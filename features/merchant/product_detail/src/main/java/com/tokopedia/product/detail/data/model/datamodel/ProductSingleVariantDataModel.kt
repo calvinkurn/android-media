@@ -16,7 +16,8 @@ data class ProductSingleVariantDataModel(
     var mapOfSelectedVariant: MutableMap<String, String> = mutableMapOf(),
     var isVariantError: Boolean = false,
     var isRefreshing: Boolean = false,
-    var thumbnailType: String = "" // single variant for thumbnail variant in pdp
+    var thumbnailType: String = "", // single variant for thumbnail variant in pdp
+    var title: String = ""
 ) : DynamicPdpDataModel {
 
     override fun type(): String = type
@@ -29,7 +30,9 @@ data class ProductSingleVariantDataModel(
 
     override fun equalsWith(newData: DynamicPdpDataModel): Boolean {
         return if (newData is ProductSingleVariantDataModel) {
-            isVariantError == newData.isVariantError && variantLevelOne == newData.variantLevelOne
+            isVariantError == newData.isVariantError &&
+                variantLevelOne == newData.variantLevelOne &&
+                title == newData.title
         } else {
             false
         }

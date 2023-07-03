@@ -20,6 +20,7 @@ import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstant
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.ITEM_NAME
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.ITEM_VARIANT
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.KEY_INDEX
+import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.LIST
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.PRICE
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.TRACKER_ID
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.VALUE_IS_TOPADS
@@ -122,7 +123,7 @@ object RecommendationCarouselTracking {
             ECOMMERCE to mapOf(
                 CURRENCY_CODE to IDR,
                 IMPRESSIONS to listOf(mapOf(
-                    DIMENSION_40 to IMPRESSION_CLICK_DIMENSION_40_FORMAT.format(
+                    LIST to IMPRESSION_CLICK_DIMENSION_40_FORMAT.format(
                         trackingModel.listPageName,
                         item.pageName,
                         item.recommendationType,
@@ -148,7 +149,6 @@ object RecommendationCarouselTracking {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
             SELECT_CONTENT,
             bundle {
-                putString(EVENT, VIEW_ITEM_LIST)
                 putString(EVENT_CATEGORY, trackingModel.androidPageName)
                 putString(EVENT_ACTION, trackingModel.eventActionClick)
                 putString(EVENT_LABEL, widget.title)

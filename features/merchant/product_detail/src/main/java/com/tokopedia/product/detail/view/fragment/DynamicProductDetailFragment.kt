@@ -84,6 +84,8 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.createDefaultProgressDialog
 import com.tokopedia.kotlin.extensions.view.hasValue
+import com.tokopedia.kotlin.extensions.view.ifNull
+import com.tokopedia.kotlin.extensions.view.ifNullOrBlank
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
@@ -148,7 +150,6 @@ import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.VariantChild
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCategory
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
-import com.tokopedia.product.detail.common.extensions.ifNull
 import com.tokopedia.product.detail.common.showImmediately
 import com.tokopedia.product.detail.common.showToasterError
 import com.tokopedia.product.detail.common.showToasterSuccess
@@ -300,9 +301,9 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.universal_sharing.model.PdpParamModel
 import com.tokopedia.universal_sharing.model.PersonalizedCampaignModel
 import com.tokopedia.universal_sharing.view.bottomsheet.ScreenshotDetector
-import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
+import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ScreenShotListener
-import com.tokopedia.universal_sharing.view.model.AffiliatePDPInput
+import com.tokopedia.universal_sharing.view.model.AffiliateInput
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -606,7 +607,7 @@ open class DynamicProductDetailFragment :
 
         if (!viewModel.isUserSessionActive) initStickyLogin(view)
         screenshotDetector = context?.let {
-            UniversalShareBottomSheet.createAndStartScreenShotDetector(
+            SharingUtil.createAndStartScreenShotDetector(
                 it,
                 this,
                 this,
@@ -2642,8 +2643,9 @@ open class DynamicProductDetailFragment :
     ) {
         val singleVariant = pdpUiUpdater?.productSingleVariant
         val selectedChild = viewModel.getChildOfVariantSelected(singleVariant = singleVariant)
+        val title = selectedChild?.subText.ifNullOrBlank { getVariantString() }
 
-        pdpUiUpdater?.updateVariantData(variantProcessedData)
+        pdpUiUpdater?.updateVariantData(title = title, processedVariant = variantProcessedData)
         pdpUiUpdater?.updateMediaScrollPosition(selectedChild?.optionIds?.firstOrNull())
 
         updateProductInfoOnVariantChanged(selectedChild)
@@ -2714,7 +2716,10 @@ open class DynamicProductDetailFragment :
     private fun updateThumbnailVariantDataAndUi(singleVariant: ProductSingleVariantDataModel?) {
         val selectedChild = viewModel.getChildOfVariantSelected(singleVariant = singleVariant)
         val optionId = selectedChild?.optionIds?.firstOrNull().orEmpty()
-        pdpUiUpdater?.updateSingleVariant(singleVariant)
+        val title = selectedChild?.subText.ifNullOrBlank { getVariantString() }
+        val singleVariantUpdated = singleVariant?.copy(title = title)
+
+        pdpUiUpdater?.updateSingleVariant(singleVariantUpdated)
         pdpUiUpdater?.updateMediaScrollPosition(optionId)
 
         // store the product id to this variable to open vbs later
@@ -2729,7 +2734,7 @@ open class DynamicProductDetailFragment :
         viewModel.getDynamicProductInfoP1?.let {
             val cartTypeData = viewModel.getCartTypeByProductId()
             val selectedMiniCartItem =
-                if (it.basic.isTokoNow && cartTypeData?.availableButtons?.firstOrNull()
+                if (it.basic.isTokoNow && cartTypeData?.availableButtonsPriority?.firstOrNull()
                     ?.isCartTypeDisabledOrRemindMe() == false
                 ) {
                     viewModel.getMiniCartItem()
@@ -2741,7 +2746,7 @@ open class DynamicProductDetailFragment :
                 viewModel.p2Data.value?.getTotalStockMiniCartByParentId(it.data.variant.parentID)
 
             val shouldShowTokoNow = it.basic.isTokoNow &&
-                cartTypeData?.availableButtons?.firstOrNull()
+                cartTypeData?.availableButtonsPriority?.firstOrNull()
                 ?.isCartTypeDisabledOrRemindMe() == false &&
                 (totalStockAtcVariant != 0 || selectedMiniCartItem != null)
 
@@ -2779,7 +2784,13 @@ open class DynamicProductDetailFragment :
                 return@observe
             }
             val listOfVariantLevelOne = listOf(variantCategory)
-            pdpUiUpdater?.updateVariantData(listOfVariantLevelOne)
+            val landingSubText = viewModel.variantData?.landingSubText.ifNullOrBlank {
+                getVariantString()
+            }
+            pdpUiUpdater?.updateVariantData(
+                title = landingSubText,
+                processedVariant = listOfVariantLevelOne
+            )
             updateUi()
         }
     }
@@ -3313,11 +3324,11 @@ open class DynamicProductDetailFragment :
     }
 
     private fun showOrHideButton() {
-        if (viewModel.shouldHideFloatingButton() && !viewModel.isShopOwner()) {
-            actionButtonView.visibility = !viewModel.shouldHideFloatingButton()
-            return
-        }
-        if (viewModel.getShopInfo().isShopInfoNotEmpty()) {
+        actionButtonView.visibility = !viewModel.shouldHideFloatingButton()
+        val shouldBeProcess = actionButtonView.visibility &&
+            viewModel.getShopInfo().isShopInfoNotEmpty()
+
+        if (shouldBeProcess) {
             val shopStatus = viewModel.getShopInfo().statusInfo.shopStatus
             val shouldShowSellerButtonByShopType =
                 shopStatus != ShopStatusDef.DELETED && shopStatus != ShopStatusDef.MODERATED_PERMANENTLY
@@ -3327,9 +3338,7 @@ open class DynamicProductDetailFragment :
                 actionButtonView.visibility =
                     viewModel.getShopInfo().statusInfo.shopStatus == ShopStatusDef.OPEN
             }
-            return
         }
-        actionButtonView.visibility = true
     }
 
     private fun renderRestrictionBottomSheet(data: RestrictionInfoResponse) {
@@ -3856,7 +3865,7 @@ open class DynamicProductDetailFragment :
         }
     }
 
-    private fun shareProduct(dynamicProductInfoP1: DynamicProductInfoP1? = null) {
+    private fun shareProduct(dynamicProductInfoP1: DynamicProductInfoP1? = null, path: String? = null) {
         val productInfo = dynamicProductInfoP1 ?: viewModel.getDynamicProductInfoP1
         if (productInfo != null) {
             val productData = generateProductShareData(
@@ -3878,8 +3887,9 @@ open class DynamicProductDetailFragment :
 
     private fun checkAndExecuteReferralAction(
         productData: ProductData,
-        affiliateData: AffiliatePDPInput,
-        imageGeneratorData: PdpParamModel
+        affiliateData: AffiliateInput,
+        imageGeneratorData: PdpParamModel,
+        path: String? = null
     ) {
         val fireBaseRemoteMsgGuest =
             remoteConfig.getString(RemoteConfigKey.fireBaseGuestShareMsgKey, "")
@@ -3901,13 +3911,13 @@ open class DynamicProductDetailFragment :
                 return
             }
         }
-        executeProductShare(productData, affiliateData, imageGeneratorData)
+        executeProductShare(productData, affiliateData, imageGeneratorData, path)
     }
 
     private fun doReferralShareAction(
         productData: ProductData,
         fireBaseRemoteMsg: String,
-        affiliateData: AffiliatePDPInput,
+        affiliateData: AffiliateInput,
         imageGeneratorData: PdpParamModel
     ) {
         val actionCreator = object : ActionCreator<String, Int> {
@@ -3947,19 +3957,20 @@ open class DynamicProductDetailFragment :
 
     private fun executeProductShare(
         productData: ProductData,
-        affiliateData: AffiliatePDPInput,
-        imageGeneratorData: PdpParamModel
+        affiliateData: AffiliateInput,
+        imageGeneratorData: PdpParamModel,
+        path: String? = null
     ) {
         val enablePdpCustomSharing = remoteConfig.getBoolean(
             REMOTE_CONFIG_KEY_ENABLE_PDP_CUSTOM_SHARING,
             REMOTE_CONFIG_DEFAULT_ENABLE_PDP_CUSTOM_SHARING
         )
-        if (UniversalShareBottomSheet.isCustomSharingEnabled(context) && enablePdpCustomSharing) {
+        if (SharingUtil.isCustomSharingEnabled(context) && enablePdpCustomSharing) {
             val description = pdpUiUpdater?.productDetailInfoData?.getDescription()?.take(100)
                 ?.replace("(\r\n|\n)".toRegex(), " ")
                 ?: ""
             productData.productShareDescription = "$description..."
-            executeUniversalShare(productData, affiliateData, imageGeneratorData)
+            executeUniversalShare(productData, affiliateData, imageGeneratorData, path)
         } else {
             executeNativeShare(productData)
         }
@@ -3977,8 +3988,9 @@ open class DynamicProductDetailFragment :
 
     private fun executeUniversalShare(
         productData: ProductData,
-        affiliateData: AffiliatePDPInput,
-        imageGeneratorData: PdpParamModel
+        affiliateData: AffiliateInput,
+        imageGeneratorData: PdpParamModel,
+        path: String? = null
     ) {
         activity?.let {
             val imageUrls = pdpUiUpdater?.mediaMap?.listOfMedia
@@ -4002,7 +4014,8 @@ open class DynamicProductDetailFragment :
                 postBuildImg = { hideProgressDialog() },
                 screenshotDetector,
                 imageGeneratorData,
-                personalizedCampaignModel
+                personalizedCampaignModel,
+                screenshotPath = path
             )
         }
     }
@@ -5298,8 +5311,8 @@ open class DynamicProductDetailFragment :
         return trackingQueue
     }
 
-    override fun getVariantString(): String {
-        return viewModel.variantData?.getVariantCombineIdentifier() ?: ""
+    private fun getVariantString(): String {
+        return viewModel.variantData?.getVariantCombineIdentifier().orEmpty()
     }
 
     private fun navAbTestCondition(navMainApp: () -> Unit = {}, navSellerApp: () -> Unit = {}) {
@@ -5606,8 +5619,8 @@ open class DynamicProductDetailFragment :
         }
     }
 
-    override fun screenShotTaken() {
-        shareProduct()
+    override fun screenShotTaken(path: String) {
+        shareProduct(path = path)
     }
 
     override fun onWidgetShouldRefresh(view: PlayWidgetView) {
