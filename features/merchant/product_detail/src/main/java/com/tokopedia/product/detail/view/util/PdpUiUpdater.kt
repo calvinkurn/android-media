@@ -50,6 +50,7 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductRecomWidgetDataM
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationVerticalDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationVerticalPlaceholderDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationWidgetUiModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductShipmentDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductShopAdditionalDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductShopCredibilityDataModel
@@ -284,6 +285,21 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
             updateData(ProductDetailConstant.SHOPADS_CAROUSEL, loadInitialData) {
                 topAdsProductBundlingData?.run {
                     this.productId = dataP1.basic.productID
+                }
+            }
+
+            DynamicProductDetailMapper.getGlobalRecommendationWidgetComponentNames().forEach { key ->
+                updateData(key, loadInitialData) {
+                    (mapOfData[key] as? ProductRecommendationWidgetUiModel)?.run {
+                        val newData = copy(
+                            recommendationWidget = recommendationWidget.copy(
+                                metadata = recommendationWidget.metadata.copy(
+                                    productIds = listOf(productId)
+                                )
+                            )
+                        )
+                        mapOfData[key] = newData
+                    }
                 }
             }
 

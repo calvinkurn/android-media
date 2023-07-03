@@ -2641,6 +2641,7 @@ open class DynamicProductDetailFragment :
 
         updateProductInfoOnVariantChanged(selectedChild)
 
+        recommendationWidgetViewModel?.refresh()
         updateUi()
         doSomethingAfterVariantUpdated?.invoke()
     }

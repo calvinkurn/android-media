@@ -905,7 +905,7 @@ object DynamicProductDetailMapper {
         )
     }
 
-    private fun getGlobalRecommendationWidgetComponentNames(): Array<String> {
+    fun getGlobalRecommendationWidgetComponentNames(): Array<String> {
         return arrayOf(RECOM_VERTICAL)
     }
 }
