@@ -29,6 +29,7 @@ internal const val HEADER_OS_TYPE = "os-type"
 internal const val HEADER_PARAM_BEARER = "Bearer"
 internal const val HEADER_PATH = "X-Tkpd-Path"
 internal const val HEADER_X_MSISDN = "x-msisdn"
+const val HEADER_X_THEME = "x-theme"
 internal const val X_TKPD_HEADER_AUTHORIZATION = "X-TKPD-Authorization"
 
 internal const val KEY_FINGERPRINT_DATA = "Fingerprint-Data"
