@@ -40,7 +40,7 @@ import com.tokopedia.shop.pageheader.util.ShopPageHeaderMapper
 import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
-import com.tokopedia.universal_sharing.view.model.AffiliatePDPInput
+import com.tokopedia.universal_sharing.view.model.AffiliateInput
 import com.tokopedia.universal_sharing.view.model.GenerateAffiliateLinkEligibility
 import com.tokopedia.universal_sharing.view.usecase.AffiliateEligibilityCheckUseCase
 import com.tokopedia.usecase.coroutines.Fail
@@ -797,7 +797,7 @@ class ShopPageHeaderViewModelTest {
     @Test
     fun `when check affiliate is success`() {
         val mockData = GenerateAffiliateLinkEligibility()
-        val mockParam = AffiliatePDPInput()
+        val mockParam = AffiliateInput()
 
         coEvery {
             eligibilityCheckUseCase.get().executeOnBackground()
@@ -813,7 +813,7 @@ class ShopPageHeaderViewModelTest {
     @Test
     fun `when check affiliate throws error`() {
         val mockError = Exception()
-        val mockParam = AffiliatePDPInput()
+        val mockParam = AffiliateInput()
         coEvery {
             eligibilityCheckUseCase.get().executeOnBackground()
         } throws mockError

@@ -70,7 +70,7 @@ import com.tokopedia.topads.sdk.domain.model.TopAdsGetDynamicSlottingDataProduct
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.topads.sdk.domain.model.TopadsIsAdsQuery
 import com.tokopedia.topads.sdk.domain.model.TopadsStatus
-import com.tokopedia.universal_sharing.view.model.AffiliatePDPInput
+import com.tokopedia.universal_sharing.view.model.AffiliateInput
 import com.tokopedia.universal_sharing.view.model.GenerateAffiliateLinkEligibility
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
@@ -3030,7 +3030,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     @Test
     fun `success check affiliate eligibility`() {
         val mockData = GenerateAffiliateLinkEligibility()
-        val mockParam = AffiliatePDPInput()
+        val mockParam = AffiliateInput()
 
         coEvery {
             affiliateEligibilityCheckUseCase.executeOnBackground()
@@ -3045,7 +3045,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
 
     fun `error check affiliate eligibility`() {
         val mockError = Exception()
-        val mockParam = AffiliatePDPInput()
+        val mockParam = AffiliateInput()
 
         coEvery {
             affiliateEligibilityCheckUseCase.executeOnBackground()
