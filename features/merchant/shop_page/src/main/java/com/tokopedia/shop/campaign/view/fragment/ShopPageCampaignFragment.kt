@@ -999,10 +999,12 @@ class ShopPageCampaignFragment :
 
     private fun handleRedeemVoucherSuccess(shopCampaignRedeemPromo: ShopCampaignRedeemPromoVoucherResult) {
         if (shopCampaignRedeemPromo.redeemResult.redeemMessage.isNotEmpty()) {
+            val toasterMessage = context?.getString(R.string.shop_campaign_tab_voucher_redeem_success_message).orEmpty()
+            val toasterCta = context?.getString(R.string.see_label).orEmpty()
             showToaster(
-                shopCampaignRedeemPromo.redeemResult.redeemMessage,
+                toasterMessage,
                 view ?: return,
-                "Lihat",
+                toasterCta,
                 {
                     showVoucherDetailBottomSheet(
                         shopCampaignRedeemPromo.slug,
