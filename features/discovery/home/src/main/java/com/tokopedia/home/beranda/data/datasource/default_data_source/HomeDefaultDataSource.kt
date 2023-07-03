@@ -9,7 +9,6 @@ class HomeDefaultDataSource {
             dynamicHomeChannel = createDefaultHomeDynamicChannel(),
             banner = createDefaultHomePageBanner(),
             dynamicHomeIcon = createDefaultHomeDynamicIcon(),
-            homeFlag = createHomeFlag()
     )
 
     fun createDefaultHomePageBanner(): BannerDataModel{
