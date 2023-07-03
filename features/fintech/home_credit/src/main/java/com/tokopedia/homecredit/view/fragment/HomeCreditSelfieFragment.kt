@@ -14,15 +14,16 @@ import androidx.annotation.RequiresPermission
 import androidx.fragment.app.Fragment
 import com.otaliastudios.cameraview.controls.Facing
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.applink.internal.ApplinkConstInternalFintech
 import com.tokopedia.homecredit.R
 import com.tokopedia.homecredit.applink.Constants
 import com.tokopedia.homecredit.view.activity.HomeCreditRegisterActivity
 
 class HomeCreditSelfieFragment : HomeCreditBaseCameraFragment() {
     override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(R.layout.fragment_home_credit_selfie, container, false)
     }
@@ -57,8 +58,12 @@ class HomeCreditSelfieFragment : HomeCreditBaseCameraFragment() {
         continueUpload?.setOnClickListener {
             val intent = Intent()
             intent.putExtra(
-                    HomeCreditRegisterActivity.HCI_KTP_IMAGE_PATH,
-                    finalCameraResultFilePath
+                HomeCreditRegisterActivity.HCI_KTP_IMAGE_PATH,
+                finalCameraResultFilePath
+            )
+            intent.putExtra(
+                ApplinkConstInternalFintech.HCI_TYPE,
+                TYPE
             )
             if (activity != null) {
                 requireActivity().setResult(Activity.RESULT_OK, intent)
@@ -76,8 +81,9 @@ class HomeCreditSelfieFragment : HomeCreditBaseCameraFragment() {
             if (!TextUtils.isEmpty(customHeader)) {
                 headerText?.text = customHeader
             }
-            if (!TextUtils.isEmpty(cameraType)  &&
-                    Constants.SLFE_NO_OVERLAY.equals(cameraType, ignoreCase = true)) {
+            if (!TextUtils.isEmpty(cameraType) &&
+                Constants.SLFE_NO_OVERLAY.equals(cameraType, ignoreCase = true)
+            ) {
                 cameraOverlayImage?.visibility = View.GONE
             } else if (!TextUtils.isEmpty(cutOutImgUrl)) {
                 cameraOverlayImage?.let {
@@ -93,5 +99,6 @@ class HomeCreditSelfieFragment : HomeCreditBaseCameraFragment() {
         fun createInstance(): Fragment {
             return HomeCreditSelfieFragment()
         }
+        const val TYPE = "selfie"
     }
 }
