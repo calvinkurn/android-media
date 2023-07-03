@@ -58,6 +58,10 @@ import com.tokopedia.oneclickcheckout.order.view.model.OrderProfileShipment
 import com.tokopedia.oneclickcheckout.order.view.model.OrderShop
 import com.tokopedia.oneclickcheckout.order.view.model.ProductTrackerData
 import com.tokopedia.oneclickcheckout.order.view.model.WholesalePrice
+import com.tokopedia.purchase_platform.common.feature.addonsproduct.data.model.AddOnsProductDataModel
+import com.tokopedia.purchase_platform.common.feature.addonsproduct.data.model.SummaryAddOnProductDataModel
+import com.tokopedia.purchase_platform.common.feature.addonsproduct.data.response.AddOnsProductResponse
+import com.tokopedia.purchase_platform.common.feature.addonsproduct.data.response.SummaryAddOnProductResponse
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.model.EthicalDrugDataModel
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.model.ImageUploadDataModel
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.response.EthicalDrugResponse
@@ -99,6 +103,7 @@ class GetOccCartMapper @Inject constructor() {
             shop.firstProductErrorIndex = firstProductErrorIndex
             kero = OrderKero(data.keroToken, data.keroDiscomToken, data.keroUnixTime)
             addOnWordingData = mapAddOnWording(data.addOnWording)
+            summaryAddOnsProduct = mapSummaryAddOnsProduct(data.summaryAddOns)
         }
         return OrderData(
             ticker = mapTicker(data.tickers),
@@ -254,6 +259,7 @@ class GetOccCartMapper @Inject constructor() {
             errorMessage = product.errors.firstOrNull() ?: ""
             isError = errorMessage.isNotEmpty() || shop.isError
             addOn = mapAddOns(product.addOns)
+            addOnsProductData = mapAddOnsProduct(product.addOnsProduct)
             ethicalDrug = mapEthicalDrug(product.ethicalDrug)
         }
         return orderProduct
@@ -563,6 +569,26 @@ class GetOccCartMapper @Inject constructor() {
         }
     }
 
+    private fun mapAddOnsProduct(addOnsProductResponse: AddOnsProductResponse): AddOnsProductDataModel = AddOnsProductDataModel(
+        title = addOnsProductResponse.title,
+        bottomsheet = AddOnsProductDataModel.Bottomsheet(
+            title = addOnsProductResponse.bottomsheet.title,
+            applink = addOnsProductResponse.bottomsheet.applink,
+            isShown = addOnsProductResponse.bottomsheet.isShown
+        ),
+        data = addOnsProductResponse.data.map { data ->
+            AddOnsProductDataModel.Data(
+                id = data.id,
+                uniqueId = data.uniqueId,
+                price = data.price,
+                infoLink = data.infoLink,
+                name = data.name,
+                status = data.status,
+                type = data.type
+            )
+        }
+    )
+
     private fun mapAddOnDataItem(addOnDataItem: AddOnGiftingResponse.AddOnDataItem): AddOnGiftingDataItemModel {
         return AddOnGiftingDataItemModel(
             addOnPrice = addOnDataItem.addOnPrice,
@@ -640,6 +666,15 @@ class GetOccCartMapper @Inject constructor() {
             onlyGreetingCard = addOnWording.onlyGreetingCard,
             invoiceNotSendToRecipient = addOnWording.invoiceNotSendToRecipient
         )
+    }
+
+    private fun mapSummaryAddOnsProduct(summaryAddOns: List<SummaryAddOnProductResponse>): List<SummaryAddOnProductDataModel> {
+        return summaryAddOns.map { summaryAddOn ->
+            SummaryAddOnProductDataModel(
+                wording = summaryAddOn.wording,
+                type = summaryAddOn.type
+            )
+        }
     }
 
     private fun mapEthicalDrug(ethicalDrugResponse: EthicalDrugResponse): EthicalDrugDataModel {

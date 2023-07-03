@@ -3,6 +3,7 @@ package com.tokopedia.oneclickcheckout.order.view.processor
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
+import com.tokopedia.purchase_platform.common.constant.AddOnConstant.ADD_ON_PRODUCT_STATUS_CHECK
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageViewModel.Companion.CHANGE_PAYMENT_METHOD_MESSAGE
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageViewModel.Companion.MAXIMUM_AMOUNT_ERROR_MESSAGE
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageViewModel.Companion.MINIMUM_AMOUNT_ERROR_MESSAGE
@@ -20,6 +21,7 @@ import com.tokopedia.oneclickcheckout.order.view.model.OrderProfile
 import com.tokopedia.oneclickcheckout.order.view.model.OrderShipment
 import com.tokopedia.oneclickcheckout.order.view.model.OrderTotal
 import com.tokopedia.promocheckout.common.view.uimodel.SummariesUiModel
+import com.tokopedia.purchase_platform.common.feature.addonsproduct.data.model.AddOnsProductDataModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import com.tokopedia.purchase_platform.common.feature.purchaseprotection.domain.PurchaseProtectionPlanData
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -398,6 +400,8 @@ class OrderSummaryPageCalculator @Inject constructor(
                 purchaseProtectionPrice = cost.purchaseProtectionPrice,
                 addOnPrice = cost.addOnPrice,
                 hasAddOn = cost.hasAddOn,
+                summaryAddOnsProduct = cost.summaryAddOnsProduct,
+                addOnsProductSelectedList = cost.addOnsProductSelectedList,
                 cashbacks = cost.cashbacks,
                 installmentData = installmentData,
                 totalPriceWithoutPaymentFees = cost.totalPriceWithoutPaymentFees,
@@ -423,7 +427,10 @@ class OrderSummaryPageCalculator @Inject constructor(
             val updatedProductIndex = arrayListOf<Int>()
             var totalPurchaseProtectionPrice = 0
             var totalAddOnPrice = 0.0
+            var totalAddOnProductPrice = 0.0
             var hasAddOn = false
+            val addOnsProductSelectedList: MutableList<AddOnsProductDataModel.Data> = mutableListOf()
+
             // This is for add on shop level
             val addOnShopLevel = orderCart.shop.addOn.addOnsDataItemModelList.firstOrNull()
             if (addOnShopLevel != null) {
@@ -475,6 +482,10 @@ class OrderSummaryPageCalculator @Inject constructor(
                         totalAddOnPrice += addOnProductLevel.addOnPrice
                         hasAddOn = true
                     }
+                    product.addOnsProductData.data.filter {it.status == ADD_ON_PRODUCT_STATUS_CHECK }.forEach { addOnProductChecked ->
+                        totalAddOnProductPrice += addOnProductChecked.price * product.orderQuantity
+                        addOnsProductSelectedList.add(addOnProductChecked.copy(productQuantity = product.orderQuantity))
+                    }
                 }
             }
             totalProductPrice += totalProductWholesalePrice
@@ -482,7 +493,7 @@ class OrderSummaryPageCalculator @Inject constructor(
             val insurancePrice = shipping.getRealInsurancePrice().toDouble()
             val isUseInsurance = shipping.isUseInsurance()
             val (productDiscount, shippingDiscount, cashbacks) = calculatePromo(validateUsePromoRevampUiModel)
-            val subtotalWithoutDiscountsAndPaymentFee = totalProductPrice + totalPurchaseProtectionPrice + totalShippingPrice + insurancePrice + totalAddOnPrice
+            val subtotalWithoutDiscountsAndPaymentFee = totalProductPrice + totalPurchaseProtectionPrice + totalShippingPrice + insurancePrice + totalAddOnPrice + totalAddOnProductPrice
             val totalDiscounts = productDiscount + shippingDiscount
             val subtotal = subtotalWithoutDiscountsAndPaymentFee - totalDiscounts
             val orderCost = OrderCost(
@@ -497,11 +508,13 @@ class OrderSummaryPageCalculator @Inject constructor(
                 purchaseProtectionPrice = totalPurchaseProtectionPrice,
                 addOnPrice = totalAddOnPrice,
                 hasAddOn = hasAddOn,
+                summaryAddOnsProduct = orderCart.summaryAddOnsProduct,
+                addOnsProductSelectedList = addOnsProductSelectedList,
                 cashbacks = cashbacks,
                 totalPriceWithoutPaymentFees = subtotal,
                 totalPriceWithoutDiscountsAndPaymentFees = subtotalWithoutDiscountsAndPaymentFee,
                 totalItemPriceAndShippingFee = totalProductPrice + totalShippingPrice,
-                totalAdditionalFee = insurancePrice + totalPurchaseProtectionPrice + totalAddOnPrice,
+                totalAdditionalFee = insurancePrice + totalPurchaseProtectionPrice + totalAddOnPrice + totalAddOnProductPrice,
                 totalDiscounts = totalDiscounts
             )
             return@withContext orderCost to updatedProductIndex

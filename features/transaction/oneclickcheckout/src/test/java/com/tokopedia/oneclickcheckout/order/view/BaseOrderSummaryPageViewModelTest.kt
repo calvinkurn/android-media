@@ -22,6 +22,7 @@ import com.tokopedia.oneclickcheckout.order.view.processor.OrderSummaryPageCheck
 import com.tokopedia.oneclickcheckout.order.view.processor.OrderSummaryPageLogisticProcessor
 import com.tokopedia.oneclickcheckout.order.view.processor.OrderSummaryPagePaymentProcessor
 import com.tokopedia.oneclickcheckout.order.view.processor.OrderSummaryPagePromoProcessor
+import com.tokopedia.purchase_platform.common.feature.addons.domain.SaveAddOnStateUseCase
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.usecase.GetPrescriptionIdsUseCaseCoroutine
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
@@ -89,6 +90,9 @@ open class BaseOrderSummaryPageViewModelTest {
     lateinit var validateUsePromoRevampUseCase: Lazy<ValidateUsePromoRevampUseCase>
 
     @MockK(relaxed = true)
+    lateinit var saveAddOnStateUseCase: SaveAddOnStateUseCase
+
+    @MockK(relaxed = true)
     lateinit var userSessionInterface: UserSessionInterface
 
     @MockK(relaxed = true)
@@ -114,6 +118,7 @@ open class BaseOrderSummaryPageViewModelTest {
                 getOccCartUseCase,
                 updateCartOccUseCase,
                 getPrescriptionIdsUseCase,
+                saveAddOnStateUseCase,
                 testDispatchers
             ),
             OrderSummaryPageLogisticProcessor(
