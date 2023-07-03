@@ -4,6 +4,7 @@ import android.animation.Animator
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.graphics.Rect
 import android.os.Bundle
@@ -2898,24 +2899,14 @@ open class SomListFragment :
         if (highLightStatusKey in listOf(STATUS_NEW_ORDER, KEY_CONFIRM_SHIPPING)) {
             context?.let {
                 if (!CoachMarkPreference.hasShown(it, SHARED_PREF_SOM_LIST_TAB_COACH_MARK)) {
-                    val coachMarkMessage = when (highLightStatusKey) {
-                        STATUS_NEW_ORDER -> {
-                            it.getString(com.tokopedia.sellerorder.R.string.som_operational_guideline_confirm_shipping_tooltip_text)
-                                .orEmpty()
-                        }
-                        KEY_CONFIRM_SHIPPING -> {
-                            it.getString(com.tokopedia.sellerorder.R.string.som_operational_guideline_new_order_tooltip_text)
-                                .orEmpty()
-                        }
-                        else -> String.EMPTY
-                    }
+                    val coachMarkMessage = getCoachMarkMessageAutoTabbing(it, highLightStatusKey)
                     if (coachMarkMessage.isNotBlank()) {
                         val tabPosition =
                             somListOrderStatusFilterTab?.somListFilterUiModel?.statusList?.indexOfFirst { status -> status.key == highLightStatusKey }
                         if (tabPosition == -Int.ONE || tabPosition == null) return
                         val tabLayoutViewPosition = somListBinding?.somListTabFilter?.tabLayout?.getChildAt(
                             tabPosition
-                            ) ?: return
+                        ) ?: return
 
                         val coachMarkItem = CoachMark2Item(
                             anchorView = tabLayoutViewPosition,
@@ -2941,6 +2932,20 @@ open class SomListFragment :
                     }
                 }
             }
+        }
+    }
+
+    private fun getCoachMarkMessageAutoTabbing(context: Context, highLightStatusKey: String): String {
+        return when (highLightStatusKey) {
+            STATUS_NEW_ORDER -> {
+                context.getString(com.tokopedia.sellerorder.R.string.som_operational_guideline_confirm_shipping_tooltip_text)
+                    .orEmpty()
+            }
+            KEY_CONFIRM_SHIPPING -> {
+                context.getString(com.tokopedia.sellerorder.R.string.som_operational_guideline_new_order_tooltip_text)
+                    .orEmpty()
+            }
+            else -> String.EMPTY
         }
     }
 }
