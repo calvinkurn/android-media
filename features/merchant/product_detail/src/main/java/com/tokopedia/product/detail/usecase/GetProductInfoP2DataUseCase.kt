@@ -413,6 +413,7 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
                     title
                     subTitle
                     iconURL
+                    gradientColors
                 }
                 isShown
                 additionalData
