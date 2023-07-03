@@ -3,14 +3,12 @@ package com.tokopedia.home_component.customview.header
 import android.content.Context
 import android.content.res.Resources
 import android.graphics.Color
-import android.graphics.drawable.GradientDrawable
 import android.view.View
 import android.view.ViewStub
 import android.view.animation.Animation
 import android.view.animation.LinearInterpolator
 import android.view.animation.RotateAnimation
 import android.widget.ImageView
-import android.widget.LinearLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
@@ -35,6 +33,10 @@ class HeaderRevampLayoutStrategy : HeaderLayoutStrategy {
         private const val ROTATE_DURATION = 500L
     }
 
+    var ctaButtonRevamp: IconUnify? = null
+    var ctaBorder: ImageView? = null
+    var ctaButtonRevampContainer: ConstraintLayout? = null
+
     private val rotateAnimation by lazy {
         RotateAnimation(ROTATE_FROM_DEGREES, ROTATE_TO_DEGREES, Animation.RELATIVE_TO_SELF, PIVOT_X_VALUE, Animation.RELATIVE_TO_SELF, PIVOT_Y_VALUE)
             .apply {
@@ -58,9 +60,6 @@ class HeaderRevampLayoutStrategy : HeaderLayoutStrategy {
         ctaMode: Int?,
         colorMode: Int?
     ) {
-        var ctaButtonRevamp: IconUnify? = null
-        var ctaBorder: ImageView? = null
-        var ctaButtonRevampContainer: ConstraintLayout? = null
         if (hasSeeMoreApplink || ctaMode != DynamicChannelHeaderView.CTA_MODE_SEE_ALL) {
             if (stubCtaButton is ViewStub &&
                 !isViewStubHasBeenInflated(stubCtaButton)

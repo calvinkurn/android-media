@@ -28,7 +28,7 @@ object DeeplinkMapperEntertainment {
         }
     }
 
-    fun getRegisteredNavigationEvents(deeplink: String, context: Context): String {
+    fun getRegisteredNavigationEvents(context: Context, deeplink: String): String {
         return when {
             deeplink == ApplinkConst.EVENTS -> {
                 ApplinkConstInternalEntertainment.EVENT_HOME

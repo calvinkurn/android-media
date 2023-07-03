@@ -20,15 +20,15 @@ private const val DEFAULT_DESIGN = 2
 
 class ShopBannerInfiniteItemViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
     private val binding: DiscoInfiniteShopBannerItemBinding = DiscoInfiniteShopBannerItemBinding.bind(itemView)
-    private lateinit var shopBannerInfiniteItemViewModel: ShopBannerInfiniteItemViewModel
+    private var shopBannerInfiniteItemViewModel: ShopBannerInfiniteItemViewModel? = null
     private val displayMetrics = Utils.getDisplayMetric(fragment.context)
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         shopBannerInfiniteItemViewModel = discoveryBaseViewModel as ShopBannerInfiniteItemViewModel
         binding.bannerImage.setOnClickListener {
-            shopBannerInfiniteItemViewModel.getNavigationUrl()?.let {
+            shopBannerInfiniteItemViewModel?.getNavigationUrl()?.let {
                 RouteManager.route(fragment.activity, it)
-                (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackShopBannerInfiniteClick(shopBannerInfiniteItemViewModel.components)
+                (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackShopBannerInfiniteClick(shopBannerInfiniteItemViewModel!!.components)
             }
         }
     }
@@ -36,20 +36,23 @@ class ShopBannerInfiniteItemViewHolder(itemView: View, private val fragment: Fra
     override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
         super.setUpObservers(lifecycleOwner)
         lifecycleOwner?.let {
-            shopBannerInfiniteItemViewModel.getComponentLiveData().observe(fragment.viewLifecycleOwner, Observer { componentItem ->
-                componentItem.data?.let {
-                    if (it.isNotEmpty()) {
-                        setupImage(it.first())
+            shopBannerInfiniteItemViewModel?.getComponentLiveData()?.observe(
+                fragment.viewLifecycleOwner,
+                Observer { componentItem ->
+                    componentItem.data?.let {
+                        if (it.isNotEmpty()) {
+                            setupImage(it.first())
+                        }
                     }
                 }
-            })
+            )
         }
     }
 
     override fun removeObservers(lifecycleOwner: LifecycleOwner?) {
         super.removeObservers(lifecycleOwner)
         lifecycleOwner?.let {
-            shopBannerInfiniteItemViewModel.getComponentLiveData().removeObservers(it)
+            shopBannerInfiniteItemViewModel?.getComponentLiveData()?.removeObservers(it)
         }
     }
 
@@ -57,8 +60,10 @@ class ShopBannerInfiniteItemViewHolder(itemView: View, private val fragment: Fra
         with(binding) {
             try {
                 val layoutParams: ViewGroup.LayoutParams = bannerImage.layoutParams
-                layoutParams.width = ((displayMetrics.widthPixels - itemView.context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_24))
-                        / DEFAULT_DESIGN)
+                layoutParams.width = (
+                    (displayMetrics.widthPixels - itemView.context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_24)) /
+                        DEFAULT_DESIGN
+                    )
                 val height = Utils.extractDimension(itemData.imageUrlDynamicMobile, Constant.Dimensions.HEIGHT)
                 val width = Utils.extractDimension(itemData.imageUrlDynamicMobile, Constant.Dimensions.WIDTH)
                 if (width != null && height != null && width != 1 && height != 1) {
@@ -80,7 +85,6 @@ class ShopBannerInfiniteItemViewHolder(itemView: View, private val fragment: Fra
 
     override fun onViewAttachedToWindow() {
         super.onViewAttachedToWindow()
-        (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackShopBannerInfiniteImpression(shopBannerInfiniteItemViewModel.components)
+        shopBannerInfiniteItemViewModel?.components?.let { (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackShopBannerInfiniteImpression(it) }
     }
-
 }

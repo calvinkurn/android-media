@@ -59,7 +59,7 @@ data class CartGroupHolderData(
 
     val hasSelectedProduct: Boolean
         get() = isAllSelected || isPartialSelected
-    
+
     val shop: CartShopHolderData
         get() = productUiModelList.getOrNull(0)?.shopHolderData ?: CartShopHolderData()
 

@@ -16,8 +16,6 @@ import com.tokopedia.chatbot.databinding.BottomsheetChatbotBigReplyBoxBinding
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import kotlinx.android.synthetic.main.item_chatbot_quick_reply_view.view.*
-
 class BigReplyBoxBottomSheet : BottomSheetUnify(), ChatbotSendButtonListener {
     private var isSendButtonActivated: Boolean = false
     private var labelText = ""

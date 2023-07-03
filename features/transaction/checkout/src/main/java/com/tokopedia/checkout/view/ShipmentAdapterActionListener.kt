@@ -45,7 +45,6 @@ interface ShipmentAdapterActionListener {
         skipValidateUse: Boolean
     )
 
-//    fun updateCheckoutRequest(checkoutRequestData: List<DataCheckoutRequest>)
     fun onInsuranceChecked(position: Int)
     fun onNeedUpdateViewItem(position: Int)
     fun onInsuranceTncClicked()
