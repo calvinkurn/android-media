@@ -11,6 +11,7 @@ class AddOnChildAdapter(
 ): RecyclerView.Adapter<AddOnChildViewHolder>() {
 
     private var items: MutableList<AddOnUIModel> = mutableListOf()
+    private var isShowDescription: Boolean = false
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AddOnChildViewHolder {
         val rootView = AddOnChildViewHolder.createRootView(parent)
@@ -38,7 +39,7 @@ class AddOnChildAdapter(
     }
 
     override fun onBindViewHolder(holder: AddOnChildViewHolder, position: Int) {
-        holder.bind(items[position])
+        holder.bind(items[position], isShowDescription)
     }
 
     override fun getItemCount() = items.size
@@ -46,6 +47,10 @@ class AddOnChildAdapter(
     fun setItems(items: List<AddOnUIModel>) {
         this.items = items.toMutableList()
         notifyItemRangeInserted(Int.ZERO, items.size)
+    }
+
+    fun showDescription(showDescription: Boolean) {
+        isShowDescription = showDescription
     }
 
 }

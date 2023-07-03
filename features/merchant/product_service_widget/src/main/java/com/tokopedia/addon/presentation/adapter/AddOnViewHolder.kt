@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.addon.presentation.uimodel.AddOnGroupUIModel
 import com.tokopedia.addon.presentation.uimodel.AddOnUIModel
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.product_service_widget.R
@@ -26,7 +27,7 @@ class AddOnViewHolder(
 
     private val binding: ItemAddonBinding? by viewBinding()
 
-    fun bind(item: AddOnGroupUIModel) {
+    fun bind(item: AddOnGroupUIModel, isShowDescription: Boolean) {
         binding?.apply {
             tfTitle.text = item.title
             iuServiceType.loadImage(
@@ -38,8 +39,10 @@ class AddOnViewHolder(
             )
             rvAddonChild.layoutManager = LinearLayoutManager(root.context, LinearLayoutManager.VERTICAL, false)
             rvAddonChild.adapter = AddOnChildAdapter(::onChildClickListener, onHelpClickListener).apply {
+                showDescription(isShowDescription)
                 setItems(item.addon)
             }
+            tfHint.isVisible = isShowDescription
         }
     }
 

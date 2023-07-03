@@ -12,6 +12,7 @@ class AddOnAdapter(
 ): RecyclerView.Adapter<AddOnViewHolder>() {
 
     private var items: MutableList<AddOnGroupUIModel> = mutableListOf()
+    private var isShowDescription: Boolean = false
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AddOnViewHolder {
         val rootView = AddOnViewHolder.createRootView(parent)
@@ -20,7 +21,7 @@ class AddOnAdapter(
 
     override fun onBindViewHolder(holder: AddOnViewHolder, position: Int) {
         items.getOrNull(position)?.let {
-            holder.bind(it)
+            holder.bind(it, isShowDescription)
         }
     }
 
@@ -36,6 +37,10 @@ class AddOnAdapter(
     fun setItems(items: List<AddOnGroupUIModel>) {
         this.items = items.toMutableList()
         notifyItemRangeChanged(Int.ZERO, items.size)
+    }
+
+    fun showDescription(isShow: Boolean) {
+        isShowDescription = isShow
     }
 
 }

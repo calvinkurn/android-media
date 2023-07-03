@@ -39,7 +39,7 @@ class AddOnChildViewHolder(
         }
     }
 
-    fun bind(item: AddOnUIModel) {
+    fun bind(item: AddOnUIModel, showDescription: Boolean) {
         binding?.apply {
             tfName.text = item.name
             tfPrice.text = item.discountedPrice.getCurrencyFormatted()
@@ -49,6 +49,8 @@ class AddOnChildViewHolder(
             cuAddon.isChecked = item.isSelected
             cuAddon.isEnabled = !item.isMandatory
             root.isEnabled = !item.isMandatory
+            tfDescription.text = item.description
+            tfDescription.isVisible = showDescription
         }
     }
 
