@@ -10,7 +10,8 @@
         <activity
             android:name="com.tokopedia.people.views.activity.UserProfileActivity"
             android:exported="false"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
@@ -27,7 +28,8 @@
         <activity
             android:name="com.tokopedia.people.views.activity.FollowerFollowingListingActivity"
             android:exported="false"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
@@ -44,7 +46,7 @@
         <activity android:name=".views.activity.ProfileSettingsActivity"
             android:exported="false"
             android:screenOrientation="portrait"
-            >
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
 
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />

@@ -213,12 +213,12 @@ class UserProfileRepositoryImpl @Inject constructor(
 
     override suspend fun setLikeStatus(
         feedbackID: String,
-        likeStatus: Int
+        isLike: Boolean,
     ): UserReviewUiModel.LikeDislike = withContext(dispatcher.io) {
         val response = setLikeStatusUseCase(
             SetLikeStatusRequest(
                 feedbackID = feedbackID,
-                likeStatus = likeStatus,
+                isLike = isLike,
             )
         )
 

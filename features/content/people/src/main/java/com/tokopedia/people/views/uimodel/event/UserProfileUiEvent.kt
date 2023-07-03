@@ -7,7 +7,6 @@ import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
  * Created By : Jonathan Darwin on June 28, 2022
  */
 sealed interface UserProfileUiEvent {
-    data class SuccessLoadTabs(val isEmptyContent: Boolean) : UserProfileUiEvent
     data class SuccessUpdateReminder(val message: String) : UserProfileUiEvent
 
     data class ErrorLoadProfile(val throwable: Throwable) : UserProfileUiEvent

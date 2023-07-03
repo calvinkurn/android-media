@@ -70,7 +70,7 @@ interface UserProfileRepository {
 
     suspend fun setLikeStatus(
         feedbackID: String,
-        likeStatus: Int,
+        isLike: Boolean,
     ): UserReviewUiModel.LikeDislike
 
 }

@@ -120,34 +120,6 @@ class UserProfileContentViewModelTest {
     }
 
     @Test
-    fun `when user success load profile tab and emit event`() {
-        robot.use {
-            it.setup {
-                coEvery { mockRepo.getUserProfileTab(mockOwnProfile.userID) } returns mockProfileTabShown
-            }
-            it.recordEvent {
-                submitAction(UserProfileAction.LoadProfile(isRefresh = true))
-            } andThen {
-                last().assertEvent(UserProfileUiEvent.SuccessLoadTabs(false))
-            }
-        }
-    }
-
-    @Test
-    fun `when user success load profile tab and emit event but empty data`() {
-        robot.use {
-            it.setup {
-                coEvery { mockRepo.getUserProfileTab(mockOwnProfile.userID) } returns mockProfileTabNotShown
-            }
-            it.recordEvent {
-                submitAction(UserProfileAction.LoadProfile(isRefresh = true))
-            } andThen {
-                last().assertEvent(UserProfileUiEvent.SuccessLoadTabs(false))
-            }
-        }
-    }
-
-    @Test
     fun `when user success load profile tab and this is the first time review tab is shown`() {
         robot.use {
             it.setup {

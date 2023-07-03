@@ -232,7 +232,7 @@ class UserProfileUiMapperImpl @Inject constructor(
                     }.take(MAX_REVIEW_MEDIA),
                     likeDislike = UserReviewUiModel.LikeDislike(
                         totalLike = it.likeDislike.totalLike,
-                        likeStatus = it.likeDislike.likeStatus,
+                        isLike = UserProfileLikeStatusMapper.isLike(it.likeDislike.likeStatus),
                     ),
                     isReviewTextExpanded = false,
                 )
@@ -246,7 +246,7 @@ class UserProfileUiMapperImpl @Inject constructor(
     override fun mapSetLikeStatus(response: SetLikeStatusResponse): UserReviewUiModel.LikeDislike {
         return UserReviewUiModel.LikeDislike(
             totalLike = response.data.totalLike,
-            likeStatus = response.data.likeStatus,
+            isLike = UserProfileLikeStatusMapper.isLike(response.data.likeStatus),
         )
     }
 

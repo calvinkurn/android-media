@@ -28,6 +28,7 @@ import com.tokopedia.content.common.navigation.shorts.PlayShortsParam
 import com.tokopedia.content.common.types.BundleData.KEY_IS_OPEN_FROM
 import com.tokopedia.content.common.types.ContentCommonUserType.KEY_AUTHOR_TYPE
 import com.tokopedia.content.common.types.ContentCommonUserType.TYPE_USER
+import com.tokopedia.content.common.util.Router
 import com.tokopedia.content.common.util.coachmark.ContentCoachMarkConfig
 import com.tokopedia.content.common.util.coachmark.ContentCoachMarkManager
 import com.tokopedia.content.common.util.coachmark.ContentCoachMarkSharedPref
@@ -108,6 +109,7 @@ class UserProfileFragment @Inject constructor(
     private val coachMarkManager: ContentCoachMarkManager,
     private val userProfileSharedPref: UserProfileSharedPref,
     private val userProfileUiBridge: UserProfileUiBridge,
+    private val router: Router
 ) : TkpdBaseV4Fragment(),
     ShareBottomsheetListener,
     ScreenShotListener,
@@ -406,16 +408,6 @@ class UserProfileFragment @Inject constructor(
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.uiEvent.collect { event ->
                 when (event) {
-                    is UserProfileUiEvent.SuccessLoadTabs -> {
-                        if (event.isEmptyContent) {
-                            if (viewModel.isSelfProfile) emptyPostSelf() else emptyPostVisitor()
-                            mainBinding.userPostContainer.displayedChild = PAGE_EMPTY
-                        } else {
-                            mainBinding.shopRecommendation.hide()
-                            mainBinding.profileTabs.viewPager.currentItem = viewPagerSelectedPage
-                            mainBinding.userPostContainer.displayedChild = PAGE_CONTENT
-                        }
-                    }
                     is UserProfileUiEvent.ErrorGetProfileTab -> {
                         if (binding.swipeRefreshLayout.isRefreshing) {
                             binding.swipeRefreshLayout.isRefreshing = false
@@ -738,6 +730,15 @@ class UserProfileFragment @Inject constructor(
 
         val selectedTabKey = UserProfileParam.getSelectedTab(activity?.intent, isRemoveAfterGet = true).key
         setupAutoSelectTabIfAny(selectedTabKey)
+
+        if (value == ProfileTabUiModel()) {
+            if (viewModel.isSelfProfile) emptyPostSelf() else emptyPostVisitor()
+            mainBinding.userPostContainer.displayedChild = PAGE_EMPTY
+        } else {
+            mainBinding.shopRecommendation.hide()
+            mainBinding.profileTabs.viewPager.currentItem = viewPagerSelectedPage
+            mainBinding.userPostContainer.displayedChild = PAGE_CONTENT
+        }
     }
 
     private fun setupAutoSelectTabIfAny(selectedTabKey: String) {
@@ -991,8 +992,12 @@ class UserProfileFragment @Inject constructor(
     }
 
     private fun openProfileSettingsPage() {
-        val intent = RouteManager.getIntent(requireContext(), ApplinkConst.PROFILE_SETTINGS, viewModel.profileUserID)
-        profileSettingsForActivityResult.launch(intent)
+        router.route(
+            context = requireContext(),
+            activityResultLauncher = profileSettingsForActivityResult,
+            appLinkPattern = ApplinkConst.PROFILE_SETTINGS,
+            viewModel.profileUserID
+        )
     }
 
     private fun getFollowersBundle(isFollowers: Boolean): Bundle {

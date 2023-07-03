@@ -10,5 +10,5 @@ data class SetLikeStatusRequest(
     val feedbackID: String,
 
     @SerializedName("likeStatus")
-    val likeStatus: Int,
+    val isLike: Boolean,
 )
