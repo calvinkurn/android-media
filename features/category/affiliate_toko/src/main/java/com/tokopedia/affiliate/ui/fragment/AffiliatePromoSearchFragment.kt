@@ -21,7 +21,6 @@ import com.tokopedia.affiliate.interfaces.PromotionClickInterface
 import com.tokopedia.affiliate.model.pojo.AffiliatePromotionBottomSheetParams
 import com.tokopedia.affiliate.model.response.AffiliateSearchData
 import com.tokopedia.affiliate.ui.activity.AffiliateRegistrationActivity
-import com.tokopedia.affiliate.ui.bottomsheet.AffiliateHowToPromoteBottomSheet
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliatePromotionBottomSheet
 import com.tokopedia.affiliate.ui.custom.AffiliateBaseFragment
 import com.tokopedia.affiliate.ui.custom.AffiliateLinkTextField
@@ -98,11 +97,7 @@ class AffiliatePromoSearchFragment :
         view?.findViewById<NavToolbar>(R.id.promo_search_navToolbar)?.run {
             viewLifecycleOwner.lifecycle.addObserver(this)
             setIcon(
-                IconBuilder().addIcon(IconList.ID_INFORMATION) {
-                    AffiliateHowToPromoteBottomSheet.newInstance(
-                        AffiliateHowToPromoteBottomSheet.STATE_HOW_TO_PROMOTE
-                    ).show(childFragmentManager, "")
-                }.addIcon(IconList.ID_NAV_GLOBAL) {}
+                IconBuilder().addIcon(IconList.ID_NAV_GLOBAL) {}
             )
             getCustomViewContentView()?.findViewById<Typography>(R.id.navbar_tittle)?.text =
                 getString(R.string.affiliate_promo)
@@ -288,12 +283,10 @@ class AffiliatePromoSearchFragment :
     override fun onSystemDown() {
         view?.findViewById<AffiliateLinkTextField>(R.id.product_link_et)?.isEnabled = false
         affiliatePromoViewModel?.setValidateUserType(SYSTEM_DOWN)
-        affiliatePromoViewModel?.getAnnouncementInformation()
     }
 
     override fun onReviewed() {
         affiliatePromoViewModel?.setValidateUserType(ON_REVIEWED)
-        affiliatePromoViewModel?.getAnnouncementInformation()
     }
 
     override fun onUserNotRegistered() {
@@ -311,7 +304,6 @@ class AffiliatePromoSearchFragment :
     }
 
     override fun onUserValidated() {
-        affiliatePromoViewModel?.getAnnouncementInformation()
         affiliatePromoViewModel?.setValidateUserType(ON_REGISTERED)
     }
 

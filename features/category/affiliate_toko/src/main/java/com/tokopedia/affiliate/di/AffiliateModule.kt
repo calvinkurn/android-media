@@ -7,6 +7,7 @@ import com.tokopedia.affiliate.sse.AffiliateSSE
 import com.tokopedia.affiliate.sse.AffiliateSSEImpl
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -31,4 +32,8 @@ class AffiliateModule {
         dispatchers: CoroutineDispatchers
     ): AffiliateSSE =
         AffiliateSSEImpl(userSession, dispatchers, appContext)
+
+    @AffiliateScope
+    @Provides
+    fun provideAbTestPlatform(): RemoteConfigInstance = RemoteConfigInstance.getInstance()
 }

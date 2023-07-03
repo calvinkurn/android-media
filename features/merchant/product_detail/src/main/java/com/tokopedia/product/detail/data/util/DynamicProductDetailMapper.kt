@@ -99,7 +99,7 @@ import com.tokopedia.universal_sharing.model.BoTypeImageGeneratorParam
 import com.tokopedia.universal_sharing.model.PdpParamModel
 import com.tokopedia.universal_sharing.model.PersonalizedCampaignModel
 import com.tokopedia.universal_sharing.tracker.PageType
-import com.tokopedia.universal_sharing.view.model.AffiliatePDPInput
+import com.tokopedia.universal_sharing.view.model.AffiliateInput
 import com.tokopedia.universal_sharing.view.model.Product
 import com.tokopedia.universal_sharing.view.model.Shop
 
@@ -697,8 +697,8 @@ object DynamicProductDetailMapper {
         productInfo: DynamicProductInfoP1,
         shopInfo: ShopInfo?,
         variantData: ProductVariant?
-    ): AffiliatePDPInput {
-        return AffiliatePDPInput(
+    ): AffiliateInput {
+        return AffiliateInput(
             pageType = PageType.PDP.value,
             product = Product(
                 productID = productInfo.basic.productID,

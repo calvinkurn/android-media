@@ -40,7 +40,7 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
     private var viewModel: FeedProductItemInfoViewModel? = null
     private var customMvcTracker: MvcTrackerImpl? = null
 
-    private lateinit var listProducts: List<FeedXProduct>
+    private var listProducts: List<FeedXProduct> = emptyList()
     private var listener: Listener? = null
     private var postId: String = "0"
     private val adapter by lazy {
