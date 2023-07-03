@@ -228,6 +228,7 @@ import com.tokopedia.usercomponents.stickylogin.view.StickyLoginView
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import com.tokopedia.utils.view.binding.viewBinding
+import com.tokopedia.webview.WebViewHelper
 import java.io.File
 import java.net.URLEncoder
 import java.util.*
@@ -321,6 +322,7 @@ class ShopPageHeaderFragment :
         private const val IMG_GENERATOR_SHOP_INFO_3 = 3
         private const val IMG_GENERATOR_SHOP_INFO_MAX_SIZE = 3
         private const val PARTIAL_SHOP_HEADER_MARGIN_BOTTOM_FOLDABLE = 8
+        private const val WEBVIEW_ALLOW_OVERRIDE_FORMAT = "%s?allow_override=%b&url=%s"
 
         @JvmStatic
         fun createInstance() = ShopPageHeaderFragment()
@@ -2326,7 +2328,21 @@ class ShopPageHeaderFragment :
 
     override fun onShopStatusTickerClickableDescriptionClicked(linkUrl: CharSequence) {
         context?.let {
-            RouteManager.route(it, linkUrl.toString())
+            val link = linkUrl.toString()
+            if (WebViewHelper.isUrlValid(linkUrl.toString())) {
+                RouteManager.route(
+                    context,
+                    String.format(
+                        Locale.getDefault(),
+                        WEBVIEW_ALLOW_OVERRIDE_FORMAT,
+                        ApplinkConst.WEBVIEW,
+                        false,
+                        link
+                    )
+                )
+            } else {
+                RouteManager.route(context, link)
+            }
         }
     }
 
