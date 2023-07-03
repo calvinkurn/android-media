@@ -90,7 +90,7 @@ data class AnimatedInfos(
     @SerializedName("title") val title: String?,
     @SerializedName("subTitle") val subTitle: String?,
     @SerializedName("iconURL") val iconURL: String?,
-    @SerializedName("gradientColors") val gradientColors: List<String>
+    @SerializedName("gradientColors") val gradientColors: List<String> = emptyList()
 ) : Parcelable
 
 data class FollowShopResponse(
