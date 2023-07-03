@@ -35,6 +35,7 @@ class CabinetView(
     }
 
     fun bindData(cabinetHeader: CabinetHeader, medalList: List<MedalData>) {
+        cabinetHeaderAdapter.clearAllElements()
         cabinetHeaderAdapter.addElement(cabinetHeader)
         bindMedalList(medalList)
     }

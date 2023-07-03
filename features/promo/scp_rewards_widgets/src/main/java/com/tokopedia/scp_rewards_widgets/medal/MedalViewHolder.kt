@@ -54,10 +54,10 @@ class MedalViewHolder(
                 listener?.onMedalFailed(item)
             }
         } else {
-            listener?.let {
-                this.root.setOnClickListener { listener.onMedalClick(item) }
-            }
             ivMedal.loadImageOrFallback(item.imageUrl, R.drawable.ic_empty_medal)
+        }
+        listener?.let {
+            this.root.setOnClickListener { listener.onMedalClick(item) }
         }
         handleProgressBar(item)
     }

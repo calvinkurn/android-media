@@ -460,6 +460,7 @@ object MedalCabinetAnalyticsImpl : MedalCabinetAnalytics {
 
     // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/4006
     // Tracker ID: 44278
+    // Not implemented - no such click listener as of now
     override fun sendClickBannerEvent(creativeName: String, bannerPosition: String) {
         val eventLabel = JSONObject().apply {
             put(TrackerConstants.EventLabelProperties.CREATIVE_NAME, creativeName)
@@ -494,6 +495,7 @@ object MedalCabinetAnalyticsImpl : MedalCabinetAnalytics {
 
     // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/4006
     // Tracker ID: 44280
+    // Not implemented - no such UI as of now
     override fun sendClickCtaUnlockedMedalSectionApiErrorEvent(buttonText: String) {
         val eventLabel = JSONObject().apply {
             put(TrackerConstants.EventLabelProperties.MEDAL_BUTTON_TEXT, buttonText)
@@ -527,6 +529,7 @@ object MedalCabinetAnalyticsImpl : MedalCabinetAnalytics {
 
     // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/4006
     // Tracker ID: 44282
+    // Not implemented - no such UI as of now
     override fun sendClickCtaLockedMedalSectionApiErrorEvent(buttonText: String) {
         val eventLabel = JSONObject().apply {
             put(TrackerConstants.EventLabelProperties.MEDAL_BUTTON_TEXT, buttonText)
@@ -758,7 +761,7 @@ object MedalCabinetAnalyticsImpl : MedalCabinetAnalytics {
 
     // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/4006
     // Tracker ID: 44759
-    override fun sendViewPageSeeMoreLockedMedalPageNonWhitelistedErrorEvent() {
+    override fun sendViewSeeMoreLockedMedalPageNonWhitelistedErrorEvent() {
         Tracker.Builder()
             .setEvent(TrackerConstants.Event.VIEW_EVENT)
             .setEventAction(TrackerConstants.General.VIEW_PAGE_EVENT)

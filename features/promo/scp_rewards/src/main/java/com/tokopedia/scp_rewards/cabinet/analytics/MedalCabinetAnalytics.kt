@@ -93,7 +93,7 @@ interface MedalCabinetAnalytics {
     fun sendViewSeeMoreUnlockedMedalPageNonWhitelistedErrorEvent()
     fun sendClickCtaSeeMoreUnlockedMedalPageNonWhitelistedErrorEvent()
     fun sendClickBackSeeMoreUnlockedMedalPageNonWhitelistedErrorEvent()
-    fun sendViewPageSeeMoreLockedMedalPageNonWhitelistedErrorEvent()
+    fun sendViewSeeMoreLockedMedalPageNonWhitelistedErrorEvent()
     fun sendClickCtaSeeMoreLockedMedalPageNonWhitelistedErrorEvent()
     fun sendClickBackSeeMoreLockedMedalPageNonWhitelistedErrorEvent()
 }

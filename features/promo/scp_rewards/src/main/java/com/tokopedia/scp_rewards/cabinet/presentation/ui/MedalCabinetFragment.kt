@@ -31,11 +31,13 @@ import com.tokopedia.scp_rewards.common.data.Error
 import com.tokopedia.scp_rewards.common.data.Loading
 import com.tokopedia.scp_rewards.common.data.Success
 import com.tokopedia.scp_rewards.common.utils.launchLink
+import com.tokopedia.scp_rewards.common.utils.show
 import com.tokopedia.scp_rewards.databinding.FragmentMedalCabinetLayoutBinding
 import com.tokopedia.scp_rewards_widgets.cabinetHeader.CabinetHeader
 import com.tokopedia.scp_rewards_widgets.medal.MedalCallbackListener
 import com.tokopedia.scp_rewards_widgets.medal.MedalData
 import com.tokopedia.scp_rewards_widgets.medal.MedalItem
+import com.tokopedia.unifycomponents.UnifyButton
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
@@ -100,6 +102,7 @@ class MedalCabinetFragment : BaseDaggerFragment() {
 
                 is Loading -> {
                     binding.mainFlipper.displayedChild = 0
+                    MedalCabinetAnalyticsImpl.sendViewMedalCabinetSkeletonPageEvent()
                 }
 
                 is Error -> {
@@ -121,6 +124,19 @@ class MedalCabinetFragment : BaseDaggerFragment() {
                     medalCabinetData.progressMedaliData ?: MedalData()
                 )
             )
+
+            if (medalCabinetData.earnedMedaliData == null) {
+                MedalCabinetAnalyticsImpl.sendViewUnlockedMedalSectionApiErrorEvent()
+            }
+            if (medalCabinetData.progressMedaliData == null) {
+                MedalCabinetAnalyticsImpl.sendViewLockedMedalSectionApiErrorEvent()
+            }
+            if (medalCabinetData.earnedMedaliData?.bannerData != null ||
+                medalCabinetData.progressMedaliData?.bannerData != null
+            ) {
+                MedalCabinetAnalyticsImpl.sendViewBannerEvent("", "")
+            }
+
             binding.viewCabinet.attachMedalClickListener(object : MedalCallbackListener {
                 override fun onMedalClick(medalItem: MedalItem) {
                     if (medalItem.isEarned()) {
@@ -148,11 +164,11 @@ class MedalCabinetFragment : BaseDaggerFragment() {
                 override fun onSeeMoreClick(medalData: MedalData) {
                     if (medalData.isEarned()) {
                         medalData.medalList?.firstOrNull()?.let { medalItem ->
-                            MedalCabinetAnalyticsImpl.sendViewUnlockedMedalSectionCtaEvent(medalItem.cta?.text.orEmpty())
+                            MedalCabinetAnalyticsImpl.sendClickUnlockedMedalSectionCtaEvent(medalItem.cta?.text.orEmpty())
                         }
                     } else {
                         medalData.medalList?.firstOrNull()?.let { medalItem ->
-                            MedalCabinetAnalyticsImpl.sendViewLockedMedalSectionCtaEvent(medalItem.cta?.text.orEmpty())
+                            MedalCabinetAnalyticsImpl.sendClickLockedMedalSectionCtaEvent(medalItem.cta?.text.orEmpty())
                         }
                     }
                     requireContext().launchLink(
@@ -274,7 +290,14 @@ class MedalCabinetFragment : BaseDaggerFragment() {
         val error = scpError.error
         when {
             error is UnknownHostException || error is SocketTimeoutException -> {
-                binding.loadContainer.medalCabinetError.setType(GlobalError.NO_CONNECTION)
+                binding.loadContainer.medalCabinetError.apply {
+                    setType(GlobalError.NO_CONNECTION)
+                    setActionClickListener {
+                        resetPage()
+                        MedalCabinetAnalyticsImpl.sendClickCobaLagiMedalCabinetPageInternetErrorEvent()
+                    }
+                }
+                MedalCabinetAnalyticsImpl.sendViewMedalCabinetPageInternetErrorEvent()
             }
 
             scpError.errorCode == NON_WHITELISTED_USER_ERROR_CODE -> {
@@ -283,21 +306,34 @@ class MedalCabinetFragment : BaseDaggerFragment() {
                     errorTitle.text = context.getText(R.string.error_non_whitelisted_user_title)
                     errorDescription.text =
                         context.getText(R.string.error_non_whitelisted_user_description)
-                    errorAction.text = context.getText(R.string.error_non_whitelisted_user_action)
+                    val ctaText = context.getString(R.string.error_non_whitelisted_user_action)
+                    errorAction.text = ctaText
                     setActionClickListener {
-//                        MedalCabinetAnalyticsImpl.sendNonWhitelistedUserCtaClick()
+                        MedalCabinetAnalyticsImpl.sendClickCtaMedalCabinetPageNonWhitelistedErrorEvent(
+                            ctaText
+                        )
                         RouteManager.route(context, ApplinkConst.HOME)
                         activity?.finish()
                     }
                 }
-//                MedalCabinetAnalyticsImpl.sendImpressionNonWhitelistedError()
+                MedalCabinetAnalyticsImpl.sendViewMedalCabinetPageNonWhitelistedErrorEvent()
             }
 
             else -> {
+                MedalCabinetAnalyticsImpl.sendViewMedalCabinetPageApiErrorEvent()
                 binding.loadContainer.medalCabinetError.apply {
                     setType(GlobalError.SERVER_ERROR)
+                    setActionClickListener {
+                        resetPage()
+                        MedalCabinetAnalyticsImpl.sendClickCobaLagiMedalCabinetPageApiErrorEvent()
+                    }
+                    errorSecondaryAction.show()
+                    if (errorSecondaryAction is UnifyButton) {
+                        (errorSecondaryAction as UnifyButton).buttonVariant = UnifyButton.Variant.TEXT_ONLY
+                    }
                     errorSecondaryAction.text = context.getText(R.string.goto_main_page_text)
                     setSecondaryActionClickListener {
+                        MedalCabinetAnalyticsImpl.sendClickHalamanUtamaMedalCabinetPageApiErrorEvent()
                         activity?.finish()
                     }
                 }
@@ -306,8 +342,32 @@ class MedalCabinetFragment : BaseDaggerFragment() {
     }
 
     override fun onFragmentBackPressed(): Boolean {
-        MedalCabinetAnalyticsImpl.sendClickBackMedalCabinetPageEvent()
+        val state = viewModel.cabinetLiveData.value
+        if (state is Error) {
+            when {
+                state.error is UnknownHostException || state.error is SocketTimeoutException -> {
+                    MedalCabinetAnalyticsImpl.sendClickBackMedalCabinetPageInternetErrorEvent()
+                }
+
+                state.errorCode == NON_WHITELISTED_USER_ERROR_CODE -> {
+                    MedalCabinetAnalyticsImpl.sendClickBackMedalCabinetPageNonWhitelistedErrorEvent()
+                }
+
+                else -> {
+                    MedalCabinetAnalyticsImpl.sendClickBackMedalCabinetPageApiErrorEvent()
+                }
+            }
+        } else {
+            MedalCabinetAnalyticsImpl.sendClickBackMedalCabinetPageEvent()
+        }
         return super.onFragmentBackPressed()
+    }
+
+    private fun resetPage() {
+        binding.mainFlipper.displayedChild = 0
+        binding.loadContainer.loaderFlipper.displayedChild = 0
+        setTransparentStatusBar()
+        viewModel.getHomePage(medaliSlug)
     }
 
     override fun getScreenName() = ""

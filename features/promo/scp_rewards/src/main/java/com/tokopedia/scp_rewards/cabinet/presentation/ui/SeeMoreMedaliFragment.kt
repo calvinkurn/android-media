@@ -11,6 +11,8 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo.MEDALI_QUERY_PARAM
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
@@ -22,6 +24,7 @@ import com.tokopedia.scp_rewards.cabinet.domain.model.ScpRewardsGetUserMedalisRe
 import com.tokopedia.scp_rewards.cabinet.mappers.MedaliListMapper
 import com.tokopedia.scp_rewards.cabinet.presentation.adapter.SeeMoreMedalAdapter
 import com.tokopedia.scp_rewards.cabinet.presentation.viewmodel.SeeMoreMedaliViewModel
+import com.tokopedia.scp_rewards.common.constants.NON_WHITELISTED_USER_ERROR_CODE
 import com.tokopedia.scp_rewards.common.data.Error
 import com.tokopedia.scp_rewards.common.data.Loading
 import com.tokopedia.scp_rewards.common.data.Success
@@ -90,17 +93,7 @@ class SeeMoreMedaliFragment : BaseDaggerFragment(), MedalCallbackListener {
     }
 
     private fun setupHeader() {
-        binding?.header?.apply {
-            title = getHeaderTitle()
-            setNavigationOnClickListener {
-                if (badgeType == EARNED_BADGE) {
-                    MedalCabinetAnalyticsImpl.sendClickBackSeeMoreUnlockedMedalEvent()
-                } else {
-                    MedalCabinetAnalyticsImpl.sendClickBackSeeMoreLockedMedalEvent()
-                }
-                activity?.onBackPressed()
-            }
-        }
+        binding?.header?.title = getHeaderTitle()
     }
 
     private fun getHeaderTitle(): String {
@@ -139,7 +132,7 @@ class SeeMoreMedaliFragment : BaseDaggerFragment(), MedalCallbackListener {
     private fun onErrorState(result: Error) {
         with(viewModel) {
             if (pageCount == 1) {
-                handleError(result.error)
+                handleError(result)
             } else {
                 if (visitableList.last() is LoadingMoreModel) {
                     visitableList.removeLast()
@@ -148,19 +141,50 @@ class SeeMoreMedaliFragment : BaseDaggerFragment(), MedalCallbackListener {
         }
     }
 
-    private fun handleError(error: Throwable) {
+    private fun handleError(scpError: Error) {
         binding?.let {
             with(it) {
                 badgeRv.gone()
                 viewError.visible()
-                if (error is UnknownHostException || error is SocketTimeoutException) {
-                    viewError.setType(GlobalError.NO_CONNECTION)
-                } else {
-                    viewError.apply {
-                        setType(GlobalError.SERVER_ERROR)
-                        errorSecondaryAction.text = context.getText(R.string.goto_main_page_text)
-                        setSecondaryActionClickListener {
-                            activity?.finish()
+
+                val error = scpError.error
+                when {
+                    error is UnknownHostException || error is SocketTimeoutException -> {
+                        viewError.setType(GlobalError.NO_CONNECTION)
+                    }
+
+                    scpError.errorCode == NON_WHITELISTED_USER_ERROR_CODE -> {
+                        viewError.apply {
+                            setType(GlobalError.PAGE_NOT_FOUND)
+                            errorTitle.text = context.getText(R.string.error_non_whitelisted_user_title)
+                            errorDescription.text =
+                                context.getText(R.string.error_non_whitelisted_user_description)
+                            val ctaText = context.getString(R.string.error_non_whitelisted_user_action)
+                            errorAction.text = ctaText
+                            setActionClickListener {
+                                if (badgeType == EARNED_BADGE) {
+                                    MedalCabinetAnalyticsImpl.sendClickCtaSeeMoreUnlockedMedalPageNonWhitelistedErrorEvent()
+                                } else {
+                                    MedalCabinetAnalyticsImpl.sendClickCtaSeeMoreLockedMedalPageNonWhitelistedErrorEvent()
+                                }
+                                RouteManager.route(context, ApplinkConst.HOME)
+                                activity?.finish()
+                            }
+                        }
+                        if (badgeType == EARNED_BADGE) {
+                            MedalCabinetAnalyticsImpl.sendViewSeeMoreUnlockedMedalPageNonWhitelistedErrorEvent()
+                        } else {
+                            MedalCabinetAnalyticsImpl.sendViewSeeMoreLockedMedalPageNonWhitelistedErrorEvent()
+                        }
+                    }
+
+                    else -> {
+                        viewError.apply {
+                            setType(GlobalError.SERVER_ERROR)
+                            errorSecondaryAction.text = context.getText(R.string.goto_main_page_text)
+                            setSecondaryActionClickListener {
+                                activity?.finish()
+                            }
                         }
                     }
                 }
@@ -269,7 +293,7 @@ class SeeMoreMedaliFragment : BaseDaggerFragment(), MedalCallbackListener {
     }
 
     override fun onSeeMoreClick(medalData: MedalData) {
-        TODO("Not yet implemented")
+        // No such CTA on this page
     }
 
     override fun onMedalLoad(medalItem: MedalItem) {
@@ -292,10 +316,28 @@ class SeeMoreMedaliFragment : BaseDaggerFragment(), MedalCallbackListener {
     }
 
     override fun onMedalFailed(medalItem: MedalItem) {
-        TODO("Not yet implemented")
+         // Not used here
     }
 
     override fun onSeeMoreLoad(medalData: MedalData) {
-        TODO("Not yet implemented")
+        // No such CTA on this page
+    }
+
+    override fun onFragmentBackPressed(): Boolean {
+        val state = viewModel.medalLiveData.value
+        if (state is Error && state.errorCode == NON_WHITELISTED_USER_ERROR_CODE) {
+            if (badgeType == EARNED_BADGE) {
+                MedalCabinetAnalyticsImpl.sendClickBackSeeMoreUnlockedMedalPageNonWhitelistedErrorEvent()
+            } else {
+                MedalCabinetAnalyticsImpl.sendClickBackSeeMoreLockedMedalPageNonWhitelistedErrorEvent()
+            }
+        } else {
+            if (badgeType == EARNED_BADGE) {
+                MedalCabinetAnalyticsImpl.sendClickBackSeeMoreUnlockedMedalEvent()
+            } else {
+                MedalCabinetAnalyticsImpl.sendClickBackSeeMoreLockedMedalEvent()
+            }
+        }
+        return super.onFragmentBackPressed()
     }
 }
