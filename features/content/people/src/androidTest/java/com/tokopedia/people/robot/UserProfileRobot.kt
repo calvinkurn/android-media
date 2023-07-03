@@ -19,6 +19,7 @@ import com.tokopedia.content.test.util.click
 import com.tokopedia.content.test.util.clickItemOnNestedRecyclerView
 import com.tokopedia.content.test.util.clickItemRecyclerView
 import com.tokopedia.content.test.util.clickTabLayout
+import com.tokopedia.content.test.util.onItemRecyclerView
 import com.tokopedia.content.test.util.pressBack
 import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomUiModel
 import com.tokopedia.people.builder.ProfileModelBuilder
@@ -146,7 +147,7 @@ class UserProfileRobot {
     }
 
     fun clickReviewSeeMore() = chainable {
-        clickItemRecyclerView(R.id.rv_review, 0) { view ->
+        onItemRecyclerView(R.id.rv_review, 0) { view ->
             val tvReview = view.findViewById<TextView>(R.id.tv_review)
             val spans = (tvReview.text as SpannableString).getSpans<ClickableSpan>()
 
@@ -155,7 +156,7 @@ class UserProfileRobot {
     }
 
     fun clickProductInfo() = chainable {
-        clickItemRecyclerView(R.id.rv_review, 0) { view ->
+        onItemRecyclerView(R.id.rv_review, 0) { view ->
             val clProductInfo = view.findViewById<ConstraintLayout>(R.id.cl_product_info)
             clProductInfo.performClick()
         }

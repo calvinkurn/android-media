@@ -125,7 +125,7 @@ fun clickItemRecyclerView(@IdRes rvId: Int, position: Int, @IdRes id: Int) {
         )
 }
 
-fun clickItemRecyclerView(@IdRes rvId: Int, position: Int, action: (view: View) -> Unit) {
+fun onItemRecyclerView(@IdRes rvId: Int, position: Int, action: (view: View) -> Unit) {
     select(rvId)
         .perform(
             RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
