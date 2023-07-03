@@ -19,18 +19,6 @@
             <solid android:color="@color/tokopedianow_toolbar_dms_shadow_color_3"/>
         </shape>
     </item>
-    <item>
-        <shape>
-            <padding android:top="@dimen/spacing_lvl1"/>
-            <solid android:color="@color/tokopedianow_toolbar_dms_shadow_color_4"/>
-        </shape>
-    </item>
-    <item>
-        <shape>
-            <padding android:top="@dimen/spacing_lvl1"/>
-            <solid android:color="@color/tokopedianow_toolbar_dms_shadow_color_5"/>
-        </shape>
-    </item>
     <!--Background-->
     <item>
         <shape>

@@ -87,7 +87,7 @@
         </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
 
         <View
-            android:id="@+id/shadow"
+            android:id="@+id/mini_cart_widget_shadow"
             android:layout_width="0dp"
             android:layout_height="8dp"
             android:background="@drawable/tokopedianow_bg_top_shadow_minicart"
