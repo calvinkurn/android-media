@@ -4,7 +4,6 @@ import com.tokopedia.addon.domain.model.GetAddOnByProductResponse
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
-import com.tokopedia.product.detail.common.getCurrencyFormatted
 import com.tokopedia.purchase_platform.common.feature.addons.data.request.AddOnDataRequest
 import com.tokopedia.purchase_platform.common.feature.addons.data.request.AddOnRequest
 import com.tokopedia.purchase_platform.common.feature.addons.data.request.CartProduct
@@ -34,7 +33,8 @@ object AddOnMapper {
                     isSelected = it.basic.rules.autoSelect || it.basic.rules.mandatory,
                     isMandatory = it.basic.rules.mandatory,
                     addOnType = it.basic.addOnType.toIntSafely(),
-                    eduLink = it.basic.metadata.infoURL.eduPageURL
+                    eduLink = it.basic.metadata.infoURL.eduPageURL,
+                    uniqueId = it.basic.addOnKey
                 )
             }
             AddOnGroupUIModel(

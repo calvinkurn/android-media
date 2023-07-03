@@ -41,6 +41,7 @@ class GetAddOnByProductUseCase @Inject constructor(
                       Status
                       IsEligible
                       OwnerWarehouseID
+                      AddOnKey
                       Metadata {
                         NotesTemplate
                         Description

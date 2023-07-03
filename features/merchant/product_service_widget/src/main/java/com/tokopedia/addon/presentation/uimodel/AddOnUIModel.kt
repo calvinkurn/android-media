@@ -12,7 +12,8 @@ data class AddOnUIModel(
     var isMandatory: Boolean= false,
     var addOnType: Int = 0,
     var eduLink: String = "",
-    var uniqueId: String = ""
+    var uniqueId: String = "",
+    var description: String = ""
 ): Serializable {
     fun getSelectedStatus(): AddOnSelectedStatus {
         return when {
