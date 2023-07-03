@@ -29,7 +29,7 @@
         app:constraintSetEnd="@id/end"
         app:constraintSetStart="@+id/start"
         app:duration="2500"
-        app:motionInterpolator="bounce">
+        app:motionInterpolator="easeInOut">
         <KeyFrameSet>
             <KeyAttribute
                 android:alpha="0.0"
