@@ -17,10 +17,23 @@
         android:id="@+id/tf_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/Unify_NN600"
-        app:layout_constraintBottom_toBottomOf="@+id/cu_addon"
+        android:textColor="@color/Unify_NN950"
+        app:layout_constraintBottom_toTopOf="@+id/tf_description"
         app:layout_constraintStart_toEndOf="@+id/cu_addon"
         app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="display_3" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tf_description"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="26dp"
+        android:textColor="@color/Unify_NN600"
+        app:layout_constraintBottom_toBottomOf="@+id/cu_addon"
+        app:layout_constraintEnd_toStartOf="@+id/tf_price"
+        app:layout_constraintStart_toEndOf="@+id/cu_addon"
+        app:layout_constraintTop_toBottomOf="@+id/tf_name"
         app:typographyType="display_3" />
 
     <com.tokopedia.iconunify.IconUnify
@@ -28,7 +41,7 @@
         android:layout_width="16dp"
         android:layout_height="16dp"
         app:icon_name="INFORMATION"
-        app:icon_color_light_enable="@color/Unify_NN600"
+        app:icon_color_light_enable="@color/Unify_NN900"
         android:layout_marginStart="6dp"
         app:layout_constraintBottom_toBottomOf="@+id/tf_name"
         app:layout_constraintStart_toEndOf="@+id/tf_name"
@@ -39,9 +52,19 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/Unify_NN950"
-        app:layout_constraintBottom_toBottomOf="@+id/tf_name"
+        app:layout_constraintBottom_toTopOf="@+id/tf_slashed_price"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/tf_name"
+        app:typographyType="display_3" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tf_slashed_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_NN600"
+        app:layout_constraintBottom_toBottomOf="@+id/tf_name"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tf_price"
         app:typographyType="display_3" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -140,6 +140,8 @@ class AddOnWidgetView : BaseCustomView {
 
             try {
                 val text = styledAttributes.getString(R.styleable.AddOnWidgetView_addonwidget_title).orEmpty()
+                val isShowDescription = styledAttributes.getBoolean(R.styleable.AddOnWidgetView_addonwidget_show_description, false)
+                addonAdapter.showDescription(isShowDescription)
                 setTitleText(text)
             } finally {
                 styledAttributes.recycle()

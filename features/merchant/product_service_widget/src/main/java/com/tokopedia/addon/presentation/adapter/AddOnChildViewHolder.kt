@@ -5,6 +5,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.addon.presentation.uimodel.AddOnUIModel
+import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
+import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.strikethrough
 import com.tokopedia.product_service_widget.R
 import com.tokopedia.product_service_widget.databinding.ItemAddonChildBinding
 import com.tokopedia.utils.view.binding.viewBinding
@@ -36,11 +39,18 @@ class AddOnChildViewHolder(
         }
     }
 
-    fun bind(item: AddOnUIModel) {
+    fun bind(item: AddOnUIModel, showDescription: Boolean) {
         binding?.apply {
             tfName.text = item.name
-            tfPrice.text = item.priceFormatted
+            tfPrice.text = item.discountedPrice.getCurrencyFormatted()
+            tfSlashedPrice.text = item.price.getCurrencyFormatted()
+            tfSlashedPrice.strikethrough()
+            tfSlashedPrice.isVisible = item.isDiscounted()
             cuAddon.isChecked = item.isSelected
+            cuAddon.isEnabled = !item.isMandatory
+            root.isEnabled = !item.isMandatory
+            tfDescription.text = item.description
+            tfDescription.isVisible = showDescription
         }
     }
 

@@ -15,6 +15,7 @@
             android:id="@+id/addon_widget"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            app:addonwidget_show_description="true"
             android:layout_marginHorizontal="16dp"/>
 
         <androidx.appcompat.widget.LinearLayoutCompat

@@ -1,26 +1,30 @@
 package com.tokopedia.addon.presentation.uimodel
 
-import com.tokopedia.addon.presentation.uimodel.AddOnType.PRODUCT_PROTECTION_INSURANCE_TYPE
 import java.io.Serializable
 
 data class AddOnUIModel(
     var id: String = "",
     var name: String = "",
-    var priceFormatted: String = "",
     var price: Long = 0L,
+    var discountedPrice: Long = 0L,
     var isSelected: Boolean = false,
     var isPreselected: Boolean = false,
-    var addOnType: AddOnType = PRODUCT_PROTECTION_INSURANCE_TYPE,
+    var isMandatory: Boolean= false,
+    var addOnType: Int = 0,
     var eduLink: String = "",
-    var uniqueId: String = ""
+    var uniqueId: String = "",
+    var description: String = ""
 ): Serializable {
     fun getSelectedStatus(): AddOnSelectedStatus {
         return when {
+            isMandatory -> AddOnSelectedStatus.MANDATORY
             isPreselected && !isSelected -> AddOnSelectedStatus.UNCHECKED
             !isPreselected && isSelected -> AddOnSelectedStatus.CHECKED
             else -> AddOnSelectedStatus.DEFAULT
         }
     }
+
+    fun isDiscounted(): Boolean = price != discountedPrice
 }
 
 data class AddOnGroupUIModel(

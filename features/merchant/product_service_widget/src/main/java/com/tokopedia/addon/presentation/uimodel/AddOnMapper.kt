@@ -2,8 +2,8 @@ package com.tokopedia.addon.presentation.uimodel
 
 import com.tokopedia.addon.domain.model.GetAddOnByProductResponse
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
-import com.tokopedia.product.detail.common.getCurrencyFormatted
 import com.tokopedia.purchase_platform.common.feature.addons.data.request.AddOnDataRequest
 import com.tokopedia.purchase_platform.common.feature.addons.data.request.AddOnRequest
 import com.tokopedia.purchase_platform.common.feature.addons.data.request.CartProduct
@@ -11,15 +11,8 @@ import com.tokopedia.purchase_platform.common.feature.addons.data.request.SaveAd
 
 object AddOnMapper {
 
-    private const val ATC_ADDON_STATUS_SELECTING = 1
-    private const val ATC_ADDON_STATUS_DESELECTING = 2
     private const val ATC_ADDON_DEFAULT_QTY = 1
     private const val ATC_ADDON_SERVICE_FEATURE_TYPE = 1
-
-    private fun String.convertToAddonEnum(): AddOnType {
-        return AddOnType.values().find { it.value == this }
-            ?: AddOnType.PRODUCT_PROTECTION_INSURANCE_TYPE
-    }
 
     fun mapAddonToUiModel(response: GetAddOnByProductResponse): List<AddOnGroupUIModel> {
         val addonResponse = response.getAddOnByProduct.addOnByProductResponse.firstOrNull()
@@ -35,11 +28,14 @@ object AddOnMapper {
                 AddOnUIModel(
                     id = it.basic.basicId,
                     name = it.basic.name,
-                    priceFormatted = it.inventory.price.getCurrencyFormatted(),
                     price = it.inventory.price.toLong(),
-                    isSelected = it.basic.rules.autoSelect,
-                    addOnType = it.basic.addOnType.convertToAddonEnum(),
-                    eduLink = it.basic.metadata.infoURL.eduPageURL
+                    discountedPrice = it.inventory.price.toLong(),
+                    isSelected = it.basic.rules.autoSelect || it.basic.rules.mandatory,
+                    isMandatory = it.basic.rules.mandatory,
+                    addOnType = it.basic.addOnType.toIntSafely(),
+                    eduLink = it.basic.metadata.infoURL.eduPageURL,
+                    uniqueId = it.basic.addOnKey,
+                    description = it.basic.metadata.description
                 )
             }
             AddOnGroupUIModel(
@@ -61,7 +57,7 @@ object AddOnMapper {
         return addonGroupList.map {
             it.copy(
                 addon = it.addon.map { addon ->
-                    val isPreselected = addon.id in selectedAddonIds
+                    val isPreselected = addon.id in selectedAddonIds || addon.isMandatory
                     addon.copy(
                         isSelected = isPreselected,
                         isPreselected = isPreselected
@@ -104,7 +100,7 @@ object AddOnMapper {
                     addOnId = it.id.toLongOrZero(),
                     addOnQty = ATC_ADDON_DEFAULT_QTY,
                     addOnUniqueId = it.uniqueId,
-                    addOnType = it.addOnType.toRequestAddonType(),
+                    addOnType = it.addOnType,
                     addOnStatus = it.getSelectedStatus().value
                 )
             }

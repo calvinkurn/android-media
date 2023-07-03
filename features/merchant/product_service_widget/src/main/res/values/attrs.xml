@@ -25,5 +25,6 @@
     </declare-styleable>
     <declare-styleable name="AddOnWidgetView">
         <attr name="addonwidget_title" format="string" />
+        <attr name="addonwidget_show_description" format="boolean" />
     </declare-styleable>
 </resources>

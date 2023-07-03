@@ -30,5 +30,8 @@ data class Basic (
     var metadata: Metadata = Metadata(),
 
     @SerializedName("Rules")
-    var rules: Rules = Rules()
+    var rules: Rules = Rules(),
+
+    @SerializedName("AddOnKey")
+    var addOnKey: String = "",
 )
