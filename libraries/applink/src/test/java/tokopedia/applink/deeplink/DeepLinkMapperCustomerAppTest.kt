@@ -7,6 +7,7 @@ import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.account.DeeplinkMapperAccount
 import com.tokopedia.applink.communication.DeeplinkMapperCommunication
 import com.tokopedia.applink.constant.DeeplinkConstant
+import com.tokopedia.applink.home.DeeplinkMapperHome
 import com.tokopedia.applink.internal.*
 import com.tokopedia.applink.model.Always
 import com.tokopedia.applink.powermerchant.PowerMerchantDeepLinkMapper
@@ -1663,7 +1664,7 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     @Test
     fun `check content detail appLink then should return tokopedia internal content detail in customerapp`() {
         val expectedDeepLink =
-            "${ApplinkConsInternalHome.HOME_NAVIGATION}?TAB_POSITION=1&FEED_TAB_POSITION=0&FEED_RELEVANT_POST=123"
+            "${ApplinkConsInternalHome.HOME_NAVIGATION}?TAB_POSITION=1&FEED_TAB_POSITION=0&ARGS_FEED_SOURCE_ID=123"
         val appLink = UriUtil.buildUri(ApplinkConst.CONTENT_DETAIL, "123")
         assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
     }
@@ -2725,5 +2726,22 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
         val expectedInternalDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://global/youtube-player/123/"
         val appLink = UriUtil.buildUri(ApplinkConst.YOUTUBE_PLAYER, "123")
         assertEqualsDeepLinkMapper(appLink, expectedInternalDeepLink)
+    }
+
+    @Test
+    fun `check feed relevant post applink customerapp`() {
+        val postId = "12345"
+        val source = "detail-play"
+        val query = "source=$source"
+        val expectedDeepLink = ApplinkConsInternalHome.HOME_NAVIGATION +
+            "?${DeeplinkMapperHome.EXTRA_TAB_POSITION}=${DeeplinkMapperHome.TAB_POSITION_FEED}" +
+            "&${ApplinkConstInternalContent.EXTRA_FEED_TAB_POSITION}=${ApplinkConstInternalContent.UF_TAB_POSITION_FOR_YOU}" +
+            "&${ApplinkConstInternalContent.UF_EXTRA_FEED_SOURCE_ID}=$postId" +
+            "&${ApplinkConstInternalContent.UF_EXTRA_FEED_SOURCE_NAME}=$source" +
+            "&$query"
+
+        val appLink = "tokopedia://content/$postId?$query"
+
+        assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
     }
 }
