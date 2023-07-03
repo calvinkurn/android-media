@@ -4,6 +4,8 @@ import android.graphics.drawable.Drawable
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.tokopedia.chat_common.util.ChatLinkHandlerMovementMethod
+import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandlerListener
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.BaseChatBotViewHolder
 import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.listener.ChatbotDynamicOwocListener
@@ -13,30 +15,34 @@ import com.tokopedia.chatbot.chatbot2.view.util.generateLeftMessageBackground
 import com.tokopedia.chatbot.chatbot2.view.util.helper.ChatbotMessageViewHolderBinder
 import com.tokopedia.chatbot.databinding.ItemChatbotDynamicOwocBinding
 import com.tokopedia.chatbot.util.setContainerBackground
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.utils.view.binding.viewBinding
 
 class DynamicOwocInvoiceViewHolder(
     itemView: View,
-    private val listener: ChatbotDynamicOwocListener
+    private val listener: ChatbotDynamicOwocListener,
+    private val chatLinkHandlerListener: ChatLinkHandlerListener,
 ) : BaseChatBotViewHolder<DynamicOwocInvoiceUiModel>(itemView) {
 
     private var binding: ItemChatbotDynamicOwocBinding? by viewBinding()
 
-//    private val movementMethod = ChatLinkHandlerMovementMethod(chatLinkHandlerListener)
+    private val movementMethod = ChatLinkHandlerMovementMethod(chatLinkHandlerListener)
     private var invoiceAdapter: ChatbotDynamicOwocInvoiceAdapter? = null
 
     override fun bind(uiModel: DynamicOwocInvoiceUiModel) {
         super.bind(uiModel)
 
         verifyReplyTime(uiModel)
+        binding?.customChatLayout?.showTimeStamp(false)
         binding?.customChatLayout?.background = null
         binding?.mainParent?.setContainerBackground(bindBackground())
-//        ChatbotMessageViewHolderBinder.bindChatMessage(
-//            uiModel.message,
-//            customChatLayout,
-//            movementMethod
-//        )
-        ChatbotMessageViewHolderBinder.bindHour(uiModel.replyTime, customChatLayout)
+        ChatbotMessageViewHolderBinder.bindChatMessage(
+            uiModel.message,
+            customChatLayout,
+            movementMethod
+        )
+    //    ChatbotMessageViewHolderBinder.bindHourTextView(uiModel, binding?.tvTime)
+
         binding?.apply {
             customChatLayout.message?.text = uiModel.message
             initializeAdapter(uiModel)

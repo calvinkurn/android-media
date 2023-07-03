@@ -136,7 +136,8 @@ open class ChatbotTypeFactoryImpl(
             )
             DynamicOwocInvoiceViewHolder.LAYOUT -> DynamicOwocInvoiceViewHolder(
                 parent,
-                chatbotDynamicOwocInvoiceListener
+                chatbotDynamicOwocInvoiceListener,
+                chatLinkHandlerListener
             )
             else -> createViewHolder(parent, type)
         }

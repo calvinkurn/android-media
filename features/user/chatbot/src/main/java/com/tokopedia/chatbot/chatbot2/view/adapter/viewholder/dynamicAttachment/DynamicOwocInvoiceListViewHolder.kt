@@ -18,6 +18,7 @@ class DynamicOwocInvoiceListViewHolder(itemView: View) : RecyclerView.ViewHolder
                 shopBadge.urlSrc = shopBadgeImageUrl ?: ""
                 textShopName.text = shopName
                 textProductName.text = productName
+                textProductDescription.text = productDescription
             }
 
         }
