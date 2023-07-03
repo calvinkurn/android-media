@@ -3,8 +3,8 @@ package com.tokopedia.product.addedit.category.presentation.viewmodel
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.core.common.category.domain.interactor.GetCategoryLiteTreeUseCase
-import com.tokopedia.core.common.category.domain.model.CategoriesResponse
+import com.tokopedia.product.manage.common.feature.category.domain.GetCategoryLiteTreeUseCase
+import com.tokopedia.product.manage.common.feature.category.model.CategoriesResponse
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result

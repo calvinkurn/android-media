@@ -1,9 +1,6 @@
 package com.tkpd.macrobenchmark.util
 
-import androidx.benchmark.macro.CompilationMode
-import androidx.benchmark.macro.MacrobenchmarkScope
-import androidx.benchmark.macro.Metric
-import androidx.benchmark.macro.StartupMode
+import androidx.benchmark.macro.*
 import androidx.benchmark.macro.junit4.MacrobenchmarkRule
 import androidx.test.platform.app.InstrumentationRegistry
 
@@ -15,7 +12,10 @@ fun MacrobenchmarkRule.measureTokopediaApps(
 ) = measureRepeated(
     packageName = packageName,
     metrics = metrics,
-    compilationMode = CompilationMode.None(),
+    compilationMode = CompilationMode.Partial(
+        BaselineProfileMode.UseIfAvailable,
+        3
+        ),
     iterations = MacroArgs.getIterations(InstrumentationRegistry.getArguments()),
     startupMode = startupMode,
     setupBlock = {
