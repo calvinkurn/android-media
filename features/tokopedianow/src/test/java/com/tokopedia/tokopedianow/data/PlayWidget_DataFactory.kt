@@ -38,7 +38,7 @@ fun createPlayWidgetChannel(channelId: String, totalView: String): PlayWidgetCha
         recommendationType = "",
         channelTypeTransition = PlayWidgetChannelTypeTransition(null, PlayWidgetChannelType.Live),
         shouldShowPerformanceDashboard = false,
-        products = listOf()
+        products = emptyList()
     )
 }
 

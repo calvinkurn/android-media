@@ -297,9 +297,9 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.universal_sharing.model.PdpParamModel
 import com.tokopedia.universal_sharing.model.PersonalizedCampaignModel
 import com.tokopedia.universal_sharing.view.bottomsheet.ScreenshotDetector
-import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
+import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ScreenShotListener
-import com.tokopedia.universal_sharing.view.model.AffiliatePDPInput
+import com.tokopedia.universal_sharing.view.model.AffiliateInput
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -603,7 +603,7 @@ open class DynamicProductDetailFragment :
 
         if (!viewModel.isUserSessionActive) initStickyLogin(view)
         screenshotDetector = context?.let {
-            UniversalShareBottomSheet.createAndStartScreenShotDetector(
+            SharingUtil.createAndStartScreenShotDetector(
                 it,
                 this,
                 this,
@@ -3851,7 +3851,7 @@ open class DynamicProductDetailFragment :
         }
     }
 
-    private fun shareProduct(dynamicProductInfoP1: DynamicProductInfoP1? = null) {
+    private fun shareProduct(dynamicProductInfoP1: DynamicProductInfoP1? = null, path: String? = null) {
         val productInfo = dynamicProductInfoP1 ?: viewModel.getDynamicProductInfoP1
         if (productInfo != null) {
             val productData = generateProductShareData(
@@ -3873,8 +3873,9 @@ open class DynamicProductDetailFragment :
 
     private fun checkAndExecuteReferralAction(
         productData: ProductData,
-        affiliateData: AffiliatePDPInput,
-        imageGeneratorData: PdpParamModel
+        affiliateData: AffiliateInput,
+        imageGeneratorData: PdpParamModel,
+        path: String? = null
     ) {
         val fireBaseRemoteMsgGuest =
             remoteConfig.getString(RemoteConfigKey.fireBaseGuestShareMsgKey, "")
@@ -3896,13 +3897,13 @@ open class DynamicProductDetailFragment :
                 return
             }
         }
-        executeProductShare(productData, affiliateData, imageGeneratorData)
+        executeProductShare(productData, affiliateData, imageGeneratorData, path)
     }
 
     private fun doReferralShareAction(
         productData: ProductData,
         fireBaseRemoteMsg: String,
-        affiliateData: AffiliatePDPInput,
+        affiliateData: AffiliateInput,
         imageGeneratorData: PdpParamModel
     ) {
         val actionCreator = object : ActionCreator<String, Int> {
@@ -3942,19 +3943,20 @@ open class DynamicProductDetailFragment :
 
     private fun executeProductShare(
         productData: ProductData,
-        affiliateData: AffiliatePDPInput,
-        imageGeneratorData: PdpParamModel
+        affiliateData: AffiliateInput,
+        imageGeneratorData: PdpParamModel,
+        path: String? = null
     ) {
         val enablePdpCustomSharing = remoteConfig.getBoolean(
             REMOTE_CONFIG_KEY_ENABLE_PDP_CUSTOM_SHARING,
             REMOTE_CONFIG_DEFAULT_ENABLE_PDP_CUSTOM_SHARING
         )
-        if (UniversalShareBottomSheet.isCustomSharingEnabled(context) && enablePdpCustomSharing) {
+        if (SharingUtil.isCustomSharingEnabled(context) && enablePdpCustomSharing) {
             val description = pdpUiUpdater?.productDetailInfoData?.getDescription()?.take(100)
                 ?.replace("(\r\n|\n)".toRegex(), " ")
                 ?: ""
             productData.productShareDescription = "$description..."
-            executeUniversalShare(productData, affiliateData, imageGeneratorData)
+            executeUniversalShare(productData, affiliateData, imageGeneratorData, path)
         } else {
             executeNativeShare(productData)
         }
@@ -3972,8 +3974,9 @@ open class DynamicProductDetailFragment :
 
     private fun executeUniversalShare(
         productData: ProductData,
-        affiliateData: AffiliatePDPInput,
-        imageGeneratorData: PdpParamModel
+        affiliateData: AffiliateInput,
+        imageGeneratorData: PdpParamModel,
+        path: String? = null
     ) {
         activity?.let {
             val imageUrls = pdpUiUpdater?.mediaMap?.listOfMedia
@@ -3997,7 +4000,8 @@ open class DynamicProductDetailFragment :
                 postBuildImg = { hideProgressDialog() },
                 screenshotDetector,
                 imageGeneratorData,
-                personalizedCampaignModel
+                personalizedCampaignModel,
+                screenshotPath = path
             )
         }
     }
@@ -5601,8 +5605,8 @@ open class DynamicProductDetailFragment :
         }
     }
 
-    override fun screenShotTaken() {
-        shareProduct()
+    override fun screenShotTaken(path: String) {
+        shareProduct(path = path)
     }
 
     override fun onWidgetShouldRefresh(view: PlayWidgetView) {
