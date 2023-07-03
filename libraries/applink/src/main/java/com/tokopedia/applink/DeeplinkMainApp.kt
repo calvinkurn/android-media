@@ -69,6 +69,11 @@ object DeeplinkMainApp {
         "account" to mutableListOf(
             DLP.goTo(DeeplinkMapperAccount::getAccountInternalApplink)
         ),
+        "addon" to mutableListOf(
+            DLP.matchPattern("{addon_id}") { _, _, _, idList ->
+                UriUtil.buildUri(ApplinkConstInternalMechant.MERCHANT_ADDON, idList?.getOrNull(0))
+            }
+        ),
         "add-phone" to mutableListOf(
             DLP.matchPattern("", DeeplinkMapperUser::getRegisteredNavigationUser)
         ),
@@ -1013,7 +1018,7 @@ object DeeplinkMainApp {
             DLP.matchPattern("{video_id}") { _, _, _, idList ->
                 UriUtil.buildUri(ApplinkConstInternalGlobal.YOUTUBE_PLAYER, idList?.getOrNull(0))
             }
-        ),
+        )
 
     )
 }

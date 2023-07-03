@@ -113,10 +113,10 @@ object ShipmentAddOnProductServiceMapper {
 
         val mapSummary = getShoppingSummaryAddOns(cartShipmentAddressFormData.listSummaryAddons)
         for (entry in countMapSummaries) {
-            val addOnWording = mapSummary[entry.key]!!.replace(CartConstant.QTY_ADDON_REPLACE, entry.value.second.toString())
+            val addOnWording = mapSummary[entry.key]?.replace(CartConstant.QTY_ADDON_REPLACE, entry.value.second.toString())
             val addOnPrice = CurrencyFormatUtil.convertPriceValueToIdrFormat(entry.value.first, false).removeDecimalSuffix()
             val summaryAddOn = ShipmentAddOnSummaryModel(
-                wording = addOnWording,
+                wording = addOnWording ?: "",
                 type = entry.key,
                 qty = entry.value.second,
                 priceLabel = addOnPrice,
