@@ -94,7 +94,8 @@ object ShopPageWidgetMapper {
         productList = ShopPageHomeMapper.mapCampaignListProduct(
             widgetResponse.data.firstOrNull()?.statusCampaign.orEmpty(),
             widgetResponse.data.firstOrNull()?.listProduct.orEmpty()
-        )
+        ),
+        statusCampaign = widgetResponse.data.firstOrNull()?.statusCampaign.orEmpty()
     )
 
     fun mapToCampaignVoucherSliderUiModel(

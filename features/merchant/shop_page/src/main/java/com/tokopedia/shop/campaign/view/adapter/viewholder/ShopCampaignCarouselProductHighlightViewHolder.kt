@@ -18,6 +18,7 @@ import com.tokopedia.shop.campaign.view.customview.ShopCampaignTabWidgetHeaderVi
 import com.tokopedia.shop.campaign.view.listener.ShopCampaignCarouselProductListener
 import com.tokopedia.shop.campaign.view.listener.ShopCampaignInterface
 import com.tokopedia.shop.campaign.view.model.ShopCampaignWidgetCarouselProductUiModel
+import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.databinding.ItemShopCampaignProductCarouselBinding
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
 import com.tokopedia.shop.home.view.model.ShopHomeProductUiModel
@@ -35,6 +36,7 @@ class ShopCampaignCarouselProductHighlightViewHolder(
         @LayoutRes
         val LAYOUT = R.layout.item_shop_campaign_product_carousel
         private const val TOTAL_PRODUCT_FOR_DOUBLE_PRODUCT_CARD = 2
+        private const val RED_STOCK_BAR_LABEL_MATCH_VALUE = "segera habis"
     }
 
     private val viewBinding: ItemShopCampaignProductCarouselBinding? by viewBinding()
@@ -69,12 +71,22 @@ class ShopCampaignCarouselProductHighlightViewHolder(
         recyclerViewForSingleOrDoubleProductCard?.isNestedScrollingEnabled = false
         initProductCardListener(uiModel)
         val listProductCardModel = uiModel.productList.map {
-            ShopPageHomeMapper.mapToProductCardModel(
+            val stockBarLabel = it.stockLabel
+            var stockBarLabelColor = ""
+            if (stockBarLabel.equals(RED_STOCK_BAR_LABEL_MATCH_VALUE, ignoreCase = true)) {
+                stockBarLabelColor = ShopUtil.getColorHexString(
+                    itemView.context,
+                    com.tokopedia.unifyprinciples.R.color.Unify_RN600
+                )
+            }
+            ShopPageHomeMapper.mapToProductCardCampaignModel(
                 isHasAddToCartButton = false,
                 hasThreeDots = false,
                 shopHomeProductViewModel = it,
-                isWideContent = false,
-                productRating = if (it.rating != 0.0) it.rating.toString() else ""
+                widgetName = it.name,
+                statusCampaign = uiModel.statusCampaign
+            ).copy(
+                stockBarLabelColor = stockBarLabelColor
             )
         }
         if (isProductCardSingleOrDouble(uiModel.productList)) {

@@ -50,8 +50,12 @@ object ShopPageCampaignMapper {
     }
 
     private fun checkShouldMapWidget(layoutWidget: ShopLayoutWidget.Widget): Boolean {
-        return layoutWidget.data.isNotEmpty() ||
-            layoutWidget.type.equals(DYNAMIC, ignoreCase = true)
+        return layoutWidget.data.isNotEmpty() || isSpecialWidget(layoutWidget)
+    }
+
+    private fun isSpecialWidget(layoutWidget: ShopLayoutWidget.Widget): Boolean {
+        return layoutWidget.type.equals(DYNAMIC, ignoreCase = true) ||
+            layoutWidget.name.equals(SLIDER_BANNER_HIGHLIGHT, ignoreCase = true)
     }
 
     private fun mapToWidgetUiModel(

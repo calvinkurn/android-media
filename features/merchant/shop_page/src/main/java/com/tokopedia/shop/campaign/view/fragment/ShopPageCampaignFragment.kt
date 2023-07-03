@@ -695,7 +695,7 @@ class ShopPageCampaignFragment :
                 super.onScrollStateChanged(recyclerView, state)
                 if (state == SCROLL_STATE_IDLE) {
                     val firstCompletelyVisibleItemPosition =
-                        (layoutManager as? StaggeredGridLayoutManager)?.findFirstCompletelyVisibleItemPositions(
+                        (getRecyclerView(view)?.layoutManager as? StaggeredGridLayoutManager)?.findFirstCompletelyVisibleItemPositions(
                             null
                         )?.getOrNull(0).orZero()
                     if (firstCompletelyVisibleItemPosition > 0) {
@@ -939,7 +939,9 @@ class ShopPageCampaignFragment :
         position: Int
     ) {
         if (isLogin) {
-            redeemCampaignVoucherSlider(parentUiModel, model)
+            if(viewModelCampaign?.isLoadingRedeemVoucher() == false) {
+                redeemCampaignVoucherSlider(parentUiModel, model)
+            }
         } else {
             redirectToLoginPage()
         }
@@ -997,10 +999,12 @@ class ShopPageCampaignFragment :
 
     private fun handleRedeemVoucherSuccess(shopCampaignRedeemPromo: ShopCampaignRedeemPromoVoucherResult) {
         if (shopCampaignRedeemPromo.redeemResult.redeemMessage.isNotEmpty()) {
+            val toasterMessage = context?.getString(R.string.shop_campaign_tab_voucher_redeem_success_message).orEmpty()
+            val toasterCta = context?.getString(R.string.see_label).orEmpty()
             showToaster(
-                shopCampaignRedeemPromo.redeemResult.redeemMessage,
+                toasterMessage,
                 view ?: return,
-                "Lihat",
+                toasterCta,
                 {
                     showVoucherDetailBottomSheet(
                         shopCampaignRedeemPromo.slug,

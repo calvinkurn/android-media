@@ -73,6 +73,8 @@ class ShopCampaignViewModel @Inject constructor(
     val updatedBannerTimerUiModelData: LiveData<ShopWidgetDisplayBannerTimerUiModel?>
         get() = _updatedBannerTimerUiModelData
 
+    private var isLoadingRedeemVoucher = false
+
     fun getWidgetContentData(
         listWidgetLayout: List<ShopPageWidgetUiModel>,
         shopId: String,
@@ -161,7 +163,9 @@ class ShopCampaignViewModel @Inject constructor(
         launchCatchError(
             dispatcherProvider.io,
             block = {
+                isLoadingRedeemVoucher = true
                 val redeemResult = doRedeemPromoVoucher(voucherModel)
+                isLoadingRedeemVoucher = false
                 _redeemResult.postValue(Success(
                     ShopPageCampaignMapper.mapToShopCampaignRedeemPromoVoucherResult(
                         voucherModel.slug,
@@ -173,6 +177,7 @@ class ShopCampaignViewModel @Inject constructor(
                 ))
             },
             onError = { throwable ->
+                isLoadingRedeemVoucher = false
                 _redeemResult.postValue(Fail(throwable))
             }
         )
@@ -312,5 +317,9 @@ class ShopCampaignViewModel @Inject constructor(
         }) { throwable ->
             _campaignWidgetListVisitable.postValue(Fail(throwable))
         }
+    }
+
+    fun isLoadingRedeemVoucher(): Boolean {
+        return isLoadingRedeemVoucher
     }
 }

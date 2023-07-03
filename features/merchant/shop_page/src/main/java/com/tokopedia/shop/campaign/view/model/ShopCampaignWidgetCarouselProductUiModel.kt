@@ -15,6 +15,7 @@ data class ShopCampaignWidgetCarouselProductUiModel(
     override val header: Header = Header(),
     override val isFestivity: Boolean = false,
     val productList: List<ShopHomeProductUiModel> = listOf(),
+    val statusCampaign: String = ""
 ) : BaseShopHomeWidgetUiModel() {
 
     val impressHolder = ImpressHolder()
