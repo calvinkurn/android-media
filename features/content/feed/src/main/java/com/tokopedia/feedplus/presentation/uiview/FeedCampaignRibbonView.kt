@@ -123,31 +123,29 @@ class FeedCampaignRibbonView(
     }
 
     fun startAnimation() {
-        with(binding) {
-            when (type) {
-                FeedCampaignRibbonType.ASGC_GENERAL -> {
-                    startDelayProcess(TWO_SECOND) {
-                        setBackgroundGradient()
-                    }
+        when (type) {
+            FeedCampaignRibbonType.ASGC_GENERAL -> {
+                startDelayProcess(TWO_SECOND) {
+                    setBackgroundGradient()
                 }
-                FeedCampaignRibbonType.ASGC_DISCOUNT -> {
-                    startDelayProcess(TWO_SECOND) {
-                        setBackgroundGradient()
+            }
+            FeedCampaignRibbonType.ASGC_DISCOUNT -> {
+                startDelayProcess(TWO_SECOND) {
+                    setBackgroundGradient()
 
-                        runRecursiveDelayDiscount(START_ANIMATION_INDEX)
-                    }
+                    runRecursiveDelayDiscount(START_ANIMATION_INDEX)
                 }
-                FeedCampaignRibbonType.ASGC_FLASH_SALE_ONGOING, FeedCampaignRibbonType.ASGC_SPECIAL_RELEASE_ONGOING -> {
-                    startDelayProcess(TWO_SECOND) {
-                        setBackgroundGradient()
-                        runLoopAnimation(index = START_ANIMATION_INDEX)
-                    }
+            }
+            FeedCampaignRibbonType.ASGC_FLASH_SALE_ONGOING, FeedCampaignRibbonType.ASGC_SPECIAL_RELEASE_ONGOING -> {
+                startDelayProcess(TWO_SECOND) {
+                    setBackgroundGradient()
+                    runLoopAnimation(index = START_ANIMATION_INDEX)
                 }
-                FeedCampaignRibbonType.ASGC_FLASH_SALE_UPCOMING, FeedCampaignRibbonType.ASGC_SPECIAL_RELEASE_UPCOMING -> {
-                    startDelayProcess(TWO_SECOND) {
-                        setBackgroundGradient()
-                        runLoopAnimation(index = START_ANIMATION_INDEX)
-                    }
+            }
+            FeedCampaignRibbonType.ASGC_FLASH_SALE_UPCOMING, FeedCampaignRibbonType.ASGC_SPECIAL_RELEASE_UPCOMING -> {
+                startDelayProcess(TWO_SECOND) {
+                    setBackgroundGradient()
+                    runLoopAnimation(index = START_ANIMATION_INDEX)
                 }
             }
         }
@@ -325,7 +323,6 @@ class FeedCampaignRibbonView(
 
                 FeedCampaignRibbonType.ASGC_FLASH_SALE_ONGOING, FeedCampaignRibbonType.ASGC_SPECIAL_RELEASE_ONGOING -> {
                     setupAvailabilityProgress()
-                    tyFeedCampaignRibbonSubtitle.text = ""
 
                     tyFeedCampaignRibbonTitle.text = mCampaign?.shortName.orEmpty()
                     tyFeedCampaignRibbonTitleSecond.text = mCampaign?.shortName.orEmpty()
@@ -416,9 +413,16 @@ class FeedCampaignRibbonView(
 
     private fun setupAvailabilityProgress() {
         with(binding) {
-            tyFeedCampaignRibbonSubtitle.text = mProduct?.stockWording
-
             val value = getProgressValue()
+
+            tyFeedCampaignRibbonSubtitle.text = when {
+                value < SEVENTY_FIVE_PERCENT -> root.context.getString(R.string.feed_cta_available_label)
+                value < EIGHTY_FIVE_PERCENT -> root.context.getString(R.string.feed_cta_hyped_label)
+                value < HUNDRED_PERCENT -> root.context.getString(R.string.feed_cta_almost_sold_label)
+                value == HUNDRED_PERCENT -> root.context.getString(R.string.feed_cta_sold_label)
+                else -> ""
+            }
+
             pbFeedCampaignRibbon.setValue(value)
         }
     }
@@ -473,6 +477,8 @@ class FeedCampaignRibbonView(
         private const val COLOR_TRANSITION_DURATION = 250
 
         private const val SEVENTY_FIVE_PERCENT = 75
+        private const val EIGHTY_FIVE_PERCENT = 85
+        private const val HUNDRED_PERCENT = 100
 
         private const val CORNER_RADIUS = 20f
         private const val START_ANIMATION_INDEX = 1
