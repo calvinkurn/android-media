@@ -65,36 +65,6 @@ class RatesDataConverter @Inject constructor() {
                 preOrderDuration = cartItemModel.preOrderDurationDay
             }
         }
-        //        initializeShipmentCartData(
-//            userAddress,
-//            groupShop,
-//            shipmentCartData,
-//            keroToken,
-//            keroUnixTime
-//        )
-//        var orderValue: Long = 0
-//        var totalWeight = 0
-//        var totalWeightActual = 0
-//        var preOrderDuration = 0
-//        for (cartItemModel in shipmentCartItemModel.cartItemModels) {
-//            if (!cartItemModel.isError) {
-//                orderValue += (cartItemModel.quantity * cartItemModel.price).toLong()
-//                totalWeight += (cartItemModel.quantity * cartItemModel.weight).toInt()
-//                val weightActual: Double = if (cartItemModel.weightActual > 0) {
-//                    cartItemModel.weightActual
-//                } else {
-//                    cartItemModel.weight
-//                }
-//                totalWeightActual += (cartItemModel.quantity * weightActual).toInt()
-//                preOrderDuration = cartItemModel.preOrderDurationDay
-//            }
-//        }
-//        shipmentCartData.orderValue = orderValue,
-//        shipmentCartData.weight = totalWeight.toDouble(),
-//        shipmentCartData.weightActual = totalWeightActual.toDouble(),
-//        shipmentCartData.preOrderDuration = preOrderDuration,
-//        shipmentCartData.isFulfillment = shipmentCartItemModel.isFulfillment,
-//        shipmentCartData.shopTier = shipmentCartItemModel.shopTypeInfoData.shopTier,
         return ShipmentCartData(
             token = keroToken,
             ut = keroUnixTime,

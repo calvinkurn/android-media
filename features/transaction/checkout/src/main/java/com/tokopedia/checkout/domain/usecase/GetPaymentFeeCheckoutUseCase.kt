@@ -13,15 +13,15 @@ import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
 class GetPaymentFeeCheckoutUseCase @Inject constructor(
-        @ApplicationContext private val graphqlRepository: GraphqlRepository
+    @ApplicationContext private val graphqlRepository: GraphqlRepository
 ) : UseCase<PaymentFeeGqlResponse>() {
     private var params: Map<String, Any?>? = null
 
     fun setParams(request: PaymentFeeCheckoutRequest) {
         params = mapOf(
-                PROFILE_CODE_PARAM to request.profileCode,
-                GATEWAY_CODE_PARAM to request.gatewayCode,
-                PAYMENT_AMOUNT_PARAM to request.paymentAmount
+            PROFILE_CODE_PARAM to request.profileCode,
+            GATEWAY_CODE_PARAM to request.gatewayCode,
+            PAYMENT_AMOUNT_PARAM to request.paymentAmount
         )
     }
 
@@ -32,13 +32,13 @@ class GetPaymentFeeCheckoutUseCase @Inject constructor(
         }
 
         val response = graphqlRepository.response(
-                listOf(
-                        GraphqlRequest(
-                                GetPaymentFeeCheckoutQuery(),
-                                PaymentFeeGqlResponse::class.java,
-                                params
-                        )
+            listOf(
+                GraphqlRequest(
+                    GetPaymentFeeCheckoutQuery(),
+                    PaymentFeeGqlResponse::class.java,
+                    params
                 )
+            )
         ).getSuccessData<PaymentFeeGqlResponse>()
 
         if (response.response.success) {

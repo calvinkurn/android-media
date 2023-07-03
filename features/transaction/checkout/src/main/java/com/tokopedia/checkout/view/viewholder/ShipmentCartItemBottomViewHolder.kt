@@ -84,13 +84,10 @@ class ShipmentCartItemBottomViewHolder(
     private val compositeSubscription: CompositeSubscription = CompositeSubscription()
     private var saveStateDebounceListener: SaveStateDebounceListener? = null
 
-//    private var scheduleDeliverySubscription: Subscription? = null
     private var scheduleDeliveryDonePublisher: PublishSubject<Boolean>? = null
-//    private var scheduleDeliveryDebouncedListener: ScheduleDeliveryDebouncedListener? = null
 
     init {
         initSaveStateDebouncer()
-//        initScheduleDeliveryPublisher()
     }
 
     fun bind(
@@ -1233,66 +1230,6 @@ class ShipmentCartItemBottomViewHolder(
         )
     }
 
-    private fun initScheduleDeliveryPublisher() {
-//        if (scheduleDeliverySubscription?.isUnsubscribed == false) {
-//            scheduleDeliverySubscription?.unsubscribe()
-//        }
-//        if (scheduleDeliveryDonePublisher?.hasCompleted() == false) {
-//            scheduleDeliveryDonePublisher?.onCompleted()
-//        }
-//        scheduleDeliverySubscription = Observable.create(
-//            Action1 { emitter: Emitter<ShipmentScheduleDeliveryHolderData> ->
-//                scheduleDeliveryDebouncedListener =
-//                    object : ScheduleDeliveryDebouncedListener {
-//                        override fun onScheduleDeliveryChanged(shipmentScheduleDeliveryHolderData: ShipmentScheduleDeliveryHolderData?) {
-//                            emitter.onNext(shipmentScheduleDeliveryHolderData)
-//                        }
-//                    }
-//            } as Action1<Emitter<ShipmentScheduleDeliveryHolderData>>,
-//            Emitter.BackpressureMode.LATEST
-//        )
-//            .observeOn(AndroidSchedulers.mainThread(), false, 1)
-//            .subscribeOn(AndroidSchedulers.mainThread())
-//            .concatMap { (scheduleDeliveryUiModel, position): ShipmentScheduleDeliveryHolderData ->
-//                scheduleDeliveryDonePublisher = PublishSubject.create()
-//                actionListener?.onChangeScheduleDelivery(
-//                    scheduleDeliveryUiModel,
-//                    position,
-//                    scheduleDeliveryDonePublisher!!
-//                )
-//                scheduleDeliveryDonePublisher
-//            }
-//            .subscribe()
-//        scheduleDeliveryCompositeSubscription?.add(scheduleDeliverySubscription)
-    }
-
-    private fun renderSubtotalAddOn(cartItemModel: CartItemModel, context: Context, subtotalAddOnMap: HashMap<Int, String>) {
-        if (cartItemModel.addOnProduct.listAddOnProductData.isNotEmpty()) {
-        val listShipmentAddOnSubtotalModel = arrayListOf<ShipmentAddOnSubtotalModel>()
-            for ((key, value) in subtotalAddOnMap) {
-                cartItemModel.addOnProduct.listAddOnProductData.forEach {
-                    if (it.addOnDataType == key && it.addOnDataStatus == 1) {
-                        val shipmentAddOnSubtotalModel = ShipmentAddOnSubtotalModel(
-                                wording = value.replace(CartConstant.QTY_ADDON_REPLACE, cartItemModel.quantity.toString()),
-                                priceLabel = CurrencyFormatUtil.convertPriceValueToIdrFormat((it.addOnDataPrice * cartItemModel.quantity), false).removeDecimalSuffix()
-                        )
-                        listShipmentAddOnSubtotalModel.add(shipmentAddOnSubtotalModel)
-                    }
-                }
-            }
-
-            val addOnSubtotalAdapter = ShipmentAddOnSubtotalAdapter(listShipmentAddOnSubtotalModel)
-            binding.containerSubtotal.rvSubtotalAddon.apply {
-                layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
-                setHasFixedSize(true)
-                adapter = addOnSubtotalAdapter
-                visible()
-            }
-        } else {
-            binding.containerSubtotal.rvSubtotalAddon.gone()
-        }
-    }
-
     fun unsubscribeDebouncer() {
         compositeSubscription.unsubscribe()
     }
@@ -1348,7 +1285,6 @@ class ShipmentCartItemBottomViewHolder(
                 bindingAdapterPosition
             )
             actionListener?.onClickRefreshErrorLoadCourier()
-            initScheduleDeliveryPublisher()
         }
     }
 
@@ -1375,11 +1311,6 @@ class ShipmentCartItemBottomViewHolder(
 
         fun onNeedToSaveState(shipmentCartItemModel: ShipmentCartItemModel?)
     }
-
-//    private interface ScheduleDeliveryDebouncedListener {
-//
-//        fun onScheduleDeliveryChanged(shipmentScheduleDeliveryHolderData: ShipmentScheduleDeliveryHolderData?)
-//    }
 
     interface Listener {
 
