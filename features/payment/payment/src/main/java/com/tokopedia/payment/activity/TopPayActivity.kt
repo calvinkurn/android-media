@@ -268,18 +268,8 @@ class TopPayActivity :
         callbackPaymentCanceled()
     }
 
-    fun navigateToActivity(goToIntent: Intent) {
-        startActivityForResult(goToIntent, REQUEST_CODE_GOPAY_TOP_UP)
-    }
-
     fun navigateAutoReload(goToIntent: Intent) {
         startActivityForResult(goToIntent, REQURST_CODE_AUTO_RELOAD)
-    }
-
-    fun navigateToActivityAndFinish(goToIntent: Intent) {
-        startActivity(goToIntent)
-        setResult(Activity.RESULT_OK)
-        finish()
     }
 
     fun callbackPaymentCanceled() {
@@ -475,10 +465,6 @@ class TopPayActivity :
             } else {
                 hideFullLoading()
             }
-        } else if (resultCode == RESULT_OK && requestCode == REQUEST_CODE_GOPAY_TOP_UP) {
-            if (reloadUrl.contains(getBaseUrlDomainPayment())) {
-                reloadPayment()
-            }
         } else if (requestCode == REQURST_CODE_AUTO_RELOAD) {
             if (reloadUrl.contains(getBaseUrlDomainPayment())) {
                 reloadPayment()
@@ -664,12 +650,8 @@ class TopPayActivity :
                     if (isURLReloadParamExist(url)) {
                         reloadUrl = scroogeWebView?.url.orEmpty()
                         navigateAutoReload(intent)
-                    }
-                    else if (isGoPayTopUpLink(url)) {
-                        reloadUrl = scroogeWebView?.url.orEmpty()
-                        navigateToActivity(intent)
                     } else {
-                        navigateToActivityAndFinish(intent)
+                        startActivity(intent)
                     }
                     return true
                 }
@@ -909,8 +891,6 @@ class TopPayActivity :
         return url.contains(LINK_AJA_APP_LINK)
     }
 
-    private fun isGoPayTopUpLink(url: String) = url.contains(GOPAY_TOP_UP)
-
     private fun isURLReloadParamExist(url: String): Boolean {
         val decodedURL = URLDecoder.decode(url, "UTF-8")
         return decodedURL.contains("payment_reload=true")
@@ -961,7 +941,6 @@ class TopPayActivity :
         private const val CUST_HEADER = "header_text"
 
         private const val REQUEST_CODE_LINK_ACCOUNT = 101
-        private const val REQUEST_CODE_GOPAY_TOP_UP = 102
         private const val REQURST_CODE_AUTO_RELOAD = 103
 
         @JvmStatic
