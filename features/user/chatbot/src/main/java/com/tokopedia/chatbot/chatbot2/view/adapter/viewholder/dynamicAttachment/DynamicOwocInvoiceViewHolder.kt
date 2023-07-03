@@ -12,6 +12,7 @@ import com.tokopedia.chatbot.chatbot2.view.uimodel.dynamicattachment.DynamicOwoc
 import com.tokopedia.chatbot.chatbot2.view.util.generateLeftMessageBackground
 import com.tokopedia.chatbot.chatbot2.view.util.helper.ChatbotMessageViewHolderBinder
 import com.tokopedia.chatbot.databinding.ItemChatbotDynamicOwocBinding
+import com.tokopedia.chatbot.util.setContainerBackground
 import com.tokopedia.utils.view.binding.viewBinding
 
 class DynamicOwocInvoiceViewHolder(
@@ -28,7 +29,8 @@ class DynamicOwocInvoiceViewHolder(
         super.bind(uiModel)
 
         verifyReplyTime(uiModel)
-        bindBackground()
+        binding?.customChatLayout?.background = null
+        binding?.mainParent?.setContainerBackground(bindBackground())
 //        ChatbotMessageViewHolderBinder.bindChatMessage(
 //            uiModel.message,
 //            customChatLayout,

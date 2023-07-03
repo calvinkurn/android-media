@@ -3,19 +3,26 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:paddingStart="16dp"
+    android:paddingEnd="16dp"
+    android:layout_marginTop="8dp"
+    android:layout_marginBottom="8dp"
     android:layout_height="wrap_content">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="80dp"
+        android:background="@color/Unify_NN50"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/product_image"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:paddingStart="8dp"
+            android:scaleType="fitCenter"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -25,7 +32,7 @@
             android:id="@+id/shop_badge"
             android:layout_width="20dp"
             android:layout_height="20dp"
-            android:paddingStart="8dp"
+            android:layout_marginStart="8dp"
             app:layout_constraintStart_toEndOf="@id/product_image"
             app:layout_constraintTop_toTopOf="@id/product_image"
             tools:src="@drawable/ic_tanya_dark_mode" />
@@ -35,6 +42,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/Unify_NN950"
+            android:layout_marginStart="8dp"
             app:layout_constraintStart_toEndOf="@id/shop_badge"
             app:layout_constraintTop_toTopOf="@id/product_image"
             app:typographyType="display_3"
@@ -45,7 +53,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/Unify_NN950"
-            android:paddingStart="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="2dp"
             app:layout_constraintStart_toEndOf="@id/product_image"
             app:layout_constraintTop_toBottomOf="@id/text_shop_name"
             app:typographyType="display_2"

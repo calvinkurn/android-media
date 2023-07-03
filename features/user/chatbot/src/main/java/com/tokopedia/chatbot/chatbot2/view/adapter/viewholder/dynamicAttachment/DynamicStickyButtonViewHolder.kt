@@ -14,6 +14,7 @@ import com.tokopedia.chatbot.chatbot2.view.uimodel.dynamicattachment.DynamicStic
 import com.tokopedia.chatbot.chatbot2.view.util.generateLeftMessageBackground
 import com.tokopedia.chatbot.chatbot2.view.util.helper.ChatbotMessageViewHolderBinder
 import com.tokopedia.chatbot.databinding.ItemChatbotDynamicContentCode105Binding
+import com.tokopedia.chatbot.util.setContainerBackground
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.utils.view.binding.viewBinding
 
@@ -69,13 +70,4 @@ class DynamicStickyButtonViewHolder(
         @LayoutRes
         val LAYOUT = R.layout.item_chatbot_dynamic_content_code_105
     }
-}
-
-private fun LinearLayout.setContainerBackground(bg: Drawable?) {
-    val pl = paddingLeft
-    val pt = paddingTop
-    val pr = paddingRight
-    val pb = paddingBottom
-    background = bg
-    setPadding(pl, pt, pr, pb)
 }

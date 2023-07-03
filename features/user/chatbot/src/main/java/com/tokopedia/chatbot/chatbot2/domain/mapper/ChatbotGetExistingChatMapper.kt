@@ -107,6 +107,10 @@ open class ChatbotGetExistingChatMapper @Inject constructor() : GetExistingChatM
                             chatItemPojoByDateByTime,
                             dynamicAttachment
                         )
+                        ChatbotConstant.DynamicAttachment.DYNAMIC_INVOICE_OWOC -> convertToDynamicOwocInvoice(
+                            chatItemPojoByDateByTime,
+                            dynamicAttachment
+                        )
                         else -> convertToDynamicAttachmentFallback(chatItemPojoByDateByTime)
                     }
                 } else {
