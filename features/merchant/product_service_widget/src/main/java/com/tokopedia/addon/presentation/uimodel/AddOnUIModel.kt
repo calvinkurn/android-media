@@ -1,6 +1,5 @@
 package com.tokopedia.addon.presentation.uimodel
 
-import com.tokopedia.addon.presentation.uimodel.AddOnType.PRODUCT_PROTECTION_INSURANCE_TYPE
 import java.io.Serializable
 
 data class AddOnUIModel(
@@ -11,7 +10,7 @@ data class AddOnUIModel(
     var isSelected: Boolean = false,
     var isPreselected: Boolean = false,
     var isMandatory: Boolean= false,
-    var addOnType: AddOnType = PRODUCT_PROTECTION_INSURANCE_TYPE,
+    var addOnType: Int = 0,
     var eduLink: String = "",
     var uniqueId: String = ""
 ): Serializable {
