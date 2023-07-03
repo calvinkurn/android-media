@@ -1,11 +1,8 @@
 package com.tokopedia.media.editor.ui.activity.main
 
-import android.Manifest
 import android.app.Activity
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
-import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.ViewModelProvider
@@ -62,6 +59,24 @@ class EditorActivity : BaseEditorActivity() {
             this,
             getEditorSaveFolderPath()
         )
+
+        viewModel.editorResult.observe(this) { imageResultList ->
+            imageResultList?.let {
+                val listImageEditState = viewModel.editStateList.values.toList()
+                val result = EditorResult(
+                    originalPaths = listImageEditState.map { it.getOriginalUrl() },
+                    editedImages = imageResultList
+                )
+
+                editorHomeAnalytics.clickUpload()
+
+                val intent = Intent()
+                intent.putExtra(RESULT_INTENT_EDITOR, result)
+                setResult(Activity.RESULT_OK, intent)
+            }
+
+            finish()
+        }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -125,25 +140,9 @@ class EditorActivity : BaseEditorActivity() {
     }
 
     private fun finishPage() {
-        val listImageEditState = viewModel.editStateList.values.toList()
         viewModel.finishPage(
-            listImageEditState
-        ) { imageResultList ->
-            imageResultList?.let {
-                val result = EditorResult(
-                    originalPaths = listImageEditState.map { it.getOriginalUrl() },
-                    editedImages = imageResultList
-                )
-
-                editorHomeAnalytics.clickUpload()
-
-                val intent = Intent()
-                intent.putExtra(RESULT_INTENT_EDITOR, result)
-                setResult(Activity.RESULT_OK, intent)
-            }
-
-            finish()
-        }
+            viewModel.editStateList.values.toList()
+        )
     }
 
     private fun showBackDialogConfirmation() {

@@ -5,45 +5,44 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.common.topupbills.R
+import com.tokopedia.common.topupbills.databinding.ViewTopupBillsInputDropdownBottomSheetBinding
+import com.tokopedia.common.topupbills.databinding.ViewTopupBillsInputDropdownBottomSheetItemBinding
 import com.tokopedia.common.topupbills.view.model.TopupBillsInputDropdownData
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
-import kotlinx.android.synthetic.main.view_topup_bills_input_dropdown_bottom_sheet.view.*
-import kotlinx.android.synthetic.main.view_topup_bills_input_dropdown_bottom_sheet_item.view.*
 import org.jetbrains.annotations.NotNull
 
 /**
  * Created by resakemal on 11/11/19.
  */
-class TopupBillsInputDropdownWidget @JvmOverloads constructor(@NotNull context: Context,
-                                                              attrs: AttributeSet? = null,
-                                                              defStyleAttr: Int = 0,
-                                                              var listener: OnClickListener? = null,
-                                                              val selected: String = "")
-    : FrameLayout(context, attrs, defStyleAttr) {
+class TopupBillsInputDropdownWidget @JvmOverloads constructor(
+    @NotNull context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0,
+    var listener: OnClickListener? = null,
+    val selected: String = ""
+) :
+    FrameLayout(context, attrs, defStyleAttr) {
+
+    private val binding = ViewTopupBillsInputDropdownBottomSheetBinding.inflate(LayoutInflater.from(context), this, true)
 
     private var initialData: List<TopupBillsInputDropdownData> = listOf()
     private var displayData: List<TopupBillsInputDropdownData> = listOf()
         set(value) {
             field = value
-            with(vg_input_dropdown_recycler_view.adapter as TopupBillsInputDropdownAdapter) {
+            with(binding.vgInputDropdownRecyclerView.adapter as TopupBillsInputDropdownAdapter) {
                 items = value
                 notifyDataSetChanged()
             }
         }
 
     init {
-        View.inflate(context, getLayout(), this)
-
-        vg_input_dropdown_recycler_view.adapter = TopupBillsInputDropdownAdapter(displayData)
-
-        vg_input_dropdown_search_view.searchBarTextField.addTextChangedListener(object: TextWatcher {
+        binding.vgInputDropdownRecyclerView.adapter = TopupBillsInputDropdownAdapter(displayData)
+        binding.vgInputDropdownSearchView.searchBarTextField.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(text: Editable?) {
                 text?.let {
                     displayData = initialData.filter { item -> item.label.contains(it, true) }
@@ -51,22 +50,15 @@ class TopupBillsInputDropdownWidget @JvmOverloads constructor(@NotNull context: 
             }
 
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-
             }
-
         })
-        vg_input_dropdown_search_view.clearListener = {
+        binding.vgInputDropdownSearchView.clearListener = {
             displayData = initialData
         }
-        vg_input_dropdown_search_view.searchBarTextField.requestFocus()
-    }
-
-    open fun getLayout(): Int {
-        return R.layout.view_topup_bills_input_dropdown_bottom_sheet
+        binding.vgInputDropdownSearchView.searchBarTextField.requestFocus()
     }
 
     fun setData(data: List<TopupBillsInputDropdownData>) {
@@ -80,8 +72,8 @@ class TopupBillsInputDropdownWidget @JvmOverloads constructor(@NotNull context: 
 
     inner class TopupBillsInputDropdownAdapter(var items: List<TopupBillsInputDropdownData>) : RecyclerView.Adapter<TopupBillsInputDropdownViewHolder>() {
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TopupBillsInputDropdownViewHolder {
-            val view = LayoutInflater.from(parent.context).inflate(R.layout.view_topup_bills_input_dropdown_bottom_sheet_item, parent, false)
-            return TopupBillsInputDropdownViewHolder(view)
+            val binding = ViewTopupBillsInputDropdownBottomSheetItemBinding.inflate(LayoutInflater.from(context), parent, false)
+            return TopupBillsInputDropdownViewHolder(binding)
         }
 
         override fun getItemCount(): Int {
@@ -91,27 +83,28 @@ class TopupBillsInputDropdownWidget @JvmOverloads constructor(@NotNull context: 
         override fun onBindViewHolder(holder: TopupBillsInputDropdownViewHolder, position: Int) {
             holder.bind(items[position])
         }
-
     }
 
-    inner class TopupBillsInputDropdownViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class TopupBillsInputDropdownViewHolder(
+        private val binding: ViewTopupBillsInputDropdownBottomSheetItemBinding
+    ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(element: TopupBillsInputDropdownData) {
-            with(itemView) {
-                vg_input_dropdown_label.text = element.label
-                vg_input_dropdown_icon.cornerRadius = 0
+            with(binding) {
+                vgInputDropdownLabel.text = element.label
+                vgInputDropdownIcon.cornerRadius = 0
                 if (element.icon.isNotEmpty()) {
-                    vg_input_dropdown_icon.loadImage(element.icon)
-                    vg_input_dropdown_icon.show()
+                    vgInputDropdownIcon.loadImage(element.icon)
+                    vgInputDropdownIcon.show()
                 } else {
-                    vg_input_dropdown_icon.hide()
+                    vgInputDropdownIcon.hide()
                 }
 
                 if (selected.isNotEmpty() && element.label == selected) {
-                    vg_input_dropdown_selected.show()
+                    vgInputDropdownSelected.show()
                 } else {
-                    vg_input_dropdown_selected.hide()
+                    vgInputDropdownSelected.hide()
                 }
-                vg_input_dropdown_item.setOnClickListener { listener?.onItemClicked(element) }
+                vgInputDropdownItem.setOnClickListener { listener?.onItemClicked(element) }
             }
         }
     }

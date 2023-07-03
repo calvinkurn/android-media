@@ -3,7 +3,8 @@ package com.tokopedia.shop.score.penalty.presentation.model
 import com.tokopedia.shop.score.penalty.presentation.adapter.PenaltyPageAdapterFactory
 
 data class ItemSortFilterPenaltyUiModel(
-    var itemSortFilterWrapperList: List<ItemSortFilterWrapper> = listOf()
+    var itemSortFilterWrapperList: List<ItemSortFilterWrapper> = listOf(),
+    var isDateFilterApplied: Boolean = false
 ) : BasePenaltyPage {
 
     data class ItemSortFilterWrapper(
