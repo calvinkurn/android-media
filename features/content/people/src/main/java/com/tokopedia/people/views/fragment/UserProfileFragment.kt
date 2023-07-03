@@ -217,7 +217,7 @@ class UserProfileFragment @Inject constructor(
         mainBinding.appBarUserProfile.addOnOffsetChangedListener(feedFloatingButtonManager.offsetListener)
 
         context?.let {
-            screenShotDetector = UniversalShareBottomSheet.createAndStartScreenShotDetector(
+            screenShotDetector = SharingUtil.createAndStartScreenShotDetector(
                 it,
                 this,
                 this,
@@ -742,7 +742,7 @@ class UserProfileFragment @Inject constructor(
 
     private fun setupAutoSelectTabIfAny(selectedTabKey: String) {
         val idx = viewModel.profileTab.tabs.indexOfFirst { it.key.value == selectedTabKey }
-        if(idx != -1) {
+        if (idx != -1) {
             mainBinding.profileTabs.viewPager.setCurrentItem(idx, false)
         }
     }
@@ -1107,11 +1107,15 @@ class UserProfileFragment @Inject constructor(
         }
     }
 
-    private fun showUniversalShareBottomSheet() {
-        if(!isAdded) return
+    private fun showUniversalShareBottomSheet(path: String? = null) {
+        if (!isAdded) return
 
-        if(universalShareBottomSheet == null) {
+        if (universalShareBottomSheet == null) {
             universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
+                path?.let {
+                    setImageOnlySharingOption(true)
+                    setScreenShotImagePath(path)
+                }
                 init(this@UserProfileFragment)
                 userSession.userId.ifEmpty { "0" }.let {
                     setUtmCampaignData(
@@ -1184,7 +1188,7 @@ class UserProfileFragment @Inject constructor(
                             )
                             // send gtm trackers if you want to
 
-                            when (UniversalShareBottomSheet.getShareBottomSheetType()) {
+                            when (universalShareBottomSheet?.getShareBottomSheetType()) {
                                 UniversalShareBottomSheet.SCREENSHOT_SHARE_SHEET -> {
                                     userProfileTracker.clickChannelScreenshotShareBottomsheet(userSession.userId, self = viewModel.isSelfProfile)
                                 }
@@ -1206,8 +1210,8 @@ class UserProfileFragment @Inject constructor(
         )
     }
 
-    override fun screenShotTaken() {
-        showUniversalShareBottomSheet()
+    override fun screenShotTaken(path: String) {
+        showUniversalShareBottomSheet(path)
         userProfileTracker.viewScreenshotShareBottomsheet(userSession.userId, self = viewModel.isSelfProfile)
         // add tracking for the screenshot bottom sheet
     }
@@ -1230,7 +1234,7 @@ class UserProfileFragment @Inject constructor(
 //        TODO gtm tracking
         // This method will be mostly used for GTM Tracking stuff. So add the tracking accordingly
         // this will give you the bottomsheet type : if it's screenshot or general
-        when (UniversalShareBottomSheet.getShareBottomSheetType()) {
+        when (universalShareBottomSheet?.getShareBottomSheetType()) {
             UniversalShareBottomSheet.SCREENSHOT_SHARE_SHEET -> {
                 userSession.userId.let { userProfileTracker.clickCloseScreenshotShareBottomsheet(it, self = viewModel.isSelfProfile) }
             }
