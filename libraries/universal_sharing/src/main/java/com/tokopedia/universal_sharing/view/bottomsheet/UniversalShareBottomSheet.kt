@@ -558,14 +558,12 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
                     personalizedMessage = context.getString(
                         R.string.personalized_campaign_message_ongoing_discount,
                         model.getDiscountString(),
-                        model.price,
-                        model.getEndDateCampaign()
+                        model.price
                     )
                 } else {
                     personalizedMessage = context.getString(
                         R.string.personalized_campaign_message_ongoing_without_disc,
-                        model.price,
-                        model.getEndDateCampaign()
+                        model.price
                     )
                 }
                 personalizedImage = context.getString(
@@ -586,6 +584,24 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
                         R.string.personalized_campaign_message_endsoon_without_disc,
                         model.getMinuteLeft().toString(),
                         model.getDiscountString()
+                    )
+                }
+                personalizedImage = context.getString(
+                    com.tokopedia.universal_sharing.R.string.ongoing_personalized_campaign_info,
+                    DateUtil.getDateCampaignInfo(model.endTime)
+                )
+            }
+            CampaignStatus.END_BY_A_WEEK -> {
+                if (model.discountPercentage != 0F) {
+                    personalizedMessage = context.getString(
+                        R.string.personalized_campaign_message_endweek_discount,
+                        model.getDiscountString(),
+                        model.price
+                    )
+                } else {
+                    personalizedMessage = context.getString(
+                        R.string.personalized_campaign_message_ongoing_without_disc,
+                        model.price
                     )
                 }
                 personalizedImage = context.getString(
