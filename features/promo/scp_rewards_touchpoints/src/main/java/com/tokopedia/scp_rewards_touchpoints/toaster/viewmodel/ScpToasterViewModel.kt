@@ -19,7 +19,7 @@ class ScpToasterViewModel @Inject constructor(
     private val _toasterLiveData: MutableLiveData<ScpResult> = MutableLiveData()
     val toasterLiveData: LiveData<ScpResult> = _toasterLiveData
 
-    fun getToaster(orderID: Long, pageName: String, sourceName: String) {
+    fun getToaster(orderID: Long, pageName: String = "", sourceName: String) {
         viewModelScope.launchCatchError(
             block = {
                 _toasterLiveData.postValue(Loading)

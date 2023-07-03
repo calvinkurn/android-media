@@ -72,6 +72,9 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey.HOME_ENABLE_AUTO_REFRESH_UOH
+import com.tokopedia.scp_rewards_touchpoints.toaster.model.ScpRewardsToasterModel
+import com.tokopedia.scp_rewards_touchpoints.toaster.viewmodel.ScpToasterViewModel
+import com.tokopedia.scp_rewards_touchpoints.view.toaster.ScpRewardsToaster
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.helper.ViewHelper
 import com.tokopedia.searchbar.navigation_component.NavToolbar
@@ -285,6 +288,10 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
         ViewModelProvider(this, viewModelFactory)[UohListViewModel::class.java]
     }
 
+    private val toasterViewModel by lazy {
+        ViewModelProvider(this, viewModelFactory)[ScpToasterViewModel::class.java]
+    }
+
     companion object {
         const val PARAM_ACTIVITY_ORDER_HISTORY = "activity_order_history"
         const val PARAM_HOME = "home"
@@ -303,6 +310,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
         private val CATEGORY_GROUP_GOTO_PLUS = "goto_plus"
         private val CATEGORY_GROUP_TOKOFOOD = "tokofood"
         private val CATEGORY_GROUP_OTHER = "other"
+        private const val SOURCE_NAME = "order_history_list_page"
 
         @JvmStatic
         fun newInstance(bundle: Bundle): UohListFragment {
@@ -535,6 +543,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
         observeTdnBanner()
         observeUohPmsCounter()
         observingUohItemDelay()
+        observeScpToaster()
     }
 
     private fun observeTdnBanner() {
@@ -822,6 +831,29 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
                         Toaster.TYPE_ERROR
                     )
                 }
+            }
+        }
+    }
+
+    private fun observeScpToaster() {
+        toasterViewModel.toasterLiveData.observe(viewLifecycleOwner) {
+            when (it) {
+                is com.tokopedia.scp_rewards_touchpoints.common.Success<*> -> {
+                    val data = (it.data as ScpRewardsToasterModel).scpRewardsMedaliTouchpointOrder
+                    if (data?.isShown == true) {
+                        val title = data.medaliTouchpointOrder?.infoMessage?.title ?: ""
+                        val subtitle = data.medaliTouchpointOrder?.infoMessage?.subtitle ?: ""
+                        val ctaTitle = data.medaliTouchpointOrder?.cta?.text ?: ""
+                        val appLink = data.medaliTouchpointOrder?.cta?.appLink
+
+                        view?.let { it1 ->
+                            ScpRewardsToaster.build(it1, title, subtitle, 4000, actionText = ctaTitle, clickListener = {
+                                RouteManager.route(context, appLink)
+                            }).show()
+                        }
+                    }
+                }
+                else -> {}
             }
         }
     }
@@ -2111,7 +2143,10 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
                 if (paramFinishOrder != null) {
                     uohListViewModel.doFinishOrder(paramFinishOrder)
                 }
-
+                toasterViewModel.getToaster(
+                    orderID = orderId.toLong(),
+                    sourceName = SOURCE_NAME
+                )
                 userSession.userId?.let { it1 -> UohAnalytics.clickSelesaiOnBottomSheetFinishTransaction(it1) }
             }
 
