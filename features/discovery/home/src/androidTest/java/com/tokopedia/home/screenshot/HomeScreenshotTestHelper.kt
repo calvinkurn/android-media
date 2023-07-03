@@ -29,7 +29,6 @@ object HomeScreenshotTestHelper {
             ScreenshotModel(name = "Lego4Image"),
             ScreenshotModel(name = "Lego3Image"),
             ScreenshotModel(name = "1x2Banner"),
-            ScreenshotModel(name = "4BannerAuto"),
             ScreenshotModel(name = "6ImageAuto"),
             ScreenshotModel(name = "RecommendationListCarousel"),
             ScreenshotModel(name = "ProductHighlight"),

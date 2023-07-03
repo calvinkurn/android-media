@@ -110,7 +110,6 @@ import com.tokopedia.home_component.viewholders.DynamicLegoBannerSixAutoViewHold
 import com.tokopedia.home_component.viewholders.DynamicLegoBannerViewHolder
 import com.tokopedia.home_component.viewholders.FeaturedShopViewHolder
 import com.tokopedia.home_component.viewholders.FlashSaleViewHolder
-import com.tokopedia.home_component.viewholders.Lego4AutoBannerViewHolder
 import com.tokopedia.home_component.viewholders.Lego4ProductViewHolder
 import com.tokopedia.home_component.viewholders.MerchantVoucherViewHolder
 import com.tokopedia.home_component.viewholders.MissionWidgetViewHolder
@@ -135,10 +134,8 @@ import com.tokopedia.home_component.visitable.DealsDataModel
 import com.tokopedia.home_component.visitable.DynamicIconComponentDataModel
 import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
 import com.tokopedia.home_component.visitable.DynamicLegoBannerSixAutoDataModel
-import com.tokopedia.home_component.visitable.FeaturedBrandDataModel
 import com.tokopedia.home_component.visitable.FeaturedShopDataModel
 import com.tokopedia.home_component.visitable.FlashSaleDataModel
-import com.tokopedia.home_component.visitable.Lego4AutoDataModel
 import com.tokopedia.home_component.visitable.Lego4ProductDataModel
 import com.tokopedia.home_component.visitable.MerchantVoucherDataModel
 import com.tokopedia.home_component.visitable.MissionWidgetListDataModel
@@ -325,10 +322,6 @@ class HomeAdapterFactory(
         return DynamicChannelRetryViewHolder.LAYOUT
     }
 
-    override fun type(lego4AutoDataModel: Lego4AutoDataModel): Int {
-        return Lego4AutoBannerViewHolder.LAYOUT
-    }
-
     override fun type(featuredShopDataModel: FeaturedShopDataModel): Int {
         return FeaturedShopViewHolder.LAYOUT
     }
@@ -392,10 +385,6 @@ class HomeAdapterFactory(
 
     override fun type(errorStateAtfModel: ErrorStateAtfModel): Int {
         return HomeAtfErrorViewHolder.LAYOUT
-    }
-
-    override fun type(featuredBrandDataModel: FeaturedBrandDataModel): Int {
-        return 0
     }
 
     override fun type(questWidgetModel: QuestWidgetModel): Int {
@@ -528,14 +517,6 @@ class HomeAdapterFactory(
             DynamicChannelLoadingViewHolder.LAYOUT -> viewHolder = DynamicChannelLoadingViewHolder(view)
             ErrorPromptViewHolder.LAYOUT -> viewHolder = ErrorPromptViewHolder(view, listener)
             DynamicChannelRetryViewHolder.LAYOUT -> viewHolder = DynamicChannelRetryViewHolder(view, listener)
-            Lego4AutoBannerViewHolder.LAYOUT ->
-                viewHolder =
-                    Lego4AutoBannerViewHolder(
-                        view,
-                        lego4AutoBannerListener,
-                        homeComponentListener,
-                        parentRecycledViewPool
-                    )
             FeaturedShopViewHolder.LAYOUT -> viewHolder = FeaturedShopViewHolder(
                 view,
                 featuredShopListener,

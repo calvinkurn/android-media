@@ -155,9 +155,6 @@ class HomeDynamicChannelVisitableFactoryImpl(
                 DynamicHomeChannel.Channels.LAYOUT_VERTICAL_BANNER_ADS -> {
                     createTopAdsVerticalBannerModel(channel)
                 }
-                DynamicHomeChannel.Channels.LAYOUT_LEGO_4_AUTO -> {
-                    createLego4AutoComponent(channel, position, isCache)
-                }
                 DynamicHomeChannel.Channels.LAYOUT_FEATURED_SHOP -> {
                     createFeaturedShopComponent(channel, position, isCache)
                 }
@@ -384,30 +381,6 @@ class HomeDynamicChannelVisitableFactoryImpl(
         }
     }
 
-    private fun createLego4AutoComponent(channel: DynamicHomeChannel.Channels, verticalPosition: Int, isCache: Boolean) {
-        visitableList.add(
-            mappingLego4BannerAutoComponent(
-                channel,
-                isCache,
-                verticalPosition
-            )
-        )
-        if (!isCache) {
-            HomePageTracking.eventEnhanceImpressionLegoAndCuratedHomePage(
-                trackingQueue,
-                channel.convertPromoEnhanceLegoBannerDataLayerForCombination(),
-                userSessionInterface?.userId.orEmpty()
-            )
-        }
-        context?.let {
-            HomeTrackingUtils.homeDiscoveryWidgetImpression(
-                it,
-                visitableList.size,
-                channel
-            )
-        }
-    }
-
     private fun createBusinessUnitWidget(channel: DynamicHomeChannel.Channels, position: Int) {
         if (!isCache) {
             visitableList.add(
@@ -487,9 +460,7 @@ class HomeDynamicChannelVisitableFactoryImpl(
                     String.format(PROMO_NAME_LEGO_6_IMAGE, position.toString(), channel.header.name)
             } else if (channel.layout == DynamicHomeChannel.Channels.LAYOUT_LEGO_6_AUTO) {
                 channel.promoName = String.format(PROMO_NAME_LEGO_6_AUTO_IMAGE, position.toString(), "individual_grid", channel.header.name)
-            } else if (channel.layout == DynamicHomeChannel.Channels.LAYOUT_LEGO_4_IMAGE ||
-                channel.layout == DynamicHomeChannel.Channels.LAYOUT_LEGO_4_AUTO
-            ) {
+            } else if (channel.layout == DynamicHomeChannel.Channels.LAYOUT_LEGO_4_IMAGE) {
                 channel.promoName = String.format(PROMO_NAME_LEGO_4_IMAGE, position.toString(), channel.header.name)
             } else if (channel.layout == DynamicHomeChannel.Channels.LAYOUT_LEGO_2_IMAGE) {
                 channel.promoName = String.format(PROMO_NAME_LEGO_2_IMAGE, position.toString(), channel.header.name)
@@ -665,21 +636,6 @@ class HomeDynamicChannelVisitableFactoryImpl(
                 verticalPosition
             ),
             isCache = isCache
-        )
-    }
-
-    private fun mappingLego4BannerAutoComponent(
-        channel: DynamicHomeChannel.Channels,
-        isCache: Boolean,
-        verticalPosition: Int
-    ): Visitable<*> {
-        return Lego4AutoDataModel(
-            channelModel = DynamicChannelComponentMapper.mapHomeChannelToComponent(
-                channel,
-                verticalPosition
-            ),
-            isCache = isCache,
-            cardInteraction = true
         )
     }
 

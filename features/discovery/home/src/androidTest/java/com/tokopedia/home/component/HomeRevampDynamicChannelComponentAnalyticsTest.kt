@@ -195,7 +195,6 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
             doActivityTest(
                 listOf(
                     DynamicLegoBannerViewHolder::class.simpleName!!,
-                    Lego4AutoBannerViewHolder::class.simpleName!!,
                     DynamicLegoBannerSixAutoViewHolder::class.simpleName!!
                 )
             ) { viewHolder: RecyclerView.ViewHolder, i: Int ->

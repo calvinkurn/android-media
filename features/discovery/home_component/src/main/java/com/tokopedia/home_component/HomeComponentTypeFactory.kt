@@ -11,10 +11,8 @@ import com.tokopedia.home_component.visitable.DealsDataModel
 import com.tokopedia.home_component.visitable.DynamicIconComponentDataModel
 import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
 import com.tokopedia.home_component.visitable.DynamicLegoBannerSixAutoDataModel
-import com.tokopedia.home_component.visitable.FeaturedBrandDataModel
 import com.tokopedia.home_component.visitable.FeaturedShopDataModel
 import com.tokopedia.home_component.visitable.FlashSaleDataModel
-import com.tokopedia.home_component.visitable.Lego4AutoDataModel
 import com.tokopedia.home_component.visitable.Lego4ProductDataModel
 import com.tokopedia.home_component.visitable.MerchantVoucherDataModel
 import com.tokopedia.home_component.visitable.MissionWidgetListDataModel
@@ -43,12 +41,10 @@ interface HomeComponentTypeFactory {
     fun type(mixLeftPaddingDataModel: MixLeftPaddingDataModel): Int = 0
     fun type(mixTopDataModel: MixTopDataModel): Int
     fun type(productHighlightDataModel: ProductHighlightDataModel): Int
-    fun type(lego4AutoDataModel: Lego4AutoDataModel): Int
     fun type(featuredShopDataModel: FeaturedShopDataModel): Int
     fun type(categoryNavigationDataModel: CategoryNavigationDataModel): Int
     fun type(bannerDataModel: BannerDataModel): Int
     fun type(dynamicIconComponentDataModel: DynamicIconComponentDataModel): Int
-    fun type(featuredBrandDataModel: FeaturedBrandDataModel): Int
     fun type(questWidgetModel: QuestWidgetModel): Int
     fun type(campaignWidgetDataModel: CampaignWidgetDataModel): Int = 0
     fun type(merchantVoucherDataModel: MerchantVoucherDataModel): Int = 0
