@@ -15,4 +15,7 @@ class Inventory {
 
     @SerializedName("UnlimitedStock")
     var unlimitedStock: Boolean = false
+
+    @SerializedName("DiscountedPrice")
+    var discountedPrice: Double = Int.ZERO.toDouble()
 }

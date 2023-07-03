@@ -29,8 +29,8 @@ object AddOnMapper {
                 AddOnUIModel(
                     id = it.basic.basicId,
                     name = it.basic.name,
-                    priceFormatted = it.inventory.price.getCurrencyFormatted(),
                     price = it.inventory.price.toLong(),
+                    discountedPrice = it.inventory.price.toLong(),
                     isSelected = it.basic.rules.autoSelect || it.basic.rules.mandatory,
                     isMandatory = it.basic.rules.mandatory,
                     addOnType = it.basic.addOnType.toIntSafely(),

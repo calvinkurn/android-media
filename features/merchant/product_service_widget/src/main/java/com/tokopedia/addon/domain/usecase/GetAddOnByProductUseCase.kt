@@ -5,8 +5,8 @@ import com.tokopedia.addon.domain.model.AddOnRequest
 import com.tokopedia.addon.domain.model.GetAddOnByProductRequest
 import com.tokopedia.addon.domain.model.GetAddOnByProductResponse
 import com.tokopedia.addon.domain.model.Source
-import com.tokopedia.common.ProductServiceWidgetConstant.SQUAD_VALUE
-import com.tokopedia.common.ProductServiceWidgetConstant.USECASE_GIFTING_VALUE
+import com.tokopedia.common.ProductServiceWidgetConstant.SQUAD_VALUE_ADDON
+import com.tokopedia.common.ProductServiceWidgetConstant.USECASE_ADDON_VALUE
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.usecase.RequestParams
@@ -66,6 +66,7 @@ class GetAddOnByProductUseCase @Inject constructor(
                       Price
                       Stock
                       UnlimitedStock
+                      DiscountedPrice
                     }
                     Warehouse {
                       WarehouseName
@@ -107,7 +108,7 @@ class GetAddOnByProductUseCase @Inject constructor(
                         addOnLevel = if (isTokocabang) ADDON_LEVEL_TC else ADDON_LEVEL_NON_TC
                     )
                 ),
-                source = Source(usecase = "testing", squad = "test")
+                source = Source(usecase = USECASE_ADDON_VALUE, squad = SQUAD_VALUE_ADDON)
             )
         )
         setRequestParams(requestParams.parameters)

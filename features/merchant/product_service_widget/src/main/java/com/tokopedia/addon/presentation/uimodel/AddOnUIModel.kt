@@ -5,8 +5,8 @@ import java.io.Serializable
 data class AddOnUIModel(
     var id: String = "",
     var name: String = "",
-    var priceFormatted: String = "",
     var price: Long = 0L,
+    var discountedPrice: Long = 0L,
     var isSelected: Boolean = false,
     var isPreselected: Boolean = false,
     var isMandatory: Boolean= false,
@@ -22,6 +22,8 @@ data class AddOnUIModel(
             else -> AddOnSelectedStatus.DEFAULT
         }
     }
+
+    fun isDiscounted(): Boolean = price != discountedPrice
 }
 
 data class AddOnGroupUIModel(

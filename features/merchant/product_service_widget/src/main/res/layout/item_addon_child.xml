@@ -18,6 +18,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/Unify_NN600"
+        android:text="asdsdadasdsad adasd"
         app:layout_constraintBottom_toBottomOf="@+id/cu_addon"
         app:layout_constraintStart_toEndOf="@+id/cu_addon"
         app:layout_constraintTop_toTopOf="parent"
@@ -39,9 +40,21 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/Unify_NN950"
-        app:layout_constraintBottom_toBottomOf="@+id/tf_name"
+        android:text="Rp. 90.000"
+        app:layout_constraintBottom_toTopOf="@+id/tf_slashed_price"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/tf_name"
+        app:typographyType="display_3" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tf_slashed_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_NN600"
+        android:text="Rp. 90.000"
+        app:layout_constraintBottom_toBottomOf="@+id/tf_name"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tf_price"
         app:typographyType="display_3" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
