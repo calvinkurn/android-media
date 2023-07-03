@@ -304,7 +304,6 @@ open class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFrag
         if (!isShowBottomNav) {
             return when (InboxConfig.page) {
                 InboxFragmentType.NOTIFICATION -> getString(R.string.inbox_title_notification)
-                InboxFragmentType.CHAT -> getString(R.string.inbox_title_chat)
                 InboxFragmentType.DISCUSSION ->
                     getString(com.tokopedia.notifcenter.R.string.inbox)
                 else -> getString(com.tokopedia.notifcenter.R.string.inbox)
@@ -573,12 +572,6 @@ open class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFrag
                             onBottomNavSelected(InboxFragmentType.NOTIFICATION)
                             updateToolbarIcon()
                             InboxConfig.page = InboxFragmentType.NOTIFICATION
-                        }
-                        R.id.menu_inbox_chat -> {
-                            cacheState.saveInitialPageCache(InboxFragmentType.CHAT)
-                            onBottomNavSelected(InboxFragmentType.CHAT)
-                            updateToolbarIcon(true)
-                            InboxConfig.page = InboxFragmentType.CHAT
                         }
                     }
                     analytic.trackOpenInboxPage(InboxConfig.page, InboxConfig.role)

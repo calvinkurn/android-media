@@ -3,10 +3,8 @@ package com.tokopedia.inbox.view.navigator
 import androidx.fragment.app.Fragment
 import com.tokopedia.inbox.common.InboxFragmentType
 import com.tokopedia.notifcenter.presentation.fragment.NotificationFragment
-import com.tokopedia.topchat.chatlist.view.fragment.ChatListInboxFragment
 
 interface InboxFragmentFactory {
-    fun createChatListFragment(): Fragment
     fun createNotificationFragment(): Fragment
 }
 
@@ -15,14 +13,6 @@ class InboxFragmentFactoryImpl(
     private val page: Int,
     private val showBottomNav: Boolean
 ) : InboxFragmentFactory {
-
-    override fun createChatListFragment(): Fragment {
-        return if (eligibleToOpen(InboxFragmentType.CHAT)) {
-            ChatListInboxFragment.createFragment()
-        } else {
-            Fragment()
-        }
-    }
 
     override fun createNotificationFragment(): Fragment {
         return if (eligibleToOpen(InboxFragmentType.NOTIFICATION)) {

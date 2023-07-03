@@ -1103,8 +1103,8 @@ open class ChatListInboxFragment :
         private const val NO_INT_ARGUMENT = 0
 
         fun createFragment(
-            @RoleType role: Int? = null,
-            currentActiveChat: String? = null
+            @RoleType role: Int?,
+            currentActiveChat: String?
         ): ChatListInboxFragment {
             val fragment = ChatListInboxFragment()
             fragment.arguments = createBundle(role, currentActiveChat)
