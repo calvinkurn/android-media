@@ -86,7 +86,8 @@ object ChatbotConstant {
             DYNAMIC_STICKY_BUTTON_RECEIVE,
             DYNAMIC_TEXT_SEND,
             DYNAMIC_REJECT_REASON,
-            DYNAMIC_REJECT_REASON_SEND
+            DYNAMIC_REJECT_REASON_SEND,
+            DYNAMIC_INVOICE_OWOC
         )
     }
 

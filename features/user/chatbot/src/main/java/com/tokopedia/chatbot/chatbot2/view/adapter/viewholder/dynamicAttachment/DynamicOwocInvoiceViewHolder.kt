@@ -1,44 +1,66 @@
 package com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.dynamicAttachment
 
+import android.graphics.drawable.Drawable
 import android.view.View
 import androidx.annotation.LayoutRes
-import com.tokopedia.chat_common.util.ChatLinkHandlerMovementMethod
-import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandlerListener
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.BaseChatBotViewHolder
+import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.listener.ChatbotDynamicOwocListener
+import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.owocInvoice.ChatbotDynamicOwocInvoiceAdapter
 import com.tokopedia.chatbot.chatbot2.view.uimodel.dynamicattachment.DynamicOwocInvoiceUiModel
-import com.tokopedia.chatbot.chatbot2.view.util.ChatBackground
+import com.tokopedia.chatbot.chatbot2.view.util.generateLeftMessageBackground
 import com.tokopedia.chatbot.chatbot2.view.util.helper.ChatbotMessageViewHolderBinder
-import com.tokopedia.chatbot.databinding.ItemChatbotDynamicContentCode106Binding
 import com.tokopedia.chatbot.databinding.ItemChatbotDynamicOwocBinding
-import com.tokopedia.chatbot.databinding.ItemChatbotOwocInvoiceBinding
 import com.tokopedia.utils.view.binding.viewBinding
 
 class DynamicOwocInvoiceViewHolder(
     itemView: View,
-    private val chatLinkHandlerListener: ChatLinkHandlerListener
-): BaseChatBotViewHolder<DynamicOwocInvoiceUiModel>(itemView){
+    private val listener: ChatbotDynamicOwocListener
+) : BaseChatBotViewHolder<DynamicOwocInvoiceUiModel>(itemView) {
 
     private var binding: ItemChatbotDynamicOwocBinding? by viewBinding()
-    private val movementMethod = ChatLinkHandlerMovementMethod(chatLinkHandlerListener)
+
+//    private val movementMethod = ChatLinkHandlerMovementMethod(chatLinkHandlerListener)
+    private var invoiceAdapter: ChatbotDynamicOwocInvoiceAdapter? = null
 
     override fun bind(uiModel: DynamicOwocInvoiceUiModel) {
         super.bind(uiModel)
 
         verifyReplyTime(uiModel)
-        ChatbotMessageViewHolderBinder.bindChatMessage(
-            uiModel.message,
-            customChatLayout,
-            movementMethod
-        )
+        bindBackground()
+//        ChatbotMessageViewHolderBinder.bindChatMessage(
+//            uiModel.message,
+//            customChatLayout,
+//            movementMethod
+//        )
         ChatbotMessageViewHolderBinder.bindHour(uiModel.replyTime, customChatLayout)
-
         binding?.apply {
             customChatLayout.message?.text = uiModel.message
-
+            initializeAdapter(uiModel)
         }
+    }
 
+    private fun bindBackground(): Drawable? {
+        return generateLeftMessageBackground(
+            binding?.mainParent,
+            R.color.chatbot_dms_left_message_bg,
+            com.tokopedia.unifyprinciples.R.color.Unify_N700_20
+        )
+    }
 
+    private fun ItemChatbotDynamicOwocBinding.initializeAdapter(uiModel: DynamicOwocInvoiceUiModel) {
+        invoiceAdapter = ChatbotDynamicOwocInvoiceAdapter(listener)
+
+        rvInvoiceList.apply {
+            layoutManager = LinearLayoutManager(context)
+            //TODO change this one
+            if (uiModel.invoiceList != null) {
+                invoiceAdapter?.setList(uiModel.invoiceList!!)
+            }
+
+            adapter = invoiceAdapter
+        }
     }
 
     companion object {

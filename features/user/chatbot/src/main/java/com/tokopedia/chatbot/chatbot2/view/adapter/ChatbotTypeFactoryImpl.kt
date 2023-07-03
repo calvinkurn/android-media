@@ -40,6 +40,7 @@ import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.listener.ChatActio
 import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.listener.ChatOptionListListener
 import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.listener.ChatRatingListener
 import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.listener.ChatbotAdapterListener
+import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.listener.ChatbotDynamicOwocListener
 import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.listener.CsatOptionListListener
 import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.listener.DynamicStickyButtonListener
 import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.listener.StickyActionButtonClickListener
@@ -78,6 +79,7 @@ open class ChatbotTypeFactoryImpl(
     private val replyBubbleListener: ReplyBubbleAreaMessage.Listener,
     private val videoUploadListener: VideoUploadListener,
     private val dynamicStickyButtonListener: DynamicStickyButtonListener,
+    private val chatbotDynamicOwocInvoiceListener: ChatbotDynamicOwocListener,
     private val userSession: UserSessionInterface
 ) :
     BaseChatTypeFactoryImpl(
@@ -134,7 +136,7 @@ open class ChatbotTypeFactoryImpl(
             )
             DynamicOwocInvoiceViewHolder.LAYOUT -> DynamicOwocInvoiceViewHolder(
                 parent,
-                chatLinkHandlerListener
+                chatbotDynamicOwocInvoiceListener
             )
             else -> createViewHolder(parent, type)
         }
