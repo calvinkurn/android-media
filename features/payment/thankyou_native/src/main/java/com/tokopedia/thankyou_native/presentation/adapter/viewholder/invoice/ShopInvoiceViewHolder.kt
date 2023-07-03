@@ -50,7 +50,6 @@ class ShopInvoiceViewHolder(val view: View) : AbstractViewHolder<ShopInvoice>(vi
     private val tvInvoiceShopShippingAddressValue = view.tvInvoiceShopShippingAddressValue
     private val tvInvoiceShopShippingAddress = view.tvInvoiceShopShippingAddress
 
-    private val groupShipping = view.groupShipping
     private val divider = view.dividerShopShipping
 
     override fun bind(element: ShopInvoice?) {
@@ -68,7 +67,7 @@ class ShopInvoiceViewHolder(val view: View) : AbstractViewHolder<ShopInvoice>(vi
             addOrderLevelAddOn(addOnItemContainer, element)
 
             element.itemDiscountStr?.let {
-                tvInvoiceShopDiscountValue.text = getString(R.string.thankyou_discounted_rp, element.itemDiscountStr)
+                tvInvoiceShopDiscountValue.text = getString(R.string.thankyou_discounted, element.itemDiscountStr)
                 tvInvoiceShopDiscountValue.visible()
                 tvInvoiceShopDiscount.visible()
 
@@ -86,46 +85,45 @@ class ShopInvoiceViewHolder(val view: View) : AbstractViewHolder<ShopInvoice>(vi
                 tvInvoiceShopItemProtectionValue.gone()
             }
 
-            element.shippingPriceStr?.let {
+            if (element.shippingPriceStr != null && !element.shouldHideShopInvoice) {
                 tvInvoiceShopItemShippingValue.text = element.shippingPriceStr
                 tvInvoiceShopItemShippingValue.visible()
                 tvInvoiceShopItemShipping.visible()
-            } ?: run {
+            } else {
                 tvInvoiceShopItemShippingValue.gone()
                 tvInvoiceShopItemShipping.gone()
             }
 
-
-            element.shippingInfo?.let {
-                if(it.isNotEmpty()) {
+            if (element.shippingInfo != null && !element.shouldHideShopInvoice) {
+                if(element.shippingInfo.isNotEmpty()) {
                     tvInvoiceShopItemCourier.text = element.shippingInfo
                     tvInvoiceShopItemCourier.visible()
                 }else{
                     tvInvoiceShopItemCourier.gone()
                 }
-            } ?: run {
+            } else {
                 tvInvoiceShopItemCourier.gone()
             }
 
-            element.discountOnShippingStr?.let {
-                tvInvoiceShopItemShippingDiscountValue.text = getString(R.string.thankyou_discounted_rp, element.discountOnShippingStr)
+            if (element.discountOnShippingStr != null && !element.shouldHideShopInvoice) {
+                tvInvoiceShopItemShippingDiscountValue.text = getString(R.string.thankyou_discounted, element.discountOnShippingStr)
                 tvInvoiceShopItemShippingDiscountValue.visible()
                 tvInvoiceShopItemShippingDiscount.visible()
-            } ?: run {
+            } else {
                 tvInvoiceShopItemShippingDiscountValue.gone()
                 tvInvoiceShopItemShippingDiscount.gone()
             }
 
-
-            element.shippingInsurancePriceStr?.let {
+            if (element.shippingInsurancePriceStr != null && !element.shouldHideShopInvoice) {
                 tvInvoiceShopItemShippingInsuranceValue.text = element.shippingInsurancePriceStr
                 tvInvoiceShopItemShippingInsuranceValue.visible()
                 tvInvoiceShopItemShippingInsurance.visible()
-            } ?: run {
+            } else {
                 tvInvoiceShopItemShippingInsuranceValue.gone()
                 tvInvoiceShopItemShippingInsurance.gone()
             }
-            if(element.shippingAddress.isNullOrBlank()){
+
+            if(element.shippingAddress.isNullOrBlank() || element.shouldHideShopInvoice){
                 tvInvoiceShopShippingAddressValue.gone()
                 tvInvoiceShopShippingAddress.gone()
             }else{
@@ -134,7 +132,6 @@ class ShopInvoiceViewHolder(val view: View) : AbstractViewHolder<ShopInvoice>(vi
                 tvInvoiceShopShippingAddress.visible()
             }
 
-            if (it.shouldHideShopInvoice) groupShipping.gone() else groupShipping.show()
             if (it.shouldHideDivider) divider.gone() else divider.show()
         }
     }
