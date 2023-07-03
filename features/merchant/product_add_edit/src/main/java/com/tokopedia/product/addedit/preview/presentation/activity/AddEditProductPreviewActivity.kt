@@ -120,8 +120,8 @@ open class AddEditProductPreviewActivity: TabletAdaptiveActivity() {
     }
 
     private fun updateActivityToolbar() {
-        findViewById<HeaderUnify>(R.id.toolbar)?.let {
-            it.isShowBackButton = true
+        findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar)?.let {
+            setSupportActionBar(it)
         }
     }
 
