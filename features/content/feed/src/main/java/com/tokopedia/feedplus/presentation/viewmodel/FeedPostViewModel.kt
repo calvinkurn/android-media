@@ -106,7 +106,7 @@ class FeedPostViewModel @Inject constructor(
     fun fetchFeedPosts(
         source: String,
         isNewData: Boolean = false,
-        postId: String? = null
+        postSource: PostSourceModel? = null
     ) {
         _shouldShowNoMoreContent = false
         if (isNewData) _feedHome.value = null
@@ -118,10 +118,10 @@ class FeedPostViewModel @Inject constructor(
 
                 val relevantPostsDeferred = async {
                     try {
-                        requireNotNull(postId)
+                        requireNotNull(postSource)
                         require(isNewData)
 
-                        getRelevantPosts(postId)
+                        getRelevantPosts(postSource)
                     } catch (_: Throwable) {
                         FeedModel.Empty
                     }.items
@@ -517,9 +517,9 @@ class FeedPostViewModel @Inject constructor(
         }
     }
 
-    private suspend fun getRelevantPosts(postId: String): FeedModel {
+    private suspend fun getRelevantPosts(postSourceModel: PostSourceModel): FeedModel {
         return feedXHomeUseCase(
-            feedXHomeUseCase.createPostDetailParams(postId)
+            feedXHomeUseCase.createParamsWithId(postSourceModel.id, postSourceModel.source)
         )
     }
 
