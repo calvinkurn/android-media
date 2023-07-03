@@ -223,10 +223,11 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
             }
         })
 
-        tapcashBalanceViewModel.errorInquiry.observe(viewLifecycleOwner, Observer { throwable ->
+        tapcashBalanceViewModel.errorInquiry.observe(viewLifecycleOwner, Observer { pair ->
             context?.let {
-                val errorMessage = ErrorHandler.getErrorMessagePair(it, throwable, errorHanlderBuilder)
-                if((throwable is SocketTimeoutException)){
+                sendLogDebugErrorNetworkTapcash(pair.second)
+                val errorMessage = ErrorHandler.getErrorMessagePair(it, pair.first, errorHanlderBuilder)
+                if((pair.first is SocketTimeoutException)){
                     showError(it.resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_tapcash_error_title),
                             it.resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_timeout_socket_error_title_tapcash)+" "+errorMessage.second,
                             it.resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_socket_time_out),
@@ -234,7 +235,7 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
                             isGlobalErrorShow = false,
                             tapCashWriteFailed = true
                     )
-                } else if((throwable is UnknownHostException) || errorMessage.first.equals(it.resources.getString(com.tokopedia.network.R.string.default_request_error_unknown))){
+                } else if((pair.first is UnknownHostException) || errorMessage.first.equals(it.resources.getString(com.tokopedia.network.R.string.default_request_error_unknown))){
                     showError(it.resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_grpc_label_error),
                             it.resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_error_title)+" "+errorMessage.second,
                             "",
@@ -416,6 +417,15 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
         ServerLogger.log(Priority.P2, TAPCASH_TAG, map)
     }
 
+    private fun sendLogDebugErrorNetworkTapcash(param: RechargeEmoneyInquiryLogRequest) {
+        val map = HashMap<String, String>()
+        map.put(ISSUER_KEY, param.log.issueId.toString())
+        map.put(CARD_NUMBER_KEY, param.log.cardNumber)
+        map.put(RC_KEY, param.log.rc)
+        map.put(LOG_TYPE, TAPCASH_NETWORK_ERROR_LOGGER)
+        ServerLogger.log(Priority.P2, TAPCASH_TAG, map)
+    }
+
     private fun getPublicKey(): String {
         return if (TokopediaUrl.getInstance().TYPE == Env.STAGING) {
            getString(com.tokopedia.keys.R.string.emoney_public_stag)
@@ -439,6 +449,7 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
         private const val CARD_NUMBER_KEY = "card_number"
         private const val RC_KEY = "rc"
         private const val TAPCASH_ERROR_LOGGER = "TAPCASH_ERROR_LOGGER"
+        private const val TAPCASH_NETWORK_ERROR_LOGGER = "TAPCASH_NETWORK_ERROR_LOGGER"
 
         fun newInstance(): Fragment {
             return EmoneyCheckBalanceFragment()

@@ -32,6 +32,7 @@ import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.VariantChild
 import com.tokopedia.product.detail.common.getCurrencyFormatted
 import com.tokopedia.product.detail.common.mapper.AtcVariantMapper
+import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
 import com.tokopedia.product.detail.data.model.datamodel.ArButtonDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ContentWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
@@ -98,7 +99,7 @@ import com.tokopedia.universal_sharing.model.BoTypeImageGeneratorParam
 import com.tokopedia.universal_sharing.model.PdpParamModel
 import com.tokopedia.universal_sharing.model.PersonalizedCampaignModel
 import com.tokopedia.universal_sharing.tracker.PageType
-import com.tokopedia.universal_sharing.view.model.AffiliatePDPInput
+import com.tokopedia.universal_sharing.view.model.AffiliateInput
 import com.tokopedia.universal_sharing.view.model.Product
 import com.tokopedia.universal_sharing.view.model.Shop
 
@@ -678,21 +679,26 @@ object DynamicProductDetailMapper {
         )
     }
 
-    fun generatePersonalizedData(product: DynamicProductInfoP1, startTime: Long) = PersonalizedCampaignModel(
-        product.data.campaign.campaignTypeName,
-        product.data.price.priceFmt,
-        product.data.campaign.campaignIdentifier == CampaignRibbon.THEMATIC_CAMPAIGN,
-        product.data.campaign.percentageAmount,
-        startTime,
-        product.data.campaign.endDateUnix.toLongOrZero()
-    )
+    fun generatePersonalizedData(product: DynamicProductInfoP1, productP2: ProductInfoP2UiData?): PersonalizedCampaignModel {
+        val upcomingCampaign = productP2?.upcomingCampaigns?.get(product.basic.productID)
+        val startTime = upcomingCampaign?.startDate.toLongOrZero()
+        return PersonalizedCampaignModel(
+            product.data.campaign.campaignTypeName,
+            upcomingCampaign?.campaignTypeName ?: "",
+            product.data.price.priceFmt,
+            product.data.campaign.campaignIdentifier == CampaignRibbon.THEMATIC_CAMPAIGN,
+            product.data.campaign.percentageAmount,
+            startTime,
+            product.data.campaign.endDateUnix.toLongOrZero()
+        )
+    }
 
     fun generateAffiliateShareData(
         productInfo: DynamicProductInfoP1,
         shopInfo: ShopInfo?,
         variantData: ProductVariant?
-    ): AffiliatePDPInput {
-        return AffiliatePDPInput(
+    ): AffiliateInput {
+        return AffiliateInput(
             pageType = PageType.PDP.value,
             product = Product(
                 productID = productInfo.basic.productID,

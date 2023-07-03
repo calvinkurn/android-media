@@ -28,18 +28,18 @@ class FeedMVCAnalytics : DefaultMvcTrackerImpl() {
     ) {
         val eventLabel = trackerData?.let {
             "${it.activityId} - ${it.authorId} - ${getPrefix(it.tabType)} - ${
-                getPostType(
-                    it.typename,
-                    it.type,
-                    it.authorType,
-                    it.isFollowing
-                )
+            getPostType(
+                it.typename,
+                it.type,
+                it.authorType.value,
+                it.isFollowing
+            )
             } - ${
-                getContentType(
-                    it.typename,
-                    it.type,
-                    it.mediaType
-                )
+            getContentType(
+                it.typename,
+                it.type,
+                it.mediaType
+            )
             } - ${it.contentScore} - ${it.hasVoucher} - ${it.campaignStatus} - ${it.entryPoint}"
         } ?: ""
 

@@ -95,6 +95,9 @@ private const val ACE_SEARCH_PRODUCT_QUERY = """
           totalDataText
           responseCode
           keywordProcess
+          meta {
+            categoryId   
+          }
         }
         data {
           isQuerySafe

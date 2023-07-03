@@ -65,13 +65,17 @@ class DebugPickerActivity : AppCompatActivity(), DebugDrawerSelectionWidget.List
                                 if (contains(EditorToolType.ADD_LOGO)) {
                                     withAddLogo()
                                 }
+
+                                if (contains(EditorToolType.ADD_TEXT)) {
+                                    withAddText()
+                                }
                             }
 
                             when (fromEditorJson.autoCropRatio()) {
                                 ImageRatioType.RATIO_1_1 -> autoCrop1to1()
                                 ImageRatioType.RATIO_3_4 -> autoCrop3to4()
                                 ImageRatioType.RATIO_2_1 -> autoCrop2to1()
-                                else -> autoCrop1to1()
+                                else -> {}
                             }
                         }
                     }

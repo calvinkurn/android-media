@@ -240,6 +240,7 @@ object ApplinkConstInternalMarketplace {
 
     // ShopPenaltyActivity
     const val SHOP_PENALTY = "$INTERNAL_MARKETPLACE/shop-penalty"
+    const val SHOP_PENALTY_OLD = "$INTERNAL_MARKETPLACE/shop-penalty-old"
 
     // ShopPenaltyDetailPageActivity
     @JvmField
