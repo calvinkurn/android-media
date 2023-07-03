@@ -73,6 +73,15 @@ class GraphqlRepositoryStub @Inject constructor() : GraphqlRepository {
                     GqlResponseStub.notificationRecommendation.responseObject
                 )
             }
+            (
+                GqlQueryParser.parse(query).first() ==
+                    GqlResponseStub.notificationMarkAsSeen.query
+                ) -> {
+                shouldThrow(GqlResponseStub.notificationMarkAsSeen)
+                GqlMockUtil.createSuccessResponse(
+                    GqlResponseStub.notificationMarkAsSeen.responseObject
+                )
+            }
             else -> GqlMockUtil.createSuccessResponse(Unit)
         }
     }

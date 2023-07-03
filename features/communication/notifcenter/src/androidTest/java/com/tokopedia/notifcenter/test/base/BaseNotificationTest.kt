@@ -54,14 +54,9 @@ abstract class BaseNotificationTest {
     }
 
     protected fun launchActivity(
-        isSellerApp: Boolean = false,
         intentModifier: (Intent) -> Unit = {}
     ) {
-        if (isSellerApp) {
-            GlobalConfig.APPLICATION_TYPE = GlobalConfig.SELLER_APPLICATION
-        } else {
-            GlobalConfig.APPLICATION_TYPE = GlobalConfig.CONSUMER_APPLICATION
-        }
+        GlobalConfig.APPLICATION_TYPE = GlobalConfig.CONSUMER_APPLICATION
         val intent = RouteManager.getIntent(context, ApplinkConst.BUYER_INFO)
         intentModifier(intent)
         activityScenarioRule.launchActivity(intent)
@@ -77,5 +72,10 @@ abstract class BaseNotificationTest {
         GqlResponseStub.reset()
         topAdsRepository.isError = false
         topAdsRepository.response = topAdsRepository.defaultResponse
+    }
+
+    companion object {
+        const val THREE_DAYS = 240000L
+        const val THREE_HOURS = 10000L
     }
 }

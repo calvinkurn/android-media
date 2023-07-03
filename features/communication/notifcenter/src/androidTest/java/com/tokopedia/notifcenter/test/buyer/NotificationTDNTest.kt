@@ -5,8 +5,10 @@ import com.tokopedia.notifcenter.test.robot.filterRobot
 import com.tokopedia.notifcenter.test.robot.generalResult
 import com.tokopedia.notifcenter.test.robot.generalRobot
 import com.tokopedia.notifcenter.test.robot.topAdsResult
+import com.tokopedia.test.application.annotations.UiTest
 import org.junit.Test
 
+@UiTest
 class NotificationTDNTest : BaseNotificationTest() {
     @Test
     fun should_show_TDN_when_ad_exist() {

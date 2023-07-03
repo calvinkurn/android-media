@@ -6,7 +6,6 @@ import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.stub.common.smoothScrollTo
 
 object GeneralRobot {
-
     fun smoothScrollNotificationTo(position: Int) {
         onView(withId(R.id.recycler_view)).perform(
             smoothScrollTo(position)

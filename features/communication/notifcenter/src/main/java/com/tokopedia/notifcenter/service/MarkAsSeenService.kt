@@ -2,12 +2,11 @@ package com.tokopedia.notifcenter.service
 
 import android.content.Context
 import android.content.Intent
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.service.JobIntentServiceX
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.inboxcommon.RoleType
 import com.tokopedia.notifcenter.analytics.MarkAsSeenAnalytic
-import com.tokopedia.notifcenter.di.DaggerNotificationComponent
+import com.tokopedia.notifcenter.di.NotificationActivityComponentFactory
 import com.tokopedia.notifcenter.domain.NotificationMarkAsSeenUseCase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -31,9 +30,9 @@ class MarkAsSeenService : JobIntentServiceX() {
     }
 
     private fun initInjector() {
-        DaggerNotificationComponent.builder()
-            .baseAppComponent((application as BaseMainApplication).baseAppComponent)
-            .build()
+        NotificationActivityComponentFactory
+            .instance
+            .createNotificationComponent(application)
             .inject(this)
     }
 

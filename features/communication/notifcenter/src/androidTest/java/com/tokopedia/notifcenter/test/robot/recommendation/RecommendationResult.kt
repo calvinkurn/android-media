@@ -25,4 +25,10 @@ object RecommendationResult {
             not(hasViewHolderOf(RecommendationTitleViewHolder::class.java))
         )
     }
+
+    fun assertNotRecommendation() {
+        assertRecyclerviewItem(
+            not(hasViewHolderOf(RecommendationViewHolder::class.java))
+        )
+    }
 }

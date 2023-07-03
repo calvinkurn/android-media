@@ -8,12 +8,12 @@ import androidx.fragment.app.FragmentFactory
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.notifcenter.view.listener.NotificationFragmentContainer
 import com.tokopedia.inboxcommon.RoleType
 import com.tokopedia.kotlin.extensions.view.setStatusBarColor
 import com.tokopedia.notifcenter.di.NotificationActivityComponentFactory
 import com.tokopedia.notifcenter.di.NotificationComponent
 import com.tokopedia.notifcenter.view.NotificationFragment
+import com.tokopedia.notifcenter.view.listener.NotificationFragmentContainer
 import javax.inject.Inject
 
 /**
@@ -23,8 +23,7 @@ import javax.inject.Inject
 class NotificationSellerActivity :
     BaseSimpleActivity(),
     HasComponent<NotificationComponent>,
-    NotificationFragmentContainer
-{
+    NotificationFragmentContainer {
 
     @Inject
     lateinit var fragmentFactory: FragmentFactory
@@ -32,8 +31,8 @@ class NotificationSellerActivity :
     private var notificationComponent: NotificationComponent? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        setupFragmentFactory()
         setupInjector()
+        setupFragmentFactory()
         setThemeWhiteIfSellerApp()
         super.onCreate(savedInstanceState)
         setWhiteStatusBarIfSellerApp()
@@ -75,7 +74,8 @@ class NotificationSellerActivity :
 
     private fun setupBackground() {
         val whiteColor = ContextCompat.getColor(
-                this, com.tokopedia.unifyprinciples.R.color.Unify_Background
+            this,
+            com.tokopedia.unifyprinciples.R.color.Unify_Background
         )
         window.decorView.setBackgroundColor(whiteColor)
     }

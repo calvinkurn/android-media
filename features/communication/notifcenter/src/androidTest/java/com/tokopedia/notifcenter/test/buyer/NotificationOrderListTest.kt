@@ -40,18 +40,6 @@ class NotificationOrderListTest : BaseNotificationTest() {
         }
     }
 
-//    @Test
-//    fun should_hide_order_list_when_app_is_seller() {
-//        // Given
-//        launchActivity(isSellerApp = true)
-//
-//        // Then
-//        filterResult {
-//            assertNotNotificationOrderList()
-//        }
-//
-//    }
-
     @Test
     fun should_show_cached_version_order_list_when_cache_data_is_exist() {
         // Given

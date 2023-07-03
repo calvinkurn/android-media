@@ -4,9 +4,11 @@ import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import com.tokopedia.notifcenter.stub.data.response.GqlResponseStub
 import com.tokopedia.notifcenter.test.base.BaseNotificationTest
 import com.tokopedia.notifcenter.test.robot.detailResult
+import com.tokopedia.test.application.annotations.UiTest
 import org.hamcrest.CoreMatchers.not
 import org.junit.Test
 
+@UiTest
 class NotificationWidgetTest : BaseNotificationTest() {
     @Test
     fun should_render_widget_message() {
@@ -17,7 +19,6 @@ class NotificationWidgetTest : BaseNotificationTest() {
         val msg = GqlResponseStub.notificationDetailResponse.responseObject
             .notifcenterDetail.newList[0].widget.message
         launchActivity()
-        Thread.sleep(10000)
 
         // Then
         detailResult {
@@ -35,7 +36,6 @@ class NotificationWidgetTest : BaseNotificationTest() {
             it.notifcenterDetail.newList[0].widget.message = ""
         }
         launchActivity()
-        Thread.sleep(10000)
 
         // Then
         detailResult {
