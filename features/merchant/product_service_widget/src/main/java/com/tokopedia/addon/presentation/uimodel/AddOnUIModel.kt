@@ -10,12 +10,14 @@ data class AddOnUIModel(
     var price: Long = 0L,
     var isSelected: Boolean = false,
     var isPreselected: Boolean = false,
+    var isMandatory: Boolean= false,
     var addOnType: AddOnType = PRODUCT_PROTECTION_INSURANCE_TYPE,
     var eduLink: String = "",
     var uniqueId: String = ""
 ): Serializable {
     fun getSelectedStatus(): AddOnSelectedStatus {
         return when {
+            isMandatory -> AddOnSelectedStatus.MANDATORY
             isPreselected && !isSelected -> AddOnSelectedStatus.UNCHECKED
             !isPreselected && isSelected -> AddOnSelectedStatus.CHECKED
             else -> AddOnSelectedStatus.DEFAULT

@@ -41,6 +41,8 @@ class AddOnChildViewHolder(
             tfName.text = item.name
             tfPrice.text = item.priceFormatted
             cuAddon.isChecked = item.isSelected
+            cuAddon.isEnabled = !item.isMandatory
+            root.isEnabled = !item.isMandatory
         }
     }
 

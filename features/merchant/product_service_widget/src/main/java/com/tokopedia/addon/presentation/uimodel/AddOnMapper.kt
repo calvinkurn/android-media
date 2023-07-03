@@ -11,8 +11,6 @@ import com.tokopedia.purchase_platform.common.feature.addons.data.request.SaveAd
 
 object AddOnMapper {
 
-    private const val ATC_ADDON_STATUS_SELECTING = 1
-    private const val ATC_ADDON_STATUS_DESELECTING = 2
     private const val ATC_ADDON_DEFAULT_QTY = 1
     private const val ATC_ADDON_SERVICE_FEATURE_TYPE = 1
 
@@ -37,7 +35,8 @@ object AddOnMapper {
                     name = it.basic.name,
                     priceFormatted = it.inventory.price.getCurrencyFormatted(),
                     price = it.inventory.price.toLong(),
-                    isSelected = it.basic.rules.autoSelect,
+                    isSelected = it.basic.rules.autoSelect || it.basic.rules.mandatory,
+                    isMandatory = it.basic.rules.mandatory,
                     addOnType = it.basic.addOnType.convertToAddonEnum(),
                     eduLink = it.basic.metadata.infoURL.eduPageURL
                 )
@@ -61,7 +60,7 @@ object AddOnMapper {
         return addonGroupList.map {
             it.copy(
                 addon = it.addon.map { addon ->
-                    val isPreselected = addon.id in selectedAddonIds
+                    val isPreselected = addon.id in selectedAddonIds || addon.isMandatory
                     addon.copy(
                         isSelected = isPreselected,
                         isPreselected = isPreselected
