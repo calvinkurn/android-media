@@ -1,8 +1,6 @@
 <resources>
     <string name="inbox_title_notification">Notifikasi</string>
     <string name="inbox_title_chat">Chat</string>
-    <string name="inbox_title_discussion">Diskusi</string>
-    <string name="inbox_title_review">Ulasan</string>
     <string name="title_change_role">Akun sudah diganti ke %s.</string>
     <string name="inbox_title_onboarding_1">Ada yang baru di bawah sini</string>
     <string name="inbox_desc_onboarding_1">Bisa langsung pilih info mana yang mau kamu cek, dari notifikasi, chat, diskusi, hingga ulasan.</string>

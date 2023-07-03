@@ -22,10 +22,6 @@ class ChatFilterAdapter constructor(
     private var selectedFilter = defaultFilter
     private val handler = Handler()
 
-    fun reset() {
-        selectedFilter = defaultFilter
-    }
-
     fun showFilter(data: List<ChatFilterUiModel>) {
         visitables.clear()
         visitables.addAll(data)

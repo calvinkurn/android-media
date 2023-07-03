@@ -398,10 +398,6 @@ class ChatItemListViewModel @Inject constructor(
         return filter != PARAM_FILTER_ALL
     }
 
-    fun reset() {
-        filter = PARAM_FILTER_ALL
-    }
-
     private fun cancelAllUseCase() {
         coroutineContext.cancelChildren()
     }

@@ -32,7 +32,6 @@ import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
 import com.tokopedia.chat_common.util.EndlessRecyclerViewScrollUpListener
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.imageassets.TokopediaImageUrl
-import com.tokopedia.inboxcommon.InboxFragment
 import com.tokopedia.inboxcommon.InboxFragmentContainer
 import com.tokopedia.inboxcommon.RoleType
 import com.tokopedia.kotlin.extensions.view.EMPTY
@@ -101,7 +100,6 @@ open class ChatListInboxFragment :
     BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(),
     ChatListItemListener,
     LifecycleOwner,
-    InboxFragment,
     ChatListTickerListener {
 
     @Inject
@@ -154,24 +152,6 @@ open class ChatListInboxFragment :
         if (context is InboxFragmentContainer) {
             containerListener = context
         }
-    }
-
-    override fun onRoleChanged(role: Int) {
-        if (!::viewModelFactory.isInitialized) return
-        if (assignRole(role)) {
-            viewModel.reset()
-            chatFilter?.reset()
-            chatFilter?.onRoleChanged(isTabSeller())
-            webSocket.onRoleChanged(role)
-            if (isResumed) {
-                loadInitialData()
-                setupSellerBroadcast()
-            }
-        }
-    }
-
-    override fun onPageClickedAgain() {
-        rv?.scrollToPosition(0)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -1123,8 +1103,8 @@ open class ChatListInboxFragment :
         private const val NO_INT_ARGUMENT = 0
 
         fun createFragment(
-            @RoleType role: Int? = null,
-            currentActiveChat: String? = null
+            @RoleType role: Int?,
+            currentActiveChat: String?
         ): ChatListInboxFragment {
             val fragment = ChatListInboxFragment()
             fragment.arguments = createBundle(role, currentActiveChat)
