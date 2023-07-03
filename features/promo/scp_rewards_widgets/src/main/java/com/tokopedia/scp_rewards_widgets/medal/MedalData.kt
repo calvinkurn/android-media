@@ -12,6 +12,9 @@ data class MedalData(
     val bannerData: BannerData? = null,
     val cta: Cta? = null
 ) : Visitable<MedalViewTypeFactory> {
+
+    fun isEarned() = medalType == EARNED_BADGE
+
     override fun type(typeFactory: MedalViewTypeFactory): Int = typeFactory.type(this)
 }
 

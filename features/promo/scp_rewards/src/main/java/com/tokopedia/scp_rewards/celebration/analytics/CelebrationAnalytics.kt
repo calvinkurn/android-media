@@ -97,7 +97,7 @@ object CelebrationAnalytics {
         val map = mutableMapOf<String, Any>(
             EVENT to VIEW_EVENT,
             EVENT_ACTION to TrackerConstants.General.VIEW_PAGE_EVENT,
-            EVENT_CATEGORY to TrackerConstants.Category.MEDAL_CELEBRATION_NON_WHITELISTED,
+            EVENT_CATEGORY to TrackerConstants.EventCategory.MEDAL_CELEBRATION_NON_WHITELISTED,
             EVENT_LABEL to "",
             TRACKER_ID to TrackerConstants.Tracker.MEDAL_CELEBRATION_VIEW_PAGE_NON_WHITELISTED,
             BUSINESS_UNIT to TrackerConstants.Business.BUSINESS_UNIT,
@@ -110,7 +110,7 @@ object CelebrationAnalytics {
         val map = mutableMapOf<String, Any>(
             EVENT to VIEW_EVENT,
             EVENT_ACTION to TrackerConstants.General.CTA_CLICK,
-            EVENT_CATEGORY to TrackerConstants.Category.MEDAL_CELEBRATION_NON_WHITELISTED,
+            EVENT_CATEGORY to TrackerConstants.EventCategory.MEDAL_CELEBRATION_NON_WHITELISTED,
             EVENT_LABEL to "",
             TRACKER_ID to TrackerConstants.Tracker.MEDAL_CELEBRATION_NON_WHITELISTED_CTA_CLICK,
             BUSINESS_UNIT to TrackerConstants.Business.BUSINESS_UNIT,
@@ -123,7 +123,7 @@ object CelebrationAnalytics {
         val map = mutableMapOf<String, Any>(
             EVENT to VIEW_EVENT,
             EVENT_ACTION to TrackerConstants.General.BACK_BUTTON_CLICK,
-            EVENT_CATEGORY to TrackerConstants.Category.MEDAL_CELEBRATION_NON_WHITELISTED,
+            EVENT_CATEGORY to TrackerConstants.EventCategory.MEDAL_CELEBRATION_NON_WHITELISTED,
             EVENT_LABEL to "",
             TRACKER_ID to TrackerConstants.Tracker.MEDAL_CELEBRATION_NON_WHITELISTED_BACK_CLICK,
             BUSINESS_UNIT to TrackerConstants.Business.BUSINESS_UNIT,

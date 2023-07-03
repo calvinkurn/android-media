@@ -22,6 +22,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.scp_rewards.R
+import com.tokopedia.scp_rewards.cabinet.analytics.MedalCabinetAnalyticsImpl
 import com.tokopedia.scp_rewards.cabinet.di.MedalCabinetComponent
 import com.tokopedia.scp_rewards.cabinet.domain.model.MedaliCabinetData
 import com.tokopedia.scp_rewards.cabinet.presentation.viewmodel.MedalCabinetViewModel
@@ -32,7 +33,7 @@ import com.tokopedia.scp_rewards.common.data.Success
 import com.tokopedia.scp_rewards.common.utils.launchLink
 import com.tokopedia.scp_rewards.databinding.FragmentMedalCabinetLayoutBinding
 import com.tokopedia.scp_rewards_widgets.cabinetHeader.CabinetHeader
-import com.tokopedia.scp_rewards_widgets.medal.MedalClickListener
+import com.tokopedia.scp_rewards_widgets.medal.MedalCallbackListener
 import com.tokopedia.scp_rewards_widgets.medal.MedalData
 import com.tokopedia.scp_rewards_widgets.medal.MedalItem
 import java.net.SocketTimeoutException
@@ -94,6 +95,7 @@ class MedalCabinetFragment : BaseDaggerFragment() {
             when (it) {
                 is Success<*> -> {
                     showData(it.data as MedaliCabinetData)
+                    MedalCabinetAnalyticsImpl.sendViewMedalCabinetPageEvent()
                 }
 
                 is Loading -> {
@@ -119,8 +121,24 @@ class MedalCabinetFragment : BaseDaggerFragment() {
                     medalCabinetData.progressMedaliData ?: MedalData()
                 )
             )
-            binding.viewCabinet.attachMedalClickListener(object : MedalClickListener {
+            binding.viewCabinet.attachMedalClickListener(object : MedalCallbackListener {
                 override fun onMedalClick(medalItem: MedalItem) {
+                    if (medalItem.isEarned()) {
+                        MedalCabinetAnalyticsImpl.sendClickUnlockedMedalEvent(
+                            medalItem.id.toString(),
+                            medalItem.isDisabled ?: false,
+                            medalItem.name.orEmpty(),
+                            medalItem.extraInfo.orEmpty()
+                        )
+                    } else {
+                        MedalCabinetAnalyticsImpl.sendClickLockedMedalEvent(
+                            medalItem.id.toString(),
+                            medalItem.isDisabled ?: false,
+                            medalItem.name.orEmpty(),
+                            medalItem.extraInfo.orEmpty(),
+                            medalItem.progression.toString()
+                        )
+                    }
                     requireContext().launchLink(
                         appLink = medalItem.cta?.appLink,
                         webLink = medalItem.cta?.deepLink
@@ -128,10 +146,54 @@ class MedalCabinetFragment : BaseDaggerFragment() {
                 }
 
                 override fun onSeeMoreClick(medalData: MedalData) {
+                    if (medalData.isEarned()) {
+                        medalData.medalList?.firstOrNull()?.let { medalItem ->
+                            MedalCabinetAnalyticsImpl.sendViewUnlockedMedalSectionCtaEvent(medalItem.cta?.text.orEmpty())
+                        }
+                    } else {
+                        medalData.medalList?.firstOrNull()?.let { medalItem ->
+                            MedalCabinetAnalyticsImpl.sendViewLockedMedalSectionCtaEvent(medalItem.cta?.text.orEmpty())
+                        }
+                    }
                     requireContext().launchLink(
                         appLink = medalData.cta?.appLink,
                         webLink = medalData.cta?.deepLink
                     )
+                }
+
+                override fun onMedalLoad(medalItem: MedalItem) {
+                    if (medalItem.isEarned()) {
+                        MedalCabinetAnalyticsImpl.sendViewUnlockedMedalEvent(
+                            medalItem.id.toString(),
+                            medalItem.isDisabled ?: false,
+                            medalItem.name.orEmpty(),
+                            medalItem.extraInfo.orEmpty()
+                        )
+                    } else {
+                        MedalCabinetAnalyticsImpl.sendViewLockedMedalEvent(
+                            medalItem.id.toString(),
+                            medalItem.isDisabled ?: false,
+                            medalItem.name.orEmpty(),
+                            medalItem.extraInfo.orEmpty(),
+                            medalItem.progression.toString()
+                        )
+                    }
+                }
+
+                override fun onMedalFailed(medalItem: MedalItem) {
+                    MedalCabinetAnalyticsImpl.sendViewUnlockedMedalGenericEvent(medalItem.id.toString())
+                }
+
+                override fun onSeeMoreLoad(medalData: MedalData) {
+                    if (medalData.isEarned()) {
+                        medalData.medalList?.firstOrNull()?.let { medalItem ->
+                            MedalCabinetAnalyticsImpl.sendViewUnlockedMedalSectionCtaEvent(medalItem.cta?.text.orEmpty())
+                        }
+                    } else {
+                        medalData.medalList?.firstOrNull()?.let { medalItem ->
+                            MedalCabinetAnalyticsImpl.sendViewLockedMedalSectionCtaEvent(medalItem.cta?.text.orEmpty())
+                        }
+                    }
                 }
             })
         }
@@ -214,6 +276,7 @@ class MedalCabinetFragment : BaseDaggerFragment() {
             error is UnknownHostException || error is SocketTimeoutException -> {
                 binding.loadContainer.medalCabinetError.setType(GlobalError.NO_CONNECTION)
             }
+
             scpError.errorCode == NON_WHITELISTED_USER_ERROR_CODE -> {
                 binding.loadContainer.medalCabinetError.apply {
                     setType(GlobalError.PAGE_NOT_FOUND)
@@ -229,6 +292,7 @@ class MedalCabinetFragment : BaseDaggerFragment() {
                 }
 //                MedalCabinetAnalyticsImpl.sendImpressionNonWhitelistedError()
             }
+
             else -> {
                 binding.loadContainer.medalCabinetError.apply {
                     setType(GlobalError.SERVER_ERROR)
@@ -239,6 +303,11 @@ class MedalCabinetFragment : BaseDaggerFragment() {
                 }
             }
         }
+    }
+
+    override fun onFragmentBackPressed(): Boolean {
+        MedalCabinetAnalyticsImpl.sendClickBackMedalCabinetPageEvent()
+        return super.onFragmentBackPressed()
     }
 
     override fun getScreenName() = ""

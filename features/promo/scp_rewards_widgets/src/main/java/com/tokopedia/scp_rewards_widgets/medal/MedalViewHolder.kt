@@ -13,7 +13,7 @@ import com.tokopedia.scp_rewards_widgets.databinding.ItemMedalLayoutBinding
 
 class MedalViewHolder(
     itemView: View,
-    private val medalClickListener: MedalClickListener? = null
+    private val listener: MedalCallbackListener? = null
 ) : AbstractViewHolder<MedalItem>(itemView) {
 
     companion object {
@@ -47,12 +47,15 @@ class MedalViewHolder(
         tvMedalSubTitle.showTextOrHide(item.provider)
         tvMedalTitle.text = item.name
         tvMedalCaption.text = item.extraInfo
+        listener?.onMedalLoad(item)
         if (item.isDisabled == true) {
             ivMedal.grayscale()
-            ivMedal.loadImageOrFallback(item.imageUrl, R.drawable.ic_empty_medal)
+            ivMedal.loadImageOrFallback(item.imageUrl, R.drawable.ic_empty_medal) {
+                listener?.onMedalFailed(item)
+            }
         } else {
-            medalClickListener?.let {
-                this.root.setOnClickListener { medalClickListener.onMedalClick(item) }
+            listener?.let {
+                this.root.setOnClickListener { listener.onMedalClick(item) }
             }
             ivMedal.loadImageOrFallback(item.imageUrl, R.drawable.ic_empty_medal)
         }

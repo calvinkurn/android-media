@@ -15,7 +15,7 @@ import com.tokopedia.scp_rewards_widgets.databinding.ItemMedalSectionBinding
 
 class MedalSectionViewHolder(
     itemView: View,
-    private val medalClickListener: MedalClickListener?
+    private val listener: MedalCallbackListener?
 ) : AbstractViewHolder<MedalData>(itemView) {
 
     companion object {
@@ -27,7 +27,7 @@ class MedalSectionViewHolder(
     private var binding: ItemMedalSectionBinding = ItemMedalSectionBinding.bind(itemView)
 
     private val medalsAdapter: BaseAdapter<MedalViewTypeFactory> by lazy {
-        BaseAdapter(MedalViewTypeFactory(medalClickListener))
+        BaseAdapter(MedalViewTypeFactory(listener))
     }
 
     init {
@@ -47,8 +47,9 @@ class MedalSectionViewHolder(
         if (item.cta?.isShown == true) {
             binding.btnSeeMore.text = item.cta.text
             binding.btnSeeMore.visible()
-            medalClickListener?.let {
-                binding.btnSeeMore.setOnClickListener { medalClickListener.onSeeMoreClick(item) }
+            listener?.let {
+                listener.onSeeMoreLoad(item)
+                binding.btnSeeMore.setOnClickListener { listener.onSeeMoreClick(item) }
             }
         } else {
             binding.btnSeeMore.gone()

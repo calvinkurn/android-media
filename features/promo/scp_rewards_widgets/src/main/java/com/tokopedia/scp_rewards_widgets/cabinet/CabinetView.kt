@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.scp_rewards_widgets.cabinetHeader.CabinetHeader
 import com.tokopedia.scp_rewards_widgets.cabinetHeader.CabinetHeaderViewTypeFactory
-import com.tokopedia.scp_rewards_widgets.medal.MedalClickListener
+import com.tokopedia.scp_rewards_widgets.medal.MedalCallbackListener
 import com.tokopedia.scp_rewards_widgets.medal.MedalData
 import com.tokopedia.scp_rewards_widgets.medal.MedalError
 import com.tokopedia.scp_rewards_widgets.medal.MedalItem
@@ -17,9 +17,9 @@ import com.tokopedia.scp_rewards_widgets.medal.MedalViewTypeFactory
 class CabinetView(
     context: Context,
     attrs: AttributeSet?
-) : RecyclerView(context, attrs), MedalClickListener {
+) : RecyclerView(context, attrs), MedalCallbackListener {
 
-    private lateinit var listener: MedalClickListener
+    private lateinit var listener: MedalCallbackListener
 
     private val cabinetMedalSectionAdapter: BaseAdapter<MedalViewTypeFactory> by lazy {
         BaseAdapter(MedalViewTypeFactory(this))
@@ -39,7 +39,7 @@ class CabinetView(
         bindMedalList(medalList)
     }
 
-    fun attachMedalClickListener(listener: MedalClickListener) {
+    fun attachMedalClickListener(listener: MedalCallbackListener) {
         this.listener = listener
     }
 
@@ -60,6 +60,24 @@ class CabinetView(
     override fun onSeeMoreClick(medalData: MedalData) {
         if (::listener.isInitialized) {
             listener.onSeeMoreClick(medalData)
+        }
+    }
+
+    override fun onMedalLoad(medalItem: MedalItem) {
+        if (::listener.isInitialized) {
+            listener.onMedalLoad(medalItem)
+        }
+    }
+
+    override fun onMedalFailed(medalItem: MedalItem) {
+        if (::listener.isInitialized) {
+            listener.onMedalFailed(medalItem)
+        }
+    }
+
+    override fun onSeeMoreLoad(medalData: MedalData) {
+        if (::listener.isInitialized) {
+            listener.onSeeMoreLoad(medalData)
         }
     }
 }

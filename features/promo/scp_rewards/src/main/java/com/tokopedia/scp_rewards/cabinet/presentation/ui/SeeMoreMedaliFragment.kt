@@ -16,6 +16,7 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.scp_rewards.R
+import com.tokopedia.scp_rewards.cabinet.analytics.MedalCabinetAnalyticsImpl
 import com.tokopedia.scp_rewards.cabinet.di.MedalCabinetComponent
 import com.tokopedia.scp_rewards.cabinet.domain.model.ScpRewardsGetUserMedalisResponse
 import com.tokopedia.scp_rewards.cabinet.mappers.MedaliListMapper
@@ -29,13 +30,16 @@ import com.tokopedia.scp_rewards_common.EARNED_BADGE
 import com.tokopedia.scp_rewards_widgets.common.GridSpacing
 import com.tokopedia.scp_rewards_widgets.common.model.LoadingModel
 import com.tokopedia.scp_rewards_widgets.common.model.LoadingMoreModel
+import com.tokopedia.scp_rewards_widgets.medal.MedalCallbackListener
+import com.tokopedia.scp_rewards_widgets.medal.MedalData
+import com.tokopedia.scp_rewards_widgets.medal.MedalItem
 import com.tokopedia.scp_rewards_widgets.medal.MedalViewHolder
 import com.tokopedia.scp_rewards_widgets.medal.SeeMoreMedalTypeFactory
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 
-class SeeMoreMedaliFragment : BaseDaggerFragment() {
+class SeeMoreMedaliFragment : BaseDaggerFragment(), MedalCallbackListener {
 
     companion object {
         private const val FULL_COLUMN = 1
@@ -48,7 +52,7 @@ class SeeMoreMedaliFragment : BaseDaggerFragment() {
     private var binding: SeeMoreMedaliFragmentBinding? = null
 
     private val medalAdapter: SeeMoreMedalAdapter by lazy {
-        SeeMoreMedalAdapter(SeeMoreMedalTypeFactory())
+        SeeMoreMedalAdapter(SeeMoreMedalTypeFactory(this))
     }
 
     private var badgeType = ""
@@ -89,6 +93,11 @@ class SeeMoreMedaliFragment : BaseDaggerFragment() {
         binding?.header?.apply {
             title = getHeaderTitle()
             setNavigationOnClickListener {
+                if (badgeType == EARNED_BADGE) {
+                    MedalCabinetAnalyticsImpl.sendClickBackSeeMoreUnlockedMedalEvent()
+                } else {
+                    MedalCabinetAnalyticsImpl.sendClickBackSeeMoreLockedMedalEvent()
+                }
                 activity?.onBackPressed()
             }
         }
@@ -96,8 +105,10 @@ class SeeMoreMedaliFragment : BaseDaggerFragment() {
 
     private fun getHeaderTitle(): String {
         return if (badgeType == EARNED_BADGE) {
+            MedalCabinetAnalyticsImpl.sendViewSeeMoreUnlockedMedalPageEvent()
             context?.getString(R.string.earned_medali_title) ?: ""
         } else {
+            MedalCabinetAnalyticsImpl.sendViewSeeMoreLockedMedalPageEvent()
             context?.getString(R.string.progress_medali_title) ?: ""
         }
     }
@@ -238,4 +249,53 @@ class SeeMoreMedaliFragment : BaseDaggerFragment() {
     }
 
     override fun getScreenName() = ""
+    override fun onMedalClick(medalItem: MedalItem) {
+        if (medalItem.isEarned()) {
+            MedalCabinetAnalyticsImpl.sendClickSeeMoreUnlockedMedalEvent(
+                medalItem.id.toString(),
+                medalItem.isDisabled ?: false,
+                medalItem.name.orEmpty(),
+                medalItem.extraInfo.orEmpty()
+            )
+        } else {
+            MedalCabinetAnalyticsImpl.sendClickSeeMoreLockedMedalEvent(
+                medalItem.id.toString(),
+                medalItem.isDisabled ?: false,
+                medalItem.name.orEmpty(),
+                medalItem.extraInfo.orEmpty(),
+                medalItem.progression.toString()
+            )
+        }
+    }
+
+    override fun onSeeMoreClick(medalData: MedalData) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onMedalLoad(medalItem: MedalItem) {
+        if (medalItem.isEarned()) {
+            MedalCabinetAnalyticsImpl.sendViewSeeMoreUnlockedMedalEvent(
+                medalItem.id.toString(),
+                medalItem.isDisabled ?: false,
+                medalItem.name.orEmpty(),
+                medalItem.extraInfo.orEmpty()
+            )
+        } else {
+            MedalCabinetAnalyticsImpl.sendViewSeeMoreLockedMedalEvent(
+                medalItem.id.toString(),
+                medalItem.isDisabled ?: false,
+                medalItem.name.orEmpty(),
+                medalItem.extraInfo.orEmpty(),
+                medalItem.progression.toString()
+            )
+        }
+    }
+
+    override fun onMedalFailed(medalItem: MedalItem) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onSeeMoreLoad(medalData: MedalData) {
+        TODO("Not yet implemented")
+    }
 }

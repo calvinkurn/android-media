@@ -64,11 +64,12 @@ fun Typography.showTextOrHide(text: String?) {
     }
 }
 
-fun ImageUnify.loadImageOrFallback(imageUrl: String?, fallback: Int = 0) {
+fun ImageUnify.loadImageOrFallback(imageUrl: String?, fallback: Int = 0, onFallback: () -> Unit = {}) {
     imageUrl?.let { safeUrl ->
         this.setImageUrl(safeUrl)
         this.onUrlLoaded = { isSuccess ->
             if (isSuccess.not() && fallback != 0) {
+                onFallback()
                 this.post {
                     this.setImageDrawable(
                         ContextCompat.getDrawable(this.context, fallback)
@@ -77,6 +78,7 @@ fun ImageUnify.loadImageOrFallback(imageUrl: String?, fallback: Int = 0) {
             }
         }
     } ?: run {
+        onFallback()
         if (fallback != 0) {
             this.setImageDrawable(ContextCompat.getDrawable(this.context, fallback))
         }
