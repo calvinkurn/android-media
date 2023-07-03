@@ -1,6 +1,7 @@
 package com.tokopedia.oneclickcheckout.order.data.get
 
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.purchase_platform.common.feature.addonsproduct.data.response.SummaryAddOnProductResponse
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.response.ImageUploadResponse
 import com.tokopedia.purchase_platform.common.feature.gifting.data.response.AddOnGiftingWording
 import com.tokopedia.purchase_platform.common.feature.gifting.data.response.PopUp
@@ -49,7 +50,9 @@ class GetOccCartData(
     @SerializedName("pop_up")
     val popUp: PopUp = PopUp(),
     @SerializedName("add_on_wording")
-    val addOnWording: AddOnGiftingWording = AddOnGiftingWording()
+    val addOnWording: AddOnGiftingWording = AddOnGiftingWording(),
+    @SerializedName("summary_add_ons")
+    val summaryAddOns: List<SummaryAddOnProductResponse> = listOf()
 )
 
 class CustomerData(

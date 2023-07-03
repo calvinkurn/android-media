@@ -5,6 +5,7 @@ import com.tokopedia.promocheckout.common.view.uimodel.VoucherLogisticItemUiMode
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingDataModel
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingWordingModel
 import kotlinx.parcelize.Parcelize
+import java.util.HashMap
 
 @Parcelize
 data class ShipmentCartItemModel(
@@ -141,7 +142,10 @@ data class ShipmentCartItemModel(
     val groupInfoName: String = "",
     val groupInfoBadgeUrl: String = "",
     val groupInfoDescription: String = "",
-    val groupInfoDescriptionBadgeUrl: String = ""
+    val groupInfoDescriptionBadgeUrl: String = "",
+
+    // add ons subtotal
+    var subtotalAddOnMap: HashMap<Int, String> = hashMapOf()
 ) : Parcelable, ShipmentCartItem {
 
     val isCustomPinpointError: Boolean

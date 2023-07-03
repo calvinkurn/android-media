@@ -129,6 +129,7 @@ class ShipmentAdapter @Inject constructor(
     private var isShowOnboarding = false
     var lastChooseCourierItemPosition = 0
     var lastServiceId = 0
+    var indexSubtotal = 0
 
     fun setShowOnboarding(showOnboarding: Boolean) {
         isShowOnboarding = showOnboarding
@@ -1040,6 +1041,16 @@ class ShipmentAdapter @Inject constructor(
             return 0
         }
 
+    val shipmentSubtotalPosition: Int
+        get() {
+            for (i in shipmentDataList.indices) {
+                if (shipmentDataList[i] is ShipmentCostModel) {
+                    return i
+                }
+            }
+            return 0
+        }
+
     fun getAddOnOrderLevelPosition(cartString: String): Int {
         for (i in shipmentDataList.indices) {
             if (shipmentDataList[i] is ShipmentCartItemModel) {
@@ -1333,6 +1344,7 @@ class ShipmentAdapter @Inject constructor(
         position: Int,
         shipmentCartItemModel: ShipmentCartItemModel
     ) {
+        indexSubtotal = position
         shipmentDataList[position] = shipmentCartItemModel
         notifyItemChanged(position)
     }
@@ -1365,5 +1377,9 @@ class ShipmentAdapter @Inject constructor(
     fun updateItem(item: Any, position: Int) {
         shipmentDataList[position] = item
         notifyItemChanged(position)
+    }
+
+    fun updateSubtotal() {
+        notifyItemChanged(indexSubtotal)
     }
 }

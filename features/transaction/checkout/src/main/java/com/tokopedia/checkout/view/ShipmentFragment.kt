@@ -158,6 +158,8 @@ import com.tokopedia.purchase_platform.common.constant.ARGS_PROMO_REQUEST
 import com.tokopedia.purchase_platform.common.constant.ARGS_VALIDATE_USE_DATA_RESULT
 import com.tokopedia.purchase_platform.common.constant.ARGS_VALIDATE_USE_REQUEST
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant
+import com.tokopedia.purchase_platform.common.constant.AddOnConstant.ADD_ON_PRODUCT_STATUS_CHECK
+import com.tokopedia.purchase_platform.common.constant.AddOnConstant.ADD_ON_PRODUCT_STATUS_UNCHECK
 import com.tokopedia.purchase_platform.common.constant.CartConstant
 import com.tokopedia.purchase_platform.common.constant.CartConstant.SCREEN_NAME_CART_NEW_USER
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
@@ -3869,12 +3871,13 @@ class ShipmentFragment :
 
     override fun onCheckboxAddonProductListener(isChecked: Boolean, addOnProductDataItemModel: AddOnProductDataItemModel, cartItemModel: CartItemModel, bindingAdapterPosition: Int) {
         if (isChecked) {
-            addOnProductDataItemModel.addOnDataStatus = 1
+            addOnProductDataItemModel.addOnDataStatus = ADD_ON_PRODUCT_STATUS_CHECK
         } else {
-            addOnProductDataItemModel.addOnDataStatus = 2
+            addOnProductDataItemModel.addOnDataStatus = ADD_ON_PRODUCT_STATUS_UNCHECK
         }
         shipmentViewModel.saveAddOnsProduct(cartItemModel)
         shipmentAdapter.checkHasSelectAllCourier(true, -1, "", false, false)
+        shipmentAdapter.updateSubtotal()
     }
 
     override fun onClickAddonProductInfoIcon(addOnDataInfoLink: String) {

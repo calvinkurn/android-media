@@ -526,10 +526,10 @@ class ShipmentViewModel @Inject constructor(
         shipmentCost.bookingFee = totalBookingFee
 
         for (entry in countMapSummaries) {
-            val addOnWording = summariesAddOnUiModel[entry.key]!!.replace(CartConstant.QTY_ADDON_REPLACE, entry.value.second.toString())
+            val addOnWording = summariesAddOnUiModel[entry.key]?.replace(CartConstant.QTY_ADDON_REPLACE, entry.value.second.toString())
             val addOnPrice = CurrencyFormatUtil.convertPriceValueToIdrFormat(entry.value.first, false).removeDecimalSuffix()
             val summaryAddOn = ShipmentAddOnSummaryModel(
-                wording = addOnWording,
+                wording = addOnWording ?: "",
                 type = entry.key,
                 qty = entry.value.second,
                 priceLabel = addOnPrice,
@@ -5011,6 +5011,7 @@ class ShipmentViewModel @Inject constructor(
             val addOnDataItemModel = AddOnGiftingDataItemModel()
             val addOnNote = addOnData.addOnMetadata.addOnNote
             addOnDataItemModel.addOnId = addOnData.addOnId
+            addOnDataItemModel.addOnUniqueId = addOnData.addOnUniqueId
             addOnDataItemModel.addOnPrice = addOnData.addOnPrice
             addOnDataItemModel.addOnQty = addOnData.addOnQty.toLong()
             addOnDataItemModel.addOnMetadata = AddOnGiftingMetadataItemModel(
@@ -5594,12 +5595,6 @@ class ShipmentViewModel @Inject constructor(
 
     fun setPlatformFeeData(paymentFee: ShipmentPaymentFeeModel) {
         shipmentCostModel.value = shipmentCostModel.value.copy(dynamicPlatformFee = paymentFee)
-    }
-
-    fun setSummaryAddOnProduct(listSummaryAddOnModel: List<ShipmentAddOnSummaryModel>) {
-        shipmentCostModel.value = shipmentCostModel.value.copy(
-            listAddOnSummary = listSummaryAddOnModel
-        )
     }
 
     private fun mapRequestSaveAddonProductService(cartShipmentAddressFormData: CartShipmentAddressFormData) {

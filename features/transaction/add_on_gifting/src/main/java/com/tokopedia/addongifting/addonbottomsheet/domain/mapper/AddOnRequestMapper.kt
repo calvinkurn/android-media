@@ -88,6 +88,7 @@ object AddOnRequestMapper {
                             AddOnDataRequest().apply {
                                 addOnId = addOnUiModel.addOnId.toLongOrZero()
                                 addOnQty = addOnUiModel.addOnQty
+                                addOnUniqueId = addOnUiModel.addOnUniqueId
                                 addOnMetadata = AddOnMetadataRequest().apply {
                                     addOnNote = AddOnNoteRequest().apply {
                                         isCustomNote = addOnUiModel.isCustomNote

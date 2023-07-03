@@ -10,24 +10,31 @@ import android.widget.CompoundButton
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.checkout.R
 import com.tokopedia.checkout.analytics.CheckoutScheduleDeliveryAnalytics
 import com.tokopedia.checkout.databinding.ItemShipmentGroupFooterBinding
 import com.tokopedia.checkout.domain.mapper.ShipmentMapper
 import com.tokopedia.checkout.view.ShipmentAdapterActionListener
+import com.tokopedia.checkout.view.adapter.ShipmentAddOnSubtotalAdapter
 import com.tokopedia.checkout.view.converter.RatesDataConverter
+import com.tokopedia.checkout.view.uimodel.ShipmentAddOnSubtotalModel
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.setTextAndContentDescription
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticCommon.data.constant.InsuranceConstant
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticcart.shipping.features.shippingwidget.ShippingWidget
+import com.tokopedia.logisticcart.shipping.model.CartItemModel
 import com.tokopedia.logisticcart.shipping.model.CourierItemData
 import com.tokopedia.logisticcart.shipping.model.ScheduleDeliveryUiModel
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData
+import com.tokopedia.purchase_platform.common.constant.CartConstant
 import com.tokopedia.purchase_platform.common.feature.bottomsheet.GeneralBottomSheet
 import com.tokopedia.purchase_platform.common.feature.bottomsheet.InsuranceBottomSheet
 import com.tokopedia.purchase_platform.common.feature.gifting.view.ButtonGiftingAddOnView
@@ -41,6 +48,7 @@ import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import rx.subjects.PublishSubject
 import rx.subscriptions.CompositeSubscription
+import java.util.HashMap
 import java.util.concurrent.TimeUnit
 import java.util.regex.Pattern
 
@@ -709,7 +717,8 @@ class ShipmentCartItemBottomViewHolder(
             var additionalPrice = 0
             var subTotalPrice: Long = 0
             var totalItemPrice: Long = 0
-            var totalAddOnPrice = 0
+            var totalGiftingAddOnPrice = 0
+            var totalAddOnProductPrice = 0.0
             var hasAddOnSelected = false
             if (shipmentCartItemModel.isStateDetailSubtotalViewExpanded) {
                 rlShipmentCost.visibility = View.VISIBLE
@@ -737,8 +746,16 @@ class ShipmentCartItemBottomViewHolder(
                     if (cartItemModel.addOnGiftingProductLevelModel.status == 1) {
                         if (cartItemModel.addOnGiftingProductLevelModel.addOnsDataItemModelList.isNotEmpty()) {
                             for (addOnsData in cartItemModel.addOnGiftingProductLevelModel.addOnsDataItemModelList) {
-                                totalAddOnPrice += addOnsData.addOnPrice.toInt()
+                                totalGiftingAddOnPrice += addOnsData.addOnPrice.toInt()
                                 hasAddOnSelected = true
+                            }
+                        }
+                    }
+                    if (cartItemModel.addOnProduct.listAddOnProductData.isNotEmpty()) {
+                        renderSubtotalAddOn(cartItemModel, itemView.context, shipmentCartItemModel.subtotalAddOnMap)
+                        cartItemModel.addOnProduct.listAddOnProductData.forEach {
+                            if (it.addOnDataStatus == 1) {
+                                totalAddOnProductPrice += it.addOnDataPrice * cartItemModel.quantity
                             }
                         }
                     }
@@ -748,7 +765,7 @@ class ShipmentCartItemBottomViewHolder(
             if (addOnsOrderLevelModel.status == 1) {
                 if (addOnsOrderLevelModel.addOnsDataItemModelList.isNotEmpty()) {
                     for (addOnsData in addOnsOrderLevelModel.addOnsDataItemModelList) {
-                        totalAddOnPrice += addOnsData.addOnPrice.toInt()
+                        totalGiftingAddOnPrice += addOnsData.addOnPrice.toInt()
                         hasAddOnSelected = true
                     }
                 }
@@ -805,7 +822,7 @@ class ShipmentCartItemBottomViewHolder(
             } else {
                 subTotalPrice = totalItemPrice
             }
-            subTotalPrice += totalAddOnPrice.toLong()
+            subTotalPrice += totalGiftingAddOnPrice.toLong() + totalAddOnProductPrice.toLong()
             tvSubTotalPrice.setTextAndContentDescription(
                 if (subTotalPrice == 0L) {
                     "-"
@@ -878,7 +895,7 @@ class ShipmentCartItemBottomViewHolder(
                 tvAddOnPrice.visibility = View.VISIBLE
                 tvAddOnPrice.text =
                     CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                        totalAddOnPrice,
+                        totalGiftingAddOnPrice,
                         false
                     )
                         .removeDecimalSuffix()
@@ -1247,6 +1264,33 @@ class ShipmentCartItemBottomViewHolder(
 //            }
 //            .subscribe()
 //        scheduleDeliveryCompositeSubscription?.add(scheduleDeliverySubscription)
+    }
+
+    private fun renderSubtotalAddOn(cartItemModel: CartItemModel, context: Context, subtotalAddOnMap: HashMap<Int, String>) {
+        if (cartItemModel.addOnProduct.listAddOnProductData.isNotEmpty()) {
+        val listShipmentAddOnSubtotalModel = arrayListOf<ShipmentAddOnSubtotalModel>()
+            for ((key, value) in subtotalAddOnMap) {
+                cartItemModel.addOnProduct.listAddOnProductData.forEach {
+                    if (it.addOnDataType == key && it.addOnDataStatus == 1) {
+                        val shipmentAddOnSubtotalModel = ShipmentAddOnSubtotalModel(
+                                wording = value.replace(CartConstant.QTY_ADDON_REPLACE, cartItemModel.quantity.toString()),
+                                priceLabel = CurrencyFormatUtil.convertPriceValueToIdrFormat((it.addOnDataPrice * cartItemModel.quantity), false).removeDecimalSuffix()
+                        )
+                        listShipmentAddOnSubtotalModel.add(shipmentAddOnSubtotalModel)
+                    }
+                }
+            }
+
+            val addOnSubtotalAdapter = ShipmentAddOnSubtotalAdapter(listShipmentAddOnSubtotalModel)
+            binding.containerSubtotal.rvSubtotalAddon.apply {
+                layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+                setHasFixedSize(true)
+                adapter = addOnSubtotalAdapter
+                visible()
+            }
+        } else {
+            binding.containerSubtotal.rvSubtotalAddon.gone()
+        }
     }
 
     fun unsubscribeDebouncer() {

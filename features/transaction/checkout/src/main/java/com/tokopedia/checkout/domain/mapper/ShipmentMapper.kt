@@ -17,6 +17,7 @@ import com.tokopedia.checkout.data.model.response.shipmentaddressform.ShipmentIn
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.ShipmentPlatformFee
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.ShipmentSummaryAddOn
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.Shop
+import com.tokopedia.checkout.data.model.response.shipmentaddressform.SubtotalAddOn
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.TradeInInfo
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.Upsell
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.UserAddress
@@ -39,6 +40,7 @@ import com.tokopedia.checkout.domain.model.cartshipmentform.Product
 import com.tokopedia.checkout.domain.model.cartshipmentform.ScheduleDeliveryData
 import com.tokopedia.checkout.domain.model.cartshipmentform.ShipmentInformationData
 import com.tokopedia.checkout.domain.model.cartshipmentform.ShipmentPlatformFeeData
+import com.tokopedia.checkout.domain.model.cartshipmentform.ShipmentSubtotalAddOnData
 import com.tokopedia.checkout.domain.model.cartshipmentform.ShipmentSummaryAddOnData
 import com.tokopedia.checkout.domain.model.cartshipmentform.TradeInInfoData
 import com.tokopedia.checkout.domain.model.cartshipmentform.UpsellData
@@ -264,6 +266,7 @@ class ShipmentMapper @Inject constructor() {
                     courierSelectionErrorData = CourierSelectionErrorData(it.courierSelectionError.title, it.courierSelectionError.description)
                     scheduleDelivery = mapScheduleDelivery(it.scheduledDelivery)
                     ratesValidationFlow = it.ratesValidationFlow
+                    listSubtotalAddOn = mapSubtotalAddOn(it.listSubtotalAddOns)
                 }
             )
         }
@@ -587,6 +590,20 @@ class ShipmentMapper @Inject constructor() {
         return listAddOnDataItem
     }
 
+    private fun mapSubtotalAddOn(subtotalAddOns: List<SubtotalAddOn>): List<ShipmentSubtotalAddOnData> {
+        val listSubtotal = arrayListOf<ShipmentSubtotalAddOnData>()
+
+        subtotalAddOns.forEach {
+            val shipmentSubtotalAddOnData = ShipmentSubtotalAddOnData(
+                wording = it.wording,
+                type = it.type
+            )
+            listSubtotal.add(shipmentSubtotalAddOnData)
+        }
+
+        return listSubtotal
+    }
+
     private fun mapEthicalDrugData(addOns: EthicalDrugResponse): EthicalDrugDataModel {
         return EthicalDrugDataModel(
             needPrescription = addOns.needPrescription,
@@ -602,6 +619,7 @@ class ShipmentMapper @Inject constructor() {
                 AddOnGiftingDataItemModel().apply {
                     addOnPrice = item.addOnPrice
                     addOnId = item.addOnId
+                    addOnUniqueId = item.addOnUniqueId
                     addOnMetadata = mapAddOnMetadata(item.addOnMetadata)
                     addOnQty = item.addOnQty
                 }
@@ -1197,8 +1215,8 @@ class ShipmentMapper @Inject constructor() {
         val listShipmentSummaryAddOn: ArrayList<ShipmentSummaryAddOnData> = arrayListOf()
         listSummaryAddOns.forEach { item ->
             val shipmentSummaryAddOnData = ShipmentSummaryAddOnData(
-                    wording = item.wording,
-                    type = item.type
+                wording = item.wording,
+                type = item.type
             )
             listShipmentSummaryAddOn.add(shipmentSummaryAddOnData)
         }

@@ -76,7 +76,7 @@ data class ShipmentAddressFormDataResponse(
     val dynamicDataPassing: ShipmentDynamicDataPassing = ShipmentDynamicDataPassing(),
     @SerializedName("platform_fee")
     val shipmentPlatformFee: ShipmentPlatformFee = ShipmentPlatformFee(),
-    @SerializedName("summary_add_ons")
+    @SerializedName("add_ons_summary")
     val listSummaryAddOns: List<ShipmentSummaryAddOn> = emptyList()
 ) {
 
@@ -95,6 +95,5 @@ data class ShipmentAddressFormDataResponse(
             val text = map[entry.key]!!.replace("qty", entry.value.second.toString()) // Total Jasa Pasang ({{qty}} Jasa)
             val valuetext = map[entry.key]!!.replace("qty", entry.value.first.toString()) // Total Jasa Pasang ({{qty}} Jasa)
         }
-
     }
 }

@@ -77,15 +77,4 @@
         android:layout_marginTop="3dp"
         android:orientation="vertical"/>
 
-    <LinearLayout
-        android:id="@+id/ll_addon_product_loaders"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/loader_ic_product_addon"
-        android:layout_marginTop="3dp"
-        android:orientation="vertical"
-        android:visibility="gone"/>
-
 </androidx.constraintlayout.widget.ConstraintLayout>
