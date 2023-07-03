@@ -42,7 +42,7 @@ class SmartBillsActivityTest {
 
     @get:Rule
     var activityRule =
-            ActivityTestRule(SmartBillsActivity::class.java, false, false)
+        ActivityTestRule(SmartBillsActivity::class.java, false, false)
 
     @get:Rule
     var cassavaTestRule = CassavaTestRule()
@@ -53,29 +53,34 @@ class SmartBillsActivityTest {
         graphqlCacheManager.deleteAll()
         setupGraphqlMockResponse {
             addMockResponse(
-                    KEY_STATEMENT_MONTHS,
-                    ResourcePathUtil.getJsonFromResource(PATH_STATEMENT_MONTHS),
-                    MockModelConfig.FIND_BY_CONTAINS)
+                KEY_STATEMENT_MONTHS,
+                ResourcePathUtil.getJsonFromResource(PATH_STATEMENT_MONTHS),
+                MockModelConfig.FIND_BY_CONTAINS
+            )
 
             addMockResponse(
-                    KEY_STATEMENT_BILLS,
-                    ResourcePathUtil.getJsonFromResource(PATH_STATEMENT_BILLS),
-                    MockModelConfig.FIND_BY_CONTAINS)
+                KEY_STATEMENT_BILLS,
+                ResourcePathUtil.getJsonFromResource(PATH_STATEMENT_BILLS),
+                MockModelConfig.FIND_BY_CONTAINS
+            )
 
             addMockResponse(
-                    KEY_CATALOG_MENU,
-                    ResourcePathUtil.getJsonFromResource(PATH_CATALOG_BILLS),
-                    MockModelConfig.FIND_BY_CONTAINS)
+                KEY_CATALOG_MENU,
+                ResourcePathUtil.getJsonFromResource(PATH_CATALOG_BILLS),
+                MockModelConfig.FIND_BY_CONTAINS
+            )
 
             addMockResponse(
-                    KEY_DELETE_PRODUCT,
-                    ResourcePathUtil.getJsonFromResource(PATH_DELELTE_BILLS),
-                    MockModelConfig.FIND_BY_CONTAINS)
+                KEY_DELETE_PRODUCT,
+                ResourcePathUtil.getJsonFromResource(PATH_DELELTE_BILLS),
+                MockModelConfig.FIND_BY_CONTAINS
+            )
 
             addMockResponse(
-                    KEY_HIGHLIGHT_CATEGORY,
-                    ResourcePathUtil.getJsonFromResource(PATH_HIGHLIGHT_CATEGORY),
-                    MockModelConfig.FIND_BY_CONTAINS)
+                KEY_HIGHLIGHT_CATEGORY,
+                ResourcePathUtil.getJsonFromResource(PATH_HIGHLIGHT_CATEGORY),
+                MockModelConfig.FIND_BY_CONTAINS
+            )
         }
         setupAbTestRemoteConfig()
         InstrumentationAuthHelper.loginInstrumentationTestUser1()
@@ -89,7 +94,6 @@ class SmartBillsActivityTest {
         val intent = Intent(targetContext, SmartBillsActivity::class.java)
         activityRule.launchActivity(intent)
     }
-
 
     @Test
     fun validateSmartBills() {
@@ -149,11 +153,11 @@ class SmartBillsActivityTest {
         }
     }
 
-    private fun validate_tooltip(){
+    private fun validate_tooltip() {
         Intents.intending(IntentMatchers.isInternal()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
         Thread.sleep(2000)
         onView(withId(R.id.action_menu_tooltip)).check(ViewAssertions.matches(isDisplayed()))
-                .perform(click())
+            .perform(click())
         Thread.sleep(2000)
         onView(allOf(withId(R.id.btn_tooltip_sbm), withText("Pelajari Selengkapnya"))).perform(click())
         Thread.sleep(2000)
@@ -162,10 +166,12 @@ class SmartBillsActivityTest {
 
     private fun validate_bill_selection() {
         onView(ViewMatchers.withText("Air PDAM - ATB BATAM")).check(ViewAssertions.matches(isDisplayed()))
-        val billCheckbox = onView(AllOf.allOf(
+        val billCheckbox = onView(
+            AllOf.allOf(
                 withId(R.id.cb_smart_bills_item),
                 ViewMatchers.hasSibling(ViewMatchers.withChild(ViewMatchers.withText("Air PDAM - ATB BATAM")))
-        ))
+            )
+        )
         billCheckbox.perform(click())
         Thread.sleep(2000)
         billCheckbox.perform(click())
@@ -178,10 +184,12 @@ class SmartBillsActivityTest {
     }
 
     private fun validate_bill_detail() {
-        onView(AllOf.allOf(
+        onView(
+            AllOf.allOf(
                 withId(R.id.tv_smart_bills_item_detail),
                 ViewMatchers.hasSibling(ViewMatchers.withText("Air PDAM - ATB BATAM"))
-        )).perform(click())
+            )
+        ).perform(click())
         Thread.sleep(2000)
         onView(ViewMatchers.withText("Detail Air PDAM")).check(ViewAssertions.matches(isDisplayed()))
         onView(ViewMatchers.withText("13111516111")).check(ViewAssertions.matches(isDisplayed()))
@@ -192,13 +200,20 @@ class SmartBillsActivityTest {
     private fun validate_click_bayar() {
         Intents.intending(IntentMatchers.isInternal()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
         Thread.sleep(2000)
-        val billCheckbox = onView(AllOf.allOf(
+        val billCheckbox = onView(
+            AllOf.allOf(
                 withId(R.id.cb_smart_bills_item),
                 ViewMatchers.hasSibling(ViewMatchers.withChild(ViewMatchers.withText("Air PDAM - ATB BATAM")))
-        ))
+            )
+        )
         billCheckbox.perform(click())
         Thread.sleep(2000)
-        onView(withId(R.id.btn_recharge_checkout_next)).perform(click())
+        onView(
+            allOf(
+                withId(R.id.btn_recharge_checkout_next),
+                withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)
+            )
+        ).perform(click())
     }
 
     private fun validate_refresh_action() {
@@ -207,7 +222,7 @@ class SmartBillsActivityTest {
         onView(withId(R.id.refreshID)).perform(click())
     }
 
-    private fun click_add_bills(){
+    private fun click_add_bills() {
         Intents.intending(IntentMatchers.isInternal()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
         Thread.sleep(3000)
         onView(withId(R.id.tv_sbm_add_bills)).perform(click())
@@ -219,34 +234,34 @@ class SmartBillsActivityTest {
         onView(withText("Pulsa")).perform(click())
     }
 
-    private fun click_delete_cancel(){
+    private fun click_delete_cancel() {
         click_kebab()
         click_delete_bottom_sheet()
         click_batal_dialog()
     }
 
-    private fun click_delete_success(){
+    private fun click_delete_success() {
         click_kebab()
         click_delete_bottom_sheet()
         click_ok_dialog()
     }
 
-    private fun click_kebab(){
+    private fun click_kebab() {
         Thread.sleep(3000)
         onView(CommonMatcher.getElementFromMatchAtPosition(withId(R.id.icon_menu_sbm_delete), 0)).perform(click())
     }
 
-    private fun click_delete_bottom_sheet(){
+    private fun click_delete_bottom_sheet() {
         Thread.sleep(3000)
         onView(withId(R.id.tg_delete_sbm)).perform(click())
     }
 
-    private fun click_batal_dialog(){
+    private fun click_batal_dialog() {
         Thread.sleep(3000)
         onView(withId(R.id.dialog_btn_secondary)).perform(click())
     }
 
-    private fun click_ok_dialog(){
+    private fun click_ok_dialog() {
         Thread.sleep(3000)
         onView(withId(R.id.dialog_btn_primary)).perform(click())
     }
@@ -265,14 +280,14 @@ class SmartBillsActivityTest {
     private fun setupAbTestRemoteConfig() {
         RemoteConfigInstance.getInstance().abTestPlatform.setString(
             RollenceKey.KEY_SBM_TRANSITION,
-            RollenceKey.KEY_SBM_TRANSITION)
+            RollenceKey.KEY_SBM_TRANSITION
+        )
     }
 
     @After
     fun cleanUp() {
         Intents.release()
     }
-
 
     companion object {
         private const val KEY_STATEMENT_MONTHS = "rechargeStatementMonths"
