@@ -72,8 +72,7 @@ class FeedTaggedProductBottomSheetItemView(
             is FeedTaggedProductUiModel.DiscountedPrice -> {
                 binding.tvProductDiscount.show()
                 binding.tvOriginalPrice.show()
-                binding.tvProductDiscount.text =
-                    context.getString(R.string.feed_product_discount_percent, price.discount)
+                binding.tvProductDiscount.text = context.getString(com.tokopedia.content.common.R.string.feed_product_discount_percent, price.discount)
                 binding.tvOriginalPrice.text = price.originalFormattedPrice
                 binding.tvCurrentPrice.text = price.formattedPrice
             }
@@ -91,11 +90,11 @@ class FeedTaggedProductBottomSheetItemView(
             binding.pbStock.progressBarColor = intArrayOf(
                 ContextCompat.getColor(
                     context,
-                    com.tokopedia.feedcomponent.R.color.feed_dms_asgc_progress_0_color
+                    R.color.feed_dms_asgc_progress_0_color
                 ),
                 ContextCompat.getColor(
                     context,
-                    com.tokopedia.feedcomponent.R.color.feed_dms_asgc_progress_100_color
+                    R.color.feed_dms_asgc_progress_100_color
                 )
             )
             binding.tvStock.text = campaign.status.stockLabel

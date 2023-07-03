@@ -6,7 +6,11 @@ data class DenomWidgetModel(
    val mainTitle: String = "",
    val subTitle: String = "",
    val listDenomData: List<DenomData> = emptyList(),
-   val isFlashSale: Boolean = false
+   val isFlashSale: Boolean = false,
+   val isHorizontalMCCM: Boolean = true,
+   val imageBackgroundUrl: String? = null,
+   val imageBackgroundUrlDarkMode: String? = null,
+   val showMoreText: String = "",
 )
 
 data class DenomData(
@@ -34,5 +38,6 @@ data class DenomData(
     val isShowChevron: Boolean = true,
     val appLink: String = "",
     val productDescriptions: List<String> = listOf(),
-    val greenLabel: String = ""
+    val greenLabel: String = "",
+    val itemType: String = ""
 ): ImpressHolder()

@@ -17,10 +17,10 @@ import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import java.lang.Exception
 
 class ShopCardItemViewHolder(itemView: View, val fragment: Fragment) :
-        AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
+    AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
 
     private val binding: ShopCardItemLayoutBinding = ShopCardItemLayoutBinding.bind(itemView)
-    private lateinit var mShopCardItemViewModel: ShopCardItemViewModel
+    private var mShopCardItemViewModel: ShopCardItemViewModel? = null
     private var shopCardDataItem: DataItem? = null
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
@@ -37,23 +37,23 @@ class ShopCardItemViewHolder(itemView: View, val fragment: Fragment) :
     override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
         super.setUpObservers(lifecycleOwner)
         lifecycleOwner?.let { lifecycle ->
-            mShopCardItemViewModel.getComponentLiveData().observe(lifecycle, { item ->
+            mShopCardItemViewModel?.getComponentLiveData()?.observe(lifecycle) { item ->
                 item.data?.firstOrNull()?.let {
                     shopCardDataItem = it
                     populateData(it)
                 }
-            })
-            mShopCardItemViewModel.getSyncPageLiveData().observe(lifecycle, {
+            }
+            mShopCardItemViewModel?.getSyncPageLiveData()?.observe(lifecycle) {
                 if (it) (fragment as DiscoveryFragment).reSync()
-            })
+            }
         }
     }
 
     override fun removeObservers(lifecycleOwner: LifecycleOwner?) {
         super.removeObservers(lifecycleOwner)
         lifecycleOwner?.let {
-            mShopCardItemViewModel.getComponentLiveData().removeObservers(it)
-            mShopCardItemViewModel.getSyncPageLiveData().removeObservers(it)
+            mShopCardItemViewModel?.getComponentLiveData()?.removeObservers(it)
+            mShopCardItemViewModel?.getSyncPageLiveData()?.removeObservers(it)
         }
     }
 
@@ -117,20 +117,21 @@ class ShopCardItemViewHolder(itemView: View, val fragment: Fragment) :
     private fun handleUIClick(view: View) {
         when (view) {
             binding.parentLayout -> {
-                mShopCardItemViewModel.navigate(fragment.context, shopCardDataItem?.applinks)
+                mShopCardItemViewModel?.navigate(fragment.context, shopCardDataItem?.applinks)
                 sendClickEvent()
             }
         }
     }
 
     private fun sendClickEvent() {
-        (fragment as DiscoveryFragment).getDiscoveryAnalytics()
-                .trackEventClickShopCard(mShopCardItemViewModel.components)
+        mShopCardItemViewModel?.components?.let {
+            (fragment as DiscoveryFragment).getDiscoveryAnalytics()
+                .trackEventClickShopCard(it)
+        }
     }
 
     override fun onViewAttachedToWindow() {
         super.onViewAttachedToWindow()
-        (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackShopCardImpression(mShopCardItemViewModel.components)
+        mShopCardItemViewModel?.components?.let { (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackShopCardImpression(it) }
     }
-
 }

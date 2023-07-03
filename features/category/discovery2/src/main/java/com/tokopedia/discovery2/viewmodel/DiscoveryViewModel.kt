@@ -105,7 +105,6 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
     private val discoveryFabLiveData = MutableLiveData<Result<ComponentsItem>>()
     private val discoveryResponseList = MutableLiveData<Result<List<ComponentsItem>>>()
     private val discoveryLiveStateData = MutableLiveData<DiscoveryLiveState>()
-    private val discoveryBottomNavLiveData = MutableLiveData<Result<ComponentsItem>>()
     private val discoveryAnchorTabLiveData = MutableLiveData<Result<ComponentsItem>>()
 
     var miniCartSimplifiedData: MiniCartSimplifiedData? = null
@@ -348,8 +347,6 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
                         setPageInfo(it)
                         withContext(Dispatchers.Default) {
                             discoveryResponseList.postValue(Success(it.components))
-                            findCustomTopChatComponentsIfAny(it.components)
-                            findBottomTabNavDataComponentsIfAny(it.components)
                             findAnchorTabComponentsIfAny(it.components)
                         }
                     }
@@ -379,22 +376,10 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
         }
     }
 
-    private fun findCustomTopChatComponentsIfAny(components: List<ComponentsItem>?) {
-        val customTopChatComponent = components?.find {
-            it.name == ComponentNames.CustomTopchat.componentName
-        }
-        if (customTopChatComponent != null) {
-            discoveryFabLiveData.postValue(Success(customTopChatComponent))
-        } else {
-            discoveryFabLiveData.postValue(Fail(Throwable()))
-        }
-    }
-
     fun getDiscoveryPageInfo(): LiveData<Result<PageInfo>> = discoveryPageInfo
     fun getDiscoveryResponseList(): LiveData<Result<List<ComponentsItem>>> = discoveryResponseList
     fun getDiscoveryFabLiveData(): LiveData<Result<ComponentsItem>> = discoveryFabLiveData
     fun getDiscoveryLiveStateData(): LiveData<DiscoveryLiveState> = discoveryLiveStateData
-    fun getDiscoveryBottomNavLiveData(): LiveData<Result<ComponentsItem>> = discoveryBottomNavLiveData
     fun getDiscoveryAnchorTabLiveData(): LiveData<Result<ComponentsItem>> = discoveryAnchorTabLiveData
 
     private fun fetchTopChatMessageId(context: Context, appLinks: String, shopId: Int) {
@@ -518,16 +503,6 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
         return categoryID ?: ""
     }
 
-    private fun findBottomTabNavDataComponentsIfAny(components: List<ComponentsItem>?) {
-        bottomTabNavDataComponent = components?.find {
-            it.name == ComponentNames.BottomNavigation.componentName && it.renderByDefault
-        }
-        if (bottomTabNavDataComponent != null) {
-            discoveryBottomNavLiveData.postValue(Success(bottomTabNavDataComponent!!))
-        } else {
-            discoveryBottomNavLiveData.postValue(Fail(Throwable()))
-        }
-    }
     private fun findAnchorTabComponentsIfAny(components: List<ComponentsItem>?) {
         val tabDataComponent = components?.find {
             it.name == ComponentNames.AnchorTabs.componentName && it.renderByDefault

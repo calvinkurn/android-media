@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.tokopedia.unifycomponents.CardUnify2 xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/cardViewShopCard"
@@ -8,11 +8,9 @@
     android:layout_marginHorizontal="12dp"
     android:layout_marginVertical="4dp"
     android:foreground="?attr/selectableItemBackground"
-    app:cardBackgroundColor="@color/product_card_dms_card_background"
+    app:cardBackgroundColor="@color/Unify_NN0"
     app:cardCornerRadius="8dp"
     app:cardElevation="4dp"
-    app:cardPreventCornerOverlap="false"
-    app:cardUseCompatPadding="true"
     tools:layout_height="wrap_content">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -53,6 +51,8 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="2dp"
             android:layout_marginTop="5dp"
+            android:ellipsize="end"
+            android:maxLines="1"
             android:textColor="@color/Unify_NN950"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/imageTitleEmblem"
@@ -64,15 +64,24 @@
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/ssa_message"
             android:layout_width="wrap_content"
-            android:layout_height="14dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:visibility="gone"
             app:layout_constraintStart_toStartOf="@id/imageTitleEmblem"
             app:layout_constraintTop_toBottomOf="@id/textViewTitle"
             app:layout_goneMarginStart="8dp"
             app:typographyType="small"
-            tools:text="Komisi hingga 5%"
+            tools:text="Komisi hingga 5%/baran terjual"
             tools:visibility="visible" />
+
+        <Space
+            android:id="@+id/ssa_promo_space"
+            android:layout_width="64dp"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/ssa_message"
+            app:layout_constraintTop_toTopOf="@id/ssa_message" />
 
         <com.tokopedia.unifycomponents.Label
             android:id="@+id/ssa_label"
@@ -105,7 +114,7 @@
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/textViewRating"
             android:layout_width="wrap_content"
-            android:layout_height="18dp"
+            android:layout_height="wrap_content"
             android:layout_marginStart="2dp"
             android:layout_marginTop="4dp"
             android:gravity="center_vertical"
@@ -133,15 +142,15 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/textViewItemSold"
-            android:layout_width="0dp"
-            android:layout_height="18dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
             android:layout_marginTop="4dp"
             android:ellipsize="end"
             android:gravity="center_vertical"
             android:maxLines="1"
             android:textColor="@color/Unify_N700_68"
             android:visibility="gone"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/ratingDivider"
             app:layout_constraintTop_toBottomOf="@id/ssa_label"
             app:layout_goneMarginStart="8dp"
@@ -175,7 +184,7 @@
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/textViewFooterLocation"
             android:layout_width="0dp"
-            android:layout_height="18dp"
+            android:layout_height="wrap_content"
             android:layout_marginStart="2dp"
             android:ellipsize="end"
             android:gravity="center_vertical"
@@ -221,4 +230,4 @@
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-</androidx.cardview.widget.CardView>
+</com.tokopedia.unifycomponents.CardUnify2>

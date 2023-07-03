@@ -174,7 +174,7 @@ class TodoWidgetViewHolder(
     override fun dismiss(element: CarouselTodoWidgetDataModel, position: Int) {
         visitables.removeAt(position)
         adapter?.notifyItemRemoved(position)
-        todoWidgetComponentListener.onTodoCloseClicked(element, position)
+        todoWidgetComponentListener.onTodoCloseClicked(element)
     }
 }
 

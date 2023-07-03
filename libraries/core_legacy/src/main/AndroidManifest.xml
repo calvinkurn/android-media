@@ -33,9 +33,8 @@
         android:required="false"
         tools:replace="required" />
 
-    <uses-permission
-        android:name="android.permission.READ_EXTERNAL_STORAGE"
-        android:maxSdkVersion="22" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+
     <uses-permission android:name="android.permission.READ_CALL_LOG" />
 
     <permission

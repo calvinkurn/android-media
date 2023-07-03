@@ -115,6 +115,10 @@ class AddEditProductPreviewViewModel @Inject constructor(
         !it.variantInputModel.hasVariant()
     }
 
+    val hasDTStock = Transformations.map(productInputModel) {
+        it.hasDTStock
+    }
+
     val priceRangeFormatted = Transformations.map(productInputModel) {
         val highestPrice = it.variantInputModel.getHighestPrice().orZero()
         val lowestPrice = it.variantInputModel.getLowestPrice().orZero()

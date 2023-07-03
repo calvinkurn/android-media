@@ -29,7 +29,7 @@ class InteractiveInitView : RoundedConstraintLayout {
     private var mListener: Listener? = null
 
     init {
-        binding.clInteractiveInit.setBackgroundResource(com.tokopedia.content.common.R.drawable.bg_play_interactive)
+        binding.clInteractiveInit.setBackgroundResource(com.tokopedia.play_common.R.drawable.bg_play_interactive)
         binding.ivInteractive.setImageResource(R.drawable.ic_play_interactive_gift)
         binding.root.setOnClickListener {
             mListener?.onCreateNewGameClicked(this)

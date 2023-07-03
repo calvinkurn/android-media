@@ -1,7 +1,5 @@
 package com.tokopedia.review.feature.createreputation.presentation.fragment
 
-import com.tokopedia.imageassets.TokopediaImageUrl
-
 import android.animation.Animator
 import android.annotation.SuppressLint
 import android.app.Activity
@@ -29,6 +27,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.device.info.DevicePerformanceInfo
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.imageassets.TokopediaImageUrl
 import com.tokopedia.imagepicker.common.ImagePickerBuilder
 import com.tokopedia.imagepicker.common.ImagePickerPageSource
 import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
@@ -66,6 +65,7 @@ import com.tokopedia.review.feature.createreputation.presentation.adapter.ImageR
 import com.tokopedia.review.feature.createreputation.presentation.listener.ImageClickListener
 import com.tokopedia.review.feature.createreputation.presentation.listener.TextAreaListener
 import com.tokopedia.review.feature.createreputation.presentation.uimodel.visitable.CreateReviewMediaUiModel
+import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewRatingUiState
 import com.tokopedia.review.feature.createreputation.presentation.viewholder.old.VideoReviewViewHolder
 import com.tokopedia.review.feature.createreputation.presentation.viewmodel.old.CreateReviewViewModel
 import com.tokopedia.review.feature.createreputation.presentation.widget.old.CreateReviewTextAreaBottomSheet
@@ -278,12 +278,13 @@ class CreateReviewFragment :
                 AnimatedRatingPickerCreateReviewView.AnimatedReputationListener {
                 override fun onClick(position: Int) {
                     CreateReviewTracking.reviewOnRatingChangedTracker(
-                        orderId = "",
-                        productId = productId,
-                        ratingValue = (position).toString(),
-                        isSuccessful = true,
-                        isEditReview = true,
-                        feedbackId = feedbackId
+                        CreateReviewRatingUiState.Showing.TrackerData.create(
+                            rating = position,
+                            orderId = "",
+                            productId = productId,
+                            editMode = true,
+                            feedbackId = feedbackId
+                        )
                     )
                     reviewClickAt = position
                     shouldPlayAnimation = true

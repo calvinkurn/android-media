@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.broadcaster.revamp.Broadcaster
+import com.tokopedia.content.common.di.ContentCoachMarkSharedPrefModule
 import com.tokopedia.content.common.onboarding.di.UGCOnboardingModule
 import com.tokopedia.content.common.producttag.di.module.ContentCreationProductTagBindModule
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -35,8 +36,10 @@ import dagger.Component
         PlayBroadcastConfigStoreModule::class,
         PlayBroadcastDataStoreModule::class,
         PlayBroadcastRepositoryModule::class,
+        PlayBroadcastNetworkModule::class,
         PlayBroadcastBindModule::class,
         PlayBroadcastModule::class,
+        ContentCoachMarkSharedPrefModule::class,
         ContentCreationProductTagBindModule::class,
         UGCOnboardingModule::class
     ]

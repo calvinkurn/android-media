@@ -24,16 +24,9 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class HomeFrameTimingBenchmark: BaseFrameTimingBenchmark() {
     override fun setupEnvironment() {
-        MacroDevOps.setupEnvironment(MacroIntent.Session.getSessionMacroSetupIntent())
-        MacroDevOps.setupEnvironment(MacroIntent.Home.getHomeIntent().apply {
-            this.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        })
-        UiDevice.getInstance(InstrumentationRegistry.getInstrumentation()).pressBack()
-        UiDevice.getInstance(InstrumentationRegistry.getInstrumentation()).pressBack()
     }
 
     override fun setupMock() {
-        MacroDevOps.setupEnvironment(MacroIntent.Mock.getHomeMockIntent())
     }
 
     override fun pageInteractionTest(currentIteration: Int) {

@@ -467,9 +467,9 @@ class FeedPlusFragment :
                                 if (data.isFollowedFromFollowRestrictionBottomSheet && data.isFollow) {
                                     if (::productTagBS.isInitialized) {
                                         productTagBS.showToasterOnBottomSheetOnSuccessFollow(
-                                            getString(com.tokopedia.feedcomponent.R.string.feed_follow_bottom_sheet_success_toaster_text),
+                                            getString(com.tokopedia.content.common.R.string.feed_follow_bottom_sheet_success_toaster_text),
                                             Toaster.TYPE_NORMAL,
-                                            getString(com.tokopedia.feedcomponent.R.string.feed_ok)
+                                            getString(com.tokopedia.content.common.R.string.feed_ok)
                                         )
                                         if (feedFollowersOnlyBottomSheet?.isAdded == true && feedFollowersOnlyBottomSheet?.isVisible == true) {
                                             feedFollowersOnlyBottomSheet?.dismiss()
@@ -477,7 +477,7 @@ class FeedPlusFragment :
                                     }
                                 } else {
                                     val messageRes =
-                                        if (data.isFollow) com.tokopedia.feedcomponent.R.string.feed_component_follow_success_toast else com.tokopedia.feedcomponent.R.string.feed_component_unfollow_success_toast
+                                        if (data.isFollow) com.tokopedia.content.common.R.string.feed_component_follow_success_toast else com.tokopedia.content.common.R.string.feed_component_unfollow_success_toast
                                     showToast(
                                         getString(messageRes),
                                         Toaster.TYPE_NORMAL
@@ -487,10 +487,10 @@ class FeedPlusFragment :
                             } else {
                                 if (data.isFollow) {
                                     data.errorMessage =
-                                        getString(com.tokopedia.feedcomponent.R.string.feed_component_unfollow_fail_toast)
+                                        getString(com.tokopedia.content.common.R.string.feed_component_unfollow_fail_toast)
                                 } else {
                                     data.errorMessage =
-                                        getString(com.tokopedia.feedcomponent.R.string.feed_component_follow_fail_toast)
+                                        getString(com.tokopedia.content.common.R.string.feed_component_follow_fail_toast)
                                 }
                                 onErrorFollowUnfollowKol(data)
                             }
@@ -605,9 +605,9 @@ class FeedPlusFragment :
                                 if (data.isFollowedFromFollowRestrictionBottomSheet) {
                                     if (::productTagBS.isInitialized) {
                                         productTagBS.showToasterOnBottomSheetOnSuccessFollow(
-                                            getString(com.tokopedia.feedcomponent.R.string.feed_follow_bottom_sheet_success_toaster_text),
+                                            getString(com.tokopedia.content.common.R.string.feed_follow_bottom_sheet_success_toaster_text),
                                             Toaster.TYPE_NORMAL,
-                                            getString(com.tokopedia.feedcomponent.R.string.feed_ok)
+                                            getString(com.tokopedia.content.common.R.string.feed_ok)
                                         )
                                         if (feedFollowersOnlyBottomSheet?.isAdded == true && feedFollowersOnlyBottomSheet?.isVisible == true) {
                                             feedFollowersOnlyBottomSheet?.dismiss()
@@ -2326,6 +2326,7 @@ class FeedPlusFragment :
     }
 
     override fun onImageClick(
+        postId: String,
         positionInFeed: Int,
         contentPosition: Int,
         redirectLink: String
@@ -3119,18 +3120,18 @@ class FeedPlusFragment :
     private fun showToastOnSuccessReminderSetForFSTorRS(card: FeedXCard) {
         when {
             card.campaign.reminder is FeedASGCUpcomingReminderStatus.On && card.campaign.isFlashSaleToko -> showToast(
-                context?.getString(com.tokopedia.feedcomponent.R.string.feed_asgc_reminder_activate_fst_message)
+                context?.getString(com.tokopedia.content.common.R.string.feed_asgc_reminder_activate_fst_message)
                     ?: "",
                 Toaster.TYPE_NORMAL
             )
             card.campaign.reminder is FeedASGCUpcomingReminderStatus.On && card.campaign.isRilisanSpl -> showToast(
-                context?.getString(com.tokopedia.feedcomponent.R.string.feed_asgc_reminder_activate_rs_message)
+                context?.getString(com.tokopedia.content.common.R.string.feed_asgc_reminder_activate_rs_message)
                     ?: "",
                 Toaster.TYPE_NORMAL
             )
             card.campaign.reminder is FeedASGCUpcomingReminderStatus.Off -> showToast(
                 context?.getString(
-                    com.tokopedia.feedcomponent.R.string.feed_asgc_reminder_deactivate_message
+                    com.tokopedia.content.common.R.string.feed_asgc_reminder_deactivate_message
                 ) ?: "",
                 Toaster.TYPE_NORMAL
             )
@@ -3192,12 +3193,12 @@ class FeedPlusFragment :
                 feedXCardData.followers.isFollowed = !feedXCardData.followers.isFollowed
                 if (!feedXCardData.followers.isFollowed) {
                     showToast(
-                        getString(com.tokopedia.feedcomponent.R.string.feed_component_unfollow_success_toast),
+                        getString(com.tokopedia.content.common.R.string.feed_component_unfollow_success_toast),
                         Toaster.TYPE_NORMAL
                     )
                 } else if (feedXCardData.followers.isFollowed) {
                     showToast(
-                        getString(com.tokopedia.feedcomponent.R.string.feed_component_follow_success_toast),
+                        getString(com.tokopedia.content.common.R.string.feed_component_follow_success_toast),
                         Toaster.TYPE_NORMAL
                     )
                 }
@@ -3262,12 +3263,12 @@ class FeedPlusFragment :
                 }
                 if (!isFollowed) {
                     showToast(
-                        getString(com.tokopedia.feedcomponent.R.string.feed_component_unfollow_success_toast),
+                        getString(com.tokopedia.content.common.R.string.feed_component_unfollow_success_toast),
                         Toaster.TYPE_NORMAL
                     )
                 } else {
                     showToast(
-                        getString(com.tokopedia.feedcomponent.R.string.feed_component_follow_success_toast),
+                        getString(com.tokopedia.content.common.R.string.feed_component_follow_success_toast),
                         Toaster.TYPE_NORMAL
                     )
                 }

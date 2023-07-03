@@ -195,7 +195,7 @@ class ContentProductTagAnalyticTest {
 
         openTokopediaSection()
 
-        verify { mockAnalytic.clickProductTagSource(ProductTagSource.GlobalSearch, "", "") }
+        verify { mockAnalytic.clickProductTagSource(ProductTagSource.GlobalSearch, "123", "3") }
     }
 
     @Test
@@ -207,7 +207,7 @@ class ContentProductTagAnalyticTest {
 
         openLastPurchasedSection()
 
-        verify { mockAnalytic.clickProductTagSource(ProductTagSource.LastPurchase, "", "") }
+        verify { mockAnalytic.clickProductTagSource(ProductTagSource.LastPurchase, "123", "3") }
     }
 
     @Test
@@ -219,7 +219,7 @@ class ContentProductTagAnalyticTest {
 
         openMyShopSection()
 
-        verify { mockAnalytic.clickProductTagSource(ProductTagSource.MyShop, "", "") }
+        verify { mockAnalytic.clickProductTagSource(ProductTagSource.MyShop, "123", "2") }
     }
 
     /** impressProductCardTest */

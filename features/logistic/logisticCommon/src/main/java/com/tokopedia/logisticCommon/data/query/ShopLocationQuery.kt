@@ -78,17 +78,16 @@ object ShopLocationQuery {
         }
     """.trimIndent()
 
-    val shopLocationWhitelist = """
-        query ShopLocWhitelist(${'$'}shop_id: Int!) {
-          ShopLocWhitelist (shop_id: ${'$'}shop_id) {
+    val keroGetRolloutEligibility = """
+        query KeroGetRolloutEligibility(${'$'}id: Int!, ${'$'}feature_id: Int!, ${'$'}device: String) {
+          keroGetRolloutEligibility(id: ${'$'}id, feature_id: ${'$'}feature_id, device: ${'$'}device) {
             status
-            message
             data {
-              eligibility_state
+                eligibility_state
             }
             error {
               id
-              description
+              detail
             }
           }
         }

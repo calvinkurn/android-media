@@ -15,10 +15,11 @@ import androidx.core.content.LocusIdCompat
 import androidx.core.content.pm.ShortcutInfoCompat
 import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.core.graphics.drawable.IconCompat
-import com.tokopedia.bubbles.data.model.BubbleNotificationModel
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.bubbles.analytics.BubblesTracker
 import com.tokopedia.bubbles.data.model.BubbleHistoryItemModel
+import com.tokopedia.bubbles.data.model.BubbleNotificationModel
 import com.tokopedia.bubbles.utils.BubblesConst
 import com.tokopedia.bubbles.utils.BubblesUtils
 import com.tokopedia.config.GlobalConfig
@@ -43,13 +44,9 @@ class BubblesFactoryImpl(private val context: Context) : BubblesFactory {
             val user = getBubblePerson(model.fullName)
             val person = getBubblePerson(icon, model.fullName)
             val messagingStyle = getMessagingStyle(user, person, model.summary, model.sentTime)
-            val bubbleMetadata = getBubbleMetadata(pendingIntent, icon)
+            val bubbleMetadata = getBubbleMetadata(pendingIntent, icon, model.isFromUser)
 
-            BubblesTracker.sendImpressionTracking(
-                userSession.shopId,
-                model.shortcutId,
-                model.senderId
-            )
+            sendImpressionTracking(model)
 
             builder
                 .setBubbleMetadata(bubbleMetadata)
@@ -59,6 +56,26 @@ class BubblesFactoryImpl(private val context: Context) : BubblesFactory {
                 .addPerson(person)
                 .setStyle(messagingStyle)
                 .setWhen(model.sentTime)
+        }
+    }
+
+    private fun sendImpressionTracking(model: BubbleNotificationModel) {
+        try {
+            val uri = Uri.parse(model.applinks)
+            when (uri.host) {
+                TOPCHAT_HOST -> {
+                    BubblesTracker.sendImpressionTracking(
+                        userSession.shopId,
+                        model.shortcutId,
+                        model.senderId
+                    )
+                }
+                else -> {
+                    // no op
+                }
+            }
+        } catch (e: Exception) {
+            FirebaseCrashlytics.getInstance().recordException(e)
         }
     }
 
@@ -139,6 +156,10 @@ class BubblesFactoryImpl(private val context: Context) : BubblesFactory {
         }
     }
 
+    private fun getComponentName(): String {
+        return GlobalConfig.DEEPLINK_HANDLER_ACTIVITY_CLASS_NAME
+    }
+
     private fun getBubblePerson(fullName: String): Person {
         return Person.Builder()
             .setName(fullName)
@@ -180,13 +201,18 @@ class BubblesFactoryImpl(private val context: Context) : BubblesFactory {
 
     private fun getBubbleMetadata(
         pendingIntent: PendingIntent,
-        icon: IconCompat
+        icon: IconCompat,
+        isFromUser: Boolean
     ): NotificationCompat.BubbleMetadata {
         return NotificationCompat.BubbleMetadata.Builder(
             pendingIntent,
             icon
-        ).setDesiredHeight(getBubbleHeight())
-            .build()
+        ).setDesiredHeight(getBubbleHeight()).apply {
+            if (isFromUser) {
+                setAutoExpandBubble(true)
+                setSuppressNotification(true)
+            }
+        }.build()
     }
 
     private fun createShortcuts(historyModels: List<BubbleHistoryItemModel>, bubbleBitmap: Bitmap?): List<ShortcutInfoCompat> {
@@ -196,7 +222,7 @@ class BubblesFactoryImpl(private val context: Context) : BubblesFactory {
                 .setActivity(
                     ComponentName(
                         context.packageName,
-                        GlobalConfig.DEEPLINK_HANDLER_ACTIVITY_CLASS_NAME
+                        getComponentName()
                     )
                 )
                 .setShortLabel(it.senderName)
@@ -210,6 +236,6 @@ class BubblesFactoryImpl(private val context: Context) : BubblesFactory {
 
     companion object {
         const val REQUEST_BUBBLE = 2
+        const val TOPCHAT_HOST = "topchat"
     }
-
 }

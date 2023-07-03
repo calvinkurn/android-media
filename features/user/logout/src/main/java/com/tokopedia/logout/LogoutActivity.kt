@@ -8,7 +8,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.webkit.CookieManager
 import android.webkit.CookieSyncManager
@@ -17,6 +16,10 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import com.gojek.kyc.plus.OneKycConstants
+import com.gojek.kyc.plus.getKycSdkDocumentDirectoryPath
+import com.gojek.kyc.plus.getKycSdkFrameDirectoryPath
+import com.gojek.kyc.plus.getKycSdkLogDirectoryPath
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -32,10 +35,9 @@ import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.core.gcm.NotificationModHandler
 import com.tokopedia.dialog.DialogUnify
-import com.tokopedia.logger.ServerLogger.log
-import com.tokopedia.logger.utils.Priority
 import com.tokopedia.logout.di.DaggerLogoutComponent
 import com.tokopedia.logout.di.LogoutComponent
+import com.tokopedia.logout.domain.usecase.LogoutUseCase
 import com.tokopedia.notifications.CMPushNotificationManager.Companion.instance
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.sessioncommon.data.Token.Companion.getGoogleClientId
@@ -46,10 +48,9 @@ import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.user.session.datastore.DataStorePreference
 import com.tokopedia.user.session.datastore.UserSessionDataStore
-import com.tokopedia.user.session.datastore.workmanager.DataStoreMigrationWorker
 import com.tokopedia.user.session.util.EncoderDecoder
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import com.tokopedia.utils.file.FileUtil
+import java.io.File
 import javax.inject.Inject
 
 /**
@@ -80,6 +81,7 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
 
     private var isReturnToHome = true
     private var isClearDataOnly = false
+    private var isSaveSession = false
 
     private lateinit var mGoogleSignInClient: GoogleSignInClient
 
@@ -110,7 +112,11 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
         if (isClearDataOnly) {
             clearData()
         } else {
-            logoutViewModel.doLogout()
+            if(isSaveSession) {
+                logoutViewModel.doLogout(LogoutUseCase.PARAM_SAVE_SESSION)
+            } else {
+                logoutViewModel.doLogout()
+            }
         }
     }
 
@@ -118,6 +124,7 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
         if (intent.extras != null) {
             isReturnToHome = intent.extras?.getBoolean(ApplinkConstInternalUserPlatform.PARAM_IS_RETURN_HOME, true) as Boolean
             isClearDataOnly = intent.extras?.getBoolean(ApplinkConstInternalUserPlatform.PARAM_IS_CLEAR_DATA_ONLY, false) as Boolean
+            isSaveSession = intent.extras?.getBoolean(ApplinkConstInternalUserPlatform.PARAM_IS_SAVE_SESSION, false) as Boolean
         }
     }
 
@@ -177,6 +184,7 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
 
     private fun clearData() {
         hideLoading()
+        clearCacheGotoKyc()
         disconnectTokoChat()
         clearStickyLogin()
         logoutGoogleAccountIfExist()
@@ -194,11 +202,9 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
         clearTemporaryTokenForSeamless()
         instance.refreshFCMTokenFromForeground(userSession.deviceId, true)
 
-        userSession.clearToken()
         userSession.logoutSession()
         TkpdFirebaseAnalytics.getInstance(this).setUserId(null)
 
-        clearDataStore()
         RemoteConfigInstance.getInstance().abTestPlatform.fetchByType(null)
 
         if (isReturnToHome) {
@@ -217,22 +223,6 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
         } else {
             setResult(Activity.RESULT_OK)
             finish()
-        }
-    }
-
-    private fun clearDataStore() {
-        if (dataStorePreference.isDataStoreEnabled()) {
-            GlobalScope.launch {
-                try {
-                    userSessionDataStore.logoutSession()
-                } catch (e: Exception) {
-                    val data = mapOf(
-                        "method" to "logout_activity",
-                        "error" to Log.getStackTraceString(e).take(MAX_STACKTRACE_LENGTH)
-                    )
-                    log(Priority.P2, DataStoreMigrationWorker.USER_SESSION_LOGGER_TAG, data)
-                }
-            }
         }
     }
 
@@ -322,6 +312,33 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
         }
     }
 
+    private fun clearCacheGotoKyc() {
+        try {
+            val preferenceName = OneKycConstants.KYC_SDK_PREFERENCE_NAME
+            val preferenceKey = OneKycConstants.KYC_UPLOAD_PROGRESS_STATE
+            val preference = applicationContext.getSharedPreferences(preferenceName, Context.MODE_PRIVATE)
+
+            val state = preference.getString(preferenceKey, "").orEmpty()
+            if (state.isNotEmpty()) {
+                preference.edit().remove(preferenceKey).apply()
+            }
+
+            val directory1 = getKycSdkDocumentDirectoryPath(this)
+            val directory2 = getKycSdkFrameDirectoryPath(this)
+            val directory3 = getKycSdkLogDirectoryPath(this)
+            removeGotoKycImage(directory1)
+            removeGotoKycImage(directory2)
+            removeGotoKycImage(directory3)
+        } catch (ignored: Exception) {}
+    }
+
+    private fun removeGotoKycImage(directory: String) {
+        val file = File(directory)
+        if (file.isDirectory) {
+            FileUtil.deleteFolder(directory)
+        }
+    }
+
     companion object {
         private const val STICKY_LOGIN_PREF = "sticky_login_widget.pref"
         private const val STICKY_LOGIN_REMINDER_PREF = "sticky_login_reminder.pref"
@@ -329,8 +346,6 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
         private const val KEY_PROFILE_PICTURE = "profile_picture"
         private const val CHOOSE_ADDRESS_PREF = "local_choose_address"
         private const val INVALID_TOKEN = "Token tidak valid."
-
-        private const val MAX_STACKTRACE_LENGTH = 1000
 
         const val GOTO_SEAMLESS_PREF = "goto_seamless_pref"
         const val KEY_TEMPORARY = "temporary_key"

@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.DrawableRes
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -28,6 +29,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.unifycomponents.ChipsUnify
+import com.tokopedia.utils.resources.isDarkMode
 import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
 
@@ -63,6 +65,7 @@ class AttachVoucherFragment : BaseListFragment<Visitable<*>, AttachVoucherTypeFa
         setupObserver()
         setupFilter()
         super.onViewCreated(view, savedInstanceState)
+        setupShadow()
     }
 
     override fun loadData(page: Int) {
@@ -209,6 +212,15 @@ class AttachVoucherFragment : BaseListFragment<Visitable<*>, AttachVoucherTypeFa
     }
 
     override fun onItemClicked(t: Visitable<*>?) {}
+
+    private fun setupShadow() {
+        @DrawableRes val drawableRes = if (context?.isDarkMode() == true) {
+            com.tokopedia.attachcommon.R.drawable.bg_attachcommon_shadow_attachment_dark
+        } else {
+            com.tokopedia.attachcommon.R.drawable.bg_attachcommon_shadow_attachment_light
+        }
+        binding?.attachShadow?.setBackgroundResource(drawableRes)
+    }
 
     companion object {
         fun createInstance(): AttachVoucherFragment {

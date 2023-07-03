@@ -114,7 +114,7 @@
         android:drawableTint="@color/feed_dms_produk_tag_heading_color"
         android:gravity="center_vertical|start"
         android:minWidth="@dimen/unify_space_32"
-        android:paddingStart="@dimen/feed_component_dp_7"
+        android:paddingStart="@dimen/content_common_dp_7"
         android:paddingEnd="@dimen/unify_space_2"
         android:paddingTop="@dimen/unify_space_2"
         android:paddingBottom="@dimen/unify_space_2"

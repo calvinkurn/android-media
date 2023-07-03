@@ -38,7 +38,7 @@ public class ExploreImageAdapter extends RecyclerView.Adapter<AbstractViewHolder
         this.list = new ArrayList<>();
         this.loadingMoreModel = new LoadingMoreModel();
         this.emptyModel = new EmptyModel();
-        this.emptyModel.setIconRes(com.tokopedia.feedcomponent.R.drawable.ic_empty_search);
+        this.emptyModel.setIconRes(com.tokopedia.feedcomponent.R.drawable.ic_feed_empty_search);
         this.emptyModel.setContent(context.getString(R.string.explore_empty_result));
     }
 
