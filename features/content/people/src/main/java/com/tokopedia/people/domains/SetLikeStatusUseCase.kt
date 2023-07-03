@@ -8,6 +8,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.people.model.SetLikeStatusRequest
 import com.tokopedia.people.model.SetLikeStatusResponse
+import com.tokopedia.people.views.uimodel.mapper.UserProfileLikeStatusMapper
 import javax.inject.Inject
 
 /**
@@ -24,7 +25,7 @@ class SetLikeStatusUseCase @Inject constructor(
     override suspend fun execute(params: SetLikeStatusRequest): SetLikeStatusResponse {
         val param = mapOf(
             PARAM_FEEDBACK_ID to params.feedbackID,
-            PARAM_LIKE_STATUS to params.likeStatus,
+            PARAM_LIKE_STATUS to UserProfileLikeStatusMapper.getLikeStatus(params.isLike)
         )
 
         return repository.request(graphqlQuery(), param)

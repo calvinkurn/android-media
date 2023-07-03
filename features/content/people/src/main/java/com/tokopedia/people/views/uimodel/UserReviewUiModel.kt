@@ -116,20 +116,8 @@ data class UserReviewUiModel(
 
     data class LikeDislike(
         val totalLike: Int,
-        val likeStatus: Int
-    ) {
-        fun switchLikeStatus(): Int {
-            return if (likeStatus == LIKE_STATUS) RESET_STATUS else LIKE_STATUS
-        }
-
         val isLike: Boolean
-            get() = likeStatus == LIKE_STATUS
-
-        companion object {
-            private const val LIKE_STATUS = 1
-            private const val RESET_STATUS = 3
-        }
-    }
+    )
 
     companion object {
         val Empty: UserReviewUiModel

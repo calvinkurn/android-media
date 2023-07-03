@@ -28,6 +28,7 @@ import com.tokopedia.people.views.uimodel.profile.ProfileTabUiModel
 import com.tokopedia.people.views.uimodel.profile.ProfileType
 import com.tokopedia.people.views.uimodel.profile.ProfileUiModel
 import com.tokopedia.people.views.uimodel.getReviewSettings
+import com.tokopedia.people.views.uimodel.mapper.UserProfileLikeStatusMapper
 import com.tokopedia.people.views.uimodel.saved.SavedReminderData
 import com.tokopedia.people.views.uimodel.state.UserProfileUiState
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
@@ -585,7 +586,7 @@ class UserProfileViewModel @AssistedInject constructor(
 
             val response = repo.setLikeStatus(
                 feedbackID = review.feedbackID,
-                likeStatus = review.likeDislike.switchLikeStatus()
+                isLike = !review.likeDislike.isLike
             )
 
             if (response.isLike != likeDislikeAfterUpdate?.isLike) {
@@ -637,7 +638,7 @@ class UserProfileViewModel @AssistedInject constructor(
     private fun handleUpdateLikeStatus(feedbackId: String, likeStatus: Int) {
         val review = _reviewContent.value.reviewList.firstOrNull { it.feedbackID == feedbackId } ?: return
 
-        if (review.likeDislike.likeStatus != likeStatus) {
+        if (review.likeDislike.isLike != UserProfileLikeStatusMapper.isLike(likeStatus)) {
             toggleLikeDislikeStatus(feedbackId)
         }
     }
@@ -785,7 +786,7 @@ class UserProfileViewModel @AssistedInject constructor(
                                 } else {
                                     item.likeDislike.totalLike + 1
                                 },
-                                likeStatus = item.likeDislike.switchLikeStatus()
+                                isLike = !item.likeDislike.isLike
                             ).also { likeDislike ->
                                 selectedLikeDislike = likeDislike
                             }

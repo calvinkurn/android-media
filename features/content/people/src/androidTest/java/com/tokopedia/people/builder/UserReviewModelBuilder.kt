@@ -44,7 +44,7 @@ class UserReviewModelBuilder {
                     ),
                     likeDislike = UserReviewUiModel.LikeDislike(
                         totalLike = 123,
-                        likeStatus = 0,
+                        isLike = true,
                     ),
                     isReviewTextExpanded = false,
                 )
@@ -61,7 +61,7 @@ class UserReviewModelBuilder {
     ): UserReviewUiModel.LikeDislike {
         return UserReviewUiModel.LikeDislike(
             totalLike = totalLike,
-            likeStatus = if (isLike) 1 else 3
+            isLike = isLike,
         )
     }
 }
