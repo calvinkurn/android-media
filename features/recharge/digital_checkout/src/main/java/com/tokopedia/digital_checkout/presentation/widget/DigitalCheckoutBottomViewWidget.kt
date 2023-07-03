@@ -114,8 +114,6 @@ class DigitalCheckoutBottomViewWidget @JvmOverloads constructor(
                                 else -> true
                             }
                         }
-                    } else {
-                        isCheckoutButtonEnabled = true
                     }
                     removeConsentCollectionObserver()
                 }
@@ -136,15 +134,19 @@ class DigitalCheckoutBottomViewWidget @JvmOverloads constructor(
             setOnFailedGetCollectionListener {
                 isCheckoutButtonEnabled = false
             }
-            setOnDetailConsentListener { _, consentType ->
-                if (isProductConsentWidgetVisible()) {
-                    isCheckoutButtonEnabled = when (consentType) {
-                        is ConsentType.SingleInfo -> true
-                        is ConsentType.SingleChecklist -> false
-                        is ConsentType.MultipleChecklist -> false
-                        else -> true
+            setOnDetailConsentListener { isShowConsent, consentType ->
+                if (isShowConsent) {
+                    if (isProductConsentWidgetVisible()) {
+                        isCheckoutButtonEnabled = when (consentType) {
+                            is ConsentType.SingleInfo -> true
+                            is ConsentType.SingleChecklist -> false
+                            is ConsentType.MultipleChecklist -> false
+                            else -> true
+                        }
+                        removeConsentCollectionObserver()
                     }
-                    removeConsentCollectionObserver()
+                } else {
+                    isCheckoutButtonEnabled = true
                 }
             }
             load(lifecycleOwner, viewModelStoreOwner, consentCollectionParam)
