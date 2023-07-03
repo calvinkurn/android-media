@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.common.network.exception.ResponseErrorException
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.content.common.comment.usecase.GetCountCommentsUseCase
+import com.tokopedia.content.common.usecase.BroadcasterReportTrackViewerUseCase
 import com.tokopedia.content.common.usecase.TrackVisitChannelBroadcasterUseCase
 import com.tokopedia.createpost.common.domain.entity.SubmitPostData
 import com.tokopedia.feed.component.product.FeedTaggedProductUiModel
@@ -25,14 +26,7 @@ import com.tokopedia.feedplus.domain.usecase.FeedCampaignReminderUseCase
 import com.tokopedia.feedplus.domain.usecase.FeedXHomeUseCase
 import com.tokopedia.feedplus.presentation.adapter.FeedAdapterTypeFactory
 import com.tokopedia.feedplus.presentation.fragment.FeedBaseFragment
-import com.tokopedia.feedplus.presentation.model.FeedCardImageContentModel
-import com.tokopedia.feedplus.presentation.model.FeedCardLivePreviewContentModel
-import com.tokopedia.feedplus.presentation.model.FeedCardVideoContentModel
-import com.tokopedia.feedplus.presentation.model.FeedLikeModel
-import com.tokopedia.feedplus.presentation.model.FeedModel
-import com.tokopedia.feedplus.presentation.model.FeedReminderResultModel
-import com.tokopedia.feedplus.presentation.model.FollowShopModel
-import com.tokopedia.feedplus.presentation.model.LikeFeedDataModel
+import com.tokopedia.feedplus.presentation.model.*
 import com.tokopedia.feedplus.presentation.uiview.FeedCampaignRibbonType
 import com.tokopedia.feedplus.presentation.util.common.FeedLikeAction
 import com.tokopedia.kolcommon.domain.interactor.SubmitActionContentUseCase
@@ -44,21 +38,7 @@ import com.tokopedia.mvcwidget.TokopointsCatalogMVCSummary
 import com.tokopedia.mvcwidget.usecases.MVCSummaryUseCase
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.topads.sdk.domain.usecase.GetTopAdsHeadlineUseCase
-import com.tokopedia.topads.sdk.utils.PARAM_DEVICE
-import com.tokopedia.topads.sdk.utils.PARAM_EP
-import com.tokopedia.topads.sdk.utils.PARAM_HEADLINE_PRODUCT_COUNT
-import com.tokopedia.topads.sdk.utils.PARAM_ITEM
-import com.tokopedia.topads.sdk.utils.PARAM_PAGE
-import com.tokopedia.topads.sdk.utils.PARAM_SRC
-import com.tokopedia.topads.sdk.utils.PARAM_TEMPLATE_ID
-import com.tokopedia.topads.sdk.utils.PARAM_USER_ID
-import com.tokopedia.topads.sdk.utils.TopAdsAddressHelper
-import com.tokopedia.topads.sdk.utils.UrlParamHelper
-import com.tokopedia.topads.sdk.utils.VALUE_DEVICE
-import com.tokopedia.topads.sdk.utils.VALUE_EP
-import com.tokopedia.topads.sdk.utils.VALUE_HEADLINE_PRODUCT_COUNT
-import com.tokopedia.topads.sdk.utils.VALUE_ITEM
-import com.tokopedia.topads.sdk.utils.VALUE_TEMPLATE_ID
+import com.tokopedia.topads.sdk.utils.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -88,6 +68,7 @@ class FeedPostViewModel @Inject constructor(
     private val topAdsAddressHelper: TopAdsAddressHelper,
     private val getCountCommentsUseCase: GetCountCommentsUseCase,
     private val trackVisitChannelUseCase: TrackVisitChannelBroadcasterUseCase,
+    private val trackReportTrackViewerUseCase: BroadcasterReportTrackViewerUseCase,
     private val dispatchers: CoroutineDispatchers
 ) : ViewModel() {
 
@@ -141,8 +122,7 @@ class FeedPostViewModel @Inject constructor(
                         require(isNewData)
 
                         getRelevantPosts(postId)
-                    } catch (e: Throwable) {
-                        Timber.e(e)
+                    } catch (_: Throwable) {
                         FeedModel.Empty
                     }.items
                 }
@@ -779,19 +759,35 @@ class FeedPostViewModel @Inject constructor(
      */
     fun trackVisitChannel(model: FeedCardVideoContentModel) {
         val playChannelId = model.playChannelId
-        if (playChannelId.isBlank()) return // only track when post is play channel
+        if (playChannelId.isBlank()) return
 
-        viewModelScope.launchCatchError(block = {
-            withContext(dispatchers.io) {
-                trackVisitChannelUseCase.apply {
-                    setRequestParams(
-                        TrackVisitChannelBroadcasterUseCase.createParams(
-                            playChannelId,
-                            TrackVisitChannelBroadcasterUseCase.FEED_ENTRY_POINT_VALUE
-                        )
+        viewModelScope.launchCatchError(dispatchers.io, block = {
+            trackVisitChannelUseCase.apply {
+                setRequestParams(
+                    TrackVisitChannelBroadcasterUseCase.createParams(
+                        playChannelId,
+                        TrackVisitChannelBroadcasterUseCase.FEED_ENTRY_POINT_VALUE
                     )
-                }.executeOnBackground()
-            }
+                )
+            }.executeOnBackground()
+        }) {
+        }
+    }
+
+    fun trackChannelPerformance(model: FeedCardVideoContentModel) {
+        val playChannelId = model.playChannelId
+        if (playChannelId.isBlank()) return
+
+        val productIds = model.products.map { it.id }
+        viewModelScope.launchCatchError(dispatchers.io, block = {
+            trackReportTrackViewerUseCase.apply {
+                setRequestParams(
+                    BroadcasterReportTrackViewerUseCase.createParams(
+                        playChannelId,
+                        productIds
+                    )
+                )
+            }.executeOnBackground()
         }) {
         }
     }

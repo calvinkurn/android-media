@@ -1,0 +1,100 @@
+{
+  "topadsDisplayBannerAdsV3": {
+    "data": [
+      {
+        "id": 128888919,
+        "ad_ref_key": "",
+        "ad_view_url": "https://ta.tokopedia.com/promo/v1/views/8a-xgVY2gmUEH_Ud6AKd6_JNbm-xgVY789CBUstRbm-FQRo2PcB5QiUEHZFiPcBWgZUEH_ydosKho_yNoZFircV7qmUEUMBWy3PBraN7QfW5rcujq3JXQMu7bfBWgaYkgIgjPIK5HsnaHi47bpJ5oMyhg3uMy3JWocJRHZ77HsnNb3Ud6cJWoMepgsrRofyOo_UpbM2FgaUDUMoFQZUEH_UDUMVj9RosQR-BUstaopUX6AK7H_HhHsefHAe7HaFirpowQcYSUstig9BGP3Uao32q17jfZ326qjNkyRBvzJ2t_VzgHjNJe9z6zJVN39jFouBkgRBHuOJh3_-oHjOEe_-6Q1ud_SB-r7BX_M2iH72D3A-G83UpgI2q17jfZ32-H1YAoAC6qBjO_jzCHjOk1_-6zJ7aZ3BRq3Ha_SgsQugMyp-3qcoW_MY-qMY2_32uHjhkgpCoqB1h_M2uH7Y11_ovuVV2gBJYvZUDUSupg9-wq3ei6iUhoAKaHAJa6_1ibm-pg9opq3YX9fBjUstig1FN3MdR9f2_oMJfZMtaoO2poSVv__2C1JJNH3-UeMhZZS-Wz9-A_J1FZ3-UqsPf8M2uqSg_HuYZZ1V_Ps-boRuMg1xMzMOy3BxEq7tNPO-BHfzNzaOJHjuW_sByHICuHc1a1f2NguoUzMBxZBusZsoFgRnWZJKpqVYpe7tpqjuq8uxzypuy3BCzriOh3szy81gCyMYjPJOquVPJZRrOrpVpPmUDUMVDgaUEUM-xQMNBrBYxgIHibm-XP3Oig9-wQfgwy3zpUstabm-XP3Oig9-wy3zp9R-BrZUEHiFiQBYsy3Njq3zxPcuwy3zpUsthosrDUMVi9RzBrRei6i-6UiFirMYDQcuXyfuwgMh5PaUEUMgDQRPwyMVXQMua9fVjrfo5rMuwPMVa9pUibm-aQfhDg3NsguYfy9-2y3N79fNxQ31i6i-7gcNwy3zpyfYaguYfy9-wHiUDUS-5QchBQMoB9fudrcuaq3OBQSzwQMVWgZUEUSzjQBYxgIosQR-B9fudrmUDUSgBrSo2Qfdi6i-fHiUDUMP5y3hwq3ei6sVY?t\u003dandroid\u0026sid\u003deL9Zn7_jS6a6Jj27Zs6qOM%3AAPA91bHBlRJrmErCLE0IbHj7vzjUjvS1_RIASv2K7ufeHfFmXZXzkJ9wRe3dyG-D2EmN9X0pU0e2SjyeSHFiaJUcJ3pgp-HH3h_sCJ3jEZyXQc5XZPQr-qZ4XyFAbodtMZTWDKw5s1st\u0026uid\u003d148201295\u0026src\u003dinbox\u0026page\u003d1",
+        "ad_click_url": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEH_Ud6AKd6_JNbm-xgVY789CBUstRbm-FQRo2PcB5QiUEHZFiPcBWgZUEH_ydosKho_yNoZFiy3zwrfo5rM1i6sURHidd6AehHpJaoAyFoAepbm-pHOYDQfri6i-B812OysUOqB2_Z_g-qjNk_M2s81YJZMxHuVja_jzCPJNJe9Bg8_nO332S81h91_VgHj7a_92CHjNWz9x681BpZ3N6qMUpZMhyHj2Nysoj8B2_Z_g-qjjh_7H7HJNk3_u6zJJa_32zHjNJ__--q9P2yp-6PMoWuMgsHBgtyfO6Q7BkQfBoqB1a_c2SHJOku_V6qB1p_OzzH7Y113BM1_7YUiFiP9oBrBY2gmUEUsJ76AUFH_UNoZUDUSoBrRo2QfNwq3ei6i-B_ABqQsPwqBHfy_gGqsUR3SHfr1Yo6jVee_jhyjxmQV-GrMOVrjoHz_C-yjxkoRgEqBukPBHh9O--euofHjDRP3gBZcgcQuxq3I20ZsBR1M1pgIBIb1eaz3O66uKFrV1Fg_-_qSBB17xcq3VGu3oGHRCSrmOUZAot9RoAZsokzu2N3VVsouxq1VVab9VqoVxNzjViQfz7_u21u7zbPpupH9o7UiFiy3hSUstiyMVXQMua9fVjraUDUMNOQ3-BrBY5gBYxgIHi6sUDUMNOQ3-BrBYxgIowrMuhUstabm-X9foxQMz2gcV7guYxgIHi6sJfoaFiy3-wPcupPmUEUjdibm-aQfhDg3NsguYMQcYRUstigMh5POYiy3NXg9-wy3zpyfYaguYfy9-wHiUDUS-5QchBQMoB9RgxrMBxQSzwQMVWgZUEUSzjQBYxgIosQR-B9RgxrB4aUiFirMYDQcuXyfuwg9xFg9-2Q3uXPVYXy3OBUstiPczX9fVjrfo5rMuwg9xFUiFiPMuarfB5QiUEUSyaUiFigfYxQVY2gmUEH97?t\u003dandroid\u0026uid\u003d148201295\u0026page\u003d1\u0026sid\u003deL9Zn7_jS6a6Jj27Zs6qOM%3AAPA91bHBlRJrmErCLE0IbHj7vzjUjvS1_RIASv2K7ufeHfFmXZXzkJ9wRe3dyG-D2EmN9X0pU0e2SjyeSHFiaJUcJ3pgp-HH3h_sCJ3jEZyXQc5XZPQr-qZ4XyFAbodtMZTWDKw5s1st\u0026r\u003dhttps%3A%2F%2Fwww.tokopedia.com%2Fgisnicbaby\u0026src\u003dinbox\u0026click_ad_type\u003d1",
+        "applinks": "tokopedia://shop/3264628",
+        "banner": {
+          "Name": "",
+          "Position": 0,
+          "LayoutType": "single",
+          "Images": [
+            {
+              "Dimension": {
+                "Id": 3,
+                "Height": 400,
+                "Width": 1200
+              },
+              "Url": "https://images.tokopedia.net/img/jdvdtx/2022/4/1/6f1eefaa-4a71-4209-b88a-6d3f777f5523.jpg"
+            }
+          ],
+          "CategoryIDs": [],
+          "Shop": {
+            "ShopID": 3264628,
+            "ShopName": "Gisnicbaby Official",
+            "ShopImage": {
+              "cover": "",
+              "cover_ecs": "",
+              "s_ecs": "",
+              "s_url": "",
+              "xs_ecs": "",
+              "xs_url": ""
+            },
+            "ShopDomain": "gisnicbaby",
+            "ShopTagline": "High Quality with Affordable Price Baby Products",
+            "ShopCityName": "Jakarta Barat",
+            "ShopIsOfficial": true,
+            "IsPowerMerchant": false,
+            "IsPowerMerchantBadge": true
+          }
+        }
+      },
+      {
+        "id": 189266490,
+        "ad_ref_key": "",
+        "ad_view_url": "https://ta.tokopedia.com/promo/v1/views/8a-xgVY2gmUEH_KNHsyfoAjFbm-xgVY789CBUstRbm-FQRo2PcB5QiUEHiFiPcBWgZUEH_ydosKho_yNoZFircV7qmUEUMBWy3PBraN7QfW5rcujq3JXQMu7bfBWgaYBg1BRujj5HsnaHa4fbpr5osBxoABsHAeW6ABBHi77y31Rb_jd6_rW6_yhg_eagAHh6ArfbM2FgaUDUMoFQZUEHsKDUMVj9RosQR-BUstaopJXHsJOopehosjFHAeNoZFirpowQcYSUstig9BGP3Uao32q17jfZ326qjNkyRBvzJ2t_VzgHjNJe9z6zJVN39jFouBkgRBHuOJh3_-oHjOEe_-6Q1ud_SB-r7BX_M2iH72D3A-G83UpgI2q17jfZ32-HjO_oA-vzJOE_OzSH1OJz_VvuVuEZ3BRq3Ha_SgsQugMyp-3qcoW_MY-qMY2_32gP7hk1_-vzJja_7zg81Y13_u6zVuEZ3dFvZUDUSupg9-wq3ei6iUhoAKaHAJa6_1ibm-pg9opq3YX9fBjUstig1FN3MdR9f2_oMJfZMtaoO2poSVv__2C1JJNH3-UeMhZZS-Wz9-A_J1FZ3-UqsPf8M2uqSg_HuYZZ1V_Ps-boRuMg1xMzMOy3BxEq7tNPO-BHfzNzaOJHjuW_sByHICuHc1a1f2NguoUzMBxZBusZsoFgRnWZJKpqVYpe7tpqjuq8uxzypuy3BCzriOh3szy81gCyMYjPJOquVPJZRrOrpVpPmUDUMVDgaUEUM-xQMNBrBYxgIHibm-XP3Oig9-wQfgwy3zpUstabm-XP3Oig9-wy3zp9R-BrZUEHiFiQBYsy3Njq3zxPcuwy3zpUsthosrDUMVi9RzBrRei6i-6UiFirMYDQcuXyfuwgMh5PaUEUMgDQRPwyMVXQMua9fVjrfo5rMuwPMVa9pUibm-aQfhDg3NsguYfy9-2y3N79fNxQ31i6i-7gcNwy3zpyfYaguYfy9-wHiUDUS-5QchBQMoB9fudrcuaq3OBQSzwQMVWgZUEUSzjQBYxgIosQR-B9fudrmUDUSgBrSo2Qfdi6i-fHiUDUMP5y3hwq3ei6sVY?t\u003dandroid\u0026sid\u003deL9Zn7_jS6a6Jj27Zs6qOM%3AAPA91bHBlRJrmErCLE0IbHj7vzjUjvS1_RIASv2K7ufeHfFmXZXzkJ9wRe3dyG-D2EmN9X0pU0e2SjyeSHFiaJUcJ3pgp-HH3h_sCJ3jEZyXQc5XZPQr-qZ4XyFAbodtMZTWDKw5s1st\u0026uid\u003d148201295\u0026src\u003dinbox\u0026page\u003d1",
+        "ad_click_url": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEH_KNHsyfoAjFbm-xgVY789CBUstRbm-FQRo2PcB5QiUEHiFiPcBWgZUEH_ydosKho_yNoZFiy3zwrfo5rM1i6sURHZdaH_1RoAJf6_nFoAjObm-pHOYDQfri6i-B812OysUOqB2_Z_g-qjNk_M2s81YJZMxHuVja_jzCPJNJe9Bg8_nO332S81h91_VgHj7a_92CHjNWz9x681BpZ3N6qMUpZMhyHj2Nysoj8B2_Z_g-qjja_uH7HjYJ_92vucrh_1zVH1Y1u92-q9P2yp-6PMoWuMgsHBgtyfO6Q7BkQfBoqBBR_c2zHjYJZ_-vzVBN_Ozgo1NJu92-QsnYUiFiP9oBrBY2gmUEUsJ76AUFH_UNoZUDUSoBrRo2QfNwq3ei6i-B_ABqQsPwqBHfy_gGqsUR3SHfr1Yo6jVee_jhyjxmQV-GrMOVrjoHz_C-yjxkoRgEqBukPBHh9O--euofHjDRP3gBZcgcQuxq3I20ZsBR1M1pgIBIb1eaz3O66uKFrV1Fg_-_qSBB17xcq3VGu3oGHRCSrmOUZAot9RoAZsokzu2N3VVsouxq1VVab9VqoVxNzjViQfz7_u21u7zbPpupH9o7UiFiy3hSUstiyMVXQMua9fVjraUDUMNOQ3-BrBY5gBYxgIHi6sUDUMNOQ3-BrBYxgIowrMuhUstabm-X9foxQMz2gcV7guYxgIHi6sJfoaFiy3-wPcupPmUEUjdibm-aQfhDg3NsguYMQcYRUstigMh5POYiy3NXg9-wy3zpyfYaguYfy9-wHiUDUS-5QchBQMoB9RgxrMBxQSzwQMVWgZUEUSzjQBYxgIosQR-B9RgxrB4aUiFirMYDQcuXyfuwg9xFg9-2Q3uXPVYXy3OBUstiPczX9fVjrfo5rMuwg9xFUiFiPMuarfB5QiUEUSyaUiFigfYxQVY2gmUEH97?src\u003dinbox\u0026click_ad_type\u003d1\u0026t\u003dandroid\u0026sid\u003deL9Zn7_jS6a6Jj27Zs6qOM%3AAPA91bHBlRJrmErCLE0IbHj7vzjUjvS1_RIASv2K7ufeHfFmXZXzkJ9wRe3dyG-D2EmN9X0pU0e2SjyeSHFiaJUcJ3pgp-HH3h_sCJ3jEZyXQc5XZPQr-qZ4XyFAbodtMZTWDKw5s1st\u0026uid\u003d148201295\u0026r\u003dhttps%3A%2F%2Fwww.tokopedia.com%2Fdiscovery%2Fmustelaindonesia_mustelaid_WIB_1_Apr_2023\u0026page\u003d1",
+        "applinks": "tokopedia://discovery/mustelaindonesia_mustelaid_WIB_1_Apr_2023",
+        "banner": {
+          "Name": "",
+          "Position": 40,
+          "LayoutType": "single",
+          "Images": [
+            {
+              "Dimension": {
+                "Id": 3,
+                "Height": 400,
+                "Width": 1200
+              },
+              "Url": "https://images.tokopedia.net/img/jdvdtx/2023/6/7/84a695b7-ac6d-4dee-a865-1bbe83d8761d.jpg"
+            }
+          ],
+          "CategoryIDs": [],
+          "Shop": {
+            "ShopID": 5994167,
+            "ShopName": "Mustela Indonesia",
+            "ShopImage": {
+              "cover": "",
+              "cover_ecs": "",
+              "s_ecs": "",
+              "s_url": "",
+              "xs_ecs": "",
+              "xs_url": ""
+            },
+            "ShopDomain": "mustelaindonesia",
+            "ShopTagline": "Ahli kulit bayi sejak 1950",
+            "ShopCityName": "Kota Tangerang",
+            "ShopIsOfficial": true,
+            "IsPowerMerchant": false,
+            "IsPowerMerchantBadge": true
+          }
+        }
+      }
+    ],
+    "header": {
+      "total_data": 2,
+      "pagination": {
+        "kind": "scroll",
+        "next_page_token": "8a-pyR-5QchwPsJi6SDiQcVpPVYaQRri6s-Ywe",
+        "current_page": "1"
+      },
+      "auto_scroll": {
+        "enable": true,
+        "timer": 5
+      }
+    }
+  }
+}

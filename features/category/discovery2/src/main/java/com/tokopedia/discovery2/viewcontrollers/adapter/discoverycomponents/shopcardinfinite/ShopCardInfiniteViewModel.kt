@@ -15,11 +15,11 @@ import kotlinx.coroutines.SupervisorJob
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
-
 class ShopCardInfiniteViewModel(val application: Application, val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
 
+    @JvmField
     @Inject
-    lateinit var shopCardInfiniteUseCase: ShopCardUseCase
+    var shopCardInfiniteUseCase: ShopCardUseCase? = null
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + SupervisorJob()
@@ -27,12 +27,12 @@ class ShopCardInfiniteViewModel(val application: Application, val components: Co
     override fun onAttachToViewHolder() {
         super.onAttachToViewHolder()
         launchCatchError(block = {
-            val shouldSync = shopCardInfiniteUseCase.loadFirstPageComponents(
+            val shouldSync = shopCardInfiniteUseCase?.loadFirstPageComponents(
                 components.id,
                 components.pageEndPoint,
                 SHOP_PER_PAGE
             )
-            if (shouldSync) {
+            if (shouldSync == true) {
                 getComponent(components.id, components.pageEndPoint)?.let {
                     if (it.getComponentsItem().isNullOrEmpty() && !it.areFiltersApplied()) {
                         it.verticalProductFailState = true
@@ -45,9 +45,8 @@ class ShopCardInfiniteViewModel(val application: Application, val components: Co
             }
             this@ShopCardInfiniteViewModel.syncData.value = shouldSync
         }, onError = {
-            getComponent(components.id, components.pageEndPoint)?.verticalProductFailState = true
-            this@ShopCardInfiniteViewModel.syncData.value = true
-        })
+                getComponent(components.id, components.pageEndPoint)?.verticalProductFailState = true
+                this@ShopCardInfiniteViewModel.syncData.value = true
+            })
     }
-
 }

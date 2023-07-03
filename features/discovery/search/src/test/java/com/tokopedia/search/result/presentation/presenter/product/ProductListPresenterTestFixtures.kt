@@ -5,6 +5,7 @@ import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.discovery.common.utils.CoachMarkLocalCache
+import com.tokopedia.discovery.common.utils.SimilarSearchCoachMarkLocalCache
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -45,6 +46,8 @@ import com.tokopedia.search.result.product.safesearch.SafeSearchPresenterDelegat
 import com.tokopedia.search.result.product.safesearch.SafeSearchView
 import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationPreference
 import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationPresenterDelegate
+import com.tokopedia.search.result.product.similarsearch.SimilarSearchOnBoardingPresenterDelegate
+import com.tokopedia.search.result.product.similarsearch.SimilarSearchOnBoardingView
 import com.tokopedia.search.result.product.suggestion.SuggestionPresenter
 import com.tokopedia.search.result.product.tdn.TopAdsImageViewPresenterDelegate
 import com.tokopedia.search.result.product.ticker.TickerPresenterDelegate
@@ -129,6 +132,8 @@ internal open class ProductListPresenterTestFixtures {
     protected val inspirationCarouselView = mockk<InspirationCarouselView>(relaxed = true)
     protected val bottomSheetFilterView = mockk<BottomSheetFilterView>(relaxed = true)
     protected val abTestRemoteConfig = mockk<RemoteConfig>(relaxed = true)
+    protected val similarSearchCoachMarkLocalCache = mockk<SimilarSearchCoachMarkLocalCache>(relaxed = true)
+    protected val similarSearchOnBoardingView = mockk<SimilarSearchOnBoardingView>(relaxed = true)
 
     private val dynamicFilterModel = MutableDynamicFilterModelProviderDelegate()
     private val pagination = PaginationImpl()
@@ -212,6 +217,12 @@ internal open class ProductListPresenterTestFixtures {
             pagination = pagination,
         )
 
+        val similarSearchOnBoardingPresenterDelegate = SimilarSearchOnBoardingPresenterDelegate(
+            similarSearchLocalCache = similarSearchCoachMarkLocalCache,
+            { abTestRemoteConfig },
+            similarSearchOnBoardingView,
+        )
+
         productListPresenter = ProductListPresenter(
             searchFirstPageUseCase,
             searchLoadMoreUseCase,
@@ -251,6 +262,7 @@ internal open class ProductListPresenterTestFixtures {
             adsLowOrganic,
             abTestRemoteConfig,
             responseCodeImpl,
+            similarSearchOnBoardingPresenterDelegate,
         )
         productListPresenter.attachView(productListView)
     }
