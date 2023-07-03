@@ -4,13 +4,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.scp_rewards_touchpoints.common.di.CelebrationComponent
+import com.tokopedia.scp_rewards_touchpoints.common.Error
 import com.tokopedia.scp_rewards_touchpoints.common.Loading
 import com.tokopedia.scp_rewards_touchpoints.common.Success
-import com.tokopedia.scp_rewards_touchpoints.common.Error
+import com.tokopedia.scp_rewards_touchpoints.common.di.CelebrationComponent
 import com.tokopedia.scp_rewards_touchpoints.databinding.ActivityTestBinding
 import com.tokopedia.scp_rewards_touchpoints.toaster.model.ScpRewardsToasterModel
 import com.tokopedia.scp_rewards_touchpoints.toaster.viewmodel.ScpToasterViewModel
@@ -63,18 +64,22 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
 //        }
 
         binding?.btnToaster?.setOnClickListener {
-            scpToasterViewModel.getToaster(914957011, "", "order_history_list_page")
+            if (binding?.input?.editText?.text?.isEmpty() == true) {
+                Toast.makeText(context, "Please enter order id", Toast.LENGTH_LONG).show()
+            } else {
+                scpToasterViewModel.getToaster(binding?.input?.editText?.text?.toString()?.toLong() ?: 0, "", "order_history_list_page")
+            }
         }
-
     }
     private fun observeData() {
         scpToasterViewModel.toasterLiveData.observe(this) {
             when (it) {
                 is Success<*> -> {
+                    binding?.btnToaster?.isLoading = false
                     val data = (it.data as ScpRewardsToasterModel).scpRewardsMedaliTouchpointOrder
                     if (data?.isShown == true) {
-                        val title = data.medaliTouchpointOrder?.infoMessage?.title?: ""
-                        val subtitle = data.medaliTouchpointOrder?.infoMessage?.subtitle?: ""
+                        val title = data.medaliTouchpointOrder?.infoMessage?.title ?: ""
+                        val subtitle = data.medaliTouchpointOrder?.infoMessage?.subtitle ?: ""
                         val ctaTitle = data.medaliTouchpointOrder?.cta?.text ?: ""
                         val appLink = data.medaliTouchpointOrder?.cta?.appLink
 
@@ -87,10 +92,11 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
                 }
 
                 is Error -> {
-
+                    binding?.btnToaster?.isLoading = false
+                    Toast.makeText(context, "User doesnt have medalis", Toast.LENGTH_LONG).show()
                 }
                 Loading -> {
-
+                    binding?.btnToaster?.isLoading = true
                 }
             }
         }

@@ -7,21 +7,21 @@ import javax.inject.Inject
 
 @GqlQuery("scpRewardsMedaliTouchpointOrder", SCP_TOASTER_QUERY)
 class ScpToasterUseCase @Inject constructor() : GraphqlUseCase<ScpRewardsToasterModel>() {
-    suspend fun getToaster(orderID:Int, pageName:String, sourceName:String) : ScpRewardsToasterModel {
+    suspend fun getToaster(orderID: Long, pageName: String, sourceName: String): ScpRewardsToasterModel {
         setTypeClass(ScpRewardsToasterModel::class.java)
         setGraphqlQuery(ScpRewardsMedaliTouchpointOrder())
-        setRequestParams(getRequestParams(orderID,pageName, sourceName))
+        setRequestParams(getRequestParams(orderID, pageName, sourceName))
         return executeOnBackground()
     }
 
-    private fun getRequestParams(orderID:Int, pageName:String, sourceName:String) = mapOf(
+    private fun getRequestParams(orderID: Long, pageName: String, sourceName: String) = mapOf(
         API_VERSION_KEY to "5.0.0",
         ORDER_ID_KEY to orderID,
         PAGE_NAME_KEY to pageName,
         SOURCE_NAME_KEY to sourceName
     )
 
-    companion object{
+    companion object {
         private const val API_VERSION_KEY = "apiVersion"
         private const val ORDER_ID_KEY = "orderID"
         private const val PAGE_NAME_KEY = "pageName"
