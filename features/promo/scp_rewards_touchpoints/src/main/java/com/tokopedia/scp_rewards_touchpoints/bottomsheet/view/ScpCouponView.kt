@@ -31,6 +31,11 @@ class ScpCouponView @JvmOverloads constructor(
             field = value
             refresh()
         }
+    var isEdgeControl = true
+        set(value) {
+            field = value
+            refresh()
+        }
     private var circularEdgePaint: Paint = Paint()
     private var path = Path()
     private var shimmerPlaceholder: AnimatedVectorDrawableCompat? = null
@@ -56,7 +61,7 @@ class ScpCouponView @JvmOverloads constructor(
 
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
-        if (shimmerPlaceholder == null) {
+        if (shimmerPlaceholder == null && isEdgeControl) {
             val edgeRadius = height / EDGE_RADIUS_MULTIPLIER
             val leftCx = 0f
             val rightCx = width.toFloat()

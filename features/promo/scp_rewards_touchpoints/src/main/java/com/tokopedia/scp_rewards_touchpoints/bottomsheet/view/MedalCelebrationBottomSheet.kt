@@ -216,7 +216,7 @@ class MedalCelebrationBottomSheet : BottomSheetUnify() {
 
     private fun setupCloseButtonBehaviour() {
         binding?.btnClose?.setOnClickListener {
-            CelebrationBottomSheetAnalytics.clickCloseBottomSheet(medaliSlug, getBenefitCta("primary")?.couponCode ?: "")
+            CelebrationBottomSheetAnalytics.clickCloseBottomSheet(medaliSlug, getBenefitCta(autoApply = true)?.couponCode ?: "")
             dismiss()
         }
     }
@@ -310,8 +310,7 @@ class MedalCelebrationBottomSheet : BottomSheetUnify() {
             coupon_image = it
             incrementAssetCount()
         }) {
-            isFallbackCase = true
-            showAnimatedView()
+            incrementAssetCount()
         }
     }
 
@@ -401,6 +400,14 @@ class MedalCelebrationBottomSheet : BottomSheetUnify() {
             setupSponsorCard()
             showCloseButton()
             setCloseBtnColor()
+            hideAllBenefitCta()
+        }
+    }
+
+    private fun hideAllBenefitCta(){
+        binding?.mainView?.couponUi?.apply {
+            btnPrimary.hide()
+            btnSecondary.hide()
         }
     }
 
@@ -598,7 +605,7 @@ class MedalCelebrationBottomSheet : BottomSheetUnify() {
         playSound()
         handler.postDelayed(
             {
-                CelebrationBottomSheetAnalytics.impressionCelebrationBottomSheet(medaliSlug, getBenefitCta("primary")?.couponCode ?: "")
+                CelebrationBottomSheetAnalytics.impressionCelebrationBottomSheet(medaliSlug, getBenefitCta(autoApply = true)?.couponCode ?: "")
                 showCelebrationConfetti()
                 showStarsConfetti()
             },
@@ -609,10 +616,32 @@ class MedalCelebrationBottomSheet : BottomSheetUnify() {
     private fun setupCouponCtaListeners() {
         (medalCelebrationViewModel.badgeLiveData.value as Success<ScpRewardsCelebrationModel>).data.apply {
             binding?.mainView?.couponUi?.apply {
-                val benefitCta = getBenefitCta("primary")
+                val benefitList = scpRewardsCelebrationPage?.celebrationPage?.benefitButton ?: listOf()
+                benefitList.forEach { benefit ->
+                    if(benefit.isAutoApply){
+                        btnPrimary.show()
+                        btnPrimary.setOnClickListener {
+                            medalCelebrationViewModel.autoApplyCoupon(
+                                couponCode = benefit.couponCode,
+                                benefitData = benefit
+                            )
+                            CelebrationBottomSheetAnalytics.clickPrimaryCta(medaliSlug, benefit.couponCode)
+                        }
+                    }
+                    else{
+                        val primaryBenefit = getBenefitCta(autoApply = true)
+                        btnSecondary.show()
+                        btnSecondary.setOnClickListener {
+                            CelebrationBottomSheetAnalytics.clickSecondaryCta(medaliSlug, primaryBenefit?.couponCode ?: "")
+                            RouteManager.route(context, getBenefitCta(autoApply = false)?.appLink)
+                            activity?.finish()
+                        }
+                    }
+                }
+                val benefitCta = getBenefitCta(autoApply = true)
                 btnSecondary.setOnClickListener {
                     CelebrationBottomSheetAnalytics.clickSecondaryCta(medaliSlug, benefitCta?.couponCode ?: "")
-                    RouteManager.route(context, getBenefitCta("secondary")?.appLink)
+                    RouteManager.route(context, getBenefitCta(autoApply = false)?.appLink)
                     activity?.finish()
                 }
                 btnPrimary.setOnClickListener {
@@ -654,14 +683,16 @@ class MedalCelebrationBottomSheet : BottomSheetUnify() {
     }
 
     private fun animateCoupon() {
-        val couponDrawable = if (isFallbackCase) {
+        val couponDrawable = if (coupon_image == null) {
 //            CelebrationAnalytics.sendImpressionFallbackBadge(medaliSlug)
 //            changeBadgeSize()
-            ResourcesCompat.getDrawable(resources, R.drawable.fallback_badge, null)
+            binding?.mainView?.couponUi?.couponImage?.isEdgeControl = false
+            ResourcesCompat.getDrawable(resources, R.drawable.coupon_fallback, null)
         } else {
+            binding?.mainView?.couponUi?.couponImage?.isEdgeControl = true
+            binding?.mainView?.couponUi?.couponImage?.circularEdgeColor = Color.parseColor(bgColor)
             coupon_image
         }
-        binding?.mainView?.couponUi?.couponImage?.circularEdgeColor = Color.parseColor(bgColor)
         binding?.mainView?.couponUi?.couponImage?.setImageDrawable(couponDrawable)
         val listener = object : Animator.AnimatorListener {
             override fun onAnimationStart(animation: Animator) {}
@@ -959,10 +990,10 @@ class MedalCelebrationBottomSheet : BottomSheetUnify() {
         }
     }
 
-    private fun getBenefitCta(key: String): ScpRewardsCelebrationModel.RewardsGetMedaliCelebrationPage.CelebrationPage.BenefitButton? {
+    private fun getBenefitCta(autoApply:Boolean): ScpRewardsCelebrationModel.RewardsGetMedaliCelebrationPage.CelebrationPage.BenefitButton? {
         return if (medalCelebrationViewModel.badgeLiveData.value is Success<*>) {
             (medalCelebrationViewModel.badgeLiveData.value as Success<ScpRewardsCelebrationModel>).data.getBenefitCta(
-                key
+                autoApply = autoApply
             )
         } else {
             null

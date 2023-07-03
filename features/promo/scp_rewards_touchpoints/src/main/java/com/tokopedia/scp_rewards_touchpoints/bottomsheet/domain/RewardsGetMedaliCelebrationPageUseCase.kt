@@ -58,6 +58,7 @@ query scpRewardsCelebrationPage(${'$'}apiVersion:String, ${'$'}medaliSlug:String
       redirectSourceName
       benefit {
         imageURL
+        status
       }
       benefitButton {
         unifiedStyle

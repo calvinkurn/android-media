@@ -103,7 +103,10 @@ data class ScpRewardsCelebrationModel(
             data class BenefitImage(
                 @Expose
                 @SerializedName("imageURL")
-                val imageURL: String = ""
+                val imageURL: String = "",
+                @Expose
+                @SerializedName("status")
+                val status:String = ""
             )
             data class BenefitButton(
                 @Expose
@@ -129,6 +132,6 @@ data class ScpRewardsCelebrationModel(
     }
 }
 
-fun ScpRewardsCelebrationModel.getBenefitCta(key:String) : ScpRewardsCelebrationModel.RewardsGetMedaliCelebrationPage.CelebrationPage.BenefitButton?{
-    return scpRewardsCelebrationPage?.celebrationPage?.benefitButton?.find { it.unifiedStyle == key }
+fun ScpRewardsCelebrationModel.getBenefitCta(autoApply:Boolean) : ScpRewardsCelebrationModel.RewardsGetMedaliCelebrationPage.CelebrationPage.BenefitButton?{
+    return scpRewardsCelebrationPage?.celebrationPage?.benefitButton?.find { it.isAutoApply == autoApply }
 }
