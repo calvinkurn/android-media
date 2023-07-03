@@ -183,7 +183,7 @@ object DynamicProductDetailMapper {
                         name = component.componentName,
                         data = component.componentData.firstOrNull()
                     )
-                    if(dataModel != null){
+                    if (dataModel != null) {
                         listOfComponent.add(dataModel)
                     }
                 }
@@ -429,7 +429,8 @@ object DynamicProductDetailMapper {
             variants = networkData.variants,
             children = networkData.children,
             maxFinalPrice = networkData.maxFinalPrice,
-            postAtcLayout = networkData.postAtcLayout
+            postAtcLayout = networkData.postAtcLayout,
+            landingSubText = networkData.landingSubText
         )
     }
 
@@ -869,7 +870,6 @@ object DynamicProductDetailMapper {
         name: String,
         data: ComponentData?
     ): OngoingCampaignDataModel? {
-
         if (data == null) return null
 
         val mainData = ProductContentMainData(
