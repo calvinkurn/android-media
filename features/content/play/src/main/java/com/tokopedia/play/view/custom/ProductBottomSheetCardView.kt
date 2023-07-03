@@ -7,6 +7,7 @@ import android.text.Spanned
 import android.text.style.ForegroundColorSpan
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.widget.FrameLayout
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -21,20 +22,23 @@ import com.tokopedia.play.view.uimodel.isShowSoldQuantity
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.isUpcoming
 import com.tokopedia.play_common.util.extension.buildSpannedString
-import com.tokopedia.play_common.view.setGradientBackground
-import com.tokopedia.unifycomponents.CardUnify
 
 /**
  * Created by kenny.hadisaputra on 19/08/22
  */
-class ProductBottomSheetCardView(
-    context: Context,
-    attrs: AttributeSet?
-) : CardUnify(context, attrs) {
+class ProductBottomSheetCardView: FrameLayout {
+
+    constructor(context: Context) : super(context)
+    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
+        context,
+        attrs,
+        defStyleAttr
+    )
 
     private val binding = ViewProductBottomSheetCardBinding.inflate(
         LayoutInflater.from(context),
-        this
+        this, true
     )
 
     private val imageRadius =

@@ -126,7 +126,7 @@ class ProductCarouselViewHolder private constructor() {
                 listener.onTransactionClicked(this, item, lastButton.type.toAction)
             }
 
-            binding.root.setOnClickListener {
+            binding.cardPlayPinned.setOnClickListener {
                 binding.layoutRibbon.root.transitionToEnd()
 //                listener.onClicked(this, item, absoluteAdapterPosition)
             }

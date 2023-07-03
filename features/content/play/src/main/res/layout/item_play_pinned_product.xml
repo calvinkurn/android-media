@@ -13,6 +13,7 @@
         android:layout_marginTop="@dimen/unify_space_2" />
 
     <com.tokopedia.unifycomponents.CardUnify2
+        android:id="@+id/card_play_pinned"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/unify_space_4">
