@@ -30,6 +30,10 @@ data class CarouselPlayWidgetUiModel(
         data class DeleteFailed(val channelId: String, val reason: Throwable) : Action()
     }
 
+    companion object{
+        private const val LINK_TYPE_CAMPAIGN_ID = "campaign"
+    }
+
     override fun type(typeFactory: ShopWidgetTypeFactory): Int {
         return when (typeFactory) {
             is ShopHomeAdapterTypeFactory -> {
@@ -44,5 +48,9 @@ data class CarouselPlayWidgetUiModel(
                 Int.ZERO
             }
         }
+    }
+
+    fun getCampaignId(): String {
+        return header.data.firstOrNull { it.linkType == LINK_TYPE_CAMPAIGN_ID }?.linkId?.toString().orEmpty()
     }
 }

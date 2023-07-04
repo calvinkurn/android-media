@@ -548,40 +548,10 @@ class ShopPageCampaignFragment :
                     if (firstCompletelyVisibleItemPosition > 0) {
                         showScrollToTopButton()
                     }
-                    checkIsShouldShowPerformanceDashboardCoachMark()
                 }
             }
 
             override fun onLoadMore(page: Int, totalItemsCount: Int) {}
-        }
-    }
-
-    override fun checkIsShouldShowPerformanceDashboardCoachMark() {
-        val isShownAlready = coachMarkSharedPref.hasBeenShown(ContentCoachMarkSharedPref.Key.PerformanceDashboardEntryPointShopPage, viewModel?.userSessionShopId.orEmpty())
-        if (isShownAlready) return
-        val recyclerView = getRecyclerView(view)
-        recyclerView?.addOneTimeGlobalLayoutListener {
-            val widgetPosition = shopCampaignTabAdapter.list.orEmpty().indexOfFirst { it is CarouselPlayWidgetUiModel }
-            val widgetViewHolder = recyclerView.findViewHolderForAdapterPosition(widgetPosition)
-            val ivAction = widgetViewHolder?.itemView?.findViewById<IconUnify>(com.tokopedia.play.widget.R.id.play_widget_iv_action)
-            if (ivAction?.isVisible == true) {
-                val coachMarkItems = mutableListOf<CoachMark2Item>()
-                val coachMark = CoachMark2(requireContext())
-                coachMarkItems.add(
-                    CoachMark2Item(
-                        anchorView = ivAction,
-                        title = getString(com.tokopedia.content.common.R.string.performance_dashboard_coachmark_title),
-                        description = getString(com.tokopedia.content.common.R.string.performance_dashboard_coachmark_subtitle),
-                        position = CoachMark2.POSITION_BOTTOM,
-                    )
-                )
-                coachMark.isOutsideTouchable = true
-                coachMark.showCoachMark(ArrayList(coachMarkItems))
-                coachMarkSharedPref.setHasBeenShown(
-                    ContentCoachMarkSharedPref.Key.PerformanceDashboardEntryPointShopPage,
-                    viewModel?.userSessionShopId.orEmpty()
-                )
-            }
         }
     }
 
@@ -620,7 +590,10 @@ class ShopPageCampaignFragment :
 
     override fun getPlayWidgetData() {
         shopCampaignTabAdapter.getPlayWidgetUiModel()?.let {
-            val playWidgetType = ShopPageWidgetMapper.mapToPlayWidgetTypeExclusiveLaunch(shopId)
+            val playWidgetType = ShopPageWidgetMapper.mapToPlayWidgetTypeExclusiveLaunch(
+                shopId,
+                it.getCampaignId()
+            )
             viewModel?.getPlayWidget(it, playWidgetType)
         }
     }

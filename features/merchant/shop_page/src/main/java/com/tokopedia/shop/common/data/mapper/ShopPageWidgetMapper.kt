@@ -160,9 +160,10 @@ object ShopPageWidgetMapper {
         )
     }
 
-    fun mapToPlayWidgetTypeExclusiveLaunch(shopId: String): PlayWidgetUseCase.WidgetType.ShopPageExclusiveLaunch{
+    fun mapToPlayWidgetTypeExclusiveLaunch(shopId: String, campaignId: String): PlayWidgetUseCase.WidgetType.ShopPageExclusiveLaunch{
         return PlayWidgetUseCase.WidgetType.ShopPageExclusiveLaunch(
-            shopId = shopId
+            shopId = shopId,
+            campaignId = campaignId
         )
     }
     private fun Int?.mapToStatusCampaign(): StatusCampaign {
