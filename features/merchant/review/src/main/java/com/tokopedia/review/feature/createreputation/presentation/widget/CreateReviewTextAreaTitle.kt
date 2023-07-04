@@ -12,8 +12,6 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.review.databinding.WidgetCreateReviewTextAreaTitleBinding
 import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewTextAreaTitleUiState
 import com.tokopedia.reviewcommon.uimodel.StringRes
-import kotlin.coroutines.Continuation
-import kotlin.coroutines.resume
 
 class CreateReviewTextAreaTitle @JvmOverloads constructor(
     context: Context,
@@ -36,19 +34,15 @@ class CreateReviewTextAreaTitle @JvmOverloads constructor(
         layoutTextAreaTitle.root.text = textRes.getStringValue(context)
     }
 
-    fun updateUi(uiState: CreateReviewTextAreaTitleUiState, continuation: Continuation<Unit>) {
+    fun updateUi(uiState: CreateReviewTextAreaTitleUiState) {
         when(uiState) {
             is CreateReviewTextAreaTitleUiState.Loading -> {
                 showLoading()
-                animateShow(onAnimationEnd = {
-                    continuation.resume(Unit)
-                })
+                animateShow()
             }
             is CreateReviewTextAreaTitleUiState.Showing -> {
                 binding.showTitle(uiState)
-                animateShow(onAnimationEnd = {
-                    continuation.resume(Unit)
-                })
+                animateShow()
             }
         }
     }

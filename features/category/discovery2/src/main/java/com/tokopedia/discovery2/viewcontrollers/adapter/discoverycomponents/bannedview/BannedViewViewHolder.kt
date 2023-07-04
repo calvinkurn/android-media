@@ -10,15 +10,18 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewH
 import com.tokopedia.unifyprinciples.Typography
 
 class BannedViewViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView) {
-    private lateinit var bannedViewModel: DefaultComponentViewModel
+    private var bannedViewModel: DefaultComponentViewModel? = null
     private val header: Typography = itemView.findViewById(R.id.txt_header)
     private val subHeader: Typography = itemView.findViewById(R.id.txt_sub_header)
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         bannedViewModel = discoveryBaseViewModel as DefaultComponentViewModel
-        bannedViewModel.getComponentLiveData().observe(fragment.viewLifecycleOwner, Observer { item ->
-            header.text = item.title
-            subHeader.text = item.description
-        })
+        bannedViewModel?.getComponentLiveData()?.observe(
+            fragment.viewLifecycleOwner,
+            Observer { item ->
+                header.text = item.title
+                subHeader.text = item.description
+            }
+        )
     }
 }

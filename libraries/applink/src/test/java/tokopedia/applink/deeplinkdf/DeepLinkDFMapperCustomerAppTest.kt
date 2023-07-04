@@ -820,6 +820,12 @@ class DeepLinkDFMapperCustomerAppTest : DeepLinkDFMapperTestFixture() {
     }
 
     @Test
+    fun `check goto kyc from applink then should return DF_USER_SETTINGS in customerapp`() {
+        val appLink = "${ApplinkConstInternalUserPlatform.NEW_INTERNAL_USER}/goto-kyc?projectId=123456"
+        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_USER_SETTINGS)
+    }
+
+    @Test
     fun `check user identification form appLink then should return DF_USER_SETTINGS in customerapp`() {
         val appLink = "${ApplinkConstInternalUserPlatform.NEW_INTERNAL_USER}/user-identification-form?projectId=123456"
         assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_USER_SETTINGS)
@@ -1087,17 +1093,5 @@ class DeepLinkDFMapperCustomerAppTest : DeepLinkDFMapperTestFixture() {
         val internalApplink =
             "${ApplinkConstInternalCommunication.TOKO_CHAT}?source=$source&orderId=$orderId"
         assertEqualDeepLinkCustomerApp(internalApplink, DeeplinkDFMapper.DF_TOKOCHAT)
-    }
-
-    @Test
-    fun `check seller persona internal appLink should return DF_SELLER_PERSONA in seller app`() {
-        val appLink = ApplinkConstInternalSellerapp.INTERNAL_SELLERAPP+"/seller-persona"
-        assertEqualDeepLinkSellerApp(appLink, DeeplinkDFMapper.DF_SELLER_PERSONA)
-    }
-
-    @Test
-    fun `check seller persona external appLink should return DF_SELLER_PERSONA in seller app`() {
-        val appLink = "sellerapp://seller-persona"
-        assertEqualDeepLinkSellerApp(appLink, DeeplinkDFMapper.DF_SELLER_PERSONA)
     }
 }

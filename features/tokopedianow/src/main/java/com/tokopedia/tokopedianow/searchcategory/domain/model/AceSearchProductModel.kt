@@ -3,6 +3,7 @@ package com.tokopedia.tokopedianow.searchcategory.domain.model
 import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst
 
 data class AceSearchProductModel(
@@ -10,6 +11,11 @@ data class AceSearchProductModel(
         @Expose
         val searchProduct: SearchProduct = SearchProduct()
 ) {
+    private companion object {
+        const val LABEL_STATUS = "status"
+        const val TRANSPARENT_BLACK = "transparentBlack"
+    }
+
     data class SearchProduct (
             @SerializedName("header")
             @Expose
@@ -93,7 +99,16 @@ data class AceSearchProductModel(
 
             @SerializedName("keywordProcess")
             @Expose
-            val keywordProcess: String = "0"
+            val keywordProcess: String = "0",
+
+            @SerializedName("meta")
+            @Expose
+            val meta: Meta = Meta()
+    )
+
+    data class Meta(
+        @SerializedName("categoryId")
+        val categoryId: String = "0"
     )
 
     data class SearchProductData(
@@ -377,6 +392,10 @@ data class AceSearchProductModel(
             @Expose
             val childs: List<String> = listOf(),
 
+            @SerializedName("category_id")
+            @Expose
+            val categoryId: String = "",
+
             @SerializedName("parentId")
             @Expose
             val parentId: String = "",
@@ -388,7 +407,11 @@ data class AceSearchProductModel(
             @SerializedName("stock")
             @Expose
             val stock: Int = 0
-    )
+    ) {
+        private fun getOosLabelGroup() = labelGroupList.firstOrNull { (stock < minOrder || stock == Int.ZERO) && it.isStatusPosition() && it.isTransparentBlackColor() }
+
+        fun isOos() = getOosLabelGroup() != null
+    }
 
     data class ProductShop(
             @SerializedName("id")
@@ -446,7 +469,11 @@ data class AceSearchProductModel(
             @SerializedName("url")
             @Expose
             val url: String = ""
-    )
+    ) {
+        fun isStatusPosition() = position == LABEL_STATUS
+
+        fun isTransparentBlackColor() = type == TRANSPARENT_BLACK
+    }
 
     data class ProductLabelGroupVariant(
             @SerializedName("title")

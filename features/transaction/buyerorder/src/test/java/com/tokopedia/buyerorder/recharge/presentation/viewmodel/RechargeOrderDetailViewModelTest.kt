@@ -7,6 +7,7 @@ import com.tokopedia.buyerorder.recharge.domain.RechargeEmoneyVoidUseCase
 import com.tokopedia.buyerorder.recharge.domain.RechargeOrderDetailUseCase
 import com.tokopedia.buyerorder.recharge.presentation.model.*
 import com.tokopedia.digital.digital_recommendation.domain.DigitalRecommendationUseCase
+import com.tokopedia.home_component_header.model.ChannelHeader
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
@@ -377,23 +378,24 @@ class RechargeOrderDetailViewModelTest {
             productCardModelList = emptyList(),
             recommendationItemList = emptyList(),
             filterChip = emptyList(),
-            seeMoreAppLink = ""
+            seeMoreAppLink = "",
+            channelHeader = ChannelHeader()
         )
         coEvery {
             getRecommendationUseCaseCoroutine.getData(any())
         } returns
-                listOf(
-                    RecommendationWidget(
-                        title = "",
-                        subtitle = "",
-                        pageName = "",
-                        recommendationFilterChips = emptyList(),
-                        seeMoreAppLink = "",
-                        recommendationItemList = listOf(
-                            RecommendationItem()
-                        )
+            listOf(
+                RecommendationWidget(
+                    title = "",
+                    subtitle = "",
+                    pageName = "",
+                    recommendationFilterChips = emptyList(),
+                    seeMoreAppLink = "",
+                    recommendationItemList = listOf(
+                        RecommendationItem()
                     )
                 )
+            )
         coEvery {
             bestSellerMapper.mappingRecommendationWidget(any())
         } returns bestSellerDataModel
@@ -414,5 +416,4 @@ class RechargeOrderDetailViewModelTest {
         // then
         assert(viewModel.orderDetailData.value == null)
     }
-
 }
