@@ -124,4 +124,13 @@
 
     <string name="collection_privacy_message">Cuma kamu yang bisa melihat Koleksi ini, kecuali kalau kamu membagikannya ke orang lain.</string>
     <string name="collection_other_select_items_label">Pilih Barang (%s)</string>
+
+    <string name="collection_affiliate_info_title">Dari Wishlist jadi komisi!</string>
+    <string name="collection_affiliate_info_header">Kamu pasti ingin mewujudkan Wishlist-mu. Gimana kalau bisa sambil dapat komisi juga?</string>
+    <string name="collection_affiliate_info_content_top">Gampang, kamu cuma perlu bikin Koleksi Wishlist dari barang-barang yang diimpinkan. Kasih nama yang menarik, pastikan semua kategori produknya bisa dipromosikan, dan dari toko PM, PM Pro, dan Official Store. </string>
+    <string name="collection_affiliate_info_content_non_affiliate_additional_info">Selanjutnya, kamu cuma perlu daftar Tokopedia Affiliate aja dan gabung jadi Affiliates kami!</string>
+    <string name="collection_affiliate_info_content_bottom">Setelah itu, kamu bisa klik ikon Bagikan di Koleksi Wishlist-mu. Lihat juga perkiraan komisi yang didapatkan berdasarkan kategori produk di koleksimu. Salin link-nya dan bagikan di sosial media!\n\nJika ada yang beli produk dari koleksimu, kamu bisa dapat komisi!</string>
+    <string name="collection_affiliate_info_footer">Udah siap wujudkan mimpi &amp; komisi bareng Tokopedia Affiliate? Yuk, daftar sekarang!</string>
+    <string name="collection_affiliate_register_affiliate">Daftar Tokopedia Affiliate</string>
+    <string name="collection_affiliate_check_affiliate">Cek Tokopedia Affiliate</string>
 </resources>

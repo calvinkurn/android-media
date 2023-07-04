@@ -67,8 +67,7 @@ class WishlistCollectionTickerItemViewHolder(
         spannableWishlistDescription.setSpan(
             object : ClickableSpan() {
                 override fun onClick(textView: View) {
-                    // TODO: Change implementation
-                    Toaster.build(binding.root, "Test").show()
+                    actionListener?.onTickerActionClicked(true)
                 }
 
                 override fun updateDrawState(ds: TextPaint) {
