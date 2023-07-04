@@ -90,8 +90,7 @@ class HomeVisitableFactoryImpl(
     }
 
     override fun addHomeHeaderOvo(): HomeVisitableFactory {
-        val needToShowUserWallet = homeData?.homeFlag?.getFlag(HomeFlag.TYPE.HAS_TOKOPOINTS) ?: false
-        val homeHeader = HomeHeaderDataModel(needToShowUserWallet = needToShowUserWallet)
+        val homeHeader = HomeHeaderDataModel()
         val headerViewModel = HeaderDataModel()
         headerViewModel.isUserLogin = userSessionInterface?.isLoggedIn ?: false
         homeHeader.headerDataModel = headerViewModel
@@ -132,7 +131,7 @@ class HomeVisitableFactoryImpl(
 
     private fun addDynamicIconData(defaultIconList: List<DynamicHomeIcon.DynamicIcon> = listOf(), isCache: Boolean = false) {
         if (isCache && homePrefController.isUsingDifferentAtfRollenceVariant()) return
-        var isDynamicIconWrapType = homeData?.homeFlag?.getFlag(HomeFlag.TYPE.DYNAMIC_ICON_WRAP) ?: false
+        var isDynamicIconWrapType = false
         var iconList = defaultIconList
         if (iconList.isEmpty()) {
             iconList = homeData?.dynamicHomeIcon?.dynamicIcon ?: listOf()

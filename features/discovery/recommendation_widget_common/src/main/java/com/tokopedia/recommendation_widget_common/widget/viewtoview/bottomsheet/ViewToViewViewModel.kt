@@ -123,6 +123,7 @@ class ViewToViewViewModel @Inject constructor(
         val atcStatus = if (atcData.isStatusError()) {
             ViewToViewATCStatus.Failure(atcData.getAtcErrorMessage() ?: "")
         } else {
+            product.recommendationItem.cartId = atcData.data.cartId
             ViewToViewATCStatus.Success(atcData.data.message.firstOrNull() ?: "", product)
         }
 

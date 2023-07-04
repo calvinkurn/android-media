@@ -38,11 +38,7 @@ open class GetPdpLayoutUseCase @Inject constructor(
                 pdpSession
                 basicInfo {
                   shopMultilocation {
-                    isReroute
                     cityName
-                    eduLink {
-                        appLink
-                    }
                   }
                   isGiftable
                   isTokoNow
@@ -133,6 +129,37 @@ open class GetPdpLayoutUseCase @Inject constructor(
                       }
                       containerType
             		}
+                    ... on pdpDataOnGoingCampaign {
+                      campaign {
+                        campaignID
+                        campaignType
+                        campaignTypeName
+                        percentageAmount
+                        originalPrice
+                        discountedPrice
+                        stock
+                        stockSoldPercentage
+                        threshold
+                        startDate
+                        endDate
+                        endDateUnix
+                        appLinks
+                        isAppsOnly
+                        isActive
+                        hideGimmick
+                        isCheckImei
+                        isUsingOvo
+                        background
+                        campaignIdentifier
+                        paymentInfoWording
+                      }
+                      thematicCampaign{
+                        campaignName
+                        icon
+                        background
+                        additionalInfo
+                      }
+                    }
             		... on pdpDataProductContent {
                       name
                       parentName
@@ -285,6 +312,7 @@ open class GetPdpLayoutUseCase @Inject constructor(
                       defaultChild
                       sizeChart
                       maxFinalPrice
+                      landingSubText
                       postATCLayout {
                         layoutID
                       }
@@ -306,6 +334,7 @@ open class GetPdpLayoutUseCase @Inject constructor(
                       }
                       children {
                         productID
+                        subText
                         price
                         priceFmt
                         sku

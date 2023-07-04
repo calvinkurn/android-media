@@ -32,8 +32,8 @@ class GetProductBundleRecomUseCase @Inject constructor(
     }
 
     suspend fun execute(
-        productIds: List<String>,
-        excludeBundleIds: List<String>,
+        productIds: List<String> = listOf(),
+        excludeBundleIds: List<String> = listOf(),
         queryParam: String = "type=SINGLE,MULTIPLE"
     ): ProductBundleRecomResponse {
         setRequestParams(

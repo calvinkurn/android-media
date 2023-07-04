@@ -90,6 +90,7 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.CAMPAIGN
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.CAMPAIGN_WIDGET_PRODUCT_CARD_IMPRESSION
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.CLICK_EXCLUSIVE_LAUNCH_WIDGET
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.CLICK_PERSONALIZATION_TRENDING_WIDGET_ITEM
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.CLICK_PERSO_PRODUCT_COMPARISON
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.CLICK_PRODUCT_ATC
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.CLICK_PRODUCT_ATC_QUANTITY
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.CLICK_PRODUCT_ATC_RESET
@@ -97,6 +98,7 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.CLICK_RE
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.IMPRESSION_EXCLUSIVE_LAUNCH_WIDGET
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.IMPRESSION_PERSONALIZATION_TRENDING_WIDGET
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.IMPRESSION_PERSONALIZATION_TRENDING_WIDGET_ITEM
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.IMPRESSION_PERSO_PRODUCT_COMPARISON
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.IMPRESSION_PRODUCT_ATC
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventCategory.SHOP_PAGE_BUYER_DIRECT_PURCHASE
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.FESTIVITY
@@ -124,6 +126,7 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ITEM_BRAND
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ITEM_CATEGORY
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ITEM_ID
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ITEM_LIST
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ITEM_LIST_PERSO_PRODUCT_COMPARISON
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ITEM_LIST_PERSO_TRENDING_WIDGET
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ITEM_NAME
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ITEM_VARIANT
@@ -202,12 +205,14 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_CLICK_PRODUCT_SHOP_DECOR
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_CLICK_REMIND_ME_BANNER_TIMER_HOME_TAB
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_CLICK_SHOP_DECOR
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_CLICK_SHOP_PERSO_PRODUCT_COMPARISON
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_CLICK_SINGLE_BUNDLE_PRODUCT
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_IMPRESSION_BANNER_TIMER_HOME_TAB
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_IMPRESSION_MULTIPLE_BUNDLING_WIDGET
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_IMPRESSION_PERSONALIZATION_TRENDING_WIDGET
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_IMPRESSION_PERSONALIZATION_TRENDING_WIDGET_ITEM
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_IMPRESSION_SHOP_DECOR
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_IMPRESSION_SHOP_PERSO_PRODUCT_COMPARISON
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_IMPRESSION_SINGLE_BUNDLING_WIDGET
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_PRODUCT_CAROUSEL_CLICK_CTA_SEE_ALL
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_PRODUCT_LIST_IMPRESSION_SHOP_DECOR
@@ -3168,6 +3173,67 @@ class ShopPageHomeTracking(
             putString(USER_ID, userId)
         }
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(SELECT_CONTENT, eventBundle)
+    }
+
+    fun impressionPersoProductComparisonWidget(
+        trackerModel: ShopHomePersoProductComparisonWidgetImpressionTrackerModel
+    ) {
+        val eventBundle = Bundle().apply {
+            putString(EVENT, VIEW_ITEM_LIST)
+            putString(EVENT_ACTION, IMPRESSION_PERSO_PRODUCT_COMPARISON)
+            putString(EVENT_CATEGORY, SHOP_PAGE_BUYER)
+            putString(EVENT_LABEL, "")
+            putString(TRACKER_ID, TRACKER_ID_IMPRESSION_SHOP_PERSO_PRODUCT_COMPARISON)
+            putString(BUSINESS_UNIT, PHYSICAL_GOODS)
+            putString(CURRENT_SITE, TOKOPEDIA_MARKETPLACE)
+            putString(ITEM_LIST, ITEM_LIST_PERSO_PRODUCT_COMPARISON)
+            putParcelableArrayList(
+                ITEMS,
+                arrayListOf(createPersoProductComparisonItemMap(trackerModel))
+            )
+            putString(PRODUCT_ID, trackerModel.productId)
+            putString(SHOP_ID, trackerModel.shopId)
+            putString(USER_ID, trackerModel.userId)
+        }
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(VIEW_ITEM_LIST, eventBundle)
+    }
+
+    fun clickPersoProductComparisonWidget(
+        trackerModel: ShopHomePersoProductComparisonWidgetImpressionTrackerModel
+    ) {
+        val eventBundle = Bundle().apply {
+            putString(EVENT, SELECT_CONTENT)
+            putString(EVENT_ACTION, CLICK_PERSO_PRODUCT_COMPARISON)
+            putString(EVENT_CATEGORY, SHOP_PAGE_BUYER)
+            putString(EVENT_LABEL, "")
+            putString(TRACKER_ID, TRACKER_ID_CLICK_SHOP_PERSO_PRODUCT_COMPARISON)
+            putString(BUSINESS_UNIT, PHYSICAL_GOODS)
+            putString(CURRENT_SITE, TOKOPEDIA_MARKETPLACE)
+            putString(ITEM_LIST, ITEM_LIST_PERSO_PRODUCT_COMPARISON)
+            putParcelableArrayList(
+                ITEMS,
+                arrayListOf(createPersoProductComparisonItemMap(trackerModel))
+            )
+            putString(PRODUCT_ID, trackerModel.productId)
+            putString(SHOP_ID, trackerModel.shopId)
+            putString(USER_ID, trackerModel.userId)
+        }
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(SELECT_CONTENT, eventBundle)
+    }
+
+    private fun createPersoProductComparisonItemMap(
+        trackerModel: ShopHomePersoProductComparisonWidgetImpressionTrackerModel
+    ): Bundle {
+        return Bundle().apply {
+            putString(DIMENSION_40, ITEM_LIST_PERSO_PRODUCT_COMPARISON)
+            putInt(INDEX, trackerModel.position)
+            putString(ITEM_BRAND, "")
+            putString(ITEM_CATEGORY, "")
+            putString(ITEM_ID, trackerModel.productId)
+            putString(ITEM_NAME, trackerModel.productName)
+            putString(ITEM_VARIANT, "")
+            putDouble(PRICE, 0.0)
+        }
     }
 
     fun impressionDisplayBannerTimerWidget(

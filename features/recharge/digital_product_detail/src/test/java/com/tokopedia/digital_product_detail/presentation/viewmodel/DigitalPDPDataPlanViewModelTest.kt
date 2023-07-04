@@ -90,6 +90,31 @@ class DigitalPDPDataPlanViewModelTest : DigitalPDPDataPlanViewModelTestFixture()
         }
 
     @Test
+    fun `when getting mccm should run and give success result`() =
+        runTest {
+            val response = dataFactory.getMCCMData()
+            val mappedResponse =
+                mapperFactory.mapDigiPersoToMCCMProducts(response.recommendationData)
+            onGetMCCM_thenReturn(mappedResponse)
+
+            viewModel.getMCCMProducts(listOf(), listOf())
+            skipMultitabDelay()
+            verifyGetMCCMRepoGetCalled()
+            verifyGetMCCMSuccess(mappedResponse)
+        }
+
+    @Test
+    fun `when getting mccm should run and give fail result`() =
+        runTest {
+            onGetMCCM_thenReturn(NullPointerException())
+
+            viewModel.getMCCMProducts(listOf(), listOf())
+            skipMultitabDelay()
+            verifyGetMCCMRepoGetCalled()
+            verifyGetMCCMFail()
+        }
+
+    @Test
     fun `given favoriteNumber loading state then should get loading state`() {
         val loadingResponse = RechargeNetworkResult.Loading
 
@@ -583,6 +608,32 @@ class DigitalPDPDataPlanViewModelTest : DigitalPDPDataPlanViewModelTestFixture()
     }
 
     @Test
+    fun `when cancelMCCMJob called the job should be cancelled and live data should not emit`() {
+        val response = dataFactory.getMCCMData()
+        val mappedResponse =
+            mapperFactory.mapDigiPersoToMCCMProducts(response.recommendationData)
+        onGetMCCM_thenReturn(mappedResponse)
+
+        viewModel.getMCCMProducts(listOf(), listOf())
+        viewModel.cancelMCCMProductsJob()
+        verifyMCCMJobIsCancelled()
+        verifyGetMCCMRepoWasNotCalled()
+        verifyGetMCCMErrorCancellation()
+    }
+
+    @Test
+    fun `given mccmProductsJob null when cancelMCCMProductsJob called should do nothing`() {
+        viewModel.cancelMCCMProductsJob()
+        verifyMCCMJobIsNull()
+    }
+
+    @Test
+    fun `given mccmProductsJob null when implicit setMCCMProductsJob called should update mccmProductsJob to non-null`() {
+        viewModel.mccmProductsJob = Job()
+        verifyMCCMJobIsNotNull()
+    }
+
+    @Test
     fun `given filterData with some isSelected and should updated filterDataParams`() {
         val initialFilter =
             dataFactory.getCatalogInputMultiTabData().multitabData.productInputs.first().filterTagComponents
@@ -694,45 +745,6 @@ class DigitalPDPDataPlanViewModelTest : DigitalPDPDataPlanViewModelTestFixture()
 
             verifyClientNumberThrottleJobNotSame(jobA, jobB)
         }
-
-    fun `when given list denom and list mccm is not empty, isEmptyDenomMCCM should return true`() {
-        val listDenom = listOf(DenomData())
-        val listMccm = listOf(DenomData())
-
-        val expectedResult = viewModel.isEmptyDenomMCCM(listDenom, listMccm)
-
-        verifyDenomAndMCCMIsNotEmpty(expectedResult)
-    }
-
-    @Test
-    fun `when given list denom empty and list mccm is not empty, isEmptyDenomMCCM should return true`() {
-        val listDenom = listOf<DenomData>()
-        val listMccm = listOf(DenomData())
-
-        val expectedResult = viewModel.isEmptyDenomMCCM(listDenom, listMccm)
-
-        verifyDenomAndMCCMIsNotEmpty(expectedResult)
-    }
-
-    @Test
-    fun `when given list denom is not empty and list mccm is empty, isEmptyDenomMCCM should return true`() {
-        val listDenom = listOf(DenomData())
-        val listMccm = listOf<DenomData>()
-
-        val expectedResult = viewModel.isEmptyDenomMCCM(listDenom, listMccm)
-
-        verifyDenomAndMCCMIsNotEmpty(expectedResult)
-    }
-
-    @Test
-    fun `when given list denom is empty and list mccm is empty, isEmptyDenomMCCM should return false`() {
-        val listDenom = listOf<DenomData>()
-        val listMccm = listOf<DenomData>()
-
-        val expectedResult = viewModel.isEmptyDenomMCCM(listDenom, listMccm)
-
-        verifyDenomAndMCCMIsEmpty(expectedResult)
-    }
 
     @Test
     fun `when resetFilter is used, filterData must be reseted`() {

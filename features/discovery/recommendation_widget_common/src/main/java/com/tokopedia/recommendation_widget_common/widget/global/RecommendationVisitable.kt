@@ -11,8 +11,8 @@ interface RecommendationVisitable : Visitable<RecommendationTypeFactory> {
 
     companion object {
         fun create(
-            metadata: RecommendationWidgetMetadata,
-            trackingModel: RecommendationWidgetTrackingModel,
+            metadata: RecommendationWidgetMetadata = RecommendationWidgetMetadata(),
+            trackingModel: RecommendationWidgetTrackingModel = RecommendationWidgetTrackingModel(),
         ): RecommendationVisitable {
             return object : RecommendationVisitable {
                 override val metadata: RecommendationWidgetMetadata

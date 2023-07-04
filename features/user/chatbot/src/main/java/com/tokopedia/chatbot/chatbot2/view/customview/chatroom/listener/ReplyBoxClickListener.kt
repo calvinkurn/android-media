@@ -2,6 +2,7 @@ package com.tokopedia.chatbot.chatbot2.view.customview.chatroom.listener
 
 interface ReplyBoxClickListener {
     fun onAttachmentMenuClicked()
-    fun goToBigReplyBoxBottomSheet()
+    fun goToBigReplyBoxBottomSheet(isError: Boolean)
     fun getMessageContentFromBottomSheet(message: String)
+    fun dismissBigReplyBoxBottomSheet(s: String, wordLength: Int)
 }

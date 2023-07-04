@@ -6,7 +6,6 @@ labels:
 - dropoff
 ---
 
-
 | **Status** | <!--start status:GREEN-->RELEASE<!--end status--> |
 | --- | --- |
 | Contributors | [Fajar Nuha](https://tokopedia.atlassian.net/wiki/people/5c90c19e47a4d62d37cde63f?ref=confluence)  |

@@ -17,7 +17,6 @@ import com.tokopedia.buyerorder.detail.revamp.adapter.EventDetailsListener
 import com.tokopedia.buyerorder.detail.revamp.util.Utils.Const.DELIMITERS
 import com.tokopedia.buyerorder.detail.revamp.util.Utils.Const.KEY_TEXT
 import com.tokopedia.buyerorder.detail.revamp.widget.RedeemVoucherView
-import com.tokopedia.buyerorder.detail.view.adapter.ItemsAdapter.ITEM_DEALS
 import com.tokopedia.buyerorder.detail.view.customview.BookingCodeView
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
@@ -37,6 +36,7 @@ class DealsViewHolder(
     companion object{
         @LayoutRes
         val LAYOUT = R.layout.voucher_item_deals
+        const val ITEM_DEALS = 1
     }
 
     override fun bind(element: ItemsDeals) {

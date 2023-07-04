@@ -27,6 +27,5 @@
         android:layout_marginStart="4dp"
         android:textColor="@color/Unify_NN600"
         app:typographyType="small"
-        app:typographyWeight="reguler"
         tools:text="Update terakhir hari ini, 15:00 WIB" />
 </LinearLayout>

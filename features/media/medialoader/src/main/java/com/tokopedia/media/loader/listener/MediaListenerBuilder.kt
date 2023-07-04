@@ -12,7 +12,7 @@ import com.tokopedia.media.loader.tracker.MediaLoaderTracker
 import com.tokopedia.media.loader.utils.adaptiveSizeImageRequest
 import com.tokopedia.media.loader.wrapper.MediaDataSource.Companion.mapTo as dataSource
 
-object MediaListenerBuilder {
+internal object MediaListenerBuilder {
 
     operator fun invoke(
         context: Context,

@@ -1,0 +1,82 @@
+{
+  "readme": "Home flash sale widget impression and click",
+  "mode": "exact",
+  "query": [
+    {
+      "event": "view_item_list",
+      "eventAction": "impression on product dynamic channel flash sale",
+      "eventCategory": "homepage",
+      "eventLabel": ".* - .*",
+      "trackerId": "43653",
+      "businessUnit": "home & browse",
+      "currentSite": "tokopediamarketplace",
+      "item_list_name": "/ - p.* - dynamic channel flash sale - product - .* - carousel - .* - .* - campaign - .* - .*",
+      "item_list": "/ - p.* - dynamic channel flash sale - product - .* - carousel - .* - .* - campaign - .* - .*",
+      "items": [
+        {
+          "dimension40": "/ - p.* - dynamic channel flash sale - product - .* - carousel - .* - .* - campaign - .* - .*",
+          "dimension84": ".*",
+          "dimension96": ".*_.*",
+          "index": ".*",
+          "item_brand": ".*",
+          "item_category": ".*",
+          "item_id": ".*",
+          "item_name": ".*",
+          "item_variant": ".*",
+          "price": ".*"
+        }
+      ],
+      "userId": ".*",
+      "sessionIris": ".*"
+    },
+    {
+      "event": "select_content",
+      "eventAction": "click on product dynamic channel flash sale",
+      "eventCategory": "homepage",
+      "eventLabel": ".* - .*",
+      "trackerId": "43654",
+      "businessUnit": "home & browse",
+      "currentSite": "tokopediamarketplace",
+      "item_list": "/ - p.* - dynamic channel flash sale - product - .* - carousel - .* - .* - campaign - .* - .*",
+      "items": [
+        {
+          "dimension40": "/ - p.* - dynamic channel flash sale - product - .* - carousel - .* - .* - campaign - .* - .*",
+          "dimension84": ".*",
+          "dimension96": ".*_.*",
+          "index": ".*",
+          "item_brand": ".*",
+          "item_category": ".*",
+          "item_id": ".*",
+          "item_name": ".*",
+          "item_variant": ".*",
+          "price": ".*"
+        }
+      ],
+      "userId": ".*",
+      "sessionIris": ".*",
+      "clientId": ".*"
+    },
+    {
+      "event": "clickHomepage",
+      "eventAction": "click chevron button on dynamic channel flash sale",
+      "eventCategory": "homepage",
+      "eventLabel": ".* - .*",
+      "trackerId": "43655",
+      "businessUnit": "home & browse",
+      "channelId": ".*",
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".*"
+    },
+    {
+      "event": "clickHomepage",
+      "eventAction": "click view all card on dynamic channel flash sale",
+      "eventCategory": "homepage",
+      "eventLabel": ".* - .*",
+      "trackerId": "43656",
+      "businessUnit": "home & browse",
+      "channelId": ".*",
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".*"
+    }
+  ]
+}

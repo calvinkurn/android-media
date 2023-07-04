@@ -79,6 +79,10 @@ class ImmersiveFeedOnboarding private constructor(
         coachMark.dismissCoachMark()
     }
 
+    fun isShowing(): Boolean {
+        return coachMark.isShowing
+    }
+
     private fun triggerListenerForItem(item: CoachMark2Item) {
         when (item.anchorView) {
             createContentView -> {
