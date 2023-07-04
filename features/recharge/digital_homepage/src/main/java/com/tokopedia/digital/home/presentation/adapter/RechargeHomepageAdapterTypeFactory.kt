@@ -74,7 +74,6 @@ import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
 import com.tokopedia.home_component.visitable.DynamicLegoBannerSixAutoDataModel
 import com.tokopedia.home_component.visitable.FeaturedBrandDataModel
 import com.tokopedia.home_component.visitable.FeaturedShopDataModel
-import com.tokopedia.home_component.visitable.Lego4AutoDataModel
 import com.tokopedia.home_component.visitable.MixLeftDataModel
 import com.tokopedia.home_component.visitable.MixTopDataModel
 import com.tokopedia.home_component.visitable.ProductHighlightDataModel
@@ -173,10 +172,6 @@ class RechargeHomepageAdapterTypeFactory(
 
     override fun type(dynamicLegoBannerDataModel: DynamicLegoBannerDataModel): Int {
         return RechargeHomepageLegoBannerViewHolder.LAYOUT
-    }
-
-    override fun type(lego4AutoDataModel: Lego4AutoDataModel): Int {
-        return 0
     }
 
     override fun type(recommendationListCarouselDataModel: RecommendationListCarouselDataModel): Int {

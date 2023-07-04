@@ -104,10 +104,6 @@ class OfficialHomeAdapterTypeFactory(
         return ProductHighlightComponentViewHolder.LAYOUT
     }
 
-    override fun type(lego4AutoDataModel: Lego4AutoDataModel): Int {
-        return Lego4AutoBannerViewHolder.LAYOUT
-    }
-
     override fun type(featuredShopDataModel: FeaturedShopDataModel): Int {
         return FeaturedShopViewHolder.LAYOUT
     }

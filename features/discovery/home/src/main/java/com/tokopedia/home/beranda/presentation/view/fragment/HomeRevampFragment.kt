@@ -129,7 +129,6 @@ import com.tokopedia.home.beranda.presentation.view.listener.FramePerformanceInd
 import com.tokopedia.home.beranda.presentation.view.listener.HomeComponentCallback
 import com.tokopedia.home.beranda.presentation.view.listener.HomePayLaterWidgetListener
 import com.tokopedia.home.beranda.presentation.view.listener.HomeReminderWidgetCallback
-import com.tokopedia.home.beranda.presentation.view.listener.Lego4AutoBannerComponentCallback
 import com.tokopedia.home.beranda.presentation.view.listener.Lego6AutoBannerComponentCallback
 import com.tokopedia.home.beranda.presentation.view.listener.LegoProductCallback
 import com.tokopedia.home.beranda.presentation.view.listener.MerchantVoucherComponentCallback
@@ -1450,7 +1449,6 @@ open class HomeRevampFragment :
                 SalamWidgetCallback(context, this, getUserSession())
             ),
             ProductHighlightComponentCallback(this),
-            Lego4AutoBannerComponentCallback(context, this, userId),
             FeaturedShopComponentCallback(context, this),
             playWidgetCoordinator,
             this,

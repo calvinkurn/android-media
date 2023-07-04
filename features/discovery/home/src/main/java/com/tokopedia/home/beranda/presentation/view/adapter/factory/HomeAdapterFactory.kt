@@ -85,7 +85,6 @@ import com.tokopedia.home_component.listener.DynamicLegoBannerListener
 import com.tokopedia.home_component.listener.FeaturedShopListener
 import com.tokopedia.home_component.listener.FlashSaleWidgetListener
 import com.tokopedia.home_component.listener.HomeComponentListener
-import com.tokopedia.home_component.listener.Lego4AutoBannerListener
 import com.tokopedia.home_component.listener.Lego6AutoBannerListener
 import com.tokopedia.home_component.listener.LegoProductListener
 import com.tokopedia.home_component.listener.MerchantVoucherComponentListener
@@ -179,7 +178,6 @@ class HomeAdapterFactory(
     private val mixTopComponentListener: MixTopComponentListener,
     private val reminderWidgetListener: ReminderWidgetListener,
     private val productHighlightListener: ProductHighlightListener,
-    private val lego4AutoBannerListener: Lego4AutoBannerListener,
     private val featuredShopListener: FeaturedShopListener,
     private val playWidgetCoordinator: PlayWidgetCoordinator,
     private val bestSellerListener: RecommendationWidgetListener,
