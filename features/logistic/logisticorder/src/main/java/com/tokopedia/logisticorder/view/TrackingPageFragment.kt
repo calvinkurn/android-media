@@ -49,6 +49,7 @@ import com.tokopedia.logisticorder.view.bottomsheet.DriverInfoBottomSheet
 import com.tokopedia.logisticorder.view.bottomsheet.DriverTippingBottomSheet
 import com.tokopedia.logisticorder.view.livetracking.LiveTrackingActivity
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
@@ -229,6 +230,7 @@ class TrackingPageFragment : BaseDaggerFragment(), TrackingHistoryAdapter.OnImag
     private fun setHeader(model: TrackingDataModel) {
         binding?.headerTrackingPage?.let { header ->
             model.page.contactUsUrl.takeIf { it.isNotEmpty() }?.let { url ->
+                val cleanedUrl = HtmlLinkHelper(requireContext(), url).spannedString
                 header.addRightIcon(0).apply {
                     clearImage()
                     setImageDrawable(
@@ -242,7 +244,7 @@ class TrackingPageFragment : BaseDaggerFragment(), TrackingHistoryAdapter.OnImag
                     setOnClickListener {
                         RouteManager.route(
                             activity,
-                            "${ApplinkConst.WEBVIEW}?url=$url"
+                            "${ApplinkConst.WEBVIEW}?url=$cleanedUrl"
                         )
                     }
                 }
