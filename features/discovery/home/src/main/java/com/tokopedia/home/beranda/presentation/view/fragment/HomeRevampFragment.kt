@@ -115,7 +115,6 @@ import com.tokopedia.home.beranda.presentation.view.listener.BannerComponentCall
 import com.tokopedia.home.beranda.presentation.view.listener.CMHomeWidgetCallback
 import com.tokopedia.home.beranda.presentation.view.listener.CampaignWidgetComponentCallback
 import com.tokopedia.home.beranda.presentation.view.listener.CarouselPlayWidgetCallback
-import com.tokopedia.home.beranda.presentation.view.listener.CategoryNavigationCallback
 import com.tokopedia.home.beranda.presentation.view.listener.CategoryWidgetV2Callback
 import com.tokopedia.home.beranda.presentation.view.listener.ChooseAddressWidgetCallback
 import com.tokopedia.home.beranda.presentation.view.listener.CueWidgetComponentCallback
@@ -1481,7 +1480,6 @@ open class HomeRevampFragment :
             FeaturedShopComponentCallback(context, this),
             playWidgetCoordinator,
             this,
-            CategoryNavigationCallback(context, this),
             RechargeBUWidgetCallback(context, this),
             bannerCarouselCallback,
             DynamicIconComponentCallback(context, this, homePrefController),

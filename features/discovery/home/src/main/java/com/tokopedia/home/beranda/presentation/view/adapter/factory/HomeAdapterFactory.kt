@@ -78,7 +78,6 @@ import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendation
 import com.tokopedia.home_component.HomeComponentTypeFactory
 import com.tokopedia.home_component.listener.BannerComponentListener
 import com.tokopedia.home_component.listener.CampaignWidgetComponentListener
-import com.tokopedia.home_component.listener.CategoryNavigationListener
 import com.tokopedia.home_component.listener.CategoryWidgetV2Listener
 import com.tokopedia.home_component.listener.CueWidgetCategoryListener
 import com.tokopedia.home_component.listener.DynamicIconComponentListener
@@ -101,7 +100,6 @@ import com.tokopedia.home_component.listener.VpsWidgetListener
 import com.tokopedia.home_component.viewholders.BannerComponentViewHolder
 import com.tokopedia.home_component.viewholders.BannerRevampViewHolder
 import com.tokopedia.home_component.viewholders.CampaignWidgetViewHolder
-import com.tokopedia.home_component.viewholders.CategoryNavigationViewHolder
 import com.tokopedia.home_component.viewholders.CategoryWidgetV2ViewHolder
 import com.tokopedia.home_component.viewholders.CueWidgetCategoryViewHolder
 import com.tokopedia.home_component.viewholders.DealsWidgetViewHolder
@@ -126,7 +124,6 @@ import com.tokopedia.home_component.viewholders.VpsWidgetViewHolder
 import com.tokopedia.home_component.visitable.BannerDataModel
 import com.tokopedia.home_component.visitable.BannerRevampDataModel
 import com.tokopedia.home_component.visitable.CampaignWidgetDataModel
-import com.tokopedia.home_component.visitable.CategoryNavigationDataModel
 import com.tokopedia.home_component.visitable.CategoryWidgetDataModel
 import com.tokopedia.home_component.visitable.CategoryWidgetV2DataModel
 import com.tokopedia.home_component.visitable.CueCategoryDataModel
@@ -182,7 +179,6 @@ class HomeAdapterFactory(
     private val featuredShopListener: FeaturedShopListener,
     private val playWidgetCoordinator: PlayWidgetCoordinator,
     private val bestSellerListener: RecommendationWidgetListener,
-    private val categoryNavigationListener: CategoryNavigationListener,
     private val rechargeBUWidgetListener: RechargeBUWidgetListener,
     private val bannerComponentListener: BannerComponentListener?,
     private val dynamicIconComponentListener: DynamicIconComponentListener,
@@ -328,10 +324,6 @@ class HomeAdapterFactory(
 
     override fun type(dataModel: CarouselPlayWidgetDataModel) =
         CarouselPlayWidgetViewHolder.LAYOUT
-
-    override fun type(categoryNavigationDataModel: CategoryNavigationDataModel): Int {
-        return CategoryNavigationViewHolder.LAYOUT
-    }
 
     override fun type(bannerDataModel: BannerDataModel): Int {
         return BannerComponentViewHolder.LAYOUT
@@ -523,7 +515,6 @@ class HomeAdapterFactory(
                 homeComponentListener,
                 cardInteraction = true
             )
-            CategoryNavigationViewHolder.LAYOUT -> viewHolder = CategoryNavigationViewHolder(view, categoryNavigationListener)
             CarouselPlayWidgetViewHolder.LAYOUT -> {
                 val playWidgetView = view.findViewById<View>(R.id.playWidgetView)
                 viewHolder = if (playWidgetView != null) {

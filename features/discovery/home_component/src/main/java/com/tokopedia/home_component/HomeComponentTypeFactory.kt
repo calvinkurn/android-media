@@ -3,7 +3,6 @@ package com.tokopedia.home_component
 import com.tokopedia.home_component.visitable.BannerDataModel
 import com.tokopedia.home_component.visitable.BannerRevampDataModel
 import com.tokopedia.home_component.visitable.CampaignWidgetDataModel
-import com.tokopedia.home_component.visitable.CategoryNavigationDataModel
 import com.tokopedia.home_component.visitable.CategoryWidgetDataModel
 import com.tokopedia.home_component.visitable.CategoryWidgetV2DataModel
 import com.tokopedia.home_component.visitable.CueCategoryDataModel
@@ -42,7 +41,6 @@ interface HomeComponentTypeFactory {
     fun type(mixTopDataModel: MixTopDataModel): Int = 0
     fun type(productHighlightDataModel: ProductHighlightDataModel): Int = 0
     fun type(featuredShopDataModel: FeaturedShopDataModel): Int = 0
-    fun type(categoryNavigationDataModel: CategoryNavigationDataModel): Int = 0
     fun type(bannerDataModel: BannerDataModel): Int = 0
     fun type(dynamicIconComponentDataModel: DynamicIconComponentDataModel): Int = 0
     fun type(questWidgetModel: QuestWidgetModel): Int = 0

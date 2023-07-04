@@ -29,7 +29,6 @@ class OfficialHomeAdapterTypeFactory(
         private val legoBannerListener: DynamicLegoBannerListener,
         private val mixLeftComponentListener: MixLeftComponentListener,
         private val mixTopComponentListener: MixTopComponentListener,
-        private val featuredBrandListener: FeaturedBrandListener,
         private val featuredShopDCListener: com.tokopedia.home_component.listener.FeaturedShopListener,
         private val recycledViewPool: RecyclerView.RecycledViewPool? = null,
         private val merchantVoucherComponentListener: MerchantVoucherComponentListener,
@@ -112,10 +111,6 @@ class OfficialHomeAdapterTypeFactory(
         return BannerComponentViewHolder.LAYOUT
     }
 
-    override fun type(featuredBrandDataModel: FeaturedBrandDataModel): Int {
-        return FeaturedBrandViewHolder.LAYOUT
-    }
-
     override fun type(merchantVoucherDataModel: MerchantVoucherDataModel): Int {
         return MerchantVoucherViewHolder.LAYOUT
     }
@@ -158,10 +153,6 @@ class OfficialHomeAdapterTypeFactory(
             HideViewHolder.LAYOUT -> HideViewHolder(view)
             DynamicLegoBannerViewHolder.LAYOUT -> DynamicLegoBannerViewHolder(view, legoBannerListener, homeComponentListener)
             OfficialTopAdsBannerViewHolder.LAYOUT -> OfficialTopAdsBannerViewHolder(view)
-            FeaturedBrandViewHolder.LAYOUT -> FeaturedBrandViewHolder(
-                    itemView = view,
-                    homeComponentListener = homeComponentListener,
-                    featuredBrandListener = featuredBrandListener )
             EmptyBlankViewHolder.LAYOUT -> EmptyBlankViewHolder(view)
             SpecialReleaseViewHolder.LAYOUT -> SpecialReleaseViewHolder(
                 view,

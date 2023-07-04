@@ -163,9 +163,6 @@ class HomeDynamicChannelVisitableFactoryImpl(
                 DynamicHomeChannel.Channels.LAYOUT_PLAY_CAROUSEL_NEW_WITH_PRODUCT -> {
                     createCarouselPlayWidget(channel, position)
                 }
-                DynamicHomeChannel.Channels.LAYOUT_CATEGORY_ICON -> {
-                    createCategoryIconComponent(channel, position, isCache)
-                }
                 DynamicHomeChannel.Channels.LAYOUT_BEST_SELLING -> {
                     createBestSellingWidget(channel)
                 }
@@ -221,27 +218,6 @@ class HomeDynamicChannelVisitableFactoryImpl(
             )
         )
         if (!isCache && channel.convertPromoEnhanceLegoBannerDataLayerForCombination().isNotEmpty()) {
-            HomePageTracking.eventEnhanceImpressionLegoAndCuratedHomePage(
-                trackingQueue,
-                channel.convertPromoEnhanceLegoBannerDataLayerForCombination()
-            )
-        }
-        context?.let {
-            HomeTrackingUtils.homeDiscoveryWidgetImpression(
-                it,
-                visitableList.size,
-                channel
-            )
-        }
-    }
-
-    private fun createCategoryIconComponent(channel: DynamicHomeChannel.Channels, verticalPosition: Int, isCache: Boolean) {
-        visitableList.add(
-            CategoryNavigationDataModel(
-                DynamicChannelComponentMapper.mapHomeChannelToComponent(channel, verticalPosition)
-            )
-        )
-        if (!isCache) {
             HomePageTracking.eventEnhanceImpressionLegoAndCuratedHomePage(
                 trackingQueue,
                 channel.convertPromoEnhanceLegoBannerDataLayerForCombination()
