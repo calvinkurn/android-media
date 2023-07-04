@@ -1,7 +1,5 @@
 package com.tokopedia.media.loader.data
 
-const val RESPONSE_HEADER = "X-Tkp-Media-Failure"
-
 enum class FailureType(val value: String) {
     NotFound("Not-Found"),
     Gone("Gone"),
