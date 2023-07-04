@@ -24,30 +24,15 @@ import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_SELECTED
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloads
 import com.tokopedia.feedplus.presentation.adapter.listener.FeedListener
-import com.tokopedia.feedplus.presentation.model.FeedCardImageContentModel
-import com.tokopedia.feedplus.presentation.model.FeedLikeModel
-import com.tokopedia.feedplus.presentation.model.FeedMediaModel
-import com.tokopedia.feedplus.presentation.model.FeedShareModel
-import com.tokopedia.feedplus.presentation.model.FeedTrackerDataModel
-import com.tokopedia.feedplus.presentation.uiview.FeedAsgcTagsView
-import com.tokopedia.feedplus.presentation.uiview.FeedAuthorInfoView
-import com.tokopedia.feedplus.presentation.uiview.FeedCampaignRibbonView
-import com.tokopedia.feedplus.presentation.uiview.FeedCaptionView
-import com.tokopedia.feedplus.presentation.uiview.FeedCommentButtonView
-import com.tokopedia.feedplus.presentation.uiview.FeedProductButtonView
-import com.tokopedia.feedplus.presentation.uiview.FeedProductTagView
+import com.tokopedia.feedplus.presentation.model.*
+import com.tokopedia.feedplus.presentation.uiview.*
 import com.tokopedia.feedplus.presentation.util.animation.FeedLikeAnimationComponent
 import com.tokopedia.feedplus.presentation.util.animation.FeedSmallLikeIconAnimationComponent
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.isActive
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import kotlin.math.abs
 
 /**
@@ -210,7 +195,8 @@ class FeedPostImageViewHolder(
                 bindAsgcTags(data)
                 bindCampaignRibbon(data)
 
-                val trackerData = trackerDataModel ?: trackerMapper.transformImageContentToTrackerModel(data)
+                val trackerData =
+                    trackerDataModel ?: trackerMapper.transformImageContentToTrackerModel(data)
 
                 menuButton.setOnClickListener {
                     listener.onMenuClicked(
@@ -296,11 +282,13 @@ class FeedPostImageViewHolder(
                 if (it.tagging.isNotEmpty()) {
                     if (it.tagging.size == PRODUCT_COUNT_ONE && it.tagging[PRODUCT_COUNT_ZERO].tagIndex in PRODUCT_COUNT_ZERO until element.products.size) {
                         productTagView.bindText(
-                            listOf(element.products[it.tagging[PRODUCT_COUNT_ZERO].tagIndex])
+                            listOf(element.products[it.tagging[PRODUCT_COUNT_ZERO].tagIndex]),
+                            element.totalProducts
                         )
                     } else {
                         productTagView.bindText(
-                            element.products
+                            element.products,
+                            element.totalProducts
                         )
                     }
                 } else {
@@ -413,6 +401,7 @@ class FeedPostImageViewHolder(
             campaign = model.campaign,
             hasVoucher = model.hasVoucher,
             products = model.products,
+            totalProducts = model.totalProducts,
             trackerData = trackerDataModel,
             positionInFeed = absoluteAdapterPosition
         )
