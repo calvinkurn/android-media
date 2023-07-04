@@ -35,6 +35,7 @@ import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConsta
 import com.tokopedia.topads.dashboard.recommendation.common.decoration.RecommendationInsightItemDecoration
 import com.tokopedia.topads.dashboard.recommendation.data.model.cloud.TopAdsBatchGroupInsightResponse.TopAdsBatchGetKeywordInsightByGroupIDV3.Group.GroupData.NewPositiveKeywordsRecom
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.AccordianKataKunciUiModel
+import com.tokopedia.unifycomponents.TextFieldUnify2
 
 class AccordianKataKunciViewHolder(
     private val itemView: View,
@@ -76,21 +77,7 @@ class AccordianKataKunciViewHolder(
                             if(bid == element.suggestionBid) {
                                 keywordCost.setMessage(getString(R.string.biaya_optimal))
                             } else {
-                                val msg = String.format(getString(R.string.topads_insight_recommended_bid_apply), element.suggestionBid)
-                                val ss = SpannableString(msg)
-                                val cs = object : ClickableSpan() {
-                                    override fun onClick(p0: View) {
-                                        keywordCost.editText.setText(element.suggestionBid.toString())
-                                    }
-
-                                    override fun updateDrawState(ds: TextPaint) {
-                                        ds.isUnderlineText = false
-                                        ds.color = ContextCompat.getColor(keywordCost.context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
-                                        ds.isFakeBoldText = true
-                                    }
-                                }
-                                ss.setSpan(cs, msg.length-8, msg.length, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
-                                keywordCost.setMessage(ss)
+                                keywordCost.setMessage(getClickableString(element,keywordCost))
                             }
 
                             if(checkbox.isChecked){
@@ -332,6 +319,24 @@ class AccordianKataKunciViewHolder(
             }
         }
         return hasErrors
+    }
+
+    private fun getClickableString(element: NewPositiveKeywordsRecom, keywordCost: TextFieldUnify2): SpannableString {
+        val msg = String.format(getString(R.string.topads_insight_recommended_bid_apply), element.suggestionBid)
+        val ss = SpannableString(msg)
+        val cs = object : ClickableSpan() {
+            override fun onClick(p0: View) {
+                keywordCost.editText.setText(element.suggestionBid.toString())
+            }
+
+            override fun updateDrawState(ds: TextPaint) {
+                ds.isUnderlineText = false
+                ds.color = ContextCompat.getColor(keywordCost.context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
+                ds.isFakeBoldText = true
+            }
+        }
+        ss.setSpan(cs, msg.length-8, msg.length, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
+        return ss
     }
 
     companion object {

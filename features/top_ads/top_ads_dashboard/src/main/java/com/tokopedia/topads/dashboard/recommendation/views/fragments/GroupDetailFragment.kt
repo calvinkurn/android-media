@@ -278,6 +278,7 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
             utils.convertAdTypeToInt(adType),
             adGroupId
         )
+        showApplyInsightCta(false)
     }
 
     private fun showFailedInsightApplyDialog() {
@@ -528,7 +529,7 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
         }
     }
 
-    override fun onClickItemListener(adType: Int, groupId: String, groupName: String) {
+    override fun onSubmitSelectItemListener(adType: Int, groupId: String, groupName: String) {
         // adType changes with choose ad type bottomsheet & vice versa for choose group bottomsheet
         this.adType = if (adType == TYPE_PRODUCT_VALUE) PRODUCT_KEY else HEADLINE_KEY
         this.adGroupId = groupId

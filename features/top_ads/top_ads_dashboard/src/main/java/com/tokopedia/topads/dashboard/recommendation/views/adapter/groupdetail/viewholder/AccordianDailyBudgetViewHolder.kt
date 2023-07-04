@@ -63,32 +63,7 @@ class AccordianDailyBudgetViewHolder(
                     if(dailyBudgetBid == element?.sellerInsightData?.dailyBudgetData?.firstOrNull()?.suggestedPriceDaily?.toDouble()){
                         dailyBudget.setMessage(getString(R.string.biaya_optimal))
                     } else {
-                        val msg = String.format(
-                            getString(R.string.topads_insight_recommended_bid_apply),
-                            element?.sellerInsightData?.dailyBudgetData?.firstOrNull()?.suggestedPriceDaily.toZeroIfNull()
-                        )
-                        val ss = SpannableString(msg)
-                        val cs = object : ClickableSpan() {
-                            override fun onClick(p0: View) {
-                                dailyBudget.editText.setText(element?.sellerInsightData?.dailyBudgetData?.firstOrNull()?.suggestedPriceDaily.toZeroIfNull())
-                            }
-
-                            override fun updateDrawState(ds: TextPaint) {
-                                ds.isUnderlineText = false
-                                ds.color = ContextCompat.getColor(
-                                    dailyBudget.context,
-                                    com.tokopedia.unifyprinciples.R.color.Unify_GN500
-                                )
-                                ds.isFakeBoldText = true
-                            }
-                        }
-                        ss.setSpan(
-                            cs,
-                            msg.length - 8,
-                            msg.length,
-                            SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE
-                        )
-                        dailyBudget.setMessage(ss)
+                        dailyBudget.setMessage(getClickableString(element))
                     }
                 } else {
                     hasError = true
@@ -122,6 +97,35 @@ class AccordianDailyBudgetViewHolder(
                 dailyBudget = dailyBudgetBid
             )
         )
+    }
+
+    private fun getClickableString(element: AccordianDailyBudgetUiModel?): SpannableString {
+        val msg = String.format(
+            getString(R.string.topads_insight_recommended_bid_apply),
+            element?.sellerInsightData?.dailyBudgetData?.firstOrNull()?.suggestedPriceDaily.toZeroIfNull()
+        )
+        val ss = SpannableString(msg)
+        val cs = object : ClickableSpan() {
+            override fun onClick(p0: View) {
+                dailyBudget.editText.setText(element?.sellerInsightData?.dailyBudgetData?.firstOrNull()?.suggestedPriceDaily.toZeroIfNull())
+            }
+
+            override fun updateDrawState(ds: TextPaint) {
+                ds.isUnderlineText = false
+                ds.color = ContextCompat.getColor(
+                    dailyBudget.context,
+                    com.tokopedia.unifyprinciples.R.color.Unify_GN500
+                )
+                ds.isFakeBoldText = true
+            }
+        }
+        ss.setSpan(
+            cs,
+            msg.length - 8,
+            msg.length,
+            SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+        return ss
     }
 
     companion object {

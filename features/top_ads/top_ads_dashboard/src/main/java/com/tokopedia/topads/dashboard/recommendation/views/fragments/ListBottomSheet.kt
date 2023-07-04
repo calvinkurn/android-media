@@ -63,7 +63,7 @@ class ListBottomSheet :
             searchGroup.showWithCondition(bottomsheetType == CHOOSE_AD_GROUP_BOTTOM_SHEET)
 
             saveCtaButton.setOnClickListener {
-                newAdType?.let { itemChangeListener?.onClickItemListener(it, newGroupId ?: "", selectedGroupName ?: "") }
+                newAdType?.let { itemChangeListener?.onSubmitSelectItemListener(it, newGroupId ?: "", selectedGroupName ?: "") }
                 dismiss()
             }
 
@@ -107,8 +107,12 @@ class ListBottomSheet :
         newAdType = adType
         newGroupId = groupId
         selectedGroupName = groupName
-        adapterItemList.setData(itemList)
         showCtaButton()
+        if(bottomsheetType == CHOOSE_AD_GROUP_BOTTOM_SHEET){
+            updateAdGroups(binding?.searchGroup?.searchBarTextField?.text.toString())
+        } else{
+            adapterItemList.setData(itemList)
+        }
     }
 
     private fun showCtaButton() {
