@@ -78,17 +78,17 @@ class JakCardBalanceViewModelTest {
     private val cardNumber = "9360885008689978"
     private val lastBalance = 20000
     private val amount = 20000
-    private val mockPrivateKeyString = "lalalalalalalaalalalalalalalalalalalalalalala"
-    private val mockPublicKeyString = "dadadadadadadadadadadadadadadadadadaadadadadadadadadadada"
-    private val pairEncryptionResult = Pair("lalalalalalalaalalalalalalalalalalalalalalala", "dadadadadadadadadadadadadadadadadadaadadadadadadadadadada")
-    private val pairEncryptionResultTopUp = Pair("fafafafafafa", "gagagagaga")
-    private val pairEncryptionResultTopUpConfirmation = Pair("hahahahahaha", "jajajajajaja")
-    private val encKeyAes = "babababababababa"
-    private val encPayloadAes = "cacacacacaca"
-    private val encKeyTopUpAes = "fafafafafafa"
-    private val encPayloadTopUpAes = "gagagagaga"
-    private val encKeyTopUpConfirmationAes = "hahahahahaha"
-    private val encKeyPayloadTopUpConfirmationAes = "jajajajajaja"
+    private val mockPrivateKeyString = "7dgf8agd7isgdifushkdfhskdfh"
+    private val mockPublicKeyString = "f8eh8fhe8fh8fy8eyf8eyf8yef8"
+    private val pairEncryptionResult = Pair("ihcdhicjhd9cj9di", "8cdis8hdvios8dvosdvh")
+    private val pairEncryptionResultTopUp = Pair("8y9s8dhiocs8dhvi8hsdoivh", "i7dya89ciad8cdi8")
+    private val pairEncryptionResultTopUpConfirmation = Pair("8yfe8f9a8ef98ah9df8hd", "sfi8a8dhciadhgic7")
+    private val encKeyAes = "ihcdhicjhd9cj9di"
+    private val encPayloadAes = "8cdis8hdvios8dvosdvh"
+    private val encKeyTopUpAes = "8y9s8dhiocs8dhvi8hsdoivh"
+    private val encPayloadTopUpAes = "i7dya89ciad8cdi8"
+    private val encKeyTopUpConfirmationAes = "8yfe8f9a8ef98ah9df8hd"
+    private val encKeyPayloadTopUpConfirmationAes = "sfi8a8dhciadhgic7"
 
 
     private val gson = Gson()
