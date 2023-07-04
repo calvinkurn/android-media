@@ -116,18 +116,8 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
     private val insightListAdapter by lazy { InsightListAdapter(onInsightItemClick) }
 
     private val onInsightItemClick: (list: ArrayList<AdGroupUiModel>, item: AdGroupUiModel) -> Unit =
-        { adGroupList, item ->
-            val bundle = Bundle()
-            bundle.putString(RecommendationConstants.AD_GROUP_TYPE_KEY, item.adGroupType)
-            bundle.putString(RecommendationConstants.AD_GROUP_NAME_KEY, item.adGroupName)
-            bundle.putString(RecommendationConstants.AD_GROUP_ID_KEY, item.adGroupID)
-            bundle.putInt(RecommendationConstants.AD_GROUP_COUNT_KEY, item.count)
-            bundle.putInt(RecommendationConstants.INSIGHT_TYPE_KEY, item.insightType)
-            bundle.putParcelableArrayList(RecommendationConstants.INSIGHT_TYPE_LIST_KEY, adGroupList)
-            Intent(context, GroupDetailActivity::class.java).apply {
-                this.putExtra(RecommendationConstants.GROUP_DETAIL_BUNDLE_KEY, bundle)
-                startActivity(this)
-            }
+        { list, item ->
+            moveToInsightDetailPage(list, item)
         }
 
     private var needToHitInsight = true
@@ -651,6 +641,22 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
             }
         }
     }
+
+
+    private fun moveToInsightDetailPage(adGroupList: ArrayList<AdGroupUiModel>, item: AdGroupUiModel) {
+        val bundle = Bundle()
+        bundle.putString(RecommendationConstants.AD_GROUP_TYPE_KEY, item.adGroupType)
+        bundle.putString(RecommendationConstants.AD_GROUP_NAME_KEY, item.adGroupName)
+        bundle.putString(RecommendationConstants.AD_GROUP_ID_KEY, item.adGroupID)
+        bundle.putInt(RecommendationConstants.AD_GROUP_COUNT_KEY, item.count)
+        bundle.putInt(RecommendationConstants.INSIGHT_TYPE_KEY, item.insightType)
+        bundle.putParcelableArrayList(RecommendationConstants.INSIGHT_TYPE_LIST_KEY, adGroupList)
+        Intent(context, GroupDetailActivity::class.java).apply {
+            this.putExtra(RecommendationConstants.GROUP_DETAIL_BUNDLE_KEY, bundle)
+            startActivity(this)
+        }
+    }
+
 
     private fun setInsightWidgetBehaviour() {
         binding.layoutInsight.insightWidgetSeeMore.setOnClickListener {

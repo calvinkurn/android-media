@@ -226,7 +226,10 @@ class AccordianGroupBidViewHolder(
         return false
     }
 
-    private fun attachClickableSpan(view: com.tokopedia.unifycomponents.TextFieldUnify2, suggestionBid: Int){
+    private fun attachClickableSpan(
+        view: com.tokopedia.unifycomponents.TextFieldUnify2,
+        suggestionBid: Int
+    ) {
         val msg = String.format(
             getString(R.string.topads_insight_recommended_bid_apply),
             suggestionBid

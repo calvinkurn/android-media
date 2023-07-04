@@ -321,8 +321,14 @@ class AccordianKataKunciViewHolder(
         return hasErrors
     }
 
-    private fun getClickableString(element: NewPositiveKeywordsRecom, keywordCost: TextFieldUnify2): SpannableString {
-        val msg = String.format(getString(R.string.topads_insight_recommended_bid_apply), element.suggestionBid)
+    private fun getClickableString(
+        element: NewPositiveKeywordsRecom,
+        keywordCost: TextFieldUnify2
+    ): SpannableString {
+        val msg = String.format(
+            getString(R.string.topads_insight_recommended_bid_apply),
+            element.suggestionBid
+        )
         val ss = SpannableString(msg)
         val cs = object : ClickableSpan() {
             override fun onClick(p0: View) {
@@ -331,11 +337,14 @@ class AccordianKataKunciViewHolder(
 
             override fun updateDrawState(ds: TextPaint) {
                 ds.isUnderlineText = false
-                ds.color = ContextCompat.getColor(keywordCost.context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
+                ds.color = ContextCompat.getColor(
+                    keywordCost.context,
+                    com.tokopedia.unifyprinciples.R.color.Unify_GN500
+                )
                 ds.isFakeBoldText = true
             }
         }
-        ss.setSpan(cs, msg.length-8, msg.length, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
+        ss.setSpan(cs, msg.length - 8, msg.length, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
         return ss
     }
 
