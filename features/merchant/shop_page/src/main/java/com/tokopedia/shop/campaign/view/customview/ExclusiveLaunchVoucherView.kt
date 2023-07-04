@@ -68,8 +68,8 @@ class ExclusiveLaunchVoucherView @JvmOverloads constructor(
         }
 
         binding?.tpgClaim?.text = ctaText
-        binding?.tpgClaim?.isClickable = !isDisabledButton
-        binding?.tpgClaim?.alpha = if (isClickable) 1f else 0.5f
+        val isCtaClickable = !isDisabledButton && !isVoucherClaimed
+        binding?.tpgClaim?.isEnabled = isCtaClickable
     }
 
     fun useDarkBackground() {
