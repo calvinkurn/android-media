@@ -70,12 +70,7 @@ class ExclusiveLaunchVoucherAdapter :
                     )
                 )
 
-                val remainingQuota = if (voucher.remainingQuota.isMoreThanZero()) {
-                    context.getString(R.string.shop_page_placeholder_remaining_quota, voucher.remainingQuota)
-                } else {
-                    ""
-                }
-                setRemainingQuota(remainingQuota)
+                setRemainingQuota(voucher.remainingQuota)
                 setVoucherName(voucher.voucherName)
 
                 val ctaText = voucher.buttonStr

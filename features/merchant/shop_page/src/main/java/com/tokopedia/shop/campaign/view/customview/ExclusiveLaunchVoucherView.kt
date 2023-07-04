@@ -4,7 +4,9 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.FrameLayout
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.setTextColorCompat
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.shop.databinding.CustomViewExclusiveLaunchVoucherBinding
 import com.tokopedia.shop.R
 
@@ -13,6 +15,10 @@ class ExclusiveLaunchVoucherView @JvmOverloads constructor(
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
 ) : FrameLayout(context, attrs, defStyleAttr) {
+
+    companion object {
+        private const val MINIMUM_VOUCHER_QUOTA = 5
+    }
 
     private var binding: CustomViewExclusiveLaunchVoucherBinding? = null
 
@@ -33,8 +39,16 @@ class ExclusiveLaunchVoucherView @JvmOverloads constructor(
         binding?.tpgMinPurchase?.text = text
     }
 
-    fun setRemainingQuota(remainingQuota: String) {
-        binding?.tpgRemainingQuota?.text = remainingQuota
+    fun setRemainingQuota(remainingQuota: Int) {
+        when {
+            remainingQuota == 0 -> binding?.tpgRemainingQuota?.gone()
+            remainingQuota <= MINIMUM_VOUCHER_QUOTA -> {
+                binding?.tpgRemainingQuota?.visible()
+                val remainingQuotaText = context.getString(R.string.shop_page_placeholder_remaining_quota, remainingQuota)
+                binding?.tpgRemainingQuota?.text = remainingQuotaText
+            }
+            else ->  binding?.tpgRemainingQuota?.gone()
+        }
     }
 
     fun setOnPrimaryCtaClick(onClick: () -> Unit) {

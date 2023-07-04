@@ -67,12 +67,7 @@ class ShopCampaignVoucherSliderItemViewHolder(
                     uiModel.minimumPurchase.getNumberFormatted()
                 )
             )
-            val remainingQuota = if (uiModel.remainingQuota.isMoreThanZero()) {
-                context.getString(R.string.shop_page_placeholder_remaining_quota, uiModel.remainingQuota)
-            } else {
-                ""
-            }
-            setRemainingQuota(remainingQuota)
+            setRemainingQuota(uiModel.remainingQuota)
             setVoucherName(uiModel.voucherName)
             if (shopCampaignListener.isCampaignTabDarkMode()) useDarkBackground() else useLightBackground()
             setOnClickListener {
