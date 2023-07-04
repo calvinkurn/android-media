@@ -288,21 +288,6 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 }
             }
 
-            DynamicProductDetailMapper.getGlobalRecommendationWidgetComponentNames().forEach { key ->
-                updateData(key, loadInitialData) {
-                    (mapOfData[key] as? ProductRecommendationWidgetUiModel)?.run {
-                        val newData = copy(
-                            recommendationWidget = recommendationWidget.copy(
-                                metadata = recommendationWidget.metadata.copy(
-                                    productIds = listOf(productId)
-                                )
-                            )
-                        )
-                        mapOfData[key] = newData
-                    }
-                }
-            }
-
             if (loadInitialData) {
                 verticalRecommendationItems.clear()
             }
@@ -1221,6 +1206,23 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                             status = ProductCustomInfoTitleDataModel.Status.fromString(it.status)
                         }
                     }
+                }
+            }
+        }
+    }
+
+    fun updateGlobalRecommendationWidget(productInfo: DynamicProductInfoP1) {
+        DynamicProductDetailMapper.getGlobalRecommendationWidgetComponentNames().forEach { key ->
+            updateData(key, true) {
+                (mapOfData[key] as? ProductRecommendationWidgetUiModel)?.run {
+                    val newData = copy(
+                        recommendationWidget = recommendationWidget.copy(
+                            metadata = recommendationWidget.metadata.copy(
+                                productIds = listOf(productInfo.data.productId)
+                            )
+                        )
+                    )
+                    mapOfData[key] = newData
                 }
             }
         }

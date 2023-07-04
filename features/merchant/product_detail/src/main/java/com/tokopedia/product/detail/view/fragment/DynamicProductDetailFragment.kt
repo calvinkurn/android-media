@@ -2641,7 +2641,6 @@ open class DynamicProductDetailFragment :
 
         updateProductInfoOnVariantChanged(selectedChild)
 
-        recommendationWidgetViewModel?.refresh()
         updateUi()
         doSomethingAfterVariantUpdated?.invoke()
     }
@@ -3276,6 +3275,7 @@ open class DynamicProductDetailFragment :
             productInfo.data.containerType,
             productInfo.data.productMediaRecomBasicInfo
         )
+        pdpUiUpdater?.updateGlobalRecommendationWidget(productInfo)
         actionButtonView.setButtonP1(productInfo.data.preOrder)
 
         if ((productInfo.basic.category.isAdult && !viewModel.isUserSessionActive) ||
