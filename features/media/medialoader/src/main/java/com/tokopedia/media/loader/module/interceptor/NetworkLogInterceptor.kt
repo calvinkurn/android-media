@@ -10,13 +10,15 @@ class NetworkLogInterceptor constructor(
 ) : Interceptor {
 
     override fun intercept(chain: Interceptor.Chain): Response {
+        val url = chain.request().url.toString()
+
         val response = chain.proceed(chain.request())
         val headers = response.headers
 
         try {
             NetworkResponseManager
                 .getInstance(context)
-                .set(headers)
+                .set(url, headers)
         } catch (ignored: Throwable) {}
 
         return response
