@@ -79,7 +79,6 @@ class ShopCampaignVoucherSliderItemViewHolder(
                     )
                 }
             }
-            val ctaText = uiModel.buttonStr
             setOnPrimaryCtaClick {
                 parentUiModel?.let {
                     listener.onCampaignVoucherSliderItemCtaClaimClick(
@@ -89,7 +88,11 @@ class ShopCampaignVoucherSliderItemViewHolder(
                     )
                 }
             }
-            setPrimaryCta(ctaText = ctaText, isClickable = !uiModel.isDisabledButton)
+            setPrimaryCta(
+                voucherCode = uiModel.couponCode,
+                isDisabledButton = uiModel.isDisabledButton,
+                remoteCtaText = uiModel.buttonStr,
+            )
         }
     }
 

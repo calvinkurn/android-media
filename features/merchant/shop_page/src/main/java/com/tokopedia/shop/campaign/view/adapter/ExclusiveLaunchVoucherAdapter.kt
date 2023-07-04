@@ -73,8 +73,11 @@ class ExclusiveLaunchVoucherAdapter :
                 setRemainingQuota(voucher.remainingQuota)
                 setVoucherName(voucher.voucherName)
 
-                val ctaText = voucher.buttonStr
-                setPrimaryCta(ctaText = ctaText, isClickable = !voucher.isDisabledButton)
+                setPrimaryCta(
+                    voucherCode = voucher.couponCode,
+                    isDisabledButton = voucher.isDisabledButton,
+                    remoteCtaText = voucher.buttonStr,
+                )
                 if (useDarkBackground) useDarkBackground() else useLightBackground()
             }
         }

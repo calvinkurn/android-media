@@ -55,9 +55,20 @@ class ExclusiveLaunchVoucherView @JvmOverloads constructor(
         binding?.tpgClaim?.setOnClickListener { onClick() }
     }
 
-    fun setPrimaryCta(ctaText: String, isClickable: Boolean) {
+    fun setPrimaryCta(
+        voucherCode: String,
+        isDisabledButton: Boolean,
+        remoteCtaText: String
+    ) {
+        val isVoucherClaimed = voucherCode.isNotEmpty()
+        val ctaText = when {
+            !isDisabledButton && isVoucherClaimed ->  context?.getString(R.string.shop_page_claimed)
+            !isDisabledButton && !isVoucherClaimed ->  context?.getString(R.string.shop_page_claim)
+            else -> remoteCtaText
+        }
+
         binding?.tpgClaim?.text = ctaText
-        binding?.tpgClaim?.isClickable = isClickable
+        binding?.tpgClaim?.isClickable = !isDisabledButton
         binding?.tpgClaim?.alpha = if (isClickable) 1f else 0.5f
     }
 
