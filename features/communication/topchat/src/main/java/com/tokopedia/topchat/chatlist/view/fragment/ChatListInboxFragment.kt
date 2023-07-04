@@ -1,6 +1,5 @@
 package com.tokopedia.topchat.chatlist.view.fragment
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -32,7 +31,6 @@ import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
 import com.tokopedia.chat_common.util.EndlessRecyclerViewScrollUpListener
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.imageassets.TokopediaImageUrl
-import com.tokopedia.notifcenter.ui.NotificationFragmentContainer
 import com.tokopedia.inboxcommon.RoleType
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ZERO
@@ -138,7 +136,6 @@ open class ChatListInboxFragment :
     private var chatFilter: ChatFilterView? = null
     private var emptyUiModel: Visitable<*>? = null
     private var broadCastButton: FloatingActionButton? = null
-    private var containerListener: com.tokopedia.notifcenter.ui.NotificationFragmentContainer? = null
     var chatRoomFlexModeListener: TopChatRoomFlexModeListener? = null
     var stopTryingIndicator = false
 
@@ -148,16 +145,10 @@ open class ChatListInboxFragment :
     override fun getSwipeRefreshLayoutResourceId() = R.id.swipe_refresh_layout
     override fun getScreenName(): String = "chatlist"
 
-    override fun onAttachActivity(context: Context?) {
-        if (context is com.tokopedia.notifcenter.ui.NotificationFragmentContainer) {
-            containerListener = context
-        }
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         performanceMonitoring = PerformanceMonitoring.start(getFpmKey())
-        initRole()
+        initRoleFromChatRoom()
         initWebSocket()
         setHasOptionsMenu(false)
     }
@@ -179,26 +170,10 @@ open class ChatListInboxFragment :
         }
     }
 
-    private fun initRole() {
-        if (isArgumentUserRoleAvailable()) {
-            initRoleFromChatRoom()
-        } else {
-            initRoleFromInbox()
-        }
-    }
-
-    private fun isArgumentUserRoleAvailable(): Boolean {
-        return arguments?.getInt(Constant.CHAT_USER_ROLE_KEY) != NO_INT_ARGUMENT
-    }
-
     private fun initRoleFromChatRoom() {
         // From ChatRoom with Flex Foldables
         role = arguments?.getInt(Constant.CHAT_USER_ROLE_KEY) ?: RoleType.BUYER
         assignRole(role)
-    }
-
-    private fun initRoleFromInbox() {
-        assignRole(containerListener?.role)
     }
 
     private fun initWebSocket() {
@@ -809,17 +784,7 @@ open class ChatListInboxFragment :
                 )
             }
             webSocket.activeRoom = element.msgId
-            if (context is com.tokopedia.notifcenter.ui.NotificationFragmentContainer) {
-                val intent = RouteManager.getIntent(it, ApplinkConst.TOPCHAT, element.msgId)
-                intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
-                intent.putExtra(Constant.CHAT_CURRENT_ACTIVE, element.msgId)
-                intent.putExtra(Constant.CHAT_USER_ROLE_KEY, role)
-                startActivityForResult(intent, OPEN_DETAIL_MESSAGE)
-
-                it.overridePendingTransition(0, 0)
-
-                // Handle if activity is ChatRoom & flex mode
-            } else if (isFromTopChatRoom() && chatRoomFlexModeListener?.isFlexMode() == true) {
+            if (isFromTopChatRoom() && chatRoomFlexModeListener?.isFlexMode() == true) {
                 handleChatRoomAndFlexMode(element, itemPosition, lastActiveChat)
             }
         }
@@ -946,11 +911,6 @@ open class ChatListInboxFragment :
         }
 
         return EmptyChatModel(title, subtitle, image, ctaText, ctaApplink, isTopAds)
-    }
-
-    override fun onSwipeRefresh() {
-        containerListener?.refreshNotificationCounter()
-        super.onSwipeRefresh()
     }
 
     override fun trackChangeReadStatus(element: ItemChatListPojo) {

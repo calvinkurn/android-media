@@ -9,7 +9,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.StringRes
 import androidx.collection.ArrayMap
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
@@ -36,6 +35,7 @@ import com.tokopedia.notifcenter.analytics.MarkAsSeenAnalytic
 import com.tokopedia.notifcenter.analytics.NotificationAnalytic
 import com.tokopedia.notifcenter.analytics.NotificationTopAdsAnalytic
 import com.tokopedia.notifcenter.data.entity.notification.NotificationDetailResponseModel
+import com.tokopedia.notifcenter.data.entity.notification.NotificationDetailResponseWrapper
 import com.tokopedia.notifcenter.data.entity.notification.ProductData
 import com.tokopedia.notifcenter.data.entity.orderlist.NotifOrderListResponse
 import com.tokopedia.notifcenter.data.entity.orderlist.OrderWidgetUiModel
@@ -48,7 +48,8 @@ import com.tokopedia.notifcenter.data.uimodel.LoadMoreUiModel
 import com.tokopedia.notifcenter.data.uimodel.NotificationUiModel
 import com.tokopedia.notifcenter.di.DaggerNotificationComponent
 import com.tokopedia.notifcenter.di.module.CommonModule
-import com.tokopedia.notifcenter.ui.listener.NotificationItemListener
+import com.tokopedia.notifcenter.domain.NotifcenterDetailUseCase
+import com.tokopedia.notifcenter.service.MarkAsSeenService
 import com.tokopedia.notifcenter.ui.adapter.NotificationAdapter
 import com.tokopedia.notifcenter.ui.adapter.decoration.NotificationItemDecoration
 import com.tokopedia.notifcenter.ui.adapter.decoration.RecommendationItemDecoration
@@ -59,10 +60,10 @@ import com.tokopedia.notifcenter.ui.adapter.viewholder.ViewHolderState
 import com.tokopedia.notifcenter.ui.adapter.viewholder.notification.v3.LoadMoreViewHolder
 import com.tokopedia.notifcenter.ui.customview.bottomsheet.BottomSheetFactory
 import com.tokopedia.notifcenter.ui.customview.bottomsheet.NotificationLongerContentBottomSheet
-import com.tokopedia.notifcenter.service.MarkAsSeenService
-import com.tokopedia.notifcenter.ui.listener.NotificationFragmentContainer
-import com.tokopedia.notifcenter.util.NotificationTopAdsHeadlineHelper
 import com.tokopedia.notifcenter.ui.customview.widget.NotificationFilterView
+import com.tokopedia.notifcenter.ui.listener.NotificationFragmentContainer
+import com.tokopedia.notifcenter.ui.listener.NotificationItemListener
+import com.tokopedia.notifcenter.util.NotificationTopAdsHeadlineHelper
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -79,10 +80,14 @@ import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
 import javax.inject.Inject
 
-open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFactory>(),
-    InboxFragment, NotificationItemListener, LoadMoreViewHolder.Listener,
+open class NotificationFragment :
+    BaseListFragment<Visitable<*>, NotificationTypeFactory>(),
+    InboxFragment,
+    NotificationItemListener,
+    LoadMoreViewHolder.Listener,
     NotificationEndlessRecyclerViewScrollListener.Listener,
-    NotificationAdapter.Listener, NotificationLongerContentBottomSheet.Listener {
+    NotificationAdapter.Listener,
+    NotificationLongerContentBottomSheet.Listener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -100,7 +105,7 @@ open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTyp
     lateinit var userSession: UserSessionInterface
 
     private val topAdsHeadlineViewModel by lazy {
-        ViewModelProvider(this,  viewModelFactory)[TopAdsHeadlineViewModel::class.java]
+        ViewModelProvider(this, viewModelFactory)[TopAdsHeadlineViewModel::class.java]
     }
 
     var remoteConfig: RemoteConfig? = null
@@ -137,20 +142,26 @@ open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTyp
     override fun loadData(page: Int) {
         if (page == 1) {
             if (!hasFilter() && !GlobalConfig.isSellerApp()) {
-                viewModel.loadNotifOrderList(containerListener?.role)
+                containerListener?.role?.let {
+                    viewModel.loadNotifOrderList(it)
+                }
             }
-            viewModel.loadFirstPageNotification(
-                containerListener?.role
-            )
+            containerListener?.role?.let {
+                viewModel.loadFirstPageNotification(it)
+            }
         }
     }
 
     override fun onLoadMore(page: Int, totalItemsCount: Int) {
         if (rvAdapter?.lastItemIsErrorNetwork() == true) return
+        // The bottom part of non-filtered is product recommendation
         if (!viewModel.hasFilter()) {
             viewModel.loadRecommendations(page)
         } else {
-            viewModel.loadMoreEarlier(containerListener?.role)
+            // The bottom part of filtered is still notification items
+            containerListener?.role?.let {
+                viewModel.loadMoreEarlier(it)
+            }
         }
     }
 
@@ -158,7 +169,9 @@ open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTyp
         super.onCreate(savedInstanceState)
         initRecommendationComponent()
         initRemoteConfig()
-        viewModel.loadNotificationFilter(containerListener?.role)
+        containerListener?.role?.let {
+            viewModel.loadNotificationFilter(it)
+        }
     }
 
     override fun onHiddenChanged(hidden: Boolean) {
@@ -177,7 +190,12 @@ open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTyp
         context?.let {
             trackingQueue = TrackingQueue(it)
             recommendationLifeCycleAware = RecommendationLifeCycleAware(
-                topAdsAnalytic, trackingQueue, rvAdapter, viewModel, this, it
+                topAdsAnalytic,
+                trackingQueue,
+                rvAdapter,
+                viewModel,
+                this,
+                it
             )
         }
         rvTypeFactory?.recommendationListener = recommendationLifeCycleAware
@@ -193,7 +211,9 @@ open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTyp
         savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(
-            R.layout.fragment_notifcenter_notification, container, false
+            R.layout.fragment_notifcenter_notification,
+            container,
+            false
         )?.also {
             initView(it)
             setupObserver()
@@ -237,7 +257,7 @@ open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTyp
 
     override fun isListEmpty(): Boolean {
         return super.isListEmpty() ||
-                (rvAdapter?.itemCount == 1 && rvAdapter?.hasNotifOrderList() == true)
+            (rvAdapter?.itemCount == 1 && rvAdapter?.hasNotifOrderList() == true)
     }
 
     override fun showGetListError(throwable: Throwable?) {
@@ -276,55 +296,53 @@ open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTyp
     }
 
     private fun setupObserver() {
-        viewModel.notificationItems.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> {
-                    renderNotifications(it.data)
-                    if (!viewModel.hasFilter() && isVisible) {
-                        viewModel.clearNotifCounter(containerListener?.role)
-                    }
+        viewModel.notificationItems.observe(viewLifecycleOwner) {
+            when (it.loadType) {
+                NotifcenterDetailUseCase.NotificationDetailLoadType.FIRST_PAGE -> {
+                    handleFirstPageNotificationItems(it.result)
                 }
-                is Fail -> showGetListError(it.throwable)
-                else -> {
+                NotifcenterDetailUseCase.NotificationDetailLoadType.LOAD_MORE_NEW,
+                NotifcenterDetailUseCase.NotificationDetailLoadType.LOAD_MORE_EARLIER -> {
+                    handleLoadMoreNotification(it)
                 }
             }
-        })
+        }
 
-        viewModel.topAdsBanner.observe(viewLifecycleOwner, Observer {
+        viewModel.topAdsBanner.observe(viewLifecycleOwner) {
             rvAdapter?.addTopAdsBanner(it)
-        })
+        }
 
-        viewModel.recommendations.observe(viewLifecycleOwner, Observer {
+        viewModel.recommendations.observe(viewLifecycleOwner) {
             renderRecomList(it)
-        })
+        }
 
-        viewModel.filterList.observe(viewLifecycleOwner, Observer {
+        viewModel.filterList.observe(viewLifecycleOwner) {
             filter?.updateFilterState(it)
-        })
+        }
 
-        viewModel.clearNotif.observe(viewLifecycleOwner, Observer {
+        viewModel.clearNotif.observe(viewLifecycleOwner) {
             when (it.status) {
                 Status.SUCCESS -> containerListener?.clearNotificationCounter()
                 else -> {
                 }
             }
-        })
+        }
 
-        viewModel.bumpReminder.observe(viewLifecycleOwner, Observer {
+        viewModel.bumpReminder.observe(viewLifecycleOwner) {
             updateReminderState(
                 resource = it,
                 isBumpReminder = true
             )
-        })
+        }
 
-        viewModel.deleteReminder.observe(viewLifecycleOwner, Observer {
+        viewModel.deleteReminder.observe(viewLifecycleOwner) {
             updateReminderState(
                 resource = it,
                 isBumpReminder = false
             )
-        })
+        }
 
-        viewModel.orderList.observe(viewLifecycleOwner, Observer {
+        viewModel.orderList.observe(viewLifecycleOwner) {
             when (it.status) {
                 Status.LOADING -> {
                     if (rvAdapter?.hasNotifOrderList() == false) {
@@ -337,7 +355,50 @@ open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTyp
                 else -> {
                 }
             }
-        })
+        }
+    }
+
+    private fun handleFirstPageNotificationItems(
+        result: com.tokopedia.usecase.coroutines.Result<NotificationDetailResponseModel>
+    ) {
+        when (result) {
+            is Success<NotificationDetailResponseModel> -> {
+                renderNotifications(result.data)
+                if (!viewModel.hasFilter() && isVisible) {
+                    containerListener?.role?.let { role ->
+                        viewModel.clearNotifCounter(role)
+                    }
+                }
+            }
+            is Fail -> showGetListError(result.throwable)
+        }
+    }
+
+    private fun handleLoadMoreNotification(
+        result: NotificationDetailResponseWrapper
+    ) {
+        when (result.result) {
+            is Success -> {
+                if (result.lastKnownPair != null) {
+                    rvAdapter?.insertNotificationData(
+                        lastKnownPosition = result.lastKnownPair.first,
+                        element = result.lastKnownPair.second as LoadMoreUiModel,
+                        response = result.result.data
+                    )
+                } else {
+                    renderNotifications(result.result.data)
+                }
+            }
+            is Fail -> {
+                if (result.lastKnownPair != null) {
+                    rvAdapter?.failLoadMoreNotification(
+                        lastKnownPosition = result.lastKnownPair.first,
+                        element = result.lastKnownPair.second as LoadMoreUiModel
+                    )
+                }
+                showErrorMessage(result.result.throwable)
+            }
+        }
     }
 
     private fun updateOrRenderOrderListState(data: NotifOrderListResponse?) {
@@ -399,11 +460,13 @@ open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTyp
     }
 
     private fun loadShopAds() {
-        if(rvAdapter == null || rvAdapter?.shopAdsWidgetAdded == true) return
+        if (rvAdapter == null || rvAdapter?.shopAdsWidgetAdded == true) return
         topAdsHeadlineViewModel.getTopAdsHeadlineData(
-            NotificationTopAdsHeadlineHelper.getParams(userSession.userId), {
+            NotificationTopAdsHeadlineHelper.getParams(userSession.userId),
+            {
                 rvAdapter?.addShopAds(it)
-            }, {
+            },
+            {
                 ServerLogger.log(
                     Priority.P1,
                     NotificationFragment::class.java.simpleName,
@@ -451,7 +514,9 @@ open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTyp
                     viewModel.filter = filterType
                     loadInitialData()
                     analytic.trackFilterClick(
-                        filterType, filterName, containerListener?.role
+                        filterType,
+                        filterName,
+                        containerListener?.role
                     )
                 }
             }
@@ -468,15 +533,9 @@ open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTyp
     override fun loadMoreNew(lastKnownPosition: Int, element: LoadMoreUiModel) {
         analytic.trackLoadMoreNew()
         rvAdapter?.loadMore(lastKnownPosition, element)
-        viewModel.loadMoreNew(containerListener?.role,
-            {
-                rvAdapter?.insertNotificationData(lastKnownPosition, element, it)
-            },
-            {
-                rvAdapter?.failLoadMoreNotification(lastKnownPosition, element)
-                showErrorMessage(it)
-            }
-        )
+        containerListener?.role?.let { role ->
+            viewModel.loadMoreNew(role, lastKnownPosition, element)
+        }
     }
 
     override fun loadMoreEarlier(
@@ -485,15 +544,9 @@ open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTyp
     ) {
         analytic.trackLoadMoreEarlier()
         rvAdapter?.loadMore(lastKnownPosition, element)
-        viewModel.loadMoreEarlier(containerListener?.role,
-            {
-                rvAdapter?.insertNotificationData(lastKnownPosition, element, it)
-            },
-            {
-                rvAdapter?.failLoadMoreNotification(lastKnownPosition, element)
-                showErrorMessage(it)
-            }
-        )
+        containerListener?.role?.let { role ->
+            viewModel.loadMoreEarlier(role, lastKnownPosition, element)
+        }
     }
 
     private fun showErrorMessage(msg: String) {
@@ -574,7 +627,10 @@ open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTyp
         } else {
             doBuyAndAtc(product) {
                 analytic.trackSuccessDoBuyAndAtc(
-                    notification, product, it, NotificationAnalytic.EventAction.CLICK_PRODUCT_BUY
+                    notification,
+                    product,
+                    it,
+                    NotificationAnalytic.EventAction.CLICK_PRODUCT_BUY
                 )
                 RouteManager.route(context, ApplinkConst.CART)
             }
@@ -591,7 +647,10 @@ open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTyp
         } else {
             doBuyAndAtc(product) {
                 analytic.trackSuccessDoBuyAndAtc(
-                    notification, product, it, NotificationAnalytic.EventAction.CLICK_PRODUCT_ATC
+                    notification,
+                    product,
+                    it,
+                    NotificationAnalytic.EventAction.CLICK_PRODUCT_ATC
                 )
                 val msg = it.message.getOrNull(0) ?: ""
                 view?.let { view ->
@@ -654,7 +713,9 @@ open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTyp
     }
 
     override fun markNotificationAsRead(element: NotificationUiModel) {
-        viewModel.markNotificationAsRead(containerListener?.role, element)
+        containerListener?.role?.let {
+            viewModel.markNotificationAsRead(it, element)
+        }
     }
 
     override fun bumpReminder(
@@ -681,7 +742,8 @@ open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTyp
         position: Int
     ) {
         context?.let { context ->
-            viewModel.doAddToWishlistV2(product.productId,
+            viewModel.doAddToWishlistV2(
+                product.productId,
                 object : WishlistV2ActionListener {
                     override fun onErrorAddWishList(throwable: Throwable, productId: String) {
                         val errorMsg = ErrorHandler.getErrorMessage(context, throwable)
@@ -702,7 +764,8 @@ open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTyp
 
                     override fun onErrorRemoveWishlist(throwable: Throwable, productId: String) {}
                     override fun onSuccessRemoveWishlist(result: DeleteWishlistV2Response.Data.WishlistRemoveV2, productId: String) {}
-                })
+                }
+            )
         }
     }
 
@@ -817,5 +880,4 @@ open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTyp
         private const val SHOPADS_LOAD_FAIL_ERROR = "Failed to load Shopads in NotifCenter"
         private const val ERROR = "error"
     }
-
 }

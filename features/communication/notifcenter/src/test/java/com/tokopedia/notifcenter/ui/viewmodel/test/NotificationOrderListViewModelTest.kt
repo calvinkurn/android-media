@@ -3,8 +3,8 @@ package com.tokopedia.notifcenter.ui.viewmodel.test
 import com.tokopedia.inboxcommon.RoleType
 import com.tokopedia.notifcenter.data.state.Resource
 import com.tokopedia.notifcenter.ui.viewmodel.base.NotificationViewModelTestFixture
-import io.mockk.every
-import io.mockk.verify
+import io.mockk.coEvery
+import io.mockk.coVerify
 import kotlinx.coroutines.flow.flow
 import org.hamcrest.CoreMatchers
 import org.hamcrest.MatcherAssert
@@ -12,16 +12,6 @@ import org.junit.Assert
 import org.junit.Test
 
 class NotificationOrderListViewModelTest : NotificationViewModelTestFixture() {
-    @Test
-    fun `loadNotifOrderList verify no interaction if role is null`() {
-        // when
-        viewModel.loadNotifOrderList(null)
-
-        // then
-        verify(exactly = 0) {
-            notifOrderListUseCase.getOrderList(any())
-        }
-    }
 
     @Test
     fun `loadNotifOrderList propagate success data`() {
@@ -30,14 +20,16 @@ class NotificationOrderListViewModelTest : NotificationViewModelTestFixture() {
         val expectedValue = Resource.success(notifOrderListResponse)
         val flow = flow { emit(expectedValue) }
 
-        every { notifOrderListUseCase.getOrderList(role) } returns flow
+        coEvery {
+            notifOrderListUseCase(role)
+        } returns flow
 
         // when
         viewModel.loadNotifOrderList(role)
 
         // then
-        verify {
-            notifOrderListUseCase.getOrderList(role)
+        coVerify {
+            notifOrderListUseCase(role)
         }
         Assert.assertEquals(
             expectedValue,
@@ -50,14 +42,16 @@ class NotificationOrderListViewModelTest : NotificationViewModelTestFixture() {
         // given
         val role = RoleType.BUYER
         val throwable: Throwable = IllegalStateException()
-        every { notifOrderListUseCase.getOrderList(role) } throws throwable
+        coEvery {
+            notifOrderListUseCase(role)
+        } throws throwable
 
         // when
         viewModel.loadNotifOrderList(role)
 
         // then
-        verify {
-            notifOrderListUseCase.getOrderList(role)
+        coVerify {
+            notifOrderListUseCase(role)
         }
         Assert.assertEquals(
             throwable,

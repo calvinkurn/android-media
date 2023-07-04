@@ -10,13 +10,12 @@ import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.inboxcommon.RoleType
-import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.notifcenter.data.entity.Notifications
 import com.tokopedia.notifcenter.data.entity.bumpreminder.BumpReminderResponse
 import com.tokopedia.notifcenter.data.entity.clearnotif.ClearNotifCounterResponse
 import com.tokopedia.notifcenter.data.entity.deletereminder.DeleteReminderResponse
 import com.tokopedia.notifcenter.data.entity.filter.NotifcenterFilterResponse
-import com.tokopedia.notifcenter.data.entity.notification.NotificationDetailResponseModel
+import com.tokopedia.notifcenter.data.entity.notification.NotificationDetailResponseWrapper
 import com.tokopedia.notifcenter.data.entity.notification.ProductData
 import com.tokopedia.notifcenter.data.entity.orderlist.NotifOrderListResponse
 import com.tokopedia.notifcenter.data.model.RecommendationDataModel
@@ -35,12 +34,14 @@ import com.tokopedia.notifcenter.domain.NotifcenterDeleteReminderBumpUseCase
 import com.tokopedia.notifcenter.domain.NotifcenterDetailUseCase
 import com.tokopedia.notifcenter.domain.NotifcenterFilterV2UseCase
 import com.tokopedia.notifcenter.domain.NotifcenterSetReminderBumpUseCase
+import com.tokopedia.notifcenter.ui.adapter.typefactory.notification.NotificationTypeFactory
 import com.tokopedia.notifcenter.ui.listener.WishlistListener
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -81,9 +82,8 @@ class NotificationViewModel @Inject constructor(
             cancelAllUseCase()
         }
 
-    private val _mutateNotificationItems =
-        MutableLiveData<Result<NotificationDetailResponseModel>>()
-    val notificationItems: LiveData<Result<NotificationDetailResponseModel>>
+    private val _mutateNotificationItems = MutableLiveData<NotificationDetailResponseWrapper>()
+    val notificationItems: LiveData<NotificationDetailResponseWrapper>
         get() = _mutateNotificationItems
 
     private val _topAdsBanner = MutableLiveData<NotificationTopAdsBannerUiModel>()
@@ -128,18 +128,16 @@ class NotificationViewModel @Inject constructor(
     }
 
     fun cancelAllUseCase() {
-        notifcenterDetailUseCase.cancelRunningOperation()
         coroutineContext.cancelChildren()
     }
 
     fun loadNotifOrderList(
         @RoleType
-        role: Int?
+        role: Int
     ) {
-        if (role == null) return
         viewModelScope.launch {
             try {
-                notifOrderListUseCase.getOrderList(role).collect {
+                notifOrderListUseCase(role).collect {
                     _orderList.value = it
                 }
             } catch (throwable: Throwable) {
@@ -148,119 +146,150 @@ class NotificationViewModel @Inject constructor(
         }
     }
 
-    /**
-     * Load notification on first page
-     */
-    fun loadFirstPageNotification(
-        @RoleType
-        role: Int?
-    ) {
-        if (role == null) return
-        notifcenterDetailUseCase.getFirstPageNotification(
-            filter,
-            role,
-            {
-                _mutateNotificationItems.value = Success(it)
-                if (!hasFilter() && role == RoleType.BUYER) {
-                    loadTopAdsBannerData()
-                }
-                if (role!! == RoleType.AFFILIATE) {
-                    loadAffiliateEducationArticles()
-                }
-            },
-            {
-                _mutateNotificationItems.value = Fail(it)
-            }
-        )
-    }
-
     fun loadNotificationFilter(
         @RoleType
-        role: Int?
+        role: Int
     ) {
-        if (role == null) return
-        launchCatchError(
-            dispatcher.io,
-            {
-                notifcenterFilterUseCase.getFilter(role).collect {
+        viewModelScope.launch {
+            try {
+                notifcenterFilterUseCase(role).collect {
                     _filterList.postValue(it)
                 }
-            },
-            {
-                _filterList.postValue(Resource.error(it, null))
+            } catch (throwable: Throwable) {
+                _filterList.value = Resource.error(throwable, null)
             }
-        )
+        }
     }
 
     fun markNotificationAsRead(
         @RoleType
-        role: Int?,
+        role: Int,
         element: NotificationUiModel
     ) {
-        if (role == null) return
-        launchCatchError(
-            dispatcher.io,
-            {
-                markAsReadUseCase.markAsRead(role, element.notifId).collect { }
-            },
-            { }
-        )
+        viewModelScope.launch {
+            try {
+                val params = MarkNotificationAsReadUseCase.Param(
+                    role = role,
+                    notifId = element.notifId
+                )
+                markAsReadUseCase(params)
+            } catch (throwable: Throwable) {
+                Timber.d(throwable)
+            }
+        }
+    }
+
+    fun loadFirstPageNotification(
+        @RoleType
+        role: Int
+    ) {
+        val loadType = NotifcenterDetailUseCase.NotificationDetailLoadType.FIRST_PAGE
+        viewModelScope.launch {
+            val param = NotifcenterDetailUseCase.Param(
+                filter = filter,
+                role = role
+            ).also {
+                it.loadType = loadType
+            }
+            try {
+                val result = notifcenterDetailUseCase(param)
+                _mutateNotificationItems.value = NotificationDetailResponseWrapper(
+                    result = Success(result),
+                    loadType = loadType,
+                    lastKnownPair = null
+                )
+                if (!hasFilter() && role == RoleType.BUYER) {
+                    loadTopAdsBannerData()
+                }
+                if (role == RoleType.AFFILIATE) {
+                    loadAffiliateEducationArticles()
+                }
+            } catch (throwable: Throwable) {
+                _mutateNotificationItems.value =
+                    NotificationDetailResponseWrapper(
+                        result = Fail(throwable),
+                        loadType = loadType,
+                        lastKnownPair = null
+                    )
+            }
+        }
     }
 
     fun loadMoreEarlier(
         @RoleType
-        role: Int?
+        role: Int,
+        lastKnownPosition: Int? = null,
+        element: Visitable<NotificationTypeFactory>? = null
     ) {
-        if (role == null) return
-        notifcenterDetailUseCase.getMoreEarlierNotifications(
-            filter,
-            role,
-            {
-                _mutateNotificationItems.value = Success(it)
-            },
-            {
-                _mutateNotificationItems.value = Fail(it)
+        viewModelScope.launch {
+            val loadType = NotifcenterDetailUseCase.NotificationDetailLoadType.LOAD_MORE_EARLIER
+            val param = NotifcenterDetailUseCase.Param(
+                filter = filter,
+                role = role
+            ).also {
+                it.loadType = loadType
             }
-        )
+            val lastKnownPair = if (lastKnownPosition == null || element == null) {
+                null
+            } else {
+                Pair(lastKnownPosition, element)
+            }
+            try {
+                val result = notifcenterDetailUseCase(param)
+                _mutateNotificationItems.value = NotificationDetailResponseWrapper(
+                    result = Success(result),
+                    loadType = loadType,
+                    lastKnownPair = lastKnownPair
+                )
+            } catch (throwable: Throwable) {
+                _mutateNotificationItems.value = NotificationDetailResponseWrapper(
+                    result = Fail(throwable),
+                    loadType = loadType,
+                    lastKnownPair = lastKnownPair
+                )
+            }
+        }
     }
 
     fun loadMoreNew(
         @RoleType
-        role: Int?,
-        onSuccess: (NotificationDetailResponseModel) -> Unit,
-        onError: (Throwable) -> Unit
+        role: Int,
+        lastKnownPosition: Int,
+        element: Visitable<NotificationTypeFactory>
     ) {
-        if (role == null) return
-        notifcenterDetailUseCase.getMoreNewNotifications(
-            filter,
-            role,
-            onSuccess,
-            onError
-        )
-    }
-
-    fun loadMoreEarlier(
-        @RoleType
-        role: Int?,
-        onSuccess: (NotificationDetailResponseModel) -> Unit,
-        onError: (Throwable) -> Unit
-    ) {
-        if (role == null) return
-        notifcenterDetailUseCase.getMoreEarlierNotifications(
-            filter,
-            role,
-            onSuccess,
-            onError
-        )
+        val loadType = NotifcenterDetailUseCase.NotificationDetailLoadType.LOAD_MORE_NEW
+        viewModelScope.launch {
+            val param = NotifcenterDetailUseCase.Param(
+                filter = filter,
+                role = role
+            ).also {
+                it.loadType = loadType
+            }
+            try {
+                val result = notifcenterDetailUseCase(param)
+                _mutateNotificationItems.value = NotificationDetailResponseWrapper(
+                    result = Success(result),
+                    loadType = loadType,
+                    lastKnownPair = Pair(lastKnownPosition, element)
+                )
+            } catch (throwable: Throwable) {
+                _mutateNotificationItems.value = NotificationDetailResponseWrapper(
+                    result = Fail(throwable),
+                    loadType = loadType,
+                    lastKnownPair = Pair(lastKnownPosition, element)
+                )
+            }
+        }
     }
 
     fun bumpReminder(product: ProductData, notif: NotificationUiModel) {
         viewModelScope.launch {
             try {
-                bumpReminderUseCase.bumpReminder(
-                    product.productId,
-                    notif.notifId
-                ).collect {
+                val param = NotifcenterSetReminderBumpUseCase.Param(
+                    productId = product.productId,
+                    notifId = notif.notifId
+                )
+                bumpReminderUseCase(param).collect {
                     it.referer = product.productId
                     _bumpReminder.value = it
                 }
@@ -274,52 +303,49 @@ class NotificationViewModel @Inject constructor(
     }
 
     fun deleteReminder(product: ProductData, notification: NotificationUiModel) {
-        launchCatchError(
-            dispatcher.io,
-            {
-                deleteReminderUseCase.deleteReminder(
-                    product.productId,
-                    notification.notifId
-                ).collect {
+        viewModelScope.launch {
+            try {
+                val param = NotifcenterDeleteReminderBumpUseCase.Param(
+                    productId = product.productId,
+                    notifId = notification.notifId
+                )
+                deleteReminderUseCase(param).collect {
                     it.referer = product.productId
                     _deleteReminder.postValue(it)
                 }
-            },
-            {
-                val error = Resource.error(it, null).apply {
+            } catch (throwable: Throwable) {
+                val error = Resource.error(throwable, null).apply {
                     referer = product.productId
                 }
                 _deleteReminder.postValue(error)
             }
-        )
+        }
     }
 
     fun loadRecommendations(page: Int) {
-        launchCatchError(
-            dispatcher.io,
-            {
+        viewModelScope.launch {
+            try {
                 val params = getRecommendationUseCase.getRecomParams(
                     page,
                     RECOM_WIDGET,
                     RECOM_SOURCE_INBOX_PAGE,
                     emptyList()
                 )
-                val recommendationWidget = getRecommendationUseCase
-                    .createObservable(params)
-                    .toBlocking()
-                    .single()
-                    .getOrNull(0) ?: RecommendationWidget()
-                withContext(dispatcher.main) {
-                    _recommendations.value = getRecommendationVisitables(
-                        page,
-                        recommendationWidget
-                    )
+                val recommendationWidget = withContext(dispatcher.io) {
+                    return@withContext getRecommendationUseCase
+                        .createObservable(params)
+                        .toBlocking()
+                        .single()
+                        .getOrNull(0) ?: RecommendationWidget()
                 }
-            },
-            {
-                it.printStackTrace()
+                _recommendations.value = getRecommendationVisitables(
+                    page,
+                    recommendationWidget
+                )
+            } catch (throwable: Throwable) {
+                Timber.d(throwable)
             }
-        )
+        }
     }
 
     fun reset() {
@@ -366,70 +392,73 @@ class NotificationViewModel @Inject constructor(
 
     fun clearNotifCounter(
         @RoleType
-        role: Int?
+        role: Int
     ) {
-        if (role == null) return
-        launchCatchError(
-            dispatcher.io,
-            {
+        viewModelScope.launch {
+            try {
                 var type = role
                 if (userSessionInterface.shopId == DEFAULT_SHOP_ID && role != RoleType.AFFILIATE) {
                     type = CLEAR_ALL_NOTIF_TYPE
                 }
-                clearNotifUseCase.clearNotifCounter(type).collect {
-                    _clearNotif.postValue(it)
+                clearNotifUseCase(type).collect {
+                    _clearNotif.value = it
                 }
-            },
-            { }
-        )
+            } catch (throwable: Throwable) {
+                Timber.d(throwable)
+            }
+        }
     }
 
     fun addWishListTopAds(
         model: RecommendationItem,
         callback: ((Boolean, Throwable?) -> Unit)
     ) {
-        launchCatchError(
-            dispatcher.io,
-            {
+        viewModelScope.launch {
+            try {
                 val params = RequestParams.create()?.apply {
                     putString(TopAdsWishlishedUseCase.WISHSLIST_URL, model.wishlistUrl)
                 }
-                val response = topAdsWishlishedUseCase.createObservable(params)
-                    .toBlocking().single()
+                val response = withContext(dispatcher.io) {
+                    return@withContext topAdsWishlishedUseCase.createObservable(params)
+                        .toBlocking().single()
+                }
                 if (response.data != null) {
                     callback.invoke(true, null)
                 }
-            },
-            {
-                callback.invoke(false, it)
+            } catch (throwable: Throwable) {
+                callback.invoke(false, throwable)
             }
-        )
+        }
     }
 
     fun loadTopAdsBannerData() {
-        launchCatchError(
-            dispatcher.io,
-            {
-                val results = topAdsImageViewUseCase.getImageData(
-                    topAdsImageViewUseCase.getQueryMap(
-                        "",
-                        TOP_ADS_SOURCE,
-                        "",
-                        TOP_ADS_COUNT,
-                        TOP_ADS_DIMEN_ID,
-                        ""
-                    )
-                )
+        viewModelScope.launch {
+            try {
+                val results = getTopAdsImageData()
                 if (results.isNotEmpty()) {
-                    _topAdsBanner.postValue(NotificationTopAdsBannerUiModel(results))
+                    _topAdsBanner.value = NotificationTopAdsBannerUiModel(results)
                 }
                 loadRecommendations(1)
-            },
-            {
-                it.printStackTrace()
+            } catch (throwable: Throwable) {
+                Timber.d(throwable)
                 loadRecommendations(1)
             }
-        )
+        }
+    }
+
+    private suspend fun getTopAdsImageData(): ArrayList<TopAdsImageViewModel> {
+        return withContext(dispatcher.io) {
+            topAdsImageViewUseCase.getImageData(
+                topAdsImageViewUseCase.getQueryMap(
+                    "",
+                    TOP_ADS_SOURCE,
+                    "",
+                    TOP_ADS_COUNT,
+                    TOP_ADS_DIMEN_ID,
+                    ""
+                )
+            )
+        }
     }
 
     fun addProductToCart(
@@ -437,33 +466,27 @@ class NotificationViewModel @Inject constructor(
         onSuccessAddToCart: (data: DataModel) -> Unit,
         onError: (msg: String?) -> Unit
     ) {
-        launchCatchError(
-            dispatcher.io,
-            block = {
-                addToCartUseCase.addToCartRequestParams = requestParams
-                val atcResponse = addToCartUseCase.executeOnBackground()
-                withContext(dispatcher.main) {
-                    if (atcResponse.isDataError()) {
-                        onError(atcResponse.getAtcErrorMessage())
-                    } else {
-                        onSuccessAddToCart(atcResponse.data)
-                    }
+        viewModelScope.launch {
+            try {
+                val atcResponse = withContext(dispatcher.io) {
+                    addToCartUseCase.addToCartRequestParams = requestParams
+                    return@withContext addToCartUseCase.executeOnBackground()
                 }
-            },
-            onError = {
-                withContext(dispatcher.main) {
-                    it.message?.let { errorMsg ->
-                        onError(errorMsg)
-                    }
+                if (atcResponse.isDataError()) {
+                    onError(atcResponse.getAtcErrorMessage())
+                } else {
+                    onSuccessAddToCart(atcResponse.data)
                 }
+            } catch (throwable: Throwable) {
+                onError(throwable.message)
             }
-        )
+        }
     }
 
     private fun loadAffiliateEducationArticles() {
         viewModelScope.launch {
             try {
-                affiliateEducationArticleUseCase.getEducationArticles().collect { response ->
+                affiliateEducationArticleUseCase(Unit).collect { response ->
                     if (response.data != null && !response.data.cardsArticle?.data?.cards.isNullOrEmpty()) {
                         response.data.cardsArticle?.data?.cards?.get(0)?.let {
                             _affiliateEducationArticle.postValue(
