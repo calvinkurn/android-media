@@ -205,11 +205,20 @@ class BitmapCreationRepositoryImpl @Inject constructor(
         var finalWidth = width
         var finalX = x
 
+        var finalHeight = height
+        var finalY = y
+
+        val widthRatio = width/height.toFloat()
+        val heightRatio = height/width.toFloat()
+
+        //===========
+
         // if width target is more than source but still on tolerance size
         // then reduce the width target
-        val tempWidth = bitmap.width - width
+        val tempWidth = bitmap.width - finalWidth
         if (tempWidth in BITMAP_SIZE_TOLERANCE_VALUE..0) {
-            finalWidth = width - abs(tempWidth)
+            finalWidth -= abs(tempWidth)
+            finalHeight = (finalWidth * heightRatio).toInt()
         }
 
         // if width target + x pos is more than source but still on tolerance size
@@ -219,16 +228,12 @@ class BitmapCreationRepositoryImpl @Inject constructor(
             finalX = x - abs(tempX)
         }
 
-        //===========
-
-        var finalHeight = height
-        var finalY = y
-
         // if height target is more than source but still on tolerance size
         // then reduce the height target
-        val tempHeight = bitmap.height - height
+        val tempHeight = bitmap.height - finalHeight
         if (tempHeight in BITMAP_SIZE_TOLERANCE_VALUE..0) {
-            finalHeight = height - abs(tempHeight)
+            finalHeight -= abs(tempHeight)
+            finalWidth = (finalHeight * widthRatio).toInt()
         }
 
         // if height target + y pos is more than source but still on tolerance size

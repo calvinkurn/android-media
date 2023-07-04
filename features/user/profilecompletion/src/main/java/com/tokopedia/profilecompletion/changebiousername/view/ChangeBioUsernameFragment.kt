@@ -24,6 +24,7 @@ import com.tokopedia.profilecompletion.common.ColorUtils
 import com.tokopedia.profilecompletion.common.SubmitProfileError
 import com.tokopedia.profilecompletion.common.getErrorMessage
 import com.tokopedia.profilecompletion.databinding.FragmentChangeBioUsernameBinding
+import com.tokopedia.profilecompletion.databinding.FragmentCompletePinBinding
 import com.tokopedia.profilecompletion.di.ProfileCompletionSettingComponent
 import com.tokopedia.profilecompletion.profileinfo.data.ProfileFeed
 import com.tokopedia.profilecompletion.profileinfo.data.ProfileFeedData
@@ -46,7 +47,8 @@ class ChangeBioUsernameFragment : BaseDaggerFragment() {
         ViewModelProvider(this, viewModelFactory).get(ChangeBioUsernameViewModel::class.java)
     }
 
-    private val binding: FragmentChangeBioUsernameBinding? by viewBinding()
+    private var _binding: FragmentChangeBioUsernameBinding? = null
+    private val binding get() = _binding!!
 
     private var profileFeed: ProfileFeed? = null
 
@@ -70,7 +72,8 @@ class ChangeBioUsernameFragment : BaseDaggerFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_change_bio_username, container, false)
+        _binding = FragmentChangeBioUsernameBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -478,6 +481,11 @@ class ChangeBioUsernameFragment : BaseDaggerFragment() {
             binding?.stubField?.etUsername?.setMessage("")
         }
         binding?.stubField?.etUsername?.isInputError = false
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
 
     companion object {

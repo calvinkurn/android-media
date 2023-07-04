@@ -99,6 +99,7 @@ class FeedPostViewModelTest {
             topAdsAddressHelper,
             getCountCommentsUseCase,
             mockk(),
+            mockk(),
             testDispatcher
         )
     }
