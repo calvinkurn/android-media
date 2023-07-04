@@ -33,6 +33,7 @@ import com.tokopedia.pdpsimulation.activateCheckout.helper.OccBundleHelper
 import com.tokopedia.pdpsimulation.activateCheckout.helper.OccBundleHelper.setBundleForInstalmentBottomSheet
 import com.tokopedia.pdpsimulation.activateCheckout.listner.ActivationListner
 import com.tokopedia.pdpsimulation.activateCheckout.presentation.adapter.ActivationTenureAdapter
+import com.tokopedia.pdpsimulation.activateCheckout.presentation.bottomsheet.DownRateBottomsheet
 import com.tokopedia.pdpsimulation.activateCheckout.viewmodel.PayLaterActivationViewModel
 import com.tokopedia.pdpsimulation.activateCheckout.viewmodel.ShowToasterException
 import com.tokopedia.pdpsimulation.common.analytics.PdpSimulationEvent
@@ -533,6 +534,12 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
         }
         gatewayDetailLayout.changePayLaterPartner.setOnClickListener {
             changePartnerLogic()
+        }
+        gatewayDetailLayout.additionalInformationBottomsheetIcon.setOnClickListener {
+            DownRateBottomsheet.show(
+                DownRateBottomsheet.createBundle("", "", ""),
+                childFragmentManager
+            )
         }
         quantityTextWatcher()
         detailHeader.quantityEditor.setValueChangedListener { newValue, _, _ ->
