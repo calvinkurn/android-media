@@ -25,6 +25,7 @@ import com.tokopedia.play.view.uimodel.isShowSoldQuantity
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.isUpcoming
 import com.tokopedia.play_common.util.extension.buildSpannedString
+import com.tokopedia.play_common.view.setGradientAnimBackground
 import java.lang.Exception
 
 /**
@@ -189,6 +190,7 @@ class ProductBottomSheetCardView: FrameLayout {
         if (colors.isNullOrEmpty()) return
 
         try {
+            binding.layoutRibbon.playIvRibbon.setGradientAnimBackground(colors.takeLast(2))
             binding.layoutRibbon.ivTailRibbon.colorFilter =
                 BlendModeColorFilterCompat.createBlendModeColorFilterCompat(Color.parseColor(colors.first()), BlendModeCompat.SRC_ATOP)
             binding.layoutRibbon.ivBackRibbon.colorFilter =

@@ -22,6 +22,7 @@ import com.tokopedia.play.databinding.ItemPlayPinnedProductBinding
 import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play_common.util.extension.buildSpannedString
+import com.tokopedia.play_common.view.setGradientAnimBackground
 import com.tokopedia.unifycomponents.UnifyButton
 import java.lang.Exception
 import com.tokopedia.unifyprinciples.R as unifyR
@@ -165,6 +166,7 @@ class ProductCarouselViewHolder private constructor() {
             if (colors.isNullOrEmpty()) return
 
             try {
+                binding.layoutRibbon.playIvRibbon.setGradientAnimBackground(colors.takeLast(2))
                 binding.layoutRibbon.ivTailRibbon.colorFilter =
                     BlendModeColorFilterCompat.createBlendModeColorFilterCompat(Color.parseColor(colors.first()), BlendModeCompat.SRC_ATOP)
                 binding.layoutRibbon.ivBackRibbon.colorFilter =

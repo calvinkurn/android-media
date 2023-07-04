@@ -98,3 +98,30 @@ suspend fun Context.getBitmapFromUrl(
             } else it
         }.submit()
 }
+
+fun View.setGradientAnimBackground(colorArray: List<String>) {
+    if (colorArray.size > 1) {
+        val colors = IntArray(colorArray.size)
+        for (i in colorArray.indices) {
+            colors[i] = parseColor(colorArray[i])
+        }
+        val gradient = GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT, colors)
+        gradient.cornerRadii = floatArrayOf(
+            // top left
+            0f,
+            0f,
+            // top right
+            20f,
+            20f,
+            // bottom right
+            20f,
+            20f,
+            // bottom left
+            0f,
+            0f
+        )
+        this.background = gradient
+    } else if (colorArray.isNotEmpty()) {
+        this.setBackgroundColor(parseColor(colorArray.first()))
+    }
+}

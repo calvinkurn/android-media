@@ -18,6 +18,7 @@ import com.tokopedia.play.view.type.DiscountedPrice
 import com.tokopedia.play.view.type.OriginalPrice
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play_common.view.loadImage
+import com.tokopedia.play_common.view.setGradientAnimBackground
 import java.lang.Exception
 
 /**
@@ -76,6 +77,7 @@ class ProductFeaturedViewHolder(
         if (colors.isNullOrEmpty()) return
 
         try {
+            binding.layoutRibbon.playIvRibbon.setGradientAnimBackground(colors.takeLast(2))
             binding.layoutRibbon.ivTailRibbon.colorFilter =
                 BlendModeColorFilterCompat.createBlendModeColorFilterCompat(Color.parseColor(colors.first()), BlendModeCompat.SRC_ATOP)
             binding.layoutRibbon.ivBackRibbon.colorFilter =
