@@ -455,7 +455,7 @@ public abstract class SellerRouterApplication extends MainApplication implements
     @NotNull
     @Override
     public Fragment getChatListFragment() {
-        return ChatTabListFragment.create();
+        return ChatTabListFragment.create(null);
     }
 
     @Override
