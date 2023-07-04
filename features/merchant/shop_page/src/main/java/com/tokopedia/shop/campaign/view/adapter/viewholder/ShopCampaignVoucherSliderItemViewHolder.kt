@@ -67,14 +67,16 @@ class ShopCampaignVoucherSliderItemViewHolder(
                     uiModel.minimumPurchase.getNumberFormatted()
                 )
             )
-            val remainingQuota = if (uiModel.remainingQuota.isMoreThanZero()) {
-                context.getString(R.string.shop_page_placeholder_remaining_quota, uiModel.remainingQuota)
-            } else {
-                ""
-            }
-            setRemainingQuota(remainingQuota)
+            setRemainingQuota(uiModel.remainingQuota)
             setVoucherName(uiModel.voucherName)
-            if (shopCampaignListener.isCampaignTabDarkMode()) useDarkBackground() else useLightBackground()
+
+            val isClaimCtaCtaDisabled = uiModel.isDisabledButton
+            if (shopCampaignListener.isCampaignTabDarkMode()) {
+                useDarkBackground(isClaimCtaCtaDisabled)
+            } else {
+                useLightBackground(isClaimCtaCtaDisabled)
+            }
+
             setOnClickListener {
                 parentUiModel?.let {
                     listener.onCampaignVoucherSliderItemClick(
@@ -84,7 +86,6 @@ class ShopCampaignVoucherSliderItemViewHolder(
                     )
                 }
             }
-            val ctaText = uiModel.buttonStr
             setOnPrimaryCtaClick {
                 parentUiModel?.let {
                     listener.onCampaignVoucherSliderItemCtaClaimClick(
@@ -94,7 +95,7 @@ class ShopCampaignVoucherSliderItemViewHolder(
                     )
                 }
             }
-            setPrimaryCta(ctaText = ctaText, isClickable = !uiModel.isDisabledButton)
+            setPrimaryCta(voucherCode = uiModel.couponCode, isDisabledButton = uiModel.isDisabledButton)
         }
     }
 
