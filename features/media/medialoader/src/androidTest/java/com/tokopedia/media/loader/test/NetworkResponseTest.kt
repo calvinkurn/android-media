@@ -1,11 +1,10 @@
 package com.tokopedia.media.loader.test
 
-import android.widget.Toast
 import com.tokopedia.media.loader.BaseTest
 import com.tokopedia.media.loader.clearImage
+import com.tokopedia.media.loader.data.FailureType
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.test.application.annotations.UiTest
-import org.junit.Assert
 import org.junit.Test
 
 @UiTest
@@ -31,33 +30,31 @@ class NetworkResponseTest : BaseTest() {
             it.loadImage(publicImageUrl) {
                 shouldTrackNetworkResponse(true)
 
-                networkResponse(
-                    header = { data ->
-                        countingIdlingResource.decrement()
+                networkResponse{ data, type ->
+                    countingIdlingResource.decrement()
 
-                        // Then
-                        Assert.assertTrue("the data should be not empty", data.isNotEmpty())
-                    }
-                )
+                    // Then
+                    assert(data.isNotEmpty())
+                    assert(type == null)
+                }
             }
         }
     }
 
     @Test
-    fun loadImage_getNetworkResponseLog() {
+    fun loadImage_getNotFoundFailureType() {
         onImageView {
             // When
-            it.loadImage(publicImageUrl) {
+            it.loadImage(notFoundUrl) {
                 shouldTrackNetworkResponse(true)
 
-                networkResponse(
-                    response = { data ->
-                        countingIdlingResource.decrement()
+                networkResponse { data, type ->
+                    countingIdlingResource.decrement()
 
-                        // Then
-                        Assert.assertTrue("the data should be not empty", data.isNotEmpty())
-                    }
-                )
+                    // Then
+                    assert(data.isNotEmpty())
+                    assert(type == FailureType.NotFound)
+                }
             }
         }
     }
