@@ -584,7 +584,13 @@ open class HomeRevampViewModel @Inject constructor(
     fun getPlayWidgetWhenShouldRefresh() {
         findWidget<CarouselPlayWidgetDataModel> { playWidget, index ->
             launchCatchError(block = {
-                updateWidget(playWidget.copy(widgetState = homePlayUseCase.get().onGetPlayWidgetWhenShouldRefresh()), index)
+                updateWidget(
+                    playWidget.copy(
+                        widgetState = homePlayUseCase.get()
+                            .onGetPlayWidgetWhenShouldRefresh(playWidget.homeChannel.layout)
+                    ),
+                    index
+                )
             }) {
                 deleteWidget(playWidget, index)
             }

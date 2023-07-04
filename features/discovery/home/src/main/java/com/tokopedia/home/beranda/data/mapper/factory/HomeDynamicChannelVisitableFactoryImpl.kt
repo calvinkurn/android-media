@@ -158,7 +158,9 @@ class HomeDynamicChannelVisitableFactoryImpl(
                 DynamicHomeChannel.Channels.LAYOUT_FEATURED_SHOP -> {
                     createFeaturedShopComponent(channel, position, isCache)
                 }
-                DynamicHomeChannel.Channels.LAYOUT_PLAY_CAROUSEL_BANNER -> {
+                DynamicHomeChannel.Channels.LAYOUT_PLAY_CAROUSEL_BANNER,
+                DynamicHomeChannel.Channels.LAYOUT_PLAY_CAROUSEL_NEW_NO_PRODUCT,
+                DynamicHomeChannel.Channels.LAYOUT_PLAY_CAROUSEL_NEW_WITH_PRODUCT -> {
                     createCarouselPlayWidget(channel, position)
                 }
                 DynamicHomeChannel.Channels.LAYOUT_CATEGORY_ICON -> {
@@ -958,9 +960,7 @@ class HomeDynamicChannelVisitableFactoryImpl(
     private fun createCarouselPlayWidget(dynamicHomeChannel: DynamicHomeChannel.Channels, position: Int) {
         if (isCache) return
         val dataModel = CarouselPlayWidgetDataModel(
-            dynamicHomeChannel.apply {
-                setPosition(position)
-            }
+            DynamicChannelComponentMapper.mapHomeChannelToComponent(dynamicHomeChannel, position)
         )
         val listOfRegisteredPlayWidget = visitableList.filterIsInstance(CarouselPlayWidgetDataModel::class.java)
         if (listOfRegisteredPlayWidget.isEmpty()) visitableList.add(dataModel)
