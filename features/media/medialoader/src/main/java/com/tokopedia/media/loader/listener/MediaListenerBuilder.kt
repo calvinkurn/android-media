@@ -6,6 +6,8 @@ import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
+import com.tokopedia.media.loader.data.Header
+import com.tokopedia.media.loader.data.Header.Companion.getFailureType
 import com.tokopedia.media.loader.data.Properties
 import com.tokopedia.media.loader.internal.NetworkResponseManager
 import com.tokopedia.media.loader.tracker.IsIcon
@@ -89,7 +91,12 @@ internal object MediaListenerBuilder {
 
         if (properties.shouldTrackNetwork) {
             val result = NetworkResponseManager.getInstance(context)
-            properties.setNetworkResponse?.header(result.header())
+            val headers = result.header()
+
+            properties.setNetworkResponse?.header(
+                headers, // get all header responses
+                headers.getFailureType() // get failure type (if any)
+            )
         }
         return false
     }
