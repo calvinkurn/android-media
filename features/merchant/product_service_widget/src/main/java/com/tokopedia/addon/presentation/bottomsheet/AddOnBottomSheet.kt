@@ -26,7 +26,7 @@ class AddOnBottomSheet : BottomSheetUnify() {
     private var atcSource: String = ""
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        overlayClickDismiss = false
+        overlayClickDismiss = true
         binding = BottomsheetAddonBinding.inflate(inflater, container, false)
         setChild(binding?.root)
         clearContentPadding = true

@@ -1,17 +1,17 @@
 package com.tokopedia.purchase_platform.common.feature.addons.domain
 
-import com.google.gson.Gson
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.gql_query_annotation.GqlQuery
+import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.purchase_platform.common.feature.addons.data.request.SaveAddOnStateRequest
 import com.tokopedia.purchase_platform.common.feature.addons.data.response.SaveAddOnStateResponse
-import com.tokopedia.purchase_platform.common.feature.dynamicdatapassing.domain.UpdateDynamicDataPassingUseCase
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
-class SaveAddOnStateUseCase @Inject constructor(@ApplicationContext private val graphqlRepository: GraphqlRepository
+class SaveAddOnStateUseCase @Inject constructor(
+    @ApplicationContext private val graphqlRepository: GraphqlRepository
 ) : UseCase<SaveAddOnStateResponse>() {
 
     private var params: Map<String, Any>? = null
@@ -30,74 +30,24 @@ class SaveAddOnStateUseCase @Inject constructor(@ApplicationContext private val 
         }
 
         val requestFireAndForget = GraphqlRequest(
-                SaveAddOnStateFireAndForgetQuery(),
-                SaveAddOnStateResponse::class.java,
-                params
+            SaveAddOnStateFireAndForgetQuery(),
+            SaveAddOnStateResponse::class.java,
+            params
         )
 
         val request = GraphqlRequest(
-                SaveAddOnStateQuery(),
-                SaveAddOnStateResponse::class.java,
-                params
+            SaveAddOnStateQuery(),
+            SaveAddOnStateResponse::class.java,
+            params
         )
 
-        /*return if (isFireAndForget) {
+        return if (isFireAndForget) {
             graphqlRepository.response(listOf(requestFireAndForget))
-                    .getSuccessData<SaveAddOnStateResponse>()
+                .getSuccessData<SaveAddOnStateResponse>()
         } else {
             graphqlRepository.response(listOf(request))
-                    .getSuccessData<SaveAddOnStateResponse>()
-        }*/
-
-        val jsonRaw = """
-            {
-              "save_add_ons": {
-                "error_message": [],
-                "status": "OK",
-                "data": {
-                  "add_ons": [
-                    {
-                      "add_on_key": "11905458-0-11861356-84614149-6440070595",
-                      "add_on_level": "product",
-                      "status": 1,
-                      "add_on_data": [
-                        {
-                          "add_on_id": 10904,
-                          "add_on_qty": 1,
-                          "add_on_price": 10000.0,
-                          "add_on_metadata": {
-                            "add_on_note": {
-                              "is_custom_note": "",
-                              "to": "",
-                              "from": "",
-                              "notes": ""
-                            }
-                          }
-                        }
-                      ],
-                      "add_on_button": {
-                        "title": "",
-                        "description": "",
-                        "left_icon_url": "",
-                        "right_icon_url": "",
-                        "action": 0
-                      },
-                      "add_on_bottomsheet": {
-                        "header_title": "",
-                        "description": "",
-                        "products": [],
-                        "ticker": {
-                          "text": ""
-                        }
-                      }
-                    }
-                  ]
-                }
-              }
-            }
-        """.trimIndent()
-        val gson = Gson()
-        return gson.fromJson(jsonRaw, SaveAddOnStateResponse::class.java)
+                .getSuccessData<SaveAddOnStateResponse>()
+        }
     }
 
     companion object {
