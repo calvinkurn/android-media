@@ -2,7 +2,7 @@ package com.tokopedia.inbox.fake.view.fragment
 
 import com.tokopedia.inbox.view.activity.base.InboxTest
 import com.tokopedia.notifcenter.di.NotificationComponent
-import com.tokopedia.notifcenter.presentation.fragment.NotificationFragment
+import com.tokopedia.notifcenter.ui.NotificationFragment
 
 class FakeNotifcenterInboxFragment: NotificationFragment() {
 

@@ -12,7 +12,6 @@ class ClearNotifCounterUseCase @Inject constructor(
 ) {
 
     fun clearNotifCounter(
-            @RoleType
             role: Int
     ) = flow {
         emit(Resource.loading(null))
