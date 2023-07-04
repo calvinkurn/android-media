@@ -499,19 +499,7 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                val errorHelper = binding?.tvDetailAlamatHelper?.text?.toString()
-                if (s.toString().length >= MIN_CHAR_ADDRESS_DETAIL && errorHelper == getString(R.string.helper_shop_detail)) {
-                    binding?.tvDetailAlamatHelper?.text = ""
-                } else if (checkAddressSimilarity(
-                        detailAddressHelper,
-                        s.toString()
-                    ) && errorHelper == getString(
-                            R.string.detail_alamat_error_helper,
-                            detailAddressHelper
-                        )
-                ) {
-                    binding?.tvDetailAlamatHelper?.text = ""
-                }
+                binding?.tvDetailAlamatHelper?.text = ""
             }
 
             override fun afterTextChanged(s: Editable?) {
