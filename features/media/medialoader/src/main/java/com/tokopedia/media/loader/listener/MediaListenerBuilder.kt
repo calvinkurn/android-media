@@ -76,6 +76,21 @@ internal object MediaListenerBuilder {
                 isIcon = IsIcon(properties.isIcon),
                 loadTime = loadTime
             )
+
+            if (properties.shouldTrackNetwork) {
+                val result = NetworkResponseManager.getInstance(context)
+                val headers = result.header(properties.data.toString())
+
+                properties.setNetworkResponse?.header(
+                    headers, // get all header responses
+                    headers.getFailureType() // get failure type (if any)
+                )
+
+                // in case we need to clear force the previous cache of headers
+                if (properties.isForceClearHeaderCache) {
+                    result.forceResetCache()
+                }
+            }
         }
 
         // override the load time into properties
@@ -87,16 +102,6 @@ internal object MediaListenerBuilder {
         }
 
         properties.loaderListener?.onLoaded(resource, dataSource(dataSource))
-
-        if (properties.shouldTrackNetwork) {
-            val result = NetworkResponseManager.getInstance(context)
-            val headers = result.header()
-
-            properties.setNetworkResponse?.header(
-                headers, // get all header responses
-                headers.getFailureType() // get failure type (if any)
-            )
-        }
         return false
     }
 }
