@@ -1183,6 +1183,10 @@ class ProductListFragment: BaseDaggerFragment(),
     override fun sendTrackingGTMEventSearchAttempt(generalSearchTrackingModel: GeneralSearchTrackingModel) {
         SearchTracking.trackGTMEventSearchAttempt(generalSearchTrackingModel)
     }
+
+    override fun sendTrackingRTOEventSearchAttempt(generalSearchTrackingModel: GeneralSearchTrackingModel) {
+        SearchTracking.trackGTMEventSearchAttempt(generalSearchTrackingModel)
+    }
     //endregion
 
     //region Filter related

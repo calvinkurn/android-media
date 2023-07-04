@@ -33,6 +33,7 @@ interface ProductListSectionContract {
         fun sendTrackingEventAppsFlyerViewListingSearch(afProdIds: JSONArray?, query: String?, prodIdArray: ArrayList<String?>?, allProdIdArray: ArrayList<String?>? = null)
         fun sendTrackingEventMoEngageSearchAttempt(query: String?, hasProductList: Boolean, category: HashMap<String?, String?>?)
         fun sendTrackingGTMEventSearchAttempt(generalSearchTrackingModel: GeneralSearchTrackingModel)
+        fun sendTrackingRTOEventSearchAttempt(generalSearchTrackingModel: GeneralSearchTrackingModel)
         val isAnySortActive: Boolean
         fun clearLastProductItemPositionFromCache()
         fun saveLastProductItemPositionToCache(lastProductItemPositionToCache: Int)
