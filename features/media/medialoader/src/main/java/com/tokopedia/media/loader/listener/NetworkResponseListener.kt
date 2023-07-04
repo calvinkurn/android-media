@@ -1,5 +1,7 @@
 package com.tokopedia.media.loader.listener
 
+import com.tokopedia.media.loader.data.Header
+
 interface NetworkResponseListener {
-    fun header(data: String)
+    fun header(data: List<Header>)
 }

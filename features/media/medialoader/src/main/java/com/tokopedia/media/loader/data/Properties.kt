@@ -166,7 +166,7 @@ data class Properties(
         response: (String) -> Unit = { _ -> }
     ) = apply {
         setNetworkResponse = object : NetworkResponseListener {
-            override fun header(data: String) {
+            override fun header(data: List<Header>) {
                 header(data)
             }
         }

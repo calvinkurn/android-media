@@ -11,8 +11,9 @@ import com.bumptech.glide.integration.okhttp3.OkHttpUrlLoader
 import com.bumptech.glide.load.engine.cache.DiskLruCacheFactory
 import com.bumptech.glide.load.model.GlideUrl
 import com.bumptech.glide.module.AppGlideModule
-import com.tokopedia.media.loader.isImageLoaderV2
 import com.tokopedia.media.loader.module.interceptor.NetworkLogInterceptor
+import com.tokopedia.media.loader.module.model.AdaptiveImageSizeLoader
+import com.tokopedia.media.loader.module.model.M3U8ModelLoaderFactory
 import com.tokopedia.media.loader.utils.RemoteConfig
 import okhttp3.OkHttpClient
 import java.io.InputStream
