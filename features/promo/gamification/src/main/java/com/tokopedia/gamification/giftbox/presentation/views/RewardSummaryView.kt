@@ -34,7 +34,6 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.utils.image.ImageUtils
-import kotlinx.android.synthetic.main.gami_gift_result.view.*
 
 class RewardSummaryView : FrameLayout {
 
@@ -45,6 +44,7 @@ class RewardSummaryView : FrameLayout {
     lateinit var tvTitle: AppCompatTextView
     lateinit var tvMessage: AppCompatTextView
     lateinit var imageBox: AppCompatImageView
+    lateinit var llButton: LinearLayout
 
     lateinit var rvAdapter: RewardSummaryAdapter
     lateinit var decoration: RewardItemDecoration
@@ -81,6 +81,7 @@ class RewardSummaryView : FrameLayout {
         tvTitle = findViewById(R.id.tvTitle)
         tvMessage = findViewById(R.id.tvMessage)
         imageBox = findViewById(R.id.imageBox)
+        llButton = findViewById(R.id.llButton)
 
         rvAdapter = RewardSummaryAdapter(dataList)
 
