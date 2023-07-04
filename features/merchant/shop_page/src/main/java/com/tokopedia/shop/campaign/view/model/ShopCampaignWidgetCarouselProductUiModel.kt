@@ -6,6 +6,7 @@ import com.tokopedia.shop.campaign.view.adapter.ShopCampaignTabAdapterTypeFactor
 import com.tokopedia.shop.home.view.adapter.ShopWidgetTypeFactory
 import com.tokopedia.shop.home.view.model.BaseShopHomeWidgetUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeProductUiModel
+import com.tokopedia.shop.home.view.model.ShopWidgetDisplayBannerTimerUiModel
 
 data class ShopCampaignWidgetCarouselProductUiModel(
     override val widgetId: String = "",
@@ -15,8 +16,12 @@ data class ShopCampaignWidgetCarouselProductUiModel(
     override val header: Header = Header(),
     override val isFestivity: Boolean = false,
     val productList: List<ShopHomeProductUiModel> = listOf(),
-    val statusCampaign: String = ""
+    val statusCampaign: String = "",
 ) : BaseShopHomeWidgetUiModel() {
+
+    companion object{
+        private const val LINK_TYPE_CAMPAIGN_ID = "campaign"
+    }
 
     val impressHolder = ImpressHolder()
 
@@ -26,5 +31,9 @@ data class ShopCampaignWidgetCarouselProductUiModel(
         } else {
             Int.ZERO
         }
+    }
+
+    fun getCampaignId(): String {
+        return header.data.firstOrNull { it.linkType == LINK_TYPE_CAMPAIGN_ID }?.linkId?.toString().orEmpty()
     }
 }

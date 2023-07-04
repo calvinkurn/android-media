@@ -44,7 +44,6 @@ object ShopPageWidgetMapper {
             appLink =  data?.appLink.orEmpty(),
             imageUrl =  data?.imageUrl.orEmpty(),
             linkType =  data?.linkType.orEmpty(),
-            campaignId = data?.campaignId.orEmpty(),
             timeDescription = data?.timeInfo?.timeDescription.orEmpty(),
             timeCounter = data?.timeInfo?.timeCounter.orZero(),
             startDate = data?.timeInfo?.startDate.orEmpty(),
@@ -161,9 +160,10 @@ object ShopPageWidgetMapper {
         )
     }
 
-    fun mapToPlayWidgetTypeExclusiveLaunch(shopId: String): PlayWidgetUseCase.WidgetType.ShopPageExclusiveLaunch{
+    fun mapToPlayWidgetTypeExclusiveLaunch(shopId: String, campaignId: String): PlayWidgetUseCase.WidgetType.ShopPageExclusiveLaunch{
         return PlayWidgetUseCase.WidgetType.ShopPageExclusiveLaunch(
-            shopId = shopId
+            shopId = shopId,
+            campaignId = campaignId
         )
     }
     private fun Int?.mapToStatusCampaign(): StatusCampaign {

@@ -1,17 +1,26 @@
 package com.tokopedia.kyc_centralized
 
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.VerificationModes.times
-import androidx.test.espresso.intent.matcher.IntentMatchers.*
-import androidx.test.espresso.intent.rule.IntentsTestRule
-import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasData
+import androidx.test.espresso.matcher.ViewMatchers.assertThat
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withText
+import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.common.di.component.DaggerBaseAppComponent
+import com.tokopedia.abstraction.common.di.module.AppModule
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
-import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.PARAM_REDIRECT_URL
-import com.tokopedia.kyc_centralized.ui.tokoKyc.alacarte.UserIdentificationInfoSimpleActivity
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.kyc_centralized.fakes.FakeGraphqlRepository
 import com.tokopedia.kyc_centralized.ui.tokoKyc.camera.UserIdentificationCameraActivity
+import com.tokopedia.kyc_centralized.util.MockTimber
+import com.tokopedia.kyc_centralized.util.hasRedirectUrlFinal
 import com.tokopedia.kyc_centralized.util.waitOnView
 
 class KycRobot {
@@ -28,6 +37,10 @@ class KycRobot {
 
     fun atKtpIntroClickNext() {
         onView(withId(R.id.button)).perform(click())
+    }
+
+    fun atFinalAlacarteClickOK() {
+        onView(withId(R.id.uii_simple_button)).perform(click())
     }
 
     fun atCameraClickCapture() {
@@ -70,8 +83,12 @@ class KycResultRobot {
         intended(hasData(ApplinkConstInternalUserPlatform.KYC_LIVENESS.replace("{projectId}", projectId)), times(count))
     }
 
-    fun hasRedirectUrl(rule: IntentsTestRule<UserIdentificationInfoSimpleActivity>, url: String) {
-        assertThat(rule.activityResult.resultData, hasExtra(PARAM_REDIRECT_URL, url))
+    fun hasRedirectUrl(timber: MockTimber, url: String) {
+        assertThat(timber, hasRedirectUrlFinal(url))
+    }
+
+    fun shouldShowErrorSnackbar(textError: Int) {
+        onView(withText(textError)).check(matches(isDisplayed()))
     }
 }
 
@@ -79,8 +96,18 @@ fun kycRobot(func: KycRobot.() -> Unit): KycRobot {
     return KycRobot().apply(func)
 }
 
-infix fun KycRobot.upload(func: KycResultRobot.() -> Unit): KycResultRobot {
+infix fun KycRobot.validate(func: KycResultRobot.() -> Unit): KycResultRobot {
     // in KYC, there is no manual CTA Button to upload, so we just wait
-    Thread.sleep(2500)
+    Thread.sleep(2000)
     return KycResultRobot().apply(func)
+}
+
+fun stubAppGraphqlRepo() {
+    val baseAppComponent = DaggerBaseAppComponent.builder()
+        .appModule(object : AppModule(ApplicationProvider.getApplicationContext()) {
+            override fun provideGraphqlRepository(): GraphqlRepository {
+                return FakeGraphqlRepository()
+            }
+        }).build()
+    ApplicationProvider.getApplicationContext<BaseMainApplication>().setComponent(baseAppComponent)
 }

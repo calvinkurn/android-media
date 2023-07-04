@@ -126,7 +126,7 @@ class ShopHomeDisplayBannerTimerViewHolder(
             } else {
                 text = ctaText
                 setOnClickListener {
-                    listener.onClickCtaDisplayBannerTimerWidget(uiModel)
+                    listener.onClickCtaDisplayBannerTimerWidget(bindingAdapterPosition, uiModel)
                 }
                 show()
             }
@@ -283,7 +283,7 @@ class ShopHomeDisplayBannerTimerViewHolder(
             buttonRemindMe?.show()
             buttonRemindMe?.setOnClickListener {
                 if (loaderRemindMe?.isVisible == false) {
-                    listener.onClickRemindMe(uiModel)
+                    listener.onClickRemindMe(bindingAdapterPosition, uiModel)
                 }
             }
             if (it) {

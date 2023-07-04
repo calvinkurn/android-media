@@ -3,15 +3,15 @@ title: Shipping Editor
 ---
 
 <!--left header table-->
-| **Status** | <!--start status:GREEN-->RELEASED<!--end status-->                                                             |
-| --- |----------------------------------------------------------------------------------------------------------------|
+| **Status**              | <!--start status:GREEN-->RELEASED<!--end status-->                                                             |
+|-------------------------|----------------------------------------------------------------------------------------------------------------|
 | **Project Contributor** | [Fakhira Devina](https://tokopedia.atlassian.net/wiki/people/61077e53b704b40068e80a8e?ref=confluence)          |
-| Product Manager | [Aditya Rifaldi](https://tokopedia.atlassian.net/wiki/people/603c7cf8333ff40070ba5f3c?ref=confluence)          |
-| Team | [Minion Bob](https://tokopedia.atlassian.net/people/team/2373d8a6-1afc-4f2a-aa7a-63855c273051)                 |
-| Release date | -                                                                                                              |
-| Module type | <!--start status:YELLOW-->FEATURE<!--end status-->                                                             |
-| Product PRD | **Multi-Loc**<br />PRD: <https://docs.google.com/document/d/1aYZuy3NFTxXozIhIqdlMSljTknYrKmaHL9G3ozgt4L8/edit> |
-| Module Location | `features/logistic/editshipping`                                                                               |
+| Product Manager         | [Aditya Rifaldi](https://tokopedia.atlassian.net/wiki/people/603c7cf8333ff40070ba5f3c?ref=confluence)          |
+| Team                    | [Minion Bob](https://tokopedia.atlassian.net/people/team/2373d8a6-1afc-4f2a-aa7a-63855c273051)                 |
+| Release date            | -                                                                                                              |
+| Module type             | <!--start status:YELLOW-->FEATURE<!--end status-->                                                             |
+| Product PRD             | **Multi-Loc**<br />PRD: <https://docs.google.com/document/d/1aYZuy3NFTxXozIhIqdlMSljTknYrKmaHL9G3ozgt4L8/edit> |
+| Module Location         | `features/logistic/editshipping`                                                                               |
 
 <!--toc-->
 

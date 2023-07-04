@@ -329,6 +329,7 @@ object ShopPageTrackingConstant {
     const val VALUE_STRING_ZERO = "0"
     const val VALUE_SHOP_PAGE_THEMATIC = "/shoppagethematic"
     const val ITEM_LIST_PERSO_TRENDING_WIDGET = "/shoppage - trending"
+    const val ITEM_LIST_PERSO_PRODUCT_COMPARISON = "/shoppage - comparison"
     const val VALUE_MULTIPLE_BUNDLING = "multiple bundling"
     const val VALUE_SINGLE_BUNDLING = "single bundling"
     const val SHOP_AFFILIATE = "affiliate"
@@ -337,6 +338,7 @@ object ShopPageTrackingConstant {
     const val NULL_VALUE = "null"
     const val CLICK_SHOP_HEADER = "click shop header"
     const val CLICK_SELLER = "click - seller"
+    const val HIGHLIGHT_WIDGET = "highlight widget"
 
     // trackerId
     const val TRACKER_ID_CLICK_SHARE_BUTTON = "10544"
@@ -381,6 +383,7 @@ object ShopPageTrackingConstant {
     object Event {
         const val DIRECT_PURCHASE_ADD_TO_CART = "add_to_cart"
         const val VIEW_PG_IRIS = "viewPGIris"
+        const val OPEN_SCREEN = "openScreen"
     }
 
     object EventAction {
@@ -399,11 +402,29 @@ object ShopPageTrackingConstant {
         const val CAMPAIGN_WIDGET_CLICK_BANNER = "click banner widget campaign"
         const val ALL_PRODUCT_CLICKED = "click product"
         const val ALL_PRODUCT_IMPRESSION = "product list impression"
+        const val IMPRESSION_PERSO_PRODUCT_COMPARISON = "product list impression - home - comparison"
+        const val CLICK_PERSO_PRODUCT_COMPARISON = "click product - home - comparison"
         const val CAMPAIGN_TAB_COUPON_DETAIL_IMPRESSION = "campaign tab - impression kupon detail"
         const val CAMPAIGN_TAB_COUPON_DETAIL_CLICK = "campaign tab - click kupon detail"
         const val CAMPAIGN_TAB_COUPON_LIST_IMPRESSION = "campaign tab - impression kupon list"
         const val CAMPAIGN_TAB_COUPON_IMPRESSION = "campaign tab - impression kupon"
         const val CAMPAIGN_TAB_COUPON_CLICK = "campaign tab - click kupon"
+        const val IMPRESSION_EXCLUSIVE_LAUNCH_WIDGET = "impression exclusive launch widget"
+        const val CLICK_REMIND_ME_EXCLUSIVE_LAUNCH_WIDGET = "click remind me exclusive launch widget"
+        const val CLICK_EXCLUSIVE_LAUNCH_WIDGET = "click exclusive launch widget"
+        const val IMPRESSION_MAIN_BANNER_CAMPAIGN_TAB = "campaign tab - impression main banner"
+        const val CLICK_REMIND_ME_MAIN_BANNER_CAMPAIGN_TAB = "campaign tab - click remind me main banner"
+        const val IMPRESSION_TITLE_WIDGET = "campaign tab - impression title widget"
+        const val CLICK_TITLE_WIDGET = "campaign tab - click title widget"
+        const val IMPRESSION_PRODUCT_HIGHLIGHT_WIDGET = "campaign tab - impression product highlight"
+        const val CLICK_PRODUCT_HIGHLIGHT_WIDGET = "campaign tab - click product highlight"
+        const val IMPRESSION_VOUCHER_SLIDER_WIDGET = "campaign tab - impression kupon"
+        const val CLICK_CTA_VOUCHER_SLIDER_ITEM_WIDGET = "campaign tab - click kupon"
+        const val CLICK_SEE_MORE_VOUCHER_SLIDER_ITEM_WIDGET = "campaign tab - click see more kupon"
+        const val CLICK_VOUCHER_SLIDER_ITEM_WIDGET = "campaign tab - click kupon other"
+        const val IMPRESSION_BANNER_WIDGET = "campaign tab - impression banner"
+        const val CLICK_BANNER_WIDGET = "campaign tab - click banner"
+
     }
 
     object EventCategory {
@@ -447,11 +468,30 @@ object ShopPageTrackingConstant {
         const val TRACKER_CLICK_SINGLE_BUNDLING_WIDGET_PACKAGE_VARIANT = "25642"
         const val TRACKER_ID_CLICK_SHOP_NAME_ON_HEADER_AS_BUYER = "8055"
         const val TRACKER_ID_CLICK_SHOP_NAME_ON_HEADER_AS_SELLER = "8100"
+        const val TRACKER_ID_IMPRESSION_SHOP_PERSO_PRODUCT_COMPARISON = "43123"
+        const val TRACKER_ID_CLICK_SHOP_PERSO_PRODUCT_COMPARISON = "43124"
+
         const val TRACKER_ID_EXCLUSIVE_LAUNCH_VOUCHER_DETAIL_IMPRESSION = "44415"
         const val TRACKER_ID_EXCLUSIVE_LAUNCH_VOUCHER_CLICK = "44416"
         const val TRACKER_ID_EXCLUSIVE_LAUNCH_VOUCHER_LIST_IMPRESSION = "44408"
         const val TRACKER_ID_EXCLUSIVE_LAUNCH_VOUCHER_IMPRESSION = "44348"
         const val TRACKER_ID_EXCLUSIVE_LAUNCH_VOUCHER_CLICK_ON_CAMPAIGN_TAB = "44349"
+        const val TRACKER_ID_IMPRESSION_BANNER_TIMER_HOME_TAB = "44337"
+        const val TRACKER_ID_CLICK_REMIND_ME_BANNER_TIMER_HOME_TAB = "44338"
+        const val TRACKER_ID_CLICK_CTA_BANNER_TIMER_HOME_TAB = "44339"
+        const val TRACKER_ID_OPEN_SCREEN_CAMPAIGN_TAB = "44340"
+        const val TRACKER_ID_IMPRESSION_MAIN_BANNER_CAMPAIGN_TAB = "44341"
+        const val TRACKER_ID_CLICK_REMIND_ME_MAIN_BANNER_CAMPAIGN_TAB = "44342"
+        const val TRACKER_ID_IMPRESSION_TITLE_WIDGET = "44343"
+        const val TRACKER_ID_CLICK_TITLE_WIDGET = "44344"
+        const val TRACKER_ID_IMPRESSION_PRODUCT_HIGHLIGHT = "44346"
+        const val TRACKER_ID_CLICK_PRODUCT_HIGHLIGHT = "44347"
+        const val TRACKER_ID_IMPRESSION_VOUCHER_SLIDER = "44348"
+        const val TRACKER_ID_CLICK_CTA_VOUCHER_SLIDER_ITEM = "44349"
+        const val TRACKER_ID_CLICK_SEE_MORE_VOUCHER_SLIDER_ITEM = "44350"
+        const val TRACKER_ID_CLICK_VOUCHER_SLIDER_ITEM = "44351"
+        const val TRACKER_ID_IMPRESSION_BANNER_WIDGET = "44359"
+        const val TRACKER_ID_CLICK_BANNER_WIDGET = "44360"
     }
 
     object Key {

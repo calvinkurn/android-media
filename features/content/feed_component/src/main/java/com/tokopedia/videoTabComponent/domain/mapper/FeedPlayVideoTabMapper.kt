@@ -11,6 +11,7 @@ import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetConfigUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetItemUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetPartnerUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetProduct
 import com.tokopedia.play.widget.ui.model.PlayWidgetShareUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetTotalView
 import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
@@ -22,6 +23,7 @@ import com.tokopedia.videoTabComponent.domain.model.data.Configurations
 import com.tokopedia.videoTabComponent.domain.model.data.PlayFeedUiModel
 import com.tokopedia.videoTabComponent.domain.model.data.PlayGetContentSlotResponse
 import com.tokopedia.videoTabComponent.domain.model.data.PlayPagingProperties
+import com.tokopedia.videoTabComponent.domain.model.data.PlayPinnedProduct
 import com.tokopedia.videoTabComponent.domain.model.data.PlaySlot
 import com.tokopedia.videoTabComponent.domain.model.data.PlaySlotItems
 import com.tokopedia.videoTabComponent.domain.model.data.PlaySlotTabMenuUiModel
@@ -190,7 +192,10 @@ object FeedPlayVideoTabMapper {
                     partner = PlayWidgetPartnerUiModel(
                         id = item.partner.id,
                         name = MethodChecker.fromHtml(item.partner.name).toString(),
-                        type = PartnerType.getTypeByValue(item.partner.name)
+                        type = PartnerType.getTypeByValue(item.partner.name),
+                        avatarUrl = item.partner.thumbnailUrl,
+                        badgeUrl = item.partner.badgeUrl,
+                        appLink = item.partner.appLink,
                     ),
                     video = PlayWidgetVideoUiModel(
                         item.video.id,
@@ -213,7 +218,8 @@ object FeedPlayVideoTabMapper {
                     channelTypeTransition = PlayWidgetChannelTypeTransition(
                         PlayWidgetChannelType.getByValue(channelTypeTransitionPrev),
                         PlayWidgetChannelType.getByValue(channelTypeTransitionNext)
-                    )
+                    ),
+                    products = mapProducts(item.pinnedProducts)
                 )
             )
         }
@@ -222,6 +228,17 @@ object FeedPlayVideoTabMapper {
     }
     private fun mapHasGame(promoLabels: List<Configurations.PromoLabel>): Boolean {
         return promoLabels.firstOrNull { it.type == GIVEAWAY } != null
+    }
+
+    private fun mapProducts(products: List<PlayPinnedProduct>) = products.map {
+        PlayWidgetProduct(
+            id = it.id,
+            name = it.name,
+            imageUrl = it.imageUrl,
+            appLink = it.appLink,
+            priceFmt = it.priceFmt,
+            price = it.price,
+        )
     }
 
     private fun shouldHaveActionMenu(channelType: PlayWidgetChannelType, partnerId: String, shopId: String): Boolean {

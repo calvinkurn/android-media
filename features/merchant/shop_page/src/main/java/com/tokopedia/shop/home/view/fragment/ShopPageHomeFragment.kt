@@ -49,12 +49,8 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.atc_common.domain.model.response.AddToCartBundleModel
 import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.cachemanager.PersistentCacheManager
-import com.tokopedia.coachmark.CoachMark2
-import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.content.common.analytic.entrypoint.PlayPerformanceDashboardEntryPointAnalytic
-import com.tokopedia.content.common.util.coachmark.ContentCoachMarkSharedPref
-import com.tokopedia.content.common.util.coachmark.ContentCoachMarkSharedPref.Key
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.discovery.common.manager.ProductCardOptionsWishlistCallback
 import com.tokopedia.discovery.common.manager.handleProductCardOptionsActivityResult
@@ -63,7 +59,6 @@ import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.globalerror.GlobalError
-import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
@@ -94,6 +89,8 @@ import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
 import com.tokopedia.play.widget.ui.model.ext.hasSuccessfulTranscodedChannel
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.VariantPageSource
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.recommendation_widget_common.widget.comparison.ComparisonListModel
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
@@ -110,6 +107,8 @@ import com.tokopedia.shop.analytic.model.CustomDimensionShopPageProduct
 import com.tokopedia.shop.common.constant.DEFAULT_SORT_ID
 import com.tokopedia.shop.common.constant.ShopCommonExtraConstant
 import com.tokopedia.shop.common.constant.ShopPageConstant
+import com.tokopedia.shop.analytic.model.ShopHomePersoProductComparisonWidgetImpressionTrackerModel
+import com.tokopedia.shop.common.constant.*
 import com.tokopedia.shop.common.constant.ShopPageConstant.VALUE_INT_ONE
 import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.Tag.SHOP_PAGE_BUYER_FLOW_TAG
 import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.Tag.SHOP_PAGE_HOME_TAB_BUYER_FLOW_TAG
@@ -146,10 +145,12 @@ import com.tokopedia.shop.common.widget.bundle.viewholder.SingleProductBundleLis
 import com.tokopedia.shop.common.widget.model.ShopHomeWidgetLayout
 import com.tokopedia.shop.databinding.FragmentShopPageHomeBinding
 import com.tokopedia.shop.home.WidgetName
+import com.tokopedia.shop.home.WidgetName.PERSO_PRODUCT_COMPARISON
 import com.tokopedia.shop.home.WidgetName.PLAY_CAROUSEL_WIDGET
 import com.tokopedia.shop.home.WidgetName.VIDEO
 import com.tokopedia.shop.home.WidgetName.VOUCHER_STATIC
 import com.tokopedia.shop.home.WidgetType.DYNAMIC
+import com.tokopedia.shop.home.WidgetType.PERSONALIZATION
 import com.tokopedia.shop.home.WidgetType.PROMO
 import com.tokopedia.shop.home.di.component.DaggerShopPageHomeComponent
 import com.tokopedia.shop.home.di.module.ShopPageHomeModule
@@ -159,6 +160,7 @@ import com.tokopedia.shop.home.view.adapter.ShopHomeAdapter
 import com.tokopedia.shop.home.view.adapter.ShopHomeAdapterTypeFactory
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeProductListSellerEmptyListener
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeVoucherViewHolder
+import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomePersoProductComparisonViewHolder
 import com.tokopedia.shop.home.view.bottomsheet.ShopHomeFlashSaleTncBottomSheet
 import com.tokopedia.shop.home.view.bottomsheet.ShopHomeNplCampaignTncBottomSheet
 import com.tokopedia.shop.home.view.listener.ShopHomeCampaignNplWidgetListener
@@ -203,6 +205,7 @@ import com.tokopedia.shop.sort.view.activity.ShopProductSortActivity
 import com.tokopedia.shop_widget.thematicwidget.uimodel.ProductCardUiModel
 import com.tokopedia.shop_widget.thematicwidget.uimodel.ThematicWidgetUiModel
 import com.tokopedia.shop_widget.thematicwidget.viewholder.ThematicWidgetViewHolder
+import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
@@ -218,7 +221,6 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 import kotlin.math.min
-import com.tokopedia.content.common.R as contentCommonR
 
 open class ShopPageHomeFragment :
     BaseListFragment<Visitable<*>, AdapterTypeFactory>(),
@@ -240,6 +242,7 @@ open class ShopPageHomeFragment :
     SingleProductBundleListener,
     ShopHomeProductListSellerEmptyListener,
     ShopHomeListener,
+    ShopHomePersoProductComparisonViewHolder.ShopHomePersoProductComparisonViewHolderListener,
     ShopHomeDisplayBannerTimerWidgetListener {
 
     companion object {
@@ -316,7 +319,7 @@ open class ShopPageHomeFragment :
     lateinit var dispatcher: CoroutineDispatchers
 
     @Inject
-    lateinit var coachMarkSharedPref: ContentCoachMarkSharedPref
+    lateinit var trackingQueue: TrackingQueue
 
     var viewModel: ShopHomeViewModel? = null
     var extParam: String = ""
@@ -394,6 +397,7 @@ open class ShopPageHomeFragment :
             thematicWidgetListener = thematicWidgetProductClickListenerImpl(),
             shopHomeProductListSellerEmptyListener = this,
             shopHomeListener = this,
+            shopPersoProductComparisonListener = this,
             shopHomeDisplayBannerTimerWidgetListener = this,
         )
     }
@@ -533,6 +537,7 @@ open class ShopPageHomeFragment :
         observeShopReminderButtonStatusSharedVieModel()
         observeLatestShopHomeWidgetLayoutData()
         observeShowHomeTabConfetti()
+        observeProductComparisonLiveData()
         observeBannerTimerRemindMeStatusData()
         observeCheckBannerTimerRemindMeStatusData()
         observeHomeWidgetListVisitable()
@@ -687,6 +692,26 @@ open class ShopPageHomeFragment :
                 }
             }
         )
+    }
+
+    private fun observeProductComparisonLiveData() {
+        viewModel?.productComparisonLiveData?.observe(viewLifecycleOwner) {
+            when (it) {
+                is Success -> {
+                    val listRecommendationItem = it.data.recommendationWidget?.recommendationItemList.orEmpty()
+                    if(listRecommendationItem.isNotEmpty()) {
+                        shopHomeAdapter?.setProductComparisonData(it.data)
+                    } else {
+                        shopHomeAdapter?.removeProductComparisonWidget()
+                    }
+                }
+                is Fail -> {
+                    shopHomeAdapter?.getPersoProductComparisonWidgetUiModel()?.let { uiModel ->
+                        shopHomeAdapter?.setProductComparisonData(uiModel.copy(isError = true))
+                    }
+                }
+            }
+        }
     }
 
     open fun initView() {
@@ -858,7 +883,7 @@ open class ShopPageHomeFragment :
                 .filterIsInstance<ShopWidgetDisplayBannerTimerUiModel>()
                 .firstOrNull().let { bannerTimerWidget ->
                     if(bannerTimerWidget?.data?.status == StatusCampaign.UPCOMING) {
-                        viewModel?.getBannerTimerRemindMeStatus(bannerTimerWidget.data.campaignId)
+                        viewModel?.getBannerTimerRemindMeStatus(bannerTimerWidget.getCampaignId())
                     }
                 }
         }
@@ -1807,7 +1832,6 @@ open class ShopPageHomeFragment :
                     if (firstCompletelyVisibleItemPosition > 0) {
                         showScrollToTopButton()
                     }
-                    checkIsShouldShowPerformanceDashboardCoachMark()
                 }
             }
 
@@ -1858,6 +1882,7 @@ open class ShopPageHomeFragment :
             val widgetMvcLayout = listWidgetLayoutToLoad.firstOrNull { isWidgetMvc(it) }?.apply {
                 listWidgetLayoutToLoad.remove(this)
             }
+            val widgetProductComparison = excludeWidgetComparison(listWidgetLayoutToLoad)
             excludeWidgetBundle(listWidgetLayoutToLoad)
             getWidgetContentData(listWidgetLayoutToLoad)
             widgetPlayLayout?.let {
@@ -1866,7 +1891,22 @@ open class ShopPageHomeFragment :
             widgetMvcLayout?.let {
                 getMvcWidgetData()
             }
+            widgetProductComparison?.let {
+                getProductComparisonWidgetData()
+            }
             listWidgetLayoutToLoad.clear()
+        }
+    }
+
+    private fun excludeWidgetComparison(listWidgetLayoutToLoad: MutableList<ShopPageWidgetUiModel>): ShopPageWidgetUiModel? {
+        return listWidgetLayoutToLoad.firstOrNull { isWidgetPersoComparison(it) }?.apply {
+            listWidgetLayoutToLoad.remove(this)
+        }
+    }
+
+    private fun getProductComparisonWidgetData() {
+        shopHomeAdapter?.getPersoProductComparisonWidgetUiModel()?.let {
+            viewModel?.getProductComparisonData(shopId, it)
         }
     }
 
@@ -1910,6 +1950,10 @@ open class ShopPageHomeFragment :
                 isEnableDirectPurchase
             )
         }
+    }
+
+    private fun isWidgetPersoComparison(data: ShopPageWidgetUiModel): Boolean {
+        return data.widgetType == PERSONALIZATION && data.widgetName == PERSO_PRODUCT_COMPARISON
     }
 
     private fun isWidgetMvc(data: ShopPageWidgetUiModel): Boolean {
@@ -3909,7 +3953,7 @@ open class ShopPageHomeFragment :
         } else {
             REGISTER_VALUE
         }
-        val campaignId = model.data?.campaignId.orEmpty()
+        val campaignId = model.getCampaignId()
         viewModel?.clickBannerTimerReminder(campaignId, action)
     }
 
@@ -4190,12 +4234,70 @@ open class ShopPageHomeFragment :
         (parentFragment as? ShopPageHeaderFragment)?.showScrollToTopButton()
     }
 
-    private fun getSelectedTabName(): String {
+    protected open fun getSelectedTabName(): String {
         return (parentFragment as? ShopPageHeaderFragment)?.getSelectedTabName().orEmpty()
     }
 
     override fun getWidgetCarouselPositionSavedState(): SparseIntArray {
         return shopHomeWidgetCarouselPositionSavedState
+    }
+
+    override fun getFragmentTrackingQueue(): TrackingQueue? {
+        return trackingQueue
+    }
+
+    override fun onProductCardComparisonImpressed(
+        recommendationItem: RecommendationItem,
+        comparisonListModel: ComparisonListModel,
+        position: Int
+    ) {
+        sendTrackerImpressionPersoProductComparisonWidget(recommendationItem, position)
+    }
+
+    private fun sendTrackerImpressionPersoProductComparisonWidget(
+        recommendationItem: RecommendationItem,
+        position: Int
+    ) {
+        shopPageHomeTracking.impressionPersoProductComparisonWidget(
+            ShopHomePersoProductComparisonWidgetImpressionTrackerModel(
+                shopId,
+                userId,
+                recommendationItem.productId.toString(),
+                recommendationItem.name,
+                recommendationItem.price,
+                position
+            )
+        )
+    }
+
+    override fun onProductCardComparisonClicked(
+        recommendationItem: RecommendationItem,
+        comparisonListModel: ComparisonListModel,
+        position: Int
+    ) {
+        sendTrackerClickPersoProductComparisonWidget(recommendationItem, position)
+        goToPDP(
+            UriUtil.buildUri(
+                ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
+                recommendationItem.productId.toString()
+            )
+        )
+    }
+
+    private fun sendTrackerClickPersoProductComparisonWidget(
+        recommendationItem: RecommendationItem,
+        position: Int
+    ) {
+        shopPageHomeTracking.clickPersoProductComparisonWidget(
+            ShopHomePersoProductComparisonWidgetImpressionTrackerModel(
+                shopId,
+                userId,
+                recommendationItem.productId.toString(),
+                recommendationItem.name,
+                recommendationItem.price,
+                position
+            )
+        )
     }
 
     private fun checkShowConfetti() {
@@ -4378,35 +4480,6 @@ open class ShopPageHomeFragment :
                 }
             }
         )
-    }
-
-    protected open fun checkIsShouldShowPerformanceDashboardCoachMark() {
-        val isShownAlready = coachMarkSharedPref.hasBeenShown(Key.PerformanceDashboardEntryPointShopPage, viewModel?.userSessionShopId.orEmpty())
-        if (isShownAlready) return
-        val recyclerView = getRecyclerView(view)
-        recyclerView?.addOneTimeGlobalLayoutListener {
-            val widgetPosition = shopHomeAdapter?.list.orEmpty().indexOfFirst { it is CarouselPlayWidgetUiModel }
-            val widgetViewHolder = recyclerView.findViewHolderForAdapterPosition(widgetPosition)
-            val ivAction = widgetViewHolder?.itemView?.findViewById<IconUnify>(com.tokopedia.play.widget.R.id.play_widget_iv_action)
-            if (ivAction?.isVisible == true) {
-                val coachMarkItems = mutableListOf<CoachMark2Item>()
-                val coachMark = CoachMark2(requireContext())
-                coachMarkItems.add(
-                    CoachMark2Item(
-                        anchorView = ivAction,
-                        title = getString(contentCommonR.string.performance_dashboard_coachmark_title),
-                        description = getString(contentCommonR.string.performance_dashboard_coachmark_subtitle),
-                        position = CoachMark2.POSITION_BOTTOM,
-                    )
-                )
-                coachMark.isOutsideTouchable = true
-                coachMark.showCoachMark(ArrayList(coachMarkItems))
-                coachMarkSharedPref.setHasBeenShown(
-                    Key.PerformanceDashboardEntryPointShopPage,
-                    viewModel?.userSessionShopId.orEmpty()
-                )
-            }
-        }
     }
 
     private fun observePlayWidgetReminder() {
@@ -4648,6 +4721,7 @@ open class ShopPageHomeFragment :
             model.isFestivity
         )
     }
+    //endregion
 
     override fun onCardDonationClick(model: ShopHomeCardDonationUiModel) {
         context?.let {
@@ -4752,31 +4826,58 @@ open class ShopPageHomeFragment :
 
     override fun onClickTncDisplayBannerTimerWidget(uiModel: ShopWidgetDisplayBannerTimerUiModel) {
         showTncBottomSheet(
-            uiModel.data?.campaignId.orEmpty(),
+            uiModel.getCampaignId(),
             uiModel.data?.status?.statusCampaign.orEmpty(),
             uiModel.data?.dynamicRule?.listDynamicRoleData?.map { it.ruleID }.orEmpty()
         )
     }
 
-    override fun onClickRemindMe(uiModel: ShopWidgetDisplayBannerTimerUiModel) {
+    override fun onClickRemindMe(position: Int, uiModel: ShopWidgetDisplayBannerTimerUiModel) {
         viewModel?.let {
             if (it.isLogin) {
                 shopHomeAdapter?.showBannerTimerRemindMeLoading()
                 handleBannerTimerClickRemindMe(uiModel)
+                sendClickRemindMeShopHomeBannerTimerTracker(uiModel, position)
             } else {
                 redirectToLoginPage()
             }
         }
     }
 
-    override fun onClickCtaDisplayBannerTimerWidget(uiModel: ShopWidgetDisplayBannerTimerUiModel) {
+    private fun sendClickRemindMeShopHomeBannerTimerTracker(
+        uiModel: ShopWidgetDisplayBannerTimerUiModel,
+        position: Int
+    ) {
+        shopPageHomeTracking.clickRemindMeBannerTimerWidget(uiModel, position, shopId, userId)
+    }
+
+    override fun onClickCtaDisplayBannerTimerWidget(
+        position: Int,
+        uiModel: ShopWidgetDisplayBannerTimerUiModel
+    ) {
+        sendClickCtaShopHomeBannerTimerTracker(uiModel, position)
         checkShouldSelectCampaignTab(uiModel.header.ctaLink)
+    }
+
+    private fun sendClickCtaShopHomeBannerTimerTracker(
+        uiModel: ShopWidgetDisplayBannerTimerUiModel,
+        position: Int
+    ) {
+        shopPageHomeTracking.clickCtaShopHomeBannerTimerWidget(uiModel, position, shopId, userId)
     }
 
     override fun onImpressionDisplayBannerTimerWidget(
         position: Int,
         uiModel: ShopWidgetDisplayBannerTimerUiModel
     ) {
+        sendImpressionShopHomeBannerTimerTracker(uiModel, position)
+    }
+
+    private fun sendImpressionShopHomeBannerTimerTracker(
+        uiModel: ShopWidgetDisplayBannerTimerUiModel,
+        position: Int
+    ) {
+        shopPageHomeTracking.impressionDisplayBannerTimerWidget(uiModel, position, shopId, userId)
     }
 
     override fun onTimerFinished(uiModel: ShopWidgetDisplayBannerTimerUiModel) {
@@ -4784,6 +4885,4 @@ open class ShopPageHomeFragment :
         endlessRecyclerViewScrollListener.resetState()
         getLatestShopHomeWidgetLayoutData()
     }
-
-    //endregion
 }

@@ -41,7 +41,7 @@ import com.tokopedia.track.constant.TrackerConstant.EVENT_LABEL
 import com.tokopedia.track.constant.TrackerConstant.USERID
 import com.tokopedia.trackingoptimizer.TrackingQueue
 
-object ViewToViewBottomSheetTracker: BaseTrackerConst() {
+object ViewToViewBottomSheetTracker : BaseTrackerConst() {
     private const val TOPADS = "topads"
     private const val NONTOPADS = "nontopads"
     private const val ITEM_LIST_TEMPLATE = "/product - v2v widget - rekomendasi untuk anda - %s - product %s"
@@ -61,7 +61,7 @@ object ViewToViewBottomSheetTracker: BaseTrackerConst() {
         position: Int,
         userId: String,
         anchorProductId: String,
-        trackingQueue: TrackingQueue?,
+        trackingQueue: TrackingQueue?
     ) {
         val productList = arrayListOf(product.asDataLayer(position + 1))
 
@@ -74,12 +74,15 @@ object ViewToViewBottomSheetTracker: BaseTrackerConst() {
             CurrentSite.KEY, CurrentSite.DEFAULT,
             TRACKER_ID, IMPRESSION_TRACKER_ID,
             ITEM_LIST, product.asItemList(),
-            Ecommerce.KEY, DataLayer.mapOf(
-                CURRENCY_CODE, IDR,
-                IMPRESSIONS, productList,
+            Ecommerce.KEY,
+            DataLayer.mapOf(
+                CURRENCY_CODE,
+                IDR,
+                IMPRESSIONS,
+                productList
             ),
             PRODUCT_ID, anchorProductId,
-            USERID, userId,
+            USERID, userId
         ) as HashMap<String, Any>
         trackingQueue?.putEETracking(dataLayer)
     }
@@ -89,7 +92,7 @@ object ViewToViewBottomSheetTracker: BaseTrackerConst() {
         headerTitle: String,
         userId: String,
         position: Int,
-        anchorProductId: String,
+        anchorProductId: String
     ) {
         val itemBundle = Bundle().apply {
             putString(EVENT, SELECT_CONTENT)
@@ -107,7 +110,6 @@ object ViewToViewBottomSheetTracker: BaseTrackerConst() {
 
             putString(PRODUCT_ID, anchorProductId)
             putString(USERID, userId)
-
         }
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(SELECT_CONTENT, itemBundle)
     }
@@ -116,7 +118,7 @@ object ViewToViewBottomSheetTracker: BaseTrackerConst() {
         product: RecommendationItem,
         headerTitle: String,
         userId: String,
-        anchorProductId: String,
+        anchorProductId: String
     ) {
         val itemBundle = Bundle().apply {
             putString(EVENT, ADD_TO_CART)
@@ -127,7 +129,7 @@ object ViewToViewBottomSheetTracker: BaseTrackerConst() {
             putString(CURRENT_SITE, CURRENT_SITE_MP)
             putString(TRACKER_ID, ATC_TRACKER_ID)
 
-            val bundlePromotion = product.asBundle(product.position + 1)
+            val bundlePromotion = product.asBundle(product.position + 1, isAtc = true)
             val list = arrayListOf(bundlePromotion)
             putParcelableArrayList(ITEMS, list)
 
@@ -142,41 +144,38 @@ object ViewToViewBottomSheetTracker: BaseTrackerConst() {
         return ITEM_LIST_TEMPLATE.format(recommendationType, isTopAds)
     }
 
-    private fun RecommendationItem.asBundle(position: Int): Bundle {
+    private fun RecommendationItem.asBundle(position: Int, isAtc: Boolean = false): Bundle {
         return Bundle().apply {
-            putInt(CATEGORY_ID, departmentId)
             putString(DIMENSION_40, asItemList())
-            putString(DIMENSION_45, cartId)
+            if (isAtc) {
+                putString(CATEGORY_ID, departmentId.toString())
+                putString(DIMENSION_45, cartId)
+                putString(QUANTITY, quantity.toString())
+                putString(SHOP_ID, shopId.toString())
+                putString(SHOP_NAME, shopName)
+                putString(SHOP_TYPE, shopType)
+            } else {
+                putString(KEY_INDEX, position.toString())
+            }
             putString(ITEM_BRAND, "")
             putString(ITEM_CATEGORY, categoryBreadcrumbs)
-            putLong(ITEM_ID, productId)
+            putString(ITEM_ID, productId.toString())
             putString(ITEM_NAME, name)
             putString(ITEM_VARIANT, "")
-            putString(PRICE, "%.1f".format(priceInt.toDouble()))
-            putInt(QUANTITY, quantity)
-            putInt(SHOP_ID, shopId)
-            putString(SHOP_NAME, shopName)
-            putString(SHOP_TYPE, shopType)
-            putInt(KEY_INDEX, position)
+            putString(PRICE, convertRupiahToInt(price).toFloat().toString())
         }
     }
 
-    private fun RecommendationItem.asDataLayer(position: Int): Map<String,Any> {
+    private fun RecommendationItem.asDataLayer(position: Int): Map<String, Any> {
         return hashMapOf(
-            CATEGORY_ID to departmentId,
             DIMENSION_40 to asItemList(),
-            DIMENSION_45 to cartId,
             ITEM_BRAND to "",
             ITEM_CATEGORY to categoryBreadcrumbs,
-            ITEM_ID to productId,
+            ITEM_ID to productId.toString(),
             ITEM_NAME to name,
             ITEM_VARIANT to "",
-            PRICE to "%.1f".format(priceInt.toDouble()),
-            QUANTITY to quantity,
-            SHOP_ID to shopId,
-            SHOP_NAME to shopName,
-            SHOP_TYPE to shopType,
-            KEY_INDEX to position,
+            PRICE to convertRupiahToInt(price).toFloat().toString(),
+            KEY_INDEX to position.toString()
         )
     }
 }

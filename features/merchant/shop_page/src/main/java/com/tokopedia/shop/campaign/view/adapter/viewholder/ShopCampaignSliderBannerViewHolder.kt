@@ -130,6 +130,7 @@ class ShopCampaignSliderBannerViewHolder(
                 }
             }
         }
+        setWidgetImpressionListener(shopHomeDisplayWidgetUiModel)
     }
 
     fun pauseTimer() {
@@ -186,6 +187,12 @@ class ShopCampaignSliderBannerViewHolder(
             headerView?.show()
             headerView?.setTitle(title)
             headerView?.configColorMode(shopCampaignInterface.isCampaignTabDarkMode())
+        }
+    }
+
+    private fun setWidgetImpressionListener(model: ShopHomeDisplayWidgetUiModel) {
+        itemView.addOnImpressionListener(model.impressHolder) {
+            listener.onDisplayWidgetImpression(model, bindingAdapterPosition)
         }
     }
 

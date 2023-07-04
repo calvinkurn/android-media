@@ -70,13 +70,13 @@ class ErrorLoadViewModelTest {
         viewModel.merchantVoucherUseCase = merchantVoucherUseCase
         coEvery { componentsItem.noOfPagesLoaded } returns 0
         coEvery { componentsItem.parentComponentName } returns ComponentNames.MerchantVoucherList.componentName
-        coEvery { viewModel.merchantVoucherUseCase.loadFirstPageComponents(any(), any()) } returns true
+        coEvery { viewModel.merchantVoucherUseCase?.loadFirstPageComponents(any(), any()) } returns true
         mockkConstructor(URLParser::class)
         every { anyConstructed<URLParser>().paramKeyValueMapDecoded } returns HashMap()
         mockkStatic(::getComponent)
         val merchantVoucherComponent: ComponentsItem = spyk()
-        coEvery { getComponent( componentsItem.parentComponentId, componentsItem.pageEndPoint) } returns merchantVoucherComponent
-        every { merchantVoucherComponent.getComponentsItem()} returns listOf(mockk())
+        coEvery { getComponent(componentsItem.parentComponentId, componentsItem.pageEndPoint) } returns merchantVoucherComponent
+        every { merchantVoucherComponent.getComponentsItem() } returns listOf(mockk())
         viewModel.reloadComponentData()
         Assert.assertEquals(viewModel.syncData.value, true)
     }
@@ -86,18 +86,18 @@ class ErrorLoadViewModelTest {
         viewModel.merchantVoucherUseCase = merchantVoucherUseCase
         coEvery { componentsItem.noOfPagesLoaded } returns 0
         coEvery { componentsItem.parentComponentName } returns ComponentNames.MerchantVoucherList.componentName
-        coEvery { viewModel.merchantVoucherUseCase.loadFirstPageComponents(any(), any()) } returns true
+        coEvery { viewModel.merchantVoucherUseCase?.loadFirstPageComponents(any(), any()) } returns true
         mockkConstructor(URLParser::class)
         every { anyConstructed<URLParser>().paramKeyValueMapDecoded } returns HashMap()
         mockkStatic(::getComponent)
         val merchantVoucherComponent: ComponentsItem = spyk()
-        coEvery { getComponent( componentsItem.parentComponentId, componentsItem.pageEndPoint) } returns merchantVoucherComponent
+        coEvery { getComponent(componentsItem.parentComponentId, componentsItem.pageEndPoint) } returns merchantVoucherComponent
 
-        every { merchantVoucherComponent.getComponentsItem()} returns null
+        every { merchantVoucherComponent.getComponentsItem() } returns null
         viewModel.reloadComponentData()
         Assert.assertEquals(viewModel.syncData.value, false)
 
-        every { merchantVoucherComponent.getComponentsItem()} returns listOf()
+        every { merchantVoucherComponent.getComponentsItem() } returns listOf()
         viewModel.reloadComponentData()
         Assert.assertEquals(viewModel.syncData.value, false)
     }
@@ -115,12 +115,11 @@ class ErrorLoadViewModelTest {
         val listOfData = arrayListOf(dataItem)
         every { componentsItem.getComponentsItem() } returns listOfComps
         every { childComponentsItem.data } returns listOfData
-        coEvery { viewModel.merchantVoucherUseCase.loadFirstPageComponents(any(), any()) } returns true
+        coEvery { viewModel.merchantVoucherUseCase?.loadFirstPageComponents(any(), any()) } returns true
 
         viewModel.reloadComponentData()
 
         Assert.assertEquals(viewModel.syncData.value == null, true)
-
     }
 
     @Test
@@ -128,54 +127,47 @@ class ErrorLoadViewModelTest {
         viewModel.productCardUseCase = productCardUseCase
         coEvery { componentsItem.noOfPagesLoaded } returns 0
         coEvery { componentsItem.parentComponentName } returns ComponentNames.ProductCardCarousel.componentName
-        coEvery { viewModel.productCardUseCase.loadFirstPageComponents(any(), any()) } returns true
+        coEvery { viewModel.productCardUseCase?.loadFirstPageComponents(any(), any()) } returns true
 
         viewModel.reloadComponentData()
 
         Assert.assertEquals(viewModel.syncData.value, true)
     }
 
-
-
     @Test
     fun `reloadComponentData when getProductCardsUseCase returns true for ProductCardCarousel and noOfPagesLoaded is 1`() {
-            viewModel.productCardUseCase = productCardUseCase
-            coEvery { componentsItem.noOfPagesLoaded } returns 1
-            coEvery { componentsItem.parentComponentName } returns ComponentNames.ProductCardCarousel.componentName
-            coEvery { viewModel.productCardUseCase.getProductCardsUseCase(any(), any()) } returns true
+        viewModel.productCardUseCase = productCardUseCase
+        coEvery { componentsItem.noOfPagesLoaded } returns 1
+        coEvery { componentsItem.parentComponentName } returns ComponentNames.ProductCardCarousel.componentName
+        coEvery { viewModel.productCardUseCase?.getProductCardsUseCase(any(), any()) } returns true
 
-            viewModel.reloadComponentData()
+        viewModel.reloadComponentData()
 
-            Assert.assertEquals(viewModel.syncData.value, true)
-
+        Assert.assertEquals(viewModel.syncData.value, true)
     }
-
 
     @Test
     fun `reloadComponentData when loadFirstPageComponents returns true for BannerInfinite and noOfPagesLoaded is 0`() {
         viewModel.bannerInfiniteUseCase = bannerInfiniteUseCase
         coEvery { componentsItem.noOfPagesLoaded } returns 0
         coEvery { componentsItem.parentComponentName } returns ComponentNames.BannerInfinite.componentName
-        coEvery { viewModel.bannerInfiniteUseCase.loadFirstPageComponents(any(), any()) } returns true
+        coEvery { viewModel.bannerInfiniteUseCase?.loadFirstPageComponents(any(), any()) } returns true
 
         viewModel.reloadComponentData()
 
         Assert.assertEquals(viewModel.syncData.value, true)
     }
 
-
-
     @Test
     fun `reloadComponentData when getBannerUseCase returns true for BannerInfinite and noOfPagesLoaded is 1`() {
         viewModel.bannerInfiniteUseCase = bannerInfiniteUseCase
         coEvery { componentsItem.noOfPagesLoaded } returns 1
         coEvery { componentsItem.parentComponentName } returns ComponentNames.BannerInfinite.componentName
-        coEvery { viewModel.bannerInfiniteUseCase.getBannerUseCase(any(), any()) } returns true
+        coEvery { viewModel.bannerInfiniteUseCase?.getBannerUseCase(any(), any()) } returns true
 
         viewModel.reloadComponentData()
 
         Assert.assertEquals(viewModel.syncData.value, true)
-
     }
 
     @Test
@@ -183,12 +175,11 @@ class ErrorLoadViewModelTest {
         viewModel.bannerInfiniteUseCase = bannerInfiniteUseCase
         coEvery { componentsItem.noOfPagesLoaded } returns 1
         coEvery { componentsItem.parentComponentName } returns ComponentNames.BannerInfinite.componentName
-        coEvery { viewModel.bannerInfiniteUseCase.getBannerUseCase(any(), any()) } throws Exception("Error")
+        coEvery { viewModel.bannerInfiniteUseCase?.getBannerUseCase(any(), any()) } throws Exception("Error")
 
         viewModel.reloadComponentData()
 
         Assert.assertEquals(viewModel.getShowLoaderStatus().value, false)
-
     }
 
     @Test
@@ -196,26 +187,23 @@ class ErrorLoadViewModelTest {
         viewModel.shopCardInfiniteUseCase = shopCardInfiniteUseCase
         coEvery { componentsItem.noOfPagesLoaded } returns 0
         coEvery { componentsItem.parentComponentName } returns ComponentNames.ShopCardInfinite.componentName
-        coEvery { viewModel.shopCardInfiniteUseCase.loadFirstPageComponents(any(), any()) } returns true
+        coEvery { viewModel.shopCardInfiniteUseCase?.loadFirstPageComponents(any(), any()) } returns true
 
         viewModel.reloadComponentData()
 
         Assert.assertEquals(viewModel.syncData.value, true)
     }
 
-
-
     @Test
     fun `reloadComponentData when getShopCardUseCase returns true for ShopCardInfinite and noOfPagesLoaded is 1`() {
         viewModel.shopCardInfiniteUseCase = shopCardInfiniteUseCase
         coEvery { componentsItem.noOfPagesLoaded } returns 1
         coEvery { componentsItem.parentComponentName } returns ComponentNames.ShopCardInfinite.componentName
-        coEvery { viewModel.shopCardInfiniteUseCase.getShopCardUseCase(any(), any()) } returns true
+        coEvery { viewModel.shopCardInfiniteUseCase?.getShopCardUseCase(any(), any()) } returns true
 
         viewModel.reloadComponentData()
 
         Assert.assertEquals(viewModel.syncData.value, true)
-
     }
 
     @Test
@@ -223,15 +211,14 @@ class ErrorLoadViewModelTest {
         viewModel.shopCardInfiniteUseCase = shopCardInfiniteUseCase
         coEvery { componentsItem.noOfPagesLoaded } returns 1
         coEvery { componentsItem.parentComponentName } returns ComponentNames.ShopCardInfinite.componentName
-        coEvery { viewModel.shopCardInfiniteUseCase.getShopCardUseCase(any(), any()) } throws Exception("Error")
+        coEvery { viewModel.shopCardInfiniteUseCase?.getShopCardUseCase(any(), any()) } throws Exception("Error")
 
         viewModel.reloadComponentData()
 
         Assert.assertEquals(viewModel.getShowLoaderStatus().value, false)
-
     }
-    /**************************** reloadComponentData() *******************************************/
 
+    /**************************** reloadComponentData() *******************************************/
 
     @After
     fun shutDown() {

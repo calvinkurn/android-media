@@ -2,6 +2,7 @@ package com.tokopedia.shop.home.view.model
 
 import android.os.Parcelable
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.shop.campaign.domain.entity.ExclusiveLaunchVoucher
 import com.tokopedia.shop.campaign.view.adapter.ShopCampaignTabAdapterTypeFactory
 import com.tokopedia.shop.common.data.model.MerchantVoucherCouponUiModel
@@ -23,6 +24,9 @@ data class ShopWidgetVoucherSliderUiModel(
     companion object{
         const val CATALOG_ID_LINK_TYPE = "catalog"
     }
+
+    val impressHolder = ImpressHolder()
+
     override fun type(typeFactory: ShopWidgetTypeFactory): Int {
         return if (typeFactory is ShopCampaignTabAdapterTypeFactory) {
             typeFactory.type(this)

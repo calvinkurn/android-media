@@ -74,7 +74,7 @@ fun String.isEmail(): Boolean {
 }
 
 fun String?.toBlankOrString(): String {
-    return this?:""
+    return this ?: ""
 }
 
 private const val NUMBER_ONLY_REGEX = "[^\\d]"
@@ -97,7 +97,6 @@ fun String?.convertStrObjToHashMap(): HashMap<String, Any> {
             val splited = newStr.split(":".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
 
             map[splited[0]] = splited[1].trim { it <= ' ' }
-
         }
     }
     return map
@@ -113,12 +112,12 @@ fun String.parseAsHtml(): CharSequence {
 
 fun String.asUpperCase(): String {
     val locale = Locale.getDefault()
-    return this.toUpperCase(locale)
+    return this.uppercase(locale)
 }
 
 fun String.asLowerCase(): String {
     val locale = Locale.getDefault()
-    return this.toLowerCase(locale)
+    return this.lowercase(locale)
 }
 
 fun String.asCamelCase(): String {
@@ -142,28 +141,35 @@ fun String.digitsOnly(): Long {
 private const val IS_NUMERIC_REGEX = """-?[0-9]+(\\.[0-9]+)?"""
 fun String.isNumeric(): Boolean = this.matches(Regex(IS_NUMERIC_REGEX))
 
-
 const val INTEGER_OUT_RANGE_MAX_LENGTH = 1000
-fun String.toIntOrZero(error_block:(number:String)->Unit):Int {
+fun String.toIntOrZero(error_block: (number: String) -> Unit): Int {
     return try {
         val longValue: Long = this.toLong()
         return if (longValue < Int.MIN_VALUE || longValue > Int.MAX_VALUE) {
-            throw NumberFormatException("Integer Out Of Range value :- ${this}")
+            throw NumberFormatException("Integer Out Of Range value :- $this")
         } else {
             longValue.toInt()
         }
-    }catch (e:Exception) {
+    } catch (e: Exception) {
         val sw = StringWriter()
         e.printStackTrace(PrintWriter(sw))
         ServerLogger.log(
-            Priority.P1, "INTEGER_PARSING_ERROR",
+            Priority.P1,
+            "INTEGER_PARSING_ERROR",
             mapOf(
-                "error_msg " to (e.message?:"Integer Parsing"),
+                "error_msg " to (e.message ?: "Integer Parsing"),
                 "trace " to sw.toString().take(INTEGER_OUT_RANGE_MAX_LENGTH).trim()
-            ))
+            )
+        )
 
         // calling error block in case of exception
         error_block(this)
         0
     }
+}
+
+fun String?.ifNullOrBlank(block: () -> String): String = if (this.isNullOrBlank()) {
+    block.invoke()
+} else {
+    this
 }

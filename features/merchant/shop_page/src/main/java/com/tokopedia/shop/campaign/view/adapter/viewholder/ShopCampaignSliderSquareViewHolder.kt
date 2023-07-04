@@ -5,6 +5,7 @@ import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -49,6 +50,7 @@ class ShopCampaignSliderSquareViewHolder(
         shopHomeSliderSquareAdapter?.heightRatio = getHeightRatio(element)
         shopHomeSliderSquareAdapter?.parentPosition = adapterPosition
         shopHomeSliderSquareAdapter?.submitList(element.data)
+        setWidgetImpressionListener(element)
     }
 
     private fun getIndexRatio(data: ShopHomeDisplayWidgetUiModel, index: Int): Int {
@@ -69,6 +71,12 @@ class ShopCampaignSliderSquareViewHolder(
             headerView?.show()
             headerView?.setTitle(title)
             headerView?.configColorMode(shopCampaignInterface.isCampaignTabDarkMode())
+        }
+    }
+
+    private fun setWidgetImpressionListener(model: ShopHomeDisplayWidgetUiModel) {
+        itemView.addOnImpressionListener(model.impressHolder) {
+            listener.onDisplayWidgetImpression(model, bindingAdapterPosition)
         }
     }
 }

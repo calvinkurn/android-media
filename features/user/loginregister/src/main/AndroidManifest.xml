@@ -83,7 +83,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".shopcreation.view.activity.LandingShopCreationActivity"
+            android:name=".shopcreation.view.landingshop.LandingShopCreationActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
@@ -102,7 +102,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".shopcreation.view.activity.PhoneShopCreationActivity"
+            android:name=".shopcreation.view.phoneshop.PhoneShopCreationActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
@@ -121,7 +121,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".shopcreation.view.activity.NameShopCreationActivity"
+            android:name=".shopcreation.view.nameshop.NameShopCreationActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
@@ -178,7 +178,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".termprivacy.view.activity.TermPrivacyActivity"
+            android:name=".termprivacy.TermPrivacyActivity"
             android:label="@string/title_activity_term_and_privacy"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"

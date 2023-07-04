@@ -42,17 +42,16 @@ import com.tokopedia.play.widget.ui.model.ext.hasSuccessfulTranscodedChannel
 import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopComponentHelper
 import com.tokopedia.shop.analytic.ShopCampaignTabTracker
-import com.tokopedia.shop.analytic.ShopPageTrackingConstant.VALUE_MULTIPLE_BUNDLING
-import com.tokopedia.shop.analytic.ShopPageTrackingConstant.VALUE_SINGLE_BUNDLING
+import com.tokopedia.shop.analytic.ShopPageCampaignTrackingMapper
 import com.tokopedia.shop.campaign.domain.entity.ExclusiveLaunchVoucher
 import com.tokopedia.shop.campaign.domain.entity.ShopCampaignRedeemPromoVoucherResult
 import com.tokopedia.shop.campaign.util.mapper.ShopPageCampaignMapper
 import com.tokopedia.shop.campaign.view.adapter.ShopCampaignTabAdapter
 import com.tokopedia.shop.campaign.view.adapter.ShopCampaignTabAdapterTypeFactory
 import com.tokopedia.shop.campaign.view.adapter.viewholder.ShopCampaignDisplaySliderBannerHighlightViewHolder
-import com.tokopedia.shop.campaign.view.adapter.viewholder.ShopCampaignProductBundleParentWidgetViewHolder
 import com.tokopedia.shop.campaign.view.adapter.viewholder.ShopCampaignVoucherSliderItemViewHolder
 import com.tokopedia.shop.campaign.view.adapter.viewholder.ShopCampaignVoucherSliderMoreItemViewHolder
+import com.tokopedia.shop.campaign.view.adapter.viewholder.ShopCampaignVoucherSliderViewHolder
 import com.tokopedia.shop.campaign.view.adapter.viewholder.WidgetConfigListener
 import com.tokopedia.shop.campaign.view.bottomsheet.ExclusiveLaunchVoucherListBottomSheet
 import com.tokopedia.shop.campaign.view.bottomsheet.VoucherDetailBottomSheet
@@ -69,8 +68,6 @@ import com.tokopedia.shop.common.extension.showToaster
 import com.tokopedia.shop.common.extension.showToasterError
 import com.tokopedia.shop.common.util.ShopPageExceptionHandler
 import com.tokopedia.shop.common.util.ShopUtil
-import com.tokopedia.shop.common.widget.bundle.model.ShopHomeBundleProductUiModel
-import com.tokopedia.shop.common.widget.bundle.model.ShopHomeProductBundleDetailUiModel
 import com.tokopedia.shop.databinding.FragmentShopPageCampaignBinding
 import com.tokopedia.shop.home.WidgetName
 import com.tokopedia.shop.home.WidgetType
@@ -78,13 +75,13 @@ import com.tokopedia.shop.home.di.component.DaggerShopPageHomeComponent
 import com.tokopedia.shop.home.di.module.ShopPageHomeModule
 import com.tokopedia.shop.home.view.fragment.ShopPageHomeFragment
 import com.tokopedia.shop.home.view.listener.ShopHomeListener
+import com.tokopedia.shop.home.view.model.BaseShopHomeWidgetUiModel
 import com.tokopedia.shop.home.view.model.CarouselPlayWidgetUiModel
 import com.tokopedia.shop.home.view.model.CheckCampaignNotifyMeUiModel
 import com.tokopedia.shop.home.view.model.GetCampaignNotifyMeUiModel
 import com.tokopedia.shop.home.view.model.NotifyMeAction
-import com.tokopedia.shop.home.view.model.ShopHomeProductBundleListUiModel
+import com.tokopedia.shop.home.view.model.ShopHomeDisplayWidgetUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeProductUiModel
-import com.tokopedia.shop.home.view.model.ShopHomeVoucherUiModel
 import com.tokopedia.shop.home.view.model.ShopPageLayoutUiModel
 import com.tokopedia.shop.home.view.model.ShopWidgetDisplayBannerTimerUiModel
 import com.tokopedia.shop.home.view.model.ShopWidgetVoucherSliderUiModel
@@ -106,11 +103,11 @@ import kotlin.math.min
 class ShopPageCampaignFragment :
     ShopPageHomeFragment(),
     WidgetConfigListener,
-    ShopCampaignProductBundleParentWidgetViewHolder.Listener,
     ShopHomeListener,
     ShopCampaignInterface,
     ShopCampaignDisplaySliderBannerHighlightViewHolder.Listener,
     ShopCampaignCarouselProductListener,
+    ShopCampaignVoucherSliderViewHolder.Listener,
     ShopCampaignVoucherSliderItemViewHolder.Listener,
     ShopCampaignVoucherSliderMoreItemViewHolder.Listener {
 
@@ -151,11 +148,9 @@ class ShopPageCampaignFragment :
             shopCampaignCarouselProductListener = this,
             playWidgetCoordinator = playWidgetCoordinator,
             shopPlayWidgetListener = this,
-            multipleProductBundleListener = this,
-            singleProductBundleListener = this,
-            bundlingParentListener = this,
             shopCampaignInterface = this,
             sliderBannerHighlightListener = this,
+            shopCampaignVoucherSliderListener = this,
             shopCampaignVoucherSliderItemListener = this,
             shopCampaignVoucherSliderMoreItemListener = this
         )
@@ -454,159 +449,11 @@ class ShopPageCampaignFragment :
                 .filterIsInstance<ShopWidgetDisplayBannerTimerUiModel>()
                 .firstOrNull().let { bannerTimerWidget ->
                     if(bannerTimerWidget?.data?.status == StatusCampaign.UPCOMING) {
-                        viewModel?.getBannerTimerRemindMeStatus(bannerTimerWidget.data.campaignId)
+                        viewModel?.getBannerTimerRemindMeStatus(bannerTimerWidget.getCampaignId())
                     }
                 }
         }
     }
-
-    override fun onVoucherImpression(model: ShopHomeVoucherUiModel, position: Int) {
-        shopCampaignTabTracker.impressionShopBannerWidget(
-            shopId,
-            model.name,
-            model.widgetId,
-            ShopUtil.getActualPositionFromIndex(position),
-            userId
-        )
-    }
-
-    override fun onVoucherTokoMemberInformationImpression(
-        model: ShopHomeVoucherUiModel,
-        position: Int
-    ) {
-        shopCampaignTabTracker.impressionShopBannerWidget(
-            shopId,
-            model.name,
-            model.widgetId,
-            ShopUtil.getActualPositionFromIndex(position),
-            userId
-        )
-        shopCampaignTabTracker.impressionSeeEntryPointMerchantVoucherCouponTokoMemberInformation(
-            shopId
-        )
-    }
-
-    override fun onVoucherReloaded() {
-        getMvcWidgetData()
-    }
-    // endregion
-
-    //region Bundling Widget
-    override fun onImpressionBundlingWidget(
-        model: ShopHomeProductBundleListUiModel,
-        position: Int
-    ) {
-        shopCampaignTabTracker.impressionShopBannerWidget(
-            shopId,
-            model.name,
-            model.widgetId,
-            ShopUtil.getActualPositionFromIndex(position),
-            userId
-        )
-    }
-
-    override fun onMultipleBundleProductClicked(
-        shopId: String,
-        warehouseId: String,
-        selectedProduct: ShopHomeBundleProductUiModel,
-        selectedMultipleBundle: ShopHomeProductBundleDetailUiModel,
-        bundleName: String,
-        bundleType: String,
-        bundlePosition: Int,
-        widgetTitle: String,
-        widgetName: String,
-        productItemPosition: Int
-    ) {
-        shopCampaignTabTracker.clickCampaignTabProduct(
-            selectedProduct.productId,
-            selectedProduct.productName,
-            selectedMultipleBundle.displayPriceRaw,
-            widgetName,
-            shopId,
-            userId,
-            widgetTitle,
-            ShopUtil.getActualPositionFromIndex(productItemPosition),
-            VALUE_MULTIPLE_BUNDLING,
-            selectedMultipleBundle.bundleId
-        )
-        goToPDP(selectedProduct.productAppLink)
-    }
-
-    override fun onSingleBundleProductClicked(
-        shopId: String,
-        warehouseId: String,
-        selectedProduct: ShopHomeBundleProductUiModel,
-        selectedSingleBundle: ShopHomeProductBundleDetailUiModel,
-        bundleName: String,
-        bundlePosition: Int,
-        widgetTitle: String,
-        widgetName: String,
-        productItemPosition: Int,
-        bundleType: String
-    ) {
-        shopCampaignTabTracker.clickCampaignTabProduct(
-            selectedProduct.productId,
-            selectedProduct.productName,
-            selectedSingleBundle.displayPriceRaw,
-            widgetName,
-            shopId,
-            userId,
-            widgetTitle,
-            ShopUtil.getActualPositionFromIndex(productItemPosition),
-            VALUE_SINGLE_BUNDLING,
-            selectedSingleBundle.bundleId
-        )
-        goToPDP(selectedProduct.productAppLink)
-    }
-
-    override fun impressionProductItemBundleMultiple(
-        selectedProduct: ShopHomeBundleProductUiModel,
-        selectedMultipleBundle: ShopHomeProductBundleDetailUiModel,
-        bundleName: String,
-        bundlePosition: Int,
-        widgetTitle: String,
-        widgetName: String,
-        productItemPosition: Int
-    ) {
-        shopCampaignTabTracker.impressionCampaignTabProduct(
-            selectedProduct.productId,
-            selectedProduct.productName,
-            selectedMultipleBundle.displayPriceRaw,
-            widgetName,
-            shopId,
-            userId,
-            widgetTitle,
-            ShopUtil.getActualPositionFromIndex(productItemPosition),
-            VALUE_MULTIPLE_BUNDLING,
-            selectedMultipleBundle.bundleId
-        )
-    }
-
-    override fun impressionProductBundleSingle(
-        shopId: String,
-        warehouseId: String,
-        selectedSingleBundle: ShopHomeProductBundleDetailUiModel,
-        selectedProduct: ShopHomeBundleProductUiModel,
-        bundleName: String,
-        bundlePosition: Int,
-        widgetTitle: String,
-        widgetName: String,
-        bundleType: String
-    ) {
-        shopCampaignTabTracker.impressionCampaignTabProduct(
-            selectedProduct.productId,
-            selectedProduct.productName,
-            selectedSingleBundle.displayPriceRaw,
-            widgetName,
-            shopId,
-            userId,
-            widgetTitle,
-            ShopUtil.getActualPositionFromIndex(bundlePosition),
-            VALUE_SINGLE_BUNDLING,
-            selectedSingleBundle.bundleId
-        )
-    }
-    //endregion
 
     override fun getWidgetTextColor(): Int {
         return parseColor(textColor)
@@ -701,40 +548,10 @@ class ShopPageCampaignFragment :
                     if (firstCompletelyVisibleItemPosition > 0) {
                         showScrollToTopButton()
                     }
-                    checkIsShouldShowPerformanceDashboardCoachMark()
                 }
             }
 
             override fun onLoadMore(page: Int, totalItemsCount: Int) {}
-        }
-    }
-
-    override fun checkIsShouldShowPerformanceDashboardCoachMark() {
-        val isShownAlready = coachMarkSharedPref.hasBeenShown(ContentCoachMarkSharedPref.Key.PerformanceDashboardEntryPointShopPage, viewModel?.userSessionShopId.orEmpty())
-        if (isShownAlready) return
-        val recyclerView = getRecyclerView(view)
-        recyclerView?.addOneTimeGlobalLayoutListener {
-            val widgetPosition = shopCampaignTabAdapter.list.orEmpty().indexOfFirst { it is CarouselPlayWidgetUiModel }
-            val widgetViewHolder = recyclerView.findViewHolderForAdapterPosition(widgetPosition)
-            val ivAction = widgetViewHolder?.itemView?.findViewById<IconUnify>(com.tokopedia.play.widget.R.id.play_widget_iv_action)
-            if (ivAction?.isVisible == true) {
-                val coachMarkItems = mutableListOf<CoachMark2Item>()
-                val coachMark = CoachMark2(requireContext())
-                coachMarkItems.add(
-                    CoachMark2Item(
-                        anchorView = ivAction,
-                        title = getString(com.tokopedia.content.common.R.string.performance_dashboard_coachmark_title),
-                        description = getString(com.tokopedia.content.common.R.string.performance_dashboard_coachmark_subtitle),
-                        position = CoachMark2.POSITION_BOTTOM,
-                    )
-                )
-                coachMark.isOutsideTouchable = true
-                coachMark.showCoachMark(ArrayList(coachMarkItems))
-                coachMarkSharedPref.setHasBeenShown(
-                    ContentCoachMarkSharedPref.Key.PerformanceDashboardEntryPointShopPage,
-                    viewModel?.userSessionShopId.orEmpty()
-                )
-            }
         }
     }
 
@@ -773,7 +590,10 @@ class ShopPageCampaignFragment :
 
     override fun getPlayWidgetData() {
         shopCampaignTabAdapter.getPlayWidgetUiModel()?.let {
-            val playWidgetType = ShopPageWidgetMapper.mapToPlayWidgetTypeExclusiveLaunch(shopId)
+            val playWidgetType = ShopPageWidgetMapper.mapToPlayWidgetTypeExclusiveLaunch(
+                shopId,
+                it.getCampaignId()
+            )
             viewModel?.getPlayWidget(it, playWidgetType)
         }
     }
@@ -891,7 +711,32 @@ class ShopPageCampaignFragment :
         carouselProductWidgetUiModel: ShopCampaignWidgetCarouselProductUiModel?,
         productUiModel: ShopHomeProductUiModel?
     ) {
+        sendClickProductHighlightCarouselProductItemTracker(
+            itemPosition,
+            carouselProductWidgetUiModel,
+            productUiModel
+        )
         goToPDP(productUiModel?.productUrl.orEmpty())
+    }
+
+    private fun sendClickProductHighlightCarouselProductItemTracker(
+        itemPosition: Int,
+        carouselProductWidgetUiModel: ShopCampaignWidgetCarouselProductUiModel?,
+        productUiModel: ShopHomeProductUiModel?
+    ) {
+        shopCampaignTabTracker.clickProductHighlightCarouselProductItem(
+            ShopPageCampaignTrackingMapper.mapToShopHomeCampaignWidgetProductTrackerModel(
+                shopId,
+                userId,
+                carouselProductWidgetUiModel?.getCampaignId().orEmpty(),
+                carouselProductWidgetUiModel?.widgetId.orEmpty(),
+                getSelectedTabName(),
+                itemPosition,
+                productUiModel?.id.orEmpty(),
+                productUiModel?.name.orEmpty(),
+                productUiModel?.displayedPrice.orEmpty()
+            )
+        )
     }
 
     override fun onCampaignCarouselProductItemImpression(
@@ -900,18 +745,69 @@ class ShopPageCampaignFragment :
         carouselProductWidgetUiModel: ShopCampaignWidgetCarouselProductUiModel?,
         productUiModel: ShopHomeProductUiModel?
     ) {
+        sendImpressionProductHighlightCarouselProductItemTracker(
+            itemPosition,
+            carouselProductWidgetUiModel,
+            productUiModel
+        )
+    }
+
+    private fun sendImpressionProductHighlightCarouselProductItemTracker(
+        itemPosition: Int,
+        carouselProductWidgetUiModel: ShopCampaignWidgetCarouselProductUiModel?,
+        productUiModel: ShopHomeProductUiModel?
+    ) {
+        shopCampaignTabTracker.impressionProductHighlightCarouselProductItem(
+            ShopPageCampaignTrackingMapper.mapToShopHomeCampaignWidgetProductTrackerModel(
+                shopId,
+                userId,
+                carouselProductWidgetUiModel?.getCampaignId().orEmpty(),
+                carouselProductWidgetUiModel?.widgetId.orEmpty(),
+                getSelectedTabName(),
+                itemPosition,
+                productUiModel?.id.orEmpty(),
+                productUiModel?.name.orEmpty(),
+                productUiModel?.displayedPrice.orEmpty()
+            )
+        )
     }
 
     override fun onCtaClicked(carouselProductWidgetUiModel: ShopCampaignWidgetCarouselProductUiModel?) {
+        sendClickCtaHeaderTitle(carouselProductWidgetUiModel?.widgetId.orEmpty())
         context?.let {
             RouteManager.route(it, carouselProductWidgetUiModel?.header?.ctaLink)
         }
+    }
+
+    private fun sendClickCtaHeaderTitle(widgetId: String) {
+        shopCampaignTabTracker.clickCtaHeaderTitle(
+            ShopPageCampaignTrackingMapper.mapToShopCampaignWidgetHeaderTitleTrackerDataModel(
+                widgetId, shopId, userId
+            )
+        )
     }
 
     override fun onCampaignCarouselProductWidgetImpression(
         position: Int,
         carouselProductWidgetUiModel: ShopCampaignWidgetCarouselProductUiModel
     ) {
+        sendImpressionWidgetHeaderTitle(
+            carouselProductWidgetUiModel.header,
+            carouselProductWidgetUiModel.widgetId
+        )
+    }
+
+    private fun sendImpressionWidgetHeaderTitle(
+        header: BaseShopHomeWidgetUiModel.Header,
+        widgetId: String
+    ) {
+        if(header.title.isNotEmpty()){
+            shopCampaignTabTracker.impressionWidgetHeaderTitle(
+                ShopPageCampaignTrackingMapper.mapToShopCampaignWidgetHeaderTitleTrackerDataModel(
+                    widgetId, shopId, userId
+                )
+            )
+        }
     }
 
     override fun onCampaignVoucherSliderItemImpression(
@@ -925,11 +821,24 @@ class ShopPageCampaignFragment :
         model: ExclusiveLaunchVoucher,
         position: Int
     ) {
+        sendClickVoucherSliderItemTracker(parentUiModel)
         showVoucherDetailBottomSheet(
             model.slug,
             model.couponCode,
             "",
             parentUiModel.widgetId
+        )
+    }
+
+    private fun sendClickVoucherSliderItemTracker(
+        parentUiModel: ShopWidgetVoucherSliderUiModel
+    ) {
+        shopCampaignTabTracker.clickVoucherSliderItem(
+            ShopPageCampaignTrackingMapper.mapToClickVoucherSliderItemTrackerDataModel(
+                parentUiModel.widgetId,
+                shopId,
+                userId
+            )
         )
     }
 
@@ -940,11 +849,26 @@ class ShopPageCampaignFragment :
     ) {
         if (isLogin) {
             if(viewModelCampaign?.isLoadingRedeemVoucher() == false) {
+                sendClickCtaVoucherSliderItemTracker(parentUiModel, model)
                 redeemCampaignVoucherSlider(parentUiModel, model)
             }
         } else {
             redirectToLoginPage()
         }
+    }
+
+    private fun sendClickCtaVoucherSliderItemTracker(
+        parentUiModel: ShopWidgetVoucherSliderUiModel,
+        model: ExclusiveLaunchVoucher
+    ) {
+        shopCampaignTabTracker.clickCtaVoucherSliderItem(
+            ShopPageCampaignTrackingMapper.mapToClickCtaVoucherSliderItemTrackerDataModel(
+                model.buttonStr,
+                parentUiModel.widgetId,
+                shopId,
+                userId
+            )
+        )
     }
 
     private fun redeemCampaignVoucherSlider(
@@ -954,8 +878,22 @@ class ShopPageCampaignFragment :
         viewModelCampaign?.redeemCampaignVoucherSlider(parentUiModel, model)
     }
 
-    override fun onCampaignVoucherSliderMoreItemClick(listCategorySlug: List<String>) {
+    override fun onCampaignVoucherSliderMoreItemClick(
+        listCategorySlug: List<String>,
+        parentUiModel: ShopWidgetVoucherSliderUiModel?
+    ) {
+        sendClickSeeMoreVoucherTracker(parentUiModel)
         showVoucherListBottomSheet(listCategorySlug)
+    }
+
+    private fun sendClickSeeMoreVoucherTracker(parentUiModel: ShopWidgetVoucherSliderUiModel?) {
+        shopCampaignTabTracker.clickSeeMoreVoucherSlider(
+            ShopPageCampaignTrackingMapper.mapToClickSeeMoreVoucherSliderTrackerDataModel(
+                parentUiModel?.widgetId.orEmpty(),
+                shopId,
+                userId
+            )
+        )
     }
 
     private fun showVoucherListBottomSheet(listCategorySlug: List<String>) {
@@ -1037,7 +975,25 @@ class ShopPageCampaignFragment :
         RouteManager.route(context, uiModel.header.ctaLink)
     }
 
-    override fun onClickCtaDisplayBannerTimerWidget(uiModel: ShopWidgetDisplayBannerTimerUiModel) {}
+    override fun onImpressionDisplayBannerTimerWidget(
+        position: Int,
+        uiModel: ShopWidgetDisplayBannerTimerUiModel
+    ) {
+        sendImpressionShopHomeBannerTimerCampaignTabTracker(uiModel)
+    }
+
+    private fun sendImpressionShopHomeBannerTimerCampaignTabTracker(
+        uiModel: ShopWidgetDisplayBannerTimerUiModel
+    ) {
+        shopCampaignTabTracker.sendImpressionShopBannerTimerCampaignTracker(
+            ShopPageCampaignTrackingMapper.mapToShopCampaignBannerTimerTrackerDataModel(
+                uiModel.getCampaignId(),
+                uiModel.widgetId,
+                shopId,
+                userId
+            )
+        )
+    }
 
     override fun onTimerFinished(uiModel: ShopWidgetDisplayBannerTimerUiModel) {
         shopCampaignTabAdapter.removeWidget(uiModel)
@@ -1057,17 +1013,31 @@ class ShopPageCampaignFragment :
         )
     }
 
-    override fun onClickRemindMe(uiModel: ShopWidgetDisplayBannerTimerUiModel) {
+    override fun onClickRemindMe(position: Int, uiModel: ShopWidgetDisplayBannerTimerUiModel) {
         viewModel?.let {
             if (it.isLogin) {
                 viewModelCampaign?.showBannerTimerRemindMeLoading(
                     shopCampaignTabAdapter.getNewVisitableItems()
                 )
                 handleBannerTimerClickRemindMe(uiModel)
+                sendClickRemindMeShopCampaignBannerTimerTracker(uiModel)
             } else {
                 redirectToLoginPage()
             }
         }
+    }
+
+    private fun sendClickRemindMeShopCampaignBannerTimerTracker(
+        uiModel: ShopWidgetDisplayBannerTimerUiModel
+    ) {
+        shopCampaignTabTracker.sendClickRemindMeShopCampaignBannerTimerTracker(
+            ShopPageCampaignTrackingMapper.mapToShopCampaignBannerTimerTrackerDataModel(
+                uiModel.getCampaignId(),
+                uiModel.widgetId,
+                shopId,
+                userId
+            )
+        )
     }
 
     override fun onSuccessCheckBannerTimerNotifyMe(data: CheckCampaignNotifyMeUiModel) {
@@ -1116,6 +1086,63 @@ class ShopPageCampaignFragment :
         )
     }
 
+    override fun onDisplayWidgetImpression(model: ShopHomeDisplayWidgetUiModel, position: Int) {
+        sendImpressionWidgetHeaderTitle(
+            model.header,
+            model.widgetId
+        )
+        sendImpressionWidgetDisplayTracker(
+            model,
+            position
+        )
+    }
+
+    private fun sendImpressionWidgetDisplayTracker(model: ShopHomeDisplayWidgetUiModel, position: Int) {
+        shopCampaignTabTracker.impressionWidgetDisplay(
+            ShopPageCampaignTrackingMapper.mapToShopCampaignWidgetDisplayTrackerDataModel(
+                model.widgetId,
+                model.name,
+                position,
+                shopId,
+                userId
+            )
+        )
+    }
+
+    override fun onDisplayItemClicked(
+        displayWidgetUiModel: ShopHomeDisplayWidgetUiModel?,
+        displayWidgetItem: ShopHomeDisplayWidgetUiModel.DisplayWidgetItem,
+        parentPosition: Int,
+        adapterPosition: Int
+    ) {
+        sendClickWidgetDisplayTracker(
+            displayWidgetUiModel,
+            parentPosition
+        )
+        context?.let {
+            if (displayWidgetItem.appLink.isNotEmpty()) {
+                RouteManager.route(it, displayWidgetItem.appLink)
+            }
+        }
+    }
+
+    private fun sendClickWidgetDisplayTracker(
+        displayWidgetUiModel: ShopHomeDisplayWidgetUiModel?,
+        parentPosition: Int
+    ) {
+        displayWidgetUiModel?.let {
+            shopCampaignTabTracker.clickWidgetDisplay(
+                ShopPageCampaignTrackingMapper.mapToShopCampaignWidgetDisplayTrackerDataModel(
+                    it.widgetId,
+                    it.name,
+                    parentPosition,
+                    shopId,
+                    userId
+                )
+            )
+        }
+    }
+
     fun setIsDarkTheme(isDarkTheme: Boolean) {
         this.isDarkTheme = isDarkTheme
     }
@@ -1126,5 +1153,29 @@ class ShopPageCampaignFragment :
 
     fun setListPatternImage(listPatternImage: List<String>) {
         this.listPatternImage = listPatternImage
+    }
+
+    override fun onPlayWidgetImpression(model: CarouselPlayWidgetUiModel, position: Int) {
+        sendImpressionWidgetHeaderTitle(
+            model.header,
+            model.widgetId
+        )
+    }
+
+    override fun onImpressionVoucherSliderWidget(
+        model: ShopWidgetVoucherSliderUiModel,
+        position: Int
+    ) {
+        sendImpressionVoucherSliderWidget(model)
+    }
+
+    private fun sendImpressionVoucherSliderWidget(model: ShopWidgetVoucherSliderUiModel) {
+        shopCampaignTabTracker.sendImpressionShopVoucherSliderCampaignTracker(
+            ShopPageCampaignTrackingMapper.mapToShopCampaignVoucherSliderTrackerDataModel(
+                model.widgetId,
+                shopId,
+                userId
+            )
+        )
     }
 }

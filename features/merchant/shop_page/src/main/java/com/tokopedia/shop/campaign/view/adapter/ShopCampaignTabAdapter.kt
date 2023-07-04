@@ -11,6 +11,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.play.widget.ui.PlayWidgetState
 import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
+import com.tokopedia.shop.campaign.view.adapter.viewholder.ShopCampaignSliderBannerViewHolder
 import com.tokopedia.shop.common.data.model.ShopPageWidgetUiModel
 import com.tokopedia.shop.common.util.ShopUtil.setElement
 import com.tokopedia.shop.home.WidgetName
@@ -154,7 +155,7 @@ class ShopCampaignTabAdapter(
                 it.name == WidgetName.SLIDER_BANNER
             }
         listSliderBannerViewModel.forEach {
-            (recyclerView?.findViewHolderForAdapterPosition(visitables.indexOf(it)) as? ShopHomeSliderBannerViewHolder)?.pauseTimer()
+            (recyclerView?.findViewHolderForAdapterPosition(visitables.indexOf(it)) as? ShopCampaignSliderBannerViewHolder)?.pauseTimer()
         }
     }
 
@@ -164,7 +165,7 @@ class ShopCampaignTabAdapter(
                 it.name == WidgetName.SLIDER_BANNER
             }
         listSliderBannerViewModel.forEach {
-            (recyclerView?.findViewHolderForAdapterPosition(visitables.indexOf(it)) as? ShopHomeSliderBannerViewHolder)?.resumeTimer()
+            (recyclerView?.findViewHolderForAdapterPosition(visitables.indexOf(it)) as? ShopCampaignSliderBannerViewHolder)?.resumeTimer()
         }
     }
 

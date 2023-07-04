@@ -10,9 +10,12 @@ interface ShopHomeDisplayBannerTimerWidgetListener {
 
     fun onClickTncDisplayBannerTimerWidget(uiModel: ShopWidgetDisplayBannerTimerUiModel)
 
-    fun onClickRemindMe(uiModel: ShopWidgetDisplayBannerTimerUiModel)
+    fun onClickRemindMe(position: Int,uiModel: ShopWidgetDisplayBannerTimerUiModel)
 
-    fun onClickCtaDisplayBannerTimerWidget(uiModel: ShopWidgetDisplayBannerTimerUiModel)
+    fun onClickCtaDisplayBannerTimerWidget(
+        position: Int,
+        uiModel: ShopWidgetDisplayBannerTimerUiModel
+    )
 
     fun onImpressionDisplayBannerTimerWidget(
         position: Int,

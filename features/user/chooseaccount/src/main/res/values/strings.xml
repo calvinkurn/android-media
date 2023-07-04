@@ -30,6 +30,10 @@
     <string name="choose_account_subtitle">Sekarang kamu bisa berbelanja sekaligus berjualan dengan satu nomor HP. Pilih salah satu akunmu di bawah ini untuk melanjutkan</string>
     <string name="phone_number_not_connected_to_tokocash">Nomor Ponsel Belum\nTerhubung ke
         TokoCash</string>
+
+    <string name="ocl_choose_account_title">Selamat datang di Tokopedia!</string>
+    <string name="ocl_choose_account_subtitle">Pilih akun untuk masuk, ya.</string>
+
     <string name="not_connected_tokocash_message">Untuk masuk dengan nomor ponsel akun TokoCash Anda, harap lakukan verifikasi nomor ponsel terlebih dahulu.</string>
     <string name="login_with_other_method">Gunakan metode verifikasi lain</string>
     <string name="login_with_other_method_2">Masuk dengan Pilihan Lainnya</string>
@@ -94,4 +98,13 @@
     <string name="close_popup">Tutup</string>
 
     <string name="error_default_fp_choose_account">Terjadi kesalahan, silahkan coba sesaat lagi</string>
+    <string name="ocl_register_title">Belum punya akun? Daftar</string>
+    <string name="ocl_other_acc_text">Masuk ke akun lain</string>
+
+    <string name="ocl_delete_confirmation_title">Hapus info buat masuk?</string>
+    <string name="ocl_delete_confirmation_subtitle">Kalau kamu hapus, kamu perlu masukin ulang info akun ini.</string>
+
+    <string name="ocl_delete_confirmation_positive_btn_title">Batal</string>
+    <string name="ocl_delete_confirmation_negative_btn_title">Ya, Hapus</string>
+
 </resources>

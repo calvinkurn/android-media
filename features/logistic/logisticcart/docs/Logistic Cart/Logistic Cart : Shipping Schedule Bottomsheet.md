@@ -6,17 +6,15 @@ labels:
 ---
 
 <!--left header table-->
-| **Status** | ​​<!--start status:YELLOW-->IN TESTING<!--end status--> |
-| --- | --- |
-| Contributors | ​​[Fakhira Devina](https://tokopedia.atlassian.net/wiki/people/61077e53b704b40068e80a8e?ref=confluence) ​​[Eka Desyantoro](https://tokopedia.atlassian.net/wiki/people/6283196bd9ddcc006e9c7a85?ref=confluence) ​ |
-| Product Manager | ​[Nuringtyas Rahwinarni](https://tokopedia.atlassian.net/wiki/people/5f58b98ed2c77e0075ac9865?ref=confluence) |
-| Team | [Minion Bob](https://tokopedia.atlassian.net/people/team/2373d8a6-1afc-4f2a-aa7a-63855c273051) |
-| Release date | (ETA) ​24 Feb 2023 / ​<!--start status:GREY-->MA-3.209<!--end status--> |
-| Module type | ​​<!--start status:YELLOW-->FEATURE<!--end status--> |
-| Product PRD | [[PRD] NOW! Scheduled Delivery - Logistic Part](https://docs.google.com/document/d/1koEoZPc9OXWy3vPVQUsKjoYZV-JW8pYx6zrYk_TPDOg/edit#heading=h.pyqe7434atfh) |
-| Module Location | `features/logistic/logisticcart` |
-
-## Table of Contents
+| **Status**      | ​<!--start status:GREEN-->RELEASE<!--end status-->                                                                                                                                                                |
+|-----------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Contributors    | ​​[Fakhira Devina](https://tokopedia.atlassian.net/wiki/people/61077e53b704b40068e80a8e?ref=confluence) ​​[Eka Desyantoro](https://tokopedia.atlassian.net/wiki/people/6283196bd9ddcc006e9c7a85?ref=confluence) ​ |
+| Product Manager | ​[Nuringtyas Rahwinarni](https://tokopedia.atlassian.net/wiki/people/5f58b98ed2c77e0075ac9865?ref=confluence)                                                                                                     |
+| Team            | [Minion Bob](https://tokopedia.atlassian.net/people/team/2373d8a6-1afc-4f2a-aa7a-63855c273051)                                                                                                                    |
+| Release date    | ​24 Feb 2023 / ​<!--start status:GREY-->MA-3.209<!--end status-->                                                                                                                                                 |
+| Module type     | ​​<!--start status:YELLOW-->FEATURE<!--end status-->                                                                                                                                                              |
+| Product PRD     | [[PRD] NOW! Scheduled Delivery - Logistic Part](https://docs.google.com/document/d/1koEoZPc9OXWy3vPVQUsKjoYZV-JW8pYx6zrYk_TPDOg/edit#heading=h.pyqe7434atfh)                                                      |
+| Module Location | `features/logistic/logisticcart`                                                                                                                                                                                  |
 
 <!--toc-->
 
@@ -99,7 +97,6 @@ Setup `ScheduleSlotBottomSheetListener` and override this method
 ### BottomSheetUiModel
 
 Model for showing schedule delivery bottomsheet
-
 
 
 | **Variable name** | **Type** | **Description**                                                                                                                                                                                                                                                                                                       |

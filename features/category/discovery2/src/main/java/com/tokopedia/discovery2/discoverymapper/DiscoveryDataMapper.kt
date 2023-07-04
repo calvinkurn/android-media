@@ -13,7 +13,6 @@ import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.data.Properties
-import com.tokopedia.discovery2.data.categorynavigationresponse.ChildItem
 import com.tokopedia.discovery2.data.productcarditem.Badges
 import com.tokopedia.filter.common.data.DataValue
 import com.tokopedia.filter.common.data.DynamicFilterModel
@@ -214,26 +213,6 @@ class DiscoveryDataMapper {
             componentsItem.data = dataItem
             if (parentSectionId?.isNotEmpty() == true)
                 componentsItem.parentSectionId = parentSectionId
-            list.add(componentsItem)
-        }
-        return list
-    }
-
-
-    fun mapListToComponentList(child: List<ChildItem?>?): ArrayList<ComponentsItem> {
-        val list = ArrayList<ComponentsItem>()
-        child?.forEachIndexed { index, it ->
-            val componentsItem = ComponentsItem()
-            componentsItem.position = index
-            componentsItem.name = ComponentNames.HorizontalCategoryNavigationIem.componentName
-            val dataItemlist = mutableListOf<DataItem>()
-            val dataItem = DataItem()
-            dataItem.imageUrlMobile = it?.thumbnailImage
-            dataItem.name = it?.name
-            dataItem.id = it?.id
-            dataItem.applinks = it?.applinks
-            dataItemlist.add(dataItem)
-            componentsItem.data = dataItemlist
             list.add(componentsItem)
         }
         return list

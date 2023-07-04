@@ -477,15 +477,6 @@ class CheckoutAnalyticsCart(context: Context) : TransactionAnalytics() {
         )
     }
 
-    fun eventViewInformationAndWarningTickerInCart(tickerId: String) {
-        sendGeneralEvent(
-            ConstantTransactionAnalytics.EventName.VIEW_ATC,
-            ConstantTransactionAnalytics.EventCategory.CART,
-            ConstantTransactionAnalytics.EventAction.VIEW_INFORMATION_AND_WARNING_TICKER_IN_CART,
-            tickerId
-        )
-    }
-
     fun eventClickAddWishlistOnProductRecommendation() {
         sendGeneralEvent(
             ConstantTransactionAnalytics.EventName.CLICK_ATC,
@@ -798,21 +789,6 @@ class CheckoutAnalyticsCart(context: Context) : TransactionAnalytics() {
         gtmData[ExtraKey.BUSINESS_UNIT] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
         gtmData[ExtraKey.CURRENT_SITE] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
         gtmData[ExtraKey.USER_ID] = userId
-        sendGeneralEvent(gtmData)
-    }
-
-    fun eventClickBackNavToolbar(userId: String) {
-        val gtmData = getGtmData(
-            ConstantTransactionAnalytics.EventName.CLICK_NAVIGATION_DRAWER,
-            ConstantTransactionAnalytics.EventCategory.CART,
-            ConstantTransactionAnalytics.EventAction.CLICK_BACK_BUTTON_NAV,
-            ""
-        )
-        gtmData[ExtraKey.CURRENT_SITE] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
-        gtmData[ExtraKey.USER_ID] = userId
-        gtmData[ExtraKey.BUSINESS_UNIT] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_BUSINESS_UNIT_HOME_BROWSE
-        gtmData[ExtraKey.PAGE_TYPE] = ""
-        gtmData[ExtraKey.PAGE_PATH] = ""
         sendGeneralEvent(gtmData)
     }
 

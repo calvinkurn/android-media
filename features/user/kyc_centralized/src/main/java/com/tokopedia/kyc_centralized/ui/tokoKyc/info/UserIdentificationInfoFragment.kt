@@ -7,6 +7,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.content.ContextCompat
+import com.tokopedia.unifyprinciples.R as unifyR
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
@@ -85,6 +87,10 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        context?.let {
+            activity?.window?.decorView?.setBackgroundColor(ContextCompat.getColor(it, unifyR.color.Unify_Background))
+        }
+
         kycSharedPreference.saveStringCache(
             key = KYCConstant.SharedPreference.KEY_KYC_FLOW_TYPE,
             value = KYCConstant.SharedPreference.VALUE_KYC_FLOW_TYPE_CKYC
@@ -123,7 +129,6 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(),
     }
 
     private fun initObserver(view: View) {
-        loadUserConsent()
         viewModel.userProjectInfo.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {

@@ -86,6 +86,9 @@ class PlayWidgetUseCase @Inject constructor(private val repository: GraphqlRepos
                       ID
                       name
                       type
+                      thumbnailURL
+                      badgeURL
+                      appLink
                     }
                     video {
                       ID
@@ -109,6 +112,17 @@ class PlayWidgetUseCase @Inject constructor(private val repository: GraphqlRepos
                       is_show_button
                     }
                     performanceSummaryPageLink
+                    pinnedProducts {
+                      id
+                      name
+                      image_url
+                      discount
+                      original_price
+                      original_price_fmt
+                      price
+                      price_fmt
+                      app_link
+                    }
                   }
                   __typename ... on PlayWidgetBanner {
                     backgroundURL
@@ -178,6 +192,11 @@ class PlayWidgetUseCase @Inject constructor(private val repository: GraphqlRepos
         object Home : WidgetType() {
             override val typeKey: String
                 get() = "HOME"
+        }
+
+        object HomeV2 : WidgetType() {
+            override val typeKey: String
+                get() = "HOME_V2"
         }
 
         object Feeds : WidgetType() {
