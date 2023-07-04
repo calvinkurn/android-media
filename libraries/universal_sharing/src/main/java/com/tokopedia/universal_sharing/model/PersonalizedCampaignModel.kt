@@ -21,16 +21,18 @@ data class PersonalizedCampaignModel(
      * if [endTime] is not [ZERO_UNIX] then the campaign is on going
      */
     fun getCampaignStatus(): CampaignStatus {
-        if (startTime == ZERO_UNIX && endTime != ZERO_UNIX) {
+        return if (startTime == ZERO_UNIX && endTime != ZERO_UNIX) {
             if (DateUtil.timeIsUnderThresholdMinute(endTime, THRESHOLD_ENDSOON)) {
-                return CampaignStatus.END_SOON
+                CampaignStatus.END_SOON
+            } else if (DateUtil.timeIsUnderThresholdWeek(endTime, THRESHOLD_END_A_WEEK)) {
+                CampaignStatus.END_BY_A_WEEK
             } else {
-                return CampaignStatus.ON_GOING
+                CampaignStatus.ON_GOING
             }
         } else if (startTime != ZERO_UNIX) {
-            return CampaignStatus.UPCOMING
+            CampaignStatus.UPCOMING
         } else {
-            return CampaignStatus.NO_CAMPAIGN
+            CampaignStatus.NO_CAMPAIGN
         }
     }
 
@@ -45,6 +47,7 @@ data class PersonalizedCampaignModel(
             CampaignStatus.ON_GOING -> ongoingCampaignName
             CampaignStatus.END_SOON -> ongoingCampaignName
             CampaignStatus.UPCOMING -> upcomingCampaignName
+            CampaignStatus.END_BY_A_WEEK -> ongoingCampaignName
         }
     }
 
@@ -60,12 +63,14 @@ data class PersonalizedCampaignModel(
         private const val ZERO_UNIX = 0L
 
         // threshold for end soon campaign in minute
-        private const val THRESHOLD_ENDSOON = 10L
+        private const val THRESHOLD_ENDSOON = 60L
+        private const val THRESHOLD_END_A_WEEK = 7L
     }
 }
 
 enum class CampaignStatus {
     END_SOON,
+    END_BY_A_WEEK,
     UPCOMING,
     ON_GOING,
     NO_CAMPAIGN

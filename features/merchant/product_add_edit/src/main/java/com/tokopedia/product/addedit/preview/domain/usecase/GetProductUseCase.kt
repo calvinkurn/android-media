@@ -43,7 +43,7 @@ class GetProductUseCase @Inject constructor(
         """.trimIndent()
 
         private val QUERY_PARAM = """
-            productID:${'$'}productID, options:${'$'}options
+            productID:${'$'}productID, options:${'$'}options, extraInfo: { aggregate: true }
         """.trimIndent()
 
         private val QUERY_REQUEST = """
@@ -62,6 +62,7 @@ class GetProductUseCase @Inject constructor(
                     condition
                     mustInsurance
                     sku
+                    hasDTStock
                     category{
                       id
                       name
@@ -138,6 +139,8 @@ class GetProductUseCase @Inject constructor(
                         stock
                         weight
                         weightUnit
+                        hasDTStock
+                        isCampaign
                         pictures {
                           picID
                           description
