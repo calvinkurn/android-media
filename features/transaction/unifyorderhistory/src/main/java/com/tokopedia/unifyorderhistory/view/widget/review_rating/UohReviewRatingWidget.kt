@@ -160,7 +160,8 @@ private fun DrawScope.setupBackground(type: String, resources: Resources) {
 }
 
 private fun shouldDrawBackground(type: String): Boolean {
-    return type == UohListOrder.UohOrders.Order.Metadata.ExtraComponent.TYPE_REVIEW_GOPAY_COINS_WITH_STARS
+    return type == UohListOrder.UohOrders.Order.Metadata.ExtraComponent.TYPE_REVIEW_GOPAY_COINS_WITH_STARS ||
+        type == UohListOrder.UohOrders.Order.Metadata.ExtraComponent.TYPE_REVIEW_GOPAY_COINS
 }
 
 private fun shouldShowRatingWidget(type: String): Boolean {
