@@ -112,7 +112,7 @@ class PartialButtonActionView private constructor(
         this.isShopOwner = isShopOwner
         this.isShopModerate = isShopModerate
         this.onSuccessGetCartType =
-            cartTypeData != null && cartTypeData.availableButtons.isNotEmpty()
+            cartTypeData != null && cartTypeData.availableButtonsPriority.isNotEmpty()
         this.tokonowButtonData = tokonowButtonData
         renderButton()
     }
@@ -180,7 +180,7 @@ class PartialButtonActionView private constructor(
     }
 
     private fun renderTokoNowVar() = with(view) {
-        val availableButton = cartTypeData?.availableButtons ?: listOf()
+        val availableButton = cartTypeData?.availableButtonsPriority.orEmpty()
         btnTokonowVar.text = availableButton.getOrNull(0)?.text
             ?: context.getString(com.tokopedia.product.detail.common.R.string.plus_product_to_cart)
         btnTokonowVar.generateTheme(
@@ -223,7 +223,7 @@ class PartialButtonActionView private constructor(
 
     private fun renderNormalButtonCartRedirection() = with(binding) {
         qtyButtonPdp.hide()
-        val availableButton = cartTypeData?.availableButtons ?: listOf()
+        val availableButton = cartTypeData?.availableButtonsPriority.orEmpty()
 
         btnBuyNow.showWithCondition(availableButton.firstOrNull() != null)
         btnAddToCart.showWithCondition(availableButton.getOrNull(1) != null)

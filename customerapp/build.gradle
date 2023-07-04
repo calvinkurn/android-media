@@ -63,7 +63,7 @@ def isFirebasePerformanceLogEnabled() {
 }
 
 def isEnableMacrobenchmarkUtil() {
-    if (project.hasProperty('enableMacrobenchmarkUtil')?: "false") {
+    if (project.hasProperty('enableMacrobenchmarkUtil')) {
         return "true";
     }
     return "false";

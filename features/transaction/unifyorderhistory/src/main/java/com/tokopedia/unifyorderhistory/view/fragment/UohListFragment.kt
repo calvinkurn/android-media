@@ -439,12 +439,16 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
             } else {
                 onCancelCreateReview()
             }
+            currIndexNeedUpdate = -1
+            orderIdNeedUpdated = ""
         } else if (requestCode == BULK_REVIEW_REQUEST_CODE) {
             if (resultCode == Activity.RESULT_OK) {
                 onSuccessCreateReview(data?.getStringExtra(ApplinkConstInternalMarketplace.BULK_CREATE_REVIEW_MESSAGE) ?: getString(R.string.uoh_review_create_success_toaster, userSession.name))
             } else {
                 onCancelCreateReview()
             }
+            currIndexNeedUpdate = -1
+            orderIdNeedUpdated = ""
         } else if (requestCode == UOH_CANCEL_ORDER) {
             if (resultCode == INSTANT_CANCEL_BUYER_REQUEST) {
                 val resultMsg = data?.getStringExtra(RESULT_MSG_INSTANT_CANCEL)
@@ -2194,7 +2198,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
             order.metadata.buttons.getOrNull(buttonIndex)?.let { button ->
                 _buttonAction = button.actionType
                 if (button.actionType.equals(TYPE_ACTION_BUTTON_LINK, true)) {
-                    handleRouting(button.appURL)
+                    handleRouting(button.appURL, index, order)
                 } else {
                     when {
                         button.actionType.equals(GQL_FINISH_ORDER, true) -> {
@@ -2476,7 +2480,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
         }
     }
 
-    private fun handleRouting(applink: String) {
+    private fun handleRouting(applink: String, index: Int, order: UohListOrder.UohOrders.Order) {
         if (applink.contains(CREATE_REVIEW_APPLINK)) {
             startActivityForResult(
                 RouteManager.getIntent(
@@ -2485,6 +2489,8 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
                 ),
                 CREATE_REVIEW_REQUEST_CODE
             )
+            currIndexNeedUpdate = index
+            orderIdNeedUpdated = order.orderUUID
         } else if (applink.startsWith(ApplinkConst.PRODUCT_BULK_CREATE_REVIEW)) {
             startActivityForResult(
                 RouteManager.getIntent(
@@ -2493,6 +2499,8 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
                 ),
                 BULK_REVIEW_REQUEST_CODE
             )
+            currIndexNeedUpdate = index
+            orderIdNeedUpdated = order.orderUUID
         } else {
             RouteManager.route(context, URLDecoder.decode(applink, UohConsts.UTF_8))
         }

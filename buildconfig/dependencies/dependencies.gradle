@@ -131,7 +131,7 @@ ext {
     ]
 
     unifyIconVersion = '0.0.4'
-    unifyIconsVersion = '1.0.28'
+    unifyIconsVersion = '1.0.30'
     unifyPrinciplesVersion = '1.4.6'
     unifyComponentsVersion = '1.2.31.rc01'
     unifyCoachMarkVersion = '1.2.22'
@@ -152,7 +152,7 @@ ext {
     unifyAccordionVersion = '1.1.8'
     unifyTotalAmountVersion = '1.0.7.2'
     unifyExplorePromoVersion = '1.0.3.2'
-    unifyImageGalleryVersion = '1.0.5.2'
+    unifyImageGalleryVersion = '1.0.8'
     unifyViewAllCardVersion = '1.0.8'
 
     gradlePlugin = [

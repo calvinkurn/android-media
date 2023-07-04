@@ -2,6 +2,7 @@ package com.tokopedia.product.addedit.draft.presentation.viewholder
 
 import android.graphics.Typeface
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.databinding.ItemProductDraftListBinding
 import com.tokopedia.product.addedit.draft.presentation.listener.ProductDraftListListener
@@ -27,8 +28,14 @@ class ProductDraftListViewHolder(
             binding.tvCompletionPercentage.text = itemView.context.getString(R.string.label_draft_item_percent_complete, draft.completionPercent)
             binding.pbCompletion.progress = draft.completionPercent.toFloat()
 
-            setOnClickListener {
-                listener.onDraftClickListener(draft.draftId)
+            if (draft.isCorrupt) {
+                binding.tvCompletionPercentage.gone()
+                binding.pbCompletion.gone()
+                binding.tvProductName.text = itemView.context.getString(R.string.label_draft_product_corrupt)
+            } else {
+                setOnClickListener {
+                    listener.onDraftClickListener(draft.draftId)
+                }
             }
 
             binding.ivTrashCan.setOnClickListener {

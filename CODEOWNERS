@@ -55,7 +55,6 @@
 /features/common/feedback_form                          @tokopedia/android-core-dev
 /features/common/internal_review/                       @tokopedia/android-core-dev
 
-/features/discovery/category_common/                	@tokopedia/android-minionstuart-dev
 /features/merchant/gold_merchant/                       @tokopedia/android-minionstuart-dev
 /features/merchant/gold_merchant_common/                @tokopedia/android-minionstuart-dev
 /features/merchant/gold_merchant_subscribe/             @tokopedia/android-minionstuart-dev
@@ -123,7 +122,6 @@
 /features/top_ads/top_ads_on_boarding/                  @tokopedia/android-minionsolo-dev
 
 /features/merchant/talk/                            	@tokopedia/android-minionstuart-dev
-/features/merchant/variant_common/                      @tokopedia/android-minionstuart-dev
 /features/merchant/seller_app_widget/                   @tokopedia/android-minionstuart-dev
 /features/merchant/seller_home/                         @tokopedia/android-minionstuart-dev
 /features/merchant/seller_home_common/                  @tokopedia/android-minionstuart-dev
