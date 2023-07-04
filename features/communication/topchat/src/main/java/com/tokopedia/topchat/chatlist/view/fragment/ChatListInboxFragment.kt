@@ -10,6 +10,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.StringRes
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
@@ -139,7 +140,7 @@ open class ChatListInboxFragment :
     private var rvAdapter: ChatListAdapter? = null
     private var chatFilter: ChatFilterView? = null
     private var emptyUiModel: Visitable<*>? = null
-    private var broadCastButton: FloatingActionButton? = null
+    private var broadCastButton: ConstraintLayout? = null
     private var containerListener: InboxFragmentContainer? = null
     var chatRoomFlexModeListener: TopChatRoomFlexModeListener? = null
     var stopTryingIndicator = false
@@ -425,7 +426,7 @@ open class ChatListInboxFragment :
     }
 
     private fun initView(view: View) {
-        broadCastButton = view.findViewById(R.id.fab_broadcast)
+        broadCastButton = view.findViewById(R.id.layout_fab_broadcast)
         chatBannedSellerTicker = view.findViewById(R.id.ticker_ban_status)
         rv = view.findViewById(R.id.recycler_view)
         chatFilter = view.findViewById(R.id.cf_chat_list)

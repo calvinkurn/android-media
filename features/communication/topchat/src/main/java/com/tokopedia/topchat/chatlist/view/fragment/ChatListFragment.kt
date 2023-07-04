@@ -11,12 +11,12 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.StringRes
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
@@ -93,10 +93,11 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import timber.log.Timber
-import java.util.Locale
+import java.util.*
 import javax.inject.Inject
 
-class ChatListFragment constructor() :
+
+class ChatListFragment :
     BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(),
     ChatListItemListener,
     LifecycleOwner,
@@ -130,7 +131,7 @@ class ChatListFragment constructor() :
     private var rv: RecyclerView? = null
     private var emptyUiModel: Visitable<*>? = null
     private var menu: Menu? = null
-    private lateinit var broadCastButton: FloatingActionButton
+    private lateinit var broadCastButton: ConstraintLayout
 
     override fun getRecyclerViewResourceId() = R.id.recycler_view
     override fun getSwipeRefreshLayoutResourceId() = R.id.swipe_refresh_layout
@@ -322,7 +323,7 @@ class ChatListFragment constructor() :
     private fun initView(view: View) {
         updateScrollListenerState(false)
         showLoading()
-        broadCastButton = view.findViewById(R.id.fab_broadcast)
+        broadCastButton = view.findViewById(R.id.layout_fab_broadcast)
         chatBannedSellerTicker = view.findViewById(R.id.ticker_ban_status)
         rv = view.findViewById(R.id.recycler_view)
     }
@@ -432,7 +433,7 @@ class ChatListFragment constructor() :
 
     private fun addBubbleChatTicker() {
         val chatListTicker: ChatListTickerUiModel = ChatListTickerUiModel(
-            message = getString(com.tokopedia.topchat.R.string.topchat_bubble_ticker_message),
+            message = getString(R.string.topchat_bubble_ticker_message),
             applink = ApplinkConstInternalMarketplace.TOPCHAT_BUBBLE_ACTIVATION
         ).apply {
             this.showCloseButton = true
