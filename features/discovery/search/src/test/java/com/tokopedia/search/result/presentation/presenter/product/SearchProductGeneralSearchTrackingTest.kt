@@ -219,7 +219,7 @@ internal class SearchProductGeneralSearchTrackingTest : ProductListPresenterTest
                 SearchEventTracking.Label.GENERAL_SEARCH_EVENT_LABEL,
                 keyword,
                 searchProductModel.searchProduct.header.keywordProcess,
-                searchProductModel.searchProduct.header.responseCode,
+                "15",
                 NONE,
                 NONE,
                 NONE,

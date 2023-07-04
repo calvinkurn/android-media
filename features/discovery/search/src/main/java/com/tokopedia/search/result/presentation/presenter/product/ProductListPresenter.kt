@@ -101,8 +101,6 @@ import rx.Observable
 import rx.Subscriber
 import rx.functions.Action1
 import rx.subscriptions.CompositeSubscription
-import java.net.SocketException
-import java.net.SocketTimeoutException
 import javax.inject.Inject
 import javax.inject.Named
 import kotlin.math.max
@@ -179,7 +177,6 @@ class ProductListPresenter @Inject constructor(
         )
         private const val RESPONSE_CODE_RELATED = "3"
         private const val RESPONSE_CODE_SUGGESTION = "6"
-        private const val DEFAULT_TIME_OUT_TRACKER_VALUE = "0"
         private const val REQUEST_TIMEOUT_RESPONSE_CODE = "15"
     }
 
@@ -571,28 +568,6 @@ class ProductListPresenter @Inject constructor(
         view.showNetworkError(throwable)
         view.hideRefreshLayout()
         view.logWarning(UrlParamUtils.generateUrlParamString(searchParameter as Map<String?, Any>), throwable)
-        sendTrackingWhenRTO(throwable)
-    }
-
-    private fun sendTrackingWhenRTO(throwable: Throwable?){
-        if(throwable is SocketTimeoutException || throwable is SocketException){
-            val query = view.queryKey
-            view.sendTrackingRTOEventSearchAttempt(
-                GeneralSearchTrackingModel(
-                    createGeneralSearchTrackingEventCategory(),
-                    createGeneralSearchTrackingRTOEventLabel(query),
-                    userId,
-                    DEFAULT_TIME_OUT_TRACKER_VALUE,
-                    "",
-                    "",
-                    "",
-                    dimension90,
-                    "",
-                    "",
-                    externalReference,
-                )
-            )
-        }
     }
 
     private fun loadDataSubscriberOnNext(
@@ -1161,7 +1136,7 @@ class ProductListPresenter @Inject constructor(
                 SearchEventTracking.Label.GENERAL_SEARCH_EVENT_LABEL,
                 query,
                 getKeywordProcess(productDataView),
-                productDataView.responseCode,
+                getResponseCode(productDataView),
                 source,
                 getNavSourceForGeneralSearchTracking(),
                 getPageTitleForGeneralSearchTracking(),
@@ -1169,17 +1144,10 @@ class ProductListPresenter @Inject constructor(
         )
     }
 
-    private fun createGeneralSearchTrackingRTOEventLabel(query : String): String{
-        return String.format(
-            SearchEventTracking.Label.GENERAL_SEARCH_EVENT_LABEL,
-            query,
-            DEFAULT_TIME_OUT_TRACKER_VALUE,
-            REQUEST_TIMEOUT_RESPONSE_CODE,
-            SearchEventTracking.NONE,
-            getNavSourceForGeneralSearchTracking(),
-            getPageTitleForGeneralSearchTracking(),
-            DEFAULT_TIME_OUT_TRACKER_VALUE
-        )
+    private fun getResponseCode(productDataView: ProductDataView): String? {
+        return if(productDataView.productList.isEmpty() && productDataView.responseCode.equals("0")){
+             REQUEST_TIMEOUT_RESPONSE_CODE
+        } else productDataView.responseCode
     }
 
     private fun getTopNavSource(globalNavDataView: GlobalNavDataView?): String {
