@@ -1,6 +1,8 @@
 package com.tokopedia.campaign.usecase
 
+import com.tokopedia.campaign.data.request.GetRollenceGradualRolloutRequest
 import com.tokopedia.campaign.data.response.RollenceGradualRollout
+import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -44,6 +46,7 @@ class GetRollenceGradualRolloutUseCase @Inject constructor(
         setupUseCase()
     }
 
+    @GqlQuery(QUERY_NAME, QUERY)
     private fun setupUseCase() {
         setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
     }
@@ -58,12 +61,14 @@ class GetRollenceGradualRolloutUseCase @Inject constructor(
     private fun buildRequest(
         params: Param
     ): GraphqlRequest {
-        val requestParams = mapOf(
-            ID to params.id,
-            REVISION to params.rev,
-            CLIENT_ID to params.client_id,
-            IRIS_SESSION_ID to params.iris_session_id
+        val payload = GetRollenceGradualRolloutRequest(
+            id = params.id,
+            rev = params.rev,
+            client_id = params.client_id,
+            iris_session_id = params.iris_session_id
         )
+
+        val requestParams = mapOf(REQUEST_PARAM_KEY to payload)
 
         return GraphqlRequest(
             RolloutFeatureVariants(),
