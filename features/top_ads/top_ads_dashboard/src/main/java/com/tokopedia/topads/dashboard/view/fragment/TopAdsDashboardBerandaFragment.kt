@@ -113,8 +113,8 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
     private val insightListAdapter by lazy { InsightListAdapter(onInsightItemClick) }
 
     private val onInsightItemClick: (list: ArrayList<AdGroupUiModel>, item: AdGroupUiModel) -> Unit =
-        { _, _ ->
-            moveToInsightPage()
+        { list, item ->
+            moveToInsightDetailPage(list, item)
         }
 
     private var needToHitInsight = true
@@ -638,6 +638,21 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
             }
         }
     }
+
+
+    private fun moveToInsightDetailPage(adGroupList: ArrayList<AdGroupUiModel>, item: AdGroupUiModel) {
+        val bundle = Bundle()
+        bundle.putString("adType", item.adGroupType)
+        bundle.putString("adGroupName", item.adGroupName)
+        bundle.putString("groupId", item.adGroupID)
+        bundle.putInt("count", item.count)
+        bundle.putParcelableArrayList("insightTypeList", adGroupList)
+        Intent(context, GroupDetailActivity::class.java).apply {
+            this.putExtra("groupDetailBundle", bundle)
+            startActivity(this)
+        }
+    }
+
 
     private fun setInsightWidgetBehaviour() {
         binding.layoutInsight.insightWidgetSeeMore.setOnClickListener {

@@ -16,6 +16,7 @@ import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.empty_state.EmptyStateUnify
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
@@ -63,6 +64,7 @@ class RecommendationFragment : BaseDaggerFragment() {
 
     private var emptyStateRecyclerView: RecyclerView? = null
     private var pageControlEmptyState: PageControl? = null
+    private var potentialProductCard: View? = null
 
     private var mCurrentState = TopAdsProductIklanFragment.State.IDLE
     private var collapseStateCallBack: TopAdsHeadlineBaseFragment.AppBarActionHeadline? = null
@@ -129,6 +131,7 @@ class RecommendationFragment : BaseDaggerFragment() {
         recommendationEmptyState = view.findViewById(R.id.recommendationEmptyState)
         emptyStateRecyclerView = view.findViewById(R.id.emptyStateView)
         pageControlEmptyState = view.findViewById(R.id.pageControlEmptyState)
+        potentialProductCard = view.findViewById(R.id.topads_insight_center_product_widget_potential)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -169,6 +172,13 @@ class RecommendationFragment : BaseDaggerFragment() {
             viewModel?.loadRecommendationPage()
             recommendationEmptyState?.hide()
             recommendationMainContainer?.show()
+        }
+
+        potentialProductCard?.setOnClickListener {
+            RouteManager.route(
+                activity,
+                "tokopedia://webview?url=https://ta.tokopedia.com/v2/manage/recommendation/eligible-product"
+            )
         }
     }
 
