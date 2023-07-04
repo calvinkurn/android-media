@@ -63,12 +63,21 @@
             android:text="@string/collection_affiliate_info_footer"
             app:layout_constraintTop_toBottomOf="@id/image_wishlist_collection_info_image_bottom" />
 
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/label_wishlist_collection_info_sub_footer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            app:typographyType="display_3"
+            android:text="@string/collection_affiliate_info_footer"
+            app:layout_constraintTop_toBottomOf="@id/label_wishlist_collection_info_footer" />
+
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/image_wishlist_collection_info_affiliate_banner"
             android:layout_width="match_parent"
             android:layout_height="78dp"
             android:layout_marginTop="16dp"
-            app:layout_constraintTop_toBottomOf="@id/label_wishlist_collection_info_footer"
+            app:layout_constraintTop_toBottomOf="@id/label_wishlist_collection_info_sub_footer"
             />
 
         <com.tokopedia.unifycomponents.UnifyButton

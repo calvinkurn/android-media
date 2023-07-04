@@ -67,6 +67,7 @@ class WishlistCollectionTickerItemViewHolder(
         spannableWishlistDescription.setSpan(
             object : ClickableSpan() {
                 override fun onClick(textView: View) {
+                    // TODO: Change isAffiliate flag source
                     actionListener?.onTickerActionClicked(true)
                 }
 
