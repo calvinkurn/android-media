@@ -7,6 +7,7 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shop.R
 import com.tokopedia.shop.campaign.view.model.ShopWidgetDisplaySliderBannerHighlightUiModel
+import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.databinding.ItemShopCampaignSliderBannerHighlightProductImageItemBinding
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.toPx
@@ -14,6 +15,7 @@ import com.tokopedia.utils.view.binding.viewBinding
 
 class ShopCampaignDisplaySliderBannerHighlightProductImageItemViewHolder(
     binding: ItemShopCampaignSliderBannerHighlightProductImageItemBinding,
+    private val widgetUiModel: ShopWidgetDisplaySliderBannerHighlightUiModel?,
     private val listener: ShopCampaignDisplaySliderBannerHighlightViewHolder.Listener
 ) : RecyclerView.ViewHolder(binding.root) {
 
@@ -35,13 +37,25 @@ class ShopCampaignDisplaySliderBannerHighlightProductImageItemViewHolder(
 
     private fun setClickedListener(uiModel: ShopWidgetDisplaySliderBannerHighlightUiModel.ProductHighlightData) {
         itemView.setOnClickListener{
-            listener.onProductImageClicked(uiModel)
+            widgetUiModel?.let {
+                listener.onProductImageClicked(
+                    it,
+                    uiModel,
+                    ShopUtil.getActualPositionFromIndex(bindingAdapterPosition)
+                )
+            }
         }
     }
 
     private fun setImpressionListener(uiModel: ShopWidgetDisplaySliderBannerHighlightUiModel.ProductHighlightData) {
         itemView.addOnImpressionListener(uiModel){
-            listener.onProductImageImpression(uiModel)
+            widgetUiModel?.let {
+                listener.onProductImageImpression(
+                    it,
+                    uiModel,
+                    ShopUtil.getActualPositionFromIndex(bindingAdapterPosition)
+                )
+            }
         }
     }
 

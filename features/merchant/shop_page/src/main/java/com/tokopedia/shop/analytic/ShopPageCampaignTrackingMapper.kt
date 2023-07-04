@@ -1,6 +1,15 @@
 package com.tokopedia.shop.analytic
 
-import com.tokopedia.shop.analytic.model.*
+import com.tokopedia.shop.analytic.model.ClickSeeMoreVoucherSliderItemTrackerModel
+import com.tokopedia.shop.analytic.model.ShopCampaignBannerTimerTrackerDataModel
+import com.tokopedia.shop.analytic.model.ShopCampaignClickCtaSliderBannerHighlightTrackerDataModel
+import com.tokopedia.shop.analytic.model.ShopCampaignHeaderTitleTrackerDataModel
+import com.tokopedia.shop.analytic.model.ShopCampaignProductSliderBannerHighlightTrackerDataModel
+import com.tokopedia.shop.analytic.model.ShopCampaignWidgetDisplayTrackerDataModel
+import com.tokopedia.shop.analytic.model.ShopCampaignWidgetProductHighlightTrackerModel
+import com.tokopedia.shop.analytic.model.ShopCampaignWidgetVoucherSliderItemClickCtaTrackerModel
+import com.tokopedia.shop.analytic.model.ShopCampaignWidgetVoucherSliderItemClickTrackerModel
+import com.tokopedia.shop.analytic.model.ShopCampaignWidgetVoucherSliderTrackerModel
 
 object ShopPageCampaignTrackingMapper {
     fun mapToShopCampaignBannerTimerTrackerDataModel(
@@ -99,6 +108,34 @@ object ShopPageCampaignTrackingMapper {
         widgetId,
         name,
         position,
+        shopId,
+        userId
+    )
+
+    fun mapToProductSliderBannerHighlightTrackerDataModel(
+        widgetId: String,
+        selectedTabName: String,
+        position: Int,
+        imageUrl: String,
+        appLink: String,
+        shopId: String,
+        userId: String
+    ) = ShopCampaignProductSliderBannerHighlightTrackerDataModel(
+        widgetId,
+        selectedTabName,
+        position,
+        imageUrl,
+        appLink,
+        shopId,
+        userId
+    )
+
+    fun mapToClickCtaSliderBannerHighlightTrackerDataModel(
+        widgetId: String,
+        shopId: String,
+        userId: String
+    ) = ShopCampaignClickCtaSliderBannerHighlightTrackerDataModel(
+        widgetId,
         shopId,
         userId
     )

@@ -38,14 +38,23 @@ class ShopCampaignDisplaySliderBannerHighlightViewHolder(
     }
 
     interface Listener {
-        fun onProductImageClicked(productData: ShopWidgetDisplaySliderBannerHighlightUiModel.ProductHighlightData)
-        fun onProductImageImpression(productData: ShopWidgetDisplaySliderBannerHighlightUiModel.ProductHighlightData)
+        fun onProductImageClicked(
+            widgetUiModel: ShopWidgetDisplaySliderBannerHighlightUiModel,
+            productData: ShopWidgetDisplaySliderBannerHighlightUiModel.ProductHighlightData,
+            position: Int
+        )
+
+        fun onProductImageImpression(
+            widgetUiModel: ShopWidgetDisplaySliderBannerHighlightUiModel,
+            productData: ShopWidgetDisplaySliderBannerHighlightUiModel.ProductHighlightData,
+            position: Int
+        )
         fun onWidgetSliderBannerHighlightImpression(
             uiModel: ShopWidgetDisplaySliderBannerHighlightUiModel,
             bindingAdapterPosition: Int
         )
         fun onWidgetSliderBannerHighlightCtaClicked(
-            uiModel: ShopWidgetDisplaySliderBannerHighlightUiModel
+            widgetUiModel: ShopWidgetDisplaySliderBannerHighlightUiModel,
         )
     }
 
@@ -56,7 +65,7 @@ class ShopCampaignDisplaySliderBannerHighlightViewHolder(
     private val buttonPrev: IconUnify? = viewBinding?.prevButton
     private val buttonNext: IconUnify? = viewBinding?.nextButton
     private val adapterSliderBannerHighlight: ShopCampaignDisplaySliderBannerHighlightAdapter by lazy {
-        ShopCampaignDisplaySliderBannerHighlightAdapter(listener)
+        ShopCampaignDisplaySliderBannerHighlightAdapter(listener, uiModel)
     }
     private val layoutManagerSliderBannerHighlight: SliderBannerHighlightLayoutManager by lazy {
         SliderBannerHighlightLayoutManager(itemView.context, this)
