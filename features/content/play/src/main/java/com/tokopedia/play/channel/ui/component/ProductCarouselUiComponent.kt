@@ -29,7 +29,7 @@ class ProductCarouselUiComponent(
 ) : UiComponent<PlayViewerNewUiState> {
 
     private val uiView = ProductCarouselUiView(
-        binding, object : ProductCarouselUiView.Listener {
+        binding, scope, object : ProductCarouselUiView.Listener {
             override fun onProductImpressed(
                 view: ProductCarouselUiView,
                 productMap: Map<PlayProductUiModel.Product, Int>

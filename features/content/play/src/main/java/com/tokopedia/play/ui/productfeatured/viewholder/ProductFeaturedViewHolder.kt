@@ -83,6 +83,10 @@ class ProductFeaturedViewHolder(
         } catch (e: Exception) { false }
     }
 
+    fun startAnimation() {
+        binding.layoutRibbon.root.transitionToEnd()
+    }
+
     companion object {
         fun create(
             parent: ViewGroup,

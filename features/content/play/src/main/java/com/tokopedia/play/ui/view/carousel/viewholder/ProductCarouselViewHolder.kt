@@ -172,6 +172,10 @@ class ProductCarouselViewHolder private constructor() {
             } catch (e: Exception) { false }
         }
 
+        fun startAnimation() {
+            binding.layoutRibbon.root.transitionToEnd()
+        }
+
         companion object {
             private const val MIN_STOCK = 5
 
