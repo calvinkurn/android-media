@@ -700,14 +700,14 @@ open class ShopPageHomeFragment :
                 is Success -> {
                     val listRecommendationItem = it.data.recommendationWidget?.recommendationItemList.orEmpty()
                     if(listRecommendationItem.isNotEmpty()) {
-                        shopHomeAdapter.setProductComparisonData(it.data)
+                        shopHomeAdapter?.setProductComparisonData(it.data)
                     } else {
-                        shopHomeAdapter.removeProductComparisonWidget()
+                        shopHomeAdapter?.removeProductComparisonWidget()
                     }
                 }
                 is Fail -> {
-                    shopHomeAdapter.getPersoProductComparisonWidgetUiModel()?.let { uiModel ->
-                        shopHomeAdapter.setProductComparisonData(uiModel.copy(isError = true))
+                    shopHomeAdapter?.getPersoProductComparisonWidgetUiModel()?.let { uiModel ->
+                        shopHomeAdapter?.setProductComparisonData(uiModel.copy(isError = true))
                     }
                 }
             }
@@ -1898,14 +1898,14 @@ open class ShopPageHomeFragment :
         }
     }
 
-    private fun excludeWidgetComparison(listWidgetLayoutToLoad: MutableList<ShopPageWidgetLayoutUiModel>): ShopPageWidgetLayoutUiModel? {
+    private fun excludeWidgetComparison(listWidgetLayoutToLoad: MutableList<ShopPageWidgetUiModel>): ShopPageWidgetUiModel? {
         return listWidgetLayoutToLoad.firstOrNull { isWidgetPersoComparison(it) }?.apply {
             listWidgetLayoutToLoad.remove(this)
         }
     }
 
     private fun getProductComparisonWidgetData() {
-        shopHomeAdapter.getPersoProductComparisonWidgetUiModel()?.let {
+        shopHomeAdapter?.getPersoProductComparisonWidgetUiModel()?.let {
             viewModel?.getProductComparisonData(shopId, it)
         }
     }
@@ -1952,7 +1952,7 @@ open class ShopPageHomeFragment :
         }
     }
 
-    private fun isWidgetPersoComparison(data: ShopPageWidgetLayoutUiModel): Boolean {
+    private fun isWidgetPersoComparison(data: ShopPageWidgetUiModel): Boolean {
         return data.widgetType == PERSONALIZATION && data.widgetName == PERSO_PRODUCT_COMPARISON
     }
 

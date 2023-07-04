@@ -639,7 +639,7 @@ open class ShopHomeAdapter(
         return visitables.filterIsInstance<ShopHomePersoProductComparisonUiModel>().firstOrNull()
     }
 
-    fun removeShopHomeWidget(listShopWidgetLayout: List<ShopPageWidgetLayoutUiModel>) {
+    fun removeShopHomeWidget(listShopWidgetLayout: List<ShopPageWidgetUiModel>) {
         val newList = getNewVisitableItems()
         listShopWidgetLayout.onEach { shopWidgetLayout ->
             newList.filterIsInstance<Visitable<*>>().indexOfFirst {

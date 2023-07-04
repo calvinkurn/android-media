@@ -514,13 +514,13 @@ object ShopPageHomeMapper {
 
     private fun mapToPersoProductComparisonUiModel(
         widgetResponse: ShopLayoutWidget.Widget,
-        widgetLayout: ShopPageWidgetLayoutUiModel?
+        widgetLayout: ShopPageWidgetUiModel?
     ) = ShopHomePersoProductComparisonUiModel(
         widgetId = widgetResponse.widgetID,
         layoutOrder = widgetResponse.layoutOrder,
         name = widgetResponse.name,
         type = widgetResponse.type,
-        header = mapToHeaderModel(widgetResponse.header),
+        header = mapToHeaderModel(widgetResponse.header, widgetLayout),
         isFestivity = widgetLayout?.isFestivity.orFalse()
     )
 
