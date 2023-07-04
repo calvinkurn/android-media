@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.gone
@@ -24,6 +25,7 @@ import com.tokopedia.shop.common.extension.applyPaddingToLastItem
 import com.tokopedia.shop.common.extension.showToasterError
 import com.tokopedia.shop.databinding.BottomsheetExclusiveLaunchVoucherBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -128,6 +130,7 @@ class ExclusiveLaunchVoucherListBottomSheet : BottomSheetUnify() {
         super.onViewCreated(view, savedInstanceState)
         setupView()
         observeVouchers()
+        observePromoVoucherRedeemResult()
         viewModel.getPromoVouchers(voucherSlugs)
         tracker.sendVoucherDetailBottomSheetImpression(shopId)
     }
@@ -143,6 +146,19 @@ class ExclusiveLaunchVoucherListBottomSheet : BottomSheetUnify() {
                 is Fail -> {
                     binding?.loader?.gone()
                     binding?.recyclerView?.gone()
+                    showToasterError(binding?.root ?: return@observe, result.throwable)
+                }
+            }
+        }
+    }
+
+    private fun observePromoVoucherRedeemResult() {
+        viewModel.redeemResult.observe(viewLifecycleOwner) { result ->
+            when (result) {
+                is Success -> {
+                    viewModel.getPromoVouchers(voucherSlugs)
+                }
+                is Fail -> {
                     showToasterError(binding?.root ?: return@observe, result.throwable)
                 }
             }
@@ -171,6 +187,10 @@ class ExclusiveLaunchVoucherListBottomSheet : BottomSheetUnify() {
                 val selectedVoucher = exclusiveLaunchAdapter.getItemAtOrNull(selectedVoucherPosition) ?: return@setOnVoucherClick
                 showVoucherDetailBottomSheet(selectedVoucher)
                 recordTracker(selectedVoucher)
+            }
+            setOnPrimaryCtaClick { selectedVoucherPosition ->
+                val selectedVoucher = exclusiveLaunchAdapter.getItemAtOrNull(selectedVoucherPosition) ?: return@setOnPrimaryCtaClick
+                viewModel.claimPromoVoucher(selectedVoucher.id)
             }
             setOnVoucherImpression {
                 voucherWidgetTracker.sendVoucherImpression(
