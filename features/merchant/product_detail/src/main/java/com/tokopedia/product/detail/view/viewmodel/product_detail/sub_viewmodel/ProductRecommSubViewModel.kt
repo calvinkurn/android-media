@@ -204,4 +204,8 @@ class ProductRecommSubViewModel @Inject constructor(
             }
         }
     }
+
+    override fun onPdpReload() {
+        alreadyHitRecom = mutableListOf()
+    }
 }
