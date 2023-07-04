@@ -33,19 +33,19 @@ import com.tokopedia.home_component.visitable.VpsDataModel
 interface HomeComponentTypeFactory {
     fun type(categoryWidgetDataModel: CategoryWidgetDataModel): Int = 0
     fun type(categoryWidgetV2DataModel: CategoryWidgetV2DataModel): Int = 0
-    fun type(dynamicLegoBannerDataModel: DynamicLegoBannerDataModel): Int
-    fun type(dynamicLegoBannerSixAutoDataModel: DynamicLegoBannerSixAutoDataModel): Int
-    fun type(recommendationListCarouselDataModel: RecommendationListCarouselDataModel): Int
-    fun type(reminderWidgetModel: ReminderWidgetModel): Int
-    fun type(mixLeftDataModel: MixLeftDataModel): Int
+    fun type(dynamicLegoBannerDataModel: DynamicLegoBannerDataModel): Int = 0
+    fun type(dynamicLegoBannerSixAutoDataModel: DynamicLegoBannerSixAutoDataModel): Int = 0
+    fun type(recommendationListCarouselDataModel: RecommendationListCarouselDataModel): Int = 0
+    fun type(reminderWidgetModel: ReminderWidgetModel): Int = 0
+    fun type(mixLeftDataModel: MixLeftDataModel): Int = 0
     fun type(mixLeftPaddingDataModel: MixLeftPaddingDataModel): Int = 0
-    fun type(mixTopDataModel: MixTopDataModel): Int
-    fun type(productHighlightDataModel: ProductHighlightDataModel): Int
-    fun type(featuredShopDataModel: FeaturedShopDataModel): Int
-    fun type(categoryNavigationDataModel: CategoryNavigationDataModel): Int
-    fun type(bannerDataModel: BannerDataModel): Int
-    fun type(dynamicIconComponentDataModel: DynamicIconComponentDataModel): Int
-    fun type(questWidgetModel: QuestWidgetModel): Int
+    fun type(mixTopDataModel: MixTopDataModel): Int = 0
+    fun type(productHighlightDataModel: ProductHighlightDataModel): Int = 0
+    fun type(featuredShopDataModel: FeaturedShopDataModel): Int = 0
+    fun type(categoryNavigationDataModel: CategoryNavigationDataModel): Int = 0
+    fun type(bannerDataModel: BannerDataModel): Int = 0
+    fun type(dynamicIconComponentDataModel: DynamicIconComponentDataModel): Int = 0
+    fun type(questWidgetModel: QuestWidgetModel): Int = 0
     fun type(campaignWidgetDataModel: CampaignWidgetDataModel): Int = 0
     fun type(merchantVoucherDataModel: MerchantVoucherDataModel): Int = 0
     fun type(specialReleaseDataModel: SpecialReleaseDataModel): Int = 0

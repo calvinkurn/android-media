@@ -108,20 +108,8 @@ class OfficialHomeAdapterTypeFactory(
         return FeaturedShopViewHolder.LAYOUT
     }
 
-    override fun type(categoryNavigationDataModel: CategoryNavigationDataModel): Int {
-        return 0
-    }
-
     override fun type(bannerDataModel: BannerDataModel): Int {
         return BannerComponentViewHolder.LAYOUT
-    }
-
-    override fun type(dynamicIconComponentDataModel: DynamicIconComponentDataModel): Int {
-        return -1
-    }
-
-    override fun type(dynamicLegoBannerSixAutoDataModel: DynamicLegoBannerSixAutoDataModel): Int {
-        return -1
     }
 
     override fun type(featuredBrandDataModel: FeaturedBrandDataModel): Int {
@@ -137,10 +125,6 @@ class OfficialHomeAdapterTypeFactory(
     }
 
     override fun type(campaignWidgetDataModel: CampaignWidgetDataModel): Int = 0
-
-    override fun type(questWidgetModel: QuestWidgetModel): Int {
-        return -1
-    }
 
     override fun type(officialTopAdsHeadlineDataModel: OfficialTopAdsHeadlineDataModel): Int {
         return OfficialTopAdsHeadlineViewHolder.LAYOUT
