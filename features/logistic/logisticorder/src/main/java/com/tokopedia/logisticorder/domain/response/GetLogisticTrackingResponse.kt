@@ -99,8 +99,8 @@ data class TrackHistory(
 data class Page(
     @SerializedName("additional_info")
     val additionalInfo: List<AdditionalInfo> = listOf(),
-    @SerializedName("help_url_page")
-    val helpUrlPage: String = ""
+    @SerializedName("help_page_url")
+    val helpPageUrl: String = ""
 )
 
 data class AdditionalInfo(

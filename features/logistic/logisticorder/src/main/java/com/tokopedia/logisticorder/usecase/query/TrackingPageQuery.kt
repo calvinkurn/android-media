@@ -62,7 +62,7 @@ object TrackingPageQuery {
                   url_detail
                   url_text
                 }
-                help_url_page
+                help_page_url
               }
               last_driver {
                 photo

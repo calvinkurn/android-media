@@ -94,7 +94,7 @@ class TrackingPageMapperNew @Inject constructor() {
     private fun mapPage(page: Page): PageModel {
         return PageModel().apply {
             additionalInfo = mapAdditionalInfo(page.additionalInfo)
-            contactUsUrl = page.helpUrlPage
+            contactUsUrl = page.helpPageUrl
         }
     }
 
