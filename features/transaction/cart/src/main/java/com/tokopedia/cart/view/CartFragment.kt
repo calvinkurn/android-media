@@ -2542,6 +2542,7 @@ class CartFragment :
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun validateRenderCart(cartData: CartData) {
         if (cartData.availableSection.availableGroupGroups.isEmpty() && cartData.unavailableSections.isEmpty()) {
             renderCartEmpty(cartData)
@@ -3826,6 +3827,7 @@ class CartFragment :
         dPresenter.processGetWishlistV2Data()
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun removeLocalCartItem(
         updateListResult: Pair<List<Int>, List<Int>>,
         forceExpandCollapsedUnavailableItems: Boolean

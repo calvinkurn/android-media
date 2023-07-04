@@ -1,5 +1,6 @@
 package com.tokopedia.cart.view.adapter.cart
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -515,6 +516,7 @@ class CartAdapter constructor(
         cartDataList.addAll(index, anyList)
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun addCartWishlistData(
         cartSectionHeaderHolderData: CartSectionHeaderHolderData,
         cartWishlistHolderData: CartWishlistHolderData
@@ -542,6 +544,7 @@ class CartAdapter constructor(
         notifyDataSetChanged()
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun addCartRecentViewData(
         cartSectionHeaderHolderData: CartSectionHeaderHolderData,
         cartRecentViewHolderData: CartRecentViewHolderData
@@ -711,6 +714,7 @@ class CartAdapter constructor(
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun resetData() {
         cartDataList.clear()
         firstCartSectionHeaderPosition = -1
