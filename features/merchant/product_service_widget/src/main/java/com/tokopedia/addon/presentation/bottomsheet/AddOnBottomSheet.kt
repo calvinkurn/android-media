@@ -51,10 +51,8 @@ class AddOnBottomSheet : BottomSheetUnify() {
     }
 
     private fun onSaveAddonSuccess(result: AddOnPageResult) {
-        this.dismiss()
         val intent = Intent()
         result.cartId = cartId
-        result.aggregatedData.isGetDataSuccess = true
         intent.putExtra(EXTRA_ADDON_PAGE_RESULT, result)
         activity?.setResult(Activity.RESULT_OK, intent)
         activity?.finish()

@@ -134,7 +134,7 @@ class AddOnViewModel @Inject constructor(
             mAggregatedData.value = AddOnPageResult.AggregatedData(
                 title = result.aggregatedData.title,
                 price = result.aggregatedData.price,
-                isGetDataSuccess = result.error.messages.isNotEmpty(),
+                isGetDataSuccess = result.error.messages.isEmpty(),
                 getDataErrorMessage = result.error.messages
             )
         }, onError = {
