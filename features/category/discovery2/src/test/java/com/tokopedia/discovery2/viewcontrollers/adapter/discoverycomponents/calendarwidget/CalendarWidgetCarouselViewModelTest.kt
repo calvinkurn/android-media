@@ -58,7 +58,7 @@ class CalendarWidgetCarouselViewModelTest {
     @Throws(Exception::class)
     fun tearDown() {
         Dispatchers.resetMain()
-        mockkObject(Utils)
+        unmockkObject(Utils)
         unmockkConstructor(URLParser::class)
     }
 
@@ -193,6 +193,7 @@ class CalendarWidgetCarouselViewModelTest {
             assertEquals(viewModel.isLoadingData(), false)
             assertEquals(respList.size, 2)
             assertEquals(respList[respList.size - 1].name, ComponentNames.LoadMore.componentName)
+            unmockkObject(Utils)
         }
     }
 
@@ -284,5 +285,4 @@ class CalendarWidgetCarouselViewModelTest {
     fun `test for application passed`() {
         assert(viewModel.application == application)
     }
-
 }
