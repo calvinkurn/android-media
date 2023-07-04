@@ -4190,7 +4190,7 @@ open class ShopPageHomeFragment :
         (parentFragment as? ShopPageHeaderFragment)?.showScrollToTopButton()
     }
 
-    private fun getSelectedTabName(): String {
+    protected open fun getSelectedTabName(): String {
         return (parentFragment as? ShopPageHeaderFragment)?.getSelectedTabName().orEmpty()
     }
 

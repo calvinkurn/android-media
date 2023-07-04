@@ -20,7 +20,4 @@
         android:paddingHorizontal="16dp"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
-    <include
-        android:id="@+id/voucher_slider_reload"
-        layout="@layout/partial_shop_home_get_failed" />
 </LinearLayout>

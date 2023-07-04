@@ -16,7 +16,6 @@ import com.tokopedia.shop.campaign.view.adapter.viewholder.ShopCampaignDisplaySl
 import com.tokopedia.shop.campaign.view.adapter.viewholder.ShopCampaignLayoutLoadingShimmerViewHolder
 import com.tokopedia.shop.campaign.view.adapter.viewholder.ShopCampaignMultipleImageColumnPlaceholderViewHolder
 import com.tokopedia.shop.campaign.view.adapter.viewholder.ShopCampaignMultipleImageColumnViewHolder
-import com.tokopedia.shop.campaign.view.adapter.viewholder.ShopCampaignProductBundleParentWidgetViewHolder
 import com.tokopedia.shop.campaign.view.adapter.viewholder.ShopCampaignSliderBannerPlaceholderViewHolder
 import com.tokopedia.shop.campaign.view.adapter.viewholder.ShopCampaignSliderBannerViewHolder
 import com.tokopedia.shop.campaign.view.adapter.viewholder.ShopCampaignSliderSquarePlaceholderViewHolder
@@ -29,8 +28,6 @@ import com.tokopedia.shop.campaign.view.adapter.viewholder.ShopCampaignVoucherSl
 import com.tokopedia.shop.campaign.view.adapter.viewholder.ShopCampaignVoucherSliderViewHolder
 import com.tokopedia.shop.campaign.view.listener.ShopCampaignCarouselProductListener
 import com.tokopedia.shop.campaign.view.listener.ShopCampaignInterface
-import com.tokopedia.shop.common.widget.bundle.viewholder.MultipleProductBundleListener
-import com.tokopedia.shop.common.widget.bundle.viewholder.SingleProductBundleListener
 import com.tokopedia.shop.home.WidgetName.BANNER_TIMER
 import com.tokopedia.shop.home.WidgetName.DISPLAY_DOUBLE_COLUMN
 import com.tokopedia.shop.home.WidgetName.DISPLAY_SINGLE_COLUMN
@@ -44,7 +41,6 @@ import com.tokopedia.shop.home.WidgetName.VIDEO
 import com.tokopedia.shop.home.WidgetName.VOUCHER
 import com.tokopedia.shop.home.view.adapter.ShopWidgetTypeFactory
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopCarouselProductWidgetPlaceholderViewHolder
-import com.tokopedia.shop.home.view.adapter.viewholder.ShopLayoutLoadingShimmerViewHolder
 import com.tokopedia.shop.home.view.listener.ShopHomeDisplayBannerTimerWidgetListener
 import com.tokopedia.shop.home.view.listener.ShopHomeDisplayWidgetListener
 import com.tokopedia.shop.home.view.listener.ShopHomePlayWidgetListener
@@ -59,6 +55,7 @@ class ShopCampaignTabAdapterTypeFactory(
     private val shopPlayWidgetListener: ShopHomePlayWidgetListener,
     private val shopCampaignInterface: ShopCampaignInterface,
     private val sliderBannerHighlightListener: ShopCampaignDisplaySliderBannerHighlightViewHolder.Listener,
+    private val shopCampaignVoucherSliderListener: ShopCampaignVoucherSliderViewHolder.Listener,
     private val shopCampaignVoucherSliderItemListener: ShopCampaignVoucherSliderItemViewHolder.Listener,
     private val shopCampaignVoucherSliderMoreItemListener: ShopCampaignVoucherSliderMoreItemViewHolder.Listener
 ) : BaseAdapterTypeFactory(), ShopWidgetTypeFactory {
@@ -188,6 +185,7 @@ class ShopCampaignTabAdapterTypeFactory(
             ShopCampaignVoucherSliderViewHolder.LAYOUT -> ShopCampaignVoucherSliderViewHolder(
                 parent,
                 shopCampaignInterface,
+                shopCampaignVoucherSliderListener,
                 shopCampaignVoucherSliderItemListener,
                 shopCampaignVoucherSliderMoreItemListener
             )

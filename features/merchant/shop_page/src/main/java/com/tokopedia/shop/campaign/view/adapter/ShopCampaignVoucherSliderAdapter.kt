@@ -47,7 +47,8 @@ class ShopCampaignVoucherSliderAdapter(
             else -> ShopCampaignVoucherSliderMoreItemViewHolder(
                 view,
                 shopCampaignListener,
-                voucherSliderMoreItemListener
+                voucherSliderMoreItemListener,
+                parentUiModel
             )
         }
     }

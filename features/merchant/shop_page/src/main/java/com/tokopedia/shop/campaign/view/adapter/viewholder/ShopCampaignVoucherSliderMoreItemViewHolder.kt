@@ -9,16 +9,18 @@ import com.tokopedia.shop.campaign.view.customview.ExclusiveLaunchMoreVoucherVie
 import com.tokopedia.shop.campaign.view.listener.ShopCampaignInterface
 import com.tokopedia.shop.campaign.view.model.ExclusiveLaunchMoreVoucherUiModel
 import com.tokopedia.shop.databinding.ShopCampaignVoucherSliderMoreItemBinding
+import com.tokopedia.shop.home.view.model.ShopWidgetVoucherSliderUiModel
 import com.tokopedia.utils.view.binding.viewBinding
 
 class ShopCampaignVoucherSliderMoreItemViewHolder(
     itemView: View,
     private val shopCampaignListener: ShopCampaignInterface,
-    private val listener: Listener
+    private val listener: Listener,
+    private val parentUiModel: ShopWidgetVoucherSliderUiModel?
 ) : RecyclerView.ViewHolder(itemView) {
 
     interface Listener {
-        fun onCampaignVoucherSliderMoreItemClick(listCategorySlug: List<String>)
+        fun onCampaignVoucherSliderMoreItemClick(listCategorySlug: List<String>, parentUiModel: ShopWidgetVoucherSliderUiModel?)
     }
 
     companion object {
@@ -37,7 +39,10 @@ class ShopCampaignVoucherSliderMoreItemViewHolder(
             setRemainingVoucher(uiModel?.totalRemainingVoucher.orZero())
             configColorMode(shopCampaignListener.isCampaignTabDarkMode())
             setOnClickListener {
-                listener.onCampaignVoucherSliderMoreItemClick(uiModel?.listCategorySlug.orEmpty())
+                listener.onCampaignVoucherSliderMoreItemClick(
+                    uiModel?.listCategorySlug.orEmpty(),
+                    parentUiModel
+                )
             }
         }
     }

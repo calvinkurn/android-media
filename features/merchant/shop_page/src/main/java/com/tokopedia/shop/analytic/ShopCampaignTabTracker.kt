@@ -1,37 +1,68 @@
 package com.tokopedia.shop.analytic
 
+import android.os.Bundle
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.BUSINESS_UNIT
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_PG
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CURRENT_SITE
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.DIMENSION_40
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EVENT
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EVENT_ACTION
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EVENT_CATEGORY
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EVENT_LABEL
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.Event.VIEW_PG_IRIS
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.CLICK_CTA_VOUCHER_SLIDER_ITEM_WIDGET
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.CLICK_PRODUCT_HIGHLIGHT_WIDGET
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.CLICK_REMIND_ME_MAIN_BANNER_CAMPAIGN_TAB
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.CLICK_SEE_MORE_VOUCHER_SLIDER_ITEM_WIDGET
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.CLICK_TITLE_WIDGET
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.CLICK_VOUCHER_SLIDER_ITEM_WIDGET
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.IMPRESSION_MAIN_BANNER_CAMPAIGN_TAB
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.IMPRESSION_PRODUCT_HIGHLIGHT_WIDGET
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.IMPRESSION_TITLE_WIDGET
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.IMPRESSION_VOUCHER_SLIDER_WIDGET
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.HIGHLIGHT_WIDGET
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.INDEX
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ITEMS
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ITEM_BRAND
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ITEM_CATEGORY
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ITEM_ID
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ITEM_LIST
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ITEM_NAME
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ITEM_VARIANT
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.PHYSICAL_GOODS
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.PRICE
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.PRODUCT_ID
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SELECT_CONTENT
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOPPAGE
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_ID
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE_BUYER
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TOKOPEDIA_MARKETPLACE
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TRACKER_ID
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_CLICK_CTA_VOUCHER_SLIDER_ITEM
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_CLICK_PRODUCT_HIGHLIGHT
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_CLICK_REMIND_ME_MAIN_BANNER_CAMPAIGN_TAB
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_CLICK_SEE_MORE_VOUCHER_SLIDER_ITEM
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_CLICK_TITLE_WIDGET
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_CLICK_VOUCHER_SLIDER_ITEM
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_IMPRESSION_MAIN_BANNER_CAMPAIGN_TAB
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_IMPRESSION_PRODUCT_HIGHLIGHT
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_IMPRESSION_TITLE_WIDGET
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_IMPRESSION_VOUCHER_SLIDER
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.USER_ID
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.VIEW_ITEM_LIST
+import com.tokopedia.shop.analytic.model.ClickSeeMoreVoucherSliderItemTrackerModel
+import com.tokopedia.shop.analytic.model.ShopCampaignBannerTimerTrackerDataModel
+import com.tokopedia.shop.analytic.model.ShopCampaignHeaderTitleTrackerDataModel
+import com.tokopedia.shop.analytic.model.ShopCampaignWidgetProductHighlightTrackerModel
+import com.tokopedia.shop.analytic.model.ShopCampaignWidgetVoucherSliderItemClickCtaTrackerModel
+import com.tokopedia.shop.analytic.model.ShopCampaignWidgetVoucherSliderItemClickTrackerModel
+import com.tokopedia.shop.analytic.model.ShopCampaignWidgetVoucherSliderTrackerModel
 import com.tokopedia.shop.common.util.ShopUtil
-import com.tokopedia.shop.home.view.model.ShopWidgetDisplayBannerTimerUiModel
 import com.tokopedia.track.TrackApp
 import javax.inject.Inject
 
 /*
 Data Layer Docs:
-
-Campaign tab shop page widget
-https://mynakama.tokopedia.com/datatracker/product/requestdetail/view/3199
 
 Exclusive launch campaign tab revamp
 https://mynakama.tokopedia.com/datatracker/requestdetail/view/4008
@@ -40,13 +71,11 @@ https://mynakama.tokopedia.com/datatracker/requestdetail/view/4008
 
 class ShopCampaignTabTracker @Inject constructor() {
     fun sendImpressionShopBannerTimerCampaignTracker(
-        uiModel: ShopWidgetDisplayBannerTimerUiModel,
-        shopId: String,
-        userId: String
+        trackerDataModel: ShopCampaignBannerTimerTrackerDataModel
     ) {
         val eventLabelValue = ShopUtil.joinDash(
-            uiModel.getCampaignId(),
-            uiModel.widgetId
+            trackerDataModel.campaignId,
+            trackerDataModel.widgetId
         )
         val eventMap = mapOf(
             EVENT to VIEW_PG_IRIS,
@@ -56,20 +85,18 @@ class ShopCampaignTabTracker @Inject constructor() {
             TRACKER_ID to TRACKER_ID_IMPRESSION_MAIN_BANNER_CAMPAIGN_TAB,
             BUSINESS_UNIT to PHYSICAL_GOODS,
             CURRENT_SITE to TOKOPEDIA_MARKETPLACE,
-            SHOP_ID to shopId,
-            USER_ID to userId
+            SHOP_ID to trackerDataModel.shopId,
+            USER_ID to trackerDataModel.userId
         )
         TrackApp.getInstance().gtm.sendGeneralEvent(eventMap)
     }
 
     fun sendClickRemindMeShopCampaignBannerTimerTracker(
-        uiModel: ShopWidgetDisplayBannerTimerUiModel,
-        shopId: String,
-        userId: String
+        trackerDataModel: ShopCampaignBannerTimerTrackerDataModel
     ) {
         val eventLabelValue = ShopUtil.joinDash(
-            uiModel.getCampaignId(),
-            uiModel.widgetId
+            trackerDataModel.campaignId,
+            trackerDataModel.widgetId
         )
         val eventMap = mapOf(
             EVENT to CLICK_PG,
@@ -79,40 +106,203 @@ class ShopCampaignTabTracker @Inject constructor() {
             TRACKER_ID to TRACKER_ID_CLICK_REMIND_ME_MAIN_BANNER_CAMPAIGN_TAB,
             BUSINESS_UNIT to PHYSICAL_GOODS,
             CURRENT_SITE to TOKOPEDIA_MARKETPLACE,
-            SHOP_ID to shopId,
-            USER_ID to userId
+            SHOP_ID to trackerDataModel.shopId,
+            USER_ID to trackerDataModel.userId
         )
         TrackApp.getInstance().gtm.sendGeneralEvent(eventMap)
     }
 
-    fun impressionWidgetHeaderTitle(widgetId: String, shopId: String, userId: String) {
+    fun impressionWidgetHeaderTitle(
+        trackerDataModel: ShopCampaignHeaderTitleTrackerDataModel
+    ) {
         val eventMap = mapOf(
             EVENT to VIEW_PG_IRIS,
             EVENT_ACTION to IMPRESSION_TITLE_WIDGET,
             EVENT_CATEGORY to SHOP_PAGE_BUYER,
-            EVENT_LABEL to widgetId,
+            EVENT_LABEL to trackerDataModel.widgetId,
             TRACKER_ID to TRACKER_ID_IMPRESSION_TITLE_WIDGET,
             BUSINESS_UNIT to PHYSICAL_GOODS,
             CURRENT_SITE to TOKOPEDIA_MARKETPLACE,
-            SHOP_ID to shopId,
-            USER_ID to userId
+            SHOP_ID to trackerDataModel.shopId,
+            USER_ID to trackerDataModel.userId
         )
         TrackApp.getInstance().gtm.sendGeneralEvent(eventMap)
     }
 
-    fun clickCtaHeaderTitle(widgetId: String, shopId: String, userId: String) {
+    fun clickCtaHeaderTitle(
+        trackerDataModel: ShopCampaignHeaderTitleTrackerDataModel
+    ) {
         val eventMap = mapOf(
             EVENT to CLICK_PG,
             EVENT_ACTION to CLICK_TITLE_WIDGET,
             EVENT_CATEGORY to SHOP_PAGE_BUYER,
-            EVENT_LABEL to widgetId,
+            EVENT_LABEL to trackerDataModel.widgetId,
             TRACKER_ID to TRACKER_ID_CLICK_TITLE_WIDGET,
             BUSINESS_UNIT to PHYSICAL_GOODS,
             CURRENT_SITE to TOKOPEDIA_MARKETPLACE,
-            SHOP_ID to shopId,
-            USER_ID to userId
+            SHOP_ID to trackerDataModel.shopId,
+            USER_ID to trackerDataModel.userId
         )
         TrackApp.getInstance().gtm.sendGeneralEvent(eventMap)
     }
 
+    fun impressionProductHighlightCarouselProductItem(
+        trackerDataModel: ShopCampaignWidgetProductHighlightTrackerModel
+    ) {
+        val eventLabelValue = ShopUtil.joinDash(
+            trackerDataModel.campaignId,
+            trackerDataModel.widgetId
+        )
+        val itemListValue = ShopUtil.joinDash(SHOPPAGE, HIGHLIGHT_WIDGET, trackerDataModel.tabName)
+        val eventBundle = Bundle().apply {
+            putString(EVENT, VIEW_ITEM_LIST)
+            putString(EVENT_ACTION, IMPRESSION_PRODUCT_HIGHLIGHT_WIDGET)
+            putString(EVENT_CATEGORY, SHOP_PAGE_BUYER)
+            putString(EVENT_LABEL, eventLabelValue)
+            putString(TRACKER_ID, TRACKER_ID_IMPRESSION_PRODUCT_HIGHLIGHT)
+            putString(BUSINESS_UNIT, PHYSICAL_GOODS)
+            putString(CURRENT_SITE, TOKOPEDIA_MARKETPLACE)
+            putString(ITEM_LIST, itemListValue)
+            putParcelableArrayList(
+                ITEMS,
+                arrayListOf(
+                    createProductHighlightItemMap(
+                        trackerDataModel,
+                        itemListValue
+                    )
+                )
+            )
+            putString(PRODUCT_ID, trackerDataModel.productId)
+            putString(SHOP_ID, trackerDataModel.shopId)
+            putString(USER_ID, trackerDataModel.userId)
+        }
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(VIEW_ITEM_LIST, eventBundle)
+    }
+
+    fun clickProductHighlightCarouselProductItem(
+        trackerDataModel: ShopCampaignWidgetProductHighlightTrackerModel
+    ) {
+        val eventLabelValue = ShopUtil.joinDash(
+            trackerDataModel.campaignId,
+            trackerDataModel.widgetId
+        )
+        val itemListValue = ShopUtil.joinDash(SHOPPAGE, HIGHLIGHT_WIDGET, trackerDataModel.tabName)
+        val eventBundle = Bundle().apply {
+            putString(EVENT, SELECT_CONTENT)
+            putString(EVENT_ACTION, CLICK_PRODUCT_HIGHLIGHT_WIDGET)
+            putString(EVENT_CATEGORY, SHOP_PAGE_BUYER)
+            putString(EVENT_LABEL, eventLabelValue)
+            putString(TRACKER_ID, TRACKER_ID_CLICK_PRODUCT_HIGHLIGHT)
+            putString(BUSINESS_UNIT, PHYSICAL_GOODS)
+            putString(CURRENT_SITE, TOKOPEDIA_MARKETPLACE)
+            putString(ITEM_LIST, itemListValue)
+            putParcelableArrayList(
+                ITEMS,
+                arrayListOf(
+                    createProductHighlightItemMap(
+                        trackerDataModel,
+                        itemListValue
+                    )
+                )
+            )
+            putString(PRODUCT_ID, trackerDataModel.productId)
+            putString(SHOP_ID, trackerDataModel.shopId)
+            putString(USER_ID, trackerDataModel.userId)
+        }
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(SELECT_CONTENT, eventBundle)
+    }
+
+    private fun createProductHighlightItemMap(
+        trackerDataModel: ShopCampaignWidgetProductHighlightTrackerModel,
+        itemListValue: String
+    ): Bundle {
+        return Bundle().apply {
+            putString(DIMENSION_40, itemListValue)
+            putInt(INDEX, trackerDataModel.position)
+            putString(ITEM_BRAND, "")
+            putString(ITEM_CATEGORY, "")
+            putString(ITEM_ID, trackerDataModel.productId)
+            putString(ITEM_NAME, trackerDataModel.productName)
+            putString(ITEM_VARIANT, "")
+            putString(PRICE, ShopUtil.formatPrice(trackerDataModel.productPrice))
+        }
+    }
+
+    fun sendImpressionShopVoucherSliderCampaignTracker(
+        trackerDataModel: ShopCampaignWidgetVoucherSliderTrackerModel
+    ) {
+        val eventLabelValue = ShopUtil.joinDash(
+            "",
+            trackerDataModel.widgetId
+        )
+        val eventMap = mapOf(
+            EVENT to VIEW_PG_IRIS,
+            EVENT_ACTION to IMPRESSION_VOUCHER_SLIDER_WIDGET,
+            EVENT_CATEGORY to SHOP_PAGE_BUYER,
+            EVENT_LABEL to eventLabelValue,
+            TRACKER_ID to TRACKER_ID_IMPRESSION_VOUCHER_SLIDER,
+            BUSINESS_UNIT to PHYSICAL_GOODS,
+            CURRENT_SITE to TOKOPEDIA_MARKETPLACE,
+            SHOP_ID to trackerDataModel.shopId,
+            USER_ID to trackerDataModel.userId
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(eventMap)
+    }
+
+    fun clickCtaVoucherSliderItem(trackerDataModel: ShopCampaignWidgetVoucherSliderItemClickCtaTrackerModel) {
+        val eventLabelValue = ShopUtil.joinDash(
+            trackerDataModel.buttonStr,
+            trackerDataModel.widgetId
+        )
+        val eventMap = mapOf(
+            EVENT to CLICK_PG,
+            EVENT_ACTION to CLICK_CTA_VOUCHER_SLIDER_ITEM_WIDGET,
+            EVENT_CATEGORY to SHOP_PAGE_BUYER,
+            EVENT_LABEL to eventLabelValue,
+            TRACKER_ID to TRACKER_ID_CLICK_CTA_VOUCHER_SLIDER_ITEM,
+            BUSINESS_UNIT to PHYSICAL_GOODS,
+            CURRENT_SITE to TOKOPEDIA_MARKETPLACE,
+            SHOP_ID to trackerDataModel.shopId,
+            USER_ID to trackerDataModel.userId
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(eventMap)
+    }
+
+    fun clickSeeMoreVoucherSlider(trackerDataModel: ClickSeeMoreVoucherSliderItemTrackerModel) {
+        val eventLabelValue = ShopUtil.joinDash(
+            "",
+            trackerDataModel.widgetId
+        )
+        val eventMap = mapOf(
+            EVENT to CLICK_PG,
+            EVENT_ACTION to CLICK_SEE_MORE_VOUCHER_SLIDER_ITEM_WIDGET,
+            EVENT_CATEGORY to SHOP_PAGE_BUYER,
+            EVENT_LABEL to eventLabelValue,
+            TRACKER_ID to TRACKER_ID_CLICK_SEE_MORE_VOUCHER_SLIDER_ITEM,
+            BUSINESS_UNIT to PHYSICAL_GOODS,
+            CURRENT_SITE to TOKOPEDIA_MARKETPLACE,
+            SHOP_ID to trackerDataModel.shopId,
+            USER_ID to trackerDataModel.userId
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(eventMap)
+    }
+
+    fun clickVoucherSliderItem(trackerDataModel: ShopCampaignWidgetVoucherSliderItemClickTrackerModel) {
+        val eventLabelValue = ShopUtil.joinDash(
+            "",
+            trackerDataModel.widgetId
+        )
+        val eventMap = mapOf(
+            EVENT to CLICK_PG,
+            EVENT_ACTION to CLICK_VOUCHER_SLIDER_ITEM_WIDGET,
+            EVENT_CATEGORY to SHOP_PAGE_BUYER,
+            EVENT_LABEL to eventLabelValue,
+            TRACKER_ID to TRACKER_ID_CLICK_VOUCHER_SLIDER_ITEM,
+            BUSINESS_UNIT to PHYSICAL_GOODS,
+            CURRENT_SITE to TOKOPEDIA_MARKETPLACE,
+            SHOP_ID to trackerDataModel.shopId,
+            USER_ID to trackerDataModel.userId
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(eventMap)
+    }
 }

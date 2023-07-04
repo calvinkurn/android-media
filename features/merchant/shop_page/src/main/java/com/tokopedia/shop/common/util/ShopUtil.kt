@@ -165,4 +165,11 @@ object ShopUtil {
         return TextUtils.join(" - ", s)
     }
 
+    fun formatPrice(displayedPrice: String): String {
+        return if (!TextUtils.isEmpty(displayedPrice)) {
+            displayedPrice.replace("\\D".toRegex(), "")
+        } else {
+            ""
+        }
+    }
 }

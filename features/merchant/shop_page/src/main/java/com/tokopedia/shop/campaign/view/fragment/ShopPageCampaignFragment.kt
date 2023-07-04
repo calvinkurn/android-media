@@ -42,6 +42,7 @@ import com.tokopedia.play.widget.ui.model.ext.hasSuccessfulTranscodedChannel
 import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopComponentHelper
 import com.tokopedia.shop.analytic.ShopCampaignTabTracker
+import com.tokopedia.shop.analytic.ShopPageCampaignTrackingMapper
 import com.tokopedia.shop.campaign.domain.entity.ExclusiveLaunchVoucher
 import com.tokopedia.shop.campaign.domain.entity.ShopCampaignRedeemPromoVoucherResult
 import com.tokopedia.shop.campaign.util.mapper.ShopPageCampaignMapper
@@ -50,6 +51,7 @@ import com.tokopedia.shop.campaign.view.adapter.ShopCampaignTabAdapterTypeFactor
 import com.tokopedia.shop.campaign.view.adapter.viewholder.ShopCampaignDisplaySliderBannerHighlightViewHolder
 import com.tokopedia.shop.campaign.view.adapter.viewholder.ShopCampaignVoucherSliderItemViewHolder
 import com.tokopedia.shop.campaign.view.adapter.viewholder.ShopCampaignVoucherSliderMoreItemViewHolder
+import com.tokopedia.shop.campaign.view.adapter.viewholder.ShopCampaignVoucherSliderViewHolder
 import com.tokopedia.shop.campaign.view.adapter.viewholder.WidgetConfigListener
 import com.tokopedia.shop.campaign.view.bottomsheet.ExclusiveLaunchVoucherListBottomSheet
 import com.tokopedia.shop.campaign.view.bottomsheet.VoucherDetailBottomSheet
@@ -105,6 +107,7 @@ class ShopPageCampaignFragment :
     ShopCampaignInterface,
     ShopCampaignDisplaySliderBannerHighlightViewHolder.Listener,
     ShopCampaignCarouselProductListener,
+    ShopCampaignVoucherSliderViewHolder.Listener,
     ShopCampaignVoucherSliderItemViewHolder.Listener,
     ShopCampaignVoucherSliderMoreItemViewHolder.Listener {
 
@@ -147,6 +150,7 @@ class ShopPageCampaignFragment :
             shopPlayWidgetListener = this,
             shopCampaignInterface = this,
             sliderBannerHighlightListener = this,
+            shopCampaignVoucherSliderListener = this,
             shopCampaignVoucherSliderItemListener = this,
             shopCampaignVoucherSliderMoreItemListener = this
         )
@@ -734,7 +738,32 @@ class ShopPageCampaignFragment :
         carouselProductWidgetUiModel: ShopCampaignWidgetCarouselProductUiModel?,
         productUiModel: ShopHomeProductUiModel?
     ) {
+        sendClickProductHighlightCarouselProductItemTracker(
+            itemPosition,
+            carouselProductWidgetUiModel,
+            productUiModel
+        )
         goToPDP(productUiModel?.productUrl.orEmpty())
+    }
+
+    private fun sendClickProductHighlightCarouselProductItemTracker(
+        itemPosition: Int,
+        carouselProductWidgetUiModel: ShopCampaignWidgetCarouselProductUiModel?,
+        productUiModel: ShopHomeProductUiModel?
+    ) {
+        shopCampaignTabTracker.clickProductHighlightCarouselProductItem(
+            ShopPageCampaignTrackingMapper.mapToShopHomeCampaignWidgetProductTrackerModel(
+                shopId,
+                userId,
+                carouselProductWidgetUiModel?.getCampaignId().orEmpty(),
+                carouselProductWidgetUiModel?.widgetId.orEmpty(),
+                getSelectedTabName(),
+                itemPosition,
+                productUiModel?.id.orEmpty(),
+                productUiModel?.name.orEmpty(),
+                productUiModel?.displayedPrice.orEmpty()
+            )
+        )
     }
 
     override fun onCampaignCarouselProductItemImpression(
@@ -743,6 +772,31 @@ class ShopPageCampaignFragment :
         carouselProductWidgetUiModel: ShopCampaignWidgetCarouselProductUiModel?,
         productUiModel: ShopHomeProductUiModel?
     ) {
+        sendImpressionProductHighlightCarouselProductItemTracker(
+            itemPosition,
+            carouselProductWidgetUiModel,
+            productUiModel
+        )
+    }
+
+    private fun sendImpressionProductHighlightCarouselProductItemTracker(
+        itemPosition: Int,
+        carouselProductWidgetUiModel: ShopCampaignWidgetCarouselProductUiModel?,
+        productUiModel: ShopHomeProductUiModel?
+    ) {
+        shopCampaignTabTracker.impressionProductHighlightCarouselProductItem(
+            ShopPageCampaignTrackingMapper.mapToShopHomeCampaignWidgetProductTrackerModel(
+                shopId,
+                userId,
+                carouselProductWidgetUiModel?.getCampaignId().orEmpty(),
+                carouselProductWidgetUiModel?.widgetId.orEmpty(),
+                getSelectedTabName(),
+                itemPosition,
+                productUiModel?.id.orEmpty(),
+                productUiModel?.name.orEmpty(),
+                productUiModel?.displayedPrice.orEmpty()
+            )
+        )
     }
 
     override fun onCtaClicked(carouselProductWidgetUiModel: ShopCampaignWidgetCarouselProductUiModel?) {
@@ -753,7 +807,11 @@ class ShopPageCampaignFragment :
     }
 
     private fun sendClickCtaHeaderTitle(widgetId: String) {
-        shopCampaignTabTracker.clickCtaHeaderTitle(widgetId, shopId, userId)
+        shopCampaignTabTracker.clickCtaHeaderTitle(
+            ShopPageCampaignTrackingMapper.mapToShopCampaignWidgetHeaderTitleTrackerDataModel(
+                widgetId, shopId, userId
+            )
+        )
     }
 
     override fun onCampaignCarouselProductWidgetImpression(
@@ -771,7 +829,11 @@ class ShopPageCampaignFragment :
         widgetId: String
     ) {
         if(header.title.isNotEmpty()){
-            shopCampaignTabTracker.impressionWidgetHeaderTitle(widgetId, shopId, userId)
+            shopCampaignTabTracker.impressionWidgetHeaderTitle(
+                ShopPageCampaignTrackingMapper.mapToShopCampaignWidgetHeaderTitleTrackerDataModel(
+                    widgetId, shopId, userId
+                )
+            )
         }
     }
 
@@ -786,11 +848,24 @@ class ShopPageCampaignFragment :
         model: ExclusiveLaunchVoucher,
         position: Int
     ) {
+        sendClickVoucherSliderItemTracker(parentUiModel)
         showVoucherDetailBottomSheet(
             model.slug,
             model.couponCode,
             "",
             parentUiModel.widgetId
+        )
+    }
+
+    private fun sendClickVoucherSliderItemTracker(
+        parentUiModel: ShopWidgetVoucherSliderUiModel
+    ) {
+        shopCampaignTabTracker.clickVoucherSliderItem(
+            ShopPageCampaignTrackingMapper.mapToClickVoucherSliderItemTrackerDataModel(
+                parentUiModel.widgetId,
+                shopId,
+                userId
+            )
         )
     }
 
@@ -801,11 +876,26 @@ class ShopPageCampaignFragment :
     ) {
         if (isLogin) {
             if(viewModelCampaign?.isLoadingRedeemVoucher() == false) {
+                sendClickCtaVoucherSliderItemTracker(parentUiModel, model)
                 redeemCampaignVoucherSlider(parentUiModel, model)
             }
         } else {
             redirectToLoginPage()
         }
+    }
+
+    private fun sendClickCtaVoucherSliderItemTracker(
+        parentUiModel: ShopWidgetVoucherSliderUiModel,
+        model: ExclusiveLaunchVoucher
+    ) {
+        shopCampaignTabTracker.clickCtaVoucherSliderItem(
+            ShopPageCampaignTrackingMapper.mapToClickCtaVoucherSliderItemTrackerDataModel(
+                model.buttonStr,
+                parentUiModel.widgetId,
+                shopId,
+                userId
+            )
+        )
     }
 
     private fun redeemCampaignVoucherSlider(
@@ -815,8 +905,22 @@ class ShopPageCampaignFragment :
         viewModelCampaign?.redeemCampaignVoucherSlider(parentUiModel, model)
     }
 
-    override fun onCampaignVoucherSliderMoreItemClick(listCategorySlug: List<String>) {
+    override fun onCampaignVoucherSliderMoreItemClick(
+        listCategorySlug: List<String>,
+        parentUiModel: ShopWidgetVoucherSliderUiModel?
+    ) {
+        sendClickSeeMoreVoucherTracker(parentUiModel)
         showVoucherListBottomSheet(listCategorySlug)
+    }
+
+    private fun sendClickSeeMoreVoucherTracker(parentUiModel: ShopWidgetVoucherSliderUiModel?) {
+        shopCampaignTabTracker.clickSeeMoreVoucherSlider(
+            ShopPageCampaignTrackingMapper.mapToClickSeeMoreVoucherSliderTrackerDataModel(
+                parentUiModel?.widgetId.orEmpty(),
+                shopId,
+                userId
+            )
+        )
     }
 
     private fun showVoucherListBottomSheet(listCategorySlug: List<String>) {
@@ -908,7 +1012,14 @@ class ShopPageCampaignFragment :
     private fun sendImpressionShopHomeBannerTimerCampaignTabTracker(
         uiModel: ShopWidgetDisplayBannerTimerUiModel
     ) {
-        shopCampaignTabTracker.sendImpressionShopBannerTimerCampaignTracker(uiModel, shopId, userId)
+        shopCampaignTabTracker.sendImpressionShopBannerTimerCampaignTracker(
+            ShopPageCampaignTrackingMapper.mapToShopCampaignBannerTimerTrackerDataModel(
+                uiModel.getCampaignId(),
+                uiModel.widgetId,
+                shopId,
+                userId
+            )
+        )
     }
 
     override fun onTimerFinished(uiModel: ShopWidgetDisplayBannerTimerUiModel) {
@@ -947,9 +1058,12 @@ class ShopPageCampaignFragment :
         uiModel: ShopWidgetDisplayBannerTimerUiModel
     ) {
         shopCampaignTabTracker.sendClickRemindMeShopCampaignBannerTimerTracker(
-            uiModel,
-            shopId,
-            userId
+            ShopPageCampaignTrackingMapper.mapToShopCampaignBannerTimerTrackerDataModel(
+                uiModel.getCampaignId(),
+                uiModel.widgetId,
+                shopId,
+                userId
+            )
         )
     }
 
@@ -1022,6 +1136,23 @@ class ShopPageCampaignFragment :
         sendImpressionWidgetHeaderTitle(
             model.header,
             model.widgetId
+        )
+    }
+
+    override fun onImpressionVoucherSliderWidget(
+        model: ShopWidgetVoucherSliderUiModel,
+        position: Int
+    ) {
+        sendImpressionVoucherSliderWidget(model)
+    }
+
+    private fun sendImpressionVoucherSliderWidget(model: ShopWidgetVoucherSliderUiModel) {
+        shopCampaignTabTracker.sendImpressionShopVoucherSliderCampaignTracker(
+            ShopPageCampaignTrackingMapper.mapToShopCampaignVoucherSliderTrackerDataModel(
+                model.widgetId,
+                shopId,
+                userId
+            )
         )
     }
 }
