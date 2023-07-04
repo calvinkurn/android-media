@@ -1,14 +1,14 @@
-package com.tokopedia.scp_rewards_touchpoints.toaster.domain
+package com.tokopedia.scp_rewards_touchpoints.touchpoints.domain
 
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
-import com.tokopedia.scp_rewards_touchpoints.toaster.model.ScpRewardsToasterModel
+import com.tokopedia.scp_rewards_touchpoints.touchpoints.model.ScpRewardsMedaliTouchPointModel
 import javax.inject.Inject
 
 @GqlQuery("scpRewardsMedaliTouchpointOrder", SCP_TOASTER_QUERY)
-class ScpToasterUseCase @Inject constructor() : GraphqlUseCase<ScpRewardsToasterModel>() {
-    suspend fun getToaster(orderID: Long, pageName: String, sourceName: String): ScpRewardsToasterModel {
-        setTypeClass(ScpRewardsToasterModel::class.java)
+class ScpRewardsMedaliTouchPointUseCase @Inject constructor() : GraphqlUseCase<ScpRewardsMedaliTouchPointModel>() {
+    suspend fun getTouchPoint(orderID: Long, pageName: String, sourceName: String): ScpRewardsMedaliTouchPointModel {
+        setTypeClass(ScpRewardsMedaliTouchPointModel::class.java)
         setGraphqlQuery(ScpRewardsMedaliTouchpointOrder())
         setRequestParams(getRequestParams(orderID, pageName, sourceName))
         return executeOnBackground()
@@ -18,7 +18,7 @@ class ScpToasterUseCase @Inject constructor() : GraphqlUseCase<ScpRewardsToaster
         API_VERSION_KEY to "5.0.0",
         ORDER_ID_KEY to orderID,
         PAGE_NAME_KEY to pageName,
-        SOURCE_NAME_KEY to sourceName
+        SOURCE_NAME_KEY to sourceName,
     )
 
     companion object {

@@ -7,19 +7,17 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.scp_rewards_touchpoints.common.Error
 import com.tokopedia.scp_rewards_touchpoints.common.Loading
 import com.tokopedia.scp_rewards_touchpoints.common.Success
 import com.tokopedia.scp_rewards_touchpoints.common.di.CelebrationComponent
 import com.tokopedia.scp_rewards_touchpoints.databinding.ActivityTestBinding
-import com.tokopedia.scp_rewards_touchpoints.toaster.model.ScpRewardsToasterModel
-import com.tokopedia.scp_rewards_touchpoints.toaster.viewmodel.ScpToasterViewModel
-import com.tokopedia.scp_rewards_touchpoints.view.toaster.ScpRewardsToaster
-import kotlinx.android.synthetic.main.celebration_main_layout.view.*
+import com.tokopedia.scp_rewards_touchpoints.touchpoints.model.ScpRewardsMedaliTouchPointModel
+import com.tokopedia.scp_rewards_touchpoints.touchpoints.viewmodel.ScpRewardsMedaliTouchPointViewModel
+import com.tokopedia.scp_rewards_touchpoints.touchpoints.ScpToasterHelper
 import javax.inject.Inject
 
-@Suppress("UNCHECKED_CAST")
+
 class MedalCelebrationFragment : BaseDaggerFragment() {
 
     private var medaliSlug = "UNILEVER_CLUB"
@@ -28,9 +26,9 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
 
-    private val scpToasterViewModel: ScpToasterViewModel by lazy {
+    private val scpTouchPointViewModel by lazy {
         val viewModelProvider = ViewModelProvider(this, viewModelFactory.get())
-        viewModelProvider[ScpToasterViewModel::class.java]
+        viewModelProvider[ScpRewardsMedaliTouchPointViewModel::class.java]
     }
 
     override fun initInjector() {
@@ -62,31 +60,26 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
 //        binding?.btnBs?.setOnClickListener {
 //            MedalCelebrationBottomSheet.show(childFragmentManager, "UNILEVER_CLUB")
 //        }
-
         binding?.btnToaster?.setOnClickListener {
             if (binding?.input?.editText?.text?.isEmpty() == true) {
                 Toast.makeText(context, "Please enter order id", Toast.LENGTH_LONG).show()
             } else {
-                scpToasterViewModel.getToaster(binding?.input?.editText?.text?.toString()?.toLong() ?: 0, "", "order_history_list_page")
+                scpTouchPointViewModel.getTouchPoint(binding?.input?.editText?.text?.toString()?.toLong() ?: 0, "", "order_history_list_page")
             }
         }
     }
     private fun observeData() {
-        scpToasterViewModel.toasterLiveData.observe(this) {
+        scpTouchPointViewModel.touchPointLiveData.observe(this) {
             when (it) {
                 is Success<*> -> {
                     binding?.btnToaster?.isLoading = false
-                    val data = (it.data as ScpRewardsToasterModel).scpRewardsMedaliTouchpointOrder
-                    if (data?.isShown == true) {
-                        val title = data.medaliTouchpointOrder?.infoMessage?.title ?: ""
-                        val subtitle = data.medaliTouchpointOrder?.infoMessage?.subtitle ?: ""
-                        val ctaTitle = data.medaliTouchpointOrder?.cta?.text ?: ""
-                        val appLink = data.medaliTouchpointOrder?.cta?.appLink
-
-                        view?.let { it1 ->
-                            ScpRewardsToaster.build(it1, title, subtitle, 4000, actionText = ctaTitle, clickListener = {
-                                RouteManager.route(context, appLink)
-                            }).show()
+                    val data = (it.data as ScpRewardsMedaliTouchPointModel)
+                    if (data.scpRewardsMedaliTouchpointOrder?.isShown == true) {
+                        view?.let { v ->
+                            ScpToasterHelper.showToaster(
+                                view = v,
+                                data = data
+                            )
                         }
                     }
                 }

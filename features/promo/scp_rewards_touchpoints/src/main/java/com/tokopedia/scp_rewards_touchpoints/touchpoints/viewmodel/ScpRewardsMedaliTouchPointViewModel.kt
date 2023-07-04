@@ -1,4 +1,4 @@
-package com.tokopedia.scp_rewards_touchpoints.toaster.viewmodel
+package com.tokopedia.scp_rewards_touchpoints.touchpoints.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -9,21 +9,29 @@ import com.tokopedia.scp_rewards_touchpoints.common.Error
 import com.tokopedia.scp_rewards_touchpoints.common.Loading
 import com.tokopedia.scp_rewards_touchpoints.common.ScpResult
 import com.tokopedia.scp_rewards_touchpoints.common.Success
-import com.tokopedia.scp_rewards_touchpoints.toaster.domain.ScpToasterUseCase
+import com.tokopedia.scp_rewards_touchpoints.touchpoints.domain.ScpRewardsMedaliTouchPointUseCase
+import kotlinx.coroutines.delay
 import javax.inject.Inject
 
-class ScpToasterViewModel @Inject constructor(
-    private val scpToasterUseCase: ScpToasterUseCase
+class ScpRewardsMedaliTouchPointViewModel @Inject constructor(
+    private val touchPointUseCase: ScpRewardsMedaliTouchPointUseCase
 ) : ViewModel() {
 
-    private val _toasterLiveData: MutableLiveData<ScpResult> = MutableLiveData()
-    val toasterLiveData: LiveData<ScpResult> = _toasterLiveData
+    companion object{
+        private const val DEFAULT_DELAY = 1000L
+    }
 
-    fun getToaster(orderID: Long, pageName: String = "", sourceName: String) {
+    private val _toasterLiveData: MutableLiveData<ScpResult> = MutableLiveData()
+    val touchPointLiveData: LiveData<ScpResult> = _toasterLiveData
+
+    fun getTouchPoint(orderID: Long, pageName: String = "", sourceName: String,delay:Boolean = true) {
         viewModelScope.launchCatchError(
             block = {
+                if(delay){
+                    delay(DEFAULT_DELAY)
+                }
                 _toasterLiveData.postValue(Loading)
-                val response = scpToasterUseCase.getToaster(
+                val response = touchPointUseCase.getTouchPoint(
                     orderID,
                     pageName,
                     sourceName

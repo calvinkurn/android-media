@@ -1,22 +1,20 @@
-package com.tokopedia.scp_rewards_touchpoints.view.toaster
+package com.tokopedia.scp_rewards_touchpoints.touchpoints
 
 import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import android.graphics.Color
 import android.view.Gravity
 import android.view.View
-import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import com.google.android.material.snackbar.Snackbar
-import com.tokopedia.unifycomponents.findSuitableParent
-import com.tokopedia.unifycomponents.utils.doOnPreDraw
-import com.tokopedia.unifycomponents.utils.updateMargin
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.unifyprinciples.UnifyMotion
 import com.tokopedia.scp_rewards_touchpoints.R
+import com.tokopedia.scp_rewards_touchpoints.touchpoints.model.ScpToasterData
 import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.toPx
 
 
@@ -42,110 +40,42 @@ object ScpRewardsToaster {
     const val LENGTH_SHORT = Snackbar.LENGTH_SHORT
     const val LENGTH_LONG = Snackbar.LENGTH_LONG
     const val LENGTH_INDEFINITE = Snackbar.LENGTH_INDEFINITE
+    const val DEFAULT_DURATION = 3500
 
     var toasterLength = Snackbar.LENGTH_SHORT
 
     var toasterCustomBottomHeight: Int = 0
     var toasterCustomCtaWidth: Int = 0
 
-    @Deprecated(
-        message = "Please use build() method instead",
-        replaceWith = ReplaceWith("Toaster.build(view, text, duration, Toaster.TYPE_NORMAL).show()", "com.tokopedia.unifycomponents.Toaster")
-    )
-    fun showNormal(view: View, title: String, description: String, duration: Int) {
-        build(view.findSuitableParent() ?: return, title, description, duration, TYPE_NORMAL)
-            .show()
-    }
-
-    @Deprecated(
-        message = "Please use build() method instead",
-        replaceWith = ReplaceWith("Toaster.build(view, text, duration, Toaster.TYPE_NORMAL, actionText, clickListener).show()", "com.tokopedia.unifycomponents.Toaster")
-    )
-    fun showNormalWithAction(view: View, title: String, description: String, duration: Int, actionText: String, clickListener: View.OnClickListener) {
-        build(view.findSuitableParent() ?: return, title, description, duration, TYPE_NORMAL, actionText, clickListener)
-            .show()
-    }
-
-    @Deprecated(
-        message = "Please use build() method instead",
-        replaceWith = ReplaceWith("Toaster.build(view, text, duration, Toaster.TYPE_ERROR).show()", "com.tokopedia.unifycomponents.Toaster")
-    )
-    fun showError(view: View, title: String, description: String, duration: Int) {
-        build(view.findSuitableParent() ?: return, title, description, duration, TYPE_ERROR)
-            .show()
-    }
-
-    @Deprecated(
-        message = "Please use build() method instead",
-        replaceWith = ReplaceWith("Toaster.build(view, text, duration, Toaster.TYPE_ERROR, actionText, clickListener).show()", "com.tokopedia.unifycomponents.Toaster")
-    )
-    fun showErrorWithAction(view: View, title: String, description: String, duration: Int, actionText: String, clickListener: View.OnClickListener) {
-        build(view.findSuitableParent() ?: return, title, description, duration, TYPE_ERROR, actionText, clickListener)
-            .show()
-    }
-
-    /**
-     * Make a Toaster to display a message. Toaster will try and find a parent view to hold Toaster's view
-     * from the value given to view.
-     * @param view for finding suitable parent to hold Toaster's view.
-     * @param text The text to show
-     * @param duration How long to display the message. Either Snackbar.LENGTH_SHORT, Snackbar.LENGTH_LONG or Snackbar.LENGTH_INDEFINITE
-     * @param type What style to apply for Toaster. Either [TYPE_NORMAL] or [TYPE_ERROR]
-     * @param actionText Text to display for the action
-     * @param clickListener callback to be invoked when the action is clicked
-     */
-    @Deprecated(
-        message = "Please use build() method instead",
-        replaceWith = ReplaceWith("Toaster.build(view, text, duration, type, actionText, clickListener).show()", "com.tokopedia.unifycomponents.Toaster")
-    )
     @JvmStatic
-    fun make(view: View, title: String, description: String, duration: Int = LENGTH_SHORT, type: Int = TYPE_NORMAL, actionText: String = "", clickListener: View.OnClickListener = View.OnClickListener {}) {
-        build(view.findSuitableParent() ?: return, title, description, duration, type, actionText, clickListener)
-            .show()
-    }
-
-    @Deprecated(
-        message = "Please use build() method instead",
-        replaceWith = ReplaceWith("Toaster.build(view, text, duration, type).show()", "com.tokopedia.unifycomponents.Toaster")
-    )
-    @JvmStatic
-    fun make(view: View,title: String, description: String, duration: Int = LENGTH_SHORT, type: Int = TYPE_NORMAL) {
-        build(view.findSuitableParent() ?: return, title, description, duration, type)
-            .show()
-    }
-
-    @JvmStatic
-    fun build(view: View, title: String, description: String, duration: Int = LENGTH_SHORT, type: Int = TYPE_NORMAL, actionText: String = "", clickListener: View.OnClickListener = View.OnClickListener {}): Snackbar {
+    fun build(view: View,toasterData: ScpToasterData,duration: Int = LENGTH_SHORT, type: Int = TYPE_NORMAL,clickListener: View.OnClickListener = View.OnClickListener {}) : Snackbar{
         toasterLength = duration
-        val cta: Int = if (actionText.isNotEmpty()) WITH_CTA else WITHOUT_CTA
+        val cta: Int = if (toasterData.ctaTitle.isNotEmpty()) WITH_CTA else WITHOUT_CTA
         if (cta == WITH_CTA) {
             onCTAClick = clickListener
-            ctaText = actionText
+            ctaText = toasterData.ctaTitle
         }
-        return initToaster(view, title, description, type, cta)!!
+        return initToaster(view, toasterData, type, cta)!!
     }
 
-    @JvmStatic
-    fun build(view: View, title: String, description: String, duration: Int = LENGTH_SHORT, type: Int = TYPE_NORMAL): Snackbar {
-        toasterLength = duration
-        val cta: Int = WITHOUT_CTA
-        return initToaster(view, title, description, type, cta)!!
-    }
 
-    private fun initToaster(view: View, title: String, description: String, type: Int = TYPE_NORMAL, cta: Int = WITHOUT_CTA): Snackbar? {
+    private fun initToaster(view: View,toasterData: ScpToasterData, type: Int = TYPE_NORMAL, cta: Int = WITHOUT_CTA): Snackbar? {
         val viewTarget : View = view
-
+        Toaster
         val tempSnackBar = Snackbar.make(viewTarget, "", toasterLength)
 
         val viewLayout = View.inflate(viewTarget.context, R.layout.scp_toaster, null)
 
         val frame_icon = viewLayout.findViewById<ImageUnify>(R.id.frame_icon)
+        val badge = viewLayout.findViewById<ImageUnify>(R.id.iv_icon)
         val tv_title = viewLayout.findViewById<TextView>(R.id.scp_toaster_title)
         val tv_desc = viewLayout.findViewById<TextView>(R.id.scp_toaster_description)
-        tv_title.text = title
-        tv_title.typeface = Typography.getFontType(viewTarget.context, false, Typography.DISPLAY_2)
-        tv_desc.text = description
-        tv_desc.typeface = Typography.getFontType(viewTarget.context, false, Typography.DISPLAY_3)
+        tv_title.text = toasterData.title
+        tv_desc.text = toasterData.subtitle
+
+        frame_icon.setImageBitmap(toasterData.sunflare)
+        badge.setImageBitmap(toasterData.badgeImage)
+
 
         val constraintLayoutToaster = viewLayout.findViewById<View>(R.id.constraintLayoutToaster)
 

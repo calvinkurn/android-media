@@ -72,9 +72,9 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey.HOME_ENABLE_AUTO_REFRESH_UOH
-import com.tokopedia.scp_rewards_touchpoints.toaster.model.ScpRewardsToasterModel
-import com.tokopedia.scp_rewards_touchpoints.toaster.viewmodel.ScpToasterViewModel
-import com.tokopedia.scp_rewards_touchpoints.view.toaster.ScpRewardsToaster
+import com.tokopedia.scp_rewards_touchpoints.touchpoints.model.ScpRewardsMedaliTouchPointModel
+import com.tokopedia.scp_rewards_touchpoints.touchpoints.viewmodel.ScpRewardsMedaliTouchPointViewModel
+import com.tokopedia.scp_rewards_touchpoints.touchpoints.ScpToasterHelper
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.helper.ViewHelper
 import com.tokopedia.searchbar.navigation_component.NavToolbar
@@ -288,8 +288,8 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
         ViewModelProvider(this, viewModelFactory)[UohListViewModel::class.java]
     }
 
-    private val toasterViewModel by lazy {
-        ViewModelProvider(this, viewModelFactory)[ScpToasterViewModel::class.java]
+    private val scpTouchPointViewModel by lazy {
+        ViewModelProvider(this, viewModelFactory)[ScpRewardsMedaliTouchPointViewModel::class.java]
     }
 
     companion object {
@@ -836,24 +836,25 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
     }
 
     private fun observeScpToaster() {
-        toasterViewModel.toasterLiveData.observe(viewLifecycleOwner) {
+        scpTouchPointViewModel.touchPointLiveData.observe(viewLifecycleOwner) {
             when (it) {
                 is com.tokopedia.scp_rewards_touchpoints.common.Success<*> -> {
-                    val data = (it.data as ScpRewardsToasterModel).scpRewardsMedaliTouchpointOrder
-                    if (data?.isShown == true) {
-                        val title = data.medaliTouchpointOrder?.infoMessage?.title ?: ""
-                        val subtitle = data.medaliTouchpointOrder?.infoMessage?.subtitle ?: ""
-                        val ctaTitle = data.medaliTouchpointOrder?.cta?.text ?: ""
-                        val appLink = data.medaliTouchpointOrder?.cta?.appLink
-
-                        view?.let { it1 ->
-                            ScpRewardsToaster.build(it1, title, subtitle, 4000, actionText = ctaTitle, clickListener = {
-                                RouteManager.route(context, appLink)
-                            }).show()
+                    val data = (it.data as ScpRewardsMedaliTouchPointModel)
+                    if (data.scpRewardsMedaliTouchpointOrder?.isShown == true) {
+                        view?.let { view ->
+                            ScpToasterHelper.showToaster(
+                                view = view,
+                                data = data
+                            )
                         }
                     }
+                    else{
+                        showFinishOrderToaster()
+                    }
                 }
-                else -> {}
+                else -> {
+                    showFinishOrderToaster()
+                }
             }
         }
     }
@@ -878,19 +879,10 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
             when (it) {
                 is Success -> {
                     responseFinishOrder = it.data
-                    if (responseFinishOrder.success == 1) {
-                        responseFinishOrder.message.firstOrNull()
-                            ?.let { it1 -> showToaster(it1, Toaster.TYPE_NORMAL) }
-                        loadUohItemDelay(orderIdNeedUpdated, currIndexNeedUpdate)
-                    } else {
-                        if (responseFinishOrder.message.isNotEmpty()) {
-                            responseFinishOrder.message.firstOrNull()
-                                ?.let { it1 -> showToaster(it1, Toaster.TYPE_ERROR) }
-                        } else {
-                            context?.getString(R.string.fail_cancellation)
-                                ?.let { it1 -> showToaster(it1, Toaster.TYPE_ERROR) }
-                        }
-                    }
+                    scpTouchPointViewModel.getTouchPoint(
+                        orderID = responseFinishOrder.orderId.toLong(),
+                        sourceName = SOURCE_NAME
+                    )
                 }
                 is Fail -> {
                     responseFinishOrder.message.firstOrNull()
@@ -2143,10 +2135,6 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
                 if (paramFinishOrder != null) {
                     uohListViewModel.doFinishOrder(paramFinishOrder)
                 }
-                toasterViewModel.getToaster(
-                    orderID = orderId.toLong(),
-                    sourceName = SOURCE_NAME
-                )
                 userSession.userId?.let { it1 -> UohAnalytics.clickSelesaiOnBottomSheetFinishTransaction(it1) }
             }
 
@@ -2554,6 +2542,22 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
         orderIdNeedUpdated = order.orderUUID
         currIndexNeedUpdate = index
         startActivityForResult(intent, POF_REQUEST_CODE)
+    }
+
+    private fun showFinishOrderToaster(){
+        if (responseFinishOrder.success == 1) {
+            responseFinishOrder.message.firstOrNull()
+                ?.let { it1 -> showToaster(it1, Toaster.TYPE_NORMAL) }
+            loadUohItemDelay(orderIdNeedUpdated, currIndexNeedUpdate)
+        } else {
+            if (responseFinishOrder.message.isNotEmpty()) {
+                responseFinishOrder.message.firstOrNull()
+                    ?.let { it1 -> showToaster(it1, Toaster.TYPE_ERROR) }
+            } else {
+                context?.getString(R.string.fail_cancellation)
+                    ?.let { it1 -> showToaster(it1, Toaster.TYPE_ERROR) }
+            }
+        }
     }
 
     override fun onPause() {

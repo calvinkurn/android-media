@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.scp_rewards_touchpoints.bottomsheet.viewmodel.MedalCelebrationViewModel
-import com.tokopedia.scp_rewards_touchpoints.toaster.viewmodel.ScpToasterViewModel
+import com.tokopedia.scp_rewards_touchpoints.touchpoints.viewmodel.ScpRewardsMedaliTouchPointViewModel
 import com.tokopedia.scp_rewards_touchpoints.view.bottomsheet.di.CelebrationScope
 import dagger.Binds
 import dagger.Module
@@ -26,6 +26,6 @@ abstract class ViewModelModule {
 
     @Binds
     @IntoMap
-    @ViewModelKey(ScpToasterViewModel::class)
-    abstract fun provideScpToasterViewModel(scpToasterViewModel: ScpToasterViewModel) : ViewModel
+    @ViewModelKey(ScpRewardsMedaliTouchPointViewModel::class)
+    abstract fun provideScpToasterViewModel(scpToasterViewModel: ScpRewardsMedaliTouchPointViewModel) : ViewModel
 }

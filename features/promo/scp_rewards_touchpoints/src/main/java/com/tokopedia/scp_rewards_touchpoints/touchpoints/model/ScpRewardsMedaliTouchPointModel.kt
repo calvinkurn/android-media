@@ -1,8 +1,8 @@
-package com.tokopedia.scp_rewards_touchpoints.toaster.model
+package com.tokopedia.scp_rewards_touchpoints.touchpoints.model
 
 import com.google.gson.annotations.SerializedName
 
-data class ScpRewardsToasterModel(
+data class ScpRewardsMedaliTouchPointModel(
      @SerializedName("scpRewardsMedaliTouchpointOrder")
      val scpRewardsMedaliTouchpointOrder: ScpRewardsMedaliTouchpointOrder? = null
 ){
