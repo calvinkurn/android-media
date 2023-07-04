@@ -1,31 +1,27 @@
 package com.tokopedia.shop.score.penalty.domain.response
 
-import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.kotlin.extensions.view.ONE
 
 data class ShopScorePenaltyDetailParam(
-        @Expose
-        @SerializedName("page")
-        val page: Int = 1,
-        @Expose
-        @SerializedName("total")
-        val total: Int = 10,
-        @SerializedName("startDate")
-        @Expose
-        val startDate: String = "",
-        @SerializedName("endDate")
-        @Expose
-        val endDate: String = "",
-        @SerializedName("typeID")
-        @Expose
-        val typeID: Int = 0,
-        @SerializedName("sort")
-        @Expose
-        val sort: Int = 0,
-        @SerializedName("lang")
-        @Expose
-        val lang: String = "id",
-        @SerializedName("source")
-        @Expose
-        val source: String = "android-shop-penalty"
+    @SerializedName("page")
+    val page: Int? = null,
+    @SerializedName("total")
+    val total: Int? = 10,
+    @SerializedName("startDate")
+    val startDate: String = "",
+    @SerializedName("endDate")
+    val endDate: String = "",
+    @SerializedName("typeID")
+    val typeID: Int? = null,
+    @SerializedName("typeIDs")
+    val typeIDs: List<Int> = listOf(),
+    @SerializedName("sort")
+    val sort: Int? = null,
+    @SerializedName("lang")
+    val lang: String = "id",
+    @SerializedName("source")
+    val source: String = "android-shop-penalty",
+    @SerializedName("status")
+    val status: Int = Int.ONE
 )

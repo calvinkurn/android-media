@@ -47,7 +47,9 @@ fun <T, A : Appendable> Iterable<T>.joinToLastSeparator(
         }
         if (limit < 0 || count <= limit) {
             buffer.appendElement(element, transform)
-        } else break
+        } else {
+            break
+        }
     }
     if (limit in 0..(count - 1)) buffer.append(truncated)
     buffer.append(postfix)
@@ -87,7 +89,8 @@ fun <T> MutableList<T>.goToFirst(index: Int) {
 fun <T> MutableList<T>.moveTo(fromPosition: Int, toPosition: Int) {
     if (size == 0 ||
         fromPosition < 0 || fromPosition >= size ||
-        toPosition < 0 || toPosition >= size) {
+        toPosition < 0 || toPosition >= size
+    ) {
         return
     }
     val tmp = this[fromPosition]
@@ -97,5 +100,11 @@ fun <T> MutableList<T>.moveTo(fromPosition: Int, toPosition: Int) {
     } else {
         this.add(tmp)
     }
-
 }
+
+fun <T> List<T>?.ifNullOrEmpty(block: () -> List<T>): List<T> =
+    if (isNullOrEmpty()) {
+        block.invoke()
+    } else {
+        this
+    }
