@@ -6,8 +6,11 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.unifycomponents.toPx
 
-class GridSpacing(private val horizontalSpacing: Int,
-                  private val verticalSpacing: Int) : RecyclerView.ItemDecoration() {
+class GridSpacing(
+    private val horizontalSpacing: Int,
+    private val verticalSpacing: Int,
+    private val firstRowTopSpacing: Int = 0
+) : RecyclerView.ItemDecoration() {
     override fun getItemOffsets(
         outRect: Rect,
         view: View,
@@ -19,7 +22,7 @@ class GridSpacing(private val horizontalSpacing: Int,
         val totalSpanCount = getTotalSpanCount(parent)
         val spanSize = getItemSpanSize(parent, position)
 
-        outRect.top = if (isInTheFirstRow(position, totalSpanCount)) 0 else verticalSpacing.toPx()
+        outRect.top = if (isInTheFirstRow(position, totalSpanCount)) firstRowTopSpacing else verticalSpacing.toPx()
         outRect.left = if (isFirstInRow(position, totalSpanCount, spanSize)) 0 else horizontalSpacing.toPx() / 2
         outRect.right = if (isLastInRow(position, totalSpanCount, spanSize)) 0 else horizontalSpacing.toPx() / 2
         outRect.bottom = 0
@@ -31,7 +34,9 @@ class GridSpacing(private val horizontalSpacing: Int,
     private fun isFirstInRow(position: Int, totalSpanCount: Int, spanSize: Int): Boolean =
         if (totalSpanCount != spanSize) {
             position % totalSpanCount == 0
-        } else true
+        } else {
+            true
+        }
 
     private fun isLastInRow(position: Int, totalSpanCount: Int, spanSize: Int): Boolean =
         isFirstInRow(position + 1, totalSpanCount, spanSize)

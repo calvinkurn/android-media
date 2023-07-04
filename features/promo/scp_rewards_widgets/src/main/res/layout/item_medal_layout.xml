@@ -22,9 +22,9 @@
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/iv_medal"
-        android:layout_width="@dimen/dp_75"
-        android:layout_height="0dp"
-        app:layout_constraintDimensionRatio="1:1"
+        android:layout_width="@dimen/dp_100"
+        android:layout_height="@dimen/dp_90"
+        android:scaleType="fitCenter"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -64,7 +64,7 @@
         android:id="@+id/progress_medal"
         android:layout_width="@dimen/dp_0"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="@dimen/dp_20"
+        android:layout_marginHorizontal="@dimen/dp_5"
         android:layout_marginTop="@dimen/dp_4"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="@id/iv_medal"

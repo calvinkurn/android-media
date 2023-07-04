@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView.LayoutManager
@@ -28,6 +29,7 @@ import com.tokopedia.scp_rewards.common.constants.NON_WHITELISTED_USER_ERROR_COD
 import com.tokopedia.scp_rewards.common.data.Error
 import com.tokopedia.scp_rewards.common.data.Loading
 import com.tokopedia.scp_rewards.common.data.Success
+import com.tokopedia.scp_rewards.common.utils.launchLink
 import com.tokopedia.scp_rewards.databinding.SeeMoreMedaliFragmentBinding
 import com.tokopedia.scp_rewards_common.EARNED_BADGE
 import com.tokopedia.scp_rewards_widgets.common.GridSpacing
@@ -93,7 +95,16 @@ class SeeMoreMedaliFragment : BaseDaggerFragment(), MedalCallbackListener {
     }
 
     private fun setupHeader() {
-        binding?.header?.title = getHeaderTitle()
+        binding?.let { safeBinding ->
+            with(activity as AppCompatActivity) {
+                setSupportActionBar(safeBinding.header)
+                supportActionBar?.apply {
+                    setDisplayShowTitleEnabled(false)
+                    setDisplayHomeAsUpEnabled(true)
+                }
+            }
+            safeBinding.header.title = getHeaderTitle()
+        }
     }
 
     private fun getHeaderTitle(): String {
@@ -235,7 +246,7 @@ class SeeMoreMedaliFragment : BaseDaggerFragment(), MedalCallbackListener {
             adapter = medalAdapter
             layoutManager = rvLayoutManager
             addOnScrollListener(rvScrollListener!!)
-            addItemDecoration(GridSpacing(GRID_HORIZONTAL_SPACING, GRID_VERTICAL_SPACING))
+            addItemDecoration(GridSpacing(GRID_HORIZONTAL_SPACING, GRID_VERTICAL_SPACING, GRID_VERTICAL_SPACING))
         }
     }
 
@@ -290,6 +301,10 @@ class SeeMoreMedaliFragment : BaseDaggerFragment(), MedalCallbackListener {
                 medalItem.progression.toString()
             )
         }
+        requireContext().launchLink(
+            appLink = medalItem.cta?.appLink,
+            webLink = medalItem.cta?.deepLink
+        )
     }
 
     override fun onSeeMoreClick(medalData: MedalData) {
@@ -316,7 +331,7 @@ class SeeMoreMedaliFragment : BaseDaggerFragment(), MedalCallbackListener {
     }
 
     override fun onMedalFailed(medalItem: MedalItem) {
-         // Not used here
+        // Not used here
     }
 
     override fun onSeeMoreLoad(medalData: MedalData) {
