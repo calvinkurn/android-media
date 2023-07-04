@@ -30,7 +30,7 @@ class NetworkResponseTest : BaseTest() {
             it.loadImage(publicImageUrl) {
                 shouldTrackNetworkResponse(true)
 
-                networkResponse{ data, type ->
+                networkResponse { data, type ->
                     countingIdlingResource.decrement()
 
                     // Then
