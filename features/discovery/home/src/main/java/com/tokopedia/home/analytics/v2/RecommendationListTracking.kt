@@ -53,8 +53,7 @@ object RecommendationListTracking : BaseTrackerConst() {
                     recommendationType = grid.recommendationType
                 )
             },
-            list = String.format(
-                "/ - p%s - %s - product",
+            list = "/ - p%s - %s - product".format(
                 parentPosition,
                 RECOMMENDATION_LIST_CAROUSEL_PRODUCT
             )
@@ -93,8 +92,7 @@ object RecommendationListTracking : BaseTrackerConst() {
                     recommendationType = grid.recommendationType
                 )
             ),
-            list = String.format(
-                "/ - p%s - %s - product",
+            list = "/ - p%s - %s - product".format(
                 parentPosition,
                 RECOMMENDATION_LIST_CAROUSEL_PRODUCT
             )
