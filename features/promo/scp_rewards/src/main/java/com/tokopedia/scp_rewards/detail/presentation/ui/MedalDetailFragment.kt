@@ -36,6 +36,7 @@ import com.tokopedia.scp_rewards.common.data.Loading
 import com.tokopedia.scp_rewards.common.data.Success
 import com.tokopedia.scp_rewards.common.utils.launchLink
 import com.tokopedia.scp_rewards.common.utils.launchWeblink
+import com.tokopedia.scp_rewards.common.utils.show
 import com.tokopedia.scp_rewards.databinding.MedalDetailFragmentLayoutBinding
 import com.tokopedia.scp_rewards.detail.analytics.MedalDetailAnalyticsImpl
 import com.tokopedia.scp_rewards.detail.di.MedalDetailComponent
@@ -51,6 +52,7 @@ import com.tokopedia.scp_rewards_widgets.model.MedalRewardsModel
 import com.tokopedia.scp_rewards_widgets.task_progress.Task
 import com.tokopedia.scp_rewards_widgets.task_progress.TaskProgress
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.UnifyButton
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
@@ -475,6 +477,9 @@ class MedalDetailFragment : BaseDaggerFragment() {
         when {
             error is UnknownHostException || error is SocketTimeoutException -> {
                 binding.loadContainer.mdpError.setType(GlobalError.NO_CONNECTION)
+                binding.loadContainer.mdpError.setActionClickListener {
+                    resetPage()
+                }
             }
             scpError.errorCode == NON_WHITELISTED_USER_ERROR_CODE -> {
                 binding.loadContainer.mdpError.apply {
@@ -493,9 +498,17 @@ class MedalDetailFragment : BaseDaggerFragment() {
             else -> {
                 binding.loadContainer.mdpError.apply {
                     setType(GlobalError.SERVER_ERROR)
-                    errorSecondaryAction.text = context.getText(R.string.goto_medali_cabinet_text)
                     setActionClickListener {
                         resetPage()
+                    }
+                    errorSecondaryAction.show()
+                    if (errorSecondaryAction is UnifyButton) {
+                        (errorSecondaryAction as UnifyButton).buttonVariant = UnifyButton.Variant.TEXT_ONLY
+                    }
+                    errorSecondaryAction.text = context.getText(R.string.goto_medali_cabinet_text)
+                    setSecondaryActionClickListener {
+                        RouteManager.route(context, ApplinkConstInternalPromo.MEDAL_CABINET)
+                        activity?.finish()
                     }
                 }
             }

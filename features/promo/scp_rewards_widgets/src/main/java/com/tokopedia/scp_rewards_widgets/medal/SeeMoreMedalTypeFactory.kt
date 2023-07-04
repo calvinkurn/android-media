@@ -8,7 +8,7 @@ import com.tokopedia.scp_rewards_widgets.common.model.LoadingMoreModel
 import com.tokopedia.scp_rewards_widgets.common.viewholder.LoadingMoreViewHolder
 import com.tokopedia.scp_rewards_widgets.common.viewholder.LoadingViewHolder
 
-class SeeMoreMedalTypeFactory : MedalViewTypeFactory() {
+class SeeMoreMedalTypeFactory(listener: MedalCallbackListener) : MedalViewTypeFactory(listener) {
 
     fun type(model: LoadingModel) = LoadingViewHolder.LAYOUT
 
