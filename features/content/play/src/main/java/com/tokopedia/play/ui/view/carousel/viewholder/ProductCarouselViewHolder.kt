@@ -2,12 +2,15 @@ package com.tokopedia.play.ui.view.carousel.viewholder
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Color
 import android.graphics.Paint
 import android.text.Spanned
 import android.text.style.ForegroundColorSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.graphics.BlendModeColorFilterCompat
+import androidx.core.graphics.BlendModeCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.iconunify.IconUnify
@@ -20,6 +23,7 @@ import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play_common.util.extension.buildSpannedString
 import com.tokopedia.unifycomponents.UnifyButton
+import java.lang.Exception
 import com.tokopedia.unifyprinciples.R as unifyR
 
 /**
@@ -127,11 +131,11 @@ class ProductCarouselViewHolder private constructor() {
             }
 
             binding.cardPlayPinned.setOnClickListener {
-                binding.layoutRibbon.root.transitionToEnd()
-//                listener.onClicked(this, item, absoluteAdapterPosition)
+                listener.onClicked(this, item, absoluteAdapterPosition)
             }
             binding.lblProductNumber.showWithCondition(item.isNumerationShown)
             binding.lblProductNumber.text = item.number
+            configRibbon(colors = item.rankColors, rankFmt = item.rankFmt)
         }
 
         private fun getInfo(item: PlayProductUiModel.Product): CharSequence {
@@ -152,6 +156,20 @@ class ProductCarouselViewHolder private constructor() {
                 val stockText = getString(R.string.play_product_item_stock, item.stock.stock.toString())
                 append(stockText, stockSpan, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
             }
+        }
+
+        private fun configRibbon(colors: List<String>, rankFmt: String) {
+            binding.layoutRibbon.root.showWithCondition(rankFmt.isNotBlank())
+            binding.layoutRibbon.playTvRibbon.text = rankFmt
+
+            if (colors.isNullOrEmpty()) return
+
+            try {
+                binding.layoutRibbon.ivTailRibbon.colorFilter =
+                    BlendModeColorFilterCompat.createBlendModeColorFilterCompat(Color.parseColor(colors.first()), BlendModeCompat.SRC_ATOP)
+                binding.layoutRibbon.ivBackRibbon.colorFilter =
+                    BlendModeColorFilterCompat.createBlendModeColorFilterCompat(Color.parseColor(colors.getOrElse(1) {colors.first()} ), BlendModeCompat.SRC_ATOP)
+            } catch (e: Exception) { false }
         }
 
         companion object {

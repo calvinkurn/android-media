@@ -2,10 +2,13 @@ package com.tokopedia.play.ui.productfeatured.viewholder
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Color
 import android.graphics.Paint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.graphics.BlendModeColorFilterCompat
+import androidx.core.graphics.BlendModeCompat
 import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.play.R
@@ -15,6 +18,7 @@ import com.tokopedia.play.view.type.DiscountedPrice
 import com.tokopedia.play.view.type.OriginalPrice
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play_common.view.loadImage
+import java.lang.Exception
 
 /**
  * Created by jegul on 23/02/21
@@ -55,13 +59,28 @@ class ProductFeaturedViewHolder(
         }
 
         binding.root.setOnClickListener {
-            binding.layoutRibbon.root.transitionToEnd()
             if (item.applink.isNullOrEmpty()) return@setOnClickListener
-//            listener.onClickProductCard(item, adapterPosition)
+            listener.onClickProductCard(item, adapterPosition)
         }
 
         binding.lblProductNumber.showWithCondition(item.isNumerationShown)
         binding.lblProductNumber.text = item.number
+
+        configRibbon(colors = item.rankColors, rankFmt = item.rankFmt)
+    }
+
+    private fun configRibbon(colors: List<String>, rankFmt: String) {
+        binding.layoutRibbon.root.showWithCondition(rankFmt.isNotBlank())
+        binding.layoutRibbon.playTvRibbon.text = rankFmt
+
+        if (colors.isNullOrEmpty()) return
+
+        try {
+            binding.layoutRibbon.ivTailRibbon.colorFilter =
+                BlendModeColorFilterCompat.createBlendModeColorFilterCompat(Color.parseColor(colors.first()), BlendModeCompat.SRC_ATOP)
+            binding.layoutRibbon.ivBackRibbon.colorFilter =
+                BlendModeColorFilterCompat.createBlendModeColorFilterCompat(Color.parseColor(colors.getOrElse(1) {colors.first()} ), BlendModeCompat.SRC_ATOP)
+        } catch (e: Exception) { false }
     }
 
     companion object {
