@@ -48,6 +48,7 @@ import com.tokopedia.network.authentication.*
 import com.tokopedia.network.authentication.AuthKey.Companion.KEY_WSV4
 import com.tokopedia.network.constant.ErrorNetMessage
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.network.utils.ThemeUtils
 import com.tokopedia.payment.R
 import com.tokopedia.payment.fingerprint.di.DaggerFingerprintComponent
 import com.tokopedia.payment.fingerprint.di.FingerprintModule
@@ -883,7 +884,7 @@ class TopPayActivity :
     }
 
     private fun generateWebviewHeaders(path: String, strParam: String): MutableMap<String, String> {
-        val header = AuthHelper.getDefaultHeaderMapOld(path, strParam, "GET", CONTENT_TYPE, KEY_WSV4, DATE_FORMAT, userSession.userId, userSession)
+        val header = AuthHelper.getDefaultHeaderMapOld(path, strParam, "GET", CONTENT_TYPE, KEY_WSV4, DATE_FORMAT, userSession.userId, userSession, ThemeUtils.getHeader(this))
         header[HEADER_TKPD_USER_AGENT] = DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_DEVICE
         header[HEADER_TKPD_SESSION_ID] = userSession.deviceId
         return header
