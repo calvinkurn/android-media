@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.gone
@@ -21,9 +22,11 @@ import com.tokopedia.shop.campaign.util.tracker.VoucherWidgetTracker
 import com.tokopedia.shop.campaign.view.adapter.ExclusiveLaunchVoucherAdapter
 import com.tokopedia.shop.campaign.view.viewmodel.ExclusiveLaunchVoucherListViewModel
 import com.tokopedia.shop.common.extension.applyPaddingToLastItem
+import com.tokopedia.shop.common.extension.showToaster
 import com.tokopedia.shop.common.extension.showToasterError
 import com.tokopedia.shop.databinding.BottomsheetExclusiveLaunchVoucherBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -128,6 +131,7 @@ class ExclusiveLaunchVoucherListBottomSheet : BottomSheetUnify() {
         super.onViewCreated(view, savedInstanceState)
         setupView()
         observeVouchers()
+        observePromoVoucherRedeemResult()
         viewModel.getPromoVouchers(voucherSlugs)
         tracker.sendVoucherDetailBottomSheetImpression(shopId)
     }
@@ -143,6 +147,21 @@ class ExclusiveLaunchVoucherListBottomSheet : BottomSheetUnify() {
                 is Fail -> {
                     binding?.loader?.gone()
                     binding?.recyclerView?.gone()
+                    showToasterError(binding?.root ?: return@observe, result.throwable)
+                }
+            }
+        }
+    }
+
+    private fun observePromoVoucherRedeemResult() {
+        viewModel.redeemResult.observe(viewLifecycleOwner) { result ->
+            when (result) {
+                is Success -> {
+                    val toasterMessage = context?.getString(R.string.shop_campaign_tab_voucher_redeem_success_message).orEmpty()
+                    Toaster.build(binding?.recyclerView ?: return@observe, toasterMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL).show()
+                    viewModel.getPromoVouchers(voucherSlugs)
+                }
+                is Fail -> {
                     showToasterError(binding?.root ?: return@observe, result.throwable)
                 }
             }
@@ -171,6 +190,10 @@ class ExclusiveLaunchVoucherListBottomSheet : BottomSheetUnify() {
                 val selectedVoucher = exclusiveLaunchAdapter.getItemAtOrNull(selectedVoucherPosition) ?: return@setOnVoucherClick
                 showVoucherDetailBottomSheet(selectedVoucher)
                 recordTracker(selectedVoucher)
+            }
+            setOnPrimaryCtaClick { selectedVoucherPosition ->
+                val selectedVoucher = exclusiveLaunchAdapter.getItemAtOrNull(selectedVoucherPosition) ?: return@setOnPrimaryCtaClick
+                viewModel.claimPromoVoucher(selectedVoucher.id)
             }
             setOnVoucherImpression {
                 voucherWidgetTracker.sendVoucherImpression(

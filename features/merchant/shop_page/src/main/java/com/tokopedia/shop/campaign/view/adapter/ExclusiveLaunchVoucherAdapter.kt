@@ -7,7 +7,6 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.getNumberFormatted
-import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.shop.campaign.domain.entity.ExclusiveLaunchVoucher
 import com.tokopedia.shop.databinding.ItemExclusiveLaunchVoucherBinding
 import com.tokopedia.shop.R
@@ -33,6 +32,7 @@ class ExclusiveLaunchVoucherAdapter :
 
     private val differ = AsyncListDiffer(this, differCallback)
     private var onVoucherClick: (Int) -> Unit = {}
+    private var onCtaClick: (Int) -> Unit = {}
     private var useDarkBackground = true
     private var onVoucherImpression: (ExclusiveLaunchVoucher) -> Unit = {}
 
@@ -73,12 +73,17 @@ class ExclusiveLaunchVoucherAdapter :
                 setRemainingQuota(voucher.remainingQuota)
                 setVoucherName(voucher.voucherName)
 
-                setPrimaryCta(
-                    voucherCode = voucher.couponCode,
-                    isDisabledButton = voucher.isDisabledButton,
-                    remoteCtaText = voucher.buttonStr,
-                )
-                if (useDarkBackground) useDarkBackground() else useLightBackground()
+                setPrimaryCta(voucherCode = voucher.couponCode, isDisabledButton = voucher.isDisabledButton)
+
+                setOnPrimaryCtaClick {
+                    val isVoucherClaimed = voucher.couponCode.isNotEmpty()
+                    if (!isVoucherClaimed) {
+                        onCtaClick(bindingAdapterPosition)
+                    }
+                }
+
+                val isClaimCtaDisabled = voucher.isDisabledButton
+                if (useDarkBackground) useDarkBackground(isClaimCtaDisabled) else useLightBackground(isClaimCtaDisabled)
             }
         }
 
@@ -93,6 +98,9 @@ class ExclusiveLaunchVoucherAdapter :
         this.onVoucherClick = onVoucherClick
     }
 
+    fun setOnPrimaryCtaClick(onCtaClick : (Int) -> Unit) {
+        this.onCtaClick = onCtaClick
+    }
     fun setOnVoucherImpression(onVoucherImpression: (ExclusiveLaunchVoucher) -> Unit) {
         this.onVoucherImpression = onVoucherImpression
     }

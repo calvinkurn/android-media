@@ -69,7 +69,14 @@ class ShopCampaignVoucherSliderItemViewHolder(
             )
             setRemainingQuota(uiModel.remainingQuota)
             setVoucherName(uiModel.voucherName)
-            if (shopCampaignListener.isCampaignTabDarkMode()) useDarkBackground() else useLightBackground()
+
+            val isClaimCtaCtaDisabled = uiModel.isDisabledButton
+            if (shopCampaignListener.isCampaignTabDarkMode()) {
+                useDarkBackground(isClaimCtaCtaDisabled)
+            } else {
+                useLightBackground(isClaimCtaCtaDisabled)
+            }
+
             setOnClickListener {
                 parentUiModel?.let {
                     listener.onCampaignVoucherSliderItemClick(
@@ -88,11 +95,7 @@ class ShopCampaignVoucherSliderItemViewHolder(
                     )
                 }
             }
-            setPrimaryCta(
-                voucherCode = uiModel.couponCode,
-                isDisabledButton = uiModel.isDisabledButton,
-                remoteCtaText = uiModel.buttonStr,
-            )
+            setPrimaryCta(voucherCode = uiModel.couponCode, isDisabledButton = uiModel.isDisabledButton)
         }
     }
 
