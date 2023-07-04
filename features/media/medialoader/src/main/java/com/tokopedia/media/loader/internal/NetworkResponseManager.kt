@@ -22,6 +22,10 @@ class NetworkResponseManager constructor(
         applyEditor()
     }
 
+    fun forceResetCache() {
+        clearCache()
+    }
+
     fun header(): List<Header> {
         val json = getString(KEY_NETWORK_HEADER, "")
         if (json.isEmpty()) return emptyList()

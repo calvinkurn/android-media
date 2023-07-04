@@ -96,6 +96,11 @@ internal object MediaListenerBuilder {
                 headers, // get all header responses
                 headers.getFailureType() // get failure type (if any)
             )
+
+            // in case we need to clear force the previous cache of headers
+            if (properties.isForceClearHeaderCache) {
+                result.forceResetCache()
+            }
         }
         return false
     }

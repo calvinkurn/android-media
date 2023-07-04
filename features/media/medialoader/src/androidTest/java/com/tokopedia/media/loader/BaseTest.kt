@@ -63,10 +63,12 @@ open class BaseTest {
     }
 
     companion object {
+        const val invalidUrl = "https://images.tokopedia.com/img/invalid_url.png"
         const val secureImageUrl = "https://chat.tokopedia.com/tc/v1/download_secure/1844584535/2022-04-19/99f532b4-bfb0-11ec-9296-42010a2942a0"
         const val publicImageUrl = "https://images.tokopedia.net/img/cache/900/VqbcmM/2021/11/13/819f37fd-cff6-4212-ae58-5618ac2b5e07.jpg"
         const val iconUrl = "https://images.tokopedia.net/img/cache/100-square/iEWsxH/2021/10/5/75f2fb8a-a4ca-4cd6-a166-7279daef1d5b.png"
         const val notFoundUrl = "https://images.tokopedia.net/img/cache/1200/BgtCLw/2023/4/10/de89952a-3ae6-40d7-9cad-226c24953f8.jpg"
-        const val invalidUrl = "https://images.tokopedia.com/img/invalid_url.png"
+        const val badUrl = "https://images.tokopedia.net/img/haryot/20/7/4/0d8b7db3-4609-4357-8ab6-3138d7477186.jpg"
+        const val goneUrl = "https://images.tokopedia.net/img/haryot/2023/7/4/0d8b7db3-4609-4357-8ab6-3138d7477186.jpg"
     }
 }
