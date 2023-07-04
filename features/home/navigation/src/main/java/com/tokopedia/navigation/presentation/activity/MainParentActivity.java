@@ -59,9 +59,11 @@ import com.tokopedia.applink.internal.ApplinkConstInternalContent;
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.devicefingerprint.submitdevice.service.SubmitDeviceWorker;
 import com.tokopedia.dynamicfeatures.DFInstaller;
+import com.tokopedia.graphql.interceptor.MockInterceptor;
 import com.tokopedia.home.HomeInternalRouter;
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeRevampFragment;
 import com.tokopedia.inappupdate.AppUpdateManagerWrapper;
@@ -209,6 +211,8 @@ public class MainParentActivity extends BaseActivity implements
 
     private ApplicationUpdate appUpdate;
     private LottieBottomNavbar bottomNavigation;
+
+    private View lineBottomNav;
     List<Fragment> fragmentList;
     private Notification notification;
     Fragment currentFragment;
@@ -336,9 +340,11 @@ public class MainParentActivity extends BaseActivity implements
         if (pageLoadTimePerformanceCallback != null) {
             pageLoadTimePerformanceCallback.startCustomMetric(MAIN_PARENT_ON_START_METRICS);
         }
-        if (isFirstTimeUser()) {
-            setDefaultShakeEnable();
-            routeOnboarding();
+        if (!GlobalConfig.ENABLE_MACROBENCHMARK_UTIL) {
+            if (isFirstTimeUser()) {
+                setDefaultShakeEnable();
+                routeOnboarding();
+            }
         }
         if (pageLoadTimePerformanceCallback != null && pageLoadTimePerformanceCallback.getCustomMetric().containsKey(MAIN_PARENT_ON_START_METRICS)) {
             pageLoadTimePerformanceCallback.stopCustomMetric(MAIN_PARENT_ON_START_METRICS);
@@ -389,6 +395,7 @@ public class MainParentActivity extends BaseActivity implements
         fragmentList = fragments();
 
         bottomNavigation = findViewById(R.id.bottom_navbar);
+        lineBottomNav = findViewById(R.id.line_bottom_nav);
 
         WeaveInterface firstTimeWeave = new WeaveInterface() {
             @NotNull
@@ -626,7 +633,11 @@ public class MainParentActivity extends BaseActivity implements
     }
 
     private void configureNavigationBarBasedOnFragment(Fragment fragment) {
-        bottomNavigation.forceDarkMode(getIsFragmentForceDarkModeNavigationBar(fragment));
+        boolean isForceDarkMode = getIsFragmentForceDarkModeNavigationBar(fragment);
+        bottomNavigation.forceDarkMode(isForceDarkMode);
+
+        int lineColorRes = isForceDarkMode ? R.color.navigation_dms_line_bottom_nav_darkmode : com.tokopedia.unifyprinciples.R.color.Unify_N75;
+        lineBottomNav.setBackgroundResource(lineColorRes);
     }
 
     private void scrollToTop(Fragment fragment) {

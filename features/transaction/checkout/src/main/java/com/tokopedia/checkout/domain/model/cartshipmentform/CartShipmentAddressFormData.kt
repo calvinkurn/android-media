@@ -1,7 +1,6 @@
 package com.tokopedia.checkout.domain.model.cartshipmentform
 
 import android.os.Parcelable
-import com.tokopedia.checkout.data.model.response.shipmentaddressform.ShipmentPlatformFee
 import com.tokopedia.checkout.view.uimodel.CrossSellModel
 import com.tokopedia.checkout.view.uimodel.EgoldAttributeModel
 import com.tokopedia.logisticcart.shipping.model.CodModel

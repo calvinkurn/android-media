@@ -1,5 +1,6 @@
 package com.tokopedia.checkout.view.adapter
 
+import android.annotation.SuppressLint
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -462,6 +463,7 @@ class ShipmentAdapter @Inject constructor(
         compositeSubscription?.clear()
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun clearData() {
         shipmentDataList.clear()
         shipmentCartItemModelList = null
@@ -742,8 +744,8 @@ class ShipmentAdapter @Inject constructor(
         var eligibleNewShippingExperience = false
         for (position in shipmentDataList.indices) {
             if (shipmentDataList[position] is ShipmentCartItemModel) {
-                val shipmentCartItemModel = shipmentDataList[position] as ShipmentCartItemModel?
-                if (shipmentCartItemModel!!.selectedShipmentDetailData != null) {
+                val shipmentCartItemModel = shipmentDataList[position] as ShipmentCartItemModel
+                if (shipmentCartItemModel.selectedShipmentDetailData != null) {
                     shipmentCartItemModel.selectedShipmentDetailData = null
                     shipmentCartItemModel.voucherLogisticItemUiModel = null
                     notifyItemChanged(position)
@@ -1130,7 +1132,7 @@ class ShipmentAdapter @Inject constructor(
 
     fun getShipmentCartItemModelByIndex(index: Int): ShipmentCartItemModel? {
         return if (shipmentDataList.isNotEmpty() && index >= 0 && index < shipmentDataList.size) {
-            if (shipmentDataList[index] is ShipmentCartItemModel) shipmentDataList[index] as ShipmentCartItemModel? else null
+            if (shipmentDataList[index] is ShipmentCartItemModel) shipmentDataList[index] as ShipmentCartItemModel else null
         } else {
             null
         }
@@ -1335,20 +1337,6 @@ class ShipmentAdapter @Inject constructor(
         shipmentDataList[position] = shipmentCartItemModel
         notifyItemChanged(position)
     }
-
-//    fun setPlatformFeeData(platformFeeModel: ShipmentPaymentFeeModel?) {
-//        if (shipmentCostModel != null) {
-//            shipmentCostModel!!.dynamicPlatformFee = platformFeeModel!!
-//        }
-//    }
-
-//    fun getShipmentCostItemIndex(): Int {
-//        var index = 0
-//        if (shipmentCostModel != null) {
-//            index = shipmentDataList.indexOf(shipmentCostModel!!)
-//        }
-//        return index
-//    }
 
     fun updateItem(item: Any, position: Int) {
         shipmentDataList[position] = item

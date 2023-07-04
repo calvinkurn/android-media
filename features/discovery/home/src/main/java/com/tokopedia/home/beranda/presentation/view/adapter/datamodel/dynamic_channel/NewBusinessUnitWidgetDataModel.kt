@@ -15,6 +15,13 @@ data class NewBusinessUnitWidgetDataModel(
     val contentsList: List<BusinessUnitDataModel>? = null,
     val channelModel: ChannelModel
 ) : HomeVisitable{
+
+    val channelId: String
+        get() = channelModel.id
+
+    val campaignCode: String
+        get() = channelModel.trackingAttributionModel.campaignCode
+
     override fun isTrackingCombined(): Boolean {
         return false
     }
@@ -75,8 +82,11 @@ data class NewBusinessUnitWidgetDataModel(
 }
 
 data class BusinessUnitDataModel(
+        val tabId: String = "",
         val tabName: String = "",
         val tabPosition: Int,
+        val channelId: String = "",
+        val campaignCode: String = "",
         val list: List<BusinessUnitItemDataModel>? = null
 )
 
