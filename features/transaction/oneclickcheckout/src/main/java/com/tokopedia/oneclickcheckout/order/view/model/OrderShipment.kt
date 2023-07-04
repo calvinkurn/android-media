@@ -27,6 +27,7 @@ data class OrderShipment(
     val checksum: String? = null,
     val shippingPrice: Int? = null,
     val logisticPromoTickerMessage: String? = null,
+    val isShowLogisticPromoTickerMessage: Boolean = true,
     val logisticPromoViewModel: LogisticPromoUiModel? = null,
     val logisticPromoShipping: ShippingCourierUiModel? = null,
     val isApplyLogisticPromo: Boolean = false,

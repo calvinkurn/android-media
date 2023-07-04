@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#fff">
+    android:background="@color/Unify_Background">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/groupDetailChipsRv"
@@ -16,7 +16,8 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:itemCount="5"
         tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        tools:listitem="@layout/topads_layout"
-        tools:orientation="horizontal" />
+        tools:listitem="@layout/topads_insight_chips_item_layout"
+        tools:orientation="horizontal"
+        android:layout_marginTop="10dp"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

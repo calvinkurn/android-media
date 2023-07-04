@@ -9,6 +9,7 @@ import com.tokopedia.header.HeaderUnify
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.di.DaggerTopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.GROUP_DETAIL_BUNDLE_KEY
 import com.tokopedia.topads.dashboard.recommendation.views.fragments.GroupDetailFragment
 
 class GroupDetailActivity : BaseSimpleActivity(), HasComponent<TopAdsDashboardComponent> {
@@ -26,7 +27,7 @@ class GroupDetailActivity : BaseSimpleActivity(), HasComponent<TopAdsDashboardCo
     }
 
     override fun getNewFragment(): Fragment =
-        GroupDetailFragment.createInstance(intent.getBundleExtra("groupDetailBundle"))
+        GroupDetailFragment.createInstance(intent.getBundleExtra(GROUP_DETAIL_BUNDLE_KEY))
 
     override fun getLayoutRes(): Int {
         return R.layout.activity_topads_group_details

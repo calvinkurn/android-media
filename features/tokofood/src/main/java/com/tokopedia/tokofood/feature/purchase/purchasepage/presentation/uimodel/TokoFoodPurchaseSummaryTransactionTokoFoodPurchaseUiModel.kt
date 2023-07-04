@@ -1,7 +1,7 @@
 package com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodSummaryItemDetailInfo
+import com.tokopedia.tokofood.common.domain.response.CartListAddOnsCustomResponseInfo
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.adapter.TokoFoodPurchaseAdapterTypeFactory
 
 data class TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModel(
@@ -23,7 +23,7 @@ data class TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModel(
     data class Transaction(
             var title: String = "",
             var value: String = "",
-            var detailInfo: CheckoutTokoFoodSummaryItemDetailInfo? = null
+            var detailInfo: CartListAddOnsCustomResponseInfo? = null
     )
 
 }

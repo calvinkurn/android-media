@@ -139,9 +139,14 @@ class OrderPreferenceCard(
     }
 
     private fun renderBboTicker(shipping: OrderShipment) {
+        val logisticPromoTickerMessage = if (shipping.isShowLogisticPromoTickerMessage) {
+            shipping.logisticPromoTickerMessage
+        } else {
+            null
+        }
         binding.shippingOccWidget.renderBboTicker(
             logisticPromo = shipping.shippingRecommendationData?.logisticPromo,
-            logisticPromoTickerMessage = shipping.logisticPromoTickerMessage,
+            logisticPromoTickerMessage = logisticPromoTickerMessage,
             onTickerClickListener = {
                 if (profile.enable) {
                     shipping.shippingRecommendationData?.logisticPromo?.apply {

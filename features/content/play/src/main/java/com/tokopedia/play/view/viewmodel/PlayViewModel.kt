@@ -29,7 +29,6 @@ import com.tokopedia.play.extensions.isAnyShown
 import com.tokopedia.play.ui.chatlist.model.PlayChat
 import com.tokopedia.play.ui.engagement.model.EngagementUiModel
 import com.tokopedia.play.ui.toolbar.model.PartnerFollowAction
-import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.util.CastPlayerHelper
 import com.tokopedia.play.util.channel.state.PlayViewerChannelStateListener
 import com.tokopedia.play.util.channel.state.PlayViewerChannelStateProcessor
@@ -58,6 +57,7 @@ import com.tokopedia.play.view.uimodel.recom.tagitem.TagItemUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.VariantUiModel
 import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
 import com.tokopedia.play.view.uimodel.state.*
+import com.tokopedia.play.widget.ui.model.PartnerType
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetConfigUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
@@ -526,6 +526,9 @@ class PlayViewModel @AssistedInject constructor(
 
     val userId: String
         get() = userSession.userId
+
+    val shopId: String
+        get() = userSession.shopId
 
     val isCastAllowed: Boolean
         get() {
@@ -998,6 +1001,7 @@ class PlayViewModel @AssistedInject constructor(
             is PiPState.Requesting -> {
                 _observableEventPiPState.value = Event(PiPState.InPiP(state.pipMode))
             }
+            else -> {}
         }
     }
 
@@ -1097,6 +1101,14 @@ class PlayViewModel @AssistedInject constructor(
             }
             EmptyPageWidget -> handleEmptyExplore()
             is SelectReason -> handleSelectedReason(action.reasonId)
+            is CommentVisibilityAction -> {
+                _isBottomSheetsShown.update { action.isOpen }
+                viewModelScope.launch {
+                    _uiEvent.emit(CommentVisibilityEvent(action.isOpen))
+                }
+                if(!action.isOpen) return
+                updateCommentConfig()
+            }
         }
     }
 
@@ -1169,6 +1181,7 @@ class PlayViewModel @AssistedInject constructor(
         updateLiveChannelChatHistory(channelData)
         updateChannelInfo(channelData)
         updateCartCount()
+        updateCommentConfig()
 
         sendInitialLog()
     }
@@ -1310,7 +1323,7 @@ class PlayViewModel @AssistedInject constructor(
         _tagItems.update { it.copy(resultState = ResultState.Loading) }
         viewModelScope.launchCatchError(dispatchers.io, block = {
             val warehouseId = _warehouseInfo.value.warehouseId
-            val tagItem = repo.getTagItem(channelId, warehouseId, _partnerInfo.value.name)
+            val tagItem = repo.getTagItem(channelId, warehouseId, _partnerInfo.value.name, channelType)
 
             _tagItems.update {
                 tagItem
@@ -1405,6 +1418,7 @@ class PlayViewModel @AssistedInject constructor(
             BottomInsetsType.VariantSheet -> onHideVariantSheet()
             BottomInsetsType.LeaderboardSheet -> hideLeaderboardSheet()
             BottomInsetsType.CouponSheet -> hideCouponSheet()
+            else -> {}
         }
         return shownBottomSheets.isNotEmpty()
     }
@@ -1835,7 +1849,7 @@ class PlayViewModel @AssistedInject constructor(
                 }
             }
             is ProductSection -> {
-                val mappedData = playSocketToModelMapper.mapProductSection(result)
+                val mappedData = playSocketToModelMapper.mapProductSection(result, channelType)
                 val updatedSections = repo.updateCampaignReminderStatus(
                     mappedData.product.productSectionList.filterIsInstance<ProductSectionUiModel.Section>()
                 )
@@ -2968,6 +2982,13 @@ class PlayViewModel @AssistedInject constructor(
         }
     }
 
+    private fun updateCommentConfig() {
+        if (!channelType.isVod) return
+        viewModelScope.launchCatchError(block = {
+            val response = repo.getCountComment(channelId)
+            _channelDetail.update { it.copy(commentConfig = response) }
+        }){}
+    }
     private fun handleEmptyExplore() {
         val position = _exploreWidget.value.chips.items.indexOfFirst { it.isSelected }
         val finalPosition = if (position >= _exploreWidget.value.chips.items.size) 0 else position.plus(1)

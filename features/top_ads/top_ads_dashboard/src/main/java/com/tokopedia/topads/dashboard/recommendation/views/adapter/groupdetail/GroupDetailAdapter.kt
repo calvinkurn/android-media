@@ -6,8 +6,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.base.view.adapter.viewholders.HideViewHolder
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.GroupDetailDataModel
-import com.tokopedia.topads.dashboard.recommendation.data.model.local.groupdetailchips.GroupDetailChipsUiModel
 import com.tokopedia.topads.dashboard.recommendation.views.adapter.groupdetail.factory.GroupDetailAdapterFactory
 import com.tokopedia.topads.dashboard.recommendation.views.adapter.groupdetail.viewholder.GroupDetailChipsViewHolder
 
@@ -33,17 +33,11 @@ class GroupDetailAdapter(private val adapterTypeFactory: GroupDetailAdapterFacto
     }
 
     override fun getItemViewType(position: Int): Int {
-        return currentList[position]?.type(adapterTypeFactory)!!
+        return currentList[position]?.type(adapterTypeFactory) ?: HideViewHolder.LAYOUT
     }
 
     override fun onViewAttachedToWindow(holder: AbstractViewHolder<*>) {
         (holder as? GroupDetailChipsViewHolder)?.onViewAttachedToWindow()
-    }
-
-    fun updateItem() {
-        val currentList = currentList.toMutableList()
-        currentList[2] = GroupDetailChipsUiModel()
-        submitList(currentList)
     }
 
 }

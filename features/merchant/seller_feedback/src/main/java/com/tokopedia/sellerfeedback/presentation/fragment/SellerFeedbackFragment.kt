@@ -7,9 +7,13 @@ import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.view.*
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import android.view.animation.AnimationUtils
-import android.widget.EditText
 import android.widget.FrameLayout
 import androidx.annotation.ColorRes
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -23,8 +27,17 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.imagepicker.common.*
+import com.tokopedia.imagepicker.common.GalleryType
+import com.tokopedia.imagepicker.common.ImagePickerBuilder
+import com.tokopedia.imagepicker.common.ImagePickerMultipleSelectionBuilder
+import com.tokopedia.imagepicker.common.ImagePickerPageSource
+import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
+import com.tokopedia.imagepicker.common.ImagePickerTab
+import com.tokopedia.imagepicker.common.putImagePickerBuilder
+import com.tokopedia.imagepicker.common.putParamPageSource
 import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.seller.active.common.features.sellerfeedback.ScreenshotPreferenceManager
+import com.tokopedia.seller.active.common.features.sellerfeedback.SuccessToasterHelper
 import com.tokopedia.sellerfeedback.BuildConfig
 import com.tokopedia.sellerfeedback.R
 import com.tokopedia.sellerfeedback.SellerFeedbackTracking
@@ -40,8 +53,6 @@ import com.tokopedia.sellerfeedback.presentation.uimodel.ImageFeedbackUiModel
 import com.tokopedia.sellerfeedback.presentation.uimodel.Score
 import com.tokopedia.sellerfeedback.presentation.util.ScreenShootPageHelper
 import com.tokopedia.sellerfeedback.presentation.util.ScreenshotManager
-import com.tokopedia.sellerfeedback.presentation.util.ScreenshotPreferenceManager
-import com.tokopedia.sellerfeedback.presentation.util.SuccessToasterHelper
 import com.tokopedia.sellerfeedback.presentation.view.SellerFeedbackToolbar
 import com.tokopedia.sellerfeedback.presentation.viewholder.BaseImageFeedbackViewHolder
 import com.tokopedia.sellerfeedback.presentation.viewmodel.SellerFeedbackViewModel
@@ -104,7 +115,7 @@ class SellerFeedbackFragment : BaseDaggerFragment(),
     private var chipFeedback: ChipsUnify? = null
     private var chipReportError: ChipsUnify? = null
     private var chipFeatureRequest: ChipsUnify? = null
-    private var textFieldFeedbackPage: EditText? = null
+    private var textFieldFeedbackPage: Typography? = null
     private var textAreaFeedbackDetail: TextAreaUnify? = null
     private var buttonSend: UnifyButton? = null
     private var rvImageFeedback: RecyclerView? = null
@@ -259,21 +270,12 @@ class SellerFeedbackFragment : BaseDaggerFragment(),
         }
 
         val pageClassName = arguments?.getString(EXTRA_ACTIVITY_NAME).orEmpty()
-        textFieldFeedbackPage?.setText(
-            ScreenShootPageHelper.getPageByClassName(
-                requireContext(),
-                pageClassName
-            )
+        textFieldFeedbackPage?.text = ScreenShootPageHelper.getPageByClassName(
+            requireContext(), pageClassName
         )
         checkButtonSend()
-        textFieldFeedbackPage?.setOnClickListener {
-            val currentValue = textFieldFeedbackPage?.text.toString()
-            val bottomSheet = SellerFeedbackPageChooserBottomSheet.createInstance(currentValue)
-            bottomSheet.setListener {
-                textFieldFeedbackPage?.setText(it)
-                checkButtonSend()
-            }
-            activity?.supportFragmentManager?.let { bottomSheet.show(it, null) }
+        textFieldFeedbackPage?.setOnClickListener { v ->
+            setOnSelectPageClicked()
         }
 
         textAreaFeedbackDetail?.textAreaInput?.addTextChangedListener(feedbackDetailTextWatcher)
@@ -294,6 +296,16 @@ class SellerFeedbackFragment : BaseDaggerFragment(),
                 viewModel?.submitFeedback(sellerFeedback)
             }
         }
+    }
+
+    private fun setOnSelectPageClicked() {
+        val currentValue = textFieldFeedbackPage?.text?.toString().orEmpty()
+        val bottomSheet = SellerFeedbackPageChooserBottomSheet.createInstance(currentValue)
+        bottomSheet.setListener {
+            textFieldFeedbackPage?.text = it
+            checkButtonSend()
+        }
+        activity?.supportFragmentManager?.let { bottomSheet.show(it, null) }
     }
 
     private fun setupTicker() {
@@ -396,7 +408,7 @@ class SellerFeedbackFragment : BaseDaggerFragment(),
     }
 
     private fun getFeedbackPage(): String {
-        return textFieldFeedbackPage?.text.toString()
+        return textFieldFeedbackPage?.text?.toString().orEmpty()
     }
 
     private fun getFeedbackDetail(): String {
@@ -477,11 +489,12 @@ class SellerFeedbackFragment : BaseDaggerFragment(),
     }
 
     private fun checkPermission() {
-        permissionCheckerHelper?.checkPermission(this, if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
-            PERMISSION_READ_MEDIA_IMAGES
-        }else{
-            PERMISSION_READ_EXTERNAL_STORAGE
-        },
+        permissionCheckerHelper?.checkPermission(this,
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                PERMISSION_READ_MEDIA_IMAGES
+            } else {
+                PERMISSION_READ_EXTERNAL_STORAGE
+            },
             object : PermissionCheckerHelper.PermissionCheckListener {
 
                 override fun onPermissionDenied(permissionText: String) {

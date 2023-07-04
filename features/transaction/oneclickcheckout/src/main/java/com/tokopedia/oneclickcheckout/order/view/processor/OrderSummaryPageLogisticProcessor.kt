@@ -843,6 +843,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(
                             shippingEta = getShippingCourierETA(selectedShippingCourierUiModel.productData.estimatedTimeArrival),
                             shippingRecommendationData = shippingRecommendationData,
                             logisticPromoShipping = null,
+                            isShowLogisticPromoTickerMessage = false,
                             isApplyLogisticPromo = false
                         )
                     }
@@ -899,6 +900,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(
                 shippingEta = getShippingCourierETA(selectedShippingCourierUiModel.productData.estimatedTimeArrival),
                 shippingRecommendationData = shippingRecommendationData,
                 logisticPromoTickerMessage = null,
+                isShowLogisticPromoTickerMessage = false,
                 logisticPromoViewModel = null,
                 logisticPromoShipping = null,
                 isApplyLogisticPromo = false,
@@ -963,6 +965,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(
                         serviceErrorMessage = if (needPinpoint) OrderSummaryPageViewModel.NEED_PINPOINT_ERROR_MESSAGE else logisticPromoShipping.productData.error?.errorMessage,
                         needPinpoint = needPinpoint,
                         logisticPromoTickerMessage = null,
+                        isShowLogisticPromoTickerMessage = false,
                         isApplyLogisticPromo = true,
                         logisticPromoShipping = logisticPromoShipping
                     ),

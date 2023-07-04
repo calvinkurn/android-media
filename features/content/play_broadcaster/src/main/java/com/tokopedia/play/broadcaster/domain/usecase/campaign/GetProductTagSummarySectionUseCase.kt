@@ -55,6 +55,7 @@ class GetProductTagSummarySectionUseCase @Inject constructor(
                             quantity
                             is_pinned: isPinned
                             is_pinnable: isPinnable
+                            product_number: productNumber
                         }
                     }
                 }

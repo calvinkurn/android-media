@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.smoothSnapToPosition
 import com.tokopedia.topads.dashboard.R
+import com.tokopedia.topads.dashboard.recommendation.common.decoration.ChipsInsightItemDecoration
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.data.ChipsData.chipsList
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.groupdetailchips.GroupDetailChipsUiModel
 import com.tokopedia.topads.dashboard.recommendation.views.adapter.groupdetail.GroupDetailsChipsAdapter
@@ -24,6 +25,7 @@ class GroupDetailChipsViewHolder(private val view: View, private val onChipClick
         adapter = GroupDetailsChipsAdapter(onChipsClick)
         chipsRv.layoutManager =
             LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
+        chipsRv.addItemDecoration(ChipsInsightItemDecoration())
         chipsRv.adapter = adapter
     }
 
@@ -43,6 +45,7 @@ class GroupDetailChipsViewHolder(private val view: View, private val onChipClick
     }
 
     fun onViewAttachedToWindow() {
+        adapter?.notifyDataSetChanged()
         chipsRv.smoothSnapToPosition(chipsList.findPositionOfSelected { it.isSelected })
     }
 

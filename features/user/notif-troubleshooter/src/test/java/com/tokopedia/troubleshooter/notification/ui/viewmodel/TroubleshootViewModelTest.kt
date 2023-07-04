@@ -29,7 +29,7 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.*
-import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -102,7 +102,7 @@ class TroubleshootViewModelTest {
         verify { notificationStatus.onChanged(expectedValue) }
     }
 
-    @Test fun `it should troubleshoot push notification properly`() = runBlockingTest {
+    @Test fun `it should troubleshoot push notification properly`() = runTest {
         val expectedValue = NotificationTroubleshoot().notificationSendTroubleshoot
 
         coEvery {
@@ -115,7 +115,7 @@ class TroubleshootViewModelTest {
         viewModel.troubleshootSuccess isEqualsTo expectedValue
     }
 
-    @Test fun `it should cannot troubleshoot`() = runBlockingTest {
+    @Test fun `it should cannot troubleshoot`() = runTest {
         val expectedValue = Throwable()
 
         coEvery { troubleshootUseCase(Unit) } throws expectedValue
@@ -224,7 +224,7 @@ class TroubleshootViewModelTest {
     }
 
     @Test fun `it should return seller settings properly`() {
-        runBlockingTest {
+        runTest {
             mockkStatic(GlobalConfig::class)
 
             val response = FileUtils.parse<UserNotificationResponse>(
@@ -245,7 +245,7 @@ class TroubleshootViewModelTest {
     }
 
     @Test fun `it should return user settings as buyer and have shop properly`() {
-        runBlockingTest {
+        runTest {
             mockkStatic(GlobalConfig::class)
 
             val response = FileUtils.parse<UserNotificationResponse>(
@@ -285,7 +285,7 @@ class TroubleshootViewModelTest {
         verify { notificationSetting.onChanged(expectedValue) }
     }
 
-    @Test fun `it should cannot get user settings`() = runBlockingTest {
+    @Test fun `it should cannot get user settings`() = runTest {
         val expectedValue = Throwable()
 
         coEvery {

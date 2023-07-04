@@ -5,7 +5,7 @@
     android:id="@+id/container_feed"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/feed_component_dp_1">
+    android:layout_marginTop="@dimen/content_common_space_1">
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/image_content"

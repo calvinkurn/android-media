@@ -6,6 +6,7 @@ import android.graphics.Matrix
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.media.editor.ui.uimodel.*
 import com.tokopedia.media.editor.utils.*
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import javax.inject.Inject
 
 interface BitmapCreationRepository {
@@ -17,13 +18,20 @@ interface BitmapCreationRepository {
 class BitmapCreationRepositoryImpl @Inject constructor(
     @ApplicationContext private val context: Context
 ) : BitmapCreationRepository {
+    private val refFirebase: FirebaseRemoteConfigImpl = FirebaseRemoteConfigImpl(context)
+
     override fun isBitmapOverflow(width: Int, height: Int): Boolean {
-        val memoryUsage = width * height * BITMAP_PIXEL_SIZE
+        var multiplier = DEFAULT_MULTIPLIER
+        try {
+            multiplier = refFirebase.getString(REMOTE_CONFIG_MULTIPLIER_KEY).toFloat()
+        } catch (_: Exception) {}
+
+        val memoryUsage = (width * height * BITMAP_PIXEL_SIZE) * multiplier
         val sourceSize = Pair(width, height)
 
         // check memory limit when create new bitmap
-        return if (context.checkMemoryOverflow(memoryUsage)) {
-             context.showMemoryLimitToast(sourceSize)
+        return if (context.checkMemoryOverflow(memoryUsage.toInt())) {
+             context.showMemoryLimitToast(sourceSize, multiplier = multiplier)
             true
         } else {
             false
@@ -193,5 +201,8 @@ class BitmapCreationRepositoryImpl @Inject constructor(
         private const val BITMAP_PIXEL_SIZE = 4
         private const val HALF_DIVIDER = 2f
         private const val SCALE_MIRROR_VALUE = -1f
+
+        private const val REMOTE_CONFIG_MULTIPLIER_KEY = "android_media_editor_memory_multiplier"
+        private const val DEFAULT_MULTIPLIER = 1.25f
     }
 }

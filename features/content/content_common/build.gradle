@@ -48,6 +48,13 @@ android {
     testOptions {
         animationsDisabled = true
     }
+
+    compileOptions {
+        coreLibraryDesugaringEnabled = true
+
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
+    }
 }
 
 dependencies {
@@ -61,7 +68,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.resourcesCommon)
     implementation projectOrAar(rootProject.ext.features.topAdsSdk)
     implementation projectOrAar(rootProject.ext.features.medialoader)
-    implementation projectOrAar(rootProject.ext.features.feedComponent)
 
     implementation projectOrAar(rootProject.ext.libraries.analytics)
     implementation projectOrAar(rootProject.ext.libraries.applink)
@@ -97,6 +103,7 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
+    implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
 
     implementation rootProject.ext.networkDependencies.glide
@@ -132,6 +139,8 @@ dependencies {
 
     androidTestImplementation rootProject.ext.unifyDependencies.sortFilter
     androidTestImplementation projectOrAar(rootProject.ext.features.filter)
+
+    coreLibraryDesugaring rootProject.ext.miscDependencies.desugarJdk
 }
 
 project.ext {

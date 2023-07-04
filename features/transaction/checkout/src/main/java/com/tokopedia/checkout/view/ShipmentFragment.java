@@ -45,6 +45,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Pair;
 import android.view.LayoutInflater;
@@ -84,6 +85,10 @@ import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection;
 import com.tokopedia.checkout.analytics.CheckoutEgoldAnalytics;
 import com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics;
 import com.tokopedia.checkout.analytics.CornerAnalytics;
+import com.tokopedia.checkout.domain.model.platformfee.PaymentFee;
+import com.tokopedia.checkout.domain.model.platformfee.PaymentFeeGqlResponse;
+import com.tokopedia.checkout.domain.model.platformfee.PaymentFeeCheckoutRequest;
+import com.tokopedia.checkout.view.uimodel.ShipmentPaymentFeeModel;
 import com.tokopedia.checkout.data.model.request.checkout.old.DataCheckoutRequest;
 import com.tokopedia.checkout.domain.mapper.ShipmentAddOnMapper;
 import com.tokopedia.checkout.domain.model.cartshipmentform.CampaignTimerUi;
@@ -201,6 +206,7 @@ import com.tokopedia.purchase_platform.common.feature.sellercashback.SellerCashb
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementHolderData;
 import com.tokopedia.purchase_platform.common.utils.Utils;
 import com.tokopedia.purchase_platform.common.utils.UtilsKt;
+import com.tokopedia.unifycomponents.BottomSheetUnify;
 import com.tokopedia.unifycomponents.TimerUnify;
 import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.unifyprinciples.Typography;
@@ -252,6 +258,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     private static final int ADD_ON_STATUS_DISABLE = 2;
 
     private static final String SHIPMENT_TRACE = "mp_shipment";
+
+    private static final String PLATFORM_FEE_CODE = "platform_fee";
 
     private static final String KEY_UPLOAD_PRESCRIPTION_IDS_EXTRA = "epharmacy_prescription_ids";
     public static final String ARG_IS_ONE_CLICK_SHIPMENT = "ARG_IS_ONE_CLICK_SHIPMENT";
@@ -1300,6 +1308,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         if (getContext() != null) {
             ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.getShipmentCartItemModelByIndex(itemPosition);
             if (shipmentCartItemModel != null) {
+                shipmentLoadingIndex = -1;
                 shipmentCartItemModel.setStateLoadingCourierState(false);
                 if (isTradeInDropOff) {
                     shipmentCartItemModel.setStateHasLoadCourierTradeInDropOffState(true);
@@ -4280,5 +4289,108 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 break;
             }
         }
+    }
+
+    @Override
+    public void checkPlatformFee() {
+        if (shipmentPresenter.getShipmentPlatformFeeData().isEnable()) {
+            ShipmentPaymentFeeModel platformFeeModel = shipmentPresenter.getShipmentCostModel().getDynamicPlatformFee();
+            if (shipmentPresenter.getShipmentCostModel().getTotalPrice() > platformFeeModel.getMinRange()
+                    && shipmentPresenter.getShipmentCostModel().getTotalPrice() < platformFeeModel.getMaxRange()) {
+                shipmentAdapter.setPlatformFeeData(platformFeeModel);
+                updateCost();
+            } else {
+                getPaymentFee();
+            }
+        }
+    }
+
+    private void updateCost() {
+        if (rvShipment.isComputingLayout()) {
+            rvShipment.post(() -> {
+                shipmentAdapter.updateShipmentCostModel();
+                shipmentAdapter.updateItemAndTotalCost(shipmentAdapter.getShipmentCostItemIndex());
+            });
+        } else {
+            shipmentAdapter.updateShipmentCostModel();
+            shipmentAdapter.updateItemAndTotalCost(shipmentAdapter.getShipmentCostItemIndex());
+        }
+    }
+
+    @Override
+    public void showPlatformFeeTooltipInfoBottomSheet(ShipmentPaymentFeeModel platformFeeModel) {
+        View childView = View.inflate(getContext(), R.layout.bottom_sheet_platform_fee_info, null);
+        Typography tvPlatformFeeInfo = childView.findViewById(R.id.tv_platform_fee_info);
+        tvPlatformFeeInfo.setText(platformFeeModel.getTooltip());
+
+        BottomSheetUnify bottomSheetUnify = new BottomSheetUnify();
+        bottomSheetUnify.setTitle(getString(R.string.platform_fee_title_info, platformFeeModel.getTitle()));
+        bottomSheetUnify.setShowCloseIcon(true);
+        bottomSheetUnify.setChild(childView);
+        bottomSheetUnify.show(getChildFragmentManager(), null);
+        checkoutAnalyticsCourierSelection.eventClickPlatformFeeInfoButton(userSessionInterface.getUserId(),
+                Utils.removeDecimalSuffix(CurrencyFormatUtil.INSTANCE.convertPriceValueToIdrFormat((long) platformFeeModel.getFee(), false)));
+    }
+
+    private void getPaymentFee() {
+        PaymentFeeCheckoutRequest paymentFeeCheckoutRequest = new PaymentFeeCheckoutRequest();
+        paymentFeeCheckoutRequest.setGatewayCode("");
+        paymentFeeCheckoutRequest.setProfileCode(shipmentPresenter.getShipmentPlatformFeeData().getProfileCode());
+        paymentFeeCheckoutRequest.setPaymentAmount(shipmentPresenter.getShipmentCostModel().getTotalPrice());
+        paymentFeeCheckoutRequest.setAdditionalData(shipmentPresenter.getShipmentPlatformFeeData().getAdditionalData());
+        shipmentPresenter.getDynamicPaymentFee(paymentFeeCheckoutRequest);
+    }
+
+    @Override
+    public void showPaymentFeeData(PaymentFeeGqlResponse platformFeeData) {
+        ShipmentPaymentFeeModel platformFeeModel = new ShipmentPaymentFeeModel();
+        for (PaymentFee paymentFee : platformFeeData.getResponse().getData()) {
+            if (paymentFee.getCode().equalsIgnoreCase(PLATFORM_FEE_CODE)) {
+                platformFeeModel.setTitle(paymentFee.getTitle());
+                platformFeeModel.setFee(paymentFee.getFee());
+                platformFeeModel.setMinRange(paymentFee.getMinRange());
+                platformFeeModel.setMaxRange(paymentFee.getMaxRange());
+                platformFeeModel.setShowTooltip(paymentFee.getShowTooltip());
+                platformFeeModel.setTooltip(paymentFee.getTooltipInfo());
+                platformFeeModel.setShowSlashed(paymentFee.getShowSlashed());
+                platformFeeModel.setSlashedFee(paymentFee.getSlashedFee());
+            }
+        }
+        shipmentAdapter.setPlatformFeeData(platformFeeModel);
+        hideLoaderTotalPayment();
+        updateCost();
+        checkoutAnalyticsCourierSelection.eventViewPlatformFeeInCheckoutPage(userSessionInterface.getUserId(),
+                Utils.removeDecimalSuffix(CurrencyFormatUtil.INSTANCE.convertPriceValueToIdrFormat((long) platformFeeModel.getFee(), false)));
+    }
+
+    @Override
+    public void showPaymentFeeSkeletonLoading() {
+        ShipmentPaymentFeeModel platformFeeModel = new ShipmentPaymentFeeModel();
+        platformFeeModel.setLoading(true);
+        shipmentAdapter.setPlatformFeeData(platformFeeModel);
+        showLoaderTotalPayment();
+        updateCost();
+    }
+
+    public void showLoaderTotalPayment() {
+        ShipmentButtonPaymentModel shipmentButtonPaymentModel = shipmentPresenter.getShipmentButtonPaymentModel();
+        shipmentButtonPaymentModel.setLoading(true);
+        onNeedUpdateViewItem(shipmentAdapter.getItemCount() - 1);
+    }
+
+    public void hideLoaderTotalPayment() {
+        ShipmentButtonPaymentModel shipmentButtonPaymentModel = shipmentPresenter.getShipmentButtonPaymentModel();
+        shipmentButtonPaymentModel.setLoading(false);
+        onNeedUpdateViewItem(shipmentAdapter.getItemCount() - 1);
+    }
+
+    @Override
+    public void showPaymentFeeTickerFailedToLoad(String ticker) {
+        ShipmentPaymentFeeModel platformFeeModel = new ShipmentPaymentFeeModel();
+        platformFeeModel.setShowTicker(true);
+        platformFeeModel.setTicker(ticker);
+        shipmentAdapter.setPlatformFeeData(platformFeeModel);
+        hideLoaderTotalPayment();
+        updateCost();
     }
 }

@@ -50,6 +50,9 @@ class PlayShortsIdleManager @Inject constructor(
             State.Idle -> {
                 startIdleTimer(scope)
             }
+            else -> {
+                //no-op
+            }
         }
     }
 

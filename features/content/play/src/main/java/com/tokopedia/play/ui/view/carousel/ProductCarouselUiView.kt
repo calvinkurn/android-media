@@ -31,19 +31,24 @@ class ProductCarouselUiView(
     private val adapter = ProductCarouselAdapter(
         listener = object : ProductBasicViewHolder.Listener {
             override fun onClickProductCard(product: PlayProductUiModel.Product, position: Int) {
-                listener.onProductClicked(this@ProductCarouselUiView, product, position)
+                if (position <= lastCompletelyVisible) {
+                    listener.onProductClicked(this@ProductCarouselUiView, product, position)
+                }
             }
         },
         pinnedProductListener = object : ProductCarouselViewHolder.PinnedProduct.Listener {
             override fun onClicked(
                 viewHolder: ProductCarouselViewHolder.PinnedProduct,
-                product: PlayProductUiModel.Product
+                product: PlayProductUiModel.Product,
+                position: Int,
             ) {
-                listener.onProductClicked(
-                    this@ProductCarouselUiView,
-                    product,
-                    viewHolder.adapterPosition,
-                )
+                if (position <= lastCompletelyVisible) {
+                    listener.onProductClicked(
+                        this@ProductCarouselUiView,
+                        product,
+                        viewHolder.adapterPosition,
+                    )
+                }
             }
 
             override fun onTransactionClicked(
@@ -64,6 +69,11 @@ class ProductCarouselUiView(
     }
 
     private val defaultItemDecoration = ProductFeaturedItemDecoration(context)
+
+    private val lastCompletelyVisible : Int
+        get() {
+            return layoutManager.findLastCompletelyVisibleItemPosition()
+        }
 
     init {
         binding.rvProductFeatured.itemAnimator = null

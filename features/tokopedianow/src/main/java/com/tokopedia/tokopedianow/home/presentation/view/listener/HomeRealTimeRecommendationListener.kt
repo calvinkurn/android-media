@@ -16,7 +16,8 @@ import com.tokopedia.user.session.UserSessionInterface
 class HomeRealTimeRecommendationListener(
     private val tokoNowView: TokoNowView,
     private val viewModel: TokoNowHomeViewModel,
-    private val userSession: UserSessionInterface
+    private val userSession: UserSessionInterface,
+    private val onAddToCartBlocked: () -> Unit,
 ) : RealTimeRecommendationListener {
 
     private val context by lazy { tokoNowView.getFragmentPage().context }
@@ -25,7 +26,8 @@ class HomeRealTimeRecommendationListener(
         position: Int,
         product: ProductCardCompactCarouselItemUiModel
     ) {
-        RouteManager.route(context, product.appLink)
+        val appLink = viewModel.createAffiliateLink(product.appLink)
+        RouteManager.route(context, appLink)
     }
 
     override fun onAddToCartProductNonVariant(
@@ -39,6 +41,8 @@ class HomeRealTimeRecommendationListener(
                 productId = item.getProductId(),
                 quantity = quantity,
                 shopId = item.shopId,
+                stock = item.productCardModel.availableStock,
+                isVariant = item.productCardModel.isVariant,
                 type = TokoNowLayoutType.PRODUCT_RECOM
             )
         } else {
@@ -74,4 +78,6 @@ class HomeRealTimeRecommendationListener(
     override fun removeRealTimeRecommendation(data: HomeRealTimeRecomUiModel) {
         viewModel.removeRealTimeRecommendation(data.channelId, data.type)
     }
+
+    override fun onAddToCartProductBlocked() = onAddToCartBlocked()
 }

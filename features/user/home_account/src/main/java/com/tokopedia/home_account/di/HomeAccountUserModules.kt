@@ -8,16 +8,15 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
-import com.tokopedia.home_account.PermissionChecker
-import com.tokopedia.home_account.analytics.AddVerifyPhoneAnalytics
-import com.tokopedia.home_account.analytics.HomeAccountAnalytics
-import com.tokopedia.home_account.analytics.TokopediaPlusAnalytics
-import com.tokopedia.home_account.view.helper.StaticMenuGenerator
 import com.tokopedia.home_account.view.mapper.DataViewMapper
 import com.tokopedia.loginfingerprint.tracker.BiometricTracker
 import com.tokopedia.navigation_common.model.WalletPref
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform
+import com.tokopedia.sessioncommon.data.fingerprint.FingerprintPreference
+import com.tokopedia.sessioncommon.data.fingerprint.FingerprintPreferenceManager
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.user.session.datastore.UserSessionDataStore
@@ -33,6 +32,9 @@ import kotlinx.coroutines.Dispatchers
  */
 @Module
 class HomeAccountUserModules(val context: Context) {
+
+    @Provides
+    fun provideContext(): Context = context
 
     @Provides
     fun provideUserSessionInterface(@ApplicationContext context: Context?): UserSessionInterface {
@@ -65,26 +67,8 @@ class HomeAccountUserModules(val context: Context) {
 
     @Provides
     @ActivityScope
-    fun providePermissionCheck(@ApplicationContext context: Context, permissionChecker: PermissionCheckerHelper): PermissionChecker {
-        return PermissionChecker(context, permissionChecker)
-    }
-
-    @Provides
-    @ActivityScope
     fun provideHomeAccountPref(@ApplicationContext context: Context): SharedPreferences {
         return PreferenceManager.getDefaultSharedPreferences(context)
-    }
-
-    @Provides
-    @ActivityScope
-    fun provideHomeAccountAnalytics(userSession: UserSessionInterface): HomeAccountAnalytics {
-        return HomeAccountAnalytics(userSession)
-    }
-
-    @Provides
-    @ActivityScope
-    fun provideMenuGenerator(@ApplicationContext context: Context): StaticMenuGenerator {
-        return StaticMenuGenerator(context)
     }
 
     @Provides
@@ -100,13 +84,13 @@ class HomeAccountUserModules(val context: Context) {
 
     @Provides
     @ActivityScope
-    fun provideTokopediaPlusAnalytics(): TokopediaPlusAnalytics {
-        return TokopediaPlusAnalytics()
+    fun provideAbTestPlatform(): AbTestPlatform {
+        return RemoteConfigInstance.getInstance().abTestPlatform
     }
 
     @Provides
     @ActivityScope
-    fun provideAddVerifyPhoneAnalytics(): AddVerifyPhoneAnalytics {
-        return AddVerifyPhoneAnalytics()
+    fun provideFingerprintPrefManager(@ApplicationContext context: Context): FingerprintPreference {
+        return FingerprintPreferenceManager(context)
     }
 }

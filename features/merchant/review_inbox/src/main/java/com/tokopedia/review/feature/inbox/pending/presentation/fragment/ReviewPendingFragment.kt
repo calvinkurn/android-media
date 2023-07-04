@@ -345,7 +345,7 @@ class ReviewPendingFragment :
             )
         } else {
             val intent = RouteManager.getIntent(context, appLink)
-            if (appLink == ApplinkConst.PRODUCT_BULK_CREATE_REVIEW) {
+            if (appLink.startsWith(ApplinkConst.PRODUCT_BULK_CREATE_REVIEW)) {
                 startActivityForResult(intent, BULK_CREATE_REVIEW_REQUEST_CODE)
             } else {
                 startActivity(intent)

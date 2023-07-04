@@ -15,8 +15,8 @@ data class LogisticDriverModel(
 data class PrepaymentModel(
     var info: List<String> = listOf(),
     var presetAmount: List<Int> = listOf(),
-    var maxAmount: Int =  0,
-    var minAmount: Int =  0,
+    var maxAmount: Int = 0,
+    var minAmount: Int = 0,
     var paymentLink: String = ""
 )
 

@@ -1,5 +1,6 @@
 package com.tokopedia.play.domain.repository
 
+import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.TagItemUiModel
@@ -8,7 +9,7 @@ import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOpt
 
 interface PlayViewerTagItemRepository {
 
-    suspend fun getTagItem(channelId: String, warehouseId: String, partnerName: String): TagItemUiModel
+    suspend fun getTagItem(channelId: String, warehouseId: String, partnerName: String, channelType: PlayChannelType): TagItemUiModel
 
     suspend fun updateCampaignReminderStatus(
         productSections: List<ProductSectionUiModel.Section>,

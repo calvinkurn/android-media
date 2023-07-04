@@ -55,7 +55,7 @@ import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.searchbar.navigation_component.util.NavToolbarExt
 import com.tokopedia.tokofood.R
-import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodData
+import com.tokopedia.tokofood.common.domain.response.CartGeneralCartListData
 import com.tokopedia.tokofood.common.domain.response.Merchant
 import com.tokopedia.tokofood.common.minicartwidget.view.TokoFoodMiniCartWidget
 import com.tokopedia.tokofood.common.presentation.UiEvent
@@ -538,7 +538,7 @@ class TokoFoodHomeFragment :
     private fun onSearchBarClick() {
         analytics.clickSearchBar(userSession.userId, localCacheModel?.district_id)
         context?.let {
-            TokofoodRouteManager.routePrioritizeInternal(it, ApplinkConst.TokoFood.SEARCH)
+            TokofoodRouteManager.routePrioritizeInternal(it, ApplinkConstInternalTokoFood.SEARCH)
         }
     }
 
@@ -660,11 +660,11 @@ class TokoFoodHomeFragment :
             activityViewModel?.cartDataValidationFlow?.collect { uiEvent ->
                 when (uiEvent.state) {
                     UiEvent.EVENT_SUCCESS_VALIDATE_CHECKOUT -> {
-                        (uiEvent.data as? CheckoutTokoFoodData)?.let {
+                        (uiEvent.data as? CartGeneralCartListData)?.let {
                             analytics.clickAtc(userSession.userId, localCacheModel?.district_id, it)
-                            if (uiEvent.source == MINI_CART_SOURCE) {
-                                goToPurchasePage()
-                            }
+                        }
+                        if (uiEvent.source == MINI_CART_SOURCE) {
+                            goToPurchasePage()
                         }
                     }
                     UiEvent.EVENT_SUCCESS_LOAD_CART -> {
@@ -712,7 +712,7 @@ class TokoFoodHomeFragment :
         onOpenHomepage()
         showHomeLayout(data)
         getLayoutComponentData()
-        activityViewModel?.loadCartList(SOURCE)
+        activityViewModel?.loadCartList(MINI_CART_SOURCE)
         stopRenderPerformanceMonitoring()
     }
 
@@ -872,11 +872,11 @@ class TokoFoodHomeFragment :
     }
 
     private fun isChooseAddressWidgetDataUpdated(): Boolean {
-        localCacheModel?.let {
-            context?.apply {
+        localCacheModel?.let { cacheModel ->
+            context?.let {
                 return ChooseAddressUtils.isLocalizingAddressHasUpdated(
-                    this,
-                    it
+                    it,
+                    cacheModel
                 )
             }
         }
@@ -923,7 +923,7 @@ class TokoFoodHomeFragment :
     private fun onResultFromAddAddress(resultCode: Int, data: Intent?) {
         if (resultCode == Activity.RESULT_OK) {
             data?.let {
-                val addressDataModel = data?.getParcelableExtra<SaveAddressDataModel>(NEW_ADDRESS_PARCELABLE)
+                val addressDataModel = data.getParcelableExtra(NEW_ADDRESS_PARCELABLE) as? SaveAddressDataModel
                 addressDataModel?.let {
                     setupChooseAddress(it)
                 }

@@ -3,11 +3,6 @@ package com.tokopedia.csat_rating.presenter
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.csat_rating.data.BadCsatReasonListItem
 import com.tokopedia.csat_rating.fragment.BaseFragmentProvideRating.Companion.NO_EMOJI
-import com.tokopedia.csat_rating.presenter.BaseProvideRatingFragmentViewModel.Companion.FIFTH_EMOJI
-import com.tokopedia.csat_rating.presenter.BaseProvideRatingFragmentViewModel.Companion.FIRST_EMOJI
-import com.tokopedia.csat_rating.presenter.BaseProvideRatingFragmentViewModel.Companion.FOURTH_EMOJI
-import com.tokopedia.csat_rating.presenter.BaseProvideRatingFragmentViewModel.Companion.SECOND_EMOJI
-import com.tokopedia.csat_rating.presenter.BaseProvideRatingFragmentViewModel.Companion.THIRD_EMOJI
 import com.tokopedia.csat_rating.presenter.screenState.FifthScreenState
 import com.tokopedia.csat_rating.presenter.screenState.FirstScreenState
 import com.tokopedia.csat_rating.presenter.screenState.FourthScreenState
@@ -59,15 +54,15 @@ class BaseProvideRatingFragmentViewModelTest {
     fun `check setSelectedEmoji when is FIRST_EMOJI`() {
         val captionListDummy = setCaptionDummy()
         val questionListDummy = setQuestionDummy()
-        val targetCaption = captionListDummy[FIRST_EMOJI - 1]
-        val targetQuestion = questionListDummy[FIRST_EMOJI - 1]
+        val targetCaption = captionListDummy[Companion.FIRST_EMOJI - 1]
+        val targetQuestion = questionListDummy[Companion.FIRST_EMOJI - 1]
         viewModel.setCaption(captionListDummy)
         viewModel.setQuestion(questionListDummy)
-        viewModel.setSelectedEmoji(FIRST_EMOJI)
+        viewModel.setSelectedEmoji(BaseProvideRatingFragmentViewModel.FIRST_EMOJI)
         viewModel.setCsatTitle("ABC")
         val resultInReal = viewModel.screenState.value
 
-        assertEquals(viewModel.emojiState, FIRST_EMOJI)
+        assertEquals(viewModel.emojiState, BaseProvideRatingFragmentViewModel.FIRST_EMOJI)
         assertTrue(resultInReal is FirstScreenState)
         assertEquals(resultInReal?.getMessage(), targetCaption)
         assertEquals(resultInReal?.getQuestion(), targetQuestion)
@@ -78,15 +73,15 @@ class BaseProvideRatingFragmentViewModelTest {
     fun `check setSelectedEmoji when is SECOND_EMOJI`() {
         val captionListDummy = setCaptionDummy()
         val questionListDummy = setQuestionDummy()
-        val targetCaption = captionListDummy[SECOND_EMOJI - 1]
-        val targetQuestion = questionListDummy[SECOND_EMOJI - 1]
+        val targetCaption = captionListDummy[Companion.SECOND_EMOJI - 1]
+        val targetQuestion = questionListDummy[Companion.SECOND_EMOJI - 1]
         viewModel.setCaption(captionListDummy)
         viewModel.setQuestion(questionListDummy)
-        viewModel.setSelectedEmoji(SECOND_EMOJI)
+        viewModel.setSelectedEmoji(BaseProvideRatingFragmentViewModel.SECOND_EMOJI)
         viewModel.setCsatTitle("ABC")
         val resultInReal = viewModel.screenState.value
 
-        assertEquals(viewModel.emojiState, SECOND_EMOJI)
+        assertEquals(viewModel.emojiState, BaseProvideRatingFragmentViewModel.SECOND_EMOJI)
         assertTrue(resultInReal is SecondScreenState)
         assertEquals(resultInReal?.getMessage(), targetCaption)
         assertEquals(resultInReal?.getQuestion(), targetQuestion)
@@ -97,15 +92,15 @@ class BaseProvideRatingFragmentViewModelTest {
     fun `check setSelectedEmoji when is THIRD_EMOJI`() {
         val captionListDummy = setCaptionDummy()
         val questionListDummy = setQuestionDummy()
-        val targetCaption = captionListDummy[THIRD_EMOJI - 1]
-        val targetQuestion = questionListDummy[THIRD_EMOJI - 1]
+        val targetCaption = captionListDummy[Companion.THIRD_EMOJI - 1]
+        val targetQuestion = questionListDummy[Companion.THIRD_EMOJI - 1]
         viewModel.setCaption(captionListDummy)
         viewModel.setQuestion(questionListDummy)
-        viewModel.setSelectedEmoji(THIRD_EMOJI)
+        viewModel.setSelectedEmoji(BaseProvideRatingFragmentViewModel.THIRD_EMOJI)
         viewModel.setCsatTitle("ABC")
         val resultInReal = viewModel.screenState.value
 
-        assertEquals(viewModel.emojiState, THIRD_EMOJI)
+        assertEquals(viewModel.emojiState, BaseProvideRatingFragmentViewModel.THIRD_EMOJI)
         assertTrue(resultInReal is ThirdScreenState)
         assertEquals(resultInReal?.getMessage(), targetCaption)
         assertEquals(resultInReal?.getQuestion(), targetQuestion)
@@ -116,15 +111,15 @@ class BaseProvideRatingFragmentViewModelTest {
     fun `check setSelectedEmoji when is FOURTH_EMOJI`() {
         val captionListDummy = setCaptionDummy()
         val questionListDummy = setQuestionDummy()
-        val targetCaption = captionListDummy[FOURTH_EMOJI - 1]
-        val targetQuestion = questionListDummy[FOURTH_EMOJI - 1]
+        val targetCaption = captionListDummy[Companion.FOURTH_EMOJI - 1]
+        val targetQuestion = questionListDummy[Companion.FOURTH_EMOJI - 1]
         viewModel.setCaption(captionListDummy)
         viewModel.setQuestion(questionListDummy)
-        viewModel.setSelectedEmoji(FOURTH_EMOJI)
+        viewModel.setSelectedEmoji(BaseProvideRatingFragmentViewModel.FOURTH_EMOJI)
         viewModel.setCsatTitle("ABC")
         val resultInReal = viewModel.screenState.value
 
-        assertEquals(viewModel.emojiState, FOURTH_EMOJI)
+        assertEquals(viewModel.emojiState, BaseProvideRatingFragmentViewModel.FOURTH_EMOJI)
         assertTrue(resultInReal is FourthScreenState)
         assertEquals(resultInReal?.getMessage(), targetCaption)
         assertEquals(resultInReal?.getQuestion(), targetQuestion)
@@ -135,15 +130,15 @@ class BaseProvideRatingFragmentViewModelTest {
     fun `check setSelectedEmoji when is FIFTH_EMOJI`() {
         val captionListDummy = setCaptionDummy()
         val questionListDummy = setQuestionDummy()
-        val targetCaption = captionListDummy[FIFTH_EMOJI - 1]
-        val targetQuestion = questionListDummy[FIFTH_EMOJI - 1]
+        val targetCaption = captionListDummy[Companion.FIFTH_EMOJI - 1]
+        val targetQuestion = questionListDummy[Companion.FIFTH_EMOJI - 1]
         viewModel.setCaption(captionListDummy)
         viewModel.setQuestion(questionListDummy)
-        viewModel.setSelectedEmoji(FIFTH_EMOJI)
+        viewModel.setSelectedEmoji(BaseProvideRatingFragmentViewModel.FIFTH_EMOJI)
         viewModel.setCsatTitle("ABC")
         val resultInReal = viewModel.screenState.value
 
-        assertEquals(viewModel.emojiState, FIFTH_EMOJI)
+        assertEquals(viewModel.emojiState, BaseProvideRatingFragmentViewModel.FIFTH_EMOJI)
         assertTrue(resultInReal is FifthScreenState)
         assertEquals(resultInReal?.getMessage(), targetCaption)
         assertEquals(resultInReal?.getQuestion(), targetQuestion)
@@ -190,5 +185,13 @@ class BaseProvideRatingFragmentViewModelTest {
             "apa yang bisa kami tambahkan?",
             "apa yang bisa kami pertahankan?"
         )
+    }
+
+    companion object {
+        const val FIRST_EMOJI = 1
+        const val SECOND_EMOJI = 2
+        const val THIRD_EMOJI = 3
+        const val FOURTH_EMOJI = 4
+        const val FIFTH_EMOJI = 5
     }
 }

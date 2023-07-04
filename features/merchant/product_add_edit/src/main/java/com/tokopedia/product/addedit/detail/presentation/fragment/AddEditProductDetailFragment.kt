@@ -1187,17 +1187,20 @@ class AddEditProductDetailFragment :
     }
 
     private fun subscribeToShopInfo() {
-        viewModel.shopInfo.observe(viewLifecycleOwner, { shopInfoResponse ->
+        viewModel.shopInfo.observe(viewLifecycleOwner) { shopInfoResponse ->
             val shopInfo = shopInfoResponse.shopInfoById.result.firstOrNull()
             shopInfo?.run {
                 val totalTxSuccess = shopInfo.shopStats.totalTxSuccess.toIntOrZero()
                 viewModel.shopTier = shopInfo.goldOSData.shopTier
-                viewModel.isFreeOfServiceFee = viewModel.isFreeOfServiceFee(totalTxSuccess, viewModel.shopTier)
+                viewModel.isFreeOfServiceFee =
+                    viewModel.isFreeOfServiceFee(totalTxSuccess, viewModel.shopTier)
                 if (viewModel.isFreeOfServiceFee) {
                     setupCommissionInfoTips(commissionInfoTipsView, viewModel.isFreeOfServiceFee)
                     if (viewModel.shopTier == ShopStatusLevelDef.LEVEL_OFFICIAL_STORE) {
                         commissionInfoTipsView?.hide()
-                    } else { commissionInfoTipsView?.show() }
+                    } else {
+                        commissionInfoTipsView?.animateExpand()
+                    }
                 } else {
                     // display commission info tips when drafting or editing
                     val categoryIdStr = viewModel.productInputModel.detailInputModel.categoryId
@@ -1207,10 +1210,10 @@ class AddEditProductDetailFragment :
                     }
                 }
             }
-        })
-        viewModel.shopInfoError.observe(viewLifecycleOwner, {
+        }
+        viewModel.shopInfoError.observe(viewLifecycleOwner) {
             AddEditProductErrorHandler.logExceptionToCrashlytics(it)
-        })
+        }
     }
 
     private fun subscribeToCommissionInfo() {

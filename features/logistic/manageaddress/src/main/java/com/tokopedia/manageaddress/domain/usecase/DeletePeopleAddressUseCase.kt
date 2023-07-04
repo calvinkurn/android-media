@@ -21,8 +21,8 @@ class DeletePeopleAddressUseCase @Inject constructor(
 
     companion object {
         private val QUERY = """
-            mutation deleteAddress(${"$"}inputAddressId: Int!, ${"$"}isTokonowRequest: Boolean!) {
-              kero_remove_address(addr_id: ${"$"}inputAddressId, is_tokonow_request: ${"$"}isTokonowRequest) {
+            mutation deleteAddress(${"$"}inputAddressId: Int!, ${"$"}isTokonowRequest: Boolean!, ${"$"}consent_json: String) {
+              kero_remove_address(addr_id: ${"$"}inputAddressId, is_tokonow_request: ${"$"}isTokonowRequest, consent_json: ${"$"}consent_json) {
                     data{
                         is_success
                     }

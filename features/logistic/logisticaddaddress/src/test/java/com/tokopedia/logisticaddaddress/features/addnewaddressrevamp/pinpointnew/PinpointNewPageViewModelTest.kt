@@ -66,7 +66,7 @@ class PinpointNewPageViewModelTest {
 
     @Test
     fun `Get District Data Success`() {
-        coEvery { repo.getDistrictGeocode(any()) } returns AutoFillResponse()
+        coEvery { repo.getDistrictGeocode(any(), any()) } returns AutoFillResponse()
         pinpointNewPageViewModel.getDistrictData(1134.5, -6.4214)
         verify { autofillDistrictDataObserver.onChanged(match { it is Success }) }
     }
@@ -80,7 +80,7 @@ class PinpointNewPageViewModelTest {
 
     @Test
     fun `Get District Location Success`() {
-        coEvery { repo.getDistrict(any()) } returns GetDistrictResponse()
+        coEvery { repo.getDistrict(any(), any()) } returns GetDistrictResponse()
         pinpointNewPageViewModel.getDistrictLocation("12312")
         verify { districtLocationObserver.onChanged(match { it is Success }) }
     }

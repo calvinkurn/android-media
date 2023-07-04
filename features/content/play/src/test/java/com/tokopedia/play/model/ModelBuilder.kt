@@ -8,15 +8,11 @@ import com.tokopedia.play.util.video.state.PlayViewerVideoState
 import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.*
 import com.tokopedia.play.view.uimodel.recom.PlayShareInfoUiModel
-import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 import com.tokopedia.play.view.wrapper.PlayResult
 import com.tokopedia.play_common.model.PlayBufferControl
 import com.tokopedia.play_common.model.result.ResultState
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
-import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
-import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCategory
 import com.tokopedia.variant_common.model.GetProductVariantResponse
-
 
 /**
  * Created by jegul on 20/02/20
@@ -522,337 +518,191 @@ class ModelBuilder {
     """.trimIndent()
 
     private val channelTagItemsJson = """
-        {
-        "playGetTagsItemSection": {
-        "sections": [
-          {
-            "type": "other",
-            "title": "",
-            "countdown": {
-              "copy": ""
-            },
-            "background": {
-              "gradient": [],
-              "image_url": ""
-            },
-            "start_time": "1970-01-01T07:00:00+07:00",
-            "end_time": "1970-01-01T07:00:00+07:00",
-            "server_time": "2022-09-13T13:31:38+07:00",
-            "source_id": "0",
-            "products": [
-              {
-                "id": "205240239",
-                "name": "si tangan besi panas bisa melelehkan baja",
-                "image_url": "https://images.tokopedia.net/img/cache/700/product-1/2017/7/28/17227058/17227058_cb279d46-7257-4ec9-b47a-991eb2e261d4_620_372.jpg",
-                "shop_id": "1961630",
-                "original_price": 131313,
-                "original_price_formatted": "Rp 131.313",
-                "discount": 20,
-                "price": 105050,
-                "price_formatted": "Rp 105.050",
-                "quantity": 11,
-                "is_variant": false,
-                "is_available": true,
-                "order": 0,
-                "app_link": "tokopedia://product/205240239",
-                "web_link": "https://www.tokopedia.com/voc123/si-tangan-besi-panas-bisa-melelehkan-baja",
-                "min_quantity": 1,
-                "is_free_shipping": false,
-                "is_toko_now": false,
-                "is_pinned": false,
-                "available_buttons": [
-                  {
-                    "text": "+ Keranjang",
-                    "color": "SECONDARY_DISABLED",
-                    "button_type": "ATC"
-                  },
-                  {
-                    "text": "Beli",
-                    "color": "PRIMARY_DISABLED",
-                    "button_type": "GCR"
-                  }
-                ]
-              },
-              {
-                "id": "233501860",
-                "name": "KOL belum digoreng",
-                "image_url": "https://images.tokopedia.net/img/cache/700/product-1/2017/11/22/17227058/17227058_bb079da4-06f6-461e-bb5a-3d9f83339625_496_379.jpg",
-                "shop_id": "1961630",
-                "original_price": 80000,
-                "original_price_formatted": "Rp 80.000",
-                "discount": 0,
-                "price": 0,
-                "price_formatted": "",
-                "quantity": 20,
-                "is_variant": true,
-                "is_available": true,
-                "order": 1,
-                "app_link": "tokopedia://product/1810972910",
-                "web_link": "https://www.tokopedia.com/voc123/kol-belum-digoreng-hitam-0",
-                "min_quantity": 1,
-                "is_free_shipping": false,
-                "is_toko_now": false,
-                "is_pinned": false,
-                "available_buttons": [
-                  {
-                    "text": "+ Keranjang",
-                    "color": "SECONDARY_DISABLED",
-                    "button_type": "ATC"
-                  },
-                  {
-                    "text": "Beli",
-                    "color": "PRIMARY_DISABLED",
-                    "button_type": "GCR"
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "type": "other",
-            "title": "Produk Habis",
-            "countdown": {
-              "copy": ""
-            },
-            "background": {
-              "gradient": [],
-              "image_url": ""
-            },
-            "start_time": "0001-01-01T00:00:00Z",
-            "end_time": "0001-01-01T00:00:00Z",
-            "server_time": "2022-09-13T13:31:38+07:00",
-            "source_id": "",
-            "products": [
-              {
-                "id": "227295441",
-                "name": "Tengkurak",
-                "image_url": "https://images.tokopedia.net/img/cache/700/product-1/2017/11/10/17227058/17227058_7ec00048-b473-406e-918a-ec45d3e8e02e_948_1300.jpg",
-                "shop_id": "1961630",
-                "original_price": 700,
-                "original_price_formatted": "Rp 700",
-                "discount": 0,
-                "price": 0,
-                "price_formatted": "Rp 0",
-                "quantity": 0,
-                "is_variant": false,
-                "is_available": false,
-                "order": 2,
-                "app_link": "tokopedia://product/227295441",
-                "web_link": "https://www.tokopedia.com/voc123/tengkurak",
-                "min_quantity": 1,
-                "is_free_shipping": false,
-                "is_toko_now": false,
-                "is_pinned": false,
-                "available_buttons": [
-                  {
-                    "text": "+ Keranjang",
-                    "color": "SECONDARY_DISABLED",
-                    "button_type": "ATC"
-                  },
-                  {
-                    "text": "Beli",
-                    "color": "PRIMARY_DISABLED",
-                    "button_type": "GCR"
-                  }
-                ]
-              },
-              {
-                "id": "193124774",
-                "name": "aku ingin begini aku ingin begitu ingin ini ingin itu banyak sekaliiii",
-                "image_url": "https://images.tokopedia.net/img/cache/700/product-1/2017/7/7/17227058/17227058_2c250f2d-2fdd-4a85-a570-94fd49730e4f_1071_999.jpg",
-                "shop_id": "1961630",
-                "original_price": 3123123,
-                "original_price_formatted": "Rp 3.123.123",
-                "discount": 5,
-                "price": 2966967,
-                "price_formatted": "Rp 2.966.967",
-                "quantity": 0,
-                "is_variant": false,
-                "is_available": false,
-                "order": 3,
-                "app_link": "tokopedia://product/193124774",
-                "web_link": "https://www.tokopedia.com/voc123/aku-ingin-begini-aku-ingin-begitu-ingin-ini-ingin-itu-banyak-sekaliiii",
-                "min_quantity": 1,
-                "is_free_shipping": false,
-                "is_toko_now": false,
-                "is_pinned": false,
-                "available_buttons": [
-                  {
-                    "text": "+ Keranjang",
-                    "color": "SECONDARY_DISABLED",
-                    "button_type": "ATC"
-                  },
-                  {
-                    "text": "Beli",
-                    "color": "PRIMARY_DISABLED",
-                    "button_type": "GCR"
-                  }
-                ]
-              },
-              {
-                "id": "489530510",
-                "name": "sudahbreloom",
-                "image_url": "https://images.tokopedia.net/img/cache/700/product-1/2019/6/17/17227058/17227058_d39d0414-e92a-4b0e-8f40-81776ee345db_500_500",
-                "shop_id": "1961630",
-                "original_price": 200,
-                "original_price_formatted": "Rp 200",
-                "discount": 0,
-                "price": 0,
-                "price_formatted": "Rp 0",
-                "quantity": 0,
-                "is_variant": false,
-                "is_available": false,
-                "order": 4,
-                "app_link": "tokopedia://product/489530510",
-                "web_link": "https://www.tokopedia.com/voc123/sudahbreloom",
-                "min_quantity": 1,
-                "is_free_shipping": false,
-                "is_toko_now": false,
-                "is_pinned": false,
-                "available_buttons": [
-                  {
-                    "text": "+ Keranjang",
-                    "color": "SECONDARY_DISABLED",
-                    "button_type": "ATC"
-                  },
-                  {
-                    "text": "Beli",
-                    "color": "PRIMARY_DISABLED",
-                    "button_type": "GCR"
-                  }
-                ]
-              }
-            ]
-          }
-        ],
-        "vouchers": [
-          {
-            "voucher_id": "6137135",
-            "voucher_name": "",
-            "shop_id": "0",
-            "title": "Gratis Ongkir Rp20.000",
-            "subtitle": "Transaksi min. Rp100.000",
-            "voucher_type": 1,
-            "voucher_image": "",
-            "voucher_image_square": "",
-            "voucher_finish_time": "2022-09-13T23:59:59Z",
-            "voucher_code": "KONGT074OKE",
-            "is_quota_available": 1,
-            "is_highlighted": true,
-            "is_copyable": true,
-            "is_private": true
-          },
-          {
-            "voucher_id": "11968111",
-            "voucher_name": "free ongkir",
-            "shop_id": "1961630",
-            "title": "Gratis Ongkir Rp20.000",
-            "subtitle": "Transaksi min. Rp100.000",
-            "voucher_type": 1,
-            "voucher_image": "https://images.tokopedia.net/img/BTJGre/2022/8/31/876cf223-e031-4410-a61e-74d6d3e9c8bd.jpg",
-            "voucher_image_square": "https://images.tokopedia.net/img/nNLhqY/2022/8/31/f47c1320-e630-4fec-9216-b9bb48de647a.jpg",
-            "voucher_finish_time": "2022-09-30T23:30:00Z",
-            "voucher_code": "KONGON40HU",
-            "is_quota_available": 1,
-            "is_highlighted": false,
-            "is_copyable": false,
-            "is_private": true
-          },
-          {
-            "voucher_id": "11968048",
-            "voucher_name": "voucher testing",
-            "shop_id": "1961630",
-            "title": "Gratis Ongkir Rp20.000",
-            "subtitle": "Transaksi min. Rp100.000",
-            "voucher_type": 1,
-            "voucher_image": "https://images.tokopedia.net/img/BTJGre/2022/8/31/a9660bff-3632-4929-a8ff-c056c81dc769.jpg",
-            "voucher_image_square": "https://images.tokopedia.net/img/nNLhqY/2022/8/31/0997fcca-3a69-4dc3-bc9e-db646c4296b1.jpg",
-            "voucher_finish_time": "2022-09-30T23:30:00Z",
-            "voucher_code": "KONGGWPFRO",
-            "is_quota_available": 1,
-            "is_highlighted": false,
-            "is_copyable": false,
-            "is_private": true
-          },
-          {
-            "voucher_id": "11968115",
-            "voucher_name": "cashback",
-            "shop_id": "1961630",
-            "title": "Cashback Rp20.000",
-            "subtitle": "Transaksi min. Rp287.500",
-            "voucher_type": 1,
-            "voucher_image": "https://images.tokopedia.net/img/BTJGre/2022/8/31/79a73fb7-12ae-4292-80b7-8c8b5a85393b.jpg",
-            "voucher_image_square": "https://images.tokopedia.net/img/nNLhqY/2022/8/31/f2a68a0e-70da-43ec-8dc2-d991eba517ff.jpg",
-            "voucher_finish_time": "2022-09-30T23:30:00Z",
-            "voucher_code": "KONG0NBOUE",
-            "is_quota_available": 1,
-            "is_highlighted": false,
-            "is_copyable": false,
-            "is_private": true
-          },
-          {
-            "voucher_id": "4946142",
-            "voucher_name": "ONGKIRFREE",
-            "shop_id": "1961630",
-            "title": "Gratis Ongkir Rp20.000",
-            "subtitle": "Transaksi min. Rp50.000",
-            "voucher_type": 1,
-            "voucher_image": "https://images.tokopedia.net/img/BTJGre/2021/9/23/f71f1cce-47ac-4e0d-ab6f-e3810ed5e344.jpg",
-            "voucher_image_square": "https://images.tokopedia.net/img/BTJGre/2021/9/23/f71f1cce-47ac-4e0d-ab6f-e3810ed5e344.jpg",
-            "voucher_quota": 25,
-            "voucher_finish_time": "2050-12-31T23:59:00Z",
-            "voucher_code": "KONGP0FL5B",
-            "is_quota_available": 1,
-            "is_highlighted": false,
-            "is_copyable": false,
-            "is_private": true
-          },
-          {
-            "voucher_id": "11968045",
-            "voucher_name": "voucher untuk trackeran",
-            "shop_id": "1961630",
-            "title": "Cashback Rp20.000",
-            "subtitle": "Transaksi min. Rp287.500",
-            "voucher_type": 1,
-            "voucher_image": "https://images.tokopedia.net/img/BTJGre/2022/8/31/2b25f48d-b8c1-4c89-ab25-82fc5c8146b1.jpg",
-            "voucher_image_square": "https://images.tokopedia.net/img/nNLhqY/2022/8/31/140e27e4-6f0d-4f70-a458-a386a91066f3.jpg",
-            "voucher_quota": 15,
-            "voucher_finish_time": "2022-09-30T23:30:00Z",
-            "voucher_code": "KONG3LPOBC",
-            "is_quota_available": 1,
-            "is_highlighted": false,
-            "is_copyable": false,
-            "is_private": true
-          },
-          {
-            "voucher_id": "11968042",
-            "voucher_name": "monthly voucher",
-            "shop_id": "1961630",
-            "title": "Gratis Ongkir Rp20.000",
-            "subtitle": "Transaksi min. Rp100.000",
-            "voucher_type": 1,
-            "voucher_image": "https://images.tokopedia.net/img/BTJGre/2022/8/31/e4a7b074-3d7d-43ee-afd3-890e3cbc9d26.jpg",
-            "voucher_image_square": "https://images.tokopedia.net/img/nNLhqY/2022/8/31/be163b96-589f-4a41-8394-788d15d2ce26.jpg",
-            "voucher_quota": 25,
-            "voucher_finish_time": "2022-09-30T23:30:00Z",
-            "voucher_code": "KONG92U02Z",
-            "is_quota_available": 1,
-            "is_highlighted": false,
-            "is_copyable": false,
-            "is_private": false
-          }
-        ],
-        "config": {
-          "peek_product_count": 15,
-          "title_bottomsheet": "Promo dan produk pilihan"
-        }
-      }
-    }
+       {
+             "playGetTagsItemSection": {
+               "sections": [
+                 {
+                   "type": "other",
+                   "title": "",
+                   "countdown": {
+                     "copy": ""
+                   },
+                   "background": {
+                     "gradient": [],
+                     "image_url": ""
+                   },
+                   "start_time": "1970-01-01T07:00:00+07:00",
+                   "end_time": "1970-01-01T07:00:00+07:00",
+                   "server_time": "2023-05-08T10:24:04+07:00",
+                   "source_id": "0",
+                   "products": [
+                     {
+                       "id": "2148348755",
+                       "name": "ku3 smil3y",
+                       "image_url": "https://images.tokopedia.net/img/cache/300/VqbcmM/2022/3/16/64f663b5-48bd-4808-8b33-51e45c63e1e7.jpg",
+                       "shop_id": "479541",
+                       "original_price": 680952,
+                       "original_price_formatted": "Rp 680.952",
+                       "discount": 0,
+                       "price": 0,
+                       "price_formatted": "Rp 0",
+                       "quantity": 1234,
+                       "is_variant": false,
+                       "is_available": false,
+                       "order": 0,
+                       "app_link": "tokopedia://product/2148348755",
+                       "web_link": "https://staging.tokopedia.com/ituajakak/ku3-smil3y",
+                       "min_quantity": 1,
+                       "is_free_shipping": false,
+                       "is_toko_now": false,
+                       "is_pinned": false,
+                       "available_buttons": [
+                         {
+                           "text": "+ Keranjang",
+                           "color": "SECONDARY_DISABLED",
+                           "button_type": "ATC"
+                         },
+                         {
+                           "text": "Beli",
+                           "color": "PRIMARY_DISABLED",
+                           "button_type": "GCR"
+                         }
+                       ],
+                       "rating": "",
+                       "sold_quantity": ""
+                     }
+                   ]
+                 }
+               ],
+               "vouchers": [
+                {
+                   "voucher_id": "6137135",
+                   "voucher_name": "",
+                   "shop_id": "0",
+                   "title": "Gratis Ongkir Rp20.000",
+                   "subtitle": "Transaksi min. Rp100.000",
+                   "voucher_type": 1,
+                   "voucher_image": "",
+                   "voucher_image_square": "",
+                   "voucher_finish_time": "2022-09-13T23:59:59Z",
+                   "voucher_code": "KONGT074OKE",
+                   "is_quota_available": 1,
+                   "is_highlighted": true,
+                   "is_copyable": true,
+                   "is_private": true
+                 },
+                 {
+                   "voucher_id": "11968111",
+                   "voucher_name": "free ongkir",
+                   "shop_id": "1961630",
+                   "title": "Gratis Ongkir Rp20.000",
+                   "subtitle": "Transaksi min. Rp100.000",
+                   "voucher_type": 1,
+                   "voucher_image": "https://images.tokopedia.net/img/BTJGre/2022/8/31/876cf223-e031-4410-a61e-74d6d3e9c8bd.jpg",
+                   "voucher_image_square": "https://images.tokopedia.net/img/nNLhqY/2022/8/31/f47c1320-e630-4fec-9216-b9bb48de647a.jpg",
+                   "voucher_finish_time": "2022-09-30T23:30:00Z",
+                   "voucher_code": "KONGON40HU",
+                   "is_quota_available": 1,
+                   "is_highlighted": false,
+                   "is_copyable": false,
+                   "is_private": true
+                 },
+                 {
+                   "voucher_id": "11968048",
+                   "voucher_name": "voucher testing",
+                   "shop_id": "1961630",
+                   "title": "Gratis Ongkir Rp20.000",
+                   "subtitle": "Transaksi min. Rp100.000",
+                   "voucher_type": 1,
+                   "voucher_image": "https://images.tokopedia.net/img/BTJGre/2022/8/31/a9660bff-3632-4929-a8ff-c056c81dc769.jpg",
+                   "voucher_image_square": "https://images.tokopedia.net/img/nNLhqY/2022/8/31/0997fcca-3a69-4dc3-bc9e-db646c4296b1.jpg",
+                   "voucher_finish_time": "2022-09-30T23:30:00Z",
+                   "voucher_code": "KONGGWPFRO",
+                   "is_quota_available": 1,
+                   "is_highlighted": false,
+                   "is_copyable": false,
+                   "is_private": true
+                 },
+                 {
+                   "voucher_id": "11968115",
+                   "voucher_name": "cashback",
+                   "shop_id": "1961630",
+                   "title": "Cashback Rp20.000",
+                   "subtitle": "Transaksi min. Rp287.500",
+                   "voucher_type": 1,
+                   "voucher_image": "https://images.tokopedia.net/img/BTJGre/2022/8/31/79a73fb7-12ae-4292-80b7-8c8b5a85393b.jpg",
+                   "voucher_image_square": "https://images.tokopedia.net/img/nNLhqY/2022/8/31/f2a68a0e-70da-43ec-8dc2-d991eba517ff.jpg",
+                   "voucher_finish_time": "2022-09-30T23:30:00Z",
+                   "voucher_code": "KONG0NBOUE",
+                   "is_quota_available": 1,
+                   "is_highlighted": false,
+                   "is_copyable": false,
+                   "is_private": true
+                 },
+                 {
+                   "voucher_id": "4946142",
+                   "voucher_name": "ONGKIRFREE",
+                   "shop_id": "1961630",
+                   "title": "Gratis Ongkir Rp20.000",
+                   "subtitle": "Transaksi min. Rp50.000",
+                   "voucher_type": 1,
+                   "voucher_image": "https://images.tokopedia.net/img/BTJGre/2021/9/23/f71f1cce-47ac-4e0d-ab6f-e3810ed5e344.jpg",
+                   "voucher_image_square": "https://images.tokopedia.net/img/BTJGre/2021/9/23/f71f1cce-47ac-4e0d-ab6f-e3810ed5e344.jpg",
+                   "voucher_quota": 25,
+                   "voucher_finish_time": "2050-12-31T23:59:00Z",
+                   "voucher_code": "KONGP0FL5B",
+                   "is_quota_available": 1,
+                   "is_highlighted": false,
+                   "is_copyable": false,
+                   "is_private": true
+                 },
+                 {
+                   "voucher_id": "11968045",
+                   "voucher_name": "voucher untuk trackeran",
+                   "shop_id": "1961630",
+                   "title": "Cashback Rp20.000",
+                   "subtitle": "Transaksi min. Rp287.500",
+                   "voucher_type": 1,
+                   "voucher_image": "https://images.tokopedia.net/img/BTJGre/2022/8/31/2b25f48d-b8c1-4c89-ab25-82fc5c8146b1.jpg",
+                   "voucher_image_square": "https://images.tokopedia.net/img/nNLhqY/2022/8/31/140e27e4-6f0d-4f70-a458-a386a91066f3.jpg",
+                   "voucher_quota": 15,
+                   "voucher_finish_time": "2022-09-30T23:30:00Z",
+                   "voucher_code": "KONG3LPOBC",
+                   "is_quota_available": 1,
+                   "is_highlighted": false,
+                   "is_copyable": false,
+                   "is_private": true
+                 },
+                 {
+                   "voucher_id": "11968042",
+                   "voucher_name": "monthly voucher",
+                   "shop_id": "1961630",
+                   "title": "Gratis Ongkir Rp20.000",
+                   "subtitle": "Transaksi min. Rp100.000",
+                   "voucher_type": 1,
+                   "voucher_image": "https://images.tokopedia.net/img/BTJGre/2022/8/31/e4a7b074-3d7d-43ee-afd3-890e3cbc9d26.jpg",
+                   "voucher_image_square": "https://images.tokopedia.net/img/nNLhqY/2022/8/31/be163b96-589f-4a41-8394-788d15d2ce26.jpg",
+                   "voucher_quota": 25,
+                   "voucher_finish_time": "2022-09-30T23:30:00Z",
+                   "voucher_code": "KONG92U02Z",
+                   "is_quota_available": 1,
+                   "is_highlighted": false,
+                   "is_copyable": false,
+                   "is_private": false
+                 }
+
+               ],
+               "config": {
+                 "peek_product_count": 15,
+                 "title_bottomsheet": "Promo dan Barang Pilihan"
+               }
+             }
+           }
     """.trimIndent()
 
     private val channelNoPublicVoucher = """
         {
-        "playGetTagsItemSection": {
+      "playGetTagsItemSection": {
         "sections": [
           {
             "type": "other",
@@ -866,25 +716,25 @@ class ModelBuilder {
             },
             "start_time": "1970-01-01T07:00:00+07:00",
             "end_time": "1970-01-01T07:00:00+07:00",
-            "server_time": "2022-09-13T13:31:38+07:00",
+            "server_time": "2023-05-08T10:24:04+07:00",
             "source_id": "0",
             "products": [
               {
-                "id": "205240239",
-                "name": "si tangan besi panas bisa melelehkan baja",
-                "image_url": "https://images.tokopedia.net/img/cache/700/product-1/2017/7/28/17227058/17227058_cb279d46-7257-4ec9-b47a-991eb2e261d4_620_372.jpg",
-                "shop_id": "1961630",
-                "original_price": 131313,
-                "original_price_formatted": "Rp 131.313",
-                "discount": 20,
-                "price": 105050,
-                "price_formatted": "Rp 105.050",
-                "quantity": 11,
+                "id": "2148348755",
+                "name": "ku3 smil3y",
+                "image_url": "https://images.tokopedia.net/img/cache/300/VqbcmM/2022/3/16/64f663b5-48bd-4808-8b33-51e45c63e1e7.jpg",
+                "shop_id": "479541",
+                "original_price": 680952,
+                "original_price_formatted": "Rp 680.952",
+                "discount": 0,
+                "price": 0,
+                "price_formatted": "Rp 0",
+                "quantity": 1234,
                 "is_variant": false,
-                "is_available": true,
+                "is_available": false,
                 "order": 0,
-                "app_link": "tokopedia://product/205240239",
-                "web_link": "https://www.tokopedia.com/voc123/si-tangan-besi-panas-bisa-melelehkan-baja",
+                "app_link": "tokopedia://product/2148348755",
+                "web_link": "https://staging.tokopedia.com/ituajakak/ku3-smil3y",
                 "min_quantity": 1,
                 "is_free_shipping": false,
                 "is_toko_now": false,
@@ -900,162 +750,15 @@ class ModelBuilder {
                     "color": "PRIMARY_DISABLED",
                     "button_type": "GCR"
                   }
-                ]
-              },
-              {
-                "id": "233501860",
-                "name": "KOL belum digoreng",
-                "image_url": "https://images.tokopedia.net/img/cache/700/product-1/2017/11/22/17227058/17227058_bb079da4-06f6-461e-bb5a-3d9f83339625_496_379.jpg",
-                "shop_id": "1961630",
-                "original_price": 80000,
-                "original_price_formatted": "Rp 80.000",
-                "discount": 0,
-                "price": 0,
-                "price_formatted": "",
-                "quantity": 20,
-                "is_variant": true,
-                "is_available": true,
-                "order": 1,
-                "app_link": "tokopedia://product/1810972910",
-                "web_link": "https://www.tokopedia.com/voc123/kol-belum-digoreng-hitam-0",
-                "min_quantity": 1,
-                "is_free_shipping": false,
-                "is_toko_now": false,
-                "is_pinned": false,
-                "available_buttons": [
-                  {
-                    "text": "+ Keranjang",
-                    "color": "SECONDARY_DISABLED",
-                    "button_type": "ATC"
-                  },
-                  {
-                    "text": "Beli",
-                    "color": "PRIMARY_DISABLED",
-                    "button_type": "GCR"
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "type": "other",
-            "title": "Produk Habis",
-            "countdown": {
-              "copy": ""
-            },
-            "background": {
-              "gradient": [],
-              "image_url": ""
-            },
-            "start_time": "0001-01-01T00:00:00Z",
-            "end_time": "0001-01-01T00:00:00Z",
-            "server_time": "2022-09-13T13:31:38+07:00",
-            "source_id": "",
-            "products": [
-              {
-                "id": "227295441",
-                "name": "Tengkurak",
-                "image_url": "https://images.tokopedia.net/img/cache/700/product-1/2017/11/10/17227058/17227058_7ec00048-b473-406e-918a-ec45d3e8e02e_948_1300.jpg",
-                "shop_id": "1961630",
-                "original_price": 700,
-                "original_price_formatted": "Rp 700",
-                "discount": 0,
-                "price": 0,
-                "price_formatted": "Rp 0",
-                "quantity": 0,
-                "is_variant": false,
-                "is_available": false,
-                "order": 2,
-                "app_link": "tokopedia://product/227295441",
-                "web_link": "https://www.tokopedia.com/voc123/tengkurak",
-                "min_quantity": 1,
-                "is_free_shipping": false,
-                "is_toko_now": false,
-                "is_pinned": false,
-                "available_buttons": [
-                  {
-                    "text": "+ Keranjang",
-                    "color": "SECONDARY_DISABLED",
-                    "button_type": "ATC"
-                  },
-                  {
-                    "text": "Beli",
-                    "color": "PRIMARY_DISABLED",
-                    "button_type": "GCR"
-                  }
-                ]
-              },
-              {
-                "id": "193124774",
-                "name": "aku ingin begini aku ingin begitu ingin ini ingin itu banyak sekaliiii",
-                "image_url": "https://images.tokopedia.net/img/cache/700/product-1/2017/7/7/17227058/17227058_2c250f2d-2fdd-4a85-a570-94fd49730e4f_1071_999.jpg",
-                "shop_id": "1961630",
-                "original_price": 3123123,
-                "original_price_formatted": "Rp 3.123.123",
-                "discount": 5,
-                "price": 2966967,
-                "price_formatted": "Rp 2.966.967",
-                "quantity": 0,
-                "is_variant": false,
-                "is_available": false,
-                "order": 3,
-                "app_link": "tokopedia://product/193124774",
-                "web_link": "https://www.tokopedia.com/voc123/aku-ingin-begini-aku-ingin-begitu-ingin-ini-ingin-itu-banyak-sekaliiii",
-                "min_quantity": 1,
-                "is_free_shipping": false,
-                "is_toko_now": false,
-                "is_pinned": false,
-                "available_buttons": [
-                  {
-                    "text": "+ Keranjang",
-                    "color": "SECONDARY_DISABLED",
-                    "button_type": "ATC"
-                  },
-                  {
-                    "text": "Beli",
-                    "color": "PRIMARY_DISABLED",
-                    "button_type": "GCR"
-                  }
-                ]
-              },
-              {
-                "id": "489530510",
-                "name": "sudahbreloom",
-                "image_url": "https://images.tokopedia.net/img/cache/700/product-1/2019/6/17/17227058/17227058_d39d0414-e92a-4b0e-8f40-81776ee345db_500_500",
-                "shop_id": "1961630",
-                "original_price": 200,
-                "original_price_formatted": "Rp 200",
-                "discount": 0,
-                "price": 0,
-                "price_formatted": "Rp 0",
-                "quantity": 0,
-                "is_variant": false,
-                "is_available": false,
-                "order": 4,
-                "app_link": "tokopedia://product/489530510",
-                "web_link": "https://www.tokopedia.com/voc123/sudahbreloom",
-                "min_quantity": 1,
-                "is_free_shipping": false,
-                "is_toko_now": false,
-                "is_pinned": false,
-                "available_buttons": [
-                  {
-                    "text": "+ Keranjang",
-                    "color": "SECONDARY_DISABLED",
-                    "button_type": "ATC"
-                  },
-                  {
-                    "text": "Beli",
-                    "color": "PRIMARY_DISABLED",
-                    "button_type": "GCR"
-                  }
-                ]
+                ],
+                "rating": "",
+                "sold_quantity": ""
               }
             ]
           }
         ],
         "vouchers": [
-          {
+         {
             "voucher_id": "6137135",
             "voucher_name": "",
             "shop_id": "0",
@@ -1170,10 +873,11 @@ class ModelBuilder {
             "is_copyable": false,
             "is_private": true
           }
+
         ],
         "config": {
           "peek_product_count": 15,
-          "title_bottomsheet": "Promo dan produk pilihan"
+          "title_bottomsheet": "Promo dan Barang Pilihan"
         }
       }
     }
@@ -1551,7 +1255,8 @@ class ModelBuilder {
                 "max_retries": 5,
                 "min_reconnect_delay": 5000
               }
-        }""".trimIndent()
+        }
+    """.trimIndent()
 
     fun buildChannel(): ChannelDetailsWithRecomResponse =
         gson.fromJson(channelJsonWithRecom, ChannelDetailsWithRecomResponse::class.java)
@@ -1658,6 +1363,10 @@ class ModelBuilder {
         isPinned: Boolean = false,
         isRilisanSpesial: Boolean = false,
         buttons: List<ProductButtonUiModel> = emptyList(),
+        isProductNumerationShown: Boolean = false,
+        number: String = "0",
+        rating: String = "",
+        soldQuantity : String = "",
     ) = PlayProductUiModel.Product(
         id = id,
         shopId = shopId,
@@ -1673,6 +1382,10 @@ class ModelBuilder {
         isPinned = isPinned,
         isRilisanSpesial = isRilisanSpesial,
         buttons = buttons,
+        isNumerationShown = isProductNumerationShown,
+        number = number,
+        rating = rating,
+        soldQuantity = soldQuantity,
     )
 
     fun buildProductStockAvailable(
@@ -1735,10 +1448,14 @@ class ModelBuilder {
         isShown: Boolean = false,
         isPreviousSameState: Boolean = false,
         estimatedInsetsHeight: Int = 250
-    ) = if (isShown) BottomInsetsState.Shown(
-        estimatedInsetsHeight,
-        isPreviousSameState
-    ) else BottomInsetsState.Hidden(isPreviousSameState)
+    ) = if (isShown) {
+        BottomInsetsState.Shown(
+            estimatedInsetsHeight,
+            isPreviousSameState
+        )
+    } else {
+        BottomInsetsState.Hidden(isPreviousSameState)
+    }
 
     fun <T> buildPlayResultLoading(
         showPlaceholder: Boolean = true
@@ -1762,10 +1479,10 @@ class ModelBuilder {
 
         return PlayShareInfoUiModel(
             content = fullShareContent,
-            shouldShow = channel.share.isShowButton
-                    && channel.share.redirectUrl.isNotBlank()
-                    && channel.configuration.active
-                    && !channel.configuration.freezed
+            shouldShow = channel.share.isShowButton &&
+                channel.share.redirectUrl.isNotBlank() &&
+                channel.configuration.active &&
+                !channel.configuration.freezed
         )
     }
 
@@ -1804,69 +1521,1151 @@ class ModelBuilder {
         applink: String? = null,
         gradient: List<String>? = null
     ): ProductSection.Response {
-        var productList = ""
-        for (i in 1..size) {
-            productList += """
-                {
-                    app_link: "$applink",
-                    discount: 0,
-                    id: $i,
-                    image_url: "$imageUrl",
-                    is_available: false,
-                    is_free_shipping: $isFreeShipping,
-                    is_variant: $isVariantAvailable,
-                    min_quantity: $minQty,
-                    name: "Barang $i",
-                    order: 0,
-                    original_price: 123,
-                    original_price_formatted: "123",
-                    price: 0,
-                    price_formatted: "",
-                    quantity: 0,
-                    shop_id: "$shopId",
-                    web_link: "https://staging.tokopedia.com/ramayana-qc/ramayana-kemeja-pria-blue-camouflage-raf-07901447"
-              }
-            """.trimIndent()
-            if (i != size) productList += ","
-        }
-
-        var sectionList = ""
-        for (x in 1..size) {
-            sectionList += """{
-                type: "active",
-                title: "$title $x",
-                countdown: {
-                    copy: "Berakhir dalam"
-                },
-                background: {
-                    gradient: "$gradient",
-                    image_url: "https://via.placeholder.com/150"
-                },
-                start_time: "2022-01-02T15:04:05Z07:00",
-                end_time: "2022-01-02T16:04:05Z07:00",
-                server_time: "2022-01-02T15:14:05Z07:00",
-                products : [
-                    $productList
-                 ]
-                }
-            """.trimIndent()
-            if (x != size) sectionList += ","
-        }
         val data = """
-             {
-                "data": {
-                      "playGetTagsItemSection":{
-                          "sections" : [
-                            $sectionList
-                          ],
-                          "config" : {
-                            "peek_product_count" : 15,
-                            "title_bottomsheet" : "Promo dan Produk Lainnya"
+                 {
+                  "playGetTagsItemSection": {
+                    "sections": [
+                      {
+                        "type": "other",
+                        "title": "",
+                        "countdown": {
+                          "copy": ""
+                        },
+                        "background": {
+                          "gradient": [],
+                          "image_url": ""
+                        },
+                        "start_time": "1970-01-01T07:00:00+07:00",
+                        "end_time": "1970-01-01T07:00:00+07:00",
+                        "server_time": "2023-03-21T15:36:25+07:00",
+                        "source_id": "0",
+                        "products": [
+                          {
+                            "id": "6925401702",
+                            "name": "Hampers 6 Kaleng Cookies Kue Kering",
+                            "image_url": "https://images.tokopedia.net/img/cache/300/VqbcmM/2023/2/25/916aeea4-a7c5-45f2-b930-2c2b7642120e.jpg",
+                            "shop_id": "11757826",
+                            "original_price": 195000,
+                            "original_price_formatted": "Rp 195.000",
+                            "discount": 5,
+                            "price": 185250,
+                            "price_formatted": "Rp 185.250",
+                            "quantity": 4483,
+                            "is_variant": true,
+                            "is_available": true,
+                            "order": 0,
+                            "app_link": "tokopedia://product/8174237886",
+                            "web_link": "https://www.tokopedia.com/missogura/hampers-6-kaleng-cookies-kue-kering-batch2-17-21mar",
+                            "min_quantity": 1,
+                            "is_free_shipping": false,
+                            "is_toko_now": false,
+                            "is_pinned": false,
+                            "available_buttons": [
+                              {
+                                "text": "Beli",
+                                "color": "SECONDARY",
+                                "button_type": "GCR"
+                              },
+                              {
+                                "text": "+ Keranjang",
+                                "color": "PRIMARY",
+                                "button_type": "ATC"
+                              }
+                            ],
+                            "product_number": 1,
+                            "rating": "",
+                            "sold_quantity": ""
+                          },
+                          {
+                            "id": "8175013631",
+                            "name": "Kurma Medjool Cake Cupcake Muffin",
+                            "image_url": "https://images.tokopedia.net/img/cache/300/VqbcmM/2023/2/25/0a756fc8-5a58-46d6-a049-9f3d7ff85820.jpg",
+                            "shop_id": "11757826",
+                            "original_price": 65000,
+                            "original_price_formatted": "Rp 65.000",
+                            "discount": 5,
+                            "price": 61750,
+                            "price_formatted": "Rp 61.750",
+                            "quantity": 8979,
+                            "is_variant": true,
+                            "is_available": true,
+                            "order": 1,
+                            "app_link": "tokopedia://product/8175013641",
+                            "web_link": "https://www.tokopedia.com/missogura/kurma-medjool-cake-cupcake-muffin-isi-12-batch7-11-15apr-76baf",
+                            "min_quantity": 1,
+                            "is_free_shipping": false,
+                            "is_toko_now": false,
+                            "is_pinned": false,
+                            "available_buttons": [
+                              {
+                                "text": "Beli",
+                                "color": "SECONDARY",
+                                "button_type": "GCR"
+                              },
+                              {
+                                "text": "+ Keranjang",
+                                "color": "PRIMARY",
+                                "button_type": "ATC"
+                              }
+                            ],
+                            "product_number": 2,
+                            "rating": "",
+                            "sold_quantity": ""
+                          },
+                          {
+                            "id": "3325111748",
+                            "name": "Ameena Hampers Lebaran Eid Trio Nastar",
+                            "image_url": "https://images.tokopedia.net/img/cache/300/VqbcmM/2023/2/25/9e0672a0-bc8d-40cb-8b02-c73ed87913c5.jpg",
+                            "shop_id": "11757826",
+                            "original_price": 65000,
+                            "original_price_formatted": "Rp 65.000",
+                            "discount": 5,
+                            "price": 61750,
+                            "price_formatted": "Rp 61.750",
+                            "quantity": 8956,
+                            "is_variant": true,
+                            "is_available": true,
+                            "order": 2,
+                            "app_link": "tokopedia://product/8160582985",
+                            "web_link": "https://www.tokopedia.com/missogura/ameena-hampers-lebaran-eid-trio-nastar-isi-12-batch8-16-20apr",
+                            "min_quantity": 1,
+                            "is_free_shipping": false,
+                            "is_toko_now": false,
+                            "is_pinned": false,
+                            "available_buttons": [
+                              {
+                                "text": "Beli",
+                                "color": "SECONDARY",
+                                "button_type": "GCR"
+                              },
+                              {
+                                "text": "+ Keranjang",
+                                "color": "PRIMARY",
+                                "button_type": "ATC"
+                              }
+                            ],
+                            "product_number": 3,
+                            "rating": "",
+                            "sold_quantity": ""
+                          },
+                          {
+                            "id": "7506341076",
+                            "name": "Melted Cookies / Messy Cookies / Cookies Siram",
+                            "image_url": "https://images.tokopedia.net/img/cache/300/VqbcmM/2023/3/5/6b6ccfaa-602c-43ff-842d-a77832599eb9.jpg",
+                            "shop_id": "11757826",
+                            "original_price": 60000,
+                            "original_price_formatted": "Rp 60.000",
+                            "discount": 5,
+                            "price": 57000,
+                            "price_formatted": "Rp 57.000",
+                            "quantity": 8980,
+                            "is_variant": true,
+                            "is_available": true,
+                            "order": 3,
+                            "app_link": "tokopedia://product/8319956789",
+                            "web_link": "https://www.tokopedia.com/missogura/melted-cookies-messy-cookies-cookies-siram-pandan-kurma-batch2-17-21mar",
+                            "min_quantity": 1,
+                            "is_free_shipping": false,
+                            "is_toko_now": false,
+                            "is_pinned": false,
+                            "available_buttons": [
+                              {
+                                "text": "Beli",
+                                "color": "SECONDARY",
+                                "button_type": "GCR"
+                              },
+                              {
+                                "text": "+ Keranjang",
+                                "color": "PRIMARY",
+                                "button_type": "ATC"
+                              }
+                            ],
+                            "product_number": 4,
+                            "rating": "",
+                            "sold_quantity": ""
+                          },
+                          {
+                            "id": "1953633275",
+                            "name": "Seaweed edamame",
+                            "image_url": "https://images.tokopedia.net/img/cache/300/VqbcmM/2021/6/26/f181fcc4-e3c6-4dbb-84a8-d2c7cb45dd90.jpg",
+                            "shop_id": "11757826",
+                            "original_price": 40000,
+                            "original_price_formatted": "Rp 40.000",
+                            "discount": 0,
+                            "price": 0,
+                            "price_formatted": "Rp 0",
+                            "quantity": 2027,
+                            "is_variant": false,
+                            "is_available": true,
+                            "order": 4,
+                            "app_link": "tokopedia://product/1953633275",
+                            "web_link": "https://www.tokopedia.com/missogura/seaweed-edamame",
+                            "min_quantity": 1,
+                            "is_free_shipping": false,
+                            "is_toko_now": false,
+                            "is_pinned": false,
+                            "available_buttons": [
+                              {
+                                "text": "Beli Langsung",
+                                "color": "SECONDARY",
+                                "button_type": "OCC"
+                              },
+                              {
+                                "text": "+ Keranjang",
+                                "color": "PRIMARY",
+                                "button_type": "ATC"
+                              }
+                            ],
+                            "product_number": 5,
+                            "rating": "",
+                            "sold_quantity": ""
+                          },
+                          {
+                            "id": "8584759533",
+                            "name": "KOKO Kookies Kocok / Cookies / Kue Kering",
+                            "image_url": "https://images.tokopedia.net/img/cache/300/VqbcmM/2023/3/17/d5649a0f-c2bc-4b31-a5d5-043965eac2d6.jpg",
+                            "shop_id": "11757826",
+                            "original_price": 27000,
+                            "original_price_formatted": "Rp 27.000",
+                            "discount": 0,
+                            "price": 0,
+                            "price_formatted": "",
+                            "quantity": 1485,
+                            "is_variant": true,
+                            "is_available": true,
+                            "order": 5,
+                            "app_link": "tokopedia://product/8584759541",
+                            "web_link": "https://www.tokopedia.com/missogura/koko-kookies-kocok-cookies-kue-kering-mie-goreng-788e8",
+                            "min_quantity": 1,
+                            "is_free_shipping": false,
+                            "is_toko_now": false,
+                            "is_pinned": false,
+                            "available_buttons": [
+                              {
+                                "text": "Beli Langsung",
+                                "color": "SECONDARY",
+                                "button_type": "OCC"
+                              },
+                              {
+                                "text": "+ Keranjang",
+                                "color": "PRIMARY",
+                                "button_type": "ATC"
+                              }
+                            ],
+                            "product_number": 6,
+                            "rating": "",
+                            "sold_quantity": ""
+                          },
+                          {
+                            "id": "2851476971",
+                            "name": "Nastar Ronde",
+                            "image_url": "https://images.tokopedia.net/img/cache/300/VqbcmM/2022/2/1/2bee065f-f056-4731-953f-253a98752505.jpg",
+                            "shop_id": "11757826",
+                            "original_price": 60000,
+                            "original_price_formatted": "Rp 60.000",
+                            "discount": 0,
+                            "price": 0,
+                            "price_formatted": "",
+                            "quantity": 1076,
+                            "is_variant": true,
+                            "is_available": true,
+                            "order": 6,
+                            "app_link": "tokopedia://product/2851476977",
+                            "web_link": "https://www.tokopedia.com/missogura/nastar-ronde-isi-12",
+                            "min_quantity": 1,
+                            "is_free_shipping": false,
+                            "is_toko_now": false,
+                            "is_pinned": false,
+                            "available_buttons": [
+                              {
+                                "text": "Beli Langsung",
+                                "color": "SECONDARY",
+                                "button_type": "OCC"
+                              },
+                              {
+                                "text": "+ Keranjang",
+                                "color": "PRIMARY",
+                                "button_type": "ATC"
+                              }
+                            ],
+                            "product_number": 7,
+                            "rating": "",
+                             "sold_quantity": ""
+                          },
+                          {
+                            "id": "1953652961",
+                            "name": "Nastar Klepon",
+                            "image_url": "https://images.tokopedia.net/img/cache/300/VqbcmM/2021/6/26/be20e6b4-f9b9-42c2-971f-27fc902448ef.jpg",
+                            "shop_id": "11757826",
+                            "original_price": 60000,
+                            "original_price_formatted": "Rp 60.000",
+                            "discount": 0,
+                            "price": 0,
+                            "price_formatted": "",
+                            "quantity": 3471,
+                            "is_variant": true,
+                            "is_available": true,
+                            "order": 7,
+                            "app_link": "tokopedia://product/2012242417",
+                            "web_link": "https://www.tokopedia.com/missogura/nastar-klepon-isi-12",
+                            "min_quantity": 1,
+                            "is_free_shipping": false,
+                            "is_toko_now": false,
+                            "is_pinned": false,
+                            "available_buttons": [
+                              {
+                                "text": "Beli Langsung",
+                                "color": "SECONDARY",
+                                "button_type": "OCC"
+                              },
+                              {
+                                "text": "+ Keranjang",
+                                "color": "PRIMARY",
+                                "button_type": "ATC"
+                              }
+                            ],
+                            "product_number": 8,
+                            "rating": "",
+                             "sold_quantity": ""
+                          },
+                          {
+                            "id": "1953621470",
+                            "name": "Greentea tea bag cookies",
+                            "image_url": "https://images.tokopedia.net/img/cache/300/VqbcmM/2021/6/26/930957b9-5d2c-4511-9999-48a7c2ef0f20.jpg",
+                            "shop_id": "11757826",
+                            "original_price": 75000,
+                            "original_price_formatted": "Rp 75.000",
+                            "discount": 0,
+                            "price": 0,
+                            "price_formatted": "Rp 0",
+                            "quantity": 983,
+                            "is_variant": false,
+                            "is_available": true,
+                            "order": 8,
+                            "app_link": "tokopedia://product/1953621470",
+                            "web_link": "https://www.tokopedia.com/missogura/greentea-tea-bag-cookies",
+                            "min_quantity": 1,
+                            "is_free_shipping": false,
+                            "is_toko_now": false,
+                            "is_pinned": false,
+                            "available_buttons": [
+                              {
+                                "text": "Beli Langsung",
+                                "color": "SECONDARY",
+                                "button_type": "OCC"
+                              },
+                              {
+                                "text": "+ Keranjang",
+                                "color": "PRIMARY",
+                                "button_type": "ATC"
+                              }
+                            ],
+                            "product_number": 9,
+                            "rating": "",
+                            "sold_quantity": ""
+                          },
+                          {
+                            "id": "6924972249",
+                            "name": "Rum Kartoshka Cake - Rum Balls",
+                            "image_url": "https://images.tokopedia.net/img/cache/300/VqbcmM/2022/11/9/d475c2e3-eeb3-4f39-87fe-5b05bd275de6.jpg",
+                            "shop_id": "11757826",
+                            "original_price": 75000,
+                            "original_price_formatted": "Rp 75.000",
+                            "discount": 0,
+                            "price": 0,
+                            "price_formatted": "",
+                            "quantity": 134,
+                            "is_variant": true,
+                            "is_available": true,
+                            "order": 9,
+                            "app_link": "tokopedia://product/7326019550",
+                            "web_link": "https://www.tokopedia.com/missogura/rum-kartoshka-cake-rum-balls-isi-12pc",
+                            "min_quantity": 1,
+                            "is_free_shipping": false,
+                            "is_toko_now": false,
+                            "is_pinned": false,
+                            "available_buttons": [
+                              {
+                                "text": "Beli Langsung",
+                                "color": "SECONDARY",
+                                "button_type": "OCC"
+                              },
+                              {
+                                "text": "+ Keranjang",
+                                "color": "PRIMARY",
+                                "button_type": "ATC"
+                              }
+                            ],
+                            "product_number": 10,
+                            "rating": "",
+                            "sold_quantity": ""
+                          },
+                          {
+                            "id": "1953600735",
+                            "name": "Earl grey tea bag cookies",
+                            "image_url": "https://images.tokopedia.net/img/cache/300/VqbcmM/2021/6/26/67083bf9-1341-4f40-aaae-138be0dd083f.jpg",
+                            "shop_id": "11757826",
+                            "original_price": 70000,
+                            "original_price_formatted": "Rp 70.000",
+                            "discount": 0,
+                            "price": 0,
+                            "price_formatted": "Rp 0",
+                            "quantity": 1481,
+                            "is_variant": false,
+                            "is_available": true,
+                            "order": 10,
+                            "app_link": "tokopedia://product/1953600735",
+                            "web_link": "https://www.tokopedia.com/missogura/earl-grey-tea-bag-cookies",
+                            "min_quantity": 1,
+                            "is_free_shipping": false,
+                            "is_toko_now": false,
+                            "is_pinned": false,
+                            "available_buttons": [
+                              {
+                                "text": "Beli Langsung",
+                                "color": "SECONDARY",
+                                "button_type": "OCC"
+                              },
+                              {
+                                "text": "+ Keranjang",
+                                "color": "PRIMARY",
+                                "button_type": "ATC"
+                              }
+                            ],
+                            "product_number": 11,
+                            "rating": "",
+                            "sold_quantity": ""
+                          },
+                          {
+                            "id": "2671545794",
+                            "name": "Orange Marmalade Cake Hampers Imlek CNY",
+                            "image_url": "https://images.tokopedia.net/img/cache/300/VqbcmM/2022/1/5/70c953ea-ed67-4f1e-8bfa-d95a6dea9a7e.jpg",
+                            "shop_id": "11757826",
+                            "original_price": 65000,
+                            "original_price_formatted": "Rp 65.000",
+                            "discount": 0,
+                            "price": 0,
+                            "price_formatted": "Rp 0",
+                            "quantity": 1872,
+                            "is_variant": false,
+                            "is_available": true,
+                            "order": 11,
+                            "app_link": "tokopedia://product/2671545794",
+                            "web_link": "https://www.tokopedia.com/missogura/orange-marmalade-cake-hampers-imlek-cny",
+                            "min_quantity": 1,
+                            "is_free_shipping": false,
+                            "is_toko_now": false,
+                            "is_pinned": false,
+                            "available_buttons": [
+                              {
+                                "text": "Beli Langsung",
+                                "color": "SECONDARY",
+                                "button_type": "OCC"
+                              },
+                              {
+                                "text": "+ Keranjang",
+                                "color": "PRIMARY",
+                                "button_type": "ATC"
+                              }
+                            ],
+                            "product_number": 12,
+                            "rating": "",
+                            "sold_quantity": ""
+                          },
+                          {
+                            "id": "1953609394",
+                            "name": "Espresso cookies",
+                            "image_url": "https://images.tokopedia.net/img/cache/300/VqbcmM/2021/6/26/920f1dd7-a6f7-4eaf-9626-dad9881117b1.jpg",
+                            "shop_id": "11757826",
+                            "original_price": 45000,
+                            "original_price_formatted": "Rp 45.000",
+                            "discount": 0,
+                            "price": 0,
+                            "price_formatted": "",
+                            "quantity": 1809,
+                            "is_variant": true,
+                            "is_available": true,
+                            "order": 12,
+                            "app_link": "tokopedia://product/2596394887",
+                            "web_link": "https://www.tokopedia.com/missogura/espresso-cookies-125gr",
+                            "min_quantity": 1,
+                            "is_free_shipping": false,
+                            "is_toko_now": false,
+                            "is_pinned": false,
+                            "available_buttons": [
+                              {
+                                "text": "Beli Langsung",
+                                "color": "SECONDARY",
+                                "button_type": "OCC"
+                              },
+                              {
+                                "text": "+ Keranjang",
+                                "color": "PRIMARY",
+                                "button_type": "ATC"
+                              }
+                            ],
+                            "product_number": 13,
+                            "rating": "",
+                            "sold_quantity": ""
+                          },
+                          {
+                            "id": "1953658710",
+                            "name": "Choco Soes",
+                            "image_url": "https://images.tokopedia.net/img/cache/300/VqbcmM/2021/6/26/89943743-ea61-4d2f-a8eb-e8a1c618deb2.jpg",
+                            "shop_id": "11757826",
+                            "original_price": 35000,
+                            "original_price_formatted": "Rp 35.000",
+                            "discount": 0,
+                            "price": 0,
+                            "price_formatted": "",
+                            "quantity": 656,
+                            "is_variant": true,
+                            "is_available": true,
+                            "order": 13,
+                            "app_link": "tokopedia://product/2290364287",
+                            "web_link": "https://www.tokopedia.com/missogura/choco-soes-choco",
+                            "min_quantity": 1,
+                            "is_free_shipping": false,
+                            "is_toko_now": false,
+                            "is_pinned": false,
+                            "available_buttons": [
+                              {
+                                "text": "Beli Langsung",
+                                "color": "SECONDARY",
+                                "button_type": "OCC"
+                              },
+                              {
+                                "text": "+ Keranjang",
+                                "color": "PRIMARY",
+                                "button_type": "ATC"
+                              }
+                            ],
+                            "product_number": 14,
+                            "rating": "",
+                            "sold_quantity": ""
+                          },
+                          {
+                            "id": "2373468360",
+                            "name": "Lavender Cookies - vegan",
+                            "image_url": "https://images.tokopedia.net/img/cache/300/VqbcmM/2021/11/4/a5f5770c-ffe1-4776-9e5b-46a59dc13df1.jpg",
+                            "shop_id": "11757826",
+                            "original_price": 50000,
+                            "original_price_formatted": "Rp 50.000",
+                            "discount": 0,
+                            "price": 0,
+                            "price_formatted": "Rp 0",
+                            "quantity": 2364,
+                            "is_variant": false,
+                            "is_available": true,
+                            "order": 14,
+                            "app_link": "tokopedia://product/2373468360",
+                            "web_link": "https://www.tokopedia.com/missogura/lavender-cookies-vegan",
+                            "min_quantity": 1,
+                            "is_free_shipping": false,
+                            "is_toko_now": false,
+                            "is_pinned": false,
+                            "available_buttons": [
+                              {
+                                "text": "Beli Langsung",
+                                "color": "SECONDARY",
+                                "button_type": "OCC"
+                              },
+                              {
+                                "text": "+ Keranjang",
+                                "color": "PRIMARY",
+                                "button_type": "ATC"
+                              }
+                            ],
+                            "product_number": 15,
+                            "rating": "",
+                            "sold_quantity": ""
                           }
+                        ]
                       }
-                }
-             }
-            """.trimIndent()
+                    ],
+                    "vouchers": [],
+                    "config": {
+                      "peek_product_count": 15,
+                      "title_bottomsheet": "Promo dan produk pilihan"
+                    }
+                  }
+                 }
+        """.trimIndent()
+
+        return gson.fromJson(data, ProductSection.Response::class.java)
+    }
+
+    fun generateGqlProductNumeration(): ProductSection.Response {
+        val data = """
+                 {
+                  "playGetTagsItemSection": {
+                    "sections": [
+                      {
+                        "type": "other",
+                        "title": "",
+                        "countdown": {
+                          "copy": ""
+                        },
+                        "background": {
+                          "gradient": [],
+                          "image_url": ""
+                        },
+                        "start_time": "1970-01-01T07:00:00+07:00",
+                        "end_time": "1970-01-01T07:00:00+07:00",
+                        "server_time": "2023-03-21T15:36:25+07:00",
+                        "source_id": "0",
+                        "products": [
+                          {
+                            "id": "6925401702",
+                            "name": "Hampers 6 Kaleng Cookies Kue Kering",
+                            "image_url": "https://images.tokopedia.net/img/cache/300/VqbcmM/2023/2/25/916aeea4-a7c5-45f2-b930-2c2b7642120e.jpg",
+                            "shop_id": "11757826",
+                            "original_price": 195000,
+                            "original_price_formatted": "Rp 195.000",
+                            "discount": 5,
+                            "price": 185250,
+                            "price_formatted": "Rp 185.250",
+                            "quantity": 4483,
+                            "is_variant": true,
+                            "is_available": true,
+                            "order": 0,
+                            "app_link": "tokopedia://product/8174237886",
+                            "web_link": "https://www.tokopedia.com/missogura/hampers-6-kaleng-cookies-kue-kering-batch2-17-21mar",
+                            "min_quantity": 1,
+                            "is_free_shipping": false,
+                            "is_toko_now": false,
+                            "is_pinned": false,
+                            "available_buttons": [
+                              {
+                                "text": "Beli",
+                                "color": "SECONDARY",
+                                "button_type": "GCR"
+                              },
+                              {
+                                "text": "+ Keranjang",
+                                "color": "PRIMARY",
+                                "button_type": "ATC"
+                              }
+                            ],
+                            "product_number": 1,
+                            "rating": "",
+                            "sold_quantity": ""
+                          },
+                          {
+                            "id": "8175013631",
+                            "name": "Kurma Medjool Cake Cupcake Muffin",
+                            "image_url": "https://images.tokopedia.net/img/cache/300/VqbcmM/2023/2/25/0a756fc8-5a58-46d6-a049-9f3d7ff85820.jpg",
+                            "shop_id": "11757826",
+                            "original_price": 65000,
+                            "original_price_formatted": "Rp 65.000",
+                            "discount": 5,
+                            "price": 61750,
+                            "price_formatted": "Rp 61.750",
+                            "quantity": 8979,
+                            "is_variant": true,
+                            "is_available": true,
+                            "order": 1,
+                            "app_link": "tokopedia://product/8175013641",
+                            "web_link": "https://www.tokopedia.com/missogura/kurma-medjool-cake-cupcake-muffin-isi-12-batch7-11-15apr-76baf",
+                            "min_quantity": 1,
+                            "is_free_shipping": false,
+                            "is_toko_now": false,
+                            "is_pinned": false,
+                            "available_buttons": [
+                              {
+                                "text": "Beli",
+                                "color": "SECONDARY",
+                                "button_type": "GCR"
+                              },
+                              {
+                                "text": "+ Keranjang",
+                                "color": "PRIMARY",
+                                "button_type": "ATC"
+                              }
+                            ],
+                            "product_number": 2,
+                            "rating": "",
+                            "sold_quantity": ""
+                          },
+                          {
+                            "id": "3325111748",
+                            "name": "Ameena Hampers Lebaran Eid Trio Nastar",
+                            "image_url": "https://images.tokopedia.net/img/cache/300/VqbcmM/2023/2/25/9e0672a0-bc8d-40cb-8b02-c73ed87913c5.jpg",
+                            "shop_id": "11757826",
+                            "original_price": 65000,
+                            "original_price_formatted": "Rp 65.000",
+                            "discount": 5,
+                            "price": 61750,
+                            "price_formatted": "Rp 61.750",
+                            "quantity": 8956,
+                            "is_variant": true,
+                            "is_available": true,
+                            "order": 2,
+                            "app_link": "tokopedia://product/8160582985",
+                            "web_link": "https://www.tokopedia.com/missogura/ameena-hampers-lebaran-eid-trio-nastar-isi-12-batch8-16-20apr",
+                            "min_quantity": 1,
+                            "is_free_shipping": false,
+                            "is_toko_now": false,
+                            "is_pinned": false,
+                            "available_buttons": [
+                              {
+                                "text": "Beli",
+                                "color": "SECONDARY",
+                                "button_type": "GCR"
+                              },
+                              {
+                                "text": "+ Keranjang",
+                                "color": "PRIMARY",
+                                "button_type": "ATC"
+                              }
+                            ],
+                            "product_number": 3,
+                            "rating": "",
+                            "sold_quantity": ""
+                          },
+                          {
+                            "id": "7506341076",
+                            "name": "Melted Cookies / Messy Cookies / Cookies Siram",
+                            "image_url": "https://images.tokopedia.net/img/cache/300/VqbcmM/2023/3/5/6b6ccfaa-602c-43ff-842d-a77832599eb9.jpg",
+                            "shop_id": "11757826",
+                            "original_price": 60000,
+                            "original_price_formatted": "Rp 60.000",
+                            "discount": 5,
+                            "price": 57000,
+                            "price_formatted": "Rp 57.000",
+                            "quantity": 8980,
+                            "is_variant": true,
+                            "is_available": true,
+                            "order": 3,
+                            "app_link": "tokopedia://product/8319956789",
+                            "web_link": "https://www.tokopedia.com/missogura/melted-cookies-messy-cookies-cookies-siram-pandan-kurma-batch2-17-21mar",
+                            "min_quantity": 1,
+                            "is_free_shipping": false,
+                            "is_toko_now": false,
+                            "is_pinned": false,
+                            "available_buttons": [
+                              {
+                                "text": "Beli",
+                                "color": "SECONDARY",
+                                "button_type": "GCR"
+                              },
+                              {
+                                "text": "+ Keranjang",
+                                "color": "PRIMARY",
+                                "button_type": "ATC"
+                              }
+                            ],
+                            "product_number": 4,
+                            "rating": "",
+                            "sold_quantity": ""
+                          },
+                          {
+                            "id": "1953633275",
+                            "name": "Seaweed edamame",
+                            "image_url": "https://images.tokopedia.net/img/cache/300/VqbcmM/2021/6/26/f181fcc4-e3c6-4dbb-84a8-d2c7cb45dd90.jpg",
+                            "shop_id": "11757826",
+                            "original_price": 40000,
+                            "original_price_formatted": "Rp 40.000",
+                            "discount": 0,
+                            "price": 0,
+                            "price_formatted": "Rp 0",
+                            "quantity": 2027,
+                            "is_variant": false,
+                            "is_available": true,
+                            "order": 4,
+                            "app_link": "tokopedia://product/1953633275",
+                            "web_link": "https://www.tokopedia.com/missogura/seaweed-edamame",
+                            "min_quantity": 1,
+                            "is_free_shipping": false,
+                            "is_toko_now": false,
+                            "is_pinned": false,
+                            "available_buttons": [
+                              {
+                                "text": "Beli Langsung",
+                                "color": "SECONDARY",
+                                "button_type": "OCC"
+                              },
+                              {
+                                "text": "+ Keranjang",
+                                "color": "PRIMARY",
+                                "button_type": "ATC"
+                              }
+                            ],
+                            "product_number": 5,
+                            "rating": "",
+                            "sold_quantity": ""
+                          },
+                          {
+                            "id": "8584759533",
+                            "name": "KOKO Kookies Kocok / Cookies / Kue Kering",
+                            "image_url": "https://images.tokopedia.net/img/cache/300/VqbcmM/2023/3/17/d5649a0f-c2bc-4b31-a5d5-043965eac2d6.jpg",
+                            "shop_id": "11757826",
+                            "original_price": 27000,
+                            "original_price_formatted": "Rp 27.000",
+                            "discount": 0,
+                            "price": 0,
+                            "price_formatted": "",
+                            "quantity": 1485,
+                            "is_variant": true,
+                            "is_available": true,
+                            "order": 5,
+                            "app_link": "tokopedia://product/8584759541",
+                            "web_link": "https://www.tokopedia.com/missogura/koko-kookies-kocok-cookies-kue-kering-mie-goreng-788e8",
+                            "min_quantity": 1,
+                            "is_free_shipping": false,
+                            "is_toko_now": false,
+                            "is_pinned": false,
+                            "available_buttons": [
+                              {
+                                "text": "Beli Langsung",
+                                "color": "SECONDARY",
+                                "button_type": "OCC"
+                              },
+                              {
+                                "text": "+ Keranjang",
+                                "color": "PRIMARY",
+                                "button_type": "ATC"
+                              }
+                            ],
+                            "product_number": 6,
+                            "rating": "",
+                            "sold_quantity": ""
+                          },
+                          {
+                            "id": "2851476971",
+                            "name": "Nastar Ronde",
+                            "image_url": "https://images.tokopedia.net/img/cache/300/VqbcmM/2022/2/1/2bee065f-f056-4731-953f-253a98752505.jpg",
+                            "shop_id": "11757826",
+                            "original_price": 60000,
+                            "original_price_formatted": "Rp 60.000",
+                            "discount": 0,
+                            "price": 0,
+                            "price_formatted": "",
+                            "quantity": 1076,
+                            "is_variant": true,
+                            "is_available": true,
+                            "order": 6,
+                            "app_link": "tokopedia://product/2851476977",
+                            "web_link": "https://www.tokopedia.com/missogura/nastar-ronde-isi-12",
+                            "min_quantity": 1,
+                            "is_free_shipping": false,
+                            "is_toko_now": false,
+                            "is_pinned": false,
+                            "available_buttons": [
+                              {
+                                "text": "Beli Langsung",
+                                "color": "SECONDARY",
+                                "button_type": "OCC"
+                              },
+                              {
+                                "text": "+ Keranjang",
+                                "color": "PRIMARY",
+                                "button_type": "ATC"
+                              }
+                            ],
+                            "product_number": 7,
+                            "rating": "",
+                            "sold_quantity": ""
+                          },
+                          {
+                            "id": "1953652961",
+                            "name": "Nastar Klepon",
+                            "image_url": "https://images.tokopedia.net/img/cache/300/VqbcmM/2021/6/26/be20e6b4-f9b9-42c2-971f-27fc902448ef.jpg",
+                            "shop_id": "11757826",
+                            "original_price": 60000,
+                            "original_price_formatted": "Rp 60.000",
+                            "discount": 0,
+                            "price": 0,
+                            "price_formatted": "",
+                            "quantity": 3471,
+                            "is_variant": true,
+                            "is_available": true,
+                            "order": 7,
+                            "app_link": "tokopedia://product/2012242417",
+                            "web_link": "https://www.tokopedia.com/missogura/nastar-klepon-isi-12",
+                            "min_quantity": 1,
+                            "is_free_shipping": false,
+                            "is_toko_now": false,
+                            "is_pinned": false,
+                            "available_buttons": [
+                              {
+                                "text": "Beli Langsung",
+                                "color": "SECONDARY",
+                                "button_type": "OCC"
+                              },
+                              {
+                                "text": "+ Keranjang",
+                                "color": "PRIMARY",
+                                "button_type": "ATC"
+                              }
+                            ],
+                            "product_number": 8,
+                            "rating": "",
+                            "sold_quantity": ""
+                          },
+                          {
+                            "id": "1953621470",
+                            "name": "Greentea tea bag cookies",
+                            "image_url": "https://images.tokopedia.net/img/cache/300/VqbcmM/2021/6/26/930957b9-5d2c-4511-9999-48a7c2ef0f20.jpg",
+                            "shop_id": "11757826",
+                            "original_price": 75000,
+                            "original_price_formatted": "Rp 75.000",
+                            "discount": 0,
+                            "price": 0,
+                            "price_formatted": "Rp 0",
+                            "quantity": 983,
+                            "is_variant": false,
+                            "is_available": true,
+                            "order": 8,
+                            "app_link": "tokopedia://product/1953621470",
+                            "web_link": "https://www.tokopedia.com/missogura/greentea-tea-bag-cookies",
+                            "min_quantity": 1,
+                            "is_free_shipping": false,
+                            "is_toko_now": false,
+                            "is_pinned": false,
+                            "available_buttons": [
+                              {
+                                "text": "Beli Langsung",
+                                "color": "SECONDARY",
+                                "button_type": "OCC"
+                              },
+                              {
+                                "text": "+ Keranjang",
+                                "color": "PRIMARY",
+                                "button_type": "ATC"
+                              }
+                            ],
+                            "product_number": 9,
+                            "rating": "",
+                            "sold_quantity": ""
+                          },
+                          {
+                            "id": "6924972249",
+                            "name": "Rum Kartoshka Cake - Rum Balls",
+                            "image_url": "https://images.tokopedia.net/img/cache/300/VqbcmM/2022/11/9/d475c2e3-eeb3-4f39-87fe-5b05bd275de6.jpg",
+                            "shop_id": "11757826",
+                            "original_price": 75000,
+                            "original_price_formatted": "Rp 75.000",
+                            "discount": 0,
+                            "price": 0,
+                            "price_formatted": "",
+                            "quantity": 134,
+                            "is_variant": true,
+                            "is_available": true,
+                            "order": 9,
+                            "app_link": "tokopedia://product/7326019550",
+                            "web_link": "https://www.tokopedia.com/missogura/rum-kartoshka-cake-rum-balls-isi-12pc",
+                            "min_quantity": 1,
+                            "is_free_shipping": false,
+                            "is_toko_now": false,
+                            "is_pinned": false,
+                            "available_buttons": [
+                              {
+                                "text": "Beli Langsung",
+                                "color": "SECONDARY",
+                                "button_type": "OCC"
+                              },
+                              {
+                                "text": "+ Keranjang",
+                                "color": "PRIMARY",
+                                "button_type": "ATC"
+                              }
+                            ],
+                            "product_number": 10,
+                            "rating": "",
+                            "sold_quantity": ""
+                          },
+                          {
+                            "id": "1953600735",
+                            "name": "Earl grey tea bag cookies",
+                            "image_url": "https://images.tokopedia.net/img/cache/300/VqbcmM/2021/6/26/67083bf9-1341-4f40-aaae-138be0dd083f.jpg",
+                            "shop_id": "11757826",
+                            "original_price": 70000,
+                            "original_price_formatted": "Rp 70.000",
+                            "discount": 0,
+                            "price": 0,
+                            "price_formatted": "Rp 0",
+                            "quantity": 1481,
+                            "is_variant": false,
+                            "is_available": true,
+                            "order": 10,
+                            "app_link": "tokopedia://product/1953600735",
+                            "web_link": "https://www.tokopedia.com/missogura/earl-grey-tea-bag-cookies",
+                            "min_quantity": 1,
+                            "is_free_shipping": false,
+                            "is_toko_now": false,
+                            "is_pinned": false,
+                            "available_buttons": [
+                              {
+                                "text": "Beli Langsung",
+                                "color": "SECONDARY",
+                                "button_type": "OCC"
+                              },
+                              {
+                                "text": "+ Keranjang",
+                                "color": "PRIMARY",
+                                "button_type": "ATC"
+                              }
+                            ],
+                            "product_number": 11,
+                            "rating": "",
+                            "sold_quantity": ""
+                          },
+                          {
+                            "id": "2671545794",
+                            "name": "Orange Marmalade Cake Hampers Imlek CNY",
+                            "image_url": "https://images.tokopedia.net/img/cache/300/VqbcmM/2022/1/5/70c953ea-ed67-4f1e-8bfa-d95a6dea9a7e.jpg",
+                            "shop_id": "11757826",
+                            "original_price": 65000,
+                            "original_price_formatted": "Rp 65.000",
+                            "discount": 0,
+                            "price": 0,
+                            "price_formatted": "Rp 0",
+                            "quantity": 1872,
+                            "is_variant": false,
+                            "is_available": true,
+                            "order": 11,
+                            "app_link": "tokopedia://product/2671545794",
+                            "web_link": "https://www.tokopedia.com/missogura/orange-marmalade-cake-hampers-imlek-cny",
+                            "min_quantity": 1,
+                            "is_free_shipping": false,
+                            "is_toko_now": false,
+                            "is_pinned": false,
+                            "available_buttons": [
+                              {
+                                "text": "Beli Langsung",
+                                "color": "SECONDARY",
+                                "button_type": "OCC"
+                              },
+                              {
+                                "text": "+ Keranjang",
+                                "color": "PRIMARY",
+                                "button_type": "ATC"
+                              }
+                            ],
+                            "product_number": 12,
+                            "rating": "",
+                            "sold_quantity": ""
+                          },
+                          {
+                            "id": "1953609394",
+                            "name": "Espresso cookies",
+                            "image_url": "https://images.tokopedia.net/img/cache/300/VqbcmM/2021/6/26/920f1dd7-a6f7-4eaf-9626-dad9881117b1.jpg",
+                            "shop_id": "11757826",
+                            "original_price": 45000,
+                            "original_price_formatted": "Rp 45.000",
+                            "discount": 0,
+                            "price": 0,
+                            "price_formatted": "",
+                            "quantity": 1809,
+                            "is_variant": true,
+                            "is_available": true,
+                            "order": 12,
+                            "app_link": "tokopedia://product/2596394887",
+                            "web_link": "https://www.tokopedia.com/missogura/espresso-cookies-125gr",
+                            "min_quantity": 1,
+                            "is_free_shipping": false,
+                            "is_toko_now": false,
+                            "is_pinned": false,
+                            "available_buttons": [
+                              {
+                                "text": "Beli Langsung",
+                                "color": "SECONDARY",
+                                "button_type": "OCC"
+                              },
+                              {
+                                "text": "+ Keranjang",
+                                "color": "PRIMARY",
+                                "button_type": "ATC"
+                              }
+                            ],
+                            "product_number": 13,
+                            "rating": "",
+                            "sold_quantity": ""
+                          },
+                          {
+                            "id": "1953658710",
+                            "name": "Choco Soes",
+                            "image_url": "https://images.tokopedia.net/img/cache/300/VqbcmM/2021/6/26/89943743-ea61-4d2f-a8eb-e8a1c618deb2.jpg",
+                            "shop_id": "11757826",
+                            "original_price": 35000,
+                            "original_price_formatted": "Rp 35.000",
+                            "discount": 0,
+                            "price": 0,
+                            "price_formatted": "",
+                            "quantity": 656,
+                            "is_variant": true,
+                            "is_available": true,
+                            "order": 13,
+                            "app_link": "tokopedia://product/2290364287",
+                            "web_link": "https://www.tokopedia.com/missogura/choco-soes-choco",
+                            "min_quantity": 1,
+                            "is_free_shipping": false,
+                            "is_toko_now": false,
+                            "is_pinned": false,
+                            "available_buttons": [
+                              {
+                                "text": "Beli Langsung",
+                                "color": "SECONDARY",
+                                "button_type": "OCC"
+                              },
+                              {
+                                "text": "+ Keranjang",
+                                "color": "PRIMARY",
+                                "button_type": "ATC"
+                              }
+                            ],
+                            "product_number": 14,
+                            "rating": "",
+                            "sold_quantity": ""
+                          },
+                          {
+                            "id": "2373468360",
+                            "name": "Lavender Cookies - vegan",
+                            "image_url": "https://images.tokopedia.net/img/cache/300/VqbcmM/2021/11/4/a5f5770c-ffe1-4776-9e5b-46a59dc13df1.jpg",
+                            "shop_id": "11757826",
+                            "original_price": 50000,
+                            "original_price_formatted": "Rp 50.000",
+                            "discount": 0,
+                            "price": 0,
+                            "price_formatted": "Rp 0",
+                            "quantity": 2364,
+                            "is_variant": false,
+                            "is_available": true,
+                            "order": 14,
+                            "app_link": "tokopedia://product/2373468360",
+                            "web_link": "https://www.tokopedia.com/missogura/lavender-cookies-vegan",
+                            "min_quantity": 1,
+                            "is_free_shipping": false,
+                            "is_toko_now": false,
+                            "is_pinned": false,
+                            "available_buttons": [
+                              {
+                                "text": "Beli Langsung",
+                                "color": "SECONDARY",
+                                "button_type": "OCC"
+                              },
+                              {
+                                "text": "+ Keranjang",
+                                "color": "PRIMARY",
+                                "button_type": "ATC"
+                              }
+                            ],
+                            "product_number": 15,
+                            "rating": "",
+                            "sold_quantity": ""
+                          }
+                        ]
+                      }
+                    ],
+                    "vouchers": [],
+                    "config": {
+                      "peek_product_count": 15,
+                      "title_bottomsheet": "Promo dan produk pilihan"
+                    }
+                  }
+                 }
+        """.trimIndent()
 
         return gson.fromJson(data, ProductSection.Response::class.java)
     }

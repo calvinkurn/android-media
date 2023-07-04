@@ -3,6 +3,7 @@ package com.tokopedia.topads.dashboard.recommendation.usecase
 import com.tokopedia.gql_query_annotation.GqlQueryInterface
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.InsightGqlInputSource.SOURCE_INSIGHT_CENTER_GROUP_DETAIL_PAGE
 import com.tokopedia.topads.dashboard.recommendation.data.model.cloud.TopAdsBatchGroupInsightResponse
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.TopAdsListAllInsightState
 import com.tokopedia.usecase.RequestParams
@@ -21,19 +22,18 @@ class TopAdsGetBatchKeywordInsightUseCase @Inject constructor(
         TopAdsListAllInsightState<TopAdsBatchGroupInsightResponse> {
         setRequestParams(createRequestParam(groupId).parameters)
         val data = executeOnBackground()
-        return TopAdsListAllInsightState.Success(data)
-//        return when {
-//            data.error.title.isNullOrEmpty() -> {
-//                TopAdsListAllInsightState.Success(data)
-//            }
-//            else -> TopAdsListAllInsightState.Fail(Throwable(data.error.title))
-//        }
+        return when {
+            data.topAdsBatchGetKeywordInsightByGroupIDV3.error.title.isNullOrEmpty() -> {
+                TopAdsListAllInsightState.Success(data)
+            }
+            else -> TopAdsListAllInsightState.Fail(Throwable(data.topAdsBatchGetKeywordInsightByGroupIDV3.error.title))
+        }
     }
 
     private fun createRequestParam(groupId: String): RequestParams {
         val requestParams = RequestParams.create()
         requestParams.putString("insightType", "all")
-        requestParams.putString("source", "adsmgmt.keywordinsight.test")
+        requestParams.putString("source", SOURCE_INSIGHT_CENTER_GROUP_DETAIL_PAGE)
         requestParams.putObject(
             "groupIDs",
             listOf(groupId)
@@ -78,6 +78,11 @@ class TopAdsGetBatchKeywordInsightUseCase @Inject constructor(
                       keywordSource
                     }
                   }
+                }
+                error {
+                  code
+                  detail
+                  title
                 }
               }
             }

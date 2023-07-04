@@ -35,6 +35,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.createpost.common.data.feedrevamp.FeedXMediaTagging
 import com.tokopedia.feedcomponent.R
+import com.tokopedia.content.common.R as contentCommonR
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCard
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXComments
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXLike
@@ -1233,13 +1234,16 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 }
 
                 videoPlayer?.start(feedMedia.mediaUrl, GridPostAdapter.isMute)
-                volume_icon?.setImageResource(if (!GridPostAdapter.isMute) R.drawable.ic_feed_volume_up else R.drawable.ic_feed_volume_mute)
+                volume_icon?.setImageResource(
+                    if (!GridPostAdapter.isMute) com.tokopedia.iconunify.R.drawable.iconunify_volume_up
+                    else com.tokopedia.iconunify.R.drawable.iconunify_volume_mute
+                )
                 videoPlayer?.setVideoStateListener(object : VideoStateListener {
                     override fun onInitialStateLoading() {
                         showVideoLoading()
                     }
 
-                    override fun onVideoReadyToPlay() {
+                    override fun onVideoReadyToPlay(isPlaying: Boolean) {
                         hideVideoLoading()
                         timer_view?.visible()
                         var time = (videoPlayer?.getExoPlayer()?.duration ?: 0L) / TIME_SECOND
@@ -1551,9 +1555,9 @@ class PostDynamicViewNew @JvmOverloads constructor(
             gridList.setPadding(0, 0, 0, 0)
         } else {
             gridList.setPadding(
-                gridList.getDimens(com.tokopedia.feedcomponent.R.dimen.feed_component_dp_3),
+                gridList.getDimens(contentCommonR.dimen.content_common_dp_3),
                 0,
-                gridList.getDimens(com.tokopedia.feedcomponent.R.dimen.feed_component_dp_3),
+                gridList.getDimens(contentCommonR.dimen.content_common_dp_3),
                 0
             )
         }

@@ -2,16 +2,21 @@ package com.tokopedia.deals.checkout
 
 import com.tokopedia.common_entertainment.data.DealsCheckoutInstantResponse
 import com.tokopedia.common_entertainment.data.DealsCheckoutResponse
+import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runBlockingTest
-import com.tokopedia.usecase.coroutines.Result
-import com.tokopedia.usecase.coroutines.Success
 import org.junit.Assert
+import org.junit.Rule
 import org.junit.Test
 
 class DealsCheckoutViewModelTest: DealsCheckoutViewModelTestFixture() {
+
+    @get:Rule
+    val coroutineTestRule = CoroutineTestRule()
 
     @Test
     fun `when getting checkout general with promo should run and give success result`() {

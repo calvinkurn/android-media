@@ -129,8 +129,6 @@ includeIfEnabled("features:payment:payment")
 includeIfEnabled("features:payment:withdraw")
 includeIfEnabled("features:payment:payment_setting")
 
-includeIfEnabled("features:merchant:gallery")
-
 includeIfEnabled("features:promo:loyalty")
 includeIfEnabled("features:promo:loyalty_common")
 includeIfEnabled("features:promo:merchant_voucher")

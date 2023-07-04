@@ -1,14 +1,10 @@
 package com.tokopedia.tkpd
 
 import android.annotation.SuppressLint
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.relocation.BringIntoViewRequester
 import androidx.compose.foundation.relocation.bringIntoViewRequester
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -24,6 +20,7 @@ import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.constrain
 import androidx.compose.ui.unit.dp
 import com.tokopedia.common_compose.components.NestButton
+import com.tokopedia.common_compose.header.NestHeaderType
 import com.tokopedia.common_compose.principles.NestHeader
 import com.tokopedia.common_compose.ui.NestTheme
 
@@ -47,7 +44,9 @@ fun HomeScreen(
                 .onMeasureConstraints { constraints.value = it }
                 .verticalScroll(scrollState)
         ) {
-            NestHeader(title = "Tokopedia Test App", showBackIcon = false)
+            NestHeader(
+                type = NestHeaderType.SingleLine(title = "Tokopedia Test App", showBackButton = false)
+            )
             val urlBgColor = if (model.urlState.contains("live", true)) {
                 NestTheme.colors.GN._600
             } else {
@@ -86,15 +85,15 @@ fun HomeScreen(
                 if (model.isLoggedIn) {
                     NestButton(
                         text = "Logout",
-                        modifier = Modifier.fillMaxWidth(),
-                        onClick = { onNavigateTo(MainActivity.HomeDestination.LOGOUT) }
+                        onClick = { onNavigateTo(MainActivity.HomeDestination.LOGOUT) },
+                        modifier = Modifier.fillMaxWidth()
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                 }
                 NestButton(
                     text = "Developer Option",
-                    modifier = Modifier.fillMaxWidth(),
-                    onClick = { onNavigateTo(MainActivity.HomeDestination.DEVELOPER_OPTION) }
+                    onClick = { onNavigateTo(MainActivity.HomeDestination.DEVELOPER_OPTION) },
+                    modifier = Modifier.fillMaxWidth()
                 )
                 Spacer(modifier = Modifier.height(16.dp))
 
@@ -113,8 +112,8 @@ fun HomeScreen(
                 Spacer(modifier = Modifier.height(16.dp))
                 NestButton(
                     text = "Open",
-                    modifier = Modifier.fillMaxWidth(),
-                    onClick = { onNavigateTo(MainActivity.HomeDestination.APPLINK) }
+                    onClick = { onNavigateTo(MainActivity.HomeDestination.APPLINK) },
+                    modifier = Modifier.fillMaxWidth()
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 Row(

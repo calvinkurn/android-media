@@ -59,7 +59,7 @@ class OrderAppWidgetViewModelTest {
     }
 
     @Test
-    fun `returns the order list and notify the UI when get the order list successfully`() = coroutineTestRule.runBlockingTest {
+    fun `returns the order list and notify the UI when get the order list successfully`() = coroutineTestRule.runTest {
 
         getNewOrderUseCase.params = newOrderParams
         getReadyToShipUseCase.params = readyToShipParams
@@ -112,7 +112,7 @@ class OrderAppWidgetViewModelTest {
 
     @Test
     fun `returns the order list but can't notify the UI when view not bind`() =
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             mViewModel.unbind()
             getNewOrderUseCase.params = newOrderParams
             getReadyToShipUseCase.params = readyToShipParams
@@ -167,7 +167,7 @@ class OrderAppWidgetViewModelTest {
 
     @Test
     fun `returns the order list and notify the UI when get the order list successfully with null orders`() =
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
 
             getNewOrderUseCase.params = newOrderParams
             getReadyToShipUseCase.params = readyToShipParams

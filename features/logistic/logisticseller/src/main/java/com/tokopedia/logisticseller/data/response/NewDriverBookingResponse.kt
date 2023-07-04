@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 data class NewDriverBookingResponse(
     @SerializedName("MpLogisticNewDriverBooking")
-    val data: NewDriverBookingData? = null,
+    val data: NewDriverBookingData? = null
 ) {
     data class NewDriverBookingData(
         @SerializedName("message")
@@ -20,6 +20,6 @@ data class NewDriverBookingResponse(
         @SerializedName("shipper_id")
         val shipperId: String = "",
         @SerializedName("shipper_product_id")
-        val shipperProductId: String = "",
+        val shipperProductId: String = ""
     )
 }

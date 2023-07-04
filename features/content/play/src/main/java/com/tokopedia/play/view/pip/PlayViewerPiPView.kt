@@ -58,6 +58,9 @@ class PlayViewerPiPView : ConstraintLayout {
                 PlayVideoState.Buffering -> onVideoBuffering()
                 PlayVideoState.Playing, PlayVideoState.Pause -> onVideoStarted()
                 PlayVideoState.Ended -> onVideoEnded()
+                else -> {
+                    //no-op
+                }
             }
         }
     }

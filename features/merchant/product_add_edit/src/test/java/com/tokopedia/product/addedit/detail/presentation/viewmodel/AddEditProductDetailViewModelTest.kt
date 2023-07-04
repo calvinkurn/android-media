@@ -197,7 +197,7 @@ class AddEditProductDetailViewModelTest {
     }
 
     @Test
-    fun `success get category recommendation`() = coroutineTestRule.runBlockingTest {
+    fun `success get category recommendation`() = coroutineTestRule.runTest {
         val successResult = listOf(any<ListItemUnify>(), any<ListItemUnify>(), any<ListItemUnify>())
 
         coEvery {
@@ -215,7 +215,7 @@ class AddEditProductDetailViewModelTest {
     }
 
     @Test
-    fun `failed get category recommendation`() = coroutineTestRule.runBlockingTest {
+    fun `failed get category recommendation`() = coroutineTestRule.runTest {
         coEvery {
             getCategoryRecommendationUseCase.executeOnBackground()
         } throws MessageErrorException("")
@@ -231,7 +231,7 @@ class AddEditProductDetailViewModelTest {
     }
 
     @Test
-    fun `success get name recommendation`() = coroutineTestRule.runBlockingTest {
+    fun `success get name recommendation`() = coroutineTestRule.runTest {
         val resultNameRecommendation = listOf("batik", "batik couple", "baju batik wanita", "baju batik pria", "batik kultut")
 
         coEvery {
@@ -249,7 +249,7 @@ class AddEditProductDetailViewModelTest {
     }
 
     @Test
-    fun `failed get name recommendation`() = coroutineTestRule.runBlockingTest {
+    fun `failed get name recommendation`() = coroutineTestRule.runTest {
         coEvery {
             getNameRecommendationUseCase.executeOnBackground()
         } throws MessageErrorException("")
@@ -419,7 +419,7 @@ class AddEditProductDetailViewModelTest {
     }
 
     @Test
-    fun `validateProductNameInput should invalid when product name is blacklisted`() = coroutineTestRule.runBlockingTest {
+    fun `validateProductNameInput should invalid when product name is blacklisted`() = coroutineTestRule.runTest {
         val errorMessageBlacklist = "error blacklist"
         val errorMessageTypo = "error typo"
         val errorMessageNegative = "error blacklist"
@@ -456,7 +456,7 @@ class AddEditProductDetailViewModelTest {
     }
 
     @Test
-    fun `validateProductNameInput should valid when product name no error`() = coroutineTestRule.runBlockingTest {
+    fun `validateProductNameInput should valid when product name no error`() = coroutineTestRule.runTest {
         val productNameInput = "indomilk"
 
         coEvery {
@@ -1016,7 +1016,7 @@ class AddEditProductDetailViewModelTest {
     }
 
     @Test
-    fun `validateProductSkuInput should valid when productSkuInput is not contains space char`() = coroutineTestRule.runBlockingTest {
+    fun `validateProductSkuInput should valid when productSkuInput is not contains space char`() = coroutineTestRule.runTest {
         val resultMessage = listOf<String>()
 
         coEvery {
@@ -1036,7 +1036,7 @@ class AddEditProductDetailViewModelTest {
     }
 
     @Test
-    fun `validateProductNameInputFromNetwork should valid when productNameValidationFromNetwork returns blank message`() = coroutineTestRule.runBlockingTest {
+    fun `validateProductNameInputFromNetwork should valid when productNameValidationFromNetwork returns blank message`() = coroutineTestRule.runTest {
         coEvery {
             validateProductNameUseCase.executeOnBackground()
         } returns ValidateProductNameResponse()
@@ -1052,7 +1052,7 @@ class AddEditProductDetailViewModelTest {
     }
 
     @Test
-    fun `validateProductNameInputFromNetwork should valid when productNameValidationFromNetwork returns message`() = coroutineTestRule.runBlockingTest {
+    fun `validateProductNameInputFromNetwork should valid when productNameValidationFromNetwork returns message`() = coroutineTestRule.runTest {
         val errorMessage = "Error Message"
 
         coEvery {
@@ -1076,7 +1076,7 @@ class AddEditProductDetailViewModelTest {
     }
 
     @Test
-    fun `validateProductNameInputFromNetwork should invalid when Error throws`() = coroutineTestRule.runBlockingTest {
+    fun `validateProductNameInputFromNetwork should invalid when Error throws`() = coroutineTestRule.runTest {
         val errorMessage = "Error Message"
 
         coEvery {
@@ -1110,7 +1110,7 @@ class AddEditProductDetailViewModelTest {
     }
 
     @Test
-    fun `validateProductSkuInput should invalid when productSkuInput is contains space char`() = coroutineTestRule.runBlockingTest {
+    fun `validateProductSkuInput should invalid when productSkuInput is contains space char`() = coroutineTestRule.runTest {
         val resultMessage = listOf("error 1", "error 2")
 
         coEvery {
@@ -1325,7 +1325,7 @@ class AddEditProductDetailViewModelTest {
     }
 
     @Test
-    fun `get showcase list should get the list`() = coroutineTestRule.runBlockingTest {
+    fun `get showcase list should get the list`() = coroutineTestRule.runTest {
         coEvery {
             getShopEtalaseUseCase.executeOnBackground().shopShowcases.result
         } returns listOf()
@@ -1357,7 +1357,7 @@ class AddEditProductDetailViewModelTest {
     }
 
     @Test
-    fun `getAnnotationCategory should return unfilled data when productId is not provided`() = coroutineTestRule.runBlockingTest {
+    fun `getAnnotationCategory should return unfilled data when productId is not provided`() = coroutineTestRule.runTest {
         val annotationCategoryData = listOf<AnnotationCategoryData>()
 
         coEvery {
@@ -1383,7 +1383,7 @@ class AddEditProductDetailViewModelTest {
     }
 
     @Test
-    fun `getAnnotationCategory should return specification data when productId is provided`() = coroutineTestRule.runBlockingTest {
+    fun `getAnnotationCategory should return specification data when productId is provided`() = coroutineTestRule.runTest {
         val annotationCategoryData = listOf(
             AnnotationCategoryData(
                 variant = "Merek",
@@ -1427,7 +1427,7 @@ class AddEditProductDetailViewModelTest {
     }
 
     @Test
-    fun `getAnnotationCategory should return simplified specification data when having more than 5 specification`() = coroutineTestRule.runBlockingTest {
+    fun `getAnnotationCategory should return simplified specification data when having more than 5 specification`() = coroutineTestRule.runTest {
         val annotationCategoryData = listOf(
             AnnotationCategoryData(
                 variant = "Merek",
@@ -1622,7 +1622,7 @@ class AddEditProductDetailViewModelTest {
     }
 
     @Test
-    fun `getProductPriceRecommendation should return unfilled data when productId is not provided`() = coroutineTestRule.runBlockingTest {
+    fun `getProductPriceRecommendation should return unfilled data when productId is not provided`() = coroutineTestRule.runTest {
         coEvery {
             getEditProductPriceSuggestionUseCase.executeOnBackground()
                 .priceSuggestionSuggestedPriceGet
@@ -1639,7 +1639,7 @@ class AddEditProductDetailViewModelTest {
     }
 
     @Test
-    fun `getProductPriceRecommendation should return throwable if error happen`() = coroutineTestRule.runBlockingTest {
+    fun `getProductPriceRecommendation should return throwable if error happen`() = coroutineTestRule.runTest {
         val expectedErrorMessage = "error happen"
         coEvery {
             getEditProductPriceSuggestionUseCase.executeOnBackground()
@@ -1858,7 +1858,7 @@ class AddEditProductDetailViewModelTest {
     }
 
     @Test
-    fun `getAddProductPriceSuggestion should return expected data when request params is provided`() = coroutineTestRule.runBlockingTest {
+    fun `getAddProductPriceSuggestion should return expected data when request params is provided`() = coroutineTestRule.runTest {
         coEvery {
             getAddProductPriceSuggestionUseCase.executeOnBackground()
                 .priceSuggestionByKeyword
@@ -1881,7 +1881,7 @@ class AddEditProductDetailViewModelTest {
     }
 
     @Test
-    fun `getAddProductPriceSuggestion should return throwable if error happen`() = coroutineTestRule.runBlockingTest {
+    fun `getAddProductPriceSuggestion should return throwable if error happen`() = coroutineTestRule.runTest {
         val expectedErrorMessage = "error happen"
         coEvery {
             getAddProductPriceSuggestionUseCase.executeOnBackground()
@@ -2202,7 +2202,7 @@ class AddEditProductDetailViewModelTest {
     }
 
     @Test
-    fun `getShopInfo should return expected data when request params is provided`() = coroutineTestRule.runBlockingTest {
+    fun `getShopInfo should return expected data when request params is provided`() = coroutineTestRule.runTest {
         coEvery {
             getShopInfoUseCase.executeOnBackground()
                 .shopInfoById
@@ -2223,7 +2223,7 @@ class AddEditProductDetailViewModelTest {
     }
 
     @Test
-    fun `getShopInfo should return throwable if error happen`() = coroutineTestRule.runBlockingTest {
+    fun `getShopInfo should return throwable if error happen`() = coroutineTestRule.runTest {
         val expectedErrorMessage = "error happen"
         coEvery {
             getShopInfoUseCase.executeOnBackground()
@@ -2234,7 +2234,7 @@ class AddEditProductDetailViewModelTest {
     }
 
     @Test
-    fun `getCommissionInfo should return expected data when request params is provided`() = coroutineTestRule.runBlockingTest {
+    fun `getCommissionInfo should return expected data when request params is provided`() = coroutineTestRule.runTest {
         coEvery {
             getDefaultCommissionRulesUseCase.executeOnBackground()
         } returns GetDefaultCommissionRulesResponse(
@@ -2257,7 +2257,7 @@ class AddEditProductDetailViewModelTest {
     }
 
     @Test
-    fun `getCommissionInfo should return throwable if error happen`() = coroutineTestRule.runBlockingTest {
+    fun `getCommissionInfo should return throwable if error happen`() = coroutineTestRule.runTest {
         val expectedErrorMessage = "error happen"
         coEvery {
             getDefaultCommissionRulesUseCase.executeOnBackground()
@@ -2276,7 +2276,7 @@ class AddEditProductDetailViewModelTest {
     }
 
     @Test
-    fun `getProductAutoMigratedStatus should return expected data when request params is provided`() = coroutineTestRule.runBlockingTest {
+    fun `getProductAutoMigratedStatus should return expected data when request params is provided`() = coroutineTestRule.runTest {
         coEvery {
             getProductAutoMigratedStatusUseCase.executeOnBackground()
         } returns GetProductAutoMigratedStatusResponse(
@@ -2293,7 +2293,7 @@ class AddEditProductDetailViewModelTest {
     }
 
     @Test
-    fun `getProductAutoMigratedStatus should return throwable if error happen`() = coroutineTestRule.runBlockingTest {
+    fun `getProductAutoMigratedStatus should return throwable if error happen`() = coroutineTestRule.runTest {
         val expectedErrorMessage = "error happen"
         coEvery {
             getProductAutoMigratedStatusUseCase.executeOnBackground()

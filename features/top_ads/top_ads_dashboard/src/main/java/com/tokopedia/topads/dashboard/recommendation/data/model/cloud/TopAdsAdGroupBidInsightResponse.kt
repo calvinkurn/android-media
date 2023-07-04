@@ -17,19 +17,25 @@ data class TopAdsAdGroupBidInsightResponse(
         ) {
         data class Group(
             @SerializedName("data")
-            val adGroupBidInsightData: AdGroupBidInsightData = AdGroupBidInsightData()
+            val adGroupBidInsightData: AdGroupBidInsightData = AdGroupBidInsightData(),
         ) {
             data class AdGroupBidInsightData(
                 @SerializedName("currentBidSettings")
-                val currentBidSettings: List<Any> = listOf(),
+                val currentBidSettings: List<BidSettings> = listOf(),
                 @SerializedName("groupID")
                 val groupID: String = "",
                 @SerializedName("predictedTotalImpression")
                 val predictedTotalImpression: String = "",
                 @SerializedName("suggestionBidSettings")
-                val suggestionBidSettings: List<Any> = listOf()
-            )
+                val suggestionBidSettings: List<BidSettings> = listOf(),
+            ){
+                data class BidSettings(
+                    @SerializedName("bidType")
+                    val bidType: String = "",
+                    @SerializedName("priceBid")
+                    val priceBid: Int = 0,
+                )
+            }
         }
     }
-
 }

@@ -33,7 +33,7 @@ import com.tokopedia.utils.text.currency.NumberTextWatcher
 import kotlinx.android.synthetic.main.tm_layout_add_quota.*
 import javax.inject.Inject
 
-class TmAddQuotaBottomsheet: BottomSheetUnify() {
+class TmAddQuotaBottomsheet : BottomSheetUnify() {
 
     private var maxCashback = 1
     private var token = ""
@@ -49,8 +49,9 @@ class TmAddQuotaBottomsheet: BottomSheetUnify() {
 
     @Inject
     lateinit var tmTracker: TmTracker
+
     @Inject
-    lateinit var userSession:UserSessionInterface
+    lateinit var userSession: UserSessionInterface
 
     private val childLayoutRes = R.layout.tm_layout_add_quota
     private var voucherId = ""
@@ -73,7 +74,6 @@ class TmAddQuotaBottomsheet: BottomSheetUnify() {
             voucherQuota = it
         }
         DaggerTokomemberDashComponent.builder().baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent).build().inject(this)
-
     }
 
     override fun onCreateView(
@@ -81,7 +81,6 @@ class TmAddQuotaBottomsheet: BottomSheetUnify() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
         setDefaultParams()
         initBottomSheet()
         return super.onCreateView(inflater, container, savedInstanceState)
@@ -90,11 +89,12 @@ class TmAddQuotaBottomsheet: BottomSheetUnify() {
     private fun initBottomSheet() {
         val childView = LayoutInflater.from(context).inflate(
             childLayoutRes,
-            null, false
+            null,
+            false
         )
         setChild(childView)
         observeViewModel()
-        if(voucherType.lowercase() == "gratis ongkir"){
+        if (voucherType.lowercase() == "gratis ongkir") {
             voucherType = "shipping"
         }
         tmCouponViewModel.getInitialCouponData("update", voucherType.lowercase())
@@ -102,38 +102,47 @@ class TmAddQuotaBottomsheet: BottomSheetUnify() {
 
     private fun observeViewModel() {
         tmCouponViewModel.tmCouponInitialLiveData.observe(viewLifecycleOwner, {
-            when(it.status){
-                TokoLiveDataResult.STATUS.SUCCESS ->{
+            when (it.status) {
+                TokoLiveDataResult.STATUS.SUCCESS -> {
                     it.data?.getInitiateVoucherPage?.data?.token?.let { it1 ->
                         token = it1
                     }
                 }
-                TokoLiveDataResult.STATUS.ERROR ->{
+                TokoLiveDataResult.STATUS.ERROR -> {
                     view?.rootView?.let { it1 -> Toaster.build(it1, it.error?.message.toString(), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show() }
+                }
+                else -> {
+                    // no-op
                 }
             }
         })
 
         tmCouponViewModel.tmCouponQuotaUpdateLiveData.observe(viewLifecycleOwner, {
-            when(it.status){
-                TokoLiveDataResult.STATUS.SUCCESS ->{
-                    if(it.data?.merchantPromotionUpdateMVQuota?.status == 200) {
+            when (it.status) {
+                TokoLiveDataResult.STATUS.SUCCESS -> {
+                    if (it.data?.merchantPromotionUpdateMVQuota?.status == 200) {
                         tmCouponListRefreshCallback.refreshCouponList(ADD_QUOTA)
                         dismiss()
+                    } else {
+                        view?.rootView?.let { it1 ->
+                            it.data?.merchantPromotionUpdateMVQuota?.message?.let { it2 ->
+                                Toaster.build(
+                                    it1,
+                                    it2,
+                                    Toaster.LENGTH_SHORT,
+                                    Toaster.TYPE_ERROR
+                                ).show()
+                            }
+                        }
                     }
-                    else{
-                        view?.rootView?.let { it1 -> it.data?.merchantPromotionUpdateMVQuota?.message?.let { it2 ->
-                            Toaster.build(it1,
-                                it2, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
-                        } }
-                    }
-
                 }
-                TokoLiveDataResult.STATUS.LOADING ->{
-
+                TokoLiveDataResult.STATUS.LOADING -> {
                 }
-                TokoLiveDataResult.STATUS.ERROR ->{
+                TokoLiveDataResult.STATUS.ERROR -> {
                     view?.rootView?.let { it1 -> Toaster.build(it1, "Something went wrong", Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show() }
+                }
+                else -> {
+                    // no-op
                 }
             }
         })
@@ -144,7 +153,7 @@ class TmAddQuotaBottomsheet: BottomSheetUnify() {
 
         textFieldQuota.editText.setText(voucherQuota.toString())
         tvCouponBenefit.text = "Rp" + CurrencyFormatHelper.convertToRupiah((maxCashback.times(voucherQuota).toString()))
-        textFieldQuota.editText.addTextChangedListener(object : NumberTextWatcher(textFieldQuota.editText){
+        textFieldQuota.editText.addTextChangedListener(object : NumberTextWatcher(textFieldQuota.editText) {
             override fun onNumberChanged(number: Double) {
                 super.onNumberChanged(number)
                 when {
@@ -152,7 +161,7 @@ class TmAddQuotaBottomsheet: BottomSheetUnify() {
                         textFieldQuota.isInputError = true
                         textFieldQuota.setMessage("Kuota harus lebih dari $voucherQuota")
                     }
-                    number> MAX_QUOTA_CHECK -> {
+                    number > MAX_QUOTA_CHECK -> {
                         textFieldQuota.isInputError = true
                         textFieldQuota.setMessage(MAX_QUOTA_LABEL)
                     }
@@ -165,12 +174,11 @@ class TmAddQuotaBottomsheet: BottomSheetUnify() {
             }
         })
         btnContinue.setOnClickListener {
-            if(token.isEmpty()){
+            if (token.isEmpty()) {
                 tmCouponViewModel.getInitialCouponData("update", voucherType.lowercase())
-            }
-            else {
+            } else {
                 val quota = textFieldQuota.editText.text.toString().toIntOrZero()
-                if(quota >= voucherQuota) {
+                if (quota >= voucherQuota) {
                     callingFragment?.let {
                         if (it is TmDashCouponDetailFragment) {
                             tmTracker.clickSimpanQuotaCouponDetail(userSession.shopId)
@@ -183,8 +191,7 @@ class TmAddQuotaBottomsheet: BottomSheetUnify() {
                         voucherId = voucherId.toIntOrZero(),
                         token
                     )
-                }
-                else{
+                } else {
                     textFieldQuota.textInputLayout.error = "Minimum kuota: $voucherQuota"
                 }
             }
@@ -218,7 +225,7 @@ class TmAddQuotaBottomsheet: BottomSheetUnify() {
             tmCouponListRefreshCallback: TmCouponListRefreshCallback,
             fragment: Fragment,
             maxCashback: Int
-        ){
+        ) {
             val bundle = Bundle()
             bundle.putString(BUNDLE_VOUCHER_ID, voucherId)
             bundle.putInt(BUNDLE_VOUCHER_QUOTA, currentQuota)
@@ -232,5 +239,4 @@ class TmAddQuotaBottomsheet: BottomSheetUnify() {
             tokomemberIntroBottomsheet.show(childFragmentManager, TAG)
         }
     }
-
 }

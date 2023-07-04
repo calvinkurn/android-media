@@ -62,9 +62,10 @@ class HomeFragmentRefreshTest {
         private const val TOTAL_PARTIAL_HEADER_RESUME_COUNT = 1
 
         private const val BELOW_THREE_MINUTES_ELAPSED_TIME = 5000L
-        private const val ABOVE_THREE_MINUTES_ELAPSED_TIME = 180001L
-        private const val DELAY_TRANSITION = 500L
-        private const val DELAY_PROCESS = 5000L
+
+        // Should be 3 mins rule, but mocked to 10 secs
+        private const val ABOVE_THREE_MINUTES_ELAPSED_TIME = 11000L
+        private const val DELAY_PROCESS = 2000L
 
         private const val ADDRESS_1_ID = "0"
         private const val ADDRESS_1_CITY_ID = "228"

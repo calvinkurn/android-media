@@ -32,7 +32,8 @@
         android:layout_marginLeft="8dp"
         android:visibility="gone"
         tools:src="@tools:sample/avatars"
-        tools:visibility="visible" />
+        tools:visibility="visible"
+        tools:ignore="ContentDescription" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/cta"

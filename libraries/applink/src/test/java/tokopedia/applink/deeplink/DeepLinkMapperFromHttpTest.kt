@@ -6,6 +6,7 @@ import com.tokopedia.applink.internal.ApplinkConsInternalDigital
 import com.tokopedia.applink.internal.ApplinkConsInternalHome
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -623,13 +624,13 @@ class DeepLinkMapperFromHttpTest : DeepLinkMapperTestFixture() {
 
     @Test
     fun `check link url of recommendation with id then should be redirected to discovery page with id`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://${ApplinkConsInternalHome.AUTHORITY_DISCOVERY}/${ApplinkConsInternalHome.PATH_REKOMENDASI}?recomProdId=3190804069"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://${ApplinkConstInternalGlobal.HOST_GLOBAL}/${ApplinkConsInternalHome.AUTHORITY_DISCOVERY}/${ApplinkConsInternalHome.PATH_REKOMENDASI}?recomProdId=3190804069"
         assertEqualsDeepLinkMapper(DeepLinkUrlConstant.RECOMMENDATION.RECOMMENDATION_WITH_ID, expectedDeepLink)
     }
 
     @Test
     fun `check link url of recommendation with id and param then should be redirected to discovery page with id and param`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://${ApplinkConsInternalHome.AUTHORITY_DISCOVERY}/${ApplinkConsInternalHome.PATH_REKOMENDASI}?recomProdId=2137719991&msrc=product-feed&utm_source=facebook&utm_medium=ocpm&utm_campaign=alon-smda-DPO-WIB-SER-18-55-MF-AUTO-180-SMDA-NWB-PG-11110000-0020-alon-smda&ref=fbdpa"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://${ApplinkConstInternalGlobal.HOST_GLOBAL}/${ApplinkConsInternalHome.AUTHORITY_DISCOVERY}/${ApplinkConsInternalHome.PATH_REKOMENDASI}?recomProdId=2137719991&msrc=product-feed&utm_source=facebook&utm_medium=ocpm&utm_campaign=alon-smda-DPO-WIB-SER-18-55-MF-AUTO-180-SMDA-NWB-PG-11110000-0020-alon-smda&ref=fbdpa"
         assertEqualsDeepLinkMapper(DeepLinkUrlConstant.RECOMMENDATION.RECOMMENDATION_WITH_ID_AND_QUERY, expectedDeepLink)
     }
 

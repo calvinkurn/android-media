@@ -4,8 +4,11 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.tokochat.domain.usecase.*
 import com.tokopedia.tokochat.util.TokoChatViewUtil
 import com.tokopedia.tokochat.view.chatroom.TokoChatViewModel
+import com.tokopedia.tokochat.view.chatroom.uimodel.TokoChatImageAttachmentExtensionProvider
 import com.tokopedia.tokochat_common.util.TokoChatCacheManager
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
+import com.tokopedia.usercomponents.userconsent.domain.collection.GetNeedConsentUseCase
+import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.MockKAnnotations
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.spyk
@@ -22,6 +25,9 @@ abstract class TokoChatViewModelTestFixture {
 
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
+
+    @get:Rule
+    val coroutineTestRule = CoroutineTestRule()
 
     @RelaxedMockK
     protected lateinit var getChannelUseCase: TokoChatChannelUseCase
@@ -54,6 +60,15 @@ abstract class TokoChatViewModelTestFixture {
     protected lateinit var getImageUrlUseCase: TokoChatGetImageUseCase
 
     @RelaxedMockK
+    protected lateinit var uploadImageUseCase: TokoChatUploadImageUseCase
+
+    @RelaxedMockK
+    protected lateinit var getNeedConsentUseCase: GetNeedConsentUseCase
+
+    @RelaxedMockK
+    protected lateinit var imageAttachmentExtensionProvider: TokoChatImageAttachmentExtensionProvider
+
+    @RelaxedMockK
     protected lateinit var cacheManager: TokoChatCacheManager
 
     @RelaxedMockK
@@ -63,7 +78,7 @@ abstract class TokoChatViewModelTestFixture {
     protected val throwableDummy = Throwable("Oops!")
 
     @Before
-    fun setup() {
+    open fun setup() {
         MockKAnnotations.init(this)
         viewModel = spyk(
             TokoChatViewModel(
@@ -77,7 +92,11 @@ abstract class TokoChatViewModelTestFixture {
                 getTokoChatRoomTickerUseCase,
                 getTokoChatOrderProgressUseCase,
                 getImageUrlUseCase,
+                uploadImageUseCase,
+                getNeedConsentUseCase,
                 viewUtil,
+                imageAttachmentExtensionProvider,
+                cacheManager,
                 CoroutineTestDispatchersProvider
             )
         )

@@ -231,7 +231,7 @@ data class TokoFoodCheckoutShipping(
     @SerializedName("price_fmt")
     val priceFmt: String = ""
 ) {
-    
+
     companion object {
         @JvmStatic
         fun convertToMetadata(shipping: CheckoutTokoFoodShipping): TokoFoodCheckoutShipping {

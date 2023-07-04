@@ -21,6 +21,8 @@ interface RealTimeRecommendationListener {
         item: ProductCardCompactCarouselItemUiModel
     )
 
+    fun onAddToCartProductBlocked()
+
     fun refreshRealTimeRecommendation(data: HomeRealTimeRecomUiModel)
 
     fun removeRealTimeRecommendation(data: HomeRealTimeRecomUiModel)

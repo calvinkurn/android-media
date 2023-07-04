@@ -3,13 +3,12 @@ package com.tokopedia.tokofood.feature.home.analytics
 import android.os.Bundle
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalytics
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalytics.CHECKOUT_STEP_1
-import com.tokopedia.tokofood.common.analytics.TokoFoodAnalytics.CHECKOUT_STEP_2
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalytics.EVENT_CHECKOUT_OPTION_MINI_CART
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalytics.KEY_CHECKOUT_OPTION
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalytics.KEY_CHECKOUT_STEP
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalytics.KEY_TRACKER_ID
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalyticsConstants
-import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodData
+import com.tokopedia.tokofood.common.domain.response.CartGeneralCartListData
 import com.tokopedia.tokofood.common.domain.response.Merchant
 import com.tokopedia.tokofood.feature.home.analytics.TokoFoodHomeCategoryCommonAnalytics.addGeneralTracker
 import com.tokopedia.tokofood.feature.home.analytics.TokoFoodHomeCategoryCommonAnalytics.getItemATC
@@ -44,18 +43,18 @@ class TokoFoodCategoryAnalytics: BaseTrackerConst() {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(Event.SELECT_CONTENT, eventDataLayer)
     }
 
-    fun clickAtc(userId: String?, destinationId: String?, data: CheckoutTokoFoodData){
+    fun clickAtc(userId: String?, destinationId: String?, data: CartGeneralCartListData){
         val eventDataLayer = Bundle().apply {
             putString(TrackAppUtils.EVENT_ACTION, TokoFoodAnalytics.EVENT_ACTION_CLICK_ORDER_MINICART)
             putString(TrackAppUtils.EVENT_LABEL, "")
         }
         val items = getItemATC(data)
         eventDataLayer.putParcelableArrayList(TokoFoodAnalytics.KEY_ITEMS, items)
-        eventDataLayer.addToCart(userId, destinationId, data.shop.shopId, data)
+        eventDataLayer.addToCart(userId, destinationId, data.data.getTokofoodBusinessData().customResponse.shop.shopId, data)
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(TokoFoodAnalyticsConstants.BEGIN_CHECKOUT, eventDataLayer)
     }
 
-    private fun Bundle.addToCart(userId: String?, destinationId: String?, shopId: String, data: CheckoutTokoFoodData): Bundle {
+    private fun Bundle.addToCart(userId: String?, destinationId: String?, shopId: String, data: CartGeneralCartListData): Bundle {
         addGeneralTracker(userId, destinationId)
         this.putString(TrackAppUtils.EVENT, TokoFoodAnalyticsConstants.BEGIN_CHECKOUT)
         this.putString(TrackAppUtils.EVENT_CATEGORY, TokoFoodAnalytics.EVENT_CATEGORY_CATEGORY_PAGE)
@@ -64,13 +63,6 @@ class TokoFoodCategoryAnalytics: BaseTrackerConst() {
         this.putString(KEY_TRACKER_ID, ATC_CATEGORY_TRACKER_ID)
         this.putString(KEY_CHECKOUT_STEP, CHECKOUT_STEP_1)
         this.putString(KEY_CHECKOUT_OPTION, EVENT_CHECKOUT_OPTION_MINI_CART)
-        return this
-    }
-
-    private fun Bundle.viewItem(userId: String?, destinationId: String?): Bundle {
-        addGeneralTracker(userId, destinationId)
-        this.putString(TrackAppUtils.EVENT, TokoFoodAnalyticsConstants.VIEW_ITEM)
-        this.putString(TrackAppUtils.EVENT_CATEGORY, TokoFoodAnalytics.EVENT_CATEGORY_CATEGORY_PAGE)
         return this
     }
 

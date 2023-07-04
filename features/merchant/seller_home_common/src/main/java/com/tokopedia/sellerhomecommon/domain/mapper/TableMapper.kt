@@ -4,6 +4,7 @@ import android.graphics.Color
 import com.google.gson.Gson
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.EMPTY
+import com.tokopedia.sellerhomecommon.common.DarkModeHelper
 import com.tokopedia.sellerhomecommon.data.WidgetLastUpdatedSharedPrefInterface
 import com.tokopedia.sellerhomecommon.domain.model.DataKeyModel
 import com.tokopedia.sellerhomecommon.domain.model.GetTableDataResponse
@@ -22,7 +23,8 @@ import javax.inject.Inject
 
 class TableMapper @Inject constructor(
     lastUpdatedSharedPref: WidgetLastUpdatedSharedPrefInterface,
-    lastUpdatedEnabled: Boolean
+    lastUpdatedEnabled: Boolean,
+    private val darkModeHelper: DarkModeHelper
 ) : BaseWidgetMapper(lastUpdatedSharedPref, lastUpdatedEnabled),
     BaseResponseMapper<GetTableDataResponse, List<TableDataUiModel>> {
 
@@ -50,7 +52,7 @@ class TableMapper @Inject constructor(
 
     override fun mapRemoteDataToUiData(
         response: GetTableDataResponse,
-        isFromCache: Boolean
+        isFromCache: Boolean,
     ): List<TableDataUiModel> {
         return response.fetchSearchTableWidgetData.data.mapIndexed { i, table ->
             var maxDisplay = dataKeys.getOrNull(i)?.maxDisplay ?: MAX_ROWS_PER_PAGE
@@ -97,28 +99,27 @@ class TableMapper @Inject constructor(
                     val width = headers[j].width
                     val rowColumn: TableRowsUiModel = when (col.type) {
                         COLUMN_TEXT -> TableRowsUiModel.RowColumnText(
-                            valueStr = col.value,
+                            valueStr = darkModeHelper.makeHtmlDarkModeSupport(col.value),
                             width = width,
                             meta = getTableRowMeta(col.meta),
                             isLeftAlign = firstTextColumn == col
                         )
                         COLUMN_IMAGE -> TableRowsUiModel.RowColumnImage(col.value, width)
-
                         COLUMN_HTML -> TableRowsUiModel.RowColumnHtml(
-                            col.value,
-                            width,
+                            valueStr = darkModeHelper.makeHtmlDarkModeSupport(col.value),
+                            width = width,
                             meta = getTableRowMeta(col.meta),
                             isLeftAlign = firstTextColumn == col,
                             colorInt = getColorFromHtml(col.value)
                         )
                         else ->
                             TableRowsUiModel.RowColumnHtmlWithIcon(
-                                col.value,
-                                width,
-                                col.iconUrl.orEmpty(),
+                                valueStr = darkModeHelper.makeHtmlDarkModeSupport(col.value),
+                                width = width,
+                                icon = col.iconUrl.orEmpty(),
                                 meta = getTableRowMeta(col.meta),
                                 isLeftAlign = firstTextColumn == col,
-                                getColorFromHtml(col.value)
+                                colorInt = getColorFromHtml(col.value)
                             ) // it's COLUMN_HTML WITH ICON
                     }
                     rows.add(rowColumn)

@@ -7,28 +7,37 @@
     tools:ignore="MissingDefaultResource">
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/chipsRecyclerView"
+        android:id="@+id/unoptimisedGroupHeading"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="16dp"
         android:gravity="center"
-        android:text="Coba cek dan maksimalkan iklanmu yang lain, ya."
+        android:text="@string/unoptimised_group_heading_group_detail"
         android:textColor="#212121"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="display_3" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/groupCardRecyclerView"
+    <com.tokopedia.unifycomponents.CardUnify2
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="12dp"
-        android:layout_marginEnd="12dp"
+        android:layout_margin="16dp"
+        app:layout_constraintVertical_bias="0"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/chipsRecyclerView"
-        tools:itemCount="4"
-        tools:listitem="@layout/topads_group_card_item_layout" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/unoptimisedGroupHeading">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/groupCardRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            tools:itemCount="4"
+            tools:listitem="@layout/topads_group_card_item_layout" />
+    </com.tokopedia.unifycomponents.CardUnify2>
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

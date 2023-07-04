@@ -1,8 +1,5 @@
 package com.tokopedia.home.beranda.presentation.view.listener
 
-import android.content.Context
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.home.analytics.v2.LegoBannerTracking
 import com.tokopedia.home.analytics.v2.VpsWidgetTracking
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home_component.listener.VpsWidgetListener
@@ -13,7 +10,9 @@ import com.tokopedia.home_component.model.ChannelModel
  * Created by frenzel
  */
 class VpsWidgetComponentCallback(val homeCategoryListener: HomeCategoryListener): VpsWidgetListener {
-    override fun onSeeAllClicked(channelModel: ChannelModel, position: Int) {
+    override fun onSeeAllClicked(channelModel: ChannelModel, applink: String, position: Int) {
+        homeCategoryListener.sendEETracking(VpsWidgetTracking.getVpsViewAllClick(channelModel))
+        homeCategoryListener.onDynamicChannelClicked(applink)
     }
 
     override fun onItemImpressed(

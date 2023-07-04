@@ -12,9 +12,14 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
+import android.text.SpannableString
+import android.text.TextPaint
+import android.text.method.LinkMovementMethod
+import android.text.style.ClickableSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -24,6 +29,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.abstraction.constant.TkpdCache
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
@@ -34,6 +40,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
+import com.tokopedia.coachmark.util.ViewHelper
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.discovery.common.manager.ProductCardOptionsWishlistCallback
@@ -49,7 +56,6 @@ import com.tokopedia.home_account.AccountConstants.Analytics.DEVELOPER_OPTIONS
 import com.tokopedia.home_account.AccountConstants.Analytics.LOGOUT
 import com.tokopedia.home_account.AccountConstants.Analytics.PAYMENT_METHOD
 import com.tokopedia.home_account.AccountConstants.Analytics.PERSONAL_DATA
-import com.tokopedia.home_account.AccountConstants.Analytics.PRIVACY_POLICY
 import com.tokopedia.home_account.AccountConstants.Analytics.TERM_CONDITION
 import com.tokopedia.home_account.AccountConstants.TDNBanner.TDN_INDEX
 import com.tokopedia.home_account.PermissionChecker
@@ -58,10 +64,20 @@ import com.tokopedia.home_account.ResultBalanceAndPoint
 import com.tokopedia.home_account.analytics.AddVerifyPhoneAnalytics
 import com.tokopedia.home_account.analytics.HomeAccountAnalytics
 import com.tokopedia.home_account.analytics.TokopediaPlusAnalytics
-import com.tokopedia.home_account.data.model.*
+import com.tokopedia.home_account.data.model.CentralizedUserAssetConfig
+import com.tokopedia.home_account.data.model.CommonDataView
+import com.tokopedia.home_account.data.model.LoadMoreRecommendation
+import com.tokopedia.home_account.data.model.ProfileDataView
+import com.tokopedia.home_account.data.model.RecommendationTitleView
+import com.tokopedia.home_account.data.model.SeparatorView
+import com.tokopedia.home_account.data.model.SettingDataView
+import com.tokopedia.home_account.data.model.ShortcutResponse
+import com.tokopedia.home_account.data.model.UserAccountDataModel
+import com.tokopedia.home_account.data.model.WalletappGetAccountBalance
+import com.tokopedia.home_account.data.pref.AccountPreference
+import com.tokopedia.home_account.databinding.BottomSheetOclBinding
 import com.tokopedia.home_account.databinding.HomeAccountUserFragmentBinding
 import com.tokopedia.home_account.di.HomeAccountUserComponents
-import com.tokopedia.home_account.pref.AccountPreference
 import com.tokopedia.home_account.privacy_account.view.LinkAccountWebViewActivity
 import com.tokopedia.home_account.privacy_account.view.LinkAccountWebviewFragment
 import com.tokopedia.home_account.view.HomeAccountUserViewModel
@@ -94,22 +110,29 @@ import com.tokopedia.loginfingerprint.tracker.BiometricTracker.Companion.EVENT_L
 import com.tokopedia.loginfingerprint.view.activity.RegisterFingerprintActivity
 import com.tokopedia.loginfingerprint.view.dialog.FingerprintDialogHelper
 import com.tokopedia.loginfingerprint.view.helper.BiometricPromptHelper
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
-import com.tokopedia.searchbar.helper.ViewHelper
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScrollListener
+import com.tokopedia.sessioncommon.tracker.OclTracker
+import com.tokopedia.sessioncommon.util.OclUtils
 import com.tokopedia.topads.sdk.domain.model.CpmModel
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.trackingoptimizer.TrackingQueue
-import com.tokopedia.unifycomponents.*
+import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.CardUnify
+import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.LocalLoad
+import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -120,6 +143,7 @@ import com.tokopedia.utils.image.ImageUtils
 import com.tokopedia.utils.view.binding.noreflection.viewBinding
 import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -164,8 +188,13 @@ open class HomeAccountUserFragment :
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
+    @Inject
+    lateinit var remoteConfig: RemoteConfig
+
+    @Inject
+    lateinit var oclUtils: OclUtils
+
     private lateinit var remoteConfigInstance: RemoteConfigInstance
-    private lateinit var firebaseRemoteConfig: FirebaseRemoteConfigImpl
 
     private var biometricOfferingDialog: BottomSheetUnify? = null
 
@@ -202,7 +231,7 @@ open class HomeAccountUserFragment :
     }
 
     private fun isEnablePrivacyAccount(): Boolean {
-        return getRemoteConfig().getBoolean(REMOTE_CONFIG_KEY_PRIVACY_ACCOUNT, false)
+        return remoteConfig.getBoolean(REMOTE_CONFIG_KEY_PRIVACY_ACCOUNT, false)
     }
 
     private fun isEnableExplicitProfileMenu(): Boolean {
@@ -216,13 +245,6 @@ open class HomeAccountUserFragment :
             remoteConfigInstance = RemoteConfigInstance(activity?.application)
         }
         return remoteConfigInstance.abTestPlatform
-    }
-
-    private fun getRemoteConfig(): FirebaseRemoteConfigImpl {
-        if (!::firebaseRemoteConfig.isInitialized) {
-            firebaseRemoteConfig = FirebaseRemoteConfigImpl(requireContext())
-        }
-        return firebaseRemoteConfig
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -435,7 +457,6 @@ open class HomeAccountUserFragment :
     }
 
     override fun onItemViewBinded(position: Int, itemView: View, data: Any) {
-        initCoachMark(position, itemView, data)
         if (position == POSITION_0) {
             initMemberLocalLoad(itemView)
             initBalanceAndPointLocalLoad(itemView)
@@ -583,7 +604,9 @@ open class HomeAccountUserFragment :
         }
 
         handleProductCardOptionsActivityResult(
-            requestCode, resultCode, data,
+            requestCode,
+            resultCode,
+            data,
             object : ProductCardOptionsWishlistCallback {
                 override fun onReceiveWishlistResult(productCardOptionsModel: ProductCardOptionsModel) {
                     handleWishlistAction(productCardOptionsModel)
@@ -610,7 +633,7 @@ open class HomeAccountUserFragment :
                     balanceAndPointUiModel
                 )
             )
-            viewModel.getBalanceAndPoint(balanceAndPointUiModel.id, balanceAndPointUiModel.hideTitle)
+            viewModel.getBalanceAndPoint(balanceAndPointUiModel.id, balanceAndPointUiModel.hideTitle, balanceAndPointUiModel.title)
         } else if (!balanceAndPointUiModel.applink.isEmpty()) {
             goToApplink(balanceAndPointUiModel.applink)
         }
@@ -618,8 +641,8 @@ open class HomeAccountUserFragment :
 
     private fun fetchRemoteConfig() {
         context?.let {
-            isShowDarkModeToggle = getRemoteConfig().getBoolean(RemoteConfigKey.SETTING_SHOW_DARK_MODE_TOGGLE, false)
-            isShowScreenRecorder = getRemoteConfig().getBoolean(RemoteConfigKey.SETTING_SHOW_SCREEN_RECORDER, false)
+            isShowDarkModeToggle = remoteConfig.getBoolean(RemoteConfigKey.SETTING_SHOW_DARK_MODE_TOGGLE, false)
+            isShowScreenRecorder = remoteConfig.getBoolean(RemoteConfigKey.SETTING_SHOW_SCREEN_RECORDER, false)
         }
     }
 
@@ -821,7 +844,7 @@ open class HomeAccountUserFragment :
 
     private fun getBalanceAndPoints(centralizedUserAssetConfig: CentralizedUserAssetConfig) {
         centralizedUserAssetConfig.assetConfig.forEach {
-            viewModel.getBalanceAndPoint(it.id, it.hideTitle)
+            viewModel.getBalanceAndPoint(it.id, it.hideTitle, it.title)
 
             if (it.id == AccountConstants.WALLET.GOPAY) {
                 balanceAndPointAdapter?.removeById(AccountConstants.WALLET.TOKOPOINT)
@@ -922,6 +945,47 @@ open class HomeAccountUserFragment :
         }
         hideLoading()
         fpmBuyer?.run { stopTrace() }
+
+        if (accountPref.isShowCoachmark()) {
+            setCoachMark()
+        }
+    }
+
+    private fun setCoachMark() {
+        lifecycleScope.launchWhenResumed {
+            try {
+                // Add coachmark delay to prevent racing condition
+                delay(COACHMARK_DELAY_MS)
+                val profileView = binding?.homeAccountUserFragmentRv?.layoutManager?.findViewByPosition(PROFILE_POS)
+                profileView?.let {
+                    coachMarkItem.add(
+                        CoachMark2Item(
+                            it.findViewById(R.id.home_account_profile_section),
+                            getString(R.string.coachmark_title_account_info),
+                            getString(R.string.coachmark_desc_account_info),
+                            CoachMark2.POSITION_BOTTOM
+                        )
+                    )
+                }
+                val accountSettingView = binding?.homeAccountUserFragmentRv?.layoutManager?.findViewByPosition(ACC_SETTING_POS)
+                accountSettingView?.let {
+                    coachMarkItem.add(
+                        CoachMark2Item(
+                            accountSettingView.findViewById(R.id.home_account_expandable_layout_content_title),
+                            getString(R.string.coachmark_title_setting),
+                            getString(R.string.coachmark_desc_setting),
+                            CoachMark2.POSITION_TOP
+                        )
+                    )
+                }
+                context?.run {
+                    coachMark?.onFinishListener = {
+                        accountPref.saveSettingValue(AccountConstants.KEY.KEY_SHOW_COACHMARK, false)
+                    }
+                    coachMark?.showCoachMark(coachMarkItem)
+                }
+            } catch (ignored: Exception) {}
+        }
     }
 
     private fun onSuccessGetFirstRecommendationData(
@@ -989,8 +1053,8 @@ open class HomeAccountUserFragment :
             binding?.statusBarBg?.background = ColorDrawable(
                 ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_G500)
             )
+            binding?.statusBarBg?.layoutParams?.height = ViewHelper.getStatusBarHeight(it)
         }
-        binding?.statusBarBg?.layoutParams?.height = ViewHelper.getStatusBarHeight(activity)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             binding?.statusBarBg?.visibility = View.INVISIBLE
         } else {
@@ -1015,13 +1079,15 @@ open class HomeAccountUserFragment :
     }
 
     private fun getData() {
-        viewModel.refreshUserProfile()
         binding?.homeAccountUserFragmentRv?.scrollToPosition(POSITION_0)
         endlessRecyclerViewScrollListener?.resetState()
         viewModel.getBuyerData(BiometricPromptHelper.isBiometricAvailableActivity(activity))
         setupSettingList()
         getFirstRecommendation()
         viewModel.getSafeModeValue()
+        if (oclUtils.isOclEnabled()) {
+            viewModel.getOclStatus()
+        }
     }
 
     private fun onRefresh() {
@@ -1055,8 +1121,7 @@ open class HomeAccountUserFragment :
     }
 
     private fun setupList() {
-        binding?.homeAccountUserFragmentRv?.layoutManager =
-            StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+        binding?.homeAccountUserFragmentRv?.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
         binding?.homeAccountUserFragmentRv?.adapter = adapter
         binding?.homeAccountUserFragmentRv?.isNestedScrollingEnabled = false
     }
@@ -1307,12 +1372,7 @@ open class HomeAccountUserFragment :
             AccountConstants.SettingCode.SETTING_OUT_ID -> {
                 homeAccountAnalytic.eventClickSetting(LOGOUT)
                 homeAccountAnalytic.eventClickLogout()
-                if (isEnableBiometricOffering()) {
-                    homeAccountAnalytic.trackOnClickLogoutDialog()
-                    viewModel.getFingerprintStatus()
-                } else {
-                    showDialogLogout()
-                }
+                checkLogoutOffering()
             }
             AccountConstants.SettingCode.SETTING_QUALITY_SETTING -> {
                 RouteManager.route(context, ApplinkConstInternalUserPlatform.MEDIA_QUALITY_SETTING)
@@ -1354,6 +1414,79 @@ open class HomeAccountUserFragment :
                 goToApplink(item.applink)
             }
         }
+    }
+
+    private fun checkLogoutOffering() {
+        if (viewModel.getOclStatus.value?.isShowing == true) {
+            showOclBtmSheet()
+        } else if (isEnableBiometricOffering()) {
+            homeAccountAnalytic.trackOnClickLogoutDialog()
+            viewModel.getFingerprintStatus()
+        } else {
+            showDialogLogout()
+        }
+    }
+
+    fun getTncOclSpan(): SpannableString {
+        val sourceString = SpannableString(requireContext().resources.getString(R.string.ocl_btm_sheet_subtitle))
+
+        val startIndexTermAndCondition = sourceString.indexOf(getString(R.string.ocl_btm_sheet_tnc_index))
+        val endIndexTermAndCondition = startIndexTermAndCondition.plus(getString(R.string.ocl_btm_sheet_tnc_index).length)
+
+        sourceString.setSpan(
+            clickableSpan(ApplinkConstInternalGlobal.PAGE_TERM_AND_CONDITION),
+            startIndexTermAndCondition,
+            endIndexTermAndCondition,
+            0
+        )
+        return sourceString
+    }
+
+    private fun clickableSpan(page: String): ClickableSpan {
+        return object : ClickableSpan() {
+            override fun onClick(widget: View) {
+                context?.let {
+                    startActivity(RouteManager.getIntent(it, ApplinkConstInternalUserPlatform.TERM_PRIVACY, page))
+                }
+            }
+            override fun updateDrawState(ds: TextPaint) {
+                ds.color = MethodChecker.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
+            }
+        }
+    }
+
+    private fun showOclBtmSheet() {
+        val child = BottomSheetOclBinding.inflate(
+            LayoutInflater.from(context),
+            null,
+            false
+        )
+        child.btmSheetOclPositiveBtn.setOnClickListener {
+            OclTracker.sendClickOnButtonSimpanLoginAccountEvent()
+            doLogoutAndSaveSession()
+        }
+
+        child.btmSheetOclNegativeBtn.setOnClickListener {
+            OclTracker.sendClickOnButtonNantiLoginAccountEvent()
+            doLogout()
+        }
+        child.oclSubtitleText.movementMethod = LinkMovementMethod.getInstance()
+        child.oclSubtitleText.setText(getTncOclSpan(), TextView.BufferType.SPANNABLE)
+        child.imageUnify.loadImage(getString(R.string.ocl_bottomsheet_main_image))
+        BottomSheetUnify().apply {
+            setChild(child.root)
+            setCloseClickListener {
+                OclTracker.sendClickOnCloseButtonEvent()
+                doLogout()
+                dismiss()
+            }
+        }.show(parentFragmentManager, AccountConstants.LABEL_OCL_BTM_SHEET)
+    }
+
+    private fun doLogoutAndSaveSession() {
+        val intent = RouteManager.getIntent(activity, ApplinkConstInternalUserPlatform.LOGOUT)
+        intent.putExtra(ApplinkConstInternalUserPlatform.PARAM_IS_SAVE_SESSION, true)
+        startActivity(intent)
     }
 
     private fun doLogout() {
@@ -1465,48 +1598,6 @@ open class HomeAccountUserFragment :
                     )
                 )
             }
-        }
-    }
-
-    private fun initCoachMark(position: Int, itemView: View, data: Any) {
-        if (accountPref.isShowCoachmark()) {
-            if (!isProfileSectionBinded) {
-                if (coachMarkItem.count() < COACHMARK_SIZE) {
-                    if (position == 0 && data is ProfileDataView) {
-                        coachMarkItem.add(
-                            CoachMark2Item(
-                                itemView.findViewById(R.id.account_user_item_profile_email),
-                                getString(R.string.coachmark_title_account_info),
-                                getString(R.string.coachmark_desc_account_info),
-                                CoachMark2.POSITION_BOTTOM
-                            )
-                        )
-                    }
-                    if (position == 1 && data is SettingDataView) {
-                        coachMarkItem.add(
-                            CoachMark2Item(
-                                itemView.findViewById(R.id.home_account_expandable_layout_title),
-                                getString(R.string.coachmark_title_setting),
-                                getString(R.string.coachmark_desc_setting),
-                                CoachMark2.POSITION_TOP
-                            )
-                        )
-                        showCoachMark()
-                    }
-                } else {
-                    showCoachMark()
-                }
-            }
-        }
-    }
-
-    private fun showCoachMark() {
-        context?.run {
-            coachMark?.onFinishListener = {
-                accountPref.saveSettingValue(AccountConstants.KEY.KEY_SHOW_COACHMARK, false)
-            }
-            coachMark?.showCoachMark(coachMarkItem)
-            isProfileSectionBinded = true
         }
     }
 
@@ -1647,7 +1738,7 @@ open class HomeAccountUserFragment :
                 addNameLayout.findViewById(R.id.layout_bottom_sheet_add_name_icon)
             val bottomSheet = BottomSheetUnify()
 
-            ImageUtils.loadImage(iconAddName, URL_ICON_ADD_NAME_BOTTOM_SHEET)
+            ImageUtils.loadImage(iconAddName, getString(R.string.add_name_url_icon))
             iconAddName.setOnClickListener {
                 gotoChangeName(profile)
                 bottomSheet.dismiss()
@@ -1752,11 +1843,9 @@ open class HomeAccountUserFragment :
         private const val PDP_EXTRA_PRODUCT_ID = "product_id"
         private const val WIHSLIST_STATUS_IS_WISHLIST = "isWishlist"
         private const val FPM_BUYER = "mp_account_buyer"
-        private const val URL_ICON_ADD_NAME_BOTTOM_SHEET =
-            "https://images.tokopedia.net/img/android/user/profile_page/Group3082@3x.png"
         private const val USER_CENTRALIZED_ASSET_CONFIG_USER_PAGE = "user_page"
 
-        private const val REMOTE_CONFIG_KEY_PRIVACY_ACCOUNT = "android_user_privacy_account_enabled"
+        const val REMOTE_CONFIG_KEY_PRIVACY_ACCOUNT = "android_user_privacy_account_enabled"
         private const val EXPLICIT_PROFILE_MENU_ROLLOUT = "explicit_android"
         private const val CLICK_TYPE_WISHLIST = "&click_type=wishlist"
 
@@ -1766,6 +1855,12 @@ open class HomeAccountUserFragment :
         private const val POSITION_1 = 1
         private const val POSITION_2 = 2
         private const val POSITION_3 = 3
+
+        private const val PROFILE_POS = 0
+        private const val ACC_SETTING_POS = 1
+
+        private const val COACHMARK_DELAY_MS = 1000L
+        private const val PRIVACY_POLICY = "Kebijakan Privasi"
 
         fun newInstance(bundle: Bundle?): Fragment {
             return HomeAccountUserFragment().apply {

@@ -1,11 +1,9 @@
 package com.tokopedia.play.widget.ui
 
 import android.content.Context
-import android.os.Build
 import android.util.AttributeSet
 import android.view.View
 import android.widget.LinearLayout
-import androidx.annotation.RequiresApi
 import androidx.lifecycle.LifecycleObserver
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -16,7 +14,6 @@ import com.tokopedia.play.widget.ui.listener.PlayWidgetInternalListener
 import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
 import com.tokopedia.play.widget.ui.model.PlayWidgetType
 import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
-import java.lang.Exception
 
 /**
  * Created by jegul on 08/10/20
@@ -40,7 +37,6 @@ class PlayWidgetView : LinearLayout, LifecycleObserver, IPlayWidgetView {
         defStyleAttr
     )
 
-    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     constructor(
         context: Context?,
         attrs: AttributeSet?,
@@ -127,7 +123,7 @@ class PlayWidgetView : LinearLayout, LifecycleObserver, IPlayWidgetView {
     private fun addSmallView(model: PlayWidgetUiModel) {
         val widgetView = addWidgetView { PlayWidgetSmallView(context) } ?: return
 
-        if (model.items.isNullOrEmpty()) {
+        if (model.items.isEmpty()) {
             widgetView.hide()
         } else {
             widgetView.show()

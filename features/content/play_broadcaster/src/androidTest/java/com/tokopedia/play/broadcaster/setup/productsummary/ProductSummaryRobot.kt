@@ -8,6 +8,8 @@ import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.platform.app.InstrumentationRegistry
+import com.tokopedia.content.test.espresso.clickOnViewChild
+import com.tokopedia.content.test.espresso.delay
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.analytic.setup.product.PlayBroSetupProductAnalyticImpl
@@ -18,8 +20,6 @@ import com.tokopedia.play.broadcaster.setup.product.view.viewholder.ProductSumma
 import com.tokopedia.play.broadcaster.setup.product.viewmodel.PlayBroProductSetupViewModel
 import com.tokopedia.play.broadcaster.setup.productSetupViewModel
 import com.tokopedia.play.broadcaster.view.fragment.loading.LoadingDialogFragment
-import com.tokopedia.content.test.espresso.clickOnViewChild
-import com.tokopedia.content.test.espresso.delay
 import io.mockk.mockk
 import org.hamcrest.Description
 import org.hamcrest.TypeSafeMatcher
@@ -55,6 +55,7 @@ class ProductSummaryRobot(
                         pinProductAnalytic = mockk(relaxed = true),
                         accountAnalytic = mockk(relaxed = true),
                         shortsEntryPointAnalytic = mockk(relaxed = true),
+                        playPerformanceDashboardEntryPointAnalytic = mockk(relaxed = true),
                     )
                 )
             }

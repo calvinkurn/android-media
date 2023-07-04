@@ -1,7 +1,5 @@
 package com.tokopedia.topchat.chatlist.view.fragment
 
-import com.tokopedia.imageassets.TokopediaImageUrl
-
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -19,7 +17,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
@@ -34,6 +31,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
 import com.tokopedia.chat_common.util.EndlessRecyclerViewScrollUpListener
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.imageassets.TokopediaImageUrl
 import com.tokopedia.inboxcommon.InboxFragment
 import com.tokopedia.inboxcommon.InboxFragmentContainer
 import com.tokopedia.inboxcommon.RoleType
@@ -51,10 +49,9 @@ import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_FILTER_
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_FILTER_TOPBOT
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_FILTER_UNREAD
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_FILTER_UNREPLIED
-import com.tokopedia.topchat.chatlist.di.ChatListContextModule
-import com.tokopedia.topchat.chatlist.di.DaggerChatListComponent
+import com.tokopedia.topchat.chatlist.di.ActivityComponentFactory
 import com.tokopedia.topchat.chatlist.domain.pojo.ChatChangeStateResponse
-import com.tokopedia.topchat.chatlist.domain.pojo.ChatListDataPojo
+import com.tokopedia.topchat.chatlist.domain.pojo.ChatListPojo
 import com.tokopedia.topchat.chatlist.domain.pojo.ItemChatListPojo
 import com.tokopedia.topchat.chatlist.domain.pojo.chatlistticker.ChatListTickerResponse
 import com.tokopedia.topchat.chatlist.domain.pojo.operational_insight.ShopChatTicker
@@ -337,6 +334,9 @@ open class ChatListInboxFragment :
             Observer {
                 when (it) {
                     is Success -> updateChatBannedSellerStatus(it.data)
+                    else -> {
+                        //no-op
+                    }
                 }
             }
         )
@@ -573,7 +573,13 @@ open class ChatListInboxFragment :
                             is IncomingTypingWebSocketModel -> processIncomingMessage(
                                 result.data as IncomingTypingWebSocketModel
                             )
+                            else -> {
+                                //no-op
+                            }
                         }
+                    }
+                    else -> {
+                        //no-op
                     }
                 }
             }
@@ -671,7 +677,7 @@ open class ChatListInboxFragment :
         }
     }
 
-    private fun onSuccessGetChatList(data: ChatListDataPojo) {
+    private fun onSuccessGetChatList(data: ChatListPojo.ChatListDataPojo) {
         renderList(data.list, data.hasNext)
         fpmStopTrace()
         setIndicatorCurrentActiveChat(currentActiveMessageId)
@@ -793,10 +799,10 @@ open class ChatListInboxFragment :
         }
     }
 
-    protected open fun generateChatListComponent() = DaggerChatListComponent.builder()
-        .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
-        .chatListContextModule(context?.let { ChatListContextModule(it) })
-        .build()
+    protected open fun generateChatListComponent() = ActivityComponentFactory.instance.createChatListComponent(
+        requireActivity().application,
+        requireContext()
+    )
 
     override fun loadData(page: Int) {
         viewModel.getChatListMessage(page, role)

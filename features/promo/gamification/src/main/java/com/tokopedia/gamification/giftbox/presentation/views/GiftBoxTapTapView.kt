@@ -6,7 +6,6 @@ import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.View
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.lifecycle.*
 import com.airbnb.lottie.LottieAnimationView
@@ -19,15 +18,11 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.tokopedia.gamification.R
-import com.tokopedia.gamification.di.ActivityContextModule
 import com.tokopedia.gamification.giftbox.Constants
-import com.tokopedia.gamification.giftbox.data.di.component.DaggerGiftBoxComponent
 import com.tokopedia.gamification.giftbox.presentation.helpers.CubicBezierInterpolator
 import com.tokopedia.gamification.giftbox.presentation.helpers.addListener
-import com.tokopedia.gamification.giftbox.presentation.viewmodels.GiftBoxImageDownloadViewModel
 import com.tokopedia.gamification.pdp.data.LiveDataResult
 import java.util.zip.ZipInputStream
-import javax.inject.Inject
 
 class GiftBoxTapTapView : GiftBoxDailyView {
 
@@ -51,13 +46,12 @@ class GiftBoxTapTapView : GiftBoxDailyView {
         const val REWARD_START_DELAY = 300L // added because GIFT_BOX_START_DELAY was 300L in base class
     }
 
-
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
 
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
-            context,
-            attrs,
-            defStyleAttr
+        context,
+        attrs,
+        defStyleAttr
     )
 
     constructor(context: Context) : super(context)
@@ -72,8 +66,9 @@ class GiftBoxTapTapView : GiftBoxDailyView {
         clipChildren = false
         clipToPadding = false
         val task = prepareLoaderLottieTask(Constants.CONFETTI_ZIP_FILE)
-        if (task != null)
+        if (task != null) {
             addLottieAnimationToView(confettiView, task)
+        }
     }
 
     override fun handleTapOnGiftBox() {}
@@ -152,14 +147,15 @@ class GiftBoxTapTapView : GiftBoxDailyView {
         return animatorSet
     }
 
-    fun loadFilesForTapTap(glowImageUrl: String?,
-                           glowImageShadowUrl: String?,
-                           imageFrontUrl: String,
-                           bgUrl: String,
-                           lidImageList: List<String>,
-                           lifecycleOwner: LifecycleOwner,
-                           imageCallback: ((isLoaded: Boolean) -> Unit)) {
-
+    fun loadFilesForTapTap(
+        glowImageUrl: String?,
+        glowImageShadowUrl: String?,
+        imageFrontUrl: String,
+        bgUrl: String,
+        lidImageList: List<String>,
+        lifecycleOwner: LifecycleOwner,
+        imageCallback: ((isLoaded: Boolean) -> Unit)
+    ) {
         fun incrementAndSendCallback() {
             val count = imagesLoaded.incrementAndGet()
             if (count == TOTAL_ASYNC_IMAGES) {
@@ -169,98 +165,10 @@ class GiftBoxTapTapView : GiftBoxDailyView {
 
         if (glowImageUrl != null) {
             Glide.with(this)
-                    .load(glowImageUrl)
-                    .dontAnimate()
-                    .timeout(GLIDE_TIME_OUT)
-                    .error(R.drawable.gf_gift_white_waktu)
-                    .addListener(object : RequestListener<Drawable> {
-                        override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
-                            incrementAndSendCallback()
-                            return false
-                        }
-
-                        override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
-                            incrementAndSendCallback()
-                            return false
-                        }
-                    })
-                    .into(imageBoxWhite)
-        } else {
-            TOTAL_ASYNC_IMAGES -= 1
-        }
-
-        if (glowImageShadowUrl != null) {
-            Glide.with(this)
-                    .load(glowImageShadowUrl)
-                    .dontAnimate()
-                    .timeout(GLIDE_TIME_OUT)
-                    .error(R.drawable.gf_gift_glow)
-                    .addListener(object : RequestListener<Drawable> {
-                        override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
-                            incrementAndSendCallback()
-                            return false
-                        }
-
-                        override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
-                            incrementAndSendCallback()
-                            return false
-                        }
-                    })
-                    .into(imageBoxGlow)
-        } else {
-            TOTAL_ASYNC_IMAGES -= 1
-        }
-
-        //Bg Image
-        fun handleSuccessOfDownloadImage(bmp: Bitmap?){
-            try {
-                val rp = if (bmp != null) {
-                    Glide.with(this)
-                            .load(bmp)
-                } else {
-                    Glide.with(this)
-                            .load(R.drawable.gf_gift_bg)
-                }
-                rp.dontAnimate()
-                        .into(imageBg)
-                incrementAndSendCallback()
-            }catch (ex:Exception){
-                ex.printStackTrace()
-            }
-        }
-
-        fun handleFailureOfDownloadImage(){
-            try {
-                Glide.with(this)
-                        .load(R.drawable.gf_gift_bg)
-                        .dontAnimate()
-                        .into(imageBg)
-
-                incrementAndSendCallback()
-            }catch (ex:Exception){
-                ex.printStackTrace()
-            }
-        }
-
-        val imageLiveData = MutableLiveData<LiveDataResult<Bitmap?>>()
-        imageLiveData.observe(lifecycleOwner, Observer {
-            when (it.status) {
-                LiveDataResult.STATUS.SUCCESS -> {
-                    val bmp = it.data
-                    handleSuccessOfDownloadImage(bmp)
-                }
-                LiveDataResult.STATUS.ERROR -> {
-                    handleFailureOfDownloadImage()
-                }
-            }
-        })
-        viewModel.downloadImage(bgUrl, imageLiveData)
-
-        Glide.with(this)
-                .load(imageFrontUrl)
+                .load(glowImageUrl)
                 .dontAnimate()
                 .timeout(GLIDE_TIME_OUT)
-                .error(R.drawable.gf_gift_green_front)
+                .error(R.drawable.gf_gift_white_waktu)
                 .addListener(object : RequestListener<Drawable> {
                     override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
                         incrementAndSendCallback()
@@ -272,11 +180,104 @@ class GiftBoxTapTapView : GiftBoxDailyView {
                         return false
                     }
                 })
-                .into(imageBoxFront)
+                .into(imageBoxWhite)
+        } else {
+            TOTAL_ASYNC_IMAGES -= 1
+        }
 
-        //Download lid images
-        fun handleSuccessOfImageListDownload(images: List<Bitmap>?){
+        if (glowImageShadowUrl != null) {
+            Glide.with(this)
+                .load(glowImageShadowUrl)
+                .dontAnimate()
+                .timeout(GLIDE_TIME_OUT)
+                .error(R.drawable.gf_gift_glow)
+                .addListener(object : RequestListener<Drawable> {
+                    override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
+                        incrementAndSendCallback()
+                        return false
+                    }
 
+                    override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
+                        incrementAndSendCallback()
+                        return false
+                    }
+                })
+                .into(imageBoxGlow)
+        } else {
+            TOTAL_ASYNC_IMAGES -= 1
+        }
+
+        // Bg Image
+        fun handleSuccessOfDownloadImage(bmp: Bitmap?) {
+            try {
+                val rp = if (bmp != null) {
+                    Glide.with(this)
+                        .load(bmp)
+                } else {
+                    Glide.with(this)
+                        .load(R.drawable.gf_gift_bg)
+                }
+                rp.dontAnimate()
+                    .into(imageBg)
+                incrementAndSendCallback()
+            } catch (ex: Exception) {
+                ex.printStackTrace()
+            }
+        }
+
+        fun handleFailureOfDownloadImage() {
+            try {
+                Glide.with(this)
+                    .load(R.drawable.gf_gift_bg)
+                    .dontAnimate()
+                    .into(imageBg)
+
+                incrementAndSendCallback()
+            } catch (ex: Exception) {
+                ex.printStackTrace()
+            }
+        }
+
+        val imageLiveData = MutableLiveData<LiveDataResult<Bitmap?>>()
+        imageLiveData.observe(
+            lifecycleOwner,
+            Observer {
+                when (it.status) {
+                    LiveDataResult.STATUS.SUCCESS -> {
+                        val bmp = it.data
+                        handleSuccessOfDownloadImage(bmp)
+                    }
+                    LiveDataResult.STATUS.ERROR -> {
+                        handleFailureOfDownloadImage()
+                    }
+                    else -> {
+                        // no-op
+                    }
+                }
+            }
+        )
+        viewModel.downloadImage(bgUrl, imageLiveData)
+
+        Glide.with(this)
+            .load(imageFrontUrl)
+            .dontAnimate()
+            .timeout(GLIDE_TIME_OUT)
+            .error(R.drawable.gf_gift_green_front)
+            .addListener(object : RequestListener<Drawable> {
+                override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
+                    incrementAndSendCallback()
+                    return false
+                }
+
+                override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
+                    incrementAndSendCallback()
+                    return false
+                }
+            })
+            .into(imageBoxFront)
+
+        // Download lid images
+        fun handleSuccessOfImageListDownload(images: List<Bitmap>?) {
             if (images.isNullOrEmpty()) {
                 loadOriginalImages(null, imageCallback)
             } else {
@@ -286,16 +287,22 @@ class GiftBoxTapTapView : GiftBoxDailyView {
         }
 
         val imageListLiveData = MutableLiveData<LiveDataResult<List<Bitmap>?>>()
-        imageListLiveData.observe(lifecycleOwner, Observer {
-            when (it.status) {
-                LiveDataResult.STATUS.SUCCESS -> {
-                    handleSuccessOfImageListDownload(it.data)
-                }
-                LiveDataResult.STATUS.ERROR -> {
-                    loadOriginalImages(null, imageCallback)
+        imageListLiveData.observe(
+            lifecycleOwner,
+            Observer {
+                when (it.status) {
+                    LiveDataResult.STATUS.SUCCESS -> {
+                        handleSuccessOfImageListDownload(it.data)
+                    }
+                    LiveDataResult.STATUS.ERROR -> {
+                        loadOriginalImages(null, imageCallback)
+                    }
+                    else -> {
+                        // no-op
+                    }
                 }
             }
-        })
+        )
         viewModel.downloadImages(lidImageList, imageListLiveData)
     }
 

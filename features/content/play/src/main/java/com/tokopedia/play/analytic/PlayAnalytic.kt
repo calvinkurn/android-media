@@ -232,6 +232,9 @@ class PlayAnalytic(
         when(productAction) {
             ProductAction.AddToCart -> clickAtcButtonProductWithVariant(productId)
             ProductAction.Buy, ProductAction.OCC -> clickBeliButtonProductWithVariant(productId)
+            else -> {
+                //no-op
+            }
         }
     }
 
@@ -806,6 +809,21 @@ class PlayAnalytic(
             .setCurrentSite(VAL_CURRENT_SITE)
             .setCustomProperty(KEY_IS_LOGGED_IN_STATUS, isLoggedIn)
             .setCustomProperty(KEY_SCREEN_NAME, "/group-chat-room/$channelId/${channelType.value}/is coachmark true")
+            .setUserId(userId)
+            .build()
+            .send()
+    }
+
+    fun clickCommentIcon(partnerId: String) {
+        Tracker.Builder()
+            .setEvent(KEY_TRACK_CLICK_CONTENT)
+            .setEventAction("click - comment button")
+            .setEventCategory(KEY_TRACK_GROUP_CHAT_ROOM)
+            .setEventLabel("$channelId - $partnerId")
+            .setCustomProperty(KEY_TRACKER_ID, "42591")
+            .setBusinessUnit(KEY_TRACK_BUSINESS_UNIT)
+            .setCurrentSite(VAL_CURRENT_SITE)
+            .setCustomProperty(KEY_SESSION_IRIS, TrackApp.getInstance().gtm.irisSessionId)
             .setUserId(userId)
             .build()
             .send()

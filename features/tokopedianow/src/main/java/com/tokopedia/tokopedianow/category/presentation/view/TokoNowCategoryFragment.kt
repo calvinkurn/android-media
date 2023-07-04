@@ -192,7 +192,8 @@ class TokoNowCategoryFragment:
                 cdListName = getCDListName(),
                 categoryIdTracking = getViewModel().categoryIdTracking
             ),
-            feedbackWidgetListener = this
+            feedbackWidgetListener = this,
+            productCardCompactListener = createProductCardCompactCallback()
     )
 
     override fun getViewModel() = tokoNowCategoryViewModel

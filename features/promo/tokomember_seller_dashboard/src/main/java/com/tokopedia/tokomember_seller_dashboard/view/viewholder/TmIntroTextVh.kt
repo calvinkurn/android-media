@@ -12,7 +12,7 @@ class TmIntroTextVh(view: View) :
     AbstractViewHolder<TokomemberIntroTextItem>(view) {
 
     private val tvSectionText = itemView.tvSection
-    private var holderElement:TokomemberIntroTextItem?=null
+    private var holderElement: TokomemberIntroTextItem? = null
 
     override fun bind(element: TokomemberIntroTextItem?) {
         holderElement = element
@@ -22,7 +22,7 @@ class TmIntroTextVh(view: View) :
     }
 
     fun setAnimationLeftToRight(itemView: View, adapterPosition: Int, ON_ATTACH: Boolean) {
-        if (holderElement?.isAnimationFinished==false) {
+        if (holderElement?.isAnimationFinished == false) {
             TmIntroItemAnimator.fromLeftToRight(
                 itemView,
                 adapterPosition,
@@ -33,7 +33,7 @@ class TmIntroTextVh(view: View) :
     }
 
     fun setAnimationRightToLeft(itemView: View, adapterPosition: Int, ON_ATTACH: Boolean) {
-        if (holderElement?.isAnimationFinished==false) {
+        if (holderElement?.isAnimationFinished == false) {
             TmIntroItemAnimator.fromRightToLeft(
                 itemView,
                 adapterPosition,
@@ -63,5 +63,4 @@ class TmIntroTextVh(view: View) :
     companion object {
         val LAYOUT_ID = R.layout.tm_dash_intro_text_item
     }
-
 }

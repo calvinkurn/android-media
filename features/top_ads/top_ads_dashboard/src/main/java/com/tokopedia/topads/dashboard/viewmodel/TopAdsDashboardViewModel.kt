@@ -6,8 +6,8 @@ import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.topads.common.data.model.ticker.TopAdsTickerResponse
 import com.tokopedia.topads.common.data.exception.ResponseErrorException
+import com.tokopedia.topads.common.data.model.ticker.TopAdsTickerResponse
 import com.tokopedia.topads.common.data.response.DepositAmount
 import com.tokopedia.topads.common.domain.usecase.GetWhiteListedUserUseCase
 import com.tokopedia.topads.common.domain.usecase.TopAdsGetDepositUseCase
@@ -23,10 +23,12 @@ import com.tokopedia.topads.dashboard.data.raw.topAdsHomepageLatestReadingJson
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsAutoTopUpUSeCase
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsWidgetSummaryStatisticsUseCase
 import com.tokopedia.topads.dashboard.domain.interactor.TopadsRecommendationStatisticsUseCase
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.HEADLINE_KEY
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.InsightGqlInputSource.SOURCE_TOP_ADS_DASHBOARD
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.PRODUCT_KEY
 import com.tokopedia.topads.dashboard.recommendation.data.mapper.InsightDataMapper
 import com.tokopedia.topads.dashboard.recommendation.data.model.cloud.TopAdsTotalAdGroupsWithInsightResponse
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.InsightListUiModel
-import com.tokopedia.topads.dashboard.recommendation.data.model.local.InsightUiModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.TopAdsListAllInsightState
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.data.EmptyStateData
 import com.tokopedia.topads.dashboard.recommendation.usecase.TopAdsGetTotalAdGroupsWithInsightUseCase
@@ -52,7 +54,6 @@ class TopAdsDashboardViewModel @Inject constructor(
     private val topAdsListAllInsightCountsUseCase: TopAdsListAllInsightCountsUseCase,
     private val topAdsGetTotalAdGroupsWithInsightUseCase: TopAdsGetTotalAdGroupsWithInsightUseCase
 ) : BaseViewModel(Dispatchers.Main) {
-
 
     private val _summaryStatisticsLiveData =
         MutableLiveData<Result<TopadsWidgetSummaryStatisticsModel.TopadsWidgetSummaryStatistics.WidgetSummaryStatistics>>()
@@ -107,8 +108,8 @@ class TopAdsDashboardViewModel @Inject constructor(
                     Fail(Throwable())
                 }
         }, onError = {
-            _recommendationStatsLiveData.value = Fail(it)
-        })
+                _recommendationStatsLiveData.value = Fail(it)
+            })
     }
 
     fun fetchSummaryStatistics(startDate: String, endDate: String, adTypes: String) {
@@ -116,23 +117,23 @@ class TopAdsDashboardViewModel @Inject constructor(
             val data =
                 summaryStatisticsUseCase.getSummaryStatistics(startDate, endDate, adTypes)
             _summaryStatisticsLiveData.value =
-                if (data?.topadsWidgetSummaryStatistics?.widgetSummaryStatistics == null)
+                if (data?.topadsWidgetSummaryStatistics?.widgetSummaryStatistics == null) {
                     Fail(Throwable())
-                else
+                } else {
                     Success(data.topadsWidgetSummaryStatistics.widgetSummaryStatistics)
+                }
         }, onError = {
-            _summaryStatisticsLiveData.postValue(Fail(it))
-        })
+                _summaryStatisticsLiveData.postValue(Fail(it))
+            })
     }
 
     fun getTopadsTicker() {
         launchCatchError(block = {
             val response = topAdsTickerUseCase.execute()
             _tickerLiveData.postValue(response)
-
         }, onError = {
-            it.printStackTrace()
-        })
+                it.printStackTrace()
+            })
     }
 
     fun getLatestReadings() {
@@ -145,9 +146,9 @@ class TopAdsDashboardViewModel @Inject constructor(
                 Fail(Throwable())
             }
         }, onError = {
-            _latestReadingLiveData.value = Fail(it)
-            Timber.d(it)
-        })
+                _latestReadingLiveData.value = Fail(it)
+                Timber.d(it)
+            })
     }
 
     fun getAutoTopUpStatus() {
@@ -155,14 +156,17 @@ class TopAdsDashboardViewModel @Inject constructor(
         autoTopUpUSeCase.setParams()
         autoTopUpUSeCase.execute({ data ->
             when {
-                data.response == null -> _autoTopUpStatusLiveData.value =
-                    Fail(Exception("Gagal mengambil status"))
+                data.response == null ->
+                    _autoTopUpStatusLiveData.value =
+                        Fail(Exception("Gagal mengambil status"))
 
-                data.response.errors.isEmpty() -> _autoTopUpStatusLiveData.value =
-                    Success(data.response.data)
+                data.response.errors.isEmpty() ->
+                    _autoTopUpStatusLiveData.value =
+                        Success(data.response.data)
 
-                else -> _autoTopUpStatusLiveData.value =
-                    Fail(ResponseErrorException(data.response.errors))
+                else ->
+                    _autoTopUpStatusLiveData.value =
+                        Fail(ResponseErrorException(data.response.errors))
             }
         }, {
             _autoTopUpStatusLiveData.value = Fail(it)
@@ -191,8 +195,10 @@ class TopAdsDashboardViewModel @Inject constructor(
                             IS_TOP_UP_CREDIT_NEW_UI,
                             true
                         )
-                    ) _isUserWhitelisted.value =
-                        Success(true)
+                    ) {
+                        _isUserWhitelisted.value =
+                            Success(true)
+                    }
                 }
             },
             onError = {
@@ -200,7 +206,6 @@ class TopAdsDashboardViewModel @Inject constructor(
             }
         )
     }
-
 
     private val _productInsights =
         MutableLiveData<TopAdsListAllInsightState<MutableList<InsightListUiModel>>>()
@@ -215,26 +220,28 @@ class TopAdsDashboardViewModel @Inject constructor(
         launchCatchError(dispatcher.main, block = {
             _productInsights.value = TopAdsListAllInsightState.Loading(insightType)
             val data = topAdsListAllInsightCountsUseCase.invoke(
-                source = "gql.list_all_insight_counts.test",
+                source = SOURCE_TOP_ADS_DASHBOARD,
                 adGroupType = adGroupType,
                 insightType = insightType,
                 startCursor = "",
                 mapper = mapper
             )
-            val state = TopAdsListAllInsightState.Success(data.toInsightUiAtHomeModel().toMutableList())
+            val state = TopAdsListAllInsightState.Success(data.toInsightUiAtHomeModel(insightType).toMutableList())
             _productInsights.value = state
-
         }, onError = {
-            _productInsights.value = TopAdsListAllInsightState.Fail(it)
-        })
+                _productInsights.value = TopAdsListAllInsightState.Fail(it)
+            })
     }
 
     fun fetchInsightTitle() {
         launchCatchError(dispatcher.main, block = {
-            _adGroupWithInsight.value = topAdsGetTotalAdGroupsWithInsightUseCase()
+            _adGroupWithInsight.value = topAdsGetTotalAdGroupsWithInsightUseCase(
+                listOf(PRODUCT_KEY, HEADLINE_KEY),
+                SOURCE_TOP_ADS_DASHBOARD
+            )
         }, onError = {
-            _adGroupWithInsight.value = TopAdsListAllInsightState.Fail(it)
-        })
+                _adGroupWithInsight.value = TopAdsListAllInsightState.Fail(it)
+            })
     }
 
     val emptyStateData = EmptyStateData.getData()

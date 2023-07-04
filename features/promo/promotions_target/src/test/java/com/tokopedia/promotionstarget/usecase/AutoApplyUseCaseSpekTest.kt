@@ -9,7 +9,7 @@ import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
-import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.runTest
 import org.junit.Assert
 import org.spekframework.spek2.Spek
 
@@ -27,7 +27,7 @@ class AutoApplyUseCaseSpekTest : Spek({
 
     group("function invocation"){
         test("check function invokation of Gql wrapper") {
-            runBlockingTest {
+            runTest {
                 val map = HashMap<String, Any>()
                 coEvery { gqlWrapper.getResponse(AutoApplyResponse::class.java, queryString, map) } returns mockk()
 

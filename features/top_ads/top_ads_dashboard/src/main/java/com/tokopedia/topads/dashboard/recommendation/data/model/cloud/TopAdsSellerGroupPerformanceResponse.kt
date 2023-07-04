@@ -44,8 +44,6 @@ data class TopAdsSellerGroupPerformanceResponse(
         return GroupPerformanceWidgetUiModel(
             impression = performance.impression,
             topSlotImpression = performance.topSlotImpression,
-//            totalPerformance = (performance.topSlotImpression/performance.impression)*100
-            totalPerformance = 20
         )
     }
 }

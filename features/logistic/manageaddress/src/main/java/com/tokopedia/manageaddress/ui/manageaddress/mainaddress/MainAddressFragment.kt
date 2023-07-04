@@ -10,10 +10,13 @@ import androidx.activity.OnBackPressedCallback
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.PARAM_SOURCE
+import com.tokopedia.config.GlobalConfig
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.globalerror.ReponseStatus
 import com.tokopedia.kotlin.extensions.view.gone
@@ -62,6 +65,8 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.usercomponents.userconsent.domain.collection.ConsentCollectionParam
+import com.tokopedia.usercomponents.userconsent.ui.UserConsentWidget
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.net.ConnectException
 import java.net.SocketTimeoutException
@@ -244,7 +249,10 @@ class MainAddressFragment :
                     if (isFromCheckoutChangeAddress == true) {
                         val resultIntent = Intent().apply {
                             if (viewModel.isFromMoneyIn) {
-                                putExtra(CheckoutConstant.EXTRA_SELECTED_ADDRESS_DATA, _selectedAddressItem)
+                                putExtra(
+                                    CheckoutConstant.EXTRA_SELECTED_ADDRESS_DATA,
+                                    _selectedAddressItem
+                                )
                             } else {
                                 putExtra(CheckoutConstant.EXTRA_SELECTED_ADDRESS_DATA, data)
                             }
@@ -342,8 +350,16 @@ class MainAddressFragment :
                         globalError.gone()
                     }
                     if (viewModel.isClearData) clearData()
+
+                    setupTicker(
+                        if (it.data.listAddress.isNotEmpty()) {
+                            it.data.pageInfo?.ticker
+                        } else {
+                            null
+                        }
+                    )
+
                     if (it.data.listAddress.isNotEmpty()) {
-                        updateTicker(it.data.pageInfo?.ticker)
                         updateStateForCheckoutSnippet(it.data.listAddress)
                         if (viewModel.isNeedToShareAddress.not()) {
                             updateButton(it.data.pageInfo?.buttonLabel)
@@ -355,6 +371,7 @@ class MainAddressFragment :
                 }
 
                 is ManageAddressState.Fail -> {
+                    setupTicker()
                     binding?.swipeRefresh?.isRefreshing = false
                     if (it.throwable != null) {
                         handleError(it.throwable)
@@ -367,6 +384,12 @@ class MainAddressFragment :
                     isLoading = true
                 }
             }
+        }
+    }
+
+    private fun setupTicker(firstTicker: String? = null) {
+        if (viewModel.page == 1) {
+            mainAddressListener?.setupTicker(firstTicker)
         }
     }
 
@@ -527,8 +550,9 @@ class MainAddressFragment :
                     super.onScrolled(recyclerView, dx, dy)
                     val adapter = recyclerView.adapter
                     val totalItemCount = adapter?.itemCount
-                    val lastVisibleItemPosition = (recyclerView.layoutManager as LinearLayoutManager)
-                        .findLastVisibleItemPosition()
+                    val lastVisibleItemPosition =
+                        (recyclerView.layoutManager as LinearLayoutManager)
+                            .findLastVisibleItemPosition()
 
                     if (maxItemPosition < lastVisibleItemPosition) {
                         maxItemPosition = lastVisibleItemPosition
@@ -585,19 +609,6 @@ class MainAddressFragment :
 
     private fun updateData(data: List<RecipientAddressModel>) {
         adapter.addList(data)
-    }
-
-    private fun updateTicker(ticker: String?) {
-        ticker?.let {
-            binding?.tickerInfo?.run {
-                if (it.isEmpty()) {
-                    gone()
-                } else {
-                    visible()
-                    setHtmlDescription(ticker)
-                }
-            }
-        }
     }
 
     private fun updateButton(btnLabel: String?) {
@@ -679,9 +690,8 @@ class MainAddressFragment :
                         bottomSheetLainnya?.dismiss()
                     }
                     btnHapusAlamat.setOnClickListener {
-                        viewModel.deletePeopleAddress(data.id)
                         bottomSheetLainnya?.dismiss()
-                        isFromDeleteAddress = true
+                        showDeleteAddressDialog(data.id)
                     }
                     btnAlamatUtamaChoose.setOnClickListener {
                         isStayOnPageState = false
@@ -831,7 +841,10 @@ class MainAddressFragment :
                     addressDataModel.toChosenAddressModel()
                 )
             }
-            activity?.setResult(CheckoutConstant.RESULT_CODE_ACTION_CHECKOUT_CHANGE_ADDRESS, resultIntent)
+            activity?.setResult(
+                CheckoutConstant.RESULT_CODE_ACTION_CHECKOUT_CHANGE_ADDRESS,
+                resultIntent
+            )
             activity?.finish()
         } else {
             performSearch("", addressDataModel)
@@ -948,22 +961,62 @@ class MainAddressFragment :
         )
     }
 
-    override fun onSuccessConfirmShareAddress(isApproved: Boolean) {
-        bottomSheetConfirmationShareAddress?.dismiss()
-
-        if (isApproved) {
-            showToaster(getString(R.string.success_share_address))
-        }
-    }
-
-    override fun onFailedShareAddress(errorMessage: String) {
-        bottomSheetConfirmationShareAddress?.dismiss()
-        showToaster(errorMessage, Toaster.TYPE_ERROR)
+    override fun showToast(isError: Boolean, msg: String) {
+        val type = if (isError) Toaster.TYPE_ERROR else Toaster.TYPE_NORMAL
+        showToaster(msg, type)
     }
 
     private fun showToaster(message: String, toastType: Int = Toaster.TYPE_NORMAL) {
         view?.let {
             Toaster.build(it, message, Toaster.LENGTH_SHORT, toastType).show()
+        }
+    }
+
+    private fun generateUserConsentWidget(): UserConsentWidget? {
+        return try {
+            val userConsent = UserConsentWidget(requireContext())
+            userConsent.load(
+                viewLifecycleOwner,
+                this,
+                ConsentCollectionParam(
+                    collectionId = viewModel.deleteCollectionId
+                )
+            )
+            userConsent
+        } catch (e: Exception) {
+            logToCrashlytics(e)
+            null
+        }
+    }
+
+    private fun logToCrashlytics(exception: Exception) {
+        if (!GlobalConfig.DEBUG) {
+            FirebaseCrashlytics.getInstance().recordException(exception)
+        } else {
+            exception.printStackTrace()
+        }
+    }
+
+    private fun showDeleteAddressDialog(addressId: String) {
+        context?.apply {
+            val userConsent = generateUserConsentWidget()
+
+            DialogUnify(this, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
+                setTitle(getString(R.string.title_delete_address_dialog))
+                setSecondaryCTAText(getString(R.string.action_cancel_delete_address))
+                setPrimaryCTAText(getString(R.string.btn_delete))
+                setSecondaryCTAClickListener {
+                    dismiss()
+                }
+                setPrimaryCTAClickListener {
+                    dismiss()
+                    viewModel.deletePeopleAddress(
+                        id = addressId,
+                        consentJson = userConsent?.generatePayloadData().orEmpty()
+                    )
+                    isFromDeleteAddress = true
+                }
+            }.show()
         }
     }
 
@@ -973,5 +1026,7 @@ class MainAddressFragment :
 
     interface MainAddressListener {
         fun setAddButtonOnClickListener(onClick: () -> Unit)
+
+        fun setupTicker(firstTicker: String? = null)
     }
 }

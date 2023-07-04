@@ -60,15 +60,18 @@ jobs:
         min_mask_length: '20'
         secrets: |-
             codescanner-credential:${{ secrets.CODESCANNER_GSM }}/appsec-codescanner-key
-    - id: 'output-files'
-      name: Generate Secret Files
-      run: |
-          mkdir ~/.ssh
-          cd ~/.ssh
-          echo '${{ steps.secrets.outputs.codescanner-credential }}' &> id_rsa
-          chmod 400 ~/.ssh/*
-          eval "$(ssh-agent -s)"
-          ssh-add ~/.ssh/id_rsa
+    - name: Check out itsec-sdk-go
+      uses: actions/checkout@v3
+      with:
+          repository: tokopedia/itsec-sdk-go
+          ref: main
+          ssh-key: ${{ steps.secrets.outputs.codescanner-credential}}
+          path: ./.github/actions/itsec-sdk-go
+    - name: Setup SSH
+      uses: ./.github/actions/itsec-sdk-go/ssh-setup-action
+      with:
+          host: github.com
+          private-key: ${{ steps.secrets.outputs.codescanner-credential }}
     - name: Checkout repository
       uses: actions/checkout@v2
     - run: git config --global --add url."git@github.com:".insteadOf "https://github.com/"

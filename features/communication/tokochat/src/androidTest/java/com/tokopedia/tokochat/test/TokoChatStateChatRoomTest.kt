@@ -17,7 +17,6 @@ class TokoChatStateChatRoomTest : BaseTokoChatTest() {
     @Test
     fun should_show_global_error_when_fail_get_channel_id() {
         // Given
-        shouldWaitForChatHistory = false
         ApiResponseStub.channelIdResponse = Pair(
             400,
             "channel_id/fail_get_channel_id_invalid_channel.json"
@@ -32,9 +31,6 @@ class TokoChatStateChatRoomTest : BaseTokoChatTest() {
 
     @Test
     fun should_not_show_global_error_when_success_get_channel_id() {
-        // Given
-        shouldWaitForChatHistory = false
-
         // When
         launchChatRoomActivity()
 
@@ -45,7 +41,6 @@ class TokoChatStateChatRoomTest : BaseTokoChatTest() {
     @Test
     fun should_show_unavailable_bottom_sheet() {
         // Given
-        shouldWaitForChatHistory = false
         ApiResponseStub.channelIdResponse = Pair(
             400,
             "channel_id/fail_get_channel_id_chat_closed.json"
@@ -61,7 +56,6 @@ class TokoChatStateChatRoomTest : BaseTokoChatTest() {
     @Test
     fun should_show_global_error_bottom_sheet() {
         // Given
-        shouldWaitForChatHistory = false
         tokoChatChannelUseCase.isConnected = false
 
         // When
@@ -75,7 +69,6 @@ class TokoChatStateChatRoomTest : BaseTokoChatTest() {
     @Test
     fun should_show_read_only_chatroom() {
         // Given
-        shouldWaitForChatHistory = false
         ApiResponseStub.channelDetailsResponse = Pair(
             200,
             "channel_details/success_get_channel_details_read_only.json"

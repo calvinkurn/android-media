@@ -3,6 +3,20 @@ package com.tokopedia.topads.dashboard.recommendation.usecase
 import com.tokopedia.gql_query_annotation.GqlQueryInterface
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.topads.common.data.internal.ParamObject.FILTER
+import com.tokopedia.topads.common.data.internal.ParamObject.SHOP_ID
+import com.tokopedia.topads.common.data.internal.ParamObject.SOURCE
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.InsightTypeConstants.INSIGHT_TYPE_DAILY_BUDGET_INPUT
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.InsightTypeConstants.INSIGHT_TYPE_GROUP_BID_INPUT
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.InsightTypeConstants.INSIGHT_TYPE_KEYWORD_BID_INPUT
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.InsightTypeConstants.INSIGHT_TYPE_NEGATIVE_KEYWORD_INPUT
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.InsightTypeConstants.INSIGHT_TYPE_POSITIVE_KEYWORD_INPUT
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.KEY_AD_GROUP_TYPES
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.PARAM_INSIGHT_TYPES
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.PARAM_PAGE_SETTING
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.PARAM_SIZE
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.PARAM_START_CURSOR
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.PER_PAGE_COUNT_VALUE
 import com.tokopedia.topads.dashboard.recommendation.data.mapper.InsightDataMapper
 import com.tokopedia.topads.dashboard.recommendation.data.model.cloud.TopAdsListAllInsightCountsResponse
 import com.tokopedia.usecase.RequestParams
@@ -13,7 +27,6 @@ class TopAdsListAllInsightCountsUseCase @Inject constructor(
     graphqlRepository: GraphqlRepository,
     private val userSession: UserSessionInterface
 ) : GraphqlUseCase<TopAdsListAllInsightCountsResponse>(graphqlRepository) {
-
 
     init {
         setGraphqlQuery(GqlQuery)
@@ -56,30 +69,30 @@ class TopAdsListAllInsightCountsUseCase @Inject constructor(
     ): RequestParams {
         val requestParams = RequestParams.create()
         requestParams.putObject(
-            "filter",
+            FILTER,
             mapOf(
-                "shopID" to userSession.shopId,
-                "adGroupTypes" to convertStringToList(adGroupType),
+                SHOP_ID to userSession.shopId,
+                KEY_AD_GROUP_TYPES to convertStringToList(adGroupType),
                 if (insightType == 0) {
-                    "insightTypes" to listOf(
-                        "keyword_bid",
-                        "group_daily_budget",
-                        "group_bid",
-                        "keyword_new_negative",
-                        "keyword_new_positive"
+                    PARAM_INSIGHT_TYPES to listOf(
+                        INSIGHT_TYPE_POSITIVE_KEYWORD_INPUT,
+                        INSIGHT_TYPE_KEYWORD_BID_INPUT,
+                        INSIGHT_TYPE_GROUP_BID_INPUT,
+                        INSIGHT_TYPE_DAILY_BUDGET_INPUT,
+                        INSIGHT_TYPE_NEGATIVE_KEYWORD_INPUT
                     )
                 } else {
-                    "insightTypes" to listOf(mapper?.insightTypeInputList?.get(insightType) ?: 0)
+                    PARAM_INSIGHT_TYPES to listOf(mapper?.insightTypeInputList?.get(insightType) ?: 0)
                 }
 
             )
         )
-        requestParams.putString("source", source)
+        requestParams.putString(SOURCE, source)
         requestParams.putObject(
-            "pageSetting",
+            PARAM_PAGE_SETTING,
             mapOf(
-                "size" to 20,
-                "startCursor" to startCursor
+                PARAM_SIZE to PER_PAGE_COUNT_VALUE,
+                PARAM_START_CURSOR to startCursor
             )
         )
         return requestParams
@@ -92,7 +105,6 @@ class TopAdsListAllInsightCountsUseCase @Inject constructor(
             listOf(input)
         }
     }
-
 
     object GqlQuery : GqlQueryInterface {
         private const val OPERATION_NAME = "topAdsListAllInsightCounts"

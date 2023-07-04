@@ -17,7 +17,12 @@ import android.text.format.DateFormat
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
-import android.view.*
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import androidx.core.content.ContextCompat
@@ -84,14 +89,15 @@ import com.tokopedia.loginregister.common.view.ticker.domain.pojo.TickerInfoPojo
 import com.tokopedia.loginregister.databinding.FragmentLoginWithPhoneBinding
 import com.tokopedia.loginregister.discover.pojo.DiscoverData
 import com.tokopedia.loginregister.discover.pojo.ProviderData
+import com.tokopedia.loginregister.forbidden.ForbiddenActivity
 import com.tokopedia.loginregister.goto_seamless.GotoSeamlessHelper
 import com.tokopedia.loginregister.goto_seamless.GotoSeamlessLoginFragment
 import com.tokopedia.loginregister.goto_seamless.worker.TemporaryTokenWorker
 import com.tokopedia.loginregister.login.const.LoginConstants
 import com.tokopedia.loginregister.login.const.LoginConstants.Request.REQUEST_GOTO_SEAMLESS
 import com.tokopedia.loginregister.login.di.LoginComponent
+import com.tokopedia.loginregister.login.domain.model.LoginOption
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckData
-import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckFingerprintResult
 import com.tokopedia.loginregister.login.router.LoginRouter
 import com.tokopedia.loginregister.login.service.GetDefaultChosenAddressService
 import com.tokopedia.loginregister.login.view.activity.LoginActivity
@@ -113,12 +119,13 @@ import com.tokopedia.sessioncommon.constants.SessionConstants
 import com.tokopedia.sessioncommon.data.LoginTokenPojo
 import com.tokopedia.sessioncommon.data.PopupError
 import com.tokopedia.sessioncommon.data.Token.Companion.getGoogleClientId
+import com.tokopedia.sessioncommon.data.ocl.OclPreference
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import com.tokopedia.sessioncommon.network.TokenErrorException
+import com.tokopedia.sessioncommon.util.OclUtils
 import com.tokopedia.sessioncommon.util.TokenGenerator
 import com.tokopedia.sessioncommon.util.TwoFactorMluHelper
 import com.tokopedia.sessioncommon.view.admin.dialog.LocationAdminDialog
-import com.tokopedia.loginregister.forbidden.ForbiddenActivity
 import com.tokopedia.track.TrackApp
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
@@ -161,6 +168,9 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     lateinit var seamlessAnalytics: SeamlessLoginAnalytics
 
     @Inject
+    lateinit var oclPreferences: OclPreference
+
+    @Inject
     lateinit var needHelpAnalytics: NeedHelpAnalytics
 
     @Inject
@@ -175,6 +185,8 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     @Inject
     lateinit var abTestPlatform: AbTestPlatform
 
+    @Inject lateinit var oclUtils: OclUtils
+
     var viewBinding by autoClearedNullable<FragmentLoginWithPhoneBinding>()
 
     private var source: String = ""
@@ -183,6 +195,8 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     private var isShowBanner: Boolean = false
     private var isEnableFingerprint = false
     private var isEnableSilentVerif = false
+    private var isEnableOcl = false
+    private var isEnableDirectBiometric = false
     private var isHitRegisterPushNotif: Boolean = false
     private var isEnableEncryptConfig: Boolean = false
     private var activityShouldEnd = true
@@ -327,7 +341,15 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         isUsingRollenceNeedHelp = isUsingRollenceNeedHelp()
         isEnableSeamlessLogin = isEnableSeamlessGoto()
         isEnableFingerprint = abTestPlatform.getString(LoginConstants.RollenceKey.LOGIN_PAGE_BIOMETRIC, "").isNotEmpty()
+        isEnableDirectBiometric = isEnableDirectBiometric()
+        isEnableOcl = isOclEnabled()
         refreshRolloutVariant()
+    }
+
+    fun isOclEnabled(): Boolean {
+        return oclPreferences.getToken().isNotEmpty() &&
+            arguments?.getBoolean(ApplinkConstInternalUserPlatform.PARAM_IS_FROM_OCL_LOGIN, false) == false &&
+            oclUtils.isOclEnabled()
     }
 
     open fun refreshRolloutVariant() {
@@ -368,7 +390,8 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         initObserver()
         prepareView()
         setupToolbar()
-        checkSeamless()
+        checkLoginOption()
+
         prepareArgData()
         viewModel.discoverLogin()
 
@@ -397,21 +420,17 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         }
     }
 
-    private fun checkSeamless() {
-        if (isEnableSeamlessLogin) {
-            showLoadingSeamless()
-            viewModel.checkSeamlessEligiblity()
-        } else {
-            hideLoadingSeamless()
-        }
+    private fun checkLoginOption() {
+        viewModel.checkLoginOption(isEnableSeamlessLogin, isEnableFingerprint, isEnableDirectBiometric, isEnableOcl)
+        showLoadingOverlay()
     }
 
-    private fun showLoadingSeamless() {
+    private fun showLoadingOverlay() {
         viewBinding?.loginLoadingOverlay?.root?.show()
         (activity as? LoginActivity)?.supportActionBar?.hide()
     }
 
-    private fun hideLoadingSeamless() {
+    private fun hideLoadingOverlay() {
         viewBinding?.loginLoadingOverlay?.root?.hide()
         (activity as? LoginActivity)?.supportActionBar?.show()
     }
@@ -454,7 +473,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
             if (it) {
                 routeToGojekSeamlessPage()
             } else {
-                hideLoadingSeamless()
+                hideLoadingOverlay()
             }
         }
 
@@ -462,15 +481,6 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
             when (it) {
                 is Success -> onSuccessRegisterCheck().invoke(it.data)
                 is Fail -> onErrorRegisterCheck().invoke(it.throwable)
-            }
-        }
-
-        viewModel.registerCheckFingerprint.observe(viewLifecycleOwner) {
-            when (it) {
-                is Success -> {
-                    onSuccessRegisterCheckFingerprint(it.data.data)
-                }
-                is Fail -> disableFingerprint()
             }
         }
 
@@ -547,6 +557,9 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         viewModel.adminRedirection.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> onLocationAdminRedirection()
+                else -> {
+                    // no-op
+                }
             }
         }
 
@@ -586,18 +599,38 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
             }
             onSuccessLogin()
         }
+
+        viewModel.getLoginOption.observe(viewLifecycleOwner) {
+            handleLoginOption(it)
+        }
     }
 
-    private fun onSuccessRegisterCheckFingerprint(data: RegisterCheckFingerprintResult) {
+    private fun handleLoginOption(data: LoginOption) {
+        hideLoadingOverlay()
+        if (data.isEnableSeamless) {
+            routeToGojekSeamlessPage()
+        } else if (data.isEnableOcl) {
+            goToOclChooseAccount()
+        } else if (data.isEnableDirectBiometric) {
+            analytics.trackClickBiometricLoginBtn()
+            gotoVerifyFingerprint()
+        }
+        // The non direct biometric won't be affected, we still have to show the biometric login btn
+        hideOrShowFingerprintBtn(data.isEnableBiometrics)
+    }
+
+    /**
+     * @param isShowDirectBiometricsPrompt default false means that the param is not called from [handleLoginOption]
+     */
+    private fun hideOrShowFingerprintBtn(isRegistered: Boolean) {
         activity?.let {
-            if (isEnableFingerprint && data.isRegistered) {
+            if (isRegistered) {
                 enableFingerprint()
             } else {
                 disableFingerprint()
             }
         }
     }
-
     private fun onSuccessLoginBiometric() {
         analytics.trackOnLoginFingerprintSuccess()
         viewModel.getUserInfo()
@@ -627,6 +660,16 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
             }
             startActivityForResult(intent, LoginConstants.Request.REQUEST_CHOOSE_ACCOUNT_FINGERPRINT)
         }
+    }
+
+    fun goToOclChooseAccount() {
+        val intent = RouteManager.getIntent(
+            requireContext(),
+            ApplinkConstInternalUserPlatform.CHOOSE_ACCOUNT_OCL
+        )
+        intent.flags = Intent.FLAG_ACTIVITY_FORWARD_RESULT
+        startActivity(intent)
+        activity?.finish()
     }
 
     private fun fetchRemoteConfig() {
@@ -677,6 +720,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
     private fun prepareView() {
         viewBinding?.loginInputView?.showForgotPassword()
+        viewBinding?.loginLoadingOverlay?.root?.background?.alpha = 178
         socmedBottomSheet = SocmedBottomSheet().apply {
             listener = object : SocmedBottomSheetListener {
                 override fun onItemClick(provider: ProviderData) {
@@ -696,8 +740,6 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
             analytics.eventClickSocmedButton()
             socmedBottomSheet?.show(parentFragmentManager, context?.resources?.getString(R.string.bottom_sheet_show))
         }
-
-        checkFingerprintAvailability()
 
         viewBinding?.loginInputView?.buttonContinue?.text = getString(R.string.next)
         viewBinding?.loginInputView?.buttonContinue?.contentDescription = getString(R.string.content_desc_register_btn)
@@ -785,12 +827,6 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         }
     }
 
-    private fun checkFingerprintAvailability() {
-        if (!GlobalConfig.isSellerApp()) {
-            viewModel.registerCheckFingerprint()
-        }
-    }
-
     private fun disableFingerprint() {
         viewBinding?.fingerprintBtn?.hide()
     }
@@ -805,6 +841,19 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
             }
         }
     }
+
+    private fun isEnableDirectBiometric(): Boolean {
+        val value = abTestPlatform.getString(LoginConstants.RollenceKey.DIRECT_LOGIN_BIOMETRIC, "")
+        return value.isNotEmpty()
+    }
+
+    /**
+     * function to prevent clash biometrics prompt and seamless routing
+     * @param isEnableSeamless value is get from [LoginOption]
+     * @return true if [isEnableDirectBiometric] true && [isEnableSeamless] false
+     * @return false if [isEnableDirectBiometric] true && [isEnableSeamless] true
+     */
+    private fun isShowDirectBiometricsPrompt(isEnableSeamless: Boolean): Boolean = isEnableDirectBiometric && isEnableSeamless.not()
 
     private fun setLeftDrawableForFingerprint() {
         if (activity != null) {
@@ -1608,6 +1657,8 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
                 } else {
                     showToaster(getString(R.string.error_login_fp_error))
                 }
+            } else if (requestCode == LoginConstants.Request.REQUEST_CHOOSE_ACCOUNT_OCL && resultCode == Activity.RESULT_OK) {
+                viewModel.getUserInfo()
             } else if (requestCode == LoginConstants.Request.REQUEST_LOGIN_PHONE || requestCode == LoginConstants.Request.REQUEST_CHOOSE_ACCOUNT) {
                 analytics.trackLoginPhoneNumberFailed(getString(R.string.error_login_user_cancel_login_phone))
                 dismissLoadingLogin()
@@ -1644,7 +1695,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
                         activity?.finish()
                     }
                     GotoSeamlessLoginFragment.RESULT_OTHER_ACCS -> {
-                        hideLoadingSeamless()
+                        hideLoadingOverlay()
                     }
                     else -> {
                         activity?.finish()

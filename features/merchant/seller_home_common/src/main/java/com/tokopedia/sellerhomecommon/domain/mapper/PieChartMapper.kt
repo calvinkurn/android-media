@@ -1,5 +1,6 @@
 package com.tokopedia.sellerhomecommon.domain.mapper
 
+import com.tokopedia.sellerhomecommon.common.DarkModeHelper
 import com.tokopedia.sellerhomecommon.data.WidgetLastUpdatedSharedPrefInterface
 import com.tokopedia.sellerhomecommon.domain.model.ChartSummaryModel
 import com.tokopedia.sellerhomecommon.domain.model.GetPieChartDataResponse
@@ -16,7 +17,8 @@ import javax.inject.Inject
 
 class PieChartMapper @Inject constructor(
     lastUpdatedSharedPref: WidgetLastUpdatedSharedPrefInterface,
-    lastUpdatedEnabled: Boolean
+    lastUpdatedEnabled: Boolean,
+    private val darkModeHelper: DarkModeHelper
 ) : BaseWidgetMapper(lastUpdatedSharedPref, lastUpdatedEnabled),
     BaseResponseMapper<GetPieChartDataResponse, List<PieChartDataUiModel>> {
 
@@ -55,9 +57,9 @@ class PieChartMapper @Inject constructor(
     private fun mapPieChartSummary(summary: ChartSummaryModel): ChartSummaryUiModel {
         return ChartSummaryUiModel(
             diffPercentage = summary.diffPercentage,
-            diffPercentageFmt = summary.diffPercentageFmt,
+            diffPercentageFmt = darkModeHelper.makeHtmlDarkModeSupport(summary.diffPercentageFmt),
             value = summary.value,
-            valueFmt = summary.valueFmt
+            valueFmt = darkModeHelper.makeHtmlDarkModeSupport(summary.valueFmt)
         )
     }
 }

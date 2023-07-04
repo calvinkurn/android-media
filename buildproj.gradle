@@ -96,6 +96,7 @@ subprojects {
             dependencySubstitution {
                 force "androidx.appcompat:appcompat:${supportLibraryVersion}"
                 force("org.objenesis:objenesis:2.6")
+                substitute module('androidx.appcompat:appcompat-resources') with module(rootProject.ext.supportLibDependencies.appCompactResource)
                 substitute module('org.jetbrains.kotlin:kotlin-stdlib') with module(rootProject.ext.supportLibDependencies.kotlinSupport)
                 substitute module('org.jetbrains.kotlin:kotlin-stdlib-common') with module("org.jetbrains.kotlin:kotlin-stdlib-common:${kotlinVersion}")
                 substitute module('com.squareup.okio:okio') with module('com.squareup.okio:okio:2.6.0')

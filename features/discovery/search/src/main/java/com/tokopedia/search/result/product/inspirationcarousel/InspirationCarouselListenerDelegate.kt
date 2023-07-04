@@ -63,20 +63,6 @@ class InspirationCarouselListenerDelegate(
         )
     }
 
-    override fun onImpressedInspirationCarouselInfoProduct(product: InspirationCarouselDataView.Option.Product) {
-        val trackingQueue = trackingQueue
-
-        val products = ArrayList<Any>()
-        products.add(product.getInspirationCarouselInfoProductAsObjectDataLayer())
-
-        InspirationCarouselTracking.trackImpressionInspirationCarouselInfo(
-            trackingQueue,
-            product.inspirationCarouselType,
-            queryKey,
-            products,
-        )
-    }
-
     override fun onInspirationCarouselChipsSeeAllClicked(
         inspirationCarouselDataViewOption: InspirationCarouselDataView.Option,
     ) {

@@ -35,18 +35,18 @@ class DebugPickerActivity : AppCompatActivity(), DebugDrawerSelectionWidget.List
         initConfig()
 
         binding?.btnAction?.setOnClickListener {
-            val appLink = binding?.edtApplink?.editText?.text?: ""
+            val appLink = binding?.edtApplink?.editText?.text ?: ""
             val intent = RouteManager.getIntent(applicationContext, appLink.toString()).apply {
                 val editorJson = binding?.editorConfig?.text ?: ""
                 val fromEditorJson = Gson().fromJson(editorJson.toString(), EditorParam::class.java)
 
-                val pickerJson = binding?.pickerConfig?.text?: ""
+                val pickerJson = binding?.pickerConfig?.text ?: ""
                 val fromPickerJson = Gson().fromJson(pickerJson.toString(), PickerParam::class.java).apply {
                     if (isEditorEnabled()) {
                         withEditor {
                             resetRatioList()
                             fromEditorJson.ratioList().forEach {
-                                when(it){
+                                when (it) {
                                     ImageRatioType.RATIO_1_1 -> ratioListAdd1to1()
                                     ImageRatioType.RATIO_3_4 -> ratioListAdd3to4()
                                     ImageRatioType.RATIO_2_1 -> ratioListAdd2to1()
@@ -67,11 +67,12 @@ class DebugPickerActivity : AppCompatActivity(), DebugDrawerSelectionWidget.List
                                 }
                             }
 
-                            when(fromEditorJson.autoCropRatio()){
-                            ImageRatioType.RATIO_1_1 -> autoCrop1to1()
-                            ImageRatioType.RATIO_3_4 -> autoCrop3to4()
-                            ImageRatioType.RATIO_2_1 -> autoCrop2to1()
-                        }
+                            when (fromEditorJson.autoCropRatio()) {
+                                ImageRatioType.RATIO_1_1 -> autoCrop1to1()
+                                ImageRatioType.RATIO_3_4 -> autoCrop3to4()
+                                ImageRatioType.RATIO_2_1 -> autoCrop2to1()
+                                else -> autoCrop1to1()
+                            }
                         }
                     }
                 }
@@ -87,7 +88,7 @@ class DebugPickerActivity : AppCompatActivity(), DebugDrawerSelectionWidget.List
         super.onActivityResult(requestCode, resultCode, data)
 
         if (requestCode == REQUEST_PICKER_CODE && resultCode == RESULT_OK) {
-            val elements = data?.getParcelableExtra(EXTRA_RESULT_PICKER)?: PickerResult()
+            val elements = data?.getParcelableExtra(EXTRA_RESULT_PICKER) ?: PickerResult()
 
             val resultList = if (elements.editedImages.isEmpty()) elements.originalPaths else elements.editedImages
 
@@ -118,11 +119,9 @@ class DebugPickerActivity : AppCompatActivity(), DebugDrawerSelectionWidget.List
     }
 
     override fun onDataSetChanged(action: DebugDrawerActionType) {
-
     }
 
     override fun onItemClicked(media: MediaUiModel) {
-
     }
 
     private fun initDefaultApplink() {
@@ -134,11 +133,13 @@ class DebugPickerActivity : AppCompatActivity(), DebugDrawerSelectionWidget.List
     private fun initConfig() {
         val gson = GsonBuilder().setPrettyPrinting().create()
         val pickerConfigJson = gson.toJson(PickerParam().apply { })
-        val editorConfigJson = gson.toJson(EditorParam().apply {
-            withRemoveBackground()
-            withWatermark()
-            autoCrop1to1()
-        })
+        val editorConfigJson = gson.toJson(
+            EditorParam().apply {
+                withRemoveBackground()
+                withWatermark()
+                autoCrop1to1()
+            }
+        )
 
         binding?.pickerConfig?.setText(pickerConfigJson)
         binding?.editorConfig?.setText(editorConfigJson)
@@ -147,5 +148,4 @@ class DebugPickerActivity : AppCompatActivity(), DebugDrawerSelectionWidget.List
     companion object {
         private const val REQUEST_PICKER_CODE = 123
     }
-
 }

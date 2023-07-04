@@ -22,6 +22,7 @@ import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.ApplinkConstInternalTokoFood
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet
 import com.tokopedia.filter.bottomsheet.filtergeneraldetail.FilterGeneralDetailBottomSheet
@@ -304,7 +305,9 @@ class SearchResultFragment :
     }
 
     override fun onGoToHome() {
-        navigateToNewFragment(TokoFoodHomeFragment.createInstance())
+        context?.let {
+            TokofoodRouteManager.routePrioritizeInternal(it, ApplinkConstInternalTokoFood.HOME)
+        }
     }
 
     override fun onOOCActionButtonClicked(type: Int) {
@@ -560,11 +563,11 @@ class SearchResultFragment :
     }
 
     private fun isChooseAddressWidgetDataUpdated(): Boolean {
-        localCacheModel?.let {
-            context?.apply {
+        localCacheModel?.let { cacheModel ->
+            context?.let {
                 return ChooseAddressUtils.isLocalizingAddressHasUpdated(
-                    this,
-                    it
+                    it,
+                    cacheModel
                 )
             }
         }

@@ -189,7 +189,6 @@ ext {
             feedShop                        : ":features:merchant:feed_shop",
             shopSettings                    : ":features:merchant:shop_settings",
             statistic                       : ":features:merchant:statistic",
-            officialStore                  : ":features:merchant:official_store",
             sellerShopFlashSale             : ":features:merchant:seller_shop_flash_sale",
             sellerTokopediaFlashSale        : ":features:merchant:seller_tokopedia_flash_sale",
             brandlist                       : ":features:merchant:brandlist",
@@ -208,8 +207,6 @@ ext {
             pms                             : ":features:payment:pms",
             goPayKyc                        : ":features:payment:gopay.kyc",
             withdraw                        : ":features:payment:withdraw",
-
-            gallery                         : ":features:merchant:gallery",
 
             gamification                    : ":features:promo:gamification",
             merchantVoucher                 : ":features:promo:merchant_voucher",

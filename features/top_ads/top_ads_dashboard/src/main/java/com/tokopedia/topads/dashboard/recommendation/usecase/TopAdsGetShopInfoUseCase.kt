@@ -3,7 +3,8 @@ package com.tokopedia.topads.dashboard.recommendation.usecase
 import com.tokopedia.gql_query_annotation.GqlQueryInterface
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.topads.common.data.internal.ParamObject
+import com.tokopedia.topads.common.data.internal.ParamObject.SHOP_ID
+import com.tokopedia.topads.common.data.internal.ParamObject.SOURCE
 import com.tokopedia.topads.dashboard.recommendation.data.model.cloud.TopAdsGetShopInfoResponse
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.TopAdsGetShopInfoUiModel
 import com.tokopedia.usecase.RequestParams
@@ -15,7 +16,7 @@ import javax.inject.Inject
 
 class TopAdsGetShopInfoUseCase @Inject constructor(
     graphqlRepository: GraphqlRepository,
-    private val userSession: UserSessionInterface,
+    private val userSession: UserSessionInterface
 ) : GraphqlUseCase<TopAdsGetShopInfoResponse>(graphqlRepository) {
 
     init {
@@ -38,8 +39,8 @@ class TopAdsGetShopInfoUseCase @Inject constructor(
 
     private fun createRequestParam(source: String): RequestParams {
         val requestParams = RequestParams.create()
-        requestParams.putString(ParamObject.SHOP_ID, userSession.shopId)
-        requestParams.putString("source", source)
+        requestParams.putString(SHOP_ID, userSession.shopId)
+        requestParams.putString(SOURCE, source)
         return requestParams
     }
 
@@ -69,5 +70,4 @@ class TopAdsGetShopInfoUseCase @Inject constructor(
 
         override fun getTopOperationName(): String = OPERATION_NAME
     }
-
 }

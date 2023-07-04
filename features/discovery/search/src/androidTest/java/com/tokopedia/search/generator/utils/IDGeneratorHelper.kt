@@ -36,11 +36,11 @@ object IDGeneratorHelper {
 
     private val viewPrinter = ViewHierarchyPrinter(
         printConditions,
-        packageName = BuildConfig.LIBRARY_PACKAGE_NAME,
+        packageName = BuildConfig.APPLICATION_ID,
     )
     private val rootViewPrinter = ViewHierarchyPrinter(
         rootPrintCondition,
-        packageName = BuildConfig.LIBRARY_PACKAGE_NAME,
+        packageName = BuildConfig.APPLICATION_ID,
     )
     private val fileWriter = FileWriter()
     private val savedFileName = mutableListOf<String>()

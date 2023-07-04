@@ -176,6 +176,7 @@ class OrderSummaryPageViewModel @Inject constructor(
                 OccState.Failed(Failure(result.throwable))
             }
             orderShipment.value = OrderShipment()
+                .copy(isShowLogisticPromoTickerMessage = orderShipment.value.isShowLogisticPromoTickerMessage)
             orderPayment.value = result.orderPayment
             validateUsePromoRevampUiModel = null
             lastValidateUsePromoRequest = null
@@ -394,7 +395,13 @@ class OrderSummaryPageViewModel @Inject constructor(
                 hasOldPromoCode = true
             }
         }
-        orderShipment.value = result.orderShipment
+        if (hasOldPromoCode) {
+            orderShipment.value = result.orderShipment
+                .copy(isShowLogisticPromoTickerMessage = true)
+        } else {
+            orderShipment.value = result.orderShipment
+                .copy(isShowLogisticPromoTickerMessage = orderShipment.value.isShowLogisticPromoTickerMessage)
+        }
         sendViewOspEe()
         sendPreselectedCourierOption(result.preselectedSpId)
         if (result.overweight != null) {
@@ -686,7 +693,10 @@ class OrderSummaryPageViewModel @Inject constructor(
             val (isSuccess, newGlobalEvent) = cartProcessor.updatePreference(param)
             if (isSuccess) {
                 globalEvent.value = OccGlobalEvent.UpdateLocalCacheAddress(newChosenAddress)
-                clearBboIfExist()
+                clearBboIfExist().also { isBoExist ->
+                    orderShipment.value =
+                        orderShipment.value.copy(isShowLogisticPromoTickerMessage = true)
+                }
             }
             globalEvent.value = newGlobalEvent
         }
@@ -799,7 +809,15 @@ class OrderSummaryPageViewModel @Inject constructor(
             globalEvent.value = OccGlobalEvent.Loading
             val (isSuccess, newGlobalEvent) = cartProcessor.updatePreference(param)
             if (isSuccess) {
-                clearBboIfExist()
+                clearBboIfExist().also { isBoExist ->
+                    if (orderShipment.value.isShowLogisticPromoTickerMessage) {
+                        orderShipment.value =
+                            orderShipment.value.copy(isShowLogisticPromoTickerMessage = true)
+                    } else {
+                        orderShipment.value =
+                            orderShipment.value.copy(isShowLogisticPromoTickerMessage = isBoExist)
+                    }
+                }
             }
             globalEvent.value = newGlobalEvent
         }

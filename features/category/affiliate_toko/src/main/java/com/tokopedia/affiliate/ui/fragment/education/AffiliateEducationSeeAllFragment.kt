@@ -44,7 +44,8 @@ class AffiliateEducationSeeAllFragment :
     AffiliateEduCategoryChipClick {
 
     @Inject
-    lateinit var userSessionInterface: UserSessionInterface
+    @JvmField
+    var userSessionInterface: UserSessionInterface? = null
 
     private var educationVM: AffiliateEducationSeeAllViewModel? = null
     private var pageType: String? = null
@@ -314,7 +315,7 @@ class AffiliateEducationSeeAllFragment :
             eventId,
             position = 0,
             eventId,
-            userSessionInterface.userId,
+            userSessionInterface?.userId.orEmpty(),
             creativeName
         )
     }
@@ -332,7 +333,7 @@ class AffiliateEducationSeeAllFragment :
             id,
             position = 0,
             id,
-            userSessionInterface.userId,
+            userSessionInterface?.userId.orEmpty(),
             creativeName
         )
     }

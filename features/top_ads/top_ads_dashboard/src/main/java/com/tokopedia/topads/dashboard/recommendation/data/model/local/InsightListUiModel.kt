@@ -20,6 +20,7 @@ data class AdGroupUiModel(
     val adGroupName: String = "",
     val adGroupType: String = "",
     val count: Int = 0,
+    val insightType: Int,
     val showGroupType: Boolean = false
 ) : InsightListUiModel, Parcelable {
     override fun id(): String {
@@ -29,7 +30,6 @@ data class AdGroupUiModel(
     override fun equalsWith(newItem: InsightListUiModel): Boolean {
         return this == newItem
     }
-
 }
 
 data class LoadingUiModel(val isLoading: Boolean = true) : InsightListUiModel {
@@ -40,7 +40,6 @@ data class LoadingUiModel(val isLoading: Boolean = true) : InsightListUiModel {
     override fun equalsWith(newItem: InsightListUiModel): Boolean {
         return this == newItem
     }
-
 }
 
 data class EmptyStateUiListModel(

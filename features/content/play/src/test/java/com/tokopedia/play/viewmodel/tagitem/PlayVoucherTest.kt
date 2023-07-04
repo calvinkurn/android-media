@@ -9,17 +9,14 @@ import com.tokopedia.play.robot.play.createPlayViewModelRobot
 import com.tokopedia.play.util.*
 import com.tokopedia.play.view.uimodel.PlayVoucherUiModel
 import com.tokopedia.play.websocket.response.PlayMerchantVoucherSocketResponse
-import com.tokopedia.play_common.model.result.ResultState
 import com.tokopedia.play_common.websocket.PlayWebSocket
 import com.tokopedia.play_common.websocket.WebSocketAction
 import com.tokopedia.play_common.websocket.WebSocketResponse
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.coEvery
-import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Rule
 import org.junit.Test
 
@@ -111,7 +108,7 @@ class PlayVoucherTest {
                 voucherList = mockVoucherList
             )
         )
-        coEvery { repo.getTagItem(any(), any(), any()) } returns mockTagItem
+        coEvery { repo.getTagItem(any(), any(), any(), any()) } returns mockTagItem
 
         val robot = createPlayViewModelRobot(
             dispatchers = testDispatcher,
@@ -153,7 +150,7 @@ class PlayVoucherTest {
                 voucherList = mockVoucherList
             )
         )
-        coEvery { repo.getTagItem(any(), any(), any()) } returns mockTagItem
+        coEvery { repo.getTagItem(any(), any(), any(), any()) } returns mockTagItem
 
         val robot = createPlayViewModelRobot(
             dispatchers = testDispatcher,

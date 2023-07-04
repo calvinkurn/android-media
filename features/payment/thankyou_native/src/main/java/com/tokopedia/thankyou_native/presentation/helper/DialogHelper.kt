@@ -17,6 +17,9 @@ class DialogHelper(val context: Context, val listener: OnDialogRedirectListener)
             is PaymentExpired -> showPaymentTimeExpired()
             is PaymentWaiting -> showPaymentWaitingDialog()
             is PaymentCancelled -> showPaymentFailedDialog()
+            else -> {
+                //no-op
+            }
         }
     }
 

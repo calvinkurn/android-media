@@ -126,11 +126,6 @@ dependencies {
     //Promo
     implementation projectOrAar(rootProject.ext.features.promoCheckout)
 
-    //Salam
-
-    //Travel
-    implementation projectOrAar(rootProject.ext.features.travelHomepage)
-
     //User
     implementation projectOrAar(rootProject.ext.features.settingnotif)
     implementation projectOrAar(rootProject.ext.features.campaignShakeLanding)

@@ -543,6 +543,9 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
                         else -> showNotFoundLocation()
                     }
                 }
+                else -> {
+                    //no-op
+                }
             }
         }
 
@@ -564,6 +567,9 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
                         }
                     }
                 }
+                else -> {
+                    //no-op
+                }
             }
         }
 
@@ -573,6 +579,9 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
                     moveMap(getLatLng(it.data.latitude, it.data.longitude), ZOOM_LEVEL)
                     viewModel.getDistrictData(it.data.latitude, it.data.longitude)
                 }
+                else -> {
+                    //no-op
+                }
             }
         }
 
@@ -580,6 +589,9 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
             when (it) {
                 is Success -> {
                     showBoundaries(it.data.geometry.listCoordinates)
+                }
+                else -> {
+                    //no-op
                 }
             }
         }

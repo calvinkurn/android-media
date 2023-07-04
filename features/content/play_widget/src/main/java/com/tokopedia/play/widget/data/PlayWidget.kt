@@ -47,7 +47,8 @@ data class PlayWidgetPromoLabel(
 
 data class PlayWidgetItemPartner(
         @SerializedName("ID") val id: String = "",
-        @SerializedName("name") val name: String = ""
+        @SerializedName("name") val name: String = "",
+        @SerializedName("type") val type: String = "",
 )
 
 data class PlayWidgetItemStat(

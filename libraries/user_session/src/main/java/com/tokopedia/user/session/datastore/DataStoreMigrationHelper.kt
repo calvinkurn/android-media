@@ -45,7 +45,8 @@ object DataStoreMigrationHelper {
                 userSessionDataStore.setAndroidId(userSessionInterface.androidId.trim())
             } catch (e: Exception) {
                 ServerLogger.log(
-                    Priority.P2, DataStoreMigrationWorker.USER_SESSION_LOGGER_TAG,
+                    Priority.P2,
+                    DataStoreMigrationWorker.USER_SESSION_LOGGER_TAG,
                     mapOf(
                         "method" to "migrateToDataStore_exception",
                         "error" to Log.getStackTraceString(e)

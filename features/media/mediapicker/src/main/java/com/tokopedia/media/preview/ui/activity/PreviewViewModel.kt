@@ -25,6 +25,7 @@ class PreviewViewModel @Inject constructor(
     private val _files = MutableSharedFlow<List<MediaUiModel>>()
 
     private var _isLoading = MutableLiveData<Boolean>()
+
     val isLoading: LiveData<Boolean> get() = _isLoading
 
     // get all files
@@ -59,12 +60,17 @@ class PreviewViewModel @Inject constructor(
             .map { imageCompressor.compress(it) }
             .flowOn(dispatchers.computation)
 
+    private val selectedIncludedMedia = _files.map { files ->
+        files.mapNotNull { it.sourcePath }
+    }
+
     val result = combine(
         originalFiles,
         videoCameraFiles,
         imageCameraFiles,
-        compressedImages
-    ) { originalFiles, videoCameraFiles, imageCameraFiles, compressedImages ->
+        compressedImages,
+        selectedIncludedMedia
+    ) { originalFiles, videoCameraFiles, imageCameraFiles, compressedImages, selectedIncludedMedia ->
         _isLoading.value = false
 
         /*
@@ -82,7 +88,8 @@ class PreviewViewModel @Inject constructor(
         PickerResult(
             originalPaths = originalFiles,
             videoFiles = videoCameraFiles,
-            compressedImages = compressedImages
+            compressedImages = compressedImages,
+            selectedIncludeMedia = selectedIncludedMedia
         )
     }.shareIn(
         viewModelScope,

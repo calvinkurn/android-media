@@ -513,6 +513,9 @@ class UserProfileFragment @Inject constructor(
                         emptyPostVisitor()
                         mainBinding.userPostContainer.displayedChild = PAGE_EMPTY
                     }
+                    else -> {
+                        //no-op
+                    }
                 }
             }
         }

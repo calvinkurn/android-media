@@ -9,7 +9,7 @@ import com.tokopedia.unit.test.ext.verifySuccessEquals
 import com.tokopedia.unit.test.ext.verifyValueEquals
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.runTest
 import org.junit.Test
 
 class GetProductRecommendationTest : TokoNowProductRecommendationViewModelTestFixture() {
@@ -42,27 +42,27 @@ class GetProductRecommendationTest : TokoNowProductRecommendationViewModelTestFi
     )
 
     @Test
-    fun `while getting product recommendation, the request should be success with returning empty value`() = runBlockingTest {
+    fun `while getting product recommendation, the request should be success with returning empty value`() = runTest {
         onGetRecommendation_thenReturn(listOf())
 
-        viewModel.getRecommendationCarousel(GetRecommendationRequestParam())
+        viewModel.getFirstRecommendationCarousel(GetRecommendationRequestParam())
 
         viewModel.productRecommendation.verifyErrorEquals(Fail(Throwable()))
         viewModel.loadingState.verifyValueEquals(false)
     }
 
     @Test
-    fun `while getting product recommendation, the request should be success with returning the value and an empty recommendation list`() = runBlockingTest {
+    fun `while getting product recommendation, the request should be success with returning the value and an empty recommendation list`() = runTest {
         onGetRecommendation_thenReturn(listOf(RecommendationWidget()))
 
-        viewModel.getRecommendationCarousel(GetRecommendationRequestParam())
+        viewModel.getFirstRecommendationCarousel(GetRecommendationRequestParam())
 
         viewModel.productRecommendation.verifyErrorEquals(Fail(Throwable()))
         viewModel.loadingState.verifyValueEquals(false)
     }
 
     @Test
-    fun `while getting product recommendation, the request should be success with returning the value`() = runBlockingTest {
+    fun `while getting product recommendation, the request should be success with returning the value`() = runTest {
         val recommendationWidget = RecommendationWidget(
             title = "product recom",
             seeMoreAppLink = "tokopedia://now",
@@ -71,11 +71,12 @@ class GetProductRecommendationTest : TokoNowProductRecommendationViewModelTestFi
 
         onGetRecommendation_thenReturn(listOf(recommendationWidget))
 
-        viewModel.getRecommendationCarousel(GetRecommendationRequestParam())
+        viewModel.getFirstRecommendationCarousel(GetRecommendationRequestParam())
 
         val expectedProductModels = mapResponseToProductRecommendation(
             recommendationWidget = recommendationWidget,
-            miniCartData = null
+            miniCartData = null,
+            hasBlockedAddToCart = false
         )
 
         viewModel.productRecommendation.verifySuccessEquals(Success(expectedProductModels))
@@ -83,7 +84,7 @@ class GetProductRecommendationTest : TokoNowProductRecommendationViewModelTestFi
     }
 
     @Test
-    fun `while getting product recommendation, the request should be success with returning the value without seeMoreAppLink`() = runBlockingTest {
+    fun `while getting product recommendation, the request should be success with returning the value without seeMoreAppLink`() = runTest {
         val recommendationWidget = RecommendationWidget(
             title = "product recom",
             recommendationItemList = productRecommendations
@@ -91,11 +92,12 @@ class GetProductRecommendationTest : TokoNowProductRecommendationViewModelTestFi
 
         onGetRecommendation_thenReturn(listOf(recommendationWidget))
 
-        viewModel.getRecommendationCarousel(GetRecommendationRequestParam())
+        viewModel.getFirstRecommendationCarousel(GetRecommendationRequestParam())
 
         val expectedProductModels = mapResponseToProductRecommendation(
             recommendationWidget = recommendationWidget,
-            miniCartData = null
+            miniCartData = null,
+            hasBlockedAddToCart = false
         )
 
         viewModel.productRecommendation.verifySuccessEquals(Success(expectedProductModels))
@@ -103,17 +105,17 @@ class GetProductRecommendationTest : TokoNowProductRecommendationViewModelTestFi
     }
 
     @Test
-    fun `while getting product recommendation, the request should fail`() = runBlockingTest {
+    fun `while getting product recommendation, the request should fail`() = runTest {
         onGetRecommendation_thenReturn(Throwable())
 
-        viewModel.getRecommendationCarousel(GetRecommendationRequestParam())
+        viewModel.getFirstRecommendationCarousel(GetRecommendationRequestParam())
 
         viewModel.productRecommendation.verifyErrorEquals(Fail(Throwable()))
         viewModel.loadingState.verifyValueEquals(false)
     }
 
     @Test
-    fun `while updating and setting recommendation page name should get expected result`() = runBlockingTest {
+    fun `while updating and setting recommendation page name should get expected result`() = runTest {
         /**
          * 1. doesn't have any job and the page name is not yet set, it should do nothing
          */
@@ -132,11 +134,12 @@ class GetProductRecommendationTest : TokoNowProductRecommendationViewModelTestFi
 
         onGetRecommendation_thenReturn(listOf(recommendationWidget))
 
-        viewModel.getRecommendationCarousel(GetRecommendationRequestParam(pageName = "tokonow"))
+        viewModel.getFirstRecommendationCarousel(GetRecommendationRequestParam(pageName = "tokonow"))
 
         var expectedProductModels = mapResponseToProductRecommendation(
             recommendationWidget = recommendationWidget,
-            miniCartData = null
+            miniCartData = null,
+            hasBlockedAddToCart = false
         )
 
         viewModel.productRecommendation.verifySuccessEquals(Success(expectedProductModels))
@@ -163,7 +166,8 @@ class GetProductRecommendationTest : TokoNowProductRecommendationViewModelTestFi
 
         expectedProductModels = mapResponseToProductRecommendation(
             recommendationWidget = recommendationWidget,
-            miniCartData = null
+            miniCartData = null,
+            hasBlockedAddToCart = false
         )
 
         viewModel.productRecommendation.verifySuccessEquals(Success(expectedProductModels))

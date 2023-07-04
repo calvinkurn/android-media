@@ -1,9 +1,13 @@
 package com.tokopedia.topads.dashboard.recommendation.usecase
 
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.gql_query_annotation.GqlQueryInterface
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.topads.common.data.internal.ParamObject.GROUP_ID
+import com.tokopedia.topads.common.data.internal.ParamObject.SHOP_id
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.PARAM_AD_TYPE
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.PARAM_INSIGHT_TYPE
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.PARAM_INSIGHT_TYPE_VALUE_GROUP_PERFORMANCE
 import com.tokopedia.topads.dashboard.recommendation.data.model.cloud.TopAdsSellerGroupPerformanceResponse
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.GroupPerformanceWidgetUiModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.TopAdsListAllInsightState
@@ -13,8 +17,7 @@ import javax.inject.Inject
 
 class TopAdsGroupPerformanceUseCase @Inject constructor(
     graphqlRepository: GraphqlRepository,
-    private val userSession: UserSessionInterface,
-    private val dispatchers: CoroutineDispatchers
+    private val userSession: UserSessionInterface
 ) : GraphqlUseCase<TopAdsSellerGroupPerformanceResponse>(graphqlRepository) {
 
     init {
@@ -36,10 +39,10 @@ class TopAdsGroupPerformanceUseCase @Inject constructor(
 
     private fun createRequestParam(groupId: String, adType: String): RequestParams {
         val requestParams = RequestParams.create()
-        requestParams.putString("shop_id", userSession.shopId)
-        requestParams.putString("group_id", groupId)
-        requestParams.putString("insight_type", "GROUP_PERFORMANCE")
-        requestParams.putString("ad_type", adType)
+        requestParams.putString(SHOP_id, userSession.shopId)
+        requestParams.putString(GROUP_ID, groupId)
+        requestParams.putString(PARAM_INSIGHT_TYPE, PARAM_INSIGHT_TYPE_VALUE_GROUP_PERFORMANCE)
+        requestParams.putString(PARAM_AD_TYPE, adType)
 
         return requestParams
     }

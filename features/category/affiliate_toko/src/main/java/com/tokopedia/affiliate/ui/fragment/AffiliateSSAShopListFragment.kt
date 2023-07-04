@@ -52,7 +52,7 @@ class AffiliateSSAShopListFragment :
     private val ssaAdapter: AffiliateAdapter by lazy {
         AffiliateAdapter(
             AffiliateAdapterFactory(productClickInterface = this),
-            source = AffiliateAdapter.SOURCE_SSA_SHOP
+            source = AffiliateAdapter.PageSource.SOURCE_SSA_SHOP
         )
     }
 

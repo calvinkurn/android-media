@@ -27,6 +27,7 @@ data class ProductRecommendationCallback(
     private val productRecommendationViewModel: TokoNowProductRecommendationViewModel?,
     private val baseSearchCategoryViewModel: BaseSearchCategoryViewModel,
     private val activity: FragmentActivity?,
+    private val onAddToCartBlocked: () -> Unit,
     private val startActivityForResult: (Intent, Int) -> Unit,
 
     /**
@@ -82,6 +83,8 @@ data class ProductRecommendationCallback(
         userId: String
     ) {
         val recommendationItem = mapProductItemToRecommendationItem(product)
+        val appLink = baseSearchCategoryViewModel.createAffiliateLink(product.appLink)
+
         SearchResultTracker.trackClickProduct(
             position,
             eventLabel,
@@ -92,7 +95,7 @@ data class ProductRecommendationCallback(
             recommendationItem
         )
 
-        RouteManager.route(activity, product.appLink)
+        RouteManager.route(activity, appLink)
     }
 
     override fun productCardImpressed(
@@ -124,6 +127,8 @@ data class ProductRecommendationCallback(
     ) {
         directToSeeMorePage(appLink)
     }
+
+    override fun productCardAddToCartBlocked() = onAddToCartBlocked()
 
     private fun directToSeeMorePage(
         appLink: String

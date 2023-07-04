@@ -10,8 +10,7 @@ import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSetup
 import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSetupProductUiModel.SetupProductData.ErrorType.Companion.VALUE_ERROR
 import com.tokopedia.shopdiscount.manage_discount.presentation.adapter.ShopDiscountManageDiscountTypeFactory
 import kotlinx.parcelize.Parcelize
-import java.util.*
-
+import java.util.Date
 
 data class ShopDiscountSetupProductUiModel(
     val responseHeader: ResponseHeader = ResponseHeader(),
@@ -29,7 +28,7 @@ data class ShopDiscountSetupProductUiModel(
         val listProductVariant: List<SetupProductData> = listOf(),
         var productStatus: ProductStatus = ProductStatus(),
         var variantStatus: VariantStatus = VariantStatus(),
-        var mappedResultData: MappedResultData = MappedResultData(),
+        var mappedResultData: MappedResultData = MappedResultData()
     ) : Parcelable, Visitable<ShopDiscountManageDiscountTypeFactory> {
 
         fun getListEnabledProductWarehouse(): List<ProductWarehouse> {
@@ -124,7 +123,5 @@ data class ShopDiscountSetupProductUiModel(
         override fun type(typeFactory: ShopDiscountManageDiscountTypeFactory): Int {
             return typeFactory.type(this)
         }
-
     }
-
 }

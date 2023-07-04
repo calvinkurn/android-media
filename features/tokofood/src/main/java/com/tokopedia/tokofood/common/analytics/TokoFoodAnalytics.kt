@@ -11,7 +11,6 @@ object TokoFoodAnalytics {
     const val KEY_SHOP_ID = "shop_id"
     const val KEY_SHOP_NAME = "shop_name"
     const val KEY_SHOP_TYPE = "shop_type"
-    const val KEY_CATEGORY_ID = "category_id"
     const val KEY_ITEMS = "items"
     const val KEY_QUANTITY = "quantity"
     const val KEY_TRACKER_ID = "trackerId"

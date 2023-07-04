@@ -5,7 +5,7 @@ import com.nhaarman.mockitokotlin2.mock
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateClickUseCase
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
-import com.tokopedia.content.common.usecase.GetWhiteListNewUseCase
+import com.tokopedia.content.common.usecase.GetWhiteListUseCase
 import com.tokopedia.feedcomponent.analytics.topadstracker.SendTopAdsUseCase
 import com.tokopedia.feedcomponent.domain.usecase.CheckUpcomingCampaignReminderUseCase
 import com.tokopedia.feedcomponent.domain.usecase.FeedBroadcastTrackerUseCase
@@ -21,7 +21,7 @@ import com.tokopedia.feedcomponent.people.usecase.ProfileFollowUseCase
 import com.tokopedia.feedcomponent.people.usecase.ProfileUnfollowedUseCase
 import com.tokopedia.feedcomponent.shoprecom.mapper.ShopRecomUiMapper
 import com.tokopedia.feedcomponent.shoprecom.mapper.ShopRecomUiMapperImpl
-import com.tokopedia.feedplus.view.presenter.FeedViewModel
+import com.tokopedia.feedplus.oldFeed.view.presenter.FeedViewModel
 import com.tokopedia.kolcommon.domain.interactor.SubmitActionContentUseCase
 import com.tokopedia.kolcommon.domain.interactor.SubmitLikeContentUseCase
 import com.tokopedia.kolcommon.domain.interactor.SubmitReportContentUseCase
@@ -47,7 +47,7 @@ class FeedViewModelRobot(
     sendTopAdsUseCase: SendTopAdsUseCase,
     playWidgetTools: PlayWidgetTools,
     getDynamicFeedNewUseCase: GetDynamicFeedNewUseCase,
-    getWhitelistNewUseCase: GetWhiteListNewUseCase,
+    getWhitelistNewUseCase: GetWhiteListUseCase,
     sendReportUseCase: SubmitReportContentUseCase,
     addToWishlistV2UseCase: AddToWishlistV2UseCase,
     trackVisitChannelBroadcasterUseCase: FeedBroadcastTrackerUseCase,
@@ -76,7 +76,7 @@ class FeedViewModelRobot(
         shopRecomMapper = shopRecomMapper,
         getDynamicFeedNewUseCase = getDynamicFeedNewUseCase,
         sendReportUseCase = sendReportUseCase,
-        getWhiteListNewUseCase = getWhitelistNewUseCase,
+        getWhiteListUseCase = getWhitelistNewUseCase,
         addToWishlistV2UseCase = addToWishlistV2UseCase,
         trackVisitChannelBroadcasterUseCase = trackVisitChannelBroadcasterUseCase,
         feedXTrackViewerUseCase = feedXTrackViewerUseCase,
@@ -112,7 +112,7 @@ fun create(
     sendTopAdsUseCase: SendTopAdsUseCase = mockk(relaxed = true),
     playWidgetTools: PlayWidgetTools = mockk(relaxed = true),
     getDynamicFeedNewUseCase: GetDynamicFeedNewUseCase = mockk(relaxed = true),
-    getWhitelistNewUseCase: GetWhiteListNewUseCase = mockk(relaxed = true),
+    getWhitelistNewUseCase: GetWhiteListUseCase = mockk(relaxed = true),
     sendReportUseCase: SubmitReportContentUseCase = mockk(relaxed = true),
     addToWishlistV2UseCase: AddToWishlistV2UseCase = mockk(relaxed = true),
     trackVisitChannelBroadcasterUseCase: FeedBroadcastTrackerUseCase = mockk(relaxed = true),

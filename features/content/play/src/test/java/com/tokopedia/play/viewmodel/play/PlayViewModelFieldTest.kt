@@ -10,6 +10,7 @@ import com.tokopedia.play.util.*
 import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.type.VideoOrientation
 import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
+import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.Rule
@@ -22,6 +23,9 @@ class PlayViewModelFieldTest {
 
     @get:Rule
     val instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
+
+    @get:Rule
+    val rule: CoroutineTestRule = CoroutineTestRule()
 
     private val channelInfoBuilder = PlayChannelInfoModelBuilder()
     private val cartInfoBuilder = PlayCartInfoModelBuilder()

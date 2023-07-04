@@ -1,13 +1,19 @@
 package com.tokopedia.deals.pdp
 
 import com.tokopedia.deals.pdp.data.Outlet
+import com.tokopedia.unit.test.rule.CoroutineTestRule
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.runTest
 import org.junit.Assert
+import org.junit.Rule
 import org.junit.Test
 
 class DealsPDPAllLocationViewModelTest : DealsPDPAllLocationViewModelTestFixture() {
+
+    @get:Rule
+    val coroutineTestRule = CoroutineTestRule()
 
     @Test
     fun `when getting search result by name give expected search result`() {

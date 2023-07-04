@@ -8,15 +8,20 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.topads.dashboard.R
+import com.tokopedia.topads.dashboard.recommendation.data.model.local.InsightListUiModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.insighttypechips.InsightTypeChipsUiModel
 import com.tokopedia.unifycomponents.ChipsUnify
 
-class InsightTypeChipsViewHolder(val itemView: View) :
+class InsightTypeChipsViewHolder(
+    val itemView: View,
+    private val onInsightTypeChipClick: ((MutableList<InsightListUiModel>?) -> Unit)?
+) :
     AbstractViewHolder<InsightTypeChipsUiModel>(itemView) {
 
     inner class InsightTypeChipsAdapter :
         RecyclerView.Adapter<InsightTypeChipsAdapter.InsightChipsViewHolder>() {
         var insightChipsList: List<String> = mutableListOf()
+        var adGroupList: MutableList<InsightListUiModel> = mutableListOf()
 
         inner class InsightChipsViewHolder(val itemView: View) : RecyclerView.ViewHolder(itemView) {
             private val chips: ChipsUnify = itemView.findViewById(R.id.groupInsightChips)
@@ -28,7 +33,13 @@ class InsightTypeChipsViewHolder(val itemView: View) :
                         com.tokopedia.iconunify.R.drawable.iconunify_chevron_down
                     )
                 )
-                chips.setChevronClickListener { }
+                chips.setChevronClickListener {
+                    if(chipName == getString(R.string.topads_insight_ad_type_product) || chipName == getString(R.string.topads_insight_ad_type_shop)) {
+                        onInsightTypeChipClick?.invoke(null)
+                    } else {
+                        onInsightTypeChipClick?.invoke(adGroupList)
+                    }
+                }
             }
         }
 
@@ -58,7 +69,10 @@ class InsightTypeChipsViewHolder(val itemView: View) :
         insightTypeChipsRv.layoutManager =
             LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
         insightTypeChipsRv.adapter = adapter
-        element?.let { adapter.insightChipsList = element.chipsList }
+        element?.let {
+            adapter.insightChipsList = element.chipsList
+            adapter.adGroupList = element.adGroupList
+        }
     }
 
     companion object {

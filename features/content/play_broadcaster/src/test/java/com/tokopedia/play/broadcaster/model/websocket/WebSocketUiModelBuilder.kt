@@ -317,7 +317,8 @@ class WebSocketUiModelBuilder {
                     price = OriginalPrice(
                         price = "Rp 60.000",
                         priceNumber = 60000.0,
-                    )
+                    ),
+                    number = "0",
                 )
             }
         )

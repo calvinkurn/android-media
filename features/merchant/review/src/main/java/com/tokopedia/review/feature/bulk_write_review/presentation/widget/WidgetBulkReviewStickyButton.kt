@@ -31,6 +31,9 @@ class WidgetBulkReviewStickyButton(
             is BulkReviewStickyButtonUiState.Submitting -> {
                 bind(uiState.text, uiState.anonymous, true)
             }
+            else -> {
+                //no-op
+            }
         }
     }
 

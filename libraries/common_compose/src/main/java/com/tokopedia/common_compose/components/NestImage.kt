@@ -1,4 +1,4 @@
-package com.tokopedia.common_compose.principles
+package com.tokopedia.common_compose.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.runtime.Composable
@@ -9,7 +9,7 @@ import coil.compose.rememberImagePainter
 
 @OptIn(ExperimentalCoilApi::class)
 @Composable
-fun NestImage(modifier: Modifier = Modifier, imageUrl: String) {
+fun NestImage(imageUrl: String, modifier: Modifier = Modifier) {
     val painter = rememberImagePainter(data = imageUrl)
     Image(
         painter = painter,

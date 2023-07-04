@@ -1,9 +1,9 @@
 package com.tokopedia.product.detail.common.data.model.pdplayout
 
-
 import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.product.detail.common.data.model.product.Cashback
+import com.tokopedia.product.detail.common.data.model.product.PostAtcLayout
 import com.tokopedia.product.detail.common.data.model.product.PreOrder
 import com.tokopedia.product.detail.common.data.model.product.Stock
 import com.tokopedia.product.detail.common.data.model.product.VariantBasic
@@ -57,6 +57,8 @@ data class ComponentData(
     val isWishlist: Boolean = false,
     @SerializedName("media")
     val media: List<Media> = listOf(),
+    @SerializedName("recommendation")
+    val productMediaRecomBasicInfo: ProductMediaRecomBasicInfo = ProductMediaRecomBasicInfo(),
     @SerializedName("containerType")
     val containerType: String = "",
     @SerializedName("name")
@@ -88,6 +90,8 @@ data class ComponentData(
     val sizeChart: String = "",
     @SerializedName("maxFinalPrice")
     val maxFinalPrice: Float = 0F,
+    @SerializedName("postATCLayout")
+    val postAtcLayout: PostAtcLayout = PostAtcLayout(),
     @SerializedName("defaultChild")
     val defaultChild: String = "",
     @SerializedName("variants")
@@ -141,8 +145,11 @@ data class ComponentData(
     // region Variant Thumb
     // componentType value is thumbnail or chips
     @SerializedName("componentType")
-    val componentType: String = ""
+    val componentType: String = "",
     // endregion
+
+    @SerializedName("variantCampaign")
+    val variantCampaign: VariantCampaign = VariantCampaign()
 ) {
     companion object {
         private const val PRODUCT_IMAGE_TYPE = "image"
@@ -191,13 +198,15 @@ data class ComponentData(
     }
 
     fun getImagePath(): ArrayList<String> {
-        return ArrayList(media.map {
-            if (it.type == PRODUCT_IMAGE_TYPE) {
-                it.uRLOriginal
-            } else {
-                it.uRLThumbnail
+        return ArrayList(
+            media.map {
+                if (it.type == PRODUCT_IMAGE_TYPE) {
+                    it.uRLOriginal
+                } else {
+                    it.uRLThumbnail
+                }
             }
-        })
+        )
     }
 
     fun getGalleryItems(): List<ProductDetailGallery.Item> {
@@ -237,4 +246,11 @@ data class CategoryCarousel(
     val applink: String = "",
     @SerializedName("categoryID")
     val categoryId: String = ""
+)
+
+data class VariantCampaign(
+    @SerializedName("campaigns")
+    val campaigns: List<com.tokopedia.product.detail.common.data.model.variant.VariantCampaign> = emptyList(),
+    @SerializedName("thematicCampaigns")
+    val thematicCampaigns: List<ThematicCampaign> = emptyList()
 )

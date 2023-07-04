@@ -136,3 +136,6 @@ object FailedFollow: PlayViewerNewUiEvent()
  */
 object ExploreWidgetInitialState: PlayViewerNewUiEvent()
 
+data class CommentVisibilityEvent(val isOpen: Boolean): PlayViewerNewUiEvent()
+
+

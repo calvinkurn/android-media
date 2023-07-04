@@ -13,7 +13,7 @@ class TokoNowChipListDiffer : BaseTokopediaNowDiffer() {
         val oldItem = oldList[oldItemPosition]
         val newItem = newList[newItemPosition]
         return if(oldItem is TokoNowChipUiModel && newItem is TokoNowChipUiModel) {
-            oldItem.id == newItem.id && oldItem.selected == newItem.selected
+            oldItem.id == newItem.id
         } else {
             oldItem == newItem
         }
@@ -34,5 +34,16 @@ class TokoNowChipListDiffer : BaseTokopediaNowDiffer() {
         this.oldList = oldList
         this.newList = newList
         return this
+    }
+
+    override fun getChangePayload(oldItemPosition: Int, newItemPosition: Int): Any? {
+        val oldItem = oldList[oldItemPosition]
+        val newItem = newList[newItemPosition]
+
+        return if(oldItem is TokoNowChipUiModel && newItem is TokoNowChipUiModel) {
+            oldItem.getChangePayload(newItem)
+        } else {
+            super.getChangePayload(oldItemPosition, newItemPosition)
+        }
     }
 }
