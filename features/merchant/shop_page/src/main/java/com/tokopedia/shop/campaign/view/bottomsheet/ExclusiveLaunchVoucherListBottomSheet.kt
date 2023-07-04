@@ -22,7 +22,6 @@ import com.tokopedia.shop.campaign.util.tracker.VoucherWidgetTracker
 import com.tokopedia.shop.campaign.view.adapter.ExclusiveLaunchVoucherAdapter
 import com.tokopedia.shop.campaign.view.viewmodel.ExclusiveLaunchVoucherListViewModel
 import com.tokopedia.shop.common.extension.applyPaddingToLastItem
-import com.tokopedia.shop.common.extension.showToaster
 import com.tokopedia.shop.common.extension.showToasterError
 import com.tokopedia.shop.databinding.BottomsheetExclusiveLaunchVoucherBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -157,8 +156,6 @@ class ExclusiveLaunchVoucherListBottomSheet : BottomSheetUnify() {
         viewModel.redeemResult.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Success -> {
-                    val toasterMessage = context?.getString(R.string.shop_campaign_tab_voucher_redeem_success_message).orEmpty()
-                    Toaster.build(binding?.recyclerView ?: return@observe, toasterMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL).show()
                     viewModel.getPromoVouchers(voucherSlugs)
                 }
                 is Fail -> {
