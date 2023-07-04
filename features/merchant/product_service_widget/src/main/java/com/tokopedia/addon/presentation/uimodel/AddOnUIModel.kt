@@ -1,5 +1,7 @@
 package com.tokopedia.addon.presentation.uimodel
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
 import java.io.Serializable
 
 data class AddOnUIModel(
@@ -9,12 +11,12 @@ data class AddOnUIModel(
     var discountedPrice: Long = 0L,
     var isSelected: Boolean = false,
     var isPreselected: Boolean = false,
-    var isMandatory: Boolean= false,
+    var isMandatory: Boolean = false,
     var addOnType: Int = 0,
     var eduLink: String = "",
     var uniqueId: String = "",
     var description: String = ""
-): Serializable {
+) : Serializable {
     fun getSelectedStatus(): AddOnSelectedStatus {
         return when {
             isMandatory -> AddOnSelectedStatus.MANDATORY
@@ -37,14 +39,17 @@ data class AddOnGroupUIModel(
     var addon: List<AddOnUIModel> = emptyList()
 )
 
-class AddOnPageResult(
+@Parcelize
+data class AddOnPageResult(
     val changedAddons: List<AddOnUIModel> = emptyList(),
-    val aggregatedData: AggregatedData = AggregatedData()
-): Serializable {
+    val aggregatedData: AggregatedData = AggregatedData(),
+    var cartId: Long = 0
+) : Parcelable {
+    @Parcelize
     data class AggregatedData(
         val title: String = "",
         val price: Long = 0,
-        val isGetDataSuccess: Boolean = false,
-        val getDataErrorMessage: String = "",
-    ): Serializable
+        var isGetDataSuccess: Boolean = false,
+        val getDataErrorMessage: String = ""
+    ) : Parcelable
 }

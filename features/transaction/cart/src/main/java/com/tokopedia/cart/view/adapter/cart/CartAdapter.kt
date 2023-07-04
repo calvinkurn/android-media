@@ -1449,6 +1449,23 @@ class CartAdapter constructor(
         plusCoachMark = coachMark
     }
 
+    fun updateAddOnByCartId(cartId: String, newAddOnWording: String) {
+        var position = 0
+        loop@ for ((index, any) in cartDataList.withIndex()) {
+            if (any is CartGroupHolderData) {
+                any.productUiModelList.let { cartItemHolderDataList ->
+                    innerLoop@ for (cartItemHolderData in cartItemHolderDataList) {
+                        if (cartItemHolderData.cartId == cartId) {
+                            position = index
+                            cartItemHolderData.addOnsProduct.widget.wording = newAddOnWording
+                        }
+                    }
+                }
+            }
+        }
+        notifyItemChanged(position)
+    }
+
     override fun onNeedToRefreshSingleProduct(childPosition: Int) {
         notifyItemChanged(childPosition)
         cartItemActionListener.onNeedToRecalculate()

@@ -36,6 +36,8 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler
+import com.tokopedia.addon.presentation.uimodel.AddOnExtraConstant
+import com.tokopedia.addon.presentation.uimodel.AddOnPageResult
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.analytics.performance.util.EmbraceKey
@@ -300,6 +302,7 @@ class CartFragment :
         const val NAVIGATION_EDIT_BUNDLE = 789
         const val NAVIGATION_VERIFICATION = 890
         const val NAVIGATION_APPLINK = 809
+        const val NAVIGATION_ADDON = 808
         const val WISHLIST_SOURCE_AVAILABLE_ITEM = "WISHLIST_SOURCE_AVAILABLE_ITEM"
         const val WISHLIST_SOURCE_UNAVAILABLE_ITEM = "WISHLIST_SOURCE_UNAVAILABLE_ITEM"
         const val WORDING_GO_TO_HOMEPAGE = "Kembali ke Homepage"
@@ -511,6 +514,7 @@ class CartFragment :
             NAVIGATION_EDIT_BUNDLE -> onResultFromEditBundle(resultCode, data)
             NAVIGATION_VERIFICATION -> refreshCartWithSwipeToRefresh()
             NAVIGATION_APPLINK -> refreshCartWithSwipeToRefresh()
+            NAVIGATION_ADDON -> onResultFromAddOnBottomSheet(resultCode, data)
         }
     }
 
@@ -4553,11 +4557,27 @@ class CartFragment :
         }
         val warehouseId = cartItemData.warehouseId
         val isTokoCabang = cartItemData.isFulfillment // need to confirm
-        val applink = "tokopedia://addon/"+productId+"/?cartId="+cartId+
-                "&selectedAddonIds="+addOnIds.toString()+"&source=cart&warehouseId="+warehouseId+"&isTokocabang="+isTokoCabang
-        println("++ applink = "+applink)
+        val applink = "tokopedia://addon/" + productId + "/?cartId=" + cartId +
+            "&selectedAddonIds=" + addOnIds.toString() + "&source=cart&warehouseId=" + warehouseId + "&isTokocabang=" + isTokoCabang
+        println("++ applink = " + applink)
         activity?.let {
+            val intent = RouteManager.getIntent(it, applink)
+            startActivityForResult(intent, NAVIGATION_ADDON)
             RouteManager.route(it, applink)
         }
+    }
+
+    private fun onResultFromAddOnBottomSheet(resultCode: Int, data: Intent?) {
+        // if (resultCode == Activity.RESULT_OK) {
+        val addOnProductDataResult = data?.getParcelableExtra(AddOnExtraConstant.EXTRA_ADDON_PAGE_RESULT) ?: AddOnPageResult()
+
+        if (addOnProductDataResult.aggregatedData.isGetDataSuccess) {
+            val cartId = addOnProductDataResult.cartId
+            val newAddOnWording = "${addOnProductDataResult.aggregatedData.title} <b>(${addOnProductDataResult.aggregatedData.price})</b>"
+            cartAdapter.updateAddOnByCartId(addOnProductDataResult.cartId.toString(), newAddOnWording)
+        } else {
+            showToastMessageRed(addOnProductDataResult.aggregatedData.getDataErrorMessage)
+        }
+        // }
     }
 }
