@@ -2,19 +2,15 @@ package com.tokopedia.digital.home.presentation.adapter
 
 import android.net.Uri
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.digital.home.R
-import com.tokopedia.digital.home.databinding.ViewRechargeHomeCarousellBinding
 import com.tokopedia.digital.home.databinding.ViewRechargeHomeCarousellImageBinding
 import com.tokopedia.digital.home.model.RechargeHomepageSections
 import com.tokopedia.digital.home.presentation.listener.RechargeHomepageItemListener
-import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.media.loader.loadImage
 
-
-class RechargeItemCarousellAdapter(val items: List<RechargeHomepageSections.Item>, val listener: RechargeHomepageItemListener)
-    : RecyclerView.Adapter<RechargeItemCarousellAdapter.CarousellRechargeItemViewHolder>() {
+class RechargeItemCarousellAdapter(val items: List<RechargeHomepageSections.Item>, val listener: RechargeHomepageItemListener) :
+    RecyclerView.Adapter<RechargeItemCarousellAdapter.CarousellRechargeItemViewHolder>() {
 
     override fun onBindViewHolder(viewHolder: CarousellRechargeItemViewHolder, position: Int) {
         viewHolder.bind(items[position], listener)
@@ -29,24 +25,23 @@ class RechargeItemCarousellAdapter(val items: List<RechargeHomepageSections.Item
         return items.size
     }
 
-    class CarousellRechargeItemViewHolder(val binding : ViewRechargeHomeCarousellImageBinding) : RecyclerView.ViewHolder(binding.root) {
+    class CarousellRechargeItemViewHolder(val binding: ViewRechargeHomeCarousellImageBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(element: RechargeHomepageSections.Item, onItemBindListener: RechargeHomepageItemListener) {
-            with(binding){
+            with(binding) {
                 imgCarousellRechargeHomePage.loadImage(element.mediaUrl)
                 root.setOnClickListener {
-                    if(element.applink.isNotEmpty()){
+                    if (element.applink.isNotEmpty()) {
                         try {
                             val uri = Uri.parse(element.applink)
-                            if (!uri.host.isNullOrEmpty()){
+                            if (!uri.host.isNullOrEmpty()) {
                                 onItemBindListener.onRechargeSectionItemClicked(element)
                             }
-                        } catch (e: Exception){
-
+                        } catch (e: Exception) {
+                            e.printStackTrace()
                         }
                     }
                 }
             }
         }
-
     }
 }

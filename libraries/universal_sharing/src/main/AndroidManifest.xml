@@ -9,9 +9,9 @@
         android:allowBackup="true"
         android:supportsRtl="true">
         <activity
+            android:name=".view.activity.GlobalSharingActivity"
             android:exported="false"
             android:label=""
-            android:name=".view.activity.GlobalSharingActivity"
             android:theme="@style/Theme.AppCompat.Transparent.NoActionBar.GlobalSharing">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
@@ -26,4 +26,5 @@
             </intent-filter>
         </activity>
     </application>
+
 </manifest>

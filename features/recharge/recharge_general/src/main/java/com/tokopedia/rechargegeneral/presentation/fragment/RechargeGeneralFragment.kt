@@ -99,6 +99,7 @@ import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import timber.log.Timber
 import javax.inject.Inject
 
 class RechargeGeneralFragment :
@@ -1519,15 +1520,19 @@ class RechargeGeneralFragment :
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         menu.clear()
-        val dppoConsentData = viewModel.dppoConsent.value
-        inflater.inflate(R.menu.menu, menu)
-        if (dppoConsentData is Success && dppoConsentData.data.description.isNotEmpty()) {
-            menu.showConsentIcon()
-            menu.setupConsentIcon(dppoConsentData.data.description)
-            menu.setupKebabIcon()
-        } else {
-            menu.hideConsentIcon()
-            menu.setupKebabIcon()
+        try {
+            val dppoConsentData = viewModel.dppoConsent.value
+            inflater.inflate(R.menu.menu, menu)
+            if (dppoConsentData is Success && dppoConsentData.data.description.isNotEmpty()) {
+                menu.showConsentIcon()
+                menu.setupConsentIcon(dppoConsentData.data.description)
+                menu.setupKebabIcon()
+            } else {
+                menu.hideConsentIcon()
+                menu.setupKebabIcon()
+            }
+        } catch (e: Exception) {
+            Timber.e(e)
         }
     }
 
