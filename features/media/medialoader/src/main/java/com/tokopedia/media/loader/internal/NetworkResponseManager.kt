@@ -5,8 +5,7 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.media.loader.data.Header
-import com.tokopedia.media.loader.data.Header.Companion.toJson
-import com.tokopedia.media.loader.data.Header.Companion.toModel
+import com.tokopedia.media.loader.data.toModel
 import okhttp3.Headers
 
 class NetworkResponseManager constructor(
@@ -27,8 +26,16 @@ class NetworkResponseManager constructor(
         val json = getString(KEY_NETWORK_HEADER, "")
         if (json.isEmpty()) return emptyList()
 
+        return json.toModel()
+    }
+
+    private fun List<Header>.toJson(): String {
+        return Gson().toJson(this)
+    }
+
+    private fun String.toModel(): List<Header> {
         return Gson().fromJson(
-            json,
+            this,
             object : TypeToken<List<Header>>() {}.type
         )
     }
