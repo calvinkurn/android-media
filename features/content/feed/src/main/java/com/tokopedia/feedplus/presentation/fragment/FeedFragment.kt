@@ -283,8 +283,9 @@ class FeedFragment :
 
     override fun onDestroyView() {
         _binding = null
-        (childFragmentManager.findFragmentByTag(TAG_FEED_PRODUCT_BOTTOM_SHEET) as? FeedTaggedProductBottomSheet)?.dismiss()
-        (childFragmentManager.findFragmentByTag(TAG_FEED_MENU_BOTTOMSHEET) as? ContentThreeDotsMenuBottomSheet)?.dismiss()
+        dismissFeedProductBottomSheet()
+        dismissFeedMenuBottomSheet()
+        dismissAtcVariantBottomSheet()
         dismissShareBottomSheet()
         super.onDestroyView()
 
@@ -1248,7 +1249,10 @@ class FeedFragment :
     private fun checkAddToCartAction(product: FeedTaggedProductUiModel) {
         when {
             userSession.isLoggedIn -> {
-                if (product.hasVariant) openVariantBottomSheet(product)
+                if (product.hasVariant) {
+                    dismissFeedProductBottomSheet()
+                    openVariantBottomSheet(product)
+                }
                 else feedPostViewModel.addProductToCart(product)
             }
             !userSession.isLoggedIn -> {
@@ -1425,6 +1429,18 @@ class FeedFragment :
                 }
             )
         )
+    }
+
+    private fun dismissFeedProductBottomSheet() {
+        (childFragmentManager.findFragmentByTag(TAG_FEED_PRODUCT_BOTTOM_SHEET) as? FeedTaggedProductBottomSheet)?.dismiss()
+    }
+
+    private fun dismissFeedMenuBottomSheet() {
+        (childFragmentManager.findFragmentByTag(TAG_FEED_MENU_BOTTOMSHEET) as? ContentThreeDotsMenuBottomSheet)?.dismiss()
+    }
+
+    private fun dismissAtcVariantBottomSheet() {
+        (childFragmentManager.findFragmentByTag(VARIANT_BOTTOM_SHEET_TAG) as? AtcVariantBottomSheet)?.dismiss()
     }
 
     private fun dismissShareBottomSheet() {
