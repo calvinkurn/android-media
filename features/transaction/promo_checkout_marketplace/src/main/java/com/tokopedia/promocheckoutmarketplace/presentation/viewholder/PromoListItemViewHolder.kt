@@ -13,7 +13,10 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
+import com.tokopedia.kotlin.extensions.view.isEven
+import com.tokopedia.kotlin.extensions.view.isOdd
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.promocheckoutmarketplace.R
@@ -341,6 +344,7 @@ class PromoListItemViewHolder(
         renderUserValidity(viewBinding, element)
         renderErrorInfo(viewBinding, element)
         renderDivider(viewBinding, element)
+        renderPromoActionable(viewBinding)
         adjustConstraints(viewBinding)
         currentItemId = element.id
     }
@@ -679,6 +683,21 @@ class PromoListItemViewHolder(
             } else {
                 lastPromoDivider.gone()
                 lastPromoDivider2.gone()
+            }
+        }
+    }
+
+    private fun renderPromoActionable(
+        viewBinding: PromoCheckoutMarketplaceModuleItemPromoCardBinding
+    ) {
+        val dummyCondition = adapterPosition.isOdd()
+        with(viewBinding) {
+            if (dummyCondition) {
+                textPromoActionable.text = "hello ini kode promo"
+                cardPromoActionable.show()
+            } else {
+                textPromoActionable.text = ""
+                cardPromoActionable.hide()
             }
         }
     }

@@ -12,6 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.FrameLayout
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -32,6 +33,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConsInternalDigital
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.coachmark.CoachMark2
@@ -155,8 +157,16 @@ class PromoCheckoutFragment :
 
     private var toolbar: ToolbarPromoCheckout? = null
 
+    // Activity result
+    val gopayCicilLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+        if (it.resultCode == Activity.RESULT_OK) {
+            loadPromoData()
+        }
+    }
+
     companion object {
         const val REQUEST_CODE_PHONE_VERIFICATION = 9999
+        const val REQUEST_CODE_GOPAY_CICIL_WEBVIEW = 9998
         const val HAS_ELEVATION = 6
         const val NO_ELEVATION = 0
         const val KEYBOARD_HEIGHT_THRESHOLD = 100
@@ -945,13 +955,17 @@ class PromoCheckoutFragment :
 
     override fun loadData(page: Int) {
         showLoading()
-        val promoRequest = arguments?.getParcelable(ARGS_PROMO_REQUEST) ?: PromoRequest()
-        val chosenAddress: ChosenAddress? = arguments?.getParcelable(ARGS_CHOSEN_ADDRESS)
-        viewModel.getPromoList(promoRequest, "", chosenAddress)
+        loadPromoData()
     }
 
     override fun isLoadMoreEnabledByDefault(): Boolean {
         return false
+    }
+
+    private fun loadPromoData(promoCode: String = "") {
+        val promoRequest = arguments?.getParcelable(ARGS_PROMO_REQUEST) ?: PromoRequest()
+        val chosenAddress: ChosenAddress? = arguments?.getParcelable(ARGS_CHOSEN_ADDRESS)
+        viewModel.getPromoList(promoRequest, promoCode, chosenAddress)
     }
 
     private fun showToastMessage(message: String) {
@@ -1129,9 +1143,7 @@ class PromoCheckoutFragment :
 
     override fun onClickApplyManualInputPromo(promoCode: String, isFromSuggestion: Boolean) {
         viewModel.updatePromoInputStateBeforeApplyPromo(promoCode, isFromSuggestion)
-        val promoRequest = arguments?.getParcelable(ARGS_PROMO_REQUEST) ?: PromoRequest()
-        val chosenAddress: ChosenAddress? = arguments?.getParcelable(ARGS_CHOSEN_ADDRESS)
-        viewModel.getPromoList(promoRequest, promoCode, chosenAddress)
+        loadPromoData(promoCode)
     }
 
     override fun onCLickClearManualInputPromo() {
@@ -1139,7 +1151,14 @@ class PromoCheckoutFragment :
     }
 
     override fun onClickPromoListItem(element: PromoListItemUiModel, position: Int) {
-        viewModel.updatePromoListAfterClickPromoItem(element)
+        // navigate actionable if applink exist
+        if (true) {
+            // TOOD: [Misael] Remove dummy applink
+            val intent = RouteManager.getIntent(context, ApplinkConsInternalDigital.CREDIT_CARD_TEMPLATE)
+            gopayCicilLauncher.launch(intent)
+        } else {
+            viewModel.updatePromoListAfterClickPromoItem(element)
+        }
 
         // dismiss coachmark if user click promo with coachmark
         val adapterItems = adapter.list
