@@ -41,7 +41,11 @@ object ProductMapper {
                     price = product.price.toDouble()
                 )
             },
-            campaign = newCampaign
+            campaign = newCampaign,
+            affiliate = FeedTaggedProductUiModel.Affiliate(
+                id = product.affiliate.id,
+                channel = product.affiliate.channel
+            )
         )
     }
 

@@ -53,6 +53,10 @@ class FeedXGetActivityProductsUseCase @Inject constructor(
                     bebasOngkirStatus
                     bebasOngkirURL
                     mods
+                    affiliate {
+                        id
+                        channel
+                    }
                 }
                 isFollowed
                 contentType
@@ -72,7 +76,7 @@ class FeedXGetActivityProductsUseCase @Inject constructor(
                 nextCursor
               }
             }
-            """.trimIndent()
+    """.trimIndent()
 
     fun getFeedDetailParam(detailId: String, cursor: String): Map<String, Any> {
         val queryMap = mapOf(
@@ -88,6 +92,5 @@ class FeedXGetActivityProductsUseCase @Inject constructor(
         private const val PARAM_LIMIT = "limit"
         private const val PARAM_CURSOR = "cursor"
         private const val LIMIT_DETAIL = 99
-
     }
 }
