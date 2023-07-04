@@ -22,6 +22,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.topads.common.data.model.ticker.TickerInfo
+import com.tokopedia.topads.common.sheet.TopAdsToolTipBottomSheet
 import com.tokopedia.topads.credit.history.view.activity.TopAdsCreditHistoryActivity
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_5
@@ -39,6 +40,7 @@ import com.tokopedia.topads.dashboard.data.utils.Utils.asString
 import com.tokopedia.topads.dashboard.data.utils.Utils.openWebView
 import com.tokopedia.topads.dashboard.databinding.FragmentTopadsDashboardBerandaBaseBinding
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.HEADLINE_KEY
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.INSIGHT_COUNT_PLACE_HOLDER
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.InsightTypeConstants.INSIGHT_TYPE_ALL
@@ -51,6 +53,7 @@ import com.tokopedia.topads.dashboard.recommendation.data.model.local.AdGroupUiM
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.EmptyStateUiListModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.InsightListUiModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.TopAdsListAllInsightState
+import com.tokopedia.topads.dashboard.recommendation.views.activities.GroupDetailActivity
 import com.tokopedia.topads.dashboard.recommendation.views.adapter.recommendation.InsightListAdapter
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity.Companion.INSIGHT_PAGE
@@ -642,13 +645,14 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
 
     private fun moveToInsightDetailPage(adGroupList: ArrayList<AdGroupUiModel>, item: AdGroupUiModel) {
         val bundle = Bundle()
-        bundle.putString("adType", item.adGroupType)
-        bundle.putString("adGroupName", item.adGroupName)
-        bundle.putString("groupId", item.adGroupID)
-        bundle.putInt("count", item.count)
-        bundle.putParcelableArrayList("insightTypeList", adGroupList)
+        bundle.putString(RecommendationConstants.AD_GROUP_TYPE_KEY, item.adGroupType)
+        bundle.putString(RecommendationConstants.AD_GROUP_NAME_KEY, item.adGroupName)
+        bundle.putString(RecommendationConstants.AD_GROUP_ID_KEY, item.adGroupID)
+        bundle.putInt(RecommendationConstants.AD_GROUP_COUNT_KEY, item.count)
+        bundle.putInt(RecommendationConstants.INSIGHT_TYPE_KEY, item.insightType)
+        bundle.putParcelableArrayList(RecommendationConstants.INSIGHT_TYPE_LIST_KEY, adGroupList)
         Intent(context, GroupDetailActivity::class.java).apply {
-            this.putExtra("groupDetailBundle", bundle)
+            this.putExtra(RecommendationConstants.GROUP_DETAIL_BUNDLE_KEY, bundle)
             startActivity(this)
         }
     }
@@ -657,6 +661,15 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
     private fun setInsightWidgetBehaviour() {
         binding.layoutInsight.insightWidgetSeeMore.setOnClickListener {
             moveToInsightPage()
+        }
+
+        binding.layoutInsight.infoIcon.setOnClickListener{
+            TopAdsToolTipBottomSheet.newInstance().also {
+                it.setTitle(context?.getString(R.string.topads_beranda_saran) ?: "")
+                it.setDescription(
+                    context?.getString(R.string.topads_dashboard_saran_ads_info_sheet_desc) ?: ""
+                )
+            }.show(childFragmentManager)
         }
 
         scroll_view?.viewTreeObserver?.addOnScrollChangedListener(object :

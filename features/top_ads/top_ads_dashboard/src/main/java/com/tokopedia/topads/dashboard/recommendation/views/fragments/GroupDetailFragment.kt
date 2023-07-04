@@ -58,6 +58,7 @@ import com.tokopedia.topads.dashboard.recommendation.views.adapter.groupdetail.G
 import com.tokopedia.topads.dashboard.recommendation.views.adapter.groupdetail.GroupDetailsChipsAdapter
 import com.tokopedia.topads.dashboard.recommendation.views.adapter.groupdetail.factory.GroupDetailAdapterFactoryImpl
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsProductIklanFragment
+import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.usecase.coroutines.Fail
@@ -74,6 +75,7 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
     private var groupDetailsRecyclerView: RecyclerView? = null
     private var groupDetailChipsRv: RecyclerView? = null
     private var saveButton: UnifyButton? = null
+    private var saveButtonContainer: CardUnify2? = null
     private var groupChipsLayout: View? = null
     private var groupDetailPageShimmer: View? = null
     private var detailPageEmptyState: EmptyStateUnify? = null
@@ -276,6 +278,7 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
             utils.convertAdTypeToInt(adType),
             adGroupId
         )
+        showApplyInsightCta(false)
     }
 
     private fun showFailedInsightApplyDialog() {
@@ -419,6 +422,7 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
         groupDetailPageShimmer = view?.findViewById(R.id.groupDetailPageShimmer)
         detailPageEmptyState = view?.findViewById(R.id.detailPageEmptyState)
         saveButton = view?.findViewById(R.id.saveButton)
+        saveButtonContainer = view?.findViewById(R.id.saveButtonContainer)
     }
 
     private fun attachViewClickListeners() {
@@ -478,7 +482,7 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
     }
 
     private fun showApplyInsightCta(isVisible: Boolean) {
-        saveButton?.showWithCondition(isVisible)
+        saveButtonContainer?.showWithCondition(isVisible)
     }
 
     private fun onInsightTypeChipClick(groupList: MutableList<InsightListUiModel>?) {
@@ -525,7 +529,7 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
         }
     }
 
-    override fun onClickItemListener(adType: Int, groupId: String, groupName: String) {
+    override fun onSubmitSelectItemListener(adType: Int, groupId: String, groupName: String) {
         // adType changes with choose ad type bottomsheet & vice versa for choose group bottomsheet
         this.adType = if (adType == TYPE_PRODUCT_VALUE) PRODUCT_KEY else HEADLINE_KEY
         this.adGroupId = groupId

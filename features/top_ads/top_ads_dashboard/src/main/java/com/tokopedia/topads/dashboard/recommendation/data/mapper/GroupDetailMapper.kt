@@ -12,6 +12,7 @@ import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONS
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_4
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_5
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.ACTION_EDIT_PARAM
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.HEADLINE_INSIGHT_DEFAULT_STATUS
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.INVALID_INSIGHT_TYPE
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.InsightTypeConstants.INSIGHT_TYPE_DAILY_BUDGET_NAME
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.InsightTypeConstants.INSIGHT_TYPE_GROUP_BID
@@ -312,7 +313,8 @@ class GroupDetailMapper @Inject constructor() {
         input: TopadsManagePromoGroupProductInput?,
         shopId: String,
         groupId: String?,
-        source: String
+        source: String,
+        groupName: String?
     ): TopAdsManageHeadlineInput2 {
         val keywords = mutableListOf<TopAdsManageHeadlineInput2.Operation.Group.KeywordOperation>()
         input?.keywordOperation?.forEachIndexed { _, keywordEditInput ->
@@ -336,7 +338,9 @@ class GroupDetailMapper @Inject constructor() {
                 group = TopAdsManageHeadlineInput2.Operation.Group(
                     id = groupId.toString(),
                     shopID = shopId,
-                    keywordOperations = keywords
+                    keywordOperations = keywords,
+                    status = HEADLINE_INSIGHT_DEFAULT_STATUS,
+                    name = groupName.toString()
                 )
             )
         )
