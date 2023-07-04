@@ -81,8 +81,15 @@ class JakCardBalanceViewModelTest {
     private val mockPrivateKeyString = "lalalalalalalaalalalalalalalalalalalalalalala"
     private val mockPublicKeyString = "dadadadadadadadadadadadadadadadadadaadadadadadadadadadada"
     private val pairEncryptionResult = Pair("lalalalalalalaalalalalalalalalalalalalalalala", "dadadadadadadadadadadadadadadadadadaadadadadadadadadadada")
+    private val pairEncryptionResultTopUp = Pair("fafafafafafa", "gagagagaga")
+    private val pairEncryptionResultTopUpConfirmation = Pair("hahahahahaha", "jajajajajaja")
     private val encKeyAes = "babababababababa"
     private val encPayloadAes = "cacacacacaca"
+    private val encKeyTopUpAes = "fafafafafafa"
+    private val encPayloadTopUpAes = "gagagagaga"
+    private val encKeyTopUpConfirmationAes = "hahahahahaha"
+    private val encKeyPayloadTopUpConfirmationAes = "jajajajajaja"
+
 
     private val gson = Gson()
 
@@ -122,7 +129,6 @@ class JakCardBalanceViewModelTest {
 
     private val getPendingBalanceResponseCryptogramEmpty = """
       {
-              "rechargeUpdateBalanceEmoneyDkiJakcard": {
                 "action": 1,
                 "status": 0,
                 "attributes": {
@@ -136,12 +142,10 @@ class JakCardBalanceViewModelTest {
                   "ref_no": ""
                 }
               }
-            }
     """.trimIndent()
 
     private val topUpResponseWithoutWrite = """
       {
-              "rechargeUpdateBalanceEmoneyDkiJakcard": {
                 "action": 2,
                 "status": 1,
                 "attributes": {
@@ -155,12 +159,10 @@ class JakCardBalanceViewModelTest {
                   "ref_no": "000000000460"
                 }
               }
-            }
     """.trimIndent()
 
     private val topUpResponseCryptogramEmpty = """
-      {
-              "rechargeUpdateBalanceEmoneyDkiJakcard": {
+        {
                 "action": 2,
                 "status": 0,
                 "attributes": {
@@ -174,12 +176,10 @@ class JakCardBalanceViewModelTest {
                   "ref_no": "000000000460"
                 }
               }
-            }
     """.trimIndent()
 
     private val topUpResponse = """
-      {
-              "rechargeUpdateBalanceEmoneyDkiJakcard": {
+        {
                 "action": 2,
                 "status": 0,
                 "attributes": {
@@ -193,12 +193,10 @@ class JakCardBalanceViewModelTest {
                   "ref_no": "000000000460"
                 }
               }
-            }
     """.trimIndent()
 
     private val topUpConfirmationResponseError = """
-      {
-              "rechargeUpdateBalanceEmoneyDkiJakcard": {
+        {
                 "action": 3,
                 "status": 2,
                 "attributes": {
@@ -212,12 +210,10 @@ class JakCardBalanceViewModelTest {
                   "ref_no": "000000000460"
                 }
               }
-            }
     """.trimIndent()
 
     private val topUpConfirmationResponseWrite = """
-      {
-              "rechargeUpdateBalanceEmoneyDkiJakcard": {
+        {
                 "action": 3,
                 "status": 0,
                 "attributes": {
@@ -231,12 +227,10 @@ class JakCardBalanceViewModelTest {
                   "ref_no": "000000000460"
                 }
               }
-            }
     """.trimIndent()
 
     private val topUpConfirmationResponse = """
-      {
-              "rechargeUpdateBalanceEmoneyDkiJakcard": {
+     {
                 "action": 3,
                 "status": 1,
                 "attributes": {
@@ -250,7 +244,6 @@ class JakCardBalanceViewModelTest {
                   "ref_no": "000000000460"
                 }
               }
-            }
     """.trimIndent()
 
     private val COMMAND_SELECT_STAG_BYTE_ARRAY =
@@ -502,6 +495,780 @@ class JakCardBalanceViewModelTest {
         assertEquals(
             ((jakCardBalanceViewModel.errorCardMessage.value) as Throwable).message,
             ERROR_MESSAGE
+        )
+    }
+
+    @Test
+    fun `processJakCardTagIntent success select production process and get pending balance success but cryptogram empty and return error`() {
+        //given
+        initSuccessData()
+        val createPendingBalanceParam = JakCardRequestMapper.createGetPendingBalanceParam(
+            resultSelectSuccessString,
+            cardNumber,
+            lastBalance,
+            gson
+        )
+
+        every {
+            electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createPendingBalanceParam)
+        } returns pairEncryptionResult
+
+        val encParam = electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createPendingBalanceParam)
+        val paramGetPendingBalanceQuery = JakCardRequestMapper.createEncryptedParam(encParam.first, encParam.second)
+        val responseCheckBalanceEnc = JakCardResponse(data = JakCardDataEnc(
+            encKey =  encKeyAes,
+            encPayload = encPayloadAes
+        ))
+
+        val responsePendingBalanceCryptogramEmpty =
+            Gson().fromJson(getPendingBalanceResponseCryptogramEmpty, JakCardResponse::class.java)
+
+        every { isoDep.transceive(COMMAND_SELECT_PROD_BYTE_ARRAY) } returns resultSelectSuccess
+        every { isoDep.transceive(COMMAND_CHECK_BALANCE_BYTE_ARRAY) } returns resultCheckBalanceSuccess
+
+        every { electronicMoneyEncryption.createDecryptedPayload(mockPrivateKeyString, encKeyAes, encPayloadAes)
+        } returns getPendingBalanceResponseCryptogramEmpty
+
+        coEvery { jakCardUseCase.execute(paramGetPendingBalanceQuery) } returns responseCheckBalanceEnc
+        //when
+        jakCardBalanceViewModel.processJakCardTagIntent(isoDep, false, mockPublicKeyString, mockPrivateKeyString)
+        //then
+        assertEquals(
+            ((jakCardBalanceViewModel.errorCardMessage.value) as Throwable).message,
+            ERROR_MESSAGE
+        )
+    }
+
+    @Test
+    fun `processJakCardTagIntent success select production process and get pending balance success but isodep is not connected and return error`() {
+        //given
+        initSuccessDataIsoDepNotConnected()
+        val createPendingBalanceParam = JakCardRequestMapper.createGetPendingBalanceParam(
+            resultSelectSuccessString,
+            cardNumber,
+            lastBalance,
+            gson
+        )
+
+        every {
+            electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createPendingBalanceParam)
+        } returns pairEncryptionResult
+
+        val encParam = electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createPendingBalanceParam)
+        val paramGetPendingBalanceQuery = JakCardRequestMapper.createEncryptedParam(encParam.first, encParam.second)
+        val responseCheckBalanceEnc = JakCardResponse(data = JakCardDataEnc(
+            encKey =  encKeyAes,
+            encPayload = encPayloadAes
+        ))
+
+        every { isoDep.transceive(COMMAND_SELECT_PROD_BYTE_ARRAY) } returns resultSelectSuccess
+        every { isoDep.transceive(COMMAND_CHECK_BALANCE_BYTE_ARRAY) } returns resultCheckBalanceSuccess
+        every { electronicMoneyEncryption.createDecryptedPayload(mockPrivateKeyString, encKeyAes, encPayloadAes)
+        } returns getPendingBalanceResponse
+
+        coEvery { jakCardUseCase.execute(paramGetPendingBalanceQuery) } returns responseCheckBalanceEnc
+        //when
+        jakCardBalanceViewModel.processJakCardTagIntent(isoDep, false, mockPublicKeyString, mockPrivateKeyString)
+        //then
+        assertEquals(
+            ((jakCardBalanceViewModel.errorCardMessage.value) as Throwable).message,
+            ERROR_MESSAGE
+        )
+    }
+
+    @Test
+    fun `processInitLoad isoDep not initialize and return error`() {
+        //when
+        jakCardBalanceViewModel.processInitLoad(
+            resultSelectSuccessString,
+            cardNumber,
+            lastBalance,
+            COMMAND_INIT_LOAD,
+            mockPublicKeyString,
+            mockPrivateKeyString
+        )
+
+        //then
+        assertEquals(
+            ((jakCardBalanceViewModel.errorCardMessage.value) as Throwable).message,
+            ERROR_MESSAGE
+        )
+    }
+
+    @Test
+    fun `processJakCardTagIntent success select production process and get pending balance success but init load success with no cryptogram return last balance`() {
+        //given
+        initSuccessData()
+        val createPendingBalanceParam = JakCardRequestMapper.createGetPendingBalanceParam(
+            resultSelectSuccessString,
+            cardNumber,
+            lastBalance,
+            gson
+        )
+        val responsePendingBalance =
+            Gson().fromJson(getPendingBalanceResponse, JakCardResponse::class.java)
+
+        every {
+            electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createPendingBalanceParam)
+        } returns pairEncryptionResult
+
+        val encParam = electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createPendingBalanceParam)
+        val paramGetPendingBalanceQuery = JakCardRequestMapper.createEncryptedParam(encParam.first, encParam.second)
+        val responseCheckBalanceEnc = JakCardResponse(data = JakCardDataEnc(
+            encKey =  encKeyAes,
+            encPayload = encPayloadAes
+        ))
+
+        val topUpCardData = resultInitLoadSuccessStringWithoutCode + deposit + expiry
+        val createTopUpParam = JakCardRequestMapper.createGetTopUpParam(
+            topUpCardData,
+            cardNumber,
+            lastBalance,
+            amount,
+            gson
+        )
+        val topUpWithoutWrite =
+            Gson().fromJson(topUpResponseWithoutWrite, JakCardData::class.java)
+
+        every {
+            electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createTopUpParam)
+        } returns pairEncryptionResultTopUp
+
+        val encParamTopUp = electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createTopUpParam)
+        val paramGetPendingBalanceQueryTopUp = JakCardRequestMapper.createEncryptedParam(encParamTopUp.first, encParamTopUp.second)
+        val responseCheckBalanceEncTopUp = JakCardResponse(data = JakCardDataEnc(
+            encKey =  encKeyTopUpAes,
+            encPayload = encPayloadTopUpAes
+        ))
+
+        every { isoDep.transceive(COMMAND_SELECT_PROD_BYTE_ARRAY) } returns resultSelectSuccess
+        every { isoDep.transceive(COMMAND_CHECK_BALANCE_BYTE_ARRAY) } returns resultCheckBalanceSuccess
+        every { isoDep.transceive(COMMAND_INIT_LOAD_BYTE_ARRAY) } returns resultInitLoadSuccess
+
+        every { electronicMoneyEncryption.createDecryptedPayload(mockPrivateKeyString, encKeyAes, encPayloadAes)
+        } returns getPendingBalanceResponse
+
+        every { electronicMoneyEncryption.createDecryptedPayload(mockPrivateKeyString, encKeyTopUpAes, encPayloadTopUpAes)
+        } returns topUpResponseWithoutWrite
+
+        coEvery { jakCardUseCase.execute(paramGetPendingBalanceQuery) } returns responseCheckBalanceEnc
+        coEvery { jakCardUseCase.execute(paramGetPendingBalanceQueryTopUp) } returns responseCheckBalanceEncTopUp
+        //when
+        jakCardBalanceViewModel.processJakCardTagIntent(isoDep, false, mockPublicKeyString, mockPrivateKeyString)
+        //then
+        assertEquals(
+            (jakCardBalanceViewModel.jakCardInquiry.value) as EmoneyInquiry,
+            JakCardResponseMapper.jakCardResponseMapper(topUpWithoutWrite)
+        )
+    }
+
+    @Test
+    fun `processJakCardTagIntent success select production process and get pending balance success but init load success return error`() {
+        //given
+        initSuccessData()
+        val createPendingBalanceParam = JakCardRequestMapper.createGetPendingBalanceParam(
+            resultSelectSuccessString,
+            cardNumber,
+            lastBalance,
+            gson
+        )
+        val responsePendingBalance =
+            Gson().fromJson(getPendingBalanceResponse, JakCardResponse::class.java)
+
+        every {
+            electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createPendingBalanceParam)
+        } returns pairEncryptionResult
+
+        val encParam = electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createPendingBalanceParam)
+        val paramGetPendingBalanceQuery = JakCardRequestMapper.createEncryptedParam(encParam.first, encParam.second)
+        val responseCheckBalanceEnc = JakCardResponse(data = JakCardDataEnc(
+            encKey =  encKeyAes,
+            encPayload = encPayloadAes
+        ))
+
+        val topUpCardData = resultInitLoadSuccessStringWithoutCode + deposit + expiry
+        val createTopUpParam = JakCardRequestMapper.createGetTopUpParam(
+            topUpCardData,
+            cardNumber,
+            lastBalance,
+            amount,
+            gson
+        )
+        val topUpWithoutWrite =
+            Gson().fromJson(topUpResponseWithoutWrite, JakCardResponse::class.java)
+
+        every {
+            electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createTopUpParam)
+        } returns pairEncryptionResultTopUp
+
+        val encParamTopUp = electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createTopUpParam)
+        val paramGetPendingBalanceQueryTopUp = JakCardRequestMapper.createEncryptedParam(encParamTopUp.first, encParamTopUp.second)
+        val responseCheckBalanceEncTopUp = JakCardResponse(data = JakCardDataEnc(
+            encKey =  encKeyTopUpAes,
+            encPayload = encPayloadTopUpAes
+        ))
+
+        every { isoDep.transceive(COMMAND_SELECT_PROD_BYTE_ARRAY) } returns resultSelectSuccess
+        every { isoDep.transceive(COMMAND_CHECK_BALANCE_BYTE_ARRAY) } returns resultCheckBalanceSuccess
+        every { isoDep.transceive(COMMAND_INIT_LOAD_BYTE_ARRAY) } returns resultInitLoadSuccess
+
+        every { electronicMoneyEncryption.createDecryptedPayload(mockPrivateKeyString, encKeyAes, encPayloadAes)
+        } returns getPendingBalanceResponse
+
+        every { electronicMoneyEncryption.createDecryptedPayload(mockPrivateKeyString, encKeyTopUpAes, encPayloadTopUpAes)
+        } returns topUpResponseWithoutWrite
+
+        coEvery { jakCardUseCase.execute(paramGetPendingBalanceQuery) } returns responseCheckBalanceEnc
+        coEvery { jakCardUseCase.execute(paramGetPendingBalanceQueryTopUp) } throws SocketTimeoutException(
+            ERROR_MESSAGE
+        )
+        //when
+        jakCardBalanceViewModel.processJakCardTagIntent(isoDep, false, mockPublicKeyString, mockPrivateKeyString)
+        //then
+        assertEquals(
+            ((jakCardBalanceViewModel.errorCardMessage.value) as Throwable).message,
+            ERROR_MESSAGE
+        )
+    }
+
+    @Test
+    fun `processJakCardTagIntent success select production process and get pending balance success but init load success with cryptogram empty and return error `() {
+        //given
+        initSuccessData()
+        val createPendingBalanceParam = JakCardRequestMapper.createGetPendingBalanceParam(
+            resultSelectSuccessString,
+            cardNumber,
+            lastBalance,
+            gson
+        )
+        val responsePendingBalance =
+            Gson().fromJson(getPendingBalanceResponse, JakCardResponse::class.java)
+
+        every {
+            electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createPendingBalanceParam)
+        } returns pairEncryptionResult
+
+        val encParam = electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createPendingBalanceParam)
+        val paramGetPendingBalanceQuery = JakCardRequestMapper.createEncryptedParam(encParam.first, encParam.second)
+        val responseCheckBalanceEnc = JakCardResponse(data = JakCardDataEnc(
+            encKey =  encKeyAes,
+            encPayload = encPayloadAes
+        ))
+
+        val topUpCardData = resultInitLoadSuccessStringWithoutCode + deposit + expiry
+        val createTopUpParam = JakCardRequestMapper.createGetTopUpParam(
+            topUpCardData,
+            cardNumber,
+            lastBalance,
+            amount,
+            gson
+        )
+        val topUpCryptogramEmpty =
+            Gson().fromJson(topUpResponseCryptogramEmpty, JakCardResponse::class.java)
+
+        every {
+            electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createTopUpParam)
+        } returns pairEncryptionResultTopUp
+
+        val encParamTopUp = electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createTopUpParam)
+        val paramGetPendingBalanceQueryTopUp = JakCardRequestMapper.createEncryptedParam(encParamTopUp.first, encParamTopUp.second)
+        val responseCheckBalanceEncTopUp = JakCardResponse(data = JakCardDataEnc(
+            encKey =  encKeyTopUpAes,
+            encPayload = encPayloadTopUpAes
+        ))
+
+        every { isoDep.transceive(COMMAND_SELECT_PROD_BYTE_ARRAY) } returns resultSelectSuccess
+        every { isoDep.transceive(COMMAND_CHECK_BALANCE_BYTE_ARRAY) } returns resultCheckBalanceSuccess
+        every { isoDep.transceive(COMMAND_INIT_LOAD_BYTE_ARRAY) } returns resultInitLoadSuccess
+
+        every { electronicMoneyEncryption.createDecryptedPayload(mockPrivateKeyString, encKeyAes, encPayloadAes)
+        } returns getPendingBalanceResponse
+
+        every { electronicMoneyEncryption.createDecryptedPayload(mockPrivateKeyString, encKeyTopUpAes, encPayloadTopUpAes)
+        } returns topUpResponseCryptogramEmpty
+
+        coEvery { jakCardUseCase.execute(paramGetPendingBalanceQuery) } returns responseCheckBalanceEnc
+        coEvery { jakCardUseCase.execute(paramGetPendingBalanceQueryTopUp) } returns responseCheckBalanceEncTopUp
+        //when
+        jakCardBalanceViewModel.processJakCardTagIntent(isoDep, false, mockPublicKeyString, mockPrivateKeyString)
+        //then
+        assertEquals(
+            ((jakCardBalanceViewModel.errorCardMessage.value) as Throwable).message,
+            ERROR_MESSAGE
+        )
+    }
+
+    @Test
+    fun `processJakCardTagIntent success select production process and get pending balance success but init load success with isodep not connected and return error`() {
+        //given
+        initSuccessDataIsoDepNotConnected()
+        val createPendingBalanceParam = JakCardRequestMapper.createGetPendingBalanceParam(
+            resultSelectSuccessString,
+            cardNumber,
+            lastBalance,
+            gson
+        )
+        val responsePendingBalance =
+            Gson().fromJson(getPendingBalanceResponse, JakCardResponse::class.java)
+
+        every {
+            electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createPendingBalanceParam)
+        } returns pairEncryptionResult
+
+        val encParam = electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createPendingBalanceParam)
+        val paramGetPendingBalanceQuery = JakCardRequestMapper.createEncryptedParam(encParam.first, encParam.second)
+        val responseCheckBalanceEnc = JakCardResponse(data = JakCardDataEnc(
+            encKey =  encKeyAes,
+            encPayload = encPayloadAes
+        ))
+
+        val topUpCardData = resultInitLoadSuccessStringWithoutCode + deposit + expiry
+        val createTopUpParam = JakCardRequestMapper.createGetTopUpParam(
+            topUpCardData,
+            cardNumber,
+            lastBalance,
+            amount,
+            gson
+        )
+        val topUp = Gson().fromJson(topUpResponse, JakCardResponse::class.java)
+
+        every {
+            electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createTopUpParam)
+        } returns pairEncryptionResultTopUp
+
+        val encParamTopUp = electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createTopUpParam)
+        val paramGetPendingBalanceQueryTopUp = JakCardRequestMapper.createEncryptedParam(encParamTopUp.first, encParamTopUp.second)
+        val responseCheckBalanceEncTopUp = JakCardResponse(data = JakCardDataEnc(
+            encKey =  encKeyTopUpAes,
+            encPayload = encPayloadTopUpAes
+        ))
+
+        every { isoDep.transceive(COMMAND_SELECT_PROD_BYTE_ARRAY) } returns resultSelectSuccess
+        every { isoDep.transceive(COMMAND_CHECK_BALANCE_BYTE_ARRAY) } returns resultCheckBalanceSuccess
+        every { isoDep.transceive(COMMAND_INIT_LOAD_BYTE_ARRAY) } returns resultInitLoadSuccess
+
+        every { electronicMoneyEncryption.createDecryptedPayload(mockPrivateKeyString, encKeyAes, encPayloadAes)
+        } returns getPendingBalanceResponse
+
+        every { electronicMoneyEncryption.createDecryptedPayload(mockPrivateKeyString, encKeyTopUpAes, encPayloadTopUpAes)
+        } returns topUpResponse
+
+        coEvery { jakCardUseCase.execute(paramGetPendingBalanceQuery) } returns responseCheckBalanceEnc
+        coEvery { jakCardUseCase.execute(paramGetPendingBalanceQueryTopUp) } returns responseCheckBalanceEncTopUp
+        //when
+        jakCardBalanceViewModel.processJakCardTagIntent(isoDep, false, mockPublicKeyString, mockPrivateKeyString)
+        //then
+        assertEquals(
+            ((jakCardBalanceViewModel.errorCardMessage.value) as Throwable).message,
+            ERROR_MESSAGE
+        )
+    }
+
+    @Test
+    fun `processJakCardTagIntent success select production process and get pending balance success but init load success and process load error and return error`() {
+        //given
+        initSuccessData()
+        val createPendingBalanceParam = JakCardRequestMapper.createGetPendingBalanceParam(
+            resultSelectSuccessString,
+            cardNumber,
+            lastBalance,
+            gson
+        )
+        val responsePendingBalance =
+            Gson().fromJson(getPendingBalanceResponse, JakCardResponse::class.java)
+
+        every {
+            electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createPendingBalanceParam)
+        } returns pairEncryptionResult
+
+        val encParam = electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createPendingBalanceParam)
+        val paramGetPendingBalanceQuery = JakCardRequestMapper.createEncryptedParam(encParam.first, encParam.second)
+        val responseCheckBalanceEnc = JakCardResponse(data = JakCardDataEnc(
+            encKey =  encKeyAes,
+            encPayload = encPayloadAes
+        ))
+
+        val topUpCardData = resultInitLoadSuccessStringWithoutCode + deposit + expiry
+        val createTopUpParam = JakCardRequestMapper.createGetTopUpParam(
+            topUpCardData,
+            cardNumber,
+            lastBalance,
+            amount,
+            gson
+        )
+        val topUp = Gson().fromJson(topUpResponse, JakCardResponse::class.java)
+
+        every {
+            electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createTopUpParam)
+        } returns pairEncryptionResultTopUp
+
+        val encParamTopUp = electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createTopUpParam)
+        val paramGetPendingBalanceQueryTopUp = JakCardRequestMapper.createEncryptedParam(encParamTopUp.first, encParamTopUp.second)
+        val responseCheckBalanceEncTopUp = JakCardResponse(data = JakCardDataEnc(
+            encKey =  encKeyTopUpAes,
+            encPayload = encPayloadTopUpAes
+        ))
+
+        every { isoDep.transceive(COMMAND_SELECT_PROD_BYTE_ARRAY) } returns resultSelectSuccess
+        every { isoDep.transceive(COMMAND_CHECK_BALANCE_BYTE_ARRAY) } returns resultCheckBalanceSuccess
+        every { isoDep.transceive(COMMAND_INIT_LOAD_BYTE_ARRAY) } returns resultInitLoadSuccess
+        every { isoDep.transceive(COMMAND_LOAD_BYTE_ARRAY) } returns resultFail
+
+        every { electronicMoneyEncryption.createDecryptedPayload(mockPrivateKeyString, encKeyAes, encPayloadAes)
+        } returns getPendingBalanceResponse
+
+        every { electronicMoneyEncryption.createDecryptedPayload(mockPrivateKeyString, encKeyTopUpAes, encPayloadTopUpAes)
+        } returns topUpResponse
+
+        coEvery { jakCardUseCase.execute(paramGetPendingBalanceQuery) } returns responseCheckBalanceEnc
+        coEvery { jakCardUseCase.execute(paramGetPendingBalanceQueryTopUp) } returns responseCheckBalanceEncTopUp
+        //when
+        jakCardBalanceViewModel.processJakCardTagIntent(isoDep, false, mockPublicKeyString, mockPrivateKeyString)
+        //then
+        assertEquals(
+            ((jakCardBalanceViewModel.errorCardMessage.value) as Throwable).message,
+            ERROR_MESSAGE
+        )
+    }
+
+    @Test
+    fun `processLoad isoDep not initialize and return error`() {
+        //when
+        jakCardBalanceViewModel.processLoad(
+            JakCardData(),
+            "",
+            "",
+            "",
+            "",
+            amount,
+            cardNumber,
+            mockPublicKeyString,
+            mockPrivateKeyString
+        )
+
+        //then
+        assertEquals(
+            ((jakCardBalanceViewModel.errorCardMessage.value) as Throwable).message,
+            ERROR_MESSAGE
+        )
+    }
+
+    @Test
+    fun `processLoad isoDep not initialize and cryptogram is not empty and return error`() {
+        //given
+        initSuccessDataIsoDepNotConnected()
+        jakCardBalanceViewModel.isoDep = isoDep
+        //when
+        jakCardBalanceViewModel.processLoad(
+            JakCardData(),
+            "",
+            "904200001011223344556677880000000144D51AC8",
+            "",
+            "",
+            amount,
+            cardNumber,
+            mockPublicKeyString,
+            mockPrivateKeyString
+        )
+
+        //then
+        assertEquals(
+            ((jakCardBalanceViewModel.errorCardMessage.value) as Throwable).message,
+            ERROR_MESSAGE
+        )
+    }
+
+    @Test
+    fun `processLoad load command is thrown IOException return error`() {
+        //given
+        initSuccessData()
+        jakCardBalanceViewModel.isoDep = isoDep
+
+        val topUp = Gson().fromJson(topUpResponse, JakCardData::class.java)
+        val topUpCardData = resultInitLoadSuccessStringWithoutCode + deposit + expiry
+        every { isoDep.transceive(COMMAND_LOAD_BYTE_ARRAY) } throws IOException(ERROR_MESSAGE)
+
+        //when
+        jakCardBalanceViewModel.processLoad(
+            topUp,
+            topUpCardData,
+            topUp.attributes.cryptogram,
+            topUp.attributes.stan,
+            topUp.attributes.refNo,
+            amount,
+            cardNumber,
+            mockPublicKeyString,
+            mockPrivateKeyString
+        )
+
+        //then
+        assertEquals(
+            ((jakCardBalanceViewModel.errorCardMessage.value) as Throwable).message,
+            ERROR_MESSAGE
+        )
+    }
+
+    @Test
+    fun `processLoad load command success but recheck balance is failed return error`() {
+        //given
+        initSuccessData()
+        jakCardBalanceViewModel.isoDep = isoDep
+
+        val topUp = Gson().fromJson(topUpResponse, JakCardData::class.java)
+        val topUpCardData = resultInitLoadSuccessStringWithoutCode + deposit + expiry
+
+        every { isoDep.transceive(COMMAND_LOAD_BYTE_ARRAY) } returns resultLoadSuccess
+        every { isoDep.transceive(COMMAND_CHECK_BALANCE_BYTE_ARRAY) } returns resultFail
+
+
+        //when
+        jakCardBalanceViewModel.processLoad(
+            topUp,
+            topUpCardData,
+            topUp.attributes.cryptogram,
+            topUp.attributes.stan,
+            topUp.attributes.refNo,
+            amount,
+            cardNumber,
+            mockPublicKeyString,
+            mockPrivateKeyString
+        )
+
+        //then
+        assertEquals(
+            ((jakCardBalanceViewModel.errorCardMessage.value) as Throwable).message,
+            ERROR_MESSAGE
+        )
+    }
+
+    @Test
+    fun `processLoad load command success and got finished proses`() {
+        //given
+        initSuccessData()
+        jakCardBalanceViewModel.isoDep = isoDep
+
+        val topUp = Gson().fromJson(topUpResponse, JakCardData::class.java)
+        val topUpCardData = resultInitLoadSuccessStringWithoutCode + deposit + expiry
+        val topUpConfirmationCardData =
+            resultInitLoadSuccessStringWithoutCode + deposit + expiry + resultLoadSuccessSeparated
+
+        val topUpConfirmation =
+            Gson().fromJson(topUpConfirmationResponse, JakCardData::class.java)
+
+        val paramGetTopUpQuery = JakCardRequestMapper.createGetTopUpConfirmationParam(
+            topUpConfirmationCardData,
+            cardNumber, lastBalance, amount, topUp.attributes.stan, topUp.attributes.refNo, gson
+        )
+
+        every {
+            electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, paramGetTopUpQuery)
+        } returns pairEncryptionResultTopUpConfirmation
+
+        val encParamTopUpConfirmation = electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, paramGetTopUpQuery)
+        val paramGetPendingBalanceQueryTopUp = JakCardRequestMapper.createEncryptedParam(encParamTopUpConfirmation.first, encParamTopUpConfirmation.second)
+        val responseCheckBalanceEncTopUp = JakCardResponse(data = JakCardDataEnc(
+            encKey =  encKeyTopUpConfirmationAes,
+            encPayload = encKeyPayloadTopUpConfirmationAes
+        ))
+
+        every { isoDep.transceive(COMMAND_LOAD_BYTE_ARRAY) } returns resultLoadSuccess
+        every { isoDep.transceive(COMMAND_CHECK_BALANCE_BYTE_ARRAY) } returns resultCheckBalanceSuccess
+
+        coEvery { jakCardUseCase.execute(paramGetPendingBalanceQueryTopUp) } returns responseCheckBalanceEncTopUp
+
+        //when
+        jakCardBalanceViewModel.processLoad(
+            topUp,
+            topUpCardData,
+            topUp.attributes.cryptogram,
+            topUp.attributes.stan,
+            topUp.attributes.refNo,
+            amount,
+            cardNumber,
+            mockPublicKeyString,
+            mockPrivateKeyString
+        )
+
+        //then
+        assertEquals(
+            (jakCardBalanceViewModel.jakCardInquiry.value) as EmoneyInquiry,
+            JakCardResponseMapper.jakCardResponseMapper(topUpConfirmation)
+        )
+    }
+
+    @Test
+    fun `processLoad load command success and got write process but return success`() {
+        //given
+        initSuccessData()
+        jakCardBalanceViewModel.isoDep = isoDep
+
+        val topUp = Gson().fromJson(topUpResponse, JakCardData::class.java)
+        val topUpCardData = resultInitLoadSuccessStringWithoutCode + deposit + expiry
+        val topUpConfirmationCardData =
+            resultInitLoadSuccessStringWithoutCode + deposit + expiry + resultLoadSuccessSeparated
+
+        val topUpConfirmation =
+            Gson().fromJson(topUpConfirmationResponse, JakCardData::class.java)
+
+        val paramGetTopUpQuery = JakCardRequestMapper.createGetTopUpConfirmationParam(
+            topUpConfirmationCardData,
+            cardNumber, lastBalance, amount, topUp.attributes.stan, topUp.attributes.refNo, gson
+        )
+
+        every {
+            electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, paramGetTopUpQuery)
+        } returns pairEncryptionResultTopUpConfirmation
+
+        val encParamTopUpConfirmation = electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, paramGetTopUpQuery)
+        val paramGetPendingBalanceQueryTopUp = JakCardRequestMapper.createEncryptedParam(encParamTopUpConfirmation.first, encParamTopUpConfirmation.second)
+        val responseCheckBalanceEncTopUp = JakCardResponse(data = JakCardDataEnc(
+            encKey =  encKeyTopUpConfirmationAes,
+            encPayload = encKeyPayloadTopUpConfirmationAes
+        ))
+
+        every { isoDep.transceive(COMMAND_LOAD_BYTE_ARRAY) } returns resultLoadSuccess
+        every { isoDep.transceive(COMMAND_CHECK_BALANCE_BYTE_ARRAY) } returns resultCheckBalanceSuccess
+
+        every { electronicMoneyEncryption.createDecryptedPayload(mockPrivateKeyString, encKeyTopUpConfirmationAes, encKeyPayloadTopUpConfirmationAes)
+        } returns topUpConfirmationResponseWrite
+
+        coEvery { jakCardUseCase.execute(paramGetPendingBalanceQueryTopUp) } returns responseCheckBalanceEncTopUp
+
+        //when
+        jakCardBalanceViewModel.processLoad(
+            topUp,
+            topUpCardData,
+            topUp.attributes.cryptogram,
+            topUp.attributes.stan,
+            topUp.attributes.refNo,
+            amount,
+            cardNumber,
+            mockPublicKeyString,
+            mockPrivateKeyString
+        )
+
+        //then
+        assertEquals(
+            (jakCardBalanceViewModel.jakCardInquiry.value) as EmoneyInquiry,
+            JakCardResponseMapper.jakCardResponseMapper(topUpConfirmation)
+        )
+    }
+
+    @Test
+    fun `processLoad load command success and got error process but return success`() {
+        //given
+        initSuccessData()
+        jakCardBalanceViewModel.isoDep = isoDep
+
+        val topUp = Gson().fromJson(topUpResponse, JakCardData::class.java)
+        val topUpCardData = resultInitLoadSuccessStringWithoutCode + deposit + expiry
+        val topUpConfirmationCardData =
+            resultInitLoadSuccessStringWithoutCode + deposit + expiry + resultLoadSuccessSeparated
+
+        val topUpConfirmationError =
+            Gson().fromJson(topUpConfirmationResponse, JakCardData::class.java)
+
+        val paramGetTopUpQuery = JakCardRequestMapper.createGetTopUpConfirmationParam(
+            topUpConfirmationCardData,
+            cardNumber, lastBalance, amount, topUp.attributes.stan, topUp.attributes.refNo, gson
+        )
+
+        every {
+            electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, paramGetTopUpQuery)
+        } returns pairEncryptionResultTopUpConfirmation
+
+        val encParamTopUpConfirmation = electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, paramGetTopUpQuery)
+        val paramGetPendingBalanceQueryTopUp = JakCardRequestMapper.createEncryptedParam(encParamTopUpConfirmation.first, encParamTopUpConfirmation.second)
+        val responseCheckBalanceEncTopUp = JakCardResponse(data = JakCardDataEnc(
+            encKey =  encKeyTopUpConfirmationAes,
+            encPayload = encKeyPayloadTopUpConfirmationAes
+        ))
+
+        every { isoDep.transceive(COMMAND_LOAD_BYTE_ARRAY) } returns resultLoadSuccess
+        every { isoDep.transceive(COMMAND_CHECK_BALANCE_BYTE_ARRAY) } returns resultCheckBalanceSuccess
+
+        every { electronicMoneyEncryption.createDecryptedPayload(mockPrivateKeyString, encKeyTopUpConfirmationAes, encKeyPayloadTopUpConfirmationAes)
+        } returns topUpConfirmationResponseError
+
+        coEvery { jakCardUseCase.execute(paramGetPendingBalanceQueryTopUp) } returns responseCheckBalanceEncTopUp
+
+        //when
+        jakCardBalanceViewModel.processLoad(
+            topUp,
+            topUpCardData,
+            topUp.attributes.cryptogram,
+            topUp.attributes.stan,
+            topUp.attributes.refNo,
+            amount,
+            cardNumber,
+            mockPublicKeyString,
+            mockPrivateKeyString
+        )
+
+        //then
+        assertEquals(
+            (jakCardBalanceViewModel.jakCardInquiry.value) as EmoneyInquiry,
+            JakCardResponseMapper.jakCardResponseMapper(topUpConfirmationError)
+        )
+    }
+
+    @Test
+    fun `processLoad load command success and got exception process and return success`() {
+        //given
+        initSuccessData()
+        jakCardBalanceViewModel.isoDep = isoDep
+
+        val topUp = Gson().fromJson(topUpResponse, JakCardData::class.java)
+        val topUpCardData = resultInitLoadSuccessStringWithoutCode + deposit + expiry
+        val topUpConfirmationCardData =
+            resultInitLoadSuccessStringWithoutCode + deposit + expiry + resultLoadSuccessSeparated
+
+        val topUpConfirmation =
+            Gson().fromJson(topUpConfirmationResponse, JakCardData::class.java)
+
+        val paramGetTopUpQuery = JakCardRequestMapper.createGetTopUpConfirmationParam(
+            topUpConfirmationCardData,
+            cardNumber, lastBalance, amount, topUp.attributes.stan, topUp.attributes.refNo, gson
+        )
+
+        every {
+            electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, paramGetTopUpQuery)
+        } returns pairEncryptionResultTopUpConfirmation
+
+        val encParamTopUpConfirmation = electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, paramGetTopUpQuery)
+        val paramGetPendingBalanceQueryTopUp = JakCardRequestMapper.createEncryptedParam(encParamTopUpConfirmation.first, encParamTopUpConfirmation.second)
+        val responseCheckBalanceEncTopUp = JakCardResponse(data = JakCardDataEnc(
+            encKey =  encKeyTopUpConfirmationAes,
+            encPayload = encKeyPayloadTopUpConfirmationAes
+        ))
+
+        every { isoDep.transceive(COMMAND_LOAD_BYTE_ARRAY) } returns resultLoadSuccess
+        every { isoDep.transceive(COMMAND_CHECK_BALANCE_BYTE_ARRAY) } returns resultCheckBalanceSuccess
+
+        every { electronicMoneyEncryption.createDecryptedPayload(mockPrivateKeyString, encKeyTopUpConfirmationAes, encKeyPayloadTopUpConfirmationAes)
+        } returns topUpConfirmationResponseError
+
+        coEvery { jakCardUseCase.execute(paramGetPendingBalanceQueryTopUp) } throws SocketTimeoutException(
+            ERROR_MESSAGE
+        )
+
+        //when
+        jakCardBalanceViewModel.processLoad(
+            topUp,
+            topUpCardData,
+            topUp.attributes.cryptogram,
+            topUp.attributes.stan,
+            topUp.attributes.refNo,
+            amount,
+            cardNumber,
+            mockPublicKeyString,
+            mockPrivateKeyString
+        )
+
+        //then
+        assertEquals(
+            (jakCardBalanceViewModel.jakCardInquiry.value) as EmoneyInquiry,
+            JakCardResponseMapper.jakCardResponseMapper(topUpConfirmation)
         )
     }
 
