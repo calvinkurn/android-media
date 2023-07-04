@@ -1050,7 +1050,7 @@ class AddEditProductPreviewFragment :
 
     private fun observeValidationMessage() {
         viewModel.resetValidateResult() // reset old result when re-observe
-        viewModel.validationResult.observe(viewLifecycleOwner, { result ->
+        viewModel.validationResult.observe(viewLifecycleOwner) { result ->
             when (result.result) {
                 // when we perform add product, the productId will be 0
                 // when we perform edit product, the productId will be provided from the getProductV3 response
@@ -1059,6 +1059,7 @@ class AddEditProductPreviewFragment :
                     if (viewModel.productInputModel.value?.productId.orZero() != 0L) {
                         viewModel.productInputModel.value?.apply {
                             startProductEditService(this)
+                            view?.postDelayed({ activity?.finish() }, DELAY_CLOSE_ACTIVITY)
                         }
                     } else {
                         viewModel.productInputModel.value?.let { productInputModel ->
@@ -1067,11 +1068,11 @@ class AddEditProductPreviewFragment :
                             } else {
                                 startProductAddService(productInputModel)
                                 activity?.setResult(RESULT_OK)
+                                view?.postDelayed({ activity?.finish() }, DELAY_CLOSE_ACTIVITY)
                             }
                         }
                     }
                     showLoading()
-                    view?.postDelayed({ activity?.finish() }, DELAY_CLOSE_ACTIVITY)
                 }
                 ValidationResultModel.Result.VALIDATION_ERROR -> {
                     showToasterFailed(result.exception)
@@ -1083,7 +1084,7 @@ class AddEditProductPreviewFragment :
                     // no-op
                 }
             }
-        })
+        }
     }
 
     private fun observeSaveProductDraft() {
@@ -2019,6 +2020,7 @@ class AddEditProductPreviewFragment :
                 productInputModel.isDuplicate = true
                 startProductAddService(productInputModel)
                 activity?.setResult(RESULT_OK)
+                view?.postDelayed({ activity?.finish() }, DELAY_CLOSE_ACTIVITY)
             }
         } else {
             val listener = object : PermissionCheckerHelper.PermissionCheckListener {
@@ -2035,6 +2037,7 @@ class AddEditProductPreviewFragment :
                         productInputModel.isDuplicate = true
                         startProductAddService(productInputModel)
                         activity?.setResult(RESULT_OK)
+                        view?.postDelayed({ activity?.finish() }, DELAY_CLOSE_ACTIVITY)
                     }
                 }
             }
