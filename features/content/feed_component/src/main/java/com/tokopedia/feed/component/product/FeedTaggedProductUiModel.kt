@@ -5,9 +5,8 @@ package com.tokopedia.feed.component.product
  */
 data class FeedTaggedProductUiModel(
     val id: String,
-    val isParent: Boolean,
     val parentID: String,
-    val hasVariant: Boolean,
+    val showGlobalVariant: Boolean,
     val shop: Shop,
     val title: String,
     val imageUrl: String,

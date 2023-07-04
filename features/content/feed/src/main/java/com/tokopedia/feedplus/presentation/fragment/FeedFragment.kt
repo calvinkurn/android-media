@@ -1249,14 +1249,14 @@ class FeedFragment :
     private fun checkAddToCartAction(product: FeedTaggedProductUiModel) {
         when {
             userSession.isLoggedIn -> {
-                if (product.hasVariant) {
+                if (product.showGlobalVariant) {
                     dismissFeedProductBottomSheet()
                     openVariantBottomSheet(product)
                 }
                 else feedPostViewModel.addProductToCart(product)
             }
             !userSession.isLoggedIn -> {
-                if (product.hasVariant) RouteManager.route(context, ApplinkConst.LOGIN)
+                if (product.showGlobalVariant) RouteManager.route(context, ApplinkConst.LOGIN)
                 else {
                     feedPostViewModel.suspendAddProductToCart(product)
                     addToCartLoginResult.launch(RouteManager.getIntent(context, ApplinkConst.LOGIN))
