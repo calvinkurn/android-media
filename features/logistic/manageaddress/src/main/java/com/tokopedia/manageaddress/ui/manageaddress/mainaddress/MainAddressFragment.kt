@@ -198,7 +198,6 @@ class MainAddressFragment :
     private fun initAdapter() {
         adapter.apply {
             setMainAddressListener(
-                isEligibleShareAddress = viewModel.isEligibleShareAddress,
                 isNeedToShareAddress = viewModel.isNeedToShareAddress,
                 listener = this@MainAddressFragment
             )
@@ -213,7 +212,7 @@ class MainAddressFragment :
     private fun initView() {
         setButtonEnabled(false)
         updateButton(
-            if (viewModel.isEligibleShareAddress && viewModel.isNeedToShareAddress) {
+            if (viewModel.isNeedToShareAddress) {
                 getString(R.string.btn_share_adddress)
             } else {
                 getString(R.string.pilih_alamat)
@@ -800,7 +799,7 @@ class MainAddressFragment :
                     it.setResult(Activity.RESULT_OK, resultIntent)
                     it.finish()
                 }
-            } else if (viewModel.isEligibleShareAddress && viewModel.isNeedToShareAddress) {
+            } else if (viewModel.isNeedToShareAddress) {
                 addressData?.apply {
                     ShareAddressAnalytics.onClickShareAddress()
                     showShareAddressConfirmationBottomSheet(

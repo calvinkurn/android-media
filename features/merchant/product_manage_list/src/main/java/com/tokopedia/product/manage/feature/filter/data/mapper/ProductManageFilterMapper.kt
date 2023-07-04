@@ -1,6 +1,6 @@
 package com.tokopedia.product.manage.feature.filter.data.mapper
 
-import com.tokopedia.core.common.category.domain.model.CategoriesResponse
+import com.tokopedia.product.manage.common.feature.category.model.CategoriesResponse
 import com.tokopedia.product.manage.feature.filter.data.model.FilterOptionWrapper
 import com.tokopedia.product.manage.feature.filter.data.model.FilterOptionsResponse
 import com.tokopedia.product.manage.common.feature.list.data.model.filter.ProductListMetaData

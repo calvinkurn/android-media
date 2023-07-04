@@ -1,5 +1,6 @@
 package com.tokopedia.product.manage.common.feature.draft.data.db.repository
 
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.product.manage.common.feature.draft.data.db.entity.AddEditProductDraftEntity
 import com.tokopedia.product.manage.common.feature.draft.data.db.source.AddEditProductDraftDataSource
 import com.tokopedia.product.manage.common.feature.draft.data.model.ProductDraft
@@ -28,13 +29,35 @@ class AddEditProductDraftRepositoryImpl @Inject constructor(
 
     override suspend fun getAllDraftsFlow(): Flow<List<ProductDraft>> =
         draftDataSource.getAllDraftsFlow(userSession.shopId).map { list ->
-            list.map {  AddEditProductDraftMapper.mapDraftToProductInput(it) }
+            list.map {
+                try {
+                    AddEditProductDraftMapper.mapDraftToProductInput(it)
+                } catch (e: Exception) {
+                    FirebaseCrashlytics.getInstance().recordException(e)
+                    ProductDraft(
+                        draftId = it.id,
+                        isCorrupt = true,
+                        corruptedData = it.data
+                    )
+                }
+            }
         }
 
     override fun getAllDrafts(): List<ProductDraft> {
         val shopId = userSession.shopId
         val listEntities = draftDataSource.getAllDrafts(shopId)
-        return listEntities.map { AddEditProductDraftMapper.mapDraftToProductInput(it) }
+        return listEntities.map {
+            try {
+                AddEditProductDraftMapper.mapDraftToProductInput(it)
+            } catch (e: Exception) {
+                FirebaseCrashlytics.getInstance().recordException(e)
+                ProductDraft(
+                    draftId = it.id,
+                    isCorrupt = true,
+                    corruptedData = it.data
+                )
+            }
+        }
     }
 
     override fun getAllDraftsCountFlow(): Flow<Long> {
