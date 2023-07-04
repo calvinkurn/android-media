@@ -3,8 +3,6 @@ package com.tokopedia.feedplus.presentation.adapter
 import androidx.recyclerview.widget.DiffUtil
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
-import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
-import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_CLEAR_MODE
 import com.tokopedia.feedplus.presentation.model.FeedNoContentModel
 import com.tokopedia.feedplus.presentation.util.FeedDiffUtilCallback
@@ -19,7 +17,7 @@ class FeedPostAdapter(typeFactory: FeedAdapterTypeFactory) :
         val diffResult = DiffUtil.calculateDiff(FeedDiffUtilCallback(visitables, newList))
         diffResult.dispatchUpdatesTo(this)
 
-        setElements(newList)
+        setElements(newList.toList())
     }
 
     fun showClearView(position: Int) {
@@ -39,10 +37,5 @@ class FeedPostAdapter(typeFactory: FeedAdapterTypeFactory) :
             super.showLoading()
         } catch (_: Throwable) {
         }
-    }
-
-    override fun hideLoading() {
-        val newVisitables = visitables.filter { it !is LoadingModel && it !is LoadingMoreModel }
-        updateList(newVisitables)
     }
 }
