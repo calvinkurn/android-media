@@ -7,7 +7,8 @@ import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.campaign.data.response.RollenceGradualRollout
-import com.tokopedia.campaign.usecase.GetRollenceGradualRolloutUseCase
+import com.tokopedia.campaign.usecase.RolloutFeatureVariantsUseCase
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.shop.flashsale.common.extension.removeTimeZone
 import com.tokopedia.shop.flashsale.common.tracker.ShopFlashSaleTracker
 import com.tokopedia.shop.flashsale.domain.entity.CampaignAction
@@ -36,7 +37,7 @@ class CampaignRuleViewModel @Inject constructor(
     private val validateCampaignCreationEligibilityUseCase: ValidateCampaignCreationEligibilityUseCase,
     private val tracker: ShopFlashSaleTracker,
     private val dispatchers: CoroutineDispatchers,
-    private val getRollenceGradualRolloutUseCase: GetRollenceGradualRolloutUseCase
+    private val getRollenceGradualRolloutUseCase: RolloutFeatureVariantsUseCase
 ) : BaseViewModel(dispatchers.main) {
 
     companion object {
@@ -432,9 +433,11 @@ class CampaignRuleViewModel @Inject constructor(
         launchCatchError(
             dispatchers.io,
             block = {
-                val params = GetRollenceGradualRolloutUseCase.Param(
+                val params = RolloutFeatureVariantsUseCase.Param(
                     iris_session_id = irisSessionId,
-                    id = shopId
+                    id = shopId,
+                    rev = 0,
+                    client_id = AbTestPlatform.ANDROID_CLIENTID
                 )
                 val result = getRollenceGradualRolloutUseCase.execute(params)
                 _isGetGradualRollout.postValue(Success(result))
