@@ -1638,6 +1638,7 @@ class ShipmentViewModel @Inject constructor(
                         }
                         onCancelPromoSuccess(shipmentValidatePromoHolderData, responseData)
                     } catch (t: Throwable) {
+                        Timber.d(t)
                         promoQueue.remove()
                         itemToProcess = promoQueue.peek()
                         if (promoQueue.any { it.cartString == shipmentValidatePromoHolderData.cartString }) {
