@@ -194,7 +194,8 @@ class GroupDetailViewModel @Inject constructor(
             input,
             userSession.shopId,
             groupId,
-            HEADLINE_INSIGHT_MUTATION_SOURCE
+            HEADLINE_INSIGHT_MUTATION_SOURCE,
+            groupName
         )
         launchCatchError(
             block = {

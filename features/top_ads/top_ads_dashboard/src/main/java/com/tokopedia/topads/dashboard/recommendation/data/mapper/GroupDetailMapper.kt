@@ -312,7 +312,8 @@ class GroupDetailMapper @Inject constructor() {
         input: TopadsManagePromoGroupProductInput?,
         shopId: String,
         groupId: String?,
-        source: String
+        source: String,
+        groupName: String?
     ): TopAdsManageHeadlineInput2 {
         val keywords = mutableListOf<TopAdsManageHeadlineInput2.Operation.Group.KeywordOperation>()
         input?.keywordOperation?.forEachIndexed { _, keywordEditInput ->
@@ -336,7 +337,9 @@ class GroupDetailMapper @Inject constructor() {
                 group = TopAdsManageHeadlineInput2.Operation.Group(
                     id = groupId.toString(),
                     shopID = shopId,
-                    keywordOperations = keywords
+                    keywordOperations = keywords,
+                    status = "published",
+                    name = groupName.toString()
                 )
             )
         )
