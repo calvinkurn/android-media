@@ -61,7 +61,7 @@ class ProductThumbnailVariantViewHolder(
     }
 
     override fun bind(element: ProductSingleVariantDataModel) {
-        binding.setTitle()
+        binding.thumbVariantTitle.text = element.title
         binding.setThumbnailItems(element = element)
         setOnClick()
         setImpression(element = element)
@@ -69,12 +69,9 @@ class ProductThumbnailVariantViewHolder(
 
     override fun bind(element: ProductSingleVariantDataModel, payloads: MutableList<Any>) {
         if (payloads.isNotEmpty()) {
+            binding.thumbVariantTitle.text = element.title
             binding.setThumbnailItems(element = element)
         }
-    }
-
-    private fun ItemThumbnailVariantViewHolderBinding.setTitle() {
-        thumbVariantTitle.text = pdpListener.getVariantString()
     }
 
     private fun setOnClick() {

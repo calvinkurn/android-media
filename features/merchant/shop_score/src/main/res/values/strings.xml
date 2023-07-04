@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">shop-score</string>
 
     <string name="title_shopscore">Skor Performa Toko</string>
@@ -70,14 +70,24 @@
     <string name="desc_shop_score_service">Tingkatkan terus kualitas tokomu supaya kamu punya kesempatan untuk naik ke level tertinggi, ya.</string>
     <string name="title_shop_performance_promo_creation">Yuk, gunakan fitur-fitur ini supaya tokomu makin berkembang!</string>
     <string name="title_empty_state_penalty">Hore, kamu tidak memiliki pelanggaran!</string>
+    <string name="title_empty_state_penalty_ongoing">Yay, belum ada penalti yang sedang berlangsung!</string>
+    <string name="title_empty_state_penalty_history">Yay, belum ada riwayat penalti!</string>
+    <string name="title_empty_state_penalty_not_yet_deducted">Yay, belum ada penalti yang belum berlangsung!</string>
     <string name="desc_empty_state_penalty">Ubah filter untuk melihat pelanggaran pada kriteria lain, ya.</string>
+    <string name="desc_empty_state_penalty_ongoing">Jika ada penalti, penalti yang sedang memotong skor Performa Toko-mu akan muncul di sini.</string>
+    <string name="desc_empty_state_penalty_history">Jika ada penalti, penalti yang sudah selesai akan muncul di sini.</string>
+    <string name="desc_empty_state_penalty_not_yet_deducted">Jika ada penalti, penalti yang belum memotong skor Performa Toko-mu akan muncul di sini.</string>
     <string name="total_penalty_text">Jumlah Pelanggaran</string>
     <string name="desc_no_penalty">Tidak ada pelanggaran yang sedang berlangsung</string>
     <string name="performance_point_deduction_text">Potongan Poin Performa</string>
     <string name="start_date">Mulai dari</string>
+    <string name="shop_penalty_start_date">Mulai dari</string>
     <string name="select_date">Pilih Tanggal</string>
     <string name="end_date">Sampai dengan</string>
+    <string name="shop_penalty_end_date">Sampai dengan</string>
     <string name="btn_show_penalty">Tampilkan Pelanggaran</string>
+    <string name="btn_penalty_apply_filter">Terapkan Filter</string>
+    <string name="btn_save">Simpan</string>
     <string name="ss_not_active">Tidak Aktif</string>
 
     <string name="btn_call_help_center">Hubungi Pusat Bantuan</string>
@@ -101,7 +111,7 @@
     <string name="desc_calculation_open_seller_app_within_90_days">Membuka Tokopedia Seller dalam waktu 90 hari</string>
     <string name="desc_calculation_open_seller_app">Membuka Tokopedia Seller</string>
 
-    <string name="total_deduction_point_performance">Pengurangan poin performa sebanyak <![CDATA[<b>%s poin.</b>]]></string>
+    <string name="total_deduction_point_performance">Total poin Penalti Sedang Berlangsung bertambah sebanyak <![CDATA[<b>%s poin.</b>]]></string>
     <string name="title_due_to_violations">Akibat Pelanggaran</string>
     <string name="title_penalty_type">Jenis Pelanggaran:</string>
     <string name="cta_penalty_detail_summary">Cek Definisi Penalti</string>
@@ -189,19 +199,20 @@
     <string name="desc_status_penalty">Status memperlihatkan status dari setiap periode penaltimu.</string>
     <string name="title_my_shop">Tokomu</string>
 
-    <string name="title_point_have_not_been_deducted_bottom_sheet">Poin belum dipotong</string>
+    <string name="title_point_have_not_been_deducted_bottom_sheet">Belum Berlangsung</string>
     <string name="title_on_going_bottom_sheet">Sedang berlangsung</string>
     <string name="title_penalty_over_bottom_sheet">Penalti selesai</string>
 
     <string name="title_point_have_not_been_deducted">Poin belum &lt;br /&gt;dipotong</string>
-    <string name="desc_point_have_not_been_deducted">Penalti belum aktif dan poin pelanggaran akan dikenakan mulai dari tanggal yang tertera.</string>
+    <string name="title_point_have_not_been_deducted_new">Belum &lt;br /&gt;Berlangsung</string>
+    <string name="desc_point_have_not_been_deducted">Penalti yang belum berlangsung dan poin yang terkonversi baru akan memotong skor Performa Toko-mu di tanggal aktif.</string>
     <string name="desc_on_going_status_penalty">Penalti saat ini sedang aktif dan poin pelanggaran akan dikenakan pada tokomu. Masa aktif penalti berlangsung selama 4 minggu dari tanggal aktif.</string>
     <string name="desc_done_status_penalty">Penalti sudah tidak aktif dan tidak akan dikenakan poin pelanggaran.</string>
 
     <string name="title_on_going">Sedang &lt;br /&gt;berlangsung</string>
-    <string name="desc_on_going">Penalti saat ini sedang aktif dan poin pelanggaran akan dikenakan pada tokomu. Masa aktif penalti berlangsung selama 4 minggu dari tanggal aktif.</string>
+    <string name="desc_on_going">Penalti yang sedang berlangsung di mana poin yang telah terkonversi akan memotong skor Performa Toko-mu. Pemotongan skor akan berlangsung selama 4 minggu sejak tanggal penalti dimulai. </string>
     <string name="title_penalty_over">Penalti &lt;br /&gt;selesai</string>
-    <string name="desc_penalty_over">Penalti sudah tidak aktif dan tidak akan dikenakan poin pelanggaran.</string>
+    <string name="desc_penalty_over">Penalti sudah selesai dan tidak akan memotong skor Performa Toko-mu lagi.</string>
     <string name="example_desc_result_detail_penalty">Penalti belum aktif dan poin pelanggaran akan dikenakan mulai dari tanggal yang tertera.</string>
     <string name="example_title_faq_shop_score">Apa keuntungan skor Performa Toko yang baru bagi toko saya?</string>
     <string name="example_desc_faq_shop_score">Skor Performa Toko adalah standar penilaian Performa Toko berdasarkan kombinasi parameter yang digunakan untuk memberikan penilaian yang objektif bagi Seller.</string>
@@ -282,6 +293,7 @@
     <string name="title_coachmark_shop_score_3">Lihat status tokomu di sini!</string>
     <string name="desc_coachmark_shop_score_3">Kamu bisa cek status dan potensi grade Power Merchant untuk tokomu di sini, ya!</string>
     <string name="title_penalty_filter_bottom_sheet">Filter</string>
+    <string name="title_penalty_filter_penalty_bottom_sheet">Filter Pelanggaran</string>
     <string name="reset_filter_penalty">Reset</string>
     <string name="close_youtube">Close</string>
     <string name="title_header_rm_section_new_seller">Gabung ke Power Merchant untuk tarik banyak calon pembeli, yuk!</string>
@@ -337,4 +349,39 @@
 
     <!-- Shop Penalty Tablet -->
     <string name="title_welcome_shop_penalty_tablet">Selamat datang di halaman penalti</string>
+    
+    <!-- Poena -->
+    <string name="desc_ticker_penalty"><![CDATA[%s <a href="\"%s\""><b>%s</b></a>]]></string>
+    <string name="title_card_penalty_point">Potongan Poin Performa</string>
+    <string name="btn_card_penalty_point">Lihat Detail Hitungan</string>
+    <string name="title_filter_penalty_date">Tanggal</string>
+    <string name="title_penalty_ongoing">Sedang Berlangsung</string>
+    <string name="title_penalty_done">Penalti Selesai</string>
+    <string name="title_penalty_not_yet_deducted">Belum Berlangsung</string>
+    <string name="title_penalty_calculation">Detail Perhitungan</string>
+    <string name="title_penalty_calculation_summary">Ringkasan Penalti Toko</string>
+    <string name="title_penalty_calculation_level">(Level %s)</string>
+    <string name="title_penalty_calculation_percentage_calculate">Perhitungan Potongan Skor Performa Toko</string>
+    <string name="title_penalty_calculation_conversion_table">Tabel Konversi</string>
+    <string name="title_penalty_calculation_score">Potongan Skor Performa Toko</string>
+    <string name="title_penalty_calculation_ongoing">Total Poin Penalti Sedang Berlangsung</string>
+    <string name="title_penalty_calculation_total_order">Total Pesanan 4 Minggu Terakhir</string>
+    <string name="title_penalty_calculation_shop_level">Level Toko</string>
+    <string name="title_penalty_calculation_formula_ongoing">Total Poin Penalti Sedang Berlangsung</string>
+    <string name="title_penalty_calculation_formula_this_week">Total Pesanan 4 Minggu Terakhir</string>
+    <string name="title_penalty_calculation_formula_x">x</string>
+    <string name="title_penalty_calculation_formula_equal_sign">=</string>
+    <string name="title_penalty_calculation_formula_hundred_percent">100%</string>
+    <string name="desc_penalty_calculation_fraction_info">(Lihat Tabel Konversi)</string>
+    <string name="title_penalty_calculation_percentage">Persentase</string>
+    <string name="title_penalty_calculation_score_deduction">Potongan Skor</string>
+    <string name="desc_penalty_calculation_information"><![CDATA[Potongan skor performa dihitung secara langsung dari <b>Total Poin Penalti Sedang Berlangsung</b> karena kamu tidak memiliki pesanan selama 4 minggu terakhir.]]></string>
+    <string name="title_penalty_tab_latest">Penalti Terbaru</string>
+    <string name="title_penalty_tab_history">Riwayat Penalti</string>
+    <string name="title_penalty_info_notification">Belum Berlangsung (%s)</string>
+    <string name="title_penalty_filter_see_all">Lihat Semua</string>
+    <string name="title_penalty_types">Jenis Pelanggaran</string>
+    <string name="shop_penalty_filter_applied">Filter Terpilih</string>
+    <string name="desc_penalty_shop_level"><![CDATA[Level Toko adalah penilaian terhadap skala bisnis tokomu berdasarkan jumlah pendapatan dan produk terjual selama <b>90 hari terakhir.</b>]]></string>
+
 </resources>

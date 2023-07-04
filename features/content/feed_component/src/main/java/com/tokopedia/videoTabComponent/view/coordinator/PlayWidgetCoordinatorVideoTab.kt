@@ -13,6 +13,7 @@ import com.tokopedia.play.widget.ui.listener.PlayWidgetInternalListener
 import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
 import com.tokopedia.play.widget.ui.model.PlayWidgetType
 import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
+import com.tokopedia.play.widget.ui.model.WidgetInList
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -40,6 +41,10 @@ class PlayWidgetCoordinatorVideoTab(
 
         override fun onWidgetDetached(widget: View) {
             autoPlayCoordinator.onWidgetDetached(widget)
+        }
+
+        override fun onFocusedWidgetsChanged(focusedWidgets: List<WidgetInList>) {
+            autoPlayCoordinator.onFocusedWidgetsChanged(focusedWidgets)
         }
     }
 

@@ -18,8 +18,10 @@ class CalendarWidgetGridViewModel(
     val components: ComponentsItem,
     val position: Int
 ) : DiscoveryBaseViewModel(), CoroutineScope {
+
+    @JvmField
     @Inject
-    lateinit var calenderWidgetUseCase: ProductCardsUseCase
+    var calenderWidgetUseCase: ProductCardsUseCase? = null
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + SupervisorJob()
@@ -27,11 +29,12 @@ class CalendarWidgetGridViewModel(
     override fun onAttachToViewHolder() {
         super.onAttachToViewHolder()
         launchCatchError(block = {
-            if(components.properties?.calendarType == Constant.Calendar.DYNAMIC)
-                this@CalendarWidgetGridViewModel.syncData.value = calenderWidgetUseCase.loadFirstPageComponents(components.id, components.pageEndPoint)
+            if (components.properties?.calendarType == Constant.Calendar.DYNAMIC) {
+                this@CalendarWidgetGridViewModel.syncData.value = calenderWidgetUseCase?.loadFirstPageComponents(components.id, components.pageEndPoint)
+            }
         }, onError = {
-            getComponent(components.id, components.pageEndPoint)?.verticalProductFailState = true
-            this@CalendarWidgetGridViewModel.syncData.value = true
-        })
+                getComponent(components.id, components.pageEndPoint)?.verticalProductFailState = true
+                this@CalendarWidgetGridViewModel.syncData.value = true
+            })
     }
 }
