@@ -113,7 +113,7 @@ class RecommendationListCarouselViewHolder(itemView: View,
                     val backColor = Color.parseColor(banner.backColor)
                     listCarouselView.setBackgroundColor(backColor)
                     listCarouselView.visibility = View.VISIBLE
-                } else listCarouselView.visibility = View.GONE
+                } else listCarouselView.visibility = View.INVISIBLE
             }
 
             if(banner.title.isEmpty()) listCarouselBannerHeader.visibility = View.GONE

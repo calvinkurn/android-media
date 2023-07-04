@@ -18,6 +18,7 @@ import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.network.constant.TkpdBaseURL
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.universal_sharing.util.UniversalShareConst
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
@@ -47,7 +48,7 @@ class HotelShare(
                     }
 
                     override fun onShareOptionClicked(shareModel: ShareModel) {
-                        trackerUtil.clickChannelShare(this@HotelShare.context, propertyDetailData.property.id, shareModel.channel ?: "", UniversalShareBottomSheet.KEY_IMAGE_DEFAULT)
+                        trackerUtil.clickChannelShare(this@HotelShare.context, propertyDetailData.property.id, shareModel.channel ?: "", UniversalShareConst.ImageType.KEY_IMAGE_DEFAULT)
                         if (this@HotelShare.activity.get() != null) {
                             onClickChannelWidget(
                                 this@apply,
