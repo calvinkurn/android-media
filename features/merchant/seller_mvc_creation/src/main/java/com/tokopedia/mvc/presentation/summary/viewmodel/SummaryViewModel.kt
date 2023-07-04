@@ -25,6 +25,8 @@ import com.tokopedia.mvc.presentation.bottomsheet.voucherperiod.DateStartEndData
 import com.tokopedia.mvc.util.constant.CommonConstant
 import com.tokopedia.mvc.util.formatTo
 import com.tokopedia.mvc.util.tracker.SummaryPageTracker
+import com.tokopedia.utils.date.addTimeToSpesificDate
+import com.tokopedia.utils.date.removeTime
 import java.util.*
 import javax.inject.Inject
 
@@ -61,7 +63,7 @@ class SummaryViewModel @Inject constructor(
             it.copy(
                 voucherId = ADDING_VOUCHER_ID,
                 startPeriod = Date(),
-                endPeriod = Date(),
+                endPeriod = Date().addTimeToSpesificDate(Calendar.MONTH, 1).removeTime(),
                 duplicatedVoucherId = it.voucherId
             )
         } else {
@@ -136,18 +138,18 @@ class SummaryViewModel @Inject constructor(
 
     fun previewImage(
         voucherConfiguration: VoucherConfiguration,
-        parentProductIds : List<Long>,
+        parentProductIds: List<Long>,
         imageRatio: ImageRatio
     ) {
         launchCatchError(
             dispatchers.io,
             block = {
                 val result = getCouponImagePreviewUseCase.execute(
-                        checkIsAdding(voucherConfiguration),
-                        voucherConfiguration,
-                        parentProductIds,
-                        imageRatio
-                    )
+                    checkIsAdding(voucherConfiguration),
+                    voucherConfiguration,
+                    parentProductIds,
+                    imageRatio
+                )
                 _couponImage.postValue(BitmapFactory.decodeByteArray(result, Int.ZERO, result.size))
             },
             onError = {

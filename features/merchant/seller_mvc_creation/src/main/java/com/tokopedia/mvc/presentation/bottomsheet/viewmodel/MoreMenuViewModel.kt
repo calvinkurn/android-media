@@ -141,8 +141,6 @@ class MoreMenuViewModel @Inject constructor(
             getCancelledVpsSubsidyListMenu(isDiscountPromoTypeEnabled)
         } else if (voucher.isSubsidy) {
             getCancelledVpsSubsidyListMenu(isDiscountPromoTypeEnabled)
-        } else if (isSubsidy(voucher)) {
-            getCancelledVpsSubsidyListMenu(isDiscountPromoTypeEnabled)
         } else {
             getEndedOrCancelledOptionsListMenu(isDiscountPromoTypeEnabled, isDiscountPromoType)
         }
@@ -156,8 +154,6 @@ class MoreMenuViewModel @Inject constructor(
         return if (voucher.isVps) {
             getEndedVpsSubsidyListMenu()
         } else if (voucher.isSubsidy) {
-            getEndedVpsSubsidyListMenu()
-        } else if (isSubsidy(voucher)) {
             getEndedVpsSubsidyListMenu()
         } else {
             getEndedOrCancelledOptionsListMenu(isDiscountPromoTypeEnabled, isDiscountPromoType)

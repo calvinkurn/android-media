@@ -295,7 +295,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
     private fun setupTicker(voucherDetail: VoucherDetailData) {
         binding?.run {
             ticker.apply {
-                showWithCondition(voucherDetail.subsidyDetail.programDetail.programLabel.isNotEmpty())
+                showWithCondition(voucherDetail.voucherStatus != VoucherStatus.ENDED && isSubsidy(voucherDetail) && !isPromotionRejected(voucherDetail))
                 tickerTitle = voucherDetail.subsidyDetail.programDetail.programLabel
                 setTextDescription(voucherDetail.subsidyDetail.programDetail.programLabelDetail)
             }
@@ -386,16 +386,19 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                 VoucherCreator.SELLER -> {
                     tpgVpsPackage.invisible()
                 }
+
                 VoucherCreator.INTOOLS -> {
                     tpgVpsPackage.apply {
                         showWithCondition(!isPromotionRejected(data))
                         text = data.labelVoucher.labelCreatorFormatted
                     }
                 }
+
                 VoucherCreator.VPS -> {
                     tpgVpsPackage.apply {
                         visible()
-                        text = getString(R.string.smvc_placeholder_vps_package_name, data.packageName)
+                        text =
+                            getString(R.string.smvc_placeholder_vps_package_name, data.packageName)
                     }
                 }
             }
@@ -1298,6 +1301,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
             SubsidyInfo.NOT_SUBSIDIZED -> {
                 false
             }
+
             SubsidyInfo.FULL_SUBSIDIZED, SubsidyInfo.PARTIALLY_SUBSIDIZED -> {
                 true
             }
