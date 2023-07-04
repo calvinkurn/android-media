@@ -17,6 +17,7 @@ import com.tokopedia.people.utils.UserProfileSharedPref
 import com.tokopedia.people.views.uimodel.UserReviewUiModel
 import com.tokopedia.people.views.uimodel.action.UserProfileAction
 import com.tokopedia.people.views.uimodel.event.UserProfileUiEvent
+import com.tokopedia.people.views.uimodel.mapper.UserProfileLikeStatusMapper
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
@@ -246,7 +247,8 @@ class UserProfileReviewTabViewModelTest {
 
         val currentLikeDislike = mockReviewContent.reviewList.first().likeDislike
 
-        val expectedLikeStatus = currentLikeDislike.switchLikeStatus()
+        val expectedIsLike = !currentLikeDislike.isLike
+        val expectedLikeStatus = UserProfileLikeStatusMapper.getLikeStatus(expectedIsLike)
         val expectedTotalLike = when (currentLikeDislike.isLike) {
             true -> currentLikeDislike.totalLike - 1
             false -> currentLikeDislike.totalLike + 1
@@ -270,7 +272,7 @@ class UserProfileReviewTabViewModelTest {
                 )
             } andThen {
                 reviewContent.reviewList.first().likeDislike.totalLike.equalTo(expectedTotalLike)
-                reviewContent.reviewList.first().likeDislike.likeStatus.equalTo(expectedLikeStatus)
+                reviewContent.reviewList.first().likeDislike.isLike.equalTo(expectedIsLike)
             }
         }
     }
@@ -281,9 +283,9 @@ class UserProfileReviewTabViewModelTest {
         val currentLikeDislike = mockReviewContent.reviewList.first().likeDislike
         val randomFeedbackId = "kasdjfklajsdf"
 
-        val oldLikeStatus = currentLikeDislike.likeStatus
+        val oldIsLike = currentLikeDislike.isLike
         val oldTotalLike = currentLikeDislike.totalLike
-        val expectedLikeStatus = currentLikeDislike.switchLikeStatus()
+        val expectedLikeStatus = UserProfileLikeStatusMapper.getLikeStatus(!currentLikeDislike.isLike)
 
         UserProfileViewModelRobot(
             username = mockOwnUsername,
@@ -303,7 +305,7 @@ class UserProfileReviewTabViewModelTest {
                 )
             } andThen {
                 reviewContent.reviewList.first().likeDislike.totalLike.equalTo(oldTotalLike)
-                reviewContent.reviewList.first().likeDislike.likeStatus.equalTo(oldLikeStatus)
+                reviewContent.reviewList.first().likeDislike.isLike.equalTo(oldIsLike)
             }
         }
     }
@@ -313,7 +315,8 @@ class UserProfileReviewTabViewModelTest {
 
         val currentLikeDislike = mockReviewContent.reviewList.first().likeDislike
 
-        val expectedLikeStatus = currentLikeDislike.likeStatus
+        val expectedIsLike = currentLikeDislike.isLike
+        val expectedLikeStatus = UserProfileLikeStatusMapper.getLikeStatus(expectedIsLike)
         val expectedTotalLike = currentLikeDislike.totalLike
 
         UserProfileViewModelRobot(
@@ -334,7 +337,7 @@ class UserProfileReviewTabViewModelTest {
                 )
             } andThen {
                 reviewContent.reviewList.first().likeDislike.totalLike.equalTo(expectedTotalLike)
-                reviewContent.reviewList.first().likeDislike.likeStatus.equalTo(expectedLikeStatus)
+                reviewContent.reviewList.first().likeDislike.isLike.equalTo(expectedIsLike)
             }
         }
     }

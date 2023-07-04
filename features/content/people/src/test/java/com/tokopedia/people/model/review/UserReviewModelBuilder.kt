@@ -2,6 +2,7 @@ package com.tokopedia.people.model.review
 
 import com.tokopedia.people.views.uimodel.ProfileSettingsUiModel
 import com.tokopedia.people.views.uimodel.UserReviewUiModel
+import com.tokopedia.people.views.uimodel.mapper.UserProfileLikeStatusMapper
 
 /**
  * Created By : Jonathan Darwin on June 05, 2023
@@ -57,9 +58,9 @@ class UserReviewModelBuilder {
                         )
                     }
                 },
-                likeDislike = UserReviewUiModel.LikeDislike(
+                likeDislike = buildLikeDislike(
                     totalLike = idx,
-                    likeStatus = if (isLike) 1 else 3,
+                    isLike = isLike,
                 ),
                 isReviewTextExpanded = false
             )
@@ -71,9 +72,9 @@ class UserReviewModelBuilder {
 
     fun buildLikeDislike(
         totalLike: Int = 123,
-        likeStatus: Int = 3,
+        isLike: Boolean = false,
     ) = UserReviewUiModel.LikeDislike(
         totalLike = totalLike,
-        likeStatus = likeStatus,
+        isLike = isLike,
     )
 }

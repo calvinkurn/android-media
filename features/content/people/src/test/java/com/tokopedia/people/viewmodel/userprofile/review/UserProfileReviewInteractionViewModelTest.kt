@@ -39,8 +39,8 @@ class UserProfileReviewInteractionViewModelTest {
     private val mockUserId = "1"
     private val mockOwnUsername = "jonathandarwin"
     private val mockException = commonModelBuilder.buildException()
-    private val mockLike = userReviewModelBuilder.buildLikeDislike(likeStatus = 1)
-    private val mockUnlike = userReviewModelBuilder.buildLikeDislike(likeStatus = 3)
+    private val mockLike = userReviewModelBuilder.buildLikeDislike(isLike = true)
+    private val mockUnlike = userReviewModelBuilder.buildLikeDislike(isLike = false)
 
     private val mockReviewSettingsEnabled = userReviewModelBuilder.buildReviewSetting(isEnabled = true)
     private val mockReviewContentUnlike = userReviewModelBuilder.buildReviewList(isLike = false)
