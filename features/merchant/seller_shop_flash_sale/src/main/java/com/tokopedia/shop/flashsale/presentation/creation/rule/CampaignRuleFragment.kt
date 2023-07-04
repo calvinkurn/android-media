@@ -29,14 +29,16 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.ApplinkConst.SellerApp.SELLER_MVC_INTRO
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.campaign.data.response.RollenceGradualRollout
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsFragmentCampaignRuleBinding
 import com.tokopedia.shop.flashsale.common.constant.BundleConstant
@@ -48,7 +50,7 @@ import com.tokopedia.shop.flashsale.common.extension.showError
 import com.tokopedia.shop.flashsale.common.extension.showLoading
 import com.tokopedia.shop.flashsale.common.extension.stopLoading
 import com.tokopedia.shop.flashsale.common.extension.toBulletSpan
-import com.tokopedia.shop.flashsale.common.util.RemoteConfigUtil
+import com.tokopedia.shop.flashsale.common.util.FlashSaleTokoUtil
 import com.tokopedia.shop.flashsale.di.component.DaggerShopFlashSaleComponent
 import com.tokopedia.shop.flashsale.domain.entity.CampaignUiModel
 import com.tokopedia.shop.flashsale.domain.entity.MerchantCampaignTNC
@@ -73,10 +75,12 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSession
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
-class CampaignRuleFragment : BaseDaggerFragment(),
+class CampaignRuleFragment :
+    BaseDaggerFragment(),
     OnRemoveRelatedCampaignListener,
     MerchantCampaignTNCBottomSheet.ConfirmationClickListener,
     ChooseRelatedCampaignBottomSheetListener,
@@ -114,6 +118,8 @@ class CampaignRuleFragment : BaseDaggerFragment(),
     private var relatedCampaignAdapter: RelatedCampaignAdapter? = null
 
     private var errorToaster: Snackbar? = null
+    private lateinit var irisSession: IrisSession
+    private lateinit var userSession: UserSession
 
     private val tncCheckboxChangeListener = object : CompoundButton.OnCheckedChangeListener {
         override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
@@ -135,7 +141,8 @@ class CampaignRuleFragment : BaseDaggerFragment(),
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         binding = SsfsFragmentCampaignRuleBinding.inflate(inflater, container, false)
@@ -156,13 +163,20 @@ class CampaignRuleFragment : BaseDaggerFragment(),
     }
 
     private fun setUpView() {
+        userSession = UserSession(activity)
+        context?.let {
+            irisSession = IrisSession(it)
+        }
+
+        getRollenceGradualRollout()
         handlePageMode()
         setUpToolbar()
         setUpClickListeners()
         setUpUniqueAccountTips()
         setUpTNCText()
-        setupOosHandler()
+//        setupOosHandler()
         setUpRelatedCampaignRecyclerView()
+        observeOutOfStockStatus()
         observeCampaign()
         observeSelectedPaymentMethod()
         observeSelectedOosState()
@@ -239,25 +253,27 @@ class CampaignRuleFragment : BaseDaggerFragment(),
             viewModel.onAddRelatedCampaignButtonClicked()
         }
 
-        childFragmentManager.registerFragmentLifecycleCallbacks(object :
-            FragmentManager.FragmentLifecycleCallbacks() {
-            override fun onFragmentResumed(fm: FragmentManager, f: Fragment) {
-                super.onFragmentResumed(fm, f)
-                when (f) {
-                    is MerchantCampaignTNCBottomSheet -> {
-                        f.setConfirmationClickListener(this@CampaignRuleFragment)
-                    }
-                    is ChooseRelatedCampaignBottomSheet -> {
-                        f.setChooseRelatedCampaignListener(this@CampaignRuleFragment)
-                    }
-                    is CreateCampaignConfirmationDialog -> {
-                        f.setCreateCampaignConfirmationListener(this@CampaignRuleFragment)
+        childFragmentManager.registerFragmentLifecycleCallbacks(
+            object :
+                FragmentManager.FragmentLifecycleCallbacks() {
+                override fun onFragmentResumed(fm: FragmentManager, f: Fragment) {
+                    super.onFragmentResumed(fm, f)
+                    when (f) {
+                        is MerchantCampaignTNCBottomSheet -> {
+                            f.setConfirmationClickListener(this@CampaignRuleFragment)
+                        }
+                        is ChooseRelatedCampaignBottomSheet -> {
+                            f.setChooseRelatedCampaignListener(this@CampaignRuleFragment)
+                        }
+                        is CreateCampaignConfirmationDialog -> {
+                            f.setCreateCampaignConfirmationListener(this@CampaignRuleFragment)
+                        }
                     }
                 }
-            }
-        }, false)
+            },
+            false
+        )
     }
-
 
     private fun handlePageMode() {
         if (pageMode == PageMode.UPDATE || pageMode == PageMode.DRAFT) {
@@ -290,10 +306,10 @@ class CampaignRuleFragment : BaseDaggerFragment(),
         binding.checkboxCampaignRuleTnc.text = getTNCText()
     }
 
-    private fun setupOosHandler() {
-        val context = context ?: return
+    private fun setupOosHandler(isShowOosSection: Boolean) {
+//        val context = context ?: return
         val binding = binding ?: return
-        val isShowOosSection = RemoteConfigUtil.isShowOutOfStockSection(context)
+//        val isShowOosSection = RemoteConfigUtil.isShowOutOfStockSection(context)
         if (isShowOosSection) {
             binding.viewGroupOosHandling.visible()
             binding.tgCampaignFsOosTitle.apply {
@@ -308,7 +324,7 @@ class CampaignRuleFragment : BaseDaggerFragment(),
 
     private fun getOosSpan(spanString: String): CharSequence? {
         val spannableString = SpannableString(spanString)
-        val urlLink = "${ApplinkConst.WEBVIEW}?url=${sellerEduArticleUrl}"
+        val urlLink = "${ApplinkConst.WEBVIEW}?url=$sellerEduArticleUrl"
         val clickableSpan = object : ClickableSpan() {
             override fun onClick(p0: View) {
                 RouteManager.route(context, urlLink)
@@ -341,6 +357,14 @@ class CampaignRuleFragment : BaseDaggerFragment(),
         viewModel.selectedOosState.observe(viewLifecycleOwner) { it ->
             showOosStateRadioSelected(it)
         }
+    }
+
+    // Get Rollence Gradual Rollout to check whether the new feature is available to user or not
+    private fun getRollenceGradualRollout() {
+        viewModel.getRollenceGradualRollout(
+            shopId = userSession.shopId,
+            irisSessionId = irisSession.getSessionId()
+        )
     }
 
     private fun onRegularPaymentMethodSelected() {
@@ -398,7 +422,7 @@ class CampaignRuleFragment : BaseDaggerFragment(),
                 false -> onUniqueAccountRequired()
                 true -> onUniqueAccountNotRequired()
                 else -> {
-                    //no-op
+                    // no-op
                 }
             }
         }
@@ -426,7 +450,7 @@ class CampaignRuleFragment : BaseDaggerFragment(),
                 true -> renderNotCampaignRelation()
                 false -> renderCampaignRelation()
                 else -> {
-                    //no-op
+                    // no-op
                 }
             }
         }
@@ -453,7 +477,7 @@ class CampaignRuleFragment : BaseDaggerFragment(),
             true -> choosePreviousCampaignButton.enable()
             false -> choosePreviousCampaignButton.disable()
             else -> {
-                //no-op
+                // no-op
             }
         }
     }
@@ -488,7 +512,7 @@ class CampaignRuleFragment : BaseDaggerFragment(),
             addItemDecoration(
                 RelatedCampaignItemDecoration(
                     RELATED_CAMPAIGN_OFFSET_DP.toPx(),
-                    RELATED_CAMPAIGN_OFFSET_DP.toPx(),
+                    RELATED_CAMPAIGN_OFFSET_DP.toPx()
                 )
             )
             layoutManager = ChipsLayoutManager.newBuilder(context)
@@ -506,7 +530,7 @@ class CampaignRuleFragment : BaseDaggerFragment(),
         Toaster.build(
             binding.wrapperCampaignRuleContent,
             getString(R.string.campaign_rule_previous_campaign_item_removed),
-            actionText = getString(R.string.campaign_rule_previous_campaign_item_removed_cta),
+            actionText = getString(R.string.campaign_rule_previous_campaign_item_removed_cta)
         )
             .setAnchorView(binding.cardButtonWrapper)
             .show()
@@ -664,9 +688,43 @@ class CampaignRuleFragment : BaseDaggerFragment(),
                     hideSaveDraftButtonLoading()
                 }
                 else -> {
-                    //no-op
+                    // no-op
                 }
             }
+        }
+    }
+
+    private fun observeOutOfStockStatus() {
+        viewModel.isGetGradualRollout.observe(viewLifecycleOwner) { result ->
+            when (result) {
+                is Success -> {
+                    val isFeatureAvailable = isUserGetGradualRollout(result.data)
+                    setupOosHandler(isShowOosSection = isFeatureAvailable)
+                }
+                is Fail -> {
+                    // Disable UI OOS
+                    setupOosHandler(isShowOosSection = false)
+                }
+            }
+        }
+    }
+
+    private fun isUserGetGradualRollout(data: RollenceGradualRollout): Boolean {
+        // Validate the list if it's not empty
+        // If it's not empty, get the index 0 & read the value
+        // Update the liveData based on the value is empty or not
+
+        val rollenceList = FlashSaleTokoUtil().getKeysByPrefix(
+            prefix = RollenceKey.FLASH_SALE_OUT_OF_STOCK_GRADUAL_ROLLOUT,
+            dataRollout = data.dataRollout
+        )
+
+        return if (rollenceList.isNotEmpty()) {
+            val rollenceValue = rollenceList[RollenceKey.FLASH_SALE_OUT_OF_STOCK_GRADUAL_ROLLOUT]
+            val isGettingRollenceGradualRollout = rollenceValue != ""
+            isGettingRollenceGradualRollout
+        } else {
+            false
         }
     }
 
@@ -690,7 +748,7 @@ class CampaignRuleFragment : BaseDaggerFragment(),
                     showCreateCampaignConfirmationDialog()
                 }
                 else -> {
-                    //no-op
+                    // no-op
                 }
             }
         }
@@ -717,7 +775,7 @@ class CampaignRuleFragment : BaseDaggerFragment(),
             CampaignRuleValidationResult.InvalidPaymentMethod -> showErrorMessageToaster(R.string.campaign_rule_invalid_payment_type_message)
             CampaignRuleValidationResult.TNCNotAccepted -> showErrorMessageToaster(R.string.campaign_rule_tnc_not_accepted_message)
             else -> {
-                //no-op
+                // no-op
             }
         }
     }
@@ -775,7 +833,6 @@ class CampaignRuleFragment : BaseDaggerFragment(),
         dialog.show()
     }
 
-
     private fun routeToPmSubscribePage() {
         val intent = RouteManager.getIntent(
             context,
@@ -808,7 +865,7 @@ class CampaignRuleFragment : BaseDaggerFragment(),
     private fun routeToCampaignListPage(isSaveDraft: Boolean = false) {
         val context = context ?: return
 
-        //Add some spare time caused by Backend write operation delay
+        // Add some spare time caused by Backend write operation delay
         doOnDelayFinished(REDIRECTION_TO_CAMPAIGN_LIST_PAGE_DELAY) {
             CampaignListActivity.start(
                 context,
