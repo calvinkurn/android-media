@@ -50,25 +50,7 @@ class CartPageRobot {
         Thread.sleep(2000)
     }
 
-    fun initData(context: Context) {
-        val jsonString = InstrumentationMockHelper.getRawString(
-            context,
-            com.tokopedia.cart.test.R.raw.cart_bundle_happy_flow_response
-        )
-        val jsonArray: JsonArray = CommonUtils.fromJson(
-            jsonString,
-            JsonArray::class.java
-        )
-        val jsonObject = jsonArray.asJsonArray[0].asJsonObject.getAsJsonObject("data")
-        cartData = Gson().fromJson(
-            jsonObject,
-            ShopGroupSimplifiedGqlResponse::class.java
-        ).shopGroupSimplifiedResponse.data
-        availableCartList = CartUiModelMapper.mapAvailableGroupUiModel(cartData!!)
-        unavailableCartList = CartUiModelMapper.mapUnavailableShopUiModel(context, cartData!!).first
-    }
-
-    fun initData(context: Context, cartRawRes: Int) {
+    fun initData(context: Context, cartRawRes: Int = com.tokopedia.cart.test.R.raw.cart_bundle_happy_flow_response) {
         val jsonString = InstrumentationMockHelper.getRawString(context, cartRawRes)
         val jsonArray: JsonArray = CommonUtils.fromJson(
             jsonString,
