@@ -198,19 +198,19 @@ class UohOrderListViewHolder(
                 }
             }
 
-            setupReviewRatingWidget(item.dataObject.metadata, item.dataObject.orderUUID)
+            setupReviewRatingWidget(item.dataObject, item.dataObject.orderUUID)
 
             actionListener?.trackViewOrderCard(item.dataObject, position)
         }
     }
 
     private fun setupReviewRatingWidget(
-        metadata: UohListOrder.UohOrders.Order.Metadata,
+        order: UohListOrder.UohOrders.Order,
         orderUUID: String
     ) {
         binding.layoutReviewRating.apply {
             setContent {
-                val componentData = metadata.getReviewRatingComponent()
+                val componentData = order.metadata.getReviewRatingComponent()
                 val config = remember(orderUUID, componentData, actionListener) {
                     mutableStateOf(
                         if (componentData == null) {
@@ -222,7 +222,7 @@ class UohOrderListViewHolder(
                                 onRatingChanged = { appLink ->
                                     actionListener?.onReviewRatingClicked(
                                         index = bindingAdapterPosition,
-                                        orderUUID = orderUUID,
+                                        order = order,
                                         appLink = appLink
                                     )
                                 }
@@ -233,7 +233,7 @@ class UohOrderListViewHolder(
                 UohReviewRatingWidget(config = config.value)
             }
 
-            showWithCondition(metadata.getReviewRatingComponent() != null)
+            showWithCondition(order.metadata.getReviewRatingComponent() != null)
         }
     }
 

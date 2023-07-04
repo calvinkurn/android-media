@@ -2399,10 +2399,8 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
         }
     }
 
-    override fun onReviewRatingClicked(index: Int, orderUUID: String, appLink: String) {
-        currIndexNeedUpdate = index
-        orderIdNeedUpdated = orderUUID
-        handleRouting(appLink)
+    override fun onReviewRatingClicked(index: Int, order: UohListOrder.UohOrders.Order, appLink: String) {
+        handleRouting(appLink, index, order)
     }
 
     private fun doChatSeller(appUrl: String, order: UohListOrder.UohOrders.Order) {
@@ -2520,8 +2518,6 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
 
     private fun onCancelCreateReview() {
         uohItemAdapter.resetReviewRatingWidgetAtIndex(orderIdNeedUpdated)
-        orderIdNeedUpdated = ""
-        currIndexNeedUpdate = -1
     }
 
     private fun goToOrderExtension(order: UohListOrder.UohOrders.Order, index: Int) {

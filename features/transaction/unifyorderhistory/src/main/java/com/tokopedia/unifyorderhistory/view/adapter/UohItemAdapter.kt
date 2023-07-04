@@ -72,7 +72,7 @@ class UohItemAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         fun atcRecommendationItem(recommendationItem: RecommendationItem)
         fun onImpressionPmsButton()
         fun onPmsButtonClicked()
-        fun onReviewRatingClicked(index: Int, orderUUID: String, appLink: String)
+        fun onReviewRatingClicked(index: Int, order: UohListOrder.UohOrders.Order, appLink: String)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
