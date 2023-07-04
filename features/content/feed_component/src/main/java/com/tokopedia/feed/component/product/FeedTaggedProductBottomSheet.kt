@@ -24,10 +24,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlin.math.roundToInt
 
-/**
- * todo:
- * - Max bottom sheet height is 80% of device height
- */
 class FeedTaggedProductBottomSheet : BottomSheetUnify() {
 
     private var _binding: BottomSheetFeedTaggedProductBinding? = null
