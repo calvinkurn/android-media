@@ -7,6 +7,15 @@ data class Header(
     val values: List<String>
 ) {
     companion object {
+        fun List<Header>.getFailureType(): FailureType? {
+            return filter { it.key == RESPONSE_HEADER }
+                .map {
+                    FailureType.fromString(
+                        it.values.first()
+                    )
+                }.firstOrNull()
+        }
+
         fun Map<String, List<String>>.toModel(): List<Header> {
             return map {
                 val (key, value) = it
