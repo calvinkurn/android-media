@@ -99,7 +99,7 @@ class BankAccountViewHolder(view: View) : RecyclerView.ViewHolder(view) {
             tvSpecialOffer.gone()
         }
 
-        if (bankAccount.status == INACTIVE_BANK_STATUS || (bankAccount.isGopay() && !bankAccount.isGopayEligible())) {
+        if (bankAccount.status == INACTIVE_BANK_STATUS) {
             val disabledColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_32)
             bankName.setTextColor(disabledColor)
             bankAccountNumber.setTextColor(disabledColor)
@@ -126,7 +126,12 @@ class BankAccountViewHolder(view: View) : RecyclerView.ViewHolder(view) {
             btnBankSelector.isEnabled = true
         }
 
-        radioBankSelector.shouldShowWithAction(bankAccount.walletAppData.ctaLink.isEmpty()) {
+        radioBankSelector.shouldShowWithAction(
+            (bankAccount.walletAppData.ctaLink.isEmpty() &&
+                bankAccount.walletAppData.message.isEmpty() &&
+                bankAccount.isGopay()) ||
+                !bankAccount.isGopay()
+        ) {
             radioBankSelector.setOnClickListener {
                 itemView.performClick()
             }

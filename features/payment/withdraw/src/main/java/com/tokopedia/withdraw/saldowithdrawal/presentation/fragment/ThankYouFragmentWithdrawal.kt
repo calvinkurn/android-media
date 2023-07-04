@@ -92,7 +92,16 @@ class ThankYouFragmentWithdrawal : BaseDaggerFragment(), TickerCallback {
                 )
                 tvAdminFees.visible()
             }
-            tvAccountNumber.text = bankAccount.accountNo + "-" + bankAccount.accountName
+            tvAccountNumber.text =
+                if (bankAccount.accountNo?.isNotEmpty() == true && bankAccount.accountName?.isNotEmpty() == true)
+                    context?.getString(
+                        R.string.swd_account_number_name,
+                        bankAccount.accountNo,
+                        bankAccount.accountName
+                ) ?: ""
+                else if (bankAccount.accountNo?.isNotEmpty() == true) bankAccount.accountNo
+                else bankAccount.accountName
+
             tvTotalWithdrawalAmount.text = CurrencyFormatHelper.convertToRupiah(withdrawalRequest.withdrawal.toString())
             showRekeningWidgets(activity)
         }

@@ -10,7 +10,6 @@
     <string name="swd_title_add_account_bank">Tambah Rekening</string>
     <string name="swd_title_set_account_bank">Atur Rekening</string>
     <string name="swd_title_set_rekening_utama">Rekening Utama</string>
-    <string name="swd_bank_setting">Atur Rekening</string>
 
     <string name="swd_alert_not_verified_yet_title">Akun Anda Belum Terverifikasi</string>
     <string name="swd_alert_not_verified_yet_body">Untuk melakukan penarikan saldo Anda harus mengverifikasi akun Anda.</string>
@@ -31,7 +30,7 @@
     <string name="swd_tnc_clickable_text">Syarat &amp; Ketentuan</string>
     <string name="swd_tnc_end">penarikan Saldo Tokopedia.</string>
     <string name="swd_tnc_title">Ketentuan penarikan saldo</string>
-    <string name="swd_saldo_exceeding_withdraw_balance">Nominal melebihi saldo milikmu</string>
+    <string name="swd_saldo_exceeding_withdraw_balance">Oops, jumlahnya lebih dari saldo kamu saat ini.</string>
     <string name="swd_saldo_exceeding_withdraw_balance_gopay">Oops, ini lebih dari maksimal tarik ke GoPay kamu.</string>
     <string name="swd_continue_pull">Lanjut Tarik</string>
     <string name="swd_back">Kembali</string>

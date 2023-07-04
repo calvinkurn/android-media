@@ -186,7 +186,7 @@
             app:layout_constraintTop_toTopOf="@id/title_choose_bank"
             app:layout_constraintBottom_toBottomOf="@id/title_choose_bank"
             android:layout_marginEnd="16dp"
-            android:text="@string/swd_bank_setting"
+            android:text="@string/swd_title_set_account_bank"
             app:typographyType="display_3"
             app:typographyWeight="bold"
             android:textColor="@color/Unify_GN500"

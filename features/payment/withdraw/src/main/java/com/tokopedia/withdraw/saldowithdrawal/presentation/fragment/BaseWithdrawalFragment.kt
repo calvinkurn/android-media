@@ -109,7 +109,7 @@ abstract class BaseWithdrawalFragment : BaseDaggerFragment(), BankAccountAdapter
             setCurrencyTextWatcherToSaldoInput()
             withdrawalButton.isEnabled = false
             tvCopyAllSaldoAmount.setOnClickListener { copyAllBalanceToWithdrawalAmount() }
-            tvBankSetting.setOnClickListener { openAddBankAccount() }
+            tvBankSetting.setOnClickListener { openBankAccountSetting() }
             context?.let {
                 tvTermsAndCondition.text = createTermsAndConditionSpannable(it)
             }
