@@ -17,17 +17,17 @@ import com.tokopedia.unifyprinciples.R as unifyR
 /**
  * Created by kenny.hadisaputra on 04/05/23
  */
-class PlayWidgetCarouselItemDecoration(
+open class PlayWidgetCarouselItemDecoration(
     context: Context
 ) : RecyclerView.ItemDecoration() {
 
-    private val offset6 = context.resources.getDimensionPixelOffset(R.dimen.play_widget_dp_6)
+    protected val offset6 = context.resources.getDimensionPixelOffset(R.dimen.play_widget_dp_6)
     private val offset12 = context.resources.getDimensionPixelOffset(R.dimen.play_widget_dp_12)
 
     private val distanceBeforeScale = context.resources.getDimension(
         R.dimen.play_widget_carousel_distance_before_scale
     )
-    private val maxShrink = 0.96f
+    protected open val maxShrink = 0.96f
     private val maxAlphaOverlay = 0.5f
 
     private val whiteColor = MethodChecker.getColor(context, unifyR.color.Unify_Static_White)

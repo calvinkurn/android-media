@@ -33,21 +33,28 @@
         android:layout_marginEnd="16dp"
         android:textAlignment="center"
         android:textColor="@color/Unify_NN0"
-        app:layout_constraintBottom_toTopOf="@id/rv_follow_recommendation"
+        app:layout_constraintBottom_toTopOf="@id/scrollable_host"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_title"
         app:typographyType="display_2"
         tools:text="Yuk, follow mereka buat dapetin update &amp; konten yang pas banget buatmu!" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_follow_recommendation"
+    <com.tokopedia.feedcomponent.util.FeedNestedScrollableHost
+        android:id="@+id/scrollable_host"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_desc" />
+        app:layout_constraintTop_toBottomOf="@id/tv_desc">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_follow_recommendation"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </com.tokopedia.feedcomponent.util.FeedNestedScrollableHost>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -8,16 +8,18 @@ import com.tokopedia.kotlin.extensions.view.dpToPx
 /**
  * Created by kenny.hadisaputra on 04/05/23
  */
-class PlayWidgetCarouselLayoutManager(
+open class PlayWidgetCarouselLayoutManager(
     context: Context
 ) : LinearLayoutManager(context, RecyclerView.HORIZONTAL, false) {
 
-    private val maxWidth = 234.dpToPx(context.resources.displayMetrics)
+    protected open val maxWidth = 234.dpToPx(context.resources.displayMetrics)
+    protected open val widthPercentage = 0.65
+    protected open val heightPercentage = 1 / 0.5625
 
     override fun checkLayoutParams(lp: RecyclerView.LayoutParams?): Boolean {
         if (lp != null) {
-            lp.width = (0.65 * width).toInt().coerceAtMost(maxWidth)
-            lp.height = (1 / 0.5625 * lp.width).toInt()
+            lp.width = (widthPercentage * width).toInt().coerceAtMost(maxWidth)
+            lp.height = (heightPercentage * lp.width).toInt()
         }
         return super.checkLayoutParams(lp)
     }
