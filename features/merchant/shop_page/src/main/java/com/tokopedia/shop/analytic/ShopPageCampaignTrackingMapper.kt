@@ -88,4 +88,18 @@ object ShopPageCampaignTrackingMapper {
         shopId,
         userId
     )
+
+    fun mapToShopCampaignWidgetDisplayTrackerDataModel(
+        widgetId: String,
+        name: String,
+        position: Int,
+        shopId: String,
+        userId: String
+    ) = ShopCampaignWidgetDisplayTrackerDataModel(
+        widgetId,
+        name,
+        position,
+        shopId,
+        userId
+    )
 }

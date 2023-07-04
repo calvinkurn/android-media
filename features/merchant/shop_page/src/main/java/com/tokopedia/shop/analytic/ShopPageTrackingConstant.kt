@@ -419,6 +419,8 @@ object ShopPageTrackingConstant {
         const val CLICK_CTA_VOUCHER_SLIDER_ITEM_WIDGET = "campaign tab - click kupon"
         const val CLICK_SEE_MORE_VOUCHER_SLIDER_ITEM_WIDGET = "campaign tab - click see more kupon"
         const val CLICK_VOUCHER_SLIDER_ITEM_WIDGET = "campaign tab - click kupon other"
+        const val IMPRESSION_BANNER_WIDGET = "campaign tab - impression banner"
+        const val CLICK_BANNER_WIDGET = "campaign tab - click banner"
 
     }
 
@@ -482,6 +484,8 @@ object ShopPageTrackingConstant {
         const val TRACKER_ID_CLICK_CTA_VOUCHER_SLIDER_ITEM = "44349"
         const val TRACKER_ID_CLICK_SEE_MORE_VOUCHER_SLIDER_ITEM = "44350"
         const val TRACKER_ID_CLICK_VOUCHER_SLIDER_ITEM = "44351"
+        const val TRACKER_ID_IMPRESSION_BANNER_WIDGET = "44359"
+        const val TRACKER_ID_CLICK_BANNER_WIDGET = "44360"
     }
 
     object Key {

@@ -1118,6 +1118,56 @@ class ShopPageCampaignFragment :
             model.header,
             model.widgetId
         )
+        sendImpressionWidgetDisplayTracker(
+            model,
+            position
+        )
+    }
+
+    private fun sendImpressionWidgetDisplayTracker(model: ShopHomeDisplayWidgetUiModel, position: Int) {
+        shopCampaignTabTracker.impressionWidgetDisplay(
+            ShopPageCampaignTrackingMapper.mapToShopCampaignWidgetDisplayTrackerDataModel(
+                model.widgetId,
+                model.name,
+                position,
+                shopId,
+                userId
+            )
+        )
+    }
+
+    override fun onDisplayItemClicked(
+        displayWidgetUiModel: ShopHomeDisplayWidgetUiModel?,
+        displayWidgetItem: ShopHomeDisplayWidgetUiModel.DisplayWidgetItem,
+        parentPosition: Int,
+        adapterPosition: Int
+    ) {
+        sendClickWidgetDisplayTracker(
+            displayWidgetUiModel,
+            parentPosition
+        )
+        context?.let {
+            if (displayWidgetItem.appLink.isNotEmpty()) {
+                RouteManager.route(it, displayWidgetItem.appLink)
+            }
+        }
+    }
+
+    private fun sendClickWidgetDisplayTracker(
+        displayWidgetUiModel: ShopHomeDisplayWidgetUiModel?,
+        parentPosition: Int
+    ) {
+        displayWidgetUiModel?.let {
+            shopCampaignTabTracker.clickWidgetDisplay(
+                ShopPageCampaignTrackingMapper.mapToShopCampaignWidgetDisplayTrackerDataModel(
+                    it.widgetId,
+                    it.name,
+                    parentPosition,
+                    shopId,
+                    userId
+                )
+            )
+        }
     }
 
     fun setIsDarkTheme(isDarkTheme: Boolean) {
