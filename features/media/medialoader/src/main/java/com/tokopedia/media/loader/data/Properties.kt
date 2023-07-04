@@ -162,6 +162,16 @@ data class Properties(
     }
 
     fun networkResponse(
+        invoke: (List<Header>) -> Unit = { _ -> },
+    ) = apply {
+        setNetworkResponse = object : NetworkResponseListener {
+            override fun header(data: List<Header>, type: FailureType?) {
+                invoke(data)
+            }
+        }
+    }
+
+    fun networkResponse(
         invoke: (List<Header>, FailureType?) -> Unit = { _, _ -> },
     ) = apply {
         setNetworkResponse = object : NetworkResponseListener {
