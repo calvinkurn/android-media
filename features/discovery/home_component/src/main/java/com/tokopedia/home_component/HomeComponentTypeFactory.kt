@@ -19,7 +19,6 @@ import com.tokopedia.home_component.visitable.MixLeftDataModel
 import com.tokopedia.home_component.visitable.MixLeftPaddingDataModel
 import com.tokopedia.home_component.visitable.MixTopDataModel
 import com.tokopedia.home_component.visitable.ProductHighlightDataModel
-import com.tokopedia.home_component.visitable.QuestWidgetModel
 import com.tokopedia.home_component.visitable.RecommendationListCarouselDataModel
 import com.tokopedia.home_component.visitable.ReminderWidgetModel
 import com.tokopedia.home_component.visitable.SpecialReleaseDataModel
@@ -43,7 +42,6 @@ interface HomeComponentTypeFactory {
     fun type(featuredShopDataModel: FeaturedShopDataModel): Int = 0
     fun type(bannerDataModel: BannerDataModel): Int = 0
     fun type(dynamicIconComponentDataModel: DynamicIconComponentDataModel): Int = 0
-    fun type(questWidgetModel: QuestWidgetModel): Int = 0
     fun type(campaignWidgetDataModel: CampaignWidgetDataModel): Int = 0
     fun type(merchantVoucherDataModel: MerchantVoucherDataModel): Int = 0
     fun type(specialReleaseDataModel: SpecialReleaseDataModel): Int = 0

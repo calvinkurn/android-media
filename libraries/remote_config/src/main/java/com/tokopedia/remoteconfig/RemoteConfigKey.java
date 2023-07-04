@@ -175,7 +175,6 @@ public class RemoteConfigKey {
     public static final String FORCE_LIGHT_MODE = "android_force_light_mode";
 
     public static final String SHOW_SHOPADS_FEED_NEW_DESIGN = "app_android_feed_shopads_new_design_flag";
-    public static final String ENABLE_QUEST_WIDGET = "android_enable_quest_widget";
 
     public static final String ENABLE_ASYNC_MOVETOHOME = "android_async_movetohome";
     public static final String ENABLE_MPC_LIFECYCLE_OBSERVER = "android_mainapp_enable_mpc_lifecycle_observer";

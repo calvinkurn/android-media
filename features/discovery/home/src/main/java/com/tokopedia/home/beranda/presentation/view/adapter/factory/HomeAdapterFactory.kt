@@ -115,7 +115,6 @@ import com.tokopedia.home_component.viewholders.MixLeftComponentViewHolder
 import com.tokopedia.home_component.viewholders.MixLeftPaddingComponentViewHolder
 import com.tokopedia.home_component.viewholders.MixTopComponentViewHolder
 import com.tokopedia.home_component.viewholders.ProductHighlightComponentViewHolder
-import com.tokopedia.home_component.viewholders.QuestWidgetViewHolder
 import com.tokopedia.home_component.viewholders.RecommendationListCarouselViewHolder
 import com.tokopedia.home_component.viewholders.ReminderWidgetViewHolder
 import com.tokopedia.home_component.viewholders.SpecialReleaseViewHolder
@@ -140,7 +139,6 @@ import com.tokopedia.home_component.visitable.MixLeftDataModel
 import com.tokopedia.home_component.visitable.MixLeftPaddingDataModel
 import com.tokopedia.home_component.visitable.MixTopDataModel
 import com.tokopedia.home_component.visitable.ProductHighlightDataModel
-import com.tokopedia.home_component.visitable.QuestWidgetModel
 import com.tokopedia.home_component.visitable.RecommendationListCarouselDataModel
 import com.tokopedia.home_component.visitable.ReminderWidgetModel
 import com.tokopedia.home_component.visitable.SpecialReleaseDataModel
@@ -148,7 +146,6 @@ import com.tokopedia.home_component.visitable.TodoWidgetListDataModel
 import com.tokopedia.home_component.visitable.VpsDataModel
 import com.tokopedia.play.widget.PlayWidgetViewHolder
 import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
-import com.tokopedia.quest_widget.listeners.QuestWidgetCallbacks
 import com.tokopedia.recharge_component.RechargeComponentTypeFactory
 import com.tokopedia.recharge_component.listener.RechargeBUWidgetListener
 import com.tokopedia.recharge_component.model.RechargeBUWidgetDataModel
@@ -184,7 +181,6 @@ class HomeAdapterFactory(
     private val dynamicIconComponentListener: DynamicIconComponentListener,
     private val legoSixAutoListener: Lego6AutoBannerListener,
     private val campaignWidgetComponentListener: CampaignWidgetComponentListener,
-    private val questWidgetCallbacks: QuestWidgetCallbacks,
     private val cmHomeWidgetCallback: CMHomeWidgetCallback,
     private val homePayLaterWidgetListener: HomePayLaterWidgetListener,
     private val specialReleaseComponentListener: SpecialReleaseComponentListener,
@@ -196,7 +192,7 @@ class HomeAdapterFactory(
     private val legoProductListener: LegoProductListener,
     private val todoWidgetComponentListener: TodoWidgetComponentListener,
     private val flashSaleWidgetListener: FlashSaleWidgetListener,
-    private val carouselPlayWidgetCallback: CarouselPlayWidgetCallback,
+    private val carouselPlayWidgetCallback: CarouselPlayWidgetCallback
 ) : BaseAdapterTypeFactory(),
     HomeTypeFactory,
     HomeComponentTypeFactory,
@@ -379,10 +375,6 @@ class HomeAdapterFactory(
         return HomeAtfErrorViewHolder.LAYOUT
     }
 
-    override fun type(questWidgetModel: QuestWidgetModel): Int {
-        return QuestWidgetViewHolder.LAYOUT
-    }
-
     override fun type(campaignWidgetDataModel: CampaignWidgetDataModel): Int {
         return CampaignWidgetViewHolder.LAYOUT
     }
@@ -561,9 +553,6 @@ class HomeAdapterFactory(
                         homeComponentListener,
                         parentRecycledViewPool
                     )
-            QuestWidgetViewHolder.LAYOUT ->
-                viewHolder =
-                    QuestWidgetViewHolder(view, questWidgetCallbacks)
             CampaignWidgetViewHolder.LAYOUT -> viewHolder = CampaignWidgetViewHolder(
                 view,
                 homeComponentListener,

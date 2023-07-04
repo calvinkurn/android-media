@@ -48,7 +48,6 @@ import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.model.ReminderEnum
 import com.tokopedia.home_component.usecase.todowidget.DismissTodoWidgetUseCase
 import com.tokopedia.home_component.visitable.MissionWidgetListDataModel
-import com.tokopedia.home_component.visitable.QuestWidgetModel
 import com.tokopedia.home_component.visitable.RecommendationListCarouselDataModel
 import com.tokopedia.home_component.visitable.ReminderWidgetModel
 import com.tokopedia.home_component.visitable.TodoWidgetListDataModel
@@ -663,13 +662,6 @@ open class HomeRevampViewModel @Inject constructor(
             updateHomeData(homeDataModel)
         }
     }
-
-    fun deleteQuestWidget() {
-        findWidget<QuestWidgetModel> { questWidgetModel, index ->
-            deleteWidget(questWidgetModel, index)
-        }
-    }
-
     fun getCMHomeWidgetData(isForceRefresh: Boolean = true) {
         findWidget<CMHomeWidgetDataModel> { cmHomeWidgetDataModel, index ->
             launchCatchError(coroutineContext, {

@@ -5,7 +5,6 @@ import com.tokopedia.home.beranda.domain.interactor.usecase.HomeDynamicChannelUs
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDynamicChannelModel
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRevampViewModel
 import com.tokopedia.home_component.model.ChannelModel
-import com.tokopedia.home_component.visitable.QuestWidgetModel
 import com.tokopedia.quest_widget.data.QuestData
 import io.mockk.mockk
 import org.junit.Rule

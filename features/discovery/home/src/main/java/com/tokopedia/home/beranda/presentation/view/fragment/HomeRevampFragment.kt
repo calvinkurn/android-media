@@ -74,7 +74,6 @@ import com.tokopedia.home.beranda.data.model.HomeChooseAddressData
 import com.tokopedia.home.beranda.di.BerandaComponent
 import com.tokopedia.home.beranda.di.DaggerBerandaComponent
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
-import com.tokopedia.home.beranda.domain.model.HomeFlag
 import com.tokopedia.home.beranda.domain.model.SearchPlaceholder
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel
 import com.tokopedia.home.beranda.helper.Event
@@ -155,7 +154,6 @@ import com.tokopedia.home_component.customview.pullrefresh.ParentIconSwipeRefres
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.util.toDpInt
-import com.tokopedia.home_component.visitable.QuestWidgetModel
 import com.tokopedia.iris.Iris
 import com.tokopedia.iris.IrisAnalytics.Companion.getInstance
 import com.tokopedia.iris.util.IrisSession
@@ -187,8 +185,6 @@ import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
 import com.tokopedia.play.widget.ui.model.reminded
 import com.tokopedia.play_common.util.extension.getVisiblePortion
 import com.tokopedia.promogamification.common.floating.view.fragment.FloatingEggButtonFragment
-import com.tokopedia.quest_widget.constants.QuestUrls.QUEST_URL
-import com.tokopedia.quest_widget.listeners.QuestWidgetCallbacks
 import com.tokopedia.recharge_component.model.WidgetSource
 import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
@@ -256,7 +252,6 @@ open class HomeRevampFragment :
     FramePerformanceIndexInterface,
     PlayWidgetListener,
     RecommendationWidgetListener,
-    QuestWidgetCallbacks,
     CMHomeWidgetCallback,
     HomePayLaterWidgetListener {
 
@@ -266,7 +261,6 @@ open class HomeRevampFragment :
         private const val DEFAULT_WALLET_APPLINK_REQUEST_CODE = 111
         private const val REQUEST_CODE_LOGIN_STICKY_LOGIN = 130
         private const val REQUEST_CODE_LOGIN = 131
-        private const val REQUEST_CODE_LOGIN_QUEST_WIDGET = 132
         private const val REQUEST_CODE_REVIEW = 999
         private const val EXTRA_SHOP_ID = "EXTRA_SHOP_ID"
         private const val REVIEW_CLICK_AT = "rating"
@@ -330,7 +324,6 @@ open class HomeRevampFragment :
         }
     }
 
-    private var questWidgetPosition = -1
     private var isNeedToRotateTokopoints: Boolean = true
     private var errorToaster: Snackbar? = null
     override val eggListener: HomeEggListener
@@ -1029,17 +1022,10 @@ open class HomeRevampFragment :
             getHomeViewModel().isFirstLoad = false
         }
 
-        refreshQuestWidget()
         adapter?.onResumeSpecialRelease()
 
         // refresh home-to-do-widget data if needed
         getHomeViewModel().getCMHomeWidgetData(false)
-    }
-
-    private fun refreshQuestWidget() {
-        if (questWidgetPosition != -1 && adapter?.currentList?.any { it is QuestWidgetModel } == true) {
-            adapter?.notifyItemChanged(questWidgetPosition)
-        }
     }
 
     private fun conditionalViewModelRefresh() {
@@ -1487,7 +1473,6 @@ open class HomeRevampFragment :
             CampaignWidgetComponentCallback(context, this),
             this,
             this,
-            this,
             SpecialReleaseComponentCallback(context, this),
             MerchantVoucherComponentCallback(this),
             CueWidgetComponentCallback(this),
@@ -1497,7 +1482,7 @@ open class HomeRevampFragment :
             LegoProductCallback(this),
             TodoWidgetComponentCallback(this, getHomeViewModel()),
             FlashSaleWidgetCallback(this),
-            CarouselPlayWidgetCallback(getTrackingQueueObj(), userSession, this),
+            CarouselPlayWidgetCallback(getTrackingQueueObj(), userSession, this)
         )
         val asyncDifferConfig = AsyncDifferConfig.Builder(HomeVisitableDiffUtil())
             .setBackgroundThreadExecutor(Executors.newSingleThreadExecutor())
@@ -1705,21 +1690,6 @@ open class HomeRevampFragment :
                     it.finish()
                 }
             }
-            REQUEST_CODE_LOGIN_QUEST_WIDGET -> {
-                activity?.let {
-                    val intentQuestWidget = RouteManager.getIntent(
-                        context,
-                        QUEST_URL
-                    )
-
-                    val intentHome = RouteManager.getIntent(activity, ApplinkConst.HOME)
-                    intentHome.flags =
-                        Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-
-                    it.startActivities(arrayOf(intentHome, intentQuestWidget))
-                    it.finish()
-                }
-            }
             REQUEST_CODE_LOGIN_STICKY_LOGIN -> {
                 if (resultCode == Activity.RESULT_OK && data != null) {
                     val isSuccessRegister = data.getBooleanExtra(ApplinkConstInternalGlobal.PARAM_IS_SUCCESS_REGISTER, false)
@@ -1732,7 +1702,6 @@ open class HomeRevampFragment :
     }
 
     override fun onRefresh() {
-        refreshQuestWidget()
         bannerCarouselCallback?.resetImpression()
         resetFeedState()
         removeNetworkError()
@@ -2253,7 +2222,7 @@ open class HomeRevampFragment :
 
     override fun onBestSellerFilterImpression(
         filter: RecommendationFilterChipsEntity.RecommendationFilterChip,
-        bestSellerDataModel: BestSellerDataModel,
+        bestSellerDataModel: BestSellerDataModel
     ) {
         val filterValue = UrlParamUtils.getParamMap(filter.value)
         val categoryId = filterValue[CATEGORY_ID].toString()
@@ -2267,7 +2236,7 @@ open class HomeRevampFragment :
                 position = filter.position,
                 ncpRank = filter.ncpRank,
                 totalFilterCount = bestSellerDataModel.filterChip.size,
-                chipsValue = filter.title,
+                chipsValue = filter.title
             ) as HashMap<String, Any>
         )
     }
@@ -2276,7 +2245,7 @@ open class HomeRevampFragment :
         filter: RecommendationFilterChipsEntity.RecommendationFilterChip,
         bestSellerDataModel: BestSellerDataModel,
         widgetPosition: Int,
-        selectedChipsPosition: Int,
+        selectedChipsPosition: Int
     ) {
         val filterValue = UrlParamUtils.getParamMap(filter.value)
         val categoryId = filterValue[CATEGORY_ID].toString()
@@ -2725,19 +2694,6 @@ open class HomeRevampFragment :
             it.startActivities(arrayOf(intentHome, intentNewUser))
             it.finish()
         }
-    }
-
-    override fun questLogin() {
-        val intent = RouteManager.getIntent(context, ApplinkConst.LOGIN)
-        startActivityForResult(intent, REQUEST_CODE_LOGIN_QUEST_WIDGET)
-    }
-
-    override fun deleteQuestWidget() {
-        viewModel.get().deleteQuestWidget()
-    }
-
-    override fun updateQuestWidget(position: Int) {
-        this.questWidgetPosition = position
     }
 
     override fun onCMHomeWidgetDismissClick() {

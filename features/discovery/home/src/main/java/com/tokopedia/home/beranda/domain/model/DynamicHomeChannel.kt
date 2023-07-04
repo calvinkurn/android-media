@@ -192,7 +192,6 @@ data class DynamicHomeChannel(
             const val LAYOUT_BEST_SELLING: String = "best_selling"
             const val LAYOUT_BANNER_CAROUSEL_V2 = "banner_carousel_v2"
             const val LAYOUT_LEGO_6_AUTO: String = "6_image_auto"
-            const val LAYOUT_QUESTWIDGET = "quest_widget"
             const val LAYOUT_CAMPAIGN_WIDGET: String = "campaign_widget"
             const val LAYOUT_CAMPAIGN_FEATURING: String = "campaign_featuring"
             const val LAYOUT_CM_HOME_TO_DO: String = "home_todo"
