@@ -1,5 +1,8 @@
 package com.tokopedia.feedplus.presentation.model
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.feedplus.presentation.adapter.FeedAdapterTypeFactory
+
 /**
  * Created By : Jonathan Darwin on July 04, 2023
  */
@@ -9,7 +12,9 @@ data class FeedFollowRecommendationModel(
     val data: List<Profile>,
     val hasNext: Boolean,
     val cursor: String,
-) {
+) : Visitable<FeedAdapterTypeFactory> {
+
+    override fun type(typeFactory: FeedAdapterTypeFactory): Int = typeFactory.type(this)
 
     data class Profile(
         val id: String,

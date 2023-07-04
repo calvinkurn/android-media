@@ -9,6 +9,7 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.base.view.adapter.viewholders.ErrorNetworkViewHolder
 import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingMoreViewHolder
+import com.tokopedia.feedplus.databinding.ItemFeedFollowRecommendationBinding
 import com.tokopedia.feedplus.databinding.ItemFeedLoadMoreContentBinding
 import com.tokopedia.feedplus.databinding.ItemFeedNoContentBinding
 import com.tokopedia.feedplus.databinding.ItemFeedPostBinding
@@ -17,6 +18,7 @@ import com.tokopedia.feedplus.databinding.ItemFeedPostVideoBinding
 import com.tokopedia.feedplus.domain.mapper.MapperFeedModelToTrackerDataModel
 import com.tokopedia.feedplus.presentation.adapter.listener.FeedListener
 import com.tokopedia.feedplus.presentation.adapter.viewholder.FeedErrorViewHolder
+import com.tokopedia.feedplus.presentation.adapter.viewholder.FeedFollowRecommendationViewHolder
 import com.tokopedia.feedplus.presentation.adapter.viewholder.FeedLoadMoreViewHolder
 import com.tokopedia.feedplus.presentation.adapter.viewholder.FeedNoContentViewHolder
 import com.tokopedia.feedplus.presentation.adapter.viewholder.FeedPostImageViewHolder
@@ -26,6 +28,7 @@ import com.tokopedia.feedplus.presentation.fragment.FeedFragment
 import com.tokopedia.feedplus.presentation.model.FeedCardImageContentModel
 import com.tokopedia.feedplus.presentation.model.FeedCardLivePreviewContentModel
 import com.tokopedia.feedplus.presentation.model.FeedCardVideoContentModel
+import com.tokopedia.feedplus.presentation.model.FeedFollowRecommendationModel
 import com.tokopedia.feedplus.presentation.model.FeedNoContentModel
 
 /**
@@ -50,6 +53,8 @@ class FeedAdapterTypeFactory(
     fun type(model: FeedCardVideoContentModel) = FeedPostVideoViewHolder.LAYOUT
 
     fun type(model: FeedCardLivePreviewContentModel) = FeedPostLiveViewHolder.LAYOUT
+
+    fun type(model: FeedFollowRecommendationModel) = FeedFollowRecommendationViewHolder.LAYOUT
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>>? =
         when (type) {
@@ -83,6 +88,14 @@ class FeedAdapterTypeFactory(
             )
             FeedNoContentViewHolder.LAYOUT -> FeedNoContentViewHolder(
                 ItemFeedNoContentBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent as ViewGroup,
+                    false
+                ),
+                feedListener
+            )
+            FeedFollowRecommendationViewHolder.LAYOUT -> FeedFollowRecommendationViewHolder(
+                ItemFeedFollowRecommendationBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent as ViewGroup,
                     false
