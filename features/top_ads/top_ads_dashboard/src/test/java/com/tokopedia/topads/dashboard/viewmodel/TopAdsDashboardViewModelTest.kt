@@ -65,6 +65,8 @@ class TopAdsDashboardViewModelTest {
         autoTopUpUSeCase = mockk(relaxed = true)
         topAdsGetSelectedTopUpTypeUseCase = mockk(relaxed = true)
         whiteListedUserUseCase = mockk(relaxed = true)
+        topAdsListAllInsightCountsUseCase = mockk(relaxed = true)
+        topAdsGetTotalAdGroupsWithInsightUseCase = mockk(relaxed = true)
 
         viewModel = TopAdsDashboardViewModel(
             testRule.dispatchers,
