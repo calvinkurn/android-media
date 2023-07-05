@@ -90,7 +90,7 @@ class PlayProductTagUiMapper @Inject constructor() {
             isNumerationShown = channelType.isLive,
             rating = input.rating,
             soldQuantity = input.soldQuantity,
-            rankType = input.rankType,
+            rankType = input.rankType.ifEmpty { "no ribbon" },
             rankFmt = input.rankFmt,
             rankColors = input.ribbonColors,
         )
