@@ -742,7 +742,7 @@ class GetOccCartUseCase @Inject constructor(
         invoice_not_sent_to_recipient
       }
       total_product_price
-      summary_add_ons {
+      add_ons_summary {
         wording
         type
       }
