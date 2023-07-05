@@ -189,7 +189,7 @@ class ProductCarouselUiView(
                 for (i in startPosition..endPosition) {
                     when (val vh = binding.rvProductFeatured.findViewHolderForAdapterPosition(i)) {
                         is ProductFeaturedViewHolder -> vh.startAnimation()
-                        is ProductCarouselViewHolder.PinnedProduct -> vh.startAnimation() //configure here
+                        is ProductCarouselViewHolder.PinnedProduct -> vh.startAnimation()
                     }
                 }
             }
