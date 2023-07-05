@@ -1205,14 +1205,18 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         }
     }
 
-    fun updateGlobalRecommendationWidget(productInfo: DynamicProductInfoP1) {
+    fun updateGlobalRecommendationWidget(productId: String?) {
         DynamicProductDetailMapper.getGlobalRecommendationWidgetComponentNames().forEach { key ->
             updateData(key, true) {
                 (mapOfData[key] as? ProductRecommendationWidgetUiModel)?.run {
                     val newData = copy(
                         recommendationWidget = recommendationWidget.copy(
                             metadata = recommendationWidget.metadata.copy(
-                                productIds = listOf(productInfo.data.productId)
+                                productIds = if (productId.isNullOrBlank()) {
+                                    listOf()
+                                } else {
+                                    listOf(productId)
+                                }
                             )
                         )
                     )

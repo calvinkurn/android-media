@@ -3,6 +3,7 @@ package com.tokopedia.product.detail.view.viewholder
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationWidgetUiModel
@@ -21,16 +22,22 @@ class ProductRecommendationWidgetViewHolder(
     private val binding = ItemProductRecommendationWidgetBinding.bind(view)
 
     override fun bind(element: ProductRecommendationWidgetUiModel) {
-        binding.recomWidget.bind(element.recommendationWidget)
-        binding.root.addOnImpressionListener(element.impressHolder) {
-            listener.onImpressComponent(
-                ComponentTrackDataModel(
-                    componentType = element.type(),
-                    componentName = element.name(),
-                    adapterPosition = bindingAdapterPosition
+        // when `ProductRecommendationWidgetUiModel` initially created it don't have productID
+        // so we need to wait until it get productID data from the P1 data
+        val hasValidProductID = element.recommendationWidget.metadata.productIds.isNotEmpty()
+        if (hasValidProductID) {
+            binding.recomWidget.bind(element.recommendationWidget)
+            binding.root.addOnImpressionListener(element.impressHolder) {
+                listener.onImpressComponent(
+                    ComponentTrackDataModel(
+                        componentType = element.type(),
+                        componentName = element.name(),
+                        adapterPosition = bindingAdapterPosition
+                    )
                 )
-            )
+            }
         }
+        binding.root.showWithCondition(hasValidProductID)
     }
 
     override fun onViewRecycled() {
