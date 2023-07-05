@@ -33,6 +33,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.network.authentication.AuthHelper
+import com.tokopedia.network.utils.ThemeUtils
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.user.session.UserSessionInterface
 
@@ -185,7 +186,8 @@ class ChatbotImageUploadViewHolder(
             contentType = CONTENT_TYPE,
             authKey = AuthUtil.KEY.KEY_WSV4,
             dateFormat = DATE_FORMAT,
-            userSession = userSession
+            userSession = userSession,
+            theme = ThemeUtils.getHeader(itemView.context)
         )
         return if (attachmentType == TYPE_SECURE_IMAGE_UPLOAD) {
             GlideUrl(

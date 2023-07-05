@@ -10,7 +10,6 @@ import com.tokopedia.logger.utils.Priority
 import com.tokopedia.user.session.UserSessionInterface
 import java.text.SimpleDateFormat
 import java.util.*
-import java.util.regex.Pattern
 import javax.crypto.Mac
 import javax.crypto.spec.SecretKeySpec
 
@@ -39,7 +38,8 @@ class AuthHelper {
             contentType: String,
             authKey: String,
             dateFormat: String,
-            userSession: UserSessionInterface
+            userSession: UserSessionInterface,
+            theme: String
         ): MutableMap<String, String> {
             val date = generateDate(dateFormat)
             val contentMD5 = getMD5Hash(strParam)
@@ -70,6 +70,8 @@ class AuthHelper {
             headerMap[HEADER_USER_AGENT] = getUserAgent()
             headerMap[HEADER_USER_ID] = userSession.userId
             headerMap[HEADER_DEVICE] = "android-${GlobalConfig.VERSION_NAME}"
+            headerMap[HEADER_X_MSISDN] = "android-${GlobalConfig.VERSION_NAME}"
+            headerMap[HEADER_X_THEME] = theme
 
             return headerMap
         }
@@ -83,7 +85,8 @@ class AuthHelper {
             authKey: String,
             dateFormat: String,
             userId: String,
-            session: UserSessionInterface
+            session: UserSessionInterface,
+            theme: String
         ): MutableMap<String, String> {
             val date = generateDate(dateFormat)
             val contentMD5 = getMD5Hash(strParam)
@@ -111,6 +114,7 @@ class AuthHelper {
 
             headerMap[HEADER_USER_ID] = userId
             headerMap[HEADER_DEVICE] = "android-${GlobalConfig.VERSION_NAME}"
+            headerMap[HEADER_X_THEME] = theme
 
             return headerMap
         }
@@ -123,7 +127,8 @@ class AuthHelper {
             authKey: String,
             contentType: String?,
             userId: String,
-            userSession: UserSessionInterface
+            userSession: UserSessionInterface,
+            theme: String
         ): MutableMap<String, String> {
             val finalHeader = getDefaultHeaderMap(
                 path,
@@ -132,7 +137,8 @@ class AuthHelper {
                 contentType ?: CONTENT_TYPE,
                 authKey,
                 DATE_FORMAT,
-                userSession
+                userSession,
+                theme
             )
 
             finalHeader[HEADER_X_APP_VERSION] = GlobalConfig.VERSION_CODE.toString(10)
@@ -175,7 +181,8 @@ class AuthHelper {
             authKey: String,
             contentType: String?,
             userId: String,
-            userSessionInterface: UserSessionInterface
+            userSessionInterface: UserSessionInterface,
+            theme: String
         ): MutableMap<String, String> {
             val finalHeader = getDefaultHeaderMapOld(
                 path,
@@ -185,7 +192,8 @@ class AuthHelper {
                 authKey,
                 DATE_FORMAT,
                 userId,
-                userSessionInterface
+                userSessionInterface,
+                theme
             ) as ArrayMap<String, String>
 
             finalHeader[HEADER_X_APP_VERSION] = GlobalConfig.VERSION_CODE.toString(10)

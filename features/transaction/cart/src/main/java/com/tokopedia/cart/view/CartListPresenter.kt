@@ -1628,6 +1628,7 @@ class CartListPresenter @Inject constructor(
                     it.stopAllCartPerformanceTrace()
                 }
             } catch (t: Throwable) {
+                Timber.d(t)
                 view?.setHasTriedToLoadRecentView()
                 view?.stopAllCartPerformanceTrace()
             }
@@ -1691,6 +1692,7 @@ class CartListPresenter @Inject constructor(
                     it.stopAllCartPerformanceTrace()
                 }
             } catch (t: Throwable) {
+                Timber.d(t)
                 view?.hideItemLoading()
                 view?.setHasTriedToLoadRecommendation()
                 view?.stopAllCartPerformanceTrace()

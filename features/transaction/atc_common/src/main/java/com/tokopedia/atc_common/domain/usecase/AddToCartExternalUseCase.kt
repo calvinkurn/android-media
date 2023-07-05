@@ -56,8 +56,11 @@ class AddToCartExternalUseCase @Inject constructor(
                 val data = result.data
                 analytics.sendEnhancedEcommerceTracking(data)
                 AddToCartBaseAnalytics.sendAppsFlyerTracking(
-                    data.productId, data.productName, data.price.roundToLong().toString(),
-                    data.quantity.toString(), data.category
+                    data.productId,
+                    data.productName,
+                    data.price.roundToLong().toString(),
+                    data.quantity.toString(),
+                    data.category
                 )
                 AddToCartBaseAnalytics.sendBranchIoTracking(
                     data.productId, data.productName, data.price.roundToLong().toString(),

@@ -17,7 +17,7 @@
         android:layout_marginEnd="16dp"
         android:text="@string/label_payment_total"
         android:textColor="@color/Unify_N700_96"
-        app:layout_constraintEnd_toStartOf="@+id/barrier_btn_payment"
+        app:layout_constraintEnd_toStartOf="@+id/btn_select_payment_method"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="body_3"
@@ -31,7 +31,7 @@
         android:layout_marginBottom="8dp"
         android:gravity="start"
         android:textColor="@color/Unify_NN950"
-        app:layout_constraintEnd_toStartOf="@+id/barrier_btn_payment"
+        app:layout_constraintEnd_toStartOf="@+id/btn_select_payment_method"
         app:layout_constraintStart_toStartOf="@id/tv_total_payment_header"
         app:layout_constraintTop_toBottomOf="@id/tv_total_payment_header"
         app:typographyType="heading_4"
@@ -42,7 +42,7 @@
         android:layout_width="0dp"
         android:layout_height="20dp"
         android:visibility="visible"
-        app:layout_constraintEnd_toStartOf="@+id/barrier_btn_payment"
+        app:layout_constraintEnd_toStartOf="@+id/btn_select_payment_method"
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toStartOf="@id/tv_total_payment_header"
         app:layout_constraintTop_toBottomOf="@id/tv_total_payment_header"
@@ -69,24 +69,5 @@
         app:unifyButtonSize="medium"
         app:unifyButtonType="main"
         app:unifyButtonVariant="filled" />
-
-    <com.tokopedia.unifycomponents.LoaderUnify
-        android:id="@+id/loader_btn_payment"
-        android:layout_width="140dp"
-        android:layout_height="40dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="10dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:loader_type="rect" />
-
-    <androidx.constraintlayout.widget.Barrier
-        android:id="@+id/barrier_btn_payment"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:barrierDirection="start"
-        app:constraint_referenced_ids="loader_btn_payment,btn_select_payment_method" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

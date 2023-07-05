@@ -10,7 +10,7 @@ import dagger.Component
  */
 
 @ActivityScope
-@Component(modules = [CheckoutModule::class, CheckoutPresenterModule::class], dependencies = [BaseAppComponent::class])
+@Component(modules = [CheckoutModule::class, CheckoutViewModelModule::class], dependencies = [BaseAppComponent::class])
 interface CheckoutComponent {
     fun inject(shipmentFragment: ShipmentFragment)
 }

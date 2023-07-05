@@ -1,5 +1,6 @@
 package com.tokopedia.checkout.view.adapter
 
+import android.annotation.SuppressLint
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -464,6 +465,7 @@ class ShipmentAdapter @Inject constructor(
         compositeSubscription?.clear()
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun clearData() {
         shipmentDataList.clear()
         shipmentCartItemModelList = null
@@ -744,8 +746,8 @@ class ShipmentAdapter @Inject constructor(
         var eligibleNewShippingExperience = false
         for (position in shipmentDataList.indices) {
             if (shipmentDataList[position] is ShipmentCartItemModel) {
-                val shipmentCartItemModel = shipmentDataList[position] as ShipmentCartItemModel?
-                if (shipmentCartItemModel!!.selectedShipmentDetailData != null) {
+                val shipmentCartItemModel = shipmentDataList[position] as ShipmentCartItemModel
+                if (shipmentCartItemModel.selectedShipmentDetailData != null) {
                     shipmentCartItemModel.selectedShipmentDetailData = null
                     shipmentCartItemModel.voucherLogisticItemUiModel = null
                     notifyItemChanged(position)
@@ -1142,7 +1144,7 @@ class ShipmentAdapter @Inject constructor(
 
     fun getShipmentCartItemModelByIndex(index: Int): ShipmentCartItemModel? {
         return if (shipmentDataList.isNotEmpty() && index >= 0 && index < shipmentDataList.size) {
-            if (shipmentDataList[index] is ShipmentCartItemModel) shipmentDataList[index] as ShipmentCartItemModel? else null
+            if (shipmentDataList[index] is ShipmentCartItemModel) shipmentDataList[index] as ShipmentCartItemModel else null
         } else {
             null
         }
