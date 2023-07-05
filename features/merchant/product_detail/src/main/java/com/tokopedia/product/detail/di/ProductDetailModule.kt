@@ -23,12 +23,13 @@ import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.topads.sdk.repository.TopAdsRepository
 import com.tokopedia.topads.sdk.utils.TopAdsIrisSession
 import com.tokopedia.trackingoptimizer.TrackingQueue
+import com.tokopedia.universal_sharing.view.usecase.AffiliateEligibilityCheckUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
 import dagger.Module
 import dagger.Provides
 
-@Module (includes = [RecommendationCoroutineModule::class, PlayWidgetModule::class, AffiliateCommonSdkModule::class])
+@Module(includes = [RecommendationCoroutineModule::class, PlayWidgetModule::class, AffiliateCommonSdkModule::class])
 class ProductDetailModule {
 
     @ProductDetailScope
@@ -41,8 +42,11 @@ class ProductDetailModule {
     @ProductDetailScope
     @Provides
     fun provideDiscussionMostHelpfulUseCase(rawQueries: Map<String, String>, graphqlRepository: GraphqlRepository): DiscussionMostHelpfulUseCase =
-            DiscussionMostHelpfulUseCase(rawQueries[QUERY_DISCUSSION_MOST_HELPFUL]
-                    ?: "", graphqlRepository)
+        DiscussionMostHelpfulUseCase(
+            rawQueries[QUERY_DISCUSSION_MOST_HELPFUL]
+                ?: "",
+            graphqlRepository
+        )
 
     @ProductDetailScope
     @Provides
@@ -69,19 +73,22 @@ class ProductDetailModule {
     @ProductDetailScope
     @Provides
     fun providePlayWidget(
-            playWidgetUseCase: PlayWidgetUseCase,
-            playWidgetReminderUseCase: Lazy<PlayWidgetReminderUseCase>,
-            playWidgetUpdateChannelUseCase: Lazy<PlayWidgetUpdateChannelUseCase>,
-            mapper: PlayWidgetUiMapper,
-            connectionUtil: PlayWidgetConnectionUtil
+        playWidgetUseCase: PlayWidgetUseCase,
+        playWidgetReminderUseCase: Lazy<PlayWidgetReminderUseCase>,
+        playWidgetUpdateChannelUseCase: Lazy<PlayWidgetUpdateChannelUseCase>,
+        mapper: PlayWidgetUiMapper,
+        connectionUtil: PlayWidgetConnectionUtil
     ): PlayWidgetTools {
         return PlayWidgetTools(
-                playWidgetUseCase,
-                playWidgetReminderUseCase,
-                playWidgetUpdateChannelUseCase,
-                mapper,
-                connectionUtil
+            playWidgetUseCase,
+            playWidgetReminderUseCase,
+            playWidgetUpdateChannelUseCase,
+            mapper,
+            connectionUtil
         )
     }
 
+    @ProductDetailScope
+    @Provides
+    fun provideAffiliateEligibilityUseCase(graphqlRepository: GraphqlRepository) = AffiliateEligibilityCheckUseCase(graphqlRepository)
 }

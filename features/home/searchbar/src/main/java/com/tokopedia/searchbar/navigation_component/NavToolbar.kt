@@ -552,6 +552,10 @@ class NavToolbar : Toolbar, LifecycleObserver, TopNavComponentListener {
         return null
     }
 
+    fun updateIcon(oldIconId: Int, newIconId: Int) {
+        navIconAdapter?.updateIcon(oldIconId, newIconId)
+    }
+
     private fun getNoteBookIconView(): IconNotification? {
         val noteBookPosition = navIconAdapter?.getNoteBookPosition()
         noteBookPosition?.let {
