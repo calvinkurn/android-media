@@ -49,7 +49,8 @@ class FeedFollowRecommendationViewHolder(
     }
 
     private fun setupProfileList(model: FeedFollowRecommendationModel) {
-        binding.rvFollowRecommendation.adapter = profileAdapter
+        if (binding.rvFollowRecommendation.adapter == null)
+            binding.rvFollowRecommendation.adapter = profileAdapter
 
         val mappedList = model.data.map {
             FeedFollowProfileAdapter.Model.Profile(data = it)
