@@ -270,7 +270,6 @@ import com.tokopedia.shop.home.view.model.StatusCampaign
 import com.tokopedia.shop_widget.thematicwidget.uimodel.ProductCardUiModel
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
-import com.tokopedia.track.builder.Tracker
 import com.tokopedia.trackingoptimizer.TrackingQueue
 
 /*
@@ -3242,6 +3241,7 @@ class ShopPageHomeTracking(
         shopId: String,
         userId: String
     ) {
+        val widgetTitle = uiModel.header.title
         val statusCampaignTrackerValue = getShopHomeBannerTimerStatusCampaignTrackerValue(
             uiModel.data?.status?.name.orEmpty()
         )
@@ -3263,7 +3263,8 @@ class ShopPageHomeTracking(
                 arrayListOf(
                     createBannerTimerHomePromotions(
                         uiModel,
-                        position
+                        position,
+                        widgetTitle
                     )
                 )
             )
@@ -3275,7 +3276,8 @@ class ShopPageHomeTracking(
 
     private fun createBannerTimerHomePromotions(
         uiModel: ShopWidgetDisplayBannerTimerUiModel,
-        position: Int
+        position: Int,
+        widgetTitle: String
     ): Bundle {
         val creativeNameValue = getShopHomeBannerTimerStatusCampaignTrackerValue(
             uiModel.data?.status?.name.orEmpty()
@@ -3284,7 +3286,7 @@ class ShopPageHomeTracking(
             putString(CREATIVE_NAME, creativeNameValue)
             putInt(CREATIVE_SLOT, position)
             putString(ITEM_ID, uiModel.getCampaignId())
-            putString(ITEM_NAME, "")
+            putString(ITEM_NAME, widgetTitle)
         }
     }
 
@@ -3336,6 +3338,7 @@ class ShopPageHomeTracking(
         shopId: String,
         userId: String
     ) {
+        val widgetTitle = uiModel.header.title
         val statusCampaignTrackerValue = getShopHomeBannerTimerStatusCampaignTrackerValue(
             uiModel.data?.status?.name.orEmpty()
         )
@@ -3357,7 +3360,8 @@ class ShopPageHomeTracking(
                 arrayListOf(
                     createBannerTimerHomePromotions(
                         uiModel,
-                        position
+                        position,
+                        widgetTitle
                     )
                 )
             )

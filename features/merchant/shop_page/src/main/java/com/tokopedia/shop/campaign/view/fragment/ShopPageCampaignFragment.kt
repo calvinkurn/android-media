@@ -1158,7 +1158,8 @@ class ShopPageCampaignFragment :
                 model.name,
                 position,
                 shopId,
-                userId
+                userId,
+                model.header.title
             )
         )
     }
@@ -1191,7 +1192,8 @@ class ShopPageCampaignFragment :
                     it.name,
                     parentPosition,
                     shopId,
-                    userId
+                    userId,
+                    it.header.title
                 )
             )
         }

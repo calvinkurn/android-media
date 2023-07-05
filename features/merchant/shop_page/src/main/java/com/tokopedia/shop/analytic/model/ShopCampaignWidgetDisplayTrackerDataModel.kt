@@ -5,5 +5,6 @@ data class ShopCampaignWidgetDisplayTrackerDataModel(
     val name: String,
     val position: Int,
     val shopId: String,
-    val userId: String
+    val userId: String,
+    val widgetTitle: String
 )

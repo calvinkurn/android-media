@@ -103,13 +103,15 @@ object ShopPageCampaignTrackingMapper {
         name: String,
         position: Int,
         shopId: String,
-        userId: String
+        userId: String,
+        widgetTitle: String
     ) = ShopCampaignWidgetDisplayTrackerDataModel(
         widgetId,
         name,
         position,
         shopId,
-        userId
+        userId,
+        widgetTitle
     )
 
     fun mapToProductSliderBannerHighlightTrackerDataModel(

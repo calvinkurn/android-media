@@ -358,7 +358,7 @@ class ShopCampaignTabTracker @Inject constructor() {
             putString(CREATIVE_NAME, trackerDataModel.name)
             putInt(CREATIVE_SLOT, trackerDataModel.position)
             putString(ITEM_ID, "")
-            putString(ITEM_NAME, "")
+            putString(ITEM_NAME, trackerDataModel.widgetTitle)
         }
     }
 
