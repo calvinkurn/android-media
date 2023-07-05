@@ -6,15 +6,6 @@
     android:layout_height="wrap_content"
     android:paddingBottom="16dp">
 
-    <View
-        android:id="@+id/shop_credibility_area_click"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="@id/shop_credibility_location"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/shop_credibility_name" />
-
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/shop_credibility_ava"
         android:layout_width="50dp"

@@ -88,7 +88,7 @@ class ProductShopCredibilityViewHolder(
             setupInfoRegion(element, this)
             setupFollow(element.isFavorite, componentTracker, this)
 
-            shopCredibilityAreaClick.setOnClickListener {
+            root.setOnClickListener {
                 listener.gotoShopDetail(componentTracker)
             }
 
