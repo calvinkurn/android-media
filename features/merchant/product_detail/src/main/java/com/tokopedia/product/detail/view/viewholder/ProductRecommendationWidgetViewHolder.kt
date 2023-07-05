@@ -21,7 +21,7 @@ class ProductRecommendationWidgetViewHolder(
     private val binding = ItemProductRecommendationWidgetBinding.bind(view)
 
     override fun bind(element: ProductRecommendationWidgetUiModel) {
-        binding.root.bind(element.recommendationWidget)
+        binding.recomWidget.bind(element.recommendationWidget)
         binding.root.addOnImpressionListener(element.impressHolder) {
             listener.onImpressComponent(
                 ComponentTrackDataModel(
@@ -35,6 +35,6 @@ class ProductRecommendationWidgetViewHolder(
 
     override fun onViewRecycled() {
         super.onViewRecycled()
-        binding.root.recycle()
+        binding.recomWidget.recycle()
     }
 }
