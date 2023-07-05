@@ -51,6 +51,7 @@ import com.tokopedia.feedplus.presentation.adapter.FeedAdapterTypeFactory
 import com.tokopedia.feedplus.presentation.adapter.FeedPostAdapter
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_NOT_SELECTED
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_SELECTED
+import com.tokopedia.feedplus.presentation.adapter.listener.FeedFollowRecommendationListener
 import com.tokopedia.feedplus.presentation.adapter.listener.FeedListener
 import com.tokopedia.feedplus.presentation.model.FeedAuthorModel
 import com.tokopedia.feedplus.presentation.model.FeedCardCampaignModel
@@ -59,6 +60,7 @@ import com.tokopedia.feedplus.presentation.model.FeedCardLivePreviewContentModel
 import com.tokopedia.feedplus.presentation.model.FeedCardProductModel
 import com.tokopedia.feedplus.presentation.model.FeedCardVideoContentModel
 import com.tokopedia.feedplus.presentation.model.FeedDataModel
+import com.tokopedia.feedplus.presentation.model.FeedFollowRecommendationModel
 import com.tokopedia.feedplus.presentation.model.FeedMainEvent
 import com.tokopedia.feedplus.presentation.model.FeedNoContentModel
 import com.tokopedia.feedplus.presentation.model.FeedShareModel
@@ -208,6 +210,20 @@ class FeedFragment :
 
                 notifyItemSelected(position)
             }
+        }
+    }
+
+    private val feedFollowRecommendationListener = object : FeedFollowRecommendationListener {
+        override fun onClickFollow(profile: FeedFollowRecommendationModel.Profile) {
+
+        }
+
+        override fun onCloseProfileRecommendation(profile: FeedFollowRecommendationModel.Profile) {
+            feedPostViewModel.removeProfileRecommendation(profile)
+        }
+
+        override fun onClickProfileRecommendation(profile: FeedFollowRecommendationModel.Profile) {
+
         }
     }
 
@@ -778,7 +794,12 @@ class FeedFragment :
             }
 
             adapter = FeedPostAdapter(
-                FeedAdapterTypeFactory(this, binding.rvFeedPost, trackerModelMapper)
+                FeedAdapterTypeFactory(
+                    this,
+                    binding.rvFeedPost,
+                    trackerModelMapper,
+                    feedFollowRecommendationListener,
+                )
             )
             if (adapter!!.itemCount == 0) {
                 showLoading()

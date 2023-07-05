@@ -8,7 +8,7 @@ import com.tokopedia.feedplus.databinding.ItemFeedFollowRecommendationBinding
 import com.tokopedia.feedplus.presentation.adapter.FeedFollowProfileAdapter
 import com.tokopedia.feedplus.presentation.adapter.itemdecoration.FeedFollowProfileItemDecoration
 import com.tokopedia.feedplus.presentation.adapter.layoutmanager.FeedFollowProfileLayoutManager
-import com.tokopedia.feedplus.presentation.adapter.listener.FeedListener
+import com.tokopedia.feedplus.presentation.adapter.listener.FeedFollowRecommendationListener
 import com.tokopedia.feedplus.presentation.model.FeedFollowRecommendationModel
 
 /**
@@ -16,7 +16,7 @@ import com.tokopedia.feedplus.presentation.model.FeedFollowRecommendationModel
  */
 class FeedFollowRecommendationViewHolder(
     private val binding: ItemFeedFollowRecommendationBinding,
-    private val listener: FeedListener
+    private val listener: FeedFollowRecommendationListener
 ) : AbstractViewHolder<FeedFollowRecommendationModel>(binding.root) {
 
     private val profileAdapter = FeedFollowProfileAdapter(
@@ -24,7 +24,8 @@ class FeedFollowRecommendationViewHolder(
             override fun onScrollProfile(position: Int) {
                 binding.rvFollowRecommendation.smoothScrollToPosition(position)
             }
-        }
+        },
+        followRecommendationListener = listener
     )
     private val layoutManager = FeedFollowProfileLayoutManager(itemView.context)
     private val snapHelper = PagerSnapHelper()

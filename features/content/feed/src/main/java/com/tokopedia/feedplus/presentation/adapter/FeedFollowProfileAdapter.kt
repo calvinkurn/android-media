@@ -2,6 +2,7 @@ package com.tokopedia.feedplus.presentation.adapter
 
 import com.tokopedia.adapterdelegate.BaseDiffUtilAdapter
 import com.tokopedia.feedplus.presentation.adapter.delegate.FeedFollowProfileAdapterDelegate
+import com.tokopedia.feedplus.presentation.adapter.listener.FeedFollowRecommendationListener
 import com.tokopedia.feedplus.presentation.adapter.viewholder.FeedFollowProfileViewHolder
 import com.tokopedia.feedplus.presentation.model.FeedFollowRecommendationModel
 
@@ -10,11 +11,12 @@ import com.tokopedia.feedplus.presentation.model.FeedFollowRecommendationModel
  */
 class FeedFollowProfileAdapter(
     profileListener: FeedFollowProfileViewHolder.Profile.Listener,
+    followRecommendationListener: FeedFollowRecommendationListener,
 ) : BaseDiffUtilAdapter<FeedFollowProfileAdapter.Model>() {
 
     init {
         delegatesManager
-            .addDelegate(FeedFollowProfileAdapterDelegate.Profile(profileListener))
+            .addDelegate(FeedFollowProfileAdapterDelegate.Profile(profileListener, followRecommendationListener))
             .addDelegate(FeedFollowProfileAdapterDelegate.Loading())
     }
 

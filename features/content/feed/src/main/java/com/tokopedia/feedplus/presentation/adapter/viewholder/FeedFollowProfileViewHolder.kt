@@ -8,6 +8,8 @@ import com.tokopedia.feedplus.databinding.ItemFeedFollowProfileShimmerBinding
 import com.tokopedia.feedplus.presentation.adapter.FeedFollowProfileAdapter
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.feedplus.R
+import com.tokopedia.feedplus.presentation.adapter.listener.FeedFollowRecommendationListener
+import com.tokopedia.feedplus.presentation.model.FeedFollowRecommendationModel
 
 /**
  * Created By : Jonathan Darwin on July 04, 2023
@@ -17,6 +19,7 @@ class FeedFollowProfileViewHolder private constructor() {
     class Profile(
         private val binding: ItemFeedFollowProfileBinding,
         private val listener: Listener,
+        private val followRecommendationListener: FeedFollowRecommendationListener
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(model: FeedFollowProfileAdapter.Model.Profile) {
@@ -34,20 +37,20 @@ class FeedFollowProfileViewHolder private constructor() {
                 }
 
                 setOnClickListener {
-                    /** TODO: setup click listener */
+                    followRecommendationListener.onClickFollow(model.data)
                 }
             }
 
             binding.root.setOnClickListener { listener.onScrollProfile(absoluteAdapterPosition) }
-            binding.imgProfile.setOnClickListener { onClickProfile() }
-            binding.tvProfileName.setOnClickListener { onClickProfile() }
+            binding.imgProfile.setOnClickListener { onClickProfile(model.data) }
+            binding.tvProfileName.setOnClickListener { onClickProfile(model.data) }
             binding.icClose.setOnClickListener {
-                /** TODO: handle this */
+                followRecommendationListener.onCloseProfileRecommendation(model.data)
             }
         }
 
-        private fun onClickProfile() {
-            /** TODO: handle this */
+        private fun onClickProfile(profile: FeedFollowRecommendationModel.Profile) {
+            followRecommendationListener.onClickProfileRecommendation(profile)
         }
 
         interface Listener {
@@ -58,13 +61,15 @@ class FeedFollowProfileViewHolder private constructor() {
             fun create(
                 parent: ViewGroup,
                 listener: Listener,
+                followRecommendationListener: FeedFollowRecommendationListener
             ) = Profile(
                 ItemFeedFollowProfileBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
                     false
                 ),
-                listener
+                listener,
+                followRecommendationListener
             )
         }
     }

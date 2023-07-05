@@ -16,6 +16,7 @@ import com.tokopedia.feedplus.databinding.ItemFeedPostBinding
 import com.tokopedia.feedplus.databinding.ItemFeedPostLiveBinding
 import com.tokopedia.feedplus.databinding.ItemFeedPostVideoBinding
 import com.tokopedia.feedplus.domain.mapper.MapperFeedModelToTrackerDataModel
+import com.tokopedia.feedplus.presentation.adapter.listener.FeedFollowRecommendationListener
 import com.tokopedia.feedplus.presentation.adapter.listener.FeedListener
 import com.tokopedia.feedplus.presentation.adapter.viewholder.FeedErrorViewHolder
 import com.tokopedia.feedplus.presentation.adapter.viewholder.FeedFollowRecommendationViewHolder
@@ -37,7 +38,8 @@ import com.tokopedia.feedplus.presentation.model.FeedNoContentModel
 class FeedAdapterTypeFactory(
     context: FeedFragment,
     private val parentToBeDisabled: ViewParent?,
-    private val trackerMapper: MapperFeedModelToTrackerDataModel
+    private val trackerMapper: MapperFeedModelToTrackerDataModel,
+    private val followRecommendationListener: FeedFollowRecommendationListener,
 ) : BaseAdapterTypeFactory() {
 
     private val feedListener: FeedListener
@@ -100,7 +102,7 @@ class FeedAdapterTypeFactory(
                     parent as ViewGroup,
                     false
                 ),
-                feedListener
+                followRecommendationListener
             )
             LoadingMoreViewHolder.LAYOUT -> FeedLoadMoreViewHolder(
                 ItemFeedLoadMoreContentBinding.inflate(
