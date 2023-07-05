@@ -11,7 +11,7 @@ import dagger.Module
 import dagger.multibindings.IntoMap
 
 @Module
-abstract class CheckoutPresenterModule {
+abstract class CheckoutViewModelModule {
 
     @Binds
     @ActivityScope

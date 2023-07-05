@@ -51,8 +51,8 @@ data class GroupShop(
 ) : Parcelable {
 
     companion object {
-        const val GROUP_TYPE_NORMAL = 0
-        const val GROUP_TYPE_OWOC = 1
+        const val GROUP_TYPE_NORMAL = 1
+        const val GROUP_TYPE_OWOC = 2
 
         const val UI_GROUP_TYPE_NORMAL = 0
         const val UI_GROUP_TYPE_OWOC = 1
