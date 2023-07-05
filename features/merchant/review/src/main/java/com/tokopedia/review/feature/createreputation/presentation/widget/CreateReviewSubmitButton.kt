@@ -11,8 +11,6 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.review.databinding.WidgetCreateReviewSubmitButtonBinding
 import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewSubmitButtonUiState
-import kotlin.coroutines.Continuation
-import kotlin.coroutines.resume
 
 class CreateReviewSubmitButton @JvmOverloads constructor(
     context: Context,
@@ -47,31 +45,23 @@ class CreateReviewSubmitButton @JvmOverloads constructor(
         layoutSubmitButton.root.isLoading = sending
     }
 
-    fun updateUi(uiState: CreateReviewSubmitButtonUiState, continuation: Continuation<Unit>) {
+    fun updateUi(uiState: CreateReviewSubmitButtonUiState) {
         when(uiState) {
             is CreateReviewSubmitButtonUiState.Loading -> {
                 showLoading()
-                animateShow(onAnimationEnd = {
-                    continuation.resume(Unit)
-                })
+                animateShow()
             }
             is CreateReviewSubmitButtonUiState.Enabled -> {
                 binding.showButton(enabled = true, sending = false)
-                animateShow(onAnimationEnd = {
-                    continuation.resume(Unit)
-                })
+                animateShow()
             }
             is CreateReviewSubmitButtonUiState.Disabled -> {
                 binding.showButton(enabled = false, sending = false)
-                animateShow(onAnimationEnd = {
-                    continuation.resume(Unit)
-                })
+                animateShow()
             }
             is CreateReviewSubmitButtonUiState.Sending -> {
                 binding.showButton(enabled = false, sending = true)
-                animateShow(onAnimationEnd = {
-                    continuation.resume(Unit)
-                })
+                animateShow()
             }
         }
     }
