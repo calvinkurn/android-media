@@ -1052,7 +1052,9 @@ class ShopPageCampaignFragment :
     override fun onTimerFinished(uiModel: ShopWidgetDisplayBannerTimerUiModel) {
         shopCampaignTabAdapter.removeWidget(uiModel)
         endlessRecyclerViewScrollListener.resetState()
-        getLatestShopCampaignWidgetLayoutData()
+        if(getSelectedFragment() == this){
+            refreshShopHeader()
+        }
     }
 
     private fun getLatestShopCampaignWidgetLayoutData() {
