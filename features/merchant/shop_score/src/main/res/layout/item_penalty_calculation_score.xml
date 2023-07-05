@@ -41,13 +41,14 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="18dp"
             android:textColor="@color/Unify_Static_White"
+            android:layout_marginTop="4dp"
             app:layout_constraintHorizontal_bias="0"
             app:layout_constraintVertical_chainStyle="packed"
             app:layout_constraintTop_toBottomOf="@id/tv_penalty_calculation_score_title"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintBottom_toTopOf="@id/divider_penalty_calculation_score"
             app:layout_constraintEnd_toStartOf="@id/tv_penalty_calculation_score_value"
-            app:typographyType="small"
+            app:typographyType="display_3"
             tools:text="5 Agu - 6 Agu 2020"/>
 
         <com.tokopedia.unifyprinciples.Typography
