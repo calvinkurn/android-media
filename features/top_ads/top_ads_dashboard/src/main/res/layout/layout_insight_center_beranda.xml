@@ -40,8 +40,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
-            <include layout="@layout/topads_dash_saran_topads_top_widget_layout" />
-            <include layout="@layout/shimmer_layout_bottom_level_recommendation_at_home" />
+            <include android:id="@+id/topAdsInsightCenterTopWidget" layout="@layout/topads_dash_saran_topads_top_widget_layout" />
+            <include android:id="@+id/topAdsInsightCenterShimmerBottomPage" layout="@layout/shimmer_layout_bottom_level_recommendation_at_home" />
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/insight_recyclerview"
                 android:layout_width="match_parent"
