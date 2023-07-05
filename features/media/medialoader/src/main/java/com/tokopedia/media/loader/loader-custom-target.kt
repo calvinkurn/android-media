@@ -48,24 +48,26 @@ fun String.getBitmapImageUrl(
 ): Flow<Bitmap> {
     val url = this
     return callbackFlow {
-        val target = MediaBitmapEmptyTarget<Bitmap>(
-            onReady = {
-                trySend(it)
-            }
-        )
-
         MediaLoaderTarget.loadImage(
             context,
             Properties()
                 .apply(properties)
                 .setSource(url),
-            target
+            MediaBitmapEmptyTarget<Bitmap>(
+                onReady = {
+                    trySend(it)
+                }
+            )
         )
 
-        awaitClose { target.onDestroy() }
+        awaitClose { channel.close() }
     }
 }
 
+@Deprecated(
+    message = "This function is too verbose, please use getBitmapImageUrl() extension instead",
+    replaceWith = ReplaceWith("getBitmapImageUrl")
+)
 fun <T: View> loadImageWithTarget(
     context: Context,
     url: String,
@@ -81,6 +83,10 @@ fun <T: View> loadImageWithTarget(
     )
 }
 
+@Deprecated(
+    message = "This function is too verbose, please use getBitmapImageUrl() extension instead",
+    replaceWith = ReplaceWith("getBitmapImageUrl")
+)
 fun loadImageWithEmptyTarget(
     context: Context,
     url: String,
