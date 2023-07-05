@@ -19,7 +19,7 @@ object MapperFeedTabs {
     ): FeedTabsModel =
         FeedTabsModel(
             meta = MetaModel(
-                selectedIndex = 0,
+                selectedIndex = header.data.tab.meta?.selectedIndex ?: 0,
                 profileApplink = header.data.userProfile.applink,
                 profilePhotoUrl = header.data.userProfile.image,
                 showMyProfile = header.data.userProfile.isShown,

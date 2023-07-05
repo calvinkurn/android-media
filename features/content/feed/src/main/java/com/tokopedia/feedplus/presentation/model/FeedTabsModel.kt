@@ -40,7 +40,7 @@ data class MetaModel(
     companion object {
         val Empty: MetaModel
             get() = MetaModel(
-                selectedIndex = -1,
+                selectedIndex = 0,
                 profileApplink = "",
                 profilePhotoUrl = "",
                 showMyProfile = false,

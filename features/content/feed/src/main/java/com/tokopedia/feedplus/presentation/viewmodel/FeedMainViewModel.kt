@@ -216,6 +216,9 @@ class FeedMainViewModel @Inject constructor(
                 feedXHeaderUseCase.executeOnBackground()
             }
             val mappedData = MapperFeedTabs.transform(response.feedXHeaderData)
+            if (mappedData.meta.selectedIndex >= 0 && mappedData.meta.selectedIndex < mappedData.data.size) {
+                _currentTabIndex.value = mappedData.meta.selectedIndex
+            }
             _metaData.value = Success(mappedData.meta)
 
             handleCreationData(
