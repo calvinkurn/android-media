@@ -9,14 +9,16 @@ import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandle
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.BaseChatBotViewHolder
 import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.listener.ChatbotDynamicOwocListener
-import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.owocInvoice.ChatbotDynamicOwocInvoiceAdapter
+import com.tokopedia.chatbot.chatbot2.view.adapter.ChatbotDynamicOwocInvoiceAdapter
 import com.tokopedia.chatbot.chatbot2.view.uimodel.dynamicattachment.DynamicOwocInvoiceUiModel
 import com.tokopedia.chatbot.chatbot2.view.util.generateLeftMessageBackground
 import com.tokopedia.chatbot.chatbot2.view.util.helper.ChatbotMessageViewHolderBinder
 import com.tokopedia.chatbot.databinding.ItemChatbotDynamicOwocBinding
 import com.tokopedia.chatbot.util.setContainerBackground
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.utils.view.binding.viewBinding
+import kotlinx.android.synthetic.main.item_chatbot_read_more_action_bubble.view.*
 
 class DynamicOwocInvoiceViewHolder(
     itemView: View,
@@ -46,6 +48,13 @@ class DynamicOwocInvoiceViewHolder(
         binding?.apply {
             customChatLayout.message?.text = uiModel.message
             initializeAdapter(uiModel)
+            btnReadMore.readMoreOptions.text = "Test"
+            val size = uiModel.invoiceList?.size ?: 0
+
+            if (size>2)
+                btnReadMore.root.show()
+            else
+                btnReadMore.root.hide()
         }
     }
 

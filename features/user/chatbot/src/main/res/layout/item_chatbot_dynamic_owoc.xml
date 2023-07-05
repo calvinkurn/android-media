@@ -38,6 +38,9 @@
             tools:itemCount="3"
             tools:listitem="@layout/item_chatbot_owoc_invoice" />
 
+        <include layout="@layout/item_chatbot_read_more_action_bubble"
+            android:id="@+id/btn_read_more"/>
+
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvTime"
             android:layout_width="wrap_content"

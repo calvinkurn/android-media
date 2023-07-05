@@ -1,4 +1,4 @@
-package com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.owocInvoice
+package com.tokopedia.chatbot.chatbot2.view.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -36,6 +36,7 @@ class ChatbotDynamicOwocInvoiceAdapter(
     override fun getItemCount(): Int {
         return data.size
     }
+
     //TODO change this one
     fun setList(invoiceList: List<DynamicOwocInvoicePojo.InvoiceCardOwoc>) {
         data.clear()
