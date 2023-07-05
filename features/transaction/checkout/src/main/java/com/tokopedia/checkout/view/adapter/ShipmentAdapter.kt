@@ -1351,20 +1351,6 @@ class ShipmentAdapter @Inject constructor(
         notifyItemChanged(position)
     }
 
-//    fun setPlatformFeeData(platformFeeModel: ShipmentPaymentFeeModel?) {
-//        if (shipmentCostModel != null) {
-//            shipmentCostModel!!.dynamicPlatformFee = platformFeeModel!!
-//        }
-//    }
-
-//    fun getShipmentCostItemIndex(): Int {
-//        var index = 0
-//        if (shipmentCostModel != null) {
-//            index = shipmentDataList.indexOf(shipmentCostModel!!)
-//        }
-//        return index
-//    }
-
     override fun onCheckboxAddonProductListener(isChecked: Boolean, addOnProductDataItemModel: AddOnProductDataItemModel, cartItemModel: CartItemModel, bindingAdapterPosition: Int) {
         shipmentAdapterActionListener.onCheckboxAddonProductListener(isChecked, addOnProductDataItemModel, cartItemModel, bindingAdapterPosition)
     }

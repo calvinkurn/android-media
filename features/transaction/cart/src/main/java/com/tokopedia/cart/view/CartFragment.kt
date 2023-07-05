@@ -4565,7 +4565,6 @@ class CartFragment :
         activity?.let {
             val intent = RouteManager.getIntent(it, applink)
             startActivityForResult(intent, NAVIGATION_ADDON)
-            RouteManager.route(it, applink)
         }
     }
 
