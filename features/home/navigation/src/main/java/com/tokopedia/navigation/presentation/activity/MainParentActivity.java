@@ -636,7 +636,7 @@ public class MainParentActivity extends BaseActivity implements
         boolean isForceDarkMode = getIsFragmentForceDarkModeNavigationBar(fragment);
         bottomNavigation.forceDarkMode(isForceDarkMode);
 
-        int lineColorRes = isForceDarkMode ? R.color.navigation_dms_line_bottom_nav_darkmode : com.tokopedia.unifyprinciples.R.color.Unify_N75;
+        int lineColorRes = isForceDarkMode ? R.color.navigation_dms_line_bottom_nav_darkmode : com.tokopedia.unifyprinciples.R.color.Unify_NN50;
         lineBottomNav.setBackgroundResource(lineColorRes);
     }
 
