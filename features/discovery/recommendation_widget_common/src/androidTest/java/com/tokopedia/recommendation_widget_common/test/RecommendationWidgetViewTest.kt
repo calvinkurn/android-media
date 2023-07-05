@@ -133,7 +133,7 @@ class RecommendationWidgetViewTest {
         val pageName = PAGENAME_VERTICAL
         val state = stateFrom(
             pageName = pageName,
-            rawResponseId = R.raw.recom_vertical, // TODO:: Add BE response for Recom Vertical
+            rawResponseId = R.raw.recom_vertical,
         )
 
         openTestActivity(state, pageName)

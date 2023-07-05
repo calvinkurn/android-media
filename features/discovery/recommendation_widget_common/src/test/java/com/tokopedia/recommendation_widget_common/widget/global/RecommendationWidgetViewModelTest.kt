@@ -158,7 +158,6 @@ class RecommendationWidgetViewModelTest {
     fun `layout name vertical will render carousel vertical`() {
         val viewModel = ViewModel()
 
-        //TODO:: Add BE Response for Recom Vertical
         val recommendationWidgetList = "recom_vertical.json".jsonToRecommendationWidgetList()
         coEvery { getRecommendationWidgetUseCase.getData(any()) } returns recommendationWidgetList
 

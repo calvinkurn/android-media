@@ -32,7 +32,7 @@ data class RecommendationWidgetState(
                 trackingModel = model.trackingModel,
                 recommendationWidget = widget,
             )
-        } else if (widget.pageName == PAGENAME_VERTICAL) { //TODO:: Check discussion for page name
+        } else if (widget.pageName == PAGENAME_VERTICAL) {
             RecommendationVerticalModel.from(
                 metadata = model.metadata,
                 trackingModel = model.trackingModel,
