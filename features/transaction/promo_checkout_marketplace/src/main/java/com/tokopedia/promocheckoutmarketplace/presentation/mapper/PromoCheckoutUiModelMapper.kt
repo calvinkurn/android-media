@@ -1,8 +1,10 @@
 package com.tokopedia.promocheckoutmarketplace.presentation.mapper
 
+import com.tokopedia.applink.internal.ApplinkConsInternalDigital
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.promocheckoutmarketplace.data.response.BenefitDetail
 import com.tokopedia.promocheckoutmarketplace.data.response.BottomSheet
+import com.tokopedia.promocheckoutmarketplace.data.response.CTA
 import com.tokopedia.promocheckoutmarketplace.data.response.ClearPromoResponse
 import com.tokopedia.promocheckoutmarketplace.data.response.Coupon
 import com.tokopedia.promocheckoutmarketplace.data.response.CouponListRecommendation
@@ -190,6 +192,7 @@ class PromoCheckoutUiModelMapper @Inject constructor() {
                     paymentOptions = it.methods.joinToString(",")
                 }
                 benefitDetail = couponItem.benefitDetail.firstOrNull() ?: BenefitDetail()
+                cta = couponItem.cta
             },
             uiState = PromoListItemUiModel.UiState().apply {
                 isParentEnabled = couponSubSection.isEnabled
@@ -201,8 +204,11 @@ class PromoCheckoutUiModelMapper @Inject constructor() {
                 val lastPromo = couponSubSection.coupons.lastOrNull()
                 isLastPromoItem = lastPromo != null && (lastPromo.code == couponItem.code || lastPromo.groupId == couponItem.groupId)
                 isBebasOngkir = couponItem.isBebasOngkir
+                isContainActionableCTA = couponItem.cta.applink.isNotEmpty() && couponItem.cta.text.isNotEmpty()
             }
         )
+        println("couponItemA: ${couponItem.cta.applink.isNotEmpty()} == ${couponItem.cta.applink}")
+        println("couponItemB: ${couponItem.cta.text.isNotEmpty()} == ${couponItem.cta.text}")
         promoItem.uiState.isDisabled = !promoItem.uiState.isParentEnabled || promoItem.uiData.errorMessage.isNotBlank()
 
         return promoItem

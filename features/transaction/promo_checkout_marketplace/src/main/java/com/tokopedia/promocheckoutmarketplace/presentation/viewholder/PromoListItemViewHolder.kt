@@ -100,7 +100,7 @@ class PromoListItemViewHolder(
         viewBinding: PromoCheckoutMarketplaceModuleItemPromoCardBinding,
         element: PromoListItemUiModel
     ) {
-        viewBinding.cardPromoItem.setOnClickListener {
+        viewBinding.promoConstraintWrapper.setOnClickListener {
             adapterPosition.takeIf { it != RecyclerView.NO_POSITION }?.let {
                 if (element.uiData.currentClashingPromo.isNullOrEmpty() && element.uiState.isParentEnabled && !element.uiState.isDisabled) {
                     listener.onClickPromoListItem(element, adapterPosition)
@@ -344,7 +344,7 @@ class PromoListItemViewHolder(
         renderUserValidity(viewBinding, element)
         renderErrorInfo(viewBinding, element)
         renderDivider(viewBinding, element)
-        renderPromoActionable(viewBinding)
+        renderPromoActionable(viewBinding, element)
         adjustConstraints(viewBinding)
         currentItemId = element.id
     }
@@ -688,12 +688,12 @@ class PromoListItemViewHolder(
     }
 
     private fun renderPromoActionable(
-        viewBinding: PromoCheckoutMarketplaceModuleItemPromoCardBinding
+        viewBinding: PromoCheckoutMarketplaceModuleItemPromoCardBinding,
+        element: PromoListItemUiModel
     ) {
-        val dummyCondition = adapterPosition.isOdd()
         with(viewBinding) {
-            if (dummyCondition) {
-                textPromoActionable.text = "hello ini kode promo"
+            if (element.uiState.isContainActionableCTA) {
+                textPromoActionable.text = element.uiData.cta.text
                 cardPromoActionable.show()
             } else {
                 textPromoActionable.text = ""

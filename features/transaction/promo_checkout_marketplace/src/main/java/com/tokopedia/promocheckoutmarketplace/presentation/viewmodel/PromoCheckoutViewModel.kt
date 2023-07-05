@@ -135,6 +135,11 @@ class PromoCheckoutViewModel @Inject constructor(
     val getPromoSuggestionResponse: LiveData<GetPromoSuggestionAction>
         get() = _getPromoSuggestionResponse
 
+    // Live data to handle actionable CTA
+    private val _getApplinkNavigation = MutableLiveData<String>()
+    val getApplinkNavigation: LiveData<String>
+        get() = _getApplinkNavigation
+
     // Page source : CART, CHECKOUT, OCC
     fun getPageSource(): Int {
         return fragmentUiModel.value?.uiData?.pageSource ?: 0
@@ -1363,6 +1368,14 @@ class PromoCheckoutViewModel @Inject constructor(
 
         setFragmentStateHasPromoSelected(false)
         resetRecommendedPromo()
+    }
+
+    fun handlePromoListAfterClickPromoItem(element: PromoListItemUiModel) {
+        if (element.uiState.isContainActionableCTA) {
+            _getApplinkNavigation.value = element.uiData.cta.applink
+        } else {
+            updatePromoListAfterClickPromoItem(element)
+        }
     }
 
     fun updatePromoListAfterClickPromoItem(element: PromoListItemUiModel) {

@@ -289,6 +289,9 @@ class PromoCheckoutFragment :
         observeApplyPromoResult()
         observeClearPromoResult()
         observeGetPromoSuggestionResult()
+
+        // Observe ui actions
+        observeActionableCTAApplink()
     }
 
     private fun setBackground() {
@@ -728,6 +731,13 @@ class PromoCheckoutFragment :
         }
     }
 
+    private fun observeActionableCTAApplink() {
+        viewModel.getApplinkNavigation.observe(viewLifecycleOwner) { applink ->
+            val intent = RouteManager.getIntent(context, applink)
+            gopayCicilLauncher.launch(intent)
+        }
+    }
+
     private fun showPromoCheckoutSuggestionBottomSheet(data: PromoSuggestionUiModel) {
         activity?.let {
             snapToPromoInput()
@@ -1151,14 +1161,7 @@ class PromoCheckoutFragment :
     }
 
     override fun onClickPromoListItem(element: PromoListItemUiModel, position: Int) {
-        // navigate actionable if applink exist
-        if (true) {
-            // TOOD: [Misael] Remove dummy applink
-            val intent = RouteManager.getIntent(context, ApplinkConsInternalDigital.CREDIT_CARD_TEMPLATE)
-            gopayCicilLauncher.launch(intent)
-        } else {
-            viewModel.updatePromoListAfterClickPromoItem(element)
-        }
+        viewModel.handlePromoListAfterClickPromoItem(element)
 
         // dismiss coachmark if user click promo with coachmark
         val adapterItems = adapter.list

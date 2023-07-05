@@ -10,6 +10,7 @@ import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.just
+import io.mockk.verify
 import org.junit.Test
 
 class PromoCheckoutViewModelUICallbackTest : BasePromoCheckoutViewModelTest() {
@@ -479,5 +480,66 @@ class PromoCheckoutViewModelUICallbackTest : BasePromoCheckoutViewModelTest() {
         assert(lastModifiedData != null)
         assert(lastModifiedData?.data is PromoListItemUiModel)
         assert((lastModifiedData?.data as PromoListItemUiModel).uiData.errorMessage.isBlank())
+    }
+
+    @Test
+    fun `WHEN click promo card with actionable CTA THEN should navigate applink`() {
+        // GIVEN
+        val response = GetPromoListDataProvider.provideGetPromoListResponseSuccessAllEligible()
+
+        coEvery { getCouponListRecommendationUseCase.setParams(any(), any()) } just Runs
+        coEvery { getCouponListRecommendationUseCase.execute(any(), any()) } answers {
+            firstArg<(CouponListRecommendationResponse) -> Unit>().invoke(response)
+        }
+
+        viewModel.getPromoList(PromoRequest(), "")
+
+        var selectedPromoItemWithActionableCTA: PromoListItemUiModel? = null
+        viewModel.promoListUiModel.value?.forEach {
+            println(it)
+            if (it is PromoListItemUiModel && it.uiState.isContainActionableCTA) {
+                selectedPromoItemWithActionableCTA = it
+                return@forEach
+            }
+        }
+
+        // WHEN
+        viewModel.handlePromoListAfterClickPromoItem(selectedPromoItemWithActionableCTA!!)
+
+        // THEN
+        val applinkData = viewModel.getApplinkNavigation.value
+        assert(applinkData == selectedPromoItemWithActionableCTA?.uiData?.cta?.applink)
+    }
+
+    @Test
+    fun `WHEN click promo card with no actionable CTA and is unselected THEN should select the product`() {
+        // GIVEN
+        val response = GetPromoListDataProvider.provideGetPromoListResponseSuccessAllEligible()
+
+        coEvery { getCouponListRecommendationUseCase.setParams(any(), any()) } just Runs
+        coEvery { getCouponListRecommendationUseCase.execute(any(), any()) } answers {
+            firstArg<(CouponListRecommendationResponse) -> Unit>().invoke(response)
+        }
+        every { analytics.eventClickSelectKupon(any(), any(), any()) } just Runs
+
+        viewModel.getPromoList(PromoRequest(), "")
+
+        var selectedPromoItemWithActionableCTA: PromoListItemUiModel? = null
+        viewModel.promoListUiModel.value?.forEach {
+            if (it is PromoListItemUiModel && !it.uiState.isContainActionableCTA && !it.uiState.isSelected) {
+                selectedPromoItemWithActionableCTA = it
+                return@forEach
+            }
+        }
+
+        var hasAnyPromoSelected = viewModel.isHasAnySelectedPromoItem()
+        assert(!hasAnyPromoSelected)
+
+        // WHEN
+        viewModel.handlePromoListAfterClickPromoItem(selectedPromoItemWithActionableCTA!!)
+
+        // THEN
+        hasAnyPromoSelected = viewModel.isHasAnySelectedPromoItem()
+        assert(hasAnyPromoSelected)
     }
 }
