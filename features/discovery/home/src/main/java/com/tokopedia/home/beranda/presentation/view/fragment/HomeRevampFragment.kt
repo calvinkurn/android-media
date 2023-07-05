@@ -589,9 +589,6 @@ open class HomeRevampFragment :
                 override fun onFrameRendered(fpiPerformanceData: FpiPerformanceData) {}
             }
         )
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            viewLifecycleOwner.lifecycle.addObserver(fragmentFramePerformanceIndexMonitoring)
-        }
         navToolbar = view.findViewById(R.id.navToolbar)
 
         statusBarBackground = view.findViewById(R.id.status_bar_bg)

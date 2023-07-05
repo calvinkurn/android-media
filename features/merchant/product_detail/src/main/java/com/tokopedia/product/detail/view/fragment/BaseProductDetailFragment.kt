@@ -11,6 +11,8 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
+import com.tokopedia.analytics.performance.fpi.FfpiMonitoringDelegate
+import com.tokopedia.analytics.performance.fpi.FfpiMonitoringDelegateImpl
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
@@ -48,6 +50,8 @@ abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactor
 
     protected var binding by autoClearedNullable<DynamicProductDetailFragmentBinding>()
 
+    private val fpiMonitoring: FfpiMonitoringDelegate = FfpiMonitoringDelegateImpl()
+
     open fun onSwipeRefresh() {
         swipeToRefresh?.isRefreshing = true
         loadData(true)
@@ -56,21 +60,33 @@ abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactor
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         context?.let {
-            activity?.window?.decorView?.setBackgroundColor(androidx.core.content.ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_Background))
+            activity?.window?.decorView?.setBackgroundColor(
+                androidx.core.content.ContextCompat.getColor(
+                    it,
+                    com.tokopedia.unifyprinciples.R.color.Unify_Background
+                )
+            )
         }
         setHasOptionsMenu(true)
         productAdapter = createAdapterInstance()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        fpiMonitoring.onCreateView(this)
         binding = DynamicProductDetailFragmentBinding.inflate(inflater, container, false)
         return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        fpiMonitoring.onViewCreated(view)
         setupSwipeLayout(view)
         setupRecyclerView(view)
+    }
+
+    override fun onHiddenChanged(hidden: Boolean) {
+        super.onHiddenChanged(hidden)
+        fpiMonitoring.onHiddenChanged(hidden)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
