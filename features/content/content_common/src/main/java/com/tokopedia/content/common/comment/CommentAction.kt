@@ -16,7 +16,7 @@ sealed interface CommentAction {
     data class ReplyComment(val comment: String, val commentType: CommentType) : CommentAction
 
     data class DeleteComment(val isFromToaster: Boolean) : CommentAction
-    data class PermanentRemoveComment(val itemId: String) : CommentAction
+    object PermanentRemoveComment : CommentAction
 
     data class ReportComment(
         val param: FeedComplaintSubmitReportUseCase.Param
