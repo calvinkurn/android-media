@@ -219,6 +219,12 @@ class FeedFragment :
         }
     }
 
+    private var mAuthor: FeedAuthorModel? = null
+    private var mProducts: List<FeedCardProductModel>? = null
+    private var mHasVoucher: Boolean = false
+    private var mTrackerData: FeedTrackerDataModel? = null
+    private var mCampaign: FeedCardCampaignModel? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         childFragmentManager.fragmentFactory = fragmentFactory
@@ -1089,34 +1095,13 @@ class FeedFragment :
         trackerData: FeedTrackerDataModel?,
         campaign: FeedCardCampaignModel
     ) {
-        if (products.isEmpty()) return
-
-        val productBottomSheet = FeedTaggedProductBottomSheet().apply {
-            setCustomListener(this@FeedFragment)
-        }
-
-        fun trackOpenProductTagBottomSheet(data: FeedTrackerDataModel) {
-            feedMvcAnalytics.trackerData = data
-            currentTrackerData = data
-            feedAnalytics.eventViewProductListBottomSheets(
-                data,
-                products
-            )
-
-            productBottomSheet.setOnDismissListener {
-                feedAnalytics.eventClickCloseProductListBottomSheet(data)
-            }
-        }
-
-        if (trackerData != null) trackOpenProductTagBottomSheet(trackerData)
-
-        val mappedProducts = products.map { MapperProductsToXProducts.transform(it, campaign) }
-        productBottomSheet.show(
-            taggedProducts = mappedProducts,
-            manager = childFragmentManager,
-            tag = TAG_FEED_PRODUCT_BOTTOM_SHEET
+        openFeedTaggedProductBottomSheet(
+            author = author,
+            products = products,
+            hasVoucher = hasVoucher,
+            trackerData = trackerData,
+            campaign = campaign,
         )
-        if (hasVoucher && author.type.isShop) getMerchantVoucher(author.id)
     }
 
     private fun getMerchantVoucher(shopId: String) {
@@ -1266,6 +1251,55 @@ class FeedFragment :
         }
     }
 
+    private fun saveFeedTaggedProductArgs(
+        author: FeedAuthorModel?,
+        products: List<FeedCardProductModel>?,
+        hasVoucher: Boolean,
+        trackerData: FeedTrackerDataModel?,
+        campaign: FeedCardCampaignModel?
+    ) {
+        mAuthor = author
+        mProducts = products
+        mHasVoucher = hasVoucher
+        mTrackerData = trackerData
+        mCampaign = campaign
+    }
+
+    private fun openFeedTaggedProductBottomSheet(
+        author: FeedAuthorModel?,
+        products: List<FeedCardProductModel>?,
+        hasVoucher: Boolean,
+        trackerData: FeedTrackerDataModel?,
+        campaign: FeedCardCampaignModel?
+    ) {
+        if (products.isNullOrEmpty() || campaign == null) return
+        saveFeedTaggedProductArgs(author, products, hasVoucher, trackerData, campaign)
+
+        val productBottomSheet = FeedTaggedProductBottomSheet().apply {
+            setCustomListener(this@FeedFragment)
+        }
+
+        fun trackOpenProductTagBottomSheet(data: FeedTrackerDataModel) {
+            feedMvcAnalytics.trackerData = data
+            currentTrackerData = data
+            feedAnalytics.eventViewProductListBottomSheets(data, products)
+
+            productBottomSheet.setOnDismissListener {
+                feedAnalytics.eventClickCloseProductListBottomSheet(data)
+            }
+        }
+
+        if (trackerData != null) trackOpenProductTagBottomSheet(trackerData)
+
+        val mappedProducts = products.map { MapperProductsToXProducts.transform(it, campaign) }
+        productBottomSheet.show(
+            taggedProducts = mappedProducts,
+            manager = childFragmentManager,
+            tag = TAG_FEED_PRODUCT_BOTTOM_SHEET
+        )
+        if (hasVoucher && author?.type?.isShop == true) getMerchantVoucher(author.id)
+    }
+
     private fun openVariantBottomSheet(product: FeedTaggedProductUiModel) {
         atcVariantViewModel.setAtcBottomSheetParams(
             ProductVariantBottomSheetParams(
@@ -1277,6 +1311,15 @@ class FeedFragment :
 
         val atcVariantBottomSheet = AtcVariantBottomSheet()
         atcVariantBottomSheet.showNow(childFragmentManager, VARIANT_BOTTOM_SHEET_TAG)
+        atcVariantBottomSheet.setOnDismissListener {
+            openFeedTaggedProductBottomSheet(
+                author = mAuthor,
+                products = mProducts,
+                hasVoucher = mHasVoucher,
+                trackerData = mTrackerData,
+                campaign = mCampaign,
+            )
+        }
     }
 
     override fun onBuyProductButtonClicked(product: FeedTaggedProductUiModel, itemPosition: Int) {
