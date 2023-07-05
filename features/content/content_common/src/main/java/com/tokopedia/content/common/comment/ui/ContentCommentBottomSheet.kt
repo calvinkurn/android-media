@@ -180,8 +180,7 @@ class ContentCommentBottomSheet @Inject constructor(
         object : Snackbar.Callback() {
             override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
                 super.onDismissed(transientBottomBar, event)
-
-                viewModel.submitAction(CommentAction.PermanentRemoveComment)
+                if (event == DISMISS_EVENT_TIMEOUT) viewModel.submitAction(CommentAction.PermanentRemoveComment)
             }
         }
     }
