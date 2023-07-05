@@ -9,15 +9,13 @@
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/ivSomListEmptyStateIllustration"
-        android:layout_width="@dimen/layout_lvl0"
-        android:layout_height="0dp"
+        android:layout_width="0dp"
+        android:layout_height="210dp"
         android:adjustViewBounds="true"
         app:layout_constraintBottom_toTopOf="@id/somEmptyStateContainer"
-        app:layout_constraintDimensionRatio="1.334"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_chainStyle="packed" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/somEmptyStateContainer"
