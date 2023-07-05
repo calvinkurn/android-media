@@ -47,6 +47,8 @@ object RecommendationTrackingConstants {
         const val VALUE_NONE_OTHER = "none / other"
         const val VALUE_IS_TOPADS = "- product topads"
 
+        const val LIST = "list"
+
         fun String.convertToWidgetType(): String = replace("-", " ")
     }
 
