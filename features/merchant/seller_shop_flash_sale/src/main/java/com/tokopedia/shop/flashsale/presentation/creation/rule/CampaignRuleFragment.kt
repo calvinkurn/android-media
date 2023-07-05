@@ -174,7 +174,6 @@ class CampaignRuleFragment :
         setUpClickListeners()
         setUpUniqueAccountTips()
         setUpTNCText()
-//        setupOosHandler()
         setUpRelatedCampaignRecyclerView()
         observeOutOfStockStatus()
         observeCampaign()
@@ -307,9 +306,7 @@ class CampaignRuleFragment :
     }
 
     private fun setupOosHandler(isShowOosSection: Boolean) {
-//        val context = context ?: return
         val binding = binding ?: return
-//        val isShowOosSection = RemoteConfigUtil.isShowOutOfStockSection(context)
         if (isShowOosSection) {
             binding.viewGroupOosHandling.visible()
             binding.tgCampaignFsOosTitle.apply {
@@ -574,11 +571,6 @@ class CampaignRuleFragment :
             tncRequest = request
         )
             .show(childFragmentManager)
-    }
-
-    private fun openEduPage() {
-        // TODO: Add web Url Edu Page & Redirect to the page
-        val webUrl = ""
     }
 
     override fun onTNCConfirmationClicked() {
