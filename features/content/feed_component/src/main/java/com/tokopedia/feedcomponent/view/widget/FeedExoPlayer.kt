@@ -22,7 +22,13 @@ class FeedExoPlayer(val context: Context) {
 
     private var videoStateListener: VideoStateListener? = null
 
-    private var loadControl: LoadControl = DefaultLoadControl()
+    private var loadControl: LoadControl = DefaultLoadControl.Builder()
+        .setBufferDurationsMs(
+            30000, // this is expected
+            DefaultLoadControl.DEFAULT_MAX_BUFFER_MS,
+            1000,
+            3000
+        ).createDefaultLoadControl()
 
     private val exoPlayer: SimpleExoPlayer = SimpleExoPlayer.Builder(context)
         .setTrackSelector(DefaultTrackSelector(context))

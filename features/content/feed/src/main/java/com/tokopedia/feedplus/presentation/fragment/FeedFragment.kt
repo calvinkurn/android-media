@@ -14,7 +14,6 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2.SCROLL_STATE_IDLE
@@ -51,6 +50,7 @@ import com.tokopedia.feedplus.domain.mapper.MapperProductsToXProducts
 import com.tokopedia.feedplus.presentation.adapter.FeedAdapterTypeFactory
 import com.tokopedia.feedplus.presentation.adapter.FeedContentAdapter
 import com.tokopedia.feedplus.presentation.adapter.listener.FeedListener
+import com.tokopedia.feedplus.presentation.adapter.util.FeedPostLayoutManager
 import com.tokopedia.feedplus.presentation.model.FeedAuthorModel
 import com.tokopedia.feedplus.presentation.model.FeedCardCampaignModel
 import com.tokopedia.feedplus.presentation.model.FeedCardImageContentModel
@@ -190,7 +190,8 @@ class FeedFragment :
     private var feedFollowersOnlyBottomSheet: FeedFollowersOnlyBottomSheet? = null
 
     private val layoutManager by lazy {
-        LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+//        LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+        FeedPostLayoutManager(context)
     }
     private val contentScrollListener = object : RecyclerView.OnScrollListener() {
         override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
@@ -780,8 +781,8 @@ class FeedFragment :
             PagerSnapHelper().attachToRecyclerView(it.rvFeedPost)
             it.rvFeedPost.removeOnScrollListener(contentScrollListener)
             it.rvFeedPost.addOnScrollListener(contentScrollListener)
-            it.rvFeedPost.setHasFixedSize(true)
             it.rvFeedPost.itemAnimator = null
+
             if (adapter.itemCount == 0) { showLoading() }
         }
     }

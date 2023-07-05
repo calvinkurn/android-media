@@ -1,6 +1,7 @@
 package com.tokopedia.feedplus.presentation.adapter.viewholder
 
 import android.annotation.SuppressLint
+import android.util.Log
 import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
@@ -93,9 +94,11 @@ class FeedPostImageViewHolder(
     init {
         binding.root.addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
             override fun onViewAttachedToWindow(p0: View) {
+                Log.d("FeedViewHolder", "Image - Attached - ${mData?.text} - $absoluteAdapterPosition")
             }
 
             override fun onViewDetachedFromWindow(p0: View) {
+                Log.d("FeedViewHolder", "Image - Detached - ${mData?.text} - $absoluteAdapterPosition")
                 onNotSelected()
             }
         })
@@ -203,6 +206,7 @@ class FeedPostImageViewHolder(
     }
 
     override fun bind(element: FeedCardImageContentModel?) {
+        Log.d("FeedViewHolder", "Image - Bind - ${mData?.text} - $absoluteAdapterPosition")
         mData = element
         element?.let { data ->
             trackerDataModel = trackerMapper.transformImageContentToTrackerModel(data)
@@ -260,6 +264,7 @@ class FeedPostImageViewHolder(
     }
 
     override fun bind(element: FeedCardImageContentModel?, payloads: MutableList<Any>) {
+        Log.d("FeedViewHolder", "Image - BindPayloads - Payloads: $payloads - ${mData?.text} - $absoluteAdapterPosition")
         super.bind(element, payloads)
         mData = element
         element?.let {
@@ -588,6 +593,11 @@ class FeedPostImageViewHolder(
         } else {
             data.share
         }
+    }
+
+    override fun onViewRecycled() {
+        Log.d("FeedViewHolder", "Image - Recycled - ${mData?.text} - $absoluteAdapterPosition")
+        super.onViewRecycled()
     }
 
     companion object {
