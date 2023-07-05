@@ -2,6 +2,7 @@ package com.tokopedia.tkpd.flashsale.presentation.list.container
 
 import com.tokopedia.campaign.entity.RemoteTicker
 import com.tokopedia.campaign.usecase.GetTargetedTickerUseCase
+import com.tokopedia.campaign.utils.constant.TickerConstant
 import com.tokopedia.campaign.utils.constant.TickerType
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.tkpd.flashsale.domain.entity.SellerEligibility
@@ -13,7 +14,6 @@ import com.tokopedia.tkpd.flashsale.util.constant.TabConstant
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
-import io.mockk.coVerify
 import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.toList
@@ -54,7 +54,7 @@ class FlashSaleContainerViewModelTest {
 
     @Test
     fun `When fetch prerequisite data success, rbac rule is active and user is allowed, should successfully receive the data`() = runBlockingTest {
-        //Given
+        // Given
         val tabsMetadata = TabMetadata(
             listOf(
                 TabMetadata.Tab(
@@ -65,37 +65,49 @@ class FlashSaleContainerViewModelTest {
                 )
             )
         )
+        val tickerData = emptyList<RemoteTicker>()
         val rollenceValueList: List<String> = listOf("ct_ticker_1", "ct_ticker_2")
         val sellerEligibility = SellerEligibility(isDeviceAllowed = true, isUserAllowed = true)
+        val targetParams: List<GetTargetedTickerUseCase.Param.Target> = listOf(
+            GetTargetedTickerUseCase.Param.Target(
+                type = GetTargetedTickerUseCase.KEY_TYPE_ROLLENCE_NAME,
+                values = rollenceValueList
+            )
+        )
+        val tickerParams = GetTargetedTickerUseCase.Param(
+            page = TickerConstant.REMOTE_TICKER_KEY_FLASH_SALE_TOKOPEDIA_CAMPAIGN_LIST,
+            targets = targetParams
+        )
 
         coEvery { getFlashSaleSellerStatusUseCase.execute() } returns sellerEligibility
         coEvery { getFlashSaleListForSellerMetaUseCase.execute() } returns tabsMetadata
+        coEvery { getTargetedTickerUseCase.execute(tickerParams) } returns tickerData
 
         val emittedValues = arrayListOf<FlashSaleContainerViewModel.UiState>()
         val job = launch {
             viewModel.uiState.toList(emittedValues)
         }
 
-        //When
+        // When
         viewModel.processEvent(
             event = FlashSaleContainerViewModel.UiEvent.GetPrerequisiteData,
             rollenceValueList = rollenceValueList
         )
 
-        //Then
+        // Then
         val actual = emittedValues.last()
 
         assertEquals(false, actual.isLoading)
-        assertEquals(null, actual.error)
         assertEquals(tabsMetadata.tabs, actual.tabs)
         assertEquals(false, actual.showTicker)
         assertEquals(true, actual.isEligibleUsingFeature)
+        assertEquals(null, actual.error)
 
         job.cancel()
     }
 
     @Test
-    fun `When fetch prerequisite data success, rbac rule is active and user is allowed, should successfully receive the data include ticker list data`() = runBlockingTest {
+    fun `When fetch prerequisite data success, rbac rule is active and user is allowed, should successfully receive the datas & show the ticker`() = runBlockingTest {
         // Given
         val tabsMetadata = TabMetadata(
             listOf(
@@ -119,9 +131,20 @@ class FlashSaleContainerViewModelTest {
         )
         val rollenceValueList: List<String> = listOf("ct_ticker_1", "ct_ticker_2")
         val sellerEligibility = SellerEligibility(isDeviceAllowed = true, isUserAllowed = true)
+        val targetParams: List<GetTargetedTickerUseCase.Param.Target> = listOf(
+            GetTargetedTickerUseCase.Param.Target(
+                type = GetTargetedTickerUseCase.KEY_TYPE_ROLLENCE_NAME,
+                values = rollenceValueList
+            )
+        )
+        val tickerParams = GetTargetedTickerUseCase.Param(
+            page = TickerConstant.REMOTE_TICKER_KEY_FLASH_SALE_TOKOPEDIA_CAMPAIGN_LIST,
+            targets = targetParams
+        )
 
         coEvery { getFlashSaleSellerStatusUseCase.execute() } returns sellerEligibility
         coEvery { getFlashSaleListForSellerMetaUseCase.execute() } returns tabsMetadata
+        coEvery { getTargetedTickerUseCase.execute(tickerParams) } returns tickerData
 
         val emittedValues = arrayListOf<FlashSaleContainerViewModel.UiState>()
         val job = launch {
@@ -149,7 +172,7 @@ class FlashSaleContainerViewModelTest {
 
     @Test
     fun `When rbac rule is inactive but user is allowed, isEligibleUsingFeature should be true`() = runBlockingTest {
-        //Given
+        // Given
         val tabsMetadata = TabMetadata(
             listOf(
                 TabMetadata.Tab(
@@ -171,13 +194,13 @@ class FlashSaleContainerViewModelTest {
             viewModel.uiState.toList(emittedValues)
         }
 
-        //When
+        // When
         viewModel.processEvent(
             event = FlashSaleContainerViewModel.UiEvent.GetPrerequisiteData,
             rollenceValueList = rollenceValueList
         )
 
-        //Then
+        // Then
         val actual = emittedValues.last()
 
         assertEquals(true, actual.isEligibleUsingFeature)
@@ -187,7 +210,7 @@ class FlashSaleContainerViewModelTest {
 
     @Test
     fun `When rbac rule is active but user is not allowed, isEligibleUsingFeature should be false`() = runBlockingTest {
-        //Given
+        // Given
         val tabsMetadata = TabMetadata(
             listOf(
                 TabMetadata.Tab(
@@ -198,24 +221,36 @@ class FlashSaleContainerViewModelTest {
                 )
             )
         )
+        val tickerData = emptyList<RemoteTicker>()
         val rollenceValueList: List<String> = listOf("ct_ticker_1", "ct_ticker_2")
         val sellerEligibility = SellerEligibility(isDeviceAllowed = true, isUserAllowed = false)
+        val targetParams: List<GetTargetedTickerUseCase.Param.Target> = listOf(
+            GetTargetedTickerUseCase.Param.Target(
+                type = GetTargetedTickerUseCase.KEY_TYPE_ROLLENCE_NAME,
+                values = rollenceValueList
+            )
+        )
+        val tickerParams = GetTargetedTickerUseCase.Param(
+            page = TickerConstant.REMOTE_TICKER_KEY_FLASH_SALE_TOKOPEDIA_CAMPAIGN_LIST,
+            targets = targetParams
+        )
 
         coEvery { getFlashSaleSellerStatusUseCase.execute() } returns sellerEligibility
         coEvery { getFlashSaleListForSellerMetaUseCase.execute() } returns tabsMetadata
+        coEvery { getTargetedTickerUseCase.execute(tickerParams) } returns tickerData
 
         val emittedValues = arrayListOf<FlashSaleContainerViewModel.UiState>()
         val job = launch {
             viewModel.uiState.toList(emittedValues)
         }
 
-        //When
+        // When
         viewModel.processEvent(
             event = FlashSaleContainerViewModel.UiEvent.GetPrerequisiteData,
             rollenceValueList = rollenceValueList
         )
 
-        //Then
+        // Then
         val actual = emittedValues.last()
 
         assertEquals(false, actual.isEligibleUsingFeature)
@@ -225,7 +260,7 @@ class FlashSaleContainerViewModelTest {
 
     @Test
     fun `When user is not allowed to use feature, isEligibleUsingFeature should be false`() = runBlockingTest {
-        //Given
+        // Given
         val tabsMetadata = TabMetadata(
             listOf(
                 TabMetadata.Tab(
@@ -236,24 +271,36 @@ class FlashSaleContainerViewModelTest {
                 )
             )
         )
+        val tickerData = emptyList<RemoteTicker>()
         val rollenceValueList: List<String> = listOf("ct_ticker_1", "ct_ticker_2")
         val sellerEligibility = SellerEligibility(isDeviceAllowed = true, isUserAllowed = false)
+        val targetParams: List<GetTargetedTickerUseCase.Param.Target> = listOf(
+            GetTargetedTickerUseCase.Param.Target(
+                type = GetTargetedTickerUseCase.KEY_TYPE_ROLLENCE_NAME,
+                values = rollenceValueList
+            )
+        )
+        val tickerParams = GetTargetedTickerUseCase.Param(
+            page = TickerConstant.REMOTE_TICKER_KEY_FLASH_SALE_TOKOPEDIA_CAMPAIGN_LIST,
+            targets = targetParams
+        )
 
         coEvery { getFlashSaleSellerStatusUseCase.execute() } returns sellerEligibility
         coEvery { getFlashSaleListForSellerMetaUseCase.execute() } returns tabsMetadata
+        coEvery { getTargetedTickerUseCase.execute(tickerParams) } returns tickerData
 
         val emittedValues = arrayListOf<FlashSaleContainerViewModel.UiState>()
         val job = launch {
             viewModel.uiState.toList(emittedValues)
         }
 
-        //When
+        // When
         viewModel.processEvent(
             event = FlashSaleContainerViewModel.UiEvent.GetPrerequisiteData,
             rollenceValueList = rollenceValueList
         )
 
-        //Then
+        // Then
         val actual = emittedValues.last()
 
         assertEquals(false, actual.isEligibleUsingFeature)
@@ -263,26 +310,37 @@ class FlashSaleContainerViewModelTest {
 
     @Test
     fun `When fetch tabs metadata from remote error, should emit correct error event`() = runBlockingTest {
-        //Given
+        // Given
         val error = MessageErrorException("Server Error")
         val expectedEvent = FlashSaleContainerViewModel.UiEffect.ErrorFetchTabsMetaData(error)
         val rollenceValueList: List<String> = listOf("ct_ticker_1", "ct_ticker_2")
+        val targetParams: List<GetTargetedTickerUseCase.Param.Target> = listOf(
+            GetTargetedTickerUseCase.Param.Target(
+                type = GetTargetedTickerUseCase.KEY_TYPE_ROLLENCE_NAME,
+                values = rollenceValueList
+            )
+        )
+        val tickerParams = GetTargetedTickerUseCase.Param(
+            page = TickerConstant.REMOTE_TICKER_KEY_FLASH_SALE_TOKOPEDIA_CAMPAIGN_LIST,
+            targets = targetParams
+        )
 
-        coEvery { getFlashSaleSellerStatusUseCase.execute() } throws  error
+        coEvery { getFlashSaleSellerStatusUseCase.execute() } throws error
         coEvery { getFlashSaleListForSellerMetaUseCase.execute() } throws error
+        coEvery { getTargetedTickerUseCase.execute(tickerParams) } throws error
 
         val emittedEvent = arrayListOf<FlashSaleContainerViewModel.UiEffect>()
         val job = launch {
             viewModel.uiEffect.toList(emittedEvent)
         }
 
-        //When
+        // When
         viewModel.processEvent(
             event = FlashSaleContainerViewModel.UiEvent.GetPrerequisiteData,
             rollenceValueList = rollenceValueList
         )
 
-        //Then
+        // Then
         val actualEvent = emittedEvent.last()
 
         assertEquals(expectedEvent, actualEvent)
@@ -293,26 +351,37 @@ class FlashSaleContainerViewModelTest {
 
     @Test
     fun `When fetch tabs metadata from remote error, isLoading should be false and error value should be set`() = runBlockingTest {
-        //Given
+        // Given
         val error = MessageErrorException("Server Error")
         val rollenceValueList: List<String> = listOf("ct_ticker_1", "ct_ticker_2")
+        val tickerData = emptyList<RemoteTicker>()
+        val targetParams: List<GetTargetedTickerUseCase.Param.Target> = listOf(
+            GetTargetedTickerUseCase.Param.Target(
+                type = GetTargetedTickerUseCase.KEY_TYPE_ROLLENCE_NAME,
+                values = rollenceValueList
+            )
+        )
+        val tickerParams = GetTargetedTickerUseCase.Param(
+            page = TickerConstant.REMOTE_TICKER_KEY_FLASH_SALE_TOKOPEDIA_CAMPAIGN_LIST,
+            targets = targetParams
+        )
 
-        coEvery { getFlashSaleSellerStatusUseCase.execute() } throws  error
+        coEvery { getFlashSaleSellerStatusUseCase.execute() } throws error
         coEvery { getFlashSaleListForSellerMetaUseCase.execute() } throws error
-
+        coEvery { getTargetedTickerUseCase.execute(tickerParams) } returns tickerData
 
         val emittedValues = arrayListOf<FlashSaleContainerViewModel.UiState>()
         val job = launch {
             viewModel.uiState.toList(emittedValues)
         }
 
-        //When
+        // When
         viewModel.processEvent(
             event = FlashSaleContainerViewModel.UiEvent.GetPrerequisiteData,
             rollenceValueList = rollenceValueList
         )
 
-        //Then
+        // Then
         val actual = emittedValues.last()
 
         assertEquals(false, actual.isLoading)
