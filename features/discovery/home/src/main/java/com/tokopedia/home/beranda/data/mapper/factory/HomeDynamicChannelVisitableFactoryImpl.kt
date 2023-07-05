@@ -86,6 +86,7 @@ class HomeDynamicChannelVisitableFactoryImpl(
             when (channel.layout) {
                 DynamicHomeChannel.Channels.LAYOUT_HOME_WIDGET -> createBusinessUnitWidget(channel = channel, position = position)
                 DynamicHomeChannel.Channels.LAYOUT_6_IMAGE,
+                DynamicHomeChannel.Channels.LAYOUT_LEGO_3_IMAGE,
                 DynamicHomeChannel.Channels.LAYOUT_LEGO_4_IMAGE,
                 DynamicHomeChannel.Channels.LAYOUT_LEGO_2_IMAGE -> {
                     createDynamicLegoBannerComponent(channel, position, isCache)
