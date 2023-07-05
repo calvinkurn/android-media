@@ -793,7 +793,7 @@ class AddEditProductDetailFragment :
             if (viewModel.isFirstMoved) {
                 inputAllDataInProductInputModel()
                 dataBackPressed = DETAIL_DATA
-                viewModel.productInputModel.requestCode = arrayOf(DETAIL_DATA, NO_DATA, NO_DATA)
+                viewModel.productInputModel.requestCode = arrayListOf(DETAIL_DATA, NO_DATA, NO_DATA)
             }
             setFragmentResultWithBundle(REQUEST_KEY_ADD_MODE, dataBackPressed)
         } else {

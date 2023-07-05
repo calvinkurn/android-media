@@ -112,8 +112,6 @@ class TokoNowRepurchaseViewModel @Inject constructor(
         private const val INITIAL_PAGE = 1
     }
 
-    val warehouseId: String
-        get() = localCacheModel?.warehouse_id.orEmpty()
     val serviceType: String
         get() = localCacheModel?.service_type.orEmpty()
 
@@ -393,6 +391,7 @@ class TokoNowRepurchaseViewModel @Inject constructor(
     }
 
     fun setLocalCacheModel(localCacheModel: LocalCacheModel?) {
+        localCacheModel?.let { setAddressData(localCacheModel) }
         this.localCacheModel = localCacheModel
     }
 
@@ -501,8 +500,8 @@ class TokoNowRepurchaseViewModel @Inject constructor(
                 state = TokoNowLayoutState.LOADING
             )
 
-            val response = getCategoryListUseCase.execute(warehouseId, CATEGORY_LEVEL_DEPTH).data
-            layoutList.mapCategoryMenuData(response, warehouseId)
+            val response = getCategoryListUseCase.execute(getWarehouseId(), CATEGORY_LEVEL_DEPTH).data
+            layoutList.mapCategoryMenuData(response, getWarehouseId())
 
             val layout = RepurchaseLayoutUiModel(
                 layoutList = layoutList,
@@ -524,8 +523,8 @@ class TokoNowRepurchaseViewModel @Inject constructor(
 
     fun getCategoryMenu() {
         launchCatchError(block = {
-            val response = getCategoryListUseCase.execute(warehouseId, CATEGORY_LEVEL_DEPTH).data
-            layoutList.mapCategoryMenuData(response, warehouseId)
+            val response = getCategoryListUseCase.execute(getWarehouseId(), CATEGORY_LEVEL_DEPTH).data
+            layoutList.mapCategoryMenuData(response, getWarehouseId())
 
             val layout = RepurchaseLayoutUiModel(
                 layoutList = layoutList,
@@ -639,7 +638,7 @@ class TokoNowRepurchaseViewModel @Inject constructor(
         val dateEnd = selectedDateFilter.endDate
 
         return GetRepurchaseProductListParam(
-            warehouseID = warehouseId,
+            warehouseID = getWarehouseId(),
             sort = sort,
             totalScan = totalScan,
             page = page,
