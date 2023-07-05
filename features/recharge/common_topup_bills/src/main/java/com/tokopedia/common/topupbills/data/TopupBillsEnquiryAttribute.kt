@@ -1,12 +1,15 @@
 package com.tokopedia.common.topupbills.data
 
+import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.common_digital.atc.data.response.AttributesCart
+import kotlinx.android.parcel.Parcelize
 
 /**
  * Created by nabillasabbaha on 27/05/19.
  */
+@Parcelize
 data class TopupBillsEnquiryAttribute (
     @SerializedName("UserID")
     @Expose
@@ -29,10 +32,11 @@ data class TopupBillsEnquiryAttribute (
     @SerializedName("additionalInfo")
     @Expose
     val additionalMainInfo: List<AdditionalInfoInquiry> = listOf()
-)
+): Parcelable
 
+@Parcelize
 data class AdditionalInfoInquiry (
     @SerializedName("detail")
     @Expose
     val detail: List<TopupBillsEnquiryMainInfo> = listOf()
-)
+): Parcelable

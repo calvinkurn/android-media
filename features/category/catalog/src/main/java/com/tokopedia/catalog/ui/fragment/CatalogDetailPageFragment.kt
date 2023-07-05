@@ -260,7 +260,7 @@ class CatalogDetailPageFragment :
 
     private fun setUpUniversalShare() {
         context?.let {
-            screenshotDetector = UniversalShareBottomSheet.createAndStartScreenShotDetector(
+            screenshotDetector = SharingUtil.createAndStartScreenShotDetector(
                 it,
                 this,
                 this,
@@ -556,9 +556,13 @@ class CatalogDetailPageFragment :
     private var screenshotDetector: ScreenshotDetector? = null
     private var shareType: Int = 1
 
-    private fun showUniversalShareBottomSheet(catalogImages: ArrayList<CatalogImage>) {
+    private fun showUniversalShareBottomSheet(catalogImages: ArrayList<CatalogImage>, path: String? = null) {
         universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
             init(this@CatalogDetailPageFragment)
+            path?.let {
+                setImageOnlySharingOption(true)
+                setScreenShotImagePath(path)
+            }
             setUtmCampaignData(
                 CatalogConstant.CATALOG,
                 if (UserSession(this@CatalogDetailPageFragment.context).userId.isNullOrEmpty()) {
@@ -582,8 +586,8 @@ class CatalogDetailPageFragment :
             this@CatalogDetailPageFragment,
             screenshotDetector
         )
-        shareType = UniversalShareBottomSheet.getShareBottomSheetType()
-        if (UniversalShareBottomSheet.getShareBottomSheetType() == UniversalShareBottomSheet.CUSTOM_SHARE_SHEET) {
+        shareType = universalShareBottomSheet?.getShareBottomSheetType() ?: 0
+        if (universalShareBottomSheet?.getShareBottomSheetType() == UniversalShareBottomSheet.CUSTOM_SHARE_SHEET) {
             CatalogUniversalShareAnalytics.shareBottomSheetAppearGTM(catalogId, userSession.userId)
         }
     }
@@ -599,7 +603,7 @@ class CatalogDetailPageFragment :
                 ogImageUrl = shareModel.ogImgUrl
             }
         }
-        if (UniversalShareBottomSheet.getShareBottomSheetType() == UniversalShareBottomSheet.CUSTOM_SHARE_SHEET) {
+        if (universalShareBottomSheet?.getShareBottomSheetType() == UniversalShareBottomSheet.CUSTOM_SHARE_SHEET) {
             CatalogUniversalShareAnalytics.sharingChannelSelectedGTM(shareModel.channel ?: "", catalogId, userSession.userId)
         } else {
             CatalogUniversalShareAnalytics.sharingChannelScreenShotSelectedGTM(shareModel.channel ?: "", catalogId, userSession.userId)
@@ -637,7 +641,7 @@ class CatalogDetailPageFragment :
     }
 
     override fun onCloseOptionClicked() {
-        if (UniversalShareBottomSheet.getShareBottomSheetType() == UniversalShareBottomSheet.CUSTOM_SHARE_SHEET) {
+        if (universalShareBottomSheet?.getShareBottomSheetType() == UniversalShareBottomSheet.CUSTOM_SHARE_SHEET) {
             CatalogUniversalShareAnalytics.dismissShareBottomSheetGTM(catalogId, userSession.userId)
         } else {
             CatalogUniversalShareAnalytics.userClosesScreenShotBottomSheetGTM(catalogId, userSession.userId)
@@ -645,9 +649,9 @@ class CatalogDetailPageFragment :
         universalShareBottomSheet?.dismiss()
     }
 
-    override fun screenShotTaken() {
+    override fun screenShotTaken(path: String) {
         CatalogUniversalShareAnalytics.userTakenScreenShotGTM(catalogId, userSession.userId)
-        showUniversalShareBottomSheet(catalogImages)
+        showUniversalShareBottomSheet(catalogImages, path)
     }
 
     override fun onRequestPermissionsResult(

@@ -173,7 +173,7 @@ import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomShee
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.PermissionListener
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ScreenShotListener
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
-import com.tokopedia.universal_sharing.view.model.AffiliatePDPInput
+import com.tokopedia.universal_sharing.view.model.AffiliateInput
 import com.tokopedia.universal_sharing.view.model.PageDetail
 import com.tokopedia.universal_sharing.view.model.Product
 import com.tokopedia.universal_sharing.view.model.ShareModel
@@ -223,7 +223,6 @@ open class DiscoveryFragment :
     private lateinit var ivToTop: ImageView
     private lateinit var globalError: GlobalError
     private lateinit var navToolbar: NavToolbar
-    private var bottomNav: TabsUnify? = null
     private lateinit var discoveryAdapter: DiscoveryRecycleAdapter
     private var chooseAddressWidget: ChooseAddressWidget? = null
     private var chooseAddressWidgetDivider: View? = null
@@ -345,7 +344,7 @@ open class DiscoveryFragment :
         initChooseAddressWidget(view)
         initView(view)
         context?.let {
-            screenshotDetector = UniversalShareBottomSheet.createAndStartScreenShotDetector(
+            screenshotDetector = SharingUtil.createAndStartScreenShotDetector(
                 it,
                 this,
                 this,
@@ -409,8 +408,6 @@ open class DiscoveryFragment :
                     )
             )
         }
-        bottomNav = view.findViewById(R.id.bottomNav)
-        bottomNav?.tabLayout?.addOnTabSelectedListener(this)
     }
 
     private fun initView(view: View) {
@@ -821,17 +818,6 @@ open class DiscoveryFragment :
             }
         })
 
-        discoveryViewModel.getDiscoveryBottomNavLiveData().observe(viewLifecycleOwner, {
-            when (it) {
-                is Success -> {
-                    setBottomNavigationComp(it)
-                }
-                is Fail -> {
-                    bottomNav?.hide()
-                }
-            }
-        })
-
         discoveryViewModel.getDiscoveryAnchorTabLiveData().observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> {
@@ -1030,15 +1016,17 @@ open class DiscoveryFragment :
     private fun setupObserveAndShowAnchor() {
         if (!stickyHeaderShowing) {
             anchorViewHolder?.let {
-                if (!it.viewModel.getCarouselItemsListData().hasActiveObservers()) {
-                    anchorViewHolder?.setUpObservers(viewLifecycleOwner)
-                }
-                if (mAnchorHeaderView.findViewById<RecyclerView>(R.id.anchor_rv) == null) {
-                    mAnchorHeaderView.removeAllViews()
-                    (anchorViewHolder?.itemView?.parent as? FrameLayout)?.removeView(
-                        anchorViewHolder?.itemView
-                    )
-                    mAnchorHeaderView.addView(it.itemView)
+                it.viewModel?.let { anchorTabsViewModel ->
+                    if (!anchorTabsViewModel.getCarouselItemsListData().hasActiveObservers()) {
+                        anchorViewHolder?.setUpObservers(viewLifecycleOwner)
+                    }
+                    if (mAnchorHeaderView.findViewById<RecyclerView>(R.id.anchor_rv) == null) {
+                        mAnchorHeaderView.removeAllViews()
+                        (anchorViewHolder?.itemView?.parent as? FrameLayout)?.removeView(
+                            anchorViewHolder?.itemView
+                        )
+                        mAnchorHeaderView.addView(it.itemView)
+                    }
                 }
             }
         }
@@ -1085,33 +1073,6 @@ open class DiscoveryFragment :
                 )
             )
             coachMark.showCoachMark(coachMarkItem)
-        }
-    }
-
-    private fun setBottomNavigationComp(it: Success<ComponentsItem>) {
-        if (bottomNav != null && !it.data.data.isNullOrEmpty()) {
-            bottomNav?.let { bottomTabHolder ->
-                bottomTabHolder.tabLayout.apply {
-                    tabMode = TabLayout.MODE_FIXED
-                    removeAllTabs()
-                    setBackgroundResource(0)
-                }
-                bottomTabHolder.getUnifyTabLayout().setSelectedTabIndicator(null)
-                it.data.data!!.forEach { item ->
-                    if (item.image.isNotEmpty()) {
-                        val tab = bottomTabHolder.tabLayout.newTab()
-                        tab.customView = LayoutInflater.from(this.context).inflate(R.layout.bottom_nav_item, bottomTabHolder, false).apply {
-                            findViewById<ImageUnify>(R.id.tab_image).loadImage(item.image)
-                            findViewById<Typography>(R.id.tab_text).apply {
-                                text = item.name
-                                setTextColor(getTabTextColor(this.context, item.fontColor))
-                            }
-                        }
-                        bottomTabHolder.tabLayout.addTab(tab, false)
-                    }
-                }
-                bottomTabHolder.show()
-            }
         }
     }
 
@@ -1178,7 +1139,7 @@ open class DiscoveryFragment :
             handleGlobalNavClick(Constant.TOP_NAV_BUTTON.SHARE)
         }
 
-        if (UniversalShareBottomSheet.isCustomSharingEnabled(context)) {
+        if (SharingUtil.isCustomSharingEnabled(context)) {
             sendUnifyShareGTM()
             showUniversalShareBottomSheet(data)
         } else {
@@ -1236,9 +1197,14 @@ open class DiscoveryFragment :
         return linkerShareData
     }
 
-    private fun showUniversalShareBottomSheet(data: PageInfo?) {
+    private fun showUniversalShareBottomSheet(data: PageInfo?, screenshotPath: String? = null) {
         data?.let { pageInfo ->
             universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
+                screenshotPath?.let { path ->
+                    setImageOnlySharingOption(true)
+                    setScreenShotImagePath(path)
+                }
+                setFeatureFlagRemoteConfigKey()
                 init(this@DiscoveryFragment)
                 setUtmCampaignData(
                     this@DiscoveryFragment.context?.resources?.getString(R.string.discovery) ?: UTM_DISCOVERY,
@@ -1255,10 +1221,9 @@ open class DiscoveryFragment :
                     pageInfo.share?.image ?: ""
                 )
                 setOgImageUrl(pageInfo.share?.image ?: "")
-            }
-            universalShareBottomSheet?.show(fragmentManager, this@DiscoveryFragment, screenshotDetector) {
+
                 if (this@DiscoveryFragment.isAffiliateInitialized) {
-                    val inputShare = AffiliatePDPInput().apply {
+                    val inputShare = AffiliateInput().apply {
                         pageDetail = PageDetail(
                             pageId = "0",
                             pageType = "campaign",
@@ -1270,11 +1235,12 @@ open class DiscoveryFragment :
                         product = Product()
                         shop = Shop(shopID = "0", shopStatus = 0, isOS = false, isPM = false)
                     }
-                    universalShareBottomSheet?.setAffiliateRequestHolder(inputShare)
-                    universalShareBottomSheet?.affiliateRequestDataReceived(true)
+                    enableAffiliateCommission(inputShare)
                 }
             }
-            shareType = UniversalShareBottomSheet.getShareBottomSheetType()
+
+            universalShareBottomSheet?.show(fragmentManager, this@DiscoveryFragment, screenshotDetector)
+            shareType = universalShareBottomSheet?.getShareBottomSheetType() ?: 0
             getDiscoveryAnalytics().trackUnifyShare(
                 VIEW_DISCOVERY_IRIS,
                 if (shareType == CUSTOM_SHARE_SHEET) VIEW_UNIFY_SHARE else VIEW_SCREENSHOT_SHARE,
@@ -1340,8 +1306,8 @@ open class DiscoveryFragment :
         getDiscoveryAnalytics().trackUnifyShare(EVENT_CLICK_DISCOVERY, UNIFY_CLICK_SHARE, getUserID())
     }
 
-    override fun screenShotTaken() {
-        showUniversalShareBottomSheet(pageInfoHolder)
+    override fun screenShotTaken(path: String) {
+        showUniversalShareBottomSheet(pageInfoHolder, path)
     }
 
     private fun setToolBarPageInfoOnFail() {
@@ -2082,7 +2048,6 @@ open class DiscoveryFragment :
             } else {
                 miniCartWidget?.updateData(data)
             }
-            bottomNav?.hide()
         } else {
             miniCartWidget?.hide()
         }
@@ -2173,8 +2138,9 @@ open class DiscoveryFragment :
                     }
                 }
             smoothScroller.targetPosition = position
-            if (this.isResumed)
+            if (this.isResumed) {
                 staggeredGridLayoutManager?.startSmoothScroll(smoothScroller)
+            }
         } catch (e: Exception) {
         }
     }
