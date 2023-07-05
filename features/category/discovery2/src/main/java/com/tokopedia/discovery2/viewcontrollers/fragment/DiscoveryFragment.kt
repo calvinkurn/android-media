@@ -384,7 +384,7 @@ open class DiscoveryFragment :
         if (arguments?.getString(DISCO_PAGE_SOURCE) == Constant.DiscoveryPageSource.HOME) {
             navToolbar.setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_NONE)
             navToolbar.setIcon(
-                IconBuilder(IconBuilderFlag(NavSource.SOS, pageEndPoint))
+                IconBuilder(IconBuilderFlag(NavSource.SOS))
                     .addIcon(
                         IconList.ID_MESSAGE,
                         onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.INBOX) },

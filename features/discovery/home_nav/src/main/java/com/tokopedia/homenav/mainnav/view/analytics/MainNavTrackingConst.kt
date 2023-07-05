@@ -24,6 +24,7 @@ internal object MainNavTrackingConst {
     private const val PAGE_SOURCE_NOTIF = "notification"
     private const val PAGE_SOURCE_PDP = "pdp"
     private const val PAGE_SOURCE_SHOP = "shoppage"
+    private const val PAGE_SOURCE_SOS = "sos"
     private const val PAGE_SOURCE_SRP = "search result"
     private const val PAGE_SOURCE_SRP_UNIVERSAL = "srp universal"
     private const val PAGE_SOURCE_THANK_YOU = "thankyou page"
