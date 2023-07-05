@@ -174,7 +174,7 @@ private fun setTickerView(
                         position = PAGE_ANNOUNCEMENT_HOME
                     }
 
-                    PAGE_ANNOUNCEMENT_PROMOSIKAN -> {
+                    PAGE_ANNOUNCEMENT_PROMO_PERFORMA -> {
                         item = AffiliateAnalytics.ItemKeys.AFFILIATE_PROMOSIKAN_TICKER_COMMUNICATION
                         category = AffiliateAnalytics.CategoryKeys.AFFILIATE_PROMOSIKAN_PAGE
                         position = PAGE_ANNOUNCEMENT_HOME

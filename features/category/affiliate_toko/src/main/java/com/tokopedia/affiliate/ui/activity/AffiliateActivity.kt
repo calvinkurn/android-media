@@ -15,6 +15,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.base.view.fragment.lifecycle.FragmentLifecycleObserver.onFragmentSelected
 import com.tokopedia.abstraction.base.view.fragment.lifecycle.FragmentLifecycleObserver.onFragmentUnSelected
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.affiliate.AFFILIATE_PROMOTE_HOME
 import com.tokopedia.affiliate.AffiliateAnalytics
 import com.tokopedia.affiliate.COACHMARK_TAG
 import com.tokopedia.affiliate.FIRST_TAB
@@ -23,6 +24,7 @@ import com.tokopedia.affiliate.PAGE_SEGMENT_DISCO_PAGE_LIST
 import com.tokopedia.affiliate.PAGE_SEGMENT_EDU_PAGE
 import com.tokopedia.affiliate.PAGE_SEGMENT_HELP
 import com.tokopedia.affiliate.PAGE_SEGMENT_ONBOARDING
+import com.tokopedia.affiliate.PAGE_SEGMENT_PERFORMA
 import com.tokopedia.affiliate.PAGE_SEGMENT_PROMO_PAGE
 import com.tokopedia.affiliate.PAGE_SEGMENT_SSA_SHOP_LIST
 import com.tokopedia.affiliate.PAGE_SEGMENT_TRANSACTION_HISTORY
@@ -36,7 +38,7 @@ import com.tokopedia.affiliate.ui.custom.AffiliateBottomNavbar
 import com.tokopedia.affiliate.ui.custom.AffiliateLinkTextField
 import com.tokopedia.affiliate.ui.custom.IBottomClickListener
 import com.tokopedia.affiliate.ui.custom.LottieBottomNavbar
-import com.tokopedia.affiliate.ui.fragment.AffiliateHomeFragment
+import com.tokopedia.affiliate.ui.fragment.AffiliateAdpFragment
 import com.tokopedia.affiliate.ui.fragment.AffiliateIncomeFragment
 import com.tokopedia.affiliate.ui.fragment.AffiliatePromoFragment
 import com.tokopedia.affiliate.ui.fragment.education.AffiliateEducationLandingPage
@@ -48,6 +50,7 @@ import com.tokopedia.coachmark.CoachMarkPreference
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -118,6 +121,10 @@ class AffiliateActivity :
                     selectItem(PROMO_MENU, R.id.menu_promo_affiliate, true)
                 }
 
+                it.contains(PAGE_SEGMENT_PERFORMA) -> {
+                    selectItem(ADP_MENU, R.id.menu_performa_affiliate, true)
+                }
+
                 it.contains(PAGE_SEGMENT_EDU_PAGE) || it.contains(PAGE_SEGMENT_HELP) -> {
                     fromAppLink = it.contains(PAGE_SEGMENT_EDU_PAGE)
                     fromHelpAppLink = it.contains(PAGE_SEGMENT_HELP)
@@ -168,6 +175,7 @@ class AffiliateActivity :
     }
 
     private fun showAffiliatePortal() {
+        updateHomeTab()
         initBottomNavigationView()
         findViewById<ImageUnify>(R.id.affiliate_background_image)?.show()
         pushOpenScreenEvent()
@@ -214,7 +222,8 @@ class AffiliateActivity :
                     disableTouch()
                     when (currentIndex) {
                         1 -> {
-                            if (currentCoachIndex == 2) handleBackButton(true)
+                            // commenting below statement in favor of future implementation of coachmark
+//                            if (currentCoachIndex == 2) handleBackButton(true)
                         }
 
                         2 -> {
@@ -262,9 +271,9 @@ class AffiliateActivity :
 
     private fun getHomeFragmentView(): Typography? {
         val currentFragment =
-            supportFragmentManager.findFragmentByTag(AffiliateHomeFragment::class.java.name)
+            supportFragmentManager.findFragmentByTag(AffiliatePromoFragment::class.java.name)
         currentFragment?.let { fragment ->
-            return (fragment as? AffiliateHomeFragment)?.view?.findViewById(R.id.user_name)
+            return (fragment as? AffiliatePromoFragment)?.view?.findViewById(R.id.user_name)
         }
         return null
     }
@@ -279,7 +288,11 @@ class AffiliateActivity :
     }
 
     private fun initBottomNavigationView() {
-        var selectedTab = HOME_MENU
+        var selectedTab = if (isAffiliatePromoteHomeEnabled()) {
+            PROMO_MENU
+        } else {
+            ADP_MENU
+        }
         Uri.parse(intent?.data?.path ?: "").pathSegments.firstOrNull()?.let {
             when {
                 it.contains(PAGE_SEGMENT_HELP) || it.contains(PAGE_SEGMENT_EDU_PAGE) -> {
@@ -292,6 +305,10 @@ class AffiliateActivity :
 
                 it.contains(PAGE_SEGMENT_PROMO_PAGE) -> {
                     selectedTab = PROMO_MENU
+                }
+
+                it.contains(PAGE_SEGMENT_PERFORMA) -> {
+                    selectedTab = ADP_MENU
                 }
 
                 it.contains(PAGE_SEGMENT_SSA_SHOP_LIST) -> {
@@ -315,7 +332,7 @@ class AffiliateActivity :
 
     override fun menuClicked(position: Int, id: Int, isNotFromBottom: Boolean): Boolean {
         when (position) {
-            HOME_MENU -> openFragment(AffiliateHomeFragment.getFragmentInstance(this, this))
+            ADP_MENU -> openFragment(AffiliateAdpFragment.getFragmentInstance(this, this))
             PROMO_MENU -> openFragment(AffiliatePromoFragment.getFragmentInstance())
             INCOME_MENU -> openFragment(
                 AffiliateIncomeFragment.getFragmentInstance(
@@ -394,7 +411,7 @@ class AffiliateActivity :
     private fun sendBottomNavClickEvent(position: Int) {
         var eventAction = ""
         when (position) {
-            HOME_MENU -> eventAction = AffiliateAnalytics.ActionKeys.HOME_NAV_BAR_CLICK
+            ADP_MENU -> eventAction = AffiliateAnalytics.ActionKeys.HOME_NAV_BAR_CLICK
             PROMO_MENU -> eventAction = AffiliateAnalytics.ActionKeys.PROMOSIKAN_NAV_BAR_CLICK
             EDUKASI_MENU -> eventAction = AffiliateAnalytics.ActionKeys.BANUTAN_NAV_BAR_CLICK
             INCOME_MENU -> eventAction = AffiliateAnalytics.ActionKeys.PENDAPATAN_NAV_BAR_CLICK
@@ -425,11 +442,28 @@ class AffiliateActivity :
         }
     }
 
+    private fun isAffiliatePromoteHomeEnabled() =
+        RemoteConfigInstance.getInstance()?.abTestPlatform?.getString(
+            AFFILIATE_PROMOTE_HOME,
+            ""
+        ) == AFFILIATE_PROMOTE_HOME
+
+    private fun updateHomeTab() {
+        if (isAffiliatePromoteHomeEnabled()) {
+            PROMO_MENU = FIRST_TAB
+            ADP_MENU = SECOND_TAB
+        } else {
+            ADP_MENU = FIRST_TAB
+            PROMO_MENU = SECOND_TAB
+        }
+    }
+
     companion object MenuItems {
-        var HOME_MENU = FIRST_TAB
+
+        var ADP_MENU = FIRST_TAB
         var PROMO_MENU = SECOND_TAB
-        var INCOME_MENU = THIRD_TAB
-        var EDUKASI_MENU = FOURTH_TAB
+        const val INCOME_MENU = THIRD_TAB
+        const val EDUKASI_MENU = FOURTH_TAB
     }
 
     override fun selectItem(position: Int, id: Int, isNotFromBottom: Boolean) {
@@ -451,37 +485,40 @@ class AffiliateActivity :
     }
 
     override fun handleBackButton(fromCoacher: Boolean) {
-        if (!fromCoacher) {
-            coachMark?.isDismissed = true
-            coachMark?.dismiss()
-        }
-        if (!fragmentStack.empty()) {
-            fragmentStack.pop()
-            if (!fragmentStack.empty()) {
-                handleBackStack()
-            } else {
-                super.onBackPressed()
-            }
-        } else {
-            super.onBackPressed()
-        }
+        finish()
+//        if (!fromCoacher) {
+//            coachMark?.isDismissed = true
+//            coachMark?.dismiss()
+//        }
+//        if (!fragmentStack.empty()) {
+//            fragmentStack.pop()
+//            if (!fragmentStack.empty()) {
+//                handleBackStack()
+//            } else {
+//                super.onBackPressed()
+//            }
+//        } else {
+//            super.onBackPressed()
+//        }
     }
 
-    private fun handleBackStack() {
-        val ft = supportFragmentManager.beginTransaction()
-        showSelectedFragment(
-            fragmentStack.peek(),
-            supportFragmentManager,
-            ft
-        )
-        setBottomState(fragmentStack.peek())
-        ft.commitNowAllowingStateLoss()
-    }
+    // Commenting below function in favor of future implementation of coachmark
+
+//    private fun handleBackStack() {
+//        val ft = supportFragmentManager.beginTransaction()
+//        showSelectedFragment(
+//            fragmentStack.peek(),
+//            supportFragmentManager,
+//            ft
+//        )
+//        setBottomState(fragmentStack.peek())
+//        ft.commitNowAllowingStateLoss()
+//    }
 
     private fun setBottomState(peek: String?) {
         when (peek) {
-            AffiliateHomeFragment::class.java.name -> affiliateBottomNavigation?.selectBottomTab(
-                HOME_MENU
+            AffiliateAdpFragment::class.java.name -> affiliateBottomNavigation?.selectBottomTab(
+                ADP_MENU
             )
 
             AffiliatePromoFragment::class.java.name -> affiliateBottomNavigation?.selectBottomTab(

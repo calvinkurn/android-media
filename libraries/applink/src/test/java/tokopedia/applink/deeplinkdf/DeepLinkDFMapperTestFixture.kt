@@ -17,20 +17,20 @@ open class DeepLinkDFMapperTestFixture {
     private val mockHost = ""
     private val mockPaths = listOf<String>()
 
+    private var hasMock = false
+
     @Before
     open fun setup() {
-        mockkStatic(Uri::class)
-        every { Uri.parse(any()) } returns mockUri
-        every { Uri.parse(any()).buildUpon() } returns mockBuilder
-        every { Uri.parse(any()).buildUpon().build() } returns mockUri
-        every { Uri.parse(any()).buildUpon().build().host } returns mockHost
-        every { Uri.parse(any()).buildUpon().build().pathSegments } returns mockPaths
-        every { Uri.parse(any()).pathSegments } returns mockPaths
-    }
-
-    @After
-    open fun finish()  {
-        unmockkStatic(Uri::class)
+        if (!hasMock) {
+            mockkStatic(Uri::class)
+            every { Uri.parse(any()) } returns mockUri
+            every { Uri.parse(any()).buildUpon() } returns mockBuilder
+            every { Uri.parse(any()).buildUpon().build() } returns mockUri
+            every { Uri.parse(any()).buildUpon().build().host } returns mockHost
+            every { Uri.parse(any()).buildUpon().build().pathSegments } returns mockPaths
+            every { Uri.parse(any()).pathSegments } returns mockPaths
+            hasMock = true
+        }
     }
 
     protected fun assertEqualDeepLinkCustomerApp(appLink: String, expectedModuleId: String) {
