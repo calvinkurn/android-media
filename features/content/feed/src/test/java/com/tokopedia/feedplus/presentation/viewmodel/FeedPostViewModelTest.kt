@@ -100,6 +100,7 @@ class FeedPostViewModelTest {
             getCountCommentsUseCase,
             mockk(),
             mockk(),
+            mockk(),
             testDispatcher
         )
     }
@@ -305,6 +306,10 @@ class FeedPostViewModelTest {
                 FeedTaggedProductUiModel.CampaignType.NoCampaign,
                 FeedTaggedProductUiModel.CampaignStatus.Unknown,
                 false
+            ),
+            FeedTaggedProductUiModel.Affiliate(
+                "xxx",
+                "play"
             )
         )
 
@@ -337,6 +342,10 @@ class FeedPostViewModelTest {
                 FeedTaggedProductUiModel.CampaignType.NoCampaign,
                 FeedTaggedProductUiModel.CampaignStatus.Unknown,
                 false
+            ),
+            FeedTaggedProductUiModel.Affiliate(
+                "xxx",
+                "play"
             )
         )
 
@@ -379,6 +388,10 @@ class FeedPostViewModelTest {
                 FeedTaggedProductUiModel.CampaignType.NoCampaign,
                 FeedTaggedProductUiModel.CampaignStatus.Unknown,
                 false
+            ),
+            FeedTaggedProductUiModel.Affiliate(
+                "xxx",
+                "play"
             )
         )
         val dummyAtcResult = AddToCartDataModel(
@@ -425,6 +438,10 @@ class FeedPostViewModelTest {
                 FeedTaggedProductUiModel.CampaignType.NoCampaign,
                 FeedTaggedProductUiModel.CampaignStatus.Unknown,
                 false
+            ),
+            FeedTaggedProductUiModel.Affiliate(
+                "xxx",
+                "play"
             )
         )
 
@@ -457,6 +474,10 @@ class FeedPostViewModelTest {
                 FeedTaggedProductUiModel.CampaignType.NoCampaign,
                 FeedTaggedProductUiModel.CampaignStatus.Unknown,
                 false
+            ),
+            FeedTaggedProductUiModel.Affiliate(
+                "xxx",
+                "play"
             )
         )
 
@@ -499,6 +520,10 @@ class FeedPostViewModelTest {
                 FeedTaggedProductUiModel.CampaignType.NoCampaign,
                 FeedTaggedProductUiModel.CampaignStatus.Unknown,
                 false
+            ),
+            FeedTaggedProductUiModel.Affiliate(
+                "xxx",
+                "play"
             )
         )
         val dummyAtcResult = AddToCartDataModel(
