@@ -96,7 +96,7 @@ class ExclusiveLaunchVoucherView @JvmOverloads constructor(
             if (isCtaDisabled) {
                 tpgClaim.setTextColorCompat(com.tokopedia.unifyprinciples.R.color.Unify_NN400)
             } else {
-                tpgClaim.setTextColorCompat(R.color.Unify_GN500)
+                tpgClaim.setTextColorCompat(com.tokopedia.unifyprinciples.R.color.Unify_GN500)
             }
         }
     }
