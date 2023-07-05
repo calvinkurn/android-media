@@ -4,7 +4,7 @@ import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConsta
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.GroupDetailDataModel
 import com.tokopedia.topads.dashboard.recommendation.views.adapter.groupdetail.factory.GroupDetailAdapterFactory
 
-class GroupDetailChipsUiModel(var isChipsAvailable: Boolean = true) :
+data class GroupDetailChipsUiModel(var isChipsAvailable: Boolean = true) :
     GroupDetailDataModel {
 
     override fun isAvailable(): Boolean {

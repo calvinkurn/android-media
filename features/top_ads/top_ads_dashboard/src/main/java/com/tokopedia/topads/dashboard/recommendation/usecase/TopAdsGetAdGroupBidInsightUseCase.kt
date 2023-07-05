@@ -3,7 +3,9 @@ package com.tokopedia.topads.dashboard.recommendation.usecase
 import com.tokopedia.gql_query_annotation.GqlQueryInterface
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.topads.common.data.internal.ParamObject.SOURCE
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.InsightGqlInputSource.SOURCE_INSIGHT_CENTER_GROUP_DETAIL_PAGE
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.PARAM_GROUP_IDS_KEY
 import com.tokopedia.topads.dashboard.recommendation.data.model.cloud.TopAdsAdGroupBidInsightResponse
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.TopAdsListAllInsightState
 import com.tokopedia.usecase.RequestParams
@@ -33,9 +35,9 @@ class TopAdsGetAdGroupBidInsightUseCase @Inject constructor(
 
     private fun createRequestParam(groupId: String): RequestParams {
         val requestParams = RequestParams.create()
-        requestParams.putString("source", SOURCE_INSIGHT_CENTER_GROUP_DETAIL_PAGE)
+        requestParams.putString(SOURCE, SOURCE_INSIGHT_CENTER_GROUP_DETAIL_PAGE)
         requestParams.putObject(
-            "groupIDs",
+            PARAM_GROUP_IDS_KEY,
             listOf(groupId)
         )
         return requestParams
@@ -44,7 +46,7 @@ class TopAdsGetAdGroupBidInsightUseCase @Inject constructor(
     object GqlQuery : GqlQueryInterface {
         private const val OPERATION_NAME = "topAdsBatchGetAdGroupBidInsightByGroupID"
         private val QUERY = """
-            query $OPERATION_NAME(${'$'}groupIDs: [String]!, ${'$'}source: String!) {
+            query $OPERATION_NAME(${'$'}$PARAM_GROUP_IDS_KEY: [String]!, ${'$'}$SOURCE: String!) {
               $OPERATION_NAME(groupIDs: ${'$'}groupIDs, source: ${'$'}source) {
                 groups {
                   data {

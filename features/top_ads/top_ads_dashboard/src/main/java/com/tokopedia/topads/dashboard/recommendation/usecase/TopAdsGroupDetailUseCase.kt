@@ -17,7 +17,9 @@ import com.tokopedia.topads.dashboard.recommendation.data.model.cloud.TopAdsBatc
 import com.tokopedia.topads.dashboard.recommendation.data.model.cloud.TopAdsGetPricingDetailsResponse
 import com.tokopedia.topads.dashboard.recommendation.data.model.cloud.TopAdsGetSellerInsightDataResponse
 import com.tokopedia.topads.dashboard.recommendation.data.model.cloud.TopAdsTotalAdGroupsWithInsightResponse
-import com.tokopedia.topads.dashboard.recommendation.data.model.local.*
+import com.tokopedia.topads.dashboard.recommendation.data.model.local.GroupDetailDataModel
+import com.tokopedia.topads.dashboard.recommendation.data.model.local.GroupPerformanceWidgetUiModel
+import com.tokopedia.topads.dashboard.recommendation.data.model.local.TopAdsListAllInsightState
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import javax.inject.Inject

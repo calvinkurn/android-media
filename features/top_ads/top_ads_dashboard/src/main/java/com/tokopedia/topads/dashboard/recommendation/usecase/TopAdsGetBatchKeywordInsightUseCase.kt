@@ -3,7 +3,11 @@ package com.tokopedia.topads.dashboard.recommendation.usecase
 import com.tokopedia.gql_query_annotation.GqlQueryInterface
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.topads.common.data.internal.ParamObject.SOURCE
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.INSIGHT_TYPE_KEY
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.InsightGqlInputSource.SOURCE_INSIGHT_CENTER_GROUP_DETAIL_PAGE
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.PARAM_ALL_VALUE
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.PARAM_GROUP_IDS_KEY
 import com.tokopedia.topads.dashboard.recommendation.data.model.cloud.TopAdsBatchGroupInsightResponse
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.TopAdsListAllInsightState
 import com.tokopedia.usecase.RequestParams
@@ -32,10 +36,10 @@ class TopAdsGetBatchKeywordInsightUseCase @Inject constructor(
 
     private fun createRequestParam(groupId: String): RequestParams {
         val requestParams = RequestParams.create()
-        requestParams.putString("insightType", "all")
-        requestParams.putString("source", SOURCE_INSIGHT_CENTER_GROUP_DETAIL_PAGE)
+        requestParams.putString(INSIGHT_TYPE_KEY, PARAM_ALL_VALUE)
+        requestParams.putString(SOURCE, SOURCE_INSIGHT_CENTER_GROUP_DETAIL_PAGE)
         requestParams.putObject(
-            "groupIDs",
+            PARAM_GROUP_IDS_KEY,
             listOf(groupId)
         )
         return requestParams

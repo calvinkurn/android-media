@@ -5,6 +5,7 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.topads.common.data.internal.ParamObject.SOURCE
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.InsightGqlInputSource.SOURCE_INSIGHT_CENTER_GROUP_DETAIL_PAGE
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.PARAM_SCHEME
 import com.tokopedia.topads.dashboard.recommendation.data.model.cloud.TopAdsGetPricingDetailsResponse
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
@@ -27,7 +28,7 @@ class TopAdsGetPricingDetailsUseCase @Inject constructor(
 
     private fun createRequestParam(adType: String): RequestParams {
         val requestParams = RequestParams.create()
-        requestParams.putString("scheme", adType)
+        requestParams.putString(PARAM_SCHEME, adType)
         requestParams.putString(SOURCE, SOURCE_INSIGHT_CENTER_GROUP_DETAIL_PAGE)
         return requestParams
     }

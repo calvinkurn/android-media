@@ -74,9 +74,7 @@ import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.android.synthetic.main.fragment_topads_dashboard_beranda_base.*
-import kotlinx.android.synthetic.main.shimmer_layout_bottom_level_recommendation_at_home.*
-import kotlinx.android.synthetic.main.topads_dash_saran_topads_top_widget_layout.*
+
 import javax.inject.Inject
 
 /**
@@ -389,7 +387,7 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
             if (it.status.errorCode == 0) {
                 showTickerTopads(it.data.tickerInfo)
             } else {
-                tickerTopAds.hide()
+                binding.tickerTopAds.hide()
             }
         }
 
@@ -412,7 +410,7 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
         topAdsDashboardViewModel.adGroupWithInsight.observe(viewLifecycleOwner) {
             when (it) {
                 is TopAdsListAllInsightState.Success -> {
-                    topLevelWidgetShimmer?.hide()
+                    binding.layoutInsight.topAdsInsightCenterTopWidget.topLevelWidgetShimmer.shimmerLayoutTopLevelRecommendation.hide()
                     renderTopLevelWidget(it.data)
                 }
 
@@ -430,30 +428,30 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
         val count =
             data.topAdsGetTotalAdGroupsWithInsightByShopID.totalAdGroupsWithInsight.totalAdGroupsWithInsight
         if (count == Int.ZERO) {
-            insightWidgetTitle?.text = context?.getString(R.string.topads_insight_max_out_title)
-            insightWidgetIcon?.loadImage(
+            binding.layoutInsight.topAdsInsightCenterTopWidget.insightWidgetTitle.text = context?.getString(R.string.topads_insight_max_out_title)
+            binding.layoutInsight.topAdsInsightCenterTopWidget.insightWidgetIcon.loadImage(
                 ContextCompat.getDrawable(
                     context!!,
                     R.drawable.perfomace_widget_optimized_icon
                 )
             )
         } else if (count <= INSIGHT_COUNT_PLACE_HOLDER) {
-            insightWidgetTitle?.text = String.format(
+            binding.layoutInsight.topAdsInsightCenterTopWidget.insightWidgetTitle.text = String.format(
                 context?.getString(R.string.topads_insight_title_improve_ads_performance) ?: "",
                 "$count"
             )
-            insightWidgetIcon?.loadImage(
+            binding.layoutInsight.topAdsInsightCenterTopWidget.insightWidgetIcon.loadImage(
                 ContextCompat.getDrawable(
                     context!!,
                     R.drawable.performance_widget_default_icon
                 )
             )
         } else {
-            insightWidgetTitle?.text = String.format(
+            binding.layoutInsight.topAdsInsightCenterTopWidget.insightWidgetTitle.text = String.format(
                 context?.getString(R.string.topads_insight_title_improve_ads_performance) ?: "",
                 "$INSIGHT_COUNT_PLACE_HOLDER+"
             )
-            insightWidgetIcon?.loadImage(
+            binding.layoutInsight.topAdsInsightCenterTopWidget.insightWidgetIcon?.loadImage(
                 ContextCompat.getDrawable(
                     context!!,
                     R.drawable.performance_widget_default_icon
@@ -471,19 +469,19 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
             insightListAdapter.submitList(it.data.take(CONST_5))
             binding.layoutInsight.insightWidgetSeeMore.show()
         }
-        shimmer_layout_bottom_level_recommendation_at_home?.hide()
+        binding.layoutInsight.topAdsInsightCenterShimmerBottomPage.shimmerLayoutBottomLevelRecommendationAtHome.hide()
     }
 
     private fun showTickerTopads(tickerInfo: TickerInfo) {
-        tickerTopAds.show()
-        tickerTopAds.setHtmlDescription(tickerInfo.tickerMessage)
-        tickerTopAds.tickerType = when (tickerInfo.tickerType) {
+        binding.tickerTopAds.show()
+        binding.tickerTopAds.setHtmlDescription(tickerInfo.tickerMessage)
+        binding.tickerTopAds.tickerType = when (tickerInfo.tickerType) {
             TYPE_ERROR -> Ticker.TYPE_ERROR
             TYPE_INFO -> Ticker.TYPE_ANNOUNCEMENT
             TYPE_WARNING -> Ticker.TYPE_WARNING
             else -> Ticker.TYPE_ANNOUNCEMENT
         }
-        tickerTopAds.setDescriptionClickEvent(object : TickerCallback {
+        binding.tickerTopAds.setDescriptionClickEvent(object : TickerCallback {
             override fun onDescriptionViewClick(linkUrl: CharSequence) {
                 RouteManager.route(context, linkUrl.toString())
             }
@@ -672,12 +670,12 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
             }.show(childFragmentManager)
         }
 
-        scroll_view?.viewTreeObserver?.addOnScrollChangedListener(object :
+        binding.scrollView.viewTreeObserver?.addOnScrollChangedListener(object :
                 ViewTreeObserver.OnScrollChangedListener {
                 private var scrollY = Int.ZERO
 
                 override fun onScrollChanged() {
-                    val newScrollY = scroll_view.scrollY
+                    val newScrollY = binding.scrollView.scrollY
                     if (newScrollY != scrollY && needToHitInsight) {
                         needToHitInsight = false
                         fetchInsight()

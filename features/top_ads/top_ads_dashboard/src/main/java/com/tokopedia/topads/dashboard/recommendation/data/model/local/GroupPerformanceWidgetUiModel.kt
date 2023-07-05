@@ -3,7 +3,7 @@ package com.tokopedia.topads.dashboard.recommendation.data.model.local
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_PERFORMANCE
 import com.tokopedia.topads.dashboard.recommendation.views.adapter.groupdetail.factory.GroupDetailAdapterFactory
 
-class GroupPerformanceWidgetUiModel(
+data class GroupPerformanceWidgetUiModel(
     val impression: Int = 0,
     val topSlotImpression: Int = 0,
 ) : GroupDetailDataModel {

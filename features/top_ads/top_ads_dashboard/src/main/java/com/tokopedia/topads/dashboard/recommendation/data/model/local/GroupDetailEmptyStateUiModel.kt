@@ -2,7 +2,7 @@ package com.tokopedia.topads.dashboard.recommendation.data.model.local
 
 import com.tokopedia.topads.dashboard.recommendation.views.adapter.groupdetail.factory.GroupDetailAdapterFactory
 
-class GroupDetailEmptyStateUiModel(
+data class GroupDetailEmptyStateUiModel(
     val statesList: List<EmptyStatesUiModel>
 ) : GroupDetailDataModel {
 

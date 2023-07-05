@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="72dp"
     android:background="@drawable/top_ads_widget_background"
+    android:id="@+id/shimmer_layout_top_level_recommendation"
     tools:ignore="MissingDefaultResource">
 
     <com.tokopedia.unifycomponents.LoaderUnify

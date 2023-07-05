@@ -3,7 +3,7 @@ package com.tokopedia.topads.dashboard.recommendation.data.model.local
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_EMPTY_STATE
 import com.tokopedia.topads.dashboard.recommendation.views.adapter.groupdetail.factory.GroupDetailAdapterFactory
 
-class GroupDetailInsightListUiModel(
+data class GroupDetailInsightListUiModel(
     val adGroups: MutableList<InsightListUiModel> = mutableListOf(),
     var insightType: Int = 0
 ) :

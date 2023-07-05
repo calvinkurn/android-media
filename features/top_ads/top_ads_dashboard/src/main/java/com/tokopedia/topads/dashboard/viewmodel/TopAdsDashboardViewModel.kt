@@ -90,6 +90,11 @@ class TopAdsDashboardViewModel @Inject constructor(
     private val _isUserWhitelisted: MutableLiveData<Result<Boolean>> = MutableLiveData()
     val isUserWhitelisted: LiveData<Result<Boolean>> = _isUserWhitelisted
 
+    private val _productInsights =
+        MutableLiveData<TopAdsListAllInsightState<MutableList<InsightListUiModel>>>()
+    val productInsights: LiveData<TopAdsListAllInsightState<MutableList<InsightListUiModel>>>
+        get() = _productInsights
+
     fun fetchShopDeposit() {
         topAdsGetShopDepositUseCase.execute({
             _shopDeposit.value = Success(it.topadsDashboardDeposits.data)
@@ -206,11 +211,6 @@ class TopAdsDashboardViewModel @Inject constructor(
             }
         )
     }
-
-    private val _productInsights =
-        MutableLiveData<TopAdsListAllInsightState<MutableList<InsightListUiModel>>>()
-    val productInsights: LiveData<TopAdsListAllInsightState<MutableList<InsightListUiModel>>>
-        get() = _productInsights
 
     fun fetchInsightItems(
         adGroupType: String,

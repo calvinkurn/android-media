@@ -2,7 +2,15 @@ package com.tokopedia.topads.dashboard.recommendation.views.adapter.groupdetail.
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.topads.dashboard.recommendation.data.model.local.*
+import com.tokopedia.topads.dashboard.recommendation.data.model.local.AccordianKataKunciUiModel
+import com.tokopedia.topads.dashboard.recommendation.data.model.local.AccordianKeywordBidUiModel
+import com.tokopedia.topads.dashboard.recommendation.data.model.local.GroupInsightsUiModel
+import com.tokopedia.topads.dashboard.recommendation.data.model.local.GroupPerformanceWidgetUiModel
+import com.tokopedia.topads.dashboard.recommendation.data.model.local.AccordianGroupBidUiModel
+import com.tokopedia.topads.dashboard.recommendation.data.model.local.AccordianNegativeKeywordUiModel
+import com.tokopedia.topads.dashboard.recommendation.data.model.local.GroupDetailEmptyStateUiModel
+import com.tokopedia.topads.dashboard.recommendation.data.model.local.GroupDetailInsightListUiModel
+import com.tokopedia.topads.dashboard.recommendation.data.model.local.AccordianDailyBudgetUiModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.groupdetailchips.GroupDetailChipsUiModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.insighttypechips.InsightTypeChipsUiModel
 
