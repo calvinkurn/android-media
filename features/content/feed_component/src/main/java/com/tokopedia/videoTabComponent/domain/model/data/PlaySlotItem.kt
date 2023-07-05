@@ -28,22 +28,14 @@ data class PlaySlotItems(
     val air_time: String = "",
     @SerializedName("cover_url")
     val cover_url: String = "",
-    @SerializedName("video")
-    val video: PlayVideoStream = PlayVideoStream(),
-    @SerializedName("pinned_product")
-    val pinnedProducts: List<PlayPinnedProduct>? = emptyList(),
-    @SerializedName("pinned_voucher")
-    val pinned_voucher: List<PlayPinnedVoucher> = emptyList(),
-    @SerializedName("pinned_message")
-    val pinned_message: PlayPinnedMessage = PlayPinnedMessage(),
     @SerializedName("partner")
     val partner: PlayPartner = PlayPartner(),
-    @SerializedName("quick_replies")
-    val quick_replies: List<String> = emptyList(),
-    @SerializedName("configurations")
-    val configurations: Configurations,
+    @SerializedName("video")
+    val video: PlayVideoStream = PlayVideoStream(),
     @SerializedName("stats")
     val stats: PlayChannelStats = PlayChannelStats(),
+    @SerializedName("configurations")
+    val configurations: Configurations,
     @SerializedName("app_link")
     val appLink: String = "",
     @SerializedName("web_link")
@@ -81,7 +73,6 @@ data class PlaySlotItems(
     val source_id: String = "",
     @SerializedName("slug_id")
     val slug_id: String = ""
-
 )
 
 data class PlayChannelStats(
