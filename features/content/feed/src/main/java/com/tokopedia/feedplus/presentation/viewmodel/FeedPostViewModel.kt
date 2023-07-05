@@ -722,7 +722,7 @@ class FeedPostViewModel @Inject constructor(
                     affiliate.id,
                     affiliate.channel,
                     AffiliatePageDetail(
-                        pageId = product.shop.id,
+                        pageId = product.id,
                         source = AffiliateSdkPageSource.DirectATC(
                             atcSource = AffiliateAtcSource.SHOP_PAGE,
                             null,
