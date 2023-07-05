@@ -10,7 +10,6 @@ import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.just
-import io.mockk.verify
 import org.junit.Test
 
 class PromoCheckoutViewModelUICallbackTest : BasePromoCheckoutViewModelTest() {
