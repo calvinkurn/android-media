@@ -13,87 +13,87 @@ import com.google.gson.annotations.SerializedName
 
 data class PlaySlotItems(
     @SerializedName("id")
-    var id: String = "",
+    val id: String = "",
     @SerializedName("title")
-    var title: String = "",
+    val title: String = "",
     @SerializedName("description")
-    var description: String = "",
+    val description: String = "",
     @SerializedName("start_time")
-    var start_time: String = "",
+    val start_time: String = "",
     @SerializedName("end_time")
-    var end_time: String = "",
+    val end_time: String = "",
     @SerializedName("is_live")
-    var is_live: Boolean = true,
+    val is_live: Boolean = true,
     @SerializedName("air_time")
-    var air_time: String = "",
+    val air_time: String = "",
     @SerializedName("cover_url")
-    var cover_url: String = "",
+    val cover_url: String = "",
     @SerializedName("video")
-    var video: PlayVideoStream = PlayVideoStream(),
+    val video: PlayVideoStream = PlayVideoStream(),
     @SerializedName("pinned_product")
-    var pinnedProducts: List<PlayPinnedProduct>? = emptyList(),
+    val pinnedProducts: List<PlayPinnedProduct>? = emptyList(),
     @SerializedName("pinned_voucher")
-    var pinned_voucher: List<PlayPinnedVoucher> = emptyList(),
+    val pinned_voucher: List<PlayPinnedVoucher> = emptyList(),
     @SerializedName("pinned_message")
-    var pinned_message: PlayPinnedMessage = PlayPinnedMessage(),
+    val pinned_message: PlayPinnedMessage = PlayPinnedMessage(),
     @SerializedName("partner")
-    var partner: PlayPartner = PlayPartner(),
+    val partner: PlayPartner = PlayPartner(),
     @SerializedName("quick_replies")
-    var quick_replies: List<String> = emptyList(),
+    val quick_replies: List<String> = emptyList(),
     @SerializedName("configurations")
     val configurations: Configurations,
     @SerializedName("stats")
-    var stats: PlayChannelStats = PlayChannelStats(),
+    val stats: PlayChannelStats = PlayChannelStats(),
     @SerializedName("app_link")
-    var appLink: String = "",
+    val appLink: String = "",
     @SerializedName("web_link")
-    var webLink: String = "",
+    val webLink: String = "",
 
     @SerializedName("share")
-    var share: PlayChannelShare = PlayChannelShare(),
+    val share: PlayChannelShare = PlayChannelShare(),
     @SerializedName("display_type")
-    var display_type: String = "",
+    val display_type: String = "",
     @SerializedName("recommendationType")
-    var recommendationType: String = "",
+    val recommendationType: String = "",
 
     // PlayBanner
     @SerializedName("created_time")
-    var created_time: String = "",
+    val created_time: String = "",
     @SerializedName("updated_time")
-    var updated_time: String = "",
+    val updated_time: String = "",
     @SerializedName("slug")
-    var slug: String = "",
+    val slug: String = "",
     @SerializedName("broadcaster_name")
-    var broadcaster_name: String = "",
+    val broadcaster_name: String = "",
     @SerializedName("image_url")
-    var image_url: String? = "",
+    val image_url: String? = "",
 
     // PlaySlotTabMenu
     @SerializedName("label")
-    var label: String = "",
+    val label: String = "",
     @SerializedName("icon_url")
-    var icon_url: String = "",
+    val icon_url: String = "",
     @SerializedName("group")
-    var group: String = "",
+    val group: String = "",
     @SerializedName("source_type")
-    var source_type: String = "",
+    val source_type: String = "",
     @SerializedName("source_id")
-    var source_id: String = "",
+    val source_id: String = "",
     @SerializedName("slug_id")
-    var slug_id: String = ""
+    val slug_id: String = ""
 
 )
 
 data class PlayChannelStats(
     @SerializedName("view")
-    var view: PlayChannelViewStats = PlayChannelViewStats()
+    val view: PlayChannelViewStats = PlayChannelViewStats()
 )
 
 data class PlayChannelViewStats(
     @SerializedName("value")
-    var value: String = "",
+    val value: String = "",
     @SerializedName("formatted")
-    var formatted: String = ""
+    val formatted: String = ""
 )
 
 data class Configurations(
