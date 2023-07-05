@@ -81,7 +81,6 @@ import com.tokopedia.wishlistcollection.view.bottomsheet.BottomSheetCreateNewCol
 import com.tokopedia.wishlistcollection.view.bottomsheet.BottomSheetKebabMenuWishlistCollection
 import com.tokopedia.wishlistcollection.view.bottomsheet.BottomSheetOnboardingWishlistCollection
 import com.tokopedia.wishlistcollection.view.bottomsheet.BottomSheetUpdateWishlistCollectionName
-import com.tokopedia.wishlistcollection.view.bottomsheet.BottomSheetWishlistAffiliateInfo
 import com.tokopedia.wishlistcollection.view.bottomsheet.listener.ActionListenerBottomSheetMenu
 import com.tokopedia.wishlistcollection.view.viewmodel.WishlistCollectionViewModel
 import java.net.SocketTimeoutException
@@ -1115,11 +1114,6 @@ class WishlistCollectionFragment :
             }
             startActivityForResult(intent, REQUEST_CODE_COLLECTION_DETAIL)
         }
-    }
-
-    override fun onTickerActionClicked(isAffiliate: Boolean) {
-        val bottomSheetWishlistAffiliateInfo = BottomSheetWishlistAffiliateInfo()
-        bottomSheetWishlistAffiliateInfo.show(isAffiliate, requireContext(), childFragmentManager)
     }
 
     private fun showLoader() {

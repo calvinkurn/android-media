@@ -367,7 +367,6 @@ class WishlistCollectionDetailFragment :
         super.onViewCreated(view, savedInstanceState)
         prepareLayout()
         observingData()
-//        hitWishlistAffiliateCookie()
     }
 
     override fun onDestroyView() {
