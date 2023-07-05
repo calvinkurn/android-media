@@ -23,15 +23,15 @@ class RolloutFeatureVariantsUseCase @Inject constructor(
 
     private val query = object : GqlQueryInterface {
         private val OPERATION_NAME = "RolloutFeatureVariants"
-        private val QUERY = """query RolloutFeatureVariants(${'$'}rev: Int, ${'$'}client_id: Int, ${'$'}id: String, ${'$'}iris_session_id: String) {
-  RolloutFeatureVariants(rev: ${'$'}rev, client_id: ${'$'}client_id, id: ${'$'}id, iris_session_id: ${'$'}iris_session_id) {
-    featureVariants {
-      feature
-      variant
-    }
-  }
-}
-"""
+        private val QUERY = """query RolloutFeatureVariants(${'$'}rev: Int!, ${'$'}client_id: Int!, ${'$'}id: String, ${'$'}iris_session_id: String){
+                RolloutFeatureVariants(rev:${'$'}rev, client_id:${'$'}client_id, id:${'$'}id, iris_session_id: ${'$'}iris_session_id){
+                    featureVariants {
+                        feature
+                        variant
+                    }
+                }
+            }
+        """
 
         override fun getOperationNameList(): List<String> = listOf(OPERATION_NAME)
         override fun getQuery(): String = QUERY
