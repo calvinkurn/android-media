@@ -12,6 +12,7 @@ import com.tokopedia.play.ui.view.carousel.adapter.ProductCarouselAdapter
 import com.tokopedia.play.ui.view.carousel.viewholder.ProductCarouselViewHolder
 import com.tokopedia.play.view.type.ProductAction
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
+import com.tokopedia.unifyprinciples.UnifyMotion
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -73,6 +74,7 @@ class ProductCarouselUiView(
     private val layoutManager = object : LinearLayoutManager(context, RecyclerView.HORIZONTAL, false) {
         override fun onLayoutCompleted(state: RecyclerView.State?) {
             super.onLayoutCompleted(state)
+            startAnimation()
             sendImpression()
         }
     }
@@ -182,7 +184,7 @@ class ProductCarouselUiView(
         if (products.isEmpty()) return
 
         scope.launch(Dispatchers.Main) {
-            delay(2000)
+            delay(UnifyMotion.T2)
             val startPosition = layoutManager.findFirstCompletelyVisibleItemPosition()
             val endPosition = layoutManager.findLastCompletelyVisibleItemPosition()
             if (startPosition > -1 && endPosition < products.size) {
