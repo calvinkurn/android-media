@@ -6,6 +6,7 @@ import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.atc_common.domain.model.response.ErrorReporterModel
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
+import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
 import com.tokopedia.content.common.comment.model.CountComment
 import com.tokopedia.content.common.comment.usecase.GetCountCommentsUseCase
 import com.tokopedia.feed.component.product.FeedTaggedProductUiModel
