@@ -9,11 +9,12 @@ import androidx.core.graphics.BlendModeCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow.EDUCATIONAL_INFO
-import com.tokopedia.imageassets.TokopediaImageUrl.IMG_STOCK_AVAILABLE
 import com.tokopedia.imageassets.TokopediaImageUrl.IMG_USP_NOW_FREE_SHIPPING_DARK_MODE
 import com.tokopedia.imageassets.TokopediaImageUrl.IMG_USP_NOW_FREE_SHIPPING_LIGHT_MODE
 import com.tokopedia.imageassets.TokopediaImageUrl.IMG_USP_NOW_GUARANTEED_QUALITY_DARK_MODE
 import com.tokopedia.imageassets.TokopediaImageUrl.IMG_USP_NOW_GUARANTEED_QUALITY_LIGHT_MODE
+import com.tokopedia.imageassets.TokopediaImageUrl.IMG_USP_NOW_STOCK_AVAILABLE_DARK_MODE
+import com.tokopedia.imageassets.TokopediaImageUrl.IMG_USP_NOW_STOCK_AVAILABLE_LIGHT_MODE
 import com.tokopedia.imageassets.TokopediaImageUrl.IMG_USP_NOW_TIME_DARK_MODE
 import com.tokopedia.imageassets.TokopediaImageUrl.IMG_USP_NOW_TIME_LIGHT_MODE
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
@@ -91,17 +92,17 @@ class HomeEducationalInformationWidgetViewHolder(
     ) {
         if (root.context.isDarkMode()) {
             iuTime.setImageUrl(IMG_USP_NOW_TIME_DARK_MODE)
-            iuSelectedProductFreeShipping.setImageUrl(if (serviceType == ServiceType.NOW_15M) IMG_STOCK_AVAILABLE  else IMG_USP_NOW_FREE_SHIPPING_DARK_MODE)
+            iuSelectedProductFreeShipping.setImageUrl(if (serviceType == ServiceType.NOW_15M) IMG_USP_NOW_STOCK_AVAILABLE_DARK_MODE  else IMG_USP_NOW_FREE_SHIPPING_DARK_MODE)
             iuGuaranteedQuality.setImageUrl(IMG_USP_NOW_GUARANTEED_QUALITY_DARK_MODE)
         } else {
             iuTime.setImageUrl(IMG_USP_NOW_TIME_LIGHT_MODE)
-            iuSelectedProductFreeShipping.setImageUrl(if (serviceType == ServiceType.NOW_15M) IMG_STOCK_AVAILABLE  else IMG_USP_NOW_FREE_SHIPPING_LIGHT_MODE)
+            iuSelectedProductFreeShipping.setImageUrl(if (serviceType == ServiceType.NOW_15M) IMG_USP_NOW_STOCK_AVAILABLE_LIGHT_MODE  else IMG_USP_NOW_FREE_SHIPPING_LIGHT_MODE)
             iuGuaranteedQuality.setImageUrl(IMG_USP_NOW_GUARANTEED_QUALITY_LIGHT_MODE)
         }
     }
 
     private fun ItemTokopedianowHomeEducationalInformationWidgetBinding.setupChevron() {
-        if(listener?.isEducationInformationLottieStopped() == false) {
+        if(listener?.isEducationInformationLottieStopped() == true) {
             setChevronDefault()
         } else {
             setChevronAnimation()
