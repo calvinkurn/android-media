@@ -4570,16 +4570,16 @@ class CartFragment :
     }
 
     private fun onResultFromAddOnBottomSheet(resultCode: Int, data: Intent?) {
-        // if (resultCode == Activity.RESULT_OK) {
-        val addOnProductDataResult = data?.getParcelableExtra(AddOnExtraConstant.EXTRA_ADDON_PAGE_RESULT) ?: AddOnPageResult()
+        if (resultCode == Activity.RESULT_OK) {
+            val addOnProductDataResult = data?.getParcelableExtra(AddOnExtraConstant.EXTRA_ADDON_PAGE_RESULT) ?: AddOnPageResult()
 
-        if (addOnProductDataResult.aggregatedData.isGetDataSuccess) {
-            val cartId = addOnProductDataResult.cartId
-            val newAddOnWording = "${addOnProductDataResult.aggregatedData.title} <b>(${addOnProductDataResult.aggregatedData.price})</b>"
-            cartAdapter.updateAddOnByCartId(addOnProductDataResult.cartId.toString(), newAddOnWording)
-        } else {
-            showToastMessageRed(addOnProductDataResult.aggregatedData.getDataErrorMessage)
+            if (addOnProductDataResult.aggregatedData.isGetDataSuccess) {
+                val cartId = addOnProductDataResult.cartId
+                val newAddOnWording = "${addOnProductDataResult.aggregatedData.title} <b>(${addOnProductDataResult.aggregatedData.price})</b>"
+                cartAdapter.updateAddOnByCartId(addOnProductDataResult.cartId.toString(), newAddOnWording)
+            } else {
+                showToastMessageRed(addOnProductDataResult.aggregatedData.getDataErrorMessage)
+            }
         }
-        // }
     }
 }

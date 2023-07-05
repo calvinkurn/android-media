@@ -20,7 +20,12 @@ val QUERY_ADD_TO_CART = """
                       uc_ut_param
                       is_trade_in
                       message
-                      add_ons
+                      is_fulfillment
+                      add_ons {
+                         id
+                         unique_id
+                         status
+                      }
                     }
                     error_reporter {
                       eligible
