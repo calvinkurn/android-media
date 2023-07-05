@@ -23,7 +23,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalOrder.IS_SNAPSHOT_FROM
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_ORDER_DETAIL_ID
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_ORDER_ID
 import com.tokopedia.header.HeaderUnify
-import com.tokopedia.imagepreview.ImagePreviewActivity
+import com.tokopedia.imagepreview.imagesecure.ImageSecurePreviewActivity
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.ordermanagement.snapshot.R
@@ -223,13 +223,14 @@ class SnapshotFragment : BaseDaggerFragment(), SnapshotAdapter.ActionListener, R
 
     override fun onSnapshotImgClicked(position: Int) {
         activity?.let {
-            val strings: ArrayList<String> = ArrayList()
-            responseSnapshot.productImageSecondary.forEach {
-                strings.add(it.imageUrl)
+            val strings = responseSnapshot.productImageSecondary.map { item ->
+                item.imageUrl
             }
-            it.startActivity(ImagePreviewActivity.getCallingIntent(it,
-                    strings,
-                    null, position))
+            it.startActivity(
+                ImageSecurePreviewActivity.getCallingIntent(
+                    it, ArrayList(strings), null, position
+                )
+            )
         }
     }
 
