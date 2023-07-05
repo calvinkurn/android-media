@@ -1,6 +1,7 @@
 package com.tokopedia.shop.campaign.view.adapter.viewholder
 
 import android.view.View
+import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
@@ -12,6 +13,7 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
@@ -58,8 +60,10 @@ class ShopCampaignDisplayBannerTimerViewHolder(
     private val viewBinding: ItemShopCampaignDisplayBannerTimerBinding? by viewBinding()
     private val contentContainer: CardUnify2? = viewBinding?.contentContainer
     private val imageBanner: ImageUnify? = viewBinding?.imageBanner
-    private val timerContainer: ConstraintLayout? = viewBinding?.timerContainer
+    private val timerSectionContainer: ConstraintLayout? = viewBinding?.timerSectionContainer
+    private val timerContainer: ViewGroup? = viewBinding?.timerContainer
     private val timerUnify: TimerUnifyHighlight? = viewBinding?.timer
+    private val timeDescriptionContainer: ViewGroup? = viewBinding?.timeDescriptionContainer
     private val timerMoreThanOneDay: Typography? = viewBinding?.textTimerMoreThan1Day
     private val textTimeDescription: Typography? = viewBinding?.timerDescription
     private val buttonRemindMe: View? = viewBinding?.buttonRemindMe
@@ -112,6 +116,16 @@ class ShopCampaignDisplayBannerTimerViewHolder(
         textTimeDescription?.setTextColorCompat(UNIFY_NN950_LIGHT)
         timerMoreThanOneDay?.setTextColorCompat(UNIFY_NN950_LIGHT)
         timerUnify?.variant = VARIANT_DARK_RED
+        setTimeDescriptionColor(UNIFY_NN950_LIGHT)
+    }
+
+    private fun setTimeDescriptionColor(color: Int) {
+        for(i in Int.ZERO until timeDescriptionContainer?.childCount.orZero()) {
+            val child = timeDescriptionContainer?.getChildAt(i)
+            if (child is Typography) {
+                child.setTextColorCompat(color)
+            }
+        }
     }
 
     private fun configDarkModeColor() {
@@ -124,6 +138,7 @@ class ShopCampaignDisplayBannerTimerViewHolder(
         textTimeDescription?.setTextColorCompat(UNIFY_NN950_DARK)
         timerMoreThanOneDay?.setTextColorCompat(UNIFY_NN950_DARK)
         timerUnify?.variant = VARIANT_ALTERNATE
+        setTimeDescriptionColor(UNIFY_NN950_DARK)
     }
 
     private fun setTimer(
@@ -155,7 +170,7 @@ class ShopCampaignDisplayBannerTimerViewHolder(
                 setTimerUnify(dateCampaign, timeCounter, statusCampaign, model)
             }
         } else {
-            timerUnify?.gone()
+            timerContainer?.gone()
             textTimeDescription?.gone()
             timerMoreThanOneDay?.gone()
         }
@@ -170,79 +185,79 @@ class ShopCampaignDisplayBannerTimerViewHolder(
         timerMoreThanOneDay?.gone()
         if (!timeCounter.isZero()) {
             configTimerUnifyPosition(statusCampaign)
-            timerUnify?.apply {
+            timerContainer?.apply {
                 show()
-                targetDate = Calendar.getInstance().apply {
+                timerUnify?.targetDate = Calendar.getInstance().apply {
                     time = dateCampaign
                 }
-                onFinish = {
+                timerUnify?.onFinish = {
                     listener.onTimerFinished(model)
                 }
             }
         } else {
-            timerUnify?.gone()
+            timerContainer?.gone()
         }
     }
 
     private fun configTimerUnifyPosition(statusCampaign: StatusCampaign?) {
         val constraintSet = ConstraintSet()
-        constraintSet.clone(timerContainer)
+        constraintSet.clone(timerSectionContainer)
         if (isStatusCampaignUpcoming(statusCampaign)) {
-            constraintSet.clear(timerUnify?.id.orZero(), ConstraintSet.BOTTOM)
-            constraintSet.clear(timerUnify?.id.orZero(), ConstraintSet.RIGHT)
-            constraintSet.clear(timerUnify?.id.orZero(), ConstraintSet.TOP)
+            constraintSet.clear(timerContainer?.id.orZero(), ConstraintSet.BOTTOM)
+            constraintSet.clear(timerContainer?.id.orZero(), ConstraintSet.RIGHT)
+            constraintSet.clear(timerContainer?.id.orZero(), ConstraintSet.TOP)
             constraintSet.connect(
-                timerUnify?.id.orZero(),
-                ConstraintSet.BOTTOM,
                 timerContainer?.id.orZero(),
+                ConstraintSet.BOTTOM,
+                timerSectionContainer?.id.orZero(),
                 ConstraintSet.BOTTOM,
                 0
             )
             constraintSet.connect(
-                timerUnify?.id.orZero(),
-                ConstraintSet.LEFT,
                 timerContainer?.id.orZero(),
+                ConstraintSet.LEFT,
+                timerSectionContainer?.id.orZero(),
                 ConstraintSet.LEFT,
                 0
             )
             constraintSet.connect(
-                timerUnify?.id.orZero(),
+                timerContainer?.id.orZero(),
                 ConstraintSet.TOP,
                 textTimeDescription?.id.orZero(),
                 ConstraintSet.BOTTOM,
                 0
             )
         } else {
-            constraintSet.clear(timerUnify?.id.orZero(), ConstraintSet.BOTTOM)
-            constraintSet.clear(timerUnify?.id.orZero(), ConstraintSet.LEFT)
-            constraintSet.clear(timerUnify?.id.orZero(), ConstraintSet.TOP)
+            constraintSet.clear(timerContainer?.id.orZero(), ConstraintSet.BOTTOM)
+            constraintSet.clear(timerContainer?.id.orZero(), ConstraintSet.LEFT)
+            constraintSet.clear(timerContainer?.id.orZero(), ConstraintSet.TOP)
             constraintSet.connect(
-                timerUnify?.id.orZero(),
-                ConstraintSet.BOTTOM,
                 timerContainer?.id.orZero(),
+                ConstraintSet.BOTTOM,
+                timerSectionContainer?.id.orZero(),
                 ConstraintSet.BOTTOM,
                 0
             )
             constraintSet.connect(
-                timerUnify?.id.orZero(),
-                ConstraintSet.RIGHT,
                 timerContainer?.id.orZero(),
+                ConstraintSet.RIGHT,
+                timerSectionContainer?.id.orZero(),
                 ConstraintSet.RIGHT,
                 0
             )
             constraintSet.connect(
-                timerUnify?.id.orZero(),
+                timerContainer?.id.orZero(),
                 ConstraintSet.TOP,
-                timerContainer?.id.orZero(),
+                timerSectionContainer?.id.orZero(),
                 ConstraintSet.TOP,
                 0
             )
         }
-        constraintSet.applyTo(timerContainer)
+        constraintSet.applyTo(timerSectionContainer)
     }
 
     private fun setTimerNonUnify(dateCampaign: Date) {
-        timerUnify?.gone()
+        timerContainer?.gone()
         timerMoreThanOneDay?.apply {
             val dateStringFormatted = dateCampaign.toString(
                 SHOP_CAMPAIGN_BANNER_TIMER_MORE_THAN_1_DAY_DATE_FORMAT

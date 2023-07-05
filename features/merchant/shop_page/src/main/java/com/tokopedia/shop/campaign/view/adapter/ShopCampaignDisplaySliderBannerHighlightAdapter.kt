@@ -11,7 +11,8 @@ import com.tokopedia.shop.campaign.view.model.ShopWidgetDisplaySliderBannerHighl
 import com.tokopedia.shop.databinding.ItemShopCampaignSliderBannerHighlightProductImageItemBinding
 
 class ShopCampaignDisplaySliderBannerHighlightAdapter(
-    private val listener: ShopCampaignDisplaySliderBannerHighlightViewHolder.Listener
+    private val listener: ShopCampaignDisplaySliderBannerHighlightViewHolder.Listener,
+    private val widgetUiModel: ShopWidgetDisplaySliderBannerHighlightUiModel?
 ) : RecyclerView.Adapter<ShopCampaignDisplaySliderBannerHighlightProductImageItemViewHolder>() {
 
     companion object{
@@ -46,7 +47,11 @@ class ShopCampaignDisplaySliderBannerHighlightAdapter(
             parent,
             false
         )
-        return ShopCampaignDisplaySliderBannerHighlightProductImageItemViewHolder(binding, listener)
+        return ShopCampaignDisplaySliderBannerHighlightProductImageItemViewHolder(
+            binding,
+            widgetUiModel,
+            listener
+        )
     }
 
     override fun onBindViewHolder(

@@ -339,6 +339,7 @@ object ShopPageTrackingConstant {
     const val CLICK_SHOP_HEADER = "click shop header"
     const val CLICK_SELLER = "click - seller"
     const val HIGHLIGHT_WIDGET = "highlight widget"
+    const val HOME_ANCHOR = "home anchor"
 
     // trackerId
     const val TRACKER_ID_CLICK_SHARE_BUTTON = "10544"
@@ -424,6 +425,9 @@ object ShopPageTrackingConstant {
         const val CLICK_VOUCHER_SLIDER_ITEM_WIDGET = "campaign tab - click kupon other"
         const val IMPRESSION_BANNER_WIDGET = "campaign tab - impression banner"
         const val CLICK_BANNER_WIDGET = "campaign tab - click banner"
+        const val IMPRESSION_PRODUCT_SLIDER_BANNER_HIGHLIGHT = "campaign tab - impression product home anchor"
+        const val CLICK_PRODUCT_SLIDER_BANNER_HIGHLIGHT = "campaign tab - click product home anchor"
+        const val CLICK_CTA_SLIDER_BANNER_HIGHLIGHT = "campaign tab - click jelajahi home anchor"
 
     }
 
@@ -492,6 +496,12 @@ object ShopPageTrackingConstant {
         const val TRACKER_ID_CLICK_VOUCHER_SLIDER_ITEM = "44351"
         const val TRACKER_ID_IMPRESSION_BANNER_WIDGET = "44359"
         const val TRACKER_ID_CLICK_BANNER_WIDGET = "44360"
+        const val TRACKER_ID_IMPRESSION_PLAY_WIDGET = "44363"
+        const val TRACKER_ID_CLICK_PLAY_WIDGET = "44364"
+        const val TRACKER_ID_IMPRESSION_SLIDER_BANNER_HIGHLIGHT_WIDGET = "44365"
+        const val TRACKER_ID_CLICK_PRODUCT_SLIDER_BANNER_HIGHLIGHT_WIDGET = "44366"
+        const val TRACKER_ID_CLICK_EXPLORE_SHOP_SLIDER_BANNER_HIGHLIGHT_WIDGET = "44368"
+
     }
 
     object Key {

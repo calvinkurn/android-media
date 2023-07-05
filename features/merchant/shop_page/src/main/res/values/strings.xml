@@ -114,6 +114,11 @@
     <!--  campaign tab  -->
     <string name="shop_campaign_tab_banner_timer_date_format">%1s WIB</string>
     <string name="shop_campaign_tab_voucher_redeem_success_message">Kupon berhasil di klaim, yuk gunakan di halaman keranjang sebelum kehabisan!</string>
+    <string name="shop_campaign_tab_timer_days">Hari</string>
+    <string name="shop_campaign_tab_timer_hours">Jam</string>
+    <string name="shop_campaign_tab_timer_minutes">Menit</string>
+    <string name="shop_campaign_tab_timer_seconds">Detik</string>
+
 
     <!-- product -->
     <string name="shop_page_product_no_upload_product">Agar tidak dinonaktifkan, tambah produk sebelum 90 hari</string>

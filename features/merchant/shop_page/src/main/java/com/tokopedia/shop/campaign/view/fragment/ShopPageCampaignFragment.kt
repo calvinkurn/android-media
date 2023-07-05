@@ -21,15 +21,10 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.coachmark.CoachMark2
-import com.tokopedia.coachmark.CoachMark2Item
-import com.tokopedia.content.common.util.coachmark.ContentCoachMarkSharedPref
 import com.tokopedia.globalerror.GlobalError
-import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
@@ -681,11 +676,57 @@ class ShopPageCampaignFragment :
         shopCampaignTabAdapter.pauseSliderBannerAutoScroll()
     }
 
-    override fun onProductImageClicked(productData: ShopWidgetDisplaySliderBannerHighlightUiModel.ProductHighlightData) {
+    override fun onProductImageClicked(
+        widgetUiModel: ShopWidgetDisplaySliderBannerHighlightUiModel,
+        productData: ShopWidgetDisplaySliderBannerHighlightUiModel.ProductHighlightData,
+        position: Int
+    ) {
+        sendClickProductSliderBannerHighlight(widgetUiModel, productData, position)
         RouteManager.route(context, productData.appLink)
     }
 
-    override fun onProductImageImpression(productData: ShopWidgetDisplaySliderBannerHighlightUiModel.ProductHighlightData) {
+    private fun sendClickProductSliderBannerHighlight(
+        widgetUiModel: ShopWidgetDisplaySliderBannerHighlightUiModel,
+        productData: ShopWidgetDisplaySliderBannerHighlightUiModel.ProductHighlightData,
+        position: Int
+    ) {
+        shopCampaignTabTracker.sendClickProductSliderBannerHighlight(
+            ShopPageCampaignTrackingMapper.mapToProductSliderBannerHighlightTrackerDataModel(
+                widgetUiModel.widgetId,
+                getSelectedTabName(),
+                position,
+                productData.imageUrl,
+                productData.appLink,
+                shopId,
+                userId
+            )
+        )
+    }
+
+    override fun onProductImageImpression(
+        widgetUiModel: ShopWidgetDisplaySliderBannerHighlightUiModel,
+        productData: ShopWidgetDisplaySliderBannerHighlightUiModel.ProductHighlightData,
+        position: Int
+    ) {
+        sendImpressionProductSliderBannerHighlight(widgetUiModel, productData, position)
+    }
+
+    private fun sendImpressionProductSliderBannerHighlight(
+        widgetUiModel: ShopWidgetDisplaySliderBannerHighlightUiModel,
+        productData: ShopWidgetDisplaySliderBannerHighlightUiModel.ProductHighlightData,
+        position: Int
+    ) {
+        shopCampaignTabTracker.sendImpressionProductSliderBannerHighlight(
+            ShopPageCampaignTrackingMapper.mapToProductSliderBannerHighlightTrackerDataModel(
+                widgetUiModel.widgetId,
+                getSelectedTabName(),
+                position,
+                productData.imageUrl,
+                productData.appLink,
+                shopId,
+                userId
+            )
+        )
     }
 
     override fun onWidgetSliderBannerHighlightImpression(
@@ -694,8 +735,21 @@ class ShopPageCampaignFragment :
     ) {
     }
 
-    override fun onWidgetSliderBannerHighlightCtaClicked(uiModel: ShopWidgetDisplaySliderBannerHighlightUiModel) {
-        checkShouldSelectHomeTab(uiModel.header.ctaLink)
+    override fun onWidgetSliderBannerHighlightCtaClicked(
+        widgetUiModel: ShopWidgetDisplaySliderBannerHighlightUiModel
+    ) {
+        sendClickCtaSliderBannerHighlight(widgetUiModel)
+        checkShouldSelectHomeTab(widgetUiModel.header.ctaLink)
+    }
+
+    private fun sendClickCtaSliderBannerHighlight(widgetUiModel: ShopWidgetDisplaySliderBannerHighlightUiModel) {
+        shopCampaignTabTracker.sendClickCtaSliderBannerHighlight(
+            ShopPageCampaignTrackingMapper.mapToClickCtaSliderBannerHighlightTrackerDataModel(
+                widgetUiModel.widgetId,
+                shopId,
+                userId
+            )
+        )
     }
 
     private fun checkShouldSelectHomeTab(appLink: String) {
@@ -1104,7 +1158,8 @@ class ShopPageCampaignFragment :
                 model.name,
                 position,
                 shopId,
-                userId
+                userId,
+                model.header.title
             )
         )
     }
@@ -1137,7 +1192,8 @@ class ShopPageCampaignFragment :
                     it.name,
                     parentPosition,
                     shopId,
-                    userId
+                    userId,
+                    it.header.title
                 )
             )
         }
@@ -1156,10 +1212,6 @@ class ShopPageCampaignFragment :
     }
 
     override fun onPlayWidgetImpression(model: CarouselPlayWidgetUiModel, position: Int) {
-        sendImpressionWidgetHeaderTitle(
-            model.header,
-            model.widgetId
-        )
     }
 
     override fun onImpressionVoucherSliderWidget(
