@@ -2,7 +2,12 @@ package com.tokopedia.feedcomponent.view.widget
 
 import android.content.Context
 import android.net.Uri
-import com.google.android.exoplayer2.*
+import com.google.android.exoplayer2.C
+import com.google.android.exoplayer2.DefaultLoadControl
+import com.google.android.exoplayer2.ExoPlayer
+import com.google.android.exoplayer2.LoadControl
+import com.google.android.exoplayer2.Player
+import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.source.MediaSource
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.source.dash.DashMediaSource
@@ -48,10 +53,9 @@ class FeedExoPlayer(val context: Context) {
                     isInitialLoad -> {
                         videoStateListener?.onInitialStateLoading()
                     }
-
                 }
                 if (!exoPlayer.playWhenReady && exoPlayer.currentPosition != VIDEO_AT_FIRST_POSITION) {
-                    //Track only when video stop
+                    // Track only when video stop
                     videoStateListener?.onVideoStateChange(
                         exoPlayer.currentPosition,
                         exoPlayer.duration
@@ -62,7 +66,7 @@ class FeedExoPlayer(val context: Context) {
     }
 
     fun reset() {
-        exoPlayer.seekTo(1)
+        exoPlayer.seekTo(0)
     }
 
     fun setVideoResizeListener(listener: VideoListener) {
@@ -91,7 +95,6 @@ class FeedExoPlayer(val context: Context) {
         if (exoPlayer.playbackState == ExoPlayer.STATE_ENDED) reset()
         exoPlayer.playWhenReady = true
     }
-
 
     fun stop() {
         exoPlayer.playWhenReady = false
@@ -148,5 +151,5 @@ interface VideoStateListener {
     fun onVideoReadyToPlay(isPlaying: Boolean)
 
     fun onBuffering() {}
-    fun onVideoStateChange(stopDuration: Long, videoDuration: Long) //Tracker Purpose
+    fun onVideoStateChange(stopDuration: Long, videoDuration: Long) // Tracker Purpose
 }

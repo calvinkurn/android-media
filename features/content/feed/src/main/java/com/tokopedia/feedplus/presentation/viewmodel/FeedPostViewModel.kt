@@ -527,12 +527,25 @@ class FeedPostViewModel @Inject constructor(
         source: String,
         cursor: String = ""
     ): FeedModel {
-        return feedXHomeUseCase(
-            feedXHomeUseCase.createParams(
-                source,
-                cursor
+        var response = FeedModel(emptyList(), FeedPaginationModel.Empty)
+        var thresholdGet = 3
+        var nextCursor = cursor
+
+        while (response.items.isEmpty() && --thresholdGet >= 0) {
+            response = feedXHomeUseCase(
+                feedXHomeUseCase.createParams(
+                    source,
+                    nextCursor
+                )
             )
-        )
+            nextCursor = response.pagination.cursor
+        }
+
+        return if (response.items.isEmpty()) {
+            FeedModel(emptyList(), FeedPaginationModel.Empty)
+        } else {
+            response
+        }
     }
 
     private suspend fun getCampaignReminderStatus(campaignId: Long): Boolean = try {

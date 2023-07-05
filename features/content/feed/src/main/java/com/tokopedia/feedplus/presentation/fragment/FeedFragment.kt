@@ -49,9 +49,7 @@ import com.tokopedia.feedplus.di.FeedMainInjector
 import com.tokopedia.feedplus.domain.mapper.MapperFeedModelToTrackerDataModel
 import com.tokopedia.feedplus.domain.mapper.MapperProductsToXProducts
 import com.tokopedia.feedplus.presentation.adapter.FeedAdapterTypeFactory
-import com.tokopedia.feedplus.presentation.adapter.FeedPostAdapter
-import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_NOT_SELECTED
-import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_SELECTED
+import com.tokopedia.feedplus.presentation.adapter.FeedContentAdapter
 import com.tokopedia.feedplus.presentation.adapter.listener.FeedListener
 import com.tokopedia.feedplus.presentation.model.FeedAuthorModel
 import com.tokopedia.feedplus.presentation.model.FeedCardCampaignModel
@@ -108,7 +106,19 @@ class FeedFragment :
         get() = _binding!!
 
     private var data: FeedDataModel? = null
-    private var adapter: FeedPostAdapter? = null
+    private val adapter: FeedContentAdapter by lazy {
+        FeedContentAdapter(
+            FeedAdapterTypeFactory(
+                this,
+                binding.rvFeedPost,
+                trackerModelMapper
+            )
+        ) {
+            if (feedPostViewModel.shouldShowNoMoreContent) return@FeedContentAdapter
+            adapter.showLoading()
+            feedPostViewModel.fetchFeedPosts(data?.type ?: "")
+        }
+    }
     private var currentTrackerData: FeedTrackerDataModel? = null
 
     private val videoPlayerManager by lazy { VideoPlayerManager(requireContext()) }
@@ -184,14 +194,6 @@ class FeedFragment :
     }
     private val contentScrollListener = object : RecyclerView.OnScrollListener() {
         override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-            if (newState == SCROLL_STATE_IDLE &&
-                layoutManager.findFirstVisibleItemPosition() >= (adapter?.itemCount.orZero() - MINIMUM_ENDLESS_CALL) &&
-                !feedPostViewModel.shouldShowNoMoreContent
-            ) {
-                adapter?.showLoading()
-                feedPostViewModel.fetchFeedPosts(data?.type ?: "")
-            }
-
             // update item state and send tracker
             if (newState == SCROLL_STATE_IDLE) {
                 feedAnalytics.eventSwipeUpDownContent(
@@ -200,15 +202,7 @@ class FeedFragment :
                 )
 
                 val position = layoutManager.findFirstVisibleItemPosition()
-
-                if (position > ZERO) {
-                    notifyItemNotSelected(position - ONE)
-                }
-                if (position < (adapter?.list?.size.orZero())) {
-                    notifyItemNotSelected(position + ONE)
-                }
-
-                notifyItemSelected(position)
+                adapter.select(position)
             }
         }
     }
@@ -259,7 +253,7 @@ class FeedFragment :
             isNewData = true,
             postSource = arguments?.getString(UF_EXTRA_FEED_SOURCE_ID)?.let { sourceId ->
                 PostSourceModel(sourceId, arguments?.getString(UF_EXTRA_FEED_SOURCE_NAME))
-            },
+            }
         )
 
         initView()
@@ -445,9 +439,9 @@ class FeedFragment :
 
     override fun reload() {
         feedPostViewModel.fetchFeedPosts(data?.type ?: "")
-        adapter?.removeErrorNetwork()
+        adapter.removeErrorNetwork()
         showLoading()
-        adapter?.showLoading()
+        adapter.showLoading()
     }
 
     override fun getVideoPlayer(id: String): FeedExoPlayer {
@@ -705,12 +699,12 @@ class FeedFragment :
     }
 
     override fun onFollowClickedFromFollowBottomSheet(position: Int) {
-        if (adapter?.list?.size.orZero() > position) {
-            adapter?.list?.get(position)?.let {
+        if (adapter.itemCount > position) {
+            adapter.currentList[position]?.let {
                 var author: FeedAuthorModel? = null
-                when (it) {
-                    is FeedCardImageContentModel -> author = it.author
-                    is FeedCardVideoContentModel -> author = it.author
+                when (it.data) {
+                    is FeedCardImageContentModel -> author = it.data.author
+                    is FeedCardVideoContentModel -> author = it.data.author
                 }
                 author?.let {
                     if (userSession.isLoggedIn) {
@@ -781,18 +775,14 @@ class FeedFragment :
                 feedPostViewModel.fetchFeedPosts(data?.type ?: "", isNewData = true)
             }
 
-            adapter = FeedPostAdapter(
-                FeedAdapterTypeFactory(this, binding.rvFeedPost, trackerModelMapper)
-            )
-            if (adapter!!.itemCount == 0) {
-                showLoading()
-            }
-
-            PagerSnapHelper().attachToRecyclerView(it.rvFeedPost)
-            it.rvFeedPost.layoutManager = layoutManager
             it.rvFeedPost.adapter = adapter
+            it.rvFeedPost.layoutManager = layoutManager
+            PagerSnapHelper().attachToRecyclerView(it.rvFeedPost)
             it.rvFeedPost.removeOnScrollListener(contentScrollListener)
             it.rvFeedPost.addOnScrollListener(contentScrollListener)
+            it.rvFeedPost.setHasFixedSize(true)
+            it.rvFeedPost.itemAnimator = null
+            if (adapter.itemCount == 0) { showLoading() }
         }
     }
 
@@ -800,33 +790,30 @@ class FeedFragment :
         feedPostViewModel.feedHome.observe(viewLifecycleOwner) {
             binding.swipeRefreshFeedLayout.isRefreshing = false
             hideLoading()
-            adapter?.hideLoading()
+            adapter.hideLoading()
             when (it) {
                 is Success -> {
                     if (it.data.items.isEmpty()) {
                         context?.let { ctx ->
-                            adapter?.setElements(
+                            adapter.setList(
                                 listOf(
                                     FeedNoContentModel.getNoContentInstance(ctx)
                                 )
                             )
                         }
                     } else {
-                        adapter?.updateList(it.data.items)
+                        adapter.setList(it.data.items)
                         context?.let { ctx ->
                             if (feedPostViewModel.shouldShowNoMoreContent) {
-                                adapter?.addElement(FeedNoContentModel.getNoMoreContentInstance(ctx))
+                                adapter.addElement(FeedNoContentModel.getNoMoreContentInstance(ctx))
                             }
                         }
                         feedPostViewModel.fetchTopAdsData()
-                        if (it.data.pagination.totalData == it.data.items.size) {
-                            view?.post { notifyItemSelected(0) }
-                        }
                     }
                     feedMainViewModel.onPostDataLoaded(it.data.items.isNotEmpty())
                 }
                 is Fail -> {
-                    adapter?.showErrorNetwork()
+                    adapter.showErrorNetwork()
                 }
                 else -> {}
             }
@@ -965,8 +952,8 @@ class FeedFragment :
 
     private fun pauseCurrentVideo() {
         val currentIndex = layoutManager.findFirstVisibleItemPosition()
-        if (currentIndex < ZERO || currentIndex >= (adapter?.list?.size ?: 0)) return
-        val item = adapter?.list?.get(currentIndex) ?: return
+        if (currentIndex < ZERO || currentIndex >= adapter.itemCount) return
+        val item = adapter.currentList[currentIndex]?.data ?: return
 
         when (item) {
             is FeedCardVideoContentModel -> pauseVideo(item.id)
@@ -977,8 +964,8 @@ class FeedFragment :
 
     private fun resumeCurrentVideo() {
         val currentIndex = layoutManager.findFirstVisibleItemPosition()
-        if (currentIndex < ZERO || currentIndex >= (adapter?.list?.size ?: 0)) return
-        val item = adapter?.list?.get(currentIndex) ?: return
+        if (currentIndex < ZERO || currentIndex >= adapter.itemCount) return
+        val item = adapter.currentList[currentIndex]?.data ?: return
 
         when (item) {
             is FeedCardVideoContentModel -> resumeVideo(item.id)
@@ -1146,14 +1133,6 @@ class FeedFragment :
     private fun hideLoading() {
         binding.feedLoading.hide()
         binding.swipeRefreshFeedLayout.show()
-    }
-
-    private fun notifyItemSelected(position: Int) {
-        adapter?.notifyItemChanged(position, FEED_POST_SELECTED)
-    }
-
-    private fun notifyItemNotSelected(position: Int) {
-        adapter?.notifyItemChanged(position, FEED_POST_NOT_SELECTED)
     }
 
     private fun checkForFollowerBottomSheet(

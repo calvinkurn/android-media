@@ -1,5 +1,6 @@
 package com.tokopedia.feedplus.presentation.adapter.viewholder
 
+import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
@@ -8,8 +9,10 @@ import com.tokopedia.feedcomponent.view.widget.VideoStateListener
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.databinding.ItemFeedPostLiveBinding
 import com.tokopedia.feedplus.domain.mapper.MapperFeedModelToTrackerDataModel
+import com.tokopedia.feedplus.presentation.adapter.FeedContentAdapter
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_NOT_SELECTED
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_SELECTED
+import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloads
 import com.tokopedia.feedplus.presentation.adapter.listener.FeedListener
 import com.tokopedia.feedplus.presentation.model.FeedCardLivePreviewContentModel
 import com.tokopedia.feedplus.presentation.model.FeedTrackerDataModel
@@ -34,6 +37,23 @@ class FeedPostLiveViewHolder(
 
     private var mVideoPlayer: FeedExoPlayer? = null
 
+    init {
+        binding.root.addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
+            override fun onViewAttachedToWindow(p0: View) {
+            }
+
+            override fun onViewDetachedFromWindow(p0: View) {
+                onNotSelected()
+            }
+        })
+    }
+
+    fun bind(item: FeedContentAdapter.Item) {
+        val data = item.data as FeedCardLivePreviewContentModel
+        bind(data)
+        if (item.isSelected) onSelected(data)
+    }
+
     override fun bind(element: FeedCardLivePreviewContentModel?) {
         element?.let { data ->
             trackerDataModel = trackerMapper.transformLiveContentToTrackerModel(data)
@@ -54,25 +74,51 @@ class FeedPostLiveViewHolder(
         }
     }
 
+    fun bind(item: FeedContentAdapter.Item, payloads: MutableList<Any>) {
+        val selectedPayload = if (item.isSelected) FEED_POST_SELECTED else FEED_POST_NOT_SELECTED
+        val newPayloads = payloads.toMutableList().also {
+            it.add(selectedPayload)
+        }
+        bind(item.data as FeedCardLivePreviewContentModel, newPayloads)
+    }
+
     override fun bind(element: FeedCardLivePreviewContentModel?, payloads: MutableList<Any>) {
         element?.let {
             trackerDataModel = trackerMapper.transformLiveContentToTrackerModel(it)
 
             if (payloads.contains(FEED_POST_SELECTED)) {
-                listener.onPostImpression(
-                    trackerDataModel ?: trackerMapper.transformLiveContentToTrackerModel(
-                        it
-                    ),
-                    it.id,
-                    absoluteAdapterPosition
-                )
-
-                mVideoPlayer?.resume(shouldReset = false)
+                onSelected(element)
             }
+
             if (payloads.contains(FEED_POST_NOT_SELECTED)) {
-                mVideoPlayer?.pause()
+                onNotSelected()
+            }
+
+            payloads.forEach { payload ->
+                if (payload is FeedViewHolderPayloads) {
+                    bind(
+                        element,
+                        payload.payloads.toMutableList()
+                    )
+                }
             }
         }
+    }
+
+    private fun onSelected(element: FeedCardLivePreviewContentModel) {
+        listener.onPostImpression(
+            trackerDataModel ?: trackerMapper.transformLiveContentToTrackerModel(
+                element
+            ),
+            element.id,
+            absoluteAdapterPosition
+        )
+
+        mVideoPlayer?.resume(shouldReset = false)
+    }
+
+    private fun onNotSelected() {
+        mVideoPlayer?.pause()
     }
 
     override fun onViewRecycled() {
@@ -99,7 +145,6 @@ class FeedPostLiveViewHolder(
 
         videoPlayer.setVideoStateListener(object : VideoStateListener {
             override fun onInitialStateLoading() {
-
             }
 
             override fun onBuffering() {
@@ -118,7 +163,7 @@ class FeedPostLiveViewHolder(
         videoPlayer.start(
             element.media.firstOrNull()?.mediaUrl.orEmpty(),
             false,
-            playWhenReady = false,
+            playWhenReady = false
         )
     }
 

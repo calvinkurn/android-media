@@ -3,6 +3,7 @@ package com.tokopedia.feedplus.presentation.adapter.viewholder
 import android.annotation.SuppressLint
 import android.view.GestureDetector
 import android.view.MotionEvent
+import android.view.View
 import android.view.ViewParent
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
@@ -14,6 +15,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.databinding.ItemFeedPostBinding
 import com.tokopedia.feedplus.domain.mapper.MapperFeedModelToTrackerDataModel
+import com.tokopedia.feedplus.presentation.adapter.FeedContentAdapter
 import com.tokopedia.feedplus.presentation.adapter.FeedPostImageAdapter
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_CLEAR_MODE
@@ -89,6 +91,15 @@ class FeedPostImageViewHolder(
     private var mData: FeedCardImageContentModel? = null
 
     init {
+        binding.root.addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
+            override fun onViewAttachedToWindow(p0: View) {
+            }
+
+            override fun onViewDetachedFromWindow(p0: View) {
+                onNotSelected()
+            }
+        })
+
         with(binding) {
             indicatorFeedContent.activeColor = ContextCompat.getColor(
                 binding.root.context,
@@ -185,6 +196,12 @@ class FeedPostImageViewHolder(
         binding.scrollableHost.setTargetParent(parentToBeDisabled)
     }
 
+    fun bind(item: FeedContentAdapter.Item) {
+        val data = item.data as FeedCardImageContentModel
+        bind(data)
+        if (item.isSelected) onSelected(data)
+    }
+
     override fun bind(element: FeedCardImageContentModel?) {
         mData = element
         element?.let { data ->
@@ -234,6 +251,14 @@ class FeedPostImageViewHolder(
         }
     }
 
+    fun bind(item: FeedContentAdapter.Item, payloads: MutableList<Any>) {
+        val selectedPayload = if (item.isSelected) FEED_POST_SELECTED else FEED_POST_NOT_SELECTED
+        val newPayloads = payloads.toMutableList().also {
+            it.add(selectedPayload)
+        }
+        bind(item.data as FeedCardImageContentModel, newPayloads)
+    }
+
     override fun bind(element: FeedCardImageContentModel?, payloads: MutableList<Any>) {
         super.bind(element, payloads)
         mData = element
@@ -257,20 +282,11 @@ class FeedPostImageViewHolder(
             }
 
             if (payloads.contains(FEED_POST_SELECTED)) {
-                campaignView.startAnimation()
-                sendImpressionTracker(it)
-                updateProductTagText(it)
-
-                isAutoSwipeOn = true
-                runAutoSwipe()
+                onSelected(element)
             }
 
             if (payloads.contains(FEED_POST_NOT_SELECTED)) {
-                job?.cancel()
-                campaignView.resetView()
-                hideClearView()
-
-                isAutoSwipeOn = false
+                onNotSelected()
             }
 
             if (payloads.contains(FeedViewHolderPayloadActions.FEED_POST_FOLLOW_CHANGED)) {
@@ -286,6 +302,23 @@ class FeedPostImageViewHolder(
                 }
             }
         }
+    }
+
+    private fun onSelected(data: FeedCardImageContentModel) {
+        campaignView.startAnimation()
+        sendImpressionTracker(data)
+        updateProductTagText(data)
+
+        isAutoSwipeOn = true
+        runAutoSwipe()
+    }
+
+    private fun onNotSelected() {
+        job?.cancel()
+        campaignView.resetView()
+        hideClearView()
+
+        isAutoSwipeOn = false
     }
 
     private fun updateProductTagText(element: FeedCardImageContentModel) {
