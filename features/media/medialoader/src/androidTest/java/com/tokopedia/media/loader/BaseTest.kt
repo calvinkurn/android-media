@@ -1,6 +1,7 @@
 package com.tokopedia.media.loader
 
 import android.content.Context
+import android.graphics.Bitmap
 import android.widget.ImageView
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.idling.CountingIdlingResource
@@ -20,7 +21,7 @@ open class BaseTest {
 
     @get:Rule
     val activityTestRule = object : ActivityCustomRule(
-        ActivityScenarioRule(DebugMediaLoaderActivity::class.java)
+        ActivityScenarioRule(StubDebugMediaLoaderActivity::class.java)
     ) {
         override fun before() {
             InstrumentationAuthHelper
@@ -39,6 +40,8 @@ open class BaseTest {
     protected val interceptor = StubInterceptor()
     protected val countingIdlingResource = CountingIdlingResource("media-loader")
 
+    lateinit var activity: StubDebugMediaLoaderActivity
+
     @Before
     open fun setUp() {
         DaggerMediaLoaderComponent
@@ -50,6 +53,10 @@ open class BaseTest {
             .inject(interceptor)
 
         Intents.init()
+
+        activityTestRule.inner.scenario.onActivity {
+            activity = it as StubDebugMediaLoaderActivity
+        }
     }
 
     @After
@@ -60,6 +67,10 @@ open class BaseTest {
     protected fun onImageView(imgView: (ImageView) -> Unit) {
         Espresso.onView(ViewMatchers.withId(R.id.img_sample))
             .check { view, _ -> imgView(view as ImageView) }
+    }
+
+    protected fun setImageViewContent(content: Bitmap) {
+        activity.setImageViewContent(content)
     }
 
     companion object {

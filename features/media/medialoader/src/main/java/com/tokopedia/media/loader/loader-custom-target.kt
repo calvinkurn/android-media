@@ -6,6 +6,65 @@ import android.view.View
 import com.tokopedia.media.loader.data.Properties
 import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
 import com.tokopedia.media.loader.utils.MediaTarget
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
+
+fun String.getBitmapImageUrl(
+    context: Context,
+    properties: Properties.() -> Unit = {},
+    target: MediaBitmapEmptyTarget<Bitmap> = MediaBitmapEmptyTarget()
+) {
+    MediaLoaderTarget.loadImage(
+        context,
+        Properties()
+            .apply(properties)
+            .setSource(this),
+        target
+    )
+}
+
+fun String.getBitmapImageUrl(
+    context: Context,
+    properties: Properties.() -> Unit = {},
+    onReady: (Bitmap) -> Unit
+) {
+    MediaLoaderTarget.loadImage(
+        context,
+        Properties()
+            .apply(properties)
+            .setSource(this),
+        MediaBitmapEmptyTarget(
+            onReady = {
+                onReady(it)
+            }
+        )
+    )
+}
+
+fun String.getBitmapImageUrl(
+    context: Context,
+    properties: Properties.() -> Unit = {}
+): Flow<Bitmap> {
+    val url = this
+    return callbackFlow {
+        val target = MediaBitmapEmptyTarget<Bitmap>(
+            onReady = {
+                trySend(it)
+            }
+        )
+
+        MediaLoaderTarget.loadImage(
+            context,
+            Properties()
+                .apply(properties)
+                .setSource(url),
+            target
+        )
+
+        awaitClose { target.onDestroy() }
+    }
+}
 
 fun <T: View> loadImageWithTarget(
     context: Context,

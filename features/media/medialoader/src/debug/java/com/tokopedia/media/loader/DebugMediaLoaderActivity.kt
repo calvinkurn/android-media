@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
+import androidx.annotation.VisibleForTesting
 import androidx.appcompat.app.AppCompatActivity
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -13,12 +14,14 @@ import com.tokopedia.unifycomponents.Label
 /** @suppress */
 open class DebugMediaLoaderActivity : AppCompatActivity() {
 
-    private val btnShow by lazy { findViewById<Button>(R.id.btn_show) }
-    private val btnEdit by lazy { findViewById<ImageView>(R.id.img_edit) }
-    private val edtUrl by lazy { findViewById<EditText>(R.id.edt_url) }
-    private val edtProperties by lazy { findViewById<EditText>(R.id.edt_properties) }
-    private val imgSample by lazy { findViewById<ImageView>(R.id.img_sample) }
-    private val label by lazy { findViewById<Label>(R.id.label) }
+    private val btnShow: Button by lazy { findViewById(R.id.btn_show) }
+    private val btnEdit: ImageView by lazy { findViewById(R.id.img_edit) }
+    private val edtUrl: EditText by lazy { findViewById(R.id.edt_url) }
+    private val edtProperties: EditText by lazy { findViewById(R.id.edt_properties) }
+    private val label: Label by lazy { findViewById(R.id.label) }
+
+    @VisibleForTesting
+    val imgSample: ImageView by lazy { findViewById(R.id.img_sample) }
 
     private var isCustomPropertiesVisible = false
 
