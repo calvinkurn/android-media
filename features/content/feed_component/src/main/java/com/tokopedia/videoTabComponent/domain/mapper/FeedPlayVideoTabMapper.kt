@@ -195,7 +195,7 @@ object FeedPlayVideoTabMapper {
                         type = PartnerType.getTypeByValue(item.partner.name),
                         avatarUrl = item.partner.thumbnailUrl,
                         badgeUrl = item.partner.badgeUrl,
-                        appLink = item.partner.appLink,
+                        appLink = item.partner.appLink
                     ),
                     video = PlayWidgetVideoUiModel(
                         item.video.id,
@@ -213,13 +213,13 @@ object FeedPlayVideoTabMapper {
                     shouldShowPerformanceDashboard = shouldShowPerformanceDashboard(
                         partnerType = item.partner.type,
                         partnerId = item.partner.id,
-                        shopId = shopId,
+                        shopId = shopId
                     ),
                     channelTypeTransition = PlayWidgetChannelTypeTransition(
                         PlayWidgetChannelType.getByValue(channelTypeTransitionPrev),
                         PlayWidgetChannelType.getByValue(channelTypeTransitionNext)
                     ),
-                    products = mapProducts(item.pinnedProducts)
+                    products = mapProducts(item.pinnedProducts.orEmpty())
                 )
             )
         }
@@ -237,7 +237,7 @@ object FeedPlayVideoTabMapper {
             imageUrl = it.imageUrl,
             appLink = it.appLink,
             priceFmt = it.priceFmt,
-            price = it.price,
+            price = it.price
         )
     }
 
