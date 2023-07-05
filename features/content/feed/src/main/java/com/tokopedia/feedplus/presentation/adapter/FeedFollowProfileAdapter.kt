@@ -1,5 +1,6 @@
 package com.tokopedia.feedplus.presentation.adapter
 
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.adapterdelegate.BaseDiffUtilAdapter
 import com.tokopedia.feedplus.presentation.adapter.delegate.FeedFollowProfileAdapterDelegate
 import com.tokopedia.feedplus.presentation.adapter.listener.FeedFollowRecommendationListener
@@ -11,13 +12,25 @@ import com.tokopedia.feedplus.presentation.model.FeedFollowRecommendationModel
  */
 class FeedFollowProfileAdapter(
     profileListener: FeedFollowProfileViewHolder.Profile.Listener,
-    followRecommendationListener: FeedFollowRecommendationListener,
+    private val followRecommendationListener: FeedFollowRecommendationListener,
 ) : BaseDiffUtilAdapter<FeedFollowProfileAdapter.Model>() {
 
     init {
         delegatesManager
             .addDelegate(FeedFollowProfileAdapterDelegate.Profile(profileListener, followRecommendationListener))
             .addDelegate(FeedFollowProfileAdapterDelegate.Loading())
+    }
+
+    override fun onBindViewHolder(
+        holder: RecyclerView.ViewHolder,
+        position: Int,
+        payloads: List<Any>
+    ) {
+        super.onBindViewHolder(holder, position, payloads)
+
+        if (position == itemCount - 1) {
+            followRecommendationListener.onLoadNextProfileRecommendation()
+        }
     }
 
     override fun areItemsTheSame(oldItem: Model, newItem: Model): Boolean {

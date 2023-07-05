@@ -215,7 +215,7 @@ class FeedFragment :
 
     private val feedFollowRecommendationListener = object : FeedFollowRecommendationListener {
         override fun onClickFollow(profile: FeedFollowRecommendationModel.Profile) {
-
+            /** TODO: handle this */
         }
 
         override fun onCloseProfileRecommendation(profile: FeedFollowRecommendationModel.Profile) {
@@ -223,7 +223,11 @@ class FeedFragment :
         }
 
         override fun onClickProfileRecommendation(profile: FeedFollowRecommendationModel.Profile) {
+            /** TODO: handle this */
+        }
 
+        override fun onLoadNextProfileRecommendation() {
+            /** TODO: handle this */
         }
     }
 

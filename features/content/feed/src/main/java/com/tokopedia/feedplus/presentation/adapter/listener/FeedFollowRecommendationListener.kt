@@ -18,4 +18,6 @@ interface FeedFollowRecommendationListener {
     fun onClickProfileRecommendation(
         profile: FeedFollowRecommendationModel.Profile
     )
+
+    fun onLoadNextProfileRecommendation()
 }
