@@ -159,7 +159,7 @@ class DynamicProductDetailViewModel @Inject constructor(
     private val remoteConfig: RemoteConfig,
     val userSessionInterface: UserSessionInterface,
     private val affiliateCookieHelper: Lazy<AffiliateCookieHelper>,
-    productRecommSubViewModel: ProductRecommSubViewModel,
+    private val productRecommSubViewModel: ProductRecommSubViewModel,
     playWidgetSubViewModel: PlayWidgetSubViewModel
 ) : ParentSubViewModel(dispatcher.main, productRecommSubViewModel, playWidgetSubViewModel),
     IProductRecommSubViewModel by productRecommSubViewModel,
@@ -289,8 +289,6 @@ class DynamicProductDetailViewModel @Inject constructor(
     private var userLocationCache: LocalCacheModel = LocalCacheModel()
     private var forceRefresh: Boolean = false
     private var shopDomain: String? = null
-    private var alreadyHitRecom: MutableList<String> = mutableListOf()
-
     private var updateCartCounterSubscription: Subscription? = null
 
     fun hasShopAuthority(): Boolean = isShopOwner() || getShopInfo().allowManage
@@ -517,7 +515,7 @@ class DynamicProductDetailViewModel @Inject constructor(
     ) {
         launch(context = dispatcher.io) {
             runCatching {
-                alreadyHitRecom = mutableListOf()
+                productRecommSubViewModel.onResetAlreadyRecomHit()
                 shopDomain = productParams.shopDomain
                 forceRefresh = refreshPage
                 userLocationCache = userLocationLocal
