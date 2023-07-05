@@ -43,7 +43,6 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.*
-import net.bytebuddy.implementation.InvokeDynamic.lambda
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.MatcherAssert.assertThat
@@ -1214,7 +1213,7 @@ class ChatItemListViewModelTest {
         } returns false
 
         // When
-        viewModel.saveTickerPref(BUBBLE_TICKER_PREF_NAME)
+        viewModel.saveBooleanCache(BUBBLE_TICKER_PREF_NAME)
         val result = viewModel.shouldShowBubbleTicker()
 
         // Then

@@ -448,14 +448,24 @@ class ChatItemListViewModel @Inject constructor(
     }
 
     fun shouldShowBubbleTicker(): Boolean {
-        return sharedPref.getBoolean(BUBBLE_TICKER_PREF_NAME, true) &&
+        return getBooleanCache(BUBBLE_TICKER_PREF_NAME) &&
             (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R)
     }
 
-    fun saveTickerPref(prefName: String) {
+    fun saveBooleanCache(cacheName: String, value: Boolean) {
         sharedPref.edit()
-            .putBoolean(prefName, false)
+            .putBoolean(cacheName, value)
             .apply()
+    }
+
+    fun getBooleanCache(
+        cacheName: String,
+        defaultValue: Boolean = true
+    ): Boolean {
+        return sharedPref.getBoolean(
+            cacheName,
+            defaultValue
+        )
     }
 
     companion object {
@@ -463,6 +473,7 @@ class ChatItemListViewModel @Inject constructor(
         private const val ONE_MILLION = 1_000_000L
         const val OPERATIONAL_INSIGHT_NEXT_MONDAY = "topchat_operational_insight_next_monday"
         const val BUBBLE_TICKER_PREF_NAME = "topchat_seller_bubble_chat_ticker"
+        const val BROADCAST_FAB_LABEL_PREF_NAME = "topchat_seller_broadcast_newww"
         val arrayFilterParam = arrayListOf(
             PARAM_FILTER_ALL,
             PARAM_FILTER_UNREAD,

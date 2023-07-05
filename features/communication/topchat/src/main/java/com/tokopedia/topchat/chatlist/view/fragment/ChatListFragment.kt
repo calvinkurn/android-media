@@ -73,6 +73,7 @@ import com.tokopedia.topchat.chatlist.view.uimodel.IncomingChatWebSocketModel
 import com.tokopedia.topchat.chatlist.view.uimodel.IncomingTypingWebSocketModel
 import com.tokopedia.topchat.chatlist.view.viewmodel.ChatItemListViewModel
 import com.tokopedia.topchat.chatlist.view.viewmodel.ChatItemListViewModel.Companion.arrayFilterParam
+import com.tokopedia.topchat.chatlist.view.widget.BroadcastButtonLayout
 import com.tokopedia.topchat.chatlist.view.widget.FilterMenu
 import com.tokopedia.topchat.chatlist.view.widget.OperationalInsightBottomSheet
 import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity
@@ -131,7 +132,7 @@ class ChatListFragment :
     private var rv: RecyclerView? = null
     private var emptyUiModel: Visitable<*>? = null
     private var menu: Menu? = null
-    private lateinit var broadCastButton: ConstraintLayout
+    private var broadCastButton: BroadcastButtonLayout? = null
 
     override fun getRecyclerViewResourceId() = R.id.recycler_view
     override fun getSwipeRefreshLayoutResourceId() = R.id.swipe_refresh_layout
@@ -282,21 +283,20 @@ class ChatListFragment :
 
     private fun setupSellerBroadcastButton() {
         chatItemListViewModel.broadCastButtonVisibility.observe(
-            viewLifecycleOwner,
-            Observer { visibility ->
-                when (visibility) {
-                    true -> {
-                        broadCastButton.show()
-                    }
-                    false -> broadCastButton.hide()
-                }
-            }
-        )
+            viewLifecycleOwner
+        ) { visibility ->
+            broadCastButton?.toggleBroadcastButton(
+                shouldShow = visibility,
+                shouldShowLabel = chatItemListViewModel.getBooleanCache(
+                    ChatItemListViewModel.BROADCAST_FAB_LABEL_PREF_NAME
+                )
+            )
+        }
         chatItemListViewModel.broadCastButtonUrl.observe(
             viewLifecycleOwner,
             Observer { applink ->
                 if (applink.isNullOrEmpty()) return@Observer
-                broadCastButton.setOnClickListener {
+                broadCastButton?.setOnClickListener {
                     if (isSellerMigrationEnabled(context)) {
                         val screenName = SellerMigrationFeatureName.FEATURE_BROADCAST_CHAT
                         val intent = context?.let { context ->
@@ -315,9 +315,25 @@ class ChatListFragment :
                         chatListAnalytics.eventClickBroadcastButton()
                         RouteManager.route(context, applink)
                     }
+                    markBroadcastNewLabel()
                 }
             }
         )
+    }
+
+    private fun markBroadcastNewLabel() {
+        val cacheResult = chatItemListViewModel.getBooleanCache(
+            ChatItemListViewModel.BROADCAST_FAB_LABEL_PREF_NAME
+        )
+        if (cacheResult) {
+            chatItemListViewModel.saveBooleanCache(
+                cacheName = ChatItemListViewModel.BROADCAST_FAB_LABEL_PREF_NAME,
+                value = false
+            )
+            broadCastButton?.toggleBroadcastLabel(
+                shouldShowLabel = false
+            )
+        }
     }
 
     private fun initView(view: View) {
@@ -461,7 +477,10 @@ class ChatListFragment :
     override fun onDismissTicker(element: ChatListTickerUiModel) {
         adapter?.removeElement(element)
         if (element.sharedPreferenceKey.isNotBlank()) {
-            chatItemListViewModel.saveTickerPref(ChatItemListViewModel.BUBBLE_TICKER_PREF_NAME)
+            chatItemListViewModel.saveBooleanCache(
+                cacheName = ChatItemListViewModel.BUBBLE_TICKER_PREF_NAME,
+                value = false
+            )
         }
     }
 
