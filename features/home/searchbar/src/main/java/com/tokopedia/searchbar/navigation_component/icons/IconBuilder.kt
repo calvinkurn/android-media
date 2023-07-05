@@ -1,6 +1,7 @@
 package com.tokopedia.searchbar.navigation_component.icons
 
 import android.os.Bundle
+import com.tokopedia.searchbar.navigation_component.NavSource
 
 class IconBuilder(val builderFlags: IconBuilderFlag = IconBuilderFlag()) {
     private val listIcon = mutableListOf<IconToolbar>()
@@ -63,4 +64,4 @@ internal data class IconToolbar(val id: Int, val name: String = "", val bundle: 
     }
 }
 
-data class IconBuilderFlag(val pageSource: String = "")
+data class IconBuilderFlag(val pageSource: NavSource = NavSource.DEFAULT)

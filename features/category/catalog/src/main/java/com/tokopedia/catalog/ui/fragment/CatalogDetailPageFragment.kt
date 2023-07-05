@@ -67,6 +67,7 @@ import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
+import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.toPx
@@ -409,7 +410,7 @@ class CatalogDetailPageFragment :
         navToolbar?.apply {
             viewLifecycleOwner.lifecycle.addObserver(this)
             setIcon(
-                IconBuilder()
+                IconBuilder(builderFlags = IconBuilderFlag(pageSource = NavSource.CATALOG))
                     .addIcon(IconList.ID_SHARE) {
                         generateCatalogShareData(catalogId, true)
                     }

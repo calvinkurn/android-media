@@ -1,8 +1,9 @@
 package com.tokopedia.homenav.mainnav.view.analytics
 
-import com.tokopedia.homenav.mainnav.view.analytics.MainNavTrackingConst.FORMAT_PAGE_SOURCE
 import com.tokopedia.homenav.mainnav.view.analytics.MainNavTrackingConst.GLOBAL_MENU
 import com.tokopedia.homenav.mainnav.view.analytics.MainNavTrackingConst.KEY_PAGE_SOURCE
+import com.tokopedia.homenav.mainnav.view.analytics.MainNavTrackingConst.asTrackingPageSource
+import com.tokopedia.searchbar.navigation_component.NavSource
 import com.tokopedia.track.builder.BaseTrackerBuilder
 import com.tokopedia.track.builder.util.BaseTrackerConst
 import com.tokopedia.track.builder.util.BaseTrackerConst.Event.CLICK_HOMEPAGE
@@ -24,7 +25,7 @@ object TrackingProfileSection: BaseTrackerConst() {
      * Thanos: https://mynakama.tokopedia.com/datatracker/requestdetail/view/1890
      */
     fun onClickLoginButton(
-        pageSource: String
+        pageSource: NavSource
     ){
         getTracker().sendGeneralEvent(
             BaseTrackerBuilder()
@@ -37,7 +38,7 @@ object TrackingProfileSection: BaseTrackerConst() {
                 .appendCurrentSite(CurrentSite.DEFAULT)
                 .appendBusinessUnit(BusinessUnit.DEFAULT)
                 .appendCustomKeyValue(TrackerId.KEY, "18478")
-                .appendCustomKeyValue(KEY_PAGE_SOURCE, FORMAT_PAGE_SOURCE.format(pageSource))
+                .appendCustomKeyValue(KEY_PAGE_SOURCE, pageSource.asTrackingPageSource())
                 .build()
         )
     }
@@ -47,7 +48,7 @@ object TrackingProfileSection: BaseTrackerConst() {
      * Thanos: https://mynakama.tokopedia.com/datatracker/requestdetail/view/1890
      */
     fun onClickLoginReminderButton(
-        pageSource: String
+        pageSource: NavSource
     ){
         getTracker().sendGeneralEvent(
             BaseTrackerBuilder()
@@ -60,7 +61,7 @@ object TrackingProfileSection: BaseTrackerConst() {
                 .appendCurrentSite(CurrentSite.DEFAULT)
                 .appendBusinessUnit(BusinessUnit.DEFAULT)
                 .appendCustomKeyValue(TrackerId.KEY, "18478")
-                .appendCustomKeyValue(KEY_PAGE_SOURCE, FORMAT_PAGE_SOURCE.format(pageSource))
+                .appendCustomKeyValue(KEY_PAGE_SOURCE, pageSource.asTrackingPageSource())
                 .build()
         )
     }
@@ -70,7 +71,7 @@ object TrackingProfileSection: BaseTrackerConst() {
      * Thanos: https://mynakama.tokopedia.com/datatracker/requestdetail/view/1890
      */
     fun onClickRegisterButton(
-        pageSource: String
+        pageSource: NavSource
     ){
         getTracker().sendGeneralEvent(
             BaseTrackerBuilder()
@@ -83,7 +84,7 @@ object TrackingProfileSection: BaseTrackerConst() {
                 .appendCurrentSite(CurrentSite.DEFAULT)
                 .appendBusinessUnit(BusinessUnit.DEFAULT)
                 .appendCustomKeyValue(TrackerId.KEY, "18478")
-                .appendCustomKeyValue(KEY_PAGE_SOURCE, FORMAT_PAGE_SOURCE.format(pageSource))
+                .appendCustomKeyValue(KEY_PAGE_SOURCE, pageSource.asTrackingPageSource())
                 .build()
         )
     }
@@ -94,7 +95,7 @@ object TrackingProfileSection: BaseTrackerConst() {
      */
     fun onClickProfileSection(
         eventLabel: String,
-        pageSource: String
+        pageSource: NavSource
     ){
         getTracker().sendGeneralEvent(
             BaseTrackerBuilder()
@@ -107,7 +108,7 @@ object TrackingProfileSection: BaseTrackerConst() {
                 .appendCurrentSite(CurrentSite.DEFAULT)
                 .appendBusinessUnit(BusinessUnit.DEFAULT)
                 .appendCustomKeyValue(TrackerId.KEY, "18479")
-                .appendCustomKeyValue(KEY_PAGE_SOURCE, FORMAT_PAGE_SOURCE.format(pageSource))
+                .appendCustomKeyValue(KEY_PAGE_SOURCE, pageSource.asTrackingPageSource())
                 .build()
         )
     }
@@ -118,7 +119,7 @@ object TrackingProfileSection: BaseTrackerConst() {
      */
     fun onClickTokopediaPlus(
         isSubscriber: Boolean,
-        pageSource: String
+        pageSource: NavSource
     ) {
         val action = if(isSubscriber) "click on gotoplus - subscriber" else "click on gotoplus - non subscriber"
         val trackerId = if(isSubscriber) "33342" else "33341"
@@ -133,7 +134,7 @@ object TrackingProfileSection: BaseTrackerConst() {
                 .appendCurrentSite(CurrentSite.DEFAULT)
                 .appendBusinessUnit(BusinessUnit.DEFAULT)
                 .appendCustomKeyValue(TrackerId.KEY, trackerId)
-                .appendCustomKeyValue(KEY_PAGE_SOURCE, FORMAT_PAGE_SOURCE.format(pageSource))
+                .appendCustomKeyValue(KEY_PAGE_SOURCE, pageSource.asTrackingPageSource())
                 .build()
         )
     }

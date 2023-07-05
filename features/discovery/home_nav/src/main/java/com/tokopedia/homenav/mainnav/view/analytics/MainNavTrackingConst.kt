@@ -1,37 +1,76 @@
 package com.tokopedia.homenav.mainnav.view.analytics
 
-import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
+import com.tokopedia.searchbar.navigation_component.NavSource
 
 internal object MainNavTrackingConst {
     const val CLICK_NAVIGATION_DRAWER = "clickNavigationDrawer"
     const val GLOBAL_MENU = "global menu"
+
+    // page Source section
     const val KEY_PAGE_SOURCE = "pageSource"
-    const val FORMAT_PAGE_SOURCE = "%s.null.null.null"
+    private const val FORMAT_PAGE_SOURCE = "%s.%s.null.null"
 
-    private const val PAGE_SOURCE_HOME = "Homepage"
-    private const val PAGE_SOURCE_ACCOUNT = "Account page"
-    private const val PAGE_SOURCE_UOH = "Order History"
-    private const val PAGE_SOURCE_WISHLIST = "Wishlist"
-    private const val PAGE_SOURCE_DISCOVERY = "Discovery page"
-    private const val PAGE_SOURCE_PDP = "PDP"
-    private const val PAGE_SOURCE_SRP = "Search Result Page"
-    private const val PAGE_SOURCE_SHOP = "ShopPage"
-    private const val PAGE_SOURCE_FEED = "Feed"
-    private const val PAGE_SOURCE_CART = "Cart"
-    private const val PAGE_SOURCE_NOTIF = "Notification Page"
-    private const val PAGE_SOURCE_THANK_YOU = "Thank you"
-    private const val PAGE_SOURCE_SOS = "Serbu Official Store"
+    private const val PAGE_SOURCE_ACCOUNT = "account page"
+    private const val PAGE_SOURCE_AFFILIATE = "affiliate page"
+    private const val PAGE_SOURCE_UOH = "transaction"
+    private const val PAGE_SOURCE_CART = "cart"
+    private const val PAGE_SOURCE_CATALOG = "catalog page"
+    private const val PAGE_SOURCE_CLP = "category page"
+    private const val PAGE_SOURCE_DISCOVERY = "discopage"
+    private const val PAGE_SOURCE_DT = "dilayani page"
+    private const val PAGE_SOURCE_FEED = "feed"
+    private const val PAGE_SOURCE_HOME = "homepage"
+    private const val PAGE_SOURCE_MVC = "merchant voucher"
+    private const val PAGE_SOURCE_NOTIF = "notification"
+    private const val PAGE_SOURCE_PDP = "pdp"
+    private const val PAGE_SOURCE_SHOP = "shoppage"
+    private const val PAGE_SOURCE_SRP = "search result"
+    private const val PAGE_SOURCE_SRP_UNIVERSAL = "srp universal"
+    private const val PAGE_SOURCE_THANK_YOU = "thankyou page"
+    private const val PAGE_SOURCE_TOKOFOOD = "food"
+    private const val PAGE_SOURCE_TOKONOW = "now"
+    private const val PAGE_SOURCE_WISHLIST = "wishlist"
 
-    fun String.asTrackingPageSource(): String {
-        return when(this) {
-            ApplinkConsInternalNavigation.SOURCE_HOME -> PAGE_SOURCE_HOME
-            ApplinkConsInternalNavigation.SOURCE_ACCOUNT -> PAGE_SOURCE_ACCOUNT
-            ApplinkConsInternalNavigation.SOURCE_HOME_UOH -> PAGE_SOURCE_UOH
-            ApplinkConsInternalNavigation.SOURCE_HOME_WISHLIST,
-            ApplinkConsInternalNavigation.SOURCE_HOME_WISHLIST_V2,
-            ApplinkConsInternalNavigation.SOURCE_HOME_WISHLIST_COLLECTION -> PAGE_SOURCE_WISHLIST
-            ApplinkConsInternalNavigation.SOURCE_HOME_SOS -> PAGE_SOURCE_SOS
-            else -> this
+    private const val PAGE_SOURCE_DETAIL_DEALS = "deals"
+    private const val PAGE_SOURCE_DETAIL_SOS = "sos"
+    // end of page source section
+
+    fun NavSource.asTrackingPageSource(): String {
+        val pageSource = when(this) {
+            NavSource.ACCOUNT -> PAGE_SOURCE_ACCOUNT
+            NavSource.AFFILIATE -> PAGE_SOURCE_AFFILIATE
+            NavSource.CART -> PAGE_SOURCE_CART
+            NavSource.CATALOG -> PAGE_SOURCE_CATALOG
+            NavSource.CLP -> PAGE_SOURCE_CLP
+            NavSource.DISCOVERY,
+            NavSource.DISCOVERY_DEALS,
+            NavSource.DISCOVERY_SOS -> PAGE_SOURCE_DISCOVERY
+            NavSource.DT -> PAGE_SOURCE_DT
+            NavSource.FEED -> PAGE_SOURCE_FEED
+            NavSource.HOME -> PAGE_SOURCE_HOME
+            NavSource.HOME_WISHLIST,
+            NavSource.WISHLIST -> PAGE_SOURCE_WISHLIST
+            NavSource.HOME_UOH,
+            NavSource.UOH -> PAGE_SOURCE_UOH
+            NavSource.MVC -> PAGE_SOURCE_MVC
+            NavSource.NOTIFICATION -> PAGE_SOURCE_NOTIF
+            NavSource.PDP -> PAGE_SOURCE_PDP
+            NavSource.SHOP -> PAGE_SOURCE_SHOP
+            NavSource.SRP -> PAGE_SOURCE_SRP
+            NavSource.SRP_UNIVERSAL -> PAGE_SOURCE_SRP_UNIVERSAL
+            NavSource.THANKYOU -> PAGE_SOURCE_THANK_YOU
+            NavSource.TOKOFOOD -> PAGE_SOURCE_TOKOFOOD
+            NavSource.TOKONOW -> PAGE_SOURCE_TOKONOW
+            else -> "null"
         }
+        val pageSourceDetail = when(this) {
+            NavSource.DISCOVERY_DEALS -> PAGE_SOURCE_DETAIL_DEALS
+            NavSource.DISCOVERY_SOS -> PAGE_SOURCE_DETAIL_SOS
+            else -> "null"
+        }
+        return FORMAT_PAGE_SOURCE.format(
+            pageSource,
+            pageSourceDetail
+        )
     }
 }

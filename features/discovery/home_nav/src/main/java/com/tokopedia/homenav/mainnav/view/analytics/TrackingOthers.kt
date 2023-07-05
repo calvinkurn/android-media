@@ -1,8 +1,9 @@
 package com.tokopedia.homenav.mainnav.view.analytics
 
-import com.tokopedia.homenav.mainnav.view.analytics.MainNavTrackingConst.FORMAT_PAGE_SOURCE
 import com.tokopedia.homenav.mainnav.view.analytics.MainNavTrackingConst.GLOBAL_MENU
 import com.tokopedia.homenav.mainnav.view.analytics.MainNavTrackingConst.KEY_PAGE_SOURCE
+import com.tokopedia.homenav.mainnav.view.analytics.MainNavTrackingConst.asTrackingPageSource
+import com.tokopedia.searchbar.navigation_component.NavSource
 import com.tokopedia.track.builder.BaseTrackerBuilder
 import com.tokopedia.track.builder.util.BaseTrackerConst
 import com.tokopedia.track.builder.util.BaseTrackerConst.Event.CLICK_HOMEPAGE
@@ -15,7 +16,7 @@ object TrackingOthers: BaseTrackerConst() {
      */
     fun onClickBusinessUnitItem(
         title: String,
-        pageSource: String
+        pageSource: NavSource
     ){
         getTracker().sendGeneralEvent(
             BaseTrackerBuilder()
@@ -26,7 +27,7 @@ object TrackingOthers: BaseTrackerConst() {
                 .appendCurrentSite(CurrentSite.DEFAULT)
                 .appendBusinessUnit(BusinessUnit.DEFAULT)
                 .appendCustomKeyValue(TrackerId.KEY, "18480")
-                .appendCustomKeyValue(KEY_PAGE_SOURCE, FORMAT_PAGE_SOURCE.format(pageSource))
+                .appendCustomKeyValue(KEY_PAGE_SOURCE, pageSource.asTrackingPageSource())
                 .build()
         )
     }
@@ -37,7 +38,7 @@ object TrackingOthers: BaseTrackerConst() {
      */
     fun clickOnUserMenu(
         menuTrackerName: String,
-        pageSource: String
+        pageSource: NavSource
     ) {
         getTracker().sendGeneralEvent(
             BaseTrackerBuilder()
@@ -48,7 +49,7 @@ object TrackingOthers: BaseTrackerConst() {
                 .appendCurrentSite(CurrentSite.DEFAULT)
                 .appendBusinessUnit(BusinessUnit.DEFAULT)
                 .appendCustomKeyValue(TrackerId.KEY, "18485")
-                .appendCustomKeyValue(KEY_PAGE_SOURCE, FORMAT_PAGE_SOURCE.format(pageSource))
+                .appendCustomKeyValue(KEY_PAGE_SOURCE, pageSource.asTrackingPageSource())
                 .build()
         )
     }
@@ -58,7 +59,7 @@ object TrackingOthers: BaseTrackerConst() {
      * Thanos: https://mynakama.tokopedia.com/datatracker/requestdetail/view/1890
      */
     fun onClickBackToHome(
-        pageSource: String
+        pageSource: NavSource
     ){
         getTracker().sendGeneralEvent(
             BaseTrackerBuilder()
@@ -69,7 +70,7 @@ object TrackingOthers: BaseTrackerConst() {
                 .appendCurrentSite(CurrentSite.DEFAULT)
                 .appendBusinessUnit(BusinessUnit.DEFAULT)
                 .appendCustomKeyValue(TrackerId.KEY, "18477")
-                .appendCustomKeyValue(KEY_PAGE_SOURCE, FORMAT_PAGE_SOURCE.format(pageSource))
+                .appendCustomKeyValue(KEY_PAGE_SOURCE, pageSource.asTrackingPageSource())
                 .build()
         )
     }
@@ -79,7 +80,7 @@ object TrackingOthers: BaseTrackerConst() {
      * Thanos: https://mynakama.tokopedia.com/datatracker/requestdetail/view/1890
      */
     fun onClickCloseButton(
-        pageSource: String
+        pageSource: NavSource
     ){
         TrackingOthers.getTracker().sendGeneralEvent(
             BaseTrackerBuilder()
@@ -90,7 +91,7 @@ object TrackingOthers: BaseTrackerConst() {
                 .appendCurrentSite(CurrentSite.DEFAULT)
                 .appendBusinessUnit(BusinessUnit.DEFAULT)
                 .appendCustomKeyValue(TrackerId.KEY, "18476")
-                .appendCustomKeyValue(KEY_PAGE_SOURCE, FORMAT_PAGE_SOURCE.format(pageSource))
+                .appendCustomKeyValue(KEY_PAGE_SOURCE, pageSource.asTrackingPageSource())
                 .build()
         )
     }

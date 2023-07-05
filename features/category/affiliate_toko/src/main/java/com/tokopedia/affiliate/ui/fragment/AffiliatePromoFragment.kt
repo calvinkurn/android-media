@@ -61,7 +61,9 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.searchbar.navigation_component.NavSource
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
+import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
@@ -149,7 +151,7 @@ class AffiliatePromoFragment :
         binding?.promoNavToolbar?.run {
             viewLifecycleOwner.lifecycle.addObserver(this)
             setIcon(
-                IconBuilder()
+                IconBuilder(builderFlags = IconBuilderFlag(pageSource = NavSource.AFFILIATE))
                     .addIcon(IconList.ID_INFORMATION) {
                         AffiliateHowToPromoteBottomSheet.newInstance(
                             AffiliateHowToPromoteBottomSheet.STATE_HOW_TO_PROMOTE
