@@ -10,7 +10,7 @@ import com.tokopedia.tokopedianow.common.model.NowAffiliateAtcData
 import com.tokopedia.tokopedianow.common.model.NowAffiliateData
 import com.tokopedia.tokopedianow.common.util.ShopIdProvider
 import com.tokopedia.universal_sharing.tracker.PageType
-import com.tokopedia.universal_sharing.view.model.AffiliatePDPInput
+import com.tokopedia.universal_sharing.view.model.AffiliateInput
 import com.tokopedia.universal_sharing.view.model.PageDetail
 import com.tokopedia.universal_sharing.view.model.Product
 import com.tokopedia.universal_sharing.view.model.Shop
@@ -93,7 +93,7 @@ class NowAffiliateService @Inject constructor(
         return affiliateCookieHelper.createAffiliateLink(url, trackerId)
     }
 
-    fun createShareInput(): AffiliatePDPInput {
+    fun createShareInput(): AffiliateInput {
         val shopId = ShopIdProvider.getShopId()
         val pageDetail = PageDetail(
             pageId = shopId,
@@ -109,7 +109,7 @@ class NowAffiliateService @Inject constructor(
             isPM = false
         )
 
-        return AffiliatePDPInput(
+        return AffiliateInput(
             pageDetail = pageDetail,
             pageType = PageType.SHOP.value,
             product = Product(),

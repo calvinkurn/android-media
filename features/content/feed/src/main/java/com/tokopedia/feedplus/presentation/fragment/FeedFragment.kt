@@ -462,8 +462,13 @@ class FeedFragment :
         feedAnalytics.eventHoldSeekBarVideo(trackerModel)
     }
 
-    override fun onWatchPostVideo(trackerModel: FeedTrackerDataModel) {
+    override fun onWatchPostVideo(
+        model: FeedCardVideoContentModel,
+        trackerModel: FeedTrackerDataModel
+    ) {
         feedAnalytics.eventWatchVideoPost()
+        feedPostViewModel.trackVisitChannel(model)
+        feedPostViewModel.trackChannelPerformance(model)
     }
 
     override fun onSwipeMultiplePost(trackerModel: FeedTrackerDataModel) {
