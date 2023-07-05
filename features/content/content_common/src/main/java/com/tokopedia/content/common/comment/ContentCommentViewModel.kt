@@ -163,7 +163,7 @@ class ContentCommentViewModel @AssistedInject constructor(
             is CommentAction.ReportComment -> reportComment(action.param)
             CommentAction.RequestReportAction -> handleOpenReport()
             is CommentAction.SelectComment -> _selectedComment.update {
-                val item = action.comment
+                val item = _comments.value.list.filterIsInstance<CommentUiModel.Item>().first { comment -> comment.id == action.id }
                 it.copy(first = item, second = _comments.value.list.indexOf(item))
             }
             is CommentAction.EditTextClicked -> handleEditTextClicked(action.item)

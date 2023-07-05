@@ -417,7 +417,6 @@ class ContentCommentBottomSheet @Inject constructor(
     override fun onLongClicked(item: CommentUiModel.Item) {
         analytics?.longClickComment()
 
-        viewModel.submitAction(CommentAction.SelectComment(item))
         sheetMenu.setListener(this@ContentCommentBottomSheet)
         sheetMenu.setData(getMenuItems(item), item.id)
         sheetMenu.show(childFragmentManager)
@@ -498,7 +497,7 @@ class ContentCommentBottomSheet @Inject constructor(
 
     override fun onMenuItemClick(feedMenuItem: FeedMenuItem, contentId: String) {
         when (feedMenuItem.type) {
-            FeedMenuIdentifier.Delete -> deleteCommentChecker()
+            FeedMenuIdentifier.Delete -> deleteCommentChecker(contentId)
             FeedMenuIdentifier.Report -> {
                 viewModel.submitAction(CommentAction.RequestReportAction)
                 analytics?.clickReportComment()
@@ -507,8 +506,9 @@ class ContentCommentBottomSheet @Inject constructor(
         }
     }
 
-    private fun deleteCommentChecker() {
+    private fun deleteCommentChecker(id: String) {
         requireInternet {
+            viewModel.submitAction(CommentAction.SelectComment(id))
             analytics?.clickRemoveComment()
             viewModel.submitAction(CommentAction.DeleteComment(isFromToaster = false))
         }
