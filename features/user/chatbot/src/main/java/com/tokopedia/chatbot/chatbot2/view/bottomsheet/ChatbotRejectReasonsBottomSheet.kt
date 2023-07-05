@@ -130,7 +130,7 @@ class ChatbotRejectReasonsBottomSheet : BottomSheetUnify() {
     }
 
     fun setText(text: String) {
-        binding?.reasonText?.editText?.setText(text)
+        reasonTextString = text
     }
 
     private fun getMyLayoutManager(): RecyclerView.LayoutManager {
