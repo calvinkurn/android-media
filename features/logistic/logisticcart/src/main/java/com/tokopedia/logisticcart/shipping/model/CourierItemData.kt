@@ -108,7 +108,6 @@ data class CourierItemData(
     }
 
     companion object {
-        @JvmStatic
         fun clone(courierItemData: CourierItemData, scheduleDeliveryUiModel: ScheduleDeliveryUiModel): CourierItemData {
             return courierItemData.copy(scheduleDeliveryUiModel = scheduleDeliveryUiModel)
         }

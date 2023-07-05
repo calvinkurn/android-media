@@ -637,7 +637,7 @@ class ShipmentFragment :
     }
 
     private fun initializeToasterLocation() {
-        val layoutManager = binding?.rvShipment?.layoutManager as LinearLayoutManager?
+        val layoutManager = binding?.rvShipment?.layoutManager as? LinearLayoutManager
             ?: return
         val lastItemPosition = layoutManager.findLastVisibleItemPosition()
         if (lastItemPosition == RecyclerView.NO_POSITION || lastItemPosition >= shipmentAdapter.getShipmentDataList().size) {
@@ -1123,6 +1123,7 @@ class ShipmentFragment :
         startActivityForResult(intent, CheckoutConstant.REQUEST_CODE_CHECKOUT_ADDRESS)
     }
 
+    @Suppress("ImplicitDefaultLocale")
     private fun updateLocalCacheAddressData(saveAddressDataModel: SaveAddressDataModel) {
         val activity: Activity? = activity
         if (activity != null) {
@@ -1148,6 +1149,7 @@ class ShipmentFragment :
         }
     }
 
+    @Suppress("ImplicitDefaultLocale")
     fun updateLocalCacheAddressData(userAddress: UserAddress) {
         val activity: Activity? = activity
         if (activity != null) {

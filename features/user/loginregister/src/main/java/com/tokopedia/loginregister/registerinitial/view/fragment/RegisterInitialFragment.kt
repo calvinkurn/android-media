@@ -71,8 +71,8 @@ import com.tokopedia.loginregister.common.view.dialog.ProceedWithPhoneDialog
 import com.tokopedia.loginregister.common.view.dialog.RegisteredDialog
 import com.tokopedia.loginregister.common.view.ticker.domain.pojo.TickerInfoPojo
 import com.tokopedia.loginregister.databinding.FragmentInitialRegisterBinding
-import com.tokopedia.loginregister.discover.pojo.DiscoverData
-import com.tokopedia.loginregister.discover.pojo.ProviderData
+import com.tokopedia.loginregister.discover.DiscoverData
+import com.tokopedia.loginregister.discover.ProviderData
 import com.tokopedia.loginregister.login.const.LoginConstants
 import com.tokopedia.loginregister.registerinitial.const.RegisterConstants
 import com.tokopedia.loginregister.registerinitial.di.RegisterInitialComponent

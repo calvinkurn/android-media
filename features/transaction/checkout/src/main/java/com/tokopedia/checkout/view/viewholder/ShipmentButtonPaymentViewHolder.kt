@@ -37,7 +37,6 @@ class ShipmentButtonPaymentViewHolder(private val binding: ItemShipmentButtonPay
         } else {
             binding.loaderTotalPayment.gone()
             binding.tvTotalPayment.visible()
-            binding.loaderBtnPayment.gone()
             binding.btnSelectPaymentMethod.visible()
             binding.btnSelectPaymentMethod.isEnabled = model.enable
             binding.btnSelectPaymentMethod.let {
