@@ -46,5 +46,5 @@ interface IProductRecommSubViewModel {
         miniCart: MutableMap<String, MiniCartItem.MiniCartItemProduct>?
     )
 
-    fun onPdpReload()
+    fun onResetAlreadyRecomHit()
 }

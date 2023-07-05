@@ -81,7 +81,7 @@ class ProductRecommSubViewModelTest {
         val recomWidget = RecommendationWidget(recommendationItemList = listOf(RecommendationItem()))
         val response = listOf(recomWidget)
 
-        viewModel.onPdpReload()
+        viewModel.onResetAlreadyRecomHit()
         every { GlobalConfig.isSellerApp() } returns false
         coEvery { getRecommendationUseCase.getData(any()) } returns response
 
@@ -96,7 +96,7 @@ class ProductRecommSubViewModelTest {
         val recomWidget = RecommendationWidget(recommendationItemList = listOf(RecommendationItem()))
         val response = listOf(recomWidget)
 
-        viewModel.onPdpReload()
+        viewModel.onResetAlreadyRecomHit()
         every { GlobalConfig.isSellerApp() } returns true
         coEvery { getRecommendationUseCase.getData(any()) } returns response
 
@@ -114,7 +114,7 @@ class ProductRecommSubViewModelTest {
         val recomWidget = RecommendationWidget(recommendationItemList = listOf(RecommendationItem()))
         val response = listOf(recomWidget)
 
-        viewModel.onPdpReload()
+        viewModel.onResetAlreadyRecomHit()
         every { GlobalConfig.isSellerApp() } returns false
         coEvery { getRecommendationUseCase.getData(any()) } returns response
 
@@ -263,7 +263,7 @@ class ProductRecommSubViewModelTest {
     fun `load recommendation already hitted`() {
         val recomWidget =
             RecommendationWidget(tid = "1", recommendationItemList = listOf(RecommendationItem()))
-        viewModel.onPdpReload()
+        viewModel.onResetAlreadyRecomHit()
 
         coEvery {
             getProductRecommendationUseCase.executeOnBackground(any())

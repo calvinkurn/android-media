@@ -515,7 +515,7 @@ class DynamicProductDetailViewModel @Inject constructor(
     ) {
         launch(context = dispatcher.io) {
             runCatching {
-                productRecommSubViewModel.onPdpReload()
+                productRecommSubViewModel.onResetAlreadyRecomHit()
                 shopDomain = productParams.shopDomain
                 forceRefresh = refreshPage
                 userLocationCache = userLocationLocal
