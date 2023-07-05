@@ -83,8 +83,13 @@ class UniversalInboxAdapter(
         }
     }
 
-    fun isRecommendationLoader(position: Int): Boolean {
-        return itemList[position]::class == UniversalInboxRecommendationLoaderUiModel::class
+    fun getFirstLoadingPosition(): Int? {
+        itemList.forEachIndexed { index, item ->
+            if (item is UniversalInboxRecommendationLoaderUiModel) {
+                return index
+            }
+        }
+        return null
     }
 
     fun getFirstTopAdsBannerPositionPair(): Pair<Int, UniversalInboxTopAdsBannerUiModel>? {
