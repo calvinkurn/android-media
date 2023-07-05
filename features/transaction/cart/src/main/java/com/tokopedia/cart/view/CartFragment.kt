@@ -18,6 +18,8 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import android.view.animation.DecelerateInterpolator
 import android.widget.ImageView
+import android.widget.TextSwitcher
+import android.widget.ViewSwitcher
 import androidx.annotation.Keep
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -204,6 +206,8 @@ class CartFragment :
     CartToolbarListener,
     SellerCashbackListener,
     CartBundlingBottomSheetListener {
+
+    private var testingCounter = 1
 
     private var binding by autoClearedNullable<FragmentCartBinding>()
 
@@ -935,9 +939,9 @@ class CartFragment :
                 delay(DELAY_SHOW_PROMO_BUTTON_AFTER_SCROLL)
                 binding?.apply {
                     val initialPosition =
-                        bottomLayout.y - llPromoCheckout.height + PROMO_POSITION_BUFFER.dpToPx(
+                        bottomLayout.y - llPromoCheckout.height/* + PROMO_POSITION_BUFFER.dpToPx(
                             resources.displayMetrics
-                        )
+                        )*/
                     llPromoCheckout.animate().y(initialPosition)
                         .setDuration(PROMO_ANIMATION_DURATION).start()
                 }
@@ -2794,13 +2798,15 @@ class CartFragment :
                 getString(com.tokopedia.purchase_platform.common.R.string.promo_funnel_label)
             promoCheckoutBtnCart.desc = ""
             promoCheckoutBtnCart.setOnClickListener {
-                checkGoToPromo()
-                // analytics
-                PromoRevampAnalytics.eventCartClickPromoSection(
-                    listPromoApplied,
-                    false,
-                    userSession.userId
-                )
+                testingCounter++
+                promoCheckoutBtnCart.findViewById<TextSwitcher>(com.tokopedia.promocheckout.common.R.id.tv_promo_checkout_title).setText("testing yoi $testingCounter")
+//                checkGoToPromo()
+//                // analytics
+//                PromoRevampAnalytics.eventCartClickPromoSection(
+//                    listPromoApplied,
+//                    false,
+//                    userSession.userId
+//                )
             }
         }
     }
@@ -2823,7 +2829,7 @@ class CartFragment :
         val tickerPromoData = dPresenter.getTickerPromoData()
         if (dPresenter.getShowChoosePromoWidget()) {
             binding?.promoCheckoutBtnCart?.visible()
-            binding?.llPromoCheckoutShadow?.visible()
+            binding?.llPromoCheckoutShadow?.gone()
 
             val isApplied: Boolean
 
@@ -2861,20 +2867,23 @@ class CartFragment :
 
             binding?.promoCheckoutBtnCart?.title = title
             binding?.promoCheckoutBtnCart?.setOnClickListener {
-                if (cartAdapter.selectedCartItemData.isEmpty()) {
-                    showToastMessageGreen(getString(R.string.promo_choose_item_cart))
-                    PromoRevampAnalytics.eventCartViewPromoMessage(getString(R.string.promo_choose_item_cart))
-                } else {
-                    checkGoToPromo()
-                    // analytics
-                    PromoRevampAnalytics.eventCartClickPromoSection(
-                        getAllPromosApplied(
-                            lastApplyData
-                        ),
-                        isApplied,
-                        userSession.userId
-                    )
-                }
+                testingCounter++
+                binding?.promoCheckoutBtnCart?.findViewById<TextSwitcher>(com.tokopedia.promocheckout.common.R.id.tv_promo_checkout_title)?.setText("testing yoi $testingCounter")
+                binding?.promoCheckoutBtnCart?.findViewById<ViewSwitcher>(com.tokopedia.promocheckout.common.R.id.switcher_promo_checkout)?.showNext()
+//                if (cartAdapter.selectedCartItemData.isEmpty()) {
+//                    showToastMessageGreen(getString(R.string.promo_choose_item_cart))
+//                    PromoRevampAnalytics.eventCartViewPromoMessage(getString(R.string.promo_choose_item_cart))
+//                } else {
+//                    checkGoToPromo()
+//                    // analytics
+//                    PromoRevampAnalytics.eventCartClickPromoSection(
+//                        getAllPromosApplied(
+//                            lastApplyData
+//                        ),
+//                        isApplied,
+//                        userSession.userId
+//                    )
+//                }
             }
             if (isApplied) {
                 PromoRevampAnalytics.eventCartViewPromoAlreadyApplied()
