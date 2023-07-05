@@ -339,7 +339,7 @@
             android:visibility="visible"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/v_bundling_product_separator"/>
+            app:layout_constraintTop_toBottomOf="@+id/iu_image_product"/>
 
         <com.tokopedia.unifycomponents.TextFieldUnify2
             android:id="@+id/text_field_notes"
@@ -391,7 +391,7 @@
             app:layout_constraintHorizontal_bias="0"
             app:layout_constraintHorizontal_chainStyle="packed"
             app:layout_constraintStart_toEndOf="@id/v_bundling_product_separator"
-            app:layout_constraintTop_toBottomOf="@+id/iu_image_product"
+            app:layout_constraintTop_toBottomOf="@+id/item_addon_cart"
             app:typographyType="body_3"
             tools:text="Jangan Jangan Jangan Jangan Jangan Jangan Jangan "
             tools:visibility="visible" />
