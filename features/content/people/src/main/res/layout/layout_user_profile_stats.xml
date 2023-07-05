@@ -19,7 +19,7 @@
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
             android:textColor="@color/Unify_NN950"
-            app:typographyType="heading_4"
+            app:typographyType="display_1"
             app:typographyWeight="bold"
             tools:text="999" />
 
@@ -30,7 +30,7 @@
             android:gravity="center_horizontal"
             android:text="@string/up_lb_post"
             android:textColor="@color/Unify_NN600"
-            app:typographyType="body_2" />
+            app:typographyType="display_2" />
 
     </LinearLayout>
 
@@ -54,7 +54,7 @@
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
             android:textColor="@color/Unify_NN950"
-            app:typographyType="heading_4"
+            app:typographyType="display_1"
             app:typographyWeight="bold"
             tools:text="999" />
 
@@ -65,7 +65,7 @@
             android:gravity="center_horizontal"
             android:text="@string/up_lb_review"
             android:textColor="@color/Unify_NN600"
-            app:typographyType="body_2" />
+            app:typographyType="display_2" />
 
     </LinearLayout>
 
@@ -88,7 +88,7 @@
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
             android:textColor="@color/Unify_NN950"
-            app:typographyType="heading_4"
+            app:typographyType="display_1"
             app:typographyWeight="bold"
             tools:text="999" />
 
@@ -99,7 +99,7 @@
             android:gravity="center_horizontal"
             android:text="@string/up_lb_follower"
             android:textColor="@color/Unify_NN600"
-            app:typographyType="body_2" />
+            app:typographyType="display_2" />
 
     </LinearLayout>
 
@@ -122,7 +122,7 @@
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
             android:textColor="@color/Unify_NN950"
-            app:typographyType="heading_4"
+            app:typographyType="display_1"
             app:typographyWeight="bold"
             tools:text="999" />
 
@@ -133,7 +133,7 @@
             android:gravity="center_horizontal"
             android:text="@string/up_lb_following"
             android:textColor="@color/Unify_NN600"
-            app:typographyType="body_2" />
+            app:typographyType="display_2" />
 
     </LinearLayout>
 

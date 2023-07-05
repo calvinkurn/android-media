@@ -47,6 +47,6 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_review_hidden_title"
-        app:typographyType="body_2" />
+        app:typographyType="display_2" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
