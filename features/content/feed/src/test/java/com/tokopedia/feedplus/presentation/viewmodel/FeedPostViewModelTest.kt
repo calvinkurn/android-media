@@ -79,6 +79,7 @@ class FeedPostViewModelTest {
     private val mvcSummaryUseCase: MVCSummaryUseCase = mockk()
     private val topAdsAddressHelper: TopAdsAddressHelper = mockk()
     private val getCountCommentsUseCase: GetCountCommentsUseCase = mockk()
+    private val affiliateCookieHelper: AffiliateCookieHelper = mockk()
 
     private lateinit var viewModel: FeedPostViewModel
 
@@ -98,7 +99,7 @@ class FeedPostViewModelTest {
             mvcSummaryUseCase,
             topAdsAddressHelper,
             getCountCommentsUseCase,
-            mockk(),
+            affiliateCookieHelper,
             mockk(),
             mockk(),
             testDispatcher
@@ -288,6 +289,7 @@ class FeedPostViewModelTest {
         coEvery { userSession.userId } returns "1"
         coEvery { atcUseCase.setParams(any()) } coAnswers {}
         coEvery { atcUseCase.executeOnBackground() } throws MessageErrorException("Failed")
+        coEvery { affiliateCookieHelper.initCookie(any(), any(), any()) } coAnswer {}
 
         val dummyData = FeedTaggedProductUiModel(
             "dummyId",
@@ -358,6 +360,7 @@ class FeedPostViewModelTest {
             errorReporter = ErrorReporterModel(),
             responseJson = ""
         )
+        coEvery { affiliateCookieHelper.initCookie(any(), any(), any()) } coAnswer {}
 
         // when
         viewModel.addProductToCart(dummyData)
@@ -405,6 +408,7 @@ class FeedPostViewModelTest {
         coEvery { userSession.userId } returns "1"
         coEvery { atcUseCase.setParams(any()) } coAnswers {}
         coEvery { atcUseCase.executeOnBackground() } returns dummyAtcResult
+        coEvery { affiliateCookieHelper.initCookie(any(), any(), any()) } coAnswer {}
 
         // when
         viewModel.addProductToCart(dummyData)
@@ -420,6 +424,7 @@ class FeedPostViewModelTest {
         coEvery { userSession.userId } returns "1"
         coEvery { atcUseCase.setParams(any()) } coAnswers {}
         coEvery { atcUseCase.executeOnBackground() } throws MessageErrorException("Failed")
+        coEvery { affiliateCookieHelper.initCookie(any(), any(), any()) } coAnswer {}
 
         val dummyData = FeedTaggedProductUiModel(
             "dummyId",
@@ -481,6 +486,7 @@ class FeedPostViewModelTest {
             )
         )
 
+        coEvery { affiliateCookieHelper.initCookie(any(), any(), any()) } coAnswer {}
         coEvery { userSession.userId } returns "1"
         coEvery { atcUseCase.setParams(any()) } coAnswers {}
         coEvery { atcUseCase.executeOnBackground() } returns AddToCartDataModel(
@@ -537,6 +543,7 @@ class FeedPostViewModelTest {
         coEvery { userSession.userId } returns "1"
         coEvery { atcUseCase.setParams(any()) } coAnswers {}
         coEvery { atcUseCase.executeOnBackground() } returns dummyAtcResult
+        coEvery { affiliateCookieHelper.initCookie(any(), any(), any()) } coAnswer {}
 
         // when
         viewModel.buyProduct(dummyData)
