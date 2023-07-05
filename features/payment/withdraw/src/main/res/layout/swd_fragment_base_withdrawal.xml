@@ -192,15 +192,31 @@
             android:textColor="@color/Unify_GN500"
             />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerBankList"
-            android:layout_width="@dimen/unify_space_0"
+        <com.tokopedia.unifycomponents.ticker.Ticker
+            android:id="@+id/tickerRP"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/title_choose_bank"
-            android:layout_marginStart="@dimen/unify_space_16"
+            android:visibility="gone"
+            android:layout_marginStart="14dp"
+            android:layout_marginEnd="14dp"
+            android:layout_marginTop="8dp"
+            app:descriptionText="@string/swd_ticker_rp_info"
+            app:closeButtonVisibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/title_choose_bank" />
+            app:layout_constraintTop_toBottomOf="@id/title_choose_bank"
+            app:tickerShapeType="loose"
+            app:tickerType="announcement"
+            tools:visibility="visible" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerBankList"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tickerRP" />
 
         <com.tkpd.remoteresourcerequest.view.DeferredImageView
             android:id="@+id/iv_emptySaldo"

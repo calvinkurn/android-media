@@ -378,6 +378,7 @@ abstract class BaseWithdrawalFragment : BaseDaggerFragment(), BankAccountAdapter
 
     override fun onBankAccountChanged() {
         gopayTickerGroup.showWithCondition(bankAccountAdapter.getSelectedBankAccount()?.isGopayEligible() == true)
+        tickerRP.showWithCondition(bankAccountAdapter.getSelectedBankAccount()?.haveRPProgram == true)
 
         try {
             tfWithdrawal?.editText?.let { textFieldInput ->
@@ -425,8 +426,8 @@ abstract class BaseWithdrawalFragment : BaseDaggerFragment(), BankAccountAdapter
             coachMarks.add(
                 CoachMarkItem(
                     view,
-                    getString(R.string.swd_join_premium_account_icon_title),
-                    getString(R.string.swd_join_premium_account_icon_description),
+                    getString(R.string.swd_coachmark_gopay_wd_title),
+                    getString(R.string.swd_coachmark_gopay_wd_description),
                     CoachMarkContentPosition.TOP,
                     ContextCompat.getColor(
                         requireContext(),

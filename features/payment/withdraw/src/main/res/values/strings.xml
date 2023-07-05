@@ -116,4 +116,8 @@
     <string name="swd_awd_no_saved_account">Belum ada rekening tersimpan.</string>
     <string name="swd_awd_pilih">Pilih</string>
     <string name="swd_baru">BARU</string>
+
+    <string name="swd_ticker_rp_info">Sebagai pengguna Rekening Premium, kamu cuma bisa tarik saldo ke rekening ini.</string>
+    <string name="swd_coachmark_gopay_wd_title">Sekarang bisa tarik saldo ke Gopay!</string>
+    <string name="swd_coachmark_gopay_wd_description">Tinggal satu klik, kamu bisa tarik Saldo Tokopedia langsung ke saldo GoPay.</string>
 </resources>
