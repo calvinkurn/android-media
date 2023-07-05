@@ -2,10 +2,9 @@ package com.tokopedia.topchat.chatroom.view.adapter.viewholder.previewattachment
 
 import android.view.View
 import android.widget.ImageView
+import com.tokopedia.merchantvoucher.common.widget.MerchantVoucherView
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.uimodel.SendableVoucherPreviewUiModel
-import com.tokopedia.topchat.databinding.ItemVoucherPreviewBinding
-import com.tokopedia.utils.view.binding.viewBinding
 
 class VoucherPreviewViewHolder(
     itemView: View,
@@ -15,10 +14,11 @@ class VoucherPreviewViewHolder(
     attachmentItemPreviewListener
 ) {
 
-    private val binding: ItemVoucherPreviewBinding? by viewBinding()
+    private val voucher: MerchantVoucherView = itemView.findViewById(R.id.voucher)
+    private val btnClose: ImageView = itemView.findViewById(R.id.iv_close)
 
-    override fun getButtonView(itemView: View): ImageView? {
-        return binding?.ivClose
+    override fun getButtonView(itemView: View): ImageView {
+        return btnClose
     }
 
     override fun bind(model: SendableVoucherPreviewUiModel) {
@@ -28,7 +28,7 @@ class VoucherPreviewViewHolder(
 
     private fun bindVoucherView(model: SendableVoucherPreviewUiModel) {
         val voucherModel = model.merchantVoucherViewModel
-        binding?.voucher?.setData(voucherModel, false)
+        voucher.setData(voucherModel, false)
     }
 
     companion object {
