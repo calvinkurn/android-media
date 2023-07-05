@@ -18,12 +18,6 @@ import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.TYPE_COLLE
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.TYPE_COLLECTION_SHARE
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.TYPE_COLLECTION_TICKER
 
-// TODO: Dummy data class, waiting for contract
-data class TickerWrapper(
-    val ctaText: String,
-    val ticker: GetWishlistCollectionResponse.GetWishlistCollections.WishlistCollectionResponseData.Ticker
-)
-
 object WishlistCollectionUtils {
     fun mapCollection(
         data: GetWishlistCollectionResponse.GetWishlistCollections.WishlistCollectionResponseData,
@@ -31,12 +25,8 @@ object WishlistCollectionUtils {
     ): List<WishlistCollectionTypeLayoutData> {
         val listCollection = arrayListOf<WishlistCollectionTypeLayoutData>()
         if (data.ticker.title.isNotEmpty() && data.ticker.description.isNotEmpty()) {
-            val tickerWrapper = TickerWrapper(
-                ctaText = "Lihat Selengkapnya",
-                ticker = data.ticker
-            )
             val tickerObject = WishlistCollectionTypeLayoutData(
-                tickerWrapper,
+                data.ticker,
                 TYPE_COLLECTION_TICKER
             )
             listCollection.add(tickerObject)
