@@ -506,6 +506,10 @@ class PlayAnalytic(
     }
 
     private fun convertProductToHashMapWithList(product: PlayProductUiModel.Product, position: Int, sourceFrom: String): HashMap<String, Any> {
+        val dimension115 = buildString {
+            append("pinned.${product.isPinned}, ")
+            append("ribbon.${product.rankType}")
+        }
         return hashMapOf(
             "name" to product.title,
             "id" to product.id,
@@ -517,7 +521,8 @@ class PlayAnalytic(
             "category" to "",
             "variant" to "",
             "list" to "/groupchat - $sourceFrom",
-            "position" to position
+            "position" to position,
+            "dimension115" to dimension115
         )
     }
 
