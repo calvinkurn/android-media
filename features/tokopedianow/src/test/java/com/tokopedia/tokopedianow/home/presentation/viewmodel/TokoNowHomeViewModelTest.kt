@@ -2238,7 +2238,6 @@ class TokoNowHomeViewModelTest : TokoNowHomeViewModelTestFixture() {
             TokoNowChooseAddressWidgetUiModel("0"),
             HomeEducationalInformationWidgetUiModel(
                 "2",
-                HomeLayoutItemState.LOADED,
                 ServiceType.NOW_2H
             ),
             HomeSwitcherUiModel.Home20mSwitcher()
@@ -2294,7 +2293,6 @@ class TokoNowHomeViewModelTest : TokoNowHomeViewModelTestFixture() {
             TokoNowChooseAddressWidgetUiModel("0"),
             HomeEducationalInformationWidgetUiModel(
                 "2",
-                HomeLayoutItemState.LOADED,
                 ServiceType.NOW_2H
             )
         )
@@ -2351,7 +2349,6 @@ class TokoNowHomeViewModelTest : TokoNowHomeViewModelTestFixture() {
             TokoNowChooseAddressWidgetUiModel("0"),
             HomeEducationalInformationWidgetUiModel(
                 "2",
-                HomeLayoutItemState.LOADED,
                 ServiceType.NOW_15M
             ),
             HomeSwitcherUiModel.Home2hSwitcher()
@@ -2407,7 +2404,6 @@ class TokoNowHomeViewModelTest : TokoNowHomeViewModelTestFixture() {
             TokoNowChooseAddressWidgetUiModel("0"),
             HomeEducationalInformationWidgetUiModel(
                 "2",
-                HomeLayoutItemState.LOADED,
                 ServiceType.NOW_15M
             )
         )
@@ -2459,7 +2455,6 @@ class TokoNowHomeViewModelTest : TokoNowHomeViewModelTestFixture() {
             TokoNowChooseAddressWidgetUiModel("0"),
             HomeEducationalInformationWidgetUiModel(
                 "2",
-                HomeLayoutItemState.LOADED,
                 ServiceType.NOW_2H
             )
         )
@@ -2518,7 +2513,6 @@ class TokoNowHomeViewModelTest : TokoNowHomeViewModelTestFixture() {
             TokoNowChooseAddressWidgetUiModel("0"),
             HomeEducationalInformationWidgetUiModel(
                 "2",
-                HomeLayoutItemState.LOADED,
                 ServiceType.NOW_2H
             )
         )
