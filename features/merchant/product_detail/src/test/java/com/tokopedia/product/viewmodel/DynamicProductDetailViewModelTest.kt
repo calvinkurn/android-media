@@ -70,6 +70,8 @@ import com.tokopedia.topads.sdk.domain.model.TopAdsGetDynamicSlottingDataProduct
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.topads.sdk.domain.model.TopadsIsAdsQuery
 import com.tokopedia.topads.sdk.domain.model.TopadsStatus
+import com.tokopedia.universal_sharing.view.model.AffiliateInput
+import com.tokopedia.universal_sharing.view.model.GenerateAffiliateLinkEligibility
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -3024,6 +3026,37 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         Assert.assertTrue(spykViewModel.getVariant() == variantExpected)
     }
     // endregion
+
+    @Test
+    fun `success check affiliate eligibility`() {
+        val mockData = GenerateAffiliateLinkEligibility()
+        val mockParam = AffiliateInput()
+
+        coEvery {
+            affiliateEligibilityCheckUseCase.executeOnBackground()
+        } returns mockData
+
+        viewModel.checkAffiliateEligibility(mockParam)
+        coVerify {
+            affiliateEligibilityCheckUseCase.executeOnBackground()
+        }
+        assertTrue(viewModel.resultAffiliate.value is Success)
+    }
+
+    fun `error check affiliate eligibility`() {
+        val mockError = Exception()
+        val mockParam = AffiliateInput()
+
+        coEvery {
+            affiliateEligibilityCheckUseCase.executeOnBackground()
+        } throws mockError
+
+        viewModel.checkAffiliateEligibility(mockParam)
+        coVerify {
+            affiliateEligibilityCheckUseCase.executeOnBackground()
+        }
+        assertTrue(viewModel.resultAffiliate.value is Fail)
+    }
 
     companion object {
         const val PARAM_PRODUCT_ID = "productID"
