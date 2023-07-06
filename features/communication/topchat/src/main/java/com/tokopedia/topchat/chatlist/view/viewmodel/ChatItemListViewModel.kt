@@ -5,6 +5,7 @@ import android.content.SharedPreferences
 import android.os.Build
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
@@ -18,7 +19,6 @@ import com.tokopedia.shopadmin.common.util.AccessId
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.data.ChatListQueries.MUTATION_CHAT_MARK_READ
 import com.tokopedia.topchat.chatlist.data.ChatListQueries.MUTATION_CHAT_MARK_UNREAD
-import com.tokopedia.topchat.chatlist.data.ChatListQueries.QUERY_CHAT_BLAST_SELLER_METADATA
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_FILTER_ALL
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_FILTER_TOPBOT
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_FILTER_UNREAD
@@ -30,12 +30,12 @@ import com.tokopedia.topchat.chatlist.domain.pojo.ChatChangeStateResponse
 import com.tokopedia.topchat.chatlist.domain.pojo.ChatDelete
 import com.tokopedia.topchat.chatlist.domain.pojo.ChatListParam
 import com.tokopedia.topchat.chatlist.domain.pojo.ChatListPojo
-import com.tokopedia.topchat.chatlist.domain.pojo.chatblastseller.BlastSellerMetaDataResponse
 import com.tokopedia.topchat.chatlist.domain.pojo.chatblastseller.ChatBlastSellerMetadata
 import com.tokopedia.topchat.chatlist.domain.pojo.chatlistticker.ChatListTickerResponse
 import com.tokopedia.topchat.chatlist.domain.pojo.operational_insight.ShopChatTicker
 import com.tokopedia.topchat.chatlist.domain.pojo.whitelist.ChatWhitelistFeatureResponse
 import com.tokopedia.topchat.chatlist.domain.usecase.ChatBanedSellerUseCase
+import com.tokopedia.topchat.chatlist.domain.usecase.GetChatBlastSellerMetaDataUseCase
 import com.tokopedia.topchat.chatlist.domain.usecase.GetChatListMessageUseCase
 import com.tokopedia.topchat.chatlist.domain.usecase.GetChatListTickerUseCase
 import com.tokopedia.topchat.chatlist.domain.usecase.GetChatWhitelistFeature
@@ -89,6 +89,7 @@ class ChatItemListViewModel @Inject constructor(
     private val moveChatToTrashUseCase: MutationMoveChatToTrashUseCase,
     private val operationalInsightUseCase: GetOperationalInsightUseCase,
     private val getChatListTickerUseCase: GetChatListTickerUseCase,
+    private val getChatBlastSellerMetaDataUseCase: GetChatBlastSellerMetaDataUseCase,
     private val sharedPref: SharedPreferences,
     private val userSession: UserSessionInterface,
     private val dispatcher: CoroutineDispatchers
@@ -197,19 +198,16 @@ class ChatItemListViewModel @Inject constructor(
 
     private fun setChatAdminAccessJob() {
         if (getChatAdminAccessJob?.isCompleted != false) {
-            getChatAdminAccessJob =
-                launchCatchError(
-                    block = {
-                        _isChatAdminEligible.postValue(
-                            withContext(dispatcher.io) {
-                                Success(getIsChatAdminAccessAuthorized())
-                            }!!
-                        )
-                    },
-                    onError = {
-                        _isChatAdminEligible.value = Fail(it)
+            getChatAdminAccessJob = viewModelScope.launch {
+                try {
+                    val result = withContext(dispatcher.io) {
+                        Success(getIsChatAdminAccessAuthorized())
                     }
-                )
+                    _isChatAdminEligible.postValue(result)
+                } catch (throwable: Throwable) {
+                    _isChatAdminEligible.value = Fail(throwable)
+                }
+            }
         }
     }
 
@@ -321,21 +319,19 @@ class ChatItemListViewModel @Inject constructor(
     }
 
     fun loadChatBlastSellerMetaData() {
-        val query = QUERY_CHAT_BLAST_SELLER_METADATA
-        launchCatchError(block = {
-            val data = withContext(dispatcher.io) {
-                val request =
-                    GraphqlRequest(query, BlastSellerMetaDataResponse::class.java, emptyMap())
-                repository.response(listOf(request))
-            }.getSuccessData<BlastSellerMetaDataResponse>()
-            getChatAdminAccessJob?.join()
-            if (isAdminHasAccess) {
-                onSuccessLoadChatBlastSellerMetaData(data.chatBlastSellerMetadata)
-            } else {
+        viewModelScope.launch {
+            try {
+                getChatBlastSellerMetaDataUseCase(Unit).collect {
+                    getChatAdminAccessJob?.join()
+                    if (isAdminHasAccess) {
+                        onSuccessLoadChatBlastSellerMetaData(it.chatBlastSellerMetadata)
+                    } else {
+                        onErrorLoadChatBlastSellerMetaData()
+                    }
+                }
+            } catch (throwable: Throwable) {
                 onErrorLoadChatBlastSellerMetaData()
             }
-        }) {
-            onErrorLoadChatBlastSellerMetaData()
         }
     }
 
