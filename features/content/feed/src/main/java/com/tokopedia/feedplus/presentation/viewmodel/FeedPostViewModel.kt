@@ -43,6 +43,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -95,6 +96,8 @@ class FeedPostViewModel @Inject constructor(
     private val _suspendedFollowData = MutableLiveData<FollowShopModel>()
     private val _suspendedLikeData = MutableLiveData<LikeFeedDataModel>()
 
+    private var fetchPostJob: Job? = null
+
     private var cursor = ""
     private var currentTopAdsPage = 0
     private var shouldFetchTopAds = true
@@ -108,10 +111,12 @@ class FeedPostViewModel @Inject constructor(
         isNewData: Boolean = false,
         postSource: PostSourceModel? = null
     ) {
+        if (fetchPostJob?.isActive == true) return
+
         _shouldShowNoMoreContent = false
         if (isNewData) _feedHome.value = null
 
-        viewModelScope.launch {
+        fetchPostJob = viewModelScope.launch {
             if (cursor == "" || cursor != _feedHome.value?.cursor.orEmpty()) {
                 shouldFetchTopAds = true
                 cursor = _feedHome.value?.cursor.orEmpty()
