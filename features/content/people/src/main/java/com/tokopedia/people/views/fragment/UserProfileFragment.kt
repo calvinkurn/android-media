@@ -93,7 +93,7 @@ import java.net.URLEncoder
 import java.net.UnknownHostException
 import javax.inject.Inject
 import kotlin.math.abs
-import com.tokopedia.feedcomponent.R as feedComponentR
+import com.tokopedia.content.common.R as contentCommonR
 
 class UserProfileFragment @Inject constructor(
     private val viewModelFactoryCreator: UserProfileViewModelFactory.Creator,
@@ -199,7 +199,7 @@ class UserProfileFragment @Inject constructor(
         mainBinding.appBarUserProfile.addOnOffsetChangedListener(feedFloatingButtonManager.offsetListener)
 
         context?.let {
-            screenShotDetector = UniversalShareBottomSheet.createAndStartScreenShotDetector(
+            screenShotDetector = SharingUtil.createAndStartScreenShotDetector(
                 it,
                 this,
                 this,
@@ -696,7 +696,7 @@ class UserProfileFragment @Inject constructor(
         val selectedTab = UserProfileParam.getSelectedTab(activity?.intent, isRemoveAfterGet = true)
 
         val idx = tabs.indexOfFirst { it.key == selectedTab.key }
-        if(idx != -1) {
+        if (idx != -1) {
             mainBinding.profileTabs.viewPager.setCurrentItem(idx, false)
         }
     }
@@ -735,7 +735,7 @@ class UserProfileFragment @Inject constructor(
     private fun createLiveFab(): FloatingButtonItem {
         return FloatingButtonItem(
             iconDrawable = getIconUnifyDrawable(requireContext(), IconUnify.VIDEO),
-            title = getString(feedComponentR.string.feed_fab_create_live),
+            title = getString(contentCommonR.string.feed_fab_create_live),
             listener = {
                 mainBinding.fabUp.menuOpen = false
 
@@ -747,7 +747,7 @@ class UserProfileFragment @Inject constructor(
     private fun createPostFab(): FloatingButtonItem {
         return FloatingButtonItem(
             iconDrawable = getIconUnifyDrawable(requireContext(), IconUnify.IMAGE),
-            title = getString(feedComponentR.string.feed_fab_create_post),
+            title = getString(contentCommonR.string.feed_fab_create_post),
             listener = {
                 mainBinding.fabUp.menuOpen = false
                 userProfileTracker.clickCreatePost(viewModel.profileUserID)
@@ -760,7 +760,7 @@ class UserProfileFragment @Inject constructor(
     private fun createShortsFab(): FloatingButtonItem {
         return FloatingButtonItem(
             iconDrawable = getIconUnifyDrawable(requireContext(), IconUnify.SHORT_VIDEO),
-            title = getString(feedComponentR.string.feed_fab_create_shorts),
+            title = getString(contentCommonR.string.feed_fab_create_shorts),
             listener = {
                 mainBinding.fabUp.menuOpen = false
                 userProfileTracker.clickCreateShorts(viewModel.profileUserID)
@@ -874,8 +874,8 @@ class UserProfileFragment @Inject constructor(
     private fun setupCoachMark() {
         coachMarkManager.setupCoachMark(
             ContentCoachMarkConfig(mainBinding.fabUserProfile).apply {
-                title = getString(feedComponentR.string.feed_play_shorts_entry_point_coachmark_title)
-                subtitle = getString(feedComponentR.string.feed_play_shorts_entry_point_coachmark_description)
+                title = getString(contentCommonR.string.feed_play_shorts_entry_point_coachmark_title)
+                subtitle = getString(contentCommonR.string.feed_play_shorts_entry_point_coachmark_description)
                 setCoachmarkPrefKey(ContentCoachMarkSharedPref.Key.PlayShortsEntryPoint, userSession.userId)
             }
         )
@@ -929,7 +929,7 @@ class UserProfileFragment @Inject constructor(
         val intent = RouteManager.getIntent(requireContext(), ApplinkConst.IMAGE_PICKER_V2)
         intent.putExtra(KEY_APPLINK_AFTER_CAMERA_CAPTURE, ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2)
         intent.putExtra(KEY_MAX_MULTI_SELECT_ALLOWED, KEY_MAX_MULTI_SELECT_ALLOWED_VALUE)
-        intent.putExtra(KEY_TITLE, getString(feedComponentR.string.feed_post_sebagai))
+        intent.putExtra(KEY_TITLE, getString(contentCommonR.string.feed_post_sebagai))
         intent.putExtra(KEY_APPLINK_FOR_GALLERY_PROCEED, ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2)
         intent.putExtra(KEY_IS_CREATE_POST_AS_BUYER, true)
         intent.putExtra(KEY_IS_OPEN_FROM, VALUE_IS_OPEN_FROM_USER_PROFILE)
@@ -1056,11 +1056,15 @@ class UserProfileFragment @Inject constructor(
         }
     }
 
-    private fun showUniversalShareBottomSheet() {
-        if(!isAdded) return
+    private fun showUniversalShareBottomSheet(path: String? = null) {
+        if (!isAdded) return
 
-        if(universalShareBottomSheet == null) {
+        if (universalShareBottomSheet == null) {
             universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
+                path?.let {
+                    setImageOnlySharingOption(true)
+                    setScreenShotImagePath(path)
+                }
                 init(this@UserProfileFragment)
                 userSession.userId.ifEmpty { "0" }.let {
                     setUtmCampaignData(
@@ -1125,7 +1129,7 @@ class UserProfileFragment @Inject constructor(
                             )
                             // send gtm trackers if you want to
 
-                            when (UniversalShareBottomSheet.getShareBottomSheetType()) {
+                            when (universalShareBottomSheet?.getShareBottomSheetType()) {
                                 UniversalShareBottomSheet.SCREENSHOT_SHARE_SHEET -> {
                                     userProfileTracker.clickChannelScreenshotShareBottomsheet(userSession.userId, self = viewModel.isSelfProfile)
                                 }
@@ -1147,8 +1151,8 @@ class UserProfileFragment @Inject constructor(
         )
     }
 
-    override fun screenShotTaken() {
-        showUniversalShareBottomSheet()
+    override fun screenShotTaken(path: String) {
+        showUniversalShareBottomSheet(path)
         userProfileTracker.viewScreenshotShareBottomsheet(userSession.userId, self = viewModel.isSelfProfile)
         // add tracking for the screenshot bottom sheet
     }
@@ -1171,7 +1175,7 @@ class UserProfileFragment @Inject constructor(
 //        TODO gtm tracking
         // This method will be mostly used for GTM Tracking stuff. So add the tracking accordingly
         // this will give you the bottomsheet type : if it's screenshot or general
-        when (UniversalShareBottomSheet.getShareBottomSheetType()) {
+        when (universalShareBottomSheet?.getShareBottomSheetType()) {
             UniversalShareBottomSheet.SCREENSHOT_SHARE_SHEET -> {
                 userSession.userId.let { userProfileTracker.clickCloseScreenshotShareBottomsheet(it, self = viewModel.isSelfProfile) }
             }

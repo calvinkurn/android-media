@@ -12,20 +12,20 @@ import com.tokopedia.topads.common.data.response.Deposit
 import com.tokopedia.topads.common.data.response.FinalAdResponse
 import com.tokopedia.topads.common.data.response.TopAdsGroupsResponse
 import com.tokopedia.topads.common.data.response.TopAdsGroupsStatisticResponseResponse
-import com.tokopedia.topads.common.domain.usecase.GetTopAdsGroupsUseCase
-import com.tokopedia.topads.common.domain.usecase.TopAdsGetDepositUseCase
 import com.tokopedia.topads.common.domain.usecase.GetTopAdsGroupsStatisticsUseCase
-import com.tokopedia.topads.common.domain.usecase.TopAdsManageGroupAdsUseCase
+import com.tokopedia.topads.common.domain.usecase.GetTopAdsGroupsUseCase
 import com.tokopedia.topads.common.domain.usecase.TopAdsCreateUseCase
+import com.tokopedia.topads.common.domain.usecase.TopAdsGetDepositUseCase
+import com.tokopedia.topads.common.domain.usecase.TopAdsManageGroupAdsUseCase
 import com.tokopedia.topads.data.AdGroupCompleteData
 import com.tokopedia.topads.data.AdGroupStatsData
 import com.tokopedia.topads.data.mappers.AdGroupMapper
-import com.tokopedia.topads.view.adapter.adgrouplist.model.AdGroupUiModel
-import com.tokopedia.topads.view.adapter.adgrouplist.model.LoadingMoreUiModel
-import com.tokopedia.topads.view.adapter.adgrouplist.model.CreateAdGroupUiModel
-import com.tokopedia.topads.view.adapter.adgrouplist.model.ReloadInfiniteUiModel
 import com.tokopedia.topads.view.adapter.adgrouplist.model.AdGroupShimmerUiModel
+import com.tokopedia.topads.view.adapter.adgrouplist.model.AdGroupUiModel
+import com.tokopedia.topads.view.adapter.adgrouplist.model.CreateAdGroupUiModel
 import com.tokopedia.topads.view.adapter.adgrouplist.model.ErrorUiModel
+import com.tokopedia.topads.view.adapter.adgrouplist.model.LoadingMoreUiModel
+import com.tokopedia.topads.view.adapter.adgrouplist.model.ReloadInfiniteUiModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -335,13 +335,15 @@ class MpAdsGroupsViewModel @Inject constructor(
     }
 
     fun moveTopAdsGroup(productId: String) {
-        val groupId = adGroupDataList[selectedAdGroupIndex].groupId
-        launchCatchError(block = {
-            val param = topAdsCreateUseCase.createRequestParamMoveGroup(groupId, TOP_ADS_CREATE, listOf(productId), ADD)
-            val response = topAdsCreateUseCase.execute(param)
-            checkTopadsDeposits(response)
-        }, onError = {
-                _topadsCreditLiveData.value = Fail(it)
-            })
+        if (selectedAdGroupIndex != NO_POSITION && selectedAdGroupIndex < adGroupDataList.size) {
+            val groupId = adGroupDataList[selectedAdGroupIndex].groupId
+            launchCatchError(block = {
+                val param = topAdsCreateUseCase.createRequestParamMoveGroup(groupId, TOP_ADS_CREATE, listOf(productId), ADD)
+                val response = topAdsCreateUseCase.execute(param)
+                checkTopadsDeposits(response)
+            }, onError = {
+                    _topadsCreditLiveData.value = Fail(it)
+                })
+        }
     }
 }

@@ -80,6 +80,7 @@ import com.tokopedia.play_common.websocket.WebSocketAction
 import com.tokopedia.play_common.websocket.WebSocketClosedReason
 import com.tokopedia.play_common.websocket.WebSocketResponse
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.assisted.Assisted
@@ -370,7 +371,7 @@ class PlayViewModel @AssistedInject constructor(
         _engagementUiState,
         _followPopUpUiState,
         _explore.distinctUntilChanged(),
-        _combinedState,
+        _combinedState
     ) { channelDetail, interactive, partner, winnerBadge, bottomInsets,
         like, totalView, rtn, title, tagItems,
         status, quickReply, address,
@@ -393,7 +394,7 @@ class PlayViewModel @AssistedInject constructor(
             engagement = engagement,
             followPopUp = followPopUp,
             exploreWidget = explore,
-            combinedState = combinedState,
+            combinedState = combinedState
         )
     }.stateIn(
         viewModelScope,
@@ -1015,8 +1016,8 @@ class PlayViewModel @AssistedInject constructor(
             ClickShareAction -> handleClickShareIcon()
             ShowShareExperienceAction -> handleOpenSharingOption(false)
             ScreenshotTakenAction -> handleOpenSharingOption(true)
-            CloseSharingOptionAction -> handleCloseSharingOption()
-            is ClickSharingOptionAction -> handleSharingOption(action.shareModel)
+            is CloseSharingOptionAction -> handleCloseSharingOption(action.isScreenshotBottomSheet)
+            is ClickSharingOptionAction -> handleSharingOption(action.shareModel, action.isScreenshotBottomSheet)
             is SharePermissionAction -> handleSharePermission(action.label)
             OpenKebabAction -> handleThreeDotsMenuClick()
             is OpenFooterUserReport -> handleFooterClick(action.appLink)
@@ -1074,6 +1075,7 @@ class PlayViewModel @AssistedInject constructor(
                 updateCommentConfig()
             }
             is ShowVariantAction -> handleAtcVariant(action.product, action.forcePushTop)
+            HideBottomSheet -> hideBottomSheet()
         }
     }
 
@@ -2410,14 +2412,14 @@ class PlayViewModel @AssistedInject constructor(
         _isBottomSheetsShown.update { true }
     }
 
-    private fun handleCloseSharingOption() {
-        playAnalytic.closeShareBottomSheet(channelId, partnerId, channelType.value, playShareExperience.isScreenshotBottomSheet())
+    private fun handleCloseSharingOption(isScreenshotBottomSheet: Boolean) {
+        playAnalytic.closeShareBottomSheet(channelId, partnerId, channelType.value, isScreenshotBottomSheet)
         _isBottomSheetsShown.update { false }
     }
 
-    private fun handleSharingOption(shareModel: ShareModel) {
+    private fun handleSharingOption(shareModel: ShareModel, isScreenshotBottomSheet: Boolean) {
         viewModelScope.launch {
-            playAnalytic.clickSharingOption(channelId, partnerId, channelType.value, shareModel.channel, playShareExperience.isScreenshotBottomSheet())
+            playAnalytic.clickSharingOption(channelId, partnerId, channelType.value, shareModel.channel, isScreenshotBottomSheet)
 
             val playShareExperienceData = getPlayShareExperienceData()
 
@@ -2549,11 +2551,14 @@ class PlayViewModel @AssistedInject constructor(
     }
 
     private fun handleAtcVariant(product: PlayProductUiModel.Product, forcePushTop: Boolean) {
-        needLogin {
-            viewModelScope.launch {
-                _uiEvent.emit(ShowVariantSheet(product, forcePushTop))
-            }
+        viewModelScope.launch {
+            _isBottomSheetsShown.update { true }
+            _uiEvent.emit(ShowVariantSheet(product, forcePushTop))
         }
+    }
+
+    private fun hideBottomSheet() {
+        _isBottomSheetsShown.update { false }
     }
 
     /**
@@ -2822,6 +2827,8 @@ class PlayViewModel @AssistedInject constructor(
         authenticated {
             viewModelScope.launchCatchError(block = {
                 val result = repo.updateReminder(channelId, reminderType)
+                val message = if (reminderType == PlayWidgetReminderType.Reminded) UiString.Resource(R.string.play_explore_widget_reminded) else UiString.Resource(R.string.play_explore_widget_unreminded)
+                _uiEvent.emit(ShowInfoEvent(message))
                 if (result) {
                     _exploreWidget.update {
                         it.copy(
@@ -2879,7 +2886,7 @@ class PlayViewModel @AssistedInject constructor(
     }
 
     private fun handleSelectedReason(id: Int) {
-        val selected = _userReportItems.value.reasoningList.filterIsInstance<PlayUserReportReasoningUiModel.Reasoning>().find {  it.reasoningId == id }
+        val selected = _userReportItems.value.reasoningList.filterIsInstance<PlayUserReportReasoningUiModel.Reasoning>().find { it.reasoningId == id }
         _userReportSubmission.update {
             it.copy(selectedReasoning = selected)
         }

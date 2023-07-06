@@ -42,6 +42,7 @@ import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.universal_sharing.tracker.UniversalSharebottomSheetTracker
+import com.tokopedia.universal_sharing.util.UniversalShareConst
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
@@ -49,7 +50,6 @@ import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.utils.date.DateUtil
 import kotlinx.android.synthetic.main.activity_flight_search.*
-import java.util.*
 
 /**
  * @author by furqan on 06/04/2020
@@ -319,7 +319,7 @@ open class FlightSearchActivity :
                         shareTracker.trackClickShareChannel(
                             flightSearchPassDataModel.searchRequestId,
                             shareModel.channel ?: "",
-                            UniversalShareBottomSheet.KEY_IMAGE_DEFAULT,
+                            UniversalShareConst.ImageType.KEY_IMAGE_DEFAULT,
                             FlightAnalyticsCategory.DG_FLIGHT_PAGE,
                             FlightAnalyticsTrackerId.CLICK_CHANNEL,
                             FlightAnalyticsDefaults.DIGITAL_CURRENT_SITE

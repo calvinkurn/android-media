@@ -8,6 +8,8 @@ import com.tokopedia.productcard.layout.label.LabelLayoutStrategy
 import com.tokopedia.productcard.layout.label.LabelLayoutStrategyControl
 import com.tokopedia.productcard.layout.shadow.ShadowLayoutStrategy
 import com.tokopedia.productcard.layout.shadow.ShadowLayoutStrategyControl
+import com.tokopedia.productcard.layout.stockbar.StockBarLayoutStrategy
+import com.tokopedia.productcard.layout.stockbar.StockBarLayoutStrategyControl
 import com.tokopedia.productcard.layout.threedots.ThreeDotsLayoutStrategy
 import com.tokopedia.productcard.layout.threedots.ThreeDotsLayoutStrategyNone
 import com.tokopedia.productcard.layout.variant.VariantLayoutStrategy
@@ -19,4 +21,5 @@ internal class LayoutStrategyPortrait: LayoutStrategy,
     VariantLayoutStrategy by VariantLayoutStrategyControl(),
     EtaLayoutStrategy by EtaLayoutStrategyControl(),
     ShadowLayoutStrategy by ShadowLayoutStrategyControl(),
-    ThreeDotsLayoutStrategy by ThreeDotsLayoutStrategyNone()
+    ThreeDotsLayoutStrategy by ThreeDotsLayoutStrategyNone(),
+    StockBarLayoutStrategy by StockBarLayoutStrategyControl()

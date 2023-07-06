@@ -60,6 +60,10 @@ class AddEditProductDescriptionViewModel @Inject constructor(
     private val _videoYoutubeNew = MutableLiveData<Result<YoutubeVideoDetailModel>>()
     val videoYoutube: LiveData<Result<YoutubeVideoDetailModel>> = _videoYoutubeNew
 
+    val hasDTStock = Transformations.map(productInputModel){
+        it.hasDTStock
+    }
+
     private val videoYoutubeLiveData = MutableLiveData<String>()
     private val descriptionFlow = MutableStateFlow("")
 

@@ -6,6 +6,7 @@ import com.tokopedia.homecredit.di.module.HomeCreditViewModelModule
 import com.tokopedia.homecredit.di.scope.HomeCreditScope
 import com.tokopedia.homecredit.view.activity.HomeCreditRegisterActivity
 import com.tokopedia.homecredit.view.fragment.HomeCreditBaseCameraFragment
+import com.tokopedia.homecredit.view.fragment.HomeCreditCameraV2Fragment
 import dagger.Component
 
 @HomeCreditScope
@@ -18,4 +19,6 @@ interface HomeCreditComponent {
     fun inject(homeCreditBaseCameraFragment: HomeCreditBaseCameraFragment)
 
     fun inject(homeCreditRegisterActivity: HomeCreditRegisterActivity)
+
+    fun inject(homeCreditCameraV2Fragment: HomeCreditCameraV2Fragment)
 }

@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tkpd.remoteresourcerequest.view.DeferredImageView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -180,6 +181,13 @@ class InboxContactUsFragment :
         } else {
             hideChatBotWidget()
             showErrorTopChatStatus(uiState.errorMessageChatBotWidget)
+            sendRecordToFirebase(uiState.exception)
+        }
+    }
+
+    private fun sendRecordToFirebase(e : Exception?){
+        e?.let {
+            FirebaseCrashlytics.getInstance().recordException(e)
         }
     }
 
