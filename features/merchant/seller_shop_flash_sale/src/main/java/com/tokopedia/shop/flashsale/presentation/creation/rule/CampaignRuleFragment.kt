@@ -356,10 +356,12 @@ class CampaignRuleFragment :
     // Get Rollence Gradual Rollout to check whether the new feature is available to user or not
     private fun getRollenceGradualRollout() {
         userSession?.let {
-            viewModel.getRollenceGradualRollout(
-                shopId = it.shopId,
-                irisSessionId = irisSession?.getSessionId() ?: ""
-            )
+            irisSession?.let { iris_session ->
+                viewModel.getRollenceGradualRollout(
+                    shopId = it.shopId,
+                    irisSessionId = iris_session.getSessionId()
+                )
+            }
         }
     }
 
