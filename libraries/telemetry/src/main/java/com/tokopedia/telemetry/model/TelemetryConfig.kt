@@ -29,7 +29,7 @@ data class TelemetryConfig(
         fun parseFromRemoteConfig(json: String): TelemetryConfig {
             return try {
                 Gson().fromJson(json, TelemetryConfig::class.java)
-            } catch (e: Exception) {
+            } catch (@Suppress("SwallowedException") e: Exception) {
                 TelemetryConfig()
             }
         }

@@ -74,7 +74,7 @@ class TelemetryActLifecycleCallback(
                     et.addTextChangedListener(TelemetryTextWatcher)
                 }
             }
-            var sensorManager = activity.getSystemService(Context.SENSOR_SERVICE) as SensorManager?
+            var sensorManager = activity.getSystemService(Context.SENSOR_SERVICE) as? SensorManager
             val sensor: Sensor? = sensorManager?.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
 
             val samplingRate = getSamplingRate()
@@ -83,7 +83,7 @@ class TelemetryActLifecycleCallback(
 
             if (sensorManager == null) {
                 sensorManager =
-                    activity.getSystemService(Context.SENSOR_SERVICE) as SensorManager?
+                    activity.getSystemService(Context.SENSOR_SERVICE) as? SensorManager
             }
             val sensorGyro: Sensor? = sensorManager?.getDefaultSensor(Sensor.TYPE_GYROSCOPE)
             sensorManager?.registerListener(TelemetryGyroListener, sensorGyro, samplingRate)
