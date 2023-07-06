@@ -73,6 +73,7 @@ const val GET_USER_MEDALI_GQL = """
           imageURL
           redirectURL
           redirectAppLink
+          creativeName
        }
     }
     paging{

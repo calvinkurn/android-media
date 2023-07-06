@@ -26,7 +26,9 @@ data class ScpRewardsGetUserMedalisResponse(
                 @SerializedName("redirectAppLink")
                 val redirectAppLink: String = "",
                 @SerializedName("redirectURL")
-                val redirectURL: String = ""
+                val redirectURL: String = "",
+                @SerializedName("creativeName")
+                val creativeName: String = ""
             )
         }
 

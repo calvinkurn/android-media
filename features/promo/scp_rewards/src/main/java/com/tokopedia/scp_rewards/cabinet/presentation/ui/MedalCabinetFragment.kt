@@ -132,10 +132,10 @@ class MedalCabinetFragment : BaseDaggerFragment() {
             if (medalCabinetData.progressMedaliData == null) {
                 MedalCabinetAnalyticsImpl.sendViewLockedMedalSectionApiErrorEvent()
             }
-            if (medalCabinetData.earnedMedaliData?.bannerData != null ||
-                medalCabinetData.progressMedaliData?.bannerData != null
-            ) {
-                MedalCabinetAnalyticsImpl.sendViewBannerEvent("", "")
+            if (medalCabinetData.earnedMedaliData?.bannerData != null) {
+                MedalCabinetAnalyticsImpl.sendViewBannerEvent(medalCabinetData.earnedMedaliData.bannerData?.creativeName.orEmpty(), medalCabinetData.earnedMedaliData.id.toString())
+            } else if (medalCabinetData.progressMedaliData?.bannerData != null) {
+                MedalCabinetAnalyticsImpl.sendViewBannerEvent(medalCabinetData.progressMedaliData.bannerData?.creativeName.orEmpty(), medalCabinetData.progressMedaliData.id.toString())
             }
 
             binding.viewCabinet.attachMedalClickListener(object : MedalCallbackListener {
@@ -213,8 +213,8 @@ class MedalCabinetFragment : BaseDaggerFragment() {
                     }
                 }
 
-                override fun onBannerClick(bannerData: BannerData?) {
-                    MedalCabinetAnalyticsImpl.sendClickBannerEvent("", "")
+                override fun onBannerClick(bannerData: BannerData?, position: Int?) {
+                    MedalCabinetAnalyticsImpl.sendClickBannerEvent(bannerData?.creativeName.orEmpty(), position.toString())
                     requireContext().launchLink(
                         appLink = bannerData?.appLink,
                         webLink = bannerData?.webLink

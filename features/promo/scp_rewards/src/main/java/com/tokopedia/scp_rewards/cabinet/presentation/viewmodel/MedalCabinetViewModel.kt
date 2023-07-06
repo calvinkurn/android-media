@@ -14,7 +14,6 @@ import com.tokopedia.scp_rewards.common.data.Error
 import com.tokopedia.scp_rewards.common.data.Loading
 import com.tokopedia.scp_rewards.common.data.ScpResult
 import com.tokopedia.scp_rewards.common.data.Success
-import com.tokopedia.scp_rewards.common.utils.MEDALI_DETAIL_PAGE
 import com.tokopedia.scp_rewards.common.utils.PAGESIZE_PARAM
 import com.tokopedia.scp_rewards.common.utils.PAGE_NAME_PARAM
 import com.tokopedia.scp_rewards.common.utils.PAGE_PARAM

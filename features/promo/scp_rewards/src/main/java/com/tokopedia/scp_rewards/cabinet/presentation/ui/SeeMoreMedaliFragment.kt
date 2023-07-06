@@ -339,7 +339,7 @@ class SeeMoreMedaliFragment : BaseDaggerFragment(), MedalCallbackListener {
         // No such CTA on this page
     }
 
-    override fun onBannerClick(bannerData: BannerData?) {
+    override fun onBannerClick(bannerData: BannerData?, position: Int?) {
         // Not used here
     }
 

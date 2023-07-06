@@ -47,6 +47,7 @@ object MedaliListMapper {
         val medalSection =
             sectionResponse.scpRewardsGetMedaliSectionLayout?.medaliSectionLayoutList?.find { it.id == sectionId }
         return MedalData(
+            id = sectionId,
             title = medalSection?.medaliSectionTitle?.content,
             description = medalSection?.medaliSectionTitle?.description,
             textColor = medalSection?.medaliSectionTitle?.color,
@@ -55,7 +56,8 @@ object MedaliListMapper {
             bannerData = BannerData(
                 imageUrl = medalResponse.scpRewardsGetUserMedalisByType?.medaliBanner?.imageList?.first()?.imageURL,
                 appLink = medalResponse.scpRewardsGetUserMedalisByType?.medaliBanner?.imageList?.first()?.redirectAppLink,
-                webLink = medalResponse.scpRewardsGetUserMedalisByType?.medaliBanner?.imageList?.first()?.redirectURL
+                webLink = medalResponse.scpRewardsGetUserMedalisByType?.medaliBanner?.imageList?.first()?.redirectURL,
+                creativeName = medalResponse.scpRewardsGetUserMedalisByType?.medaliBanner?.imageList?.first()?.creativeName
             ),
             cta = Cta(
                 text = medalResponse.scpRewardsGetUserMedalisByType?.paging?.cta?.text,

@@ -6,5 +6,5 @@ interface MedalCallbackListener {
     fun onMedalLoad(medalItem: MedalItem)
     fun onMedalFailed(medalItem: MedalItem)
     fun onSeeMoreLoad(medalData: MedalData)
-    fun onBannerClick(bannerData: BannerData?)
+    fun onBannerClick(bannerData: BannerData?, position: Int?)
 }

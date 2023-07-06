@@ -55,7 +55,7 @@ class MedalSectionViewHolder(
         } else {
             binding.btnSeeMore.gone()
         }
-        handleList(item.medalList, item.bannerData)
+        handleList(item.medalList, item.bannerData, item.id)
         handleDivider()
     }
 
@@ -67,12 +67,12 @@ class MedalSectionViewHolder(
         }
     }
 
-    private fun handleList(medalList: List<MedalItem>?, bannerData: BannerData?) {
+    private fun handleList(medalList: List<MedalItem>?, bannerData: BannerData?, position: Int?) {
         if (medalList.isNullOrEmpty()) {
             binding.ivEmptyList.loadImageOrFallback(bannerData?.imageUrl, R.drawable.ic_error_medal_list)
             binding.ivEmptyList.visible()
             binding.rvMedals.gone()
-            binding.ivEmptyList.setOnClickListener { listener?.onBannerClick(bannerData) }
+            binding.ivEmptyList.setOnClickListener { listener?.onBannerClick(bannerData, position) }
         } else {
             val placeHolderList = mutableListOf<MedalItem>().apply { addAll(medalList) }
             val remainder = medalList.size % 3

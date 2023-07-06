@@ -83,9 +83,9 @@ class CabinetView(
         }
     }
 
-    override fun onBannerClick(bannerData: BannerData?) {
+    override fun onBannerClick(bannerData: BannerData?, position: Int?) {
         if (::listener.isInitialized) {
-            listener.onBannerClick(bannerData)
+            listener.onBannerClick(bannerData, position)
         }
     }
 }

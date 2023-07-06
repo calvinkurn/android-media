@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.scp_rewards_common.EARNED_BADGE
 
 data class MedalData(
+    val id: Int? = null,
     val title: String? = null,
     val description: String? = null,
     val textColor: String? = null,
@@ -21,7 +22,8 @@ data class MedalData(
 data class BannerData(
     val imageUrl: String? = null,
     val webLink: String? = null,
-    val appLink: String? = null
+    val appLink: String? = null,
+    val creativeName: String? = null
 )
 
 data class MedalItem(

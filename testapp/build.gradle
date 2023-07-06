@@ -147,7 +147,4 @@ dependencies {
 
     //------- DO NOT DELETE THIS PART -------//
     // TO BE ADDED AS FEATURE REQUIREMENT
-	implementation project(rootProject.ext.features.scpRewardsCommon)
-	implementation project(rootProject.ext.features.scpRewards)
-	implementation project(rootProject.ext.features.scpRewardsWidgets)
 }
