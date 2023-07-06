@@ -24,6 +24,9 @@ interface FfpiMonitoringDelegate {
     fun onHiddenChanged(hidden: Boolean)
 }
 
+/**
+ * Method 1 for measure frame performance
+ */
 class FfpiMonitoringDelegateImpl : FfpiMonitoringDelegate {
 
     private val fpiMonitoring by lazy {
