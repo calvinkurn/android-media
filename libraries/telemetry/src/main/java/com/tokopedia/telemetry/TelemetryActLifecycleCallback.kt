@@ -44,8 +44,9 @@ class TelemetryActLifecycleCallback(
         const val SAMPLING_RATE_MICRO = 200_000 // 200ms or 0.2s
         const val SAMPLING_RATE_MS = 200 // 200ms or 0.2s
         var remoteConfig: RemoteConfig? = null
-        var telemetryConfig: TelemetryConfig? = null
-        var hasFetch = false
+        var telemetryConfig = TelemetryConfig()
+        var lastFetch: Long = 0L
+        const val DURATION_FETCH = 3600000L
         val mapSectionToCount = mutableMapOf<String, CapturedTelemetry>()
     }
 
@@ -134,22 +135,22 @@ class TelemetryActLifecycleCallback(
     }
 
     private fun fetchConfig(context: Context): TelemetryConfig {
-        val obj: TelemetryConfig
-        if (telemetryConfig == null || !hasFetch) {
+        val now = System.currentTimeMillis()
+        if (now - lastFetch > DURATION_FETCH) {
             val remoteConfig = getRemoteConfig(context)
             val telemetryConfigString = remoteConfig.getString(TELEMETRY_REMOTE_CONFIG_KEY, "")
+            lastFetch = now
             return if (telemetryConfigString.isNullOrEmpty()) {
-                obj = TelemetryConfig()
+                val obj = TelemetryConfig()
                 telemetryConfig = obj
                 obj
             } else {
-                obj = TelemetryConfig.parseFromRemoteConfig(telemetryConfigString)
+                val obj = TelemetryConfig.parseFromRemoteConfig(telemetryConfigString)
                 telemetryConfig = obj
-                hasFetch = true
                 obj
             }
         } else {
-            return telemetryConfig ?: TelemetryConfig()
+            return telemetryConfig
         }
     }
 
@@ -249,8 +250,9 @@ class TelemetryActLifecycleCallback(
 
                     Telemetry.addSection(sectionName)
                     registerTelemetryListener(activity)
-
+                    yield()
                     delay(SECTION_TELEMETRY_DURATION)
+                    yield()
                     stopTelemetryListener(activity)
                     Telemetry.addStopTime()
                 }
