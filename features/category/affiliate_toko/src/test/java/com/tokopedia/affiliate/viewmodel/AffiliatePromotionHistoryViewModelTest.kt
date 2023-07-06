@@ -54,7 +54,7 @@ class AffiliatePromotionHistoryViewModelTest {
         affiliatePerformanceData.getAffiliateItemsPerformanceList?.itemPerformanceListData?.sectionData = sectionData
         coEvery { affiliatePerformanceUseCase.affiliatePerformance(any(), any()) } returns affiliatePerformanceData
 
-        val response = affiliatePromotionHistoryViewModel.convertDataToVisitables(affiliatePerformanceData.getAffiliateItemsPerformanceList?.itemPerformanceListData?.sectionData!!)
+        val response = affiliatePromotionHistoryViewModel.convertDataToVisitable(affiliatePerformanceData.getAffiliateItemsPerformanceList?.itemPerformanceListData?.sectionData!!)
         affiliatePromotionHistoryViewModel.getAffiliatePerformance(0)
         assertEquals(affiliatePromotionHistoryViewModel.getAffiliateDataItems().value, response)
         assertEquals(affiliatePromotionHistoryViewModel.getAffiliateItemCount().value, sectionData.itemTotalCount)

@@ -9,6 +9,7 @@ import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateSharedProductCar
 import com.tokopedia.affiliate.usecase.AffiliatePerformanceUseCase
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.orZero
 import java.util.ArrayList
 import javax.inject.Inject
 
@@ -27,9 +28,9 @@ class AffiliatePromotionHistoryViewModel @Inject constructor(
             block = {
                 affiliatePerformanceUseCase.affiliatePerformance(page, PAGE_LIMIT)
                     .getAffiliateItemsPerformanceList?.itemPerformanceListData?.sectionData?.let {
-                        totalItemsCount.value = it.itemTotalCount
-                        convertDataToVisitables(it)?.let { visitables ->
-                            affiliateDataList.value = visitables
+                        totalItemsCount.value = it.itemTotalCount.orZero()
+                        convertDataToVisitable(it)?.let { visitable ->
+                            affiliateDataList.value = visitable
                         }
                     }
             },
@@ -41,7 +42,7 @@ class AffiliatePromotionHistoryViewModel @Inject constructor(
         )
     }
 
-    fun convertDataToVisitables(
+    fun convertDataToVisitable(
         data: AffiliatePerformanceData.GetAffiliateItemsPerformanceList.Data.SectionData
     ): ArrayList<Visitable<AffiliateAdapterTypeFactory>>? {
         val tempList: ArrayList<Visitable<AffiliateAdapterTypeFactory>> = ArrayList()

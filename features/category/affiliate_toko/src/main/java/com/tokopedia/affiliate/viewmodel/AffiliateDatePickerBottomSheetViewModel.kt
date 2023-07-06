@@ -33,7 +33,7 @@ class AffiliateDatePickerBottomSheetViewModel @Inject constructor(
                 response.dateFilterData?.ticker?.let { ticker ->
                     if (ticker.isNotEmpty()) {
                         tickerInformation.value =
-                            ticker.first()?.tickerDescription
+                            ticker.first()?.tickerDescription.orEmpty()
                     }
                 }
 
