@@ -15,6 +15,7 @@
         <domain includeSubdomains="true">gojek.com</domain>
         <domain includeSubdomains="true">grab.com</domain>
         <domain includeSubdomains="true">35.198.223.102</domain>
+        <domain includeSubdomains="true">172.21.56.230</domain>
 
 
         <!--    Need to be whitelisted for silent verification    -->
