@@ -14,9 +14,9 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImageWithEmptyTarget
 import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
-import com.tokopedia.play.R
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 import com.tokopedia.universal_sharing.view.bottomsheet.ScreenshotDetector
+import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.PermissionListener
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ScreenShotListener
@@ -38,16 +38,17 @@ class ShareExperienceViewComponent(
     private val listener: Listener,
     private val context: Context,
     private val dispatchers: CoroutineDispatchers,
+    private val source: Source = Source.PlayRoom
 ) : ViewComponent(container, idRes) {
 
-    private val ivShareLink = findViewById<IconUnify>(R.id.ic_play_share_experience)
+    private val ivShareLink = rootView as IconUnify
 
     private var imgSaveFilePath = ""
     private var bitmap: Bitmap? = null
     private val scope = CoroutineScope(dispatchers.computation)
 
     private val universalShareBottomSheet: UniversalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
-        init(object: ShareBottomsheetListener {
+        init(object : ShareBottomsheetListener {
             override fun onShareOptionClicked(shareModel: ShareModel) {
                 listener.onShareOptionClick(this@ShareExperienceViewComponent, shareModel)
             }
@@ -60,21 +61,27 @@ class ShareExperienceViewComponent(
 
     private var screenshotDetector: ScreenshotDetector? = null
 
+    val isScreenshotBottomSheet: Boolean
+        get() = universalShareBottomSheet.getShareBottomSheetType() == UniversalShareBottomSheet.SCREENSHOT_SHARE_SHEET
+
     init {
         ivShareLink.setOnClickListener {
             listener.onShareIconClick(this)
         }
+        ivShareLink.setImage(newIconId = if (source == Source.Upcoming) IconUnify.SHARE_MOBILE else IconUnify.SHARE)
     }
 
     fun setIsShareable(isShow: Boolean) {
         if (isShow) {
             ivShareLink.show()
             listener.onShareIconImpressed(this)
-        } else ivShareLink.hide()
+        } else {
+            ivShareLink.hide()
+        }
     }
 
     private fun isTemporaryImageAvailable(): Boolean {
-        if(imgSaveFilePath.isNotEmpty()) {
+        if (imgSaveFilePath.isNotEmpty()) {
             return File(imgSaveFilePath).exists()
         }
 
@@ -82,7 +89,7 @@ class ShareExperienceViewComponent(
     }
 
     private fun deleteTemporaryImage() {
-        if(isTemporaryImageAvailable()) {
+        if (isTemporaryImageAvailable()) {
             File(imgSaveFilePath).delete()
         }
     }
@@ -92,10 +99,11 @@ class ShareExperienceViewComponent(
 
         scope.launch {
             val savedFile = ImageProcessingUtil.writeImageToTkpdPath(
-                image, Bitmap.CompressFormat.PNG
+                image,
+                Bitmap.CompressFormat.PNG
             )
 
-            if(savedFile != null) {
+            if (savedFile != null) {
                 imgSaveFilePath = savedFile.absolutePath
                 universalShareBottomSheet.apply {
                     imageSaved(imgSaveFilePath)
@@ -103,8 +111,7 @@ class ShareExperienceViewComponent(
                 withContext(dispatchers.main) {
                     listener.onShareOpenBottomSheet(this@ShareExperienceViewComponent)
                 }
-            }
-            else {
+            } else {
                 withContext(dispatchers.main) {
                     listener.onHandleShareFallback(this@ShareExperienceViewComponent)
                 }
@@ -114,27 +121,32 @@ class ShareExperienceViewComponent(
 
     fun saveTemporaryImage(imageUrl: String) {
         try {
-            if(bitmap != null) {
+            if (bitmap != null) {
                 saveBitmap()
                 return
             }
 
-            loadImageWithEmptyTarget(context, imageUrl, {
-                fitCenter()
-            }, MediaBitmapEmptyTarget(
-                onReady = {
-                    bitmap = it
-                    saveBitmap()
-                }
-            ))
-        }
-        catch (e: Exception) {
+            loadImageWithEmptyTarget(
+                context,
+                imageUrl,
+                {
+                    fitCenter()
+                },
+                MediaBitmapEmptyTarget(
+                    onReady = {
+                        bitmap = it
+                        saveBitmap()
+                    }
+                )
+            )
+        } catch (ignore: Exception) {
             listener.onHandleShareFallback(this@ShareExperienceViewComponent)
         }
     }
 
     fun showSharingOptions(title: String, coverUrl: String, userId: String, channelId: String) {
         universalShareBottomSheet.apply {
+            setFeatureFlagRemoteConfigKey()
             setMetaData(tnTitle = title, tnImage = coverUrl)
             setUtmCampaignData("Play", userId, channelId, "share")
             setOgImageUrl(coverUrl)
@@ -155,12 +167,16 @@ class ShareExperienceViewComponent(
      */
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     fun onResume() {
-        screenshotDetector = UniversalShareBottomSheet.createAndStartScreenShotDetector(
-            context, object: ScreenShotListener {
-                override fun screenShotTaken() {
+        screenshotDetector = SharingUtil.createAndStartScreenShotDetector(
+            context,
+            object : ScreenShotListener {
+                override fun screenShotTaken(path: String) {
                     listener.onScreenshotTaken(this@ShareExperienceViewComponent)
                 }
-            }, fragment, addFragmentLifecycleObserver = false, permissionListener = object: PermissionListener {
+            },
+            fragment,
+            addFragmentLifecycleObserver = false,
+            permissionListener = object : PermissionListener {
                 override fun permissionAction(action: String, label: String) {
                     listener.onSharePermissionAction(this@ShareExperienceViewComponent, label)
                 }
@@ -170,7 +186,7 @@ class ShareExperienceViewComponent(
 
     @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
     fun onPause() {
-        UniversalShareBottomSheet.clearState(screenshotDetector)
+        SharingUtil.clearState(screenshotDetector)
         screenshotDetector = null
     }
 
@@ -189,5 +205,9 @@ class ShareExperienceViewComponent(
         fun onSharePermissionAction(view: ShareExperienceViewComponent, label: String)
         fun onHandleShareFallback(view: ShareExperienceViewComponent)
         fun onShareIconImpressed(view: ShareExperienceViewComponent)
+    }
+
+    enum class Source {
+        Upcoming, PlayRoom;
     }
 }

@@ -45,9 +45,11 @@ import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBotto
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet.Companion.SCREEN_NAME_CHOOSE_ADDRESS_NEW_USER
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.logisticCommon.data.constant.AddEditAddressSource
+import com.tokopedia.logisticCommon.data.constant.AddressConstant
 import com.tokopedia.logisticCommon.data.constant.LogisticConstant
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass
+import com.tokopedia.logisticCommon.util.PinpointRolloutHelper
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
@@ -55,7 +57,7 @@ import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.searchbar.navigation_component.util.NavToolbarExt
 import com.tokopedia.tokofood.R
-import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodData
+import com.tokopedia.tokofood.common.domain.response.CartGeneralCartListData
 import com.tokopedia.tokofood.common.domain.response.Merchant
 import com.tokopedia.tokofood.common.minicartwidget.view.TokoFoodMiniCartWidget
 import com.tokopedia.tokofood.common.presentation.UiEvent
@@ -538,7 +540,7 @@ class TokoFoodHomeFragment :
     private fun onSearchBarClick() {
         analytics.clickSearchBar(userSession.userId, localCacheModel?.district_id)
         context?.let {
-            TokofoodRouteManager.routePrioritizeInternal(it, ApplinkConst.TokoFood.SEARCH)
+            TokofoodRouteManager.routePrioritizeInternal(it, ApplinkConstInternalTokoFood.SEARCH)
         }
     }
 
@@ -660,11 +662,11 @@ class TokoFoodHomeFragment :
             activityViewModel?.cartDataValidationFlow?.collect { uiEvent ->
                 when (uiEvent.state) {
                     UiEvent.EVENT_SUCCESS_VALIDATE_CHECKOUT -> {
-                        (uiEvent.data as? CheckoutTokoFoodData)?.let {
+                        (uiEvent.data as? CartGeneralCartListData)?.let {
                             analytics.clickAtc(userSession.userId, localCacheModel?.district_id, it)
-                            if (uiEvent.source == MINI_CART_SOURCE) {
-                                goToPurchasePage()
-                            }
+                        }
+                        if (uiEvent.source == MINI_CART_SOURCE) {
+                            goToPurchasePage()
                         }
                     }
                     UiEvent.EVENT_SUCCESS_LOAD_CART -> {
@@ -712,7 +714,7 @@ class TokoFoodHomeFragment :
         onOpenHomepage()
         showHomeLayout(data)
         getLayoutComponentData()
-        activityViewModel?.loadCartList(SOURCE)
+        activityViewModel?.loadCartList(MINI_CART_SOURCE)
         stopRenderPerformanceMonitoring()
     }
 
@@ -872,11 +874,11 @@ class TokoFoodHomeFragment :
     }
 
     private fun isChooseAddressWidgetDataUpdated(): Boolean {
-        localCacheModel?.let {
-            context?.apply {
+        localCacheModel?.let { cacheModel ->
+            context?.let {
                 return ChooseAddressUtils.isLocalizingAddressHasUpdated(
-                    this,
-                    it
+                    it,
+                    cacheModel
                 )
             }
         }
@@ -889,17 +891,32 @@ class TokoFoodHomeFragment :
         }
     }
     private fun navigateToSetPinpoint() {
-        val locationPass = LocationPass().apply {
-            latitude = TOTO_LATITUDE
-            longitude = TOTO_LONGITUDE
+        activity?.let {
+            if (PinpointRolloutHelper.eligibleForRevamp(it, true)) {
+                // go to pinpoint
+                val bundle = Bundle().apply {
+                    putBoolean(AddressConstant.EXTRA_IS_GET_PINPOINT_ONLY, true)
+                    putDouble(AddressConstant.EXTRA_LAT, TOTO_LATITUDE.toDouble())
+                    putDouble(AddressConstant.EXTRA_LONG, TOTO_LONGITUDE.toDouble())
+                }
+                RouteManager.getIntent(it, ApplinkConstInternalLogistic.PINPOINT).apply {
+                    putExtra(AddressConstant.EXTRA_BUNDLE, bundle)
+                    startActivityForResult(this, REQUEST_CODE_SET_PINPOINT)
+                }
+            } else {
+                val locationPass = LocationPass().apply {
+                    latitude = TOTO_LATITUDE
+                    longitude = TOTO_LONGITUDE
+                }
+                val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.GEOLOCATION)
+                val bundle = Bundle().apply {
+                    putParcelable(LogisticConstant.EXTRA_EXISTING_LOCATION, locationPass)
+                    putBoolean(LogisticConstant.EXTRA_IS_FROM_MARKETPLACE_CART, true)
+                }
+                intent.putExtras(bundle)
+                startActivityForResult(intent, REQUEST_CODE_SET_PINPOINT)
+            }
         }
-        val intent = RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.GEOLOCATION)
-        val bundle = Bundle().apply {
-            putParcelable(LogisticConstant.EXTRA_EXISTING_LOCATION, locationPass)
-            putBoolean(LogisticConstant.EXTRA_IS_FROM_MARKETPLACE_CART, true)
-        }
-        intent.putExtras(bundle)
-        startActivityForResult(intent, REQUEST_CODE_SET_PINPOINT)
     }
 
     private fun onResultFromSetPinpoint(resultCode: Int, data: Intent?) {
@@ -907,7 +924,18 @@ class TokoFoodHomeFragment :
             data?.let {
                 val locationPass =
                     it.getParcelableExtra(LogisticConstant.EXTRA_EXISTING_LOCATION) as? LocationPass
-                locationPass?.let { locationPass ->
+                if (locationPass == null) {
+                    val addressData = it.getParcelableExtra(AddressConstant.EXTRA_SAVE_DATA_UI_MODEL) as? SaveAddressDataModel
+                    addressData?.let { address ->
+                        localCacheModel?.address_id?.let { addressId ->
+                            viewModel.setUpdatePinPoint(
+                                addressId,
+                                address.latitude,
+                                address.longitude
+                            )
+                        }
+                    }
+                } else {
                     localCacheModel?.address_id?.let { addressId ->
                         viewModel.setUpdatePinPoint(
                             addressId,
@@ -923,7 +951,7 @@ class TokoFoodHomeFragment :
     private fun onResultFromAddAddress(resultCode: Int, data: Intent?) {
         if (resultCode == Activity.RESULT_OK) {
             data?.let {
-                val addressDataModel = data?.getParcelableExtra<SaveAddressDataModel>(NEW_ADDRESS_PARCELABLE)
+                val addressDataModel = data.getParcelableExtra(NEW_ADDRESS_PARCELABLE) as? SaveAddressDataModel
                 addressDataModel?.let {
                     setupChooseAddress(it)
                 }
@@ -1021,7 +1049,7 @@ class TokoFoodHomeFragment :
     }
 
     private fun shareClicked() {
-        if (UniversalShareBottomSheet.isCustomSharingEnabled(context)) {
+        if (SharingUtil.isCustomSharingEnabled(context)) {
             context?.let {
                 SharingUtil.saveImageFromURLToStorage(
                     it,
@@ -1038,6 +1066,7 @@ class TokoFoodHomeFragment :
     private fun showUniversalShareBottomSheet(imageSaved: String) {
         if (isAdded) {
             universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
+                setFeatureFlagRemoteConfigKey()
                 init(this@TokoFoodHomeFragment)
                 setUtmCampaignData(
                     pageName = PAGE_SHARE_NAME,

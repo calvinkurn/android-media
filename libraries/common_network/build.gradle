@@ -25,7 +25,6 @@ android {
 
 dependencies {
     implementation projectOrAar(rootProject.ext.features.resourcesCommon)
-    implementation projectOrAar(rootProject.ext.libraries.tkpddesign)
     implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout

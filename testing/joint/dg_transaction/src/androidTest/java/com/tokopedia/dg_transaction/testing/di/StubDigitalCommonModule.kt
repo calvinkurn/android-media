@@ -4,7 +4,6 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor
 import com.tokopedia.common.network.coroutines.repository.RestRepository
-import com.tokopedia.common_digital.atc.DigitalAddToCartRestUseCase
 import com.tokopedia.common_digital.atc.DigitalAddToCartUseCase
 import com.tokopedia.common_digital.atc.RechargeAddToCartGqlUseCase
 import com.tokopedia.common_digital.common.RechargeAnalytics
@@ -13,7 +12,6 @@ import com.tokopedia.common_digital.common.di.DigitalAddToCartQualifier
 import com.tokopedia.common_digital.common.di.DigitalCommonScope
 import com.tokopedia.common_digital.common.usecase.RechargePushEventRecommendationUseCase
 import com.tokopedia.common_digital.product.data.response.TkpdDigitalResponse
-import com.tokopedia.dg_transaction.testing.response.rest.DigitalRestAddToCartMockResponse
 import com.tokopedia.dg_transaction.testing.response.rest.RestRepositoryStub
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -52,9 +50,10 @@ class StubDigitalCommonModule {
 
     @DigitalCommonScope
     @Provides
-    fun provideDigitalCartInterceptor(@ApplicationContext context: Context,
-                                      networkRouter: NetworkRouter,
-                                      userSession: UserSessionInterface
+    fun provideDigitalCartInterceptor(
+        @ApplicationContext context: Context,
+        networkRouter: NetworkRouter,
+        userSession: UserSessionInterface
     ): DigitalInterceptor {
         return DigitalInterceptor(context, networkRouter, userSession)
     }
@@ -62,22 +61,18 @@ class StubDigitalCommonModule {
     @DigitalCommonScope
     @Provides
     fun provideNetworkRouter(@ApplicationContext context: Context): NetworkRouter {
-        return if (context is NetworkRouter) context
-        else throw RuntimeException("Application must implement " + NetworkRouter::class.java.canonicalName)
-    }
-
-    @Provides
-    @DigitalCommonScope
-    fun provideRestRepositoryStub(): RestRepositoryStub {
-        return RestRepositoryStub().apply {
-            responses = DigitalRestAddToCartMockResponse().getMockResponse()
+        return if (context is NetworkRouter) {
+            context
+        } else {
+            throw RuntimeException("Application must implement " + NetworkRouter::class.java.canonicalName)
         }
     }
 
     @Provides
     @DigitalCommonScope
-    @DigitalAddToCartQualifier
-    fun provideGraphqlRepository() = GraphqlInteractor.getInstance().graphqlRepository
+    fun provideRestRepositoryStub(): RestRepositoryStub {
+        return RestRepositoryStub()
+    }
 
     @Provides
     @DigitalCommonScope
@@ -86,19 +81,18 @@ class StubDigitalCommonModule {
 
     @Provides
     @DigitalCommonScope
-    fun provideDigitalAtcRestUseCase(@DigitalAddToCartQualifier restRepository: RestRepository)
-            : DigitalAddToCartRestUseCase = DigitalAddToCartRestUseCase(restRepository)
+    @DigitalAddToCartQualifier
+    fun provideGraphqlRepository() = GraphqlInteractor.getInstance().graphqlRepository
 
     @Provides
     @DigitalCommonScope
-    fun provideRechargeAddToCartGqluseCase(@DigitalAddToCartQualifier graphqlRepository: GraphqlRepository)
-            : RechargeAddToCartGqlUseCase = RechargeAddToCartGqlUseCase(graphqlRepository)
+    fun provideRechargeAddToCartGqluseCase(@DigitalAddToCartQualifier graphqlRepository: GraphqlRepository): RechargeAddToCartGqlUseCase =
+        RechargeAddToCartGqlUseCase(graphqlRepository)
 
     @DigitalCommonScope
     @Provides
-    fun provideDigitalAtcUseCase(restUseCase: DigitalAddToCartRestUseCase,
-                                 gqlUseCase: RechargeAddToCartGqlUseCase
-    ): DigitalAddToCartUseCase = DigitalAddToCartUseCase(restUseCase, gqlUseCase)
+    fun provideDigitalAtcUseCase(gqlUseCase: RechargeAddToCartGqlUseCase): DigitalAddToCartUseCase =
+        DigitalAddToCartUseCase(gqlUseCase)
 
     @Provides
     @DigitalCommonScope

@@ -1,6 +1,7 @@
 package com.tokopedia.mvc.presentation.summary.viewmodel
 
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
@@ -8,6 +9,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.campaign.utils.constant.DateConstant
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.mvc.R
 import com.tokopedia.mvc.domain.entity.SelectedProduct
 import com.tokopedia.mvc.domain.entity.VoucherConfiguration
@@ -143,7 +145,7 @@ class SummaryViewModel @Inject constructor(
                         parentProductIds,
                         imageRatio
                     )
-                _couponImage.postValue(result)
+                _couponImage.postValue(BitmapFactory.decodeByteArray(result, Int.ZERO, result.size))
             },
             onError = {
                 _error.postValue(it)

@@ -1,21 +1,24 @@
 package com.tokopedia.editshipping.ui.customview;
 
+import static com.tokopedia.logisticCommon.data.constant.AddressConstant.EXTRA_SAVE_DATA_UI_MODEL;
+
 import android.content.Context;
 import android.content.Intent;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.EditText;
 
 import androidx.annotation.NonNull;
 
 import com.tokopedia.editshipping.R;
+import com.tokopedia.editshipping.databinding.EditShippingAddressLayoutBinding;
 import com.tokopedia.editshipping.domain.model.editshipping.ShopShipping;
 import com.tokopedia.editshipping.presenter.EditShippingPresenter;
 import com.tokopedia.editshipping.ui.EditShippingViewListener;
+import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel;
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass;
-import com.tokopedia.unifyprinciples.Typography;
 
 /**
  * Created by Kris on 6/9/2016.
@@ -23,13 +26,7 @@ import com.tokopedia.unifyprinciples.Typography;
  */
 public class ShippingAddressLayout extends EditShippingCustomView<ShopShipping,
         EditShippingPresenter,
-        EditShippingViewListener>{
-
-    EditText addressArea;
-    EditText chooseLocation;
-    Typography phoneNumber;
-    Typography phoneNumberTitle;
-    Typography phoneNumberButton;
+        EditShippingViewListener, EditShippingAddressLayoutBinding> {
     private static final String EXTRA_EXISTING_LOCATION = "EXTRA_EXISTING_LOCATION";
 
     private EditShippingPresenter presenter;
@@ -48,23 +45,14 @@ public class ShippingAddressLayout extends EditShippingCustomView<ShopShipping,
     }
 
     @Override
-    protected void bindView(View view) {
-        addressArea = (EditText) view.findViewById(R.id.address_text_field);
-
-        chooseLocation = (EditText) view.findViewById(R.id.value_location);
-
-        phoneNumber = (Typography) view.findViewById(R.id.shop_phone_number);
-        phoneNumberTitle = (Typography) view.findViewById(R.id.shop_phone_number_title);
-
-        phoneNumberButton = (Typography) view.findViewById(R.id.change_phone_number_button);
-
-        chooseLocation.setOnClickListener(new View.OnClickListener() {
+    protected void bindView(EditShippingAddressLayoutBinding view) {
+        view.editShippingMapView.valueLocation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mainView.openGeoLocation();
             }
         });
-        addressArea.addTextChangedListener(new TextWatcher() {
+        view.addressTextField.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -84,17 +72,17 @@ public class ShippingAddressLayout extends EditShippingCustomView<ShopShipping,
     }
 
     @Override
-    protected int getLayoutView() {
-        return R.layout.edit_shipping_address_layout;
+    protected EditShippingAddressLayoutBinding getLayoutView(Context context) {
+        return EditShippingAddressLayoutBinding.inflate(LayoutInflater.from(context), this, true);
     }
 
     @Override
     public void renderData(@NonNull ShopShipping data) {
-        addressArea.setText(data.addrStreet);
+        getBinding().addressTextField.setText(data.addrStreet);
     }
 
     public void renderGeoAddress(String address) {
-        chooseLocation.setText(address);
+        getBinding().editShippingMapView.valueLocation.setText(address);
     }
 
     @Override
@@ -107,14 +95,23 @@ public class ShippingAddressLayout extends EditShippingCustomView<ShopShipping,
         this.mainView = mainView;
     }
 
-    public void setGoogleMapData(Intent data){
+    public void setGoogleMapData(Intent data) {
         LocationPass locationPass = data.getParcelableExtra(EXTRA_EXISTING_LOCATION);
-        if(locationPass != null && locationPass.getLatitude() != null) {
+        if (locationPass != null && locationPass.getLatitude() != null) {
             if (presenter.getShopInformation() != null) {
                 presenter.getShopInformation().setShopLatitude(locationPass.getLatitude());
                 presenter.getShopInformation().setShopLongitude(locationPass.getLongitude());
             }
-            chooseLocation.setText(getReverseGeocode(locationPass));
+            renderGeoAddress(getReverseGeocode(locationPass));
+        } else {
+            SaveAddressDataModel addressData = data.getParcelableExtra(EXTRA_SAVE_DATA_UI_MODEL);
+            if (addressData != null) {
+                if (presenter.getShopInformation() != null) {
+                    presenter.getShopInformation().setShopLatitude(addressData.getLatitude());
+                    presenter.getShopInformation().setShopLongitude(addressData.getLongitude());
+                }
+                renderGeoAddress(addressData.getFormattedAddress());
+            }
         }
     }
 
@@ -126,11 +123,11 @@ public class ShippingAddressLayout extends EditShippingCustomView<ShopShipping,
         }
     }
 
-    public String getGoogleMapAddressString(){
-        return chooseLocation.getText().toString();
+    public String getGoogleMapAddressString() {
+        return getBinding().editShippingMapView.valueLocation.getText().toString();
     }
 
-    public String getAddressData(){
-        return addressArea.getText().toString();
+    public String getAddressData() {
+        return getBinding().addressTextField.getText().toString();
     }
 }

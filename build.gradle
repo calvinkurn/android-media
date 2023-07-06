@@ -1,3 +1,6 @@
+import org.jetbrains.dokka.gradle.DokkaMultiModuleTask
+import org.jetbrains.dokka.gradle.DokkaTaskPartial
+
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 apply from: 'buildconfig/dependencies/dependencies.gradle'
 apply from: 'buildconfig/dependencies/dependency-libraries.gradle'
@@ -19,7 +22,7 @@ buildscript {
         mavenLocal()
         mavenCentral()
         maven {
-            url "${gcp_artifactory_url}" + "/libs-release-local";
+            url "${gcp_artifactory_url}" + "/libs-release-local"
             credentials {
                 username = "${gcp_artifactory_username}"
                 password = "${gcp_artifactory_password}"
@@ -29,7 +32,7 @@ buildscript {
         maven { url 'https://plugins.gradle.org/m2/' }
     }
     dependencies {
-        classpath ('com.android.tools.build:gradle:7.0.4') {
+        classpath ('com.android.tools.build:gradle:7.4.2') {
             exclude module: 'proguard-gradle'
         }
         classpath "org.jacoco:org.jacoco.core:$jacocoVersion"
@@ -39,20 +42,20 @@ buildscript {
         classpath("org.jfrog.buildinfo:build-info-extractor-gradle:4.18.2") {
             exclude group: 'org.codehaus.groovy', module: 'groovy-all'
         }
-        classpath 'com.google.firebase:perf-plugin:1.4.0'
-        classpath "com.google.gms:google-services:4.3.3"
+        classpath 'com.google.firebase:perf-plugin:1.4.2'
+        classpath 'com.google.gms:google-services:4.3.15'
         classpath rootProject.ext.gradlePlugin.crashlytics
         classpath "com.vanniktech:gradle-code-quality-tools-plugin:0.17.0"
         classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.7.1"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
-        classpath 'com.tokopedia.patch:preprocessor:2.0.9'
-        classpath 'com.tokopedia.patch:core:1.0.0'
         classpath 'org.javassist:javassist:3.20.0-GA'
-        classpath "androidx.benchmark:benchmark-gradle-plugin:1.0.0"
-        classpath "androidx.navigation:navigation-safe-args-gradle-plugin:2.3.5"
+        classpath "androidx.benchmark:benchmark-gradle-plugin:1.1.1"
+        classpath "androidx.navigation:navigation-safe-args-gradle-plugin:2.5.3"
         classpath "com.newrelic.agent.android:agent-gradle-plugin:$newRelicVersion"
         classpath "com.gradle:gradle-enterprise-gradle-plugin:3.6.3"
         classpath "gradle.plugin.org.gradle.android:android-cache-fix-gradle-plugin:2.4.4"
+        classpath "org.jetbrains.dokka:dokka-gradle-plugin:1.7.20"
+        classpath "org.jetbrains.dokka:dokka-core:1.7.20"
     }
 }
 
@@ -64,7 +67,6 @@ if (hasProperty('buildScan')) {
 }
 
 apply from: 'buildproj.gradle'
-
 apply from: "$rootDir/tools/set_debug_tools.gradle"
 
 //Installing Git Hooks
@@ -76,3 +78,84 @@ task installGitHooks {
 }
 clean.dependsOn installGitHooks
 
+// --- Dokka ---
+
+apply plugin: "org.jetbrains.dokka"
+
+/**
+ * Override the default value of Dokka styles.
+ *
+ * BaseConfiguration to generate a dokka properties to able to override through [pluginsMapConfiguration],
+ * it used for a multiModuleTask and dokkaPartialTask.
+ *
+ * @return String
+ */
+String generateBaseConfiguration() {
+    String footer = new File("$rootDir/docs/internal/footer.txt")
+            .readLines()
+            .join(" ")
+            .trim()
+            .toString()
+
+    return """
+        {
+            "customStyleSheets": ["${file("$rootDir/docs/internal/css/logo-styles.css")}"],
+            "templatesDir": "${file("$rootDir/docs/internal/templates")}",
+            "separateInheritedMembers": true,
+            "footerMessage": "$footer"
+        }
+    """
+}
+
+// root module
+tasks.withType(DokkaMultiModuleTask).configureEach {
+    failOnWarning.set(true)
+    outputDirectory.set(rootProject.file('docs'))
+    pluginsMapConfiguration.set(
+            ["org.jetbrains.dokka.base.DokkaBase": generateBaseConfiguration()]
+    )
+}
+
+// root module
+tasks.withType(DokkaMultiModuleTask) {
+    // Append the default main.css with a custom style.css
+    // The style.css contains a custom css style for Tokopedia footer message
+    doLast {
+        project.file("$rootDir/docs/styles/main.css").append(
+                project.file("$rootDir/docs/internal/css/style.css").text
+        )
+    }
+}
+
+// sub module
+subprojects {
+    tasks.withType(DokkaTaskPartial.class) {
+        pluginsMapConfiguration.set(
+                ["org.jetbrains.dokka.base.DokkaBase": generateBaseConfiguration()]
+        )
+
+        dokkaSourceSets.configureEach {
+            perPackageOption {
+                matchingRegex.set(".*internal.*")
+                suppress.set(true)
+            }
+
+            reportUndocumented.set(true)
+            skipEmptyPackages.set(true)
+            skipDeprecated.set(true)
+
+            // Add Android SDK packages
+            noAndroidSdkLink.set(false)
+
+            // AndroidX + Kotlin docs
+            externalDocumentationLink {
+                url.set(new URL("https://developer.android.com/reference/"))
+                packageListUrl.set(new URL("https://developer.android.com/reference/androidx/package-list"))
+            }
+            externalDocumentationLink {
+                url.set(new URL("https://developer.android.com/reference/kotlin/"))
+                packageListUrl.set(new URL("https://developer.android.com/reference/kotlin/androidx/package-list"))
+            }
+        }
+    }
+}

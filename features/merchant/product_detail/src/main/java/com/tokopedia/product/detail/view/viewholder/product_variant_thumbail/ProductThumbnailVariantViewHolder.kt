@@ -42,14 +42,13 @@ class ProductThumbnailVariantViewHolder(
     }
     private val layoutManager = LinearLayoutManager(view.context, RecyclerView.HORIZONTAL, false)
 
-    private val emptyVariantData = VariantOptionWithAttribute()
+    private val emptyVariantData = VariantOptionWithAttribute.EMPTY
 
     init {
         with(binding) {
             thumbVariantList.adapter = containerAdapter
             thumbVariantList.itemAnimator = null
             thumbVariantList.layoutManager = layoutManager
-            thumbVariantList.setRecycledViewPool(pdpListener.getParentRecyclerViewPool())
         }
     }
 
@@ -62,7 +61,7 @@ class ProductThumbnailVariantViewHolder(
     }
 
     override fun bind(element: ProductSingleVariantDataModel) {
-        binding.setTitle()
+        binding.thumbVariantTitle.text = element.title
         binding.setThumbnailItems(element = element)
         setOnClick()
         setImpression(element = element)
@@ -70,12 +69,9 @@ class ProductThumbnailVariantViewHolder(
 
     override fun bind(element: ProductSingleVariantDataModel, payloads: MutableList<Any>) {
         if (payloads.isNotEmpty()) {
+            binding.thumbVariantTitle.text = element.title
             binding.setThumbnailItems(element = element)
         }
-    }
-
-    private fun ItemThumbnailVariantViewHolderBinding.setTitle() {
-        thumbVariantTitle.text = pdpListener.getVariantString()
     }
 
     private fun setOnClick() {

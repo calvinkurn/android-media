@@ -58,7 +58,7 @@ object ShareAddressAnalytics : BaseTrackerConst() {
         action: String,
         category: String,
         label: String,
-        trackerId: String,
+        trackerId: String
     ) {
         Tracker.Builder()
             .setEvent(EVENT_CLICK_LOGISTIC)
@@ -153,6 +153,42 @@ object ShareAddressAnalytics : BaseTrackerConst() {
         )
     }
 
+    fun directShareAgreeSendAddress(isSuccess: Boolean) {
+        sendTracker(
+            action = ACTION_DIRECT_SHARE_AGREE_TO_SEND_ADDRESS,
+            category = CATEGORY_CONSENT_BOTTOM_SHEET,
+            label = if (isSuccess) LABEL_SUCCESS else LABEL_NOT_SUCCESS,
+            trackerId = TRACKER_ID_DIRECT_SHARE_AGREE_TO_SEND_ADDRESS
+        )
+    }
+
+    fun directShareDisagreeSendAddress() {
+        sendTracker(
+            action = ACTION_DIRECT_SHARE_DISAGREE_TO_SEND_ADDRESS,
+            category = CATEGORY_CONSENT_BOTTOM_SHEET,
+            label = "",
+            trackerId = TRACKER_ID_DIRECT_SHARE_DISAGREE_TO_SEND_ADDRESS
+        )
+    }
+
+    fun fromNotifAgreeSendAddress(isSuccess: Boolean) {
+        sendTracker(
+            action = ACTION_AGREE_TO_SEND_ADDRESS,
+            category = CATEGORY_CONSENT_BOTTOM_SHEET,
+            label = if (isSuccess) LABEL_SUCCESS else LABEL_NOT_SUCCESS,
+            trackerId = TRACKER_ID_AGREE_TO_SEND_ADDRESS
+        )
+    }
+
+    fun fromNotifDisagreeSendAddress(isSuccess: Boolean) {
+        sendTracker(
+            action = ACTION_DISAGREE_TO_SEND_ADDRESS,
+            category = CATEGORY_CONSENT_BOTTOM_SHEET,
+            label = if (isSuccess) LABEL_SUCCESS else LABEL_NOT_SUCCESS,
+            trackerId = TRACKER_ID_DISAGREE_TO_SEND_ADDRESS
+        )
+    }
+
     fun onAgreeSendAddress(isDirectShare: Boolean, isSuccess: Boolean = false) {
         if (isDirectShare) {
             sendTracker(
@@ -167,24 +203,6 @@ object ShareAddressAnalytics : BaseTrackerConst() {
                 category = CATEGORY_CONSENT_BOTTOM_SHEET,
                 label = if (isSuccess) LABEL_SUCCESS else LABEL_NOT_SUCCESS,
                 trackerId = TRACKER_ID_AGREE_TO_SEND_ADDRESS
-            )
-        }
-    }
-
-    fun onDisagreeSendAddress(isDirectShare: Boolean, isSuccess: Boolean = false) {
-        if (isDirectShare) {
-            sendTracker(
-                action = ACTION_DIRECT_SHARE_DISAGREE_TO_SEND_ADDRESS,
-                category = CATEGORY_CONSENT_BOTTOM_SHEET,
-                label = "",
-                trackerId = TRACKER_ID_DIRECT_SHARE_DISAGREE_TO_SEND_ADDRESS
-            )
-        } else {
-            sendTracker(
-                action = ACTION_DISAGREE_TO_SEND_ADDRESS,
-                category = CATEGORY_CONSENT_BOTTOM_SHEET,
-                label = if (isSuccess) LABEL_SUCCESS else LABEL_NOT_SUCCESS,
-                trackerId = TRACKER_ID_DISAGREE_TO_SEND_ADDRESS
             )
         }
     }

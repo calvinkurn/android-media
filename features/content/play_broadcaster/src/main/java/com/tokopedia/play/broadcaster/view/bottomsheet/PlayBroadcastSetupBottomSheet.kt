@@ -75,9 +75,6 @@ class PlayBroadcastSetupBottomSheet :
     private var mListener: Listener? = null
     private var mDataSource: DataSource? = null
 
-    private val currentFragment: Fragment?
-        get() = childFragmentManager.findFragmentById(R.id.fl_fragment)
-
     private val pageNavigator: FragmentPageNavigator by lifecycleBound(
         creator = {
             FragmentPageNavigator(
@@ -129,7 +126,13 @@ class PlayBroadcastSetupBottomSheet :
         mListener = null
     }
 
-    override fun <T : Fragment> navigateToFragment(fragmentClass: Class<out T>, extras: Bundle, sharedElements: List<View>, onFragment: (T) -> Unit) {
+    override fun <T : Fragment> navigateToFragment(
+        fragmentClass: Class<out T>,
+        extras: Bundle,
+        sharedElements: List<View>,
+        onFragment: (T) -> Unit,
+        isAddToBackStack: Boolean
+    ) {
         openFragment(fragmentClass, extras, sharedElements)
     }
 

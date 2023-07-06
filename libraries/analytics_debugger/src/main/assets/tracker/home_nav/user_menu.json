@@ -1,0 +1,16 @@
+{
+  "readme": "Home Nav click user menu",
+  "mode": "exact",
+  "query": [
+    {
+      "event": "clickHomepage",
+      "eventAction": "click on .*",
+      "eventCategory": "global menu",
+      "eventLabel": ".*",
+      "businessUnit": "home & browse",
+      "currentSite": "tokopediamarketplace",
+      "userId": ".*",
+      "sessionIris": ".*"
+    }
+  ]
+}

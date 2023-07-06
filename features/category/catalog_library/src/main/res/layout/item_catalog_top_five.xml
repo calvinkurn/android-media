@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.CardUnify2 xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/catalog_top_five_layout"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_margin="4dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="148dp">
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/catalog_top_five_product_image"
+            android:layout_width="104dp"
+            android:layout_height="104dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:unify_image_corner_radius="0"
+            android:scaleType="fitCenter"
+            app:unify_image_type="rect" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/catalog_top_five_product_title"
+            android:layout_width="104dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="8dp"
+            android:layout_marginBottom="8dp"
+            android:ellipsize="end"
+            android:maxLines="2"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/catalog_top_five_product_image"
+            app:typographyType="paragraph_3"
+            app:typographyWeight="bold"
+            tools:text="Product NameProduct NameProduct Name" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/catalog_top_five_rank"
+        android:layout_width="30dp"
+        android:layout_height="20dp"
+        android:background="@drawable/catalog_rank_tag_bg"
+        android:gravity="center"
+        android:textColor="@color/Unify_Static_White"
+        app:typographyType="small"
+        app:typographyWeight="bold"
+        tools:text="#1" />
+
+</com.tokopedia.unifycomponents.CardUnify2>

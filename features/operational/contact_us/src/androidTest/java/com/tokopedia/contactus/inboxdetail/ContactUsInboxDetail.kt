@@ -2,7 +2,6 @@ package com.tokopedia.contactus.inboxdetail
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.core.view.size
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.platform.app.InstrumentationRegistry
@@ -17,15 +16,7 @@ import com.tokopedia.contactus.inboxdetail.di.FakeGraphqlRepositoryInboxDetail.T
 import com.tokopedia.contactus.inboxtickets.view.activity.ContactUsProvideRatingActivity
 import com.tokopedia.contactus.inboxtickets.view.inboxdetail.InboxDetailActivity
 import com.tokopedia.contactus.inboxtickets.view.inboxdetail.InboxDetailActivity.Companion.BUNDLE_ID_TICKET
-import com.tokopedia.contactus.utils.InstrumentedTestUtil.clickOnPosition
-import com.tokopedia.contactus.utils.InstrumentedTestUtil.scrollRecyclerViewToPosition
-import com.tokopedia.contactus.utils.InstrumentedTestUtil.isGoneView
-import com.tokopedia.contactus.utils.InstrumentedTestUtil.isTextDisplayed
-import com.tokopedia.contactus.utils.InstrumentedTestUtil.isTextShowedInItemPosition
-import com.tokopedia.contactus.utils.InstrumentedTestUtil.isViewGoneInItemPosition
-import com.tokopedia.contactus.utils.InstrumentedTestUtil.isViewVisibleInItemPosition
-import com.tokopedia.contactus.utils.InstrumentedTestUtil.isVisible
-import com.tokopedia.contactus.utils.InstrumentedTestUtil.performClick
+import com.tokopedia.contactus.initRulePage
 import com.tokopedia.contactus.utils.InstrumentedTestUtil.viewChildPerformClick
 import com.tokopedia.contactus.utils.InstrumentedTestUtil.isShowToaster
 import com.tokopedia.test.application.annotations.UiTest
@@ -71,167 +62,254 @@ class ContactUsInboxDetail {
 
     @Test
     fun ticketIsOnProgress_layoutReplayIsVisible() {
-        mActivityTestRule.launchActivity(intent)
-        isVisible(R.id.rv_message_list)
-        isVisible(R.id.layout_replay_message)
+        initRulePage {
+            fakeGqlRepository.setTypeOfTicket(ON_PROGRESS)
+        }.launchPage {
+            launchDetailInboxPage(mActivityTestRule, intent)
+        }.verify {
+            R.id.rv_message_list.isVisible()
+            R.id.layout_replay_message.isVisible()
+        }
     }
 
     @Test
     fun agentReplayChat_ButtonReplayVisible() {
-        fakeGqlRepository.setTypeOfTicket(ON_PROGRESS_NEED_TO_REPLAY)
-        mActivityTestRule.launchActivity(intent)
-        val recyclerView =
-            mActivityTestRule.activity.findViewById<RecyclerView>(R.id.rv_message_list)
-        isVisible(R.id.rv_message_list)
-        isVisible(R.id.layout_replay_message)
-        val lastIndex = recyclerView.size - 1
-        recyclerView.clickOnPosition(lastIndex)
-        recyclerView.isViewVisibleInItemPosition(lastIndex, R.id.iv_csast_status_bad)
-        recyclerView.isTextShowedInItemPosition(lastIndex, R.id.tv_name, "Tim Tokopedia Care")
-        isVisible(R.id.view_rply_botton_before_csat_rating)
+        var lastPosition = 0
+        var recyclerView : RecyclerView? = null
+        initRulePage {
+            fakeGqlRepository.setTypeOfTicket(ON_PROGRESS_NEED_TO_REPLAY)
+        }.launchPage {
+            launchDetailInboxPage(mActivityTestRule, intent)
+        }.doing {
+            recyclerView = findRecyclerViewWithId(R.id.rv_message_list, onActivityRule = mActivityTestRule)
+            lastPosition = recyclerView.getSize() - 1
+            recyclerView.clickOnPosition(lastPosition)
+        }.verify {
+            R.id.iv_csast_status_bad.isVisibleInPosition(lastPosition, onRecyclerView = recyclerView)
+            R.id.tv_name.isTextShowedInPosition(lastPosition, withText = "Tim Tokopedia Care", onRecyclerView = recyclerView)
+            R.id.view_rply_botton_before_csat_rating.isVisible()
+        }
     }
 
     @Test
     fun ticketIsOnClosed_cannotClickReplayOrRating() {
-        fakeGqlRepository.setTypeOfTicket(CLOSE)
-        mActivityTestRule.launchActivity(intent)
-        isVisible(R.id.rv_message_list)
-        isVisible(R.id.view_link_bottom)
-        isGoneView(R.id.layout_replay_message)
-        isGoneView(R.id.view_help_rate)
+        initRulePage {
+            fakeGqlRepository.setTypeOfTicket(CLOSE)
+        }.launchPage {
+            launchDetailInboxPage(mActivityTestRule, intent)
+        }.verify {
+            R.id.rv_message_list.isVisible()
+            R.id.view_link_bottom.isVisible()
+            R.id.layout_replay_message.isGone()
+            R.id.view_help_rate.isGone()
+        }
     }
 
     @Test
     fun ticketIsNeedRating_viewReplayIsGoneAndViewHelpRateVisible() {
-        fakeGqlRepository.setTypeOfTicket(NEED_RATING)
-        mActivityTestRule.launchActivity(intent)
-        isVisible(R.id.rv_message_list)
-        isVisible(R.id.view_help_rate)
-        isGoneView(R.id.layout_replay_message)
+        initRulePage {
+            fakeGqlRepository.setTypeOfTicket(NEED_RATING)
+        }.launchPage {
+            launchDetailInboxPage(mActivityTestRule, intent)
+        }.verify {
+            R.id.rv_message_list.isVisible()
+            R.id.view_help_rate.isVisible()
+            R.id.layout_replay_message.isGone()
+        }
     }
 
     @Test
     fun failedGetDetailTicket_showToasterError() {
-        fakeGqlRepository.setResponseTypeNotHappy(true)
-        mActivityTestRule.launchActivity(Intent())
-        isGoneView(R.id.rv_message_list)
-        isShowToaster("Something went wrong")
+        initRulePage {
+            fakeGqlRepository.setResponseTypeNotHappy(true)
+        }.launchPage {
+            launchDetailInboxPage(mActivityTestRule, Intent())
+        }.verify {
+            R.id.rv_message_list.isGone()
+        }
     }
 
     @Test
     fun sendNegativeCSATPerReplaySuccess_showOnlyThumbDownOnLastReplay() {
-        fakeGqlRepository.setTypeOfTicket(ON_PROGRESS_NEED_TO_REPLAY)
-        mActivityTestRule.launchActivity(intent)
-        val recyclerView =
-            mActivityTestRule.activity.findViewById<RecyclerView>(R.id.rv_message_list)
-        isVisible(R.id.rv_message_list)
-        isVisible(R.id.layout_replay_message)
-        isVisible(R.id.view_rply_botton_before_csat_rating)
-        performClick(R.id.tv_reply_button)
-        isVisible(R.id.tv_no_button)
-        isVisible(R.id.tv_yes_button)
-        performClick(R.id.tv_no_button)
-        val lastIndex = recyclerView.size - 1
-        mActivityTestRule.scrollRecyclerViewToPosition(recyclerView, lastIndex)
-        recyclerView.isViewVisibleInItemPosition(lastIndex, R.id.iv_csast_status_bad)
-        recyclerView.isViewGoneInItemPosition(lastIndex, R.id.iv_csast_status_good)
+        var lastItem = 0
+        var recyclerView : RecyclerView? = null
+        initRulePage {
+            fakeGqlRepository.setTypeOfTicket(ON_PROGRESS_NEED_TO_REPLAY)
+        }.launchPage {
+            launchDetailInboxPage(mActivityTestRule, intent)
+        }.doing {
+            recyclerView = findRecyclerViewWithId(R.id.rv_message_list, onActivityRule = mActivityTestRule)
+        }.verify {
+            R.id.rv_message_list.isVisible()
+            R.id.layout_replay_message.isVisible()
+            R.id.view_rply_botton_before_csat_rating.isVisible()
+        }.doing {
+            click(R.id.tv_reply_button)
+        }.verify {
+            R.id.tv_no_button.isVisible()
+            R.id.tv_yes_button.isVisible()
+        }.doing {
+            click(R.id.tv_no_button)
+            lastItem = recyclerView.getSize() - 1
+            recyclerView.scrollToPosition(lastItem, mActivityTestRule)
+        }.verify {
+            recyclerView.isHaveView(R.id.iv_csast_status_bad, onPosition = lastItem)
+            recyclerView.isNotHaveView(R.id.iv_csast_status_good, onPosition = lastItem)
+        }
     }
 
     @Test
     fun sendPositiveCSATPerReplaySuccess_showCloseTicketDialog() {
-        fakeGqlRepository.setTypeOfTicket(ON_PROGRESS_NEED_TO_REPLAY)
-        mActivityTestRule.launchActivity(intent)
-        isVisible(R.id.rv_message_list)
-        isVisible(R.id.layout_replay_message)
-        isVisible(R.id.view_rply_botton_before_csat_rating)
-        performClick(R.id.tv_reply_button)
-        isVisible(R.id.tv_no_button)
-        isVisible(R.id.tv_yes_button)
-        performClick(R.id.tv_yes_button)
-        isTextDisplayed("Tutup komplain ini?")
-        isVisible(R.id.tv_no_button)
-        isVisible(R.id.tv_yes_button)
+        initRulePage {
+            fakeGqlRepository.setTypeOfTicket(ON_PROGRESS_NEED_TO_REPLAY)
+        }.launchPage {
+            launchDetailInboxPage(mActivityTestRule, intent)
+        }.verify {
+            R.id.rv_message_list.isVisible()
+            R.id.layout_replay_message.isVisible()
+            R.id.view_rply_botton_before_csat_rating.isVisible()
+        }.doing {
+            click(R.id.tv_reply_button)
+        }.verify {
+            R.id.tv_no_button.isVisible()
+            R.id.tv_yes_button.isVisible()
+        }.doing {
+            click(R.id.tv_yes_button)
+        }.verify {
+            "Tutup komplain ini?".isVisible()
+            R.id.tv_no_button.isVisible()
+            R.id.tv_yes_button.isVisible()
+        }
     }
 
     @Test
     fun failedSendCSATPerReplay_showToasErrorMessage() {
-        fakeGqlRepository.setTypeOfTicket(ON_PROGRESS_NEED_TO_REPLAY)
-        mActivityTestRule.launchActivity(intent)
-        isVisible(R.id.rv_message_list)
-        isVisible(R.id.layout_replay_message)
-        isVisible(R.id.view_rply_botton_before_csat_rating)
-        performClick(R.id.tv_reply_button)
-        isVisible(R.id.tv_no_button)
-        isVisible(R.id.tv_yes_button)
-        fakeGqlRepository.setResponseTypeNotHappy(true)
-        performClick(R.id.tv_no_button)
-        isShowToaster("Failed to send Rating")
+        initRulePage {
+            fakeGqlRepository.setTypeOfTicket(ON_PROGRESS_NEED_TO_REPLAY)
+        }.launchPage {
+            launchDetailInboxPage(mActivityTestRule, intent)
+        }.verify {
+            R.id.rv_message_list.isVisible()
+            R.id.layout_replay_message.isVisible()
+            R.id.view_rply_botton_before_csat_rating.isVisible()
+        }.doing {
+            click(R.id.tv_reply_button)
+        }.verify {
+            R.id.tv_no_button.isVisible()
+            R.id.tv_yes_button.isVisible()
+        }.doing {
+            fakeGqlRepository.setResponseTypeNotHappy(true)
+            click(R.id.tv_no_button)
+        }.verify {
+            isShowToaster("Failed to send Rating")
+        }
     }
 
     @Test
     fun failedToCloseTicket_shownErrorMessage() {
-        fakeGqlRepository.setTypeOfTicket(ON_PROGRESS_NEED_TO_REPLAY)
-        mActivityTestRule.launchActivity(intent)
-        isVisible(R.id.rv_message_list)
-        isVisible(R.id.layout_replay_message)
-        isVisible(R.id.view_rply_botton_before_csat_rating)
-        performClick(R.id.tv_reply_button)
-        isVisible(R.id.tv_no_button)
-        isVisible(R.id.tv_yes_button)
-        performClick(R.id.tv_yes_button)
-        isVisible(R.id.tv_no_button)
-        isVisible(R.id.tv_yes_button)
-        fakeGqlRepository.setResponseTypeNotHappy(true)
-        performClick(R.id.tv_yes_button)
-        isShowToaster("Failed close user")
+        initRulePage {
+            fakeGqlRepository.setTypeOfTicket(ON_PROGRESS_NEED_TO_REPLAY)
+        }.launchPage {
+            launchDetailInboxPage(mActivityTestRule, intent)
+        }.verify {
+            R.id.rv_message_list.isVisible()
+            R.id.layout_replay_message.isVisible()
+            R.id.view_rply_botton_before_csat_rating.isVisible()
+        }.doing {
+            click(R.id.tv_reply_button)
+        }.verify {
+            R.id.tv_no_button.isVisible()
+            R.id.tv_yes_button.isVisible()
+        }.doing {
+            click(R.id.tv_yes_button)
+        }.verify {
+            R.id.tv_no_button.isVisible()
+            R.id.tv_yes_button.isVisible()
+        }.doing {
+            fakeGqlRepository.setResponseTypeNotHappy(true)
+            click(R.id.tv_yes_button)
+        }.verify {
+            isShowToaster("Failed close user")
+        }
     }
 
     @Test
     fun successfulCloseAndCSATTicket_helpRateAndReplayViewAreGone() {
-        fakeGqlRepository.setTypeOfTicket(ON_PROGRESS_NEED_TO_REPLAY)
-        mActivityTestRule.launchActivity(intent)
-        isVisible(R.id.rv_message_list)
-        isVisible(R.id.layout_replay_message)
-        isVisible(R.id.view_rply_botton_before_csat_rating)
-        performClick(R.id.tv_reply_button)
-        isVisible(R.id.tv_no_button)
-        isVisible(R.id.tv_yes_button)
-        performClick(R.id.tv_yes_button)
-        isVisible(R.id.tv_no_button)
-        isVisible(R.id.tv_yes_button)
-        performClick(R.id.tv_yes_button)
-        isVisible(R.id.smile_layout)
-        viewChildPerformClick(R.id.smile_layout, 2)
-        isTextDisplayed("Apa yang bisa ditingkatkan dari layanan kami?")
-        isVisible(R.id.filter_review)
-        viewChildPerformClick(R.id.rv_filter, 0)
-        performClick(R.id.txt_finished)
-        isVisible(R.id.view_link_bottom)
-        isGoneView(R.id.layout_replay_message)
-        isGoneView(R.id.view_help_rate)
+        initRulePage {
+            fakeGqlRepository.setTypeOfTicket(ON_PROGRESS_NEED_TO_REPLAY)
+        }.launchPage {
+            launchDetailInboxPage(mActivityTestRule, intent)
+        }.verify {
+            R.id.rv_message_list.isVisible()
+            R.id.layout_replay_message.isVisible()
+            R.id.view_rply_botton_before_csat_rating.isVisible()
+        }.doing {
+            click(R.id.tv_reply_button)
+        }.verify {
+            R.id.tv_no_button.isVisible()
+            R.id.tv_yes_button.isVisible()
+        }.doing {
+            click(R.id.tv_yes_button)
+        }.verify {
+            R.id.tv_no_button.isVisible()
+            R.id.tv_yes_button.isVisible()
+        }.doing {
+            click(R.id.tv_yes_button)
+        }.verify {
+            R.id.smile_layout.isVisible()
+        }.doing {
+            viewChildPerformClick(R.id.smile_layout, 2)
+        }.verify {
+            "Apa yang bisa ditingkatkan dari layanan kami?".isVisible()
+            R.id.filter_review.isVisible()
+        }.doing {
+            viewChildPerformClick(R.id.rv_filter, 0)
+            click(R.id.txt_finished)
+        }.verify {
+            R.id.view_link_bottom.isVisible()
+            R.id.layout_replay_message.isGone()
+            R.id.view_help_rate.isGone()
+        }
     }
 
     @Test
-    fun closeTicketAreSuccessButCSATSendFailed_shownErrorMessage() {
-        fakeGqlRepository.setTypeOfTicket(ON_PROGRESS_NEED_TO_REPLAY)
-        mActivityTestRule.launchActivity(intent)
-        isVisible(R.id.rv_message_list)
-        isVisible(R.id.layout_replay_message)
-        isVisible(R.id.view_rply_botton_before_csat_rating)
-        performClick(R.id.tv_reply_button)
-        isVisible(R.id.tv_no_button)
-        isVisible(R.id.tv_yes_button)
-        performClick(R.id.tv_yes_button)
-        isVisible(R.id.tv_no_button)
-        isVisible(R.id.tv_yes_button)
-        performClick(R.id.tv_yes_button)
-        isVisible(R.id.smile_layout)
-        viewChildPerformClick(R.id.smile_layout, 2)
-        isTextDisplayed("Apa yang bisa ditingkatkan dari layanan kami?")
-        isVisible(R.id.filter_review)
-        viewChildPerformClick(R.id.rv_filter, 0)
-        fakeGqlRepository.setResponseTypeNotHappy(true)
-        performClick(R.id.txt_finished)
-        isShowToaster("Failed to send Rating")
+    fun closeTicketAreSuccessButCSATSendFailed_stillShownReplayBox() {
+        initRulePage {
+            fakeGqlRepository.setTypeOfTicket(ON_PROGRESS_NEED_TO_REPLAY)
+        }.launchPage {
+            launchDetailInboxPage(mActivityTestRule, intent)
+        }.verify {
+            R.id.rv_message_list.isVisible()
+            R.id.layout_replay_message.isVisible()
+            R.id.view_rply_botton_before_csat_rating.isVisible()
+        }.doing {
+            click(R.id.tv_reply_button)
+        }.verify {
+            R.id.tv_no_button.isVisible()
+            R.id.tv_yes_button.isVisible()
+        }.doing {
+            click(R.id.tv_yes_button)
+        }.verify {
+            R.id.tv_no_button.isVisible()
+            R.id.tv_yes_button.isVisible()
+        }.doing {
+            click(R.id.tv_yes_button)
+        }.verify {
+            R.id.smile_layout.isVisible()
+        }.doing {
+            viewChildPerformClick(R.id.smile_layout, 2)
+        }.verify {
+            "Apa yang bisa ditingkatkan dari layanan kami?".isVisible()
+            R.id.filter_review.isVisible()
+        }.doing {
+            viewChildPerformClick(R.id.rv_filter, 0)
+            fakeGqlRepository.setResponseTypeNotHappy(true)
+            click(R.id.txt_finished)
+            waitForData(200)
+        }.verify {
+            R.id.iv_send_button.isVisible()
+            R.id.ed_message.isVisible()
+            R.id.iv_upload_img.isVisible()
+        }
     }
 }

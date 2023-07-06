@@ -214,6 +214,8 @@ object ShopPageTrackingConstant {
     const val LABEL_SHOP_DECOR_CLICK = "click - shop decor"
     const val IMPRESSION_SHOP_BANNER_LABEL = "impression - shop banner - campaign tab - %1s - %2s"
     const val CLICK_SHOP_BANNER_LABEL = "click - shop banner - campaign tab - %1s - %2s"
+    const val CLICK_SHARE_REGULER = "general"
+    const val CLICK_SHARE_AFFILIATE_ICON = "affiliate"
 
     // key
     const val EVENT = "event"
@@ -328,12 +330,15 @@ object ShopPageTrackingConstant {
     const val VALUE_STRING_ZERO = "0"
     const val VALUE_SHOP_PAGE_THEMATIC = "/shoppagethematic"
     const val ITEM_LIST_PERSO_TRENDING_WIDGET = "/shoppage - trending"
+    const val ITEM_LIST_PERSO_PRODUCT_COMPARISON = "/shoppage - comparison"
     const val VALUE_MULTIPLE_BUNDLING = "multiple bundling"
     const val VALUE_SINGLE_BUNDLING = "single bundling"
     const val SHOP_AFFILIATE = "affiliate"
     const val SHOP_NOT_AFFILIATE = "not affiliate"
     const val FESTIVITY = "festivity"
     const val NULL_VALUE = "null"
+    const val CLICK_SHOP_HEADER = "click shop header"
+    const val CLICK_SELLER = "click - seller"
 
     // trackerId
     const val TRACKER_ID_CLICK_SHARE_BUTTON = "10544"
@@ -396,7 +401,8 @@ object ShopPageTrackingConstant {
         const val CAMPAIGN_WIDGET_CLICK_BANNER = "click banner widget campaign"
         const val ALL_PRODUCT_CLICKED = "click product"
         const val ALL_PRODUCT_IMPRESSION = "product list impression"
-
+        const val IMPRESSION_PERSO_PRODUCT_COMPARISON = "product list impression - home - comparison"
+        const val CLICK_PERSO_PRODUCT_COMPARISON = "click product - home - comparison"
     }
 
     object EventCategory {
@@ -437,6 +443,10 @@ object ShopPageTrackingConstant {
         const val TRACKER_ID_IMPRESSION_MULTIPLE_BUNDLING_WIDGET = "25639"
         const val TRACKER_ID_IMPRESSION_SINGLE_BUNDLING_WIDGET = "25641"
         const val TRACKER_CLICK_SINGLE_BUNDLING_WIDGET_PACKAGE_VARIANT = "25642"
+        const val TRACKER_ID_CLICK_SHOP_NAME_ON_HEADER_AS_BUYER = "8055"
+        const val TRACKER_ID_CLICK_SHOP_NAME_ON_HEADER_AS_SELLER = "8100"
+        const val TRACKER_ID_IMPRESSION_SHOP_PERSO_PRODUCT_COMPARISON = "43123"
+        const val TRACKER_ID_CLICK_SHOP_PERSO_PRODUCT_COMPARISON = "43124"
 
     }
 

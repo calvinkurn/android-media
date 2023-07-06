@@ -13,5 +13,5 @@ data class CustomOrderDetail(
         var customListItems: List<CustomListItem> = listOf()
 ) : Parcelable {
     @IgnoredOnParcel
-    val orderNote = customListItems.firstOrNull() { it.orderNote.isNotBlank() }?.orderNote ?: ""
+    val orderNote = customListItems.firstOrNull { it.orderNote.isNotBlank() }?.orderNote ?: ""
 }

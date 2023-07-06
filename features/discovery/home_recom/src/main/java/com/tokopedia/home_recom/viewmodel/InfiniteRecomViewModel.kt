@@ -23,6 +23,8 @@ import com.tokopedia.minicart.common.domain.data.getMiniCartItemProduct
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.recommendation_widget_common.affiliate.RecommendationNowAffiliate
+import com.tokopedia.recommendation_widget_common.affiliate.RecommendationNowAffiliateData
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
@@ -44,6 +46,7 @@ class InfiniteRecomViewModel @Inject constructor(
         private val miniCartListSimplifiedUseCase: Lazy<GetMiniCartListSimplifiedUseCase>,
         private val updateCartUseCase: Lazy<UpdateCartUseCase>,
         private val deleteCartUseCase: Lazy<DeleteCartUseCase>,
+        private val recommendationNowAffiliate: RecommendationNowAffiliate,
         private val dispatcher: RecommendationDispatcher
 ) : BaseViewModel(dispatcher.getMainDispatcher()) {
 
@@ -176,7 +179,11 @@ class InfiniteRecomViewModel @Inject constructor(
             _minicartError.postValue(it)
         }
     }
-    fun onAtcRecomNonVariantQuantityChanged(recomItem: RecommendationItem, quantity: Int) {
+    fun onAtcRecomNonVariantQuantityChanged(
+        recomItem: RecommendationItem,
+        quantity: Int,
+        affiliateTrackerId: String,
+    ) {
         if (!userSessionInterface.isLoggedIn) {
             _atcRecomTokonowNonLogin.value = recomItem
         } else {
@@ -185,9 +192,9 @@ class InfiniteRecomViewModel @Inject constructor(
             if (quantity == 0) {
                 deleteRecomItemFromCart(recomItem, miniCartItem)
             } else if (recomItem.quantity == 0) {
-                atcRecomNonVariant(recomItem, quantity)
+                atcRecomNonVariant(recomItem, quantity, affiliateTrackerId)
             } else {
-                updateRecomCartNonVariant(recomItem, quantity, miniCartItem)
+                updateRecomCartNonVariant(recomItem, quantity, miniCartItem, affiliateTrackerId)
             }
         }
     }
@@ -214,7 +221,11 @@ class InfiniteRecomViewModel @Inject constructor(
         }
     }
 
-    fun atcRecomNonVariant(recomItem: RecommendationItem, quantity: Int) {
+    fun atcRecomNonVariant(
+        recomItem: RecommendationItem,
+        quantity: Int,
+        affiliateTrackerId: String,
+    ) {
         launchCatchError(block = {
             val param = AddToCartUseCase.getMinimumParams(
                     recomItem.productId.toString(),
@@ -229,6 +240,12 @@ class InfiniteRecomViewModel @Inject constructor(
                         ?: result.status), recomItem)
             } else {
                 recomItem.cartId = result.data.cartId
+                recommendationNowAffiliate.initCookieDirectATC(
+                    recommendationNowAffiliateData = RecommendationNowAffiliateData(
+                        affiliateTrackerId = affiliateTrackerId,
+                    ),
+                    recommendationItem = recomItem,
+                )
                 updateMiniCartAfterATCRecomTokonow(
                         message = result.data.message.first(),
                         isAtc = true,
@@ -239,7 +256,12 @@ class InfiniteRecomViewModel @Inject constructor(
         }
     }
 
-    fun updateRecomCartNonVariant(recomItem: RecommendationItem, quantity: Int, miniCartItem: MiniCartItem.MiniCartItemProduct?) {
+    fun updateRecomCartNonVariant(
+        recomItem: RecommendationItem,
+        quantity: Int,
+        miniCartItem: MiniCartItem.MiniCartItemProduct?,
+        affiliateTrackerId: String,
+    ) {
         launchCatchError(block = {
             miniCartItem?.let {
                 val copyOfMiniCartItem = UpdateCartRequest(cartId = it.cartId, quantity = quantity, notes = it.notes)
@@ -253,6 +275,12 @@ class InfiniteRecomViewModel @Inject constructor(
                     onFailedATCRecomTokonow(MessageErrorException(result.error.firstOrNull()
                             ?: ""), recomItem)
                 } else {
+                    recommendationNowAffiliate.initCookieDirectATC(
+                        recommendationNowAffiliateData = RecommendationNowAffiliateData(
+                            affiliateTrackerId = affiliateTrackerId,
+                        ),
+                        recommendationItem = recomItem,
+                    )
                     updateMiniCartAfterATCRecomTokonow(
                             message = result.data.message, recomItem = recomItem)
                 }
@@ -279,6 +307,15 @@ class InfiniteRecomViewModel @Inject constructor(
     private fun onFailedATCRecomTokonow(throwable: Throwable, recomItem: RecommendationItem) {
         _atcRecomTokonow.value = throwable.asFail()
         _atcRecomTokonowResetCard.value = recomItem
+    }
+
+    fun initCookieAffiliate(affiliateTrackerId: String) {
+        launchCatchError(
+            block = {
+                recommendationNowAffiliate.initCookie(affiliateTrackerId)
+            },
+            onError = {},
+        )
     }
 
 }

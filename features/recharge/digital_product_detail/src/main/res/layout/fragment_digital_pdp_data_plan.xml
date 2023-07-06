@@ -56,7 +56,8 @@
                             android:id="@+id/recharge_pdp_paket_data_omni_widget"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="16dp"
+                            android:layout_marginTop="12dp"
+                            app:layout_goneMarginTop="0dp"
                             android:visibility="gone"
                             app:layout_constraintTop_toBottomOf="@id/recharge_pdp_paket_data_recommendation_widget"
                             app:layout_constraintStart_toStartOf="parent"
@@ -71,6 +72,16 @@
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"/>
 
+                        <com.tokopedia.recharge_component.widget.MCCMVerticalFullWidget
+                            android:id="@+id/recharge_pdp_paket_data_promo_widget_vertical"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:visibility="gone"
+                            app:layout_constraintTop_toBottomOf="@id/recharge_pdp_paket_data_promo_widget"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            />
+
                         <com.tokopedia.sortfilter.SortFilter
                             android:id="@+id/sort_filter_paket_data"
                             android:layout_width="@dimen/unify_space_0"
@@ -79,7 +90,7 @@
                             android:layout_marginTop="@dimen/unify_space_12"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintTop_toBottomOf="@id/recharge_pdp_paket_data_promo_widget"
+                            app:layout_constraintTop_toBottomOf="@id/recharge_pdp_paket_data_promo_widget_vertical"
                             android:visibility="gone"
                             app:sort_filter_relationship="AND"
                             app:sort_filter_type="advanced"
@@ -97,16 +108,14 @@
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"/>
 
-
                         <com.tokopedia.globalerror.GlobalError
                             android:id="@+id/global_error_paket_data"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
                             android:visibility="gone"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintTop_toBottomOf="@+id/sort_filter_paket_data"
-                            app:layout_constraintBottom_toBottomOf="parent"
                             app:globalerrors_type="PAGE_NOT_FOUND"
                             />
 

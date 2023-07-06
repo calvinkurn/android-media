@@ -27,6 +27,7 @@
     <string name="title_shop_performance">Performa Toko</string>
     <string name="title_penalty_shop_score">Penalti</string>
     <string name="title_penalty_detail_shop_score">Detail Pelanggaran</string>
+    <string name="title_penalty_not_yet_deducted">Belum Berlangsung</string>
 
     <!-- Dynamic feature Product Add Edit -->
     <string name="label_title_add_product">Tambah Produk</string>
@@ -60,5 +61,8 @@
     <string name="review_gallery_title">Foto &amp; Video Pembeli</string>
     <string name="reputation_history_set_date">Atur Tanggal</string>
 
-    <string name="sp_seller_persona">Seller Persona</string>
+    <string name="seller_persona">Seller Persona</string>
+
+    <string name="centralized_promo_toolbar_title">Iklan dan Promosi</string>
+    <string name="centralized_promo_first_voucher_label">First Voucher</string>
 </resources>

@@ -1,0 +1,31 @@
+{
+  "chatListMessage": {
+    "list": [
+      {
+        "msgID": 2442425480,
+        "messageKey": "user-20807596~shop-2682314",
+        "attributes": {
+          "contact": {
+            "id": 2682314,
+            "role": "shop",
+            "domain": "vita-shopindo",
+            "name": "Natural Farm",
+            "shopStatus": 1,
+            "tag": "Penjual",
+            "thumbnail": "https://images.tokopedia.net/img/cache/215-square/shops-1/2018/10/2/2682314/2682314_1a3ad551-750c-4ae5-8cf6-815a56b1311d.jpg"
+          },
+          "lastReplyMessage": "CUMA HARI INI! Serbu Diskon hingga 70% dari Natura",
+          "lastReplyTimeStr": "1685332975563",
+          "readStatus": 1,
+          "unreads": 1,
+          "unreadsreply": 1,
+          "fraudStatus": 0,
+          "pinStatus": 0,
+          "isReplyByTopbot": false,
+          "label": "",
+          "labelIconURL": "https://images.tokopedia.net/img/topchat/icons/coupon.png"
+        }
+      }
+    ]
+  }
+}

@@ -2,8 +2,8 @@ package com.tokopedia.tokofood.feature.merchant.domain.model.response
 
 import android.annotation.SuppressLint
 import android.os.Parcelable
-import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.kotlin.extensions.view.ONE
 import kotlinx.parcelize.Parcelize
 
 data class GetMerchantDataResponse(
@@ -22,7 +22,12 @@ data class TokoFoodGetMerchantData(
         val filters: List<TokoFoodCategoryFilter>,
         @SerializedName("categories")
         val categories: List<TokoFoodCategoryCatalog>
-)
+) {
+    fun getProductsWithSameId(): List<String> {
+        return categories.flatMap { it.catalogs }.groupingBy { it.id }.eachCount()
+            .filter { it.value > Int.ONE }.keys.toList()
+    }
+}
 
 data class TokoFoodTickerDetail(
         @SerializedName("title")

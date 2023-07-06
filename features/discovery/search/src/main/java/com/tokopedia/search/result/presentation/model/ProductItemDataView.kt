@@ -3,6 +3,7 @@ package com.tokopedia.search.result.presentation.model
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.discovery.common.constants.SearchConstant.ProductCardLabel
+import com.tokopedia.kotlin.extensions.view.ifNullOrBlank
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.search.analytics.SearchTracking
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
@@ -73,6 +74,7 @@ class ProductItemDataView : ImpressHolder(), Visitable<ProductListTypeFactory>, 
     var keywordIntention: Int = DEFAULT_KEYWORD_INTENT
     var showButtonAtc: Boolean = false
     var parentId: String = DEFAULT_PARENT_ID
+    var isPortrait: Boolean = false
 
     override fun setWishlist(productID: String, isWishlisted: Boolean) {
         if (this.productID == productID) {
@@ -96,8 +98,9 @@ class ProductItemDataView : ImpressHolder(), Visitable<ProductListTypeFactory>, 
                 "category", categoryBreadcrumb,
                 "variant", "none / other",
                 "list", SearchTracking.getActionFieldString(isOrganicAds, topadsTag, componentId),
-                "position", position.toString(),
-                "dimension61", if (filterSortParams.isEmpty()) "none / other" else filterSortParams,
+                "index", position.toString(),
+                "dimension56", warehouseID.ifNullOrBlank { "0" },
+                "dimension61", filterSortParams.ifEmpty { "none / other" },
                 "dimension79", shopID,
                 "dimension81", getDimension81(),
                 "dimension83", getFreeOngkirDataLayer(),
@@ -125,9 +128,10 @@ class ProductItemDataView : ImpressHolder(), Visitable<ProductListTypeFactory>, 
             "category", categoryBreadcrumb,
             "variant", "none / other",
             "list", SearchTracking.getActionFieldString(isOrganicAds, topadsTag, componentId),
-            "position", position.toString(),
+            "index", position.toString(),
             "dimension45", cartId,
-            "dimension61", if (filterSortParams.isEmpty()) "none / other" else filterSortParams,
+            "dimension56", warehouseID.ifNullOrBlank { "0" },
+            "dimension61", filterSortParams.ifEmpty { "none / other" },
             "dimension87", "search result",
             "dimension88", "search - product",
             "dimension115", dimension115,

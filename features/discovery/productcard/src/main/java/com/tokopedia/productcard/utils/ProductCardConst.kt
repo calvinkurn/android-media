@@ -9,12 +9,23 @@ internal const val LIGHT_BLUE = "lightBlue"
 internal const val LIGHT_GREEN = "lightGreen"
 internal const val LIGHT_RED = "lightRed"
 internal const val LIGHT_ORANGE = "lightOrange"
+internal const val LIGHT_TEAL = "lightTeal"
 internal const val DARK_GREY = "darkGrey"
 internal const val DARK_BLUE = "darkBlue"
 internal const val DARK_GREEN = "darkGreen"
 internal const val DARK_RED = "darkRed"
 internal const val DARK_ORANGE = "darkOrange"
 internal const val TRANSPARENT_BLACK = "transparentBlack"
+internal const val DARK_TEAL = "darkTeal"
+internal const val LABEL_ON_IMAGE = "labelOnImage"
+internal const val GENERAL_GREY = "generalGrey"
+internal const val GENERAL_BLUE = "generalBlue"
+internal const val GENERAL_GREEN = "generalGreen"
+internal const val GENERAL_RED = "generalRed"
+internal const val GENERAL_ORANGE = "generalOrange"
+internal const val GENERAL_TEAL = "generalTeal"
+internal const val GOLD = "gold"
+internal const val RED = "red"
 
 internal const val LABEL_PRODUCT_STATUS = "status"
 internal const val LABEL_PRICE = "price"
@@ -29,6 +40,8 @@ internal const val LABEL_CATEGORY = "category"
 internal const val LABEL_COST_PER_UNIT = "costperunit"
 internal const val LABEL_CATEGORY_SIDE = "category_side"
 internal const val LABEL_CATEGORY_BOTTOM = "category_bottom"
+internal const val LABEL_OVERLAY = "overlay"
+internal const val LABEL_RIBBON = "ribbon"
 
 internal const val TEXT_DARK_ORANGE = "textDarkOrange"
 internal const val TEXT_DARK_RED = "textDarkRed"
@@ -56,6 +69,8 @@ internal const val EXTRA_CHAR_SPACE_REPOSITION = 0
 internal const val LABEL_VARIANT_TAG = "label_variant_tag"
 
 internal const val WORDING_SEGERA_HABIS = "Segera Habis"
+internal const val WORDING_LAGI_DIMINATI = "Lagi Diminati"
+internal const val WORDING_TERSEDIA = "Tersedia"
 
 @DimenRes
 internal val FIRE_WIDTH = dp_12
@@ -70,3 +85,6 @@ internal const val MIN_QUANTITY_NON_VARIANT = 1
 
 internal const val SQUARE_IMAGE_RATIO = "1:1"
 internal const val LONG_IMAGE_RATIO = "4:5"
+
+internal const val CARD_MARGIN = 4
+internal const val MEDIA_MARGIN = 1.25f

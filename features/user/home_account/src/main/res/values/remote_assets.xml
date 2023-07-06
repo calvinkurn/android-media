@@ -5,4 +5,9 @@
     <string name="privacy_account_bottom_sheet_clarification_image_banner_2" translatable="false">https://images.tokopedia.net/img/android/user/optinout/img_privacy_account_banner_2.png</string>
     <string name="privacy_account_bottom_sheet_clarification_image_banner_3" translatable="false">https://images.tokopedia.net/img/android/user/optinout/img_privacy_account_banner_3.png</string>
     <string name="privacy_account_bottom_sheet_verification_image_header" translatable="false">https://images.tokopedia.net/img/android/user/optinout/img_privacy_account_verification.png</string>
+
+    <string name="ocl_bottomsheet_main_image" translatable="false">https://images.tokopedia.net/img/user/home_account/img_ocl_header.png</string>
+
+    <string name="add_name_url_icon" translatable="false">https://images.tokopedia.net/img/android/user/profile_page/Group3082@3x.png</string>
+
 </resources>

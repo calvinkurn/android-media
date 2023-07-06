@@ -116,6 +116,8 @@ object ApplinkConstInternalGlobal {
     const val WEBVIEW_DOWNLOAD = "$INTERNAL_GLOBAL/webviewdownload"
     const val WEBVIEW_BACK_HOME = "$INTERNAL_GLOBAL/webviewbackhome"
 
+    const val YOUTUBE_PLAYER = "$INTERNAL_GLOBAL/youtube-player/{video_id}/"
+
     const val IMAGE_PICKER = "$INTERNAL_GLOBAL/image-picker"
     const val IMAGE_PICKER_V2 = "$INTERNAL_GLOBAL/image-picker/v2/"
     const val USER_PROFILE_LANDING = "$INTERNAL_GLOBAL/people/"
@@ -249,4 +251,7 @@ object ApplinkConstInternalGlobal {
     const val DATA_EXPLORER = "$INTERNAL_GLOBAL/data-explorer"
 
     const val COMMISSION_BREAKDOWN = "$INTERNAL_GLOBAL/transaction-fee-download"
+
+    //LoginHelperActivity
+    const val LOGIN_HELPER = "$INTERNAL_GLOBAL/login-helper"
 }

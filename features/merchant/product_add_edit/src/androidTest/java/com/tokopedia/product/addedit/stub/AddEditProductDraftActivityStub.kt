@@ -5,11 +5,11 @@ import android.view.View
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.draft.presentation.activity.AddEditProductDraftActivity
 import com.tokopedia.product.addedit.draft.presentation.fragment.AddEditProductDraftFragment
-import com.tokopedia.product.addedit.R
 
-class AddEditProductDraftActivityStub: AddEditProductDraftActivity() {
+class AddEditProductDraftActivityStub : AddEditProductDraftActivity() {
 
     private val fragmentStub: AddEditProductDraftFragmentStub by lazy {
         AddEditProductDraftFragmentStub()

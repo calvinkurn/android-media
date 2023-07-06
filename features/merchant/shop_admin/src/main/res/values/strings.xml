@@ -50,5 +50,9 @@
     <string name="error_admin_try_again_action">Coba Lagi</string>
 
     <!-- Shop Admin Redirection -->
+    <string name="admin_authorize_title">Admin Role Access Authorize</string>
+
     <string name="error_message_shop_admin_redirection">Gagal memuat konten. Coba lagi, ya.</string>
+    <string name="admin_error_refresh_page">Refresh Halaman</string>
+
 </resources>

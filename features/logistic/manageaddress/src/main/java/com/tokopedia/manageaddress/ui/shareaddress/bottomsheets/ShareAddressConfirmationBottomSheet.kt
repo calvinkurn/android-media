@@ -14,26 +14,20 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
-import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.manageaddress.R
 import com.tokopedia.manageaddress.data.analytics.ShareAddressAnalytics
-import com.tokopedia.manageaddress.ui.uimodel.ShareAddressBottomSheetState
 import com.tokopedia.manageaddress.databinding.BottomsheetShareAddressConfirmationBinding
-import com.tokopedia.manageaddress.di.DaggerShareAddressComponent
-import com.tokopedia.manageaddress.di.ShareAddressComponent
+import com.tokopedia.manageaddress.di.ActivityComponentFactory
+import com.tokopedia.manageaddress.domain.request.shareaddress.SelectShareAddressParam
+import com.tokopedia.manageaddress.domain.request.shareaddress.ShareAddressToUserParam
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoCleared
 import javax.inject.Inject
-import com.tokopedia.manageaddress.R
-import com.tokopedia.manageaddress.domain.request.shareaddress.ShareAddressToUserParam
-import com.tokopedia.manageaddress.domain.request.shareaddress.SelectShareAddressParam
-import com.tokopedia.media.loader.loadImage
 
-class ShareAddressConfirmationBottomSheet :
-    BottomSheetUnify(),
-    HasComponent<ShareAddressComponent> {
+class ShareAddressConfirmationBottomSheet : BottomSheetUnify() {
 
     private var binding by autoCleared<BottomsheetShareAddressConfirmationBinding>()
 
@@ -48,13 +42,10 @@ class ShareAddressConfirmationBottomSheet :
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private val viewModel: ShareAddressConfirmationViewModel by lazy {
-        ViewModelProvider(this, viewModelFactory)[ShareAddressConfirmationViewModel::class.java]
-    }
-
-    override fun getComponent(): ShareAddressComponent {
-        return DaggerShareAddressComponent.builder()
-            .baseAppComponent((activity?.applicationContext as BaseMainApplication).baseAppComponent)
-            .build()
+        ViewModelProvider(
+            requireParentFragment(),
+            viewModelFactory
+        )[ShareAddressConfirmationViewModel::class.java]
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -65,7 +56,8 @@ class ShareAddressConfirmationBottomSheet :
     }
 
     private fun initInjector() {
-        component.inject(this)
+        ActivityComponentFactory.instance.createComponent(requireActivity().application)
+            .inject(this)
     }
 
     private fun hideHeader() {
@@ -74,52 +66,26 @@ class ShareAddressConfirmationBottomSheet :
     }
 
     private fun initObserver() {
-        viewModel.shareAddressResponse.observe(viewLifecycleOwner) {
-            when (it) {
-                is ShareAddressBottomSheetState.Success -> onSuccessShareAddress()
-                is ShareAddressBottomSheetState.Fail -> onFailedShareAddress(it.errorMessage)
-                is ShareAddressBottomSheetState.Loading -> onLoadingShareAddress(it.isShowLoading)
+        viewModel.dismissEvent.observe(viewLifecycleOwner) {
+            dismiss()
+        }
+        viewModel.toastEvent.observe(viewLifecycleOwner) {
+            val isError = it !is ShareAddressConfirmationViewModel.Toast.Success
+            val msg = if (isError) {
+                (it as ShareAddressConfirmationViewModel.Toast.Error).msg
+            } else {
+                getString(R.string.success_share_address)
             }
+            mListener?.showToast(isError, msg)
         }
-    }
-
-    private fun onSuccessShareAddress() {
-        if (viewModel.isApprove) {
-            trackOnAgreeShareAddress(isSuccess = true)
-        } else {
-            trackOnDisagreeShareAddress(isSuccess = true)
+        viewModel.loading.observe(viewLifecycleOwner) {
+            binding.btnAgree.isLoading =
+                it is ShareAddressConfirmationViewModel.LoadingState.AgreeLoading
+            binding.btnDisagree.isLoading =
+                it is ShareAddressConfirmationViewModel.LoadingState.DisagreeLoading
         }
-        mListener?.onSuccessConfirmShareAddress(viewModel.isApprove)
-    }
-
-    private fun onFailedShareAddress(errorMessage: String) {
-        if (viewModel.isApprove) {
-            trackOnAgreeShareAddress(isSuccess = false)
-        } else {
-            trackOnDisagreeShareAddress(isSuccess = false)
-        }
-        mListener?.onFailedShareAddress(errorMessage)
-    }
-
-    private fun trackOnAgreeShareAddress(isSuccess: Boolean) {
-        ShareAddressAnalytics.onAgreeSendAddress(
-            isDirectShare = isFromNotif().not(),
-            isSuccess = isSuccess
-        )
-    }
-
-    private fun trackOnDisagreeShareAddress(isSuccess: Boolean) {
-        ShareAddressAnalytics.onDisagreeSendAddress(
-            isDirectShare = isFromNotif().not(),
-            isSuccess = isSuccess
-        )
-    }
-
-    private fun onLoadingShareAddress(isShowLoading: Boolean) {
-        if (viewModel.isApprove) {
-            binding.btnAgree.isLoading = isShowLoading
-        } else {
-            binding.btnDisagree.isLoading = isShowLoading
+        viewModel.leavePageEvent.observe(viewLifecycleOwner) {
+            mListener?.leavePage()
         }
     }
 
@@ -173,17 +139,13 @@ class ShareAddressConfirmationBottomSheet :
     }
 
     private fun onClickBtnShare() {
-        viewModel.isApprove = true
-
         if (isFromNotif()) {
             viewModel.shareAddressFromNotif(
-                SelectShareAddressParam(
-                    SelectShareAddressParam.SelectShareAddressData(
-                        receiverUserId = receiverUserId.orEmpty(),
-                        senderAddressId = senderAddressId.orEmpty(),
-                        approve = true,
-                        source = source
-                    )
+                SelectShareAddressParam.Param(
+                    receiverUserId = receiverUserId.orEmpty(),
+                    senderAddressId = senderAddressId.orEmpty(),
+                    approve = true,
+                    source = source
                 )
             )
         } else {
@@ -201,20 +163,16 @@ class ShareAddressConfirmationBottomSheet :
     }
 
     private fun onClickBtnCancel() {
-        viewModel.isApprove = false
-
         if (isFromNotif()) {
             viewModel.shareAddressFromNotif(
-                SelectShareAddressParam(
-                    SelectShareAddressParam.SelectShareAddressData(
-                        receiverUserId = receiverUserId.orEmpty(),
-                        senderAddressId = senderAddressId.orEmpty(),
-                        approve = false
-                    )
+                SelectShareAddressParam.Param(
+                    receiverUserId = receiverUserId.orEmpty(),
+                    senderAddressId = senderAddressId.orEmpty(),
+                    approve = false
                 )
             )
         } else {
-            trackOnDisagreeShareAddress(isSuccess = true)
+            ShareAddressAnalytics.directShareDisagreeSendAddress()
             dismiss()
         }
     }
@@ -254,9 +212,8 @@ class ShareAddressConfirmationBottomSheet :
     }
 
     interface Listener {
-        fun onSuccessConfirmShareAddress(isApproved: Boolean)
-
-        fun onFailedShareAddress(errorMessage: String)
+        fun showToast(isError: Boolean, msg: String)
+        fun leavePage()
     }
 
     companion object {

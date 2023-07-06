@@ -146,7 +146,9 @@ class CustomOrderDetailBottomSheet :
 
     override fun onDeleteButtonClicked(adapterPosition: Int, cartId: String) {
         adapter.removeCustomProduct(cartId, adapterPosition)
-        productUiModel?.let { clickListener?.onDeleteCustomOrderButtonClicked(cartId, it.id) }
+        productUiModel?.let {
+            clickListener?.onDeleteCustomOrderButtonClicked(cartId, it.id)
+        }
         if (adapter.getCustomOrderDetails().isEmpty()) dismiss()
     }
 

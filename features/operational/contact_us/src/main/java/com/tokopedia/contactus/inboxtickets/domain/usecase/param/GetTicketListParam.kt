@@ -11,5 +11,5 @@ data class GetTicketListParam(
     @SerializedName("status")
     val status: Int = 0,
     @SerializedName("rating")
-    val rating: Int? = null,
+    val rating: Long? = null
 ) : GqlParam

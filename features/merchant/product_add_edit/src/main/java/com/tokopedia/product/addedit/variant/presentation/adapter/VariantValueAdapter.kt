@@ -8,8 +8,8 @@ import com.tokopedia.product.addedit.variant.data.model.UnitValue
 import com.tokopedia.product.addedit.variant.presentation.adapter.viewholder.VariantValueViewHolder
 
 class VariantValueAdapter(private val removeButtonClickListener: OnRemoveButtonClickListener, private val layoutPosition: Int) :
-        RecyclerView.Adapter<VariantValueViewHolder>(),
-        VariantValueViewHolder.OnRemoveButtonClickListener {
+    RecyclerView.Adapter<VariantValueViewHolder>(),
+    VariantValueViewHolder.OnRemoveButtonClickListener {
 
     companion object {
         private const val INVALID_POSITION = -1
@@ -40,8 +40,6 @@ class VariantValueAdapter(private val removeButtonClickListener: OnRemoveButtonC
         if (position != INVALID_POSITION) {
             val removedUnitValue = items[position]
             removeButtonClickListener.onRemoveButtonClicked(position, layoutPosition, removedUnitValue)
-            items.removeAt(position)
-            notifyItemRemoved(position)
         }
     }
 
@@ -50,12 +48,10 @@ class VariantValueAdapter(private val removeButtonClickListener: OnRemoveButtonC
         notifyDataSetChanged()
     }
 
-    fun addData(item: UnitValue) {
-        this.items.add(item)
-        notifyDataSetChanged()
-    }
+    fun getData() = items
 
-    fun getItem(position: Int): UnitValue {
-        return items[position]
+    fun removeData(position: Int){
+        items.removeAt(position)
+        notifyItemRemoved(position)
     }
 }

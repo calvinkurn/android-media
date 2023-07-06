@@ -579,6 +579,9 @@ class PromoCheckoutFragment :
                 is Delete -> {
                     adapter.removeData(it.data)
                 }
+                else -> {
+                    // no op
+                }
             }
         })
     }
@@ -590,6 +593,9 @@ class PromoCheckoutFragment :
                     it.data.forEach { mapData ->
                         adapter.addVisitableList((adapter.data.indexOf(mapData.key) + 1), mapData.value)
                     }
+                }
+                else -> {
+                    // no op
                 }
             }
         })

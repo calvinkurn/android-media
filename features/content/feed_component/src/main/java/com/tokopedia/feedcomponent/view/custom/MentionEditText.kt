@@ -16,7 +16,7 @@ import com.tokopedia.unifyprinciples.R as unifyR
  * Created by jegul on 2019-08-05.
  */
 
-//{@user_id|display name@}
+// {@user_id|display name@}
 class MentionEditText : AppCompatMultiAutoCompleteTextView {
 
     companion object {
@@ -42,7 +42,6 @@ class MentionEditText : AppCompatMultiAutoCompleteTextView {
 
     private val onMentionClickedListener = object : MentionSpan.OnClickListener {
         override fun onClick(userId: String) {
-
         }
     }
 
@@ -53,7 +52,7 @@ class MentionEditText : AppCompatMultiAutoCompleteTextView {
 
             val prevLength = length()
             val selEnd = selectionEnd
-            val distanceFromEnd = prevLength - selEnd //calculate cursor distance from text end
+            val distanceFromEnd = prevLength - selEnd // calculate cursor distance from text end
 
             val spannedText = MentionTextHelper.spanText(text, color, onMentionClickedListener, true)
             val allMentionSpans = MentionTextHelper.getRenewedMentionSpans(spannedText).toList()
@@ -65,10 +64,11 @@ class MentionEditText : AppCompatMultiAutoCompleteTextView {
              * Cursor positioning
              */
             val currentLength = length()
-            if (currentLength < distanceFromEnd) setSelection(selEnd)
-            else {
+            if (currentLength < distanceFromEnd) {
+                setSelection(selEnd)
+            } else {
                 val expectedCursorFromEnd = max(currentLength - distanceFromEnd, 0)
-                setSelection(expectedCursorFromEnd) //move cursor to distance from text end to mimic previous cursor place
+                setSelection(expectedCursorFromEnd) // move cursor to distance from text end to mimic previous cursor place
             }
 
             addTextChangedListener(this)
@@ -77,11 +77,9 @@ class MentionEditText : AppCompatMultiAutoCompleteTextView {
         }
 
         override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-
         }
 
         override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-
         }
     }
 

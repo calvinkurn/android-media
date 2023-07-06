@@ -17,7 +17,6 @@ dependencies {
     implementation rootProject.ext.miscDependencies.lifecycleRuntimeKtx
 
     implementation projectOrAar(rootProject.ext.features.resourcesCommon)
-    implementation projectOrAar(rootProject.ext.libraries.tkpddesign)
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.baseList)
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)

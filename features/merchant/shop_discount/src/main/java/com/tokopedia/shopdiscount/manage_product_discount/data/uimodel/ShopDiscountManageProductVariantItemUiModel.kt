@@ -2,7 +2,7 @@ package com.tokopedia.shopdiscount.manage_product_discount.data.uimodel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.shopdiscount.manage_product_discount.presentation.adapter.ShopDiscountManageProductVariantDiscountTypeFactory
-import java.util.*
+import java.util.Date
 
 data class ShopDiscountManageProductVariantItemUiModel(
     val variantId: String = "",

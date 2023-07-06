@@ -1,24 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:clipToPadding="false"
     android:orientation="vertical"
-    android:paddingBottom="16dp">
+    android:paddingBottom="16dp"
+    app:layout_constrainedHeight="true"
+    app:layout_constraintHeight_max="wrap"
+    app:layout_constraintHeight_percent="0.8">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/cardTitlePostTag"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
         android:layout_marginTop="8dp"
         android:fontFamily="sans-serif"
         android:textColor="@color/Unify_N700_68"
         android:textSize="14sp"
         android:textStyle="bold"
         android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         tools:text="@string/content_product_bs_title"
         tools:visibility="visible" />
 
@@ -29,6 +35,9 @@
         android:clipChildren="false"
         android:clipToPadding="false"
         android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/cardTitlePostTag"
         tools:visibility="visible" />
 
     <androidx.recyclerview.widget.RecyclerView
@@ -36,10 +45,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:clipToPadding="false"
-        android:orientation="horizontal"
-        android:paddingStart="16dp"
-        android:paddingLeft="16dp"
+        android:orientation="vertical"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        tools:ignore="RtlSymmetry"
+        app:layout_constrainedHeight="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_default="wrap"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/merchant_voucher_widget_post_tag"
         tools:listitem="@layout/item_producttag_list_new" />
-</LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

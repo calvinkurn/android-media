@@ -20,7 +20,6 @@ import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.mockk
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.test.runBlockingTest
 import java.io.Closeable
 
@@ -36,7 +35,7 @@ class PlayBroadcastSummaryViewModelRobot(
     getSellerLeaderboardUseCase: GetSellerLeaderboardUseCase = mockk(relaxed = true),
     updateChannelUseCase: PlayBroadcastUpdateChannelUseCase = mockk(relaxed = true),
     userSession: UserSessionInterface = mockk(relaxed = true),
-    playBroadcastMapper: PlayBroadcastMapper = PlayBroadcastUiMapper(TestHtmlTextTransformer(), TestUriParser()),
+    playBroadcastMapper: PlayBroadcastMapper = PlayBroadcastUiMapper(TestHtmlTextTransformer(), TestUriParser(), mockk(relaxed = true)),
     getRecommendedChannelTagsUseCase: GetRecommendedChannelTagsUseCase = mockk(relaxed = true),
     setChannelTagsUseCase: SetChannelTagsUseCase = mockk(relaxed = true),
     getChannelUseCase: GetChannelUseCase = mockk(relaxed = true),

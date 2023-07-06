@@ -1,9 +1,9 @@
 package com.tokopedia.shop.settings.notes.view.viewholder
 
 import android.annotation.SuppressLint
-import androidx.core.view.MotionEventCompat
 import android.view.MotionEvent
 import android.view.View
+import androidx.core.view.MotionEventCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.shop.settings.R
 import com.tokopedia.shop.settings.common.util.*

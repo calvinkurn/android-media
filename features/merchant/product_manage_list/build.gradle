@@ -1,13 +1,7 @@
 apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/kotlin/core-module.gradle"
+apply from: "$rootProject.projectDir/buildconfig/kotlin/core-kapt.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
-apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-parcelize'
-
-kapt {
-    correctErrorTypes = true
-    useBuildCache = true
-}
 
 android {
     buildFeatures {
@@ -42,7 +36,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.shopCommon)
     implementation projectOrAar(rootProject.ext.features.productManageCommon)
     implementation projectOrAar(rootProject.ext.features.sellerActiveCommon)
-    implementation projectOrAar(rootProject.ext.features.categoryCommon)
     implementation projectOrAar(rootProject.ext.features.sellerMigrationCommon)
     implementation projectOrAar(rootProject.ext.libraries.applink)
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
@@ -79,6 +72,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.viewPager2
 
     implementation rootProject.ext.miscDependencies.dagger
+    implementation projectOrAar(rootProject.ext.libraries.cmPushNotifications)
     kapt rootProject.ext.miscDependencies.daggerCompiler
     implementation rootProject.ext.debugToolsDependencies.chuck
 

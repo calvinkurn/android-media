@@ -520,6 +520,10 @@ data class SearchProductModel(
             @SerializedName("parentId")
             @Expose
             val parentId: String = "",
+
+            @SerializedName("isPortrait")
+            @Expose
+            val isPortrait: Boolean = false,
     ) {
 
         fun isOrganicAds(): Boolean = ads.id.isNotEmpty()
@@ -937,6 +941,10 @@ data class SearchProductModel(
             @SerializedName("stockbar")
             @Expose
             val stockBar: InspirationCarouselStockBar = InspirationCarouselStockBar(),
+
+            @SerializedName("warehouse_id_default")
+            @Expose
+            val warehouseIdDefault: String = "",
     ) {
         fun isOrganicAds(): Boolean = ads.id.isNotEmpty()
     }
@@ -1077,6 +1085,10 @@ data class SearchProductModel(
         @SerializedName("tracking_option")
         @Expose
         val trackingOption: String = "0",
+
+        @SerializedName("input_type")
+        @Expose
+        val inputType: String = "",
     ) {
         fun asFilter(): Filter {
             return if (isPriceRangeWidget()) Filter(options = priceRangeOptions())
@@ -1092,6 +1104,10 @@ data class SearchProductModel(
 
         private fun inspirationWidgetAsFilterOption() = inspirationWidgetOptions.flatMap {
             it.asOptionList()
+        }
+
+        fun isTypeRadio(): Boolean {
+            return Option.INPUT_TYPE_RADIO == inputType
         }
     }
 

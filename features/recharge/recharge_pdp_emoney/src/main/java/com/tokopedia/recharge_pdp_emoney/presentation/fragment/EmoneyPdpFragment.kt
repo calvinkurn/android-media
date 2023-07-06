@@ -2,15 +2,21 @@ package com.tokopedia.recharge_pdp_emoney.presentation.fragment
 
 import android.app.Activity
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.view.Gravity
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.appbar.AppBarLayout
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
@@ -28,18 +34,21 @@ import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActiv
 import com.tokopedia.common.topupbills.view.model.search.TopupBillsSearchNumberDataModel
 import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel
 import com.tokopedia.common_digital.atc.DigitalAddToCartViewModel
-import com.tokopedia.common_digital.atc.data.response.DigitalSubscriptionParams
 import com.tokopedia.common_digital.atc.utils.DeviceUtil
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.common_digital.common.RechargeAnalytics
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
+import com.tokopedia.common_digital.common.presentation.bottomsheet.DigitalDppoConsentBottomSheet
 import com.tokopedia.common_digital.common.presentation.model.DigitalCategoryDetailPassData
 import com.tokopedia.common_digital.product.presentation.model.ClientNumberType
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.globalerror.showUnifyError
 import com.tokopedia.header.HeaderUnify
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toBitmap
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
@@ -50,6 +59,7 @@ import com.tokopedia.recharge_pdp_emoney.di.EmoneyPdpComponent
 import com.tokopedia.recharge_pdp_emoney.presentation.activity.EmoneyPdpActivity
 import com.tokopedia.recharge_pdp_emoney.presentation.adapter.EmoneyPdpFragmentPagerAdapter
 import com.tokopedia.recharge_pdp_emoney.presentation.adapter.viewholder.EmoneyPdpProductViewHolder
+import com.tokopedia.recharge_pdp_emoney.presentation.bottomsheet.EmoneyMenuBottomSheets
 import com.tokopedia.recharge_pdp_emoney.presentation.bottomsheet.EmoneyProductDetailBottomSheet
 import com.tokopedia.recharge_pdp_emoney.presentation.viewmodel.EmoneyPdpViewModel
 import com.tokopedia.recharge_pdp_emoney.presentation.widget.EmoneyPdpBottomCheckoutWidget
@@ -59,7 +69,6 @@ import com.tokopedia.recharge_pdp_emoney.utils.EmoneyPdpAnalyticsUtils
 import com.tokopedia.recharge_pdp_emoney.utils.EmoneyPdpMapper
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifycomponents.ticker.TickerData
@@ -77,9 +86,14 @@ import kotlin.math.abs
  * @author by jessica on 29/03/21
  */
 
-open class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.ActionListener,
-    EmoneyPdpInputCardNumberWidget.ActionListener, EmoneyPdpProductViewHolder.ActionListener,
-    EmoneyPdpBottomCheckoutWidget.ActionListener {
+open class EmoneyPdpFragment :
+    BaseDaggerFragment(),
+    EmoneyPdpHeaderViewWidget.ActionListener,
+    EmoneyPdpInputCardNumberWidget.ActionListener,
+    EmoneyPdpProductViewHolder.ActionListener,
+    EmoneyPdpBottomCheckoutWidget.ActionListener,
+    EmoneyMenuBottomSheets.MenuListener
+{
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -116,6 +130,7 @@ open class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.A
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
         arguments?.let {
             detailPassData = it.getParcelable(EXTRA_PARAM_DIGITAL_CATEGORY_DETAIL_PASS_DATA)
                 ?: DigitalCategoryDetailPassData.Builder().build()
@@ -124,7 +139,6 @@ open class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.A
         activity?.let {
             localCacheHandler = LocalCacheHandler(context, EMONEY_PDP_PREFERENCES_NAME)
         }
-
     }
 
     private var binding by autoCleared<FragmentEmoneyPdpBinding>()
@@ -152,11 +166,9 @@ open class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.A
             issuerId = detailPassData.operatorId ?: ""
         }
 
+        emoneyPdpViewModel.getDppoConsent()
         loadData()
-
         renderCardState(detailPassData)
-
-
 
         binding.emoneyPdpHeaderView.actionListener = this
         binding.emoneyPdpInputCardWidget.initView(this)
@@ -167,112 +179,161 @@ open class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.A
         setAnimationAppBarLayout()
     }
 
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        menu.clear()
+        val dppoConsentData = emoneyPdpViewModel.dppoConsent.value
+        inflater.inflate(R.menu.menu_emoney, menu)
+        if (dppoConsentData is Success && dppoConsentData.data.description.isNotEmpty()) {
+            menu.showConsentIcon()
+            menu.setupConsentIcon(dppoConsentData.data.description)
+            menu.setupKebabIcon()
+        } else {
+            menu.hideConsentIcon()
+            menu.setupKebabIcon()
+        }
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        topUpBillsViewModel.menuDetailData.observe(viewLifecycleOwner, Observer {
-            binding.emoneyGlobalError.hide()
-            when (it) {
-                is Success -> {
-                    trackEventViewPdp(it.data.catalog.label)
-                    renderRecommendationsAndPromoList(it.data.recommendations, it.data.promos)
-                    renderTicker(EmoneyPdpMapper.mapTopUpBillsTickersToTickersData(it.data.tickers))
-                }
-                is Fail -> {
-                    renderFullPageError(it.throwable)
+        topUpBillsViewModel.menuDetailData.observe(
+            viewLifecycleOwner,
+            Observer {
+                binding.emoneyGlobalError.hide()
+                when (it) {
+                    is Success -> {
+                        trackEventViewPdp(it.data.catalog.label)
+                        renderRecommendationsAndPromoList(it.data.recommendations, it.data.promos)
+                        renderTicker(EmoneyPdpMapper.mapTopUpBillsTickersToTickersData(it.data.tickers))
+                    }
+                    is Fail -> {
+                        renderFullPageError(it.throwable)
+                    }
                 }
             }
-        })
+        )
 
-        topUpBillsViewModel.favNumberData.observe(viewLifecycleOwner, Observer {
-            emoneyPdpViewModel.getPrefixOperator(detailPassData.menuId.toIntSafely())
-        })
+        topUpBillsViewModel.favNumberData.observe(
+            viewLifecycleOwner,
+            Observer {
+                emoneyPdpViewModel.getPrefixOperator(detailPassData.menuId.toIntSafely())
+            }
+        )
 
+        emoneyPdpViewModel.inputViewError.observe(
+            viewLifecycleOwner,
+            Observer {
+                binding.emoneyPdpInputCardWidget.renderError(it)
+                if (it.isNotEmpty()) showRecentNumberAndPromo()
+            }
+        )
 
-        emoneyPdpViewModel.inputViewError.observe(viewLifecycleOwner, Observer {
-            binding.emoneyPdpInputCardWidget.renderError(it)
-            if (it.isNotEmpty()) showRecentNumberAndPromo()
-        })
-
-        emoneyPdpViewModel.catalogPrefixSelect.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Fail -> renderErrorMessage(it.throwable)
-                is Success -> {
-                    if (detailPassData.clientNumber != null && detailPassData.clientNumber?.isNotEmpty() == true) {
-                        renderClientNumber(
-                            TopupBillsSearchNumberDataModel(
-                                clientNumber = detailPassData.clientNumber ?: ""
+        emoneyPdpViewModel.catalogPrefixSelect.observe(
+            viewLifecycleOwner,
+            Observer {
+                when (it) {
+                    is Fail -> renderErrorMessage(it.throwable)
+                    is Success -> {
+                        if (detailPassData.clientNumber != null && detailPassData.clientNumber?.isNotEmpty() == true) {
+                            renderClientNumber(
+                                TopupBillsSearchNumberDataModel(
+                                    clientNumber = detailPassData.clientNumber ?: ""
+                                )
                             )
-                        )
-                    } else if (emoneyCardNumber.isNotEmpty()) {
-                        renderClientNumber(
-                            TopupBillsSearchNumberDataModel(
-                                clientNumber = emoneyCardNumber
+                        } else if (emoneyCardNumber.isNotEmpty()) {
+                            renderClientNumber(
+                                TopupBillsSearchNumberDataModel(
+                                    clientNumber = emoneyCardNumber
+                                )
                             )
-                        )
-                    } else {
-                        topUpBillsViewModel.favNumberData.value?.let { favNumber ->
-                            if (favNumber is Success) {
-                                favNumber.data.firstOrNull()?.let { num -> renderClientNumber(num) }
+                        } else {
+                            topUpBillsViewModel.favNumberData.value?.let { favNumber ->
+                                if (favNumber is Success) {
+                                    favNumber.data.firstOrNull()?.let { num -> renderClientNumber(num) }
+                                }
                             }
                         }
                     }
                 }
             }
-        })
+        )
 
-        emoneyPdpViewModel.selectedOperator.observe(viewLifecycleOwner, Observer {
-            renderOperatorIcon(it)
-            loadProducts(it)
-        })
+        emoneyPdpViewModel.selectedOperator.observe(
+            viewLifecycleOwner,
+            Observer {
+                renderOperatorIcon(it)
+                loadProducts(it)
+            }
+        )
 
-        emoneyPdpViewModel.selectedRecentNumber.observe(viewLifecycleOwner, Observer {
-            binding.emoneyFullPageLoadingLayout.show()
-            proceedAddToCart(
-                emoneyPdpViewModel.generateCheckoutPassData(
-                    (requireActivity() as EmoneyPdpActivity).promoCode,
-                    it.clientNumber, it.productId, it.operatorId,
-                    categoryIdFromPDP = detailPassData.categoryId
-                )
-            )
-        })
-
-        emoneyPdpViewModel.catalogData.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> {
-                    renderProducts(
-                        it.data.product.dataCollections.firstOrNull()?.products
-                            ?: listOf()
+        emoneyPdpViewModel.selectedRecentNumber.observe(
+            viewLifecycleOwner,
+            Observer {
+                binding.emoneyFullPageLoadingLayout.show()
+                proceedAddToCart(
+                    emoneyPdpViewModel.generateCheckoutPassData(
+                        (requireActivity() as EmoneyPdpActivity).promoCode,
+                        it.clientNumber,
+                        it.productId,
+                        it.operatorId,
+                        categoryIdFromPDP = detailPassData.categoryId
                     )
-                    showOnBoarding()
-                }
-                is Fail -> renderErrorMessage(it.throwable)
+                )
             }
-        })
+        )
 
-        addToCartViewModel.addToCartResult.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> {
-                    navigateToCart(it.data)
-                }
-                is Fail -> {
-                    renderErrorMessage(it.throwable)
-                    binding.emoneyFullPageLoadingLayout.hide()
+        emoneyPdpViewModel.catalogData.observe(
+            viewLifecycleOwner,
+            Observer {
+                when (it) {
+                    is Success -> {
+                        renderProducts(
+                            it.data.product.dataCollections.firstOrNull()?.products
+                                ?: listOf()
+                        )
+                        showOnBoarding()
+                    }
+                    is Fail -> renderErrorMessage(it.throwable)
                 }
             }
-            binding.emoneyFullPageLoadingLayout.hide()
-            binding.emoneyBuyWidget.onBuyButtonLoading(false)
-        })
+        )
 
-        addToCartViewModel.errorAtc.observe(viewLifecycleOwner){
+        addToCartViewModel.addToCartResult.observe(
+            viewLifecycleOwner,
+            Observer {
+                when (it) {
+                    is Success -> {
+                        navigateToCart(it.data)
+                    }
+                    is Fail -> {
+                        renderErrorMessage(it.throwable)
+                        binding.emoneyFullPageLoadingLayout.hide()
+                    }
+                }
+                binding.emoneyFullPageLoadingLayout.hide()
+                binding.emoneyBuyWidget.onBuyButtonLoading(false)
+            }
+        )
+
+        addToCartViewModel.errorAtc.observe(viewLifecycleOwner) {
             renderErrorMessage(MessageErrorException(it.title))
             binding.emoneyFullPageLoadingLayout.hide()
             binding.emoneyBuyWidget.onBuyButtonLoading(false)
         }
+
+        emoneyPdpViewModel.dppoConsent.observe(viewLifecycleOwner) {
+            when (it) {
+                is Success -> {
+                    activity?.invalidateOptionsMenu()
+                }
+                is Fail -> {}
+            }
+        }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        //save userInputView value for don't keep activities
+        // save userInputView value for don't keep activities
         super.onSaveInstanceState(outState)
         outState.putString(EXTRA_USER_INPUT_EMONEY_NUMBER, emoneyCardNumber)
         outState.putParcelable(EXTRA_EMONEY_DETAIL_PASS_DATA, detailPassData)
@@ -290,31 +351,30 @@ open class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.A
 
     private fun setAnimationAppBarLayout() {
         binding.appBarLayout.addOnOffsetChangedListener(object :
-            AppBarLayout.OnOffsetChangedListener {
-            var lastOffset = -1
-            var lastIsCollapsed = false
+                AppBarLayout.OnOffsetChangedListener {
+                var lastOffset = -1
+                var lastIsCollapsed = false
 
-            override fun onOffsetChanged(layoutAppBar: AppBarLayout?, verticalOffSet: Int) {
-                if (lastOffset == verticalOffSet || layoutAppBar == null) return
+                override fun onOffsetChanged(layoutAppBar: AppBarLayout?, verticalOffSet: Int) {
+                    if (lastOffset == verticalOffSet || layoutAppBar == null) return
 
-                lastOffset = verticalOffSet
-                if (abs(verticalOffSet) >= layoutAppBar.totalScrollRange && !lastIsCollapsed) {
-                    //Collapsed
-                    lastIsCollapsed = true
-                    (activity as EmoneyPdpActivity).findViewById<HeaderUnify>(R.id.emoney_toolbar)?.isShowShadow =
-                        true
-
-                } else if (verticalOffSet == 0 && lastIsCollapsed) {
-                    //Expanded
-                    lastIsCollapsed = false
-                    (activity as EmoneyPdpActivity).findViewById<HeaderUnify>(R.id.emoney_toolbar)?.isShowShadow =
-                        false
-                    showCoachMark(true)
-                } else {
-                    showCoachMark(false)
+                    lastOffset = verticalOffSet
+                    if (abs(verticalOffSet) >= layoutAppBar.totalScrollRange && !lastIsCollapsed) {
+                        // Collapsed
+                        lastIsCollapsed = true
+                        (activity as EmoneyPdpActivity).findViewById<HeaderUnify>(R.id.emoney_toolbar)?.isShowShadow =
+                            true
+                    } else if (verticalOffSet == 0 && lastIsCollapsed) {
+                        // Expanded
+                        lastIsCollapsed = false
+                        (activity as EmoneyPdpActivity).findViewById<HeaderUnify>(R.id.emoney_toolbar)?.isShowShadow =
+                            false
+                        showCoachMark(true)
+                    } else {
+                        showCoachMark(false)
+                    }
                 }
-            }
-        })
+            })
     }
 
     private fun trackEventViewPdp(categoryName: String) {
@@ -345,24 +405,24 @@ open class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.A
         adapter.notifyDataSetChanged()
 
         binding.emoneyPdpTab.tabLayout.addOnTabSelectedListener(object :
-            TabLayout.OnTabSelectedListener {
-            override fun onTabSelected(tab: TabLayout.Tab) {
-                tab.select()
-                trackSelectedTab(tab.position)
-                binding.emoneyPdpViewPager.currentItem = tab.position
-            }
+                TabLayout.OnTabSelectedListener {
+                override fun onTabSelected(tab: TabLayout.Tab) {
+                    tab.select()
+                    trackSelectedTab(tab.position)
+                    binding.emoneyPdpViewPager.currentItem = tab.position
+                }
 
-            override fun onTabUnselected(p0: TabLayout.Tab?) {}
-            override fun onTabReselected(p0: TabLayout.Tab?) {}
-        })
+                override fun onTabUnselected(p0: TabLayout.Tab?) {}
+                override fun onTabReselected(p0: TabLayout.Tab?) {}
+            })
 
         binding.emoneyPdpViewPager?.registerOnPageChangeCallback(object :
-            ViewPager2.OnPageChangeCallback() {
-            override fun onPageSelected(position: Int) {
-                val tab = binding.emoneyPdpTab?.getUnifyTabLayout()?.getTabAt(position)
-                tab?.select()
-            }
-        })
+                ViewPager2.OnPageChangeCallback() {
+                override fun onPageSelected(position: Int) {
+                    val tab = binding.emoneyPdpTab?.getUnifyTabLayout()?.getTabAt(position)
+                    tab?.select()
+                }
+            })
     }
 
     private fun trackSelectedTab(tabPosition: Int) {
@@ -381,8 +441,11 @@ open class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.A
             return
         }
 
-        if (tickers.size == 1) setUpSingleTicker(tickers.first())
-        else setUpMultipleTicker(tickers)
+        if (tickers.size == 1) {
+            setUpSingleTicker(tickers.first())
+        } else {
+            setUpMultipleTicker(tickers)
+        }
         binding.emoneyPdpTicker.show()
     }
 
@@ -392,7 +455,7 @@ open class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.A
         binding.emoneyPdpTicker.tickerType = ticker.type
         binding.emoneyPdpTicker.setDescriptionClickEvent(object : TickerCallback {
             override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                RouteManager.route(context, "${ApplinkConst.WEBVIEW}?url=${linkUrl}")
+                RouteManager.route(context, "${ApplinkConst.WEBVIEW}?url=$linkUrl")
             }
 
             override fun onDismiss() {}
@@ -404,7 +467,7 @@ open class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.A
             val tickerAdapter = TickerPagerAdapter(context, tickers)
             tickerAdapter.setPagerDescriptionClickEvent(object : TickerPagerCallback {
                 override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
-                    RouteManager.route(context, "${ApplinkConst.WEBVIEW}?url=${linkUrl}")
+                    RouteManager.route(context, "${ApplinkConst.WEBVIEW}?url=$linkUrl")
                 }
             })
             binding.emoneyPdpTicker.addPagerView(tickerAdapter, tickers)
@@ -423,7 +486,7 @@ open class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.A
                     favNumber?.let {
                         renderClientNumber(it)
 
-                        //to handle don't keep activities case, so displayed client number wont be override with client number on detailPassData
+                        // to handle don't keep activities case, so displayed client number wont be override with client number on detailPassData
                         detailPassData.clientNumber = it.clientNumber
                         detailPassData.additionalETollBalance = ""
                     }
@@ -437,7 +500,7 @@ open class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.A
                         showToastMessage(getString(R.string.recharge_pdp_success_message_scan_ocr))
                         renderClientNumber(TopupBillsSearchNumberDataModel(clientNumber = it))
 
-                        //to handle don't keep activities case, so displayed client number wont be override with client number on detailPassData
+                        // to handle don't keep activities case, so displayed client number wont be override with client number on detailPassData
                         detailPassData.clientNumber = it
                         detailPassData.additionalETollBalance = ""
                     }
@@ -455,7 +518,7 @@ open class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.A
                         )
 
                         renderClientNumber(clientNumberData)
-                        //renderProduct
+                        // renderProduct
                         detailPassData = this
                         renderCardState(this)
                     }
@@ -464,12 +527,12 @@ open class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.A
                 REQUEST_CODE_CART_DIGITAL -> {
                     if (data?.hasExtra(DigitalExtraParam.EXTRA_MESSAGE) == true) {
                         val throwable = data.getSerializableExtra(DigitalExtraParam.EXTRA_MESSAGE)
-                                as Throwable
-                        if (!throwable.message.isNullOrEmpty())
+                            as Throwable
+                        if (!throwable.message.isNullOrEmpty()) {
                             renderErrorMessage(throwable)
+                        }
                     }
                 }
-
 
                 REQUEST_CODE_LOGIN -> {
                     proceedAddToCart(emoneyPdpViewModel.digitalCheckoutPassData)
@@ -524,7 +587,9 @@ open class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.A
         EmoneyPdpAnalyticsUtils.clickCheckSaldoButton(userSession.userId, getIssuerName(issuerId))
         val intent = RouteManager.getIntent(
             activity,
-            ApplinkConsInternalDigital.SMARTCARD, DigitalExtraParam.EXTRA_NFC_FROM_PDP, "false"
+            ApplinkConsInternalDigital.SMARTCARD,
+            DigitalExtraParam.EXTRA_NFC_FROM_PDP,
+            "false"
         )
         startActivityForResult(intent, REQUEST_CODE_EMONEY_PDP_CHECK_SALDO)
     }
@@ -538,7 +603,9 @@ open class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.A
     override fun onClickInputView(inputNumber: String) {
         if (topUpBillsViewModel.favNumberData.value is Success) {
             showFavoriteNumbersPage((topUpBillsViewModel.favNumberData.value as Success).data)
-        } else showFavoriteNumbersPage(arrayListOf())
+        } else {
+            showFavoriteNumbersPage(arrayListOf())
+        }
     }
 
     override fun onRemoveNumberIconClick() {
@@ -633,7 +700,7 @@ open class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.A
     }
 
     override fun onClickProduct(product: CatalogProduct, position: Int) {
-        //atc
+        // atc
         emoneyPdpViewModel.setSelectedProduct(product)
         coachMark.dismissCoachMark()
 
@@ -655,8 +722,10 @@ open class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.A
                 context?.resources?.getDimensionPixelOffset(com.tokopedia.unifycomponents.R.dimen.unify_space_64)
                     ?: 0,
                 binding.emoneyBuyWidgetLayout.measuredHeight
-            ) + (context?.resources?.getDimensionPixelOffset(com.tokopedia.unifycomponents.R.dimen.spacing_lvl6)
-                ?: 0)
+            ) + (
+                context?.resources?.getDimensionPixelOffset(com.tokopedia.unifycomponents.R.dimen.spacing_lvl6)
+                    ?: 0
+                )
         )
     }
 
@@ -666,7 +735,7 @@ open class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.A
             product.attributes.pricePlain,
             userSession.userId
         )
-        val bottomSheet = EmoneyProductDetailBottomSheet(product)
+        val bottomSheet = EmoneyProductDetailBottomSheet.newBottomSheet(product)
         bottomSheet.show(childFragmentManager, TAG)
     }
 
@@ -684,9 +753,8 @@ open class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.A
     private fun proceedAddToCart(digitalCheckoutData: DigitalCheckoutPassData) {
         if (userSession.isLoggedIn) {
             addToCartViewModel.addToCart(
-                digitalCheckoutData, DeviceUtil.getDigitalIdentifierParam(requireActivity()),
-                DigitalSubscriptionParams(),
-                remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_RECHARGE_ATC_CHECKOUT_GQL, true)
+                digitalCheckoutData,
+                DeviceUtil.getDigitalIdentifierParam(requireActivity())
             )
         } else {
             navigateToLoginPage()
@@ -739,8 +807,6 @@ open class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.A
                                 }
                             }
                         }
-
-
                     } catch (e: Throwable) {
                         // do nothing, don't show coachmark then.
                     }
@@ -763,7 +829,7 @@ open class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.A
                 }
             }
         } catch (e: Throwable) {
-            //do nothing. don't show coachmark.
+            // do nothing. don't show coachmark.
         }
     }
 
@@ -773,6 +839,83 @@ open class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.A
             ISSUER_ID_BRIZZI -> ISSUER_NAME_BRIZZI
             ISSUER_ID_TAP_CASH -> ISSUER_NAME_TAPCASH
             else -> ""
+        }
+    }
+
+    override fun onOrderListClicked() {
+        context?.let {
+            if (userSession.isLoggedIn) {
+                RouteManager.route(it, ApplinkConst.DIGITAL_ORDER)
+            } else {
+                val intent = RouteManager.getIntent(it, ApplinkConst.LOGIN)
+                startActivityForResult(intent, EmoneyPdpActivity.REQUEST_CODE_LOGIN_EMONEY)
+            }
+        }
+    }
+
+    override fun onHelpClicked() {
+        context?.let {
+            RouteManager.route(it, ApplinkConst.CONTACT_US_NATIVE)
+        }
+    }
+
+    private fun showBottomMenus() {
+        val menuBottomSheet = EmoneyMenuBottomSheets.newInstance()
+        menuBottomSheet.listener = this
+        menuBottomSheet.setShowListener {
+            menuBottomSheet.bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED
+        }
+        menuBottomSheet.show(childFragmentManager, EmoneyPdpActivity.TAG_EMONEY_MENU)
+    }
+
+    private fun Menu.hideConsentIcon() {
+        findItem(R.id.emoney_action_dppo_consent).isVisible = false
+    }
+
+    private fun Menu.showConsentIcon() {
+        findItem(R.id.emoney_action_dppo_consent).isVisible = true
+    }
+
+    private fun Menu.setupConsentIcon(description: String) {
+        if (description.isNotEmpty()) {
+            context?.let { ctx ->
+                val iconUnify = getIconUnifyDrawable(
+                    ctx,
+                    IconUnify.INFORMATION,
+                    ContextCompat.getColor(ctx, com.tokopedia.unifyprinciples.R.color.Unify_NN900)
+                )
+                iconUnify?.toBitmap()?.let {
+                    getItem(0).setOnMenuItemClickListener {
+                        val bottomSheet = DigitalDppoConsentBottomSheet(description)
+                        bottomSheet.show(childFragmentManager)
+                        true
+                    }
+                    getItem(0).icon = BitmapDrawable(
+                        ctx.resources,
+                        Bitmap.createScaledBitmap(it, TOOLBAR_ICON_SIZE, TOOLBAR_ICON_SIZE, true)
+                    )
+                }
+            }
+        }
+    }
+
+    private fun Menu.setupKebabIcon() {
+        context?.let { ctx ->
+            val iconUnify = getIconUnifyDrawable(
+                ctx,
+                IconUnify.MENU_KEBAB_VERTICAL,
+                ContextCompat.getColor(ctx, com.tokopedia.unifyprinciples.R.color.Unify_NN900)
+            )
+            iconUnify?.toBitmap()?.let {
+                getItem(1).setOnMenuItemClickListener {
+                    showBottomMenus()
+                    true
+                }
+                getItem(1).icon = BitmapDrawable(
+                    ctx.resources,
+                    Bitmap.createScaledBitmap(it, TOOLBAR_ICON_SIZE, TOOLBAR_ICON_SIZE, true)
+                )
+            }
         }
     }
 
@@ -803,8 +946,9 @@ open class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.A
         const val ISSUER_NAME_BRIZZI = "brizzi"
         const val ISSUER_NAME_TAPCASH = "tapcash"
 
-        fun newInstance(digitalCategoryDetailPassData: DigitalCategoryDetailPassData)
-                : EmoneyPdpFragment {
+        private const val TOOLBAR_ICON_SIZE = 64
+
+        fun newInstance(digitalCategoryDetailPassData: DigitalCategoryDetailPassData): EmoneyPdpFragment {
             val fragment = EmoneyPdpFragment()
             val bundle = Bundle()
             bundle.putParcelable(
@@ -815,5 +959,4 @@ open class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.A
             return fragment
         }
     }
-
 }

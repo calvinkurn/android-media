@@ -1,8 +1,6 @@
 package com.tokopedia.product.info.view.bottomsheet
 
-import android.content.Intent
 import android.graphics.Rect
-import android.net.Uri
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.view.LayoutInflater
@@ -13,9 +11,12 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.youtube.player.YouTubeApiServiceUtil
 import com.google.android.youtube.player.YouTubeInitializationResult
+import android.content.Intent
+import android.net.Uri
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.config.GlobalConfig
@@ -31,7 +32,6 @@ import com.tokopedia.product.detail.data.util.DynamicProductDetailTracking
 import com.tokopedia.product.detail.databinding.BottomSheetProductDetailInfoBinding
 import com.tokopedia.product.detail.di.ProductDetailComponent
 import com.tokopedia.product.detail.tracking.ProductDetailBottomSheetTracking
-import com.tokopedia.product.detail.view.activity.ProductYoutubePlayerActivity
 import com.tokopedia.product.detail.view.util.doSuccessOrFail
 import com.tokopedia.product.detail.view.util.getIntentImagePreviewWithoutDownloadButton
 import com.tokopedia.product.info.data.response.ShopNotesData
@@ -50,6 +50,7 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import timber.log.Timber
+import java.util.*
 import java.util.concurrent.Executors
 import javax.inject.Inject
 
@@ -113,7 +114,10 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
          * caused by lateinit when don't keep activity which is initialized in bottom-sheet not created
          */
         if (::viewModelFactory.isInitialized) {
-            viewModel = ViewModelProvider(this, viewModelFactory).get(BsProductDetailInfoViewModel::class.java)
+            viewModel = ViewModelProvider(
+                this,
+                viewModelFactory
+            ).get(BsProductDetailInfoViewModel::class.java)
         }
     }
 
@@ -276,6 +280,13 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
         RouteManager.route(context, url)
     }
 
+    override fun goToWebView(url: String) {
+        RouteManager.route(
+            context,
+            String.format(Locale.getDefault(), "%s?url=%s", ApplinkConst.WEBVIEW, url)
+        )
+    }
+
     override fun goToEducational(url: String, infoTitle: String, infoValue: String, position: Int) {
         val context = context ?: return
         val data = listener?.getPdpDataSource() ?: return
@@ -310,7 +321,7 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
             if (YouTubeApiServiceUtil.isYouTubeApiServiceAvailable(it.applicationContext)
                 == YouTubeInitializationResult.SUCCESS
             ) {
-                startActivity(ProductYoutubePlayerActivity.createIntent(it, url, index))
+                redirectToYoutubePlayerPage(url[index])
             } else {
                 try {
                     startActivity(
@@ -324,6 +335,10 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
                 }
             }
         }
+    }
+
+    private fun redirectToYoutubePlayerPage(youTubeVideoId: String) {
+        RouteManager.route(context, ApplinkConst.YOUTUBE_PLAYER, youTubeVideoId)
     }
 
     override fun goToShopNotes(shopNotesData: ShopNotesData) {
@@ -374,7 +389,8 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
     private fun onVariantGuideLineBottomSheetClicked(url: String) {
         activity?.let {
             DynamicProductDetailTracking.ProductDetailSheet.onVariantGuideLineBottomSheetClicked(
-                listener?.getPdpDataSource(), userSession.userId.orEmpty()
+                listener?.getPdpDataSource(),
+                userSession.userId.orEmpty()
             )
             startActivity(getIntentImagePreviewWithoutDownloadButton(it, arrayListOf(url)))
         }

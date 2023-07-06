@@ -17,9 +17,9 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseMultiFragment
 import com.tokopedia.abstraction.base.view.fragment.enums.BaseMultiFragmentLaunchMode
-import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
+import com.tokopedia.applink.internal.ApplinkConstInternalTokoFood
+import com.tokopedia.applink.tokofood.DeeplinkMapperTokoFood
 import com.tokopedia.applink.tokofood.DeeplinkMapperTokoFood.BRAND_UID_PARAM
 import com.tokopedia.applink.tokofood.DeeplinkMapperTokoFood.CUISINE_PARAM
 import com.tokopedia.applink.tokofood.DeeplinkMapperTokoFood.OPTION_PARAM
@@ -36,11 +36,13 @@ import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.util.NavToolbarExt
-import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodData
+import com.tokopedia.tokofood.common.domain.response.CartGeneralCartListData
 import com.tokopedia.tokofood.common.domain.response.Merchant
 import com.tokopedia.tokofood.common.minicartwidget.view.TokoFoodMiniCartWidget
 import com.tokopedia.tokofood.common.presentation.UiEvent
+import com.tokopedia.tokofood.common.presentation.adapter.viewholder.TokoFoodErrorStateViewHolder
 import com.tokopedia.tokofood.common.presentation.listener.HasViewModel
+import com.tokopedia.tokofood.common.presentation.listener.TokofoodScrollChangedListener
 import com.tokopedia.tokofood.common.presentation.viewmodel.MultipleFragmentsViewModel
 import com.tokopedia.tokofood.common.util.Constant
 import com.tokopedia.tokofood.common.util.TokofoodErrorLogger
@@ -54,8 +56,6 @@ import com.tokopedia.tokofood.feature.home.presentation.adapter.CustomLinearLayo
 import com.tokopedia.tokofood.feature.home.presentation.adapter.TokoFoodCategoryAdapter
 import com.tokopedia.tokofood.feature.home.presentation.adapter.TokoFoodCategoryAdapterTypeFactory
 import com.tokopedia.tokofood.feature.home.presentation.adapter.TokoFoodListDiffer
-import com.tokopedia.tokofood.common.presentation.adapter.viewholder.TokoFoodErrorStateViewHolder
-import com.tokopedia.tokofood.common.presentation.listener.TokofoodScrollChangedListener
 import com.tokopedia.tokofood.feature.home.presentation.adapter.viewholder.TokoFoodMerchantListViewHolder
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodListUiModel
 import com.tokopedia.tokofood.feature.home.presentation.viewmodel.TokoFoodCategoryViewModel
@@ -253,8 +253,11 @@ class TokoFoodCategoryFragment: BaseMultiFragment(),
 
     override fun onClickMerchant(merchant: Merchant, horizontalPosition: Int) {
         analytics.clickMerchant(userSession.userId, localCacheModel?.district_id, merchant, horizontalPosition)
-        val merchantApplink = UriUtil.buildUri(ApplinkConst.TokoFood.MERCHANT, merchant.id, "")
-        TokofoodRouteManager.routePrioritizeInternal(context, merchantApplink)
+        val merchantApplink = Uri.parse(ApplinkConstInternalTokoFood.MERCHANT)
+            .buildUpon()
+            .appendQueryParameter(DeeplinkMapperTokoFood.PARAM_MERCHANT_ID, merchant.id)
+            .build()
+        TokofoodRouteManager.routePrioritizeInternal(context, merchantApplink.toString())
     }
 
     override fun onImpressMerchant(merchant: Merchant, horizontalPosition: Int) {
@@ -277,11 +280,11 @@ class TokoFoodCategoryFragment: BaseMultiFragment(),
             activityViewModel?.cartDataValidationFlow?.collect { uiEvent ->
                 when(uiEvent.state) {
                     UiEvent.EVENT_SUCCESS_VALIDATE_CHECKOUT -> {
-                        (uiEvent.data as? CheckoutTokoFoodData)?.let {
+                        (uiEvent.data as? CartGeneralCartListData)?.let {
                             analytics.clickAtc(userSession.userId, localCacheModel?.district_id, it)
-                            if (uiEvent.source == MINI_CART_SOURCE){
-                                goToPurchasePage()
-                            }
+                        }
+                        if (uiEvent.source == MINI_CART_SOURCE){
+                            goToPurchasePage()
                         }
                     }
                     UiEvent.EVENT_SUCCESS_LOAD_CART -> {

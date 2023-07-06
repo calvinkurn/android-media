@@ -334,13 +334,16 @@ class FlashSaleContainerFragment : BaseDaggerFragment() {
 
         val appLinkData = RouteManager.getIntent(activity, activity?.intent?.data.toString()).data
 
-        return when (appLinkData?.lastPathSegment.orEmpty()) {
+        val lastPathSegment = appLinkData?.lastPathSegment.orEmpty()
+        val tabPosition =  when (lastPathSegment) {
             "upcoming" -> FlashSaleListPageTab.UPCOMING.position
             "registered" -> FlashSaleListPageTab.REGISTERED.position
             "ongoing" -> FlashSaleListPageTab.ONGOING.position
             "finished" -> FlashSaleListPageTab.FINISHED.position
             else -> FlashSaleListPageTab.UPCOMING.position
         }
+
+        return tabPosition
     }
 
     private fun showIneligibleAccessBottomSheet() {

@@ -1,10 +1,11 @@
 package com.tokopedia.createpost.view.adapter
 
+import android.annotation.SuppressLint
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.createpost.createpost.R
 import com.tokopedia.createpost.common.view.viewmodel.RelatedProductItem
+import com.tokopedia.createpost.createpost.R
 import com.tokopedia.kotlin.extensions.view.inflateLayout
 import kotlinx.android.synthetic.main.content_item_product_tag_view.view.*
 
@@ -23,15 +24,16 @@ class CreatePostTagAdapter(
     }
 
     override fun onBindViewHolder(holder: CreatePostViewHolder, position: Int) {
-        holder.bind(itemList[position])    }
+        holder.bind(itemList[position])
+    }
 
     override fun getItemCount(): Int {
         return itemList.size
     }
 
-    inner class CreatePostViewHolder(view: View): RecyclerView.ViewHolder(view) {
+    inner class CreatePostViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         fun bind(productData: RelatedProductItem) {
-            with(itemView){
+            with(itemView) {
                 productName.text = productData.name
                 productPrice.text = productData.price
                 productImage.setImageUrl(productData.image)
@@ -40,12 +42,15 @@ class CreatePostTagAdapter(
             }
         }
     }
+
     private fun removeProduct(adapterPosition: Int) {
         itemList.removeAt(adapterPosition)
         notifyItemRangeRemoved(adapterPosition, 1)
         onDeleteProduct?.invoke(adapterPosition)
     }
-    fun updateProduct(products: List<RelatedProductItem>){
+
+    @SuppressLint("NotifyDataSetChanged")
+    fun updateProduct(products: List<RelatedProductItem>) {
         this.itemList.clear()
         this.itemList.addAll(products)
         notifyDataSetChanged()

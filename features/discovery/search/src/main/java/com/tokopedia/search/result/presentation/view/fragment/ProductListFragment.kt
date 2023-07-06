@@ -98,6 +98,7 @@ import com.tokopedia.search.result.product.video.SearchVideoPreference
 import com.tokopedia.search.result.product.videowidget.VideoCarouselListenerDelegate
 import com.tokopedia.search.result.product.violation.ViolationListenerDelegate
 import com.tokopedia.search.result.product.wishlist.WishlistHelper
+import com.tokopedia.search.utils.BackToTopView
 import com.tokopedia.search.utils.FragmentProvider
 import com.tokopedia.search.utils.SearchIdlingResource
 import com.tokopedia.search.utils.SearchLogger
@@ -134,7 +135,8 @@ class ProductListFragment: BaseDaggerFragment(),
     SearchParameterProvider,
     FragmentProvider,
     ClassNameProvider,
-    ScreenNameProvider {
+    ScreenNameProvider,
+    BackToTopView {
 
     companion object {
         private const val SCREEN_SEARCH_PAGE_PRODUCT_TAB = "Search result - Product tab"
@@ -394,6 +396,7 @@ class ProductListFragment: BaseDaggerFragment(),
         return object : EndlessRecyclerViewScrollListener(recyclerViewLayoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
                 val searchParameterMap = searchParameter?.getSearchParameterMap() ?: return
+                SearchIdlingResource.increment()
                 presenter?.loadMoreData(searchParameterMap)
             }
         }
@@ -575,10 +578,12 @@ class ProductListFragment: BaseDaggerFragment(),
     //region adding visitable list to recycler view adapter
     override fun addProductList(list: List<Visitable<*>>) {
         recyclerViewUpdater.appendItems(list)
+        SearchIdlingResource.decrement()
     }
 
     override fun setProductList(list: List<Visitable<*>>) {
         recyclerViewUpdater.setItems(list)
+        SearchIdlingResource.decrement()
     }
 
     override fun addLoading() {
@@ -602,6 +607,7 @@ class ProductListFragment: BaseDaggerFragment(),
     override fun showNetworkError(throwable: Throwable?) {
         val productListAdapter = recyclerViewUpdater.productListAdapter ?: return
 
+        SearchIdlingResource.decrement()
         if (productListAdapter.isListEmpty())
             showNetworkErrorOnEmptyList(throwable)
         else
@@ -634,11 +640,13 @@ class ProductListFragment: BaseDaggerFragment(),
         if (throwable!= null) {
             NetworkErrorHelper.createSnackbarWithAction(activity, ErrorHandler.getErrorMessage(requireContext(), throwable)) {
                 addLoading()
+                SearchIdlingResource.increment()
                 presenter?.loadMoreData(searchParameter.getSearchParameterMap())
             }
         } else {
             NetworkErrorHelper.createSnackbarWithAction(activity) {
                 addLoading()
+                SearchIdlingResource.increment()
                 presenter?.loadMoreData(searchParameter.getSearchParameterMap())
             }.showRetrySnackbar()
         }
@@ -1085,6 +1093,7 @@ class ProductListFragment: BaseDaggerFragment(),
 
         hideSearchSortFilter()
 
+        SearchIdlingResource.increment()
         presenter?.loadData(searchParameter.getSearchParameterMap())
     }
 
@@ -1282,10 +1291,6 @@ class ProductListFragment: BaseDaggerFragment(),
         lastFilterListenerDelegate.updateLastFilter()
 
         reloadData()
-    }
-
-    override fun trackEventClickDropdownQuickFilter(filterTitle: String) {
-        SearchTracking.trackEventClickDropdownQuickFilter(filterTitle)
     }
 
     override fun trackEventApplyDropdownQuickFilter(

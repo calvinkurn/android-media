@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <dimen name="play_dp_1">1dp</dimen>
     <dimen name="play_dp_2">2dp</dimen>
     <dimen name="play_dp_6">6dp</dimen>
     <dimen name="play_dp_10">10dp</dimen>
@@ -104,4 +103,6 @@
     <dimen name="play_shorts_no_eligible_account_width">281dp</dimen>
     <dimen name="play_shorts_no_eligible_account_height">210dp</dimen>
     <dimen name="play_shorts_summary_divider_height">1dp</dimen>
+    <dimen name="play_shorts_tnc_image_width">300dp</dimen>
+    <dimen name="play_shorts_tnc_image_height">350dp</dimen>
 </resources>

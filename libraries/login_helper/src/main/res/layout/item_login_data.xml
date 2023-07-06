@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/user_email"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/tribe_chip"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:gravity="start"
+        tools:text="Text Email Address for user"
+        app:typographyType="display_2"
+        android:textColor="@color/Unify_N700_96"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:padding="8dp"
+        android:maxLines="1"
+        android:ellipsize="end"/>
+
+    <com.tokopedia.unifycomponents.ChipsUnify
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/tribe_chip"
+        android:layout_marginEnd="16dp"
+        app:chipType="selected"
+        app:centerText="true"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        />
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:id="@+id/divider"
+        app:layout_constraintTop_toBottomOf="@id/user_email"
+        android:layout_marginTop="16dp"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

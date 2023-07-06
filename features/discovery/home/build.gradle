@@ -16,7 +16,6 @@ buildscript {
     }
     dependencies {
         classpath rootProject.ext.miscDependencies.hansel
-        classpath rootProject.ext.miscDependencies.androidjunit5
     }
 }
 
@@ -46,6 +45,7 @@ android {
         unitTests {
             includeAndroidResources = true
         }
+        execution 'ANDROIDX_TEST_ORCHESTRATOR'
     }
 }
 
@@ -81,6 +81,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.questWidget)
     implementation projectOrAar(rootProject.ext.features.cmHomeWidget)
     implementation projectOrAar(rootProject.ext.features.fintechHomeWidget)
+    implementation projectOrAar(rootProject.ext.features.homeComponentHeader)
 
     // Library
     implementation projectOrAar(rootProject.ext.libraries.analytics)
@@ -104,6 +105,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.deviceInfo)
     implementation projectOrAar(rootProject.ext.libraries.remoteResourceRequest)
     implementation projectOrAar(rootProject.ext.libraries.logger)
+
 
     // Room
     implementation rootProject.ext.dbDependencies.dbRoomRuntime
@@ -175,13 +177,15 @@ dependencies {
     androidTestImplementation rootProject.ext.testDependencies.espressoCore
     androidTestImplementation rootProject.ext.testDependencies.espressoContrib
     androidTestImplementation projectOrAar(rootProject.ext.libraries.instrumentation_test)
-    androidTestAnnotationProcessor rootProject.ext.miscDependencies.daggerCompiler
+    androidTestImplementation rootProject.ext.miscDependencies.dagger
+    kaptAndroidTest rootProject.ext.miscDependencies.daggerCompiler
     androidTestImplementation rootProject.ext.testDependencies.archCoreTesting
     androidTestImplementation rootProject.ext.testDependencies.benchmark
     androidTestImplementation rootProject.ext.testDependencies.testCore
     androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.cassavaTest
     androidTestImplementation rootProject.ext.testDependencies.espressoIntents
     androidTestImplementation rootProject.ext.testDependencies.uiautomator
+    androidTestUtil rootProject.ext.testDependencies.orchestrator
     androidTestImplementation projectOrAar(rootProject.ext.features.localizationchooseaddress)
 
     // Unit test

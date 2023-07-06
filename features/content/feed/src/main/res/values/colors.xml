@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--Upload Progress-->
+    <color name="feed_dms_upload_progress_background">#B32E3137</color>
+    <color name="feed_dms_upload_failed_img_foreground">#B32E3137</color>
+
+    <!--Video Seekbar-->
+    <color name="feed_dms_seekbar_unplayed_color">#66FFFFFF</color>
+
+    <!--Overlay-->
+    <color name="feed_dms_bottom_overlay_0">#00000000</color>
+    <color name="feed_dms_bottom_overlay_1">#66000000</color>
+
+    <color name="feed_dms_top_overlay_0">#33000000</color>
+    <color name="feed_dms_top_overlay_1">#00000000</color>
+
+    <color name="feed_dms_right_overlay_0">#66000000</color>
+    <color name="feed_dms_right_overlay_1">#00000000</color>
+
+    <color name="feed_dms_ribbon_flashsale_start">#D74049</color>
+    <color name="feed_dms_ribbon_flashsale_end">#F56958</color>
+
+    <color name="feed_dms_ribbon_general_start">#008849</color>
+    <color name="feed_dms_ribbon_general_end">#00AA5B</color>
+
+    <color name="feed_dms_ribbon_special_release_start">#4A3576</color>
+    <color name="feed_dms_ribbon_special_release_end">#58BCE4</color>
+
+    <color name="feed_dms_overlay">#B32E3137</color>
+
+    <!--other-->
+    <color name="feed_dms_tag_product_background">#2E3137</color>
+    <color name="feed_dms_tag_product_icon_background">#FFA617</color>
+</resources>

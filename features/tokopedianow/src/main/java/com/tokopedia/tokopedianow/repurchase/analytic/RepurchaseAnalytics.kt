@@ -4,7 +4,13 @@ import android.os.Bundle
 import com.tokopedia.kotlin.extensions.view.getDigits
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
-import com.tokopedia.tokopedianow.category.analytics.CategoryTracking
+import com.tokopedia.productcard.compact.similarproduct.analytic.ProductCardCompactSimilarProductAnalyticsConstants.TRACKER_ID_ADD_TO_CART_REPURCHASE
+import com.tokopedia.productcard.compact.similarproduct.analytic.ProductCardCompactSimilarProductAnalyticsConstants.TRACKER_ID_CLICK_CLOSE_BOTTOMSHEET_REPURCHASE
+import com.tokopedia.productcard.compact.similarproduct.analytic.ProductCardCompactSimilarProductAnalyticsConstants.TRACKER_ID_CLICK_PRODUCT_REPURCHASE
+import com.tokopedia.productcard.compact.similarproduct.analytic.ProductCardCompactSimilarProductAnalyticsConstants.TRACKER_ID_CLICK_SIMILAR_PRODUCT_BUTTON_REPURCHASE
+import com.tokopedia.productcard.compact.similarproduct.analytic.ProductCardCompactSimilarProductAnalyticsConstants.TRACKER_ID_VIEW_EMPTY_STATE_REPURCHASE
+import com.tokopedia.productcard.compact.similarproduct.analytic.ProductCardCompactSimilarProductAnalyticsConstants.TRACKER_ID_VIEW_SIMILAR_PRODUCT_BOTTOMSHEET_REPURCHASE
+import com.tokopedia.productcard.compact.similarproduct.presentation.uimodel.ProductCardCompactSimilarProductUiModel
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.ACTION.EVENT_ACTION_CLICK_ADD_TO_WISHLIST
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.ACTION.EVENT_ACTION_CLICK_CATEGORY_MENU_WIDGET
@@ -48,6 +54,7 @@ import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalytics.getEco
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalytics.getTracker
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalytics.hitCommonTracker
 import com.tokopedia.tokopedianow.common.util.TrackerUtil.getTrackerPosition
+import com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking
 import com.tokopedia.tokopedianow.repurchase.analytic.RepurchaseAnalytics.ACTION.EVENT_ACTION_CLICK_ADD_TO_CART
 import com.tokopedia.tokopedianow.repurchase.analytic.RepurchaseAnalytics.ACTION.EVENT_ACTION_CLICK_APPLY_CATEGORY_FILTER
 import com.tokopedia.tokopedianow.repurchase.analytic.RepurchaseAnalytics.ACTION.EVENT_ACTION_CLICK_APPLY_DATE_FILTER
@@ -66,12 +73,6 @@ import com.tokopedia.tokopedianow.repurchase.analytic.RepurchaseAnalytics.TRACKE
 import com.tokopedia.tokopedianow.repurchase.analytic.RepurchaseAnalytics.TRACKER_ID.TRACKER_ID_CLICK_SEE_ALL_CATEGORY
 import com.tokopedia.tokopedianow.repurchase.analytic.RepurchaseAnalytics.TRACKER_ID.TRACKER_ID_IMPRESSION_CATEGORY_MENU_WIDGET
 import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseProductUiModel
-import com.tokopedia.tokopedianow.similarproduct.analytic.TokonowSimilarProductConstants
-import com.tokopedia.tokopedianow.similarproduct.analytic.TokonowSimilarProductConstants.TRACKER_ID_ADD_TO_CART_REPURCHASE
-import com.tokopedia.tokopedianow.similarproduct.analytic.TokonowSimilarProductConstants.TRACKER_ID_CLICK_CLOSE_BOTTOMSHEET_REPURCHASE
-import com.tokopedia.tokopedianow.similarproduct.analytic.TokonowSimilarProductConstants.TRACKER_ID_CLICK_PRODUCT_REPURCHASE
-import com.tokopedia.tokopedianow.similarproduct.analytic.TokonowSimilarProductConstants.TRACKER_ID_VIEW_EMPTY_STATE_REPURCHASE
-import com.tokopedia.tokopedianow.similarproduct.model.SimilarProductUiModel
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils.EVENT
 import com.tokopedia.track.TrackAppUtils.EVENT_ACTION
@@ -367,7 +368,7 @@ class RepurchaseAnalytics @Inject constructor(@Transient private val userSession
             userId = userId
         ).apply {
             putString(KEY_PRODUCT_ID, productIdTriggered)
-            putString(KEY_TRACKER_ID, TokonowSimilarProductConstants.TRACKER_ID_CLICK_SIMILAR_PRODUCT_BUTTON_REPURCHASE)
+            putString(KEY_TRACKER_ID, TRACKER_ID_CLICK_SIMILAR_PRODUCT_BUTTON_REPURCHASE)
         }
 
         sendEnhanceEcommerceEvent(
@@ -379,7 +380,7 @@ class RepurchaseAnalytics @Inject constructor(@Transient private val userSession
     fun trackImpressionBottomSheet(
         userId: String,
         warehouseId: String,
-        similarProduct: SimilarProductUiModel,
+        similarProduct: ProductCardCompactSimilarProductUiModel,
         productIdTriggered: String
     ) {
         val items =  arrayListOf(
@@ -399,7 +400,7 @@ class RepurchaseAnalytics @Inject constructor(@Transient private val userSession
             userId = userId
         ).apply {
             putString(KEY_PRODUCT_ID, similarProduct.id)
-            putString(KEY_TRACKER_ID, TokonowSimilarProductConstants.TRACKER_ID_VIEW_SIMILAR_PRODUCT_BOTTOMSHEET_REPURCHASE)
+            putString(KEY_TRACKER_ID, TRACKER_ID_VIEW_SIMILAR_PRODUCT_BOTTOMSHEET_REPURCHASE)
             putString(KEY_ITEM_LIST, "/tokonow - product card - similar product recom")
             putParcelableArrayList(KEY_ITEMS, items)
         }
@@ -413,7 +414,7 @@ class RepurchaseAnalytics @Inject constructor(@Transient private val userSession
     fun trackClickProduct(
         userId: String,
         warehouseId: String,
-        similarProduct: SimilarProductUiModel,
+        similarProduct: ProductCardCompactSimilarProductUiModel,
         productIdTriggered: String
     ) {
         val items = arrayListOf(
@@ -447,7 +448,7 @@ class RepurchaseAnalytics @Inject constructor(@Transient private val userSession
     fun trackClickAddToCart(
         userId: String,
         warehouseId: String,
-        similarProduct: SimilarProductUiModel,
+        similarProduct: ProductCardCompactSimilarProductUiModel,
         productIdTriggered: String,
         newQuantity: Int
     ) {
@@ -466,7 +467,7 @@ class RepurchaseAnalytics @Inject constructor(@Transient private val userSession
 
         val dataLayer = createGeneralDataLayer(
             event = EVENT_ADD_TO_CART,
-            action = CategoryTracking.Action.EVENT_ACTION_CLICK_ADD_TO_CART,
+            action = com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking.Action.EVENT_ACTION_CLICK_ADD_TO_CART,
             label = "$warehouseId - $productIdTriggered - ${similarProduct.id}",
             userId = userId
         ).apply {
@@ -489,7 +490,7 @@ class RepurchaseAnalytics @Inject constructor(@Transient private val userSession
     ) {
         val dataLayer = createGeneralDataLayer(
             event = EVENT_CLICK_GROCERIES,
-            action = CategoryTracking.Action.EVENT_ACTION_CLICK_CLOSE_BOTTOMSHEET,
+            action = com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking.Action.EVENT_ACTION_CLICK_CLOSE_BOTTOMSHEET,
             label = "$warehouseId - $productIdTriggered",
             userId = userId
         ).apply {
@@ -509,7 +510,7 @@ class RepurchaseAnalytics @Inject constructor(@Transient private val userSession
     ) {
         val dataLayer = createGeneralDataLayer(
             event = TokoNowCommonAnalyticConstants.EVENT.EVENT_VIEW_GROCERIES,
-            action = CategoryTracking.Action.EVENT_ACTION_IMPRESSION_EMPTY_STATE,
+            action = com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking.Action.EVENT_ACTION_IMPRESSION_EMPTY_STATE,
             label = "$warehouseId - $productIdTriggered",
             userId = userId
         ).apply {

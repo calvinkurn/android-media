@@ -116,7 +116,6 @@ class ProofOfDeliveryFragment : BaseDaggerFragment() {
             )
 
             binding?.imgProof?.loadImagePod(
-                requireContext(),
                 userSession.accessToken,
                 url,
                 onReadyListener = {
@@ -141,7 +140,6 @@ class ProofOfDeliveryFragment : BaseDaggerFragment() {
                 proofDescription.visibility = View.VISIBLE
                 proofDescription.text = textDescription
             }
-
         }
     }
 
@@ -152,8 +150,5 @@ class ProofOfDeliveryFragment : BaseDaggerFragment() {
                 requireActivity().finish()
             }
         }
-
     }
-
 }
-

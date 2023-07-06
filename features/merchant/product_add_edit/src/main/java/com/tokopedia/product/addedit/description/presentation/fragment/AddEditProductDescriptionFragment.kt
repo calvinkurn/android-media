@@ -25,6 +25,7 @@ import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringConstants
@@ -39,6 +40,7 @@ import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.KEY
 import com.tokopedia.product.addedit.common.util.*
 import com.tokopedia.product.addedit.common.util.JsonUtil.mapJsonToObject
 import com.tokopedia.product.addedit.common.util.JsonUtil.mapObjectToJson
+import com.tokopedia.product.addedit.common.util.StringValidationUtil.fromHtmlWithSpaceAndLinebreak
 import com.tokopedia.product.addedit.description.di.AddEditProductDescriptionModule
 import com.tokopedia.product.addedit.description.di.DaggerAddEditProductDescriptionComponent
 import com.tokopedia.product.addedit.description.presentation.adapter.VideoLinkTypeFactory
@@ -252,6 +254,7 @@ class AddEditProductDescriptionFragment :
         observeDescriptionValidation()
         observeProductVideo()
         observeIsHampersProduct()
+        observeHasDTStock()
 
         // PLT Monitoring
         stopPreparePagePerformanceMonitoring()
@@ -495,7 +498,7 @@ class AddEditProductDescriptionFragment :
             if (descriptionViewModel.isFirstMoved) {
                 inputAllDataInInputModel()
                 dataBackPressed = DESCRIPTION_DATA
-                descriptionViewModel.productInputModel.value?.requestCode = arrayOf(DETAIL_DATA, DESCRIPTION_DATA, NO_DATA)
+                descriptionViewModel.productInputModel.value?.requestCode = arrayListOf(DETAIL_DATA, DESCRIPTION_DATA, NO_DATA)
             }
             setFragmentResultWithBundle(REQUEST_KEY_ADD_MODE, dataBackPressed)
         } else {
@@ -529,6 +532,17 @@ class AddEditProductDescriptionFragment :
                 layoutDescriptionTips?.tvTipsText?.text = getString(R.string.label_gifting_description_tips)
                 layoutDescriptionTips?.setOnClickListener {
                     showGiftingDescription()
+                }
+            }
+        }
+    }
+
+    private fun observeHasDTStock() {
+        descriptionViewModel.hasDTStock.observe(viewLifecycleOwner) {
+            if (it) {
+                tvAddVariant?.setColorToDisabled()
+                tvAddVariant?.setOnClickListener {
+                    showDTDisableVariantChangeDialog()
                 }
             }
         }
@@ -630,7 +644,7 @@ class AddEditProductDescriptionFragment :
         val description = descriptionViewModel.descriptionInputModel?.productDescription ?: ""
         val videoLinks = descriptionViewModel.descriptionInputModel?.videoLinkList?.toMutableList()
 
-        textFieldDescription?.setText(description)
+        textFieldDescription?.setText(description.fromHtmlWithSpaceAndLinebreak())
         if (!videoLinks.isNullOrEmpty()) {
             super.clearAllData()
             super.renderList(videoLinks)
@@ -727,6 +741,20 @@ class AddEditProductDescriptionFragment :
             setDividerVisible(false)
         }
         tooltipBottomSheet.show(childFragmentManager, null)
+    }
+
+    private fun showDTDisableVariantChangeDialog() {
+        val dialog = DialogUnify(context ?: return, DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE)
+        val descriptionText = getString(R.string.product_add_edit_text_disabled_variant_deactivate_dialog)
+        dialog.apply {
+            setTitle(getString(R.string.product_add_edit_title_disabled_variant_deactivate_dialog))
+            setDescription(descriptionText)
+            setPrimaryCTAText(getString(R.string.action_oke_got_it))
+            setPrimaryCTAClickListener {
+                dismiss()
+            }
+        }
+        dialog.show()
     }
 
     override fun loadData(page: Int) {

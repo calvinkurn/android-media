@@ -6,8 +6,9 @@ import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCampaign
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXGQLResponse
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXGetActivityProductsResponse
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
-import com.tokopedia.feedplus.view.repository.FeedDetailRepository
-import com.tokopedia.feedplus.view.subscriber.FeedDetailViewState
+import com.tokopedia.feedplus.oldFeed.view.presenter.FeedDetailViewModel
+import com.tokopedia.feedplus.oldFeed.view.repository.FeedDetailRepository
+import com.tokopedia.feedplus.oldFeed.view.subscriber.FeedDetailViewState
 import com.tokopedia.mvcwidget.ResultStatus
 import com.tokopedia.mvcwidget.TokopointsCatalogMVCSummary
 import com.tokopedia.mvcwidget.TokopointsCatalogMVCSummaryResponse
@@ -52,7 +53,11 @@ class FeedDetailViewModelTest {
     @Before
     fun setUp() {
         viewModel =
-            FeedDetailViewModel(feedDetailRepository = mockRepo, mvcSummaryUseCase = mockMvcUseCase, dispatcherProvider = testDispatcher)
+            FeedDetailViewModel(
+                feedDetailRepository = mockRepo,
+                mvcSummaryUseCase = mockMvcUseCase,
+                dispatcherProvider = testDispatcher
+            )
     }
 
     /**
@@ -66,14 +71,20 @@ class FeedDetailViewModelTest {
                 counterTotal = 0,
                 animatedInfoList = emptyList(),
                 isShown = true,
-                resultStatus = ResultStatus(code = HttpURLConnection.HTTP_OK.toString(), message = null, reason = "", status = "")
+                resultStatus = ResultStatus(
+                    code = HttpURLConnection.HTTP_OK.toString(),
+                    message = null,
+                    reason = "",
+                    status = ""
+                )
             )
         )
         coEvery { mockMvcUseCase.getResponse(any()) } returns expected
 
         viewModel.fetchMerchantVoucherSummary("11")
 
-        viewModel.merchantVoucherSummary.getOrAwaitValue().assertType<Success<TokopointsCatalogMVCSummary>> {}
+        viewModel.merchantVoucherSummary.getOrAwaitValue()
+            .assertType<Success<TokopointsCatalogMVCSummary>> {}
     }
 
     @Test
@@ -83,7 +94,12 @@ class FeedDetailViewModelTest {
                 counterTotal = 0,
                 animatedInfoList = emptyList(),
                 isShown = true,
-                resultStatus = ResultStatus(code = HttpURLConnection.HTTP_BAD_GATEWAY.toString(), message = listOf("Error ya"), reason = "", status = "")
+                resultStatus = ResultStatus(
+                    code = HttpURLConnection.HTTP_BAD_GATEWAY.toString(),
+                    message = listOf("Error ya"),
+                    reason = "",
+                    status = ""
+                )
             )
         )
         coEvery { mockMvcUseCase.getResponse(any()) } returns expected
@@ -91,7 +107,11 @@ class FeedDetailViewModelTest {
         viewModel.fetchMerchantVoucherSummary("11")
 
         viewModel.merchantVoucherSummary.getOrAwaitValue().assertType<Fail> {
-            it.throwable.assertType<ResponseErrorException> { it.message.assertEqualTo(expected.data?.resultStatus?.message?.firstOrNull().orEmpty()) }
+            it.throwable.assertType<ResponseErrorException> {
+                it.message.assertEqualTo(
+                    expected.data?.resultStatus?.message?.firstOrNull().orEmpty()
+                )
+            }
         }
     }
 
@@ -126,9 +146,10 @@ class FeedDetailViewModelTest {
 
         viewModel.getFeedDetail("1", 2)
 
-        viewModel.getFeedDetailLiveData().getOrAwaitValue().assertType<FeedDetailViewState.Success> {
-            it.feedXGetActivityProductsResponse.assertEqualTo(expectedResponse.data)
-        }
+        viewModel.getFeedDetailLiveData().getOrAwaitValue()
+            .assertType<FeedDetailViewState.Success> {
+                it.feedXGetActivityProductsResponse.assertEqualTo(expectedResponse.data)
+            }
 
         Assertions
             .assertThat(viewModel.cursor)
@@ -150,7 +171,8 @@ class FeedDetailViewModelTest {
 
         viewModel.getFeedDetail("1", 1)
 
-        viewModel.getFeedDetailLiveData().getOrAwaitValue().assertType<FeedDetailViewState.SuccessWithNoData> {}
+        viewModel.getFeedDetailLiveData().getOrAwaitValue()
+            .assertType<FeedDetailViewState.SuccessWithNoData> {}
     }
 
     @Test

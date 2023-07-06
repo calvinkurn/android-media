@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.seller.menu.di.scope.SellerMenuScope
-import com.tokopedia.seller.menu.presentation.viewmodel.AdminRoleAuthorizeViewModel
 import com.tokopedia.seller.menu.presentation.viewmodel.SellerMenuViewModel
 import com.tokopedia.seller.menu.presentation.viewmodel.SellerSettingViewModel
 import dagger.Binds
@@ -23,11 +22,6 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(SellerMenuViewModel::class)
     internal abstract fun sellerMenuViewModel(viewModel: SellerMenuViewModel): ViewModel
-
-    @Binds
-    @IntoMap
-    @ViewModelKey(AdminRoleAuthorizeViewModel::class)
-    internal abstract fun provideAdminRoleAuthorizeViewModel(adminRoleAuthorizeViewModel: AdminRoleAuthorizeViewModel): ViewModel
 
     @Binds
     @IntoMap

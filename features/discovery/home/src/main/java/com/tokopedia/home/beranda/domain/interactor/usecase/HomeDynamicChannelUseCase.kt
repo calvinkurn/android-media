@@ -16,27 +16,29 @@ import com.tokopedia.home.beranda.domain.interactor.repository.*
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.domain.model.HomeChannelData
 import com.tokopedia.home.beranda.domain.model.HomeData
-import com.tokopedia.home.beranda.domain.model.HomeFlag
 import com.tokopedia.home.beranda.domain.model.recharge_recommendation.RechargeRecommendation
 import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReview
 import com.tokopedia.home.beranda.domain.model.salam_widget.SalamWidget
-import com.tokopedia.home.beranda.helper.MissionWidgetHelper
+import com.tokopedia.home.beranda.helper.LazyLoadDynamicChannelHelper
 import com.tokopedia.home.beranda.helper.Result
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDynamicChannelModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.*
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedDataModel
 import com.tokopedia.home.constant.AtfKey
 import com.tokopedia.home.util.HomeServerLogger
+import com.tokopedia.home.util.QueryParamUtils.convertToLocationParams
 import com.tokopedia.home_component.model.ReminderEnum
 import com.tokopedia.home_component.usecase.featuredshop.DisplayHeadlineAdsEntity
 import com.tokopedia.home_component.usecase.featuredshop.mappingTopAdsHeaderToChannelGrid
 import com.tokopedia.home_component.usecase.missionwidget.GetMissionWidget
 import com.tokopedia.home_component.usecase.missionwidget.HomeMissionWidgetData
+import com.tokopedia.home_component.usecase.todowidget.GetTodoWidgetUseCase
+import com.tokopedia.home_component.usecase.todowidget.HomeTodoWidgetData
 import com.tokopedia.home_component.visitable.FeaturedShopDataModel
 import com.tokopedia.home_component.visitable.MissionWidgetListDataModel
 import com.tokopedia.home_component.visitable.ReminderWidgetModel
+import com.tokopedia.home_component.visitable.TodoWidgetListDataModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
-import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils.convertToLocationParams
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.widget.ui.PlayWidgetState
@@ -55,9 +57,8 @@ class HomeDynamicChannelUseCase @Inject constructor(
     private val homeBalanceWidgetUseCase: HomeBalanceWidgetUseCase,
     private val homeDataMapper: HomeDataMapper,
     private val homeDynamicChannelsRepository: HomeDynamicChannelsRepository,
-    private val homeDataRepository: HomeDataRepository,
     private val atfDataRepository: HomeAtfRepository,
-    private val homeFlagRepository: HomeFlagRepository,
+    private val homeUserStatusRepository: HomeUserStatusRepository,
     private val homePageBannerRepository: HomePageBannerRepository,
     private val homeIconRepository: HomeIconRepository,
     private val homeTickerRepository: HomeTickerRepository,
@@ -79,7 +80,8 @@ class HomeDynamicChannelUseCase @Inject constructor(
     private val homeRecommendationFeedTabRepository: HomeRecommendationFeedTabRepository,
     private val homeChooseAddressRepository: HomeChooseAddressRepository,
     private val userSessionInterface: UserSessionInterface,
-    private val homeMissionWidgetRepository: HomeMissionWidgetRepository
+    private val homeMissionWidgetRepository: HomeMissionWidgetRepository,
+    private val homeTodoWidgetRepository: HomeTodoWidgetRepository
 ) {
 
     private var CHANNEL_LIMIT_FOR_PAGINATION = 1
@@ -107,12 +109,10 @@ class HomeDynamicChannelUseCase @Inject constructor(
         homeDataModel: HomeDynamicChannelModel
     ) {
         findWidget<HomeHeaderDataModel>(homeDataModel) { model, index ->
-            if (model.needToShowUserWallet) {
-                homeDataModel.updateWidgetModel(
-                    visitable = homeHeaderDataModel,
-                    position = index
-                ) {}
-            }
+            homeDataModel.updateWidgetModel(
+                visitable = homeHeaderDataModel,
+                position = index
+            ) {}
         }
     }
 
@@ -124,8 +124,6 @@ class HomeDynamicChannelUseCase @Inject constructor(
         val homeAtfCacheFlow = getHomeRoomDataSource.getCachedAtfData().flatMapConcat {
             flow<HomeDynamicChannelModel> {
                 if (isCache) {
-                    val defaultFlag = HomeFlag()
-                    defaultFlag.addFlag(HomeFlag.HAS_TOKOPOINTS_STRING, true)
                     val dynamicChannelPlainResponse = homeDataMapper.mapToHomeRevampViewModel(
                         HomeData(
                             atfData = HomeAtfData(
@@ -143,7 +141,6 @@ class HomeDynamicChannelUseCase @Inject constructor(
                                 isProcessingAtf = true
                             ),
                             isProcessingDynamicChannel = true,
-                            homeFlag = defaultFlag
                         ),
                         isCache = true,
                         addShimmeringChannel = true,
@@ -210,7 +207,20 @@ class HomeDynamicChannelUseCase @Inject constructor(
 
                     dynamicChannelPlainResponse.getWidgetDataIfExist<
                         CarouselPlayWidgetDataModel,
-                        PlayWidgetState>(widgetRepository = homePlayRepository) { visitableFound, data, position ->
+                        PlayWidgetState>(
+                        bundleParam = {
+                            Bundle().apply {
+                                putString(
+                                    HomePlayRepository.KEY_WIDGET_LAYOUT,
+                                    it.homeChannel.layout
+                                )
+                            }
+                        },
+                        deleteWidgetWhen = {
+                            it?.model?.items?.isEmpty() == true
+                        },
+                        widgetRepository = homePlayRepository
+                    ) { visitableFound, data, position ->
                         visitableFound.copy(widgetState = data)
                     }
 
@@ -257,10 +267,39 @@ class HomeDynamicChannelUseCase @Inject constructor(
                         },
                         mapToWidgetData = { visitableFound, data, _ ->
                             val resultList =
-                                MissionWidgetHelper.convertMissionWidgetDataList(data.getHomeMissionWidget.missions)
+                                LazyLoadDynamicChannelHelper.convertMissionWidgetDataList(data.getHomeMissionWidget.missions)
                             visitableFound.copy(
                                 missionWidgetList = resultList,
                                 status = MissionWidgetListDataModel.STATUS_SUCCESS
+                            )
+                        }
+                    )
+
+                    dynamicChannelPlainResponse.getWidgetDataIfExistHandleError<
+                        TodoWidgetListDataModel,
+                        HomeTodoWidgetData.HomeTodoWidget>(
+                        widgetRepository = homeTodoWidgetRepository,
+                        bundleParam = {
+                            Bundle().apply {
+                                putString(
+                                    GetTodoWidgetUseCase.LOCATION_PARAM,
+                                    homeChooseAddressRepository.getRemoteData()?.convertToLocationParams()
+                                )
+                                putString(
+                                    GetTodoWidgetUseCase.PARAM,
+                                    it.channelModel.widgetParam
+                                )
+                            }
+                        },
+                        handleOnFailed = { visitableFound ->
+                            visitableFound.copy(status = TodoWidgetListDataModel.STATUS_ERROR)
+                        },
+                        mapToWidgetData = { visitableFound, data, _ ->
+                            val resultList =
+                                LazyLoadDynamicChannelHelper.convertTodoWidgetDataList(data.getHomeTodoWidget.todos)
+                            visitableFound.copy(
+                                todoWidgetList = resultList,
+                                status = TodoWidgetListDataModel.STATUS_SUCCESS
                             )
                         }
                     )
@@ -760,7 +799,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
      *
      * 1. Provide initial HomeData
      * 2. Get above the fold skeleton
-     *    2.1 Get home flag response
+     *    2.1 Hit home user status query
      * 3. Get above the fold content
      * 4. Get dynamic channel data
      *    4.1. If remote config pagination enabled, proceed with pagination
@@ -826,17 +865,9 @@ class HomeDynamicChannelUseCase @Inject constructor(
             }
 
             /**
-             * 2.1 Get home flag response
+             * 2.1 Hit home user status (fire and forget)
              */
-            try {
-                launch {
-                    val homeFlagResponse = homeFlagRepository.getCachedData()
-                    homeFlagResponse.homeFlag.let {
-                        homeData.homeFlag = homeFlagResponse.homeFlag
-                    }
-                }
-            } catch (e: Exception) {
-            }
+            launch { homeUserStatusRepository.hitHomeStatusThenIgnoreResponse() }
 
             /**
              * 3. Get above the fold content

@@ -15,7 +15,11 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.afterTextChanged
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.observe
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.shop.common.constant.ShopScheduleActionDef
 import com.tokopedia.shop.common.graphql.data.shopbasicdata.ShopBasicDataModel
 import com.tokopedia.shop.settings.R
@@ -25,7 +29,12 @@ import com.tokopedia.shop.settings.basicinfo.view.fragment.ShopSettingsInfoFragm
 import com.tokopedia.shop.settings.basicinfo.view.fragment.ShopSettingsInfoFragment.Companion.EXTRA_SHOP_BASIC_DATA_MODEL
 import com.tokopedia.shop.settings.basicinfo.view.viewmodel.ShopScheduleViewModel
 import com.tokopedia.shop.settings.common.di.DaggerShopSettingsComponent
-import com.tokopedia.shop.settings.common.util.*
+import com.tokopedia.shop.settings.common.util.FORMAT_DAY_DATE
+import com.tokopedia.shop.settings.common.util.currentDate
+import com.tokopedia.shop.settings.common.util.toDate
+import com.tokopedia.shop.settings.common.util.toReadableString
+import com.tokopedia.shop.settings.common.util.tomorrowDate
+import com.tokopedia.shop.settings.common.util.unixToDate
 import com.tokopedia.shop.settings.common.view.customview.ImageLabelView
 import com.tokopedia.shop.settings.databinding.ActivityShopEditScheduleBinding
 import com.tokopedia.unifycomponents.LoaderUnify
@@ -57,7 +66,7 @@ class ShopEditScheduleActivity : BaseSimpleActivity() {
     @Inject
     lateinit var viewModel: ShopScheduleViewModel
 
-    private var binding : ActivityShopEditScheduleBinding? by viewBinding()
+    private var binding: ActivityShopEditScheduleBinding? by viewBinding()
 
     private var loader: LoaderUnify? = null
     private var layout: LinearLayout? = null
@@ -86,9 +95,9 @@ class ShopEditScheduleActivity : BaseSimpleActivity() {
         }
 
         DaggerShopSettingsComponent.builder()
-                .baseAppComponent((application as BaseMainApplication).baseAppComponent)
-                .build()
-                .inject(this)
+            .baseAppComponent((application as BaseMainApplication).baseAppComponent)
+            .build()
+            .inject(this)
 
         if (shopBasicDataModel != null) {
             setupView(shopBasicDataModel)
@@ -176,8 +185,8 @@ class ShopEditScheduleActivity : BaseSimpleActivity() {
         loader = binding?.loader
         layout = binding?.layout
         labelStartClose = binding?.labelStartClose
-        labelEndClose =  binding?.labelEndClose
-        tfShopCloseNote =  binding?.tfShopCloseNote
+        labelEndClose = binding?.labelEndClose
+        tfShopCloseNote = binding?.tfShopCloseNote
         binding?.header?.apply {
             setSupportActionBar(this)
             title = getString(R.string.shop_settings_shop_status)
@@ -195,7 +204,7 @@ class ShopEditScheduleActivity : BaseSimpleActivity() {
     private fun observeGetShopBasicData() {
         observe(viewModel.shopBasicData) { result ->
             result?.let {
-                when(it) {
+                when (it) {
                     is Success -> onSuccessGetShopBasicData(it.data)
                     is Fail -> onFailGetShopBasicData(it.throwable)
                 }
@@ -206,7 +215,7 @@ class ShopEditScheduleActivity : BaseSimpleActivity() {
     private fun observeUpdateShopSchedule() {
         observe(viewModel.message) { result ->
             result?.let {
-                when(it) {
+                when (it) {
                     is Success -> onSuccessUpdateShopSchedule(it.data)
                     is Fail -> onFailUpdateShopSchedule(it.throwable)
                 }
@@ -239,9 +248,13 @@ class ShopEditScheduleActivity : BaseSimpleActivity() {
     private fun showStartDatePickerDialog(selectedDate: Date, minDate: Date) {
         val calendar = Calendar.getInstance()
         calendar.time = selectedDate
-        val datePicker = DatePickerDialog(this, DatePickerDialog.OnDateSetListener { _, year, month, dayOfMonth ->
-            setStartCloseDate(toDate(year, month, dayOfMonth))
-        }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE))
+        val datePicker = DatePickerDialog(
+            this,
+            DatePickerDialog.OnDateSetListener { _, year, month, dayOfMonth ->
+                setStartCloseDate(toDate(year, month, dayOfMonth))
+            },
+            calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE)
+        )
         val datePicker1 = datePicker.datePicker
         datePicker1.minDate = minDate.time
         datePicker.show()
@@ -250,9 +263,13 @@ class ShopEditScheduleActivity : BaseSimpleActivity() {
     private fun showEndDatePickerDialog(selectedDate: Date, minDate: Date) {
         val calendar = Calendar.getInstance()
         calendar.time = selectedDate
-        val datePicker = DatePickerDialog(this, DatePickerDialog.OnDateSetListener { _, year, month, dayOfMonth ->
-            setEndCloseDate(toDate(year, month, dayOfMonth))
-        }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE))
+        val datePicker = DatePickerDialog(
+            this,
+            DatePickerDialog.OnDateSetListener { _, year, month, dayOfMonth ->
+                setEndCloseDate(toDate(year, month, dayOfMonth))
+            },
+            calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE)
+        )
         val datePicker1 = datePicker.datePicker
         datePicker1.minDate = minDate.time
         datePicker.show()
@@ -282,18 +299,20 @@ class ShopEditScheduleActivity : BaseSimpleActivity() {
         }
 
         showLoading()
-        @ShopScheduleActionDef val shopAction = if (isClosedNow || shopBasicDataModel?.isClosed == true)
+        @ShopScheduleActionDef val shopAction = if (isClosedNow || shopBasicDataModel?.isClosed == true) {
             ShopScheduleActionDef.CLOSED
-        else
+        } else {
             ShopScheduleActionDef.OPEN
+        }
         val closeStart = selectedStartCloseUnixTimeMs
         val closeEnd = selectedEndCloseUnixTimeMs
         viewModel.updateShopSchedule(
-                shopAction,
-                isClosedNow || shopBasicDataModel?.isClosed == true,
-                if (closeStart == DEFAULT_TIME) null else closeStart.toString(),
-                if (closeEnd == DEFAULT_TIME) null else closeEnd.toString(),
-                closeNote)
+            shopAction,
+            isClosedNow || shopBasicDataModel?.isClosed == true,
+            if (closeStart == DEFAULT_TIME) null else closeStart.toString(),
+            if (closeEnd == DEFAULT_TIME) null else closeEnd.toString(),
+            closeNote
+        )
     }
 
     private fun hideKeyboard() {
@@ -315,7 +334,7 @@ class ShopEditScheduleActivity : BaseSimpleActivity() {
     }
 
     private fun setUIShopSchedule(shopBasicDataModel: ShopBasicDataModel?) {
-        //set close schedule
+        // set close schedule
         if (isClosedNow || shopBasicDataModel?.isClosed == true) {
             labelStartClose?.isEnabled = false
             setStartCloseDate(currentDate)
@@ -324,10 +343,9 @@ class ShopEditScheduleActivity : BaseSimpleActivity() {
             setStartCloseDate(Date(selectedStartCloseUnixTimeMs))
         }
 
-        //set open schedule.
+        // set open schedule.
         setEndCloseDate(Date(selectedEndCloseUnixTimeMs))
         tfShopCloseNote?.textFieldInput?.setText(shopBasicDataModel?.closeNote)
-
     }
 
     private fun showSnackbarErrorSubmitEdit(throwable: Throwable) {
@@ -347,5 +365,4 @@ class ShopEditScheduleActivity : BaseSimpleActivity() {
             snackbar?.show()
         }
     }
-
 }

@@ -12,17 +12,13 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
-import com.tokopedia.kotlin.extensions.view.ONE
-import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.utils.extensions.updateLayoutParams
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.MediaContainerType
 import com.tokopedia.product.detail.data.model.datamodel.MediaDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductMediaRecomData
 import com.tokopedia.product.detail.data.model.datamodel.ThumbnailDataModel
 import com.tokopedia.product.detail.databinding.WidgetVideoPictureBinding
 import com.tokopedia.product.detail.view.adapter.ProductMainThumbnailAdapter
@@ -77,7 +73,8 @@ class VideoPictureView @JvmOverloads constructor(
         listener: DynamicProductDetailListener?,
         componentTrackDataModel: ComponentTrackDataModel?,
         initialScrollPosition: Int,
-        containerType: MediaContainerType
+        containerType: MediaContainerType,
+        recommendation: ProductMediaRecomData
     ) {
         this.mListener = listener
         this.componentTrackDataModel = componentTrackDataModel
@@ -95,6 +92,9 @@ class VideoPictureView @JvmOverloads constructor(
         updateInitialThumbnail(media = media)
         updateImages(listOfImage = media)
         updateMediaLabel(position = pagerSelectedLastPosition)
+        setupRecommendationLabel(recommendation = recommendation)
+        setupRecommendationLabelListener(position = pagerSelectedLastPosition)
+        shouldShowRecommendationLabel(position = pagerSelectedLastPosition)
         scrollToPosition(position = initialScrollPosition)
         renderVideoOnceAtPosition(position = initialScrollPosition)
     }
@@ -167,6 +167,8 @@ class VideoPictureView @JvmOverloads constructor(
         binding.pdpViewPager.setCurrentItem(position, smoothScroll)
         updateMediaLabel(position)
         updateThumbnail(position)
+        setupRecommendationLabelListener(position)
+        shouldShowRecommendationLabel(position)
     }
 
     private fun setupThumbnailRv() {
@@ -268,6 +270,8 @@ class VideoPictureView @JvmOverloads constructor(
             }
 
             updateMediaLabel(position)
+            setupRecommendationLabelListener(position)
+            shouldShowRecommendationLabel(position)
             updateThumbnail(position)
             pagerSelectedLastPosition = position
         }
@@ -335,6 +339,28 @@ class VideoPictureView @JvmOverloads constructor(
         if (ignoreUpdateLabel) return
 
         binding.txtAnimLabel.showView(stringLabel)
+    }
+
+    private fun setupRecommendationLabel(recommendation: ProductMediaRecomData) {
+        binding.txtAnimLabelRecommendation.setup(recommendation)
+    }
+
+    private fun setupRecommendationLabelListener(position: Int) {
+        if (videoPictureAdapter?.isPicture(position) == true) {
+            binding.txtAnimLabelRecommendation.setOnClickListener {
+                mListener?.onShowProductMediaRecommendationClicked()
+            }
+        } else {
+            binding.txtAnimLabelRecommendation.setOnClickListener(null)
+        }
+    }
+
+    private fun shouldShowRecommendationLabel(position: Int) {
+        if (videoPictureAdapter?.isPicture(position) == true) {
+            binding.txtAnimLabelRecommendation.showView()
+        } else {
+            binding.txtAnimLabelRecommendation.hideView()
+        }
     }
 
     companion object {

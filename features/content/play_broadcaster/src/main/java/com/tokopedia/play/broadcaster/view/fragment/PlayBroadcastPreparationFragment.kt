@@ -6,12 +6,18 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.webkit.URLUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.PagerSnapHelper
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.HORIZONTAL
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalContent.PLAY_BROADCASTER_PERFORMANCE_DASHBOARD_APP_LINK
 import com.tokopedia.broadcaster.revamp.util.error.BroadcasterErrorType
 import com.tokopedia.broadcaster.revamp.util.error.BroadcasterException
 import com.tokopedia.coachmark.CoachMark2
@@ -27,40 +33,51 @@ import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.content.common.ui.model.TermsAndConditionUiModel
 import com.tokopedia.content.common.ui.toolbar.ContentColor
 import com.tokopedia.content.common.util.coachmark.ContentCoachMarkSharedPref
-import com.tokopedia.content.common.util.remoteconfig.PlayShortsEntryPointRemoteConfig
+import com.tokopedia.content.common.util.coachmark.ContentCoachMarkSharedPref.Key
 import com.tokopedia.dialog.DialogUnify
-import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.IconUnify.Companion.CLOSE
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
+import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastDataStore
+import com.tokopedia.play.broadcaster.analytic.beautification.PlayBroadcastBeautificationAnalyticStateHolder
 import com.tokopedia.play.broadcaster.databinding.FragmentPlayBroadcastPreparationBinding
 import com.tokopedia.play.broadcaster.setup.product.view.ProductSetupFragment
 import com.tokopedia.play.broadcaster.setup.schedule.util.SchedulePicker
+import com.tokopedia.play.broadcaster.shorts.view.custom.DynamicPreparationMenu
+import com.tokopedia.play.broadcaster.shorts.view.custom.isMenuExists
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction.SwitchAccount
+import com.tokopedia.play.broadcaster.ui.bridge.BeautificationUiBridge
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastEvent
+import com.tokopedia.play.broadcaster.ui.itemdecoration.PlayBroadcastPreparationBannerItemDecoration
 import com.tokopedia.play.broadcaster.ui.model.BroadcastScheduleUiModel
+import com.tokopedia.play.broadcaster.ui.model.PlayBroadcastPreparationBannerModel
+import com.tokopedia.play.broadcaster.ui.model.PlayBroadcastPreparationBannerModel.Companion.TYPE_DASHBOARD
+import com.tokopedia.play.broadcaster.ui.model.PlayBroadcastPreparationBannerModel.Companion.TYPE_SHORTS
 import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.page.PlayBroPageSource
-import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkState
-import com.tokopedia.play.broadcaster.ui.state.PlayChannelUiState
 import com.tokopedia.play.broadcaster.ui.state.ScheduleUiModel
 import com.tokopedia.play.broadcaster.util.eventbus.EventBus
+import com.tokopedia.play.broadcaster.util.extension.isNetworkError
+import com.tokopedia.play.broadcaster.view.adapter.PlayBroadcastPreparationBannerAdapter
 import com.tokopedia.play.broadcaster.view.analyticmanager.PreparationAnalyticManager
-import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupBottomSheet
+import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupCoverBottomSheet
+import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupCoverBottomSheet.Companion.TAB_AUTO_GENERATED
+import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupCoverBottomSheet.Companion.TAB_UPLOAD_IMAGE
+import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupCoverBottomSheet.DataSource
+import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupTitleBottomSheet
 import com.tokopedia.play.broadcaster.view.custom.PlayTimerLiveCountDown
-import com.tokopedia.play.broadcaster.view.custom.preparation.CoverFormView
-import com.tokopedia.play.broadcaster.view.custom.preparation.PreparationMenuView
-import com.tokopedia.play.broadcaster.view.custom.preparation.TitleFormView
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
+import com.tokopedia.play.broadcaster.view.fragment.beautification.BeautificationSetupFragment
 import com.tokopedia.play.broadcaster.view.fragment.loading.LoadingDialogFragment
-import com.tokopedia.play.broadcaster.view.state.CoverSetupState
-import com.tokopedia.play.broadcaster.view.viewmodel.*
+import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastPrepareViewModel
+import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.factory.PlayBroadcastViewModelFactory
 import com.tokopedia.play_common.detachableview.FragmentViewContainer
 import com.tokopedia.play_common.detachableview.FragmentWithDetachableView
@@ -69,7 +86,7 @@ import com.tokopedia.play_common.lifecycle.viewLifecycleBound
 import com.tokopedia.play_common.lifecycle.whenLifecycle
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.util.PlayToaster
-import com.tokopedia.play_common.util.extension.hideKeyboard
+import com.tokopedia.play_common.util.extension.commit
 import com.tokopedia.play_common.util.extension.withCache
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
@@ -77,7 +94,6 @@ import com.tokopedia.play_common.view.updateMargins
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.view.binding.viewBinding
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import java.util.*
 import javax.inject.Inject
@@ -94,12 +110,13 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     private val analyticManager: PreparationAnalyticManager,
     private val userSession: UserSessionInterface,
     private val coachMarkSharedPref: ContentCoachMarkSharedPref,
-    private val playShortsEntryPointRemoteConfig: PlayShortsEntryPointRemoteConfig,
+    private val beautificationUiBridge: BeautificationUiBridge,
+    private val beautificationAnalyticStateHolder: PlayBroadcastBeautificationAnalyticStateHolder,
 ) : PlayBaseBroadcastFragment(),
     FragmentWithDetachableView,
-    PreparationMenuView.Listener,
-    TitleFormView.Listener,
-    CoverFormView.Listener {
+    PlayBroadcastSetupTitleBottomSheet.Listener,
+    PlayBroadcastSetupCoverBottomSheet.Listener,
+    PlayBroadcastPreparationBannerAdapter.BannerListener {
 
     /** ViewModel */
     private val viewModel: PlayBroadcastPrepareViewModel by viewModels { viewModelFactory }
@@ -114,12 +131,24 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     private val binding get() = _binding!!
 
     /** Others */
+    private val adapterBanner: PlayBroadcastPreparationBannerAdapter by lazyThreadSafetyNone {
+        PlayBroadcastPreparationBannerAdapter(this)
+    }
+    private val mLayoutManager by lazyThreadSafetyNone {
+        LinearLayoutManager(context, HORIZONTAL, false)
+    }
+    private val snapHelper = PagerSnapHelper()
+
     private val fragmentViewContainer = FragmentViewContainer()
 
     private var earlyLiveStreamDialog: DialogUnify? = null
     private var switchAccountConfirmationDialog: DialogUnify? = null
 
+    private var isShortsEntryPointCoachMarkShown = false
+    private var isPerformanceDashboardEntryPointCoachMarkShown = false
+    private var coachMarkItems = mutableListOf<CoachMark2Item>()
     private var coachMark: CoachMark2? = null
+    private var productSetupPendingToaster: String? = null
 
     override fun getScreenName(): String = "Play Prepare Page"
 
@@ -162,6 +191,18 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         fragment
     }
 
+    private val scrollListener by lazy(LazyThreadSafetyMode.NONE) {
+        object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                val snappedView = snapHelper.findSnapView(mLayoutManager) ?: return
+
+                val position = mLayoutManager.getPosition(snappedView)
+                binding.pcBannerPreparation.setCurrentIndicator(position)
+            }
+        }
+    }
+
     /** Lifecycle */
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -177,9 +218,6 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         setupInsets()
         setupListener()
         setupObserver()
-        setupCoachMark()
-
-        binding.viewPreparationMenu.isSetTitleChecked(parentViewModel.channelTitle.isNotEmpty())
     }
 
     override fun onStart() {
@@ -190,20 +228,20 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     override fun onDestroyView() {
         super.onDestroyView()
 
+        binding.rvBannerPreparation.removeOnScrollListener(scrollListener)
         coachMark?.dismissCoachMark()
+        binding.preparationMenu.dismissCoachMark()
         coachMark = null
 
         _binding = null
     }
 
     override fun onBackPressed(): Boolean {
+        val beautificationSetupFragment = BeautificationSetupFragment.getFragment(childFragmentManager, requireActivity().classLoader)
+
         return when {
-            binding.formTitle.visibility == View.VISIBLE -> {
-                showTitleForm(false)
-                true
-            }
-            binding.formCover.visibility == View.VISIBLE -> {
-                showCoverForm(false)
+            beautificationSetupFragment.isBottomSheetShown -> {
+                beautificationUiBridge.eventBus.emit(BeautificationUiBridge.Event.BeautificationBottomSheetDismissed)
                 true
             }
             else -> {
@@ -219,7 +257,6 @@ class PlayBroadcastPreparationFragment @Inject constructor(
             is ProductSetupFragment -> {
                 childFragment.setDataSource(object : ProductSetupFragment.DataSource {
                     override fun getProductSectionList(): List<ProductTagSectionUiModel> {
-                        // TODO("Use uiState directly when uiState already return StateFlow")
                         return parentViewModel.productSectionList
                     }
 
@@ -236,6 +273,14 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                     override fun maxProduct(): Int {
                         return parentViewModel.maxProduct
                     }
+
+                    override fun getPageSource(): PlayBroPageSource {
+                        return PlayBroPageSource.Live
+                    }
+
+                    override fun fetchCommissionProduct(): Boolean {
+                        return false
+                    }
                 })
 
                 childFragment.setListener(object : ProductSetupFragment.Listener {
@@ -244,31 +289,13 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                             PlayBroadcastAction.SetProduct(productTagSectionList)
                         )
                     }
-                })
-            }
-            is PlayBroadcastSetupBottomSheet -> {
-                childFragment.setListener(object : PlayBroadcastSetupBottomSheet.Listener {
-                    override fun onCoverChanged(cover: PlayCoverUiModel) {
+                    override fun onProductSetupDismissed() {
+                        if (productSetupPendingToaster == null) return
                         parentViewModel.submitAction(
-                            PlayBroadcastAction.SetCover(cover)
+                            PlayBroadcastAction.ResetUploadState
                         )
-                    }
-                })
-                childFragment.setDataSource(object : PlayBroadcastSetupBottomSheet.DataSource {
-                    override fun getProductList(): List<ProductUiModel> {
-                        return parentViewModel.productSectionList.flatMap { it.products }
-                    }
-
-                    override fun getSelectedAccount(): ContentAccountUiModel {
-                        return parentViewModel.selectedAccount
-                    }
-
-                    override fun getChannelId(): String {
-                        return parentViewModel.channelId
-                    }
-
-                    override fun getPageSource(): PlayBroPageSource {
-                        return PlayBroPageSource.Live
+                        toaster.showToaster(productSetupPendingToaster.orEmpty())
+                        productSetupPendingToaster = null
                     }
                 })
             }
@@ -305,7 +332,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                     }
 
                     override fun clickAcceptTnc(isChecked: Boolean) {
-                        if(isChecked) analytic.onClickCheckBoxCompleteOnboardingUGC()
+                        if (isChecked) analytic.onClickCheckBoxCompleteOnboardingUGC()
                     }
 
                     override fun clickNextOnCompleteOnboarding() {
@@ -347,12 +374,46 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                     }
                 })
             }
+            is PlayBroadcastSetupTitleBottomSheet -> {
+                childFragment.setupListener(this)
+                childFragment.setupData(parentViewModel.channelTitle, viewModel.maxTitleChars)
+            }
+            is PlayBroadcastSetupCoverBottomSheet -> {
+                childFragment.setupListener(listener = this)
+                childFragment.setupDataSource(
+                    dataSource = object : DataSource {
+                        override fun getEntryPoint(): String {
+                            return PAGE_NAME
+                        }
+
+                        override fun getContentAccount(): ContentAccountUiModel {
+                            return parentViewModel.selectedAccount
+                        }
+
+                        override fun getChannelId(): String {
+                            return parentViewModel.channelId
+                        }
+
+                        override fun getChannelTitle(): String {
+                            return parentViewModel.channelTitle
+                        }
+
+                        override fun getDataStore(): PlayBroadcastDataStore {
+                            return parentViewModel.mDataStore
+                        }
+                    }
+                )
+
+                val isShowCoachMark = parentViewModel.isShowSetupCoverCoachMark
+                childFragment.needToShowCoachMark(isShowCoachMark)
+                if (isShowCoachMark) parentViewModel.submitAction(PlayBroadcastAction.SetShowSetupCoverCoachMark)
+            }
         }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if(requestCode == REQ_PLAY_SHORTS && resultCode == Activity.RESULT_OK) {
+        if (requestCode == REQ_PLAY_SHORTS && resultCode == Activity.RESULT_OK) {
             activity?.finish()
         }
     }
@@ -373,24 +434,36 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                 activity?.onBackPressed()
             }
         }
-        binding.formTitle.setMaxCharacter(viewModel.maxTitleChars)
         with(binding.toolbarContentCommon) {
             if (parentViewModel.isAllowChangeAccount) {
                 setOnAccountClickListener {
                     analytic.onClickAccountDropdown()
-                    coachMark?.dismissCoachMark()
+                    hideCoachMarkSwitchAccount()
+                    binding.preparationMenu.dismissCoachMark()
 
-                    showAccountBottomSheet()
+                    openAccountBottomSheet()
                 }
             } else {
                 setOnAccountClickListener(null)
             }
         }
 
-        binding.bannerShorts.apply {
-            title = getString(R.string.play_bro_banner_shorts_title)
-            description = getString(R.string.play_bro_banner_shorts_description)
-            bannerIcon = IconUnify.SHORT_VIDEO
+        binding.rvBannerPreparation.apply {
+            layoutManager = mLayoutManager
+            adapter = adapterBanner
+            if (itemDecorationCount == 0) addItemDecoration(
+                PlayBroadcastPreparationBannerItemDecoration(context)
+            )
+            addOnScrollListener(scrollListener)
+        }
+        snapHelper.attachToRecyclerView(binding.rvBannerPreparation)
+
+        childFragmentManager.commit {
+            replace(
+                binding.faceFilterSetupContainer.id,
+                BeautificationSetupFragment.getFragment(childFragmentManager, requireActivity().classLoader),
+                BeautificationSetupFragment.TAG,
+            )
         }
     }
 
@@ -413,7 +486,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
             }
         }
 
-        binding.viewPreparationMenu.doOnApplyWindowInsets { v, insets, _, margin ->
+        binding.preparationMenu.doOnApplyWindowInsets { v, insets, _, margin ->
             val marginLayoutParams = v.layoutParams as ViewGroup.MarginLayoutParams
             val newBottomMargin = margin.bottom + insets.systemWindowInsetBottom
             if (marginLayoutParams.bottomMargin != newBottomMargin) {
@@ -425,9 +498,34 @@ class PlayBroadcastPreparationFragment @Inject constructor(
 
     private fun setupListener() {
         binding.apply {
-            viewPreparationMenu.setListener(this@PlayBroadcastPreparationFragment)
-            formTitle.setListener(this@PlayBroadcastPreparationFragment)
-            formCover.setListener(this@PlayBroadcastPreparationFragment)
+            preparationMenu.setOnMenuClickListener {
+                when(it.menu) {
+                    DynamicPreparationMenu.Menu.Title -> {
+                        analytic.clickSetupTitleMenu()
+                        openSetupTitleBottomSheet()
+                    }
+                    DynamicPreparationMenu.Menu.Cover -> {
+                        analytic.clickSetupCoverMenu()
+                        openSetupCoverBottomSheet()
+                    }
+                    DynamicPreparationMenu.Menu.Product -> {
+                        analytic.clickSetupProductMenu()
+
+                        openSetupProductBottomSheet()
+                    }
+                    DynamicPreparationMenu.Menu.Schedule -> {
+                        eventBus.emit(Event.ClickSetSchedule)
+                    }
+                    DynamicPreparationMenu.Menu.FaceFilter -> {
+                        analytic.clickBeautificationEntryPointOnPreparationPage(parentViewModel.selectedAccount)
+
+                        BeautificationSetupFragment.getFragment(
+                            childFragmentManager,
+                            requireActivity().classLoader
+                        ).showFaceSetupBottomSheet(BeautificationSetupFragment.PageSource.Preparation)
+                    }
+                }
+            }
 
             flBroStartLivestream.setOnClickListener {
                 analytic.clickStartStreaming(parentViewModel.channelId)
@@ -449,14 +547,20 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                 analytic.clickSwitchCameraOnPreparation()
                 broadcaster.flip()
             }
+        }
 
-            bannerShorts.setOnClickListener {
-                analytic.clickShortsEntryPoint(parentViewModel.authorId, parentViewModel.authorType)
-
-                coachMarkSharedPref.setHasBeenShown(ContentCoachMarkSharedPref.Key.PlayShortsEntryPoint, userSession.userId)
-
-                val intent = RouteManager.getIntent(requireContext(), PlayShorts.generateApplink())
-                startActivityForResult(intent, REQ_PLAY_SHORTS)
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            beautificationUiBridge.eventBus.subscribe().collect { event ->
+                when(event) {
+                    is BeautificationUiBridge.Event.BeautificationBottomSheetShown -> {
+                        showMainComponent(false)
+                        showOverlayBackground(false)
+                    }
+                    is BeautificationUiBridge.Event.BeautificationBottomSheetDismissed -> {
+                        showMainComponent(true)
+                        showOverlayBackground(true)
+                    }
+                }
             }
         }
     }
@@ -471,7 +575,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                     err = MessageErrorException(errorMessage),
                     customErrMessage = errorMessage
                 )
-                showCoverForm(true)
+                openSetupCoverBottomSheet()
             }
         } else {
             val errorMessage = getString(R.string.play_bro_title_empty_error)
@@ -486,8 +590,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     private fun setupObserver() {
         observeConfigInfo()
 
-        observeTitle()
-        observeCover()
+        observeUploadTitleEvent()
         observeCreateLiveStream()
 
         observeUiState()
@@ -495,62 +598,91 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         observeViewEvent()
     }
 
-    private fun setupCoachMark() {
+    private fun getCoachMarkSwitchAccount(): CoachMark2Item? {
+        val isSwitchAccountCoachMarkShown = !coachMarkSharedPref.hasBeenShown(Key.SwitchAccount, userSession.userId)
+        if (!isSwitchAccountCoachMarkShown) return null
 
-        var isShortsEntryPointCoachMarkShown = false
+        val coachMarkSwitchAccount = CoachMark2Item(
+            anchorView = binding.toolbarContentCommon,
+            title = getString(contentCommonR.string.sa_coach_mark_title),
+            description = getString(contentCommonR.string.sa_livestream_coach_mark_subtitle),
+            position = CoachMark2.POSITION_BOTTOM,
+        )
 
+        coachMarkSharedPref.setHasBeenShown(Key.SwitchAccount, userSession.userId)
+        return coachMarkSwitchAccount
+    }
+
+    private fun getCoachMarkShortsEntryPoint(): CoachMark2Item? {
+        isShortsEntryPointCoachMarkShown = !coachMarkSharedPref.hasBeenShown(Key.PlayShortsEntryPoint, userSession.userId)
+        if (!isShortsEntryPointCoachMarkShown) return null
+
+        val coachMarkShortsEntryPoint = CoachMark2Item(
+            anchorView = binding.rvBannerPreparation,
+            title = getString(R.string.play_bro_banner_shorts_coachmark_title),
+            description = getString(R.string.play_bro_banner_shorts_coachmark_description),
+            position = CoachMark2.POSITION_BOTTOM,
+        )
+
+        coachMarkSharedPref.setHasBeenShown(Key.PlayShortsEntryPoint, userSession.userId)
+        return coachMarkShortsEntryPoint
+    }
+
+    private fun getCoachMarkPerformanceDashboardEntryPoint(): CoachMark2Item? {
+        isPerformanceDashboardEntryPointCoachMarkShown = !coachMarkSharedPref.hasBeenShown(Key.PerformanceDashboardEntryPointBanner, PAGE_NAME + userSession.userId)
+        if (!isPerformanceDashboardEntryPointCoachMarkShown) return null
+
+        val coachMarkPerformanceDashboard = CoachMark2Item(
+            anchorView = binding.rvBannerPreparation,
+            title = getString(contentCommonR.string.performance_dashboard_coachmark_title),
+            description = getString(contentCommonR.string.performance_dashboard_coachmark_subtitle),
+            position = CoachMark2.POSITION_BOTTOM,
+        )
+
+        coachMarkSharedPref.setHasBeenShown(Key.PerformanceDashboardEntryPointBanner, PAGE_NAME + userSession.userId)
+        return coachMarkPerformanceDashboard
+    }
+
+    private fun setupCoachMark(coachMarkItem: CoachMark2Item) {
         fun onDismissCoachMark() {
-            if(isShortsEntryPointCoachMarkShown)
-                analytic.clickCloseShortsEntryPointCoachMark(parentViewModel.authorId, parentViewModel.authorType)
-
+            if (isShortsEntryPointCoachMarkShown) {
+                analytic.clickCloseShortsEntryPointCoachMark(
+                    parentViewModel.authorId,
+                    parentViewModel.authorType
+                )
+            }
+            if (isPerformanceDashboardEntryPointCoachMarkShown) {
+                analytic.onClickCloseCoachMarkPerformanceDashboardPrepPage(parentViewModel.authorId)
+            }
             coachMark?.dismissCoachMark()
         }
 
-        if(coachMark != null) return
+        if (coachMarkItems.contains(coachMarkItem)) return
 
-        val coachMarkItems = mutableListOf<CoachMark2Item>().apply {
-            isShortsEntryPointCoachMarkShown = parentViewModel.isShortVideoAllowed && !coachMarkSharedPref.hasBeenShown(ContentCoachMarkSharedPref.Key.PlayShortsEntryPoint, userSession.userId)
+        coachMarkItems.add(coachMarkItem)
 
-            if(isShortsEntryPointCoachMarkShown) {
-                add(
-                    CoachMark2Item(
-                        anchorView = binding.bannerShorts,
-                        title = getString(R.string.play_bro_banner_shorts_coachmark_title),
-                        description = getString(R.string.play_bro_banner_shorts_coachmark_description),
-                        position = CoachMark2.POSITION_BOTTOM,
-                    )
-                )
-                coachMarkSharedPref.setHasBeenShown(ContentCoachMarkSharedPref.Key.PlayShortsEntryPoint, userSession.userId)
-            }
+        if (coachMark == null) coachMark = CoachMark2(requireContext())
+        coachMark?.showCoachMark(ArrayList(coachMarkItems))
 
-            if(parentViewModel.isAllowChangeAccount && viewModel.isFirstSwitchAccount) {
-                add(
-                    CoachMark2Item(
-                        anchorView = binding.toolbarContentCommon,
-                        title = getString(contentCommonR.string.sa_coach_mark_title),
-                        description = getString(contentCommonR.string.sa_livestream_coach_mark_subtitle),
-                        position = CoachMark2.POSITION_BOTTOM,
-                    )
-                )
-                viewModel.setNotFirstSwitchAccount()
-            }
+        autoScrollToPerformanceDashBoardBanner()
+
+        if (coachMarkItems.size == 1) {
+            coachMark?.simpleCloseIcon?.setOnClickListener { onDismissCoachMark() }
+        } else {
+            coachMark?.stepCloseIcon?.setOnClickListener { onDismissCoachMark() }
         }
+    }
 
-        if(coachMarkItems.isNotEmpty()) {
-
-            if(coachMark == null) {
-                coachMark = CoachMark2(requireContext())
+    private fun autoScrollToPerformanceDashBoardBanner() {
+        coachMark?.setStepListener(object : CoachMark2.OnStepListener {
+            override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
+                if (coachMarkItem.title == getString(contentCommonR.string.performance_dashboard_coachmark_title)) {
+                    val performanceDashboardPosition = adapterBanner.getPerformanceDashboardPosition()
+                    val autoScrollPosition = if (performanceDashboardPosition != -1) performanceDashboardPosition else return
+                    binding.rvBannerPreparation.smoothScrollToPosition(autoScrollPosition)
+                }
             }
-
-            coachMark?.showCoachMark(ArrayList(coachMarkItems))
-
-            if(coachMarkItems.size == 1) {
-                coachMark?.simpleCloseIcon?.setOnClickListener { onDismissCoachMark() }
-            }
-            else {
-                coachMark?.stepCloseIcon?.setOnClickListener { onDismissCoachMark() }
-            }
-        }
+        })
     }
 
     private fun observeConfigInfo() {
@@ -559,48 +691,25 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                 is NetworkResult.Loading -> showMainComponent(false)
                 is NetworkResult.Success -> showMainComponent(true)
                 is NetworkResult.Fail -> showMainComponent(true)
+                else -> {
+                    // no-op
+                }
             }
         }
     }
 
-    private fun observeTitle() {
-        parentViewModel.observableTitle.observe(viewLifecycleOwner) {
-            binding.viewPreparationMenu.isSetTitleChecked(it.title.isNotEmpty())
-        }
-
+    private fun observeUploadTitleEvent() {
         viewModel.observableUploadTitleEvent.observe(viewLifecycleOwner) {
             when (val content = it.peekContent()) {
                 is NetworkResult.Fail -> {
-                    binding.formTitle.setLoading(false)
-                    toaster.showError(content.error, content.error.message)
+                    val errorMessage = if (content.error.isNetworkError) getString(R.string.play_bro_default_error_message)
+                    else content.error.message
+                    getSetupTitleBottomSheet().failSubmit(errorMessage)
                 }
                 is NetworkResult.Success -> {
-                    if (!it.hasBeenHandled) {
-                        binding.formTitle.setLoading(false)
-                        showTitleForm(false)
-                    }
+                    if (!it.hasBeenHandled) getSetupTitleBottomSheet().successSubmit()
                 }
-            }
-        }
-    }
-
-    private fun observeCover() {
-        parentViewModel.observableCover.observe(viewLifecycleOwner) {
-            when (val croppedCover = it.croppedCover) {
-                is CoverSetupState.Cropped.Uploaded -> {
-                    if (croppedCover.coverImage.toString().isNotEmpty() &&
-                        croppedCover.coverImage.toString().contains("http")
-                    ) {
-                        binding.viewPreparationMenu.isSetCoverChecked(true)
-                        binding.formCover.setCover(croppedCover.coverImage.toString())
-                    } else if (!croppedCover.localImage?.toString().isNullOrEmpty()) {
-                        binding.viewPreparationMenu.isSetCoverChecked(true)
-                        binding.formCover.setCover(croppedCover.localImage.toString())
-                    } else {
-                        binding.viewPreparationMenu.isSetCoverChecked(false)
-                        binding.formCover.setInitialCover()
-                    }
-                }
+                else -> {}
             }
         }
     }
@@ -618,6 +727,9 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                     analytic.viewErrorOnFinalSetupPage(getProperErrorMessage(it.error))
                 }
                 NetworkResult.Loading -> showLoading(true)
+                else -> {
+                    // no-op
+                }
             }
         }
     }
@@ -625,12 +737,11 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     private fun observeUiState() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             parentViewModel.uiState.withCache().collectLatest { (prevState, state) ->
+                renderPreparationMenu(prevState?.menuList, state.menuList)
                 renderAccountInfo(prevState?.selectedContentAccount, state.selectedContentAccount)
-                renderProductMenu(prevState?.selectedProduct, state.selectedProduct)
-                renderScheduleMenu(state.schedule)
                 renderSchedulePicker(prevState?.schedule, state.schedule)
                 renderAccountStateInfo(prevState?.accountStateInfo, state.accountStateInfo)
-                renderShortsEntryPoint(prevState?.channel, state.channel)
+                renderBannerPreparationPage(prevState?.bannerPreparation, state.bannerPreparation)
             }
         }
     }
@@ -690,6 +801,12 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                         showLoading(false)
                         handleBroadcastError(event.error)
                     }
+                    is PlayBroadcastEvent.AutoGeneratedCoverToasterUpdate -> {
+                        productSetupPendingToaster = getString(R.string.play_setup_cover_auto_generated_toaster_update_cover_from_product)
+                    }
+                    is PlayBroadcastEvent.AutoGeneratedCoverToasterDelete -> {
+                        productSetupPendingToaster = getString(R.string.play_setup_cover_auto_generated_toaster_delete_cover_from_product)
+                    }
                     else -> {}
                 }
             }
@@ -701,7 +818,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
             eventBus.subscribe().collect { event ->
                 when (event) {
                     Event.ClickSetSchedule -> {
-                        requireTitleAndCover { showScheduleBottomSheet() }
+                        requireTitleAndCover { openScheduleBottomSheet() }
                     }
                     is Event.SaveSchedule -> {
                         parentViewModel.submitAction(
@@ -722,6 +839,52 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         )
     }
 
+    override fun onBannerClick(data: PlayBroadcastPreparationBannerModel) {
+        when (data.type) {
+            TYPE_SHORTS -> {
+                analytic.clickShortsEntryPoint(parentViewModel.authorId, parentViewModel.authorType)
+                val intent = RouteManager.getIntent(requireContext(), PlayShorts.generateApplink())
+                startActivityForResult(intent, REQ_PLAY_SHORTS)
+            }
+            TYPE_DASHBOARD -> {
+                analytic.onClickPerformanceDashboardEntryPointPrepPage(parentViewModel.authorId)
+                RouteManager.route(requireContext(), PLAY_BROADCASTER_PERFORMANCE_DASHBOARD_APP_LINK)
+            }
+        }
+    }
+
+    private fun renderPreparationMenu(
+        prevState: List<DynamicPreparationMenu>?,
+        state: List<DynamicPreparationMenu>,
+    ) {
+        if(prevState == state) return
+
+        binding.preparationMenu.submitMenu(state)
+
+        if(state.isMenuExists(DynamicPreparationMenu.Menu.FaceFilter)) {
+            if(!beautificationAnalyticStateHolder.isBeautificationMenuHasBeenShownOnPreparationPage) {
+                beautificationAnalyticStateHolder.isBeautificationMenuHasBeenShownOnPreparationPage = true
+
+                analytic.openScreenBeautificationEntryPointOnPreparationPage()
+            }
+        }
+
+        if(!coachMarkSharedPref.hasBeenShown(ContentCoachMarkSharedPref.Key.PlayBroadcasterFaceFilter) &&
+            parentViewModel.isTitleMenuChecked
+        ) {
+            binding.preparationMenu.showCoachMark(
+                DynamicPreparationMenu.Menu.FaceFilter,
+                getString(R.string.play_broadcaster_face_filter_coachmark_title),
+                getString(R.string.play_broadcaster_face_filter_coachmark_description)
+            ) {
+                analytic.clickCloseBeautificationCoachmark(parentViewModel.selectedAccount)
+            }
+
+            analytic.viewBeautificationCoachmark(parentViewModel.selectedAccount)
+            coachMarkSharedPref.setHasBeenShown(ContentCoachMarkSharedPref.Key.PlayBroadcasterFaceFilter)
+        }
+    }
+
     private fun renderAccountInfo(
         prevState: ContentAccountUiModel?,
         state: ContentAccountUiModel
@@ -733,25 +896,11 @@ class PlayBroadcastPreparationFragment @Inject constructor(
             subtitle = state.name
             icon = state.iconUrl
         }
-    }
 
-    private fun renderProductMenu(
-        prevState: List<ProductTagSectionUiModel>?,
-        state: List<ProductTagSectionUiModel>
-    ) {
-        if (prevState != state) {
-            binding.viewPreparationMenu.isSetProductChecked(
-                state.any { it.products.isNotEmpty() }
-            )
+        if (parentViewModel.isAllowChangeAccount) {
+            val coachMark = getCoachMarkSwitchAccount()
+            if (coachMark != null) setupCoachMark(coachMark)
         }
-    }
-
-    private fun renderScheduleMenu(
-        state: ScheduleUiModel
-    ) {
-        binding.viewPreparationMenu.isSetScheduleChecked(
-            state.schedule is BroadcastScheduleUiModel.Scheduled
-        )
     }
 
     private fun renderSchedulePicker(
@@ -796,50 +945,65 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         }
     }
 
-    private fun renderShortsEntryPoint(
-        prev: PlayChannelUiState?,
-        curr: PlayChannelUiState,
+    private fun renderBannerPreparationPage(
+        prev: List<PlayBroadcastPreparationBannerModel>?,
+        curr: List<PlayBroadcastPreparationBannerModel>
     ) {
-        if(prev?.shortVideoAllowed == curr.shortVideoAllowed) return
+        if (prev == null || prev == curr) return
 
-        if(curr.shortVideoAllowed && playShortsEntryPointRemoteConfig.isShowEntryPoint()) {
-            binding.bannerShorts.show()
-            analytic.viewShortsEntryPoint(parentViewModel.authorId, parentViewModel.authorType)
+        adapterBanner.setItemsAndAnimateChanges(curr)
+        if (curr.size > 1) binding.pcBannerPreparation.setIndicator(curr.size)
+        else binding.pcBannerPreparation.setIndicator(0)
+
+        curr.forEachIndexed { index, model ->
+            if (model.type == TYPE_DASHBOARD) {
+                analytic.onViewPerformanceDashboardEntryPointPrepPage(
+                    parentViewModel.authorId,
+                    creativeSlot = index + 1,
+                )
+            }
         }
-        else {
-            binding.bannerShorts.gone()
+
+        val containsShorts = curr.find { it.type == TYPE_SHORTS } != null
+        val containsDashboard = curr.find { it.type == TYPE_DASHBOARD } != null
+
+        if (containsShorts) {
+            val coachMark = getCoachMarkShortsEntryPoint()
+            if (coachMark != null) setupCoachMark(coachMark)
+        }
+
+        if (containsDashboard) {
+            val coachMark = getCoachMarkPerformanceDashboardEntryPoint()
+            if (coachMark != null) {
+                analytic.onViewCoachMarkPerformanceDashboardPrepPage(parentViewModel.authorId)
+                setupCoachMark(coachMark)
+            }
         }
     }
 
     /** Form */
-    private fun showTitleForm(isShow: Boolean) {
-        if (isShow) {
-            showMainComponent(false)
-
-            binding.formTitle.setTitle(parentViewModel.channelTitle)
-            binding.formTitle.setPlaceholder(getString(R.string.play_bro_title_form_hint))
-            binding.formTitle.setLoading(false)
-            binding.formTitle.visibility = View.VISIBLE
-        } else {
-            showMainComponent(true)
-
-            binding.formTitle.visibility = View.GONE
-        }
+    private fun openSetupTitleBottomSheet() {
+        childFragmentManager.executePendingTransactions()
+        val existingFragment =
+            childFragmentManager.findFragmentByTag(PlayBroadcastSetupTitleBottomSheet.TAG)
+        if (existingFragment is PlayBroadcastSetupTitleBottomSheet && existingFragment.isVisible) return
+        getSetupTitleBottomSheet().show(childFragmentManager)
     }
 
-    private fun showCoverForm(isShow: Boolean) {
-        if (isShow) {
-            showMainComponent(false)
+    private fun getSetupTitleBottomSheet() = PlayBroadcastSetupTitleBottomSheet
+        .getFragment(childFragmentManager, requireActivity().classLoader)
 
-            binding.formCover.setTitle(parentViewModel.channelTitle)
-            binding.formCover.setAuthorName(parentViewModel.authorName)
-        } else {
-            showMainComponent(true)
-        }
-        binding.formCover.showWithCondition(isShow)
+    private fun openSetupCoverBottomSheet() {
+        childFragmentManager.executePendingTransactions()
+        val existingFragment = childFragmentManager.findFragmentByTag(PlayBroadcastSetupCoverBottomSheet.TAG)
+        if (existingFragment is PlayBroadcastSetupCoverBottomSheet && existingFragment.isVisible) return
+        getSetupCoverBottomSheet()?.show(childFragmentManager)
     }
 
-    private fun showScheduleBottomSheet() {
+    private fun getSetupCoverBottomSheet() = PlayBroadcastSetupCoverBottomSheet
+        .getFragment(childFragmentManager, requireActivity().classLoader)
+
+    private fun openScheduleBottomSheet() {
         val schedule = parentViewModel.uiState.value.schedule
         schedulePicker.show(
             minDate = GregorianCalendar().apply {
@@ -866,67 +1030,56 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         )
     }
 
-    private fun showAccountBottomSheet() {
-        try {
-            ContentAccountTypeBottomSheet
-                .getFragment(childFragmentManager, requireActivity().classLoader)
-                .show(childFragmentManager)
-        } catch (e: Exception) {}
+    private fun openAccountBottomSheet() {
+        ContentAccountTypeBottomSheet
+            .getFragment(childFragmentManager, requireActivity().classLoader)
+            .show(childFragmentManager)
     }
 
-    /** Callback Preparation Menu */
-    override fun onClickSetTitle() {
-        analytic.clickSetupTitleMenu()
-
-        showTitleForm(true)
-    }
-
-    override fun onClickSetCover() {
-        analytic.clickSetupCoverMenu()
-
-        showCoverForm(true)
-    }
-
-    override fun onClickSetProduct() {
-        analytic.clickSetupProductMenu()
-
-        childFragmentManager.beginTransaction()
-            .add(ProductSetupFragment::class.java, null, null)
-            .commit()
-    }
-
-    override fun onClickSetSchedule() {
-        eventBus.emit(Event.ClickSetSchedule)
+    private fun openSetupProductBottomSheet() {
+        childFragmentManager.commit {
+            add(ProductSetupFragment::class.java, null, null)
+        }
     }
 
     /** Callback Title Form */
-    override fun onCloseTitleForm(view: TitleFormView) {
-        hideKeyboard()
-        activity?.onBackPressed()
-    }
-
-    override fun onTitleSaved(view: TitleFormView, title: String) {
+    override fun submitTitle(title: String) {
         analytic.clickSubmitTitle()
-
-        hideKeyboard()
-        binding.formTitle.setLoading(true)
         viewModel.uploadTitle(parentViewModel.authorId, title)
     }
 
     /** Callback Cover Form */
-    override fun onCloseCoverForm() {
-        activity?.onBackPressed()
+    override fun setupCoverProductClicked() {
+        openSetupProductBottomSheet()
     }
 
-    override fun onClickCoverPreview(isEditCover: Boolean) {
-        if (isEditCover) analytic.clickEditCover() else analytic.clickAddNewCover()
-        openCoverSetupFragment()
+    override fun dismissSetupCover(source: Int) {
+        if (getSetupCoverBottomSheet()?.isAdded == true) getSetupCoverBottomSheet()?.dismiss()
+
+        if (parentViewModel.uploadedCoverSource == TAB_AUTO_GENERATED && source != TAB_AUTO_GENERATED) {
+            toaster.showToaster(getString(R.string.play_setup_cover_upload_image_toaster))
+        } else if (parentViewModel.uploadedCoverSource == TAB_UPLOAD_IMAGE && source != TAB_UPLOAD_IMAGE) {
+            toaster.showToaster(getString(R.string.play_setup_cover_auto_generated_toaster))
+        }
+        parentViewModel.submitAction(PlayBroadcastAction.SetCoverUploadedSource(source))
     }
 
     /** Others */
     private fun showMainComponent(isShow: Boolean) {
-        if (!isShow) coachMark?.dismissCoachMark()
+        if (!isShow) {
+            coachMark?.dismissCoachMark()
+            binding.preparationMenu.dismissCoachMark()
+        }
         binding.groupPreparationMain.showWithCondition(isShow)
+    }
+
+    private fun showOverlayBackground(isShow: Boolean) {
+        if(isShow) {
+            binding.root.setBackgroundResource(R.color.play_bro_dms_preparation_overlay)
+        }
+        else {
+            binding.root.setBackgroundResource(0)
+        }
     }
 
     private fun getProperErrorMessage(err: Throwable): String {
@@ -1025,13 +1178,6 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         }
     }
 
-    private fun openCoverSetupFragment() {
-        val setupClass = PlayBroadcastSetupBottomSheet::class.java
-        val fragmentFactory = childFragmentManager.fragmentFactory
-        val setupFragment = fragmentFactory.instantiate(requireContext().classLoader, setupClass.name) as PlayBroadcastSetupBottomSheet
-        setupFragment.show(childFragmentManager)
-    }
-
     private fun openBroadcastLivePage() {
         broadcastCoordinator.navigateToFragment(PlayBroadcastUserInteractionFragment::class.java)
         analytic.openBroadcastScreen(parentViewModel.channelId)
@@ -1104,29 +1250,23 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         childFragmentManager.executePendingTransactions()
         val existingFragment = childFragmentManager.findFragmentByTag(UGCOnboardingParentFragment.TAG)
         if (existingFragment is UGCOnboardingParentFragment && existingFragment.isVisible) return
-        try {
-            val bundle = UGCOnboardingParentFragment.createBundle(onboardingType)
+        val bundle = UGCOnboardingParentFragment.createBundle(onboardingType)
 
-            childFragmentManager.beginTransaction()
-                .add(UGCOnboardingParentFragment::class.java, bundle, UGCOnboardingParentFragment.TAG)
-                .commit()
-        } catch (e: Exception) { }
+        childFragmentManager.beginTransaction()
+            .add(UGCOnboardingParentFragment::class.java, bundle, UGCOnboardingParentFragment.TAG)
+            .commit()
     }
 
     private fun showWarningInfoBottomSheet() {
-        try {
-            WarningInfoBottomSheet
-                .getFragment(childFragmentManager, requireActivity().classLoader)
-                .show(childFragmentManager)
-        } catch (e: Exception) { }
+        WarningInfoBottomSheet
+            .getFragment(childFragmentManager, requireActivity().classLoader)
+            .show(childFragmentManager)
     }
 
     private fun showTermsAndConditionBottomSheet() {
-        try {
-            SellerTncBottomSheet
-                .getFragment(childFragmentManager, requireActivity().classLoader)
-                .show(childFragmentManager)
-        } catch (e: Exception) { }
+        SellerTncBottomSheet
+            .getFragment(childFragmentManager, requireActivity().classLoader)
+            .show(childFragmentManager)
     }
 
     private fun showLoading(isShow: Boolean) {
@@ -1149,7 +1289,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
 
     companion object {
         private const val TIMER_TEXT_COUNTDOWN_INTERVAL = 1000L
-
+        private const val PAGE_NAME = "prep page"
         private const val REQ_PLAY_SHORTS = 12323
     }
 

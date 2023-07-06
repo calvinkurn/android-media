@@ -5,13 +5,12 @@ import com.tokopedia.media.editor.analytics.editordetail.EditorDetailAnalytics
 import com.tokopedia.media.editor.analytics.editordetail.EditorDetailAnalyticsImpl
 import com.tokopedia.media.editor.analytics.editorhome.EditorHomeAnalytics
 import com.tokopedia.media.editor.analytics.editorhome.EditorHomeAnalyticsImpl
+import com.tokopedia.media.editor.data.AddTextColorProvider
+import com.tokopedia.media.editor.data.AddTextColorProviderImpl
 import com.tokopedia.media.editor.data.repository.*
-import com.tokopedia.picker.common.cache.EditorAddLogoCacheManager
-import com.tokopedia.picker.common.cache.EditorAddLogoCacheManagerImpl
-import com.tokopedia.picker.common.cache.EditorCacheManager
-import com.tokopedia.picker.common.cache.EditorParamCacheManager
-import com.tokopedia.picker.common.cache.PickerCacheManager
-import com.tokopedia.picker.common.cache.PickerParamCacheManager
+import com.tokopedia.media.editor.data.FeatureToggleManager
+import com.tokopedia.media.editor.data.FeatureToggleManagerImpl
+import com.tokopedia.picker.common.cache.*
 import dagger.Binds
 import dagger.Module
 
@@ -35,6 +34,12 @@ abstract class EditorModule {
     internal abstract fun provideEditorAddLogoCacheManager(
         manager: EditorAddLogoCacheManagerImpl
     ): EditorAddLogoCacheManager
+
+    @Binds
+    @ActivityScope
+    internal abstract fun provideEditorAddTextCacheManager(
+        manager: EditorAddTextCacheManagerImpl
+    ): EditorAddTextCacheManager
 
     @Binds
     @ActivityScope
@@ -86,6 +91,18 @@ abstract class EditorModule {
 
     @Binds
     @ActivityScope
+    internal abstract fun provideBitmapCreationRepository(
+        repository: BitmapCreationRepositoryImpl
+    ): BitmapCreationRepository
+
+    @Binds
+    @ActivityScope
+    internal abstract fun provideAddTextFilterRepository(
+        repository: AddTextFilterRepositoryImpl
+    ): AddTextFilterRepository
+
+    @Binds
+    @ActivityScope
     internal abstract fun provideSaveEditorHomeAnalytics(
         analytics: EditorHomeAnalyticsImpl
     ): EditorHomeAnalytics
@@ -96,4 +113,15 @@ abstract class EditorModule {
         analytics: EditorDetailAnalyticsImpl
     ): EditorDetailAnalytics
 
+    @Binds
+    @ActivityScope
+    internal abstract fun provideAddTextColorCollection(
+        textColorCollection: AddTextColorProviderImpl
+    ): AddTextColorProvider
+
+    @Binds
+    @ActivityScope
+    internal abstract fun provideFeatureToggleManager(
+        featureToggleManager: FeatureToggleManagerImpl
+    ): FeatureToggleManager
 }

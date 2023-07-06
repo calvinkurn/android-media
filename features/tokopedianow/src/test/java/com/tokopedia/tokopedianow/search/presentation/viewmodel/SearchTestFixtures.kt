@@ -11,8 +11,8 @@ import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWa
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.tokopedianow.common.domain.usecase.SetUserPreferenceUseCase
+import com.tokopedia.tokopedianow.common.service.NowAffiliateService
 import com.tokopedia.tokopedianow.search.domain.model.SearchModel
-import com.tokopedia.tokopedianow.searchcategory.utils.ABTestPlatformWrapper
 import com.tokopedia.tokopedianow.searchcategory.utils.ChooseAddressWrapper
 import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW
 import com.tokopedia.tokopedianow.util.SearchCategoryDummyUtils.dummyChooseAddressData
@@ -21,6 +21,7 @@ import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.tokopedianow.searchcategory.cartservice.CartService
+import com.tokopedia.unit.test.rule.UnconfinedTestRule
 import io.mockk.CapturingSlot
 import io.mockk.every
 import io.mockk.mockk
@@ -32,6 +33,9 @@ open class SearchTestFixtures {
 
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
+
+    @get:Rule
+    val coroutineTestRule = UnconfinedTestRule()
 
     protected val defaultKeyword = "samsung"
     protected val defaultQueryParamMap = mapOf(SearchApiConst.Q to defaultKeyword)
@@ -47,7 +51,7 @@ open class SearchTestFixtures {
     protected val getRecommendationUseCase = mockk<GetRecommendationUseCase>(relaxed = true)
     protected val setUserPreferenceUseCase = mockk<SetUserPreferenceUseCase>(relaxed = true)
     protected val chooseAddressWrapper = mockk<ChooseAddressWrapper>(relaxed = true)
-    protected val abTestPlatformWrapper = mockk<ABTestPlatformWrapper>(relaxed = true)
+    protected val affiliateService = mockk<NowAffiliateService>(relaxed = true)
     protected val userSession = mockk<UserSessionInterface>(relaxed = true).also {
         every { it.isLoggedIn } returns true
     }
@@ -86,7 +90,7 @@ open class SearchTestFixtures {
                 getWarehouseUseCase,
                 setUserPreferenceUseCase,
                 chooseAddressWrapper,
-                abTestPlatformWrapper,
+                affiliateService,
                 userSession,
         )
     }
@@ -107,7 +111,6 @@ open class SearchTestFixtures {
     ) = mapOf(
             SearchApiConst.SOURCE to TOKONOW,
             SearchApiConst.DEVICE to SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_DEVICE,
-            SearchApiConst.USER_WAREHOUSE_ID to chooseAddressData.warehouse_id,
             SearchApiConst.USER_CITY_ID to chooseAddressData.city_id,
             SearchApiConst.USER_ADDRESS_ID to chooseAddressData.address_id,
             SearchApiConst.USER_DISTRICT_ID to chooseAddressData.district_id,

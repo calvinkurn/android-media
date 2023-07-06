@@ -1,4 +1,4 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
     <string name="app_name">top_ads_create</string>
     <string name="mulai_beriklan">Mulai Beriklan</string>
     <string name="apa_itu_group_iklan">Apa itu Grup Iklan?</string>
@@ -17,8 +17,8 @@
     <string name="masukkan_kata_kunci_yang_sesuai_untuk_produkmu_secara_manual">Masukkan kata kunci yang sesuai untuk produkmu secara manual.</string>
     <string name="atur_biaya_iklan_manual">Atur biaya iklan manual</string>
     <string name="pasang_biaya_iklan_sesuai_dengan_rekomendasi">Pasang biaya iklan sesuai dengan rekomendasi.</string>
-    <string name="gunakan_iklan_manual">Mulai Iklan Manual</string>
-    <string name="mulai_iklan_otomatis">Mulai Iklan Otomatis</string>
+    <string name="gunakan_iklan_manual">Buat Iklan Manual</string>
+    <string name="mulai_iklan_otomatis">Buat Iklan Otomatis</string>
     <string name="urutkan">Urutkan</string>
     <string name="harga_terendah">Harga Terendah</string>
     <string name="harga_tertinggi">Harga Tertinggi</string>
@@ -35,6 +35,7 @@
     <string name="duplicate_group_name_error_wrong">Nama Grup Anda telah digunakan</string>
     <string name="atur_beberapa_iklan_sekaligus_ke_dalam_satu_group_sesuai_kategori_produk">Atur beberapa iklan sekaligus ke dalam satu grup sesuai kategori produk.</string>
     <string name="group_iklan">Grup Iklan</string>
+    <string name="no_of_products">Jumlah Produk</string>
     <string name="oops_produk_ntidak_ditemukan">Oops, produk tidak ditemukan</string>
     <string name="tip_biaya_iklan">Tips Biaya Iklan</string>
     <string name="tip_biaya_iklan_title">Tips biaya iklan</string>
@@ -84,6 +85,7 @@
     <string name="info_text_summary">Sistem TopAds akan melindungi iklanmu dari klik yang tidak valid.</string>
     <string name="anggaran_dibatasi">Anggaran harian Dibatasi</string>
     <string name="ads_active">Aktif</string>
+    <string name="topads_non_active">Nonaktif</string>
     <string name="ads_deactive">Tidak Aktif</string>
     <string name="ads_inprogress">Dalam Proses</string>
     <string name="ads_not_delivered">Tidak Tampil</string>
@@ -109,13 +111,14 @@
     <string name="topads_create_onboarding_screen_desc2">Dengan TopAds, produkmu dapat menjangkau  lebih banyak calon pembeli dan berpotensi meningkatkan penjualan.</string>
     <string name="topads_create_onboarding_screen_title3">Beriklan tanpa ribet</string>
     <string name="topads_create_onboarding_screen_desc3">Cukup bayar sesuai hasil, produkmu akan diiklankan lebih efektif dan tepat sasaran. Lebih mudah beriklan hanya dengan 1x klik.</string>
-    <string name="iklan_otomatis_desc1">Produk dipilihkan secara rutin\n oleh TopAds</string>
-    <string name="iklan_otomatis_desc2">Kata kunci &amp; biaya iklan diatur secara rutin\n oleh TopAds</string>
-    <string name="iklan_otomatis_desc3">Kamu cukup atur anggaran harian saja</string>
+    <string name="iklan_otomatis_desc1">Maksimalkan jangkauan iklan dengan\n<b>pemilihan produk otomatis</b></string>
+    <string name="iklan_otomatis_desc2"><b>Kata kunci &amp; biaya iklan diatur</b> secara\nrutin oleh TopAds</string>
+    <string name="iklan_otomatis_desc3"><b>Atur anggaran harian</b> sendiri sesuai\ndengan kebutuhan beriklan</string>
 
-    <string name="iklan_manual_desc1">Bebas pilih produk yang ingin diiklankan</string>
-    <string name="iklan_manual_desc2">Bebas pilih kata kunci &amp; atur biaya iklan</string>
-    <string name="iklan_manual_desc3">Bebas atur anggaran harian </string>
+    <string name="iklan_manual_desc1"><b>Bebas pilih produk</b> yang ingin diiklankan</string>
+    <string name="iklan_manual_desc2">Bebas <b>pilih kata kunci &amp; atur biaya</b> iklan\nsesuai budget</string>
+    <string name="iklan_manual_desc3">Bebas atur <b>anggaran harian</b></string>
+    <string name="iklan_manual_desc4">Buat iklan lebih mudah karena bisa <b>Diatur\nSistem TopAds</b></string>
     <string name="autoads_selanjutnya">Selanjutnya</string>
 
     <!-- Manual Summary Page-->
@@ -144,7 +147,7 @@
     <string name="topads_create_tip_sheet_desc2">Pilih kata kunci dengan jumlah pencarian tertinggi agar iklanmu dapat <![CDATA["<font color='#F531353B'><b>menjangkau lebih banyak calon pembeli.</b></font> Data jumlah pencarian merupakan data dari <font color='#F531353B'><b> 30 hari terakhir. </b></font>.]]></string>
     <string name="topads_create_tip_sheet_desc4"><p><p>Sistem iklan di TopAds bersifat lelang, maka <![CDATA["<font color='#F531353B'><b> kompetisi tinggi </b></font> butuh <font color='#F531353B'><b> biaya iklan lebih tinggi</b></font> untuk tampil dan <font color='#F531353B'><b> kompetisi rendah </b></font> butuh <font color='#F531353B'><b> biaya iklan  </b></font>yang relatif <font color='#F531353B'><b> lebih rendah. </b></font>]]></p></p></string>
 
-    <!-- Search activity-->
+<!-- Search activity-->
     <string name="topads_create_empty_view_title">Tidak ada kata kunci ditemukan</string>
     <string name="topads_create_empty_view_desc">Coba cari kata kunci, ya.</string>
     <string name="topads_create_search_loading">Mencari kata kunci...</string>
@@ -152,6 +155,7 @@
     <string name="biaya_iklan_tip_1">Semakin tinggi biaya iklanmu, maka semakin \ntinggi posisi iklanmu di halaman pencarian.</string>
     <string name="biaya_iklan_tip_2">Pakai rekomendasi biaya agar dapat\n menyaingi iklan dari penjual lain.</string>
     <string name="biaya_iklan_tip_3">Biaya iklan hanya dikenakan jika ada calon \npembeli yang klik iklanmu.</string>
+    <string name="learn_more">Pelajari Selengkapnya</string>
 
     <!-- MpAdCreationOnboarding -->
     <string name="mp_ad_creation_onboarding_text">Beriklan dengan TopAds terbukti meningkatkan jangkauan pembeli, lho. Yuk, rasakan sendiri keuntungannya dengan mulai beriklan.</string>
@@ -191,6 +195,12 @@
     <string name="product_successfully_advertised">Produk berhasil diiklankan!</string>
     <string name="success_dailog_description">Kamu bisa tambah produk, atur biaya iklan, kata kunci, dan anggaran harian dengan klik tombol Atur Grup Iklan.</string>
     <string name="manage_ads_group">Atur Grup Iklan</string>
+    <string name="topads_ad_status">Status Iklan</string>
+    <string name="topads_create_failed_to_load">Gagal Memuat</string>
+    <string name="your_product_ad_performance">Performa Iklan Produkmu</string>
+    <string name="product_and_advertising_costs_are_set_automatically_by_topads">Produk dan biaya iklan diatur otomatis oleh TopAds.</string>
+    <string name="see_group_settings">Lihat Pengaturan Grup</string>
+    <string name="setup_auto_ads">Atur Iklan Otomatis</string>
     <string name="stay_here">Tetap di Sini</string>
     <string name="ads_created_successfully_but_cant_appear_yet">Iklan berhasil dibuat, tapi belum bisa tampil nih</string>
     <string name="success_group_creation_insufficient_credits_text">Saat ini, Kredit TopAds-mu Rpx.xxx dan belum cukup untuk beriklan. Tambah Kredit TopAds dulu, yuk.</string>
@@ -203,6 +213,59 @@
     <string name="min_budget_rp">Min. anggaran Rp</string>
     <string name="max_budget_rp">Maks. anggaran Rp</string>
     <string name="ad_groups_character_limit_error_msg">Grup iklan maksimal 70 karakter</string>
+    <string name="see_ads_performance_tips_heading">Tips optimalkan iklan</string>
+    <string name="keywords">Kata Kunci</string>
+    <string name="topads_ads_performance_top_keyword">teratas</string>
+    <string name="topads_ads_performance_performa_tampil">Performa tampil</string>
+    <string name="topads_ads_performance_top_frequently">Sering Teratas</string>
+    <string name="topads_ads_performance_top_rarity">Jarang Teratas</string>
+    <string name="topads_ads_performance_lose_competition">Kalah Saing</string>
+    <string name="topads_ads_performance_not_rated">Belum Dinilai</string>
+    <string name="topads_ads_performance_count">%sx teratas dari %s total tampil</string>
+    <string name="topads_ads_performance_status_info_title">Kenapa iklanmu tidak tampil?</string>
+    <string name="topads_ads_performance_choose_time_range">Pilih rentang waktu</string>
+    <string name="topads_ads_performance_ad_placement">Penempatan Iklan</string>
+    <string name="topads_ads_performance_all_placements_filter_title">Semua Penempatan</string>
+    <string name="topads_ads_performance_all_placements_filter_desc">Iklan produk yang tampil di halaman pencarian dan rekomendasi.</string>
+    <string name="topads_ads_performance_in_search_filter_title">Di Pencarian</string>
+    <string name="topads_ads_performance_in_search_filter_desc">Iklan produk yang tampil di halaman pencarian</string>
+    <string name="topads_ads_performance_in_recommendation_filter_title">Di Rekomendasi</string>
+    <string name="topads_ads_performance_in_recommendation_filter_desc">Iklan produk yang tampil di bagian rekomendasi</string>
+    <string name="topads_ads_performance_view_more">Lihat Selengkapnya</string>
+    <string name="topads_ads_performance_not_active_ads_automatic_info">Iklan tidak tampil karena Kredit TopAds tidak cukup.</string>
+    <string name="topads_ads_price_format_1">Rp%s</string>
+    <string name="topads_ads_price_format_2">%s dari Rp%s</string>
+    <string name="topads_ads_price_format_3">Rp %s</string>
+    <string name="topads_ads_price_format_4">Rp %s dari %s</string>
+    <string name="topads_ads_performance_status_info_description"><![CDATA[
+        <ul>
+            <li>&nbsp;&nbsp;Kredit TopAds tidak mencukupi</li>
+            <li>&nbsp;&nbsp;Anggaran Harian mencapai batas maksimal</li>
+            <li>&nbsp;&nbsp;Stok produk kosong</li>
+            <li>&nbsp;&nbsp;Toko sedang tutup</li>
+            <li>&nbsp;Biaya iklan di bawah batas minimum</li>
+        </ul>
+]]></string>
+    <string name="topads_ads_performance_tips_description"><![CDATA[
+    Buat produk lebih dikenal pembeli:
+    <p>
+        <ul>
+            <li>Tulis nama produk sesuai rumus Tokopedia:  Nama Produk + Merek + Keterangan</li>
+            <li>Gunakan foto produk yang jernih</li>
+            <li>Tambahkan video produk yang menarik</li>
+            <li>Atur biaya iklan sesuai rekomendasi</li>
+            <li>Gunakan rekomendasi kata kunci</li>
+        </ul>
+    </p>
+    Tingkatkan penjualan produkmu
+    <p>
+        <ul>
+            <li>Tulis deskripsi produk yang informatif</li>
+            <li>Buat Diskon Toko untuk tarik minat pembeli</li>
+            <li>Upgrade toko ke Power Merchant untuk tingkatkan kepercayaan pembeli</li>
+        </ul>
+    </p>
+]]></string>
 
     <string-array name="sort_product_list_array">
         <item>Terlaris</item>

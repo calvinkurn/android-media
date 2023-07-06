@@ -5,6 +5,7 @@ import com.tokopedia.play.view.type.BottomInsetsState
 import com.tokopedia.play.view.type.BottomInsetsType
 import com.tokopedia.play.view.uimodel.ExploreWidgetUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
+import com.tokopedia.play.view.uimodel.VideoPropertyUiModel
 import com.tokopedia.play.view.uimodel.WarehouseInfoUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayChannelDetailUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayPartnerInfo
@@ -13,8 +14,6 @@ import com.tokopedia.play.view.uimodel.recom.PlayStatusUiModel
 import com.tokopedia.play.view.uimodel.recom.interactive.InteractiveStateUiModel
 import com.tokopedia.play.view.uimodel.recom.interactive.LeaderboardUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.TagItemUiModel
-import com.tokopedia.play.view.uimodel.recom.tagitem.VariantUiModel
-import com.tokopedia.play_common.model.result.NetworkResult
 
 /**
  * Created by jegul on 28/06/21
@@ -32,13 +31,12 @@ data class PlayViewerNewUiState(
     val tagItems: TagItemUiModel,
     val status: PlayStatusUiModel,
     val quickReply: PlayQuickReplyInfoUiModel,
-    val selectedVariant: NetworkResult<VariantUiModel>,
-    val isLoadingBuy: Boolean,
     val address: AddressWidgetUiState,
     val featuredProducts: List<PlayProductUiModel.Product>,
     val engagement: EngagementUiState,
     val followPopUp: Boolean,
     val exploreWidget: ExploreWidgetUiState,
+    val combinedState: PlayCombinedState,
 ) {
 
     companion object {
@@ -62,8 +60,6 @@ data class PlayViewerNewUiState(
                 tagItems = TagItemUiModel.Empty,
                 status = PlayStatusUiModel.Empty,
                 quickReply = PlayQuickReplyInfoUiModel.Empty,
-                selectedVariant = NetworkResult.Loading,
-                isLoadingBuy = false,
                 address = AddressWidgetUiState(
                     shouldShow = false,
                     warehouseInfo = WarehouseInfoUiModel.Empty,
@@ -72,6 +68,7 @@ data class PlayViewerNewUiState(
                 engagement = EngagementUiState.Empty,
                 followPopUp = false,
                 exploreWidget = ExploreWidgetUiState.Empty,
+                combinedState = PlayCombinedState.Empty,
             )
     }
 }
@@ -164,6 +161,21 @@ data class ExploreWidgetUiState(
             get() = ExploreWidgetUiState(
                 shouldShow = false,
                 data = ExploreWidgetUiModel.Empty,
+            )
+    }
+}
+
+data class PlayCombinedState(
+    val videoProperty: VideoPropertyUiModel,
+    val isLoadingBuy: Boolean,
+    val cartCount: Int,
+) {
+    companion object {
+        val Empty: PlayCombinedState
+            get() = PlayCombinedState(
+                videoProperty = VideoPropertyUiModel.Empty,
+                isLoadingBuy = false,
+                cartCount = 0,
             )
     }
 }

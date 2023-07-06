@@ -4,7 +4,17 @@ import com.tokopedia.content.common.types.ContentCommonUserType
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.content.common.ui.model.TermsAndConditionUiModel
 import com.tokopedia.play.broadcaster.domain.model.GetChannelResponse
-import com.tokopedia.play.broadcaster.ui.model.*
+import com.tokopedia.play.broadcaster.ui.model.BroadcastScheduleConfigUiModel
+import com.tokopedia.play.broadcaster.ui.model.ChannelStatus
+import com.tokopedia.play.broadcaster.ui.model.ConfigurationUiModel
+import com.tokopedia.play.broadcaster.ui.model.CoverConfigUiModel
+import com.tokopedia.play.broadcaster.ui.model.DurationConfigUiModel
+import com.tokopedia.play.broadcaster.ui.model.ProductTagConfigUiModel
+import com.tokopedia.play.broadcaster.ui.model.beautification.BeautificationAssetStatus
+import com.tokopedia.play.broadcaster.ui.model.beautification.BeautificationConfigUiModel
+import com.tokopedia.play.broadcaster.ui.model.beautification.FaceFilterUiModel
+import com.tokopedia.play.broadcaster.ui.model.beautification.PresetFilterUiModel
+import com.tokopedia.play.broadcaster.ui.model.config.BroadcastingConfigUiModel
 import java.util.*
 
 /**
@@ -71,9 +81,30 @@ val channelResponse = GetChannelResponse.Channel(
     )
 )
 
+val channelWithTitleResponse = GetChannelResponse.Channel(
+    basic = GetChannelResponse.ChannelBasic(
+        title = "Title",
+        coverUrl = "https://tokopedia.com",
+        channelId = "12345",
+    )
+)
+
+val channelPausedResponse = GetChannelResponse.Channel(
+    basic = GetChannelResponse.ChannelBasic(
+        title = "Title",
+        coverUrl = "https://tokopedia.com",
+        channelId = "12345",
+        status = GetChannelResponse.ChannelBasicStatus(
+            id = "3",
+            text = "pause",
+        )
+    )
+)
+
 fun buildConfigurationUiModel(
     streamAllowed: Boolean = true,
     shortVideoAllowed: Boolean = false,
+    hasContent: Boolean = false,
     channelId: String = "12345",
     channelStatus: ChannelStatus = ChannelStatus.Draft,
     durationConfig: DurationConfigUiModel = buildDurationConfigUiModel(),
@@ -82,6 +113,7 @@ fun buildConfigurationUiModel(
     countDown: Long = 0L,
     scheduleConfig: BroadcastScheduleConfigUiModel = buildBroadcastScheduleConfigUiModel(),
     tnc: List<TermsAndConditionUiModel> = emptyList(),
+    beautificationConfig: BeautificationConfigUiModel = buildBeautificationConfig(),
 ) = ConfigurationUiModel(
     streamAllowed = streamAllowed,
     shortVideoAllowed = shortVideoAllowed,
@@ -93,6 +125,8 @@ fun buildConfigurationUiModel(
     countDown = countDown,
     scheduleConfig = scheduleConfig,
     tnc = tnc,
+    hasContent = hasContent,
+    beautificationConfig = beautificationConfig,
 )
 
 private fun buildDurationConfigUiModel(
@@ -134,3 +168,60 @@ private fun buildBroadcastScheduleConfigUiModel(
     maximum = maximum,
     default = default,
 )
+
+fun buildBroadcastingConfigUiModel(): BroadcastingConfigUiModel {
+    return BroadcastingConfigUiModel(
+        audioRate = "123",
+        bitrateMode = "123",
+        fps = "123",
+        maxRetry = 1,
+        reconnectDelay = 1,
+        videoBitrate = "123",
+        videoWidth = "123",
+        videoHeight = "123",
+    )
+}
+
+fun buildBeautificationConfig(
+    presetsSize: Int = 5,
+    assetStatus: BeautificationAssetStatus = BeautificationAssetStatus.Available,
+): BeautificationConfigUiModel {
+    return BeautificationConfigUiModel(
+        licenseLink = "licenseLink",
+        modelLink = "modelLink",
+        customFaceAssetLink = "customFaceAssetLink",
+        faceFilters = List(4) {
+            FaceFilterUiModel(
+                id = when (it) {
+                    0 -> "none"
+                    1 -> "sharpen"
+                    2 -> "buffing"
+                    3 -> "toning"
+                    else -> ""
+                },
+                name = "Face Filter $it",
+                active = false,
+                minValue = 0.0,
+                maxValue = 1.0,
+                defaultValue = 0.1 * it,
+                value = 0.1 * it,
+                isSelected = false,
+            )
+        },
+        presets = List(presetsSize) {
+            PresetFilterUiModel(
+                id = if (it == 0) "none" else it.toString(),
+                name = "Preset $it",
+                active = false,
+                minValue = 0.0,
+                maxValue = 1.0,
+                defaultValue = 0.1 * it,
+                value = 0.1 * it,
+                iconUrl = "iconUrl $it",
+                assetLink = "assetLink $it",
+                assetStatus = if (it == 0) BeautificationAssetStatus.Available else assetStatus,
+                isSelected = false,
+            )
+        }
+    )
+}

@@ -5,6 +5,7 @@ import com.tokopedia.seller.search.common.domain.GetSellerSearchPlaceholderUseCa
 import com.tokopedia.seller.search.common.domain.model.SellerSearchPlaceholderResponse
 import com.tokopedia.seller.search.common.domain.model.SellerSearchPlaceholderResponse.SellerSearchPlaceholder
 import com.tokopedia.unit.test.rule.CoroutineTestRule
+import com.tokopedia.unit.test.rule.StandardTestRule
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
@@ -20,7 +21,7 @@ open class InitialSearchActivityViewModelTestFixture {
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
     @get:Rule
-    val coroutineTestRule = CoroutineTestRule()
+    val coroutineTestRule = StandardTestRule()
 
     private lateinit var getSearchPlaceholderUseCase: GetSellerSearchPlaceholderUseCase
     protected lateinit var viewModel: InitialSearchActivityViewModel

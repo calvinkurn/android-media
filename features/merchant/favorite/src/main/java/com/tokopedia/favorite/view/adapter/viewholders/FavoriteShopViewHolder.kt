@@ -70,13 +70,13 @@ class FavoriteShopViewHolder(itemView: View) : AbstractViewHolder<FavoriteShopUi
         }
     }
 
-    fun onShopLayoutClicked() {
+    private fun onShopLayoutClicked() {
         eventFavoriteShop()
         val intent = RouteManager.getIntent(context, ApplinkConst.SHOP, favoriteShop!!.shopId)
         context.startActivity(intent)
     }
 
-    fun eventFavoriteShop() {
+    private fun eventFavoriteShop() {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 TrackingConst.Event.FAVORITE,
                 TrackingConst.Category.HOMEPAGE.toLowerCase(Locale.getDefault()),

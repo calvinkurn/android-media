@@ -48,7 +48,8 @@ open class ShopHomeProductViewHolder(
             isHasAddToCartButton = false,
             hasThreeDots = isShowTripleDot,
             shopHomeProductViewModel = shopHomeProductViewModel,
-            isWideContent = false
+            isWideContent = false,
+            productRating = shopHomeProductViewModel.averageRating
         )
         productCard?.setProductModel(productCardModel)
         setListener(productCardModel)

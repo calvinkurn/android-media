@@ -1,7 +1,6 @@
 apply plugin: 'com.android.dynamic-feature'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 apply plugin: 'io.hansel.preprocessor.feature'
-apply plugin: 'robust'
 
 buildscript {
     repositories {
@@ -63,6 +62,7 @@ dependencies {
     //Category
     implementation projectOrAar(rootProject.ext.features.exploreCategory)
     implementation projectOrAar(rootProject.ext.features.catalog)
+    implementation projectOrAar(rootProject.ext.features.catalogLibrary)
     implementation projectOrAar(rootProject.ext.features.kategori)
     implementation projectOrAar(rootProject.ext.features.categoryLevels)
     implementation projectOrAar(rootProject.ext.features.affiliateToko)
@@ -95,9 +95,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.productCardOptions)
 
     //Fintech
-//    implementation projectOrAar(rootProject.ext.features.ovoPayWithQr)
     implementation projectOrAar(rootProject.ext.features.wallet)
-//    implementation projectOrAar(rootProject.ext.features.ovop2p)
     implementation projectOrAar(rootProject.ext.features.paylater)
     implementation projectOrAar(rootProject.ext.features.insurance)
 
@@ -109,10 +107,8 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.logisticseller)
     implementation projectOrAar(rootProject.ext.features.logisticaddaddress)
     implementation projectOrAar(rootProject.ext.features.manageaddress)
-    implementation projectOrAar(rootProject.ext.features.dilayanitokopedia)
 
     //Merchant
-    implementation projectOrAar(rootProject.ext.features.shopOpen)
     implementation projectOrAar(rootProject.ext.features.talk)
     implementation projectOrAar(rootProject.ext.features.shopShowcase)
     implementation projectOrAar(rootProject.ext.features.brandlist)
@@ -130,14 +126,10 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.pms)
     implementation projectOrAar(rootProject.ext.features.goPayKyc)
     implementation projectOrAar(rootProject.ext.features.withdraw)
+    implementation projectOrAar(rootProject.ext.features.thankYouNative)
 
     //Promo
     implementation projectOrAar(rootProject.ext.features.promoCheckout)
-
-    //Salam
-
-    //Travel
-    implementation projectOrAar(rootProject.ext.features.travelHomepage)
 
     //User
     implementation projectOrAar(rootProject.ext.features.settingnotif)

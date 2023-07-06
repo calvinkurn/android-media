@@ -7,7 +7,6 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
@@ -21,9 +20,9 @@ import com.tokopedia.content.common.ui.model.AccountStateInfo
 import com.tokopedia.content.common.ui.model.AccountStateInfoType
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.content.common.ui.model.TermsAndConditionUiModel
+import com.tokopedia.content.common.util.remoteconfig.PlayShortsEntryPointRemoteConfig
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastDataStore
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
@@ -34,16 +33,20 @@ import com.tokopedia.play.broadcaster.domain.model.socket.PinnedMessageSocketRes
 import com.tokopedia.play.broadcaster.domain.model.socket.SectionedProductTagSocketResponse
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
 import com.tokopedia.play.broadcaster.domain.usecase.*
-import com.tokopedia.play.broadcaster.pusher.*
 import com.tokopedia.play.broadcaster.pusher.state.PlayBroadcasterState
 import com.tokopedia.play.broadcaster.pusher.timer.PlayBroadcastTimer
 import com.tokopedia.play.broadcaster.pusher.timer.PlayBroadcastTimerState
+import com.tokopedia.play.broadcaster.shorts.view.custom.DynamicPreparationMenu
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastEvent
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroProductUiMapper
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
 import com.tokopedia.play.broadcaster.ui.model.*
+import com.tokopedia.play.broadcaster.ui.model.PlayBroadcastPreparationBannerModel.Companion.TYPE_DASHBOARD
+import com.tokopedia.play.broadcaster.ui.model.PlayBroadcastPreparationBannerModel.Companion.TYPE_SHORTS
+import com.tokopedia.play.broadcaster.ui.model.beautification.*
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
+import com.tokopedia.play.broadcaster.ui.model.config.BroadcastingConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.GameType
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizChoiceDetailStateUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizDetailStateUiModel
@@ -65,6 +68,7 @@ import com.tokopedia.play.broadcaster.util.game.quiz.QuizOptionListExt.updateQui
 import com.tokopedia.play.broadcaster.util.logger.PlayLogger
 import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
 import com.tokopedia.play.broadcaster.util.share.PlayShareWrapper
+import com.tokopedia.play.broadcaster.view.state.CoverSetupState
 import com.tokopedia.play_common.domain.model.interactive.GiveawayResponse
 import com.tokopedia.play_common.domain.model.interactive.QuizResponse
 import com.tokopedia.play_common.model.dto.interactive.GameUiModel
@@ -83,23 +87,21 @@ import com.tokopedia.play_common.websocket.PlayWebSocket
 import com.tokopedia.play_common.websocket.WebSocketAction
 import com.tokopedia.play_common.websocket.WebSocketClosedReason
 import com.tokopedia.play_common.websocket.WebSocketResponse
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.getAndUpdate
 import kotlinx.coroutines.flow.map
@@ -117,7 +119,7 @@ import java.util.concurrent.TimeUnit
  */
 class PlayBroadcastViewModel @AssistedInject constructor(
     @Assisted private val handle: SavedStateHandle,
-    private val mDataStore: PlayBroadcastDataStore,
+    private val dataStore: PlayBroadcastDataStore,
     private val hydraConfigStore: HydraConfigStore,
     private val sharedPref: HydraSharedPreferences,
     private val getChannelUseCase: GetChannelUseCase,
@@ -131,7 +133,9 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     private val interactiveMapper: PlayInteractiveMapper,
     private val repo: PlayBroadcastRepository,
     private val logger: PlayLogger,
-    private val broadcastTimer: PlayBroadcastTimer
+    private val broadcastTimer: PlayBroadcastTimer,
+    private val playShortsEntryPointRemoteConfig: PlayShortsEntryPointRemoteConfig,
+    private val remoteConfig: RemoteConfig,
 ) : ViewModel() {
 
     @AssistedFactory
@@ -139,12 +143,16 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         fun create(handle: SavedStateHandle): PlayBroadcastViewModel
     }
 
+    private val jobMap = mutableMapOf<String, Job>()
+
+    val mDataStore = dataStore
+
     val channelId: String
         get() = hydraConfigStore.getChannelId()
 
     val channelTitle: String
         get() {
-            return when (val titleModel = mDataStore.getSetupDataStore().getTitle()) {
+            return when (val titleModel = dataStore.getSetupDataStore().getTitle()) {
                 is PlayTitleUiModel.HasTitle -> titleModel.title
                 else -> ""
             }
@@ -171,15 +179,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         get() = _observableNewChat
     val observableNewMetrics: LiveData<Event<List<PlayMetricUiModel>>>
         get() = _observableNewMetrics
-    val observableCover = getCurrentSetupDataStore().getObservableSelectedCover()
-    val observableTitle: LiveData<PlayTitleUiModel.HasTitle> =
-        getCurrentSetupDataStore().getObservableTitle()
-            .filterIsInstance<PlayTitleUiModel.HasTitle>()
-            .asLiveData(viewModelScope.coroutineContext + dispatcher.computation)
     val observableEvent: LiveData<EventUiModel>
         get() = _observableEvent
-    val observableLeaderboardInfo: LiveData<NetworkResult<List<LeaderboardGameUiModel>>>
-        get() = _observableLeaderboardInfo
     val shareContents: String
         get() = _observableShareInfo.value.orEmpty()
     val interactiveId: String
@@ -189,6 +190,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     val productSectionList: List<ProductTagSectionUiModel>
         get() = _productSectionList.value
+
+    private val _bannerPreparation = MutableStateFlow<List<PlayBroadcastPreparationBannerModel>>(emptyList())
 
     private val _observableConfigInfo = MutableLiveData<NetworkResult<ConfigurationUiModel>>()
     private val _observableChannelInfo = MutableLiveData<NetworkResult<ChannelInfoUiModel>>()
@@ -203,18 +206,12 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }
     }
     private val _observableEvent = MutableLiveData<EventUiModel>()
-    private val _observableLeaderboardInfo =
-        MutableLiveData<NetworkResult<List<LeaderboardGameUiModel>>>()
 
     private val _configInfo = MutableStateFlow<ConfigurationUiModel?>(null)
     private var isLiveStreamEnded = false
 
-    private val _pinnedMessage = MutableStateFlow<PinnedMessageUiModel>(
-        PinnedMessageUiModel.Empty()
-    )
-    private val _productSectionList = MutableStateFlow(emptyList<ProductTagSectionUiModel>())
+    private val _pinnedMessage = MutableStateFlow(PinnedMessageUiModel.Empty())
     private val _isExiting = MutableStateFlow(false)
-    private val _schedule = MutableStateFlow(ScheduleUiModel.Empty)
 
     private val _quizFormData = MutableStateFlow(QuizFormDataUiModel())
     private val _quizFormState =
@@ -228,18 +225,39 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     private val _selectedAccount = MutableStateFlow(ContentAccountUiModel.Empty)
 
     private val _accountStateInfo = MutableStateFlow(AccountStateInfo())
+
+    /** Preparation */
+    private val _menuList = MutableStateFlow<List<DynamicPreparationMenu>>(emptyList())
+    private val _title = getCurrentSetupDataStore().getObservableTitle()
+    private val _cover = getCurrentSetupDataStore().getSelectedCoverAsFlow()
+    private val _productSectionList = MutableStateFlow(emptyList<ProductTagSectionUiModel>())
+    private val _schedule = MutableStateFlow(ScheduleUiModel.Empty)
+    private val _beautificationConfig = MutableStateFlow(BeautificationConfigUiModel.Empty)
+
+    private val _allowRetryDownloadAsset = MutableStateFlow(true)
+
     var warningInfoType: WarningType = WarningType.UNKNOWN
     val tncList = mutableListOf<TermsAndConditionUiModel>()
+
+    val uploadedCoverSource: Int
+        get() = sharedPref.getUploadedCoverSource(authorId, SOURCE_PREP_PAGE)
+    val isShowSetupCoverCoachMark: Boolean
+        get() = sharedPref.isShowSetupCoverCoachMark()
 
     private val _accountListState = MutableStateFlow<List<ContentAccountUiModel>>(emptyList())
 
     private var isFirstOpen: Boolean = true
+    private val isAfterUploadAutoGeneratedCover: Boolean
+        get() = sharedPref.getSavedSelectedAutoGeneratedCover(authorId, SOURCE_PREP_PAGE) != -1
 
     val contentAccountList: List<ContentAccountUiModel>
         get() = _accountListState.value
 
     val isAllowChangeAccount: Boolean
         get() = if (GlobalConfig.isSellerApp()) false else _accountListState.value.size > 1
+
+    private val isAllowToSeePerformanceDashboard: Boolean
+        get() = selectedAccount.isShop
 
     val selectedAccount: ContentAccountUiModel
         get() = _selectedAccount.value
@@ -253,8 +271,26 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     val authorType: String
         get() = _selectedAccount.value.type
 
-    val isShortVideoAllowed: Boolean
-        get() = _configInfo.value?.shortVideoAllowed.orFalse()
+    val broadcastingConfig: BroadcastingConfigUiModel
+        get() = hydraConfigStore.getBroadcastingConfig()
+
+    val isTitleMenuChecked: Boolean
+        get() {
+            val title = getCurrentSetupDataStore().getTitle()
+            return title is PlayTitleUiModel.HasTitle && title.title.isNotEmpty()
+        }
+
+    val isBeautificationEnabled: Boolean
+        get() = !_beautificationConfig.value.isUnknown
+
+    val faceFiltersWithoutNoneOption: List<FaceFilterUiModel>
+        get() = _beautificationConfig.value.faceFiltersWithoutNoneOption
+
+    val selectedFaceFilter: FaceFilterUiModel?
+        get() = _beautificationConfig.value.selectedFaceFilter
+
+    val selectedPreset: PresetFilterUiModel?
+        get() = _beautificationConfig.value.selectedPreset
 
     private val _channelUiState = _configInfo
         .filterNotNull()
@@ -262,7 +298,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             PlayChannelUiState(
                 streamAllowed = it.streamAllowed,
                 shortVideoAllowed = it.shortVideoAllowed,
-                tnc = it.tnc
+                hasContent = it.hasContent,
+                tnc = it.tnc,
             )
         }
 
@@ -303,6 +340,53 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         )
     }
 
+    private val _menuListUiState = combine(
+        _menuList,
+        _title,
+        _cover,
+        _productSectionList,
+        _schedule,
+        _beautificationConfig,
+    ) { menuList, title, cover, productSectionList, schedule, beautificationConfig, ->
+        menuList.map {
+            when (it.menu) {
+                DynamicPreparationMenu.Menu.Title -> {
+                    it.copy(isChecked = isTitleMenuChecked)
+                }
+                DynamicPreparationMenu.Menu.Product -> {
+                    it.copy(
+                        isChecked = productSectionList.isNotEmpty(),
+                        isEnabled = isTitleMenuChecked,
+                    )
+                }
+                DynamicPreparationMenu.Menu.Cover -> {
+                    it.copy(
+                        isChecked = (
+                            (cover.croppedCover is CoverSetupState.Cropped.Uploaded && (cover.croppedCover.coverImage.toString().isNotEmpty() || !cover.croppedCover.localImage?.toString().isNullOrEmpty())) ||
+                            cover.croppedCover is CoverSetupState.GeneratedCover
+                        ),
+                        isEnabled = isTitleMenuChecked,
+                    )
+                }
+                DynamicPreparationMenu.Menu.Schedule -> {
+                    it.copy(
+                        isChecked = schedule.schedule is BroadcastScheduleUiModel.Scheduled,
+                        isEnabled = isTitleMenuChecked,
+                    )
+                }
+                DynamicPreparationMenu.Menu.FaceFilter -> {
+                    it.copy(
+                        isChecked = beautificationConfig.isBeautificationApplied,
+                        isEnabled = isTitleMenuChecked,
+                    )
+                }
+                else -> {
+                    it
+                }
+            }
+        }
+    }
+
     val uiState = combine(
         _channelUiState.distinctUntilChanged(),
         _pinnedMessageUiState.distinctUntilChanged(),
@@ -317,7 +401,12 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         _onboarding,
         _quizBottomSheetUiState,
         _selectedAccount,
-        _accountStateInfo
+        _accountStateInfo,
+        _bannerPreparation,
+        _menuListUiState,
+        _title,
+        _cover,
+        _beautificationConfig,
     ) { channelState,
         pinnedMessage,
         productMap,
@@ -331,7 +420,12 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         onBoarding,
         quizBottomSheetUiState,
         selectedFeedAccount,
-        accountStateInfo ->
+        accountStateInfo,
+        bannerPreparation,
+        menuListUiState,
+        title,
+        cover,
+        beautificationConfig, ->
         PlayBroadcastUiState(
             channel = channelState,
             pinnedMessage = pinnedMessage,
@@ -346,7 +440,12 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             onBoarding = onBoarding,
             quizBottomSheetUiState = quizBottomSheetUiState,
             selectedContentAccount = selectedFeedAccount,
-            accountStateInfo = accountStateInfo
+            accountStateInfo = accountStateInfo,
+            bannerPreparation = bannerPreparation,
+            menuList = menuListUiState,
+            title = title,
+            cover = cover,
+            beautificationConfig = beautificationConfig,
         )
     }.stateIn(
         viewModelScope,
@@ -385,6 +484,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }
 
         _observableChatList.value = mutableListOf()
+
+        setupPreparationMenu()
     }
 
     fun getCurrentSetupDataStore(): PlayBroadcastSetupDataStore {
@@ -414,7 +515,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             PlayBroadcastAction.EditPinnedMessage -> handleEditPinnedMessage()
             is PlayBroadcastAction.SetPinnedMessage -> handleSetPinnedMessage(event.message)
             PlayBroadcastAction.CancelEditPinnedMessage -> handleCancelEditPinnedMessage()
-            is PlayBroadcastAction.SetCover -> handleSetCover(event.cover)
             is PlayBroadcastAction.SetProduct -> handleSetProduct(event.productTagSectionList)
             is PlayBroadcastAction.SetSchedule -> handleSetSchedule(event.date)
             PlayBroadcastAction.DeleteSchedule -> handleDeleteSchedule()
@@ -454,11 +554,43 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             PlayBroadcastAction.ClickRefreshQuizOption -> handleRefreshQuizOptionDetail()
             is PlayBroadcastAction.ClickPinProduct -> handleClickPin(event.product)
             is PlayBroadcastAction.BroadcastStateChanged -> handleBroadcastStateChanged(event.state)
+
+            is PlayBroadcastAction.SetCoverUploadedSource -> handleSetCoverUploadedSource(event.source)
+            is PlayBroadcastAction.SetShowSetupCoverCoachMark -> handleSetShowSetupCoverCoachMark()
+            is PlayBroadcastAction.ResetUploadState -> handleResetUploadState()
+
+            /** Beautification */
+            is PlayBroadcastAction.RemoveBeautificationMenu -> handleRemoveBeautificationMenu()
+            is PlayBroadcastAction.ResetBeautification -> handleResetBeautification()
+
+            is PlayBroadcastAction.SelectFaceFilterOption -> handleSelectFaceFilterOption(event.faceFilter)
+            is PlayBroadcastAction.ChangeFaceFilterValue -> handleChangeFaceFilterValue(event.newValue)
+
+            is PlayBroadcastAction.SelectPresetOption -> handleSelectPresetOption(event.preset)
+            is PlayBroadcastAction.ChangePresetValue -> handleChangePresetValue(event.newValue)
+            else -> {
+                //no-op
+            }
         }
+    }
+
+    private fun addBannerPreparation(data: PlayBroadcastPreparationBannerModel) {
+        viewModelScope.launchCatchError(block = {
+            if (_bannerPreparation.value.contains(data)) return@launchCatchError
+            _bannerPreparation.update { it + data }
+        }, onError = {})
+    }
+
+    private fun removeBannerPreparation(data: PlayBroadcastPreparationBannerModel) {
+        viewModelScope.launchCatchError(block = {
+            _bannerPreparation.update { it - data }
+        }, onError = {})
     }
 
     private fun handleGetConfiguration(selectedType: String) {
         viewModelScope.launchCatchError(block = {
+            _allowRetryDownloadAsset.value = true
+
             getFeedCheckWhitelist(selectedType)
             getBroadcastingConfig()
             getBroadcasterAuthorConfig(_selectedAccount.value)
@@ -477,7 +609,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         _accountListState.value = accountList
 
         if (accountList.isNotEmpty()) {
-            updateSelectedAccount(
+            setSelectedAccount(
                 getSelectedAccount(
                     selectedType = selectedType,
                     cacheSelectedType = sharedPref.getLastSelectedAccountType(),
@@ -490,11 +622,12 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     private suspend fun getBroadcastingConfig() {
         val request = repo.getBroadcastingConfig(authorId, authorType)
         hydraConfigStore.saveBroadcastingConfig(request)
-        _uiEvent.emit(PlayBroadcastEvent.InitializeBroadcaster(hydraConfigStore.getBroadcastingConfig()))
     }
 
     private fun getBroadcasterAuthorConfig(selectedAccount: ContentAccountUiModel) {
         viewModelScope.launchCatchError(block = {
+            _observableConfigInfo.value = NetworkResult.Loading
+
             val currConfigInfo = _configInfo.value
             val configUiModel = repo.getChannelConfiguration(selectedAccount.id, selectedAccount.type)
             setChannelId(configUiModel.channelId)
@@ -552,7 +685,17 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 configUiModel.durationConfig.pauseDuration
             )
 
-            updateSelectedAccount(selectedAccount)
+            setSelectedAccount(selectedAccount)
+
+            setupShortEntryPoint(configUiModel)
+            setupPerformanceDashboardEntryPoint(configUiModel)
+
+            setBeautificationConfig(configUiModel.beautificationConfig)
+
+            _uiEvent.emit(
+                PlayBroadcastEvent.InitializeBroadcaster(hydraConfigStore.getBroadcastingConfig())
+            )
+
             _observableConfigInfo.value = NetworkResult.Success(configUiModel)
         }) {
             _observableConfigInfo.value = NetworkResult.Fail(it) { getBroadcasterAuthorConfig(selectedAccount) }
@@ -676,6 +819,9 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         when (giveaway.status) {
             GameUiModel.Giveaway.Status.Finished -> displayGameResultWidgetIfHasLeaderBoard()
             GameUiModel.Giveaway.Status.Unknown -> stopInteractive()
+            else -> {
+                //no-op
+            }
         }
     }
 
@@ -684,6 +830,9 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         when (quiz.status) {
             GameUiModel.Quiz.Status.Finished -> displayGameResultWidgetIfHasLeaderBoard()
             GameUiModel.Quiz.Status.Unknown -> stopInteractive()
+            else -> {
+                //no-op
+            }
         }
     }
 
@@ -798,7 +947,31 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     }
 
     private fun setSelectedProduct(productSectionList: List<ProductTagSectionUiModel>) {
-        _productSectionList.value = productSectionList
+        viewModelScope.launchCatchError(block = {
+            checkProductChangedAutoGeneratedCover(
+                oldProduct = _productSectionList.value,
+                newProduct = productSectionList,
+            )
+            getCurrentSetupDataStore().setProductTag(productSectionList)
+            _productSectionList.value = productSectionList
+        }) {}
+    }
+
+    private suspend fun checkProductChangedAutoGeneratedCover(
+        oldProduct: List<ProductTagSectionUiModel>,
+        newProduct: List<ProductTagSectionUiModel>,
+    ) {
+        if (oldProduct.isNotEmpty()
+            && newProduct.isEmpty()
+            && isAfterUploadAutoGeneratedCover
+        ) {
+            _uiEvent.emit(PlayBroadcastEvent.AutoGeneratedCoverToasterDelete)
+        } else if (oldProduct != newProduct
+            && oldProduct.isNotEmpty()
+            && isAfterUploadAutoGeneratedCover
+        ) {
+            _uiEvent.emit(PlayBroadcastEvent.AutoGeneratedCoverToasterUpdate)
+        }
     }
 
     private fun setSelectedCover(cover: PlayCoverUiModel) {
@@ -851,6 +1024,24 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 ),
                 canSchedule = repo.canSchedule()
             )
+        }
+    }
+
+    private fun setupShortEntryPoint(config: ConfigurationUiModel) {
+        val banner = PlayBroadcastPreparationBannerModel(TYPE_SHORTS)
+        if (playShortsEntryPointRemoteConfig.isShowEntryPoint() && config.shortVideoAllowed) {
+            addBannerPreparation(banner)
+        } else {
+            removeBannerPreparation(banner)
+        }
+    }
+
+    private fun setupPerformanceDashboardEntryPoint(config: ConfigurationUiModel) {
+        val banner = PlayBroadcastPreparationBannerModel(TYPE_DASHBOARD)
+        if (isAllowToSeePerformanceDashboard && config.hasContent) {
+            addBannerPreparation(banner)
+        } else {
+            removeBannerPreparation(banner)
         }
     }
 
@@ -930,7 +1121,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         _quizDetailState.value = QuizDetailStateUiModel.Loading
         viewModelScope.launchCatchError(block = {
             val leaderboardSlots = repo.getSellerLeaderboardWithSlot(channelId, allowChat).map {
-                if(it is LeaderboardGameUiModel.Header && it.leaderBoardType == LeadeboardType.Quiz && (_interactive.value as? GameUiModel.Quiz)?.status is GameUiModel.Quiz.Status.Ongoing && it.id == _interactive.value.id) it.copy(endsIn = endTimeInteractive)
+                if(it is LeaderboardGameUiModel.Header && it.leaderBoardType == LeadeboardType.Quiz && (_interactive.value as? GameUiModel.Quiz)?.status is GameUiModel.Quiz.Status.Ongoing && it.id == _interactive.value.id) it.copy(endsIn = if (allowChat) null else endTimeInteractive)
                 else it
             }
             _quizDetailState.value = QuizDetailStateUiModel.Success(leaderboardSlots)
@@ -941,8 +1132,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     }
 
     private val endTimeInteractive: Calendar? get() {
-        return when (val interactive = _interactive.value){
-            is GameUiModel.Quiz -> return when (val status = interactive.status){
+        return when (val interactive = _interactive.value) {
+            is GameUiModel.Quiz -> return when (val status = interactive.status) {
                 is GameUiModel.Quiz.Status.Ongoing -> {
                     status.endTime
                 }
@@ -1003,10 +1194,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         _pinnedMessage.setValue {
             copy(editStatus = PinnedMessageEditStatus.Nothing)
         }
-    }
-
-    private fun handleSetCover(cover: PlayCoverUiModel) {
-        setSelectedCover(cover)
     }
 
     private fun handleSetProduct(productSectionList: List<ProductTagSectionUiModel>) {
@@ -1283,6 +1470,9 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                     )
                 }
             }
+            else -> {
+                //no-op
+            }
         }
     }
 
@@ -1361,6 +1551,9 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                     getLeaderboardWithSlots(state.allowChat)
                 }
             }
+            else -> {
+                //no-op
+            }
         }
     }
 
@@ -1373,6 +1566,9 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                     interactiveId = state.interactiveId,
                     interactiveTitle = state.interactiveTitle
                 )
+            }
+            else -> {
+                //no-op
             }
         }
     }
@@ -1455,7 +1651,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     private fun handleBroadcastStateChanged(state: PlayBroadcasterState) {
         logPusherState(state)
-        when(state) {
+        when (state) {
             is PlayBroadcasterState.Started -> handleBroadcasterStart()
             is PlayBroadcasterState.Resume -> handleBroadcasterResume(state.startedBefore, state.shouldContinue)
             PlayBroadcasterState.Paused -> handleBroadcasterPause()
@@ -1473,6 +1669,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     private fun handleBroadcasterStart() {
         viewModelScope.launchCatchError(block = {
+            handleResetUploadState()
             updateChannelStatus(PlayChannelStatusType.Live)
             getChannelById(channelId)
             _uiEvent.emit(PlayBroadcastEvent.BroadcastStarted)
@@ -1481,9 +1678,11 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             getInteractiveConfig()
         }) {
             logger.logBroadcastError(it)
-            _uiEvent.emit(PlayBroadcastEvent.ShowError(it) {
-                handleBroadcasterStart()
-            })
+            _uiEvent.emit(
+                PlayBroadcastEvent.ShowError(it) {
+                    handleBroadcasterStart()
+                }
+            )
         }
     }
 
@@ -1518,9 +1717,11 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             }
         }) {
             logger.logBroadcastError(it)
-            _uiEvent.emit(PlayBroadcastEvent.ShowError(it) {
-                doResumeBroadcaster(shouldContinue)
-            })
+            _uiEvent.emit(
+                PlayBroadcastEvent.ShowError(it) {
+                    doResumeBroadcaster(shouldContinue)
+                }
+            )
         }
     }
 
@@ -1536,9 +1737,11 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             }
         }) {
             logger.logBroadcastError(it)
-            _uiEvent.emit(PlayBroadcastEvent.ShowError(it) {
-                handleBroadcasterRecovered()
-            })
+            _uiEvent.emit(
+                PlayBroadcastEvent.ShowError(it) {
+                    handleBroadcasterRecovered()
+                }
+            )
         }
     }
 
@@ -1567,6 +1770,249 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }
 
         mIsBroadcastStopped = true
+    }
+
+    /** Beautification */
+    private fun handleRemoveBeautificationMenu() {
+        removePreparationMenu(DynamicPreparationMenu.Menu.FaceFilter)
+    }
+
+    private fun handleResetBeautification() {
+        _beautificationConfig.update {
+            it.copy(
+                faceFilters = it.faceFilters.map { faceFilter ->
+                    faceFilter.copy(
+                        value = faceFilter.defaultValue,
+                        isSelected = false,
+                        active = faceFilter.defaultValue > 0
+                    )
+                },
+                presets = it.presets.map { preset ->
+                    preset.copy(
+                        value = preset.defaultValue,
+                        isSelected = preset.active,
+                    )
+                }
+            )
+        }
+
+        viewModelScope.launch {
+            _uiEvent.emit(PlayBroadcastEvent.BeautificationRebindEffect)
+        }
+
+        saveBeautificationConfig()
+    }
+
+    private fun handleSelectFaceFilterOption(faceFilter: FaceFilterUiModel) {
+        viewModelScope.launch {
+            _beautificationConfig.update {
+                it.copy(
+                    faceFilters = it.faceFilters.map { item ->
+                        item.copy(
+                            active = when {
+                                item.id == faceFilter.id -> item.value > 0.0 || faceFilter.isRemoveEffect
+                                faceFilter.isRemoveEffect || item.isRemoveEffect -> false
+                                else -> item.active
+                            },
+                            isSelected = item.id == faceFilter.id,
+                        )
+                    }
+                )
+            }
+        }
+
+        saveBeautificationConfig()
+    }
+
+    private fun handleChangeFaceFilterValue(newValue: Int) {
+        viewModelScope.launch {
+            _beautificationConfig.update {
+                it.copy(
+                    faceFilters = it.faceFilters.map { faceFilter ->
+                        if(faceFilter.isSelected) faceFilter.copyWithNewValue(newValueFromSlider = newValue)
+                        else faceFilter
+                    }
+                )
+            }
+        }
+
+        saveBeautificationConfig()
+    }
+
+    private fun handleSelectPresetOption(preset: PresetFilterUiModel) {
+        viewModelScope.launch {
+            if(preset.isRemoveEffect || preset.assetStatus == BeautificationAssetStatus.Available) {
+                updateSelectPreset(preset)
+            }
+            else if(preset.assetStatus == BeautificationAssetStatus.NotDownloaded) {
+                downloadPreset(preset)
+            }
+        }
+
+        saveBeautificationConfig()
+    }
+
+    private fun handleChangePresetValue(newValue: Int) {
+        viewModelScope.launch {
+            _beautificationConfig.update {
+                it.copy(
+                    presets = it.presets.map { preset ->
+                        if(preset.isSelected) preset.copyWithNewValue(newValueFromSlider = newValue)
+                        else preset
+                    }
+                )
+            }
+        }
+
+        saveBeautificationConfig()
+    }
+
+    private suspend fun setBeautificationConfig(beautificationConfig: BeautificationConfigUiModel) {
+        _beautificationConfig.value = if (remoteConfig.getBoolean(REMOTE_CONFIG_ENABLE_BEAUTIFICATION_KEY, true)) {
+            beautificationConfig
+        } else {
+            BeautificationConfigUiModel.Empty
+        }
+
+        if (!_beautificationConfig.value.isUnknown) {
+            try {
+                downloadInitialBeautificationAsset(beautificationConfig)
+                setupOnDemandAsset(beautificationConfig)
+                addPreparationMenu(DynamicPreparationMenu.createFaceFilter(isMandatory = false))
+            } catch (_: Exception) {
+                _beautificationConfig.value = BeautificationConfigUiModel.Empty
+
+                removePreparationMenu(DynamicPreparationMenu.Menu.FaceFilter)
+
+                if (_allowRetryDownloadAsset.value) {
+                    _allowRetryDownloadAsset.value = false
+                    setBeautificationConfig(beautificationConfig)
+                }
+            }
+        }
+        else {
+            removePreparationMenu(DynamicPreparationMenu.Menu.FaceFilter)
+        }
+    }
+
+    private suspend fun downloadInitialBeautificationAsset(beautificationConfig: BeautificationConfigUiModel) {
+        if(beautificationConfig.isUnknown) return
+
+        val isLicenseDownloaded = viewModelScope.async {
+            try {
+                repo.downloadLicense(beautificationConfig.licenseLink)
+            } catch (expected: Exception) {
+                throw DownloadLicenseAssetException(expected.message)
+            }
+        }
+
+        val isModelDownloaded = viewModelScope.async {
+            try {
+                repo.downloadModel(beautificationConfig.modelLink)
+            } catch (expected: Exception) {
+                throw DownloadModelAssetException(expected.message)
+            }
+        }
+
+        val isCustomFaceDownloaded = viewModelScope.async {
+            try {
+                repo.downloadCustomFace(beautificationConfig.customFaceAssetLink)
+            } catch (expected: Exception) {
+                throw DownloadCustomFaceAssetException(expected.message)
+            }
+        }
+
+        if(!isLicenseDownloaded.await()) {
+            throw DownloadLicenseAssetException(FAIL_SAVE_ERROR_MESSAGE)
+        }
+
+        if(!isModelDownloaded.await()) {
+            throw DownloadModelAssetException(FAIL_SAVE_ERROR_MESSAGE)
+        }
+
+        if(!isCustomFaceDownloaded.await()) {
+            throw DownloadCustomFaceAssetException(FAIL_SAVE_ERROR_MESSAGE)
+        }
+    }
+
+    private fun setupOnDemandAsset(beautificationConfig: BeautificationConfigUiModel) {
+
+        val presetActive = beautificationConfig.presets.firstOrNull { it.active }
+
+        if(presetActive != null) {
+            when (presetActive.assetStatus) {
+                BeautificationAssetStatus.Available -> updateSelectPreset(presetActive)
+                BeautificationAssetStatus.NotDownloaded -> downloadPreset(presetActive, forceSelect = true)
+                else -> {}
+            }
+        }
+    }
+
+    private fun downloadPreset(preset: PresetFilterUiModel, forceSelect: Boolean = false) {
+        viewModelScope.launchCatchError(block = {
+            if(preset.isRemoveEffect) return@launchCatchError
+
+            updatePresetAssetStatus(preset, BeautificationAssetStatus.Downloading)
+
+            val isSuccess = repo.downloadPresetAsset(
+                url = preset.assetLink,
+                fileName = preset.id,
+            )
+
+            if (isSuccess) {
+                updatePresetAssetStatus(preset, BeautificationAssetStatus.Available)
+
+                if (forceSelect) {
+                    updateSelectPreset(preset)
+                }
+            }
+            else {
+                throw Exception("Something went wrong")
+            }
+        }) { throwable ->
+            delay(ERROR_EVENT_DELAY)
+            updatePresetAssetStatus(preset, BeautificationAssetStatus.NotDownloaded)
+            _uiEvent.emit(
+                PlayBroadcastEvent.BeautificationDownloadAssetFailed(throwable, preset)
+            )
+        }
+    }
+
+    private fun updateSelectPreset(preset: PresetFilterUiModel) {
+        _beautificationConfig.update {
+            it.copy(
+                presets = it.presets.map { item ->
+                    item.copy(isSelected = item.id == preset.id)
+                }
+            )
+        }
+    }
+
+    private fun updatePresetAssetStatus(preset: PresetFilterUiModel, assetStatus: BeautificationAssetStatus) {
+        _beautificationConfig.update {
+            it.copy(
+                presets = it.presets.map { item ->
+                    item.copy(
+                        assetStatus = if(preset.id == item.id) assetStatus else item.assetStatus,
+                        isSelected = if(preset.id == item.id) false else item.isSelected
+                    )
+                }
+            )
+        }
+    }
+
+    private fun saveBeautificationConfig() {
+        val job = viewModelScope.launchCatchError(block = {
+            delay(SAVE_BEAUTIFICATION_DELAY)
+
+            repo.saveBeautificationConfig(
+                authorId = authorId,
+                authorType = authorType,
+                beautificationConfig = _beautificationConfig.value
+            )
+        }) {}
+
+        saveJob(SAVE_BEAUTIFICATION_JOB_ID, job)
     }
 
     private fun getSelectedAccount(
@@ -1613,6 +2059,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 else -> TYPE_SHOP
             }
         )
+
+        _allowRetryDownloadAsset.value = true
         getBroadcasterAuthorConfig(currentSelected)
     }
 
@@ -1668,7 +2116,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }
     }
 
-    private fun updateSelectedAccount(selectedAccount: ContentAccountUiModel) {
+    private fun setSelectedAccount(selectedAccount: ContentAccountUiModel) {
         _selectedAccount.update { selectedAccount }
         sharedPref.setLastSelectedAccountType(selectedAccount.type)
         hydraConfigStore.setAuthor(selectedAccount)
@@ -1677,6 +2125,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     private fun handleSuccessOnBoardingUGC() {
         viewModelScope.launchCatchError(block = {
             getFeedCheckWhitelist(TYPE_USER)
+
+            _allowRetryDownloadAsset.value = true
             getBroadcasterAuthorConfig(_selectedAccount.value)
         }, onError = {
             _observableConfigInfo.value = NetworkResult.Fail(it) {
@@ -1733,7 +2183,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             if (result) {
                 product.updatePinProduct(isLoading = false, needToUpdate = true)
             }
-        }){
+        }) {
             product.updatePinProduct(isLoading = false, needToUpdate = false)
             _uiEvent.emit(PlayBroadcastEvent.FailPinUnPinProduct(it, product.pinStatus.isPinned))
         }
@@ -1794,10 +2244,67 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         logger.sendBroadcasterLog(mappedMetric)
     }
 
+    private fun handleSetCoverUploadedSource(source: Int) {
+        sharedPref.setUploadedCoverSource(source, authorId, SOURCE_PREP_PAGE)
+    }
+
+    private fun handleResetUploadState() {
+        deleteCoverUploadedSource()
+        deleteSavedAutoGeneratedCover()
+    }
+
+    private fun deleteCoverUploadedSource() {
+        sharedPref.setUploadedCoverSource(-1, authorId, SOURCE_PREP_PAGE)
+    }
+
+    private fun deleteSavedAutoGeneratedCover() {
+        getCurrentSetupDataStore().setFullCover(PlayCoverUiModel.empty())
+        sharedPref.savedSelectedAutoGeneratedCover(-1, authorId, SOURCE_PREP_PAGE)
+    }
+
+    private fun handleSetShowSetupCoverCoachMark() {
+        sharedPref.setShowSetupCoverCoachMark()
+    }
+
+    private fun setupPreparationMenu() {
+        viewModelScope.launchCatchError(block = {
+            addPreparationMenu(
+                DynamicPreparationMenu.createTitle(isMandatory = true),
+                DynamicPreparationMenu.createCover(isMandatory = false),
+                DynamicPreparationMenu.createProduct(isMandatory = false),
+                DynamicPreparationMenu.createSchedule(isMandatory = false),
+            )
+        }) { }
+    }
+
+    private fun addPreparationMenu(vararg newMenuList: DynamicPreparationMenu) {
+        _menuList.update {
+            _menuList.value.toMutableSet().apply {
+                addAll(newMenuList)
+            }.toList()
+        }
+    }
+
+    private fun removePreparationMenu(menu: DynamicPreparationMenu.Menu) {
+        _menuList.update {
+            _menuList.value.filter { it.menu.id != menu.id }
+        }
+    }
+
+    private fun saveJob(jobId: String, job: Job) {
+        cancelJob(jobId)
+        jobMap[jobId] = job
+    }
+
+    private fun cancelJob(jobId: String) {
+        jobMap[jobId]?.cancel()
+    }
+
     companion object {
 
         private const val UI_STATE_STOP_TIMEOUT = 5000L
 
+        private const val SOURCE_PREP_PAGE = "prep page"
         private const val KEY_TITLE = "title"
         private const val KEY_CONFIG = "config_ui_model"
         private const val KEY_IS_LIVE_STREAM_ENDED = "key_is_live_stream_ended"
@@ -1811,5 +2318,13 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         private const val DEFAULT_GAME_RESULT_COACHMARK_AUTO_DISMISS = 5000L
         private const val FLAG_END_CURSOR = "-1"
         private const val WEB_SOCKET_SOURCE_PLAY_BROADCASTER = "Broadcaster"
+
+        private const val FAIL_SAVE_ERROR_MESSAGE = "fail to save asset to local storage"
+
+        private const val SAVE_BEAUTIFICATION_JOB_ID = "SAVE_BEAUTIFICATION_JOB_ID"
+        private const val SAVE_BEAUTIFICATION_DELAY = 500L
+        private const val ERROR_EVENT_DELAY = 500L
+
+        private const val REMOTE_CONFIG_ENABLE_BEAUTIFICATION_KEY = "android_enable_beautification"
     }
 }

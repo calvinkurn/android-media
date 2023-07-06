@@ -3,4 +3,8 @@
     <color name="disco_lihat_clr_arrow">#FFFFFF</color>
     <color name="discovery2_dms_lihat_bg">#31353B</color>
     <color name="discovery2_dms_shop_card_bg">@color/Unify_NN50</color>
+    <color name="discovery2_dms_clr_black_3_opacity">#08000000</color>
+    <color name="discovery2_dms_clr_2E3137B2">@color/Unify_NN900_70</color>
+    <color name="discovery2_dms_clr_FFCCD9">#FFCCD9</color>
+    <color name="discovery2_dms_clr_C9FDE0">#C9FDE0</color>
 </resources>

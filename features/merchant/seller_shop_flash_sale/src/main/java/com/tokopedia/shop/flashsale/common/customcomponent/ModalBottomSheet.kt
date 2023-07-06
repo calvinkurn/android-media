@@ -9,8 +9,9 @@ import android.widget.LinearLayout
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.shop.flashsale.common.util.KeyboardHandler
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.seller_shop_flash_sale.R
 
-open class ModalBottomSheet: BottomSheetUnify() {
+open class ModalBottomSheet : BottomSheetUnify() {
 
     companion object {
         const val MODAL_WIDTH_RATIO = 0.7
@@ -61,21 +62,24 @@ open class ModalBottomSheet: BottomSheetUnify() {
         } else {
             getScreenWidth() * modalWidthRatio
         }.toInt()
-        bsLayout.background = requireContext().getDrawable(com.tokopedia.unifycomponents.R.drawable.notification_big_bg)
+        bsLayout.background = requireContext().getDrawable(R.drawable.bg_dialog)
         bsLayout.requestLayout()
     }
 
     private fun setSoftKeyboardHandler(bsLayout: LinearLayout) {
-        KeyboardHandler(view ?: return, object : KeyboardHandler.OnKeyBoardVisibilityChangeListener{
-            override fun onKeyboardShow() {
-                bsLayout.setMargin(Int.ZERO, Int.ZERO, Int.ZERO, Int.ZERO)
-                bsLayout.requestLayout()
-            }
+        KeyboardHandler(
+            view ?: return,
+            object : KeyboardHandler.OnKeyBoardVisibilityChangeListener {
+                override fun onKeyboardShow() {
+                    bsLayout.setMargin(Int.ZERO, Int.ZERO, Int.ZERO, Int.ZERO)
+                    bsLayout.requestLayout()
+                }
 
-            override fun onKeyboardHide() {
-                setAlignToCenter(bsLayout)
+                override fun onKeyboardHide() {
+                    setAlignToCenter(bsLayout)
+                }
             }
-        })
+        )
     }
 
     fun refreshLayout() {

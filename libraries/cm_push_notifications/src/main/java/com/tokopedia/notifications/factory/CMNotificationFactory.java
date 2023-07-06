@@ -2,6 +2,7 @@ package com.tokopedia.notifications.factory;
 
 import android.app.NotificationManager;
 import android.content.Context;
+import android.os.Build;
 
 import androidx.annotation.Nullable;
 
@@ -11,10 +12,18 @@ import com.tokopedia.notifications.common.CMConstant;
 import com.tokopedia.notifications.common.CMEvents;
 import com.tokopedia.notifications.common.IrisAnalyticsEvents;
 import com.tokopedia.notifications.common.PersistentEvent;
+import com.tokopedia.notifications.factory.custom_notifications.TokoChatBubbleChatNotification;
 import com.tokopedia.notifications.factory.custom_notifications.ReplyChatNotification;
 import com.tokopedia.notifications.model.BaseNotificationModel;
+import com.tokopedia.remoteconfig.RemoteConfigInstance;
+import com.tokopedia.remoteconfig.RollenceKey;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -23,7 +32,7 @@ import java.util.Map;
 public class CMNotificationFactory {
 
     @Nullable
-    public static BaseNotification getNotification(Context context, BaseNotificationModel baseNotificationModel) {
+    public static BaseNotification getNotification(Context context, BaseNotificationModel baseNotificationModel, List<BaseNotificationModel> baseNotificationModelList) {
         if (context == null) {
             return null;
         }
@@ -42,12 +51,15 @@ public class CMNotificationFactory {
             case CMConstant.NotificationType.GENERAL:
             case CMConstant.NotificationType.BIG_IMAGE:
             case CMConstant.NotificationType.ACTION_BUTTONS: {
+
                 if (baseNotificationModel.isReviewOn()) {
                     return new ReviewNotification(context.getApplicationContext(), baseNotificationModel);
                 } else if (baseNotificationModel.isReplyChat()) {
-                    return new ReplyChatNotification(context.getApplicationContext(), baseNotificationModel);
+                    return new ReplyChatNotification(context.getApplicationContext(), baseNotificationModel, getTopChatNotificationModelList(baseNotificationModelList));
+                } else if (isEnableTokoChatBubble(baseNotificationModel)) {
+                    return new TokoChatBubbleChatNotification(context.getApplicationContext(), baseNotificationModel, getTokoChatNotificationModelList(baseNotificationModelList), null);
                 } else {
-                    return new RichDefaultNotification(context.getApplicationContext(), baseNotificationModel);
+                    return new RichDefaultNotification(context.getApplicationContext(), baseNotificationModel, baseNotificationModelList);
                 }
             }
 
@@ -91,5 +103,52 @@ public class CMNotificationFactory {
         notificationManager.cancel(notificationId);
     }
 
+    public static List<BaseNotificationModel> getTopChatNotificationModelList(List<BaseNotificationModel> baseNotificationModelList) {
+        List<BaseNotificationModel> topChatNotificationModelList = new ArrayList<>();
+        for (BaseNotificationModel baseNotificationModel : baseNotificationModelList) {
+            if (baseNotificationModel.isTopChatOn()) {
+                topChatNotificationModelList.add(baseNotificationModel);
+            }
+        }
+        return topChatNotificationModelList;
+    }
+    private static boolean isEnableTokoChatBubble(BaseNotificationModel baseNotificationModel) {
+        boolean isEnableBubble = Build.VERSION.SDK_INT >= Build.VERSION_CODES.R;
+        return isEnableBubble && getIsBubbleRollenceEnabled() && isTokoChatPNIdExist(baseNotificationModel);
+    }
 
+    private static boolean isTokoChatPNIdExist(BaseNotificationModel baseNotificationModel) {
+        String tokoChatPNId;
+        try {
+            tokoChatPNId = new JSONObject(baseNotificationModel.getCustomValues() != null ? baseNotificationModel.getCustomValues() : "")
+                    .optString(CMConstant.CustomValuesKeys.TOKOCHAT_PN_ID);
+        } catch (JSONException e) {
+            tokoChatPNId = "";
+        }
+        return !tokoChatPNId.isBlank();
+    }
+
+    private static boolean getIsBubbleRollenceEnabled() {
+        boolean isRollenceEnabled;
+        try {
+            isRollenceEnabled = RemoteConfigInstance.getInstance().getABTestPlatform().getString(
+                    RollenceKey.TOKOCHAT_BUBBLES, ""
+            ).equals(RollenceKey.TOKOCHAT_BUBBLES);
+        } catch (Exception exception) {
+            isRollenceEnabled = true;
+        }
+        return isRollenceEnabled;
+    }
+
+    private static List<BaseNotificationModel> getTokoChatNotificationModelList(List<BaseNotificationModel> baseNotificationModelList) {
+        List<BaseNotificationModel> tokoChatNotificationModelList = new ArrayList<>();
+        for (BaseNotificationModel baseNotificationModel : baseNotificationModelList) {
+            if (isTokoChatPNIdExist(baseNotificationModel)) {
+                if (baseNotificationModel.getTitle() != null && !baseNotificationModel.getTitle().isBlank()) {
+                    tokoChatNotificationModelList.add(baseNotificationModel);
+                }
+            }
+        }
+        return tokoChatNotificationModelList;
+    }
 }

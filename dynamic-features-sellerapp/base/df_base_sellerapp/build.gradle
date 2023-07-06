@@ -1,8 +1,6 @@
 apply plugin: 'com.android.dynamic-feature'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 apply plugin: 'io.hansel.preprocessor.feature'
-apply plugin: 'robust'
-
 
 buildscript {
     repositories {
@@ -56,6 +54,8 @@ android {
 }
 
 dependencies {
+	implementation projectOrAar(rootProject.ext.features.sellerShopNib)
+
 	implementation projectOrAar(rootProject.ext.features.sellerMvcCreation)
 
 	implementation projectOrAar(rootProject.ext.features.shopDiscount)
@@ -65,15 +65,8 @@ dependencies {
 
     implementation projectOrAar(rootProject.ext.features.paymentSetting)
     implementation projectOrAar(rootProject.ext.features.productManageList)
-    implementation projectOrAar(rootProject.ext.features.shopSettings)
     implementation projectOrAar(rootProject.ext.features.layanan)
     implementation projectOrAar(rootProject.ext.features.withdraw)
-
-    //Media
-    implementation projectOrAar(rootProject.ext.features.liveBroadcaster)
-
-    //Content
-    implementation projectOrAar(rootProject.ext.features.playBroadcaster)
 
     //Discovery
     implementation projectOrAar(rootProject.ext.features.productCardOptions)
@@ -96,21 +89,17 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.settingbank)
     implementation projectOrAar(rootProject.ext.features.settingnotif)
     implementation projectOrAar(rootProject.ext.features.attachinvoice)
-    implementation projectOrAar(rootProject.ext.features.kyccentralized)
 //    implementation projectOrAar(rootProject.ext.features.notifCenter)
     implementation projectOrAar(rootProject.ext.features.talk)
     implementation projectOrAar(rootProject.ext.features.attachvoucher)
     implementation projectOrAar(rootProject.ext.features.attachproduct)
 //    implementation projectOrAar(rootProject.ext.features.topchat)
-    implementation projectOrAar(rootProject.ext.features.liveness)
     implementation projectOrAar(rootProject.ext.features.updateinactivephone)
     implementation projectOrAar(rootProject.ext.features.telephony_masking)
 
     implementation projectOrAar(rootProject.ext.features.sellerOnboarding)
     implementation projectOrAar(rootProject.ext.features.shopShowcase)
-    implementation projectOrAar(rootProject.ext.features.voucherCreation)
     implementation projectOrAar(rootProject.ext.features.sellerShopFlashSale)
-    implementation projectOrAar(rootProject.ext.features.sellerTokopediaFlashSale)
     implementation projectOrAar(rootProject.ext.features.sellerSearch)
     implementation projectOrAar(rootProject.ext.features.activation)
     implementation projectOrAar(rootProject.ext.features.manageaddress)
@@ -122,8 +111,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.shopPage)
     implementation projectOrAar(rootProject.ext.features.shopPageWidget)
     implementation projectOrAar(rootProject.ext.features.feedShop)
-    implementation projectOrAar(rootProject.ext.features.statistic)
-    implementation projectOrAar(rootProject.ext.features.sellerMenu)
     implementation projectOrAar(rootProject.ext.features.snapshot)
     implementation projectOrAar(rootProject.ext.features.atcVariant)
     implementation projectOrAar(rootProject.ext.features.shopAdmin)
@@ -133,10 +120,10 @@ dependencies {
 
     //Media
     implementation projectOrAar(rootProject.ext.features.mediaeditor)
-    implementation projectOrAar(rootProject.ext.features.mediapicker)
     implementation projectOrAar(rootProject.ext.libraries.imagePicker)
 
     implementation projectOrAar(rootProject.ext.features.tokomemberSellerDashboard)
     implementation projectOrAar(rootProject.ext.features.tokomemberUiCommon)
-    implementation projectOrAar(rootProject.ext.features.sellerPersona)
+    implementation projectOrAar(rootProject.ext.features.centralizedPromo)
+    implementation projectOrAar(rootProject.ext.features.powerMerchantSubscribe)
 }

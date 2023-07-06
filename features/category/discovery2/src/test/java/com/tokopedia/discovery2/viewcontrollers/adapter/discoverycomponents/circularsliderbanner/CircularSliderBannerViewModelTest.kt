@@ -3,10 +3,14 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.cir
 import android.app.Application
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.circular_view_pager.presentation.widgets.circularViewPager.CircularModel
+import com.tokopedia.discovery.common.utils.URLParser
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
+import com.tokopedia.discovery2.datamapper.getComponent
 import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapper
 import io.mockk.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.test.resetMain
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -67,6 +71,15 @@ class CircularSliderBannerViewModelTest {
         dataList.add(dataItem)
         every { componentsItem.name } returns TEST_STRING
         assert(viewModel.getBannerItem(0)?.parentComponentName == TEST_STRING)
+    }
+
+    @After
+    @Throws(Exception::class)
+    fun tearDown() {
+        Dispatchers.resetMain()
+        unmockkObject(DiscoveryDataMapper)
+        unmockkStatic(::getComponent)
+        unmockkConstructor(URLParser::class)
     }
 
 

@@ -46,12 +46,13 @@ class PlayBroadcastPrepareViewModelTest {
     private val mockTitleDataStore: TitleDataStore = mockk(relaxed = true)
     private lateinit var tagsDataStore: TagsDataStore
     private lateinit var interactiveDataStore: InteractiveDataStore
+    private lateinit var productTagDataStoreImpl: ProductTagDataStoreImpl
     private lateinit var mockSetupDataStore: MockSetupDataStore
     private lateinit var dataStore: PlayBroadcastDataStore
     private lateinit var mockHydraDataStore: HydraConfigStore
     private lateinit var mockBroadcastSetupDataStore: PlayBroadcastSetupDataStore
 
-    private val playBroadcastMapper = PlayBroadcastUiMapper(TestHtmlTextTransformer(), TestUriParser())
+    private val playBroadcastMapper = PlayBroadcastUiMapper(TestHtmlTextTransformer(), TestUriParser(), mockk(relaxed = true))
 
     private lateinit var createLiveStreamChannelUseCase: CreateLiveStreamChannelUseCase
 
@@ -74,7 +75,15 @@ class PlayBroadcastPrepareViewModelTest {
         titleDataStore = TitleDataStoreImpl(dispatcherProvider, mockk())
         tagsDataStore = TagsDataStoreImpl(dispatcherProvider, mockk())
         interactiveDataStore = InteractiveDataStoreImpl()
-        mockSetupDataStore = MockSetupDataStore(coverDataStore, broadcastScheduleDataStore, titleDataStore, tagsDataStore, interactiveDataStore)
+        productTagDataStoreImpl = ProductTagDataStoreImpl()
+        mockSetupDataStore = MockSetupDataStore(
+            coverDataStore,
+            broadcastScheduleDataStore,
+            titleDataStore,
+            tagsDataStore,
+            interactiveDataStore,
+            productTagDataStoreImpl,
+        )
         mockHydraDataStore = TestDoubleModelBuilder().buildHydraConfigStore()
         mockBroadcastSetupDataStore = TestDoubleModelBuilder().buildSetupDataStore(
             titleDataStore = mockTitleDataStore,

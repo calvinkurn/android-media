@@ -4,9 +4,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.model.GlideUrl
-import com.bumptech.glide.load.model.LazyHeaders
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
@@ -21,10 +18,12 @@ import com.tokopedia.utils.date.DateUtil
 /**
  * Created by kris on 5/11/18. Tokopedia
  */
-class TrackingHistoryAdapter(private val trackingHistoryData: List<TrackHistoryModel>,
-                             private val userSession: UserSessionInterface,
-                             private val orderId: Long?,
-                             private val listener: OnImageClicked) : RecyclerView.Adapter<TrackingHistoryAdapter.TrackingHistoryViewHolder>() {
+class TrackingHistoryAdapter(
+    private val trackingHistoryData: List<TrackHistoryModel>,
+    private val userSession: UserSessionInterface,
+    private val orderId: Long?,
+    private val listener: OnImageClicked
+) : RecyclerView.Adapter<TrackingHistoryAdapter.TrackingHistoryViewHolder>() {
     interface OnImageClicked {
         fun onImageItemClicked(imageId: String, orderId: Long, description: String)
     }
@@ -43,14 +42,16 @@ class TrackingHistoryAdapter(private val trackingHistoryData: List<TrackHistoryM
         return trackingHistoryData.size
     }
 
-    inner class TrackingHistoryViewHolder(private val binding: AdapterTrackingHistoryViewHolderBinding,
-                                          private val userSession: UserSessionInterface,
-                                          private val orderId: Long?,
-                                          private val listener: OnImageClicked) : RecyclerView.ViewHolder(binding.root) {
+    inner class TrackingHistoryViewHolder(
+        private val binding: AdapterTrackingHistoryViewHolderBinding,
+        private val userSession: UserSessionInterface,
+        private val orderId: Long?,
+        private val listener: OnImageClicked
+    ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(data: TrackHistoryModel, position: Int) {
             binding.run {
                 title.run {
-                    text = DateUtil.formatDate("yyyy-MM-dd", "EEEE, dd MMM yyyy",data.date)
+                    text = DateUtil.formatDate("yyyy-MM-dd", "EEEE, dd MMM yyyy", data.date)
                     setTextColor(MethodChecker.getColor(itemView.context, if (position == 0) com.tokopedia.unifyprinciples.R.color.Unify_G400 else com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
                 }
                 date.text = "${DateUtil.formatDate("HH:mm:ss", "HH:mm",data.time)} WIB"
@@ -71,8 +72,13 @@ class TrackingHistoryAdapter(private val trackingHistoryData: List<TrackHistoryM
                     dotTrail.visibility = View.VISIBLE
                     dotTrail.setBackgroundColor(MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N75))
                 }
-                dotImage.setImageDrawable(getIconUnifyDrawable(itemView.context,
-                    IconUnify.CHECK_CIRCLE, dotColor))
+                dotImage.setImageDrawable(
+                    getIconUnifyDrawable(
+                        itemView.context,
+                        IconUnify.CHECK_CIRCLE,
+                        dotColor
+                    )
+                )
                 if (data.proof.imageId.isEmpty()) {
                     imgProof.visibility = View.GONE
                 } else {
@@ -84,14 +90,15 @@ class TrackingHistoryAdapter(private val trackingHistoryData: List<TrackHistoryM
                             LogisticImageDeliveryHelper.IMAGE_SMALL_SIZE,
                             userSession.userId,
                             LogisticImageDeliveryHelper.DEFAULT_OS_TYPE,
-                            userSession.deviceId)
+                            userSession.deviceId
+                        )
 
                         imgProof.loadImagePod(
-                            itemView.context,
                             userSession.accessToken,
                             url,
-                            itemView.context.getDrawable(R.drawable.ic_image_error),
-                            itemView.context.getDrawable(R.drawable.ic_image_error))
+                            R.drawable.ic_image_error,
+                            R.drawable.ic_image_error
+                        )
 
                         imgProof.setOnClickListener { view: View? -> listener.onImageItemClicked(data.proof.imageId, orderId, data.proof.description) }
                     }

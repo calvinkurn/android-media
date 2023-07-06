@@ -4,8 +4,8 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.productcard.compact.databinding.ItemProductCardCompactCarouselBinding
 import com.tokopedia.tokopedianow.R
-import com.tokopedia.tokopedianow.databinding.ItemTokopedianowProductCardCarouselBinding
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselAtcProductCardUiModel
 import com.tokopedia.utils.view.binding.viewBinding
 
@@ -16,10 +16,10 @@ class HomeLeftCarouselAtcProductCardViewHolder(
 
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.item_tokopedianow_product_card_carousel
+        val LAYOUT = R.layout.item_product_card_compact_carousel
     }
 
-    private var binding: ItemTokopedianowProductCardCarouselBinding? by viewBinding()
+    private var binding: ItemProductCardCompactCarouselBinding? by viewBinding()
 
     override fun bind(element: HomeLeftCarouselAtcProductCardUiModel) {
         binding?.productCard?.apply {
@@ -42,6 +42,9 @@ class HomeLeftCarouselAtcProductCardViewHolder(
                 listener?.onProductCardAddVariantClicked(
                     product = element
                 )
+            }
+            setOnBlockAddToCartListener {
+                listener?.onProductCardAddToCartBlocked()
             }
             addOnImpressionListener(element) {
                 listener?.onProductCardImpressed(
@@ -68,5 +71,6 @@ class HomeLeftCarouselAtcProductCardViewHolder(
             position: Int,
             product: HomeLeftCarouselAtcProductCardUiModel
         )
+        fun onProductCardAddToCartBlocked()
     }
 }

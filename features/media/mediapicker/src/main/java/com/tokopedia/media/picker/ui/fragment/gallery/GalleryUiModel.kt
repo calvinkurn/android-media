@@ -7,7 +7,8 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class GalleryUiModel(
     var bucketId: Long = BUCKET_ALL_MEDIA_ID,
-    var hasChangeAlbum: Boolean = false
+    var bucketCount: Int = 0,
+    var hasChangeAlbum: Boolean = true
 ) : Parcelable {
 
     companion object {

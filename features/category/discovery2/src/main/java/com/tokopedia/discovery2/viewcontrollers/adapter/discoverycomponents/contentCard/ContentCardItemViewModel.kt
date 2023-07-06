@@ -1,16 +1,13 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.contentCard
 
 import android.app.Application
-import android.widget.TextView
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.tkpd.atcvariant.util.AtcCommonMapper.asSuccess
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.data.multibannerresponse.timmerwithbanner.TimerDataModel
-import com.tokopedia.discovery2.datamapper.getComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.banners.timerbanners.SaleCountDownTimer
 import java.text.SimpleDateFormat
@@ -74,7 +71,7 @@ class ContentCardItemViewModel(val application: Application, val components: Com
                 } else {
                     mutableTimerText.value =
                         application.resources.getString(R.string.discovery_sale_ends_in)
-                    val timerModel = TimerDataModel(hours = 0, minutes = 0)
+                    val timerModel = TimerDataModel(hours = 0, minutes = 0, seconds = 0)
                     mutableTimeDiffModel.value = timerModel
                 }
             }

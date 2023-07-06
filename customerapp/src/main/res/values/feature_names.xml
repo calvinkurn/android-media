@@ -179,7 +179,7 @@
     <string name="hotlist_label">hotlist</string>
     <string name="label_affiliate">Affiliate</string>
     <string name="title_category_epharmacy">E-Pharmacy</string>
-
+    <string name="title_category_catalog_library">Katalog Tokopedia</string>
 
     <!--Contact Us-->
     <string name="title_module_contact_us">Pusat Bantuan</string>
@@ -412,7 +412,6 @@
     <!-- Seller Menu -->
     <string name="title_seller_menu">Toko Saya</string>
     <string name="title_seller_settings">Pengaturan Toko</string>
-    <string name="admin_authorize_title">Admin Role Access Authorize</string>
 
     <!--Dynamic feature for profile-->
     <string name="title_profile_df">Profile</string>
@@ -444,8 +443,12 @@
     <string name="title_tokofood" translatable="false">TokoFood</string>
     <string name="title_tokofood_post_purchase" translatable="false">Detail Pesanan</string>
 
+    <!--Dynamic feature for logistic-->
+    <string name="title_logistic_dt">Dilayani Tokopedia</string>
+
     <!-- Shop Admin -->
     <string name="title_shop_admin">Shop Admin</string>
+    <string name="admin_authorize_title">Admin Role Access Authorize</string>
 
     <!-- Product Ar   -->
     <string name="title_product_ar">Product Ar</string>

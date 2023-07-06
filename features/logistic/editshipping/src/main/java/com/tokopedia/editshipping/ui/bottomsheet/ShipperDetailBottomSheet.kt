@@ -1,9 +1,9 @@
 package com.tokopedia.editshipping.ui.bottomsheet
 
-import android.view.View
+import android.content.Context
+import android.view.LayoutInflater
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.editshipping.R
+import com.tokopedia.editshipping.databinding.BottomsheetShipperDetailBinding
 import com.tokopedia.editshipping.ui.shippingeditor.ShippingEditorFragment
 import com.tokopedia.editshipping.ui.shippingeditor.adapter.ShippingEditorDetailsAdapter
 import com.tokopedia.editshipping.util.EditShippingConstant.BOTTOMSHEET_SHIPPER_DETAIL_TITLE
@@ -13,15 +13,15 @@ class ShipperDetailBottomSheet {
 
     private var bottomSheet: BottomSheetUnify? = null
 
-    fun show(fragment: ShippingEditorFragment, adapter: ShippingEditorDetailsAdapter) {
+    fun show(context: Context, fragment: ShippingEditorFragment, adapter: ShippingEditorDetailsAdapter) {
         fragment.fragmentManager?.let {
             bottomSheet = BottomSheetUnify().apply {
                 setTitle(BOTTOMSHEET_SHIPPER_DETAIL_TITLE)
 
                 val child =
-                    View.inflate(fragment.context, R.layout.bottomsheet_shipper_detail, null)
+                    BottomsheetShipperDetailBinding.inflate(LayoutInflater.from(context), null, false)
                 setupChild(child, adapter)
-                setChild(child)
+                setChild(child.root)
                 setOnDismissListener { dismiss() }
                 setCloseClickListener { dismiss() }
 
@@ -30,11 +30,10 @@ class ShipperDetailBottomSheet {
         }
     }
 
-    private fun setupChild(child: View, shippingDetailsAdapter: ShippingEditorDetailsAdapter) {
-        child.findViewById<RecyclerView>(R.id.rv_shipper_detail)?.apply {
+    private fun setupChild(child: BottomsheetShipperDetailBinding, shippingDetailsAdapter: ShippingEditorDetailsAdapter) {
+        child.rvShipperDetail.apply {
             layoutManager = LinearLayoutManager(this.context)
             adapter = shippingDetailsAdapter
         }
     }
-
 }

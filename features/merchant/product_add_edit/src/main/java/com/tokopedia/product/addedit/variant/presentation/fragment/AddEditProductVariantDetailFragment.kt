@@ -15,9 +15,17 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.orFalse
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.isZero
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.parseAsHtml
+import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringConstants.ADD_EDIT_PRODUCT_VARIANT_DETAIL_PLT_NETWORK_METRICS
 import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringConstants.ADD_EDIT_PRODUCT_VARIANT_DETAIL_PLT_PREPARE_METRICS
@@ -51,6 +59,7 @@ import com.tokopedia.product.addedit.variant.presentation.model.OptionInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.SelectionInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.VariantDetailInputLayoutModel
 import com.tokopedia.product.addedit.variant.presentation.viewmodel.AddEditProductVariantDetailViewModel
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
 import com.tokopedia.unifycomponents.ticker.Ticker
@@ -59,14 +68,15 @@ import com.tokopedia.user.session.UserSessionInterface
 import java.math.BigInteger
 import java.util.*
 import javax.inject.Inject
+import com.tokopedia.product.manage.common.R as productManageR
 
-class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
-        VariantDetailHeaderViewHolder.OnCollapsibleHeaderClickListener,
-        SelectVariantMainBottomSheet.SelectVariantMainListener,
-        VariantDetailFieldsViewHolder.VariantDetailFieldsViewHolderListener,
-        AddEditProductPerformanceMonitoringListener,
-        MultipleVariantEditListener
-{
+class AddEditProductVariantDetailFragment :
+    BaseDaggerFragment(),
+    VariantDetailHeaderViewHolder.OnCollapsibleHeaderClickListener,
+    SelectVariantMainBottomSheet.SelectVariantMainListener,
+    VariantDetailFieldsViewHolder.VariantDetailFieldsViewHolderListener,
+    AddEditProductPerformanceMonitoringListener,
+    MultipleVariantEditListener {
 
     companion object {
         const val SCROLLING_DELAY = 500L
@@ -123,18 +133,23 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
         val saveInstanceCacheManager = SaveInstanceCacheManager(requireContext(), cacheManagerId)
 
         cacheManagerId?.run {
-            val productInputModel = saveInstanceCacheManager.get(EXTRA_PRODUCT_INPUT_MODEL,
-                    ProductInputModel::class.java) ?: ProductInputModel()
+            val productInputModel = saveInstanceCacheManager.get(
+                EXTRA_PRODUCT_INPUT_MODEL,
+                ProductInputModel::class.java
+            ) ?: ProductInputModel()
             viewModel.updateProductInputModel(productInputModel)
         }
 
         activity?.window?.setSoftInputMode(
-                WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN
+            WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN
         )
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.fragment_add_edit_product_variant_detail, container, false)
     }
 
@@ -155,10 +170,16 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
 
         val multipleVariantEditSelectBottomSheet = MultipleVariantEditSelectBottomSheet(this, viewModel.isMultiLocationShop)
         val variantInputModel = viewModel.productInputModel.value?.variantInputModel
+        val hasDTStock = viewModel.productInputModel.value?.hasDTStock.orFalse()
         multipleVariantEditSelectBottomSheet.setData(variantInputModel)
 
-        variantDetailFieldsAdapter = VariantDetailFieldsAdapter(VariantDetailInputTypeFactoryImpl(
-                this, this))
+        variantDetailFieldsAdapter = VariantDetailFieldsAdapter(
+            VariantDetailInputTypeFactoryImpl(
+                this,
+                this,
+                !hasDTStock
+            )
+        )
         recyclerViewVariantDetailFields?.adapter = variantDetailFieldsAdapter
         recyclerViewVariantDetailFields?.layoutManager = LinearLayoutManager(context)
         recyclerViewVariantDetailFields?.itemAnimator = null
@@ -185,7 +206,6 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
         observeSelectedVariantSize()
         observeHasWholesale()
         observeMaxStockThreshold()
-
 
         enableSku()
         setupToolbarActions()
@@ -248,6 +268,23 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
         setFirstTimeWeightPerVariant(activity, false)
     }
 
+    override fun onDisablingVariantDT(position: Int) {
+        showDTNotAllowedChangeStatusDialog(position)
+    }
+
+    override fun onDisablingVariantCampaign(position: Int) {
+        val toaster = Toaster.build(
+            requireView(),
+            getString(R.string.product_add_edit_cannot_deactivate_variant_campaign),
+            actionText = getString(R.string.action_oke),
+            type = Toaster.TYPE_ERROR,
+            duration = Toaster.LENGTH_LONG
+        ).apply {
+            anchorView = buttonSave
+        }
+        toaster.show()
+    }
+
     override fun onMultipleEditInputFinished(multipleVariantEditInputModel: MultipleVariantEditInputModel) {
         val headerList = variantDetailFieldsAdapter?.list?.filterIsInstance<VariantDetailHeaderUiModel>()
         headerList?.forEach {
@@ -298,7 +335,7 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
         val updatedFieldPosition = viewModel.updatePrimaryVariant(combination)
 
         // update switch status if primary variant changed (index bigger than -1)
-        if (updatedFieldPosition.isMoreThanZero() || updatedFieldPosition.isZero() ) {
+        if (updatedFieldPosition.isMoreThanZero() || updatedFieldPosition.isZero()) {
             viewModel.updateSwitchStatus(true, updatedFieldPosition)
             variantDetailFieldsAdapter?.activateVariantStatus(combination)
         }
@@ -309,14 +346,14 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
 
     override fun startPerformanceMonitoring() {
         pageLoadTimePerformanceMonitoring = PageLoadTimePerformanceCallback(
-                ADD_EDIT_PRODUCT_VARIANT_DETAIL_PLT_PREPARE_METRICS,
-                ADD_EDIT_PRODUCT_VARIANT_DETAIL_PLT_NETWORK_METRICS,
-                ADD_EDIT_PRODUCT_VARIANT_DETAIL_PLT_RENDER_METRICS,
-                0,
-                0,
-                0,
-                0,
-                null
+            ADD_EDIT_PRODUCT_VARIANT_DETAIL_PLT_PREPARE_METRICS,
+            ADD_EDIT_PRODUCT_VARIANT_DETAIL_PLT_NETWORK_METRICS,
+            ADD_EDIT_PRODUCT_VARIANT_DETAIL_PLT_RENDER_METRICS,
+            0,
+            0,
+            0,
+            0,
+            null
         )
 
         pageLoadTimePerformanceMonitoring?.startMonitoring(ADD_EDIT_PRODUCT_VARIANT_DETAIL_TRACE)
@@ -349,21 +386,23 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
     }
 
     private fun observeSelectedVariantSize() {
-        viewModel.selectedVariantSize.observe(viewLifecycleOwner, { size ->
+        viewModel.selectedVariantSize.observe(viewLifecycleOwner) { size ->
             // clear old elements before rendering new elements
             variantDetailFieldsAdapter?.clearAllElements()
             // have 2 selected variant detail
             val hasVariantCombination = viewModel.hasVariantCombination(size)
             // with collapsible header
             if (hasVariantCombination) {
-                val selectedVariantList = viewModel.productInputModel.value?.variantInputModel?.selections
+                val selectedVariantList =
+                    viewModel.productInputModel.value?.variantInputModel?.selections
                 selectedVariantList?.run { setupVariantDetailCombinationFields(selectedVariantList) }
             } else {
-                val selectedVariant = viewModel.productInputModel.value?.variantInputModel?.selections?.firstOrNull()
+                val selectedVariant =
+                    viewModel.productInputModel.value?.variantInputModel?.selections?.firstOrNull()
                 val selectedUnitValues = selectedVariant?.options
                 selectedUnitValues?.run { setupVariantDetailFields(selectedUnitValues) }
             }
-        })
+        }
     }
 
     private fun observeHasWholesale() {
@@ -400,15 +439,21 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
         selectedUnitValues.forEachIndexed { productVariantIndex, unitValue ->
             val isSkuVisible = switchUnifySku?.isChecked.orFalse() // get last visibility
             val variantDetailInputModel = viewModel.generateVariantDetailInputModel(
-                productVariantIndex, Int.ZERO, unitValue.value, isSkuVisible)
+                productVariantIndex,
+                Int.ZERO,
+                unitValue.value,
+                isSkuVisible
+            )
             val fieldVisitablePosition = variantDetailFieldsAdapter?.addVariantDetailField(
-                variantDetailInputModel, firstTimeWeightPerVariant)
+                variantDetailInputModel,
+                firstTimeWeightPerVariant
+            )
             fieldVisitablePosition?.let { viewModel.addToVariantDetailInputMap(fieldVisitablePosition, variantDetailInputModel) }
         }
     }
 
     private fun setupVariantDetailCombinationFields(selectedVariants: List<SelectionInputModel>) {
-        //increment for indexing product variant
+        // increment for indexing product variant
         var productVariantIndex = Int.ZERO
         // variant level 1 properties
         val selectedVariantLevel1 = selectedVariants[VARIANT_VALUE_LEVEL_ONE_POSITION]
@@ -427,9 +472,15 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
             unitValueLevel2.forEach { level2Value ->
                 val isSkuVisible = switchUnifySku?.isChecked.orFalse() // get last visibility
                 val variantDetailInputModel = viewModel.generateVariantDetailInputModel(
-                    productVariantIndex, headerVisitablePosition, level2Value.value, isSkuVisible)
+                    productVariantIndex,
+                    headerVisitablePosition,
+                    level2Value.value,
+                    isSkuVisible
+                )
                 val fieldVisitablePosition = variantDetailFieldsAdapter?.addVariantDetailField(
-                    variantDetailInputModel, firstTimeWeightPerVariant)
+                    variantDetailInputModel,
+                    firstTimeWeightPerVariant
+                )
                 fieldVisitablePosition?.let { viewModel.addToVariantDetailInputMap(fieldVisitablePosition, variantDetailInputModel) }
                 productVariantIndex++
             }
@@ -457,13 +508,34 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
         bottomSheet.show(childFragmentManager)
     }
 
+    private fun showDTNotAllowedChangeStatusDialog(position: Int) {
+        val dialog = DialogUnify(requireContext(), DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE)
+        val descriptionText = getString(R.string.product_add_edit_text_description_product_dt_cannot_deactivate).parseAsHtml()
+        dialog.apply {
+            setTitle(getString(R.string.product_add_edit_text_title_product_dt_cannot_deactivate))
+            setDescription(descriptionText)
+            setPrimaryCTAText(getString(productManageR.string.product_manage_confirm_inactive_dt_product_positive_button))
+            setSecondaryCTAText(getString(productManageR.string.product_manage_confirm_dt_product_cancel_button))
+            setPrimaryCTAClickListener {
+                viewModel.updateSwitchStatus(false, position)
+                variantDetailFieldsAdapter?.deactivateVariantStatus(position)
+                dismiss()
+            }
+            setSecondaryCTAClickListener {
+                dismiss()
+            }
+        }
+        dialog.show()
+    }
+
     private fun submitVariantInput() {
         invokeFieldsValidation()
         if (viewModel.getInputDataValidStatus()) {
             viewModel.updateProductInputModel()
             viewModel.productInputModel.value?.apply {
                 val cacheManagerId = arguments?.getString(
-                    AddEditProductConstants.EXTRA_CACHE_MANAGER_ID).orEmpty()
+                    AddEditProductConstants.EXTRA_CACHE_MANAGER_ID
+                ).orEmpty()
                 SaveInstanceCacheManager(requireContext(), cacheManagerId)
                     .put(EXTRA_PRODUCT_INPUT_MODEL, this)
 
@@ -517,24 +589,28 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
     private fun sendTrackerSaveMainVariant(combination: List<Int>) {
         if (viewModel.isEditMode) {
             ProductEditVariantDetailTracking.saveMainVariant(
-                    viewModel.getPrimaryVariantTitle(combination),
-                    userSession.shopId)
+                viewModel.getPrimaryVariantTitle(combination),
+                userSession.shopId
+            )
         } else {
             ProductAddVariantDetailTracking.saveMainVariant(
-                    viewModel.getPrimaryVariantTitle(combination),
-                    userSession.shopId)
+                viewModel.getPrimaryVariantTitle(combination),
+                userSession.shopId
+            )
         }
     }
 
     private fun sendClickVariantStatusToggleData(isChecked: Boolean) {
         if (viewModel.isEditMode) {
             ProductEditVariantDetailTracking.clickVariantStatusToggle(
-                    if (isChecked) VARIANT_TRACKER_ON else VARIANT_TRACKER_OFF,
-                    userSession.shopId)
+                if (isChecked) VARIANT_TRACKER_ON else VARIANT_TRACKER_OFF,
+                userSession.shopId
+            )
         } else {
             ProductAddVariantDetailTracking.clickVariantStatusToggle(
-                    if (isChecked) VARIANT_TRACKER_ON else VARIANT_TRACKER_OFF,
-                    userSession.shopId)
+                if (isChecked) VARIANT_TRACKER_ON else VARIANT_TRACKER_OFF,
+                userSession.shopId
+            )
         }
     }
 
@@ -549,25 +625,27 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
     private fun sendTrackerClickSKUToggleData(isChecked: Boolean) {
         if (viewModel.isEditMode) {
             ProductEditVariantDetailTracking.clickSKUToggle(
-                    if (isChecked) VARIANT_TRACKER_ON else VARIANT_TRACKER_OFF,
-                    userSession.shopId)
+                if (isChecked) VARIANT_TRACKER_ON else VARIANT_TRACKER_OFF,
+                userSession.shopId
+            )
         } else {
             ProductAddVariantDetailTracking.clickSKUToggle(
-                    if (isChecked) VARIANT_TRACKER_ON else VARIANT_TRACKER_OFF,
-                    userSession.shopId)
+                if (isChecked) VARIANT_TRACKER_ON else VARIANT_TRACKER_OFF,
+                userSession.shopId
+            )
         }
     }
 
     private fun sendTrackerTrackScreenData() {
         if (viewModel.isEditMode) {
             ProductEditVariantDetailTracking.trackScreen(
-                    userSession.isLoggedIn.toString(),
-                    userSession.userId
+                userSession.isLoggedIn.toString(),
+                userSession.userId
             )
         } else {
             ProductAddVariantDetailTracking.trackScreen(
-                    userSession.isLoggedIn.toString(),
-                    userSession.userId
+                userSession.isLoggedIn.toString(),
+                userSession.userId
             )
         }
     }

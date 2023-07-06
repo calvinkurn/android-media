@@ -13,6 +13,7 @@ import com.tokopedia.product.estimasiongkir.usecase.GetRatesEstimateUseCase
 import com.tokopedia.product.estimasiongkir.usecase.GetScheduledDeliveryRatesUseCase
 import com.tokopedia.product.estimasiongkir.view.viewmodel.RatesEstimationBoeViewModel
 import com.tokopedia.product.util.BaseProductViewModelTest
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -36,6 +37,9 @@ class RatesEstimationBoeViewModelTest : BaseProductViewModelTest() {
     private lateinit var userSessionInterface: UserSessionInterface
 
     @RelaxedMockK
+    private lateinit var remoteConfig: RemoteConfig
+
+    @RelaxedMockK
     private lateinit var scheduledDeliveryUseCase: GetScheduledDeliveryRatesUseCase
 
     private val viewModel: RatesEstimationBoeViewModel by lazy {
@@ -43,6 +47,7 @@ class RatesEstimationBoeViewModelTest : BaseProductViewModelTest() {
             ratesUseCase,
             scheduledDeliveryUseCase,
             userSessionInterface,
+            remoteConfig,
             CoroutineTestDispatchersProvider
         )
     }

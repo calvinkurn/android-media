@@ -26,7 +26,7 @@ import com.tokopedia.seller.menu.common.view.uimodel.base.PowerMerchantStatus
 import com.tokopedia.seller.menu.common.view.uimodel.base.PowerMerchantProStatus
 import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.ShopStatusUiModel
 import com.tokopedia.sellerhome.common.viewmodel.NonNullLiveData
-import com.tokopedia.sellerhome.domain.usecase.GetNewPromotionUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetNewPromotionUseCase
 import com.tokopedia.sellerhome.domain.usecase.GetShopOperationalUseCase
 import com.tokopedia.sellerhome.domain.usecase.GetTotalTokoMemberUseCase
 import com.tokopedia.sellerhome.domain.usecase.ShareInfoOtherUseCase
@@ -35,6 +35,7 @@ import com.tokopedia.sellerhome.domain.usecase.TopAdsDashboardDepositUseCase
 import com.tokopedia.sellerhome.settings.view.adapter.uimodel.OtherMenuShopShareData
 import com.tokopedia.sellerhome.settings.view.adapter.uimodel.ShopOperationalData
 import com.tokopedia.sellerhome.settings.view.uimodel.OtherMenuDataType
+import com.tokopedia.sellerhomecommon.domain.usecase.GetTopAdsShopInfoUseCase
 import com.tokopedia.shop.common.graphql.domain.usecase.GetTokoPlusBadgeUseCase
 import com.tokopedia.shop.common.view.model.TokoPlusBadgeUiModel
 import com.tokopedia.usecase.coroutines.Fail
@@ -61,6 +62,7 @@ class OtherMenuViewModel @Inject constructor(
     private val topAdsDashboardDepositUseCase: TopAdsDashboardDepositUseCase,
     private val shopShareInfoUseCase: ShareInfoOtherUseCase,
     private val getNewPromotionUseCase: GetNewPromotionUseCase,
+    private val getTopAdsShopInfoUseCase: GetTopAdsShopInfoUseCase,
     private val userSession: UserSessionInterface,
     private val remoteConfig: FirebaseRemoteConfigImpl
 ) : BaseViewModel(dispatcher.main) {
@@ -95,6 +97,7 @@ class OtherMenuViewModel @Inject constructor(
     private val _kreditTopAdsFormattedLiveData = MutableLiveData<SettingResponseState<String>>()
     private val _isTopAdsAutoTopupLiveData = MutableLiveData<Result<Boolean>>()
     private val _isShowTagCentralizePromo = MutableLiveData<SettingResponseState<Boolean>>()
+    private val _isTopAdsShopUsed = MutableLiveData<Boolean>()
 
     val shopBadgeLiveData: LiveData<SettingResponseState<String>>
         get() = _shopBadgeLiveData
@@ -116,6 +119,8 @@ class OtherMenuViewModel @Inject constructor(
         get() = _freeShippingLiveData
     val isShowTagCentralizePromo: LiveData<SettingResponseState<Boolean>>
         get() = _isShowTagCentralizePromo
+    val isTopAdsShopUsed: LiveData<Boolean>
+        get() = _isTopAdsShopUsed
 
     private val _errorStateMap = MediatorLiveData<Map<OtherMenuDataType, Boolean>>().apply {
         addSource(_shopBadgeLiveData) {
@@ -237,7 +242,7 @@ class OtherMenuViewModel @Inject constructor(
         getKreditTopAdsData()
         getIsTopAdsAutoTopup()
         getIsShowTagCentralizePromo()
-        getShopPeriodType()
+        getIsTopAdsShopUsed()
     }
 
     fun onShownMultipleError(isShown: Boolean = false) {
@@ -395,6 +400,20 @@ class OtherMenuViewModel @Inject constructor(
             },
             onError = {
                 _isShowTagCentralizePromo.value = SettingResponseState.SettingError(it)
+            }
+        )
+    }
+
+    fun getIsTopAdsShopUsed(){
+        launchCatchError(
+            block = {
+                val data = withContext(dispatcher.io) {
+                    getTopAdsShopInfoUseCase.execute(userSession.shopId)
+                }
+                _isTopAdsShopUsed.value = data.data.ads.get(0).isUsed
+            },
+            onError = {
+                _isTopAdsShopUsed.value = false
             }
         )
     }

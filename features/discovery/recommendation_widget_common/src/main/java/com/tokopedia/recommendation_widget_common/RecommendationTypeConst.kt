@@ -6,4 +6,5 @@ object RecommendationTypeConst {
     const val TYPE_CAROUSEL = "Carousel"
     const val TYPE_INFINITE = "Infinite"
     const val TYPE_COMPARISON_WIDGET = "Comparison-Widget"
+    const val TYPE_COMPARISON_BPC_WIDGET = "comparison-widget-bpc"
 }

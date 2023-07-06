@@ -102,6 +102,12 @@ class GetBuyerOrderDetailUseCase @Inject constructor(
                     city
                     province
                   }
+                  buttons {
+                    key
+                    icon
+                    action_type
+                    value
+                  }
                   driver {
                     name
                     phone

@@ -7,17 +7,13 @@ import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.content.common.onboarding.domain.repository.UGCOnboardingRepository
 import com.tokopedia.content.common.producttag.domain.repository.ProductTagRepository
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
+import com.tokopedia.play.broadcaster.helper.PlayBroadcastCassavaValidator
 import com.tokopedia.play.broadcaster.shorts.builder.ShortsUiModelBuilder
 import com.tokopedia.play.broadcaster.shorts.di.DaggerPlayShortsTestComponent
 import com.tokopedia.play.broadcaster.shorts.di.PlayShortsTestModule
 import com.tokopedia.play.broadcaster.shorts.domain.PlayShortsRepository
 import com.tokopedia.play.broadcaster.shorts.domain.manager.PlayShortsAccountManager
 import com.tokopedia.play.broadcaster.shorts.helper.*
-import com.tokopedia.play.broadcaster.type.OriginalPrice
-import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignStatus
-import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
-import com.tokopedia.play.broadcaster.ui.model.paged.PagedDataUiModel
-import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -37,7 +33,7 @@ class PlayShortsSetupCoverAnalyticTest {
 
     private val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
 
-    private val cassavaValidator = PlayShortsCassavaValidator(cassavaTestRule)
+    private val cassavaValidator = PlayBroadcastCassavaValidator.buildForShorts(cassavaTestRule)
 
     private val launcher = PlayShortsLauncher(targetContext)
 
@@ -83,6 +79,7 @@ class PlayShortsSetupCoverAnalyticTest {
                         mockUserSession = mockUserSession,
                         mockRouter = mockk(relaxed = true),
                         mockIdleManager = mockk(relaxed = true),
+                        mockDataStore = mockk(relaxed = true),
                     )
                 )
                 .build()

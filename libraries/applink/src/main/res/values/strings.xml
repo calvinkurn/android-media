@@ -58,6 +58,10 @@
     <string name="user_identification_info_simple">Dokumen Data Diri</string>
     <string name="talk_title">Diskusi Produk</string>
 
+    <string name="goto_kyc_title">GoTo KYC</string>
+
+    <string name="liveness_title">Liveness</string>
+
     <string name="title_topchat">Chat</string>
     <string name="title_inbox">Inbox</string>
 
@@ -85,7 +89,10 @@
 
     <!-- Shop Score -->
     <string name="title_shop_score_sellerapp">Performa Toko Penjual</string>
-    
+
+    <!-- Campaign List -->
+    <string name="title_campaign_list">Daftar Campaign Aktif</string>
+
     <!--Product Add Edit-->
     <string name="title_product_add_edit">Product Add Edit</string>
 
@@ -113,6 +120,10 @@
 
     <!-- Statistic -->
     <string name="title_statistic">Statistic</string>
+
+    <string name="title_seller_persona">Seller Persona</string>
+
+    <string name="title_seller_feedback">Seller Feedback</string>
 
 <!--    pms-->
     <string name="payment_title_payment_status">Menunggu Pembayaran</string>
@@ -180,10 +191,19 @@
     <string name="title_tokomember" translatable="false">Tokomember</string>
     <string name="title_tokopedia_flash_sale_campaign_detail">Campaign Detail</string>
 
+    <!--Centralized Promo-->
+    <string name="title_centralized_promo">Centralized Promo</string>
+
     <string name="title_seller_mvc_redirection_page">Mvc Redirection Page</string>
     <string name="title_seller_mvc_intro">Mvc Intro</string>
     <string name="title_seller_mvc_list">Mvc list</string>
     <string name="title_seller_mvc_create">Mvc Create</string>
     <string name="title_seller_mvc_product_create">Mvc Product Create</string>
     <string name="title_seller_mvc_detail">Mvc Detail</string>
+
+    <!--Shop NIB-->
+    <string name="title_seller_shop_nib">Nomor Induk Berusaha</string>
+
+    <!-- Payment Thank You -->
+    <string name="payment_title_thank_you">Thank You Page</string>
 </resources>

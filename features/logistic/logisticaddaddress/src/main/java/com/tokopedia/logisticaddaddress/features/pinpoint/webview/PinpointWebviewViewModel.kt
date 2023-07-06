@@ -32,7 +32,10 @@ class PinpointWebviewViewModel @Inject constructor(
         val param = "$lat,$long"
         viewModelScope.launch {
             try {
-                val districtData = repo.getDistrictGeocode(param)
+                val districtData = repo.getDistrictGeocode(
+                    latlong = param,
+                    isManageAddressFlow = source != null
+                )
                 val data = districtData.keroMapsAutofill.data
                 locationPass?.let {
                     it.cityName = data.cityName

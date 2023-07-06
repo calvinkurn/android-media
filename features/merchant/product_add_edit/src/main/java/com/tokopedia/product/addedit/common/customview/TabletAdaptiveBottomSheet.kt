@@ -10,12 +10,16 @@ import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import androidx.core.content.ContextCompat
 import com.tokopedia.device.info.DeviceScreenInfo
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.getScreenHeight
+import com.tokopedia.kotlin.extensions.view.getScreenWidth
+import com.tokopedia.kotlin.extensions.view.setMargin
+import com.tokopedia.kotlin.extensions.view.toDp
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.product.addedit.R
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import java.lang.Exception
 
-open class TabletAdaptiveBottomSheet: BottomSheetUnify() {
+open class TabletAdaptiveBottomSheet : BottomSheetUnify() {
 
     companion object {
         const val MODAL_WIDTH_RATIO = 0.7

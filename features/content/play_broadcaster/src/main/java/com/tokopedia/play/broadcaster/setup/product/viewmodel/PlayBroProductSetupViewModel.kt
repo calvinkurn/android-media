@@ -21,6 +21,7 @@ import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignUiModel
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.etalase.EtalaseUiModel
 import com.tokopedia.play.broadcaster.ui.model.etalase.SelectedEtalaseModel
+import com.tokopedia.play.broadcaster.ui.model.page.PlayBroPageSource
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkState
 import com.tokopedia.play.broadcaster.ui.model.result.PageResultState
@@ -56,7 +57,9 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
     @Assisted val maxProduct: Int,
     @Assisted productSectionList: List<ProductTagSectionUiModel>,
     @Assisted private val savedStateHandle: SavedStateHandle,
-    @Assisted isEligibleForPin: Boolean,
+    @Assisted private val source: PlayBroPageSource,
+    @Assisted("isEligibleForPin") isEligibleForPin: Boolean,
+    @Assisted("fetchCommissionProduct") private val fetchCommissionProduct: Boolean,
     private val repo: PlayBroadcastRepository,
     userSession: UserSessionInterface,
     private val dispatchers: CoroutineDispatchers
@@ -69,7 +72,9 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
             maxProduct: Int,
             productSectionList: List<ProductTagSectionUiModel>,
             savedStateHandle: SavedStateHandle,
-            isEligibleForPin: Boolean
+            source: PlayBroPageSource,
+            @Assisted("isEligibleForPin") isEligibleForPin: Boolean,
+            @Assisted("fetchCommissionProduct") fetchCommissionProduct: Boolean,
         ): PlayBroProductSetupViewModel
     }
 
@@ -82,6 +87,9 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
 
     val isEligibleForPin: Boolean
         get() = savedStateHandle.isEligibleForPin()
+
+    val isNumerationShown: Boolean
+        get() = source == PlayBroPageSource.Live
 
     private val _campaignAndEtalase = MutableStateFlow(CampaignAndEtalaseUiModel.Empty)
     private val _selectedProductList = MutableStateFlow(
@@ -410,7 +418,10 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
     }
 
     private suspend fun getProductTagSummary() {
-        val response = repo.getProductTagSummarySection(creationId)
+        val response = repo.getProductTagSummarySection(
+            channelID = creationId,
+            fetchCommission = fetchCommissionProduct,
+        )
 
         _productTagSectionList.value = response
         _selectedProductList.value = response.flatMap { it.products }

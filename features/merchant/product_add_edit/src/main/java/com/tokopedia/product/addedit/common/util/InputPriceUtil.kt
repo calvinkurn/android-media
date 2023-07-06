@@ -4,17 +4,16 @@ import android.text.TextWatcher
 import android.widget.EditText
 import java.text.NumberFormat
 import java.util.*
-import java.lang.Exception
 
 object InputPriceUtil {
 
     fun applyPriceFormatToInputField(
-            textField: EditText,
-            price: String,
-            cursorStart: Int,
-            stringLength: Int,
-            charAddedLength: Int,
-            textWatcher: TextWatcher
+        textField: EditText,
+        price: String,
+        cursorStart: Int,
+        stringLength: Int,
+        charAddedLength: Int,
+        textWatcher: TextWatcher
     ) {
         try {
             textField.removeTextChangedListener(textWatcher)
@@ -28,15 +27,14 @@ object InputPriceUtil {
             AddEditProductErrorHandler.logMessage("applyPriceFormatToInputField: $price")
             AddEditProductErrorHandler.logExceptionToCrashlytics(e)
         }
-
     }
 
     fun formatProductPriceInput(productPriceInput: String): String {
         return try {
             if (!productPriceInput.matches(Regex("-?(\\d+([.,]\\d+)+)+(E\\+\\d+)?"))) {
                 NumberFormat.getNumberInstance(Locale.US)
-                        .format(productPriceInput.toBigDecimal())
-                        .replace(",", ".")
+                    .format(productPriceInput.toBigDecimal())
+                    .replace(",", ".")
             } else {
                 productPriceInput
             }

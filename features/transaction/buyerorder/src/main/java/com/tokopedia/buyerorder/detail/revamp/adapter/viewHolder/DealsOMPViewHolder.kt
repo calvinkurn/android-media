@@ -68,7 +68,7 @@ class DealsOMPViewHolder(
         eventDetailsListener.sendOpenScreenDeals(true)
 
         binding.llValid.shouldShowWithAction(metadata.endTime.isNotEmpty()){
-            binding.tvValidTillDate.text = getTimeMillis(metadata.endDate)
+            binding.tvValidTillDate.text = getTimeMillis(metadata.endTime)
         }
 
         eventDetailsListener.setDealsBanner(metadata)
@@ -168,7 +168,7 @@ class DealsOMPViewHolder(
     private fun getTimeMillis(date: String): String{
         return try {
             val dateFormat = SimpleDateFormat(DATE_FORMAT, Locale.ROOT)
-            val dateMillis = Date(TimeUnit.SECONDS.toMillis(date.toLongOrZero()))
+            val dateMillis = Date(TimeUnit.SECONDS.toMillis(date.toLong()))
             dateFormat.format(dateMillis)
         } catch (e: Exception) {
             date

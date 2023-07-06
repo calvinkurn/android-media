@@ -92,4 +92,6 @@ interface ChatbotViewState : BaseChatViewState {
     fun hideDummyVideoAttachment()
 
     fun hideQuickReplyOnClick()
+
+    fun removeDynamicStickyButton()
 }
