@@ -3,7 +3,7 @@ package com.tokopedia.product.detail.view.fragment.fpi.manually
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewTreeObserver.OnGlobalLayoutListener
+import android.view.ViewTreeObserver.OnDrawListener
 import android.view.ViewTreeObserver.OnPreDrawListener
 import androidx.core.view.children
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -69,12 +69,11 @@ abstract class BaseFpiDrawFragment : BaseDaggerFragment() {
             true
         }
 
-        private val drawListener = object : OnGlobalLayoutListener {
-            override fun onGlobalLayout() {
+        private val drawListener = object : OnDrawListener {
+            override fun onDraw() {
                 if (startTime == 0L) return
                 val view = view ?: return
                 view.viewTreeObserver?.removeOnPreDrawListener(preDrawListener)
-                view.viewTreeObserver?.removeOnGlobalLayoutListener(this)
                 val mContext = view.context ?: return
 
                 val total = System.currentTimeMillis() - startTime
@@ -89,7 +88,7 @@ abstract class BaseFpiDrawFragment : BaseDaggerFragment() {
         init {
             view?.viewTreeObserver?.apply {
                 addOnPreDrawListener(preDrawListener)
-                addOnGlobalLayoutListener(drawListener)
+                addOnDrawListener(drawListener)
             }
         }
     }
