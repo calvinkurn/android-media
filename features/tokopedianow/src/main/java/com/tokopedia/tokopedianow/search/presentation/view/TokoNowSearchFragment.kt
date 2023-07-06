@@ -21,6 +21,7 @@ import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
+import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.constant.TokoNowStaticLayoutType.Companion.PRODUCT_ADS_CAROUSEL
 import com.tokopedia.tokopedianow.search.analytics.SearchProductAdsAnalytics
 import com.tokopedia.tokopedianow.search.analytics.SearchResultTracker.Action.ACTION_CLICK_ATC_SRP_PRODUCT
@@ -152,9 +153,10 @@ class TokoNowSearchFragment :
         productItemDataView: ProductItemDataView,
         quantity: Int
     ) {
+        val title = getString(R.string.tokopedianow_product_ads_carousel_title)
         productAdsAnalytics.trackProductAddToCart(
             index = productItemDataView.position,
-            title = productItemDataView.widgetTitle,
+            title = title,
             quantity = quantity,
             shopId = productItemDataView.shopId,
             shopName = productItemDataView.shopName,
