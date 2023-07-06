@@ -41,7 +41,7 @@ abstract class ProductAdsCarouselAnalytics(private val userSession: UserSessionI
 
         val productItemsDataLayer = arrayListOf(
             TokoNowCommonAnalytics.productItemDataLayer(
-                position = trackerPosition,
+                position = position,
                 itemCategory = product.categoryBreadcrumbs,
                 itemId = product.getProductId(),
                 itemName = product.getProductName(),
@@ -77,7 +77,7 @@ abstract class ProductAdsCarouselAnalytics(private val userSession: UserSessionI
 
         val productItemsDataLayer = arrayListOf(
             TokoNowCommonAnalytics.productItemDataLayer(
-                position = trackerPosition,
+                position = position,
                 itemCategory = product.categoryBreadcrumbs,
                 itemId = product.getProductId(),
                 itemName = product.getProductName(),
