@@ -2,6 +2,7 @@ package com.tokopedia.shop.analytic
 
 import android.os.Bundle
 import android.os.Parcelable
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.BUSINESS_UNIT
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_PG
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CREATIVE_NAME
@@ -14,6 +15,7 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EVENT_CATEGORY
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EVENT_LABEL
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.Event.VIEW_PG_IRIS
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.CLICK_BANNER_WIDGET
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.CLICK_CAMPAIGN_PLAY_WIDGET_ITEM
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.CLICK_CTA_SLIDER_BANNER_HIGHLIGHT
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.CLICK_CTA_VOUCHER_SLIDER_ITEM_WIDGET
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.CLICK_PRODUCT_HIGHLIGHT_WIDGET
@@ -23,6 +25,7 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.CLICK_SE
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.CLICK_TITLE_WIDGET
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.CLICK_VOUCHER_SLIDER_ITEM_WIDGET
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.IMPRESSION_BANNER_WIDGET
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.IMPRESSION_CAMPAIGN_PLAY_WIDGET_ITEM
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.IMPRESSION_MAIN_BANNER_CAMPAIGN_TAB
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.IMPRESSION_PRODUCT_HIGHLIGHT_WIDGET
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.IMPRESSION_PRODUCT_SLIDER_BANNER_HIGHLIGHT
@@ -39,6 +42,7 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ITEM_LIST
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ITEM_NAME
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ITEM_VARIANT
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.PHYSICAL_GOODS
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.PLAY_WIDGET
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.PRICE
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.PRODUCT_ID
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SELECT_CONTENT
@@ -50,6 +54,7 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TRACKER_ID
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_CLICK_BANNER_WIDGET
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_CLICK_CTA_VOUCHER_SLIDER_ITEM
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_CLICK_EXPLORE_SHOP_SLIDER_BANNER_HIGHLIGHT_WIDGET
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_CLICK_PLAY_WIDGET
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_CLICK_PRODUCT_HIGHLIGHT
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_CLICK_PRODUCT_SLIDER_BANNER_HIGHLIGHT_WIDGET
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_CLICK_REMIND_ME_MAIN_BANNER_CAMPAIGN_TAB
@@ -58,6 +63,7 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_CLICK_VOUCHER_SLIDER_ITEM
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_IMPRESSION_BANNER_WIDGET
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_IMPRESSION_MAIN_BANNER_CAMPAIGN_TAB
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_IMPRESSION_PLAY_WIDGET
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_IMPRESSION_PRODUCT_HIGHLIGHT
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_IMPRESSION_SLIDER_BANNER_HIGHLIGHT_WIDGET
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_IMPRESSION_TITLE_WIDGET
@@ -69,6 +75,7 @@ import com.tokopedia.shop.analytic.model.ClickSeeMoreVoucherSliderItemTrackerMod
 import com.tokopedia.shop.analytic.model.ShopCampaignBannerTimerTrackerDataModel
 import com.tokopedia.shop.analytic.model.ShopCampaignClickCtaSliderBannerHighlightTrackerDataModel
 import com.tokopedia.shop.analytic.model.ShopCampaignHeaderTitleTrackerDataModel
+import com.tokopedia.shop.analytic.model.ShopCampaignPlayWidgetItemTrackerDataModel
 import com.tokopedia.shop.analytic.model.ShopCampaignProductSliderBannerHighlightTrackerDataModel
 import com.tokopedia.shop.analytic.model.ShopCampaignWidgetDisplayTrackerDataModel
 import com.tokopedia.shop.analytic.model.ShopCampaignWidgetProductHighlightTrackerModel
@@ -486,5 +493,83 @@ class ShopCampaignTabTracker @Inject constructor() {
             USER_ID to trackerDataModel.userId
         )
         TrackApp.getInstance().gtm.sendGeneralEvent(eventMap)
+    }
+
+    fun impressionPlayWidgetItem(trackerDataModel: ShopCampaignPlayWidgetItemTrackerDataModel) {
+        val eventLabelValue = ShopUtil.joinDash(
+            trackerDataModel.campaignId,
+            trackerDataModel.widgetId,
+            trackerDataModel.channelId
+        )
+        val itemListValue = ShopUtil.joinDash(SHOPPAGE, PLAY_WIDGET, trackerDataModel.tabName)
+        val eventBundle = Bundle().apply {
+            putString(EVENT, VIEW_ITEM_LIST)
+            putString(EVENT_ACTION, IMPRESSION_CAMPAIGN_PLAY_WIDGET_ITEM)
+            putString(EVENT_CATEGORY, SHOP_PAGE_BUYER)
+            putString(EVENT_LABEL, eventLabelValue)
+            putString(TRACKER_ID, TRACKER_ID_IMPRESSION_PLAY_WIDGET)
+            putString(BUSINESS_UNIT, PHYSICAL_GOODS)
+            putString(CURRENT_SITE, TOKOPEDIA_MARKETPLACE)
+            putString(ITEM_LIST, itemListValue)
+            putParcelableArrayList(
+                ITEMS,
+                arrayListOf(
+                    createPlayWidgetItemMap(
+                        trackerDataModel,
+                        itemListValue
+                    )
+                )
+            )
+            putString(SHOP_ID, trackerDataModel.shopId)
+            putString(USER_ID, trackerDataModel.userId)
+        }
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(VIEW_ITEM_LIST, eventBundle)
+    }
+
+    fun clickPlayWidgetItem(trackerDataModel: ShopCampaignPlayWidgetItemTrackerDataModel) {
+        val eventLabelValue = ShopUtil.joinDash(
+            trackerDataModel.campaignId,
+            trackerDataModel.widgetId,
+            trackerDataModel.channelId
+        )
+        val itemListValue = ShopUtil.joinDash(SHOPPAGE, PLAY_WIDGET, trackerDataModel.tabName)
+        val eventBundle = Bundle().apply {
+            putString(EVENT, SELECT_CONTENT)
+            putString(EVENT_ACTION, CLICK_CAMPAIGN_PLAY_WIDGET_ITEM)
+            putString(EVENT_CATEGORY, SHOP_PAGE_BUYER)
+            putString(EVENT_LABEL, eventLabelValue)
+            putString(TRACKER_ID, TRACKER_ID_CLICK_PLAY_WIDGET)
+            putString(BUSINESS_UNIT, PHYSICAL_GOODS)
+            putString(CURRENT_SITE, TOKOPEDIA_MARKETPLACE)
+            putString(ITEM_LIST, itemListValue)
+            putParcelableArrayList(
+                ITEMS,
+                arrayListOf(
+                    createPlayWidgetItemMap(
+                        trackerDataModel,
+                        itemListValue
+                    )
+                )
+            )
+            putString(SHOP_ID, trackerDataModel.shopId)
+            putString(USER_ID, trackerDataModel.userId)
+        }
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(SELECT_CONTENT, eventBundle)
+    }
+
+    private fun createPlayWidgetItemMap(
+        trackerDataModel: ShopCampaignPlayWidgetItemTrackerDataModel,
+        itemListValue: String
+    ): Bundle {
+        return Bundle().apply {
+            putString(DIMENSION_40, itemListValue)
+            putInt(INDEX, trackerDataModel.position)
+            putString(ITEM_BRAND, "")
+            putString(ITEM_CATEGORY, "")
+            putString(ITEM_ID, "")
+            putString(ITEM_NAME, "")
+            putString(ITEM_VARIANT, trackerDataModel.tabName)
+            putDouble(PRICE, Int.ZERO.toDouble())
+        }
     }
 }

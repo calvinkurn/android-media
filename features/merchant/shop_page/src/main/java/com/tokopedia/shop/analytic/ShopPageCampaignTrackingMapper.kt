@@ -4,6 +4,7 @@ import com.tokopedia.shop.analytic.model.ClickSeeMoreVoucherSliderItemTrackerMod
 import com.tokopedia.shop.analytic.model.ShopCampaignBannerTimerTrackerDataModel
 import com.tokopedia.shop.analytic.model.ShopCampaignClickCtaSliderBannerHighlightTrackerDataModel
 import com.tokopedia.shop.analytic.model.ShopCampaignHeaderTitleTrackerDataModel
+import com.tokopedia.shop.analytic.model.ShopCampaignPlayWidgetItemTrackerDataModel
 import com.tokopedia.shop.analytic.model.ShopCampaignProductSliderBannerHighlightTrackerDataModel
 import com.tokopedia.shop.analytic.model.ShopCampaignWidgetDisplayTrackerDataModel
 import com.tokopedia.shop.analytic.model.ShopCampaignWidgetProductHighlightTrackerModel
@@ -138,6 +139,24 @@ object ShopPageCampaignTrackingMapper {
         userId: String
     ) = ShopCampaignClickCtaSliderBannerHighlightTrackerDataModel(
         widgetId,
+        shopId,
+        userId
+    )
+
+    fun mapToShopCampaignPlayWidgetItemTrackerDataModel(
+        campaignId: String,
+        widgetId: String,
+        channelId: String,
+        tabName: String,
+        position: Int,
+        shopId: String,
+        userId: String
+    ) = ShopCampaignPlayWidgetItemTrackerDataModel(
+        campaignId,
+        widgetId,
+        channelId,
+        tabName,
+        position,
         shopId,
         userId
     )

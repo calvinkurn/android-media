@@ -4883,6 +4883,15 @@ open class ShopPageHomeFragment :
     override fun onTimerFinished(uiModel: ShopWidgetDisplayBannerTimerUiModel) {
         shopHomeAdapter?.removeWidget(uiModel)
         endlessRecyclerViewScrollListener.resetState()
-        getLatestShopHomeWidgetLayoutData()
+        if(getSelectedFragment() == this){
+            refreshShopHeader()
+        }
+    }
+
+    protected fun refreshShopHeader(){
+        (parentFragment as? ShopPageHeaderFragment)?.apply {
+            resetSelectedPosition()
+            refreshData()
+        }
     }
 }

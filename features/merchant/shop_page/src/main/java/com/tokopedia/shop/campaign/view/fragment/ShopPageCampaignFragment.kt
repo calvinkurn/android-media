@@ -33,6 +33,7 @@ import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.widget.extension.stepScrollToPositionWithDelay
+import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.play.widget.ui.model.ext.hasSuccessfulTranscodedChannel
 import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopComponentHelper
@@ -52,6 +53,7 @@ import com.tokopedia.shop.campaign.view.bottomsheet.ExclusiveLaunchVoucherListBo
 import com.tokopedia.shop.campaign.view.bottomsheet.VoucherDetailBottomSheet
 import com.tokopedia.shop.campaign.view.listener.ShopCampaignCarouselProductListener
 import com.tokopedia.shop.campaign.view.listener.ShopCampaignInterface
+import com.tokopedia.shop.campaign.view.listener.ShopCampaignPlayWidgetListener
 import com.tokopedia.shop.campaign.view.model.ShopCampaignWidgetCarouselProductUiModel
 import com.tokopedia.shop.campaign.view.model.ShopWidgetDisplaySliderBannerHighlightUiModel
 import com.tokopedia.shop.campaign.view.viewmodel.ShopCampaignViewModel
@@ -104,7 +106,8 @@ class ShopPageCampaignFragment :
     ShopCampaignCarouselProductListener,
     ShopCampaignVoucherSliderViewHolder.Listener,
     ShopCampaignVoucherSliderItemViewHolder.Listener,
-    ShopCampaignVoucherSliderMoreItemViewHolder.Listener {
+    ShopCampaignVoucherSliderMoreItemViewHolder.Listener,
+    ShopCampaignPlayWidgetListener {
 
     companion object {
         private const val KEY_SHOP_ID = "SHOP_ID"
@@ -1052,7 +1055,9 @@ class ShopPageCampaignFragment :
     override fun onTimerFinished(uiModel: ShopWidgetDisplayBannerTimerUiModel) {
         shopCampaignTabAdapter.removeWidget(uiModel)
         endlessRecyclerViewScrollListener.resetState()
-        getLatestShopCampaignWidgetLayoutData()
+        if(getSelectedFragment() == this){
+            refreshShopHeader()
+        }
     }
 
     private fun getLatestShopCampaignWidgetLayoutData() {
@@ -1225,6 +1230,64 @@ class ShopPageCampaignFragment :
         shopCampaignTabTracker.sendImpressionShopVoucherSliderCampaignTracker(
             ShopPageCampaignTrackingMapper.mapToShopCampaignVoucherSliderTrackerDataModel(
                 model.widgetId,
+                shopId,
+                userId
+            )
+        )
+    }
+
+    override fun onImpressionPlayWidget(widgetModel: CarouselPlayWidgetUiModel, position: Int) {
+        sendImpressionWidgetHeaderTitle(
+            widgetModel.header,
+            widgetModel.widgetId
+        )
+    }
+    override fun onPlayWidgetItemImpression(
+        widgetModel: CarouselPlayWidgetUiModel,
+        channelModel: PlayWidgetChannelUiModel,
+        position: Int
+    ) {
+        sendPlayWidgetItemImpression(widgetModel, channelModel, position)
+    }
+
+    private fun sendPlayWidgetItemImpression(
+        widgetModel: CarouselPlayWidgetUiModel,
+        channelModel: PlayWidgetChannelUiModel,
+        position: Int
+    ) {
+        shopCampaignTabTracker.impressionPlayWidgetItem(
+            ShopPageCampaignTrackingMapper.mapToShopCampaignPlayWidgetItemTrackerDataModel(
+                widgetModel.getCampaignId(),
+                widgetModel.widgetId,
+                channelModel.channelId,
+                getSelectedTabName(),
+                position,
+                shopId,
+                userId
+            )
+        )
+    }
+
+    override fun onPlayWidgetItemClick(
+        widgetModel: CarouselPlayWidgetUiModel,
+        channelModel: PlayWidgetChannelUiModel,
+        position: Int
+    ) {
+        sendPlayWidgetItemClick(widgetModel, channelModel, position)
+    }
+
+    private fun sendPlayWidgetItemClick(
+        widgetModel: CarouselPlayWidgetUiModel,
+        channelModel: PlayWidgetChannelUiModel,
+        position: Int
+    ) {
+        shopCampaignTabTracker.clickPlayWidgetItem(
+            ShopPageCampaignTrackingMapper.mapToShopCampaignPlayWidgetItemTrackerDataModel(
+                widgetModel.getCampaignId(),
+                widgetModel.widgetId,
+                channelModel.channelId,
+                getSelectedTabName(),
+                position,
                 shopId,
                 userId
             )

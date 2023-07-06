@@ -65,7 +65,7 @@ class ShopCampaignDisplayBannerTimerViewHolder(
     private val timerUnify: TimerUnifyHighlight? = viewBinding?.timer
     private val timeDescriptionContainer: ViewGroup? = viewBinding?.timeDescriptionContainer
     private val timerMoreThanOneDay: Typography? = viewBinding?.textTimerMoreThan1Day
-    private val textTimeDescription: Typography? = viewBinding?.timerDescription
+    private val textTimerDescription: Typography? = viewBinding?.timerDescription
     private val buttonRemindMe: View? = viewBinding?.buttonRemindMe
     private val loaderRemindMe: View? = viewBinding?.loaderRemindMe
     private val remindMeText: Typography? = viewBinding?.textRemindMe
@@ -113,7 +113,7 @@ class ShopCampaignDisplayBannerTimerViewHolder(
                 STATIC_WHITE_COLOR
             )
         )
-        textTimeDescription?.setTextColorCompat(UNIFY_NN950_LIGHT)
+        textTimerDescription?.setTextColorCompat(UNIFY_NN950_LIGHT)
         timerMoreThanOneDay?.setTextColorCompat(UNIFY_NN950_LIGHT)
         timerUnify?.variant = VARIANT_DARK_RED
         setTimeDescriptionColor(UNIFY_NN950_LIGHT)
@@ -135,7 +135,7 @@ class ShopCampaignDisplayBannerTimerViewHolder(
                 STATIC_BLACK_COLOR
             )
         )
-        textTimeDescription?.setTextColorCompat(UNIFY_NN950_DARK)
+        textTimerDescription?.setTextColorCompat(UNIFY_NN950_DARK)
         timerMoreThanOneDay?.setTextColorCompat(UNIFY_NN950_DARK)
         timerUnify?.variant = VARIANT_ALTERNATE
         setTimeDescriptionColor(UNIFY_NN950_DARK)
@@ -148,8 +148,8 @@ class ShopCampaignDisplayBannerTimerViewHolder(
         if (!isStatusCampaignFinished(statusCampaign)) {
             val timeDescription = model.data?.timeDescription.orEmpty()
             val timeCounter = model.data?.timeCounter.orZero()
-            textTimeDescription?.text = timeDescription
-            textTimeDescription?.show()
+            textTimerDescription?.text = timeDescription
+            textTimerDescription?.show()
             val days = model.data?.timeCounter?.millisecondsToDays().orZero()
             val dateCampaign = when {
                 isStatusCampaignUpcoming(statusCampaign) -> {
@@ -171,7 +171,7 @@ class ShopCampaignDisplayBannerTimerViewHolder(
             }
         } else {
             timerContainer?.gone()
-            textTimeDescription?.gone()
+            textTimerDescription?.gone()
             timerMoreThanOneDay?.gone()
         }
     }
@@ -223,10 +223,11 @@ class ShopCampaignDisplayBannerTimerViewHolder(
             constraintSet.connect(
                 timerContainer?.id.orZero(),
                 ConstraintSet.TOP,
-                textTimeDescription?.id.orZero(),
+                textTimerDescription?.id.orZero(),
                 ConstraintSet.BOTTOM,
                 0
             )
+            constraintSet.setVerticalBias(textTimerDescription?.id.orZero(), 0f)
         } else {
             constraintSet.clear(timerContainer?.id.orZero(), ConstraintSet.BOTTOM)
             constraintSet.clear(timerContainer?.id.orZero(), ConstraintSet.LEFT)
@@ -252,6 +253,21 @@ class ShopCampaignDisplayBannerTimerViewHolder(
                 ConstraintSet.TOP,
                 0
             )
+            constraintSet.connect(
+                textTimerDescription?.id.orZero(),
+                ConstraintSet.TOP,
+                timerContainer?.id.orZero(),
+                ConstraintSet.TOP,
+                0
+            )
+            constraintSet.connect(
+                textTimerDescription?.id.orZero(),
+                ConstraintSet.BOTTOM,
+                timerContainer?.id.orZero(),
+                ConstraintSet.BOTTOM,
+                0
+            )
+            constraintSet.setVerticalBias(textTimerDescription?.id.orZero(), 0.5f)
         }
         constraintSet.applyTo(timerSectionContainer)
     }

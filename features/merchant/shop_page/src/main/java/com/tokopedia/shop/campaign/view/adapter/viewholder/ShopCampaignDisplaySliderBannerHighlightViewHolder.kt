@@ -61,7 +61,7 @@ class ShopCampaignDisplaySliderBannerHighlightViewHolder(
     private val viewBinding: ItemShopCampaignSliderBannerHighlightBinding? by viewBinding()
     private val textTitle: Typography? = viewBinding?.textTitle
     private val rvProductImage: RecyclerView? = viewBinding?.rvProductImage
-    private val buttonCta: UnifyButton? = viewBinding?.buttonCta
+    private val buttonCta: Typography? = viewBinding?.buttonCta
     private val buttonPrev: IconUnify? = viewBinding?.prevButton
     private val buttonNext: IconUnify? = viewBinding?.nextButton
     private val adapterSliderBannerHighlight: ShopCampaignDisplaySliderBannerHighlightAdapter by lazy {

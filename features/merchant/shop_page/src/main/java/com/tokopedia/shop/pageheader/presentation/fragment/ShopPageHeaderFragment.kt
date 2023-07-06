@@ -330,6 +330,7 @@ class ShopPageHeaderFragment :
         fun createInstance() = ShopPageHeaderFragment()
     }
 
+    private var isResetSelectedPosition: Boolean = false
     private var initialScrollToTopButtonMarginBottom: Int = 0
 
     @Inject
@@ -1924,7 +1925,8 @@ class ShopPageHeaderFragment :
 
     private fun getSelectedDynamicTabPosition(): Int {
         var selectedPosition = viewPager?.currentItem.orZero()
-        if (tabLayout?.tabCount.isZero()) {
+        if (tabLayout?.tabCount.isZero() || isResetSelectedPosition) {
+            isResetSelectedPosition = false
             if (shouldOverrideTabToHome || shouldOverrideTabToProduct || shouldOverrideTabToFeed || shouldOverrideTabToReview) {
                 val overrideTabName = when {
                     shouldOverrideTabToHome -> {
@@ -3464,5 +3466,9 @@ class ShopPageHeaderFragment :
         val selectedTabPosition = getTabPositionBasedOnTabName(tabName)
         viewPager?.setCurrentItem(selectedTabPosition, false)
         tabLayout?.getTabAt(selectedTabPosition)?.select()
+    }
+
+    fun resetSelectedPosition() {
+        this.isResetSelectedPosition = true
     }
 }

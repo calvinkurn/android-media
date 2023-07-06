@@ -28,6 +28,7 @@ import com.tokopedia.shop.campaign.view.adapter.viewholder.ShopCampaignVoucherSl
 import com.tokopedia.shop.campaign.view.adapter.viewholder.ShopCampaignVoucherSliderViewHolder
 import com.tokopedia.shop.campaign.view.listener.ShopCampaignCarouselProductListener
 import com.tokopedia.shop.campaign.view.listener.ShopCampaignInterface
+import com.tokopedia.shop.campaign.view.listener.ShopCampaignPlayWidgetListener
 import com.tokopedia.shop.home.WidgetName.BANNER_TIMER
 import com.tokopedia.shop.home.WidgetName.DISPLAY_DOUBLE_COLUMN
 import com.tokopedia.shop.home.WidgetName.DISPLAY_SINGLE_COLUMN
@@ -43,16 +44,16 @@ import com.tokopedia.shop.home.view.adapter.ShopWidgetTypeFactory
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopCarouselProductWidgetPlaceholderViewHolder
 import com.tokopedia.shop.home.view.listener.ShopHomeDisplayBannerTimerWidgetListener
 import com.tokopedia.shop.home.view.listener.ShopHomeDisplayWidgetListener
-import com.tokopedia.shop.home.view.listener.ShopHomePlayWidgetListener
 import com.tokopedia.shop.home.view.model.BaseShopHomeWidgetUiModel
 import com.tokopedia.shop_widget.common.util.WidgetState
+import com.tokopedia.shop.R
 
 class ShopCampaignTabAdapterTypeFactory(
     private val shopHomeDisplayWidgetListener: ShopHomeDisplayWidgetListener,
     private val shopCampaignDisplayBannerTimerWidgetListener: ShopHomeDisplayBannerTimerWidgetListener,
     private val shopCampaignCarouselProductListener: ShopCampaignCarouselProductListener,
     private val playWidgetCoordinator: PlayWidgetCoordinator,
-    private val shopPlayWidgetListener: ShopHomePlayWidgetListener,
+    private val shopPlayWidgetListener: ShopCampaignPlayWidgetListener,
     private val shopCampaignInterface: ShopCampaignInterface,
     private val sliderBannerHighlightListener: ShopCampaignDisplaySliderBannerHighlightViewHolder.Listener,
     private val shopCampaignVoucherSliderListener: ShopCampaignVoucherSliderViewHolder.Listener,
@@ -211,7 +212,12 @@ class ShopCampaignTabAdapterTypeFactory(
             )
 
             ShopCampaignCarouselPlayWidgetViewHolder.LAYOUT -> ShopCampaignCarouselPlayWidgetViewHolder(
-                PlayWidgetViewHolder(parent, playWidgetCoordinator), shopPlayWidgetListener, shopCampaignInterface
+                parent,
+                PlayWidgetViewHolder(
+                    parent.findViewById(R.id.play_widget_view),
+                    playWidgetCoordinator
+                ),
+                shopPlayWidgetListener, shopCampaignInterface
             )
 
             ShopCampaignVideoPlaceholderViewHolder.LAYOUT -> ShopCampaignVideoPlaceholderViewHolder(
