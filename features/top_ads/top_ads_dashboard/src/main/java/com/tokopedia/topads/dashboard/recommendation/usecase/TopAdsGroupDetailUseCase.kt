@@ -120,6 +120,7 @@ class TopAdsGroupDetailUseCase @Inject constructor(
         return try {
             topAdsGetPricingDetailsUseCase.invoke(utils.convertAdTypeToString(adGroupType))
         } catch (e: Exception) {
+            e.printStackTrace()
             TopAdsGetPricingDetailsResponse(
                 TopAdsGetPricingDetailsResponse.TopAdsGetPricingDetails(
                     maxBid = INSIGHT_PRICING_FAIL_MAX_BID_FALLBACK_VALUE,
