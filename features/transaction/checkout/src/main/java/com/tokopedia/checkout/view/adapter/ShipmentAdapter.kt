@@ -459,6 +459,7 @@ class ShipmentAdapter @Inject constructor(
     override fun onViewRecycled(holder: RecyclerView.ViewHolder) {
         super.onViewRecycled(holder)
         (holder as? ShipmentCartItemBottomViewHolder)?.unsubscribeDebouncer()
+        (holder as? ShipmentCartItemViewHolder)?.unsubscribeDebouncer()
     }
 
     fun clearCompositeSubscription() {
@@ -1359,8 +1360,8 @@ class ShipmentAdapter @Inject constructor(
         shipmentAdapterActionListener.onClickAddonProductInfoIcon(addOnDataInfoLink)
     }
 
-    override fun onClickSeeAllAddOnProductService(cartItemModel: CartItemModel, listSelectedAddOnId: java.util.ArrayList<Long>) {
-        shipmentAdapterActionListener.onClickSeeAllAddOnProductService(cartItemModel, listSelectedAddOnId)
+    override fun onClickSeeAllAddOnProductService(cartItemModel: CartItemModel) {
+        shipmentAdapterActionListener.onClickSeeAllAddOnProductService(cartItemModel)
     }
     fun updateItem(item: Any, position: Int) {
         shipmentDataList[position] = item
