@@ -19,9 +19,11 @@ import com.google.android.exoplayer2.util.Util
 import com.tokopedia.content.common.util.Bytes
 import com.tokopedia.content.common.util.fromMegaBytes
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import java.io.File
 import java.util.*
-import java.util.concurrent.ConcurrentLinkedQueue
+import java.util.concurrent.ConcurrentHashMap
 
 /**
  * Created by kenny.hadisaputra on 06/07/23
@@ -36,7 +38,9 @@ class FeedVideoCache private constructor(
         Log.d("FeedVideo", "[Cache Media] Request Length: $requestLength, Bytes Cached: $bytesCached, New Bytes Cached: $newBytesCache")
     }
 
-    private val ongoingDownloaderQueue = ConcurrentLinkedQueue<Downloader>()
+    private val ongoingDownloaderQueue = ConcurrentHashMap<String, Downloader>()
+
+    private val mutex = Mutex()
 
     private suspend fun cache(context: Context, uri: Uri) = coroutineScope {
         val type = Util.inferContentType(uri)
@@ -63,9 +67,7 @@ class FeedVideoCache private constructor(
     }
 
     private fun cancel() {
-        ongoingDownloaderQueue.forEach {
-            it.cancel()
-        }
+        ongoingDownloaderQueue.values.forEach { it.cancel() }
     }
 
     private fun release() {
@@ -83,7 +85,7 @@ class FeedVideoCache private constructor(
         }
     }
 
-    private fun cacheHls(context: Context, uri: Uri, bytesToCache: Bytes) {
+    private suspend fun cacheHls(context: Context, uri: Uri, bytesToCache: Bytes) {
         val downloader = HlsDownloader(
             uri,
             Collections.singletonList(
@@ -101,8 +103,11 @@ class FeedVideoCache private constructor(
                 }
             }
 
-            Log.d("FeedVideo", "[Cache Hls] Start download for Uri: $uri for $bytesToCache")
-            ongoingDownloaderQueue.add(downloader)
+            mutex.withLock {
+                if (ongoingDownloaderQueue.containsKey(uri.toString())) return
+                Log.d("FeedVideo", "[Cache Hls] Start download for Uri: $uri for $bytesToCache")
+                ongoingDownloaderQueue[uri.toString()] = downloader
+            }
             downloader.download(listener)
         } catch (e: InterruptedException) {
             Log.d("FeedVideo", "[Cache Hls] Finished by cancellation")
@@ -110,7 +115,7 @@ class FeedVideoCache private constructor(
             Log.d("FeedVideo", "[Cache Hls] Error for url: $uri with exception $e")
             e.printStackTrace()
         } finally {
-            ongoingDownloaderQueue.remove(downloader)
+            ongoingDownloaderQueue.remove(uri.toString())
         }
     }
 
@@ -135,7 +140,7 @@ class FeedVideoCache private constructor(
 
         private const val DIR_NAME = "feed"
 
-        private const val MB_TO_CACHE = 5L
+        private const val MB_TO_CACHE = 2L
 
         fun getInstance(context: Context): FeedVideoCache =
             INSTANCE ?: synchronized(this) {
