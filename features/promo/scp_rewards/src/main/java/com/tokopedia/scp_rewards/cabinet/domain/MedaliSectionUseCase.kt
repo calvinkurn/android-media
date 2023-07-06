@@ -20,7 +20,7 @@ class MedaliSectionUseCase @Inject constructor() {
     }
 
     private fun putCommonParams(params: RequestParams): RequestParams {
-        params.putString(API_VERSION_PARAM, "1.0.0")
+        params.putString(API_VERSION_PARAM, "2.0.0")
         return params
     }
 }

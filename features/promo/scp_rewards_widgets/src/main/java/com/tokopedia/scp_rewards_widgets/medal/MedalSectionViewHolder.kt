@@ -2,6 +2,7 @@ package com.tokopedia.scp_rewards_widgets.medal
 
 import android.graphics.Color
 import android.view.View
+import androidx.core.text.HtmlCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -41,7 +42,7 @@ class MedalSectionViewHolder(
 
     override fun bind(item: MedalData) {
         with(binding) {
-            tvSectionTitle.text = item.title
+            tvSectionTitle.text = HtmlCompat.fromHtml(item.title.orEmpty(), HtmlCompat.FROM_HTML_MODE_LEGACY)
             tvSectionTitle.setTextColor(parseColor(item.textColor) ?: Color.BLACK)
         }
         if (item.cta?.isShown == true) {

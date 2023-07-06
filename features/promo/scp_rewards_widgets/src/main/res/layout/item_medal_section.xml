@@ -6,28 +6,24 @@
     android:layout_height="wrap_content"
     android:clipChildren="false"
     android:clipToPadding="false"
+    android:paddingHorizontal="@dimen/dp_16"
     android:paddingBottom="@dimen/dp_20">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_section_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="@dimen/dp_10"
-        android:layout_marginTop="@dimen/dp_10"
+        android:layout_marginTop="@dimen/dp_6"
         android:textColor="@color/Unify_NN500"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="display_2"
-        app:typographyWeight="bold"
         tools:text="Medali kamu" />
-
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/iv_empty_list"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_160"
-        android:layout_marginHorizontal="@dimen/dp_10"
         android:layout_marginTop="@dimen/dp_18"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
@@ -40,7 +36,6 @@
         android:id="@+id/rv_medals"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="@dimen/dp_10"
         android:layout_marginTop="@dimen/dp_18"
         android:clipChildren="false"
         android:clipToPadding="false"
@@ -58,7 +53,6 @@
         android:id="@+id/btn_see_more"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="@dimen/dp_10"
         android:layout_marginTop="@dimen/dp_26"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

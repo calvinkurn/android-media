@@ -83,5 +83,5 @@ object ApplinkConstInternalPromo {
     const val SEE_MORE_PATH = "more"
     const val CABINET_PATH = "cabinet"
     const val MEDALI_QUERY_PARAM = "medali"
-    const val SOURCE_PARAM = "source"
+    const val SOURCE_PARAM = "sourceName"
 }

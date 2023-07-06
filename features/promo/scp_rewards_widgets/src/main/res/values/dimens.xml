@@ -3,5 +3,4 @@
     <dimen name="coupon_image_default_width">328dp</dimen>
     <dimen name="coupon_image_default_height">120dp</dimen>
     <dimen name="coupon_image_corner_radius">9dp</dimen>
-    <dimen name="cabinet_header_height">250dp</dimen>
 </resources>

@@ -44,11 +44,11 @@ class CabinetView(
         this.listener = listener
     }
 
-    private fun bindMedalList(medalList: List<MedalData>) {
-        if (medalList.all { it.medalType.isNotEmpty() and it.medalList.isNullOrEmpty() }) {
-            cabinetMedalSectionAdapter.setVisitables(listOf(MedalError(imageUrl = medalList.firstOrNull()?.bannerData?.imageUrl)))
+    private fun bindMedalList(medalSections: List<MedalData>) {
+        if (medalSections.all { it.medalType.isNotEmpty() and it.medalList.isNullOrEmpty() }) {
+            cabinetMedalSectionAdapter.setVisitables(listOf(MedalError(imageUrl = medalSections.firstOrNull()?.bannerData?.imageUrl)))
         } else {
-            cabinetMedalSectionAdapter.setVisitables(medalList)
+            cabinetMedalSectionAdapter.setVisitables(medalSections)
         }
     }
 

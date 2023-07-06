@@ -6,8 +6,10 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.text.HtmlCompat
+import com.tokopedia.scp_rewards_common.loadImageOrFallback
 import com.tokopedia.scp_rewards_common.parseColor
 import com.tokopedia.scp_rewards_widgets.databinding.WidgetCabinetHeaderBinding
+import com.tokopedia.scp_rewards_widgets.R
 
 class CabinetHeaderView(context: Context, attrs: AttributeSet?) :
     ConstraintLayout(context, attrs) {
@@ -30,7 +32,7 @@ class CabinetHeaderView(context: Context, attrs: AttributeSet?) :
         backgroundUrl: String?,
         backgroundColor: String?
     ) {
-        ivBackground.setImageUrl(backgroundUrl.orEmpty())
+        ivBackground.loadImageOrFallback(backgroundUrl, R.drawable.ic_cabinet_header_background)
         binding.apply { setBackgroundColor(parseColor(backgroundColor) ?: Color.BLACK) }
     }
 }

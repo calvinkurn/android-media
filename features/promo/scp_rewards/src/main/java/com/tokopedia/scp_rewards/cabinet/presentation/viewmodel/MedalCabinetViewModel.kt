@@ -125,7 +125,7 @@ class MedalCabinetViewModel @Inject constructor(
 
     private fun getCommonParams(page: Int, pageSize: Int) = RequestParams().apply {
         if (medaliSlug.isNotEmpty()) {
-            putString(SOURCE_NAME_PARAM, "${MEDALI_DETAIL_PAGE}_$medaliSlug")
+            putString(SOURCE_NAME_PARAM, medaliSlug)
         }
         putString(PAGE_NAME_PARAM, "medali_home_page")
         putInt(PAGE_PARAM, page)
