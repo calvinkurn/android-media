@@ -67,7 +67,6 @@ object RollenceKey {
     const val PDP_CAROUSEL_ANDROID = "pdp_carousel_android"
     const val PDP_SHOW_THUMBNAIL = "pdp_show_thumbnail"
     const val PDP_HIDE_THUMBNAIL = "pdp_hide_thumbnail"
-    const val PDP_SHOW_SHARE_AFFILIATE = "pdp_share_icon"
 
     // Review
     const val CREATE_REVIEW_REVIEW_INSPIRATION_EXPERIMENT_NAME = "review_inspiration"
@@ -96,4 +95,8 @@ object RollenceKey {
 
     // FS Toko OOS Gradual Rollout
     const val FLASH_SALE_OUT_OF_STOCK_GRADUAL_ROLLOUT = "fst_oosimprovement"
+
+    // Share affiliate
+    const val AFFILIATE_SHARE_ICON = "ShareAff_pdpshop"
+
 }

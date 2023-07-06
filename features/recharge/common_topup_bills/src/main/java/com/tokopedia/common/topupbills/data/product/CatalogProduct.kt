@@ -1,12 +1,15 @@
 package com.tokopedia.common.topupbills.data.product
 
 import android.annotation.SuppressLint
+import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import kotlinx.android.parcel.Parcelize
 
 /**
  * Created by resakemal on 26/11/19.
  */
+@Parcelize
 open class CatalogProduct(
 
         @SerializedName("id")
@@ -16,7 +19,8 @@ open class CatalogProduct(
         @Expose
         var attributes: Attributes = Attributes()
 
-) {
+): Parcelable {
+        @Parcelize
         class Attributes(
                 @SerializedName("desc")
                 @Expose
@@ -55,8 +59,9 @@ open class CatalogProduct(
                 @SerializedName("status")
                 @Expose
                 val status: Int = 0
-        )
+        ): Parcelable
 
+        @Parcelize
         class Promo(
                 @SerializedName("id")
                 @Expose
@@ -82,5 +87,5 @@ open class CatalogProduct(
                 @SerializedName("discount")
                 @Expose
                 var discount: String = "",
-        )
+        ): Parcelable
 }
