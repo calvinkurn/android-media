@@ -1213,8 +1213,60 @@ class ChatItemListViewModelTest {
         } returns false
 
         // When
-        viewModel.saveBooleanCache(BUBBLE_TICKER_PREF_NAME)
+        viewModel.saveBooleanCache(BUBBLE_TICKER_PREF_NAME, false)
         val result = viewModel.shouldShowBubbleTicker()
+
+        // Then
+        assertEquals(result, false)
+    }
+
+    @Test
+    fun should_show_broadcast_fab_new_label_when_cache_true() {
+        // Given
+        every {
+            sharedPref.getBoolean(any(), any())
+        } returns true
+
+        // When
+        val result = viewModel.getBooleanCache(
+            ChatItemListViewModel.BROADCAST_FAB_LABEL_PREF_NAME,
+            false
+        )
+
+        // Then
+        assertEquals(result, true)
+    }
+
+    @Test
+    fun should_show_broadcast_fab_new_label_when_cache_not_found() {
+        // Given
+        every {
+            sharedPref.getBoolean(any(), any())
+        } returns true
+
+        // When
+        val result = viewModel.getBooleanCache(
+            ChatItemListViewModel.BROADCAST_FAB_LABEL_PREF_NAME,
+            false
+        )
+
+        // Then
+        assertEquals(result, true)
+    }
+
+    @Test
+    fun test_save_broadcast_fab() {
+        // Given
+        every {
+            sharedPref.getBoolean(any(), any())
+        } returns false
+
+        // When
+        viewModel.saveBooleanCache(
+            ChatItemListViewModel.BROADCAST_FAB_LABEL_PREF_NAME,
+            false
+        )
+        val result = viewModel.getBooleanCache(ChatItemListViewModel.BROADCAST_FAB_LABEL_PREF_NAME)
 
         // Then
         assertEquals(result, false)
