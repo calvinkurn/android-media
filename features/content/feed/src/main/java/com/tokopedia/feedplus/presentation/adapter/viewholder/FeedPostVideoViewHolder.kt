@@ -389,7 +389,7 @@ class FeedPostVideoViewHolder(
         binding.playerControl.player = videoPlayer.getExoPlayer()
 
         videoPlayer.start(
-            element.media.firstOrNull()?.mediaUrl.orEmpty(),
+            element.videoUrl,
             false,
             playWhenReady = false
         )

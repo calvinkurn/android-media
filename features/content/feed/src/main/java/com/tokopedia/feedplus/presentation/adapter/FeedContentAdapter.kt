@@ -195,6 +195,7 @@ class FeedContentAdapter(
 
     fun showLoading() {
         val currentList = this.currentList
+        if (currentList.contains(loadingMoreModel)) return
         submitList(currentList + loadingMoreModel)
     }
 
@@ -205,6 +206,7 @@ class FeedContentAdapter(
 
     fun showErrorNetwork() {
         val currentList = this.currentList
+        if (currentList.contains(errorNetworkModel)) return
         submitList(currentList + errorNetworkModel)
     }
 

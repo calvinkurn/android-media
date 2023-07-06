@@ -8,26 +8,26 @@ import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.LoadControl
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
-import com.google.android.exoplayer2.source.MediaSource
-import com.google.android.exoplayer2.source.ProgressiveMediaSource
-import com.google.android.exoplayer2.source.dash.DashMediaSource
-import com.google.android.exoplayer2.source.hls.HlsMediaSource
-import com.google.android.exoplayer2.source.smoothstreaming.SsMediaSource
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
-import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
-import com.google.android.exoplayer2.util.Util
 import com.google.android.exoplayer2.video.VideoListener
+import com.tokopedia.feedcomponent.util.FeedExoUtil
+import com.tokopedia.feedcomponent.util.FeedVideoCache
+import java.util.concurrent.TimeUnit
 
 class FeedExoPlayer(val context: Context) {
 
     private var videoStateListener: VideoStateListener? = null
 
     private var loadControl: LoadControl = DefaultLoadControl.Builder()
+        .setBackBuffer(
+            TimeUnit.MINUTES.toMillis(1).toInt(),
+            true
+        )
         .setBufferDurationsMs(
-            30000, // this is expected
+            TimeUnit.SECONDS.toMillis(30).toInt(), // this is expected
             DefaultLoadControl.DEFAULT_MAX_BUFFER_MS,
-            1000,
-            3000
+            TimeUnit.SECONDS.toMillis(1).toInt(),
+            TimeUnit.SECONDS.toMillis(1).toInt()
         ).createDefaultLoadControl()
 
     private val exoPlayer: SimpleExoPlayer = SimpleExoPlayer.Builder(context)
@@ -83,10 +83,14 @@ class FeedExoPlayer(val context: Context) {
         this.videoStateListener = videoStateListener
     }
 
-    fun start(videoUrl: String, isMute: Boolean, playWhenReady: Boolean = true) {
+    fun start(videoUrl: String, isMute: Boolean, playWhenReady: Boolean = true, isLive: Boolean = false) {
         if (videoUrl.isBlank()) return
 
-        val mediaSource = getMediaSourceBySource(context, Uri.parse(videoUrl))
+        val mediaSource = FeedExoUtil.getMediaSourceByUri(
+            context,
+            Uri.parse(videoUrl),
+            if (!isLive) FeedVideoCache.getInstance(context).cache else null
+        )
         toggleVideoVolume(isMute)
         exoPlayer.repeatMode = Player.REPEAT_MODE_ALL
         exoPlayer.playWhenReady = playWhenReady
@@ -130,19 +134,6 @@ class FeedExoPlayer(val context: Context) {
     fun getExoPlayer(): SimpleExoPlayer = exoPlayer
 
     fun isMute(): Boolean = exoPlayer.volume == MUTE_VOLUME
-
-    private fun getMediaSourceBySource(context: Context, uri: Uri): MediaSource {
-        val mDataSourceFactory =
-            DefaultDataSourceFactory(context, Util.getUserAgent(context, "Tokopedia Android"))
-        val mediaSource = when (val type = Util.inferContentType(uri)) {
-            C.TYPE_SS -> SsMediaSource.Factory(mDataSourceFactory)
-            C.TYPE_DASH -> DashMediaSource.Factory(mDataSourceFactory)
-            C.TYPE_HLS -> HlsMediaSource.Factory(mDataSourceFactory)
-            C.TYPE_OTHER -> ProgressiveMediaSource.Factory(mDataSourceFactory)
-            else -> throw IllegalStateException("Unsupported type: $type")
-        }
-        return mediaSource.createMediaSource(uri)
-    }
 
     companion object {
         const val MUTE_VOLUME = 0F

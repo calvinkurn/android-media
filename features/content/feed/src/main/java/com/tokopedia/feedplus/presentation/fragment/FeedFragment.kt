@@ -17,7 +17,9 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2.SCROLL_STATE_IDLE
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.INTERNAL_AFFILIATE_CREATE_POST_V2
@@ -39,6 +41,7 @@ import com.tokopedia.feed.component.product.FeedTaggedProductUiModel
 import com.tokopedia.feedcomponent.bottomsheets.FeedFollowersOnlyBottomSheet
 import com.tokopedia.feedcomponent.presentation.utils.FeedResult
 import com.tokopedia.feedcomponent.util.CustomUiMessageThrowable
+import com.tokopedia.feedcomponent.util.FeedVideoCache
 import com.tokopedia.feedcomponent.util.util.DataMapper
 import com.tokopedia.feedcomponent.view.widget.FeedExoPlayer
 import com.tokopedia.feedplus.analytics.FeedAnalytics
@@ -138,6 +141,9 @@ class FeedFragment :
     @Inject
     lateinit var fragmentFactory: FragmentFactory
 
+    @Inject
+    lateinit var dispatchers: CoroutineDispatchers
+
     private val feedMainViewModel: FeedMainViewModel by viewModels(ownerProducer = { requireParentFragment() })
     private val feedPostViewModel: FeedPostViewModel by viewModels { viewModelFactory }
 
@@ -189,10 +195,7 @@ class FeedFragment :
 
     private var feedFollowersOnlyBottomSheet: FeedFollowersOnlyBottomSheet? = null
 
-    private val layoutManager by lazy {
-//        LinearLayoutManager(context, RecyclerView.VERTICAL, false)
-        FeedPostLayoutManager(context)
-    }
+    private val layoutManager by lazy { FeedPostLayoutManager(context) }
     private val contentScrollListener = object : RecyclerView.OnScrollListener() {
         override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
             // update item state and send tracker
@@ -280,6 +283,11 @@ class FeedFragment :
         super.onDestroyView()
 
         videoPlayerManager.releaseAll()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        FeedVideoCache.cleanUp(requireContext())
     }
 
     override fun initInjector() {
@@ -804,6 +812,7 @@ class FeedFragment :
                         }
                     } else {
                         adapter.setList(it.data.items)
+                        preCacheVideo(it.data.items)
                         context?.let { ctx ->
                             if (feedPostViewModel.shouldShowNoMoreContent) {
                                 adapter.addElement(FeedNoContentModel.getNoMoreContentInstance(ctx))
@@ -817,6 +826,17 @@ class FeedFragment :
                     adapter.showErrorNetwork()
                 }
                 else -> {}
+            }
+        }
+    }
+
+    private fun preCacheVideo(items: List<Visitable<FeedAdapterTypeFactory>>) {
+        val cacheManager = FeedVideoCache.getInstance(requireContext())
+        items.forEach {
+            if (it !is FeedCardVideoContentModel) return@forEach
+            lifecycleScope.launch(dispatchers.io) {
+                if (cacheManager.isCached(it.videoUrl)) return@launch
+                cacheManager.cache(requireContext(), it.videoUrl)
             }
         }
     }
