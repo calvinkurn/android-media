@@ -25,7 +25,8 @@ object TrackingProfileSection: BaseTrackerConst() {
      * Thanos: https://mynakama.tokopedia.com/datatracker/requestdetail/view/1890
      */
     fun onClickLoginButton(
-        pageSource: NavSource
+        pageSource: NavSource,
+        pageSourcePath: String? = null
     ){
         getTracker().sendGeneralEvent(
             BaseTrackerBuilder()
@@ -38,7 +39,7 @@ object TrackingProfileSection: BaseTrackerConst() {
                 .appendCurrentSite(CurrentSite.DEFAULT)
                 .appendBusinessUnit(BusinessUnit.DEFAULT)
                 .appendCustomKeyValue(TrackerId.KEY, "18478")
-                .appendCustomKeyValue(KEY_PAGE_SOURCE, pageSource.asTrackingPageSource())
+                .appendCustomKeyValue(KEY_PAGE_SOURCE, pageSource.asTrackingPageSource(pageSourcePath))
                 .build()
         )
     }
@@ -48,7 +49,8 @@ object TrackingProfileSection: BaseTrackerConst() {
      * Thanos: https://mynakama.tokopedia.com/datatracker/requestdetail/view/1890
      */
     fun onClickLoginReminderButton(
-        pageSource: NavSource
+        pageSource: NavSource,
+        pageSourcePath: String? = null
     ){
         getTracker().sendGeneralEvent(
             BaseTrackerBuilder()
@@ -61,7 +63,7 @@ object TrackingProfileSection: BaseTrackerConst() {
                 .appendCurrentSite(CurrentSite.DEFAULT)
                 .appendBusinessUnit(BusinessUnit.DEFAULT)
                 .appendCustomKeyValue(TrackerId.KEY, "18478")
-                .appendCustomKeyValue(KEY_PAGE_SOURCE, pageSource.asTrackingPageSource())
+                .appendCustomKeyValue(KEY_PAGE_SOURCE, pageSource.asTrackingPageSource(pageSourcePath))
                 .build()
         )
     }
@@ -71,7 +73,8 @@ object TrackingProfileSection: BaseTrackerConst() {
      * Thanos: https://mynakama.tokopedia.com/datatracker/requestdetail/view/1890
      */
     fun onClickRegisterButton(
-        pageSource: NavSource
+        pageSource: NavSource,
+        pageSourcePath: String? = null
     ){
         getTracker().sendGeneralEvent(
             BaseTrackerBuilder()
@@ -84,7 +87,7 @@ object TrackingProfileSection: BaseTrackerConst() {
                 .appendCurrentSite(CurrentSite.DEFAULT)
                 .appendBusinessUnit(BusinessUnit.DEFAULT)
                 .appendCustomKeyValue(TrackerId.KEY, "18478")
-                .appendCustomKeyValue(KEY_PAGE_SOURCE, pageSource.asTrackingPageSource())
+                .appendCustomKeyValue(KEY_PAGE_SOURCE, pageSource.asTrackingPageSource(pageSourcePath))
                 .build()
         )
     }
@@ -95,7 +98,8 @@ object TrackingProfileSection: BaseTrackerConst() {
      */
     fun onClickProfileSection(
         eventLabel: String,
-        pageSource: NavSource
+        pageSource: NavSource,
+        pageSourcePath: String? = null
     ){
         getTracker().sendGeneralEvent(
             BaseTrackerBuilder()
@@ -108,7 +112,7 @@ object TrackingProfileSection: BaseTrackerConst() {
                 .appendCurrentSite(CurrentSite.DEFAULT)
                 .appendBusinessUnit(BusinessUnit.DEFAULT)
                 .appendCustomKeyValue(TrackerId.KEY, "18479")
-                .appendCustomKeyValue(KEY_PAGE_SOURCE, pageSource.asTrackingPageSource())
+                .appendCustomKeyValue(KEY_PAGE_SOURCE, pageSource.asTrackingPageSource(pageSourcePath))
                 .build()
         )
     }
@@ -119,7 +123,8 @@ object TrackingProfileSection: BaseTrackerConst() {
      */
     fun onClickTokopediaPlus(
         isSubscriber: Boolean,
-        pageSource: NavSource
+        pageSource: NavSource,
+        pageSourcePath: String? = null
     ) {
         val action = if(isSubscriber) "click on gotoplus - subscriber" else "click on gotoplus - non subscriber"
         val trackerId = if(isSubscriber) "33342" else "33341"
@@ -134,7 +139,7 @@ object TrackingProfileSection: BaseTrackerConst() {
                 .appendCurrentSite(CurrentSite.DEFAULT)
                 .appendBusinessUnit(BusinessUnit.DEFAULT)
                 .appendCustomKeyValue(TrackerId.KEY, trackerId)
-                .appendCustomKeyValue(KEY_PAGE_SOURCE, pageSource.asTrackingPageSource())
+                .appendCustomKeyValue(KEY_PAGE_SOURCE, pageSource.asTrackingPageSource(pageSourcePath))
                 .build()
         )
     }

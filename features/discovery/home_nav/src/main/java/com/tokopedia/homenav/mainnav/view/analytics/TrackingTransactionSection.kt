@@ -25,7 +25,10 @@ object TrackingTransactionSection : BaseTrackerConst() {
      * Tracker ID: 18481
      * Thanos: https://mynakama.tokopedia.com/datatracker/requestdetail/view/1890
      */
-    fun clickOnAllTransaction(pageSource: NavSource) {
+    fun clickOnAllTransaction(
+        pageSource: NavSource,
+        pageSourcePath: String? = null
+    ) {
         val trackingBuilder = BaseTrackerBuilder()
         trackingBuilder.constructBasicGeneralClick(
             event = Event.CLICK_HOMEPAGE,
@@ -36,7 +39,7 @@ object TrackingTransactionSection : BaseTrackerConst() {
         trackingBuilder.appendCurrentSite(CurrentSite.DEFAULT)
         trackingBuilder.appendBusinessUnit(BusinessUnit.DEFAULT)
         trackingBuilder.appendCustomKeyValue(TrackerId.KEY, "18481")
-        trackingBuilder.appendCustomKeyValue(KEY_PAGE_SOURCE, pageSource.asTrackingPageSource())
+        trackingBuilder.appendCustomKeyValue(KEY_PAGE_SOURCE, pageSource.asTrackingPageSource(pageSourcePath))
         getTracker().sendGeneralEvent(trackingBuilder.build())
     }
 
@@ -44,7 +47,10 @@ object TrackingTransactionSection : BaseTrackerConst() {
      * Tracker ID: 18482
      * Thanos: https://mynakama.tokopedia.com/datatracker/requestdetail/view/1890
      */
-    fun clickOnTicket(pageSource: NavSource) {
+    fun clickOnTicket(
+        pageSource: NavSource,
+        pageSourcePath: String? = null
+    ) {
         val trackingBuilder = BaseTrackerBuilder()
         trackingBuilder.constructBasicGeneralClick(
             event = CLICK_NAVIGATION_DRAWER,
@@ -55,7 +61,7 @@ object TrackingTransactionSection : BaseTrackerConst() {
         trackingBuilder.appendCurrentSite(CurrentSite.DEFAULT)
         trackingBuilder.appendBusinessUnit(BusinessUnit.DEFAULT)
         trackingBuilder.appendCustomKeyValue(TrackerId.KEY, "18482")
-        trackingBuilder.appendCustomKeyValue(KEY_PAGE_SOURCE, pageSource.asTrackingPageSource())
+        trackingBuilder.appendCustomKeyValue(KEY_PAGE_SOURCE, pageSource.asTrackingPageSource(pageSourcePath))
         getTracker().sendGeneralEvent(trackingBuilder.build())
     }
 
@@ -63,7 +69,10 @@ object TrackingTransactionSection : BaseTrackerConst() {
      * Tracker ID: 18483
      * Thanos: https://mynakama.tokopedia.com/datatracker/requestdetail/view/1890
      */
-    fun clickOnReview(pageSource: NavSource) {
+    fun clickOnReview(
+        pageSource: NavSource,
+        pageSourcePath: String? = null
+    ) {
         val trackingBuilder = BaseTrackerBuilder()
         trackingBuilder.constructBasicGeneralClick(
             event = CLICK_NAVIGATION_DRAWER,
@@ -74,7 +83,7 @@ object TrackingTransactionSection : BaseTrackerConst() {
         trackingBuilder.appendCurrentSite(CurrentSite.DEFAULT)
         trackingBuilder.appendBusinessUnit(BusinessUnit.DEFAULT)
         trackingBuilder.appendCustomKeyValue(TrackerId.KEY, "18483")
-        trackingBuilder.appendCustomKeyValue(KEY_PAGE_SOURCE, pageSource.asTrackingPageSource())
+        trackingBuilder.appendCustomKeyValue(KEY_PAGE_SOURCE, pageSource.asTrackingPageSource(pageSourcePath))
         getTracker().sendGeneralEvent(trackingBuilder.build())
     }
 
@@ -84,7 +93,8 @@ object TrackingTransactionSection : BaseTrackerConst() {
      */
     fun clickOnOrderStatus(
         orderLabel: String,
-        pageSource: NavSource
+        pageSource: NavSource,
+        pageSourcePath: String? = null
     ) {
         val trackingBuilder = BaseTrackerBuilder()
         trackingBuilder.constructBasicGeneralClick(
@@ -96,7 +106,7 @@ object TrackingTransactionSection : BaseTrackerConst() {
         trackingBuilder.appendCurrentSite(CurrentSite.DEFAULT)
         trackingBuilder.appendBusinessUnit(BusinessUnit.DEFAULT)
         trackingBuilder.appendCustomKeyValue(TrackerId.KEY, "18484")
-        trackingBuilder.appendCustomKeyValue(KEY_PAGE_SOURCE, pageSource.asTrackingPageSource())
+        trackingBuilder.appendCustomKeyValue(KEY_PAGE_SOURCE, pageSource.asTrackingPageSource(pageSourcePath))
         getTracker().sendGeneralEvent(trackingBuilder.build())
     }
 
@@ -110,7 +120,8 @@ object TrackingTransactionSection : BaseTrackerConst() {
         bannerId: String = "0",
         orderId: String,
         position: Int,
-        pageSource: NavSource
+        pageSource: NavSource,
+        pageSourcePath: String? = null
     ): HashMap<String, Any> {
         val trackingBuilder = BaseTrackerBuilder()
         return trackingBuilder.constructBasicPromotionView(
@@ -132,7 +143,7 @@ object TrackingTransactionSection : BaseTrackerConst() {
             .appendUserId(userId)
             .appendBusinessUnit(BusinessUnit.DEFAULT)
             .appendCustomKeyValue(TrackerId.KEY, "30622")
-            .appendCustomKeyValue(KEY_PAGE_SOURCE, pageSource.asTrackingPageSource())
+            .appendCustomKeyValue(KEY_PAGE_SOURCE, pageSource.asTrackingPageSource(pageSourcePath))
             .build() as HashMap<String, Any>
     }
 
@@ -144,7 +155,8 @@ object TrackingTransactionSection : BaseTrackerConst() {
         userId: String,
         position: Int,
         wishlistModel: NavWishlistModel,
-        pageSource: NavSource
+        pageSource: NavSource,
+        pageSourcePath: String? = null
     ): HashMap<String, Any> {
         return BaseTrackerBuilder().constructBasicPromotionView(
             event = Event.PROMO_VIEW,
@@ -165,7 +177,7 @@ object TrackingTransactionSection : BaseTrackerConst() {
             .appendUserId(userId)
             .appendBusinessUnit(BusinessUnit.DEFAULT)
             .appendCustomKeyValue(TrackerId.KEY, "30836")
-            .appendCustomKeyValue(KEY_PAGE_SOURCE, pageSource.asTrackingPageSource())
+            .appendCustomKeyValue(KEY_PAGE_SOURCE, pageSource.asTrackingPageSource(pageSourcePath))
             .build() as HashMap<String, Any>
     }
 
@@ -177,7 +189,8 @@ object TrackingTransactionSection : BaseTrackerConst() {
         userId: String,
         wishlistModel: NavWishlistModel,
         position: Int,
-        pageSource: NavSource
+        pageSource: NavSource,
+        pageSourcePath: String? = null
     ) {
         val bundle = Bundle()
         bundle.putString(Event.KEY, Event.SELECT_CONTENT)
@@ -197,7 +210,7 @@ object TrackingTransactionSection : BaseTrackerConst() {
         )
         bundle.putParcelableArrayList(Promotion.KEY, promotions)
         bundle.putString(TrackerId.KEY, "30837")
-        bundle.putString(KEY_PAGE_SOURCE, pageSource.asTrackingPageSource())
+        bundle.putString(KEY_PAGE_SOURCE, pageSource.asTrackingPageSource(pageSourcePath))
         getTracker().sendEnhanceEcommerceEvent(Event.SELECT_CONTENT, bundle)
     }
 
@@ -205,7 +218,10 @@ object TrackingTransactionSection : BaseTrackerConst() {
      * Tracker ID: 30859
      * Thanos: https://mynakama.tokopedia.com/datatracker/requestdetail/view/1890
      */
-    fun clickOnWishlistViewAll(pageSource: NavSource) {
+    fun clickOnWishlistViewAll(
+        pageSource: NavSource,
+        pageSourcePath: String? = null
+    ) {
         val trackingBuilder = BaseTrackerBuilder()
         trackingBuilder.constructBasicGeneralClick(
             event = Event.CLICK_HOMEPAGE,
@@ -216,7 +232,7 @@ object TrackingTransactionSection : BaseTrackerConst() {
         trackingBuilder.appendCurrentSite(CurrentSite.DEFAULT)
         trackingBuilder.appendBusinessUnit(BusinessUnit.DEFAULT)
         trackingBuilder.appendCustomKeyValue(TrackerId.KEY, "30859")
-        trackingBuilder.appendCustomKeyValue(KEY_PAGE_SOURCE, pageSource.asTrackingPageSource())
+        trackingBuilder.appendCustomKeyValue(KEY_PAGE_SOURCE, pageSource.asTrackingPageSource(pageSourcePath))
         getTracker().sendGeneralEvent(trackingBuilder.build())
     }
 
@@ -228,7 +244,8 @@ object TrackingTransactionSection : BaseTrackerConst() {
         position: Int,
         userId: String,
         element: NavReviewModel,
-        pageSource: NavSource
+        pageSource: NavSource,
+        pageSourcePath: String? = null
     ): HashMap<String, Any> {
         val trackingBuilder = BaseTrackerBuilder()
         val positionCard = (position + 1).toString()
@@ -250,7 +267,7 @@ object TrackingTransactionSection : BaseTrackerConst() {
             .appendCurrentSite(CurrentSite.DEFAULT)
             .appendUserId(userId)
             .appendBusinessUnit(BusinessUnit.DEFAULT)
-            .appendCustomKeyValue(KEY_PAGE_SOURCE, pageSource.asTrackingPageSource())
+            .appendCustomKeyValue(KEY_PAGE_SOURCE, pageSource.asTrackingPageSource(pageSourcePath))
             .build() as HashMap<String, Any>
     }
 
@@ -263,7 +280,8 @@ object TrackingTransactionSection : BaseTrackerConst() {
         userId: String,
         element: NavReviewModel,
         starRating: String,
-        pageSource: NavSource
+        pageSource: NavSource,
+        pageSourcePath: String? = null
     ) {
         val bundle = Bundle()
         bundle.putString(Event.KEY, Event.SELECT_CONTENT)
@@ -280,7 +298,7 @@ object TrackingTransactionSection : BaseTrackerConst() {
         )
         bundle.putString(BusinessUnit.KEY, BusinessUnit.DEFAULT)
         bundle.putString(CurrentSite.KEY, CurrentSite.DEFAULT)
-        bundle.putString(KEY_PAGE_SOURCE, pageSource.asTrackingPageSource())
+        bundle.putString(KEY_PAGE_SOURCE, pageSource.asTrackingPageSource(pageSourcePath))
         bundle.putString(UserId.KEY, userId)
         bundle.putString(TrackerId.KEY, "30845")
         val promotion = Bundle()
@@ -315,7 +333,8 @@ object TrackingTransactionSection : BaseTrackerConst() {
         position: Int,
         userId: String,
         element: NavReviewModel,
-        pageSource: NavSource
+        pageSource: NavSource,
+        pageSourcePath: String? = null
     ) {
         val bundle = Bundle()
         bundle.putString(Event.KEY, Event.SELECT_CONTENT)
@@ -331,7 +350,7 @@ object TrackingTransactionSection : BaseTrackerConst() {
         )
         bundle.putString(BusinessUnit.KEY, BusinessUnit.DEFAULT)
         bundle.putString(CurrentSite.KEY, CurrentSite.DEFAULT)
-        bundle.putString(KEY_PAGE_SOURCE, pageSource.asTrackingPageSource())
+        bundle.putString(KEY_PAGE_SOURCE, pageSource.asTrackingPageSource(pageSourcePath))
         bundle.putString(UserId.KEY, userId)
         bundle.putString(TrackerId.KEY, "31120")
         val promotion = Bundle()
@@ -361,7 +380,10 @@ object TrackingTransactionSection : BaseTrackerConst() {
      * Tracker ID: 30860
      * Thanos: https://mynakama.tokopedia.com/datatracker/requestdetail/view/1890
      */
-    fun getClickViewAllTransaction(pageSource: NavSource) {
+    fun getClickViewAllTransaction(
+        pageSource: NavSource,
+        pageSourcePath: String? = null
+    ) {
         val bundle = Bundle()
         bundle.putString(Event.KEY, Event.CLICK_HOMEPAGE)
         bundle.putString(Action.KEY, "click view all transaction")
@@ -369,7 +391,7 @@ object TrackingTransactionSection : BaseTrackerConst() {
         bundle.putString(Label.KEY, Label.NONE)
         bundle.putString(BusinessUnit.KEY, BusinessUnit.DEFAULT)
         bundle.putString(CurrentSite.KEY, CurrentSite.DEFAULT)
-        bundle.putString(KEY_PAGE_SOURCE, pageSource.asTrackingPageSource())
+        bundle.putString(KEY_PAGE_SOURCE, pageSource.asTrackingPageSource(pageSourcePath))
         bundle.putString(TrackerId.KEY, "30860")
         getTracker().sendEnhanceEcommerceEvent(Event.CLICK_HOMEPAGE, bundle)
     }
@@ -378,7 +400,10 @@ object TrackingTransactionSection : BaseTrackerConst() {
      * Tracker ID: 40850
      * Thanos: https://mynakama.tokopedia.com/datatracker/requestdetail/view/1890
      */
-    fun clickOnReviewViewAll(pageSource: NavSource) {
+    fun clickOnReviewViewAll(
+        pageSource: NavSource,
+        pageSourcePath: String? = null
+    ) {
         val bundle = Bundle()
         bundle.putString(Event.KEY, Event.CLICK_HOMEPAGE)
         bundle.putString(Category.KEY, GLOBAL_MENU)
@@ -386,7 +411,7 @@ object TrackingTransactionSection : BaseTrackerConst() {
         bundle.putString(Label.KEY, Label.NONE)
         bundle.putString(CurrentSite.KEY, CurrentSite.DEFAULT)
         bundle.putString(BusinessUnit.KEY, BusinessUnit.DEFAULT)
-        bundle.putString(KEY_PAGE_SOURCE, pageSource.asTrackingPageSource())
+        bundle.putString(KEY_PAGE_SOURCE, pageSource.asTrackingPageSource(pageSourcePath))
         bundle.putString(TrackerId.KEY, "40850")
         getTracker().sendEnhanceEcommerceEvent(Event.CLICK_HOMEPAGE, bundle)
     }

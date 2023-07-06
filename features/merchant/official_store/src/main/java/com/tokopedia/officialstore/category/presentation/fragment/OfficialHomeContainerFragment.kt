@@ -445,7 +445,7 @@ class OfficialHomeContainerFragment
 
     private fun getToolbarIcons(): IconBuilder {
         val icons =
-            IconBuilder(IconBuilderFlag(pageSource = NavSource.DISCOVERY_SOS))
+            IconBuilder(IconBuilderFlag(pageSource = NavSource.SOS))
                 .addIcon(getInboxIcon()) {}
         if(activityOfficialStore != PARAM_HOME)
         {

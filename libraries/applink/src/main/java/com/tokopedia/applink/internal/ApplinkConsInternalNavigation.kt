@@ -4,6 +4,7 @@ import com.tokopedia.applink.constant.DeeplinkConstant
 
 object ApplinkConsInternalNavigation {
     const val PARAM_PAGE_SOURCE = "PAGE_SOURCE"
+    const val PARAM_PAGE_SOURCE_PATH = "PAGE_SOURCE_PATH"
 
     const val HOST_NAVIGATION = "navigation"
 

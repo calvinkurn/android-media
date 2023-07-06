@@ -165,7 +165,7 @@ class TestMainNavViewModel {
     @Test
     fun `given launch global menu when from home sos page then do not show back to home icon`() {
         val clientMenuGenerator = mockk<ClientMenuGenerator>()
-        val pageSource = NavSource.DISCOVERY_SOS
+        val pageSource = NavSource.SOS
         every { clientMenuGenerator.getMenu(menuId = any(), notifCount = any(), sectionId = any()) }
             .answers {
                 HomeNavMenuDataModel(

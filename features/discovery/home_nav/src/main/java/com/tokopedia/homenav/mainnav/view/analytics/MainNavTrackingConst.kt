@@ -30,21 +30,16 @@ internal object MainNavTrackingConst {
     private const val PAGE_SOURCE_TOKOFOOD = "food"
     private const val PAGE_SOURCE_TOKONOW = "now"
     private const val PAGE_SOURCE_WISHLIST = "wishlist"
-
-    private const val PAGE_SOURCE_DETAIL_DEALS = "deals"
-    private const val PAGE_SOURCE_DETAIL_SOS = "sos"
     // end of page source section
 
-    fun NavSource.asTrackingPageSource(): String {
+    fun NavSource.asTrackingPageSource(pageSourcePath: String? = null): String {
         val pageSource = when(this) {
             NavSource.ACCOUNT -> PAGE_SOURCE_ACCOUNT
             NavSource.AFFILIATE -> PAGE_SOURCE_AFFILIATE
             NavSource.CART -> PAGE_SOURCE_CART
             NavSource.CATALOG -> PAGE_SOURCE_CATALOG
             NavSource.CLP -> PAGE_SOURCE_CLP
-            NavSource.DISCOVERY,
-            NavSource.DISCOVERY_DEALS,
-            NavSource.DISCOVERY_SOS -> PAGE_SOURCE_DISCOVERY
+            NavSource.DISCOVERY -> PAGE_SOURCE_DISCOVERY
             NavSource.DT -> PAGE_SOURCE_DT
             NavSource.FEED -> PAGE_SOURCE_FEED
             NavSource.HOME -> PAGE_SOURCE_HOME
@@ -56,6 +51,7 @@ internal object MainNavTrackingConst {
             NavSource.NOTIFICATION -> PAGE_SOURCE_NOTIF
             NavSource.PDP -> PAGE_SOURCE_PDP
             NavSource.SHOP -> PAGE_SOURCE_SHOP
+            NavSource.SOS -> PAGE_SOURCE_DISCOVERY
             NavSource.SRP -> PAGE_SOURCE_SRP
             NavSource.SRP_UNIVERSAL -> PAGE_SOURCE_SRP_UNIVERSAL
             NavSource.THANKYOU -> PAGE_SOURCE_THANK_YOU
@@ -63,14 +59,9 @@ internal object MainNavTrackingConst {
             NavSource.TOKONOW -> PAGE_SOURCE_TOKONOW
             else -> "null"
         }
-        val pageSourceDetail = when(this) {
-            NavSource.DISCOVERY_DEALS -> PAGE_SOURCE_DETAIL_DEALS
-            NavSource.DISCOVERY_SOS -> PAGE_SOURCE_DETAIL_SOS
-            else -> "null"
-        }
         return FORMAT_PAGE_SOURCE.format(
             pageSource,
-            pageSourceDetail
+            pageSourcePath
         )
     }
 }

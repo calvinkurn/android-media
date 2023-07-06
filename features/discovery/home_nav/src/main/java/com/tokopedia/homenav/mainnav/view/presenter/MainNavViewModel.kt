@@ -176,7 +176,7 @@ class MainNavViewModel @Inject constructor(
         return pageSource == NavSource.HOME ||
             pageSource == NavSource.HOME_UOH ||
             pageSource == NavSource.HOME_WISHLIST ||
-            pageSource == NavSource.DISCOVERY_SOS
+            pageSource == NavSource.SOS
     }
 
     fun getPageSource(): NavSource {

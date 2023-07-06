@@ -16,7 +16,8 @@ object TrackingOthers: BaseTrackerConst() {
      */
     fun onClickBusinessUnitItem(
         title: String,
-        pageSource: NavSource
+        pageSource: NavSource,
+        pageSourcePath: String? = null
     ){
         getTracker().sendGeneralEvent(
             BaseTrackerBuilder()
@@ -27,7 +28,7 @@ object TrackingOthers: BaseTrackerConst() {
                 .appendCurrentSite(CurrentSite.DEFAULT)
                 .appendBusinessUnit(BusinessUnit.DEFAULT)
                 .appendCustomKeyValue(TrackerId.KEY, "18480")
-                .appendCustomKeyValue(KEY_PAGE_SOURCE, pageSource.asTrackingPageSource())
+                .appendCustomKeyValue(KEY_PAGE_SOURCE, pageSource.asTrackingPageSource(pageSourcePath))
                 .build()
         )
     }
@@ -38,7 +39,8 @@ object TrackingOthers: BaseTrackerConst() {
      */
     fun clickOnUserMenu(
         menuTrackerName: String,
-        pageSource: NavSource
+        pageSource: NavSource,
+        pageSourcePath: String? = null
     ) {
         getTracker().sendGeneralEvent(
             BaseTrackerBuilder()
@@ -49,7 +51,7 @@ object TrackingOthers: BaseTrackerConst() {
                 .appendCurrentSite(CurrentSite.DEFAULT)
                 .appendBusinessUnit(BusinessUnit.DEFAULT)
                 .appendCustomKeyValue(TrackerId.KEY, "18485")
-                .appendCustomKeyValue(KEY_PAGE_SOURCE, pageSource.asTrackingPageSource())
+                .appendCustomKeyValue(KEY_PAGE_SOURCE, pageSource.asTrackingPageSource(pageSourcePath))
                 .build()
         )
     }
@@ -59,7 +61,8 @@ object TrackingOthers: BaseTrackerConst() {
      * Thanos: https://mynakama.tokopedia.com/datatracker/requestdetail/view/1890
      */
     fun onClickBackToHome(
-        pageSource: NavSource
+        pageSource: NavSource,
+        pageSourcePath: String? = null
     ){
         getTracker().sendGeneralEvent(
             BaseTrackerBuilder()
@@ -70,7 +73,7 @@ object TrackingOthers: BaseTrackerConst() {
                 .appendCurrentSite(CurrentSite.DEFAULT)
                 .appendBusinessUnit(BusinessUnit.DEFAULT)
                 .appendCustomKeyValue(TrackerId.KEY, "18477")
-                .appendCustomKeyValue(KEY_PAGE_SOURCE, pageSource.asTrackingPageSource())
+                .appendCustomKeyValue(KEY_PAGE_SOURCE, pageSource.asTrackingPageSource(pageSourcePath))
                 .build()
         )
     }
@@ -80,7 +83,8 @@ object TrackingOthers: BaseTrackerConst() {
      * Thanos: https://mynakama.tokopedia.com/datatracker/requestdetail/view/1890
      */
     fun onClickCloseButton(
-        pageSource: NavSource
+        pageSource: NavSource,
+        pageSourcePath: String? = null
     ){
         TrackingOthers.getTracker().sendGeneralEvent(
             BaseTrackerBuilder()
@@ -91,7 +95,7 @@ object TrackingOthers: BaseTrackerConst() {
                 .appendCurrentSite(CurrentSite.DEFAULT)
                 .appendBusinessUnit(BusinessUnit.DEFAULT)
                 .appendCustomKeyValue(TrackerId.KEY, "18476")
-                .appendCustomKeyValue(KEY_PAGE_SOURCE, pageSource.asTrackingPageSource())
+                .appendCustomKeyValue(KEY_PAGE_SOURCE, pageSource.asTrackingPageSource(pageSourcePath))
                 .build()
         )
     }

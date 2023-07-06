@@ -156,7 +156,6 @@ import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScrollListener
 import com.tokopedia.searchbar.navigation_component.util.StatusBarUtil
-import com.tokopedia.searchbar.navigation_component.NavSource
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ImageUnify
@@ -385,7 +384,7 @@ open class DiscoveryFragment :
         if (arguments?.getString(DISCO_PAGE_SOURCE) == Constant.DiscoveryPageSource.HOME) {
             navToolbar.setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_NONE)
             navToolbar.setIcon(
-                IconBuilder(IconBuilderFlag(pageSource = NavSource.DISCOVERY_SOS))
+                IconBuilder(IconBuilderFlag(NavSource.SOS, pageEndPoint))
                     .addIcon(
                         IconList.ID_MESSAGE,
                         onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.INBOX) },
@@ -1103,7 +1102,7 @@ open class DiscoveryFragment :
                 }
             } else {
                 navToolbar.setIcon(
-                    IconBuilder(builderFlags = IconBuilderFlag(pageSource = NavSource.DISCOVERY))
+                    IconBuilder(IconBuilderFlag(NavSource.DISCOVERY, pageEndPoint))
                         .addIcon(
                             iconId = IconList.ID_SHARE,
                             disableRouteManager = true,
@@ -1325,7 +1324,7 @@ open class DiscoveryFragment :
 
     private fun setCartAndNavIcon() {
         navToolbar.setIcon(
-            IconBuilder(builderFlags = IconBuilderFlag(pageSource = NavSource.DISCOVERY))
+            IconBuilder(IconBuilderFlag(NavSource.DISCOVERY, pageEndPoint))
                 .addIcon(iconId = IconList.ID_CART, onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.CART) }, disableDefaultGtmTracker = true)
                 .addIcon(iconId = IconList.ID_NAV_GLOBAL, onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.GLOBAL_MENU) }, disableDefaultGtmTracker = true)
         )

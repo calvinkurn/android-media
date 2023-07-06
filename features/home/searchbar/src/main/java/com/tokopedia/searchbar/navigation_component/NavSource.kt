@@ -1,9 +1,5 @@
 package com.tokopedia.searchbar.navigation_component
 
-import android.content.Intent
-import android.os.Build
-import java.io.Serializable
-
 enum class NavSource {
     DEFAULT,
     ACCOUNT,
@@ -12,8 +8,6 @@ enum class NavSource {
     CATALOG,
     CLP,
     DISCOVERY,
-    DISCOVERY_DEALS,
-    DISCOVERY_SOS,
     DT,
     FEED,
     HOME,
@@ -23,13 +17,14 @@ enum class NavSource {
     NOTIFICATION,
     PDP,
     SHOP,
+    SOS,
     SRP,
     SRP_UNIVERSAL,
     THANKYOU,
     TOKOFOOD,
     TOKONOW,
     UOH,
-    WISHLIST;
+    WISHLIST
 }
 
 fun String?.asNavSource(): NavSource {
@@ -38,9 +33,4 @@ fun String?.asNavSource(): NavSource {
         if (it.name == this) return it
     }
     return NavSource.DEFAULT
-}
-
-inline fun <reified T : Serializable> Intent.getSerializable(key: String): T? = when {
-    Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU -> getSerializableExtra(key, T::class.java)
-    else -> @Suppress("DEPRECATION") getSerializableExtra(key) as? T
 }
