@@ -40,10 +40,6 @@ class GetRechargeCheckBalanceUseCase @Inject constructor(
         setRequestParams(params)
     }
 
-    override suspend fun executeOnBackground(): DigitalPersoData {
-        return super.executeOnBackground()
-    }
-
     companion object {
         private const val KEY_DIGI_PERSO_INPUT = "input"
 

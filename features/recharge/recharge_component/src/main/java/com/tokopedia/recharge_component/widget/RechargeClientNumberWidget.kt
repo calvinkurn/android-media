@@ -32,7 +32,6 @@ import com.tokopedia.recharge_component.listener.ClientNumberCheckBalanceListene
 import com.tokopedia.recharge_component.listener.ClientNumberFilterChipListener
 import com.tokopedia.recharge_component.listener.ClientNumberInputFieldListener
 import com.tokopedia.recharge_component.model.check_balance.RechargeCheckBalanceDetailBottomSheetModel
-import com.tokopedia.recharge_component.model.check_balance.RechargeCheckBalanceDetailModel
 import com.tokopedia.recharge_component.model.check_balance.RechargeCheckBalanceOTPModel
 import com.tokopedia.recharge_component.model.check_balance.RechargeCheckBalanceUnitModel
 import com.tokopedia.recharge_component.model.client_number.InputFieldType
@@ -428,12 +427,12 @@ class RechargeClientNumberWidget @JvmOverloads constructor(
 
     fun renderCheckBalanceWidget(
         balanceInfo: List<RechargeCheckBalanceUnitModel>,
-        balanceDetailBottomSheetModel: RechargeCheckBalanceDetailBottomSheetModel,
+        balanceDetailBottomSheetModel: RechargeCheckBalanceDetailBottomSheetModel
     ) {
         binding.clientNumberWidgetMainLayout.clientNumberWidgetBase.clientNumberWidgetCheckBalance.run {
             setBalanceInfo(balanceInfo)
             if (balanceDetailBottomSheetModel.details.isNotEmpty()) {
-                setListener(object: RechargeCheckBalanceWidget.RechargeCheckBalanceWidgetListener {
+                setListener(object : RechargeCheckBalanceWidget.RechargeCheckBalanceWidgetListener {
                     override fun onClickWidget() {
                         mCheckBalanceListener?.onClickCheckBalanceWidget(balanceDetailBottomSheetModel)
                     }
@@ -444,7 +443,8 @@ class RechargeClientNumberWidget @JvmOverloads constructor(
 
     fun showCheckBalanceWarning(message: String, iconUrl: String) {
         binding.clientNumberWidgetMainLayout.clientNumberWidgetBase.clientNumberWidgetCheckBalance.showWarningMessage(
-            message, iconUrl
+            message,
+            iconUrl
         )
     }
 
@@ -468,16 +468,6 @@ class RechargeClientNumberWidget @JvmOverloads constructor(
             Int.ZERO,
             PADDING_16.dpToPx(resources.displayMetrics)
         )
-    }
-
-    fun showCheckBalanceWarning(message: String, iconUrl: String, onClick: () -> Unit) {
-        binding.clientNumberWidgetMainLayout.clientNumberWidgetCheckBalance.showWarningMessage(
-            message, iconUrl, onClick
-        )
-    }
-
-    fun hideCheckBalanceWarning() {
-        binding.clientNumberWidgetMainLayout.clientNumberWidgetCheckBalance.hideWarningMessage()
     }
 
     fun startShakeAnimation() {
