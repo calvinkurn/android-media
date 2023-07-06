@@ -13,10 +13,12 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.picker.common.MediaPicker
 import com.tokopedia.picker.common.PageSource
 import com.tokopedia.picker.common.types.ModeType
+import com.tokopedia.picker.common.types.PageType
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.track.TrackApp
+import com.tokopedia.webview.data.model.WhiteListedDisableGalleryImagePick
 import com.tokopedia.webview.data.model.WhiteListedFintechPath
 import com.tokopedia.webview.ext.decode
 import com.tokopedia.webview.ext.encodeOnce
@@ -45,6 +47,7 @@ object WebViewHelper {
     private const val APP_SCP_WHITELISTED_ROUTES = "android_scp_whitelisted_routes"
     var whiteListedDomains = WhiteListedDomains()
     var whiteListedFintechPath = WhiteListedFintechPath()
+    var whiteListedDisableGalleryPickerUrl = WhiteListedDisableGalleryImagePick()
 
     private const val ANDROID_WEBVIEW_JS_ENCODE = "android_webview_js_encode"
 
@@ -430,10 +433,11 @@ object WebViewHelper {
         }
     }
 
-    fun getMediaPickerIntent(context: Context, hasVideo: Boolean = false): Intent {
+    fun getMediaPickerIntent(context: Context, hasVideo: Boolean = false, disableGallery: Boolean = false): Intent {
         return MediaPicker.intent(context) {
             pageSource(PageSource.WebView)
             modeType(if (hasVideo) ModeType.COMMON else ModeType.IMAGE_ONLY)
+            pageType(if (disableGallery) PageType.CAMERA else PageType.COMMON)
             singleSelectionMode()
         }
     }
@@ -532,5 +536,37 @@ object WebViewHelper {
             Timber.e(e)
         }
         return null
+    }
+
+    private fun getWhitelistDisableGalleryPicker(context: Context) {
+        try {
+            val remoteConfig: RemoteConfig = FirebaseRemoteConfigImpl(context.applicationContext)
+            val data = remoteConfig.getString(RemoteConfigKey.FINTECH_WEBVIEW_DISABLE_GALLERY_PICKER)
+            if (data.isNotBlank()) {
+                whiteListedDisableGalleryPickerUrl = Gson().fromJson(
+                    data,
+                    WhiteListedDisableGalleryImagePick::class.java
+                )
+            }
+        } catch (exception: Exception) {
+            FirebaseCrashlytics.getInstance().recordException(exception)
+        }
+    }
+
+    @JvmStatic
+    fun isWhitelistDisableGalleryPicker(context: Context, url: String): Boolean {
+        if (whiteListedDisableGalleryPickerUrl.urls.isEmpty()) {
+            getWhitelistDisableGalleryPicker(context)
+        }
+
+        if (whiteListedDisableGalleryPickerUrl.isEnabled) {
+            whiteListedDisableGalleryPickerUrl.urls.forEach {
+                if (it == url) {
+                    return true
+                }
+            }
+        }
+
+        return false
     }
 }

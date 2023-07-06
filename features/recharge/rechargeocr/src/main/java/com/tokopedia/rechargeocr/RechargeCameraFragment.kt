@@ -42,8 +42,10 @@ class RechargeCameraFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var permissionCheckerHelper: PermissionCheckerHelper
+
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
     @Inject
     lateinit var rechargeCameraAnalytics: RechargeCameraAnalytics
 
@@ -71,29 +73,31 @@ class RechargeCameraFragment : BaseDaggerFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        uploadImageviewModel.resultDataOcr.observe(viewLifecycleOwner, Observer { ocrData ->
-            when (ocrData) {
-                is Success -> {
-                    hideLoading()
-                    rechargeCameraAnalytics.scanIdCard(VALUE_TRACKING_OCR_SUCCESS)
-                    activity?.let {
-                        val intentReturn = Intent()
-                        intentReturn.putExtra(EXTRA_NUMBER_FROM_CAMERA_OCR, ocrData.data)
-                        it.setResult(Activity.RESULT_OK, intentReturn)
-                        it.finish()
+        uploadImageviewModel.resultDataOcr.observe(
+            viewLifecycleOwner,
+            Observer { ocrData ->
+                when (ocrData) {
+                    is Success -> {
+                        hideLoading()
+                        rechargeCameraAnalytics.scanIdCard(VALUE_TRACKING_OCR_SUCCESS)
+                        activity?.let {
+                            val intentReturn = Intent()
+                            intentReturn.putExtra(EXTRA_NUMBER_FROM_CAMERA_OCR, ocrData.data)
+                            it.setResult(Activity.RESULT_OK, intentReturn)
+                            it.finish()
+                        }
+                    }
+
+                    is Fail -> {
+                        hideLoading()
+                        showCameraView()
+                        val throwableMessage = ErrorHandler.getErrorMessage(requireContext(), ocrData.throwable)
+                        rechargeCameraAnalytics.scanIdCard(throwableMessage)
+                        Toaster.build(layout_container, throwableMessage, Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
                     }
                 }
-
-                is Fail -> {
-                    hideLoading()
-                    showCameraView()
-                    val throwableMessage = ErrorHandler.getErrorMessage(requireContext(), ocrData.throwable)
-                    rechargeCameraAnalytics.scanIdCard(throwableMessage)
-                    Toaster.build(layout_container, throwableMessage, Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
-                }
             }
-
-        })
+        )
     }
 
     private fun setupInfoCamera() {
@@ -125,35 +129,40 @@ class RechargeCameraFragment : BaseDaggerFragment() {
 
     private fun getPermissionCamera() {
         activity?.let {
-            permissionCheckerHelper.checkPermissions(it, arrayOf(
+            permissionCheckerHelper.checkPermissions(
+                it,
+                arrayOf(
                     PermissionCheckerHelper.Companion.PERMISSION_CAMERA,
-                    PermissionCheckerHelper.Companion.PERMISSION_WRITE_EXTERNAL_STORAGE),
-                    object : PermissionCheckerHelper.PermissionCheckListener {
-                        override fun onPermissionDenied(permissionText: String) {
-                            permissionCheckerHelper.onPermissionDenied(it, permissionText)
-                        }
+                    PermissionCheckerHelper.Companion.PERMISSION_WRITE_EXTERNAL_STORAGE
+                ),
+                object : PermissionCheckerHelper.PermissionCheckListener {
+                    override fun onPermissionDenied(permissionText: String) {
+                        permissionCheckerHelper.onPermissionDenied(it, permissionText)
+                    }
 
-                        override fun onNeverAskAgain(permissionText: String) {
-                            permissionCheckerHelper.onNeverAskAgain(it, permissionText)
-                        }
+                    override fun onNeverAskAgain(permissionText: String) {
+                        permissionCheckerHelper.onNeverAskAgain(it, permissionText)
+                    }
 
-                        override fun onPermissionGranted() {
-                            full_camera_view.takePicture()
-                        }
-                    }, "")
+                    override fun onPermissionGranted() {
+                        full_camera_view.takePicture()
+                    }
+                },
+                ""
+            )
         }
     }
 
     fun saveToFile(imageByte: ByteArray) {
         val mCaptureNativeSize = full_camera_view.pictureSize
         try {
-            //rotate the bitmap using the library
+            // rotate the bitmap using the library
             mCaptureNativeSize?.let {
                 CameraUtils.decodeBitmap(imageByte, mCaptureNativeSize.width, mCaptureNativeSize.height) { bitmap ->
                     if (bitmap != null) {
                         fullImagePreview?.setImageBitmap(bitmap)
                         val cameraResultFile = ImageProcessingUtil.writeImageToTkpdPath(bitmap, Bitmap.CompressFormat.JPEG)
-                        if (cameraResultFile!= null) {
+                        if (cameraResultFile != null) {
                             onSuccessImageTakenFromCamera(cameraResultFile)
                         }
                     }
@@ -161,7 +170,7 @@ class RechargeCameraFragment : BaseDaggerFragment() {
             }
         } catch (error: Throwable) {
             val cameraResultFile = ImageProcessingUtil.writeImageToTkpdPath(imageByte, Bitmap.CompressFormat.JPEG)
-            if (cameraResultFile!= null) {
+            if (cameraResultFile != null) {
                 onSuccessImageTakenFromCamera(cameraResultFile)
                 if (cameraResultFile.exists()) {
                     fullImagePreview?.let {
@@ -176,12 +185,18 @@ class RechargeCameraFragment : BaseDaggerFragment() {
         if (cameraResultFile.exists()) {
             imagePath = cameraResultFile.absolutePath
             showImagePreview()
-            uploadImageviewModel.uploadImageRecharge(imagePath,
-                    RechargeOcrGqlQuery.rechargeCameraRecognition)
+            uploadImageviewModel.uploadImageRecharge(
+                imagePath,
+                RechargeOcrGqlQuery.rechargeCameraRecognition
+            )
         } else {
             val throwableMessage = MessageErrorException(getString(R.string.ocr_default_error_message))
-            Toast.makeText(context, ErrorHandler.getErrorMessage(requireContext(), throwableMessage), Toast
-                    .LENGTH_LONG).show()
+            Toast.makeText(
+                context,
+                ErrorHandler.getErrorMessage(requireContext(), throwableMessage),
+                Toast
+                    .LENGTH_LONG
+            ).show()
         }
     }
 
@@ -227,22 +242,27 @@ class RechargeCameraFragment : BaseDaggerFragment() {
 
     private fun openCamera() {
         activity?.let {
-            permissionCheckerHelper.checkPermissions(it, arrayOf(
+            permissionCheckerHelper.checkPermissions(
+                it,
+                arrayOf(
                     PermissionCheckerHelper.Companion.PERMISSION_CAMERA,
-                    PermissionCheckerHelper.Companion.PERMISSION_RECORD_AUDIO),
-                    object : PermissionCheckerHelper.PermissionCheckListener {
-                        override fun onPermissionDenied(permissionText: String) {
-                            permissionCheckerHelper.onPermissionDenied(it, permissionText)
-                        }
+                    PermissionCheckerHelper.Companion.PERMISSION_RECORD_AUDIO
+                ),
+                object : PermissionCheckerHelper.PermissionCheckListener {
+                    override fun onPermissionDenied(permissionText: String) {
+                        permissionCheckerHelper.onPermissionDenied(it, permissionText)
+                    }
 
-                        override fun onNeverAskAgain(permissionText: String) {
-                            permissionCheckerHelper.onNeverAskAgain(it, permissionText)
-                        }
+                    override fun onNeverAskAgain(permissionText: String) {
+                        permissionCheckerHelper.onNeverAskAgain(it, permissionText)
+                    }
 
-                        override fun onPermissionGranted() {
-                            full_camera_view.open()
-                        }
-                    }, "")
+                    override fun onPermissionGranted() {
+                        full_camera_view.open()
+                    }
+                },
+                ""
+            )
         }
     }
 
@@ -277,7 +297,7 @@ class RechargeCameraFragment : BaseDaggerFragment() {
 
     companion object {
 
-        //TODO get this data from DigitalExtraParam
+        // TODO get this data from DigitalExtraParam
         private const val EXTRA_NUMBER_FROM_CAMERA_OCR = "EXTRA_NUMBER_FROM_CAMERA_OCR"
 
         private const val VALUE_TRACKING_OCR_SUCCESS = "success"
@@ -286,5 +306,4 @@ class RechargeCameraFragment : BaseDaggerFragment() {
             return RechargeCameraFragment()
         }
     }
-
 }

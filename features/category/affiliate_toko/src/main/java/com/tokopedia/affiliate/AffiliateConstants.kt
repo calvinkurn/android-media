@@ -25,6 +25,7 @@ const val PAGE_SEGMENT_EDU_PAGE = "edu-page"
 const val PAGE_SEGMENT_ONBOARDING = "onboarding"
 const val PAGE_SEGMENT_DISCO_PAGE_LIST = "discopage-list"
 const val PAGE_SEGMENT_PROMO_PAGE = "promosikan"
+const val PAGE_SEGMENT_PERFORMA = "performa"
 const val KYC_DONE = 1
 
 const val TRANSACTION_ID = "TransactionID"
@@ -184,13 +185,14 @@ const val TOTAL_ITEMS_METRIC_TYPE = "totalItems"
 
 const val PAGE_ANNOUNCEMENT_ALL = 0
 const val PAGE_ANNOUNCEMENT_HOME = 1
-const val PAGE_ANNOUNCEMENT_PROMOSIKAN = 2
+const val PAGE_ANNOUNCEMENT_PROMO_PERFORMA = 2
 const val PAGE_ANNOUNCEMENT_TRANSACTION_HISTORY = 3
 
 const val AFFILIATE_SSA_SHOP = "aff_ssa_portal"
 const val AFFILIATE_DISCO_PROMO = "aff_disco_link_gen"
 const val AFFILIATE_TOKONOW_BANNER = "aff_now_att"
 const val AFFILIATE_NC = "Affiliate_NC"
+const val AFFILIATE_PROMOTE_HOME = "aff_promote_home"
 
 const val AFFILIATE_GAMIFICATION_VISIBILITY = "affil_banner_gami"
 const val AFFILIATE_GAMIFICATION_REDIRECTION = "affil_gami_disco"

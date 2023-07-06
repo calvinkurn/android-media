@@ -4,13 +4,15 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.shop.common.constant.GQLQueryNamedConstant
 import com.tokopedia.shop.pageheader.ShopPageHeaderConstant
+import com.tokopedia.shop.pageheader.di.scope.ShopPageHeaderScope
 import com.tokopedia.shop.pageheader.domain.interactor.GetBroadcasterAuthorConfig
 import com.tokopedia.trackingoptimizer.TrackingQueue
-import com.tokopedia.shop.pageheader.di.scope.ShopPageHeaderScope
+import com.tokopedia.universal_sharing.view.usecase.AffiliateEligibilityCheckUseCase
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -60,7 +62,14 @@ class ShopPageHeaderModule {
     fun provideFirebaseRemoteConfig(@ApplicationContext context: Context): RemoteConfig {
         return FirebaseRemoteConfigImpl(context)
     }
+
     @ShopPageHeaderScope
     @Provides
     fun provideTrackingQueue(@ApplicationContext context: Context) = TrackingQueue(context)
+
+    @ShopPageHeaderScope
+    @Provides
+    fun provideAffiliateUseCase(graphqlRepository: GraphqlRepository): AffiliateEligibilityCheckUseCase {
+        return AffiliateEligibilityCheckUseCase(graphqlRepository)
+    }
 }

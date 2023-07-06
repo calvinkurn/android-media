@@ -91,10 +91,8 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
             "com.tokopedia.sellerappwidget.GET_ALL_APP_WIDGET_DATA"
         private const val NAVIGATION_OTHER_MENU_POSITION = 4
         private const val NAVIGATION_HOME_MENU_POSITION = 0
-        private const val TRACKER_PREF_NAME = "NotificationUserSettings"
         private const val WEAR_PREF_NAME = "WearPopupSharedPref"
 
-        private const val NOTIFICATION_USER_SETTING_KEY = "isSellerSettingSent"
         private const val WEAR_POPUP_KEY = "isWearPopupShown"
         private const val TOKOPEDIA_MARKET_WEAR_APP = "market://details?id=com.tokopedia.sellerapp"
     }
@@ -129,9 +127,6 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
     private var sellerHomeFragmentChangeCallback: FragmentChangeCallback? = null
     private var otherMenuFragmentChangeCallback: FragmentChangeCallback? = null
     private var binding: ActivitySahSellerHomeBinding? = null
-    private val sharedPreference: SharedPreferences by lazy {
-        applicationContext.getSharedPreferences(TRACKER_PREF_NAME, MODE_PRIVATE)
-    }
     private val wearSharedPreference: SharedPreferences by lazy {
         applicationContext.getSharedPreferences(WEAR_PREF_NAME, MODE_PRIVATE)
     }
@@ -296,13 +291,8 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
     }
 
     private fun sendNotificationUserSetting() {
-        val isSettingsSent: Boolean =
-            sharedPreference.getBoolean(NOTIFICATION_USER_SETTING_KEY, false)
-        if (userSession.isLoggedIn && !isSettingsSent) {
+        if (userSession.isLoggedIn) {
             NotificationUserSettingsTracker(applicationContext).sendNotificationUserSettings()
-            sharedPreference.edit()
-                .putBoolean(NOTIFICATION_USER_SETTING_KEY, true)
-                .apply()
         }
     }
 

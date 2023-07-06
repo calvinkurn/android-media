@@ -6,14 +6,18 @@ import com.tokopedia.digital.home.R
 import com.tokopedia.digital.home.databinding.ViewRechargeHomeDualBannersBinding
 import com.tokopedia.digital.home.model.RechargeHomepageDualBannersModel
 import com.tokopedia.digital.home.presentation.listener.RechargeHomepageItemListener
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.displayTextOrHide
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.loadImage
 
 /**
  * @author by resakemal on 21/06/20.
  */
 
 class RechargeHomepageDualBannersViewHolder(itemView: View?, val listener: RechargeHomepageItemListener) :
-        AbstractViewHolder<RechargeHomepageDualBannersModel>(itemView) {
+    AbstractViewHolder<RechargeHomepageDualBannersModel>(itemView) {
 
     override fun bind(element: RechargeHomepageDualBannersModel) {
         val bind = ViewRechargeHomeDualBannersBinding.bind(itemView)
@@ -23,7 +27,7 @@ class RechargeHomepageDualBannersViewHolder(itemView: View?, val listener: Recha
             2 -> section.items
             else -> section.items.subList(0, 2)
         }
-        with (bind) {
+        with(bind) {
             items?.run {
                 viewRechargeHomeDualBannersContainer.show()
                 viewRechargeHomeDualBannersShimmering.root.hide()
