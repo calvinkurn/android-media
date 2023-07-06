@@ -18,18 +18,16 @@ class AffiliatePerformanceChipRVVH(
     private val affiliatePerformanceChipClick: AffiliatePerformanceChipClick? = null
 ) : AbstractViewHolder<AffiliatePerformanceChipRVModel>(itemView), AffiliatePerformanceChipClick {
 
-    private lateinit var chipAdapter: AffiliateAdapter
+    private var chipAdapter: AffiliateAdapter =
+        AffiliateAdapter(AffiliateAdapterFactory(affiliatePerformanceChipClick = this))
 
     companion object {
         @JvmField
         @LayoutRes
         var LAYOUT = R.layout.affiliate_chip_recycler_view
-
     }
 
     override fun bind(element: AffiliatePerformanceChipRVModel?) {
-        chipAdapter =
-            AffiliateAdapter(AffiliateAdapterFactory(affiliatePerformanceChipClick = this))
         val performanceChipRv = itemView.findViewById<RecyclerView>(R.id.rv_performance_chip)
         val rvLayoutManager =
             LinearLayoutManager(itemView.context, RecyclerView.HORIZONTAL, false)
@@ -37,34 +35,31 @@ class AffiliatePerformanceChipRVVH(
             layoutManager = rvLayoutManager
             adapter = chipAdapter
         }
-        chipAdapter.addMoreData(
+        chipAdapter.setVisitables(
             element?.itemTypes?.map { AffiliatePerformanceChipModel(it) }
         )
-
     }
 
     override fun onChipClick(type: ItemTypesItem?) {
-        if (this::chipAdapter.isInitialized) {
-            val selectedIndex =
-                chipAdapter.list.map { (it as AffiliatePerformanceChipModel).chipType }
-                    .indexOf(type)
-            var previouslySelectedIndex = -1
-            chipAdapter.list.forEachIndexed { index, visitable ->
-                if ((visitable as AffiliatePerformanceChipModel).chipType.isSelected)
-                    previouslySelectedIndex = index
-                else
-                    previouslySelectedIndex - 1
-            }
-            if (selectedIndex != previouslySelectedIndex && previouslySelectedIndex >=0){
-                affiliatePerformanceChipClick?.onChipClick(type)
-                (chipAdapter.list[selectedIndex] as AffiliatePerformanceChipModel).chipType.isSelected = true
-                (chipAdapter.list[previouslySelectedIndex] as AffiliatePerformanceChipModel).chipType.isSelected = false
-                chipAdapter.notifyItemChanged(selectedIndex)
-                chipAdapter.notifyItemChanged(previouslySelectedIndex)
+        val selectedIndex =
+            chipAdapter.list.map { (it as AffiliatePerformanceChipModel).chipType }
+                .indexOf(type)
+        var previouslySelectedIndex = -1
+        chipAdapter.list.forEachIndexed { index, visitable ->
+            if ((visitable as AffiliatePerformanceChipModel).chipType.isSelected) {
+                previouslySelectedIndex = index
+            } else {
+                previouslySelectedIndex - 1
             }
         }
-
+        if (selectedIndex != previouslySelectedIndex && previouslySelectedIndex >= 0) {
+            affiliatePerformanceChipClick?.onChipClick(type)
+            (chipAdapter.list[selectedIndex] as AffiliatePerformanceChipModel).chipType.isSelected =
+                true
+            (chipAdapter.list[previouslySelectedIndex] as AffiliatePerformanceChipModel).chipType.isSelected =
+                false
+            chipAdapter.notifyItemChanged(selectedIndex)
+            chipAdapter.notifyItemChanged(previouslySelectedIndex)
+        }
     }
-
-
 }

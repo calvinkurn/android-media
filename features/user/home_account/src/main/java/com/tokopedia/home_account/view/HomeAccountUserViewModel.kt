@@ -309,26 +309,35 @@ class HomeAccountUserViewModel @Inject constructor(
             })
     }
 
-    fun getBalanceAndPoint(walletId: String, hideTitle: Boolean, titleText: String) {
+    fun getBalanceAndPoint(walletId: String, hideTitleText: Boolean, titleText: String) {
         launchCatchError(block = {
             when (walletId) {
                 AccountConstants.WALLET.TOKOPOINT -> {
                     val result = getTokopointsBalanceAndPointUseCase(Unit)
-                    result.data.titleAsset = titleText
-                    setBalanceAndPointValue(result.data, walletId, hideTitle)
+                    result.data.apply {
+                        titleAsset = titleText
+                        hideTitle = hideTitleText
+                    }
+                    setBalanceAndPointValue(result.data, walletId)
                 }
                 AccountConstants.WALLET.SALDO -> {
                     val result = getSaldoBalanceUseCase(Unit)
-                    result.data.titleAsset = titleText
-                    setBalanceAndPointValue(result.data, walletId, hideTitle)
+                    result.data.apply {
+                        titleAsset = titleText
+                        hideTitle = hideTitleText
+                    }
+                    setBalanceAndPointValue(result.data, walletId)
                 }
                 AccountConstants.WALLET.CO_BRAND_CC -> {
                     val result = getCoBrandCCBalanceAndPointUseCase(Unit)
-                    result.data.titleAsset = titleText
-                    setBalanceAndPointValue(result.data, walletId, hideTitle)
+                    result.data.apply {
+                        titleAsset = titleText
+                        hideTitle = hideTitleText
+                    }
+                    setBalanceAndPointValue(result.data, walletId)
                 }
                 else -> {
-                    getOtherBalanceAndPoint(walletId, hideTitle)
+                    getOtherBalanceAndPoint(walletId, hideTitleText)
                 }
             }
         }, onError = {
@@ -339,13 +348,16 @@ class HomeAccountUserViewModel @Inject constructor(
     /**
      * same API
      */
-    private suspend fun getOtherBalanceAndPoint(walletId: String, hideTitle: Boolean) {
+    private suspend fun getOtherBalanceAndPoint(walletId: String, hideTitleText: Boolean) {
         val result = when (walletId) {
             AccountConstants.WALLET.GOPAY -> {
                 getBalanceAndPointUseCase(GOPAY_PARTNER_CODE)
             }
             AccountConstants.WALLET.GOPAYLATER -> {
                 getBalanceAndPointUseCase(GOPAYLATER_PARTNER_CODE)
+            }
+            AccountConstants.WALLET.GOPAYLATERCICIL -> {
+                getBalanceAndPointUseCase(GOPAYLATERCICIL_PARTNER_CODE)
             }
             AccountConstants.WALLET.OVO -> {
                 getBalanceAndPointUseCase(OVO_PARTNER_CODE)
@@ -354,12 +366,14 @@ class HomeAccountUserViewModel @Inject constructor(
                 BalanceAndPointDataModel()
             }
         }
-        setBalanceAndPointValue(result.data, walletId, hideTitle)
+        result.data.apply {
+            hideTitle = hideTitleText
+        }
+        setBalanceAndPointValue(result.data, walletId)
     }
 
-    private fun setBalanceAndPointValue(data: WalletappGetAccountBalance, walletId: String, hideTitle: Boolean) {
+    private fun setBalanceAndPointValue(data: WalletappGetAccountBalance, walletId: String) {
         if (data.id.isNotEmpty()) {
-            data.hideTitle = hideTitle
             _balanceAndPoint.value = ResultBalanceAndPoint.Success(data, walletId)
         } else {
             _balanceAndPoint.value = ResultBalanceAndPoint.Fail(IllegalArgumentException(), walletId)
@@ -393,6 +407,7 @@ class HomeAccountUserViewModel @Inject constructor(
 
         private const val GOPAY_PARTNER_CODE = "PEMUDA"
         private const val GOPAYLATER_PARTNER_CODE = "PEMUDAPAYLATER"
+        private const val GOPAYLATERCICIL_PARTNER_CODE = "PEMUDACICIL"
         private const val OVO_PARTNER_CODE = "OVO"
         private const val GOPAY_WALLET_CODE = "PEMUDAPOINTS"
     }

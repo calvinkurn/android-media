@@ -39,10 +39,6 @@ object Const {
         const val OPERATIONAL_INSIGHT = "seller-statistic#wawasan-operasional"
     }
 
-    object RemoteConfigKey {
-        const val CUSTOM_DATE_FILTER_ENABLED = "android_sellerapp_statistic_custom_date_filter"
-    }
-
     object BottomSheet {
         const val TAG_MONTH_PICKER = "MonthPickerBottomSheet"
     }

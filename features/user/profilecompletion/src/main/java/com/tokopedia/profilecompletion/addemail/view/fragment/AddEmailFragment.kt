@@ -22,6 +22,7 @@ import com.tokopedia.profilecompletion.R
 import com.tokopedia.profilecompletion.addemail.data.AddEmailResult
 import com.tokopedia.profilecompletion.addemail.viewmodel.AddEmailViewModel
 import com.tokopedia.profilecompletion.common.ColorUtils
+import com.tokopedia.profilecompletion.databinding.FragmentAddEmailSettingProfileBinding
 import com.tokopedia.profilecompletion.di.ProfileCompletionSettingComponent
 import com.tokopedia.profilecompletion.profileinfo.tracker.ProfileInfoTracker
 import com.tokopedia.sessioncommon.ErrorHandlerSession
@@ -29,10 +30,12 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.fragment_add_email_setting_profile.*
 import javax.inject.Inject
 
 class AddEmailFragment : BaseDaggerFragment() {
+
+    private var _binding: FragmentAddEmailSettingProfileBinding? = null
+    private val binding get() = _binding!!
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -65,8 +68,8 @@ class AddEmailFragment : BaseDaggerFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_add_email_setting_profile, container, false)
-        return view
+        _binding = FragmentAddEmailSettingProfileBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -81,7 +84,7 @@ class AddEmailFragment : BaseDaggerFragment() {
     }
 
     private fun setListener() {
-        et_email.editText.addTextChangedListener(object : TextWatcher {
+        binding?.etEmail?.editText?.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {
 
             }
@@ -89,7 +92,7 @@ class AddEmailFragment : BaseDaggerFragment() {
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
                 if (s.isNotEmpty()) {
                     setErrorText("")
-                } else if (et_email.editText.text.isEmpty()) {
+                } else if (binding?.etEmail?.editText?.text?.isEmpty() == true) {
                     setErrorText(getString(com.tokopedia.profilecompletion.R.string.error_cant_empty))
                 }
             }
@@ -99,9 +102,9 @@ class AddEmailFragment : BaseDaggerFragment() {
             }
         })
 
-        buttonSubmit.setOnClickListener {
+        binding?.buttonSubmit?.setOnClickListener {
             tracker.trackOnBtnLanjutAddEmailClick()
-            val email = et_email.editText.text.toString()
+            val email = binding?.etEmail?.editText?.text.toString()
             if (email.isBlank()) {
                 setErrorText(getString(R.string.error_field_required))
             } else if (!isValidEmail(email)) {
@@ -129,13 +132,13 @@ class AddEmailFragment : BaseDaggerFragment() {
 
     private fun setErrorText(s: String, isButtonEnabled: Boolean = false) {
         if (TextUtils.isEmpty(s)) {
-            et_email.setMessage("")
-            buttonSubmit.isEnabled = true
-            et_email.isInputError = false
+            binding?.etEmail?.setMessage("")
+            binding?.buttonSubmit?.isEnabled = true
+            binding?.etEmail?.isInputError = false
         } else {
-            et_email.setMessage(s)
-            buttonSubmit.isEnabled = isButtonEnabled
-            et_email.isInputError = true
+            binding?.etEmail?.setMessage(s)
+            binding?.buttonSubmit?.isEnabled = isButtonEnabled
+            binding?.etEmail?.isInputError = true
         }
     }
 
@@ -198,13 +201,13 @@ class AddEmailFragment : BaseDaggerFragment() {
     }
 
     private fun showLoading() {
-        mainView.visibility = View.GONE
-        progressBar.visibility = View.VISIBLE
+        binding?.mainView?.visibility = View.GONE
+        binding?.progressBar?.visibility = View.VISIBLE
     }
 
     private fun dismissLoading() {
-        mainView.visibility = View.VISIBLE
-        progressBar.visibility = View.GONE
+        binding?.mainView?.visibility = View.VISIBLE
+        binding?.progressBar?.visibility = View.GONE
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -221,7 +224,7 @@ class AddEmailFragment : BaseDaggerFragment() {
             val otpCode = getString(ApplinkConstInternalGlobal.PARAM_OTP_CODE, "")
             val validateToken = getString(ApplinkConstInternalGlobal.PARAM_TOKEN).orEmpty()
             if (otpCode.isNotBlank()) {
-                val email = et_email.editText.text.toString().trim()
+                val email = binding?.etEmail?.editText?.text.toString().trim()
                 viewModel.mutateAddEmail(email, otpCode, validateToken)
             } else {
                 onErrorAddEmail(
@@ -251,6 +254,7 @@ class AddEmailFragment : BaseDaggerFragment() {
         super.onDestroy()
         viewModel.mutateAddEmailResponse.removeObservers(this)
         viewModel.flush()
+        _binding = null
     }
 
 }

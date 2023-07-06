@@ -8,6 +8,8 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.base.view.adapter.viewholders.ErrorNetworkViewHolder
+import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingMoreViewHolder
+import com.tokopedia.feedplus.databinding.ItemFeedLoadMoreContentBinding
 import com.tokopedia.feedplus.databinding.ItemFeedNoContentBinding
 import com.tokopedia.feedplus.databinding.ItemFeedPostBinding
 import com.tokopedia.feedplus.databinding.ItemFeedPostLiveBinding
@@ -15,6 +17,7 @@ import com.tokopedia.feedplus.databinding.ItemFeedPostVideoBinding
 import com.tokopedia.feedplus.domain.mapper.MapperFeedModelToTrackerDataModel
 import com.tokopedia.feedplus.presentation.adapter.listener.FeedListener
 import com.tokopedia.feedplus.presentation.adapter.viewholder.FeedErrorViewHolder
+import com.tokopedia.feedplus.presentation.adapter.viewholder.FeedLoadMoreViewHolder
 import com.tokopedia.feedplus.presentation.adapter.viewholder.FeedNoContentViewHolder
 import com.tokopedia.feedplus.presentation.adapter.viewholder.FeedPostImageViewHolder
 import com.tokopedia.feedplus.presentation.adapter.viewholder.FeedPostLiveViewHolder
@@ -85,6 +88,13 @@ class FeedAdapterTypeFactory(
                     false
                 ),
                 feedListener
+            )
+            LoadingMoreViewHolder.LAYOUT -> FeedLoadMoreViewHolder(
+                ItemFeedLoadMoreContentBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent as ViewGroup,
+                    false
+                )
             )
             ErrorNetworkViewHolder.LAYOUT -> FeedErrorViewHolder(
                 ItemFeedNoContentBinding.inflate(
