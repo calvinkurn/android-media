@@ -79,12 +79,12 @@ class AccordianDailyBudgetViewHolder(
     private fun validateDailyBudgetBidInput(budget: Double, element: AccordianDailyBudgetUiModel?): String {
         return if (budget < element?.sellerInsightData?.dailyBudgetData?.firstOrNull()?.priceDaily.toZeroIfNull())
             String.format(
-                getString(R.string.min_budget_rp),
-                element?.sellerInsightData?.dailyBudgetData?.firstOrNull()?.suggestedPriceDaily.toZeroIfNull()
+                getString(R.string.topads_insight_min_budget_rp),
+                element?.sellerInsightData?.dailyBudgetData?.firstOrNull()?.priceDaily.toZeroIfNull()
             )
         else if (budget > INSIGHT_DAILY_BUDGET_MAX_BID)
             String.format(
-                getString(R.string.max_budget_rp),
+                getString(R.string.topads_insight_max_budget_rp),
                 INSIGHT_DAILY_BUDGET_MAX_BID
             )
         else String.EMPTY
