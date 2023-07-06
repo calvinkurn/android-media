@@ -109,7 +109,6 @@ class SomFilterBottomSheet :
             val cancelWrapper = SomFilterCancelWrapper(statusList, somFilterUiModelListCopy)
             somFilterFinishListener?.onClickOverlayBottomSheet(cancelWrapper)
         }
-        cleanupResources()
     }
 
     private fun getDataFromArgumentOrCacheManager() {
@@ -197,8 +196,6 @@ class SomFilterBottomSheet :
     private fun cleanupResources() {
         somListOrderParam = null
         somFilterAdapter = null
-        statusBarColorUtil?.activityRef?.clear()
-        statusBarColorUtil = null
         somFilterFinishListener = null
     }
 
@@ -239,6 +236,7 @@ class SomFilterBottomSheet :
         removeObservers(somFilterViewModel.somFilterOrderListParam)
         removeObservers(somFilterViewModel.resetFilterResult)
         undoStatusBarColor()
+        cleanupResources()
         super.onDestroy()
     }
 
@@ -292,6 +290,8 @@ class SomFilterBottomSheet :
 
     private fun undoStatusBarColor() {
         statusBarColorUtil?.undoSetStatusBarColor()
+        statusBarColorUtil?.activityRef?.clear()
+        statusBarColorUtil = null
     }
 
     private fun clickShowOrder() {
