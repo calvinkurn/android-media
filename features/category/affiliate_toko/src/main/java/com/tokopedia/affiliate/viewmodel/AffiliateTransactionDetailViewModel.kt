@@ -145,7 +145,7 @@ class AffiliateTransactionDetailViewModel @Inject constructor(
                 }
                 applink.value = deeplink
             },
-            onError = { Timber.e(it) }
+            onError = { errorMessage.value = it }
         )
     }
 
