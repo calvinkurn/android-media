@@ -133,7 +133,7 @@ class PlayUserInteractionFragment @Inject constructor(
     private val newAnalytic: PlayNewAnalytic,
     private val analyticManager: PlayChannelAnalyticManager,
     private val router: Router,
-    private val commentAnalytics: ContentCommentAnalytics.Creator,
+    private val commentAnalytics: ContentCommentAnalytics.Creator
 ) :
     TkpdBaseV4Fragment(),
     PlayMoreActionBottomSheet.Listener,
@@ -285,7 +285,7 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private val commentEntrySource = object : ContentCommentBottomSheet.EntrySource {
-        override fun getPageSource(): PageSource  = PageSource.Play(channelId)
+        override fun getPageSource(): PageSource = PageSource.Play(channelId)
         override fun onCommentDismissed() {
             playViewModel.submitAction(CommentVisibilityAction(isOpen = false))
         }
@@ -451,10 +451,6 @@ class PlayUserInteractionFragment @Inject constructor(
 
     override fun onShareIconClick(view: ShareExperienceViewComponent) {
         playViewModel.submitAction(ClickShareAction)
-    }
-
-    override fun onShareOpenBottomSheet(view: ShareExperienceViewComponent) {
-        playViewModel.submitAction(ShowShareExperienceAction)
     }
 
     override fun onShareOptionClick(view: ShareExperienceViewComponent, shareModel: ShareModel) {
@@ -1025,7 +1021,6 @@ class PlayUserInteractionFragment @Inject constructor(
                     }
                     RemindToLikeEvent -> likeView.playReminderAnimation()
                     is PreloadLikeBubbleIconEvent -> likeBubbleView.preloadIcons(event.urls)
-                    is SaveTemporarySharingImage -> shareExperienceView?.saveTemporaryImage(event.imageUrl)
                     is OpenSharingOptionEvent -> {
                         shareExperienceView?.showSharingOptions(event.title, event.coverUrl, event.userId, event.channelId)
                     }

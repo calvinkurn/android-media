@@ -108,9 +108,6 @@ class ShareExperienceViewComponent(
                 universalShareBottomSheet.apply {
                     imageSaved(imgSaveFilePath)
                 }
-                withContext(dispatchers.main) {
-                    listener.onShareOpenBottomSheet(this@ShareExperienceViewComponent)
-                }
             } else {
                 withContext(dispatchers.main) {
                     listener.onHandleShareFallback(this@ShareExperienceViewComponent)
@@ -198,7 +195,6 @@ class ShareExperienceViewComponent(
 
     interface Listener {
         fun onShareIconClick(view: ShareExperienceViewComponent)
-        fun onShareOpenBottomSheet(view: ShareExperienceViewComponent)
         fun onShareOptionClick(view: ShareExperienceViewComponent, shareModel: ShareModel)
         fun onShareOptionClosed(view: ShareExperienceViewComponent)
         fun onScreenshotTaken(view: ShareExperienceViewComponent)

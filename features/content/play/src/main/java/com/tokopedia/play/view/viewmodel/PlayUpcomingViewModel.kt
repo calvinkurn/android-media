@@ -33,7 +33,6 @@ import com.tokopedia.play.view.uimodel.action.ExpandDescriptionUpcomingAction
 import com.tokopedia.play.view.uimodel.action.OpenUpcomingPageResultAction
 import com.tokopedia.play.view.uimodel.action.PlayUpcomingAction
 import com.tokopedia.play.view.uimodel.action.ScreenshotTakenUpcomingAction
-import com.tokopedia.play.view.uimodel.action.ShowShareExperienceUpcomingAction
 import com.tokopedia.play.view.uimodel.action.TapCover
 import com.tokopedia.play.view.uimodel.action.UpcomingTimerFinish
 import com.tokopedia.play.view.uimodel.event.PlayUpcomingUiEvent
@@ -53,7 +52,6 @@ import com.tokopedia.play_common.sse.PlayChannelSSEPageSource
 import com.tokopedia.play_common.sse.model.SSEAction
 import com.tokopedia.play_common.sse.model.SSECloseReason
 import com.tokopedia.play_common.sse.model.SSEResponse
-import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Job
@@ -262,8 +260,7 @@ class PlayUpcomingViewModel @Inject constructor(
             is ClickPartnerNameUpcomingAction -> handleClickPartnerName(action.appLink)
             is OpenUpcomingPageResultAction -> handleOpenPageResult(action.isSuccess, action.requestCode)
             CopyLinkUpcomingAction -> handleCopyLink()
-            ClickShareUpcomingAction -> handleClickShareIcon()
-            ShowShareExperienceUpcomingAction -> handleOpenSharingOption(false)
+            ClickShareUpcomingAction -> handleOpenSharingOption(false)
             ScreenshotTakenUpcomingAction -> handleOpenSharingOption(true)
             is ClickSharingOptionUpcomingAction -> handleSharingOption(action.shareModel)
             ExpandDescriptionUpcomingAction -> handleExpandText()
@@ -430,14 +427,6 @@ class PlayUpcomingViewModel @Inject constructor(
 
     private fun handleCopyLink() {
         viewModelScope.launch { copyLink() }
-    }
-
-    private fun handleClickShareIcon() {
-        viewModelScope.launch {
-            _uiEvent.emit(
-                PlayUpcomingUiEvent.SaveTemporarySharingImage(imageUrl = _channelDetail.value.channelInfo.coverUrl)
-            )
-        }
     }
 
     private fun handleOpenSharingOption(isScreenshot: Boolean) {
