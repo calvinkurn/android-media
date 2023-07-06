@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.chatbot.chatbot2.data.owocinvoice.DynamicOwocInvoicePojo
 import com.tokopedia.chatbot.databinding.ItemChatbotDynamicOwocBinding
 import com.tokopedia.chatbot.databinding.ItemChatbotOwocInvoiceBinding
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.utils.view.binding.viewBinding
 
 class DynamicOwocInvoiceListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -19,8 +20,9 @@ class DynamicOwocInvoiceListViewHolder(itemView: View) : RecyclerView.ViewHolder
                 textShopName.text = shopName
                 textProductName.text = productName
                 textProductDescription.text = productDescription
+                if (shopBadgeImageUrl?.isEmpty() == true)
+                    shopBadge.hide()
             }
-
         }
     }
 }

@@ -7,9 +7,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.chat_common.util.ChatLinkHandlerMovementMethod
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandlerListener
 import com.tokopedia.chatbot.R
+import com.tokopedia.chatbot.chatbot2.data.owocinvoice.DynamicOwocInvoicePojo
+import com.tokopedia.chatbot.chatbot2.view.adapter.ChatbotDynamicOwocInvoiceAdapter
 import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.BaseChatBotViewHolder
 import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.listener.ChatbotDynamicOwocListener
-import com.tokopedia.chatbot.chatbot2.view.adapter.ChatbotDynamicOwocInvoiceAdapter
 import com.tokopedia.chatbot.chatbot2.view.uimodel.dynamicattachment.DynamicOwocInvoiceUiModel
 import com.tokopedia.chatbot.chatbot2.view.util.generateLeftMessageBackground
 import com.tokopedia.chatbot.chatbot2.view.util.helper.ChatbotMessageViewHolderBinder
@@ -18,43 +19,74 @@ import com.tokopedia.chatbot.util.setContainerBackground
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.utils.view.binding.viewBinding
-import kotlinx.android.synthetic.main.item_chatbot_read_more_action_bubble.view.*
 
 class DynamicOwocInvoiceViewHolder(
     itemView: View,
     private val listener: ChatbotDynamicOwocListener,
-    private val chatLinkHandlerListener: ChatLinkHandlerListener,
+    private val chatLinkHandlerListener: ChatLinkHandlerListener
 ) : BaseChatBotViewHolder<DynamicOwocInvoiceUiModel>(itemView) {
 
     private var binding: ItemChatbotDynamicOwocBinding? by viewBinding()
 
     private val movementMethod = ChatLinkHandlerMovementMethod(chatLinkHandlerListener)
     private var invoiceAdapter: ChatbotDynamicOwocInvoiceAdapter? = null
+    private var showSeeAll: Boolean = true
+    private var modifiedInvoiceList: List<DynamicOwocInvoicePojo.InvoiceCardOwoc>? = emptyList()
 
     override fun bind(uiModel: DynamicOwocInvoiceUiModel) {
         super.bind(uiModel)
-
         verifyReplyTime(uiModel)
-        binding?.customChatLayout?.showTimeStamp(false)
-        binding?.customChatLayout?.background = null
-        binding?.mainParent?.setContainerBackground(bindBackground())
         ChatbotMessageViewHolderBinder.bindChatMessage(
             uiModel.message,
             customChatLayout,
             movementMethod
         )
-    //    ChatbotMessageViewHolderBinder.bindHourTextView(uiModel, binding?.tvTime)
 
         binding?.apply {
-            customChatLayout.message?.text = uiModel.message
-            initializeAdapter(uiModel)
-            btnReadMore.readMoreOptions.text = "Test"
-            val size = uiModel.invoiceList?.size ?: 0
-
-            if (size>2)
+            customChatLayout.apply {
+                showTimeStamp(false)
+                background = null
+                message?.text = uiModel.message
+            }
+            mainParent?.setContainerBackground(bindBackground())
+            invoiceAdapter = ChatbotDynamicOwocInvoiceAdapter(listener)
+            setUpReadMoreButtonClickListener(uiModel)
+            if ((uiModel.invoiceList?.size ?: 0) > INVOICE_LIST_SIZE) {
+                showSeeAll = true
+                setupReadMoreButton()
                 btnReadMore.root.show()
-            else
+                modifiedInvoiceList = uiModel.invoiceList?.take(INVOICE_LIST_SIZE)
+                initializeAdapter(modifiedInvoiceList)
+            } else {
+                showSeeAll = false
                 btnReadMore.root.hide()
+                initializeAdapter(uiModel.invoiceList)
+            }
+        }
+    }
+
+    private fun ItemChatbotDynamicOwocBinding.setUpReadMoreButtonClickListener(uiModel: DynamicOwocInvoiceUiModel) {
+        btnReadMore.root.setOnClickListener {
+            if (showSeeAll) {
+                modifiedInvoiceList = uiModel.invoiceList?.take(INVOICE_LIST_SIZE)
+                initializeAdapter(modifiedInvoiceList)
+            } else {
+                initializeAdapter(uiModel.invoiceList)
+            }
+            setupReadMoreButton()
+            showSeeAll = !showSeeAll
+        }
+    }
+
+    private fun ItemChatbotDynamicOwocBinding.setupReadMoreButton() {
+        if (showSeeAll) {
+            btnReadMore.readMoreOptions.text =
+                itemView.context.resources.getString(R.string.chatbot_invoice_owoc_see_all)
+            btnReadMore.arrowUpDown.setImageResource(com.tokopedia.iconunify.R.drawable.iconunify_chevron_down)
+        } else {
+            btnReadMore.readMoreOptions.text =
+                itemView.context.resources.getString(R.string.chatbot_invoice_owoc_hide)
+            btnReadMore.arrowUpDown.setImageResource(com.tokopedia.iconunify.R.drawable.iconunify_chevron_up)
         }
     }
 
@@ -66,16 +98,12 @@ class DynamicOwocInvoiceViewHolder(
         )
     }
 
-    private fun ItemChatbotDynamicOwocBinding.initializeAdapter(uiModel: DynamicOwocInvoiceUiModel) {
-        invoiceAdapter = ChatbotDynamicOwocInvoiceAdapter(listener)
-
+    private fun ItemChatbotDynamicOwocBinding.initializeAdapter(invoiceList: List<DynamicOwocInvoicePojo.InvoiceCardOwoc>?) {
         rvInvoiceList.apply {
             layoutManager = LinearLayoutManager(context)
-            //TODO change this one
-            if (uiModel.invoiceList != null) {
-                invoiceAdapter?.setList(uiModel.invoiceList!!)
+            if (invoiceList != null) {
+                invoiceAdapter?.setList(invoiceList)
             }
-
             adapter = invoiceAdapter
         }
     }
@@ -83,5 +111,6 @@ class DynamicOwocInvoiceViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_chatbot_dynamic_owoc
+        const val INVOICE_LIST_SIZE = 2
     }
 }

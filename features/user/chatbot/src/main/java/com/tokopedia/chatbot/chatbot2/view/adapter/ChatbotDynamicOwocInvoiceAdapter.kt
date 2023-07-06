@@ -37,10 +37,9 @@ class ChatbotDynamicOwocInvoiceAdapter(
         return data.size
     }
 
-    //TODO change this one
     fun setList(invoiceList: List<DynamicOwocInvoicePojo.InvoiceCardOwoc>) {
         data.clear()
         data.addAll(invoiceList)
-        notifyDataSetChanged()
+        notifyItemRangeInserted(0, invoiceList.size)
     }
 }
