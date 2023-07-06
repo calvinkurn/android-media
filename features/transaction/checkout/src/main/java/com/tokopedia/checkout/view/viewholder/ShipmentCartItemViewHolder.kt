@@ -516,7 +516,7 @@ class ShipmentCartItemViewHolder(
                     binding.itemShipmentAddonProductBundling.llAddonProductItems.visible()
                     val addOnView = ItemShipmentAddonProductItemBinding.inflate(layoutInflater, null, false)
                     addOnView.apply {
-                        cbAddonItem.isChecked = (addon.addOnDataStatus == 1)
+                        cbAddonItem.isChecked = (addon.addOnDataStatus == ADD_ON_PRODUCT_STATUS_CHECK)
                         cbAddonItem.setOnCheckedChangeListener { compoundButton, isChecked ->
                             listener?.onCheckboxAddonProductListener(isChecked, addon, cartItemModel, bindingAdapterPosition)
                         }

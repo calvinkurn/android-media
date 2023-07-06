@@ -1528,6 +1528,26 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                 url
             )
         }
+
+        override fun onClickSeeAllAddOnProductService(product: OrderProduct, addOnsProductData: AddOnsProductDataModel) {
+            // tokopedia://addon/2148784281/?cartId=123123&selectedAddonIds=111,222,333&source=cart&warehouseId=789789&isTokocabang=false
+            val productId = product.productId
+            val cartId = product.productId
+            val addOnIds = arrayListOf<String>()
+            addOnsProductData.data.forEach { addOnItem ->
+                if (addOnItem.status == AddOnConstant.ADD_ON_PRODUCT_STATUS_CHECK) {
+                    addOnIds.add(addOnItem.id)
+                }
+            }
+            val warehouseId = product.warehouseId
+            val isTokoCabang = product.isFulfillment
+            val applink = "tokopedia://addon/" + productId + "/?cartId=" + cartId +
+                "&selectedAddonIds=" + addOnIds.toString() + "&source=cart&warehouseId=" + warehouseId + "&isTokocabang=" + isTokoCabang
+            println("++ applink = " + applink)
+            activity?.let {
+                RouteManager.route(it, applink)
+            }
+        }
     }
 
     private fun getOrderPreferenceCardListener(): OrderPreferenceCard.OrderPreferenceCardListener = object : OrderPreferenceCard.OrderPreferenceCardListener {
