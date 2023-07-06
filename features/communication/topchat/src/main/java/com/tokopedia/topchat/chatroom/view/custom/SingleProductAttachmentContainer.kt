@@ -66,6 +66,7 @@ class SingleProductAttachmentContainer : ConstraintLayout {
     private var productColorVariant: LinearLayout? = null
     private var productColorVariantValue: Typography? = null
     private var productSizeVariant: LinearLayout? = null
+    private var productVariantSize: Typography? = null
     private var campaignDiscount: Label? = null
     private var campaignPrice: Typography? = null
     private var price: Typography? = null
@@ -163,6 +164,7 @@ class SingleProductAttachmentContainer : ConstraintLayout {
         productColorVariant = findViewById(R.id.ll_variant_color)
         productColorVariantValue = findViewById(R.id.tv_variant_color)
         productSizeVariant = findViewById(R.id.ll_variant_size)
+        productVariantSize = findViewById(R.id.tv_variant_size)
         campaignDiscount = findViewById(R.id.tv_campaign_discount)
         campaignPrice = findViewById(R.id.tv_campaign_price)
         price = findViewById(R.id.tv_price)
@@ -364,7 +366,7 @@ class SingleProductAttachmentContainer : ConstraintLayout {
         showVariantLayout()
         if (product.hasColorVariant()) {
             productColorVariant?.show()
-            productColorVariantValue?.text = ellipsizeLongText(
+            productVariantSize?.text = ellipsizeLongText(
                 product.colorVariant, MAX_VARIANT_LABEL_CHAR
             )
         } else {
