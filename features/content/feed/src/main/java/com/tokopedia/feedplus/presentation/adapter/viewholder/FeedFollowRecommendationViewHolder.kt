@@ -34,6 +34,7 @@ class FeedFollowRecommendationViewHolder(
         binding.rvFollowRecommendation.layoutManager = layoutManager
         binding.rvFollowRecommendation.addItemDecoration(FeedFollowProfileItemDecoration(itemView.context))
         snapHelper.attachToRecyclerView(binding.rvFollowRecommendation)
+        binding.rvFollowRecommendation.adapter = profileAdapter
     }
 
     override fun bind(element: FeedFollowRecommendationModel?) {
@@ -49,9 +50,6 @@ class FeedFollowRecommendationViewHolder(
     }
 
     private fun setupProfileList(model: FeedFollowRecommendationModel) {
-        if (binding.rvFollowRecommendation.adapter == null)
-            binding.rvFollowRecommendation.adapter = profileAdapter
-
         val mappedList = model.data.map {
             FeedFollowProfileAdapter.Model.Profile(data = it)
         }
