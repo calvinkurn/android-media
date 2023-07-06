@@ -18,7 +18,6 @@ import com.tokopedia.tkpd.flashsale.presentation.detail.DummyDataHelper
 import com.tokopedia.tkpd.flashsale.presentation.manageproductlist.adapter.item.FlashSaleManageProductListItem
 import com.tokopedia.tkpd.flashsale.presentation.manageproductlist.uimodel.FlashSaleManageProductListUiEffect
 import com.tokopedia.tkpd.flashsale.presentation.manageproductlist.uimodel.FlashSaleManageProductListUiEvent
-import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.unit.test.rule.UnconfinedTestRule
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
@@ -208,7 +207,6 @@ class FlashSaleManageProductListViewModelTest {
             assert(viewModel.uiState.first().listDelegateItem.size != mockCurrentReservedProductData.products.size)
         }
     }
-
 
     @Test
     fun `When delete product from reservation success with current product list is not empty and deleted product not matched, then product list should be the same`() {
@@ -423,7 +421,6 @@ class FlashSaleManageProductListViewModelTest {
         }
     }
 
-
     @Test
     fun `When UpdateProductData with empty current product list, then current product list should be empty`() {
         testCoroutineRule.runTest {
@@ -442,10 +439,10 @@ class FlashSaleManageProductListViewModelTest {
         runBlockingTest {
             val mockUpdatedProductData = ReservedProduct.Product(
                 productId = 12352,
-                name = "test",
+                name = "test"
             )
             val mockCurrentReservedProductData = getMockedDiscountedReservedProductDataWithParentAndChild()
-            getReservedProductList( mockCurrentReservedProductData)
+            getReservedProductList(mockCurrentReservedProductData)
             viewModel.processEvent(
                 FlashSaleManageProductListUiEvent.UpdateProductData(
                     mockUpdatedProductData
@@ -458,7 +455,7 @@ class FlashSaleManageProductListViewModelTest {
     }
 
     @Test
-    fun `When rollence value list data is provided, then should get success ticker list result `() {
+    fun `When rollence value list data is provided, then should get success ticker list result & show ticker`() {
         runBlockingTest {
             val tickerListData = listOf(
                 RemoteTicker(
@@ -491,7 +488,9 @@ class FlashSaleManageProductListViewModelTest {
                 )
             )
 
-
+            val emittedValue = viewModel.uiState.first()
+            Assert.assertEquals(true, emittedValue.showTicker)
+            assert(emittedValue.tickerList.isNotEmpty())
         }
     }
 
@@ -500,7 +499,7 @@ class FlashSaleManageProductListViewModelTest {
         runBlockingTest {
             val mockUpdatedProductData = ReservedProduct.Product(
                 productId = 5,
-                name = "test",
+                name = "test"
             )
             val mockCurrentReservedProductData = getMockedDiscountedReservedProductDataWithParentAndChild()
             getReservedProductList(mockCurrentReservedProductData)
@@ -805,5 +804,4 @@ class FlashSaleManageProductListViewModelTest {
         )
         advanceUntilIdle()
     }
-
 }

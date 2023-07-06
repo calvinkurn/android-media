@@ -41,7 +41,6 @@ class FlashSaleContainerViewModel @Inject constructor(
 
     sealed class UiEvent {
         object GetPrerequisiteData : UiEvent()
-//        object DismissMultiLocationTicker : UiEvent()
     }
 
     sealed class UiEffect {
