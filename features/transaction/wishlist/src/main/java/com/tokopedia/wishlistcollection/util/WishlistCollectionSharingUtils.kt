@@ -20,7 +20,7 @@ import com.tokopedia.universal_sharing.tracker.PageType
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
-import com.tokopedia.universal_sharing.view.model.AffiliatePDPInput
+import com.tokopedia.universal_sharing.view.model.AffiliateInput
 import com.tokopedia.universal_sharing.view.model.PageDetail
 import com.tokopedia.universal_sharing.view.model.Product
 import com.tokopedia.universal_sharing.view.model.ShareModel
@@ -173,7 +173,7 @@ class WishlistCollectionSharingUtils {
 
     private fun createShareInput(
         collectionId: String
-    ): AffiliatePDPInput {
+    ): AffiliateInput {
         val pageDetail = PageDetail(
             pageId = collectionId,
             pageType = PageType.WISHLIST.value,
@@ -181,7 +181,7 @@ class WishlistCollectionSharingUtils {
             verticalId = VERTICAL_ID
         )
 
-        return AffiliatePDPInput(
+        return AffiliateInput(
             pageDetail = pageDetail,
             pageType = PageType.WISHLIST.value,
             product = Product(),
@@ -190,7 +190,6 @@ class WishlistCollectionSharingUtils {
     }
 
     companion object {
-        private const val WISHLIST_COLLECTION = "WISHLIST_COLLECTION"
         private const val PRODUCT_COUNT_2 = 2
         private const val PRODUCT_COUNT_3 = 3
         private const val PRODUCT_COUNT_4 = 4
