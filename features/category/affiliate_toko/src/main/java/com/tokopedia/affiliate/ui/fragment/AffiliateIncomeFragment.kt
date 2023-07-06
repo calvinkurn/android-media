@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
@@ -408,7 +407,7 @@ class AffiliateIncomeFragment :
             val iconBuilder = IconBuilder()
             if (isAffiliateNCEnabled()) {
                 iconBuilder.addIcon(IconList.ID_NOTIFICATION, disableRouteManager = true) {
-                affiliateIncomeViewModel?.resetNotificationCount()
+                    affiliateIncomeViewModel?.resetNotificationCount()
                     sendNotificationClickEvent()
                     RouteManager.route(
                         context,
@@ -457,8 +456,11 @@ class AffiliateIncomeFragment :
                 AffiliateAnalytics.CategoryKeys.AFFILIATE_PENDAPATAN_PAGE,
                 ""
             )
-            AffiliateBottomDatePicker.newInstance(affiliateIncomeViewModel?.getSelectedDate()
-                    ?: AffiliateBottomDatePicker.THIRTY_DAYS, this)
+            AffiliateBottomDatePicker.newInstance(
+                affiliateIncomeViewModel?.getSelectedDate()
+                    ?: AffiliateBottomDatePicker.THIRTY_DAYS,
+                this
+            )
                 .show(
                     childFragmentManager,
                     ""
@@ -582,5 +584,7 @@ class AffiliateIncomeFragment :
         return AffiliateIncomeViewModel::class.java
     }
 
-    override fun setViewModel(viewModel: BaseViewModel) = Unit
+    override fun setViewModel(viewModel: BaseViewModel) {
+        affiliateIncomeViewModel = viewModel as AffiliateIncomeViewModel
+    }
 }
