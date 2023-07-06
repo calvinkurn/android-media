@@ -30,7 +30,7 @@ class FakeTopchatCacheManager(
         cacheMap[stateCacheKey] = value
     }
 
-    override fun getPreviousState(stateCacheKey: String): Boolean {
+    override fun getPreviousState(stateCacheKey: String, defaultValue: Boolean): Boolean {
         return cacheMap[stateCacheKey] as? Boolean ?: isPreviousLoadSuccess
     }
 

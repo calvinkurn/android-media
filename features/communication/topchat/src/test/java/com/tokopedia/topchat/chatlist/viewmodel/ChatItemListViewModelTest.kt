@@ -1,7 +1,6 @@
 package com.tokopedia.topchat.chatlist.viewmodel
 
 import android.content.Context
-import android.content.SharedPreferences
 import android.os.Build
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
@@ -38,6 +37,7 @@ import com.tokopedia.topchat.chatlist.view.viewmodel.ChatItemListViewModel.Compa
 import com.tokopedia.topchat.chatlist.view.widget.BroadcastButtonLayout.Companion.BROADCAST_FAB_LABEL_PREF_NAME
 import com.tokopedia.topchat.chatroom.view.uimodel.ReplyParcelableModel
 import com.tokopedia.topchat.common.domain.MutationMoveChatToTrashUseCase
+import com.tokopedia.topchat.common.network.TopchatCacheManager
 import com.tokopedia.topchat.common.util.Utils
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.unit.test.rule.UnconfinedTestRule
@@ -80,10 +80,12 @@ class ChatItemListViewModelTest {
     private val moveChatToTrashUseCase: MutationMoveChatToTrashUseCase = mockk(relaxed = true)
     private val operationalInsightUseCase: GetOperationalInsightUseCase = mockk(relaxed = true)
     private val getChatListTickerUseCase: GetChatListTickerUseCase = mockk(relaxed = true)
-    private val sharedPref: SharedPreferences = mockk(relaxed = true)
 
     @RelaxedMockK
     lateinit var getChatBlastSellerMetaDataUseCase: GetChatBlastSellerMetaDataUseCase
+
+    @RelaxedMockK
+    lateinit var cacheManager: TopchatCacheManager
 
     private val mutateChatListObserver: Observer<Result<ChatListPojo>> = mockk(relaxed = true)
     private val deleteChatObserver: Observer<Result<ChatDelete>> = mockk(relaxed = true)
@@ -109,7 +111,7 @@ class ChatItemListViewModelTest {
             operationalInsightUseCase,
             getChatListTickerUseCase,
             getChatBlastSellerMetaDataUseCase,
-            sharedPref,
+            cacheManager,
             userSession,
             CoroutineTestDispatchersProvider
         )
@@ -991,7 +993,7 @@ class ChatItemListViewModelTest {
             operationalInsightUseCase(any())
         } returns expectedResponse
         every {
-            sharedPref.getLong(any(), any())
+            cacheManager.getLongCache(any(), any())
         } returns 0
 
         // When
@@ -1011,7 +1013,7 @@ class ChatItemListViewModelTest {
             operationalInsightUseCase(any())
         } returns expectedResponse
         every {
-            sharedPref.getLong(any(), any())
+            cacheManager.getLongCache(any(), any())
         } returns Long.MAX_VALUE
 
         // When
@@ -1133,7 +1135,7 @@ class ChatItemListViewModelTest {
         mockkObject(Utils)
         val expectedTimeMillis: Long = 1
         every {
-            sharedPref.getLong(any(), any())
+            cacheManager.getLongCache(any(), any())
         } returns expectedTimeMillis
         every {
             Utils.getNextParticularDay(any())
@@ -1141,7 +1143,7 @@ class ChatItemListViewModelTest {
 
         // When
         viewModel.saveNextMondayDate()
-        val result = sharedPref.getLong(OPERATIONAL_INSIGHT_NEXT_MONDAY, 0)
+        val result = cacheManager.getLongCache(OPERATIONAL_INSIGHT_NEXT_MONDAY, 0)
 
         // Then
         assertEquals(
@@ -1155,7 +1157,7 @@ class ChatItemListViewModelTest {
         // Given
         setFinalStatic(Build.VERSION::class.java.getField(SDK_INT), 30)
         every {
-            sharedPref.getBoolean(any(), any())
+            cacheManager.getPreviousState(any(), any())
         } returns true
 
         // When
@@ -1170,7 +1172,7 @@ class ChatItemListViewModelTest {
         // Given
         setFinalStatic(Build.VERSION::class.java.getField(SDK_INT), 29)
         every {
-            sharedPref.getBoolean(any(), any())
+            cacheManager.getPreviousState(any(), any())
         } returns true
 
         // When
@@ -1185,7 +1187,7 @@ class ChatItemListViewModelTest {
         // Given
         setFinalStatic(Build.VERSION::class.java.getField(SDK_INT), 30)
         every {
-            sharedPref.getBoolean(any(), any())
+            cacheManager.getPreviousState(any(), any())
         } returns false
 
         // When
@@ -1200,7 +1202,7 @@ class ChatItemListViewModelTest {
         // Given
         setFinalStatic(Build.VERSION::class.java.getField(SDK_INT), 29)
         every {
-            sharedPref.getBoolean(any(), any())
+            cacheManager.getPreviousState(any(), any())
         } returns false
 
         // When
@@ -1215,7 +1217,7 @@ class ChatItemListViewModelTest {
         // Given
         setFinalStatic(Build.VERSION::class.java.getField(SDK_INT), 30)
         every {
-            sharedPref.getBoolean(any(), any())
+            cacheManager.getPreviousState(any(), any())
         } returns false
 
         // When
@@ -1230,31 +1232,11 @@ class ChatItemListViewModelTest {
     fun should_show_broadcast_fab_new_label_when_cache_true() {
         // Given
         every {
-            sharedPref.getBoolean(any(), any())
+            cacheManager.getPreviousState(any(), any())
         } returns true
 
         // When
-        val result = viewModel.getBooleanCache(
-            BROADCAST_FAB_LABEL_PREF_NAME,
-            false
-        )
-
-        // Then
-        assertEquals(result, true)
-    }
-
-    @Test
-    fun should_show_broadcast_fab_new_label_when_cache_not_found() {
-        // Given
-        every {
-            sharedPref.getBoolean(any(), any())
-        } returns true
-
-        // When
-        val result = viewModel.getBooleanCache(
-            BROADCAST_FAB_LABEL_PREF_NAME,
-            false
-        )
+        val result = viewModel.getBooleanCache(BROADCAST_FAB_LABEL_PREF_NAME)
 
         // Then
         assertEquals(result, true)
@@ -1264,18 +1246,18 @@ class ChatItemListViewModelTest {
     fun test_save_broadcast_fab() {
         // Given
         every {
-            sharedPref.getBoolean(any(), any())
-        } returns false
+            cacheManager.getPreviousState(any(), any())
+        } returns true
 
         // When
         viewModel.saveBooleanCache(
             BROADCAST_FAB_LABEL_PREF_NAME,
-            false
+            true
         )
         val result = viewModel.getBooleanCache(BROADCAST_FAB_LABEL_PREF_NAME)
 
         // Then
-        assertEquals(result, false)
+        assertEquals(result, true)
     }
 
     // Mock the OS Build Version

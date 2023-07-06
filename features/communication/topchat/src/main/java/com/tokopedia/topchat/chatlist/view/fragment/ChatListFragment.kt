@@ -323,7 +323,7 @@ class ChatListFragment :
         if (shouldShowBroadcastFabNewLabel()) {
             chatItemListViewModel.saveBooleanCache(
                 cacheName = BROADCAST_FAB_LABEL_PREF_NAME,
-                value = true
+                value = false
             )
             broadCastButton?.toggleBroadcastLabel(
                 shouldShowLabel = false
@@ -336,7 +336,7 @@ class ChatListFragment :
             BROADCAST_FAB_LABEL_PREF_NAME
         )
         val rollenceValue = getRollenceValue(BROADCAST_FAB_LABEL_ROLLENCE_KEY)
-        return !labelCache && rollenceValue
+        return labelCache && rollenceValue
     }
 
     private fun initView(view: View) {
@@ -472,7 +472,8 @@ class ChatListFragment :
                         chatListAnalytics.clickChatDriverTicker(getRoleStr())
                     }
                 }
-                RouteManager.route(it, applink)
+                val intent = RouteManager.getIntent(it, applink)
+                startActivity(intent)
             }
         }
     }

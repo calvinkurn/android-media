@@ -452,7 +452,7 @@ class ChatItemListViewModel @Inject constructor(
     }
 
     fun getBooleanCache(cacheName: String): Boolean {
-        return cacheManager.getPreviousState(cacheName)
+        return cacheManager.getPreviousState(cacheName, true)
     }
 
     companion object {

@@ -198,7 +198,7 @@ class ChatListActivityTest : ChatListTest() {
         chatListUseCase.response = exSize5ChatListPojo
         userSession.setIsShopOwner(true)
         setLastSeenTab(isSellerTab = true)
-        setLabelNew(false)
+        setLabelNew(true)
         setRollenceLabelNew(true)
 
         // When
@@ -212,7 +212,7 @@ class ChatListActivityTest : ChatListTest() {
         }
 
         // Clean-up
-        setLabelNew(true)
+        setLabelNew(false)
         setRollenceLabelNew(false)
     }
 
@@ -222,7 +222,7 @@ class ChatListActivityTest : ChatListTest() {
         chatListUseCase.response = exSize5ChatListPojo
         userSession.setIsShopOwner(true)
         setLastSeenTab(isSellerTab = true)
-        setLabelNew(true)
+        setLabelNew(false)
         setRollenceLabelNew(true)
 
         // When
