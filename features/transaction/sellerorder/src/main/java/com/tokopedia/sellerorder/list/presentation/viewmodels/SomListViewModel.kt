@@ -535,7 +535,6 @@ class SomListViewModel @Inject constructor(
                 val result = somListGetFilterListUseCase.executeOnBackground()
                 result.mergeWithCurrent(getOrderListParams, tabActiveFromAppLink, isFirstPageOpened)
                 result.refreshOrder = refreshOrders
-                setTabActiveFromAppLink("")
                 _filterResult.value = Success(result)
             }
         }, onError = {

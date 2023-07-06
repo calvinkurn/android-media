@@ -2910,9 +2910,9 @@ open class SomListFragment :
                         val tabPosition =
                             somListOrderStatusFilterTab?.somListFilterUiModel?.statusList?.indexOfFirst { status -> status.key == highLightStatusKey }
                         if (tabPosition == -Int.ONE || tabPosition == null) return
-                        val tabLayoutViewPosition = somListBinding?.somListTabFilter?.tabLayout?.getChildAt(
+                        val tabLayoutViewPosition = somListBinding?.somListTabFilter?.tabLayout?.getTabAt(
                             tabPosition
-                        ) ?: return
+                        )?.view ?: return
 
                         val coachMarkItem = CoachMark2Item(
                             anchorView = tabLayoutViewPosition,
