@@ -84,7 +84,7 @@ class LastUpdatedView : LinearLayout {
             isSameDay -> {
                 context.getString(
                     R.string.shc_last_updated_same_day,
-                    DateTimeUtil.format(timeInMillis, DateTimeUtil.FORMAT_HH_MM)
+                    DateTimeUtil.format(timeInMillis, DateTimeUtil.FORMAT_HOUR_24)
                 )
             }
             isYesterday -> {

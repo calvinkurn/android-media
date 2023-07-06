@@ -1,5 +1,6 @@
 package com.tokopedia.contactus.inboxtickets.view.inbox
 
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.contactus.inboxtickets.data.model.InboxTicketListResponse
@@ -16,6 +17,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class InboxContactUsViewModel @Inject constructor(
@@ -75,8 +77,8 @@ class InboxContactUsViewModel @Inject constructor(
     }
 
     fun getTopBotStatus() {
-        launchCatchError(
-            block = {
+        launch {
+            try {
                 val topBotStatusResponse = topBotStatusUseCase(Unit)
                 val topBotStatusInbox = topBotStatusResponse.getTopBotStatusInbox()
                 if (topBotStatusInbox.getTopBotStatusData().isActive &&
@@ -91,12 +93,14 @@ class InboxContactUsViewModel @Inject constructor(
                     val isHasUnreadNotif =
                         topBotStatusResponse.getTopBotStatusInbox()
                             .getTopBotStatusData().unreadNotif
+                    val isChatbotActive = topBotStatusResponse.getTopBotStatusInbox().getTopBotStatusData().isChatbotActive
                     _uiState.update {
                         it.copy(
                             idMessage = messageId,
                             welcomeMessage = welcomeMessage,
                             unReadNotification = isHasUnreadNotif,
-                            showChatBotWidget = true
+                            showChatBotWidget = true,
+                            isChatbotActive = isChatbotActive ?: false
                         )
                     }
                 } else {
@@ -105,13 +109,13 @@ class InboxContactUsViewModel @Inject constructor(
                         errorMessageChatBotWidget = topBotStatusResponse.getErrorMessage()
                     )
                 }
-            },
-            onError = {
+            } catch (e: Exception) {
                 _uiState.value = InboxUiState(
-                    showChatBotWidget = false
+                    showChatBotWidget = false,
+                    exception = e
                 )
             }
-        )
+        }
     }
 
     fun restartPageOfList() {

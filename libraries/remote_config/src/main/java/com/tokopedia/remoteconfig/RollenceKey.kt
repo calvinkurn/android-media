@@ -29,7 +29,6 @@ object RollenceKey {
     const val HOME_COMPONENT_DYNAMIC_CHANNEL_HEADER_VARIANT = "header_variant"
     // end of home component rollence section
 
-
     // TBD
     const val EXPERIMENT_NAME_TOKOPOINT = "tokopoints_glmenu"
 
@@ -54,29 +53,25 @@ object RollenceKey {
     const val SEARCH_VIDEO_SNEAK_PEEK_AUTOPLAY_VARIANT = "experiment_variant"
     const val SEARCH_VIDEO_SNEAK_PEEK_AUTOPLAY_OTHER_VARIANT = "exp_variant"
 
+    // SRP Similar Search Coachmark
+    const val SEARCH_SIMILAR_SEARCH_COACHMARK = "coachmark_similar"
+    const val SEARCH_SIMILAR_SEARCH_COACHMARK_VARIANT = "experiment_variant"
+
     // Product Card Experiment
     const val PRODUCT_CARD_EXPERIMENT = "newcard1"
     const val PRODUCT_CARD_EXPERIMENT_GIMMICK = "gimmick"
     const val PRODUCT_CARD_EXPERIMENT_PORTRAIT = "portrait"
     const val PRODUCT_CARD_EXPERIMENT_ETA = "eta"
 
-    // Global Menu (Me Page)
-    const val ME_PAGE_EXP = "mepage_secondexp"
-    const val ME_PAGE_CONTROL = "control_variant"
-    const val ME_PAGE_VARIANT_1 = "Mepage_1"
-    const val ME_PAGE_VARIANT_2 = "Mepage_2"
-
     // PDP
     const val PDP_CAROUSEL_ANDROID = "pdp_carousel_android"
     const val PDP_SHOW_THUMBNAIL = "pdp_show_thumbnail"
     const val PDP_HIDE_THUMBNAIL = "pdp_hide_thumbnail"
-    const val PDP_SHOW_SHARE_AFFILIATE = "pdp_share_icon"
 
     // Review
     const val CREATE_REVIEW_REVIEW_INSPIRATION_EXPERIMENT_NAME = "review_inspiration"
 
     // Logistic
-    const val KEY_SHARE_ADDRESS_LOGI = "share_address_logi"
     const val KEY_ADDRESS_IMPROVEMENTS = "address_improvements"
 
     // Fulfillment
@@ -90,7 +85,14 @@ object RollenceKey {
 
     // TokopediaNOW
     const val TOKOPEDIA_NOW_AFFILIATE = "aff_now_att"
+    const val TOKOPEDIA_NOW_REPURCHASE = "now_repurchase"
 
-    //Feed
+    // Feed
     const val AB_TEST_IMMERSIVE_FEED = "immersive_feed"
+
+    // Tokochat Bubbles
+    const val TOKOCHAT_BUBBLES = "tokochat_bubble_chat"
+
+    // Share affiliate
+    const val AFFILIATE_SHARE_ICON = "ShareAff_pdpshop"
 }

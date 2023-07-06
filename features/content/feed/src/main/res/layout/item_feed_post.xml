@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/Unify_Static_Black">
 
-    <com.tokopedia.feedcomponent.util.NestedScrollableHost
+    <com.tokopedia.feedcomponent.util.FeedNestedScrollableHost
         android:id="@+id/scrollable_host"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -20,7 +20,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
-    </com.tokopedia.feedcomponent.util.NestedScrollableHost>
+    </com.tokopedia.feedcomponent.util.FeedNestedScrollableHost>
 
     <include
         android:id="@+id/overlay_top"
@@ -126,7 +126,9 @@
         app:layout_constraintBottom_toTopOf="@id/feed_campaign_ribbon"
         app:layout_constraintEnd_toEndOf="@id/layout_author_info"
         app:layout_constraintStart_toStartOf="@id/layout_author_info"
-        app:layout_constraintTop_toBottomOf="@id/tv_feed_caption" />
+        app:layout_constraintTop_toBottomOf="@id/tv_feed_caption"
+        tools:itemCount="3"
+        tools:listitem="@layout/item_asgc_label" />
 
     <include
         android:id="@+id/feed_campaign_ribbon"

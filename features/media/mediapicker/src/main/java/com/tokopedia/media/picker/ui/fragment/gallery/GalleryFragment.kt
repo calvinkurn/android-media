@@ -1,5 +1,8 @@
+@file:SuppressLint("NotifyDataSetChanged")
+
 package com.tokopedia.media.picker.ui.fragment.gallery
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -152,6 +155,9 @@ open class GalleryFragment @Inject constructor(
             uiModel.bucketId = id
 
             endlessScrollListener.resetState()
+            // force move to top every single bucketId has changed
+            binding?.lstMedia?.smoothScrollToPosition(0)
+
             viewModel.loadMedia(uiModel.bucketId)
         }
     }
@@ -206,12 +212,19 @@ open class GalleryFragment @Inject constructor(
         viewModel.medias.observe(viewLifecycleOwner) {
             if (it.isNotEmpty()) {
                 if (uiModel.hasChangeAlbum) {
-                    featureAdapter.setItemsAndAnimateChanges(it)
+                    featureAdapter.setItems(it)
 
-                    // force move to top every single bucketId has changed
-                    binding?.lstMedia?.smoothScrollToPosition(0)
+                    /*
+                     * since the initial state will reflect all items,
+                     * we have to notify for all data set.
+                     *
+                     * Since the gallery is pagination, hence the performance
+                     * wouldn't be impacted to this operation.
+                     */
+                    featureAdapter.notifyDataSetChanged()
                 } else {
-                    featureAdapter.addItemsAndAnimateChanges(it)
+                    featureAdapter.addItems(it)
+                    featureAdapter.notifyItemRangeInserted(featureAdapter.getItems().size, it.size)
                     endlessScrollListener.updateStateAfterGetData()
                 }
             }

@@ -22,7 +22,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
-            android:inflatedId="@+id/channel_title"
+            android:inflatedId="@+id/vsTitle"
             android:layout="@layout/partial_tokopedianow_view_stub_dc_title"
             app:layout_constraintBottom_toTopOf="@id/text_subtitle"
             app:layout_constraintStart_toStartOf="parent"

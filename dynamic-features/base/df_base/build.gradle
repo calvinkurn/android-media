@@ -1,7 +1,6 @@
 apply plugin: 'com.android.dynamic-feature'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 apply plugin: 'io.hansel.preprocessor.feature'
-apply plugin: 'robust'
 
 buildscript {
     repositories {
@@ -96,9 +95,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.productCardOptions)
 
     //Fintech
-//    implementation projectOrAar(rootProject.ext.features.ovoPayWithQr)
     implementation projectOrAar(rootProject.ext.features.wallet)
-//    implementation projectOrAar(rootProject.ext.features.ovop2p)
     implementation projectOrAar(rootProject.ext.features.paylater)
     implementation projectOrAar(rootProject.ext.features.insurance)
 
@@ -129,6 +126,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.pms)
     implementation projectOrAar(rootProject.ext.features.goPayKyc)
     implementation projectOrAar(rootProject.ext.features.withdraw)
+    implementation projectOrAar(rootProject.ext.features.thankYouNative)
 
     //Promo
     implementation projectOrAar(rootProject.ext.features.promoCheckout)

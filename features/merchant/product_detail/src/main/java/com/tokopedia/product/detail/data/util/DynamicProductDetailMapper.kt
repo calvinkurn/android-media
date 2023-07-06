@@ -27,10 +27,12 @@ import com.tokopedia.product.detail.common.data.model.pdplayout.Wholesale
 import com.tokopedia.product.detail.common.data.model.rates.ShipmentPlus
 import com.tokopedia.product.detail.common.data.model.rates.TokoNowParam
 import com.tokopedia.product.detail.common.data.model.rates.UserLocationRequest
+import com.tokopedia.product.detail.common.data.model.rates.WarehouseData
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.VariantChild
 import com.tokopedia.product.detail.common.getCurrencyFormatted
 import com.tokopedia.product.detail.common.mapper.AtcVariantMapper
+import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
 import com.tokopedia.product.detail.data.model.datamodel.ArButtonDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ContentWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
@@ -40,9 +42,11 @@ import com.tokopedia.product.detail.data.model.datamodel.GlobalBundlingDataModel
 import com.tokopedia.product.detail.data.model.datamodel.LoadingDataModel
 import com.tokopedia.product.detail.data.model.datamodel.MediaDataModel
 import com.tokopedia.product.detail.data.model.datamodel.OneLinersDataModel
+import com.tokopedia.product.detail.data.model.datamodel.OngoingCampaignDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductBundlingDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductCategoryCarouselDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductContentDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductContentMainData
 import com.tokopedia.product.detail.data.model.datamodel.ProductCustomInfoDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductCustomInfoTitleDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductDiscussionMostHelpfulDataModel
@@ -95,7 +99,7 @@ import com.tokopedia.universal_sharing.model.BoTypeImageGeneratorParam
 import com.tokopedia.universal_sharing.model.PdpParamModel
 import com.tokopedia.universal_sharing.model.PersonalizedCampaignModel
 import com.tokopedia.universal_sharing.tracker.PageType
-import com.tokopedia.universal_sharing.view.model.AffiliatePDPInput
+import com.tokopedia.universal_sharing.view.model.AffiliateInput
 import com.tokopedia.universal_sharing.view.model.Product
 import com.tokopedia.universal_sharing.view.model.Shop
 
@@ -172,6 +176,16 @@ object DynamicProductDetailMapper {
                 }
                 ProductDetailConstant.PRODUCT_CONTENT -> {
                     listOfComponent.add(ProductContentDataModel(type = component.type, name = component.componentName))
+                }
+                ProductDetailConstant.ONGOING_CAMPAIGN -> {
+                    val dataModel = mapToOngoingCampaignDataModel(
+                        type = component.type,
+                        name = component.componentName,
+                        data = component.componentData.firstOrNull()
+                    )
+                    if (dataModel != null) {
+                        listOfComponent.add(dataModel)
+                    }
                 }
                 ProductDetailConstant.MEDIA -> {
                     listOfComponent.add(ProductMediaDataModel(type = component.type, name = component.componentName))
@@ -415,7 +429,8 @@ object DynamicProductDetailMapper {
             variants = networkData.variants,
             children = networkData.children,
             maxFinalPrice = networkData.maxFinalPrice,
-            postAtcLayout = networkData.postAtcLayout
+            postAtcLayout = networkData.postAtcLayout,
+            landingSubText = networkData.landingSubText
         )
     }
 
@@ -614,7 +629,14 @@ object DynamicProductDetailMapper {
         return TokoNowParam(
             shopId = localData.shop_id,
             warehouseId = localData.warehouse_id,
-            serviceType = localData.service_type
+            serviceType = localData.service_type,
+            warehouses = localData.warehouses
+                .filter {
+                    it.warehouse_id != 0L
+                }
+                .map {
+                    WarehouseData(it.warehouse_id.toString(), it.service_type)
+                }
         )
     }
 
@@ -658,21 +680,26 @@ object DynamicProductDetailMapper {
         )
     }
 
-    fun generatePersonalizedData(product: DynamicProductInfoP1, startTime: Long) = PersonalizedCampaignModel(
-        product.data.campaign.campaignTypeName,
-        product.data.price.priceFmt,
-        product.data.campaign.campaignIdentifier == CampaignRibbon.THEMATIC_CAMPAIGN,
-        product.data.campaign.percentageAmount,
-        startTime,
-        product.data.campaign.endDateUnix.toLongOrZero()
-    )
+    fun generatePersonalizedData(product: DynamicProductInfoP1, productP2: ProductInfoP2UiData?): PersonalizedCampaignModel {
+        val upcomingCampaign = productP2?.upcomingCampaigns?.get(product.basic.productID)
+        val startTime = upcomingCampaign?.startDate.toLongOrZero()
+        return PersonalizedCampaignModel(
+            product.data.campaign.campaignTypeName,
+            upcomingCampaign?.campaignTypeName ?: "",
+            product.data.price.priceFmt,
+            product.data.campaign.campaignIdentifier == CampaignRibbon.THEMATIC_CAMPAIGN,
+            product.data.campaign.percentageAmount,
+            startTime,
+            product.data.campaign.endDateUnix.toLongOrZero()
+        )
+    }
 
     fun generateAffiliateShareData(
         productInfo: DynamicProductInfoP1,
         shopInfo: ShopInfo?,
         variantData: ProductVariant?
-    ): AffiliatePDPInput {
-        return AffiliatePDPInput(
+    ): AffiliateInput {
+        return AffiliateInput(
             pageType = PageType.PDP.value,
             product = Product(
                 productID = productInfo.basic.productID,
@@ -836,5 +863,28 @@ object DynamicProductDetailMapper {
 
     private fun isPlus(boType: Int): Boolean {
         return boType == BebasOngkirType.BO_PLUS.value || boType == BebasOngkirType.BO_PLUS_DT.value
+    }
+
+    private fun mapToOngoingCampaignDataModel(
+        type: String,
+        name: String,
+        data: ComponentData?
+    ): OngoingCampaignDataModel? {
+        if (data == null) return null
+
+        val mainData = ProductContentMainData(
+            campaign = data.campaign,
+            thematicCampaign = data.thematicCampaign,
+            cashbackPercentage = data.isCashback.percentage,
+            price = data.price,
+            stockWording = data.stock.stockWording,
+            isVariant = data.variant.isVariant,
+            productName = data.name
+        )
+        return OngoingCampaignDataModel(
+            type = type,
+            name = name,
+            data = mainData
+        )
     }
 }

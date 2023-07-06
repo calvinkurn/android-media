@@ -43,7 +43,6 @@ object ProductDetailConstant {
     const val REQUEST_CODE_REPORT = 570
     const val REQUEST_CODE_TOP_CHAT = 997
     const val REQUEST_CODE_SHOP_INFO = 998
-    const val REQUEST_CODE_IMAGE_PREVIEW = 999
 
     // Result
     const val SHOP_STATUS_FAVOURITE = "SHOP_STATUS_FAVOURITE"
@@ -86,6 +85,7 @@ object ProductDetailConstant {
     const val INFO_OBAT_KERAS = "info_obat_keras"
     const val VALUE_PROP = "value_prop"
     const val PRODUCT_CONTENT = "product_content"
+    const val ONGOING_CAMPAIGN = "ongoing_campaign"
     const val MEDIA = "product_media"
     const val TOP_ADS = "banner_ads"
     const val REPORT = "report"

@@ -9,6 +9,7 @@ import com.tokopedia.linter.detectors.DeprecatedResourceDetector
 import com.tokopedia.linter.detectors.DimenResourceValueDetector
 import com.tokopedia.linter.detectors.DimenUsageDetector
 import com.tokopedia.linter.detectors.GradientVectorDetector
+import com.tokopedia.linter.detectors.ImageUrlDeclarationDetector
 import com.tokopedia.linter.detectors.ResourceFragmentDetector
 import com.tokopedia.linter.detectors.ResourcePackageDetector
 import com.tokopedia.linter.detectors.SerializedNameAnnotationDetector
@@ -52,8 +53,9 @@ class IssueRegistry : IssueRegistry() {
             ResourceFragmentDetector.ISSUE,
             DimenUsageDetector.XML_ISSUE,
             UnsafeFragmentConstructorDetector.ISSUE,
-            UnsupportedNestColorDetector.JAVA_ISSUE,
+            ImageUrlDeclarationDetector.JAVA_ISSUE,
             UnsupportedNestColorDetector.XML_ISSUE,
+            UnsupportedNestColorDetector.JAVA_ISSUE,
             HANSEL_REQUIRED
         )
 

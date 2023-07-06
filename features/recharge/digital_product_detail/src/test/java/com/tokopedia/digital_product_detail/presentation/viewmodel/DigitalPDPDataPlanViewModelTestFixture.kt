@@ -15,6 +15,7 @@ import com.tokopedia.digital_product_detail.data.model.data.InputMultiTabDenomMo
 import com.tokopedia.digital_product_detail.data.model.data.SelectedProduct
 import com.tokopedia.digital_product_detail.data.model.data.TelcoFilterTagComponent
 import com.tokopedia.digital_product_detail.domain.repository.DigitalPDPTelcoRepository
+import com.tokopedia.recharge_component.model.denom.DenomWidgetModel
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationWidgetModel
 import com.tokopedia.recharge_component.result.RechargeNetworkResult
 import com.tokopedia.unit.test.rule.CoroutineTestRule
@@ -76,6 +77,18 @@ abstract class DigitalPDPDataPlanViewModelTestFixture {
     protected fun onGetRecommendation_thenReturn(error: Throwable) {
         coEvery {
             repo.getRecommendations(any(), any(), any(), any(), true)
+        } throws error
+    }
+
+    protected fun onGetMCCM_thenReturn(response: DenomWidgetModel) {
+        coEvery {
+            repo.getMCCMProducts(any(), any(), any(), any())
+        } returns response
+    }
+
+    protected fun onGetMCCM_thenReturn(error: Throwable) {
+        coEvery {
+            repo.getMCCMProducts(any(), any(), any(), any())
         } throws error
     }
 
@@ -147,6 +160,14 @@ abstract class DigitalPDPDataPlanViewModelTestFixture {
 
     protected fun verifyGetRecommendationRepoWasNotCalled() {
         coVerify { repo.getRecommendations(any(), any(), any(), any(), true) wasNot Called }
+    }
+
+    protected fun verifyGetMCCMRepoGetCalled() {
+        coVerify { repo.getMCCMProducts(any(), any(), any(), any()) }
+    }
+
+    protected fun verifyGetMCCMRepoWasNotCalled() {
+        coVerify { repo.getMCCMProducts(any(), any(), any(), any()) wasNot Called }
     }
 
     protected fun verifyGetFavoriteNumberChipsRepoGetCalled() {
@@ -345,6 +366,24 @@ abstract class DigitalPDPDataPlanViewModelTestFixture {
         Assert.assertNull(actualResponse)
     }
 
+    protected fun verifyGetMCCMSuccess(expectedResponse: DenomWidgetModel) {
+        val actualResponse = viewModel.mccmProductsData.value
+        Assert.assertEquals(
+            expectedResponse,
+            (actualResponse as RechargeNetworkResult.Success).data
+        )
+    }
+
+    protected fun verifyGetMCCMFail() {
+        val actualResponse = viewModel.mccmProductsData.value
+        Assert.assertTrue(actualResponse is RechargeNetworkResult.Fail)
+    }
+
+    protected fun verifyGetMCCMErrorCancellation() {
+        val actualResponse = viewModel.mccmProductsData.value
+        Assert.assertNull(actualResponse)
+    }
+
     protected fun verifyCheckoutPassDataUpdated(expectedResult: DigitalCheckoutPassData) {
         val actualResult = viewModel.digitalCheckoutPassData
         assertDigitalCheckoutPassDataEqual(expectedResult, actualResult)
@@ -436,6 +475,18 @@ abstract class DigitalPDPDataPlanViewModelTestFixture {
 
     protected fun verifyRecommendationJobIsCancelled() {
         Assert.assertTrue(viewModel.recommendationJob?.isCancelled == true)
+    }
+
+    protected fun verifyMCCMJobIsNull() {
+        Assert.assertNull(viewModel.mccmProductsJob)
+    }
+
+    protected fun verifyMCCMJobIsNotNull() {
+        Assert.assertNotNull(viewModel.mccmProductsJob)
+    }
+
+    protected fun verifyMCCMJobIsCancelled() {
+        Assert.assertTrue(viewModel.mccmProductsJob?.isCancelled == true)
     }
 
     protected fun verifyValidatorJobIsNull() {
