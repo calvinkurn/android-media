@@ -34,7 +34,6 @@ import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstant
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_WAREHOUSE_ID
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.CURRENT_SITE_TOKOPEDIA_MARKET_PLACE
-import com.tokopedia.tokopedianow.common.util.TrackerUtil.getTrackerPosition
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils.EVENT
 import com.tokopedia.track.TrackAppUtils.EVENT_ACTION
@@ -60,17 +59,17 @@ object TokoNowCommonAnalytics {
         return this
     }
 
-    fun onOpenScreen(isLoggedInStatus : Boolean, screenName: String, additionalMap: MutableMap<String, String>? = null) {
+    fun onOpenScreen(isLoggedInStatus: Boolean, screenName: String, additionalMap: MutableMap<String, String>? = null) {
         val map = mutableMapOf(
             Pair(EVENT, EVENT_OPEN_SCREEN),
-            Pair(KEY_IS_LOGGED_IN_STATUS, isLoggedInStatus.toString()),
+            Pair(KEY_IS_LOGGED_IN_STATUS, isLoggedInStatus.toString())
         )
         additionalMap?.apply {
             map.putAll(this)
         }
         hitCommonScreenTracker(
             screenName,
-            map,
+            map
         )
     }
 
@@ -149,10 +148,14 @@ object TokoNowCommonAnalytics {
     fun getDataLayer(event: String, action: String, category: String, label: String = "", trackerId: String = ""): MutableMap<String, Any> {
         return if (trackerId.isBlank()) {
             DataLayer.mapOf(
-                EVENT, event,
-                EVENT_ACTION, action,
-                EVENT_CATEGORY, category,
-                EVENT_LABEL, label,
+                EVENT,
+                event,
+                EVENT_ACTION,
+                action,
+                EVENT_CATEGORY,
+                category,
+                EVENT_LABEL,
+                label
             )
         } else {
             DataLayer.mapOf(
@@ -198,7 +201,7 @@ object TokoNowCommonAnalytics {
         price: String = ""
     ): Bundle = Bundle().apply {
         putString(KEY_DIMENSION_40, dimension40)
-        putString(KEY_INDEX, position.getTrackerPosition().toString())
+        putString(KEY_INDEX, position.toString())
         putString(KEY_ITEM_BRAND, itemBrand)
         putString(KEY_ITEM_CATEGORY, itemCategory)
         putString(KEY_ITEM_ID, itemId)
@@ -218,7 +221,7 @@ object TokoNowCommonAnalytics {
         quantity: Int = 0,
         shopId: String = "",
         shopName: String = "",
-        shopType: String = "",
+        shopType: String = ""
     ): Bundle = Bundle().apply {
         putString(KEY_CATEGORY_ID, categoryId)
         putString(KEY_ITEM_BRAND, itemBrand)

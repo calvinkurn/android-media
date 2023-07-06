@@ -250,7 +250,7 @@ class CategoryProductAdsTest : TokoNowCategoryMainViewModelTestFixture() {
             val expectedCategoryPage = listOf(expectedProductAdsCarousel)
 
             val expectedAtcTrackerData = CategoryAtcTrackerModel(
-                index = adsProductItem.index,
+                index = adsProductItem.position,
                 quantity = productQuantity,
                 shopId = adsProductItem.shopId,
                 shopName = adsProductItem.shopName,

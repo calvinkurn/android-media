@@ -1089,7 +1089,7 @@ class TokoNowCategoryFragment : BaseDaggerFragment(),
     private fun trackProductAdsAddToCart(model: CategoryAtcTrackerModel) {
         val title = getString(R.string.tokopedianow_product_ads_carousel_title)
         analytic.productAdsAnalytic.trackProductAddToCart(
-            index = model.index,
+            position = model.index,
             title = title,
             quantity = model.quantity,
             shopId = model.shopId,

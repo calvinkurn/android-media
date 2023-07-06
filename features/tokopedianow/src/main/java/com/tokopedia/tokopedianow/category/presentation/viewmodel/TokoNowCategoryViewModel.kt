@@ -512,7 +512,7 @@ class TokoNowCategoryViewModel @Inject constructor(
     private fun trackProductAdsAddToCart(product: ProductCardCompactUiModel, quantity: Int) {
         layout.findAdsProductCarousel(product.productId)?.let { item ->
             _atcDataTracker.postValue(CategoryAtcTrackerModel(
-                index = item.index,
+                index = item.position,
                 quantity = quantity,
                 shopId = item.shopId,
                 shopName = item.shopName,

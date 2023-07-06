@@ -41,7 +41,7 @@ abstract class ProductAdsCarouselAnalytics(private val userSession: UserSessionI
 
         val productItemsDataLayer = arrayListOf(
             TokoNowCommonAnalytics.productItemDataLayer(
-                position = position,
+                position = trackerPosition,
                 itemCategory = product.categoryBreadcrumbs,
                 itemId = product.getProductId(),
                 itemName = product.getProductName(),
@@ -77,7 +77,7 @@ abstract class ProductAdsCarouselAnalytics(private val userSession: UserSessionI
 
         val productItemsDataLayer = arrayListOf(
             TokoNowCommonAnalytics.productItemDataLayer(
-                position = position,
+                position = trackerPosition,
                 itemCategory = product.categoryBreadcrumbs,
                 itemId = product.getProductId(),
                 itemName = product.getProductName(),
@@ -104,7 +104,7 @@ abstract class ProductAdsCarouselAnalytics(private val userSession: UserSessionI
     }
 
     fun trackProductAddToCart(
-        index: Int,
+        position: Int,
         title: String,
         quantity: Int,
         shopId: String,
@@ -114,8 +114,7 @@ abstract class ProductAdsCarouselAnalytics(private val userSession: UserSessionI
         product: ProductCardCompactUiModel
     ) {
         val productId = product.productId
-        val trackerPosition = index.getTrackerPosition()
-        val eventLabel = "$title - $trackerPosition - $productId"
+        val eventLabel = "$title - $position - $productId"
 
         val productItemsDataLayer = arrayListOf(
             TokoNowCommonAnalytics.productItemDataLayer(

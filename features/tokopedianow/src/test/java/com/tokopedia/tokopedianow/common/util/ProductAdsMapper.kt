@@ -40,7 +40,7 @@ object ProductAdsMapper {
             val shop = item.shop
             val product = item.product
             ProductCardCompactCarouselItemUiModel(
-                index = index,
+                position = index + 1,
                 productCardModel = mapProductCardCompactUiModel(
                     product,
                     miniCartData,

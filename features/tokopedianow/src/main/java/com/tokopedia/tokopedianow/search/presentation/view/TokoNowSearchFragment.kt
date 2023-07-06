@@ -155,7 +155,7 @@ class TokoNowSearchFragment :
     ) {
         val title = getString(R.string.tokopedianow_product_ads_carousel_title)
         productAdsAnalytics.trackProductAddToCart(
-            index = productItemDataView.position,
+            position = productItemDataView.position,
             title = title,
             quantity = quantity,
             shopId = productItemDataView.shopId,

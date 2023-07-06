@@ -23,6 +23,8 @@ object ProductAdsMapper {
     private const val SHOP_TYPE_OS = "os"
     private const val SHOP_TYPE_PM = "pm"
 
+    private const val ADDITIONAL_POSITION = 1
+
     fun MutableList<Visitable<*>>.addProductAdsCarousel() {
         add(
             TokoNowAdsCarouselUiModel(
@@ -42,7 +44,7 @@ object ProductAdsMapper {
             val shop = item.shop
             val product = item.product
             ProductCardCompactCarouselItemUiModel(
-                index = index,
+                position = index + ADDITIONAL_POSITION,
                 productCardModel = mapProductCardCompactUiModel(
                     product,
                     miniCartData,
