@@ -22,7 +22,6 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.wishlist.data.model.WishlistV2BulkRemoveAdditionalParams
 import com.tokopedia.wishlist.data.model.WishlistV2RecommendationDataModel
 import com.tokopedia.wishlist.data.model.WishlistV2TypeLayoutData
-import com.tokopedia.wishlist.data.model.WishlistV2UiModel
 import com.tokopedia.wishlist.data.model.response.BulkDeleteWishlistV2Response
 import com.tokopedia.wishlist.data.model.response.DeleteWishlistProgressResponse
 import com.tokopedia.wishlist.domain.BulkDeleteWishlistV2UseCase
@@ -405,7 +404,7 @@ class WishlistCollectionDetailViewModel @Inject constructor(
     fun checkShouldCreateAffiliateCookieAtcProduct(
         affiliateUUID: String,
         affiliateChannel: String,
-        wishlistItemOnAtc: WishlistV2UiModel.Item
+        wishlistCollectionId: String
     ) {
         if (affiliateUUID.isNotEmpty()) {
             launchCatchError(block = {
@@ -418,7 +417,7 @@ class WishlistCollectionDetailViewModel @Inject constructor(
                     affiliateUUID = affiliateUUID,
                     affiliateChannel = affiliateChannel,
                     affiliatePageDetail = AffiliatePageDetail(
-                        pageId = wishlistItemOnAtc.wishlistId,
+                        pageId = wishlistCollectionId,
                         source = affiliateSource
                     )
                 )

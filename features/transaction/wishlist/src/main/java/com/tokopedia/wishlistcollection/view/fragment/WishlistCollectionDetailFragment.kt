@@ -748,7 +748,7 @@ class WishlistCollectionDetailFragment :
                         wishlistCollectionDetailViewModel.checkShouldCreateAffiliateCookieAtcProduct(
                             affiliateUniqueId,
                             affiliateChannel,
-                            wishlistItemOnAtc
+                            collectionId
                         )
                     }
                 }
