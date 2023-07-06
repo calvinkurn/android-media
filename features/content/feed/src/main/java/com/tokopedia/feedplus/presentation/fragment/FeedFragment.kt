@@ -205,11 +205,12 @@ class FeedFragment :
                     trackerModelMapper.entryPoint
                 )
 
-                val position = layoutManager.findFirstVisibleItemPosition()
+                val position = getCurrentPosition()
                 adapter.select(position)
             }
         }
     }
+    private val snapHelper = PagerSnapHelper()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -330,9 +331,9 @@ class FeedFragment :
             }
 
             FeedMenuIdentifier.WatchMode -> {
-                val position = layoutManager.findFirstCompletelyVisibleItemPosition()
+                val position = getCurrentPosition()
                 if (position >= ZERO) {
-                    adapter?.showClearView(layoutManager.findFirstCompletelyVisibleItemPosition())
+                    adapter.showClearView(position)
                 }
                 currentTrackerData?.let {
                     feedAnalytics.eventClickWatchMode(it)
@@ -786,7 +787,7 @@ class FeedFragment :
 
             it.rvFeedPost.adapter = adapter
             it.rvFeedPost.layoutManager = layoutManager
-            PagerSnapHelper().attachToRecyclerView(it.rvFeedPost)
+            snapHelper.attachToRecyclerView(it.rvFeedPost)
             it.rvFeedPost.removeOnScrollListener(contentScrollListener)
             it.rvFeedPost.addOnScrollListener(contentScrollListener)
             it.rvFeedPost.itemAnimator = null
@@ -972,7 +973,7 @@ class FeedFragment :
     }
 
     private fun pauseCurrentVideo() {
-        val currentIndex = layoutManager.findFirstVisibleItemPosition()
+        val currentIndex = getCurrentPosition()
         if (currentIndex < ZERO || currentIndex >= adapter.itemCount) return
         val item = adapter.currentList[currentIndex]?.data ?: return
 
@@ -984,7 +985,7 @@ class FeedFragment :
     }
 
     private fun resumeCurrentVideo() {
-        val currentIndex = layoutManager.findFirstVisibleItemPosition()
+        val currentIndex = getCurrentPosition()
         if (currentIndex < ZERO || currentIndex >= adapter.itemCount) return
         val item = adapter.currentList[currentIndex]?.data ?: return
 
@@ -1008,6 +1009,11 @@ class FeedFragment :
         isPageResumed: Boolean = feedMainViewModel.isPageResumed.value != false
     ): Boolean {
         return isPageResumed && isOnResume
+    }
+
+    private fun getCurrentPosition(): Int {
+        val snappedView = snapHelper.findSnapView(layoutManager) ?: return RecyclerView.NO_POSITION
+        return binding.rvFeedPost.getChildAdapterPosition(snappedView)
     }
 
     private fun onGoToLogin() {

@@ -141,7 +141,7 @@ class FeedContentAdapter(
             }
         }
 
-        if (position == itemCount - 1) onLoadMore()
+        if (position >= itemCount - 6) onLoadMore()
     }
 
     override fun onBindViewHolder(

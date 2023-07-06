@@ -22,6 +22,7 @@ import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_NOT_SELECTED
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_REMINDER_CHANGED
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_SELECTED
+import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_SELECTED_CHANGED
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloads
 import com.tokopedia.feedplus.presentation.adapter.listener.FeedListener
 import com.tokopedia.feedplus.presentation.customview.FeedPlayerControl
@@ -206,8 +207,11 @@ class FeedPostVideoViewHolder(
 
     fun bind(item: FeedContentAdapter.Item, payloads: MutableList<Any>) {
         val selectedPayload = if (item.isSelected) FEED_POST_SELECTED else FEED_POST_NOT_SELECTED
-        val newPayloads = payloads.toMutableList().also {
-            it.add(selectedPayload)
+        val feedPayloads = payloads.firstOrNull { it is FeedViewHolderPayloads } as? FeedViewHolderPayloads
+        val newPayloads = if (feedPayloads != null && feedPayloads.payloads.contains(FEED_POST_SELECTED_CHANGED)) {
+            payloads.toMutableList().also { it.add(selectedPayload) }
+        } else {
+            payloads
         }
         bind(item.data as FeedCardVideoContentModel, newPayloads)
     }
