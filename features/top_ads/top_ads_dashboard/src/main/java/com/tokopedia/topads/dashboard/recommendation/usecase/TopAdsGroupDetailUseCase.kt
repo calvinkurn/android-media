@@ -22,6 +22,7 @@ import com.tokopedia.topads.dashboard.recommendation.data.model.local.GroupPerfo
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.TopAdsListAllInsightState
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
+import timber.log.Timber
 import javax.inject.Inject
 
 class TopAdsGroupDetailUseCase @Inject constructor(
@@ -120,7 +121,7 @@ class TopAdsGroupDetailUseCase @Inject constructor(
         return try {
             topAdsGetPricingDetailsUseCase.invoke(utils.convertAdTypeToString(adGroupType))
         } catch (e: Exception) {
-            e.printStackTrace()
+            Timber.d(e)
             TopAdsGetPricingDetailsResponse(
                 TopAdsGetPricingDetailsResponse.TopAdsGetPricingDetails(
                     maxBid = INSIGHT_PRICING_FAIL_MAX_BID_FALLBACK_VALUE,
