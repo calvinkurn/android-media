@@ -2,21 +2,25 @@ package com.tokopedia.shop.campaign.view.adapter.viewholder
 
 import android.view.LayoutInflater
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.play.widget.PlayWidgetViewHolder
+import com.tokopedia.play.widget.analytic.PlayWidgetAnalyticListener
+import com.tokopedia.play.widget.ui.PlayWidgetMediumView
 import com.tokopedia.play.widget.ui.PlayWidgetView
+import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetConfigUiModel
 import com.tokopedia.shop.R
 import com.tokopedia.shop.campaign.view.customview.ShopCampaignTabWidgetHeaderView
 import com.tokopedia.shop.campaign.view.listener.ShopCampaignInterface
+import com.tokopedia.shop.campaign.view.listener.ShopCampaignPlayWidgetListener
+import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.databinding.ItemShopCampaignPlayWidgetBinding
 import com.tokopedia.shop.databinding.ShopCampaignPlayTitleCustomViewBinding
-import com.tokopedia.shop.home.view.listener.ShopHomePlayWidgetListener
 import com.tokopedia.shop.home.view.model.CarouselPlayWidgetUiModel
 import com.tokopedia.utils.view.binding.viewBinding
 
 class ShopCampaignCarouselPlayWidgetViewHolder(
     private val playWidgetViewHolder: PlayWidgetViewHolder,
-    private val shopPlayWidgetListener: ShopHomePlayWidgetListener,
+    private val shopPlayWidgetListener: ShopCampaignPlayWidgetListener,
     private val shopCampaignInterface: ShopCampaignInterface
 ) : AbstractViewHolder<CarouselPlayWidgetUiModel>(playWidgetViewHolder.itemView) {
 
@@ -32,7 +36,37 @@ class ShopCampaignCarouselPlayWidgetViewHolder(
 
     override fun bind(element: CarouselPlayWidgetUiModel) {
         setPlayWidget(element)
-        setWidgetImpressionListener(element)
+        setPlayWidgetAnalyticListener(element)
+    }
+
+    private fun setPlayWidgetAnalyticListener(element: CarouselPlayWidgetUiModel) {
+        playWidgetView?.setAnalyticListener(object : PlayWidgetAnalyticListener {
+            override fun onImpressChannelCard(
+                view: PlayWidgetMediumView,
+                item: PlayWidgetChannelUiModel,
+                config: PlayWidgetConfigUiModel,
+                channelPositionInList: Int
+            ) {
+                shopPlayWidgetListener.onPlayWidgetItemImpression(
+                    element,
+                    item,
+                    ShopUtil.getActualPositionFromIndex(channelPositionInList)
+                )
+            }
+
+            override fun onClickChannelCard(
+                view: PlayWidgetMediumView,
+                item: PlayWidgetChannelUiModel,
+                config: PlayWidgetConfigUiModel,
+                channelPositionInList: Int
+            ) {
+                shopPlayWidgetListener.onPlayWidgetItemClick(
+                    element,
+                    item,
+                    ShopUtil.getActualPositionFromIndex(channelPositionInList)
+                )
+            }
+        })
     }
 
     private fun setPlayWidget(element: CarouselPlayWidgetUiModel) {
@@ -51,12 +85,6 @@ class ShopCampaignCarouselPlayWidgetViewHolder(
         customHeader.headerView.showTitle()
         customHeader.headerView.configColorMode(shopCampaignInterface.isCampaignTabDarkMode())
         return customHeader.headerView
-    }
-
-    private fun setWidgetImpressionListener(model: CarouselPlayWidgetUiModel) {
-        itemView.addOnImpressionListener(model.impressHolder) {
-            shopPlayWidgetListener.onPlayWidgetImpression(model, bindingAdapterPosition)
-        }
     }
 
 }

@@ -28,6 +28,7 @@ import com.tokopedia.shop.campaign.view.adapter.viewholder.ShopCampaignVoucherSl
 import com.tokopedia.shop.campaign.view.adapter.viewholder.ShopCampaignVoucherSliderViewHolder
 import com.tokopedia.shop.campaign.view.listener.ShopCampaignCarouselProductListener
 import com.tokopedia.shop.campaign.view.listener.ShopCampaignInterface
+import com.tokopedia.shop.campaign.view.listener.ShopCampaignPlayWidgetListener
 import com.tokopedia.shop.home.WidgetName.BANNER_TIMER
 import com.tokopedia.shop.home.WidgetName.DISPLAY_DOUBLE_COLUMN
 import com.tokopedia.shop.home.WidgetName.DISPLAY_SINGLE_COLUMN
@@ -52,7 +53,7 @@ class ShopCampaignTabAdapterTypeFactory(
     private val shopCampaignDisplayBannerTimerWidgetListener: ShopHomeDisplayBannerTimerWidgetListener,
     private val shopCampaignCarouselProductListener: ShopCampaignCarouselProductListener,
     private val playWidgetCoordinator: PlayWidgetCoordinator,
-    private val shopPlayWidgetListener: ShopHomePlayWidgetListener,
+    private val shopPlayWidgetListener: ShopCampaignPlayWidgetListener,
     private val shopCampaignInterface: ShopCampaignInterface,
     private val sliderBannerHighlightListener: ShopCampaignDisplaySliderBannerHighlightViewHolder.Listener,
     private val shopCampaignVoucherSliderListener: ShopCampaignVoucherSliderViewHolder.Listener,
