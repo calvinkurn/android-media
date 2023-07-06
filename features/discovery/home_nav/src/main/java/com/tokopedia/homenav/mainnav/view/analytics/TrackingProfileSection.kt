@@ -26,7 +26,7 @@ object TrackingProfileSection: BaseTrackerConst() {
      */
     fun onClickLoginButton(
         pageSource: NavSource,
-        pageSourcePath: String? = null
+        pageSourcePath: String = ""
     ){
         getTracker().sendGeneralEvent(
             BaseTrackerBuilder()
@@ -50,7 +50,7 @@ object TrackingProfileSection: BaseTrackerConst() {
      */
     fun onClickLoginReminderButton(
         pageSource: NavSource,
-        pageSourcePath: String? = null
+        pageSourcePath: String = ""
     ){
         getTracker().sendGeneralEvent(
             BaseTrackerBuilder()
@@ -74,7 +74,7 @@ object TrackingProfileSection: BaseTrackerConst() {
      */
     fun onClickRegisterButton(
         pageSource: NavSource,
-        pageSourcePath: String? = null
+        pageSourcePath: String = ""
     ){
         getTracker().sendGeneralEvent(
             BaseTrackerBuilder()
@@ -99,7 +99,7 @@ object TrackingProfileSection: BaseTrackerConst() {
     fun onClickProfileSection(
         eventLabel: String,
         pageSource: NavSource,
-        pageSourcePath: String? = null
+        pageSourcePath: String = ""
     ){
         getTracker().sendGeneralEvent(
             BaseTrackerBuilder()
@@ -124,7 +124,7 @@ object TrackingProfileSection: BaseTrackerConst() {
     fun onClickTokopediaPlus(
         isSubscriber: Boolean,
         pageSource: NavSource,
-        pageSourcePath: String? = null
+        pageSourcePath: String = ""
     ) {
         val action = if(isSubscriber) "click on gotoplus - subscriber" else "click on gotoplus - non subscriber"
         val trackerId = if(isSubscriber) "33342" else "33341"

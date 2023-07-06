@@ -11,10 +11,7 @@ import com.tokopedia.track.builder.BaseTrackerBuilder
 import com.tokopedia.track.builder.util.BaseTrackerConst
 
 object TrackingTransactionSection : BaseTrackerConst() {
-    private const val TEMPLATE_GLOBAL_MENU = "/global_menu - order_status_card"
-    private const val PROMOTION_NAME_FORMAT = "/%s - %s"
-    private const val GLOBAL_MENU = "global_menu"
-    private const val REVIEW_CARD = "review_card"
+    private const val PROMOTION_NAME_REVIEW = "/global_menu - review_card"
     private const val PROMOTION_ID_FORMAT = "%s_%s_%s"
     private const val STAR_RATING = "star rating"
     private const val PRODUCT_CARD = "product card"
@@ -27,12 +24,12 @@ object TrackingTransactionSection : BaseTrackerConst() {
      */
     fun clickOnAllTransaction(
         pageSource: NavSource,
-        pageSourcePath: String? = null
+        pageSourcePath: String = ""
     ) {
         val trackingBuilder = BaseTrackerBuilder()
         trackingBuilder.constructBasicGeneralClick(
             event = Event.CLICK_HOMEPAGE,
-            eventCategory = GLOBAL_MENU,
+            eventCategory = MainNavTrackingConst.GLOBAL_MENU,
             eventAction = "click on all transaction",
             eventLabel = Label.NONE
         )
@@ -49,12 +46,12 @@ object TrackingTransactionSection : BaseTrackerConst() {
      */
     fun clickOnTicket(
         pageSource: NavSource,
-        pageSourcePath: String? = null
+        pageSourcePath: String = ""
     ) {
         val trackingBuilder = BaseTrackerBuilder()
         trackingBuilder.constructBasicGeneralClick(
             event = CLICK_NAVIGATION_DRAWER,
-            eventCategory = GLOBAL_MENU,
+            eventCategory = MainNavTrackingConst.GLOBAL_MENU,
             eventAction = "click on e-ticket and e-voucher",
             eventLabel = Label.NONE
         )
@@ -71,12 +68,12 @@ object TrackingTransactionSection : BaseTrackerConst() {
      */
     fun clickOnReview(
         pageSource: NavSource,
-        pageSourcePath: String? = null
+        pageSourcePath: String = ""
     ) {
         val trackingBuilder = BaseTrackerBuilder()
         trackingBuilder.constructBasicGeneralClick(
-            event = CLICK_NAVIGATION_DRAWER,
-            eventCategory = GLOBAL_MENU,
+            event = Event.CLICK_HOMEPAGE,
+            eventCategory = MainNavTrackingConst.GLOBAL_MENU,
             eventAction = "click on review",
             eventLabel = Label.NONE
         )
@@ -94,12 +91,12 @@ object TrackingTransactionSection : BaseTrackerConst() {
     fun clickOnOrderStatus(
         orderLabel: String,
         pageSource: NavSource,
-        pageSourcePath: String? = null
+        pageSourcePath: String = ""
     ) {
         val trackingBuilder = BaseTrackerBuilder()
         trackingBuilder.constructBasicGeneralClick(
             event = Event.CLICK_HOMEPAGE,
-            eventCategory = GLOBAL_MENU,
+            eventCategory = MainNavTrackingConst.GLOBAL_MENU,
             eventAction = "click on order status",
             eventLabel = orderLabel
         )
@@ -121,19 +118,19 @@ object TrackingTransactionSection : BaseTrackerConst() {
         orderId: String,
         position: Int,
         pageSource: NavSource,
-        pageSourcePath: String? = null
+        pageSourcePath: String = ""
     ): HashMap<String, Any> {
         val trackingBuilder = BaseTrackerBuilder()
         return trackingBuilder.constructBasicPromotionView(
             event = Event.PROMO_VIEW,
-            eventCategory = GLOBAL_MENU,
+            eventCategory = MainNavTrackingConst.GLOBAL_MENU,
             eventAction = "impression on order status",
             eventLabel = Label.NONE,
             promotions = listOf(
                 Promotion(
                     creative = orderLabel,
                     id = "%s - %s".format(bannerId, orderId),
-                    name = TEMPLATE_GLOBAL_MENU,
+                    name = "/global_menu - order_status_card",
                     creativeUrl = "",
                     position = (position + 1).toString()
                 )
@@ -156,11 +153,11 @@ object TrackingTransactionSection : BaseTrackerConst() {
         position: Int,
         wishlistModel: NavWishlistModel,
         pageSource: NavSource,
-        pageSourcePath: String? = null
+        pageSourcePath: String = ""
     ): HashMap<String, Any> {
         return BaseTrackerBuilder().constructBasicPromotionView(
             event = Event.PROMO_VIEW,
-            eventCategory = GLOBAL_MENU,
+            eventCategory = MainNavTrackingConst.GLOBAL_MENU,
             eventAction = "impression wishlist card",
             eventLabel = wishlistModel.id,
             promotions = listOf(
@@ -190,11 +187,11 @@ object TrackingTransactionSection : BaseTrackerConst() {
         wishlistModel: NavWishlistModel,
         position: Int,
         pageSource: NavSource,
-        pageSourcePath: String? = null
+        pageSourcePath: String = ""
     ) {
         val bundle = Bundle()
         bundle.putString(Event.KEY, Event.SELECT_CONTENT)
-        bundle.putString(Category.KEY, GLOBAL_MENU)
+        bundle.putString(Category.KEY, MainNavTrackingConst.GLOBAL_MENU)
         bundle.putString(Action.KEY, "click wishlist card")
         bundle.putString(Label.KEY, wishlistModel.id)
         bundle.putString(CurrentSite.KEY, CurrentSite.DEFAULT)
@@ -220,12 +217,12 @@ object TrackingTransactionSection : BaseTrackerConst() {
      */
     fun clickOnWishlistViewAll(
         pageSource: NavSource,
-        pageSourcePath: String? = null
+        pageSourcePath: String = ""
     ) {
         val trackingBuilder = BaseTrackerBuilder()
         trackingBuilder.constructBasicGeneralClick(
             event = Event.CLICK_HOMEPAGE,
-            eventCategory = GLOBAL_MENU,
+            eventCategory = MainNavTrackingConst.GLOBAL_MENU,
             eventAction = "click view all wishlist",
             eventLabel = Label.NONE
         )
@@ -245,20 +242,20 @@ object TrackingTransactionSection : BaseTrackerConst() {
         userId: String,
         element: NavReviewModel,
         pageSource: NavSource,
-        pageSourcePath: String? = null
+        pageSourcePath: String = ""
     ): HashMap<String, Any> {
         val trackingBuilder = BaseTrackerBuilder()
         val positionCard = (position + 1).toString()
         return trackingBuilder.constructBasicPromotionView(
             event = Event.PROMO_VIEW,
-            eventCategory = GLOBAL_MENU,
+            eventCategory = MainNavTrackingConst.GLOBAL_MENU,
             eventAction = "impression review card",
             eventLabel = Label.NONE,
             promotions = listOf(
                 Promotion(
                     creative = Value.EMPTY,
                     id = PROMOTION_ID_FORMAT.format("0", element.reputationId, element.productId),
-                    name = PROMOTION_NAME_FORMAT.format(GLOBAL_MENU, REVIEW_CARD),
+                    name = PROMOTION_NAME_REVIEW,
                     creativeUrl = Value.EMPTY,
                     position = positionCard
                 )
@@ -267,6 +264,7 @@ object TrackingTransactionSection : BaseTrackerConst() {
             .appendCurrentSite(CurrentSite.DEFAULT)
             .appendUserId(userId)
             .appendBusinessUnit(BusinessUnit.DEFAULT)
+            .appendCustomKeyValue(TrackerId.KEY, "30840")
             .appendCustomKeyValue(KEY_PAGE_SOURCE, pageSource.asTrackingPageSource(pageSourcePath))
             .build() as HashMap<String, Any>
     }
@@ -281,12 +279,12 @@ object TrackingTransactionSection : BaseTrackerConst() {
         element: NavReviewModel,
         starRating: String,
         pageSource: NavSource,
-        pageSourcePath: String? = null
+        pageSourcePath: String = ""
     ) {
         val bundle = Bundle()
         bundle.putString(Event.KEY, Event.SELECT_CONTENT)
         bundle.putString(Action.KEY, "click review card - product star rating")
-        bundle.putString(Category.KEY, GLOBAL_MENU)
+        bundle.putString(Category.KEY, MainNavTrackingConst.GLOBAL_MENU)
         bundle.putString(
             Label.KEY,
             "%s - %s - %s - %s".format(
@@ -310,7 +308,7 @@ object TrackingTransactionSection : BaseTrackerConst() {
         promotion.putString(Promotion.CREATIVE_SLOT, horizontalPosition)
         promotion.putString(
             Promotion.ITEM_NAME,
-            PROMOTION_NAME_FORMAT.format(GLOBAL_MENU, REVIEW_CARD)
+            PROMOTION_NAME_REVIEW
         )
         promotion.putString(
             Promotion.ITEM_ID,
@@ -334,12 +332,12 @@ object TrackingTransactionSection : BaseTrackerConst() {
         userId: String,
         element: NavReviewModel,
         pageSource: NavSource,
-        pageSourcePath: String? = null
+        pageSourcePath: String = ""
     ) {
         val bundle = Bundle()
         bundle.putString(Event.KEY, Event.SELECT_CONTENT)
         bundle.putString(Action.KEY, "click review card - product card")
-        bundle.putString(Category.KEY, GLOBAL_MENU)
+        bundle.putString(Category.KEY, MainNavTrackingConst.GLOBAL_MENU)
         bundle.putString(
             Label.KEY,
             "%s - %s - %s".format(
@@ -362,7 +360,7 @@ object TrackingTransactionSection : BaseTrackerConst() {
         promotion.putString(Promotion.CREATIVE_SLOT, horizontalPosition)
         promotion.putString(
             Promotion.ITEM_NAME,
-            PROMOTION_NAME_FORMAT.format(GLOBAL_MENU, REVIEW_CARD)
+            PROMOTION_NAME_REVIEW
         )
         promotion.putString(
             Promotion.ITEM_ID,
@@ -382,12 +380,12 @@ object TrackingTransactionSection : BaseTrackerConst() {
      */
     fun getClickViewAllTransaction(
         pageSource: NavSource,
-        pageSourcePath: String? = null
+        pageSourcePath: String = ""
     ) {
         val bundle = Bundle()
         bundle.putString(Event.KEY, Event.CLICK_HOMEPAGE)
         bundle.putString(Action.KEY, "click view all transaction")
-        bundle.putString(Category.KEY, GLOBAL_MENU)
+        bundle.putString(Category.KEY, MainNavTrackingConst.GLOBAL_MENU)
         bundle.putString(Label.KEY, Label.NONE)
         bundle.putString(BusinessUnit.KEY, BusinessUnit.DEFAULT)
         bundle.putString(CurrentSite.KEY, CurrentSite.DEFAULT)
@@ -402,11 +400,11 @@ object TrackingTransactionSection : BaseTrackerConst() {
      */
     fun clickOnReviewViewAll(
         pageSource: NavSource,
-        pageSourcePath: String? = null
+        pageSourcePath: String = ""
     ) {
         val bundle = Bundle()
         bundle.putString(Event.KEY, Event.CLICK_HOMEPAGE)
-        bundle.putString(Category.KEY, GLOBAL_MENU)
+        bundle.putString(Category.KEY, MainNavTrackingConst.GLOBAL_MENU)
         bundle.putString(Action.KEY, "click view all review")
         bundle.putString(Label.KEY, Label.NONE)
         bundle.putString(CurrentSite.KEY, CurrentSite.DEFAULT)

@@ -17,7 +17,7 @@ object TrackingOthers: BaseTrackerConst() {
     fun onClickBusinessUnitItem(
         title: String,
         pageSource: NavSource,
-        pageSourcePath: String? = null
+        pageSourcePath: String = ""
     ){
         getTracker().sendGeneralEvent(
             BaseTrackerBuilder()
@@ -40,7 +40,7 @@ object TrackingOthers: BaseTrackerConst() {
     fun clickOnUserMenu(
         menuTrackerName: String,
         pageSource: NavSource,
-        pageSourcePath: String? = null
+        pageSourcePath: String = ""
     ) {
         getTracker().sendGeneralEvent(
             BaseTrackerBuilder()
@@ -62,7 +62,7 @@ object TrackingOthers: BaseTrackerConst() {
      */
     fun onClickBackToHome(
         pageSource: NavSource,
-        pageSourcePath: String? = null
+        pageSourcePath: String = ""
     ){
         getTracker().sendGeneralEvent(
             BaseTrackerBuilder()
@@ -84,7 +84,7 @@ object TrackingOthers: BaseTrackerConst() {
      */
     fun onClickCloseButton(
         pageSource: NavSource,
-        pageSourcePath: String? = null
+        pageSourcePath: String = ""
     ){
         TrackingOthers.getTracker().sendGeneralEvent(
             BaseTrackerBuilder()

@@ -32,7 +32,7 @@ internal object MainNavTrackingConst {
     private const val PAGE_SOURCE_WISHLIST = "wishlist"
     // end of page source section
 
-    fun NavSource.asTrackingPageSource(pageSourcePath: String? = null): String {
+    fun NavSource.asTrackingPageSource(pageSourcePath: String = ""): String {
         val pageSource = when(this) {
             NavSource.ACCOUNT -> PAGE_SOURCE_ACCOUNT
             NavSource.AFFILIATE -> PAGE_SOURCE_AFFILIATE
@@ -61,7 +61,7 @@ internal object MainNavTrackingConst {
         }
         return FORMAT_PAGE_SOURCE.format(
             pageSource,
-            pageSourcePath
+            pageSourcePath.ifEmpty { "null" }
         )
     }
 }

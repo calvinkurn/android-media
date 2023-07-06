@@ -103,7 +103,7 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
     private val args: MainNavFragmentArgs by navArgs()
 
     var pageSource = NavSource.DEFAULT
-    var pageSourcePath: String? = null
+    var pageSourcePath: String = ""
 
     // for coachmark purpose
     private var isOngoingShowOnboarding = false
@@ -142,12 +142,11 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         activity?.findViewById<NavToolbar>(R.id.toolbar)?.let {
             it.setToolbarTitle(getString(R.string.title_main_nav))
-            it.setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_CLOSE)
-            navToolbar = it
-            viewLifecycleOwner.lifecycle.addObserver(it)
-            it.setOnClickListener {
+            it.setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_CLOSE) {
                 TrackingOthers.onClickCloseButton(pageSource, pageSourcePath)
             }
+            navToolbar = it
+            viewLifecycleOwner.lifecycle.addObserver(it)
         }
         return inflater.inflate(R.layout.fragment_main_nav, container, false)
     }
