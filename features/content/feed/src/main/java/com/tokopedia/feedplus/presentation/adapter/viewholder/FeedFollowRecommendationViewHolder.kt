@@ -10,6 +10,7 @@ import com.tokopedia.feedplus.presentation.adapter.itemdecoration.FeedFollowProf
 import com.tokopedia.feedplus.presentation.adapter.layoutmanager.FeedFollowProfileLayoutManager
 import com.tokopedia.feedplus.presentation.adapter.listener.FeedFollowRecommendationListener
 import com.tokopedia.feedplus.presentation.model.FeedFollowRecommendationModel
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 
 /**
  * Created By : Jonathan Darwin on July 04, 2023
@@ -41,6 +42,7 @@ class FeedFollowRecommendationViewHolder(
         element?.let { model ->
             setupHeader(model)
             setupProfileList(model)
+            setupEmptyLayout()
         }
     }
 
@@ -50,6 +52,7 @@ class FeedFollowRecommendationViewHolder(
     }
 
     private fun setupProfileList(model: FeedFollowRecommendationModel) {
+
         val mappedList = model.data.map {
             FeedFollowProfileAdapter.Model.Profile(data = it)
         }
@@ -59,7 +62,18 @@ class FeedFollowRecommendationViewHolder(
         else
             mappedList
 
+        val isDataAvailable = finalList.isNotEmpty()
+
         profileAdapter.setItemsAndAnimateChanges(finalList)
+
+        binding.clMain.showWithCondition(isDataAvailable)
+        binding.feedNoContent.root.showWithCondition(!isDataAvailable)
+    }
+
+    private fun setupEmptyLayout() {
+        binding.feedNoContent.btnShowOtherContent.setOnClickListener {
+            listener.onClickViewOtherContent()
+        }
     }
 
     companion object {

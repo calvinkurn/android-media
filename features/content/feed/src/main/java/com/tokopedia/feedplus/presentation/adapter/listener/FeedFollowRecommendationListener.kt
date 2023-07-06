@@ -20,4 +20,6 @@ interface FeedFollowRecommendationListener {
     )
 
     fun onLoadNextProfileRecommendation()
+
+    fun onClickViewOtherContent()
 }

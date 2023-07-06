@@ -229,6 +229,10 @@ class FeedFragment :
         override fun onLoadNextProfileRecommendation() {
             /** TODO: handle this */
         }
+
+        override fun onClickViewOtherContent() {
+            feedMainViewModel.changeCurrentTabByType(FeedBaseFragment.TAB_TYPE_FOR_YOU)
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
