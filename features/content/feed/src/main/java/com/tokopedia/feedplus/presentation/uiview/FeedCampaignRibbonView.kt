@@ -3,6 +3,7 @@ package com.tokopedia.feedplus.presentation.uiview
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.TransitionDrawable
+import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.feedcomponent.util.TimeConverter
 import com.tokopedia.feedplus.R
@@ -13,15 +14,25 @@ import com.tokopedia.feedplus.data.FeedXCard.Companion.TYPE_FEED_ASGC_SHOP_FLASH
 import com.tokopedia.feedplus.data.FeedXCard.Companion.TYPE_FEED_ASGC_SPECIAL_RELEASE
 import com.tokopedia.feedplus.databinding.LayoutFeedCampaignRibbonMotionBinding
 import com.tokopedia.feedplus.presentation.adapter.listener.FeedListener
-import com.tokopedia.feedplus.presentation.model.*
+import com.tokopedia.feedplus.presentation.model.FeedAuthorModel
+import com.tokopedia.feedplus.presentation.model.FeedCardCampaignModel
+import com.tokopedia.feedplus.presentation.model.FeedCardCtaModel
+import com.tokopedia.feedplus.presentation.model.FeedCardProductModel
+import com.tokopedia.feedplus.presentation.model.FeedTrackerDataModel
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.util.*
+import com.tokopedia.unifyprinciples.R as unifyR
 
 /**
  * Created By : Muhammad Furqan on 16/03/23
@@ -98,6 +109,7 @@ class FeedCampaignRibbonView(
                 root.show()
             }
 
+            setupProgressBar()
             buildRibbonBasedOnType()
         }
     }
@@ -159,6 +171,20 @@ class FeedCampaignRibbonView(
             } else {
                 binding.icFeedCampaignRibbonIcon.setImage(IconUnify.BELL)
             }
+        }
+    }
+
+    private fun setupProgressBar() {
+        with(binding) {
+            pbFeedCampaignRibbon.trackDrawable.setColor(
+                ContextCompat.getColor(
+                    root.context,
+                    R.color.feed_dms_progress_bar_track_color
+                )
+            )
+            val stockBarColor =
+                ContextCompat.getColor(root.context, unifyR.color.Unify_Static_White)
+            pbFeedCampaignRibbon.progressBarColor = intArrayOf(stockBarColor, stockBarColor)
         }
     }
 
