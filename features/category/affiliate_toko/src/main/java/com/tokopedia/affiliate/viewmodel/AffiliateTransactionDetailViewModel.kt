@@ -19,7 +19,6 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.universal_sharing.usecase.ExtractBranchLinkUseCase
-import timber.log.Timber
 import javax.inject.Inject
 
 class AffiliateTransactionDetailViewModel @Inject constructor(
