@@ -278,10 +278,14 @@ class SharedReviewMediaGalleryViewModelTest: SharedReviewMediaGalleryViewModelTe
         } returns toggleLikeReviewResult
 
         `tryGetPreloadedData should get all given data from cache manager`()
+
+        Assert.assertEquals(viewModel.getLikeStatus(), -1)
+
         viewModel.requestToggleLike(feedbackID, invertedLikeStatus)
 
         val newTotalLike = viewModel.detailedReviewMediaResult.first()!!.detail.reviewDetail.first().totalLike
         Assert.assertEquals(currentTotalLike + 1, newTotalLike)
+        Assert.assertEquals(viewModel.getLikeStatus(), invertedLikeStatus)
     }
 
     @Test
