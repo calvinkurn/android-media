@@ -18,6 +18,9 @@
     <color name="dms_color_525A67">#525A67</color>
     <color name="dms_static_Unify_NN950_dark">#F5F6FF</color>
     <color name="dms_static_Unify_NN950_light">#212121</color>
+    <color name="dms_static_Unify_BFC9D9_light">#BFC9D9</color>
+    <color name="dms_static_Unify_NN600_light">#6D7588</color>
+
 
 
 </resources>
