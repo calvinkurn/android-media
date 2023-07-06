@@ -11,7 +11,6 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.StringRes
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
@@ -74,6 +73,8 @@ import com.tokopedia.topchat.chatlist.view.uimodel.IncomingTypingWebSocketModel
 import com.tokopedia.topchat.chatlist.view.viewmodel.ChatItemListViewModel
 import com.tokopedia.topchat.chatlist.view.viewmodel.ChatItemListViewModel.Companion.arrayFilterParam
 import com.tokopedia.topchat.chatlist.view.widget.BroadcastButtonLayout
+import com.tokopedia.topchat.chatlist.view.widget.BroadcastButtonLayout.Companion.BROADCAST_FAB_LABEL_PREF_NAME
+import com.tokopedia.topchat.chatlist.view.widget.BroadcastButtonLayout.Companion.BROADCAST_FAB_LABEL_ROLLENCE_KEY
 import com.tokopedia.topchat.chatlist.view.widget.FilterMenu
 import com.tokopedia.topchat.chatlist.view.widget.OperationalInsightBottomSheet
 import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity
@@ -96,7 +97,6 @@ import com.tokopedia.user.session.UserSessionInterface
 import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
-
 
 class ChatListFragment :
     BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(),
@@ -288,8 +288,8 @@ class ChatListFragment :
             broadCastButton?.toggleBroadcastButton(
                 shouldShow = visibility,
                 shouldShowLabel = chatItemListViewModel.getBooleanCache(
-                    ChatItemListViewModel.BROADCAST_FAB_LABEL_PREF_NAME
-                )
+                    BROADCAST_FAB_LABEL_PREF_NAME
+                ) && getRollenceValue(BROADCAST_FAB_LABEL_ROLLENCE_KEY)
             )
         }
         chatItemListViewModel.broadCastButtonUrl.observe(
@@ -323,11 +323,11 @@ class ChatListFragment :
 
     private fun markBroadcastNewLabel() {
         val cacheResult = chatItemListViewModel.getBooleanCache(
-            ChatItemListViewModel.BROADCAST_FAB_LABEL_PREF_NAME
-        )
+            BROADCAST_FAB_LABEL_PREF_NAME
+        ) && getRollenceValue(BROADCAST_FAB_LABEL_ROLLENCE_KEY)
         if (cacheResult) {
             chatItemListViewModel.saveBooleanCache(
-                cacheName = ChatItemListViewModel.BROADCAST_FAB_LABEL_PREF_NAME,
+                cacheName = BROADCAST_FAB_LABEL_PREF_NAME,
                 value = false
             )
             broadCastButton?.toggleBroadcastLabel(

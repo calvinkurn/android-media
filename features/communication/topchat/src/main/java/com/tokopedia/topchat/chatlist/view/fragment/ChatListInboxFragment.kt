@@ -70,6 +70,8 @@ import com.tokopedia.topchat.chatlist.view.viewmodel.ChatItemListViewModel
 import com.tokopedia.topchat.chatlist.view.viewmodel.ChatItemListViewModel.Companion.arrayFilterParam
 import com.tokopedia.topchat.chatlist.view.viewmodel.ChatListWebSocketViewModel
 import com.tokopedia.topchat.chatlist.view.widget.BroadcastButtonLayout
+import com.tokopedia.topchat.chatlist.view.widget.BroadcastButtonLayout.Companion.BROADCAST_FAB_LABEL_PREF_NAME
+import com.tokopedia.topchat.chatlist.view.widget.BroadcastButtonLayout.Companion.BROADCAST_FAB_LABEL_ROLLENCE_KEY
 import com.tokopedia.topchat.chatlist.view.widget.FilterMenu
 import com.tokopedia.topchat.chatlist.view.widget.OperationalInsightBottomSheet
 import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity
@@ -391,8 +393,8 @@ open class ChatListInboxFragment :
             broadCastButton?.toggleBroadcastButton(
                 shouldShow = visibility,
                 shouldShowLabel = viewModel.getBooleanCache(
-                    ChatItemListViewModel.BROADCAST_FAB_LABEL_PREF_NAME
-                )
+                    BROADCAST_FAB_LABEL_PREF_NAME
+                ) && getRollenceValue(BROADCAST_FAB_LABEL_ROLLENCE_KEY)
             )
         }
         viewModel.broadCastButtonUrl.observe(
@@ -426,11 +428,11 @@ open class ChatListInboxFragment :
 
     private fun markBroadcastNewLabel() {
         val cacheResult = viewModel.getBooleanCache(
-            ChatItemListViewModel.BROADCAST_FAB_LABEL_PREF_NAME
-        )
+            BROADCAST_FAB_LABEL_PREF_NAME
+        ) && getRollenceValue(BROADCAST_FAB_LABEL_ROLLENCE_KEY)
         if (cacheResult) {
             viewModel.saveBooleanCache(
-                cacheName = ChatItemListViewModel.BROADCAST_FAB_LABEL_PREF_NAME,
+                cacheName = BROADCAST_FAB_LABEL_PREF_NAME,
                 value = false
             )
             broadCastButton?.toggleBroadcastLabel(

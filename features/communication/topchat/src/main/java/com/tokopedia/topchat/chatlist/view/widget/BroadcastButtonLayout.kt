@@ -8,7 +8,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.topchat.databinding.TopchatPartialBroadcastFabBinding
 
-class BroadcastButtonLayout: ConstraintLayout {
+class BroadcastButtonLayout : ConstraintLayout {
     constructor(context: Context) : super(context)
     constructor(context: Context, attrSet: AttributeSet) : super(context, attrSet)
     constructor(context: Context, attrSet: AttributeSet, defStyleAttr: Int) :
@@ -48,5 +48,10 @@ class BroadcastButtonLayout: ConstraintLayout {
             binding?.labelNewFabBroadcast?.hide()
             binding?.backgroundShadowLabelBroadcast?.hide()
         }
+    }
+
+    companion object {
+        const val BROADCAST_FAB_LABEL_PREF_NAME = "topchat_seller_should_show_broadcast_new_label"
+        const val BROADCAST_FAB_LABEL_ROLLENCE_KEY = "broadcast_label"
     }
 }
