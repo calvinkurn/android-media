@@ -107,7 +107,7 @@ class AccordianDailyBudgetViewHolder(
         val ss = SpannableString(msg)
         val cs = object : ClickableSpan() {
             override fun onClick(p0: View) {
-                dailyBudget.editText.setText(element?.sellerInsightData?.dailyBudgetData?.firstOrNull()?.suggestedPriceDaily.toZeroIfNull())
+                dailyBudget.editText.setText(element?.sellerInsightData?.dailyBudgetData?.firstOrNull()?.suggestedPriceDaily.toZeroIfNull().toString())
             }
 
             override fun updateDrawState(ds: TextPaint) {

@@ -395,7 +395,7 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 val position =
-                    (recyclerView.layoutManager as LinearLayoutManager?)?.findFirstVisibleItemPosition()
+                    (recyclerView.layoutManager as? LinearLayoutManager)?.findFirstVisibleItemPosition()
                         ?: return
 
                 if (dy > Int.ZERO) {
