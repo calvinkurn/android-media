@@ -407,7 +407,7 @@ class FeedFragment :
     }
 
     override fun onSubmitReport(desc: String) {
-        val currentIndex = binding.rvFeedPost.currentItem
+        val currentIndex = layoutManager.findFirstVisibleItemPosition()
         val item = adapter?.list?.get(currentIndex)
         if (item !is FeedCardVideoContentModel) return
 
@@ -452,7 +452,7 @@ class FeedFragment :
     }
 
     private fun getVideoTimeStamp(): Long {
-        val currentIndex = binding.rvFeedPost.currentItem
+        val currentIndex = layoutManager.findFirstVisibleItemPosition()
         if (currentIndex >= (adapter?.list?.size ?: 0)) return 0
         val item = adapter?.list?.get(currentIndex) ?: return 0
 
