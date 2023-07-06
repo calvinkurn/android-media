@@ -19,7 +19,6 @@ import com.google.android.exoplayer2.upstream.cache.CacheDataSourceFactory
 import com.google.android.exoplayer2.util.Util
 import com.tokopedia.play.widget.ui.model.PlayWidgetType
 import com.tokopedia.play_common.util.PlayConnectionCommon
-import java.time.Duration
 import java.util.concurrent.TimeUnit
 
 /**
@@ -77,13 +76,11 @@ open class PlayVideoPlayer(val context: Context, cardType: PlayWidgetType) {
             context,
             Uri.parse(videoUrl),
             shouldCache,
-            Duration.ofSeconds(
-                if (PlayConnectionCommon.isConnectCellular(context)) {
-                    maxDurationCellularInSeconds
-                } else {
-                    maxDurationWifiInSeconds
-                }.toLong()
-            )
+            if (PlayConnectionCommon.isConnectCellular(context)) {
+                maxDurationCellularInSeconds
+            } else {
+                maxDurationWifiInSeconds
+            }.toLong()
         )
 
         exoPlayer.playWhenReady = true
@@ -124,7 +121,7 @@ open class PlayVideoPlayer(val context: Context, cardType: PlayWidgetType) {
         context: Context,
         uri: Uri,
         shouldCache: Boolean,
-        durationToPlay: Duration
+        durationToPlayInSecond: Long
     ): MediaSource {
         val defaultDataSourceFactory = DefaultDataSourceFactory(context, Util.getUserAgent(context, "Tokopedia Android"))
         val dataSourceFactory = if (shouldCache) {
@@ -141,13 +138,13 @@ open class PlayVideoPlayer(val context: Context, cardType: PlayWidgetType) {
             else -> throw IllegalStateException("Unsupported type: $type")
         }
 
-        return if (durationToPlay.isZero || durationToPlay.isNegative) {
+        return if (durationToPlayInSecond <= 0) {
             mediaSourceFactory.createMediaSource(uri)
         } else {
             ClippingMediaSource(
                 mediaSourceFactory.createMediaSource(uri),
                 0,
-                TimeUnit.NANOSECONDS.toMicros(durationToPlay.toNanos()),
+                TimeUnit.SECONDS.toMicros(durationToPlayInSecond),
                 true,
                 true,
                 true
