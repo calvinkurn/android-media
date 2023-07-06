@@ -22,6 +22,7 @@ import com.tokopedia.applink.imagepicker.DeeplinkMapperImagePicker
 import com.tokopedia.applink.inbox.DeeplinkMapperInbox
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory
+import com.tokopedia.applink.internal.ApplinkConstInternalCommunication
 import com.tokopedia.applink.internal.ApplinkConstInternalDilayaniTokopedia
 import com.tokopedia.applink.internal.ApplinkConstInternalFeed
 import com.tokopedia.applink.internal.ApplinkConstInternalFintech
@@ -959,7 +960,14 @@ object DeeplinkMainApp {
             DLP.goTo(DeeplinkMapperDigital::getRegisteredNavigationDigital)
         ),
         "tokochat" to mutableListOf(
-            DLP.goTo(DeeplinkMapperCommunication::getRegisteredNavigationTokoChat)
+            DLP.matchPattern(
+                "",
+                DeeplinkMapperCommunication::getRegisteredNavigationTokoChat
+            ),
+            DLP.matchPattern(
+                "list",
+                ApplinkConstInternalCommunication.TOKOCHAT_LIST
+            )
         ),
         "tokopoints" to mutableListOf(
             DLP.goTo(DeeplinkMapperPromo::getRegisteredNavigationTokopoints)
@@ -1013,7 +1021,7 @@ object DeeplinkMainApp {
             DLP.matchPattern("{video_id}") { _, _, _, idList ->
                 UriUtil.buildUri(ApplinkConstInternalGlobal.YOUTUBE_PLAYER, idList?.getOrNull(0))
             }
-        ),
+        )
 
     )
 }
