@@ -10,9 +10,6 @@ public class RemoteConfigKey {
     public static final String MAINAPP_WALLET_LABEL_NAME = "mainapp_wallet_label_name";
     public static final String MAINAPP_WALLET_LABEL_REGISTER = "mainapp_wallet_label_register";
 
-    public static final String CUSTOMER_ENABLE_ROBUST = "android_customer_robust_enable";
-    public static final String SELLER_ENABLE_ROBUST = "android_sellerapp_robust_enable";
-
     public static final String APP_SHARE_DESCRIPTION = "app_share_description";
     public static final String MAINAPP_ACTIVATE_BRANCH_LINKS = "mainapp_activate_branch_links";
 
@@ -243,6 +240,7 @@ public class RemoteConfigKey {
     public static final String BUBBLE_TOPCHAT_CM = "android_enable_bubble_topchat_cm";
 
     public static final String FINTECH_WEBVIEW_HIDE_TOOLBAR = "android_fintech_webview_hide_toolbar";
+    public static final String FINTECH_WEBVIEW_DISABLE_GALLERY_PICKER = "android_fintech_webview_disable_gallery_picker";
 
     public static final String FEED_NEW_ICON = "FeedNewIcon";
 

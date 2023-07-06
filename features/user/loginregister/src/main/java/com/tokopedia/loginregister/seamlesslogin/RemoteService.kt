@@ -5,21 +5,21 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.IBinder
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.loginregister.RemoteApi
-import com.tokopedia.loginregister.common.di.DaggerLoginRegisterComponent
 import com.tokopedia.loginregister.seamlesslogin.di.DaggerSeamlessLoginComponent
-import com.tokopedia.loginregister.seamlesslogin.di.SeamlessLoginModule
-import com.tokopedia.loginregister.seamlesslogin.di.SeamlessLoginQueryModule
-import com.tokopedia.loginregister.seamlesslogin.di.SeamlessLoginUseCaseModule
+import com.tokopedia.loginregister.seamlesslogin.di.SeamlessLoginComponent
+import com.tokopedia.loginregister.seamlesslogin.ui.SeamlessLoginViewModel
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 /**
  * Created by Yoris Prayogo on 2020-03-02.
- * Copyright (c) 2020 PT. Tokopedia All rights reserved.
+ * Don't move this class to other package to avoid bug
+ * seamless login not show up in seller app
  */
 
-class RemoteService : Service() {
+class RemoteService : Service(), HasComponent<SeamlessLoginComponent> {
 
     companion object {
         const val KEY_NAME = "name"
@@ -38,17 +38,16 @@ class RemoteService : Service() {
 
     override fun onCreate() {
         super.onCreate()
-        DaggerSeamlessLoginComponent.builder()
-                .seamlessLoginModule(SeamlessLoginModule(applicationContext))
-                .seamlessLoginQueryModule(SeamlessLoginQueryModule())
-                .seamlessLoginUseCaseModule(SeamlessLoginUseCaseModule())
-                .loginRegisterComponent(DaggerLoginRegisterComponent.builder().baseAppComponent((application as BaseMainApplication).baseAppComponent).build())
-                .build()
-                .inject(this)
+        initInjector()
     }
 
-    @Inject lateinit var viewModel: SeamlessLoginViewModel
-    @Inject lateinit var userSession: UserSessionInterface
+    private fun initInjector() = component.inject(this)
+
+    @Inject
+    lateinit var viewModel: SeamlessLoginViewModel
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     override fun onBind(intent: Intent): IBinder {
         return binder
@@ -62,10 +61,11 @@ class RemoteService : Service() {
                 putExtras(data)
             }
             sendBroadcast(intent)
-        } catch (ignored: Exception) {}
+        } catch (ignored: Exception) {
+        }
     }
 
-    fun getKey(taskId: String?){
+    fun getKey(taskId: String?) {
         taskId?.run {
             val data = Bundle()
             viewModel.getKey({
@@ -82,10 +82,10 @@ class RemoteService : Service() {
         }
     }
 
-    fun getUserData(taskId: String?){
+    fun getUserData(taskId: String?) {
         taskId?.run {
             val data = Bundle()
-            if(userSession.isLoggedIn) {
+            if (userSession.isLoggedIn) {
                 data.apply {
                     putString(KEY_NAME, userSession.name)
                     putString(KEY_EMAIL, userSession.email)
@@ -93,7 +93,7 @@ class RemoteService : Service() {
                     putString(KEY_SHOP_NAME, userSession.shopName)
                     putString(KEY_PHONE, userSession.phoneNumber)
                 }
-            }else {
+            } else {
                 data.apply {
                     putString(KEY_ERROR, MSG_NOT_LOGIN)
                 }
@@ -111,4 +111,7 @@ class RemoteService : Service() {
             getUserData(taskId)
         }
     }
+
+    override fun getComponent(): SeamlessLoginComponent = DaggerSeamlessLoginComponent.builder()
+        .baseAppComponent((application as BaseMainApplication).baseAppComponent).build()
 }

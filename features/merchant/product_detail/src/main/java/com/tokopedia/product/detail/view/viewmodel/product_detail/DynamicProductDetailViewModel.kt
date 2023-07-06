@@ -102,6 +102,9 @@ import com.tokopedia.topads.sdk.domain.interactor.GetTopadsIsAdsUseCase.Companio
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.topads.sdk.domain.model.TopAdsGetDynamicSlottingDataProduct
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
+import com.tokopedia.universal_sharing.view.model.AffiliateInput
+import com.tokopedia.universal_sharing.view.model.GenerateAffiliateLinkEligibility
+import com.tokopedia.universal_sharing.view.usecase.AffiliateEligibilityCheckUseCase
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -156,6 +159,7 @@ class DynamicProductDetailViewModel @Inject constructor(
     private val updateCartUseCase: Lazy<UpdateCartUseCase>,
     private val deleteCartUseCase: Lazy<DeleteCartUseCase>,
     private val getTopadsIsAdsUseCase: Lazy<GetTopadsIsAdsUseCase>,
+    private val affiliateEligibilityUseCase: Lazy<AffiliateEligibilityCheckUseCase>,
     private val remoteConfig: RemoteConfig,
     val userSessionInterface: UserSessionInterface,
     private val affiliateCookieHelper: Lazy<AffiliateCookieHelper>,
@@ -304,6 +308,11 @@ class DynamicProductDetailViewModel @Inject constructor(
     private val _productMediaRecomBottomSheetState = MutableLiveData<ProductMediaRecomBottomSheetState>()
     val productMediaRecomBottomSheetState: LiveData<ProductMediaRecomBottomSheetState>
         get() = _productMediaRecomBottomSheetState
+
+    private val _resultAffiliate = MutableLiveData<Result<GenerateAffiliateLinkEligibility>>()
+
+    val resultAffiliate: LiveData<Result<GenerateAffiliateLinkEligibility>>
+        get() = _resultAffiliate
 
     val userId: String
         get() = userSessionInterface.userId
@@ -920,8 +929,11 @@ class DynamicProductDetailViewModel @Inject constructor(
     }
 
     fun shouldHideFloatingButton(): Boolean {
-        return p2Data.value?.cartRedirection?.get(getDynamicProductInfoP1?.basic?.productID)
-            ?.hideFloatingButton.orFalse()
+        val cardRedirection = p2Data.value?.cartRedirection ?: return false
+        val p1 = getDynamicProductInfoP1 ?: return false
+        val pid = p1.basic.productID
+        val hideFloatingButton = cardRedirection[pid]?.shouldHideFloatingButtonInPdp.orFalse()
+        return hideFloatingButton && !isShopOwner()
     }
 
     fun onAtcRecomNonVariantQuantityChanged(
@@ -1310,6 +1322,19 @@ class DynamicProductDetailViewModel @Inject constructor(
 
     fun dismissProductMediaRecomBottomSheet() {
         _productMediaRecomBottomSheetState.value = ProductMediaRecomBottomSheetState.Dismissed
+    }
+
+    fun checkAffiliateEligibility(affiliatePDPInput: AffiliateInput) {
+        launch {
+            try {
+                val result = affiliateEligibilityUseCase.get().apply {
+                    params = AffiliateEligibilityCheckUseCase.createParam(affiliatePDPInput)
+                }.executeOnBackground()
+                _resultAffiliate.value = Success(result)
+            } catch (e: Exception) {
+                _resultAffiliate.value = Fail(e)
+            }
+        }
     }
 
     private suspend fun loadProductMediaRecomBottomSheetData(

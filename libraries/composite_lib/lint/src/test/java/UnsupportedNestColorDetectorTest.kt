@@ -27,7 +27,7 @@ class UnsupportedNestColorDetectorTest : LintDetectorTest() {
 
     @Test
     fun `regex validation`() {
-        val regex = UnsupportedNestColorDetector.REGEX_OLD_COLOR
+        val regex = UnsupportedNestColorDetector.XML_REGEX_OLD_COLOR
 
         assertTrue(regex.containsMatchIn("Unify_N100_70"))
         assertTrue("Unify_N100_70".contains(regex))
