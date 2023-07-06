@@ -190,7 +190,6 @@ class WishlistCollectionSharingUtils {
     }
 
     companion object {
-        private const val WISHLIST_COLLECTION = "WISHLIST_COLLECTION"
         private const val PRODUCT_COUNT_2 = 2
         private const val PRODUCT_COUNT_3 = 3
         private const val PRODUCT_COUNT_4 = 4
