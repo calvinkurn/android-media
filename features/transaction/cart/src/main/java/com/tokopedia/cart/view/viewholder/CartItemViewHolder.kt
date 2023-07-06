@@ -512,7 +512,9 @@ class CartItemViewHolder constructor(
         layoutProductInfo.gone()
 
         var isProductInformationExist = false
-        val productInformationWithIcon = data.productInformationWithIcon
+
+        // gifting will be removed from cart page
+        /*val productInformationWithIcon = data.productInformationWithIcon
         if (productInformationWithIcon.isNotEmpty()) {
             isProductInformationExist = true
             layoutProductInfo.removeAllViews()
@@ -521,7 +523,7 @@ class CartItemViewHolder constructor(
                 layoutProductInfo.addView(productInfoWithIcon)
             }
             layoutProductInfo.show()
-        }
+        }*/
         if (data.needPrescription) {
             if (!isProductInformationExist) {
                 layoutProductInfo.removeAllViews()

@@ -214,6 +214,7 @@ import rx.Emitter
 import rx.Observable
 import rx.Subscription
 import rx.subjects.PublishSubject
+import rx.subscriptions.CompositeSubscription
 import timber.log.Timber
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -274,6 +275,9 @@ class ShipmentFragment :
 
     @Inject
     lateinit var ePharmacyAnalytics: EPharmacyAnalytics
+
+    @Inject
+    lateinit var compositeSubscriptionAddOnCheckbox: CompositeSubscription
 
     private var toasterErrorAkamai: Snackbar? = null
 
@@ -3875,6 +3879,11 @@ class ShipmentFragment :
         } else {
             addOnProductDataItemModel.addOnDataStatus = ADD_ON_PRODUCT_STATUS_UNCHECK
         }
+        cartItemModel.addOnProduct.listAddOnProductData.forEach {
+            if (it.addOnDataUniqueId == addOnProductDataItemModel.addOnDataUniqueId) {
+                it.addOnDataStatus = addOnProductDataItemModel.addOnDataStatus
+            }
+        }
         shipmentViewModel.saveAddOnsProduct(cartItemModel)
         shipmentAdapter.checkHasSelectAllCourier(true, -1, "", false, false)
         shipmentAdapter.updateSubtotal()
@@ -3884,13 +3893,15 @@ class ShipmentFragment :
         RouteManager.route(context, "${ApplinkConst.WEBVIEW}?url=$addOnDataInfoLink")
     }
 
-    override fun onClickSeeAllAddOnProductService(cartItemModel: CartItemModel, listSelectedAddOnId: ArrayList<Long>) {
+    override fun onClickSeeAllAddOnProductService(cartItemModel: CartItemModel) {
         // tokopedia://addon/2148784281/?cartId=123123&selectedAddonIds=111,222,333&source=cart&warehouseId=789789&isTokocabang=false
         val productId = cartItemModel.productId
         val cartId = cartItemModel.cartId
         val addOnIds = arrayListOf<Long>()
         cartItemModel.addOnProduct.listAddOnProductData.forEach { addOnItem ->
-            addOnIds.add(addOnItem.addOnDataId)
+            if (addOnItem.addOnDataStatus == ADD_ON_STATUS_ACTIVE) {
+                addOnIds.add(addOnItem.addOnDataId)
+            }
         }
         val warehouseId = cartItemModel.warehouseId
         val isTokoCabang = cartItemModel.isTokoCabang // need to confirm

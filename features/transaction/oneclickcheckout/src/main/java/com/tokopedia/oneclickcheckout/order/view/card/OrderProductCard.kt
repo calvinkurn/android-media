@@ -56,7 +56,7 @@ class OrderProductCard(
     private val listener: OrderProductCardListener,
     private val orderSummaryAnalytics: OrderSummaryAnalytics,
     private val inflater: LayoutInflater
-): RecyclerView.ViewHolder(binding.root), CoroutineScope {
+) : RecyclerView.ViewHolder(binding.root), CoroutineScope {
 
     private var product: OrderProduct = OrderProduct()
     private var shop: OrderShop = OrderShop()
@@ -506,9 +506,9 @@ class OrderProductCard(
         addOnsProductData: AddOnsProductDataModel
     ) {
         binding.tvSeeAllAddonProduct.showIfWithBlock(
-            predicate = addOnsProductData.bottomsheet.title.isNotBlank()
-                && addOnsProductData.bottomsheet.applink.isNotBlank()
-                && addOnsProductData.bottomsheet.isShown
+            predicate = addOnsProductData.bottomsheet.title.isNotBlank() &&
+                addOnsProductData.bottomsheet.applink.isNotBlank() &&
+                addOnsProductData.bottomsheet.isShown
         ) {
             text = addOnsProductData.bottomsheet.title
             setOnClickListener {
@@ -595,6 +595,9 @@ class OrderProductCard(
         addOn: AddOnsProductDataModel.Data
     ) {
         binding.tvShipmentAddOnName.text = addOn.name
+        binding.tvShipmentAddOnName.setOnClickListener {
+            binding.cbAddonItem.isChecked = binding.cbAddonItem.isChecked.not()
+        }
     }
 
     private fun setAddOnProductPrice(
@@ -660,6 +663,9 @@ class OrderProductCard(
         fun onCheckAddOnProduct(newAddOnProductData: AddOnsProductDataModel.Data, product: OrderProduct)
 
         fun onClickAddOnProductInfoIcon(url: String)
+
+        fun onClickSeeAllAddOnProductService()
+        // TODO: implementation like checkout
     }
 
     companion object {
