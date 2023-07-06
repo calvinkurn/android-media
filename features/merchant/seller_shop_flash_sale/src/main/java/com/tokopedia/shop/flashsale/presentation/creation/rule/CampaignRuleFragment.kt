@@ -118,8 +118,8 @@ class CampaignRuleFragment :
     private var relatedCampaignAdapter: RelatedCampaignAdapter? = null
 
     private var errorToaster: Snackbar? = null
-    private lateinit var irisSession: IrisSession
-    private lateinit var userSession: UserSession
+    private var irisSession: IrisSession? = null
+    private var userSession: UserSession? = null
 
     private val tncCheckboxChangeListener = object : CompoundButton.OnCheckedChangeListener {
         override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
@@ -146,6 +146,8 @@ class CampaignRuleFragment :
         savedInstanceState: Bundle?
     ): View? {
         binding = SsfsFragmentCampaignRuleBinding.inflate(inflater, container, false)
+        if (irisSession == null && container != null) irisSession = IrisSession(container.context)
+        userSession = UserSession(context)
         return binding?.root
     }
 
@@ -163,11 +165,6 @@ class CampaignRuleFragment :
     }
 
     private fun setUpView() {
-        userSession = UserSession(activity)
-        context?.let {
-            irisSession = IrisSession(it)
-        }
-
         getRollenceGradualRollout()
         handlePageMode()
         setUpToolbar()
@@ -358,10 +355,12 @@ class CampaignRuleFragment :
 
     // Get Rollence Gradual Rollout to check whether the new feature is available to user or not
     private fun getRollenceGradualRollout() {
-        viewModel.getRollenceGradualRollout(
-            shopId = userSession.shopId,
-            irisSessionId = irisSession.getSessionId()
-        )
+        userSession?.let {
+            viewModel.getRollenceGradualRollout(
+                shopId = it.shopId,
+                irisSessionId = irisSession?.getSessionId() ?: ""
+            )
+        }
     }
 
     private fun onRegularPaymentMethodSelected() {
