@@ -30,13 +30,13 @@ class LottieBottomNavbar : LinearLayout {
     private var containerList: MutableList<LinearLayout> = ArrayList()
     private var itemCount: Int = 1
     private var buttonContainerBackgroundColor: Int =
-        ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+        ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN0)
     private var buttonsHeight: Float = DEFAULT_HEIGHT
     private var selectedItem: Int? = null
     private var containerWidth: Int = 0
     private var navbarContainer: LinearLayout? = null
     private var buttonColor: Int =
-        ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N300)
+        ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN300)
     private var activeButtonColor: Int = Color.TRANSPARENT
     private var isThreeItemBottomNav: Boolean = false
 
@@ -164,14 +164,14 @@ class LottieBottomNavbar : LinearLayout {
 
         buttonContainerBackgroundColor = a.getColor(
             R.styleable.LottieBottomNavbar_buttonContainerBackgroundColor,
-            ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+            ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN0)
         )
         buttonsHeight =
             a.getDimension(R.styleable.LottieBottomNavbar_buttonsHeight, defaultButtonHeight)
 
         buttonColor = a.getColor(
             R.styleable.LottieBottomNavbar_buttonColor,
-            ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N200)
+            ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN200)
         )
         activeButtonColor = a.getColor(
             R.styleable.LottieBottomNavbar_activeButtonColor,
