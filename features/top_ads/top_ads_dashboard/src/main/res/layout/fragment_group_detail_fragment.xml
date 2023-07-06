@@ -33,21 +33,16 @@
         app:layout_constraintBottom_toBottomOf="parent"
         android:visibility="gone"/>
 
-    <com.tokopedia.empty_state.EmptyStateUnify
-        android:id="@+id/detailPageEmptyState"
+    <com.tokopedia.globalerror.GlobalError
+        android:id="@+id/detailPageGlobalError"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="visible"
+        android:visibility="gone"
+        app:globalerrors_type="SERVER_ERROR"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:unifyEmptyStateDescription="@string/topads_insight_global_error_description"
-        app:unifyEmptyStateImageDrawable="@drawable/recommendation_empty_state"
-        app:unifyEmptyStateOrientation="vertical"
-        app:unifyEmptyStatePrimaryCTAText="Coba Lagi"
-        app:unifyEmptyStateTitle="@string/topads_insight_global_error_title"
-        app:unifyEmptyStateType="page" />
+        app:layout_constraintTop_toTopOf="parent"/>
 
     <com.tokopedia.unifycomponents.CardUnify2
         android:id="@+id/saveButtonContainer"

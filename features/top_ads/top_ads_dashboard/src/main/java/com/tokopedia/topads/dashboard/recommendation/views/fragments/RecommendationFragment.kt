@@ -17,7 +17,7 @@ import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.empty_state.EmptyStateUnify
+import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
@@ -60,7 +60,7 @@ class RecommendationFragment : BaseDaggerFragment() {
     private var topLevelWidgetShimmer: View? = null
     private var bottomShimmerRecommendation: View? = null
     private var recommendationMainContainer: CardUnify2? = null
-    private var recommendationEmptyState: EmptyStateUnify? = null
+    private var recommendationGlobalError: GlobalError? = null
 
     private var emptyStateRecyclerView: RecyclerView? = null
     private var pageControlEmptyState: PageControl? = null
@@ -128,7 +128,7 @@ class RecommendationFragment : BaseDaggerFragment() {
         topLevelWidgetShimmer = view.findViewById(R.id.topLevelWidgetShimmer)
         bottomShimmerRecommendation = view.findViewById(R.id.bottomShimmerRecommendation)
         recommendationMainContainer = view.findViewById(R.id.recommendationMainContainer)
-        recommendationEmptyState = view.findViewById(R.id.recommendationEmptyState)
+        recommendationGlobalError = view.findViewById(R.id.recommendationGlobalError)
         emptyStateRecyclerView = view.findViewById(R.id.emptyStateView)
         pageControlEmptyState = view.findViewById(R.id.pageControlEmptyState)
         potentialProductCard = view.findViewById(R.id.topads_insight_center_product_widget_potential)
@@ -168,9 +168,9 @@ class RecommendationFragment : BaseDaggerFragment() {
     }
 
     private fun settingClickListener() {
-        recommendationEmptyState?.emptyStateCTAID?.setOnClickListener {
+        recommendationGlobalError?.setActionClickListener{
             viewModel?.loadRecommendationPage()
-            recommendationEmptyState?.hide()
+            recommendationGlobalError?.hide()
             recommendationMainContainer?.show()
         }
 
@@ -193,7 +193,7 @@ class RecommendationFragment : BaseDaggerFragment() {
                     renderTopLevelWidgetForNoTopAds(it.data.isHeadline && it.data.isProduct)
                 }
                 is Fail -> {
-                    recommendationEmptyState?.show()
+                    showGlobalError()
                     recommendationMainContainer?.hide()
                 }
             }
@@ -213,6 +213,12 @@ class RecommendationFragment : BaseDaggerFragment() {
                 }
             }
         }
+    }
+
+    private fun showGlobalError() {
+        recommendationGlobalError?.show()
+        recommendationGlobalError?.errorTitle?.text = context?.getString(R.string.topads_insight_global_error_title)
+        recommendationGlobalError?.errorDescription?.text = context?.getString(R.string.topads_insight_global_error_description)
     }
 
     private fun setTabsCount(totalAdGroupsWithInsight: GroupInsightCountUiModel) {

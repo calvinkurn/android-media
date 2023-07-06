@@ -8,9 +8,9 @@
     android:layout_marginEnd="8dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/performanceWidgetContainer"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@drawable/performance_widget_bg">
+        android:layout_height="match_parent">
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/performanceWidgetTitle"

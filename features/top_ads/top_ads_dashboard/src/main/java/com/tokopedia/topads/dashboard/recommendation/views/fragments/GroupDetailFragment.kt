@@ -13,7 +13,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.dialog.DialogUnify
-import com.tokopedia.empty_state.EmptyStateUnify
+import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
@@ -78,7 +78,7 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
     private var saveButtonContainer: CardUnify2? = null
     private var groupChipsLayout: View? = null
     private var groupDetailPageShimmer: View? = null
-    private var detailPageEmptyState: EmptyStateUnify? = null
+    private var detailPageGlobalError: GlobalError? = null
     private var confirmationDailog: DialogUnify? = null
     private val groupDetailAdapter by lazy {
         GroupDetailAdapter(
@@ -133,10 +133,16 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
         observeLiveData()
         attachViewClickListeners()
         settingClicks()
+        setGlobalError()
+    }
+
+    private fun setGlobalError() {
+        detailPageGlobalError?.errorTitle?.text = context?.getString(R.string.topads_insight_global_error_title)
+        detailPageGlobalError?.errorDescription?.text = context?.getString(R.string.topads_insight_global_error_description)
     }
 
     private fun settingClicks() {
-        detailPageEmptyState?.emptyStateCTAID?.setOnClickListener {
+        detailPageGlobalError?.setActionClickListener{
             viewModel.selectDefaultChips(insightType)
             if (!adGroupId.isNullOrEmpty() && !adGroupName.isNullOrEmpty()) {
                 loadDetailPageOnAction(
@@ -147,7 +153,7 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
                     adGroupName!!
                 )
             }
-            detailPageEmptyState?.hide()
+            detailPageGlobalError?.hide()
             groupDetailsRecyclerView?.show()
         }
     }
@@ -205,7 +211,7 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
         viewModel.detailPageLiveData.observe(viewLifecycleOwner) { it ->
             when (it) {
                 is TopAdsListAllInsightState.Success -> {
-                    detailPageEmptyState?.hide()
+                    detailPageGlobalError?.hide()
                     val list = mutableListOf<GroupDetailDataModel>()
                     it.data.map {
                         if (it.value.isAvailable()) list.add(it.value)
@@ -223,11 +229,11 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
                 is TopAdsListAllInsightState.Fail -> {
                     groupDetailPageShimmer?.hide()
                     groupDetailsRecyclerView?.hide()
-                    detailPageEmptyState?.show()
+                    detailPageGlobalError?.show()
                 }
                 is TopAdsListAllInsightState.Loading -> {
                     groupDetailPageShimmer?.show()
-                    detailPageEmptyState?.hide()
+                    detailPageGlobalError?.hide()
                 }
             }
         }
@@ -420,7 +426,7 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
         groupDetailChipsRv = view?.findViewById(R.id.groupDetailChipsRv)
         groupChipsLayout = view?.findViewById(R.id.groupChipsLayout)
         groupDetailPageShimmer = view?.findViewById(R.id.groupDetailPageShimmer)
-        detailPageEmptyState = view?.findViewById(R.id.detailPageEmptyState)
+        detailPageGlobalError = view?.findViewById(R.id.detailPageGlobalError)
         saveButton = view?.findViewById(R.id.saveButton)
         saveButtonContainer = view?.findViewById(R.id.saveButtonContainer)
     }

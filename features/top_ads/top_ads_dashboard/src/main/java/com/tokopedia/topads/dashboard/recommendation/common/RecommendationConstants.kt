@@ -74,6 +74,7 @@ object RecommendationConstants {
     const val PER_PAGE_COUNT_VALUE = 20
 
     const val SEARCH_REPORT_EDU_URL = "https://seller.tokopedia.com/edu/topads-laporan-pencarian/"
+    const val PERFORMANCE_WIDGET_BG = "https://images.tokopedia.net/img/img/android/topads/insight_center_page/performance_widget_bg.png"
     const val HEADLINE_INSIGHT_MUTATION_SOURCE = "android.insight_center_headline_keyword_recom"
     const val PRODUCT_INSIGHT_MUTATION_SOURCE = "product_recom_app"
     const val MANAGE_RECOMMENDATION_URL = "tokopedia://webview?url=https://ta.tokopedia.com/v2/manage/recommendation/eligible-product"

@@ -105,21 +105,16 @@
         </androidx.coordinatorlayout.widget.CoordinatorLayout>
     </com.tokopedia.unifycomponents.CardUnify2>
 
-    <com.tokopedia.empty_state.EmptyStateUnify
-        android:id="@+id/recommendationEmptyState"
+    <com.tokopedia.globalerror.GlobalError
+        android:id="@+id/recommendationGlobalError"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="gone"
+        app:globalerrors_type="SERVER_ERROR"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:unifyEmptyStateDescription="Tunggu sebentar, biar Toped bereskan. Coba lagi atau kembali nanti."
-        app:unifyEmptyStateImageDrawable="@drawable/recommendation_empty_state"
-        app:unifyEmptyStateOrientation="vertical"
-        app:unifyEmptyStatePrimaryCTAText="Coba Lagi"
-        app:unifyEmptyStateTitle="Ada gangguan di rumah Toped!"
-        app:unifyEmptyStateType="page" />
+        app:layout_constraintTop_toTopOf="parent"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
