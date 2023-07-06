@@ -9,4 +9,6 @@ interface TopchatCacheManager {
     fun <T> loadCache(key: String, type: Type): T
     fun saveState(stateCacheKey: String, value: Boolean)
     fun getPreviousState(stateCacheKey: String): Boolean
+    fun saveLongCache(cacheKey: String, value: Long)
+    fun getLongCache(cacheKey: String, defaultValue: Long): Long
 }

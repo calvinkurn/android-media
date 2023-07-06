@@ -392,9 +392,7 @@ open class ChatListInboxFragment :
         ) { visibility ->
             broadCastButton?.toggleBroadcastButton(
                 shouldShow = visibility,
-                shouldShowLabel = viewModel.getBooleanCache(
-                    BROADCAST_FAB_LABEL_PREF_NAME
-                ) && getRollenceValue(BROADCAST_FAB_LABEL_ROLLENCE_KEY)
+                shouldShowLabel = shouldShowBroadcastFabNewLabel()
             )
         }
         viewModel.broadCastButtonUrl.observe(
@@ -427,18 +425,23 @@ open class ChatListInboxFragment :
     }
 
     private fun markBroadcastNewLabel() {
-        val cacheResult = viewModel.getBooleanCache(
-            BROADCAST_FAB_LABEL_PREF_NAME
-        ) && getRollenceValue(BROADCAST_FAB_LABEL_ROLLENCE_KEY)
-        if (cacheResult) {
+        if (shouldShowBroadcastFabNewLabel()) {
             viewModel.saveBooleanCache(
                 cacheName = BROADCAST_FAB_LABEL_PREF_NAME,
-                value = false
+                value = true
             )
             broadCastButton?.toggleBroadcastLabel(
                 shouldShowLabel = false
             )
         }
+    }
+
+    private fun shouldShowBroadcastFabNewLabel(): Boolean {
+        val labelCache = viewModel.getBooleanCache(
+            BROADCAST_FAB_LABEL_PREF_NAME
+        )
+        val rollenceValue = getRollenceValue(BROADCAST_FAB_LABEL_ROLLENCE_KEY)
+        return !labelCache && rollenceValue
     }
 
     private fun initView(view: View) {

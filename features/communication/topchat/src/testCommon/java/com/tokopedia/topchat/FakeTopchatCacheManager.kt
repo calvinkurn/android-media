@@ -5,7 +5,7 @@ import com.tokopedia.topchat.common.network.TopchatCacheManager
 import java.lang.reflect.Type
 
 class FakeTopchatCacheManager(
-        var cache: Any? = null
+    var cache: Any? = null
 ) : TopchatCacheManager {
 
     val cacheMap: ArrayMap<Any, Any> = ArrayMap()
@@ -32,5 +32,13 @@ class FakeTopchatCacheManager(
 
     override fun getPreviousState(stateCacheKey: String): Boolean {
         return cacheMap[stateCacheKey] as? Boolean ?: isPreviousLoadSuccess
+    }
+
+    override fun saveLongCache(cacheKey: String, value: Long) {
+        cacheMap[cacheKey] = value
+    }
+
+    override fun getLongCache(cacheKey: String, defaultValue: Long): Long {
+        return cacheMap[cacheKey] as? Long ?: defaultValue
     }
 }

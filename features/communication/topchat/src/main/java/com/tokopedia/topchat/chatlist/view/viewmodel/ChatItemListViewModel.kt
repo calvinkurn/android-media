@@ -1,7 +1,6 @@
 package com.tokopedia.topchat.chatlist.view.viewmodel
 
 import android.content.Context
-import android.content.SharedPreferences
 import android.os.Build
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -45,6 +44,7 @@ import com.tokopedia.topchat.chatlist.domain.usecase.MutationUnpinChatUseCase
 import com.tokopedia.topchat.chatroom.view.uimodel.ReplyParcelableModel
 import com.tokopedia.topchat.common.Constant
 import com.tokopedia.topchat.common.domain.MutationMoveChatToTrashUseCase
+import com.tokopedia.topchat.common.network.TopchatCacheManager
 import com.tokopedia.topchat.common.util.Utils
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -90,7 +90,7 @@ class ChatItemListViewModel @Inject constructor(
     private val operationalInsightUseCase: GetOperationalInsightUseCase,
     private val getChatListTickerUseCase: GetChatListTickerUseCase,
     private val getChatBlastSellerMetaDataUseCase: GetChatBlastSellerMetaDataUseCase,
-    private val sharedPref: SharedPreferences,
+    private val cacheManager: TopchatCacheManager,
     private val userSession: UserSessionInterface,
     private val dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main), ChatItemListContract {
@@ -200,10 +200,11 @@ class ChatItemListViewModel @Inject constructor(
         if (getChatAdminAccessJob?.isCompleted != false) {
             getChatAdminAccessJob = viewModelScope.launch {
                 try {
-                    val result = withContext(dispatcher.io) {
-                        Success(getIsChatAdminAccessAuthorized())
+                    withContext(dispatcher.io) {
+                        _isChatAdminEligible.postValue(
+                            Success(getIsChatAdminAccessAuthorized())
+                        )
                     }
-                    _isChatAdminEligible.postValue(result)
                 } catch (throwable: Throwable) {
                     _isChatAdminEligible.value = Fail(throwable)
                 }
@@ -427,16 +428,14 @@ class ChatItemListViewModel @Inject constructor(
     }
 
     private fun shouldShowOperationalInsightTicker(): Boolean {
-        val nextMonday = sharedPref.getLong(getTickerPrefName(), 0)
+        val nextMonday = cacheManager.getLongCache(getTickerPrefName(), 0)
         val todayTimeMillis = System.currentTimeMillis()
         return todayTimeMillis > nextMonday
     }
 
     fun saveNextMondayDate() {
         val newNextMonday = Utils.getNextParticularDay(Calendar.MONDAY)
-        sharedPref.edit()
-            .putLong(getTickerPrefName(), newNextMonday)
-            .apply()
+        cacheManager.saveLongCache(getTickerPrefName(), newNextMonday)
     }
 
     private fun getTickerPrefName(): String {
@@ -449,19 +448,11 @@ class ChatItemListViewModel @Inject constructor(
     }
 
     fun saveBooleanCache(cacheName: String, value: Boolean) {
-        sharedPref.edit()
-            .putBoolean(cacheName, value)
-            .apply()
+        cacheManager.saveState(cacheName, value)
     }
 
-    fun getBooleanCache(
-        cacheName: String,
-        defaultValue: Boolean = true
-    ): Boolean {
-        return sharedPref.getBoolean(
-            cacheName,
-            defaultValue
-        )
+    fun getBooleanCache(cacheName: String): Boolean {
+        return cacheManager.getPreviousState(cacheName)
     }
 
     companion object {
