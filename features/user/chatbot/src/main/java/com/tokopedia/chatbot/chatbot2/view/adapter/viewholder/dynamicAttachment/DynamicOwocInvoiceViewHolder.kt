@@ -48,6 +48,7 @@ class DynamicOwocInvoiceViewHolder(
                 message?.text = uiModel.message
             }
             tvTime.text = ChatbotMessageViewHolderBinder.getTime(uiModel.replyTime)
+            tvTime.show()
             messageParent.setContainerBackground(bindBackground())
             invoiceAdapter = ChatbotDynamicOwocInvoiceAdapter()
             setUpReadMoreButtonClickListener(uiModel)
