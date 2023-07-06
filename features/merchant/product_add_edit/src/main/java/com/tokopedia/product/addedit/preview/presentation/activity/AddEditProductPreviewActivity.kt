@@ -119,8 +119,15 @@ open class AddEditProductPreviewActivity: TabletAdaptiveActivity() {
     }
 
     private fun updateActivityToolbar() {
-        findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar)?.let {
+        findViewById<androidx.appcompat.widget.Toolbar>(com.tokopedia.product.addedit.R.id.toolbar)?.let {
             setSupportActionBar(it)
+            // set to dark mode color support
+            val color = androidx.core.content.ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N700)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                it.navigationIcon?.colorFilter = BlendModeColorFilter(color, BlendMode.SRC_IN)
+            }else{
+                it.navigationIcon?.setColorFilter(color, PorterDuff.Mode.SRC_IN)
+            }
         }
     }
 
