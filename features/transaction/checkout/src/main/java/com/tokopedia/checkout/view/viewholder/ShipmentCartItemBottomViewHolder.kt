@@ -1206,20 +1206,20 @@ class ShipmentCartItemBottomViewHolder(
     }
 
     private fun renderSubtotalAddOn(cartItemModel: CartItemModel, context: Context, subtotalAddOnMap: HashMap<Int, String>) {
-        if (cartItemModel.addOnProduct.listAddOnProductData.isNotEmpty()) {
-            val listShipmentAddOnSubtotalModel = arrayListOf<ShipmentAddOnSubtotalModel>()
+        val listShipmentAddOnSubtotalModel = arrayListOf<ShipmentAddOnSubtotalModel>()
+        cartItemModel.addOnProduct.listAddOnProductData.forEach {
             for ((key, value) in subtotalAddOnMap) {
-                cartItemModel.addOnProduct.listAddOnProductData.forEach {
-                    if (it.addOnDataType == key && it.addOnDataStatus == 1) {
-                        val shipmentAddOnSubtotalModel = ShipmentAddOnSubtotalModel(
-                            wording = value.replace(CartConstant.QTY_ADDON_REPLACE, cartItemModel.quantity.toString()),
-                            priceLabel = CurrencyFormatUtil.convertPriceValueToIdrFormat((it.addOnDataPrice * cartItemModel.quantity), false).removeDecimalSuffix()
-                        )
-                        listShipmentAddOnSubtotalModel.add(shipmentAddOnSubtotalModel)
-                    }
+                if (it.addOnDataType == key && it.addOnDataStatus == 1) {
+                    val shipmentAddOnSubtotalModel = ShipmentAddOnSubtotalModel(
+                        wording = value.replace(CartConstant.QTY_ADDON_REPLACE, cartItemModel.quantity.toString()),
+                        priceLabel = CurrencyFormatUtil.convertPriceValueToIdrFormat((it.addOnDataPrice * cartItemModel.quantity), false).removeDecimalSuffix()
+                    )
+                    listShipmentAddOnSubtotalModel.add(shipmentAddOnSubtotalModel)
                 }
             }
+        }
 
+        if (listShipmentAddOnSubtotalModel.isNotEmpty()) {
             val addOnSubtotalAdapter = ShipmentAddOnSubtotalAdapter(listShipmentAddOnSubtotalModel)
             binding.containerSubtotal.rvSubtotalAddon.apply {
                 layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
