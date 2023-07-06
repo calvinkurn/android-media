@@ -210,6 +210,7 @@ class SharedReviewMediaGalleryViewModelTest: SharedReviewMediaGalleryViewModelTe
         val preloadedShopID = "654321"
         val preloadedIsProductReview = true
         val preloadedIsFromGallery = true
+        val preloadedPageSource = ReviewMediaGalleryRouter.PageSource.REVIEW
         val preloadedIsReviewOwner = true
         val mockCacheManager = mockk<CacheManager> {
             every { get<Any>(any(), any(), any()) } answers {
@@ -219,6 +220,7 @@ class SharedReviewMediaGalleryViewModelTest: SharedReviewMediaGalleryViewModelTe
                     ReviewMediaGalleryRouter.EXTRAS_PRELOADED_DETAILED_REVIEW_MEDIA_RESULT -> preloadedDetailedReviewMediaResult
                     ReviewMediaGalleryRouter.EXTRAS_IS_PRODUCT_REVIEW -> preloadedIsProductReview
                     ReviewMediaGalleryRouter.EXTRAS_IS_FROM_GALLERY -> preloadedIsFromGallery
+                    ReviewMediaGalleryRouter.EXTRAS_PAGE_SOURCE -> preloadedPageSource
                     ReviewMediaGalleryRouter.EXTRAS_IS_REVIEW_OWNER -> preloadedIsReviewOwner
                     else -> null
                 }
@@ -242,6 +244,7 @@ class SharedReviewMediaGalleryViewModelTest: SharedReviewMediaGalleryViewModelTe
         Assert.assertEquals(preloadedIsFromGallery, viewModel.isFromGallery())
         Assert.assertEquals(preloadedDetailedReviewMediaResult.detail.reviewDetail[0].feedbackId, viewModel.getFeedbackId())
         Assert.assertEquals(preloadedDetailedReviewMediaResult.detail.reviewDetail[0].user.userId, viewModel.getReviewUserID())
+        Assert.assertEquals(preloadedPageSource, viewModel.getPageSource())
         Assert.assertEquals(preloadedIsReviewOwner, viewModel.isReviewOwner)
     }
 
@@ -567,5 +570,27 @@ class SharedReviewMediaGalleryViewModelTest: SharedReviewMediaGalleryViewModelTe
             getDetailedReviewMediaResult1stPage.productrevGetReviewMedia.reviewMedia.last(),
             viewModel.detailedReviewMediaResult.first()!!.reviewMedia.last()
         )
+    }
+
+    @Test
+    fun `hideOverlay should change overlayVisibility to false`() = rule.runTest {
+        viewModel.hideOverlay()
+
+        Assert.assertEquals(viewModel.overlayVisibility.first(), false)
+    }
+
+    @Test
+    fun `updateIsPlayingVideo true should change isPlayingVideo to true`() = rule.runTest {
+        viewModel.updateIsPlayingVideo(true)
+
+        Assert.assertEquals(viewModel.isPlayingVideo.first(), true)
+    }
+
+    @Test
+    fun `updateIsPlayingVideo false should change isPlayingVideo to false and overlayVisibility to true`() = rule.runTest {
+        viewModel.updateIsPlayingVideo(false)
+
+        Assert.assertEquals(viewModel.isPlayingVideo.first(), false)
+        Assert.assertEquals(viewModel.overlayVisibility.first(), true)
     }
 }
