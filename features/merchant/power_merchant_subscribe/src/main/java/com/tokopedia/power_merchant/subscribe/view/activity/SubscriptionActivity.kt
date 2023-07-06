@@ -150,6 +150,16 @@ class SubscriptionActivity : BaseSimpleActivity(), HasComponent<PowerMerchantSub
         }
     }
 
+    override fun renderFooterView() {
+        (sharedViewModel.powerMerchantBasicInfo.value as? Success)?.data?.let {
+            setupFooterView(it)
+        }
+    }
+
+    override fun hideFooterView() {
+        binding?.pmRegistrationFooterView?.gone()
+    }
+
     override fun showLoadingState() {
         binding?.run {
             loaderPmSubscription.visible()
@@ -161,6 +171,7 @@ class SubscriptionActivity : BaseSimpleActivity(), HasComponent<PowerMerchantSub
     override fun showErrorState(throwable: Throwable) {
         binding?.run {
             loaderPmSubscription.gone()
+            framePmFragment.gone()
             globalErrorPmSubscription.visible()
             globalErrorPmSubscription.setActionClickListener {
                 fetchPmBasicInfo(false)

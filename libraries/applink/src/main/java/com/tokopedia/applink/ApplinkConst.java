@@ -406,7 +406,6 @@ public interface ApplinkConst {
     String PAYLATER = "tokopedia://fintech/paylater";
     String ACTIVATION_GOPAY = "tokopedia://fintech/activate_gopay";
     String OPTIMIZED_CHECKOUT = "tokopedia://fintech/opt-checkout";
-    String INBOX_HOST = "inbox";
     String INBOX = "tokopedia://inbox";
 
     String PLAY_WEBVIEW = "tokopedia://play/webview?url={url}&titlebar={has_titlebar}";
@@ -432,6 +431,7 @@ public interface ApplinkConst {
     String AFFILIATE_TOKO_EDU_PAGE = "tokopedia://affiliate/edu-page";
     String AFFILIATE_TOKO_ONBOARDING = "tokopedia://affiliate/onboarding";
     String AFFILIATE_TOKO_PROMO_PAGE = "tokopedia://affiliate/promosikan";
+    String AFFILIATE_TOKO_PERFORMA_PAGE = "tokopedia://affiliate/performa";
     String QRSCAN = "tokopedia://scanqr";
     String OVOP2PTRANSFERFORM = "tokopedia-android-internal://ovop2ptransfer?phone";
     String OVOP2PTRANSFERFORM_SHORT = "tokopedia-android-internal://ovop2ptransfer";

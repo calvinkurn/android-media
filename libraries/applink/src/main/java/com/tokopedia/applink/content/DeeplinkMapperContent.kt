@@ -61,7 +61,8 @@ object DeeplinkMapperContent {
     }
 
     fun getRegisteredNavigation(deeplink: String): String {
-        return deeplink.replace(DeeplinkConstant.SCHEME_TOKOPEDIA, DeeplinkConstant.SCHEME_INTERNAL)
+        return if (deeplink.startsWith(DeeplinkConstant.SCHEME_TOKOPEDIA)) deeplink.replaceFirst(DeeplinkConstant.SCHEME_TOKOPEDIA, DeeplinkConstant.SCHEME_INTERNAL)
+        else deeplink
     }
 
     fun isPostDetailDeepLink(uri: Uri): Boolean {
