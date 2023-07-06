@@ -1,8 +1,6 @@
 apply plugin: 'com.android.dynamic-feature'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 apply plugin: 'io.hansel.preprocessor.feature'
-apply plugin: 'robust'
-
 
 buildscript {
     repositories {
@@ -70,12 +68,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.layanan)
     implementation projectOrAar(rootProject.ext.features.withdraw)
 
-    //Media
-    implementation projectOrAar(rootProject.ext.features.liveBroadcaster)
-
-    //Content
-    implementation projectOrAar(rootProject.ext.features.playBroadcaster)
-
     //Discovery
     implementation projectOrAar(rootProject.ext.features.productCardOptions)
     //Fintech
@@ -128,7 +120,6 @@ dependencies {
 
     //Media
     implementation projectOrAar(rootProject.ext.features.mediaeditor)
-    implementation projectOrAar(rootProject.ext.features.mediapicker)
     implementation projectOrAar(rootProject.ext.libraries.imagePicker)
 
     implementation projectOrAar(rootProject.ext.features.tokomemberSellerDashboard)

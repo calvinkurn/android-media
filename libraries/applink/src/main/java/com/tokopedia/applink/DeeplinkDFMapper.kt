@@ -266,6 +266,7 @@ object DeeplinkDFMapper : CoroutineScope {
     const val DF_BASE_SELLER_APP = "df_base_sellerapp"
     const val DF_CATEGORY_TRADE_IN = "df_category_trade_in"
     const val DF_CATEGORY_EPHARMACY = "df_category_epharmacy"
+    const val DF_CATEGORY_CATALOG_LIBRARY = "df_category_catalog_library"
     const val DF_MERCHANT_SELLER = "df_merchant_seller"
     const val DF_MERCHANT_NONLOGIN = "df_merchant_nonlogin"
     const val DF_MERCHANT_PRODUCT_AR = "df_merchant_product_ar"
@@ -315,7 +316,7 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({ it.startsWith(INTERNAL_EXPLORE_CATEGORY) }, DF_BASE, R.string.applink_title_explore_category))
             add(DFP({ it.startsWith(INTERNAL_CATALOG) }, DF_BASE, R.string.applink_title_catalog))
             add(DFP({ it.startsWith(INTERNAL_E_PHARMACY) }, DF_CATEGORY_EPHARMACY, R.string.applink_title_e_pharmacy))
-            add(DFP({ it.startsWith(INTERNAL_CATALOG_LIBRARY) }, DF_BASE, R.string.applink_title_catalog_library))
+            add(DFP({ it.startsWith(INTERNAL_CATALOG_LIBRARY) }, DF_CATEGORY_CATALOG_LIBRARY, R.string.applink_title_catalog_library))
             add(DFP({ it.startsWith(INTERNAL_FIND) }, DF_BASE, R.string.applink_title_find_native))
             add(DFP({ it.startsWith(INTERNAL_CATEGORY) }, DF_BASE, R.string.label_category))
 
@@ -553,6 +554,8 @@ object DeeplinkDFMapper : CoroutineScope {
 
             add(DFP({ it.startsWith(ApplinkConstInternalGlobal.WITHDRAW) }, DF_BASE, R.string.payment_title_withdraw))
             add(DFP({ it.startsWith(ApplinkConstInternalGlobal.AUTO_WITHDRAW_SETTING) }, DF_BASE, R.string.payment_title_auto_withdraw))
+
+            add(DFP({ it.startsWith(ApplinkConstInternalPayment.PAYMENT_THANK_YOU_PAGE) }, DF_BASE, R.string.payment_title_thank_you))
 
             // Promo
             add(DFP({ it.startsWith(INTERNAL_TOKOPOINTS) }, DF_PROMO_TOKOPOINTS, R.string.title_tokopoints, { DFWebviewFallbackUrl.PROMO_TOKOPOINTS }))
@@ -870,7 +873,14 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({ it.startsWithPattern(INTERNAL_CONTENT_POST_DETAIL) }, DF_BASE_SELLER_APP, R.string.applink_kol_title_post_detail))
             add(DFP({ it.startsWithPattern(CONTENT_REPORT) }, DF_BASE_SELLER_APP, R.string.applink_kol_title_content_report))
             add(DFP({ it.startsWithPattern(VIDEO_DETAIL) }, DF_BASE_SELLER_APP, R.string.applink_kol_title_video_detail))
-            add(DFP({ it.startsWithPattern(PLAY_BROADCASTER) || it.startsWithPattern(PLAY_SHORTS) }, DF_BASE_SELLER_APP, R.string.applink_title_play_broadcaster))
+            add(DFP({ it.startsWithPattern(PLAY_BROADCASTER)
+                || it.startsWith(ApplinkConstInternalContent.INTERNAL_PLAY_BROADCASTER)
+                || it.startsWithPattern(PLAY_SHORTS)
+                || it.startsWith(ApplinkConstInternalContent.INTERNAL_PLAY_SHORTS)
+                || it.startsWithPattern(INTERNAL_MEDIA_PICKER)
+                || it.startsWith(INTERNAL_MEDIA_PICKER_ALBUM)
+                || it.startsWith(INTERNAL_MEDIA_PICKER_PREVIEW)
+            }, DF_CONTENT_PLAY_BROADCASTER, R.string.applink_title_play_broadcaster))
 
             // Logistic
             add(DFP({ it.startsWith(SELLER_COD_ACTIVATION) }, DF_BASE_SELLER_APP, R.string.path_shop_setting_cod_activation))

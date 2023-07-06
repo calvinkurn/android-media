@@ -126,7 +126,7 @@ abstract class BaseDigitalPDPPulsaTest {
     }
 
     protected fun recommendations_clickCard() {
-        onView(withId(R.id.tg_title_recharge_recommendation_card_small)).perform(click())
+        onView(withId(R.id.rv_recharge_recommendation_card_title)).perform(click())
     }
 
     protected fun mccm_clickCard_withIndex(index: Int) {
