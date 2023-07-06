@@ -145,6 +145,7 @@ class FeedVideoCache private constructor(
             }
 
         fun cleanUp(context: Context) {
+            if (INSTANCE == null) return
             val instance = getInstance(context)
             instance.cancel()
             instance.release()

@@ -169,7 +169,8 @@ class FeedPostLiveViewHolder(
         videoPlayer.start(
             element.media.firstOrNull()?.mediaUrl.orEmpty(),
             false,
-            playWhenReady = false
+            playWhenReady = false,
+            isLive = true
         )
     }
 

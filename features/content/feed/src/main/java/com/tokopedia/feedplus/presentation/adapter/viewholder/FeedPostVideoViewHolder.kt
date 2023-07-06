@@ -56,7 +56,9 @@ class FeedPostVideoViewHolder(
     private val commentButtonView = FeedCommentButtonView(binding.feedCommentButton, listener)
 
     private var mVideoPlayer: FeedExoPlayer? = null
+    private var mIsSelected: Boolean = false
     private var mData: FeedCardVideoContentModel? = null
+
     private var trackerDataModel: FeedTrackerDataModel? = null
 
     init {
@@ -378,7 +380,7 @@ class FeedPostVideoViewHolder(
 
             override fun onVideoReadyToPlay(isPlaying: Boolean) {
                 hideLoading()
-                binding.iconPlay.showWithCondition(!isPlaying)
+                binding.iconPlay.showWithCondition(!isPlaying && mIsSelected)
             }
 
             override fun onVideoStateChange(stopDuration: Long, videoDuration: Long) {
@@ -446,6 +448,7 @@ class FeedPostVideoViewHolder(
     }
 
     private fun onSelected(element: FeedCardVideoContentModel) {
+        mIsSelected = true
         val trackerModel = trackerDataModel ?: trackerMapper.transformVideoContentToTrackerModel(element)
         listener.onPostImpression(
             trackerModel,
@@ -458,6 +461,7 @@ class FeedPostVideoViewHolder(
     }
 
     private fun onNotSelected() {
+        mIsSelected = false
         mVideoPlayer?.pause()
         mVideoPlayer?.reset()
 
