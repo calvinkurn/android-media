@@ -1,7 +1,10 @@
 package com.tokopedia.shop.campaign.view.adapter.viewholder
 
-import android.view.LayoutInflater
+import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.widget.PlayWidgetViewHolder
 import com.tokopedia.play.widget.analytic.PlayWidgetAnalyticListener
 import com.tokopedia.play.widget.ui.PlayWidgetMediumView
@@ -14,32 +17,52 @@ import com.tokopedia.shop.campaign.view.listener.ShopCampaignInterface
 import com.tokopedia.shop.campaign.view.listener.ShopCampaignPlayWidgetListener
 import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.databinding.ItemShopCampaignPlayWidgetBinding
-import com.tokopedia.shop.databinding.ShopCampaignPlayTitleCustomViewBinding
 import com.tokopedia.shop.home.view.model.CarouselPlayWidgetUiModel
 import com.tokopedia.utils.view.binding.viewBinding
 
 class ShopCampaignCarouselPlayWidgetViewHolder(
+    itemView: View,
     private val playWidgetViewHolder: PlayWidgetViewHolder,
     private val shopPlayWidgetListener: ShopCampaignPlayWidgetListener,
     private val shopCampaignInterface: ShopCampaignInterface
-) : AbstractViewHolder<CarouselPlayWidgetUiModel>(playWidgetViewHolder.itemView) {
+) : AbstractViewHolder<CarouselPlayWidgetUiModel>(itemView) {
 
     companion object{
         val LAYOUT = R.layout.item_shop_campaign_play_widget
-        private val TV_PLAY_WIDGET_TITLE_ID =  com.tokopedia.play.widget.R.id.tv_play_widget_title
-        private val TV_PLAY_WIDGET_ACTION_ID =  com.tokopedia.play.widget.R.id.tv_play_widget_action
     }
 
     private val viewBinding: ItemShopCampaignPlayWidgetBinding? by viewBinding()
+    private var headerView: ShopCampaignTabWidgetHeaderView? = viewBinding?.headerView
     private var playWidgetView: PlayWidgetView? = viewBinding?.playWidgetView
 
-
     override fun bind(element: CarouselPlayWidgetUiModel) {
+        setHeader(element)
         setPlayWidget(element)
-        setPlayWidgetAnalyticListener(element)
+        setPlayWidgetItemAnalyticListener(element)
+        setPlayWidgetImpressionListener(element)
     }
 
-    private fun setPlayWidgetAnalyticListener(element: CarouselPlayWidgetUiModel) {
+    private fun setPlayWidgetImpressionListener(element: CarouselPlayWidgetUiModel) {
+        itemView.addOnImpressionListener(element.impressHolder) {
+            shopPlayWidgetListener.onImpressionPlayWidget(
+                element,
+                ShopUtil.getActualPositionFromIndex(bindingAdapterPosition)
+            )
+        }
+    }
+
+    private fun setHeader(uiModel: CarouselPlayWidgetUiModel) {
+        val title = uiModel.header.title
+        if (title.isEmpty()) {
+            headerView?.hide()
+        } else {
+            headerView?.show()
+            headerView?.setTitle(title)
+            headerView?.configColorMode(shopCampaignInterface.isCampaignTabDarkMode())
+        }
+    }
+
+    private fun setPlayWidgetItemAnalyticListener(element: CarouselPlayWidgetUiModel) {
         playWidgetView?.setAnalyticListener(object : PlayWidgetAnalyticListener {
             override fun onImpressChannelCard(
                 view: PlayWidgetMediumView,
@@ -70,21 +93,7 @@ class ShopCampaignCarouselPlayWidgetViewHolder(
     }
 
     private fun setPlayWidget(element: CarouselPlayWidgetUiModel) {
-        playWidgetView?.setCustomHeader(getCustomHeaderView())
         playWidgetViewHolder.bind(element.playWidgetState, this)
-    }
-
-    private fun getCustomHeaderView(): ShopCampaignTabWidgetHeaderView {
-        val customHeader = ShopCampaignPlayTitleCustomViewBinding.inflate(
-            LayoutInflater.from(itemView.context),
-            playWidgetView,
-            false
-        )
-        customHeader.headerView.setTitleId(TV_PLAY_WIDGET_TITLE_ID)
-        customHeader.headerView.setCtaTextId(TV_PLAY_WIDGET_ACTION_ID)
-        customHeader.headerView.showTitle()
-        customHeader.headerView.configColorMode(shopCampaignInterface.isCampaignTabDarkMode())
-        return customHeader.headerView
     }
 
 }

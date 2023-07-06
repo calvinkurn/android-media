@@ -1236,6 +1236,12 @@ class ShopPageCampaignFragment :
         )
     }
 
+    override fun onImpressionPlayWidget(widgetModel: CarouselPlayWidgetUiModel, position: Int) {
+        sendImpressionWidgetHeaderTitle(
+            widgetModel.header,
+            widgetModel.widgetId
+        )
+    }
     override fun onPlayWidgetItemImpression(
         widgetModel: CarouselPlayWidgetUiModel,
         channelModel: PlayWidgetChannelUiModel,

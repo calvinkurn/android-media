@@ -44,9 +44,9 @@ import com.tokopedia.shop.home.view.adapter.ShopWidgetTypeFactory
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopCarouselProductWidgetPlaceholderViewHolder
 import com.tokopedia.shop.home.view.listener.ShopHomeDisplayBannerTimerWidgetListener
 import com.tokopedia.shop.home.view.listener.ShopHomeDisplayWidgetListener
-import com.tokopedia.shop.home.view.listener.ShopHomePlayWidgetListener
 import com.tokopedia.shop.home.view.model.BaseShopHomeWidgetUiModel
 import com.tokopedia.shop_widget.common.util.WidgetState
+import com.tokopedia.shop.R
 
 class ShopCampaignTabAdapterTypeFactory(
     private val shopHomeDisplayWidgetListener: ShopHomeDisplayWidgetListener,
@@ -212,7 +212,12 @@ class ShopCampaignTabAdapterTypeFactory(
             )
 
             ShopCampaignCarouselPlayWidgetViewHolder.LAYOUT -> ShopCampaignCarouselPlayWidgetViewHolder(
-                PlayWidgetViewHolder(parent, playWidgetCoordinator), shopPlayWidgetListener, shopCampaignInterface
+                parent,
+                PlayWidgetViewHolder(
+                    parent.findViewById(R.id.play_widget_view),
+                    playWidgetCoordinator
+                ),
+                shopPlayWidgetListener, shopCampaignInterface
             )
 
             ShopCampaignVideoPlaceholderViewHolder.LAYOUT -> ShopCampaignVideoPlaceholderViewHolder(
