@@ -4,12 +4,12 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.loginregister.databinding.ItemSocmedBottomsheetBinding
-import com.tokopedia.loginregister.discover.pojo.ProviderData
+import com.tokopedia.loginregister.discover.ProviderData
 import com.tokopedia.media.loader.loadImage
 
 class SocmedBottomSheetAdapter constructor(
-    private val providers: MutableList<ProviderData>,
-    private val listener: SocmedBottomSheetListener?
+        private val providers: MutableList<ProviderData>,
+        private val listener: SocmedBottomSheetListener?
 ) : RecyclerView.Adapter<SocmedBottomSheetAdapter.ViewHolder>(){
 
     inner class ViewHolder(

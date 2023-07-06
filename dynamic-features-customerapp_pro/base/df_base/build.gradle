@@ -120,6 +120,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.pms)
     implementation projectOrAar(rootProject.ext.features.goPayKyc)
     implementation projectOrAar(rootProject.ext.features.withdraw)
+    implementation projectOrAar(rootProject.ext.features.thankYouNative)
 
     //Promo
     implementation projectOrAar(rootProject.ext.features.promoCheckout)
