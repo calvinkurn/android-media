@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.view.View
 import android.widget.FrameLayout
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentFactory
 import com.google.android.play.core.splitcompat.SplitCompat
@@ -119,7 +118,7 @@ open class NotificationActivity :
 
     private var switcher: NotifCenterAccountSwitcherBottomSheet? = null
     private var navHeaderContainer: ConstraintLayout? = null
-    private var container: CoordinatorLayout? = null
+    private var container: ConstraintLayout? = null
     private var fragmentContainer: FrameLayout? = null
     private var toolbar: NavToolbar? = null
 
