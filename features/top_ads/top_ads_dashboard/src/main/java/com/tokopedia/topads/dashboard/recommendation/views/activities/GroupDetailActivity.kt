@@ -14,14 +14,14 @@ import com.tokopedia.topads.dashboard.recommendation.views.fragments.GroupDetail
 
 class GroupDetailActivity : BaseSimpleActivity(), HasComponent<TopAdsDashboardComponent> {
 
-    private lateinit var headerToolbar: HeaderUnify
+    private var headerToolbar: HeaderUnify? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         headerToolbar = findViewById(R.id.headerGroupDetailsActivity)
 
-        headerToolbar.setNavigationOnClickListener {
+        headerToolbar?.setNavigationOnClickListener {
             onBackPressed()
         }
     }

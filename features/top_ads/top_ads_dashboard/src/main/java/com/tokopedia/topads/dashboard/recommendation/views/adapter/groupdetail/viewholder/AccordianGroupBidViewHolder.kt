@@ -206,10 +206,14 @@ class AccordianGroupBidViewHolder(
     }
 
     private fun checkForErrors(element: AccordianGroupBidUiModel?): Boolean {
+        if (!searchCheckBox.isChecked && !recommendationCheckBox.isChecked) {
+            return true
+        }
         if (searchCheckBox.isChecked) {
             if (validateInput(
                     searchCost.editText.text.toString().toIntOrZero(),
-                    getSearchTypeCurrentBid(element))
+                    getSearchTypeCurrentBid(element)
+                )
                     .isNotEmpty()
             )
                 return true
@@ -217,7 +221,8 @@ class AccordianGroupBidViewHolder(
         if (recommendationCheckBox.isChecked) {
             if (validateInput(
                     recommendationCost.editText.text.toString().toIntOrZero(),
-                    getBrowseTypeCurrentBid(element))
+                    getBrowseTypeCurrentBid(element)
+                )
                     .isNotEmpty()
             )
                 return true
@@ -237,7 +242,7 @@ class AccordianGroupBidViewHolder(
         val ss = SpannableString(msg)
         val cs = object : ClickableSpan() {
             override fun onClick(p0: View) {
-                view.editText.setText(suggestionBid)
+                view.editText.setText(suggestionBid.toString())
             }
 
             override fun updateDrawState(ds: TextPaint) {

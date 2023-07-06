@@ -255,8 +255,8 @@ class AccordianKataKunciViewHolder(
                 KeywordEditInput(
                     ACTION_CREATE_PARAM,
                     keyword = KeywordEditInput.Keyword(
-                        type = it.keywordType,
-                        status = it.keywordStatus,
+                        type = getKeywordType(it.keywordType),
+                        status = getKeywordStatus(it.keywordStatus),
                         tag = it.keywordTag,
                         suggestionPriceBid = it.suggestionBid.toDouble(),
                         price_bid = it.suggestionBid.toDouble(),

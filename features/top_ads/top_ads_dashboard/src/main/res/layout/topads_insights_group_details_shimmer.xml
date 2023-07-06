@@ -38,7 +38,6 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@drawable/performance_widget_bg"
             android:padding="16dp">
 
             <com.tokopedia.unifycomponents.LoaderUnify

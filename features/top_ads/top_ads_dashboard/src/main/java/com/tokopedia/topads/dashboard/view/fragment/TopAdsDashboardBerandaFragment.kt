@@ -463,7 +463,7 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
     private fun onSuccessFetchProductInsight(it: TopAdsListAllInsightState.Success<MutableList<InsightListUiModel>>) {
         val temp = arrayListOf(EmptyStateUiListModel("0", topAdsDashboardViewModel.emptyStateData))
         if (it.data.size.isZero()) {
-            insightListAdapter.submitList(temp as List<InsightListUiModel>?)
+            insightListAdapter.submitList(temp as? List<InsightListUiModel>)
             binding.layoutInsight.insightWidgetSeeMore.hide()
         } else {
             insightListAdapter.submitList(it.data.take(CONST_5))
