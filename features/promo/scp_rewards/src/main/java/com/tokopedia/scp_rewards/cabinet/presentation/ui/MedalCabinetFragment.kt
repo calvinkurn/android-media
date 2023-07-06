@@ -34,6 +34,7 @@ import com.tokopedia.scp_rewards.common.utils.launchLink
 import com.tokopedia.scp_rewards.common.utils.show
 import com.tokopedia.scp_rewards.databinding.FragmentMedalCabinetLayoutBinding
 import com.tokopedia.scp_rewards_widgets.cabinetHeader.CabinetHeader
+import com.tokopedia.scp_rewards_widgets.medal.BannerData
 import com.tokopedia.scp_rewards_widgets.medal.MedalCallbackListener
 import com.tokopedia.scp_rewards_widgets.medal.MedalData
 import com.tokopedia.scp_rewards_widgets.medal.MedalItem
@@ -210,6 +211,14 @@ class MedalCabinetFragment : BaseDaggerFragment() {
                             MedalCabinetAnalyticsImpl.sendViewLockedMedalSectionCtaEvent(medalItem.cta?.text.orEmpty())
                         }
                     }
+                }
+
+                override fun onBannerClick(bannerData: BannerData?) {
+                    MedalCabinetAnalyticsImpl.sendClickBannerEvent("", "")
+                    requireContext().launchLink(
+                        appLink = bannerData?.appLink,
+                        webLink = bannerData?.webLink
+                    )
                 }
             })
         }

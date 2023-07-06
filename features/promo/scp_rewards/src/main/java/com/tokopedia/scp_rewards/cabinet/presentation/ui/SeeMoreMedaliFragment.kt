@@ -35,6 +35,7 @@ import com.tokopedia.scp_rewards_common.EARNED_BADGE
 import com.tokopedia.scp_rewards_widgets.common.GridSpacing
 import com.tokopedia.scp_rewards_widgets.common.model.LoadingModel
 import com.tokopedia.scp_rewards_widgets.common.model.LoadingMoreModel
+import com.tokopedia.scp_rewards_widgets.medal.BannerData
 import com.tokopedia.scp_rewards_widgets.medal.MedalCallbackListener
 import com.tokopedia.scp_rewards_widgets.medal.MedalData
 import com.tokopedia.scp_rewards_widgets.medal.MedalItem
@@ -336,6 +337,10 @@ class SeeMoreMedaliFragment : BaseDaggerFragment(), MedalCallbackListener {
 
     override fun onSeeMoreLoad(medalData: MedalData) {
         // No such CTA on this page
+    }
+
+    override fun onBannerClick(bannerData: BannerData?) {
+        // Not used here
     }
 
     override fun onFragmentBackPressed(): Boolean {

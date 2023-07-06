@@ -72,6 +72,7 @@ class MedalSectionViewHolder(
             binding.ivEmptyList.loadImageOrFallback(bannerData?.imageUrl, R.drawable.ic_error_medal_list)
             binding.ivEmptyList.visible()
             binding.rvMedals.gone()
+            binding.ivEmptyList.setOnClickListener { listener?.onBannerClick(bannerData) }
         } else {
             val placeHolderList = mutableListOf<MedalItem>().apply { addAll(medalList) }
             val remainder = medalList.size % 3

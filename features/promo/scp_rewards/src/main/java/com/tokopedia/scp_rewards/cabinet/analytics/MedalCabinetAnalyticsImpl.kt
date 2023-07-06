@@ -460,7 +460,6 @@ object MedalCabinetAnalyticsImpl : MedalCabinetAnalytics {
 
     // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/4006
     // Tracker ID: 44278
-    // Not implemented - no such click listener as of now
     override fun sendClickBannerEvent(creativeName: String, bannerPosition: String) {
         val eventLabel = JSONObject().apply {
             put(TrackerConstants.EventLabelProperties.CREATIVE_NAME, creativeName)

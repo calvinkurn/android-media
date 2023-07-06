@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.scp_rewards_widgets.cabinetHeader.CabinetHeader
 import com.tokopedia.scp_rewards_widgets.cabinetHeader.CabinetHeaderViewTypeFactory
+import com.tokopedia.scp_rewards_widgets.medal.BannerData
 import com.tokopedia.scp_rewards_widgets.medal.MedalCallbackListener
 import com.tokopedia.scp_rewards_widgets.medal.MedalData
 import com.tokopedia.scp_rewards_widgets.medal.MedalError
@@ -79,6 +80,12 @@ class CabinetView(
     override fun onSeeMoreLoad(medalData: MedalData) {
         if (::listener.isInitialized) {
             listener.onSeeMoreLoad(medalData)
+        }
+    }
+
+    override fun onBannerClick(bannerData: BannerData?) {
+        if (::listener.isInitialized) {
+            listener.onBannerClick(bannerData)
         }
     }
 }
