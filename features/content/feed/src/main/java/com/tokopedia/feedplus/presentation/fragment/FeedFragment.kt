@@ -222,7 +222,6 @@ class FeedFragment :
     private var mAuthor: FeedAuthorModel? = null
     private var mProducts: List<FeedCardProductModel>? = null
     private var mHasVoucher: Boolean = false
-    private var mTrackerData: FeedTrackerDataModel? = null
     private var mCampaign: FeedCardCampaignModel? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -1261,7 +1260,7 @@ class FeedFragment :
         mAuthor = author
         mProducts = products
         mHasVoucher = hasVoucher
-        mTrackerData = trackerData
+        currentTrackerData = trackerData
         mCampaign = campaign
     }
 
@@ -1273,7 +1272,6 @@ class FeedFragment :
         campaign: FeedCardCampaignModel?
     ) {
         if (products.isNullOrEmpty() || campaign == null) return
-        saveFeedTaggedProductArgs(author, products, hasVoucher, trackerData, campaign)
 
         val productBottomSheet = FeedTaggedProductBottomSheet().apply {
             setCustomListener(this@FeedFragment)
@@ -1290,6 +1288,7 @@ class FeedFragment :
         }
 
         if (trackerData != null) trackOpenProductTagBottomSheet(trackerData)
+        saveFeedTaggedProductArgs(author, products, hasVoucher, trackerData, campaign)
 
         val mappedProducts = products.map { MapperProductsToXProducts.transform(it, campaign) }
         productBottomSheet.show(
@@ -1316,7 +1315,7 @@ class FeedFragment :
                 author = mAuthor,
                 products = mProducts,
                 hasVoucher = mHasVoucher,
-                trackerData = mTrackerData,
+                trackerData = currentTrackerData,
                 campaign = mCampaign,
             )
         }
