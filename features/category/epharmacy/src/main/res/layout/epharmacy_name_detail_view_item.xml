@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="16dp"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/service_type"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:typographyType="body_2"
+        tools:text="Jenis Layanan"
+        />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/service_provider"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/service_type"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="4dp"
+        app:typographyType="body_2"
+        tools:text="Penyedia Layanan"
+        />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/duration"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/service_provider"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="4dp"
+        app:typographyType="body_2"
+        tools:text="Durasi"
+        />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/fee"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/duration"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="4dp"
+        app:typographyType="body_2"
+        tools:text="Biaya Chat Doker"
+        />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrier"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="right"
+        app:constraint_referenced_ids="duration,fee,service_provider,service_type"
+        />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/service_type_value"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/service_type"
+        app:layout_constraintStart_toEndOf="@id/barrier"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:typographyType="body_2"
+        app:typographyWeight="bold"
+        tools:text="Chat Dokter"
+        />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/service_provider_value"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/service_provider"
+        app:layout_constraintStart_toEndOf="@id/barrier"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:typographyType="body_2"
+        app:typographyWeight="bold"
+        tools:text="Enabler"
+        />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/duration_value"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/duration"
+        app:layout_constraintStart_toEndOf="@id/barrier"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:typographyType="body_2"
+        app:typographyWeight="bold"
+        tools:text="15 Menit"
+        />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/fee_value"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/fee"
+        app:layout_constraintStart_toEndOf="@id/barrier"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:typographyType="body_2"
+        app:typographyWeight="bold"
+        tools:text="Rp10.000"
+        />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
