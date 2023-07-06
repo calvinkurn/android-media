@@ -22,7 +22,6 @@ import com.tokopedia.utils.view.binding.viewBinding
 
 class DynamicOwocInvoiceViewHolder(
     itemView: View,
-    private val listener: ChatbotDynamicOwocListener,
     private val chatLinkHandlerListener: ChatLinkHandlerListener
 ) : BaseChatBotViewHolder<DynamicOwocInvoiceUiModel>(itemView) {
 
@@ -48,8 +47,9 @@ class DynamicOwocInvoiceViewHolder(
                 background = null
                 message?.text = uiModel.message
             }
-            mainParent?.setContainerBackground(bindBackground())
-            invoiceAdapter = ChatbotDynamicOwocInvoiceAdapter(listener)
+            tvTime.text = ChatbotMessageViewHolderBinder.getTime(uiModel.replyTime)
+            messageParent.setContainerBackground(bindBackground())
+            invoiceAdapter = ChatbotDynamicOwocInvoiceAdapter()
             setUpReadMoreButtonClickListener(uiModel)
             if ((uiModel.invoiceList?.size ?: 0) > INVOICE_LIST_SIZE) {
                 showSeeAll = true
@@ -92,7 +92,7 @@ class DynamicOwocInvoiceViewHolder(
 
     private fun bindBackground(): Drawable? {
         return generateLeftMessageBackground(
-            binding?.mainParent,
+            binding?.messageParent,
             R.color.chatbot_dms_left_message_bg,
             com.tokopedia.unifyprinciples.R.color.Unify_N700_20
         )

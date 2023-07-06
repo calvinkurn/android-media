@@ -5,8 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <LinearLayout
-        android:id="@+id/main_parent"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/message_parent"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="12dp"
@@ -24,7 +24,10 @@
             android:paddingTop="10dp"
             android:paddingRight="16dp"
             android:paddingBottom="10dp"
-            app:showCheckMark="false" />
+            app:showCheckMark="false"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_invoice_list"
@@ -32,14 +35,18 @@
             android:layout_height="wrap_content"
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
-            app:layout_constraintEnd_toStartOf="@id/guideline"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/customChatLayout"
             tools:itemCount="3"
-            tools:listitem="@layout/item_chatbot_owoc_invoice" />
+            tools:listitem="@layout/item_chatbot_owoc_invoice"
+            />
 
         <include layout="@layout/item_chatbot_read_more_action_bubble"
-            android:id="@+id/btn_read_more"/>
+            android:id="@+id/btn_read_more"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/rv_invoice_list"/>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvTime"
@@ -49,11 +56,13 @@
             android:includeFontPadding="false"
             android:layout_gravity="end"
             android:paddingEnd="16dp"
-            android:text="11:00"
+            tools:text="11:00"
             android:textColor="@color/chatbot_dms_time_text"
-            app:typographyType="body_3" />
+            app:typographyType="body_3"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/btn_read_more"/>
 
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline"

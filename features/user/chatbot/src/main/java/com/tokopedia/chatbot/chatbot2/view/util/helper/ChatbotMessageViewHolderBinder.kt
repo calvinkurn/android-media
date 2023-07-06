@@ -44,6 +44,12 @@ object ChatbotMessageViewHolderBinder {
         chatLayout?.setHourTime(hourTime)
     }
 
+    fun getTime(
+        replyTime: String?
+    ): String {
+        return getHourTime(replyTime)
+    }
+
     fun bindHour(
         replyTime: String?,
         messageBubble: MessageBubbleLayout?

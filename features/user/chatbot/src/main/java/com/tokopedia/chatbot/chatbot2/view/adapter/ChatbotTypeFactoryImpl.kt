@@ -79,7 +79,6 @@ open class ChatbotTypeFactoryImpl(
     private val replyBubbleListener: ReplyBubbleAreaMessage.Listener,
     private val videoUploadListener: VideoUploadListener,
     private val dynamicStickyButtonListener: DynamicStickyButtonListener,
-    private val chatbotDynamicOwocInvoiceListener: ChatbotDynamicOwocListener,
     private val userSession: UserSessionInterface
 ) :
     BaseChatTypeFactoryImpl(
@@ -136,7 +135,6 @@ open class ChatbotTypeFactoryImpl(
             )
             DynamicOwocInvoiceViewHolder.LAYOUT -> DynamicOwocInvoiceViewHolder(
                 parent,
-                chatbotDynamicOwocInvoiceListener,
                 chatLinkHandlerListener
             )
             else -> createViewHolder(parent, type)

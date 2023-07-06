@@ -8,7 +8,7 @@ import android.graphics.drawable.ShapeDrawable
 import android.graphics.drawable.shapes.RoundRectShape
 import android.view.Gravity
 import android.view.View
-import android.widget.LinearLayout
+import android.view.ViewGroup
 import androidx.annotation.ColorRes
 import androidx.annotation.DimenRes
 import androidx.core.content.ContextCompat
@@ -167,7 +167,7 @@ object ViewUtil {
     }
 }
 
-fun LinearLayout.setContainerBackground(bg: Drawable?) {
+fun ViewGroup.setContainerBackground(bg: Drawable?) {
     val pl = paddingLeft
     val pt = paddingTop
     val pr = paddingRight

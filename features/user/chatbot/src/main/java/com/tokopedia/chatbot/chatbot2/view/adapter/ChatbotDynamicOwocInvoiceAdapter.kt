@@ -11,9 +11,7 @@ import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.listener.ChatbotDy
 import com.tokopedia.chatbot.chatbot2.view.uimodel.dynamicattachment.DynamicOwocInvoiceUiModel
 import com.tokopedia.chatbot.databinding.ItemChatbotOwocInvoiceBinding
 
-class ChatbotDynamicOwocInvoiceAdapter(
-    private val listener: ChatbotDynamicOwocListener
-): RecyclerView.Adapter<DynamicOwocInvoiceListViewHolder>() {
+class ChatbotDynamicOwocInvoiceAdapter: RecyclerView.Adapter<DynamicOwocInvoiceListViewHolder>() {
 
     private val data = ArrayList<DynamicOwocInvoicePojo.InvoiceCardOwoc>()
 

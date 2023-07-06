@@ -253,8 +253,7 @@ class ChatbotFragment2 :
     com.tokopedia.chatbot.chatbot2.view.customview.chatroom.listener.ReplyBoxClickListener,
     ChatbotRejectReasonsBottomSheet.ChatbotRejectReasonsListener,
     DynamicStickyButtonListener,
-    ChatbotRejectReasonsChipListener,
-    ChatbotDynamicOwocListener {
+    ChatbotRejectReasonsChipListener{
 
     @Inject
     lateinit var session: UserSessionInterface
@@ -647,7 +646,6 @@ class ChatbotFragment2 :
 
     override fun getAdapterTypeFactory(): BaseAdapterTypeFactory {
         return ChatbotTypeFactoryImpl(
-            this,
             this,
             this,
             this,
@@ -2924,9 +2922,5 @@ class ChatbotFragment2 :
 
     override fun onChipClick(count: Int) {
         reasonsBottomSheet?.checkChipCounter(count)
-    }
-
-    override fun onInvoiceClicked() {
-
     }
 }
