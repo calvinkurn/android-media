@@ -247,7 +247,7 @@ object Utils {
     fun isEnableOperationalGuideline(): Boolean {
         return try {
             val remoteConfigImpl = RemoteConfigInstance.getInstance().abTestPlatform
-            remoteConfigImpl.getString(RollenceKey.KEY_SOM_OPERATIONAL_GUIDELINE, "") == RollenceKey.KEY_SOM_OPERATIONAL_GUIDELINE
+            remoteConfigImpl.getString(RollenceKey.KEY_SOM_OG, "") == RollenceKey.KEY_SOM_OG
         } catch (e: Exception) {
             true
         }

@@ -98,5 +98,5 @@ object RollenceKey {
     const val TOKOCHAT_BUBBLES = "tokochat_bubble_chat"
 
     // Seller Order Management
-    const val KEY_SOM_OPERATIONAL_GUIDELINE = "android_som_operational_guideline"
+    const val KEY_SOM_OG = "android_som_og"
 }

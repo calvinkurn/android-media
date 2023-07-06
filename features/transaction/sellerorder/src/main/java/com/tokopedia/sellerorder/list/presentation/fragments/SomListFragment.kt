@@ -2881,7 +2881,7 @@ open class SomListFragment :
             somListGetOrderListParam = viewModel.getDataOrderListParams()
         )
 
-        val highLightStatusKey = result.data.highLightedStatusKey
+        val highLightStatusKey = somFilterUiModel.highLightedStatusKey
 
         // this case to handle when there is a highlightedStatusKey (all_order, new_order, confirm_shipping) from backend
         val shouldRefreshOrderAutoTabbing = viewModel.getIsFirstPageOpened() &&
