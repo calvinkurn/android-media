@@ -3,6 +3,7 @@ package com.tokopedia.feedplus.presentation.adapter.viewholder
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.feedplus.databinding.ItemFeedFollowProfileBinding
 import com.tokopedia.feedplus.databinding.ItemFeedFollowProfileShimmerBinding
 import com.tokopedia.feedplus.presentation.adapter.FeedFollowProfileAdapter
@@ -24,6 +25,12 @@ class FeedFollowProfileViewHolder private constructor() {
 
         fun bind(model: FeedFollowProfileAdapter.Model.Profile) {
             /** TODO: setup exoPlayer */
+
+            if (model.isSelected) {
+                /** TODO: play video */
+            } else {
+                /** TODO: pause video */
+            }
 
             binding.imgProfile.setImageUrl(model.data.imageUrl)
             binding.tvProfileName.text = model.data.name

@@ -2,6 +2,7 @@ package com.tokopedia.feedplus.presentation.adapter.viewholder
 
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.PagerSnapHelper
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.databinding.ItemFeedFollowRecommendationBinding
@@ -31,17 +32,32 @@ class FeedFollowRecommendationViewHolder(
     private val layoutManager = FeedFollowProfileLayoutManager(itemView.context)
     private val snapHelper = PagerSnapHelper()
 
+    private var mData: FeedFollowRecommendationModel? = null
+
     init {
         binding.rvFollowRecommendation.layoutManager = layoutManager
         binding.rvFollowRecommendation.addItemDecoration(FeedFollowProfileItemDecoration(itemView.context))
         snapHelper.attachToRecyclerView(binding.rvFollowRecommendation)
         binding.rvFollowRecommendation.adapter = profileAdapter
+
+        binding.rvFollowRecommendation.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+
+                if (profileAdapter.itemCount == 0) return
+                if (newState != RecyclerView.SCROLL_STATE_IDLE) return
+
+                setupProfileList(selectedPosition = getSelectedPosition())
+            }
+        })
     }
 
     override fun bind(element: FeedFollowRecommendationModel?) {
-        element?.let { model ->
+        mData = element
+
+        mData?.let { model ->
             setupHeader(model)
-            setupProfileList(model)
+            setupProfileList(model, getSelectedPosition())
             setupEmptyLayout()
         }
     }
@@ -51,10 +67,17 @@ class FeedFollowRecommendationViewHolder(
         binding.tvDesc.text = model.description
     }
 
-    private fun setupProfileList(model: FeedFollowRecommendationModel) {
+    private fun setupProfileList(
+        model: FeedFollowRecommendationModel? = mData,
+        selectedPosition: Int
+    ) {
+        if (model == null) return
 
-        val mappedList = model.data.map {
-            FeedFollowProfileAdapter.Model.Profile(data = it)
+        val mappedList = model.data.mapIndexed { idx, item ->
+            FeedFollowProfileAdapter.Model.Profile(
+                data = item,
+                isSelected = idx == selectedPosition,
+            )
         }
 
         val finalList = if (model.hasNext)
@@ -74,6 +97,11 @@ class FeedFollowRecommendationViewHolder(
         binding.feedNoContent.btnShowOtherContent.setOnClickListener {
             listener.onClickViewOtherContent()
         }
+    }
+
+    private fun getSelectedPosition(): Int {
+        val snappedView = snapHelper.findSnapView(layoutManager) ?: return 0
+        return binding.rvFollowRecommendation.getChildAdapterPosition(snappedView)
     }
 
     companion object {

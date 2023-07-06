@@ -37,7 +37,7 @@ class FeedFollowProfileAdapter(
         return if (oldItem is Model.Profile && newItem is Model.Profile) {
             oldItem.data.id == newItem.data.id
         } else if (oldItem is Model.Loading && newItem is Model.Loading) {
-            false
+            oldItem == newItem
         } else oldItem == newItem
     }
 
@@ -46,7 +46,10 @@ class FeedFollowProfileAdapter(
     }
 
     sealed interface Model {
-        data class Profile(val data: FeedFollowRecommendationModel.Profile) : Model
+        data class Profile(
+            val data: FeedFollowRecommendationModel.Profile,
+            val isSelected: Boolean,
+        ) : Model
         object Loading : Model
     }
 }
