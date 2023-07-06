@@ -159,6 +159,8 @@ class FeedVideoCache private constructor(
         }
 
         private fun createInstance(context: Context): FeedVideoCache {
+            deleteCacheDir(context)
+
             val cacheDir = getCacheDir(context)
             val cache = SimpleCache(
                 cacheDir,
