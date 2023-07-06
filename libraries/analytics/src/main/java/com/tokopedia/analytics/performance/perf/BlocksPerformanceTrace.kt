@@ -32,14 +32,9 @@ class BlocksPerformanceTrace(
         const val TYPE_TTIL = "TTIL"
         const val ATTR_CONDITION = "State"
         const val ATTR_BLOCKS = "Blocks"
-        const val STATE_TOUCH = "user_touch"
-        const val STATE_SUCCESS = "success"
+
         const val FINISHED_LOADING_TTFL_BLOCKS_THRESHOLD = 1
         const val FINISHED_LOADING_TTIL_BLOCKS_THRESHOLD = 5
-
-        const val STATE_ERROR = "page_error"
-        const val STATE_PARTIALLY_ERROR = "page_partially_error"
-        const val STATE_TIMEOUT = "timeout"
     }
     private var startCurrentTimeMillis = 0L
     private var currentLoadableComponentList = mutableListOf<LoadableComponent>()
@@ -64,6 +59,14 @@ class BlocksPerformanceTrace(
     private var performanceBlocks = mutableListOf<LoadableComponent>()
     private var lastPerformanceBlocks = mutableListOf<LoadableComponent>()
 
+    enum class BlocksPerfState {
+        STATE_ERROR,
+        STATE_PARTIALLY_ERROR,
+        STATE_TIMEOUT,
+        STATE_TOUCH,
+        STATE_SUCCESS,
+        STATE_ONPAUSED
+    }
     init {
         context?.let {
             val remoteConfig = FirebaseRemoteConfigImpl(context)
@@ -95,8 +98,12 @@ class BlocksPerformanceTrace(
         this.onLaunchTimeFinished = onLaunchTimeFinished
         if (isPerformanceTraceEnabled) {
             touchListenerActivity?.addListener {
-                cancelPerformanceTrace(STATE_TOUCH, TTFLperformanceMonitoring)
-                cancelPerformanceTrace(STATE_TOUCH, TTILperformanceMonitoring)
+                if (!ttflMeasured) {
+                    finishTTFL(BlocksPerfState.STATE_TOUCH)
+                }
+                if (!ttilMeasured) {
+                    finishTTIL(BlocksPerfState.STATE_TOUCH)
+                }
             }
         }
     }
@@ -122,9 +129,14 @@ class BlocksPerformanceTrace(
         }
     }
 
-    fun cancelPerformanceTrace(state: String, targetPerfMonitoring: PerformanceMonitoring? = null, listOfFinishedLoadableComponent: List<LoadableComponent> = listOf()) {
+    fun finishOnPaused() {
+        finishTTIL(BlocksPerfState.STATE_ONPAUSED)
+        finishTTFL(BlocksPerfState.STATE_ONPAUSED)
+    }
+
+    fun cancelPerformanceTrace(state: BlocksPerfState, targetPerfMonitoring: PerformanceMonitoring? = null, listOfFinishedLoadableComponent: List<LoadableComponent> = listOf()) {
         targetPerfMonitoring?.putCustomAttribute(
-            ATTR_CONDITION, state)
+            ATTR_CONDITION, state.name)
         targetPerfMonitoring?.putCustomAttribute(
             ATTR_BLOCKS, listOfFinishedLoadableComponent.map { it.name() to "isLoading:${it.isLoading()}" }.joinToString(
                 prefix = "[",
@@ -145,11 +157,11 @@ class BlocksPerformanceTrace(
         }
     }
 
-    fun setPageState(state: String) {
+    fun setPageState(state: BlocksPerfState) {
         TTFLperformanceMonitoring?.putCustomAttribute(
-            ATTR_CONDITION, state)
+            ATTR_CONDITION, state.name)
         TTILperformanceMonitoring?.putCustomAttribute(
-            ATTR_CONDITION, state)
+            ATTR_CONDITION, state.name)
     }
 
     private fun blocksPerformanceFlow() : Flow<List<LoadableComponent>> {
@@ -184,11 +196,10 @@ class BlocksPerformanceTrace(
         onLaunchTimeFinished?.invoke(
             summaryModel.get(), listOfFinishedLoadableComponent
         )
-        cancelPerformanceTrace(STATE_SUCCESS, TTILperformanceMonitoring, listOfLoadableComponent)
+        finishTTIL(BlocksPerfState.STATE_SUCCESS, listOfLoadableComponent)
         this.onLaunchTimeFinished = null
         TTILperformanceMonitoring = null
         performanceTraceJob?.cancel()
-        ttilMeasured = true
     }
 
     private fun measureTTFL(listOfLoadableComponent: List<LoadableComponent>) {
@@ -197,8 +208,18 @@ class BlocksPerformanceTrace(
         onLaunchTimeFinished?.invoke(
             summaryModel.get(), listOfFinishedLoadableComponent
         )
-        cancelPerformanceTrace(STATE_SUCCESS, TTFLperformanceMonitoring, listOfLoadableComponent)
+        finishTTFL(BlocksPerfState.STATE_SUCCESS, listOfLoadableComponent)
         TTFLperformanceMonitoring = null
+    }
+
+
+    private fun finishTTIL(state: BlocksPerfState, listOfLoadableComponent: List<LoadableComponent> = listOf()) {
+        cancelPerformanceTrace(state, TTILperformanceMonitoring, listOfLoadableComponent)
+        ttilMeasured = true
+    }
+
+    private fun finishTTFL(state: BlocksPerfState, listOfLoadableComponent: List<LoadableComponent> = listOf()) {
+        cancelPerformanceTrace(state, TTFLperformanceMonitoring, listOfLoadableComponent)
         ttflMeasured = true
     }
 
