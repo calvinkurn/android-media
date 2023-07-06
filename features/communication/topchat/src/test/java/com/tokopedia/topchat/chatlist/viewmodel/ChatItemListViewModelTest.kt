@@ -25,6 +25,7 @@ import com.tokopedia.topchat.chatlist.domain.pojo.operational_insight.ShopChatMe
 import com.tokopedia.topchat.chatlist.domain.pojo.whitelist.ChatWhitelistFeature
 import com.tokopedia.topchat.chatlist.domain.pojo.whitelist.ChatWhitelistFeatureResponse
 import com.tokopedia.topchat.chatlist.domain.usecase.ChatBanedSellerUseCase
+import com.tokopedia.topchat.chatlist.domain.usecase.GetChatBlastSellerMetaDataUseCase
 import com.tokopedia.topchat.chatlist.domain.usecase.GetChatListMessageUseCase
 import com.tokopedia.topchat.chatlist.domain.usecase.GetChatListTickerUseCase
 import com.tokopedia.topchat.chatlist.domain.usecase.GetChatWhitelistFeature
@@ -34,15 +35,20 @@ import com.tokopedia.topchat.chatlist.domain.usecase.MutationUnpinChatUseCase
 import com.tokopedia.topchat.chatlist.view.viewmodel.ChatItemListViewModel
 import com.tokopedia.topchat.chatlist.view.viewmodel.ChatItemListViewModel.Companion.BUBBLE_TICKER_PREF_NAME
 import com.tokopedia.topchat.chatlist.view.viewmodel.ChatItemListViewModel.Companion.OPERATIONAL_INSIGHT_NEXT_MONDAY
+import com.tokopedia.topchat.chatlist.view.widget.BroadcastButtonLayout.Companion.BROADCAST_FAB_LABEL_PREF_NAME
 import com.tokopedia.topchat.chatroom.view.uimodel.ReplyParcelableModel
 import com.tokopedia.topchat.common.domain.MutationMoveChatToTrashUseCase
 import com.tokopedia.topchat.common.util.Utils
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
+import com.tokopedia.unit.test.rule.UnconfinedTestRule
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.*
+import io.mockk.impl.annotations.RelaxedMockK
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.flowOf
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.MatcherAssert.assertThat
@@ -58,6 +64,10 @@ class ChatItemListViewModelTest {
 
     @get:Rule val rule = InstantTaskExecutorRule()
 
+    @OptIn(ExperimentalCoroutinesApi::class)
+    @get:Rule
+    val coroutineTestRule = UnconfinedTestRule()
+
     private val repository: GraphqlRepository = mockk(relaxed = true)
 
     private val chatWhitelistFeature: GetChatWhitelistFeature = mockk(relaxed = true)
@@ -72,6 +82,9 @@ class ChatItemListViewModelTest {
     private val getChatListTickerUseCase: GetChatListTickerUseCase = mockk(relaxed = true)
     private val sharedPref: SharedPreferences = mockk(relaxed = true)
 
+    @RelaxedMockK
+    lateinit var getChatBlastSellerMetaDataUseCase: GetChatBlastSellerMetaDataUseCase
+
     private val mutateChatListObserver: Observer<Result<ChatListPojo>> = mockk(relaxed = true)
     private val deleteChatObserver: Observer<Result<ChatDelete>> = mockk(relaxed = true)
     private val broadCastButtonVisibilityObserver: Observer<Boolean> = mockk(relaxed = true)
@@ -83,6 +96,7 @@ class ChatItemListViewModelTest {
     private lateinit var viewModel: ChatItemListViewModel
 
     @Before fun setUp() {
+        MockKAnnotations.init(this)
         viewModel = ChatItemListViewModel(
             repository,
             chatWhitelistFeature,
@@ -94,6 +108,7 @@ class ChatItemListViewModelTest {
             moveChatToTrashUseCase,
             operationalInsightUseCase,
             getChatListTickerUseCase,
+            getChatBlastSellerMetaDataUseCase,
             sharedPref,
             userSession,
             CoroutineTestDispatchersProvider
@@ -746,14 +761,10 @@ class ChatItemListViewModelTest {
         val expectedData = BlastSellerMetaDataResponse(
             ChatBlastSellerMetadata(urlBroadcast = testUrlBroadcast)
         )
-        val expectedResponse = GraphqlResponse(
-            mapOf(Pair(BlastSellerMetaDataResponse::class.java, expectedData)),
-            mapOf(),
-            false
-        )
         coEvery {
-            repository.response(any(), any())
-        } returns expectedResponse
+            getChatBlastSellerMetaDataUseCase(Unit)
+        } returns flowOf(expectedData)
+
         every {
             userSession.isShopOwner
         } returns true
@@ -778,14 +789,9 @@ class ChatItemListViewModelTest {
     fun should_get_data_when_load_success_get_chat_blast_seller_metadata_but_no_access() {
         // Given
         val expectedData = BlastSellerMetaDataResponse()
-        val expectedResponse = GraphqlResponse(
-            mapOf(Pair(BlastSellerMetaDataResponse::class.java, expectedData)),
-            mapOf(),
-            false
-        )
         coEvery {
-            repository.response(any(), any())
-        } returns expectedResponse
+            getChatBlastSellerMetaDataUseCase(Unit)
+        } returns flowOf(expectedData)
 
         // When
         viewModel.loadChatBlastSellerMetaData()
@@ -806,7 +812,7 @@ class ChatItemListViewModelTest {
         // Given
         val expectedError = Throwable("Oops!")
         coEvery {
-            repository.response(any(), any())
+            getChatBlastSellerMetaDataUseCase(Unit)
         } throws expectedError
 
         // When
@@ -1229,7 +1235,7 @@ class ChatItemListViewModelTest {
 
         // When
         val result = viewModel.getBooleanCache(
-            ChatItemListViewModel.BROADCAST_FAB_LABEL_PREF_NAME,
+            BROADCAST_FAB_LABEL_PREF_NAME,
             false
         )
 
@@ -1246,7 +1252,7 @@ class ChatItemListViewModelTest {
 
         // When
         val result = viewModel.getBooleanCache(
-            ChatItemListViewModel.BROADCAST_FAB_LABEL_PREF_NAME,
+            BROADCAST_FAB_LABEL_PREF_NAME,
             false
         )
 
@@ -1263,10 +1269,10 @@ class ChatItemListViewModelTest {
 
         // When
         viewModel.saveBooleanCache(
-            ChatItemListViewModel.BROADCAST_FAB_LABEL_PREF_NAME,
+            BROADCAST_FAB_LABEL_PREF_NAME,
             false
         )
-        val result = viewModel.getBooleanCache(ChatItemListViewModel.BROADCAST_FAB_LABEL_PREF_NAME)
+        val result = viewModel.getBooleanCache(BROADCAST_FAB_LABEL_PREF_NAME)
 
         // Then
         assertEquals(result, false)
