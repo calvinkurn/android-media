@@ -14,7 +14,6 @@ import com.tokopedia.media.editor.utils.showErrorLoadToaster
 import com.tokopedia.media.loader.clearImage
 import com.tokopedia.media.loader.data.MediaException
 import com.tokopedia.media.loader.loadImage
-import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
 
 class EditorViewPager(context: Context, attrSet: AttributeSet) : ViewPager(context, attrSet),
     EditorViewPagerAdapter.Listener {

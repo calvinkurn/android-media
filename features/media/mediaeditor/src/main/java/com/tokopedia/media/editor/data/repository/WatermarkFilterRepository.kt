@@ -180,7 +180,7 @@ class WatermarkFilterRepositoryImpl @Inject constructor(
         return Pair(resultBitmap1, resultBitmap2)
     }
 
-    //formula to determine brightness 0.299 * r + 0.0f + 0.587 * g + 0.0f + 0.114 * b + 0.0f
+    // formula to determine brightness 0.299 * r + 0.0f + 0.587 * g + 0.0f + 0.114 * b + 0.0f
     // if total of dark pixel > total of pixel * 0.45 count that as dark image
     private fun Bitmap.isDark(): Boolean {
         val width = this.width
@@ -190,7 +190,7 @@ class WatermarkFilterRepositoryImpl @Inject constructor(
             return false
         }
 
-        try {
+        return try {
             val ratio = width.toFloat() / height
             val widthBitmapChecker = IMAGE_DARK_CHECKER_SCALE
             val heightBitmapChecker = widthBitmapChecker * ratio
@@ -223,9 +223,9 @@ class WatermarkFilterRepositoryImpl @Inject constructor(
                 }
             }
             bitmapChecker.recycle()
-            return darkPixels >= darkThreshold
-        } catch (t: Throwable) {
-            return false
+            darkPixels >= darkThreshold
+        } catch (_: Exception) {
+            false
         }
     }
 

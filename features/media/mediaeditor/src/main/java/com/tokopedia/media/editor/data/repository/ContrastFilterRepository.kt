@@ -17,24 +17,30 @@ class ContrastFilterRepositoryImpl @Inject constructor(
      */
     override fun contrast(value: Float, source: Bitmap): Bitmap? {
         val standardContrastValue = ContrastToolsUiComponent.contrastRawToStdValue(value)
-        if (standardContrastValue == 0f) return source
-        val width = source.width
-        val height = source.height
+        return if (standardContrastValue == 0f) {
+            source
+        } else {
+            val width = source.width
+            val height = source.height
 
-        if (bitmapCreationRepository.isBitmapOverflow(width, height)) {
-            return null
+            if (bitmapCreationRepository.isBitmapOverflow(width, height)) {
+                // return
+                null
+            } else {
+                val pixels = IntArray(width * height)
+                source.getPixels(pixels, 0, width, 0, 0, width, height)
+                shiftPixel(
+                    width = width,
+                    height = height,
+                    pixels = pixels,
+                    tempValue = standardContrastValue
+                )
+                source.setPixels(pixels, 0, width, 0, 0, width, height)
+
+                // return
+                source
+            }
         }
-
-        val pixels = IntArray(width * height)
-        source.getPixels(pixels, 0, width, 0, 0, width, height)
-        shiftPixel(
-            width = width,
-            height = height,
-            pixels = pixels,
-            tempValue = standardContrastValue
-        )
-        source.setPixels(pixels, 0, width, 0, 0, width, height)
-        return source
     }
 
     private fun shiftPixel(width: Int, height: Int, pixels: IntArray, tempValue: Float) {
