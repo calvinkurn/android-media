@@ -366,7 +366,7 @@ class SingleProductAttachmentContainer : ConstraintLayout {
         showVariantLayout()
         if (product.hasColorVariant()) {
             productColorVariant?.show()
-            productVariantSize?.text = ellipsizeLongText(
+            productColorVariantValue?.text = ellipsizeLongText(
                 product.colorVariant, MAX_VARIANT_LABEL_CHAR
             )
         } else {
@@ -375,7 +375,7 @@ class SingleProductAttachmentContainer : ConstraintLayout {
 
         if (product.hasSizeVariant()) {
             productSizeVariant?.show()
-            productColorVariantValue?.text = ellipsizeLongText(
+            productVariantSize?.text = ellipsizeLongText(
                 product.sizeVariant, MAX_VARIANT_LABEL_CHAR
             )
         } else {
