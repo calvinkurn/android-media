@@ -428,17 +428,17 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
 
     private fun getPublicKey(): String {
         return if (TokopediaUrl.getInstance().TYPE == Env.STAGING) {
-           getString(com.tokopedia.keys.R.string.emoney_public_stag)
+           getString(com.tokopedia.keys.R.string.rfvtgbyhn)
         } else {
-           getString(com.tokopedia.keys.R.string.emoney_public_prod)
+           getString(com.tokopedia.keys.R.string.ijnuhbygv)
         }
     }
 
     private fun getPrivateKey(): String {
         return if (TokopediaUrl.getInstance().TYPE == Env.STAGING) {
-            getString(com.tokopedia.keys.R.string.emoney_private_stag)
+            getString(com.tokopedia.keys.R.string.qazwsxedc)
         } else {
-            getString(com.tokopedia.keys.R.string.emoney_private_prod)
+            getString(com.tokopedia.keys.R.string.plmoknijb)
         }
     }
 
