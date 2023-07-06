@@ -114,6 +114,10 @@ class DigitalCheckoutBottomViewWidget @JvmOverloads constructor(
                                 else -> true
                             }
                         }
+                    } else {
+                        if (!isProductConsentWidgetVisible()) {
+                            isCheckoutButtonEnabled = true
+                        }
                     }
                     removeConsentCollectionObserver()
                 }
