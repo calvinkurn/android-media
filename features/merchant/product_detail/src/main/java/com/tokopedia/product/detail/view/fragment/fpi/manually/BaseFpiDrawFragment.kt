@@ -15,7 +15,9 @@ import java.lang.ref.WeakReference
  * Project name: android-tokopedia-core
  **/
 
-
+/**
+ * Method 3 for measure frame performance
+ */
 abstract class BaseFpiDrawFragment : BaseDaggerFragment() {
 
     private val viewTreeMap = mutableMapOf<String, Set<Long>>()
