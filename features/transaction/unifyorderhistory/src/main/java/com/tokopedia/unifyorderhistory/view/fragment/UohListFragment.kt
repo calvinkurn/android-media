@@ -72,9 +72,10 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey.HOME_ENABLE_AUTO_REFRESH_UOH
+import com.tokopedia.scp_rewards_touchpoints.common.Error
+import com.tokopedia.scp_rewards_touchpoints.touchpoints.ScpToasterHelper
 import com.tokopedia.scp_rewards_touchpoints.touchpoints.model.ScpRewardsMedaliTouchPointModel
 import com.tokopedia.scp_rewards_touchpoints.touchpoints.viewmodel.ScpRewardsMedaliTouchPointViewModel
-import com.tokopedia.scp_rewards_touchpoints.touchpoints.ScpToasterHelper
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.helper.ViewHelper
 import com.tokopedia.searchbar.navigation_component.NavToolbar
@@ -851,14 +852,14 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
                                 data = data
                             )
                         }
-                    }
-                    else{
+                    } else {
                         showFinishOrderToaster()
                     }
                 }
-                else -> {
+                is Error -> {
                     showFinishOrderToaster()
                 }
+                else -> {}
             }
         }
     }
@@ -2555,7 +2556,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
         startActivityForResult(intent, POF_REQUEST_CODE)
     }
 
-    private fun showFinishOrderToaster(){
+    private fun showFinishOrderToaster() {
         if (responseFinishOrder.success == 1) {
             responseFinishOrder.message.firstOrNull()
                 ?.let { it1 -> showToaster(it1, Toaster.TYPE_NORMAL) }
