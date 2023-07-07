@@ -140,7 +140,7 @@ class FeedVideoCache private constructor(
 
         private const val DIR_NAME = "feed_video"
 
-        private const val MB_TO_CACHE = 1L
+        private const val MB_TO_CACHE = 2L
 
         fun getInstance(context: Context): FeedVideoCache =
             INSTANCE ?: synchronized(this) {
