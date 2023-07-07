@@ -7,5 +7,6 @@ data class ScpToasterData(
     val subtitle:String = "",
     val ctaTitle:String = "",
     val badgeImage: Bitmap? = null,
-    val sunflare:Bitmap? = null
+    val sunflare:Bitmap? = null,
+    val ctaIsShown:Boolean = false
 )

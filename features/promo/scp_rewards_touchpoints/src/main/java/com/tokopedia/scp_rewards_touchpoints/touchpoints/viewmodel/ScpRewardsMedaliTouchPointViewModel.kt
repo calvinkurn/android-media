@@ -18,7 +18,7 @@ class ScpRewardsMedaliTouchPointViewModel @Inject constructor(
 ) : ViewModel() {
 
     companion object{
-        private const val DEFAULT_DELAY = 1000L
+        private const val DEFAULT_DELAY = 10000L
     }
 
     private val _toasterLiveData: MutableLiveData<ScpResult> = MutableLiveData()
@@ -27,10 +27,10 @@ class ScpRewardsMedaliTouchPointViewModel @Inject constructor(
     fun getTouchPoint(orderID: Long, pageName: String = "", sourceName: String,delay:Boolean = true) {
         viewModelScope.launchCatchError(
             block = {
+                _toasterLiveData.postValue(Loading)
                 if(delay){
                     delay(DEFAULT_DELAY)
                 }
-                _toasterLiveData.postValue(Loading)
                 val response = touchPointUseCase.getTouchPoint(
                     orderID,
                     pageName,

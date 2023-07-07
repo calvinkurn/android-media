@@ -52,7 +52,7 @@ data class ScpRewardsMedaliTouchPointModel(
             val appLink: String? = null,
 
             @SerializedName("isShown")
-            val isShown: String? = null,
+            val isShown: Boolean,
 
             @SerializedName("text")
             val text: String? = null,

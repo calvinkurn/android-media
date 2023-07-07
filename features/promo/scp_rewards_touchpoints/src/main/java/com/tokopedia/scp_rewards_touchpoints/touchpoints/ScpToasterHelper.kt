@@ -2,6 +2,7 @@ package com.tokopedia.scp_rewards_touchpoints.touchpoints
 
 import android.view.View
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.scp_rewards_touchpoints.bottomsheet.utils.downloadImage
 import com.tokopedia.scp_rewards_touchpoints.touchpoints.model.ScpRewardsMedaliTouchPointModel
 import com.tokopedia.scp_rewards_touchpoints.touchpoints.model.ScpToasterData
@@ -29,11 +30,13 @@ object ScpToasterHelper {
                 subtitle = subtitle,
                 ctaTitle = ctaTitle,
                 badgeImage = badgeImage.await(),
-                sunflare = sunflare.await()
+                sunflare = sunflare.await(),
+                ctaIsShown = data?.scpRewardsMedaliTouchpointOrder?.medaliTouchpointOrder?.cta?.isShown.orFalse()
             )
             withContext(Dispatchers.Main){
                 ScpRewardsToaster.build(view, toasterData, duration, clickListener = {
-                    RouteManager.route(view.context, appLink)
+                    val slug = data?.scpRewardsMedaliTouchpointOrder?.medaliTouchpointOrder?.medaliSlug.orEmpty()
+                    RouteManager.route(view.context, "${appLink}/$slug")
                 }).show()
             }
         }

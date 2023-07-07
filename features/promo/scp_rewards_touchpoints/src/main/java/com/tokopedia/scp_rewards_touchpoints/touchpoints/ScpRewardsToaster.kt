@@ -50,7 +50,7 @@ object ScpRewardsToaster {
     @JvmStatic
     fun build(view: View,toasterData: ScpToasterData,duration: Int = LENGTH_SHORT, type: Int = TYPE_NORMAL,clickListener: View.OnClickListener = View.OnClickListener {}) : Snackbar{
         toasterLength = duration
-        val cta: Int = if (toasterData.ctaTitle.isNotEmpty()) WITH_CTA else WITHOUT_CTA
+        val cta = if (toasterData.ctaIsShown) WITH_CTA else WITHOUT_CTA
         if (cta == WITH_CTA) {
             onCTAClick = clickListener
             ctaText = toasterData.ctaTitle
