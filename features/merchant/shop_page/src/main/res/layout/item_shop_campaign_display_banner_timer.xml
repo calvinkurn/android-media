@@ -100,7 +100,7 @@
                     <com.tokopedia.unifyprinciples.Typography
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="0.25"
+                        android:layout_weight="0.22"
                         android:gravity="start"
                         android:paddingStart="3dp"
                         android:text="@string/shop_campaign_tab_timer_days"
@@ -109,25 +109,23 @@
                     <com.tokopedia.unifyprinciples.Typography
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="0.25"
-                        android:gravity="start"
-                        android:paddingStart="5dp"
+                        android:layout_weight="0.28"
+                        android:gravity="center"
                         android:text="@string/shop_campaign_tab_timer_hours"
                         app:typographyType="small" />
 
                     <com.tokopedia.unifyprinciples.Typography
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="0.25"
-                        android:gravity="start"
-                        android:paddingStart="6dp"
+                        android:layout_weight="0.28"
+                        android:gravity="center"
                         android:text="@string/shop_campaign_tab_timer_minutes"
                         app:typographyType="small" />
 
                     <com.tokopedia.unifyprinciples.Typography
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="0.25"
+                        android:layout_weight="0.22"
                         android:gravity="end"
                         android:paddingEnd="1dp"
                         android:text="@string/shop_campaign_tab_timer_seconds"
