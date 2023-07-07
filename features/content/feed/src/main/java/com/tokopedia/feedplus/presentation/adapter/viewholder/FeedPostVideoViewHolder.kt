@@ -462,8 +462,6 @@ class FeedPostVideoViewHolder(
         campaignView.startAnimation()
         mVideoPlayer?.resume()
         listener.onWatchPostVideo(element, trackerModel)
-
-        binding.playerFeedVideo.keepScreenOn = true
     }
 
     private fun onNotSelected() {
@@ -473,8 +471,6 @@ class FeedPostVideoViewHolder(
 
         campaignView.resetView()
         hideClearView()
-
-        binding.playerFeedVideo.keepScreenOn = false
     }
 
     override fun onViewRecycled() {
