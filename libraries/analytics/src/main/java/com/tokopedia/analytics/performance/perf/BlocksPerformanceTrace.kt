@@ -17,8 +17,8 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey.ENABLE_PERFORMANCE_TRACE
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.channels.BufferOverflow
+import kotlinx.coroutines.flow.*
 import java.util.concurrent.atomic.AtomicReference
 
 @FlowPreview
@@ -46,8 +46,6 @@ class BlocksPerformanceTrace(
 
     private var performanceTraceJob: Job? = null
 
-    private var listOfFinishedLoadableComponent = setOf<String>()
-
     private var ttflMeasured = false
     private var ttilMeasured = false
 
@@ -55,7 +53,13 @@ class BlocksPerformanceTrace(
     private var currentView: View? = null
 
     private var performanceBlocks = mutableSetOf<String>()
-    private var lastPerformanceBlocks = mutableSetOf<String>()
+
+    private var inputFlow = MutableSharedFlow<Set<String>>(1, onBufferOverflow = BufferOverflow.SUSPEND)
+
+    private var perfBlockFlow = inputFlow.transform {
+        performanceBlocks.addAll(it)
+        emit(performanceBlocks.size)
+    }.stateIn(scope, SharingStarted.WhileSubscribed(5000), 0)
 
     enum class BlocksPerfState {
         STATE_ERROR,
@@ -79,8 +83,14 @@ class BlocksPerformanceTrace(
             TTILperformanceMonitoring?.startTrace("ttil_perf_trace_$traceName")
 
             performanceTraceJob = scope.launch(Dispatchers.IO) {
-                blocksPerformanceFlow().collect {
-                    updateBlocks(it)
+                perfBlockFlow.collect {
+                    if (!ttflMeasured && TTFLperformanceMonitoring != null && it >= FINISHED_LOADING_TTFL_BLOCKS_THRESHOLD) {
+                        measureTTFL(performanceBlocks)
+                    }
+
+                    if (!ttilMeasured && TTILperformanceMonitoring != null && it >= FINISHED_LOADING_TTIL_BLOCKS_THRESHOLD) {
+                        measureTTIL(performanceBlocks)
+                    }
                 }
             }
         }
@@ -114,7 +124,11 @@ class BlocksPerformanceTrace(
     }
 
     fun addViewPerformanceBlocks(view: View?) {
-        view?.let { performanceBlocks.addPerformanceBlocks(view) }
+        view?.let {
+            performanceBlocks.addPerformanceBlocks(view) {
+                inputFlow.tryEmit(performanceBlocks)
+            }
+        }
     }
 
     fun setBlock(list: List<Any>) {
@@ -129,6 +143,7 @@ class BlocksPerformanceTrace(
             tempBlocks.addAll(listOfLoadableComponent.toSet())
 
             performanceBlocks = tempBlocks
+            inputFlow.tryEmit(performanceBlocks)
         }
     }
 
@@ -158,6 +173,10 @@ class BlocksPerformanceTrace(
                 "Performance TTIL trace cancelled due to scroll event / error"
             )
         }
+
+        if (state != BlocksPerfState.STATE_SUCCESS) {
+            performanceTraceJob?.cancel()
+        }
     }
 
     fun setPageState(state: BlocksPerfState) {
@@ -167,48 +186,22 @@ class BlocksPerformanceTrace(
             ATTR_CONDITION, state.name)
     }
 
-    private fun blocksPerformanceFlow() : Flow<Set<String>> {
-        return flow {
-            while(true) {
-                val tempPerfBlocks = performanceBlocks
-                val tempLastPerfBlocks = lastPerformanceBlocks
-
-                if (tempPerfBlocks.size != tempLastPerfBlocks.size) {
-                    lastPerformanceBlocks = performanceBlocks.toMutableSet()
-                    emit(performanceBlocks)
-                }
-            }
-        }
-    }
-
-    private fun updateBlocks(blocksSet: Set<String>) {
-        listOfFinishedLoadableComponent = blocksSet
-
-        if (!ttflMeasured && TTFLperformanceMonitoring != null && listOfFinishedLoadableComponent.size >= FINISHED_LOADING_TTFL_BLOCKS_THRESHOLD) {
-            measureTTFL(listOfFinishedLoadableComponent)
-        }
-        if (!ttilMeasured && TTILperformanceMonitoring != null && listOfFinishedLoadableComponent.size >= FINISHED_LOADING_TTIL_BLOCKS_THRESHOLD) {
-            measureTTIL(listOfFinishedLoadableComponent)
-        }
-    }
-
     private fun measureTTIL(listOfLoadableComponent: Set<String>) {
         val blocksModel = createBlocksPerformanceModel()
         validateTTIL(blocksModel)
         onLaunchTimeFinished?.invoke(
-            summaryModel.get(), listOfFinishedLoadableComponent
+            summaryModel.get(), performanceBlocks
         )
         finishTTIL(BlocksPerfState.STATE_SUCCESS, listOfLoadableComponent)
         this.onLaunchTimeFinished = null
         TTILperformanceMonitoring = null
-        performanceTraceJob?.cancel()
     }
 
     private fun measureTTFL(listOfLoadableComponent: Set<String>) {
         val blocksModel = createBlocksPerformanceModel()
         validateTTFL(blocksModel)
         onLaunchTimeFinished?.invoke(
-            summaryModel.get(), listOfFinishedLoadableComponent
+            summaryModel.get(), performanceBlocks
         )
         finishTTFL(BlocksPerfState.STATE_SUCCESS, listOfLoadableComponent)
         TTFLperformanceMonitoring = null
@@ -227,7 +220,7 @@ class BlocksPerformanceTrace(
 
     private fun createBlocksPerformanceModel() = BlocksPerformanceModel(
         inflateTime = System.currentTimeMillis() - startCurrentTimeMillis,
-        capturedBlocks = listOfFinishedLoadableComponent
+        capturedBlocks = performanceBlocks
     )
 
     private fun validateTTFL(blocksPerformanceModel: BlocksPerformanceModel?) {
@@ -252,9 +245,10 @@ class BlocksPerformanceTrace(
 }
 
 
-fun MutableSet<String>.addPerformanceBlocks(v: View?) {
+fun MutableSet<String>.addPerformanceBlocks(v: View?, onView: () -> Unit) {
     viewHierarchyInUsableState {
         this.add((v?.javaClass?.canonicalName ?: "") + "-${v.hashCode()}")
+        onView.invoke()
     }
 }
 

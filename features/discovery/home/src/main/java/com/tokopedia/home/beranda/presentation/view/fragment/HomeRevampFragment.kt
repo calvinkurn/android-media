@@ -1362,14 +1362,7 @@ open class HomeRevampFragment :
         performanceTrace.init(
             v = view.rootView,
             touchListenerActivity = activity as? TouchListenerActivity,
-        ) { summaryModel: BlocksSummaryModel, capturedBlocks: Set<String> ->
-            performanceTrace.debugPerformanceTrace(
-                activity,
-                summaryModel,
-                "TTIL",
-                view.rootView
-            )
-        }
+        ) { summaryModel: BlocksSummaryModel, capturedBlocks: Set<String> -> }
         observeSearchHint()
     }
 
