@@ -160,5 +160,5 @@ interface VideoStateListener {
     fun onBuffering() {}
     fun onVideoStateChange(stopDuration: Long, videoDuration: Long) // Tracker Purpose
 
-    fun onBehindLiveWindow(playWhenReady: Boolean)
+    fun onBehindLiveWindow(playWhenReady: Boolean) {}
 }
