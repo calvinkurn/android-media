@@ -23,7 +23,6 @@ import org.junit.runners.Parameterized
 @RunWith(Parameterized::class)
 class OfficialStoreStartupBenchmark(startupMode: StartupMode): BaseStartupBenchmark(startupMode) {
     override fun setupEnvironment() {
-        MacroDevOps.setupEnvironment(MacroIntent.Session.getSessionMacroSetupIntent())
     }
 
     override fun setupMock() {

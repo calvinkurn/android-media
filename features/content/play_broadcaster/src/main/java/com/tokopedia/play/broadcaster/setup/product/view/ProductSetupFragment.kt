@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.content.common.ui.model.orUnknown
 import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.play.broadcaster.analytic.setup.product.PlayBroSetupProductAnalytic
 import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.EtalaseListBottomSheet
@@ -73,6 +74,10 @@ class ProductSetupFragment @Inject constructor(
             mListener?.onProductSetupDismissed()
             bottomSheet.dismiss()
             removeFragment()
+        }
+
+        override fun onProductSummaryCommissionShown() {
+            mListener?.onProductSummaryCommissionShown()
         }
     }
 
@@ -206,8 +211,9 @@ class ProductSetupFragment @Inject constructor(
                         mDataSource?.maxProduct().orZero(),
                         mDataSource?.getProductSectionList().orEmpty(),
                         handle,
-                        mDataSource?.isEligibleForPin() ?: true,
                         mDataSource?.getPageSource().orUnknown(),
+                        mDataSource?.isEligibleForPin().orTrue(),
+                        mDataSource?.fetchCommissionProduct().orFalse(),
                     ) as T
                 }
             }
@@ -228,10 +234,13 @@ class ProductSetupFragment @Inject constructor(
         fun creationId(): String
         fun maxProduct(): Int
         fun getPageSource() : PlayBroPageSource
+        fun fetchCommissionProduct(): Boolean
     }
 
     interface Listener {
         fun onProductChanged(productTagSectionList: List<ProductTagSectionUiModel>)
         fun onProductSetupDismissed() {}
+
+        fun onProductSummaryCommissionShown() {}
     }
 }

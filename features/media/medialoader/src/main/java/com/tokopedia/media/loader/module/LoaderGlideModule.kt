@@ -14,6 +14,7 @@ import com.tokopedia.media.loader.utils.RemoteConfig
 import java.io.InputStream
 
 @GlideModule
+/** @suppress */
 class LoaderGlideModule : AppGlideModule() {
 
     override fun applyOptions(context: Context, builder: GlideBuilder) {

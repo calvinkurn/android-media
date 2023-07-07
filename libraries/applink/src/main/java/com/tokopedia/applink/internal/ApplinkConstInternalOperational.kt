@@ -1,8 +1,6 @@
 package com.tokopedia.applink.internal
 
 import android.net.Uri
-import com.tokopedia.applink.DLP
-import com.tokopedia.applink.DeeplinkMapper
 import com.tokopedia.applink.constant.DeeplinkConstant
 
 object ApplinkConstInternalOperational {

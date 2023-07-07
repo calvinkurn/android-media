@@ -17,13 +17,17 @@
     <string name="notif_failed_menu_device">Notifikasi HP belum aktif.</string>
     <string name="notif_failed_menu_ringtone">Bunyi notifikasi mati.</string>
     <string name="notif_failed_menu_push">Push notification gagal dites.</string>
+    <string name="notif_failed_menu_play_services">Google Play Service tidak tersedia</string>
 
     <string name="notif_loading_menu_notification">Memeriksa aplikasi Tokopedia kamu…</string>
     <string name="notif_loading_menu_device">Memeriksa pengaturan HP kamu…</string>
     <string name="notif_loading_menu_ringtone">Memeriksa bunyi notifikasi…</string>
     <string name="notif_loading_menu_push">Mengirim push notification…</string>
+    <string name="notif_loading_menu_play_services">Google Play Service tersedia</string>
+
 
     <string name="notif_ticker_title">Terima info yang lebih lengkap</string>
+
 
     <string name="notif_success_update_token">Berhasil perbaharui token</string>
     <string name="notif_error_update_token">Gagal perbaharui token</string>
@@ -52,10 +56,13 @@
     <string name="notif_footer_title">Belum terima tes push notification? </string>
     <string name="notif_footer_message">Coba bersihkan cache agar kamu bisa tetap terima push notification dari Tokopedia.</string>
     <string name="notif_footer_dnd_message">Matikan mode ini agar kamu bisa tetap terima push notification dari Tokopedia.</string>
+    <string name="notif_footer_message_play_services">Tenang, kami akan infokan jika fitur notifikasinya sudah tersedia untukmu.</string>
+    <string name="notif_title_play_services">Yaah, notifikasimu belum tersedia saat ini</string>
 
     <string name="notif_footer_status">Status HP : <b>Jangan Ganggu</b></string>
 
     <string name="btn_notif_clear_cache">Bersihkan Cache</string>
+    <string name="btn_notif_home">Ke Home</string>
     <string name="btn_notif_turnoff_dnd">Matikan Mode</string>
     <string name="btn_notif_try_again">Coba lagi</string>
     <string name="btn_notif_activation">Aktifkan</string>

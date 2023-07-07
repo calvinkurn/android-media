@@ -9,6 +9,7 @@ import com.tokopedia.kotlin.extensions.view.removeFirst
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
+import com.tokopedia.minicart.common.domain.data.ProductBundleRecomResponse
 import com.tokopedia.minicart.common.domain.data.getMiniCartItemParentProduct
 import com.tokopedia.minicart.common.domain.data.getMiniCartItemProduct
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
@@ -26,16 +27,17 @@ import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.MA
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.MEDIUM_PLAY_WIDGET
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.MIX_LEFT_CAROUSEL
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.MIX_LEFT_CAROUSEL_ATC
+import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.BUNDLING_WIDGET
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.PRODUCT_RECOM
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.PRODUCT_RECOM_OOC
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.REPURCHASE_PRODUCT
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.SHARING_EDUCATION
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.SHARING_REFERRAL
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.SMALL_PLAY_WIDGET
-import com.tokopedia.tokopedianow.common.domain.mapper.CategoryMenuMapper.APPLINK_PARAM_WAREHOUSE_ID
 import com.tokopedia.tokopedianow.common.domain.mapper.CategoryMenuMapper.mapToCategoryLayout
 import com.tokopedia.tokopedianow.common.domain.mapper.CategoryMenuMapper.mapToCategoryList
 import com.tokopedia.tokopedianow.common.domain.model.GetCategoryListResponse
+import com.tokopedia.tokopedianow.common.model.TokoNowBundleUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowChooseAddressWidgetUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateOocUiModel
 import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
@@ -50,9 +52,11 @@ import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.EMP
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_OUT_OF_COVERAGE
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.LOADING_STATE
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.TICKER_WIDGET_ID
+import com.tokopedia.tokopedianow.home.domain.mapper.BundleMapper.mapToProductBundleLayout
+import com.tokopedia.tokopedianow.home.domain.mapper.BundleMapper.mapToProductBundleUiModel
+import com.tokopedia.tokopedianow.home.domain.mapper.EducationalInformationMapper.mapEducationalInformationUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.CatalogCouponListMapper.mapToClaimCouponWidgetUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.CatalogCouponListMapper.mapToClaimCouponWidgetUiModelList
-import com.tokopedia.tokopedianow.home.domain.mapper.EducationalInformationMapper.mapEducationalInformationUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeRepurchaseMapper.mapRepurchaseUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeRepurchaseMapper.mapToRepurchaseUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeRepurchaseMapper.sortRepurchaseProduct
@@ -92,6 +96,7 @@ import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSharingWidgetUiM
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSharingWidgetUiModel.HomeSharingReferralWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.claimcoupon.HomeClaimCouponWidgetUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowTickerUiModel
+import com.tokopedia.tokopedianow.home.domain.mapper.oldrepurchase.HomeRepurchaseMapper
 import com.tokopedia.unifycomponents.ticker.TickerData
 
 object HomeLayoutMapper {
@@ -118,7 +123,8 @@ object HomeLayoutMapper {
         MEDIUM_PLAY_WIDGET,
         SMALL_PLAY_WIDGET,
         COUPON_CLAIM,
-        CHIP_CAROUSEL
+        CHIP_CAROUSEL,
+        BUNDLING_WIDGET
     )
 
     fun MutableList<HomeLayoutItemUiModel?>.addLoadingIntoList() {
@@ -162,7 +168,8 @@ object HomeLayoutMapper {
         localCacheModel: LocalCacheModel,
         isLoggedIn: Boolean,
         hasBlockedAddToCart: Boolean,
-        tickerList: List<TickerData>
+        tickerList: List<TickerData>,
+        enableNewRepurchase: Boolean
     ) {
         val chooseAddressUiModel = TokoNowChooseAddressWidgetUiModel(id = CHOOSE_ADDRESS_WIDGET_ID)
         add(HomeLayoutItemUiModel(chooseAddressUiModel, HomeLayoutItemState.LOADED))
@@ -174,7 +181,7 @@ object HomeLayoutMapper {
 
         response.filter { SUPPORTED_LAYOUT_TYPES.contains(it.layout) }.forEach { layoutResponse ->
             if (removeAbleWidgets.none { layoutResponse.layout == it.type && it.isRemoved }) {
-                mapToHomeUiModel(layoutResponse, miniCartData, localCacheModel, hasBlockedAddToCart)?.let { item ->
+                mapToHomeUiModel(layoutResponse, miniCartData, localCacheModel, hasBlockedAddToCart, enableNewRepurchase)?.let { item ->
                     add(item)
                 }
 
@@ -199,11 +206,18 @@ object HomeLayoutMapper {
         removeAbleWidgets: List<HomeRemoveAbleWidget>,
         miniCartData: MiniCartSimplifiedData?,
         localCacheModel: LocalCacheModel,
-        hasBlockedAddToCart: Boolean
+        hasBlockedAddToCart: Boolean,
+        enableNewRepurchase: Boolean
     ) {
         response.filter { SUPPORTED_LAYOUT_TYPES.contains(it.layout) }.forEach { layoutResponse ->
             if (removeAbleWidgets.none { layoutResponse.layout == it.type && it.isRemoved }) {
-                mapToHomeUiModel(layoutResponse, miniCartData, localCacheModel, hasBlockedAddToCart)?.let { item ->
+                mapToHomeUiModel(
+                    layoutResponse,
+                    miniCartData,
+                    localCacheModel,
+                    hasBlockedAddToCart,
+                    enableNewRepurchase
+                )?.let { item ->
                     add(item)
                 }
             }
@@ -233,7 +247,7 @@ object HomeLayoutMapper {
         firstOrNull { it?.layout is TokoNowCategoryMenuUiModel }?.let {
             val item = it.layout as TokoNowCategoryMenuUiModel
             val newItem = if (!response.isNullOrEmpty()) {
-                val seeAllAppLink = ApplinkConstInternalTokopediaNow.SEE_ALL_CATEGORY + APPLINK_PARAM_WAREHOUSE_ID + warehouseId
+                val seeAllAppLink = ApplinkConstInternalTokopediaNow.SEE_ALL_CATEGORY
                 val categoryList = mapToCategoryList(
                     response = response,
                     headerName = item.title,
@@ -352,15 +366,6 @@ object HomeLayoutMapper {
         }
     }
 
-    fun MutableList<HomeLayoutItemUiModel?>.mapTickerData(
-        item: TokoNowTickerUiModel,
-        tickerData: List<TickerData>
-    ) {
-        updateItemById(item.id) {
-            HomeLayoutItemUiModel(item.copy(tickers = tickerData), HomeLayoutItemState.LOADED)
-        }
-    }
-
     fun MutableList<HomeLayoutItemUiModel?>.mapQuestData(
         item: HomeQuestSequenceWidgetUiModel,
         questList: List<HomeQuestWidgetUiModel>,
@@ -383,6 +388,31 @@ object HomeLayoutMapper {
     ) {
         updateItemById(item.id) {
             val uiModel = mapToRepurchaseUiModel(item, response, miniCartData)
+            HomeLayoutItemUiModel(uiModel, HomeLayoutItemState.LOADED)
+        }
+    }
+
+    fun MutableList<HomeLayoutItemUiModel?>.mapProductBundleRecomData(
+        item: TokoNowBundleUiModel,
+        response: ProductBundleRecomResponse
+    ) {
+        val uiModel = mapToProductBundleUiModel(item, response)
+        if (uiModel.bundleIds.isEmpty()) {
+            removeItem(item.id)
+        } else {
+            updateItemById(item.id) {
+                HomeLayoutItemUiModel(uiModel, HomeLayoutItemState.LOADED)
+            }
+        }
+    }
+
+    fun MutableList<HomeLayoutItemUiModel?>.mapProductPurchaseData(
+        item: com.tokopedia.tokopedianow.common.model.oldrepurchase.TokoNowRepurchaseUiModel,
+        response: RepurchaseData,
+        miniCartData: MiniCartSimplifiedData? = null
+    ) {
+        updateItemById(item.id) {
+            val uiModel = HomeRepurchaseMapper.mapToRepurchaseUiModel(item, response, miniCartData)
             HomeLayoutItemUiModel(uiModel, HomeLayoutItemState.LOADED)
         }
     }
@@ -434,7 +464,6 @@ object HomeLayoutMapper {
         updateDeletedProductQuantity(miniCartData, CHIP_CAROUSEL)
     }
 
-
     // Update all product with quantity from cart
     private fun MutableList<HomeLayoutItemUiModel?>.updateAllProductQuantity(
         miniCartData: MiniCartSimplifiedData,
@@ -472,6 +501,27 @@ object HomeLayoutMapper {
             REPURCHASE_PRODUCT -> {
                 firstOrNull { it?.layout is TokoNowRepurchaseUiModel }?.run {
                     val layout = layout as TokoNowRepurchaseUiModel
+                    val cartProductIds = miniCartData.miniCartItems.values.mapNotNull {
+                        if (it is MiniCartItem.MiniCartItemProduct) it.productId else null
+                    }
+                    val deletedProducts = layout.productList.filter { it.productId !in cartProductIds }
+
+                    deletedProducts.forEach { model ->
+                        if (model.parentId != DEFAULT_PARENT_ID) {
+                            val totalQuantity = miniCartData.miniCartItems.getMiniCartItemParentProduct(model.parentId)?.totalQuantity.orZero()
+                            if (totalQuantity == DEFAULT_QUANTITY) {
+                                updateRepurchaseProductQuantity(model.productId, DEFAULT_QUANTITY)
+                            } else {
+                                updateRepurchaseProductQuantity(model.productId, totalQuantity)
+                            }
+                        } else {
+                            updateRepurchaseProductQuantity(model.productId, DEFAULT_QUANTITY)
+                        }
+                    }
+                }
+
+                firstOrNull { it?.layout is com.tokopedia.tokopedianow.common.model.oldrepurchase.TokoNowRepurchaseUiModel }?.run {
+                    val layout = layout as com.tokopedia.tokopedianow.common.model.oldrepurchase.TokoNowRepurchaseUiModel
                     val cartProductIds = miniCartData.miniCartItems.values.mapNotNull {
                         if (it is MiniCartItem.MiniCartItemProduct) it.productId else null
                     }
@@ -635,6 +685,31 @@ object HomeLayoutMapper {
                     productList[index] = it
                     val sortedProductList = sortRepurchaseProduct(productList)
                     copy(layout = layoutUiModel.copy(productList = sortedProductList))
+                }
+            }
+        }
+
+        firstOrNull { it?.layout is com.tokopedia.tokopedianow.common.model.oldrepurchase.TokoNowRepurchaseUiModel }?.run {
+            val layoutUiModel = layout as com.tokopedia.tokopedianow.common.model.oldrepurchase.TokoNowRepurchaseUiModel
+            val productList = layoutUiModel.productList.toMutableList()
+            val productUiModel = productList.firstOrNull {
+                it.productId == productId
+            }
+            val index = layoutUiModel.productList.indexOf(productUiModel)
+
+            productUiModel?.product?.run {
+                if (hasVariant()) {
+                    copy(variant = variant?.copy(quantity = quantity))
+                } else {
+                    copy(
+                        hasAddToCartButton = quantity == DEFAULT_QUANTITY,
+                        nonVariant = nonVariant?.copy(quantity = quantity)
+                    )
+                }
+            }?.let {
+                updateItemById(layoutUiModel.id) {
+                    productList[index] = productUiModel.copy(quantity = quantity, product = it)
+                    copy(layout = layoutUiModel.copy(productList = productList))
                 }
             }
         }
@@ -803,6 +878,7 @@ object HomeLayoutMapper {
             is HomeComponentVisitable -> visitableId()
             is TokoNowRepurchaseUiModel -> id
             is TokoNowCategoryMenuUiModel -> id
+            is TokoNowBundleUiModel -> id
             else -> null
         }
     }
@@ -822,6 +898,7 @@ object HomeLayoutMapper {
         miniCartData: MiniCartSimplifiedData? = null,
         localCacheModel: LocalCacheModel,
         hasBlockedAddToCart: Boolean,
+        isEnableNewRepurchase: Boolean,
     ): HomeLayoutItemUiModel? {
         val serviceType = localCacheModel.service_type
         val warehouseId = localCacheModel.warehouse_id
@@ -843,7 +920,12 @@ object HomeLayoutMapper {
             // region TokoNow Component
             // Layout need to fetch content data from other GQL, set state to not loaded.
             CATEGORY -> mapToCategoryLayout(response, notLoadedState)
-            REPURCHASE_PRODUCT -> mapRepurchaseUiModel(response, notLoadedState)
+            BUNDLING_WIDGET -> mapToProductBundleLayout(response, notLoadedState)
+            REPURCHASE_PRODUCT -> if(isEnableNewRepurchase) {
+                mapRepurchaseUiModel(response, notLoadedState)
+            } else {
+                HomeRepurchaseMapper.mapRepurchaseUiModel(response, notLoadedState)
+            }
             MAIN_QUEST -> mapQuestUiModel(response, notLoadedState)
             SHARING_EDUCATION -> mapSharingEducationUiModel(response, notLoadedState, serviceType)
             SHARING_REFERRAL -> mapSharingReferralUiModel(response, notLoadedState, warehouseId)

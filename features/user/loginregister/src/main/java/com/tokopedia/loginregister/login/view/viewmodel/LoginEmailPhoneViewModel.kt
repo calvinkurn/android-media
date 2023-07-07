@@ -6,6 +6,7 @@ import com.gojek.icp.identity.loginsso.data.models.Profile
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.encryption.security.RsaUtils
 import com.tokopedia.encryption.security.decodeBase64
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -393,6 +394,7 @@ class LoginEmailPhoneViewModel @Inject constructor(
     }
 
     suspend fun isFingerprintRegistered(): Boolean {
+        if (GlobalConfig.isSellerApp()) return false
         return try {
             registerCheckFingerprintUseCase(Unit)
         } catch (ignored: Exception) {

@@ -12,6 +12,7 @@ import android.os.Build
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.applink.RouteManager
@@ -28,13 +29,17 @@ import com.tokopedia.common_electronic_money.util.KeyLogEmoney.TAPCASH_TAG
 import com.tokopedia.common_electronic_money.util.NfcCardErrorTypeDef
 import com.tokopedia.emoney.R
 import com.tokopedia.emoney.di.DaggerDigitalEmoneyComponent
+import com.tokopedia.emoney.domain.request.JakCardStatus
 import com.tokopedia.emoney.util.DigitalEmoneyGqlQuery
 import com.tokopedia.emoney.viewmodel.EmoneyBalanceViewModel
+import com.tokopedia.emoney.viewmodel.JakCardBalanceViewModel
 import com.tokopedia.emoney.viewmodel.TapcashBalanceViewModel
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.url.Env
+import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.permission.PermissionCheckerHelper
@@ -45,8 +50,6 @@ import javax.inject.Inject
 open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
 
     private lateinit var permissionCheckerHelper: PermissionCheckerHelper
-    protected lateinit var emoneyBalanceViewModel: EmoneyBalanceViewModel
-    protected lateinit var tapcashBalanceViewModel: TapcashBalanceViewModel
     private lateinit var nfcAdapter: NfcAdapter
 
     val errorHanlderBuilder = ErrorHandler.Builder().apply {
@@ -59,18 +62,9 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        initiateViewModel()
-    }
-
-    protected open fun initiateViewModel() {
-        activity?.let {
-            val viewModelProvider = ViewModelProvider(it, viewModelFactory)
-            emoneyBalanceViewModel = viewModelProvider.get(EmoneyBalanceViewModel::class.java)
-            tapcashBalanceViewModel = viewModelProvider.get(TapcashBalanceViewModel::class.java)
-        }
-    }
+    private val emoneyBalanceViewModel by viewModels<EmoneyBalanceViewModel> { viewModelFactory }
+    private val tapcashBalanceViewModel by viewModels<TapcashBalanceViewModel> { viewModelFactory }
+    private val jakcardBalanceViewModel by viewModels<JakCardBalanceViewModel> { viewModelFactory }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -117,11 +111,21 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
 
     private fun executeCard(intent: Intent) {
         val tag = intent.getParcelableExtra<Tag>(NfcAdapter.EXTRA_TAG)
+        val rawPublicKey = getPublicKey()
+        val rawPrivateKey = getPrivateKey()
         if (CardUtils.isTapcashCard(intent)) {
             issuerActive = ISSUER_ID_TAP_CASH
             showLoading(getOperatorName(issuerActive))
             tapcashBalanceViewModel.processTapCashTagIntent(IsoDep.get(tag),
                     DigitalEmoneyGqlQuery.rechargeBniTapcashQuery)
+        } else if(CardUtils.isJakCard(intent) ) {
+            issuerActive = ISSUER_ID_JAKCARD
+            showLoading(getOperatorName(issuerActive))
+            jakcardBalanceViewModel.processJakCardTagIntent(IsoDep.get(tag), false, rawPublicKey, rawPrivateKey)
+        } else if(CardUtils.isJakCardDev(intent)) {
+            issuerActive = ISSUER_ID_JAKCARD
+            showLoading(getOperatorName(issuerActive))
+            jakcardBalanceViewModel.processJakCardTagIntent(IsoDep.get(tag), true,  rawPublicKey, rawPrivateKey)
         } else if (CardUtils.isEmoneyCard(intent)){
             if (tag != null) {
                 issuerActive = ISSUER_ID_EMONEY
@@ -219,10 +223,11 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
             }
         })
 
-        tapcashBalanceViewModel.errorInquiry.observe(viewLifecycleOwner, Observer { throwable ->
+        tapcashBalanceViewModel.errorInquiry.observe(viewLifecycleOwner, Observer { pair ->
             context?.let {
-                val errorMessage = ErrorHandler.getErrorMessagePair(it, throwable, errorHanlderBuilder)
-                if((throwable is SocketTimeoutException)){
+                sendLogDebugErrorNetworkTapcash(pair.second)
+                val errorMessage = ErrorHandler.getErrorMessagePair(it, pair.first, errorHanlderBuilder)
+                if((pair.first is SocketTimeoutException)){
                     showError(it.resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_tapcash_error_title),
                             it.resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_timeout_socket_error_title_tapcash)+" "+errorMessage.second,
                             it.resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_socket_time_out),
@@ -230,7 +235,7 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
                             isGlobalErrorShow = false,
                             tapCashWriteFailed = true
                     )
-                } else if((throwable is UnknownHostException) || errorMessage.first.equals(it.resources.getString(com.tokopedia.network.R.string.default_request_error_unknown))){
+                } else if((pair.first is UnknownHostException) || errorMessage.first.equals(it.resources.getString(com.tokopedia.network.R.string.default_request_error_unknown))){
                     showError(it.resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_grpc_label_error),
                             it.resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_error_title)+" "+errorMessage.second,
                             "",
@@ -288,6 +293,24 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
                     }
                     else -> return@let
                 }
+            }
+        })
+
+        jakcardBalanceViewModel.jakCardInquiry.observe(viewLifecycleOwner, Observer { jakCardInquiry ->
+            jakCardInquiry.attributesEmoneyInquiry?.let { attribute ->
+                when(attribute.status) {
+                    JakCardStatus.DONE.status -> showCardLastBalance(jakCardInquiry)
+                    JakCardStatus.ERROR.status -> jakCardInquiry.error?.let { error ->
+                        showError(error.title)
+                    }
+                }
+            }
+        })
+
+        jakcardBalanceViewModel.errorCardMessage.observe(viewLifecycleOwner, Observer { errorMessage ->
+            context?.let { context ->
+                val errorMessage = ErrorHandler.getErrorMessagePair(context, errorMessage, errorHanlderBuilder)
+                showError(errorMessage.first.orEmpty())
             }
         })
     }
@@ -394,6 +417,31 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
         ServerLogger.log(Priority.P2, TAPCASH_TAG, map)
     }
 
+    private fun sendLogDebugErrorNetworkTapcash(param: RechargeEmoneyInquiryLogRequest) {
+        val map = HashMap<String, String>()
+        map.put(ISSUER_KEY, param.log.issueId.toString())
+        map.put(CARD_NUMBER_KEY, param.log.cardNumber)
+        map.put(RC_KEY, param.log.rc)
+        map.put(LOG_TYPE, TAPCASH_NETWORK_ERROR_LOGGER)
+        ServerLogger.log(Priority.P2, TAPCASH_TAG, map)
+    }
+
+    private fun getPublicKey(): String {
+        return if (TokopediaUrl.getInstance().TYPE == Env.STAGING) {
+            getString(com.tokopedia.keys.R.string.rfvtgbyhn)
+        } else {
+            getString(com.tokopedia.keys.R.string.ijnuhbygv)
+        }
+    }
+
+    private fun getPrivateKey(): String {
+        return if (TokopediaUrl.getInstance().TYPE == Env.STAGING) {
+            getString(com.tokopedia.keys.R.string.qazwsxedc)
+        } else {
+            getString(com.tokopedia.keys.R.string.plmoknijb)
+        }
+    }
+
     companion object {
         const val REQUEST_CODE_LOGIN = 1980
         const val CLASS_NAME = "EmoneyCheckBalanceFragment"
@@ -401,6 +449,7 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
         private const val CARD_NUMBER_KEY = "card_number"
         private const val RC_KEY = "rc"
         private const val TAPCASH_ERROR_LOGGER = "TAPCASH_ERROR_LOGGER"
+        private const val TAPCASH_NETWORK_ERROR_LOGGER = "TAPCASH_NETWORK_ERROR_LOGGER"
 
         fun newInstance(): Fragment {
             return EmoneyCheckBalanceFragment()
