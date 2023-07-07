@@ -11,6 +11,7 @@
     <string name="thankyou_rp">Rp %s</string>
     <string name="thankyou_rp_without_space">Rp%s</string>
     <string name="thankyou_discounted_rp">- Rp%s</string>
+    <string name="thankyou_discounted">- %s</string>
     <string name="thank_payment_deadline">Batas Akhir Pembayaran</string>
     <string name="thank_copy">Salin</string>
     <string name="thank_total_amount_label">Total Pembayaran</string>
