@@ -3899,7 +3899,7 @@ class ShipmentFragment :
         val cartId = cartItemModel.cartId
         val addOnIds = arrayListOf<Long>()
         cartItemModel.addOnProduct.listAddOnProductData.forEach { addOnItem ->
-            if (addOnItem.addOnDataStatus == ADD_ON_STATUS_ACTIVE) {
+            if (addOnItem.addOnDataStatus == ADD_ON_PRODUCT_STATUS_CHECK) {
                 addOnIds.add(addOnItem.addOnDataId)
             }
         }

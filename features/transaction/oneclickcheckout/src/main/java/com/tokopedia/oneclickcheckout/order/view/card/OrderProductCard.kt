@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showIfWithBlock
@@ -484,7 +483,8 @@ class OrderProductCard(
                 )
                 setSeeAllAddOnsProduct(
                     binding = this,
-                    addOnsProductData = addOnsProductData
+                    addOnsProductData = addOnsProductData,
+                    product = product
                 )
                 setAddOnsProductItem(
                     binding = this,
@@ -503,7 +503,8 @@ class OrderProductCard(
 
     private fun setSeeAllAddOnsProduct(
         binding: ItemShipmentAddonProductBinding,
-        addOnsProductData: AddOnsProductDataModel
+        addOnsProductData: AddOnsProductDataModel,
+        product: OrderProduct
     ) {
         binding.tvSeeAllAddonProduct.showIfWithBlock(
             predicate = addOnsProductData.bottomsheet.title.isNotBlank() &&
@@ -511,12 +512,9 @@ class OrderProductCard(
                 addOnsProductData.bottomsheet.isShown
         ) {
             text = addOnsProductData.bottomsheet.title
-            setOnClickListener {
-                RouteManager.route(
-                    binding.root.context,
-                    addOnsProductData.bottomsheet.applink
-                )
-            }
+        }
+        binding.tvSeeAllAddonProduct.setOnClickListener {
+            listener.onClickSeeAllAddOnProductService(product, addOnsProductData)
         }
     }
 
@@ -664,8 +662,7 @@ class OrderProductCard(
 
         fun onClickAddOnProductInfoIcon(url: String)
 
-        fun onClickSeeAllAddOnProductService()
-        // TODO: implementation like checkout
+        fun onClickSeeAllAddOnProductService(product: OrderProduct, addOnsProductData: AddOnsProductDataModel)
     }
 
     companion object {

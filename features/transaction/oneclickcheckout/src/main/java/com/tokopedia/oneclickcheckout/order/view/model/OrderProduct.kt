@@ -54,7 +54,8 @@ data class OrderProduct(
     var addOnsProductData: AddOnsProductDataModel = AddOnsProductDataModel(),
     var ethicalDrug: EthicalDrugDataModel = EthicalDrugDataModel(),
     // Analytics
-    var hasTriggerViewErrorProductLevelTicker: Boolean = false
+    var hasTriggerViewErrorProductLevelTicker: Boolean = false,
+    var isFulfillment: Boolean = false
 ) {
 
     fun hasParentId(): Boolean {
