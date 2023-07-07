@@ -83,14 +83,6 @@ class SomGetOrderDetailUseCase @Inject constructor(
                   awb_text_color
                   awb_upload_url
                 }
-                shipment_change {
-                  id
-                  name
-                  product_id
-                  product_name
-                  is_same_day
-                  awb
-                }
                 booking_info {
                   driver {
                     name

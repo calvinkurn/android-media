@@ -17,8 +17,8 @@ import com.tokopedia.loginregister.common.view.banner.data.DynamicBannerDataMode
 import com.tokopedia.loginregister.common.view.banner.domain.usecase.DynamicBannerUseCase
 import com.tokopedia.loginregister.common.view.ticker.domain.pojo.TickerInfoPojo
 import com.tokopedia.loginregister.common.view.ticker.domain.usecase.TickerInfoUseCase
-import com.tokopedia.loginregister.discover.pojo.DiscoverData
-import com.tokopedia.loginregister.discover.usecase.DiscoverUseCase
+import com.tokopedia.loginregister.discover.DiscoverData
+import com.tokopedia.loginregister.discover.DiscoverUseCase
 import com.tokopedia.loginregister.registerinitial.di.RegisterInitialQueryConstant
 import com.tokopedia.loginregister.registerinitial.domain.RegisterV2Query
 import com.tokopedia.loginregister.registerinitial.domain.data.ProfileInfoData
@@ -47,19 +47,19 @@ import javax.inject.Inject
  */
 
 class RegisterInitialViewModel @Inject constructor(
-        private val registerCheckUseCase: GraphqlUseCase<RegisterCheckPojo>,
-        private val registerRequestUseCase: GraphqlUseCase<RegisterRequestPojo>,
-        private val registerRequestUseCaseV2: GraphqlUseCase<RegisterRequestV2>,
-        private val activateUserUseCase: ActivateUserUseCase,
-        private val discoverUseCase: DiscoverUseCase,
-        private val loginTokenUseCase: LoginTokenUseCase,
-        private val getProfileUseCase: GetProfileUseCase,
-        private val tickerInfoUseCase: TickerInfoUseCase,
-        private val dynamicBannerUseCase: DynamicBannerUseCase,
-        private val generatePublicKeyUseCase: GeneratePublicKeyUseCase,
-        private val userSession: UserSessionInterface,
-        private val rawQueries: Map<String, String>,
-        private val dispatcherProvider: CoroutineDispatchers) : BaseViewModel(dispatcherProvider.main) {
+    private val registerCheckUseCase: GraphqlUseCase<RegisterCheckPojo>,
+    private val registerRequestUseCase: GraphqlUseCase<RegisterRequestPojo>,
+    private val registerRequestUseCaseV2: GraphqlUseCase<RegisterRequestV2>,
+    private val activateUserUseCase: ActivateUserUseCase,
+    private val discoverUseCase: DiscoverUseCase,
+    private val loginTokenUseCase: LoginTokenUseCase,
+    private val getProfileUseCase: GetProfileUseCase,
+    private val tickerInfoUseCase: TickerInfoUseCase,
+    private val dynamicBannerUseCase: DynamicBannerUseCase,
+    private val generatePublicKeyUseCase: GeneratePublicKeyUseCase,
+    private val userSession: UserSessionInterface,
+    private val rawQueries: Map<String, String>,
+    private val dispatcherProvider: CoroutineDispatchers) : BaseViewModel(dispatcherProvider.main) {
 
     private val mutableGetProviderResponse = MutableLiveData<Result<DiscoverData>>()
     val getProviderResponse: LiveData<Result<DiscoverData>>

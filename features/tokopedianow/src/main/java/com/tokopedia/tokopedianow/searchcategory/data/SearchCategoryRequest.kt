@@ -24,27 +24,27 @@ internal fun getTokonowQueryParam(requestParams: RequestParams): Map<String?, An
 }
 
 internal fun createAceSearchProductRequest(params: Map<String?, Any>) = GraphqlRequest(
-        ACE_SEARCH_PRODUCT_QUERY,
-        AceSearchProductModel::class.java,
-        mapOf(SearchConstant.GQL.KEY_PARAMS to generateUrlParamString(params))
+    ACE_SEARCH_PRODUCT_QUERY,
+    AceSearchProductModel::class.java,
+    mapOf(SearchConstant.GQL.KEY_PARAMS to generateUrlParamString(params))
 )
 
 internal fun createCategoryFilterRequest(params: Map<String?, Any>) = GraphqlRequest(
-        FILTER_SORT_PRODUCT_QUERY,
-        CategoryFilterModel::class.java,
-        mapOf(SearchConstant.GQL.KEY_PARAMS to generateUrlParamString(params))
+    FILTER_SORT_PRODUCT_QUERY,
+    CategoryFilterModel::class.java,
+    mapOf(SearchConstant.GQL.KEY_PARAMS to generateUrlParamString(params))
 )
 
 internal fun createQuickFilterRequest(params: Map<String?, Any>) = GraphqlRequest(
-        FILTER_SORT_PRODUCT_QUERY,
-        QuickFilterModel::class.java,
-        mapOf(SearchConstant.GQL.KEY_PARAMS to generateUrlParamString(params))
+    FILTER_SORT_PRODUCT_QUERY,
+    QuickFilterModel::class.java,
+    mapOf(SearchConstant.GQL.KEY_PARAMS to generateUrlParamString(params))
 )
 
 internal fun createDynamicChannelRequest(type: String) = GraphqlRequest(
-        DYNAMIC_CHANNEL_QUERY,
-        DynamicChannelModel::class.java,
-        mapOf(TYPE to type)
+    DYNAMIC_CHANNEL_QUERY,
+    DynamicChannelModel::class.java,
+    mapOf(TYPE to type)
 )
 
 internal fun createRepurchaseWidgetRequest(params: Map<String, Any>): GraphqlRequest {
@@ -55,25 +55,24 @@ internal fun createRepurchaseWidgetRequest(params: Map<String, Any>): GraphqlReq
         GetRepurchaseWidget.getQuery(),
         GetRepurchaseResponse::class.java,
         mapOf(
-            GetRepurchaseWidgetUseCase.PARAM_WAREHOUSE_ID to warehouseID,
-            GetRepurchaseWidgetUseCase.PARAM_QUERY_PARAM to queryParam,
+            GetRepurchaseWidgetUseCase.PARAM_WAREHOUSES to warehouseID,
+            GetRepurchaseWidgetUseCase.PARAM_QUERY_PARAM to queryParam
         )
     )
 }
 
 internal fun getFeedbackFieldToggleData(
     graphqlResponse: GraphqlResponse
-) : GetFeedbackFieldModel {
+): GetFeedbackFieldModel {
     return graphqlResponse
         .getData<GetFeedbackFieldModel?>(GetFeedbackFieldModel::class.java) ?: GetFeedbackFieldModel()
 }
 
-internal fun createFeedbackFieldToggleRequest() : GraphqlRequest = GraphqlRequest(
+internal fun createFeedbackFieldToggleRequest(): GraphqlRequest = GraphqlRequest(
     FEEDBACK_FIELD_TOGGLE_QUERY,
     GetFeedbackFieldModel::class.java,
     mapOf()
 )
-
 
 private fun createRepurchaseQueryParam(params: Map<String, Any>): String {
     val categoryID = params[CATEGORY_ID]?.toString() ?: ""
@@ -95,6 +94,9 @@ private const val ACE_SEARCH_PRODUCT_QUERY = """
           totalDataText
           responseCode
           keywordProcess
+          meta {
+            categoryId   
+          }
         }
         data {
           isQuerySafe

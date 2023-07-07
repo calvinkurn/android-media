@@ -1,0 +1,95 @@
+<resources>
+
+    <!--One Kyc Customize String-->
+    <!-- Zero Click Flow -->
+    <string name="onekyc_zero_clicks_view_guideline">Lihat Tips</string>
+    <string name="onekyc_zero_clicks_ktp_title">Pastikan e-KTP kamu dalam kotak</string>
+    <string name="onekyc_zero_clicks_ktp_auto_capture_info">Tahan dulu ya, kami akan foto segera.</string>
+    <string name="onekyc_zero_clicks_ktp_manual_capture_info">Ambil fotonya kalau udah siap</string>
+
+    <!-- Zero Click Flow Selfie Prepare Dialog-->
+    <string name="onekyc_zero_clicks_selfie_title">Posisikan wajahmu dalam lingkaran</string>
+    <string name="onekyc_zero_clicks_selfie_auto_capture_info">Tahan dulu ya, kami akan foto segera.</string>
+    <string name="onekyc_zero_clicks_selfie_manual_capture_info">Ambil fotonya kalau udah siap</string>
+    <string name="onekyc_zero_clicks_selfie_prepare_card_title">Siap-siap buat selfie</string>
+    <string name="onekyc_zero_clicks_selfie_prepare_card_info1">Tanpa masker</string>
+    <string name="onekyc_zero_clicks_selfie_prepare_card_info2">Tanpa topi</string>
+    <string name="onekyc_zero_clicks_selfie_prepare_card_info3">Tanpa kacamata</string>
+    <string name="onekyc_zero_clicks_selfie_prepare_card_info4">Cahaya cukup</string>
+    <string name="onekyc_zero_clicks_selfie_prepare_card_ready_cta">Mulai Selfie</string>
+    <string name="onekyc_zero_clicks_selfie_prepare_card_needtime_cta">Siap-siap Dulu</string>
+
+    <!-- Zero Click Flow Feedbacks-->
+    <string name="onekyc_zero_clicks_feedback_ktp_face_not_detected">Fotomu yang ada di e-KTP harus masuk di kotak</string>
+    <string name="onekyc_zero_clicks_feedback_ktp_card_not_detected">e-KTP kamu belum pas di kotak</string>
+    <string name="onekyc_zero_clicks_feedback_ktp_card_cropped">e-KTP kamu belum pas di kotak</string>
+    <string name="onekyc_zero_clicks_feedback_ktp_lowlight">Terlalu gelap. Atur lagi cahayanya, ya.</string>
+    <string name="onekyc_zero_clicks_feedback_ktp_highlight">Terlalu terang. Atur lagi cahayanya, ya</string>
+    <string name="onekyc_zero_clicks_feedback_ktp_lowlight_highlight">Atur cahayanya biar e-KTP kamu terlihat.</string>
+    <string name="onekyc_zero_clicks_feedback_ktp_blurry">Buram, nih. Pegang HP yang stabil, ya</string>
+    <string name="onekyc_zero_clicks_feedback_ktp_blurry_lowlight_highlight">Foto kurang jelas. Atur cahayanya.</string>
+    <string name="onekyc_zero_clicks_feedback_ktp_blurry_lowlight">Foto kurang jelas. Atur cahayanya.</string>
+    <string name="onekyc_zero_clicks_feedback_ktp_blurry_highlight">Foto kurang jelas. Atur cahayanya.</string>
+    <string name="onekyc_zero_clicks_feedback_ktp_zoomin">Posisikan e-KTP-mu biar semua bagiannya terlihat.</string>
+    <string name="onekyc_zero_clicks_feedback_ktp_zoomout">Posisikan e-KTP-mu biar semua bagiannya terlihat.</string>
+    <string name="onekyc_zero_clicks_feedback_selfie_face_not_detected">Wajahmu harus pas dalam lingkaran</string>
+    <string name="onekyc_zero_clicks_feedback_selfie_zoomout">Maju sedikit biar seluruh wajahmu terlihat.</string>
+    <string name="onekyc_zero_clicks_feedback_selfie_zoomin">Mundur sedikit biar seluruh wajahmu terlihat.</string>
+    <string name="onekyc_zero_clicks_feedback_selfie_mask">Lepas maskernya dulu, ya.</string>
+    <string name="onekyc_zero_clicks_feedback_selfie_lowlight">Terlalu gelap. Atur lagi cahayanya, ya.</string>
+    <string name="onekyc_zero_clicks_feedback_selfie_highlight">Terlalu terang. Atur lagi cahayanya, ya.</string>
+    <string name="onekyc_zero_clicks_feedback_selfie_lowlight_highlight">Atur cahayanya biar wajahmu terlihat.</string>
+    <string name="onekyc_zero_clicks_feedback_selfie_blurry">Buram, nih. Pegang HP yang stabil, ya.</string>
+    <string name="onekyc_zero_clicks_feedback_selfie_blurry_lowlight_highlight">Foto kurang jelas. Atur cahayanya.</string>
+    <string name="onekyc_zero_clicks_feedback_selfie_blurry_highlight">Foto kurang jelas. Atur cahayanya.</string>
+    <string name="onekyc_zero_clicks_feedback_selfie_blurry_lowlight">Foto kurang jelas. Atur cahayanya.</string>
+    <string name="onekyc_zero_clicks_feedback_selfie_cropped">Wajahmu belum pas di lingkaran</string>
+    <string name="onekyc_zero_clicks_feedback_perfect_autocapture">Lagi ambil foto.. jangan gerak dulu, ya.</string>
+    <string name="onekyc_zero_clicks_feedback_perfect_manualcapture">Ambil fotonya kalau udah siap</string>
+    <string name="onekyc_review_screen_title">Review &amp; Kirim Dokumen</string>
+    <string name="onekyc_review_document_info">Pastikan foto dokumen kamu terlihat jelas biar bisa langsung dikirim dan diproses.</string>
+    <string name="onekyc_review_document_ktp">Foto e-KTP</string>
+    <string name="onekyc_review_document_selfie">Foto selfie</string>
+    <string name="onekyc_review_document_take_photo">Ambil Foto</string>
+    <string name="onekyc_review_document_submit">Kirim Dokumen</string>
+    <string name="onekyc_review_document_delete_confirmation_title">Yakin mau hapus fotonya?</string>
+    <string name="onekyc_review_document_delete_confirmation_description">Setelah foto dihapus, kamu bakal perlu ulang dari awal kalau kamu mau verifikasi.</string>
+    <string name="onekyc_review_document_delete_confirmation_yes">Ya, Hapus</string>
+    <string name="onekyc_review_document_delete_confirmation_cancel">Batal</string>
+
+    <!-- Zero Click Flow Guideline Dialog-->
+    <string name="onekyc_guideline_ktp_title">Tips ambil foto e-KTP</string>
+    <string name="onekyc_guideline_ktp_autocapture_info_title">Fotomu akan diambil secara otomatis</string>
+    <string name="onekyc_guideline_ktp_autocapture_info_description">Kamu hanya perlu posisikan e-KTP kamu sesuai tips di bawah. Kami akan otomatis ambil fotomu.</string>
+    <string name="onekyc_guideline_ktp_instruction_1">e-KTP kamu harus asli (bukan hasil scan atau fotokopi) dan difoto langsung dari kamera HP-mu.</string>
+    <string name="onekyc_guideline_ktp_instruction_2">e-KTP harus muat di dalam bingkai.</string>
+    <string name="onekyc_guideline_ktp_instruction_3">Pastikan e-KTP kamu bisa dibaca dengan jelas.</string>
+    <string name="onekyc_guideline_ktp_instruction_manual_4">Tekan button untuk ambil foto.</string>
+    <string name="onekyc_guideline_selfie_title">Tips ambil selfie</string>
+    <string name="onekyc_guideline_selfie_autocapture_info_title">Fotomu akan diambil secara otomatis</string>
+    <string name="onekyc_guideline_selfie_autocapture_info_description">Kamu hanya perlu posisikan wajahmu sesuai tips di bawah ini. Kami akan otomatis ambil fotomu.</string>
+    <string name="onekyc_guideline_selfie_instruction_1">Tempatkan wajahmu di dalam bingkai.</string>
+    <string name="onekyc_guideline_selfie_instruction_2">Pastikan foto tidak blur dan tidak silau.</string>
+    <string name="onekyc_guideline_selfie_instruction_3">Pastikan kamu tidak memakai kacamata atau masker di wajahmu.</string>
+    <string name="onekyc_guideline_selfie_instruction_4">Pastikan cahayanya cukup saat foto.</string>
+    <string name="onekyc_guideline_correct">Benar</string>
+    <string name="onekyc_guideline_wrong">Salah</string>
+
+    <!-- Zero Click Flow Detailed Preview-->
+    <string name="onekyc_review_document_ktp_title">Review Foto e-KTP</string>
+    <string name="onekyc_review_document_selfie_title">Review Foto Selfie</string>
+    <string name="onekyc_review_document_full_instruction">Ingin tau lebih jelas?</string>
+    <string name="onekyc_review_document_guideline_info_title">Pastikan fotomu sudah…</string>
+    <string name="onekyc_review_document_guideline_info1">Pas di bingkai.</string>
+    <string name="onekyc_review_document_guideline_info2">Cukup terang cahayanya.</string>
+    <string name="onekyc_review_document_guideline_info3">Terlihat jelas dan tidak buram.</string>
+    <string name="onekyc_review_document_looksgood">Pakai Foto Ini</string>
+    <string name="onekyc_review_document_retake">Foto Ulang</string>
+
+    <!-- Auto capture exhausted -->
+    <string name="gofin_kyc_auto_capture_exhausted_dialog_title">Mau coba foto manual aja?</string>
+    <string name="gofin_kyc_auto_capture_exhausted_dialog_description">Sepertinya kamu kesulitan saat ambil foto otomatis, coba foto manual buat lanjutin.</string>
+    <string name="gofin_kyc_auto_capture_continue_cta">Foto Otomatis</string>
+    <string name="gofin_kyc_auto_capture_switch_mode_cta">Foto Manual</string>
+
+</resources>

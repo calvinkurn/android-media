@@ -64,7 +64,6 @@ class HomeDataMapper(
         }
 
         return HomeDynamicChannelModel(
-            homeFlag = homeData.homeFlag,
             list = mutableVisitableList,
             isCache = isCache,
             isFirstPage = firstPage,
