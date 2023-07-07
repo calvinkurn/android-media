@@ -42,17 +42,28 @@ class FeedFollowProfileViewHolder private constructor() {
                     buttonVariant = UnifyButton.Variant.FILLED
                     text = itemView.context.getString(R.string.feed_follow_label)
                 }
-
-                setOnClickListener {
-                    followRecommendationListener.onClickFollow(model.data)
-                }
             }
 
+            setupListener(model)
+        }
+
+        private fun setupListener(model: FeedFollowProfileAdapter.Model.Profile) {
             binding.root.setOnClickListener { listener.onScrollProfile(absoluteAdapterPosition) }
-            binding.imgProfile.setOnClickListener { onClickProfile(model.data) }
-            binding.tvProfileName.setOnClickListener { onClickProfile(model.data) }
-            binding.icClose.setOnClickListener {
-                followRecommendationListener.onCloseProfileRecommendation(model.data)
+
+            if (model.isSelected) {
+                binding.imgProfile.setOnClickListener { onClickProfile(model.data) }
+                binding.tvProfileName.setOnClickListener { onClickProfile(model.data) }
+                binding.btnFollow.setOnClickListener {
+                    followRecommendationListener.onClickFollow(model.data)
+                }
+                binding.icClose.setOnClickListener {
+                    followRecommendationListener.onCloseProfileRecommendation(model.data)
+                }
+            } else {
+                binding.imgProfile.setOnClickListener { listener.onScrollProfile(absoluteAdapterPosition) }
+                binding.tvProfileName.setOnClickListener { listener.onScrollProfile(absoluteAdapterPosition) }
+                binding.btnFollow.setOnClickListener { listener.onScrollProfile(absoluteAdapterPosition) }
+                binding.icClose.setOnClickListener { listener.onScrollProfile(absoluteAdapterPosition) }
             }
         }
 
