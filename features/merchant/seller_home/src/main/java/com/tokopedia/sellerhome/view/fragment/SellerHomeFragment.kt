@@ -1916,7 +1916,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             if (it is Success) {
                 val info = it.data
                 this.isNewSellerState = info.isNewSellerState
-                setSectionWidgetTextColor()
                 if (info.subtitle.isBlank()) return@observe
 
                 if (info.subType == ShopStateInfoUiModel.SubType.TOAST) {
@@ -1930,32 +1929,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         }
     }
 
-    private fun setSectionWidgetTextColor() {
-        recyclerView?.post {
-            val widgets = adapter.data.map {
-                if (it is SectionWidgetUiModel) {
-                    val titleTextColor: Int
-                    val subTitleTextColor: Int
-                    if (isNewSellerState) {
-                        titleTextColor = com.tokopedia.unifyprinciples.R.color.Unify_NN0
-                        subTitleTextColor = com.tokopedia.unifyprinciples.R.color.Unify_NN0
-                    } else {
-                        titleTextColor = com.tokopedia.unifyprinciples.R.color.Unify_N700_96
-                        subTitleTextColor = com.tokopedia.unifyprinciples.R.color.Unify_N700_68
-                    }
-                    return@map it.copy(
-                        titleTextColorId = titleTextColor, subTitleTextColorId = subTitleTextColor
-                    )
-                }
-                return@map it
-            }
-
-            notifyWidgetWithSdkChecking {
-                updateWidgets(widgets)
-            }
-        }
-    }
-
     private fun setViewBackground() = binding?.run {
         val isOfficialStore = userSession.isShopOfficialStore
         val isPowerMerchant = userSession.isPowerMerchantIdle || userSession.isGoldMerchant
@@ -1963,9 +1936,11 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             isOfficialStore -> {
                 showHomeBackground(R.drawable.sah_shop_state_bg_official_store)
             }
+
             isPowerMerchant -> {
                 showHomeBackground(R.drawable.sah_shop_state_bg_power_merchant)
             }
+
             else -> {
                 showHomeBackground(R.drawable.sah_shop_state_bg_regular_merchant)
             }
@@ -2760,7 +2735,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         if (shopState == ShopStateUiModel.NewRegisteredShop) {
             showNewSellerDialog()
             isNewSellerState = true
-            setSectionWidgetTextColor()
         } else if (shouldGetShopStateInfo) {
             getShopStateInfoIfEligible()
         }
@@ -2771,7 +2745,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             sellerHomeViewModel.getShopStateInfo()
         } else {
             isNewSellerState = false
-            setSectionWidgetTextColor()
         }
     }
 
