@@ -689,60 +689,6 @@ class PlayUpcomingTest {
     /**
      * Share Experience
      */
-//    @Test
-//    fun `when user click share action, it should emit event to save temporary sharing image`() {
-//        /** Prepare */
-//        coEvery { mockPlayShareExperience.isCustomSharingAllow() } returns true
-//
-//        val mockEvent = PlayUpcomingUiEvent.SaveTemporarySharingImage(imageUrl = channelInfo.coverUrl)
-//
-//        val robot = createPlayUpcomingViewModelRobot(
-//            dispatchers = testDispatcher,
-//            playShareExperience = mockPlayShareExperience,
-//        ) {
-//            viewModel.initPage(mockChannelData.id, mockChannelData)
-//        }
-//
-//        robot.use {
-//            /** Test */
-//            val event = it.recordEvent {
-//                submitAction(ClickShareUpcomingAction)
-//            }
-//
-//            event.last().assertEqualTo(mockEvent)
-//        }
-//    }
-
-//    @Test
-//    fun `when app failed to save temporary image, it should emit copy link event`() {
-//        /** Prepare */
-//        coEvery { mockPlayShareExperience.isCustomSharingAllow() } returns true
-//
-//        val mockCopyEvent = PlayUpcomingUiEvent.CopyToClipboardEvent(
-//            shareInfo.content
-//        )
-//        val mockShowInfoEvent = PlayUpcomingUiEvent.ShowInfoEvent(
-//            UiString.Resource(123)
-//        )
-//
-//        val robot = createPlayUpcomingViewModelRobot(
-//            dispatchers = testDispatcher,
-//            playShareExperience = mockPlayShareExperience,
-//        ) {
-//            viewModel.initPage(mockChannelData.id, mockChannelData)
-//        }
-//
-//        robot.use {
-//            /** Test */
-//            val event = it.recordEvent {
-//                submitAction(CopyLinkUpcomingAction)
-//            }
-//
-//            event[0].assertEqualTo(mockCopyEvent)
-//            event[1].isEqualToIgnoringFields(mockShowInfoEvent, ShowInfoEvent::message)
-//        }
-//    }
-
     @Test
     fun `when user wants to open sharing experience & custom sharing is allowed, it should emit event to open universal sharing bottom sheet`() {
         /** Prepare */
