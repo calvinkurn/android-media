@@ -72,6 +72,7 @@ import com.tokopedia.tokopedianow.databinding.FragmentTokopedianowCategoryBaseBi
 import com.tokopedia.tokopedianow.similarproduct.presentation.activity.TokoNowSimilarProductBottomSheetActivity
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.universal_sharing.view.bottomsheet.ScreenshotDetector
+import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.PermissionListener
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ScreenShotListener
@@ -82,13 +83,13 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
-class TokoNowCategoryFragment : BaseDaggerFragment(),
+class TokoNowCategoryFragment :
+    BaseDaggerFragment(),
     ScreenShotListener,
     ShareBottomsheetListener,
     PermissionListener,
     MiniCartWidgetListener,
-    NoAddressEmptyStateView.ActionListener
-{
+    NoAddressEmptyStateView.ActionListener {
     companion object {
         private const val SCROLL_DOWN_DIRECTION = 1
         private const val START_SWIPE_PROGRESS_POSITION = 120
@@ -188,7 +189,7 @@ class TokoNowCategoryFragment : BaseDaggerFragment(),
 
     private var shareTokonow: ShareTokonow? = null
     private var universalShareBottomSheet: UniversalShareBottomSheet? = null
-    private var screenshotDetector : ScreenshotDetector? = null
+    private var screenshotDetector: ScreenshotDetector? = null
 
     /**
      * -- override function section --
@@ -231,12 +232,12 @@ class TokoNowCategoryFragment : BaseDaggerFragment(),
     }
 
     override fun onStop() {
-        UniversalShareBottomSheet.clearState(screenshotDetector)
+        SharingUtil.clearState(screenshotDetector)
         super.onStop()
     }
 
     override fun onDestroy() {
-        UniversalShareBottomSheet.clearState(screenshotDetector)
+        SharingUtil.clearState(screenshotDetector)
         recycledViewPool.clear()
         super.onDestroy()
     }
@@ -250,12 +251,12 @@ class TokoNowCategoryFragment : BaseDaggerFragment(),
         return binding?.root
     }
 
-    override fun screenShotTaken() {
+    override fun screenShotTaken(path: String) {
         updateShareCategoryData(
             isScreenShot = true,
             thumbNailTitle = context?.resources?.getString(R.string.tokopedianow_share_thumbnail_title_ss).orEmpty()
         )
-        showUniversalShareBottomSheet(shareTokonow)
+        showUniversalShareBottomSheet(shareTokonow, path)
     }
 
     override fun permissionAction(action: String, label: String) {
@@ -386,7 +387,7 @@ class TokoNowCategoryFragment : BaseDaggerFragment(),
         oosLayout.hide()
     }
 
-    private fun FragmentTokopedianowCategoryBaseBinding.setupGlobalErrorPageNotFound(){
+    private fun FragmentTokopedianowCategoryBaseBinding.setupGlobalErrorPageNotFound() {
         globalError.apply {
             errorAction.text = getString(R.string.tokopedianow_common_error_state_button_back_to_tokonow_home_page)
             errorSecondaryAction.show()
@@ -468,7 +469,6 @@ class TokoNowCategoryFragment : BaseDaggerFragment(),
         }
     }
 
-
     private fun NavToolbar.setupNavigationToolbarInteraction() {
         activity?.let { setupToolbarWithStatusBar(activity = it) }
         viewLifecycleOwner.lifecycle.addObserver(this)
@@ -493,7 +493,7 @@ class TokoNowCategoryFragment : BaseDaggerFragment(),
                 warehouseId = viewModel.getWarehouseId()
             )
         },
-        disableDefaultGtmTracker = true,
+        disableDefaultGtmTracker = true
     )
 
     private fun IconBuilder.addShare() = addIcon(
@@ -539,8 +539,8 @@ class TokoNowCategoryFragment : BaseDaggerFragment(),
         linkerType = LinkerData.NOW_TYPE
     )
 
-    private fun shareClicked(shareCategoryTokonow: ShareTokonow?){
-        if(UniversalShareBottomSheet.isCustomSharingEnabled(context)){
+    private fun shareClicked(shareCategoryTokonow: ShareTokonow?) {
+        if (SharingUtil.isCustomSharingEnabled(context)) {
             showUniversalShareBottomSheet(
                 shareCategoryTokonow = shareCategoryTokonow
             )
@@ -554,8 +554,13 @@ class TokoNowCategoryFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun showUniversalShareBottomSheet(shareCategoryTokonow: ShareTokonow?) {
+    private fun showUniversalShareBottomSheet(shareCategoryTokonow: ShareTokonow?, path: String? = null) {
         universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
+            setFeatureFlagRemoteConfigKey()
+            path?.let {
+                setImageOnlySharingOption(true)
+                setScreenShotImagePath(path)
+            }
             init(this@TokoNowCategoryFragment)
             setUtmCampaignData(
                 pageName = PAGE_SHARE_NAME,
@@ -565,9 +570,9 @@ class TokoNowCategoryFragment : BaseDaggerFragment(),
             )
             setMetaData(
                 tnTitle = shareCategoryTokonow?.thumbNailTitle.orEmpty(),
-                tnImage = shareCategoryTokonow?.thumbNailImage.orEmpty(),
+                tnImage = shareCategoryTokonow?.thumbNailImage.orEmpty()
             )
-            //set the Image Url of the Image that represents page
+            // set the Image Url of the Image that represents page
             setOgImageUrl(imgUrl = shareCategoryTokonow?.ogImageUrl.orEmpty())
         }
 
@@ -626,7 +631,7 @@ class TokoNowCategoryFragment : BaseDaggerFragment(),
     }
 
     private fun createNavRecyclerViewOnScrollListener(
-        navToolbar: NavToolbar,
+        navToolbar: NavToolbar
     ): RecyclerView.OnScrollListener {
         val transitionRange = context?.resources?.getDimensionPixelSize(R.dimen.tokopedianow_searchbar_transition_range).orZero()
         return NavRecyclerViewScrollListener(
@@ -659,7 +664,7 @@ class TokoNowCategoryFragment : BaseDaggerFragment(),
 
     private fun setupScreenshotDetector() {
         context?.let {
-            screenshotDetector = UniversalShareBottomSheet.createAndStartScreenShotDetector(
+            screenshotDetector = SharingUtil.createAndStartScreenShotDetector(
                 context = it,
                 screenShotListener = this,
                 fragment = this,
@@ -685,7 +690,7 @@ class TokoNowCategoryFragment : BaseDaggerFragment(),
         context?.apply {
             return ChooseAddressUtils.isLocalizingAddressHasUpdated(
                 context = this,
-                localizingAddressStateData =  addressData
+                localizingAddressStateData = addressData
             )
         }
         return false
@@ -1086,7 +1091,7 @@ class TokoNowCategoryFragment : BaseDaggerFragment(),
                 categoryIdL1 = categoryIdL1,
                 price = product.productCardModel.price.getDigits().orZero(),
                 headerName = product.headerName,
-                layoutType = CategoryLayoutType.CATEGORY_SHOWCASE,
+                layoutType = CategoryLayoutType.CATEGORY_SHOWCASE
             )
         }
     }
@@ -1096,22 +1101,23 @@ class TokoNowCategoryFragment : BaseDaggerFragment(),
     private fun showMiniCart(
         data: MiniCartSimplifiedData
     ) {
-        val miniCartWidget = binding?.miniCartWidget
         val showMiniCartWidget = data.isShowMiniCartWidget
-
-        if(showMiniCartWidget) {
+        if (showMiniCartWidget) {
             val pageName = MiniCartAnalytics.Page.HOME_PAGE
             val shopIds = listOf(shopId)
             val source = MiniCartSource.TokonowHome
-            miniCartWidget?.initialize(
-                shopIds = shopIds,
-                fragment = this,
-                listener = this,
-                pageName = pageName,
-                source = source
-            )
-            miniCartWidget?.show()
-            miniCartWidget?.hideTopContentView()
+            binding?.apply {
+                miniCartWidget.initialize(
+                    shopIds = shopIds,
+                    fragment = this@TokoNowCategoryFragment,
+                    listener = this@TokoNowCategoryFragment,
+                    pageName = pageName,
+                    source = source
+                )
+                miniCartWidgetShadow?.show()
+                miniCartWidget.show()
+                miniCartWidget.hideTopContentView()
+            }
         } else {
             hideMiniCart()
         }
@@ -1185,7 +1191,10 @@ class TokoNowCategoryFragment : BaseDaggerFragment(),
     }
 
     private fun hideMiniCart() {
-        binding?.miniCartWidget?.hide()
+        binding?.apply {
+            miniCartWidgetShadow.hide()
+            miniCartWidget.hide()
+        }
     }
     private fun clickWishlistButton(
         productId: String,
@@ -1194,8 +1203,8 @@ class TokoNowCategoryFragment : BaseDaggerFragment(),
         ctaToaster: String,
         type: Int,
         ctaClickListener: (() -> Unit)?
-    ){
-        if(isWishlistSelected) {
+    ) {
+        if (isWishlistSelected) {
             analytic.categoryOosProductAnalytic.trackClickAddToWishlist(
                 warehouseId = viewModel.getWarehouseId(),
                 productId = productId
