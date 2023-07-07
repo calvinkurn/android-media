@@ -27,10 +27,12 @@ import com.tokopedia.analytics.performance.util.EmbraceKey
 import com.tokopedia.analytics.performance.util.EmbraceMonitoring.stopMoments
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalFintech
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.PARAM_SOURCE
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.checkout.R
@@ -160,6 +162,7 @@ import com.tokopedia.purchase_platform.common.constant.ARGS_VALIDATE_USE_REQUEST
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant.ADD_ON_PRODUCT_STATUS_CHECK
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant.ADD_ON_PRODUCT_STATUS_UNCHECK
+import com.tokopedia.purchase_platform.common.constant.AddOnConstant.SOURCE_NORMAL_CHECKOUT
 import com.tokopedia.purchase_platform.common.constant.CartConstant
 import com.tokopedia.purchase_platform.common.constant.CartConstant.SCREEN_NAME_CART_NEW_USER
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
@@ -3903,12 +3906,21 @@ class ShipmentFragment :
                 addOnIds.add(addOnItem.addOnDataId)
             }
         }
-        val warehouseId = cartItemModel.warehouseId
-        val isTokoCabang = cartItemModel.isTokoCabang // need to confirm
-        val applink = "tokopedia://addon/" + productId + "/?cartId=" + cartId +
-            "&selectedAddonIds=" + addOnIds.toString() + "&source=cart&warehouseId=" + warehouseId + "&isTokocabang=" + isTokoCabang
-        println("++ applink = " + applink)
+
+        val applinkAddon = ApplinkConst.ADDON.replace(AddOnConstant.QUERY_PARAM_ADDON_PRODUCT, productId.toString())
+        val applink = UriUtil.buildUriAppendParams(
+            applinkAddon,
+            mapOf(
+                AddOnConstant.QUERY_PARAM_CART_ID to cartId,
+                AddOnConstant.QUERY_PARAM_SELECTED_ADDON_IDS to addOnIds,
+                AddOnConstant.QUERY_PARAM_PAGE_ATC_SOURCE to SOURCE_NORMAL_CHECKOUT,
+                ApplinkConstInternalMechant.QUERY_PARAM_WAREHOUSE_ID to cartItemModel.warehouseId,
+                AddOnConstant.QUERY_PARAM_IS_TOKOCABANG to cartItemModel.isTokoCabang
+            )
+        )
+
         activity?.let {
+            // TODO: startActivityForResult & update onActivityResult
             RouteManager.route(it, applink)
         }
     }

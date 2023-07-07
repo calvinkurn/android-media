@@ -17,12 +17,15 @@ import androidx.recyclerview.widget.LinearSmoothScroller
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.ApplinkConst.ADDON
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalFintech
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.PARAM_SOURCE
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.ApplinkConstInternalMechant.QUERY_PARAM_WAREHOUSE_ID
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
@@ -128,6 +131,12 @@ import com.tokopedia.purchase_platform.common.constant.ARGS_PROMO_REQUEST
 import com.tokopedia.purchase_platform.common.constant.ARGS_VALIDATE_USE_DATA_RESULT
 import com.tokopedia.purchase_platform.common.constant.ARGS_VALIDATE_USE_REQUEST
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant
+import com.tokopedia.purchase_platform.common.constant.AddOnConstant.QUERY_PARAM_ADDON_PRODUCT
+import com.tokopedia.purchase_platform.common.constant.AddOnConstant.QUERY_PARAM_CART_ID
+import com.tokopedia.purchase_platform.common.constant.AddOnConstant.QUERY_PARAM_IS_TOKOCABANG
+import com.tokopedia.purchase_platform.common.constant.AddOnConstant.QUERY_PARAM_PAGE_ATC_SOURCE
+import com.tokopedia.purchase_platform.common.constant.AddOnConstant.QUERY_PARAM_SELECTED_ADDON_IDS
+import com.tokopedia.purchase_platform.common.constant.AddOnConstant.SOURCE_ONE_CLICK_CHECKOUT
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
 import com.tokopedia.purchase_platform.common.constant.PAGE_OCC
 import com.tokopedia.purchase_platform.common.feature.addonsproduct.data.model.AddOnsProductDataModel
@@ -1533,18 +1542,28 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
             // tokopedia://addon/2148784281/?cartId=123123&selectedAddonIds=111,222,333&source=cart&warehouseId=789789&isTokocabang=false
             val productId = product.productId
             val cartId = product.productId
+
             val addOnIds = arrayListOf<String>()
             addOnsProductData.data.forEach { addOnItem ->
                 if (addOnItem.status == AddOnConstant.ADD_ON_PRODUCT_STATUS_CHECK) {
                     addOnIds.add(addOnItem.id)
                 }
             }
-            val warehouseId = product.warehouseId
-            val isTokoCabang = product.isFulfillment
-            val applink = "tokopedia://addon/" + productId + "/?cartId=" + cartId +
-                "&selectedAddonIds=" + addOnIds.toString() + "&source=cart&warehouseId=" + warehouseId + "&isTokocabang=" + isTokoCabang
-            println("++ applink = " + applink)
+
+            val applinkAddon = ADDON.replace(QUERY_PARAM_ADDON_PRODUCT, productId)
+            val applink = UriUtil.buildUriAppendParams(
+                applinkAddon,
+                mapOf(
+                    QUERY_PARAM_CART_ID to cartId,
+                    QUERY_PARAM_SELECTED_ADDON_IDS to addOnIds,
+                    QUERY_PARAM_PAGE_ATC_SOURCE to SOURCE_ONE_CLICK_CHECKOUT,
+                    QUERY_PARAM_WAREHOUSE_ID to product.warehouseId,
+                    QUERY_PARAM_IS_TOKOCABANG to product.isFulfillment
+                )
+            )
+
             activity?.let {
+                // TODO: startActivityForResult & update onActivityResult
                 RouteManager.route(it, applink)
             }
         }

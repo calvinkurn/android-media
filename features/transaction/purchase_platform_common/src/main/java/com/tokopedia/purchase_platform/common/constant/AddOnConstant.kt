@@ -23,4 +23,11 @@ object AddOnConstant {
     const val ADD_ON_PRODUCT_STATUS_CHECK = 1
     const val ADD_ON_PRODUCT_STATUS_UNCHECK = 2
     const val ADD_ON_PRODUCT_STATUS_MANDATORY = 3
+
+    const val QUERY_PARAM_PAGE_ATC_SOURCE = "atcSource"
+    const val QUERY_PARAM_CART_ID = "cartId"
+    const val QUERY_PARAM_SELECTED_ADDON_IDS = "selectedAddonIds"
+    const val QUERY_PARAM_IS_TOKOCABANG = "isTokoCabang"
+    const val QUERY_PARAM_ADDON_PRODUCT = "{addon_id}"
+    const val QUERY_PARAM_WAREHOUSE_ID = "warehouseId"
 }
