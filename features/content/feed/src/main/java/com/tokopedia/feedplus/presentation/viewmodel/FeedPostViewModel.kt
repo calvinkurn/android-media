@@ -349,6 +349,7 @@ class FeedPostViewModel @Inject constructor(
                     }.toMutableList()
 
                     indexToRemove.forEach { indexNumber ->
+                        if (newItems.size <= indexNumber) return@forEach
                         newItems.removeAt(indexNumber)
                     }
 
