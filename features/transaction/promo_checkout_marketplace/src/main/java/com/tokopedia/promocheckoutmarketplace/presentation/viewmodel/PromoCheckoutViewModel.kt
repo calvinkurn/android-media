@@ -234,13 +234,17 @@ class PromoCheckoutViewModel @Inject constructor(
                 order.codes.add(it.uiData.promoCode)
             } else if (it.uiState.isBebasOngkir) {
                 val boData =
-                    it.uiData.boAdditionalData.firstOrNull { order.uniqueId == it.uniqueId }
+                    it.uiData.boAdditionalData.firstOrNull { order.cartStringGroup == it.cartStringGroup }
                 boData?.let {
                     if (!order.codes.contains(boData.code)) {
                         // if code is not already in request param, then add bo additional data
                         order.shippingId = boData.shippingId
                         order.spId = boData.shipperProductId
-                        order.codes.add(boData.code)
+                        if (order.uniqueId == boData.uniqueId) {
+                            order.codes.add(boData.code)
+                        }
+                    } else if (order.uniqueId != boData.uniqueId) {
+                        order.codes.remove(boData.code)
                     }
                 }
             } else if (it.uiData.shopId == 0 && !promoRequest.codes.contains(it.uiData.promoCode)) {
@@ -254,7 +258,7 @@ class PromoCheckoutViewModel @Inject constructor(
             } else if (it.uiState.isBebasOngkir) {
                 // if coupon is bebas ongkir promo, then remove code only
                 val boData =
-                    it.uiData.boAdditionalData.firstOrNull { order.uniqueId == it.uniqueId }
+                    it.uiData.boAdditionalData.firstOrNull { order.cartStringGroup == it.cartStringGroup }
                 if (boData != null) {
                     order.let {
                         if (it.codes.contains(boData.code)) {
@@ -1136,13 +1140,13 @@ class PromoCheckoutViewModel @Inject constructor(
                 if (visitable.uiState.isBebasOngkir) {
                     // get orders in clearpromo param that eligible for bo promo
                     val boPromoUniqueIds =
-                        visitable.uiData.boAdditionalData.map { additionalBoData -> additionalBoData.uniqueId }
+                        visitable.uiData.boAdditionalData.map { additionalBoData -> additionalBoData.cartStringGroup }
                     val eligibleClearPromoParamForBoPromo =
-                        orders.filter { clearPromoOrder -> boPromoUniqueIds.contains(clearPromoOrder.uniqueId) }
+                        orders.filter { clearPromoOrder -> boPromoUniqueIds.contains(clearPromoOrder.cartStringGroup) }
                     eligibleClearPromoParamForBoPromo.forEach { order ->
                         // for each eligible order, get bo additional data
                         val boData = visitable.uiData.boAdditionalData
-                            .find { boAdditionalData -> order.uniqueId == boAdditionalData.uniqueId }
+                            .find { boAdditionalData -> order.cartStringGroup == boAdditionalData.cartStringGroup }
                         if (boData != null) {
                             // if code is not in clear orders code & is applied in previous page, then add bo code
                             if (!order.codes.contains(boData.code) && bboPromoCodes.contains(boData.code)) {
