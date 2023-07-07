@@ -17,7 +17,6 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2.SCROLL_STATE_IDLE
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.ApplinkConst
@@ -63,6 +62,7 @@ import com.tokopedia.feedplus.presentation.model.FeedCardVideoContentModel
 import com.tokopedia.feedplus.presentation.model.FeedDataModel
 import com.tokopedia.feedplus.presentation.model.FeedMainEvent
 import com.tokopedia.feedplus.presentation.model.FeedNoContentModel
+import com.tokopedia.feedplus.presentation.model.FeedPostEvent
 import com.tokopedia.feedplus.presentation.model.FeedShareModel
 import com.tokopedia.feedplus.presentation.model.FeedTrackerDataModel
 import com.tokopedia.feedplus.presentation.model.PostSourceModel
@@ -813,7 +813,6 @@ class FeedFragment :
                         }
                     } else {
                         adapter.setList(it.data.items)
-                        preCacheVideo(it.data.items)
                         context?.let { ctx ->
                             if (feedPostViewModel.shouldShowNoMoreContent) {
                                 adapter.addElement(FeedNoContentModel.getNoMoreContentInstance(ctx))
@@ -831,13 +830,12 @@ class FeedFragment :
         }
     }
 
-    private fun preCacheVideo(items: List<Visitable<FeedAdapterTypeFactory>>) {
+    private fun preCacheVideo(urls: List<String>) {
         val cacheManager = FeedVideoCache.getInstance(requireContext())
-        items.forEach {
-            if (it !is FeedCardVideoContentModel) return@forEach
+        urls.forEach { url ->
             lifecycleScope.launch(dispatchers.io) {
-                if (cacheManager.isCached(it.videoUrl)) return@launch
-                cacheManager.cache(requireContext(), it.videoUrl)
+                if (cacheManager.isCached(url)) return@launch
+                cacheManager.cache(requireContext(), url)
             }
         }
     }
@@ -967,6 +965,23 @@ class FeedFragment :
                     }
 
                     feedMainViewModel.consumeEvent(event)
+                }
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                feedPostViewModel.uiEvent.collect { event ->
+                    if (event == null) return@collect
+
+                    when (event) {
+                        is FeedPostEvent.PreCacheVideos -> {
+                            preCacheVideo(event.videoUrls)
+                        }
+                        else -> {}
+                    }
+
+                    feedPostViewModel.consumeEvent(event)
                 }
             }
         }

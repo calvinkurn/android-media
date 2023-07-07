@@ -12,6 +12,7 @@ import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.content.common.comment.usecase.GetCountCommentsUseCase
 import com.tokopedia.content.common.usecase.BroadcasterReportTrackViewerUseCase
 import com.tokopedia.content.common.usecase.TrackVisitChannelBroadcasterUseCase
+import com.tokopedia.content.common.util.UiEventManager
 import com.tokopedia.createpost.common.domain.entity.SubmitPostData
 import com.tokopedia.feed.component.product.FeedTaggedProductUiModel
 import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowUseCase
@@ -45,6 +46,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -70,6 +72,7 @@ class FeedPostViewModel @Inject constructor(
     private val getCountCommentsUseCase: GetCountCommentsUseCase,
     private val trackVisitChannelUseCase: TrackVisitChannelBroadcasterUseCase,
     private val trackReportTrackViewerUseCase: BroadcasterReportTrackViewerUseCase,
+    private val uiEventManager: UiEventManager<FeedPostEvent>,
     private val dispatchers: CoroutineDispatchers
 ) : ViewModel() {
 
@@ -105,6 +108,9 @@ class FeedPostViewModel @Inject constructor(
     private var _shouldShowNoMoreContent = false
     val shouldShowNoMoreContent: Boolean
         get() = _shouldShowNoMoreContent
+
+    val uiEvent: Flow<FeedPostEvent?>
+        get() = uiEventManager.event
 
     fun fetchFeedPosts(
         source: String,
@@ -170,6 +176,19 @@ class FeedPostViewModel @Inject constructor(
                 }
 
                 val feedPosts = feedPostsDeferred.await()
+
+                uiEventManager.emitEvent(
+                    FeedPostEvent.PreCacheVideos(
+                        feedPosts.items.mapNotNull {
+                            if (it is FeedCardVideoContentModel && it.videoUrl.isNotEmpty()) {
+                                it.videoUrl
+                            } else {
+                                null
+                            }
+                        }
+                    )
+                )
+
                 _feedHome.value = when (feedPosts) {
                     is Success -> {
                         val items = feedPosts.items.map {
@@ -414,6 +433,12 @@ class FeedPostViewModel @Inject constructor(
     fun likeContent(contentId: String, rowNumber: Int) {
         val likeStatus = getIsLikedStatus(contentId) ?: return
         likeContent(contentId, rowNumber, shouldLike = !likeStatus)
+    }
+
+    fun consumeEvent(event: FeedPostEvent) {
+        viewModelScope.launch {
+            uiEventManager.clearEvent(event.id)
+        }
     }
 
     private fun likeContent(contentId: String, rowNumber: Int, shouldLike: Boolean) {
