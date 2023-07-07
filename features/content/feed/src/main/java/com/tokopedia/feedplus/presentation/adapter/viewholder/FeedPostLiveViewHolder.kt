@@ -124,10 +124,14 @@ class FeedPostLiveViewHolder(
         )
 
         mVideoPlayer?.resume(shouldReset = false)
+
+        binding.playerFeedVideo.keepScreenOn = true
     }
 
     private fun onNotSelected() {
         mVideoPlayer?.pause()
+
+        binding.playerFeedVideo.keepScreenOn = false
     }
 
     override fun onViewRecycled() {
