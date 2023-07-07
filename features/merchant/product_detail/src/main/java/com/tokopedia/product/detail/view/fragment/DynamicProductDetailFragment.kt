@@ -63,6 +63,7 @@ import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiRequestParam
 import com.tokopedia.atc_common.data.model.request.AddToCartOcsRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
+import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
 import com.tokopedia.common_tradein.utils.TradeInPDPHelper
@@ -3173,7 +3174,7 @@ open class DynamicProductDetailFragment :
             }
             ProductDetailCommonConstant.ATC_BUTTON -> {
                 sendTrackingATC(cartId)
-                showAddToCartDoneBottomSheet(result.data.cartId)
+                showAddToCartDoneBottomSheet(result.data)
             }
             ProductDetailCommonConstant.TRADEIN_AFTER_DIAGNOSE -> {
                 // Same with OCS but should send devideId
@@ -3618,27 +3619,31 @@ open class DynamicProductDetailFragment :
         return singleVariant.mapOfSelectedVariant
     }
 
-    private fun showAddToCartDoneBottomSheet(cartId: String) {
+    private fun showAddToCartDoneBottomSheet(cartDataModel: DataModel) {
         val productInfo = viewModel.getDynamicProductInfoP1 ?: return
         val basicInfo = productInfo.basic
         val postATCLayoutId = basicInfo.postAtcLayout.layoutId
 
         val remoteNewATC = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_POST_ATC_PDP, true)
         if (postATCLayoutId.isNotBlank() && remoteNewATC) {
-            showGlobalPostATC(cartId, basicInfo)
+            showGlobalPostATC(cartDataModel, basicInfo)
         } else {
-            showOldPostATC(cartId)
+            showOldPostATC(cartDataModel.cartId)
         }
     }
 
-    private fun showGlobalPostATC(cartId: String, basicInfo: BasicInfo) {
+    private fun showGlobalPostATC(cartDataModel: DataModel, basicInfo: BasicInfo) {
         val context = context ?: return
         PostAtcHelper.start(
             context,
             basicInfo.productID,
-            cartId = cartId,
-            pageSource = PostAtcHelper.Source.PDP,
-            layoutId = basicInfo.postAtcLayout.layoutId
+            layoutId = basicInfo.postAtcLayout.layoutId,
+            cartId = cartDataModel.cartId,
+            selectedAddonsIds = cartDataModel.addOns.mapNotNull { item ->
+                item.id.takeIf { item.status == 1 }
+            },
+            isFulfillment = cartDataModel.isFulfillment,
+            pageSource = PostAtcHelper.Source.PDP
         )
     }
 
