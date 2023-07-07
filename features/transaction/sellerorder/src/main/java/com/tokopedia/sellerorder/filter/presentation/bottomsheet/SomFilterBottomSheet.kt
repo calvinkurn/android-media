@@ -197,6 +197,8 @@ class SomFilterBottomSheet :
         somListOrderParam = null
         somFilterAdapter = null
         somFilterFinishListener = null
+        statusList = emptyList()
+        somFilterUiModelListCopy = emptyList()
     }
 
     override fun onBtnSaveCalendarClicked(startDate: Pair<String, String>, endDate: Pair<String, String>) {
@@ -251,9 +253,11 @@ class SomFilterBottomSheet :
     }
 
     fun show(fm: FragmentManager?) {
-        isApplyFilter = false
-        fm?.let {
-            show(it, SOM_FILTER_BOTTOM_SHEET_TAG)
+        if (!isVisible) {
+            isApplyFilter = false
+            fm?.let {
+                show(it, SOM_FILTER_BOTTOM_SHEET_TAG)
+            }
         }
     }
 
@@ -333,10 +337,7 @@ class SomFilterBottomSheet :
             somFilterDateBottomSheet.selectedDates = listOf(startDate, endDate)
         }
         somFilterDateBottomSheet.setCalendarListener(this)
-        somFilterDateBottomSheet.setFragmentManager(childFragmentManager)
-        if (!somFilterDateBottomSheet.isAdded) {
-            somFilterDateBottomSheet.show()
-        }
+        somFilterDateBottomSheet.show(childFragmentManager)
     }
 
     private fun observeSomFilter() = observe(somFilterViewModel.filterResult) {
