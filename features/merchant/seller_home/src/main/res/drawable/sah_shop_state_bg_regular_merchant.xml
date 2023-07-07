@@ -5,5 +5,5 @@
     <gradient
         android:angle="270"
         android:endColor="@color/sah_dms_bottom_gradient_color"
-        android:startColor="@color/sah_dms_top_gradient_color_os" />
+        android:startColor="@color/sah_dms_top_gradient_color_rm" />
 </shape>
