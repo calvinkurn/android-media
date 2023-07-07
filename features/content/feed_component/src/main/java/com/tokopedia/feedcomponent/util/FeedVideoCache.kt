@@ -138,9 +138,9 @@ class FeedVideoCache private constructor(
         @Volatile
         private var INSTANCE: FeedVideoCache? = null
 
-        private const val DIR_NAME = "feed"
+        private const val DIR_NAME = "feed_video"
 
-        private const val MB_TO_CACHE = 2L
+        private const val MB_TO_CACHE = 1L
 
         fun getInstance(context: Context): FeedVideoCache =
             INSTANCE ?: synchronized(this) {
