@@ -35,7 +35,7 @@ import com.tokopedia.tokochat.view.chatroom.TokoChatFragment
 import com.tokopedia.tokochat.view.chatroom.TokoChatViewModel
 import com.tokopedia.tokochat_common.util.TokoChatCacheManager
 import com.tokopedia.tokochat_common.util.TokoChatValueUtil
-import com.tokopedia.tokochat_common.view.adapter.TokoChatBaseAdapter
+import com.tokopedia.tokochat_common.view.chatroom.adapter.TokoChatBaseAdapter
 import com.tokopedia.usercomponents.userconsent.common.UserConsentComponentProvider
 import com.tokopedia.usercomponents.userconsent.di.UserConsentComponent
 import kotlinx.coroutines.Dispatchers

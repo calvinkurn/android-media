@@ -54,6 +54,7 @@ import com.tokopedia.tokochat.util.TokoChatValueUtil.CHAT_DOES_NOT_EXIST
 import com.tokopedia.tokochat.util.TokoChatValueUtil.NOTIFCENTER_NOTIFICATION_TEMPLATE_KEY
 import com.tokopedia.tokochat.util.isFromBubble
 import com.tokopedia.tokochat.view.chatroom.bottomsheet.TokoChatGeneralUnavailableBottomSheet
+import com.tokopedia.tokochat_common.R
 import com.tokopedia.tokochat_common.util.OrderStatusType
 import com.tokopedia.tokochat_common.util.TokoChatUrlUtil.IC_TOKOFOOD_SOURCE
 import com.tokopedia.tokochat_common.util.TokoChatValueUtil.CUSTOMER
@@ -63,29 +64,29 @@ import com.tokopedia.tokochat_common.util.TokoChatValueUtil.IS_FROM_BUBBLE_KEY
 import com.tokopedia.tokochat_common.util.TokoChatValueUtil.TOKOFOOD
 import com.tokopedia.tokochat_common.util.TokoChatViewUtil
 import com.tokopedia.tokochat_common.util.TokoChatViewUtil.EIGHT_DP
-import com.tokopedia.tokochat_common.view.adapter.TokoChatBaseAdapter
-import com.tokopedia.tokochat_common.view.customview.TokoChatReplyMessageView
-import com.tokopedia.tokochat_common.view.customview.TokoChatTransactionOrderWidget
-import com.tokopedia.tokochat_common.view.customview.attachment.TokoChatMenuLayout
-import com.tokopedia.tokochat_common.view.customview.bottomsheet.MaskingPhoneNumberBottomSheet
-import com.tokopedia.tokochat_common.view.customview.bottomsheet.TokoChatConsentBottomSheet
-import com.tokopedia.tokochat_common.view.customview.bottomsheet.TokoChatGuideChatBottomSheet
-import com.tokopedia.tokochat_common.view.customview.bottomsheet.TokoChatLongTextBottomSheet
-import com.tokopedia.tokochat_common.view.customview.bottomsheet.bubble_awareness.TokoChatBubblesAwarenessBottomSheet
-import com.tokopedia.tokochat_common.view.fragment.TokoChatBaseFragment
-import com.tokopedia.tokochat_common.view.listener.TokoChatAttachmentMenuListener
-import com.tokopedia.tokochat_common.view.listener.TokoChatImageAttachmentListener
-import com.tokopedia.tokochat_common.view.listener.TokoChatMessageBubbleListener
-import com.tokopedia.tokochat_common.view.listener.TokoChatMessageCensorListener
-import com.tokopedia.tokochat_common.view.listener.TokoChatReplyAreaListener
-import com.tokopedia.tokochat_common.view.listener.TokoChatReplyTextListener
-import com.tokopedia.tokochat_common.view.listener.TokoChatTypingListener
-import com.tokopedia.tokochat_common.view.listener.TokochatReminderTickerListener
-import com.tokopedia.tokochat_common.view.uimodel.TokoChatHeaderUiModel
-import com.tokopedia.tokochat_common.view.uimodel.TokoChatImageBubbleUiModel
-import com.tokopedia.tokochat_common.view.uimodel.TokoChatMessageBubbleUiModel
-import com.tokopedia.tokochat_common.view.uimodel.TokoChatOrderProgressUiModel
-import com.tokopedia.tokochat_common.view.uimodel.TokoChatReminderTickerUiModel
+import com.tokopedia.tokochat_common.view.chatroom.adapter.TokoChatBaseAdapter
+import com.tokopedia.tokochat_common.view.chatroom.customview.TokoChatReplyMessageView
+import com.tokopedia.tokochat_common.view.chatroom.customview.TokoChatTransactionOrderWidget
+import com.tokopedia.tokochat_common.view.chatroom.customview.attachment.TokoChatMenuLayout
+import com.tokopedia.tokochat_common.view.chatroom.customview.bottomsheet.MaskingPhoneNumberBottomSheet
+import com.tokopedia.tokochat_common.view.chatroom.customview.bottomsheet.TokoChatConsentBottomSheet
+import com.tokopedia.tokochat_common.view.chatroom.customview.bottomsheet.TokoChatGuideChatBottomSheet
+import com.tokopedia.tokochat_common.view.chatroom.customview.bottomsheet.TokoChatLongTextBottomSheet
+import com.tokopedia.tokochat_common.view.chatroom.customview.bottomsheet.bubble_awareness.TokoChatBubblesAwarenessBottomSheet
+import com.tokopedia.tokochat_common.view.chatroom.TokoChatBaseFragment
+import com.tokopedia.tokochat_common.view.chatroom.listener.TokoChatAttachmentMenuListener
+import com.tokopedia.tokochat_common.view.chatroom.listener.TokoChatImageAttachmentListener
+import com.tokopedia.tokochat_common.view.chatroom.listener.TokoChatMessageBubbleListener
+import com.tokopedia.tokochat_common.view.chatroom.listener.TokoChatMessageCensorListener
+import com.tokopedia.tokochat_common.view.chatroom.listener.TokoChatReplyAreaListener
+import com.tokopedia.tokochat_common.view.chatroom.listener.TokoChatReplyTextListener
+import com.tokopedia.tokochat_common.view.chatroom.listener.TokoChatTypingListener
+import com.tokopedia.tokochat_common.view.chatroom.listener.TokochatReminderTickerListener
+import com.tokopedia.tokochat_common.view.chatroom.uimodel.TokoChatHeaderUiModel
+import com.tokopedia.tokochat_common.view.chatroom.uimodel.TokoChatImageBubbleUiModel
+import com.tokopedia.tokochat_common.view.chatroom.uimodel.TokoChatMessageBubbleUiModel
+import com.tokopedia.tokochat_common.view.chatroom.uimodel.TokoChatOrderProgressUiModel
+import com.tokopedia.tokochat_common.view.chatroom.uimodel.TokoChatReminderTickerUiModel
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
@@ -625,7 +626,7 @@ open class TokoChatFragment :
             !viewModel.isFromBubble
         ) {
             val tickerBubble = TokoChatReminderTickerUiModel(
-                message = getString(com.tokopedia.tokochat_common.R.string.tokochat_bubbles_ticker_desc),
+                message = getString(R.string.tokochat_bubbles_ticker_desc),
                 tickerType = Ticker.TYPE_ANNOUNCEMENT,
                 showCloseButton = true,
                 tag = BUBBLES_NOTIF
