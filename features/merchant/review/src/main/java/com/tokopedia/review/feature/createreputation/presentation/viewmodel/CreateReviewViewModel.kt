@@ -80,6 +80,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.mapLatest
@@ -192,14 +193,16 @@ class CreateReviewViewModel @Inject constructor(
 
     // region misc state
     private val canRenderForm = combine(
-        reviewForm.filterIsInstance(), incentiveOvo, reviewTemplate.filterIsInstance(),
-        badRatingCategories.filterIsInstance(), ::mapCanRenderForm
+        reviewForm, incentiveOvo, reviewTemplate, badRatingCategories, ::mapCanRenderForm
     ).toStateFlow(false)
     private val isGoodRating = rating.mapLatest(::mapIsGoodRating).toStateFlow(false)
-    private val hasIncentive = incentiveOvo.filterIsInstance<IncentiveOvoRequestSuccessState>()
-        .mapLatest(::mapHasIncentive).toStateFlow(false)
+    private val hasIncentive = incentiveOvo
+        .filterIsInstance<IncentiveOvoRequestSuccessState>()
+        .mapLatest(::mapHasIncentive)
+        .toStateFlow(false)
     private val hasOngoingChallenge = incentiveOvo
-        .filterIsInstance<IncentiveOvoRequestSuccessState>().mapLatest(::mapHasOngoingChallenge)
+        .filterIsInstance<IncentiveOvoRequestSuccessState>()
+        .mapLatest(::mapHasOngoingChallenge)
         .toStateFlow(false)
     private val isAnyBadRatingCategorySelected = badRatingCategories.mapLatest(
         ::mapIsAnyBadRatingCategorySelected
@@ -266,8 +269,7 @@ class CreateReviewViewModel @Inject constructor(
 
     // region template state
     val templateUiState = combine(
-        canRenderForm, isGoodRating, reviewTemplate.filterIsInstance(),
-        ::mapTemplateUiState
+        canRenderForm, isGoodRating, reviewTemplate, ::mapTemplateUiState
     ).toStateFlow(CreateReviewTemplateUiState.Loading)
     // endregion template state
 
@@ -314,7 +316,7 @@ class CreateReviewViewModel @Inject constructor(
 
     // region create review bottom sheet state
     val createReviewBottomSheetUiState = combine(
-        reviewForm, bottomSheetBottomInset, ::mapCreateReviewBottomSheetUiState
+        reviewForm, badRatingCategories, bottomSheetBottomInset, ::mapCreateReviewBottomSheetUiState
     ).toStateFlow(CreateReviewBottomSheetUiState.Showing(Int.ZERO))
 
     // endregion create review bottom sheet state
@@ -373,17 +375,20 @@ class CreateReviewViewModel @Inject constructor(
     // endregion extensions
 
     // region state mapper
-    @Suppress("UNUSED_PARAMETER")
     private fun mapCanRenderForm(
-        reviewForm: ReviewFormRequestSuccessState,
+        reviewForm: ReviewFormRequestState,
         incentiveOvo: IncentiveOvoRequestState,
-        reviewTemplates: ReviewTemplateRequestSuccessState,
-        badRatingCategories: BadRatingCategoriesRequestSuccessState
+        reviewTemplates: ReviewTemplateRequestState,
+        badRatingCategories: BadRatingCategoriesRequestState
     ): Boolean {
-        val isReviewFormValid = reviewForm.result.productrevGetForm.validToReview &&
-                reviewForm.result.productrevGetForm.productData.productStatus != Int.ZERO
+        val isReviewFormValid = (reviewForm as? ReviewFormRequestSuccessState)?.let {
+            it.result.productrevGetForm.validToReview &&
+                it.result.productrevGetForm.productData.productStatus != Int.ZERO
+        } ?: false
         val isIncentiveOvoLoaded = incentiveOvo is RequestState.CompleteRequestState
-        return isReviewFormValid && isIncentiveOvoLoaded
+        val isReviewTemplatesLoaded = reviewTemplates is RequestState.CompleteRequestState
+        val isBadRatingCategoriesSuccess = badRatingCategories is RequestState.Success
+        return isReviewFormValid && isIncentiveOvoLoaded && isReviewTemplatesLoaded && isBadRatingCategoriesSuccess
     }
 
     private fun mapIsGoodRating(rating: Int): Boolean {
@@ -670,12 +675,30 @@ class CreateReviewViewModel @Inject constructor(
     private fun mapTemplateUiState(
         canRenderForm: Boolean,
         isGoodRating: Boolean,
-        reviewTemplates: ReviewTemplateRequestSuccessState
+        reviewTemplates: ReviewTemplateRequestState
     ): CreateReviewTemplateUiState {
-        val templates = if (canRenderForm) {
-            getReviewTemplatesToShow(reviewTemplates, isGoodRating)
-        } else {
-            return CreateReviewTemplateUiState.Loading
+        val templates = when (reviewTemplates) {
+            is RequestState.Idle -> {
+                return CreateReviewTemplateUiState.Loading
+            }
+            is RequestState.Requesting -> {
+                return CreateReviewTemplateUiState.Loading
+            }
+            is RequestState.CompleteRequestState -> {
+                if (reviewTemplates is RequestState.Success) {
+                    if (canRenderForm) {
+                        getReviewTemplatesToShow(reviewTemplates, isGoodRating)
+                    } else {
+                        return CreateReviewTemplateUiState.Loading
+                    }
+                } else {
+                    if (canRenderForm) {
+                        emptyList()
+                    } else {
+                        return CreateReviewTemplateUiState.Loading
+                    }
+                }
+            }
         }
         return when {
             templates.isEmpty() -> CreateReviewTemplateUiState.Hidden(emptyList())
@@ -811,10 +834,26 @@ class CreateReviewViewModel @Inject constructor(
     }
 
     private fun mapCreateReviewBottomSheetUiState(
-        reviewForm: ReviewFormRequestState, bottomInset: Int
+        reviewForm: ReviewFormRequestState,
+        badRatingCategories: BadRatingCategoriesRequestState,
+        bottomInset: Int
     ): CreateReviewBottomSheetUiState {
         var uiState = createReviewBottomSheetUiState.value
-        if (reviewForm is RequestState.Success && !reviewForm.result.productrevGetForm.validToReview) {
+        if (reviewForm is RequestState.Error) {
+            getErrorCode(reviewForm.throwable)
+            uiState = CreateReviewBottomSheetUiState.ShouldDismiss(
+                success = false,
+                message = StringRes(R.string.review_toaster_page_error),
+                feedbackId = ""
+            )
+        } else if (badRatingCategories is RequestState.Error) {
+            getErrorCode(badRatingCategories.throwable)
+            uiState = CreateReviewBottomSheetUiState.ShouldDismiss(
+                success = false,
+                message = StringRes(R.string.review_toaster_page_error),
+                feedbackId = ""
+            )
+        } else if (reviewForm is RequestState.Success && !reviewForm.result.productrevGetForm.validToReview) {
             uiState = CreateReviewBottomSheetUiState.ShouldDismiss(
                 success = false,
                 message = StringRes(R.string.review_pending_invalid_to_review),
@@ -824,12 +863,6 @@ class CreateReviewViewModel @Inject constructor(
             uiState = CreateReviewBottomSheetUiState.ShouldDismiss(
                 success = false,
                 message = StringRes(R.string.review_pending_deleted_product_error_toaster),
-                feedbackId = ""
-            )
-        } else if (reviewForm is RequestState.Error) {
-            uiState = CreateReviewBottomSheetUiState.ShouldDismiss(
-                success = false,
-                message = StringRes(R.string.review_toaster_page_error),
                 feedbackId = ""
             )
         } else if (uiState is CreateReviewBottomSheetUiState.Showing) {
@@ -1002,7 +1035,8 @@ class CreateReviewViewModel @Inject constructor(
 
     private fun observeMediaTemplatesToAppend() {
         launch {
-            reviewTemplate.filterIsInstance<ReviewTemplateRequestSuccessState>()
+            reviewTemplate
+                .filterIsInstance<ReviewTemplateRequestSuccessState>()
                 .collect(::appendSelectedTemplatesToReviewText)
         }
     }
@@ -1030,7 +1064,9 @@ class CreateReviewViewModel @Inject constructor(
         launch {
             combine(
                 reputationId, productId, reviewForm, ::mapShouldLoadForm
-            ).collectLatest { if (it) getProductReputation() }
+            ).filter { shouldLoad ->
+                shouldLoad
+            }.collectLatest { getProductReputation() }
         }
     }
 
@@ -1038,14 +1074,19 @@ class CreateReviewViewModel @Inject constructor(
         launch {
             combine(
                 reputationId, productId, incentiveOvo, ::mapShouldLoadIncentiveOvo
-            ).collectLatest { if (it) getProductIncentiveOvo() }
+            ).filter { shouldLoad ->
+                shouldLoad
+            }.collectLatest { getProductIncentiveOvo() }
         }
     }
 
     private fun observeShouldLoadReviewTemplates() {
         launch {
-            combine(productId, reviewTemplate, ::mapShouldLoadReviewTemplates)
-                .collectLatest { if (it) getReviewTemplates() }
+            combine(
+                productId, reviewTemplate, ::mapShouldLoadReviewTemplates
+            ).filter { shouldLoad ->
+                shouldLoad
+            }.collectLatest { getReviewTemplates() }
         }
     }
 
@@ -1053,7 +1094,9 @@ class CreateReviewViewModel @Inject constructor(
         launch {
             badRatingCategories.mapLatest{ badRatingCategories ->
                 badRatingCategories is RequestState.Idle
-            }.collectLatest { if (it) getBadRatingCategories() }
+            }.filter { shouldLoad ->
+                shouldLoad
+            }.collectLatest { getBadRatingCategories() }
         }
     }
     // endregion state observer
