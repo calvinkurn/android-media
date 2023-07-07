@@ -1122,9 +1122,7 @@ class ShopPageHeaderFragment :
                     if (lastPathSegment.orEmpty() == PATH_NOTE) {
                         shouldOpenShopNoteBottomSheet = true
                     }
-                    if (lastPathSegment.orEmpty() == PATH_CAMPAIGN) {
-                        queryParamTab = getQueryParameter(QUERY_TAB).orEmpty()
-                    }
+                    queryParamTab = getQueryParameter(QUERY_TAB).orEmpty()
                     shopRef = getQueryParameter(QUERY_SHOP_REF) ?: ""
                     shopAttribution = getQueryParameter(QUERY_SHOP_ATTRIBUTION) ?: ""
                     checkAffiliateAppLink(this)
