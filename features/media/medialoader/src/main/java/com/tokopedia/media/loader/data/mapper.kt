@@ -3,10 +3,10 @@ package com.tokopedia.media.loader.data
 fun List<Header>.getFailureType(): FailureType? {
     val key = "x-tkp-media-failure"
 
-    val header = find { it.key.lowercase() == key } ?: return null
+    val header = find { it.key() == key } ?: return null
     if (header.values.isEmpty()) return null
 
-    val values = header.values.first()
+    val values = header.firstValue()
     return FailureType.fromString(values)
 }
 

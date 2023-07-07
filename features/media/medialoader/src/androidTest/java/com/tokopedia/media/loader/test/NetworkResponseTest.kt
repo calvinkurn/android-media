@@ -24,6 +24,21 @@ class NetworkResponseTest : BaseTest() {
     }
 
     @Test
+    fun loadImage_shouldEmptyNetworkHeaderLog() {
+        onImageView {
+            // When
+            it.loadImage(publicImageUrl) {
+                networkResponse { data ->
+                    countingIdlingResource.decrement()
+
+                    // Then
+                    assert(data.isEmpty())
+                }
+            }
+        }
+    }
+
+    @Test
     fun loadImage_getNetworkHeaderLog() {
         onImageView {
             // When
@@ -42,10 +57,11 @@ class NetworkResponseTest : BaseTest() {
     }
 
     @Test
-    fun loadImage_getNotFoundFailureType() {
+    fun loadImage_notFoundFailureType() {
         onImageView {
             // When
             it.loadImage(notFoundUrl) {
+                setForceClearHeaderCache(true)
                 shouldTrackNetworkResponse(true)
 
                 networkResponse { data, type ->
@@ -54,6 +70,44 @@ class NetworkResponseTest : BaseTest() {
                     // Then
                     assert(data.isNotEmpty())
                     assert(type == FailureType.NotFound)
+                }
+            }
+        }
+    }
+
+    @Test
+    fun loadImage_goneFailureType() {
+        onImageView {
+            // When
+            it.loadImage(goneUrl) {
+                setForceClearHeaderCache(true)
+                shouldTrackNetworkResponse(true)
+
+                networkResponse { data, type ->
+                    countingIdlingResource.decrement()
+
+                    // Then
+                    assert(data.isNotEmpty())
+                    assert(type == FailureType.Gone)
+                }
+            }
+        }
+    }
+
+    @Test
+    fun loadImage_badFailureType() {
+        onImageView {
+            // When
+            it.loadImage(badUrl) {
+                setForceClearHeaderCache(true)
+                shouldTrackNetworkResponse(true)
+
+                networkResponse { data, type ->
+                    countingIdlingResource.decrement()
+
+                    // Then
+                    assert(data.isNotEmpty())
+                    assert(type == FailureType.BadUrl)
                 }
             }
         }

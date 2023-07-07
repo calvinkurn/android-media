@@ -11,8 +11,9 @@ import com.bumptech.glide.integration.okhttp3.OkHttpUrlLoader
 import com.bumptech.glide.load.engine.cache.DiskLruCacheFactory
 import com.bumptech.glide.load.model.GlideUrl
 import com.bumptech.glide.module.AppGlideModule
-import com.tokopedia.media.loader.isImageLoaderV2
 import com.tokopedia.media.loader.module.interceptor.NetworkLogInterceptor
+import com.tokopedia.media.loader.module.model.AdaptiveImageSizeLoader
+import com.tokopedia.media.loader.module.model.M3U8ModelLoaderFactory
 import com.tokopedia.media.loader.utils.RemoteConfig
 import okhttp3.OkHttpClient
 import java.io.InputStream
@@ -36,21 +37,21 @@ class LoaderGlideModule : AppGlideModule() {
         super.registerComponents(context, glide, registry)
 
         // custom network interceptor
-        val client = OkHttpClient.Builder()
-            .addInterceptor(NetworkLogInterceptor(context))
-            .build()
+        if (isCustomOkHttpClient()) {
+            val client = OkHttpClient.Builder()
+                .addInterceptor(NetworkLogInterceptor(context))
+                .build()
 
-        val okHttpLoaderFactory = OkHttpUrlLoader.Factory(client)
-        registry.replace(GlideUrl::class.java, InputStream::class.java, okHttpLoaderFactory)
+            val okHttpLoaderFactory = OkHttpUrlLoader.Factory(client)
+            registry.replace(GlideUrl::class.java, InputStream::class.java, okHttpLoaderFactory)
+        }
 
         // dynamic image loader (based on network connection)
-        if (isImageLoaderV2()) {
-            registry.prepend(
-                String::class.java,
-                InputStream::class.java,
-                AdaptiveImageSizeLoader.Factory(context)
-            )
-        }
+        registry.prepend(
+            String::class.java,
+            InputStream::class.java,
+            AdaptiveImageSizeLoader.Factory(context)
+        )
 
         // m3u8 video preview
         if (RemoteConfig.glideM3U8ThumbnailLoaderEnabled(context)) {
@@ -64,6 +65,11 @@ class LoaderGlideModule : AppGlideModule() {
         * avoid some potential problems with trying to parse metadata.
         * */
         return false
+    }
+
+    // Hansel-able method
+    private fun isCustomOkHttpClient(): Boolean {
+        return true
     }
 
     companion object {

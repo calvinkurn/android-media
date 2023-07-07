@@ -1,10 +1,10 @@
 package com.tokopedia.media.loader.data
 
 enum class FailureType(val value: String) {
-    NotFound("Not-Found"),
-    Gone("Gone"),
-    BadUrl("Bad-URL"),
-    Unknown("Unknown");
+    NotFound("not-found"),
+    Gone("gone"),
+    BadUrl("bad-url"),
+    Unknown("unknown");
 
     companion object {
         private val map = values().associateBy(FailureType::value)
