@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
-import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -15,6 +14,8 @@ import com.tokopedia.checkout.revamp.di.CheckoutModule
 import com.tokopedia.checkout.revamp.di.DaggerCheckoutComponent
 import com.tokopedia.checkout.view.ShipmentFragment
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics
+import com.tokopedia.purchase_platform.common.utils.animateGone
+import com.tokopedia.purchase_platform.common.utils.animateShow
 import com.tokopedia.utils.lifecycle.autoCleared
 import javax.inject.Inject
 
@@ -75,45 +76,15 @@ class CheckoutFragment : BaseDaggerFragment() {
 
         binding.tvCheckoutTesting.setOnClickListener {
             if (header.tvCheckoutHeaderText.isVisible) {
-//                header.groupCheckoutHeaderDefault
-//                    .animate()
-//                    .alpha(0f)
-//                    .withEndAction {
-                        header.tvCheckoutHeaderText.animateGone()
-//                    }
-//                    .start()
+                header.tvCheckoutHeaderText.animateGone()
                 header.tvCheckoutHeaderAddressHeader.animateShow()
                 header.tvCheckoutHeaderAddressName.animateShow()
-//                header.groupCheckoutHeaderAddress.alpha = 0f
-//                header.groupCheckoutHeaderAddress
-//                    .animate()
-//                    .alpha(1f)
-//                    .setDuration(3000)
-//                    .withStartAction {
-//                        header.groupCheckoutHeaderAddress.isVisible = true
-//                    }
-//                    .start()
             } else {
                 header.tvCheckoutHeaderText.animateShow()
-//                header.groupCheckoutHeaderAddress
-//                    .animate()
-//                    .alpha(0f)
-//                    .setDuration(400)
-//                    .withEndAction {
-                        header.tvCheckoutHeaderAddressHeader.animateGone()
+                header.tvCheckoutHeaderAddressHeader.animateGone()
                 header.tvCheckoutHeaderAddressName.animateGone()
-//                    }
-//                    .start()
-//                header.groupCheckoutHeaderDefault.alpha = 0f
-//                header.groupCheckoutHeaderDefault
-//                    .animate()
-//                    .alpha(1f)
-//                    .setDuration(3000)
-//                    .withStartAction {
-//                        header.groupCheckoutHeaderDefault.isVisible = true
-//                    }
-//                    .start()
             }
+            viewModel.test()
         }
     }
 
@@ -146,29 +117,3 @@ class CheckoutFragment : BaseDaggerFragment() {
         }
     }
 }
-
-private fun View.fadeTo(visible: Boolean, duration: Long) {
-    // Make this idempotent.
-    val tagKey = "fadeTo".hashCode()
-    if (visible == isVisible && animation == null && getTag(tagKey) == null) return
-    if (getTag(tagKey) == visible) return
-
-    setTag(tagKey, visible)
-
-    if (visible && alpha == 1f) alpha = 0f
-    animate()
-        .alpha(if (visible) 1f else 0f)
-        .withStartAction {
-            if (visible) isVisible = true
-        }
-        .withEndAction {
-            setTag(tagKey, null)
-            if (isAttachedToWindow && !visible) isVisible = false
-        }
-        .setInterpolator(FastOutSlowInInterpolator())
-        .setDuration(duration)
-        .start()
-}
-
-internal fun View.animateShow(duration: Long = 400) = fadeTo(true, duration)
-internal fun View.animateGone(duration: Long = 400) = fadeTo(false, duration)
