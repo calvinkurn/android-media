@@ -1358,10 +1358,17 @@ open class HomeRevampFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         performanceTrace.init(
             v = view.rootView,
             touchListenerActivity = activity as? TouchListenerActivity,
-        ) { summaryModel: BlocksSummaryModel, capturedBlocks: List<LoadableComponent> ->
+        ) { summaryModel: BlocksSummaryModel, capturedBlocks: Set<String> ->
+            performanceTrace.debugPerformanceTrace(
+                activity,
+                summaryModel,
+                "TTIL",
+                view.rootView
+            )
         }
         observeSearchHint()
     }
@@ -1381,10 +1388,7 @@ open class HomeRevampFragment :
                 visitableListCount = data.size,
                 scrollPosition = layoutManager?.findLastVisibleItemPosition()
             )
-            performanceTrace.setLoadableComponentListPerformanceBlocks(
-                1,
-                data.filterIsInstance<LoadableComponent>().toMutableList()
-            )
+            performanceTrace.setBlock(data)
             adapter?.submitList(data)
         }
     }

@@ -19,7 +19,6 @@ import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import okhttp3.internal.toImmutableList
 import java.util.concurrent.atomic.AtomicReference
 
 @FlowPreview
@@ -37,18 +36,17 @@ class BlocksPerformanceTrace(
         const val FINISHED_LOADING_TTIL_BLOCKS_THRESHOLD = 5
     }
     private var startCurrentTimeMillis = 0L
-    private var currentLoadableComponentList = mutableListOf<LoadableComponent>()
 
     private var summaryModel: AtomicReference<BlocksSummaryModel> = AtomicReference(BlocksSummaryModel())
     private var TTFLperformanceMonitoring: PerformanceMonitoring? = PerformanceMonitoring()
     private var TTILperformanceMonitoring: PerformanceMonitoring? = PerformanceMonitoring()
 
-    private var onLaunchTimeFinished: ((BlocksSummaryModel, capturedBlocks: List<LoadableComponent>) -> Unit)? = {
-            summaryModel: BlocksSummaryModel, capturedBlocks: List<LoadableComponent> -> }
+    private var onLaunchTimeFinished: ((BlocksSummaryModel, capturedBlocks: Set<String>) -> Unit)? = {
+            summaryModel: BlocksSummaryModel, capturedBlocks: Set<String> -> }
 
     private var performanceTraceJob: Job? = null
 
-    private var listOfFinishedLoadableComponent = listOf<LoadableComponent>()
+    private var listOfFinishedLoadableComponent = setOf<String>()
 
     private var ttflMeasured = false
     private var ttilMeasured = false
@@ -56,8 +54,8 @@ class BlocksPerformanceTrace(
     private var isPerformanceTraceEnabled = true
     private var currentView: View? = null
 
-    private var performanceBlocks = mutableListOf<LoadableComponent>()
-    private var lastPerformanceBlocks = mutableListOf<LoadableComponent>()
+    private var performanceBlocks = mutableSetOf<String>()
+    private var lastPerformanceBlocks = mutableSetOf<String>()
 
     enum class BlocksPerfState {
         STATE_ERROR,
@@ -91,7 +89,7 @@ class BlocksPerformanceTrace(
     fun init(
         v: View,
         touchListenerActivity: TouchListenerActivity?,
-        onLaunchTimeFinished: (summaryModel: BlocksSummaryModel, capturedBlocks: List<LoadableComponent>) -> Unit =
+        onLaunchTimeFinished: (summaryModel: BlocksSummaryModel, capturedBlocks: Set<String>) -> Unit =
             { _,_ -> },
     ) {
         this.currentView = v
@@ -119,26 +117,31 @@ class BlocksPerformanceTrace(
         view?.let { performanceBlocks.addPerformanceBlocks(view) }
     }
 
-    fun setLoadableComponentListPerformanceBlocks(positionToAdd: Int = 0, listOfLoadableComponent: List<LoadableComponent>) {
+    fun setBlock(list: List<Any>) {
+        setLoadableComponentListPerformanceBlocks(
+            list.getFinishedLoadableComponent()
+        )
+    }
+
+    fun setLoadableComponentListPerformanceBlocks(listOfLoadableComponent: List<String>) {
         viewHierarchyInUsableState {
             val tempBlocks = performanceBlocks
-            tempBlocks.subList(positionToAdd, performanceBlocks.size).clear()
-            tempBlocks.addAll(positionToAdd, listOfLoadableComponent)
+            tempBlocks.addAll(listOfLoadableComponent.toSet())
 
             performanceBlocks = tempBlocks
         }
     }
 
     fun finishOnPaused() {
-        finishTTIL(BlocksPerfState.STATE_ONPAUSED)
-        finishTTFL(BlocksPerfState.STATE_ONPAUSED)
+        if (!ttilMeasured) finishTTIL(BlocksPerfState.STATE_ONPAUSED)
+        if (!ttflMeasured) finishTTFL(BlocksPerfState.STATE_ONPAUSED)
     }
 
-    fun cancelPerformanceTrace(state: BlocksPerfState, targetPerfMonitoring: PerformanceMonitoring? = null, listOfFinishedLoadableComponent: List<LoadableComponent> = listOf()) {
+    fun cancelPerformanceTrace(state: BlocksPerfState, targetPerfMonitoring: PerformanceMonitoring? = null, listOfFinishedLoadableComponent: Set<String> = setOf()) {
         targetPerfMonitoring?.putCustomAttribute(
             ATTR_CONDITION, state.name)
         targetPerfMonitoring?.putCustomAttribute(
-            ATTR_BLOCKS, listOfFinishedLoadableComponent.map { it.name() to "isLoading:${it.isLoading()}" }.joinToString(
+            ATTR_BLOCKS, listOfFinishedLoadableComponent.map { it }.joinToString(
                 prefix = "[",
                 separator = ", ",
                 postfix = "]",
@@ -164,23 +167,22 @@ class BlocksPerformanceTrace(
             ATTR_CONDITION, state.name)
     }
 
-    private fun blocksPerformanceFlow() : Flow<List<LoadableComponent>> {
+    private fun blocksPerformanceFlow() : Flow<Set<String>> {
         return flow {
             while(true) {
-                val tempPerfBlocks = performanceBlocks.toImmutableList()
-                val tempLastPerfBlocks = lastPerformanceBlocks.toImmutableList()
+                val tempPerfBlocks = performanceBlocks
+                val tempLastPerfBlocks = lastPerformanceBlocks
 
                 if (tempPerfBlocks.size != tempLastPerfBlocks.size) {
-                    lastPerformanceBlocks = performanceBlocks.toMutableList()
+                    lastPerformanceBlocks = performanceBlocks.toMutableSet()
                     emit(performanceBlocks)
                 }
             }
         }
     }
 
-    private fun updateBlocks(objList: List<Any>) {
-        currentLoadableComponentList = objList.filterIsInstance<LoadableComponent>().toMutableList()
-        listOfFinishedLoadableComponent = currentLoadableComponentList.filter { !it.isLoading() }
+    private fun updateBlocks(blocksSet: Set<String>) {
+        listOfFinishedLoadableComponent = blocksSet
 
         if (!ttflMeasured && TTFLperformanceMonitoring != null && listOfFinishedLoadableComponent.size >= FINISHED_LOADING_TTFL_BLOCKS_THRESHOLD) {
             measureTTFL(listOfFinishedLoadableComponent)
@@ -190,7 +192,7 @@ class BlocksPerformanceTrace(
         }
     }
 
-    private fun measureTTIL(listOfLoadableComponent: List<LoadableComponent>) {
+    private fun measureTTIL(listOfLoadableComponent: Set<String>) {
         val blocksModel = createBlocksPerformanceModel()
         validateTTIL(blocksModel)
         onLaunchTimeFinished?.invoke(
@@ -202,7 +204,7 @@ class BlocksPerformanceTrace(
         performanceTraceJob?.cancel()
     }
 
-    private fun measureTTFL(listOfLoadableComponent: List<LoadableComponent>) {
+    private fun measureTTFL(listOfLoadableComponent: Set<String>) {
         val blocksModel = createBlocksPerformanceModel()
         validateTTFL(blocksModel)
         onLaunchTimeFinished?.invoke(
@@ -213,19 +215,19 @@ class BlocksPerformanceTrace(
     }
 
 
-    private fun finishTTIL(state: BlocksPerfState, listOfLoadableComponent: List<LoadableComponent> = listOf()) {
+    private fun finishTTIL(state: BlocksPerfState, listOfLoadableComponent: Set<String> = setOf()) {
         cancelPerformanceTrace(state, TTILperformanceMonitoring, listOfLoadableComponent)
         ttilMeasured = true
     }
 
-    private fun finishTTFL(state: BlocksPerfState, listOfLoadableComponent: List<LoadableComponent> = listOf()) {
+    private fun finishTTFL(state: BlocksPerfState, listOfLoadableComponent: Set<String> = setOf()) {
         cancelPerformanceTrace(state, TTFLperformanceMonitoring, listOfLoadableComponent)
         ttflMeasured = true
     }
 
     private fun createBlocksPerformanceModel() = BlocksPerformanceModel(
         inflateTime = System.currentTimeMillis() - startCurrentTimeMillis,
-        capturedBlocks = listOfFinishedLoadableComponent.map { it.name() }
+        capturedBlocks = listOfFinishedLoadableComponent
     )
 
     private fun validateTTFL(blocksPerformanceModel: BlocksPerformanceModel?) {
@@ -250,13 +252,18 @@ class BlocksPerformanceTrace(
 }
 
 
-fun MutableList<LoadableComponent>.addPerformanceBlocks(v: View?) {
+fun MutableSet<String>.addPerformanceBlocks(v: View?) {
     viewHierarchyInUsableState {
-        this.add(object: LoadableComponent by BlocksLoadableComponent(
-            { true },
-            v?.javaClass?.simpleName
-        ) {})
+        this.add((v?.javaClass?.canonicalName ?: "") + "-${v.hashCode()}")
     }
+}
+
+fun List<Any>.getFinishedLoadableComponent(): MutableList<String>  {
+    return (this.filter {
+        it is LoadableComponent && !it.isLoading()
+    }.map {
+        (it as? LoadableComponent)?.name()?:""
+        }.toMutableList())
 }
 
 /**

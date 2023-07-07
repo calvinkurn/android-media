@@ -15,6 +15,6 @@ class BlocksLoadableComponent(
     }
 
     override fun name(): String {
-        return customBlocksName?: this.javaClass.simpleName
+        return customBlocksName+"-${hashCode()}"
     }
 }
