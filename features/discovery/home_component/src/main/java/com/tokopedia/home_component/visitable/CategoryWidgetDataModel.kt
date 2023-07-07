@@ -3,23 +3,25 @@ package com.tokopedia.home_component.visitable
 import android.os.Bundle
 import com.tokopedia.home_component.HomeComponentTypeFactory
 import com.tokopedia.home_component.model.ChannelModel
-import com.tokopedia.quest_widget.data.QuestData
-import java.util.*
 
-data class QuestWidgetModel(
-    val channelModel: ChannelModel? = null,
-    val questData : QuestData? = null,
-): HomeComponentVisitable {
+/**
+ * Create by Firman on 5/4/22
+ */
+data class CategoryWidgetDataModel(
+    val channelModel: ChannelModel,
+    val isCache: Boolean = false
+) : HomeComponentVisitable {
+
     override fun visitableId(): String? {
         return channelModel?.id
     }
 
     override fun equalsWith(b: Any?): Boolean {
-        return this === b
+        return b is CategoryWidgetDataModel && b.channelModel == channelModel
     }
 
     override fun getChangePayloadFrom(b: Any?): Bundle? {
-        return Bundle.EMPTY
+        return Bundle()
     }
 
     override fun type(typeFactory: HomeComponentTypeFactory): Int {

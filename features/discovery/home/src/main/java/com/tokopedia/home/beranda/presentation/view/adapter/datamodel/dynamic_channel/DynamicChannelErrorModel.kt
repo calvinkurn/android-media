@@ -3,8 +3,10 @@ package com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_c
 import android.os.Bundle
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeTypeFactory
+import com.tokopedia.home_component.model.ChannelModel
 
-class DynamicChannelRetryModel(var isLoading: Boolean) : HomeVisitable {
+class DynamicChannelErrorModel(val channelModel: ChannelModel) : HomeVisitable {
+
     override fun type(adapterTypeFactory: HomeTypeFactory): Int {
         return adapterTypeFactory.type(this)
     }
@@ -35,13 +37,10 @@ class DynamicChannelRetryModel(var isLoading: Boolean) : HomeVisitable {
     }
 
     override fun visitableId(): String? {
-        return DynamicChannelRetryModel::class.java.simpleName
+        return "errorModel"
     }
 
     override fun equalsWith(b: Any): Boolean {
-        if (b is DynamicChannelRetryModel) {
-            b.isLoading == isLoading
-        }
         return false
     }
 
