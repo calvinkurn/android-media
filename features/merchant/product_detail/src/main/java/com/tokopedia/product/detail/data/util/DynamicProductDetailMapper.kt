@@ -89,6 +89,7 @@ import com.tokopedia.product.detail.data.util.ProductDetailConstant.SHOPADS_CARO
 import com.tokopedia.product.detail.view.util.checkIfNumber
 import com.tokopedia.product.detail.view.widget.CampaignRibbon
 import com.tokopedia.product.share.ProductData
+import com.tokopedia.recommendation_widget_common.widget.carousel.global.RecommendationCarouselTrackingConst
 import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetMetadata
 import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetModel
 import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetSource
@@ -166,7 +167,10 @@ object DynamicProductDetailMapper {
                                             pageName = component.componentName,
                                         ),
                                         trackingModel = RecommendationWidgetTrackingModel(
-                                            androidPageName = RecommendationWidgetSource.PDP.trackingValue
+                                            androidPageName = RecommendationCarouselTrackingConst.Category.PDP,
+                                            eventActionImpression = RecommendationCarouselTrackingConst.Action.IMPRESSION_ON_PRODUCT_RECOMMENDATION_PDP,
+                                            eventActionClick = RecommendationCarouselTrackingConst.Action.CLICK_ON_PRODUCT_RECOMMENDATION_PDP,
+                                            listPageName = RecommendationCarouselTrackingConst.List.PDP
                                         )
                                     )
                                 )
