@@ -32,6 +32,7 @@ import com.tokopedia.tokopedianow.repurchase.analytic.RepurchaseAnalytics.VALUE.
 import com.tokopedia.tokopedianow.repurchase.domain.model.TokoNowRepurchasePageResponse.GetRepurchaseProductListResponse
 import com.tokopedia.tokopedianow.repurchase.domain.param.GetRepurchaseProductListParam
 import com.tokopedia.tokopedianow.repurchase.domain.usecase.GetRepurchaseProductListUseCase
+import com.tokopedia.tokopedianow.repurchase.presentation.fragment.TokoNowRepurchaseFragment
 import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseEmptyStateNoHistoryUiModel
 import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseLayoutUiModel
 import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseSortFilterUiModel
