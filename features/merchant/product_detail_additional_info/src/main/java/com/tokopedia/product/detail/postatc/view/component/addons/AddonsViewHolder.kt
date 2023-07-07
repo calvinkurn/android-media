@@ -3,6 +3,7 @@ package com.tokopedia.product.detail.postatc.view.component.addons
 import com.tokopedia.addon.presentation.listener.AddOnComponentListener
 import com.tokopedia.addon.presentation.uimodel.AddOnGroupUIModel
 import com.tokopedia.addon.presentation.uimodel.AddOnUIModel
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.product.detail.databinding.ItemPostAtcAddonsBinding
 import com.tokopedia.product.detail.postatc.base.PostAtcCallback
 import com.tokopedia.product.detail.postatc.base.PostAtcViewHolder
@@ -22,11 +23,12 @@ class AddonsViewHolder(
         val data = element.data
         setSelectedAddons(data.selectedAddonsIds) // Possible bug if it set several times.
         setTitleText(data.title)
+        setAutosaveAddon(data.cartId.toLongOrZero(), "normal")
         getAddonData(data.productId, data.warehouseId, data.isTokoCabang)
         this@AddonsViewHolder.element = element
     }
 
-    override fun onAddonComponentError(throwable: Throwable) {
+    override fun onAddonComponentError(errorMessage: String) {
         val element = this.element ?: return
         callback.removeComponent(element.id)
     }
@@ -51,18 +53,18 @@ class AddonsViewHolder(
         super.onSaveAddonLoading()
     }
 
-    override fun onSaveAddonFailed(throwable: Throwable) {
-        callback.onFailedSaveAddons("Ada gangguan yang lagi dibereskan. Coba lagi atau balik lagi nanti, ya.")
-        super.onSaveAddonFailed(throwable)
+    override fun onSaveAddonFailed(errorMessage: String) {
+        callback.onFailedSaveAddons(errorMessage)
+        super.onSaveAddonFailed(errorMessage)
     }
 
     override fun onSaveAddonSuccess(
         selectedAddonIds: List<String>,
-        selectedAddons: List<AddOnUIModel>,
-        selectedAddonGroup: List<AddOnGroupUIModel>
+        changedAddonSelections: List<AddOnUIModel>,
+        addonGroups: List<AddOnGroupUIModel>
     ) {
         callback.onSuccessSaveAddons(selectedAddonIds.size)
-        super.onSaveAddonSuccess(selectedAddonIds, selectedAddons, selectedAddonGroup)
+        super.onSaveAddonSuccess(selectedAddonIds, changedAddonSelections, addonGroups)
     }
 
 }

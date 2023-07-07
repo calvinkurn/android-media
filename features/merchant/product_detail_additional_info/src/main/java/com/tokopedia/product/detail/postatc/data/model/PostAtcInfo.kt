@@ -21,9 +21,8 @@ data class PostAtcInfo(
         val buttonText: String = "",
         val cartId: String = ""
     ) {
-//        val shouldShow: Boolean
-//            get() = image.isNotEmpty() && description.isNotEmpty()
+        val shouldShow: Boolean
+            get() = image.isNotEmpty() && description.isNotEmpty()
 
-        val shouldShow: Boolean = true
     }
 }

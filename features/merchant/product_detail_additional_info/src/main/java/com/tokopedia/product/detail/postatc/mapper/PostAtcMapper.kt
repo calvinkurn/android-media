@@ -50,6 +50,7 @@ private fun toAddonsUiModel(
         name = component.name,
         type = component.type,
         data = AddonsUiModel.Data(
+            cartId = postAtcInfo.cartId,
             title = data.title,
             productId = postAtcInfo.productId,
             warehouseId = postAtcInfo.warehouseId,

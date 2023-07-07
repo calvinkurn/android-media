@@ -18,6 +18,7 @@ data class AddonsUiModel(
     override fun newInstance(): PostAtcUiModel = this.copy()
 
     data class Data(
+        val cartId: String = "",
         val title: String = "",
         val productId: String = "",
         val warehouseId: String = "",

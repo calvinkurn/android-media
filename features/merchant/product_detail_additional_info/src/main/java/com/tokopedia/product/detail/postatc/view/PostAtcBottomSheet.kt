@@ -5,27 +5,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.AccelerateDecelerateInterpolator
-import android.view.animation.AlphaAnimation
-import android.view.animation.Animation
-import android.view.animation.AnimationSet
-import android.view.animation.TranslateAnimation
-import android.widget.TextView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.transition.AutoTransition
-import androidx.transition.TransitionManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.getBooleanArg
 import com.tokopedia.kotlin.extensions.view.getStringArg
 import com.tokopedia.kotlin.extensions.view.getStringArrayListArg
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.databinding.PostAtcBottomSheetBinding
+import com.tokopedia.product.detail.databinding.ViewPostAtcFooterBinding
 import com.tokopedia.product.detail.postatc.base.PostAtcAdapter
 import com.tokopedia.product.detail.postatc.base.PostAtcCallback
 import com.tokopedia.product.detail.postatc.base.PostAtcLayoutManager
@@ -115,6 +103,8 @@ class PostAtcBottomSheet : BottomSheetUnify() {
     private val callback = PostAtcCallback(this)
     internal val adapter = PostAtcAdapter(callback)
 
+    internal var footer: ViewPostAtcFooterBinding? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         component.inject(this)
         return super.onCreate(savedInstanceState)
@@ -199,81 +189,18 @@ class PostAtcBottomSheet : BottomSheetUnify() {
             })
         }
 
-    private fun updateFooter() = with(binding) {
-        if (this == null) return
+    private fun updateFooter() {
         val data = viewModel.postAtcInfo.footer
-        postAtcLayoutFooter.showWithCondition(data.shouldShow)
-        if (data.shouldShow) {
+        if (!data.shouldShow) return
+
+        val footerView = binding?.postAtcViewStubFooter?.inflate() ?: return
+        footer = ViewPostAtcFooterBinding.bind(footerView).apply {
             postAtcFooterProductImage.setImageUrl(data.image)
-//            postAtcFooterDescription.text = data.description
             postAtcFooterButtonMain.text = data.buttonText
             postAtcFooterButtonMain.setOnClickListener {
-//                callback.goToCart(data.cartId)
-                if (postAtcFooterInfo.isVisible) {
-                    val transition = AutoTransition()
-                    transition.duration = 150
-                    transition.interpolator = AccelerateDecelerateInterpolator()
-                    TransitionManager.beginDelayedTransition(postAtcLayoutFooter, transition)
-                    postAtcFooterInfo.hide()
-                } else {
-                    val loadingText =
-                        context?.getString(R.string.pdp_post_atc_footer_info_loading) ?: ""
-                    postAtcFooterInfo.text = loadingText
-//                    fadeInTextView(postAtcFooterInfo)
-
-                    val transition = AutoTransition()
-                    transition.duration = 150
-                    transition.interpolator = AccelerateDecelerateInterpolator()
-                    TransitionManager.beginDelayedTransition(postAtcLayoutFooter, transition)
-                    postAtcFooterInfo.show()
-                }
+                callback.goToCart(data.cartId)
             }
         }
-    }
-
-    private fun fadeInTextView(textView: TextView) {
-        val fadeInAnimation = AlphaAnimation(0f, 1f)
-        fadeInAnimation.duration = 500 // Set the duration of the animation in milliseconds
-        fadeInAnimation.fillAfter = true // Maintain the final state of the animation
-
-        textView.startAnimation(fadeInAnimation)
-        textView.visibility = View.VISIBLE
-    }
-
-    private fun scrollUpTextView(textView: TextView) {
-        val animation = TranslateAnimation(
-            Animation.RELATIVE_TO_SELF, 0f,
-            Animation.RELATIVE_TO_SELF, 0f,
-            Animation.RELATIVE_TO_SELF, 1f,
-            Animation.RELATIVE_TO_SELF, 0f
-        )
-        animation.duration = 500 // Set the duration of the animation in milliseconds
-        animation.fillAfter = true // Maintain the final state of the animation
-
-        textView.startAnimation(animation)
-        textView.visibility = View.VISIBLE
-    }
-
-    private fun fadeAndScrollUpTextView(textView: TextView) {
-        val fadeInAnimation = AlphaAnimation(0f, 1f)
-        fadeInAnimation.duration = 500 // Set the duration of the fade-in animation in milliseconds
-        fadeInAnimation.fillAfter = true // Maintain the final state of the animation
-
-        val scrollUpAnimation = TranslateAnimation(
-            Animation.RELATIVE_TO_SELF, 0f,
-            Animation.RELATIVE_TO_SELF, 0f,
-            Animation.RELATIVE_TO_SELF, 1f,
-            Animation.RELATIVE_TO_SELF, 0f
-        )
-        scrollUpAnimation.duration = 300 // Set the duration of the scroll-up animation in milliseconds
-        scrollUpAnimation.fillAfter = true // Maintain the final state of the animation
-
-        val animationSet = AnimationSet(true)
-        animationSet.addAnimation(fadeInAnimation)
-        animationSet.addAnimation(scrollUpAnimation)
-
-        textView.startAnimation(animationSet)
-        textView.visibility = View.VISIBLE
     }
 
     private fun showError(it: Throwable) {
