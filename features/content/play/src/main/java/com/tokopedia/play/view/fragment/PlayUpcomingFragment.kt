@@ -39,7 +39,6 @@ import com.tokopedia.play.view.uimodel.action.ClickPartnerNameUpcomingAction
 import com.tokopedia.play.view.uimodel.action.ClickShareUpcomingAction
 import com.tokopedia.play.view.uimodel.action.ClickSharingOptionUpcomingAction
 import com.tokopedia.play.view.uimodel.action.ClickUpcomingButton
-import com.tokopedia.play.view.uimodel.action.CopyLinkUpcomingAction
 import com.tokopedia.play.view.uimodel.action.ExpandDescriptionUpcomingAction
 import com.tokopedia.play.view.uimodel.action.OpenUpcomingPageResultAction
 import com.tokopedia.play.view.uimodel.action.ScreenshotTakenUpcomingAction
@@ -92,7 +91,7 @@ class PlayUpcomingFragment @Inject constructor(
     private val partnerInfoView by viewComponent { PartnerInfoViewComponent(it, this) }
     private val upcomingTimer by viewComponent { UpcomingTimerViewComponent(it, R.id.view_upcoming_timer, this) }
     private val actionButton by viewComponent { UpcomingActionButtonViewComponent(it, R.id.btn_action, this) }
-    private val shareExperienceView by viewComponent { ShareExperienceViewComponent(it, R.id.view_upcoming_share_experience, childFragmentManager, this, this, requireContext(), dispatchers, ShareExperienceViewComponent.Source.Upcoming) }
+    private val shareExperienceView by viewComponent { ShareExperienceViewComponent(it, R.id.view_upcoming_share_experience, childFragmentManager, this, this, requireContext(), ShareExperienceViewComponent.Source.Upcoming) }
     private val description by viewComponent { UpcomingDescriptionViewComponent(it, R.id.tv_upcoming_description, this) }
 
     private val toaster by viewLifecycleBound(
@@ -434,10 +433,6 @@ class PlayUpcomingFragment @Inject constructor(
 
     override fun onSharePermissionAction(view: ShareExperienceViewComponent, label: String) {
         analytic.clickSharePermission(channelId, playUpcomingViewModel.partnerId, playUpcomingViewModel.channelType.value, label)
-    }
-
-    override fun onHandleShareFallback(view: ShareExperienceViewComponent) {
-        playUpcomingViewModel.submitAction(CopyLinkUpcomingAction)
     }
 
     override fun onShareIconImpressed(view: ShareExperienceViewComponent) {

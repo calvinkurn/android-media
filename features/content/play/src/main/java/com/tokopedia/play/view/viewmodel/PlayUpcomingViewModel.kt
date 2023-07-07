@@ -28,7 +28,6 @@ import com.tokopedia.play.view.uimodel.action.ClickPartnerNameUpcomingAction
 import com.tokopedia.play.view.uimodel.action.ClickShareUpcomingAction
 import com.tokopedia.play.view.uimodel.action.ClickSharingOptionUpcomingAction
 import com.tokopedia.play.view.uimodel.action.ClickUpcomingButton
-import com.tokopedia.play.view.uimodel.action.CopyLinkUpcomingAction
 import com.tokopedia.play.view.uimodel.action.ExpandDescriptionUpcomingAction
 import com.tokopedia.play.view.uimodel.action.OpenUpcomingPageResultAction
 import com.tokopedia.play.view.uimodel.action.PlayUpcomingAction
@@ -259,7 +258,6 @@ class PlayUpcomingViewModel @Inject constructor(
             ClickFollowUpcomingAction -> handleClickFollow(isFromLogin = false)
             is ClickPartnerNameUpcomingAction -> handleClickPartnerName(action.appLink)
             is OpenUpcomingPageResultAction -> handleOpenPageResult(action.isSuccess, action.requestCode)
-            CopyLinkUpcomingAction -> handleCopyLink()
             ClickShareUpcomingAction -> handleOpenSharingOption(false)
             ScreenshotTakenUpcomingAction -> handleOpenSharingOption(true)
             is ClickSharingOptionUpcomingAction -> handleSharingOption(action.shareModel)
@@ -423,10 +421,6 @@ class PlayUpcomingViewModel @Inject constructor(
                 )
             )
         }
-    }
-
-    private fun handleCopyLink() {
-        viewModelScope.launch { copyLink() }
     }
 
     private fun handleOpenSharingOption(isScreenshot: Boolean) {

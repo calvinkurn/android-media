@@ -66,7 +66,6 @@ object ClickLikeAction : PlayViewerNewAction()
  * Share
  */
 object ClickShareAction : PlayViewerNewAction()
-object CopyLinkAction : PlayViewerNewAction()
 
 /**
  * Swipe

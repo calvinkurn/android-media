@@ -1010,7 +1010,6 @@ class PlayViewModel @AssistedInject constructor(
             ClickLikeAction -> handleClickLike(isFromLogin = false)
             RefreshLeaderboard -> handleRefreshLeaderboard()
             RetryGetTagItemsAction -> handleRetryGetTagItems()
-            CopyLinkAction -> handleCopyLink()
             ClickShareAction -> handleOpenSharingOption(false)
             ScreenshotTakenAction -> handleOpenSharingOption(true)
             is CloseSharingOptionAction -> handleCloseSharingOption(action.isScreenshotBottomSheet)
@@ -2368,10 +2367,6 @@ class PlayViewModel @AssistedInject constructor(
 
     private fun handleRetryGetTagItems() {
         updateTagItems()
-    }
-
-    private fun handleCopyLink() {
-        viewModelScope.launch { copyLink() }
     }
 
     private fun handleOpenSharingOption(isScreenshot: Boolean) {
