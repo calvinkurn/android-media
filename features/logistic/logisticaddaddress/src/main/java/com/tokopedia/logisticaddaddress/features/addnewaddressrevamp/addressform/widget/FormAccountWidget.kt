@@ -7,8 +7,12 @@ import android.text.TextWatcher
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.LinearLayout
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.iconunify.getIconUnifyDrawable
+import com.tokopedia.kotlin.extensions.view.clearImage
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.databinding.FormAddressNewAkunBinding
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.addressform.AddressFormFragment
@@ -89,7 +93,17 @@ class FormAccountWidget : ConstraintLayout {
                     context?.getString(R.string.tv_error_field)
                 )
             )
-            etNomorHp.setFirstIcon(R.drawable.ic_contact_black)
+            etNomorHp.getFirstIcon().let {
+                it.clearImage()
+                it.setImageDrawable(
+                    getIconUnifyDrawable(
+                        context,
+                        IconUnify.CONTACT,
+                        assetColor = com.tokopedia.unifyprinciples.R.color.Unify_NN900
+                    )
+                )
+                it.show()
+            }
             etNomorHp.textFieldInput.addTextChangedListener(
                 setWrapperWatcherPhone(
                     etNomorHp.textFieldWrapper,
