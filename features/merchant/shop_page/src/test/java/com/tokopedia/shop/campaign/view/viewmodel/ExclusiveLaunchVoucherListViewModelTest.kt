@@ -4,6 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.shop.campaign.domain.entity.ExclusiveLaunchVoucher
 import com.tokopedia.shop.campaign.domain.usecase.GetPromoVoucherListUseCase
+import com.tokopedia.shop.campaign.domain.usecase.RedeemPromoVoucherUseCase
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.unit.test.ext.getOrAwaitValue
 import com.tokopedia.usecase.coroutines.Fail
@@ -24,6 +25,9 @@ class ExclusiveLaunchVoucherListViewModelTest {
     @RelaxedMockK
     lateinit var getPromoVoucherListUseCase: GetPromoVoucherListUseCase
 
+    @RelaxedMockK
+    lateinit var redeemPromoVoucherUseCase: RedeemPromoVoucherUseCase
+
     private lateinit var viewModel : ExclusiveLaunchVoucherListViewModel
 
     @Before
@@ -31,7 +35,8 @@ class ExclusiveLaunchVoucherListViewModelTest {
         MockKAnnotations.init(this)
         viewModel = ExclusiveLaunchVoucherListViewModel(
             CoroutineTestDispatchersProvider,
-            getPromoVoucherListUseCase
+            getPromoVoucherListUseCase,
+            redeemPromoVoucherUseCase
         )
     }
 

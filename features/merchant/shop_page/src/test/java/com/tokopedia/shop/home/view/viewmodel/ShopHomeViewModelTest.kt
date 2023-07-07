@@ -34,6 +34,7 @@ import com.tokopedia.mvcwidget.TokopointsCatalogMVCSummaryResponse
 import com.tokopedia.mvcwidget.usecases.MVCSummaryUseCase
 import com.tokopedia.play.widget.data.PlayWidget
 import com.tokopedia.play.widget.data.PlayWidgetReminder
+import com.tokopedia.play.widget.domain.PlayWidgetUseCase
 import com.tokopedia.play.widget.ui.PlayWidgetState
 import com.tokopedia.play.widget.ui.model.PartnerType
 import com.tokopedia.play.widget.ui.model.PlayGridType
@@ -855,13 +856,15 @@ class ShopHomeViewModelTest {
         coEvery { playWidgetTools.getWidgetFromNetwork(any(), any()) } returns playWidgetMock
         coEvery { playWidgetTools.mapWidgetToModel(playWidgetMock, any()) } returns playWidgetStateMockData
         viewModel.getPlayWidget(
-            mockShopId,
             CarouselPlayWidgetUiModel(
                 "",
                 0,
                 "",
                 "",
                 BaseShopHomeWidgetUiModel.Header()
+            ),
+            PlayWidgetUseCase.WidgetType.ShopPage(
+                shopId = mockShopId
             )
         )
 
@@ -885,13 +888,15 @@ class ShopHomeViewModelTest {
         coEvery { playWidgetTools.getWidgetFromNetwork(any(), any()) } returns playWidgetMock
         coEvery { playWidgetTools.mapWidgetToModel(playWidgetMock, any()) } returns playWidgetStateMockData
         viewModel.getPlayWidget(
-            mockShopId,
             CarouselPlayWidgetUiModel(
                 "",
                 0,
                 "",
                 "",
                 BaseShopHomeWidgetUiModel.Header()
+            ),
+            PlayWidgetUseCase.WidgetType.ShopPage(
+                shopId = mockShopId
             )
         )
         coEvery { userSessionInterface.isLoggedIn } returns true
@@ -915,13 +920,15 @@ class ShopHomeViewModelTest {
         coEvery { playWidgetTools.getWidgetFromNetwork(any(), any()) } returns playWidgetMock
         coEvery { playWidgetTools.mapWidgetToModel(playWidgetMock, any()) } returns playWidgetStateMockData
         viewModel.getPlayWidget(
-            mockShopId,
             CarouselPlayWidgetUiModel(
                 "",
                 0,
                 "",
                 "",
                 BaseShopHomeWidgetUiModel.Header()
+            ),
+            PlayWidgetUseCase.WidgetType.ShopPage(
+                shopId = mockShopId
             )
         )
         coEvery { userSessionInterface.isLoggedIn } returns true
@@ -1138,13 +1145,15 @@ class ShopHomeViewModelTest {
         coEvery { playWidgetTools.getWidgetFromNetwork(any(), any()) } returns playWidgetMock
         coEvery { playWidgetTools.mapWidgetToModel(playWidgetMock, any()) } returns playWidgetStateMockData
         viewModel.getPlayWidget(
-            mockShopId,
             CarouselPlayWidgetUiModel(
                 "",
                 0,
                 "",
                 "",
                 BaseShopHomeWidgetUiModel.Header()
+            ),
+            PlayWidgetUseCase.WidgetType.ShopPage(
+                shopId = mockShopId
             )
         )
         coVerify { playWidgetTools.getWidgetFromNetwork(any(), any()) }
@@ -1158,13 +1167,15 @@ class ShopHomeViewModelTest {
         coEvery { playWidgetTools.getWidgetFromNetwork(any(), any()) } returns playWidgetMock
         coEvery { playWidgetTools.mapWidgetToModel(playWidgetMock, any()) } returns playWidgetStateMockData
         viewModel.getPlayWidget(
-            mockShopId,
             CarouselPlayWidgetUiModel(
                 "",
                 0,
                 "",
                 "",
                 BaseShopHomeWidgetUiModel.Header()
+            ),
+            PlayWidgetUseCase.WidgetType.ShopPage(
+                shopId = mockShopId
             )
         )
         coVerify { playWidgetTools.getWidgetFromNetwork(any(), any()) }
@@ -1176,25 +1187,29 @@ class ShopHomeViewModelTest {
         every { userSessionInterface.shopId } returns mockShopId
         val playWidgetMock = PlayWidget()
         viewModel.getPlayWidget(
-            mockShopId,
             CarouselPlayWidgetUiModel(
                 "",
                 0,
                 "",
                 "",
                 BaseShopHomeWidgetUiModel.Header()
+            ),
+            PlayWidgetUseCase.WidgetType.ShopPage(
+                shopId = mockShopId
             )
         )
         coEvery { playWidgetTools.getWidgetFromNetwork(any(), any()) } returns playWidgetMock
         coEvery { playWidgetTools.mapWidgetToModel(playWidgetMock, any()) } returns playWidgetStateMockData
         viewModel.getPlayWidget(
-            mockShopId,
             CarouselPlayWidgetUiModel(
                 "",
                 0,
                 "",
                 "",
                 BaseShopHomeWidgetUiModel.Header()
+            ),
+            PlayWidgetUseCase.WidgetType.ShopPage(
+                shopId = mockShopId
             )
         )
         coVerify { playWidgetTools.getWidgetFromNetwork(any(), any()) }
@@ -1208,23 +1223,27 @@ class ShopHomeViewModelTest {
         coEvery { playWidgetTools.getWidgetFromNetwork(any(), any()) } returns playWidgetMock
         coEvery { playWidgetTools.mapWidgetToModel(playWidgetMock, any()) } returns playWidgetStateMockData
         viewModel.getPlayWidget(
-            mockShopId,
             CarouselPlayWidgetUiModel(
                 "",
                 0,
                 "",
                 "",
                 BaseShopHomeWidgetUiModel.Header()
+            ),
+            PlayWidgetUseCase.WidgetType.ShopPage(
+                shopId = mockShopId
             )
         )
         viewModel.getPlayWidget(
-            mockShopId,
             CarouselPlayWidgetUiModel(
                 "",
                 0,
                 "",
                 "",
                 BaseShopHomeWidgetUiModel.Header()
+            ),
+            PlayWidgetUseCase.WidgetType.ShopPage(
+                shopId = mockShopId
             )
         )
         coVerify { playWidgetTools.getWidgetFromNetwork(any(), any()) }
@@ -1238,13 +1257,15 @@ class ShopHomeViewModelTest {
         coEvery { playWidgetTools.getWidgetFromNetwork(any(), any()) } returns playWidgetMock
         coEvery { playWidgetTools.mapWidgetToModel(playWidgetMock, any()) } returns playWidgetStateMockData
         viewModel.getPlayWidget(
-            mockShopId,
             CarouselPlayWidgetUiModel(
                 "",
                 0,
                 "",
                 "",
                 BaseShopHomeWidgetUiModel.Header()
+            ),
+            PlayWidgetUseCase.WidgetType.ShopPage(
+                shopId = mockShopId
             )
         )
         coEvery {
@@ -1265,13 +1286,15 @@ class ShopHomeViewModelTest {
         coEvery { playWidgetTools.getWidgetFromNetwork(any(), any()) } returns playWidgetMock
         coEvery { playWidgetTools.mapWidgetToModel(playWidgetMock, any()) } returns playWidgetStateMockData
         viewModel.getPlayWidget(
-            mockShopId,
             CarouselPlayWidgetUiModel(
                 "",
                 0,
                 "",
                 "",
                 BaseShopHomeWidgetUiModel.Header()
+            ),
+            PlayWidgetUseCase.WidgetType.ShopPage(
+                shopId = mockShopId
             )
         )
         coEvery {
@@ -1337,13 +1360,15 @@ class ShopHomeViewModelTest {
         coEvery { playWidgetTools.getWidgetFromNetwork(any(), any()) } returns playWidgetMock
         coEvery { playWidgetTools.mapWidgetToModel(playWidgetMock, any()) } returns playWidgetStateMockData
         viewModel.getPlayWidget(
-            mockShopId,
             CarouselPlayWidgetUiModel(
                 "",
                 0,
                 "",
                 "",
                 BaseShopHomeWidgetUiModel.Header()
+            ),
+            PlayWidgetUseCase.WidgetType.ShopPage(
+                shopId = mockShopId
             )
         )
         coVerify { playWidgetTools.getWidgetFromNetwork(any(), any()) }
@@ -1432,13 +1457,15 @@ class ShopHomeViewModelTest {
         coEvery { playWidgetTools.getWidgetFromNetwork(any(), any()) } returns playWidgetMock
         coEvery { playWidgetTools.mapWidgetToModel(playWidgetMock, any()) } returns playWidgetStateMediumMockData
         viewModel.getPlayWidget(
-            mockShopId,
             CarouselPlayWidgetUiModel(
                 "",
                 0,
                 "",
                 "",
                 BaseShopHomeWidgetUiModel.Header()
+            ),
+            PlayWidgetUseCase.WidgetType.ShopPage(
+                shopId = mockShopId
             )
         )
         coVerify { playWidgetTools.getWidgetFromNetwork(any(), any()) }
@@ -1506,13 +1533,15 @@ class ShopHomeViewModelTest {
         coEvery { playWidgetTools.getWidgetFromNetwork(any(), any()) } returns playWidgetMock
         coEvery { playWidgetTools.mapWidgetToModel(playWidgetMock, any()) } returns playWidgetStateMediumMockData
         viewModel.getPlayWidget(
-            mockShopId,
             CarouselPlayWidgetUiModel(
                 "",
                 0,
                 "",
                 "",
                 BaseShopHomeWidgetUiModel.Header()
+            ),
+            PlayWidgetUseCase.WidgetType.ShopPage(
+                shopId = mockShopId
             )
         )
         coVerify { playWidgetTools.getWidgetFromNetwork(any(), any()) }
