@@ -13,10 +13,13 @@ import com.tokopedia.kotlin.model.ImpressHolder
  */
 
 class HomepageBannerDataModel : ImpressHolder(), HomeVisitable, LoadableComponent by BlocksLoadableComponent(
-    { true },
-    "HomePageBanner"
+    customBlocksName = "HomePageBanner"
 ) {
     var slides: List<BannerSlidesModel>? = null
+    set(value) {
+        field = value
+        finishLoading()
+    }
     var createdTimeMillis = ""
     private var isCache: Boolean = false
     private var trackingData: Map<String, Any>? = null
@@ -24,6 +27,7 @@ class HomepageBannerDataModel : ImpressHolder(), HomeVisitable, LoadableComponen
     private var isCombined: Boolean = false
 
     override fun equalsWith(b: Any?): Boolean {
+        this.finishLoading()
         return if (b is HomepageBannerDataModel) {
             createdTimeMillis == b.createdTimeMillis
         }
