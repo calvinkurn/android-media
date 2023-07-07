@@ -514,8 +514,8 @@ public interface ApplinkConst {
     }
 
     interface ScpRewards{
-        String CELEBRATION_BOTTOMSHEET = "tokopedia://medali/celebration-bottomsheet";
-        String SCP_TOASTER = "tokopedia://medali/celebration_toaster";
+        String CELEBRATION_BOTTOMSHEET = "celebration-bottomsheet";
+        String SCP_TOASTER = "celebration_toaster";
     }
 
     String OQR_PIN_URL_ENTRY_LINK = "tokopedia://ovoqrthanks/";
