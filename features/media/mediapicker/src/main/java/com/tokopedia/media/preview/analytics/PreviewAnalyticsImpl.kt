@@ -1,6 +1,7 @@
 package com.tokopedia.media.preview.analytics
 
 import com.tokopedia.kotlin.extensions.view.toZeroStringIfNullOrBlank
+import com.tokopedia.picker.common.PageSource
 import com.tokopedia.picker.common.cache.PickerCacheManager
 import com.tokopedia.track.TrackApp
 import com.tokopedia.user.session.UserSessionInterface
@@ -21,12 +22,28 @@ class PreviewAnalyticsImpl @Inject constructor(
         cacheManager.get().pageSourceName()
     }
 
-    override fun clickNextButton(buttonState: String) {
+    override fun clickNextButton(buttonState: String, listImage: List<Triple<String,String, Int>>) {
         sendGeneralEvent(
             event = EVENT_CLICK_COMMUNICATION,
             eventAction = ACTION_CLICK_NEXT,
             eventCategory = CATEGORY_MEDIA_PREVIEW,
             eventLabel = "$buttonState - $sourcePage - $userId - $shopId"
+        )
+
+        // Temporary, used to gather data and will be removed later
+        val buttonStateInt = if (buttonState == PREVIEW_PAGE_LANJUT) 0 else 1
+        val pageSourceInt = PageSource.values().indexOf(cacheManager.get().pageSource())
+        var imageListString = ""
+        listImage.forEachIndexed { index, (imageSize, imageResolution, _) ->
+            if (index >= DATA_SAMPLING_LIMIT) return@forEachIndexed
+            imageListString+= " - $imageSize - $imageResolution"
+        }
+
+        sendGeneralEvent(
+            event = EVENT_CLICK_COMMUNICATION,
+            eventAction = ACTION_CLICK_UPLOAD,
+            eventCategory = CATEGORY_IMAGE_UPLOAD,
+            eventLabel = "$buttonStateInt - $pageSourceInt$imageListString - ${listImage.size}"
         )
     }
 
@@ -81,5 +98,9 @@ class PreviewAnalyticsImpl @Inject constructor(
         TrackApp.getInstance().gtm.sendGeneralEvent(
             generalEvent.toMap()
         )
+    }
+
+    companion object {
+        const val DATA_SAMPLING_LIMIT = 4
     }
 }

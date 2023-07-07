@@ -14,12 +14,14 @@ const val EVENT_CLICK_COMMUNICATION = "clickCommunication"
 
 // event category
 const val CATEGORY_MEDIA_PREVIEW = "media preview"
+const val CATEGORY_IMAGE_UPLOAD = "image upload"
 
 // event action
 const val ACTION_CLICK_THUMBNAIL = "click thumbnail"
 const val ACTION_CLICK_NEXT = "click lanjut"
 const val ACTION_CLICK_BACK = "click back"
 const val ACTION_CLICK_ULANG = "click ulang"
+const val ACTION_CLICK_UPLOAD = "click upload"
 
 // additional
 const val BUSINESS_UNIT = "media"
