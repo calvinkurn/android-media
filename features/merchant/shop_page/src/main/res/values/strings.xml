@@ -110,6 +110,7 @@
     <string name="new_shop_page_header_shop_close_description_seller_clickable_text" formatted="true">Buka Toko</string>
     <string name="shop_page_choose_address_widget_coachmark_title">Bisa pilih alamat pengirimanmu dulu</string>
     <string name="shop_page_choose_address_widget_coachmark_description">Biar pengalaman belanja lebih asyik &amp; dapatkan rekomendasi barang terdekat dari alamatmu.</string>
+    <string name="shop_home_tab_banner_timer_finish_date_format"><![CDATA[Berakhir sejak <b>%1s</b>]]></string>
 
     <!--  campaign tab  -->
     <string name="shop_campaign_tab_banner_timer_date_format">%1s WIB</string>
