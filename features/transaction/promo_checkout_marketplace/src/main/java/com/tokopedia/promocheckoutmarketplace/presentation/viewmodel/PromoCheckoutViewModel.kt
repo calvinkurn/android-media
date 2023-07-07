@@ -888,6 +888,10 @@ class PromoCheckoutViewModel @Inject constructor(
                         } else {
                             // if code already in request param, set shipping id and sp id again
                             // in case user changes address from other page and the courier info changes
+                            if (order.uniqueId != boData.uniqueId) {
+                                // remove code to prevent duplicate bo code in owoc order
+                                it.codes.remove(boData.code)
+                            }
                             it.shippingId = boData.shippingId
                             it.spId = boData.shipperProductId
                         }
@@ -896,6 +900,7 @@ class PromoCheckoutViewModel @Inject constructor(
                         it.shippingPrice = boData.shippingPrice
                         it.shippingSubsidy = boData.shippingSubsidy
                         it.etaText = boData.etaText
+                        it.boCode = boData.code
                     }
                 }
             } else if (promoListItemUiModel.uiData.shopId == 0 &&
@@ -912,7 +917,7 @@ class PromoCheckoutViewModel @Inject constructor(
                 order.codes.remove(promoListItemUiModel.uiData.promoCode)
             } else if (promoListItemUiModel.uiState.isBebasOngkir) {
                 val boData =
-                    promoListItemUiModel.uiData.boAdditionalData.firstOrNull { order.uniqueId == it.uniqueId }
+                    promoListItemUiModel.uiData.boAdditionalData.firstOrNull { order.cartStringGroup == it.cartStringGroup }
                 if (boData != null) {
                     order.let {
                         if (it.codes.contains(boData.code)) {
@@ -922,6 +927,7 @@ class PromoCheckoutViewModel @Inject constructor(
                             it.shippingPrice = 0.0
                             it.shippingSubsidy = 0
                             it.etaText = ""
+                            it.boCode = ""
                             if (validateUsePromoRequest.state == CartConstant.PARAM_CART) {
                                 it.shippingId = 0
                                 it.spId = 0
