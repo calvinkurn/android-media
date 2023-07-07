@@ -4,10 +4,12 @@ import android.content.Context
 import android.net.Uri
 import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.DefaultLoadControl
+import com.google.android.exoplayer2.ExoPlaybackException
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.LoadControl
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
+import com.google.android.exoplayer2.source.BehindLiveWindowException
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.video.VideoListener
 import com.tokopedia.feedcomponent.util.FeedExoUtil
@@ -66,6 +68,14 @@ class FeedExoPlayer(val context: Context) {
                         exoPlayer.currentPosition,
                         exoPlayer.duration
                     )
+                }
+            }
+
+            override fun onPlayerError(error: ExoPlaybackException) {
+                super.onPlayerError(error)
+
+                if (error.sourceException is BehindLiveWindowException) {
+                    videoStateListener?.onBehindLiveWindow(exoPlayer.playWhenReady)
                 }
             }
         })
@@ -149,4 +159,6 @@ interface VideoStateListener {
 
     fun onBuffering() {}
     fun onVideoStateChange(stopDuration: Long, videoDuration: Long) // Tracker Purpose
+
+    fun onBehindLiveWindow(playWhenReady: Boolean)
 }

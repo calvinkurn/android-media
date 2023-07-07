@@ -167,11 +167,20 @@ class FeedPostLiveViewHolder(
 
             override fun onVideoStateChange(stopDuration: Long, videoDuration: Long) {
             }
+
+            override fun onBehindLiveWindow(playWhenReady: Boolean) {
+                videoPlayer.start(
+                    element.videoUrl,
+                    false,
+                    playWhenReady = playWhenReady,
+                    isLive = true
+                )
+            }
         })
 
         binding.playerFeedVideo.player = videoPlayer.getExoPlayer()
         videoPlayer.start(
-            element.media.firstOrNull()?.mediaUrl.orEmpty(),
+            element.videoUrl,
             false,
             playWhenReady = false,
             isLive = true
