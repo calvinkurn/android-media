@@ -195,6 +195,7 @@ class BlocksPerformanceTrace(
         finishTTIL(BlocksPerfState.STATE_SUCCESS, listOfLoadableComponent)
         this.onLaunchTimeFinished = null
         TTILperformanceMonitoring = null
+        performanceTraceJob?.cancel()
     }
 
     private fun measureTTFL(listOfLoadableComponent: Set<String>) {
