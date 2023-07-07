@@ -155,6 +155,7 @@
         android:layout_height="wrap_content"
         tools:ignore="UnifyComponentUsage"
         app:cardElevation="8dp"
+        app:cardBackgroundColor="@color/Unify_NN0"
         app:layout_constraintBottom_toBottomOf="parent">
 
         <com.tokopedia.unifycomponents.UnifyButton

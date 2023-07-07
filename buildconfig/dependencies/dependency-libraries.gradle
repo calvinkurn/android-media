@@ -123,7 +123,6 @@ ext {
             utils                   : ":libraries:utils",
             imagePreviewSlider      : ":libraries:imagepreviewslider",
             mapviewer               : ":libraries:mapviewer",
-            tokopatch               : ":libraries:tokopatch",
             analyticAnnotationCentral   : ":libraries:annotation_proc_central",
             screenRecorder          : ":libraries:screen_recorder",
             unitTest                : ":libraries:unit_test",

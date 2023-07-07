@@ -10,9 +10,6 @@ public class RemoteConfigKey {
     public static final String MAINAPP_WALLET_LABEL_NAME = "mainapp_wallet_label_name";
     public static final String MAINAPP_WALLET_LABEL_REGISTER = "mainapp_wallet_label_register";
 
-    public static final String CUSTOMER_ENABLE_ROBUST = "android_customer_robust_enable";
-    public static final String SELLER_ENABLE_ROBUST = "android_sellerapp_robust_enable";
-
     public static final String APP_SHARE_DESCRIPTION = "app_share_description";
     public static final String MAINAPP_ACTIVATE_BRANCH_LINKS = "mainapp_activate_branch_links";
 
