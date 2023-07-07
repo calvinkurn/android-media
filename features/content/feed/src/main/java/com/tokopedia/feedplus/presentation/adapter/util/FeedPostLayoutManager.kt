@@ -15,7 +15,7 @@ class FeedPostLayoutManager(
     private val helper = OrientationHelper.createOrientationHelper(this, RecyclerView.VERTICAL)
 
     override fun calculateExtraLayoutSpace(state: RecyclerView.State, extraLayoutSpace: IntArray) {
-        extraLayoutSpace[0] = helper.totalSpace
-        extraLayoutSpace[1] = helper.totalSpace
+        extraLayoutSpace[0] = 2 * helper.totalSpace
+        extraLayoutSpace[1] = 2 * helper.totalSpace
     }
 }
