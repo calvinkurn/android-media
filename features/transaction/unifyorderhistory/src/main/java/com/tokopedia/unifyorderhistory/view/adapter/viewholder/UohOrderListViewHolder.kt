@@ -8,6 +8,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
@@ -230,7 +231,9 @@ class UohOrderListViewHolder(
                         }
                     )
                 }
-                UohReviewRatingWidget(config = config.value)
+                NestTheme {
+                    UohReviewRatingWidget(config = config.value)
+                }
             }
 
             showWithCondition(order.metadata.getReviewRatingComponent() != null)
