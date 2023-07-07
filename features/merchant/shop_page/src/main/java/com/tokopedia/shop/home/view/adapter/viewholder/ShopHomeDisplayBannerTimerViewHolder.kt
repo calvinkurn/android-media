@@ -23,6 +23,7 @@ import com.tokopedia.shop.R
 import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.databinding.ItemShopHomeDisplayBannerTimerBinding
 import com.tokopedia.shop.home.util.DateHelper
+import com.tokopedia.shop.home.util.DateHelper.SHOP_CAMPAIGN_BANNER_TIMER_MORE_THAN_1_DAY_DATE_FORMAT_ENDED
 import com.tokopedia.shop.home.util.DateHelper.SHOP_NPL_CAMPAIGN_WIDGET_MORE_THAT_1_DAY_DATE_FORMAT
 import com.tokopedia.shop.home.util.DateHelper.millisecondsToDays
 import com.tokopedia.shop.home.view.listener.ShopHomeDisplayBannerTimerWidgetListener
@@ -103,8 +104,7 @@ class ShopHomeDisplayBannerTimerViewHolder(
 
     private fun setTnc(title: String, model: ShopWidgetDisplayBannerTimerUiModel) {
         imageTnc?.apply {
-            val statusCampaign = model.data?.status
-            if (title.isEmpty() || isStatusCampaignFinished(statusCampaign)) {
+            if (title.isEmpty()) {
                 hide()
             } else {
                 show()
@@ -165,8 +165,18 @@ class ShopHomeDisplayBannerTimerViewHolder(
             }
         } else {
             timerUnify?.gone()
-            textTimeDescription?.gone()
             timerMoreThanOneDay?.gone()
+            val endDate = DateHelper.getDateFromString(model.data?.endDate.orEmpty())
+            val textTimeDescriptionFinished = MethodChecker.fromHtml(
+                itemView.context.getString(
+                    R.string.shop_home_tab_banner_timer_finish_date_format,
+                    endDate.toString(SHOP_CAMPAIGN_BANNER_TIMER_MORE_THAN_1_DAY_DATE_FORMAT_ENDED)
+                )
+            )
+            textTimeDescription?.apply {
+                show()
+                text = textTimeDescriptionFinished
+            }
         }
     }
 

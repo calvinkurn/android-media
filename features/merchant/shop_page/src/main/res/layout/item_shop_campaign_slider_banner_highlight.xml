@@ -66,6 +66,8 @@
         app:layout_constraintBottom_toBottomOf="@id/rv_product_image"
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintTop_toTopOf="@id/rv_product_image"
+        app:icon_color_light_enable="@color/dms_color_525A67"
+        app:icon_color_night_enable="@color/dms_color_525A67"
         tools:visibility="visible" />
 
     <com.tokopedia.iconunify.IconUnify
