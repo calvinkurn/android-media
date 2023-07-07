@@ -17,6 +17,7 @@ import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstant
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.CURRENT_SITE_TOKOPEDIA_MARKET_PLACE
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalytics
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalytics.joinDash
+import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
 import com.tokopedia.track.builder.Tracker
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
@@ -27,7 +28,8 @@ import javax.inject.Inject
  **/
 
 class CategoryAnalytic @Inject constructor(
-    private val userSession: UserSessionInterface
+    private val userSession: UserSessionInterface,
+    private val addressData: TokoNowLocalAddress
 ) {
     internal object ACTION {
         const val EVENT_ACTION_CLICK_OTHER_CATEGORIES = "click kategori lain"
@@ -109,7 +111,7 @@ class CategoryAnalytic @Inject constructor(
         get() = CategoryOosProductAnalytic()
 
     val productAdsAnalytic: CategoryProductAdsAnalytic
-        get() = CategoryProductAdsAnalytic(userSession)
+        get() = CategoryProductAdsAnalytic(userSession, addressData)
 
     fun sendOpenScreenEvent(slug: String, id: String, name: String, isLoggedInStatus: Boolean) {
         TokoNowCommonAnalytics.onOpenScreen(

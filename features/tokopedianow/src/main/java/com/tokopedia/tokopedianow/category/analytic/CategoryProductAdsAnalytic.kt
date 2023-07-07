@@ -1,6 +1,7 @@
 package com.tokopedia.tokopedianow.category.analytic
 
 import com.tokopedia.tokopedianow.category.analytic.CategoryAnalytic.CATEGORY.EVENT_CATEGORY_PAGE
+import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
 import com.tokopedia.tokopedianow.searchcategory.analytics.ProductAdsCarouselAnalytics
 import com.tokopedia.user.session.UserSessionInterface
 
@@ -10,7 +11,8 @@ import com.tokopedia.user.session.UserSessionInterface
  */
 class CategoryProductAdsAnalytic(
     userSession: UserSessionInterface,
-) : ProductAdsCarouselAnalytics(userSession) {
+    addressData: TokoNowLocalAddress,
+) : ProductAdsCarouselAnalytics(userSession, addressData) {
 
     companion object {
         private const val TRACKER_ID_PRODUCT_IMPRESSION = "44063"

@@ -11,6 +11,7 @@ import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstant
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.CURRENT_SITE_TOKOPEDIA_MARKET_PLACE
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalytics
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalytics.getTracker
+import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
 import com.tokopedia.tokopedianow.common.util.TrackerUtil.getTrackerPosition
 import com.tokopedia.user.session.UserSessionInterface
 
@@ -18,7 +19,10 @@ import com.tokopedia.user.session.UserSessionInterface
  * Ads Slot Tracker
  * https://mynakama.tokopedia.com/datatracker/product/requestdetail/view/3991
  */
-abstract class ProductAdsCarouselAnalytics(private val userSession: UserSessionInterface) {
+abstract class ProductAdsCarouselAnalytics(
+    private val userSession: UserSessionInterface,
+    private val addressData: TokoNowLocalAddress
+) {
 
     companion object {
         private const val ACTION_IMPRESSION_ADS_SLOT = "impression product - ads slot"
@@ -37,7 +41,8 @@ abstract class ProductAdsCarouselAnalytics(private val userSession: UserSessionI
         product: ProductCardCompactCarouselItemUiModel
     ) {
         val trackerPosition = position.getTrackerPosition()
-        val eventLabel = "$title - $trackerPosition - ${product.getProductId()}"
+        val eventLabel = "$title - $trackerPosition - ${product.getProductId()} - " +
+            "${addressData.getWarehouseId()}"
 
         val productItemsDataLayer = arrayListOf(
             TokoNowCommonAnalytics.productItemDataLayer(
@@ -73,7 +78,8 @@ abstract class ProductAdsCarouselAnalytics(private val userSession: UserSessionI
         product: ProductCardCompactCarouselItemUiModel
     ) {
         val trackerPosition = position.getTrackerPosition()
-        val eventLabel = "$title - $trackerPosition - ${product.getProductId()}"
+        val eventLabel = "$title - $trackerPosition - ${product.getProductId()} - " +
+            "${addressData.getWarehouseId()}"
 
         val productItemsDataLayer = arrayListOf(
             TokoNowCommonAnalytics.productItemDataLayer(
@@ -114,7 +120,8 @@ abstract class ProductAdsCarouselAnalytics(private val userSession: UserSessionI
         product: ProductCardCompactUiModel
     ) {
         val productId = product.productId
-        val eventLabel = "$title - $position - $productId"
+        val eventLabel = "$title - $position - $productId - " +
+            "${addressData.getWarehouseId()}"
 
         val productItemsDataLayer = arrayListOf(
             TokoNowCommonAnalytics.productItemDataLayer(

@@ -75,9 +75,11 @@ class TokoNowSearchFragment :
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-    private lateinit var tokoNowSearchViewModel: TokoNowSearchViewModel
 
-    private val productAdsAnalytics by lazy { SearchProductAdsAnalytics(userSession) }
+    @Inject
+    lateinit var productAdsAnalytics: SearchProductAdsAnalytics
+
+    private lateinit var tokoNowSearchViewModel: TokoNowSearchViewModel
 
     override val toolbarPageName = "TokoNow Search"
 

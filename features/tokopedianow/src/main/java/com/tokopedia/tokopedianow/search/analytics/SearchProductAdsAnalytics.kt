@@ -1,16 +1,19 @@
 package com.tokopedia.tokopedianow.search.analytics
 
+import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Category.TOKONOW_DASH_SEARCH_RESULT_PAGE
 import com.tokopedia.tokopedianow.searchcategory.analytics.ProductAdsCarouselAnalytics
 import com.tokopedia.user.session.UserSessionInterface
+import javax.inject.Inject
 
 /**
  * Ads Slot Tracker
  * https://mynakama.tokopedia.com/datatracker/product/requestdetail/view/3991
  */
-class SearchProductAdsAnalytics(
+class SearchProductAdsAnalytics @Inject constructor(
     userSession: UserSessionInterface,
-) : ProductAdsCarouselAnalytics(userSession) {
+    addressData: TokoNowLocalAddress
+) : ProductAdsCarouselAnalytics(userSession, addressData) {
 
     companion object {
         private const val TRACKER_ID_PRODUCT_IMPRESSION = "44060"

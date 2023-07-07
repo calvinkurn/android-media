@@ -51,6 +51,7 @@ class ProductAdsCarouselListener(
             shopName = product.shopName,
             shopType = product.shopType,
             categoryBreadcrumbs = product.categoryBreadcrumbs,
+            position = product.position,
             type = PRODUCT_ADS_CAROUSEL
         )
         viewModel.onViewATCProductNonVariant(productItem, quantity)
