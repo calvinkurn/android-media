@@ -80,6 +80,38 @@ import timber.log.Timber
 import javax.inject.Inject
 
 class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCompleteItemListener {
+    companion object {
+        private const val RESULT_PERMISSION_CODE = 1234
+        private const val REQUEST_CODE_PERMISSION = 9876
+
+        private const val LOCATION_REQUEST_INTERVAL = 10000L
+        private const val LOCATION_REQUEST_FASTEST_INTERVAL = 2000L
+        private const val GPS_DELAY = 1000L
+
+        private const val DEFAULT_LONG = 0.0
+        private const val DEFAULT_LAT = 0.0
+
+        fun newInstance(bundle: Bundle): SearchPageFragment {
+            return SearchPageFragment().apply {
+                arguments = Bundle().apply {
+                    putParcelable(
+                        EXTRA_SAVE_DATA_UI_MODEL,
+                        bundle.getParcelable(EXTRA_SAVE_DATA_UI_MODEL)
+                    )
+                    putBoolean(EXTRA_IS_POSITIVE_FLOW, bundle.getBoolean(EXTRA_IS_POSITIVE_FLOW))
+                    putBoolean(EXTRA_FROM_PINPOINT, bundle.getBoolean(EXTRA_FROM_PINPOINT))
+                    putBoolean(EXTRA_IS_POLYGON, bundle.getBoolean(EXTRA_IS_POLYGON))
+                    putString(EXTRA_ADDRESS_STATE, bundle.getString(EXTRA_ADDRESS_STATE, AddressUiState.AddAddress.name))
+                    putString(PARAM_SOURCE, bundle.getString(PARAM_SOURCE, ""))
+                    putString(EXTRA_REF, bundle.getString(EXTRA_REF, ""))
+                    putBoolean(
+                        EXTRA_IS_GET_PINPOINT_ONLY,
+                        bundle.getBoolean(EXTRA_IS_GET_PINPOINT_ONLY)
+                    )
+                }
+            }
+        }
+    }
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -91,9 +123,6 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
         ViewModelProvider(this, viewModelFactory).get(SearchPageViewModel::class.java)
     }
 
-    private var autoCompleteAdapter: AutoCompleteListAdapter? = null
-
-    private var bottomSheetLocUndefined: BottomSheetUnify? = null
     private var fusedLocationClient: FusedLocationProviderClient? = null
     private var hasRequestedLocation: Boolean = false
     private var permissionState: Int = PERMISSION_NOT_DEFINED
@@ -105,6 +134,9 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
         )
 
     private var saveAddressDataModel = SaveAddressDataModel()
+    var currentLat: Double = DEFAULT_LAT
+    var currentLong: Double = DEFAULT_LONG
+
     private var isGmsAvailable: Boolean = true
     private var isPositiveFlow: Boolean = true
     private var isFromPinpoint: Boolean = false
@@ -113,16 +145,38 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
 
     private var addressUiState: AddressUiState = AddressUiState.AddAddress
 
-    var currentLat: Double = DEFAULT_LAT
-    var currentLong: Double = DEFAULT_LONG
-
     private var binding by autoClearedNullable<FragmentSearchAddressBinding>()
+    private var autoCompleteAdapter: AutoCompleteListAdapter? = null
+    private var bottomSheetLocUndefined: BottomSheetUnify? = null
 
     private val gpsResultResolutionContract = registerForActivityResult(
         ActivityResultContracts.StartIntentSenderForResult()
     ) {
         if (it.resultCode == Activity.RESULT_OK) {
             onResultFromGpsRequest()
+        }
+    }
+
+    private val pinpointPageContract = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) {
+        if (it.resultCode == Activity.RESULT_OK) {
+            onResultFromPinpoint(it.data)
+        } else {
+            showInitialLoadMessage()
+        }
+    }
+
+    private val addressFormContract = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) {
+        if (it.resultCode == Activity.RESULT_OK) {
+            onResultFromAddressForm(it.data)
+        } else {
+            showInitialLoadMessage()
+            if (!isGmsAvailable) {
+                activity?.finish()
+            }
         }
     }
 
@@ -146,44 +200,15 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
         initDataFromArguments()
     }
 
-    private fun setOnBackPressed() {
-        activity?.onBackPressedDispatcher?.addCallback(
-            viewLifecycleOwner,
-            object : OnBackPressedCallback(true) {
-                override fun handleOnBackPressed() {
-                    hitAnalyticOnBackPress()
-                    activity?.finish()
-                }
-            }
-        )
-    }
-
-    private fun hitAnalyticOnBackPress() {
-        when (addressUiState) {
-            AddressUiState.AddAddress -> AddNewAddressRevampAnalytics.onClickBackArrowSearch(userSession.userId)
-            AddressUiState.EditAddress -> EditAddressRevampAnalytics.onClickBackArrowSearch(userSession.userId)
-            else -> {
-                // no op
-            }
-        }
-    }
-
-    private fun initDataFromArguments() {
-        arguments?.apply {
-            isPositiveFlow = getBoolean(EXTRA_IS_POSITIVE_FLOW)
-            isFromPinpoint = getBoolean(EXTRA_FROM_PINPOINT)
-            isPolygon = getBoolean(EXTRA_IS_POLYGON)
-            addressUiState = getString(EXTRA_ADDRESS_STATE).toAddressUiState()
-            currentLat = getDouble(EXTRA_LAT, DEFAULT_LAT)
-            currentLong = getDouble(EXTRA_LONG, DEFAULT_LONG)
-            source = getString(PARAM_SOURCE, "")
-            getParcelable<SaveAddressDataModel>(EXTRA_SAVE_DATA_UI_MODEL)?.apply {
-                saveAddressDataModel = this
-            }
-            getString(EXTRA_REF)?.takeIf { addressUiState.isAdd() }?.let { from ->
-                AddNewAddressRevampAnalytics.sendScreenName(from)
-            }
-        }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        checkGms()
+        initView()
+        showInitialLoadMessage()
+        setSearchView()
+        setViewListener()
+        initObserver()
+        setOnBackPressed()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -196,85 +221,6 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
         outState.putDouble(EXTRA_LAT, currentLat)
         outState.putDouble(EXTRA_LONG, currentLong)
         super.onSaveInstanceState(outState)
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        checkGms()
-        initView()
-        showInitialLoadMessage()
-        setSearchView()
-        setViewListener()
-        initObserver()
-        setOnBackPressed()
-    }
-
-    private fun checkGms() {
-        context?.let {
-            val gmsAvailable = MapsAvailabilityHelper.isMapsAvailable(it)
-            isGmsAvailable = gmsAvailable
-            if (!gmsAvailable) {
-                goToAddressForm()
-            }
-        }
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (resultCode == Activity.RESULT_OK) {
-            when (requestCode) {
-                REQUEST_PINPOINT_PAGE -> {
-                    onResultFromPinpoint(data)
-                }
-
-                REQUEST_ADDRESS_FORM_PAGE -> {
-                    onResultFromAddressForm(data)
-                }
-            }
-        } else {
-            showInitialLoadMessage()
-            if (requestCode == REQUEST_ADDRESS_FORM_PAGE && !isGmsAvailable) {
-                activity?.finish()
-            }
-        }
-    }
-
-    private fun onResultFromPinpoint(data: Intent?) {
-        val isFromAddressForm = data?.getBooleanExtra(EXTRA_FROM_ADDRESS_FORM, false)
-        var newAddress =
-            data?.getParcelableExtra<SaveAddressDataModel>(LogisticConstant.EXTRA_ADDRESS_NEW)
-        if (newAddress == null) {
-            newAddress = data?.getParcelableExtra(EXTRA_SAVE_DATA_UI_MODEL)
-        }
-        if (isFromAddressForm != null && newAddress != null) {
-            finishActivity(newAddress, isFromAddressForm)
-        }
-    }
-
-    private fun onResultFromAddressForm(data: Intent?) {
-        val newAddress =
-            data?.getParcelableExtra<SaveAddressDataModel>(LogisticConstant.EXTRA_ADDRESS_NEW)
-        newAddress?.let { finishActivity(it, false) }
-    }
-
-    private fun onResultFromGpsRequest() {
-        bottomSheetLocUndefined?.dismiss()
-        if (allPermissionsGranted()) {
-            binding?.loaderCurrentLocation?.visibility = View.VISIBLE
-            Handler().postDelayed({ getLocation() }, GPS_DELAY)
-        }
-    }
-
-    private fun finishActivity(data: SaveAddressDataModel?, isFromAddressForm: Boolean) {
-        activity?.run {
-            setResult(
-                Activity.RESULT_OK,
-                Intent().apply {
-                    putExtra(LogisticConstant.EXTRA_ADDRESS_NEW, data)
-                    putExtra(EXTRA_FROM_ADDRESS_FORM, isFromAddressForm)
-                }
-            )
-            finish()
-        }
     }
 
     override fun onRequestPermissionsResult(
@@ -338,6 +284,116 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
         stopLocationUpdate()
     }
 
+    override fun onItemClicked(placeId: String) {
+        when (addressUiState) {
+            AddressUiState.AddAddress -> AddNewAddressRevampAnalytics.onClickDropdownSuggestion(userSession.userId)
+            AddressUiState.EditAddress -> EditAddressRevampAnalytics.onClickDropdownSuggestionAlamat(userSession.userId)
+            else -> {
+                // no op
+            }
+        }
+
+        isPolygon = false
+        if (!isPositiveFlow && isFromPinpoint) {
+            goToPinpointPage(
+                placeId,
+                null,
+                null,
+                isFromAddressForm = true,
+                isPositiveFlow = false
+            )
+        } else {
+            goToPinpointPage(placeId, null, null, isFromAddressForm = false, isPositiveFlow = true)
+        }
+    }
+
+    private fun setOnBackPressed() {
+        activity?.onBackPressedDispatcher?.addCallback(
+            viewLifecycleOwner,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    hitAnalyticOnBackPress()
+                    activity?.finish()
+                }
+            }
+        )
+    }
+
+    private fun hitAnalyticOnBackPress() {
+        when (addressUiState) {
+            AddressUiState.AddAddress -> AddNewAddressRevampAnalytics.onClickBackArrowSearch(userSession.userId)
+            AddressUiState.EditAddress -> EditAddressRevampAnalytics.onClickBackArrowSearch(userSession.userId)
+            else -> {
+                // no op
+            }
+        }
+    }
+
+    private fun initDataFromArguments() {
+        arguments?.apply {
+            isPositiveFlow = getBoolean(EXTRA_IS_POSITIVE_FLOW)
+            isFromPinpoint = getBoolean(EXTRA_FROM_PINPOINT)
+            isPolygon = getBoolean(EXTRA_IS_POLYGON)
+            addressUiState = getString(EXTRA_ADDRESS_STATE).toAddressUiState()
+            currentLat = getDouble(EXTRA_LAT, DEFAULT_LAT)
+            currentLong = getDouble(EXTRA_LONG, DEFAULT_LONG)
+            source = getString(PARAM_SOURCE, "")
+            getParcelable<SaveAddressDataModel>(EXTRA_SAVE_DATA_UI_MODEL)?.apply {
+                saveAddressDataModel = this
+            }
+            getString(EXTRA_REF)?.takeIf { addressUiState.isAdd() }?.let { from ->
+                AddNewAddressRevampAnalytics.sendScreenName(from)
+            }
+        }
+    }
+
+    private fun checkGms() {
+        context?.let {
+            val gmsAvailable = MapsAvailabilityHelper.isMapsAvailable(it)
+            isGmsAvailable = gmsAvailable
+            if (!gmsAvailable) {
+                goToAddressForm()
+            }
+        }
+    }
+
+    private fun onResultFromPinpoint(data: Intent?) {
+        val isFromAddressForm = data?.getBooleanExtra(EXTRA_FROM_ADDRESS_FORM, false)
+        val newAddress =
+            data?.getParcelableExtra<SaveAddressDataModel>(LogisticConstant.EXTRA_ADDRESS_NEW)
+                ?: data?.getParcelableExtra(EXTRA_SAVE_DATA_UI_MODEL)
+        if (isFromAddressForm != null && newAddress != null) {
+            finishActivity(newAddress, isFromAddressForm)
+        }
+    }
+
+    private fun onResultFromAddressForm(data: Intent?) {
+        val newAddress =
+            data?.getParcelableExtra<SaveAddressDataModel>(LogisticConstant.EXTRA_ADDRESS_NEW)
+        newAddress?.let { finishActivity(it, false) }
+    }
+
+    private fun onResultFromGpsRequest() {
+        bottomSheetLocUndefined?.dismiss()
+        if (allPermissionsGranted()) {
+            binding?.loaderCurrentLocation?.visibility = View.VISIBLE
+            Handler().postDelayed({ getLocation() }, GPS_DELAY)
+        }
+    }
+
+    private fun finishActivity(data: SaveAddressDataModel?, isFromAddressForm: Boolean) {
+        activity?.run {
+            setResult(
+                Activity.RESULT_OK,
+                Intent().apply {
+                    putExtra(LogisticConstant.EXTRA_ADDRESS_NEW, data)
+                    putExtra(EXTRA_FROM_ADDRESS_FORM, isFromAddressForm)
+                }
+            )
+            finish()
+        }
+    }
+
     private fun stopLocationUpdate() {
         fusedLocationClient?.removeLocationUpdates(locationCallback)
     }
@@ -380,7 +436,7 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
             putExtra(EXTRA_ADDRESS_STATE, addressUiState.name)
             putExtra(EXTRA_GMS_AVAILABILITY, isGmsAvailable)
         }
-        startActivityForResult(intent, REQUEST_ADDRESS_FORM_PAGE)
+        addressFormContract.launch(intent)
     }
 
     private fun setSearchView() {
@@ -441,31 +497,36 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
 
     private fun setViewListener() {
         fusedLocationClient = FusedLocationProviderClient(requireActivity())
-        binding?.rlSearchCurrentLocation?.setOnClickListener {
-            when (addressUiState) {
-                AddressUiState.AddAddress -> AddNewAddressRevampAnalytics.onClickGunakanLokasiSaatIniSearch(userSession.userId)
-                AddressUiState.EditAddress -> EditAddressRevampAnalytics.onClickGunakanLokasiSaatIniSearch(userSession.userId)
-                else -> {
-                    // no op
-                }
+        binding?.tvSearchCurrentLocation?.setOnClickListener {
+            doGetCurrentLocation()
+        }
+        binding?.ivSearchCurrentLocation?.setOnClickListener { doGetCurrentLocation() }
+    }
+
+    private fun doGetCurrentLocation() {
+        when (addressUiState) {
+            AddressUiState.AddAddress -> AddNewAddressRevampAnalytics.onClickGunakanLokasiSaatIniSearch(userSession.userId)
+            AddressUiState.EditAddress -> EditAddressRevampAnalytics.onClickGunakanLokasiSaatIniSearch(userSession.userId)
+            else -> {
+                // no op
             }
+        }
 
-            if (allPermissionsGranted()) {
-                permissionState = PERMISSION_GRANTED
-                if (AddNewAddressUtils.isGpsEnabled(context)) {
-                    getLocation()
-                } else {
-                    showBottomSheetLocUndefined(false)
-                }
+        if (allPermissionsGranted()) {
+            permissionState = PERMISSION_GRANTED
+            if (AddNewAddressUtils.isGpsEnabled(context)) {
+                getLocation()
             } else {
-                when (permissionState) {
-                    PERMISSION_DENIED, PERMISSION_NOT_DEFINED -> {
-                        requestPermissionLocation()
-                    }
+                showBottomSheetLocUndefined(false)
+            }
+        } else {
+            when (permissionState) {
+                PERMISSION_DENIED, PERMISSION_NOT_DEFINED -> {
+                    requestPermissionLocation()
+                }
 
-                    PERMISSION_DONT_ASK_AGAIN -> {
-                        showBottomSheetLocUndefined(true)
-                    }
+                PERMISSION_DONT_ASK_AGAIN -> {
+                    showBottomSheetLocUndefined(true)
                 }
             }
         }
@@ -674,29 +735,6 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
             }
         }
 
-    override fun onItemClicked(placeId: String) {
-        when (addressUiState) {
-            AddressUiState.AddAddress -> AddNewAddressRevampAnalytics.onClickDropdownSuggestion(userSession.userId)
-            AddressUiState.EditAddress -> EditAddressRevampAnalytics.onClickDropdownSuggestionAlamat(userSession.userId)
-            else -> {
-                // no op
-            }
-        }
-
-        isPolygon = false
-        if (!isPositiveFlow && isFromPinpoint) {
-            goToPinpointPage(
-                placeId,
-                null,
-                null,
-                isFromAddressForm = true,
-                isPositiveFlow = false
-            )
-        } else {
-            goToPinpointPage(placeId, null, null, isFromAddressForm = false, isPositiveFlow = true)
-        }
-    }
-
     private fun goToPinpointPage(
         placeId: String?,
         latitude: Double?,
@@ -715,14 +753,13 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
         bundle.putString(EXTRA_ADDRESS_STATE, addressUiState.name)
         bundle.putBoolean(EXTRA_GMS_AVAILABILITY, isGmsAvailable)
         if (addressUiState.isAdd()) {
-            startActivityForResult(
+            pinpointPageContract.launch(
                 context?.let {
                     PinpointNewPageActivity.createIntent(
                         it,
                         bundle
                     )
-                },
-                REQUEST_PINPOINT_PAGE
+                }
             )
         } else {
             activity?.run {
@@ -739,42 +776,6 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
                     }
                 )
                 finish()
-            }
-        }
-    }
-
-    companion object {
-        private const val RESULT_PERMISSION_CODE = 1234
-
-        private const val REQUEST_ADDRESS_FORM_PAGE = 1599
-        private const val REQUEST_PINPOINT_PAGE = 1998
-        private const val REQUEST_CODE_PERMISSION = 9876
-
-        private const val LOCATION_REQUEST_INTERVAL = 10000L
-        private const val LOCATION_REQUEST_FASTEST_INTERVAL = 2000L
-        private const val GPS_DELAY = 1000L
-
-        private const val DEFAULT_LONG = 0.0
-        private const val DEFAULT_LAT = 0.0
-
-        fun newInstance(bundle: Bundle): SearchPageFragment {
-            return SearchPageFragment().apply {
-                arguments = Bundle().apply {
-                    putParcelable(
-                        EXTRA_SAVE_DATA_UI_MODEL,
-                        bundle.getParcelable(EXTRA_SAVE_DATA_UI_MODEL)
-                    )
-                    putBoolean(EXTRA_IS_POSITIVE_FLOW, bundle.getBoolean(EXTRA_IS_POSITIVE_FLOW))
-                    putBoolean(EXTRA_FROM_PINPOINT, bundle.getBoolean(EXTRA_FROM_PINPOINT))
-                    putBoolean(EXTRA_IS_POLYGON, bundle.getBoolean(EXTRA_IS_POLYGON))
-                    putString(EXTRA_ADDRESS_STATE, bundle.getString(EXTRA_ADDRESS_STATE, AddressUiState.AddAddress.name))
-                    putString(PARAM_SOURCE, bundle.getString(PARAM_SOURCE, ""))
-                    putString(EXTRA_REF, bundle.getString(EXTRA_REF, ""))
-                    putBoolean(
-                        EXTRA_IS_GET_PINPOINT_ONLY,
-                        bundle.getBoolean(EXTRA_IS_GET_PINPOINT_ONLY)
-                    )
-                }
             }
         }
     }
