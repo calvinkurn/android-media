@@ -39,6 +39,7 @@ import com.tokopedia.gm.common.utils.CoachMarkPrefHelper
 import com.tokopedia.imageassets.TokopediaImageUrl
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.EMPTY
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
@@ -1933,17 +1934,18 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         val isOfficialStore = userSession.isShopOfficialStore
         val isPowerMerchant = userSession.isPowerMerchantIdle || userSession.isGoldMerchant
         when {
-            isOfficialStore -> {
-                showHomeBackground(R.drawable.sah_shop_state_bg_official_store)
-            }
-
-            isPowerMerchant -> {
-                showHomeBackground(R.drawable.sah_shop_state_bg_power_merchant)
-            }
-
-            else -> {
-                showHomeBackground(R.drawable.sah_shop_state_bg_regular_merchant)
-            }
+            isOfficialStore -> showHomeBackground(
+                backgroundResource = R.drawable.sah_shop_state_bg_official_store,
+                effectUrl = TokopediaImageUrl.IMG_14TH_ANNIV_HOME_OS
+            )
+            isPowerMerchant -> showHomeBackground(
+                backgroundResource = R.drawable.sah_shop_state_bg_power_merchant,
+                effectUrl = TokopediaImageUrl.IMG_14TH_ANNIV_HOME_PM
+            )
+            else -> showHomeBackground(
+                backgroundResource = R.drawable.sah_shop_state_bg_regular_merchant,
+                effectUrl = TokopediaImageUrl.IMG_14TH_ANNIV_HOME_RM
+            )
         }
         show14thIllustration()
     }
@@ -1953,13 +1955,21 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         binding?.imgSahNewSellerRight?.loadImage(TokopediaImageUrl.IMG_14TH_ANNIV)
     }
 
-    private fun showHomeBackground(backgroundResource: Int) {
+    private fun showHomeBackground(
+        backgroundResource: Int,
+        effectUrl: String
+    ) {
         binding?.run {
             val height = requireActivity().resources.getDimensionPixelSize(R.dimen.sah_dimen_280dp)
             viewBgShopStatus.layoutParams.height = height
             viewBgShopStatus.visible()
             viewBgShopStatus.setImageResource(backgroundResource)
             viewBgShopStatus.requestLayout()
+
+            imgBackgroundEffect.loadImage(effectUrl) {
+                setPlaceHolder(Int.ONE.inv())
+                setErrorDrawable(Int.ZERO)
+            }
         }
     }
 
