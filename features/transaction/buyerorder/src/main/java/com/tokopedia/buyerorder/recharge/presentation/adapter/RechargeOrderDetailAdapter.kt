@@ -2,11 +2,12 @@ package com.tokopedia.buyerorder.recharge.presentation.adapter
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.buyerorder.R
 import com.tokopedia.buyerorder.recharge.presentation.model.*
 import com.tokopedia.digital.digital_recommendation.domain.DigitalRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
+import com.tokopedia.url.Env
+import com.tokopedia.url.TokopediaUrl
 
 /**
  * @author by furqan on 01/11/2021
@@ -84,7 +85,7 @@ class RechargeOrderDetailAdapter(typeFactory: RechargeOrderDetailTypeFactory) :
                 titleRes = R.string.recharge_order_detail_sbm_label,
                 subtitle = "",
                 subtitleRes = R.string.recharge_order_detail_sbm_detail,
-                actionUrl = ApplinkConst.DIGITAL_SMARTBILLS
+                actionUrl = getBayarSekaligusUrl()
         ))
         addDivider()
     }
@@ -97,7 +98,7 @@ class RechargeOrderDetailAdapter(typeFactory: RechargeOrderDetailTypeFactory) :
                 titleRes = R.string.recharge_order_detail_mybills_label,
                 subtitle = "",
                 subtitleRes = R.string.recharge_order_detail_mybills_detail,
-                actionUrl = ACTION_URL_LANGGANAN
+                actionUrl = getLanggananUrl()
         ))
         addDivider()
     }
@@ -143,8 +144,30 @@ class RechargeOrderDetailAdapter(typeFactory: RechargeOrderDetailTypeFactory) :
                 false
             }
 
-    companion object {
-        private const val ACTION_URL_LANGGANAN = "tokopedia://webview?titlebar=false&url=https://m.tokopedia.com/langganan"
+    private fun getLanggananUrl(): String {
+        return if (TokopediaUrl.getInstance().TYPE == Env.STAGING) {
+            ACTION_URL_LANGGANAN_STAGING
+        } else {
+            ACTION_URL_LANGGANAN
+        }
     }
 
+    private fun getBayarSekaligusUrl(): String {
+        return if (TokopediaUrl.getInstance().TYPE == Env.STAGING) {
+            ACTION_URL_BAYAR_SEKALIGUS_STAGING
+        } else {
+            ACTION_URL_BAYAR_SEKALIGUS
+        }
+    }
+
+    companion object {
+        private const val ACTION_URL_LANGGANAN =
+            "tokopedia://webview?titlebar=false&url=https://www.tokopedia.com/mybills/?show=subscription"
+        private const val ACTION_URL_LANGGANAN_STAGING =
+            "tokopedia://webview?titlebar=false&url=https://staging.tokopedia.com/mybills/?show=subscription"
+        private const val ACTION_URL_BAYAR_SEKALIGUS =
+            "tokopedia://webview?titlebar=false&url=https://www.tokopedia.com/mybills/?show=bills"
+        private const val ACTION_URL_BAYAR_SEKALIGUS_STAGING =
+            "tokopedia://webview?titlebar=false&url=https://staging.tokopedia.com/mybills/?show=bills"
+    }
 }

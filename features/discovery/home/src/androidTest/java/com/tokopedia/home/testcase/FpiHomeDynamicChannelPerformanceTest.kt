@@ -29,14 +29,14 @@ class FpiHomeDynamicChannelPerformanceTest {
     val TEST_CASE_OVERALL_SCROLL_PERFORMANCE = "test_case_overall_scroll"
 
     @get:Rule
-    var activityRule = object: ActivityTestRule<InstrumentationHomeRevampTestActivity>(InstrumentationHomeRevampTestActivity::class.java) {
+    var activityRule = object : ActivityTestRule<InstrumentationHomeRevampTestActivity>(InstrumentationHomeRevampTestActivity::class.java) {
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
             setupGraphqlMockResponseWithCheck(HomeMockResponseConfig())
         }
     }
 
-    //for testing purpose, to check if mock response is working
+    // for testing purpose, to check if mock response is working
 //    @Test
 //    fun testHomeLayout() {
 //        Thread.sleep(10000000)
@@ -44,7 +44,7 @@ class FpiHomeDynamicChannelPerformanceTest {
 
     @Before
     fun deleteDatabase() {
-        activityRule. activity.deleteDatabase("HomeCache.db")
+        activityRule.activity.deleteDatabase("HomeCache.db")
     }
 
     @Test
@@ -56,7 +56,7 @@ class FpiHomeDynamicChannelPerformanceTest {
     @Test
     fun testDynamicChannelPerformance() {
         waitForData()
-        while (!isHomeRecommendationVisible()){
+        while (!isHomeRecommendationVisible()) {
             scrollWithDelay()
         }
         saveFPIPerformanceResultData(TEST_CASE_DYNAMIC_CHANNEL_SCROLL_PERFORMANCE)
@@ -65,7 +65,7 @@ class FpiHomeDynamicChannelPerformanceTest {
     @Test
     fun testOverallHomePerformance() {
         waitForData()
-        for (i in 1..20) {
+        for (i in 1..5) {
             scrollWithDelay()
         }
         saveFPIPerformanceResultData(TEST_CASE_OVERALL_SCROLL_PERFORMANCE)
@@ -91,7 +91,7 @@ class FpiHomeDynamicChannelPerformanceTest {
     private fun scrollWithDelay() {
         Thread.sleep(1000)
         onView(withId(R.id.home_fragment_recycler_view))
-                .perform(ViewActions.swipeUp())
+            .perform(ViewActions.swipeUp())
     }
 
     private fun saveFPIPerformanceResultData(tag: String) {

@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.view.View
 import androidx.appcompat.widget.AppCompatImageView
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -64,6 +65,11 @@ class DealsHomeFragment : DealsBaseFragment(),
     @Inject
     lateinit var analytics: DealsAnalytics
     override fun onCreate(savedInstanceState: Bundle?) {
+        childFragmentManager.addFragmentOnAttachListener { _, fragment ->
+            if (fragment is DealsCategoryBottomSheet) {
+                fragment.setListener(this)
+            }
+        }
         super.onCreate(savedInstanceState)
         initViewModel()
         localCacheHandler = LocalCacheHandler(context, PREFERENCES_NAME)
@@ -259,9 +265,9 @@ class DealsHomeFragment : DealsBaseFragment(),
 
     override fun onDealsCategorySeeAllClicked(categories: List<DealsCategoryDataView>) {
         analytics.eventClickViewAllProductCardInHomepage()
-        val categoriesBottomSheet = DealsCategoryBottomSheet(this)
-        categoriesBottomSheet.showDealsCategories(categories)
-        categoriesBottomSheet.show(requireFragmentManager(), "")
+        val categoriesBottomSheet = DealsCategoryBottomSheet.newInstance(ArrayList(categories))
+        categoriesBottomSheet.setListener(this)
+        categoriesBottomSheet.show(childFragmentManager, "")
     }
 
     /* BRAND SECTION ACTION */
