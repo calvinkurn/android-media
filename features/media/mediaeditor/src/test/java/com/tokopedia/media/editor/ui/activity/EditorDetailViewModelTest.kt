@@ -642,7 +642,7 @@ class EditorDetailViewModelTest {
     fun `check crop is success`() {
         // Given
         val source = ShadowBitmapFactory.create("", BitmapFactory.Options())
-        var resultSource = source
+        var resultSource: Bitmap? = null
         val cropRotateData = EditorCropRotateUiModel(
             offsetX = 10,
             offsetY = 20,
@@ -651,11 +651,11 @@ class EditorDetailViewModelTest {
         )
 
         // When
-        every { bitmapCreationRepository.createBitmap(any()) } returns null
+        every { bitmapCreationRepository.createBitmap(any()) } returns source
         resultSource = viewModel.cropImage(source, cropRotateData)
 
         // Then
-        assertNull(resultSource)
+        assertNotNull(resultSource)
     }
 
     companion object {

@@ -1,5 +1,6 @@
 package com.tokopedia.media.editor.ui.activity
 
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import com.tokopedia.media.editor.data.repository.SaveImageRepository
 import com.tokopedia.media.editor.ui.activity.main.EditorViewModel
@@ -358,7 +359,7 @@ class EditorViewModelTest {
     fun `check crop is success`() {
         // Given
         val source = ShadowBitmapFactory.create("", BitmapFactory.Options())
-        var resultSource = source
+        var resultSource: Bitmap? = null
         val cropRotateData = EditorCropRotateUiModel(
             offsetX = 10,
             offsetY = 20,
@@ -367,11 +368,11 @@ class EditorViewModelTest {
         )
 
         // When
-        every { bitmapCreationRepository.createBitmap(any()) } returns null
+        every { bitmapCreationRepository.createBitmap(any()) } returns source
         resultSource = viewModel.cropImage(source, cropRotateData)
 
         // Then
-        assertNull(resultSource)
+        assertNotNull(resultSource)
     }
 
     private fun createUiModelState(excludeIndex: Int, cameraIndex: Int): List<EditorUiModel> {
