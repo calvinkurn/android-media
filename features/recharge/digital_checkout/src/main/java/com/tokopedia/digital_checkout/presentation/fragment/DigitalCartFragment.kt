@@ -78,8 +78,6 @@ import com.tokopedia.promocheckout.common.view.model.PromoData
 import com.tokopedia.promocheckout.common.view.uimodel.PromoDigitalModel
 import com.tokopedia.promocheckout.common.view.widget.ButtonPromoCheckoutView
 import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
 import com.tokopedia.unifycomponents.Toaster.build
@@ -126,9 +124,6 @@ class DigitalCartFragment :
 
     private val viewModel by viewModels<DigitalCartViewModel> { viewModelFactory }
     private val addToCartViewModel by viewModels<DigitalAddToCartViewModel> { viewModelFactory }
-    private val remoteConfig: RemoteConfig by lazy(LazyThreadSafetyMode.NONE) {
-        FirebaseRemoteConfigImpl(context)
-    }
     private var binding by autoClearedNullable<FragmentDigitalCheckoutPageBinding>()
 
     private var cartPassData: DigitalCheckoutPassData? = null

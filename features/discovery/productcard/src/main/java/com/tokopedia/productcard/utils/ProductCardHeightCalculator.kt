@@ -485,15 +485,25 @@ private fun ProductCardModel.getPdpViewCountSectionHeight(context: Context): Int
 
 private fun ProductCardModel.getStockBarAndLabelSectionHeight(context: Context): Int {
     return if (isStockBarShown()) {
-        val stockBarMarginTop = context.resources.getDimensionPixelSize(R.dimen.product_card_flashsale_progressbar_margintop)
-        val stockBarHeight = context.resources.getDimensionPixelSize(R.dimen.product_card_flashsale_progressbar_height)
-
-        val labelHeight = context.resources.getDimensionPixelSize(R.dimen.product_card_flashsale_label_height)
-        val labelMarginTop = context.resources.getDimensionPixelSize(R.dimen.product_card_flashsale_label_margintop)
-
-        return stockBarMarginTop + stockBarHeight +  labelHeight + labelMarginTop
+        return if (isTopStockBar)
+            context.resources.getDimensionPixelSize(R.dimen.product_card_top_stock_bar_background_height)
+        else getBottomStockBarSectionHeight(context)
     }
     else 0
+}
+
+private fun getBottomStockBarSectionHeight(context: Context): Int {
+    val stockBarMarginTop =
+        context.resources.getDimensionPixelSize(R.dimen.product_card_flashsale_progressbar_margintop)
+    val stockBarHeight =
+        context.resources.getDimensionPixelSize(R.dimen.product_card_flashsale_progressbar_height)
+
+    val labelHeight =
+        context.resources.getDimensionPixelSize(R.dimen.product_card_flashsale_label_height)
+    val labelMarginTop =
+        context.resources.getDimensionPixelSize(R.dimen.product_card_flashsale_label_margintop)
+
+    return stockBarMarginTop + stockBarHeight + labelHeight + labelMarginTop
 }
 
 private fun ProductCardModel.getButtonSimilarProductHeight(context: Context): Int {

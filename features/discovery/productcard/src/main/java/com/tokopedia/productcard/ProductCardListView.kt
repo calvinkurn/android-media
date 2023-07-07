@@ -4,6 +4,8 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewGroup.LayoutParams.MATCH_PARENT
+import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.Space
@@ -28,16 +30,19 @@ import com.tokopedia.productcard.utils.renderStockBar
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.remoteconfig.RemoteConfigKey.PRODUCT_CARD_ENABLE_INTERACTION
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.ProgressBarUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.CardUnify2
+import com.tokopedia.unifycomponents.CardUnify2.Companion.ANIMATE_OVERLAY
+import com.tokopedia.unifycomponents.CardUnify2.Companion.ANIMATE_OVERLAY_BOUNCE
 import com.tokopedia.video_widget.VideoPlayerController
 import com.tokopedia.unifyprinciples.Typography
 import kotlin.LazyThreadSafetyMode.NONE
 
-class ProductCardListView: BaseCustomView, IProductCardView {
+class ProductCardListView: ConstraintLayout, IProductCardView {
 
     private val cartExtension = ProductCardCartExtension(this)
     private val video: VideoPlayerController by lazy{
@@ -144,23 +149,27 @@ class ProductCardListView: BaseCustomView, IProductCardView {
     }
 
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
-        initWithAttrs(attrs)
+        init(attrs)
     }
 
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
-        initWithAttrs(attrs)
+        init(attrs)
     }
 
-    private fun init() {
+    private fun init(attrs: AttributeSet? = null) {
+        layoutParams = LayoutParams(MATCH_PARENT, WRAP_CONTENT)
+
+        initAttributes(attrs)
+
         View.inflate(context, R.layout.product_card_list_layout, this)
 
-        val footerView = View.inflate(context, R.layout.product_card_footer_layout, null)
-        footerView.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
-
+        val footerView = createFooterView()
         productCardFooterLayoutContainer?.addView(footerView)
     }
 
-    private fun initWithAttrs(attrs: AttributeSet?){
+    private fun initAttributes(attrs: AttributeSet?){
+        attrs ?: return
+
         val typedArray = context.obtainStyledAttributes(attrs, R.styleable.ProductCardView, 0, 0)
 
         try {
@@ -168,21 +177,28 @@ class ProductCardListView: BaseCustomView, IProductCardView {
         } finally {
             typedArray.recycle()
         }
-
-        View.inflate(context, R.layout.product_card_list_layout, this)
-
-        val footerView = 
-            if (isUsingViewStub)
-                View.inflate(context, R.layout.product_card_footer_with_viewstub_layout, null)
-            else
-                View.inflate(context, R.layout.product_card_footer_layout, null)
-
-        footerView.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
-
-        productCardFooterLayoutContainer?.addView(footerView)
     }
 
+    private fun createFooterView(): View = inflateFooterView().apply {
+        layoutParams = LayoutParams(MATCH_PARENT, LayoutParams.WRAP_CONTENT)
+    }
+
+    private fun inflateFooterView(): View =
+        if (isUsingViewStub)
+            inflate(context, R.layout.product_card_footer_with_viewstub_layout, null)
+        else
+            inflate(context, R.layout.product_card_footer_layout, null)
+
     override fun setProductModel(productCardModel: ProductCardModel) {
+        productCardModel.layoutStrategy.renderProductCardShadow(
+            productCardModel,
+            this,
+            cardViewProductCard,
+            false,
+        )
+
+        renderProductCardRibbon(productCardModel, false)
+
         imageProduct?.loadImageRounded(productCardModel.productImageUrl)
 
         val isShowCampaign = productCardModel.isShowLabelCampaign()
@@ -236,10 +252,7 @@ class ProductCardListView: BaseCustomView, IProductCardView {
         cartExtension.setProductModel(productCardModel)
         video.setVideoURL(productCardModel.customVideoURL)
 
-        cardViewProductCard?.animateOnPress = if(remoteConfig.getBoolean(RemoteConfigKey.PRODUCT_CARD_ENABLE_INTERACTION, true)
-            && productCardModel.cardInteraction){
-                CardUnify2.ANIMATE_OVERLAY_BOUNCE
-        } else CardUnify2.ANIMATE_OVERLAY
+        cardViewProductCard?.animateOnPress = cardViewAnimationOnPress(productCardModel)
 
         constraintLayoutProductCard?.post {
             imageThreeDots?.expandTouchArea(
@@ -249,6 +262,14 @@ class ProductCardListView: BaseCustomView, IProductCardView {
                 getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16)
             )
         }
+    }
+
+    private fun cardViewAnimationOnPress(productCardModel: ProductCardModel): Int {
+        val isOverlayBounce =
+            remoteConfig.getBoolean(PRODUCT_CARD_ENABLE_INTERACTION, true)
+                && productCardModel.cardInteraction
+
+        return if (isOverlayBounce) ANIMATE_OVERLAY_BOUNCE else ANIMATE_OVERLAY
     }
 
     fun setImageProductViewHintListener(impressHolder: ImpressHolder, viewHintListener: ViewHintListener) {
@@ -310,7 +331,7 @@ class ProductCardListView: BaseCustomView, IProductCardView {
 
     private fun setCardHeightMatchParent() {
         val layoutParams = cardViewProductCard?.layoutParams
-        layoutParams?.height = ViewGroup.LayoutParams.MATCH_PARENT
+        layoutParams?.height = MATCH_PARENT
         cardViewProductCard?.layoutParams = layoutParams
     }
 

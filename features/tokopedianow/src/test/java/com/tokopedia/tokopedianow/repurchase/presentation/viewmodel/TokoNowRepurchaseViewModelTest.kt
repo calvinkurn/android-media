@@ -15,6 +15,7 @@ import com.tokopedia.tokopedianow.common.domain.model.RepurchaseProduct
 import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference
 import com.tokopedia.tokopedianow.common.domain.model.WarehouseData
 import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateNoResultUiModel
+import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
 import com.tokopedia.tokopedianow.data.createCategoryGridLayout
 import com.tokopedia.tokopedianow.data.createChooseAddress
 import com.tokopedia.tokopedianow.data.createChooseAddressLayout
@@ -38,12 +39,15 @@ import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseEmpt
 import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseLayoutUiModel
 import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseSortFilterUiModel.SelectedDateFilter
 import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseSortFilterUiModel.SelectedSortFilter
+import com.tokopedia.tokopedianow.util.AddressMapperTestUtils
+import com.tokopedia.tokopedianow.util.AddressMapperTestUtils.mapToWarehousesData
 import com.tokopedia.tokopedianow.util.TestUtils.mockPrivateField
 import com.tokopedia.unit.test.ext.verifyErrorEquals
 import com.tokopedia.unit.test.ext.verifySuccessEquals
 import com.tokopedia.unit.test.ext.verifyValueEquals
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Assert.assertEquals
 import org.junit.Test
@@ -161,6 +165,29 @@ class TokoNowRepurchaseViewModelTest : TokoNowRepurchaseViewModelTestFixture() {
     @Test
     fun `when getting category list layout should run and give the success result`() {
         val warehouseId = "1"
+        val localCacheModel = LocalCacheModel(warehouse_id = warehouseId)
+        val warehouses = mapToWarehousesData(localCacheModel)
+
+        addressData = TokoNowLocalAddress(mockk(relaxed = true))
+
+        addressData.mockPrivateField("localAddressData", LocalCacheModel(warehouse_id = warehouseId))
+
+        viewModel = TokoNowRepurchaseViewModel(
+            getRepurchaseProductListUseCase,
+            getMiniCartUseCase,
+            getCategoryListUseCase,
+            getChooseAddressWarehouseLocUseCase,
+            setUserPreferenceUseCase,
+            userSession,
+            addToCartUseCase,
+            updateCartUseCase,
+            deleteCartUseCase,
+            affiliateService,
+            getTargetedTicker,
+            addressData,
+            coroutineTestRule.dispatchers
+        )
+
         val response = CategoryListResponse(
             header = Header(),
             data = listOf(
@@ -191,7 +218,7 @@ class TokoNowRepurchaseViewModelTest : TokoNowRepurchaseViewModelTestFixture() {
 
         onGetCategoryList_thenReturn(response)
 
-        privateLocalCacheModel.set(viewModel, LocalCacheModel(warehouse_id = warehouseId))
+        privateLocalCacheModel.set(viewModel, localCacheModel)
 
         viewModel.showEmptyState(EMPTY_STATE_NO_RESULT)
 
@@ -200,23 +227,44 @@ class TokoNowRepurchaseViewModelTest : TokoNowRepurchaseViewModelTestFixture() {
             state = TokoNowLayoutState.SHOW
         )
 
-        verifyGetCategoryListUseCaseCalled()
+        verifyGetCategoryListUseCaseCalled(warehouses = warehouses)
         verifyGetCategoryGridLayoutSuccess(layout)
     }
 
     @Test
     fun `when getting category list layout and map the data with different data should give the success result with mapped data`() {
         val warehouseId = "1"
+
+        addressData = TokoNowLocalAddress(mockk(relaxed = true))
+
+        addressData.mockPrivateField("localAddressData", LocalCacheModel(warehouse_id = warehouseId))
+
+        viewModel = TokoNowRepurchaseViewModel(
+            getRepurchaseProductListUseCase,
+            getMiniCartUseCase,
+            getCategoryListUseCase,
+            getChooseAddressWarehouseLocUseCase,
+            setUserPreferenceUseCase,
+            userSession,
+            addToCartUseCase,
+            updateCartUseCase,
+            deleteCartUseCase,
+            affiliateService,
+            getTargetedTicker,
+            addressData,
+            coroutineTestRule.dispatchers
+        )
+
         var response = CategoryListResponse(
             header = Header(),
             data = listOf()
         )
+        val localCacheModel = LocalCacheModel(warehouse_id = warehouseId)
+        val warehouses = mapToWarehousesData(localCacheModel)
 
         onGetCategoryList_thenReturn(response)
 
         viewModel.showEmptyState(EMPTY_STATE_NO_RESULT)
-
-        privateLocalCacheModel.set(viewModel, LocalCacheModel(warehouse_id = warehouseId))
 
         response = CategoryListResponse(
             header = Header(),
@@ -255,13 +303,19 @@ class TokoNowRepurchaseViewModelTest : TokoNowRepurchaseViewModelTestFixture() {
             state = TokoNowLayoutState.SHOW
         )
 
-        verifyGetCategoryListUseCaseCalled()
+        verifyGetCategoryListUseCaseCalled(
+            warehouses = warehouses,
+            times = 2
+        )
         verifyGetCategoryGridLayoutSuccess(layout)
     }
 
     @Test
     fun `when getting category list layout and map the data with empty list should give the success result with empty list`() {
         val warehouseId = "1"
+        val localCacheModel = LocalCacheModel(warehouse_id = warehouseId)
+        val warehouses = mapToWarehousesData(localCacheModel)
+
         val response = CategoryListResponse(
             header = Header(),
             data = listOf(
@@ -294,7 +348,7 @@ class TokoNowRepurchaseViewModelTest : TokoNowRepurchaseViewModelTestFixture() {
 
         viewModel.showEmptyState(EMPTY_STATE_NO_RESULT)
 
-        privateLocalCacheModel.set(viewModel, LocalCacheModel(warehouse_id = warehouseId))
+        privateLocalCacheModel.set(viewModel, localCacheModel)
 
         onGetCategoryList_thenReturn(Throwable())
 
@@ -311,7 +365,10 @@ class TokoNowRepurchaseViewModelTest : TokoNowRepurchaseViewModelTestFixture() {
             state = TokoNowLayoutState.SHOW
         )
 
-        verifyGetCategoryListUseCaseCalled()
+        verifyGetCategoryListUseCaseCalled(
+            warehouses = warehouses,
+            times = 2
+        )
         verifyGetCategoryGridLayoutSuccess(layout)
     }
 
@@ -1011,12 +1068,33 @@ class TokoNowRepurchaseViewModelTest : TokoNowRepurchaseViewModelTestFixture() {
     fun `given localCacheModel when getLayoutData should call use case with warehouseId from localCacheModel`() {
         val warehouseId = "200"
         val localCacheModel = LocalCacheModel(warehouse_id = warehouseId)
+        val warehouses = AddressMapperTestUtils.mapToWarehousesData(localCacheModel)
+
+        addressData = TokoNowLocalAddress(mockk(relaxed = true))
+
+        addressData.mockPrivateField("localAddressData", localCacheModel)
+
+        viewModel = TokoNowRepurchaseViewModel(
+            getRepurchaseProductListUseCase,
+            getMiniCartUseCase,
+            getCategoryListUseCase,
+            getChooseAddressWarehouseLocUseCase,
+            setUserPreferenceUseCase,
+            userSession,
+            addToCartUseCase,
+            updateCartUseCase,
+            deleteCartUseCase,
+            affiliateService,
+            getTargetedTicker,
+            addressData,
+            coroutineTestRule.dispatchers
+        )
 
         viewModel.setLocalCacheModel(localCacheModel)
         viewModel.getLayoutData()
 
         val expectedParam = GetRepurchaseProductListParam(
-            warehouseID = warehouseId,
+            warehouses = warehouses,
             sort = 2, // FREQUENTLY_BOUGHT
             dateStart = "",
             dateEnd = "",
@@ -1030,11 +1108,33 @@ class TokoNowRepurchaseViewModelTest : TokoNowRepurchaseViewModelTestFixture() {
 
     @Test
     fun `given clearSelectedFilters when getLayoutData should call use case with default filter params`() {
+        val localCacheModel = LocalCacheModel(warehouse_id = "0")
+
+        addressData = TokoNowLocalAddress(mockk(relaxed = true))
+
+        addressData.mockPrivateField("localAddressData", localCacheModel)
+
+        viewModel = TokoNowRepurchaseViewModel(
+            getRepurchaseProductListUseCase,
+            getMiniCartUseCase,
+            getCategoryListUseCase,
+            getChooseAddressWarehouseLocUseCase,
+            setUserPreferenceUseCase,
+            userSession,
+            addToCartUseCase,
+            updateCartUseCase,
+            deleteCartUseCase,
+            affiliateService,
+            getTargetedTicker,
+            addressData,
+            coroutineTestRule.dispatchers
+        )
+
         viewModel.clearSelectedFilters()
         viewModel.getLayoutData()
 
         val expectedParam = GetRepurchaseProductListParam(
-            warehouseID = "",
+            warehouses = emptyList(),
             sort = 2, // FREQUENTLY_BOUGHT
             dateStart = "",
             dateEnd = "",

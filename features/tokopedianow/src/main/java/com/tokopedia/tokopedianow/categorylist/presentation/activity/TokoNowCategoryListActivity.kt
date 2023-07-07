@@ -6,12 +6,7 @@ import com.tokopedia.tokopedianow.common.base.activity.BaseTokoNowActivity
 
 class TokoNowCategoryListActivity: BaseTokoNowActivity() {
 
-    companion object {
-        const val PARAM_WAREHOUSE_ID = "warehouse_id"
-    }
-
     override fun getFragment(): Fragment {
-        val warehouseId = intent?.data?.getQueryParameter(PARAM_WAREHOUSE_ID).orEmpty()
-        return TokoNowCategoryListFragment.newInstance(warehouseId)
+        return TokoNowCategoryListFragment.newInstance()
     }
 }

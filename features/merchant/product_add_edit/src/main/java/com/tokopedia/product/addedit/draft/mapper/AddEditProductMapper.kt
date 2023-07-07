@@ -174,6 +174,7 @@ object AddEditProductMapper {
                 draft.detailInputModel.imageUrlOrPathList.firstOrNull() ?: "",
                 draft.detailInputModel.productName,
                 AddEditProductDraftMapper.getCompletionPercent(draft),
+                draft.isCorrupt
         )
     }
 

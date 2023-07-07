@@ -6,6 +6,7 @@ import com.gojek.icp.identity.loginsso.data.models.Profile
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.encryption.security.RsaUtils
 import com.tokopedia.encryption.security.decodeBase64
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -15,8 +16,8 @@ import com.tokopedia.loginregister.common.view.banner.data.DynamicBannerDataMode
 import com.tokopedia.loginregister.common.view.banner.domain.usecase.DynamicBannerUseCase
 import com.tokopedia.loginregister.common.view.ticker.domain.pojo.TickerInfoPojo
 import com.tokopedia.loginregister.common.view.ticker.domain.usecase.TickerInfoUseCase
-import com.tokopedia.loginregister.discover.pojo.DiscoverData
-import com.tokopedia.loginregister.discover.usecase.DiscoverUseCase
+import com.tokopedia.loginregister.discover.DiscoverData
+import com.tokopedia.loginregister.discover.DiscoverUseCase
 import com.tokopedia.loginregister.goto_seamless.GotoSeamlessHelper
 import com.tokopedia.loginregister.goto_seamless.GotoSeamlessPreference
 import com.tokopedia.loginregister.goto_seamless.model.GetTemporaryKeyParam
@@ -141,7 +142,6 @@ class LoginEmailPhoneViewModel @Inject constructor(
     val dynamicBannerResponse: LiveData<Result<DynamicBannerDataModel>>
         get() = mutableDynamicBannerResponse
 
-
     private val mutableLoginBiometricResponse = MutableLiveData<Result<LoginToken>>()
     val loginBiometricResponse: LiveData<Result<LoginToken>>
         get() = mutableLoginBiometricResponse
@@ -160,7 +160,7 @@ class LoginEmailPhoneViewModel @Inject constructor(
             val response = registerCheckUseCase.executeOnBackground()
             if (response.data.errors.isEmpty()) {
                 mutableRegisterCheckResponse.value = Success(response.data)
-            } else{
+            } else {
                 mutableRegisterCheckResponse.value = Fail(MessageErrorException(response.data.errors.first()))
             }
         }, {
@@ -392,7 +392,6 @@ class LoginEmailPhoneViewModel @Inject constructor(
         getProfileUseCase.unsubscribe()
     }
 
-
     suspend fun isGojekProfileExist(): Boolean {
         return try {
             gotoSeamlessHelper.getGojekProfile().authCode.isNotEmpty()
@@ -403,6 +402,7 @@ class LoginEmailPhoneViewModel @Inject constructor(
     }
 
     suspend fun isFingerprintRegistered(): Boolean {
+        if (GlobalConfig.isSellerApp()) return false
         return try {
             registerCheckFingerprintUseCase(Unit)
         } catch (ignored: Exception) {

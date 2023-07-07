@@ -1,9 +1,9 @@
 package com.tokopedia.homenav.mock
 
 import android.content.Context
+import com.tokopedia.homenav.test.R
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.util.InstrumentationMockHelper.getRawString
-import com.tokopedia.homenav.test.R
 
 internal open class MainNavMockResponseConfig : MockModelConfig() {
     companion object {
@@ -19,7 +19,6 @@ internal open class MainNavMockResponseConfig : MockModelConfig() {
         const val KEY_CONTAINS_MAINNAV_BU_LIST = "businessUnitList"
         const val KEY_CONTAINS_MAINNAV_SHOP_INFO = "getShopInfo"
         const val KEY_CONTAINS_MAINNAV_GET_WISHLIST = "GetWishlist"
-        const val KEY_CONTAINS_MAINNAV_GET_USER_SHOP_FOLLOW = "GetUserShopFollow"
         const val KEY_CONTAINS_MAINNAV_PRODUCT_REV_WAIT_FOR_FEEDBACK = "productrevWaitForFeedback"
         const val KEY_CONTAINS_MAINNAV_PRODUCT_REV_AFFILIATE = "affiliateUserDetail"
         const val KEY_CONTAINS_MAINNAV_TOKOPEDIA_PLUS = "tokopediaPlusWidget"
@@ -95,12 +94,6 @@ internal open class MainNavMockResponseConfig : MockModelConfig() {
         addMockResponse(
             KEY_CONTAINS_MAINNAV_GET_WISHLIST,
             getRawString(context, R.raw.response_success_mock_mainnav_get_wishlist),
-            FIND_BY_CONTAINS
-        )
-
-        addMockResponse(
-            KEY_CONTAINS_MAINNAV_GET_USER_SHOP_FOLLOW,
-            getRawString(context, R.raw.response_success_mock_mainnav_get_user_shop_follow),
             FIND_BY_CONTAINS
         )
 
