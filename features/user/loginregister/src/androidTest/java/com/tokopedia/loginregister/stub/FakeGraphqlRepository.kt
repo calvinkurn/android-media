@@ -4,9 +4,9 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.loginregister.discover.pojo.DiscoverData
-import com.tokopedia.loginregister.discover.pojo.DiscoverPojo
-import com.tokopedia.loginregister.discover.pojo.ProviderData
+import com.tokopedia.loginregister.discover.DiscoverData
+import com.tokopedia.loginregister.discover.DiscoverPojo
+import com.tokopedia.loginregister.discover.ProviderData
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckPojo
 import com.tokopedia.test.application.graphql.GqlMockUtil

@@ -30,11 +30,11 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.tokopedianow.common.domain.model.GetCategoryListResponse.CategoryListResponse
 import com.tokopedia.tokopedianow.common.domain.model.GetTargetedTickerResponse
 import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference.SetUserPreferenceData
+import com.tokopedia.tokopedianow.common.domain.model.WarehouseData
 import com.tokopedia.tokopedianow.common.domain.usecase.GetCategoryListUseCase
 import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase
 import com.tokopedia.tokopedianow.common.domain.usecase.SetUserPreferenceUseCase
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
-import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseUiModel
 import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
 import com.tokopedia.tokopedianow.common.service.NowAffiliateService
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
@@ -97,7 +97,6 @@ abstract class TokoNowHomeViewModelTestFixture {
 
     @RelaxedMockK
     lateinit var getTargetedTickerUseCase: GetTargetedTickerUseCase
-
     @RelaxedMockK
     lateinit var getMiniCartUseCase: GetMiniCartListSimplifiedUseCase
 
@@ -180,8 +179,7 @@ abstract class TokoNowHomeViewModelTestFixture {
             getHomeReferralUseCase,
             referralEvaluateJoinUseCase,
             getCatalogCouponListUseCase,
-            redeemCouponUseCase,
-            getProductBundleRecomUseCase,
+            redeemCouponUseCase, getProductBundleRecomUseCase,
             playWidgetTools,
             userSession,
             coroutineTestRule.dispatchers,
@@ -286,25 +284,36 @@ abstract class TokoNowHomeViewModelTestFixture {
         coVerify(exactly = times) { getHomeLayoutDataUseCase.execute(any(), any(), localCacheModel) }
     }
 
-    protected fun verifyGetCarouselChipsRecomCalled(times: Int = 1, pageName: String) {
+    protected fun verifyGetCarouselChipsRecomCalled(
+        times: Int = 1,
+        pageName: String,
+        categoryIDs: List<String> = emptyList()
+    ) {
         coVerify(exactly = times) {
             getRecommendationUseCase.getData(
                 GetRecommendationRequestParam(
                     pageName = pageName,
+                    categoryIds = categoryIDs,
                     xSource = "recom_widget",
-                    xDevice = "android"
+                    xDevice = "android",
+                    isTokonow = true
                 )
             )
         }
     }
 
-    protected fun verifyGetCarouselChipsRecomNotCalled(pageName: String = anyString()) {
+    protected fun verifyGetCarouselChipsRecomNotCalled(
+        pageName: String = anyString(),
+        categoryIDs: List<String> = emptyList()
+    ) {
         coVerify(exactly = 0) {
             getRecommendationUseCase.getData(
                 GetRecommendationRequestParam(
                     pageName = pageName,
+                    categoryIds = categoryIDs,
                     xSource = "recom_widget",
-                    xDevice = "android"
+                    xDevice = "android",
+                    isTokonow = true
                 )
             )
         }
@@ -348,12 +357,12 @@ abstract class TokoNowHomeViewModelTestFixture {
         coVerify { getKeywordSearchUseCase.execute(anyBoolean(), anyString(), anyString()) }
     }
 
-    protected fun verifyGetCategoryListUseCaseCalled(count: Int = 1) {
-        coVerify(exactly = count) { getCategoryListUseCase.execute("1", 1) }
+    protected fun verifyGetCategoryListUseCaseCalled(warehouses: List<WarehouseData>, count: Int = 1) {
+        coVerify(exactly = count) { getCategoryListUseCase.execute(warehouses, 1) }
     }
 
     protected fun verifyGetCategoryListUseCaseNotCalled() {
-        coVerify(exactly = 0) { getCategoryListUseCase.execute(anyString(), anyInt()) }
+        coVerify(exactly = 0) { getCategoryListUseCase.execute(any(), anyInt()) }
     }
 
     protected fun verifyGetCatalogCouponListUseCaseCalled() {
@@ -461,11 +470,11 @@ abstract class TokoNowHomeViewModelTestFixture {
     }
 
     protected fun onGetCategoryList_thenReturn(errorThrowable: Throwable) {
-        coEvery { getCategoryListUseCase.execute("1", 1) } throws errorThrowable
+        coEvery { getCategoryListUseCase.execute(any(), 1) } throws errorThrowable
     }
 
     protected fun onGetCategoryList_thenReturn(categoryListResponse: CategoryListResponse) {
-        coEvery { getCategoryListUseCase.execute("1", 1) } returns categoryListResponse
+        coEvery { getCategoryListUseCase.execute(any(), 1) } returns categoryListResponse
     }
 
     protected fun onGetProductBundleRecom_thenReturn(productBundleRecomResponse: ProductBundleRecomResponse) {

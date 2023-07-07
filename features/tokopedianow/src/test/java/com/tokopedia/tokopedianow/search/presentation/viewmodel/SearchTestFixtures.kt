@@ -111,7 +111,6 @@ open class SearchTestFixtures {
     ) = mapOf(
             SearchApiConst.SOURCE to TOKONOW,
             SearchApiConst.DEVICE to SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_DEVICE,
-            SearchApiConst.USER_WAREHOUSE_ID to chooseAddressData.warehouse_id,
             SearchApiConst.USER_CITY_ID to chooseAddressData.city_id,
             SearchApiConst.USER_ADDRESS_ID to chooseAddressData.address_id,
             SearchApiConst.USER_DISTRICT_ID to chooseAddressData.district_id,

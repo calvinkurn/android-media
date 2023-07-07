@@ -5,6 +5,7 @@ internal const val PRODUCT_ADS_PARAMS = "get_product_ads_params"
 internal const val CATEGORY_ID = "categoryID"
 internal const val SLUG = "slug"
 internal const val WAREHOUSE_ID = "warehouseID"
+internal const val WAREHOUSES = "warehouses"
 internal const val TYPE = "type"
 
 internal const val TOKONOW = "tokonow"

@@ -2,6 +2,7 @@ package com.tokopedia.product.detail.view.util
 
 import android.content.Context
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.kotlin.extensions.view.ifNullOrBlank
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.model.ImpressHolder
@@ -19,7 +20,6 @@ import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimateData
 import com.tokopedia.product.detail.common.data.model.rates.ShipmentPlus
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCategory
-import com.tokopedia.product.detail.common.extensions.ifNullOrBlank
 import com.tokopedia.product.detail.common.getCurrencyFormatted
 import com.tokopedia.product.detail.data.model.ProductInfoP2Other
 import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
@@ -896,20 +896,14 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         }
     }
 
-    fun updateVariantData(processedVariant: List<VariantCategory>?) {
+    /**
+     * this function should call when first render variant and update from vbs only
+     */
+    fun updateVariantData(title: String, processedVariant: List<VariantCategory>?) {
         updateData(ProductDetailConstant.MINI_VARIANT_OPTIONS) {
             val variantLvlOne = processedVariant?.firstOrNull()
+            productSingleVariant?.title = title
             productSingleVariant?.variantLevelOne = doRetainImpressOfVariantOptions(variantLvlOne)
-        }
-    }
-
-    fun updateVariantSelected(variantId: String, variantKey: String) {
-        updateData(ProductDetailConstant.MINI_VARIANT_OPTIONS) {
-            productSingleVariant?.let {
-                val copyMap: MutableMap<String, String> = it.mapOfSelectedVariant.toMutableMap()
-                copyMap[variantKey] = variantId
-                it.mapOfSelectedVariant = copyMap
-            }
         }
     }
 
