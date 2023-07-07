@@ -3,12 +3,14 @@ package com.tokopedia.recommendation_widget_common.widget.vertical.model
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetTrackingModel
 import com.tokopedia.recommendation_widget_common.widget.vertical.RecommendationVerticalTypeFactory
 
 data class RecommendationVerticalProductCardModel(
     val productModel: ProductCardModel,
     val recomItem: RecommendationItem,
     val recomWidget: RecommendationWidget,
+    val trackingModel: RecommendationWidgetTrackingModel,
     val componentName: String = ""
 ) : RecommendationVerticalVisitable {
     override fun type(typeFactory: RecommendationVerticalTypeFactory): Int {
@@ -39,7 +41,8 @@ data class RecommendationVerticalProductCardModel(
             if (
                 componentName != toCompare.componentName ||
                 recomItem != toCompare.recomItem ||
-                recomWidget != toCompare.recomWidget
+                recomWidget != toCompare.recomWidget ||
+                trackingModel != toCompare.trackingModel
             ) {
                 put(PAYLOAD_FLAG_SHOULD_UPDATE_LISTENERS, Unit)
             }

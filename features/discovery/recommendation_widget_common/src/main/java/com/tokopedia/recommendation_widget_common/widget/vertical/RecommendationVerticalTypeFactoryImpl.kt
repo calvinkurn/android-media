@@ -8,10 +8,11 @@ import com.tokopedia.recommendation_widget_common.widget.vertical.model.Recommen
 import com.tokopedia.recommendation_widget_common.widget.vertical.model.RecommendationVerticalSeeMoreModel
 import com.tokopedia.recommendation_widget_common.widget.vertical.viewholder.RecommendationVerticalProductCardViewHolder
 import com.tokopedia.recommendation_widget_common.widget.vertical.viewholder.RecommendationVerticalSeeMoreViewHolder
+import com.tokopedia.trackingoptimizer.TrackingQueue
 
-class RecommendationVerticalTypeFactoryImpl :
-    BaseAdapterTypeFactory(),
-    RecommendationVerticalTypeFactory {
+class RecommendationVerticalTypeFactoryImpl(
+    private val trackingQueue: TrackingQueue
+) : BaseAdapterTypeFactory(), RecommendationVerticalTypeFactory {
     override fun type(recommendationVerticalProductCardModel: RecommendationVerticalProductCardModel): Int {
         return RecommendationVerticalProductCardViewHolder.LAYOUT
     }
@@ -23,7 +24,7 @@ class RecommendationVerticalTypeFactoryImpl :
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
             RecommendationVerticalProductCardViewHolder.LAYOUT -> {
-                RecommendationVerticalProductCardViewHolder(itemView = parent)
+                RecommendationVerticalProductCardViewHolder(itemView = parent, trackingQueue)
             }
             RecommendationVerticalSeeMoreViewHolder.LAYOUT -> {
                 RecommendationVerticalSeeMoreViewHolder(itemView = parent)
