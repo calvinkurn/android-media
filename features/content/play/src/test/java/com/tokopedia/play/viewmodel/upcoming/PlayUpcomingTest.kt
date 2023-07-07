@@ -808,10 +808,8 @@ class PlayUpcomingTest {
 
     @Test
     fun `when user close sharing bottom sheet, it should send analytics close bottom sheet`() {
-        /** Prepare */
-        every { mockPlayShareExperience.isScreenshotBottomSheet() } returns false
 
-        val robot = createPlayUpcomingViewModelRobot(
+        createPlayUpcomingViewModelRobot(
             dispatchers = testDispatcher,
             playShareExperience = mockPlayShareExperience,
         ) {

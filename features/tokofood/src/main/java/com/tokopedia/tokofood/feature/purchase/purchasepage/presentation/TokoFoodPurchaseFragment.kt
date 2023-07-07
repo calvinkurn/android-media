@@ -132,6 +132,8 @@ class TokoFoodPurchaseFragment :
 
     private var shopId = ""
     private var currentCartIdList: List<String> = listOf()
+    private var isPaymentButtonLoading: Boolean = false
+    private var canPaymentButtonClicked: Boolean = false
 
     override fun onAttachActivity(context: Context?) {
         super.onAttachActivity(context)
@@ -170,6 +172,7 @@ class TokoFoodPurchaseFragment :
         collectShouldRefreshCartData()
         collectTrackerLoadCheckoutData()
         collectTrackerPaymentCheckoutData()
+        collectIsPaymentButtonLoading()
     }
 
     override fun getFragmentToolbar(): Toolbar? {
@@ -511,12 +514,14 @@ class TokoFoodPurchaseFragment :
                                     }
                                 }
                             }
+                            canPaymentButtonClicked = true
                         }
                     }
                     UiEvent.EVENT_SUCCESS_DELETE_UNAVAILABLE_PRODUCTS -> {
                         viewBinding?.recyclerViewPurchase?.post {
                             viewModel.bulkDeleteUnavailableProducts()
                         }
+                        canPaymentButtonClicked = true
                     }
                     UiEvent.EVENT_SUCCESS_UPDATE_NOTES -> {
                         if (it.source == SOURCE) {
@@ -531,6 +536,7 @@ class TokoFoodPurchaseFragment :
                                             .orEmpty()
                                     showToaster(toasterMessage, getOkayMessage())
                                 }
+                                canPaymentButtonClicked = true
                             }
                         }
                     }
@@ -546,6 +552,7 @@ class TokoFoodPurchaseFragment :
                                 viewBinding?.recyclerViewPurchase?.post {
                                     viewModel.refreshPartialCartInformation()
                                 }
+                                canPaymentButtonClicked = true
                             }
                         }
                     }
@@ -563,6 +570,7 @@ class TokoFoodPurchaseFragment :
                                     )
                                 )
                             }
+                            canPaymentButtonClicked = true
                         }
                     }
                     UiEvent.EVENT_FAILED_UPDATE_QUANTITY -> {
@@ -579,6 +587,10 @@ class TokoFoodPurchaseFragment :
                                     )
                                 )
                             }
+                            viewBinding?.recyclerViewPurchase?.post {
+                                viewModel.refreshPartialCartInformation()
+                            }
+                            canPaymentButtonClicked = true
                         }
                     }
                     UiEvent.EVENT_FAILED_UPDATE_NOTES -> {
@@ -596,6 +608,7 @@ class TokoFoodPurchaseFragment :
                                 )
                                 showToasterError(throwable)
                             }
+                            canPaymentButtonClicked = true
                         }
                     }
                 }
@@ -641,6 +654,15 @@ class TokoFoodPurchaseFragment :
                 .collect { checkoutData ->
                     val userId = userSession.userId
                     TokoFoodPurchaseAnalytics.sendSuccessChoosePayment(checkoutData, userId)
+                }
+        }
+    }
+
+    private fun collectIsPaymentButtonLoading() {
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            viewModel.isPaymentButtonLoading
+                .collect { isLoading ->
+                    isPaymentButtonLoading = isLoading
                 }
         }
     }
@@ -890,8 +912,10 @@ class TokoFoodPurchaseFragment :
                 }
 
                 override fun onRetry() {
-                    viewModel.setPaymentButtonLoading(true)
-                    viewModel.checkoutGeneral()
+                    if (canPaymentButtonClicked) {
+                        viewModel.setPaymentButtonLoading(true)
+                        viewModel.checkoutGeneral()
+                    }
                 }
 
                 override fun onCheckOtherMerchant() {
@@ -983,8 +1007,10 @@ class TokoFoodPurchaseFragment :
             message ?: context?.getString(com.tokopedia.tokofood.R.string.text_purchase_failed_to_payment).orEmpty()
         val actionMessage = context?.getString(com.tokopedia.tokofood.R.string.text_purchase_try_again).orEmpty()
         showToasterError(errorMessage, actionMessage) {
-            viewModel.setPaymentButtonLoading(true)
-            viewModel.checkoutGeneral()
+            if (canPaymentButtonClicked) {
+                viewModel.setPaymentButtonLoading(true)
+                viewModel.checkoutGeneral()
+            }
         }
     }
 
@@ -996,8 +1022,10 @@ class TokoFoodPurchaseFragment :
         val toasterAction: () -> Unit = {
             when (errorDetail.action) {
                 CheckoutErrorMetadataDetail.REFRESH_ACTION -> {
-                    viewModel.setPaymentButtonLoading(true)
-                    viewModel.checkoutGeneral()
+                    if (canPaymentButtonClicked) {
+                        viewModel.setPaymentButtonLoading(true)
+                        viewModel.checkoutGeneral()
+                    }
                 }
                 CheckoutErrorMetadataDetail.REDIRECT_ACTION -> {
                     context?.let {
@@ -1032,14 +1060,8 @@ class TokoFoodPurchaseFragment :
             val paymentCheckoutString = ApplinkConstInternalPayment.PAYMENT_CHECKOUT
             val intent = RouteManager.getIntent(context, paymentCheckoutString)
             intent.putExtra(PaymentConstant.EXTRA_PARAMETER_TOP_PAY_DATA, checkoutResultData)
-            intent.putPaymentTimestampExtra()
             startActivityForResult(intent, REQUEST_CODE_PAYMENT)
         }
-    }
-
-    private fun Intent.putPaymentTimestampExtra() {
-        val currentTimestamp = System.currentTimeMillis()
-        putExtra(ApplinkConstInternalPayment.CHECKOUT_TIMESTAMP, currentTimestamp)
     }
 
     private fun setCurrentCartList(visitableList: List<Visitable<*>>) {
@@ -1078,16 +1100,21 @@ class TokoFoodPurchaseFragment :
     }
 
     override fun onQuantityChanged() {
-        viewModel.triggerEditQuantity()
+        if (!isPaymentButtonLoading) {
+            canPaymentButtonClicked = false
+            viewModel.triggerEditQuantity()
+        }
     }
 
     override fun onIconDeleteProductClicked(element: TokoFoodPurchaseProductTokoFoodPurchaseUiModel) {
-        activityViewModel?.deleteProduct(
-            cartId = element.cartId,
-            productId = element.id,
-            source = SOURCE,
-            shouldRefreshCart = false
-        )
+        if (!isPaymentButtonLoading) {
+            activityViewModel?.deleteProduct(
+                cartId = element.cartId,
+                productId = element.id,
+                source = SOURCE,
+                shouldRefreshCart = false
+            )
+        }
     }
 
     override fun onIconDeleteProductClicked(element: TokoFoodPurchaseProductTokoFoodPurchaseUiModelOld) {
@@ -1150,8 +1177,10 @@ class TokoFoodPurchaseFragment :
     }
 
     override fun onSuccessAgreeConsent() {
-        viewModel.setConsentAgreed(true)
-        viewModel.checkoutGeneral()
+        if (canPaymentButtonClicked) {
+            viewModel.setConsentAgreed(true)
+            viewModel.checkoutGeneral()
+        }
     }
 
     override fun onFailedAgreeConsent(throwable: Throwable) {

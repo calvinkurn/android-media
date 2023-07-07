@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.tokopedianow.common.domain.model.GetCategoryListResponse
 import com.tokopedia.tokopedianow.common.domain.usecase.GetCategoryListUseCase
+import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -14,8 +15,9 @@ import javax.inject.Inject
 
 class TokoNowCategoryListViewModel @Inject constructor(
     private val getCategoryListUseCase: GetCategoryListUseCase,
+    private val addressData: TokoNowLocalAddress,
     dispatchers: CoroutineDispatchers
-): BaseViewModel(dispatchers.io) {
+) : BaseViewModel(dispatchers.io) {
 
     companion object {
         const val ERROR_PAGE_NOT_FOUND = "400"
@@ -30,13 +32,13 @@ class TokoNowCategoryListViewModel @Inject constructor(
 
     private val _categoryList = MutableLiveData<Result<GetCategoryListResponse.CategoryListResponse>>()
 
-    fun getCategoryList(warehouseId: String) {
+    fun getCategoryList() {
         launchCatchError(block = {
-            val response = getCategoryListUseCase.execute(warehouseId, CATEGORY_LEVEL_DEPTH)
+            val warehouses = addressData.getWarehousesData()
+            val response = getCategoryListUseCase.execute(warehouses, CATEGORY_LEVEL_DEPTH)
             _categoryList.postValue(Success(response))
         }) {
             _categoryList.postValue(Fail(it))
         }
     }
-
 }

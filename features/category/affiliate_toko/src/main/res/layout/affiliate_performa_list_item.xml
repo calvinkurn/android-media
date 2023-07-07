@@ -1,43 +1,101 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_height="wrap_content">
+
     <com.tokopedia.unifyprinciples.Typography
-        android:layout_marginTop="@dimen/unify_space_12"
-        android:layout_marginStart="@dimen/unify_space_16"
         android:id="@+id/head_top"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="12dp"
         android:text="@string/performa_affiliate"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:typographyType="body_1"
         app:typographyWeight="bold" />
+
     <androidx.recyclerview.widget.RecyclerView
-        app:layout_constraintVertical_bias="0"
         android:id="@+id/performaItem_RV"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/unify_space_12"
-        android:layout_marginBottom="6dp"
         android:layout_marginStart="10dp"
+        android:layout_marginTop="12dp"
         android:layout_marginEnd="10dp"
+        android:layout_marginBottom="6dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/head_top" />
+        app:layout_constraintTop_toBottomOf="@+id/head_top"
+        app:layout_constraintVertical_bias="0" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/icon_link_link_history"
+        android:layout_width="13dp"
+        android:layout_height="13dp"
+        android:layout_marginStart="16dp"
+        app:icon_color_light_disabled="@color/Unify_NN900"
+        app:icon_color_light_enable="@color/Unify_NN900"
+        app:icon_color_night_disabled="@color/Unify_NN900"
+        app:icon_color_night_enable="@color/Unify_NN900"
+        app:icon_name="BILL"
+        app:layout_constraintBottom_toBottomOf="@id/link_history_entry"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/link_history_entry" />
+
     <com.tokopedia.unifyprinciples.Typography
-        android:layout_marginBottom="@dimen/unify_space_8"
-        android:layout_marginTop="@dimen/unify_space_16"
-        android:layout_marginStart="@dimen/unify_space_16"
+        android:id="@+id/link_history_entry"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:paddingHorizontal="8dp"
+        android:text="@string/link_history_entry"
+        android:textColor="@color/Unify_NN950"
+        app:layout_constraintEnd_toStartOf="@id/link_history_chevron"
+        app:layout_constraintStart_toEndOf="@id/icon_link_link_history"
+        app:layout_constraintTop_toBottomOf="@+id/performaItem_RV"
+        app:typographyType="display_3" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/link_history_chevron"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginEnd="8dp"
+        app:icon_color_light_disabled="@color/Unify_NN900"
+        app:icon_color_light_enable="@color/Unify_NN900"
+        app:icon_color_night_disabled="@color/Unify_NN900"
+        app:icon_color_night_enable="@color/Unify_NN900"
+        app:icon_name="CHEVRON_RIGHT"
+        app:layout_constraintBottom_toBottomOf="@id/link_history_entry"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/link_history_entry" />
+
+    <androidx.constraintlayout.helper.widget.Layer
+        android:id="@+id/link_history_group"
+        android:layout_width="match_parent"
+        android:clickable="true"
+        android:focusable="true"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:visibility="visible"
+        app:constraint_referenced_ids="link_history_chevron, link_history_entry, icon_link_link_history"
+        app:layout_constraintTop_toBottomOf="@+id/performaItem_RV" />
+
+
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/head"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="18dp"
+        android:layout_marginBottom="8dp"
         android:text="@string/link_dengan_performa"
-        app:layout_constraintTop_toBottomOf="@+id/performaItem_RV"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/link_history_entry"
+        app:layout_constraintVertical_bias="1"
+        app:layout_goneMarginTop="18dp"
         app:typographyType="body_1"
         app:typographyWeight="bold" />
 

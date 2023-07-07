@@ -1000,12 +1000,13 @@ class AddEditProductPreviewFragment :
 
     private fun observeHasDTStock() {
         viewModel.hasDTStock.observe(viewLifecycleOwner) { hasDTStock ->
-            addEditProductVariantButton?.setColorToDisabled(hasDTStock)
+            addEditProductVariantButton?.setColorToDisabled(
+                hasDTStock && viewModel.isVariantEmpty.value == true)
             addEditProductVariantButton?.setOnClickListener {
                 if (isEditing()) {
                     ProductEditStepperTracking.trackAddProductVariant(shopId)
                 }
-                if (hasDTStock) {
+                if (hasDTStock && viewModel.isVariantEmpty.value == true) {
                     showDTDisableVariantChangeDialog()
                 } else {
                     showVariantActivity()

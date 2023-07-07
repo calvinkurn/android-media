@@ -88,15 +88,7 @@ class ProductShopCredibilityViewHolder(
             setupInfoRegion(element, this)
             setupFollow(element.isFavorite, componentTracker, this)
 
-            shopCredibilityAva.setOnClickListener {
-                listener.gotoShopDetail(componentTracker)
-            }
-
-            shopCredibilityName.setOnClickListener {
-                listener.gotoShopDetail(componentTracker)
-            }
-
-            shopCredibilityBadge.setOnClickListener {
+            root.setOnClickListener {
                 listener.gotoShopDetail(componentTracker)
             }
 

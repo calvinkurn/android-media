@@ -993,7 +993,7 @@ class TokoFoodHomeFragment :
     }
 
     private fun shareClicked() {
-        if (UniversalShareBottomSheet.isCustomSharingEnabled(context)) {
+        if (SharingUtil.isCustomSharingEnabled(context)) {
             context?.let {
                 SharingUtil.saveImageFromURLToStorage(
                     it,
@@ -1010,6 +1010,7 @@ class TokoFoodHomeFragment :
     private fun showUniversalShareBottomSheet(imageSaved: String) {
         if (isAdded) {
             universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
+                setFeatureFlagRemoteConfigKey()
                 init(this@TokoFoodHomeFragment)
                 setUtmCampaignData(
                     pageName = PAGE_SHARE_NAME,
