@@ -267,14 +267,16 @@ open class SomListFragment :
         ViewModelProvider(this, viewModelFactory).get(SomListViewModel::class.java)
     }
 
+    private val autoTabbingCoachMark: CoachMark2? by lazy {
+        somListBinding?.root?.context?.let {
+            CoachMark2(it)
+        }
+    }
+
     protected var somListBinding by autoClearedNullable<FragmentSomListBinding> {
         somListBulkProcessOrderBottomSheet?.clearViewBinding()
         orderRequestCancelBottomSheet?.clearViewBinding()
         somOrderEditAwbBottomSheet?.clearViewBinding()
-    }
-
-    private val autoTabbingCoachMark: CoachMark2? = somListBinding?.root?.context?.let {
-        CoachMark2(it)
     }
 
     protected var somListHeaderBinding by autoClearedNullable<SomListHeaderBinding>()
@@ -2912,7 +2914,7 @@ open class SomListFragment :
                         if (tabPosition == -Int.ONE || tabPosition == null) return
                         val tabLayoutViewPosition = somListBinding?.somListTabFilter?.tabLayout?.getTabAt(
                             tabPosition
-                        )?.view ?: return
+                        )?.customView ?: return
 
                         val coachMarkItem = CoachMark2Item(
                             anchorView = tabLayoutViewPosition,
@@ -2931,8 +2933,7 @@ open class SomListFragment :
                             }
                             isDismissed = false
                             showCoachMark(
-                                step = arrayListOf(coachMarkItem),
-                                index = Int.ZERO
+                                step = arrayListOf(coachMarkItem)
                             )
                         }
                     }
