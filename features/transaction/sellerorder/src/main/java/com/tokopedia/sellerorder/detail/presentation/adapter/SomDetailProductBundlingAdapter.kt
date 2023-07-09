@@ -4,11 +4,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.imageassets.TokopediaImageUrl
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.media.loader.loadImage
 import com.tokopedia.sellerorder.R
+import com.tokopedia.sellerorder.common.util.Utils.loadProductImage
 import com.tokopedia.sellerorder.databinding.ItemSomProductBundlingProductBinding
 import com.tokopedia.sellerorder.detail.data.model.SomDetailOrder
 import com.tokopedia.sellerorder.detail.presentation.adapter.factory.SomDetailAdapterFactoryImpl
@@ -45,7 +46,10 @@ class SomDetailProductBundlingAdapter(
                 root.setOnClickListener {
                     actionListener?.onClickProduct(product.orderDetailId.toLongOrZero())
                 }
-                imgSomBundleProduct.loadImage(product.thumbnail)
+                imgSomBundleProduct.loadProductImage(
+                    url = product.thumbnail,
+                    archivedUrl = TokopediaImageUrl.IMG_ARCHIVED_PRODUCT_SMALL
+                )
                 tvSomBundleProductName.text = product.name
                 tvSomBundlePrice.text = StringBuilder("${product.quantity} x ${product.priceText}")
                 if (product.note.isNotEmpty()) {

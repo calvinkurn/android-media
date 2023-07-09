@@ -11,6 +11,7 @@ import android.os.Parcelable
 import android.text.Spanned
 import android.view.HapticFeedbackConstants
 import android.view.View
+import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
@@ -18,6 +19,11 @@ import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.data.DEFAULT_ROUNDED
+import com.tokopedia.media.loader.data.FailureType
+import com.tokopedia.media.loader.getBitmapImageUrl
+import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
 import com.tokopedia.seller.active.common.worker.UpdateShopActiveWorker
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.common.util.SomConsts.PATTERN_DATE_PARAM
@@ -33,7 +39,9 @@ import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifyprinciples.stringToUnifyColor
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Calendar
+import java.util.Date
+import java.util.Locale
 
 /**
  * Created by fwidjaja on 2019-11-21.
@@ -229,5 +237,27 @@ object Utils {
         } catch (t: Throwable) {
             defaultColor
         }
+    }
+
+    fun ImageView.loadProductImage(
+        url: String, archivedUrl: String, cornerRadius: Float = DEFAULT_ROUNDED
+    ) {
+        url.getBitmapImageUrl(
+            context = context, properties = {
+                shouldTrackNetworkResponse(true)
+                networkResponse { _, failure ->
+                    val isArchivedProduct =
+                        failure == FailureType.Gone || failure == FailureType.NotFound
+                    if (isArchivedProduct) {
+                        loadImage(archivedUrl) {
+                            setPlaceHolder(-1)
+                        }
+                    } else {
+                        loadImage(url)
+                    }
+                }
+                setRoundedRadius(cornerRadius)
+            }, target = MediaBitmapEmptyTarget()
+        )
     }
 }

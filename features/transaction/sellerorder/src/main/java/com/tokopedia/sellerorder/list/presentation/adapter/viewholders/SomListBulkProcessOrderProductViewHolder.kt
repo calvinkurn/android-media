@@ -3,9 +3,10 @@ package com.tokopedia.sellerorder.list.presentation.adapter.viewholders
 import android.annotation.SuppressLint
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.imageassets.TokopediaImageUrl
 import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.sellerorder.R
+import com.tokopedia.sellerorder.common.util.Utils.loadProductImage
 import com.tokopedia.sellerorder.databinding.ItemSomListBulkProcessOrderProductBinding
 import com.tokopedia.sellerorder.list.presentation.models.SomListBulkProcessOrderProductUiModel
 import com.tokopedia.utils.view.binding.viewBinding
@@ -23,7 +24,10 @@ class SomListBulkProcessOrderProductViewHolder(itemView: View) : AbstractViewHol
     override fun bind(element: SomListBulkProcessOrderProductUiModel?) {
         element?.let { element ->
             binding?.run {
-                ivProduct.loadImageRounded(element.picture)
+                ivProduct.loadProductImage(
+                    url = element.picture,
+                    archivedUrl = TokopediaImageUrl.IMG_ARCHIVED_PRODUCT_SMALL
+                )
                 val productName = element.productName.split(" - ").firstOrNull().orEmpty().trim()
                 val productVariant = element.productName.split(" - ").takeIf { it.size > 1 }?.lastOrNull().orEmpty().replace(Regex("\\s*,\\s*"), " | ").trim()
                 tvProductName.apply {
