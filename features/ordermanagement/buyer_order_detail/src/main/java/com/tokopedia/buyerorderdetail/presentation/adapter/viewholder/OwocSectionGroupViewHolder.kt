@@ -9,6 +9,7 @@ import com.tokopedia.buyerorderdetail.databinding.ItemOwocSectionGroupBinding
 import com.tokopedia.buyerorderdetail.presentation.adapter.OwocProductListAdapter
 import com.tokopedia.buyerorderdetail.presentation.adapter.listener.OwocProductListHeaderListener
 import com.tokopedia.buyerorderdetail.presentation.adapter.listener.OwocProductListListener
+import com.tokopedia.buyerorderdetail.presentation.adapter.listener.OwocRecyclerviewPoolListener
 import com.tokopedia.buyerorderdetail.presentation.adapter.typefactory.OwocProductListTypeFactoryImpl
 import com.tokopedia.buyerorderdetail.presentation.model.BaseOwocVisitableUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.OwocSectionGroupUiModel
@@ -16,7 +17,8 @@ import com.tokopedia.buyerorderdetail.presentation.model.OwocSectionGroupUiModel
 class OwocSectionGroupViewHolder(
     view: View?,
     navigator: BuyerOrderDetailNavigator?,
-    private val owocProductListHeaderListener: OwocProductListHeaderListener
+    private val owocProductListHeaderListener: OwocProductListHeaderListener,
+    private val recyclerviewPoolListener: OwocRecyclerviewPoolListener
 ) : AbstractViewHolder<OwocSectionGroupUiModel>(view), OwocProductListListener {
 
     companion object {
@@ -26,7 +28,7 @@ class OwocSectionGroupViewHolder(
     private val binding = ItemOwocSectionGroupBinding.bind(itemView)
 
     private val typeFactory: OwocProductListTypeFactoryImpl by lazy(LazyThreadSafetyMode.NONE) {
-        OwocProductListTypeFactoryImpl(navigator, this, owocProductListHeaderListener)
+        OwocProductListTypeFactoryImpl(navigator, this, owocProductListHeaderListener, recyclerviewPoolListener)
     }
 
     private val owocSectionGroupAdapter: OwocProductListAdapter by lazy {
@@ -57,7 +59,10 @@ class OwocSectionGroupViewHolder(
         with(rvOwocProductList) {
             if (adapter != owocSectionGroupAdapter) {
                 layoutManager = LinearLayoutManager(context)
+                itemAnimator = null
                 adapter = owocSectionGroupAdapter
+                isNestedScrollingEnabled = false
+                setRecycledViewPool(recyclerviewPoolListener.parentPool)
             }
             setupOwocProductList(item.baseOwocProductListUiModel)
         }

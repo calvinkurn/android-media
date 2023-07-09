@@ -10,7 +10,7 @@ class OwocProductBundlingItemDiffUtilCallback(
     override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
         val oldItem = oldItems.getOrNull(oldItemPosition)
         val newItem = newItems.getOrNull(newItemPosition)
-        return oldItem?.productId == newItem?.productId
+        return oldItem?.productId == newItem?.productId || oldItem?.productName == newItem?.productName
     }
 
     override fun getOldListSize(): Int {

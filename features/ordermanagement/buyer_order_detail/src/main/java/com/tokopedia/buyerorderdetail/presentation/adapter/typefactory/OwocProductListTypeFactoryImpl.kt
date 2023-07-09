@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.buyerorderdetail.common.utils.BuyerOrderDetailNavigator
 import com.tokopedia.buyerorderdetail.presentation.adapter.listener.OwocProductListHeaderListener
 import com.tokopedia.buyerorderdetail.presentation.adapter.listener.OwocProductListListener
+import com.tokopedia.buyerorderdetail.presentation.adapter.listener.OwocRecyclerviewPoolListener
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.OwocAddonsViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.OwocProductBundlingViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.OwocProductListHeaderViewHolder
@@ -20,7 +21,8 @@ import com.tokopedia.buyerorderdetail.presentation.model.OwocThickDividerUiModel
 class OwocProductListTypeFactoryImpl(
     private val navigator: BuyerOrderDetailNavigator?,
     private val owocSectionGroupListener: OwocProductListListener,
-    private val owocProductListHeaderListener: OwocProductListHeaderListener
+    private val owocProductListHeaderListener: OwocProductListHeaderListener,
+    private val recyclerviewPoolListener: OwocRecyclerviewPoolListener
 ): BaseAdapterTypeFactory(), OwocProductListTypeFactory {
 
     override fun type(owocProductListHeaderUiModel: OwocProductListUiModel.ProductListHeaderUiModel): Int {
@@ -52,7 +54,7 @@ class OwocProductListTypeFactoryImpl(
         return when (type) {
             OwocProductListHeaderViewHolder.LAYOUT -> OwocProductListHeaderViewHolder(parent, owocProductListHeaderListener)
             OwocProductViewHolder.LAYOUT -> OwocProductViewHolder(parent, navigator)
-            OwocProductBundlingViewHolder.LAYOUT -> OwocProductBundlingViewHolder(parent, navigator)
+            OwocProductBundlingViewHolder.LAYOUT -> OwocProductBundlingViewHolder(parent, navigator, recyclerviewPoolListener)
             OwocProductListToggleViewHolder.LAYOUT -> OwocProductListToggleViewHolder(parent, owocSectionGroupListener)
             OwocAddonsViewHolder.LAYOUT -> OwocAddonsViewHolder(parent)
             OwocThickDividerViewHolder.LAYOUT -> OwocThickDividerViewHolder(parent)
