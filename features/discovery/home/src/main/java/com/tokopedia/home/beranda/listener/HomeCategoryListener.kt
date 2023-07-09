@@ -143,5 +143,5 @@ interface HomeCategoryListener {
 
     fun pullRefreshIconCaptured(view: LayoutIconPullRefreshView?)
 
-    fun goToLogin()
+    fun onLoginWidgetClick()
 }
