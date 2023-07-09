@@ -22,6 +22,7 @@ import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.LinearInterpolator
 import android.view.animation.PathInterpolator
 import android.view.inputmethod.InputMethodManager
+import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.animation.addListener
 import androidx.core.content.ContextCompat
@@ -56,6 +57,7 @@ import com.tokopedia.scp_rewards_touchpoints.bottomsheet.utils.launchLink
 import com.tokopedia.scp_rewards_touchpoints.bottomsheet.utils.parseColor
 import com.tokopedia.scp_rewards_touchpoints.bottomsheet.viewmodel.MedalCelebrationViewModel
 import com.tokopedia.scp_rewards_touchpoints.common.Error
+import com.tokopedia.scp_rewards_touchpoints.common.HIDDEN
 import com.tokopedia.scp_rewards_touchpoints.common.Loading
 import com.tokopedia.scp_rewards_touchpoints.common.Success
 import com.tokopedia.scp_rewards_touchpoints.common.di.DaggerCelebrationComponent
@@ -156,7 +158,6 @@ class MedalCelebrationBottomSheet : BottomSheetUnify() {
                     downloadAssets()
                 }
                 is Error -> {
-//                    CelebrationAnalytics.sendImpressionCelebrationError(medaliSlug)
                     showErrorView(it.error)
                 }
                 is Loading -> {
@@ -677,8 +678,6 @@ class MedalCelebrationBottomSheet : BottomSheetUnify() {
 
     private fun animateCoupon() {
         val couponDrawable = if (coupon_image == null) {
-//            CelebrationAnalytics.sendImpressionFallbackBadge(medaliSlug)
-//            changeBadgeSize()
             binding?.mainView?.couponUi?.couponImage?.isEdgeControl = false
             ResourcesCompat.getDrawable(resources, R.drawable.coupon_fallback, null)
         } else {
@@ -686,17 +685,16 @@ class MedalCelebrationBottomSheet : BottomSheetUnify() {
             binding?.mainView?.couponUi?.couponImage?.circularEdgeColor = Color.parseColor(bgColor)
             coupon_image
         }
-        binding?.mainView?.couponUi?.couponImage?.setImageDrawable(couponDrawable)
-        val listener = object : Animator.AnimatorListener {
-            override fun onAnimationStart(animation: Animator) {}
-            override fun onAnimationEnd(animation: Animator) {
-                if (isFallbackCase || mandatoryAssetFailure) {
-//                    startRedirection()
-                }
-            }
-            override fun onAnimationCancel(animation: Animator) {}
-            override fun onAnimationRepeat(animation: Animator) {}
+        if(medalCelebrationViewModel.badgeLiveData.value is Success<*>){
+          val status = (medalCelebrationViewModel.badgeLiveData.value as Success<ScpRewardsCelebrationModel>).data.scpRewardsCelebrationPage?.celebrationPage?.benefit?.first()?.status
+          if(status == HIDDEN){
+              binding?.mainView?.couponUi?.couponImage?.scaleType = ImageView.ScaleType.CENTER_CROP
+          }
+            else{
+              binding?.mainView?.couponUi?.couponImage?.scaleType = ImageView.ScaleType.FIT_CENTER
+          }
         }
+        binding?.mainView?.couponUi?.couponImage?.setImageDrawable(couponDrawable)
         context?.let {
             val dimen53 = it.resources.getDimension(R.dimen.dimen_53).toInt()
             translateView(
@@ -776,12 +774,6 @@ class MedalCelebrationBottomSheet : BottomSheetUnify() {
                     from = dpToPx(it, dimen44).toInt(),
                     interpolatorType = EASE_IN
                 )
-//                translateView(
-//                    view = badgeDescription,
-//                    duration = ANIMATION_DURATION,
-//                    from = dpToPx(it, dimen40).toInt(),
-//                    interpolatorType = EASE_IN
-//                )
             }
         }
     }
@@ -792,14 +784,6 @@ class MedalCelebrationBottomSheet : BottomSheetUnify() {
                 binding?.mainView?.celebrationView?.apply {
                     setComposition(it)
                     playAnimation()
-                    addAnimatorListener(object : Animator.AnimatorListener {
-                        override fun onAnimationStart(animation: Animator) {}
-                        override fun onAnimationCancel(animation: Animator) {}
-                        override fun onAnimationEnd(animation: Animator) {
-//                            startRedirection()
-                        }
-                        override fun onAnimationRepeat(animation: Animator) {}
-                    })
                 }
             }
         }
@@ -845,13 +829,11 @@ class MedalCelebrationBottomSheet : BottomSheetUnify() {
                 val buttonColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN0)
                 errorSecondaryAction.setBackgroundColor(buttonColor)
                 setSecondaryActionClickListener {
-//                CelebrationAnalytics.sendClickGoBackCelebration(medaliSlug)
                     activity?.finish()
                 }
             }
         }
         binding?.errorView?.setActionClickListener {
-            //                CelebrationAnalytics.sendClickRetryCelebration(medaliSlug)
             resetPage()
         }
     }
@@ -861,50 +843,6 @@ class MedalCelebrationBottomSheet : BottomSheetUnify() {
         binding?.mainFlipper?.displayedChild = LOADING_STATE
         medalCelebrationViewModel.getRewards(medaliSlug, "medali_celebration_bottomsheet")
     }
-
-    private fun startRedirection() {
-        (medalCelebrationViewModel.badgeLiveData.value as Success<ScpRewardsCelebrationModel>).data.apply {
-            val delay = scpRewardsCelebrationPage?.celebrationPage?.redirectDelayInMilliseconds.isNullOrZero(
-                FALLBACK_DELAY
-            )
-            handler.postDelayed({
-                fadeOutPage()
-            }, delay)
-        }
-    }
-
-    private fun fadeOutPage() {
-        binding?.mainView?.apply {
-            val opacityPvh = getOpacityPropertyValueHolder(from = 255, to = 0)
-            ObjectAnimator.ofPropertyValuesHolder(this.root.rootView, opacityPvh).apply {
-                duration = ANIMATION_DURATION
-                interpolator = LinearInterpolator()
-                addListener(object : Animator.AnimatorListener {
-                    override fun onAnimationStart(animation: Animator) {}
-                    override fun onAnimationEnd(animation: Animator) {
-                        redirectToMedaliDetail()
-                    }
-                    override fun onAnimationCancel(animation: Animator) {}
-                    override fun onAnimationRepeat(animation: Animator) {}
-                })
-                start()
-            }
-        }
-    }
-
-    private fun redirectToMedaliDetail() {
-        (medalCelebrationViewModel.badgeLiveData.value as Success<ScpRewardsCelebrationModel>).data.apply {
-            val args = Bundle().apply {
-                putString(
-                    "source",
-                    scpRewardsCelebrationPage?.celebrationPage?.redirectSourceName ?: ""
-                )
-            }
-            RouteManager.route(context, args, scpRewardsCelebrationPage?.celebrationPage?.redirectAppLink)
-        }
-        activity?.finish()
-    }
-
     override fun onStop() {
         super.onStop()
         binding?.mainView?.apply {

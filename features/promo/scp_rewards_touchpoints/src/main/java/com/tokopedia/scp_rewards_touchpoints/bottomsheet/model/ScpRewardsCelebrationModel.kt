@@ -94,7 +94,7 @@ data class ScpRewardsCelebrationModel(
             val redirectSourceName: String = "",
             @Expose
             @SerializedName("benefit")
-            val benefit: ArrayList<BenefitImage>? = null,
+            val benefit: List<BenefitImage>? = null,
             @Expose
             @SerializedName("benefitButton")
             val benefitButton: ArrayList<BenefitButton>? = null

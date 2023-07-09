@@ -8,7 +8,10 @@
     android:layout_height="wrap_content"
     app:cardCornerRadius="10dp"
     app:cardElevation="10dp"
-    android:orientation="vertical">
+    tools:background="@color/Unify_GN500"
+    android:orientation="vertical"
+    android:paddingBottom="15dp"
+    >
 
     <com.tokopedia.scp_rewards_touchpoints.bottomsheet.view.ScpCouponView
         android:id="@+id/coupon_image"
@@ -26,21 +29,21 @@
         android:layout_marginTop="16dp"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
+        app:unifyButtonSize="medium"
         tools:text="Use Coupon"/>
 
-    <com.tokopedia.unifyprinciples.Typography
+    <com.tokopedia.unifycomponents.UnifyButton
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/btn_secondary"
-        android:textAlignment="center"
-        android:textColor="@color/white"
         android:layout_marginTop="12dp"
-        android:paddingVertical="11dp"
-        android:paddingHorizontal="16dp"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         app:typographyWeight="bold"
-        android:background="@drawable/transparent_rounded_background"
+        app:unifyButtonInvers="true"
+        app:unifyButtonVariant="ghost"
+        app:unifyButtonSize="medium"
+        tools:text="Lihat Koleksi"
         />
 
 </LinearLayout>
