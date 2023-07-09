@@ -82,7 +82,6 @@ ext {
 
             umrah                           : ":features:salam:umrah",
 
-            categoryCommon                  : ":features:discovery:category_common",
             discoveryCommon                 : ":features:discovery:discovery_common",
             home                            : ":features:discovery:home",
             homeComponent                   : ":features:discovery:home_component",
@@ -115,7 +114,6 @@ ext {
             fintechHomeWidget               : ":features:fintech:fintech_home_widget",
             insurance                       : ":features:fintech:insurance",
 
-            dynamicBanner                   : ":features:home:dynamicbanner",
             navigation                      : ":features:home:navigation",
             navigationCommon                : ":features:home:navigation-common",
             searchbar                       : ":features:home:searchbar",
@@ -145,7 +143,6 @@ ext {
             productDraftDatabase            : ":features:merchant:product_draft_database",
             productDetailCommon             : ":features:merchant:product_detail_common",
             productDetailAdditionalInfo     : ":features:merchant:product_detail_additional_info",
-            variantCommon                   : ":features:merchant:variant_common",
             productDetail                   : ":features:merchant:product_detail",
             atcVariant                      : ":features:merchant:atc_variant",
             productAddEdit                  : ":features:merchant:product_add_edit",
