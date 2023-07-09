@@ -37,7 +37,6 @@ import io.mockk.mockkStatic
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
 import org.junit.Before
@@ -179,6 +178,8 @@ abstract class CreateReviewViewModelTestFixture {
         mockIsVideoFormat()
         mockUserSession()
         mockkStatic(RemoteConfigInstance::class)
+        mockStringAb("review_inspiration", "experiment_variant", "experiment_variant")
+        setShouldRunReviewTopicsPeekAnimation()
         mockkObject(ErrorHandler)
         viewModel = CreateReviewViewModel(
             CoroutineTestDispatchersProvider,

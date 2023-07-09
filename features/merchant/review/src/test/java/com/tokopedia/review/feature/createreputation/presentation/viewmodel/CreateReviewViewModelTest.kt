@@ -34,7 +34,6 @@ import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
-import kotlinx.coroutines.flow.first
 import org.junit.Assert
 import org.junit.Test
 
@@ -768,7 +767,7 @@ class CreateReviewViewModelTest: CreateReviewViewModelTestFixture() {
     }
 
     @Test
-    fun `postSubmitBottomSheetUiState should equal to PostSubmitUiState#Hidden when postSubmitReviewResult is not success`() = runCollectingStateFlows {
+    fun `postSubmitBottomSheetUiState should equal to PostSubmitUiState#ShowThankYouToaster with null data when postSubmitReviewResult is not success`() = runCollectingStateFlows {
         mockSuccessGetReputationForm()
         mockSuccessGetReviewTemplate()
         mockSuccessGetProductIncentiveOvo()
@@ -776,7 +775,8 @@ class CreateReviewViewModelTest: CreateReviewViewModelTestFixture() {
         mockErrorPostSubmitBottomSheet()
         setInitialData()
         viewModel.submitReview()
-        assertInstanceOf<PostSubmitUiState.Hidden>(viewModel.postSubmitBottomSheetUiState.value)
+        assertInstanceOf<PostSubmitUiState.ShowThankYouToaster>(viewModel.postSubmitBottomSheetUiState.value)
+        Assert.assertEquals(null, (viewModel.postSubmitBottomSheetUiState.value as PostSubmitUiState.ShowThankYouToaster).data)
     }
 
     @Test
@@ -875,7 +875,6 @@ class CreateReviewViewModelTest: CreateReviewViewModelTestFixture() {
     @Test
     fun `topicsUiState should equal to CreateReviewTopicsUiState#Hidden when keywords is not empty and review topics inspiration is disabled`() = runCollectingStateFlows {
         mockStringAb("review_inspiration", "experiment_variant", "control_variant")
-        setShouldRunReviewTopicsPeekAnimation()
         mockSuccessGetReputationForm()
         mockSuccessGetReviewTemplate()
         mockSuccessGetProductIncentiveOvo()
@@ -886,7 +885,6 @@ class CreateReviewViewModelTest: CreateReviewViewModelTestFixture() {
     @Test
     fun `topicsUiState should equal to CreateReviewTopicsUiState#Showing when keywords is not empty and review topics inspiration is enabled`() = runCollectingStateFlows {
         mockStringAb("review_inspiration", "experiment_variant", "experiment_variant")
-        setShouldRunReviewTopicsPeekAnimation()
         mockSuccessGetReputationForm()
         mockSuccessGetReviewTemplate()
         mockSuccessGetProductIncentiveOvo()
