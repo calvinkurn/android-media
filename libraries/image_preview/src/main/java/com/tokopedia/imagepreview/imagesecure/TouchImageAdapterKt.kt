@@ -1,16 +1,19 @@
 package com.tokopedia.imagepreview.imagesecure
 
+import com.tokopedia.utils.image.ImageProcessingUtil.getBitmapFromPath
+import android.view.ViewGroup
+import com.tokopedia.design.image.TouchImageView
 import android.text.TextUtils
 import android.view.View
-import android.view.ViewGroup
 import android.webkit.URLUtil
 import android.widget.ImageView
 import androidx.viewpager.widget.PagerAdapter
-import com.tokopedia.design.image.TouchImageView
-import com.tokopedia.imagepreview.utils.loadPreviewImage
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loader.loadSecureImage
+import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.utils.image.ImageProcessingUtil.getBitmapFromPath
+import java.lang.Exception
+import java.util.ArrayList
 
 /**
  * Kotlin version of [com.tokopedia.design.list.adapter.TouchImageAdapter]
@@ -66,7 +69,17 @@ class TouchImageAdapterKt(
     }
 
     private fun handleUrlImage(imageView: ImageView, source: String) {
-        imageView.loadPreviewImage(source, userSessionInterface, isSecure)
+        if (isSecure) {
+            imageView.loadSecureImage(source, userSessionInterface) {
+                this.fitCenter()
+                this.setCacheStrategy(MediaCacheStrategy.DATA)
+            }
+        } else {
+            imageView.loadImage(source) {
+                this.fitCenter()
+                this.setCacheStrategy(MediaCacheStrategy.DATA)
+            }
+        }
     }
 
     private fun loadImageFromFile(imageView: ImageView, thumbnail: String) {
