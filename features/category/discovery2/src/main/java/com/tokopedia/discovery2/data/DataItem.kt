@@ -115,6 +115,9 @@ data class DataItem(
     @SerializedName("action")
     val action: String? = "",
 
+    @SerializedName("move_action")
+    val moveAction: MoveAction? = null,
+
     @SerializedName("notification_title")
     val notificationTitle: String? = "",
 

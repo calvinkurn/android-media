@@ -76,6 +76,7 @@ import com.tokopedia.discovery2.data.ParamsForOpenScreen
 import com.tokopedia.discovery2.data.ScrollData
 import com.tokopedia.discovery2.data.productcarditem.DiscoATCRequestParams
 import com.tokopedia.discovery2.datamapper.discoComponentQuery
+import com.tokopedia.discovery2.datamapper.discoveryPageData
 import com.tokopedia.discovery2.datamapper.getSectionPositionMap
 import com.tokopedia.discovery2.datamapper.setCartData
 import com.tokopedia.discovery2.di.DiscoveryComponent
@@ -90,6 +91,7 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Compa
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.DYNAMIC_SUBTITLE
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.EMBED_CATEGORY
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.END_POINT
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.FORCED_NAVIGATION
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.PIN_PRODUCT
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.PRODUCT_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.QUERY_PARENT
@@ -132,7 +134,6 @@ import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
-import com.tokopedia.media.loader.loadImage
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
@@ -158,7 +159,6 @@ import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScro
 import com.tokopedia.searchbar.navigation_component.util.StatusBarUtil
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.TabsUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -2274,5 +2274,25 @@ open class DiscoveryFragment :
     private fun getNavIconBuilderFlag(): IconBuilderFlag {
         val pageSource = if(isFromCategory) NavSource.CLP else NavSource.DISCOVERY
         return IconBuilderFlag(pageSource, pageEndPoint)
+    }
+
+    fun redirectToOtherTab(queryParams: String?) {
+        val queryParameterMapWithRpc = mutableMapOf<String, String>()
+        val queryParameterMapWithoutRpc = mutableMapOf<String, String>()
+
+        Utils.setParameterMapUtil(queryParams, queryParameterMapWithRpc, queryParameterMapWithoutRpc)
+
+        val activeTab = queryParameterMapWithoutRpc[ACTIVE_TAB]?.toIntOrNull()
+
+        if (activeTab != null) {
+
+            discoveryPageData[discoveryViewModel.pageIdentifier]?.let {
+                it.queryParamMapWithRpc.putAll(queryParameterMapWithRpc)
+                it.queryParamMapWithoutRpc.putAll(queryParameterMapWithoutRpc)
+            }
+
+            this.arguments?.putString(FORCED_NAVIGATION, "true")
+            discoveryViewModel.getDiscoveryData(discoveryViewModel.getQueryParameterMapFromBundle(arguments), userAddressData, true)
+        }
     }
 }

@@ -126,4 +126,7 @@ object Constant {
         const val STATUS = "status"
         const val PROMO = "promo"
     }
+
+    const val REDIRECTION = "redirection"
+    const val NAVIGATION = "navigation"
 }

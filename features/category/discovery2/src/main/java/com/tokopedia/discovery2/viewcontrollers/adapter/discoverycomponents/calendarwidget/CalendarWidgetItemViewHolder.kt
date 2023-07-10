@@ -209,7 +209,11 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
                             TIMER_DATE_FORMAT
                         )
                     ) {
-                        RouteManager.route(itemView.context, cta)
+                        if(dataItem.moveAction?.type != null) {
+                            Utils.routingBasedOnMoveAction(dataItem.moveAction, fragment)
+                        }else{
+                            RouteManager.route(itemView.context, cta)
+                        }
                         calendarWidgetItemViewModel?.let { calendarWidgetItemViewModel ->
                             (fragment as DiscoveryFragment).getDiscoveryAnalytics()
                                 .trackEventClickCalendarWidget(calendarWidgetItemViewModel.components, calendarWidgetItemViewModel.getUserId())

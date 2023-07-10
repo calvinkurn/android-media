@@ -7,11 +7,8 @@ import com.tokopedia.discovery2.Constant.Calendar.STATIC
 import com.tokopedia.discovery2.Constant.ProductTemplate.GRID
 import com.tokopedia.discovery2.Constant.TopAdsSdk.TOP_ADS_GSLP_TDN
 import com.tokopedia.discovery2.Utils
-import com.tokopedia.discovery2.Utils.Companion.TIMER_DATE_FORMAT
 import com.tokopedia.discovery2.Utils.Companion.areFiltersApplied
 import com.tokopedia.discovery2.Utils.Companion.getElapsedTime
-import com.tokopedia.discovery2.Utils.Companion.isSaleOver
-import com.tokopedia.discovery2.Utils.Companion.parseFlashSaleDate
 import com.tokopedia.discovery2.analytics.EMPTY_STRING
 import com.tokopedia.discovery2.data.*
 import com.tokopedia.discovery2.data.ErrorState.NetworkErrorState
@@ -19,6 +16,7 @@ import com.tokopedia.discovery2.data.Properties
 import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapper
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.ACTIVE_TAB
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.CATEGORY_ID
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.FORCED_NAVIGATION
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.RECOM_PRODUCT_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.TARGET_COMP_ID
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.youtubeview.AutoPlayController
@@ -69,7 +67,7 @@ fun mapDiscoveryResponseToPageData(
 
 class DiscoveryPageDataMapper(
     private val pageInfo: PageInfo,
-    private val queryParameterMap: Map<String, String?>,
+    private val queryParameterMap: MutableMap<String, String?>,
     private val queryParameterMapWithRpc: Map<String, String>,
     private val queryParameterMapWithoutRpc: Map<String, String>,
     private val localCacheModel: LocalCacheModel?,
@@ -289,6 +287,19 @@ class DiscoveryPageDataMapper(
         }
         if (component.getComponentsItem().isNullOrEmpty()) {
             component.setComponentsItem(DiscoveryDataMapper.mapTabsListToComponentList(component, ComponentNames.TabsItem.componentName), component.tabName)
+        } else if (!component.getComponentsItem().isNullOrEmpty() && queryParameterMap[FORCED_NAVIGATION] == "true") {
+            val activeTabIndex = queryParameterMapWithoutRpc[ACTIVE_TAB]?.toIntOrNull()
+            if (activeTabIndex != null) {
+                component.getComponentsItem()?.forEachIndexed { index, it ->
+                    if(activeTabIndex == index + 1) {
+                        Utils.setTabSelectedBasedOnDataItem(it,true)
+                    }else{
+                        Utils.setTabSelectedBasedOnDataItem(it,false)
+                    }
+                }
+            }
+            queryParameterMap.remove(FORCED_NAVIGATION)
+            component.shouldRefreshComponent = true
         }
         component.getComponentsItem()?.forEachIndexed { index, it ->
             it.apply {

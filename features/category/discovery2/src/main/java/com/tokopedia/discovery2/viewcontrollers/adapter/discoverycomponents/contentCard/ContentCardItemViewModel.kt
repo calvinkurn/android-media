@@ -7,6 +7,7 @@ import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
+import com.tokopedia.discovery2.data.MoveAction
 import com.tokopedia.discovery2.data.multibannerresponse.timmerwithbanner.TimerDataModel
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.banners.timerbanners.SaleCountDownTimer
@@ -85,8 +86,8 @@ class ContentCardItemViewModel(val application: Application, val components: Com
 
     fun getComponentLiveData(): LiveData<ComponentsItem> = componentData
 
-    fun getNavigationUrl(): String? {
-        return getDataItem()?.landingPage?.appLink
+    fun getNavigationAction(): MoveAction? {
+        return getDataItem()?.moveAction
     }
 
     private fun getDataItem(): DataItem? {
