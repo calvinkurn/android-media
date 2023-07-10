@@ -2115,7 +2115,8 @@ class CartListPresenter @Inject constructor(
                         Product(
                             it.productId.toLong(),
                             it.isFreeShipping,
-                            it.isFreeShippingExtra
+                            it.isFreeShippingExtra,
+                            it.shopHolderData.shopId
                         )
                     }
                 }
