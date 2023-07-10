@@ -205,8 +205,6 @@ class FeedFragment :
         super.onCreate(savedInstanceState)
         childFragmentManager.fragmentFactory = fragmentFactory
 
-
-
         arguments?.let {
             data = it.getParcelable(ARGUMENT_DATA)
         } ?: savedInstanceState?.let {
