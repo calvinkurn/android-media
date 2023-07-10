@@ -9,6 +9,10 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.network.exception.ResponseErrorException
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
+import com.tokopedia.common_sdk_affiliate_toko.model.AffiliatePageDetail
+import com.tokopedia.common_sdk_affiliate_toko.model.AffiliateSdkPageSource
+import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateAtcSource
+import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
 import com.tokopedia.content.common.comment.usecase.GetCountCommentsUseCase
 import com.tokopedia.content.common.usecase.BroadcasterReportTrackViewerUseCase
 import com.tokopedia.content.common.usecase.TrackVisitChannelBroadcasterUseCase
@@ -39,6 +43,7 @@ import com.tokopedia.feedplus.presentation.util.common.FeedLikeAction
 import com.tokopedia.kolcommon.domain.interactor.SubmitActionContentUseCase
 import com.tokopedia.kolcommon.domain.interactor.SubmitLikeContentUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.decodeToUtf8
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.mvcwidget.TokopointsCatalogMVCSummary
@@ -88,6 +93,7 @@ class FeedPostViewModel @Inject constructor(
     private val mvcSummaryUseCase: MVCSummaryUseCase,
     private val topAdsAddressHelper: TopAdsAddressHelper,
     private val getCountCommentsUseCase: GetCountCommentsUseCase,
+    private val affiliateCookieHelper: AffiliateCookieHelper,
     private val trackVisitChannelUseCase: TrackVisitChannelBroadcasterUseCase,
     private val trackReportTrackViewerUseCase: BroadcasterReportTrackViewerUseCase,
     private val dispatchers: CoroutineDispatchers
@@ -732,6 +738,23 @@ class FeedPostViewModel @Inject constructor(
     }
 
     private suspend fun addToCart(product: FeedTaggedProductUiModel) = withContext(dispatchers.io) {
+        product.affiliate.let { affiliate ->
+            if (affiliate.id.isNotEmpty() && affiliate.channel.isNotEmpty()) {
+                affiliateCookieHelper.initCookie(
+                    affiliate.id.decodeToUtf8(),
+                    affiliate.channel,
+                    AffiliatePageDetail(
+                        pageId = product.id,
+                        source = AffiliateSdkPageSource.DirectATC(
+                            atcSource = AffiliateAtcSource.SHOP_PAGE,
+                            null,
+                            null
+                        )
+                    )
+                )
+            }
+        }
+
         addToCartUseCase.apply {
             setParams(
                 AddToCartUseCase.getMinimumParams(
