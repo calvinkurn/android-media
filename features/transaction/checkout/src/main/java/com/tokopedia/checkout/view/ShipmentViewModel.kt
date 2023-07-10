@@ -707,6 +707,9 @@ class ShipmentViewModel @Inject constructor(
                     enhancedECommerceProductCartMapData.setDimension118(
                         cartItemModel.bundleId
                     )
+                    enhancedECommerceProductCartMapData.setCartStringGroup(
+                        cartItemModel.cartStringGroup
+                    )
                     enhancedECommerceCheckout.addProduct(
                         enhancedECommerceProductCartMapData.getProduct()
                     )

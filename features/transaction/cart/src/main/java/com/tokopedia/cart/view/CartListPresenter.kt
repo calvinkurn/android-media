@@ -1422,6 +1422,7 @@ class CartListPresenter @Inject constructor(
             } else {
                 setBoAffordability("")
             }
+            setCartStringGroup(cartItemHolderData.cartString)
         }
         return enhancedECommerceProductCartMapData
     }
