@@ -10,11 +10,10 @@ import android.content.SharedPreferences
 import android.graphics.Rect
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
-import android.os.Build
-import android.os.Bundle
-import android.os.Handler
+import android.os.*
 import android.text.TextUtils
 import android.util.DisplayMetrics
+import android.view.Choreographer
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -40,7 +39,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.SnackbarRetry
 import com.tokopedia.analytics.performance.fpi.FpiPerformanceData
 import com.tokopedia.analytics.performance.fpi.FragmentFramePerformanceIndexMonitoring
 import com.tokopedia.analytics.performance.fpi.FragmentFramePerformanceIndexMonitoring.OnFrameListener
-import com.tokopedia.analytics.performance.perf.PerformanceTrace
+import com.tokopedia.analytics.performance.perf.*
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -224,6 +223,9 @@ import com.tokopedia.weaver.Weaver.Companion.executeWeaveCoRoutineWithFirebase
 import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
 import dagger.Lazy
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import rx.Observable
 import rx.schedulers.Schedulers
 import java.io.UnsupportedEncodingException
@@ -416,7 +418,11 @@ open class HomeRevampFragment :
 
     private val navToolbarMicroInteraction: NavToolbarMicroInteraction? by navToolbarMicroInteraction()
 
-    private val performanceTrace = PerformanceTrace(PERFORMANCE_TRACE_HOME)
+    private val performanceTrace = BlocksPerformanceTrace(
+        context?.applicationContext,
+        PERFORMANCE_TRACE_HOME,
+        lifecycleScope
+        )
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -555,6 +561,7 @@ open class HomeRevampFragment :
     private fun castContextToHomeCoachmarkListener(context: Context): HomeCoachmarkListener? =
         if (context is HomeCoachmarkListener) context else null
 
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         BenchmarkHelper.beginSystraceSection(TRACE_INFLATE_HOME_FRAGMENT)
         isUsingNewPullRefresh = isUseNewPullRefresh()
@@ -575,7 +582,7 @@ open class HomeRevampFragment :
             viewLifecycleOwner.lifecycle.addObserver(fragmentFramePerformanceIndexMonitoring)
         }
         navToolbar = view.findViewById(R.id.navToolbar)
-
+        performanceTrace.addViewPerformanceBlocks(navToolbar)
         statusBarBackground = view.findViewById(R.id.status_bar_bg)
         homeRecyclerView = view.findViewById(R.id.home_fragment_recycler_view)
         homeRecyclerView?.setHasFixedSize(true)
@@ -1072,6 +1079,7 @@ open class HomeRevampFragment :
         if (activityStateListener != null) {
             activityStateListener!!.onPause()
         }
+        performanceTrace.finishOnPaused()
     }
 
     override fun onStop() {
@@ -1200,26 +1208,26 @@ open class HomeRevampFragment :
                         hideLoading()
                         showNetworkError(getErrorStringWithDefault(throwable))
                         onPageLoadTimeEnd()
-                        performanceTrace.setPageState(PerformanceTrace.STATE_PARTIALLY_ERROR)
+                        performanceTrace.setPageState(BlocksPerformanceTrace.BlocksPerfState.STATE_PARTIALLY_ERROR)
                     }
                     status === Result.Status.ERROR_PAGINATION -> {
                         hideLoading()
                         showNetworkError(getErrorStringWithDefault(throwable))
-                        performanceTrace.setPageState(PerformanceTrace.STATE_PARTIALLY_ERROR)
+                        performanceTrace.setPageState(BlocksPerformanceTrace.BlocksPerfState.STATE_PARTIALLY_ERROR)
                     }
                     status === Result.Status.ERROR_ATF -> {
                         hideLoading()
                         showNetworkError(getErrorStringWithDefault(throwable))
                         adapter?.resetChannelErrorState()
                         adapter?.resetAtfErrorState()
-                        performanceTrace.setPageState(PerformanceTrace.STATE_PARTIALLY_ERROR)
+                        performanceTrace.setPageState(BlocksPerformanceTrace.BlocksPerfState.STATE_PARTIALLY_ERROR)
                     }
                     status == Result.Status.ERROR_GENERAL -> {
                         val errorString = getErrorStringWithDefault(throwable)
                         showNetworkError(errorString)
                         NetworkErrorHelper.showEmptyState(activity, root, errorString) { onRefresh() }
                         onPageLoadTimeEnd()
-                        performanceTrace.cancelPerformanceTrace(PerformanceTrace.STATE_ERROR)
+                        performanceTrace.setPageState(BlocksPerformanceTrace.BlocksPerfState.STATE_ERROR)
                     }
                     else -> {
                         showLoading()
@@ -1320,11 +1328,11 @@ open class HomeRevampFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         performanceTrace.init(
             v = view.rootView,
-            scope = this.lifecycleScope,
-            touchListenerActivity = activity as? TouchListenerActivity
-        )
+            touchListenerActivity = activity as? TouchListenerActivity,
+        ) { summaryModel: BlocksSummaryModel, capturedBlocks: Set<String> -> }
         observeSearchHint()
     }
 
@@ -1343,7 +1351,7 @@ open class HomeRevampFragment :
                 visitableListCount = data.size,
                 scrollPosition = layoutManager?.findLastVisibleItemPosition()
             )
-            performanceTrace.setLoadableComponentList(data)
+            performanceTrace.setBlock(data)
             adapter?.submitList(data)
         }
     }

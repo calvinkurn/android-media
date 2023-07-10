@@ -798,8 +798,8 @@ class FeedFragment :
 
     private fun observePostData() {
         feedPostViewModel.feedHome.observe(viewLifecycleOwner) {
-            binding.swipeRefreshFeedLayout.isRefreshing = false
             hideLoading()
+            binding.swipeRefreshFeedLayout.isRefreshing = false
             adapter.hideLoading()
             when (it) {
                 is Success -> {
