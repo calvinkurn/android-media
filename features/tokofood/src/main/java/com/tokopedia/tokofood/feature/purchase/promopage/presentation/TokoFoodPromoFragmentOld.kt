@@ -18,12 +18,14 @@ import com.tokopedia.abstraction.base.view.fragment.BaseMultiFragment
 import com.tokopedia.abstraction.base.view.fragment.IBaseMultiFragment
 import com.tokopedia.abstraction.base.view.fragment.enums.BaseMultiFragmentLaunchMode
 import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.exception.ResponseErrorException
+import com.tokopedia.tokofood.common.presentation.view.BaseTokofoodActivity
 import com.tokopedia.tokofood.common.presentation.view.BaseTokofoodActivityOld
 import com.tokopedia.tokofood.common.util.TokofoodErrorLogger
 import com.tokopedia.tokofood.common.util.TokofoodRouteManager
@@ -70,6 +72,10 @@ class TokoFoodPromoFragmentOld : BaseMultiFragment(),
         arguments?.getString(MERCHANT_ID_KEY).orEmpty()
     }
 
+    private val isNew by lazy(LazyThreadSafetyMode.NONE) {
+        arguments?.getBoolean(IS_NEW_KEY).orFalse()
+    }
+
     private val adapterTypeFactory by lazy(LazyThreadSafetyMode.NONE) {
         TokoFoodPromoAdapterTypeFactory(this)
     }
@@ -91,12 +97,16 @@ class TokoFoodPromoFragmentOld : BaseMultiFragment(),
 
         private const val SOURCE_KEY = "source_key"
         private const val MERCHANT_ID_KEY = "merchant_id_key"
+        private const val IS_NEW_KEY = "is_new"
 
         fun createInstance(source: String,
-                           merchantId: String? = null): TokoFoodPromoFragmentOld {
+                           merchantId: String? = null,
+                           isNew: Boolean = false
+        ): TokoFoodPromoFragmentOld {
             return TokoFoodPromoFragmentOld().apply {
                 arguments = Bundle().apply {
                     putString(SOURCE_KEY, source)
+                    putBoolean(IS_NEW_KEY, isNew)
                     merchantId?.let {
                         putString(MERCHANT_ID_KEY, it)
                     }
@@ -170,7 +180,11 @@ class TokoFoodPromoFragmentOld : BaseMultiFragment(),
     }
 
     override fun onBackPressed() {
-        (activity as? BaseTokofoodActivityOld)?.onBackPressed()
+        if (isNew) {
+            (activity as? BaseTokofoodActivity)?.onBackPressed()
+        } else {
+            (activity as? BaseTokofoodActivityOld)?.onBackPressed()
+        }
     }
 
     private fun setupRecyclerView() {

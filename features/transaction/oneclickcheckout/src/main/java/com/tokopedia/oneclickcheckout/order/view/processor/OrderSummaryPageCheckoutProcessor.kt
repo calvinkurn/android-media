@@ -156,7 +156,7 @@ class OrderSummaryPageCheckoutProcessor @Inject constructor(
                     )
                 }
             }
-            if (prescriptionIds != null && prescriptionIds.isNotEmpty()) {
+            if (!prescriptionIds.isNullOrEmpty()) {
                 orderMetadata.add(
                     OrderMetadata(
                         PRESCRIPTION_IDS_METADATA,

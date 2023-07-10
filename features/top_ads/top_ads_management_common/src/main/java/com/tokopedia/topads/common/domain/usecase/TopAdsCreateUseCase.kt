@@ -391,6 +391,10 @@ class TopAdsCreateUseCase @Inject constructor(val userSession: UserSessionInterf
         return input
     }
 
+    fun createRequestParamForInsight2(topAdsManagePromoGroupProductInput: TopadsManagePromoGroupProductInput): RequestParams {
+        return topAdsManagePromoGroupProductInput.convertToRequestParam()
+    }
+
     private fun TopadsManagePromoGroupProductInput.convertToRequestParam(): RequestParams {
         val param = RequestParams.create()
         val variable: HashMap<String, Any> = HashMap()
