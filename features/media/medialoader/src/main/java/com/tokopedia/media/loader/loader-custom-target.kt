@@ -85,7 +85,7 @@ fun <T : View> loadImageWithTarget(
 
 @Deprecated(
     message = "This function is too verbose, please use getBitmapImageUrl() extension instead",
-    replaceWith = ReplaceWith("getBitmapImageUrl")
+    replaceWith = ReplaceWith("imageUrl.getBitmapImageUrl(context, properties)")
 )
 fun loadImageWithEmptyTarget(
     context: Context,
