@@ -7,7 +7,6 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.mvc.R
 import com.tokopedia.mvc.domain.entity.Voucher
 import com.tokopedia.mvc.domain.entity.VoucherCreationMetadata
-import com.tokopedia.mvc.domain.entity.enums.SubsidyInfo
 import com.tokopedia.mvc.domain.entity.enums.VoucherStatus
 import com.tokopedia.mvc.domain.usecase.GetInitiateVoucherPageUseCase
 import com.tokopedia.mvc.presentation.detail.VoucherDetailFragment
@@ -108,7 +107,7 @@ class MoreMenuViewModel @Inject constructor(
         // return subsidy voucher menu, isVps is always false here
         else if (voucher.isSubsidy) {
             getOngoingVpsSubsidyMenu()
-        } else if (isSubsidy(voucher)) {
+        } else if (!voucher.isEditable) {
             getOngoingVpsSubsidyMenu()
         } else {
             // return seller create voucher menu
@@ -124,7 +123,7 @@ class MoreMenuViewModel @Inject constructor(
         // return subsidy voucher menu
         else if (voucher.isSubsidy) {
             getUpcomingVpsSubsidyMenu()
-        } else if (isSubsidy(voucher)) {
+        } else if (!voucher.isEditable) {
             getUpcomingVpsSubsidyMenu()
         }
         // return seller created voucher menu
@@ -345,16 +344,5 @@ class MoreMenuViewModel @Inject constructor(
                 StringHandler.ResourceString(R.string.voucher_bs_ubah_batalkan)
             )
         )
-    }
-
-    private fun isSubsidy(voucher: Voucher): Boolean {
-        return when (voucher.labelVoucher.labelSubsidyInfo) {
-            SubsidyInfo.NOT_SUBSIDIZED -> {
-                false
-            }
-            SubsidyInfo.FULL_SUBSIDIZED, SubsidyInfo.PARTIALLY_SUBSIDIZED -> {
-                true
-            }
-        }
     }
 }
