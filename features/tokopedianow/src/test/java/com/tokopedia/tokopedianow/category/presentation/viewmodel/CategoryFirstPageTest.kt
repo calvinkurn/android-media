@@ -12,7 +12,7 @@ import com.tokopedia.tokopedianow.util.TestUtils.mockPrivateField
 import com.tokopedia.unit.test.ext.verifyValueEquals
 import org.junit.Test
 
-class CategoryFirstPageTest: TokoNowCategoryViewModelTestFixture() {
+class CategoryFirstPageTest : TokoNowCategoryViewModelTestFixture() {
 
     @Test
     fun `getFirstPage should return result with first 3 showcases for the first page of pagination`() {
@@ -48,7 +48,7 @@ class CategoryFirstPageTest: TokoNowCategoryViewModelTestFixture() {
 
         // map choose address
         val chooseAddressUiModel = categoryDetailResponse
-            .mapToChooseAddress()
+            .mapToChooseAddress(addressData)
 
         // map ticker
         val tickerDataList = TickerMapper.mapTickerData(
@@ -79,7 +79,7 @@ class CategoryFirstPageTest: TokoNowCategoryViewModelTestFixture() {
             tickerUiModel,
             titleUiModel,
             categoryNavigationUiModel,
-            productRecommendationUiModel,
+            productRecommendationUiModel
         )
 
         val categoryNavigationList = categoryNavigationUiModel.categoryListUiModel.toMutableList()
@@ -96,8 +96,8 @@ class CategoryFirstPageTest: TokoNowCategoryViewModelTestFixture() {
             .verifyValueEquals(
                 CategoryOpenScreenTrackerModel(
                     id = categoryDetailResponse.categoryDetail.data.id,
-                    name= categoryDetailResponse.categoryDetail.data.name,
-                    url=categoryDetailResponse.categoryDetail.data.url
+                    name = categoryDetailResponse.categoryDetail.data.name,
+                    url = categoryDetailResponse.categoryDetail.data.url
                 )
             )
         viewModel.categoryPage
@@ -140,7 +140,7 @@ class CategoryFirstPageTest: TokoNowCategoryViewModelTestFixture() {
 
         // map choose address
         val chooseAddressUiModel = categoryDetailResponse
-            .mapToChooseAddress()
+            .mapToChooseAddress(addressData)
 
         // map ticker
         val tickerDataList = TickerMapper.mapTickerData(
@@ -171,7 +171,7 @@ class CategoryFirstPageTest: TokoNowCategoryViewModelTestFixture() {
             tickerUiModel,
             titleUiModel,
             categoryNavigationUiModel,
-            productRecommendationUiModel,
+            productRecommendationUiModel
         )
 
         val categoryNavigationList = categoryNavigationUiModel.categoryListUiModel.toMutableList()
@@ -189,8 +189,8 @@ class CategoryFirstPageTest: TokoNowCategoryViewModelTestFixture() {
             .verifyValueEquals(
                 CategoryOpenScreenTrackerModel(
                     id = categoryDetailResponse.categoryDetail.data.id,
-                    name= categoryDetailResponse.categoryDetail.data.name,
-                    url=categoryDetailResponse.categoryDetail.data.url
+                    name = categoryDetailResponse.categoryDetail.data.name,
+                    url = categoryDetailResponse.categoryDetail.data.url
                 )
             )
         viewModel.categoryPage

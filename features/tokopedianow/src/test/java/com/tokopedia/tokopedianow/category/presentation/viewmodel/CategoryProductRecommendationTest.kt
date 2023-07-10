@@ -10,7 +10,7 @@ import com.tokopedia.tokopedianow.util.TestUtils.mockPrivateField
 import com.tokopedia.unit.test.ext.verifyValueEquals
 import org.junit.Test
 
-class CategoryProductRecommendationTest: TokoNowCategoryViewModelTestFixture() {
+class CategoryProductRecommendationTest : TokoNowCategoryViewModelTestFixture() {
     @Test
     fun `after getFirstPage, call removeProductRecommendation to remove the recommendation in the layout`() {
         val isLoggedIn = true
@@ -45,7 +45,7 @@ class CategoryProductRecommendationTest: TokoNowCategoryViewModelTestFixture() {
 
         // map choose address
         val chooseAddressUiModel = categoryDetailResponse
-            .mapToChooseAddress()
+            .mapToChooseAddress(addressData)
 
         // map ticker
         val tickerDataList = TickerMapper.mapTickerData(
@@ -70,7 +70,7 @@ class CategoryProductRecommendationTest: TokoNowCategoryViewModelTestFixture() {
             chooseAddressUiModel,
             tickerUiModel,
             titleUiModel,
-            categoryNavigationUiModel,
+            categoryNavigationUiModel
         )
 
         val categoryNavigationList = categoryNavigationUiModel.categoryListUiModel.toMutableList()
@@ -90,7 +90,7 @@ class CategoryProductRecommendationTest: TokoNowCategoryViewModelTestFixture() {
     }
 
     @Test
-    fun `modify layout while its value is null should make removeProductRecommendation error and do nothing`()  {
+    fun `modify layout while its value is null should make removeProductRecommendation error and do nothing`() {
         val privateFieldNameLayout = "layout"
 
         viewModel.mockPrivateField(

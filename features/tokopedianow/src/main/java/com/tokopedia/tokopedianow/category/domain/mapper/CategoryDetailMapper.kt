@@ -1,5 +1,6 @@
 package com.tokopedia.tokopedianow.category.domain.mapper
 
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.tokopedianow.category.domain.response.CategoryDetailResponse
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryTitleUiModel
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryHeaderSpaceUiModel
@@ -13,9 +14,14 @@ internal object CategoryDetailMapper {
         backgroundLightColor = categoryDetail.data.color
     )
 
-    fun CategoryDetailResponse.mapToChooseAddress(): TokoNowChooseAddressWidgetUiModel = TokoNowChooseAddressWidgetUiModel(
-        backgroundLightColor = categoryDetail.data.color
-    )
+    fun CategoryDetailResponse.mapToChooseAddress(
+        addressData: LocalCacheModel
+    ): TokoNowChooseAddressWidgetUiModel {
+        return TokoNowChooseAddressWidgetUiModel(
+            backgroundLightColor = categoryDetail.data.color,
+            addressData = addressData
+        )
+    }
 
     fun CategoryDetailResponse.mapToCategoryTitle(): CategoryTitleUiModel = CategoryTitleUiModel(
         title = categoryDetail.data.name,
