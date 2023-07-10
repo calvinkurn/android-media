@@ -456,6 +456,11 @@ class LoginHelperFragment : BaseDaggerFragment(), LoginHelperClickListener {
         }
     }
 
+    override fun onFragmentBackPressed(): Boolean {
+        backToPreviousScreen()
+        return true
+    }
+
     private fun backToPreviousScreen() {
         val state = RouteManager.route(context, ApplinkConst.HOME)
         if (!state) {

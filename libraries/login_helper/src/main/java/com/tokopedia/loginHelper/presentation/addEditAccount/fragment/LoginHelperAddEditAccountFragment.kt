@@ -1,7 +1,6 @@
 package com.tokopedia.loginHelper.presentation.addEditAccount.fragment
 
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -24,7 +23,6 @@ import com.tokopedia.loginHelper.databinding.FragmentLoginHelperAddEditAccountBi
 import com.tokopedia.loginHelper.di.component.DaggerLoginHelperComponent
 import com.tokopedia.loginHelper.domain.LoginHelperEnvType
 import com.tokopedia.loginHelper.domain.entity.PageMode
-import com.tokopedia.loginHelper.presentation.accountSettings.LoginHelperAccountSettingsActivity
 import com.tokopedia.loginHelper.presentation.addEditAccount.customview.SaveToLocalCoachmark
 import com.tokopedia.loginHelper.presentation.addEditAccount.viewmodel.LoginHelperAddEditAccountViewModel
 import com.tokopedia.loginHelper.presentation.addEditAccount.viewmodel.state.LoginHelperAddEditAccountAction
@@ -170,8 +168,12 @@ class LoginHelperAddEditAccountFragment : BaseDaggerFragment() {
     }
 
     private fun goToAccountSettingsScreen() {
-        val intent = Intent(activity, LoginHelperAccountSettingsActivity::class.java)
-        startActivity(intent)
+        RouteManager.route(context, ApplinkConstInternalGlobal.LOGIN_HELPER_ACCOUNTS_SETTINGS)
+    }
+
+    override fun onFragmentBackPressed(): Boolean {
+        goToAccountSettingsScreen()
+        return true
     }
 
     private fun showSuccessAndGoToHomePage(isRemote: Boolean = false) {

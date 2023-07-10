@@ -77,5 +77,4 @@ class LoginHelperAddEditAccountActivity : BaseSimpleActivity() {
     private val userId by lazy {
         intent?.extras?.getLong(BundleConstants.LOGIN_HELPER_USER_ID)
     }
-
 }

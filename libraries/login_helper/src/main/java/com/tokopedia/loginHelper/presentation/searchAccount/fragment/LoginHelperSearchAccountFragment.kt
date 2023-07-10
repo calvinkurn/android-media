@@ -1,6 +1,5 @@
 package com.tokopedia.loginHelper.presentation.searchAccount.fragment
 
-import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -30,7 +29,6 @@ import com.tokopedia.loginHelper.di.component.DaggerLoginHelperComponent
 import com.tokopedia.loginHelper.domain.LoginHelperEnvType
 import com.tokopedia.loginHelper.domain.uiModel.users.LoginDataUiModel
 import com.tokopedia.loginHelper.domain.uiModel.users.UserDataUiModel
-import com.tokopedia.loginHelper.presentation.accountSettings.LoginHelperAccountSettingsActivity
 import com.tokopedia.loginHelper.presentation.addEditAccount.LoginHelperAddEditAccountActivity
 import com.tokopedia.loginHelper.presentation.searchAccount.adapter.LoginHelperSearchAdapter
 import com.tokopedia.loginHelper.presentation.searchAccount.adapter.listener.LoginHelperSearchListener
@@ -246,9 +244,12 @@ class LoginHelperSearchAccountFragment : BaseDaggerFragment(), LoginHelperSearch
     }
 
     private fun handleBackButtonPress() {
-        val intent = Intent(activity, LoginHelperAccountSettingsActivity::class.java)
-        startActivity(intent)
-        activity?.finish()
+        RouteManager.route(context, ApplinkConstInternalGlobal.LOGIN_HELPER_ACCOUNTS_SETTINGS)
+    }
+
+    override fun onFragmentBackPressed(): Boolean {
+        handleBackButtonPress()
+        return true
     }
 
     override fun initInjector() {

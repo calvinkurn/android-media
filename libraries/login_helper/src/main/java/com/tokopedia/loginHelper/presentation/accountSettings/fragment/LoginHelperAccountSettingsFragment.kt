@@ -11,6 +11,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.loginHelper.databinding.FragmentLoginHelperAccountSettingsBinding
@@ -19,7 +21,6 @@ import com.tokopedia.loginHelper.presentation.accountSettings.viewmodel.LoginHel
 import com.tokopedia.loginHelper.presentation.accountSettings.viewmodel.state.LoginHelperAccountSettingsAction
 import com.tokopedia.loginHelper.presentation.accountSettings.viewmodel.state.LoginHelperAccountSettingsEvent
 import com.tokopedia.loginHelper.presentation.addEditAccount.LoginHelperAddEditAccountActivity
-import com.tokopedia.loginHelper.presentation.home.LoginHelperActivity
 import com.tokopedia.loginHelper.presentation.searchAccount.LoginHelperSearchActivity
 import com.tokopedia.url.TokopediaUrl.Companion.getInstance
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -101,9 +102,13 @@ class LoginHelperAccountSettingsFragment : BaseDaggerFragment() {
         }
     }
 
+    override fun onFragmentBackPressed(): Boolean {
+        backToPreviousScreen()
+        return true
+    }
+
     private fun backToPreviousScreen() {
-        val intent = Intent(activity, LoginHelperActivity::class.java)
-        startActivity(intent)
+        RouteManager.route(context, ApplinkConstInternalGlobal.LOGIN_HELPER)
     }
 
     private fun goToAddAccountScreen() {
