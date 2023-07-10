@@ -3,6 +3,7 @@ package com.tokopedia.people.data
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.content.common.model.FeedXHeaderRequestFields.CREATION
 import com.tokopedia.content.common.usecase.FeedXHeaderUseCase
+import com.tokopedia.content.common.types.ContentCommonUserType
 import com.tokopedia.feedcomponent.domain.usecase.GetUserProfileFeedPostsUseCase
 import com.tokopedia.feedcomponent.domain.usecase.shoprecom.ShopRecomUseCase
 import com.tokopedia.feedcomponent.domain.usecase.shoprecom.ShopRecomUseCase.Companion.VAL_LIMIT
@@ -10,12 +11,22 @@ import com.tokopedia.feedcomponent.domain.usecase.shoprecom.ShopRecomUseCase.Com
 import com.tokopedia.feedcomponent.people.model.MutationUiModel
 import com.tokopedia.feedcomponent.shoprecom.mapper.ShopRecomUiMapper
 import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomUiModel
+import com.tokopedia.people.model.GetProfileSettingsRequest
+import com.tokopedia.people.model.GetUserReviewListRequest
+import com.tokopedia.people.model.SetLikeStatusRequest
+import com.tokopedia.people.model.SetProfileSettingsRequest
+import com.tokopedia.people.views.uimodel.ProfileSettingsUiModel
+import com.tokopedia.people.views.uimodel.UserReviewUiModel
 import com.tokopedia.people.domains.GetUserProfileTabUseCase
 import com.tokopedia.people.domains.PlayPostContentUseCase
 import com.tokopedia.people.domains.PostBlockUserUseCase
 import com.tokopedia.people.domains.ProfileTheyFollowedUseCase
 import com.tokopedia.people.domains.UserDetailsUseCase
 import com.tokopedia.people.domains.VideoPostReminderUseCase
+import com.tokopedia.people.domains.GetProfileSettingsUseCase
+import com.tokopedia.people.domains.SetProfileSettingsUseCase
+import com.tokopedia.people.domains.GetUserReviewListUseCase
+import com.tokopedia.people.domains.SetLikeStatusUseCase
 import com.tokopedia.people.views.uimodel.content.UserFeedPostsUiModel
 import com.tokopedia.people.views.uimodel.content.UserPlayVideoUiModel
 import com.tokopedia.people.views.uimodel.mapper.UserProfileUiMapper
@@ -45,6 +56,10 @@ class UserProfileRepositoryImpl @Inject constructor(
     private val postBlockUserUseCase: PostBlockUserUseCase,
     private val updateChannelUseCase: UpdateChannelUseCase,
     private val feedXHeaderUseCase: FeedXHeaderUseCase,
+    private val getProfileSettingsUseCase: GetProfileSettingsUseCase,
+    private val setProfileSettingsUseCase: SetProfileSettingsUseCase,
+    private val getUserReviewListUseCase: GetUserReviewListUseCase,
+    private val setLikeStatusUseCase: SetLikeStatusUseCase,
 ) : UserProfileRepository {
 
     override suspend fun getProfile(username: String): ProfileUiModel {
@@ -148,6 +163,66 @@ class UserProfileRepositoryImpl @Inject constructor(
             UpdateChannelUseCase.createUpdateStatusRequest(channelId, userId, PlayChannelStatusType.Deleted)
         )
         updateChannelUseCase.executeOnBackground().id
+    }
+
+    override suspend fun getProfileSettings(userID: String): List<ProfileSettingsUiModel> = withContext(dispatcher.io) {
+        val response = getProfileSettingsUseCase(
+            GetProfileSettingsRequest(
+                authorID = userID,
+                authorType = ContentCommonUserType.VALUE_TYPE_ID_USER,
+            )
+        )
+
+        mapper.mapProfileSettings(response)
+    }
+
+    override suspend fun setShowReview(
+        userID: String,
+        settingID: String,
+        isShow: Boolean,
+    ) = withContext(dispatcher.io) {
+        setProfileSettingsUseCase(
+            SetProfileSettingsRequest(
+                authorID = userID,
+                authorType = ContentCommonUserType.VALUE_TYPE_ID_USER,
+                data = listOf(
+                    SetProfileSettingsRequest.Data(
+                        settingID = settingID,
+                        enabled = isShow,
+                    )
+                )
+            )
+        ).data.success
+    }
+
+    override suspend fun getUserReviewList(
+        userID: String,
+        limit: Int,
+        page: Int
+    ): UserReviewUiModel = withContext(dispatcher.io) {
+        val response = getUserReviewListUseCase(
+            GetUserReviewListRequest(
+                userID = userID,
+                limit = limit,
+                page = page,
+            )
+        )
+
+        mapper.mapUserReviewList(response, page)
+    }
+
+    override suspend fun setLikeStatus(
+        feedbackID: String,
+        isLike: Boolean,
+    ): UserReviewUiModel.LikeDislike = withContext(dispatcher.io) {
+        val response = setLikeStatusUseCase(
+            SetLikeStatusRequest(
+                feedbackID = feedbackID,
+                isLike = isLike,
+            )
+        )
+
+        mapper.mapSetLikeStatus(response)
     }
 
     companion object {

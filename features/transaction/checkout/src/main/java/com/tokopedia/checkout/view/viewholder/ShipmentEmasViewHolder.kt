@@ -1,84 +1,74 @@
 package com.tokopedia.checkout.view.viewholder
 
 import android.annotation.SuppressLint
-import android.view.View
-import android.widget.CheckBox
 import android.widget.CompoundButton
-import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.checkout.R
+import com.tokopedia.checkout.databinding.CheckoutHolderItemEmasBinding
 import com.tokopedia.checkout.view.ShipmentAdapterActionListener
 import com.tokopedia.checkout.view.uimodel.EgoldAttributeModel
-import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.purchase_platform.common.feature.bottomsheet.GeneralBottomSheet
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
-import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.currency.CurrencyFormatUtil
-import java.util.Locale
+import java.util.*
 
-class ShipmentEmasViewHolder(itemView: View, private val shipmentAdapterActionListener: ShipmentAdapterActionListener) : RecyclerView.ViewHolder(itemView) {
-    private val buyEmas: CheckBox = itemView.findViewById(R.id.cb_emas)
-    private val tvEmasTitle: Typography = itemView.findViewById(R.id.tv_emas_title)
-    private val tvEmasDesc: Typography = itemView.findViewById(R.id.tv_emas_sub_title)
-    private val imgEmasInfo: IconUnify = itemView.findViewById(R.id.img_emas_info)
-    private val llContainer: LinearLayout = itemView.findViewById(R.id.ll_container)
-    private val tvEmasHyperlink: Typography = itemView.findViewById(R.id.tv_emas_hyperlink)
+class ShipmentEmasViewHolder(private val binding: CheckoutHolderItemEmasBinding, private val shipmentAdapterActionListener: ShipmentAdapterActionListener) : RecyclerView.ViewHolder(binding.root) {
 
     @SuppressLint("NewApi")
     fun bindViewHolder(egoldAttributeModel: EgoldAttributeModel) {
-        llContainer.setOnClickListener {
+        binding.llContainer.setOnClickListener {
             if (egoldAttributeModel.isEnabled) {
-                buyEmas.isChecked = !buyEmas.isChecked
+                binding.cbEmas.isChecked = !binding.cbEmas.isChecked
             }
         }
-        buyEmas.isChecked = egoldAttributeModel.isChecked
-        tvEmasTitle.text = egoldAttributeModel.titleText
-        imgEmasInfo.setOnClickListener {
+        binding.cbEmas.isChecked = egoldAttributeModel.isChecked
+        binding.tvEmasTitle.text = egoldAttributeModel.titleText
+        binding.imgEmasInfo.setOnClickListener {
             if (egoldAttributeModel.isEnabled) {
                 showBottomSheet(egoldAttributeModel)
             }
         }
-        tvEmasDesc.text = MethodChecker.fromHtml(
+        binding.tvEmasSubTitle.text = MethodChecker.fromHtml(
             String.format(
-                llContainer.context.getString(R.string.emas_checkout_desc),
+                binding.root.context.getString(R.string.emas_checkout_desc),
                 egoldAttributeModel.subText,
                 CurrencyFormatUtil.convertPriceValueToIdrFormat(egoldAttributeModel.buyEgoldValue, false).removeDecimalSuffix()
             )
         )
-        buyEmas.setOnCheckedChangeListener { _: CompoundButton?, isChecked: Boolean ->
+        binding.cbEmas.setOnCheckedChangeListener { _: CompoundButton?, isChecked: Boolean ->
             if (egoldAttributeModel.isEnabled) {
                 shipmentAdapterActionListener.onEgoldChecked(isChecked)
             }
         }
 
         if (egoldAttributeModel.isShowHyperlink) {
-            tvEmasHyperlink.text = String.format(Locale.getDefault(), "(${egoldAttributeModel.hyperlinkText})")
-            tvEmasHyperlink.setOnClickListener {
+            binding.tvEmasHyperlink.text = String.format(Locale.getDefault(), "(${egoldAttributeModel.hyperlinkText})")
+            binding.tvEmasHyperlink.setOnClickListener {
                 RouteManager.route(
                     itemView.context,
                     String.format(Locale.getDefault(), "%s?url=%s", ApplinkConst.WEBVIEW, egoldAttributeModel.hyperlinkUrl)
                 )
             }
-            tvEmasHyperlink.visible()
+            binding.tvEmasHyperlink.visible()
         } else {
-            tvEmasHyperlink.gone()
+            binding.tvEmasHyperlink.gone()
         }
 
         if (egoldAttributeModel.isEnabled) {
-            buyEmas.isEnabled = true
+            binding.cbEmas.isEnabled = true
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-                llContainer.foreground = ContextCompat.getDrawable(llContainer.context, com.tokopedia.purchase_platform.common.R.drawable.fg_enabled_item)
+                binding.llContainer.foreground = ContextCompat.getDrawable(binding.root.context, com.tokopedia.purchase_platform.common.R.drawable.fg_enabled_item)
             }
         } else {
-            buyEmas.isEnabled = false
+            binding.cbEmas.isEnabled = false
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-                llContainer.foreground = ContextCompat.getDrawable(llContainer.context, com.tokopedia.purchase_platform.common.R.drawable.fg_disabled_item)
+                binding.llContainer.foreground = ContextCompat.getDrawable(binding.root.context, com.tokopedia.purchase_platform.common.R.drawable.fg_disabled_item)
             }
         }
     }
@@ -87,9 +77,9 @@ class ShipmentEmasViewHolder(itemView: View, private val shipmentAdapterActionLi
         GeneralBottomSheet().apply {
             setTitle(egoldAttributeModel.titleText ?: "")
             setDesc(egoldAttributeModel.tooltipText ?: "")
-            setButtonText(imgEmasInfo.context.getString(com.tokopedia.purchase_platform.common.R.string.label_button_bottomsheet_close))
+            setButtonText(binding.root.context.getString(com.tokopedia.purchase_platform.common.R.string.label_button_bottomsheet_close))
             setButtonOnClickListener { it.dismiss() }
-        }.show(llContainer.context, shipmentAdapterActionListener.currentFragmentManager)
+        }.show(binding.root.context, shipmentAdapterActionListener.currentFragmentManager)
     }
 
     companion object {

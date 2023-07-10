@@ -12,16 +12,19 @@ import org.hamcrest.CoreMatchers
 import org.hamcrest.Matcher
 
 // Duplicate Class For ScrollToViewAction with support for NestedScrollView descendants
-class NestedScrollViewScrollTo(scrollToAction: ViewAction = ViewActions.scrollTo()): ViewAction by scrollToAction {
+class NestedScrollViewScrollTo(scrollToAction: ViewAction = ViewActions.scrollTo()) : ViewAction by scrollToAction {
 
     override fun getConstraints(): Matcher<View> {
         return CoreMatchers.allOf(
-                ViewMatchers.withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE),
-                ViewMatchers.isDescendantOfA(
-                    CoreMatchers.anyOf(
-                                ViewMatchers.isAssignableFrom(NestedScrollView::class.java),
-                                ViewMatchers.isAssignableFrom(ScrollView::class.java),
-                                ViewMatchers.isAssignableFrom(HorizontalScrollView::class.java),
-                                ViewMatchers.isAssignableFrom(ListView::class.java))))
+            ViewMatchers.withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE),
+            ViewMatchers.isDescendantOfA(
+                CoreMatchers.anyOf(
+                    ViewMatchers.isAssignableFrom(NestedScrollView::class.java),
+                    ViewMatchers.isAssignableFrom(ScrollView::class.java),
+                    ViewMatchers.isAssignableFrom(HorizontalScrollView::class.java),
+                    ViewMatchers.isAssignableFrom(ListView::class.java)
+                )
+            )
+        )
     }
 }

@@ -39,7 +39,6 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomeHeaderDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomePayLaterWidgetDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.NewBusinessUnitWidgetDataModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PlayCardDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PopularKeywordListDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.ReviewDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.TickerDataModel
@@ -49,7 +48,6 @@ import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.model.ReminderEnum
 import com.tokopedia.home_component.usecase.todowidget.DismissTodoWidgetUseCase
 import com.tokopedia.home_component.visitable.MissionWidgetListDataModel
-import com.tokopedia.home_component.visitable.QuestWidgetModel
 import com.tokopedia.home_component.visitable.RecommendationListCarouselDataModel
 import com.tokopedia.home_component.visitable.ReminderWidgetModel
 import com.tokopedia.home_component.visitable.TodoWidgetListDataModel
@@ -408,14 +406,6 @@ open class HomeRevampViewModel @Inject constructor(
         }
     }
 
-    fun updateBannerTotalView(channelId: String?, totalView: String?) {
-        if (channelId == null || totalView == null) return
-        findWidget<PlayCardDataModel>(predicate = { it.playCardHome?.channelId == channelId }) { playCard, index ->
-            val newPlayCard = playCard.copy(playCardHome = playCard.playCardHome?.copy(totalView = totalView))
-            updateWidget(newPlayCard, index)
-        }
-    }
-
     fun onCloseTicker() {
         findWidget<TickerDataModel> { tickerModel, index -> deleteWidget(tickerModel, index) }
     }
@@ -672,13 +662,6 @@ open class HomeRevampViewModel @Inject constructor(
             updateHomeData(homeDataModel)
         }
     }
-
-    fun deleteQuestWidget() {
-        findWidget<QuestWidgetModel> { questWidgetModel, index ->
-            deleteWidget(questWidgetModel, index)
-        }
-    }
-
     fun getCMHomeWidgetData(isForceRefresh: Boolean = true) {
         findWidget<CMHomeWidgetDataModel> { cmHomeWidgetDataModel, index ->
             launchCatchError(coroutineContext, {

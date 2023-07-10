@@ -119,7 +119,7 @@ class AffiliateTransactionDetailViewModel @Inject constructor(
                 }
                 applink.value = deeplink
             },
-            onError = { it }
+            onError = { errorMessage.value = it }
         )
     }
 

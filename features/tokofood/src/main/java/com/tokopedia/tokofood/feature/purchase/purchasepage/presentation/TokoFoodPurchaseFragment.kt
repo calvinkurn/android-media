@@ -135,7 +135,7 @@ class TokoFoodPurchaseFragment :
     private var shopId = ""
     private var currentCartIdList: List<String> = listOf()
     private var isPaymentButtonLoading: Boolean = false
-    private var canPaymentButtonClicked: Boolean = false
+    private var canPaymentButtonClicked: Boolean = true
 
     override fun onAttachActivity(context: Context?) {
         super.onAttachActivity(context)
