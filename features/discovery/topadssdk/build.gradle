@@ -74,9 +74,6 @@ dependencies {
     ksp project(rootProject.ext.libraries.gqlKspProcessor)
     implementation rootProject.ext.miscDependencies.viewModelKtx
 
-    implementation('de.hdodenhof:circleimageview:2.2.0') {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    }
     androidTestImplementation rootProject.ext.testDependencies.androidAnnotation
 
     //test

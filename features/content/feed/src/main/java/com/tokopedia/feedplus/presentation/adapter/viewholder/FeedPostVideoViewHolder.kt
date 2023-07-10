@@ -202,20 +202,16 @@ class FeedPostVideoViewHolder(
             }
 
             if (payloads.contains(FEED_POST_SELECTED)) {
+                val trackerModel = trackerDataModel ?: trackerMapper.transformVideoContentToTrackerModel(it)
                 listener.onPostImpression(
-                    trackerDataModel ?: trackerMapper.transformVideoContentToTrackerModel(
-                        it
-                    ),
+                    trackerModel,
                     it.id,
                     absoluteAdapterPosition
                 )
+                campaignView.resetView()
                 campaignView.startAnimation()
                 mVideoPlayer?.resume()
-                listener.onWatchPostVideo(
-                    trackerDataModel ?: trackerMapper.transformVideoContentToTrackerModel(
-                        it
-                    )
-                )
+                listener.onWatchPostVideo(it, trackerModel)
             }
 
             if (payloads.contains(FEED_POST_NOT_SELECTED)) {

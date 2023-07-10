@@ -9,7 +9,6 @@ import com.tokopedia.homenav.common.TrackingConst.DEFAULT_EMPTY
 import com.tokopedia.homenav.common.TrackingConst.DEFAULT_PAGE_SOURCE
 import com.tokopedia.homenav.common.TrackingConst.EVENT_CLICK_NAVIGATION_DRAWER
 import com.tokopedia.homenav.common.TrackingConst.PAGE_SOURCE
-import com.tokopedia.homenav.mainnav.domain.model.NavFavoriteShopModel
 import com.tokopedia.homenav.mainnav.domain.model.NavReviewModel
 import com.tokopedia.homenav.mainnav.domain.model.NavWishlistModel
 import com.tokopedia.track.builder.BaseTrackerBuilder
@@ -208,60 +207,6 @@ object TrackingTransactionSection : BaseTrackerConst() {
         bundle.putString(Event.KEY, Event.CLICK_HOMEPAGE)
         bundle.putString(Category.KEY, CATEGORY_GLOBAL_MENU)
         bundle.putString(Action.KEY, ACTION_CLICK_ON_WISHLIST_VIEW_ALL)
-        bundle.putString(Label.KEY, Label.NONE)
-        bundle.putString(CurrentSite.KEY, DEFAULT_CURRENT_SITE)
-        bundle.putString(BusinessUnit.KEY, DEFAULT_BUSINESS_UNIT)
-        getTracker().sendEnhanceEcommerceEvent(Event.CLICK_HOMEPAGE, bundle)
-    }
-
-    fun getImpressionOnFavoriteShop(userId: String, position: Int, favoriteShopModel: NavFavoriteShopModel): HashMap<String, Any> {
-        return BaseTrackerBuilder().constructBasicPromotionView(
-            event = Event.PROMO_VIEW,
-            eventCategory = CATEGORY_GLOBAL_MENU,
-            eventAction = IMPRESSION_ON_FAVORITE_SHOP_CARD,
-            eventLabel = Value.EMPTY,
-            promotions = listOf(
-                Promotion(
-                    creative = Value.EMPTY,
-                    id = ITEM_ID_FORMAT.format(favoriteShopModel.id),
-                    name = ITEM_NAME_FAVORITE_SHOP,
-                    creativeUrl = Value.EMPTY,
-                    position = (position + 1).toString()
-                )
-            )
-        )
-            .appendCurrentSite(DEFAULT_CURRENT_SITE)
-            .appendUserId(userId)
-            .appendBusinessUnit(DEFAULT_BUSINESS_UNIT)
-            .build() as HashMap<String, Any>
-    }
-
-    fun clickOnFavoriteShopItem(userId: String, favoriteShopModel: NavFavoriteShopModel, position: Int) {
-        val bundle = Bundle()
-        bundle.putString(Event.KEY, Event.SELECT_CONTENT)
-        bundle.putString(Category.KEY, CATEGORY_GLOBAL_MENU)
-        bundle.putString(Action.KEY, ACTION_CLICK_ON_FAVORITE_SHOP_CARD)
-        bundle.putString(Label.KEY, favoriteShopModel.id)
-        bundle.putString(CurrentSite.KEY, DEFAULT_CURRENT_SITE)
-        bundle.putString(UserId.KEY, userId)
-        bundle.putString(BusinessUnit.KEY, DEFAULT_BUSINESS_UNIT)
-        val promotions = arrayListOf(
-            Bundle().apply {
-                putString(Promotion.CREATIVE_NAME, Value.EMPTY)
-                putString(Promotion.CREATIVE_SLOT, (position + 1).toString())
-                putString(Items.ITEM_ID, ITEM_ID_FORMAT.format(favoriteShopModel.id))
-                putString(Items.ITEM_NAME, ITEM_NAME_FAVORITE_SHOP)
-            }
-        )
-        bundle.putParcelableArrayList(Promotion.KEY, promotions)
-        getTracker().sendEnhanceEcommerceEvent(Event.SELECT_CONTENT, bundle)
-    }
-
-    fun clickOnFavoriteShopViewAll() {
-        val bundle = Bundle()
-        bundle.putString(Event.KEY, Event.CLICK_HOMEPAGE)
-        bundle.putString(Category.KEY, CATEGORY_GLOBAL_MENU)
-        bundle.putString(Action.KEY, ACTION_CLICK_ON_FAVORITE_SHOP_VIEW_ALL)
         bundle.putString(Label.KEY, Label.NONE)
         bundle.putString(CurrentSite.KEY, DEFAULT_CURRENT_SITE)
         bundle.putString(BusinessUnit.KEY, DEFAULT_BUSINESS_UNIT)

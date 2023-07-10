@@ -20,7 +20,14 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.track)
     implementation projectOrAar(rootProject.ext.libraries.usersession)
 
+    implementation rootProject.ext.miscDependencies.coreKtx
+
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
+
+    implementation (rootProject.ext.firebase.crashlytics) {
+        transitive = true
+    }
+
     ksp rootProject.ext.networkDependencies.glideKsp
     implementation rootProject.ext.networkDependencies.glide
 

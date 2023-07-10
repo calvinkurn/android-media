@@ -58,7 +58,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.commonWallet)
     implementation projectOrAar(rootProject.ext.features.discoveryCommon)
     implementation projectOrAar(rootProject.ext.features.recommendationWidgetCommon)
-    implementation projectOrAar(rootProject.ext.features.dynamicBanner)
     implementation projectOrAar(rootProject.ext.features.homeComponent)
     implementation projectOrAar(rootProject.ext.features.goldMerchantCommon)
     implementation projectOrAar(rootProject.ext.features.loyalty)
@@ -82,6 +81,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.questWidget)
     implementation projectOrAar(rootProject.ext.features.cmHomeWidget)
     implementation projectOrAar(rootProject.ext.features.fintechHomeWidget)
+    implementation projectOrAar(rootProject.ext.features.homeComponentHeader)
 
     // Library
     implementation projectOrAar(rootProject.ext.libraries.analytics)

@@ -26,7 +26,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.weaver)
     implementation projectOrAar(rootProject.ext.libraries.usersession)
     implementation projectOrAar(rootProject.ext.libraries.network)
-    implementation projectOrAar(rootProject.ext.libraries.tokopatch)
 
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
@@ -39,11 +38,7 @@ dependencies {
     implementation rootProject.ext.firebase.messaging
     implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
-    implementation projectOrAar(rootProject.ext.features.tkpdcore)
-
     implementation rootProject.ext.debugToolsDependencies.chuck
-
-
     implementation (rootProject.ext.firebase.crashlytics) {
         transitive = true
     }
