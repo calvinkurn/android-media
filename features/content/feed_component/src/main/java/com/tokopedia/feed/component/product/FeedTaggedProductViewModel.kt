@@ -26,9 +26,9 @@ class FeedTaggedProductViewModel @Inject constructor(
     val feedTagProductList: LiveData<Result<List<FeedTaggedProductUiModel>>>
         get() = _feedTagProductList
 
-    var cursor = ""
     var shopId = ""
-    var prevActivityId = ""
+    private var cursor = ""
+    private var prevActivityId = ""
 
     fun fetchFeedProduct(activityId: String, sourceType: FeedTaggedProductUiModel.SourceType) {
         viewModelScope.launch {
@@ -49,13 +49,13 @@ class FeedTaggedProductViewModel @Inject constructor(
 
                 cursor = response.nextCursor
 
-                _feedTagProductList.value = Success(currentList +
-                    response.products.map {
-                        ProductMapper.transform(it, response.campaign, sourceType)
-                    }
-                )
+                val mappedData = response.products.map {
+                    ProductMapper.transform(it, response.campaign, sourceType)
+                }
+                _feedTagProductList.value = Success(currentList + mappedData)
 
-                shopId = currentList.firstOrNull()?.shop?.id ?: ""
+                prevActivityId = activityId
+                shopId = mappedData.firstOrNull()?.shop?.id ?: ""
             } catch (t: Throwable) {
                 _feedTagProductList.value = Fail(t)
             }
