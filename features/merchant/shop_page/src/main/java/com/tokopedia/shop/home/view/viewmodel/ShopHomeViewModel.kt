@@ -1361,7 +1361,7 @@ class ShopHomeViewModel @Inject constructor(
     }
 
     fun updateBannerTimerWidgetData(
-        newList: MutableList<Visitable<Any>>,
+        newList: MutableList<Visitable<*>>,
         isRemindMe: Boolean,
         isClickRemindMe: Boolean
     ) {
