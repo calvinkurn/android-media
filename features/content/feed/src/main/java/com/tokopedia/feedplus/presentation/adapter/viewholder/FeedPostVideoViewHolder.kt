@@ -1,7 +1,6 @@
 package com.tokopedia.feedplus.presentation.adapter.viewholder
 
 import android.annotation.SuppressLint
-import android.util.Log
 import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
@@ -64,12 +63,9 @@ class FeedPostVideoViewHolder(
 
     init {
         binding.root.addOnAttachStateChangeListener(object : OnAttachStateChangeListener {
-            override fun onViewAttachedToWindow(view: View) {
-                Log.d("FeedViewHolder", "Video - Attached - ${mData?.text} - $absoluteAdapterPosition")
-            }
+            override fun onViewAttachedToWindow(view: View) {}
 
             override fun onViewDetachedFromWindow(view: View) {
-                Log.d("FeedViewHolder", "Video - Detached - ${mData?.text} - $absoluteAdapterPosition")
                 onNotSelected()
             }
         })
@@ -171,7 +167,6 @@ class FeedPostVideoViewHolder(
     }
 
     override fun bind(element: FeedCardVideoContentModel?) {
-        Log.d("FeedViewHolder", "Video - Bind - ${mData?.text} - $absoluteAdapterPosition")
         element?.let { data ->
             mData = data
             trackerDataModel = trackerMapper.transformVideoContentToTrackerModel(data)
@@ -217,7 +212,6 @@ class FeedPostVideoViewHolder(
     }
 
     override fun bind(element: FeedCardVideoContentModel?, payloads: MutableList<Any>) {
-        Log.d("FeedViewHolder", "Video - BindPayloads - Payloads: $payloads - ${mData?.text} - $absoluteAdapterPosition")
         mData = element
         element?.let {
             trackerDataModel = trackerMapper.transformVideoContentToTrackerModel(it)
@@ -475,7 +469,6 @@ class FeedPostVideoViewHolder(
     }
 
     override fun onViewRecycled() {
-        Log.d("FeedViewHolder", "Video - onViewRecycled - ${mData?.text} - $absoluteAdapterPosition")
         super.onViewRecycled()
         val thePlayer = mVideoPlayer
         mVideoPlayer = null
