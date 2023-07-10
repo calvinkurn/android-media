@@ -25,6 +25,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -117,6 +118,10 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
 
     @Inject lateinit var imageGeneratorUseCase: ImageGeneratorUseCase
 
+    private val viewModel: UniversalShareViewModel by lazy {
+        ViewModelProvider(this)[UniversalShareViewModel::class.java]
+    }
+
     // View
     private var fragmentView: View? = null
     private var bottomSheetListener: ShareBottomsheetListener? = null
@@ -166,6 +171,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
     private var ogImageUrl: String = ""
     private var savedImagePath: String = ""
     private var shareText: String = ""
+    private var chipList: MutableList<Map<Int, String>> = mutableListOf()
     private var subjectShare: String = ""
     private var linkProperties: LinkProperties? = null
     private var affiliateInput: AffiliateInput? = null
@@ -246,6 +252,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initObserver()
         initRecyclerView()
         initImageOptionsRecyclerView()
         initAffiliate()
@@ -468,6 +475,17 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
      */
     fun setShareText(text: String) {
         shareText = text
+    }
+
+    fun setChipList(chips: List<Map<Int, String>>, defaultSelectedIndex: Int = -1) {
+        chipList.clear()
+        chipList.addAll(chips)
+
+        if (defaultSelectedIndex >= 0) {
+
+        }
+
+        viewModel.setAction(RenderChips(chipList))
     }
 
     fun setSelectThumbnailImageListener(listener: (imgUrl: String) -> Unit) {
@@ -720,6 +738,22 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
             setCloseClickListener {
                 bottomSheetListener?.onCloseOptionClicked()
                 dismiss()
+            }
+        }
+    }
+
+    private fun initObserver() {
+        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
+            viewModel.state.collect {
+                when(it.state) {
+                    UiState.CHIP_LIST -> {
+                        // TODO recyclerView
+                    }
+                    UiState.CHIP_SELECTED -> {
+                        // TODO set active selected chip to viewHolder
+                    }
+                    else -> {}
+                }
             }
         }
     }
