@@ -125,7 +125,10 @@ class SeeInvoiceActivity : BaseSimpleWebViewActivity() {
                     val prinAttr = PrintAttributes.Builder()
                         .setMediaSize(PrintAttributes.MediaSize.ISO_A4)
                         .build()
-                    printManager?.print(jobName, printAdapter, prinAttr)
+
+                    if (printManager?.printJobs?.isNotEmpty() == true) {
+                        printManager.print(jobName, printAdapter, prinAttr)
+                    }
                 } catch (e: Throwable) {
                     e.printStackTrace()
                 }
