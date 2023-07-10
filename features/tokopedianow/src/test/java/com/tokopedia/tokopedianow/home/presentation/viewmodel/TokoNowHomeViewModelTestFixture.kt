@@ -190,6 +190,8 @@ abstract class TokoNowHomeViewModelTestFixture {
             getTargetedTickerUseCase,
             addressData
         )
+
+        onGetIsUserLoggedIn_thenReturn(userLoggedIn = true)
     }
 
     protected fun verifyGetHomeLayoutResponseSuccess(expectedResponse: HomeLayoutListUiModel) {
