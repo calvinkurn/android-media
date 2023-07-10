@@ -43,6 +43,8 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.imageAssets)
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
 
+    implementation rootProject.ext.composeDependencies.composeCoil
+
     implementation projectOrAar(rootProject.ext.libraries.applink)
     implementation projectOrAar(rootProject.ext.libraries.commonNetwork)
     implementation projectOrAar(rootProject.ext.libraries.coreNetwork)

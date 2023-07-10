@@ -25,7 +25,6 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/bg_uoh_review_rating"
                 app:unify_image_corner_radius="0"
                 app:unify_image_disable_shimmering_placeholder="false" />
 
