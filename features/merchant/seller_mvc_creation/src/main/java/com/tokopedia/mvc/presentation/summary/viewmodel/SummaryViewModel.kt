@@ -62,7 +62,7 @@ class SummaryViewModel @Inject constructor(
         if (isDuplicate) {
             it.copy(
                 voucherId = ADDING_VOUCHER_ID,
-                startPeriod = Date(),
+                startPeriod = Date().addTimeToSpesificDate(Calendar.HOUR, 3),
                 endPeriod = Date().addTimeToSpesificDate(Calendar.MONTH, 1).removeTime(),
                 duplicatedVoucherId = it.voucherId
             )

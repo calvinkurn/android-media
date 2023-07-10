@@ -69,6 +69,7 @@ import com.tokopedia.mvc.domain.entity.enums.VoucherStatus
 import com.tokopedia.mvc.domain.entity.enums.VoucherTargetBuyer
 import com.tokopedia.mvc.presentation.bottomsheet.ExpenseEstimationBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.moremenu.MoreMenuBottomSheet
+import com.tokopedia.mvc.presentation.detail.bottomsheet.UpdateCouponTipBottomSheet
 import com.tokopedia.mvc.presentation.download.DownloadVoucherImageBottomSheet
 import com.tokopedia.mvc.presentation.list.dialog.CallTokopediaCareDialog
 import com.tokopedia.mvc.presentation.list.dialog.StopVoucherConfirmationDialog
@@ -390,7 +391,11 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                 VoucherCreator.INTOOLS -> {
                     tpgVpsPackage.apply {
                         showWithCondition(!isPromotionRejected(data))
-                        text = data.labelVoucher.labelCreatorFormatted
+                        text =
+                            getString(
+                                R.string.smvc_placeholder_intools_package_name,
+                                data.labelVoucher.labelCreatorFormatted
+                            )
                     }
                 }
 
@@ -490,6 +495,9 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                 val intent = SummaryActivity.buildEditModeIntent(context, data.voucherId)
                 startActivity(intent)
                 voucherDetailTracker.sendClickEditEvent(data)
+            }
+            iconInfo.setOnClickListener {
+                UpdateCouponTipBottomSheet.newInstance().show(childFragmentManager)
             }
         }
     }
@@ -1291,8 +1299,10 @@ class VoucherDetailFragment : BaseDaggerFragment() {
         this.isEnabled = isEditable
         if (isEditable) {
             setTextColorCompat(com.tokopedia.unifyprinciples.R.color.Unify_GN500)
+            headerBinding?.iconInfo?.gone()
         } else {
             setTextColorCompat(com.tokopedia.unifyprinciples.R.color.Unify_NN500)
+            headerBinding?.iconInfo?.visible()
         }
     }
 

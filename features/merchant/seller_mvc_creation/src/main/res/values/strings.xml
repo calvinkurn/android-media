@@ -249,15 +249,17 @@
     <string name="smvc_voucher_performance_title_label">Performa Kupon</string>
     <string name="smvc_used_quota_label">Total Kuota Terpakai</string>
     <string name="smvc_used_quota_detail_label">Detail Kuota Terpakai</string>
-    <string name="smvc_quota_from_subsidy_label">Quota dari subsidy</string>
-    <string name="smvc_quota_non_subsidy_label">Quota non subsidy</string>
+    <string name="smvc_quota_from_subsidy_label">Kuota dari subsidy</string>
+    <string name="smvc_quota_non_subsidy_label">Kuota non subsidy</string>
     <string name="smvc_placeholder_total_used_quota">%d/%2d</string>
     <string name="smvc_placeholder_recap_voucher_name">Kupon %s telah berakhir!</string>
     <string name="smvc_recap_sub_text">Yuk, cek performa kuponmu di bawah ini</string>
     <string name="smvc_total_voucher_performance_label">Total Performa Kupon</string>
-    <string name="smvc_all_quota_subsidized_label">(Semua quota disubsidi)</string>
-    <string name="smvc_some_quota_subsidized_placeholder">(%d dari %2d quota disubsidi)</string>
+    <string name="smvc_all_quota_subsidized_label">(Semua kuota disubsidi)</string>
+    <string name="smvc_some_quota_subsidized_placeholder">(%d dari %2d kuota disubsidi)</string>
     <string name="smvc_placeholder_vps_package_name">Dari Paket Promosi %s</string>
+    <string name="smvc_placeholder_intools_package_name">Dibuat %s</string>
+    <string name="smvc_update_coupon_tip_label">Kupon yang sedang berpartisipasi di event campaign tidak bisa diubah hingga proses seleksi selesai.</string>
 
     <!--Voucher 3 dots menu-->
     <string name="voucher_three_bots_title">Nama Kupon Maks. 30 character</string>
