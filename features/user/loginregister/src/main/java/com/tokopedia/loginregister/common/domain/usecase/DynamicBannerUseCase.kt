@@ -20,7 +20,7 @@ class DynamicBannerUseCase @Inject constructor(
 
     override fun graphqlQuery(): String = """
         query getDynamicBanner(${'$'}page: String!) {
-            GetBanner(page: ${'$'}page}) {
+            GetBanner(page: ${'$'}page) {
                 URL
                 enable
                 message
