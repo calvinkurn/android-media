@@ -124,6 +124,7 @@ dependencies {
 
     //Tracker
     implementation projectOrAar(rootProject.ext.libraries.track)
+    implementation rootProject.ext.firebase.crashlytics
 
 }
 

@@ -11,7 +11,7 @@ object LongClickBubbleMenuRobot {
 
     fun clickLongClickMenuItemAt(position: Int) {
         onView(
-            withRecyclerView(R.id.rvMenu).atPositionOnView(
+            withRecyclerView(R.id.rv_menu).atPositionOnView(
                 position, R.id.ll_long_click_menu_item
             )
         ).perform(click())
@@ -20,7 +20,7 @@ object LongClickBubbleMenuRobot {
     fun clickDeleteMsgMenu() {
         onView(
             allOf(
-                isDescendantOfA(withId(R.id.rvMenu)),
+                isDescendantOfA(withId(R.id.rv_menu)),
                 withText(R.string.title_topchat_delete_msg)
             )
         ).perform(click())
