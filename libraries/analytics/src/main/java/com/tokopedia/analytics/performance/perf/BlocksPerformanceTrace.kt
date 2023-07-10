@@ -13,6 +13,9 @@ import com.tokopedia.abstraction.base.view.listener.TouchListenerActivity
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.analytics.performance.perf.PerformanceTraceDebugger.takeScreenshot
+import com.tokopedia.iris.Iris
+import com.tokopedia.iris.IrisAnalytics
+import com.tokopedia.iris.IrisPerformanceData
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey.ENABLE_PERFORMANCE_TRACE
 import com.tokopedia.unifycomponents.Toaster
@@ -23,8 +26,8 @@ import java.util.concurrent.atomic.AtomicReference
 
 @FlowPreview
 class BlocksPerformanceTrace(
-    @ApplicationContext context: Context?,
-    traceName: String,
+    @ApplicationContext val context: Context,
+    val traceName: String,
     scope: LifecycleCoroutineScope,
     ) {
     companion object {
@@ -70,7 +73,7 @@ class BlocksPerformanceTrace(
         STATE_ONPAUSED
     }
     init {
-        context?.let {
+        context.let {
             val remoteConfig = FirebaseRemoteConfigImpl(context)
             this.isPerformanceTraceEnabled = remoteConfig.getBoolean(
                 ENABLE_PERFORMANCE_TRACE, true
@@ -193,9 +196,19 @@ class BlocksPerformanceTrace(
             summaryModel.get(), performanceBlocks
         )
         finishTTIL(BlocksPerfState.STATE_SUCCESS, listOfLoadableComponent)
+        trackIris()
         this.onLaunchTimeFinished = null
         TTILperformanceMonitoring = null
         performanceTraceJob?.cancel()
+    }
+
+    private fun trackIris() {
+        val summaryModel = summaryModel.get()
+        val ttfl = summaryModel.ttfl()
+        val ttil = summaryModel.ttil()
+        if (ttfl > 0 && ttil > 0) {
+            IrisAnalytics.getInstance(context).trackPerformance(IrisPerformanceData(traceName, ttfl, ttil))
+        }
     }
 
     private fun measureTTFL(listOfLoadableComponent: Set<String>) {
