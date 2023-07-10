@@ -7,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.View
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.content.common.R as commonR
 import com.tokopedia.content.common.databinding.ViewUserReportSubmissionBinding
 import com.tokopedia.content.common.report_content.model.PlayUserReportReasoningUiModel
 import com.tokopedia.iconunify.IconUnify
@@ -15,6 +14,7 @@ import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlin.math.roundToInt
+import com.tokopedia.content.common.R as commonR
 
 /**
  * @author by astidhiyaa on 31/05/23
@@ -90,6 +90,7 @@ class ContentSubmitReportBottomSheet : BottomSheetUnify() {
     }
 
     private fun setupView() {
+        binding.headerContentReportSubmission.title = getString(commonR.string.content_user_report_header)
         binding.headerContentReportSubmission.icon = IconUnify.ARROW_BACK
         binding.headerContentReportSubmission.closeListener = View.OnClickListener {
             dismiss()
