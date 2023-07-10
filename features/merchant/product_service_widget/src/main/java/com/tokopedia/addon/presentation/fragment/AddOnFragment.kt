@@ -18,7 +18,7 @@ import com.tokopedia.product_bundle.common.util.Utility.animateExpand
 import com.tokopedia.product_service_widget.databinding.FragmentBottomsheetAddonBinding
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
-class AddOnFragment: BaseDaggerFragment(), AddOnComponentListener {
+class AddOnFragment : BaseDaggerFragment(), AddOnComponentListener {
 
     companion object {
         fun newInstance(
@@ -61,7 +61,8 @@ class AddOnFragment: BaseDaggerFragment(), AddOnComponentListener {
     override fun initInjector() {}
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentBottomsheetAddonBinding.inflate(inflater, container, false)
@@ -85,7 +86,6 @@ class AddOnFragment: BaseDaggerFragment(), AddOnComponentListener {
     }
 
     override fun onAddonComponentClick(index: Int, indexChild: Int, addOnGroupUIModels: List<AddOnGroupUIModel>) {
-
     }
 
     override fun onTotalPriceCalculated(price: Long) {
@@ -105,9 +105,9 @@ class AddOnFragment: BaseDaggerFragment(), AddOnComponentListener {
         changedAddonSelections: List<AddOnUIModel>,
         addonGroups: List<AddOnGroupUIModel>
     ) {
+        tempChangedAddons = changedAddonSelections
         binding?.btnSave?.isLoading = false
         binding?.addonWidget?.getAddOnAggregatedData(selectedAddonIds)
-        tempChangedAddons = changedAddonSelections
     }
 
     override fun onSaveAddonLoading() {
@@ -129,7 +129,7 @@ class AddOnFragment: BaseDaggerFragment(), AddOnComponentListener {
         }
     }
 
-    fun setOnSuccessSaveAddonListener(listener: (result: AddOnPageResult ) -> Unit) {
+    fun setOnSuccessSaveAddonListener(listener: (result: AddOnPageResult) -> Unit) {
         onSaveAddonListener = listener
     }
 }

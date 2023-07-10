@@ -1563,7 +1563,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
         override fun onClickSeeAllAddOnProductService(product: OrderProduct, addOnsProductData: AddOnsProductDataModel) {
             // tokopedia://addon/2148784281/?cartId=123123&selectedAddonIds=111,222,333&source=cart&warehouseId=789789&isTokocabang=false
             val productId = product.productId
-            val cartId = product.productId
+            val cartId = product.cartId
 
             val addOnIds = arrayListOf<String>()
             addOnsProductData.data.forEach { addOnItem ->

@@ -100,7 +100,7 @@ class OrderSummaryPageAdapter(
     fun getAddOnProductServiceIndex(cartId: String): Int {
         for (index in products.indices) {
             if (products[index].cartId == cartId) {
-                return index
+                return productStartIndex + index
             }
         }
         return 0
