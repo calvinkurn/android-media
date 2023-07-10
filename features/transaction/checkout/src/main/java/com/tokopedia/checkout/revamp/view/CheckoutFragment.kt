@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.checkout.databinding.FragmentCheckoutBinding
@@ -73,6 +74,9 @@ class CheckoutFragment : BaseDaggerFragment() {
         header.tvCheckoutHeaderAddressHeader.isVisible = false
         header.tvCheckoutHeaderAddressName.isVisible = false
         binding.headerCheckout.customView(header.root)
+
+        binding.rvCheckout.adapter = CheckoutAdapter()
+        binding.rvCheckout.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
 
         binding.tvCheckoutTesting.setOnClickListener {
             if (header.tvCheckoutHeaderText.isVisible) {

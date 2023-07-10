@@ -1,5 +1,5 @@
 package com.tokopedia.checkout.revamp.view.uimodel
 
-sealed interface CheckoutItem {
-    val cartStringGroup: String
+sealed class CheckoutItem {
+    val cartStringGroup: String = ""
 }
