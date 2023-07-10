@@ -2,7 +2,6 @@ package com.tokopedia.feedcomponent.util
 
 import android.content.Context
 import android.net.Uri
-import android.util.Log
 import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.database.ExoDatabaseProvider
 import com.google.android.exoplayer2.offline.Downloader
@@ -34,8 +33,7 @@ class FeedVideoCache private constructor(
 
     private val bytesToCache = Bytes.fromMegaBytes(MB_TO_CACHE)
 
-    private val commonProgressListener = CacheUtil.ProgressListener { requestLength, bytesCached, newBytesCache ->
-        Log.d("FeedVideo", "[Cache Media] Request Length: $requestLength, Bytes Cached: $bytesCached, New Bytes Cached: $newBytesCache")
+    private val commonProgressListener = CacheUtil.ProgressListener { _, _, _ ->
     }
 
     private val ongoingDownloaderQueue = ConcurrentHashMap<String, Downloader>()
@@ -79,10 +77,7 @@ class FeedVideoCache private constructor(
             val dataSpec = createDataSpec(uri, bytesToCache)
             val dataSource = FeedExoUtil.getDataSourceFactory(context).createDataSource()
             CacheUtil.cache(dataSpec, cache, dataSource, commonProgressListener, null)
-        } catch (e: Exception) {
-            Log.d("FeedVideo", "[Cache Media] Error for url: $uri with exception $e")
-            e.printStackTrace()
-        }
+        } catch (_: Exception) { }
     }
 
     private suspend fun cacheHls(context: Context, uri: Uri, bytesToCache: Bytes) {
@@ -96,24 +91,18 @@ class FeedVideoCache private constructor(
 
         try {
             val listener = Downloader.ProgressListener { contentLength, bytesDownloaded, percentDownloaded ->
-//                Log.d("FeedVideo", "[Cache Hls] Content Length: $contentLength, Bytes Downloaded: $bytesDownloaded, Percent Downloaded: $percentDownloaded")
                 if (bytesDownloaded >= bytesToCache.length) {
-                    Log.d("FeedVideo", "[Cache Hls] Finished caching $uri. Bytes Downloaded: $bytesDownloaded")
                     downloader.cancel()
                 }
             }
 
             mutex.withLock {
                 if (ongoingDownloaderQueue.containsKey(uri.toString())) return
-                Log.d("FeedVideo", "[Cache Hls] Start download for Uri: $uri for $bytesToCache")
                 ongoingDownloaderQueue[uri.toString()] = downloader
             }
             downloader.download(listener)
-        } catch (e: InterruptedException) {
-            Log.d("FeedVideo", "[Cache Hls] Finished by cancellation")
-        } catch (e: Exception) {
-            Log.d("FeedVideo", "[Cache Hls] Error for url: $uri with exception $e")
-            e.printStackTrace()
+        } catch (_: InterruptedException) {
+        } catch (_: Exception) {
         } finally {
             ongoingDownloaderQueue.remove(uri.toString())
         }
