@@ -516,6 +516,8 @@ public interface ApplinkConst {
     }
 
     interface ScpRewards{
+        String CELEBRATION_BASE = "celebration";
+        String MEDAL_DETAIL_BASE = "detail";
         String CELEBRATION_BOTTOMSHEET = "celebration-bottomsheet";
         String SCP_TOASTER = "celebration_toaster";
     }

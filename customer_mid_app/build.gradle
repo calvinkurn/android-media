@@ -98,6 +98,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.baseAdapter)
     implementation projectOrAar(rootProject.ext.features.csat_rating)
     implementation projectOrAar(rootProject.ext.features.resourcesCommon)
+    implementation projectOrAar(rootProject.ext.features.scpRewards)
     implementation projectOrAar(rootProject.ext.features.agerestriction)
     implementation projectOrAar(rootProject.ext.features.appCommon)
     implementation projectOrAar(rootProject.ext.features.autocompleteComponent)

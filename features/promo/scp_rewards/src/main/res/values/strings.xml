@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">scp_rewards</string>
+    <string name="go_back_text">Kembali</string>
+    <string name="tnc_text">Cek S&amp;K</string>
+    <string name="goto_medali_cabinet_text">Lihat Koleksi Medali</string>
+</resources>

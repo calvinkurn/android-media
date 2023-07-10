@@ -156,5 +156,23 @@ fun invokeScpToasterUniversalAppLink(context: Context, deeplink: Uri): String{
     fun isMatchPattern(pattern:Regex?,link:String) : Boolean{
         return pattern?.matches(link) ?: false
     }
+
+    fun getInternalDeeplinkForScpMedalDetail(deeplink: Uri): String {
+        val segments = deeplink.pathSegments
+        if (segments.last() != "") {
+            val medaliSlug = segments.last()
+            return UriUtil.buildUri(ApplinkConstInternalPromo.MEDAL_DETAIL, medaliSlug)
+        }
+        return ""
+    }
+
+    fun getInternalDeeplinkForScpCelebration(deeplink: Uri): String {
+        val segments = deeplink.pathSegments
+        if (segments.last() != "") {
+            val medaliSlug = segments.last()
+            return UriUtil.buildUri(ApplinkConstInternalPromo.CELEBRATION_PAGE, medaliSlug)
+        }
+        return ""
+    }
 }
 
