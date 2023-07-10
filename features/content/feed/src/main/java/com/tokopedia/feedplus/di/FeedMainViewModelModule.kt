@@ -35,7 +35,7 @@ abstract class FeedMainViewModelModule {
     @Binds
     @IntoMap
     @ViewModelKey(FeedTaggedProductViewModel::class)
-    abstract fun feedTaggerProductViewModel(viewModel: FeedTaggedProductViewModel): ViewModel
+    abstract fun feedTaggedProductViewModel(viewModel: FeedTaggedProductViewModel): ViewModel
 
     @Binds
     @IntoMap
