@@ -23,6 +23,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalOrder.IS_SNAPSHOT_FROM
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_ORDER_DETAIL_ID
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_ORDER_ID
 import com.tokopedia.header.HeaderUnify
+import com.tokopedia.imageassets.TokopediaImageUrl
 import com.tokopedia.imagepreview.imagesecure.ImageSecurePreviewActivity
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
@@ -42,7 +43,8 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import javax.inject.Inject
 
-class SnapshotFragment : BaseDaggerFragment(), SnapshotAdapter.ActionListener, RefreshHandler.OnRefreshHandlerListener {
+class SnapshotFragment : BaseDaggerFragment(), SnapshotAdapter.ActionListener,
+    RefreshHandler.OnRefreshHandlerListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -59,6 +61,7 @@ class SnapshotFragment : BaseDaggerFragment(), SnapshotAdapter.ActionListener, R
     private var srlSnapshot: SwipeToRefresh? = null
     private var refreshHandler: RefreshHandler? = null
     private var headerSnapshot: HeaderUnify? = null
+    private var isProductImageArchived = false
 
     private val snapshotViewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory)[SnapshotViewModel::class.java]
@@ -224,7 +227,11 @@ class SnapshotFragment : BaseDaggerFragment(), SnapshotAdapter.ActionListener, R
     override fun onSnapshotImgClicked(position: Int) {
         activity?.let {
             val strings = responseSnapshot.productImageSecondary.map { item ->
-                item.imageUrl
+                return@map if (isProductImageArchived) {
+                    TokopediaImageUrl.IMG_ARCHIVED_PRODUCT_LARGE
+                } else {
+                    item.imageUrl
+                }
             }
             it.startActivity(
                 ImageSecurePreviewActivity.getCallingIntent(
@@ -245,6 +252,10 @@ class SnapshotFragment : BaseDaggerFragment(), SnapshotAdapter.ActionListener, R
                 SnapshotAnalytics.clickShopPage(shopId, userId)
             }
         }
+    }
+
+    override fun onProductImageLoaded(isArchived: Boolean) {
+        this.isProductImageArchived = isArchived
     }
 
     override fun onRefresh(view: View?) {

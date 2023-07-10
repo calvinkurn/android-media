@@ -12,17 +12,19 @@ import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
  */
 
 fun ImageView.loadProductImage(
-    url: String, archivedUrl: String, cornerRadius: Float = DEFAULT_ROUNDED
+    url: String,
+    archivedUrl: String,
+    cornerRadius: Float = DEFAULT_ROUNDED,
+    onLoaded: ((isArchived: Boolean) -> Unit)? = null
 ) {
     url.getBitmapImageUrl(
         context = context, properties = {
             shouldTrackNetworkResponse(true)
             networkResponse { _, failure ->
                 val isArchived = failure == FailureType.Gone || failure == FailureType.NotFound
+                onLoaded?.invoke(isArchived)
                 if (isArchived) {
-                    loadImage(archivedUrl) {
-                        setPlaceHolder(-1)
-                    }
+                    loadImage(archivedUrl)
                 } else {
                     loadImage(url)
                 }

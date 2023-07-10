@@ -16,12 +16,17 @@ class SnapshotImageViewPagerItemViewHolder(
 ) : SnapshotImageViewPagerAdapter.BaseViewHolder<String>(itemView) {
     override fun bind(item: String, position: Int) {
         val imgViewHolder = itemView.findViewById<ImageView>(R.id.img_item)
-        imgViewHolder.loadProductImage(
-            url = item,
-            archivedUrl = TokopediaImageUrl.IMG_ARCHIVED_PRODUCT_LARGE
-        )
-        imgViewHolder.setOnClickListener {
-            actionListener?.onSnapshotImgClicked(position)
+        imgViewHolder.run {
+            loadProductImage(
+                url = item,
+                archivedUrl = TokopediaImageUrl.IMG_ARCHIVED_PRODUCT_LARGE,
+                cornerRadius = 0f
+            ) { isArchived ->
+                actionListener?.onProductImageLoaded(isArchived)
+            }
+            setOnClickListener {
+                actionListener?.onSnapshotImgClicked(position)
+            }
         }
     }
 }
