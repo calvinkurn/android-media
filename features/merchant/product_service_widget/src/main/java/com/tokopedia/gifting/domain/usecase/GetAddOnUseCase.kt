@@ -1,15 +1,18 @@
 package com.tokopedia.gifting.domain.usecase
 
+import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.common.ProductServiceWidgetConstant.SQUAD_VALUE
 import com.tokopedia.common.ProductServiceWidgetConstant.USECASE_GIFTING_VALUE
 import com.tokopedia.gifting.domain.model.*
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
 class GetAddOnUseCase @Inject constructor(
+    @ApplicationContext private val context: Context,
     @ApplicationContext repository: GraphqlRepository
 ) : GraphqlUseCase<GetAddOnResponse>(repository) {
 
@@ -74,6 +77,10 @@ class GetAddOnUseCase @Inject constructor(
             source = Source(usecase = USECASE_GIFTING_VALUE, squad = SQUAD_VALUE)
         ))
         setRequestParams(requestParams.parameters)
+    }
+
+    fun getErrorString(throwable: Throwable): String {
+        return ErrorHandler.getErrorMessage(context, throwable)
     }
 
     private fun List<String>.mapToAddonRequest() = map { AddOnRequest(it) }

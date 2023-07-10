@@ -190,7 +190,7 @@ class AddOnWidgetView : BaseCustomView {
     }
 
     fun getAddOnAggregatedData(addOnIds: List<String>) {
-        viewModel.getAddOnAggregatedData(context, addOnIds)
+        viewModel.getAddOnAggregatedData(addOnIds)
     }
 
     fun setAutosaveAddon(cartId: Long, atcSource: String) {
