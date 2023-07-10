@@ -219,7 +219,7 @@
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintTop_toTopOf="parent"
-                                app:srcCompat="@drawable/ic_promo_bs_action" />
+                                app:unify_image_url_src="https://images.tokopedia.net/img/android/res/singleDpi/affliate/ic_promo_bs_action.webp" />
 
                         </androidx.constraintlayout.widget.ConstraintLayout>
                     </com.tokopedia.unifycomponents.CardUnify2>

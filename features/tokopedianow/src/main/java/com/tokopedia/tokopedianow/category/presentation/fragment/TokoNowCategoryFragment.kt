@@ -1101,22 +1101,23 @@ class TokoNowCategoryFragment :
     private fun showMiniCart(
         data: MiniCartSimplifiedData
     ) {
-        val miniCartWidget = binding?.miniCartWidget
         val showMiniCartWidget = data.isShowMiniCartWidget
-
         if (showMiniCartWidget) {
             val pageName = MiniCartAnalytics.Page.HOME_PAGE
             val shopIds = listOf(shopId)
             val source = MiniCartSource.TokonowHome
-            miniCartWidget?.initialize(
-                shopIds = shopIds,
-                fragment = this,
-                listener = this,
-                pageName = pageName,
-                source = source
-            )
-            miniCartWidget?.show()
-            miniCartWidget?.hideTopContentView()
+            binding?.apply {
+                miniCartWidget.initialize(
+                    shopIds = shopIds,
+                    fragment = this@TokoNowCategoryFragment,
+                    listener = this@TokoNowCategoryFragment,
+                    pageName = pageName,
+                    source = source
+                )
+                miniCartWidgetShadow?.show()
+                miniCartWidget.show()
+                miniCartWidget.hideTopContentView()
+            }
         } else {
             hideMiniCart()
         }
@@ -1190,7 +1191,10 @@ class TokoNowCategoryFragment :
     }
 
     private fun hideMiniCart() {
-        binding?.miniCartWidget?.hide()
+        binding?.apply {
+            miniCartWidgetShadow.hide()
+            miniCartWidget.hide()
+        }
     }
     private fun clickWishlistButton(
         productId: String,

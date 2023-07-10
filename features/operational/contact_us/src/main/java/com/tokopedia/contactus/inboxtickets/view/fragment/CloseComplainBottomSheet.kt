@@ -1,39 +1,49 @@
 package com.tokopedia.contactus.inboxtickets.view.fragment
 
-import android.content.Context
+import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
-import android.widget.TextView
-import com.tokopedia.contactus.R
+import android.view.ViewGroup
+import com.tokopedia.contactus.databinding.CloseComplainBottomSheetLayoutBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 
-class CloseComplainBottomSheet(
-    context: Context,
-    private val closeBottomSheetListener: CloseComplainBottomSheetListner
-) : BottomSheetUnify(), View.OnClickListener {
+class CloseComplainBottomSheet : BottomSheetUnify() {
 
-    init {
-        val closeComplainView = View.inflate(
-            context,
-            R.layout.close_complain_bottom_sheet_layout,
-            null
-        )
-        val noButton = closeComplainView.findViewById<TextView>(R.id.tv_no_button)
-        val yesButton = closeComplainView.findViewById<TextView>(R.id.tv_yes_button)
-        noButton.setOnClickListener(this)
-        yesButton.setOnClickListener(this)
+    var viewBinding by autoClearedNullable<CloseComplainBottomSheetLayoutBinding>()
+    private var closeBottomSheetListener: CloseComplainBottomSheetListner? = null
 
-        setChild(closeComplainView)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         showKnob = true
         showCloseIcon = false
         showHeader = false
+        viewBinding = CloseComplainBottomSheetLayoutBinding.inflate(inflater).also {
+            setChild(it.root)
+        }
+
+        return super.onCreateView(inflater, container, savedInstanceState)
     }
 
-    override fun onClick(view: View) {
-        if (view.id == R.id.tv_no_button) {
-            closeBottomSheetListener.onClickComplain(false)
-        } else if (view.id == R.id.tv_yes_button) {
-            closeBottomSheetListener.onClickComplain(true)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setListener()
+    }
+
+    private fun setListener(){
+        viewBinding?.tvNoButton?.setOnClickListener {
+            closeBottomSheetListener?.onClickComplain(false)
         }
+        viewBinding?.tvYesButton?.setOnClickListener {
+            closeBottomSheetListener?.onClickComplain(true)
+        }
+    }
+
+    fun setCloseListener(closeBottomSheetListener: CloseComplainBottomSheetListner){
+        this.closeBottomSheetListener = closeBottomSheetListener
     }
 
     interface CloseComplainBottomSheetListner {
