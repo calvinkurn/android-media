@@ -6,7 +6,8 @@ package com.tokopedia.applink;
  * Central interface for AppLink in apps, do not use any new applink module
  */
 
-public interface ApplinkConst {
+public interface
+ApplinkConst {
     String APPLINK_CUSTOMER_SCHEME = "tokopedia";
     String HOME_NAVIGATION = "tokopedia://navigation/main";
     String HOME = "tokopedia://home";
