@@ -1,6 +1,7 @@
 package com.tokopedia.scp_rewards_widgets.medal
 
 import android.view.View
+import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
@@ -38,6 +39,7 @@ class MedalViewHolder(
         tvMedalSubTitle.gone()
         tvMedalCaption.gone()
         progressMedal.gone()
+        ivMedal.setImageDrawable(ContextCompat.getDrawable(itemView.context, R.drawable.ic_empty_medal))
     }
 
     private fun ItemMedalLayoutBinding.showMedal(item: MedalItem) {

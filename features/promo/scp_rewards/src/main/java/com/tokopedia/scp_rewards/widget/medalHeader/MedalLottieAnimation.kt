@@ -48,6 +48,7 @@ class MedalLottieAnimation(private val context: Context, attrs: AttributeSet?) :
 
     private fun loadMedalBadge(data: MedalHeaderData, map: Map<String, Bitmap?>) {
         binding.apply {
+            tvShutter.text = data.shutterText
             lottieView.loadLottieFromUrl(
                 url = data.lottieUrl,
                 onLottieLoaded = {
@@ -76,7 +77,6 @@ class MedalLottieAnimation(private val context: Context, attrs: AttributeSet?) :
                         lottieView.composition?.markers?.find { it.startFrame.toInt() == lottieView.frame }?.name
                     when (markerName) {
                         SHUTTER_AUTO_CLOSE -> {
-                            binding.tvShutter.text = data.shutterText
                             binding.tvShutter.animate().apply {
                                 duration = 120
                                 alpha(1F)

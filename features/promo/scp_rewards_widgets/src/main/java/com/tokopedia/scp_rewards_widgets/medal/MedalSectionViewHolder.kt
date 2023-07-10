@@ -11,8 +11,9 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.scp_rewards_common.loadImageOrFallback
 import com.tokopedia.scp_rewards_common.parseColor
 import com.tokopedia.scp_rewards_widgets.R
-import com.tokopedia.scp_rewards_widgets.common.GridSpacing
+import com.tokopedia.scp_rewards_widgets.common.GridSpacingItemDecoration
 import com.tokopedia.scp_rewards_widgets.databinding.ItemMedalSectionBinding
+import com.tokopedia.unifycomponents.toPx
 
 class MedalSectionViewHolder(
     itemView: View,
@@ -21,8 +22,8 @@ class MedalSectionViewHolder(
 
     companion object {
         val LAYOUT = R.layout.item_medal_section
-        private const val VERTICAL_SPACING = 20
-        private const val HORIZONTAL_SPACING = 20
+        private const val VERTICAL_SPACING = 8
+        private const val HORIZONTAL_SPACING = 30
     }
 
     private var binding: ItemMedalSectionBinding = ItemMedalSectionBinding.bind(itemView)
@@ -35,7 +36,7 @@ class MedalSectionViewHolder(
         binding.rvMedals.apply {
             layoutManager = GridLayoutManager(context, 3)
             adapter = medalsAdapter
-            addItemDecoration(GridSpacing(HORIZONTAL_SPACING, VERTICAL_SPACING))
+            addItemDecoration(GridSpacingItemDecoration(HORIZONTAL_SPACING.toPx(), VERTICAL_SPACING.toPx(), false))
             isNestedScrollingEnabled = false
         }
     }
