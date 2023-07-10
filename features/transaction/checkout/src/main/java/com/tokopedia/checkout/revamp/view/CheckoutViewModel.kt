@@ -6,6 +6,10 @@ import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -15,6 +19,10 @@ class CheckoutViewModel @Inject constructor(private val dispatchers: CoroutineDi
 
     var currentJob: Job? = null
     var counter: Int = 0
+
+    var ms = MutableStateFlow(true)
+
+    var sm = flow<Boolean> { }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), true)
 
     fun test() {
         currentJob = viewModelScope.launch {
