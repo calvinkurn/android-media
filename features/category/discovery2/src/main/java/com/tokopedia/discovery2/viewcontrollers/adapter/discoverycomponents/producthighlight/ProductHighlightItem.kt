@@ -193,7 +193,6 @@ class ProductHighlightItem(
                     }
 
                     if (productHighlightData.isActive == false) {
-                        phImageTextBottom.text = context.getString(R.string.terjual_habis_camel)
                         val matrix = ColorMatrix().apply {
                             setSaturation(0f)
                         }
