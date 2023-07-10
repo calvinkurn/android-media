@@ -109,6 +109,8 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.dialog
     implementation rootProject.ext.unifyDependencies.global_error
 
+    implementation projectOrAar(rootProject.ext.features.contentAnalytic)
+
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.assertJCore
     testImplementation rootProject.ext.miscDependencies.coroutineTest
