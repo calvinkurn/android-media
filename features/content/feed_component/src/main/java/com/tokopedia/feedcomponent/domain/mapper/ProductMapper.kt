@@ -45,7 +45,8 @@ object ProductMapper {
             affiliate = FeedTaggedProductUiModel.Affiliate(
                 id = product.affiliate.id,
                 channel = product.affiliate.channel
-            )
+            ),
+            stock = if (product.isAvailable) FeedTaggedProductUiModel.Stock.Available else FeedTaggedProductUiModel.Stock.OutOfStock,
         )
     }
 
