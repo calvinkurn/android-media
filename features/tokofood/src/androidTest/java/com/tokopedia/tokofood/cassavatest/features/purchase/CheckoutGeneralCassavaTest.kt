@@ -3,17 +3,19 @@ package com.tokopedia.tokofood.cassavatest.features.purchase
 import com.tokopedia.tokofood.cassavatest.base.BaseTokoFoodCassavaTest
 import org.junit.Test
 
-class PurchaseCassavaTest: BaseTokoFoodCassavaTest() {
+class CheckoutGeneralCassavaTest: BaseTokoFoodCassavaTest() {
 
     override fun setup() {
         super.setup()
         checkoutTokoFoodUseCaseStub.responseStub = checkoutTokoFoodResponseStub
+        checkoutGeneralUseCaseStub.responseStub = checkoutGeneralResponseStub
         launchActivity()
     }
 
     @Test
-    fun checkoutPageLoad() {
-        validateTracker(LOAD_CHECKOUT_PAGE)
+    fun clickGoToPaymentButton() {
+        clickPurchaseButton()
+        validateTracker(CHECKOUT_GENERAL_PAGE)
         dismissPage()
     }
 

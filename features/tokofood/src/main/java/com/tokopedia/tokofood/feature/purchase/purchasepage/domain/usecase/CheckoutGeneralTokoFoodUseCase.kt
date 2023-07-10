@@ -45,7 +45,7 @@ open class CheckoutGeneralTokoFoodUseCase @Inject constructor(
         setGraphqlQuery(TokoFoodCheckoutGeneral())
     }
 
-    suspend fun execute(params: CartGeneralCartListData): CheckoutGeneralTokoFoodResponse{
+    open suspend fun execute(params: CartGeneralCartListData): CheckoutGeneralTokoFoodResponse{
         val param = generateParam(params)
         setRequestParams(param)
         return executeOnBackground()

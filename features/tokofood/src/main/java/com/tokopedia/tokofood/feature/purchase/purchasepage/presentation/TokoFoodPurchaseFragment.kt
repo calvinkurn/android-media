@@ -89,6 +89,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
+import timber.log.Timber
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -128,7 +129,7 @@ open class TokoFoodPurchaseFragment :
         }
     }
 
-    private var rvAdapter: TokoFoodPurchaseAdapter? = null
+    protected var rvAdapter: TokoFoodPurchaseAdapter? = null
     private var toolbar: TokoFoodPurchaseToolbar? = null
     private var loaderDialog: LoaderDialog? = null
     private var consentBottomSheet: TokoFoodPurchaseConsentBottomSheet? = null
@@ -1078,7 +1079,11 @@ open class TokoFoodPurchaseFragment :
             val paymentCheckoutString = ApplinkConstInternalPayment.PAYMENT_CHECKOUT
             val intent = RouteManager.getIntent(context, paymentCheckoutString)
             intent.putExtra(PaymentConstant.EXTRA_PARAMETER_TOP_PAY_DATA, checkoutResultData)
-            startActivityForResult(intent, REQUEST_CODE_PAYMENT)
+            try {
+                startActivityForResult(intent, REQUEST_CODE_PAYMENT)
+            } catch (ex: Exception) {
+                Timber.e(ex)
+            }
         }
     }
 
