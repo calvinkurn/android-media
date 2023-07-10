@@ -81,6 +81,7 @@ import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.linker.model.LinkerError
 import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantBottomSheetParams
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.unifycomponents.Toaster
@@ -1304,6 +1305,9 @@ class FeedFragment :
             ProductVariantBottomSheetParams(
                 productId = product.id,
                 shopId = product.shop.id,
+                showQtyEditor = false,
+                isTokoNow = false,
+                pageSource = VariantPageSource.FEED_PAGESOURCE.source,
                 dismissAfterTransaction = false,
             )
         )
