@@ -3,16 +3,24 @@ package com.tokopedia.people.viewmodel.userprofile
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.people.data.UserProfileRepository
 import com.tokopedia.people.model.CommonModelBuilder
+import com.tokopedia.people.model.review.UserReviewModelBuilder
 import com.tokopedia.people.model.shoprecom.ShopRecomModelBuilder
-import com.tokopedia.people.model.userprofile.*
+import com.tokopedia.people.model.userprofile.FeedsModelBuilder
+import com.tokopedia.people.model.userprofile.FollowInfoUiModelBuilder
+import com.tokopedia.people.model.userprofile.PlayVideoModelBuilder
+import com.tokopedia.people.model.userprofile.ProfileUiModelBuilder
+import com.tokopedia.people.model.userprofile.ProfileWhitelistUiModelBuilder
+import com.tokopedia.people.model.userprofile.TabModelBuilder
 import com.tokopedia.people.robot.UserProfileViewModelRobot
 import com.tokopedia.people.util.andThen
 import com.tokopedia.people.util.assertEmpty
 import com.tokopedia.people.util.assertEvent
 import com.tokopedia.people.util.equalTo
+import com.tokopedia.people.utils.UserProfileSharedPref
 import com.tokopedia.people.views.uimodel.action.UserProfileAction
 import com.tokopedia.people.views.uimodel.content.UserPlayVideoUiModel
 import com.tokopedia.people.views.uimodel.event.UserProfileUiEvent
+import com.tokopedia.people.views.uimodel.profile.ProfileTabUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
 import com.tokopedia.unit.test.rule.CoroutineTestRule
@@ -38,6 +46,7 @@ class UserProfileContentViewModelTest {
 
     private val mockRepo: UserProfileRepository = mockk(relaxed = true)
     private val mockUserSession: UserSessionInterface = mockk(relaxed = true)
+    private val mockUserProfileSharedPref: UserProfileSharedPref = mockk(relaxed = true)
 
     private val commonBuilder = CommonModelBuilder()
     private val profileBuilder = ProfileUiModelBuilder()
@@ -47,6 +56,7 @@ class UserProfileContentViewModelTest {
     private val shopRecomBuilder = ShopRecomModelBuilder()
     private val feedsModelBuilder = FeedsModelBuilder()
     private val profileTabBuilder = TabModelBuilder()
+    private val reviewModelBuilder = UserReviewModelBuilder()
 
     private val mockException = commonBuilder.buildException()
     private val mockUserId = "1"
@@ -55,12 +65,13 @@ class UserProfileContentViewModelTest {
     private val mockShopRecom = shopRecomBuilder.buildModelIsShown()
     private val mockOwnProfile = profileBuilder.buildProfile(userID = mockUserId)
     private val mockOwnFollow = followInfoBuilder.buildFollowInfo(userID = mockUserId, encryptedUserID = mockUserId, status = false)
-    private val mockHasAcceptTnc = profileWhitelistBuilder.buildHasAcceptTnc()
-    private val mockProfileTabShown = profileTabBuilder.mockProfileTab()
+    private val mockCreationInfo = profileWhitelistBuilder.buildCreationInfoModel()
+    private val mockProfileTabShown = profileTabBuilder.mockProfileTab(newestTab = ProfileTabUiModel.Key.Review)
     private val mockProfileTabNotShown = profileTabBuilder.mockProfileTab(showTabs = false)
     private val mockFeed = feedsModelBuilder.mockFeedsPost()
     private val mockFeedPagination = feedsModelBuilder.mockFeedsPost(id = "3324")
     private val mockFeedEmpty = feedsModelBuilder.mockFeedsPost(isEmpty = true)
+    private val mockReviewSettingsEnabled = reviewModelBuilder.buildReviewSetting(isEnabled = true)
 
     private val mockPlayVideo = playVideoBuilder.buildModel(nextCursor = "asdf")
     private val mockPlayVideoEmpty = playVideoBuilder.buildModel(size = 0)
@@ -72,6 +83,7 @@ class UserProfileContentViewModelTest {
         repo = mockRepo,
         dispatcher = testDispatcher,
         userSession = mockUserSession,
+        userProfileSharedPref = mockUserProfileSharedPref,
     )
 
     @Before
@@ -85,8 +97,11 @@ class UserProfileContentViewModelTest {
         coEvery { mockRepo.getUserProfileTab(mockOwnProfile.userID) } returns mockProfileTabShown
         coEvery { mockRepo.getPlayVideo(any(), any(), any()) } returns mockPlayVideo
         coEvery { mockRepo.getShopRecom("") } returns mockShopRecom
+        coEvery { mockRepo.getProfileSettings(any()) } returns mockReviewSettingsEnabled
 
-        coEvery { mockRepo.getWhitelist() } returns mockHasAcceptTnc
+        coEvery { mockRepo.getCreationInfo() } returns mockCreationInfo
+
+        coEvery { mockUserProfileSharedPref.hasBeenShown(UserProfileSharedPref.Key.ReviewOnboarding) } returns true
     }
 
     @Test
@@ -99,34 +114,21 @@ class UserProfileContentViewModelTest {
                 submitAction(UserProfileAction.LoadProfile(isRefresh = true))
             } andThen {
                 profileTab equalTo mockProfileTabShown
+                it.viewModel.profileTab equalTo mockProfileTabShown
             }
         }
     }
 
     @Test
-    fun `when user success load profile tab and emit event`() {
+    fun `when user success load profile tab and this is the first time review tab is shown`() {
         robot.use {
             it.setup {
-                coEvery { mockRepo.getUserProfileTab(mockOwnProfile.userID) } returns mockProfileTabShown
+                coEvery { mockUserProfileSharedPref.hasBeenShown(UserProfileSharedPref.Key.ReviewOnboarding) } returns false
             }
             it.recordEvent {
                 submitAction(UserProfileAction.LoadProfile(isRefresh = true))
             } andThen {
-                last().assertEvent(UserProfileUiEvent.SuccessLoadTabs(false))
-            }
-        }
-    }
-
-    @Test
-    fun `when user success load profile tab and emit event but empty data`() {
-        robot.use {
-            it.setup {
-                coEvery { mockRepo.getUserProfileTab(mockOwnProfile.userID) } returns mockProfileTabNotShown
-            }
-            it.recordEvent {
-                submitAction(UserProfileAction.LoadProfile(isRefresh = true))
-            } andThen {
-                last().assertEvent(UserProfileUiEvent.SuccessLoadTabs(false))
+                last().assertEvent(UserProfileUiEvent.ShowReviewOnboarding)
             }
         }
     }

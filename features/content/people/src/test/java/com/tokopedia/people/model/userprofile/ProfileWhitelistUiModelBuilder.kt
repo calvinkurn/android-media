@@ -1,5 +1,6 @@
 package com.tokopedia.people.model.userprofile
 
+import com.tokopedia.people.views.uimodel.profile.ProfileCreationInfoUiModel
 import com.tokopedia.people.views.uimodel.profile.ProfileWhitelistUiModel
 
 /**
@@ -46,4 +47,13 @@ class ProfileWhitelistUiModelBuilder {
         hasUsername = hasUsername,
         hasAcceptTnc = hasAcceptTnc,
     )
+
+    fun buildCreationInfoModel(): ProfileCreationInfoUiModel {
+        return ProfileCreationInfoUiModel(
+            isActive = true,
+            showPost = true,
+            showLiveStream = true,
+            showShortVideo = true,
+        )
+    }
 }

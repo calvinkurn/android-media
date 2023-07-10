@@ -19,6 +19,7 @@ import com.tokopedia.media.editor.analytics.editorhome.EditorHomeAnalytics
 import com.tokopedia.media.editor.analytics.getToolEditorText
 import com.tokopedia.media.editor.R as editorR
 import com.tokopedia.media.editor.base.BaseEditorFragment
+import com.tokopedia.media.editor.data.FeatureToggleManager
 import com.tokopedia.media.editor.databinding.FragmentMainEditorBinding
 import com.tokopedia.media.editor.ui.activity.detail.DetailEditorActivity
 import com.tokopedia.media.editor.ui.activity.main.EditorViewModel
@@ -30,18 +31,17 @@ import com.tokopedia.media.editor.ui.uimodel.EditorUiModel
 import com.tokopedia.media.editor.utils.*
 import com.tokopedia.media.loader.loadImageWithEmptyTarget
 import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
-import com.tokopedia.picker.common.EDITOR_ADD_LOGO_TOOL
 import com.tokopedia.picker.common.ImageRatioType
 import com.tokopedia.picker.common.basecomponent.uiComponent
 import com.tokopedia.picker.common.types.EditorToolType
 import com.tokopedia.picker.common.utils.isVideoFormat
-import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
 
 class EditorFragment @Inject constructor(
-    private val editorHomeAnalytics: EditorHomeAnalytics
+    private val editorHomeAnalytics: EditorHomeAnalytics,
+    private val featureToggleManager: FeatureToggleManager
 ) : BaseEditorFragment(), ToolsUiComponent.Listener,
     DrawerUiComponent.Listener {
 
@@ -192,6 +192,7 @@ class EditorFragment @Inject constructor(
             EditorToolType.REMOVE_BACKGROUND -> editorHomeAnalytics.clickRemoveBackground()
             EditorToolType.WATERMARK -> editorHomeAnalytics.clickWatermark()
             EditorToolType.ADD_LOGO -> editorHomeAnalytics.clickAddLogo()
+            EditorToolType.ADD_TEXT -> editorHomeAnalytics.clickAddText()
         }
     }
 
@@ -212,6 +213,7 @@ class EditorFragment @Inject constructor(
                     paramData.removeBackgroundUrl = item.removeBackgroundUrl
                     paramData.cropRotateValue = item.cropRotateValue
                     paramData.addLogoValue = item.addLogoValue
+                    paramData.addTextValue = item.addTextValue
 
                     // need to store brightness / contrast implement sequence (result will be diff)
                     // if contrast is latest filter then isContrastExecuteFirst = false
@@ -264,7 +266,8 @@ class EditorFragment @Inject constructor(
             viewBinding?.viewPager?.updateImage(
                 thumbnailDrawerComponent.getCurrentIndex(),
                 this.getImageUrl(),
-                overlayImageUrl = this.getOverlayLogoValue()?.overlayLogoUrl ?: ""
+                overlayImageUrl = this.getOverlayLogoValue()?.overlayLogoUrl ?: "",
+                overlaySecondaryImageUrl = this.getOverlayTextValue()?.textImagePath ?: ""
             )
 
             renderUndoButton(this)
@@ -285,7 +288,8 @@ class EditorFragment @Inject constructor(
             viewBinding?.viewPager?.updateImage(
                 thumbnailDrawerComponent.getCurrentIndex(),
                 this.getImageUrl(),
-                overlayImageUrl = this.getOverlayLogoValue()?.overlayLogoUrl ?: ""
+                overlayImageUrl = this.getOverlayLogoValue()?.overlayLogoUrl ?: "",
+                overlaySecondaryImageUrl = this.getOverlayTextValue()?.textImagePath ?: ""
             )
 
             renderUndoButton(this)
@@ -345,11 +349,18 @@ class EditorFragment @Inject constructor(
 
     private fun observeEditorParam() {
         viewModel.editorParam.observe(viewLifecycleOwner) {
-            val isAddLogoEnable =
-                RemoteConfigInstance.getInstance().abTestPlatform.getString(EDITOR_ADD_LOGO_TOOL) == EDITOR_ADD_LOGO_TOOL
-            if (!isAddLogoEnable || !viewModel.isShopAvailable()) {
+            // show/hide add logo base on rollence
+            if (!viewModel.isShopAvailable()) {
                 it.editorToolsList().apply {
                     val removeIndex = find { toolId -> toolId == EditorToolType.ADD_LOGO }
+                    remove(removeIndex)
+                }
+            }
+
+            // show/hide add text base on rollence
+            if (!featureToggleManager.isAddTextEnable()) {
+                it.editorToolsList().apply {
+                    val removeIndex = find { toolId -> toolId == EditorToolType.ADD_TEXT }
                     remove(removeIndex)
                 }
             }
@@ -389,7 +400,8 @@ class EditorFragment @Inject constructor(
                 viewBinding?.viewPager?.updateImage(
                     it,
                     editorUiModel.getImageUrl(),
-                    overlayImageUrl = editorUiModel.getOverlayLogoValue()?.overlayLogoUrl ?: ""
+                    overlayImageUrl = editorUiModel.getOverlayLogoValue()?.overlayLogoUrl ?: "",
+                    overlaySecondaryImageUrl = editorUiModel.getOverlayTextValue()?.textImagePath ?: ""
                 )
             }
         }
@@ -434,7 +446,6 @@ class EditorFragment @Inject constructor(
         private const val TOAST_REDO = 1
         private const val UNDO_REDO_NOTIFY_TIME = 1500L
         private const val NANO_DIVIDER = 1000000
-        private const val PIXEL_BYTE_SIZE = 4
     }
 
 }

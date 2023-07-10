@@ -126,4 +126,15 @@ class RecommendationWidgetViewTest {
 
         openTestActivity(state, pageName)
     }
+
+    @Test
+    fun recommendation_widget_carousel_empty_data() {
+        val pageName = "pdp_1"
+        val state = stateFrom(
+            pageName = pageName,
+            rawResponseId = R.raw.custom_horizontal_empty,
+        )
+
+        openTestActivity(state, pageName)
+    }
 }

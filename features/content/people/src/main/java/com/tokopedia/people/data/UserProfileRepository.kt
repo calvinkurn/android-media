@@ -2,14 +2,14 @@ package com.tokopedia.people.data
 
 import com.tokopedia.feedcomponent.people.model.MutationUiModel
 import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomUiModel
-import com.tokopedia.people.model.UserPostModel
+import com.tokopedia.people.views.uimodel.ProfileSettingsUiModel
+import com.tokopedia.people.views.uimodel.UserReviewUiModel
 import com.tokopedia.people.views.uimodel.content.UserFeedPostsUiModel
 import com.tokopedia.people.views.uimodel.content.UserPlayVideoUiModel
 import com.tokopedia.people.views.uimodel.profile.FollowInfoUiModel
+import com.tokopedia.people.views.uimodel.profile.ProfileCreationInfoUiModel
 import com.tokopedia.people.views.uimodel.profile.ProfileTabUiModel
 import com.tokopedia.people.views.uimodel.profile.ProfileUiModel
-import com.tokopedia.people.views.uimodel.profile.ProfileWhitelistUiModel
-import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 
 /**
  * Created By : Jonathan Darwin on June 28, 2022
@@ -20,7 +20,7 @@ interface UserProfileRepository {
 
     suspend fun getFollowInfo(profileIdList: List<String>): FollowInfoUiModel
 
-    suspend fun getWhitelist(): ProfileWhitelistUiModel
+    suspend fun getCreationInfo(): ProfileCreationInfoUiModel
 
     suspend fun updateReminder(
         channelId: String,
@@ -51,4 +51,26 @@ interface UserProfileRepository {
         channelId: String,
         userId: String,
     ): String
+
+    suspend fun getProfileSettings(
+        userID: String,
+    ): List<ProfileSettingsUiModel>
+
+    suspend fun setShowReview(
+        userID: String,
+        settingID: String,
+        isShow: Boolean,
+    ): Boolean
+
+    suspend fun getUserReviewList(
+        userID: String,
+        limit: Int,
+        page: Int
+    ): UserReviewUiModel
+
+    suspend fun setLikeStatus(
+        feedbackID: String,
+        isLike: Boolean,
+    ): UserReviewUiModel.LikeDislike
+
 }

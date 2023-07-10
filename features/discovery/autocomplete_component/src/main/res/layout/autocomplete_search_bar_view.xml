@@ -20,7 +20,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <androidx.appcompat.widget.AppCompatEditText
+    <com.tokopedia.autocompletecomponent.widget.SearchBarEditText
         android:id="@+id/searchTextView"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -82,7 +82,7 @@
         app:icon_enable_state="true"
         app:icon_name="MICROPHONE"
         app:layout_constraintBottom_toBottomOf="@id/searchTextView"
-        app:layout_constraintRight_toRightOf="@id/searchTextView"
+        app:layout_constraintRight_toLeftOf="@+id/autocompleteAddButtonBarrier"
         app:layout_constraintTop_toTopOf="@id/searchTextView"
         tools:visibility="visible" />
 
@@ -114,15 +114,13 @@
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/autocompleteAddButton"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
         android:layout_marginEnd="2dp"
         android:visibility="gone"
-        app:icon_color_light_enable="@color/Unify_N500"
-        app:icon_enable_state="true"
-        app:srcCompat="@drawable/autocomplete_ic_add_animated"
         app:layout_constraintBottom_toBottomOf="@id/searchTextView"
         app:layout_constraintRight_toRightOf="@id/searchTextView"
-        app:layout_constraintTop_toTopOf="@id/searchTextView"/>
+        app:layout_constraintTop_toTopOf="@id/searchTextView"
+        app:srcCompat="@drawable/autocomplete_ic_add_animated" />
 
 </merge>

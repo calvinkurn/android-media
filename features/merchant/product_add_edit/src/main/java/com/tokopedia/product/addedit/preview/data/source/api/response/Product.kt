@@ -61,4 +61,6 @@ data class Product(
         val variant: Variant = Variant(),
         @SerializedName("cpl")
         val cpl: CPL = CPL(),
+        @SerializedName("hasDTStock")
+        val hasDTStock: Boolean = false,
 )

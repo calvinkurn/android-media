@@ -242,6 +242,7 @@ class FeedPostImageViewHolder(
             }
 
             if (payloads.contains(FEED_POST_SELECTED)) {
+                campaignView.resetView()
                 campaignView.startAnimation()
                 sendImpressionTracker(it)
                 updateProductTagText(it)
