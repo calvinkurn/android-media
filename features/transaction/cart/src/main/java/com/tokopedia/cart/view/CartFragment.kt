@@ -4583,7 +4583,10 @@ class CartFragment :
 
             if (addOnProductDataResult.aggregatedData.isGetDataSuccess) {
                 val cartId = addOnProductDataResult.cartId
-                val newAddOnWording = "${addOnProductDataResult.aggregatedData.title} <b>(${addOnProductDataResult.aggregatedData.price})</b>"
+                var newAddOnWording = ""
+                if (addOnProductDataResult.aggregatedData.title.isNotEmpty() && addOnProductDataResult.aggregatedData.price > 0) {
+                    newAddOnWording = "${addOnProductDataResult.aggregatedData.title} <b>(${addOnProductDataResult.aggregatedData.price})</b>"
+                }
                 cartAdapter.updateAddOnByCartId(addOnProductDataResult.cartId.toString(), newAddOnWording)
             } else {
                 showToastMessageRed(addOnProductDataResult.aggregatedData.getDataErrorMessage)
