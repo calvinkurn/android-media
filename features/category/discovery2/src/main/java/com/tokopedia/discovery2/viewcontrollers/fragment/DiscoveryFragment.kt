@@ -160,7 +160,6 @@ import com.tokopedia.searchbar.navigation_component.util.StatusBarUtil
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.LoaderUnify
-import com.tokopedia.unifycomponents.TabsUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.toPx
@@ -1405,9 +1404,9 @@ open class DiscoveryFragment :
         discoveryViewModel.getDiscoveryData(discoveryViewModel.getQueryParameterMapFromBundle(arguments), userAddressData)
     }
 
-    private fun scrollToPinnedComponent(listComponent: List<ComponentsItem>) {
+    private fun scrollToPinnedComponent(listComponent: List<ComponentsItem>, pinnedId: String? = null) {
         if (!pinnedAlreadyScrolled) {
-            val pinnedComponentId = arguments?.getString(COMPONENT_ID, "")
+            val pinnedComponentId = pinnedId ?: arguments?.getString(COMPONENT_ID, "")
             if (!pinnedComponentId.isNullOrEmpty()) {
                 val (position, isTabPresent) = discoveryViewModel.scrollToPinnedComponent(listComponent, pinnedComponentId)
                 isTabPresentToDoubleScroll = isTabPresent
@@ -2266,13 +2265,13 @@ open class DiscoveryFragment :
     }
 
     fun scrollToNextComponent(currentCompPosition: Int?) {
-        if(currentCompPosition != null && currentCompPosition + 1 < discoveryAdapter.itemCount) {
+        if (currentCompPosition != null && currentCompPosition + 1 < discoveryAdapter.itemCount) {
             smoothScrollToComponentWithPosition(currentCompPosition + 1)
         }
     }
 
     private fun getNavIconBuilderFlag(): IconBuilderFlag {
-        val pageSource = if(isFromCategory) NavSource.CLP else NavSource.DISCOVERY
+        val pageSource = if (isFromCategory) NavSource.CLP else NavSource.DISCOVERY
         return IconBuilderFlag(pageSource, pageEndPoint)
     }
 
@@ -2288,15 +2287,15 @@ open class DiscoveryFragment :
             it.queryParamMapWithRpc.putAll(queryParameterMapWithRpc)
             it.queryParamMapWithoutRpc.putAll(queryParameterMapWithoutRpc)
         }
+        pinnedAlreadyScrolled = false
         if (activeTab != null) {
-            pinnedAlreadyScrolled = false
             this.arguments?.putString(FORCED_NAVIGATION, "true")
             if (componentId != null) {
                 this.arguments?.putString(COMPONENT_ID, componentId.toString())
             }
             discoveryViewModel.getDiscoveryData(discoveryViewModel.getQueryParameterMapFromBundle(arguments), userAddressData, true)
         } else if (componentId != null) {
-            scrollToComponentWithID(componentId.toString())
+            scrollToPinnedComponent(discoveryAdapter.currentList, componentId.toString())
         }
     }
 }

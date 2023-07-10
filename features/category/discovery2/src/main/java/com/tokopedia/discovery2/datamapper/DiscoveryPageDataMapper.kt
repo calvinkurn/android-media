@@ -118,9 +118,9 @@ class DiscoveryPageDataMapper(
                 addRecomQueryProdID(component)
                 listComponents.addAll(parseProductVerticalList(component))
             }
-            ComponentNames.BannerInfinite.componentName -> listComponents.addAll(parseProductVerticalList(component,false))
-            ComponentNames.ContentCard.componentName -> listComponents.addAll(parseProductVerticalList(component,false))
-            ComponentNames.ShopCardInfinite.componentName -> listComponents.addAll(parseProductVerticalList(component,component.areFiltersApplied()))
+            ComponentNames.BannerInfinite.componentName -> listComponents.addAll(parseProductVerticalList(component, false))
+            ComponentNames.ContentCard.componentName -> listComponents.addAll(parseProductVerticalList(component, false))
+            ComponentNames.ShopCardInfinite.componentName -> listComponents.addAll(parseProductVerticalList(component, component.areFiltersApplied()))
             ComponentNames.ProductCardSprintSaleCarousel.componentName,
             ComponentNames.ProductCardCarousel.componentName -> {
                 addRecomQueryProdID(component)
@@ -205,8 +205,9 @@ class DiscoveryPageDataMapper(
         for ((key, v) in queryParameterMapWithRpc) {
             v?.let { value ->
                 val adjustedValue = Utils.isRPCFilterApplicableForTab(value, component)
-                if(adjustedValue.isNotEmpty())
+                if (adjustedValue.isNotEmpty()) {
                     component.searchParameter.set(key, adjustedValue)
+                }
             }
         }
     }
@@ -272,7 +273,7 @@ class DiscoveryPageDataMapper(
     private fun parseTab(component: ComponentsItem, position: Int): List<ComponentsItem> {
         val listComponents: ArrayList<ComponentsItem> = ArrayList()
         val isDynamicTabs = component.properties?.dynamic ?: false
-        component.pinnedActiveTabId = queryParameterMap[ACTIVE_TAB]
+        component.pinnedActiveTabId = queryParameterMapWithoutRpc[ACTIVE_TAB]
         component.parentComponentPosition = position
         when {
             isDynamicTabs -> {
@@ -291,10 +292,10 @@ class DiscoveryPageDataMapper(
             val activeTabIndex = queryParameterMapWithoutRpc[ACTIVE_TAB]?.toIntOrNull()
             if (activeTabIndex != null) {
                 component.getComponentsItem()?.forEachIndexed { index, it ->
-                    if(activeTabIndex == index + 1) {
-                        Utils.setTabSelectedBasedOnDataItem(it,true)
-                    }else{
-                        Utils.setTabSelectedBasedOnDataItem(it,false)
+                    if (activeTabIndex == index + 1) {
+                        Utils.setTabSelectedBasedOnDataItem(it, true)
+                    } else {
+                        Utils.setTabSelectedBasedOnDataItem(it, false)
                     }
                 }
             }
@@ -414,7 +415,7 @@ class DiscoveryPageDataMapper(
         return false
     }
 
-    private fun parseProductVerticalList(component: ComponentsItem,showEmptyState:Boolean = true): List<ComponentsItem> {
+    private fun parseProductVerticalList(component: ComponentsItem, showEmptyState: Boolean = true): List<ComponentsItem> {
         val listComponents: LinkedList<ComponentsItem> = LinkedList()
 
         if (component.verticalProductFailState) {
@@ -464,22 +465,22 @@ class DiscoveryPageDataMapper(
                             }
                         }
                     )
-                    if(component.name == ComponentNames.ContentCard.componentName ){
-                        if((component.data?.size?.rem(2) ?: 0) != 0){
-                            listComponents.addAll(handleProductState(component,ComponentNames.ContentCardEmptyState.componentName, queryParameterMap))
+                    if (component.name == ComponentNames.ContentCard.componentName) {
+                        if ((component.data?.size?.rem(2) ?: 0) != 0) {
+                            listComponents.addAll(handleProductState(component, ComponentNames.ContentCardEmptyState.componentName, queryParameterMap))
                         }
                     }
                 }
                 if (component.properties?.index != null &&
                     component.properties?.index!! > Int.ZERO &&
                     component.properties?.index!! < listComponents.size &&
-                    !component.properties?.targetedComponentId.isNullOrEmpty())
-                 {
+                    !component.properties?.targetedComponentId.isNullOrEmpty()
+                ) {
                     getComponent(
                         component.properties?.targetedComponentId!!,
                         component.pageEndPoint
                     )?.let {
-                        if(it.name == ComponentNames.DiscoTDNBanner.componentName){
+                        if (it.name == ComponentNames.DiscoTDNBanner.componentName) {
                             it.design = TOP_ADS_GSLP_TDN
                             it.recomQueryProdId = component.recomQueryProdId
                         }
@@ -487,7 +488,7 @@ class DiscoveryPageDataMapper(
                     }
                 }
 
-                if (Utils.nextPageAvailable(component,component.componentsPerPage) && component.showVerticalLoader) {
+                if (Utils.nextPageAvailable(component, component.componentsPerPage) && component.showVerticalLoader) {
                     listComponents.addAll(handleProductState(component, ComponentNames.LoadMore.componentName, queryParameterMap))
                 } else if (component.getComponentsItem()?.size == 0 && showEmptyState) {
                     listComponents.addAll(handleProductState(component, ComponentNames.ProductListEmptyState.componentName, queryParameterMap))
@@ -583,7 +584,7 @@ class DiscoveryPageDataMapper(
         return listComponents
     }
 
-    private fun handleQuickFilter(component: ComponentsItem){
+    private fun handleQuickFilter(component: ComponentsItem) {
         if (!component.isSelectedFiltersFromQueryApplied && !queryParameterMapWithRpc.isNullOrEmpty()) {
             component.isSelectedFiltersFromQueryApplied = true
             getFiltersFromQuery(
