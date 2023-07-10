@@ -2945,11 +2945,11 @@ open class SomListFragment :
     private fun getCoachMarkMessageAutoTabbing(context: Context, highLightStatusKey: String): String {
         return when (highLightStatusKey) {
             STATUS_NEW_ORDER -> {
-                context.getString(com.tokopedia.sellerorder.R.string.som_operational_guideline_confirm_shipping_tooltip_text)
+                context.getString(com.tokopedia.sellerorder.R.string.som_operational_guideline_new_order_tooltip_text)
                     .orEmpty()
             }
             KEY_CONFIRM_SHIPPING -> {
-                context.getString(com.tokopedia.sellerorder.R.string.som_operational_guideline_new_order_tooltip_text)
+                context.getString(com.tokopedia.sellerorder.R.string.som_operational_guideline_confirm_shipping_tooltip_text)
                     .orEmpty()
             }
             else -> String.EMPTY
