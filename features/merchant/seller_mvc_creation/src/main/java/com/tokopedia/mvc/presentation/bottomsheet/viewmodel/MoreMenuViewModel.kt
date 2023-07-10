@@ -10,7 +10,6 @@ import com.tokopedia.mvc.domain.entity.VoucherCreationMetadata
 import com.tokopedia.mvc.domain.entity.enums.SubsidyInfo
 import com.tokopedia.mvc.domain.entity.enums.VoucherStatus
 import com.tokopedia.mvc.domain.usecase.GetInitiateVoucherPageUseCase
-import com.tokopedia.mvc.presentation.bottomsheet.OtherPeriodBottomSheet
 import com.tokopedia.mvc.presentation.detail.VoucherDetailFragment
 import com.tokopedia.mvc.presentation.list.model.MoreMenuUiModel
 import com.tokopedia.mvc.util.StringHandler
@@ -63,9 +62,11 @@ class MoreMenuViewModel @Inject constructor(
                         getVoucherDetailEndedStoppedOptionsListMenu()
                     }
                 }
-        } else if (pageSource == OtherPeriodBottomSheet::class.java.simpleName) {
-            menuItem = getOtherScheduleListMenu()
-        } else {
+        }
+//        else if (pageSource == OtherPeriodBottomSheet::class.java.simpleName) {
+//            menuItem = getOtherScheduleListMenu()
+//        }
+        else {
             if (voucher == null) {
                 return menuItem
             } else {
