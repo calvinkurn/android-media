@@ -7,8 +7,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
@@ -33,6 +35,7 @@ import com.tokopedia.loginHelper.util.showToasterError
 import com.tokopedia.url.Env
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class LoginHelperAddEditAccountFragment : BaseDaggerFragment() {
@@ -126,9 +129,11 @@ class LoginHelperAddEditAccountFragment : BaseDaggerFragment() {
     }
 
     private fun observeUiAction() {
-        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            viewModel.uiAction.collect { action ->
-                handleAction(action)
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.uiAction.collect { action ->
+                    handleAction(action)
+                }
             }
         }
     }

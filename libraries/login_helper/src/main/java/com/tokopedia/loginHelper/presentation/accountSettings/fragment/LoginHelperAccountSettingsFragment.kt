@@ -5,8 +5,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.header.HeaderUnify
@@ -21,7 +23,7 @@ import com.tokopedia.loginHelper.presentation.home.LoginHelperActivity
 import com.tokopedia.loginHelper.presentation.searchAccount.LoginHelperSearchActivity
 import com.tokopedia.url.TokopediaUrl.Companion.getInstance
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class LoginHelperAccountSettingsFragment : BaseDaggerFragment() {
@@ -56,9 +58,11 @@ class LoginHelperAccountSettingsFragment : BaseDaggerFragment() {
     }
 
     private fun observeUiAction() {
-        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            viewModel.uiAction.collect { action ->
-                handleAction(action)
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.uiAction.collect { action ->
+                    handleAction(action)
+                }
             }
         }
     }
