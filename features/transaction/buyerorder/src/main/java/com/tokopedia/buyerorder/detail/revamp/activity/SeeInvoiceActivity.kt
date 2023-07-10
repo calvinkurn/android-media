@@ -41,7 +41,7 @@ class SeeInvoiceActivity : BaseSimpleWebViewActivity() {
 
     private var mHandler: Handler? = null
     private var mRunnable: Runnable? = null
-    private val delay = 500
+    private val delay = 1000
 
     @Volatile
     private var lastTimestampCalled: Long = 0
@@ -101,30 +101,30 @@ class SeeInvoiceActivity : BaseSimpleWebViewActivity() {
         mHandler = Handler(Looper.getMainLooper())
         mRunnable = Runnable {
             webView?.let {
-                // debounce
-                val currentTimestamp = System.currentTimeMillis()
-                if (lastTimestampCalled + delay >= currentTimestamp) {
-                    return@Runnable
-                }
-                lastTimestampCalled = System.currentTimeMillis()
-
-                val printManager = ContextCompat.getSystemService(this, PrintManager::class.java)
-
-                var lastNoInvoice = ""
-                val invoiceRefNum = intent?.getStringExtra(INVOICE_REF_NUM) ?: ""
-                if (invoiceRefNum.isNotEmpty()) {
-                    val splitInvoice = invoiceRefNum.split("/")
-                    if (splitInvoice.isNotEmpty()) {
-                        lastNoInvoice = splitInvoice[splitInvoice.size - 1]
-                    }
-                }
-                val jobName = "Invoice $lastNoInvoice"
-
-                val printAdapter = it.createPrintDocumentAdapter(jobName)
-                val prinAttr = PrintAttributes.Builder()
-                    .setMediaSize(PrintAttributes.MediaSize.ISO_A4)
-                    .build()
                 try {
+                    // debounce
+                    val currentTimestamp = System.currentTimeMillis()
+                    if (lastTimestampCalled + delay >= currentTimestamp) {
+                        return@Runnable
+                    }
+                    lastTimestampCalled = System.currentTimeMillis()
+
+                    val printManager = ContextCompat.getSystemService(this, PrintManager::class.java)
+
+                    var lastNoInvoice = ""
+                    val invoiceRefNum = intent?.getStringExtra(INVOICE_REF_NUM) ?: ""
+                    if (invoiceRefNum.isNotEmpty()) {
+                        val splitInvoice = invoiceRefNum.split("/")
+                        if (splitInvoice.isNotEmpty()) {
+                            lastNoInvoice = splitInvoice[splitInvoice.size - 1]
+                        }
+                    }
+                    val jobName = "Invoice $lastNoInvoice"
+
+                    val printAdapter = it.createPrintDocumentAdapter(jobName)
+                    val prinAttr = PrintAttributes.Builder()
+                        .setMediaSize(PrintAttributes.MediaSize.ISO_A4)
+                        .build()
                     printManager?.print(jobName, printAdapter, prinAttr)
                 } catch (e: Throwable) {
                     e.printStackTrace()
