@@ -8,6 +8,9 @@ import com.tokopedia.atc_common.domain.model.response.ErrorReporterModel
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.content.common.comment.model.CountComment
 import com.tokopedia.content.common.comment.usecase.GetCountCommentsUseCase
+import com.tokopedia.content.common.model.TrackVisitChannelResponse
+import com.tokopedia.content.common.usecase.BroadcasterReportTrackViewerUseCase
+import com.tokopedia.content.common.usecase.TrackVisitChannelBroadcasterUseCase
 import com.tokopedia.feed.component.product.FeedTaggedProductUiModel
 import com.tokopedia.feedcomponent.data.pojo.UpcomingCampaignResponse
 import com.tokopedia.feedcomponent.data.pojo.shopmutation.FollowShop
@@ -96,6 +99,8 @@ class FeedPostViewModelTest {
     private val mvcSummaryUseCase: MVCSummaryUseCase = mockk()
     private val topAdsAddressHelper: TopAdsAddressHelper = mockk()
     private val getCountCommentsUseCase: GetCountCommentsUseCase = mockk()
+    private val trackVisitChannelUseCase: TrackVisitChannelBroadcasterUseCase = mockk()
+    private val trackReportViewerUseCase: BroadcasterReportTrackViewerUseCase = mockk()
 
     private lateinit var viewModel: FeedPostViewModel
 
@@ -115,8 +120,8 @@ class FeedPostViewModelTest {
             mvcSummaryUseCase,
             topAdsAddressHelper,
             getCountCommentsUseCase,
-            mockk(),
-            mockk(),
+            trackVisitChannelUseCase,
+            trackReportViewerUseCase,
             testDispatcher
         )
     }
@@ -697,7 +702,8 @@ class FeedPostViewModelTest {
         coEvery { campaignReminderUseCase.createParams(1, true) } returns mapOf()
         coEvery { campaignReminderUseCase(any()) } returns UpcomingCampaignResponse(
             success = true,
-            errorMessage = "Failed"
+            errorMessage = "Failed",
+            isAvailable = true
         )
 
         // when
@@ -961,6 +967,25 @@ class FeedPostViewModelTest {
         assert((viewModel.feedHome.value as Success).data.items.size == getDummyFeedModel().items.size)
     }
 
+    @Test
+    fun onTrackChannelPerformance() {
+        coEvery { trackReportViewerUseCase.setRequestParams(any()) } coAnswers {}
+        coEvery { trackReportViewerUseCase.executeOnBackground() } returns true
+
+        // when
+        viewModel.trackChannelPerformance(getDummyFeedModel().items[1] as FeedCardVideoContentModel)
+    }
+
+    @Test
+    fun onTrackVisiChannel() {
+        coEvery { trackVisitChannelUseCase.setRequestParams(any()) } coAnswers {}
+        coEvery { trackVisitChannelUseCase.executeOnBackground() } returns TrackVisitChannelResponse.Response(
+            TrackVisitChannelResponse()
+        )
+
+        viewModel.trackVisitChannel(getDummyFeedModel().items[1] as FeedCardVideoContentModel)
+    }
+
     private fun provideDefaultFeedPostMockData() {
         coEvery { feedXHomeUseCase.createParams(any(), any(), any(), any()) } returns emptyMap()
         coEvery { feedXHomeUseCase.createPostDetailParams("1") } returns emptyMap()
@@ -1036,7 +1061,7 @@ class FeedPostViewModelTest {
                 emptyList(),
                 emptyList(),
                 "",
-                ""
+                "1"
             ),
             FeedCardLivePreviewContentModel(
                 "live 1 id",

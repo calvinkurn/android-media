@@ -16,6 +16,7 @@ import com.tokopedia.linter.detectors.SerializedNameAnnotationDetector
 import com.tokopedia.linter.detectors.UnifyBackgroundDetector
 import com.tokopedia.linter.detectors.UnsafeFragmentConstructorDetector
 import com.tokopedia.linter.detectors.UnsupportedColorDetector
+import com.tokopedia.linter.detectors.UnsupportedNestColorDetector
 import com.tokopedia.linter.detectors.VectorDrawableDetector
 import com.tokopedia.linter.detectors.gradle.BannedDependencyDetector.DEPENDENCY_BANNED
 import com.tokopedia.linter.detectors.gradle.DeprecatedDependencyDetector.DEPENDENCY_DEPRECATED
@@ -53,6 +54,8 @@ class IssueRegistry : IssueRegistry() {
             DimenUsageDetector.XML_ISSUE,
             UnsafeFragmentConstructorDetector.ISSUE,
             ImageUrlDeclarationDetector.JAVA_ISSUE,
+            UnsupportedNestColorDetector.XML_ISSUE,
+            UnsupportedNestColorDetector.JAVA_ISSUE,
             HANSEL_REQUIRED
         )
 

@@ -5,12 +5,6 @@ import com.google.gson.annotations.SerializedName
 
 data class BundleDetail(
     @Expose
-    @SerializedName("bundle_description")
-    val bundleDescription: String = "",
-    @Expose
-    @SerializedName("bundle_end_time_unix")
-    val bundleEndTimeUnix: String = "",
-    @Expose
     @SerializedName("bundle_group_id")
     val bundleGroupId: String = "",
     @Expose
@@ -29,9 +23,6 @@ data class BundleDetail(
     @SerializedName("bundle_original_price")
     val bundleOriginalPrice: Double = 0.0,
     @Expose
-    @SerializedName("bundle_original_price_fmt")
-    val bundleOriginalPriceFmt: String = "",
-    @Expose
     @SerializedName("bundle_price")
     val bundlePrice: Double = 0.0,
     @Expose
@@ -43,12 +34,6 @@ data class BundleDetail(
     @Expose
     @SerializedName("bundle_quota")
     val bundleQuota: Int = 0,
-    @Expose
-    @SerializedName("bundle_start_time_unix")
-    val bundleStartTimeUnix: String = "",
-    @Expose
-    @SerializedName("bundle_status")
-    val bundleStatus: String = "",
     @Expose
     @SerializedName("bundle_type")
     val bundleType: String = "",
