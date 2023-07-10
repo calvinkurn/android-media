@@ -90,8 +90,7 @@ object ShopPageWidgetMapper {
         type = widgetResponse.type,
         header = ShopPageHomeMapper.mapToHeaderModel(widgetResponse.header, widgetLayout),
         isFestivity = widgetLayout?.isFestivity.orFalse(),
-        productList = ShopPageHomeMapper.mapCampaignListProduct(
-            widgetResponse.data.firstOrNull()?.statusCampaign.orEmpty(),
+        productList = ShopPageHomeMapper.mapCampaignCarouselListProduct(
             widgetResponse.data.firstOrNull()?.listProduct.orEmpty()
         ),
         statusCampaign = widgetResponse.data.firstOrNull()?.statusCampaign.orEmpty()

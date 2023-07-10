@@ -726,6 +726,30 @@ object ShopPageHomeMapper {
         }
     }
 
+    internal fun mapCampaignCarouselListProduct(
+        listProduct: List<ShopLayoutWidget.Widget.Data.Product>
+    ): List<ShopHomeProductUiModel> {
+        return listProduct.map {
+            val stockSoldPercentage = it.stockSoldPercentage.toInt()
+            val showStockBar = it.showStockBar
+            ShopHomeProductUiModel().apply {
+                id = it.id
+                name = it.name
+                displayedPrice = it.discountedPrice
+                originalPrice = it.displayedPrice
+                discountPercentage = it.discountPercentage
+                imageUrl = it.imageUrl
+                imageUrl300 = ""
+                productUrl = it.urlApps
+                stockLabel = it.stockWording.title.takeIf { showStockBar }.orEmpty()
+                this.stockSoldPercentage = stockSoldPercentage
+                hideGimmick = it.hideGimmick
+                labelGroupList =
+                    it.labelGroups.map { labelGroup -> mapToLabelGroupViewModel(labelGroup) }
+            }
+        }
+    }
+
     private fun mapCampaignFlashSaleListProduct(
         statusCampaign: String,
         listProduct: List<ShopLayoutWidget.Widget.Data.Product>,

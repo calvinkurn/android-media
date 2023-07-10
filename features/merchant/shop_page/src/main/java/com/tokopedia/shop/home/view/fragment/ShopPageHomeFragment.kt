@@ -108,7 +108,6 @@ import com.tokopedia.shop.common.constant.DEFAULT_SORT_ID
 import com.tokopedia.shop.common.constant.ShopCommonExtraConstant
 import com.tokopedia.shop.common.constant.ShopPageConstant
 import com.tokopedia.shop.analytic.model.ShopHomePersoProductComparisonWidgetImpressionTrackerModel
-import com.tokopedia.shop.common.constant.*
 import com.tokopedia.shop.common.constant.ShopPageConstant.VALUE_INT_ONE
 import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.Tag.SHOP_PAGE_BUYER_FLOW_TAG
 import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.Tag.SHOP_PAGE_HOME_TAB_BUYER_FLOW_TAG
@@ -599,7 +598,7 @@ open class ShopPageHomeFragment :
                 getString(R.string.shop_string_ok)
             ).show()
         }
-        viewModel?.updateBannerTimerWidgetData(
+        viewModel?.toggleBannerTimerRemindMe(
             shopHomeAdapter?.getNewVisitableItems().orEmpty().toMutableList(),
             isRemindMe = false,
             isClickRemindMe = false
@@ -611,7 +610,7 @@ open class ShopPageHomeFragment :
             NotifyMeAction.REGISTER.action,
             ignoreCase = true
         )
-        viewModel?.updateBannerTimerWidgetData(
+        viewModel?.toggleBannerTimerRemindMe(
             shopHomeAdapter?.getNewVisitableItems().orEmpty().toMutableList(),
             isRegisterCampaign,
             true
@@ -1485,7 +1484,7 @@ open class ShopPageHomeFragment :
     }
 
     protected open fun onSuccessGetBannerTimerRemindMeStatusData(data: GetCampaignNotifyMeUiModel) {
-        viewModel?.updateBannerTimerWidgetData(
+        viewModel?.toggleBannerTimerRemindMe(
             shopHomeAdapter?.getNewVisitableItems().orEmpty().toMutableList(),
             isRemindMe = data.isAvailable,
             isClickRemindMe = false
