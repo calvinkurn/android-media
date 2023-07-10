@@ -17,6 +17,7 @@ buildscript {
 android {
     buildFeatures{
         viewBinding true
+        compose true
     }
 }
 
@@ -54,6 +55,13 @@ dependencies {
     kapt rootProject.ext.miscDependencies.daggerCompiler
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
+
+    /**
+     * COMPOSE
+     */
+    implementation rootProject.ext.composeDependencies.composeActivity
+    implementation rootProject.ext.composeDependencies.composeConstraint
+    implementation rootProject.ext.composeDependencies.composeLiveData
 
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.archCoreTesting
