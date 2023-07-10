@@ -20,6 +20,8 @@ object GetTopadsDashboardGroupsV3 : GqlQueryInterface{
                     per_page
                     current
                     total
+                    min
+                    max
                 }
             }
             data {
@@ -27,6 +29,7 @@ object GetTopadsDashboardGroupsV3 : GqlQueryInterface{
                 total_item
                 total_keyword
                 group_status
+                group_start_date
                 group_status_desc
                 group_status_toogle
                 group_price_bid
@@ -36,6 +39,10 @@ object GetTopadsDashboardGroupsV3 : GqlQueryInterface{
                 group_name
                 group_type
                 group_end_date
+                group_bid_setting{
+                    product_browse 
+                    product_search
+                }
                 stat_total_conversion
                 stat_total_spent
                 stat_total_ctr
@@ -43,6 +50,13 @@ object GetTopadsDashboardGroupsV3 : GqlQueryInterface{
                 stat_avg_click
                 stat_total_income
                 strategies
+                stat_total_impression
+                stat_total_top_slot_impression
+            }
+            errors{
+              code
+              detail
+              title
             }
         }
         }""".trimIndent()

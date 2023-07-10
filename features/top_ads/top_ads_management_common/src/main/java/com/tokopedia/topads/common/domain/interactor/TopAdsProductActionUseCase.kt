@@ -7,7 +7,6 @@ import com.tokopedia.common.network.data.model.CacheType
 import com.tokopedia.common.network.data.model.RequestType
 import com.tokopedia.common.network.data.model.RestCacheStrategy
 import com.tokopedia.common.network.data.model.RestRequest
-import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.data.model.response.DataResponse
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant
@@ -16,6 +15,7 @@ import com.tokopedia.topads.common.data.internal.ParamObject.ACTION
 import com.tokopedia.topads.common.data.internal.ParamObject.ADS
 import com.tokopedia.topads.common.data.internal.ParamObject.PRICE_BID
 import com.tokopedia.topads.common.data.response.ProductActionResponse
+import com.tokopedia.topads.common.domain.query.GetTopadsUpdateSingleAds
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
@@ -24,23 +24,6 @@ import javax.inject.Inject
  * Created by Pika on 5/6/20.
  */
 
-private const val UPDATE_SINGLE_ADS = """
-    mutation topadsUpdateSingleAds(${'$'}action: String!, ${'$'}ads: [topadsUpdateSingleAdsReqData]!, ${'$'}shopID: String!) {
-  topadsUpdateSingleAds(action: ${'$'}action, ads: ${'$'}ads, shopID: ${'$'}shopID) {
-        data {
-            action
-            shopID
-        }
-        errors {
-            code
-            detail
-            title
-        }
-    }
-}
-"""
-
-@GqlQuery("GetTopadsUpdateSingleAds", UPDATE_SINGLE_ADS)
 class TopAdsProductActionUseCase @Inject constructor(val userSession: UserSessionInterface) {
 
     private val restRepository: RestRepository by lazy { RestRequestInteractor.getInstance().restRepository }
@@ -51,9 +34,8 @@ class TopAdsProductActionUseCase @Inject constructor(val userSession: UserSessio
 
     suspend fun execute(requestParams: RequestParams?): ProductActionResponse {
         val token = object : TypeToken<DataResponse<ProductActionResponse>>() {}.type
-        val query = GetTopadsUpdateSingleAds.GQL_QUERY
         val request =
-            GraphqlRequest(query, ProductActionResponse::class.java, requestParams?.parameters)
+            GraphqlRequest(GetTopadsUpdateSingleAds, ProductActionResponse::class.java, requestParams?.parameters)
         val headers = java.util.HashMap<String, String>()
         headers["Content-Type"] = "application/json"
         val restRequest =
