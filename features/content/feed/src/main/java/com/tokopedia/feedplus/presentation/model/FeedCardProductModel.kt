@@ -31,5 +31,6 @@ data class FeedCardProductModel(
     val stockSoldPercentage: Float = 0f,
     val cartable: Boolean = false,
     val isCashback: Boolean = false,
-    val cashbackFmt: String = ""
+    val cashbackFmt: String = "",
+    val isAvailable: Boolean = false,
 )

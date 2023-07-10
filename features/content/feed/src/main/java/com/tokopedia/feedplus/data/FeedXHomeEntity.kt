@@ -216,7 +216,9 @@ class FeedXProduct(
     @SerializedName("isCashback")
     val isCashback: Boolean = false,
     @SerializedName("cashbackFmt")
-    val cashbackFmt: String = ""
+    val cashbackFmt: String = "",
+    @SerializedName("isStockAvailable")
+    val isAvailable: Boolean = false,
 )
 
 class FeedXMedia(

@@ -364,6 +364,7 @@ class FeedXHomeUseCase @Inject constructor(
               shopID
               shopName
               mods
+              isStockAvailable
             }
     """.trimIndent()
 
