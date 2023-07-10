@@ -22,7 +22,7 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class CategoryProductAdsTest : TokoNowCategoryMainViewModelTestFixture() {
+class CategoryProductAdsTest : TokoNowCategoryViewModelTestFixture() {
 
     @Test
     fun `given get product ads success when getFirstPage should add product ads carousel to categoryPage`() {

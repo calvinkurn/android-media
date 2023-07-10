@@ -15,7 +15,7 @@ import com.tokopedia.usecase.coroutines.Success
 import org.junit.Assert
 import org.junit.Test
 
-class CategoryViewCreatedTest : TokoNowCategoryMainViewModelTestFixture() {
+class CategoryViewCreatedTest : TokoNowCategoryViewModelTestFixture() {
 
     @Test
     fun `onViewCreated should return success result with loading showcase`() {

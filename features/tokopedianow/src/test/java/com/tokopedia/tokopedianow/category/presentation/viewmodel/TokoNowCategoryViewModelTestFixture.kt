@@ -47,7 +47,7 @@ import io.mockk.mockk
 import org.junit.Before
 import org.junit.Rule
 
-open class TokoNowCategoryMainViewModelTestFixture {
+open class TokoNowCategoryViewModelTestFixture {
 
     /**
      * private variable section

@@ -10,7 +10,7 @@ import com.tokopedia.tokopedianow.util.TestUtils.mockPrivateField
 import com.tokopedia.unit.test.ext.verifyValueEquals
 import org.junit.Test
 
-class CategoryProductRecommendationTest: TokoNowCategoryMainViewModelTestFixture() {
+class CategoryProductRecommendationTest: TokoNowCategoryViewModelTestFixture() {
     @Test
     fun `after getFirstPage, call removeProductRecommendation to remove the recommendation in the layout`() {
         val isLoggedIn = true

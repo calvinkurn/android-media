@@ -12,7 +12,7 @@ import com.tokopedia.tokopedianow.util.TestUtils.mockPrivateField
 import com.tokopedia.unit.test.ext.verifyValueEquals
 import org.junit.Test
 
-class CategoryFirstPageTest: TokoNowCategoryMainViewModelTestFixture() {
+class CategoryFirstPageTest: TokoNowCategoryViewModelTestFixture() {
 
     @Test
     fun `getFirstPage should return result with first 3 showcases for the first page of pagination`() {

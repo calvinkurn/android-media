@@ -7,7 +7,7 @@ import com.tokopedia.tokopedianow.util.TestUtils.mockPrivateField
 import com.tokopedia.unit.test.ext.verifyValueEquals
 import org.junit.Test
 
-class CategoryWishlistTest: TokoNowCategoryMainViewModelTestFixture() {
+class CategoryWishlistTest: TokoNowCategoryViewModelTestFixture() {
     @Test
     fun `when updateWishlistStatus should update the status in layout`()  {
         // mock data

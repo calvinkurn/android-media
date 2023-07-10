@@ -7,12 +7,10 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
-import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
-import com.tokopedia.network.authentication.AuthHelper
 import com.tokopedia.productcard.compact.productcard.presentation.uimodel.ProductCardCompactUiModel
 import com.tokopedia.tokopedianow.category.di.module.CategoryParamModule.Companion.NOW_CATEGORY_L1
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryNavigationMapper.mapToCategoryNavigation
@@ -42,52 +40,52 @@ import com.tokopedia.tokopedianow.category.presentation.model.CategoryOpenScreen
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryNavigationUiModel
 import com.tokopedia.tokopedianow.category.presentation.util.CategoryLayoutType
 import com.tokopedia.tokopedianow.category.presentation.util.CategoryLayoutType.CATEGORY_SHOWCASE
-import com.tokopedia.tokopedianow.common.base.viewmodel.BaseTokoNowViewModel
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.constant.TokoNowStaticLayoutType.Companion.PRODUCT_ADS_CAROUSEL
 import com.tokopedia.tokopedianow.common.domain.mapper.ProductAdsMapper.addProductAdsCarousel
 import com.tokopedia.tokopedianow.common.domain.mapper.ProductAdsMapper.findAdsProductCarousel
-import com.tokopedia.tokopedianow.common.domain.param.GetProductAdsParam
-import com.tokopedia.tokopedianow.common.domain.param.GetProductAdsParam.Companion.SRC_DIRECTORY_TOKONOW
+import com.tokopedia.tokopedianow.common.domain.model.GetProductAdsResponse
 import com.tokopedia.tokopedianow.common.domain.usecase.GetProductAdsUseCase
 import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase
 import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase.Companion.CATEGORY_PAGE
 import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
 import com.tokopedia.tokopedianow.common.service.NowAffiliateService
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
+import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Job
 import javax.inject.Inject
 import javax.inject.Named
 
 class TokoNowCategoryViewModel @Inject constructor(
-    private val getCategoryDetailUseCase: GetCategoryDetailUseCase,
-    private val getCategoryProductUseCase: GetCategoryProductUseCase,
-    private val getProductAdsUseCase: GetProductAdsUseCase,
-    private val addressData: TokoNowLocalAddress,
     @Named(NOW_CATEGORY_L1)
     val categoryIdL1: String,
-    userSession: UserSessionInterface,
+    private val getCategoryDetailUseCase: GetCategoryDetailUseCase,
+    getCategoryProductUseCase: GetCategoryProductUseCase,
+    getProductAdsUseCase: GetProductAdsUseCase,
+    getTargetedTickerUseCase: GetTargetedTickerUseCase,
     getMiniCartUseCase: GetMiniCartListSimplifiedUseCase,
     addToCartUseCase: AddToCartUseCase,
     updateCartUseCase: UpdateCartUseCase,
     deleteCartUseCase: DeleteCartUseCase,
     affiliateService: NowAffiliateService,
-    getTargetedTickerUseCase: GetTargetedTickerUseCase,
+    addressData: TokoNowLocalAddress,
+    userSession: UserSessionInterface,
     dispatchers: CoroutineDispatchers
-) : BaseTokoNowViewModel(
-    userSession = userSession,
+) : BaseCategoryViewModel(
+    getCategoryProductUseCase = getCategoryProductUseCase,
+    getProductAdsUseCase = getProductAdsUseCase,
+    getTargetedTickerUseCase = getTargetedTickerUseCase,
     getMiniCartUseCase = getMiniCartUseCase,
     addToCartUseCase = addToCartUseCase,
     updateCartUseCase = updateCartUseCase,
     deleteCartUseCase = deleteCartUseCase,
     affiliateService = affiliateService,
-    getTargetedTickerUseCase = getTargetedTickerUseCase,
     addressData = addressData,
+    userSession = userSession,
     dispatchers = dispatchers
 ) {
     companion object {
@@ -145,71 +143,64 @@ class TokoNowCategoryViewModel @Inject constructor(
         _categoryPage.postValue(layout)
     }
 
+    override fun onSuccessGetCategoryProduct(
+        response: AceSearchProductModel,
+        categoryL2Model: CategoryL2Model
+    ) {
+        categoryL2Models.remove(categoryL2Model)
+
+        val searchProduct = response.searchProduct
+        val header = searchProduct.header
+        val productList = searchProduct.data.productList.filter { !it.isOos() }
+
+        if (productList.isEmpty()) {
+            layout.removeItem(id = categoryL2Model.id)
+            return
+        }
+
+        layout.mapCategoryShowcase(
+            totalData = header.totalData,
+            productList = productList,
+            categoryIdL2 = categoryL2Model.id,
+            title = categoryL2Model.title,
+            seeAllAppLink = categoryL2Model.appLink,
+            miniCartData = miniCartData,
+            hasBlockedAddToCart = hasBlockedAddToCart
+        )
+    }
+
+    override fun onSuccessGetProductAds(response: GetProductAdsResponse.ProductAdsResponse) {
+        if (response.productList.isNotEmpty()) {
+            layout.mapProductAdsCarousel(response, miniCartData, hasBlockedAddToCart)
+        } else {
+            layout.removeItem(PRODUCT_ADS_CAROUSEL)
+        }
+        _categoryPage.postValue(layout)
+    }
+
+    override fun onErrorGetProductAds(error: Throwable) {
+        layout.removeItem(PRODUCT_ADS_CAROUSEL)
+        _categoryPage.postValue(layout)
+    }
+
+    override fun onErrorGetCategoryProduct(
+        error: Throwable,
+        categoryL2Model: CategoryL2Model
+    ) {
+        categoryL2Models.remove(categoryL2Model)
+        layout.removeItem(id = categoryL2Model.id)
+    }
+
     /**
      * -- private suspend function section --
      */
 
-    private suspend fun getCategoryShowcaseAsync(
-        categoryL2Model: CategoryL2Model,
-        hasAdded: Boolean
-    ): Deferred<Unit?> = asyncCatchError(block = {
-        val categoryPage = getCategoryProductUseCase.execute(
-            chooseAddressData = getAddressData(),
-            categoryIdL2 = categoryL2Model.id,
-            uniqueId = getUniqueId()
-        )
-
-        categoryL2Models.remove(categoryL2Model)
-
-        val productList = categoryPage.searchProduct.data.productList.filter { !it.isOos() }
-        if (productList.isEmpty()) {
-            layout.removeItem(
-                id = categoryL2Model.id
-            )
-            return@asyncCatchError
-        }
-
-        if (hasAdded) {
-            layout.mapCategoryShowcase(
-                totalData = categoryPage.searchProduct.header.totalData,
-                productList = productList,
-                categoryIdL2 = categoryL2Model.id,
-                title = categoryL2Model.title,
-                seeAllAppLink = categoryL2Model.appLink,
-                miniCartData = miniCartData,
-                hasBlockedAddToCart = hasBlockedAddToCart
-            )
-        } else {
-            layout.addCategoryShowcase(
-                totalData = categoryPage.searchProduct.header.totalData,
-                productList = productList,
-                categoryIdL2 = categoryL2Model.id,
-                title = categoryL2Model.title,
-                state = TokoNowLayoutState.SHOW,
-                seeAllAppLink = categoryL2Model.appLink,
-                miniCartData = miniCartData,
-                hasBlockedAddToCart = hasBlockedAddToCart
-            )
-        }
-    }) {
-        categoryL2Models.remove(categoryL2Model)
-
-        layout.removeItem(
-            id = categoryL2Model.id
-        )
-    }
-
-    private suspend fun getBatchShowcase(
-        hasAdded: Boolean
-    ) {
+    private suspend fun getBatchShowcase() {
         layout.addProgressBar()
         _categoryPage.postValue(layout)
 
         categoryL2Models.take(BATCH_SHOWCASE_TOTAL).map { categoryL2Model ->
-            getCategoryShowcaseAsync(
-                categoryL2Model = categoryL2Model,
-                hasAdded = hasAdded
-            ).await()
+            getCategoryProductAsync(categoryL2Model = categoryL2Model).await()
         }
 
         layout.removeItem(CategoryLayoutType.MORE_PROGRESS_BAR.name)
@@ -217,30 +208,6 @@ class TokoNowCategoryViewModel @Inject constructor(
         addCategoryRecommendation()
 
         _categoryPage.postValue(layout)
-    }
-
-    private fun getProductAds() {
-        launchCatchError(block = {
-            val params = GetProductAdsParam(
-                categoryId = categoryIdL1,
-                warehouseIds = addressData.getWarehouseIds(),
-                src = SRC_DIRECTORY_TOKONOW,
-                userId = getUserId()
-            )
-
-            val response = getProductAdsUseCase.execute(params)
-
-            if (response.productList.isNotEmpty()) {
-                layout.mapProductAdsCarousel(response, miniCartData, hasBlockedAddToCart)
-            } else {
-                layout.removeItem(PRODUCT_ADS_CAROUSEL)
-            }
-
-            _categoryPage.postValue(layout)
-        }) {
-            layout.removeItem(PRODUCT_ADS_CAROUSEL)
-            _categoryPage.postValue(layout)
-        }
     }
 
     /**
@@ -279,9 +246,7 @@ class TokoNowCategoryViewModel @Inject constructor(
     private fun getMoreShowcases() {
         moreShowcaseJob = launchCatchError(
             block = {
-                getBatchShowcase(
-                    hasAdded = false
-                )
+                getBatchShowcase()
             },
             onError = { /* nothing to do */ }
         )
@@ -307,8 +272,6 @@ class TokoNowCategoryViewModel @Inject constructor(
             )
         )
     }
-
-    private fun getUniqueId() = if (isLoggedIn()) AuthHelper.getMD5Hash(getUserId()) else AuthHelper.getMD5Hash(getDeviceId())
 
     private fun updateProductCartQuantity(
         productId: String,
@@ -398,10 +361,8 @@ class TokoNowCategoryViewModel @Inject constructor(
     fun getFirstPage() {
         launchCatchError(
             block = {
-                getBatchShowcase(
-                    hasAdded = true
-                )
-                getProductAds()
+                getBatchShowcase()
+                getProductAds(categoryIdL1)
             },
             onError = { /* nothing to do */ }
         )

@@ -16,7 +16,7 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class CategoryAddToCartTest : TokoNowCategoryMainViewModelTestFixture() {
+class CategoryAddToCartTest : TokoNowCategoryViewModelTestFixture() {
 
     @Test
     fun `when adding product to cart, request should be successful`() = runTest {

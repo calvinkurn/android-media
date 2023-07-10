@@ -12,7 +12,7 @@ import com.tokopedia.tokopedianow.util.TestUtils.mockPrivateField
 import com.tokopedia.unit.test.ext.verifyValueEquals
 import org.junit.Test
 
-class CategoryLoadMoreTest: TokoNowCategoryMainViewModelTestFixture() {
+class CategoryLoadMoreTest: TokoNowCategoryViewModelTestFixture() {
 
     @Test
     fun `loadMore should load more showcases and not prevent user to scroll more`() {

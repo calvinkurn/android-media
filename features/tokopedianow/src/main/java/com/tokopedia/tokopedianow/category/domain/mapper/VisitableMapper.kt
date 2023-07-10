@@ -148,6 +148,39 @@ internal object VisitableMapper {
         miniCartData: MiniCartSimplifiedData?,
         hasBlockedAddToCart: Boolean
     ) {
+        if(findCategoryShowcase(categoryIdL2) == null) {
+            addCategoryShowcase(
+                totalData = totalData,
+                productList = productList,
+                categoryIdL2 = categoryIdL2,
+                title = title,
+                state = TokoNowLayoutState.SHOW,
+                seeAllAppLink = seeAllAppLink,
+                miniCartData = miniCartData,
+                hasBlockedAddToCart = hasBlockedAddToCart
+            )
+        } else {
+            updateCategoryShowcase(
+                categoryIdL2,
+                totalData,
+                productList,
+                title,
+                seeAllAppLink,
+                miniCartData,
+                hasBlockedAddToCart
+            )
+        }
+    }
+
+    private fun MutableList<Visitable<*>>.updateCategoryShowcase(
+        categoryIdL2: String,
+        totalData: Int,
+        productList: List<AceSearchProductModel.Product>,
+        title: String,
+        seeAllAppLink: String,
+        miniCartData: MiniCartSimplifiedData?,
+        hasBlockedAddToCart: Boolean
+    ) {
         updateItemById(
             id = categoryIdL2,
             block = {
@@ -163,6 +196,12 @@ internal object VisitableMapper {
                 )
             }
         )
+    }
+
+    private fun MutableList<Visitable<*>>.findCategoryShowcase(
+        categoryIdL2: String
+    ): CategoryShowcaseUiModel? {
+        return filterIsInstance<CategoryShowcaseUiModel>().firstOrNull { it.id == categoryIdL2 }
     }
 
     fun MutableList<Visitable<*>>.findCategoryShowcaseItem(productId: String): CategoryShowcaseItemUiModel? {
