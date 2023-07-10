@@ -296,7 +296,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
     private fun setupTicker(voucherDetail: VoucherDetailData) {
         binding?.run {
             ticker.apply {
-                showWithCondition(voucherDetail.voucherStatus != VoucherStatus.ENDED && isSubsidy(voucherDetail) && !isPromotionRejected(voucherDetail))
+                showWithCondition(voucherDetail.voucherStatus != VoucherStatus.ENDED && voucherDetail.subsidyDetail.programDetail.programLabel.isNotEmpty() && !isPromotionRejected(voucherDetail))
                 tickerTitle = voucherDetail.subsidyDetail.programDetail.programLabel
                 setTextDescription(voucherDetail.subsidyDetail.programDetail.programLabelDetail)
             }
