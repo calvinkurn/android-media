@@ -154,5 +154,6 @@ dari Feed.</string>
     <string name="feed_cta_hyped_label">Lagi Diminati</string>
     <string name="feed_cta_almost_sold_label">Segera Habis</string>
     <string name="feed_cta_sold_label">Terjual Habis</string>
+    <string name="feed_product_out_of_stock_label">Stok Habis</string>
 
 </resources>

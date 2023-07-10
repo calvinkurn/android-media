@@ -57,6 +57,7 @@ class FeedXGetActivityProductsUseCase @Inject constructor(
                         id
                         channel
                     }
+                    isStockAvailable
                 }
                 isFollowed
                 contentType

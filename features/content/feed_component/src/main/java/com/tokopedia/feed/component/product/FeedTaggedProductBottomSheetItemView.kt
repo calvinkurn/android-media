@@ -9,6 +9,7 @@ import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.databinding.ViewFeedTaggedProductBottomSheetCardBinding
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.unifycomponents.CardUnify
 import kotlin.math.roundToInt
 
@@ -114,8 +115,11 @@ class FeedTaggedProductBottomSheetItemView(
     }
 
     private fun bindStock(stock: FeedTaggedProductUiModel.Stock) {
-        binding.btnProductBuy.isEnabled = stock is FeedTaggedProductUiModel.Stock.Available
-        binding.btnProductAtc.isEnabled = stock is FeedTaggedProductUiModel.Stock.Available
+        val isShown = stock is FeedTaggedProductUiModel.Stock.Available
+        binding.btnProductBuy.isEnabled = isShown
+        binding.btnProductAtc.isEnabled = isShown
+        binding.viewOverlayOos.showWithCondition(!isShown)
+        binding.labelOutOfStock.showWithCondition(!isShown)
     }
 
     interface Listener {
