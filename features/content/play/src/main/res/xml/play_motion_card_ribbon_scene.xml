@@ -39,6 +39,15 @@
                 android:alpha="1.0"
                 app:framePosition="100"
                 app:motionTarget="@+id/play_tv_ribbon" />
+            <KeyAttribute
+                android:translationX="0dp"
+                app:framePosition="75"
+                app:motionTarget="@+id/glare" />
+            <KeyAttribute
+                android:translationX="100dp"
+                app:framePosition="100"
+                app:motionTarget="@+id/glare" />
+
         </KeyFrameSet>
     </Transition>
 </MotionScene>

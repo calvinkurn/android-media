@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:translationZ="1dp"
     android:elevation="1dp"
+    android:translationZ="1dp"
     app:layoutDescription="@xml/play_motion_card_ribbon_scene">
 
     <androidx.appcompat.widget.AppCompatImageView
@@ -31,12 +31,12 @@
         android:layout_height="19dp"
         android:layout_marginTop="@dimen/unify_space_2"
         android:scaleType="fitXY"
-        tools:src="@drawable/bg_play_ribbon_front"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@id/play_tv_ribbon"
         app:layout_constraintStart_toEndOf="@+id/iv_back_ribbon"
         app:layout_constraintTop_toTopOf="@+id/iv_back_ribbon"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="0.0"
+        tools:src="@drawable/bg_play_ribbon_front" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/play_tv_ribbon"
@@ -55,4 +55,16 @@
         app:layout_constraintVertical_bias="0.0"
         app:typographyType="display_3"
         app:typographyWeight="bold" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/glare"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:translationZ="1dp"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/iv_back_ribbon"
+        app:srcCompat="@drawable/play_glare_shape" />
 </androidx.constraintlayout.motion.widget.MotionLayout>
