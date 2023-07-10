@@ -2,12 +2,12 @@ package com.tokopedia.checkout.domain.model.platformfee
 
 import com.google.gson.annotations.SerializedName
 
-class PaymentFeeGqlResponse(
+data class PaymentFeeGqlResponse(
     @SerializedName("getPaymentFeeCheckout")
     val response: PaymentFeeResponse = PaymentFeeResponse()
 )
 
-class PaymentFeeResponse(
+data class PaymentFeeResponse(
     @SerializedName("success")
     val success: Boolean = false,
     @SerializedName("errors")
@@ -16,14 +16,14 @@ class PaymentFeeResponse(
     val data: List<PaymentFee> = emptyList()
 )
 
-class PaymentFeeError(
+data class PaymentFeeError(
     @SerializedName("code")
     val code: String = "",
     @SerializedName("message")
     val message: String = ""
 )
 
-class PaymentFee(
+data class PaymentFee(
     @SerializedName("code")
     val code: String = "",
     @SerializedName("title")

@@ -143,8 +143,7 @@ class FeedPostViewModel @Inject constructor(
                         require(isNewData)
 
                         getRelevantPosts(postId)
-                    } catch (e: Throwable) {
-                        Timber.e(e)
+                    } catch (_: Throwable) {
                         FeedModel.Empty
                     }.items
                 }

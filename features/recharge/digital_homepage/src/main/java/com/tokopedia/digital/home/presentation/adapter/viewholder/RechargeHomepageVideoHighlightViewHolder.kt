@@ -10,16 +10,18 @@ import com.tokopedia.digital.home.R
 import com.tokopedia.digital.home.model.RechargeHomepageSections
 import com.tokopedia.digital.home.model.RechargeHomepageVideoHighlightModel
 import com.tokopedia.digital.home.presentation.listener.RechargeHomepageItemListener
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.loadImage
 
 /**
  * @author by resakemal on 15/06/20.
  */
 
 class RechargeHomepageVideoHighlightViewHolder(
-        val view: View,
-        val listener: RechargeHomepageItemListener
-): AbstractViewHolder<RechargeHomepageVideoHighlightModel>(view) {
+    val view: View,
+    val listener: RechargeHomepageItemListener
+) : AbstractViewHolder<RechargeHomepageVideoHighlightModel>(view) {
 
     internal val container = view.findViewById<ConstraintLayout>(R.id.bannerPlay)
     private val thumbnailView = view.findViewById<ImageView>(R.id.thumbnail_image_play)
@@ -44,7 +46,7 @@ class RechargeHomepageVideoHighlightViewHolder(
         }
     }
 
-    private fun initView(section: RechargeHomepageSections.Section){
+    private fun initView(section: RechargeHomepageSections.Section) {
         title.text = section.title
         subTitle.text = section.subtitle
 
@@ -65,7 +67,7 @@ class RechargeHomepageVideoHighlightViewHolder(
             listener.onRechargeSectionItemClicked(item)
         }
 
-        container.addOnImpressionListener(section){
+        container.addOnImpressionListener(section) {
             listener.onRechargeSectionItemImpression(section)
         }
     }
