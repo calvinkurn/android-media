@@ -1304,6 +1304,18 @@ class ShipmentAdapter @Inject constructor(
         shipmentAdapterActionListener.addOnProductLevelImpression(productId)
     }
 
+    override fun onImpressionAddOnProductService(addonType: Int, productId: String) {
+        shipmentAdapterActionListener.addOnProductServiceImpression(addonType, productId)
+    }
+
+    override fun onClickAddOnsProductWidget(addonType: Int, productId: String, isChecked: Boolean) {
+        shipmentAdapterActionListener.onClickAddOnProductServiceWidgetItem(addonType, productId, isChecked)
+    }
+
+    override fun onClickLihatSemuaAddOnProductWidget() {
+        shipmentAdapterActionListener.onClickLihatSemuaAddOnProductServiceWidget()
+    }
+
     override fun onClickCollapseGroupProduct(
         position: Int,
         cartItemExpandModel: CartItemExpandModel

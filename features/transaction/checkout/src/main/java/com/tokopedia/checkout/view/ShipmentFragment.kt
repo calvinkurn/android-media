@@ -4176,6 +4176,7 @@ class ShipmentFragment :
     }
     // endregion
 
+    // region platform fee
     override fun checkPlatformFee() {
         if (shipmentViewModel.getShipmentPlatformFeeData().isEnable) {
             val platformFeeModel = shipmentViewModel.shipmentCostModel.value.dynamicPlatformFee
@@ -4265,10 +4266,25 @@ class ShipmentFragment :
         hideLoaderTotalPayment()
         updateCost()
     }
+    // endregion
 
+    // region addons product service
     fun handleOnSuccessSaveAddOnProduct() {
         shipmentAdapter.checkDropshipperValidation()
     }
+
+    override fun addOnProductServiceImpression(addOnType: Int, productId: String) {
+        checkoutAnalyticsCourierSelection.eventViewAddOnsProductServiceWidget(addOnType, productId)
+    }
+
+    override fun onClickAddOnProductServiceWidgetItem(addOnType: Int, productId: String, isChecked: Boolean) {
+        checkoutAnalyticsCourierSelection.eventClickAddOnsProductServiceWidget(addOnType, productId, isChecked)
+    }
+
+    override fun onClickLihatSemuaAddOnProductServiceWidget() {
+        checkoutAnalyticsCourierSelection.eventClickLihatSemuaAddOnsProductServiceWidget()
+    }
+    // endregion
 
     companion object {
         private const val REQUEST_CODE_EDIT_ADDRESS = 11

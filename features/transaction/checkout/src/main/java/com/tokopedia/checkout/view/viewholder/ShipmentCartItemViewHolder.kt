@@ -448,6 +448,7 @@ class ShipmentCartItemViewHolder(
                             listener?.onClickSeeAllAddOnProductService(cartItemModel)
                         }
                     }
+                    listener?.onClickLihatSemuaAddOnProductWidget()
                 } else {
                     tvSeeAllAddonProduct.gone()
                 }
@@ -472,6 +473,7 @@ class ShipmentCartItemViewHolder(
                                 delay(DEBOUNCE_TIME_ADDON)
                                 if (bindingAdapterPosition != RecyclerView.NO_POSITION) {
                                     listener?.onCheckboxAddonProductListener(isChecked, addon, cartItemModel, bindingAdapterPosition)
+                                    listener?.onClickAddOnsProductWidget(addon.addOnDataType, cartItemModel.productId.toString(), isChecked)
                                 }
                             }
                         }
@@ -480,6 +482,7 @@ class ShipmentCartItemViewHolder(
                         }
                     }
                     binding.itemShipmentAddonProduct.llAddonProductItems.addView(addOnView.root)
+                    listener?.onImpressionAddOnProductService(addon.addOnDataType, cartItemModel.productId.toString())
                 }
             }
         }
@@ -560,5 +563,11 @@ class ShipmentCartItemViewHolder(
         fun onClickAddonProductInfoIcon(addOnDataInfoLink: String)
 
         fun onClickSeeAllAddOnProductService(cartItemModel: CartItemModel)
+
+        fun onImpressionAddOnProductService(addonType: Int, productId: String)
+
+        fun onClickAddOnsProductWidget(addonType: Int, productId: String, isChecked: Boolean)
+
+        fun onClickLihatSemuaAddOnProductWidget()
     }
 }
