@@ -662,7 +662,7 @@ abstract class TopchatRoomTest {
     }
 
     protected fun assertLongClickMenu(matcher: Matcher<in View>) {
-        onView(withId(R.id.rvMenu)).check(
+        onView(withId(R.id.rv_menu)).check(
             matches(matcher)
         )
     }

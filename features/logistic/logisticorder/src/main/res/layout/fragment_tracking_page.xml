@@ -8,6 +8,18 @@
     android:background="@color/Unify_Background"
     tools:context=".view.TrackingPageFragment">
 
+    <com.tokopedia.header.HeaderUnify
+        android:id="@+id/header_tracking_page"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:unify_header_is_show_shadow="true"
+        app:unify_header_title="@string/label_tracking_activity"
+        app:unify_header_is_show_back_button="true"
+        />
+
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -16,7 +28,7 @@
         app:layout_constraintEnd_toStartOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@id/header_tracking_page">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
