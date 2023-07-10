@@ -210,7 +210,8 @@ class PlayBroadcastUiMapper @Inject constructor(
                         isSelected = false,
                     )
                 }
-            )
+            ),
+            showSaveButton = config.showSaveButton,
         )
     }
 
