@@ -175,6 +175,8 @@ class FeedXProduct(
     val weblink: String = "",
     @SerializedName("appLink")
     val applink: String = "",
+    @SerializedName("affiliate")
+    val affiliate: FeedXProductAffiliate = FeedXProductAffiliate(),
     @SerializedName("star")
     val star: Double = 0.0,
     @SerializedName("price")
@@ -219,6 +221,13 @@ class FeedXProduct(
     val cashbackFmt: String = "",
     @SerializedName("isStockAvailable")
     val isAvailable: Boolean = false,
+)
+
+class FeedXProductAffiliate(
+    @SerializedName("id")
+    val id: String = "",
+    @SerializedName("channel")
+    val channel: String = ""
 )
 
 class FeedXMedia(

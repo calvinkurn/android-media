@@ -1,61 +1,57 @@
-package com.tokopedia.feedplus.domain.mapper
+package com.tokopedia.feedcomponent.domain.mapper
 
 import com.tokopedia.feed.component.product.FeedTaggedProductUiModel
-import com.tokopedia.feedplus.presentation.model.FeedCardCampaignModel
-import com.tokopedia.feedplus.presentation.model.FeedCardProductModel
+import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCampaign
+import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
 
 /**
- * Created By : Muhammad Furqan on 12/04/23
+ * Created By : Muhammad Furqan on 19/06/23
  */
-object MapperProductsToXProducts {
+object ProductMapper {
     fun transform(
-        product: FeedCardProductModel,
-        campaign: FeedCardCampaignModel
+        product: FeedXProduct,
+        campaign: FeedXCampaign
     ): FeedTaggedProductUiModel {
         val newCampaign = mapCampaignProduct(product, campaign)
         return FeedTaggedProductUiModel(
             id = product.id,
             shop = FeedTaggedProductUiModel.Shop(
-                id = product.shopId,
+                id = product.shopID,
                 name = product.shopName
             ),
-            appLink = product.applink,
+            appLink = product.appLink,
             title = product.name,
-            imageUrl = product.coverUrl,
+            imageUrl = product.coverURL,
             price = if (campaign.isUpcoming) {
                 FeedTaggedProductUiModel.CampaignPrice(
                     originalFormattedPrice = product.priceFmt,
                     formattedPrice = product.priceMaskedFmt,
-                    price = product.priceMasked
+                    price = product.priceMasked.toDouble()
                 )
             } else if (product.isDiscount) {
                 FeedTaggedProductUiModel.DiscountedPrice(
-                    discount = product.discount.toInt(),
+                    discount = product.discount,
                     originalFormattedPrice = product.priceOriginalFmt,
                     formattedPrice = product.priceDiscountFmt,
-                    price = product.priceDiscount
+                    price = product.priceDiscount.toDouble()
                 )
             } else {
                 FeedTaggedProductUiModel.NormalPrice(
                     formattedPrice = product.priceFmt,
-                    price = product.price
+                    price = product.price.toDouble()
                 )
             },
             campaign = newCampaign,
-            affiliate = product.affiliate.let {
-                FeedTaggedProductUiModel.Affiliate(
-                    it.id,
-                    it.channel
-                )
-            },
-            stock = if (product.isAvailable) FeedTaggedProductUiModel.Stock.Available else FeedTaggedProductUiModel.Stock.OutOfStock //TODO() = adjust rules
-
+            affiliate = FeedTaggedProductUiModel.Affiliate(
+                id = product.affiliate.id,
+                channel = product.affiliate.channel
+            )
         )
     }
 
     private fun mapCampaignProduct(
-        product: FeedCardProductModel,
-        campaign: FeedCardCampaignModel
+        product: FeedXProduct,
+        campaign: FeedXCampaign
     ): FeedTaggedProductUiModel.Campaign {
         val status = when (campaign.status) {
             "upcoming" -> {
@@ -83,7 +79,7 @@ object MapperProductsToXProducts {
         return FeedTaggedProductUiModel.Campaign(
             status = status,
             type = type,
-            isExclusiveForMember = campaign.isExclusiveForMember
+            isExclusiveForMember = campaign.isRSFollowersRestrictionOn
         )
     }
 }

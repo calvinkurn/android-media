@@ -347,6 +347,10 @@ class FeedXHomeUseCase @Inject constructor(
               coverURL
               webLink
               appLink
+              affiliate {
+                id
+                channel
+              }
               star
               price
               priceFmt
