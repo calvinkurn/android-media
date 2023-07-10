@@ -10,7 +10,8 @@ data class FeedTaggedProductUiModel(
     val imageUrl: String,
     val price: Price,
     val appLink: String,
-    val campaign: Campaign
+    val campaign: Campaign,
+    val stock: Stock,
 ) {
     data class Shop(
         val id: String,
@@ -65,5 +66,11 @@ data class FeedTaggedProductUiModel(
 
     enum class CampaignType {
         FlashSaleToko, RilisanSpecial, NoCampaign
+    }
+
+    sealed class Stock {
+        object OutOfStock: Stock()
+        object Available: Stock()
+        object NotAvailable: Stock()
     }
 }

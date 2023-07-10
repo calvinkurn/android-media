@@ -41,7 +41,8 @@ object MapperProductsToXProducts {
                     price = product.price
                 )
             },
-            campaign = newCampaign
+            campaign = newCampaign,
+            stock = if (product.isAvailable) FeedTaggedProductUiModel.Stock.Available else FeedTaggedProductUiModel.Stock.OutOfStock //TODO() = adjust rules
         )
     }
 

@@ -59,6 +59,8 @@ class FeedTaggedProductBottomSheetItemView(
                 mListener?.onProductCardClicked(this, product)
             }
         }
+
+        bindStock(product.stock)
     }
 
     private fun bindPrice(price: FeedTaggedProductUiModel.Price) {
@@ -109,6 +111,11 @@ class FeedTaggedProductBottomSheetItemView(
             binding.llProductActionButton.show()
             binding.btnProductLongAtc.hide()
         }
+    }
+
+    private fun bindStock(stock: FeedTaggedProductUiModel.Stock) {
+        binding.btnProductBuy.isEnabled = stock is FeedTaggedProductUiModel.Stock.Available
+        binding.btnProductAtc.isEnabled = stock is FeedTaggedProductUiModel.Stock.Available
     }
 
     interface Listener {
