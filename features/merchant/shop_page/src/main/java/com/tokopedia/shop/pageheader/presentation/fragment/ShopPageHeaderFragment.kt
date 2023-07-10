@@ -77,11 +77,11 @@ import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isValidGlideContext
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.linker.interfaces.ShareCallback
@@ -208,11 +208,12 @@ import com.tokopedia.universal_sharing.constants.ImageGeneratorConstants
 import com.tokopedia.universal_sharing.model.ShopPageParamModel
 import com.tokopedia.universal_sharing.tracker.PageType
 import com.tokopedia.universal_sharing.view.bottomsheet.ScreenshotDetector
+import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.PermissionListener
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ScreenShotListener
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
-import com.tokopedia.universal_sharing.view.model.AffiliatePDPInput
+import com.tokopedia.universal_sharing.view.model.AffiliateInput
 import com.tokopedia.universal_sharing.view.model.LinkProperties
 import com.tokopedia.universal_sharing.view.model.PageDetail
 import com.tokopedia.universal_sharing.view.model.Product
@@ -252,8 +253,7 @@ class ShopPageHeaderFragment :
     ScreenShotListener,
     PermissionListener,
     MiniCartWidgetListener,
-    FoldableSupportManager.FoldableInfoCallback
-{
+    FoldableSupportManager.FoldableInfoCallback {
 
     companion object {
         const val SHOP_ID = "EXTRA_SHOP_ID"
@@ -439,7 +439,7 @@ class ShopPageHeaderFragment :
 
     private var isConfettiAlreadyShown = false
     private var mBroadcasterConfig = Broadcaster.Config()
-    private val layoutPartialShopHeaderDefaultMarginBottom:  Int by lazy{
+    private val layoutPartialShopHeaderDefaultMarginBottom: Int by lazy {
         val layoutParams = viewBindingShopContentLayout?.layoutPartialShopPageHeader?.root?.layoutParams as? LinearLayout.LayoutParams
         layoutParams?.bottomMargin.orZero()
     }
@@ -474,7 +474,7 @@ class ShopPageHeaderFragment :
     }
 
     override fun onStop() {
-        UniversalShareBottomSheet.clearState(screenShotDetector)
+        SharingUtil.clearState(screenShotDetector)
         super.onStop()
     }
 
@@ -496,7 +496,7 @@ class ShopPageHeaderFragment :
         shopPageMiniCartSharedViewModel?.miniCartSimplifiedData?.removeObservers(this)
         shopHeaderViewModel?.flush()
         removeTemporaryShopImage(shopImageFilePath)
-        UniversalShareBottomSheet.clearState(screenShotDetector)
+        SharingUtil.clearState(screenShotDetector)
         super.onDestroy()
     }
 
@@ -719,7 +719,7 @@ class ShopPageHeaderFragment :
                         }
                     }
                     else -> {
-                        //no-op
+                        // no-op
                     }
                 }
                 val followStatusData = (it as? Success)?.data?.followStatus
@@ -1144,7 +1144,7 @@ class ShopPageHeaderFragment :
             }
         }
         context?.let {
-            screenShotDetector = UniversalShareBottomSheet.createAndStartScreenShotDetector(
+            screenShotDetector = SharingUtil.createAndStartScreenShotDetector(
                 it,
                 this,
                 this,
@@ -2999,7 +2999,7 @@ class ShopPageHeaderFragment :
                 customDimensionShopPage,
                 userId,
                 shareModel.campaign?.split("-")?.lastOrNull().orEmpty(),
-                UniversalShareBottomSheet.getUserType()
+                universalShareBottomSheet?.getUserType() ?: ""
             )
             if (!isMyShop) {
                 shopPageTracking?.clickGlobalHeaderShareBottomSheetOption(
@@ -3013,7 +3013,7 @@ class ShopPageHeaderFragment :
                 shareModel.channel.orEmpty(),
                 customDimensionShopPage,
                 userId,
-                UniversalShareBottomSheet.getUserType(),
+                universalShareBottomSheet?.getUserType() ?: "",
                 shareModel.campaign?.split("-")?.lastOrNull().orEmpty()
             )
         }
@@ -3049,19 +3049,19 @@ class ShopPageHeaderFragment :
 
     override fun onCloseOptionClicked() {
         if (isGeneralShareBottomSheet) {
-            shopPageTracking?.clickCloseNewShareBottomSheet(customDimensionShopPage, userId, UniversalShareBottomSheet.getUserType())
+            shopPageTracking?.clickCloseNewShareBottomSheet(customDimensionShopPage, userId, universalShareBottomSheet?.getUserType() ?: "")
         } else {
-            shopPageTracking?.clickCloseNewScreenshotShareBottomSheet(customDimensionShopPage, userId, UniversalShareBottomSheet.getUserType())
+            shopPageTracking?.clickCloseNewScreenshotShareBottomSheet(customDimensionShopPage, userId, universalShareBottomSheet?.getUserType() ?: "")
         }
     }
 
-    override fun screenShotTaken() {
+    override fun screenShotTaken(path: String) {
         isGeneralShareBottomSheet = false
-        showUniversalShareBottomSheet()
+        showUniversalShareBottomSheet(path)
         shopPageTracking?.onImpressionScreenshotShareBottomSheet(
             customDimensionShopPage,
             userId,
-            UniversalShareBottomSheet.getUserType()
+            universalShareBottomSheet?.getUserType() ?: ""
         )
     }
 
@@ -3069,9 +3069,13 @@ class ShopPageHeaderFragment :
         return priceTextIdr.replace(IDR_CURRENCY_TO_RAW_STRING_REGEX.toRegex(), "").toLong()
     }
 
-    private fun showUniversalShareBottomSheet() {
-        universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
+    private fun showUniversalShareBottomSheet(path: String? = null) {
+        universalShareBottomSheet = UniversalShareBottomSheet.createInstance(view).apply {
             init(this@ShopPageHeaderFragment)
+            path?.let {
+                setImageOnlySharingOption(true)
+                setScreenShotImagePath(path)
+            }
             enableDefaultShareIntent()
             setMetaData(
                 shopPageHeaderDataModel?.shopName.orEmpty(),
@@ -3256,7 +3260,7 @@ class ShopPageHeaderFragment :
         universalShareBottomSheet?.setImageGeneratorParam(shopPageParamModel)
         universalShareBottomSheet?.getImageFromMedia(shopPageParamModel.shopProfileImgUrl.isNotEmpty())
         universalShareBottomSheet?.setMediaPageSourceId(ImageGeneratorConstants.ImageGeneratorSourceId.SHOP_PAGE)
-        val inputShare = AffiliatePDPInput().apply {
+        val inputShare = AffiliateInput().apply {
             pageDetail = PageDetail(pageId = shopId, pageType = PageType.SHOP.value, siteId = "1", verticalId = "1")
             pageType = PageType.SHOP.value
             product = Product()
@@ -3287,7 +3291,7 @@ class ShopPageHeaderFragment :
         shopPageTracking?.onImpressionShareBottomSheet(
             customDimensionShopPage,
             userId,
-            UniversalShareBottomSheet.getUserType()
+            universalShareBottomSheet?.getUserType() ?: ""
         )
     }
 
@@ -3390,7 +3394,7 @@ class ShopPageHeaderFragment :
     }
 
     private var foldableScreenHorizontalBottomBound: Int? = null
-    private var shopTickerVisibilityState: Int?= null
+    private var shopTickerVisibilityState: Int? = null
 
     override fun onChangeLayout(foldableInfo: FoldableInfo) {
         ShopUtil.isFoldable = foldableInfo.isFoldableDevice()
@@ -3404,7 +3408,7 @@ class ShopPageHeaderFragment :
         }
     }
 
-    //config shop header for foldable screen
+    // config shop header for foldable screen
     private fun configShopHeaderForFoldableScreen() {
         viewBindingShopContentLayout?.apply {
             val layoutPartialHeaderBottomMargin: Int = if (foldableScreenHorizontalBottomBound != null && shopTickerVisibilityState != null) {

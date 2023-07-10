@@ -6,6 +6,7 @@ import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.digitsOnly
 import com.tokopedia.kotlin.extensions.view.getDigits
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ACTION_CLICK_PRODUCT_LIST_TOGGLE
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ACTION_FIELD
@@ -3196,7 +3197,7 @@ class ShopPageHomeTracking(
             putString(EVENT, SELECT_CONTENT)
             putString(EVENT_ACTION, CLICK_PERSO_PRODUCT_COMPARISON)
             putString(EVENT_CATEGORY, SHOP_PAGE_BUYER)
-            putString(EVENT_LABEL, "")
+            putString(EVENT_LABEL, trackerModel.productId)
             putString(TRACKER_ID, TRACKER_ID_CLICK_SHOP_PERSO_PRODUCT_COMPARISON)
             putString(BUSINESS_UNIT, PHYSICAL_GOODS)
             putString(CURRENT_SITE, TOKOPEDIA_MARKETPLACE)
@@ -3223,7 +3224,7 @@ class ShopPageHomeTracking(
             putString(ITEM_ID, trackerModel.productId)
             putString(ITEM_NAME, trackerModel.productName)
             putString(ITEM_VARIANT, "")
-            putDouble(PRICE, 0.0)
+            putDouble(PRICE, formatPrice(trackerModel.productPrice).toDoubleOrZero())
         }
     }
 }
