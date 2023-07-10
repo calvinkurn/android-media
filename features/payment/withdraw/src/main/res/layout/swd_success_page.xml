@@ -136,6 +136,15 @@
                 app:typographyType="paragraph_2"
                 tools:text="@string/swd_withdrawal_process_time" />
 
+            <com.tokopedia.unifycomponents.ImageUnify
+                android:id="@+id/ivBankImage"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginEnd="16dp"
+                app:layout_constraintEnd_toEndOf="@id/tvAccountDestination"
+                app:layout_constraintTop_toTopOf="@id/tvBankName"
+                app:layout_constraintBottom_toBottomOf="@id/tvBankName"/>
+
             <com.tokopedia.unifycomponents.CardUnify2
                 android:layout_width="0dp"
                 android:layout_height="0dp"
@@ -172,7 +181,7 @@
                 android:paddingStart="16dp"
                 android:paddingEnd="16dp"
                 android:textColor="@color/Unify_NN950"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/ivBankImage"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tvAccountDestination"

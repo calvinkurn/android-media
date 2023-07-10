@@ -60,6 +60,8 @@ class ThankYouFragmentWithdrawal : BaseDaggerFragment(), TickerCallback {
             ) {
                 withdrawalRequest = it.getParcelable(ARG_WITHDRAWAL_REQUEST) ?: WithdrawalRequest()
                 withdrawalResponse = it.getParcelable(ARG_SUBMIT_WITHDRAWAL_RESPONSE) ?: SubmitWithdrawalResponse()
+
+                val bankImage = withdrawalRequest.bankAccount.bankImageUrl
             } else {
                 activity?.finish()
             }
@@ -107,7 +109,9 @@ class ThankYouFragmentWithdrawal : BaseDaggerFragment(), TickerCallback {
         }
         btnCta.setOnClickListener { onCtaClick() }
         btnCta.text = withdrawalResponse.ctaWording
+        ivBankImage.setImageUrl(withdrawalRequest.bankAccount.bankImageUrl ?: "")
         tvWithdrawalTitle.text = withdrawalResponse.title
+
         setContentImage()
         sendPageImpressionAnalytics()
     }

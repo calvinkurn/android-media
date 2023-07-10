@@ -80,6 +80,7 @@ class BankAccountAdapter(private val withdrawAnalytics: WithdrawAnalytics,
         this.checkEligible = checkEligible
         bankAccountList.clear()
         bankAccountList.addAll(updateDefaultBankList(newBankList))
+        bankAccountList.add(bankSetting)
     }
 
     private fun updateDefaultBankList(newBankList: ArrayList<BankAccount>): ArrayList<BankAccount> {
