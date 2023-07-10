@@ -48,7 +48,6 @@ import com.tokopedia.feedplus.analytics.FeedMVCAnalytics
 import com.tokopedia.feedplus.databinding.FragmentFeedImmersiveBinding
 import com.tokopedia.feedplus.di.FeedMainInjector
 import com.tokopedia.feedplus.domain.mapper.MapperFeedModelToTrackerDataModel
-import com.tokopedia.feedplus.domain.mapper.MapperProductsToXProducts
 import com.tokopedia.feedplus.presentation.adapter.FeedAdapterTypeFactory
 import com.tokopedia.feedplus.presentation.adapter.FeedContentAdapter
 import com.tokopedia.feedplus.presentation.adapter.listener.FeedListener
@@ -541,11 +540,11 @@ class FeedFragment :
 
         val action: () -> Unit = {
             openProductTagBottomSheet(
+                activityId = postId,
                 author = author,
                 hasVoucher = hasVoucher,
                 products = products,
-                trackerData = trackerModel,
-                campaign = campaign
+                trackerData = trackerModel
             )
             trackerModel?.let {
                 feedAnalytics.eventClickProductTag(it)
@@ -592,11 +591,11 @@ class FeedFragment :
                 }
             } else {
                 openProductTagBottomSheet(
+                    activityId = postId,
                     author = author,
                     hasVoucher = hasVoucher,
                     products = products,
-                    trackerData = trackerModel,
-                    campaign = campaign
+                    trackerData = trackerModel
                 )
             }
         }
@@ -624,11 +623,11 @@ class FeedFragment :
         trackerModel: FeedTrackerDataModel?
     ) {
         openProductTagBottomSheet(
+            activityId = postId,
             author = author,
             hasVoucher = hasVoucher,
             products = products,
-            trackerData = trackerModel,
-            campaign = campaign
+            trackerData = trackerModel
         )
     }
 
@@ -687,11 +686,11 @@ class FeedFragment :
                     positionInFeed
                 )
                 openProductTagBottomSheet(
+                    activityId = postId,
                     author = author,
                     hasVoucher = hasVoucher,
                     products = products,
-                    trackerData = it,
-                    campaign = campaign
+                    trackerData = it
                 )
             }
         }
@@ -1107,11 +1106,11 @@ class FeedFragment :
     }
 
     private fun openProductTagBottomSheet(
+        activityId: String,
         author: FeedAuthorModel,
         products: List<FeedCardProductModel>,
         hasVoucher: Boolean,
-        trackerData: FeedTrackerDataModel?,
-        campaign: FeedCardCampaignModel
+        trackerData: FeedTrackerDataModel?
     ) {
         if (products.isEmpty()) return
 
@@ -1134,9 +1133,10 @@ class FeedFragment :
 
         if (trackerData != null) trackOpenProductTagBottomSheet(trackerData)
 
-        val mappedProducts = products.map { MapperProductsToXProducts.transform(it, campaign) }
         productBottomSheet.show(
-            taggedProducts = mappedProducts,
+            activityId = activityId,
+            viewModelOwner = this,
+            viewModelFactory = viewModelFactory,
             manager = childFragmentManager,
             tag = TAG_FEED_PRODUCT_BOTTOM_SHEET
         )

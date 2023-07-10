@@ -181,7 +181,8 @@ class FeedPostVideoViewHolder(
                 bindComments(data)
                 bindVideoPlayer(data)
 
-                val trackerData = trackerDataModel ?: trackerMapper.transformVideoContentToTrackerModel(data)
+                val trackerData =
+                    trackerDataModel ?: trackerMapper.transformVideoContentToTrackerModel(data)
 
                 menuButton.setOnClickListener {
                     listener.onMenuClicked(
@@ -317,6 +318,7 @@ class FeedPostVideoViewHolder(
             campaign = data.campaign,
             hasVoucher = data.hasVoucher,
             products = data.products,
+            totalProducts = data.totalProducts,
             trackerData = trackerDataModel,
             positionInFeed = absoluteAdapterPosition
         )

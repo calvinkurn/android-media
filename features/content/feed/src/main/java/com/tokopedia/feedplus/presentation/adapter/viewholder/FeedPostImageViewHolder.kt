@@ -213,7 +213,8 @@ class FeedPostImageViewHolder(
                 bindAsgcTags(data)
                 bindCampaignRibbon(data)
 
-                val trackerData = trackerDataModel ?: trackerMapper.transformImageContentToTrackerModel(data)
+                val trackerData =
+                    trackerDataModel ?: trackerMapper.transformImageContentToTrackerModel(data)
 
                 menuButton.setOnClickListener {
                     listener.onMenuClicked(
@@ -319,11 +320,13 @@ class FeedPostImageViewHolder(
                 if (it.tagging.isNotEmpty()) {
                     if (it.tagging.size == PRODUCT_COUNT_ONE && it.tagging[PRODUCT_COUNT_ZERO].tagIndex in PRODUCT_COUNT_ZERO until element.products.size) {
                         productTagView.bindText(
-                            listOf(element.products[it.tagging[PRODUCT_COUNT_ZERO].tagIndex])
+                            listOf(element.products[it.tagging[PRODUCT_COUNT_ZERO].tagIndex]),
+                            element.totalProducts
                         )
                     } else {
                         productTagView.bindText(
-                            element.products
+                            element.products,
+                            element.totalProducts
                         )
                     }
                 } else {
@@ -436,6 +439,7 @@ class FeedPostImageViewHolder(
             campaign = model.campaign,
             hasVoucher = model.hasVoucher,
             products = model.products,
+            totalProducts = model.totalProducts,
             trackerData = trackerDataModel,
             positionInFeed = absoluteAdapterPosition
         )
