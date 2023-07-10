@@ -51,16 +51,18 @@ open class SuggestionUseCase(
         return suggestionUniverse
     }
 
-    @GqlQuery("SuggestionUseCaseQuery", SUGGESTION_QUERY)
     private suspend fun getSuggestionResponse(): SuggestionResponse {
         suggestionGraphqlUseCase.prepare(
-            SuggestionUseCaseQuery(),
+            getGraphqlQuery(),
             SuggestionResponse::class.java,
             createGraphqlRequestParams(useCaseRequestParams)
         )
 
         return suggestionGraphqlUseCase.executeOnBackground()
     }
+
+    @GqlQuery("SuggestionUseCaseQuery", SUGGESTION_QUERY)
+    protected open fun getGraphqlQuery() = SuggestionUseCaseQuery()
 
     protected open fun createGraphqlRequestParams(requestParams: RequestParams): Map<String, String> {
         val params = UrlParamHelper.generateUrlParamString(requestParams.parameters)
