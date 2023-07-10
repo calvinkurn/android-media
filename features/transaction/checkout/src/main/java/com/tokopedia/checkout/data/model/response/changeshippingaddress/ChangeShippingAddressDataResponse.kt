@@ -7,5 +7,5 @@ data class ChangeShippingAddressDataResponse(
     val success: Int = 0,
 
     @SerializedName("message")
-    val messages: List<String>? = emptyList()
+    val messages: List<String>? = null
 )

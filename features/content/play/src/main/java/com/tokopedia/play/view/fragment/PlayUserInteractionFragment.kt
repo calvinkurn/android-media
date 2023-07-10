@@ -353,6 +353,8 @@ class PlayUserInteractionFragment @Inject constructor(
 
     private var localCache: LocalCacheModel = LocalCacheModel()
 
+    private var commentAnalyticsModel: ContentCommentAnalyticsModel? = null
+
     /**
      * Animation
      */
@@ -514,15 +516,14 @@ class PlayUserInteractionFragment @Inject constructor(
             }
             is ContentCommentBottomSheet -> {
                 childFragment.setEntrySource(commentEntrySource)
-                childFragment.setAnalytic(
-                    commentAnalytics.create(
-                        PageSource.Play(channelId),
-                        model = ContentCommentAnalyticsModel(
-                            eventCategory = "groupchat room",
-                            eventLabel = "$channelId - ${playViewModel.partnerId}"
+                commentAnalyticsModel?.let {
+                    childFragment.setAnalytic(
+                        commentAnalytics.create(
+                            PageSource.Play(channelId),
+                            model = it
                         )
                     )
-                )
+                }
             }
         }
     }
@@ -1150,6 +1151,10 @@ class PlayUserInteractionFragment @Inject constructor(
                         val sheet = ContentCommentBottomSheet.getOrCreate(
                             childFragmentManager,
                             requireActivity().classLoader
+                        )
+                        commentAnalyticsModel = ContentCommentAnalyticsModel(
+                            eventCategory = "groupchat room",
+                            eventLabel = "$channelId - ${playViewModel.partnerId}"
                         )
                         if (event.isOpen) sheet.show(childFragmentManager) else sheet.dismiss()
                     }

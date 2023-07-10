@@ -122,7 +122,7 @@ object RecommendationCarouselTracking {
             CURRENT_SITE to CURRENT_SITE_MP,
             ECOMMERCE to mapOf(
                 CURRENCY_CODE to IDR,
-                IMPRESSIONS to listOf(mapOf(
+                IMPRESSIONS to arrayListOf(mapOf(
                     LIST to IMPRESSION_CLICK_DIMENSION_40_FORMAT.format(
                         trackingModel.listPageName,
                         item.pageName,
