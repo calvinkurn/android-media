@@ -345,6 +345,13 @@ class BroadcastManager @Inject constructor(
                     )
                 )
             }
+            catch (throwable: Throwable) {
+                broadcastInitStateChanged(
+                    BroadcastInitState.ByteplusInitializationError(
+                        BroadcasterException(BroadcasterErrorType.ServiceUnrecoverable)
+                    )
+                )
+            }
         }
 
         val displayStreamer = builder.build()
