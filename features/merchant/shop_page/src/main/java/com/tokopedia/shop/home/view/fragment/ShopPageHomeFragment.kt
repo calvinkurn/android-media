@@ -598,7 +598,7 @@ open class ShopPageHomeFragment :
                 getString(R.string.shop_string_ok)
             ).show()
         }
-        viewModel?.updateBannerTimerWidgetData(
+        viewModel?.toggleBannerTimerRemindMe(
             shopHomeAdapter?.getNewVisitableItems().orEmpty().toMutableList(),
             isRemindMe = false,
             isClickRemindMe = false
@@ -610,7 +610,7 @@ open class ShopPageHomeFragment :
             NotifyMeAction.REGISTER.action,
             ignoreCase = true
         )
-        viewModel?.updateBannerTimerWidgetData(
+        viewModel?.toggleBannerTimerRemindMe(
             shopHomeAdapter?.getNewVisitableItems().orEmpty().toMutableList(),
             isRegisterCampaign,
             true
@@ -1484,7 +1484,7 @@ open class ShopPageHomeFragment :
     }
 
     protected open fun onSuccessGetBannerTimerRemindMeStatusData(data: GetCampaignNotifyMeUiModel) {
-        viewModel?.updateBannerTimerWidgetData(
+        viewModel?.toggleBannerTimerRemindMe(
             shopHomeAdapter?.getNewVisitableItems().orEmpty().toMutableList(),
             isRemindMe = data.isAvailable,
             isClickRemindMe = false

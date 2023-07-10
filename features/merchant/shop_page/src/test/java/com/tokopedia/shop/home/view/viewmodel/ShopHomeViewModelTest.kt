@@ -92,6 +92,7 @@ import com.tokopedia.shop.home.view.model.ShopHomeNewProductLaunchCampaignUiMode
 import com.tokopedia.shop.home.view.model.ShopHomePersoProductComparisonUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeProductUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeVoucherUiModel
+import com.tokopedia.shop.home.view.model.ShopWidgetDisplayBannerTimerUiModel
 import com.tokopedia.shop.pageheader.util.ShopPageHeaderTabName
 import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
@@ -2340,6 +2341,189 @@ class ShopHomeViewModelTest {
         viewModel.getProductComparisonData(mockShopId, ShopHomePersoProductComparisonUiModel())
         val liveDataValue = viewModel.productComparisonLiveData.value
         assert(liveDataValue is Fail)
+    }
+
+    @Test
+    fun `when click banner timer reminder success, then should return success`() {
+        val mockAction = "action"
+        coEvery { checkCampaignNotifyMeUseCase.get().executeOnBackground() } returns CheckCampaignNotifyMeModel()
+        viewModel.clickBannerTimerReminder(mockCampaignId, mockAction)
+        val liveDataValue = viewModel.checkBannerTimerRemindMeStatusData.value
+        assert(liveDataValue is Success)
+    }
+
+    @Test
+    fun `when click banner timer reminder success, then should return fail`() {
+        val mockAction = "action"
+        coEvery { checkCampaignNotifyMeUseCase.get().executeOnBackground() } throws Throwable()
+        viewModel.clickBannerTimerReminder(mockCampaignId, mockAction)
+        val liveDataValue = viewModel.checkBannerTimerRemindMeStatusData.value
+        assert(liveDataValue is Fail)
+    }
+
+    @Test
+    fun `when get banner timer remind me status success, then should return success`() {
+        val mockCampaignId = "12345"
+        coEvery { getCampaignNotifyMeUseCase.get().executeOnBackground() } returns GetCampaignNotifyMeModel()
+        viewModel.getBannerTimerRemindMeStatus(mockCampaignId)
+        assert(viewModel.bannerTimerRemindMeStatusData.value is Success)
+    }
+
+    @Test
+    fun `when get banner timer remind me status error, then should return fail`() {
+        val mockCampaignId = "12345"
+        coEvery { getCampaignNotifyMeUseCase.get().executeOnBackground() } throws Throwable()
+        viewModel.getBannerTimerRemindMeStatus(mockCampaignId)
+        assert(viewModel.bannerTimerRemindMeStatusData.value  == null)
+    }
+
+    @Test
+    fun `when toggle banner timer remind me with empty visitable, then visitable list should not include banner timer`() {
+        viewModel.toggleBannerTimerRemindMe(mutableListOf(), isRemindMe = true, isClickRemindMe = true)
+        val liveDataUpdatedBannerTimerUiModelData = viewModel.updatedBannerTimerUiModelData.value
+        val liveDataHomeWidgetListVisitable = viewModel.homeWidgetListVisitable.value
+        assert(liveDataUpdatedBannerTimerUiModelData == null)
+        assert(liveDataHomeWidgetListVisitable is Success)
+        assert((liveDataHomeWidgetListVisitable as Success).data.filterIsInstance<ShopWidgetDisplayBannerTimerUiModel>().isEmpty())
+    }
+
+    @Test
+    fun `when toggle banner timer remind me with banner timer visitable and data is null, then visitable list should include banner timer`() {
+        viewModel.toggleBannerTimerRemindMe(
+            mutableListOf(
+                ShopWidgetDisplayBannerTimerUiModel(),
+                ShopHomeCarousellProductUiModel()
+            ),
+            isRemindMe = true,
+            isClickRemindMe = true
+        )
+        val liveDataUpdatedBannerTimerUiModelData = viewModel.updatedBannerTimerUiModelData.value
+        val liveDataHomeWidgetListVisitable = viewModel.homeWidgetListVisitable.value
+        assert(liveDataUpdatedBannerTimerUiModelData != null)
+        assert(liveDataHomeWidgetListVisitable is Success)
+        assert((liveDataHomeWidgetListVisitable as Success).data.filterIsInstance<ShopWidgetDisplayBannerTimerUiModel>().isNotEmpty())
+    }
+
+    @Test
+    fun `when not click toggle banner timer remind me with banner timer visitable and data is not null, then visitable list should include banner timer`() {
+        viewModel.toggleBannerTimerRemindMe(
+            mutableListOf(
+                ShopWidgetDisplayBannerTimerUiModel(
+                    data = ShopWidgetDisplayBannerTimerUiModel.Data(
+                        totalNotify = 5
+                    )
+                ),
+                ShopHomeCarousellProductUiModel()
+            ),
+            isRemindMe = true,
+            isClickRemindMe = false
+        )
+        val liveDataUpdatedBannerTimerUiModelData = viewModel.updatedBannerTimerUiModelData.value
+        val liveDataHomeWidgetListVisitable = viewModel.homeWidgetListVisitable.value
+        assert(liveDataUpdatedBannerTimerUiModelData != null)
+        assert(liveDataHomeWidgetListVisitable is Success)
+        assert((liveDataHomeWidgetListVisitable as Success).data.filterIsInstance<ShopWidgetDisplayBannerTimerUiModel>().isNotEmpty())
+    }
+
+    @Test
+    fun `when register banner timer remind me, then total notify should increase by one`() {
+        val mockTotalNotify = 5
+        val expectedTotalNotify = 6
+        viewModel.toggleBannerTimerRemindMe(
+            mutableListOf(
+                ShopWidgetDisplayBannerTimerUiModel(
+                    data = ShopWidgetDisplayBannerTimerUiModel.Data(
+                        totalNotify = mockTotalNotify
+                    )
+                ),
+                ShopHomeCarousellProductUiModel()
+            ),
+            isRemindMe = true,
+            isClickRemindMe = true
+        )
+        val liveDataUpdatedBannerTimerUiModelData = viewModel.updatedBannerTimerUiModelData.value
+        val liveDataHomeWidgetListVisitable = viewModel.homeWidgetListVisitable.value
+        assert(liveDataUpdatedBannerTimerUiModelData != null)
+        assert(liveDataHomeWidgetListVisitable is Success)
+        val updatedBannerTimerUiModel = (liveDataHomeWidgetListVisitable as Success).data.filterIsInstance<ShopWidgetDisplayBannerTimerUiModel>().first()
+        assert(updatedBannerTimerUiModel.data?.totalNotify == expectedTotalNotify)
+    }
+
+    @Test
+    fun `when unregister banner timer remind me, then total notify should decrease by one`() {
+        val mockTotalNotify = 5
+        val expectedTotalNotify = 4
+        viewModel.toggleBannerTimerRemindMe(
+            mutableListOf(
+                ShopWidgetDisplayBannerTimerUiModel(
+                    data = ShopWidgetDisplayBannerTimerUiModel.Data(
+                        totalNotify = mockTotalNotify
+                    )
+                ),
+                ShopHomeCarousellProductUiModel()
+            ),
+            isRemindMe = false,
+            isClickRemindMe = true
+        )
+        val liveDataUpdatedBannerTimerUiModelData = viewModel.updatedBannerTimerUiModelData.value
+        val liveDataHomeWidgetListVisitable = viewModel.homeWidgetListVisitable.value
+        assert(liveDataUpdatedBannerTimerUiModelData != null)
+        assert(liveDataHomeWidgetListVisitable is Success)
+        val updatedBannerTimerUiModel = (liveDataHomeWidgetListVisitable as Success).data.filterIsInstance<ShopWidgetDisplayBannerTimerUiModel>().first()
+        assert(updatedBannerTimerUiModel.data?.totalNotify == expectedTotalNotify)
+    }
+
+    @Test
+    fun `If exception thrown when calling toggleBannerTimerRemindMe, then should return fail`() {
+        val observer = mockk<Observer<Result<List<Visitable<*>>>>>()
+        viewModel.homeWidgetListVisitable.observeForever(observer)
+        every { observer.onChanged(any()) } throws Exception()
+        viewModel.toggleBannerTimerRemindMe(
+            mutableListOf(),
+            isRemindMe = false,
+            isClickRemindMe = true
+        )
+        assert(viewModel.homeWidgetListVisitable.value is Fail)
+    }
+
+
+    @Test
+    fun `when update banner timer ui model without banner timer on visitable, then visitable should be the same`() {
+        val expectedBannerTimerModel = ShopWidgetDisplayBannerTimerUiModel()
+        val mockListVisitable = mutableListOf<Visitable<*>>(
+            ShopHomeCarousellProductUiModel()
+        )
+        viewModel.updateBannerTimerWidgetUiModel(
+            mockListVisitable,
+            expectedBannerTimerModel
+        )
+        assert(viewModel.homeWidgetListVisitable.value is Success)
+        assert((viewModel.homeWidgetListVisitable.value as Success).data.size == mockListVisitable.size)
+    }
+
+    @Test
+    fun `when update banner timer ui model with banner timer on visitable, then visitable should be updated`() {
+        val mockBannerTimerUiModel = ShopWidgetDisplayBannerTimerUiModel()
+        val expectedBannerTimerModel = ShopWidgetDisplayBannerTimerUiModel()
+        val mockListVisitable = mutableListOf<Visitable<*>>(mockBannerTimerUiModel)
+        viewModel.updateBannerTimerWidgetUiModel(
+            mockListVisitable,
+            expectedBannerTimerModel
+        )
+        assert(viewModel.homeWidgetListVisitable.value is Success)
+        assert((viewModel.homeWidgetListVisitable.value as Success).data.first { it is ShopWidgetDisplayBannerTimerUiModel } == expectedBannerTimerModel)
+    }
+
+    @Test
+    fun `If exception thrown when calling updateBannerTimerWidgetUiModel, then should return fail`() {
+        val observer = mockk<Observer<Result<List<Visitable<*>>>>>()
+        viewModel.homeWidgetListVisitable.observeForever(observer)
+        every { observer.onChanged(any()) } throws Exception()
+        viewModel.updateBannerTimerWidgetUiModel(
+            mutableListOf(),
+            ShopWidgetDisplayBannerTimerUiModel()
+        )
+        assert(viewModel.homeWidgetListVisitable.value is Fail)
     }
 
 }
