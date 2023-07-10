@@ -41,6 +41,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.logisticCommon.data.constant.AddressConstant
@@ -95,7 +96,7 @@ import javax.inject.Inject
 
 @FlowPreview
 @ExperimentalCoroutinesApi
-class TokoFoodPurchaseFragment :
+open class TokoFoodPurchaseFragment :
     BaseMultiFragment(),
     TokoFoodPurchaseActionListener,
     TokoFoodPurchaseToolbarListener,
@@ -135,7 +136,7 @@ class TokoFoodPurchaseFragment :
     private var shopId = ""
     private var currentCartIdList: List<String> = listOf()
     private var isPaymentButtonLoading: Boolean = false
-    private var canPaymentButtonClicked: Boolean = false
+    private var canPaymentButtonClicked: Boolean = true
 
     override fun onAttachActivity(context: Context?) {
         super.onAttachActivity(context)
@@ -212,12 +213,16 @@ class TokoFoodPurchaseFragment :
 
     private fun loadData() {
         showLoadingLayout()
-        context?.let {
-            ChooseAddressUtils.getLocalizingAddressData(it).let { addressData ->
-                viewModel.setIsHasPinpoint(addressData.address_id, addressData.latLong.isNotEmpty())
-            }
+        getLocalCacheModel()?.let { addressData ->
+            viewModel.setIsHasPinpoint(addressData.address_id, addressData.latLong.isNotEmpty())
         }
         viewModel.loadData()
+    }
+
+    open fun getLocalCacheModel(): LocalCacheModel? {
+        return context?.let {
+            ChooseAddressUtils.getLocalizingAddressData(it)
+        }
     }
 
     private fun showLoading() {

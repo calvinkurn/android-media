@@ -36,7 +36,7 @@ private const val QUERY = """
     """
 
 @GqlQuery("TokoFoodCheckoutGeneral", QUERY)
-class CheckoutGeneralTokoFoodUseCase @Inject constructor(
+open class CheckoutGeneralTokoFoodUseCase @Inject constructor(
     repository: GraphqlRepository
 ) : GraphqlUseCase<CheckoutGeneralTokoFoodResponse>(repository) {
 
