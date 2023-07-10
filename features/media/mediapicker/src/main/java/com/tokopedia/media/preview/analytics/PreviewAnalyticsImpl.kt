@@ -31,7 +31,11 @@ class PreviewAnalyticsImpl @Inject constructor(
         )
 
         // Temporary, used to gather data and will be removed later
-        val buttonStateInt = if (buttonState == PREVIEW_PAGE_LANJUT) 0 else 1
+        val buttonStateInt = if (buttonState == PREVIEW_PAGE_LANJUT) {
+            CONTINUE_EDITOR_INDEX
+        } else {
+            UPLOAD_PICKER_INDEX
+        }
         val pageSourceInt = PageSource.values().indexOf(cacheManager.get().pageSource())
         var imageListString = ""
         listImage.forEachIndexed { index, (imageSize, imageResolution, _) ->
@@ -43,6 +47,7 @@ class PreviewAnalyticsImpl @Inject constructor(
             event = EVENT_CLICK_COMMUNICATION,
             eventAction = ACTION_CLICK_UPLOAD,
             eventCategory = CATEGORY_IMAGE_UPLOAD,
+            trackerId = TRACKER_ID_IMAGE_DETAIL,
             eventLabel = "$buttonStateInt - $pageSourceInt$imageListString - ${listImage.size}"
         )
     }
@@ -79,6 +84,7 @@ class PreviewAnalyticsImpl @Inject constructor(
         eventCategory: String,
         eventAction: String,
         eventLabel: String,
+        trackerId: String = "",
         additionalEvent: Map<String, String> = mapOf()
     ) {
         val generalEvent = mutableMapOf(
@@ -88,8 +94,12 @@ class PreviewAnalyticsImpl @Inject constructor(
             KEY_EVENT_LABEL to eventLabel,
             KEY_BUSINESS_UNIT to BUSINESS_UNIT,
             KEY_CURRENT_SITE to CURRENT_SITE,
-            KEY_USER_ID to userId,
+            KEY_USER_ID to userId
         )
+
+        if (trackerId.isNotEmpty()) {
+            generalEvent[KEY_TRACKER_ID] = trackerId
+        }
 
         if (additionalEvent.isNotEmpty()) {
             generalEvent.putAll(additionalEvent)
@@ -102,5 +112,7 @@ class PreviewAnalyticsImpl @Inject constructor(
 
     companion object {
         const val DATA_SAMPLING_LIMIT = 4
+        const val UPLOAD_PICKER_INDEX = 0
+        const val CONTINUE_EDITOR_INDEX = 1
     }
 }
