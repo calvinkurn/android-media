@@ -47,7 +47,7 @@ class LoaderGlideModule : AppGlideModule() {
         }
 
         // dynamic image loader (based on network connection)
-        registry.prepend(
+        registry.append(
             String::class.java,
             InputStream::class.java,
             AdaptiveImageSizeLoader.Factory(context)
