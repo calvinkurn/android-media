@@ -10,9 +10,9 @@ import com.tokopedia.scp_rewards_widgets.medal.MedalItem
 
 object MedaliListMapper {
 
-    fun getMedalList(data: ScpRewardsGetUserMedalisResponse, badgeType: String): List<MedalItem> {
+    fun getMedalList(data: ScpRewardsGetUserMedalisResponse?, badgeType: String): List<MedalItem> {
         val medalList = mutableListOf<MedalItem>()
-        data.scpRewardsGetUserMedalisByType?.medaliList?.forEach {
+        data?.scpRewardsGetUserMedalisByType?.medaliList?.forEach {
             medalList.add(
                 MedalItem(
                     id = it.id,
@@ -42,8 +42,7 @@ object MedaliListMapper {
         medalResponse: ScpRewardsGetUserMedalisResponse?,
         badgeType: String,
         sectionId: Int
-    ): MedalData? {
-        if (medalResponse == null) return null
+    ): MedalData {
         val medalSection =
             sectionResponse.scpRewardsGetMedaliSectionLayout?.medaliSectionLayoutList?.find { it.id == sectionId }
         return MedalData(
@@ -54,16 +53,16 @@ object MedaliListMapper {
             medalType = badgeType,
             medalList = getMedalList(medalResponse, badgeType),
             bannerData = BannerData(
-                imageUrl = medalResponse.scpRewardsGetUserMedalisByType?.medaliBanner?.imageList?.first()?.imageURL,
-                appLink = medalResponse.scpRewardsGetUserMedalisByType?.medaliBanner?.imageList?.first()?.redirectAppLink,
-                webLink = medalResponse.scpRewardsGetUserMedalisByType?.medaliBanner?.imageList?.first()?.redirectURL,
-                creativeName = medalResponse.scpRewardsGetUserMedalisByType?.medaliBanner?.imageList?.first()?.creativeName
+                imageUrl = medalResponse?.scpRewardsGetUserMedalisByType?.medaliBanner?.imageList?.first()?.imageURL,
+                appLink = medalResponse?.scpRewardsGetUserMedalisByType?.medaliBanner?.imageList?.first()?.redirectAppLink,
+                webLink = medalResponse?.scpRewardsGetUserMedalisByType?.medaliBanner?.imageList?.first()?.redirectURL,
+                creativeName = medalResponse?.scpRewardsGetUserMedalisByType?.medaliBanner?.imageList?.first()?.creativeName
             ),
             cta = Cta(
-                text = medalResponse.scpRewardsGetUserMedalisByType?.paging?.cta?.text,
-                isShown = medalResponse.scpRewardsGetUserMedalisByType?.paging?.cta?.isShown,
-                appLink = medalResponse.scpRewardsGetUserMedalisByType?.paging?.cta?.appLink,
-                deepLink = medalResponse.scpRewardsGetUserMedalisByType?.paging?.cta?.url
+                text = medalResponse?.scpRewardsGetUserMedalisByType?.paging?.cta?.text,
+                isShown = medalResponse?.scpRewardsGetUserMedalisByType?.paging?.cta?.isShown,
+                appLink = medalResponse?.scpRewardsGetUserMedalisByType?.paging?.cta?.appLink,
+                deepLink = medalResponse?.scpRewardsGetUserMedalisByType?.paging?.cta?.url
             )
         )
     }
