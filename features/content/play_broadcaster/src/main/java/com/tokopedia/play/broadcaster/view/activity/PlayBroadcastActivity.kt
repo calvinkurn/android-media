@@ -201,9 +201,8 @@ class PlayBroadcastActivity : BaseActivity(),
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        loadEffectNativeLibrary()
-
         inject()
+        loadEffectNativeLibrary()
         setFragmentFactory()
         startPageMonitoring()
         if (savedInstanceState != null) {
@@ -371,6 +370,7 @@ class PlayBroadcastActivity : BaseActivity(),
 
     private fun loadEffectNativeLibrary() {
         try {
+            throw UnsatisfiedLinkError("joe testing try-catch")
             SplitInstallHelper.loadLibrary(this, "c++_shared")
             SplitInstallHelper.loadLibrary(this, "effect")
         } catch (throwable: Throwable) {
