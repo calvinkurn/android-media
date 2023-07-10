@@ -215,7 +215,7 @@ class VoucherDetailBottomSheet : BottomSheetUnify() {
 
             tpgVoucherName.text = voucherDetail.title
             tpgMinPurchase.text = voucherDetail.minimumUsage
-            tpgPromoPeriod.text = voucherDetail.activePeriodDate
+            tpgPromoPeriod.text = voucherDetail.expired
             tpgVoucherPrice.text = voucherDetail.voucherPrice
 
             webViewTnc.loadPartialWebView(voucherDetail.tnc)

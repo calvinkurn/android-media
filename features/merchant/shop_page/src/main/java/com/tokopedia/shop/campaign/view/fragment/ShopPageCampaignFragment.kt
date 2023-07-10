@@ -988,10 +988,20 @@ class ShopPageCampaignFragment :
                     redeemResult
                 ))
             }
+            setOnVoucherUseSuccess { showUseVoucherSuccess() }
         }
         bottomSheet.show(childFragmentManager, bottomSheet.tag)
     }
 
+    private fun showUseVoucherSuccess() {
+        val toasterMessage = context?.getString(R.string.shop_page_use_voucher_success).orEmpty()
+        showToaster(
+            message = toasterMessage ,
+            view = view ?: return,
+            ctaText = "",
+            onCtaClicked = {}
+        )
+    }
     private fun handleRedeemVoucherSuccess(shopCampaignRedeemPromo: ShopCampaignRedeemPromoVoucherResult) {
         if (shopCampaignRedeemPromo.redeemResult.redeemMessage.isNotEmpty()) {
             val toasterMessage = context?.getString(R.string.shop_campaign_tab_voucher_redeem_success_message).orEmpty()
