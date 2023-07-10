@@ -1,7 +1,7 @@
 package com.tokopedia.topads.common.data.model
 
 import android.os.Parcelable
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 @Parcelize
 open class InsightProductRecommendationModel(
