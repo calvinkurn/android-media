@@ -3,8 +3,8 @@ package com.tokopedia.ordermanagement.snapshot.view.adapter.viewholder
 import android.view.View
 import android.widget.ImageView
 import com.tokopedia.imageassets.TokopediaImageUrl
+import com.tokopedia.imageassets.utils.loadProductImage
 import com.tokopedia.ordermanagement.snapshot.R
-import com.tokopedia.ordermanagement.snapshot.util.loadProductImage
 import com.tokopedia.ordermanagement.snapshot.view.adapter.SnapshotAdapter
 import com.tokopedia.ordermanagement.snapshot.view.adapter.SnapshotImageViewPagerAdapter
 

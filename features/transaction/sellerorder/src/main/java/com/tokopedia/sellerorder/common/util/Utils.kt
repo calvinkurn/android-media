@@ -238,26 +238,4 @@ object Utils {
             defaultColor
         }
     }
-
-    fun ImageView.loadProductImage(
-        url: String, archivedUrl: String, cornerRadius: Float = DEFAULT_ROUNDED
-    ) {
-        url.getBitmapImageUrl(
-            context = context, properties = {
-                shouldTrackNetworkResponse(true)
-                networkResponse { _, failure ->
-                    val isArchivedProduct =
-                        failure == FailureType.Gone || failure == FailureType.NotFound
-                    if (isArchivedProduct) {
-                        loadImage(archivedUrl) {
-                            setPlaceHolder(-1)
-                        }
-                    } else {
-                        loadImage(url)
-                    }
-                }
-                setRoundedRadius(cornerRadius)
-            }, target = MediaBitmapEmptyTarget()
-        )
-    }
 }

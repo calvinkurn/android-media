@@ -4,9 +4,9 @@ import android.annotation.SuppressLint
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.imageassets.TokopediaImageUrl
+import com.tokopedia.imageassets.utils.loadProductImage
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.sellerorder.R
-import com.tokopedia.sellerorder.common.util.Utils.loadProductImage
 import com.tokopedia.sellerorder.databinding.ItemSomListBulkProcessOrderProductBinding
 import com.tokopedia.sellerorder.list.presentation.models.SomListBulkProcessOrderProductUiModel
 import com.tokopedia.utils.view.binding.viewBinding
