@@ -43,7 +43,6 @@ import com.tokopedia.feedplus.presentation.util.common.FeedLikeAction
 import com.tokopedia.kolcommon.domain.interactor.SubmitActionContentUseCase
 import com.tokopedia.kolcommon.domain.interactor.SubmitLikeContentUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.kotlin.extensions.view.decodeToUtf8
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.mvcwidget.TokopointsCatalogMVCSummary
@@ -741,13 +740,13 @@ class FeedPostViewModel @Inject constructor(
         product.affiliate.let { affiliate ->
             if (affiliate.id.isNotEmpty() && affiliate.channel.isNotEmpty()) {
                 affiliateCookieHelper.initCookie(
-                    affiliate.id.decodeToUtf8(),
+                    affiliate.id,
                     affiliate.channel,
                     AffiliatePageDetail(
                         pageId = product.id,
                         source = AffiliateSdkPageSource.DirectATC(
                             atcSource = AffiliateAtcSource.SHOP_PAGE,
-                            null,
+                            shopId = product.shop.id,
                             null
                         )
                     )
