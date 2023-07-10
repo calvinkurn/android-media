@@ -15,6 +15,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.addon.presentation.uimodel.AddOnExtraConstant
+import com.tokopedia.addon.presentation.uimodel.AddOnPageResult
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkConst.ADDON
@@ -250,8 +252,9 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
             REQUEST_CODE_ADD_NEW_ADDRESS -> onResultFromAddNewAddress(resultCode, data)
             REQUEST_CODE_LINK_ACCOUNT -> onResultFromLinkAccount(resultCode, data)
             REQUEST_CODE_WALLET_ACTIVATION -> refresh()
-            REQUEST_CODE_ADD_ON -> onResultFromAddOn(resultCode, data)
+            REQUEST_CODE_ADD_ON_GIFTING -> onResultFromAddOn(resultCode, data)
             REQUEST_CODE_UPLOAD_PRESCRIPTION -> onResultFromUploadPrescription(data)
+            REQUEST_CODE_ADD_ON_PRODUCT_SERVICE_BOTTOMSHEET -> onResultFromAddOnProductService(resultCode, data)
         }
     }
 
@@ -361,11 +364,30 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
         refresh()
     }
 
-    private fun onResultFromAddOn(resultCode: Int, data: Intent?) {
-        if (resultCode == Activity.RESULT_OK && data != null) {
-            val result = data.getParcelableExtra<SaveAddOnStateResult>(AddOnConstant.EXTRA_ADD_ON_PRODUCT_DATA_RESULT)
-            result?.let {
-                viewModel.updateAddOn(it)
+    private fun onResultFromAddOnProductService(resultCode: Int, data: Intent?) {
+        if (resultCode == Activity.RESULT_OK) {
+            val addOnProductDataResult = data?.getParcelableExtra(AddOnExtraConstant.EXTRA_ADDON_PAGE_RESULT) ?: AddOnPageResult()
+
+            if (addOnProductDataResult.aggregatedData.isGetDataSuccess) {
+                val cartId = addOnProductDataResult.cartId.toString()
+                val listProducts = adapter.products
+                for (index in listProducts.indices) {
+                    if (listProducts[index].cartId == cartId) {
+                        val addonProduct = listProducts[index].addOnsProductData
+                        addOnProductDataResult.changedAddons.forEach { addOnUiModel ->
+                            addonProduct.data.forEach { addon ->
+                                if (addOnUiModel.id == addon.id) {
+                                    addon.status = addOnUiModel.getSelectedStatus().value
+                                }
+                            }
+                        }
+                    }
+                }
+                adapter.notifyItemChanged(adapter.getAddOnProductServiceIndex(cartId))
+            } else {
+                view?.let { v ->
+                    Toaster.build(v, addOnProductDataResult.aggregatedData.getDataErrorMessage, type = Toaster.TYPE_ERROR).show()
+                }
             }
         }
     }
@@ -1505,7 +1527,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                 ?: PurchaseProtectionPlanData.STATE_EMPTY
         }
 
-        override fun onClickAddOnButton(addOnButtonType: Int, addOn: AddOnGiftingDataModel, product: OrderProduct, shop: OrderShop) {
+        override fun onClickAddOnGiftingButton(addOnButtonType: Int, addOn: AddOnGiftingDataModel, product: OrderProduct, shop: OrderShop) {
             // No need to open add on bottom sheet if action = 0
             if (addOn.addOnsButtonModel.action != 0) {
                 val intent = RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.ADD_ON_GIFTING)
@@ -1514,7 +1536,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                     AddOnMapper.mapAddOnBottomSheetParam(addOnButtonType, addOn, product, shop, viewModel.orderCart, viewModel.addressState.value.address, userSession.get().name)
                 )
                 intent.putExtra(AddOnConstant.EXTRA_ADD_ON_SOURCE, AddOnConstant.ADD_ON_SOURCE_OCC)
-                startActivityForResult(intent, REQUEST_CODE_ADD_ON)
+                startActivityForResult(intent, REQUEST_CODE_ADD_ON_GIFTING)
             }
         }
 
@@ -1555,7 +1577,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                 applinkAddon,
                 mapOf(
                     QUERY_PARAM_CART_ID to cartId,
-                    QUERY_PARAM_SELECTED_ADDON_IDS to addOnIds,
+                    QUERY_PARAM_SELECTED_ADDON_IDS to addOnIds.toString().replace("[", "").replace("]", ""),
                     QUERY_PARAM_PAGE_ATC_SOURCE to SOURCE_ONE_CLICK_CHECKOUT,
                     QUERY_PARAM_WAREHOUSE_ID to product.warehouseId,
                     QUERY_PARAM_IS_TOKOCABANG to product.isFulfillment
@@ -1563,8 +1585,8 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
             )
 
             activity?.let {
-                // TODO: startActivityForResult & update onActivityResult
-                RouteManager.route(it, applink)
+                val intent = RouteManager.getIntent(it, applink)
+                startActivityForResult(intent, REQUEST_CODE_ADD_ON_PRODUCT_SERVICE_BOTTOMSHEET)
             }
         }
     }
@@ -2007,6 +2029,15 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
         }
     }
 
+    private fun onResultFromAddOn(resultCode: Int, data: Intent?) {
+        if (resultCode == Activity.RESULT_OK && data != null) {
+            val result = data.getParcelableExtra<SaveAddOnStateResult>(AddOnConstant.EXTRA_ADD_ON_PRODUCT_DATA_RESULT)
+            result?.let {
+                viewModel.updateAddOn(it)
+            }
+        }
+    }
+
     companion object {
         const val REQUEST_CODE_COURIER_PINPOINT = 13
 
@@ -2028,9 +2059,11 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
         const val REQUEST_CODE_LINK_ACCOUNT = 22
         const val REQUEST_CODE_WALLET_ACTIVATION = 23
 
-        const val REQUEST_CODE_ADD_ON = 24
+        const val REQUEST_CODE_ADD_ON_GIFTING = 24
 
         const val REQUEST_CODE_UPLOAD_PRESCRIPTION = 25
+
+        const val REQUEST_CODE_ADD_ON_PRODUCT_SERVICE_BOTTOMSHEET = 26
 
         const val QUERY_PRODUCT_ID = "product_id"
         const val QUERY_SOURCE = "source"

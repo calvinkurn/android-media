@@ -97,6 +97,15 @@ class OrderSummaryPageAdapter(
         return 0
     }
 
+    fun getAddOnProductServiceIndex(cartId: String): Int {
+        for (index in products.indices) {
+            if (products[index].cartId == cartId) {
+                return index
+            }
+        }
+        return 0
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         when (viewType) {
