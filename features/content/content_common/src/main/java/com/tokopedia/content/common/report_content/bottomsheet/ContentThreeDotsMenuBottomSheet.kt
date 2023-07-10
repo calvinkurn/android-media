@@ -10,16 +10,15 @@ import com.tokopedia.content.common.report_content.adapter.ContentReportAdapter
 import com.tokopedia.content.common.report_content.adapter.ContentReportViewHolder
 import com.tokopedia.content.common.report_content.adapter.FeedMenuAdapter
 import com.tokopedia.content.common.report_content.model.*
-import com.tokopedia.content.common.report_content.model.listOfCommentReport
 import com.tokopedia.content.common.report_content.viewholder.FeedMenuViewHolder
 import com.tokopedia.content.common.ui.analytic.FeedAccountTypeAnalytic
 import com.tokopedia.content.common.usecase.FeedComplaintSubmitReportUseCase
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import kotlin.math.roundToInt
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import kotlin.math.roundToInt
 
 /**
  * Created By : Shruti Agarwal on Feb 02, 2023
@@ -42,7 +41,6 @@ class ContentThreeDotsMenuBottomSheet : BottomSheetUnify(), ContentReportViewHol
                 } else {
                     showHeader = true
                     bottomSheetHeader.visible()
-                    setTitle(getString(R.string.content_common_report_comment))
                 }
 
                 mListener?.onMenuItemClick(item, contentId)
@@ -91,28 +89,32 @@ class ContentThreeDotsMenuBottomSheet : BottomSheetUnify(), ContentReportViewHol
     }
 
     private val reportSheet by lazyThreadSafetyNone {
-        ContentReportBottomSheet.getFragment(childFragmentManager, requireActivity().classLoader).apply {
-            setListener(object : ContentReportBottomSheet.Listener {
-                override fun onCloseButtonClicked() {
-                    dismiss()
-                }
+        ContentReportBottomSheet.getFragment(childFragmentManager, requireActivity().classLoader)
+            .apply {
+                setListener(object : ContentReportBottomSheet.Listener {
+                    override fun onCloseButtonClicked() {
+                        dismiss()
+                    }
 
-                override fun onItemReportClick(item: PlayUserReportReasoningUiModel.Reasoning) {
-                    submissionReportSheet.apply {
-                        setData(item)
-                    }.show(childFragmentManager)
-                    mListener?.onReportClicked(item)
-                }
+                    override fun onItemReportClick(item: PlayUserReportReasoningUiModel.Reasoning) {
+                        submissionReportSheet.apply {
+                            setData(item)
+                        }.show(childFragmentManager)
+                        mListener?.onReportClicked(item)
+                    }
 
-                override fun onFooterClicked() {
-                    mListener?.onFooterClicked()
-                }
-            })
-        }
+                    override fun onFooterClicked() {
+                        mListener?.onFooterClicked()
+                    }
+                })
+            }
     }
 
     private val submissionReportSheet by lazyThreadSafetyNone {
-        ContentSubmitReportBottomSheet.getFragment(childFragmentManager, requireActivity().classLoader).apply {
+        ContentSubmitReportBottomSheet.getFragment(
+            childFragmentManager,
+            requireActivity().classLoader
+        ).apply {
             setListener(object : ContentSubmitReportBottomSheet.Listener {
                 override fun onBackButtonListener() {
                     dismiss()
@@ -128,13 +130,18 @@ class ContentThreeDotsMenuBottomSheet : BottomSheetUnify(), ContentReportViewHol
             })
         }
     }
-    fun showReportLayoutWhenLaporkanClicked(data: Result<List<PlayUserReportReasoningUiModel>> = Success(emptyList())) {
+
+    fun showReportLayoutWhenLaporkanClicked(
+        data: Result<List<PlayUserReportReasoningUiModel>> = Success(
+            emptyList()
+        )
+    ) {
         if (data is Success && data.data.isNotEmpty()) {
-           reportSheet.apply {
-                    updateList(data)
-                }
-                .show(childFragmentManager)
+            reportSheet.apply {
+                updateList(data)
+            }.show(childFragmentManager)
         } else {
+            setTitle(getString(R.string.content_common_report_comment))
             binding.let {
                 it.root.layoutParams.height = maxSheetHeight
                 it.viewReportGroup.visible()
@@ -142,6 +149,7 @@ class ContentThreeDotsMenuBottomSheet : BottomSheetUnify(), ContentReportViewHol
             }
         }
     }
+
     fun sendReport() {
         mListener?.onReportPost(
             FeedComplaintSubmitReportUseCase.Param(
@@ -177,7 +185,10 @@ class ContentThreeDotsMenuBottomSheet : BottomSheetUnify(), ContentReportViewHol
         if (!isAdded) show(fragmentManager, TAG)
     }
 
-    fun setData(feedMenuItemList: List<FeedMenuItem>, contentId: String): ContentThreeDotsMenuBottomSheet {
+    fun setData(
+        feedMenuItemList: List<FeedMenuItem>,
+        contentId: String
+    ): ContentThreeDotsMenuBottomSheet {
         this.contentId = contentId
         mFeedMenuItemList.clear()
         mFeedMenuItemList.addAll(feedMenuItemList)
