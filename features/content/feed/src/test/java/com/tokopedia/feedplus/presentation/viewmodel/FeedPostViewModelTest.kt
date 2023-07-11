@@ -123,12 +123,10 @@ class FeedPostViewModelTest {
             mvcSummaryUseCase,
             topAdsAddressHelper,
             getCountCommentsUseCase,
+            affiliateCookieHelper,
             trackVisitChannelUseCase,
             trackReportViewerUseCase,
             uiEventManager,
-            affiliateCookieHelper,
-            mockk(),
-            mockk(),
             testDispatcher
         )
     }
