@@ -5,4 +5,5 @@ package com.tokopedia.content.analytic
  */
 object CurrentSite {
     const val tokopediaMarketplace = "tokopediamarketplace"
+    const val tokopediaSeller = "tokopediaseller"
 }

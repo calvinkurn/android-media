@@ -15,6 +15,9 @@ object Event {
     const val clickTopAds = "clickTopAds"
     const val viewTopAdsIris = "viewTopAdsIris"
 
+    const val clickPG = "clickPG"
+    const val viewPGIris = "viewPGIris"
+
     const val promoView = "promoView"
 
     const val viewGroupChatIris = "viewGroupChatIris"

@@ -40,8 +40,8 @@ import com.tokopedia.play.broadcaster.analytic.PLAY_BROADCASTER_TRACE_PREPARE_PA
 import com.tokopedia.play.broadcaster.analytic.PLAY_BROADCASTER_TRACE_RENDER_PAGE
 import com.tokopedia.play.broadcaster.analytic.PLAY_BROADCASTER_TRACE_REQUEST_NETWORK
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
-import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
 import com.tokopedia.play.broadcaster.analytic.beautification.PlayBroadcastBeautificationAnalyticStateHolder
+import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
 import com.tokopedia.play.broadcaster.di.DaggerActivityRetainedComponent
 import com.tokopedia.play.broadcaster.di.PlayBroadcastInjector
 import com.tokopedia.play.broadcaster.di.PlayBroadcastModule
@@ -94,7 +94,8 @@ import javax.inject.Inject
  */
 
 @Suppress("LateinitUsage")
-class PlayBroadcastActivity : BaseActivity(),
+class PlayBroadcastActivity :
+    BaseActivity(),
     PlayBaseCoordinator,
     PlayBroadcasterContract,
     PlayBroadcaster.Callback,
@@ -167,8 +168,10 @@ class PlayBroadcastActivity : BaseActivity(),
             window.decorView.systemUiVisibility = value
         }
 
-    private val permissions = arrayOf(Manifest.permission.CAMERA,
-            Manifest.permission.RECORD_AUDIO)
+    private val permissions = arrayOf(
+        Manifest.permission.CAMERA,
+        Manifest.permission.RECORD_AUDIO
+    )
     private val permissionHelper by lazy { PermissionHelperImpl(this) }
 
     private lateinit var pageMonitoring: PageLoadTimePerformanceInterface
@@ -271,8 +274,11 @@ class PlayBroadcastActivity : BaseActivity(),
         super.onPostResume()
 
         if (isResultAfterAskPermission) {
-            if (isRequiredPermissionGranted()) configureChannelType(channelType)
-            else showPermissionPage()
+            if (isRequiredPermissionGranted()) {
+                configureChannelType(channelType)
+            } else {
+                showPermissionPage()
+            }
         }
         isResultAfterAskPermission = false
     }
@@ -282,7 +288,7 @@ class PlayBroadcastActivity : BaseActivity(),
         extras: Bundle,
         sharedElements: List<View>,
         onFragment: (T) -> Unit,
-        isAddToBackStack: Boolean,
+        isAddToBackStack: Boolean
     ) {
         val fragmentTransaction = supportFragmentManager.beginTransaction()
         val destFragment = getFragmentByClassName(fragmentClass)
@@ -291,11 +297,10 @@ class PlayBroadcastActivity : BaseActivity(),
             destFragment.arguments = extras
             fragmentTransaction
                 .apply {
-                    if(isAddToBackStack) {
+                    if (isAddToBackStack) {
                         add(R.id.fl_container, destFragment, fragmentClass.name)
                         addToBackStack(null)
-                    }
-                    else {
+                    } else {
                         replace(R.id.fl_container, destFragment, fragmentClass.name)
                     }
                 }
@@ -358,7 +363,7 @@ class PlayBroadcastActivity : BaseActivity(),
             activityContext = this,
             handler = Handler(Looper.getMainLooper()),
             callback = this,
-            remoteConfig = remoteConfig,
+            remoteConfig = remoteConfig
         )
     }
 
@@ -388,7 +393,7 @@ class PlayBroadcastActivity : BaseActivity(),
                         analytic.viewFailDownloadPreset(
                             viewModel.selectedAccount,
                             beautificationAnalyticStateHolder.getPageSourceForAnalytic(),
-                            event.preset.id,
+                            event.preset.id
                         )
 
                         showToaster(
@@ -400,7 +405,7 @@ class PlayBroadcastActivity : BaseActivity(),
                                 analytic.clickRetryDownloadPreset(
                                     viewModel.selectedAccount,
                                     beautificationAnalyticStateHolder.getPageSourceForAnalytic(),
-                                    event.preset.id,
+                                    event.preset.id
                                 )
                                 viewModel.submitAction(PlayBroadcastAction.SelectPresetOption(event.preset))
                             }
@@ -414,10 +419,10 @@ class PlayBroadcastActivity : BaseActivity(),
 
     private fun renderFaceFilter(
         prev: FaceFilterUiModel?,
-        value: FaceFilterUiModel?,
+        value: FaceFilterUiModel?
     ) {
         if (prev == value) return
-        if(!::broadcaster.isInitialized) return
+        if (!::broadcaster.isInitialized) return
 
         val selectedFaceFilter = value ?: return
         applyFaceFilter(listOf(selectedFaceFilter))
@@ -425,10 +430,10 @@ class PlayBroadcastActivity : BaseActivity(),
 
     private fun renderPreset(
         prev: PresetFilterUiModel?,
-        value: PresetFilterUiModel?,
+        value: PresetFilterUiModel?
     ) {
         if (prev == value) return
-        if(!::broadcaster.isInitialized) return
+        if (!::broadcaster.isInitialized) return
 
         val selectedPreset = value ?: return
         applyPreset(selectedPreset)
@@ -436,7 +441,7 @@ class PlayBroadcastActivity : BaseActivity(),
 
     private fun applyFaceFilter(
         faceFilters: List<FaceFilterUiModel>,
-        withToaster: Boolean = true,
+        withToaster: Boolean = true
     ): Boolean {
         var isAllFilterApplied = true
 
@@ -458,7 +463,7 @@ class PlayBroadcastActivity : BaseActivity(),
                 analytic.viewFailApplyBeautyFilter(
                     account = viewModel.selectedAccount,
                     page = beautificationAnalyticStateHolder.pageSource.mapToAnalytic(),
-                    customFace = faceFilter.id,
+                    customFace = faceFilter.id
                 )
 
                 showToaster(
@@ -470,7 +475,7 @@ class PlayBroadcastActivity : BaseActivity(),
                         analytic.clickRetryApplyBeautyFilter(
                             account = viewModel.selectedAccount,
                             page = beautificationAnalyticStateHolder.pageSource.mapToAnalytic(),
-                            customFace = faceFilter.id,
+                            customFace = faceFilter.id
                         )
                         applyFaceFilter(listOf(faceFilter))
                     }
@@ -483,7 +488,7 @@ class PlayBroadcastActivity : BaseActivity(),
 
     private fun applyPreset(
         preset: PresetFilterUiModel,
-        withToaster: Boolean = true,
+        withToaster: Boolean = true
     ): Boolean {
         return if (preset.isRemoveEffect) {
             broadcaster.removePreset()
@@ -491,7 +496,7 @@ class PlayBroadcastActivity : BaseActivity(),
         } else {
             val isSuccess = broadcaster.setPreset(preset.id, preset.value.toFloat())
 
-            if(!isSuccess && withToaster) {
+            if (!isSuccess && withToaster) {
                 showToaster(
                     err = Exception("fail to apply preset : ${preset.id}"),
                     customErrMessage = getString(R.string.play_broadcaster_fail_apply_filter),
@@ -517,7 +522,7 @@ class PlayBroadcastActivity : BaseActivity(),
 
             val isPresetApplied = viewModel.selectedPreset?.let { applyPreset(it, withToaster = false) }.orTrue()
 
-            if(isFirstTimeOpenPage && (!isAllFaceFilterApplied || !isPresetApplied)) {
+            if (isFirstTimeOpenPage && (!isAllFaceFilterApplied || !isPresetApplied)) {
                 analytic.viewFailReapplyBeautyFilter(account = viewModel.selectedAccount)
 
                 showToaster(
@@ -565,7 +570,7 @@ class PlayBroadcastActivity : BaseActivity(),
                     classLoader
                 ).isBottomSheetShown
 
-                if(isFaceFilterBottomSheetShown) {
+                if (isFaceFilterBottomSheetShown) {
                     beautificationUiBridge.eventBus.emit(BeautificationUiBridge.Event.BeautificationBottomSheetDismissed)
                 }
             }
@@ -573,7 +578,7 @@ class PlayBroadcastActivity : BaseActivity(),
 
         lifecycleScope.launchWhenStarted {
             beautificationUiBridge.eventBus.subscribe().collect { event ->
-                when(event) {
+                when (event) {
                     is BeautificationUiBridge.Event.BeautificationBottomSheetShown -> {
                         val fullPageHeight = findViewById<ViewGroup>(android.R.id.content).rootView.height
                         val bottomSheetHeight = event.bottomSheetHeight
@@ -620,8 +625,8 @@ class PlayBroadcastActivity : BaseActivity(),
 
     private fun setLayoutFullScreen() {
         systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
-                View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or
-                View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+            View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or
+            View.SYSTEM_UI_FLAG_LAYOUT_STABLE
     }
 
     //region observe
@@ -631,31 +636,34 @@ class PlayBroadcastActivity : BaseActivity(),
     private fun observeConfiguration() {
         viewModel.observableConfigInfo.observe(this) { result ->
             startRenderMonitoring()
-            when(result) {
+            when (result) {
                 is NetworkResult.Loading -> showLoading(true)
                 is NetworkResult.Success -> {
                     showLoading(false)
-                    if (!isRecreated) handleChannelConfiguration(result.data)
-                    else if (result.data.channelStatus == ChannelStatus.Pause) showDialogContinueLiveStreaming()
+                    if (!isRecreated) {
+                        handleChannelConfiguration(result.data)
+                    } else if (result.data.channelStatus == ChannelStatus.Pause) showDialogContinueLiveStreaming()
                     stopPageMonitoring()
 
-                    if (!PlayBroadcasterIdlingResource.idlingResource.isIdleNow)
+                    if (!PlayBroadcasterIdlingResource.idlingResource.isIdleNow) {
                         PlayBroadcasterIdlingResource.decrement()
+                    }
 
-                    if (GlobalConfig.DEBUG)
+                    if (GlobalConfig.DEBUG) {
                         debugView?.logChannelId(result.data.channelId)
+                    }
                 }
                 is NetworkResult.Fail -> {
                     invalidatePerformanceData()
                     showLoading(false)
                     showToaster(
-                            err = result.error,
-                            actionLabel = getString(R.string.play_broadcast_try_again),
-                            actionListener = { result.onRetry() }
+                        err = result.error,
+                        actionLabel = getString(R.string.play_broadcast_try_again),
+                        actionListener = { result.onRetry() }
                     )
                 }
                 else -> {
-                    //no-op
+                    // no-op
                 }
             }
         }
@@ -664,8 +672,11 @@ class PlayBroadcastActivity : BaseActivity(),
 
     private fun handleChannelConfiguration(config: ConfigurationUiModel) {
         this.channelType = config.channelStatus
-        if (isRequiredPermissionGranted()) configureChannelType(channelType)
-        else requestPermission()
+        if (isRequiredPermissionGranted()) {
+            configureChannelType(channelType)
+        } else {
+            requestPermission()
+        }
     }
 
     private fun configureChannelType(channelStatus: ChannelStatus) {
@@ -684,35 +695,41 @@ class PlayBroadcastActivity : BaseActivity(),
             ChannelStatus.CompleteDraft,
             ChannelStatus.Unknown, ChannelStatus.Live -> openBroadcastSetupPage()
             else -> {
-                //no-op
+                // no-op
             }
         }
     }
 
     private fun requestPermission() {
         permissionHelper.requestMultiPermissionsFullFlow(
-                permissions = permissions,
-                requestCode = REQUEST_PERMISSION_CODE,
-                permissionResultListener = object: PermissionResultListener {
-                    override fun onRequestPermissionResult(): PermissionStatusHandler {
-                        return {
-                            if (isAllGranted()) doWhenResume { configureChannelType(channelType) }
-                            else doWhenResume { showPermissionPage() }
+            permissions = permissions,
+            requestCode = REQUEST_PERMISSION_CODE,
+            permissionResultListener = object : PermissionResultListener {
+                override fun onRequestPermissionResult(): PermissionStatusHandler {
+                    return {
+                        if (isAllGranted()) {
+                            doWhenResume { configureChannelType(channelType) }
+                        } else {
+                            doWhenResume { showPermissionPage() }
                         }
                     }
-
-                    override fun onShouldShowRequestPermissionRationale(permissions: Array<String>, requestCode: Int): Boolean {
-                        return false
-                    }
                 }
+
+                override fun onShouldShowRequestPermissionRationale(permissions: Array<String>, requestCode: Int): Boolean {
+                    return false
+                }
+            }
         )
     }
 
     private fun isRequiredPermissionGranted() = permissionHelper.isAllPermissionsGranted(permissions)
 
     fun checkAllPermission() {
-        if (isRequiredPermissionGranted()) configureChannelType(channelType)
-        else showPermissionPage()
+        if (isRequiredPermissionGranted()) {
+            configureChannelType(channelType)
+        } else {
+            showPermissionPage()
+        }
     }
 
     private fun openBroadcastSetupPage() {
@@ -752,12 +769,12 @@ class PlayBroadcastActivity : BaseActivity(),
         }
 
         findViewById<View>(android.R.id.content)?.showErrorToaster(
-                err = err,
-                customErrMessage = customErrMessage,
-                duration = duration,
-                actionLabel = actionLabel,
-                actionListener = actionListener,
-                bottomMargin = toasterBottomMargin
+            err = err,
+            customErrMessage = customErrMessage,
+            duration = duration,
+            actionLabel = actionLabel,
+            actionListener = actionListener,
+            bottomMargin = toasterBottomMargin
         )
     }
 
@@ -772,10 +789,10 @@ class PlayBroadcastActivity : BaseActivity(),
 
     private fun showLoading(isLoading: Boolean) {
         if (isLoading) {
-            if(!isLoadingDialogVisible()) {
+            if (!isLoadingDialogVisible()) {
                 getLoadingFragment().show(supportFragmentManager)
             }
-        } else if (isLoadingDialogVisible()) {
+        } else if (getLoadingFragment().isAdded) {
             getLoadingFragment().dismiss()
         }
     }
@@ -818,9 +835,9 @@ class PlayBroadcastActivity : BaseActivity(),
 
     private fun startPageMonitoring() {
         pageMonitoring = PageLoadTimePerformanceCallback(
-                PLAY_BROADCASTER_TRACE_PREPARE_PAGE,
-                PLAY_BROADCASTER_TRACE_REQUEST_NETWORK,
-                PLAY_BROADCASTER_TRACE_RENDER_PAGE
+            PLAY_BROADCASTER_TRACE_PREPARE_PAGE,
+            PLAY_BROADCASTER_TRACE_REQUEST_NETWORK,
+            PLAY_BROADCASTER_TRACE_RENDER_PAGE
         )
         pageMonitoring.startMonitoring(PLAY_BROADCASTER_TRACE_PAGE)
         starPrepareMonitoring()
@@ -886,13 +903,15 @@ class PlayBroadcastActivity : BaseActivity(),
             val holder = surfaceHolder ?: return
             val surfaceSize = Broadcaster.Size(surfaceView.width, surfaceView.height)
             initBroadcasterWithDelay(holder, surfaceSize, broadcastingConfigUiModel)
-        } else showPermissionPage()
+        } else {
+            showPermissionPage()
+        }
     }
 
     private fun initBroadcasterWithDelay(
         holder: SurfaceHolder,
         surfaceSize: Broadcaster.Size,
-        broadcastingConfigUiModel: BroadcastingConfigUiModel,
+        broadcastingConfigUiModel: BroadcastingConfigUiModel
     ) {
         lifecycleScope.launch(dispatcher.main) {
             broadcaster.setupThread(viewModel.isBeautificationEnabled)
@@ -934,7 +953,7 @@ class PlayBroadcastActivity : BaseActivity(),
     }
 
     override fun onBroadcastInitStateChanged(state: BroadcastInitState) {
-        when(state) {
+        when (state) {
             is BroadcastInitState.Error -> {
                 showDialogWhenUnSupportedDevices()
             }
@@ -980,5 +999,4 @@ class PlayBroadcastActivity : BaseActivity(),
 
         private const val INIT_BROADCASTER_DELAY = 500L
     }
-
 }

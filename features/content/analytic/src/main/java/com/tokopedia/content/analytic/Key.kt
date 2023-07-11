@@ -15,10 +15,10 @@ object Key {
     const val sessionIris = "sessionIris"
 
     const val userId = "userId"
+    const val shopId = "shopId"
     const val isLoggedInStatus = "isLoggedInStatus"
 
     const val trackerId = "trackerId"
-
 
     const val screenName = "screenName"
     const val clientId = "clientId"
