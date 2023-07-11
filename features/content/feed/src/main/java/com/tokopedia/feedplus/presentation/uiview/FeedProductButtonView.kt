@@ -18,7 +18,9 @@ class FeedProductButtonView(
     private val binding: ViewProductSeeMoreBinding,
     private val listener: FeedListener
 ) {
+
     private var products: List<FeedCardProductModel> = emptyList()
+    private var totalProducts: Int = 0
 
     fun bindData(
         postId: String,
@@ -28,11 +30,12 @@ class FeedProductButtonView(
         campaign: FeedCardCampaignModel,
         hasVoucher: Boolean,
         products: List<FeedCardProductModel>,
+        totalProducts: Int,
         trackerData: FeedTrackerDataModel?,
         positionInFeed: Int
     ) {
         with(binding) {
-            bind(products)
+            bind(products, totalProducts)
 
             icPlayProductSeeMore.setOnClickListener {
                 listener.onProductTagButtonClicked(
@@ -63,19 +66,22 @@ class FeedProductButtonView(
         }
     }
 
-    private fun bind(products: List<FeedCardProductModel>) {
+    private fun bind(products: List<FeedCardProductModel>, totalProducts: Int) {
         this.products = products
+        this.totalProducts = totalProducts
         with(binding) {
             when {
-                products.size == PRODUCT_COUNT_ZERO -> {
+                totalProducts == PRODUCT_COUNT_ZERO && products.size == PRODUCT_COUNT_ZERO -> {
                     root.hide()
                 }
-                products.size > PRODUCT_COUNT_NINETY_NINE -> {
+                totalProducts > PRODUCT_COUNT_NINETY_NINE -> {
                     tvPlayProductCount.text = NINETY_NINE_PLUS
                     root.show()
                 }
                 else -> {
-                    tvPlayProductCount.text = products.size.toString()
+                    val total =
+                        if (totalProducts > PRODUCT_COUNT_ZERO) totalProducts else products.size
+                    tvPlayProductCount.text = total.toString()
                     root.show()
                 }
             }
@@ -87,7 +93,7 @@ class FeedProductButtonView(
     }
 
     fun showIfPossible() {
-        bind(this.products)
+        bind(this.products, totalProducts)
     }
 
     companion object {

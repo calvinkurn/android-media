@@ -30,6 +30,7 @@ import com.tokopedia.applink.internal.ApplinkConsInternalDigital
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.common.topupbills.data.RechargeSBMAddBillRequest
 import com.tokopedia.common.topupbills.data.TopupBillsEnquiry
+import com.tokopedia.common.topupbills.data.TopupBillsEnquiryAttribute
 import com.tokopedia.common.topupbills.data.TopupBillsEnquiryData
 import com.tokopedia.common.topupbills.data.TopupBillsMenuDetail
 import com.tokopedia.common.topupbills.data.TopupBillsRecommendation
@@ -99,6 +100,7 @@ import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import timber.log.Timber
 import javax.inject.Inject
 
 class RechargeGeneralFragment :
@@ -106,7 +108,8 @@ class RechargeGeneralFragment :
     OnInputListener,
     RechargeGeneralAdapter.LoaderListener,
     RechargeGeneralCheckoutBottomSheet.CheckoutListener,
-    TopupBillsMenuBottomSheets.MenuListener {
+    TopupBillsMenuBottomSheets.MenuListener,
+    AddSmartBillsInquiryCallBack{
 
     private var binding by autoClearedNullable<FragmentRechargeGeneralBinding>()
 
@@ -180,6 +183,11 @@ class RechargeGeneralFragment :
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        childFragmentManager.addFragmentOnAttachListener { _, fragment ->
+            if (fragment is AddSmartBillsInquiryBottomSheet) {
+                fragment.setCallback(this)
+            }
+        }
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
 
@@ -1294,22 +1302,22 @@ class RechargeGeneralFragment :
     }
 
     private fun renderBottomSheetAddBillInquiry(data: TopupBillsEnquiry) {
-        val inquiryBottomSheet = AddSmartBillsInquiryBottomSheet(object : AddSmartBillsInquiryCallBack {
-            override fun onInquiryClicked() {
-                commonTopupBillsAnalytics.clickAddInquiry(categoryName)
-                inputData[PARAM_CLIENT_NUMBER]?.let {
-                    addBills(productId, it)
-                }
-            }
-
-            override fun onInquiryClose() {
-                commonTopupBillsAnalytics.clickOnCloseInquiry(categoryName)
-            }
-        })
-        inquiryBottomSheet.addSBMInquiry(data.attributes)
-        fragmentManager?.let { fm ->
+        val inquiryBottomSheet = AddSmartBillsInquiryBottomSheet.newInstance(data.attributes)
+        inquiryBottomSheet.setCallback(this)
+        childFragmentManager.let { fm ->
             inquiryBottomSheet.show(fm, "")
         }
+    }
+
+    override fun onInquiryClicked(attribute: TopupBillsEnquiryAttribute) {
+        commonTopupBillsAnalytics.clickAddInquiry(categoryName)
+        inputData[PARAM_CLIENT_NUMBER]?.let {
+            addBills(productId, it)
+        }
+    }
+
+    override fun onInquiryClose() {
+        commonTopupBillsAnalytics.clickOnCloseInquiry(categoryName)
     }
 
     private fun renderCheckoutView(data: TopupBillsEnquiry) {
@@ -1519,15 +1527,19 @@ class RechargeGeneralFragment :
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         menu.clear()
-        val dppoConsentData = viewModel.dppoConsent.value
-        inflater.inflate(R.menu.menu, menu)
-        if (dppoConsentData is Success && dppoConsentData.data.description.isNotEmpty()) {
-            menu.showConsentIcon()
-            menu.setupConsentIcon(dppoConsentData.data.description)
-            menu.setupKebabIcon()
-        } else {
-            menu.hideConsentIcon()
-            menu.setupKebabIcon()
+        try {
+            val dppoConsentData = viewModel.dppoConsent.value
+            inflater.inflate(R.menu.menu, menu)
+            if (dppoConsentData is Success && dppoConsentData.data.description.isNotEmpty()) {
+                menu.showConsentIcon()
+                menu.setupConsentIcon(dppoConsentData.data.description)
+                menu.setupKebabIcon()
+            } else {
+                menu.hideConsentIcon()
+                menu.setupKebabIcon()
+            }
+        } catch (e: Exception) {
+            Timber.e(e)
         }
     }
 

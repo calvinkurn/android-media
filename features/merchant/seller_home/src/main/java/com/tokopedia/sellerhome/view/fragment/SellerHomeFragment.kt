@@ -14,7 +14,6 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewGroup.LayoutParams
 import android.view.animation.AnimationUtils
 import android.view.animation.LayoutAnimationController
 import androidx.lifecycle.LiveData
@@ -38,8 +37,10 @@ import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.empty_state.EmptyStateUnify
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.gm.common.utils.CoachMarkPrefHelper
+import com.tokopedia.imageassets.TokopediaImageUrl
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.EMPTY
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
@@ -1919,7 +1920,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             if (it is Success) {
                 val info = it.data
                 this.isNewSellerState = info.isNewSellerState
-                setViewBackgroundNewSeller()
                 if (info.subtitle.isBlank()) return@observe
 
                 if (info.subType == ShopStateInfoUiModel.SubType.TOAST) {
@@ -1933,86 +1933,46 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         }
     }
 
-    private fun setViewBackgroundNewSeller() {
-        binding?.run {
-            if (isNewSellerState) {
-                viewBgShopStatus.visible()
-                viewBgShopStatus.layoutParams.height = LayoutParams.MATCH_PARENT
-                viewBgShopStatus.setImageResource(R.drawable.sah_shop_state_bg_new_seller)
-                viewBgShopStatus.requestLayout()
-                imgSahNewSellerLeft.loadImage(SellerHomeConst.Images.IMG_NEW_SELLER_LEFT) {
-                    useCache(true)
-                    listener(onSuccess = { _, _ ->
-                        imgSahNewSellerLeft.visible()
-                    })
-                }
-
-                imgSahNewSellerRight.loadImage(SellerHomeConst.Images.IMG_NEW_SELLER_RIGHT) {
-                    useCache(true)
-                    listener(onSuccess = { _, _ ->
-                        imgSahNewSellerRight.visible()
-                    })
-                }
-            } else {
-                imgSahNewSellerLeft.gone()
-                imgSahNewSellerRight.gone()
-                setViewBackground()
-            }
-            setSectionWidgetTextColor()
-        }
-    }
-
-    private fun setSectionWidgetTextColor() {
-        recyclerView?.post {
-            val widgets = adapter.data.map {
-                if (it is SectionWidgetUiModel) {
-                    val titleTextColor: Int
-                    val subTitleTextColor: Int
-                    if (isNewSellerState) {
-                        titleTextColor = com.tokopedia.unifyprinciples.R.color.Unify_NN0
-                        subTitleTextColor = com.tokopedia.unifyprinciples.R.color.Unify_NN0
-                    } else {
-                        titleTextColor = com.tokopedia.unifyprinciples.R.color.Unify_N700_96
-                        subTitleTextColor = com.tokopedia.unifyprinciples.R.color.Unify_N700_68
-                    }
-                    return@map it.copy(
-                        titleTextColorId = titleTextColor, subTitleTextColorId = subTitleTextColor
-                    )
-                }
-                return@map it
-            }
-
-            notifyWidgetWithSdkChecking {
-                updateWidgets(widgets)
-            }
-        }
-    }
-
     private fun setViewBackground() = binding?.run {
         val isOfficialStore = userSession.isShopOfficialStore
         val isPowerMerchant = userSession.isPowerMerchantIdle || userSession.isGoldMerchant
         when {
-            isOfficialStore -> {
-                showRegularHomeBackground(R.drawable.sah_shop_state_bg_official_store)
-            }
-
-            isPowerMerchant -> {
-                showRegularHomeBackground(R.drawable.sah_shop_state_bg_power_merchant)
-            }
-
-            else -> {
-                viewBgShopStatus.gone()
-            }
+            isOfficialStore -> showHomeBackground(
+                backgroundResource = R.drawable.sah_shop_state_bg_official_store,
+                effectUrl = TokopediaImageUrl.IMG_14TH_ANNIV_HOME_OS
+            )
+            isPowerMerchant -> showHomeBackground(
+                backgroundResource = R.drawable.sah_shop_state_bg_power_merchant,
+                effectUrl = TokopediaImageUrl.IMG_14TH_ANNIV_HOME_PM
+            )
+            else -> showHomeBackground(
+                backgroundResource = R.drawable.sah_shop_state_bg_regular_merchant,
+                effectUrl = TokopediaImageUrl.IMG_14TH_ANNIV_HOME_RM
+            )
         }
+        show14thIllustration()
     }
 
-    private fun showRegularHomeBackground(backgroundResource: Int) {
+    private fun show14thIllustration() {
+        binding?.imgSahNewSellerRight?.visible()
+        binding?.imgSahNewSellerRight?.loadImage(TokopediaImageUrl.IMG_14TH_ANNIV)
+    }
+
+    private fun showHomeBackground(
+        backgroundResource: Int,
+        effectUrl: String
+    ) {
         binding?.run {
             val height = requireActivity().resources.getDimensionPixelSize(R.dimen.sah_dimen_280dp)
             viewBgShopStatus.layoutParams.height = height
             viewBgShopStatus.visible()
             viewBgShopStatus.setImageResource(backgroundResource)
             viewBgShopStatus.requestLayout()
+
+            imgBackgroundEffect.loadImage(effectUrl) {
+                setPlaceHolder(Int.ONE.inv())
+                setErrorDrawable(Int.ZERO)
+            }
         }
     }
 
@@ -2788,7 +2748,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         if (shopState == ShopStateUiModel.NewRegisteredShop) {
             showNewSellerDialog()
             isNewSellerState = true
-            setViewBackgroundNewSeller()
         } else if (shouldGetShopStateInfo) {
             getShopStateInfoIfEligible()
         }
@@ -2799,7 +2758,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             sellerHomeViewModel.getShopStateInfo()
         } else {
             isNewSellerState = false
-            setViewBackgroundNewSeller()
         }
     }
 

@@ -350,7 +350,7 @@ class EditorFragment @Inject constructor(
     private fun observeEditorParam() {
         viewModel.editorParam.observe(viewLifecycleOwner) {
             // show/hide add logo base on rollence
-            if (!featureToggleManager.isAddLogoEnable() || !viewModel.isShopAvailable()) {
+            if (!viewModel.isShopAvailable()) {
                 it.editorToolsList().apply {
                     val removeIndex = find { toolId -> toolId == EditorToolType.ADD_LOGO }
                     remove(removeIndex)
