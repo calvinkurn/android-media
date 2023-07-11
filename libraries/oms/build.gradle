@@ -16,6 +16,11 @@ buildscript {
     }
 }
 
+android {
+    namespace 'com.tokopedia.oms'
+    testNamespace 'com.tokopedia.oms.test'
+}
+
 dependencies {
     implementation projectOrAar(rootProject.ext.features.resourcesCommon)
     implementation projectOrAar(rootProject.ext.features.commonPayment)

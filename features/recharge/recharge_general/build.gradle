@@ -18,6 +18,8 @@ buildscript {
 }
 
 android {
+    namespace 'com.tokopedia.rechargegeneral'
+    testNamespace 'com.tokopedia.rechargegeneral.test'
     packagingOptions {
         exclude 'META-INF/**'
     }

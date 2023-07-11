@@ -32,7 +32,6 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.applink.internal.ApplinkConstInternalPayment
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.common.payment.PaymentConstant
 import com.tokopedia.common.payment.PaymentLoggingClient
@@ -121,8 +120,6 @@ class TopPayActivity :
 
     private var reloadUrl = ""
 
-    private var paymentTimestampLogger: PaymentTimestampLogger? = null
-
     private val webViewOnKeyListener: View.OnKeyListener
         get() = View.OnKeyListener { _, keyCode, event ->
             if (event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_BACK) {
@@ -147,19 +144,10 @@ class TopPayActivity :
         intent.extras?.let {
             setupBundlePass(it)
         }
-        initTimestampLogger()
         initView()
         initVar()
         setViewListener()
         setActionVar()
-    }
-
-    private fun initTimestampLogger() {
-        val checkoutTimestamp =
-            intent.getLongExtra(ApplinkConstInternalPayment.CHECKOUT_TIMESTAMP, 0L)
-        if (checkoutTimestamp > 0) {
-            paymentTimestampLogger = PaymentTimestampLogger(remoteConfig)
-        }
     }
 
     private fun initInjector() {
@@ -255,7 +243,6 @@ class TopPayActivity :
         } else {
             scroogeWebView?.postUrl(WebViewHelper.appendGAClientIdAsQueryParam(url, this) ?: "", postData)
         }
-        paymentTimestampLogger?.paymentStartLoadTimestamp = System.currentTimeMillis()
     }
 
     private fun isInsufficientBookingStockUrl(url: String): Boolean {
@@ -727,8 +714,6 @@ class TopPayActivity :
             hasFinishedFirstLoad = true
             presenter.clearTimeoutSubscription()
             hideProgressLoading()
-            paymentTimestampLogger?.paymentFinishLoadTimestamp = System.currentTimeMillis()
-            paymentTimestampLogger?.sendLog()
         }
 
         override fun onReceivedSslError(view: WebView?, handler: SslErrorHandler?, error: SslError?) {

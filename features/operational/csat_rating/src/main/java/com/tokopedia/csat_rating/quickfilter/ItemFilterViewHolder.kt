@@ -43,8 +43,8 @@ open class ItemFilterViewHolder(itemView: View, listener: QuickSingleFilterListe
     }
 
     init {
-        layoutBorder = itemView.findViewById<View>(com.tokopedia.csat_rating.R.id.layout_border) as? LinearLayout
-        layoutInside = itemView.findViewById<View>(com.tokopedia.csat_rating.R.id.layout_inside) as? LinearLayout
-        filterName = itemView.findViewById<View>(com.tokopedia.csat_rating.R.id.filter_name) as? TextView
+        layoutBorder = itemView.findViewById<View>(R.id.layout_border) as? LinearLayout
+        layoutInside = itemView.findViewById<View>(R.id.layout_inside) as? LinearLayout
+        filterName = itemView.findViewById<View>(R.id.filter_name) as? TextView
     }
 }

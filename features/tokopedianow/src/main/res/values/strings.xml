@@ -269,4 +269,5 @@
     <string name="tokopedianow_similar_product_bottom_sheet_add_to_cart">+ Keranjang</string>
     <string name="tokopedianow_similar_product_bottom_sheet_title">Produk serupa</string>
     <string name="tokopedianow_similar_product_bottom_sheet_similar_product_text">Produk Serupa</string>
+    <string name="tokopedianow_product_ads_carousel_title">Penawaran spesial</string>
 </resources>
