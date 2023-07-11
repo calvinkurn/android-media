@@ -3643,7 +3643,8 @@ open class DynamicProductDetailFragment :
                 item.id.takeIf { item.status == 1 }
             },
             isFulfillment = cartDataModel.isFulfillment,
-            pageSource = PostAtcHelper.Source.PDP
+            pageSource = PostAtcHelper.Source.PDP,
+            warehouseId = cartDataModel.warehouseId
         )
     }
 

@@ -12,6 +12,7 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.getBooleanArg
 import com.tokopedia.kotlin.extensions.view.getStringArg
 import com.tokopedia.kotlin.extensions.view.getStringArrayListArg
+import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.databinding.PostAtcBottomSheetBinding
 import com.tokopedia.product.detail.databinding.ViewPostAtcFooterBinding
 import com.tokopedia.product.detail.postatc.base.PostAtcAdapter
@@ -143,8 +144,9 @@ class PostAtcBottomSheet : BottomSheetUnify() {
     private fun setupBottomSheet(inflater: LayoutInflater, container: ViewGroup?) {
         clearContentPadding = true
         isHideable = true
-        showKnob = true
-        showHeader = false
+
+        val title = context?.getString(R.string.pdp_post_atc_title) ?: ""
+        setTitle(title)
 
         binding = PostAtcBottomSheetBinding.inflate(inflater, container, false).also {
             setupView(it)
