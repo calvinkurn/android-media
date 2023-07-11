@@ -122,22 +122,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Co
         initEmbrace();
 
         if (GlobalConfig.isAllowDebuggingTools()) {
-            new Cassava.Builder(this)
-                    .setRemoteValidator(new RemoteSpec() {
-                        @NonNull
-                        @Override
-                        public String getUrl() {
-                            return TokopediaUrl.getInstance().getAPI();
-                        }
-
-                        @NonNull
-                        @Override
-                        public String getToken() {
-                            return  getString(com.tokopedia.keys.R.string.thanos_token_key);
-                        }
-                    })
-                    .setLocalRootPath("tracker")
-                    .initialize();
+            initCassave();
         }
         TrackApp.initTrackApp(this);
 
@@ -165,6 +150,26 @@ public class SellerMainApplication extends SellerRouterApplication implements Co
             initDevMonitoringTools();
         }
     }
+
+    private void initCassave() {
+        new Cassava.Builder(this)
+                .setRemoteValidator(new RemoteSpec() {
+                    @NonNull
+                    @Override
+                    public String getUrl() {
+                        return TokopediaUrl.getInstance().getAPI();
+                    }
+
+                    @NonNull
+                    @Override
+                    public String getToken() {
+                        return  getString(com.tokopedia.keys.R.string.thanos_token_key);
+                    }
+                })
+                .setLocalRootPath("tracker")
+                .initialize();
+    }
+
     private TkpdAuthenticatorGql getAuthenticator() {
         return new TkpdAuthenticatorGql(this, this, new UserSession(context), new RefreshTokenGql());
     }
