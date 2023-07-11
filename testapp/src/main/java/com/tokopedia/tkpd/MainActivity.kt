@@ -162,7 +162,7 @@ class MainActivity : AppCompatActivity() {
         /*
          * Put your default applink here
          */
-        return ApplinkConst.TokoFood.HOME
+        return ""
     }
 
     data class Model(
