@@ -5647,6 +5647,12 @@ class ShipmentViewModel @Inject constructor(
                 onSuccess = {
                     if (it.saveAddOns.status.equals(statusOK, true)) {
                         view?.handleOnSuccessSaveAddOnProduct()
+                    } else {
+                        if (it.saveAddOns.errorMessage.isNotEmpty()) {
+                            view?.showToastError(it.saveAddOns.errorMessage.first())
+                        } else {
+                            view?.showToastError(view?.getStringResource(R.string.message_error_checkout_empty))
+                        }
                     }
                 },
                 onError = {
