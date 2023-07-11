@@ -1,6 +1,7 @@
 package com.tokopedia.scp_rewards_widgets.medal
 
 import android.view.View
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.scp_rewards_common.loadImageOrFallback
 import com.tokopedia.scp_rewards_widgets.R
@@ -21,7 +22,11 @@ class MedalEmptyViewHolder(itemView: View) : AbstractViewHolder<MedalError>(item
     override fun bind(data: MedalError?) {
         binding?.let { safeBinding ->
             data?.let {
-                safeBinding.errorImage.loadImageOrFallback(it.imageUrl, R.drawable.ic_error_medal_list)
+                safeBinding.errorImage.loadImageOrFallback(it.imageUrl, R.drawable.ic_error_medal_list) {
+                    val layoutParams = safeBinding.errorImage.layoutParams as ConstraintLayout.LayoutParams
+                    layoutParams.dimensionRatio = "H, 0.4"
+                    safeBinding.errorImage.layoutParams = layoutParams
+                }
             }
         }
     }

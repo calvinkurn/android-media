@@ -2,6 +2,7 @@ package com.tokopedia.scp_rewards_widgets.medal
 
 import android.graphics.Color
 import android.view.View
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.text.HtmlCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
@@ -70,7 +71,11 @@ class MedalSectionViewHolder(
 
     private fun handleList(medalList: List<MedalItem>?, bannerData: BannerData?, position: Int?) {
         if (medalList.isNullOrEmpty()) {
-            binding.ivEmptyList.loadImageOrFallback(bannerData?.imageUrl, R.drawable.ic_error_medal_list)
+            binding.ivEmptyList.loadImageOrFallback(bannerData?.imageUrl, R.drawable.ic_error_medal_list) {
+                val layoutParams = binding.ivEmptyList.layoutParams as ConstraintLayout.LayoutParams
+                layoutParams.dimensionRatio = "H, 0.4"
+                binding.ivEmptyList.layoutParams = layoutParams
+            }
             binding.ivEmptyList.visible()
             binding.rvMedals.gone()
             binding.ivEmptyList.setOnClickListener { listener?.onBannerClick(bannerData, position) }

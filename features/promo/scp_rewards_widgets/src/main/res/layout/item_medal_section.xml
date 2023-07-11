@@ -27,12 +27,13 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="@dimen/dp_5"
+        android:scaleType="centerInside"
         android:visibility="gone"
-        app:layout_constraintDimensionRatio="H, 3:1"
+        app:layout_constraintDimensionRatio="H, 0.5"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_section_title"
-        tools:src="@drawable/error_drawable"
+        tools:src="@drawable/ic_error_medal_list"
         tools:visibility="visible" />
 
     <androidx.recyclerview.widget.RecyclerView
@@ -42,11 +43,11 @@
         android:layout_marginTop="@dimen/dp_12"
         android:clipChildren="false"
         android:clipToPadding="false"
+        android:foregroundGravity="center"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_section_title"
-        android:foregroundGravity="center"
         tools:itemCount="6"
         tools:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
         tools:listitem="@layout/item_medal_layout"
