@@ -304,7 +304,7 @@ class ShipmentViewModel @Inject constructor(
 
     // add ons product
     // list summary add on - ready to render
-    private var listSummaryAddOnModel: List<ShipmentAddOnSummaryModel> = emptyList()
+    var listSummaryAddOnModel: List<ShipmentAddOnSummaryModel> = emptyList()
 
     // list summary default
     private var summariesAddOnUiModel: HashMap<Int, String> = hashMapOf()
