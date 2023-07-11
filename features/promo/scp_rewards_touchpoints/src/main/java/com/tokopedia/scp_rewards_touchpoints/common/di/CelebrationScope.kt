@@ -1,4 +1,4 @@
-package com.tokopedia.scp_rewards_touchpoints.view.bottomsheet.di
+package com.tokopedia.scp_rewards_touchpoints.common.di
 
 import javax.inject.Scope
 
