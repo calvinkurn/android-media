@@ -61,7 +61,6 @@
     <string name="path_shop_page_product" translatable="false">/shop-page/.*\\/product</string>
     <string name="path_shop_page_feed" translatable="false">/shop-page/.*\\/feed</string>
     <string name="path_shop_page_note" translatable="false">/shop-page/.*\\/note</string>
-    <string name="path_shop_page_campaign" translatable="false">/shop-page/.*\\/campaign</string>
     <string name="path_shop_page_product_list_result" translatable="false">/shop-page-product-list/.*\\/etalase/.*\\/</string>
 
     <string name="path_shop_info" translatable="false">/shop-info/.*\\/</string>
