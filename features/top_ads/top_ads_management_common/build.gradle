@@ -34,6 +34,8 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.track)
     implementation projectOrAar(rootProject.ext.libraries.remoteResourceRequest)
     implementation rootProject.ext.supportLibDependencies.constraintLayout
+    implementation rootProject.ext.miscDependencies.dagger
+    kapt rootProject.ext.miscDependencies.daggerCompiler
 
     testImplementation rootProject.ext.testDependencies.junit
     androidTestImplementation(rootProject.ext.testDependencies.espressoCore, {

@@ -6,7 +6,6 @@ import com.tokopedia.common.network.coroutines.RestRequestInteractor
 import com.tokopedia.common.network.coroutines.repository.RestRepository
 import com.tokopedia.common.network.data.model.RequestType
 import com.tokopedia.common.network.data.model.RestRequest
-import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.data.model.response.DataResponse
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant
@@ -41,8 +40,8 @@ import com.tokopedia.topads.common.data.internal.ParamObject.PRODUCT_BROWSE
 import com.tokopedia.topads.common.data.internal.ParamObject.PRODUCT_SEARCH
 import com.tokopedia.topads.common.data.internal.ParamObject.PUBLISHED
 import com.tokopedia.topads.common.data.internal.ParamObject.STRATEGIES
-import com.tokopedia.topads.common.data.raw.MANAGE_GROUP
 import com.tokopedia.topads.common.data.response.*
+import com.tokopedia.topads.common.domain.query.GetTopadsManagePromoGroupProduct
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import java.util.*
@@ -53,15 +52,13 @@ import kotlin.collections.ArrayList
  * Created by Pika on 24/5/20.
  */
 
-@GqlQuery("ManageGroupAdsQuery", MANAGE_GROUP)
 class TopAdsCreateUseCase @Inject constructor(val userSession: UserSessionInterface) {
 
     private val restRepository: RestRepository by lazy { RestRequestInteractor.getInstance().restRepository }
 
     suspend fun execute(requestParams: RequestParams?): FinalAdResponse {
         val token = object : TypeToken<DataResponse<FinalAdResponse>>() {}.type
-        val query = ManageGroupAdsQuery.GQL_QUERY
-        val request = GraphqlRequest(query, FinalAdResponse::class.java, requestParams?.parameters)
+        val request = GraphqlRequest(GetTopadsManagePromoGroupProduct, FinalAdResponse::class.java, requestParams?.parameters)
         val headers = HashMap<String, String>()
         headers["Content-Type"] = "application/json"
         val restRequest =
