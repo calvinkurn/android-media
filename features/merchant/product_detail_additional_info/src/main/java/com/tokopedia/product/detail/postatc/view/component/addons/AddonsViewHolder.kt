@@ -15,16 +15,18 @@ class AddonsViewHolder(
 
     private var element: AddonsUiModel? = null
 
-    init {
-        binding.postAtcAddonsWidget.setListener(this)
-    }
+    private var dataHash = -1
 
     override fun bind(element: AddonsUiModel) = with(binding.postAtcAddonsWidget) {
         val data = element.data
-        setSelectedAddons(data.selectedAddonsIds) // Possible bug if it set several times.
-        setTitleText(data.title)
-        setAutosaveAddon(data.cartId.toLongOrZero(), "normal")
-        getAddonData(data.productId, data.warehouseId, data.isTokoCabang)
+        if (dataHash != data.hashCode()) {
+            setSelectedAddons(data.selectedAddonsIds)
+            setTitleText(data.title)
+            setAutosaveAddon(data.cartId.toLongOrZero(), "normal")
+            getAddonData(data.productId, data.warehouseId, data.isTokoCabang)
+            binding.postAtcAddonsWidget.setListener(this@AddonsViewHolder)
+            dataHash = data.hashCode()
+        }
         this@AddonsViewHolder.element = element
     }
 
