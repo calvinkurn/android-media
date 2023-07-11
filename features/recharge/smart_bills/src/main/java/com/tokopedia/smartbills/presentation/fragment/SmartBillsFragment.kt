@@ -1,6 +1,7 @@
 package com.tokopedia.smartbills.presentation.fragment
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.provider.Settings
@@ -8,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.RelativeLayout
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -77,6 +79,7 @@ import com.tokopedia.utils.currency.CurrencyFormatUtil
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 
 /**
  * @author by resakemal on 17/05/20
@@ -93,7 +96,8 @@ class SmartBillsFragment :
     SmartBillsAccordionViewHolder.SBMAccordionListener,
     SmartBillsEmptyStateViewHolder.EmptyStateSBMListener,
     SmartBillsCatalogBottomSheet.CatalogCallback,
-    SmartBillsHighlightCategoryWidget.SmartBillsHighlightCategoryListener {
+    SmartBillsHighlightCategoryWidget.SmartBillsHighlightCategoryListener,
+    SmartBillsDeleteBottomSheet.DeleteProductSBMListener {
 
     private var binding by autoClearedNullable<FragmentSmartBillsBinding>()
 
@@ -135,6 +139,13 @@ class SmartBillsFragment :
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        childFragmentManager.addFragmentOnAttachListener { _, fragment ->
+            if (fragment is SmartBillsCatalogBottomSheet) {
+                fragment.setListener(this)
+            } else if (fragment is SmartBillsDeleteBottomSheet) {
+                fragment.setListener(this)
+            }
+        }
         super.onCreate(savedInstanceState)
 
         // Initialize performance monitoring
@@ -666,9 +677,9 @@ class SmartBillsFragment :
 
     private fun showCatalogBottomSheet(catalogList: List<SmartBillsCatalogMenu>) {
         smartBillsAnalytics.viewBottomsheetCatalog()
-        val catalogBottomSheet = SmartBillsCatalogBottomSheet.newInstance(this)
-        catalogBottomSheet.showSBMCatalog(catalogList)
-        catalogBottomSheet.show(requireFragmentManager(), "")
+        val catalogBottomSheet = SmartBillsCatalogBottomSheet.newInstance(ArrayList(catalogList))
+        catalogBottomSheet.setListener(this)
+        catalogBottomSheet.show(childFragmentManager, "")
     }
 
     private fun toggleAllItems(value: Boolean, triggerTracking: Boolean = false) {
@@ -737,22 +748,20 @@ class SmartBillsFragment :
     }
 
     override fun onDeleteClicked(bill: RechargeBills) {
-        fragmentManager?.let {
+        childFragmentManager?.let {
             smartBillsAnalytics.clickKebab(bill.categoryName)
-            val smartBillsDeleteBottomSheet = SmartBillsDeleteBottomSheet(object :
-                    SmartBillsDeleteBottomSheet.DeleteProductSBMListener {
-                    override fun onDeleteProductClicked() {
-                        smartBillsAnalytics.clickHapusTagihan(bill.categoryName)
-                        showDeleteDialog(bill)
-                    }
-
-                    override fun onCloseBottomSheet() {
-                        smartBillsAnalytics.viewCloseBottomSheet()
-                    }
-                })
-
+            val smartBillsDeleteBottomSheet = SmartBillsDeleteBottomSheet.newInstance(bill)
+            smartBillsDeleteBottomSheet.setListener(this)
             smartBillsDeleteBottomSheet.show(it, "")
         }
+    }
+    override fun onDeleteProductClicked(bill: RechargeBills) {
+        smartBillsAnalytics.clickHapusTagihan(bill.categoryName)
+        showDeleteDialog(bill)
+    }
+
+    override fun onCloseBottomSheet() {
+        smartBillsAnalytics.viewCloseBottomSheet()
     }
 
     private fun showDeleteDialog(bill: RechargeBills) {
