@@ -169,7 +169,7 @@ object Utils {
             parcel.writeParcelable(this, 0)
             parcel.setDataPosition(0)
             parcel.readParcelable(this::class.java.classLoader)
-        } catch (throwable: Throwable) {
+        } catch (ignore: Throwable) {
             null
         } finally {
             parcel?.recycle()
@@ -248,7 +248,7 @@ object Utils {
         return try {
             val remoteConfigImpl = RemoteConfigInstance.getInstance().abTestPlatform
             remoteConfigImpl.getString(RollenceKey.KEY_SOM_OG, "") == RollenceKey.KEY_SOM_OG
-        } catch (e: Exception) {
+        } catch (ignore: Exception) {
             true
         }
     }
