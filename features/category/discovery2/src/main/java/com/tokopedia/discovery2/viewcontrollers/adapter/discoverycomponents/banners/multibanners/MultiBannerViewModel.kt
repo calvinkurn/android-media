@@ -7,7 +7,6 @@ import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.discovery2.ComponentNames
-import com.tokopedia.discovery2.Constant
 import com.tokopedia.discovery2.Constant.NAVIGATION
 import com.tokopedia.discovery2.Constant.REDIRECTION
 import com.tokopedia.discovery2.R
@@ -124,7 +123,6 @@ class MultiBannerViewModel(val application: Application, var components: Compone
             when (listItem[position].action) {
                 BannerAction.APPLINK.name -> {
                     pageRedirection(position, context)
-
                 }
                 BannerAction.CODE.name -> copyCodeToClipboard(position)
                 BannerAction.PUSH_NOTIFIER.name -> subscribeUserForPushNotification(position)
@@ -136,7 +134,7 @@ class MultiBannerViewModel(val application: Application, var components: Compone
 
     private fun pageRedirection(position: Int, context: Context) {
         bannerData.value?.data.checkForNullAndSize(position)?.let { listItem ->
-            when(listItem[position].moveAction?.type){
+            when (listItem[position].moveAction?.type) {
                 REDIRECTION -> {
                     if (!listItem[position].moveAction?.value.isNullOrEmpty()) {
                         navigate(context, listItem[position].moveAction?.value)
@@ -150,7 +148,6 @@ class MultiBannerViewModel(val application: Application, var components: Compone
                 }
             }
         }
-        navigation(position, context)
     }
 
     private fun loginUser(position: Int, context: Context) {
