@@ -193,7 +193,7 @@ object DeeplinkMainApp {
                 "explore/{tab_name}/{category_id}",
                 DeeplinkMapperHome::getRegisteredNavigationHomeContentExplore
             ),
-            DLP.matchPattern("{post_id}", DeeplinkMapperContent::getKolDeepLink)
+            DLP.matchPattern("{source_id}", DeeplinkMapperContent::getContentFeedDeeplink)
         ),
         "customercare" to mutableListOf(
             DLP.matchPattern("", ApplinkConstInternalOperational.INTERNAL_INBOX_LIST)
