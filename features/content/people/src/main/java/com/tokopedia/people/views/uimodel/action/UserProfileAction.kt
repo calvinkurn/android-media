@@ -1,5 +1,6 @@
 package com.tokopedia.people.views.uimodel.action
 
+import com.tokopedia.people.views.uimodel.UserReviewUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 
 /**
@@ -16,6 +17,8 @@ sealed interface UserProfileAction {
     data class LoadFeedPosts(val cursor: String = "", val isRefresh: Boolean = false) : UserProfileAction
 
     data class LoadPlayVideo(val isRefresh: Boolean = false) : UserProfileAction
+
+    data class LoadUserReview(val isRefresh: Boolean = false) : UserProfileAction
 
     data class LoadProfile(val isRefresh: Boolean = false) : UserProfileAction
 
@@ -43,4 +46,20 @@ sealed interface UserProfileAction {
     data class ClickSeePerformancePlayChannel(val channel: PlayWidgetChannelUiModel) : UserProfileAction
 
     data class ClickDeletePlayChannel(val channel: PlayWidgetChannelUiModel) : UserProfileAction
+
+    data class ClickLikeReview(val review: UserReviewUiModel.Review) : UserProfileAction
+
+    data class ClickReviewTextSeeMore(val review: UserReviewUiModel.Review) : UserProfileAction
+
+    data class ClickProductInfo(val review: UserReviewUiModel.Review) : UserProfileAction
+
+    data class ClickReviewMedia(
+        val feedbackID: String,
+        val attachment: UserReviewUiModel.Attachment
+    ) : UserProfileAction
+
+    data class UpdateLikeStatus(
+        val feedbackId: String,
+        val likeStatus: Int,
+    ) : UserProfileAction
 }

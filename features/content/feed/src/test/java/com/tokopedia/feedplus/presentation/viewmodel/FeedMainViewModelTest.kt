@@ -359,6 +359,7 @@ class FeedMainViewModelTest {
         val errorBottomSheetData = viewModel.feedCreateContentBottomSheetData.value as Fail
         assert(errorBottomSheetData.throwable is MessageErrorException)
         assert(errorBottomSheetData.throwable.message == "Failed")
+        assert(!viewModel.isShortEntryPointShowed)
     }
 
     @Test
@@ -386,6 +387,50 @@ class FeedMainViewModelTest {
         assert(creationData[0].type == CreateContentType.CREATE_SHORT_VIDEO)
         assert(creationData[1].type == CreateContentType.CREATE_POST)
         assert(creationData[2].type == CreateContentType.CREATE_LIVE)
+        assert(viewModel.isShortEntryPointShowed)
+    }
+
+    @Test
+    fun onFetchMetaData_whenSuccessWithoutShortsCreation_isShortEntryPointShowedShouldBeFalse() {
+        // given
+        val dummyData = getDummyFeedXHeaderData()
+        val dummyDataWithoutShortsCreation = dummyData.copy(
+            feedXHeaderData = dummyData.feedXHeaderData.copy(
+                data = dummyData.feedXHeaderData.data.copy(
+                    creation = dummyData.feedXHeaderData.data.creation.copy(
+                        authors = dummyData.feedXHeaderData.data.creation.authors.map { author ->
+                            author.copy(
+                                items = author.items.filter {
+                                    it.type != CreateContentType.CREATE_SHORT_VIDEO.value
+                                }
+                            )
+                        }
+                    )
+                )
+            )
+        )
+
+        coEvery { feedXHeaderUseCase.setRequestParams(any()) } coAnswers {}
+        coEvery { feedXHeaderUseCase.executeOnBackground() } returns dummyDataWithoutShortsCreation
+
+        // when
+        viewModel.fetchFeedMetaData()
+
+        // then
+        assert(viewModel.metaData.value is Success)
+        val successData = (viewModel.metaData.value as Success).data
+        assert(successData.selectedIndex == 0)
+        assert(successData.profileApplink == dummyData.feedXHeaderData.data.userProfile.applink)
+        assert(successData.profilePhotoUrl == dummyData.feedXHeaderData.data.userProfile.image)
+        assert(successData.showMyProfile == dummyData.feedXHeaderData.data.userProfile.isShown)
+        assert(successData.isCreationActive == dummyData.feedXHeaderData.data.creation.isActive)
+        assert(successData.showLive == dummyData.feedXHeaderData.data.live.isActive)
+        assert(successData.liveApplink == dummyData.feedXHeaderData.data.live.applink)
+
+        val creationData = (viewModel.feedCreateContentBottomSheetData.value as Success).data
+        assert(creationData[0].type == CreateContentType.CREATE_POST)
+        assert(creationData[1].type == CreateContentType.CREATE_LIVE)
+        assert(!viewModel.isShortEntryPointShowed)
     }
 
     @Test

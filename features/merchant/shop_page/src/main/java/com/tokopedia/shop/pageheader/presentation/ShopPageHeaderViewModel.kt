@@ -70,6 +70,9 @@ import com.tokopedia.shop.pageheader.util.ShopPageHeaderMapper
 import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProductFilterInput
 import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
+import com.tokopedia.universal_sharing.view.model.AffiliateInput
+import com.tokopedia.universal_sharing.view.model.GenerateAffiliateLinkEligibility
+import com.tokopedia.universal_sharing.view.usecase.AffiliateEligibilityCheckUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -77,9 +80,9 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.image.ImageProcessingUtil
 import dagger.Lazy
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @ExperimentalCoroutinesApi
@@ -99,6 +102,7 @@ class ShopPageHeaderViewModel @Inject constructor(
     private val getFollowStatusUseCase: Lazy<GetFollowStatusUseCase>,
     private val updateFollowStatusUseCase: Lazy<UpdateFollowStatusUseCase>,
     private val gqlGetShopOperationalHourStatusUseCase: Lazy<GQLGetShopOperationalHourStatusUseCase>,
+    private val affiliateEligibilityCheckUseCase: Lazy<AffiliateEligibilityCheckUseCase>,
     private val sharedPreferences: SharedPreferences,
     private val dispatcherProvider: CoroutineDispatchers,
     private val playShortsEntryPointRemoteConfig: PlayShortsEntryPointRemoteConfig
@@ -156,6 +160,10 @@ class ShopPageHeaderViewModel @Inject constructor(
     private val _shopPageShopShareData = MutableLiveData<Result<ShopInfo>>()
     val shopPageShopShareData: LiveData<Result<ShopInfo>>
         get() = _shopPageShopShareData
+
+    private val _resultAffiliate = MutableLiveData<Result<GenerateAffiliateLinkEligibility>>()
+    val resultAffiliate: LiveData<Result<GenerateAffiliateLinkEligibility>>
+        get() = _resultAffiliate
 
     /*
     Function getNewShopPageTabData is expected to perform faster than
@@ -593,5 +601,18 @@ class ShopPageHeaderViewModel @Inject constructor(
                 affiliateChannel
             ).apply()
         }) {}
+    }
+
+    fun checkAffiliate(affiliateInput: AffiliateInput) {
+        launch {
+            try {
+                val result = affiliateEligibilityCheckUseCase.get().apply {
+                    params = AffiliateEligibilityCheckUseCase.createParam(affiliateInput)
+                }.executeOnBackground()
+                _resultAffiliate.value = Success(result)
+            } catch (e: Exception) {
+                _resultAffiliate.value = Fail(e)
+            }
+        }
     }
 }

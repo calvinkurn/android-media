@@ -7,17 +7,21 @@ import com.tokopedia.common.topupbills.favoritepage.view.model.TopupBillsPersoFa
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.unifycomponents.BottomSheetUnify
 
-class PersoFavoriteNumberMenuBottomSheet(
-    private val favNumberItem: TopupBillsPersoFavNumberDataView,
-    private val listener: PersoFavoriteNumberMenuListener,
-    private val isShowDelete: Boolean
-): BottomSheetUnify() {
+class PersoFavoriteNumberMenuBottomSheet: BottomSheetUnify() {
 
     // reuse seamless layout
     private lateinit var binding: BottomSheetSeamlessFavoriteNumberMenuBinding
 
+    private var isShowDelete: Boolean? = null
+    private var favNumberItem: TopupBillsPersoFavNumberDataView? = null
+    private var listener: PersoFavoriteNumberMenuListener? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        arguments?.let { arguments ->
+            isShowDelete = arguments.getBoolean(IS_SHOW_DELETE_EXTRA, false)
+            favNumberItem = arguments.getParcelable(FAV_NUMBER_ITEM_EXTRA)
+        }
         initBottomSheet()
         initView()
         initListener()
@@ -33,22 +37,30 @@ class PersoFavoriteNumberMenuBottomSheet(
 
     private fun initView() {
         with(binding) {
-            commonTopupBillsFavoriteNumberDelete.showWithCondition(isShowDelete)
+            isShowDelete?.let { isShowDelete ->
+                commonTopupBillsFavoriteNumberDelete.showWithCondition(isShowDelete)
+            }
         }
     }
 
     private fun initListener() {
         with(binding) {
-            commonTopupbillsFavoriteNumberChangeName.setOnClickListener {
-                listener.onChangeNameMenuClicked(favNumberItem)
-                dismiss()
-            }
+            favNumberItem?.let { favNumberItem ->
+                commonTopupbillsFavoriteNumberChangeName.setOnClickListener {
+                    listener?.onChangeNameMenuClicked(favNumberItem)
+                    dismiss()
+                }
 
-            commonTopupBillsFavoriteNumberDelete.setOnClickListener {
-                listener.onDeleteContactClicked(favNumberItem)
-                dismiss()
+                commonTopupBillsFavoriteNumberDelete.setOnClickListener {
+                    listener?.onDeleteContactClicked(favNumberItem)
+                    dismiss()
+                }
             }
         }
+    }
+
+    fun setListener(listener: PersoFavoriteNumberMenuListener) {
+        this.listener = listener
     }
 
     interface PersoFavoriteNumberMenuListener {
@@ -57,13 +69,18 @@ class PersoFavoriteNumberMenuBottomSheet(
     }
 
     companion object {
-
+        private const val FAV_NUMBER_ITEM_EXTRA = "FAV_NUMBER_ITEM_EXTRA"
+        private const val IS_SHOW_DELETE_EXTRA = "IS_SHOW_DELETE_EXTRA"
         fun newInstance(
             favNumberItem: TopupBillsPersoFavNumberDataView,
-            listener: PersoFavoriteNumberMenuListener,
             isShowDelete: Boolean
         ): PersoFavoriteNumberMenuBottomSheet {
-            return PersoFavoriteNumberMenuBottomSheet(favNumberItem, listener, isShowDelete)
+            val bottomSheet = PersoFavoriteNumberMenuBottomSheet()
+            val bundle = Bundle()
+            bundle.putParcelable(FAV_NUMBER_ITEM_EXTRA, favNumberItem)
+            bundle.putBoolean(IS_SHOW_DELETE_EXTRA, isShowDelete)
+            bottomSheet.arguments = bundle
+            return bottomSheet
         }
     }
 }
