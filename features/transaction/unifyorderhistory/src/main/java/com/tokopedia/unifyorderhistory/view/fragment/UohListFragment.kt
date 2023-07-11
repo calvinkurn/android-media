@@ -64,6 +64,7 @@ import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.exception.ResponseErrorException
@@ -877,7 +878,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
                     showFinishOrderToaster()
                     if (isScpRewardTouchPointEnabled()) {
                         scpTouchPointViewModel.getTouchPoint(
-                            orderId = responseFinishOrder.orderId.toLong(),
+                            orderId = responseFinishOrder.orderId.toLongOrZero(),
                             sourceName = SOURCE_NAME
                         )
                     }
