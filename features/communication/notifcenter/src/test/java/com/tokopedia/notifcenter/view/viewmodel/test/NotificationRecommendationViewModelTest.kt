@@ -1,12 +1,11 @@
-package com.tokopedia.notifcenter.ui.viewmodel.test
+package com.tokopedia.notifcenter.view.viewmodel.test
 
-import com.tokopedia.notifcenter.ui.NotificationViewModel.Companion.getRecommendationVisitables
-import com.tokopedia.notifcenter.ui.viewmodel.base.NotificationViewModelTestFixture
+import com.tokopedia.notifcenter.view.NotificationViewModel.Companion.getRecommendationVisitables
+import com.tokopedia.notifcenter.view.viewmodel.base.NotificationViewModelTestFixture
 import com.tokopedia.recommendation_widget_common.extension.mappingToRecommendationModel
-import io.mockk.every
+import io.mockk.coEvery
 import org.junit.Assert
 import org.junit.Test
-import rx.Observable
 
 class NotificationRecommendationViewModelTest : NotificationViewModelTestFixture() {
     @Test
@@ -19,9 +18,9 @@ class NotificationRecommendationViewModelTest : NotificationViewModelTestFixture
 
         val expectedValue = listOfRecommWidget.first()
 
-        every {
-            getRecommendationUseCase.createObservable(any())
-        } returns Observable.just(listOfRecommWidget)
+        coEvery {
+            getRecommendationUseCase.getData(any())
+        } returns listOfRecommWidget
 
         // when
         viewModel.loadRecommendations(0)

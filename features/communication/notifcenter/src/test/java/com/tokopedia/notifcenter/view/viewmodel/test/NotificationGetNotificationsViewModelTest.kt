@@ -1,7 +1,7 @@
-package com.tokopedia.notifcenter.ui.viewmodel.test
+package com.tokopedia.notifcenter.view.viewmodel.test
 
 import com.tokopedia.notifcenter.data.entity.NotificationResponse
-import com.tokopedia.notifcenter.ui.viewmodel.base.NotificationViewModelTestFixture
+import com.tokopedia.notifcenter.view.viewmodel.base.NotificationViewModelTestFixture
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery

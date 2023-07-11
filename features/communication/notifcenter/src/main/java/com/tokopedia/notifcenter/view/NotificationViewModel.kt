@@ -400,7 +400,7 @@ class NotificationViewModel @Inject constructor(
         }
     }
 
-    private fun loadTopAdsBannerData() {
+    fun loadTopAdsBannerData() {
         viewModelScope.launch {
             try {
                 val results = getTopAdsImageData()

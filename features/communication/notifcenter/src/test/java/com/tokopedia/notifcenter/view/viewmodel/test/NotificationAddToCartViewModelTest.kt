@@ -1,9 +1,9 @@
-package com.tokopedia.notifcenter.ui.viewmodel.test
+package com.tokopedia.notifcenter.view.viewmodel.test
 
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.DataModel
-import com.tokopedia.notifcenter.ui.viewmodel.base.NotificationViewModelTestFixture
+import com.tokopedia.notifcenter.view.viewmodel.base.NotificationViewModelTestFixture
 import io.mockk.coEvery
 import io.mockk.mockk
 import io.mockk.verify

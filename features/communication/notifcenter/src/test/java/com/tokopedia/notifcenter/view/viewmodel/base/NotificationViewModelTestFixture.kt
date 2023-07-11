@@ -1,4 +1,4 @@
-package com.tokopedia.notifcenter.ui.viewmodel.base
+package com.tokopedia.notifcenter.view.viewmodel.base
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
@@ -18,11 +18,10 @@ import com.tokopedia.notifcenter.domain.NotifcenterDeleteReminderBumpUseCase
 import com.tokopedia.notifcenter.domain.NotifcenterDetailUseCase
 import com.tokopedia.notifcenter.domain.NotifcenterFilterV2UseCase
 import com.tokopedia.notifcenter.domain.NotifcenterSetReminderBumpUseCase
-import com.tokopedia.notifcenter.ui.NotificationViewModel
+import com.tokopedia.notifcenter.view.NotificationViewModel
 import com.tokopedia.recommendation_widget_common.data.RecommendationEntity
-import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
+import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
-import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.user.session.UserSessionInterface
@@ -71,9 +70,6 @@ abstract class NotificationViewModelTestFixture {
     protected lateinit var getRecommendationUseCase: GetRecommendationUseCase
 
     @RelaxedMockK
-    protected lateinit var topAdsWishlishedUseCase: TopAdsWishlishedUseCase
-
-    @RelaxedMockK
     protected lateinit var userSessionInterface: UserSessionInterface
 
     @RelaxedMockK
@@ -112,7 +108,6 @@ abstract class NotificationViewModelTestFixture {
             getRecommendationUseCase,
             addToWishlistV2UseCase,
             deleteWishlistV2UseCase,
-            topAdsWishlishedUseCase,
             userSessionInterface,
             addToCartUseCase,
             notifOrderListUseCase,

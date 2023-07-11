@@ -1,4 +1,4 @@
-package com.tokopedia.notifcenter.ui.viewmodel.test
+package com.tokopedia.notifcenter.view.viewmodel.test
 
 import com.tokopedia.inboxcommon.RoleType
 import com.tokopedia.notifcenter.data.entity.affiliate.AffiliateEducationArticleResponse
@@ -6,7 +6,7 @@ import com.tokopedia.notifcenter.data.mapper.NotifcenterDetailMapper
 import com.tokopedia.notifcenter.data.state.Resource
 import com.tokopedia.notifcenter.data.uimodel.LoadMoreUiModel
 import com.tokopedia.notifcenter.domain.NotifcenterDetailUseCase
-import com.tokopedia.notifcenter.ui.viewmodel.base.NotificationViewModelTestFixture
+import com.tokopedia.notifcenter.view.viewmodel.base.NotificationViewModelTestFixture
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -127,7 +127,9 @@ class NotificationDetailViewModelTest : NotificationViewModelTestFixture() {
         val role = RoleType.AFFILIATE
         viewModel.reset() // filter id
 
-        coEvery { affiliateEducationArticleUseCase.getEducationArticles() } returns flow
+        coEvery {
+            affiliateEducationArticleUseCase(Unit)
+        } returns flow
 
         coEvery {
             notifcenterDetailUseCase(any())
@@ -157,7 +159,9 @@ class NotificationDetailViewModelTest : NotificationViewModelTestFixture() {
         val role = RoleType.AFFILIATE
         viewModel.reset() // filter id
 
-        coEvery { affiliateEducationArticleUseCase.getEducationArticles() } throws expectedThrowable
+        coEvery {
+            affiliateEducationArticleUseCase(Unit)
+        } throws expectedThrowable
 
         coEvery {
             notifcenterDetailUseCase(any())

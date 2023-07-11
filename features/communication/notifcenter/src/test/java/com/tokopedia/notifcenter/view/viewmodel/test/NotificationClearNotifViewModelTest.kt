@@ -1,10 +1,10 @@
-package com.tokopedia.notifcenter.ui.viewmodel.test
+package com.tokopedia.notifcenter.view.viewmodel.test
 
 import com.tokopedia.inboxcommon.RoleType
 import com.tokopedia.notifcenter.data.state.Resource
-import com.tokopedia.notifcenter.ui.NotificationViewModel.Companion.CLEAR_ALL_NOTIF_TYPE
-import com.tokopedia.notifcenter.ui.NotificationViewModel.Companion.DEFAULT_SHOP_ID
-import com.tokopedia.notifcenter.ui.viewmodel.base.NotificationViewModelTestFixture
+import com.tokopedia.notifcenter.view.NotificationViewModel.Companion.CLEAR_ALL_NOTIF_TYPE
+import com.tokopedia.notifcenter.view.NotificationViewModel.Companion.DEFAULT_SHOP_ID
+import com.tokopedia.notifcenter.view.viewmodel.base.NotificationViewModelTestFixture
 import io.mockk.coEvery
 import io.mockk.every
 import kotlinx.coroutines.flow.flow

@@ -1,7 +1,7 @@
-package com.tokopedia.notifcenter.ui.viewmodel.test
+package com.tokopedia.notifcenter.view.viewmodel.test
 
 import com.tokopedia.notifcenter.data.state.Resource
-import com.tokopedia.notifcenter.ui.viewmodel.base.NotificationViewModelTestFixture
+import com.tokopedia.notifcenter.view.viewmodel.base.NotificationViewModelTestFixture
 import io.mockk.coEvery
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.runBlocking
