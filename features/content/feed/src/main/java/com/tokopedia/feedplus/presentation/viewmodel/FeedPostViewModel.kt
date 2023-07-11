@@ -9,6 +9,10 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.network.exception.ResponseErrorException
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
+import com.tokopedia.common_sdk_affiliate_toko.model.AffiliatePageDetail
+import com.tokopedia.common_sdk_affiliate_toko.model.AffiliateSdkPageSource
+import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateAtcSource
+import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
 import com.tokopedia.content.common.comment.usecase.GetCountCommentsUseCase
 import com.tokopedia.content.common.usecase.BroadcasterReportTrackViewerUseCase
 import com.tokopedia.content.common.usecase.TrackVisitChannelBroadcasterUseCase
@@ -94,6 +98,7 @@ class FeedPostViewModel @Inject constructor(
     private val mvcSummaryUseCase: MVCSummaryUseCase,
     private val topAdsAddressHelper: TopAdsAddressHelper,
     private val getCountCommentsUseCase: GetCountCommentsUseCase,
+    private val affiliateCookieHelper: AffiliateCookieHelper,
     private val trackVisitChannelUseCase: TrackVisitChannelBroadcasterUseCase,
     private val trackReportTrackViewerUseCase: BroadcasterReportTrackViewerUseCase,
     private val uiEventManager: UiEventManager<FeedPostEvent>,
@@ -779,6 +784,23 @@ class FeedPostViewModel @Inject constructor(
     }
 
     private suspend fun addToCart(product: FeedTaggedProductUiModel) = withContext(dispatchers.io) {
+        product.affiliate.let { affiliate ->
+            if (affiliate.id.isNotEmpty() && affiliate.channel.isNotEmpty()) {
+                affiliateCookieHelper.initCookie(
+                    affiliate.id,
+                    affiliate.channel,
+                    AffiliatePageDetail(
+                        pageId = product.id,
+                        source = AffiliateSdkPageSource.DirectATC(
+                            atcSource = AffiliateAtcSource.SHOP_PAGE,
+                            shopId = product.shop.id,
+                            null
+                        )
+                    )
+                )
+            }
+        }
+
         addToCartUseCase.apply {
             setParams(
                 AddToCartUseCase.getMinimumParams(
