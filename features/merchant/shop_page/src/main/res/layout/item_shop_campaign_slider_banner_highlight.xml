@@ -82,6 +82,8 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@id/rv_product_image"
         app:layout_constraintVertical_bias="0.5"
+        app:icon_color_light_enable="@color/dms_color_525A67"
+        app:icon_color_night_enable="@color/dms_color_525A67"
         tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
