@@ -124,17 +124,13 @@ import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceCartMapData
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceCheckout
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceProductCartMapData
-import com.tokopedia.purchase_platform.common.constant.AddOnConstant.ADD_ON_LEVEL_PRODUCT
-import com.tokopedia.purchase_platform.common.constant.AddOnConstant.SOURCE_NORMAL_CHECKOUT
 import com.tokopedia.purchase_platform.common.constant.CartConstant
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.DEFAULT_ERROR_MESSAGE_FAIL_APPLY_BBO
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.DEFAULT_ERROR_MESSAGE_VALIDATE_PROMO
 import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException
 import com.tokopedia.purchase_platform.common.feature.addons.data.request.AddOnDataRequest
-import com.tokopedia.purchase_platform.common.feature.addons.data.request.AddOnRequest
 import com.tokopedia.purchase_platform.common.feature.addons.data.request.CartProduct
-import com.tokopedia.purchase_platform.common.feature.addons.data.request.SaveAddOnStateRequest
 import com.tokopedia.purchase_platform.common.feature.addons.domain.SaveAddOnStateUseCase
 import com.tokopedia.purchase_platform.common.feature.dynamicdatapassing.data.model.UpdateDynamicDataPassingUiModel
 import com.tokopedia.purchase_platform.common.feature.dynamicdatapassing.data.request.DynamicDataPassingParamRequest
@@ -327,8 +323,6 @@ class ShipmentViewModel @Inject constructor(
     var isPlusSelected: Boolean = false
 
     private var isValidatingFinalPromo: Boolean = false
-
-    private var paramRequestSaveAddOnProductService: SaveAddOnStateRequest = SaveAddOnStateRequest()
 
     // region view
     fun attachView(view: ShipmentFragment) {
@@ -1045,8 +1039,6 @@ class ShipmentViewModel @Inject constructor(
         shippingCourierViewModelsState = hashMapOf()
         mapRequestSaveAddonProductService(cartShipmentAddressFormData)
         summariesAddOnUiModel = ShipmentAddOnProductServiceMapper.getShoppingSummaryAddOns(cartShipmentAddressFormData.listSummaryAddons)
-        /*listSummaryAddOnModel = ShipmentAddOnProductServiceMapper.mapSummaryAddOns(cartShipmentAddressFormData)
-        setSummaryAddOnProduct(listSummaryAddOnModel)*/
     }
 
     internal fun setPurchaseProtection(isPurchaseProtectionPage: Boolean) {
@@ -5626,17 +5618,6 @@ class ShipmentViewModel @Inject constructor(
                 }
             }
         }
-        paramRequestSaveAddOnProductService = SaveAddOnStateRequest(
-            addOns = listOf(
-                AddOnRequest(
-                    addOnLevel = ADD_ON_LEVEL_PRODUCT,
-                    cartProducts = listCartProduct,
-                    addOnData = listAddOnDataRequest
-                )
-            ),
-            source = if (isOneClickShipment) SOURCE_OCS else SOURCE_NORMAL_CHECKOUT,
-            featureType = 1
-        )
     }
 
     fun saveAddOnsProduct(cartItemModel: CartItemModel) {
