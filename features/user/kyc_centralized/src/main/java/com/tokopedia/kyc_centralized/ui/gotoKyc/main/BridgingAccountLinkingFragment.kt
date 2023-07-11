@@ -377,7 +377,7 @@ class BridgingAccountLinkingFragment : BaseDaggerFragment() {
 
     companion object {
         private const val BACK_BTN_APPLINK = "tokopedia://back"
-        private const val TOKOPEDIA_CARE_PATH = "help"
+        private const val TOKOPEDIA_CARE_PATH = "help/article/nama-yang-muncul-bukan-nama-saya?lang=id?isBack=true"
         private const val TOKOPEDIA_CARE_STRING_FORMAT = "%s?url=%s"
         private const val PACKAGE = "package"
     }

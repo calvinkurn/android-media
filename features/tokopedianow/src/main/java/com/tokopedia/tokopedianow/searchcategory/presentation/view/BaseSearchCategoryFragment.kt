@@ -71,6 +71,7 @@ import com.tokopedia.tokopedianow.common.bottomsheet.TokoNowOnBoard20mBottomShee
 import com.tokopedia.tokopedianow.common.constant.ServiceType.NOW_2H
 import com.tokopedia.tokopedianow.common.domain.mapper.ProductRecommendationMapper.mapProductItemToRecommendationItem
 import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference
+import com.tokopedia.tokopedianow.common.model.TokoNowAdsCarouselUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
 import com.tokopedia.tokopedianow.common.util.RecyclerViewGridUtil.addProductItemDecoration
 import com.tokopedia.tokopedianow.common.util.TokoNowServiceTypeUtil
@@ -83,6 +84,7 @@ import com.tokopedia.tokopedianow.common.viewmodel.TokoNowProductRecommendationV
 import com.tokopedia.tokopedianow.databinding.FragmentTokopedianowSearchCategoryBinding
 import com.tokopedia.tokopedianow.home.presentation.view.listener.OnBoard20mBottomSheetCallback
 import com.tokopedia.tokopedianow.search.analytics.SearchResultTracker
+import com.tokopedia.tokopedianow.searchcategory.analytics.ProductAdsCarouselAnalytics
 import com.tokopedia.tokopedianow.searchcategory.data.model.QuerySafeModel
 import com.tokopedia.tokopedianow.searchcategory.presentation.adapter.SearchCategoryAdapter
 import com.tokopedia.tokopedianow.searchcategory.presentation.bottomsheet.TokoNowProductFeedbackBottomSheet
@@ -91,6 +93,7 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.customview.StickyS
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.BannerComponentListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.CategoryFilterListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ChooseAddressListener
+import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ProductAdsCarouselListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ProductCardCompactCallback
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ProductItemListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ProductRecommendationCallback
@@ -235,6 +238,13 @@ abstract class BaseSearchCategoryFragment:
 
     private fun updateToolbarNotification(update: Boolean) {
         if(update) navToolbar?.updateNotification()
+    }
+
+    private fun updateAdsProductCarousel(data: Pair<Int, TokoNowAdsCarouselUiModel>) {
+        val visitables = getViewModel().visitableListLiveData.value.orEmpty()
+        val newList = visitables.toMutableList()
+        newList[data.first] = data.second
+        searchCategoryAdapter?.submitList(newList)
     }
 
     protected open fun updateProductRecommendation(needToUpdate: Boolean) { /* override to use this function */ }
@@ -517,6 +527,7 @@ abstract class BaseSearchCategoryFragment:
         getViewModel().querySafeLiveData.observe(::showDialogAgeRestriction)
         getViewModel().updateToolbarNotification.observe(::updateToolbarNotification)
         getViewModel().needToUpdateProductRecommendationLiveData.observe(::updateProductRecommendation)
+        getViewModel().updateAdsCarouselLiveData.observe(::updateAdsProductCarousel)
 
         getViewModel().blockAddToCartLiveData.observe(viewLifecycleOwner) {
             showToasterWhenAddToCartBlocked()
@@ -1148,6 +1159,15 @@ abstract class BaseSearchCategoryFragment:
             val intent = TokoNowSimilarProductBottomSheetActivity.createNewIntent(this, productId, similarProductTrackerListener)
             startActivity(intent)
         }
+    }
+
+    protected fun createProductAdsCarouselCallback(analytics: ProductAdsCarouselAnalytics): ProductAdsCarouselListener {
+        return ProductAdsCarouselListener(
+            context = context,
+            viewModel = getViewModel(),
+            analytics = analytics,
+            startActivityResult = ::startActivityForResult
+        )
     }
 
     override fun onProductCardAddToCartBlocked() = showToasterWhenAddToCartBlocked()

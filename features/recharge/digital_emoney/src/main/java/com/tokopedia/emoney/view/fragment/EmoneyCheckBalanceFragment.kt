@@ -426,7 +426,7 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
         ServerLogger.log(Priority.P2, TAPCASH_TAG, map)
     }
 
-    private fun getPublicKey(): String {
+    private fun getPublicKey(): String {   
         return if (TokopediaUrl.getInstance().TYPE == Env.STAGING) {
             getString(com.tokopedia.keys.R.string.rfvtgbyhn)
         } else {

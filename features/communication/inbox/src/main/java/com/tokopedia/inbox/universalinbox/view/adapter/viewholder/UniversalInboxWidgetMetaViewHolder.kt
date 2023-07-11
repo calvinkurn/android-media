@@ -41,8 +41,7 @@ class UniversalInboxWidgetMetaViewHolder(
         binding?.inboxRvWidgetMeta?.layoutManager = UniversalInboxWidgetLayoutManager(
             context = context,
             orientation = LinearLayoutManager.HORIZONTAL,
-            reverseLayout = false,
-            uiModel = uiModel
+            reverseLayout = false
         )
         binding?.inboxRvWidgetMeta?.adapter = adapter
         binding?.inboxRvWidgetMeta?.setHasFixedSize(true)
