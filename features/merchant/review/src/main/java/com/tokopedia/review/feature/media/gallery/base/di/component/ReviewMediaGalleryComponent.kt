@@ -5,6 +5,7 @@ import android.util.LruCache
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.review.feature.media.gallery.base.di.module.ReviewMediaGalleryModule
+import com.tokopedia.review.feature.media.gallery.base.di.module.ReviewMediaGalleryTrackerModule
 import com.tokopedia.review.feature.media.gallery.base.di.module.ReviewMediaGalleryViewModelModule
 import com.tokopedia.review.feature.media.gallery.base.di.qualifier.ReviewMediaGalleryViewModelFactory
 import com.tokopedia.review.feature.media.gallery.base.di.scope.ReviewMediaGalleryScope
@@ -16,7 +17,8 @@ import dagger.Component
 @Component(
     modules = [
         ReviewMediaGalleryViewModelModule::class,
-        ReviewMediaGalleryModule::class
+        ReviewMediaGalleryModule::class,
+        ReviewMediaGalleryTrackerModule::class,
     ],
     dependencies = [
         BaseAppComponent::class,

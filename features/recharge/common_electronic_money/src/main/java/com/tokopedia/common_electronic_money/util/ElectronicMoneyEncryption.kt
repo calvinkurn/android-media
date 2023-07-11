@@ -24,12 +24,10 @@ class ElectronicMoneyEncryption @Inject constructor(
      * @return Pair of encrypted AES Key and Encrypted Payload
      */
     fun createEncryptedPayload(rawPublicKeyString: String, payload: String): Pair<String, String> {
-        //remove unused part key
-        val publicKeyString = removeUnusedPublicFieldKey(rawPublicKeyString)
         // 32 byte random array, will encrypted using RSA public key
         val aesRandomKey = randomString(AES_RANDOM_LENGTH)
         // Convert publicKeyString to RSAPublicKey
-        val publicKey = rsa.stringToPublicKey(publicKeyString)
+        val publicKey = rsa.stringToPublicKey(rawPublicKeyString)
         // Encrypt AES Key with RSA Algorithm
         val encryptedAESKey = rsa.encrypt(aesRandomKey, publicKey, Constants.RSA_OAEP_ALGORITHM).replace("\n", "")
 
@@ -49,10 +47,8 @@ class ElectronicMoneyEncryption @Inject constructor(
      * @return Decrypted Payload
      */
     fun createDecryptedPayload(rawPrivateKeyString: String, encryptedAESKeyString: String, encryptedPayload: String): String {
-        //remove unused part key
-        val privateKeyString = removeUnusedPrivateFieldKey(rawPrivateKeyString)
         // Convert privateKeyString to RSAPrivateKey
-        val privateKey = rsa.stringToPrivateKey(privateKeyString)
+        val privateKey = rsa.stringToPrivateKey(rawPrivateKeyString)
         // Decrypt AES Key with RSA Algorithm
         val decryptedKey = rsa.decrypt(encryptedAESKeyString, privateKey, Constants.RSA_OAEP_ALGORITHM)
 
@@ -77,19 +73,6 @@ class ElectronicMoneyEncryption @Inject constructor(
     private fun randomString(length: Int): String {
         val source = ('0'..'9') + ('a'..'z') + ('A'..'Z') + "!@#$%^&*()-_=+".toList()
         return (Int.ONE..length).map { source.random() }.joinToString("")
-    }
-
-    private fun removeUnusedPublicFieldKey(key: String): String {
-        return key
-            .replace("-----BEGIN PUBLIC KEY-----", "")
-            .replace("-----END PUBLIC KEY-----", "")
-            .replace("\\s+".toRegex(), "")
-    }
-
-    private fun removeUnusedPrivateFieldKey(key: String): String {
-        return key.replace("-----BEGIN RSA PRIVATE KEY-----", "")
-            .replace("-----END RSA PRIVATE KEY-----", "")
-            .replace("\\s+".toRegex(), "")
     }
 
     companion object {

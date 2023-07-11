@@ -27,7 +27,6 @@
 /features/discovery/autocomplete_component/             @tokopedia/android-miniondave-dev
 /features/discovery/global_nav_widget/              	@tokopedia/android-miniondave-dev
 /features/discovery/global_nav_widget_samples/      	@tokopedia/android-miniondave-dev
-/features/home/dynamicbanner/                          	@tokopedia/android-miniondave-dev
 /features/home/navigation/                          	@tokopedia/android-miniondave-dev
 /features/home/navigation-common/                   	@tokopedia/android-miniondave-dev
 /features/home/searchbar/                           	@tokopedia/android-miniondave-dev
@@ -379,7 +378,6 @@
 /libraries/screen_recorder                              @tokopedia/android-core-dev
 /libraries/screenshot_observer                          @tokopedia/android-core-dev
 /libraries/telemetry                                    @tokopedia/android-core-dev
-/libraries/tokopatch                                    @tokopedia/android-core-dev
 /libraries/macrobenchmark/								@tokopedia/android-core-dev
 /libraries/macrobenchmark_util							@tokopedia/android-core-dev
 /libraries/common_compose                               @tokopedia/android-core-dev

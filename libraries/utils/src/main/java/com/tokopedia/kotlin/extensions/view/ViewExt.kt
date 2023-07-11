@@ -197,7 +197,7 @@ fun View.hideLoadingTransparent() {
 }
 
 fun View.setMargin(left: Int, top: Int, right: Int, bottom: Int) {
-    val layoutParams = this.layoutParams as ViewGroup.MarginLayoutParams
+    val layoutParams = this.layoutParams as? ViewGroup.MarginLayoutParams ?: return
     layoutParams.setMargins(left, top, right, bottom)
 
     layoutParams.marginStart = left
