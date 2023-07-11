@@ -7,112 +7,110 @@ import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsD
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-class ShipmentCartItemModel(
+data class ShipmentCartItemModel(
     var isAllItemError: Boolean = false,
     var isError: Boolean = false,
-    var errorTitle: String? = null,
-    var errorDescription: String? = null,
+    var errorTitle: String = "",
+    val errorDescription: String = "",
     var isHasUnblockingError: Boolean = false,
-    var unblockingErrorMessage: String? = null,
+    var unblockingErrorMessage: String = "",
     var firstProductErrorIndex: Int = -1,
-    var isTriggerScrollToErrorProduct: Boolean = false,
+    val isTriggerScrollToErrorProduct: Boolean = false,
     var isCustomEpharmacyError: Boolean = false,
 
-    var shipmentCartData: ShipmentCartData? = null,
+    var shipmentCartData: ShipmentCartData = ShipmentCartData(),
     var selectedShipmentDetailData: ShipmentDetailData? = null,
-    var shopShipmentList: List<ShopShipment>? = null,
+    val shopShipmentList: List<ShopShipment> = emptyList(),
 
     // Shop data
-    var shopId: Long = 0,
-    var shopName: String? = null,
-    var orderNumber: Int = 0,
-    var preOrderInfo: String? = null,
-    var isFreeShippingExtra: Boolean = false,
-    var freeShippingBadgeUrl: String? = null,
-    var isFreeShippingPlus: Boolean = false, // flag for plus badge tracker
-    var hasSeenFreeShippingBadge: Boolean = false, // flag for tracker
-    var shopLocation: String? = null,
-    var shopAlertMessage: String? = null,
-    var shopTypeInfoData: ShopTypeInfoData? = null,
-    var isTokoNow: Boolean = false,
-    var shopTickerTitle: String = "",
-    var shopTicker: String = "",
-    var enablerLabel: String = "",
+    val shopId: Long = 0,
+    val shopName: String = "",
+    val orderNumber: Int = 0,
+    val preOrderInfo: String = "",
+    val freeShippingBadgeUrl: String = "",
+    val isFreeShippingPlus: Boolean = false, // flag for plus badge tracker
+    var shopLocation: String = "",
+    val shopAlertMessage: String = "",
+    val shopTypeInfoData: ShopTypeInfoData = ShopTypeInfoData(),
+    val isTokoNow: Boolean = false,
+    val shopTickerTitle: String = "",
+    val shopTicker: String = "",
+    val enablerLabel: String = "",
 
     // AddOns
-    var addOnsOrderLevelModel: AddOnsDataModel? = null,
-    var addOnWordingModel: AddOnWordingModel? = null,
-    var addOnDefaultFrom: String? = null,
-    var addOnDefaultTo: String? = null,
+    val addOnsOrderLevelModel: AddOnsDataModel = AddOnsDataModel(),
+    val addOnWordingModel: AddOnWordingModel = AddOnWordingModel(),
+    val addOnDefaultFrom: String = "",
+    val addOnDefaultTo: String = "",
 
     // Cart item state
-    var cartString: String? = null,
-    var shippingId: Int = 0,
+    override val cartStringGroup: String,
+    val shippingId: Int = 0,
     var spId: Int = 0,
     var boCode: String = "",
-    var dropshiperName: String? = null,
-    var dropshiperPhone: String? = null,
-    var isInsurance: Boolean = false,
-    var isSaveStateFlag: Boolean = false,
+    var boUniqueId: String = "",
+    var dropshiperName: String = "",
+    var dropshiperPhone: String = "",
+    val isInsurance: Boolean = false,
+    val isSaveStateFlag: Boolean = false,
 
-    var weightUnit: Int = 0,
-    var isProductFinsurance: Boolean = false,
-    var isProductFcancelPartial: Boolean = false,
-    var isProductIsPreorder: Boolean = false,
+    val weightUnit: Int = 0,
+    val isProductFinsurance: Boolean = false,
+    val isProductFcancelPartial: Boolean = false,
+    val isProductIsPreorder: Boolean = false,
 
     var cartItemModels: List<CartItemModel> = ArrayList(),
 
     // View state
     var isStateDetailSubtotalViewExpanded: Boolean = false,
     var isStateAllItemViewExpanded: Boolean = true,
-    var isStateDropshipperDetailExpanded: Boolean = false,
+    val isStateDropshipperDetailExpanded: Boolean = false,
     var isStateDropshipperHasError: Boolean = false,
     var isStateLoadingCourierState: Boolean = false,
     var isStateHasLoadCourierState: Boolean = false,
     var isStateHasLoadCourierTradeInDropOffState: Boolean = false,
-    var isStateHasExtraMarginTop: Boolean = false,
+    val isStateHasExtraMarginTop: Boolean = false,
 
     // Flag for courier recommendation
     private val useCourierRecommendation: Boolean = false,
-    var isHidingCourier: Boolean = false,
+    val isHidingCourier: Boolean = false,
 
     // for robinhood III
-    var isBlackbox: Boolean = false,
-    var addressId: String? = null,
-    var blackboxInfo: String? = null,
+    val isBlackbox: Boolean = false,
+    val addressId: String = "",
 
-    var isFulfillment: Boolean = false,
-    var fulfillmentBadgeUrl: String? = null,
-    var fulfillmentId: Long = 0,
+    val isFulfillment: Boolean = false,
+    val fulfillmentBadgeUrl: String = "",
+    val fulfillmentId: Long = 0,
 
     // promo stacking
     var hasPromoList: Boolean = false,
     var voucherLogisticItemUiModel: VoucherLogisticItemUiModel? = null,
 
-    var isLeasingProduct: Boolean = false,
-    var bookingFee: Int = 0,
-    var listPromoCodes: List<String>? = null,
+    val isLeasingProduct: Boolean = false,
+    val bookingFee: Int = 0,
+    val listPromoCodes: List<String> = emptyList(),
 
-    var isDropshipperDisable: Boolean = false,
-    var isOrderPrioritasDisable: Boolean = false,
+    val isDropshipperDisable: Boolean = false,
+    val isOrderPrioritasDisable: Boolean = false,
 
-    var isHasSetDropOffLocation: Boolean = false,
+    val isHasSetDropOffLocation: Boolean = false,
 
     // Shipping experiance
-    var isEligibleNewShippingExperience: Boolean = false,
+    val isEligibleNewShippingExperience: Boolean = false,
     var isTriggerShippingVibrationAnimation: Boolean = false,
     var isShippingBorderRed: Boolean = false,
-    var isDisableChangeCourier: Boolean = false,
-    var isAutoCourierSelection: Boolean = false,
-    var hasGeolocation: Boolean = false,
+    val isDisableChangeCourier: Boolean = false,
+    val isAutoCourierSelection: Boolean = false,
+    val hasGeolocation: Boolean = false,
 
     // regular shipment service but do not show change courier card
     var isHideChangeCourierCard: Boolean = false,
     var durationCardDescription: String = "",
 
     // Courier Selection Error
-    var courierSelectionErrorTitle: String? = null,
-    var courierSelectionErrorDescription: String? = null,
+    val courierSelectionErrorTitle: String = "",
+    val courierSelectionErrorDescription: String = "",
 
     // Flag for tracking
     var isHasShownCourierError: Boolean = false,
@@ -122,7 +120,7 @@ class ShipmentCartItemModel(
     var scheduleDate: String = "",
     var timeslotId: Long = 0L,
     var validationMetadata: String = "",
-    var ratesValidationFlow: Boolean = false,
+    val ratesValidationFlow: Boolean = false,
     var hasSentScheduleDeliveryAnalytics: Boolean = false,
 
     // Multiple Order Plus Coachmark
@@ -135,85 +133,21 @@ class ShipmentCartItemModel(
     var tokoConsultationId: String = "",
     var partnerConsultationId: String = "",
     var consultationDataString: String = "",
-    var shouldResetCourier: Boolean = false
-) : Parcelable {
+    var shouldResetCourier: Boolean = false,
+
+    // new owoc
+    val groupType: Int = 0,
+    val uiGroupType: Int = 0,
+    val groupInfoName: String = "",
+    val groupInfoBadgeUrl: String = "",
+    val groupInfoDescription: String = "",
+    val groupInfoDescriptionBadgeUrl: String = ""
+) : Parcelable, ShipmentCartItem {
 
     val isCustomPinpointError: Boolean
         get() = isDisableChangeCourier && !hasGeolocation
 
-    companion object {
-        @JvmStatic
-        fun clone(
-            shipmentCartItemModel: ShipmentCartItemModel,
-            cartItemModels: List<CartItemModel>
-        ): ShipmentCartItemModel {
-            val newShipmentCartItemModel = ShipmentCartItemModel()
-            newShipmentCartItemModel.selectedShipmentDetailData =
-                shipmentCartItemModel.selectedShipmentDetailData
-            newShipmentCartItemModel.cartItemModels = cartItemModels
-            newShipmentCartItemModel.isAllItemError = shipmentCartItemModel.isAllItemError
-            newShipmentCartItemModel.errorTitle = shipmentCartItemModel.errorTitle
-            newShipmentCartItemModel.errorDescription = shipmentCartItemModel.errorDescription
-            newShipmentCartItemModel.isError = shipmentCartItemModel.isError
-            newShipmentCartItemModel.weightUnit = shipmentCartItemModel.weightUnit
-            newShipmentCartItemModel.isStateDetailSubtotalViewExpanded =
-                shipmentCartItemModel.isStateDetailSubtotalViewExpanded
-            newShipmentCartItemModel.isStateAllItemViewExpanded =
-                shipmentCartItemModel.isStateAllItemViewExpanded
-            newShipmentCartItemModel.isStateDropshipperDetailExpanded =
-                shipmentCartItemModel.isStateDropshipperDetailExpanded
-            newShipmentCartItemModel.isStateDropshipperHasError =
-                shipmentCartItemModel.isStateDropshipperHasError
-            newShipmentCartItemModel.shopName = shipmentCartItemModel.shopName
-            newShipmentCartItemModel.shopId = shipmentCartItemModel.shopId
-            newShipmentCartItemModel.isProductIsPreorder = shipmentCartItemModel.isProductIsPreorder
-            newShipmentCartItemModel.isProductFinsurance = shipmentCartItemModel.isProductFinsurance
-            newShipmentCartItemModel.isProductFcancelPartial =
-                shipmentCartItemModel.isProductFcancelPartial
-            newShipmentCartItemModel.shopShipmentList = shipmentCartItemModel.shopShipmentList
-            newShipmentCartItemModel.orderNumber = shipmentCartItemModel.orderNumber
-            newShipmentCartItemModel.isHidingCourier = shipmentCartItemModel.isHidingCourier
-            newShipmentCartItemModel.cartString = shipmentCartItemModel.cartString
-            newShipmentCartItemModel.shippingId = shipmentCartItemModel.shippingId
-            newShipmentCartItemModel.spId = shipmentCartItemModel.spId
-            newShipmentCartItemModel.dropshiperName = shipmentCartItemModel.dropshiperName
-            newShipmentCartItemModel.dropshiperPhone = shipmentCartItemModel.dropshiperPhone
-            newShipmentCartItemModel.isInsurance = shipmentCartItemModel.isInsurance
-            newShipmentCartItemModel.isSaveStateFlag = shipmentCartItemModel.isSaveStateFlag
-            newShipmentCartItemModel.isStateLoadingCourierState =
-                shipmentCartItemModel.isStateLoadingCourierState
-            newShipmentCartItemModel.isStateHasLoadCourierState =
-                shipmentCartItemModel.isStateHasLoadCourierState
-            newShipmentCartItemModel.isStateHasExtraMarginTop =
-                shipmentCartItemModel.isStateHasExtraMarginTop
-            newShipmentCartItemModel.isBlackbox = shipmentCartItemModel.isBlackbox
-            newShipmentCartItemModel.addressId = shipmentCartItemModel.addressId
-            newShipmentCartItemModel.isFulfillment = shipmentCartItemModel.isFulfillment
-            newShipmentCartItemModel.fulfillmentBadgeUrl = shipmentCartItemModel.fulfillmentBadgeUrl
-            newShipmentCartItemModel.fulfillmentId = shipmentCartItemModel.fulfillmentId
-            newShipmentCartItemModel.blackboxInfo = shipmentCartItemModel.blackboxInfo
-            newShipmentCartItemModel.hasPromoList = shipmentCartItemModel.hasPromoList
-            newShipmentCartItemModel.voucherLogisticItemUiModel =
-                shipmentCartItemModel.voucherLogisticItemUiModel
-            newShipmentCartItemModel.isLeasingProduct = shipmentCartItemModel.isLeasingProduct
-            newShipmentCartItemModel.listPromoCodes = shipmentCartItemModel.listPromoCodes
-            newShipmentCartItemModel.shopTypeInfoData = shipmentCartItemModel.shopTypeInfoData
-            newShipmentCartItemModel.isDisableChangeCourier = shipmentCartItemModel.isDisableChangeCourier
-            newShipmentCartItemModel.isAutoCourierSelection = shipmentCartItemModel.isAutoCourierSelection
-            newShipmentCartItemModel.isHideChangeCourierCard = shipmentCartItemModel.isHideChangeCourierCard
-            newShipmentCartItemModel.durationCardDescription = shipmentCartItemModel.durationCardDescription
-            newShipmentCartItemModel.isShowScheduleDelivery = shipmentCartItemModel.isShowScheduleDelivery
-            newShipmentCartItemModel.timeslotId = shipmentCartItemModel.timeslotId
-            newShipmentCartItemModel.scheduleDate = shipmentCartItemModel.scheduleDate
-            newShipmentCartItemModel.validationMetadata = shipmentCartItemModel.validationMetadata
-            newShipmentCartItemModel.ratesValidationFlow = shipmentCartItemModel.ratesValidationFlow
-            newShipmentCartItemModel.hasEthicalProducts = shipmentCartItemModel.hasEthicalProducts
-            newShipmentCartItemModel.hasNonEthicalProducts = shipmentCartItemModel.hasNonEthicalProducts
-            newShipmentCartItemModel.prescriptionIds = shipmentCartItemModel.prescriptionIds
-            newShipmentCartItemModel.tokoConsultationId = shipmentCartItemModel.tokoConsultationId
-            newShipmentCartItemModel.partnerConsultationId = shipmentCartItemModel.partnerConsultationId
-            newShipmentCartItemModel.consultationDataString = shipmentCartItemModel.consultationDataString
-            return newShipmentCartItemModel
-        }
-    }
+    val cartItemModelsGroupByOrder: Map<String, List<CartItemModel>>
+        get() = cartItemModels.filter { !it.isError }
+            .groupBy { it.cartStringOrder }
 }

@@ -57,7 +57,4 @@
         <item>Tokopedia menjaga keamanan data langganan PLUS dan transaksi kamu.</item>
         <item>Lanjut berhemat dengan promo eksklusif PLUS &amp; Bebas Ongkir lebih banyak.</item>
     </string-array>
-    <string name="digital_cart_goto_plus_consent">Saya menyetujui %1$s serta %2$s Berlangganan PLUS.</string>
-    <string name="digital_cart_goto_plus_tos">Syarat &amp; Ketentuan</string>
-    <string name="digital_cart_goto_plus_privacy_policy">Kebijakan Privasi</string>
 </resources>
