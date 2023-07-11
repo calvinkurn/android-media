@@ -26,8 +26,8 @@ import com.tokopedia.play.widget.util.PlayWidgetCompositeTouchDelegate
 import com.tokopedia.play_common.util.extension.exhaustive
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.LoaderUnify
-import com.tokopedia.unifyprinciples.R as unifyR
 import com.tokopedia.play_common.R as playCommonR
+import com.tokopedia.unifyprinciples.R as unifyR
 
 /**
  * Created by mzennis on 26/10/20.
@@ -123,7 +123,7 @@ class PlayWidgetCardChannelMediumView : ConstraintLayout, PlayVideoPlayerReceive
         tvTitle.text = model.title
         tvStartTime.text = model.startTime
         tvTotalView.text = model.totalView.totalViewFmt
-        ivGiveaway.visibility = if(model.hasGame) View.VISIBLE else View.GONE
+        ivGiveaway.visibility = if (model.hasGame) View.VISIBLE else View.GONE
 
         setIconToggleReminder(model.reminderType)
         reminderBadge.setOnClickListener {
@@ -193,9 +193,12 @@ class PlayWidgetCardChannelMediumView : ConstraintLayout, PlayVideoPlayerReceive
         }.exhaustive
     }
 
-     private fun setPromoLabelIcon(isRilisanSpesial: Boolean){
-        if(isRilisanSpesial) ivPromoLabel.setImage(newIconId = IconUnify.ROCKET, newLightEnable = MethodChecker.getColor(context, unifyR.color.Unify_Static_White), newDarkEnable = MethodChecker.getColor(context, unifyR.color.Unify_Static_White))
-        else ivPromoLabel.setImage(newIconId = IconUnify.PROMO, newLightEnable = MethodChecker.getColor(context, unifyR.color.Unify_Static_White), newDarkEnable = MethodChecker.getColor(context, unifyR.color.Unify_Static_White))
+    private fun setPromoLabelIcon(isRilisanSpesial: Boolean) {
+        if (isRilisanSpesial) {
+            ivPromoLabel.setImage(newIconId = IconUnify.ROCKET, newLightEnable = MethodChecker.getColor(context, unifyR.color.Unify_Static_White), newDarkEnable = MethodChecker.getColor(context, unifyR.color.Unify_Static_White))
+        } else {
+            ivPromoLabel.setImage(newIconId = IconUnify.PROMO, newLightEnable = MethodChecker.getColor(context, unifyR.color.Unify_Static_White), newDarkEnable = MethodChecker.getColor(context, unifyR.color.Unify_Static_White))
+        }
     }
 
     override fun setPlayer(player: PlayVideoPlayer?) {
@@ -207,7 +210,7 @@ class PlayWidgetCardChannelMediumView : ConstraintLayout, PlayVideoPlayerReceive
         } else {
             if (::mModel.isInitialized) {
                 player.videoUrl = mModel.video.videoUrl
-                player.shouldCache = !mModel.video.isLive
+                player.isLive = mModel.video.isLive
                 player.start()
             }
             player.listener = playerListener
@@ -220,7 +223,7 @@ class PlayWidgetCardChannelMediumView : ConstraintLayout, PlayVideoPlayerReceive
 
     override fun isPlayable(): Boolean {
         return mModel.channelType == PlayWidgetChannelType.Live ||
-                mModel.channelType == PlayWidgetChannelType.Vod
+            mModel.channelType == PlayWidgetChannelType.Vod
     }
 
     override fun onAttachedToWindow() {
@@ -246,18 +249,18 @@ class PlayWidgetCardChannelMediumView : ConstraintLayout, PlayVideoPlayerReceive
     interface Listener {
 
         fun onChannelClicked(
-                view: View,
-                item: PlayWidgetChannelUiModel
+            view: View,
+            item: PlayWidgetChannelUiModel
         )
 
         fun onToggleReminderChannelClicked(
-                item: PlayWidgetChannelUiModel,
-                reminderType: PlayWidgetReminderType
+            item: PlayWidgetChannelUiModel,
+            reminderType: PlayWidgetReminderType
         )
 
         fun onMenuActionButtonClicked(
-                view: View,
-                item: PlayWidgetChannelUiModel
+            view: View,
+            item: PlayWidgetChannelUiModel
         )
     }
 }

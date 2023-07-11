@@ -89,7 +89,8 @@ class DigitalCheckoutGqlUseCase @Inject constructor(
                 )
             }.toList(),
             instant = requestCheckoutParams.isInstantCheckout,
-            appVersion = GlobalConfig.VERSION_NAME
+            appVersion = GlobalConfig.VERSION_NAME,
+            consentPayload = requestCheckoutParams.productConsentPayload
         )
 
         setRequestParams(mapOf(PARAMS_KEY to requestParams))
