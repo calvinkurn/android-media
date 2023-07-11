@@ -1,5 +1,10 @@
 package com.tokopedia.play.analytic.like
 
+import com.tokopedia.content.analytic.BusinessUnit
+import com.tokopedia.content.analytic.CurrentSite
+import com.tokopedia.content.analytic.Event
+import com.tokopedia.content.analytic.EventCategory
+import com.tokopedia.content.analytic.Key
 import com.tokopedia.play.analytic.*
 import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.uimodel.recom.PlayLikeStatus
@@ -11,7 +16,7 @@ import javax.inject.Inject
  * Created by jegul on 23/08/21
  */
 class PlayLikeAnalyticImpl @Inject constructor(
-        private val userSession: UserSessionInterface,
+    private val userSession: UserSessionInterface
 ) : PlayLikeAnalytic {
 
     private val userId: String
@@ -21,25 +26,25 @@ class PlayLikeAnalyticImpl @Inject constructor(
         get() = userSession.isLoggedIn.toString()
 
     override fun clickLike(
-            channelId: String,
-            channelType: PlayChannelType,
-            channelName: String,
-            likeStatus: PlayLikeStatus,
+        channelId: String,
+        channelType: PlayChannelType,
+        channelName: String,
+        likeStatus: PlayLikeStatus
     ) {
-        val action = if(likeStatus == PlayLikeStatus.Liked) LIKE else UNLIKE
+        val action = if (likeStatus == PlayLikeStatus.Liked) LIKE else UNLIKE
         TrackApp.getInstance().gtm.sendGeneralEvent(
-                mapOf(
-                        KEY_EVENT to KEY_TRACK_CLICK_GROUP_CHAT,
-                        KEY_EVENT_ACTION to "$KEY_TRACK_CLICK $action",
-                        KEY_EVENT_CATEGORY to KEY_TRACK_GROUP_CHAT_ROOM,
-                        KEY_EVENT_LABEL to "$channelId - ${channelType.value}",
-                        KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
-                        KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
-                        KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
-                        KEY_USER_ID to userId,
-                        KEY_IS_LOGGED_IN_STATUS to isLoggedIn,
-                        KEY_CHANNEL to channelName
-                )
+            mapOf(
+                Key.event to Event.clickGroupChat,
+                Key.eventAction to "click $action",
+                Key.eventCategory to EventCategory.groupChatRoom,
+                Key.eventLabel to "$channelId - ${channelType.value}",
+                Key.businessUnit to BusinessUnit.play,
+                Key.currentSite to CurrentSite.tokopediaMarketplace,
+                Key.sessionIris to TrackApp.getInstance().gtm.irisSessionId,
+                Key.userId to userId,
+                Key.isLoggedInStatus to isLoggedIn,
+                KEY_CHANNEL to channelName
+            )
         )
     }
 
