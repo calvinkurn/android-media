@@ -16,9 +16,8 @@ object HomeMockValueHelper {
     const val MOCK_HEADER_COUNT = 1
 
     const val MOCK_ATF_COUNT = 5
-    const val MOCK_ATF_ERROR_POSITION_COUNT = 1
     const val MOCK_ATF_ERROR_COUNT = 3
-    const val MOCK_DYNAMIC_CHANNEL_COUNT = 40
+    const val MOCK_DYNAMIC_CHANNEL_COUNT = 38
     const val MOCK_DYNAMIC_CHANNEL_ERROR_COUNT = 2
     const val MOCK_RECOMMENDATION_TAB_COUNT = 1
     private const val MOCK_DISABLE_REMOVE_PAGINATION = "false"

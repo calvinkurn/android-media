@@ -46,6 +46,7 @@ import com.tokopedia.review.feature.media.gallery.detailed.presentation.bottomsh
 import com.tokopedia.review.feature.media.gallery.detailed.presentation.uistate.ActionMenuBottomSheetUiState
 import com.tokopedia.review.feature.media.gallery.detailed.presentation.uistate.MediaCounterUiState
 import com.tokopedia.review.feature.media.gallery.detailed.presentation.uistate.OrientationUiState
+import com.tokopedia.review.feature.media.gallery.detailed.presentation.util.DetailedReviewMediaGalleryStorage
 import com.tokopedia.review.feature.media.gallery.detailed.presentation.viewmodel.SharedReviewMediaGalleryViewModel
 import com.tokopedia.review.feature.media.player.controller.presentation.fragment.ReviewMediaPlayerControllerFragment
 import com.tokopedia.reviewcommon.extension.hideSystemUI
@@ -75,6 +76,9 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
 
     @Inject
     lateinit var dispatchers: CoroutineDispatchers
+
+    @Inject
+    lateinit var reviewDetailTracker: ReviewDetailTracker
 
     @Inject
     @DetailedReviewMediaGalleryViewModelFactory
@@ -136,6 +140,7 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        initDetailReviewMediaGalleryStorage()
         initInjector()
         initUiState(savedInstanceState)
         super.onCreate(savedInstanceState)
@@ -164,6 +169,11 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
         outState.putString(KEY_CACHE_MANAGER_ID, cacheManager.id)
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        DetailedReviewMediaGalleryStorage.clear()
+    }
+
     override fun dispatchTouchEvent(e: MotionEvent): Boolean {
         autoHideOverlayHandler.restartTimerIfAlreadyStarted()
         return if (
@@ -183,6 +193,11 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
         } else {
             finishActivity()
         }
+    }
+
+    private fun initDetailReviewMediaGalleryStorage() {
+        val pageSource = intent.extras?.getInt(ReviewMediaGalleryRouter.EXTRAS_PAGE_SOURCE) ?: ReviewMediaGalleryRouter.PageSource.REVIEW
+        DetailedReviewMediaGalleryStorage.pageSource = pageSource
     }
 
     private fun initInjector() {
@@ -521,7 +536,13 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
 
     private fun finishActivity() {
         if (sharedReviewMediaGalleryViewModel.hasSuccessToggleLikeStatus()) {
-            setResult(Activity.RESULT_OK)
+            setResult(
+                Activity.RESULT_OK,
+                ReviewMediaGalleryRouter.setResultData(
+                    sharedReviewMediaGalleryViewModel.getFeedbackId(),
+                    sharedReviewMediaGalleryViewModel.getLikeStatus(),
+                )
+            )
         }
         finish()
     }
@@ -641,7 +662,7 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
                     .toString()
             )
             if (routed) {
-                ReviewDetailTracker.trackClickReviewerName(
+                reviewDetailTracker.trackClickReviewerName(
                     sharedReviewMediaGalleryViewModel.isFromGallery(),
                     sharedReviewMediaGalleryViewModel.currentReviewDetail.value?.feedbackID.orEmpty(),
                     userId,

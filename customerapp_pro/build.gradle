@@ -100,7 +100,8 @@ ext.lintchecks = [
 
 
 android {
-
+    namespace 'com.tokopedia.intl'
+    testNamespace 'com.tokopedia.intl.test'
     packagingOptions {
         exclude 'META-INF/**'
         pickFirst '**/armeabi-v7a/libc++_shared.so'
@@ -272,7 +273,6 @@ dependencies {
     implementation platform(rootProject.ext.networkDependencies.okhttpBom)
 
     implementation projectOrAar(rootProject.ext.features.customer_mid_app)
-    implementation projectOrAar(rootProject.ext.features.tkpdcore)
     implementation projectOrAar(rootProject.ext.libraries.coreNetwork)
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation projectOrAar(rootProject.ext.libraries.deviceInfo)

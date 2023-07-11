@@ -84,6 +84,16 @@ class FeedMainViewModel @Inject constructor(
     val isLoggedIn: Boolean
         get() = _isLoggedIn.get()
 
+    val isShortEntryPointShowed: Boolean
+        get() {
+            val feedCreateContentData = _feedCreateContentBottomSheetData.value
+
+            return feedCreateContentData is Success &&
+                feedCreateContentData.data.find {
+                    it.type == CreateContentType.CREATE_SHORT_VIDEO
+                } != null
+        }
+
     init {
         viewModelScope.launch {
             _swipeOnboardingState

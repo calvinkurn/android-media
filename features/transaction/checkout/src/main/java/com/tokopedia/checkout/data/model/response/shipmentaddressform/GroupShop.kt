@@ -7,18 +7,22 @@ import com.tokopedia.purchase_platform.common.feature.fulfillment.response.TokoC
 import com.tokopedia.purchase_platform.common.feature.gifting.data.response.AddOnsResponse
 
 data class GroupShop(
+    @SerializedName("group_type")
+    val groupType: Int = 0,
+    @SerializedName("ui_group_type")
+    val uiGroupType: Int = 0,
+    @SerializedName("group_information")
+    val groupInformation: GroupInformation = GroupInformation(),
+    @SerializedName("group_shop_v2_saf")
+    val groupShopV2: List<GroupShopV2> = emptyList(),
     @SerializedName("add_ons")
     val addOns: AddOnsResponse = AddOnsResponse(),
     @SerializedName("errors")
     val errors: List<String> = emptyList(),
     @SerializedName("errors_unblocking")
     val unblockingErrors: List<String> = emptyList(),
-    @SerializedName("shop")
-    val shop: Shop = Shop(),
     @SerializedName("shop_shipments")
     val shopShipments: List<ShopShipment> = emptyList(),
-    @SerializedName("cart_details")
-    val cartDetails: List<CartDetail> = emptyList(),
     @SuppressLint("Invalid Data Type")
     @SerializedName("shipping_id")
     val shippingId: Int = 0,
