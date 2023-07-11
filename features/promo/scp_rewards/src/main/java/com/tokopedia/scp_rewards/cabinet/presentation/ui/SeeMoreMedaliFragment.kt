@@ -32,7 +32,7 @@ import com.tokopedia.scp_rewards.common.data.Success
 import com.tokopedia.scp_rewards.common.utils.launchLink
 import com.tokopedia.scp_rewards.databinding.SeeMoreMedaliFragmentBinding
 import com.tokopedia.scp_rewards_common.EARNED_BADGE
-import com.tokopedia.scp_rewards_widgets.common.GridSpacing
+import com.tokopedia.scp_rewards_widgets.common.GridSpacingItemDecoration
 import com.tokopedia.scp_rewards_widgets.common.model.LoadingModel
 import com.tokopedia.scp_rewards_widgets.common.model.LoadingMoreModel
 import com.tokopedia.scp_rewards_widgets.medal.BannerData
@@ -41,6 +41,7 @@ import com.tokopedia.scp_rewards_widgets.medal.MedalData
 import com.tokopedia.scp_rewards_widgets.medal.MedalItem
 import com.tokopedia.scp_rewards_widgets.medal.MedalViewHolder
 import com.tokopedia.scp_rewards_widgets.medal.SeeMoreMedalTypeFactory
+import com.tokopedia.unifycomponents.toPx
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
@@ -50,8 +51,8 @@ class SeeMoreMedaliFragment : BaseDaggerFragment(), MedalCallbackListener {
     companion object {
         private const val FULL_COLUMN = 1
         private const val ONE_THIRD_COLUMN = 3
-        private const val GRID_VERTICAL_SPACING = 20
-        private const val GRID_HORIZONTAL_SPACING = 20
+        private const val GRID_VERTICAL_SPACING = 8
+        private const val GRID_HORIZONTAL_SPACING = 30
         private const val COLUMN_3 = 3
     }
 
@@ -214,7 +215,7 @@ class SeeMoreMedaliFragment : BaseDaggerFragment(), MedalCallbackListener {
                 }
             }
             visitableList.addAll(
-                MedaliListMapper.getMedalList(response, badgeType)
+                MedaliListMapper.getMedalList(response, badgeType, false)
             )
             submitAdapterList(visitableList)
             binding?.viewError?.gone()
@@ -247,7 +248,7 @@ class SeeMoreMedaliFragment : BaseDaggerFragment(), MedalCallbackListener {
             adapter = medalAdapter
             layoutManager = rvLayoutManager
             addOnScrollListener(rvScrollListener!!)
-            addItemDecoration(GridSpacing(GRID_HORIZONTAL_SPACING, GRID_VERTICAL_SPACING, GRID_VERTICAL_SPACING))
+            addItemDecoration(GridSpacingItemDecoration(GRID_HORIZONTAL_SPACING.toPx(), GRID_VERTICAL_SPACING.toPx(), false))
         }
     }
 

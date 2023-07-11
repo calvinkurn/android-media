@@ -10,7 +10,11 @@ import com.tokopedia.scp_rewards_widgets.medal.MedalItem
 
 object MedaliListMapper {
 
-    fun getMedalList(data: ScpRewardsGetUserMedalisResponse?, badgeType: String): List<MedalItem> {
+    fun getMedalList(
+        data: ScpRewardsGetUserMedalisResponse?,
+        badgeType: String,
+        showConfetti: Boolean = true
+    ): List<MedalItem> {
         val medalList = mutableListOf<MedalItem>()
         data?.scpRewardsGetUserMedalisByType?.medaliList?.forEach {
             medalList.add(
@@ -21,7 +25,7 @@ object MedaliListMapper {
                     extraInfo = it.extraInfo,
                     imageUrl = it.logoImageURL,
                     celebrationUrl = it.celebrationImageURL,
-                    isNewMedal = it.isNewMedali,
+                    showConfetti = showConfetti && it.isNewMedali,
                     isDisabled = it.isDisabled,
                     progression = it.progressionCompletement,
                     cta = Cta(
