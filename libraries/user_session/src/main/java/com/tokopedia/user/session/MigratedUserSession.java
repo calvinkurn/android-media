@@ -176,11 +176,15 @@ public class MigratedUserSession {
     protected void setString(String prefName, String keyName, String value) {
         if (isEnableDataStore()) {
             try {
-                if (keyName != null && value != null) {
+                if (keyName != null) {
+                    String finalValue = value;
+                    if(finalValue == null) {
+                        finalValue = "";
+                    }
                     UserSessionUtils.INSTANCE.mapUserSessionKeyString(
                             keyName,
                             getDataStore(),
-                            value
+                            finalValue
                     );
                 }
             } catch (Exception e) {
