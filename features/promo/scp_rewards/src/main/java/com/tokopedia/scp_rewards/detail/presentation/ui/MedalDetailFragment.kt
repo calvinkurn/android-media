@@ -20,6 +20,8 @@ import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
@@ -27,12 +29,14 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.scp_rewards.R
+import com.tokopedia.scp_rewards.common.constants.NON_WHITELISTED_USER_ERROR_CODE
 import com.tokopedia.scp_rewards.common.constants.TrackerConstants
 import com.tokopedia.scp_rewards.common.data.Error
 import com.tokopedia.scp_rewards.common.data.Loading
 import com.tokopedia.scp_rewards.common.data.Success
 import com.tokopedia.scp_rewards.common.utils.launchLink
 import com.tokopedia.scp_rewards.common.utils.launchWeblink
+import com.tokopedia.scp_rewards.common.utils.show
 import com.tokopedia.scp_rewards.databinding.MedalDetailFragmentLayoutBinding
 import com.tokopedia.scp_rewards.detail.analytics.MedalDetailAnalyticsImpl
 import com.tokopedia.scp_rewards.detail.di.MedalDetailComponent
@@ -48,6 +52,7 @@ import com.tokopedia.scp_rewards_widgets.model.MedalRewardsModel
 import com.tokopedia.scp_rewards_widgets.task_progress.Task
 import com.tokopedia.scp_rewards_widgets.task_progress.TaskProgress
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.UnifyButton
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
@@ -220,13 +225,14 @@ class MedalDetailFragment : BaseDaggerFragment() {
 
                     is Error -> {
                         setWhiteStatusBar()
-                        handleError(safeResult.error)
+                        handleError(safeResult)
                     }
 
                     is Loading -> {
                         binding.loadContainer.loaderFlipper.visible()
                         MedalDetailAnalyticsImpl.sendImpressionPageShimmer(medaliSlug)
                     }
+                    else -> {}
                 }
             }
         }
@@ -463,17 +469,47 @@ class MedalDetailFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun handleError(error: Throwable) {
+    private fun handleError(scpError: Error) {
         binding.loadContainer.loaderFlipper.displayedChild = 1
         setToolbarBackButtonTint(R.color.Unify_NN900)
-        if (error is UnknownHostException || error is SocketTimeoutException) {
-            binding.loadContainer.mdpError.setType(GlobalError.NO_CONNECTION)
-        } else {
-            binding.loadContainer.mdpError.apply {
-                setType(GlobalError.SERVER_ERROR)
-                errorSecondaryAction.text = context.getText(R.string.goto_medali_cabinet_text)
-                setActionClickListener {
+        val error = scpError.error
+
+        when {
+            error is UnknownHostException || error is SocketTimeoutException -> {
+                binding.loadContainer.mdpError.setType(GlobalError.NO_CONNECTION)
+                binding.loadContainer.mdpError.setActionClickListener {
                     resetPage()
+                }
+            }
+            scpError.errorCode == NON_WHITELISTED_USER_ERROR_CODE -> {
+                binding.loadContainer.mdpError.apply {
+                    setType(GlobalError.PAGE_NOT_FOUND)
+                    errorTitle.text = context.getText(R.string.error_non_whitelisted_user_title)
+                    errorDescription.text = context.getText(R.string.error_non_whitelisted_user_description)
+                    errorAction.text = context.getText(R.string.error_non_whitelisted_user_action)
+                    setActionClickListener {
+                        MedalDetailAnalyticsImpl.sendNonWhitelistedUserCtaClick()
+                        RouteManager.route(context, ApplinkConst.HOME)
+                        activity?.finish()
+                    }
+                }
+                MedalDetailAnalyticsImpl.sendImpressionNonWhitelistedError()
+            }
+            else -> {
+                binding.loadContainer.mdpError.apply {
+                    setType(GlobalError.SERVER_ERROR)
+                    setActionClickListener {
+                        resetPage()
+                    }
+                    errorSecondaryAction.show()
+                    if (errorSecondaryAction is UnifyButton) {
+                        (errorSecondaryAction as UnifyButton).buttonVariant = UnifyButton.Variant.TEXT_ONLY
+                    }
+                    errorSecondaryAction.text = context.getText(R.string.goto_medali_cabinet_text)
+                    setSecondaryActionClickListener {
+                        RouteManager.route(context, ApplinkConstInternalPromo.MEDAL_CABINET)
+                        activity?.finish()
+                    }
                 }
             }
         }
@@ -531,7 +567,12 @@ class MedalDetailFragment : BaseDaggerFragment() {
     }
 
     override fun onFragmentBackPressed(): Boolean {
-        MedalDetailAnalyticsImpl.sendClickBackButton(medaliSlug)
+        val state = medalDetailViewModel.badgeLiveData.value
+        if (state is Error && state.errorCode == NON_WHITELISTED_USER_ERROR_CODE) {
+            MedalDetailAnalyticsImpl.sendNonWhitelistedBackClick()
+        } else {
+            MedalDetailAnalyticsImpl.sendClickBackButton(medaliSlug)
+        }
         return super.onFragmentBackPressed()
     }
 

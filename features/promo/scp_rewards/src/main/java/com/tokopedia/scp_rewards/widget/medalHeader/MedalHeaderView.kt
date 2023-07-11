@@ -6,10 +6,12 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.scp_rewards.common.utils.grayscale
 import com.tokopedia.scp_rewards.common.utils.hide
-import com.tokopedia.scp_rewards.common.utils.parseColor
 import com.tokopedia.scp_rewards.databinding.WidgetMedalHeaderBinding
+import com.tokopedia.scp_rewards_common.R
+import com.tokopedia.scp_rewards_common.grayscale
+import com.tokopedia.scp_rewards_common.loadImageOrFallback
+import com.tokopedia.scp_rewards_common.parseColor
 
 class MedalHeaderView(private val context: Context, attrs: AttributeSet?) :
     ConstraintLayout(context, attrs) {
@@ -22,14 +24,14 @@ class MedalHeaderView(private val context: Context, attrs: AttributeSet?) :
                 ivMedalIcon.visible()
                 ivMedalIcon.grayscale()
                 lottieView.hide()
-                ivMedalIcon.setImageUrl(data.medalIconUrl ?: "")
+                ivMedalIcon.loadImageOrFallback(data.medalIconUrl, R.drawable.fallback_badge)
             } else {
                 ivMedalIcon.hide()
                 lottieView.visible()
                 lottieView.loadLottie(data, onMedalClickAction)
             }
             loadBackground(data.background, data.backgroundColor)
-            binding.ivBadgeBase.setImageUrl(data.baseImageURL ?: "")
+            ivBadgeBase.loadImageOrFallback(data.baseImageURL)
         }
     }
 
