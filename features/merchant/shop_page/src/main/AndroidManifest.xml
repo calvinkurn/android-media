@@ -35,7 +35,6 @@
                 <data android:pathPattern="@string/path_shop_page_product"/>
                 <data android:pathPattern="@string/path_shop_page_feed"/>
                 <data android:pathPattern="@string/path_shop_page_note"/>
-                <data android:pathPattern="@string/path_shop_page_campaign"/>
             </intent-filter>
         </activity>
         <activity
