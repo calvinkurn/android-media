@@ -214,6 +214,7 @@ ext {
             promoCheckoutCommon             : ":features:promo:promo_checkout_common",
             promoGamificationCommon         : ":features:promo:promo_gamification_common",
             promoUiCommon                   : ":features:promo:promo_ui_common",
+			promoUsage						: ":features:promo:promo-usage",
             promoMvcWidget                  : ":features:promo:mvc_widget",
             questWidget                     : ":features:promo:quest_widget",
             tokomember                      : ":features:promo:tokomember",
