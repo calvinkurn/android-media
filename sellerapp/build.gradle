@@ -1,6 +1,5 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.google.firebase.crashlytics'
-apply plugin: 'robust'
 apply plugin: 'io.hansel.preprocessor'
 apply plugin: 'newrelic'
 apply plugin: 'embrace-swazzler'
@@ -297,7 +296,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.graphql)
     implementation projectOrAar(rootProject.ext.libraries.network)
     implementation projectOrAar(rootProject.ext.libraries.youtubePlayer)
-    implementation projectOrAar(rootProject.ext.libraries.tokopatch)
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation projectOrAar(rootProject.ext.libraries.usersession)
@@ -371,7 +369,6 @@ dependencies {
     implementation rootProject.ext.miscDependencies.scannerZxing
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.miscDependencies.gson
-    implementation rootProject.ext.miscDependencies.autopatchbase
     implementation projectOrAar(rootProject.ext.libraries.keys)
     implementation projectOrAar(rootProject.ext.libraries.devMonitoringTools)
 

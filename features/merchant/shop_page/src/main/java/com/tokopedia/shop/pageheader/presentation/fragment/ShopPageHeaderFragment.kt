@@ -77,11 +77,11 @@ import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isValidGlideContext
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.linker.interfaces.ShareCallback
@@ -253,8 +253,7 @@ class ShopPageHeaderFragment :
     ScreenShotListener,
     PermissionListener,
     MiniCartWidgetListener,
-    FoldableSupportManager.FoldableInfoCallback
-{
+    FoldableSupportManager.FoldableInfoCallback {
 
     companion object {
         const val SHOP_ID = "EXTRA_SHOP_ID"
@@ -325,6 +324,8 @@ class ShopPageHeaderFragment :
         private const val IMG_GENERATOR_SHOP_INFO_MAX_SIZE = 3
         private const val PARTIAL_SHOP_HEADER_MARGIN_BOTTOM_FOLDABLE = 8
         private const val WEBVIEW_ALLOW_OVERRIDE_FORMAT = "%s?allow_override=%b&url=%s"
+        private const val AFFILIATE_SITE_ID = "1"
+        private const val AFFILIATE_VERTICAL_ID = "1"
 
         @JvmStatic
         fun createInstance() = ShopPageHeaderFragment()
@@ -370,6 +371,7 @@ class ShopPageHeaderFragment :
     private var errorButton: View? = null
     private var shopPageFab: FloatingButtonUnify? = null
     private var isForceNotShowingTab: Boolean = false
+    private var isAffiliateShareIcon = false
 
     // tab icons
     private val iconTabHomeInactive: Int get() = IconUnify.SHOP
@@ -443,7 +445,7 @@ class ShopPageHeaderFragment :
 
     private var isConfettiAlreadyShown = false
     private var mBroadcasterConfig = Broadcaster.Config()
-    private val layoutPartialShopHeaderDefaultMarginBottom:  Int by lazy{
+    private val layoutPartialShopHeaderDefaultMarginBottom: Int by lazy {
         val layoutParams = viewBindingShopContentLayout?.layoutPartialShopPageHeader?.root?.layoutParams as? LinearLayout.LayoutParams
         layoutParams?.bottomMargin.orZero()
     }
@@ -868,6 +870,9 @@ class ShopPageHeaderFragment :
                         it.tagline = result.data.shopCore.tagLine
                         it.shopStatus = result.data.statusInfo.shopStatus
                     }
+
+                    // check whether shop is eligible for affiliate or not
+                    checkAffiliate()
                 }
             }
         )
@@ -883,6 +888,12 @@ class ShopPageHeaderFragment :
                 }
             }
         )
+
+        shopHeaderViewModel?.resultAffiliate?.observe(viewLifecycleOwner) {
+            if (it is Success) {
+                updateShareIcon(it.data.eligibleCommission?.isEligible.orFalse())
+            }
+        }
     }
 
     private fun refreshCartCounterData() {
@@ -1386,12 +1397,7 @@ class ShopPageHeaderFragment :
             viewLifecycleOwner.lifecycle.addObserver(this)
             show()
             val iconBuilder = IconBuilder()
-            val iconShare = if (isAffiliateShareIcon()) {
-                IconList.ID_SHARE_AB_TEST
-            } else {
-                IconList.ID_SHARE
-            }
-            iconBuilder.addIcon(iconShare) { clickShopShare() }
+            iconBuilder.addIcon(IconList.ID_SHARE) { clickShopShare() }
             if (isCartShownInNewNavToolbar()) {
                 iconBuilder.addIcon(IconList.ID_CART) {}
             }
@@ -1404,11 +1410,24 @@ class ShopPageHeaderFragment :
         }
     }
 
-    private fun isAffiliateShareIcon(): Boolean {
+    private fun isEnableAffiliateShareIcon(): Boolean {
         val abTestValue = RemoteConfigInstance.getInstance().abTestPlatform.getString(
-            RollenceKey.AB_TEST_SHOP_AFFILIATE_SHARE_ICON
+            RollenceKey.AFFILIATE_SHARE_ICON
         )
-        return abTestValue == RollenceKey.AB_TEST_SHOP_AFFILIATE_SHARE_ICON
+        return abTestValue == RollenceKey.AFFILIATE_SHARE_ICON
+    }
+
+    /**
+     * only enable affiliate share icon when
+     * @param isAffiliate == true && [isMyShop] == true
+     */
+    private fun updateShareIcon(isAffiliate: Boolean) {
+        newNavigationToolbar?.let {
+            if (isEnableAffiliateShareIcon() && isAffiliate && !isMyShop) {
+                it.updateIcon(IconList.ID_SHARE, IconList.ID_SHARE_AB_TEST)
+                isAffiliateShareIcon = true
+            }
+        }
     }
 
     private fun getCartCounter(): Int {
@@ -1596,7 +1615,7 @@ class ShopPageHeaderFragment :
     }
 
     private fun clickShopShare() {
-        shopPageTracking?.clickShareButtonNewBottomSheet(customDimensionShopPage, userId)
+        shopPageTracking?.clickShareButtonNewBottomSheet(customDimensionShopPage, userId, isAffiliateShareIcon)
         if (!isMyShop) {
             shopPageTracking?.clickGlobalHeaderShareButton(customDimensionShopPage, userId)
         }
@@ -3101,7 +3120,7 @@ class ShopPageHeaderFragment :
     }
 
     private fun showUniversalShareBottomSheet(path: String? = null) {
-        universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
+        universalShareBottomSheet = UniversalShareBottomSheet.createInstance(view).apply {
             init(this@ShopPageHeaderFragment)
             path?.let {
                 setImageOnlySharingOption(true)
@@ -3425,7 +3444,7 @@ class ShopPageHeaderFragment :
     }
 
     private var foldableScreenHorizontalBottomBound: Int? = null
-    private var shopTickerVisibilityState: Int?= null
+    private var shopTickerVisibilityState: Int? = null
 
     override fun onChangeLayout(foldableInfo: FoldableInfo) {
         ShopUtil.isFoldable = foldableInfo.isFoldableDevice()
@@ -3439,7 +3458,7 @@ class ShopPageHeaderFragment :
         }
     }
 
-    //config shop header for foldable screen
+    // config shop header for foldable screen
     private fun configShopHeaderForFoldableScreen() {
         viewBindingShopContentLayout?.apply {
             val layoutPartialHeaderBottomMargin: Int = if (foldableScreenHorizontalBottomBound != null && shopTickerVisibilityState != null) {
@@ -3457,6 +3476,31 @@ class ShopPageHeaderFragment :
                 Int.ZERO,
                 layoutPartialHeaderBottomMargin
             )
+        }
+    }
+
+    /**
+     * function to check whether the input has been valid
+     * before hit [com.tokopedia.shop.pageheader.presentation.ShopPageHeaderViewModel.checkAffiliate]
+     * by checking shop status is > 0 due to this value the last updated property
+     */
+    private fun isAffiliateInputValid(shopStatus: Int): Boolean = shopStatus.isMoreThanZero()
+
+    /**
+     * check affiliate if [isEnableAffiliateShareIcon] == true && [isMyShop] != true
+     */
+    private fun checkAffiliate() {
+        if (!isEnableAffiliateShareIcon() || isMyShop) return
+        val inputAffiliate = AffiliateInput().apply {
+            pageDetail = PageDetail(pageId = shopId, pageType = PageType.SHOP.value, siteId = AFFILIATE_SITE_ID, verticalId = AFFILIATE_VERTICAL_ID)
+            pageType = PageType.SHOP.value
+            product = Product()
+            shop = Shop(shopID = shopId, shopStatus = shopPageHeaderDataModel?.shopStatus, isOS = shopPageHeaderDataModel?.isOfficial == true, isPM = shopPageHeaderDataModel?.isGoldMerchant == true)
+            affiliateLinkType = AffiliateLinkType.SHOP
+        }
+
+        if (isAffiliateInputValid(inputAffiliate.shop?.shopStatus ?: 0)) {
+            shopHeaderViewModel?.checkAffiliate(inputAffiliate)
         }
     }
 
