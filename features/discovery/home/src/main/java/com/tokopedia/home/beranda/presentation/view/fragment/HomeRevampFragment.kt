@@ -421,8 +421,8 @@ open class HomeRevampFragment :
     private val performanceTrace = BlocksPerformanceTrace(
         context?.applicationContext,
         PERFORMANCE_TRACE_HOME,
-        lifecycleScope
-        )
+        lifecycleScope,
+        touchListenerActivity = activity as? TouchListenerActivity)
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -1328,11 +1328,6 @@ open class HomeRevampFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        performanceTrace.init(
-            v = view.rootView,
-            touchListenerActivity = activity as? TouchListenerActivity,
-        ) { summaryModel: BlocksSummaryModel, capturedBlocks: Set<String> -> }
         observeSearchHint()
     }
 

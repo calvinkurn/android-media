@@ -110,13 +110,6 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
     // for coachmark purpose
     private var isOngoingShowOnboarding = false
 
-    @OptIn(FlowPreview::class)
-    private val performanceTrace = BlocksPerformanceTrace(
-        context?.applicationContext,
-        PERFORMANCE_TRACE_HOME_NAV,
-        lifecycleScope
-    )
-
     override fun getScreenName(): String {
         return ""
     }
@@ -156,11 +149,6 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        performanceTrace.init(
-            v = view.rootView,
-            touchListenerActivity = activity as? TouchListenerActivity
-        )
         recyclerView = view.findViewById(R.id.recycler_view)
         if (recyclerView.itemDecorationCount == 0) {
             recyclerView.addItemDecoration(MainNavSpacingDecoration(12f.toDpInt()))
