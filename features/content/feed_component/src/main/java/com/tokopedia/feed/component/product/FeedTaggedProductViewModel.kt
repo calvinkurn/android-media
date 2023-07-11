@@ -30,7 +30,7 @@ class FeedTaggedProductViewModel @Inject constructor(
     var shopId = ""
     var prevActivityId = ""
 
-    fun fetchFeedProduct(activityId: String) {
+    fun fetchFeedProduct(activityId: String, sourceType: FeedTaggedProductUiModel.SourceType) {
         viewModelScope.launch {
             try {
                 if (activityId != prevActivityId) cursor = ""
@@ -51,7 +51,7 @@ class FeedTaggedProductViewModel @Inject constructor(
 
                 _feedTagProductList.value = Success(currentList +
                     response.products.map {
-                        ProductMapper.transform(it, response.campaign)
+                        ProductMapper.transform(it, response.campaign, sourceType)
                     }
                 )
 

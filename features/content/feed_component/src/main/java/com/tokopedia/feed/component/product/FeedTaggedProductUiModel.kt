@@ -79,7 +79,11 @@ data class FeedTaggedProductUiModel(
 
     sealed class Stock {
         object OutOfStock: Stock()
-        object Available: Stock()
+        object Available: Stock() //add raw stock if needed
         object NotAvailable: Stock()
+    }
+
+    enum class SourceType {
+        Organic, NonOrganic
     }
 }

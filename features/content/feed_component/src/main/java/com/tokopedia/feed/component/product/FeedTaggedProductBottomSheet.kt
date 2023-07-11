@@ -35,7 +35,6 @@ class FeedTaggedProductBottomSheet : BottomSheetUnify() {
     private val maxHeight by lazyThreadSafetyNone {
         (getScreenHeight() * HEIGHT_PERCENT).roundToInt()
     }
-
     private val mAdapterListener = object : FeedTaggedProductBottomSheetViewHolder.Listener {
         override fun onProductCardClicked(product: FeedTaggedProductUiModel, itemPosition: Int) {
             mListener?.onProductCardClicked(product, itemPosition)
@@ -131,14 +130,15 @@ class FeedTaggedProductBottomSheet : BottomSheetUnify() {
         viewModelOwner: ViewModelStoreOwner,
         viewModelFactory: ViewModelProvider.Factory,
         manager: FragmentManager,
-        tag: String
+        tag: String,
+        cardType: FeedTaggedProductUiModel.SourceType
     ) {
         this.activityId = activityId
         viewModel = ViewModelProvider(
             viewModelOwner,
             viewModelFactory
         )[FeedTaggedProductViewModel::class.java]
-        viewModel?.fetchFeedProduct(activityId)
+        viewModel?.fetchFeedProduct(activityId, cardType)
 
         show(manager, tag)
     }

@@ -43,6 +43,7 @@ import com.tokopedia.feedcomponent.util.util.DataMapper
 import com.tokopedia.feedcomponent.view.widget.FeedExoPlayer
 import com.tokopedia.feedplus.analytics.FeedAnalytics
 import com.tokopedia.feedplus.analytics.FeedMVCAnalytics
+import com.tokopedia.feedplus.data.FeedXCard
 import com.tokopedia.feedplus.databinding.FragmentFeedImmersiveBinding
 import com.tokopedia.feedplus.di.FeedMainInjector
 import com.tokopedia.feedplus.domain.mapper.MapperFeedModelToTrackerDataModel
@@ -1074,6 +1075,12 @@ class FeedFragment :
     ) {
         if (products.isEmpty()) return
 
+        val sourceType = when (trackerData?.type.orEmpty()) {
+            FeedXCard.TYPE_FEED_ASGC_RESTOCK, FeedXCard.TYPE_FEED_ASGC_NEW_PRODUCTS, FeedXCard.TYPE_FEED_ASGC_SHOP_DISCOUNT,
+            FeedXCard.TYPE_FEED_ASGC_SHOP_FLASH_SALE, FeedXCard.TYPE_FEED_ASGC_SPECIAL_RELEASE, FeedXCard.TYPE_FEED_TOP_ADS -> FeedTaggedProductUiModel.SourceType.NonOrganic
+            else -> FeedTaggedProductUiModel.SourceType.Organic
+        }
+
         val productBottomSheet = FeedTaggedProductBottomSheet().apply {
             setCustomListener(this@FeedFragment)
         }
@@ -1098,7 +1105,8 @@ class FeedFragment :
             viewModelOwner = this,
             viewModelFactory = viewModelFactory,
             manager = childFragmentManager,
-            tag = TAG_FEED_PRODUCT_BOTTOM_SHEET
+            tag = TAG_FEED_PRODUCT_BOTTOM_SHEET,
+            cardType = sourceType
         )
         if (hasVoucher && author.type.isShop) getMerchantVoucher(author.id)
     }
