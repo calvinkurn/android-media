@@ -13,8 +13,6 @@ import com.tokopedia.play.analytic.KEY_CURRENCY_CODE
 import com.tokopedia.play.analytic.KEY_DIMENSION_40
 import com.tokopedia.play.analytic.KEY_DIMENSION_45
 import com.tokopedia.play.analytic.KEY_ECOMMERCE
-import com.tokopedia.play.analytic.KEY_EVENT_PRODUCT_CLICK
-import com.tokopedia.play.analytic.KEY_EVENT_PRODUCT_VIEW
 import com.tokopedia.play.analytic.KEY_IMPRESSIONS
 import com.tokopedia.play.analytic.KEY_INDEX
 import com.tokopedia.play.analytic.KEY_ITEM_BRAND
@@ -282,7 +280,7 @@ class PlayTagItemsAnalyticImpl @AssistedInject constructor(
         position: Int
     ) {
         val trackerMap = mapOf(
-            Key.event to KEY_EVENT_PRODUCT_VIEW,
+            Key.event to Event.productView,
             Key.eventCategory to EventCategory.groupChatRoom,
             Key.eventAction to "view on pinned featured product",
             Key.eventLabel to "$channelId - ${product.id} - ${channelType.value} - is rilisan spesial ${product.isRilisanSpesial}",
@@ -299,7 +297,7 @@ class PlayTagItemsAnalyticImpl @AssistedInject constructor(
 
     override fun clickPinnedProductInCarousel(product: PlayProductUiModel.Product, position: Int) {
         val trackerMap = mapOf(
-            Key.event to KEY_EVENT_PRODUCT_CLICK,
+            Key.event to Event.productClick,
             Key.eventCategory to EventCategory.groupChatRoom,
             Key.eventAction to "click pinned featured product tagging",
             Key.eventLabel to "$channelId - ${product.id} - ${channelType.value} - is rilisan spesial ${product.isRilisanSpesial}",

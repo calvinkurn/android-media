@@ -23,6 +23,8 @@ object Event {
     const val promoView = "promoView"
     const val promoClick = "promoClick"
 
+    const val productView = "productView"
+    const val productClick = "productClick"
 
     const val addToCart = "addToCart"
 

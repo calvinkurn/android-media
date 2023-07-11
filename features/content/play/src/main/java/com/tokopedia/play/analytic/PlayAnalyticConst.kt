@@ -31,10 +31,6 @@ internal const val KEY_SHOP_TYPE = "shop_type"
 internal const val KEY_TRACK_CLICK_UPCOMING = "clickUpcoming"
 internal const val KEY_TRACK_CLICK_COMMUNICATION = "clickCommunication"
 internal const val KEY_TRACK_VIEW_COMMUNICATION_IRIS = "viewCommunicationIris"
-internal const val KEY_TRACK_PROMO_VIEW = "promoView"
-
-internal const val KEY_EVENT_PRODUCT_VIEW = "productView"
-internal const val KEY_EVENT_PRODUCT_CLICK = "productClick"
 
 internal const val KEY_TRACK_CLICK = "click"
 internal const val KEY_TRACK_UPCOMING_PAGE = "upcoming page"

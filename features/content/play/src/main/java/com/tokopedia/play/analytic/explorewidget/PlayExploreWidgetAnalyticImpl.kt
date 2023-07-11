@@ -96,7 +96,7 @@ class PlayExploreWidgetAnalyticImpl @AssistedInject constructor(
         }
 
         val map = BaseTrackerBuilder().constructBasicPromotionView(
-            event = KEY_TRACK_PROMO_VIEW,
+            event = Event.promoView,
             eventCategory = EventCategory.groupChatRoom,
             eventAction = "impression - category tab",
             eventLabel = "$categoryName - $channelId - $channelType",
@@ -250,7 +250,7 @@ class PlayExploreWidgetAnalyticImpl @AssistedInject constructor(
         categoryName: String
     ) {
         val map = BaseTrackerBuilder().constructBasicPromotionView(
-            event = KEY_TRACK_PROMO_VIEW,
+            event = Event.promoView,
             eventCategory = EventCategory.groupChatRoom,
             eventAction = "impression - channel card",
             eventLabel = "$channelId - $channelType - ${item.channelType.value.lowercase()} - ${position + 1} - ${config.autoPlay} - $categoryName - ${item.hasPromo.promoToString} - ${item.recommendationType}",
