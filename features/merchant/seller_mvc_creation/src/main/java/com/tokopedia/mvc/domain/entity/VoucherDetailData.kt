@@ -2,6 +2,7 @@ package com.tokopedia.mvc.domain.entity
 
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.mvc.domain.entity.enums.BenefitType
+import com.tokopedia.mvc.domain.entity.enums.ProgramStatus
 import com.tokopedia.mvc.domain.entity.enums.PromoType
 import com.tokopedia.mvc.domain.entity.enums.PromotionStatus
 import com.tokopedia.mvc.domain.entity.enums.SubsidyInfo
@@ -99,7 +100,7 @@ data class VoucherDetailData(
     ) {
         data class ProgramDetail(
             val programName: String = "",
-            val programStatus: Int = 0,
+            val programStatus: ProgramStatus = ProgramStatus.ONGOING,
             val programLabel: String = "",
             val programLabelDetail: String = "",
             val promotionStatus: PromotionStatus = PromotionStatus.REGISTERED,

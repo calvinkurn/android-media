@@ -80,7 +80,7 @@ class OtherPeriodAdapter : RecyclerView.Adapter<OtherPeriodAdapter.ViewHolder>()
                     text = MethodChecker.fromHtml(
                         context.getString(
                             R.string.smvc_placeholder_recurring_program_name,
-                            item.subsidyDetail.programDetail.programName
+                            item.subsidyDetail.programDetail.promotionLabel
                         )
                     )
                 }

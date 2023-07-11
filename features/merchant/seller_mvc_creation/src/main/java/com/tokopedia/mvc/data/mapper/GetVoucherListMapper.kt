@@ -4,6 +4,7 @@ import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.mvc.data.response.MerchantVoucherModel
 import com.tokopedia.mvc.domain.entity.Voucher
 import com.tokopedia.mvc.domain.entity.Voucher.*
+import com.tokopedia.mvc.domain.entity.enums.ProgramStatus
 import com.tokopedia.mvc.domain.entity.enums.PromotionStatus
 import com.tokopedia.mvc.domain.entity.enums.SubsidyInfo
 import com.tokopedia.mvc.domain.entity.enums.VoucherCreator
@@ -97,7 +98,9 @@ class GetVoucherListMapper @Inject constructor() {
         return SubsidyDetail(
             programDetail = SubsidyDetail.ProgramDetail(
                 programName = programDetail.programName,
-                programStatus = programDetail.programStatus,
+                programStatus = ProgramStatus.values().firstOrNull { value ->
+                    value.id == programDetail.programStatus
+                } ?: ProgramStatus.ONGOING,
                 programLabel = programDetail.programLabel,
                 programLabelDetail = programDetail.programLabelDetail,
                 promotionStatus = PromotionStatus.values().firstOrNull { value ->

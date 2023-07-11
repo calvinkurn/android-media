@@ -61,6 +61,7 @@ import com.tokopedia.mvc.domain.entity.GenerateVoucherImageMetadata
 import com.tokopedia.mvc.domain.entity.VoucherDetailData
 import com.tokopedia.mvc.domain.entity.VoucherDetailWithVoucherCreationMetadata
 import com.tokopedia.mvc.domain.entity.enums.BenefitType
+import com.tokopedia.mvc.domain.entity.enums.ProgramStatus
 import com.tokopedia.mvc.domain.entity.enums.PromoType
 import com.tokopedia.mvc.domain.entity.enums.PromotionStatus
 import com.tokopedia.mvc.domain.entity.enums.SubsidyInfo
@@ -296,7 +297,13 @@ class VoucherDetailFragment : BaseDaggerFragment() {
     private fun setupTicker(voucherDetail: VoucherDetailData) {
         binding?.run {
             ticker.apply {
-                showWithCondition(voucherDetail.voucherStatus != VoucherStatus.ENDED && voucherDetail.subsidyDetail.programDetail.programLabel.isNotEmpty() && !isPromotionRejected(voucherDetail))
+                showWithCondition(
+                    voucherDetail.labelVoucher.labelSubsidyInfo != SubsidyInfo.FULL_SUBSIDIZED &&
+                        voucherDetail.labelVoucher.labelCreator != VoucherCreator.VPS &&
+                        voucherDetail.voucherStatus != VoucherStatus.ENDED &&
+                        voucherDetail.subsidyDetail.programDetail.programLabel.isNotEmpty() &&
+                        !isPromotionRejected(voucherDetail)
+                )
                 tickerTitle = voucherDetail.subsidyDetail.programDetail.programLabel
                 setTextDescription(voucherDetail.subsidyDetail.programDetail.programLabelDetail)
             }
@@ -305,7 +312,10 @@ class VoucherDetailFragment : BaseDaggerFragment() {
 
     private fun setupRecapSection(data: VoucherDetailData) {
         binding?.run {
-            if (data.voucherStatus == VoucherStatus.ENDED && isSubsidy(data) && !isPromotionRejected(data)) {
+            if (data.voucherStatus == VoucherStatus.ENDED &&
+                isSubsidy(data) &&
+                !isPromotionRejected(data)
+            ) {
                 if (layoutRecap.parent != null) {
                     layoutRecap.inflate()
                 }
@@ -457,8 +467,14 @@ class VoucherDetailFragment : BaseDaggerFragment() {
             when (data.voucherStatus) {
                 VoucherStatus.NOT_STARTED -> {
                     btnUbahKupon.apply {
-                        visible()
-                        isEditable(data.isEditable)
+                        if (data.labelVoucher.labelSubsidyInfo == SubsidyInfo.FULL_SUBSIDIZED ||
+                            data.labelVoucher.labelCreator == VoucherCreator.VPS
+                        ) {
+                            invisible()
+                        } else {
+                            visible()
+                            isEditable(data.isEditable)
+                        }
                     }
                     timer.invisible()
                     tpgPeriodStop.invisible()
@@ -497,7 +513,9 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                 voucherDetailTracker.sendClickEditEvent(data)
             }
             iconInfo.setOnClickListener {
-                UpdateCouponTipBottomSheet.newInstance().show(childFragmentManager)
+                UpdateCouponTipBottomSheet
+                    .newInstance(data.subsidyDetail.programDetail.programStatus == ProgramStatus.ONGOING)
+                    .show(childFragmentManager)
             }
         }
     }
@@ -672,12 +690,12 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                             tpgVoucherNominal.text =
                                 data.voucherDiscountAmount.getPercentFormatted()
                             if (isSubsidy(data) && !isPromotionRejected(data)) {
-                                llParentInitialCashback.visible()
-                                llParentAdditionalSubsidy.visible()
+                                llParentInitialCashback.showWithCondition(data.labelVoucher.labelBudgetsVoucher.isNotEmpty())
+                                llParentAdditionalSubsidy.showWithCondition(data.labelVoucher.labelBudgetsVoucher.isNotEmpty())
                                 tpgInitialCashback.text =
-                                    data.labelVoucher.labelBudgetsVoucher.first().labelBudgetVoucherValue.getPercentFormatted()
+                                    data.labelVoucher.labelBudgetsVoucher.firstOrNull()?.labelBudgetVoucherValue?.getPercentFormatted()
                                 tpgAdditionalSubsidy.text =
-                                    data.labelVoucher.labelBudgetsVoucher.last().labelBudgetVoucherValue.getPercentFormatted()
+                                    data.labelVoucher.labelBudgetsVoucher.lastOrNull()?.labelBudgetVoucherValue?.getPercentFormatted()
                             }
                         }
                     }
@@ -732,7 +750,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
         voucherSettingBinding?.run {
             if (!isSubsidy(data) || isPromotionRejected(data)) return
             val wording =
-                if (data.subsidyDetail.quotaSubsidized.voucherQuota.toLong() == data.voucherQuota) {
+                if (data.labelVoucher.labelSubsidyInfo == SubsidyInfo.FULL_SUBSIDIZED) {
                     getString(R.string.smvc_all_quota_subsidized_label)
                 } else {
                     getString(

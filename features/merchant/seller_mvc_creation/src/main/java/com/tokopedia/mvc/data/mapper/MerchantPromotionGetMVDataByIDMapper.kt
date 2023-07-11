@@ -5,6 +5,7 @@ import com.tokopedia.mvc.domain.entity.VoucherDetailData
 import com.tokopedia.mvc.domain.entity.VoucherDetailData.SubsidyDetail.ProgramDetail
 import com.tokopedia.mvc.domain.entity.VoucherDetailData.SubsidyDetail.QuotaSubsidized
 import com.tokopedia.mvc.domain.entity.enums.BenefitType
+import com.tokopedia.mvc.domain.entity.enums.ProgramStatus
 import com.tokopedia.mvc.domain.entity.enums.PromoType
 import com.tokopedia.mvc.domain.entity.enums.PromotionStatus
 import com.tokopedia.mvc.domain.entity.enums.SubsidyInfo
@@ -126,7 +127,9 @@ class MerchantPromotionGetMVDataByIDMapper @Inject constructor() {
         return VoucherDetailData.SubsidyDetail(
             programDetail = ProgramDetail(
                 programName = subsidyDetail.programDetail.programName,
-                programStatus = subsidyDetail.programDetail.programStatus,
+                programStatus = ProgramStatus.values().firstOrNull { value ->
+                    value.id == subsidyDetail.programDetail.programStatus
+                } ?: ProgramStatus.ONGOING,
                 programLabel = subsidyDetail.programDetail.programLabel,
                 programLabelDetail = subsidyDetail.programDetail.programLabelDetail,
                 promotionStatus = PromotionStatus.values().firstOrNull { value ->

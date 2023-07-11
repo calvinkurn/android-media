@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.mvc.R
 import com.tokopedia.mvc.databinding.SmvcBottomsheetUpdateCouponTipBinding
+import com.tokopedia.mvc.util.constant.BundleConstant
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
@@ -16,10 +17,15 @@ class UpdateCouponTipBottomSheet: BottomSheetUnify() {
 
     companion object {
         @JvmStatic
-        fun newInstance(): UpdateCouponTipBottomSheet {
-            return UpdateCouponTipBottomSheet()
+        fun newInstance(isApproved: Boolean): UpdateCouponTipBottomSheet {
+            return UpdateCouponTipBottomSheet().apply {
+                arguments = Bundle().apply {
+                    putBoolean(BundleConstant.BUNDLE_KEY_IS_APPROVED, isApproved)
+                }
+            }
         }
     }
+    private val isApproved by lazy { arguments?.getBoolean(BundleConstant.BUNDLE_KEY_IS_APPROVED) as Boolean}
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -30,6 +36,11 @@ class UpdateCouponTipBottomSheet: BottomSheetUnify() {
         binding = viewBinding
         setTitle(getString(R.string.smvc_ubah_kupon_label))
         setChild(viewBinding.root)
+        binding?.tpgTip?.text = if (isApproved) {
+            getString(R.string.smvc_update_coupon_tip_label_approved)
+        } else {
+            getString(R.string.smvc_update_coupon_tip_label_not_approved)
+        }
         clearContentPadding = true
         return super.onCreateView(inflater, container, savedInstanceState)
     }
