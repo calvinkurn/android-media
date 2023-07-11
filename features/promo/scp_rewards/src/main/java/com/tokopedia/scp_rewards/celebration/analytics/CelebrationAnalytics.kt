@@ -28,7 +28,7 @@ object CelebrationAnalytics {
         gtm.sendGeneralEvent(map)
     }
 
-    fun sendImpressionCelebrationLoading(badgeId: String){
+    fun sendImpressionCelebrationLoading(badgeId: String) {
         val map = mutableMapOf<String, Any>(
             EVENT to VIEW_EVENT,
             EVENT_ACTION to TrackerConstants.General.VIEW_PAGE_EVENT,
@@ -41,7 +41,7 @@ object CelebrationAnalytics {
         gtm.sendGeneralEvent(map)
     }
 
-    fun sendImpressionCelebrationError(badgeId: String){
+    fun sendImpressionCelebrationError(badgeId: String) {
         val map = mutableMapOf<String, Any>(
             EVENT to VIEW_EVENT,
             EVENT_ACTION to TrackerConstants.General.VIEW_PAGE_EVENT,
@@ -54,7 +54,7 @@ object CelebrationAnalytics {
         gtm.sendGeneralEvent(map)
     }
 
-    fun sendClickRetryCelebration(badgeId: String){
+    fun sendClickRetryCelebration(badgeId: String) {
         val map = mutableMapOf<String, Any>(
             EVENT to CLICK_EVENT,
             EVENT_ACTION to "click coba lagi",
@@ -67,7 +67,7 @@ object CelebrationAnalytics {
         gtm.sendGeneralEvent(map)
     }
 
-    fun sendClickGoBackCelebration(badgeId: String){
+    fun sendClickGoBackCelebration(badgeId: String) {
         val map = mutableMapOf<String, Any>(
             EVENT to CLICK_EVENT,
             EVENT_ACTION to "click pengaturan",
@@ -80,13 +80,52 @@ object CelebrationAnalytics {
         gtm.sendGeneralEvent(map)
     }
 
-    fun sendImpressionFallbackBadge(badgeId: String){
+    fun sendImpressionFallbackBadge(badgeId: String) {
         val map = mutableMapOf<String, Any>(
             EVENT to VIEW_EVENT,
             EVENT_ACTION to TrackerConstants.General.VIEW_PAGE_EVENT,
             EVENT_CATEGORY to "goto medali - celebration - with medali asset error",
             EVENT_LABEL to badgeId,
             TRACKER_ID to "43936",
+            BUSINESS_UNIT to TrackerConstants.Business.BUSINESS_UNIT,
+            CURRENT_SITE to TrackerConstants.Business.CURRENT_SITE
+        )
+        gtm.sendGeneralEvent(map)
+    }
+
+    fun sendImpressionNonWhitelistedError() {
+        val map = mutableMapOf<String, Any>(
+            EVENT to VIEW_EVENT,
+            EVENT_ACTION to TrackerConstants.General.VIEW_PAGE_EVENT,
+            EVENT_CATEGORY to TrackerConstants.EventCategory.MEDAL_CELEBRATION_NON_WHITELISTED,
+            EVENT_LABEL to "",
+            TRACKER_ID to TrackerConstants.Tracker.MEDAL_CELEBRATION_VIEW_PAGE_NON_WHITELISTED,
+            BUSINESS_UNIT to TrackerConstants.Business.BUSINESS_UNIT,
+            CURRENT_SITE to TrackerConstants.Business.CURRENT_SITE
+        )
+        gtm.sendGeneralEvent(map)
+    }
+
+    fun sendNonWhitelistedUserCtaClick() {
+        val map = mutableMapOf<String, Any>(
+            EVENT to VIEW_EVENT,
+            EVENT_ACTION to TrackerConstants.General.CTA_CLICK,
+            EVENT_CATEGORY to TrackerConstants.EventCategory.MEDAL_CELEBRATION_NON_WHITELISTED,
+            EVENT_LABEL to "",
+            TRACKER_ID to TrackerConstants.Tracker.MEDAL_CELEBRATION_NON_WHITELISTED_CTA_CLICK,
+            BUSINESS_UNIT to TrackerConstants.Business.BUSINESS_UNIT,
+            CURRENT_SITE to TrackerConstants.Business.CURRENT_SITE
+        )
+        gtm.sendGeneralEvent(map)
+    }
+
+    fun sendNonWhitelistedBackClick() {
+        val map = mutableMapOf<String, Any>(
+            EVENT to VIEW_EVENT,
+            EVENT_ACTION to TrackerConstants.General.BACK_BUTTON_CLICK,
+            EVENT_CATEGORY to TrackerConstants.EventCategory.MEDAL_CELEBRATION_NON_WHITELISTED,
+            EVENT_LABEL to "",
+            TRACKER_ID to TrackerConstants.Tracker.MEDAL_CELEBRATION_NON_WHITELISTED_BACK_CLICK,
             BUSINESS_UNIT to TrackerConstants.Business.BUSINESS_UNIT,
             CURRENT_SITE to TrackerConstants.Business.CURRENT_SITE
         )

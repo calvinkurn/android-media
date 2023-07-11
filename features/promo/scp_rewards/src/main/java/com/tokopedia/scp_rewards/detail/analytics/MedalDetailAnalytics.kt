@@ -82,4 +82,10 @@ interface MedalDetailAnalytics {
     )
 
     fun sendImpressionPageShimmer(badgeId: String)
+
+    fun sendImpressionNonWhitelistedError()
+
+    fun sendNonWhitelistedUserCtaClick()
+
+    fun sendNonWhitelistedBackClick()
 }

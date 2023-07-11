@@ -516,6 +516,8 @@ public interface ApplinkConst {
     interface ScpRewards{
         String CELEBRATION_BASE = "celebration";
         String MEDAL_DETAIL_BASE = "detail";
+        String MEDAL_CABINET = "medali";
+        String SEE_MORE_MEDAL = "more";
     }
 
     String OQR_PIN_URL_ENTRY_LINK = "tokopedia://ovoqrthanks/";
