@@ -11,9 +11,9 @@ import android.widget.TextView
 import com.google.android.exoplayer2.ui.PlayerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.widget.R
 import com.tokopedia.play.widget.player.PlayVideoPlayer
@@ -27,8 +27,8 @@ import com.tokopedia.play.widget.util.PlayWidgetCompositeTouchDelegate
 import com.tokopedia.play_common.util.extension.exhaustive
 import com.tokopedia.unifycomponents.ImageUnify
 import kotlin.math.roundToInt
-import com.tokopedia.unifyprinciples.R as unifyR
 import com.tokopedia.play_common.R as playCommonR
+import com.tokopedia.unifyprinciples.R as unifyR
 
 /**
  * @author by astidhiyaa on 12/01/22
@@ -65,7 +65,7 @@ class PlayWidgetCardJumboView : FrameLayout, PlayVideoPlayerReceiver {
     private val compositeTouchDelegate: PlayWidgetCompositeTouchDelegate
 
     private val ratio: Double
-        get() = WIDTH_RATIO/ HEIGHT_RATIO
+        get() = WIDTH_RATIO / HEIGHT_RATIO
 
     private lateinit var mModel: PlayWidgetChannelUiModel
 
@@ -93,15 +93,15 @@ class PlayWidgetCardJumboView : FrameLayout, PlayVideoPlayerReceiver {
         thumbnail.onUrlLoaded = { isSuccess ->
             if (isSuccess) {
                 thumbnail.post {
-                    //need to delay (e.g. with post) because ImageUnify does not give listener that can get the resource directly
-                    //without post, the drawable will be null most of the time
+                    // need to delay (e.g. with post) because ImageUnify does not give listener that can get the resource directly
+                    // without post, the drawable will be null most of the time
                     val drawable = thumbnail.drawable ?: return@post
                     val wScale = (thumbnail.width / drawable.intrinsicWidth).toFloat()
                     val hScale = (thumbnail.height / drawable.intrinsicHeight).toFloat()
 
                     val scale = wScale.coerceAtLeast(hScale)
                     thumbnail.imageMatrix = Matrix().apply {
-                        postScale(scale,scale)
+                        postScale(scale, scale)
                     }
                 }
             }
@@ -142,7 +142,7 @@ class PlayWidgetCardJumboView : FrameLayout, PlayVideoPlayerReceiver {
 
         val startTimeIsShown = model.startTime.isNotEmpty() && model.channelType == PlayWidgetChannelType.Upcoming
 
-        tvStartTime.shouldShowWithAction(startTimeIsShown){
+        tvStartTime.shouldShowWithAction(startTimeIsShown) {
             tvStartTime.text = model.startTime
         }
 
@@ -204,9 +204,12 @@ class PlayWidgetCardJumboView : FrameLayout, PlayVideoPlayerReceiver {
         }.exhaustive
     }
 
-    private fun setPromoLabelIcon(isRilisanSpesial: Boolean){
-        if(isRilisanSpesial) ivPromoLabel.setImage(newIconId = IconUnify.ROCKET, newLightEnable = MethodChecker.getColor(context, unifyR.color.Unify_Static_White), newDarkEnable = MethodChecker.getColor(context, unifyR.color.Unify_Static_White))
-        else ivPromoLabel.setImage(newIconId = IconUnify.PROMO, newLightEnable = MethodChecker.getColor(context, unifyR.color.Unify_Static_White), newDarkEnable = MethodChecker.getColor(context, unifyR.color.Unify_Static_White))
+    private fun setPromoLabelIcon(isRilisanSpesial: Boolean) {
+        if (isRilisanSpesial) {
+            ivPromoLabel.setImage(newIconId = IconUnify.ROCKET, newLightEnable = MethodChecker.getColor(context, unifyR.color.Unify_Static_White), newDarkEnable = MethodChecker.getColor(context, unifyR.color.Unify_Static_White))
+        } else {
+            ivPromoLabel.setImage(newIconId = IconUnify.PROMO, newLightEnable = MethodChecker.getColor(context, unifyR.color.Unify_Static_White), newDarkEnable = MethodChecker.getColor(context, unifyR.color.Unify_Static_White))
+        }
     }
 
     override fun setPlayer(player: PlayVideoPlayer?) {
@@ -218,7 +221,7 @@ class PlayWidgetCardJumboView : FrameLayout, PlayVideoPlayerReceiver {
         } else {
             if (::mModel.isInitialized) {
                 player.videoUrl = mModel.video.videoUrl
-                player.shouldCache = !mModel.video.isLive
+                player.isLive = mModel.video.isLive
                 player.start()
             }
             player.listener = playerListener
@@ -231,7 +234,7 @@ class PlayWidgetCardJumboView : FrameLayout, PlayVideoPlayerReceiver {
 
     override fun isPlayable(): Boolean {
         return mModel.channelType == PlayWidgetChannelType.Live ||
-                mModel.channelType == PlayWidgetChannelType.Vod
+            mModel.channelType == PlayWidgetChannelType.Vod
     }
 
     override fun onDetachedFromWindow() {
@@ -242,12 +245,12 @@ class PlayWidgetCardJumboView : FrameLayout, PlayVideoPlayerReceiver {
     interface Listener {
         fun onChannelClicked(
             view: View,
-            item: PlayWidgetChannelUiModel,
+            item: PlayWidgetChannelUiModel
         )
 
         fun onToggleReminderChannelClicked(
             item: PlayWidgetChannelUiModel,
-            reminderType: PlayWidgetReminderType,
+            reminderType: PlayWidgetReminderType
         )
     }
 

@@ -17,41 +17,41 @@ import com.tokopedia.unifycomponents.ImageUnify
 
 class BrandRecommendationItemViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
 
-    private lateinit var brandRecommendationItemViewModel: BrandRecommendationItemViewModel
+    private var brandRecommendationItemViewModel: BrandRecommendationItemViewModel? = null
     private val brandImage: ImageUnify = itemView.findViewById(R.id.brand_recom_iv)
     private val context = itemView.context
-
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         brandRecommendationItemViewModel = discoveryBaseViewModel as BrandRecommendationItemViewModel
         updateCardDesign()
-        setClick(brandRecommendationItemViewModel.getComponentItem())
+        setClick(brandRecommendationItemViewModel?.getComponentItem())
     }
 
     override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
         super.setUpObservers(lifecycleOwner)
         lifecycleOwner?.let { lifecycle ->
-            brandRecommendationItemViewModel.getComponentDataLiveData().observe(lifecycle, { item ->
+            brandRecommendationItemViewModel?.getComponentDataLiveData()?.observe(lifecycle) { item ->
                 item.data?.firstOrNull()?.let {
                     try {
-                        if (context.isValidGlideContext())
+                        if (context.isValidGlideContext()) {
                             it.imageUrlMobile?.let { url -> brandImage.setImageUrl(url) }
+                        }
                     } catch (e: Throwable) {
                     }
                 }
-            })
+            }
         }
     }
 
     override fun removeObservers(lifecycleOwner: LifecycleOwner?) {
         super.removeObservers(lifecycleOwner)
         lifecycleOwner?.let {
-            brandRecommendationItemViewModel.getComponentDataLiveData().removeObservers(it)
+            brandRecommendationItemViewModel?.getComponentDataLiveData()?.removeObservers(it)
         }
     }
 
     private fun updateCardDesign() {
-        when (brandRecommendationItemViewModel.getDesignType()) {
+        when (brandRecommendationItemViewModel?.getDesignType()) {
             RECTANGLE_DESIGN -> {
                 val cardPadding = context.resources.getDimension(R.dimen.dp_4).toInt()
                 val layoutParams: ViewGroup.LayoutParams = itemView.layoutParams
@@ -76,7 +76,12 @@ class BrandRecommendationItemViewHolder(itemView: View, private val fragment: Fr
     }
 
     private fun sendClickBrandRecommendationClickEvent(it: DataItem) {
-        (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackBrandRecommendationClick(it,
-                adapterPosition, brandRecommendationItemViewModel.getComponentID())
+        brandRecommendationItemViewModel?.getComponentID()?.let { it1 ->
+            (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackBrandRecommendationClick(
+                it,
+                adapterPosition,
+                it1
+            )
+        }
     }
 }

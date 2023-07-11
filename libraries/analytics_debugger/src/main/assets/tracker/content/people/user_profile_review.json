@@ -1,0 +1,127 @@
+{
+  "readme": "User Profile Review - Analytics",
+  "mode": "exact",
+  "query": [
+    {
+      "event": "clickContent",
+      "eventAction": "click - review tab",
+      "eventCategory": "feed user profile",
+      "eventLabel": ".* - (self|visitor)",
+      "trackerId": "44098",
+      "businessUnit": "content",
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickContent",
+      "eventAction": "click - gear icon",
+      "eventCategory": "feed user profile",
+      "eventLabel": ".*",
+      "trackerId": "44099",
+      "businessUnit": "content",
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickContent",
+      "eventAction": "click - toggle button",
+      "eventCategory": "feed user profile",
+      "eventLabel": ".* - (on|off)",
+      "trackerId": "44100",
+      "businessUnit": "content",
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickContent",
+      "eventAction": "click - review media",
+      "eventCategory": "feed user profile",
+      "eventLabel": ".* - .* - (self|visitor) - .*",
+      "trackerId": "44101",
+      "businessUnit": "content",
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickContent",
+      "eventAction": "click - like review",
+      "eventCategory": "feed user profile",
+      "eventLabel": ".* - .* - (self|visitor) - .*",
+      "trackerId": "44102",
+      "businessUnit": "content",
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "view_item",
+      "eventAction": "impression - review",
+      "eventCategory": "feed user profile",
+      "eventLabel": ".* - .* - (self|visitor) - .*",
+      "trackerId": "44103",
+      "businessUnit": "content",
+      "currentSite": "tokopediamarketplace",
+      "promotions": [
+        {
+          "creative_name": "",
+          "creative_slot": "\\d+",
+          "item_id": ".*",
+          "item_name": "/feed user profile - review"
+        }
+      ],
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "openScreen",
+      "trackerId": "44104",
+      "businessUnit": "content",
+      "currentSite": "tokopediamarketplace",
+      "isLoggedInStatus": "(true|false)",
+      "screenName": "/user profile - review tab",
+      "sessionIris": ".*",
+      "userId": ".*",
+      "networkSpeed": ".*",
+      "clientId": ".*",
+      "appsflyerId": ".*",
+      "shopId": ".*",
+      "theme": ".*"
+    },
+    {
+      "event": "clickContent",
+      "eventAction": "click - review selengkapnya",
+      "eventCategory": "feed user profile",
+      "eventLabel": ".* - .* - (self|visitor) - .*",
+      "trackerId": "44108",
+      "businessUnit": "content",
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "select_content",
+      "eventAction": "click - product on review",
+      "eventCategory": "feed user profile",
+      "eventLabel": ".* - .* - (self|visitor) - .*",
+      "trackerId": "44110",
+      "businessUnit": "content",
+      "currentSite": "tokopediamarketplace",
+      "item_list": "/user profile - review tab",
+      "items": [
+        {
+          "item_brand": "",
+          "item_category": "",
+          "item_id": ".*",
+          "item_name": ".*",
+          "item_variant": ".*"
+        }
+      ],
+      "sessionIris": ".*",
+      "userId": ".*"
+    }
+  ]
+}
