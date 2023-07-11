@@ -4,6 +4,8 @@ apply plugin: 'io.hansel.preprocessor.module'
 apply plugin: 'kotlin-parcelize'
 
 android {
+    namespace 'com.tokopedia.statistic'
+    testNamespace 'com.tokopedia.statistic.test'
     packagingOptions {
         exclude 'META-INF/**'
     }

@@ -2,6 +2,7 @@ package com.tokopedia.review.feature.media.gallery.detailed.di.component
 
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
+import com.tokopedia.review.feature.media.detail.di.module.ReviewDetailTrackerModule
 import com.tokopedia.review.feature.media.gallery.detailed.di.module.DetailedReviewMediaGalleryModule
 import com.tokopedia.review.feature.media.gallery.detailed.di.module.DetailedReviewMediaGalleryViewModelModule
 import com.tokopedia.review.feature.media.gallery.detailed.di.qualifier.DetailedReviewMediaGalleryViewModelFactory
@@ -14,7 +15,8 @@ import dagger.Component
 @Component(
     modules = [
         DetailedReviewMediaGalleryViewModelModule::class,
-        DetailedReviewMediaGalleryModule::class
+        DetailedReviewMediaGalleryModule::class,
+        ReviewDetailTrackerModule::class,
     ],
     dependencies = [BaseAppComponent::class]
 )

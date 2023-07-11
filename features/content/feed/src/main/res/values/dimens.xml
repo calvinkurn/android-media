@@ -68,6 +68,8 @@
     <dimen name="searchbar_tansition_range">50dp</dimen>
     <dimen name="searchbar_start_tansition_offsite">100dp</dimen>
 
+    <dimen name="feed_toaster_bottom_margin">48dp</dimen>
+
     <!-- Common Dimen -->
     <dimen name="feed_space_1">1dp</dimen>
     <dimen name="feed_space_16">16dp</dimen>
