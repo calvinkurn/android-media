@@ -8,6 +8,7 @@ import androidx.test.espresso.matcher.BoundedMatcher
 import com.tokopedia.test.application.matcher.RecyclerViewMatcher
 import org.hamcrest.Description
 import org.hamcrest.Matcher
+import java.util.*
 
 fun matchesBackgroundColor(expectedResourceId: Int?): Matcher<View?> {
     return object : BoundedMatcher<View?, View>(View::class.java) {
@@ -35,9 +36,14 @@ fun matchesBackgroundColor(expectedResourceId: Int?): Matcher<View?> {
                 message = (
                     "Background color did not match: Expected " +
                         String.format(
+                            Locale.getDefault(),
                             "#%06X",
                             (0xFFFFFF and expectedColor)
-                        ) + " was " + String.format("#%06X", (0xFFFFFF and actualColor))
+                        ) + " was " + String.format(
+                        Locale.getDefault(),
+                        "#%06X",
+                        (0xFFFFFF and actualColor)
+                    )
                     )
             }
             description.appendText(message)
