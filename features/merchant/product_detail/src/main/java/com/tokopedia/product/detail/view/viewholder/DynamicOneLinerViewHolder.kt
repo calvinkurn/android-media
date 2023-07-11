@@ -14,6 +14,7 @@ import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.DynamicOneLinerDataModel
 import com.tokopedia.product.detail.databinding.ItemDynamicOneLinerBinding
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
+import com.tokopedia.product.detail.view.util.renderHtmlBold
 
 class DynamicOneLinerViewHolder(
     view: View,
@@ -29,7 +30,6 @@ class DynamicOneLinerViewHolder(
 
         private const val CHEVRON_POS_FOLLOW = "follow_text"
         private const val CHEVRON_POS_END = "end"
-
     }
 
     val binding = ItemDynamicOneLinerBinding.bind(view)
@@ -62,7 +62,12 @@ class DynamicOneLinerViewHolder(
     ) = with(binding) {
         val title = data.text
         dynamicOneLinerTitle.showIfWithBlock(title.isNotEmpty()) {
-            text = title.parseAsHtml()
+            val context = context
+            text = if (context == null) {
+                title.parseAsHtml()
+            } else {
+                title.renderHtmlBold(context)
+            }
         }
 
         val iconUrl = data.icon
@@ -101,5 +106,4 @@ class DynamicOneLinerViewHolder(
             listener.onImpressComponent(getComponentTrackData(element))
         }
     }
-
 }
