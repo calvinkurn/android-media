@@ -325,12 +325,54 @@ object MedalDetailAnalyticsImpl : MedalDetailAnalytics {
     }
 
     override fun sendImpressionPageShimmer(badgeId: String) {
+        val eventLabel = JSONObject().apply {
+            put(TrackerConstants.EventLabelProperties.BADGE_ID, badgeId)
+        }
         val map = mutableMapOf<String, Any>(
             TrackerConstant.EVENT to TrackerConstants.Event.VIEW_EVENT,
             TrackerConstant.EVENT_ACTION to "view page skeleton",
             TrackerConstant.EVENT_CATEGORY to TrackerConstants.General.MDP_EVENT_ACTION,
-            TrackerConstant.EVENT_LABEL to badgeId,
+            TrackerConstant.EVENT_LABEL to eventLabel,
             TrackerConstant.TRACKER_ID to TrackerConstants.Tracker.MDP_VIEW_PAGE_SHIMMER,
+            TrackerConstant.BUSINESS_UNIT to TrackerConstants.Business.BUSINESS_UNIT,
+            TrackerConstant.CURRENT_SITE to TrackerConstants.Business.CURRENT_SITE
+        )
+        gtm.sendGeneralEvent(map)
+    }
+
+    override fun sendImpressionNonWhitelistedError() {
+        val map = mutableMapOf<String, Any>(
+            TrackerConstant.EVENT to TrackerConstants.Event.VIEW_EVENT,
+            TrackerConstant.EVENT_ACTION to TrackerConstants.General.VIEW_PAGE_EVENT,
+            TrackerConstant.EVENT_CATEGORY to TrackerConstants.EventCategory.MDP_NON_WHITELISTED,
+            TrackerConstant.EVENT_LABEL to "",
+            TrackerConstant.TRACKER_ID to TrackerConstants.Tracker.MDP_VIEW_PAGE_NON_WHITELISTED,
+            TrackerConstant.BUSINESS_UNIT to TrackerConstants.Business.BUSINESS_UNIT,
+            TrackerConstant.CURRENT_SITE to TrackerConstants.Business.CURRENT_SITE
+        )
+        gtm.sendGeneralEvent(map)
+    }
+
+    override fun sendNonWhitelistedUserCtaClick() {
+        val map = mutableMapOf<String, Any>(
+            TrackerConstant.EVENT to TrackerConstants.Event.VIEW_EVENT,
+            TrackerConstant.EVENT_ACTION to TrackerConstants.General.CTA_CLICK,
+            TrackerConstant.EVENT_CATEGORY to TrackerConstants.EventCategory.MDP_NON_WHITELISTED,
+            TrackerConstant.EVENT_LABEL to "",
+            TrackerConstant.TRACKER_ID to TrackerConstants.Tracker.MDP_NON_WHITELISTED_CTA_CLICK,
+            TrackerConstant.BUSINESS_UNIT to TrackerConstants.Business.BUSINESS_UNIT,
+            TrackerConstant.CURRENT_SITE to TrackerConstants.Business.CURRENT_SITE
+        )
+        gtm.sendGeneralEvent(map)
+    }
+
+    override fun sendNonWhitelistedBackClick() {
+        val map = mutableMapOf<String, Any>(
+            TrackerConstant.EVENT to TrackerConstants.Event.VIEW_EVENT,
+            TrackerConstant.EVENT_ACTION to TrackerConstants.General.BACK_BUTTON_CLICK,
+            TrackerConstant.EVENT_CATEGORY to TrackerConstants.EventCategory.MDP_NON_WHITELISTED,
+            TrackerConstant.EVENT_LABEL to "",
+            TrackerConstant.TRACKER_ID to TrackerConstants.Tracker.MDP_NON_WHITELISTED_BACK_CLICK,
             TrackerConstant.BUSINESS_UNIT to TrackerConstants.Business.BUSINESS_UNIT,
             TrackerConstant.CURRENT_SITE to TrackerConstants.Business.CURRENT_SITE
         )

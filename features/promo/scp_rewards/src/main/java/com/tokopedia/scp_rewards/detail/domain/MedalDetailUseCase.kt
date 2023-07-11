@@ -37,7 +37,7 @@ private const val SCP_REWARDS_MEDAL_DETAIL_QUERY = """
         medaliDetailPage {
           backgroundImageURL
           backgroundImageColor
-          frameImageURL
+          frameAltImageURL
           frameMaskingImageURL
           innerIconImageURL
           iconImageURL

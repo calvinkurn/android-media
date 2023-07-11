@@ -83,4 +83,10 @@ object ApplinkConstInternalPromo {
     const val CELEBRATION_BOTTOMSHEET = "$CELEBRATION_BOTTOMSHEET_BASE/{slug}"
     const val CELEBRATION_TOASTER = "${DeeplinkConstant.SCHEME_INTERNAL}://scp-rewards/medali/celebration_toaster"
 
+    const val MEDAL_CABINET = "$INTERNAL_SCP_REWARDS/medali/cabinet"
+    const val SEE_MORE_MEDALI = "$INTERNAL_SCP_REWARDS/medali/cabinet/more"
+    const val SEE_MORE_PATH = "more"
+    const val CABINET_PATH = "cabinet"
+    const val MEDALI_QUERY_PARAM = "medali"
+    const val SOURCE_PARAM = "sourceName"
 }

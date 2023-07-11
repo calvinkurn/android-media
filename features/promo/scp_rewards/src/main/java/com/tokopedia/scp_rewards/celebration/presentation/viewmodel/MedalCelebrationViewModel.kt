@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import com.tokopedia.scp_rewards.celebration.domain.RewardsGetMedaliCelebrationPageUseCase
 import javax.inject.Inject
 import androidx.lifecycle.viewModelScope
+import com.tokopedia.scp_rewards.common.constants.SUCCESS_CODE
 import com.tokopedia.scp_rewards.common.data.Error
 import com.tokopedia.scp_rewards.common.data.Loading
 import com.tokopedia.scp_rewards.common.data.ScpResult
@@ -16,23 +17,28 @@ class MedalCelebrationViewModel @Inject constructor(
     private val rewardsGetMedaliCelebrationPageUseCase: RewardsGetMedaliCelebrationPageUseCase
 ) : ViewModel() {
 
-    private val _badgeLiveData:MutableLiveData<ScpResult> = MutableLiveData(Loading)
+    private val _badgeLiveData: MutableLiveData<ScpResult> = MutableLiveData(Loading)
     val badgeLiveData: LiveData<ScpResult> = _badgeLiveData
 
-    fun getRewards(medaliSlug:String = "",sourceName:String = ""){
+    fun getRewards(medaliSlug: String = "", sourceName: String = "") {
         viewModelScope.launchCatchError(
             block = {
-                    val response = rewardsGetMedaliCelebrationPageUseCase.getRewards(
-                        medaliSlug = medaliSlug,
-                        sourceName = sourceName
-                    )
-                    if(response.scpRewardsCelebrationPage?.resultStatus?.code == "200"){
+                val response = rewardsGetMedaliCelebrationPageUseCase.getRewards(
+                    medaliSlug = medaliSlug,
+                    sourceName = sourceName
+                )
+
+                when (val responseCode = response.scpRewardsCelebrationPage?.resultStatus?.code) {
+                    SUCCESS_CODE -> {
                         _badgeLiveData.postValue(Success(response))
                     }
-                    else throw Throwable()
+                    else -> {
+                        _badgeLiveData.postValue(Error(Throwable(), responseCode.orEmpty()))
+                    }
+                }
             },
             onError = {
-                  _badgeLiveData.postValue(Error(it))
+                _badgeLiveData.postValue(Error(it))
             }
         )
     }

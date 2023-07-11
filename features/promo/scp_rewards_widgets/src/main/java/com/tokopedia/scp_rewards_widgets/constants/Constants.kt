@@ -6,5 +6,5 @@ object CouponState {
     const val INACTIVE = "inactive"
     const val EXPIRED = "expired"
     const val ERROR = "error"
+    const val HIDDEN = "hidden"
 }
-
