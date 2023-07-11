@@ -126,7 +126,9 @@ class SellerHomeLayoutHelper @Inject constructor(
         )
         return widgetFlow.combine(predictedInitialWidgetFlow) { widgetsFromFlow, initialWidgets ->
             widgetsFromFlow.map { widget ->
-                initialWidgets.find { it.dataKey == widget.dataKey } ?: widget
+                initialWidgets.find {
+                    it.dataKey == widget.dataKey && it.id == widget.id
+                } ?: widget
             }.filter { !it.isNeedToBeRemoved }
         }
     }
