@@ -13,6 +13,11 @@ buildscript {
     }
 }
 
+android {
+    namespace 'com.tokopedia.dev_monitoring_tools'
+    testNamespace 'com.tokopedia.dev_monitoring_tools.test'
+}
+
 dependencies {
     implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
     implementation projectOrAar(rootProject.ext.libraries.deviceInfo)

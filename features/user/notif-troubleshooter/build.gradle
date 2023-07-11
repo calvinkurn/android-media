@@ -8,6 +8,8 @@ repositories {
 }
 
 android {
+    namespace 'com.tokopedia.troubleshooter.notification'
+    testNamespace 'com.tokopedia.troubleshooter.notification.test'
     buildFeatures {
         viewBinding true
     }

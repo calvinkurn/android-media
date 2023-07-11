@@ -322,7 +322,9 @@ object DeeplinkDFMapper : CoroutineScope {
 
 
             // Content
-            add(DFP({ it.startsWithPattern(ApplinkConstInternalContent.PROFILE_DETAIL) }, DF_PEOPLE, R.string.applink_title_people))
+            add(DFP({ it.startsWithPattern(ApplinkConstInternalContent.PROFILE_DETAIL)
+                || it.startsWithPattern(ApplinkConstInternalContent.PROFILE_SETTINGS)
+            }, DF_PEOPLE, R.string.applink_title_people))
             add(DFP({ it.startsWithPattern(PLAY_DETAIL) }, DF_BASE, R.string.applink_title_play))
             add(DFP({ it.startsWithPattern(PLAY_RECOM) }, DF_BASE, R.string.applink_title_play))
             add(DFP({ it.startsWithPattern(COMMENT) }, DF_BASE, R.string.applink_kol_title_comment))
@@ -554,6 +556,8 @@ object DeeplinkDFMapper : CoroutineScope {
 
             add(DFP({ it.startsWith(ApplinkConstInternalGlobal.WITHDRAW) }, DF_BASE, R.string.payment_title_withdraw))
             add(DFP({ it.startsWith(ApplinkConstInternalGlobal.AUTO_WITHDRAW_SETTING) }, DF_BASE, R.string.payment_title_auto_withdraw))
+
+            add(DFP({ it.startsWith(ApplinkConstInternalPayment.PAYMENT_THANK_YOU_PAGE) }, DF_BASE, R.string.payment_title_thank_you))
 
             // Promo
             add(DFP({ it.startsWith(INTERNAL_TOKOPOINTS) }, DF_PROMO_TOKOPOINTS, R.string.title_tokopoints, { DFWebviewFallbackUrl.PROMO_TOKOPOINTS }))
