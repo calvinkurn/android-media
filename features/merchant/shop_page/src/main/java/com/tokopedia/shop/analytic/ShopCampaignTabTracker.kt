@@ -422,7 +422,7 @@ class ShopCampaignTabTracker @Inject constructor() {
                     )
                 )
             )
-            putString(PRODUCT_ID, "")
+            putString(PRODUCT_ID, trackerDataModel.getProductIdFromAppLink())
             putString(SHOP_ID, trackerDataModel.shopId)
             putString(USER_ID, trackerDataModel.userId)
         }
@@ -438,7 +438,7 @@ class ShopCampaignTabTracker @Inject constructor() {
             putInt(INDEX, trackerDataModel.position)
             putString(ITEM_BRAND, "")
             putString(ITEM_CATEGORY, "")
-            putString(ITEM_ID, "")
+            putString(ITEM_ID, trackerDataModel.getProductIdFromAppLink())
             putString(ITEM_NAME, "")
             putString(ITEM_VARIANT, trackerDataModel.selectedTabName)
             putDouble(PRICE, 0.toDouble())
@@ -469,7 +469,7 @@ class ShopCampaignTabTracker @Inject constructor() {
                     )
                 )
             )
-            putString(PRODUCT_ID, "")
+            putString(PRODUCT_ID, trackerDataModel.getProductIdFromAppLink())
             putString(SHOP_ID, trackerDataModel.shopId)
             putString(USER_ID, trackerDataModel.userId)
         }

@@ -8,4 +8,8 @@ data class ShopCampaignProductSliderBannerHighlightTrackerDataModel(
     val appLink: String,
     val shopId: String,
     val userId: String
-)
+){
+    fun getProductIdFromAppLink(): String {
+        return appLink.split("/").lastOrNull().orEmpty()
+    }
+}
