@@ -372,9 +372,9 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     }
 
     override fun onDestroy() {
-        super.onDestroy()
         shopShareHelper.removeTemporaryShopImage(shopImageFilePath)
         binding = null
+        super.onDestroy()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

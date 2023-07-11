@@ -22,9 +22,7 @@ import com.tokopedia.shop.common.util.sellerfeedbackutil.SellerFeedbackUtil
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class SellerHomeNavigator(
     private val context: Context,
@@ -165,7 +163,7 @@ class SellerHomeNavigator(
 
     private fun initFragments() {
         clearFragments()
-        lifecycleScope.launch(Dispatchers.IO) {
+        lifecycleScope.launch(Dispatchers.Default) {
 
             val homeFragmentAsync = async { SellerHomeFragment.newInstance() }
             val productManageFragmentAsync = async(Dispatchers.Main) {
