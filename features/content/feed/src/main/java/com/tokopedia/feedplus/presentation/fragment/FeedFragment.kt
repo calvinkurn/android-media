@@ -107,6 +107,7 @@ class FeedFragment :
     private var data: FeedDataModel? = null
     private var adapter: FeedPostAdapter? = null
     private var currentTrackerData: FeedTrackerDataModel? = null
+    private var isCdp: Boolean = false
 
     private val videoPlayerManager by lazy { VideoPlayerManager(requireContext()) }
 
@@ -135,7 +136,7 @@ class FeedFragment :
 
     private val feedMvcAnalytics = FeedMVCAnalytics()
     private val trackerModelMapper: MapperFeedModelToTrackerDataModel by lazy {
-        val isCdp = arguments?.getBoolean(ARGUMENT_IS_CDP, false) ?: false
+        isCdp = arguments?.getBoolean(ARGUMENT_IS_CDP, false) ?: false
 
         MapperFeedModelToTrackerDataModel(
             if (isCdp) FeedBaseFragment.CDP else data?.type ?: "",
@@ -189,8 +190,10 @@ class FeedFragment :
 
         arguments?.let {
             data = it.getParcelable(ARGUMENT_DATA)
+            isCdp = it.getBoolean(ARGUMENT_IS_CDP, false)
         } ?: savedInstanceState?.let {
             data = it.getParcelable(ARGUMENT_DATA)
+            isCdp = it.getBoolean(ARGUMENT_IS_CDP, false)
         }
 
         lifecycle.addObserver(object : LifecycleEventObserver {
@@ -210,6 +213,7 @@ class FeedFragment :
         super.onSaveInstanceState(outState)
 
         outState.putParcelable(ARGUMENT_DATA, data)
+        outState.putBoolean(ARGUMENT_IS_CDP, isCdp)
     }
 
     override fun onCreateView(
