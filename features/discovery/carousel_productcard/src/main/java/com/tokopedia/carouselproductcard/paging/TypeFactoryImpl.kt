@@ -9,7 +9,6 @@ import com.tokopedia.carouselproductcard.paging.loading.ShimmeringViewHolder
 
 internal class TypeFactoryImpl(
     private val paddingStart: Int,
-    private val listener: CarouselPagingProductCardView.CarouselPagingListener,
 ): TypeFactory {
     override fun type(productCardListDataView: ProductCardListDataView): Int {
         return ProductCardListViewHolder.LAYOUT
@@ -21,7 +20,7 @@ internal class TypeFactoryImpl(
 
     override fun onCreateViewHolder(view: View, viewType: Int): AbstractViewHolder<*> =
         when(viewType) {
-            ProductCardListViewHolder.LAYOUT -> ProductCardListViewHolder(view, paddingStart, listener)
+            ProductCardListViewHolder.LAYOUT -> ProductCardListViewHolder(view, paddingStart)
             ShimmeringViewHolder.LAYOUT -> ShimmeringViewHolder(view)
             else -> throw Exception("Unknown View Type")
         }

@@ -11,6 +11,7 @@ internal object VisitableFactory {
     fun from(
         carouselPagingModel: CarouselPagingModel,
         itemPerPage: Int,
+        listener: CarouselPagingProductCardView.CarouselPagingListener,
     ): List<Visitable<TypeFactory>> =
         carouselPagingModel.productCardGroupList.mapIndexed { groupIndex, groupProduct ->
             if (groupProduct.productItemList.isEmpty())  {
@@ -29,6 +30,7 @@ internal object VisitableFactory {
                         pageInGroup = pageInGroup,
                         pageCount = groupProduct.getPageCount(itemPerPage),
                         productIndex = index,
+                        listener = listener,
                     )
                 }
             }

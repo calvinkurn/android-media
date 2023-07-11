@@ -2,6 +2,7 @@ package com.tokopedia.carouselproductcard.paging.list
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.carouselproductcard.paging.CarouselPagingGroupModel
+import com.tokopedia.carouselproductcard.paging.CarouselPagingProductCardView
 import com.tokopedia.carouselproductcard.paging.Paging
 import com.tokopedia.carouselproductcard.paging.HasGroup
 import com.tokopedia.carouselproductcard.paging.Spannable
@@ -17,6 +18,7 @@ internal data class ProductCardListDataView(
     override val pageInGroup: Int,
     override val pageCount: Int,
     val productIndex: Int,
+    val listener: CarouselPagingProductCardView.CarouselPagingListener,
 ): Visitable<TypeFactory>, HasGroup, Paging, Spannable, ImpressHolder() {
 
     override fun type(typeFactory: TypeFactory?): Int =
@@ -31,6 +33,7 @@ internal data class ProductCardListDataView(
             pageInGroup: Int,
             pageCount: Int,
             productIndex: Int,
+            listener: CarouselPagingProductCardView.CarouselPagingListener,
         ) = ProductCardListDataView(
             productCardModel,
             spanSize,
@@ -39,6 +42,7 @@ internal data class ProductCardListDataView(
             pageInGroup,
             pageCount,
             productIndex,
+            listener,
         )
     }
 }

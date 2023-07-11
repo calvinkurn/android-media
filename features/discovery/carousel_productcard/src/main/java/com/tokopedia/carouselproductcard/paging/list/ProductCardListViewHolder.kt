@@ -5,7 +5,6 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.carouselproductcard.R
 import com.tokopedia.carouselproductcard.databinding.CarouselPagingItemLayoutBinding
-import com.tokopedia.carouselproductcard.paging.CarouselPagingProductCardView
 import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.unifycomponents.toPx
@@ -14,7 +13,6 @@ import com.tokopedia.utils.view.binding.viewBinding
 internal class ProductCardListViewHolder(
     itemView: View,
     private val paddingStart: Int,
-    private val listener: CarouselPagingProductCardView.CarouselPagingListener,
 ): AbstractViewHolder<ProductCardListDataView>(itemView) {
 
     private var binding: CarouselPagingItemLayoutBinding? by viewBinding()
@@ -43,12 +41,12 @@ internal class ProductCardListViewHolder(
             element,
             object: ViewHintListener {
                 override fun onViewHint() {
-                    listener.onItemImpress(element.group, element.productIndex)
+                    element.listener.onItemImpress(element.group, element.productIndex)
                 }
             }
         )
         binding?.carouselPagingProductCardListView?.setOnClickListener {
-            listener.onItemClick(element.group, element.productIndex)
+            element.listener.onItemClick(element.group, element.productIndex)
         }
     }
 

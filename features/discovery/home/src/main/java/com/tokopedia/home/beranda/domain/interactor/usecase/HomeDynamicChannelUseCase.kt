@@ -327,6 +327,8 @@ class HomeDynamicChannelUseCase @Inject constructor(
 
                     getRecommendationWidget(dynamicChannelPlainResponse)
 
+                    getBestSellerData(dynamicChannelPlainResponse)
+
                     dynamicChannelPlainResponse.getWidgetDataIfExist<
                         HomeTopAdsBannerDataModel,
                         ArrayList<TopAdsImageViewModel>>(
@@ -579,7 +581,9 @@ class HomeDynamicChannelUseCase @Inject constructor(
                 homeDataModel.deleteWidgetModel(bestSellerDataModel, index) {}
             }
         }
+    }
 
+    private suspend fun getBestSellerData(homeDataModel: HomeDynamicChannelModel) {
         findWidget<BestSellerRevampDataModel>(homeDataModel) { bestSellerDataModel, index ->
             val recommendationFilterList = getRecommendationFilterChips(
                 bestSellerDataModel.pageName,
@@ -599,12 +603,13 @@ class HomeDynamicChannelUseCase @Inject constructor(
                 )
 
                 if (!recommendationListIsEmpty(recommendationData)) {
-                    val updatedBestSellerDataModel = bestSellerRevampMapper.mapChipProductDataModelList(
-                        recommendationData,
-                        recommendationFilterList,
-                        bestSellerDataModel,
-                        activatedChip,
-                    )
+                    val updatedBestSellerDataModel =
+                        bestSellerRevampMapper.mapChipProductDataModelList(
+                            recommendationData,
+                            recommendationFilterList,
+                            bestSellerDataModel,
+                            activatedChip,
+                        )
 
                     homeDataModel.updateWidgetModel(
                         visitable = updatedBestSellerDataModel,
