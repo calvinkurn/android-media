@@ -5,10 +5,8 @@ import com.tokopedia.cart.data.model.response.promo.CartPromoTicker
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.CartData
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.OrdersItem
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
-import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.every
-import io.mockk.just
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import rx.Observable
@@ -29,10 +27,7 @@ class GetPromoDataTest : BaseCartTest() {
             )
         )
 
-        coEvery { getCartRevampV3UseCase.setParams(any(), any()) } just Runs
-        coEvery { getCartRevampV3UseCase.execute(any(), any()) } answers {
-            firstArg<(CartData) -> Unit>().invoke(cartData)
-        }
+        coEvery { getCartRevampV4UseCase(any()) } returns cartData
 
         every { updateCartCounterUseCase.createObservable(any()) } answers { Observable.just(1) }
 
@@ -53,10 +48,7 @@ class GetPromoDataTest : BaseCartTest() {
             )
         )
 
-        coEvery { getCartRevampV3UseCase.setParams(any(), any()) } just Runs
-        coEvery { getCartRevampV3UseCase.execute(any(), any()) } answers {
-            firstArg<(CartData) -> Unit>().invoke(cartData)
-        }
+        coEvery { getCartRevampV4UseCase(any()) } returns cartData
 
         every { updateCartCounterUseCase.createObservable(any()) } answers { Observable.just(1) }
 

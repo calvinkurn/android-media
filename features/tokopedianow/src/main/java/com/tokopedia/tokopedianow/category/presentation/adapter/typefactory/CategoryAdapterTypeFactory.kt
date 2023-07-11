@@ -20,11 +20,14 @@ import com.tokopedia.tokopedianow.category.presentation.viewholder.CategoryShowc
 import com.tokopedia.tokopedianow.category.presentation.viewholder.CategoryShowcaseViewHolder
 import com.tokopedia.tokopedianow.category.presentation.viewholder.CategoryTitleViewHolder
 import com.tokopedia.tokopedianow.category.presentation.viewholder.CategoryTitleViewHolder.CategoryTitleListener
+import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowAdsCarouselTypeFactory
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowCategoryMenuTypeFactory
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowChooseAddressWidgetTypeFactory
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowProductRecommendationTypeFactory
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowProgressBarTypeFactory
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowTickerTypeFactory
+import com.tokopedia.tokopedianow.common.listener.ProductAdsCarouselListener
+import com.tokopedia.tokopedianow.common.model.TokoNowAdsCarouselUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowChooseAddressWidgetUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProgressBarUiModel
@@ -33,6 +36,7 @@ import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuU
 import com.tokopedia.tokopedianow.common.view.TokoNowDynamicHeaderView.TokoNowDynamicHeaderListener
 import com.tokopedia.tokopedianow.common.view.TokoNowProductRecommendationView.TokoNowProductRecommendationListener
 import com.tokopedia.tokopedianow.common.view.TokoNowView
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowAdsCarouselViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowChooseAddressWidgetViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowChooseAddressWidgetViewHolder.TokoNowChooseAddressWidgetListener
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowProductRecommendationViewHolder
@@ -52,6 +56,7 @@ class CategoryAdapterTypeFactory(
     private val tokoNowProductRecommendationListener: TokoNowProductRecommendationListener? = null,
     private val productCardCompactListener: ProductCardCompactView.ProductCardCompactListener? = null,
     private val productCardCompactSimilarProductTrackerListener: ProductCardCompactSimilarProductTrackerListener? = null,
+    private val productAdsCarouselListener: ProductAdsCarouselListener? = null,
     private val recycledViewPool: RecyclerView.RecycledViewPool? = null,
     private val lifecycleOwner: LifecycleOwner? = null
 ): BaseAdapterTypeFactory(),
@@ -60,7 +65,8 @@ class CategoryAdapterTypeFactory(
     TokoNowCategoryMenuTypeFactory,
     TokoNowProductRecommendationTypeFactory,
     TokoNowProgressBarTypeFactory,
-    TokoNowTickerTypeFactory
+    TokoNowTickerTypeFactory,
+    TokoNowAdsCarouselTypeFactory
 {
     /* Category Component Ui Model */
     override fun type(uiModel: CategoryHeaderSpaceUiModel): Int = CategoryHeaderSpaceViewHolder.LAYOUT
@@ -74,6 +80,7 @@ class CategoryAdapterTypeFactory(
     override fun type(uiModel: TokoNowProductRecommendationUiModel): Int = TokoNowProductRecommendationViewHolder.LAYOUT
     override fun type(uiModel: TokoNowProgressBarUiModel): Int = TokoNowProgressBarViewHolder.LAYOUT
     override fun type(uiModel: TokoNowTickerUiModel): Int = TokoNowTickerViewHolder.LAYOUT
+    override fun type(uiModel: TokoNowAdsCarouselUiModel): Int = TokoNowAdsCarouselViewHolder.LAYOUT
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when(type) {
@@ -119,6 +126,9 @@ class CategoryAdapterTypeFactory(
             TokoNowTickerViewHolder.LAYOUT -> TokoNowTickerViewHolder(
                 itemView = view
             )
+            TokoNowAdsCarouselViewHolder.LAYOUT -> {
+                TokoNowAdsCarouselViewHolder(view, productAdsCarouselListener)
+            }
             else -> super.createViewHolder(view, type)
         }
     }

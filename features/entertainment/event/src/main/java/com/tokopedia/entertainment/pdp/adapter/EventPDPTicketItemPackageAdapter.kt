@@ -161,6 +161,7 @@ class EventPDPTicketItemPackageAdapter(
                     itemView.greenDivider.visibility = View.VISIBLE
                     itemView.bgTicket.background = ContextCompat.getDrawable(context, R.drawable.ent_pdp_ticket_active_bg)
                     itemView.quantityEditor.visibility = View.VISIBLE
+                    itemView.parent.clearChildFocus(itemView.findFocus())
                     itemView.quantityEditor.setValue(if (items.minQty.toIntSafely() < 1) MIN_QTY else items.minQty.toIntSafely())
                     itemView.quantityEditor.editText.visibility = View.VISIBLE
                     itemView.quantityEditor.addButton.visibility = View.VISIBLE

@@ -162,7 +162,11 @@ class ShopHomeFlashSaleProductCardBigGridViewHolder(
     }
 
     private fun adjustProductCardWidth() {
+        val productCardBigGrid = productCardBigGrid ?: return
         val productCardWidth = (getScreenWidth() - PADDING_AND_MARGIN.toFloat().dpToPx()) / TWO
-        productCardBigGrid?.layoutParams = ViewGroup.LayoutParams(productCardWidth.toInt(), ViewGroup.LayoutParams.WRAP_CONTENT)
+        val layoutParams = productCardBigGrid.layoutParams
+        layoutParams.width = productCardWidth.toInt()
+        layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
+        productCardBigGrid.layoutParams = layoutParams
     }
 }
