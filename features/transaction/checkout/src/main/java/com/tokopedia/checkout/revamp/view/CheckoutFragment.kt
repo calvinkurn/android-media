@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -13,16 +14,23 @@ import com.tokopedia.checkout.databinding.FragmentCheckoutBinding
 import com.tokopedia.checkout.databinding.HeaderCheckoutBinding
 import com.tokopedia.checkout.revamp.di.CheckoutModule
 import com.tokopedia.checkout.revamp.di.DaggerCheckoutComponent
+import com.tokopedia.checkout.revamp.view.adapter.CheckoutAdapter
+import com.tokopedia.checkout.revamp.view.adapter.CheckoutAdapterListener
+import com.tokopedia.checkout.revamp.view.adapter.CheckoutDiffUtilCallback
+import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPageState
 import com.tokopedia.checkout.view.ShipmentFragment
+import com.tokopedia.checkout.view.uimodel.ShipmentNewUpsellModel
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
 import com.tokopedia.purchase_platform.common.feature.checkout.ShipmentFormRequest
 import com.tokopedia.purchase_platform.common.utils.animateGone
 import com.tokopedia.purchase_platform.common.utils.animateShow
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.lifecycle.autoCleared
 import javax.inject.Inject
 
-class CheckoutFragment : BaseDaggerFragment() {
+class CheckoutFragment : BaseDaggerFragment(), CheckoutAdapterListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -34,6 +42,8 @@ class CheckoutFragment : BaseDaggerFragment() {
     private var binding by autoCleared<FragmentCheckoutBinding>()
 
     private var header by autoCleared<HeaderCheckoutBinding>()
+
+    private val adapter: CheckoutAdapter = CheckoutAdapter(this)
 
     private val isPlusSelected: Boolean
         get() = arguments?.getBoolean(ShipmentFragment.ARG_IS_PLUS_SELECTED, false) ?: false
@@ -52,7 +62,8 @@ class CheckoutFragment : BaseDaggerFragment() {
         get() {
             var leasingId = "0"
             if (arguments != null && arguments!!.getString(ShipmentFragment.ARG_CHECKOUT_LEASING_ID) != null &&
-                !arguments!!.getString(ShipmentFragment.ARG_CHECKOUT_LEASING_ID).equals("null", ignoreCase = true)
+                !arguments!!.getString(ShipmentFragment.ARG_CHECKOUT_LEASING_ID)
+                    .equals("null", ignoreCase = true)
             ) {
                 leasingId = arguments!!.getString(ShipmentFragment.ARG_CHECKOUT_LEASING_ID)!!
             }
@@ -113,8 +124,9 @@ class CheckoutFragment : BaseDaggerFragment() {
         header.tvCheckoutHeaderAddressName.isVisible = false
         binding.headerCheckout.customView(header.root)
 
-        binding.rvCheckout.adapter = CheckoutAdapter()
-        binding.rvCheckout.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        binding.rvCheckout.adapter = adapter
+        binding.rvCheckout.layoutManager =
+            LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
 
         binding.tvCheckoutTesting.setOnClickListener {
             if (header.tvCheckoutHeaderText.isVisible) {
@@ -140,10 +152,48 @@ class CheckoutFragment : BaseDaggerFragment() {
         viewModel.isPlusSelected = isPlusSelected
         observeData()
 
-        viewModel.loadSAF(skipUpdateOnboardingState = false)
+        viewModel.loadSAF(
+            skipUpdateOnboardingState = true,
+            isReloadData = false,
+            isReloadAfterPriceChangeHigher = false
+        )
     }
 
     private fun observeData() {
+        viewModel.listData.observe(viewLifecycleOwner) {
+            val diffResult = DiffUtil.calculateDiff(CheckoutDiffUtilCallback(it, adapter.list))
+            adapter.list = it
+            diffResult.dispatchUpdatesTo(adapter)
+        }
+
+        viewModel.pageState.observe(viewLifecycleOwner) {
+            when (it) {
+                is CheckoutPageState.CacheExpired -> {
+
+                }
+                is CheckoutPageState.CheckNoAddress -> {
+
+                }
+                CheckoutPageState.EmptyData -> {
+
+                }
+                is CheckoutPageState.Error -> {
+                    Toaster.build(binding.root, ErrorHandler.getErrorMessage(context, it.throwable), type = Toaster.TYPE_ERROR).show()
+                }
+                CheckoutPageState.Loading -> {
+
+                }
+                is CheckoutPageState.NoAddress -> {
+
+                }
+                is CheckoutPageState.NoMatchedAddress -> {
+
+                }
+                is CheckoutPageState.Success -> {
+                    binding.rvCheckout.isVisible = true
+                }
+            }
+        }
     }
 
     fun onBackPressed(): Boolean {
@@ -174,4 +224,19 @@ class CheckoutFragment : BaseDaggerFragment() {
             return checkoutFragment
         }
     }
+
+    // region adapter listener
+    override fun onViewNewUpsellCard(shipmentUpsellModel: ShipmentNewUpsellModel) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onClickApplyNewUpsellCard(shipmentUpsellModel: ShipmentNewUpsellModel) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onClickCancelNewUpsellCard(shipmentUpsellModel: ShipmentNewUpsellModel) {
+        TODO("Not yet implemented")
+    }
+
+    // endregion
 }
