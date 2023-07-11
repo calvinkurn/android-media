@@ -1114,7 +1114,7 @@ class ShopPageCampaignFragment :
             NotifyMeAction.REGISTER.action,
             ignoreCase = true
         )
-        viewModelCampaign?.updateBannerTimerWidgetData(
+        viewModelCampaign?.toggleBannerTimerRemindMe(
             shopCampaignTabAdapter.getNewVisitableItems(),
             isRegisterCampaign,
             true
@@ -1140,7 +1140,7 @@ class ShopPageCampaignFragment :
                 getString(R.string.shop_string_ok)
             ).show()
         }
-        viewModelCampaign?.updateBannerTimerWidgetData(
+        viewModelCampaign?.toggleBannerTimerRemindMe(
             shopCampaignTabAdapter.getNewVisitableItems(),
             isRemindMe = false,
             isClickRemindMe = false
@@ -1148,7 +1148,7 @@ class ShopPageCampaignFragment :
     }
 
     override fun onSuccessGetBannerTimerRemindMeStatusData(data: GetCampaignNotifyMeUiModel) {
-        viewModelCampaign?.updateBannerTimerWidgetData(
+        viewModelCampaign?.toggleBannerTimerRemindMe(
             shopCampaignTabAdapter.getNewVisitableItems(),
             isRemindMe = data.isAvailable,
             isClickRemindMe = false
