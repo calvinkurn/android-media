@@ -426,8 +426,17 @@ private fun renderStockPercentage(
                 height = it.context.resources.getDimension(FIRE_HEIGHT).toInt()
             )
         }
-        it.progressBarColorType = ProgressBarUnify.COLOR_RED
+        renderStockProgressBarColor(it)
         it.setValue(productCardModel.stockBarPercentage, false)
+    }
+}
+
+private fun renderStockProgressBarColor(progressBarStock: ProgressBarUnify?){
+    progressBarStock?.apply {
+        progressBarColor = intArrayOf(
+            ContextCompat.getColor(context, R.color.Unify_RN600),
+            ContextCompat.getColor(context, R.color.Unify_RN600)
+    )
     }
 }
 

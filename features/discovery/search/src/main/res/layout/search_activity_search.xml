@@ -19,7 +19,8 @@
         app:toolbarAlwaysShowShadow="false"
         app:toolbarBackButton="back"
         app:toolbarContentType="typeSearchbar"
-        app:toolbarInitialTheme="light" />
+        app:toolbarInitialTheme="light"
+        app:toolbarInvertSearchBarColor="true" />
 
     <androidx.constraintlayout.motion.widget.MotionLayout
         android:id="@+id/container"
