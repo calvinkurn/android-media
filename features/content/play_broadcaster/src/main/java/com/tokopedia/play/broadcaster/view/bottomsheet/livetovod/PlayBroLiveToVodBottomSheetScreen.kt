@@ -29,10 +29,12 @@ fun PlayBroadcasterLiveToVodBottomSheetScreen(
     onBackPressed: () -> Unit,
     onLearnMorePressed: () -> Unit,
 ) {
-    LiveToVodBottomSheetContent(
-        onButtonClick = { onBackPressed.invoke() },
-        onLearnMorePressed = { onLearnMorePressed.invoke() },
-    )
+    NestTheme {
+        LiveToVodBottomSheetContent(
+            onButtonClick = { onBackPressed.invoke() },
+            onLearnMorePressed = { onLearnMorePressed.invoke() },
+        )
+    }
 }
 
 @Composable
@@ -41,7 +43,7 @@ private fun LiveToVodBottomSheetContent(
     onLearnMorePressed: () -> Unit,
 ) {
     val textLearnMore = buildAnnotatedString {
-        append(stringResource(id = R.string.play_prepare_broadcaster_disable_live_to_vod_learn_more_text))
+        append(stringResource(id = R.string.play_prepare_broadcaster_disable_live_to_vod_learn_more_text_bottom_sheet))
         withStyle(
             style = SpanStyle(
                 fontWeight = FontWeight.Bold,
@@ -68,14 +70,22 @@ private fun LiveToVodBottomSheetContent(
                 .height(280.dp),
         )
         NestTypography(
-            text = stringResource(id = R.string.play_prepare_broadcaster_disable_live_to_vod_title),
+            text = stringResource(id = R.string.play_prepare_broadcaster_disable_live_to_vod_title_bottom_sheet),
             modifier = Modifier.padding(top = 16.dp),
-            textStyle = NestTheme.typography.heading2.copy(textAlign = TextAlign.Center),
+            textStyle = NestTheme.typography.heading2
+                .copy(
+                    textAlign = TextAlign.Center,
+                    color = colorResource(id = R.color.Unify_NN0)
+                ),
         )
         NestTypography(
-            text = stringResource(id = R.string.play_prepare_broadcaster_disable_live_to_vod_description),
+            text = stringResource(id = R.string.play_prepare_broadcaster_disable_live_to_vod_description_bottom_sheet),
             modifier = Modifier.padding(top = 8.dp),
-            textStyle = NestTheme.typography.body1.copy(textAlign = TextAlign.Center),
+            textStyle = NestTheme.typography.body1
+                .copy(
+                    textAlign = TextAlign.Center,
+                    color = colorResource(id = R.color.Unify_NN1000)
+                ),
         )
         NestButton(
             text = stringResource(id = R.string.play_ok),
@@ -87,7 +97,11 @@ private fun LiveToVodBottomSheetContent(
         ClickableText(
             text = textLearnMore,
             modifier = Modifier.padding(top = 8.dp, bottom = 16.dp),
-            style = NestTheme.typography.body2.copy(textAlign = TextAlign.Center),
+            style = NestTheme.typography.body2
+                .copy(
+                    textAlign = TextAlign.Center,
+                    color = colorResource(id = R.color.Unify_NN1000)
+                ),
             onClick = { offset ->
                 textLearnMore.getStringAnnotations(offset, offset)
                     .firstOrNull()?.let { span ->
