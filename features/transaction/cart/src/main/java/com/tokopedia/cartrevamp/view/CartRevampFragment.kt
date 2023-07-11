@@ -1,11 +1,19 @@
 package com.tokopedia.cartrevamp.view
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
+import android.os.Bundle
+import android.text.TextUtils
+import android.util.DisplayMetrics
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.ImageView
 import androidx.annotation.Keep
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -15,38 +23,45 @@ import androidx.recyclerview.widget.SimpleItemAnimator
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler
+import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.atc_common.AtcConstant
 import com.tokopedia.cart.R
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.Action
 import com.tokopedia.cart.databinding.FragmentCartRevampBinding
-import com.tokopedia.cart.view.ActionListener
 import com.tokopedia.cart.view.CartActivity
 import com.tokopedia.cart.view.CartFragment
 import com.tokopedia.cart.view.adapter.cart.CartAdapter
-import com.tokopedia.cart.view.adapter.cart.CartItemAdapter
 import com.tokopedia.cart.view.compoundview.CartToolbarListener
-import com.tokopedia.cart.view.uimodel.CartBundlingBottomSheetData
-import com.tokopedia.cart.view.uimodel.CartChooseAddressHolderData
-import com.tokopedia.cart.view.uimodel.CartGroupHolderData
-import com.tokopedia.cart.view.uimodel.CartItemHolderData
-import com.tokopedia.cart.view.uimodel.CartItemTickerErrorHolderData
-import com.tokopedia.cart.view.uimodel.CartRecentViewItemHolderData
-import com.tokopedia.cart.view.uimodel.CartRecommendationItemHolderData
-import com.tokopedia.cart.view.uimodel.CartSelectAllHolderData
-import com.tokopedia.cart.view.uimodel.CartShopBottomHolderData
-import com.tokopedia.cart.view.uimodel.DisabledAccordionHolderData
 import com.tokopedia.cart.view.viewholder.CartRecommendationViewHolder
+import com.tokopedia.cartrevamp.view.adapter.cart.CartItemAdapter
 import com.tokopedia.cartrevamp.view.bottomsheet.showSummaryTransactionBottomsheet
 import com.tokopedia.cartrevamp.view.decorator.CartItemDecoration
 import com.tokopedia.cartrevamp.view.di.DaggerCartRevampComponent
+import com.tokopedia.cartrevamp.view.uimodel.CartBundlingBottomSheetData
+import com.tokopedia.cartrevamp.view.uimodel.CartChooseAddressHolderData
+import com.tokopedia.cartrevamp.view.uimodel.CartGroupHolderData
+import com.tokopedia.cartrevamp.view.uimodel.CartItemHolderData
+import com.tokopedia.cartrevamp.view.uimodel.CartItemTickerErrorHolderData
+import com.tokopedia.cartrevamp.view.uimodel.CartRecentViewItemHolderData
+import com.tokopedia.cartrevamp.view.uimodel.CartRecommendationItemHolderData
+import com.tokopedia.cartrevamp.view.uimodel.CartSelectAllHolderData
+import com.tokopedia.cartrevamp.view.uimodel.CartShopBottomHolderData
+import com.tokopedia.cartrevamp.view.uimodel.DisabledAccordionHolderData
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
+import com.tokopedia.kotlin.extensions.view.pxToDp
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.network.exception.ResponseErrorException
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCart
 import com.tokopedia.purchase_platform.common.base.BaseCheckoutFragment
+import com.tokopedia.purchase_platform.common.constant.CartConstant
+import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException
 import com.tokopedia.purchase_platform.common.feature.sellercashback.SellerCashbackListener
 import com.tokopedia.purchase_platform.common.feature.sellercashback.ShipmentSellerCashbackModel
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementHolderData
@@ -55,13 +70,13 @@ import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import rx.Subscriber
 import javax.inject.Inject
 
 @Keep
@@ -101,8 +116,10 @@ class CartRevampFragment :
     private var recommendationPage = 1
     private var isCheckUncheckDirectAction = true
 
+    private var shouldReloadRecentViewList: Boolean = false
     private var delayShowPromoButtonJob: Job? = null
     private var TRANSLATION_LENGTH = 0f
+    private var isKeyboardOpened = false
     private var initialPromoButtonPosition = 0f
 
     companion object {
@@ -110,6 +127,8 @@ class CartRevampFragment :
         private const val SPAN_SIZE_ONE = 1
         private const val SPAN_SIZE_TWO = 2
 
+        const val HEIGHT_DIFF_CONSTRAINT = 100
+        const val PROMO_POSITION_BUFFER = 10
         const val DELAY_CHECK_BOX_GLOBAL = 500L
     }
 
@@ -119,7 +138,7 @@ class CartRevampFragment :
             DaggerCartRevampComponent.builder().baseAppComponent(baseMainApplication.baseAppComponent)
                 .build().inject(this)
         }
-        cartAdapter = CartAdapter(this, this, this, userSession)
+//        cartAdapter = CartAdapter(this, this, this, userSession)
     }
 
     override fun getFragmentLayout(): Int {
@@ -147,8 +166,61 @@ class CartRevampFragment :
         initTopLayout()
     }
 
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        binding = FragmentCartRevampBinding.inflate(inflater, container, false)
+        val view = binding?.root
+        view?.viewTreeObserver?.addOnGlobalLayoutListener {
+            val heightDiff = view.rootView?.height?.minus(view.height) ?: 0
+            val displayMetrics = DisplayMetrics()
+            val windowManager =
+                context?.applicationContext?.getSystemService(Context.WINDOW_SERVICE) as? WindowManager
+            windowManager?.let {
+                windowManager.defaultDisplay.getMetrics(displayMetrics)
+                val heightDiffInDp = heightDiff.pxToDp(displayMetrics)
+                if (heightDiffInDp > CartFragment.HEIGHT_DIFF_CONSTRAINT) {
+                    if (!isKeyboardOpened) {
+                        binding?.bottomLayout?.gone()
+                        binding?.llPromoCheckout?.gone()
+                    }
+                    isKeyboardOpened = true
+                } else if (isKeyboardOpened) {
+                    binding?.bottomLayout?.show()
+                    binding?.llPromoCheckout?.show()
+                    isKeyboardOpened = false
+                }
+            }
+        }
+
+        return view
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setActivityBackgroundColor()
+        activity?.let {
+            setHasOptionsMenu(true)
+            it.title = it.getString(R.string.title_activity_cart)
+
+            val productId = getAtcProductId()
+            if (isAtcExternalFlow()) {
+                if (productId == CartActivity.INVALID_PRODUCT_ID) {
+                    showToastMessageRed(MessageErrorException(AtcConstant.ATC_ERROR_GLOBAL))
+                    refreshCartWithSwipeToRefresh()
+                } else {
+                    addToCartExternal(productId)
+                }
+            } else {
+                refreshCartWithSwipeToRefresh()
+            }
+        }
+    }
+
     override fun getFragment(): Fragment {
-        TODO("Not yet implemented")
+        return this
     }
 
     override fun onClickShopNow() {
@@ -516,6 +588,10 @@ class CartRevampFragment :
         })
     }
 
+    private fun addToCartExternal(productId: Long) {
+//        dPresenter.processAddToCartExternal(productId)
+    }
+
     private fun animatePromoButtonToHiddenPosition(valueY: Float) {
         binding?.llPromoCheckout?.animate()?.y(valueY)?.setDuration(0)?.start()
     }
@@ -650,6 +726,16 @@ class CartRevampFragment :
         return getAtcProductId() != 0L
     }
 
+    private fun initializeToasterLocation() {
+        activity?.let {
+            if (it is CartActivity) {
+                Toaster.toasterCustomBottomHeight = resources.getDimensionPixelSize(R.dimen.dp_140)
+            } else {
+                Toaster.toasterCustomBottomHeight = resources.getDimensionPixelSize(R.dimen.dp_210)
+            }
+        }
+    }
+
     @SuppressLint("ObsoleteSdkInt")
     private fun initNavigationToolbar() {
         activity?.let {
@@ -777,6 +863,21 @@ class CartRevampFragment :
         }
     }
 
+    private fun refreshCartWithSwipeToRefresh() {
+        refreshHandler?.isRefreshing = true
+        resetRecentViewList()
+//        if (dPresenter.dataHasChanged()) {
+//            showMainContainer()
+//            dPresenter.processToUpdateAndReloadCartData(getCartId())
+//        } else {
+//            dPresenter.processInitialGetCartData(
+//                getCartId(),
+//                dPresenter.getCartListData() == null,
+//                true
+//            )
+//        }
+    }
+
     private fun reloadAppliedPromoFromGlobalCheck() {
 //        val params = generateParamGetLastApplyPromo()
 //        if (isNeedHitUpdateCartAndValidateUse(params)) {
@@ -785,6 +886,10 @@ class CartRevampFragment :
 //        } else {
 //            updatePromoCheckoutManualIfNoSelected(getAllAppliedPromoCodes(params))
 //        }
+    }
+
+    private fun resetRecentViewList() {
+        shouldReloadRecentViewList = true
     }
 
     private fun routeToHome() {
@@ -799,6 +904,41 @@ class CartRevampFragment :
         activity?.let {
             val intent = RouteManager.getIntent(it, ApplinkConst.NEW_WISHLIST)
             startActivityForResult(intent, CartFragment.NAVIGATION_WISHLIST)
+        }
+    }
+
+    private fun setActivityBackgroundColor() {
+        activity?.let {
+            if (activity !is CartActivity) {
+                binding?.llCartContainer?.setBackgroundColor(
+                    ContextCompat.getColor(
+                        it,
+                        com.tokopedia.unifyprinciples.R.color.Unify_N50
+                    )
+                )
+            }
+
+            it.window.decorView.setBackgroundColor(
+                ContextCompat.getColor(
+                    it,
+                    com.tokopedia.unifyprinciples.R.color.Unify_N50
+                )
+            )
+        }
+    }
+
+    private fun showMainContainer() {
+        binding?.apply {
+            layoutGlobalError.gone()
+            rlContent.show()
+            bottomLayout.show()
+            bottomLayoutShadow.show()
+            llPromoCheckout.show()
+            llPromoCheckout.post {
+                if (initialPromoButtonPosition == 0f) {
+                    initialPromoButtonPosition = llPromoCheckout.y
+                }
+            }
         }
     }
 
@@ -863,5 +1003,58 @@ class CartRevampFragment :
                 )
             }
         }
+    }
+
+    private fun showToastMessageRed(
+        message: String,
+        actionText: String = "",
+        ctaClickListener: View.OnClickListener? = null
+    ) {
+        view?.let {
+            var tmpMessage = message
+            if (TextUtils.isEmpty(tmpMessage)) {
+                tmpMessage = CartConstant.CART_ERROR_GLOBAL
+            }
+
+            var tmpCtaClickListener = View.OnClickListener { }
+
+            if (ctaClickListener != null) {
+                tmpCtaClickListener = ctaClickListener
+            }
+
+            initializeToasterLocation()
+            if (actionText.isNotBlank()) {
+                Toaster.build(
+                    it,
+                    tmpMessage,
+                    Toaster.LENGTH_LONG,
+                    Toaster.TYPE_ERROR,
+                    actionText,
+                    tmpCtaClickListener
+                ).show()
+            } else {
+                Toaster.build(
+                    it,
+                    tmpMessage,
+                    Toaster.LENGTH_LONG,
+                    Toaster.TYPE_ERROR,
+                    it.resources.getString(com.tokopedia.purchase_platform.common.R.string.checkout_flow_toaster_action_ok),
+                    tmpCtaClickListener
+                ).show()
+            }
+        }
+    }
+
+    private fun showToastMessageRed(throwable: Throwable) {
+        var errorMessage = throwable.message ?: ""
+        if (!(throwable is CartResponseErrorException || throwable is AkamaiErrorException || throwable is ResponseErrorException)) {
+            errorMessage = ErrorHandler.getErrorMessage(activity, throwable)
+        }
+
+        showToastMessageRed(errorMessage)
+    }
+
+    private fun showToastMessageRed() {
+        showToastMessageRed("")
     }
 }
