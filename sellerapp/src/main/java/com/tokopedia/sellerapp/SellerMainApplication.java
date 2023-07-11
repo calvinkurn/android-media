@@ -160,8 +160,10 @@ public class SellerMainApplication extends SellerRouterApplication implements Co
         setEmbraceUserId();
         EmbraceMonitoring.INSTANCE.setCarrierProperties(this);
 
-        showDevOptNotification();
-        initDevMonitoringTools();
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            showDevOptNotification();
+            initDevMonitoringTools();
+        }
     }
     private TkpdAuthenticatorGql getAuthenticator() {
         return new TkpdAuthenticatorGql(this, this, new UserSession(context), new RefreshTokenGql());
