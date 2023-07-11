@@ -42,7 +42,7 @@
         android:layout_width="@dimen/dp_0"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginBottom="@dimen/dp_8"
+        android:layout_marginBottom="@dimen/dp_16"
         app:layout_constraintBottom_toTopOf="@id/view_curve"
         app:layout_constraintEnd_toStartOf="@id/guideline_vertical"
         app:layout_constraintStart_toStartOf="parent"
