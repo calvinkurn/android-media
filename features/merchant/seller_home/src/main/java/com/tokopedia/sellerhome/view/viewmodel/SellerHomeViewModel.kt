@@ -259,9 +259,9 @@ class SellerHomeViewModel @Inject constructor(
                     saveRawWidgets(layout.widgetList)
                 }
             } else {
-                executeUseCase(useCase) { layout, isFromCache ->
+                getLayoutWithLazyLoad(useCase) { layout, isFromCache ->
                     saveRawWidgets(layout.widgetList)
-                    return@executeUseCase sellerHomeLayoutHelper.get()
+                    return@getLayoutWithLazyLoad sellerHomeLayoutHelper.get()
                         .getInitialWidget(layout.widgetList, heightDp, isFromCache)
                         .flowOn(dispatcher.io)
                 }
@@ -565,8 +565,8 @@ class SellerHomeViewModel @Inject constructor(
         }
     }
 
-    private suspend fun executeUseCase(
-        useCase: BaseGqlUseCase<WidgetLayoutUiModel>,
+    private suspend fun getLayoutWithLazyLoad(
+        useCase: GetLayoutUseCase,
         getTransformerFlow: suspend (widgets: WidgetLayoutUiModel, isFromCache: Boolean) -> Flow<List<BaseWidgetUiModel<*>>>
     ) {
         if (useCase.isFirstLoad) {
@@ -575,11 +575,7 @@ class SellerHomeViewModel @Inject constructor(
                 useCase.setUseCache(true)
                 val useCaseResult: WidgetLayoutUiModel = useCase.executeOnBackground()
                 getTransformerFlow(useCaseResult, true).collect {
-                    _widgetLayout.value = Success(
-                        useCaseResult.copy(
-                            widgetList = it
-                        )
-                    )
+                    _widgetLayout.value = Success(useCaseResult.copy(widgetList = it))
                 }
             } catch (_: Exception) {
                 // ignore exception from cache
@@ -588,11 +584,7 @@ class SellerHomeViewModel @Inject constructor(
         useCase.setUseCache(false)
         val useCaseResult: WidgetLayoutUiModel = useCase.executeOnBackground()
         getTransformerFlow(useCaseResult, false).collect {
-            _widgetLayout.value = Success(
-                useCaseResult.copy(
-                    widgetList = it
-                )
-            )
+            _widgetLayout.value = Success(useCaseResult.copy(widgetList = it))
         }
     }
 }

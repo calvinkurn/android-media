@@ -272,7 +272,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     private val notificationDotBadge by lazy {
         NotificationDotBadge()
     }
-    private val isNewLazyLoad by lazy {
+    private val isLazyLoadEnabled by lazy {
         Build.VERSION.SDK_INT > Build.VERSION_CODES.N_MR1
     }
 
@@ -962,7 +962,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     }
 
     private fun getWidgetLayout() {
-        val deviceHeight = if (isNewLazyLoad) {
+        val deviceHeight = if (isLazyLoadEnabled) {
             deviceDisplayHeight
         } else {
             null
@@ -1181,7 +1181,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
         sahGlobalError.gone()
         emptyState?.gone()
-        val deviceHeight = if (isNewLazyLoad) {
+        val deviceHeight = if (isLazyLoadEnabled) {
             deviceDisplayHeight
         } else {
             null
@@ -1559,7 +1559,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
         var isWidgetHasError = false
         val newWidgetFromCache = widgets.firstOrNull()?.isFromCache ?: false
-        if (isNewLazyLoad) {
+        if (isLazyLoadEnabled) {
             startHomeLayoutRenderMonitoring()
             stopPltMonitoringIfNotCompleted(fromCache = newWidgetFromCache)
         }
@@ -1573,7 +1573,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 val newWidgets = arrayListOf<BaseWidgetUiModel<*>>()
                 widgets.forEach { newWidget ->
                     oldWidgets.find { isTheSameWidget(it, newWidget) }.let { oldWidget ->
-                        if (isNewLazyLoad) {
+                        if (isLazyLoadEnabled) {
                             // If there are card widgets exist in adapter data, set the previous value in the latest widget
                             // to enable animation after pull to refresh
                             if (newWidget is CardWidgetUiModel) {
@@ -2030,7 +2030,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
      * Load next unloaded indexed widget in adapter after the previous one is complete
      */
     private fun loadNextUnloadedWidget() {
-        if (isNewLazyLoad) {
+        if (isLazyLoadEnabled) {
             adapter.data?.find { it.isNeedToLoad() }?.let { newWidgets ->
                 getWidgetsData(listOf(newWidgets))
             }
@@ -2466,7 +2466,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     }
 
     private fun setRecyclerViewLayoutAnimation() {
-        if (isNewLazyLoad) {
+        if (isLazyLoadEnabled) {
             context?.let {
                 val animation: LayoutAnimationController = AnimationUtils.loadLayoutAnimation(
                     it, R.anim.seller_home_rv_layout_animation

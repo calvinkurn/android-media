@@ -126,7 +126,7 @@ class SellerHomeLayoutHelper @Inject constructor(
         )
         return widgetFlow.combine(predictedInitialWidgetFlow) { widgetsFromFlow, initialWidgets ->
             widgetsFromFlow.map { widget ->
-                initialWidgets.find { it.id == widget.id } ?: widget
+                initialWidgets.find { it.dataKey == widget.dataKey } ?: widget
             }.filter { !it.isNeedToBeRemoved }
         }
     }
@@ -176,7 +176,7 @@ class SellerHomeLayoutHelper @Inject constructor(
     ): Flow<List<BaseWidgetUiModel<*>>> {
         val loadedWidgetList = widgetList.filter { it.isLoading }
             .map {
-                if (it.widgetType == WidgetType.SECTION) {
+                if (it.widgetType == WidgetType.SECTION || it.widgetType == WidgetType.DESCRIPTION) {
                     it.isLoaded = true
                 }
                 return@map it
