@@ -204,7 +204,7 @@
             android:layout_marginBottom="@dimen/spacing_lvl2"
             android:visibility="gone"
             app:labelType="general_dark_grey"
-            app:labelTitle="@string/feed_product_out_of_stock_label"
+            app:labelTitle="Stok Habis"
             app:layout_constraintBottom_toBottomOf="@+id/iv_product_image"
             app:layout_constraintStart_toStartOf="@+id/iv_product_image"
             tools:visibility="visible"
