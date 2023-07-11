@@ -4919,7 +4919,7 @@ class ShipmentViewModel @Inject constructor(
     }
     // endregion
 
-    // region add ons
+    // region add ons gifting
     fun updateAddOnGiftingProductLevelDataBottomSheet(saveAddOnStateResult: SaveAddOnStateResult) {
         for (addOnResult in saveAddOnStateResult.addOns) {
             for (shipmentCartItemModel in shipmentCartItemModelList) {
@@ -5558,6 +5558,7 @@ class ShipmentViewModel @Inject constructor(
     }
     // endregion
 
+    // region platform fee
     fun getDynamicPaymentFee(request: PaymentFeeCheckoutRequest?) {
         view?.showPaymentFeeSkeletonLoading()
 
@@ -5589,7 +5590,9 @@ class ShipmentViewModel @Inject constructor(
     fun setPlatformFeeData(paymentFee: ShipmentPaymentFeeModel) {
         shipmentCostModel.value = shipmentCostModel.value.copy(dynamicPlatformFee = paymentFee)
     }
+    // endregion
 
+    // region addons product service
     private fun mapRequestSaveAddonProductService(cartShipmentAddressFormData: CartShipmentAddressFormData) {
         val listCartProduct: ArrayList<CartProduct> = arrayListOf()
         val listAddOnDataRequest: ArrayList<AddOnDataRequest> = arrayListOf()
@@ -5652,6 +5655,7 @@ class ShipmentViewModel @Inject constructor(
             )
         }
     }
+    // end region
 
     companion object {
         private const val LAST_THREE_DIGIT_MODULUS: Long = 1000
