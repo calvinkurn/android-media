@@ -10,9 +10,6 @@ public class RemoteConfigKey {
     public static final String MAINAPP_WALLET_LABEL_NAME = "mainapp_wallet_label_name";
     public static final String MAINAPP_WALLET_LABEL_REGISTER = "mainapp_wallet_label_register";
 
-    public static final String CUSTOMER_ENABLE_ROBUST = "android_customer_robust_enable";
-    public static final String SELLER_ENABLE_ROBUST = "android_sellerapp_robust_enable";
-
     public static final String APP_SHARE_DESCRIPTION = "app_share_description";
     public static final String MAINAPP_ACTIVATE_BRANCH_LINKS = "mainapp_activate_branch_links";
 
@@ -100,7 +97,6 @@ public class RemoteConfigKey {
 
     public static final String MAINAPP_ENTERTAINMENT_ALWAYS_NATIVE = "android_enable_always_native_entertainment";
 
-    public static final String MAINAPP_RECHARGE_BUYER_ORDER_DETAIL = "android_enable_dg_order_detail_new";
     public static final String MAINAPP_RECHARGE_CC_PROMO_RECOM = "android_enable_cc_promorecom";
 
     public static final String ENABLE_IN_APP_REVIEW_DIGITAL_THANKYOU_PAGE = "android_customer_enable_in_app_review_digital_thank_you_page";
@@ -146,6 +142,7 @@ public class RemoteConfigKey {
 
 
     public static final String KYC_USING_SELFIE = "android_main_app_enabled_kyc_selfie";
+    public static final String GOTO_ONE_KYC_CLICKSTREAM = "android_one_kyc_clickstream";
 
     public static final String HOME_ENABLE_PAGINATION = "android_customer_home_enable_pagination";
     public static final String HOME_REMOVE_PAGINATION = "android_customer_home_remove_pagination";
@@ -223,7 +220,7 @@ public class RemoteConfigKey {
 
     public static final String PAYMENT_OVERLONG_THRESHOLD = "android_payment_overlong_threshold";
 
-    public static final String ENABLE_WEBVIEW_PRINT_JS_INTERFACE = "android_enable_webview_print_jsinterface";
+    public static final String ENABLE_WEBVIEW_PARTNER_KYC_JS_INTERFACE = "android_enable_webview_partner_kyc_jsinterface";
 
     public static final String SELLER_HOME_ENABLE_WATCH_APP_CHECKING = "android_sellerapp_home_enable_watch_app_checking";
     public static final String ENABLE_POST_ATC_PDP = "android_enable_post_atc_pdp";
@@ -243,6 +240,9 @@ public class RemoteConfigKey {
     public static final String BUBBLE_TOPCHAT_CM = "android_enable_bubble_topchat_cm";
 
     public static final String FINTECH_WEBVIEW_HIDE_TOOLBAR = "android_fintech_webview_hide_toolbar";
+    public static final String FINTECH_WEBVIEW_DISABLE_GALLERY_PICKER = "android_fintech_webview_disable_gallery_picker";
 
     public static final String FEED_NEW_ICON = "FeedNewIcon";
+
+    public static final String IS_SHOP_PENALTY_NEW_PAGE = "android_shop_penalty_new";
 }

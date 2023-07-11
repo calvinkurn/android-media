@@ -9,6 +9,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDynami
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.CarouselPlayWidgetDataModel
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRevampViewModel
 import com.tokopedia.home.ext.observeOnce
+import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.play.widget.ui.PlayWidgetState
 import com.tokopedia.play.widget.ui.model.PlayWidgetBackgroundUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetConfigUiModel
@@ -93,7 +94,7 @@ class HomeViewModelPlayCarouselTest {
     @ExperimentalCoroutinesApi
     @Test
     fun `given user not logged in when shouldUpdatePlayWidgetToggleReminder then trigger livedata with given paramater`() {
-        val mockChannel = DynamicHomeChannel.Channels()
+        val mockChannel = ChannelModel("", "")
         val mockPlayWidgetState = PlayWidgetState(isLoading = true)
 
         val mockChannelId = "1"
@@ -117,7 +118,7 @@ class HomeViewModelPlayCarouselTest {
     @ExperimentalCoroutinesApi
     @Test
     fun `given homePlayUseCase success when shouldUpdatePlayWidgetToggleReminder then trigger livedata with Result success reminderType`() {
-        val mockChannel = DynamicHomeChannel.Channels()
+        val mockChannel = ChannelModel("", "")
         val mockPlayWidgetState = PlayWidgetState(isLoading = true)
 
         val mockChannelId = "1"
@@ -156,7 +157,7 @@ class HomeViewModelPlayCarouselTest {
     @ExperimentalCoroutinesApi
     @Test
     fun `given homePlayUseCase failed when shouldUpdatePlayWidgetToggleReminder then trigger livedata with Result error reminderType and homeDataModel updated`() {
-        val mockChannel = DynamicHomeChannel.Channels()
+        val mockChannel = ChannelModel("", "")
         val mockPlayWidgetState = PlayWidgetState(isLoading = true)
 
         val mockChannelId = "1"
@@ -194,7 +195,7 @@ class HomeViewModelPlayCarouselTest {
     @ExperimentalCoroutinesApi
     @Test
     fun `given initial carousel data model when updatePlayWidgetTotalView then homeDataModel need to update carousel model with value from usecase`() {
-        val mockChannel = DynamicHomeChannel.Channels()
+        val mockChannel = ChannelModel("", "")
         val mockChannelId = "1"
         val mockTotalView = "99"
 
@@ -228,7 +229,7 @@ class HomeViewModelPlayCarouselTest {
     @ExperimentalCoroutinesApi
     @Test
     fun `given initial carousel data model when onUpdateActionReminder then homeDataModel need to update carousel model with value from usecase`() {
-        val mockChannel = DynamicHomeChannel.Channels()
+        val mockChannel = ChannelModel("", "")
         val mockChannelId = "1"
 
         val mockInitialCarouselModel = CarouselPlayWidgetDataModel(mockChannel, mockPlayWidgetState)
@@ -261,7 +262,7 @@ class HomeViewModelPlayCarouselTest {
     @ExperimentalCoroutinesApi
     @Test
     fun `given getPlayWidget usecase success when getPlayWidgetWhenShouldRefresh then homeDataModel need to update carousel model with value from usecase`() {
-        val mockChannel = DynamicHomeChannel.Channels()
+        val mockChannel = ChannelModel("", "")
 
         val mockInitialCarouselModel = CarouselPlayWidgetDataModel(mockChannel, mockPlayWidgetState)
         val mockReturnCarouselModel = CarouselPlayWidgetDataModel(mockChannel, mockPlayWidgetStateUseCaseReturn)
@@ -293,7 +294,7 @@ class HomeViewModelPlayCarouselTest {
     @ExperimentalCoroutinesApi
     @Test
     fun `given getPlayWidget usecase failed when getPlayWidgetWhenShouldRefresh then homeDataModel need to remove carousel model`() {
-        val mockChannel = DynamicHomeChannel.Channels()
+        val mockChannel = ChannelModel("", "")
 
         val mockInitialCarouselModel = CarouselPlayWidgetDataModel(mockChannel, mockPlayWidgetState)
 

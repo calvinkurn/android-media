@@ -2,12 +2,10 @@ package com.tokopedia.cart.view.presenter
 
 import com.google.gson.Gson
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
-import com.tokopedia.usecase.RequestParams
-import io.mockk.every
+import io.mockk.coEvery
 import io.mockk.verify
 import io.mockk.verifyOrder
 import org.junit.Test
-import rx.Observable
 
 class GetRecentViewTest : BaseCartTest() {
 
@@ -29,8 +27,7 @@ class GetRecentViewTest : BaseCartTest() {
             add(recommendationWidget)
         }
 
-        every { getRecentViewUseCase.createObservable(any()) } returns Observable.just(response)
-        every { getRecentViewUseCase.getRecomParams(any(), any(), any(), any(), any()) } returns RequestParams.create()
+        coEvery { getRecentViewUseCase.getData(any()) } returns response
 
         // WHEN
         cartListPresenter.processGetRecentViewData(emptyList())
@@ -58,8 +55,7 @@ class GetRecentViewTest : BaseCartTest() {
             add(recommendationWidget)
         }
 
-        every { getRecentViewUseCase.createObservable(any()) } returns Observable.just(response)
-        every { getRecentViewUseCase.getRecomParams(any(), any(), any(), any(), any()) } returns RequestParams.create()
+        coEvery { getRecentViewUseCase.getData(any()) } returns response
 
         // WHEN
         cartListPresenter.processGetRecentViewData(emptyList())
@@ -77,8 +73,7 @@ class GetRecentViewTest : BaseCartTest() {
     @Test
     fun `WHEN get recent view failed THEN should not render recent view section`() {
         // GIVEN
-        every { getRecentViewUseCase.createObservable(any()) } returns Observable.error(IllegalStateException())
-        every { getRecentViewUseCase.getRecomParams(any(), any(), any(), any(), any()) } returns RequestParams.create()
+        coEvery { getRecentViewUseCase.getData(any()) } throws IllegalStateException()
 
         // WHEN
         cartListPresenter.processGetRecentViewData(emptyList())
@@ -111,8 +106,7 @@ class GetRecentViewTest : BaseCartTest() {
             add(recommendationWidget)
         }
 
-        every { getRecentViewUseCase.createObservable(any()) } returns Observable.just(response)
-        every { getRecentViewUseCase.getRecomParams(any(), any(), any(), any(), any()) } returns RequestParams.create()
+        coEvery { getRecentViewUseCase.getData(any()) } returns response
 
         cartListPresenter.detachView()
 

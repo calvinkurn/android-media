@@ -21,25 +21,24 @@
         tools:visibility="visible" />
 
     <com.tokopedia.unifycomponents.ImageUnify
-        android:id="@+id/imgSahNewSellerLeft"
-        android:layout_width="wrap_content"
+        android:id="@+id/imgBackgroundEffect"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:scaleType="fitXY"
-        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:unify_image_corner_radius="0"
-        tools:src="@tools:sample/avatars"
-        tools:visibility="visible" />
+        app:layout_constraintTop_toBottomOf="@+id/relTicker"
+        app:unify_image_corner_radius="0" />
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/imgSahNewSellerRight"
-        android:layout_width="wrap_content"
+        android:layout_width="64dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="8dp"
         android:scaleType="fitXY"
         android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/relTicker"
         app:unify_image_corner_radius="0"
         tools:src="@tools:sample/avatars"
         tools:visibility="visible" />

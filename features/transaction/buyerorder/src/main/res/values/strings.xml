@@ -107,8 +107,8 @@
     <string name="recharge_order_detail_total_payment_label">Total Bayar</string>
     <string name="recharge_order_detail_sbm_label">Bayar Sekaligus</string>
     <string name="recharge_order_detail_sbm_detail">Banyak tagihan? Sekali bayar, semua lunas</string>
-    <string name="recharge_order_detail_mybills_label">Langganan</string>
-    <string name="recharge_order_detail_mybills_detail">Ada tagihan rutin? Biar nggak lupa, Langganan aja</string>
+    <string name="recharge_order_detail_mybills_label">Bayar Otomatis</string>
+    <string name="recharge_order_detail_mybills_detail">Ada tagihan rutin? Biar nggak lupa, bayar otomatis aja</string>
     <string name="recharge_order_detail_about_orders_title">Tentang Pesananmu</string>
     <string name="recharge_order_detail_help_center_title">Pusat Bantuan</string>
     <string name="recharge_order_detail_help_center_detail">Info lebih lanjut, jika ada kendala</string>
@@ -116,8 +116,8 @@
     <string name="recharge_order_detail_copied_message" formatted="false">%s berhasil tersalin</string>
     <string name="deals_order_detail_copied_message">Kode voucher berhasil disalin</string>
 
-    <string name="static_assets_ic_my_bills_link">https://images.tokopedia.net/img/android/recharge_order_details/sbm.png</string>
-    <string name="static_assets_ic_langganan_link">https://images.tokopedia.net/img/android/recharge_order_details/langganan.png</string>
+    <string name="static_assets_ic_my_bills_link">https://images.tokopedia.net/img/BayarSekaligus.png</string>
+    <string name="static_assets_ic_langganan_link">https://images.tokopedia.net/img/Langganan.png</string>
 
     <string name="deals_voucher_label_count">%d dari %d voucher</string>
     <string name="deals_label_copy">Salin</string>
@@ -127,4 +127,6 @@
     <string name="dialog_void_emoney_description"><![CDATA[Proses pembatalan membutuhkan waktu <strong>paling lambat 2x24 jam</strong>. Dana akan dikembalikan ke metode pembayaran yang kamu pilih.]]></string>
     <string name="dialog_void_emoney_primary_cta_label">Ya, Batalkan</string>
     <string name="dialog_void_emoney_secondary_cta_label">Kembali</string>
+
+    <string name="payment_info_string_combine">%s %s</string>
 </resources>

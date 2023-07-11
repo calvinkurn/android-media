@@ -16,9 +16,11 @@ data class PdpParamModel(
     val campaignName: String = "",
     val campaignDiscount: Int = 0,
     val newProductPrice: Long = 0,
+    val campaignInfo: String = "",
+    val hasRibbon: Boolean = false
 ) : ImageGeneratorParamModel()
 
-//this data class can be ignored for ParamFieldAnnotation, since this class is being used to map the request on ImagePolicyResponse.generateToShopPage function
+// this data class can be ignored for ParamFieldAnnotation, since this class is being used to map the request on ImagePolicyResponse.generateToShopPage function
 @SuppressLint("ParamFieldAnnotation")
 data class ShopPageParamModel(
     var shopProfileImgUrl: String = "",
@@ -49,7 +51,7 @@ data class ShopPageParamModel(
     var productImage6: String = "",
     var productPrice6: Long = 0,
     var isHeadless: Boolean = false
-): ImageGeneratorParamModel() {
+) : ImageGeneratorParamModel() {
     enum class ShopInfoType(val typeName: String = "") {
         SHOP_PERFORMANCE("shop_performance"),
         BADGE_TEXT("badge_text_value"),

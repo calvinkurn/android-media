@@ -1,0 +1,33 @@
+{
+  "readme": "TokoFood Post Purchase - click call icon",
+  "mode": "exact",
+  "query": [
+    {
+      "event": "openScreen",
+      "eventAction": "view tokofood order detail page",
+      "eventCategory": "tokofood order detail page",
+      "businessUnit": ".*",
+      "currentSite": "tokopediamarketplace",
+      "isLoggedInStatus": "true|false",
+      "screenName": ".*",
+      "sessionIris": ".*",
+      "appsflyerId": ".*",
+      "clientId": ".*",
+      "theme": ".*",
+      "networkSpeed": ".*",
+      "shopId": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickPG",
+      "eventAction": "click call icon",
+      "sessionIris": ".*",
+      "eventCategory": ".*",
+      "eventLabel": ".*",
+      "businessUnit": ".*",
+      "currentSite": "tokopediamarketplace",
+      "shopId": ".*",
+      "userId": ".*"
+    }
+  ]
+}

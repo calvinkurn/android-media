@@ -11,12 +11,13 @@ import com.tokopedia.recommendation_widget_common.widget.carousel.*
 open class PgRecommendationViewHolder(
     itemView: View,
     private val buyerOrderDetailBindRecomWidgetListener: BuyerOrderDetailBindRecomWidgetListener
-) :
-    AbstractViewHolder<PGRecommendationWidgetUiModel>(itemView),
+) : AbstractViewHolder<PGRecommendationWidgetUiModel>(itemView),
     RecomCarouselWidgetBasicListener {
 
     companion object {
         val LAYOUT = R.layout.buyer_order_detail_pg_recommendation_layout
+
+        const val DEFAULT_PAGE_NAME = "default"
     }
 
     private val recomWidget: RecommendationCarouselWidgetView? =
@@ -28,8 +29,9 @@ open class PgRecommendationViewHolder(
                 buyerOrderDetailBindRecomWidgetListener.hidePgRecommendation()
             } else {
                 buyerOrderDetailBindRecomWidgetListener.setViewToLifecycleOwner(this)
+                val pageName = element.pageName.ifBlank { DEFAULT_PAGE_NAME }
                 this.bind(
-                    pageName = element.pageName,
+                    pageName = pageName,
                     productIds = element.productIdList,
                     adapterPosition = adapterPosition,
                     basicListener = this@PgRecommendationViewHolder,
@@ -57,7 +59,6 @@ open class PgRecommendationViewHolder(
         adapterPosition: Int
     ) {
         buyerOrderDetailBindRecomWidgetListener.onProductCardImpress(recomItem)
-
     }
 
     override fun onRecomProductCardClicked(
@@ -68,7 +69,6 @@ open class PgRecommendationViewHolder(
         adapterPosition: Int
     ) {
         buyerOrderDetailBindRecomWidgetListener.onProductCardClick(recomItem, applink)
-
     }
 
     override fun onRecomBannerImpressed(data: RecommendationCarouselData, adapterPosition: Int) {
@@ -104,5 +104,4 @@ open class PgRecommendationViewHolder(
 
         fun hidePgRecommendation()
     }
-
 }

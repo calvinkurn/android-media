@@ -46,14 +46,17 @@ class MultiBannerViewModel(val application: Application, var components: Compone
     private val _showErrorState = SingleLiveEvent<Boolean>()
     private var isDarkMode: Boolean = false
 
+    @JvmField
     @Inject
-    lateinit var checkPushStatusUseCase: CheckPushStatusUseCase
+    var checkPushStatusUseCase: CheckPushStatusUseCase? = null
 
+    @JvmField
     @Inject
-    lateinit var subScribeToUseCase: SubScribeToUseCase
+    var subScribeToUseCase: SubScribeToUseCase? = null
 
+    @JvmField
     @Inject
-    lateinit var bannerUseCase: BannerUseCase
+    var bannerUseCase: BannerUseCase? = null
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + SupervisorJob()
@@ -83,7 +86,7 @@ class MultiBannerViewModel(val application: Application, var components: Compone
     private fun fetchBannerData() {
         if (components.properties?.dynamic == true) {
             launchCatchError(block = {
-                if (bannerUseCase.loadFirstPageComponents(components.id, components.pageEndPoint, isDarkMode)) {
+                if (bannerUseCase?.loadFirstPageComponents(components.id, components.pageEndPoint, isDarkMode) == true) {
                     if (components.data.isNullOrEmpty()) {
                         _hideShimmer.value = true
                     }
@@ -157,8 +160,8 @@ class MultiBannerViewModel(val application: Application, var components: Compone
     private fun subscribeUserForPushNotification(position: Int) {
         if (isUserLoggedIn()) {
             launchCatchError(block = {
-                val pushSubscriptionResponse = subScribeToUseCase.subscribeToPush(getCampaignId(position))
-                if (pushSubscriptionResponse.notifierSetReminder?.isSuccess == 1 || pushSubscriptionResponse.notifierSetReminder?.isSuccess == 2) {
+                val pushSubscriptionResponse = subScribeToUseCase?.subscribeToPush(getCampaignId(position))
+                if (pushSubscriptionResponse?.notifierSetReminder?.isSuccess == 1 || pushSubscriptionResponse?.notifierSetReminder?.isSuccess == 2) {
                     pushBannerStatus.value = Pair(
                         position,
                         pushSubscriptionResponse.notifierSetReminder.errorMessage
@@ -189,8 +192,8 @@ class MultiBannerViewModel(val application: Application, var components: Compone
     private fun checkUserPushStatus(position: Int) {
         if (isUserLoggedIn()) {
             launchCatchError(block = {
-                val pushSubscriptionResponse = checkPushStatusUseCase.checkPushStatus(getCampaignId(position))
-                if (pushSubscriptionResponse.notifierCheckReminder?.status == 1) {
+                val pushSubscriptionResponse = checkPushStatusUseCase?.checkPushStatus(getCampaignId(position))
+                if (pushSubscriptionResponse?.notifierCheckReminder?.status == 1) {
                     pushBannerSubscription.value = position
                 }
             }, onError = {
@@ -211,8 +214,8 @@ class MultiBannerViewModel(val application: Application, var components: Compone
 
     private fun checkUserLocalPushStatus(position: Int) {
         launchCatchError(block = {
-            val pushSubscriptionResponse = checkPushStatusUseCase.checkPushStatus(getCampaignId(position))
-            if (pushSubscriptionResponse.notifierCheckReminder?.status == 1) {
+            val pushSubscriptionResponse = checkPushStatusUseCase?.checkPushStatus(getCampaignId(position))
+            if (pushSubscriptionResponse?.notifierCheckReminder?.status == 1) {
                 pushBannerSubscription.value = position
             }
         }, onError = {

@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
+import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.Space
@@ -17,21 +18,20 @@ import com.tokopedia.productcard.utils.ViewStubId
 import com.tokopedia.productcard.utils.findViewById
 import com.tokopedia.productcard.utils.glideClear
 import com.tokopedia.productcard.utils.loadImage
-import com.tokopedia.productcard.utils.renderStockBar
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigKey
-import com.tokopedia.unifycomponents.BaseCustomView
-import com.tokopedia.unifycomponents.Label
-import com.tokopedia.unifycomponents.ProgressBarUnify
-import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.remoteconfig.RemoteConfigKey.PRODUCT_CARD_ENABLE_INTERACTION
 import com.tokopedia.unifycomponents.CardUnify2
-import com.tokopedia.video_widget.VideoPlayerController
+import com.tokopedia.unifycomponents.CardUnify2.Companion.ANIMATE_OVERLAY
+import com.tokopedia.unifycomponents.CardUnify2.Companion.ANIMATE_OVERLAY_BOUNCE
+import com.tokopedia.unifycomponents.Label
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.video_widget.VideoPlayerController
 import com.tokopedia.video_widget.VideoPlayerView
 import kotlin.LazyThreadSafetyMode.NONE
 
-class ProductCardGridView : BaseCustomView, IProductCardView {
+class ProductCardGridView : ConstraintLayout, IProductCardView {
 
     private val cartExtension = ProductCardCartExtension(this)
     private val video: VideoPlayerController by lazy {
@@ -54,12 +54,6 @@ class ProductCardGridView : BaseCustomView, IProductCardView {
     }
     private val imageVideoIdentifier: ImageView? by lazy(NONE) {
         findViewById(R.id.imageVideoIdentifier)
-    }
-    private val progressBarStock: ProgressBarUnify? by lazy(NONE) {
-        findViewById(R.id.progressBarStock)
-    }
-    private val textViewStockLabel: Typography? by lazy(NONE) {
-        findViewById(R.id.textViewStockLabel)
     }
     private val imageThreeDots: ImageView? by lazy(NONE) {
         findViewById(R.id.imageThreeDots)
@@ -119,13 +113,13 @@ class ProductCardGridView : BaseCustomView, IProductCardView {
     private val remoteConfig : RemoteConfig by lazy(NONE) {
         FirebaseRemoteConfigImpl(context)
     }
-    private val productCardFooterLayoutContainer: FrameLayout by lazy(NONE) {
+    private val productCardFooterLayoutContainer: FrameLayout? by lazy(NONE) {
         findViewById(R.id.productCardFooterLayoutContainer)
     }
-    private val labelRepositionBackground: ImageView by lazy(NONE) {
+    private val labelRepositionBackground: ImageView? by lazy(NONE) {
         findViewById(R.id.labelRepositionBackground)
     }
-    private val labelReposition: Typography by lazy(NONE) {
+    private val labelReposition: Typography? by lazy(NONE) {
         findViewById(R.id.labelReposition)
     }
     private val labelOverlayBackground: ImageView? by lazy(NONE) {
@@ -137,6 +131,9 @@ class ProductCardGridView : BaseCustomView, IProductCardView {
     private val labelOverlayStatus: Label? by lazy(NONE) {
         findViewById(R.id.labelOverlayStatus)
     }
+    private val buttonSeeOtherProduct: UnifyButton? by lazy(NONE) {
+        findViewById(R.id.buttonSeeOtherProduct)
+    }
     private var isUsingViewStub = false
 
     constructor(context: Context) : super(context) {
@@ -144,23 +141,27 @@ class ProductCardGridView : BaseCustomView, IProductCardView {
     }
 
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
-        initWithAttrs(attrs)
+        init(attrs)
     }
 
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
-        initWithAttrs(attrs)
+        init(attrs)
     }
 
-    private fun init() {
+    private fun init(attrs: AttributeSet? = null) {
+        layoutParams = LayoutParams(MATCH_PARENT, WRAP_CONTENT)
+
+        initAttributes(attrs)
+
         View.inflate(context, R.layout.product_card_grid_layout, this)
 
-        val footerView = View.inflate(context, R.layout.product_card_footer_layout, null)
-        footerView.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
-
-        productCardFooterLayoutContainer.addView(footerView)
+        val footerView = createFooterView()
+        productCardFooterLayoutContainer?.addView(footerView)
     }
 
-    private fun initWithAttrs(attrs: AttributeSet?) {
+    private fun initAttributes(attrs: AttributeSet?) {
+        attrs ?: return
+
         val typedArray = context.obtainStyledAttributes(attrs, R.styleable.ProductCardView, 0, 0)
 
         try {
@@ -168,22 +169,27 @@ class ProductCardGridView : BaseCustomView, IProductCardView {
         } finally {
             typedArray.recycle()
         }
-
-        View.inflate(context, R.layout.product_card_grid_layout, this)
-
-        val footerView =
-            if (isUsingViewStub)
-                View.inflate(context, R.layout.product_card_footer_with_viewstub_layout, null)
-            else
-                View.inflate(context, R.layout.product_card_footer_layout, null)
-
-        footerView.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
-
-        productCardFooterLayoutContainer.addView(footerView)
     }
 
+    private fun createFooterView(): View = inflateFooterView().apply {
+        layoutParams = LayoutParams(MATCH_PARENT, LayoutParams.WRAP_CONTENT)
+    }
+
+    private fun inflateFooterView() =
+        if (isUsingViewStub)
+            inflate(context, R.layout.product_card_footer_with_viewstub_layout, null)
+        else
+            inflate(context, R.layout.product_card_footer_layout, null)
+
     override fun setProductModel(productCardModel: ProductCardModel) {
-        productCardModel.layoutStrategy.renderProductCardShadow(cardViewProductCard)
+        productCardModel.layoutStrategy.renderProductCardShadow(
+            productCardModel,
+            this,
+            cardViewProductCard,
+            true
+        )
+
+        renderProductCardRibbon(productCardModel, true)
 
         imageProduct?.loadImage(productCardModel.productImageUrl)
 
@@ -230,7 +236,9 @@ class ProductCardGridView : BaseCustomView, IProductCardView {
 
         renderProductCardContent(productCardModel, productCardModel.isWideContent)
 
-        renderStockBar(progressBarStock, textViewStockLabel, productCardModel)
+        productCardModel
+            .layoutStrategy
+            .renderStockBar(productCardModel, this)
 
         renderProductCardFooter(productCardModel, isProductCardList = false)
 
@@ -243,16 +251,21 @@ class ProductCardGridView : BaseCustomView, IProductCardView {
         cartExtension.setProductModel(productCardModel)
         video.setVideoURL(productCardModel.customVideoURL)
 
-        cardViewProductCard?.animateOnPress = if(remoteConfig.getBoolean(RemoteConfigKey.PRODUCT_CARD_ENABLE_INTERACTION, true)
-            && productCardModel.cardInteraction){
-            CardUnify2.ANIMATE_OVERLAY_BOUNCE
-        } else CardUnify2.ANIMATE_OVERLAY
+        cardViewProductCard?.animateOnPress = cardViewAnimationOnPress(productCardModel)
 
         productCardModel.layoutStrategy.renderLabelReposition(
             labelRepositionBackground,
             labelReposition,
             productCardModel,
         )
+    }
+
+    private fun cardViewAnimationOnPress(productCardModel: ProductCardModel): Int {
+        val isOverlayBounce =
+            remoteConfig.getBoolean(PRODUCT_CARD_ENABLE_INTERACTION, true)
+                && productCardModel.cardInteraction
+
+        return if (isOverlayBounce) ANIMATE_OVERLAY_BOUNCE else ANIMATE_OVERLAY
     }
 
     fun setImageProductViewHintListener(impressHolder: ImpressHolder, viewHintListener: ViewHintListener) {
@@ -293,6 +306,10 @@ class ProductCardGridView : BaseCustomView, IProductCardView {
 
     fun setSeeSimilarProductWishlistOnClickListener(seeSimilarProductWishlistClickListener: (View) -> Unit) {
         buttonSeeSimilarProductWishlist?.setOnClickListener(seeSimilarProductWishlistClickListener)
+    }
+
+    fun setSeeOtherProductOnClickListener(seeOtherProductOnClickListener: (View) -> Unit) {
+        buttonSeeOtherProduct?.setOnClickListener(seeOtherProductOnClickListener)
     }
 
     override fun getCardMaxElevation() = cardViewProductCard?.maxCardElevation ?: 0f

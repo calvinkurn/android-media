@@ -9,12 +9,7 @@ import androidx.fragment.app.commit
 import com.tokopedia.feedplus.databinding.FragmentFeedIntermediaryBinding
 import com.tokopedia.feedplus.oldFeed.view.fragment.FeedPlusContainerFragment
 import com.tokopedia.navigation_common.listener.FragmentListener
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.RemoteConfigKey
-import com.tokopedia.remoteconfig.RollenceKey
-import timber.log.Timber
+import com.tokopedia.remoteconfig.*
 
 /**
  * Created by kenny.hadisaputra on 12/05/23
@@ -32,7 +27,7 @@ class FeedIntermediaryFragment : Fragment(), FragmentListener {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentFeedIntermediaryBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -58,15 +53,15 @@ class FeedIntermediaryFragment : Fragment(), FragmentListener {
             replace(
                 binding.root.id,
                 fragment.apply {
-                     arguments = this@FeedIntermediaryFragment.arguments
+                    arguments = this@FeedIntermediaryFragment.arguments
                 },
                 FRAGMENT_TAG
             )
         }
     }
 
-    private fun isUsingImmersiveFeed(): Boolean {
-        return try {
+    private fun isUsingImmersiveFeed(): Boolean =
+        try {
             // check for the remote config
             if (remoteConfig.getBoolean(RemoteConfigKey.IS_USING_NEW_FEED, true)) {
                 // check for rollence
@@ -76,11 +71,9 @@ class FeedIntermediaryFragment : Fragment(), FragmentListener {
             } else {
                 false
             }
-        } catch (t: Throwable) {
-            Timber.e(t)
+        } catch (_: Throwable) {
             true
         }
-    }
 
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
         super.setUserVisibleHint(isVisibleToUser)
@@ -93,9 +86,18 @@ class FeedIntermediaryFragment : Fragment(), FragmentListener {
     }
 
     override fun isLightThemeStatusBar(): Boolean {
-        val fragment = getCurrentFragment() ?: return false
+        val fragment = getCurrentFragment() ?: return isUsingImmersiveFeed()
         return if (fragment is FragmentListener) {
             fragment.isLightThemeStatusBar
+        } else {
+            false
+        }
+    }
+
+    override fun isForceDarkModeNavigationBar(): Boolean {
+        val fragment = getCurrentFragment() ?: return isUsingImmersiveFeed()
+        return if (fragment is FragmentListener) {
+            fragment.isForceDarkModeNavigationBar
         } else {
             false
         }

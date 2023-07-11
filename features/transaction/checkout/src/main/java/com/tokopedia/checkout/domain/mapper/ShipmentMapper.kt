@@ -1,6 +1,5 @@
 package com.tokopedia.checkout.domain.mapper
 
-import com.tokopedia.checkout.data.model.response.platformfee.ShipmentPlatformFee
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.AddOnWording
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.CampaignTimer
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.Cod
@@ -13,24 +12,45 @@ import com.tokopedia.checkout.data.model.response.shipmentaddressform.NewUpsell
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.ScheduleDelivery
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.ShipmentAddressFormDataResponse
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.ShipmentInformation
-import com.tokopedia.checkout.data.model.response.shipmentaddressform.Shop
+import com.tokopedia.checkout.data.model.response.shipmentaddressform.ShipmentPlatformFee
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.TradeInInfo
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.Upsell
-import com.tokopedia.checkout.data.model.response.shipmentaddressform.UserAddress
-import com.tokopedia.checkout.domain.model.cartshipmentform.*
+import com.tokopedia.checkout.domain.model.cartshipmentform.AddressData
+import com.tokopedia.checkout.domain.model.cartshipmentform.AddressesData
+import com.tokopedia.checkout.domain.model.cartshipmentform.CampaignTimerUi
+import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData
+import com.tokopedia.checkout.domain.model.cartshipmentform.CheckoutCoachmarkPlusData
+import com.tokopedia.checkout.domain.model.cartshipmentform.CourierSelectionErrorData
+import com.tokopedia.checkout.domain.model.cartshipmentform.Donation
+import com.tokopedia.checkout.domain.model.cartshipmentform.EpharmacyData
+import com.tokopedia.checkout.domain.model.cartshipmentform.FreeShippingData
+import com.tokopedia.checkout.domain.model.cartshipmentform.FreeShippingGeneralData
+import com.tokopedia.checkout.domain.model.cartshipmentform.GroupAddress
+import com.tokopedia.checkout.domain.model.cartshipmentform.GroupShop
+import com.tokopedia.checkout.domain.model.cartshipmentform.GroupShop.Companion.UI_GROUP_TYPE_OWOC
+import com.tokopedia.checkout.domain.model.cartshipmentform.GroupShopV2
+import com.tokopedia.checkout.domain.model.cartshipmentform.NewUpsellData
+import com.tokopedia.checkout.domain.model.cartshipmentform.PreorderData
+import com.tokopedia.checkout.domain.model.cartshipmentform.Product
+import com.tokopedia.checkout.domain.model.cartshipmentform.ScheduleDeliveryData
+import com.tokopedia.checkout.domain.model.cartshipmentform.ShipmentInformationData
+import com.tokopedia.checkout.domain.model.cartshipmentform.ShipmentPlatformFeeData
+import com.tokopedia.checkout.domain.model.cartshipmentform.Shop
+import com.tokopedia.checkout.domain.model.cartshipmentform.TradeInInfoData
+import com.tokopedia.checkout.domain.model.cartshipmentform.UpsellData
 import com.tokopedia.checkout.view.uimodel.CrossSellBottomSheetModel
 import com.tokopedia.checkout.view.uimodel.CrossSellInfoModel
 import com.tokopedia.checkout.view.uimodel.CrossSellModel
 import com.tokopedia.checkout.view.uimodel.CrossSellOrderSummaryModel
 import com.tokopedia.checkout.view.uimodel.EgoldAttributeModel
 import com.tokopedia.checkout.view.uimodel.EgoldTieringModel
+import com.tokopedia.logisticCommon.data.entity.address.UserAddress
 import com.tokopedia.logisticCommon.data.entity.address.UserAddressTokoNow
 import com.tokopedia.logisticcart.shipping.model.AnalyticsProductCheckoutData
 import com.tokopedia.logisticcart.shipping.model.CodModel
 import com.tokopedia.logisticcart.shipping.model.ShipProd
 import com.tokopedia.logisticcart.shipping.model.ShopShipment
 import com.tokopedia.logisticcart.shipping.model.ShopTypeInfoData
-import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
 import com.tokopedia.purchase_platform.common.feature.coachmarkplus.CoachmarkPlusResponse
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.model.EthicalDrugDataModel
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.response.EpharmacyEnablerResponse
@@ -75,9 +95,15 @@ import com.tokopedia.purchase_platform.common.feature.purchaseprotection.data.Pu
 import com.tokopedia.purchase_platform.common.feature.purchaseprotection.domain.PurchaseProtectionPlanData
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.Ticker
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerData
-import com.tokopedia.purchase_platform.common.utils.Utils.isNotNullOrEmptyOrZero
 import com.tokopedia.purchase_platform.common.utils.isNotBlankOrZero
 import javax.inject.Inject
+import com.tokopedia.checkout.data.model.response.shipmentaddressform.GroupAddress as GroupAddressResponse
+import com.tokopedia.checkout.data.model.response.shipmentaddressform.GroupShop as GroupShopResponse
+import com.tokopedia.checkout.data.model.response.shipmentaddressform.GroupShopV2 as GroupShopV2Response
+import com.tokopedia.checkout.data.model.response.shipmentaddressform.Product as ProductResponse
+import com.tokopedia.checkout.data.model.response.shipmentaddressform.ShipProd as ShipProdResponse
+import com.tokopedia.checkout.data.model.response.shipmentaddressform.Shop as ShopResponse
+import com.tokopedia.checkout.data.model.response.shipmentaddressform.UserAddress as UserAddressResponse
 
 class ShipmentMapper @Inject constructor() {
 
@@ -107,14 +133,18 @@ class ShipmentMapper @Inject constructor() {
             isError = shipmentAddressFormDataResponse.errors.isNotEmpty()
             errorMessage = shipmentAddressFormDataResponse.errors.joinToString()
             isShowOnboarding = shipmentAddressFormDataResponse.isShowOnboarding
-            isIneligiblePromoDialogEnabled = shipmentAddressFormDataResponse.isIneligiblePromoDialogEnabled
+            isIneligiblePromoDialogEnabled =
+                shipmentAddressFormDataResponse.isIneligiblePromoDialogEnabled
             isOpenPrerequisiteSite = shipmentAddressFormDataResponse.isOpenPrerequisiteSite
-            isEligibleNewShippingExperience = shipmentAddressFormDataResponse.isEligibleNewShippingExperience
+            isEligibleNewShippingExperience =
+                shipmentAddressFormDataResponse.isEligibleNewShippingExperience
             addressesData = mapAddressesData(shipmentAddressFormDataResponse)
             cod = mapCod(shipmentAddressFormDataResponse.cod)
             campaignTimerUi = mapCampaignTimer(shipmentAddressFormDataResponse.campaignTimer)
-            lastApplyData = mapPromoLastApply(shipmentAddressFormDataResponse.promoSAFResponse.lastApply.data)
-            promoCheckoutErrorDefault = mapPromoCheckoutErrorDefault(shipmentAddressFormDataResponse.promoSAFResponse.errorDefault)
+            lastApplyData =
+                mapPromoLastApply(shipmentAddressFormDataResponse.promoSAFResponse.lastApply.data)
+            promoCheckoutErrorDefault =
+                mapPromoCheckoutErrorDefault(shipmentAddressFormDataResponse.promoSAFResponse.errorDefault)
             errorTicker = shipmentAddressFormDataResponse.errorTicker
             groupAddress = mapGroupAddresses(shipmentAddressFormDataResponse, isDisablePPP)
             isHasError = checkCartHasError(this)
@@ -139,7 +169,8 @@ class ShipmentMapper @Inject constructor() {
             coachmarkPlus = mapCoachmarkPlus(shipmentAddressFormDataResponse.coachmark)
             isUsingDdp = shipmentAddressFormDataResponse.dynamicDataPassing.isDdp
             dynamicData = shipmentAddressFormDataResponse.dynamicDataPassing.dynamicData
-            shipmentPlatformFee = mapPlatformFee(shipmentAddressFormDataResponse.shipmentPlatformFee)
+            shipmentPlatformFee =
+                mapPlatformFee(shipmentAddressFormDataResponse.shipmentPlatformFee)
         }
     }
 
@@ -164,15 +195,20 @@ class ShipmentMapper @Inject constructor() {
         }
     }
 
-    private fun mapGroupAddresses(shipmentAddressFormDataResponse: ShipmentAddressFormDataResponse, isDisablePPP: Boolean): MutableList<GroupAddress> {
+    private fun mapGroupAddresses(
+        shipmentAddressFormDataResponse: ShipmentAddressFormDataResponse,
+        isDisablePPP: Boolean
+    ): MutableList<GroupAddress> {
         val groupAddressListResult = arrayListOf<GroupAddress>()
         for (groupAddress in shipmentAddressFormDataResponse.groupAddress) {
             groupAddressListResult.add(
                 GroupAddress().apply {
-                    isError = !groupAddress.errors.isNullOrEmpty() || shipmentAddressFormDataResponse.errorTicker.isNotEmpty()
+                    isError =
+                        groupAddress.errors.isNotEmpty() || shipmentAddressFormDataResponse.errorTicker.isNotEmpty()
                     errorMessage = groupAddress.errors.joinToString()
                     userAddress = mapUserAddress(groupAddress)
-                    groupShop = mapGroupShops(groupAddress, shipmentAddressFormDataResponse, isDisablePPP)
+                    groupShop =
+                        mapGroupShops(groupAddress, shipmentAddressFormDataResponse, isDisablePPP)
                 }
             )
         }
@@ -180,21 +216,35 @@ class ShipmentMapper @Inject constructor() {
     }
 
     private fun mapGroupShops(
-        groupAddress: com.tokopedia.checkout.data.model.response.shipmentaddressform.GroupAddress,
+        groupAddress: GroupAddressResponse,
         shipmentAddressFormDataResponse: ShipmentAddressFormDataResponse,
         isDisablePPP: Boolean
     ): MutableList<GroupShop> {
         val groupShopListResult = arrayListOf<GroupShop>()
         groupAddress.groupShop.forEach {
             groupShopListResult.add(
-                GroupShop().apply {
-                    isError = !it.errors.isNullOrEmpty() || shipmentAddressFormDataResponse.errorTicker.isNotEmpty()
-                    errorMessage = if (shipmentAddressFormDataResponse.errorTicker.isNotEmpty()) "" else it.errors.joinToString()
-                    hasUnblockingError = !it.unblockingErrors.isNullOrEmpty()
+                GroupShop(
+                    groupType = it.groupType,
+                    uiGroupType = it.uiGroupType,
+                    groupInfoName = it.groupInformation.name,
+                    groupInfoBadgeUrl = it.groupInformation.badgeUrl,
+                    groupInfoDescription = it.groupInformation.description,
+                    groupInfoDescriptionBadgeUrl = it.groupInformation.descriptionBadgeUrl
+                ).apply {
+                    isError =
+                        it.errors.isNotEmpty() || shipmentAddressFormDataResponse.errorTicker.isNotEmpty()
+                    errorMessage =
+                        if (shipmentAddressFormDataResponse.errorTicker.isNotEmpty()) "" else it.errors.joinToString()
+                    hasUnblockingError = it.unblockingErrors.isNotEmpty()
                     unblockingErrorMessage = it.unblockingErrors.joinToString()
                     shippingId = it.shippingId
                     spId = it.spId
                     boCode = it.boCode
+                    boUniqueId = if (it.boCode.isNotEmpty()) {
+                        shipmentAddressFormDataResponse.promoSAFResponse.lastApply.data.voucherOrders.first { voucher -> voucher.code == it.boCode && voucher.cartStringGroup == it.cartString }.uniqueId
+                    } else {
+                        ""
+                    }
                     dropshipperName = it.dropshiper.name
                     dropshipperPhone = it.dropshiper.telpNo
                     isUseInsurance = it.isInsurance
@@ -206,19 +256,27 @@ class ShipmentMapper @Inject constructor() {
                     listPromoCodes = it.listPromoCodes
                     isFulfillment = it.isFulfillment
                     fulfillmentId = it.warehouse.warehouseId
-                    fulfillmentBadgeUrl = it.tokoCabangInfo.badgeUrl
-                    fulfillmentName = it.tokoCabangInfo.message
+                    fulfillmentBadgeUrl = it.groupInformation.descriptionBadgeUrl
+                    fulfillmentName = it.groupInformation.description
                     shipmentInformationData = mapShipmentInformationData(it.shipmentInformation)
-                    shop = mapShopData(it.shop)
+                    val mapGroupShopV2List = mapGroupShopV2List(
+                        it,
+                        it.groupShopV2,
+                        groupAddress,
+                        shipmentAddressFormDataResponse,
+                        isDisablePPP
+                    )
+                    groupShopData = mapGroupShopV2List.first
+                    firstProductErrorIndex = mapGroupShopV2List.second
                     addOns = mapAddOnsData(it.addOns)
                     shopShipments = mapShopShipments(it.shopShipments)
-                    val mapProducts = mapProducts(it, groupAddress, shipmentAddressFormDataResponse, isDisablePPP, shop.shopTypeInfoData)
-                    products = mapProducts.first
-                    firstProductErrorIndex = mapProducts.second
                     isDisableChangeCourier = it.isDisableChangeCourier
                     autoCourierSelection = it.autoCourierSelection
                     boMetadata = it.boMetadata
-                    courierSelectionErrorData = CourierSelectionErrorData(it.courierSelectionError.title, it.courierSelectionError.description)
+                    courierSelectionErrorData = CourierSelectionErrorData(
+                        it.courierSelectionError.title,
+                        it.courierSelectionError.description
+                    )
                     scheduleDelivery = mapScheduleDelivery(it.scheduledDelivery)
                     ratesValidationFlow = it.ratesValidationFlow
                 }
@@ -228,21 +286,29 @@ class ShipmentMapper @Inject constructor() {
     }
 
     private fun mapProducts(
-        groupShop: com.tokopedia.checkout.data.model.response.shipmentaddressform.GroupShop,
-        groupAddress: com.tokopedia.checkout.data.model.response.shipmentaddressform.GroupAddress,
+        groupShop: GroupShopResponse,
+        groupShopV2: GroupShopV2Response,
+        groupAddress: GroupAddressResponse,
         shipmentAddressFormDataResponse: ShipmentAddressFormDataResponse,
         isDisablePPP: Boolean,
         shopTypeInfoData: ShopTypeInfoData
     ): Pair<MutableList<Product>, Int> {
         val productListResult = arrayListOf<Product>()
-        var firstErrorIndex = -1
-        groupShop.cartDetails.forEachIndexed { index, cartDetail ->
-            cartDetail.products.forEach { product ->
-                val productResult = Product().apply {
+        var firstErrorIndex = 0
+        var hasError = false
+        groupShopV2.cartDetails.forEachIndexed { index, cartDetail ->
+            cartDetail.products.forEachIndexed { productIndex, product ->
+                val productResult = Product(
+                    shouldShowShopInfo = groupShop.uiGroupType == UI_GROUP_TYPE_OWOC && index == 0 && productIndex == 0,
+                    shopName = groupShopV2.shop.shopName,
+                    shopTypeInfoData = shopTypeInfoData,
+                    originWarehouseIds = product.originWarehouseIds
+                ).apply {
                     analyticsProductCheckoutData = mapAnalyticsProductCheckoutData(
+                        groupShop,
                         product,
                         groupAddress.userAddress,
-                        groupShop,
+                        groupShopV2,
                         shipmentAddressFormDataResponse.cod,
                         shipmentAddressFormDataResponse.promoSAFResponse,
                         shopTypeInfoData
@@ -250,9 +316,9 @@ class ShipmentMapper @Inject constructor() {
                     if (product.tradeInInfo.isValidTradeIn) {
                         productPrice = product.tradeInInfo.newDevicePrice
                     }
-                    isError = !product.errors.isNullOrEmpty() ||
+                    isError = product.errors.isNotEmpty() ||
                         shipmentAddressFormDataResponse.errorTicker.isNotEmpty() ||
-                        cartDetail.bundleDetail.bundleId.isNotBlankOrZero() && cartDetail.errors.isNotEmpty()
+                        (cartDetail.bundleDetail.bundleId.isNotBlankOrZero() && cartDetail.errors.isNotEmpty())
                     errorMessage = if (shipmentAddressFormDataResponse.errorTicker.isNotEmpty()) {
                         ""
                     } else if (product.errors.isNotEmpty()) {
@@ -263,26 +329,22 @@ class ShipmentMapper @Inject constructor() {
                     } else {
                         ""
                     }
-                    errorMessageDescription = if (shipmentAddressFormDataResponse.errorTicker.isNotEmpty()) "" else if (product.errors.size >= 2) product.errors[1] else ""
-                    if (isError) {
-                        if (firstErrorIndex == -1) {
-                            firstErrorIndex = index
-                        }
+                    errorMessageDescription =
+                        if (shipmentAddressFormDataResponse.errorTicker.isNotEmpty()) "" else if (product.errors.size >= 2) product.errors[1] else ""
+                    if (isError && !hasError) {
+                        hasError = true
+                    } else if (!hasError) {
+                        firstErrorIndex += 1
                     }
                     productId = product.productId
                     cartId = product.cartId
                     productName = product.productName
-                    productPriceFmt = product.productPriceFmt
                     productPrice = product.productPrice
                     productOriginalPrice = product.productOriginalPrice
                     productWholesalePrice = product.productWholesalePrice
-                    productWholesalePriceFmt = product.productWholesalePriceFmt
                     productWeightFmt = product.productWeightFmt
                     productWeight = product.productWeight
                     productWeightActual = product.productWeightActual
-                    productCondition = product.productCondition
-                    productUrl = product.productUrl
-                    isProductReturnable = product.productReturnable == 1
                     isProductIsFreeReturns = product.productIsFreeReturns == 1
                     isProductIsPreorder = product.productIsPreorder == 1
                     preOrderDurationDay = product.productPreorder.durationDay
@@ -290,9 +352,6 @@ class ShipmentMapper @Inject constructor() {
                         productPreOrderInfo = "PO " + product.productPreorder.durationText
                     }
                     productCashback = product.productCashback
-                    productMinOrder = product.productMinOrder
-                    productInvenageValue = product.productInvenageValue
-                    productSwitchInvenage = product.productSwitchInvenage
                     productPriceCurrency = product.productPriceCurrency
                     productImageSrc200Square = product.productImageSrc200Square
                     productNotes = product.productNotes
@@ -313,7 +372,8 @@ class ShipmentMapper @Inject constructor() {
                         tradeInInfoData = mapTradeInInfoData(product.tradeInInfo)
                     }
                     if (!isDisablePPP && product.purchaseProtectionPlanDataResponse.protectionAvailable) {
-                        purchaseProtectionPlanData = mapPurchaseProtectionData(product.purchaseProtectionPlanDataResponse)
+                        purchaseProtectionPlanData =
+                            mapPurchaseProtectionData(product.purchaseProtectionPlanDataResponse)
                     }
                     variantParentId = product.productVariantsResponse.parentId
                     variant = product.variantDescriptionDetail.variantDescription
@@ -321,13 +381,14 @@ class ShipmentMapper @Inject constructor() {
                     productInformation = product.productInformation
                     if (cartDetail.bundleDetail.bundleId.isNotBlankOrZero()) {
                         isBundlingItem = true
-                        bundlingItemPosition = if (cartDetail.products.firstOrNull()?.productId == productId) {
-                            BUNDLING_ITEM_HEADER
-                        } else if (cartDetail.products.lastOrNull()?.productId == productId) {
-                            BUNDLING_ITEM_FOOTER
-                        } else {
-                            BUNDLING_ITEM_DEFAULT
-                        }
+                        bundlingItemPosition =
+                            if (cartDetail.products.firstOrNull()?.productId == productId) {
+                                BUNDLING_ITEM_HEADER
+                            } else if (cartDetail.products.lastOrNull()?.productId == productId) {
+                                BUNDLING_ITEM_FOOTER
+                            } else {
+                                BUNDLING_ITEM_DEFAULT
+                            }
                         bundleId = cartDetail.bundleDetail.bundleId
                         bundleGroupId = cartDetail.bundleDetail.bundleGroupId
                         bundleType = cartDetail.bundleDetail.bundleType
@@ -347,56 +408,62 @@ class ShipmentMapper @Inject constructor() {
                 productListResult.add(productResult)
             }
         }
-        return productListResult to firstErrorIndex
+        return productListResult to if (hasError) {
+            firstErrorIndex
+        } else {
+            -1
+        }
     }
 
     private fun mapAnalyticsProductCheckoutData(
-        product: com.tokopedia.checkout.data.model.response.shipmentaddressform.Product,
-        userAddress: UserAddress,
-        groupShop: com.tokopedia.checkout.data.model.response.shipmentaddressform.GroupShop,
+        groupShop: GroupShopResponse,
+        product: ProductResponse,
+        userAddress: UserAddressResponse,
+        groupShopV2: GroupShopV2Response,
         cod: Cod,
         promoSAFResponse: PromoSAFResponse,
         shopTypeInfoData: ShopTypeInfoData
     ): AnalyticsProductCheckoutData {
-        return AnalyticsProductCheckoutData().apply {
-            productId = product.productId.toString()
-            productAttribution = product.productTrackerData.attribution
-            productListName = product.productTrackerData.trackerListName
-            productCategory = product.productCategory
-            productCategoryId = product.productCatId.toString()
-            productName = product.productName
-            productPrice = product.productPrice.toString()
-            if (product.tradeInInfo.isValidTradeIn) {
-                productPrice = product.tradeInInfo.newDevicePrice.toString()
+        var promoCode = ""
+        var promoDetails = ""
+        promoSAFResponse.lastApply.data.trackingDetails.forEach {
+            if (it.productId == product.productId) {
+                promoCode = it.promoCodesTracking
+                promoDetails = it.promoDetailsTracking
             }
-            productShopId = groupShop.shop.shopId.toString()
-            productShopName = groupShop.shop.shopName
-            productShopType = shopTypeInfoData.shopType
-            productVariant = ""
-            productBrand = ""
-            productQuantity = product.productQuantity
-            warehouseId = groupShop.warehouse.warehouseId.toString()
-            productWeight = product.productWeight.toString()
-            buyerAddressId = userAddress.addressId
-            shippingDuration = ""
-            courier = ""
-            shippingPrice = ""
-            codFlag = cod.isCod.toString()
-            tokopediaCornerFlag = if (isNotNullOrEmptyOrZero(userAddress.cornerId)) {
+        }
+        return AnalyticsProductCheckoutData(
+            productId = product.productId.toString(),
+            productAttribution = product.productTrackerData.attribution,
+            productListName = product.productTrackerData.trackerListName,
+            productCategory = product.productCategory,
+            productCategoryId = product.productCatId.toString(),
+            productName = product.productName,
+            productPrice = if (product.tradeInInfo.isValidTradeIn) product.tradeInInfo.newDevicePrice.toString() else product.productPrice.toString(),
+            productShopId = groupShopV2.shop.shopId.toString(),
+            productShopName = groupShopV2.shop.shopName,
+            productShopType = shopTypeInfoData.shopType,
+            productVariant = "",
+            productBrand = "",
+            productQuantity = product.productQuantity,
+            warehouseId = groupShop.warehouse.warehouseId.toString(),
+            productWeight = product.productWeight.toString(),
+            buyerAddressId = userAddress.addressId,
+            shippingDuration = "",
+            courier = "",
+            shippingPrice = "",
+            codFlag = cod.isCod.toString(),
+            tokopediaCornerFlag = if (userAddress.cornerId.isNotBlankOrZero()) {
                 true.toString()
             } else {
                 false.toString()
-            }
-            isFulfillment = groupShop.isFulfillment.toString()
-            isDiscountedPrice = product.productOriginalPrice > 0
-            campaignId = product.campaignId
-            promoSAFResponse.lastApply.data.trackingDetails.forEach {
-                if (it.productId == product.productId) {
-                    promoCode = it.promoCodesTracking
-                    promoDetails = it.promoDetailsTracking
-                }
-            }
-        }
+            },
+            isFulfillment = groupShop.isFulfillment.toString(),
+            isDiscountedPrice = product.productOriginalPrice > 0,
+            campaignId = product.campaignId,
+            promoCode = promoCode,
+            promoDetails = promoDetails
+        )
     }
 
     private fun mapShopShipments(shopShipment: List<com.tokopedia.checkout.data.model.response.shipmentaddressform.ShopShipment>): List<ShopShipment> {
@@ -416,7 +483,7 @@ class ShipmentMapper @Inject constructor() {
         return shopShipmentListResult
     }
 
-    private fun mapShipProds(shipProds: List<com.tokopedia.checkout.data.model.response.shipmentaddressform.ShipProd>): List<ShipProd> {
+    private fun mapShipProds(shipProds: List<ShipProdResponse>): List<ShipProd> {
         val shipProdListResult = arrayListOf<ShipProd>()
         shipProds.forEach {
             shipProdListResult.add(
@@ -434,24 +501,57 @@ class ShipmentMapper @Inject constructor() {
         return shipProdListResult
     }
 
-    private fun mapShopData(shop: Shop): com.tokopedia.checkout.domain.model.cartshipmentform.Shop {
-        return com.tokopedia.checkout.domain.model.cartshipmentform.Shop().apply {
+    private fun mapGroupShopV2List(
+        groupShop: GroupShopResponse,
+        groupShopV2List: List<GroupShopV2Response>,
+        groupAddress: GroupAddressResponse,
+        shipmentAddressFormDataResponse: ShipmentAddressFormDataResponse,
+        isDisablePPP: Boolean
+    ): Pair<List<GroupShopV2>, Int> {
+        var firstProductErrorIndex = -1
+        var hasErrorProduct = false
+        return groupShopV2List.map {
+            val shop = mapShopData(it.shop)
+            val mapProducts = mapProducts(
+                groupShop,
+                it,
+                groupAddress,
+                shipmentAddressFormDataResponse,
+                isDisablePPP,
+                shop.shopTypeInfoData
+            )
+            val products = mapProducts.first
+            if (!hasErrorProduct) {
+                if (mapProducts.second > -1) {
+                    hasErrorProduct = true
+                    if (firstProductErrorIndex == -1) {
+                        firstProductErrorIndex = mapProducts.second
+                    } else {
+                        firstProductErrorIndex += mapProducts.second
+                    }
+                } else if (firstProductErrorIndex == -1) {
+                    firstProductErrorIndex = products.size
+                } else {
+                    firstProductErrorIndex += products.size
+                }
+            }
+            GroupShopV2(
+                it.cartStringOrder,
+                shop,
+                products
+            )
+        } to if (hasErrorProduct) firstProductErrorIndex else -1
+    }
+
+    private fun mapShopData(shop: ShopResponse): Shop {
+        return Shop().apply {
             shopId = shop.shopId
             shopName = shop.shopName
-            shopImage = shop.shopImage
-            shopUrl = shop.shopUrl
-            shopStatus = shop.shopStatus
             shopTypeInfoData = mapShopTypeInfo(shop)
             postalCode = shop.postalCode
             latitude = shop.latitude
             longitude = shop.longitude
             districtId = shop.districtId
-            districtName = shop.districtName
-            origin = shop.origin
-            addressStreet = shop.addressStreet
-            provinceId = shop.provinceId
-            cityId = shop.cityId
-            cityName = shop.cityName
             shopAlertMessage = shop.shopAlertMessage
             isTokoNow = shop.isTokoNow
             shopTickerTitle = shop.shopTickerTitle
@@ -478,11 +578,11 @@ class ShipmentMapper @Inject constructor() {
     }
 
     private fun mapEthicalDrugData(addOns: EthicalDrugResponse): EthicalDrugDataModel {
-        return EthicalDrugDataModel().apply {
-            needPrescription = addOns.needPrescription
-            text = addOns.text
+        return EthicalDrugDataModel(
+            needPrescription = addOns.needPrescription,
+            text = addOns.text,
             iconUrl = addOns.iconUrl
-        }
+        )
     }
 
     private fun mapAddOnListData(addOnData: List<AddOnsResponse.AddOnDataItem>): MutableList<AddOnDataItemModel> {
@@ -551,7 +651,7 @@ class ShipmentMapper @Inject constructor() {
         return listAddOnProductItem
     }
 
-    private fun mapShopTypeInfo(shop: Shop): ShopTypeInfoData {
+    private fun mapShopTypeInfo(shop: ShopResponse): ShopTypeInfoData {
         val shopTypeInfo = shop.shopTypeInfo
         val tmpShopType =
             when {
@@ -559,15 +659,15 @@ class ShipmentMapper @Inject constructor() {
                 shop.isOfficial == 1 -> SHOP_TYPE_OFFICIAL_STORE
                 else -> SHOP_TYPE_REGULER
             }
-        return ShopTypeInfoData().apply {
-            shopTier = shopTypeInfo.shopTier
-            shopGrade = shopTypeInfo.shopGrade
-            shopBadge = shopTypeInfo.shopBadge
-            badgeSvg = shopTypeInfo.badgeSvg
-            title = shopTypeInfo.title
-            titleFmt = shopTypeInfo.titleFmt
+        return ShopTypeInfoData(
+            shopTier = shopTypeInfo.shopTier,
+            shopGrade = shopTypeInfo.shopGrade,
+            shopBadge = shopTypeInfo.shopBadge,
+            badgeSvg = shopTypeInfo.badgeSvg,
+            title = shopTypeInfo.title,
+            titleFmt = shopTypeInfo.titleFmt,
             shopType = tmpShopType
-        }
+        )
     }
 
     private fun mapShipmentInformationData(shipmentInformation: ShipmentInformation): ShipmentInformationData {
@@ -603,8 +703,8 @@ class ShipmentMapper @Inject constructor() {
         }
     }
 
-    private fun mapUserAddress(groupAddress: com.tokopedia.checkout.data.model.response.shipmentaddressform.GroupAddress): com.tokopedia.logisticCommon.data.entity.address.UserAddress {
-        return com.tokopedia.logisticCommon.data.entity.address.UserAddress().apply {
+    private fun mapUserAddress(groupAddress: GroupAddressResponse): UserAddress {
+        return UserAddress().apply {
             status = groupAddress.userAddress.status
             address = groupAddress.userAddress.address
             address2 = groupAddress.userAddress.address2
@@ -686,21 +786,6 @@ class ShipmentMapper @Inject constructor() {
         return listAllPromoCodes
     }
 
-    private fun mapListRedPromos(promoData: Data?): List<String> {
-        val listRedStates = arrayListOf<String>()
-        if (promoData?.message?.state.equals(CheckoutConstant.STATE_RED, ignoreCase = true)) {
-            promoData?.codes?.forEach { promoCode ->
-                listRedStates.add(promoCode)
-            }
-        }
-        promoData?.voucherOrders?.forEach {
-            if (it.message.state.equals(CheckoutConstant.STATE_RED, ignoreCase = true)) {
-                listRedStates.add(it.code)
-            }
-        }
-        return listRedStates
-    }
-
     private fun mapLastApplyAdditionalInfoUiModel(additionalInfo: AdditionalInfo): LastApplyAdditionalInfoUiModel {
         return LastApplyAdditionalInfoUiModel().apply {
             emptyCartInfo = mapLastApplyEmptyCartInfoUiModel(additionalInfo.cartEmptyInfo)
@@ -709,7 +794,8 @@ class ShipmentMapper @Inject constructor() {
             promoSpIds = mapPromoSpId(additionalInfo)
             usageSummaries = mapLastApplyUsageSummariesUiModel(additionalInfo.listUsageSummaries)
             pomlAutoApplied = additionalInfo.pomlAutoApplied
-            bebasOngkirInfo = LastApplyBebasOngkirInfo(additionalInfo.bebasOngkirInfo.isBoUnstackEnabled)
+            bebasOngkirInfo =
+                LastApplyBebasOngkirInfo(additionalInfo.bebasOngkirInfo.isBoUnstackEnabled)
         }
     }
 
@@ -755,6 +841,7 @@ class ShipmentMapper @Inject constructor() {
                     uniqueId = voucherOrdersItem.uniqueId
                     message = mapLastApplyMessageUiModel(voucherOrdersItem.message)
                     type = voucherOrdersItem.type
+                    cartStringGroup = voucherOrdersItem.cartStringGroup
                 }
             )
         }
@@ -798,10 +885,7 @@ class ShipmentMapper @Inject constructor() {
     }
 
     private fun mapCod(cod: Cod): CodModel {
-        return CodModel().apply {
-            isCod = cod.isCod
-            counterCod = cod.counterCod
-        }
+        return CodModel(cod.isCod, cod.counterCod)
     }
 
     private fun mapPopUp(popup: PopUp): PopUpData {
@@ -916,7 +1000,8 @@ class ShipmentMapper @Inject constructor() {
                 val promoSpIdUiModel = PromoSpIdUiModel()
                 promoSpIdUiModel.uniqueId = promoSpId.uniqueId
                 if (promoSpId.mvcShippingBenefits.isNotEmpty()) {
-                    val mvcShippingBenefitUiModels: MutableList<MvcShippingBenefitUiModel> = ArrayList()
+                    val mvcShippingBenefitUiModels: MutableList<MvcShippingBenefitUiModel> =
+                        ArrayList()
                     for (mvcShippingBenefit in promoSpId.mvcShippingBenefits) {
                         val mvcShippingBenefitUiModel = MvcShippingBenefitUiModel().apply {
                             benefitAmount = mvcShippingBenefit.benefitAmount
@@ -947,8 +1032,8 @@ class ShipmentMapper @Inject constructor() {
         // Get trade in address if available
         val addresses = shipmentAddressFormDataResponse.addresses
         if (addresses.active.isNotEmpty()) {
-            var tradeInDefaultAddress: UserAddress? = null
-            var tradeInDropOffAddress: UserAddress? = null
+            var tradeInDefaultAddress: UserAddressResponse? = null
+            var tradeInDropOffAddress: UserAddressResponse? = null
             for ((key, value) in addresses.data) {
                 if (key == AddressesData.DEFAULT_ADDRESS) {
                     tradeInDefaultAddress = value
@@ -969,8 +1054,8 @@ class ShipmentMapper @Inject constructor() {
         return addressesData
     }
 
-    private fun mapUserAddress(defaultAddress: UserAddress): com.tokopedia.logisticCommon.data.entity.address.UserAddress {
-        return com.tokopedia.logisticCommon.data.entity.address.UserAddress().apply {
+    private fun mapUserAddress(defaultAddress: UserAddressResponse): UserAddress {
+        return UserAddress().apply {
             addressId = defaultAddress.addressId
             addressName = defaultAddress.addressName
             address = defaultAddress.address
@@ -1011,29 +1096,34 @@ class ShipmentMapper @Inject constructor() {
                 if (groupShop.isError) {
                     hasError = true
                 }
-                var totalProductError = 0
+                var allProductsError = true
                 var defaultErrorMessage = ""
                 var allProductsHaveSameError = true
-                for ((isError, errorMessage) in groupShop.products) {
-                    if (isError || errorMessage.isNotEmpty()) {
-                        hasError = true
-                        totalProductError++
-                        if (defaultErrorMessage.isEmpty()) {
-                            defaultErrorMessage = errorMessage
-                        } else if (allProductsHaveSameError && defaultErrorMessage != errorMessage) {
-                            allProductsHaveSameError = false
+                for (groupShopV2 in groupShop.groupShopData) {
+                    for (product in groupShopV2.products) {
+                        if (product.isError || product.errorMessage.isNotEmpty()) {
+                            hasError = true
+                            if (defaultErrorMessage.isEmpty()) {
+                                defaultErrorMessage = product.errorMessage
+                            } else if (allProductsHaveSameError && defaultErrorMessage != product.errorMessage) {
+                                allProductsHaveSameError = false
+                            }
+                        } else {
+                            allProductsError = false
                         }
                     }
                 }
-                if (totalProductError == groupShop.products.size) {
+                if (allProductsError) {
                     if (!groupShop.isError) {
                         groupShop.isError = true
                         groupShop.errorMessage = defaultErrorMessage
                     }
-                    for (product in groupShop.products) {
-                        if (allProductsHaveSameError) {
-                            product.isError = false
-                            product.errorMessage = ""
+                    if (allProductsHaveSameError) {
+                        for (groupShopV2 in groupShop.groupShopData) {
+                            for (product in groupShopV2.products) {
+                                product.isError = false
+                                product.errorMessage = ""
+                            }
                         }
                     }
                 }

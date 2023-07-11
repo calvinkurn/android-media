@@ -6,4 +6,5 @@ package com.tokopedia.play.broadcaster.domain.repository
 interface PlayBroadcastRepository : PlayBroadcastChannelRepository,
     PlayBroadcastPinnedMessageRepository,
     PlayBroadcastInteractiveRepository,
-        PlayBroProductRepository
+    PlayBroProductRepository,
+    PlayBroadcastBeautificationRepository

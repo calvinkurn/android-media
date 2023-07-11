@@ -1,92 +1,94 @@
 package com.tokopedia.tokopedianow.category.presentation.viewmodel
 
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.productcard.compact.productcard.presentation.uimodel.ProductCardCompactUiModel
-import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
-import com.tokopedia.tokopedianow.util.TestUtils.getParentPrivateField
-import com.tokopedia.tokopedianow.util.TestUtils.mockSuperClassField
-import org.junit.Assert
+import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryShowcaseItemUiModel
+import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryShowcaseUiModel
+import com.tokopedia.tokopedianow.util.TestUtils.mockPrivateField
+import com.tokopedia.unit.test.ext.verifyValueEquals
 import org.junit.Test
 
-class CategoryWishlistTest: CategoryTestFixtures() {
+class CategoryWishlistTest: TokoNowCategoryMainViewModelTestFixture() {
     @Test
-    fun `when updating wishlist status but the product not found should not do nothing`() {
-        /**
-         * create test data
-         */
-        val productId = "1000"
-        val fieldName = "visitableList"
-        val fieldValue = mutableListOf<Visitable<*>>()
+    fun `when updateWishlistStatus should update the status in layout`()  {
+        // mock data
+        val parentProductId = "1223"
+        val productId = "2025598474"
+        val productOrderQuantity = 0
+        val productStock = 5
+        val productName = "Jeruk"
+        val productPrice = "Rp. 2000"
+        val productHasBeenWishlist = true
+        val showcaseTitle = "Buah- Buahan"
+        val showcaseId = "133333"
+        val privateFieldNameLayout = "layout"
+        val expectedWishlist = !productHasBeenWishlist
 
-        /**
-         * mock private field from viewModel
-         */
-        tokoNowCategoryViewModel.mockSuperClassField(
-            name = fieldName,
-            value = fieldValue
+        val categoryShowcaseItemUiModel = CategoryShowcaseItemUiModel(
+            productCardModel = ProductCardCompactUiModel(
+                productId = productId,
+                orderQuantity = productOrderQuantity,
+                availableStock = productStock,
+                name = productName,
+                price = productPrice,
+                hasBeenWishlist = productHasBeenWishlist
+            ),
+            parentProductId = parentProductId,
+            headerName = showcaseTitle
         )
 
-        /**
-         * update wishlist status
-         */
-        tokoNowCategoryViewModel.updateWishlistStatus(
+        val categoryShowcaseUiModel = CategoryShowcaseUiModel(
+            id = showcaseId,
+            title = showcaseTitle,
+            productListUiModels = listOf(
+                categoryShowcaseItemUiModel
+            )
+        )
+
+        val mockLayout = mutableListOf(categoryShowcaseUiModel)
+        viewModel.mockPrivateField(
+            name = privateFieldNameLayout,
+            value = mockLayout
+        )
+
+        viewModel.updateWishlistStatus(
             productId = productId,
-            hasBeenWishlist = true
+            hasBeenWishlist = expectedWishlist
         )
 
-        /**
-         * verify the data test
-         */
-        Assert.assertTrue(tokoNowCategoryViewModel.updatedVisitableIndicesLiveData.value == null)
+        viewModel.categoryPage
+            .verifyValueEquals(
+                mockLayout.map {
+                    it.copy(
+                        productListUiModels = listOf(
+                            categoryShowcaseItemUiModel.copy(
+                                productCardModel = categoryShowcaseItemUiModel.productCardModel.copy(
+                                    hasBeenWishlist = expectedWishlist
+                                )
+                            )
+                        )
+                    )
+                }
+            )
     }
 
     @Test
-    fun `when updating wishlist status success and the status turns out as we expected`() {
-        /**
-         * create test data
-         */
-        val productId = "1000"
-        val fieldName = "visitableList"
-        val fieldValue = mutableListOf<Visitable<*>>(
-            ProductItemDataView(
-                productCardModel = ProductCardCompactUiModel(
-                    productId = productId,
-                    isWishlistShown = true,
-                    hasBeenWishlist = false
-                )
-            )
-        )
-        val expectedValue = mutableListOf<Visitable<*>>(
-            ProductItemDataView(
-                productCardModel = ProductCardCompactUiModel(
-                    productId = productId,
-                    isWishlistShown = true,
-                    hasBeenWishlist = true
-                )
-            )
+    fun `modify layout while its value is null should make updateWishlistStatus error and do nothing`()  {
+        val productId = "2025598474"
+        val productHasBeenWishlist = true
+        val privateFieldNameLayout = "layout"
+        val expectedWishlist = !productHasBeenWishlist
+
+        viewModel.mockPrivateField(
+            name = privateFieldNameLayout,
+            value = null
         )
 
-        /**
-         * mock private field from viewModel
-         */
-        tokoNowCategoryViewModel.mockSuperClassField(
-            name = fieldName,
-            value = fieldValue
-        )
-
-        /**
-         * update wishlist status
-         */
-        tokoNowCategoryViewModel.updateWishlistStatus(
+        viewModel.updateWishlistStatus(
             productId = productId,
-            hasBeenWishlist = true
+            hasBeenWishlist = expectedWishlist
         )
 
-        /**
-         * verify the data test
-         */
-        val actualValue = tokoNowCategoryViewModel.getParentPrivateField<MutableList<Visitable<*>>>(fieldName)
-        Assert.assertEquals(expectedValue, actualValue)
-        Assert.assertTrue(tokoNowCategoryViewModel.updatedVisitableIndicesLiveData.value != null)
+        viewModel.categoryPage
+            .verifyValueEquals(null)
     }
 }
