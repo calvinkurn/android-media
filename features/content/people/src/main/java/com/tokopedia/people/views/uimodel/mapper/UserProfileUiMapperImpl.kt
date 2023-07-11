@@ -128,7 +128,7 @@ class UserProfileUiMapperImpl @Inject constructor(
         return with(response.feedXProfileTabs) {
             val expectedTabs = tabs.filter {
                 if (ProfileTabUiModel.mapToKey(it.key) == ProfileTabUiModel.Key.Review) {
-                    userProfileRemoteConfig.isEnableReviewTab()
+                    it.isActive && userProfileRemoteConfig.isEnableReviewTab()
                 } else {
                     it.isActive && ProfileTabUiModel.mapToKey(it.key) != ProfileTabUiModel.Key.Unknown
                 }
