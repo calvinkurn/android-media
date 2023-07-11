@@ -184,8 +184,12 @@ class WishlistCollectionSharingUtils {
         return AffiliateInput(
             pageDetail = pageDetail,
             pageType = PageType.WISHLIST.value,
-            product = Product(),
-            shop = Shop()
+            product = Product(
+                productID = "0"
+            ),
+            shop = Shop(
+                shopID = "0"
+            )
         )
     }
 
