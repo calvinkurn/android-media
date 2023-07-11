@@ -21,7 +21,8 @@ import javax.inject.Inject
  * @author by astidhiyaa on 17/06/22
  */
 class PlayTokoNowAnalyticImpl @Inject constructor(
-    private val userSession: UserSessionInterface, private val trackingQueue: TrackingQueue,
+    private val userSession: UserSessionInterface,
+    private val trackingQueue: TrackingQueue
 ) : PlayTokoNowAnalytic {
 
     private val userId: String
@@ -49,7 +50,7 @@ class PlayTokoNowAnalyticImpl @Inject constructor(
                 KEY_EVENT_LABEL to "$channelId - ${channelType.value}",
                 KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
                 KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
-                KEY_USER_ID to userId,
+                KEY_USER_ID to userId
             )
         )
     }
@@ -65,7 +66,7 @@ class PlayTokoNowAnalyticImpl @Inject constructor(
                 KEY_EVENT_ACTION to "view - ganti alamat",
                 KEY_EVENT_LABEL to "$channelId - ${channelType.value}",
                 KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
-                KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
+                KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE
             )
         )
     }
@@ -78,7 +79,7 @@ class PlayTokoNowAnalyticImpl @Inject constructor(
                 KEY_EVENT_ACTION to "click - ganti alamat",
                 KEY_EVENT_LABEL to "$channelId - ${channelType.value}",
                 KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
-                KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
+                KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE
             )
         )
     }
@@ -95,7 +96,7 @@ class PlayTokoNowAnalyticImpl @Inject constructor(
                 KEY_EVENT_LABEL to "$channelId - ${channelType.value}",
                 KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
                 KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
-                KEY_USER_ID to userId,
+                KEY_USER_ID to userId
             )
         )
     }
@@ -108,7 +109,7 @@ class PlayTokoNowAnalyticImpl @Inject constructor(
                 KEY_EVENT_ACTION to "view - now info bottomsheet",
                 KEY_EVENT_LABEL to "$channelId - ${channelType.value}",
                 KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
-                KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
+                KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE
             )
         )
     }
@@ -121,7 +122,7 @@ class PlayTokoNowAnalyticImpl @Inject constructor(
                 KEY_EVENT_ACTION to "click - now info bottomsheet",
                 KEY_EVENT_LABEL to "$channelId - ${channelType.value}",
                 KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
-                KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
+                KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE
             )
         )
     }
@@ -134,7 +135,7 @@ class PlayTokoNowAnalyticImpl @Inject constructor(
                 KEY_EVENT_ACTION to "view - now toaster",
                 KEY_EVENT_LABEL to "$channelId - ${channelType.value}",
                 KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
-                KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
+                KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE
             )
         )
     }
@@ -147,7 +148,7 @@ class PlayTokoNowAnalyticImpl @Inject constructor(
                 KEY_EVENT_ACTION to "click - lihat now toaster",
                 KEY_EVENT_LABEL to "$channelId - ${channelType.value}",
                 KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
-                KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
+                KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE
             )
         )
     }
@@ -155,24 +156,25 @@ class PlayTokoNowAnalyticImpl @Inject constructor(
     override fun clickProductBottomSheetNow(
         product: PlayProductUiModel.Product,
         sectionInfo: ProductSectionUiModel.Section,
-        position: Int,
+        position: Int
     ) {
         trackingQueue.putEETracking(
             EventModel(
                 "productClick",
                 KEY_TRACK_GROUP_CHAT_ROOM,
                 "$KEY_TRACK_CLICK - now product bottomsheet",
-                "$channelId - ${product.id} - ${channelType.value}"
+                "$channelId - ${product.id} - ${channelType.value} - is pinned product ${product.isPinned} - ${product.rankType}"
             ),
-            hashMapOf (
+            hashMapOf(
                 "ecommerce" to hashMapOf(
                     "click" to hashMapOf(
-                        "actionField" to hashMapOf( "list" to "/groupchat - bottom sheet now"),
-                        "products" to  listOf(convertProductToHashMapWithList(product, position + 1, "bottom sheet"))
+                        "actionField" to hashMapOf("list" to "/groupchat - bottom sheet now"),
+                        "products" to listOf(convertProductToHashMapWithList(product, position + 1, "bottom sheet"))
                     )
                 )
             ),
-            generateBaseTracking())
+            generateBaseTracking()
+        )
     }
 
     override fun clickFeaturedProductNow(featuredProduct: PlayProductUiModel.Product, position: Int) {
@@ -181,13 +183,13 @@ class PlayTokoNowAnalyticImpl @Inject constructor(
                 "productClick",
                 KEY_TRACK_GROUP_CHAT_ROOM,
                 "$KEY_TRACK_CLICK - now product carousel",
-                "$channelId - ${featuredProduct.id} - ${channelType.value}"
+                "$channelId - ${featuredProduct.id} - ${channelType.value} - is pinned product ${featuredProduct.isPinned} - ${featuredProduct.rankType}"
             ),
             hashMapOf(
                 "ecommerce" to hashMapOf(
                     "click" to hashMapOf(
-                        "actionField" to hashMapOf( "list" to "/groupchat - featured product"),
-                        "products" to  listOf(convertProductToHashMapWithList(featuredProduct, position, "featured product"))
+                        "actionField" to hashMapOf("list" to "/groupchat - featured product"),
+                        "products" to listOf(convertProductToHashMapWithList(featuredProduct, position, "featured product"))
                     )
                 )
             ),
@@ -220,8 +222,8 @@ class PlayTokoNowAnalyticImpl @Inject constructor(
         val dataLayer = Bundle().apply {
             putString(TrackAppUtils.EVENT, KEY_EVENT_ITEM_LIST)
             putString(KEY_EVENT_CATEGORY, KEY_TRACK_GROUP_CHAT_ROOM)
-            putString(KEY_EVENT_ACTION, "view - now product bottomsheet",)
-            putString(KEY_EVENT_LABEL,  "$channelId - ${products.keys.firstOrNull()?.product?.id.orEmpty()} - ${channelType.value}")
+            putString(KEY_EVENT_ACTION, "view - now product bottomsheet")
+            putString(KEY_EVENT_LABEL, "$channelId - ${products.keys.firstOrNull()?.product?.id.orEmpty()} - ${channelType.value} - is pinned product ${products.keys.firstOrNull()?.product?.isPinned ?: false} - ${products.keys.firstOrNull()?.product?.rankType ?: "no ribbon"}")
             putString(KEY_CURRENT_SITE, KEY_TRACK_CURRENT_SITE)
             putString(KEY_SESSION_IRIS, TrackApp.getInstance().gtm.irisSessionId)
             putString(KEY_USER_ID, userId)
@@ -231,12 +233,13 @@ class PlayTokoNowAnalyticImpl @Inject constructor(
         }
 
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
-            KEY_EVENT_ITEM_LIST, dataLayer
+            KEY_EVENT_ITEM_LIST,
+            dataLayer
         )
     }
 
     override fun impressFeaturedProductNow(
-        products: List<Pair<PlayProductUiModel.Product, Int>>,
+        products: List<Pair<PlayProductUiModel.Product, Int>>
     ) {
         if (products.isEmpty()) return
 
@@ -245,7 +248,7 @@ class PlayTokoNowAnalyticImpl @Inject constructor(
                 "productView",
                 KEY_TRACK_GROUP_CHAT_ROOM,
                 "view - now product carousel",
-                "$channelId - ${products.first().first.id} - ${channelType.value}"
+                "$channelId - ${products.first().first.id} - ${channelType.value} - is pinned product ${products.first().first.isPinned} - ${products.first().first.rankType}"
             ),
             hashMapOf(
                 "ecommerce" to hashMapOf(
@@ -270,14 +273,14 @@ class PlayTokoNowAnalyticImpl @Inject constructor(
         product: PlayProductUiModel.Product,
         sectionInfo: ProductSectionUiModel.Section,
         cartId: String,
-        shopInfo: PlayPartnerInfo,
+        shopInfo: PlayPartnerInfo
     ) {
         trackingQueue.putEETracking(
             EventModel(
                 KEY_TRACK_ADD_TO_CART,
                 KEY_TRACK_GROUP_CHAT_ROOM,
                 "$KEY_TRACK_CLICK - buy now product",
-                "$channelId - ${product.id} - ${channelType.value}"
+                "$channelId - ${product.id} - ${channelType.value} - is pinned product ${product.isPinned} - ${product.rankType}"
             ),
             hashMapOf(
                 "ecommerce" to hashMapOf(
@@ -295,13 +298,14 @@ class PlayTokoNowAnalyticImpl @Inject constructor(
         product: PlayProductUiModel.Product,
         sectionInfo: ProductSectionUiModel.Section,
         cartId: String,
-        shopInfo: PlayPartnerInfo,
+        shopInfo: PlayPartnerInfo
     ) {
         trackingQueue.putEETracking(
             EventModel(
                 KEY_TRACK_ADD_TO_CART,
                 KEY_TRACK_GROUP_CHAT_ROOM,
-                "$KEY_TRACK_CLICK - atc now product", "$channelId - ${product.id} - ${channelType.value}"
+                "$KEY_TRACK_CLICK - atc now product",
+                "$channelId - ${product.id} - ${channelType.value} - is pinned product ${product.isPinned} - ${product.rankType}"
             ),
             hashMapOf(
                 "ecommerce" to hashMapOf(
@@ -323,25 +327,30 @@ class PlayTokoNowAnalyticImpl @Inject constructor(
                 KEY_EVENT_ACTION to "view - lihat keranjang",
                 KEY_EVENT_LABEL to "$channelId - ${channelType.value}",
                 KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
-                KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
+                KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE
             )
         )
     }
 
-    private fun generateBaseTracking(): HashMap<String, Any>{
+    private fun generateBaseTracking(): HashMap<String, Any> {
         return hashMapOf(
             KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
             KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
             KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
-            KEY_USER_ID to userId,
+            KEY_USER_ID to userId
         )
     }
 
     private fun convertProductToHashMapWithList(product: PlayProductUiModel.Product, position: Int, sourceFrom: String): HashMap<String, Any> {
+        val dimension115 = buildString {
+            append("pinned.${product.isPinned}, ")
+            append("ribbon.${product.rankType}")
+        }
+
         return hashMapOf(
             "name" to product.title,
             "id" to product.id,
-            "price" to when(product.price) {
+            "price" to when (product.price) {
                 is DiscountedPrice -> product.price.discountedPriceNumber
                 is OriginalPrice -> product.price.priceNumber
             },
@@ -349,15 +358,21 @@ class PlayTokoNowAnalyticImpl @Inject constructor(
             "category" to "",
             "variant" to "",
             "list" to "/groupchat - $sourceFrom",
-            "position" to position
+            "position" to position,
+            "dimension115" to dimension115
         )
     }
 
     private fun convertProductAndShopToHashMapWithList(product: PlayProductUiModel.Product, shopInfo: PlayPartnerInfo, dimension39: String = ""): HashMap<String, Any> {
+        val dimension115 = buildString {
+            append("pinned.${product.isPinned}, ")
+            append("ribbon.${product.rankType}")
+        }
+
         return hashMapOf(
             "name" to product.title,
             "id" to product.id,
-            "price" to when(product.price) {
+            "price" to when (product.price) {
                 is DiscountedPrice -> product.price.discountedPriceNumber
                 is OriginalPrice -> product.price.priceNumber
             },
@@ -369,18 +384,22 @@ class PlayTokoNowAnalyticImpl @Inject constructor(
             "quantity" to product.minQty,
             "shop_id" to shopInfo.id,
             "shop_name" to shopInfo.name,
-            "shop_type" to shopInfo.type.value
+            "shop_type" to shopInfo.type.value,
+            "dimension115" to dimension115
         )
     }
 
-    private fun productsToBundle(product: PlayProductUiModel.Product, position: Int, sourceFrom: String) : Bundle =
+    private fun productsToBundle(product: PlayProductUiModel.Product, position: Int, sourceFrom: String): Bundle =
         Bundle().apply {
             putString("item_name", product.title)
             putString("item_id", product.id)
-            putDouble("price", when(product.price) {
-                is DiscountedPrice -> product.price.discountedPriceNumber
-                is OriginalPrice -> product.price.priceNumber
-            })
+            putDouble(
+                "price",
+                when (product.price) {
+                    is DiscountedPrice -> product.price.discountedPriceNumber
+                    is OriginalPrice -> product.price.priceNumber
+                }
+            )
             putString("item_brand", "")
             putString("item_category", "")
             putString("item_variant", "")

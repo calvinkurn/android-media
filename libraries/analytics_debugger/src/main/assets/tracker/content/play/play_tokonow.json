@@ -35,7 +35,7 @@
       "event": "view_item_list",
       "eventAction": "view - now product carousel",
       "eventCategory": "groupchat room",
-      "eventLabel": "\\d+ - \\d+ - (live|vod)",
+      "eventLabel": "\\d+ - \\d+ - (live|vod) - is pinned product (true|false) - (terlaris|diminati|no ribbon)",
       "businessUnit": "play",
       "currentSite": "tokopediamarketplace",
       "item_list": "/groupchat - featured product",
@@ -58,7 +58,7 @@
       "eventAction": "click - now product carousel",
       "event": "select_content",
       "eventCategory": "groupchat room",
-      "eventLabel": "\\d+ - \\d+ - (live|vod)",
+      "eventLabel": "\\d+ - \\d+ - (live|vod) - is pinned product (true|false) - (terlaris|diminati|no ribbon)",
       "items": [
         {
           "item_id": "\\d+",
@@ -86,7 +86,7 @@
       "eventAction": "view - now product bottomsheet",
       "clientId":".*",
       "eventCategory": "groupchat room",
-      "eventLabel": "\\d+ - \\d+ - (live|vod)",
+      "eventLabel": "\\d+ - \\d+ - (live|vod) - is pinned product (true|false) - (terlaris|diminati|no ribbon)",
       "businessUnit": "play",
       "currentSite": "tokopediamarketplace",
       "item_list": "/groupchat - bottom sheet",
@@ -108,7 +108,7 @@
       "event": "select_content",
       "eventAction": "click - now product bottomsheet",
       "eventCategory": "groupchat room",
-      "eventLabel": "\\d+ - \\d+ - (live|vod)",
+      "eventLabel": "\\d+ - \\d+ - (live|vod) - is pinned product (true|false) - (terlaris|diminati|no ribbon)",
       "businessUnit": "play",
       "currentSite": "tokopediamarketplace",
       "item_list": "/groupchat - bottom sheet now",
@@ -130,7 +130,7 @@
       "event": "add_to_cart",
       "eventAction": "click - atc now product",
       "eventCategory": "groupchat room",
-      "eventLabel": "\\d+ - \\d+ - (live|vod)",
+      "eventLabel": "\\d+ - \\d+ - (live|vod) - is pinned product (true|false) - (terlaris|diminati|no ribbon)",
       "businessUnit": "play",
       "currentSite": "tokopediamarketplace",
       "items": [
@@ -156,7 +156,7 @@
       "event": "add_to_cart",
       "eventAction": "click - buy now product",
       "eventCategory": "groupchat room",
-      "eventLabel": "\\d+ - \\d+ - (live|vod)",
+      "eventLabel": "\\d+ - \\d+ - (live|vod) - is pinned product (true|false) - (terlaris|diminati|no ribbon)",
       "businessUnit": "play",
       "currentSite": "tokopediamarketplace",
       "items": [
