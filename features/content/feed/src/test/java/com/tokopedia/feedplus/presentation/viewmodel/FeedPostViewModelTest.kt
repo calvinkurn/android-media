@@ -314,7 +314,8 @@ class FeedPostViewModelTest {
             FeedTaggedProductUiModel.Affiliate(
                 "xxx",
                 "play"
-            )
+            ),
+            FeedTaggedProductUiModel.Stock.Available
         )
 
         // when
@@ -350,7 +351,8 @@ class FeedPostViewModelTest {
             FeedTaggedProductUiModel.Affiliate(
                 "xxx",
                 "play"
-            )
+            ),
+            FeedTaggedProductUiModel.Stock.Available
         )
 
         coEvery { userSession.userId } returns "1"
@@ -396,7 +398,8 @@ class FeedPostViewModelTest {
             FeedTaggedProductUiModel.Affiliate(
                 "xxx",
                 "play"
-            )
+            ),
+            FeedTaggedProductUiModel.Stock.Available
         )
         val dummyAtcResult = AddToCartDataModel(
             errorMessage = arrayListOf(),
@@ -446,7 +449,8 @@ class FeedPostViewModelTest {
             FeedTaggedProductUiModel.Affiliate(
                 "xxx",
                 "play"
-            )
+            ),
+            FeedTaggedProductUiModel.Stock.Available
         )
 
         // when
@@ -482,7 +486,8 @@ class FeedPostViewModelTest {
             FeedTaggedProductUiModel.Affiliate(
                 "xxx",
                 "play"
-            )
+            ),
+            FeedTaggedProductUiModel.Stock.Available
         )
 
         coEvery { userSession.userId } returns "1"
@@ -528,7 +533,8 @@ class FeedPostViewModelTest {
             FeedTaggedProductUiModel.Affiliate(
                 "xxx",
                 "play"
-            )
+            ),
+            FeedTaggedProductUiModel.Stock.Available
         )
         val dummyAtcResult = AddToCartDataModel(
             errorMessage = arrayListOf(),
