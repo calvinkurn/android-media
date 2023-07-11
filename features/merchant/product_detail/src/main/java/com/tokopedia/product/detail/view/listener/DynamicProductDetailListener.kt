@@ -530,4 +530,6 @@ interface DynamicProductDetailListener {
      * Product Media Recom BottomSheet
      */
     fun onProductMediaRecomBottomSheetDismissed()
+
+    fun onClickDynamicOneLiner(title: String, component: ComponentTrackDataModel)
 }

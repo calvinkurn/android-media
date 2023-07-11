@@ -208,6 +208,7 @@ import com.tokopedia.product.detail.di.ProductDetailComponent
 import com.tokopedia.product.detail.tracking.CommonTracker
 import com.tokopedia.product.detail.tracking.ContentWidgetTracker
 import com.tokopedia.product.detail.tracking.ContentWidgetTracking
+import com.tokopedia.product.detail.tracking.DynamicOneLinerTracking
 import com.tokopedia.product.detail.tracking.GeneralInfoTracker
 import com.tokopedia.product.detail.tracking.GeneralInfoTracking
 import com.tokopedia.product.detail.tracking.OneLinersTracking
@@ -6012,6 +6013,15 @@ open class DynamicProductDetailFragment :
             productInfo = productInfo,
             trackDataModel = trackData,
             eventLabel = eventLabel
+        )
+    }
+
+    override fun onClickDynamicOneLiner(title: String, component: ComponentTrackDataModel) {
+        val commonTracker = generateCommonTracker() ?: return
+        DynamicOneLinerTracking.onClickDynamicOneliner(
+            title,
+            commonTracker,
+            component
         )
     }
 }
