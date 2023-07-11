@@ -104,17 +104,10 @@ class ShopCampaignViewModel @Inject constructor(
                     listWidgetLayout.onEach {
                         val widgetLayoutId = it.widgetId
                         val matchedWidget =
-                            listShopCampaignWidget.firstOrNull { shopCampaignWidget ->
-                                when (shopCampaignWidget) {
-                                    is BaseShopHomeWidgetUiModel -> {
-                                        shopCampaignWidget.widgetId == widgetLayoutId
-                                    }
-
-                                    else -> {
-                                        false
-                                    }
+                            listShopCampaignWidget.filterIsInstance<BaseShopHomeWidgetUiModel>()
+                                .firstOrNull { shopCampaignWidget ->
+                                    shopCampaignWidget.widgetId == widgetLayoutId
                                 }
-                            }
                         if (matchedWidget != null) {
                             put(Pair(it.widgetId, it.widgetMasterId), matchedWidget)
                         } else {
@@ -274,8 +267,8 @@ class ShopCampaignViewModel @Inject constructor(
         }
     }
 
-    fun updateBannerTimerWidgetData(
-        newList: MutableList<Visitable<Any>>,
+    fun toggleBannerTimerRemindMe(
+        newList: MutableList<Visitable<*>>,
         isRemindMe: Boolean,
         isClickRemindMe: Boolean
     ) {
