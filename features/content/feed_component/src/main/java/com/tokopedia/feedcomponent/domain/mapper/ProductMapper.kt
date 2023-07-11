@@ -47,7 +47,7 @@ object ProductMapper {
                 id = product.affiliate.id,
                 channel = product.affiliate.channel
             ),
-            stock = if (product.isAvailable && sourceType == FeedTaggedProductUiModel.SourceType.Organic)
+            stock = if (product.isAvailable || sourceType == FeedTaggedProductUiModel.SourceType.Organic)
                 FeedTaggedProductUiModel.Stock.Available else FeedTaggedProductUiModel.Stock.OutOfStock
         )
     }
