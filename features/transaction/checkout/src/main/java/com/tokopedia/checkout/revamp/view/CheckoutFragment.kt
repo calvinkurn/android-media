@@ -15,6 +15,8 @@ import com.tokopedia.checkout.revamp.di.CheckoutModule
 import com.tokopedia.checkout.revamp.di.DaggerCheckoutComponent
 import com.tokopedia.checkout.view.ShipmentFragment
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics
+import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
+import com.tokopedia.purchase_platform.common.feature.checkout.ShipmentFormRequest
 import com.tokopedia.purchase_platform.common.utils.animateGone
 import com.tokopedia.purchase_platform.common.utils.animateShow
 import com.tokopedia.utils.lifecycle.autoCleared
@@ -33,8 +35,44 @@ class CheckoutFragment : BaseDaggerFragment() {
 
     private var header by autoCleared<HeaderCheckoutBinding>()
 
+    private val isPlusSelected: Boolean
+        get() = arguments?.getBoolean(ShipmentFragment.ARG_IS_PLUS_SELECTED, false) ?: false
+
+    private val deviceId: String
+        get() = if (arguments?.getString(ShipmentFormRequest.EXTRA_DEVICE_ID) != null) {
+            arguments!!.getString(ShipmentFormRequest.EXTRA_DEVICE_ID)!!
+        } else {
+            ""
+        }
+
     private val isOneClickShipment: Boolean
         get() = arguments != null && arguments!!.getBoolean(ShipmentFragment.ARG_IS_ONE_CLICK_SHIPMENT)
+
+    private val checkoutLeasingId: String
+        get() {
+            var leasingId = "0"
+            if (arguments != null && arguments!!.getString(ShipmentFragment.ARG_CHECKOUT_LEASING_ID) != null &&
+                !arguments!!.getString(ShipmentFragment.ARG_CHECKOUT_LEASING_ID).equals("null", ignoreCase = true)
+            ) {
+                leasingId = arguments!!.getString(ShipmentFragment.ARG_CHECKOUT_LEASING_ID)!!
+            }
+            return leasingId
+        }
+
+    private val isTradeIn: Boolean
+        get() = arguments != null && arguments!!.getString(
+            ShipmentFormRequest.EXTRA_DEVICE_ID,
+            ""
+        ) != null && arguments!!.getString(ShipmentFormRequest.EXTRA_DEVICE_ID, "").isNotEmpty()
+
+    private val checkoutPageSource: String
+        get() {
+            var pageSource: String = CheckoutConstant.CHECKOUT_PAGE_SOURCE_PDP
+            if (arguments != null && arguments!!.getString(ShipmentFragment.ARG_CHECKOUT_PAGE_SOURCE) != null) {
+                pageSource = arguments!!.getString(ShipmentFragment.ARG_CHECKOUT_PAGE_SOURCE)!!
+            }
+            return pageSource
+        }
 
     override fun getScreenName(): String {
         return if (isOneClickShipment) {
@@ -90,6 +128,22 @@ class CheckoutFragment : BaseDaggerFragment() {
             }
             viewModel.test()
         }
+
+        initViewModel()
+    }
+
+    private fun initViewModel() {
+        viewModel.isOneClickShipment = isOneClickShipment
+        viewModel.isTradeIn = isTradeIn
+        viewModel.deviceId = deviceId
+        viewModel.checkoutLeasingId = checkoutLeasingId
+        viewModel.isPlusSelected = isPlusSelected
+        observeData()
+
+        viewModel.loadSAF(skipUpdateOnboardingState = false)
+    }
+
+    private fun observeData() {
     }
 
     fun onBackPressed(): Boolean {
