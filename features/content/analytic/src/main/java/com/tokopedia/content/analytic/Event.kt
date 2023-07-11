@@ -9,6 +9,8 @@ object Event {
     const val viewGroupChat = "viewGroupChat"
     const val clickGroupChat = "clickGroupChat"
 
+    const val viewGroupChatIris = "viewGroupChatIris"
+
     const val clickContent = "clickContent"
     const val viewContentIris = "viewContentIris"
 
@@ -19,8 +21,8 @@ object Event {
     const val viewPGIris = "viewPGIris"
 
     const val promoView = "promoView"
+    const val promoClick = "promoClick"
 
-    const val viewGroupChatIris = "viewGroupChatIris"
 
     const val addToCart = "addToCart"
 
