@@ -9,6 +9,8 @@ import com.tokopedia.people.data.UserFollowRepository
 import com.tokopedia.people.data.UserFollowRepositoryImpl
 import com.tokopedia.people.data.UserProfileRepository
 import com.tokopedia.people.data.UserProfileRepositoryImpl
+import com.tokopedia.people.utils.remoteconfig.UserProfileRemoteConfig
+import com.tokopedia.people.utils.remoteconfig.UserProfileRemoteConfigImpl
 import com.tokopedia.people.views.uimodel.mapper.UserProfileUiMapper
 import com.tokopedia.people.views.uimodel.mapper.UserProfileUiMapperImpl
 import dagger.Binds
@@ -39,4 +41,8 @@ abstract class UserProfileBindModule {
     @Binds
     @UserProfileScope
     abstract fun bindUserProfileReviewTracker(userProfileReviewTracker: UserProfileReviewTrackerImpl): UserProfileReviewTracker
+
+    @Binds
+    @UserProfileScope
+    abstract fun bindUserProfileRemoteConfig(userProfileRemoteConfig: UserProfileRemoteConfigImpl): UserProfileRemoteConfig
 }
