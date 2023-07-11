@@ -214,6 +214,8 @@ object ShopPageTrackingConstant {
     const val LABEL_SHOP_DECOR_CLICK = "click - shop decor"
     const val IMPRESSION_SHOP_BANNER_LABEL = "impression - shop banner - campaign tab - %1s - %2s"
     const val CLICK_SHOP_BANNER_LABEL = "click - shop banner - campaign tab - %1s - %2s"
+    const val CLICK_SHARE_REGULER = "general"
+    const val CLICK_SHARE_AFFILIATE_ICON = "affiliate"
 
     // key
     const val EVENT = "event"

@@ -68,7 +68,6 @@ class HomeDynamicChannelUseCase @Inject constructor(
     private val remoteConfig: RemoteConfig,
     private val homePlayRepository: HomePlayRepository,
     private val homeReviewSuggestedRepository: HomeReviewSuggestedRepository,
-    private val homePlayLiveDynamicRepository: HomePlayLiveDynamicRepository,
     private val homePopularKeywordRepository: HomePopularKeywordRepository,
     private val homeHeadlineAdsRepository: HomeHeadlineAdsRepository,
     private val homeRecommendationRepository: HomeRecommendationRepository,
@@ -228,12 +227,6 @@ class HomeDynamicChannelUseCase @Inject constructor(
                         ReviewDataModel,
                         SuggestedProductReview>(widgetRepository = homeReviewSuggestedRepository) { visitableFound, data, position ->
                         visitableFound.copy(suggestedProductReview = data)
-                    }
-
-                    dynamicChannelPlainResponse.getWidgetDataIfExist<
-                        PlayCardDataModel,
-                        PlayData>(widgetRepository = homePlayLiveDynamicRepository) { visitableFound, data, position ->
-                        visitableFound.copy(playCardHome = data.playChannels.first())
                     }
 
                     dynamicChannelPlainResponse.getWidgetDataIfExist<

@@ -9,9 +9,14 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.network.exception.ResponseErrorException
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
+import com.tokopedia.common_sdk_affiliate_toko.model.AffiliatePageDetail
+import com.tokopedia.common_sdk_affiliate_toko.model.AffiliateSdkPageSource
+import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateAtcSource
+import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
 import com.tokopedia.content.common.comment.usecase.GetCountCommentsUseCase
 import com.tokopedia.content.common.usecase.BroadcasterReportTrackViewerUseCase
 import com.tokopedia.content.common.usecase.TrackVisitChannelBroadcasterUseCase
+import com.tokopedia.content.common.util.UiEventManager
 import com.tokopedia.createpost.common.domain.entity.SubmitPostData
 import com.tokopedia.feed.component.product.FeedTaggedProductUiModel
 import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowUseCase
@@ -26,7 +31,17 @@ import com.tokopedia.feedplus.domain.usecase.FeedCampaignReminderUseCase
 import com.tokopedia.feedplus.domain.usecase.FeedXHomeUseCase
 import com.tokopedia.feedplus.presentation.adapter.FeedAdapterTypeFactory
 import com.tokopedia.feedplus.presentation.fragment.FeedBaseFragment
-import com.tokopedia.feedplus.presentation.model.*
+import com.tokopedia.feedplus.presentation.model.FeedCardImageContentModel
+import com.tokopedia.feedplus.presentation.model.FeedCardLivePreviewContentModel
+import com.tokopedia.feedplus.presentation.model.FeedCardVideoContentModel
+import com.tokopedia.feedplus.presentation.model.FeedLikeModel
+import com.tokopedia.feedplus.presentation.model.FeedModel
+import com.tokopedia.feedplus.presentation.model.FeedPaginationModel
+import com.tokopedia.feedplus.presentation.model.FeedPostEvent
+import com.tokopedia.feedplus.presentation.model.FeedReminderResultModel
+import com.tokopedia.feedplus.presentation.model.FollowShopModel
+import com.tokopedia.feedplus.presentation.model.LikeFeedDataModel
+import com.tokopedia.feedplus.presentation.model.PostSourceModel
 import com.tokopedia.feedplus.presentation.uiview.FeedCampaignRibbonType
 import com.tokopedia.feedplus.presentation.util.common.FeedLikeAction
 import com.tokopedia.kolcommon.domain.interactor.SubmitActionContentUseCase
@@ -38,12 +53,28 @@ import com.tokopedia.mvcwidget.TokopointsCatalogMVCSummary
 import com.tokopedia.mvcwidget.usecases.MVCSummaryUseCase
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.topads.sdk.domain.usecase.GetTopAdsHeadlineUseCase
-import com.tokopedia.topads.sdk.utils.*
+import com.tokopedia.topads.sdk.utils.PARAM_DEVICE
+import com.tokopedia.topads.sdk.utils.PARAM_EP
+import com.tokopedia.topads.sdk.utils.PARAM_HEADLINE_PRODUCT_COUNT
+import com.tokopedia.topads.sdk.utils.PARAM_ITEM
+import com.tokopedia.topads.sdk.utils.PARAM_PAGE
+import com.tokopedia.topads.sdk.utils.PARAM_SRC
+import com.tokopedia.topads.sdk.utils.PARAM_TEMPLATE_ID
+import com.tokopedia.topads.sdk.utils.PARAM_USER_ID
+import com.tokopedia.topads.sdk.utils.TopAdsAddressHelper
+import com.tokopedia.topads.sdk.utils.UrlParamHelper
+import com.tokopedia.topads.sdk.utils.VALUE_DEVICE
+import com.tokopedia.topads.sdk.utils.VALUE_EP
+import com.tokopedia.topads.sdk.utils.VALUE_HEADLINE_PRODUCT_COUNT
+import com.tokopedia.topads.sdk.utils.VALUE_ITEM
+import com.tokopedia.topads.sdk.utils.VALUE_TEMPLATE_ID
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -67,8 +98,10 @@ class FeedPostViewModel @Inject constructor(
     private val mvcSummaryUseCase: MVCSummaryUseCase,
     private val topAdsAddressHelper: TopAdsAddressHelper,
     private val getCountCommentsUseCase: GetCountCommentsUseCase,
+    private val affiliateCookieHelper: AffiliateCookieHelper,
     private val trackVisitChannelUseCase: TrackVisitChannelBroadcasterUseCase,
     private val trackReportTrackViewerUseCase: BroadcasterReportTrackViewerUseCase,
+    private val uiEventManager: UiEventManager<FeedPostEvent>,
     private val dispatchers: CoroutineDispatchers
 ) : ViewModel() {
 
@@ -95,6 +128,8 @@ class FeedPostViewModel @Inject constructor(
     private val _suspendedFollowData = MutableLiveData<FollowShopModel>()
     private val _suspendedLikeData = MutableLiveData<LikeFeedDataModel>()
 
+    private var fetchPostJob: Job? = null
+
     private var cursor = ""
     private var currentTopAdsPage = 0
     private var shouldFetchTopAds = true
@@ -103,25 +138,30 @@ class FeedPostViewModel @Inject constructor(
     val shouldShowNoMoreContent: Boolean
         get() = _shouldShowNoMoreContent
 
+    val uiEvent: Flow<FeedPostEvent?>
+        get() = uiEventManager.event
+
     fun fetchFeedPosts(
         source: String,
         isNewData: Boolean = false,
-        postId: String? = null
+        postSource: PostSourceModel? = null
     ) {
+        if (fetchPostJob?.isActive == true) return
+
         _shouldShowNoMoreContent = false
         if (isNewData) _feedHome.value = null
 
-        viewModelScope.launch {
+        fetchPostJob = viewModelScope.launch {
             if (cursor == "" || cursor != _feedHome.value?.cursor.orEmpty()) {
                 shouldFetchTopAds = true
                 cursor = _feedHome.value?.cursor.orEmpty()
 
                 val relevantPostsDeferred = async {
                     try {
-                        requireNotNull(postId)
+                        requireNotNull(postSource)
                         require(isNewData)
 
-                        getRelevantPosts(postId)
+                        getRelevantPosts(postSource)
                     } catch (_: Throwable) {
                         FeedModel.Empty
                     }.items
@@ -165,6 +205,19 @@ class FeedPostViewModel @Inject constructor(
                 }
 
                 val feedPosts = feedPostsDeferred.await()
+
+                uiEventManager.emitEvent(
+                    FeedPostEvent.PreCacheVideos(
+                        feedPosts.items.mapNotNull {
+                            if (it is FeedCardVideoContentModel && it.videoUrl.isNotEmpty()) {
+                                it.videoUrl
+                            } else {
+                                null
+                            }
+                        }
+                    )
+                )
+
                 _feedHome.value = when (feedPosts) {
                     is Success -> {
                         val items = feedPosts.items.map {
@@ -325,6 +378,7 @@ class FeedPostViewModel @Inject constructor(
                     }.toMutableList()
 
                     indexToRemove.forEach { indexNumber ->
+                        if (newItems.size <= indexNumber) return@forEach
                         newItems.removeAt(indexNumber)
                     }
 
@@ -409,6 +463,12 @@ class FeedPostViewModel @Inject constructor(
     fun likeContent(contentId: String, rowNumber: Int) {
         val likeStatus = getIsLikedStatus(contentId) ?: return
         likeContent(contentId, rowNumber, shouldLike = !likeStatus)
+    }
+
+    fun consumeEvent(event: FeedPostEvent) {
+        viewModelScope.launch {
+            uiEventManager.clearEvent(event.id)
+        }
     }
 
     private fun likeContent(contentId: String, rowNumber: Int, shouldLike: Boolean) {
@@ -517,9 +577,9 @@ class FeedPostViewModel @Inject constructor(
         }
     }
 
-    private suspend fun getRelevantPosts(postId: String): FeedModel {
+    private suspend fun getRelevantPosts(postSourceModel: PostSourceModel): FeedModel {
         return feedXHomeUseCase(
-            feedXHomeUseCase.createPostDetailParams(postId)
+            feedXHomeUseCase.createParamsWithId(postSourceModel.id, postSourceModel.source)
         )
     }
 
@@ -527,12 +587,25 @@ class FeedPostViewModel @Inject constructor(
         source: String,
         cursor: String = ""
     ): FeedModel {
-        return feedXHomeUseCase(
-            feedXHomeUseCase.createParams(
-                source,
-                cursor
+        var response = FeedModel(emptyList(), FeedPaginationModel.Empty)
+        var thresholdGet = 3
+        var nextCursor = cursor
+
+        while (response.items.isEmpty() && --thresholdGet >= 0) {
+            response = feedXHomeUseCase(
+                feedXHomeUseCase.createParams(
+                    source,
+                    nextCursor
+                )
             )
-        )
+            nextCursor = response.pagination.cursor
+        }
+
+        return if (response.items.isEmpty()) {
+            FeedModel(emptyList(), FeedPaginationModel.Empty)
+        } else {
+            response
+        }
     }
 
     private suspend fun getCampaignReminderStatus(campaignId: Long): Boolean = try {
@@ -711,6 +784,23 @@ class FeedPostViewModel @Inject constructor(
     }
 
     private suspend fun addToCart(product: FeedTaggedProductUiModel) = withContext(dispatchers.io) {
+        product.affiliate.let { affiliate ->
+            if (affiliate.id.isNotEmpty() && affiliate.channel.isNotEmpty()) {
+                affiliateCookieHelper.initCookie(
+                    affiliate.id,
+                    affiliate.channel,
+                    AffiliatePageDetail(
+                        pageId = product.id,
+                        source = AffiliateSdkPageSource.DirectATC(
+                            atcSource = AffiliateAtcSource.SHOP_PAGE,
+                            shopId = product.shop.id,
+                            null
+                        )
+                    )
+                )
+            }
+        }
+
         addToCartUseCase.apply {
             setParams(
                 AddToCartUseCase.getMinimumParams(

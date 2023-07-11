@@ -49,7 +49,7 @@ class PlayActivityRobot(
             withId(
                 if (!isYouTube) R.id.view_video
                 else if (isErrorPage) R.id.fl_global_error
-                else R.id.fl_youtube_player
+                else R.id.youtube_webview
             )
         )
         delay(initialDelay)

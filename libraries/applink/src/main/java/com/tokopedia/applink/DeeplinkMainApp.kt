@@ -193,7 +193,7 @@ object DeeplinkMainApp {
                 "explore/{tab_name}/{category_id}",
                 DeeplinkMapperHome::getRegisteredNavigationHomeContentExplore
             ),
-            DLP.matchPattern("{post_id}", DeeplinkMapperContent::getKolDeepLink)
+            DLP.matchPattern("{source_id}", DeeplinkMapperContent::getContentFeedDeeplink)
         ),
         "customercare" to mutableListOf(
             DLP.matchPattern("", ApplinkConstInternalOperational.INTERNAL_INBOX_LIST)
@@ -495,6 +495,12 @@ object DeeplinkMainApp {
             DLP.matchPattern(
                 "{user_id}",
                 DeeplinkMapperContent::getProfileDeeplink
+            )
+        ),
+        "people-settings" to mutableListOf(
+            DLP.matchPattern(
+                "{user_id}",
+                DeeplinkMapperContent::getRegisteredNavigation
             )
         ),
         "pesawat" to mutableListOf(
