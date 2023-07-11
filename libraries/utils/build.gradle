@@ -14,6 +14,8 @@ buildscript {
 }
 
 android {
+    namespace 'com.tokopedia.utils'
+    testNamespace 'com.tokopedia.utils.test'
     compileSdkVersion rootProject.ext.compileSdkVersion
 
     defaultConfig {

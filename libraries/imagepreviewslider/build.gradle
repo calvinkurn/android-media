@@ -13,6 +13,11 @@ buildscript {
     }
 }
 
+android {
+    namespace 'com.tokopedia.imagepreviewslider'
+    testNamespace 'com.tokopedia.imagepreviewslider.test'
+}
+
 dependencies {
     implementation rootProject.ext.miscDependencies.stfalconImageViewer
 

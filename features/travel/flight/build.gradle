@@ -3,6 +3,8 @@ apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
 android {
+    namespace 'com.tokopedia.flight'
+    testNamespace 'com.tokopedia.flight.test'
     configurations {
         all {
             resolutionStrategy {

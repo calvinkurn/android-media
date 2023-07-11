@@ -18,6 +18,11 @@ buildscript {
 }
 
 
+android {
+    namespace 'com.tokopedia.category.navbottomsheet'
+    testNamespace 'com.tokopedia.category.navbottomsheet.test'
+}
+
 dependencies {
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.commonNetwork)

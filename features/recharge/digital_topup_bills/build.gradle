@@ -20,6 +20,8 @@ buildscript {
 }
 
 android {
+    namespace 'com.tokopedia.topupbills'
+    testNamespace 'com.tokopedia.topupbills.test'
     packagingOptions {
         exclude 'META-INF/**'
     }

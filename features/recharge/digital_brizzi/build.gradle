@@ -18,6 +18,11 @@ buildscript {
     }
 }
 
+android {
+    namespace 'com.tokopedia.brizzi'
+    testNamespace 'com.tokopedia.brizzi.test'
+}
+
 dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.brizzi
 

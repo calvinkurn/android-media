@@ -17,6 +17,11 @@ buildscript {
     }
 }
 
+android {
+    namespace 'com.tokopedia.data_explorer'
+    testNamespace 'com.tokopedia.data_explorer.test'
+}
+
 dependencies {
     implementation projectOrAar(rootProject.ext.features.resourcesCommon)
     implementation projectOrAar(rootProject.ext.libraries.imageAssets)

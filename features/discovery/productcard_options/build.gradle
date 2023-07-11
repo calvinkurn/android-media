@@ -19,6 +19,8 @@ buildscript {
 }
 
 android {
+    namespace 'com.tokopedia.productcard.options'
+    testNamespace 'com.tokopedia.productcard.options.test'
     buildFeatures {
         viewBinding true
     }

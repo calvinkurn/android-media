@@ -6,6 +6,8 @@ apply plugin: 'androidx.navigation.safeargs.kotlin'
 apply plugin: 'kotlin-parcelize'
 
 android {
+    namespace 'com.tokopedia.sellerpersona'
+    testNamespace 'com.tokopedia.sellerpersona.test'
     defaultConfig {
         multiDexEnabled true
     }

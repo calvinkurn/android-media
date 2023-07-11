@@ -19,6 +19,8 @@ buildscript {
 }
 
 android {
+    namespace 'com.tokopedia.seller_tokopedia_flash_sale'
+    testNamespace 'com.tokopedia.seller_tokopedia_flash_sale.test'
     packagingOptions {
         exclude 'META-INF/**'
     }

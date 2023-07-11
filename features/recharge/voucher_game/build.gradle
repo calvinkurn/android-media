@@ -18,6 +18,8 @@ buildscript {
 }
 
 android {
+    namespace 'com.tokopedia.vouchergame'
+    testNamespace 'com.tokopedia.vouchergame.test'
     packagingOptions {
         exclude 'META-INF/**'
     }

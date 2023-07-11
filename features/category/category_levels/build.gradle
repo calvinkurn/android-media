@@ -17,6 +17,8 @@ buildscript {
 }
 
 android {
+    namespace 'com.tokopedia.categorylevels'
+    testNamespace 'com.tokopedia.categorylevels.test'
     packagingOptions {
         exclude 'META-INF/**'
     }

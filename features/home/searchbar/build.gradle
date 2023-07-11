@@ -16,6 +16,8 @@ buildscript {
 }
 
 android {
+    namespace 'com.tokopedia.searchbar'
+    testNamespace 'com.tokopedia.searchbar.test'
     buildFeatures {
         viewBinding true
     }

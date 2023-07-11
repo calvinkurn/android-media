@@ -19,6 +19,8 @@ buildscript {
 }
 
 android {
+    namespace 'com.tokopedia.cmhomewidget'
+    testNamespace 'com.tokopedia.cmhomewidget.test'
     buildFeatures {
         viewBinding true
     }

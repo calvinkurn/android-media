@@ -16,6 +16,8 @@ buildscript {
 }
 
 android {
+    namespace 'com.tokopedia.product.detail'
+    testNamespace 'com.tokopedia.product.detail.test'
     buildFeatures {
         viewBinding true
     }

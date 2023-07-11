@@ -17,6 +17,11 @@ buildscript {
     }
 }
 
+android {
+    namespace 'com.tokopedia.common.travel'
+    testNamespace 'com.tokopedia.common.travel.test'
+}
+
 dependencies {
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.track)

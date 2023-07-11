@@ -20,6 +20,8 @@ buildscript {
 }
 
 android {
+    namespace 'com.tokopedia.carouselproductcard'
+    testNamespace 'com.tokopedia.carouselproductcard.test'
     buildFeatures {
         viewBinding true
     }

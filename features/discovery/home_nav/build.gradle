@@ -5,6 +5,8 @@ apply plugin: 'androidx.navigation.safeargs.kotlin'
 apply from: "../../../compile-instrument-test.gradle"
 
 android{
+    namespace 'com.tokopedia.homenav'
+    testNamespace 'com.tokopedia.homenav.test'
     buildFeatures {
         viewBinding true
     }
@@ -38,6 +40,11 @@ buildscript {
         classpath rootProject.ext.miscDependencies.hansel
         classpath rootProject.ext.miscDependencies.navigationSafeArgs
     }
+}
+
+android {
+    namespace 'com.tokopedia.homenav'
+    testNamespace 'com.tokopedia.homenav.test'
 }
 
 dependencies {

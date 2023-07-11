@@ -18,6 +18,8 @@ buildscript {
 }
 
 android {
+    namespace 'com.tokopedia.chatbot'
+    testNamespace 'com.tokopedia.chatbot.test'
 
     defaultConfig {
         multiDexEnabled true

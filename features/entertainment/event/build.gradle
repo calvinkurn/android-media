@@ -5,6 +5,8 @@ apply plugin: 'androidx.navigation.safeargs.kotlin'
 apply plugin: 'kotlin-kapt'
 
 android {
+    namespace 'com.tokopedia.entertainment'
+    testNamespace 'com.tokopedia.entertainment.test'
     buildFeatures {
         viewBinding true
     }

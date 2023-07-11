@@ -17,6 +17,8 @@ buildscript {
 }
 
 android {
+    namespace 'com.tokopedia.ordermanagement.snapshot'
+    testNamespace 'com.tokopedia.ordermanagement.snapshot.test'
     packagingOptions {
         exclude 'META-INF/**'
     }

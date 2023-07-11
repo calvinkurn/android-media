@@ -13,6 +13,11 @@ buildscript {
     }
 }
 
+android {
+    namespace 'com.tokopedia.quest_widget'
+    testNamespace 'com.tokopedia.quest_widget.test'
+}
+
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 

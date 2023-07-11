@@ -17,6 +17,11 @@ buildscript {
     }
 }
 
+android {
+    namespace 'com.tokopedia.feedback_form'
+    testNamespace 'com.tokopedia.feedback_form.test'
+}
+
 dependencies {
     implementation projectOrAar(rootProject.ext.libraries.tkpddesign)
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)

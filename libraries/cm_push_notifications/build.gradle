@@ -3,6 +3,8 @@ apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
 android {
+    namespace 'com.tokopedia.notifications'
+    testNamespace 'com.tokopedia.notifications.test'
     defaultConfig {
         javaCompileOptions {
             annotationProcessorOptions {

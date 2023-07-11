@@ -26,6 +26,8 @@ buildscript {
 }
 
 android {
+    namespace 'com.tokopedia.autocompletecomponent'
+    testNamespace 'com.tokopedia.autocompletecomponent.test'
     defaultConfig {
         multiDexEnabled true
     }

@@ -9,6 +9,8 @@ repositories {
 }
 
 android {
+    namespace 'com.tokopedia.attachvoucher'
+    testNamespace 'com.tokopedia.attachvoucher.test'
     packagingOptions {
         exclude 'META-INF/**'
     }

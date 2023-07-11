@@ -13,6 +13,11 @@ buildscript {
     }
 }
 
+android {
+    namespace 'com.tokopedia.logout'
+    testNamespace 'com.tokopedia.logout.test'
+}
+
 dependencies {
     implementation rootProject.ext.gotoOneKyc.resource
     implementation projectOrAar(rootProject.ext.libraries.core_legacy)

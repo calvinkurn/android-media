@@ -19,6 +19,8 @@ buildscript {
 }
 
 android {
+    namespace 'com.tokopedia.unifyorderhistory'
+    testNamespace 'com.tokopedia.unifyorderhistory.test'
     packagingOptions {
         exclude 'META-INF/**'
     }

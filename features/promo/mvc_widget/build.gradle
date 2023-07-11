@@ -18,6 +18,8 @@ buildscript {
 }
 
 android {
+    namespace 'com.tokopedia.mvcwidget'
+    testNamespace 'com.tokopedia.mvcwidget.test'
     packagingOptions {
         exclude 'META-INF/**'
     }

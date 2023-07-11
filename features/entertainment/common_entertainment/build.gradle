@@ -4,6 +4,8 @@ apply plugin: 'io.hansel.preprocessor.module'
 apply plugin: 'kotlin-parcelize'
 
 android {
+    namespace 'com.tokopedia.common_entertainment'
+    testNamespace 'com.tokopedia.common_entertainment.test'
     buildFeatures {
         viewBinding true
     }

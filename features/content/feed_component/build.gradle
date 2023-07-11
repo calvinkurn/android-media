@@ -19,6 +19,8 @@ buildscript {
 }
 
 android {
+    namespace 'com.tokopedia.feedcomponent'
+    testNamespace 'com.tokopedia.feedcomponent.test'
     packagingOptions {
         exclude 'META-INF/**'
     }

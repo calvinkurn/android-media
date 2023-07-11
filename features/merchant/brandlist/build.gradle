@@ -16,6 +16,8 @@ buildscript {
 
 // For instrumentation test
 android {
+    namespace 'com.tokopedia.brandlist'
+    testNamespace 'com.tokopedia.brandlist.test'
     buildFeatures {
         viewBinding true
     }

@@ -20,6 +20,8 @@ buildscript {
 }
 
 android {
+    namespace 'com.tokopedia.rechargeocr'
+    testNamespace 'com.tokopedia.rechargeocr.test'
     buildFeatures {
         viewBinding true
     }

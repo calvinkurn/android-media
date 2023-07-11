@@ -18,6 +18,8 @@ buildscript {
 }
 
 android{
+    namespace 'com.tokopedia.managename'
+    testNamespace 'com.tokopedia.managename.test'
     defaultConfig {
         testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
         multiDexEnabled true
@@ -25,6 +27,11 @@ android{
     buildFeatures {
         viewBinding true
     }
+}
+
+android {
+    namespace 'com.tokopedia.managename'
+    testNamespace 'com.tokopedia.managename.test'
 }
 
 dependencies {

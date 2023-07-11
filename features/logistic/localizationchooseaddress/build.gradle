@@ -14,6 +14,11 @@ buildscript {
     }
 }
 
+android {
+    namespace 'com.tokopedia.localizationchooseaddress'
+    testNamespace 'com.tokopedia.localizationchooseaddress.test'
+}
+
 dependencies {
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.applink)

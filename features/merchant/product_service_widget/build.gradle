@@ -16,6 +16,8 @@ buildscript {
 }
 
 android {
+    namespace 'com.tokopedia.product_service_widget'
+    testNamespace 'com.tokopedia.product_service_widget.test'
     packagingOptions {
         exclude 'META-INF/**'
     }

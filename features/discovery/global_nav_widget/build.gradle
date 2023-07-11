@@ -5,6 +5,8 @@ apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
 android {
+    namespace 'com.tokopedia.globalnavwidget'
+    testNamespace 'com.tokopedia.globalnavwidget.test'
     buildFeatures {
         viewBinding true
     }

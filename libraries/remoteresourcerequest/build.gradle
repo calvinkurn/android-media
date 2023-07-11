@@ -16,6 +16,8 @@ buildscript {
     }
 }
 android {
+    namespace 'com.tkpd.remoteresourcerequest'
+    testNamespace 'com.tkpd.remoteresourcerequest.test'
     compileSdkVersion rootProject.ext.compileSdkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
 

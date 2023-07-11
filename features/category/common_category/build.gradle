@@ -18,6 +18,11 @@ buildscript {
 }
 
 
+android {
+    namespace 'com.tokopedia.common_category'
+    testNamespace 'com.tokopedia.common_category.test'
+}
+
 dependencies {
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.commonNetwork)

@@ -15,6 +15,8 @@ buildscript {
 }
 
 android {
+    namespace 'com.tokopedia.digital.home'
+    testNamespace 'com.tokopedia.digital.home.test'
     buildFeatures {
         viewBinding true
     }

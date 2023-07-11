@@ -13,6 +13,8 @@ buildscript {
     }
 }
 android {
+    namespace 'com.tokopedia.topads.create'
+    testNamespace 'com.tokopedia.topads.create.test'
     buildFeatures {
         viewBinding true
         buildConfig true

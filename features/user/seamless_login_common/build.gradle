@@ -17,6 +17,11 @@ buildscript {
     }
 }
 
+android {
+    namespace 'com.tokopedia.seamless_login_common'
+    testNamespace 'com.tokopedia.seamless_login_common.test'
+}
+
 dependencies {
 
     api (rootProject.ext.firebase.crashlytics) {

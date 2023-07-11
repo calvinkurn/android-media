@@ -18,6 +18,8 @@ buildscript {
 }
 
 android {
+    namespace 'com.tokopedia.recharge_pdp_emoney'
+    testNamespace 'com.tokopedia.recharge_pdp_emoney.test'
     packagingOptions {
         exclude 'META-INF/**'
     }

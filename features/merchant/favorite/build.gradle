@@ -5,6 +5,8 @@ apply plugin: 'io.hansel.preprocessor.module'
 apply plugin: 'kotlin-android-extensions'
 
 android {
+    namespace 'com.tokopedia.favorite'
+    testNamespace 'com.tokopedia.favorite.test'
 
     sourceSets.each {
         it.java.srcDirs += "src/$it.name/kotlin"

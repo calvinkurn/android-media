@@ -3,6 +3,8 @@ apply from: "$rootProject.projectDir/buildconfig/kotlin/core-kapt.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
 android {
+    namespace 'com.tokopedia.buyerorderdetail'
+    testNamespace 'com.tokopedia.buyerorderdetail.test'
     packagingOptions {
         exclude 'META-INF/**'
     }

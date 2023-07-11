@@ -17,6 +17,11 @@ buildscript {
     }
 }
 
+android {
+    namespace 'com.tokopedia.travel.country_code'
+    testNamespace 'com.tokopedia.travel.country_code.test'
+}
+
 dependencies {
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     api project(rootProject.ext.libraries.baseList)

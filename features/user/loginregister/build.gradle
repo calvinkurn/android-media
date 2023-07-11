@@ -5,6 +5,8 @@ apply plugin: "androidx.navigation.safeargs.kotlin"
 apply plugin: 'kotlin-parcelize'
 
 android{
+    namespace 'com.tokopedia.loginregister'
+    testNamespace 'com.tokopedia.loginregister.test'
     defaultConfig {
         testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
         multiDexEnabled true
@@ -28,6 +30,11 @@ buildscript {
     dependencies {
         classpath rootProject.ext.miscDependencies.hansel
     }
+}
+
+android {
+    namespace 'com.tokopedia.loginregister'
+    testNamespace 'com.tokopedia.loginregister.test'
 }
 
 dependencies {

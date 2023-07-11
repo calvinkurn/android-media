@@ -16,6 +16,8 @@ buildscript {
 }
 
 android {
+    namespace 'com.tokopedia.review.inbox'
+    testNamespace 'com.tokopedia.review.inbox.test'
     def pathSources = "src/main/res/"
     sourceSets {
         main {

@@ -21,6 +21,8 @@ buildscript {
 }
 
 android {
+    namespace 'com.tokopedia.digital_checkout'
+    testNamespace 'com.tokopedia.digital_checkout.test'
     packagingOptions {
         exclude 'META-INF/**'
     }

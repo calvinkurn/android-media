@@ -13,6 +13,11 @@ buildscript {
     }
 }
 
+android {
+    namespace 'com.tokopedia.foldable'
+    testNamespace 'com.tokopedia.foldable.test'
+}
+
 dependencies {
     api rootProject.ext.miscDependencies.window
     implementation rootProject.ext.miscDependencies.viewModel

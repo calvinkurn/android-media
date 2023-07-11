@@ -19,6 +19,11 @@ buildscript {
     }
 }
 
+android {
+    namespace 'com.tokopedia.emoney'
+    testNamespace 'com.tokopedia.emoney.test'
+}
+
 dependencies {
     implementation projectOrAar(rootProject.ext.features.commonDigital)
     implementation projectOrAar(rootProject.ext.features.commonElectronicMoney)

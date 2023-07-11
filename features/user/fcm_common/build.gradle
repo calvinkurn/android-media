@@ -21,6 +21,8 @@ buildscript {
 }
 
 android {
+    namespace 'com.tokopedia.fcmcommon'
+    testNamespace 'com.tokopedia.fcmcommon.test'
     buildFeatures {
         buildConfig true
     }
