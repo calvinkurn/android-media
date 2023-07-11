@@ -15,7 +15,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.Utils
@@ -265,12 +264,11 @@ class LihatSemuaViewHolder(itemView: View, private val fragment: Fragment) : Abs
     }
 
     private fun navigateToAppLink(data: DataItem) {
-        if(data.moveAction?.type != null) {
+        if (data.moveAction?.type != null) {
             Utils.routingBasedOnMoveAction(data.moveAction, fragment)
-        }else{
+        } else {
             lihatSemuaViewModel?.navigate(fragment.activity, data.btnApplink)
         }
-
     }
 
     interface OnLihatSemuaClickListener {

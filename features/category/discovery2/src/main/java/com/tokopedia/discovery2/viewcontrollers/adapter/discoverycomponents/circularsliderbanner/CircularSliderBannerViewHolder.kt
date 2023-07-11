@@ -11,7 +11,6 @@ import com.tokopedia.circular_view_pager.presentation.widgets.circularViewPager.
 import com.tokopedia.circular_view_pager.presentation.widgets.circularViewPager.CircularViewPager
 import com.tokopedia.circular_view_pager.presentation.widgets.circularViewPager.CircularViewPager.IndicatorPageChangeListener
 import com.tokopedia.circular_view_pager.presentation.widgets.pageIndicator.CircularPageIndicator
-import com.tokopedia.discovery2.Constant
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.Utils.Companion.routingBasedOnMoveAction
@@ -115,9 +114,9 @@ class CircularSliderBannerViewHolder(itemView: View, val fragment: Fragment) : A
                     position,
                     Utils.getUserId(fragment.context)
                 )
-                if(it.moveAction?.type != null) {
+                if (it.moveAction?.type != null) {
                     routingBasedOnMoveAction(it.moveAction, fragment)
-                }else{
+                } else {
                     if (!it.applinks.isNullOrEmpty()) RouteManager.route(itemView.context, it.applinks)
                 }
             }

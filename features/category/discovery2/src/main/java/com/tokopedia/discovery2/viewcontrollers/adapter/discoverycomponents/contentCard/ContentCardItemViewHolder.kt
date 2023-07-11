@@ -3,9 +3,6 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.con
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.discovery2.Constant.NAVIGATION
-import com.tokopedia.discovery2.Constant.REDIRECTION
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.TIME_DISPLAY_FORMAT
 import com.tokopedia.discovery2.Utils
@@ -113,28 +110,17 @@ class ContentCardItemViewHolder(itemView: View, private val fragment: Fragment) 
         }
     }
 
-    private fun onClick(){
+    private fun onClick() {
         itemView.setOnClickListener {
             contentCardItemViewModel?.getNavigationAction()?.let { moveAction ->
-                when(moveAction.type){
-                    REDIRECTION -> {
-                        if (!moveAction.value.isNullOrEmpty()) {
-                            RouteManager.route(fragment.activity, moveAction.value)
-                        }
-                    }
-                    NAVIGATION -> {
-                        if (!moveAction.value.isNullOrEmpty()) {
-                            (fragment as? DiscoveryFragment)?.redirectToOtherTab(moveAction.value)
-                        }
-                    }
-                }
-                contentCardItemViewModel?.components?.let { componentItem ->
-                    (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()
-                        ?.trackContentCardClick(
-                            componentItem,
-                            Utils.getUserId(fragment.context)
-                        )
-                }
+                Utils.routingBasedOnMoveAction(moveAction, fragment)
+            }
+            contentCardItemViewModel?.components?.let { componentItem ->
+                (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()
+                    ?.trackContentCardClick(
+                        componentItem,
+                        Utils.getUserId(fragment.context)
+                    )
             }
         }
     }
