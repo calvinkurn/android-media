@@ -24,13 +24,14 @@ internal class Adapter(
 
     override fun onBindViewHolder(holder: AbstractViewHolder<*>, position: Int) {
         @Suppress("UNCHECKED_CAST")
-        (holder as AbstractViewHolder<Visitable<*>>).bind(getItem(position))
+        try { (holder as AbstractViewHolder<Visitable<*>>).bind(getItem(position)) }
+        catch(_: Throwable) { }
     }
 
     override fun getItemViewType(position: Int): Int = getItem(position).type(typeFactory)
 
     override fun onViewRecycled(holder: AbstractViewHolder<*>) {
-        try { holder.onViewRecycled() } catch (_: Throwable) { }
+        holder.onViewRecycled()
     }
 
     fun getItemAt(position: Int): Visitable<TypeFactory>? {

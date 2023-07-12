@@ -63,7 +63,7 @@ class HomeRecommendationUseCase @Inject constructor(
                 )
                 return newModel
             }
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             val newModel = currentBestSellerDataModel.copy(
                     filterChip = currentBestSellerDataModel.filterChip.map{
                         it.copy(isActivated = filterChip.name == it.name
@@ -85,7 +85,7 @@ class HomeRecommendationUseCase @Inject constructor(
                 selectedFilterChip = selectedFilterChip,
                 scrollDirection = scrollDirection,
             )
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             errorGetBestSellerFromSelectedFilter(
                 currentBestSellerDataModel = currentBestSellerDataModel,
                 selectedFilterChip = selectedFilterChip,
