@@ -376,4 +376,6 @@ object TokopediaImageUrl {
     const val IMG_14TH_ANNIV_HOME_RM = "https://images.tokopedia.net/img/android/seller_home/img_14th_anniv_rm_background_effect.png"
     const val IMG_14TH_ANNIV_HOME_PM = "https://images.tokopedia.net/img/android/seller_home/img_14th_anniv_pm_background_effect.png"
     const val IMG_14TH_ANNIV_HOME_OS = "https://images.tokopedia.net/img/android/seller_home/img_14th_anniv_os_background_effect.png"
+    const val IMG_PERSONA_INTRODUCTION = "https://images.tokopedia.net/img/android/sellerapp/seller_persona/img_persona_introduction-min.png"
+    const val IMG_PERSONA_TYPE_ACTIVE = "https://images.tokopedia.net/img/android/seller_home/bg_persona_type.png"
 }
