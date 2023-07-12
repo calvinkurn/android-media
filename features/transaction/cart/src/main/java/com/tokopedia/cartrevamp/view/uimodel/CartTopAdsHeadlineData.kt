@@ -6,4 +6,4 @@ data class CartTopAdsHeadlineData(
     var cpmModel: CpmModel? = null,
     var isHiddenBecauseOfError: Boolean = false,
     var cartProductIds: List<String> = emptyList()
-) : ICartHolder
+)

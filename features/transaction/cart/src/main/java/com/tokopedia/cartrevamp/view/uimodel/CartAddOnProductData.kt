@@ -6,4 +6,4 @@ data class CartAddOnProductData(
     var status: Int = -1,
     var type: Int = -1,
     var price: Double = 0.0
-) : ICartHolder
+)

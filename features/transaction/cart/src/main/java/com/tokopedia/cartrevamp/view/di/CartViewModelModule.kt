@@ -14,12 +14,12 @@ import dagger.multibindings.IntoMap
 abstract class CartViewModelModule {
 
     @Binds
-    @CartRevampScope
+    @ActivityScope
     abstract fun bindViewModelFactory(viewModelFactor: ViewModelFactory): ViewModelProvider.Factory
 
     @Binds
-    @CartRevampScope
+    @ActivityScope
     @IntoMap
     @ViewModelKey(CartViewModel::class)
-    abstract fun bindShipmentViewModel(cartViewModel: CartViewModel): ViewModel
+    abstract fun bindCartViewModel(cartViewModel: CartViewModel): ViewModel
 }

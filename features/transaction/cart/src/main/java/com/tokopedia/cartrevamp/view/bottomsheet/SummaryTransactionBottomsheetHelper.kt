@@ -8,10 +8,10 @@ import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.cart.databinding.LayoutBottomsheetSummaryTransactionBinding
-import com.tokopedia.cart.domain.model.cartlist.SummaryTransactionUiModel
-import com.tokopedia.cart.view.adapter.cart.CartAddOnSummaryAdapter
-import com.tokopedia.cart.view.adapter.cart.CartPromoSummaryAdapter
-import com.tokopedia.cart.view.uimodel.PromoSummaryData
+import com.tokopedia.cartrevamp.domain.model.cartlist.SummaryTransactionUiModel
+import com.tokopedia.cartrevamp.view.adapter.cart.CartAddOnSummaryAdapter
+import com.tokopedia.cartrevamp.view.adapter.cart.CartPromoSummaryAdapter
+import com.tokopedia.cartrevamp.view.uimodel.PromoSummaryData
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix

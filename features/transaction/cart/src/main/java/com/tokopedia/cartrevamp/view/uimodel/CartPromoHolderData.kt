@@ -13,4 +13,4 @@ data class CartPromoHolderData(
     var isPo: Boolean = false,
     var poDuration: String = "",
     var hasSelectedProduct: Boolean = false
-) : ICartHolder
+)

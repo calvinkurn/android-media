@@ -1,6 +1,6 @@
 package com.tokopedia.cartrevamp.view.uimodel
 
-import com.tokopedia.cart.data.model.response.shopgroupsimplified.ShopTypeInfo
+import com.tokopedia.cartrevamp.data.model.response.shopgroupsimplified.ShopTypeInfo
 import com.tokopedia.logisticcart.shipping.model.ShopShipment
 
 data class CartShopHolderData(
@@ -17,4 +17,4 @@ data class CartShopHolderData(
     var longitude: String = "",
     var poDuration: String = "",
     var enablerLabel: String = ""
-) : ICartHolder
+)

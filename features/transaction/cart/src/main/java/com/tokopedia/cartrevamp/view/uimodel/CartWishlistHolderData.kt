@@ -8,4 +8,4 @@ data class CartWishlistHolderData(
     var lastFocussPosition: Int = 0,
     var wishList: MutableList<CartWishlistItemHolderData> = arrayListOf(),
     var hasInitializeRecyclerView: Boolean = false
-) : ICartHolder
+)

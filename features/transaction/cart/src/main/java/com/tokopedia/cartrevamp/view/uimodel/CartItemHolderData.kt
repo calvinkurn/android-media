@@ -1,8 +1,8 @@
 package com.tokopedia.cartrevamp.view.uimodel
 
-import com.tokopedia.cart.data.model.response.shopgroupsimplified.Action
-import com.tokopedia.cart.data.model.response.shopgroupsimplified.ProductInformationWithIcon
-import com.tokopedia.cart.data.model.response.shopgroupsimplified.WholesalePrice
+import com.tokopedia.cartrevamp.data.model.response.shopgroupsimplified.Action
+import com.tokopedia.cartrevamp.data.model.response.shopgroupsimplified.ProductInformationWithIcon
+import com.tokopedia.cartrevamp.data.model.response.shopgroupsimplified.WholesalePrice
 import com.tokopedia.purchase_platform.common.feature.bometadata.BoMetadata
 
 data class CartItemHolderData(
@@ -95,7 +95,7 @@ data class CartItemHolderData(
 
     // AddOns Product
     var addOnsProduct: CartAddOnData = CartAddOnData()
-) : ICartHolder {
+) {
     companion object {
         const val BUNDLING_ITEM_DEFAULT = 0
         const val BUNDLING_ITEM_HEADER = 1

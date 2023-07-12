@@ -1,7 +1,7 @@
 package com.tokopedia.cartrevamp.view.adapter.cart
 
 import android.widget.ImageView
-import com.tokopedia.cart.data.model.response.shopgroupsimplified.Action
+import com.tokopedia.cartrevamp.data.model.response.shopgroupsimplified.Action
 import com.tokopedia.cartrevamp.view.uimodel.CartItemHolderData
 
 class CartItemAdapter {

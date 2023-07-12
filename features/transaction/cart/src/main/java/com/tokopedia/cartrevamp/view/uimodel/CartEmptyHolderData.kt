@@ -5,4 +5,4 @@ class CartEmptyHolderData(
     var desc: String = "",
     var imgUrl: String = "",
     var btnText: String = ""
-) : ICartHolder
+)

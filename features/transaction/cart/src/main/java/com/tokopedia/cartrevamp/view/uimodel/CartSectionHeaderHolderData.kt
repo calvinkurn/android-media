@@ -7,4 +7,4 @@ package com.tokopedia.cartrevamp.view.uimodel
 data class CartSectionHeaderHolderData(
     var title: String = "",
     var showAllAppLink: String = ""
-) : ICartHolder
+)

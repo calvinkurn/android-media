@@ -4,4 +4,4 @@ data class CartAddOnWidgetData(
     var wording: String = "",
     var leftIconUrl: String = "",
     var rightIconUrl: String = ""
-) : ICartHolder
+)
