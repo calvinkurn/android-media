@@ -57,12 +57,8 @@ class ThematicHeaderViewHolder(itemView: View, private val fragment: Fragment) :
                 lihatSubTitleTextView.text = subtitle
             }
             if(!lottieImage.isNullOrEmpty()){
-                backgroundImageView.hide()
-                backgroundLottie.run {
-                    setAnimationFromUrl(lottieImage)
-                    playAnimation()
-                }
-                backgroundLottie.visible()
+                setupLottie(color, lottieImage)
+
             }else{
                 backgroundImageView.visible()
                 backgroundLottie.invisible()
@@ -83,6 +79,25 @@ class ThematicHeaderViewHolder(itemView: View, private val fragment: Fragment) :
             }
         } catch (e: Exception) {
             backgroundImageView.hide()
+        }
+    }
+
+    private fun setupLottie(color: String?, lottieImageURL: String) {
+        try {
+            backgroundImageView.show()
+            backgroundLottie.visible()
+            if (!color.isNullOrEmpty()) {
+                backgroundImageView.setBackgroundColor(Color.parseColor(color))
+            }
+            if (lottieImageURL.isNotEmpty()) {
+                backgroundLottie.run {
+                    setAnimationFromUrl(lottieImageURL)
+                    playAnimation()
+                }
+            }
+        } catch (e: Exception) {
+            backgroundImageView.hide()
+            backgroundLottie.hide()
         }
     }
 }
