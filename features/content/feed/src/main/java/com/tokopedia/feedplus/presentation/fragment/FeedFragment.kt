@@ -813,15 +813,19 @@ class FeedFragment :
         }
 
         feedPostViewModel.isReported.observe(viewLifecycleOwner) {
+            val menuSheet = childFragmentManager.findFragmentByTag(TAG_FEED_MENU_BOTTOMSHEET) as? ContentThreeDotsMenuBottomSheet
             when (it) {
                 is Success -> {
-                    ContentThreeDotsMenuBottomSheet.get(childFragmentManager)?.dismiss()
+                    menuSheet?.dismiss()
                 }
                 is Fail -> {
-                    showToast(
+                    val view = menuSheet?.view ?: return@observe
+                    Toaster.build(
+                        view,
                         ErrorHandler.getErrorMessage(requireContext(), it.throwable),
-                        Toaster.TYPE_ERROR
-                    )
+                        type = Toaster.TYPE_ERROR,
+                        duration = Toaster.LENGTH_LONG,
+                    ).show()
                 }
             }
         }
