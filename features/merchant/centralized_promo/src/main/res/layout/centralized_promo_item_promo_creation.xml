@@ -48,11 +48,11 @@
                     android:layout_width="45dp"
                     android:layout_height="45dp"
                     android:adjustViewBounds="true"
-                    android:padding="12dp"
                     android:background="@drawable/bg_icon_promo"
                     android:contentDescription="@string/centralized_promo_content_desc_image_recommended_promo"
+                    android:padding="12dp"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"/>
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <com.tokopedia.unifycomponents.ImageUnify
                     android:id="@+id/ivRecommendedPromo"
