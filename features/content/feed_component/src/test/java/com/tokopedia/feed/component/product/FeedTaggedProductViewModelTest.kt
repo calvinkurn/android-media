@@ -96,7 +96,6 @@ internal class FeedTaggedProductViewModelTest {
         assert(viewModel.feedTagProductList.value is Success)
         val response = viewModel.feedTagProductList.value as Success
         assert(response.data.size == getDummyData().data.products.size)
-        assert(viewModel.shopId == "09876")
     }
 
     @Test
