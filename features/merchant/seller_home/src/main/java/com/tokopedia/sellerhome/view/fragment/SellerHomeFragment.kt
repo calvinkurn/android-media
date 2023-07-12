@@ -427,8 +427,13 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             RouteManager.route(requireContext(), ApplinkConst.SELLER_INFO)
             NavigationTracking.sendClickNotificationEvent()
         } else if (item.itemId == SEARCH_MENU_ID) {
-            RouteManager.route(requireContext(), ApplinkConstInternalSellerapp.SELLER_SEARCH)
-            NavigationSearchTracking.sendClickSearchMenuEvent(userSession.userId.orEmpty())
+            context?.let {
+                RouteManager.route(
+                    it,
+                    SellerSearchDeeplinkMapper.getInternalApplinkSellerSearch(it)
+                )
+                NavigationSearchTracking.sendClickSearchMenuEvent(userSession.userId.orEmpty())
+            }
         }
         return super.onOptionsItemSelected(item)
     }

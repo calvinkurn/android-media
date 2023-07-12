@@ -22,6 +22,9 @@ object ApplinkConstInternalSellerapp {
     // InitialSearchActivity
     const val SELLER_SEARCH = "$INTERNAL_SELLERAPP/seller-search"
 
+    // InitialSearchComposeActivity
+    const val SELLER_SEARCH_COMPOSE = "$INTERNAL_SELLERAPP/seller-search-compose"
+
     const val SELLER_HOME_PRODUCT_MANAGE_LIST = "$INTERNAL_SELLERAPP/sellerhome-product-list"
 
     const val SELLER_HOME_CHAT = "$INTERNAL_SELLERAPP/sellerhome-chat"

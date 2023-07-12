@@ -130,5 +130,6 @@
     <string name="path_sellerapp_dashboard" translatable="false">/sellerapp-dashboard</string>
     <string name="path_sellerapp_notification" translatable="false">sellerinfo</string>
     <string name="path_sellerapp_search" translatable="false">/seller-search</string>
+    <string name="path_sellerapp_search_compose" translatable="false">/seller-search-compose</string>
     <string name="path_category_dynamic_picker">/category-dynamic-picker</string>
 </resources>

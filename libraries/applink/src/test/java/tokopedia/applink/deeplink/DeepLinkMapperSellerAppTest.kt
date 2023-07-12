@@ -172,7 +172,8 @@ class DeepLinkMapperSellerAppTest : DeepLinkMapperTestFixture() {
     }
     @Test
     fun `check seller search appLink then should return tokopedia internal seller search in sellerapp`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://sellerapp/seller-search"
+        setRemoteConfig(true)
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://sellerapp/seller-search-compose"
         assertEqualsDeepLinkMapper(ApplinkConst.SellerApp.SELLER_SEARCH, expectedDeepLink)
     }
 

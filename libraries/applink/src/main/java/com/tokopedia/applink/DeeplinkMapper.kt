@@ -44,6 +44,7 @@ import com.tokopedia.applink.sellerhome.AppLinkMapperSellerHome.getSomNewOrderAp
 import com.tokopedia.applink.sellerhome.AppLinkMapperSellerHome.getSomReadyToShipAppLink
 import com.tokopedia.applink.sellerhome.AppLinkMapperSellerHome.getSomShippedAppLink
 import com.tokopedia.applink.sellerhome.AppLinkMapperSellerHome.shouldRedirectToSellerApp
+import com.tokopedia.applink.sellersearch.SellerSearchDeeplinkMapper
 import com.tokopedia.applink.shopadmin.ShopAdminDeepLinkMapper
 import com.tokopedia.applink.shopscore.ShopScoreDeepLinkMapper
 import com.tokopedia.applink.statistic.DeepLinkMapperStatistic
@@ -435,7 +436,7 @@ object DeeplinkMapper {
             ApplinkConst.SellerApp.TOPADS_CREATE_CHOOSER -> ApplinkConstInternalTopAds.TOPADS_CREATE_CHOOSER
             ApplinkConst.SellerApp.SELLER_ONBOARDING -> ApplinkConstInternalSellerapp.WELCOME
             ApplinkConst.SellerApp.SELLER_APP_HOME -> ApplinkConstInternalSellerapp.SELLER_HOME
-            ApplinkConst.SellerApp.SELLER_SEARCH -> ApplinkConstInternalSellerapp.SELLER_SEARCH
+            ApplinkConst.SellerApp.SELLER_SEARCH -> SellerSearchDeeplinkMapper.getInternalApplinkSellerSearch(context)
             ApplinkConst.SellerApp.PRODUCT_ADD -> ApplinkConstInternalMechant.MERCHANT_OPEN_PRODUCT_PREVIEW
             ApplinkConst.SellerApp.POWER_MERCHANT_SUBSCRIBE -> PowerMerchantDeepLinkMapper.getPowerMerchantAppLink(
                 context,
