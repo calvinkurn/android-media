@@ -31,6 +31,7 @@ class FeedTaggedProductBottomSheet : BottomSheetUnify() {
 
     private var activityId: String = ""
     private var viewModel: FeedTaggedProductViewModel? = null
+    private var isFirst: Boolean = true
 
     private val maxHeight by lazyThreadSafetyNone {
         (getScreenHeight() * HEIGHT_PERCENT).roundToInt()
@@ -86,12 +87,16 @@ class FeedTaggedProductBottomSheet : BottomSheetUnify() {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             adapter = mAdapter
         }
+
+        observeProducts()
     }
 
     override fun onResume() {
         super.onResume()
-        showLoading()
-        observeProducts()
+        if (isFirst) {
+            showLoading()
+            isFirst = false
+        }
     }
 
     private fun observeProducts() {
@@ -129,6 +134,7 @@ class FeedTaggedProductBottomSheet : BottomSheetUnify() {
         tag: String,
         products: List<FeedTaggedProductUiModel> = emptyList()
     ) {
+        this.isFirst = true
         this.activityId = activityId
         viewModel = ViewModelProvider(
             viewModelOwner,
