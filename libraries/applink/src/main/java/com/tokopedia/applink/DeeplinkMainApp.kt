@@ -69,11 +69,6 @@ object DeeplinkMainApp {
         "account" to mutableListOf(
             DLP.goTo(DeeplinkMapperAccount::getAccountInternalApplink)
         ),
-        "addon" to mutableListOf(
-            DLP.matchPattern("{addon_id}") { _, _, _, idList ->
-                UriUtil.buildUri(ApplinkConstInternalMechant.MERCHANT_ADDON, idList?.getOrNull(0))
-            }
-        ),
         "add-phone" to mutableListOf(
             DLP.matchPattern("", DeeplinkMapperUser::getRegisteredNavigationUser)
         ),
@@ -82,6 +77,11 @@ object DeeplinkMainApp {
         ),
         "addname" to mutableListOf(
             DLP.matchPattern("", ApplinkConstInternalUserPlatform.MANAGE_NAME)
+        ),
+        "addon" to mutableListOf(
+            DLP.matchPattern("{addon_id}") { _, _, _, idList ->
+                UriUtil.buildUri(ApplinkConstInternalMechant.MERCHANT_ADDON, idList?.getOrNull(0))
+            }
         ),
         "affiliate" to mutableListOf(
             DLP.matchPattern("", DeeplinkMapperCategory::getRegisteredNavigationAffiliate),
