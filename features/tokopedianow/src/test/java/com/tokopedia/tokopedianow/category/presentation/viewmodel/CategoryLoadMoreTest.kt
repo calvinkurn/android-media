@@ -35,9 +35,7 @@ class CategoryLoadMoreTest : TokoNowCategoryViewModelTestFixture() {
             )
         )
 
-        viewModel.onViewCreated(
-            navToolbarHeight = navToolbarHeight
-        )
+        viewModel.onViewCreated()
         viewModel.getFirstPage()
         viewModel.loadNextPage(true)
 
@@ -130,9 +128,7 @@ class CategoryLoadMoreTest : TokoNowCategoryViewModelTestFixture() {
             )
         )
 
-        viewModel.onViewCreated(
-            navToolbarHeight = navToolbarHeight
-        )
+        viewModel.onViewCreated()
         viewModel.getFirstPage()
         viewModel.loadNextPage(true)
         viewModel.loadNextPage(true)

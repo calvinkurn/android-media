@@ -22,9 +22,7 @@ class CategoryViewCreatedTest : TokoNowCategoryViewModelTestFixture() {
         onCategoryDetail_thenReturns()
         onTargetedTicker_thenReturns()
 
-        viewModel.onViewCreated(
-            navToolbarHeight = navToolbarHeight
-        )
+        viewModel.onViewCreated()
 
         // map header space
         val headerSpaceUiModel = categoryDetailResponse
@@ -90,9 +88,7 @@ class CategoryViewCreatedTest : TokoNowCategoryViewModelTestFixture() {
         onCategoryDetail_thenReturns()
         onTargetedTicker_thenThrows()
 
-        viewModel.onViewCreated(
-            navToolbarHeight = navToolbarHeight
-        )
+        viewModel.onViewCreated()
 
         // Add header space
         val headerSpaceUiModel = categoryDetailResponse
@@ -146,9 +142,7 @@ class CategoryViewCreatedTest : TokoNowCategoryViewModelTestFixture() {
     fun `onViewCreated should return failed because category detail throws an exception`() {
         onCategoryDetail_thenThrows()
 
-        viewModel.onViewCreated(
-            navToolbarHeight = navToolbarHeight
-        )
+        viewModel.onViewCreated()
 
         Assert.assertTrue(viewModel.categoryFirstPage.value is Fail)
     }
@@ -160,9 +154,7 @@ class CategoryViewCreatedTest : TokoNowCategoryViewModelTestFixture() {
             shopId = shopId
         )
 
-        viewModel.onViewCreated(
-            navToolbarHeight = navToolbarHeight
-        )
+        viewModel.onViewCreated()
 
         viewModel.categoryFirstPage
             .verifyValueEquals(null)

@@ -32,9 +32,7 @@ class CategoryProductRecommendationTest : TokoNowCategoryViewModelTestFixture() 
             )
         )
 
-        viewModel.onViewCreated(
-            navToolbarHeight = navToolbarHeight
-        )
+        viewModel.onViewCreated()
         viewModel.getFirstPage()
 
         // map header space

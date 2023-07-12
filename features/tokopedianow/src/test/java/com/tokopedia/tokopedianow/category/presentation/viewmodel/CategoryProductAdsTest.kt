@@ -58,9 +58,7 @@ class CategoryProductAdsTest : TokoNowCategoryViewModelTestFixture() {
         onTargetedTicker_thenReturns()
         onGetProductAds_thenReturn(getProductAdsResponse)
 
-        viewModel.onViewCreated(
-            navToolbarHeight = navToolbarHeight
-        )
+        viewModel.onViewCreated()
         viewModel.getFirstPage()
 
         // map header space
@@ -160,9 +158,7 @@ class CategoryProductAdsTest : TokoNowCategoryViewModelTestFixture() {
         onTargetedTicker_thenReturns()
         onGetProductAds_thenReturn(getProductAdsResponse)
 
-        viewModel.onViewCreated(
-            navToolbarHeight = navToolbarHeight
-        )
+        viewModel.onViewCreated()
         viewModel.getFirstPage()
 
         // map header space
