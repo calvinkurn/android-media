@@ -961,10 +961,13 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment(), RewardContainerListener {
     }
 
     override fun onTrigger(position: Int) {
-        giftBoxRewardEntity?.gamiCrack?.benefits?.get(position)?.dummyCode?.let {
+        val dummyCode = giftBoxRewardEntity?.gamiCrack?.benefits?.get(position)?.dummyCode
+        val referenceId = giftBoxRewardEntity?.gamiCrack?.benefits?.get(position)?.referenceID
+        val label = "$dummyCode - $referenceId"
+        dummyCode?.let {
             code ->
             viewModel.autoApply(code)
-            GtmEvents.sendClickCouponImageEvent("")
+            GtmEvents.sendClickCouponImageEvent(label)
         }
     }
 }
