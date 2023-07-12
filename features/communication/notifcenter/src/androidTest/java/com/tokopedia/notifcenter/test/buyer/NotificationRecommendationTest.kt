@@ -20,6 +20,7 @@ class NotificationRecommendationTest : BaseNotificationTest() {
         generalRobot {
             smoothScrollNotificationTo(8)
         }
+        Thread.sleep(300)
 
         // Then
         recommendationResult {
@@ -38,6 +39,7 @@ class NotificationRecommendationTest : BaseNotificationTest() {
         generalRobot {
             smoothScrollNotificationTo(8)
         }
+        Thread.sleep(300)
 
         // Then
         recommendationResult {
@@ -56,6 +58,7 @@ class NotificationRecommendationTest : BaseNotificationTest() {
         generalRobot {
             smoothScrollNotificationTo(8)
         }
+        Thread.sleep(300)
 
         // Then
         recommendationResult {
@@ -71,6 +74,7 @@ class NotificationRecommendationTest : BaseNotificationTest() {
         filterRobot {
             clickFilterAt(0)
         }
+        Thread.sleep(300)
 
         // Then
         recommendationResult {
