@@ -4,6 +4,7 @@ import android.os.Handler
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.constraintlayout.widget.ConstraintLayout
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.carousel.CarouselUnify
@@ -65,7 +66,7 @@ class ShopCampaignSliderBannerViewHolder(
                 img?.setImageUrl(carouselItem.imageUrl, ratio)
             }
         } catch (e: Exception) {
-            e.printStackTrace()
+            FirebaseCrashlytics.getInstance().recordException(e)
         }
         img?.onUrlLoaded = {
             performanceMonitoring.stopTrace()
