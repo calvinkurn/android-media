@@ -1970,9 +1970,7 @@ class PromoCheckoutViewModel @Inject constructor(
                 if (promoListItemUiModel.uiState.isParentEnabled) {
                     promoListItemUiModel.uiState.isDisabled = false
                 }
-                if (promoListItemUiModel.uiData.promoCode != selectedItem.uiData.promoCode
-                    && promoListItemUiModel.uiData.secondaryCoupons.first().code != selectedItem.uiData.secondaryCoupons.first().code
-                    && !isApplyRecommendedPromo) {
+                if (promoListItemUiModel.uiData.promoCode != selectedItem.uiData.promoCode && !isApplyRecommendedPromo) {
                     fragmentUiModel.value?.let {
                         it.uiData.benefitAdjustmentMessage =
                             promoListItemUiModel.uiData.benefitAdjustmentMessage
