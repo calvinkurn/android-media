@@ -79,6 +79,7 @@ import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationC
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
+import com.tokopedia.recommendation_widget_common.widget.carousel.global.RecommendationCarouselTrackingConst
 import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetMetadata
 import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetModel
 import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetSource
@@ -287,6 +288,8 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                     this.productId = dataP1.basic.productID
                 }
             }
+
+            updateGlobalRecommendationWidget(productId, loadInitialData)
 
             if (loadInitialData) {
                 verticalRecommendationItems.clear()
@@ -1205,22 +1208,27 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         }
     }
 
-    fun updateGlobalRecommendationWidget(productId: String?) {
+    private fun updateGlobalRecommendationWidget(productId: String, loadInitialData: Boolean) {
         DynamicProductDetailMapper.getGlobalRecommendationWidgetComponentNames().forEach { key ->
-            updateData(key, true) {
+            updateData(key, loadInitialData) {
                 (mapOfData[key] as? ProductRecommendationWidgetUiModel)?.run {
-                    val newData = copy(
-                        recommendationWidget = recommendationWidget.copy(
-                            metadata = recommendationWidget.metadata.copy(
-                                productIds = if (productId.isNullOrBlank()) {
-                                    listOf()
-                                } else {
-                                    listOf(productId)
-                                }
-                            )
+                    val globalRecomWidgetTrackingModel = RecommendationWidgetTrackingModel(
+                        androidPageName = RecommendationCarouselTrackingConst.Category.PDP,
+                        eventActionImpression = RecommendationCarouselTrackingConst.Action.IMPRESSION_ON_PRODUCT_RECOMMENDATION_PDP,
+                        eventActionClick = RecommendationCarouselTrackingConst.Action.CLICK_ON_PRODUCT_RECOMMENDATION_PDP,
+                        listPageName = RecommendationCarouselTrackingConst.List.PDP
+                    )
+                    val globalRecomWidgetMetadata = RecommendationWidgetMetadata(
+                        pageSource = RecommendationWidgetSource.PDP.xSourceValue,
+                        pageName = key,
+                        productIds = if (productId.isBlank()) listOf() else listOf(productId)
+                    )
+                    mapOfData[key] = copy(
+                        recommendationWidget = RecommendationWidgetModel(
+                            metadata = globalRecomWidgetMetadata,
+                            trackingModel = globalRecomWidgetTrackingModel
                         )
                     )
-                    mapOfData[key] = newData
                 }
             }
         }

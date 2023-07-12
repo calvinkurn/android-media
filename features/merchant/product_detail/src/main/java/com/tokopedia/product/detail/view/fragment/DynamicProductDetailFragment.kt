@@ -3310,7 +3310,6 @@ open class DynamicProductDetailFragment :
             productInfo.data.containerType,
             productInfo.data.productMediaRecomBasicInfo
         )
-        pdpUiUpdater?.updateGlobalRecommendationWidget(productId)
         actionButtonView.setButtonP1(productInfo.data.preOrder)
 
         if ((productInfo.basic.category.isAdult && !viewModel.isUserSessionActive) ||
