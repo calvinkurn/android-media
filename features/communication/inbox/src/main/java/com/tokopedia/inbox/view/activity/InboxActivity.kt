@@ -42,6 +42,7 @@ import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.ContentType.TOOLBAR_TYPE_CUSTOM
 import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.ContentType.TOOLBAR_TYPE_TITLE
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
+import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.toPx
@@ -319,20 +320,14 @@ open class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFrag
     }
 
     private fun updateToolbarIcon(hasChatSearch: Boolean = false) {
-        val icon = IconBuilder()
+        val icon = IconBuilder(IconBuilderFlag(NavSource.NOTIFICATION))
         if (hasChatSearch) {
             icon.addIcon(IconList.ID_SEARCH) { }
         }
         icon.addIcon(IconList.ID_CART) { }
-        if (ableToShowGlobalNav()) {
-            icon.addIcon(IconList.ID_NAV_GLOBAL) { }
-        }
+        icon.addIcon(IconList.ID_NAV_GLOBAL) { }
         toolbar?.setIcon(icon)
         toolbar?.setBadgeCounter(IconList.ID_CART, InboxConfig.notifications.totalCart)
-    }
-
-    private fun ableToShowGlobalNav(): Boolean {
-        return InboxConfig.page != InboxFragmentType.NOTIFICATION || isShowBottomNav
     }
 
     private fun setupView() {
