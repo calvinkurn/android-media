@@ -421,9 +421,19 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     }
 
     private fun checkLoginOption() {
-        viewModel.checkLoginOption(isEnableSeamlessLogin, isEnableFingerprint, isEnableDirectBiometric, isEnableOcl)
+        if (GlobalConfig.isSellerApp()){
+            viewModel.checkLoginOption(
+                isEnableSeamless = false,
+                isEnableFingerprint = false,
+                isEnableDirectBiometric = false,
+                isEnableOcl = false
+            )
+        } else {
+            viewModel.checkLoginOption(isEnableSeamlessLogin, isEnableFingerprint, isEnableDirectBiometric, isEnableOcl)
+        }
         showLoadingOverlay()
     }
+
 
     private fun showLoadingOverlay() {
         viewBinding?.loginLoadingOverlay?.root?.show()
