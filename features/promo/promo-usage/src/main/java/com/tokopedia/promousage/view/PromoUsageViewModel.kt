@@ -1,5 +1,8 @@
 package com.tokopedia.promousage.view
 
-class PromoUsageViewModel {
+import androidx.lifecycle.ViewModel
+
+class PromoUsageViewModel : ViewModel() {
+
 
 }
