@@ -3,6 +3,8 @@ apply from: "$rootProject.projectDir/buildconfig/kotlin/core-module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
 android {
+    namespace 'com.tokopedia.selleronboarding'
+    testNamespace 'com.tokopedia.selleronboarding.test'
     buildFeatures {
         viewBinding true
     }

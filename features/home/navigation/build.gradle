@@ -18,6 +18,8 @@ buildscript {
 }
 
 android {
+    namespace 'com.tokopedia.navigation'
+    testNamespace 'com.tokopedia.navigation.test'
     packagingOptions {
         exclude 'META-INF/**'
     }

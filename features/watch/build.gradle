@@ -4,6 +4,8 @@ apply plugin: 'io.hansel.preprocessor.module'
 apply from: "../../compile-instrument-test.gradle"
 
 android{
+    namespace 'com.tokopedia.watch'
+    testNamespace 'com.tokopedia.watch.test'
     packagingOptions {
         exclude 'META-INF/**'
     }
@@ -33,6 +35,11 @@ buildscript {
     dependencies {
         classpath rootProject.ext.miscDependencies.hansel
     }
+}
+
+android {
+    namespace 'com.tokopedia.watch'
+    testNamespace 'com.tokopedia.watch.test'
 }
 
 dependencies {

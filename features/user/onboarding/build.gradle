@@ -9,6 +9,8 @@ repositories {
 }
 
 android {
+    namespace 'com.tokopedia.onboarding'
+    testNamespace 'com.tokopedia.onboarding.test'
     buildFeatures {
         viewBinding true
     }
