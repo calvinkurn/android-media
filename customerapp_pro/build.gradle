@@ -100,7 +100,8 @@ ext.lintchecks = [
 
 
 android {
-
+    namespace 'com.tokopedia.intl'
+    testNamespace 'com.tokopedia.intl.test'
     packagingOptions {
         exclude 'META-INF/**'
         pickFirst '**/armeabi-v7a/libc++_shared.so'

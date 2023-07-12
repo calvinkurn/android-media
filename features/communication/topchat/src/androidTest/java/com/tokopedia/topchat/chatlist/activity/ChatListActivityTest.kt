@@ -43,7 +43,7 @@ class ChatListActivityTest : ChatListTest() {
             .check(matches(withText("Belum ada chat, nih")))
         onView(withId(R.id.subtitle))
             .check(matches(withText("Coba ngobrol dengan teman penjual, yuk!")))
-        onView(withId(R.id.btnCta))
+        onView(withId(R.id.btn_cta))
             .check(matches(not(isDisplayed())))
     }
 
@@ -78,9 +78,9 @@ class ChatListActivityTest : ChatListTest() {
             .check(matches(withText("Belum ada chat, nih")))
         onView(allOf(withId(R.id.subtitle), isCompletelyDisplayed()))
             .check(matches(withText("Yuk, bikin tokomu ramai pengunjung dengan beriklan dan promosikan produk-produkmu.")))
-        onView(allOf(withId(R.id.btnCta), isCompletelyDisplayed()))
+        onView(allOf(withId(R.id.btn_cta), isCompletelyDisplayed()))
             .check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
-        onView(allOf(withId(R.id.btnCta), isCompletelyDisplayed()))
+        onView(allOf(withId(R.id.btn_cta), isCompletelyDisplayed()))
             .check(matches(withText("Coba Iklan dan Promosi")))
     }
 
@@ -110,7 +110,7 @@ class ChatListActivityTest : ChatListTest() {
         onView(withId(R.id.menu_chat_filter)).perform(click())
 
         // Then
-        onView(withId(R.id.rvMenu)).check(withItemCount(equalTo(3)))
+        onView(withId(R.id.rv_menu)).check(withItemCount(equalTo(3)))
     }
 
     @Test
@@ -128,7 +128,7 @@ class ChatListActivityTest : ChatListTest() {
         onView(withId(R.id.menu_chat_filter)).perform(click())
 
         // Then
-        onView(withId(R.id.rvMenu)).check(withItemCount(equalTo(4)))
+        onView(withId(R.id.rv_menu)).check(withItemCount(equalTo(4)))
     }
 
     @Test
@@ -143,7 +143,7 @@ class ChatListActivityTest : ChatListTest() {
         onView(withId(R.id.menu_chat_filter)).perform(click())
 
         // Then
-        onView(withId(R.id.rvMenu)).check(withItemCount(equalTo(2)))
+        onView(withId(R.id.rv_menu)).check(withItemCount(equalTo(2)))
     }
 
     @Test

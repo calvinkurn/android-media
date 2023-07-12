@@ -161,7 +161,8 @@ class FeedPostVideoViewHolder(
                 bindComments(data)
                 bindVideoPlayer(data)
 
-                val trackerData = trackerDataModel ?: trackerMapper.transformVideoContentToTrackerModel(data)
+                val trackerData =
+                    trackerDataModel ?: trackerMapper.transformVideoContentToTrackerModel(data)
 
                 menuButton.setOnClickListener {
                     listener.onMenuClicked(
@@ -202,12 +203,14 @@ class FeedPostVideoViewHolder(
             }
 
             if (payloads.contains(FEED_POST_SELECTED)) {
-                val trackerModel = trackerDataModel ?: trackerMapper.transformVideoContentToTrackerModel(it)
+                val trackerModel =
+                    trackerDataModel ?: trackerMapper.transformVideoContentToTrackerModel(it)
                 listener.onPostImpression(
                     trackerModel,
                     it.id,
                     absoluteAdapterPosition
                 )
+                campaignView.resetView()
                 campaignView.startAnimation()
                 mVideoPlayer?.resume()
                 listener.onWatchPostVideo(it, trackerModel)
@@ -298,6 +301,7 @@ class FeedPostVideoViewHolder(
             campaign = data.campaign,
             hasVoucher = data.hasVoucher,
             products = data.products,
+            totalProducts = data.totalProducts,
             trackerData = trackerDataModel,
             positionInFeed = absoluteAdapterPosition
         )

@@ -2,6 +2,8 @@ package com.tokopedia.people.data
 
 import com.tokopedia.feedcomponent.people.model.MutationUiModel
 import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomUiModel
+import com.tokopedia.people.views.uimodel.ProfileSettingsUiModel
+import com.tokopedia.people.views.uimodel.UserReviewUiModel
 import com.tokopedia.people.views.uimodel.content.UserFeedPostsUiModel
 import com.tokopedia.people.views.uimodel.content.UserPlayVideoUiModel
 import com.tokopedia.people.views.uimodel.profile.FollowInfoUiModel
@@ -49,4 +51,26 @@ interface UserProfileRepository {
         channelId: String,
         userId: String,
     ): String
+
+    suspend fun getProfileSettings(
+        userID: String,
+    ): List<ProfileSettingsUiModel>
+
+    suspend fun setShowReview(
+        userID: String,
+        settingID: String,
+        isShow: Boolean,
+    ): Boolean
+
+    suspend fun getUserReviewList(
+        userID: String,
+        limit: Int,
+        page: Int
+    ): UserReviewUiModel
+
+    suspend fun setLikeStatus(
+        feedbackID: String,
+        isLike: Boolean,
+    ): UserReviewUiModel.LikeDislike
+
 }
