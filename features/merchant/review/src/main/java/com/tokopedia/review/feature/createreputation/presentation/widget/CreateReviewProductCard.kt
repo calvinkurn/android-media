@@ -6,12 +6,11 @@ import android.view.LayoutInflater
 import android.view.animation.AccelerateInterpolator
 import androidx.transition.Fade
 import androidx.transition.TransitionManager
-import com.tokopedia.imageassets.TokopediaImageUrl
-import com.tokopedia.imageassets.utils.loadProductImage
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.review.databinding.WidgetCreateReviewProductCardBinding
 import com.tokopedia.review.feature.createreputation.model.ProductData
 import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewProductCardUiState
@@ -49,10 +48,7 @@ class CreateReviewProductCard @JvmOverloads constructor(
                 text = productData.productVariant.variantName
                 showWithCondition(productData.productVariant.variantName.isNotBlank())
             }
-            reviewFormProductImage.loadProductImage(
-                url = productData.productImageURL,
-                archivedUrl = TokopediaImageUrl.IMG_ARCHIVED_PRODUCT_SMALL
-            )
+            reviewFormProductImage.loadImage(productData.productImageURL)
         }
     }
 
