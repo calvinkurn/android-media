@@ -18,6 +18,11 @@ buildscript {
 }
 
 
+android {
+    namespace 'com.tokopedia.common_tradein'
+    testNamespace 'com.tokopedia.common_tradein.test'
+}
+
 dependencies {
 	implementation rootProject.ext.unifyDependencies.principles
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)

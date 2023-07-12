@@ -431,6 +431,13 @@ class DetailEditorFragment @Inject constructor(
         activity?.finish()
     }
 
+    override fun onStandardizeAvatar(
+        source: Bitmap,
+        cropRotateData: EditorCropRotateUiModel
+    ): Bitmap? {
+        return viewModel.cropImage(source, cropRotateData)
+    }
+
     // === Listener add text
     override fun onAddFreeText() {
         editorDetailAnalytics.clickAddTextFreeText()

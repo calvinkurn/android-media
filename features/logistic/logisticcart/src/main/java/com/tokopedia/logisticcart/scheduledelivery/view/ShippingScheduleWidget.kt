@@ -132,7 +132,7 @@ class ShippingScheduleWidget : ConstraintLayout {
             isEnable = available,
             title = getTitleOtherOption(),
             description = if (available) deliveryProduct.textEta else text,
-            label = deliveryProduct.promoText,
+            label = deliveryProduct.promoText.convertToSpannedString(),
             isSelected = isSelected,
             isShowCoachMark = scheduleDeliveryPreferences?.isDisplayedCoachmark?.not() ?: true,
             onSelectedWidgetListener = {
