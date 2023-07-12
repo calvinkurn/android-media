@@ -47,7 +47,7 @@ import com.tokopedia.cartrevamp.view.viewholder.CartLoadingViewHolder
 import com.tokopedia.cartrevamp.view.viewholder.CartRecentViewViewHolder
 import com.tokopedia.cartrevamp.view.viewholder.CartRecommendationViewHolder
 import com.tokopedia.cartrevamp.view.viewholder.CartSectionHeaderViewHolder
-import com.tokopedia.cartrevamp.view.viewholder.CartSelectAllViewHolder
+import com.tokopedia.cartrevamp.view.viewholder.CartSelectedAmountViewHolder
 import com.tokopedia.cartrevamp.view.viewholder.CartShopBottomViewHolder
 import com.tokopedia.cartrevamp.view.viewholder.CartTickerErrorViewHolder
 import com.tokopedia.cartrevamp.view.viewholder.CartTopAdsHeadlineViewHolder
@@ -129,7 +129,7 @@ class CartAdapter constructor(
     override fun getItemViewType(position: Int): Int {
         val data = cartDataList[position]
         return when (data) {
-            is CartSelectAllHolderData -> CartSelectAllViewHolder.LAYOUT
+            is CartSelectAllHolderData -> CartSelectedAmountViewHolder.LAYOUT
             is CartChooseAddressHolderData -> CartChooseAddressViewHolder.LAYOUT
             is CartGroupHolderData -> CartGroupViewHolder.LAYOUT
             is CartShopBottomHolderData -> CartShopBottomViewHolder.LAYOUT
@@ -154,10 +154,10 @@ class CartAdapter constructor(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         initializeCompositeSubscription()
         when (viewType) {
-            CartSelectAllViewHolder.LAYOUT -> {
+            CartSelectedAmountViewHolder.LAYOUT -> {
                 val binding =
                     ItemSelectAllBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-                return CartSelectAllViewHolder(binding, actionListener, compositeSubscription)
+                return CartSelectedAmountViewHolder(binding, actionListener, compositeSubscription)
             }
 
             CartChooseAddressViewHolder.LAYOUT -> {
@@ -320,9 +320,9 @@ class CartAdapter constructor(
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val viewType = getItemViewType(position)
         when (viewType) {
-            CartSelectAllViewHolder.LAYOUT -> {
+            CartSelectedAmountViewHolder.LAYOUT -> {
                 val data = cartDataList[position] as CartSelectAllHolderData
-                (holder as CartSelectAllViewHolder).bind(data)
+                (holder as CartSelectedAmountViewHolder).bind(data)
             }
 
             CartChooseAddressViewHolder.LAYOUT -> {
@@ -427,18 +427,6 @@ class CartAdapter constructor(
 
     fun clearCompositeSubscription() {
         compositeSubscription.clear()
-    }
-
-    fun addItem(any: Any) {
-        cartDataList.add(any)
-    }
-
-    fun addItems(anyList: List<Any>) {
-        cartDataList.addAll(anyList)
-    }
-
-    fun addItems(index: Int = -1, anyList: List<Any>) {
-        cartDataList.addAll(index, anyList)
     }
 
     fun setShopSelected(position: Int, selected: Boolean) {

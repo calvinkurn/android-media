@@ -6,6 +6,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.DisplayMetrics
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,6 +24,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
+import com.google.gson.Gson
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
@@ -60,11 +62,9 @@ import com.tokopedia.cartrevamp.view.mapper.RecentViewMapper
 import com.tokopedia.cartrevamp.view.mapper.WishlistMapper
 import com.tokopedia.cartrevamp.view.uimodel.CartBundlingBottomSheetData
 import com.tokopedia.cartrevamp.view.uimodel.CartCheckoutButtonState
-import com.tokopedia.cartrevamp.view.uimodel.CartChooseAddressHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartGlobalEvent
 import com.tokopedia.cartrevamp.view.uimodel.CartGroupHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartItemHolderData
-import com.tokopedia.cartrevamp.view.uimodel.CartItemTickerErrorHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartRecentViewHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartRecentViewItemHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartRecommendationItemHolderData
@@ -85,7 +85,6 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.pxToDp
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
@@ -119,8 +118,6 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.mapper.LastAppl
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
 import com.tokopedia.purchase_platform.common.feature.sellercashback.SellerCashbackListener
-import com.tokopedia.purchase_platform.common.feature.sellercashback.ShipmentSellerCashbackModel
-import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementHolderData
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
@@ -1149,17 +1146,17 @@ class CartRevampFragment :
     }
 
     private fun handleCheckboxGlobalChangeEvent() {
-        val isChecked = binding?.topLayout?.checkboxGlobal?.isChecked ?: return
-        if (isCheckUncheckDirectAction) {
-            viewModel.setAllAvailableItemCheck(isChecked)
-            viewModel.reCalculateSubTotal(viewModel.getAllAvailableShopGroupDataList())
-            viewModel.saveCheckboxState(viewModel.getAllAvailableCartItemHolderData())
-            setGlobalDeleteVisibility()
-            cartPageAnalytics.eventCheckUncheckGlobalCheckbox(isChecked)
-
+//        val isChecked = binding?.topLayout?.checkboxGlobal?.isChecked ?: return
+//        if (isCheckUncheckDirectAction) {
+//            viewModel.setAllAvailableItemCheck(isChecked)
+//            viewModel.reCalculateSubTotal(viewModel.getAllAvailableShopGroupDataList())
+//            viewModel.saveCheckboxState(viewModel.getAllAvailableCartItemHolderData())
+//            setGlobalDeleteVisibility()
+//            cartPageAnalytics.eventCheckUncheckGlobalCheckbox(isChecked)
+//
 //            reloadAppliedPromoFromGlobalCheck()
-        }
-        isCheckUncheckDirectAction = true
+//        }
+//        isCheckUncheckDirectAction = true
     }
 
     private fun handlePromoButtonVisibilityOnIdle(newState: Int) {
@@ -1214,15 +1211,7 @@ class CartRevampFragment :
         if (topItemPosition >= adapterData.size) return
 
         val firstVisibleItemData = adapterData[topItemPosition]
-        if (firstVisibleItemData is CartSelectAllHolderData ||
-            firstVisibleItemData is TickerAnnouncementHolderData ||
-            firstVisibleItemData is CartChooseAddressHolderData ||
-            firstVisibleItemData is CartItemTickerErrorHolderData ||
-            firstVisibleItemData is CartGroupHolderData ||
-            firstVisibleItemData is CartItemHolderData ||
-            firstVisibleItemData is CartShopBottomHolderData ||
-            firstVisibleItemData is ShipmentSellerCashbackModel
-        ) {
+        if (firstVisibleItemData is CartSelectAllHolderData) {
             if (viewModel.getAllAvailableCartItemData().isNotEmpty()) {
                 if (binding?.topLayout?.root?.visibility == View.GONE) setTopLayoutVisibility(true)
             }
@@ -1330,13 +1319,12 @@ class CartRevampFragment :
 
     private fun initToolbar() {
         initNavigationToolbar()
-        binding?.toolbarCart?.gone()
         binding?.navToolbar?.show()
         setToolbarShadowVisibility(false)
     }
 
     private fun initTopLayout() {
-        binding?.topLayout?.checkboxGlobal?.let {
+//        binding?.topLayout?.checkboxGlobal?.let {
 //            compositeSubscription.add(
 //                rxCompoundButtonCheckDebounce(it, DELAY_CHECK_BOX_GLOBAL).subscribe(object :
 //                    Subscriber<Boolean>() {
@@ -1353,7 +1341,7 @@ class CartRevampFragment :
 //                    }
 //                })
 //            )
-        }
+//        }
 
         binding?.topLayout?.textActionDelete?.setOnClickListener {
             onGlobalDeleteClicked()
@@ -1385,6 +1373,7 @@ class CartRevampFragment :
 
     private fun observeCartDataList() {
         viewModel.cartDataList.observe(viewLifecycleOwner) { data ->
+            Log.d("<RESULT>", "observeCartDataList: ${Gson().toJson(data)}")
             cartAdapter.updateList(data)
         }
     }
@@ -1585,12 +1574,12 @@ class CartRevampFragment :
         routeToWishlist()
     }
 
-    private fun setGlobalDeleteVisibility() {
-        // TODO: change cartadapter
+    private fun setSelectedAmountVisibility() {
         if (viewModel.hasSelectedCartItem()) {
-            binding?.topLayout?.textActionDelete?.show()
+            binding?.topLayout?.root?.visible()
+            viewModel.addItem(CartSelectAllHolderData())
         } else {
-            binding?.topLayout?.textActionDelete?.invisible()
+            binding?.topLayout?.root?.gone()
         }
     }
 
@@ -1770,7 +1759,7 @@ class CartRevampFragment :
         }
     }
 
-    fun renderDetailInfoSubTotal(
+    private fun renderDetailInfoSubTotal(
         qty: String,
         subtotalPrice: Double,
         noAvailableItems: Boolean
@@ -1835,11 +1824,6 @@ class CartRevampFragment :
     }
 
     private fun renderInitialGetCartListDataSuccess(cartData: CartData) {
-        viewModel.updateCartModel(
-            viewModel.cartModel.copy(
-                recommendationPage = 1
-            )
-        )
         viewModel.processUpdateCartCounter()
         if (cartData.outOfService.isOutOfService()) {
             renderCartOutOfService(cartData.outOfService, true)
@@ -1850,6 +1834,7 @@ class CartRevampFragment :
         updateStateAfterFinishGetCartList()
 
         renderTickerAnnouncement(cartData)
+
         activity?.let {
             validateLocalCacheAddress(it, cartData.localizationChooseAddress)
         }
@@ -1860,7 +1845,7 @@ class CartRevampFragment :
 
         // TODO: change to bottom global checkbox
 //        setInitialCheckboxGlobalState(cartData)
-        setGlobalDeleteVisibility()
+        setSelectedAmountVisibility()
 
         validateGoToCheckout()
         scrollToLastAddedProductShop()

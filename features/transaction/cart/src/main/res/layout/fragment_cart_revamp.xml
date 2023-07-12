@@ -22,16 +22,6 @@
             android:visibility="invisible"
             app:layout_collapseMode="pin" />
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar_cart"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:minHeight="?attr/actionBarSize"
-            android:visibility="gone"
-            app:contentInsetLeft="0dp"
-            app:contentInsetStart="0dp"
-            app:contentInsetStartWithNavigation="0dp" />
-
         <com.tokopedia.searchbar.navigation_component.NavToolbar
             android:id="@+id/nav_toolbar"
             android:layout_width="match_parent"
@@ -242,7 +232,7 @@
 
                 <include
                     android:id="@+id/top_layout"
-                    layout="@layout/header_select_all"
+                    layout="@layout/header_selected_amount"
                     android:visibility="gone"
                     tools:visibility="visible" />
 

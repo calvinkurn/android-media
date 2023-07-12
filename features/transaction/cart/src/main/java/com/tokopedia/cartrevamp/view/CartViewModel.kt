@@ -153,6 +153,7 @@ class CartViewModel @Inject constructor(
 
         const val GET_CART_STATE_DEFAULT = 0
 
+        const val RECOMMENDATION_START_PAGE = 1
         const val ITEM_CHECKED_ALL_WITHOUT_CHANGES = 0
         const val ITEM_CHECKED_ALL_WITH_CHANGES = 1
         const val ITEM_CHECKED_PARTIAL_SHOP = 3
@@ -593,7 +594,8 @@ class CartViewModel @Inject constructor(
             summaryTransactionUiModel = CartUiModelMapper.mapSummaryTransactionUiModel(cartData),
             summariesAddOnUiModel = CartUiModelMapper.getShoppingSummaryAddOns(cartData.shoppingSummary.summaryAddOnList),
             showChoosePromoWidget = cartData.promo.showChoosePromoWidget,
-            promoTicker = cartData.promo.ticker
+            promoTicker = cartData.promo.ticker,
+            recommendationPage = RECOMMENDATION_START_PAGE
         )
         if (!initialLoad) {
             globalEvent.value = CartGlobalEvent.ProgressLoading(false)
