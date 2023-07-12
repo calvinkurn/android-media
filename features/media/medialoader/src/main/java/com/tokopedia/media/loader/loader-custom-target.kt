@@ -42,7 +42,7 @@ fun String.getBitmapImageUrl(
     )
 }
 
-fun String.getBitmapImageUrl(
+fun String.getBitmapImageUrlAsFlow(
     context: Context,
     properties: Properties.() -> Unit = {}
 ): Flow<Bitmap> {
@@ -68,7 +68,7 @@ fun String.getBitmapImageUrl(
     message = "This function is too verbose, please use getBitmapImageUrl() extension instead",
     replaceWith = ReplaceWith("getBitmapImageUrl")
 )
-fun <T: View> loadImageWithTarget(
+fun <T : View> loadImageWithTarget(
     context: Context,
     url: String,
     properties: Properties.() -> Unit = {},
@@ -85,7 +85,7 @@ fun <T: View> loadImageWithTarget(
 
 @Deprecated(
     message = "This function is too verbose, please use getBitmapImageUrl() extension instead",
-    replaceWith = ReplaceWith("getBitmapImageUrl")
+    replaceWith = ReplaceWith("imageUrl.getBitmapImageUrl(context, properties)")
 )
 fun loadImageWithEmptyTarget(
     context: Context,

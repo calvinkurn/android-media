@@ -4,6 +4,7 @@ import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.media.loader.BaseTest
 import com.tokopedia.media.loader.clearImage
 import com.tokopedia.media.loader.getBitmapImageUrl
+import com.tokopedia.media.loader.getBitmapImageUrlAsFlow
 import com.tokopedia.media.loader.loadImageWithEmptyTarget
 import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
 import com.tokopedia.test.application.annotations.UiTest
@@ -81,7 +82,7 @@ class LoadImageWithTargetTest : BaseTest() {
     fun loadImage_getBitmapImageUrl_flowable() {
         // When
         runBlocking {
-            val bitmap = publicImageUrl.getBitmapImageUrl(
+            val bitmap = publicImageUrl.getBitmapImageUrlAsFlow(
                 context = applicationContext,
                 properties = {
                     listener(
@@ -97,6 +98,8 @@ class LoadImageWithTargetTest : BaseTest() {
                     )
                 }
             ).first()
+
+            assert(bitmap.width.isMoreThanZero())
         }
     }
 
