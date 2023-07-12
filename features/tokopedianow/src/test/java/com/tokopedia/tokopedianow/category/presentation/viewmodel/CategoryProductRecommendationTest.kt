@@ -85,7 +85,7 @@ class CategoryProductRecommendationTest : TokoNowCategoryViewModelTestFixture() 
 
         verifyCategoryDetail()
         verifyTargetedTicker()
-        viewModel.categoryPage
+        viewModel.visitableListLiveData
             .verifyValueEquals(resultList)
     }
 
@@ -100,7 +100,7 @@ class CategoryProductRecommendationTest : TokoNowCategoryViewModelTestFixture() 
 
         viewModel.removeProductRecommendation()
 
-        viewModel.categoryPage
+        viewModel.visitableListLiveData
             .verifyValueEquals(null)
     }
 }

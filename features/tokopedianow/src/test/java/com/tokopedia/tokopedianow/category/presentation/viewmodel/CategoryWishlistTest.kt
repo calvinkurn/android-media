@@ -55,7 +55,7 @@ class CategoryWishlistTest: TokoNowCategoryViewModelTestFixture() {
             hasBeenWishlist = expectedWishlist
         )
 
-        viewModel.categoryPage
+        viewModel.visitableListLiveData
             .verifyValueEquals(
                 mockLayout.map {
                     it.copy(
@@ -88,7 +88,7 @@ class CategoryWishlistTest: TokoNowCategoryViewModelTestFixture() {
             hasBeenWishlist = expectedWishlist
         )
 
-        viewModel.categoryPage
+        viewModel.visitableListLiveData
             .verifyValueEquals(null)
     }
 }

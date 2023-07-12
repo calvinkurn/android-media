@@ -105,7 +105,7 @@ class CategoryLoadMoreTest : TokoNowCategoryViewModelTestFixture() {
         verifyTargetedTicker()
         viewModel.scrollNotNeeded
             .verifyValueEquals(null)
-        viewModel.categoryPage
+        viewModel.visitableListLiveData
             .verifyValueEquals(resultList)
     }
 
@@ -216,7 +216,7 @@ class CategoryLoadMoreTest : TokoNowCategoryViewModelTestFixture() {
         verifyTargetedTicker()
         viewModel.scrollNotNeeded
             .verifyValueEquals(Unit)
-        viewModel.categoryPage
+        viewModel.visitableListLiveData
             .verifyValueEquals(resultList)
     }
 
@@ -247,7 +247,7 @@ class CategoryLoadMoreTest : TokoNowCategoryViewModelTestFixture() {
 
         viewModel.loadNextPage(true)
 
-        viewModel.categoryPage
+        viewModel.visitableListLiveData
             .verifyValueEquals(null)
     }
 }

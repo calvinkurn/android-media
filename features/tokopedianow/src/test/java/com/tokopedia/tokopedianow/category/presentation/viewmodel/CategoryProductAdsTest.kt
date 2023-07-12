@@ -121,7 +121,7 @@ class CategoryProductAdsTest : TokoNowCategoryViewModelTestFixture() {
 
         verifyGetProductAdsParam(expectedGetProductAdsParam)
 
-        viewModel.categoryPage
+        viewModel.visitableListLiveData
             .verifyValueEquals(categoryPage)
     }
 
@@ -216,7 +216,7 @@ class CategoryProductAdsTest : TokoNowCategoryViewModelTestFixture() {
 
         verifyGetProductAdsParam(expectedGetProductAdsParam)
 
-        viewModel.categoryPage
+        viewModel.visitableListLiveData
             .verifyValueEquals(categoryPage)
     }
 
@@ -263,7 +263,7 @@ class CategoryProductAdsTest : TokoNowCategoryViewModelTestFixture() {
             viewModel.addItemToCart.getOrAwaitValue()
             viewModel.updateToolbarNotification.getOrAwaitValue()
             viewModel.atcDataTracker.getOrAwaitValue()
-            viewModel.categoryPage.getOrAwaitValue()
+            viewModel.visitableListLiveData.getOrAwaitValue()
 
             viewModel.addItemToCart
                 .verifyValueEquals(Success(addToCartDataModel))
@@ -274,7 +274,7 @@ class CategoryProductAdsTest : TokoNowCategoryViewModelTestFixture() {
             viewModel.atcDataTracker
                 .verifyValueEquals(expectedAtcTrackerData)
 
-            viewModel.categoryPage
+            viewModel.visitableListLiveData
                 .verifyValueEquals(expectedCategoryPage)
         }
     }

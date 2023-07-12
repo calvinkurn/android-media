@@ -98,7 +98,7 @@ class CategoryFirstPageTest : TokoNowCategoryViewModelTestFixture() {
                     url = categoryDetailResponse.categoryDetail.data.url
                 )
             )
-        viewModel.categoryPage
+        viewModel.visitableListLiveData
             .verifyValueEquals(resultList)
     }
 
@@ -189,7 +189,7 @@ class CategoryFirstPageTest : TokoNowCategoryViewModelTestFixture() {
                     url = categoryDetailResponse.categoryDetail.data.url
                 )
             )
-        viewModel.categoryPage
+        viewModel.visitableListLiveData
             .verifyValueEquals(resultList)
     }
 
@@ -204,7 +204,7 @@ class CategoryFirstPageTest : TokoNowCategoryViewModelTestFixture() {
 
         viewModel.getFirstPage()
 
-        viewModel.categoryPage
+        viewModel.visitableListLiveData
             .verifyValueEquals(null)
     }
 }

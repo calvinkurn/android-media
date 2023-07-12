@@ -96,9 +96,9 @@ class CategoryAddToCartTest : TokoNowCategoryViewModelTestFixture() {
                 )
             )
 
-        viewModel.categoryPage
+        viewModel.visitableListLiveData
             .getOrAwaitValue()
-        viewModel.categoryPage
+        viewModel.visitableListLiveData
             .verifyValueEquals(
                 mockLayout.map {
                     it.copy(
@@ -195,9 +195,9 @@ class CategoryAddToCartTest : TokoNowCategoryViewModelTestFixture() {
                 )
             )
 
-        viewModel.categoryPage
+        viewModel.visitableListLiveData
             .getOrAwaitValue()
-        viewModel.categoryPage
+        viewModel.visitableListLiveData
             .verifyValueEquals(
                 mockLayout.map {
                     it.copy(
@@ -293,9 +293,9 @@ class CategoryAddToCartTest : TokoNowCategoryViewModelTestFixture() {
                 )
             )
 
-        viewModel.categoryPage
+        viewModel.visitableListLiveData
             .getOrAwaitValue()
-        viewModel.categoryPage
+        viewModel.visitableListLiveData
             .verifyValueEquals(
                 mockLayout.map {
                     it.copy(
@@ -368,9 +368,9 @@ class CategoryAddToCartTest : TokoNowCategoryViewModelTestFixture() {
         viewModel.addItemToCart
             .verifyValueEquals(Fail(exception))
 
-        viewModel.categoryPage
+        viewModel.visitableListLiveData
             .getOrAwaitValue()
-        viewModel.categoryPage
+        viewModel.visitableListLiveData
             .verifyValueEquals(
                 mockLayout.map {
                     it.copy(
@@ -455,9 +455,9 @@ class CategoryAddToCartTest : TokoNowCategoryViewModelTestFixture() {
         viewModel.updateCartItem
             .verifyValueEquals(Fail(exception))
 
-        viewModel.categoryPage
+        viewModel.visitableListLiveData
             .getOrAwaitValue()
-        viewModel.categoryPage
+        viewModel.visitableListLiveData
             .verifyValueEquals(
                 mockLayout.map {
                     it.copy(
@@ -542,9 +542,9 @@ class CategoryAddToCartTest : TokoNowCategoryViewModelTestFixture() {
         viewModel.removeCartItem
             .verifyValueEquals(Fail(exception))
 
-        viewModel.categoryPage
+        viewModel.visitableListLiveData
             .getOrAwaitValue()
-        viewModel.categoryPage
+        viewModel.visitableListLiveData
             .verifyValueEquals(
                 mockLayout.map {
                     it.copy(
