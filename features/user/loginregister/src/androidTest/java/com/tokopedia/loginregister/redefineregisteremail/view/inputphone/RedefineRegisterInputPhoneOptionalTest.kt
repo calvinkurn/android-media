@@ -3,6 +3,7 @@ package com.tokopedia.loginregister.redefineregisteremail.view.inputphone
 import android.content.Context
 import android.os.Bundle
 import androidx.test.core.app.ApplicationProvider
+import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasData
@@ -12,6 +13,9 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.loginregister.R
+import com.tokopedia.loginregister.di.FakeActivityComponentFactory
+import com.tokopedia.loginregister.login.di.ActivityComponentFactory
+import com.tokopedia.loginregister.redefineregisteremail.stub.TestIdlingResourceProvider
 import com.tokopedia.loginregister.redefineregisteremail.stub.common.launchFragment
 import com.tokopedia.loginregister.redefineregisteremail.stub.data.RedefineRegisterRepositoryStub
 import com.tokopedia.loginregister.redefineregisteremail.stub.data.RedefineRegisterTestState
@@ -47,6 +51,7 @@ class RedefineRegisterInputPhoneOptionalTest {
 
     @Before
     fun setUp() {
+        IdlingRegistry.getInstance().register(TestIdlingResourceProvider.countingIdlingResource)
         val paramOptional = RedefineParamUiModel(isRequiredInputPhone = false)
         bundleOptional = Bundle()
         bundleOptional.putParcelable("parameter", paramOptional)
@@ -58,6 +63,7 @@ class RedefineRegisterInputPhoneOptionalTest {
         ApplicationProvider.getApplicationContext<BaseMainApplication>()
             .setComponent(fakeBaseComponent)
 
+        ActivityComponentFactory.instance = FakeActivityComponentFactory()
         repositoryStub = fakeBaseComponent.repository() as RedefineRegisterRepositoryStub
     }
 

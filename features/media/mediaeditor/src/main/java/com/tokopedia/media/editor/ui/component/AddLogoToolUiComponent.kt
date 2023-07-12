@@ -18,6 +18,7 @@ import com.tokopedia.kotlin.extensions.view.toBitmap
 import com.tokopedia.media.editor.R as editorR
 import com.tokopedia.media.editor.databinding.AddLogoTipsBottomsheetBinding
 import com.tokopedia.media.editor.ui.uimodel.EditorAddLogoUiModel
+import com.tokopedia.media.editor.ui.uimodel.EditorCropRotateUiModel
 import com.tokopedia.media.editor.utils.cropCenterImage
 import com.tokopedia.media.editor.utils.roundedBitmap
 import com.tokopedia.media.loader.loadImageWithEmptyTarget
@@ -149,9 +150,14 @@ class AddLogoToolUiComponent constructor(
             {},
             MediaBitmapEmptyTarget(
                 onReady = { loadedBitmap ->
-                    val finalBitmap =
-                        cropCenterImage(loadedBitmap, ImageRatioType.RATIO_1_1)?.first
-                            ?: loadedBitmap
+                    var finalBitmap: Bitmap = loadedBitmap
+
+                    val cropDetail = cropCenterImage(loadedBitmap, ImageRatioType.RATIO_1_1)
+                    cropDetail?.let { cropRotateData ->
+                        listener.onStandardizeAvatar(loadedBitmap, cropRotateData)?.let {
+                            finalBitmap = it
+                        }
+                    }
 
                     shopAvatar.setImageBitmap(
                         roundedBitmap(context, finalBitmap, isCircular = true)
@@ -270,6 +276,8 @@ class AddLogoToolUiComponent constructor(
         fun onUpload()
         fun onLoadFailed()
         fun onLoadRetry()
+
+        fun onStandardizeAvatar(source: Bitmap, cropRotateData: EditorCropRotateUiModel): Bitmap?
     }
 
     companion object {

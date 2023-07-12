@@ -12,6 +12,11 @@ buildscript {
         classpath rootProject.ext.miscDependencies.hansel
     }
 }
+android {
+    namespace 'com.tokopedia.imagepreview'
+    testNamespace 'com.tokopedia.imagepreview.test'
+}
+
 dependencies {
     implementation projectOrAar(rootProject.ext.libraries.tkpddesign)
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)

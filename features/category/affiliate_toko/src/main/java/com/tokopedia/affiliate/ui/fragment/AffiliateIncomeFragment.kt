@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
@@ -115,7 +114,6 @@ class AffiliateIncomeFragment :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        affiliateIncomeViewModel = ViewModelProvider(this)[AffiliateIncomeViewModel::class.java]
         setObservers()
     }
 
@@ -376,6 +374,7 @@ class AffiliateIncomeFragment :
                 resetItems()
             }
             binding?.appbar
+
                 ?.addOnOffsetChangedListener { _, verticalOffset ->
                     it.isEnabled = verticalOffset == 0
                 }
@@ -422,7 +421,9 @@ class AffiliateIncomeFragment :
             iconBuilder.addIcon(IconList.ID_NAV_GLOBAL) {}
             setIcon(iconBuilder)
             getCustomViewContentView()?.findViewById<Typography>(R.id.navbar_tittle)?.text =
-                getString(R.string.affiliate_withdrawal)
+                getString(
+                    R.string.affiliate_withdrawal
+                )
         }
         initDateRangeClickListener()
         affiliateIncomeViewModel?.getAffiliateValidateUser(userSession?.email.orEmpty())
@@ -462,10 +463,11 @@ class AffiliateIncomeFragment :
                 affiliateIncomeViewModel?.getSelectedDate()
                     ?: AffiliateBottomDatePicker.THIRTY_DAYS,
                 this
-            ).show(
-                childFragmentManager,
-                ""
             )
+                .show(
+                    childFragmentManager,
+                    ""
+                )
         }
     }
 
@@ -585,5 +587,7 @@ class AffiliateIncomeFragment :
         return AffiliateIncomeViewModel::class.java
     }
 
-    override fun setViewModel(viewModel: BaseViewModel) = Unit
+    override fun setViewModel(viewModel: BaseViewModel) {
+        affiliateIncomeViewModel = viewModel as AffiliateIncomeViewModel
+    }
 }

@@ -13,6 +13,11 @@ buildscript {
     }
 }
 
+android {
+    namespace 'com.tokopedia.kotlin.extensions'
+    testNamespace 'com.tokopedia.kotlin.extensions.test'
+}
+
 dependencies {
 	implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.supportLibDependencies.design

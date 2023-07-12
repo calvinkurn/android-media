@@ -19,6 +19,8 @@ buildscript {
 }
 
 android {
+    namespace 'com.tokopedia.product_ar'
+    testNamespace 'com.tokopedia.product_ar.test'
     defaultConfig {
         multiDexEnabled true
     }

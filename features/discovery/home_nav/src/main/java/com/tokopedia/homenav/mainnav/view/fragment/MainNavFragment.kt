@@ -17,7 +17,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.listener.TouchListenerActivity
-import com.tokopedia.analytics.performance.perf.PerformanceTrace
+import com.tokopedia.analytics.performance.perf.BlocksPerformanceTrace
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -66,6 +66,7 @@ import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.usercomponents.tokopediaplus.common.TokopediaPlusListener
 import com.tokopedia.usercomponents.tokopediaplus.domain.TokopediaPlusDataModel
+import kotlinx.coroutines.FlowPreview
 import java.util.*
 import javax.inject.Inject
 
@@ -108,7 +109,12 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
     // for coachmark purpose
     private var isOngoingShowOnboarding = false
 
-    private val performanceTrace = PerformanceTrace(PERFORMANCE_TRACE_HOME_NAV)
+    @OptIn(FlowPreview::class)
+    private val performanceTrace = BlocksPerformanceTrace(
+        context?.applicationContext,
+        PERFORMANCE_TRACE_HOME_NAV,
+        lifecycleScope
+    )
 
     override fun getScreenName(): String {
         return ""
@@ -156,7 +162,6 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
 
         performanceTrace.init(
             v = view.rootView,
-            scope = this.lifecycleScope,
             touchListenerActivity = activity as? TouchListenerActivity
         )
         recyclerView = view.findViewById(R.id.recycler_view)

@@ -20,7 +20,6 @@ import com.tokopedia.profilecompletion.common.PinPreference
 import com.tokopedia.profilecompletion.common.model.CheckPinV2Data
 import com.tokopedia.profilecompletion.common.model.CheckPinV2Param
 import com.tokopedia.profilecompletion.common.usecase.CheckPinV2UseCase
-import com.tokopedia.profilecompletion.data.ProfileCompletionQueryConstant
 import com.tokopedia.profilecompletion.data.SkipOtpPinParam
 import com.tokopedia.profilecompletion.domain.CheckPinUseCase
 import com.tokopedia.profilecompletion.domain.CreatePinUseCase
@@ -97,8 +96,8 @@ class AddChangePinViewModel @Inject constructor(
                 else -> mutableAddPinResponse.value = Fail(RuntimeException())
             }
         }, onError = {
-            mutableAddPinResponse.value = Fail(it)
-        })
+                mutableAddPinResponse.value = Fail(it)
+            })
     }
 
     fun addPinV2(validateToken: String) {
@@ -113,13 +112,14 @@ class AddChangePinViewModel @Inject constructor(
                     pinPreference.clearTempPin()
                     mutableMutatePin.value = Success(result)
                 }
-                result.errors.isNotEmpty() -> mutableMutatePin.value =
-                    Fail(MessageErrorException(result.errors[0].message))
+                result.errors.isNotEmpty() ->
+                    mutableMutatePin.value =
+                        Fail(MessageErrorException(result.errors[0].message))
                 else -> mutableMutatePin.value = Fail(RuntimeException())
             }
         }, onError = {
-            mutableMutatePin.value = Fail(it)
-        })
+                mutableMutatePin.value = Fail(it)
+            })
     }
 
     fun checkPin(pin: String) {
@@ -133,8 +133,8 @@ class AddChangePinViewModel @Inject constructor(
                 else -> mutableCheckPinResponse.value = Fail(RuntimeException())
             }
         }, onError = {
-            mutableCheckPinResponse.value = Fail(it)
-        })
+                mutableCheckPinResponse.value = Fail(it)
+            })
     }
 
     fun checkPinV2(pin: String) {
@@ -159,8 +159,8 @@ class AddChangePinViewModel @Inject constructor(
                 }
             }
         }, onError = {
-            mutableCheckPinV2Response.value = Fail(it)
-        })
+                mutableCheckPinV2Response.value = Fail(it)
+            })
     }
 
     fun getStatusPin() {
@@ -177,9 +177,9 @@ class AddChangePinViewModel @Inject constructor(
                 mutableGetStatusPinResponse.value = Success(response.data)
             }
         }, onError = {
-            loadingState.value = false
-            mutableGetStatusPinResponse.value = Fail(it)
-        })
+                loadingState.value = false
+                mutableGetStatusPinResponse.value = Fail(it)
+            })
     }
 
     fun validatePin(pin: String) {
@@ -193,8 +193,8 @@ class AddChangePinViewModel @Inject constructor(
                 else -> mutableValidatePinResponse.value = Fail(RuntimeException())
             }
         }, onError = {
-            mutableValidatePinResponse.value = Fail(it)
-        })
+                mutableValidatePinResponse.value = Fail(it)
+            })
     }
 
     fun checkSkipOtpPin(validateToken: String) {
@@ -213,13 +213,12 @@ class AddChangePinViewModel @Inject constructor(
                 else -> mutableSkipOtpPinResponse.value = Success(response.data)
             }
         }, onError = {
-            mutableSkipOtpPinResponse.value = Fail(it)
-        })
+                mutableSkipOtpPinResponse.value = Fail(it)
+            })
     }
 
     suspend fun getPublicKey(): KeyData {
-        generatePublicKeyUseCase.setParams(SessionConstants.GenerateKeyModule.PIN_V2.value)
-        return generatePublicKeyUseCase.executeOnBackground().keyData
+        return generatePublicKeyUseCase(SessionConstants.GenerateKeyModule.PIN_V2.value).keyData
     }
 
     companion object {

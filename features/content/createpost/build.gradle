@@ -18,6 +18,8 @@ buildscript {
 }
 
 android {
+    namespace 'com.tokopedia.createpost.createpost'
+    testNamespace 'com.tokopedia.createpost.createpost.test'
     buildFeatures {
         viewBinding true
     }
