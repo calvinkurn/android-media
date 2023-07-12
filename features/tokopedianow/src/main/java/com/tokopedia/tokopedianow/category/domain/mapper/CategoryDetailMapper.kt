@@ -29,9 +29,9 @@ internal object CategoryDetailMapper {
     )
 
     fun CategoryDetailResponse.mapToTicker(
-        tickerData: Pair<Boolean, List<TickerData>>
+        tickerList: List<TickerData>
     ) = TokoNowTickerUiModel(
-        tickers = tickerData.second,
+        tickers = tickerList,
         backgroundLightColor = categoryDetail.data.color
     )
 }

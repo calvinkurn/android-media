@@ -75,14 +75,9 @@ internal object VisitableMapper {
 
     fun MutableList<Visitable<*>>.addTicker(
         detailResponse: CategoryDetailResponse,
-        tickerData: Pair<Boolean, List<TickerData>>?
-    ): Boolean  {
-        return if (tickerData != null) {
-            add(detailResponse.mapToTicker(tickerData))
-            tickerData.first
-        } else {
-            false
-        }
+        tickerList: List<TickerData>
+    )  {
+        add(detailResponse.mapToTicker(tickerList))
     }
 
     /**

@@ -5,8 +5,8 @@ import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.getDigits
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -15,7 +15,8 @@ import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScrollListener
 import com.tokopedia.tokopedianow.R
-import com.tokopedia.tokopedianow.category.di.component.CategoryComponent
+import com.tokopedia.tokopedianow.category.di.component.DaggerCategoryComponent
+import com.tokopedia.tokopedianow.category.di.module.CategoryContextModule
 import com.tokopedia.tokopedianow.category.presentation.adapter.differ.CategoryDiffer
 import com.tokopedia.tokopedianow.category.presentation.adapter.typefactory.CategoryAdapterTypeFactory
 import com.tokopedia.tokopedianow.category.presentation.callback.CategoryNavigationCallback
@@ -28,7 +29,6 @@ import com.tokopedia.tokopedianow.category.presentation.callback.ProductCardComp
 import com.tokopedia.tokopedianow.category.presentation.callback.ProductCardCompactSimilarProductTrackerCallback
 import com.tokopedia.tokopedianow.category.presentation.callback.TokoNowCategoryMenuCallback
 import com.tokopedia.tokopedianow.category.presentation.callback.TokoNowChooseAddressWidgetCallback
-import com.tokopedia.tokopedianow.category.presentation.callback.TokoNowViewCallback
 import com.tokopedia.tokopedianow.category.presentation.model.CategoryAtcTrackerModel
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryShowcaseItemUiModel
 import com.tokopedia.tokopedianow.category.presentation.util.CategoryLayoutType.CATEGORY_SHOWCASE
@@ -40,13 +40,21 @@ import com.tokopedia.tokopedianow.similarproduct.presentation.activity.TokoNowSi
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import java.util.HashMap
 import javax.inject.Inject
 
 class TokoNowCategoryFragment : BaseCategoryFragment() {
 
     companion object {
-        fun newInstance(): TokoNowCategoryFragment {
-            return TokoNowCategoryFragment()
+        fun newInstance(
+            categoryL1: String,
+            queryParamMap: HashMap<String, String>
+        ): TokoNowCategoryFragment {
+            return TokoNowCategoryFragment().apply {
+                this.categoryIdL1 = categoryL1
+                this.currentCategoryId = categoryL1
+                this.queryParamMap = queryParamMap
+            }
         }
     }
 
@@ -71,14 +79,25 @@ class TokoNowCategoryFragment : BaseCategoryFragment() {
      * -- override function section --
      */
 
-    override val categoryIdL1: String
-        get() = viewModel.categoryIdL1
+    override val viewModel: TokoNowCategoryViewModel by lazy {
+        ViewModelProvider(
+            requireActivity(),
+            viewModelFactory
+        )[TokoNowCategoryViewModel::class.java]
+    }
 
-    override val currentCategoryId: String
-        get() = viewModel.categoryIdL1
-
-    override val viewModel: TokoNowCategoryViewModel
-        get() = ViewModelProvider(requireActivity(), viewModelFactory)[TokoNowCategoryViewModel::class.java]
+    override fun observeLiveData() {
+        super.observeLiveData()
+        observeCategoryHeader()
+        observeScrollNotNeeded()
+        observeAtcDataTracker()
+        observeProductRecommendationAddToCart()
+        observeProductRecommendationRemoveCartItem()
+        observeProductRecommendationUpdateCartItem()
+        observeProductRecommendationToolbarNotification()
+        observeProductRecommendationAtcDataTracker()
+        observeOpenScreenTracker()
+    }
 
     override fun createAdapterTypeFactory(): CategoryAdapterTypeFactory {
         return CategoryAdapterTypeFactory(
@@ -100,12 +119,12 @@ class TokoNowCategoryFragment : BaseCategoryFragment() {
 
     override fun createAdapterDiffer() = CategoryDiffer()
 
-    override fun initInjector() = getComponent(CategoryComponent::class.java).inject(this)
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        setupObserver()
-        onViewCreated()
+    override fun initInjector() {
+        DaggerCategoryComponent.builder()
+            .baseAppComponent((requireContext().applicationContext as BaseMainApplication).baseAppComponent)
+            .categoryContextModule(CategoryContextModule(requireContext()))
+            .build()
+            .inject(this)
     }
 
     override fun setupNavigationToolbar(navToolbar: NavToolbar) {
@@ -132,8 +151,6 @@ class TokoNowCategoryFragment : BaseCategoryFragment() {
         productRecommendationViewModel.updateMiniCartSimplified(data)
     }
 
-    override fun getScreenName(): String = String.EMPTY
-
     /**
      * -- private function section --
      */
@@ -159,22 +176,6 @@ class TokoNowCategoryFragment : BaseCategoryFragment() {
             },
             fixedIconColor = NavToolbar.Companion.Theme.TOOLBAR_LIGHT_TYPE
         )
-    }
-
-    private fun onViewCreated() {
-        viewModel.onViewCreated()
-    }
-
-    private fun setupObserver() {
-        observeCategoryHeader()
-        observeScrollNotNeeded()
-        observeAtcDataTracker()
-        observeProductRecommendationAddToCart()
-        observeProductRecommendationRemoveCartItem()
-        observeProductRecommendationUpdateCartItem()
-        observeProductRecommendationToolbarNotification()
-        observeProductRecommendationAtcDataTracker()
-        observeOpenScreenTracker()
     }
 
     private fun observeCategoryHeader() {
@@ -545,12 +546,6 @@ class TokoNowCategoryFragment : BaseCategoryFragment() {
     private fun createCategoryShowcaseHeaderCallback() = CategoryShowcaseHeaderCallback(
         onClickSeeMore = ::clickSeeMoreShowcase
     )
-
-    private fun createTokoNowViewCallback() = TokoNowViewCallback(
-        fragment = this@TokoNowCategoryFragment
-    ) {
-        viewModel.refreshLayout()
-    }
 
     private fun createTokoNowCategoryMenuCallback() = TokoNowCategoryMenuCallback(
         onClickCategoryMenu = ::clickCategoryMenu,

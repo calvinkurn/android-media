@@ -46,11 +46,11 @@ import com.tokopedia.tokopedianow.common.domain.mapper.ProductAdsMapper.addProdu
 import com.tokopedia.tokopedianow.common.domain.mapper.ProductAdsMapper.findAdsProductCarousel
 import com.tokopedia.tokopedianow.common.domain.usecase.GetProductAdsUseCase
 import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase
-import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase.Companion.CATEGORY_PAGE
 import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
 import com.tokopedia.tokopedianow.common.service.NowAffiliateService
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel
+import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -59,8 +59,6 @@ import javax.inject.Inject
 import javax.inject.Named
 
 class TokoNowCategoryViewModel @Inject constructor(
-    @Named(NOW_CATEGORY_L1)
-    val categoryIdL1: String,
     private val getCategoryDetailUseCase: GetCategoryDetailUseCase,
     getCategoryProductUseCase: GetCategoryProductUseCase,
     getProductAdsUseCase: GetProductAdsUseCase,
@@ -102,7 +100,6 @@ class TokoNowCategoryViewModel @Inject constructor(
      */
 
     private val categoryL2Models: MutableList<CategoryL2Model> = mutableListOf()
-    private val _openScreenTracker: MutableLiveData<CategoryOpenScreenTrackerModel> = MutableLiveData()
     private val _atcDataTracker: MutableLiveData<CategoryAtcTrackerModel> = MutableLiveData()
     private val _categoryFirstPage = MutableLiveData<Result<List<Visitable<*>>>>()
     private val _scrollNotNeeded = MutableLiveData<Unit>()
@@ -117,7 +114,6 @@ class TokoNowCategoryViewModel @Inject constructor(
      * -- public immutable variable section --
      */
 
-    val openScreenTracker: LiveData<CategoryOpenScreenTrackerModel> = _openScreenTracker
     val atcDataTracker: LiveData<CategoryAtcTrackerModel> = _atcDataTracker
     val categoryFirstPage: LiveData<Result<List<Visitable<*>>>> = _categoryFirstPage
     val scrollNotNeeded: LiveData<Unit> = _scrollNotNeeded
@@ -140,7 +136,8 @@ class TokoNowCategoryViewModel @Inject constructor(
 
         val searchProduct = response.searchProduct
         val header = searchProduct.header
-        val productList = searchProduct.data.productList.filter { !it.isOos() }
+        val data = searchProduct.data
+        val productList = data.productList.filter { !it.isOos() }
 
         if (productList.isEmpty()) {
             removeVisitableItem(categoryL2Model.id)
@@ -170,8 +167,8 @@ class TokoNowCategoryViewModel @Inject constructor(
         getBatchShowcase()
     }
 
-    override fun loadFirstPage() {
-        loadCategoryPage()
+    override fun loadFirstPage(tickerList: List<TickerData>) {
+        loadCategoryPage(tickerList)
     }
 
     /**
@@ -231,16 +228,6 @@ class TokoNowCategoryViewModel @Inject constructor(
         }
     }
 
-    private fun sendOpenScreenTracker(detailResponse: CategoryDetailResponse) {
-        _openScreenTracker.postValue(
-            CategoryOpenScreenTrackerModel(
-                id = detailResponse.categoryDetail.data.id,
-                name = detailResponse.categoryDetail.data.name,
-                url = detailResponse.categoryDetail.data.url
-            )
-        )
-    }
-
     private fun updateProductCartQuantity(
         productId: String,
         quantity: Int,
@@ -258,18 +245,13 @@ class TokoNowCategoryViewModel @Inject constructor(
      * -- public function section --
      */
 
-    private fun loadCategoryPage() {
+    private fun loadCategoryPage(tickerList: List<TickerData>) {
         launchCatchError(
             block = {
                 val detailResponse = getCategoryDetailUseCase.execute(
                     warehouseId = getWarehouseId(),
                     categoryIdL1 = categoryIdL1
                 )
-
-                val tickerData = getTickerDataAsync(
-                    warehouseId = getWarehouseId(),
-                    page = CATEGORY_PAGE
-                ).await()
 
                 val categoryNavigationUiModel = detailResponse.mapToCategoryNavigation()
                 categoryRecommendation = detailResponse.mapToCategoryRecommendation()
@@ -284,9 +266,9 @@ class TokoNowCategoryViewModel @Inject constructor(
                     detailResponse = detailResponse,
                     addressData = getAddressData()
                 )
-                hasBlockedAddToCart = visitableList.addTicker(
+                visitableList.addTicker(
                     detailResponse = detailResponse,
-                    tickerData = tickerData
+                    tickerList = tickerList
                 )
                 visitableList.addCategoryTitle(
                     detailResponse = detailResponse
@@ -304,7 +286,7 @@ class TokoNowCategoryViewModel @Inject constructor(
                 )
 
                 _categoryFirstPage.postValue(Success(visitableList))
-                sendOpenScreenTracker(detailResponse)
+                sendOpenScreenL1Tracker(detailResponse)
             },
             onError = {
                 _categoryFirstPage.postValue(Fail(it))
@@ -321,13 +303,6 @@ class TokoNowCategoryViewModel @Inject constructor(
             onError = { /* nothing to do */ }
         )
     }
-
-//    fun refreshLayout() {
-//        getMiniCart()
-//        updateAddressData()
-//        moreShowcaseJob = null
-//        _refreshState.value = Unit
-//    }
 
     fun removeProductRecommendation() {
         launchCatchError(
@@ -401,7 +376,7 @@ class TokoNowCategoryViewModel @Inject constructor(
 
     private fun trackCategoryShowCase(product: ProductCardCompactUiModel, quantity: Int) {
         visitableList.findCategoryShowcaseItem(product.productId)?.let { item ->
-            _atcDataTracker.postValue(CategoryAtcTrackerModel(
+            val trackerModel = CategoryAtcTrackerModel(
                 categoryIdL1 = categoryIdL1,
                 index = item.index,
                 warehouseId = getWarehouseId(),
@@ -409,13 +384,14 @@ class TokoNowCategoryViewModel @Inject constructor(
                 quantity = quantity,
                 product = product,
                 layoutType = CATEGORY_SHOWCASE.name
-            ))
+            )
+            _atcDataTracker.postValue(trackerModel)
         }
     }
 
     private fun trackProductAdsAddToCart(product: ProductCardCompactUiModel, quantity: Int) {
         visitableList.findAdsProductCarousel(product.productId)?.let { item ->
-            _atcDataTracker.postValue(CategoryAtcTrackerModel(
+            val trackerModel = CategoryAtcTrackerModel(
                 index = item.position,
                 quantity = quantity,
                 shopId = item.shopId,
@@ -424,7 +400,16 @@ class TokoNowCategoryViewModel @Inject constructor(
                 categoryBreadcrumbs = item.categoryBreadcrumbs,
                 product = item.productCardModel,
                 layoutType = PRODUCT_ADS_CAROUSEL
-            ))
+            )
+            _atcDataTracker.postValue(trackerModel)
         }
+    }
+
+    private fun sendOpenScreenL1Tracker(detailResponse: CategoryDetailResponse) {
+        sendOpenScreenTracker(
+            id = detailResponse.categoryDetail.data.id,
+            name = detailResponse.categoryDetail.data.name,
+            url = detailResponse.categoryDetail.data.url
+        )
     }
 }
