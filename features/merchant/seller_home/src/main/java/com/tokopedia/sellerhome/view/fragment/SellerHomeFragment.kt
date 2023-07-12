@@ -1600,6 +1600,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                                                 newData.lastUpdated.needToUpdated
                                         }
                                     }
+                                    impressHolder = oldWidget.impressHolder
                                     isLoaded = oldWidget.isLoaded
                                     isLoading = oldWidget.isLoading
                                 }
@@ -1611,6 +1612,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                                     newWidgets.add(newWidget)
                                 }
                             } else {
+                                newWidget.impressHolder = oldWidget.impressHolder
                                 newWidgets.add(newWidget)
                             }
                         }
