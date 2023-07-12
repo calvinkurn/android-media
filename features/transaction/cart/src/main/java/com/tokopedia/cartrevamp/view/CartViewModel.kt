@@ -1881,4 +1881,16 @@ class CartViewModel @Inject constructor(
             setPosition(position.toString())
         }
     }
+
+    fun setShopSelected(position: Int, selected: Boolean) {
+        val any = cartDataList.value[position]
+        if (any is CartGroupHolderData) {
+            any.isAllSelected = selected
+            any.productUiModelList.let {
+                for (cartItemHolderData in it) {
+                    cartItemHolderData.isSelected = selected
+                }
+            }
+        }
+    }
 }

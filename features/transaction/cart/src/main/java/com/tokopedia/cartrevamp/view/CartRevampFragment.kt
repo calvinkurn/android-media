@@ -386,7 +386,42 @@ class CartRevampFragment :
     }
 
     override fun onShopItemCheckChanged(index: Int, checked: Boolean) {
-        TODO("Not yet implemented")
+//        viewModel.updateCartModel(
+//            viewModel.cartModel.copy(
+//                hasPerformChecklistChange = true
+//            )
+//        )
+//        viewModel.setShopSelected(index, checked)
+//        dPresenter.reCalculateSubTotal(cartAdapter.allAvailableShopGroupDataList)
+//        val data = cartAdapter.getData()[index]
+//        var isCollapsed = false
+//        var productSize = 1
+//        if (data is com.tokopedia.cart.view.uimodel.CartGroupHolderData) {
+//            isCollapsed = data.isCollapsed
+//            productSize += data.productUiModelList.size
+//            if (checked) {
+//                checkCartShopGroupTicker(data)
+//            }
+//        }
+//        if (isCollapsed) {
+//            onNeedToUpdateViewItem(index)
+//            onNeedToUpdateViewItem(index + 1)
+//        } else {
+//            onNeedToUpdateMultipleViewItem(index, productSize + 1)
+//        }
+//        validateGoToCheckout()
+//        dPresenter.saveCheckboxState(cartAdapter.allAvailableCartItemHolderData)
+//
+//        val params = generateGeneralParamGetLastApply()
+//        if (isNeedHitUpdateCartAndValidateUse(params)) {
+//            renderPromoCheckoutLoading()
+//            dPresenter.doUpdateCartAndGetLastApply(params)
+//        } else {
+//            updatePromoCheckoutManualIfNoSelected(getAllAppliedPromoCodes(params))
+//        }
+//
+//        setCheckboxGlobalState()
+//        setGlobalDeleteVisibility()
     }
 
     override fun onCartShopGroupTickerClicked(cartGroupHolderData: CartGroupHolderData) {
