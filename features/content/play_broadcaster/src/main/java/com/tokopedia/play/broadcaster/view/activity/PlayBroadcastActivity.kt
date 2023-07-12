@@ -36,8 +36,6 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
-import com.tokopedia.logger.ServerLogger
-import com.tokopedia.logger.utils.Priority
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PLAY_BROADCASTER_TRACE_PAGE
 import com.tokopedia.play.broadcaster.analytic.PLAY_BROADCASTER_TRACE_PREPARE_PAGE
@@ -65,8 +63,6 @@ import com.tokopedia.play.broadcaster.util.extension.channelNotFound
 import com.tokopedia.play.broadcaster.util.extension.getDialog
 import com.tokopedia.play.broadcaster.util.extension.showErrorToaster
 import com.tokopedia.play.broadcaster.util.idling.PlayBroadcasterIdlingResource
-import com.tokopedia.play.broadcaster.util.logger.PlayLogger
-import com.tokopedia.play.broadcaster.util.logger.PlayLoggerImpl
 import com.tokopedia.play.broadcaster.util.permission.PermissionHelperImpl
 import com.tokopedia.play.broadcaster.util.permission.PermissionResultListener
 import com.tokopedia.play.broadcaster.util.permission.PermissionStatusHandler
@@ -145,9 +141,6 @@ class PlayBroadcastActivity : BaseActivity(),
 
     @Inject
     lateinit var valueWrapper: PlayBroadcastValueWrapper
-
-    @Inject
-    lateinit var logger: PlayLogger
 
     private lateinit var viewModel: PlayBroadcastViewModel
 
