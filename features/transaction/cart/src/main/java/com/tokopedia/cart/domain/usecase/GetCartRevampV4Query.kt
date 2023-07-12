@@ -218,7 +218,7 @@ const val CART_REVAMP_V4_QUERY =
                                 price
                             }
                             widget {
-                                description
+                                wording
                                 left_icon_url
                                 right_icon_url
                             }
