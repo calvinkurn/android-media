@@ -1,12 +1,12 @@
 package com.tokopedia.scp_rewards_touchpoints.touchpoints.model
 
-import android.graphics.Bitmap
+import com.tokopedia.kotlin.extensions.view.EMPTY
 
 data class ScpToasterData(
-    val title:String = "",
-    val subtitle:String = "",
-    val ctaTitle:String = "",
-    val badgeImage: Bitmap? = null,
-    val sunflare:Bitmap? = null,
+    val title:String = String.EMPTY,
+    val subtitle:String = String.EMPTY,
+    val ctaTitle:String = String.EMPTY,
+    val badgeImage: String = String.EMPTY,
+    val sunflare: String = String.EMPTY,
     val ctaIsShown:Boolean = false
 )

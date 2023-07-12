@@ -38,7 +38,7 @@ data class ScpRewardsMedaliTouchPointModel(
             val medaliIconImageURL: String = String.EMPTY,
 
             @SerializedName("medaliSlug")
-            val medaliSlug: String? = String.EMPTY,
+            val medaliSlug: String = String.EMPTY,
 
             @SerializedName("medaliID")
             val medaliID: Int = Int.ZERO,
