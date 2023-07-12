@@ -54,6 +54,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 
@@ -331,6 +332,7 @@ class ChatItemListViewModel @Inject constructor(
                     }
                 }
             } catch (throwable: Throwable) {
+                Timber.d(throwable)
                 onErrorLoadChatBlastSellerMetaData()
             }
         }
