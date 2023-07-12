@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.getNumberFormatted
 import com.tokopedia.shop.campaign.domain.entity.ExclusiveLaunchVoucher
@@ -113,6 +114,7 @@ class ExclusiveLaunchVoucherAdapter :
         return try {
             snapshot()[position]
         } catch (e: Exception) {
+            FirebaseCrashlytics.getInstance().recordException(e)
             null
         }
     }
