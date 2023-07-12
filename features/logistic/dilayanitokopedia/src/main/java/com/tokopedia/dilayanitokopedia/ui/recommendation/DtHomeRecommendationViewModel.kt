@@ -85,7 +85,7 @@ class DtHomeRecommendationViewModel @Inject constructor(
             recommendationItem = list[position] as HomeRecommendationItemDataModel
             recommendationItemPosition = position
         } else {
-            list.withIndex().find { it.value.getUniqueIdentity() == id && it.value is HomeRecommendationItemDataModel }?.let {
+            list.withIndex().find { it.value.getUniqueIdentity().toString() == id && it.value is HomeRecommendationItemDataModel }?.let {
                 recommendationItemPosition = it.index
                 recommendationItem = (it.value as HomeRecommendationItemDataModel)
             }

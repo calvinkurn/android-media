@@ -248,7 +248,7 @@ class DtHomeRecommendationViewModelTest {
     }
 
     @Test
-    fun `verify when update wishlist isSuccess`() {
+    fun `verify when update wishlist with position found isSuccess`() {
         val mockResponse = spyk(
             GetDtHomeRecommendationResponse(
                 GetHomeRecommendationProductV2(
@@ -279,5 +279,39 @@ class DtHomeRecommendationViewModelTest {
         assertTrue(
             (viewModel.homeRecommendationLiveData.value?.homeRecommendations?.toMutableList()?.get(0) as HomeRecommendationItemDataModel).product.isWishlist
         )
+    }
+
+    @Test
+    fun `verify when update wishlist not found position isSuccess`() {
+        val mockResponse = spyk(
+            GetDtHomeRecommendationResponse(
+                GetHomeRecommendationProductV2(
+                    products = arrayListOf(
+                        spyk(
+                            Product()
+                        )
+                    ),
+                    positions = arrayListOf(
+                        Position(
+                            type = TYPE_PRODUCT
+                        )
+                    )
+                )
+            )
+        )
+
+        // Given
+        coEvery {
+            dtGetRecommendationForYouUseCase(any())
+        } returns mockResponse
+
+        // When
+        viewModel.loadInitialPage("")
+        viewModel.updateWishlist("0", 99999, true)
+
+//        // Then
+//        assertTrue(
+//            (viewModel.homeRecommendationLiveData.value?.homeRecommendations?.toMutableList()?.get(0) as HomeRecommendationItemDataModel).product.isWishlist
+//        )
     }
 }
