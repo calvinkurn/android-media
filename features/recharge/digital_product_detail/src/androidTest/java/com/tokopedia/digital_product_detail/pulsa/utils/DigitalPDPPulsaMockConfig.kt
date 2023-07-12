@@ -70,4 +70,3 @@ class DigitalPDPPulsaMockConfig : MockModelConfig() {
         private const val PATH_RESPONSE_SAVE_INDOSAT_ACCESS_TOKEN = "pulsa/save_indosat_access_token.json"
     }
 }
-

@@ -111,14 +111,6 @@ object DigitalPDPEventTracking {
     object TrackerId {
         const val CLICK_OMNI_CHANNEL_WIDGET = "42519"
         const val IMPRESSION_OMNI_CHANNEL_WIDGET = "42730"
-        const val CLICK_CHEVRON_PROMOTION = "43960"
-        const val CLICK_PRODUCT_PROMOTION = "43968"
-        const val CLICK_SHOW_MORE_PROMOTION = "43965"
-        const val CLICK_CLOSE_PRODUCT_DESC = "43963"
-        const val IMPRESS_BOTTOM_SHEET_PRODUCT_DESC = "43961"
-        const val IMPRESS_PROMO_CLUSTER_PRODUCT = "43964"
-        const val IMPRESS_OLD_MCCM = "26157"
-        const val CLICK_OLD_MCCM = "26163"
         const val IMPRESSION_CHECK_BALANCE_WIDGET = "43697"
         const val CLICK_CHECK_BALANCE_WIDGET = "43698"
         const val IMPRESSION_PDP_OTP_POP_UP = "43699"
@@ -131,5 +123,13 @@ object DigitalPDPEventTracking {
         const val CLICK_CLOSE_SHEET_ACTIVE_PACKAGE = "43707"
         const val IMPRESSION_ACTIVE_PACKAGE_CHECK_BALANCE = "43708"
         const val CLICK_BELI_LAGI_ACTIVE_PACKAGE = "43709"
+        const val CLICK_CHEVRON_PROMOTION = "43960"
+        const val CLICK_PRODUCT_PROMOTION = "43968"
+        const val CLICK_SHOW_MORE_PROMOTION = "43965"
+        const val CLICK_CLOSE_PRODUCT_DESC = "43963"
+        const val IMPRESS_BOTTOM_SHEET_PRODUCT_DESC = "43961"
+        const val IMPRESS_PROMO_CLUSTER_PRODUCT = "43964"
+        const val IMPRESS_OLD_MCCM = "26157"
+        const val CLICK_OLD_MCCM = "26163"
     }
 }

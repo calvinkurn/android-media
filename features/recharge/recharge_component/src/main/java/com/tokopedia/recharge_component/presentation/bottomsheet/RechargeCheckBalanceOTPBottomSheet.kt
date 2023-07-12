@@ -12,7 +12,7 @@ import com.tokopedia.recharge_component.model.check_balance.RechargeCheckBalance
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
-class RechargeCheckBalanceOTPBottomSheet : BottomSheetUnify() {
+class RechargeCheckBalanceOTPBottomSheet: BottomSheetUnify() {
 
     private var binding by autoClearedNullable<BottomsheetRechargeCheckBalanceOtpBinding>()
     private lateinit var bottomSheetModel: RechargeCheckBalanceOTPBottomSheetModel
@@ -49,7 +49,6 @@ class RechargeCheckBalanceOTPBottomSheet : BottomSheetUnify() {
 
         renderBottomSheet()
     }
-
 
     private fun renderBottomSheet() {
         binding?.run {

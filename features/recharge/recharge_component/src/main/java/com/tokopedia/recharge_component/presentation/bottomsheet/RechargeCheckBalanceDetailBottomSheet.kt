@@ -15,7 +15,7 @@ import com.tokopedia.recharge_component.presentation.util.CustomDividerItemDecor
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
-class RechargeCheckBalanceDetailBottomSheet : BottomSheetUnify() {
+class RechargeCheckBalanceDetailBottomSheet: BottomSheetUnify() {
 
     private var binding by autoClearedNullable<BottomsheetRechargeCheckBalanceDetailBinding>()
     private var checkBalanceDetailAdapter: RechargeCheckBalanceDetailAdapter? = null

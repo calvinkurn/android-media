@@ -118,13 +118,13 @@ class DigitalPDPDataPlanViewModel @Inject constructor(
     val recommendationData: LiveData<RechargeNetworkResult<RecommendationWidgetModel>>
         get() = _recommendationData
 
-    private val _mccmProductsData = MutableLiveData<RechargeNetworkResult<DenomWidgetModel>>()
-    val mccmProductsData: LiveData<RechargeNetworkResult<DenomWidgetModel>>
-        get() = _mccmProductsData
-
     private val _saveAccessTokenResult = MutableLiveData<RechargeNetworkResult<DigitalSaveAccessTokenResultModel>>()
     val saveAccessTokenResult: LiveData<RechargeNetworkResult<DigitalSaveAccessTokenResultModel>>
         get() = _saveAccessTokenResult
+
+    private val _mccmProductsData = MutableLiveData<RechargeNetworkResult<DenomWidgetModel>>()
+    val mccmProductsData: LiveData<RechargeNetworkResult<DenomWidgetModel>>
+        get() = _mccmProductsData
 
     fun setMenuDetailLoading() {
         _menuDetailData.value = RechargeNetworkResult.Loading

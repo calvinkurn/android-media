@@ -432,7 +432,7 @@ class RechargeClientNumberWidget @JvmOverloads constructor(
         binding.clientNumberWidgetMainLayout.clientNumberWidgetBase.clientNumberWidgetCheckBalance.run {
             setBalanceInfo(balanceInfo)
             if (balanceDetailBottomSheetModel.details.isNotEmpty()) {
-                setListener(object : RechargeCheckBalanceWidget.RechargeCheckBalanceWidgetListener {
+                setListener(object: RechargeCheckBalanceWidget.RechargeCheckBalanceWidgetListener {
                     override fun onClickWidget() {
                         mCheckBalanceListener?.onClickCheckBalanceWidget(balanceDetailBottomSheetModel)
                     }

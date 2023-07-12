@@ -727,10 +727,8 @@ class DigitalPDPPulsaFragment :
     private fun onSuccessSaveAccessToken(data: DigitalSaveAccessTokenResultModel) {
         if (data.isSuccess) {
             getIndosatCheckBalance()
-            println("SUCCESS GAN")
         } else {
             showErrorToaster(MessageErrorException(data.message))
-            println("FAILED GAN")
         }
     }
 
@@ -1695,7 +1693,6 @@ class DigitalPDPPulsaFragment :
                 if (data != null) {
                     val accessToken = data.getStringExtra(EXTRA_CHECK_BALANCE_ACCESS_TOKEN) ?: ""
                     saveIndosatAccessToken(accessToken)
-                    println("EKSEKUSI GAN")
                 }
             }
         }

@@ -17,9 +17,7 @@ import com.tokopedia.unifycomponents.BaseCustomView
 import org.jetbrains.annotations.NotNull
 import com.tokopedia.recharge_component.presentation.util.CustomDividerItemDecorator
 import com.tokopedia.recharge_component.R
-import com.tokopedia.recharge_component.model.check_balance.RechargeCheckBalanceDetailModel
 import com.tokopedia.recharge_component.presentation.adapter.viewholder.RechargeCheckBalanceUnitViewHolder
-import com.tokopedia.recharge_component.presentation.bottomsheet.RechargeCheckBalanceDetailBottomSheet
 
 class RechargeCheckBalanceWidget @JvmOverloads constructor(
     @NotNull context: Context,
@@ -111,13 +109,11 @@ class RechargeCheckBalanceWidget @JvmOverloads constructor(
     }
 
     fun hideLocalLoad() {
-        binding.checkBalanceLocalload.run {
-            binding.run {
-                checkBalanceRv.show()
-                checkBalanceWarningContainer.show()
-                checkBalanceLocalload.setOnClickListener { }
-                checkBalanceLocalload.hide()
-            }
+        binding.run {
+            checkBalanceRv.show()
+            checkBalanceWarningContainer.show()
+            checkBalanceLocalload.setOnClickListener { }
+            checkBalanceLocalload.hide()
         }
     }
 

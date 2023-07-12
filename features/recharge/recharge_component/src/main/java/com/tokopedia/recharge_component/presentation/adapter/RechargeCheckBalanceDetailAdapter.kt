@@ -8,7 +8,7 @@ import com.tokopedia.recharge_component.databinding.ViewRechargeCheckBalanceDeta
 import com.tokopedia.recharge_component.model.check_balance.RechargeCheckBalanceDetailModel
 import com.tokopedia.recharge_component.presentation.adapter.viewholder.RechargeCheckBalanceDetailViewHolder
 
-class RechargeCheckBalanceDetailAdapter : RecyclerView.Adapter<RechargeCheckBalanceDetailViewHolder>() {
+class RechargeCheckBalanceDetailAdapter: RecyclerView.Adapter<RechargeCheckBalanceDetailViewHolder>() {
 
     private var checkBalanceDetails: List<RechargeCheckBalanceDetailModel> = emptyList()
     private var checkBalanceDetailViewHolderListener: RechargeCheckBalanceDetailViewHolder.RechargeCheckBalanceDetailViewHolderListener? = null

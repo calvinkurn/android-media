@@ -6,12 +6,15 @@ import android.app.Instrumentation
 import android.content.Intent
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.contrib.RecyclerViewActions
+import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.ComponentNameMatchers.hasClassName
 import androidx.test.espresso.intent.matcher.IntentMatchers
+import androidx.test.espresso.intent.matcher.IntentMatchers.anyIntent
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.RootMatchers
 import androidx.test.espresso.matcher.ViewMatchers
@@ -27,6 +30,8 @@ import com.tokopedia.common.topupbills.favoritepage.view.model.TopupBillsSavedNu
 import com.tokopedia.digital_product_detail.R
 import com.tokopedia.digital_product_detail.presentation.activity.DigitalPDPPulsaActivity
 import com.tokopedia.digital_product_detail.presentation.webview.RechargeCheckBalanceWebViewActivity
+import com.tokopedia.digital_product_detail.utils.CustomViewAction
+import com.tokopedia.digital_product_detail.utils.CustomViewAction.nestedScrollTo
 import com.tokopedia.recharge_component.model.InputNumberActionType
 import com.tokopedia.recharge_component.presentation.adapter.viewholder.RechargeCheckBalanceDetailViewHolder
 import com.tokopedia.recharge_component.presentation.adapter.viewholder.denom.DenomGridViewHolder
@@ -53,8 +58,6 @@ abstract class BaseDigitalPDPPulsaTest {
     @get:Rule
     var mRuntimePermissionRule: GrantPermissionRule =
         GrantPermissionRule.grant(Manifest.permission.READ_CONTACTS)
-
-    abstract fun getMockModelConfig(): MockModelConfig
 
     protected fun favoriteNumberPage_stubContactNumber() {
         Intents.intending(
@@ -163,11 +166,20 @@ abstract class BaseDigitalPDPPulsaTest {
     }
 
     protected fun mccm_clickCard_withIndex(index: Int) {
-        onView(withId(R.id.rv_mccm_grid)).perform(RecyclerViewActions.actionOnItemAtPosition<DenomGridViewHolder>(index, click()))
+        onView(withId(R.id.rv_mccm_grid))
+            .perform(
+                scrollToPosition<DenomGridViewHolder>(index),
+                RecyclerViewActions.actionOnItemAtPosition<DenomGridViewHolder>(index, click())
+            )
     }
 
     protected fun denom_clickCard_withIndex(index: Int) {
-        onView(withId(R.id.rv_denom_grid_card)).perform(RecyclerViewActions.actionOnItemAtPosition<DenomGridViewHolder>(index, click()))
+        onView(withId(R.id.tg_denom_grid_widget_title)).perform(nestedScrollTo())
+        onView(withId(R.id.rv_denom_grid_card))
+            .perform(
+                scrollToPosition<DenomGridViewHolder>(index),
+                RecyclerViewActions.actionOnItemAtPosition<DenomGridViewHolder>(index, click())
+            )
     }
 
     protected fun checkBalanceOTPBottomSheet_clickButton() {
@@ -175,8 +187,19 @@ abstract class BaseDigitalPDPPulsaTest {
     }
 
     protected fun checkBalanceBottomSheet_clickItem_withIndex(index: Int) {
-        onView(withId(R.id.recharge_check_balance_detail_rv)).perform(RecyclerViewActions.actionOnItemAtPosition<RechargeCheckBalanceDetailViewHolder>(index, click()))
+        onView(withId(R.id.recharge_check_balance_detail_rv))
+            .perform(RecyclerViewActions
+                .actionOnItemAtPosition<RechargeCheckBalanceDetailViewHolder>(
+                    index, CustomViewAction.clickChildViewWithId(R.id.check_balance_detail_buy_button)
+                )
+            )
+    }
+
+    protected fun checkBalanceBottomSheet_clickCloseIcon() {
+        onView(withId(R.id.bottom_sheet_close)).perform(click())
     }
 
     abstract fun getApplink(): String
+
+    abstract fun getMockModelConfig(): MockModelConfig
 }

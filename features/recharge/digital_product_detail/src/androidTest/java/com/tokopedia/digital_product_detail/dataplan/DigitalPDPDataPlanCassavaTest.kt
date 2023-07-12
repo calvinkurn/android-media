@@ -5,7 +5,6 @@ import android.app.Instrumentation
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
-import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
 import com.tokopedia.digital_product_detail.dataplan.utils.DigitalPDPDataPlanMockConfig
@@ -17,14 +16,14 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-class DigitalPDPDataPlanCassavaTest: BaseDigitalPDPDataPlanTest() {
-
-    private val context = InstrumentationRegistry.getInstrumentation().targetContext
-
-    override fun getMockModelConfig(): MockModelConfig  = DigitalPDPDataPlanMockConfig()
+class DigitalPDPDataPlanCassavaTest : BaseDigitalPDPDataPlanTest() {
 
     @get:Rule
     var cassavaTestRule = CassavaTestRule()
+
+    override fun getApplink(): String = APPLINK
+
+    override fun getMockModelConfig(): MockModelConfig = DigitalPDPDataPlanMockConfig()
 
     private fun stubIntent() {
         Intents.intending(IsNot.not(IntentMatchers.isInternal()))
@@ -35,6 +34,16 @@ class DigitalPDPDataPlanCassavaTest: BaseDigitalPDPDataPlanTest() {
     fun setUp() {
         InstrumentationAuthHelper.loginInstrumentationTestUser1()
         stubIntent()
+    }
+
+    @Test
+    fun validate_interact_with_check_balance() {
+        Thread.sleep(2000)
+        interactWithCheckBalanceWidget()
+        MatcherAssert.assertThat(
+            cassavaTestRule.validate(PATH_ANALYTICS_OTP),
+            hasAllSuccess()
+        )
     }
 
     @Test
@@ -106,6 +115,16 @@ class DigitalPDPDataPlanCassavaTest: BaseDigitalPDPDataPlanTest() {
         clientNumberWidget_typeNumber("7890")
     }
 
+    private fun interactWithCheckBalanceWidget() {
+        clientNumberWidget_clickCheckBalanceWidget()
+
+        Thread.sleep(2000)
+        checkBalanceBottomSheet_clickItem_withIndex(0)
+
+        Thread.sleep(1000)
+        checkBalanceBottomSheet_clickCloseIcon()
+    }
+
     private fun interactWithFavoriteChip() {
         favoriteChips_clickChip_withText("Danur rrrr")
         favoriteChips_clickChip_withText("08121111112")
@@ -151,10 +170,8 @@ class DigitalPDPDataPlanCassavaTest: BaseDigitalPDPDataPlanTest() {
         filterChip_clickChip_withText("< 1GB")
     }
 
-    override fun getApplink(): String = APPLINK
-
     companion object {
-        const val APPLINK = "tokopedia://digital/form?category_id=2&menu_id=290&template=paketdatav2"
+        const val PATH_ANALYTICS_OTP = "tracker/recharge/digital_product_detail/digital_pdp_dataplan_check_balance.json"
         const val PATH_ANALYTICS_RECOMMENDATION = "tracker/recharge/digital_product_detail/digital_pdp_dataplan_recommendation.json"
         const val PATH_ANALYTICS_FAVORITE = "tracker/recharge/digital_product_detail/digital_pdp_dataplan_favorite.json"
         const val PATH_ANALYTICS_AUTOCOMPLETE = "tracker/recharge/digital_product_detail/digital_pdp_dataplan_autocomplete.json"

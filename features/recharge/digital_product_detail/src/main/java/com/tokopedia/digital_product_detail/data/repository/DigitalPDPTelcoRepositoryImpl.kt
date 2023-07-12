@@ -18,8 +18,8 @@ class DigitalPDPTelcoRepositoryImpl @Inject constructor(
     private val rechargeAddToCardRepo: RechargeAddToCartRepository,
     private val rechargeCatalogProductInputMultiTabRepository: RechargeCatalogProductInputMultiTabRepository,
     private val rechargeRecommendationRepo: RechargeRecommendationRepository,
-    private val rechargeMCCMProductRepo: RechargeMCCMProductsRepository,
-    private val rechargeCheckBalanceRepo: RechargeCheckBalanceRepository
+    private val rechargeCheckBalanceRepo: RechargeCheckBalanceRepository,
+    private val rechargeMCCMProductRepo: RechargeMCCMProductsRepository
 ): DigitalPDPTelcoRepository,
         RechargeFavoriteNumberRepository by rechargeFavoriteNumberRepo,
         RechargeCatalogPrefixSelectRepository by rechargeCatalogPrefixSelectRepo,
