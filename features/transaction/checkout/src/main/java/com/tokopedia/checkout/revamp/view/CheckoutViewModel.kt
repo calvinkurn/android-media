@@ -16,9 +16,12 @@ import com.tokopedia.checkout.revamp.view.processor.CheckoutPaymentProcessor
 import com.tokopedia.checkout.revamp.view.processor.CheckoutProcessor
 import com.tokopedia.checkout.revamp.view.processor.CheckoutPromoProcessor
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutAddressModel
+import com.tokopedia.checkout.revamp.view.uimodel.CheckoutButtonPaymentModel
+import com.tokopedia.checkout.revamp.view.uimodel.CheckoutCostModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutEpharmacyModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutItem
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPageState
+import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPromoModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutTickerModel
 import com.tokopedia.checkout.view.CheckoutMutableLiveData
 import com.tokopedia.checkout.view.converter.ShipmentDataRequestConverter
@@ -179,8 +182,16 @@ class CheckoutViewModel @Inject constructor(
                     )
                 )
 
+                val promo = CheckoutPromoModel(
+                    promo = saf.cartShipmentAddressFormData.lastApplyData
+                )
+
+                val cost = CheckoutCostModel()
+
+                val buttonPayment = CheckoutButtonPaymentModel()
+
                 withContext(dispatchers.main) {
-                    listData.value = listOf(ticker, address, upsell) + items + epharmacy
+                    listData.value = listOf(ticker, address, upsell) + items + epharmacy + promo + cost + buttonPayment
                     pageState.value = saf
                 }
             } else {

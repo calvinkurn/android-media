@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.checkout.databinding.FragmentCheckoutBinding
 import com.tokopedia.checkout.databinding.HeaderCheckoutBinding
 import com.tokopedia.checkout.revamp.di.CheckoutModule
@@ -23,6 +24,7 @@ import com.tokopedia.checkout.view.uimodel.ShipmentNewUpsellModel
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
+import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException
 import com.tokopedia.purchase_platform.common.feature.checkout.ShipmentFormRequest
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.model.UploadPrescriptionUiModel
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.view.UploadPrescriptionListener
@@ -172,19 +174,34 @@ class CheckoutFragment : BaseDaggerFragment(), CheckoutAdapterListener, UploadPr
             when (it) {
                 is CheckoutPageState.CacheExpired -> {
                 }
+
                 is CheckoutPageState.CheckNoAddress -> {
                 }
+
                 CheckoutPageState.EmptyData -> {
                 }
+
                 is CheckoutPageState.Error -> {
-                    Toaster.build(binding.root, ErrorHandler.getErrorMessage(context, it.throwable), type = Toaster.TYPE_ERROR).show()
+                    var errorMessage = it.throwable.message ?: ""
+                    if (!(it.throwable is CartResponseErrorException || it.throwable is AkamaiErrorException)) {
+                        errorMessage = ErrorHandler.getErrorMessage(context, it.throwable)
+                    }
+                    if (errorMessage.isEmpty()) {
+                        errorMessage =
+                            getString(com.tokopedia.purchase_platform.common.R.string.checkout_flow_error_global_message)
+                    }
+                    Toaster.build(binding.root, errorMessage, type = Toaster.TYPE_ERROR).show()
                 }
+
                 CheckoutPageState.Loading -> {
                 }
+
                 is CheckoutPageState.NoAddress -> {
                 }
+
                 is CheckoutPageState.NoMatchedAddress -> {
                 }
+
                 is CheckoutPageState.Success -> {
                     binding.rvCheckout.isVisible = true
                 }
