@@ -48,6 +48,7 @@
 
 /features/common/app_common                             @tokopedia/android-core-dev
 /features/common/developer_options                  	@tokopedia/android-core-dev
+/features/common/developer_options_noop               	@tokopedia/android-core-dev
 /features/common/nps                                	@tokopedia/android-core-dev
 /features/common/resources_common                   	@tokopedia/android-core-dev
 /features/common/qr_scanner                   	        @tokopedia/android-core-dev
@@ -86,6 +87,7 @@
 /features/merchant/product_ar/                          @tokopedia/android-minionstuart-dev
 /libraries/bubbles/                                     @tokopedia/android-minionstuart-dev
 /libraries/sub_viewmodel/                               @tokopedia/android-minionstuart-dev
+/libraries/poc_new_relic/                               @tokopedia/android-minionstuart-dev
 
 /features/merchant/product_draft_database/              @tokopedia/android-minionken-dev
 /features/merchant/product_add_edit/                    @tokopedia/android-minionken-dev
@@ -111,7 +113,9 @@
 /features/merchant/seller_shop_nib                      @tokopedia/android-minionken-dev
 
 /features/top_ads/top_ads_dashboard/                    @tokopedia/android-minionsolo-dev
+/features/top_ads/top_ads_management/                   @tokopedia/android-minionsolo-dev
 /features/top_ads/top_ads_management_common/            @tokopedia/android-minionsolo-dev
+/features/top_ads/top_ads_management_sourcetagging/     @tokopedia/android-minionsolo-dev
 /features/top_ads/top_ads_autoads/                      @tokopedia/android-minionsolo-dev
 /features/top_ads/top_ads_create/                       @tokopedia/android-minionsolo-dev
 /features/top_ads/top_ads_detail_sheet/                 @tokopedia/android-minionsolo-dev
@@ -119,6 +123,8 @@
 /features/top_ads/top_ads_headline/                     @tokopedia/android-minionsolo-dev
 /features/top_ads/top_ads_edit/                         @tokopedia/android-minionsolo-dev
 /features/top_ads/top_ads_on_boarding/                  @tokopedia/android-minionsolo-dev
+/features/top_ads/top_ads_free_claim/                   @tokopedia/android-minionsolo-dev
+/features/top_ads/top_ads_headline_usecase/             @tokopedia/android-minionsolo-dev
 
 /features/merchant/talk/                            	@tokopedia/android-minionstuart-dev
 /features/merchant/seller_app_widget/                   @tokopedia/android-minionstuart-dev
@@ -283,6 +289,7 @@
 /features/promo/quest_widget  					        @tokopedia/android-minionsolo-dev
 /features/promo/tokomember_seller_dashboard  	        @tokopedia/android-minionsolo-dev
 /features/promo/tokomember_common_widget 		        @tokopedia/android-minionsolo-dev
+/features/promo/tokomember               		        @tokopedia/android-minionsolo-dev
 
 
 /features/im/install_referral                           @tokopedia/android-core-dev
@@ -387,10 +394,12 @@
 /libraries/macrobenchmark/								@tokopedia/android-core-dev
 /libraries/macrobenchmark_util							@tokopedia/android-core-dev
 /libraries/common_compose                               @tokopedia/android-core-dev
+/libraries/page_info_pusher                             @tokopedia/android-core-dev
 /libraries/universal_sharing/							@tokopedia/android-minionkevin-dev
 /libraries/sse/                                         @tokopedia/android-core-dev @tokopedia/android-minionlance-dev
 /libraries/data_explorer/                               @tokopedia/android-core-dev
 /libraries/foldable                                     @tokopedia/android-miniondarth-dev
+/features/samples                                       @tokopedia/android-miniondarth-dev
 
 /config/detekt/                                         @tokopedia/android-gatekeeper-linter
 /buildconfig/                                           @tokopedia/android-core-dev
