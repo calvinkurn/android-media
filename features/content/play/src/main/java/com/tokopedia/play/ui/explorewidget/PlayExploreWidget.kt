@@ -122,7 +122,7 @@ class PlayExploreWidget @Inject constructor(
             viewModel.uiState.withCache().collectLatest { cachedState ->
                 if (cachedState.isChanged { it.channel.exploreWidgetConfig } && cachedState.value.channel.exploreWidgetConfig.hasCategory) {
                     binding.tabPlayExploreWidget.getUnifyTabLayout().getTabAt(0)?.setCustomText(viewModel.exploreWidgetTabs.first())
-                    binding.tabPlayExploreWidget.getUnifyTabLayout().getTabAt(1)?.setCustomText(viewModel.exploreWidgetTabs.last(˚))
+                    binding.tabPlayExploreWidget.getUnifyTabLayout().getTabAt(1)?.setCustomText(viewModel.exploreWidgetTabs.last())
                 }
 
                 if (analytic != null || cachedState.value.channel.channelInfo.id.isBlank()) return@collectLatest
