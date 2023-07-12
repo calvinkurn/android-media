@@ -211,7 +211,7 @@ class HomeAdapterFactory(
     private val legoProductListener: LegoProductListener,
     private val todoWidgetComponentListener: TodoWidgetComponentListener,
     private val flashSaleWidgetListener: FlashSaleWidgetListener,
-    private val carouselPlayWidgetCallback: CarouselPlayWidgetCallback,
+    private val carouselPlayWidgetCallback: CarouselPlayWidgetCallback
 ) : BaseAdapterTypeFactory(),
     HomeTypeFactory,
     HomeComponentTypeFactory,
@@ -653,9 +653,6 @@ class HomeAdapterFactory(
             ErrorStateChannelThreeViewHolder.LAYOUT ->
                 viewHolder =
                     ErrorStateChannelThreeViewHolder(view, listener)
-            HomeInitialShimmerViewHolder.LAYOUT ->
-                viewHolder =
-                    HomeInitialShimmerViewHolder(view, listener)
             ShimmeringChannelViewHolder.LAYOUT ->
                 viewHolder =
                     ShimmeringChannelViewHolder(view, listener)
@@ -717,14 +714,6 @@ class HomeAdapterFactory(
             BannerRevampViewHolder.LAYOUT ->
                 viewHolder =
                     BannerRevampViewHolder(view, bannerComponentListener, cardInteraction = true)
-            MixLeftPaddingComponentViewHolder.LAYOUT ->
-                viewHolder =
-                    MixLeftPaddingComponentViewHolder(
-                        view,
-                        mixLeftComponentListener,
-                        homeComponentListener,
-                        cardInteraction = true
-                    )
             DealsWidgetViewHolder.LAYOUT ->
                 viewHolder = DealsWidgetViewHolder(view, vpsWidgetListener, homeComponentListener, parentRecycledViewPool)
             FlashSaleViewHolder.LAYOUT -> viewHolder = FlashSaleViewHolder(view, flashSaleWidgetListener, homeComponentListener, parentRecycledViewPool)
