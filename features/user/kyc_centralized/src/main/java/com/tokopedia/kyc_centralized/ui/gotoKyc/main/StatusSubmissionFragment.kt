@@ -60,10 +60,7 @@ class StatusSubmissionFragment : BaseDaggerFragment() {
     }
 
     @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
-    private val viewModel by lazy {
-        ViewModelProvider(this, viewModelFactory)[StatusSubmissionViewModel::class.java]
-    }
+    lateinit var viewModel: StatusSubmissionViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater,
