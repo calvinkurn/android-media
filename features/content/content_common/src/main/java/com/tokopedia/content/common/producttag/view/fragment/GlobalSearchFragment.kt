@@ -10,15 +10,13 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
 import androidx.viewpager.widget.ViewPager
 import com.tokopedia.content.common.databinding.FragmentGlobalSearchBinding
-import com.tokopedia.content.common.producttag.analytic.product.ContentProductTagAnalytic
-import com.tokopedia.content.common.producttag.util.extension.withCache
 import com.tokopedia.content.common.producttag.view.adapter.GlobalSearchResultPagerAdapter
 import com.tokopedia.content.common.producttag.view.fragment.base.BaseProductTagChildFragment
 import com.tokopedia.content.common.producttag.view.uimodel.action.ProductTagAction
 import com.tokopedia.content.common.producttag.view.uimodel.event.ProductTagUiEvent
 import com.tokopedia.content.common.producttag.view.viewmodel.ProductTagViewModel
+import com.tokopedia.content.common.util.withCache
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 import com.tokopedia.unifyprinciples.R as unifyR
 

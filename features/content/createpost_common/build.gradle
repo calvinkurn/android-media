@@ -18,6 +18,11 @@ buildscript {
     }
 }
 
+android {
+    namespace 'com.tokopedia.createpost.common'
+    testNamespace 'com.tokopedia.createpost.common.test'
+}
+
 dependencies {
     implementation projectOrAar(rootProject.ext.features.affiliateCommon)
     implementation projectOrAar(rootProject.ext.features.resourcesCommon)

@@ -40,6 +40,7 @@
         layout="@layout/layout_recommendasi_sub_section_topads_dashboard_beranda"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:visibility="gone"
         app:layout_constraintTop_toBottomOf="@id/layoutProdukBerpostensi" />
 
     <include
@@ -47,6 +48,7 @@
         layout="@layout/layout_recommendasi_sub_section_topads_dashboard_beranda"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:visibility="gone"
         app:layout_constraintTop_toBottomOf="@id/layout_anggaran_harian" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

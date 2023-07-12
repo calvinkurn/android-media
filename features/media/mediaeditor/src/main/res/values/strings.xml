@@ -7,6 +7,7 @@
     <string name="editor_tool_remove_background">Hapus Latar</string>
     <string name="editor_tool_watermark">Watermark</string>
     <string name="editor_tool_add_logo">Logo Toko</string>
+    <string name="editor_tool_add_text">Teks</string>
 
     <!-- Content description -->
     <string name="cd_img_preview">image preview</string>
@@ -60,11 +61,53 @@
     <string name="editor_add_logo_last_uploaded">Logo Terakhir</string>
     <string name="editor_add_logo_profile">Foto Profil Tokomu</string>
 
-    <!-- Bottomsheet text -->
+    <!-- Add Logo Bottomsheet text -->
     <string name="add_logo_tips_list"><Data><![CDATA[ <ul><li>Ukuran min. <b>500x500 pixel</b> dan maks. <b>10 MB</b>.</li><li>Format gambar <b>.png</b>. untuk logo transparan dan format lainnya <b>.jpg</b>, <b>.jpeg</b>.</li><li>Gambar yang ditambahkan di sini tidak akan menjadi foto profil tokomu.</li></ul> ]]></Data></string>
     <string name="add_logo_tips_more">Buat lihat tips ini lagi, klik %i% di menu depan ya.</string>
     <string name="add_logo_tips_more_format">%i%</string>
     <string name="add_logo_tips_upload_text">Upload Logo</string>
     <string name="add_logo_tips_understand_text">Oke Mengerti</string>
 
+    <!-- Add Text tools list -->
+    <string name="add_text_change_position">Ubah Posisi</string>
+    <string name="add_text_save_template">Jadikan Template</string>
+    <string name="add_text_apply_template">Gunakan Template</string>
+    <string name="add_text_free_text">Teks Bebas</string>
+    <string name="add_text_single_background_text">Latar Teks</string>
+    <string name="add_text_overlay_input_placeholder">Tambah teks</string>
+
+    <!-- Add Text Bottomsheet tips text -->
+    <string name="add_text_tips_carousel_item_1">Yuk, buat produkmu lebih menarik dengan tambahin nama produknya!</string>
+    <string name="add_text_tips_carousel_item_2">Atau, kamu bisa tambahin keunggulan produk sesuai keinginanmu. Yuk, cobain!</string>
+    <string name="add_text_tips_cta_next">Lanjut</string>
+    <string name="add_text_tips_cta_done">Oke, Mengerti</string>
+    <string name="add_text_tips_title">Tips tambah teks</string>
+    
+    <!-- Add Text Bottomsheet latar text -->
+    <string name="add_text_background_tips">Teks yang sudah kamu buat bisa kepotong saat kamu pakai Latar Teks.</string>
+    <string name="add_text_background_content_title_color">Pilihan Warna:</string>
+    <string name="add_text_background_content_title_template">Pilih Template:</string>
+    <string name="add_text_background_content_btn_text">Lanjut</string>
+    <string name="add_text_background_selection_title">Warna &amp; Template</string>
+
+    <!-- Add Text dialog text -->
+    <string name="add_text_dialog_save_title">Mau simpan buat template?</string>
+    <string name="add_text_dialog_save_desc">Kamu bisa pakai lagi hasil edit teks ini di foto produk lainnya, praktis!</string>
+    <string name="add_text_dialog_save_primary_btn">Ya, Simpan</string>
+    <string name="add_text_dialog_save_secondary_btn">Tidak</string>
+
+    <string name="add_text_dialog_load_title">Mau pakai template?</string>
+    <string name="add_text_dialog_load_desc">Proses edit media saat ini akan diganti pakai template yang kamu simpan, ya.</string>
+    <string name="add_text_dialog_load_primary_btn">Ya, Pakai</string>
+    <string name="add_text_dialog_load_secondary_btn">Tidak</string>
+
+    <!-- Add Text toaster text -->
+    <string name="add_text_toaster_template_save">Template berhasil disimpan.</string>
+    <string name="add_text_toaster_template_save_error">Oops, gagal menyimpan template.</string>
+    <string name="add_text_toaster_template_load">Template berhasil dipasang</string>
+    <string name="add_text_toaster_template_load_error">Oops, template gagal dipasang.</string>
+
+    <!-- Add Text color text -->
+    <string name="add_text_color_name_black">Hitam</string>
+    <string name="add_text_color_name_white">Putih</string>
 </resources>

@@ -25,12 +25,14 @@ import com.tokopedia.test.application.espresso_component.CommonActions.takeScree
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupDarkModeTest
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
+import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 
 /**
  * Created by devarafikry on 12/04/21.
  */
+@Ignore("Ignored due to time-consuming when ran on automation. Comment this annotation if need to run locally")
 @ScreenshotTest
 class HomeScreenshotLoggedInTest {
     private val TAG = "HomeScreenshotTest"
@@ -38,7 +40,7 @@ class HomeScreenshotLoggedInTest {
     private var homeNetworkIdlingResource: IdlingResource? = HomeNetworkUtil.homeNetworkIdlingResource
 
     @get:Rule
-    var activityRule = object: ActivityTestRule<InstrumentationHomeRevampTestActivity>(InstrumentationHomeRevampTestActivity::class.java) {
+    var activityRule = object : ActivityTestRule<InstrumentationHomeRevampTestActivity>(InstrumentationHomeRevampTestActivity::class.java) {
         override fun beforeActivityLaunched() {
             InstrumentationAuthHelper.clearUserSession()
             super.beforeActivityLaunched()
@@ -56,9 +58,9 @@ class HomeScreenshotLoggedInTest {
         turnOffAnimation(activityRule.activity)
         InstrumentationRegistry.getInstrumentation().runOnMainSync {
             takeScreenShotVisibleViewInScreen(
-                    activityRule.activity.window.decorView,
-                    fileName(),
-                    "dc".name(true)
+                activityRule.activity.window.decorView,
+                fileName(),
+                "dc".name(true)
             )
         }
         activityRule.activity.finishAndRemoveTask()
@@ -84,8 +86,8 @@ class HomeScreenshotLoggedInTest {
     }
 
     private fun screenshotHomeViewholdersAtPosition(
-            position: Int,
-            fileNamePostFix: String
+        position: Int,
+        fileNamePostFix: String
     ) {
         val recyclerViewId = R.id.home_fragment_recycler_view
         doActivityTest(position) {
@@ -93,10 +95,10 @@ class HomeScreenshotLoggedInTest {
                 turnOffAnimation(activityRule.activity)
             }
             findViewHolderAndScreenshot(
-                    recyclerViewId = recyclerViewId,
-                    position = position,
-                    fileName = fileName(),
-                    fileNamePostFix = "$fileNamePostFix-light"
+                recyclerViewId = recyclerViewId,
+                position = position,
+                fileName = fileName(),
+                fileNamePostFix = "$fileNamePostFix-light"
             )
         }
     }
@@ -113,7 +115,7 @@ class HomeScreenshotLoggedInTest {
         return prefix
     }
 
-    private fun doActivityTest(position: Int, action: (viewHolder: RecyclerView.ViewHolder)-> Unit) {
+    private fun doActivityTest(position: Int, action: (viewHolder: RecyclerView.ViewHolder) -> Unit) {
         val homeRecyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.home_fragment_recycler_view)
         scrollHomeRecyclerViewToPosition(homeRecyclerView, position)
         Thread.sleep(8000)
@@ -125,12 +127,13 @@ class HomeScreenshotLoggedInTest {
 
     private fun scrollHomeRecyclerViewToPosition(homeRecyclerView: RecyclerView, position: Int) {
         val layoutManager = homeRecyclerView.layoutManager as LinearLayoutManager
-        activityRule.runOnUiThread { layoutManager.scrollToPositionWithOffset   (position, 400) }
+        activityRule.runOnUiThread { layoutManager.scrollToPositionWithOffset(position, 400) }
     }
 
     private fun setupAbTestRemoteConfig() {
         RemoteConfigInstance.getInstance().abTestPlatform.setString(
-                BALANCE_EXP,
-                BALANCE_VARIANT_NEW)
+            BALANCE_EXP,
+            BALANCE_VARIANT_NEW
+        )
     }
 }

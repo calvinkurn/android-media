@@ -21,18 +21,17 @@ import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifyprinciples.Typography
 
-
 class CircularSliderBannerViewHolder(itemView: View, val fragment: Fragment) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner), CircularListener {
 
     private val sliderBannerTitle: Typography = itemView.findViewById(R.id.title)
-    private lateinit var sliderBannerViewModel: CircularSliderBannerViewModel
-    private val bannerCircularAdapter: BannerCircularAdapter  = BannerCircularAdapter(listOf(), this)
+    private var sliderBannerViewModel: CircularSliderBannerViewModel? = null
+    private val bannerCircularAdapter: BannerCircularAdapter = BannerCircularAdapter(listOf(), this)
     private val cvSliderBanner: CircularViewPager = itemView.findViewById(R.id.circular_slider_banner)
     private val sliderIndicator: CircularPageIndicator = itemView.findViewById(R.id.indicator_banner)
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         sliderBannerViewModel = discoveryBaseViewModel as CircularSliderBannerViewModel
-        sliderBannerViewModel.getItemsList()?.let {
+        sliderBannerViewModel?.getItemsList()?.let {
             sendBannerImpression()
             cvSliderBanner.setAdapter(bannerCircularAdapter)
             cvSliderBanner.setItemList(it)
@@ -48,16 +47,19 @@ class CircularSliderBannerViewHolder(itemView: View, val fragment: Fragment) : A
     override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
         super.setUpObservers(lifecycleOwner)
         lifecycleOwner?.let {
-            sliderBannerViewModel.getTitleLiveData().observe(it, Observer { item ->
-                sliderBannerTitle.setTextAndCheckShow(item)
-            })
+            sliderBannerViewModel?.getTitleLiveData()?.observe(
+                it,
+                Observer { item ->
+                    sliderBannerTitle.setTextAndCheckShow(item)
+                }
+            )
         }
     }
 
     override fun removeObservers(lifecycleOwner: LifecycleOwner?) {
         super.removeObservers(lifecycleOwner)
         lifecycleOwner?.let { it ->
-            sliderBannerViewModel.getTitleLiveData().removeObservers(it)
+            sliderBannerViewModel?.getTitleLiveData()?.removeObservers(it)
         }
     }
 
@@ -84,30 +86,35 @@ class CircularSliderBannerViewHolder(itemView: View, val fragment: Fragment) : A
             override fun onPageScrolled(position: Int) {
                 trackBannerImpressionGTM(position)
             }
+
             override fun onPageScrollStateChanged(state: Int) {}
         })
     }
 
-    fun trackBannerImpressionGTM(position : Int = 0){
-        sliderBannerViewModel.getBannerItem(position)?.let {
-            it.positionForParentItem = sliderBannerViewModel.getComponentPosition()
-            (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackBannerImpression(
-                arrayListOf(it),
-                position,
-                Utils.getUserId(fragment.context)
-            )
+    fun trackBannerImpressionGTM(position: Int = 0) {
+        sliderBannerViewModel?.let { sliderBannerViewModel ->
+            sliderBannerViewModel.getBannerItem(position)?.let {
+                it.positionForParentItem = sliderBannerViewModel.getComponentPosition()
+                (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackBannerImpression(
+                    arrayListOf(it),
+                    position,
+                    Utils.getUserId(fragment.context)
+                )
+            }
         }
     }
 
     override fun onClick(position: Int) {
-        sliderBannerViewModel.getBannerItem(position)?.let {
-            it.positionForParentItem = sliderBannerViewModel.getComponentPosition()
-            (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackBannerClick(
-                it,
-                position,
-                Utils.getUserId(fragment.context)
-            )
-            if (!it.applinks.isNullOrEmpty()) RouteManager.route(itemView.context, it.applinks)
+        sliderBannerViewModel?.let { sliderBannerViewModel ->
+            sliderBannerViewModel.getBannerItem(position)?.let {
+                it.positionForParentItem = sliderBannerViewModel.getComponentPosition()
+                (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackBannerClick(
+                    it,
+                    position,
+                    Utils.getUserId(fragment.context)
+                )
+                if (!it.applinks.isNullOrEmpty()) RouteManager.route(itemView.context, it.applinks)
+            }
         }
     }
 }

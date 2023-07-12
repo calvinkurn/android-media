@@ -19,6 +19,8 @@ buildscript {
 }
 
 android {
+    namespace 'com.tokopedia.recharge_credit_card'
+    testNamespace 'com.tokopedia.recharge_credit_card.test'
     packagingOptions {
         exclude 'META-INF/**'
     }

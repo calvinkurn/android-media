@@ -14,6 +14,8 @@ buildscript {
 }
 
 android {
+    namespace 'com.tokopedia.discovery2'
+    testNamespace 'com.tokopedia.discovery2.test'
     packagingOptions {
         exclude 'META-INF/**'
     }
