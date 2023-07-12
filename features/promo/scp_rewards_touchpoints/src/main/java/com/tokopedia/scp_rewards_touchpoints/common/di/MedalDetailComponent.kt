@@ -3,7 +3,6 @@ package com.tokopedia.scp_rewards_touchpoints.common.di
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.scp_rewards_touchpoints.TestActivity
 import com.tokopedia.scp_rewards_touchpoints.bottomsheet.view.MedalCelebrationBottomSheet
-import com.tokopedia.scp_rewards_touchpoints.view.bottomsheet.di.CelebrationScope
 import com.tokopedia.scp_rewards_touchpoints.bottomsheet.view.MedalCelebrationFragment
 import dagger.Component
 

@@ -19,7 +19,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AccelerateDecelerateInterpolator
-import android.view.animation.LinearInterpolator
 import android.view.animation.PathInterpolator
 import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
@@ -52,7 +51,6 @@ import com.tokopedia.scp_rewards_touchpoints.bottomsheet.model.getMessage
 import com.tokopedia.scp_rewards_touchpoints.bottomsheet.utils.AudioFactory
 import com.tokopedia.scp_rewards_touchpoints.bottomsheet.utils.DeviceInfo
 import com.tokopedia.scp_rewards_touchpoints.bottomsheet.utils.dpToPx
-import com.tokopedia.scp_rewards_touchpoints.bottomsheet.utils.isNullOrZero
 import com.tokopedia.scp_rewards_touchpoints.bottomsheet.utils.launchLink
 import com.tokopedia.scp_rewards_touchpoints.bottomsheet.utils.parseColor
 import com.tokopedia.scp_rewards_touchpoints.bottomsheet.viewmodel.MedalCelebrationViewModel

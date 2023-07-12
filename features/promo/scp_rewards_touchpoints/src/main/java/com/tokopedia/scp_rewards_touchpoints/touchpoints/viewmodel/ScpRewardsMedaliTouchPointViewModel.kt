@@ -2,9 +2,10 @@ package com.tokopedia.scp_rewards_touchpoints.touchpoints.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.scp_rewards_touchpoints.common.Error
 import com.tokopedia.scp_rewards_touchpoints.common.Loading
 import com.tokopedia.scp_rewards_touchpoints.common.ScpResult
@@ -14,36 +15,47 @@ import kotlinx.coroutines.delay
 import javax.inject.Inject
 
 class ScpRewardsMedaliTouchPointViewModel @Inject constructor(
-    private val touchPointUseCase: ScpRewardsMedaliTouchPointUseCase
-) : ViewModel() {
+    private val touchPointUseCase: ScpRewardsMedaliTouchPointUseCase,
+    dispatchers: CoroutineDispatchers
+) : BaseViewModel(dispatchers.io) {
 
     companion object{
-        private const val DEFAULT_DELAY = 10000L
+        private const val DEFAULT_DELAY = 1000L
     }
 
-    private val _toasterLiveData: MutableLiveData<ScpResult> = MutableLiveData()
-    val touchPointLiveData: LiveData<ScpResult> = _toasterLiveData
+    private val _touchPointData: MutableLiveData<ScpResult> = MutableLiveData()
+    val touchPointData: LiveData<ScpResult> = _touchPointData
 
-    fun getTouchPoint(orderID: Long, pageName: String = "", sourceName: String,delay:Boolean = true) {
-        viewModelScope.launchCatchError(
+    fun getTouchPoint(
+        orderId: Long,
+        pageName: String = String.EMPTY,
+        sourceName: String,
+        delayDuration: Long = DEFAULT_DELAY
+    ) {
+        launchCatchError(
             block = {
-                _toasterLiveData.postValue(Loading)
-                if(delay){
-                    delay(DEFAULT_DELAY)
-                }
-                val response = touchPointUseCase.getTouchPoint(
-                    orderID,
-                    pageName,
-                    sourceName
+                _touchPointData.postValue(Loading)
+                delay(
+                    timeMillis = delayDuration
                 )
-                if (response.scpRewardsMedaliTouchpointOrder?.resultStatus?.code == "200") {
-                    _toasterLiveData.postValue(Success(response))
+                val response = touchPointUseCase.getTouchPoint(
+                    orderId = orderId,
+                    pageName = pageName,
+                    sourceName = sourceName
+                )
+                if (response.scpRewardsMedaliTouchpointOrder.medaliTouchpointOrder.retryChecking.isRetryable) {
+                    getTouchPoint(
+                        orderId = orderId,
+                        pageName = pageName,
+                        sourceName = sourceName,
+                        delayDuration = response.scpRewardsMedaliTouchpointOrder.medaliTouchpointOrder.retryChecking.durationToRetry
+                    )
                 } else {
-                    throw Throwable()
+                    _touchPointData.postValue(Success(response))
                 }
             },
             onError = {
-                _toasterLiveData.postValue(Error(it))
+                _touchPointData.postValue(Error(it))
             }
         )
     }

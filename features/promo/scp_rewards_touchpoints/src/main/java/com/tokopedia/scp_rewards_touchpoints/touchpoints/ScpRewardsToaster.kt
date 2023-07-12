@@ -12,6 +12,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.unifyprinciples.UnifyMotion
 import com.tokopedia.scp_rewards_touchpoints.R
+import com.tokopedia.scp_rewards_touchpoints.bottomsheet.utils.loadImage
 import com.tokopedia.scp_rewards_touchpoints.touchpoints.model.ScpToasterData
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -73,9 +74,8 @@ object ScpRewardsToaster {
         tv_title.text = toasterData.title
         tv_desc.text = toasterData.subtitle
 
-        frame_icon.setImageBitmap(toasterData.sunflare)
-        badge.setImageBitmap(toasterData.badgeImage)
-
+        frame_icon.loadImage(toasterData.sunflare)
+        badge.loadImage(toasterData.badgeImage)
 
         val constraintLayoutToaster = viewLayout.findViewById<View>(R.id.constraintLayoutToaster)
 

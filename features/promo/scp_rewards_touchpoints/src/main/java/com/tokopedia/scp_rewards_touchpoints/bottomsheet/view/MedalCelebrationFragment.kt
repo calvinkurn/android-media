@@ -69,12 +69,12 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
         }
     }
     private fun observeData() {
-        scpTouchPointViewModel.touchPointLiveData.observe(this) {
+        scpTouchPointViewModel.touchPointData.observe(this) {
             when (it) {
                 is Success<*> -> {
                     binding?.btnToaster?.isLoading = false
                     val data = (it.data as ScpRewardsMedaliTouchPointModel)
-                    if (data.scpRewardsMedaliTouchpointOrder?.isShown == true) {
+                    if (data.scpRewardsMedaliTouchpointOrder.isShown) {
                         view?.let { v ->
                             ScpToasterHelper.showToaster(
                                 view = v,
@@ -83,7 +83,6 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
                         }
                     }
                 }
-
                 is Error -> {
                     binding?.btnToaster?.isLoading = false
                     Toast.makeText(context, "User doesnt have medalis", Toast.LENGTH_LONG).show()

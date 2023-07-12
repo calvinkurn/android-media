@@ -64,6 +64,7 @@ import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.exception.ResponseErrorException
@@ -72,7 +73,7 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey.HOME_ENABLE_AUTO_REFRESH_UOH
-import com.tokopedia.scp_rewards_touchpoints.common.Error
+import com.tokopedia.remoteconfig.RemoteConfigKey.SCP_REWARDS_MEDALI_TOUCH_POINT
 import com.tokopedia.scp_rewards_touchpoints.touchpoints.ScpToasterHelper
 import com.tokopedia.scp_rewards_touchpoints.touchpoints.model.ScpRewardsMedaliTouchPointModel
 import com.tokopedia.scp_rewards_touchpoints.touchpoints.viewmodel.ScpRewardsMedaliTouchPointViewModel
@@ -279,6 +280,8 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
 
     private var binding by autoClearedNullable<FragmentUohListBinding>()
 
+    private val remoteConfig by lazy { FirebaseRemoteConfigImpl(context) }
+
     @SuppressLint("SimpleDateFormat")
     private val monthStringDateFormat = SimpleDateFormat("dd MMM yyyy")
 
@@ -353,10 +356,6 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
         const val EXTEND_ORDER_REQUEST_CODE = 400
         const val OPEN_ORDER_REQUEST_CODE = 500
         const val POF_REQUEST_CODE = 600
-    }
-
-    private fun getFirebaseRemoteConfig(): FirebaseRemoteConfigImpl? {
-        return FirebaseRemoteConfigImpl(context)
     }
 
     private fun isAutoRefreshEnabled(): Boolean {
@@ -841,25 +840,17 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
     }
 
     private fun observeScpToaster() {
-        scpTouchPointViewModel.touchPointLiveData.observe(viewLifecycleOwner) {
-            when (it) {
-                is com.tokopedia.scp_rewards_touchpoints.common.Success<*> -> {
-                    val data = (it.data as ScpRewardsMedaliTouchPointModel)
-                    if (data.scpRewardsMedaliTouchpointOrder?.isShown == true) {
-                        view?.let { view ->
-                            ScpToasterHelper.showToaster(
-                                view = view,
-                                data = data
-                            )
-                        }
-                    } else {
-                        showFinishOrderToaster()
+        scpTouchPointViewModel.touchPointData.observe(viewLifecycleOwner) {
+            if (it is com.tokopedia.scp_rewards_touchpoints.common.Success<*>) {
+                val data = (it.data as ScpRewardsMedaliTouchPointModel)
+                if (data.scpRewardsMedaliTouchpointOrder.isShown) {
+                    view?.let { view ->
+                        ScpToasterHelper.showToaster(
+                            view = view,
+                            data = data
+                        )
                     }
                 }
-                is Error -> {
-                    showFinishOrderToaster()
-                }
-                else -> {}
             }
         }
     }
@@ -884,10 +875,13 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
             when (it) {
                 is Success -> {
                     responseFinishOrder = it.data
-                    scpTouchPointViewModel.getTouchPoint(
-                        orderID = responseFinishOrder.orderId.toLong(),
-                        sourceName = SOURCE_NAME
-                    )
+                    showFinishOrderToaster()
+                    if (isScpRewardTouchPointEnabled()) {
+                        scpTouchPointViewModel.getTouchPoint(
+                            orderId = responseFinishOrder.orderId.toLongOrZero(),
+                            sourceName = SOURCE_NAME
+                        )
+                    }
                 }
                 is Fail -> {
                     responseFinishOrder.message.firstOrNull()
@@ -896,6 +890,8 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
             }
         }
     }
+
+    private fun isScpRewardTouchPointEnabled(): Boolean = remoteConfig.getBoolean(SCP_REWARDS_MEDALI_TOUCH_POINT, true)
 
     private fun observingAtcMulti() {
         uohListViewModel.atcMultiResult.observe(viewLifecycleOwner) { result ->

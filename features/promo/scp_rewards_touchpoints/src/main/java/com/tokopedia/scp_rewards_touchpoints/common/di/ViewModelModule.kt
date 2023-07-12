@@ -6,7 +6,6 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.scp_rewards_touchpoints.bottomsheet.viewmodel.MedalCelebrationViewModel
 import com.tokopedia.scp_rewards_touchpoints.touchpoints.viewmodel.ScpRewardsMedaliTouchPointViewModel
-import com.tokopedia.scp_rewards_touchpoints.view.bottomsheet.di.CelebrationScope
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
