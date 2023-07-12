@@ -61,7 +61,6 @@ import com.tokopedia.mvc.domain.entity.GenerateVoucherImageMetadata
 import com.tokopedia.mvc.domain.entity.VoucherDetailData
 import com.tokopedia.mvc.domain.entity.VoucherDetailWithVoucherCreationMetadata
 import com.tokopedia.mvc.domain.entity.enums.BenefitType
-import com.tokopedia.mvc.domain.entity.enums.ProgramStatus
 import com.tokopedia.mvc.domain.entity.enums.PromoType
 import com.tokopedia.mvc.domain.entity.enums.PromotionStatus
 import com.tokopedia.mvc.domain.entity.enums.SubsidyInfo
@@ -514,7 +513,9 @@ class VoucherDetailFragment : BaseDaggerFragment() {
             }
             iconInfo.setOnClickListener {
                 UpdateCouponTipBottomSheet
-                    .newInstance(data.subsidyDetail.programDetail.programStatus == ProgramStatus.ONGOING)
+                    .newInstance(
+                        isVoucherApproved = data.subsidyDetail.programDetail.promotionStatus == PromotionStatus.APPROVED
+                    )
                     .show(childFragmentManager)
             }
         }
@@ -553,7 +554,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                         iconChevron.setImage(IconUnify.CHEVRON_UP)
                     }
                 }
-                val usedQuota = data.voucherQuota - data.remainingQuota
+                val usedQuota = data.confirmedGlobalQuota + data.subsidyDetail.quotaSubsidized.confirmedGlobalQuota
                 tpgUsedQuota.text = getString(
                     R.string.smvc_placeholder_total_used_quota,
                     usedQuota,
@@ -1166,7 +1167,11 @@ class VoucherDetailFragment : BaseDaggerFragment() {
     }
 
     private fun deleteOrStopVoucher(data: VoucherDetailData) {
-        if (isVps(data) || isSubsidy(data)) {
+        if (isVps(data) ||
+            isSubsidy(data) ||
+            data.subsidyDetail.programDetail.promotionStatus == PromotionStatus.APPROVED ||
+            data.subsidyDetail.programDetail.promotionStatus == PromotionStatus.REGISTERED
+        ) {
             showCallTokopediaCareDialog(data.voucherStatus)
         } else {
             showConfirmationStopVoucherDialog(data)

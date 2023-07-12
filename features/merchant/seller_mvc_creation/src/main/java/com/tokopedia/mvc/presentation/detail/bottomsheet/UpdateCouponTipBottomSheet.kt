@@ -11,21 +11,24 @@ import com.tokopedia.mvc.util.constant.BundleConstant
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
-class UpdateCouponTipBottomSheet: BottomSheetUnify() {
+class UpdateCouponTipBottomSheet : BottomSheetUnify() {
 
     private var binding by autoClearedNullable<SmvcBottomsheetUpdateCouponTipBinding>()
 
     companion object {
         @JvmStatic
-        fun newInstance(isApproved: Boolean): UpdateCouponTipBottomSheet {
+        fun newInstance(
+            isVoucherApproved: Boolean
+        ): UpdateCouponTipBottomSheet {
             return UpdateCouponTipBottomSheet().apply {
                 arguments = Bundle().apply {
-                    putBoolean(BundleConstant.BUNDLE_KEY_IS_APPROVED, isApproved)
+                    putBoolean(BundleConstant.BUNDLE_KEY_IS_VOUCHER_APPROVED, isVoucherApproved)
                 }
             }
         }
     }
-    private val isApproved by lazy { arguments?.getBoolean(BundleConstant.BUNDLE_KEY_IS_APPROVED) as Boolean}
+
+    private val isApproved by lazy { arguments?.getBoolean(BundleConstant.BUNDLE_KEY_IS_VOUCHER_APPROVED) as Boolean }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -36,11 +39,12 @@ class UpdateCouponTipBottomSheet: BottomSheetUnify() {
         binding = viewBinding
         setTitle(getString(R.string.smvc_ubah_kupon_label))
         setChild(viewBinding.root)
-        binding?.tpgTip?.text = if (isApproved) {
-            getString(R.string.smvc_update_coupon_tip_label_approved)
-        } else {
-            getString(R.string.smvc_update_coupon_tip_label_not_approved)
-        }
+        binding?.tpgTip?.text =
+            if (isApproved) {
+                getString(R.string.smvc_update_coupon_tip_label_approved)
+            } else {
+                getString(R.string.smvc_update_coupon_tip_label_not_approved)
+            }
         clearContentPadding = true
         return super.onCreateView(inflater, container, savedInstanceState)
     }

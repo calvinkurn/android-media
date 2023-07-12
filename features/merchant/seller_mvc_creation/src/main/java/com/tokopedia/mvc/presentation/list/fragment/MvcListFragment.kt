@@ -54,6 +54,7 @@ import com.tokopedia.mvc.domain.entity.Voucher
 import com.tokopedia.mvc.domain.entity.VoucherCreationQuota
 import com.tokopedia.mvc.domain.entity.enums.BenefitType
 import com.tokopedia.mvc.domain.entity.enums.PromoType
+import com.tokopedia.mvc.domain.entity.enums.PromotionStatus
 import com.tokopedia.mvc.domain.entity.enums.VoucherServiceType
 import com.tokopedia.mvc.domain.entity.enums.VoucherStatus
 import com.tokopedia.mvc.presentation.bottomsheet.FilterVoucherBottomSheet
@@ -883,7 +884,10 @@ class MvcListFragment :
     }
 
     private fun deleteVoucher(voucher: Voucher) {
-        if (voucher.isSubsidy || voucher.labelVoucher.labelSubsidyInfoFormatted.isNotEmpty()) {
+        if (voucher.isSubsidy ||
+            voucher.subsidyDetail.programDetail.promotionStatus == PromotionStatus.APPROVED ||
+            voucher.subsidyDetail.programDetail.promotionStatus == PromotionStatus.REGISTERED
+        ) {
             showCallTokopediaCareDialog(voucher.status)
         } else {
             showConfirmationStopVoucherDialog(voucher)
