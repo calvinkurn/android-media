@@ -516,7 +516,6 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
     }
 
     private fun initTest() {
-        InstrumentationAuthHelper.clearUserSession()
         login()
         waitForData()
         hideStickyLogin()
