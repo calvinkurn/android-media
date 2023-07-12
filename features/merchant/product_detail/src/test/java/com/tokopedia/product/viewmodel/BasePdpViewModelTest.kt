@@ -34,6 +34,7 @@ import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.track.TrackApp
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.unit.test.rule.CoroutineTestRule
+import com.tokopedia.universal_sharing.view.usecase.AffiliateEligibilityCheckUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
 import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
@@ -138,6 +139,9 @@ abstract class BasePdpViewModelTest {
     @RelaxedMockK
     lateinit var playWidgetSubViewModel: PlayWidgetSubViewModel
 
+    @RelaxedMockK
+    lateinit var affiliateEligibilityCheckUseCase: AffiliateEligibilityCheckUseCase
+
     lateinit var spykViewModel: DynamicProductDetailViewModel
 
     @get:Rule
@@ -207,7 +211,8 @@ abstract class BasePdpViewModelTest {
             userSessionInterface = userSessionInterface,
             affiliateCookieHelper = { affiliateCookieHelper },
             productRecommSubViewModel = productRecommSubViewModel,
-            playWidgetSubViewModel = playWidgetSubViewModel
+            playWidgetSubViewModel = playWidgetSubViewModel,
+            affiliateEligibilityUseCase = { affiliateEligibilityCheckUseCase }
         )
     }
 }

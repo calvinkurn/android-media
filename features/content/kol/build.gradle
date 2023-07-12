@@ -16,6 +16,11 @@ buildscript {
     }
 }
 
+android {
+    namespace 'com.tokopedia.kol'
+    testNamespace 'com.tokopedia.kol.test'
+}
+
 dependencies {
     implementation projectOrAar(rootProject.ext.features.resourcesCommon)
     implementation projectOrAar(rootProject.ext.libraries.adapterDelegate)

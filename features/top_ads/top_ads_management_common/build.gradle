@@ -13,6 +13,11 @@ buildscript {
     }
 }
 
+android {
+    namespace 'com.tokopedia.topads.common'
+    testNamespace 'com.tokopedia.topads.common.test'
+}
+
 dependencies {
     implementation rootProject.ext.unifyDependencies.dialog
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)

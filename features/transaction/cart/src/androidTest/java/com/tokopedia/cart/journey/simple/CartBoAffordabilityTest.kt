@@ -1,5 +1,7 @@
 package com.tokopedia.cart.journey.simple
 
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.cart.robot.cartPage
@@ -55,20 +57,24 @@ class CartBoAffordabilityTest {
     fun tickerVisibilityTest() {
         activityRule.launchActivity(null)
 
+        val cartRecyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.rv_cart)
+
         cartPage {
             waitForData()
 
             assertMainContent()
 
-            assertCartShopViewHolderOnPosition(3) {
+            assertCartShopBottomViewHolderOnPosition(6) {
                 // given checked shop & enable bo affordability, then should show ticker
                 assertShowCartShopGroupTicker()
             }
-            assertCartShopViewHolderOnPosition(4) {
+            scrollRecyclerViewToPosition(cartRecyclerView, 9)
+            assertCartShopBottomViewHolderOnPosition(9) {
                 // given unchecked shop & enable bo affordability, then should not show ticker
                 assertNotShowCartShopGroupTicker()
             }
-            assertCartShopViewHolderOnPosition(5) {
+            scrollRecyclerViewToPosition(cartRecyclerView, 12)
+            assertCartShopBottomViewHolderOnPosition(12) {
                 // given checked shop & disable bo affordability, then should not show ticker
                 assertNotShowCartShopGroupTicker()
             }
@@ -76,6 +82,11 @@ class CartBoAffordabilityTest {
             // Prevent glide crash
             Thread.sleep(2000)
         }
+    }
+
+    private fun scrollRecyclerViewToPosition(recyclerView: RecyclerView, position: Int) {
+        val layoutManager = recyclerView.layoutManager as GridLayoutManager
+        activityRule.runOnUiThread { layoutManager.scrollToPositionWithOffset(position, 0) }
     }
 
     @After

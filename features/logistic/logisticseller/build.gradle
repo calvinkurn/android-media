@@ -18,6 +18,8 @@ buildscript {
 }
 
 android {
+    namespace 'com.tokopedia.logisticseller'
+    testNamespace 'com.tokopedia.logisticseller.test'
     defaultConfig {
         multiDexEnabled true
         vectorDrawables {
