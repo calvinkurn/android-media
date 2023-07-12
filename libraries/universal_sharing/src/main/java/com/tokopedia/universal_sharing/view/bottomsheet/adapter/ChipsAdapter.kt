@@ -52,8 +52,7 @@ class ChipsAdapter constructor(
     }
 
     private fun deselectOtherSelectedFilter(element: ChipProperties) {
-        if (isSelected(element)) return
-        if (selectedFilter == null) return
+        if (isSelected(element) || selectedFilter == null) return
 
         val previouslySelectedChipPosition = chipList.indexOf(selectedFilter)
 

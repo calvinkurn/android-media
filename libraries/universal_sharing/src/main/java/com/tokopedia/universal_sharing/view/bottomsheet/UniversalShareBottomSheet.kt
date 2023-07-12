@@ -317,6 +317,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
     override fun onDismiss(dialog: DialogInterface) {
         try {
             affiliateListener = null
+            chipSelectedListener = null
             imageThumbnailListener = null
             removeLifecycleObserverAndSavedImage()
             if (gqlCallJob?.isActive == true) {
