@@ -33,7 +33,7 @@ data class MedalItem(
     val extraInfo: String? = null,
     val imageUrl: String? = null,
     val celebrationUrl: String? = null,
-    val isNewMedal: Boolean? = false,
+    val showConfetti: Boolean? = false,
     val isDisabled: Boolean? = false,
     val progression: Int? = 0,
     val cta: Cta? = null,
@@ -43,7 +43,7 @@ data class MedalItem(
 
     fun isEarned() = medalType == EARNED_BADGE
 
-    fun isNewlyEarned() = isEarned() && isNewMedal == true
+    fun isNewlyEarned() = isEarned() && showConfetti == true
     override fun type(typeFactory: MedalViewTypeFactory): Int = typeFactory.type(this)
 }
 
