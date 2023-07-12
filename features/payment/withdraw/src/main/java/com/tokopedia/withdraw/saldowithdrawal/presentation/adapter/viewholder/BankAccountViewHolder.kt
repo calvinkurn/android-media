@@ -62,12 +62,13 @@ class BankAccountViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         if (bankAccountNumber.text.isEmpty()) bankAccountNumber.hide() else bankAccountNumber.show()
 
         if (bankAccount.isGopay()) {
-            bankAdminFee.text = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                Html.fromHtml(bankAccount.notes, Html.FROM_HTML_MODE_LEGACY)
-            } else {
-                Html.fromHtml(bankAccount.notes)
+            bankAdminFee.shouldShowWithAction(bankAccount.notes.isNotEmpty()) {
+                bankAdminFee.text = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    Html.fromHtml(bankAccount.notes, Html.FROM_HTML_MODE_LEGACY)
+                } else {
+                    Html.fromHtml(bankAccount.notes)
+                }
             }
-            bankAdminFee.visible()
         }
         else if (bankAccount.adminFee > 0) {
             val bankAdminFeeStr: String = CurrencyFormatHelper.convertToRupiah(bankAccount.adminFee.toString())

@@ -161,6 +161,7 @@ abstract class BaseWithdrawalFragment : BaseDaggerFragment(), BankAccountAdapter
 
                         updateBankAccountAdapter(it.data.bankAccountList)
                         setGopayTicker(it.data.bankAccountList)
+                        tickerRP.showWithCondition(checkEligible.data.isIsPowerWD)
                     }
                     is Fail -> {
                         updateBankAccountAdapter(arrayListOf())
@@ -379,7 +380,6 @@ abstract class BaseWithdrawalFragment : BaseDaggerFragment(), BankAccountAdapter
 
     override fun onBankAccountChanged() {
         gopayTickerGroup.showWithCondition(bankAccountAdapter.getSelectedBankAccount()?.isGopayEligible() == true)
-        tickerRP.showWithCondition(bankAccountAdapter.getSelectedBankAccount()?.haveRPProgram == true)
 
         try {
             tfWithdrawal?.editText?.let { textFieldInput ->
