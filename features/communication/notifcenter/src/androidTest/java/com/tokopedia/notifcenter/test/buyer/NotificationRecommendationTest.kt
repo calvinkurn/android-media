@@ -17,10 +17,10 @@ class NotificationRecommendationTest : BaseNotificationTest() {
 
         // When
         launchActivity()
+        Thread.sleep(300)
         generalRobot {
             smoothScrollNotificationTo(8)
         }
-        Thread.sleep(300)
 
         // Then
         recommendationResult {
@@ -36,10 +36,10 @@ class NotificationRecommendationTest : BaseNotificationTest() {
 
         // When
         launchActivity()
+        Thread.sleep(300)
         generalRobot {
             smoothScrollNotificationTo(8)
         }
-        Thread.sleep(300)
 
         // Then
         recommendationResult {
@@ -55,10 +55,10 @@ class NotificationRecommendationTest : BaseNotificationTest() {
 
         // When
         launchActivity()
+        Thread.sleep(300)
         generalRobot {
             smoothScrollNotificationTo(8)
         }
-        Thread.sleep(300)
 
         // Then
         recommendationResult {
