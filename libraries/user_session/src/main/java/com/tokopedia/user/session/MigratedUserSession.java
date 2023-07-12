@@ -177,10 +177,7 @@ public class MigratedUserSession {
         if (isEnableDataStore()) {
             try {
                 if (keyName != null) {
-                    String finalValue = value;
-                    if(finalValue == null) {
-                        finalValue = "";
-                    }
+                    String finalValue = value == null ? "" : value;
                     UserSessionUtils.INSTANCE.mapUserSessionKeyString(
                             keyName,
                             getDataStore(),
