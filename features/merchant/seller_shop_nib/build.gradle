@@ -15,6 +15,9 @@ buildscript {
 }
 
 android {
+    namespace 'com.tokopedia.shop_nib'
+    testNamespace 'com.tokopedia.shop_nib.test'
+
     packagingOptions {
         exclude 'META-INF/**'
     }

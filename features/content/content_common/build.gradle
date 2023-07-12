@@ -21,6 +21,8 @@ buildscript {
 }
 
 android {
+    namespace 'com.tokopedia.content.common'
+    testNamespace 'com.tokopedia.content.common.test'
     packagingOptions {
         exclude 'META-INF/**'
     }
