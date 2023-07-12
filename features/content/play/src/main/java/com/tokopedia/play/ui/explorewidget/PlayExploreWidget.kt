@@ -121,7 +121,8 @@ class PlayExploreWidget @Inject constructor(
         viewLifecycleOwner.lifecycleScope.launchWhenCreated {
             viewModel.uiState.withCache().collectLatest { cachedState ->
                 if (cachedState.isChanged { it.channel.exploreWidgetConfig } && cachedState.value.channel.exploreWidgetConfig.hasCategory) {
-                    setupTab(viewModel.exploreWidgetTabs)
+                    binding.tabPlayExploreWidget.getUnifyTabLayout().getTabAt(0)?.setCustomText(viewModel.exploreWidgetTabs.first())
+                    binding.tabPlayExploreWidget.getUnifyTabLayout().getTabAt(1)?.setCustomText(viewModel.exploreWidgetTabs.last(˚))
                 }
 
                 if (analytic != null || cachedState.value.channel.channelInfo.id.isBlank()) return@collectLatest
