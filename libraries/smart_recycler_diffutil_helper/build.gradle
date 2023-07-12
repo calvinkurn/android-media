@@ -18,6 +18,11 @@ buildscript {
     }
 }
 
+android {
+    namespace 'com.tokopedia.smart_recycler_diffutil_helper'
+    testNamespace 'com.tokopedia.smart_recycler_diffutil_helper.test'
+}
+
 dependencies {
     implementation projectOrAar(rootProject.ext.features.resourcesCommon)
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)

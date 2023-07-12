@@ -1,6 +1,6 @@
-package com.tokopedia.tokofood.stub.cassavatest.features.postpurchase
+package com.tokopedia.tokofood.cassavatest.features.postpurchase
 
-import com.tokopedia.tokofood.stub.cassavatest.base.TokoFoodPostPurchaseCassavaTest
+import com.tokopedia.tokofood.cassavatest.base.TokoFoodPostPurchaseCassavaTest
 import org.junit.Test
 
 class OrderLiveTrackingCassavaTest : TokoFoodPostPurchaseCassavaTest() {
