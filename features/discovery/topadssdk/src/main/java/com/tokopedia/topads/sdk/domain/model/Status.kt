@@ -3,7 +3,7 @@ package com.tokopedia.topads.sdk.domain.model
 import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 private const val KEY_ERROR_CODE = "error_code"
 private const val KEY_MESSAGE = "message"
