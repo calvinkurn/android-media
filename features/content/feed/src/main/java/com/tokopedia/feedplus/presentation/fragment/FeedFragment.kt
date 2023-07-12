@@ -817,6 +817,10 @@ class FeedFragment :
             when (it) {
                 is Success -> {
                     menuSheet?.dismiss()
+                    showToast(
+                        message = getString(feedR.string.feed_success_report_video),
+                        type = Toaster.TYPE_NORMAL
+                    )
                 }
                 is Fail -> {
                     val view = menuSheet?.view ?: return@observe
