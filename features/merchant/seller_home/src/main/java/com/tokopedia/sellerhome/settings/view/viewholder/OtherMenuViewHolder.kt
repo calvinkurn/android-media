@@ -20,9 +20,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.imageassets.TokopediaImageUrl
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
@@ -37,7 +37,6 @@ import com.tokopedia.seller.menu.common.view.uimodel.base.SettingUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.base.ShopType
 import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.ShopStatusUiModel
 import com.tokopedia.sellerhome.R
-import com.tokopedia.sellerhome.common.SellerHomeConst
 import com.tokopedia.sellerhome.settings.view.adapter.OtherMenuAdapter
 import com.tokopedia.sellerhome.settings.view.adapter.ShopSecondaryInfoAdapter
 import com.tokopedia.sellerhome.settings.view.adapter.ShopSecondaryInfoAdapterTypeFactory
@@ -85,6 +84,7 @@ class OtherMenuViewHolder(
     private var headerShopNextButton: IconUnify? = null
     private var headerShopShareButton: IconUnify? = null
     private var shopStatusCurvedImage: AppCompatImageView? = null
+    private var imgAnnivToped: ImageUnify? = null
     private var shopAvatarImage: ImageUnify? = null
     private var shopNameTextView: Typography? = null
     private var shopNextButton: IconUnify? = null
@@ -253,6 +253,7 @@ class OtherMenuViewHolder(
             headerShopNextButton = findViewById(R.id.ic_sah_new_other_header_name)
             headerShopShareButton = findViewById(R.id.ic_sah_new_other_header_share)
             shopStatusCurvedImage = findViewById(R.id.iv_sah_new_other_curved_header)
+            imgAnnivToped = findViewById(R.id.imgAnnivToped)
             shopAvatarImage = findViewById(R.id.iv_sah_new_other_shop_avatar)
             shopNameTextView = findViewById(R.id.tv_sah_new_other_shop_name)
             shopNextButton = findViewById(R.id.iv_sah_new_other_shop_name)
@@ -470,6 +471,9 @@ class OtherMenuViewHolder(
         }
 
         shopStatusCurvedImage?.setImageResource(imageResource)
+        imgAnnivToped?.loadImage(TokopediaImageUrl.IMG_14TH_ANNIV_TOPED) {
+            setPlaceHolder(-1)
+        }
 
         otherMenuHeader?.setBackgroundResource(headerBackgroundResource)
     }

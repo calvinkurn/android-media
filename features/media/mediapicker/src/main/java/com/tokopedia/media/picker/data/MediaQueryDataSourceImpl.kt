@@ -11,6 +11,7 @@ import android.provider.MediaStore.Files.FileColumns.*
 import androidx.annotation.ChecksSdkIntAtLeast
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.media.picker.data.entity.Media
+import com.tokopedia.media.picker.utils.TemporaryHanselable
 import com.tokopedia.media.picker.utils.getVideoDuration
 import com.tokopedia.picker.common.cache.PickerCacheManager
 import com.tokopedia.picker.common.utils.wrapper.PickerFile
@@ -113,13 +114,52 @@ class MediaQueryDataSourceImpl @Inject constructor(
         }
 
     private fun buildContentUri(): Uri {
-        val mediaStoreUri = if (param.get().isOnlyVideoFile() || param.get().isIncludeVideoFile()) {
+        val isOnlyOrIncludeVideo = param.get().isOnlyVideoFile() || param.get().isIncludeVideoFile()
+        return if (isOnlyOrIncludeVideo) buildFileQuery() else buildImageQuery()
+    }
+
+    private fun buildFileQuery(): Uri {
+        return if (fileQueryToggle()) {
+            if (isAboveAndroidQ) {
+                MediaStore.Files.getContentUri((MediaStore.VOLUME_EXTERNAL))
+            } else {
+                MediaStore.Files.getContentUri(VOLUME_NAME)
+            }
+        } else {
             MediaStore.Files.getContentUri(VOLUME_NAME)
+        }
+    }
+
+    private fun buildImageQuery(): Uri {
+        return if (imageQueryToggle()) {
+            if (isAboveAndroidQ) {
+                MediaStore.Images.Media.getContentUri(MediaStore.VOLUME_EXTERNAL)
+            } else {
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+            }
         } else {
             MediaStore.Images.Media.EXTERNAL_CONTENT_URI
         }
+    }
 
-        return mediaStoreUri
+    /**
+     * This function marked as temporary due as mitigation if something happen in current implementation.
+     * We can easily toggle to switch into old media-store query since our bug triage impacted is not high.
+     *
+     * This toggle only for MediaStore Query's Images.
+     */
+    @TemporaryHanselable
+    private fun imageQueryToggle(): Boolean {
+        return true
+    }
+
+    /**
+     * As we have multiple media-store query to fetching and showing the media data locally,
+     * this hansel temporary function to mitigate the FILES query issues and able to revert it back.
+     */
+    @TemporaryHanselable
+    private fun fileQueryToggle(): Boolean {
+        return true
     }
 
     /**
@@ -148,7 +188,7 @@ class MediaQueryDataSourceImpl @Inject constructor(
     }
 
     private fun makeSafeFile(path: String?): PickerFile? {
-        return if (path == null || path.isEmpty()) {
+        return if (path.isNullOrEmpty()) {
             null
         } else try {
             path.asPickerFile()

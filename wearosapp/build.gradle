@@ -34,6 +34,8 @@ kapt {
     generateStubs = false
 }
 android {
+    namespace 'com.tokopedia.sellerapp'
+    testNamespace 'com.tokopedia.sellerapp.test'
     packagingOptions {
         exclude 'META-INF/**'
     }

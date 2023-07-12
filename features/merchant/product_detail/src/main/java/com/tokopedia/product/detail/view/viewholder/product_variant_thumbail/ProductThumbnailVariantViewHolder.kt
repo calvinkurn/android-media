@@ -62,7 +62,7 @@ class ProductThumbnailVariantViewHolder(
 
     override fun bind(element: ProductSingleVariantDataModel) {
         binding.thumbVariantTitle.text = element.title
-        binding.setThumbnailItems(element = element)
+        setThumbnailItems(element = element)
         setOnClick()
         setImpression(element = element)
     }
@@ -70,7 +70,7 @@ class ProductThumbnailVariantViewHolder(
     override fun bind(element: ProductSingleVariantDataModel, payloads: MutableList<Any>) {
         if (payloads.isNotEmpty()) {
             binding.thumbVariantTitle.text = element.title
-            binding.setThumbnailItems(element = element)
+            setThumbnailItems(element = element)
         }
     }
 
@@ -90,12 +90,10 @@ class ProductThumbnailVariantViewHolder(
         }
     }
 
-    private fun ItemThumbnailVariantViewHolderBinding.setThumbnailItems(
+    private fun setThumbnailItems(
         element: ProductSingleVariantDataModel
     ) {
-        thumbVariantList.post {
-            containerAdapter.submitList(element.variantLevelOne?.variantOptions)
-        }
+        containerAdapter.submitList(element.variantLevelOne?.variantOptions)
 
         if (element.mapOfSelectedVariant.isEmpty()) {
             scrollToPosition(0)

@@ -17,6 +17,8 @@ buildscript {
 }
 
 android {
+    namespace 'com.tokopedia.payment.setting'
+    testNamespace 'com.tokopedia.payment.setting.test'
     defaultConfig {
         multiDexEnabled true
         testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"

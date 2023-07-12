@@ -46,7 +46,9 @@ data class RatesParam(
     var mvc: String = "",
     var bo_metadata: String = "",
     var cart_data: String = "",
-    var warehouse_id: String = ""
+    var warehouse_id: String = "",
+    // new owoc
+    val group_type: Int = 0
 ) {
 
     private constructor(builder: Builder) : this(
@@ -79,7 +81,8 @@ data class RatesParam(
         bo_metadata = builder.boMetadata,
         cart_data = builder.cartData,
         occ = builder.occ,
-        warehouse_id = builder.warehouseId
+        warehouse_id = builder.warehouseId,
+        group_type = builder.groupType
     )
 
     fun toMap(): Map<String, Any?> = mapOf(
@@ -114,7 +117,8 @@ data class RatesParam(
         "po_time" to po_time,
         "is_fulfillment" to is_fulfillment,
         "bo_metadata" to bo_metadata,
-        "warehouse_id" to warehouse_id
+        "warehouse_id" to warehouse_id,
+        "group_type" to group_type
     )
 
     fun toMetadata(): Map<String, Any?> = mapOf(
@@ -218,6 +222,8 @@ data class RatesParam(
         var cartData: String = ""
             private set
         var warehouseId: String = ""
+            private set
+        var groupType: Int = shipping.groupType
             private set
 
         fun isCorner(isCorner: Boolean) = apply { this.isCorner = if (isCorner) 1 else 0 }

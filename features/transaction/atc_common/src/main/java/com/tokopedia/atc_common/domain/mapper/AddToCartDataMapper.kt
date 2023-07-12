@@ -57,29 +57,29 @@ class AddToCartDataMapper @Inject constructor() {
 
     fun mapAddToCartOccMultiResponse(response: AddToCartOccMultiGqlResponse): AddToCartOccMultiDataModel {
         return AddToCartOccMultiDataModel(
-                errorMessage = response.response.errorMessage,
-                status = response.response.status,
-                data = mapAddToCartOccMultiData(response.response.data)
+            errorMessage = response.response.errorMessage,
+            status = response.response.status,
+            data = mapAddToCartOccMultiData(response.response.data)
         )
     }
 
     private fun mapAddToCartOccMultiData(dataResponse: DataOccMultiResponse): AddToCartOccMultiData {
         return AddToCartOccMultiData(
-                success = dataResponse.success,
-                message = dataResponse.message,
-                cart = mapAddToCartOccMultiCartData(dataResponse.detail),
-                outOfService = dataResponse.outOfService,
-                toasterAction = dataResponse.toasterAction
+            success = dataResponse.success,
+            message = dataResponse.message,
+            cart = mapAddToCartOccMultiCartData(dataResponse.detail),
+            outOfService = dataResponse.outOfService,
+            toasterAction = dataResponse.toasterAction
         )
     }
 
     private fun mapAddToCartOccMultiCartData(data: List<DetailOccMultiResponse>): List<AddToCartOccMultiCartData> {
         return data.map {
             AddToCartOccMultiCartData(
-                    cartId = it.cartId,
-                    productId = it.productId,
-                    quantity = it.quantity.toIntOrZero(),
-                    shopId = it.shopId
+                cartId = it.cartId,
+                productId = it.productId,
+                quantity = it.quantity.toIntOrZero(),
+                shopId = it.shopId
             )
         }
     }
@@ -112,30 +112,30 @@ class AddToCartDataMapper @Inject constructor() {
         dataModel.isTradeIn = it.ocsData.isTradeIn
 
         val ovoValidaation = OvoValidationDataModel(
-                it.ocsData.ovoValidation.status,
-                it.ocsData.ovoValidation.applink,
-                OvoInsufficientBalance(
-                        it.ocsData.ovoValidation.ovoInsufficientBalance.title,
-                        it.ocsData.ovoValidation.ovoInsufficientBalance.description,
-                        OvoInsufficientDetails(
-                                it.ocsData.ovoValidation.ovoInsufficientBalance.details.productPrice.roundToLong(),
-                                it.ocsData.ovoValidation.ovoInsufficientBalance.details.shippingEstimation,
-                                it.ocsData.ovoValidation.ovoInsufficientBalance.details.ovoBalance,
-                                it.ocsData.ovoValidation.ovoInsufficientBalance.details.topupBalance
-                        ),
-                        OvoInsufficientButton(
-                                OvoInsufficientTopup(
-                                        it.ocsData.ovoValidation.ovoInsufficientBalance.buttons.topupButton.text,
-                                        it.ocsData.ovoValidation.ovoInsufficientBalance.buttons.topupButton.applink,
-                                        it.ocsData.ovoValidation.ovoInsufficientBalance.buttons.topupButton.enable
-                                ),
-                                OvoInsufficientTopup(
-                                        it.ocsData.ovoValidation.ovoInsufficientBalance.buttons.otherMethodButton.text,
-                                        it.ocsData.ovoValidation.ovoInsufficientBalance.buttons.otherMethodButton.applink,
-                                        it.ocsData.ovoValidation.ovoInsufficientBalance.buttons.otherMethodButton.enable
-                                )
-                        )
+            it.ocsData.ovoValidation.status,
+            it.ocsData.ovoValidation.applink,
+            OvoInsufficientBalance(
+                it.ocsData.ovoValidation.ovoInsufficientBalance.title,
+                it.ocsData.ovoValidation.ovoInsufficientBalance.description,
+                OvoInsufficientDetails(
+                    it.ocsData.ovoValidation.ovoInsufficientBalance.details.productPrice.roundToLong(),
+                    it.ocsData.ovoValidation.ovoInsufficientBalance.details.shippingEstimation,
+                    it.ocsData.ovoValidation.ovoInsufficientBalance.details.ovoBalance,
+                    it.ocsData.ovoValidation.ovoInsufficientBalance.details.topupBalance
+                ),
+                OvoInsufficientButton(
+                    OvoInsufficientTopup(
+                        it.ocsData.ovoValidation.ovoInsufficientBalance.buttons.topupButton.text,
+                        it.ocsData.ovoValidation.ovoInsufficientBalance.buttons.topupButton.applink,
+                        it.ocsData.ovoValidation.ovoInsufficientBalance.buttons.topupButton.enable
+                    ),
+                    OvoInsufficientTopup(
+                        it.ocsData.ovoValidation.ovoInsufficientBalance.buttons.otherMethodButton.text,
+                        it.ocsData.ovoValidation.ovoInsufficientBalance.buttons.otherMethodButton.applink,
+                        it.ocsData.ovoValidation.ovoInsufficientBalance.buttons.otherMethodButton.enable
+                    )
                 )
+            )
         )
 
         dataModel.success = it.success
@@ -166,25 +166,24 @@ class AddToCartDataMapper @Inject constructor() {
 
     fun mapAddToCartOccMultiDataModel(addToCartOccMultiDataModel: AddToCartOccMultiDataModel): AddToCartDataModel {
         return AddToCartDataModel(
-                errorMessage = ArrayList(addToCartOccMultiDataModel.errorMessage),
-                status = addToCartOccMultiDataModel.status,
-                data = mapDataModel(addToCartOccMultiDataModel.data)
+            errorMessage = ArrayList(addToCartOccMultiDataModel.errorMessage),
+            status = addToCartOccMultiDataModel.status,
+            data = mapDataModel(addToCartOccMultiDataModel.data)
         )
     }
 
     private fun mapDataModel(data: AddToCartOccMultiData): DataModel {
         val cart = data.cart.firstOrNull() ?: AddToCartOccMultiCartData()
         return DataModel(
-                success = data.success,
-                message = ArrayList(data.message),
-                cartId = cart.cartId,
-                productId = cart.productId,
-                quantity = cart.quantity,
-                notes = cart.notes,
-                shopId = cart.shopId,
-                customerId = cart.customerId,
-                warehouseId = cart.warehouseId
+            success = data.success,
+            message = ArrayList(data.message),
+            cartId = cart.cartId,
+            productId = cart.productId,
+            quantity = cart.quantity,
+            notes = cart.notes,
+            shopId = cart.shopId,
+            customerId = cart.customerId,
+            warehouseId = cart.warehouseId
         )
     }
-
 }

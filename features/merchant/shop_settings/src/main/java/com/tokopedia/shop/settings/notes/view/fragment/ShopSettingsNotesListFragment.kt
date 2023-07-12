@@ -18,6 +18,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.imageassets.TokopediaImageUrl
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.shop.common.graphql.data.shopnote.ShopNoteModel
 import com.tokopedia.shop.settings.R
@@ -150,7 +151,7 @@ class ShopSettingsNotesListFragment :
 
     override fun getEmptyDataViewModel(): Visitable<*> {
         val emptyModel = EmptyModel()
-        emptyModel.iconRes = R.drawable.ic_tree_empty_state
+        emptyModel.urlRes = TokopediaImageUrl.EMPTY_DATA_URL
         emptyModel.title = getString(R.string.shop_has_no_notes)
         emptyModel.content = getString(R.string.shop_notes_info)
         emptyModel.buttonTitleRes = R.string.add_note

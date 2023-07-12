@@ -2,6 +2,8 @@ apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/core-module.gradle"
 
 android {
+    namespace 'com.tokopedia.charts'
+    testNamespace 'com.tokopedia.charts.test'
     buildFeatures {
         viewBinding true
     }

@@ -3,7 +3,7 @@ package com.tokopedia.cart.view.presenter
 import com.tokopedia.cart.data.model.response.promo.CartPromoData
 import com.tokopedia.cart.data.model.response.promo.CartPromoTicker
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.CartData
-import com.tokopedia.cart.domain.model.updatecart.UpdateAndValidateUseData
+import com.tokopedia.cart.domain.model.updatecart.UpdateAndGetLastApplyData
 import com.tokopedia.cart.domain.model.updatecart.UpdateCartData
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
@@ -48,17 +48,17 @@ class InitializationTest : BaseCartTest() {
     @Test
     fun `WHEN last update cart and validate use response is updated THEN current value should be updated accordingly`() {
         // Given
-        val lastUpdateAndValidateUseData = UpdateAndValidateUseData(
+        val lastUpdateAndValidateUseData = UpdateAndGetLastApplyData(
             updateCartData = UpdateCartData(isSuccess = true),
             promoUiModel = PromoUiModel(codes = arrayListOf("123", "456"))
         )
 
         // When
-        cartListPresenter.setUpdateCartAndValidateUseLastResponse(lastUpdateAndValidateUseData)
+        cartListPresenter.setUpdateCartAndGetLastApplyLastResponse(lastUpdateAndValidateUseData)
 
         // Then
         Assert.assertEquals(
-            cartListPresenter.getUpdateCartAndValidateUseLastResponse(),
+            cartListPresenter.getUpdateCartAndGetLastApplyLastResponse(),
             lastUpdateAndValidateUseData
         )
     }
