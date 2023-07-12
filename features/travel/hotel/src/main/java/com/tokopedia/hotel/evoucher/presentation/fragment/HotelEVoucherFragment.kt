@@ -176,7 +176,8 @@ class HotelEVoucherFragment : HotelBaseFragment(), HotelSharePdfBottomSheets.Sha
             /**Reset layout to origin*/
             binding?.containerRoot?.requestLayout()
 
-            permissionChecker.checkPermission(this,
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+                permissionChecker.checkPermission(this,
                     PERMISSION_WRITE_EXTERNAL_STORAGE,
                     object : PermissionCheckerHelper.PermissionCheckListener {
                         override fun onPermissionDenied(permissionText: String) {
@@ -192,11 +193,18 @@ class HotelEVoucherFragment : HotelBaseFragment(), HotelSharePdfBottomSheets.Sha
                         }
 
                         override fun onPermissionGranted() {
-                            context?.let {
-                                saveImage(bitmap, it, FILENAME, isShare)
-                            }
+                            saveImageEVoucher(bitmap, isShare)
                         }
                     })
+            } else {
+                saveImageEVoucher(bitmap, isShare)
+            }
+        }
+    }
+
+    private fun saveImageEVoucher(bitmap: Bitmap, isShare: Boolean) {
+        context?.let {
+            saveImage(bitmap, it, FILENAME, isShare)
         }
     }
 
