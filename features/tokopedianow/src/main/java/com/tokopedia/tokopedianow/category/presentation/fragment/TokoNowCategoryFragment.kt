@@ -1,8 +1,6 @@
 package com.tokopedia.tokopedianow.category.presentation.fragment
 
 import android.net.Uri
-import android.os.Bundle
-import android.view.View
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -40,7 +38,6 @@ import com.tokopedia.tokopedianow.similarproduct.presentation.activity.TokoNowSi
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import java.util.HashMap
 import javax.inject.Inject
 
 class TokoNowCategoryFragment : BaseCategoryFragment() {
