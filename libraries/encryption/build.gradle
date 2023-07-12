@@ -13,6 +13,11 @@ buildscript {
     }
 }
 
+android {
+    namespace 'com.tokopedia.encryption'
+    testNamespace 'com.tokopedia.encryption.test'
+}
+
 dependencies {
     testImplementation rootProject.ext.testDependencies.robolectric
     testImplementation rootProject.ext.testDependencies.testCore

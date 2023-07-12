@@ -17,6 +17,8 @@ buildscript {
 }
 
 android {
+    namespace 'com.tokopedia.epharmacy'
+    testNamespace 'com.tokopedia.epharmacy.test'
     buildFeatures {
         viewBinding true
     }

@@ -187,6 +187,12 @@ object VisitableDataHelper {
         }
     }
 
+    fun MutableList<Visitable<*>>?.setQuantityChanged() {
+        this?.filterIsInstance<TokoFoodPurchaseProductTokoFoodPurchaseUiModel>()?.forEach { productUiModel ->
+            productUiModel.isQuantityChanged = false
+        }
+    }
+
     fun MutableList<Visitable<*>>?.setCartId(index: Int, cartId: String) {
         (this?.getOrNull(index) as? TokoFoodPurchaseProductTokoFoodPurchaseUiModel)?.cartId = cartId
     }

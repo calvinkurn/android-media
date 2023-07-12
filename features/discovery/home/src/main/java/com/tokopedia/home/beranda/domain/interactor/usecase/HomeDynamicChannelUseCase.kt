@@ -26,6 +26,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedDataModel
 import com.tokopedia.home.constant.AtfKey
 import com.tokopedia.home.util.HomeServerLogger
+import com.tokopedia.home.util.QueryParamUtils.convertToLocationParams
 import com.tokopedia.home_component.model.ReminderEnum
 import com.tokopedia.home_component.usecase.featuredshop.DisplayHeadlineAdsEntity
 import com.tokopedia.home_component.usecase.featuredshop.mappingTopAdsHeaderToChannelGrid
@@ -38,7 +39,6 @@ import com.tokopedia.home_component.visitable.MissionWidgetListDataModel
 import com.tokopedia.home_component.visitable.ReminderWidgetModel
 import com.tokopedia.home_component.visitable.TodoWidgetListDataModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
-import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils.convertToLocationParams
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.widget.ui.PlayWidgetState
@@ -68,7 +68,6 @@ class HomeDynamicChannelUseCase @Inject constructor(
     private val remoteConfig: RemoteConfig,
     private val homePlayRepository: HomePlayRepository,
     private val homeReviewSuggestedRepository: HomeReviewSuggestedRepository,
-    private val homePlayLiveDynamicRepository: HomePlayLiveDynamicRepository,
     private val homePopularKeywordRepository: HomePopularKeywordRepository,
     private val homeHeadlineAdsRepository: HomeHeadlineAdsRepository,
     private val homeRecommendationRepository: HomeRecommendationRepository,
@@ -228,12 +227,6 @@ class HomeDynamicChannelUseCase @Inject constructor(
                         ReviewDataModel,
                         SuggestedProductReview>(widgetRepository = homeReviewSuggestedRepository) { visitableFound, data, position ->
                         visitableFound.copy(suggestedProductReview = data)
-                    }
-
-                    dynamicChannelPlainResponse.getWidgetDataIfExist<
-                        PlayCardDataModel,
-                        PlayData>(widgetRepository = homePlayLiveDynamicRepository) { visitableFound, data, position ->
-                        visitableFound.copy(playCardHome = data.playChannels.first())
                     }
 
                     dynamicChannelPlainResponse.getWidgetDataIfExist<

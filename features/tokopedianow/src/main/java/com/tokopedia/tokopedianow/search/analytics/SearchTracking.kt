@@ -118,6 +118,7 @@ object SearchTracking {
         const val TOKONOW_NO_SEARCH_RESULT = "tokonow - no search result"
         const val TOKOOW_SEARCH_RESULT_PAGE = "tokonow search result page"
         const val TOKONOW_DASH_SEARCH_PAGE = "tokonow - search page"
+        const val TOKONOW_DASH_SEARCH_RESULT_PAGE = "tokonow - search result page"
     }
 
     object Misc {
