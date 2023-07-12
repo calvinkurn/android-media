@@ -57,7 +57,7 @@ class WishlistCollectionSharingUtils {
                         if (shareModel.ogImgUrl != null && shareModel.ogImgUrl?.isNotEmpty() == true) {
                             ogImageUrl = shareModel.ogImgUrl
                         }
-                        isAffiliate = shareModel.isAffiliate
+                        linkAffiliateType = WISHLIST
                     }
                 )
 
@@ -194,6 +194,7 @@ class WishlistCollectionSharingUtils {
     }
 
     companion object {
+        private const val WISHLIST = "wishlist"
         private const val PRODUCT_COUNT_2 = 2
         private const val PRODUCT_COUNT_3 = 3
         private const val PRODUCT_COUNT_4 = 4
