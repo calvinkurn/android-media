@@ -1612,7 +1612,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                                     newWidgets.add(newWidget)
                                 }
                             } else {
-                                newWidget.impressHolder = oldWidget.impressHolder
                                 newWidgets.add(newWidget)
                             }
                         }
