@@ -42,14 +42,19 @@ class FeedTaggedProductViewModel @Inject constructor(
                 val response = withContext(dispatchers.io) {
                     feedXGetActivityProductsUseCase(
                         feedXGetActivityProductsUseCase.getFeedDetailParam(
-                            activityId, cursor
+                            activityId,
+                            cursor
                         )
                     ).data
                 }
 
                 cursor = response.nextCursor
 
-                val mappedData = response.products.map {
+                val mappedData = response.products.filter { new ->
+                    currentList.firstOrNull { current ->
+                        current.id == new.id
+                    } == null
+                }.map {
                     ProductMapper.transform(it, response.campaign)
                 }
                 _feedTagProductList.value = Success(currentList + mappedData)
@@ -61,5 +66,4 @@ class FeedTaggedProductViewModel @Inject constructor(
             }
         }
     }
-
 }
