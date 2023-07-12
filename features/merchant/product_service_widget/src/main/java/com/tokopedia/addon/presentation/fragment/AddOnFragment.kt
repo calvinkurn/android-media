@@ -4,12 +4,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.addon.di.DaggerAddOnComponent
 import com.tokopedia.addon.presentation.listener.AddOnComponentListener
 import com.tokopedia.addon.presentation.uimodel.AddOnExtraConstant
 import com.tokopedia.addon.presentation.uimodel.AddOnGroupUIModel
 import com.tokopedia.addon.presentation.uimodel.AddOnPageResult
 import com.tokopedia.addon.presentation.uimodel.AddOnUIModel
+import com.tokopedia.addon.tracking.AddOnBottomsheetTracking
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.kotlin.extensions.view.gone
@@ -17,6 +20,7 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.product_bundle.common.util.Utility.animateExpand
 import com.tokopedia.product_service_widget.databinding.FragmentBottomsheetAddonBinding
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import javax.inject.Inject
 
 class AddOnFragment : BaseDaggerFragment(), AddOnComponentListener {
 
@@ -56,9 +60,17 @@ class AddOnFragment : BaseDaggerFragment(), AddOnComponentListener {
     private val isTokocabang by lazy { arguments?.getBoolean(AddOnExtraConstant.IS_TOKOCABANG).orFalse() }
     private val atcSource by lazy { arguments?.getString(AddOnExtraConstant.ATC_SOURCE).orEmpty() }
 
+    @Inject
+    lateinit var tracker: AddOnBottomsheetTracking
+
     override fun getScreenName(): String = AddOnFragment::class.java.canonicalName.orEmpty()
 
-    override fun initInjector() {}
+    override fun initInjector() {
+        DaggerAddOnComponent.builder()
+            .baseAppComponent((requireActivity().applicationContext as BaseMainApplication).baseAppComponent)
+            .build()
+            .inject(this)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -86,6 +98,7 @@ class AddOnFragment : BaseDaggerFragment(), AddOnComponentListener {
     }
 
     override fun onAddonComponentClick(index: Int, indexChild: Int, addOnGroupUIModels: List<AddOnGroupUIModel>) {
+        tracker.sendClickAddonOptionEvent(addOnGroupUIModels, cartId.orZero().toString(), pageSource.orEmpty())
     }
 
     override fun onTotalPriceCalculated(price: Long) {
@@ -93,7 +106,7 @@ class AddOnFragment : BaseDaggerFragment(), AddOnComponentListener {
     }
 
     override fun onDataEmpty() {
-        println("empty")
+        // no-op
     }
 
     override fun onAggregatedDataObtained(aggregatedData: AddOnPageResult.AggregatedData) {
@@ -112,6 +125,8 @@ class AddOnFragment : BaseDaggerFragment(), AddOnComponentListener {
 
     override fun onSaveAddonLoading() {
         binding?.btnSave?.isLoading = true
+        val addonList = binding?.addonWidget?.getFetchedAddon().orEmpty()
+        tracker.sendClickSimpanAddonEvent(addonList, cartId.orZero().toString(), pageSource.orEmpty())
     }
 
     override fun onSaveAddonFailed(errorMessage: String) {
@@ -131,5 +146,10 @@ class AddOnFragment : BaseDaggerFragment(), AddOnComponentListener {
 
     fun setOnSuccessSaveAddonListener(listener: (result: AddOnPageResult) -> Unit) {
         onSaveAddonListener = listener
+    }
+
+    fun triggerCloseButtonTracker() {
+        val addonList = binding?.addonWidget?.getFetchedAddon().orEmpty()
+        tracker.sendClickCloseBottomsheetEvent(addonList, cartId.orZero().toString(), pageSource.orEmpty())
     }
 }

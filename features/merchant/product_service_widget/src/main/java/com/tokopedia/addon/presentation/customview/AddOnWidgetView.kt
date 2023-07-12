@@ -196,4 +196,8 @@ class AddOnWidgetView : BaseCustomView {
     fun setAutosaveAddon(cartId: Long, atcSource: String) {
         viewModel.setAutosave(cartId, atcSource)
     }
+
+    fun getFetchedAddon(): List<AddOnGroupUIModel> {
+        return viewModel.getAddOnResult.value.orEmpty()
+    }
 }

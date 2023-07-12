@@ -411,6 +411,15 @@ open class GetPdpLayoutUseCase @Inject constructor(
                     ... on pdpDataCustomInfoTitle {
                       title
                       status
+                    },
+                    ... on pdpDataDynamicOneLiner {
+                      name
+                      text
+                      applink
+                      separator
+                      icon
+                      status
+                      chevronPos
                     }
                   }
                 }

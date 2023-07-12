@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:visibility="gone"
+    tools:visibility="visible">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/dynamic_one_liner_shimmering"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="8dp">
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/dynamic_one_liner_shimmering_icon"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:loader_type="rect" />
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:layout_width="0dp"
+            android:layout_height="16dp"
+            android:paddingHorizontal="4dp"
+            app:layout_constraintBottom_toBottomOf="@id/dynamic_one_liner_shimmering_icon"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/dynamic_one_liner_shimmering_icon"
+            app:layout_constraintTop_toTopOf="@id/dynamic_one_liner_shimmering_icon"
+            app:loader_type="rect" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/dynamic_one_liner_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        tools:visibility="visible">
+
+        <com.tokopedia.unifycomponents.DividerUnify
+            android:id="@+id/dynamic_one_liner_separator_top"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/dynamic_one_liner_icon_left"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginStart="16dp"
+            app:layout_constraintBottom_toBottomOf="@id/dynamic_one_liner_title"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/dynamic_one_liner_title"
+            tools:src="@drawable/ic_power_merchant" />
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/dynamic_one_liner_icon_right"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginEnd="16dp"
+            app:icon_name="CHEVRON_RIGHT"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/dynamic_one_liner_title"
+            app:layout_constraintTop_toBottomOf="@id/dynamic_one_liner_separator_top" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/dynamic_one_liner_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="6dp"
+            android:layout_marginVertical="16dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="@color/Unify_NN950"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/dynamic_one_liner_icon_right"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintHorizontal_chainStyle="spread_inside"
+            app:layout_constraintStart_toEndOf="@id/dynamic_one_liner_icon_left"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintWidth_default="wrap"
+            app:layout_goneMarginEnd="16dp"
+            app:layout_goneMarginStart="16dp"
+            app:typographyType="display_3"
+            tools:text="Tambah proteksi ekstra mulai Rp100.000" />
+
+        <com.tokopedia.unifycomponents.DividerUnify
+            android:id="@+id/dynamic_one_liner_separator_bottom"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            app:layout_constraintBottom_toBottomOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</LinearLayout>
