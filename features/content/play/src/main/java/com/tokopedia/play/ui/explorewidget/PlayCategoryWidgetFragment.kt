@@ -75,7 +75,8 @@ class PlayCategoryWidgetFragment @Inject constructor(
 
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
-                if (newState == RecyclerView.SCROLL_STATE_DRAGGING) analytic?.scrollExplore(viewModel.widgetInfo, ExploreWidgetType.Category)
+                if (newState == RecyclerView.SCROLL_STATE_DRAGGING)
+                    analytic?.scrollExplore(viewModel.widgetInfo, ExploreWidgetType.Category)
             }
         }
     }

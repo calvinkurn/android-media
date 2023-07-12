@@ -94,7 +94,8 @@ class PlayExploreWidgetFragment @Inject constructor(
 
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
-                if (newState == RecyclerView.SCROLL_STATE_DRAGGING) analytic?.scrollExplore(viewModel.widgetInfo, ExploreWidgetType.Default)
+                if (newState == RecyclerView.SCROLL_STATE_DRAGGING)
+                    analytic?.scrollExplore(viewModel.widgetInfo, ExploreWidgetType.Default)
             }
 
             override fun checkLoadMore(view: RecyclerView?, dx: Int, dy: Int) {
@@ -289,7 +290,6 @@ class PlayExploreWidgetFragment @Inject constructor(
             ExploreWidgetState.Success -> {
                 widgetAdapter.setItemsAndAnimateChanges(widget)
                 scrollListener.updateStateAfterGetData()
-                // scrollListener.setHasNextPage(param.hasNextPage)
             }
             ExploreWidgetState.Loading -> {
                 widgetAdapter.setItemsAndAnimateChanges(getWidgetShimmering)

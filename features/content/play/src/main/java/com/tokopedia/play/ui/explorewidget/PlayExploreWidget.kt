@@ -41,8 +41,8 @@ import com.tokopedia.play.R as playR
  */
 class PlayExploreWidget @Inject constructor(
     router: Router,
-    trackingQueue: TrackingQueue,
-    analyticFactory: PlayAnalytic2.Factory
+    private val trackingQueue: TrackingQueue,
+    private val analyticFactory: PlayAnalytic2.Factory
 ) : DialogFragment() {
 
     private val fgExplore by lazyThreadSafetyNone {
@@ -74,6 +74,8 @@ class PlayExploreWidget @Inject constructor(
 
     private var factory: Factory? = null
     private lateinit var viewModel: PlayViewModel
+
+    private var analytic: PlayAnalytic2? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -121,6 +123,12 @@ class PlayExploreWidget @Inject constructor(
                 if (cachedState.isChanged { it.channel.exploreWidgetConfig } && cachedState.value.channel.exploreWidgetConfig.hasCategory) {
                     setupTab(viewModel.exploreWidgetTabs)
                 }
+
+                if (analytic != null || cachedState.value.channel.channelInfo.id.isBlank()) return@collectLatest
+                analytic = analyticFactory.create(
+                    trackingQueue = trackingQueue,
+                    channelInfo = cachedState.value.channel.channelInfo
+                )
             }
         }
     }
@@ -140,6 +148,7 @@ class PlayExploreWidget @Inject constructor(
     private fun setupView() {
         binding.widgetHeader.title = getString(playR.string.play_explore_widget_header_title)
         binding.widgetHeader.closeListener = View.OnClickListener {
+            analytic?.clickCloseExplore()
             dismiss()
         }
         binding.vpPlayExploreWidget.adapter = vpAdapter

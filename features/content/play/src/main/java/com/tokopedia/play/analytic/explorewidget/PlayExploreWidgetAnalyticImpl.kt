@@ -178,7 +178,7 @@ class PlayExploreWidgetAnalyticImpl @AssistedInject constructor(
             .setEvent(KEY_TRACK_CLICK_CONTENT)
             .setEventAction("scroll - explore widget")
             .setEventCategory(KEY_TRACK_GROUP_CHAT_ROOM)
-            .setEventLabel("$channelId - $channelType -${label.first} - ${label.second} - ${label.third}")
+            .setEventLabel("$channelId - $channelType - ${label.first} - ${label.second} - ${label.third}")
             .setCustomProperty(KEY_TRACK_TRACKER_ID, "39862")
             .setBusinessUnit(KEY_TRACK_BUSINESS_UNIT)
             .setCurrentSite(KEY_TRACK_CURRENT_SITE)
