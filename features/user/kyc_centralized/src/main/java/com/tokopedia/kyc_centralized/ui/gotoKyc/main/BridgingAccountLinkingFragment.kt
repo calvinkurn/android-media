@@ -354,7 +354,7 @@ class BridgingAccountLinkingFragment : BaseDaggerFragment() {
 
     private fun showPermissionRejected() {
         Toaster.build(
-            requireView().rootView,
+            requireView(),
             getString(R.string.goto_kyc_permission_camera_denied),
             Toaster.LENGTH_LONG,
             Toaster.TYPE_ERROR,
