@@ -1,4 +1,4 @@
-package com.tokopedia.loginregister.discover
+package com.tokopedia.loginregister.common.domain.pojo
 
 import com.google.gson.annotations.SerializedName
 

@@ -1,10 +1,11 @@
-package com.tokopedia.loginregister.discover
+package com.tokopedia.loginregister.common.domain.usecase
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
+import com.tokopedia.loginregister.common.domain.pojo.DiscoverPojo
 import javax.inject.Inject
 
 class DiscoverUseCase @Inject constructor(
@@ -13,22 +14,9 @@ class DiscoverUseCase @Inject constructor(
 ) : CoroutineUseCase<String, DiscoverPojo>(dispatcher.io) {
 
     override fun graphqlQuery(): String {
-        return getQuery()
-    }
-
-    override suspend fun execute(params: String): DiscoverPojo {
-        return repository.request(graphqlQuery(), getParams(params))
-    }
-
-    private fun getParams(
-        type: String
-    ): Map<String, Any> = mapOf(
-        PARAM_TYPE to type
-    )
-
-    private fun getQuery(): String = """
-        query discover($type: String!){
-            discover(type: $type) {
+        return """
+            query discover(${'$'}$PARAM_TYPE: String!){
+            discover(type: ${'$'}$PARAM_TYPE) {
                 providers {
                     id
                     name
@@ -40,10 +28,15 @@ class DiscoverUseCase @Inject constructor(
                 url_background_seller
             }
         }
-    """.trimIndent()
+        """.trimIndent()
+    }
+
+    override suspend fun execute(params: String): DiscoverPojo {
+        val mapParam = mapOf(PARAM_TYPE to params)
+        return repository.request(graphqlQuery(), mapParam)
+    }
 
     companion object {
         private const val PARAM_TYPE = "type"
-        private const val type = "\$type"
     }
 }
