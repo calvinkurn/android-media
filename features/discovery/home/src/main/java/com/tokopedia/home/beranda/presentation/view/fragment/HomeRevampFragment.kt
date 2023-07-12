@@ -418,11 +418,7 @@ open class HomeRevampFragment :
 
     private val navToolbarMicroInteraction: NavToolbarMicroInteraction? by navToolbarMicroInteraction()
 
-    private val performanceTrace = BlocksPerformanceTrace(
-        context?.applicationContext,
-        PERFORMANCE_TRACE_HOME,
-        lifecycleScope,
-        touchListenerActivity = activity as? TouchListenerActivity)
+    private var performanceTrace: BlocksPerformanceTrace? = null
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -448,6 +444,11 @@ open class HomeRevampFragment :
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        performanceTrace = BlocksPerformanceTrace(
+            context?.applicationContext,
+            PERFORMANCE_TRACE_HOME,
+            lifecycleScope,
+            touchListenerActivity = activity as? TouchListenerActivity)
         super.onCreate(savedInstanceState)
         getPageLoadTimeCallback()?.startCustomMetric(HomePerformanceConstant.KEY_PERFORMANCE_ON_CREATE_HOME)
         fragmentCreatedForFirstTime = true
