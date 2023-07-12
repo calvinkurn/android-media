@@ -17,16 +17,7 @@ data class ProductMerchantVoucherSummaryDataModel(
         val shopId: String = "",
         val productIdMVC: String = "",
         val additionalData: String = ""
-    ) {
-        override fun equals(other: Any?): Boolean {
-            val uiModel = (other as? UiModel) ?: return false
-            return uiModel.animatedInfo.hashCode() == animatedInfo.hashCode()
-        }
-
-        override fun hashCode(): Int {
-            return super.hashCode()
-        }
-    }
+    )
 
     override val impressHolder: ImpressHolder = ImpressHolder()
 
@@ -40,7 +31,7 @@ data class ProductMerchantVoucherSummaryDataModel(
 
     override fun equalsWith(newData: DynamicPdpDataModel): Boolean {
         return if (newData is ProductMerchantVoucherSummaryDataModel) {
-            newData.uiModel == uiModel
+            newData.uiModel.animatedInfo.hashCode() == uiModel.animatedInfo.hashCode()
         } else {
             false
         }
@@ -53,5 +44,4 @@ data class ProductMerchantVoucherSummaryDataModel(
     override fun getChangePayload(newData: DynamicPdpDataModel): Bundle? {
         return null
     }
-
 }
