@@ -2605,8 +2605,6 @@
           "deeplink_variable": ""
      },
      {
-          "destination_activity": "com.tokopedia.loginHelper.presentation.LoginHelperActivity",
-          "deeplink": "tokopedia-android-internal://global/login-helper",
           "destination_activity": "com.tokopedia.loginHelper.presentation.home.LoginHelperActivity",
           "deeplink": "tokopedia-android-internal://global/login-helper",
           "deeplink_variable": "ApplinkConstInternalGlobal.LOGIN_HELPER"
