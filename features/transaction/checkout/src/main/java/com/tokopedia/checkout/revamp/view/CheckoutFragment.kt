@@ -24,13 +24,15 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
 import com.tokopedia.purchase_platform.common.feature.checkout.ShipmentFormRequest
+import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.model.UploadPrescriptionUiModel
+import com.tokopedia.purchase_platform.common.feature.ethicaldrug.view.UploadPrescriptionListener
 import com.tokopedia.purchase_platform.common.utils.animateGone
 import com.tokopedia.purchase_platform.common.utils.animateShow
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.lifecycle.autoCleared
 import javax.inject.Inject
 
-class CheckoutFragment : BaseDaggerFragment(), CheckoutAdapterListener {
+class CheckoutFragment : BaseDaggerFragment(), CheckoutAdapterListener, UploadPrescriptionListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -43,7 +45,7 @@ class CheckoutFragment : BaseDaggerFragment(), CheckoutAdapterListener {
 
     private var header by autoCleared<HeaderCheckoutBinding>()
 
-    private val adapter: CheckoutAdapter = CheckoutAdapter(this)
+    private val adapter: CheckoutAdapter = CheckoutAdapter(this, this)
 
     private val isPlusSelected: Boolean
         get() = arguments?.getBoolean(ShipmentFragment.ARG_IS_PLUS_SELECTED, false) ?: false
@@ -169,25 +171,19 @@ class CheckoutFragment : BaseDaggerFragment(), CheckoutAdapterListener {
         viewModel.pageState.observe(viewLifecycleOwner) {
             when (it) {
                 is CheckoutPageState.CacheExpired -> {
-
                 }
                 is CheckoutPageState.CheckNoAddress -> {
-
                 }
                 CheckoutPageState.EmptyData -> {
-
                 }
                 is CheckoutPageState.Error -> {
                     Toaster.build(binding.root, ErrorHandler.getErrorMessage(context, it.throwable), type = Toaster.TYPE_ERROR).show()
                 }
                 CheckoutPageState.Loading -> {
-
                 }
                 is CheckoutPageState.NoAddress -> {
-
                 }
                 is CheckoutPageState.NoMatchedAddress -> {
-
                 }
                 is CheckoutPageState.Success -> {
                     binding.rvCheckout.isVisible = true
@@ -227,7 +223,7 @@ class CheckoutFragment : BaseDaggerFragment(), CheckoutAdapterListener {
 
     // region adapter listener
     override fun onViewNewUpsellCard(shipmentUpsellModel: ShipmentNewUpsellModel) {
-        TODO("Not yet implemented")
+        // todo
     }
 
     override fun onClickApplyNewUpsellCard(shipmentUpsellModel: ShipmentNewUpsellModel) {
@@ -235,6 +231,14 @@ class CheckoutFragment : BaseDaggerFragment(), CheckoutAdapterListener {
     }
 
     override fun onClickCancelNewUpsellCard(shipmentUpsellModel: ShipmentNewUpsellModel) {
+        TODO("Not yet implemented")
+    }
+
+    override fun uploadPrescriptionAction(
+        uploadPrescriptionUiModel: UploadPrescriptionUiModel,
+        buttonText: String,
+        buttonNotes: String
+    ) {
         TODO("Not yet implemented")
     }
 

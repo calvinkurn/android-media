@@ -4,10 +4,15 @@ import com.tokopedia.checkout.domain.model.cartshipmentform.AddressesData
 import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData
 import com.tokopedia.checkout.domain.model.cartshipmentform.GroupShop
 import com.tokopedia.checkout.domain.model.cartshipmentform.GroupShopV2
+import com.tokopedia.checkout.domain.model.cartshipmentform.NewUpsellData
 import com.tokopedia.checkout.domain.model.cartshipmentform.Product
 import com.tokopedia.checkout.domain.model.cartshipmentform.ShipmentSubtotalAddOnData
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutItem
+import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutProductModel
+import com.tokopedia.checkout.revamp.view.uimodel.CheckoutUpsellModel
+import com.tokopedia.checkout.revamp.view.uimodel.CoachmarkPlusData
+import com.tokopedia.checkout.view.uimodel.ShipmentNewUpsellModel
 import com.tokopedia.logisticCommon.data.entity.address.LocationDataModel
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.address.UserAddress
@@ -131,6 +136,25 @@ class CheckoutDataConverter @Inject constructor() {
         return recipientAddress
     }
 
+    fun getUpsellModel(upsellData: NewUpsellData): CheckoutUpsellModel {
+        val shipmentUpsellModel = ShipmentNewUpsellModel()
+        shipmentUpsellModel.isShow = upsellData.isShow
+        shipmentUpsellModel.isSelected = upsellData.isSelected
+        shipmentUpsellModel.description = upsellData.description
+        shipmentUpsellModel.appLink = upsellData.appLink
+        shipmentUpsellModel.image = upsellData.image
+        shipmentUpsellModel.price = upsellData.price
+        shipmentUpsellModel.priceWording = upsellData.priceWording
+        shipmentUpsellModel.duration = upsellData.duration
+        shipmentUpsellModel.summaryInfo = upsellData.summaryInfo
+        shipmentUpsellModel.buttonText = upsellData.buttonText
+        shipmentUpsellModel.id = upsellData.id
+        shipmentUpsellModel.additionalVerticalId = upsellData.additionalVerticalId
+        shipmentUpsellModel.transactionType = upsellData.transactionType
+        shipmentUpsellModel.isLoading = false
+        return CheckoutUpsellModel(upsell = shipmentUpsellModel)
+    }
+
     fun getCheckoutItems(
         cartShipmentAddressFormData: CartShipmentAddressFormData,
         hasTradeInDropOffAddress: Boolean,
@@ -172,82 +196,82 @@ class CheckoutDataConverter @Inject constructor() {
             checkoutItems.addAll(products)
 //            cartItemModels.lastOrNull()?.isLastItemInOrder = true
 //            val fobject = levelUpParametersFromProductToCartSeller(cartItemModels)
-//            val shipmentCartItemModel = ShipmentCartItemModel(
-//                cartStringGroup = groupShop.cartString,
-//                groupType = groupShop.groupType,
-//                uiGroupType = groupShop.uiGroupType,
-//                groupInfoName = groupShop.groupInfoName,
-//                groupInfoBadgeUrl = groupShop.groupInfoBadgeUrl,
-//                groupInfoDescription = groupShop.groupInfoDescription,
-//                groupInfoDescriptionBadgeUrl = groupShop.groupInfoDescriptionBadgeUrl,
-//                isDropshipperDisable = cartShipmentAddressFormData.isDropshipperDisable,
-//                isOrderPrioritasDisable = cartShipmentAddressFormData.isOrderPrioritasDisable,
-//                isBlackbox = cartShipmentAddressFormData.isBlackbox,
-//                isHidingCourier = cartShipmentAddressFormData.isHidingCourier,
-//                addressId = cartShipmentAddressFormData.groupAddress[0].userAddress.addressId,
-//                isFulfillment = groupShop.isFulfillment,
-//                fulfillmentId = groupShop.fulfillmentId,
-//                fulfillmentBadgeUrl = groupShop.fulfillmentBadgeUrl,
+            val order = CheckoutOrderModel(
+                cartStringGroup = groupShop.cartString,
+                groupType = groupShop.groupType,
+                uiGroupType = groupShop.uiGroupType,
+                groupInfoName = groupShop.groupInfoName,
+                groupInfoBadgeUrl = groupShop.groupInfoBadgeUrl,
+                groupInfoDescription = groupShop.groupInfoDescription,
+                groupInfoDescriptionBadgeUrl = groupShop.groupInfoDescriptionBadgeUrl,
+                isDropshipperDisable = cartShipmentAddressFormData.isDropshipperDisable,
+                isOrderPrioritasDisable = cartShipmentAddressFormData.isOrderPrioritasDisable,
+                isBlackbox = cartShipmentAddressFormData.isBlackbox,
+                isHidingCourier = cartShipmentAddressFormData.isHidingCourier,
+                addressId = cartShipmentAddressFormData.groupAddress[0].userAddress.addressId,
+                isFulfillment = groupShop.isFulfillment,
+                fulfillmentId = groupShop.fulfillmentId,
+                fulfillmentBadgeUrl = groupShop.fulfillmentBadgeUrl,
 //                shopShipmentList = groupShop.shopShipments,
-//                isError = groupShop.isError,
-//                isAllItemError = groupShop.isError,
-//                isHasUnblockingError = groupShop.hasUnblockingError,
-//                unblockingErrorMessage = groupShop.unblockingErrorMessage,
-//                errorTitle = groupShop.errorMessage,
-//                firstProductErrorIndex = groupShop.firstProductErrorIndex,
-//                orderNumber = if (orderIndex > 0) orderIndex else 0,
-//                preOrderInfo = if (shipmentInformationData.preorder.isPreorder) shipmentInformationData.preorder.duration else "",
-//                freeShippingBadgeUrl = shipmentInformationData.freeShippingGeneral.badgeUrl,
-//                isFreeShippingPlus = shipmentInformationData.freeShippingGeneral.isBoTypePlus(),
-//                shopLocation = shipmentInformationData.shopLocation,
-//                shopId = shop.shopId,
-//                shopName = shop.shopName,
-//                shopAlertMessage = shop.shopAlertMessage,
+                isError = groupShop.isError,
+                isAllItemError = groupShop.isError,
+                isHasUnblockingError = groupShop.hasUnblockingError,
+                unblockingErrorMessage = groupShop.unblockingErrorMessage,
+                errorTitle = groupShop.errorMessage,
+                firstProductErrorIndex = groupShop.firstProductErrorIndex,
+                orderNumber = if (orderIndex > 0) orderIndex else 0,
+                preOrderInfo = if (shipmentInformationData.preorder.isPreorder) shipmentInformationData.preorder.duration else "",
+                freeShippingBadgeUrl = shipmentInformationData.freeShippingGeneral.badgeUrl,
+                isFreeShippingPlus = shipmentInformationData.freeShippingGeneral.isBoTypePlus(),
+                shopLocation = shipmentInformationData.shopLocation,
+                shopId = shop.shopId,
+                shopName = shop.shopName,
+                shopAlertMessage = shop.shopAlertMessage,
 //                shopTypeInfoData = shop.shopTypeInfoData,
-//                shippingId = groupShop.shippingId,
-//                spId = groupShop.spId,
-//                boCode = groupShop.boCode,
-//                boUniqueId = groupShop.boUniqueId,
-//                dropshiperName = groupShop.dropshipperName,
-//                dropshiperPhone = groupShop.dropshipperPhone,
-//                isInsurance = groupShop.isUseInsurance,
-//                hasPromoList = groupShop.isHasPromoList,
-//                isSaveStateFlag = groupShop.isSaveStateFlag,
-//                isLeasingProduct = groupShop.isLeasingProduct,
-//                bookingFee = groupShop.bookingFee,
-//                listPromoCodes = groupShop.listPromoCodes,
-//                isHasSetDropOffLocation = hasTradeInDropOffAddress,
-//                addOnsOrderLevelModel = groupShop.addOns,
-//                addOnWordingModel = addOnWordingModel,
-//                addOnDefaultFrom = username,
-//                timeslotId = groupShop.scheduleDelivery.timeslotId,
-//                scheduleDate = groupShop.scheduleDelivery.scheduleDate,
-//                validationMetadata = groupShop.scheduleDelivery.validationMetadata,
-//                ratesValidationFlow = groupShop.ratesValidationFlow,
-//                addOnDefaultTo = receiverName,
+                shippingId = groupShop.shippingId,
+                spId = groupShop.spId,
+                boCode = groupShop.boCode,
+                boUniqueId = groupShop.boUniqueId,
+                dropshiperName = groupShop.dropshipperName,
+                dropshiperPhone = groupShop.dropshipperPhone,
+                isInsurance = groupShop.isUseInsurance,
+                hasPromoList = groupShop.isHasPromoList,
+                isSaveStateFlag = groupShop.isSaveStateFlag,
+                isLeasingProduct = groupShop.isLeasingProduct,
+                bookingFee = groupShop.bookingFee,
+                listPromoCodes = groupShop.listPromoCodes,
+                isHasSetDropOffLocation = hasTradeInDropOffAddress,
+                addOnsOrderLevelModel = groupShop.addOns,
+                addOnWordingModel = addOnWordingModel,
+                addOnDefaultFrom = username,
+                timeslotId = groupShop.scheduleDelivery.timeslotId,
+                scheduleDate = groupShop.scheduleDelivery.scheduleDate,
+                validationMetadata = groupShop.scheduleDelivery.validationMetadata,
+                ratesValidationFlow = groupShop.ratesValidationFlow,
+                addOnDefaultTo = receiverName,
 //                isProductFcancelPartial = fobject.isFcancelPartial == 1,
-//                cartItemModels = cartItemModels,
+                products = products,
 //                isProductIsPreorder = fobject.isPreOrder == 1,
-//                isTokoNow = shop.isTokoNow,
-//                shopTickerTitle = shop.shopTickerTitle,
-//                shopTicker = shop.shopTicker,
-//                enablerLabel = shop.enablerLabel,
-//
-//                isEligibleNewShippingExperience = cartShipmentAddressFormData.isEligibleNewShippingExperience,
-//                isDisableChangeCourier = groupShop.isDisableChangeCourier,
-//                isAutoCourierSelection = groupShop.autoCourierSelection,
-//                hasGeolocation = userAddress.longitude.isNotEmpty() && userAddress.latitude.isNotEmpty(),
-//                courierSelectionErrorTitle = groupShop.courierSelectionErrorData.title,
-//                courierSelectionErrorDescription = groupShop.courierSelectionErrorData.description,
-//                subtotalAddOnMap =  mapSubtotalAddons(groupShop.listSubtotalAddOn)
-//            )
-//            for (cartItemModel in cartItemModels) {
-//                if (cartItemModel.ethicalDrugDataModel.needPrescription && !cartItemModel.isError) {
-//                    shipmentCartItemModel.hasEthicalProducts = true
-//                } else if (!cartItemModel.isError) {
-//                    shipmentCartItemModel.hasNonEthicalProducts = true
-//                }
-//            }
+                isTokoNow = shop.isTokoNow,
+                shopTickerTitle = shop.shopTickerTitle,
+                shopTicker = shop.shopTicker,
+                enablerLabel = shop.enablerLabel,
+
+                isEligibleNewShippingExperience = cartShipmentAddressFormData.isEligibleNewShippingExperience,
+                isDisableChangeCourier = groupShop.isDisableChangeCourier,
+                isAutoCourierSelection = groupShop.autoCourierSelection,
+                hasGeolocation = userAddress.longitude.isNotEmpty() && userAddress.latitude.isNotEmpty(),
+                courierSelectionErrorTitle = groupShop.courierSelectionErrorData.title,
+                courierSelectionErrorDescription = groupShop.courierSelectionErrorData.description,
+                subtotalAddOnMap = mapSubtotalAddons(groupShop.listSubtotalAddOn)
+            )
+            for (cartItemModel in products) {
+                if (cartItemModel.ethicalDrugDataModel.needPrescription && !cartItemModel.isError) {
+                    order.hasEthicalProducts = true
+                } else if (!cartItemModel.isError) {
+                    order.hasNonEthicalProducts = true
+                }
+            }
 //            shipmentCartItemModel.shipmentCartData = RatesDataConverter()
 //                .getShipmentCartData(
 //                    userAddress,
@@ -256,22 +280,22 @@ class CheckoutDataConverter @Inject constructor() {
 //                    cartShipmentAddressFormData.keroToken,
 //                    cartShipmentAddressFormData.keroUnixTime.toString()
 //                )
-//            if (groupShop.isFulfillment) {
-//                shipmentCartItemModel.shopLocation = groupShop.fulfillmentName
-//            }
+            if (groupShop.isFulfillment) {
+                order.shopLocation = groupShop.fulfillmentName
+            }
 //            setCartItemModelError(shipmentCartItemModel)
-//            if (shipmentCartItemModel.isFreeShippingPlus && !isFirstPlusProductHasPassed) {
-//                val coachmarkPlusData = CoachmarkPlusData(
-//                    cartShipmentAddressFormData.coachmarkPlus.isShown,
-//                    cartShipmentAddressFormData.coachmarkPlus.title,
-//                    cartShipmentAddressFormData.coachmarkPlus.content
-//                )
-//                shipmentCartItemModel.coachmarkPlus = coachmarkPlusData
-//                isFirstPlusProductHasPassed = true
-//            } else {
-//                shipmentCartItemModel.coachmarkPlus = CoachmarkPlusData()
-//            }
-//
+            if (order.isFreeShippingPlus && !isFirstPlusProductHasPassed) {
+                val coachmarkPlusData = CoachmarkPlusData(
+                    cartShipmentAddressFormData.coachmarkPlus.isShown,
+                    cartShipmentAddressFormData.coachmarkPlus.title,
+                    cartShipmentAddressFormData.coachmarkPlus.content
+                )
+                order.coachmarkPlus = coachmarkPlusData
+                isFirstPlusProductHasPassed = true
+            } else {
+                order.coachmarkPlus = CoachmarkPlusData()
+            }
+
 //            // top
 //            val shipmentCartItemTopModel =
 //                ShipmentCartItemTopModel(
@@ -304,23 +328,23 @@ class CheckoutDataConverter @Inject constructor() {
 //                    groupInfoDescription = shipmentCartItemModel.groupInfoDescription,
 //                    groupInfoDescriptionBadgeUrl = shipmentCartItemModel.groupInfoDescriptionBadgeUrl
 //                )
-////            checkoutItems.add(shipmentCartItemTopModel)
+// //            checkoutItems.add(shipmentCartItemTopModel)
 //            if (shipmentCartItemModel.isStateAllItemViewExpanded) {
 //                shipmentCartItemModel.cartItemModels.forEach {
-////                    checkoutItems.add(it)
+// //                    checkoutItems.add(it)
 //                }
 //            } else {
-////                checkoutItems.add(shipmentCartItemModel.cartItemModels.first())
+// //                checkoutItems.add(shipmentCartItemModel.cartItemModels.first())
 //            }
 //            if (shipmentCartItemModel.cartItemModels.size > 1) {
-////                checkoutItems.add(
-////                    CartItemExpandModel(
-////                        cartStringGroup = shipmentCartItemModel.cartStringGroup,
-////                        cartSize = shipmentCartItemModel.cartItemModels.size
-////                    )
-////                )
+// //                checkoutItems.add(
+// //                    CartItemExpandModel(
+// //                        cartStringGroup = shipmentCartItemModel.cartStringGroup,
+// //                        cartSize = shipmentCartItemModel.cartItemModels.size
+// //                    )
+// //                )
 //            }
-////            checkoutItems.add(shipmentCartItemModel)
+            checkoutItems.add(order)
         }
         return checkoutItems
     }

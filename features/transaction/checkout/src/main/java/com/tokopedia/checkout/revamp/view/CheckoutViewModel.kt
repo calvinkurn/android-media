@@ -16,8 +16,10 @@ import com.tokopedia.checkout.revamp.view.processor.CheckoutPaymentProcessor
 import com.tokopedia.checkout.revamp.view.processor.CheckoutProcessor
 import com.tokopedia.checkout.revamp.view.processor.CheckoutPromoProcessor
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutAddressModel
+import com.tokopedia.checkout.revamp.view.uimodel.CheckoutEpharmacyModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutItem
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPageState
+import com.tokopedia.checkout.revamp.view.uimodel.CheckoutTickerModel
 import com.tokopedia.checkout.view.CheckoutMutableLiveData
 import com.tokopedia.checkout.view.converter.ShipmentDataRequestConverter
 import com.tokopedia.checkout.view.uimodel.ShipmentAddOnSummaryModel
@@ -26,6 +28,8 @@ import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.Shippin
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
 import com.tokopedia.purchase_platform.common.feature.dynamicdatapassing.data.request.DynamicDataPassingParamRequest
+import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.model.UploadPrescriptionUiModel
+import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementHolderData
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -133,19 +137,50 @@ class CheckoutViewModel @Inject constructor(
                 isReloadAfterPriceChangeHigher
             )
             if (saf is CheckoutPageState.Success) {
-                val address = CheckoutAddressModel(dataConverter.getRecipientAddressModel(saf.cartShipmentAddressFormData))
+                val tickerData = saf.cartShipmentAddressFormData.tickerData
+                var ticker = CheckoutTickerModel(ticker = TickerAnnouncementHolderData())
+                if (tickerData != null) {
+                    ticker = CheckoutTickerModel(
+                        ticker = TickerAnnouncementHolderData(
+                            tickerData.id,
+                            tickerData.title,
+                            tickerData.message
+                        )
+                    )
+//                    analyticsActionListener.sendAnalyticsViewInformationAndWarningTickerInCheckout(
+//                        tickerData.id
+//                    )
+                }
+                val address = CheckoutAddressModel(recipientAddressModel = dataConverter.getRecipientAddressModel(saf.cartShipmentAddressFormData))
+
+                val upsell = dataConverter.getUpsellModel(saf.cartShipmentAddressFormData.newUpsell)
+
                 isUsingDdp = saf.cartShipmentAddressFormData.isUsingDdp
                 dynamicData = saf.cartShipmentAddressFormData.dynamicData
                 shipmentPlatformFeeData = saf.cartShipmentAddressFormData.shipmentPlatformFee
                 listSummaryAddOnModel =
                     ShipmentAddOnProductServiceMapper.mapSummaryAddOns(saf.cartShipmentAddressFormData)
+
                 val items = dataConverter.getCheckoutItems(
                     saf.cartShipmentAddressFormData,
                     address.recipientAddressModel.locationDataModel != null,
                     userSessionInterface.name
                 )
+
+                val epharmacy = CheckoutEpharmacyModel(
+                    epharmacy = UploadPrescriptionUiModel(
+                        showImageUpload = saf.cartShipmentAddressFormData.epharmacyData.showImageUpload,
+                        uploadImageText = saf.cartShipmentAddressFormData.epharmacyData.uploadText,
+                        leftIconUrl = saf.cartShipmentAddressFormData.epharmacyData.leftIconUrl,
+                        checkoutId = saf.cartShipmentAddressFormData.epharmacyData.checkoutId,
+                        frontEndValidation = saf.cartShipmentAddressFormData.epharmacyData.frontEndValidation,
+                        consultationFlow = saf.cartShipmentAddressFormData.epharmacyData.consultationFlow,
+                        rejectedWording = saf.cartShipmentAddressFormData.epharmacyData.rejectedWording
+                    )
+                )
+
                 withContext(dispatchers.main) {
-                    listData.value = listOf(address) + items
+                    listData.value = listOf(ticker, address, upsell) + items + epharmacy
                     pageState.value = saf
                 }
             } else {

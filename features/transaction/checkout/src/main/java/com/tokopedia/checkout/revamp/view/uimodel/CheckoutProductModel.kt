@@ -6,6 +6,7 @@ import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGi
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingWordingModel
 
 data class CheckoutProductModel(
+    override val cartStringGroup: String,
     val cartId: Long = 0,
     val shopId: String = "",
     val shopName: String = "",
@@ -83,6 +84,5 @@ data class CheckoutProductModel(
 //    val shopTypeInfoData: ShopTypeInfoData = ShopTypeInfoData(),
     val cartStringOrder: String = "",
     val originWarehouseIds: List<Long> = emptyList(),
-    val addOnProduct: AddOnProductDataModel = AddOnProductDataModel(),
-    override val cartStringGroup: String = ""
+    val addOnProduct: AddOnProductDataModel = AddOnProductDataModel()
 ) : CheckoutItem
