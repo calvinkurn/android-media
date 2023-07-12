@@ -5,12 +5,15 @@ import android.view.View
 import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
+import com.airbnb.lottie.LottieAnimationView
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.unifyprinciples.Typography
 
@@ -21,6 +24,7 @@ class ThematicHeaderViewHolder(itemView: View, private val fragment: Fragment) :
     private var lihatTitleTextView: Typography = itemView.findViewById(R.id.title)
     private var lihatSubTitleTextView: Typography = itemView.findViewById(R.id.subtitle)
     private var backgroundImageView: ImageView = itemView.findViewById(R.id.background_image)
+    private var backgroundLottie: LottieAnimationView = itemView.findViewById(R.id.lottieBgAnimation)
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         thematicHeaderViewModel = discoveryBaseViewModel as ThematicHeaderViewModel
@@ -52,7 +56,19 @@ class ThematicHeaderViewHolder(itemView: View, private val fragment: Fragment) :
             if (!subtitle.isNullOrEmpty()) {
                 lihatSubTitleTextView.text = subtitle
             }
-            setupBackground(color, image)
+            if(!lottieImage.isNullOrEmpty()){
+                backgroundImageView.hide()
+                backgroundLottie.run {
+                    setAnimationFromUrl(lottieImage)
+                    playAnimation()
+                }
+                backgroundLottie.visible()
+            }else{
+                backgroundImageView.visible()
+                backgroundLottie.invisible()
+                setupBackground(color, image)
+            }
+
         }
     }
 
