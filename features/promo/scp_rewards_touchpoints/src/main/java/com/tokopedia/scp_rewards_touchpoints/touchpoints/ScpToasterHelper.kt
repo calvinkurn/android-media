@@ -3,6 +3,7 @@ package com.tokopedia.scp_rewards_touchpoints.touchpoints
 import android.view.View
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.scp_rewards_touchpoints.touchpoints.ScpRewardsToaster.DEFAULT_DURATION
+import com.tokopedia.scp_rewards_touchpoints.touchpoints.analytics.ScpRewardsToasterAnalytics.sendClickToasterEvent
 import com.tokopedia.scp_rewards_touchpoints.touchpoints.model.ScpRewardsMedaliTouchPointModel
 import com.tokopedia.scp_rewards_touchpoints.touchpoints.model.ScpToasterData
 
@@ -32,6 +33,9 @@ object ScpToasterHelper {
                 toasterData = toasterData,
                 duration = duration,
                 clickListener = {
+                    sendClickToasterEvent(
+                        badgeId = medaliID.toString()
+                    )
                     RouteManager.route(view.context, "${appLink}/$medaliSlug")
                 }
             ).show()
