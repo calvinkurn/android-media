@@ -37,7 +37,7 @@ class CategoryLoadMoreTest : TokoNowCategoryViewModelTestFixture() {
 
         viewModel.onViewCreated()
         viewModel.getFirstPage()
-        viewModel.loadNextPage(true)
+        viewModel.onScroll(true)
 
         // map header space
         val headerSpaceUiModel = categoryDetailResponse
@@ -130,8 +130,8 @@ class CategoryLoadMoreTest : TokoNowCategoryViewModelTestFixture() {
 
         viewModel.onViewCreated()
         viewModel.getFirstPage()
-        viewModel.loadNextPage(true)
-        viewModel.loadNextPage(true)
+        viewModel.onScroll(true)
+        viewModel.onScroll(true)
 
         // map header space
         val headerSpaceUiModel = categoryDetailResponse
@@ -218,7 +218,7 @@ class CategoryLoadMoreTest : TokoNowCategoryViewModelTestFixture() {
 
     @Test
     fun `loadMore with not being at the bottom of the page should do nothing`() {
-        viewModel.loadNextPage(false)
+        viewModel.onScroll(false)
 
         viewModel.scrollNotNeeded
             .verifyValueEquals(null)
@@ -226,7 +226,7 @@ class CategoryLoadMoreTest : TokoNowCategoryViewModelTestFixture() {
 
     @Test
     fun `loadMore with being at the bottom of the page and categoryL2 model is empty should prevent user to scroll more`() {
-        viewModel.loadNextPage(true)
+        viewModel.onScroll(true)
 
         viewModel.scrollNotNeeded
             .verifyValueEquals(Unit)
@@ -241,7 +241,7 @@ class CategoryLoadMoreTest : TokoNowCategoryViewModelTestFixture() {
             value = null
         )
 
-        viewModel.loadNextPage(true)
+        viewModel.onScroll(true)
 
         viewModel.visitableListLiveData
             .verifyValueEquals(null)
