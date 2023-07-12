@@ -144,6 +144,9 @@ class DetailEditorFragment @Inject constructor(
     // and used on watermark observer as flag for
     private var isRotatedWatermark = false
 
+    private val isImplementWatermarkSave: Boolean
+        get() = (!data.isToolWatermark() && !data.isToolAddText() && !data.isToolAddLogo() && !data.isToolRemoveBackground())
+
     fun isShowDialogConfirmation(): Boolean {
         return isEdited
     }
@@ -226,7 +229,7 @@ class DetailEditorFragment @Inject constructor(
 
             getBitmap()?.let {
                 // implement watermark on editor done (save process), prevent watermark implemented twice
-                val bitmap = if (!data.isToolWatermark()) {
+                val bitmap = if (isImplementWatermarkSave) {
                     implementWatermarkOnSave(it)
                 } else {
                     it
