@@ -256,7 +256,6 @@ open class SomListFragment :
     private var errorToaster: Snackbar? = null
     private var commonToaster: Snackbar? = null
     private var textChangeJob: Job? = null
-    private var somFilterBottomSheet: SomFilterBottomSheet? = null
     private var pendingAction: SomPendingAction? = null
     private var tickerIsReady = false
     private var coachMarkManager: SomListCoachMarkManager? = null
@@ -402,6 +401,11 @@ open class SomListFragment :
         if (bulkAcceptButtonLeaveAnimation?.isRunning == true) bulkAcceptButtonLeaveAnimation?.end()
     }
 
+    override fun onDestroy() {
+        cleanupResources()
+        super.onDestroy()
+    }
+
     override fun onFragmentBackPressed(): Boolean {
         return dismissBottomSheets()
     }
@@ -484,16 +488,12 @@ open class SomListFragment :
         viewModel.getSomFilterUi().let { somFilterList ->
             val somFilterUiModelWrapper = SomFilterUiModelWrapper(somFilterList)
             cacheManager?.put(SomFilterBottomSheet.KEY_SOM_FILTER_LIST, somFilterUiModelWrapper)
-            somFilterBottomSheet = SomFilterBottomSheet.createInstance(
+            val somFilterBottomSheet = SomFilterBottomSheet.createInstance(
                 viewModel.getDataOrderListParams().statusList,
                 cacheManager?.id.orEmpty()
             )
-            somFilterBottomSheet?.setSomFilterFinishListener(this)
-            somFilterBottomSheet?.isAdded?.let {
-                if (!(it)) {
-                    somFilterBottomSheet?.show(childFragmentManager)
-                }
-            }
+            somFilterBottomSheet.setSomFilterFinishListener(this)
+            somFilterBottomSheet.show(childFragmentManager)
         }
         somListOrderStatusFilterTab?.getSelectedFilterStatus().let {
             val selectedFilterKeys = arrayListOf<String>()
@@ -873,6 +873,24 @@ open class SomListFragment :
             hideKnob()
             showCloseButton()
         }
+    }
+
+    private fun cleanupResources() {
+        bulkAcceptButtonEnterAnimation = null
+        bulkAcceptButtonLeaveAnimation = null
+        somOrderHasCancellationRequestDialog = null
+        somListBulkProcessOrderBottomSheet = null
+        orderRequestCancelBottomSheet = null
+        somOrderEditAwbBottomSheet = null
+        bulkAcceptOrderDialog = null
+        bulkRequestPickupDialog = null
+        tickerPagerAdapter = null
+        errorToaster = null
+        commonToaster = null
+        textChangeJob = null
+        pendingAction = null
+        coachMarkManager = null
+        somListLoadTimeMonitoring = null
     }
 
     private fun setDefaultSortByValue() {

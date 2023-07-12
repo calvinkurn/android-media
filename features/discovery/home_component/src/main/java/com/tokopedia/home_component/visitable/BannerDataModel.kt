@@ -1,6 +1,8 @@
 package com.tokopedia.home_component.visitable
 
 import android.os.Bundle
+import com.tokopedia.analytics.performance.perf.BlocksLoadableComponent
+import com.tokopedia.analytics.performance.perf.LoadableComponent
 import com.tokopedia.home_component.HomeComponentTypeFactory
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.kotlin.model.ImpressHolder
@@ -16,7 +18,10 @@ data class BannerDataModel(
         val cardInteraction: Boolean = false,
         val enableDotsAndInfiniteScroll: Boolean = false,
         val scrollTransitionDuration: Long = 5000L
-): ImpressHolder(), HomeComponentVisitable{
+): ImpressHolder(), HomeComponentVisitable, LoadableComponent by BlocksLoadableComponent(
+    { (channelModel?.channelGrids?.size ?: 0) > 3 },
+    "HomeBannerDataModel"
+) {
     override fun visitableId(): String? {
         return channelModel?.id
     }

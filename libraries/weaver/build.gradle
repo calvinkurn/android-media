@@ -13,6 +13,11 @@ buildscript {
     }
 }
 
+android {
+    namespace 'com.tokopedia.weaver'
+    testNamespace 'com.tokopedia.weaver.test'
+}
+
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 

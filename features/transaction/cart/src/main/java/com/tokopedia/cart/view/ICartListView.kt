@@ -4,9 +4,9 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.CartData
+import com.tokopedia.cart.view.uimodel.CartGroupHolderData
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.cart.view.uimodel.CartRecentViewItemHolderData
-import com.tokopedia.cart.view.uimodel.CartShopHolderData
 import com.tokopedia.cartcommon.data.response.common.OutOfService
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
@@ -20,7 +20,7 @@ interface ICartListView : CustomerView {
 
     fun refreshCartWithSwipeToRefresh()
 
-    fun getAllShopDataList(): List<CartShopHolderData>
+    fun getAllGroupDataList(): List<CartGroupHolderData>
 
     fun getAllCartDataList(): List<CartItemHolderData>
 
@@ -134,7 +134,7 @@ interface ICartListView : CustomerView {
         productModel: Any
     )
 
-    fun getAdsId(): String?
+    fun getAdsId(): String
 
     fun goToLite(url: String)
 
@@ -143,8 +143,6 @@ interface ICartListView : CustomerView {
     fun updatePromoCheckoutStickyButton(promoUiModel: PromoUiModel)
 
     fun renderPromoCheckoutButtonActiveDefault(listPromoApplied: List<String>)
-
-    fun showPromoCheckoutStickyButtonInactive()
 
     fun showPromoCheckoutStickyButtonLoading()
 
@@ -156,7 +154,7 @@ interface ICartListView : CustomerView {
 
     fun checkHitValidateUseIsNeeded(params: ValidateUsePromoRequest): Boolean
 
-    fun generateGeneralParamValidateUse(): ValidateUsePromoRequest
+    fun generateGeneralParamGetLastApply(): ValidateUsePromoRequest
 
     fun resetRecentViewList()
 
@@ -168,5 +166,5 @@ interface ICartListView : CustomerView {
 
     fun sendATCTrackingURLRecent(productModel: CartRecentViewItemHolderData)
 
-    fun updateCartShopGroupTicker(cartShopHolderData: CartShopHolderData)
+    fun updateCartShopGroupTicker(cartGroupHolderData: CartGroupHolderData)
 }

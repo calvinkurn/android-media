@@ -7,6 +7,7 @@ import com.tokopedia.people.data.UserFollowRepository
 import com.tokopedia.people.data.UserProfileRepository
 import com.tokopedia.people.model.CommonModelBuilder
 import com.tokopedia.people.model.content.ContentModelBuilder
+import com.tokopedia.people.model.review.UserReviewModelBuilder
 import com.tokopedia.people.model.shoprecom.ShopRecomModelBuilder
 import com.tokopedia.people.model.userprofile.FollowInfoUiModelBuilder
 import com.tokopedia.people.model.userprofile.MutationUiModelBuilder
@@ -50,6 +51,7 @@ class UserProfileShopRecomViewModelTest {
     private val mutationBuilder = MutationUiModelBuilder()
     private val profileBuilder = ProfileUiModelBuilder()
     private val contentBuilder = ContentModelBuilder()
+    private val reviewBuilder = UserReviewModelBuilder()
 
     private val mockMutationSuccess = mutationBuilder.buildSuccess()
     private val mockMutationError = mutationBuilder.buildError()
@@ -82,6 +84,8 @@ class UserProfileShopRecomViewModelTest {
     )
     private val mockTabsModel = contentBuilder.buildTabsModel(false)
 
+    private val mockProfileSettings = reviewBuilder.buildReviewSetting(isEnabled = false)
+
     private val robot = UserProfileViewModelRobot(
         username = mockOwnUserId,
         repo = mockRepo,
@@ -98,6 +102,7 @@ class UserProfileShopRecomViewModelTest {
         coEvery { mockUserSession.userId } returns mockOwnUserId
         coEvery { mockRepo.getCreationInfo() } returns mockCreationInfo
         coEvery { mockRepo.getUserProfileTab(any()) } returns mockTabsModel
+        coEvery { mockRepo.getProfileSettings(any()) } returns mockProfileSettings
     }
 
     @Test
