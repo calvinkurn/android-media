@@ -1,5 +1,6 @@
 package com.tokopedia.loginHelper.domain.usecase
 
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.loginHelper.data.api.LoginHelperApiService
@@ -44,6 +45,7 @@ class GetUserDetailsRestUseCase @Inject constructor(private val api: LoginHelper
             val decryptedRemoteUserDetails = response?.toLoginUiModel()
             UnifiedLoginHelperData(persistantCachedUserData, decryptedRemoteUserDetails)
         } catch (e: Exception) {
+            FirebaseCrashlytics.getInstance().recordException(e)
             UnifiedLoginHelperData(persistantCachedUserData, LoginDataUiModel())
         }
     }

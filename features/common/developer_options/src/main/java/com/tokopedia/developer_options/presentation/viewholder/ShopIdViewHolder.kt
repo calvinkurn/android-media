@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.developer_options.R
 import com.tokopedia.developer_options.presentation.model.ShopIdUiModel
 import com.tokopedia.unifycomponents.UnifyButton
+import java.util.*
 
 class ShopIdViewHolder(
     itemView: View,
@@ -14,7 +15,7 @@ class ShopIdViewHolder(
 
     override fun bind(element: ShopIdUiModel?) {
         val btn = itemView.findViewById<UnifyButton>(R.id.shop_id)
-        btn.text = String.format("Shop Id: ${listener.getShopId()}")
+        btn.text = String.format(Locale.getDefault(), "Shop Id: ${listener.getShopId()}")
         btn.setOnClickListener {
             listener.onClickShopIdButton()
         }

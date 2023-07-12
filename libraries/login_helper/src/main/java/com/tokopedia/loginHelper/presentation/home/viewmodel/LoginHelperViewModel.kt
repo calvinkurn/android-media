@@ -406,7 +406,5 @@ class LoginHelperViewModel @Inject constructor(
         super.onCleared()
         getProfileUseCase.unsubscribe()
         loginTokenV2UseCase.cancelJobs()
-        generatePublicKeyUseCase.cancelJobs()
-        getUserDetailsRestUseCase.cancelJobs()
     }
 }

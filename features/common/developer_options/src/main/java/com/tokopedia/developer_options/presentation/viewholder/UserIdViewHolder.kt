@@ -6,14 +6,16 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.developer_options.R
 import com.tokopedia.developer_options.presentation.model.UserIdUiModel
 import com.tokopedia.unifycomponents.UnifyButton
+import java.util.*
 
-class UserIdViewHolder(itemView: View,
-                       private val listener: UserIdListener
-): AbstractViewHolder<UserIdUiModel>(itemView) {
+class UserIdViewHolder(
+    itemView: View,
+    private val listener: UserIdListener
+) : AbstractViewHolder<UserIdUiModel>(itemView) {
 
     override fun bind(element: UserIdUiModel?) {
         val btn = itemView.findViewById<UnifyButton>(R.id.user_id)
-        btn.text = String.format("User Id: ${listener.getUserId()}")
+        btn.text = String.format(Locale.getDefault(), "User Id: ${listener.getUserId()}")
         btn.setOnClickListener {
             listener.onClickUserIdButton()
         }
@@ -26,7 +28,6 @@ class UserIdViewHolder(itemView: View,
 
     interface UserIdListener {
         fun onClickUserIdButton()
-        fun getUserId() : String
+        fun getUserId(): String
     }
-
 }
