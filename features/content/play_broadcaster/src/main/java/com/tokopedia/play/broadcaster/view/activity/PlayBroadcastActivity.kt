@@ -16,6 +16,8 @@ import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.google.android.play.core.splitinstall.SplitInstallHelper
+import com.google.firebase.crashlytics.ktx.crashlytics
+import com.google.firebase.ktx.Firebase
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
@@ -373,7 +375,7 @@ class PlayBroadcastActivity : BaseActivity(),
             SplitInstallHelper.loadLibrary(this, "c++_shared")
             SplitInstallHelper.loadLibrary(this, "effect")
         } catch (throwable: Throwable) {
-            logger.logBroadcastError(throwable)
+            Firebase.crashlytics.recordException(throwable)
         }
     }
 
