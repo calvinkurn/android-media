@@ -1080,6 +1080,18 @@ class ShipmentAdapter @Inject constructor(
         return 0
     }
 
+    fun getAddOnProductServicePosition(cartId: Long): Pair<Int, CartItemModel?> {
+        for (i in shipmentDataList.indices) {
+            if (shipmentDataList[i] is CartItemModel) {
+                val cartItemModel = shipmentDataList[i] as CartItemModel
+                if (cartItemModel.cartId == cartId) {
+                    return i to cartItemModel
+                }
+            }
+        }
+        return 0 to null
+    }
+
     val promoCheckoutPosition: Int
         get() {
             for (i in shipmentDataList.indices) {

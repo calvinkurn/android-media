@@ -254,7 +254,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
             REQUEST_CODE_WALLET_ACTIVATION -> refresh()
             REQUEST_CODE_ADD_ON_GIFTING -> onResultFromAddOn(resultCode, data)
             REQUEST_CODE_UPLOAD_PRESCRIPTION -> onResultFromUploadPrescription(data)
-            REQUEST_CODE_ADD_ON_PRODUCT_SERVICE_BOTTOMSHEET -> onResultFromAddOnProductService(resultCode, data)
+            REQUEST_CODE_ADD_ON_PRODUCT_SERVICE_BOTTOMSHEET -> onResultFromAddOnProductBottomSheet(resultCode, data)
         }
     }
 
@@ -364,7 +364,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
         refresh()
     }
 
-    private fun onResultFromAddOnProductService(resultCode: Int, data: Intent?) {
+    private fun onResultFromAddOnProductBottomSheet(resultCode: Int, data: Intent?) {
         if (resultCode == Activity.RESULT_OK) {
             val addOnProductDataResult = data?.getParcelableExtra(AddOnExtraConstant.EXTRA_ADDON_PAGE_RESULT) ?: AddOnPageResult()
 

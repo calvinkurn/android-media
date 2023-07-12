@@ -22,6 +22,8 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
+import com.tokopedia.addon.presentation.uimodel.AddOnExtraConstant
+import com.tokopedia.addon.presentation.uimodel.AddOnPageResult
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.analytics.performance.util.EmbraceKey
 import com.tokopedia.analytics.performance.util.EmbraceMonitoring.stopMoments
@@ -519,6 +521,10 @@ class ShipmentFragment :
 
             REQUEST_CODE_UPSELL -> {
                 onResultFromUpsell(data)
+            }
+
+            REQUEST_CODE_ADD_ON_PRODUCT_SERVICE_BOTTOMSHEET -> {
+                onResultFromAddOnProductBottomSheet(resultCode, data)
             }
         }
     }
@@ -3912,7 +3918,7 @@ class ShipmentFragment :
             applinkAddon,
             mapOf(
                 AddOnConstant.QUERY_PARAM_CART_ID to cartId,
-                AddOnConstant.QUERY_PARAM_SELECTED_ADDON_IDS to addOnIds,
+                AddOnConstant.QUERY_PARAM_SELECTED_ADDON_IDS to addOnIds.toString().replace("[", "").replace("]", ""),
                 AddOnConstant.QUERY_PARAM_PAGE_ATC_SOURCE to SOURCE_NORMAL_CHECKOUT,
                 ApplinkConstInternalMechant.QUERY_PARAM_WAREHOUSE_ID to cartItemModel.warehouseId,
                 AddOnConstant.QUERY_PARAM_IS_TOKOCABANG to cartItemModel.isTokoCabang
@@ -3920,8 +3926,8 @@ class ShipmentFragment :
         )
 
         activity?.let {
-            // TODO: startActivityForResult & update onActivityResult
-            RouteManager.route(it, applink)
+            val intent = RouteManager.getIntent(it, applink)
+            startActivityForResult(intent, REQUEST_CODE_ADD_ON_PRODUCT_SERVICE_BOTTOMSHEET)
         }
     }
     // endregion
@@ -4284,6 +4290,33 @@ class ShipmentFragment :
     override fun onClickLihatSemuaAddOnProductServiceWidget() {
         checkoutAnalyticsCourierSelection.eventClickLihatSemuaAddOnsProductServiceWidget()
     }
+
+    private fun onResultFromAddOnProductBottomSheet(resultCode: Int, data: Intent?) {
+        if (resultCode == Activity.RESULT_OK) {
+            val addOnProductDataResult = data?.getParcelableExtra(AddOnExtraConstant.EXTRA_ADDON_PAGE_RESULT) ?: AddOnPageResult()
+
+            if (addOnProductDataResult.aggregatedData.isGetDataSuccess) {
+                val cartIdAddOn = addOnProductDataResult.cartId
+                val needUpdateAddOnItem = shipmentAdapter.getAddOnProductServicePosition(cartIdAddOn)
+
+                run loopAddOnProduct@ {
+                    needUpdateAddOnItem.second?.addOnProduct?.listAddOnProductData?.forEach { addOnProductDataItemModel ->
+                        for (addonUiModel in addOnProductDataResult.changedAddons) {
+                            if (addonUiModel.id == addOnProductDataItemModel.addOnDataId.toString()) {
+                                addOnProductDataItemModel.addOnDataStatus = addonUiModel.getSelectedStatus().value
+                                onNeedUpdateViewItem(needUpdateAddOnItem.first)
+                                return@loopAddOnProduct
+                            }
+                        }
+                    }
+                }
+            } else {
+                view?.let { v ->
+                    Toaster.build(v, addOnProductDataResult.aggregatedData.getDataErrorMessage, type = Toaster.TYPE_ERROR).show()
+                }
+            }
+        }
+    }
     // endregion
 
     companion object {
@@ -4292,6 +4325,7 @@ class ShipmentFragment :
         private const val REQUEST_CODE_PROMO = 954
         const val REQUEST_CODE_UPLOAD_PRESCRIPTION = 10021
         const val REQUEST_CODE_MINI_CONSULTATION = 10022
+        const val REQUEST_CODE_ADD_ON_PRODUCT_SERVICE_BOTTOMSHEET = 10033
         private const val REQUEST_CODE_UPSELL = 777
         private const val ADD_ON_STATUS_ACTIVE = 1
         private const val ADD_ON_STATUS_DISABLE = 2
