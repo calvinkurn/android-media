@@ -21,6 +21,8 @@ buildscript {
 }
 
 android {
+    namespace 'com.tokopedia.globalnavwidgetsamples'
+    testNamespace 'com.tokopedia.globalnavwidgetsamples.test'
     buildFeatures {
         viewBinding true
     }

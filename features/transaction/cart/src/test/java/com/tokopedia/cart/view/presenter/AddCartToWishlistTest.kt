@@ -39,9 +39,7 @@ class AddCartToWishlistTest : BaseCartTest() {
             message = "success"
         }
 
-        every { addCartToWishlistUseCase.createObservable(any()) } returns Observable.just(
-            addToCartWishlistData
-        )
+        coEvery { addCartToWishlistUseCase(any()) } returns addToCartWishlistData
         every { updateCartCounterUseCase.createObservable(any()) } returns Observable.just(0)
 
         // When
@@ -81,9 +79,7 @@ class AddCartToWishlistTest : BaseCartTest() {
             message = "failed"
         }
 
-        every { addCartToWishlistUseCase.createObservable(any()) } returns Observable.just(
-            addToCartWishlistData
-        )
+        coEvery { addCartToWishlistUseCase(any()) } returns addToCartWishlistData
         every { updateCartCounterUseCase.createObservable(any()) } returns Observable.just(0)
 
         // When
@@ -111,9 +107,7 @@ class AddCartToWishlistTest : BaseCartTest() {
         val forceExpandCollapsedUnavailableItems = false
         val exception = ResponseErrorException("Error")
 
-        every { addCartToWishlistUseCase.createObservable(any()) } returns Observable.error(
-            exception
-        )
+        coEvery { addCartToWishlistUseCase(any()) } throws exception
         every { updateCartCounterUseCase.createObservable(any()) } returns Observable.just(0)
 
         // When

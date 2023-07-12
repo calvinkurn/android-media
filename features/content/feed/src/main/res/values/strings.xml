@@ -151,4 +151,9 @@ dari Feed.</string>
     <string name="feed_campaign_start_from_label">Dimulai dalam</string>
     <string name="feed_cancel">Batal</string>
 
+    <string name="feed_cta_available_label">Tersedia</string>
+    <string name="feed_cta_hyped_label">Lagi Diminati</string>
+    <string name="feed_cta_almost_sold_label">Segera Habis</string>
+    <string name="feed_cta_sold_label">Terjual Habis</string>
+
 </resources>

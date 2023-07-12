@@ -49,23 +49,12 @@ import com.tokopedia.feedplus.data.FeedXCard
 import com.tokopedia.feedplus.databinding.FragmentFeedImmersiveBinding
 import com.tokopedia.feedplus.di.FeedMainInjector
 import com.tokopedia.feedplus.domain.mapper.MapperFeedModelToTrackerDataModel
-import com.tokopedia.feedplus.domain.mapper.MapperProductsToXProducts
 import com.tokopedia.feedplus.presentation.adapter.FeedAdapterTypeFactory
 import com.tokopedia.feedplus.presentation.adapter.FeedPostAdapter
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_NOT_SELECTED
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_SELECTED
 import com.tokopedia.feedplus.presentation.adapter.listener.FeedListener
-import com.tokopedia.feedplus.presentation.model.FeedAuthorModel
-import com.tokopedia.feedplus.presentation.model.FeedCardCampaignModel
-import com.tokopedia.feedplus.presentation.model.FeedCardImageContentModel
-import com.tokopedia.feedplus.presentation.model.FeedCardLivePreviewContentModel
-import com.tokopedia.feedplus.presentation.model.FeedCardProductModel
-import com.tokopedia.feedplus.presentation.model.FeedCardVideoContentModel
-import com.tokopedia.feedplus.presentation.model.FeedDataModel
-import com.tokopedia.feedplus.presentation.model.FeedMainEvent
-import com.tokopedia.feedplus.presentation.model.FeedNoContentModel
-import com.tokopedia.feedplus.presentation.model.FeedShareModel
-import com.tokopedia.feedplus.presentation.model.FeedTrackerDataModel
+import com.tokopedia.feedplus.presentation.model.*
 import com.tokopedia.feedplus.presentation.uiview.FeedCampaignRibbonType
 import com.tokopedia.feedplus.presentation.uiview.FeedProductTagView
 import com.tokopedia.feedplus.presentation.util.VideoPlayerManager
@@ -605,11 +594,11 @@ class FeedFragment :
 
         val action: () -> Unit = {
             openProductTagBottomSheet(
+                activityId = postId,
                 author = author,
                 hasVoucher = hasVoucher,
                 products = products,
-                trackerData = trackerModel,
-                campaign = campaign
+                trackerData = trackerModel
             )
             trackerModel?.let {
                 feedAnalytics.eventClickProductTag(it)
@@ -656,11 +645,11 @@ class FeedFragment :
                 }
             } else {
                 openProductTagBottomSheet(
+                    activityId = postId,
                     author = author,
                     hasVoucher = hasVoucher,
                     products = products,
-                    trackerData = trackerModel,
-                    campaign = campaign
+                    trackerData = trackerModel
                 )
             }
         }
@@ -688,11 +677,11 @@ class FeedFragment :
         trackerModel: FeedTrackerDataModel?
     ) {
         openProductTagBottomSheet(
+            activityId = postId,
             author = author,
             hasVoucher = hasVoucher,
             products = products,
-            trackerData = trackerModel,
-            campaign = campaign
+            trackerData = trackerModel
         )
     }
 
@@ -751,11 +740,11 @@ class FeedFragment :
                     positionInFeed
                 )
                 openProductTagBottomSheet(
+                    activityId = postId,
                     author = author,
                     hasVoucher = hasVoucher,
                     products = products,
-                    trackerData = it,
-                    campaign = campaign
+                    trackerData = it
                 )
             }
         }
@@ -880,9 +869,8 @@ class FeedFragment :
 
     private fun observePostData() {
         feedPostViewModel.feedHome.observe(viewLifecycleOwner) {
-            binding.swipeRefreshFeedLayout.isRefreshing = false
             hideLoading()
-            adapter?.hideLoading()
+            binding.swipeRefreshFeedLayout.isRefreshing = false
             when (it) {
                 is Success -> {
                     if (it.data.items.isEmpty()) {
@@ -897,7 +885,11 @@ class FeedFragment :
                         adapter?.updateList(it.data.items)
                         context?.let { ctx ->
                             if (feedPostViewModel.shouldShowNoMoreContent) {
-                                adapter?.addElement(FeedNoContentModel.getNoMoreContentInstance(ctx))
+                                adapter?.addNoMoreContent(
+                                    FeedNoContentModel.getNoMoreContentInstance(
+                                        ctx
+                                    )
+                                )
                             }
                         }
                         feedPostViewModel.fetchTopAdsData()
@@ -1160,11 +1152,11 @@ class FeedFragment :
     }
 
     private fun openProductTagBottomSheet(
+        activityId: String,
         author: FeedAuthorModel,
         products: List<FeedCardProductModel>,
         hasVoucher: Boolean,
-        trackerData: FeedTrackerDataModel?,
-        campaign: FeedCardCampaignModel
+        trackerData: FeedTrackerDataModel?
     ) {
         if (products.isEmpty()) return
 
@@ -1187,9 +1179,10 @@ class FeedFragment :
 
         if (trackerData != null) trackOpenProductTagBottomSheet(trackerData)
 
-        val mappedProducts = products.map { MapperProductsToXProducts.transform(it, campaign) }
         productBottomSheet.show(
-            taggedProducts = mappedProducts,
+            activityId = activityId,
+            viewModelOwner = this,
+            viewModelFactory = viewModelFactory,
             manager = childFragmentManager,
             tag = TAG_FEED_PRODUCT_BOTTOM_SHEET
         )

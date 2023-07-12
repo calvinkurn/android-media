@@ -7,7 +7,7 @@ import kotlinx.parcelize.Parcelize
  * Created by Irfan Khoirul on 25/01/18.
  */
 @Parcelize
-class CourierItemData(
+data class CourierItemData(
     var shipperId: Int = 0,
     var shipperProductId: Int = 0,
     var serviceId: Int = 0,
@@ -108,70 +108,8 @@ class CourierItemData(
     }
 
     companion object {
-        @JvmStatic
         fun clone(courierItemData: CourierItemData, scheduleDeliveryUiModel: ScheduleDeliveryUiModel): CourierItemData {
-            val newCourierItemData = CourierItemData()
-            newCourierItemData.shipperId = courierItemData.shipperId
-            newCourierItemData.shipperProductId = courierItemData.shipperProductId
-            newCourierItemData.serviceId = courierItemData.serviceId
-            newCourierItemData.name = courierItemData.name
-            newCourierItemData.serviceName = courierItemData.serviceName
-            newCourierItemData.deliverySchedule = courierItemData.deliverySchedule
-            newCourierItemData.estimatedTimeDelivery = courierItemData.estimatedTimeDelivery
-            newCourierItemData.minEtd = courierItemData.minEtd
-            newCourierItemData.maxEtd = courierItemData.maxEtd
-            newCourierItemData.shipperPrice = courierItemData.shipperPrice
-            newCourierItemData.shipperFormattedPrice = courierItemData.shipperFormattedPrice
-            newCourierItemData.insurancePrice = courierItemData.insurancePrice
-            newCourierItemData.additionalPrice = courierItemData.additionalPrice
-            newCourierItemData.courierInfo = courierItemData.courierInfo
-            newCourierItemData.insuranceType = courierItemData.insuranceType
-            newCourierItemData.insuranceUsedType = courierItemData.insuranceUsedType
-            newCourierItemData.insuranceUsedInfo = courierItemData.insuranceUsedInfo
-            newCourierItemData.insuranceUsedDefault = courierItemData.insuranceUsedDefault
-            newCourierItemData.isUsePinPoint = courierItemData.isUsePinPoint
-            newCourierItemData.isAllowDropshiper = courierItemData.isAllowDropshiper
-            newCourierItemData.isSelected = courierItemData.isSelected
-            newCourierItemData.shipmentItemDataEtd = courierItemData.shipmentItemDataEtd
-            newCourierItemData.shipmentItemDataType = courierItemData.shipmentItemDataType
-            newCourierItemData.promoCode = courierItemData.promoCode
-            newCourierItemData.logPromoCode = courierItemData.logPromoCode
-            newCourierItemData.logPromoMsg = courierItemData.logPromoMsg
-            newCourierItemData.discountedRate = courierItemData.discountedRate
-            newCourierItemData.shippingRate = courierItemData.shippingRate
-            newCourierItemData.benefitAmount = courierItemData.benefitAmount
-            newCourierItemData.promoTitle = courierItemData.promoTitle
-            newCourierItemData.isHideShipperName = courierItemData.isHideShipperName
-            newCourierItemData.logPromoDesc = courierItemData.logPromoDesc
-            newCourierItemData.checksum = courierItemData.checksum
-            newCourierItemData.ut = courierItemData.ut
-            newCourierItemData.blackboxInfo = courierItemData.blackboxInfo
-            newCourierItemData.now = courierItemData.now
-            newCourierItemData.priorityPrice = courierItemData.priorityPrice
-            newCourierItemData.priorityInnactiveMessage = courierItemData.priorityInnactiveMessage
-            newCourierItemData.priorityFormattedPrice = courierItemData.priorityFormattedPrice
-            newCourierItemData.priorityInactiveMessage = courierItemData.priorityInactiveMessage
-            newCourierItemData.priorityDurationMessage = courierItemData.priorityDurationMessage
-            newCourierItemData.priorityCheckboxMessage = courierItemData.priorityCheckboxMessage
-            newCourierItemData.priorityWarningboxMessage = courierItemData.priorityWarningboxMessage
-            newCourierItemData.priorityFeeMessage = courierItemData.priorityFeeMessage
-            newCourierItemData.priorityPdpMessage = courierItemData.priorityPdpMessage
-            newCourierItemData.ontimeDelivery = courierItemData.ontimeDelivery
-            newCourierItemData.codProductData = courierItemData.codProductData
-            newCourierItemData.etaText = courierItemData.etaText
-            newCourierItemData.etaErrorCode = courierItemData.etaErrorCode
-            newCourierItemData.shipperName = courierItemData.shipperName
-            newCourierItemData.merchantVoucherProductModel = courierItemData.merchantVoucherProductModel
-            newCourierItemData.preOrderModel = courierItemData.preOrderModel
-            newCourierItemData.freeShippingChosenCourierTitle = courierItemData.freeShippingChosenCourierTitle
-            newCourierItemData.isHideChangeCourierCard = courierItemData.isHideChangeCourierCard
-            newCourierItemData.durationCardDescription = courierItemData.durationCardDescription
-            newCourierItemData.freeShippingMetadata = courierItemData.freeShippingMetadata
-            newCourierItemData.benefitClass = courierItemData.benefitClass
-            newCourierItemData.shippingSubsidy = courierItemData.shippingSubsidy
-            newCourierItemData.boCampaignId = courierItemData.boCampaignId
-            newCourierItemData.scheduleDeliveryUiModel = scheduleDeliveryUiModel
-            return newCourierItemData
+            return courierItemData.copy(scheduleDeliveryUiModel = scheduleDeliveryUiModel)
         }
     }
 }
