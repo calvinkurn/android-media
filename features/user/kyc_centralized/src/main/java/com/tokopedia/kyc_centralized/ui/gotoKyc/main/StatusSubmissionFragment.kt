@@ -136,14 +136,17 @@ class StatusSubmissionFragment : BaseDaggerFragment() {
 
     private fun setUpLoaderStatus(isLoading: Boolean) {
         if (isLoading) {
-            loaderRefreshStatus = LoaderDialog(requireActivity())
-            loaderRefreshStatus?.apply {
-                setLoadingText("")
-                dialog.setOverlayClose(false)
-                show()
+            if (loaderRefreshStatus == null) {
+                loaderRefreshStatus = LoaderDialog(requireActivity())
+                loaderRefreshStatus?.apply {
+                    setLoadingText("")
+                    dialog.setOverlayClose(false)
+                    show()
+                }
             }
         } else {
             loaderRefreshStatus?.dismiss()
+            loaderRefreshStatus = null
         }
     }
 
