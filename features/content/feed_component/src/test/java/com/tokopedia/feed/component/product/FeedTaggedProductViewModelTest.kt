@@ -50,26 +50,6 @@ internal class FeedTaggedProductViewModelTest {
     }
 
     @Test
-    fun defaultProduct() {
-        // given
-        val dummyData = getDummyData()
-        val productList = dummyData.data.products.map {
-            ProductMapper.transform(
-                it,
-                dummyData.data.campaign
-            )
-        }
-
-        // when
-        viewModel.setDefaultProducts(productList)
-
-        // then
-        assert(viewModel.feedTagProductList.value is Success)
-        val response = viewModel.feedTagProductList.value as Success
-        assert(response.data.size == productList.size)
-    }
-
-    @Test
     fun fetchFeedProduct_whenFailed_shouldBeFail() {
         // given
         val activityId = "123456"
@@ -82,7 +62,7 @@ internal class FeedTaggedProductViewModelTest {
         coEvery { feedXGetActivityProductsUseCase(any()) } throws Throwable("Failed")
 
         // when
-        viewModel.fetchFeedProduct(activityId)
+        viewModel.fetchFeedProduct(activityId, emptyList())
 
         // then
         assert(viewModel.feedTagProductList.value is Fail)
@@ -94,6 +74,13 @@ internal class FeedTaggedProductViewModelTest {
     fun fetchFeedProduct_whenSuccess_shouldBeSuccess() {
         // given
         val activityId = "123456"
+        val dummyData = getDummyData()
+        val productList = dummyData.data.products.map {
+            ProductMapper.transform(
+                it,
+                dummyData.data.campaign
+            )
+        }
         coEvery {
             feedXGetActivityProductsUseCase.getFeedDetailParam(
                 activityId,
@@ -103,7 +90,29 @@ internal class FeedTaggedProductViewModelTest {
         coEvery { feedXGetActivityProductsUseCase(any()) } returns getDummyData()
 
         // when
-        viewModel.fetchFeedProduct(activityId)
+        viewModel.fetchFeedProduct(activityId, productList)
+
+        // then
+        assert(viewModel.feedTagProductList.value is Success)
+        val response = viewModel.feedTagProductList.value as Success
+        assert(response.data.size == getDummyData().data.products.size)
+        assert(viewModel.shopId == "09876")
+    }
+
+    @Test
+    fun fetchFeedProduct_whenSuccessWithoutDefault_shouldBeSuccess() {
+        // given
+        val activityId = "123456"
+        coEvery {
+            feedXGetActivityProductsUseCase.getFeedDetailParam(
+                activityId,
+                ""
+            )
+        } returns mapOf()
+        coEvery { feedXGetActivityProductsUseCase(any()) } returns getDummyData()
+
+        // when
+        viewModel.fetchFeedProduct(activityId, emptyList())
 
         // then
         assert(viewModel.feedTagProductList.value is Success)

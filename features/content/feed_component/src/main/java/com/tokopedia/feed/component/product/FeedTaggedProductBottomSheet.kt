@@ -146,8 +146,7 @@ class FeedTaggedProductBottomSheet : BottomSheetUnify() {
             viewModelOwner,
             viewModelFactory
         )[FeedTaggedProductViewModel::class.java]
-        viewModel?.setDefaultProducts(products)
-        viewModel?.fetchFeedProduct(activityId)
+        viewModel?.fetchFeedProduct(activityId, products)
 
         show(manager, tag)
     }

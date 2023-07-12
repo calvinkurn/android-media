@@ -30,15 +30,13 @@ class FeedTaggedProductViewModel @Inject constructor(
     private var cursor = ""
     private var prevActivityId = ""
 
-    fun setDefaultProducts(products: List<FeedTaggedProductUiModel>) {
-        _feedTagProductList.value = Success(products)
-    }
-
-    fun fetchFeedProduct(activityId: String) {
+    fun fetchFeedProduct(activityId: String, products: List<FeedTaggedProductUiModel>) {
         viewModelScope.launch {
             try {
                 if (activityId != prevActivityId) cursor = ""
+
                 val currentList: List<FeedTaggedProductUiModel> = when {
+                    products.isNotEmpty() -> products
                     _feedTagProductList.value is Success && activityId == prevActivityId -> (_feedTagProductList.value as Success).data
                     else -> emptyList()
                 }

@@ -1121,8 +1121,10 @@ class FeedFragment :
         campaign: FeedCardCampaignModel,
         trackerData: FeedTrackerDataModel?
     ) {
-        val taggedProductList: MutableList<FeedTaggedProductUiModel> = mutableListOf()
-
+        var isTopAds = false
+        val taggedProductList = products.map {
+            MapperProductsToXProducts.transform(it, campaign)
+        }
         if (products.isEmpty()) return
 
         val productBottomSheet = FeedTaggedProductBottomSheet().apply {
@@ -1143,14 +1145,7 @@ class FeedFragment :
         }
 
         if (trackerData != null) {
-            if (trackerData.type == TYPE_FEED_TOP_ADS) {
-                taggedProductList.clear()
-                taggedProductList.addAll(
-                    products.map {
-                        MapperProductsToXProducts.transform(it, campaign)
-                    }
-                )
-            }
+            isTopAds = trackerData.type == TYPE_FEED_TOP_ADS
             trackOpenProductTagBottomSheet(trackerData)
         }
 
@@ -1160,7 +1155,7 @@ class FeedFragment :
             viewModelFactory = viewModelFactory,
             manager = childFragmentManager,
             tag = TAG_FEED_PRODUCT_BOTTOM_SHEET,
-            products = taggedProductList
+            products = if (isTopAds) taggedProductList else emptyList()
         )
         if (hasVoucher && author.type.isShop) getMerchantVoucher(author.id)
     }
