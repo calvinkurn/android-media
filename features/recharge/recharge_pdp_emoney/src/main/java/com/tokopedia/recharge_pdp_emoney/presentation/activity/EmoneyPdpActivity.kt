@@ -28,8 +28,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import java.util.*
 import javax.inject.Inject
 
-open class EmoneyPdpActivity : BaseSimpleActivity(), HasComponent<EmoneyPdpComponent>,
-        EmoneyMenuBottomSheets.MenuListener {
+open class EmoneyPdpActivity : BaseSimpleActivity(), HasComponent<EmoneyPdpComponent> {
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -38,8 +37,6 @@ open class EmoneyPdpActivity : BaseSimpleActivity(), HasComponent<EmoneyPdpCompo
     private var rechargeParamFromSlice = ""
 
     protected var passData: DigitalCategoryDetailPassData? = null
-
-    lateinit var menuEmoney: Menu
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val uriData = intent.data
@@ -87,50 +84,6 @@ open class EmoneyPdpActivity : BaseSimpleActivity(), HasComponent<EmoneyPdpCompo
                 .build()
         component.inject(this)
         return component
-    }
-
-    private fun showBottomMenus() {
-        val menuBottomSheet = EmoneyMenuBottomSheets.newInstance()
-        menuBottomSheet.listener = this
-        menuBottomSheet.setShowListener {
-            menuBottomSheet.bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED
-        }
-        menuBottomSheet.show(supportFragmentManager, TAG_EMONEY_MENU)
-    }
-
-    override fun onMenuOpened(featureId: Int, menu: Menu): Boolean {
-        showBottomMenus()
-        return false
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menu?.let {
-            menuEmoney = menu
-            menuInflater.inflate(R.menu.menu_emoney, menu)
-            return true
-        }
-        return false
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId ?: "" == R.id.emoney_action_overflow_menu) {
-            showBottomMenus()
-            return true
-        }
-        return super.onOptionsItemSelected(item)
-    }
-
-    override fun onOrderListClicked() {
-        if (userSession.isLoggedIn) {
-            RouteManager.route(this, ApplinkConst.DIGITAL_ORDER)
-        } else {
-            val intent = RouteManager.getIntent(this, ApplinkConst.LOGIN)
-            startActivityForResult(intent, REQUEST_CODE_LOGIN_EMONEY)
-        }
-    }
-
-    override fun onHelpClicked() {
-        RouteManager.route(this, ApplinkConst.CONTACT_US_NATIVE)
     }
 
     override fun getLayoutRes(): Int {

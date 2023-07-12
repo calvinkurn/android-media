@@ -1,7 +1,9 @@
 package com.tokopedia.shop.score.performance.presentation.fragment
 
 import android.content.Context
+import android.content.Intent
 import android.content.res.Resources
+import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -18,6 +20,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.play.core.splitcompat.SplitCompat
+import com.google.android.youtube.player.YouTubeApiServiceUtil
+import com.google.android.youtube.player.YouTubeInitializationResult
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -29,6 +33,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
 import com.tokopedia.applink.shopscore.ShopScoreDeepLinkMapper
+import com.tokopedia.applink.shopscore.ShopScoreDeepLinkMapper.getInternalApplinkPenalty
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
@@ -466,18 +471,27 @@ open class ShopPerformancePageFragment : BaseDaggerFragment(),
 
     private fun goToYoutubePage(videoId: String) {
         context?.let {
-            try {
-                val webviewUrl = String.format(
-                    Locale.getDefault(),
-                    "%s?url=%s",
-                    ApplinkConst.WEBVIEW,
-                    "https://www.youtube.com/watch?v=" + videoId
-                )
-                RouteManager.route(it, webviewUrl)
-            } catch (e: Exception) {
-                Timber.d(e)
+            if (YouTubeApiServiceUtil.isYouTubeApiServiceAvailable(it.applicationContext)
+                == YouTubeInitializationResult.SUCCESS
+            ) {
+                redirectToYoutubePlayerPage(videoId)
+            } else {
+                try {
+                    startActivity(
+                        Intent(
+                            Intent.ACTION_VIEW,
+                            Uri.parse("https://www.youtube.com/watch?v=$videoId")
+                        )
+                    )
+                } catch (e: Throwable) {
+                    Timber.d(e)
+                }
             }
         }
+    }
+
+    private fun redirectToYoutubePlayerPage(youTubeVideoId: String) {
+        RouteManager.route(context, ApplinkConst.YOUTUBE_PLAYER, youTubeVideoId)
     }
 
     private fun setPageBackground() {
@@ -840,7 +854,7 @@ open class ShopPerformancePageFragment : BaseDaggerFragment(),
     }
 
     private fun goToPenaltyPage() {
-        context?.let { RouteManager.route(it, ApplinkConstInternalMarketplace.SHOP_PENALTY) }
+        context?.let { RouteManager.route(it, getInternalApplinkPenalty(it)) }
     }
 
     private fun goToPowerMerchantSubscribe() {
