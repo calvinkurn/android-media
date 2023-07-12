@@ -57,7 +57,7 @@ class CategoryLoadMoreTest : TokoNowCategoryViewModelTestFixture() {
         )
         val tickerUiModel = categoryDetailResponse
             .mapToTicker(
-                tickerData = tickerDataList
+                tickerList = tickerDataList.second
             )
         val hasBlockedAddToCart = tickerDataList.first
 
@@ -153,7 +153,7 @@ class CategoryLoadMoreTest : TokoNowCategoryViewModelTestFixture() {
         )
         val tickerUiModel = categoryDetailResponse
             .mapToTicker(
-                tickerData = tickerDataList
+                tickerList = tickerDataList.second
             )
         val hasBlockedAddToCart = tickerDataList.first
 

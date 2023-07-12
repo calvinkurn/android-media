@@ -42,7 +42,7 @@ class CategoryViewCreatedTest : TokoNowCategoryViewModelTestFixture() {
         )
         val tickerUiModel = categoryDetailResponse
             .mapToTicker(
-                tickerData = tickerDataList
+                tickerList = tickerDataList.second
             )
         val hasBlockedAddToCart = tickerDataList.first
 
@@ -166,7 +166,7 @@ class CategoryViewCreatedTest : TokoNowCategoryViewModelTestFixture() {
 
         viewModel.categoryFirstPage
             .verifyValueEquals(null)
-        viewModel.oosState
+        viewModel.outOfCoverageState
             .verifyValueEquals(Unit)
     }
 }

@@ -35,9 +35,7 @@ class CategoryFirstPageTest : TokoNowCategoryViewModelTestFixture() {
             )
         )
 
-        viewModel.onViewCreated(
-            navToolbarHeight = navToolbarHeight
-        )
+        viewModel.onViewCreated()
         viewModel.getFirstPage()
 
         // map header space
@@ -56,7 +54,7 @@ class CategoryFirstPageTest : TokoNowCategoryViewModelTestFixture() {
         )
         val tickerUiModel = categoryDetailResponse
             .mapToTicker(
-                tickerData = tickerDataList
+                tickerList = tickerDataList.second
             )
         val hasBlockedAddToCart = tickerDataList.first
 
@@ -127,9 +125,7 @@ class CategoryFirstPageTest : TokoNowCategoryViewModelTestFixture() {
             expectedCategoryIdL2Failed = expectedCategoryIdL2Failed
         )
 
-        viewModel.onViewCreated(
-            navToolbarHeight = navToolbarHeight
-        )
+        viewModel.onViewCreated()
         viewModel.getFirstPage()
 
         // map header space
@@ -148,7 +144,7 @@ class CategoryFirstPageTest : TokoNowCategoryViewModelTestFixture() {
         )
         val tickerUiModel = categoryDetailResponse
             .mapToTicker(
-                tickerData = tickerDataList
+                tickerList = tickerDataList.second
             )
         val hasBlockedAddToCart = tickerDataList.first
 

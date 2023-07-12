@@ -53,7 +53,7 @@ class CategoryProductRecommendationTest : TokoNowCategoryViewModelTestFixture() 
         )
         val tickerUiModel = categoryDetailResponse
             .mapToTicker(
-                tickerData = tickerDataList
+                tickerList = tickerDataList.second
             )
         val hasBlockedAddToCart = tickerDataList.first
 
