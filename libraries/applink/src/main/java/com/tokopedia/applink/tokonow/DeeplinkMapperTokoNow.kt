@@ -12,6 +12,7 @@ object DeeplinkMapperTokopediaNow {
     private const val PARAM_CATEGORY_L2 = "category_l2"
     private const val PARAM_RECIPE_SLUG = "slug"
     private const val PARAM_L1 = "l1"
+    private const val PARAM_L2 = "l2"
 
     private const val RECIPE_SEGMENT_COUNT = 3
     private const val RECIPE_PATH_INDEX = 1
@@ -77,9 +78,20 @@ object DeeplinkMapperTokopediaNow {
         val content = deeplinkWithoutQuery.split("/")
 
         val indexCategoryId = 4
+
         return if (content.getOrElse(indexCategoryId) { "" } == PARAM_L1) {
             val categoryL1 = "$PARAM_CATEGORY_L1=${content.getOrElse(indexCategoryId+1) { "" }}"
             "${ApplinkConstInternalTokopediaNow.CATEGORY}?$categoryL1$queryString"
+        } else if (content.getOrElse(indexCategoryId) { "" } == PARAM_L2) {
+            val categoryL1IdIndex = indexCategoryId + 1
+            val categoryL2IdIndex = indexCategoryId + 2
+
+            val categoryL1 = "$PARAM_CATEGORY_L1=${content.getOrElse(categoryL1IdIndex) { "" }}"
+            val categoryL2 = content.getOrElse(categoryL2IdIndex) { "" }.let {
+                if (it.isNotEmpty()) "&$PARAM_CATEGORY_L2=$it" else ""
+            }
+
+            "${ApplinkConstInternalTokopediaNow.CATEGORY_L2}?$categoryL1$categoryL2$queryString"
         } else {
             val categoryL1 = "$PARAM_CATEGORY_L1=${content.getOrElse(indexCategoryId) { "" }}"
             val categoryL2 = content.getOrElse(indexCategoryId+1) { "" }.let {

@@ -620,6 +620,7 @@ public interface ApplinkConst {
         String SEARCH = "tokopedia://now/search";
         String OLD_CATEGORY = "tokopedia://now/category";
         String CATEGORY = "tokopedia://now/category/l1";
+        String CATEGORY_L2 = "tokopedia://now/category/l2";
         String REPURCHASE = "tokopedia://now/repurchase-page";
         String RECIPE_DETAIL = "tokopedia://now/recipe/detail/{recipe_id}";
         String RECIPE_BOOKMARK = "tokopedia://now/recipe/bookmarks";
