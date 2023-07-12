@@ -59,7 +59,7 @@ import com.tokopedia.scp_rewards_touchpoints.common.HIDDEN
 import com.tokopedia.scp_rewards_touchpoints.common.Loading
 import com.tokopedia.scp_rewards_touchpoints.common.Success
 import com.tokopedia.scp_rewards_touchpoints.common.di.DaggerCelebrationComponent
-import com.tokopedia.scp_rewards_touchpoints.databinding.CelebrationFragmentLayoutBinding
+import com.tokopedia.scp_rewards_touchpoints.databinding.CelebrationBottomSheetFragmentLayoutBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
@@ -99,7 +99,7 @@ class MedalCelebrationBottomSheet : BottomSheetUnify() {
     private var isFallbackCase = false
     private var mandatoryAssetFailure = false
 
-    private var binding: CelebrationFragmentLayoutBinding? = null
+    private var binding: CelebrationBottomSheetFragmentLayoutBinding? = null
     private val handler = Handler(Looper.getMainLooper())
 
     private var assetLoadCount = 0
@@ -130,7 +130,7 @@ class MedalCelebrationBottomSheet : BottomSheetUnify() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = CelebrationFragmentLayoutBinding.inflate(inflater, container, false)
+        binding = CelebrationBottomSheetFragmentLayoutBinding.inflate(inflater, container, false)
 
         setDefaultParams()
         initBottomSheet()

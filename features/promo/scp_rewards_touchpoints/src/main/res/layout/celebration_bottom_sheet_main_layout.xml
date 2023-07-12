@@ -149,7 +149,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/badge_name"
-                layout="@layout/layout_scp_coupon_view"
+                layout="@layout/celebration_bottom_sheet_scp_coupon_view"
                 android:layout_marginTop="20dp"
                 />
 

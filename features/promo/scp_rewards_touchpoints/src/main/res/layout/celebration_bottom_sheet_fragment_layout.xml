@@ -30,7 +30,7 @@
 
                 <include
                     android:id="@+id/main_view"
-                    layout="@layout/celebration_main_layout"
+                    layout="@layout/celebration_bottom_sheet_main_layout"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" />
 
