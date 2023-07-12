@@ -25,7 +25,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -35,6 +34,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
@@ -74,11 +74,13 @@ import com.tokopedia.universal_sharing.usecase.ImagePolicyUseCase
 import com.tokopedia.universal_sharing.util.DateUtil
 import com.tokopedia.universal_sharing.util.MimeType
 import com.tokopedia.universal_sharing.util.UniversalShareConst
+import com.tokopedia.universal_sharing.view.bottomsheet.adapter.ChipsAdapter
 import com.tokopedia.universal_sharing.view.bottomsheet.adapter.ImageListAdapter
 import com.tokopedia.universal_sharing.view.bottomsheet.adapter.ShareBottomSheetAdapter
 import com.tokopedia.universal_sharing.view.bottomsheet.adapter.TickerListAdapter
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
 import com.tokopedia.universal_sharing.view.model.AffiliateInput
+import com.tokopedia.universal_sharing.view.model.ChipProperties
 import com.tokopedia.universal_sharing.view.model.GenerateAffiliateLinkEligibility
 import com.tokopedia.universal_sharing.view.model.LinkProperties
 import com.tokopedia.universal_sharing.view.model.ShareModel
@@ -118,10 +120,6 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
 
     @Inject lateinit var imageGeneratorUseCase: ImageGeneratorUseCase
 
-    private val viewModel: UniversalShareViewModel by lazy {
-        ViewModelProvider(this)[UniversalShareViewModel::class.java]
-    }
-
     // View
     private var fragmentView: View? = null
     private var bottomSheetListener: ShareBottomsheetListener? = null
@@ -137,7 +135,11 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
     private var affiliateRegisterContainer: CardUnify? = null
     private var rvTicker: RecyclerView? = null
 
-    // Optons Flag
+    // View - Chip
+    private var chipOptionHeader: Typography? = null
+    private var lstChip: RecyclerView? = null
+
+    // Options Flag
     private var featureFlagRemoteConfigKey: String = ""
     private var isImageOnlySharing: Boolean = false
     private var screenShotImagePath: String = ""
@@ -171,13 +173,13 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
     private var ogImageUrl: String = ""
     private var savedImagePath: String = ""
     private var shareText: String = ""
-    private var chipList: MutableList<Map<Int, String>> = mutableListOf()
     private var subjectShare: String = ""
     private var linkProperties: LinkProperties? = null
     private var affiliateInput: AffiliateInput? = null
     private var affiliateInputTemp: AffiliateInput? = null
     private var userType: String = KEY_GENERAL_USER
     private var isAffiliateCommissionEnabled = false
+    private var chipListData: List<ChipProperties>? = null
 
     private var showLoader: Boolean = false
     private var handler: Handler? = null
@@ -235,6 +237,20 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
         TickerListAdapter(::onClickTicker)
     }
 
+    private var chipSelectedListener: ChipsAdapter.Listener? = null
+
+    /* flag to show chip list */
+    private var isShowChipList = false
+
+    private val chipListAdapter by lazy {
+        ChipsAdapter(object : ChipsAdapter.Listener {
+            override fun onChipChanged(chip: ChipProperties) {
+                chipSelectedListener?.onChipChanged(chip)
+                setLinkProperties(chip.properties)
+            }
+        })
+    }
+
     override fun getComponent(): UniversalShareComponent? {
         return DaggerUniversalShareComponent.builder().baseAppComponent((LinkerManager.getInstance().context.applicationContext as BaseMainApplication).baseAppComponent)
             .universalShareModule(UniversalShareModule()).universalShareUseCaseModule(UniversalShareUseCaseModule()).build()
@@ -252,7 +268,6 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initObserver()
         initRecyclerView()
         initImageOptionsRecyclerView()
         initAffiliate()
@@ -477,15 +492,16 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
         shareText = text
     }
 
-    fun setChipList(chips: List<Map<Int, String>>, defaultSelectedIndex: Int = -1) {
-        chipList.clear()
-        chipList.addAll(chips)
+    fun setChipList(chips: List<ChipProperties>) {
+        chipListData = chips
+    }
 
-        if (defaultSelectedIndex >= 0) {
-
+    fun onChipChangedListener(invoke: (ChipProperties) -> Unit) {
+        chipSelectedListener = object : ChipsAdapter.Listener {
+            override fun onChipChanged(chip: ChipProperties) {
+                invoke(chip)
+            }
         }
-
-        viewModel.setAction(RenderChips(chipList))
     }
 
     fun setSelectThumbnailImageListener(listener: (imgUrl: String) -> Unit) {
@@ -712,6 +728,10 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
             revImageOptionsContainer = findViewById(R.id.image_list_container)
             imageListViewGroup = findViewById(R.id.image_selection_view_group)
 
+            // chip
+            lstChip = findViewById(R.id.lst_chip)
+            chipOptionHeader = findViewById(R.id.chip_options_heading)
+
             // setting click listeners for fixed options
             copyLinkImage = findViewById(R.id.copy_link_img)
             copyLinkImage?.setBackgroundResource(R.drawable.universal_sharing_ic_ellipse_49)
@@ -733,27 +753,12 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
             setFixedOptionsClickListeners()
 
             setUserVisualData()
+            setChipContentList()
             setTitle(context.getString(R.string.label_to_social_media_text))
             setChild(this)
             setCloseClickListener {
                 bottomSheetListener?.onCloseOptionClicked()
                 dismiss()
-            }
-        }
-    }
-
-    private fun initObserver() {
-        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
-            viewModel.state.collect {
-                when(it.state) {
-                    UiState.CHIP_LIST -> {
-                        // TODO recyclerView
-                    }
-                    UiState.CHIP_SELECTED -> {
-                        // TODO set active selected chip to viewHolder
-                    }
-                    else -> {}
-                }
             }
         }
     }
@@ -770,6 +775,15 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
             rvTicker?.apply {
                 layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
                 adapter = tickerListAdapter
+            }
+        }
+
+        lstChip?.shouldShowWithAction(isShowChipList) {
+            chipOptionHeader?.show()
+
+            lstChip?.apply {
+                layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+                adapter = chipListAdapter
             }
         }
     }
@@ -1316,6 +1330,21 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
         if (getImageFromMedia) {
             shareModel.campaign = shareModel.campaign?.replace(UniversalShareConst.ImageType.KEY_CONTEXTUAL_IMAGE, sourceId)
         }
+    }
+
+    private fun setChipContentList() {
+        if (chipListData == null) return
+
+        /**
+         * The initial chip state should be always placed at the first item,
+         * hence we have to sort it based on [isSelected] attribute.
+         */
+        val chips = chipListData?.sortedByDescending { it.isSelected }
+
+        // validation the chip list visibility
+        isShowChipList = chips?.isNotEmpty() == true
+
+        chipListAdapter.setData(chips)
     }
 
     private fun setUserVisualData() {
