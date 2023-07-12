@@ -14,6 +14,7 @@ import com.tokopedia.scp_rewards.common.data.Loading
 import com.tokopedia.scp_rewards.common.data.ScpResult
 import com.tokopedia.scp_rewards.common.data.Success
 import com.tokopedia.scp_rewards.common.utils.PAGESIZE_PARAM
+import com.tokopedia.scp_rewards.common.utils.PAGE_NAME_PARAM
 import com.tokopedia.scp_rewards.common.utils.PAGE_PARAM
 import com.tokopedia.scp_rewards.common.utils.TYPE_PARAM
 import com.tokopedia.scp_rewards.common.utils.launchCatchError
@@ -62,6 +63,7 @@ class SeeMoreMedaliViewModel @Inject constructor(private val userMedaliUseCase: 
     private fun getRequestParams(badgeType: String, page: Int): RequestParams {
         return RequestParams().apply {
             putString(TYPE_PARAM, badgeType)
+            putString(PAGE_NAME_PARAM, "medali_list_page")
             putInt(PAGE_PARAM, page)
             putInt(PAGESIZE_PARAM, PAGE_SIZE)
         }
