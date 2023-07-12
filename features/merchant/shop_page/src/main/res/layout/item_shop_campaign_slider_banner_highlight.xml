@@ -24,7 +24,8 @@
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="display_1"
         app:typographyWeight="bold"
-        tools:text="Masih banyak produk di toko ini, lho! " />
+        tools:text="Masih banyak produk di toko ini, lho! "
+        android:gravity="center" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_product_image"
