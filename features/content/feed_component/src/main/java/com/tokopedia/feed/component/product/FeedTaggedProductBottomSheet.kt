@@ -37,6 +37,10 @@ class FeedTaggedProductBottomSheet : BottomSheetUnify() {
         (getScreenHeight() * HEIGHT_PERCENT).roundToInt()
     }
 
+    private val minHeight by lazyThreadSafetyNone {
+        (getScreenHeight() * MIN_HEIGHT_PERCENT).roundToInt()
+    }
+
     private val mAdapterListener = object : FeedTaggedProductBottomSheetViewHolder.Listener {
         override fun onProductCardClicked(product: FeedTaggedProductUiModel, itemPosition: Int) {
             mListener?.onProductCardClicked(product, itemPosition)
@@ -113,6 +117,8 @@ class FeedTaggedProductBottomSheet : BottomSheetUnify() {
                                     view.layoutParams = view.layoutParams.apply {
                                         if (view.measuredHeight > maxHeight) {
                                             height = maxHeight
+                                        } else if (view.measuredHeight < minHeight) {
+                                            height = minHeight
                                         } else if (height != ViewGroup.LayoutParams.WRAP_CONTENT) {
                                             height = ViewGroup.LayoutParams.WRAP_CONTENT
                                         }
@@ -219,5 +225,6 @@ class FeedTaggedProductBottomSheet : BottomSheetUnify() {
 
     companion object {
         private const val HEIGHT_PERCENT = 0.8
+        private const val MIN_HEIGHT_PERCENT = 0.2
     }
 }
