@@ -259,7 +259,7 @@ class LoginHelperViewModelTest {
         every { Base64.decode(keyData.key, any()) } returns ByteArray(10)
 
         coEvery { RsaUtils.encrypt(any(), any(), true) } returns "qwerty"
-        coEvery { generatePublicKeyUseCase.executeOnBackground() } returns generateKeyPojo
+        coEvery { generatePublicKeyUseCase() } returns generateKeyPojo
         coEvery { loginTokenV2UseCase.executeOnBackground() } returns responseToken
 
         viewModel.processEvent(LoginHelperEvent.LoginUser(mockEmail, mockPassword, true))
@@ -284,7 +284,7 @@ class LoginHelperViewModelTest {
         every { Base64.decode(keyData.key, any()) } returns ByteArray(10)
 
         coEvery { RsaUtils.encrypt(any(), any(), true) } returns "qwerty"
-        coEvery { generatePublicKeyUseCase.executeOnBackground() } returns generateKeyPojo
+        coEvery { generatePublicKeyUseCase() } returns generateKeyPojo
         coEvery { loginTokenV2UseCase.executeOnBackground() } returns responseToken
 
         viewModel.processEvent(LoginHelperEvent.LoginUser(mockEmail, mockPassword, false))
@@ -312,7 +312,7 @@ class LoginHelperViewModelTest {
         every { Base64.decode(keyData.key, any()) } returns ByteArray(10)
 
         coEvery { RsaUtils.encrypt(any(), any(), true) } returns "qwerty"
-        coEvery { generatePublicKeyUseCase.executeOnBackground() } returns generateKeyPojo
+        coEvery { generatePublicKeyUseCase() } returns generateKeyPojo
         coEvery { loginTokenV2UseCase.executeOnBackground() } returns responseToken
 
         viewModel.processEvent(LoginHelperEvent.LoginUser(mockEmail, mockPassword, true))
@@ -338,7 +338,7 @@ class LoginHelperViewModelTest {
         every { Base64.decode(keyData.key, any()) } returns ByteArray(10)
 
         coEvery { RsaUtils.encrypt(any(), any(), true) } returns "qwerty"
-        coEvery { generatePublicKeyUseCase.executeOnBackground() } returns generateKeyPojo
+        coEvery { generatePublicKeyUseCase() } returns generateKeyPojo
         coEvery { loginTokenV2UseCase.executeOnBackground() } returns responseToken
 
         viewModel.processEvent(LoginHelperEvent.LoginUser(mockEmail, mockPassword, true))
@@ -366,7 +366,7 @@ class LoginHelperViewModelTest {
         every { Base64.decode(keyData.key, any()) } returns ByteArray(10)
 
         coEvery { RsaUtils.encrypt(any(), any(), true) } returns "qwerty"
-        coEvery { generatePublicKeyUseCase.executeOnBackground() } returns generateKeyPojo
+        coEvery { generatePublicKeyUseCase() } returns generateKeyPojo
         coEvery { loginTokenV2UseCase.executeOnBackground() } returns responseToken
 
         viewModel.processEvent(LoginHelperEvent.LoginUser(mockEmail, mockPassword, true))
@@ -391,7 +391,7 @@ class LoginHelperViewModelTest {
         every { Base64.decode(keyData.key, any()) } returns ByteArray(10)
 
         coEvery { RsaUtils.encrypt(any(), any(), true) } returns "qwerty"
-        coEvery { generatePublicKeyUseCase.executeOnBackground() } returns generateKeyPojo
+        coEvery { generatePublicKeyUseCase() } returns generateKeyPojo
         coEvery { loginTokenV2UseCase.executeOnBackground() } returns responseToken
 
         viewModel.processEvent(LoginHelperEvent.LoginUser(mockEmail, mockPassword, true))
@@ -406,7 +406,7 @@ class LoginHelperViewModelTest {
         val keyData = KeyData(key = "", hash = "")
         val generateKeyPojo = GenerateKeyPojo(keyData = keyData)
 
-        coEvery { generatePublicKeyUseCase.executeOnBackground() } returns generateKeyPojo
+        coEvery { generatePublicKeyUseCase() } returns generateKeyPojo
 
         viewModel.processEvent(LoginHelperEvent.LoginUser(mockEmail, mockPassword, true))
 
@@ -417,7 +417,7 @@ class LoginHelperViewModelTest {
 
     @Test
     fun `on Login Email V2 Error`() {
-        coEvery { generatePublicKeyUseCase.executeOnBackground() } throws throwable
+        coEvery { generatePublicKeyUseCase() } throws throwable
 
         viewModel.processEvent(LoginHelperEvent.LoginUser(mockEmail, mockPassword, true))
 
@@ -504,9 +504,6 @@ class LoginHelperViewModelTest {
         every {
             loginTokenV2UseCase.cancelJobs()
         } just runs
-        every {
-            generatePublicKeyUseCase.cancelJobs()
-        } just runs
 
         val method = viewModel::class.java.getDeclaredMethod("onCleared")
         method.isAccessible = true
@@ -515,5 +512,6 @@ class LoginHelperViewModelTest {
         verify { getProfileUseCase.unsubscribe() }
         verify { loginTokenV2UseCase.cancelJobs() }
         verify { generatePublicKeyUseCase.cancelJobs() }
+        verify { getUserDetailsRestCase.cancelJobs() }
     }
 }

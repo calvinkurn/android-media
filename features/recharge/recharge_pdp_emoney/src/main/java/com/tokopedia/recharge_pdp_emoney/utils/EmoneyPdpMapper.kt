@@ -1,6 +1,9 @@
 package com.tokopedia.recharge_pdp_emoney.utils
 
 import com.tokopedia.common.topupbills.data.TopupBillsTicker
+import com.tokopedia.common_digital.common.presentation.model.DigitalDppoConsent
+import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.recharge_pdp_emoney.presentation.model.EmoneyDppoConsentModel
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerData
 
@@ -25,5 +28,11 @@ object EmoneyPdpMapper {
                     }
             )
         }
+    }
+
+    fun mapDppoConsentToEmoneyModel(data: DigitalDppoConsent): EmoneyDppoConsentModel {
+        return EmoneyDppoConsentModel(
+            description = data.persoData.items.getOrNull(Int.ZERO)?.title ?: ""
+        )
     }
 }

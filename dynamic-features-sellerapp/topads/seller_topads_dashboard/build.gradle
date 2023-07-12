@@ -14,6 +14,8 @@ buildscript {
 }
 
 android {
+    namespace 'com.tokopedia.topads.dashboard.sellerapp'
+    testNamespace 'com.tokopedia.topads.dashboard.sellerapp.test'
 
     signingConfigs {
         debug {

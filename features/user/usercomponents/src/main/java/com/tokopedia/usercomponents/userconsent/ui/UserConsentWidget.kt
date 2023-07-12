@@ -542,11 +542,14 @@ class UserConsentWidget :
     }
 
     fun onDestroy() {
+        removeConsentCollectionObserver()
+        lifecycleOwner = null
+    }
+
+    fun removeConsentCollectionObserver() {
         lifecycleOwner?.let {
             viewModel?.consentCollection?.removeObservers(it)
         }
-
-        lifecycleOwner = null
     }
     fun setOnCheckedChangeListener(listener: (Boolean) -> Unit) {
         onCheckedChangeListener = listener

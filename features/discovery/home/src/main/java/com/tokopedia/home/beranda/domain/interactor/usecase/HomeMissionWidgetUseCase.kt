@@ -3,10 +3,10 @@ package com.tokopedia.home.beranda.domain.interactor.usecase
 import android.os.Bundle
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeChooseAddressRepository
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeMissionWidgetRepository
+import com.tokopedia.home.util.QueryParamUtils.convertToLocationParams
 import com.tokopedia.home.beranda.helper.LazyLoadDynamicChannelHelper
 import com.tokopedia.home_component.usecase.missionwidget.GetMissionWidget
 import com.tokopedia.home_component.visitable.MissionWidgetListDataModel
-import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils.convertToLocationParams
 import javax.inject.Inject
 
 /**

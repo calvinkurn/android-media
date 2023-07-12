@@ -87,7 +87,7 @@ object DeeplinkMapper {
 
             DeeplinkConstant.SCHEME_TOKOPEDIA -> {
                 val query = getQuery(deeplink, uri)
-                val tempDeeplink = getRegisteredNavigation(context, getTokopediaSchemeListV2(), uri, deeplink)
+                val tempDeeplink = getRegisteredNavigation(context, getTokopediaSchemeList(), uri, deeplink)
                 UriUtil.appendDiffDeeplinkWithQuery(tempDeeplink, query)
             }
 
@@ -284,7 +284,7 @@ object DeeplinkMapper {
         return ""
     }
 
-    fun getTokopediaSchemeListV2(): Map<String, MutableList<DLP>> {
+    fun getTokopediaSchemeList(): Map<String, MutableList<DLP>> {
         return DeeplinkMainApp.deeplinkPatternTokopediaSchemeListv2
     }
 
@@ -300,7 +300,7 @@ object DeeplinkMapper {
         deeplink: String
     ): String {
         synchronized(LOCK) {
-            val sourceList = sourceMap[uri.host ?: ""]
+            val sourceList = getList(sourceMap, uri)
             if (sourceList == null) {
                 return ""
             } else {
@@ -321,6 +321,10 @@ object DeeplinkMapper {
             }
         }
         return ""
+    }
+
+    fun getList(sourceMap: Map<String, MutableList<DLP>>, uri:Uri):MutableList<DLP>?{
+        return sourceMap[uri.host ?: ""]
     }
 
     // mechanism to bring most frequent deeplink to top of the list
@@ -391,6 +395,8 @@ object DeeplinkMapper {
             deeplink == ApplinkConstInternalUserPlatform.SETTING_PROFILE -> DeeplinkMapperUser.getRegisteredNavigationUser(
                 deeplink
             )
+
+            deeplink.startsWithPattern(ApplinkConstInternalUserPlatform.GOTO_KYC) -> DeeplinkMapperUser.getRegisteredNavigationUser(deeplink)
 
             else -> return ""
         }
