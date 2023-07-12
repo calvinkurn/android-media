@@ -77,7 +77,9 @@ internal object VisitableMapper {
         detailResponse: CategoryDetailResponse,
         tickerList: List<TickerData>
     )  {
-        add(detailResponse.mapToTicker(tickerList))
+        if(tickerList.isNotEmpty()) {
+            add(detailResponse.mapToTicker(tickerList))
+        }
     }
 
     /**

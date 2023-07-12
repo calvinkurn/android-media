@@ -167,7 +167,9 @@ class TokoNowCategoryViewModel @Inject constructor(
         getBatchShowcase()
     }
 
-    override fun loadFirstPage(tickerList: List<TickerData>) {
+    override fun loadFirstPage(
+        tickerList: List<TickerData>
+    ) {
         loadCategoryPage(tickerList)
     }
 
