@@ -26,6 +26,8 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
 android {
+    namespace 'com.tokopedia.track'
+    testNamespace 'com.tokopedia.track.test'
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_11
         targetCompatibility JavaVersion.VERSION_11

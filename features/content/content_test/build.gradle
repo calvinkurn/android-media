@@ -2,6 +2,8 @@ apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 
 android {
+    namespace 'com.tokopedia.content.test'
+    testNamespace 'com.tokopedia.content.test.test'
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_11
         targetCompatibility JavaVersion.VERSION_11
@@ -18,6 +20,8 @@ dependencies {
 
     implementation rootProject.ext.testDependencies.espressoIntents
     implementation rootProject.ext.testDependencies.espressoContrib
+
+    implementation rootProject.ext.unifyDependencies.components
 }
 
 project.ext {

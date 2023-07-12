@@ -23,6 +23,7 @@ import com.tokopedia.user.session.UserSessionInterface
 class NotificationGeneralPromptBottomSheet : BottomSheetUnify() {
 
     private var binding: CmLayoutNotificationsGeneralPromptBinding? = null
+    private var bypassCloseEventTracking = false
 
     private val userSession: UserSessionInterface by lazy(LazyThreadSafetyMode.NONE) {
         UserSession(context)
@@ -171,7 +172,9 @@ class NotificationGeneralPromptBottomSheet : BottomSheetUnify() {
 
     override fun onDismiss(dialog: DialogInterface) {
         super.onDismiss(dialog)
-        sendEventClose()
+        if(!bypassCloseEventTracking) {
+            sendEventClose()
+        }
     }
 
     private fun onTurnOnNotificationClick(activity: FragmentActivity?) {
@@ -181,6 +184,7 @@ class NotificationGeneralPromptBottomSheet : BottomSheetUnify() {
         }
         lastTimeClicked = SystemClock.elapsedRealtime()
         sendEventClickCta()
+        bypassCloseEventTracking = true
         if (isReminderPrompt && activity != null) {
             OpenAppNotificationSettingPage().goToAppNotificationSettingsPage(activity)
             dismiss()

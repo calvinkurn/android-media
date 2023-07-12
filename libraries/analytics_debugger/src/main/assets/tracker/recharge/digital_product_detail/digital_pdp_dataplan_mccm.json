@@ -1,0 +1,78 @@
+{
+  "readme": "Digital PDP paket data mccm horizontal",
+  "mode": "exact",
+  "query": [
+    {
+      "eventAction": "view promo card",
+      "eventCategory": "digital - homepage",
+      "eventLabel": ".*_.*_.*_.*",
+      "event": "view_item_list",
+      "clientId": ".*",
+      "userId": ".*",
+      "trackerId": "26157",
+      "businessUnit": "recharge",
+      "currentSite": "tokopediadigitalRecharge",
+      "sessionIris": ".*",
+      "items": [
+        {
+          "item_id": ".*",
+          "price": ".*",
+          "index": ".*",
+          "item_name": ".*",
+          "item_brand": ".*",
+          "item_variant": ".*",
+          "item_category": ".*"
+        }
+      ]
+    },
+    {
+      "eventAction": "click promo card",
+      "eventCategory": "digital - homepage",
+      "eventLabel": ".*_.*_.*_.*",
+      "event": "select_content",
+      "businessUnit": "recharge",
+      "trackerId": "26163",
+      "currentSite": "tokopediadigitalRecharge",
+      "clientId": ".*",
+      "userId": ".*",
+      "item_list": ".*",
+      "sessionIris": ".*",
+      "items": [
+        {
+          "item_id": ".*",
+          "price": ".*",
+          "index": ".*",
+          "item_name": ".*",
+          "item_brand": ".*",
+          "item_variant": ".*",
+          "item_category": ".*"
+        }
+      ]
+    },
+    {
+      "businessUnit": "recharge",
+      "clientId": ".+",
+      "eventCategory": "digital - homepage",
+      "trackerId": "43960",
+      "currentSite": "tokopediadigitalRecharge",
+      "item_list": ".*",
+      "event": "select_content",
+      "userId": ".*",
+      "eventAction": "click chevron in promo card",
+      "sessionIris": ".*",
+      "items": [
+        {
+          "item_id": ".*",
+          "price": ".*",
+          "dimension40": ".*",
+          "index": ".*",
+          "item_name": ".*",
+          "item_brand": ".*",
+          "item_variant": "mccm",
+          "item_category": ".+"
+        }
+      ],
+      "eventLabel": ".* - .* - .*"
+    }
+  ]
+}
