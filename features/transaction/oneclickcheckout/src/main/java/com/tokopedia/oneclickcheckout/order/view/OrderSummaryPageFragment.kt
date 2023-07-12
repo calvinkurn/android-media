@@ -1774,17 +1774,17 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
     private fun getShippingDurationListener(): ShippingDurationBottomsheetListener =
         object : ShippingDurationBottomsheetListener {
             override fun onShippingDurationChoosen(
-                shippingCourierUiModels: List<ShippingCourierUiModel>?,
+                shippingCourierUiModels: List<ShippingCourierUiModel>,
                 selectedCourier: ShippingCourierUiModel?,
                 recipientAddressModel: RecipientAddressModel?,
                 cartPosition: Int,
                 selectedServiceId: Int,
-                serviceData: ServiceData?,
+                serviceData: ServiceData,
                 flagNeedToSetPinpoint: Boolean,
                 isDurationClick: Boolean,
                 isClearPromo: Boolean
             ) {
-                if (selectedCourier != null && serviceData != null) {
+                if (selectedCourier != null) {
                     orderSummaryAnalytics.eventClickSelectedDurationOptionNew(
                         selectedCourier.productData.shipperProductId.toString(),
                         userSession.get().userId
@@ -1800,13 +1800,13 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
             }
 
             override fun onLogisticPromoChosen(
-                shippingCourierUiModels: List<ShippingCourierUiModel>?,
-                courierData: ShippingCourierUiModel?,
+                shippingCourierUiModels: List<ShippingCourierUiModel>,
+                courierData: ShippingCourierUiModel,
                 recipientAddressModel: RecipientAddressModel?,
                 cartPosition: Int,
-                serviceData: ServiceData?,
+                serviceData: ServiceData,
                 flagNeedToSetPinpoint: Boolean,
-                promoCode: String?,
+                promoCode: String,
                 selectedServiceId: Int,
                 logisticPromo: LogisticPromoUiModel
             ) {

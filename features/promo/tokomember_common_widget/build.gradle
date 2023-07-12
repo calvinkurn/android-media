@@ -13,6 +13,11 @@ buildscript {
     }
 }
 
+android {
+    namespace 'com.tokopedia.tokomember_common_widget'
+    testNamespace 'com.tokopedia.tokomember_common_widget.test'
+}
+
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation projectOrAar(rootProject.ext.libraries.imageAssets)
