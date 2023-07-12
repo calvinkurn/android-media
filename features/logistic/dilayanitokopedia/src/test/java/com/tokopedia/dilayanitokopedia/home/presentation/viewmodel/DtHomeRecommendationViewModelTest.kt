@@ -11,6 +11,7 @@ import com.tokopedia.dilayanitokopedia.domain.usecase.GetRecommendationForYouUse
 import com.tokopedia.dilayanitokopedia.ui.recommendation.DtHomeRecommendationViewModel
 import com.tokopedia.dilayanitokopedia.ui.recommendation.adapter.datamodel.HomeRecommendationDataModel
 import com.tokopedia.dilayanitokopedia.ui.recommendation.adapter.datamodel.HomeRecommendationError
+import com.tokopedia.dilayanitokopedia.ui.recommendation.adapter.datamodel.HomeRecommendationItemDataModel
 import com.tokopedia.dilayanitokopedia.ui.recommendation.adapter.datamodel.HomeRecommendationLoading
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import io.mockk.coEvery
@@ -243,6 +244,40 @@ class DtHomeRecommendationViewModelTest {
         // Then
         assertNotNull(
             viewModel.homeRecommendationLiveData.value?.homeRecommendations?.first()
+        )
+    }
+
+    @Test
+    fun `verify when update wishlist isSuccess`() {
+        val mockResponse = spyk(
+            GetDtHomeRecommendationResponse(
+                GetHomeRecommendationProductV2(
+                    products = arrayListOf(
+                        spyk(
+                            Product()
+                        )
+                    ),
+                    positions = arrayListOf(
+                        Position(
+                            type = TYPE_PRODUCT
+                        )
+                    )
+                )
+            )
+        )
+
+        // Given
+        coEvery {
+            dtGetRecommendationForYouUseCase(any())
+        } returns mockResponse
+
+        // When
+        viewModel.loadInitialPage("")
+        viewModel.updateWishlist("0", 0, true)
+
+        // Then
+        assertTrue(
+            (viewModel.homeRecommendationLiveData.value?.homeRecommendations?.toMutableList()?.get(0) as HomeRecommendationItemDataModel).product.isWishlist
         )
     }
 }
