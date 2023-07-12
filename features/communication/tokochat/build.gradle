@@ -39,8 +39,15 @@ android {
     buildFeatures {
         buildConfig true
     }
-
-
+    sourceSets {
+        main {
+            res {
+                srcDirs 'src/main/res',
+                        'src/main/res/layouts/chatroom',
+                        'src/main/res/layouts/chatlist'
+            }
+        }
+    }
     testOptions {
         unitTests.all {
             jacoco {
