@@ -150,4 +150,20 @@ data class VoucherDetailData(
             )
         }
     }
+
+    fun isGetSubsidy(): Boolean {
+        return when (labelVoucher.labelSubsidyInfo) {
+            SubsidyInfo.NOT_SUBSIDIZED -> {
+                false
+            }
+
+            SubsidyInfo.FULL_SUBSIDIZED, SubsidyInfo.PARTIALLY_SUBSIDIZED -> {
+                true
+            }
+        }
+    }
+
+    fun isFromVps(): Boolean {
+        return labelVoucher.labelCreator == VoucherCreator.VPS
+    }
 }

@@ -122,4 +122,20 @@ data class Voucher(
             endPeriod = finishTime.toDate(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z)
         )
     }
+
+    fun isGetSubsidy(): Boolean {
+        return when (labelVoucher.labelSubsidyInfo) {
+            SubsidyInfo.NOT_SUBSIDIZED -> {
+                false
+            }
+
+            SubsidyInfo.FULL_SUBSIDIZED, SubsidyInfo.PARTIALLY_SUBSIDIZED -> {
+                true
+            }
+        }
+    }
+
+    fun isFromVps(): Boolean {
+        return labelVoucher.labelCreator == VoucherCreator.VPS
+    }
 }

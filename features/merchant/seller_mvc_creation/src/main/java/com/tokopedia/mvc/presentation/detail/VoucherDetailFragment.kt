@@ -61,6 +61,7 @@ import com.tokopedia.mvc.domain.entity.GenerateVoucherImageMetadata
 import com.tokopedia.mvc.domain.entity.VoucherDetailData
 import com.tokopedia.mvc.domain.entity.VoucherDetailWithVoucherCreationMetadata
 import com.tokopedia.mvc.domain.entity.enums.BenefitType
+import com.tokopedia.mvc.domain.entity.enums.ProgramStatus
 import com.tokopedia.mvc.domain.entity.enums.PromoType
 import com.tokopedia.mvc.domain.entity.enums.PromotionStatus
 import com.tokopedia.mvc.domain.entity.enums.SubsidyInfo
@@ -300,8 +301,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                     voucherDetail.labelVoucher.labelSubsidyInfo != SubsidyInfo.FULL_SUBSIDIZED &&
                         voucherDetail.labelVoucher.labelCreator != VoucherCreator.VPS &&
                         voucherDetail.voucherStatus != VoucherStatus.ENDED &&
-                        voucherDetail.subsidyDetail.programDetail.programLabel.isNotEmpty() &&
-                        !isPromotionRejected(voucherDetail)
+                        voucherDetail.subsidyDetail.programDetail.programLabel.isNotEmpty()
                 )
                 tickerTitle = voucherDetail.subsidyDetail.programDetail.programLabel
                 setTextDescription(voucherDetail.subsidyDetail.programDetail.programLabelDetail)
@@ -312,8 +312,8 @@ class VoucherDetailFragment : BaseDaggerFragment() {
     private fun setupRecapSection(data: VoucherDetailData) {
         binding?.run {
             if (data.voucherStatus == VoucherStatus.ENDED &&
-                isSubsidy(data) &&
-                !isPromotionRejected(data)
+                data.isGetSubsidy() &&
+                data.subsidyDetail.programDetail.promotionStatus != PromotionStatus.REJECTED
             ) {
                 if (layoutRecap.parent != null) {
                     layoutRecap.inflate()
@@ -340,7 +340,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                     iconChevron.setImage(IconUnify.CHEVRON_UP)
                 }
             }
-            val usedQuota = data.voucherQuota - data.remainingQuota
+            val usedQuota = data.confirmedGlobalQuota + data.subsidyDetail.quotaSubsidized.confirmedGlobalQuota
             tpgUsedQuota.text = getString(
                 R.string.smvc_placeholder_total_used_quota,
                 usedQuota,
@@ -371,9 +371,9 @@ class VoucherDetailFragment : BaseDaggerFragment() {
             tpgDateTimeStart.dateTime = data.voucherStartTime
             tpgDateTimeEnd.dateTime = data.voucherFinishTime
             setPackage(data)
-            val availableQuota = data.voucherQuota - data.remainingQuota
-            val usedQuotaPercentage = viewModel.getPercentage(availableQuota, data.remainingQuota)
-            tpgUsedVoucherQuota.text = availableQuota.toString()
+            val usedQuota = data.confirmedGlobalQuota + data.subsidyDetail.quotaSubsidized.confirmedGlobalQuota
+            val usedQuotaPercentage = viewModel.getPercentage(usedQuota, data.remainingQuota)
+            tpgUsedVoucherQuota.text = usedQuota.toString()
             tpgAvailableVoucherQuota.text = getString(
                 R.string.smvc_placeholder_voucher_quota,
                 data.voucherQuota
@@ -399,7 +399,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
 
                 VoucherCreator.INTOOLS -> {
                     tpgVpsPackage.apply {
-                        showWithCondition(!isPromotionRejected(data))
+                        showWithCondition(data.subsidyDetail.programDetail.promotionStatus != PromotionStatus.REJECTED)
                         text =
                             getString(
                                 R.string.smvc_placeholder_intools_package_name,
@@ -417,7 +417,10 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                 }
             }
             labelVoucherSource.apply {
-                showWithCondition(isSubsidy(data) && !isPromotionRejected(data))
+                showWithCondition(
+                    data.isGetSubsidy() &&
+                        data.subsidyDetail.programDetail.promotionStatus != PromotionStatus.REJECTED
+                )
                 text = data.labelVoucher.labelSubsidyInfoFormatted
             }
         }
@@ -531,7 +534,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
 
     private fun setupPerformanceSection(data: VoucherDetailData) {
         binding?.run {
-            if (data.voucherStatus == VoucherStatus.ONGOING && isSubsidy(data)) {
+            if (data.voucherStatus == VoucherStatus.ONGOING && data.isGetSubsidy()) {
                 if (layoutPerformance.parent != null) {
                     layoutPerformance.inflate()
                 }
@@ -690,7 +693,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                                 getString(R.string.smvc_percentage_cashback_label)
                             tpgVoucherNominal.text =
                                 data.voucherDiscountAmount.getPercentFormatted()
-                            if (isSubsidy(data) && !isPromotionRejected(data)) {
+                            if (data.isGetSubsidy() && data.subsidyDetail.programDetail.promotionStatus != PromotionStatus.REJECTED) {
                                 llParentInitialCashback.showWithCondition(data.labelVoucher.labelBudgetsVoucher.isNotEmpty())
                                 llParentAdditionalSubsidy.showWithCondition(data.labelVoucher.labelBudgetsVoucher.isNotEmpty())
                                 tpgInitialCashback.text =
@@ -749,7 +752,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
 
     private fun setSubsidyQuota(data: VoucherDetailData) {
         voucherSettingBinding?.run {
-            if (!isSubsidy(data) || isPromotionRejected(data)) return
+            if (!data.isGetSubsidy() || data.subsidyDetail.programDetail.promotionStatus != PromotionStatus.REJECTED) return
             val wording =
                 if (data.labelVoucher.labelSubsidyInfo == SubsidyInfo.FULL_SUBSIDIZED) {
                     getString(R.string.smvc_all_quota_subsidized_label)
@@ -801,8 +804,8 @@ class VoucherDetailFragment : BaseDaggerFragment() {
             else -> getString(R.string.smvc_spending_estimation_title_1)
         }
         val description = when {
-            isVps(data) -> getString(R.string.smvc_spending_estimation_description_2)
-            isSubsidy(data) -> getString(R.string.smvc_spending_estimation_description_3)
+            data.isFromVps() -> getString(R.string.smvc_spending_estimation_description_2)
+            data.isGetSubsidy() -> getString(R.string.smvc_spending_estimation_description_3)
             else -> getString(R.string.smvc_spending_estimation_description_1)
         }
         binding?.run {
@@ -1167,12 +1170,17 @@ class VoucherDetailFragment : BaseDaggerFragment() {
     }
 
     private fun deleteOrStopVoucher(data: VoucherDetailData) {
-        if (isVps(data) ||
-            isSubsidy(data) ||
-            data.subsidyDetail.programDetail.promotionStatus == PromotionStatus.APPROVED ||
-            data.subsidyDetail.programDetail.promotionStatus == PromotionStatus.REGISTERED
+        if (data.isFromVps() ||
+            data.isGetSubsidy() ||
+            data.subsidyDetail.programDetail.programStatus == ProgramStatus.ONGOING
         ) {
-            showCallTokopediaCareDialog(data.voucherStatus)
+            if (data.subsidyDetail.programDetail.promotionStatus == PromotionStatus.APPROVED ||
+                data.subsidyDetail.programDetail.promotionStatus == PromotionStatus.REGISTERED
+            ) {
+                showCallTokopediaCareDialog(data.voucherStatus)
+            } else {
+                showConfirmationStopVoucherDialog(data)
+            }
         } else {
             showConfirmationStopVoucherDialog(data)
         }
@@ -1327,25 +1335,5 @@ class VoucherDetailFragment : BaseDaggerFragment() {
             setTextColorCompat(com.tokopedia.unifyprinciples.R.color.Unify_NN500)
             headerBinding?.iconInfo?.visible()
         }
-    }
-
-    private fun isSubsidy(voucherDetail: VoucherDetailData): Boolean {
-        return when (voucherDetail.labelVoucher.labelSubsidyInfo) {
-            SubsidyInfo.NOT_SUBSIDIZED -> {
-                false
-            }
-
-            SubsidyInfo.FULL_SUBSIDIZED, SubsidyInfo.PARTIALLY_SUBSIDIZED -> {
-                true
-            }
-        }
-    }
-
-    private fun isVps(voucherDetail: VoucherDetailData): Boolean {
-        return voucherDetail.labelVoucher.labelCreator == VoucherCreator.VPS
-    }
-
-    private fun isPromotionRejected(voucherDetail: VoucherDetailData): Boolean {
-        return voucherDetail.subsidyDetail.programDetail.promotionStatus == PromotionStatus.REJECTED
     }
 }
