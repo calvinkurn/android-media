@@ -10,6 +10,7 @@ import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
@@ -18,6 +19,7 @@ import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.mapProd
 import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.removeItem
 import com.tokopedia.tokopedianow.category.domain.usecase.GetCategoryProductUseCase
 import com.tokopedia.tokopedianow.category.presentation.model.CategoryL2Model
+import com.tokopedia.tokopedianow.category.presentation.model.CategoryOpenScreenTrackerModel
 import com.tokopedia.tokopedianow.common.base.viewmodel.BaseTokoNowViewModel
 import com.tokopedia.tokopedianow.common.constant.TokoNowStaticLayoutType.Companion.PRODUCT_ADS_CAROUSEL
 import com.tokopedia.tokopedianow.common.domain.param.GetProductAdsParam
@@ -27,6 +29,7 @@ import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase
 import com.tokopedia.tokopedianow.common.service.NowAffiliateService
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel
+import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Job
@@ -57,18 +60,21 @@ abstract class BaseCategoryViewModel(
 ) {
 
     companion object {
-        private const val INVALID_ID = "0"
+        private const val INVALID_ID = 0L
     }
 
+
+    private val _openScreenTracker: MutableLiveData<CategoryOpenScreenTrackerModel> = MutableLiveData()
     private val _visitableListLiveData = MutableLiveData<List<Visitable<*>>>()
     private val _updateToolbarNotification: MutableLiveData<Boolean> = MutableLiveData()
     private val _refreshState = MutableLiveData<Unit>()
-    private val _oosState = MutableLiveData<Unit>()
+    private val _outOfCoverageState = MutableLiveData<Unit>()
 
+    val openScreenTracker: LiveData<CategoryOpenScreenTrackerModel> = _openScreenTracker
     val visitableListLiveData: LiveData<List<Visitable<*>>> = _visitableListLiveData
     val updateToolbarNotification = _updateToolbarNotification
     val refreshState: LiveData<Unit> = _refreshState
-    val oosState: LiveData<Unit> = _oosState
+    val outOfCoverageState: LiveData<Unit> = _outOfCoverageState
 
     protected val visitableList = mutableListOf<Visitable<*>>()
 
@@ -76,7 +82,12 @@ abstract class BaseCategoryViewModel(
 
     var navToolbarHeight = 0
 
-    protected abstract fun loadFirstPage()
+    var categoryIdL1 = String.EMPTY
+    var categoryIdL2 = String.EMPTY
+    var currentCategoryId = String.EMPTY
+    var queryParamMap: HashMap<String, String>? = hashMapOf()
+
+    protected abstract fun loadFirstPage(tickerList: List<TickerData>)
 
     protected abstract suspend fun loadNextPage()
 
@@ -130,6 +141,10 @@ abstract class BaseCategoryViewModel(
         }
     }
 
+    protected fun sendOpenScreenTracker(id: String, name: String, url: String) {
+        _openScreenTracker.postValue(CategoryOpenScreenTrackerModel(id, name, url))
+    }
+
     protected fun updateToolbarNotification() {
         _updateToolbarNotification.postValue(true)
     }
@@ -175,7 +190,7 @@ abstract class BaseCategoryViewModel(
     }
 
     private fun processLoadDataPage() {
-        val shopId = addressData.getShopId().toString()
+        val shopId = addressData.getShopId()
 
         if (shopId.isValidId()) {
             processLoadDataWithShopId()
@@ -185,12 +200,17 @@ abstract class BaseCategoryViewModel(
     }
 
     private fun processLoadDataWithShopId() {
-        val warehouseId = addressData.getWarehouseId().toString()
+        launchCatchError(block = {
+            val warehouseId = addressData.getWarehouseId()
 
-        if (warehouseId.isValidId()) {
-            loadFirstPage()
-        } else {
-            _oosState.value = Unit
+            if (warehouseId.isValidId()) {
+                val tickerList = getTickerData()
+                loadFirstPage(tickerList)
+            } else {
+                _outOfCoverageState.value = Unit
+            }
+        }) {
+
         }
     }
 
@@ -208,11 +228,25 @@ abstract class BaseCategoryViewModel(
         getMiniCart()
     }
 
+    private suspend fun getTickerData(): List<TickerData> {
+        val tickerData = getTickerDataAsync(
+            warehouseId = getWarehouseId(),
+            page = GetTargetedTickerUseCase.CATEGORY_PAGE
+        ).await()
+
+        return if(tickerData != null) {
+            hasBlockedAddToCart = tickerData.first
+            tickerData.second
+        } else {
+            emptyList()
+        }
+    }
+
     private fun getUniqueId() = if (isLoggedIn()) {
         AuthHelper.getMD5Hash(getUserId())
     } else {
         AuthHelper.getMD5Hash(getDeviceId())
     }
 
-    private fun String.isValidId() = this.isNotEmpty() && this != INVALID_ID
+    private fun Long.isValidId() = this != INVALID_ID
 }

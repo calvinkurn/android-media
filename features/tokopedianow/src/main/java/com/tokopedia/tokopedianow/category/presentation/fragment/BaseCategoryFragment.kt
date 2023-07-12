@@ -1,14 +1,15 @@
 package com.tokopedia.tokopedianow.category.presentation.fragment
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
-import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -43,6 +44,7 @@ import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.category.analytic.CategoryAnalytic
 import com.tokopedia.tokopedianow.category.presentation.adapter.CategoryAdapter
 import com.tokopedia.tokopedianow.category.presentation.adapter.differ.CategoryDiffer
+import com.tokopedia.tokopedianow.category.presentation.callback.TokoNowViewCallback
 import com.tokopedia.tokopedianow.category.presentation.viewmodel.BaseCategoryViewModel
 import com.tokopedia.tokopedianow.common.base.adapter.BaseTokopediaNowDiffer
 import com.tokopedia.tokopedianow.common.constant.RequestCode
@@ -67,7 +69,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
-abstract class BaseCategoryFragment : BaseDaggerFragment(), ScreenShotListener,
+abstract class BaseCategoryFragment : Fragment(), ScreenShotListener,
     ShareBottomsheetListener, PermissionListener, MiniCartWidgetListener,
     NoAddressEmptyStateView.ActionListener {
 
@@ -89,16 +91,14 @@ abstract class BaseCategoryFragment : BaseDaggerFragment(), ScreenShotListener,
     @Inject
     lateinit var analytic: CategoryAnalytic
 
-    protected open val categoryIdL1: String
-        get() = String.EMPTY
-    protected open val currentCategoryId: String
-        get() = String.EMPTY
+    protected var categoryIdL1 = String.EMPTY
+    protected var categoryIdL2 = String.EMPTY
+    protected var currentCategoryId = String.EMPTY
+    protected var queryParamMap: HashMap<String, String>? = hashMapOf()
 
     protected val shopId: String
         get() = viewModel.getShopId().toString()
 
-    private val categoryIdL2: String
-        get() = String.EMPTY
     private val categoryIdL3: String
         get() = String.EMPTY
     private val userId: String
@@ -145,10 +145,22 @@ abstract class BaseCategoryFragment : BaseDaggerFragment(), ScreenShotListener,
 
     abstract fun createAdapterDiffer(): BaseTokopediaNowDiffer
 
+    abstract fun initInjector()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         shareTokonow = createShareTokonow()
+        setCategoryViewModelData()
         setupScreenshotDetector()
+    }
+
+    private fun setCategoryViewModelData() {
+        viewModel.apply {
+            categoryIdL1 = this@BaseCategoryFragment.categoryIdL1
+            categoryIdL2 = this@BaseCategoryFragment.categoryIdL2
+            currentCategoryId = this@BaseCategoryFragment.currentCategoryId
+            queryParamMap = this@BaseCategoryFragment.queryParamMap
+        }
     }
 
     override fun onCreateView(
@@ -162,9 +174,9 @@ abstract class BaseCategoryFragment : BaseDaggerFragment(), ScreenShotListener,
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupView()
-        observeLiveData()
         showShimmeringLayout()
+        observeLiveData()
+        setupView()
     }
 
     override fun onResume() {
@@ -182,6 +194,11 @@ abstract class BaseCategoryFragment : BaseDaggerFragment(), ScreenShotListener,
         SharingUtil.clearState(screenshotDetector)
         recycledViewPool.clear()
         super.onDestroy()
+    }
+
+    override fun onAttach(context: Context) {
+        initInjector()
+        super.onAttach(context)
     }
 
     override fun onShareOptionClicked(shareModel: ShareModel) {
@@ -260,6 +277,18 @@ abstract class BaseCategoryFragment : BaseDaggerFragment(), ScreenShotListener,
 
     override fun onGetNoAddressEmptyStateEventCategoryTracker(): String {
         return NO_ADDRESS_EVENT_TRACKER
+    }
+
+    protected open fun observeLiveData() {
+        observeVisitableList()
+        observeMiniCart()
+        observeAddToCart()
+        observeUpdateCartItem()
+        observeRemoveCartItem()
+        observeRefreshState()
+        observeOutOfCoverageState()
+        observeToolbarNotification()
+        observeOpenLoginPage()
     }
 
     protected open fun setupNavigationToolbar(navToolbar: NavToolbar) {
@@ -368,16 +397,10 @@ abstract class BaseCategoryFragment : BaseDaggerFragment(), ScreenShotListener,
         binding?.rvCategory?.removeOnScrollListener(onScrollListener)
     }
 
-    private fun observeLiveData() {
-        observeVisitableList()
-        observeMiniCart()
-        observeAddToCart()
-        observeUpdateCartItem()
-        observeRemoveCartItem()
-        observeRefreshState()
-        observeOosState()
-        observeToolbarNotification()
-        observeOpenLoginPage()
+    protected fun createTokoNowViewCallback() = TokoNowViewCallback(
+        fragment = this@BaseCategoryFragment
+    ) {
+        viewModel.refreshLayout()
     }
 
     private fun observeVisitableList() {
@@ -433,8 +456,8 @@ abstract class BaseCategoryFragment : BaseDaggerFragment(), ScreenShotListener,
         }
     }
 
-    private fun observeOosState() {
-        viewModel.oosState.observe(viewLifecycleOwner) {
+    private fun observeOutOfCoverageState() {
+        viewModel.outOfCoverageState.observe(viewLifecycleOwner) {
             binding?.showOutOfCoverageLayout()
             analytic.sendOocOpenScreenEvent(viewModel.isLoggedIn())
         }
@@ -487,6 +510,7 @@ abstract class BaseCategoryFragment : BaseDaggerFragment(), ScreenShotListener,
     private fun setNavToolbarHeight(navToolbar: NavToolbar) {
         navToolbar.post {
             viewModel.navToolbarHeight = navToolbarHeight
+            viewModel.onViewCreated()
         }
     }
 
