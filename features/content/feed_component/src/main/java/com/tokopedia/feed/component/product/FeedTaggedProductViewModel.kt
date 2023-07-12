@@ -30,6 +30,10 @@ class FeedTaggedProductViewModel @Inject constructor(
     private var cursor = ""
     private var prevActivityId = ""
 
+    fun setDefaultProducts(products: List<FeedTaggedProductUiModel>) {
+        _feedTagProductList.value = Success(products)
+    }
+
     fun fetchFeedProduct(activityId: String) {
         viewModelScope.launch {
             try {

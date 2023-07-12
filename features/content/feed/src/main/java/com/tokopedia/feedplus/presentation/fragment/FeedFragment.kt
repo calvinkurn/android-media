@@ -45,9 +45,11 @@ import com.tokopedia.feedcomponent.util.util.DataMapper
 import com.tokopedia.feedcomponent.view.widget.FeedExoPlayer
 import com.tokopedia.feedplus.analytics.FeedAnalytics
 import com.tokopedia.feedplus.analytics.FeedMVCAnalytics
+import com.tokopedia.feedplus.data.FeedXCard.Companion.TYPE_FEED_TOP_ADS
 import com.tokopedia.feedplus.databinding.FragmentFeedImmersiveBinding
 import com.tokopedia.feedplus.di.FeedMainInjector
 import com.tokopedia.feedplus.domain.mapper.MapperFeedModelToTrackerDataModel
+import com.tokopedia.feedplus.domain.mapper.MapperProductsToXProducts
 import com.tokopedia.feedplus.presentation.adapter.FeedAdapterTypeFactory
 import com.tokopedia.feedplus.presentation.adapter.FeedContentAdapter
 import com.tokopedia.feedplus.presentation.adapter.listener.FeedListener
@@ -544,7 +546,8 @@ class FeedFragment :
                 author = author,
                 hasVoucher = hasVoucher,
                 products = products,
-                trackerData = trackerModel
+                trackerData = trackerModel,
+                campaign = campaign
             )
             trackerModel?.let {
                 feedAnalytics.eventClickProductTag(it)
@@ -595,7 +598,8 @@ class FeedFragment :
                     author = author,
                     hasVoucher = hasVoucher,
                     products = products,
-                    trackerData = trackerModel
+                    trackerData = trackerModel,
+                    campaign = campaign
                 )
             }
         }
@@ -627,7 +631,8 @@ class FeedFragment :
             author = author,
             hasVoucher = hasVoucher,
             products = products,
-            trackerData = trackerModel
+            trackerData = trackerModel,
+            campaign = campaign
         )
     }
 
@@ -690,7 +695,8 @@ class FeedFragment :
                     author = author,
                     hasVoucher = hasVoucher,
                     products = products,
-                    trackerData = it
+                    trackerData = it,
+                    campaign = campaign
                 )
             }
         }
@@ -791,7 +797,9 @@ class FeedFragment :
             it.rvFeedPost.addOnScrollListener(contentScrollListener)
             it.rvFeedPost.itemAnimator = null
 
-            if (adapter.itemCount == 0) { showLoading() }
+            if (adapter.itemCount == 0) {
+                showLoading()
+            }
         }
     }
 
@@ -1110,8 +1118,11 @@ class FeedFragment :
         author: FeedAuthorModel,
         products: List<FeedCardProductModel>,
         hasVoucher: Boolean,
+        campaign: FeedCardCampaignModel,
         trackerData: FeedTrackerDataModel?
     ) {
+        val taggedProductList: MutableList<FeedTaggedProductUiModel> = mutableListOf()
+
         if (products.isEmpty()) return
 
         val productBottomSheet = FeedTaggedProductBottomSheet().apply {
@@ -1131,14 +1142,25 @@ class FeedFragment :
             }
         }
 
-        if (trackerData != null) trackOpenProductTagBottomSheet(trackerData)
+        if (trackerData != null) {
+            if (trackerData.type == TYPE_FEED_TOP_ADS) {
+                taggedProductList.clear()
+                taggedProductList.addAll(
+                    products.map {
+                        MapperProductsToXProducts.transform(it, campaign)
+                    }
+                )
+            }
+            trackOpenProductTagBottomSheet(trackerData)
+        }
 
         productBottomSheet.show(
             activityId = activityId,
             viewModelOwner = this,
             viewModelFactory = viewModelFactory,
             manager = childFragmentManager,
-            tag = TAG_FEED_PRODUCT_BOTTOM_SHEET
+            tag = TAG_FEED_PRODUCT_BOTTOM_SHEET,
+            products = taggedProductList
         )
         if (hasVoucher && author.type.isShop) getMerchantVoucher(author.id)
     }

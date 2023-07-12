@@ -66,10 +66,6 @@ class FeedTaggedProductBottomSheet : BottomSheetUnify() {
         mListener = listener
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -90,13 +86,12 @@ class FeedTaggedProductBottomSheet : BottomSheetUnify() {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             adapter = mAdapter
         }
-
-        observeProducts()
     }
 
     override fun onResume() {
         super.onResume()
         showLoading()
+        observeProducts()
     }
 
     private fun observeProducts() {
@@ -131,13 +126,15 @@ class FeedTaggedProductBottomSheet : BottomSheetUnify() {
         viewModelOwner: ViewModelStoreOwner,
         viewModelFactory: ViewModelProvider.Factory,
         manager: FragmentManager,
-        tag: String
+        tag: String,
+        products: List<FeedTaggedProductUiModel> = emptyList()
     ) {
         this.activityId = activityId
         viewModel = ViewModelProvider(
             viewModelOwner,
             viewModelFactory
         )[FeedTaggedProductViewModel::class.java]
+        viewModel?.setDefaultProducts(products)
         viewModel?.fetchFeedProduct(activityId)
 
         show(manager, tag)

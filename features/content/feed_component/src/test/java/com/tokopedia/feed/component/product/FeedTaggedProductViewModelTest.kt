@@ -5,6 +5,7 @@ import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCampaign
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXGQLResponse
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXGetActivityProductsResponse
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
+import com.tokopedia.feedcomponent.domain.mapper.ProductMapper
 import com.tokopedia.feedcomponent.domain.usecase.FeedXGetActivityProductsUseCase
 import com.tokopedia.unit.test.rule.UnconfinedTestRule
 import com.tokopedia.usecase.coroutines.Fail
@@ -46,6 +47,26 @@ internal class FeedTaggedProductViewModelTest {
     @Test
     fun onInit() {
         assert(viewModel.shopId.isEmpty())
+    }
+
+    @Test
+    fun defaultProduct() {
+        // given
+        val dummyData = getDummyData()
+        val productList = dummyData.data.products.map {
+            ProductMapper.transform(
+                it,
+                dummyData.data.campaign
+            )
+        }
+
+        // when
+        viewModel.setDefaultProducts(productList)
+
+        // then
+        assert(viewModel.feedTagProductList.value is Success)
+        val response = viewModel.feedTagProductList.value as Success
+        assert(response.data.size == productList.size)
     }
 
     @Test
@@ -98,7 +119,7 @@ internal class FeedTaggedProductViewModelTest {
                 FeedXProduct(),
                 FeedXProduct(),
                 FeedXProduct(),
-                FeedXProduct(),
+                FeedXProduct()
             ),
             isFollowed = true,
             contentType = "content type",
@@ -107,6 +128,4 @@ internal class FeedTaggedProductViewModelTest {
             hasVoucher = false
         )
     )
-
-
 }
