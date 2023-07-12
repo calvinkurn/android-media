@@ -13,6 +13,11 @@ buildscript {
     }
 }
 
+android {
+    namespace 'com.tokopedia.tokomember'
+    testNamespace 'com.tokopedia.tokomember.test'
+}
+
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 

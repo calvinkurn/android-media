@@ -15,6 +15,11 @@ buildscript {
         classpath rootProject.ext.miscDependencies.hansel
     }
 }
+android {
+    namespace 'com.tokopedia.installreferral'
+    testNamespace 'com.tokopedia.installreferral.test'
+}
+
 dependencies {
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
     implementation projectOrAar(rootProject.ext.libraries.track)

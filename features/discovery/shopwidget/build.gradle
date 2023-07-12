@@ -19,6 +19,8 @@ buildscript {
 }
 
 android {
+    namespace 'com.tokopedia.shopwidget'
+    testNamespace 'com.tokopedia.shopwidget.test'
     defaultConfig {
         multiDexEnabled true
         testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"

@@ -243,7 +243,7 @@ class CommentViewModelTest {
         robot.use {
             val comment = it.recordComments {
                 submitAction(
-                    CommentAction.SelectComment(item)
+                    CommentAction.SelectComment(item.id)
                 )
                 submitAction(
                     CommentAction.PermanentRemoveComment
@@ -274,7 +274,7 @@ class CommentViewModelTest {
         robot.use {
             val comment = it.recordComments {
                 submitAction(
-                    CommentAction.SelectComment(item)
+                    CommentAction.SelectComment(item.id)
                 )
                 submitAction(
                     CommentAction.DeleteComment(isFromToaster = true)
@@ -303,7 +303,7 @@ class CommentViewModelTest {
         robot.use {
             val comment = it.recordComments {
                 submitAction(
-                    CommentAction.SelectComment(item)
+                    CommentAction.SelectComment(item.id)
                 )
                 submitAction(
                     CommentAction.DeleteComment(false)
@@ -332,7 +332,7 @@ class CommentViewModelTest {
         robot.use {
             val event = it.recordEvent {
                 submitAction(
-                    CommentAction.SelectComment(item)
+                    CommentAction.SelectComment(item.id)
                 )
                 submitAction(
                     CommentAction.DeleteComment(false)

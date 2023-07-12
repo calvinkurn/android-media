@@ -6,6 +6,8 @@ import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
 import com.tokopedia.play_common.model.ui.QuizChoicesUiModel
+import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
+import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.model.ShareModel
 
 /**
@@ -78,8 +80,8 @@ object SetChannelActiveAction : PlayViewerNewAction()
  * Sharing Experience
  */
 object ShowShareExperienceAction : PlayViewerNewAction()
-data class ClickSharingOptionAction(val shareModel: ShareModel) : PlayViewerNewAction()
-object CloseSharingOptionAction : PlayViewerNewAction()
+data class ClickSharingOptionAction(val shareModel: ShareModel, val isScreenshotBottomSheet: Boolean) : PlayViewerNewAction()
+data class CloseSharingOptionAction(val isScreenshotBottomSheet: Boolean) : PlayViewerNewAction()
 object ScreenshotTakenAction : PlayViewerNewAction()
 data class SharePermissionAction(val label: String) : PlayViewerNewAction()
 

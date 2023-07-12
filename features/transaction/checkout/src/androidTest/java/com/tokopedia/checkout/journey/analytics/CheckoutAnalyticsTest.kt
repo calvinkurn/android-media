@@ -40,7 +40,7 @@ class CheckoutAnalyticsTest {
             addMockResponse(RATES_V3_KEY, InstrumentationMockHelper.getRawString(context, R.raw.ratesv3_analytics_default_response), MockModelConfig.FIND_BY_CONTAINS)
             addMockResponse(VALIDATE_USE_KEY, InstrumentationMockHelper.getRawString(context, R.raw.validate_use_analytics_default_response), MockModelConfig.FIND_BY_CONTAINS)
             addMockResponse(CHECKOUT_KEY, InstrumentationMockHelper.getRawString(context, R.raw.checkout_analytics_default_response), MockModelConfig.FIND_BY_CONTAINS)
-            addMockResponse(GET_PAYMENT_FEE_CHECKOUT, InstrumentationMockHelper.getRawString(context, R.raw.get_payment_fee_checkout_response), MockModelConfig.FIND_BY_CONTAINS)
+            addMockResponse(GET_PAYMENT_FEE_CHECKOUT, InstrumentationMockHelper.getRawString(context, R.raw.payment_fee_default_response), MockModelConfig.FIND_BY_CONTAINS)
         }
     }
 
@@ -67,7 +67,7 @@ class CheckoutAnalyticsTest {
     }
 
     companion object {
-        private const val SHIPMENT_ADDRESS_FORM_KEY = "shipment_address_form_v3"
+        private const val SHIPMENT_ADDRESS_FORM_KEY = "shipmentAddressFormV4"
         private const val SAVE_SHIPMENT_KEY = "save_shipment"
         private const val RATES_V3_KEY = "ratesV3"
         private const val VALIDATE_USE_KEY = "validate_use_promo_revamp"

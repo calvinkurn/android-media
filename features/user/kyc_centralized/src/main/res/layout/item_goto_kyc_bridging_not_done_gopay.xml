@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal"
+    android:baselineAligned="false">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:background="@drawable/card_border"
+        android:layout_weight="1"
+        android:padding="24dp">
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/iv_ktp"
+            android:layout_width="72dp"
+            android:layout_height="0dp"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_number_ktp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/ic_circle_green"
+            android:gravity="center"
+            android:text="@string/goto_kyc_bridging_not_done_gopay_item_ktp_number"
+            android:textColor="@color/Unify_NN0"
+            android:layout_marginTop="16dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/iv_ktp"
+            app:typographyType="display_2"
+            app:typographyWeight="bold"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_ktp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/goto_kyc_bridging_not_done_gopay_item_ktp_title"
+            android:layout_marginStart="8dp"
+            app:layout_constrainedWidth="true"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_number_ktp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/tv_number_ktp"
+            app:layout_constraintTop_toTopOf="@id/tv_number_ktp"
+            app:typographyType="display_2"
+            app:typographyWeight="bold" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:background="@drawable/card_border"
+        android:padding="24dp" >
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/iv_selfie"
+            android:layout_width="72dp"
+            android:layout_height="0dp"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_number_selfie"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/ic_circle_green"
+            android:gravity="center"
+            android:text="@string/goto_kyc_bridging_not_done_gopay_item_selfie_number"
+            android:textColor="@color/Unify_NN0"
+            android:layout_marginTop="16dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/iv_selfie"
+            app:typographyType="display_2"
+            app:typographyWeight="bold"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_selfie"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/goto_kyc_bridging_not_done_gopay_item_selfie_title"
+            android:layout_marginStart="8dp"
+            app:layout_constrainedWidth="true"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_number_selfie"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/tv_number_selfie"
+            app:layout_constraintTop_toTopOf="@id/tv_number_selfie"
+            app:typographyType="display_2"
+            app:typographyWeight="bold" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</LinearLayout>

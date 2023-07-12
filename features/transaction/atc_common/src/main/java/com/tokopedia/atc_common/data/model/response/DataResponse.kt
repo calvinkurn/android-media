@@ -8,55 +8,55 @@ import com.google.gson.annotations.SerializedName
  */
 
 data class DataResponse(
-        @SerializedName("success")
-        @Expose
-        val success: Int = 0,
+    @SerializedName("success")
+    @Expose
+    val success: Int = 0,
 
-        @SerializedName("cart_id")
-        @Expose
-        val cartId: String = "",
+    @SerializedName("cart_id")
+    @Expose
+    val cartId: String = "",
 
-        @SerializedName("product_id")
-        @Expose
-        val productId: String = "",
+    @SerializedName("product_id")
+    @Expose
+    val productId: String = "",
 
-        @SerializedName("quantity")
-        @Expose
-        val quantity: Int = 0,
+    @SerializedName("quantity")
+    @Expose
+    val quantity: Int = 0,
 
-        @SerializedName("notes")
-        @Expose
-        val notes: String = "",
+    @SerializedName("notes")
+    @Expose
+    val notes: String = "",
 
-        @SerializedName("shop_id")
-        @Expose
-        val shopId: String = "",
+    @SerializedName("shop_id")
+    @Expose
+    val shopId: String = "",
 
-        @SerializedName("customer_id")
-        @Expose
-        val customerId: String = "",
+    @SerializedName("customer_id")
+    @Expose
+    val customerId: String = "",
 
-        @SerializedName("warehouse_id")
-        @Expose
-        val warehouseId: String = "",
+    @SerializedName("warehouse_id")
+    @Expose
+    val warehouseId: String = "",
 
-        @SerializedName("tracker_attribution")
-        @Expose
-        val trackerAttribution: String = "",
+    @SerializedName("tracker_attribution")
+    @Expose
+    val trackerAttribution: String = "",
 
-        @SerializedName("tracker_list_name")
-        @Expose
-        val trackerListName: String = "",
+    @SerializedName("tracker_list_name")
+    @Expose
+    val trackerListName: String = "",
 
-        @SerializedName("uc_ut_param")
-        @Expose
-        val ucUtParam: String = "",
+    @SerializedName("uc_ut_param")
+    @Expose
+    val ucUtParam: String = "",
 
-        @SerializedName("is_trade_in")
-        @Expose
-        val isTradeIn: Boolean = false,
+    @SerializedName("is_trade_in")
+    @Expose
+    val isTradeIn: Boolean = false,
 
-        @SerializedName("message")
-        @Expose
-        val message: ArrayList<String> = arrayListOf()
+    @SerializedName("message")
+    @Expose
+    val message: ArrayList<String> = arrayListOf()
 )
