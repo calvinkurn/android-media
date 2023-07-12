@@ -12,8 +12,6 @@ import com.tokopedia.gopayhomewidget.domain.usecase.GetPayLaterWidgetUseCase
 import com.tokopedia.home.beranda.data.datasource.local.HomeRoomDataSource
 import com.tokopedia.home.beranda.data.mapper.HomeDataMapper
 import com.tokopedia.home.beranda.data.mapper.HomeDynamicChannelDataMapper
-import com.tokopedia.home.beranda.data.model.PlayChannel
-import com.tokopedia.home.beranda.data.model.PlayData
 import com.tokopedia.home.beranda.domain.interactor.GetDynamicChannelsUseCase
 import com.tokopedia.home.beranda.domain.interactor.GetRechargeBUWidgetUseCase
 import com.tokopedia.home.beranda.domain.interactor.InjectCouponTimeBasedUseCase
@@ -26,7 +24,6 @@ import com.tokopedia.home.beranda.domain.interactor.repository.HomeHeadlineAdsRe
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeIconRepository
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeMissionWidgetRepository
 import com.tokopedia.home.beranda.domain.interactor.repository.HomePageBannerRepository
-import com.tokopedia.home.beranda.domain.interactor.repository.HomePlayLiveDynamicRepository
 import com.tokopedia.home.beranda.domain.interactor.repository.HomePlayRepository
 import com.tokopedia.home.beranda.domain.interactor.repository.HomePopularKeywordRepository
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeRechargeRecommendationRepository
@@ -63,7 +60,6 @@ import com.tokopedia.home.beranda.domain.model.salam_widget.SalamWidget
 import com.tokopedia.home.beranda.helper.RateLimiter
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDynamicChannelModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.CarouselPlayWidgetDataModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomeHeaderDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.NewBusinessUnitWidgetDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PopularKeywordListDataModel
@@ -165,7 +161,6 @@ fun createHomeDynamicChannelUseCase(
     remoteConfig: RemoteConfig = mockk(relaxed = true),
     homePlayRepository: HomePlayRepository = mockk(relaxed = true),
     homeReviewSuggestedRepository: HomeReviewSuggestedRepository = mockk(relaxed = true),
-    homePlayLiveDynamicRepository: HomePlayLiveDynamicRepository = mockk(relaxed = true),
     homePopularKeywordRepository: HomePopularKeywordRepository = mockk(relaxed = true),
     homeHeadlineAdsRepository: HomeHeadlineAdsRepository = mockk(relaxed = true),
     homeRecommendationRepository: HomeRecommendationRepository = mockk(relaxed = true),
@@ -195,7 +190,6 @@ fun createHomeDynamicChannelUseCase(
         remoteConfig = remoteConfig,
         homePlayRepository = homePlayRepository,
         homeReviewSuggestedRepository = homeReviewSuggestedRepository,
-        homePlayLiveDynamicRepository = homePlayLiveDynamicRepository,
         homePopularKeywordRepository = homePopularKeywordRepository,
         homeHeadlineAdsRepository = homeHeadlineAdsRepository,
         homeRecommendationRepository = homeRecommendationRepository,
@@ -366,10 +360,6 @@ fun HomeDynamicChannelUseCase.givenGetHomeDataReturn(homeDynamicChannelModel: Ho
     }
 }
 
-fun HomeDynamicChannelUseCase.givenGetDynamicChannelsUseCase(dynamicChannelDataModels: List<DynamicChannelDataModel>) {
-    coEvery { onDynamicChannelExpired(any()) } returns dynamicChannelDataModels
-}
-
 fun createDefaultHomeDataModel(): HomeDynamicChannelModel {
     return HomeDynamicChannelModel(
         list = listOf<Visitable<*>>(
@@ -379,13 +369,6 @@ fun createDefaultHomeDataModel(): HomeDynamicChannelModel {
             DynamicLegoBannerDataModel(ChannelModel(id = "4", groupId = "1")),
             DynamicLegoBannerDataModel(ChannelModel(id = "5", groupId = "1"))
         )
-    )
-}
-
-fun HomePlayLiveDynamicRepository.givenGetPlayLiveDynamicUseCaseReturn(channel: PlayChannel) {
-    setParams()
-    coEvery { executeOnBackground() } returns PlayData(
-        playChannels = listOf(channel)
     )
 }
 

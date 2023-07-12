@@ -8,19 +8,19 @@ import com.google.gson.annotations.SerializedName
  */
 
 data class AddToCartResponse(
-        @SerializedName("error_message")
-        @Expose
-        val errorMessage: ArrayList<String> = arrayListOf(),
+    @SerializedName("error_message")
+    @Expose
+    val errorMessage: ArrayList<String> = arrayListOf(),
 
-        @SerializedName("status")
-        @Expose
-        val status: String = "",
+    @SerializedName("status")
+    @Expose
+    val status: String = "",
 
-        @SerializedName("data")
-        @Expose
-        val data: DataResponse = DataResponse(),
+    @SerializedName("data")
+    @Expose
+    val data: DataResponse = DataResponse(),
 
-        @SerializedName("error_reporter")
-        @Expose
-        val errorReporter: ErrorReporterResponse = ErrorReporterResponse()
+    @SerializedName("error_reporter")
+    @Expose
+    val errorReporter: ErrorReporterResponse = ErrorReporterResponse()
 )
