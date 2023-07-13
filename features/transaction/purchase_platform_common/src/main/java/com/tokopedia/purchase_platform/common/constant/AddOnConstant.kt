@@ -10,6 +10,7 @@ object AddOnConstant {
     const val EXTRA_ADD_ON_NAME = "ADD_ON_NAME"
     const val EXTRA_ADD_ON_PRICE = "ADD_ON_PRICE"
 
+    const val ADD_ONS_PRODUCT_SERVICE = "add_ons"
     const val ADD_ON_LEVEL_PRODUCT = "product"
     const val ADD_ON_LEVEL_ORDER = "order"
     const val ADD_ON_SOURCE_OCC = "order summary"
