@@ -123,4 +123,8 @@
 
     <string name="collection_privacy_message">Cuma kamu yang bisa melihat Koleksi ini, kecuali kalau kamu membagikannya ke orang lain.</string>
     <string name="collection_other_select_items_label">Pilih Barang (%s)</string>
+
+    <string name="wishlist_affiliate_ticker_title">Dari Wishlist jadi komisi!💰</string>
+    <string name="wishlist_affiliate_ticker_desc">Buat Koleksi Wishlist &amp; bagikan link-nya buat dapet komisi dari Tokopedia Affiliate!</string>
+    <string name="wishlist_affiliate_ticker_cta">Pelajari</string>
 </resources>
