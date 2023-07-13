@@ -29,4 +29,8 @@ interface EPharmacyListener {
     fun onEndAnimation(adapterPosition: Int, modelKey: String?) {}
 
     fun onToast(toasterType: Int, message: String) {}
+
+    interface EPharmacyCheckoutListener {
+
+    }
 }

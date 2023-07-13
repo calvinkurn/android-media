@@ -306,7 +306,7 @@ class UploadPrescriptionFragment : BaseDaggerFragment(), EPharmacyListener {
     }
 
     private fun observeUploadPrescriptionIdsData() {
-        uploadPrescriptionViewModel.uploadPrescriptionIdsData.observe(viewLifecycleOwner, {
+        uploadPrescriptionViewModel.uploadPrescriptionIdsData.observe(viewLifecycleOwner) {
             ePharmacyLoader?.hide()
             when (it) {
                 is Success -> {
@@ -317,11 +317,14 @@ class UploadPrescriptionFragment : BaseDaggerFragment(), EPharmacyListener {
                         sendResultToCheckout()
                     }
                 }
+
                 is Fail -> {
                     if (it.throwable is UnknownHostException ||
                         it.throwable is SocketTimeoutException
                     ) {
-                        showToast(context?.resources?.getString(R.string.epharmacy_internet_error) ?: "")
+                        showToast(
+                            context?.resources?.getString(R.string.epharmacy_internet_error) ?: ""
+                        )
                     } else {
                         it.throwable.message?.let { errorMessage ->
                             showToast(errorMessage)
@@ -329,7 +332,7 @@ class UploadPrescriptionFragment : BaseDaggerFragment(), EPharmacyListener {
                     }
                 }
             }
-        })
+        }
     }
 
     private fun observerUploadPrescriptionError() {

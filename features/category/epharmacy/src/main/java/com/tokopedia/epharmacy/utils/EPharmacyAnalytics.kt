@@ -22,6 +22,7 @@ interface CategoryKeys {
     companion object {
         const val UPLOAD_PRESCRIPTION_PAGE = "upload prescription page"
         const val ATTACH_PRESCRIPTION_PAGE = "epharmacy attach prescription page"
+        const val EPHARMACY_CHECKOUT_PAGE = "epharmacy checkout page"
     }
 }
 

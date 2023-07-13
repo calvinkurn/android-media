@@ -23,6 +23,8 @@ object EPharmacyMapper {
             info,
             group.consultationData?.consultationStatus,
             group.consultationData?.consultationString,
+            "Rp0",
+            "15 Merit",
             group.consultationData?.prescription,
             group.consultationData?.partnerConsultationId,
             group.consultationData?.tokoConsultationId.toLongOrZero(),

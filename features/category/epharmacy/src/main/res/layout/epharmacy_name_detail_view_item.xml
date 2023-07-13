@@ -13,7 +13,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:typographyType="body_2"
-        tools:text="Jenis Layanan"
+        android:text="@string/epharmacy_jenis_layanan"
         />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -24,7 +24,7 @@
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginTop="4dp"
         app:typographyType="body_2"
-        tools:text="Penyedia Layanan"
+        android:text="@string/epharmacy_penyedia_layanan"
         />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -35,7 +35,7 @@
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginTop="4dp"
         app:typographyType="body_2"
-        tools:text="Durasi"
+        android:text="@string/epharmacy_durasi"
         />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -46,7 +46,7 @@
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginTop="4dp"
         app:typographyType="body_2"
-        tools:text="Biaya Chat Doker"
+        android:text="@string/epharmacy_biaya_chat_dokter"
         />
 
     <androidx.constraintlayout.widget.Barrier

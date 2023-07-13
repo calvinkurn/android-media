@@ -39,6 +39,14 @@
     <string name="epharmacy_show_more">Tampilkan lebih banyak</string>
     <string name="epharmacy_show_less">Tampilkan lebih sedikit</string>
     <string name="epharmacy_baru">BARU</string>
-    <string name="epharmacy_mau_tahu_selengkapnya">Mau tahu selengkapnya? </string>
-    <string name="epharmacy_pelajari">Pelajari</string>
+    <string name="epharmacy_mau_tahu_selengkapnya">Mau tahu selengkapnya?</string>
+    <string name="epharmacy_pelajari"> Pelajari</string>
+    <string name="epharmacy_chat_dokter">Chat Dokter</string>
+    <string name="epharmacy_ringkasan_pembayaran">Ringkasan Pembayaran</string>
+    <string name="epharmacy_subtotal_tagihan">Subtotal Tagihan</string>
+    <string name="epharmacy_checkout_page_title">Checkout</string>
+    <string name="epharmacy_durasi">Durasi</string>
+    <string name="epharmacy_biaya_chat_dokter">Biaya Chat Dokter</string>
+    <string name="epharmacy_jenis_layanan">Jenis Layanan</string>
+    <string name="epharmacy_penyedia_layanan">Penyedia Layanan</string>
 </resources>

@@ -92,7 +92,7 @@
             app:layout_constraintStart_toStartOf="@id/divider"
             android:layout_marginTop="8dp"
             app:typographyType="paragraph_3"
-            tools:text="Biaya Chat Doker"
+            android:text="@string/epharmacy_biaya_chat_dokter"
             />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -103,7 +103,7 @@
             app:layout_constraintStart_toStartOf="@id/fee"
             android:layout_marginTop="4dp"
             app:typographyType="paragraph_3"
-            tools:text="Durasi"
+            android:text="@string/epharmacy_durasi"
             />
 
         <androidx.constraintlayout.widget.Barrier
