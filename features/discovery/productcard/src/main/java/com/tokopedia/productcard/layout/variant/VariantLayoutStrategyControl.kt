@@ -92,7 +92,6 @@ internal class VariantLayoutStrategyControl : VariantLayoutStrategy {
         else 0
     }
 
-    override fun isSingleLine(willShowVariant: Boolean): Boolean = willShowVariant
     private fun LinearLayout.addLabelVariantColor(
         labelVariant: ProductCardModel.LabelGroupVariant,
         hasMarginStart: Boolean,

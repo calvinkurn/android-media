@@ -23,6 +23,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadIcon
+import com.tokopedia.productcard.layout.LayoutStrategyBestSeller
 import com.tokopedia.productcard.utils.CLOSE_BOLD_TAG
 import com.tokopedia.productcard.utils.CustomTypefaceSpan
 import com.tokopedia.productcard.utils.OPEN_BOLD_TAG
@@ -84,21 +85,21 @@ private fun View.renderTextProductName(productCardModel: ProductCardModel) {
     textViewProductName?.shouldShowWithAction(productCardModel.productName.isNotEmpty()) {
         val productNameFromHtml = MethodChecker.fromHtml(productCardModel.productName)
         TextAndContentDescriptionUtil.setTextAndContentDescription(it, productNameFromHtml.toString(), context.getString(R.string.content_desc_textViewProductName))
+
+        val willShowVariant = productCardModel.willShowVariant()
+
+        if (productCardModel.layoutStrategy.isSingleLine(willShowVariant)) {
+            it.isSingleLine = true
+        } else {
+            it.isSingleLine = false
+            it.maxLines = 2
+            it.ellipsize = TextUtils.TruncateAt.END
+        }
     }
 }
 
 private fun View.renderLabelGroupVariant(productCardModel: ProductCardModel) {
-    val textViewProductName = findViewById<Typography?>(R.id.textViewProductName)
     val willShowVariant = productCardModel.willShowVariant()
-
-    if (productCardModel.layoutStrategy.isSingleLine(willShowVariant)) {
-        textViewProductName?.isSingleLine = true
-    }
-    else {
-        textViewProductName?.isSingleLine = false
-        textViewProductName?.maxLines = 2
-        textViewProductName?.ellipsize = TextUtils.TruncateAt.END
-    }
 
     productCardModel.layoutStrategy.renderVariant(
         willShowVariant,
