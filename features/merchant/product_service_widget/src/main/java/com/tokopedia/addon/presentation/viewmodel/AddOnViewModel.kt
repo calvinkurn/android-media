@@ -1,6 +1,5 @@
 package com.tokopedia.addon.presentation.viewmodel
 
-import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
@@ -13,7 +12,6 @@ import com.tokopedia.addon.presentation.uimodel.AddOnPageResult
 import com.tokopedia.gifting.domain.usecase.GetAddOnUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.purchase_platform.common.feature.addons.domain.SaveAddOnStateUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -74,6 +72,10 @@ class AddOnViewModel @Inject constructor(
     var lastSelectedAddOn: List<AddOnGroupUIModel> = emptyList()
     var isSimplified = false
 
+    private fun generateEmptyAggregatedData(): AddOnPageResult.AggregatedData {
+        return AddOnPageResult.AggregatedData(isGetDataSuccess = true)
+    }
+
     fun getAddOn(productId: String, warehouseId: String, isTokocabang: Boolean, isSimplified: Boolean) {
         this.isSimplified = isSimplified
         launchCatchError(block = {
@@ -125,7 +127,11 @@ class AddOnViewModel @Inject constructor(
         }
     }
 
-    fun getAddOnAggregatedData(context: Context, addOnIds: List<String>) {
+    fun getAddOnAggregatedData(addOnIds: List<String>) {
+        if (addOnIds.isEmpty()) {
+            mAggregatedData.value = generateEmptyAggregatedData()
+            return
+        }
         launchCatchError(block = {
             val result = withContext(dispatchers.io) {
                 getAddOnDetailUseCase.setParams(addOnIds)
@@ -138,10 +144,10 @@ class AddOnViewModel @Inject constructor(
                 getDataErrorMessage = result.error.messages
             )
         }, onError = {
-                mAggregatedData.value = AddOnPageResult.AggregatedData(
-                    getDataErrorMessage = ErrorHandler.getErrorMessage(context, it)
-                )
-            })
+            mAggregatedData.value = AddOnPageResult.AggregatedData(
+                getDataErrorMessage = getAddOnDetailUseCase.getErrorString(it)
+            )
+        })
     }
 
     fun setAutosave(cartId: Long, atcSource: String) {

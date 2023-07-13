@@ -30,6 +30,7 @@ class ChatbotRejectReasonsBottomSheet : BottomSheetUnify() {
     private var charCount: Long = 0
     private var selectedReasonList = mutableListOf<DynamicAttachmentRejectReasons.RejectReasonFeedbackForm.RejectReasonReasonChip>()
     private var isSendButtonClicked: Boolean = false
+    private var reasonTextString: String = ""
 
     init {
         isFullpage = false
@@ -101,6 +102,10 @@ class ChatbotRejectReasonsBottomSheet : BottomSheetUnify() {
         }
     }
 
+    fun clearChipList() {
+        reasonsAdapter?.selectedList?.clear()
+    }
+
     private fun BottomSheetChatbotReasonsBinding.setUpClickListener() {
         btnSubmit.setOnClickListener {
             isSendButtonClicked = true
@@ -116,10 +121,18 @@ class ChatbotRejectReasonsBottomSheet : BottomSheetUnify() {
 
         setOnDismissListener {
             if (!isSendButtonClicked) {
-                listener?.isDismissClicked(true)
+                listener?.isDismissClicked(
+                    true,
+                    binding?.reasonText?.editText?.text?.toString()?.trim() ?: ""
+                )
             }
         }
     }
+
+    fun setText(text: String) {
+        reasonTextString = text
+    }
+
     private fun getMyLayoutManager(): RecyclerView.LayoutManager {
         val gridLayoutManager = GridLayoutManager(context, GRID_SPAN_2)
         gridLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
@@ -183,15 +196,22 @@ class ChatbotRejectReasonsBottomSheet : BottomSheetUnify() {
         return words.count { it != ' ' }
     }
 
+    override fun onResume() {
+        super.onResume()
+        binding?.reasonText?.editText?.setText(reasonTextString)
+    }
+
     companion object {
 
         fun newInstance(
             rejectReasonFeedbackForm: DynamicAttachmentRejectReasons? = null,
-            reasonList: MutableList<DynamicAttachmentRejectReasons.RejectReasonFeedbackForm.RejectReasonReasonChip>
+            reasonList: MutableList<DynamicAttachmentRejectReasons.RejectReasonFeedbackForm.RejectReasonReasonChip>,
+            text: String
         ): ChatbotRejectReasonsBottomSheet {
             return ChatbotRejectReasonsBottomSheet().apply {
                 this.rejectReasonFeedbackForm = rejectReasonFeedbackForm
                 this.selectedReasonList = reasonList
+                this.reasonTextString = text
             }
         }
 
@@ -209,6 +229,6 @@ class ChatbotRejectReasonsBottomSheet : BottomSheetUnify() {
             helpfulQuestion: DynamicAttachmentRejectReasons.RejectReasonHelpfulQuestion?
         )
 
-        fun isDismissClicked(isDismissClickOnRejectReasons: Boolean)
+        fun isDismissClicked(isDismissClickOnRejectReasons: Boolean, text: String)
     }
 }

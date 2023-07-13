@@ -414,7 +414,7 @@ class ShipmentMapper @Inject constructor() {
                     }
                     addOnGiftingProduct = mapAddOnsGiftingData(product.addOns)
                     ethicalDrugs = mapEthicalDrugData(product.ethicalDrugResponse)
-                    addOnProduct = mapAddOnsProductData(product.addOnsProduct)
+                    addOnProduct = mapAddOnsProductData(product.addOnsProduct, product.productQuantity)
                 }
                 productListResult.add(productResult)
             }
@@ -588,12 +588,12 @@ class ShipmentMapper @Inject constructor() {
         }
     }
 
-    private fun mapAddOnsProductData(addOn: AddOnsProduct): AddOnProductDataModel {
+    private fun mapAddOnsProductData(addOn: AddOnsProduct, productQuantity: Int): AddOnProductDataModel {
         return AddOnProductDataModel().apply {
             iconUrl = addOn.iconUrl
             title = addOn.title
             bottomsheet = mapAddOnProductBottomSheet(addOn.bottomsheet)
-            listAddOnProductData = mapAddOnProductListData(addOn.addOnsDataList)
+            listAddOnProductData = mapAddOnProductListData(addOn.addOnsDataList, productQuantity)
         }
     }
 
@@ -605,7 +605,7 @@ class ShipmentMapper @Inject constructor() {
         }
     }
 
-    private fun mapAddOnProductListData(addOnsDataList: List<AddOnsProduct.AddOnsData>): MutableList<AddOnProductDataItemModel> {
+    private fun mapAddOnProductListData(addOnsDataList: List<AddOnsProduct.AddOnsData>, productQuantity: Int): MutableList<AddOnProductDataItemModel> {
         val listAddOnDataItem = arrayListOf<AddOnProductDataItemModel>()
         addOnsDataList.forEach { item ->
             listAddOnDataItem.add(
@@ -616,6 +616,7 @@ class ShipmentMapper @Inject constructor() {
                     addOnDataName = item.name
                     addOnDataStatus = item.status
                     addOnDataType = item.type
+                    addOnDataQty = productQuantity
                 }
             )
         }

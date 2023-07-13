@@ -13,6 +13,8 @@ buildscript {
     }
 }
 android {
+    namespace 'com.tokopedia.journeydebugger'
+    testNamespace 'com.tokopedia.journeydebugger.test'
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_11
     }

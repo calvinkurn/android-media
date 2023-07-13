@@ -17,6 +17,8 @@ buildscript {
 }
 
 android {
+    namespace 'com.tokopedia.ordermanagement.buyercancellationorder'
+    testNamespace 'com.tokopedia.ordermanagement.buyercancellationorder.test'
     packagingOptions {
         exclude 'META-INF/**'
     }

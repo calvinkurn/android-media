@@ -22,15 +22,19 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
+import com.tokopedia.addon.presentation.uimodel.AddOnExtraConstant
+import com.tokopedia.addon.presentation.uimodel.AddOnPageResult
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.analytics.performance.util.EmbraceKey
 import com.tokopedia.analytics.performance.util.EmbraceMonitoring.stopMoments
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalFintech
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.PARAM_SOURCE
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.checkout.R
@@ -160,6 +164,7 @@ import com.tokopedia.purchase_platform.common.constant.ARGS_VALIDATE_USE_REQUEST
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant.ADD_ON_PRODUCT_STATUS_CHECK
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant.ADD_ON_PRODUCT_STATUS_UNCHECK
+import com.tokopedia.purchase_platform.common.constant.AddOnConstant.SOURCE_NORMAL_CHECKOUT
 import com.tokopedia.purchase_platform.common.constant.CartConstant
 import com.tokopedia.purchase_platform.common.constant.CartConstant.SCREEN_NAME_CART_NEW_USER
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
@@ -516,6 +521,10 @@ class ShipmentFragment :
 
             REQUEST_CODE_UPSELL -> {
                 onResultFromUpsell(data)
+            }
+
+            REQUEST_CODE_ADD_ON_PRODUCT_SERVICE_BOTTOMSHEET -> {
+                onResultFromAddOnProductBottomSheet(resultCode, data)
             }
         }
     }
@@ -3903,13 +3912,22 @@ class ShipmentFragment :
                 addOnIds.add(addOnItem.addOnDataId)
             }
         }
-        val warehouseId = cartItemModel.warehouseId
-        val isTokoCabang = cartItemModel.isTokoCabang // need to confirm
-        val applink = "tokopedia://addon/" + productId + "/?cartId=" + cartId +
-            "&selectedAddonIds=" + addOnIds.toString() + "&source=cart&warehouseId=" + warehouseId + "&isTokocabang=" + isTokoCabang
-        println("++ applink = " + applink)
+
+        val applinkAddon = ApplinkConst.ADDON.replace(AddOnConstant.QUERY_PARAM_ADDON_PRODUCT, productId.toString())
+        val applink = UriUtil.buildUriAppendParams(
+            applinkAddon,
+            mapOf(
+                AddOnConstant.QUERY_PARAM_CART_ID to cartId,
+                AddOnConstant.QUERY_PARAM_SELECTED_ADDON_IDS to addOnIds.toString().replace("[", "").replace("]", ""),
+                AddOnConstant.QUERY_PARAM_PAGE_ATC_SOURCE to SOURCE_NORMAL_CHECKOUT,
+                ApplinkConstInternalMechant.QUERY_PARAM_WAREHOUSE_ID to cartItemModel.warehouseId,
+                AddOnConstant.QUERY_PARAM_IS_TOKOCABANG to cartItemModel.isTokoCabang
+            )
+        )
+
         activity?.let {
-            RouteManager.route(it, applink)
+            val intent = RouteManager.getIntent(it, applink)
+            startActivityForResult(intent, REQUEST_CODE_ADD_ON_PRODUCT_SERVICE_BOTTOMSHEET)
         }
     }
     // endregion
@@ -4164,6 +4182,7 @@ class ShipmentFragment :
     }
     // endregion
 
+    // region platform fee
     override fun checkPlatformFee() {
         if (shipmentViewModel.getShipmentPlatformFeeData().isEnable) {
             val platformFeeModel = shipmentViewModel.shipmentCostModel.value.dynamicPlatformFee
@@ -4253,10 +4272,52 @@ class ShipmentFragment :
         hideLoaderTotalPayment()
         updateCost()
     }
+    // endregion
 
+    // region addons product service
     fun handleOnSuccessSaveAddOnProduct() {
         shipmentAdapter.checkDropshipperValidation()
     }
+
+    override fun addOnProductServiceImpression(addOnType: Int, productId: String) {
+        checkoutAnalyticsCourierSelection.eventViewAddOnsProductServiceWidget(addOnType, productId)
+    }
+
+    override fun onClickAddOnProductServiceWidgetItem(addOnType: Int, productId: String, isChecked: Boolean) {
+        checkoutAnalyticsCourierSelection.eventClickAddOnsProductServiceWidget(addOnType, productId, isChecked)
+    }
+
+    override fun onClickLihatSemuaAddOnProductServiceWidget() {
+        checkoutAnalyticsCourierSelection.eventClickLihatSemuaAddOnsProductServiceWidget()
+    }
+
+    private fun onResultFromAddOnProductBottomSheet(resultCode: Int, data: Intent?) {
+        if (resultCode == Activity.RESULT_OK) {
+            val addOnProductDataResult = data?.getParcelableExtra(AddOnExtraConstant.EXTRA_ADDON_PAGE_RESULT) ?: AddOnPageResult()
+
+            if (addOnProductDataResult.aggregatedData.isGetDataSuccess) {
+                val cartIdAddOn = addOnProductDataResult.cartId
+                val needUpdateAddOnItem = shipmentAdapter.getAddOnProductServicePosition(cartIdAddOn)
+
+                run loopAddOnProduct@ {
+                    needUpdateAddOnItem.second?.addOnProduct?.listAddOnProductData?.forEach { addOnProductDataItemModel ->
+                        for (addonUiModel in addOnProductDataResult.changedAddons) {
+                            if (addonUiModel.id == addOnProductDataItemModel.addOnDataId.toString()) {
+                                addOnProductDataItemModel.addOnDataStatus = addonUiModel.getSelectedStatus().value
+                                onNeedUpdateViewItem(needUpdateAddOnItem.first)
+                                return@loopAddOnProduct
+                            }
+                        }
+                    }
+                }
+            } else {
+                view?.let { v ->
+                    Toaster.build(v, addOnProductDataResult.aggregatedData.getDataErrorMessage, type = Toaster.TYPE_ERROR).show()
+                }
+            }
+        }
+    }
+    // endregion
 
     companion object {
         private const val REQUEST_CODE_EDIT_ADDRESS = 11
@@ -4264,6 +4325,7 @@ class ShipmentFragment :
         private const val REQUEST_CODE_PROMO = 954
         const val REQUEST_CODE_UPLOAD_PRESCRIPTION = 10021
         const val REQUEST_CODE_MINI_CONSULTATION = 10022
+        const val REQUEST_CODE_ADD_ON_PRODUCT_SERVICE_BOTTOMSHEET = 10033
         private const val REQUEST_CODE_UPSELL = 777
         private const val ADD_ON_STATUS_ACTIVE = 1
         private const val ADD_ON_STATUS_DISABLE = 2

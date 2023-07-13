@@ -16,6 +16,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.graphics.values
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 import com.tokopedia.dialog.DialogUnify
@@ -79,6 +80,11 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.R as principleR
 import com.tokopedia.utils.view.binding.viewBinding
 import com.yalantis.ucrop.util.FastBitmapDrawable
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.launch
 import java.io.File
 import javax.inject.Inject
 import kotlin.math.max
@@ -193,20 +199,22 @@ class DetailEditorFragment @Inject constructor(
                 data
             ) { processedData ->
                 viewModel.getProcessedBitmap(processedData)?.let {
-                    data.resultUrl = viewModel.saveImageCache(
-                        it,
-                        sourcePath = data.originalUrl
-                    )?.path
+                    lifecycleScope.launch {
+                        data.resultUrl = viewModel.saveImageCache(
+                            it,
+                            sourcePath = data.originalUrl
+                        )?.path
 
-                    if (data.addLogoValue.logoUrl.isNotEmpty()) {
-                        updateAddLogoOverlay(Pair(it.width, it.height)) {}
+                        if (data.addLogoValue.logoUrl.isNotEmpty()) {
+                            updateAddLogoOverlay(Pair(it.width, it.height)).firstOrNull()
+                        }
+
+                        if (data.addTextValue?.textImagePath?.isNotEmpty() == true) {
+                            updateAddTextOverlay(Pair(it.width, it.height)) {}
+                        }
+
+                        finishPage()
                     }
-
-                    if (data.addTextValue?.textImagePath?.isNotEmpty() == true) {
-                        updateAddTextOverlay(Pair(it.width, it.height)) {}
-                    }
-
-                    finishPage()
                 } ?: run {
                     showErrorGeneralToaster(context)
                     activity?.finish()
@@ -421,6 +429,13 @@ class DetailEditorFragment @Inject constructor(
         val text = requireContext().getString(editorR.string.editor_add_logo_toast_final)
         Toast.makeText(context, text, Toast.LENGTH_LONG).show()
         activity?.finish()
+    }
+
+    override fun onStandardizeAvatar(
+        source: Bitmap,
+        cropRotateData: EditorCropRotateUiModel
+    ): Bitmap? {
+        return viewModel.cropImage(source, cropRotateData)
     }
 
     // === Listener add text
@@ -1309,27 +1324,32 @@ class DetailEditorFragment @Inject constructor(
     }
 
     private fun updateAddLogoOverlay(
-        newSize: Pair<Int, Int>,
-        onFinish: (filePath: String) -> Unit
-    ) {
-        loadUrlImage(
-            data.addLogoValue.logoUrl,
-            {},
-            MediaBitmapEmptyTarget(
-                onReady = { logoBitmap ->
-                    viewModel.generateAddLogoOverlay(
-                        logoBitmap,
-                        newSize,
-                        isCircular = data.addLogoValue.logoUrl.contains(HTTPS_KEY)
-                    )?.let {
-                        viewModel.saveImageCache(it, sourcePath = PNG_KEY)?.let { fileResult ->
-                            data.addLogoValue.overlayLogoUrl = fileResult.path
-                            onFinish(fileResult.path)
+        newSize: Pair<Int, Int>
+    ): Flow<String> {
+        return callbackFlow {
+            loadUrlImage(
+                data.addLogoValue.logoUrl,
+                {},
+                MediaBitmapEmptyTarget(
+                    onReady = { logoBitmap ->
+                        viewModel.generateAddLogoOverlay(
+                            logoBitmap,
+                            newSize,
+                            isCircular = data.addLogoValue.logoUrl.contains(HTTPS_KEY)
+                        )?.let {
+                            viewModel.saveImageCache(it, sourcePath = PNG_KEY)?.let { fileResult ->
+                                data.addLogoValue.overlayLogoUrl = fileResult.path
+                                trySend(fileResult.path)
+                            }
                         }
                     }
-                }
+                )
             )
-        )
+
+            awaitClose {
+                channel.close()
+            }
+        }
     }
 
     private fun updateAddTextOverlay(
@@ -1410,8 +1430,10 @@ class DetailEditorFragment @Inject constructor(
                 else -> Pair(width, height)
             }
 
-            updateAddLogoOverlay(rotateSize) { resultUrl ->
-                viewBinding?.imgPreviewOverlay?.loadImage(resultUrl)
+            lifecycleScope.launch {
+                updateAddLogoOverlay(rotateSize).collect { resultUrl ->
+                    viewBinding?.imgPreviewOverlay?.loadImage(resultUrl)
+                }
             }
         }
     }

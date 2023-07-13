@@ -48,6 +48,10 @@ class AddOnBottomSheet : BottomSheetUnify() {
         childFragmentManager.beginTransaction()
             .replace(R.id.parent_view, fragment, "")
             .commit()
+        setCloseClickListener {
+            fragment.triggerCloseButtonTracker()
+            dismiss()
+        }
     }
 
     private fun onSaveAddonSuccess(result: AddOnPageResult) {

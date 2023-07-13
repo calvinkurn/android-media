@@ -3,6 +3,8 @@ apply from: "$rootProject.projectDir/buildconfig/kotlin/core-kapt.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
 android {
+    namespace 'com.tokopedia.dropoff'
+    testNamespace 'com.tokopedia.dropoff.test'
     buildFeatures {
         viewBinding true
     }

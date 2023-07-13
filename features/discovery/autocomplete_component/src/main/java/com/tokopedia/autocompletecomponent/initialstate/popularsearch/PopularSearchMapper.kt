@@ -30,6 +30,7 @@ fun InitialStateData.convertToPopularSearchDataView(
             position = position,
             componentId = item.componentId,
             trackingOption = trackingOption,
+            campaignCode = item.campaignCode,
             keyword = keyword,
         )
         childList.add(model)

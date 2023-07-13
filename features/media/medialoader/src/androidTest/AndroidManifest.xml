@@ -12,7 +12,7 @@
         tools:replace="android:debuggable,android:label">
 
         <activity
-            android:name=".base.StubDebugMediaLoaderActivity"
+            android:name=".StubDebugMediaLoaderActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
     </application>

@@ -35,7 +35,8 @@ object AddOnMapper {
                     addOnType = it.basic.addOnType.toIntSafely(),
                     eduLink = it.basic.metadata.infoURL.eduPageURL,
                     uniqueId = it.basic.addOnKey,
-                    description = it.basic.metadata.description
+                    description = it.basic.metadata.description,
+                    shopId = it.basic.shopID
                 )
             }
             AddOnGroupUIModel(

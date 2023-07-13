@@ -86,7 +86,7 @@ class OrderProductCard(
         renderNotes()
         renderQuantity()
         renderPurchaseProtection()
-        renderAddOn(binding, product, shop)
+        renderAddOnGifting(binding, product, shop)
         renderAddOnsProduct()
     }
 
@@ -435,7 +435,7 @@ class OrderProductCard(
         listener.onPurchaseProtectionCheckedChange(tmpIsChecked, product.productId)
     }
 
-    private fun renderAddOn(binding: CardOrderProductBinding, product: OrderProduct, shop: OrderShop) {
+    private fun renderAddOnGifting(binding: CardOrderProductBinding, product: OrderProduct, shop: OrderShop) {
         with(binding) {
             val addOn: AddOnGiftingDataModel = if (shop.isFulfillment) {
                 shop.addOn
@@ -448,7 +448,7 @@ class OrderProductCard(
                         state = ButtonGiftingAddOnView.State.ACTIVE
                         setAddOnButtonData(addOn)
                         setOnClickListener {
-                            listener.onClickAddOnButton(AddOnGiftingResponse.STATUS_SHOW_ENABLED_ADD_ON_BUTTON, addOn, product, shop)
+                            listener.onClickAddOnGiftingButton(AddOnGiftingResponse.STATUS_SHOW_ENABLED_ADD_ON_BUTTON, addOn, product, shop)
                             orderSummaryAnalytics.eventClickAddOnsDetail(product.productId)
                         }
                         show()
@@ -460,7 +460,7 @@ class OrderProductCard(
                         state = ButtonGiftingAddOnView.State.INACTIVE
                         setAddOnButtonData(addOn)
                         setOnClickListener {
-                            listener.onClickAddOnButton(AddOnGiftingResponse.STATUS_SHOW_DISABLED_ADD_ON_BUTTON, addOn, product, shop)
+                            listener.onClickAddOnGiftingButton(AddOnGiftingResponse.STATUS_SHOW_DISABLED_ADD_ON_BUTTON, addOn, product, shop)
                         }
                         show()
                         orderSummaryAnalytics.eventViewAddOnsWidget(product.productId)
@@ -514,6 +514,7 @@ class OrderProductCard(
             text = addOnsProductData.bottomsheet.title
         }
         binding.tvSeeAllAddonProduct.setOnClickListener {
+            orderSummaryAnalytics.eventClickLihatSemuaAddOnProductWidget()
             listener.onClickSeeAllAddOnProductService(product, addOnsProductData)
         }
     }
@@ -561,7 +562,7 @@ class OrderProductCard(
                     )
 
                     // set addon listeners
-                    cbAddonItem.setOnCheckedChangeListener { _, _ ->
+                    cbAddonItem.setOnCheckedChangeListener { _, isChecked ->
                         changeAddOnProductStatus(
                             addOn = addOn
                         )
@@ -571,6 +572,7 @@ class OrderProductCard(
                                 newAddOnProductData = addOn,
                                 product = product
                             )
+                            orderSummaryAnalytics.eventClickAddOnProductWidget(addOn.type, product.productId, isChecked)
                         }
                     }
                     icProductAddonInfo.showIfWithBlock(addOn.infoLink.isNotBlank()) {
@@ -584,6 +586,7 @@ class OrderProductCard(
 
                 // add addon to the layout
                 llAddonProductItems.addView(addOnView.root)
+                orderSummaryAnalytics.eventViewAddOnProductWidget(addOn.type, product.productId)
             }
         }
     }
@@ -656,7 +659,7 @@ class OrderProductCard(
 
         fun getLastPurchaseProtectionCheckState(productId: String): Int
 
-        fun onClickAddOnButton(addOnButtonType: Int, addOn: AddOnGiftingDataModel, product: OrderProduct, shop: OrderShop)
+        fun onClickAddOnGiftingButton(addOnButtonType: Int, addOn: AddOnGiftingDataModel, product: OrderProduct, shop: OrderShop)
 
         fun onCheckAddOnProduct(newAddOnProductData: AddOnsProductDataModel.Data, product: OrderProduct)
 

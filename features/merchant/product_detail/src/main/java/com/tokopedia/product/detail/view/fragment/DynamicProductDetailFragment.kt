@@ -63,6 +63,7 @@ import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiRequestParam
 import com.tokopedia.atc_common.data.model.request.AddToCartOcsRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
+import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
 import com.tokopedia.common_tradein.utils.TradeInPDPHelper
@@ -207,6 +208,7 @@ import com.tokopedia.product.detail.di.ProductDetailComponent
 import com.tokopedia.product.detail.tracking.CommonTracker
 import com.tokopedia.product.detail.tracking.ContentWidgetTracker
 import com.tokopedia.product.detail.tracking.ContentWidgetTracking
+import com.tokopedia.product.detail.tracking.DynamicOneLinerTracking
 import com.tokopedia.product.detail.tracking.GeneralInfoTracker
 import com.tokopedia.product.detail.tracking.GeneralInfoTracking
 import com.tokopedia.product.detail.tracking.OneLinersTracking
@@ -502,6 +504,7 @@ open class DynamicProductDetailFragment :
 
     // Prevent several method at onResume to being called when first open page.
     private var firstOpenPage: Boolean? = null
+    private var isAffiliateShareIcon = false
 
     // View
     private lateinit var actionButtonView: PartialButtonActionView
@@ -698,6 +701,7 @@ open class DynamicProductDetailFragment :
         observeOneTimeMethod()
         observeProductMediaRecomData()
         observeBottomSheetEdu()
+        observeAffiliateEligibility()
     }
 
     private fun observeBottomSheetEdu() {
@@ -2944,13 +2948,30 @@ open class DynamicProductDetailFragment :
                     affiliateChannel = affiliateChannel
                 )
             }
-
             onSuccessGetDataP2(it, boeData, ratesData, shipmentPlus)
+            checkAffiliateEligibility(it.shopInfo)
             getProductDetailActivity()?.stopMonitoringP2Data()
             ProductDetailServerLogger.logBreadCrumbSuccessGetDataP2(
                 isSuccess = it.shopInfo.shopCore.shopID.isNotEmpty()
             )
             stickyLoginView?.loadContent()
+        }
+    }
+
+    private fun observeAffiliateEligibility() {
+        viewModel.resultAffiliate.observe(viewLifecycleOwner) {
+            if (it is Success && it.data.eligibleCommission?.isEligible.orFalse()) {
+                updateToolbarShareAffiliate()
+            }
+        }
+    }
+
+    private fun checkAffiliateEligibility(shopInfo: ShopInfo) {
+        if (isShareAffiliateIconEnabled() && !GlobalConfig.isSellerApp()) {
+            viewModel.getDynamicProductInfoP1?.let { dataP1 ->
+                val affiliateInput = generateAffiliateShareData(dataP1, shopInfo, viewModel.variantData)
+                viewModel.checkAffiliateEligibility(affiliateInput)
+            }
         }
     }
 
@@ -3173,7 +3194,7 @@ open class DynamicProductDetailFragment :
             }
             ProductDetailCommonConstant.ATC_BUTTON -> {
                 sendTrackingATC(cartId)
-                showAddToCartDoneBottomSheet(result.data.cartId)
+                showAddToCartDoneBottomSheet(result.data)
             }
             ProductDetailCommonConstant.TRADEIN_AFTER_DIAGNOSE -> {
                 // Same with OCS but should send devideId
@@ -3618,27 +3639,32 @@ open class DynamicProductDetailFragment :
         return singleVariant.mapOfSelectedVariant
     }
 
-    private fun showAddToCartDoneBottomSheet(cartId: String) {
+    private fun showAddToCartDoneBottomSheet(cartDataModel: DataModel) {
         val productInfo = viewModel.getDynamicProductInfoP1 ?: return
         val basicInfo = productInfo.basic
         val postATCLayoutId = basicInfo.postAtcLayout.layoutId
 
         val remoteNewATC = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_POST_ATC_PDP, true)
         if (postATCLayoutId.isNotBlank() && remoteNewATC) {
-            showGlobalPostATC(cartId, basicInfo)
+            showGlobalPostATC(cartDataModel, basicInfo)
         } else {
-            showOldPostATC(cartId)
+            showOldPostATC(cartDataModel.cartId)
         }
     }
 
-    private fun showGlobalPostATC(cartId: String, basicInfo: BasicInfo) {
+    private fun showGlobalPostATC(cartDataModel: DataModel, basicInfo: BasicInfo) {
         val context = context ?: return
         PostAtcHelper.start(
             context,
             basicInfo.productID,
-            cartId = cartId,
+            layoutId = basicInfo.postAtcLayout.layoutId,
+            cartId = cartDataModel.cartId,
+            selectedAddonsIds = cartDataModel.addOns.mapNotNull { item ->
+                item.id.takeIf { item.status == 1 }
+            },
+            isFulfillment = cartDataModel.isFulfillment,
             pageSource = PostAtcHelper.Source.PDP,
-            layoutId = basicInfo.postAtcLayout.layoutId
+            warehouseId = cartDataModel.warehouseId
         )
     }
 
@@ -3854,7 +3880,8 @@ open class DynamicProductDetailFragment :
                 productInfo.basic.productID,
                 viewModel.userId,
                 zeroIfEmpty(productInfo.data.campaign.campaignID),
-                zeroIfEmpty(pdpUiUpdater?.productBundlingData?.bundleInfo?.bundleId)
+                zeroIfEmpty(pdpUiUpdater?.productBundlingData?.bundleInfo?.bundleId),
+                isAffiliateShareIcon
             )
             shareProduct(productInfo)
         }
@@ -4335,7 +4362,7 @@ open class DynamicProductDetailFragment :
                     .addIcon(IconList.ID_SEARCH, disableRouteManager = true) {
                         goToApplink(getLocalSearchApplink())
                     }
-                    .addIcon(getShareIcon()) {
+                    .addIcon(IconList.ID_SHARE) {
                         onClickShareProduct()
                     }
                     .addIcon(IconList.ID_CART) {}
@@ -4348,16 +4375,19 @@ open class DynamicProductDetailFragment :
         }
     }
 
-    private fun getShareIcon(): Int {
-        val isAbTestEnabled = RemoteConfigInstance.getInstance().abTestPlatform.getString(
-            RollenceKey.PDP_SHOW_SHARE_AFFILIATE
-        ) == RollenceKey.PDP_SHOW_SHARE_AFFILIATE
-
-        if (isAbTestEnabled) {
-            return IconList.ID_SHARE_AB_TEST
-        } else {
-            return IconList.ID_SHARE
+    private fun updateToolbarShareAffiliate() {
+        if (isShareAffiliateIconEnabled() && !GlobalConfig.isSellerApp()) {
+            isAffiliateShareIcon = true
+            navToolbar?.updateIcon(IconList.ID_SHARE, IconList.ID_SHARE_AB_TEST) ?: return
         }
+    }
+
+    private fun isShareAffiliateIconEnabled(): Boolean {
+        val isAbTestEnabled = RemoteConfigInstance.getInstance().abTestPlatform.getString(
+            RollenceKey.AFFILIATE_SHARE_ICON
+        ) == RollenceKey.AFFILIATE_SHARE_ICON
+
+        return isAbTestEnabled
     }
 
     private fun getDarkToolbarIconColor(): Int = ContextCompat.getColor(
@@ -5983,6 +6013,15 @@ open class DynamicProductDetailFragment :
             productInfo = productInfo,
             trackDataModel = trackData,
             eventLabel = eventLabel
+        )
+    }
+
+    override fun onClickDynamicOneLiner(title: String, component: ComponentTrackDataModel) {
+        val commonTracker = generateCommonTracker() ?: return
+        DynamicOneLinerTracking.onClickDynamicOneliner(
+            title,
+            commonTracker,
+            component
         )
     }
 }

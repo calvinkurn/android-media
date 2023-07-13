@@ -4,6 +4,8 @@ apply plugin: 'kotlin-parcelize'
 apply plugin: 'io.hansel.preprocessor.module'
 
 android {
+    namespace 'com.tokopedia.checkout'
+    testNamespace 'com.tokopedia.checkout.test'
 
     packagingOptions {
         exclude 'META-INF/**'
@@ -109,6 +111,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.commonPayment)
     implementation projectOrAar(rootProject.ext.features.promoCheckoutCommon)
     implementation projectOrAar(rootProject.ext.features.commonEPharmacy)
+    implementation projectOrAar(rootProject.ext.features.productServiceWidget)
 
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.archCoreTesting
