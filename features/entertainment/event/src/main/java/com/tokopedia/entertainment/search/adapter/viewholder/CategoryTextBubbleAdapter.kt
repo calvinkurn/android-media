@@ -5,12 +5,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.entertainment.R
-import com.tokopedia.entertainment.databinding.EntSearchCategoryTextBinding
 import com.tokopedia.entertainment.databinding.EntSearchCategoryTextItemBinding
 import com.tokopedia.entertainment.search.analytics.EventCategoryPageTracking
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.unifycomponents.ChipsUnify
-import kotlinx.android.synthetic.main.ent_search_category_text_item.view.*
 
 class CategoryTextBubbleAdapter(val onClicked: ((String) -> Unit)? ): RecyclerView.Adapter<CategoryTextBubbleAdapter.CategoryTextBubbleViewHolder>() {
 
