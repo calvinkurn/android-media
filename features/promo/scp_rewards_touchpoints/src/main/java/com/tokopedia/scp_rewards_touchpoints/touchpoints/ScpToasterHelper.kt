@@ -19,7 +19,6 @@ object ScpToasterHelper {
             val ctaTitle =  cta.text
             val badgeImageUrl = medaliIconImageURL
             val sunflareUrl = medaliSunburstImageURL
-            val appLink = cta.appLink
             val toasterData = ScpToasterData(
                 title = title,
                 subtitle = subtitle,
@@ -36,7 +35,7 @@ object ScpToasterHelper {
                     sendClickToasterEvent(
                         badgeId = medaliID.toString()
                     )
-                    RouteManager.route(view.context, "${appLink}/$medaliSlug")
+                    RouteManager.route(view.context, cta.appLink)
                 }
             ).show()
         }
