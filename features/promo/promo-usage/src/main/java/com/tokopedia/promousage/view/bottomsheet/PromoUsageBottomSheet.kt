@@ -30,6 +30,7 @@ import com.tokopedia.promousage.domain.entity.VoucherState
 import com.tokopedia.promousage.domain.entity.VoucherType
 import com.tokopedia.promousage.util.extension.applyPaddingToLastItem
 import com.tokopedia.promousage.util.extension.setHyperlinkText
+import com.tokopedia.promousage.view.custom.PromoBottomSheet
 import com.tokopedia.promousage.view.viewmodel.PromoUsageViewModel
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.usecase.coroutines.Fail
@@ -37,7 +38,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
-class PromoUsageBottomSheet: BottomSheetDialogFragment() {
+class PromoUsageBottomSheet: PromoBottomSheet() {
 
     companion object {
         private const val BUNDLE_KEY_ENTRY_POINT = "entry_point"
@@ -79,7 +80,8 @@ class PromoUsageBottomSheet: BottomSheetDialogFragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = PromoUsageBottomshetPromoVoucherListBinding.inflate(inflater, container, false)
-        return binding?.root
+        setChild(binding?.root)
+        return super.onCreateView(inflater, container, savedInstanceState)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

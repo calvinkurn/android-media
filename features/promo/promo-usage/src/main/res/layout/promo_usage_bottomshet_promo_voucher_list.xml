@@ -37,15 +37,6 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <ImageView
-                android:id="@+id/ivConfetti"
-                android:layout_width="wrap_content"
-                android:layout_height="48dp"
-                android:background="@drawable/promo_usage_bg_confetti"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tpgRecommendationTitle"
                 android:layout_width="0dp"

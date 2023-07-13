@@ -30,9 +30,11 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:layout_width="match_parent"
+            android:layout_marginStart="4dp"
             android:textColor="@color/Unify_NN0"
             app:typographyType="paragraph_3"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:text="@string/promo_voucher_promo_overlay_text" />
 
     </LinearLayout>
@@ -51,7 +53,7 @@
             android:layout_width="wrap_content"
             android:layout_height="24dp"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="16dp"
             android:layout_marginBottom="16dp"
             app:icon_color_light_enable="@color/Unify_NN0"
             app:icon_color_night_enable="@color/Unify_NN0"
@@ -63,7 +65,7 @@
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/bottom_sheet_title"
             android:layout_width="match_parent"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="16dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:ellipsize="end"

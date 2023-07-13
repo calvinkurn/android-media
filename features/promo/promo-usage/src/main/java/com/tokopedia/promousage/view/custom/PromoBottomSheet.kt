@@ -21,7 +21,7 @@ import com.tokopedia.unifycomponents.R
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
-class PromoBottomSheet : BottomSheetDialogFragment() {
+open class PromoBottomSheet : BottomSheetDialogFragment() {
 
     companion object {
         fun newInstance(): PromoBottomSheet {
