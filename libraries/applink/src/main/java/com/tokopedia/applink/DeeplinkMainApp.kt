@@ -497,6 +497,12 @@ object DeeplinkMainApp {
                 DeeplinkMapperContent::getProfileDeeplink
             )
         ),
+        "people-settings" to mutableListOf(
+            DLP.matchPattern(
+                "{user_id}",
+                DeeplinkMapperContent::getRegisteredNavigation
+            )
+        ),
         "pesawat" to mutableListOf(
             DLP.matchPattern("order", DeeplinkMapperUoh::getRegisteredNavigationUohOrder),
             DLP.matchPattern("", ApplinkConstInternalTravel.DASHBOARD_FLIGHT)

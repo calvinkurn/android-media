@@ -9,6 +9,8 @@ kapt {
 }
 
 android {
+    namespace 'com.tokopedia.logisticcart'
+    testNamespace 'com.tokopedia.logisticcart.test'
     buildFeatures {
         viewBinding true
     }
