@@ -30,7 +30,7 @@
             android:layout_marginLeft="@dimen/layout_lvl1"
             android:layout_weight="1"
             android:lineSpacingExtra="@dimen/spacing_lvl1"
-            android:textColor="@color/Unify_N700_96"
+            android:textColor="@color/Unify_NN950_96"
             app:typographyType="heading_4"
             tools:text="Fasilitas Umum" />
 
@@ -45,7 +45,7 @@
         android:layout_marginTop="@dimen/spacing_lvl2"
         android:lineSpacingExtra="@dimen/spacing_lvl2"
         app:typographyType="body_2"
-        android:textColor="@color/Unify_N700_68"
+        android:textColor="@color/Unify_NN950_68"
         tools:text="Fasilitas Umum" />
 
 </LinearLayout>

@@ -30,7 +30,7 @@ class LeftChatMessageUnifyViewHolder(
     private val backgroundForChat = generateLeftMessageBackground(
         customChatLayout?.fxChat,
         R.color.chatbot_dms_left_chat_message_bg,
-        com.tokopedia.unifyprinciples.R.color.Unify_N700_20
+        com.tokopedia.unifyprinciples.R.color.Unify_NN950_20
     )
 
     override fun bind(message: MessageUiModel) {

@@ -117,11 +117,11 @@ class NameShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
 
     private fun initView() {
         viewBinding?.textFieldName?.textFieldInput?.setTextColor(
-            MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96)
+            MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_96)
         )
         context?.let {
             viewBinding?.textFieldName?.textFieldWrapper?.setHelperTextColor(
-                ContextCompat.getColorStateList(it, com.tokopedia.unifycomponents.R.color.Unify_N700_68)
+                ContextCompat.getColorStateList(it, com.tokopedia.unifyprinciples.R.color.Unify_NN950_68)
             )
         }
         viewBinding?.textFieldName?.textFieldInput?.addTextChangedListener(object : TextWatcher {

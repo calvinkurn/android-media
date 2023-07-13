@@ -17,7 +17,7 @@
         android:layout_marginBottom="@dimen/spacing_lvl3"
         app:typographyType="heading_3"
         app:typographyWeight="bold"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

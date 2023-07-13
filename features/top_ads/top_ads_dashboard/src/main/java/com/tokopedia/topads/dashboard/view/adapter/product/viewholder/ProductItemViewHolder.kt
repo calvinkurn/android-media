@@ -105,7 +105,7 @@ class ProductItemViewHolder(
                 cardView?.setBackgroundColor(
                     ContextCompat.getColor(
                         view.context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_B400_20
+                        com.tokopedia.unifyprinciples.R.color.Unify_BN400_20
                     )
                 )
             }
@@ -117,7 +117,7 @@ class ProductItemViewHolder(
                         cardView?.setBackgroundColor(
                             ContextCompat.getColor(
                                 view.context,
-                                com.tokopedia.unifyprinciples.R.color.Unify_B400_20
+                                com.tokopedia.unifyprinciples.R.color.Unify_BN400_20
                             )
                         )
                     else
@@ -136,7 +136,7 @@ class ProductItemViewHolder(
                 cardView?.setBackgroundColor(
                     ContextCompat.getColor(
                         view.context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_B400_20
+                        com.tokopedia.unifyprinciples.R.color.Unify_BN400_20
                     )
                 )
                 onSelectMode.invoke(true)

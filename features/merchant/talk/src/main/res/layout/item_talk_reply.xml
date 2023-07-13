@@ -25,7 +25,7 @@
         android:layout_marginEnd="4dp"
         android:ellipsize="end"
         android:maxLines="1"
-        android:textColor="@color/Unify_N700_68"
+        android:textColor="@color/Unify_NN950_68"
         app:layout_constrainedWidth="true"
         app:layout_constraintEnd_toStartOf="@id/replySellerLabel"
         app:layout_constraintHorizontal_bias="0"
@@ -64,7 +64,7 @@
         android:layout_height="@dimen/dp_18"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="32dp"
-        android:textColor="@color/Unify_N700_68"
+        android:textColor="@color/Unify_NN950_68"
         app:layout_constraintEnd_toStartOf="@id/replyKebab"
         app:layout_constraintStart_toEndOf="@id/replySellerLabel"
         app:layout_constraintTop_toTopOf="parent"
@@ -167,7 +167,7 @@
         app:layout_constraintTop_toTopOf="@id/replyDisplayName"
         app:layout_goneMarginTop="12dp"
         app:icon_name="MENU_KEBAB_VERTICAL"
-        app:icon_color_light_enable="@color/Unify_N200"
+        app:icon_color_light_enable="@color/Unify_NN500"
         tools:visibility="visible" />
 
     <androidx.constraintlayout.widget.Barrier
