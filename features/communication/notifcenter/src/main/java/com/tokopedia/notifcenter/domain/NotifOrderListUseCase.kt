@@ -6,9 +6,9 @@ import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.flow.FlowUseCase
 import com.tokopedia.inboxcommon.RoleType
-import com.tokopedia.notifcenter.common.network.NotifcenterCacheManager
 import com.tokopedia.notifcenter.data.entity.orderlist.NotifOrderListResponse
 import com.tokopedia.notifcenter.data.state.Resource
+import com.tokopedia.notifcenter.util.cache.NotifCenterCacheManager
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -16,7 +16,7 @@ import javax.inject.Inject
 
 class NotifOrderListUseCase @Inject constructor(
     @ApplicationContext private val repository: GraphqlRepository,
-    private val cacheManager: NotifcenterCacheManager,
+    private val cacheManager: NotifCenterCacheManager,
     private val userSession: UserSessionInterface,
     dispatchers: CoroutineDispatchers
 ) : FlowUseCase<Int, Resource<NotifOrderListResponse>>(dispatchers.io) {
