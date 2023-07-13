@@ -6,8 +6,8 @@ object GetCategoryListQuery: GqlQueryInterface {
     override fun getOperationNameList(): List<String> = listOf("TokonowCategoryTree")
 
     override fun getQuery(): String = """
-            query TokonowCategoryTree(${'$'}warehouseID:String!, ${'$'}depth:Int!){
-                TokonowCategoryTree(warehouseID:${'$'}warehouseID, depth:${'$'}depth){
+            query TokonowCategoryTree(${'$'}warehouses:[WarehousePerService!], ${'$'}depth:Int!){
+                TokonowCategoryTree(warehouses:${'$'}warehouses, depth:${'$'}depth){
                     header{
                         process_time
                         messages

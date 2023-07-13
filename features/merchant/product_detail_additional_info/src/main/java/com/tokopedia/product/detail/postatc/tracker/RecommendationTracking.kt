@@ -6,13 +6,15 @@ import com.tokopedia.trackingoptimizer.TrackingQueue
 
 object RecommendationTracking {
     fun onClickProductCard(
-        common: CommonTracker,
+        productId: String,
+        userId: String,
+        isLoggedIn: Boolean,
         item: RecommendationItem,
         trackingQueue: TrackingQueue
     ) {
         val eventAction = "click - product recommendation"
 
-        val postFixLogin = " - non login".takeIf { !common.isLoggedIn } ?: ""
+        val postFixLogin = " - non login".takeIf { !isLoggedIn } ?: ""
 
         val itemListBuilder = StringBuilder("/productafteratc").apply {
             append(" - ${item.pageName}")
@@ -24,16 +26,17 @@ object RecommendationTracking {
                 append(" - product topads")
             }
 
-            append(" - ${common.productId}")
+            append(" - $productId")
         }
 
-        val bebasOngkirValue = if (item.isFreeOngkirActive && item.labelGroupList.hasLabelGroupFulfillment()) {
-            "bebas ongkir extra"
-        } else if (item.isFreeOngkirActive && !item.labelGroupList.hasLabelGroupFulfillment()) {
-            "bebas ongkir"
-        } else {
-            "none / other"
-        }
+        val bebasOngkirValue =
+            if (item.isFreeOngkirActive && item.labelGroupList.hasLabelGroupFulfillment()) {
+                "bebas ongkir extra"
+            } else if (item.isFreeOngkirActive && !item.labelGroupList.hasLabelGroupFulfillment()) {
+                "bebas ongkir"
+            } else {
+                "none / other"
+            }
 
         val mapEvent = hashMapOf<String, Any>(
             "event" to "productClick",
@@ -61,20 +64,22 @@ object RecommendationTracking {
                     )
                 )
             ),
-            "userId" to common.userId
+            "userId" to userId
         )
 
         trackingQueue.putEETracking(mapEvent)
     }
 
     fun onImpressionProductCard(
-        common: CommonTracker,
+        productId: String,
+        userId: String,
+        isLoggedIn: Boolean,
         item: RecommendationItem,
         trackingQueue: TrackingQueue
     ) {
         val eventAction = "impression - product recommendation"
 
-        val postFixLogin = " - non login".takeIf { !common.isLoggedIn } ?: ""
+        val postFixLogin = " - non login".takeIf { !isLoggedIn } ?: ""
 
         val itemListBuilder = StringBuilder("/productafteratc").apply {
             append(" - ${item.pageName}")
@@ -86,16 +91,17 @@ object RecommendationTracking {
                 append(" - product topads")
             }
 
-            append(" - ${common.productId}")
+            append(" - ${productId}")
         }
 
-        val bebasOngkirValue = if (item.isFreeOngkirActive && item.labelGroupList.hasLabelGroupFulfillment()) {
-            "bebas ongkir extra"
-        } else if (item.isFreeOngkirActive && !item.labelGroupList.hasLabelGroupFulfillment()) {
-            "bebas ongkir"
-        } else {
-            "none / other"
-        }
+        val bebasOngkirValue =
+            if (item.isFreeOngkirActive && item.labelGroupList.hasLabelGroupFulfillment()) {
+                "bebas ongkir extra"
+            } else if (item.isFreeOngkirActive && !item.labelGroupList.hasLabelGroupFulfillment()) {
+                "bebas ongkir"
+            } else {
+                "none / other"
+            }
 
         val mapEvent = hashMapOf<String, Any>(
             "event" to "productView",
@@ -120,7 +126,7 @@ object RecommendationTracking {
                     )
                 )
             ),
-            "userId" to common.userId
+            "userId" to userId
         )
 
         trackingQueue.putEETracking(mapEvent)

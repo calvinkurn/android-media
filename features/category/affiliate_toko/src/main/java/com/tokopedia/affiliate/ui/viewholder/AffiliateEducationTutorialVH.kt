@@ -41,7 +41,6 @@ class AffiliateEducationTutorialVH(
 
         if (bindingAdapterPosition == 0) {
             tutorialIcon.hide()
-            tutorialContentContainer.setBackgroundResource(R.drawable.affiliate_education_tutorial_cover_gradient)
             tutorialCover.show()
             tutorialTopic.apply {
                 weightType = Typography.BOLD

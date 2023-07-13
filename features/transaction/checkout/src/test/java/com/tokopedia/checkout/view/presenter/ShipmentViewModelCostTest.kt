@@ -174,10 +174,10 @@ class ShipmentViewModelCostTest : BaseShipmentViewModelTest() {
                         price = 1000.0
                     )
                 ),
-                addOnsOrderLevelModel = AddOnsDataModel(
+                addOnsOrderLevelModel = AddOnGiftingDataModel(
                     status = 1,
                     addOnsDataItemModelList = listOf(
-                        AddOnDataItemModel(
+                        AddOnGiftingDataItemModel(
                             addOnPrice = 100.0
                         )
                     )

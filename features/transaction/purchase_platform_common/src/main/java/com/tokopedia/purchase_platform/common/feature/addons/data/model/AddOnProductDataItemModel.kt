@@ -11,5 +11,6 @@ data class AddOnProductDataItemModel(
     var addOnDataInfoLink: String = "",
     var addOnDataName: String = "",
     var addOnDataStatus: Int = -1,
-    var addOnDataType: Int = -1
+    var addOnDataType: Int = -1,
+    var addOnDataQty: Int = -1
 ) : Parcelable

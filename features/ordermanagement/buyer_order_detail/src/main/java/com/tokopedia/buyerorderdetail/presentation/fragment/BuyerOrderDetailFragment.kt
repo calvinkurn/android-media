@@ -37,6 +37,7 @@ import com.tokopedia.buyerorderdetail.presentation.adapter.typefactory.BuyerOrde
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.CourierInfoViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.DigitalRecommendationViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.OrderResolutionViewHolder
+import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.OwocInfoViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.PartialProductItemViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.PgRecommendationViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.PofRefundInfoViewHolder
@@ -45,6 +46,7 @@ import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.ProductLis
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.TickerViewHolder
 import com.tokopedia.buyerorderdetail.presentation.animator.BuyerOrderDetailToolbarMenuAnimator
 import com.tokopedia.buyerorderdetail.presentation.bottomsheet.BuyerOrderDetailBottomSheetManager
+import com.tokopedia.buyerorderdetail.presentation.bottomsheet.OwocBottomSheet
 import com.tokopedia.buyerorderdetail.presentation.bottomsheet.PofDetailRefundedBottomSheet
 import com.tokopedia.buyerorderdetail.presentation.bottomsheet.PofEstimateRefundInfoBottomSheet
 import com.tokopedia.buyerorderdetail.presentation.coachmark.CoachMarkManager
@@ -84,8 +86,6 @@ import com.tokopedia.utils.text.currency.StringUtils
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
-import kotlin.coroutines.Continuation
-import kotlin.coroutines.resume
 
 open class BuyerOrderDetailFragment :
     BaseDaggerFragment(),
@@ -97,7 +97,8 @@ open class BuyerOrderDetailFragment :
     PgRecommendationViewHolder.BuyerOrderDetailBindRecomWidgetListener,
     OrderResolutionViewHolder.OrderResolutionListener,
     ProductListToggleViewHolder.Listener,
-    PofRefundInfoViewHolder.Listener {
+    PofRefundInfoViewHolder.Listener,
+    OwocInfoViewHolder.Listener {
 
     companion object {
         @JvmStatic
@@ -143,6 +144,7 @@ open class BuyerOrderDetailFragment :
             this,
             this,
             digitalRecommendationData,
+            this,
             this,
             this,
             this,
@@ -837,5 +839,11 @@ open class BuyerOrderDetailFragment :
         val bottomSheet =
             PofDetailRefundedBottomSheet.newInstance(cacheManager?.id.orEmpty())
         bottomSheet.show(childFragmentManager)
+    }
+
+    override fun onOwocInfoClicked(txId: String) {
+        BuyerOrderDetailTracker.sendClickOnOrderGroupWidget(viewModel.getOrderId())
+        val owocBottomSheet = OwocBottomSheet.newInstance(viewModel.getOrderId(), txId)
+        owocBottomSheet.show(childFragmentManager)
     }
 }

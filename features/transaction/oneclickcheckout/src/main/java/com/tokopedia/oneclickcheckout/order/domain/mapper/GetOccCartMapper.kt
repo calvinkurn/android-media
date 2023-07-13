@@ -261,6 +261,7 @@ class GetOccCartMapper @Inject constructor() {
             addOn = mapAddOns(product.addOns)
             addOnsProductData = mapAddOnsProduct(product.addOnsProduct)
             ethicalDrug = mapEthicalDrug(product.ethicalDrug)
+            isFulfillment = shop.isFulfillment
         }
         return orderProduct
     }

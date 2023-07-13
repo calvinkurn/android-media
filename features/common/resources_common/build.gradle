@@ -1,6 +1,8 @@
 apply plugin: 'com.android.library'
 
 android {
+    namespace 'com.tokopedia.resources.common'
+    testNamespace 'com.tokopedia.resources.common.test'
     compileSdkVersion rootProject.ext.compileSdkVersion
 
     defaultConfig {

@@ -209,6 +209,20 @@ const val CART_REVAMP_V4_QUERY =
                         bundle_grayscale_icon_url
                       }
                       products {
+                          add_ons_product {
+                            data {
+                                id
+                                unique_id
+                                status
+                                type
+                                price
+                            }
+                            widget {
+                                wording
+                                left_icon_url
+                                right_icon_url
+                            }
+                        }
                         origin_warehouse_ids
                         checkbox_state
                         cart_id
@@ -733,6 +747,7 @@ const val CART_REVAMP_V4_QUERY =
                       }
                     }
                     voucher_orders {
+                      cart_string_group
                       code
                       success
                       cart_id

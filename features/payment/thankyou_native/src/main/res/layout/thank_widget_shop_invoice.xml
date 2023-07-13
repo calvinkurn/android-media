@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="@dimen/spacing_lvl4">
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp">
 
 
     <com.tokopedia.unifyprinciples.Typography
@@ -71,7 +72,6 @@
         app:layout_constraintTop_toTopOf="@+id/tvInvoiceShopItemProtection"
         app:typographyType="body_3"
         tools:text="Rp12345678" />
-
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvInvoiceShopItemShipping"
@@ -184,6 +184,20 @@
         app:layout_constraintTop_toBottomOf="@+id/tvInvoiceShopShippingAddress"
         app:typographyType="body_3"
         tools:text="Shipping Address" />
+
+    <Space
+        android:id="@+id/spaceShipping"
+        android:layout_width="match_parent"
+        android:layout_height="16dp"
+        app:layout_constraintTop_toBottomOf="@id/tvInvoiceShopShippingAddressValue"/>
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/dividerShopShipping"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/spaceShipping"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

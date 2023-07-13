@@ -492,8 +492,13 @@ class CartItemViewHolder constructor(
             binding.itemAddonCart.apply {
                 root.show()
                 this.descAddon.text = data.addOnsProduct.widget.wording
+                val addOnType = data.addOnsProduct.listData.firstOrNull()?.type ?: 0
                 root.setOnClickListener {
                     actionListener?.onProductAddOnClicked(data)
+                    actionListener?.onClickAddOnsProductWidgetCart(addOnType, data.productId)
+                }
+                if (data.addOnsProduct.listData.isNotEmpty()) {
+                    actionListener?.onAddOnsProductWidgetImpression(addOnType, data.productId)
                 }
             }
         } else {
@@ -512,6 +517,7 @@ class CartItemViewHolder constructor(
         layoutProductInfo.gone()
 
         var isProductInformationExist = false
+
         val productInformationWithIcon = data.productInformationWithIcon
         if (productInformationWithIcon.isNotEmpty()) {
             isProductInformationExist = true

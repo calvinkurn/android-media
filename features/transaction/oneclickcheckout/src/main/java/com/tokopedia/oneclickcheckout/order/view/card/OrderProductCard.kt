@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showIfWithBlock
@@ -56,7 +55,7 @@ class OrderProductCard(
     private val listener: OrderProductCardListener,
     private val orderSummaryAnalytics: OrderSummaryAnalytics,
     private val inflater: LayoutInflater
-): RecyclerView.ViewHolder(binding.root), CoroutineScope {
+) : RecyclerView.ViewHolder(binding.root), CoroutineScope {
 
     private var product: OrderProduct = OrderProduct()
     private var shop: OrderShop = OrderShop()
@@ -87,7 +86,7 @@ class OrderProductCard(
         renderNotes()
         renderQuantity()
         renderPurchaseProtection()
-        renderAddOn(binding, product, shop)
+        renderAddOnGifting(binding, product, shop)
         renderAddOnsProduct()
     }
 
@@ -436,7 +435,7 @@ class OrderProductCard(
         listener.onPurchaseProtectionCheckedChange(tmpIsChecked, product.productId)
     }
 
-    private fun renderAddOn(binding: CardOrderProductBinding, product: OrderProduct, shop: OrderShop) {
+    private fun renderAddOnGifting(binding: CardOrderProductBinding, product: OrderProduct, shop: OrderShop) {
         with(binding) {
             val addOn: AddOnGiftingDataModel = if (shop.isFulfillment) {
                 shop.addOn
@@ -449,7 +448,7 @@ class OrderProductCard(
                         state = ButtonGiftingAddOnView.State.ACTIVE
                         setAddOnButtonData(addOn)
                         setOnClickListener {
-                            listener.onClickAddOnButton(AddOnGiftingResponse.STATUS_SHOW_ENABLED_ADD_ON_BUTTON, addOn, product, shop)
+                            listener.onClickAddOnGiftingButton(AddOnGiftingResponse.STATUS_SHOW_ENABLED_ADD_ON_BUTTON, addOn, product, shop)
                             orderSummaryAnalytics.eventClickAddOnsDetail(product.productId)
                         }
                         show()
@@ -461,7 +460,7 @@ class OrderProductCard(
                         state = ButtonGiftingAddOnView.State.INACTIVE
                         setAddOnButtonData(addOn)
                         setOnClickListener {
-                            listener.onClickAddOnButton(AddOnGiftingResponse.STATUS_SHOW_DISABLED_ADD_ON_BUTTON, addOn, product, shop)
+                            listener.onClickAddOnGiftingButton(AddOnGiftingResponse.STATUS_SHOW_DISABLED_ADD_ON_BUTTON, addOn, product, shop)
                         }
                         show()
                         orderSummaryAnalytics.eventViewAddOnsWidget(product.productId)
@@ -484,7 +483,8 @@ class OrderProductCard(
                 )
                 setSeeAllAddOnsProduct(
                     binding = this,
-                    addOnsProductData = addOnsProductData
+                    addOnsProductData = addOnsProductData,
+                    product = product
                 )
                 setAddOnsProductItem(
                     binding = this,
@@ -503,20 +503,19 @@ class OrderProductCard(
 
     private fun setSeeAllAddOnsProduct(
         binding: ItemShipmentAddonProductBinding,
-        addOnsProductData: AddOnsProductDataModel
+        addOnsProductData: AddOnsProductDataModel,
+        product: OrderProduct
     ) {
         binding.tvSeeAllAddonProduct.showIfWithBlock(
-            predicate = addOnsProductData.bottomsheet.title.isNotBlank()
-                && addOnsProductData.bottomsheet.applink.isNotBlank()
-                && addOnsProductData.bottomsheet.isShown
+            predicate = addOnsProductData.bottomsheet.title.isNotBlank() &&
+                addOnsProductData.bottomsheet.applink.isNotBlank() &&
+                addOnsProductData.bottomsheet.isShown
         ) {
             text = addOnsProductData.bottomsheet.title
-            setOnClickListener {
-                RouteManager.route(
-                    binding.root.context,
-                    addOnsProductData.bottomsheet.applink
-                )
-            }
+        }
+        binding.tvSeeAllAddonProduct.setOnClickListener {
+            orderSummaryAnalytics.eventClickLihatSemuaAddOnProductWidget()
+            listener.onClickSeeAllAddOnProductService(product, addOnsProductData)
         }
     }
 
@@ -563,7 +562,7 @@ class OrderProductCard(
                     )
 
                     // set addon listeners
-                    cbAddonItem.setOnCheckedChangeListener { _, _ ->
+                    cbAddonItem.setOnCheckedChangeListener { _, isChecked ->
                         changeAddOnProductStatus(
                             addOn = addOn
                         )
@@ -573,6 +572,7 @@ class OrderProductCard(
                                 newAddOnProductData = addOn,
                                 product = product
                             )
+                            orderSummaryAnalytics.eventClickAddOnProductWidget(addOn.type, product.productId, isChecked)
                         }
                     }
                     icProductAddonInfo.showIfWithBlock(addOn.infoLink.isNotBlank()) {
@@ -586,6 +586,7 @@ class OrderProductCard(
 
                 // add addon to the layout
                 llAddonProductItems.addView(addOnView.root)
+                orderSummaryAnalytics.eventViewAddOnProductWidget(addOn.type, product.productId)
             }
         }
     }
@@ -595,6 +596,9 @@ class OrderProductCard(
         addOn: AddOnsProductDataModel.Data
     ) {
         binding.tvShipmentAddOnName.text = addOn.name
+        binding.tvShipmentAddOnName.setOnClickListener {
+            binding.cbAddonItem.isChecked = binding.cbAddonItem.isChecked.not()
+        }
     }
 
     private fun setAddOnProductPrice(
@@ -655,11 +659,13 @@ class OrderProductCard(
 
         fun getLastPurchaseProtectionCheckState(productId: String): Int
 
-        fun onClickAddOnButton(addOnButtonType: Int, addOn: AddOnGiftingDataModel, product: OrderProduct, shop: OrderShop)
+        fun onClickAddOnGiftingButton(addOnButtonType: Int, addOn: AddOnGiftingDataModel, product: OrderProduct, shop: OrderShop)
 
         fun onCheckAddOnProduct(newAddOnProductData: AddOnsProductDataModel.Data, product: OrderProduct)
 
         fun onClickAddOnProductInfoIcon(url: String)
+
+        fun onClickSeeAllAddOnProductService(product: OrderProduct, addOnsProductData: AddOnsProductDataModel)
     }
 
     companion object {

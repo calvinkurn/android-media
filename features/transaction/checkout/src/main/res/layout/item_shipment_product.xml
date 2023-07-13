@@ -404,7 +404,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:orientation="vertical"
-            android:visibility="visible">
+            android:visibility="gone">
 
             <include
                 android:id="@+id/item_shipment_addon_product"
