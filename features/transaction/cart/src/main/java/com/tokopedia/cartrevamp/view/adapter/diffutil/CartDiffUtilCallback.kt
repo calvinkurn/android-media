@@ -10,7 +10,7 @@ import com.tokopedia.cartrevamp.view.uimodel.CartLoadingHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartRecentViewHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartRecommendationItemHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartSectionHeaderHolderData
-import com.tokopedia.cartrevamp.view.uimodel.CartSelectAllHolderData
+import com.tokopedia.cartrevamp.view.uimodel.CartSelectedAmountHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartShopBottomHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartTopAdsHeadlineData
 import com.tokopedia.cartrevamp.view.uimodel.CartWishlistHolderData
@@ -51,7 +51,7 @@ class CartDiffUtilCallback(
         val newItem = newList[newItemPosition]
 
         return when {
-            oldItem is CartSelectAllHolderData && newItem is CartSelectAllHolderData -> oldItem == newItem
+            oldItem is CartSelectedAmountHolderData && newItem is CartSelectedAmountHolderData -> oldItem == newItem
             oldItem is CartChooseAddressHolderData && newItem is CartChooseAddressHolderData -> oldItem == newItem
             oldItem is CartGroupHolderData && newItem is CartGroupHolderData -> oldItem == newItem
             oldItem is CartShopBottomHolderData && newItem is CartShopBottomHolderData -> oldItem == newItem

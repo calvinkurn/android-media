@@ -37,26 +37,6 @@
             app:toolbarPageName="@string/toolbar_page_name_cart"
             app:toolbarTitle="@string/cart" />
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <include
-                android:id="@+id/top_layout"
-                layout="@layout/header_selected_amount"
-                android:visibility="gone"
-                tools:visibility="visible" />
-
-            <View
-                android:id="@+id/top_layout_shadow"
-                android:layout_width="match_parent"
-                android:layout_height="4dp"
-                android:layout_below="@+id/top_layout"
-                android:visibility="gone"
-                android:background="@drawable/shadow_bottom" />
-
-        </RelativeLayout>
-
     </com.google.android.material.appbar.AppBarLayout>
 
     <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
@@ -80,6 +60,27 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_above="@+id/bottom_layout" />
+
+                <RelativeLayout
+                    android:id="@+id/rl_top_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    android:layout_alignParentTop="true">
+
+                    <include
+                        android:id="@+id/top_layout"
+                        layout="@layout/header_selected_amount"
+                        tools:visibility="visible" />
+
+                    <View
+                        android:id="@+id/top_layout_shadow"
+                        android:layout_width="match_parent"
+                        android:layout_height="4dp"
+                        android:layout_below="@+id/top_layout"
+                        android:background="@drawable/shadow_bottom" />
+
+                </RelativeLayout>
 
                 <View
                     android:id="@+id/bottom_layout_shadow"

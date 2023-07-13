@@ -44,8 +44,6 @@ import com.tokopedia.cart.R
 import com.tokopedia.cart.databinding.FragmentCartRevampBinding
 import com.tokopedia.cart.view.CartActivity
 import com.tokopedia.cart.view.CartFragment
-import com.tokopedia.cart.view.uimodel.CartChooseAddressHolderData
-import com.tokopedia.cart.view.uimodel.CartItemTickerErrorHolderData
 import com.tokopedia.cartcommon.data.response.common.Button
 import com.tokopedia.cartcommon.data.response.common.OutOfService
 import com.tokopedia.cartrevamp.data.model.response.promo.LastApplyPromo
@@ -74,7 +72,7 @@ import com.tokopedia.cartrevamp.view.uimodel.CartRecentViewHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartRecentViewItemHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartRecommendationItemHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartSectionHeaderHolderData
-import com.tokopedia.cartrevamp.view.uimodel.CartSelectAllHolderData
+import com.tokopedia.cartrevamp.view.uimodel.CartSelectedAmountHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartShopBottomHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartState
 import com.tokopedia.cartrevamp.view.uimodel.CartTrackerEvent
@@ -128,8 +126,6 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateu
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import com.tokopedia.purchase_platform.common.feature.sellercashback.SellerCashbackListener
 import com.tokopedia.purchase_platform.common.feature.sellercashback.ShipmentSellerCashbackModel
-import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementHolderData
-import com.tokopedia.purchase_platform.common.utils.DEFAULT_DEBOUNCE_IN_MILIS
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
@@ -146,7 +142,6 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.wishlistcommon.data.response.GetWishlistV2Response
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.Job
@@ -155,12 +150,9 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -219,7 +211,9 @@ class CartRevampFragment :
     private val isToolbarWithBackButton = true
     private var delayShowPromoButtonJob: Job? = null
     private var TRANSLATION_LENGTH = 0f
+    private var SELECTED_AMOUNT_TRANSLATION_LENGTH = 0f
     private var isKeyboardOpened = false
+    private var initialSelectedAmountPosition = 0f
     private var initialPromoButtonPosition = 0f
     private var unavailableItemAccordionCollapseState = true
     private var hasCalledOnSaveInstanceState = false
@@ -260,6 +254,7 @@ class CartRevampFragment :
         const val DELAY_SHOW_PROMO_BUTTON_AFTER_SCROLL = 750L
         const val PROMO_ANIMATION_DURATION = 500L
         const val PROMO_POSITION_BUFFER = 10
+        const val SELECTED_AMOUNT_POSITION_BUFFER = 10
         const val DELAY_CHECK_BOX_GLOBAL = 500L
         const val ANIMATED_IMAGE_ALPHA = 0.5f
         const val ANIMATED_IMAGE_FILLED = 1.0f
@@ -921,15 +916,13 @@ class CartRevampFragment :
                     binding?.llPromoCheckout?.gone()
                 }
 
-                Log.d("<RESULT>", "onScrolled: ${recyclerView.canScrollVertically(-1)}")
-//                if (recyclerView.canScrollVertically(-1)) {
-//                    disableSwipeRefresh()
-//                    setToolbarShadowVisibility(true)
-//                } else {
-//                    enableSwipeRefresh()
-//                    setToolbarShadowVisibility(false)
-//                }
+                if (recyclerView.canScrollVertically(-1)) {
+                    disableSwipeRefresh()
+                } else {
+                    enableSwipeRefresh()
+                }
 
+//                handleSelectedAmountVisibility(dy)
                 handlePromoButtonVisibilityOnScroll(dy)
                 handleStickySelectedAmountVisibility(recyclerView)
             }
@@ -942,6 +935,20 @@ class CartRevampFragment :
 
     private fun animatePromoButtonToHiddenPosition(valueY: Float) {
         binding?.llPromoCheckout?.animate()?.y(valueY)?.setDuration(0)?.start()
+    }
+
+    private fun animateSelectedAmountToHiddenPosition(valueY: Float) {
+        binding?.rlTopLayout?.animate()?.y(valueY)?.setDuration(0)?.start()
+    }
+
+    private fun animateSelectedAmountToStartingPosition() {
+        binding?.apply {
+            val initialPosition =
+                bottomLayout.y - rlTopLayout.height + SELECTED_AMOUNT_POSITION_BUFFER.dpToPx(
+                    resources.displayMetrics
+                )
+            rlTopLayout.animate().y(initialPosition).setDuration(0).start()
+        }
     }
 
     private fun animatePromoButtonToStartingPosition() {
@@ -1323,6 +1330,31 @@ class CartRevampFragment :
         }
     }
 
+    private fun handleSelectedAmountVisibility(dy: Int) {
+        val llPromoCheckout = binding?.rlTopLayout ?: return
+        val valueY = llPromoCheckout.y - dy
+        SELECTED_AMOUNT_TRANSLATION_LENGTH -= dy
+        if (dy != 0) {
+            if (initialSelectedAmountPosition == 0f && SELECTED_AMOUNT_TRANSLATION_LENGTH - dy == 0f) {
+                // Initial position of View if previous initialization attempt failed
+                initialSelectedAmountPosition = llPromoCheckout.y
+            }
+
+            if (SELECTED_AMOUNT_TRANSLATION_LENGTH != 0f) {
+                if (dy < 0 && valueY < initialSelectedAmountPosition) {
+                    // Prevent scroll up move button exceed initial view position
+                    animateSelectedAmountToStartingPosition()
+                } else if (valueY <= llPromoCheckout.height + initialSelectedAmountPosition) {
+                    // Prevent scroll down move button too far
+                    animateSelectedAmountToHiddenPosition(valueY)
+                }
+            } else {
+                // Set to initial position if scroll up to top
+                animateSelectedAmountToStartingPosition()
+            }
+        }
+    }
+
     private fun handlePromoButtonVisibilityOnScroll(dy: Int) {
         val llPromoCheckout = binding?.llPromoCheckout ?: return
         val valueY = llPromoCheckout.y + dy
@@ -1356,24 +1388,38 @@ class CartRevampFragment :
         val adapterData = viewModel.cartDataList.value
         if (topItemPosition >= adapterData.size) return
 
-        val firstVisibleItemData = adapterData[topItemPosition]
-        if (firstVisibleItemData is CartSelectAllHolderData ||
-            firstVisibleItemData is TickerAnnouncementHolderData ||
-            firstVisibleItemData is CartChooseAddressHolderData ||
-            firstVisibleItemData is CartItemTickerErrorHolderData ||
-            firstVisibleItemData is CartGroupHolderData ||
-            firstVisibleItemData is CartItemHolderData ||
-            firstVisibleItemData is CartShopBottomHolderData ||
-            firstVisibleItemData is ShipmentSellerCashbackModel
+        if (viewModel.getAllAvailableCartItemData().isNotEmpty()
+            && viewModel.hasSelectedCartItem()
+            && recyclerView.canScrollVertically(
+                -1
+            )
         ) {
-            if (viewModel.getAllAvailableCartItemData()
-                    .isNotEmpty() && viewModel.hasSelectedCartItem()
-            ) {
-                if (binding?.topLayout?.root?.visibility == View.GONE) setTopLayoutVisibility(true)
-            }
+            adapterData.remove(0)
+            setTopLayoutVisibility(true)
         } else {
-            if (binding?.topLayout?.root?.visibility == View.VISIBLE) setTopLayoutVisibility(false)
+            viewModel.addItems(0, listOf(CartSelectedAmountHolderData()))
+            setTopLayoutVisibility(false)
         }
+        onNeedToUpdateViewItem(0)
+
+//        val firstVisibleItemData = adapterData[topItemPosition]
+//        if (firstVisibleItemData is CartSelectAllHolderData ||
+//            firstVisibleItemData is TickerAnnouncementHolderData ||
+//            firstVisibleItemData is CartChooseAddressHolderData ||
+//            firstVisibleItemData is CartItemTickerErrorHolderData ||
+//            firstVisibleItemData is CartGroupHolderData ||
+//            firstVisibleItemData is CartItemHolderData ||
+//            firstVisibleItemData is CartShopBottomHolderData ||
+//            firstVisibleItemData is ShipmentSellerCashbackModel
+//        ) {
+//            if (viewModel.getAllAvailableCartItemData()
+//                    .isNotEmpty() && viewModel.hasSelectedCartItem()
+//            ) {
+//                if (binding?.rlTopLayout?.visibility == View.GONE) setTopLayoutVisibility(true)
+//            }
+//        } else {
+//            if (binding?.rlTopLayout?.visibility == View.VISIBLE) setTopLayoutVisibility(false)
+//        }
     }
 
     private fun isAtcExternalFlow(): Boolean {
@@ -1748,6 +1794,7 @@ class CartRevampFragment :
                     updateCashback(event.subtotalCashback)
                     renderDetailInfoSubTotal(event.qty, event.subtotalPrice, event.noAvailableItems)
                 }
+
                 is CartGlobalEvent.AdapterItemChanged -> {
                     onNeedToUpdateViewItem(event.position)
                 }
@@ -2669,9 +2716,9 @@ class CartRevampFragment :
 
     private fun setSelectedAmountVisibility() {
         if (viewModel.hasSelectedCartItem()) {
-            binding?.topLayout?.root?.visible()
+            binding?.rlTopLayout?.visible()
         } else {
-            binding?.topLayout?.root?.gone()
+            binding?.rlTopLayout?.gone()
         }
     }
 
@@ -2772,33 +2819,33 @@ class CartRevampFragment :
     }
 
     private fun setToolbarShadowVisibility(show: Boolean) {
-        if (binding?.topLayout?.root?.visibility == View.VISIBLE) {
-            if (show) {
-                binding?.topLayoutShadow?.show()
-                binding?.appBarLayout?.elevation = NO_ELEVATION.toFloat()
-            } else {
-                binding?.topLayoutShadow?.gone()
-            }
-        } else {
-            if (show) {
-                binding?.appBarLayout?.elevation = HAS_ELEVATION.toFloat()
-                binding?.topLayoutShadow?.gone()
-            } else {
-                binding?.appBarLayout?.elevation = NO_ELEVATION.toFloat()
-            }
-        }
+//        if (binding?.rlTopLayout?.visibility == View.VISIBLE) {
+//            if (show) {
+//                binding?.topLayoutShadow?.show()
+//                binding?.appBarLayout?.elevation = NO_ELEVATION.toFloat()
+//            } else {
+//                binding?.topLayoutShadow?.gone()
+//            }
+//        } else {
+//            if (show) {
+//                binding?.appBarLayout?.elevation = HAS_ELEVATION.toFloat()
+//                binding?.topLayoutShadow?.gone()
+//            } else {
+//                binding?.appBarLayout?.elevation = NO_ELEVATION.toFloat()
+//            }
+//        }
     }
 
     private fun setTopLayoutVisibility(isShow: Boolean) {
         var isShowToolbarShadow = binding?.topLayoutShadow?.visibility == View.VISIBLE
 
         if (isShow) {
-            binding?.topLayout?.root?.show()
+            binding?.rlTopLayout?.show()
             if (binding?.appBarLayout?.elevation == HAS_ELEVATION.toFloat()) {
                 isShowToolbarShadow = true
             }
         } else {
-            binding?.topLayout?.root?.gone()
+            binding?.rlTopLayout?.gone()
         }
 
         setToolbarShadowVisibility(isShowToolbarShadow)
