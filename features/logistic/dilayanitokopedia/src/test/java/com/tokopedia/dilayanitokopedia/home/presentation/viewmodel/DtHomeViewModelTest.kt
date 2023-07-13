@@ -115,6 +115,9 @@ class DtHomeViewModelTest {
 
     @Test
     fun `verify get anchor tab list`() {
+        // check empty
+        Assert.assertNull(viewModel.menuList)
+
         // Inject
         val groupId = "1"
         val feParam = "$KEY_ANCHOR_IDENTIFIER=${KEYWOARD_CHANNEL_GROUP_ID}$groupId"
