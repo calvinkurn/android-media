@@ -3,4 +3,10 @@
     <declare-styleable name="CarouselProductCardView">
         <attr name="useDefaultItemDecorator" format="boolean" />
     </declare-styleable>
+
+    <declare-styleable name="CarouselPagingProductCardView">
+        <attr name="itemPerPage" format="integer" />
+        <attr name="showPagingIndicator" format="boolean" />
+        <attr name="pagingPaddingHorizontal" format="dimension" />
+    </declare-styleable>
 </resources>
