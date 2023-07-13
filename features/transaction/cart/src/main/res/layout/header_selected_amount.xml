@@ -25,7 +25,6 @@
         android:id="@+id/text_selected_amount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="1 produk dipilih"
         android:textColor="@color/Unify_NN950"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"

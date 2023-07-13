@@ -1,9 +1,12 @@
 package com.tokopedia.cartrevamp.view.uimodel
 
 import androidx.lifecycle.LiveData
+import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.cartcommon.data.response.common.OutOfService
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopProductUiModel
 import com.tokopedia.wishlistcommon.data.response.GetWishlistV2Response
 
 sealed class CartState<out T : Any> {
@@ -21,10 +24,34 @@ sealed class CartGlobalEvent {
     object SuccessClearRedPromosThenGoToCheckout : CartGlobalEvent()
     data class UpdateAndReloadCartFailed(val throwable: Throwable) : CartGlobalEvent()
     data class SubTotalUpdated(
+        val subtotalCashback: Double,
         val qty: String,
         val subtotalPrice: Double,
         val noAvailableItems: Boolean
     ) : CartGlobalEvent()
+
+    data class AdapterItemChanged(
+        val position: Int
+    ) : CartGlobalEvent()
+}
+
+sealed interface AddToCartEvent {
+    data class Success(
+        val addToCartDataModel: AddToCartDataModel,
+        val productModel: Any
+    ) : AddToCartEvent
+
+    data class Failed(val throwable: Throwable) : AddToCartEvent
+}
+
+sealed interface CartTrackerEvent {
+    data class ATCTrackingURLRecent(val productModel: CartRecentViewItemHolderData) :
+        CartTrackerEvent
+
+    data class ATCTrackingURLRecommendation(val recommendationItem: RecommendationItem) :
+        CartTrackerEvent
+
+    data class ATCTrackingURLBanner(val bannerShop: BannerShopProductUiModel) : CartTrackerEvent
 }
 
 sealed class UpdateCartCheckoutState {
@@ -57,7 +84,9 @@ sealed class LoadWishlistV2State {
 }
 
 sealed class LoadRecommendationState {
-    data class Success(val recommendationWidgets: List<RecommendationWidget>) : LoadRecommendationState()
+    data class Success(val recommendationWidgets: List<RecommendationWidget>) :
+        LoadRecommendationState()
+
     object Failed : LoadRecommendationState()
 }
 

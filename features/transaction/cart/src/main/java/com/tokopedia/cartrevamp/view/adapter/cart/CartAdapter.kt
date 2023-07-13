@@ -80,6 +80,12 @@ class CartAdapter constructor(
 
     var plusCoachMark: CoachMark2? = null
 
+    companion object {
+        const val SELLER_CASHBACK_ACTION_INSERT = 1
+        const val SELLER_CASHBACK_ACTION_UPDATE = 2
+        const val SELLER_CASHBACK_ACTION_DELETE = 3
+    }
+
     fun updateList(newList: ArrayList<Any>) {
         val diffResult = DiffUtil.calculateDiff(CartDiffUtilCallback(cartDataList, newList))
 
@@ -438,45 +444,6 @@ class CartAdapter constructor(
                     cartItemHolderData.isSelected = selected
                 }
             }
-        }
-    }
-
-    fun setItemSelected(position: Int, cartItemHolderData: CartItemHolderData, selected: Boolean) {
-        var updatedShopData: CartGroupHolderData? = null
-        var shopBottomIndex: Int? = null
-        for ((id, data) in cartDataList.withIndex()) {
-            if (data is CartGroupHolderData && data.cartString == cartItemHolderData.cartString && data.isError == cartItemHolderData.isError) {
-                data.productUiModelList.forEachIndexed { index, item ->
-                    if ((id + 1 + index) == position) {
-                        item.isSelected = selected
-                    }
-                }
-
-                var selectedCount = 0
-                data.productUiModelList.forEach {
-                    if (it.isSelected) {
-                        selectedCount++
-                    }
-                }
-
-                if (selectedCount == 0) {
-                    data.isAllSelected = false
-                    data.isPartialSelected = false
-                } else if (selectedCount > 0 && selectedCount < data.productUiModelList.size) {
-                    data.isAllSelected = false
-                    data.isPartialSelected = true
-                } else {
-                    data.isAllSelected = true
-                    data.isPartialSelected = false
-                }
-                updatedShopData = data
-            } else if (data is CartShopBottomHolderData && data.shopData.cartString == cartItemHolderData.cartString && updatedShopData != null) {
-                shopBottomIndex = id
-                break
-            }
-        }
-        if (shopBottomIndex != null && updatedShopData != null) {
-            cartDataList[shopBottomIndex] = CartShopBottomHolderData(updatedShopData)
         }
     }
 
@@ -885,16 +852,6 @@ class CartAdapter constructor(
         }
 
         return nonCollapsibleProducts
-    }
-
-    fun getDisabledAccordionHolderData(): DisabledAccordionHolderData? {
-        cartDataList.forEach {
-            if (it is DisabledAccordionHolderData) {
-                return it
-            }
-        }
-
-        return null
     }
 
     fun setLastItemAlwaysSelected(): Boolean {

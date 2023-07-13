@@ -10,8 +10,8 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateu
 import com.tokopedia.purchase_platform.common.feature.sellercashback.ShipmentSellerCashbackModel
 
 data class CartModel(
-    val wishlists: List<CartWishlistItemHolderData>? = null,
-    val recentViewList: List<CartRecentViewItemHolderData>? = null,
+    var wishlists: List<CartWishlistItemHolderData>? = null,
+    var recentViewList: List<CartRecentViewItemHolderData>? = null,
     var isLastApplyResponseStillValid: Boolean = true,
     var lastValidateUseRequest: ValidateUsePromoRequest? = null,
     var lastValidateUseResponse: ValidateUsePromoRevampUiModel? = null,
