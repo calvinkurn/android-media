@@ -1120,17 +1120,17 @@
           "deeplink_variable": "ApplinkConstInternalUserPlatform.EMAIL_REGISTER"
      }, 
      {
-          "destination_activity": "com.tokopedia.loginregister.shopcreation.view.activity.LandingShopCreationActivity", 
+          "destination_activity": "com.tokopedia.loginregister.shopcreation.view.landingshop.LandingShopCreationActivity", 
           "deeplink": "tokopedia-android-internal://user/landing-shop-creation", 
           "deeplink_variable": "ApplinkConstInternalUserPlatform.LANDING_SHOP_CREATION"
      }, 
      {
-          "destination_activity": "com.tokopedia.loginregister.shopcreation.view.activity.PhoneShopCreationActivity", 
+          "destination_activity": "com.tokopedia.loginregister.shopcreation.view.phoneshop.PhoneShopCreationActivity", 
           "deeplink": "tokopedia-android-internal://user/phone-shop-creation", 
           "deeplink_variable": "ApplinkConstInternalUserPlatform.PHONE_SHOP_CREATION"
      }, 
      {
-          "destination_activity": "com.tokopedia.loginregister.shopcreation.view.activity.NameShopCreationActivity", 
+          "destination_activity": "com.tokopedia.loginregister.shopcreation.view.nameshop.NameShopCreationActivity", 
           "deeplink": "tokopedia-android-internal://user/name-shop-creation", 
           "deeplink_variable": "ApplinkConstInternalUserPlatform.NAME_SHOP_CREATION"
      }, 
@@ -1145,7 +1145,7 @@
           "deeplink_variable": "ApplinkConstInternalUserPlatform.SEAMLESS_LOGIN"
      }, 
      {
-          "destination_activity": "com.tokopedia.loginregister.termprivacy.view.activity.TermPrivacyActivity", 
+          "destination_activity": "com.tokopedia.loginregister.termprivacy.TermPrivacyActivity", 
           "deeplink": "tokopedia-android-internal://user/term-privacy/.*\\", 
           "deeplink_variable": ""
      }, 
@@ -2353,6 +2353,11 @@
           "destination_activity": "com.tokopedia.inbox.view.activity.InboxActivity", 
           "deeplink": "tokopedia-android-internal://marketplace/inbox?.*", 
           "deeplink_variable": ""
+     }, 
+     {
+          "destination_activity": "com.tokopedia.inbox.universalinbox.view.UniversalInboxActivity", 
+          "deeplink": "tokopedia-android-internal://communication/universal-inbox", 
+          "deeplink_variable": "ApplinkConstInternalCommunication.UNIVERSAL_INBOX"
      }, 
      {
           "destination_activity": "com.tokopedia.attachvoucher.view.activity.AttachVoucherActivity", 

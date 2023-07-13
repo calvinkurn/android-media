@@ -117,14 +117,14 @@ class ShopOpenRevampActivity : BaseActivity(), FragmentNavigationInterface {
                 setBackgroundColor(
                     androidx.core.content.ContextCompat.getColor(
                         context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_N50
+                        com.tokopedia.unifyprinciples.R.color.Unify_NN50
                     )
                 )
             } else {
                 setBackgroundColor(
                     androidx.core.content.ContextCompat.getColor(
                         context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_N0
+                        com.tokopedia.unifyprinciples.R.color.Unify_NN0
                     )
                 )
             }

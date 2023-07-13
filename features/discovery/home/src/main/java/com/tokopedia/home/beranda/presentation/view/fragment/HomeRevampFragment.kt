@@ -110,6 +110,7 @@ import com.tokopedia.home.beranda.presentation.view.helper.isSubscriptionCoachma
 import com.tokopedia.home.beranda.presentation.view.helper.setHomeTokonowCoachmarkShown
 import com.tokopedia.home.beranda.presentation.view.helper.setSubscriptionCoachmarkShown
 import com.tokopedia.home.beranda.presentation.view.listener.BannerComponentCallback
+import com.tokopedia.home.beranda.presentation.view.listener.BestSellerWidgetCallback
 import com.tokopedia.home.beranda.presentation.view.listener.CMHomeWidgetCallback
 import com.tokopedia.home.beranda.presentation.view.listener.CampaignWidgetComponentCallback
 import com.tokopedia.home.beranda.presentation.view.listener.CarouselPlayWidgetCallback
@@ -150,9 +151,12 @@ import com.tokopedia.home.widget.ToggleableSwipeRefreshLayout
 import com.tokopedia.home_component.HomeComponentRollenceController
 import com.tokopedia.home_component.customview.pullrefresh.LayoutIconPullRefreshView
 import com.tokopedia.home_component.customview.pullrefresh.ParentIconSwipeRefreshLayout
+import com.tokopedia.home_component.listener.BestSellerListener
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.util.toDpInt
+import com.tokopedia.home_component.visitable.BestSellerChipProductDataModel
+import com.tokopedia.home_component.visitable.BestSellerProductDataModel
 import com.tokopedia.iris.Iris
 import com.tokopedia.iris.IrisAnalytics.Companion.getInstance
 import com.tokopedia.iris.util.IrisSession
@@ -874,7 +878,7 @@ open class HomeRevampFragment :
     private fun setupStatusBar() {
         activity?.let {
             statusBarBackground.background = ColorDrawable(
-                ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_G500)
+                ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
             )
         }
         // status bar background compability, we show view background for android >= Kitkat
@@ -1490,7 +1494,8 @@ open class HomeRevampFragment :
             LegoProductCallback(this),
             TodoWidgetComponentCallback(this, getHomeViewModel()),
             FlashSaleWidgetCallback(this),
-            CarouselPlayWidgetCallback(getTrackingQueueObj(), userSession, this)
+            CarouselPlayWidgetCallback(getTrackingQueueObj(), userSession, this),
+            BestSellerWidgetCallback(context, this, getHomeViewModel()),
         )
         val asyncDifferConfig = AsyncDifferConfig.Builder(HomeVisitableDiffUtil())
             .setBackgroundThreadExecutor(Executors.newSingleThreadExecutor())

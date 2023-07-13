@@ -72,11 +72,11 @@ class ShopLocationItemAdapter(private val listener: ShopLocationItemAdapterListe
 
             if (shopLocation.status == ShopLocationConstant.SHOP_LOCATION_STATE_ACTIVE) {
                 binding.tvShopLabel.text = itemView.context.getString(R.string.shop_active)
-                binding.tvShopLabel.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_G600))
+                binding.tvShopLabel.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_GN600))
                 binding.imgMarkIcon.setImageDrawable(itemView.context.getResDrawable(R.drawable.ic_mark_ico))
             } else if (shopLocation.status == ShopLocationConstant.SHOP_LOCATION_STATE_INACTIVE) {
                 binding.tvShopLabel.text = itemView.context.getString(R.string.shop_inactive)
-                binding.tvShopLabel.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+                binding.tvShopLabel.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_68))
                 binding.imgMarkIcon.setImageDrawable(itemView.context.getResDrawable(R.drawable.ic_mark_ico_inactive))
             }
         }

@@ -31,7 +31,7 @@
             android:layout_marginTop="@dimen/dp_11"
             android:layout_marginBottom="@dimen/dp_11"
             android:text="@string/lorem"
-            android:textColor="@color/Unify_N500"
+            android:textColor="@color/Unify_NN600"
             app:typographyType="body_3"
             app:typographyWeight="reguler" />
 
