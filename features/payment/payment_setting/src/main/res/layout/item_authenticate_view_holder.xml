@@ -27,7 +27,7 @@
                 android:layout_marginEnd="@dimen/unify_space_8"
                 android:layout_marginBottom="@dimen/unify_space_12"
                 android:layout_toStartOf="@+id/radioSelectedAuth"
-                android:textColor="@color/Unify_N700"
+                android:textColor="@color/Unify_NN950"
                 app:typographyType="heading_4"
                 app:typographyWeight="bold"
                 tools:text="Verifikasi oleh Tokopedia" />
@@ -45,7 +45,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/titleAuthenticate"
                 android:layout_toStartOf="@+id/radioSelectedAuth"
-                android:textColor="@color/Unify_N700_68"
+                android:textColor="@color/Unify_NN950_68"
                 app:typographyType="body_2"
                 tools:text="Anda akan diminta memasukkan angka CVV disetiap transaksi. Verifikasi via SMS atau sidik jari hanya diperlukan untuk transaksi tertentu." />
         </RelativeLayout>
