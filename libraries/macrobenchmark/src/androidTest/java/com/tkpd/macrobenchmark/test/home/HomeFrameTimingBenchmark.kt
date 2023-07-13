@@ -24,11 +24,9 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class HomeFrameTimingBenchmark: BaseFrameTimingBenchmark() {
     override fun setupEnvironment() {
-        MacroDevOps.skipOnboarding()
     }
 
     override fun setupMock() {
-        MacroDevOps.setupEnvironment(MacroIntent.Mock.getHomeMockIntent())
     }
 
     override fun pageInteractionTest(currentIteration: Int) {

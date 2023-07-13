@@ -57,7 +57,7 @@ class ItemPenaltyCalculationTableViewHolder(view: View) :
             ItemPenaltyCalculationTableDetailUiModel(
                 points.toString(),
                 isBold,
-                true
+                isBold
             )
         }
     }

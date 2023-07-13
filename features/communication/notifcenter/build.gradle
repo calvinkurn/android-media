@@ -14,6 +14,9 @@ buildscript {
 }
 
 android {
+    namespace 'com.tokopedia.notifcenter'
+    testNamespace 'com.tokopedia.notifcenter.test'
+
     buildFeatures {
         viewBinding true
     }

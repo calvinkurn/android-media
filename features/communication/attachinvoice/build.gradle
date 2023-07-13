@@ -3,12 +3,16 @@ apply from: "$rootProject.projectDir/buildconfig/kotlin/core-kapt.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
 android{
+    namespace 'com.tokopedia.attachinvoice'
+    testNamespace 'com.tokopedia.attachinvoice.test'
     buildFeatures {
         viewBinding true
     }
 }
 
 android {
+    namespace 'com.tokopedia.attachinvoice'
+    testNamespace 'com.tokopedia.attachinvoice.test'
     testOptions {
         unitTests.all {
             testLogging.events = ["passed", "skipped", "failed"]
