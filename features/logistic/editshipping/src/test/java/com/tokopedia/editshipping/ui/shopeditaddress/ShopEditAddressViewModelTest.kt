@@ -15,7 +15,6 @@ import com.tokopedia.logisticCommon.data.response.GetDistrictResponse
 import com.tokopedia.logisticCommon.data.response.KeroDistrictRecommendation
 import com.tokopedia.logisticCommon.data.response.shoplocation.ShopLocCheckCouriers
 import com.tokopedia.logisticCommon.data.response.shoplocation.ShopLocCheckCouriersNewLocResponse
-import com.tokopedia.logisticCommon.data.response.shoplocation.ShopLocUpdateWarehouse
 import com.tokopedia.logisticCommon.data.response.shoplocation.ShopLocationUpdateWarehouseResponse
 import com.tokopedia.logisticCommon.domain.model.Place
 import com.tokopedia.usecase.coroutines.Fail
@@ -33,7 +32,7 @@ import org.junit.Rule
 import org.junit.Test
 
 @ExperimentalCoroutinesApi
-class ShopEditAddressViewModelTest  {
+class ShopEditAddressViewModelTest {
 
     @get:Rule
     val rule = InstantTaskExecutorRule()
@@ -42,13 +41,12 @@ class ShopEditAddressViewModelTest  {
     private val shopRepo: ShopLocationRepository = mockk(relaxed = true)
     private val autoCompleteMapper = AutoCompleteMapper()
 
-
     private val autoCompleteListObserver: Observer<Result<Place>> = mockk(relaxed = true)
     private val districtLocationObserver: Observer<Result<DistrictLocation>> = mockk(relaxed = true)
     private val zipCodeListObserver: Observer<Result<KeroDistrictRecommendation>> = mockk(relaxed = true)
     private val districtGeocodeObserver: Observer<Result<KeroMapsAutofill>> = mockk(relaxed = true)
     private val checkCouriersObserver: Observer<ShopEditAddressState<ShopLocCheckCouriers>> = mockk(relaxed = true)
-    private val saveEditShopObserver: Observer<ShopEditAddressState<ShopLocUpdateWarehouse>> = mockk(relaxed = true)
+    private val saveEditShopObserver: Observer<ShopEditAddressState<String>> = mockk(relaxed = true)
 
     private lateinit var shopEditAddressViewModel: ShopEditAddressViewModel
 
@@ -110,7 +108,7 @@ class ShopEditAddressViewModelTest  {
 
     @Test
     fun `Get formatted address from latlon Success`() {
-        coEvery{ keroRepo.getDistrictGeocode(any()) } returns AutoFillResponse()
+        coEvery { keroRepo.getDistrictGeocode(any()) } returns AutoFillResponse()
         shopEditAddressViewModel.getDistrictGeocode("123,123")
         verify { districtGeocodeObserver.onChanged(match { it is Success }) }
     }
@@ -124,7 +122,7 @@ class ShopEditAddressViewModelTest  {
 
     @Test
     fun `Check couriers availability success`() {
-        coEvery{ shopRepo.shopCheckCouriersNewLoc(any(), any()) } returns  ShopLocCheckCouriersNewLocResponse()
+        coEvery { shopRepo.shopCheckCouriersNewLoc(any(), any()) } returns ShopLocCheckCouriersNewLocResponse()
         shopEditAddressViewModel.checkCouriersAvailability(998, 123)
         verify { checkCouriersObserver.onChanged(match { it is ShopEditAddressState.Success }) }
     }
@@ -139,19 +137,34 @@ class ShopEditAddressViewModelTest  {
     @Test
     fun `Save shop edit address success`() {
         coEvery {
-            shopRepo.saveEditShopLocation(any(), any(), any(), any(), any(), any(), any(), any(), any())
+            shopRepo.saveEditShopLocation(any(), any(), any(), any(), any(), any(), any())
         } returns ShopLocationUpdateWarehouseResponse()
-        shopEditAddressViewModel.saveEditShopLocation(12, 998, "warehouse", 222, "1231,4131", "email@email", "jakarta utara", "1123", "123")
+        shopEditAddressViewModel.saveEditShopLocation(
+            12,
+            998,
+            "warehouse",
+            222,
+            "1231,4131",
+            "email@email",
+            "jakarta utara"
+        )
         verify { saveEditShopObserver.onChanged(match { it is ShopEditAddressState.Success }) }
     }
 
     @Test
     fun `Save shop edit address failed`() {
         coEvery {
-            shopRepo.saveEditShopLocation(any(), any(), any(), any(), any(), any(), any(), any(), any())
+            shopRepo.saveEditShopLocation(any(), any(), any(), any(), any(), any(), any())
         } throws defaultThrowable
-        shopEditAddressViewModel.saveEditShopLocation(12, 998, "warehouse", 222, "1231,4131", "email@email", "jakarta utara", "1123", "123")
+        shopEditAddressViewModel.saveEditShopLocation(
+            12,
+            998,
+            "warehouse",
+            222,
+            "1231,4131",
+            "email@email",
+            "jakarta utara"
+        )
         verify { saveEditShopObserver.onChanged(match { it is ShopEditAddressState.Fail }) }
     }
-
 }

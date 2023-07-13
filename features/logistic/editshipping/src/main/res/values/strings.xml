@@ -20,7 +20,6 @@
     <string name="detail_alamat">Detail Alamat</string>
     <string name="detail_alamat_error_helper">Tulis alamat sesuai peta dan tambahkan detail (kompleks/blok/nomor). Lokasi peta: %1$s</string>
     <string name="helper_shop_detail">Min. 20 Karakter. Harap tulis alamatmu lebih lengkap.</string>
-    <string name="save_edit_shop_success">Detail lokasi telah diubah</string>
     <string name="txt_error_no_access">Oops, kamu tidak punya izin untuk mengakses halaman ini</string>
     <string name="title_save_dialog">Kurir pilihanmu tidak tersedia di lokasi baru ini</string>
     <string name="desc_save_dialog">Aktifkan kurir lainnya lewat Atur Pengiriman agar lokasi tokomu yang baru dapat melakukan pengiriman.</string>

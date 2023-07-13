@@ -38,6 +38,7 @@ import com.tokopedia.editshipping.util.ShopEditAddressUtils
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.logisticCommon.data.constant.AddressConstant
 import com.tokopedia.logisticCommon.data.constant.AddressConstant.EXTRA_WH_DISTRICT_ID
+import com.tokopedia.logisticCommon.data.constant.EditShopAddressConstant.EXTRA_EDITED_WAREHOUSE_NAME
 import com.tokopedia.logisticCommon.data.entity.address.DistrictRecommendationAddress
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.data.entity.shoplocation.Warehouse
@@ -254,16 +255,13 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
             when (it) {
                 is ShopEditAddressState.Success -> {
                     binding?.swipeRefresh?.isRefreshing = false
-                    view?.let { view ->
-                        Toaster.build(
-                            view,
-                            getString(R.string.save_edit_shop_success),
-                            Toaster.LENGTH_SHORT,
-                            type = Toaster.TYPE_NORMAL
-                        ).show()
-                    }
                     if (!uncoveredCourierFlag) {
-                        activity?.setResult(Activity.RESULT_OK)
+                        activity?.setResult(
+                            Activity.RESULT_OK,
+                            Intent().apply {
+                                putExtra(EXTRA_EDITED_WAREHOUSE_NAME, it.data)
+                            }
+                        )
                     } else {
                         startActivity(
                             RouteManager.getIntent(
@@ -276,14 +274,7 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
                 }
                 is ShopEditAddressState.Fail -> {
                     binding?.swipeRefresh?.isRefreshing = false
-                    view?.let { view ->
-                        Toaster.build(
-                            view,
-                            it.errorMessage,
-                            Toaster.LENGTH_SHORT,
-                            type = Toaster.TYPE_ERROR
-                        ).show()
-                    }
+                    showErrorToaster(it.throwable?.message.orEmpty())
                 }
 
                 else -> binding?.swipeRefresh?.isRefreshing = true
@@ -298,18 +289,22 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
 
                 is ShopEditAddressState.Fail -> {
                     binding?.swipeRefresh?.isRefreshing = false
-                    view?.let { view ->
-                        Toaster.build(
-                            view,
-                            DEFAULT_ERROR_MESSAGE,
-                            Toaster.LENGTH_SHORT,
-                            type = Toaster.TYPE_ERROR
-                        ).show()
-                    }
+                    showErrorToaster(it.throwable?.message ?: DEFAULT_ERROR_MESSAGE)
                 }
 
                 else -> binding?.swipeRefresh?.isRefreshing = true
             }
+        }
+    }
+
+    private fun showErrorToaster(message: String) {
+        view?.let { view ->
+            Toaster.build(
+                view,
+                message,
+                Toaster.LENGTH_SHORT,
+                type = Toaster.TYPE_ERROR
+            ).show()
         }
     }
 
@@ -349,9 +344,13 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
             val latLong = "$currentLat,$currentLong"
             warehouseModel?.let {
                 viewModel.saveEditShopLocation(
-                    userSession.shopId.toLong(), it.warehouseId, binding?.etNamaLokasiShop?.text.toString(),
-                    it.districtId, latLong, userSession.email, binding?.etDetailAlamatShop?.text.toString(),
-                    binding?.etKodePosShop?.text.toString(), userSession.phoneNumber
+                    shopId = userSession.shopId.toLong(),
+                    warehouseId = it.warehouseId,
+                    warehouseName = binding?.etNamaLokasiShop?.text.toString(),
+                    districtId = it.districtId,
+                    latLon = latLong,
+                    addressDetail = binding?.etDetailAlamatShop?.text.toString(),
+                    postalCode = binding?.etKodePosShop?.text.toString()
                 )
             }
         } else {
@@ -372,15 +371,13 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
                 val latLong = "$currentLat,$currentLong"
                 warehouseModel?.let {
                     viewModel.saveEditShopLocation(
-                        userSession.shopId.toLong(),
-                        it.warehouseId,
-                        binding?.etNamaLokasiShop?.text.toString(),
-                        it.districtId,
-                        latLong,
-                        userSession.email,
-                        binding?.etDetailAlamatShop?.text.toString(),
-                        binding?.etKodePosShop?.text.toString(),
-                        userSession.phoneNumber
+                        shopId = userSession.shopId.toLong(),
+                        warehouseId = it.warehouseId,
+                        warehouseName = binding?.etNamaLokasiShop?.text.toString(),
+                        districtId = it.districtId,
+                        latLon = latLong,
+                        addressDetail = binding?.etDetailAlamatShop?.text.toString(),
+                        postalCode = binding?.etKodePosShop?.text.toString()
                     )
                 }
             }

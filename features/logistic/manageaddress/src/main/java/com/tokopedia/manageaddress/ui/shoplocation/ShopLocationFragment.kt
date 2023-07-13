@@ -1,5 +1,6 @@
 package com.tokopedia.manageaddress.ui.shoplocation
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -16,6 +17,7 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.globalerror.ReponseStatus
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.logisticCommon.data.constant.EditShopAddressConstant.EXTRA_EDITED_WAREHOUSE_NAME
 import com.tokopedia.logisticCommon.data.entity.shoplocation.GeneralTickerModel
 import com.tokopedia.logisticCommon.data.entity.shoplocation.Warehouse
 import com.tokopedia.manageaddress.R
@@ -84,8 +86,20 @@ class ShopLocationFragment : BaseDaggerFragment(), ShopLocationItemAdapter.ShopL
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == EDIT_WAREHOUSE_REQUEST_CODE) {
-            viewModel.getShopLocationList(userSession.shopId.toLong())
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == EDIT_WAREHOUSE_REQUEST_CODE) {
+                val warehouseName =
+                    data?.extras?.getString(EXTRA_EDITED_WAREHOUSE_NAME, "").orEmpty()
+                view?.let { view ->
+                    Toaster.build(
+                        view,
+                        getString(R.string.text_edit_shop_address_success, warehouseName),
+                        Toaster.LENGTH_SHORT,
+                        Toaster.TYPE_NORMAL
+                    ).show()
+                }
+                viewModel.getShopLocationList(userSession.shopId.toLong())
+            }
         }
     }
 
