@@ -1,10 +1,12 @@
-package com.tokopedia.promousage.view.bottomsheet
+package com.tokopedia.promousage.view.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.promousage.databinding.PromoUsageItemVoucherBinding
+import com.tokopedia.promousage.util.composite.DelegateAdapter
+import com.tokopedia.promousage.domain.entity.Voucher
 
 class VoucherDelegateAdapter(
     private val onVoucherClick: (Voucher) -> Unit

@@ -1,4 +1,4 @@
-package com.tokopedia.promousage.view.bottomsheet
+package com.tokopedia.promousage.domain.entity
 
 sealed class VoucherState {
     object Loading: VoucherState()

@@ -1,4 +1,4 @@
-package com.tokopedia.promousage.view.bottomsheet
+package com.tokopedia.promousage.view.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -9,6 +9,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.promousage.databinding.PromoUsageItemVoucherSectionBinding
+import com.tokopedia.promousage.util.composite.CompositeAdapter
+import com.tokopedia.promousage.domain.entity.Voucher
+import com.tokopedia.promousage.domain.entity.VoucherSection
 
 class VoucherSectionAdapter : RecyclerView.Adapter<VoucherSectionAdapter.ViewHolder>() {
     

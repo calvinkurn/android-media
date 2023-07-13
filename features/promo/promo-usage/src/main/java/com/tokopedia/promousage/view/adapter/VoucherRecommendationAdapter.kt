@@ -1,4 +1,4 @@
-package com.tokopedia.promousage.view.bottomsheet
+package com.tokopedia.promousage.view.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.promousage.databinding.PromoUsageItemVoucherBinding
+import com.tokopedia.promousage.domain.entity.Voucher
 
 class VoucherRecommendationAdapter : RecyclerView.Adapter<VoucherRecommendationAdapter.ViewHolder>() {
 

@@ -1,10 +1,11 @@
-package com.tokopedia.promousage.view.bottomsheet
+package com.tokopedia.promousage.view.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.promousage.R
 import com.tokopedia.promousage.databinding.PromoUsageItemVoucherViewAllBinding
+import com.tokopedia.promousage.util.composite.DelegateAdapter
 
 class ViewAllVoucherDelegateAdapter(
     private val sectionIndex: Int,

@@ -1,4 +1,4 @@
-package com.tokopedia.promousage.view.bottomsheet
+package com.tokopedia.promousage.view.custom
 
 import android.content.Context
 import android.content.res.ColorStateList
@@ -20,6 +20,13 @@ import com.tokopedia.kotlin.extensions.view.splitByThousand
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.promousage.R
 import com.tokopedia.promousage.databinding.PromoUsageVoucherViewBinding
+import com.tokopedia.promousage.domain.entity.Voucher
+import com.tokopedia.promousage.domain.entity.VoucherSource
+import com.tokopedia.promousage.domain.entity.VoucherState
+import com.tokopedia.promousage.domain.entity.VoucherType
+import com.tokopedia.promousage.util.extension.grayscale
+import com.tokopedia.promousage.util.extension.onDrawn
+import com.tokopedia.promousage.util.extension.removeGrayscale
 import com.tokopedia.unifycomponents.toPx
 
 class VoucherView @JvmOverloads constructor(

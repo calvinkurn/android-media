@@ -1,4 +1,4 @@
-package com.tokopedia.promousage.view.bottomsheet
+package com.tokopedia.promousage.domain.entity
 
 enum class EntryPoint {
     CART_PAGE,

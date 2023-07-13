@@ -1,4 +1,6 @@
-package com.tokopedia.promousage.view.bottomsheet
+package com.tokopedia.promousage.domain.entity
+
+import com.tokopedia.promousage.util.composite.DelegateAdapterItem
 
 data class VoucherSection(
     val title: String,

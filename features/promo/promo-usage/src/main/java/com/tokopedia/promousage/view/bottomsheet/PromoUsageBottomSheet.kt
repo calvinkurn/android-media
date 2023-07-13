@@ -1,4 +1,4 @@
-package com.tokopedia.promousage.view
+package com.tokopedia.promousage.view.bottomsheet
 
 import android.content.Intent
 import android.os.Bundle
@@ -21,15 +21,15 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.promousage.R
 import com.tokopedia.promousage.databinding.PromoUsageBottomshetPromoVoucherListBinding
 import com.tokopedia.promousage.di.DaggerPromoUsageComponent
-import com.tokopedia.promousage.view.bottomsheet.EntryPoint
-import com.tokopedia.promousage.view.bottomsheet.Voucher
-import com.tokopedia.promousage.view.bottomsheet.VoucherRecommendationAdapter
-import com.tokopedia.promousage.view.bottomsheet.VoucherSectionAdapter
-import com.tokopedia.promousage.view.bottomsheet.VoucherSource
-import com.tokopedia.promousage.view.bottomsheet.VoucherState
-import com.tokopedia.promousage.view.bottomsheet.VoucherType
-import com.tokopedia.promousage.view.bottomsheet.applyPaddingToLastItem
-import com.tokopedia.promousage.view.bottomsheet.setHyperlinkText
+import com.tokopedia.promousage.domain.entity.EntryPoint
+import com.tokopedia.promousage.domain.entity.Voucher
+import com.tokopedia.promousage.view.adapter.VoucherRecommendationAdapter
+import com.tokopedia.promousage.view.adapter.VoucherSectionAdapter
+import com.tokopedia.promousage.domain.entity.VoucherSource
+import com.tokopedia.promousage.domain.entity.VoucherState
+import com.tokopedia.promousage.domain.entity.VoucherType
+import com.tokopedia.promousage.util.extension.applyPaddingToLastItem
+import com.tokopedia.promousage.util.extension.setHyperlinkText
 import com.tokopedia.promousage.view.viewmodel.PromoUsageViewModel
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.usecase.coroutines.Fail

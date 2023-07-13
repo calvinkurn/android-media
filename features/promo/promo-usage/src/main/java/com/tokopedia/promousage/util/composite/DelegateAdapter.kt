@@ -1,4 +1,4 @@
-package com.tokopedia.promousage.view.bottomsheet
+package com.tokopedia.promousage.util.composite
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
