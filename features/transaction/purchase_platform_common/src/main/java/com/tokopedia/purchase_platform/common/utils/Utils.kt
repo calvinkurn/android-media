@@ -26,6 +26,12 @@ object Utils {
     }
 }
 
+fun String?.getHtmlFormat(): String {
+    if (this.isNullOrEmpty()) return ""
+    val replacedText = this.replace("&amp;", "&")
+    return MethodChecker.fromHtml(replacedText).toString()
+}
+
 fun String.removeDecimalSuffix(): String = this.removeSuffix(".00")
 
 fun String.isNotBlankOrZero(): Boolean {

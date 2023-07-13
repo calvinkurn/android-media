@@ -10,6 +10,7 @@ import com.tokopedia.checkout.domain.mapper.ShipmentAddOnProductServiceMapper
 import com.tokopedia.checkout.domain.model.cartshipmentform.ShipmentPlatformFeeData
 import com.tokopedia.checkout.revamp.view.converter.CheckoutDataConverter
 import com.tokopedia.checkout.revamp.view.processor.CheckoutAddOnProcessor
+import com.tokopedia.checkout.revamp.view.processor.CheckoutCalculator
 import com.tokopedia.checkout.revamp.view.processor.CheckoutCartProcessor
 import com.tokopedia.checkout.revamp.view.processor.CheckoutLogisticProcessor
 import com.tokopedia.checkout.revamp.view.processor.CheckoutPaymentProcessor
@@ -52,6 +53,7 @@ class CheckoutViewModel @Inject constructor(
     private val addOnProcessor: CheckoutAddOnProcessor,
     private val paymentProcessor: CheckoutPaymentProcessor,
     private val checkoutProcessor: CheckoutProcessor,
+    private val calculator: CheckoutCalculator,
     private val dataConverter: CheckoutDataConverter,
     private val shippingCourierConverter: ShippingCourierConverter,
     private val stateConverter: RatesResponseStateConverter,
@@ -72,7 +74,8 @@ class CheckoutViewModel @Inject constructor(
 
     val listData: CheckoutMutableLiveData<List<CheckoutItem>> = CheckoutMutableLiveData(emptyList())
 
-    val pageState: CheckoutMutableLiveData<CheckoutPageState> = CheckoutMutableLiveData(CheckoutPageState.Loading)
+    val pageState: CheckoutMutableLiveData<CheckoutPageState> =
+        CheckoutMutableLiveData(CheckoutPageState.Loading)
 
     var isOneClickShipment: Boolean = false
 
@@ -88,7 +91,8 @@ class CheckoutViewModel @Inject constructor(
         get() = recipientAddressModel.cornerId
 
     val recipientAddressModel: RecipientAddressModel
-        get() = (listData.value.firstOrNull { it is CheckoutAddressModel } as? CheckoutAddressModel)?.recipientAddressModel ?: RecipientAddressModel()
+        get() = (listData.value.firstOrNull { it is CheckoutAddressModel } as? CheckoutAddressModel)?.recipientAddressModel
+            ?: RecipientAddressModel()
 
     private var isUsingDdp = false
 
@@ -154,7 +158,9 @@ class CheckoutViewModel @Inject constructor(
 //                        tickerData.id
 //                    )
                 }
-                val address = CheckoutAddressModel(recipientAddressModel = dataConverter.getRecipientAddressModel(saf.cartShipmentAddressFormData))
+                val address = CheckoutAddressModel(
+                    recipientAddressModel = dataConverter.getRecipientAddressModel(saf.cartShipmentAddressFormData)
+                )
 
                 val upsell = dataConverter.getUpsellModel(saf.cartShipmentAddressFormData.newUpsell)
 
@@ -191,7 +197,11 @@ class CheckoutViewModel @Inject constructor(
                 val buttonPayment = CheckoutButtonPaymentModel()
 
                 withContext(dispatchers.main) {
-                    listData.value = listOf(ticker, address, upsell) + items + epharmacy + promo + cost + buttonPayment
+                    listData.value = listOf(
+                        ticker,
+                        address,
+                        upsell
+                    ) + items + epharmacy + promo + cost + buttonPayment
                     pageState.value = saf
                 }
             } else {

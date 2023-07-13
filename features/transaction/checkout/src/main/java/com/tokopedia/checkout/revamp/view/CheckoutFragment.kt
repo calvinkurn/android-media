@@ -239,6 +239,11 @@ class CheckoutFragment : BaseDaggerFragment(), CheckoutAdapterListener, UploadPr
     }
 
     // region adapter listener
+
+    override fun onChangeAddress() {
+        TODO("Not yet implemented")
+    }
+
     override fun onViewNewUpsellCard(shipmentUpsellModel: ShipmentNewUpsellModel) {
         // todo
     }

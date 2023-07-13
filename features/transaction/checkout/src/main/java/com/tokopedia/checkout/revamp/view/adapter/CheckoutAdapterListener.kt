@@ -4,6 +4,8 @@ import com.tokopedia.checkout.view.uimodel.ShipmentNewUpsellModel
 
 interface CheckoutAdapterListener {
 
+    fun onChangeAddress()
+
     fun onViewNewUpsellCard(shipmentUpsellModel: ShipmentNewUpsellModel)
 
     fun onClickApplyNewUpsellCard(shipmentUpsellModel: ShipmentNewUpsellModel)
