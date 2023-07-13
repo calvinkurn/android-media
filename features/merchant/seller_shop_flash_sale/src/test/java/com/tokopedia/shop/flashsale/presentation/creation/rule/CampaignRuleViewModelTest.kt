@@ -234,17 +234,21 @@ class CampaignRuleViewModelTest : CampaignRuleViewModelTestFixture() {
     fun `When provided with shopId & irisSessionId, then Rollence Gradual Rollout should return success result`() {
         runBlocking {
             with(viewModel) {
+                val shopId = "12345"
+                val irisSessionId = "SoMe_userSession_iD"
                 val param = CampaignDataGenerator.generateRollenceGradualRolloutParam(
                     rev = 0,
                     client_id = AbTestPlatform.ANDROID_CLIENTID,
-                    shopId = "12345",
-                    iris_session_id = "SoMe_userSession_iD"
+                    shopId = shopId,
+                    iris_session_id = irisSessionId
                 )
                 val result = CampaignDataGenerator.generateRollenceGradualRolloutResult()
                 val expected = Success(result)
                 coEvery {
                     getRollenceGradualRolloutUseCase.execute(param)
                 } returns result
+
+                getRollenceGradualRollout(shopId = shopId, irisSessionId = irisSessionId)
 
                 val actual = isGetGradualRollout.getOrAwaitValue(time = 0L, timeUnit = TimeUnit.SECONDS)
                 assertEquals(expected, actual)
