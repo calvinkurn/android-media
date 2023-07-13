@@ -116,7 +116,7 @@ class UohOrderListViewHolder(
                 if (item.dataObject.metadata.products.first().imageURL.isNotEmpty()) {
                     binding.ivUohProduct.visible()
                     binding.ivUohProduct.loadProductImage(
-                        url = item.dataObject.metadata.products..firstOrNull().imageURL.orEmpty(),
+                        url = item.dataObject.metadata.products.firstOrNull().imageURL.orEmpty(),
                         archivedUrl = TokopediaImageUrl.IMG_ARCHIVED_PRODUCT_SMALL,
                         cornerRadius = 6f.toPx()
                     )
