@@ -5,8 +5,10 @@ import com.tokopedia.addon.domain.model.AddOnRequest
 import com.tokopedia.addon.domain.model.GetAddOnByProductRequest
 import com.tokopedia.addon.domain.model.GetAddOnByProductResponse
 import com.tokopedia.addon.domain.model.Source
+import com.tokopedia.addon.domain.model.TypeFilters
 import com.tokopedia.common.ProductServiceWidgetConstant.SQUAD_VALUE_ADDON
 import com.tokopedia.common.ProductServiceWidgetConstant.USECASE_ADDON_VALUE
+import com.tokopedia.gifting.presentation.uimodel.AddOnType
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.usecase.RequestParams
@@ -97,7 +99,8 @@ class GetAddOnByProductUseCase @Inject constructor(
     fun setParams(
         productId: String,
         warehouseId: String,
-        isTokocabang: Boolean
+        isTokocabang: Boolean,
+        typeFilters: List<AddOnType>
     ) {
         val requestParams = RequestParams.create()
         requestParams.putObject(
@@ -106,7 +109,10 @@ class GetAddOnByProductUseCase @Inject constructor(
                     AddOnRequest(
                         productId = productId,
                         warehouseId = warehouseId,
-                        addOnLevel = if (isTokocabang) ADDON_LEVEL_TC else ADDON_LEVEL_NON_TC
+                        addOnLevel = if (isTokocabang) ADDON_LEVEL_TC else ADDON_LEVEL_NON_TC,
+                        typeFilters = typeFilters.map {
+                            TypeFilters(it.name)
+                        }
                     )
                 ),
                 source = Source(usecase = USECASE_ADDON_VALUE, squad = SQUAD_VALUE_ADDON)

@@ -17,19 +17,22 @@ data class Additional (
     @SerializedName("ShopID")
     var shopID: String = "",
 
+    @SerializedName("Quantity")
+    var quantity: Long = 0L,
+
     @SerializedName("Price")
     var price: Long = 0L,
 
     @SerializedName("DiscountedPrice")
-    var discountedPrice: Long = 0L
+    var discountedPrice: Long = 0L,
+
+    @SerializedName("Condition")
+    var condition: String = ""
 )
 
 data class TypeFilters (
     @SerializedName("Type")
-    var type: String = "",
-
-    @SerializedName("Quantity")
-    var quantity: Int = 0
+    var type: String = ""
 )
 
 data class AddOnRequest (
