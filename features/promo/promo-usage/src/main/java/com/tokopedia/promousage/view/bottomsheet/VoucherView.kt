@@ -63,9 +63,9 @@ class VoucherView @JvmOverloads constructor(
 
             tpgVoucherExpiredDate.text = MethodChecker.fromHtml(context?.getString(R.string.promo_voucher_placeholder_expired_date, voucher.expiredDate))
             tpgVoucherExpiredDate.background = if (voucher.voucherState.isSelected()) {
-                ContextCompat.getDrawable(tpgVoucherExpiredDate.context, R.drawable.promo_checkout_shape_voucher_selected)
+                ContextCompat.getDrawable(tpgVoucherExpiredDate.context, R.drawable.promo_usage_shape_voucher_selected)
             } else {
-                ContextCompat.getDrawable(tpgVoucherExpiredDate.context, R.drawable.promo_checkout_shape_voucher_expired_date)
+                ContextCompat.getDrawable(tpgVoucherExpiredDate.context, R.drawable.promo_usage_shape_voucher_expired_date)
             }
 
             when(voucher.voucherType) {

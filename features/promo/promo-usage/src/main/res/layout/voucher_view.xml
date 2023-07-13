@@ -47,7 +47,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.0"
-                app:srcCompat="@drawable/promo_checkout_ic_voucher_checkmark" />
+                app:srcCompat="@drawable/promo_usage_ic_voucher_checkmark" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tpgVoucherType"
@@ -145,7 +145,7 @@
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="1dp"
                 android:layout_marginBottom="1dp"
-                android:background="@drawable/promo_checkout_shape_voucher_expired_date"
+                android:background="@drawable/promo_usage_shape_voucher_expired_date"
                 android:textColor="@color/Unify_NN600"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -180,7 +180,7 @@
         android:id="@+id/tpgIneligibleReason"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/promo_checkout_shape_voucher_ineligible"
+        android:background="@drawable/promo_usage_shape_voucher_ineligible"
         android:textColor="@color/Unify_YN600"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"

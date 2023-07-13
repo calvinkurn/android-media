@@ -197,7 +197,7 @@ class PromoUsageBottomSheet: BottomSheetDialogFragment() {
                 binding?.buttonBuy?.text = context?.getString(R.string.promo_voucher_pay)
                 val icon = ContextCompat.getDrawable(
                     context ?: return,
-                    R.drawable.promo_checkout_ic_protection_check
+                    R.drawable.promo_usage_ic_protection_check
                 )
                 binding?.buttonBuy?.setDrawable(icon)
             }
