@@ -40,16 +40,18 @@
                 app:typographyType="heading_3"
                 tools:text="Cashback 20% s.d. 100.000 Gopay Coins" />
 
-            <androidx.appcompat.widget.AppCompatImageView
+            <com.tokopedia.iconunify.IconUnify
                 android:id="@+id/iconClock"
+                app:icon_name="CLOCK"
+                app:icon_color_light_enable="@color/Unify_GN500"
+                app:icon_color_night_enable="@color/Unify_GN500"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="14dp"
                 android:contentDescription="@string/shop_page_clock_icon"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tpgVoucherName"
-                app:srcCompat="@drawable/ic_clock_green_voucher_period" />
+                app:layout_constraintTop_toBottomOf="@+id/tpgVoucherName" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/labelPromoPeriod"
@@ -76,16 +78,18 @@
                 tools:text="30 Mar - 30 Apr 2023" />
 
 
-            <androidx.appcompat.widget.AppCompatImageView
+            <com.tokopedia.iconunify.IconUnify
                 android:id="@+id/iconMinPurchase"
+                app:icon_name="SALDO"
+                app:icon_color_light_enable="@color/Unify_GN500"
+                app:icon_color_night_enable="@color/Unify_GN500"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:contentDescription="@string/shop_page_rupiah_icon"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/iconClock"
-                app:srcCompat="@drawable/ic_rupiah_green_voucher_min_transaction" />
+                app:layout_constraintTop_toBottomOf="@+id/iconClock" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/labelMinPurchase"
