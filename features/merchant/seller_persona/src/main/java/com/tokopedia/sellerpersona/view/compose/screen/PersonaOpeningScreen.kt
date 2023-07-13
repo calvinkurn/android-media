@@ -33,7 +33,7 @@ import com.tokopedia.sellerpersona.R
  */
 
 @Composable
-fun OpeningScreen(
+fun PersonaOpeningScreen(
     onImpressed: () -> Unit, onNext: () -> Unit, onBack: () -> Unit
 ) {
     LaunchedEffect(key1 = Unit, block = {
@@ -119,6 +119,6 @@ fun Illustration(modifier: Modifier) {
 @Composable
 fun OpeningScreenPreview() {
     NestTheme {
-        OpeningScreen(onImpressed = {}, onNext = {}, onBack = {})
+        PersonaOpeningScreen(onImpressed = {}, onNext = {}, onBack = {})
     }
 }

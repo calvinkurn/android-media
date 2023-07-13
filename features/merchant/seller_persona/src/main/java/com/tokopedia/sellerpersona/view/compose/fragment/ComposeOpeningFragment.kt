@@ -12,7 +12,7 @@ import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.sellerpersona.analytics.SellerPersonaTracking
 import com.tokopedia.sellerpersona.view.activity.SellerPersonaActivity
-import com.tokopedia.sellerpersona.view.compose.screen.OpeningScreen
+import com.tokopedia.sellerpersona.view.compose.screen.PersonaOpeningScreen
 
 /**
  * Created by @ilhamsuaib on 17/01/23.
@@ -30,7 +30,7 @@ class ComposeOpeningFragment : Fragment() {
         return ComposeView(inflater.context).apply {
             setContent {
                 NestTheme {
-                    OpeningScreen(
+                    PersonaOpeningScreen(
                         onImpressed = ::sendImpressionEvent,
                         onNext = ::onNextClicked,
                         onBack = ::onBackClicked
