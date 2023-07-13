@@ -514,6 +514,7 @@ class OrderProductCard(
             text = addOnsProductData.bottomsheet.title
         }
         binding.tvSeeAllAddonProduct.setOnClickListener {
+            orderSummaryAnalytics.eventClickLihatSemuaAddOnProductWidget()
             listener.onClickSeeAllAddOnProductService(product, addOnsProductData)
         }
     }
@@ -561,7 +562,7 @@ class OrderProductCard(
                     )
 
                     // set addon listeners
-                    cbAddonItem.setOnCheckedChangeListener { _, _ ->
+                    cbAddonItem.setOnCheckedChangeListener { _, isChecked ->
                         changeAddOnProductStatus(
                             addOn = addOn
                         )
@@ -571,6 +572,7 @@ class OrderProductCard(
                                 newAddOnProductData = addOn,
                                 product = product
                             )
+                            orderSummaryAnalytics.eventClickAddOnProductWidget(addOn.type, product.productId, isChecked)
                         }
                     }
                     icProductAddonInfo.showIfWithBlock(addOn.infoLink.isNotBlank()) {
@@ -584,6 +586,7 @@ class OrderProductCard(
 
                 // add addon to the layout
                 llAddonProductItems.addView(addOnView.root)
+                orderSummaryAnalytics.eventViewAddOnProductWidget(addOn.type, product.productId)
             }
         }
     }

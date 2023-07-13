@@ -533,5 +533,8 @@ object ConstantTransactionAnalytics {
         const val CLICK_LIHAT_SEMUA_ADDONS_PRODUCT_WIDGET = "45174"
         const val VIEW_ADDONS_PRODUCT_WIDGET_CART = "45176"
         const val CLICK_ADDONS_PRODUCT_WIDGET_CART = "45177"
+        const val VIEW_ADDONS_PRODUCT_WIDGET_OCC = "45171"
+        const val CLICK_ADDONS_PRODUCT_WIDGET_OCC = "45323"
+        const val CLICK_LIHAT_SEMUA_ADDONS_PRODUCT_WIDGET_OCC = "45324"
     }
 }
