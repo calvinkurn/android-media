@@ -690,6 +690,35 @@ class PlayUpcomingTest {
      * Share Experience
      */
     @Test
+    fun `when user click share action, it should emit event to open universal sharing bottom sheet`() {
+        /** Prepare */
+        coEvery { mockPlayShareExperience.isCustomSharingAllow() } returns true
+
+        val mockEvent = PlayUpcomingUiEvent.OpenSharingOptionEvent(
+            title = channelInfo.title,
+            coverUrl = channelInfo.coverUrl,
+            userId = "",
+            channelId = channelId
+        )
+
+        val robot = createPlayUpcomingViewModelRobot(
+            dispatchers = testDispatcher,
+            playShareExperience = mockPlayShareExperience
+        ) {
+            viewModel.initPage(mockChannelData.id, mockChannelData)
+        }
+
+        robot.use {
+            /** Test */
+            val event = it.recordEvent {
+                submitAction(ClickShareUpcomingAction)
+            }
+
+            event.last().assertEqualTo(mockEvent)
+        }
+    }
+
+    @Test
     fun `when user wants to open sharing experience & custom sharing is allowed, it should emit event to open universal sharing bottom sheet`() {
         /** Prepare */
         coEvery { mockPlayShareExperience.isCustomSharingAllow() } returns true

@@ -79,6 +79,41 @@ class PlayViewModelShareExperienceTest {
     }
 
     @Test
+    fun `when user click share action, it should emit show share bottom sheet event`() {
+        /** Prepare */
+        every { mockPlayNewAnalytic.clickShareButton(any(), any(), any()) } returns Unit
+        coEvery { mockPlayShareExperience.isCustomSharingAllow() } returns true
+
+        val mockEvent = OpenSharingOptionEvent(
+            title = channelInfo.title,
+            coverUrl = channelInfo.coverUrl,
+            userId = "",
+            channelId = channelId
+        )
+
+        val robot = createPlayViewModelRobot(
+            dispatchers = testDispatcher,
+            playAnalytic = mockPlayNewAnalytic,
+            playShareExperience = mockPlayShareExperience
+        ) {
+            createPage(channelData)
+            focusPage(channelData)
+        }
+
+        robot.use {
+            /** Test */
+            val event = it.recordEvent {
+                submitAction(ClickShareAction)
+            }
+
+            /** Verify */
+            verify { mockPlayNewAnalytic.clickShareButton(channelId, partnerId, channelType) }
+
+            event.last().assertEqualTo(mockEvent)
+        }
+    }
+
+    @Test
     fun `when app wants to open sharing bottom sheet & custom sharing is allowed, it should emit show share bottom sheet event`() {
         /** Prepare */
         coEvery { mockPlayShareExperience.isCustomSharingAllow() } returns true
