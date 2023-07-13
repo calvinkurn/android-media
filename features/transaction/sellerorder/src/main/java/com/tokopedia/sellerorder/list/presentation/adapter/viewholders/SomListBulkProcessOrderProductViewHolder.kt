@@ -26,7 +26,8 @@ class SomListBulkProcessOrderProductViewHolder(itemView: View) : AbstractViewHol
             binding?.run {
                 ivProduct.loadProductImage(
                     url = element.picture,
-                    archivedUrl = TokopediaImageUrl.IMG_ARCHIVED_PRODUCT_SMALL
+                    archivedUrl = TokopediaImageUrl.IMG_ARCHIVED_PRODUCT_SMALL,
+                    cornerRadius = 5f
                 )
                 val productName = element.productName.split(" - ").firstOrNull().orEmpty().trim()
                 val productVariant = element.productName.split(" - ").takeIf { it.size > 1 }?.lastOrNull().orEmpty().replace(Regex("\\s*,\\s*"), " | ").trim()
