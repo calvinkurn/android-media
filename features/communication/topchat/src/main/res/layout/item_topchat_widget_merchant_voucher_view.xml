@@ -35,7 +35,7 @@
                 android:layout_alignParentLeft="true"
                 android:layout_gravity="center_vertical"
                 android:singleLine="false"
-                android:textColor="@color/Unify_N700"
+                android:textColor="@color/Unify_NN950"
                 app:typographyType="body_2"
                 app:typographyWeight="reguler"
                 tools:text="Gratis Ongkir\n20rb" />
@@ -47,7 +47,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/tvVoucherTitle"
                 android:layout_marginTop="@dimen/spacing_lvl1"
-                android:textColor="@color/Unify_N700"
+                android:textColor="@color/Unify_NN950"
                 android:visibility="gone"
                 app:typographyType="small"
                 tools:text="Next Day (Rp 25.000)" />
@@ -58,7 +58,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/tvVoucherSubtitle"
                 android:layout_marginTop="@dimen/dp_topchat_3"
-                android:textColor="@color/Unify_N700"
+                android:textColor="@color/Unify_NN950"
                 android:textSize="@dimen/fontSize_lvl1"
                 app:typographyType="small"
                 tools:text="*Min Pembelian 300Rb" />
@@ -113,7 +113,7 @@
                     android:layout_alignParentBottom="true"
                     android:gravity="end"
                     android:singleLine="true"
-                    android:textColor="@color/Unify_N0"
+                    android:textColor="@color/Unify_NN0"
                     app:typographyType="small"
                     app:typographyWeight="bold"
                     tools:text="LGOFFICIFO" />

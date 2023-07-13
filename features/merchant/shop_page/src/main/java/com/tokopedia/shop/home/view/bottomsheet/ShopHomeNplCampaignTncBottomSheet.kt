@@ -237,7 +237,7 @@ class ShopHomeNplCampaignTncBottomSheet : BottomSheetUnify() {
         btnFollow?.apply {
             if (isFollowShop) {
                 buttonVariant = UnifyButton.Variant.GHOST
-                tfFollow?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
+                tfFollow?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
             } else {
                 buttonVariant = UnifyButton.Variant.FILLED
                 tfFollow?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Background))

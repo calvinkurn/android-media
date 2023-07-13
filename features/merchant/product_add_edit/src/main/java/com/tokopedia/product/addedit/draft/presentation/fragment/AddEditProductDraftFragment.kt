@@ -168,7 +168,7 @@ open class AddEditProductDraftFragment : BaseDaggerFragment(), ProductDraftListL
     }
 
     private fun setupToolbarActions() {
-        val color = ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_N500)
+        val color = ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_NN600)
         activity?.findViewById<HeaderUnify>(R.id.toolbar_draft)?.apply {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 overflowIcon?.colorFilter = BlendModeColorFilter(color, BlendMode.SRC_IN)

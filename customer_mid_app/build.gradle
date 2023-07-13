@@ -16,6 +16,8 @@ buildscript {
 }
 
 android {
+    namespace 'com.tokopedia.customer_mid_app'
+    testNamespace 'com.tokopedia.customer_mid_app.test'
     compileSdkVersion rootProject.ext.compileSdkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
 

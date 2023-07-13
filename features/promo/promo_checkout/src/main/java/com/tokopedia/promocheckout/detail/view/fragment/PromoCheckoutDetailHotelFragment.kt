@@ -47,7 +47,7 @@ class PromoCheckoutDetailHotelFragment : BasePromoCheckoutDetailFragment() {
 
     override fun onClickUse() {
         context?.run {
-            promoCheckoutDetailHotelPresenter.checkVoucher(codeCoupon, cartID, ColorUtil.getColorFromResToString(this,  com.tokopedia.unifyprinciples.R.color.Unify_G200))
+            promoCheckoutDetailHotelPresenter.checkVoucher(codeCoupon, cartID, ColorUtil.getColorFromResToString(this,  com.tokopedia.unifyprinciples.R.color.Unify_GN100))
             hotelPromoCheckoutAnalytics.hotelApplyPromo(this, codeCoupon, HotelPromoCheckoutAnalytics.HOTEL_BOOKING_SCREEN_NAME)
         }
     }

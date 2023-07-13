@@ -76,7 +76,7 @@ class HtmlUrlHelper(htmlString:String , context: Context) {
                 Spanned.SPAN_EXCLUSIVE_INCLUSIVE
             )
             spanHandler.setSpan(
-                ForegroundColorSpan(context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_G500)),
+                ForegroundColorSpan(context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_GN500)),
                 linkStart,
                 linkEnd,
                 Spannable.SPAN_EXCLUSIVE_INCLUSIVE

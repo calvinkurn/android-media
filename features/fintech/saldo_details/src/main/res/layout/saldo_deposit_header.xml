@@ -52,8 +52,8 @@
                             android:layout_centerVertical="true"
                             android:contentDescription="@string/sp_saldo_title"
                             android:padding="@dimen/unify_space_2"
-                            app:icon_color_light_enable="@color/Unify_G500"
-                            app:icon_color_night_enable="@color/Unify_G500"
+                            app:icon_color_light_enable="@color/Unify_GN500"
+                            app:icon_color_night_enable="@color/Unify_GN500"
                             app:icon_name="SALDO" />
 
                         <com.tokopedia.unifyprinciples.Typography
@@ -65,7 +65,7 @@
                             android:layout_marginStart="@dimen/sd_dp_6"
                             android:layout_toEndOf="@+id/saldo_icon"
                             android:text="@string/sp_title_remaining_tokopedia"
-                            android:textColor="@color/Unify_N700_68"
+                            android:textColor="@color/Unify_NN950_68"
                             app:typographyType="body_3" />
 
                         <com.tokopedia.unifyprinciples.Typography
@@ -76,7 +76,7 @@
                             android:layout_toStartOf="@+id/saldo_deposit_layout_expand"
                             android:layout_toEndOf="@+id/saldo_deposit_text"
                             android:gravity="end"
-                            android:textColor="@color/Unify_N700_68"
+                            android:textColor="@color/Unify_NN950_68"
                             android:textSize="@dimen/sp_16"
                             android:textStyle="bold"
                             app:typographyType="body_1"
@@ -90,8 +90,8 @@
                             android:layout_alignWithParentIfMissing="true"
                             android:layout_alignParentEnd="true"
                             android:layout_centerVertical="true"
-                            app:icon_color_light_enable="@color/Unify_N400"
-                            app:icon_color_night_enable="@color/Unify_N400"
+                            app:icon_color_light_enable="@color/Unify_NN600"
+                            app:icon_color_night_enable="@color/Unify_NN600"
                             app:icon_name="CHEVRON_UP" />
 
                     </RelativeLayout>
@@ -125,7 +125,7 @@
                                 android:layout_marginStart="@dimen/unify_space_4"
                                 android:layout_marginTop="@dimen/sd_dp_10"
                                 android:text="@string/saldo_total_balance_buyer"
-                                android:textColor="@color/Unify_N700_68"
+                                android:textColor="@color/Unify_NN950_68"
                                 app:typographyType="body_3" />
 
                             <com.tokopedia.iconunify.IconUnify
@@ -138,8 +138,8 @@
                                 android:layout_centerVertical="true"
                                 android:layout_toEndOf="@+id/saldo_buyer_deposit_text"
                                 android:padding="@dimen/unify_space_2"
-                                app:icon_color_light_enable="@color/Unify_N400"
-                                app:icon_color_night_enable="@color/Unify_N400"
+                                app:icon_color_light_enable="@color/Unify_NN600"
+                                app:icon_color_night_enable="@color/Unify_NN600"
                                 app:icon_name="INFORMATION" />
 
                             <com.tokopedia.unifyprinciples.Typography
@@ -150,7 +150,7 @@
                                 android:layout_centerVertical="true"
                                 android:layout_marginEnd="@dimen/unify_space_4"
                                 android:maxLines="1"
-                                android:textColor="@color/Unify_N700_68"
+                                android:textColor="@color/Unify_NN950_68"
                                 app:typographyType="body_3"
                                 tools:text="Rp 1.000.000" />
 
@@ -172,7 +172,7 @@
                                 android:layout_centerVertical="true"
                                 android:layout_marginStart="@dimen/unify_space_4"
                                 android:text="@string/saldo_total_balance_seller"
-                                android:textColor="@color/Unify_N700_68"
+                                android:textColor="@color/Unify_NN950_68"
                                 app:typographyType="body_3" />
 
                             <com.tokopedia.iconunify.IconUnify
@@ -185,8 +185,8 @@
                                 android:layout_centerVertical="true"
                                 android:layout_toEndOf="@+id/saldo_seller_deposit_text"
                                 android:padding="@dimen/unify_space_2"
-                                app:icon_color_light_enable="@color/Unify_N400"
-                                app:icon_color_night_enable="@color/Unify_N400"
+                                app:icon_color_light_enable="@color/Unify_NN600"
+                                app:icon_color_night_enable="@color/Unify_NN600"
                                 app:icon_name="INFORMATION" />
 
                             <com.tokopedia.unifyprinciples.Typography
@@ -198,7 +198,7 @@
                                 android:layout_marginEnd="@dimen/unify_space_4"
                                 android:gravity="start"
                                 android:maxLines="1"
-                                android:textColor="@color/Unify_N700_68"
+                                android:textColor="@color/Unify_NN950_68"
                                 app:typographyType="body_3"
                                 tools:text="Rp 1.000.000" />
 
@@ -257,7 +257,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/saldo_balance_layout"
-        android:background="@color/Unify_N0"
+        android:background="@color/Unify_NN0"
         android:orientation="vertical"
         android:padding="@dimen/unify_space_16"
         android:visibility="gone"
@@ -279,7 +279,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="0.9"
                 android:text="@string/financial_services"
-                android:textColor="@color/Unify_N700_96"
+                android:textColor="@color/Unify_NN950_96"
                 app:typographyType="heading_4"
                 app:typographyWeight="bold" />
 
@@ -289,8 +289,8 @@
                 android:layout_height="match_parent"
                 android:layout_weight="0.1"
                 android:visibility="visible"
-                app:icon_color_light_enable="@color/Unify_N400"
-                app:icon_color_night_enable="@color/Unify_N400"
+                app:icon_color_light_enable="@color/Unify_NN600"
+                app:icon_color_night_enable="@color/Unify_NN600"
                 app:icon_name="CHEVRON_UP"
                 tools:visibility="visible" />
 
