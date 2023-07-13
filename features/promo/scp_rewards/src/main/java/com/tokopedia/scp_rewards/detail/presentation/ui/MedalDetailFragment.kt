@@ -34,6 +34,7 @@ import com.tokopedia.scp_rewards.common.constants.TrackerConstants
 import com.tokopedia.scp_rewards.common.data.Error
 import com.tokopedia.scp_rewards.common.data.Loading
 import com.tokopedia.scp_rewards.common.data.Success
+import com.tokopedia.scp_rewards.common.utils.MEDALI_DETAIL_PAGE
 import com.tokopedia.scp_rewards.common.utils.launchLink
 import com.tokopedia.scp_rewards.common.utils.launchWeblink
 import com.tokopedia.scp_rewards.common.utils.show
@@ -104,9 +105,14 @@ class MedalDetailFragment : BaseDaggerFragment() {
         setTopBottomMargin()
         setupScrollListener()
         setupViewModelObservers()
+        getMedaliDetail()
+    }
+
+    private fun getMedaliDetail() {
         medalDetailViewModel.getMedalDetail(
             medaliSlug = medaliSlug,
-            sourceName = sourceName
+            sourceName = sourceName,
+            pageName = MEDALI_DETAIL_PAGE
         )
     }
 
@@ -232,7 +238,6 @@ class MedalDetailFragment : BaseDaggerFragment() {
                         binding.loadContainer.loaderFlipper.visible()
                         MedalDetailAnalyticsImpl.sendImpressionPageShimmer(medaliSlug)
                     }
-                    else -> {}
                 }
             }
         }
@@ -343,7 +348,8 @@ class MedalDetailFragment : BaseDaggerFragment() {
             )
         ) {
             MedalDetailAnalyticsImpl.sendClickMedali(
-                medaliSlug, medaliDetailPage?.isMedaliGrayScale ?: false,
+                medaliSlug,
+                medaliDetailPage?.isMedaliGrayScale ?: false,
                 medaliDetailPage?.sourceText.orEmpty(),
                 medaliDetailPage?.name.orEmpty(),
                 medaliDetailPage?.description.orEmpty()
@@ -351,7 +357,8 @@ class MedalDetailFragment : BaseDaggerFragment() {
         }
 
         MedalDetailAnalyticsImpl.sendImpressionMedali(
-            medaliSlug, medaliDetailPage?.isMedaliGrayScale ?: false,
+            medaliSlug,
+            medaliDetailPage?.isMedaliGrayScale ?: false,
             medaliDetailPage?.sourceText.orEmpty(),
             medaliDetailPage?.name.orEmpty(),
             medaliDetailPage?.description.orEmpty()
@@ -393,7 +400,8 @@ class MedalDetailFragment : BaseDaggerFragment() {
         val totalTasks = mission.task?.size.orZero()
         val completedTasks = mission.task?.count { it.isCompleted }.orZero()
         MedalDetailAnalyticsImpl.sendImpressionProgressSection(
-            medaliSlug, isLocked = medaliDetailPage.isMedaliGrayScale ?: false,
+            medaliSlug,
+            isLocked = medaliDetailPage.isMedaliGrayScale ?: false,
             taskProgressPercent = "${mission.progress.orZero()} %",
             noOfTasksCompleted = "$completedTasks/$totalTasks"
         )
@@ -481,6 +489,7 @@ class MedalDetailFragment : BaseDaggerFragment() {
                     resetPage()
                 }
             }
+
             scpError.errorCode == NON_WHITELISTED_USER_ERROR_CODE -> {
                 binding.loadContainer.mdpError.apply {
                     setType(GlobalError.PAGE_NOT_FOUND)
@@ -495,6 +504,7 @@ class MedalDetailFragment : BaseDaggerFragment() {
                 }
                 MedalDetailAnalyticsImpl.sendImpressionNonWhitelistedError()
             }
+
             else -> {
                 binding.loadContainer.mdpError.apply {
                     setType(GlobalError.SERVER_ERROR)
@@ -518,10 +528,7 @@ class MedalDetailFragment : BaseDaggerFragment() {
     private fun resetPage() {
         binding.mainFlipper.displayedChild = 0
         binding.loadContainer.loaderFlipper.displayedChild = 0
-        medalDetailViewModel.getMedalDetail(
-            medaliSlug = medaliSlug,
-            sourceName = sourceName
-        )
+        getMedaliDetail()
         setToolbarBackButtonTint(R.color.Unify_NN0)
     }
 

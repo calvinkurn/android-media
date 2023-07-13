@@ -9,7 +9,6 @@ import com.tokopedia.scp_rewards.common.data.Error
 import com.tokopedia.scp_rewards.common.data.Loading
 import com.tokopedia.scp_rewards.common.data.ScpResult
 import com.tokopedia.scp_rewards.common.data.Success
-import com.tokopedia.scp_rewards.common.utils.MEDALI_DETAIL_PAGE
 import com.tokopedia.scp_rewards.common.utils.launchCatchError
 import com.tokopedia.scp_rewards.detail.domain.CouponAutoApplyUseCase
 import com.tokopedia.scp_rewards.detail.domain.MedalDetailUseCase
@@ -42,13 +41,14 @@ class MedalDetailViewModel @Inject constructor(
                 val response = medalDetailUseCase.getMedalDetail(
                     medaliSlug = medaliSlug,
                     sourceName = sourceName,
-                    pageName = MEDALI_DETAIL_PAGE
+                    pageName = pageName
                 )
                 when (val responseCode = response.detail?.resultStatus?.code) {
                     SUCCESS_CODE -> {
                         _badgeLiveData.postValue(Success(response))
                         setupAnalyticsData(response)
                     }
+
                     else -> {
                         _badgeLiveData.postValue(Error(Throwable(), responseCode.orEmpty()))
                     }
@@ -65,7 +65,7 @@ class MedalDetailViewModel @Inject constructor(
             block = {
                 _autoApplyCoupon.postValue(AutoApplyState.Loading(footerData))
                 val response = couponAutoApplyUseCase.applyCoupon(shopId, couponCode)
-                if (response.data != null) {
+                if (response.data != null && response.data.resultStatus.code == SUCCESS_CODE) {
                     if (response.data.couponAutoApply?.isSuccess == true) {
                         _autoApplyCoupon.postValue(AutoApplyState.SuccessCouponApplied(footerData, response.data))
                     } else {
