@@ -141,7 +141,7 @@
                     app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toEndOf="@+id/imgFile"
                     app:layout_constraintTop_toTopOf="@+id/iconClose"
-                    app:typographyType="display_2"
+                    app:typographyType="paragraph_3"
                     app:typographyWeight="bold"
                     tools:text="NIB.jpg" />
 
