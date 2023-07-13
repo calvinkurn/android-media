@@ -5,4 +5,5 @@ data class ProductDraftUiModel (
         val imageUrl: String,
         val productName: String,
         val completionPercent: Int,
+        val isCorrupt: Boolean
 )
