@@ -458,8 +458,6 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
                                 LocationSettingsStatusCodes.RESOLUTION_REQUIRED ->
                                     try {
                                         if (e is ResolvableApiException) {
-                                            // Show the dialog by calling startResolutionForResult(), and check the
-                                            // result in onActivityResult().
                                             val intentSenderRequest = IntentSenderRequest.Builder(e.resolution.intentSender).build()
                                             gpsResultResolutionContract.launch(intentSenderRequest)
                                         }
