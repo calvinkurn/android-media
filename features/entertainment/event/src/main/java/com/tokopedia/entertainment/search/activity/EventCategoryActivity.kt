@@ -35,6 +35,11 @@ class EventCategoryActivity : BaseSimpleActivity(), HasComponent<EventSearchComp
         super.onCreate(savedInstanceState)
         binding = EntSearchDetailActivityBinding.inflate(layoutInflater)
         setContentView(binding?.root)
+
+        setSupportActionBar(binding?.toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayShowHomeEnabled(true)
+
         bundle = intent.extras
         uriString = intent.dataString
 

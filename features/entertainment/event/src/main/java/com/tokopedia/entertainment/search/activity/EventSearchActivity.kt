@@ -37,6 +37,11 @@ class EventSearchActivity : BaseSimpleActivity(), HasComponent<EventSearchCompon
         super.onCreate(savedInstanceState)
         binding = EntSearchActivityBinding.inflate(layoutInflater)
         setContentView(binding?.root)
+
+        setSupportActionBar(binding?.toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayShowHomeEnabled(true)
+
         binding?.txtSearch?.run {
             searchBarTextField.setText(getExtrasQuery())
             searchBarTextField.onFocusChangeListener = OnFocusChangeListener { v, hasFocus ->
