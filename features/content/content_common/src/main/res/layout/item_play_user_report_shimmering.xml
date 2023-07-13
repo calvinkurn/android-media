@@ -7,9 +7,9 @@
 
     <View
         android:id="@+id/ph_item_reasoning_title"
-        style="@style/PlayPlaceholder"
+        android:background="@drawable/bg_content_placeholder"
         android:layout_width="0dp"
-        android:layout_height="@dimen/play_placeholder_product_line_title"
+        android:layout_height="@dimen/unify_space_16"
         android:layout_marginTop="@dimen/spacing_lvl4"
         android:layout_marginBottom="@dimen/spacing_lvl4"
         android:textColor="@color/Unify_N700_96"
