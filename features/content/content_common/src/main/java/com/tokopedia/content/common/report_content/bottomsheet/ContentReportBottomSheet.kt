@@ -108,11 +108,6 @@ class ContentReportBottomSheet : BottomSheetUnify() {
         mListener = null
     }
 
-    fun show(fg: FragmentManager) {
-        if (isAdded) return
-        show(fg, TAG)
-    }
-
     override fun dismiss() {
         if (!isAdded) return
         super.dismiss()
@@ -129,7 +124,7 @@ class ContentReportBottomSheet : BottomSheetUnify() {
     }
 
     companion object {
-        private val TAG = "ContentReportBottomSheet"
+        const val TAG = "ContentReportBottomSheet"
 
         fun get(fragmentManager: FragmentManager): ContentReportBottomSheet? {
             return fragmentManager.findFragmentByTag(TAG) as? ContentReportBottomSheet

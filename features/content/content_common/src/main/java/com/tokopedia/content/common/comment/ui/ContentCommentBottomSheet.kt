@@ -41,7 +41,6 @@ import com.tokopedia.content.common.databinding.FragmentContentCommentBottomShee
 import com.tokopedia.content.common.report_content.bottomsheet.ContentThreeDotsMenuBottomSheet
 import com.tokopedia.content.common.report_content.model.FeedMenuIdentifier
 import com.tokopedia.content.common.report_content.model.FeedMenuItem
-import com.tokopedia.content.common.report_content.model.PlayUserReportReasoningUiModel
 import com.tokopedia.content.common.types.ResultState
 import com.tokopedia.content.common.usecase.FeedComplaintSubmitReportUseCase
 import com.tokopedia.content.common.util.ConnectionHelper
@@ -527,12 +526,6 @@ class ContentCommentBottomSheet @Inject constructor(
     override fun onMenuBottomSheetCloseClick(contentId: String) {
         sheetMenu.dismiss()
     }
-
-    override fun onFooterClicked() {}
-
-    override fun onReportClicked(item: PlayUserReportReasoningUiModel.Reasoning) {}
-
-    override fun onSubmitReport(desc: String) {}
 
     private fun getMenuItems(item: CommentUiModel.Item): List<FeedMenuItem> = buildList {
         if (item.isOwner || viewModel.isCreator) {

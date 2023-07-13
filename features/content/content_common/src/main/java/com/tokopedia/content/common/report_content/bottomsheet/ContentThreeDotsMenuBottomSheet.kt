@@ -16,8 +16,6 @@ import com.tokopedia.content.common.usecase.FeedComplaintSubmitReportUseCase
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.usecase.coroutines.Result
-import com.tokopedia.usecase.coroutines.Success
 import kotlin.math.roundToInt
 
 /**
@@ -88,58 +86,9 @@ class ContentThreeDotsMenuBottomSheet : BottomSheetUnify(), ContentReportViewHol
         }
     }
 
-    private val reportSheet by lazyThreadSafetyNone {
-        ContentReportBottomSheet.getOrCreate(childFragmentManager, requireActivity().classLoader)
-            .apply {
-                setListener(object : ContentReportBottomSheet.Listener {
-                    override fun onCloseButtonClicked() {
-                        dismiss()
-                    }
-
-                    override fun onItemReportClick(item: PlayUserReportReasoningUiModel.Reasoning) {
-                        submissionReportSheet.apply {
-                            setData(item)
-                        }.show(childFragmentManager)
-                        mListener?.onReportClicked(item)
-                    }
-
-                    override fun onFooterClicked() {
-                        mListener?.onFooterClicked()
-                    }
-                })
-            }
-    }
-
-    private val submissionReportSheet by lazyThreadSafetyNone {
-        ContentSubmitReportBottomSheet.getOrCreate(
-            childFragmentManager,
-            requireActivity().classLoader
-        ).apply {
-            setListener(object : ContentSubmitReportBottomSheet.Listener {
-                override fun onBackButtonListener() {
-                    dismiss()
-                }
-
-                override fun onFooterClicked() {
-                    mListener?.onFooterClicked()
-                }
-
-                override fun onSubmitReport(desc: String) {
-                    mListener?.onSubmitReport(desc)
-                }
-            })
-        }
-    }
-
-    fun showReportLayoutWhenLaporkanClicked(
-        data: Result<List<PlayUserReportReasoningUiModel>> = Success(
-            emptyList()
-        )
-    ) {
-        if (data is Success && data.data.isNotEmpty()) {
-            reportSheet.apply {
-                updateList(data)
-            }.show(childFragmentManager)
+    fun showReportLayoutWhenLaporkanClicked(isVideo: Boolean = false, action: () -> Unit = {}) {
+        if (isVideo) {
+            action()
         } else {
             setTitle(getString(R.string.content_common_report_comment))
             binding.let {
@@ -233,9 +182,5 @@ class ContentThreeDotsMenuBottomSheet : BottomSheetUnify(), ContentReportViewHol
         fun onMenuItemClick(feedMenuItem: FeedMenuItem, contentId: String)
         fun onReportPost(feedReportRequestParamModel: FeedComplaintSubmitReportUseCase.Param)
         fun onMenuBottomSheetCloseClick(contentId: String)
-
-        fun onFooterClicked()
-        fun onReportClicked(item: PlayUserReportReasoningUiModel.Reasoning)
-        fun onSubmitReport(desc: String)
     }
 }

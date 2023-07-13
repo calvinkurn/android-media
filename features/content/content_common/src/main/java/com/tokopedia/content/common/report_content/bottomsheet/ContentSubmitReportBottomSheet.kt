@@ -65,11 +65,6 @@ class ContentSubmitReportBottomSheet : BottomSheetUnify() {
         mListener = listener
     }
 
-    fun show(fg: FragmentManager) {
-        if (isAdded) return
-        show(fg, TAG)
-    }
-
     override fun dismiss() {
         if (!isAdded) return
         super.dismiss()
@@ -156,7 +151,7 @@ class ContentSubmitReportBottomSheet : BottomSheetUnify() {
     }
 
     companion object {
-        private val TAG = "ContentSubmitReportBottomSheet"
+        const val TAG = "ContentSubmitReportBottomSheet"
         private const val HEIGHT_PERCENTAGE = 0.75
         private const val ERROR_FIELD_PREFIX: String = "Isi"
 

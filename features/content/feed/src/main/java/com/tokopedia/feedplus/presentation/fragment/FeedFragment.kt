@@ -29,6 +29,8 @@ import com.tokopedia.content.common.comment.PageSource
 import com.tokopedia.content.common.comment.analytic.ContentCommentAnalytics
 import com.tokopedia.content.common.comment.analytic.ContentCommentAnalyticsModel
 import com.tokopedia.content.common.comment.ui.ContentCommentBottomSheet
+import com.tokopedia.content.common.report_content.bottomsheet.ContentReportBottomSheet
+import com.tokopedia.content.common.report_content.bottomsheet.ContentSubmitReportBottomSheet
 import com.tokopedia.content.common.report_content.bottomsheet.ContentThreeDotsMenuBottomSheet
 import com.tokopedia.content.common.report_content.model.FeedMenuIdentifier
 import com.tokopedia.content.common.report_content.model.FeedMenuItem
@@ -60,6 +62,7 @@ import com.tokopedia.feedplus.presentation.uiview.FeedProductTagView
 import com.tokopedia.feedplus.presentation.util.VideoPlayerManager
 import com.tokopedia.feedplus.presentation.viewmodel.FeedMainViewModel
 import com.tokopedia.feedplus.presentation.viewmodel.FeedPostViewModel
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
@@ -139,7 +142,14 @@ class FeedFragment :
             val feedMenuSheet =
                 childFragmentManager.findFragmentByTag(TAG_FEED_MENU_BOTTOMSHEET) as? ContentThreeDotsMenuBottomSheet
             if (feedMenuSheet != null && userSession.isLoggedIn) {
-                feedMenuSheet.showReportLayoutWhenLaporkanClicked(feedPostViewModel.userReportList)
+                val isVideo = feedPostViewModel.userReportList is Success && (feedPostViewModel.userReportList as? Success<List<PlayUserReportReasoningUiModel>>)?.data?.isNotEmpty().orFalse()
+                feedMenuSheet.showReportLayoutWhenLaporkanClicked(isVideo = isVideo, action = {
+                    ContentReportBottomSheet.getOrCreate(childFragmentManager, requireActivity().classLoader)
+                        .apply {
+                            updateList(feedPostViewModel.userReportList)
+                        }
+                        .show(childFragmentManager, ContentReportBottomSheet.TAG)
+                })
             }
         }
 
@@ -310,8 +320,15 @@ class FeedFragment :
                 if (!userSession.isLoggedIn) {
                     onGoToLogin()
                 } else {
-                    (childFragmentManager.findFragmentByTag(TAG_FEED_MENU_BOTTOMSHEET) as? ContentThreeDotsMenuBottomSheet)?.showReportLayoutWhenLaporkanClicked(feedPostViewModel.userReportList)
-
+                    val isVideo = feedPostViewModel.userReportList is Success && (feedPostViewModel.userReportList as? Success<List<PlayUserReportReasoningUiModel>>)?.data?.isNotEmpty().orFalse()
+                    (childFragmentManager.findFragmentByTag(TAG_FEED_MENU_BOTTOMSHEET) as? ContentThreeDotsMenuBottomSheet)?.
+                        showReportLayoutWhenLaporkanClicked(isVideo = isVideo, action = {
+                            ContentReportBottomSheet.getOrCreate(childFragmentManager, requireActivity().classLoader)
+                                .apply {
+                                    updateList(feedPostViewModel.userReportList)
+                                }
+                                .show(childFragmentManager, ContentReportBottomSheet.TAG)
+                        })
                     currentTrackerData?.let {
                         feedAnalytics.eventClickReportContent(it)
                     }
@@ -385,31 +402,6 @@ class FeedFragment :
 
     override fun onMenuBottomSheetCloseClick(contentId: String) {
         // add analytics(if any)
-    }
-
-    override fun onFooterClicked() {
-        RouteManager.route(requireContext(), getString(com.tokopedia.content.common.R.string.content_user_report_footer_weblink))
-    }
-
-    override fun onReportClicked(item: PlayUserReportReasoningUiModel.Reasoning) {
-        feedPostViewModel.selectReport(item)
-    }
-
-    override fun onSubmitReport(desc: String) {
-        val currentIndex = layoutManager.findFirstVisibleItemPosition()
-        val item = adapter?.list?.get(currentIndex)
-        if (item !is FeedCardVideoContentModel) return
-
-
-        showDialog(
-            title = getString(commonR.string.play_user_report_verification_dialog_title),
-            description = getString(commonR.string.play_user_report_verification_dialog_desc),
-            primaryCTAText = getString(commonR.string.play_user_report_verification_dialog_btn_ok),
-            secondaryCTAText = getString(feedR.string.feed_cancel),
-            primaryAction = {
-                feedPostViewModel.submitReport(desc, getVideoTimeStamp(), item)
-            }
-        )
     }
 
     private fun showDialog(
@@ -1156,6 +1148,55 @@ class FeedFragment :
                     )
                 )
             }
+            is ContentReportBottomSheet -> {
+                childFragment.setListener(
+                    object : ContentReportBottomSheet.Listener {
+                        override fun onCloseButtonClicked() {
+                            childFragment.dismiss()
+                        }
+
+                        override fun onItemReportClick(item: PlayUserReportReasoningUiModel.Reasoning) {
+                            ContentSubmitReportBottomSheet.getOrCreate(
+                                childFragmentManager,
+                                requireActivity().classLoader
+                            ).apply {
+                                setData(item)
+                            }.show(childFragmentManager, ContentSubmitReportBottomSheet.TAG)
+                            feedPostViewModel.selectReport(item)
+                        }
+
+                        override fun onFooterClicked() {
+                            RouteManager.route(requireContext(), getString(com.tokopedia.content.common.R.string.content_user_report_footer_weblink))
+                        }
+                    }
+                )
+            }
+            is ContentSubmitReportBottomSheet -> childFragment.setListener(
+                object : ContentSubmitReportBottomSheet.Listener {
+                    override fun onBackButtonListener() {
+                        childFragment.dismiss()
+                    }
+
+                    override fun onFooterClicked() {
+                        RouteManager.route(requireContext(), getString(com.tokopedia.content.common.R.string.content_user_report_footer_weblink))
+                    }
+
+                    override fun onSubmitReport(desc: String) {
+                        val currentIndex = layoutManager.findFirstVisibleItemPosition()
+                        val item = adapter?.list?.get(currentIndex)
+                        if (item !is FeedCardVideoContentModel) return
+
+                        showDialog(
+                            title = getString(commonR.string.play_user_report_verification_dialog_title),
+                            description = getString(commonR.string.play_user_report_verification_dialog_desc),
+                            primaryCTAText = getString(commonR.string.play_user_report_verification_dialog_btn_ok),
+                            secondaryCTAText = getString(feedR.string.feed_cancel),
+                            primaryAction = {
+                                feedPostViewModel.submitReport(desc, getVideoTimeStamp(), item)
+                            }
+                        )
+                    }
+                })
         }
     }
 
