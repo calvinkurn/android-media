@@ -99,6 +99,18 @@ object GetPromoListDataProvider {
         return GSON.fromJson(FILE_UTIL.getJsonFromAsset("assets/get_promo_list_response_success_bo_and_mvc_secondary_recommended.json"), CouponListRecommendationResponse::class.java)
     }
 
+    fun provideCouponListRecommendationWithMvcPrimaryPromoNotClashResponse(): CouponListRecommendationResponse {
+        return GSON.fromJson(FILE_UTIL.getJsonFromAsset("assets/coupon_list_recommendation_with_mvc_primary_promo_not_clash_response.json"), CouponListRecommendationResponse::class.java)
+    }
+
+    fun provideCouponListRecommendationWithMvcSecondaryPromoNotClashResponse(): CouponListRecommendationResponse {
+        return GSON.fromJson(FILE_UTIL.getJsonFromAsset("assets/coupon_list_recommendation_with_mvc_secondary_promo_not_clash_response.json"), CouponListRecommendationResponse::class.java)
+    }
+
+    fun provideCouponListRecommendationWithMvcSecondaryPromoClashResponse(): CouponListRecommendationResponse {
+        return GSON.fromJson(FILE_UTIL.getJsonFromAsset("assets/coupon_list_recommendation_with_mvc_secondary_promo_clash_response.json"), CouponListRecommendationResponse::class.java)
+    }
+
     fun provideNoCurrentSelectedExpandedGlobalPromoData(): ArrayList<Visitable<*>> {
         val promoListUiModelList = ArrayList<Visitable<*>>()
         val response = provideGetPromoListResponseSuccessAllExpanded()
