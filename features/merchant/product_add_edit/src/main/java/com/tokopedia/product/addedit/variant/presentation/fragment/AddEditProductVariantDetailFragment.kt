@@ -198,14 +198,10 @@ class AddEditProductVariantDetailFragment :
             showSelectPrimaryBottomSheet()
         }
 
-        buttonSave?.setOnClickListener {
-            submitVariantInput()
-            sendTrackerSaveVariantDetailData()
-        }
-
         observeSelectedVariantSize()
         observeHasWholesale()
         observeMaxStockThreshold()
+        observeIsSingleProductVariant()
 
         enableSku()
         setupToolbarActions()
@@ -406,10 +402,25 @@ class AddEditProductVariantDetailFragment :
     }
 
     private fun observeHasWholesale() {
-        viewModel.hasWholesale.observe(viewLifecycleOwner, {
+        viewModel.hasWholesale.observe(viewLifecycleOwner) {
             variantDetailFieldsAdapter?.updatePriceEditingStatus(!it)
             tickerVariantWholesale?.isVisible = it
-        })
+        }
+    }
+
+    private fun observeIsSingleProductVariant() {
+        viewModel.isSingleProductVariant.observe(viewLifecycleOwner) {
+            if (it) {
+                buttonSave?.setOnClickListener {
+                    showSingleProductVariantDialog()
+                }
+            } else {
+                buttonSave?.setOnClickListener {
+                    submitVariantInput()
+                    sendTrackerSaveVariantDetailData()
+                }
+            }
+        }
     }
 
     private fun observeMaxStockThreshold() {
@@ -509,7 +520,7 @@ class AddEditProductVariantDetailFragment :
     }
 
     private fun showDTNotAllowedChangeStatusDialog(position: Int) {
-        val dialog = DialogUnify(requireContext(), DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE)
+        val dialog = DialogUnify(context ?: return, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE)
         val descriptionText = getString(R.string.product_add_edit_text_description_product_dt_cannot_deactivate).parseAsHtml()
         dialog.apply {
             setTitle(getString(R.string.product_add_edit_text_title_product_dt_cannot_deactivate))
@@ -519,6 +530,24 @@ class AddEditProductVariantDetailFragment :
             setPrimaryCTAClickListener {
                 viewModel.updateSwitchStatus(false, position)
                 variantDetailFieldsAdapter?.deactivateVariantStatus(position)
+                dismiss()
+            }
+            setSecondaryCTAClickListener {
+                dismiss()
+            }
+        }
+        dialog.show()
+    }
+
+    private fun showSingleProductVariantDialog() {
+        val dialog = DialogUnify(context ?: return, DialogUnify.HORIZONTAL_ACTION, DialogUnify.WITH_ILLUSTRATION)
+        dialog.apply {
+            setTitle(getString(R.string.product_add_edit_single_product_variant_dialog_title))
+            setDescription(getString(R.string.product_add_edit_single_product_variant_dialog_desc))
+            setPrimaryCTAText(getString(R.string.product_add_edit_single_product_variant_dialog_delete))
+            setSecondaryCTAText(getString(R.string.action_back))
+            setImageUrl("http://placekitten.com/g/300/300")
+            setPrimaryCTAClickListener {
                 dismiss()
             }
             setSecondaryCTAClickListener {
