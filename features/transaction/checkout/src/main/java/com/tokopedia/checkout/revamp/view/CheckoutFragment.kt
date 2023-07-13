@@ -18,6 +18,7 @@ import com.tokopedia.checkout.revamp.di.DaggerCheckoutComponent
 import com.tokopedia.checkout.revamp.view.adapter.CheckoutAdapter
 import com.tokopedia.checkout.revamp.view.adapter.CheckoutAdapterListener
 import com.tokopedia.checkout.revamp.view.adapter.CheckoutDiffUtilCallback
+import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPageState
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutProductModel
 import com.tokopedia.checkout.view.ShipmentFragment
@@ -26,10 +27,10 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
 import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException
+import com.tokopedia.purchase_platform.common.feature.addons.data.model.AddOnProductDataItemModel
 import com.tokopedia.purchase_platform.common.feature.checkout.ShipmentFormRequest
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.model.UploadPrescriptionUiModel
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.view.UploadPrescriptionListener
-import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingWordingModel
 import com.tokopedia.purchase_platform.common.utils.animateGone
 import com.tokopedia.purchase_platform.common.utils.animateShow
 import com.tokopedia.unifycomponents.Toaster
@@ -262,6 +263,55 @@ class CheckoutFragment : BaseDaggerFragment(), CheckoutAdapterListener, UploadPr
         // todo
     }
 
+    override fun onCheckboxAddonProductListener(
+        isChecked: Boolean,
+        addOnProductDataItemModel: AddOnProductDataItemModel,
+        product: CheckoutProductModel,
+        bindingAdapterPosition: Int
+    ) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onClickAddonProductInfoIcon(addOnDataInfoLink: String) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onClickAddOnsProductWidget(addonType: Int, productId: String, isChecked: Boolean) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onClickSeeAllAddOnProductService(product: CheckoutProductModel) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onImpressionAddOnProductService(addonType: Int, productId: String) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onClickLihatSemuaAddOnProductWidget() {
+        TODO("Not yet implemented")
+    }
+
+    override fun onClickAddOnGiftingProductLevel(
+        product: CheckoutProductModel
+    ) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onImpressionAddOnGiftingProductLevel(productId: String) {
+        TODO("Not yet implemented")
+    }
+
+    override fun openAddOnGiftingOrderLevelBottomSheet(order: CheckoutOrderModel) {
+        TODO("Not yet implemented")
+    }
+
+    override fun addOnGiftingOrderLevelImpression(products: List<CheckoutProductModel>) {
+        TODO("Not yet implemented")
+    }
+
+    // endregion
+
     override fun uploadPrescriptionAction(
         uploadPrescriptionUiModel: UploadPrescriptionUiModel,
         buttonText: String,
@@ -269,17 +319,4 @@ class CheckoutFragment : BaseDaggerFragment(), CheckoutAdapterListener, UploadPr
     ) {
         TODO("Not yet implemented")
     }
-
-    override fun onClickAddOnProductLevel(
-        product: CheckoutProductModel,
-        addOnWording: AddOnGiftingWordingModel
-    ) {
-        TODO("Not yet implemented")
-    }
-
-    override fun onImpressionAddOnProductLevel(productId: String) {
-        TODO("Not yet implemented")
-    }
-
-    // endregion
 }

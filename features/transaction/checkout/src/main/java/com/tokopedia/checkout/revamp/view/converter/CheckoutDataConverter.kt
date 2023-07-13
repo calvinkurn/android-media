@@ -495,6 +495,7 @@ class CheckoutDataConverter @Inject constructor() {
             bundleIconUrl = product.bundleIconUrl,
 //            analyticsProductCheckoutData = product.analyticsProductCheckoutData,
             addOnGiftingProductLevelModel = product.addOnGiftingProduct,
+            addOnGiftingWording = addOnWordingModel,
             ethicalDrugDataModel = product.ethicalDrugs,
             addOnDefaultFrom = username,
             addOnDefaultTo = receiverName,

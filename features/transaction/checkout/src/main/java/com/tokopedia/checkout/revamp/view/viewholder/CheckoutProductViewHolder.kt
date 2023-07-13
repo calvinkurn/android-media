@@ -1,6 +1,7 @@
 package com.tokopedia.checkout.revamp.view.viewholder
 
 import android.annotation.SuppressLint
+import android.view.LayoutInflater
 import android.view.View
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
@@ -13,10 +14,16 @@ import com.tokopedia.checkout.revamp.view.adapter.CheckoutAdapterListener
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutProductModel
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingWordingModel
+import com.tokopedia.purchase_platform.common.constant.AddOnConstant
+import com.tokopedia.purchase_platform.common.databinding.ItemShipmentAddonProductItemBinding
 import com.tokopedia.purchase_platform.common.utils.getHtmlFormat
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.utils.currency.CurrencyFormatUtil
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.util.*
 
 class CheckoutProductViewHolder(
@@ -26,8 +33,11 @@ class CheckoutProductViewHolder(
 
     private val productBinding: LayoutCheckoutProductBinding =
         LayoutCheckoutProductBinding.bind(binding.root)
+
     private val bundleBinding: LayoutCheckoutProductBundleBinding =
         LayoutCheckoutProductBundleBinding.bind(binding.root)
+
+    private var delayChangeCheckboxAddOnState: Job? = null
 
     fun bind(product: CheckoutProductModel) {
         if (product.isBundlingItem) {
@@ -46,6 +56,7 @@ class CheckoutProductViewHolder(
         hideBundleViews()
         renderGroupInfo(product)
         renderShopInfo(product)
+
         productBinding.ivProductImage.setImageUrl(product.imageUrl)
         productBinding.tvProductName.text = product.name
         if (product.variant.isNotBlank()) {
@@ -54,6 +65,7 @@ class CheckoutProductViewHolder(
         } else {
             productBinding.textVariant.isVisible = false
         }
+
         val priceInRp =
             CurrencyFormatUtil.convertPriceValueToIdrFormat(product.price, false)
                 .removeDecimalSuffix()
@@ -66,6 +78,9 @@ class CheckoutProductViewHolder(
         } else {
             productBinding.tvOptionalNoteToSeller.isVisible = false
         }
+
+        renderAddOnProduct(product)
+        renderAddOnGiftingProductLevel(product)
     }
 
     private fun hideBundleViews() {
@@ -156,65 +171,78 @@ class CheckoutProductViewHolder(
         }
     }
 
-//    private fun renderAddOnProduct(product: CheckoutProductModel) {
-//        val addOnProduct = product.addOnProduct
-//        if (addOnProduct.listAddOnProductData.isEmpty()) {
-//            productBinding.tvCheckoutAddons.gone()
-//            productBinding.tvCheckoutAddonsSeeAll.gone()
-//            productBinding.llAddonProductItems.gone()
-//        } else {
-//            productBinding.llAddonProductItems.removeAllViews()
-//
-////            binding.itemShipmentAddonProduct.apply {
-//                tvTitleAddonProduct.text = cartItemModel.addOnProduct.title
-//                if (addOnProduct.bottomsheet.isShown) {
-//                    productBinding.tvCheckoutAddonsSeeAll.apply {
-//                        visible()
-//                        setOnClickListener {
-//                            addOnProduct.listAddOnProductData.forEach { addOnItem ->
-//                                if (addOnItem.addOnDataStatus == 1) {
-//                                    listSelectedAddOnId.add(addOnItem.addOnDataId)
-//                                }
-//                            }
-//                            listener?.onClickSeeAllAddOnProductService(cartItemModel, listSelectedAddOnId)
-//                        }
-//                    }
-//                } else {
-//                    tvSeeAllAddonProduct.gone()
-//                }
-////            }
-//            cartItemModel.addOnProduct.listAddOnProductData.forEach { addon ->
-//                if (addon.addOnDataName.isEmpty()) {
-//                    binding.itemShipmentAddonProduct.llAddonProductItems.visibility = View.GONE
-//                } else {
-//                    binding.itemShipmentAddonProduct.llAddonProductItems.visible()
-//                    val addOnView = ItemShipmentAddonProductItemBinding.inflate(layoutInflater, null, false)
-//                    val addOnName = addOnView.tvShipmentAddOnName
-//                    addOnName.text = addon.addOnDataName
-//                    val addOnPrice = addOnView.tvShipmentAddOnPrice
-//                    addOnPrice.text = CurrencyFormatUtil
-//                        .convertPriceValueToIdrFormat(addon.addOnDataPrice.toLong(), false)
-//                        .removeDecimalSuffix()
-//                    addOnView.apply {
-//                        cbAddonItem.isChecked = (addon.addOnDataStatus == AddOnConstant.ADD_ON_PRODUCT_STATUS_CHECK)
-//                        cbAddonItem.setOnCheckedChangeListener { compoundButton, isChecked ->
-//                            if (bindingAdapterPosition != RecyclerView.NO_POSITION) {
-//                                listener?.onCheckboxAddonProductListener(isChecked, addon, cartItemModel, bindingAdapterPosition)
-//                            }
-//                        }
-//                        icProductAddonInfo.setOnClickListener {
-//                            listener?.onClickAddonProductInfoIcon(addon.addOnDataInfoLink)
-//                        }
-//                    }
-//                    binding.itemShipmentAddonProduct.llAddonProductItems.addView(addOnView.root)
-//                }
-//            }
-//        }
-//    }
+    private fun renderAddOnProduct(product: CheckoutProductModel) {
+        val addOnProduct = product.addOnProduct
+        if (addOnProduct.listAddOnProductData.isEmpty()) {
+            productBinding.tvCheckoutAddons.gone()
+            productBinding.tvCheckoutAddonsSeeAll.gone()
+            productBinding.llAddonProductItems.gone()
+        } else {
+            productBinding.llAddonProductItems.removeAllViews()
+            if (addOnProduct.bottomsheet.isShown) {
+                productBinding.tvCheckoutAddons.text = addOnProduct.title
+                productBinding.tvCheckoutAddonsSeeAll.apply {
+                    visible()
+                    setOnClickListener {
+                        listener.onClickSeeAllAddOnProductService(product)
+                    }
+                }
+                listener.onClickLihatSemuaAddOnProductWidget()
+            } else {
+                productBinding.tvCheckoutAddons.gone()
+                productBinding.tvCheckoutAddonsSeeAll.gone()
+            }
+            val layoutInflater = LayoutInflater.from(itemView.context)
+            addOnProduct.listAddOnProductData.forEach { addon ->
+                if (addon.addOnDataName.isNotEmpty()) {
+                    val addOnView =
+                        ItemShipmentAddonProductItemBinding.inflate(layoutInflater, null, false)
+                    addOnView.apply {
+                        tvShipmentAddOnName.text = addon.addOnDataName
+                        tvShipmentAddOnName.setOnClickListener {
+                            cbAddonItem.isChecked = cbAddonItem.isChecked.not()
+                        }
+                        tvShipmentAddOnPrice.text = CurrencyFormatUtil
+                            .convertPriceValueToIdrFormat(addon.addOnDataPrice.toLong(), false)
+                            .removeDecimalSuffix()
+                        cbAddonItem.isChecked =
+                            (addon.addOnDataStatus == AddOnConstant.ADD_ON_PRODUCT_STATUS_CHECK)
+                        cbAddonItem.setOnCheckedChangeListener { _, isChecked ->
+                            delayChangeCheckboxAddOnState?.cancel()
+                            delayChangeCheckboxAddOnState = GlobalScope.launch(Dispatchers.Main) {
+                                delay(DEBOUNCE_TIME_ADDON)
+                                if (bindingAdapterPosition != RecyclerView.NO_POSITION) {
+                                    listener.onCheckboxAddonProductListener(
+                                        isChecked,
+                                        addon,
+                                        product,
+                                        bindingAdapterPosition
+                                    )
+                                    listener.onClickAddOnsProductWidget(
+                                        addon.addOnDataType,
+                                        product.productId.toString(),
+                                        isChecked
+                                    )
+                                }
+                            }
+                        }
+                        icProductAddonInfo.setOnClickListener {
+                            listener.onClickAddonProductInfoIcon(addon.addOnDataInfoLink)
+                        }
+                    }
+                    productBinding.llAddonProductItems.addView(addOnView.root)
+                    productBinding.llAddonProductItems.visible()
+                    listener.onImpressionAddOnProductService(
+                        addon.addOnDataType,
+                        product.productId.toString()
+                    )
+                }
+            }
+        }
+    }
 
     private fun renderAddOnGiftingProductLevel(
-        product: CheckoutProductModel,
-        addOnWordingModel: AddOnGiftingWordingModel
+        product: CheckoutProductModel
     ) {
         val addOns = product.addOnGiftingProductLevelModel
         if (addOns.status == 0) {
@@ -234,17 +262,18 @@ class CheckoutProductViewHolder(
             binding.buttonGiftingAddonProductLevel.urlRightIcon =
                 addOns.addOnsButtonModel.rightIconUrl
             binding.buttonGiftingAddonProductLevel.setOnClickListener {
-                listener.onClickAddOnProductLevel(
-                    product,
-                    addOnWordingModel
+                listener.onClickAddOnGiftingProductLevel(
+                    product
                 )
             }
             binding.buttonGiftingAddonProductLevel.visibility = View.VISIBLE
-            listener.onImpressionAddOnProductLevel(product.productId.toString())
+            listener.onImpressionAddOnGiftingProductLevel(product.productId.toString())
         }
     }
 
     companion object {
         val VIEW_TYPE = R.layout.item_checkout_product
+
+        private const val DEBOUNCE_TIME_ADDON = 500L
     }
 }

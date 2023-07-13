@@ -4,6 +4,7 @@ import com.tokopedia.logisticcart.shipping.model.ShopTypeInfoData
 import com.tokopedia.purchase_platform.common.feature.addons.data.model.AddOnProductDataModel
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.model.EthicalDrugDataModel
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingDataModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingWordingModel
 
 data class CheckoutProductModel(
     override val cartStringGroup: String,
@@ -79,6 +80,7 @@ data class CheckoutProductModel(
     val shouldShowShopInfo: Boolean = false,
     val originWarehouseIds: List<Long> = emptyList(),
     val addOnProduct: AddOnProductDataModel = AddOnProductDataModel(),
+    val addOnGiftingWording: AddOnGiftingWordingModel = AddOnGiftingWordingModel(),
 
     // shop data
     val shopId: String = "",
