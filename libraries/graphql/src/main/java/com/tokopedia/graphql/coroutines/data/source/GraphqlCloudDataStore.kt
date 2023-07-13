@@ -23,6 +23,7 @@ import com.tokopedia.graphql.util.Const.TKPD_AKAMAI
 import com.tokopedia.graphql.util.IRIS_SESSION_ID_KEY
 import com.tokopedia.graphql.util.LoggingUtils
 import com.tokopedia.graphql.util.LoggingUtils.logGqlErrorSsl
+import com.tokopedia.graphql.util.RemoteConfigHelper
 import com.tokopedia.graphql.util.STATUS_QUERY
 import com.tokopedia.graphql.util.TOP_ADS_TRACKING_KEY
 import com.tokopedia.graphql.util.registeredGqlForTopAds
@@ -104,6 +105,7 @@ class GraphqlCloudDataStore @Inject constructor(
         header: MutableMap<String, String>,
         requests: List<GraphqlRequest>
     ) {
+        if (!RemoteConfigHelper.isEnableTdnHeader()) return
         for (req in requests) {
             val list: List<String> = getQueryListFromQueryString(req.query)
             for (temp in list) {
