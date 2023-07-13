@@ -4,10 +4,10 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.checkout.databinding.ItemCheckoutAddressBinding
+import com.tokopedia.checkout.databinding.ItemCheckoutOrderBinding
 import com.tokopedia.checkout.databinding.ItemCheckoutProductBinding
 import com.tokopedia.checkout.databinding.ItemPromoCheckoutBinding
 import com.tokopedia.checkout.databinding.ItemShipmentButtonPaymentBinding
-import com.tokopedia.checkout.databinding.ItemShipmentGroupFooterBinding
 import com.tokopedia.checkout.databinding.ItemUpsellNewImprovementBinding
 import com.tokopedia.checkout.databinding.ViewItemShipmentCostDetailsBinding
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutAddressModel
@@ -102,7 +102,7 @@ class CheckoutAdapter(
 
             CheckoutOrderViewHolder.VIEW_TYPE -> {
                 CheckoutOrderViewHolder(
-                    ItemShipmentGroupFooterBinding.inflate(
+                    ItemCheckoutOrderBinding.inflate(
                         inflater,
                         parent,
                         false

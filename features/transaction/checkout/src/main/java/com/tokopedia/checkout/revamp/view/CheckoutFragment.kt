@@ -19,6 +19,7 @@ import com.tokopedia.checkout.revamp.view.adapter.CheckoutAdapter
 import com.tokopedia.checkout.revamp.view.adapter.CheckoutAdapterListener
 import com.tokopedia.checkout.revamp.view.adapter.CheckoutDiffUtilCallback
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPageState
+import com.tokopedia.checkout.revamp.view.uimodel.CheckoutProductModel
 import com.tokopedia.checkout.view.ShipmentFragment
 import com.tokopedia.checkout.view.uimodel.ShipmentNewUpsellModel
 import com.tokopedia.network.utils.ErrorHandler
@@ -28,6 +29,7 @@ import com.tokopedia.purchase_platform.common.exception.CartResponseErrorExcepti
 import com.tokopedia.purchase_platform.common.feature.checkout.ShipmentFormRequest
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.model.UploadPrescriptionUiModel
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.view.UploadPrescriptionListener
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingWordingModel
 import com.tokopedia.purchase_platform.common.utils.animateGone
 import com.tokopedia.purchase_platform.common.utils.animateShow
 import com.tokopedia.unifycomponents.Toaster
@@ -261,6 +263,17 @@ class CheckoutFragment : BaseDaggerFragment(), CheckoutAdapterListener, UploadPr
         buttonText: String,
         buttonNotes: String
     ) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onClickAddOnProductLevel(
+        product: CheckoutProductModel,
+        addOnWording: AddOnGiftingWordingModel
+    ) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onImpressionAddOnProductLevel(productId: String) {
         TODO("Not yet implemented")
     }
 
