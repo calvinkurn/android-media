@@ -3,7 +3,7 @@
     <item>
         <shape>
             <solid android:color="@color/Unify_N75"/>
-            <corners android:radius="@dimen/play_placeholder_radius"/>
+            <corners android:radius="@dimen/unify_space_8"/>
         </shape>
     </item>
 </layer-list>
