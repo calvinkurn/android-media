@@ -520,6 +520,8 @@ public interface ApplinkConst {
         String MEDAL_DETAIL_BASE = "detail";
         String MEDAL_CABINET = "medali";
         String SEE_MORE_MEDAL = "more";
+        String CELEBRATION_BOTTOMSHEET = "celebration-bottomsheet";
+        String SCP_TOASTER = "celebration_toaster";
     }
 
     String OQR_PIN_URL_ENTRY_LINK = "tokopedia://ovoqrthanks/";

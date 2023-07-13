@@ -1,5 +1,6 @@
 package com.tokopedia.applink.promo
 
+import android.content.Context
 import android.net.Uri
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkConst.ScpRewards.SEE_MORE_MEDAL
@@ -135,6 +136,22 @@ object DeeplinkMapperPromo {
             ApplinkConst.Tokomember.COUPON_DETAIL to  Regex(couponDetailRegex)
         )
     }
+fun getCelebrationBottomsheetDeeplink(deeplink: Uri): String {
+    return if (deeplink.pathSegments.size < 2) ""
+    else UriUtil.buildUri(
+        ApplinkConstInternalPromo.CELEBRATION_BOTTOMSHEET,
+        deeplink.pathSegments.last()
+    )
+}
+
+fun invokeScpToasterUniversalAppLink(context: Context, deeplink: Uri): String{
+    //PArse deeplink to get order id
+    return UriUtil.appendDeeplinkWithQuery(
+        ApplinkConstInternalPromo.CELEBRATION_TOASTER,
+        deeplink.query ?: ""
+    )
+
+}
 
 
     fun isMatchPattern(pattern:Regex?,link:String) : Boolean{

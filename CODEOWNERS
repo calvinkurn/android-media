@@ -276,6 +276,7 @@
 /features/promo/scp_rewards                             @tokopedia/android-minionsolo-dev
 /features/promo/scp_rewards_common                      @tokopedia/android-minionsolo-dev
 /features/promo/scp_rewards_widgets                     @tokopedia/android-minionsolo-dev
+/features/promo/scp_rewards_touchpoints 				@tokopedia/android-minionsolo-dev
 /features/promo/gamification            				@tokopedia/android-minionsolo-dev
 /features/kyc                           				@tokopedia/android-minionyoda-dev
 /features/promo/merchant_voucher                        @tokopedia/android-minionsolo-dev
