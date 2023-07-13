@@ -2,13 +2,8 @@ package com.tokopedia.seller.search.feature.initialsearch.view.compose
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -17,20 +12,20 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.nest.components.NestSearchBar
 import com.tokopedia.seller.search.R
+import com.tokopedia.seller.search.feature.initialsearch.view.model.compose.GlobalSearchUiEffect
+import com.tokopedia.seller.search.feature.initialsearch.view.model.compose.GlobalSearchUiState
 
 @Composable
 fun GlobalSellerSearchView(
-    onBackBtnClicked: (String) -> Unit,
-    onSearchBarKeywordSubmit: (String) -> Unit,
-    onSearchbarCleared: () -> Unit,
+    modifier: Modifier,
+    uiState: GlobalSearchUiState,
+    uiEffect: (GlobalSearchUiEffect) -> Unit,
     onSearchBarTextChanged: (String) -> Unit
 ) {
     ConstraintLayout(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier,
         content = {
             val (backBtn, searchBarUnify) = createRefs()
-
-            var searchBarText by remember { mutableStateOf(String.EMPTY) }
 
             Image(
                 modifier = Modifier
@@ -40,23 +35,20 @@ fun GlobalSellerSearchView(
                         start.linkTo(parent.start)
                     }
                     .padding(start = 12.dp)
-                    .clickable { onBackBtnClicked(searchBarText) },
+                    .clickable { uiEffect(GlobalSearchUiEffect.OnBackButtonClicked(uiState.searchBarKeyword)) },
                 painter = painterResource(id = R.drawable.ic_back_searchbar),
-                contentDescription = null,
+                contentDescription = null
             )
 
             SearchBarUnify(
                 modifier = Modifier.constrainAs(searchBarUnify) {
-                        top.linkTo(parent.top)
-                        start.linkTo(backBtn.end, margin = 8.dp)
-                        end.linkTo(parent.end, margin = 16.dp)
-                    },
-                onSearchBarKeywordSubmit = onSearchBarKeywordSubmit,
-                onSearchbarCleared = onSearchbarCleared,
-                onSearchBarTextChanged = {
-                    searchBarText = it
-                    onSearchBarTextChanged(it)
-                }
+                    top.linkTo(parent.top)
+                    start.linkTo(backBtn.end, margin = 8.dp)
+                    end.linkTo(parent.end, margin = 16.dp)
+                },
+                uiState = uiState,
+                uiEffect = uiEffect,
+                onSearchBarTextChanged = onSearchBarTextChanged
             )
         }
     )
@@ -65,18 +57,24 @@ fun GlobalSellerSearchView(
 @Composable
 private fun SearchBarUnify(
     modifier: Modifier,
-    onSearchBarKeywordSubmit: (String) -> Unit,
-    onSearchbarCleared: () -> Unit,
+    uiState: GlobalSearchUiState,
+    uiEffect: (GlobalSearchUiEffect) -> Unit,
     onSearchBarTextChanged: (String) -> Unit
 ) {
-
     NestSearchBar(
-        placeholderText = stringResource(id = R.string.placeholder_search_seller),
+        placeholderText = uiState.searchBarKeyword.ifBlank { stringResource(id = R.string.placeholder_search_seller) },
         modifier = modifier,
-        onSearchBarCleared = onSearchbarCleared,
-        onKeyboardSearchAction = onSearchBarKeywordSubmit,
+        onSearchBarCleared = {
+            uiEffect(GlobalSearchUiEffect.OnSearchBarCleared)
+            onSearchBarTextChanged(String.EMPTY)
+            uiEffect(GlobalSearchUiEffect.OnKeywordTextChanged(String.EMPTY))
+        },
+        onKeyboardSearchAction = {
+            uiEffect(GlobalSearchUiEffect.OnKeyboardSearchSubmit(it))
+        },
         onTextChanged = {
             onSearchBarTextChanged(it)
+            uiEffect(GlobalSearchUiEffect.OnKeywordTextChanged(it))
         }
     )
 }
