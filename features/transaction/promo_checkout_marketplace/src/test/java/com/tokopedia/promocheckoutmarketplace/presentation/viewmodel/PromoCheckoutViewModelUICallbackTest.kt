@@ -3,8 +3,10 @@ package com.tokopedia.promocheckoutmarketplace.presentation.viewmodel
 import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider
 import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.providePromoListWithMultipleClashingBoPromo
 import com.tokopedia.promocheckoutmarketplace.data.response.CouponListRecommendationResponse
+import com.tokopedia.promocheckoutmarketplace.data.response.SectionTab
 import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoListItemUiModel
 import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoRecommendationUiModel
+import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoTabUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
 import io.mockk.Runs
 import io.mockk.coEvery
@@ -513,5 +515,20 @@ class PromoCheckoutViewModelUICallbackTest : BasePromoCheckoutViewModelTest() {
         assert(lastModifiedData != null)
         assert(lastModifiedData?.data is PromoListItemUiModel)
         assert((lastModifiedData?.data as PromoListItemUiModel).uiData.errorMessage.isBlank())
+    }
+
+    @Test
+    fun `WHEN promo tab is changed THEN set current tab to selected tab`() {
+        // Given
+        val promoTabUiModel = PromoTabUiModel(
+            uiData = PromoTabUiModel.UiData(tabs = listOf(SectionTab(id = "1", title = "title"))),
+            uiState = PromoTabUiModel.UiState()
+        )
+
+        // When
+        viewModel.changeSelectedTab(promoTabUiModel)
+
+        // Then
+        assert(viewModel.promoTabUiModel.value == promoTabUiModel)
     }
 }

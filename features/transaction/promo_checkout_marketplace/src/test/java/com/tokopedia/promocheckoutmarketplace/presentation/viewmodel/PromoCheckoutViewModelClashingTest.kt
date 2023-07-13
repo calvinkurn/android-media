@@ -75,11 +75,11 @@ class PromoCheckoutViewModelClashingTest : BasePromoCheckoutViewModelTest() {
         val boPromo = viewModel.promoListUiModel.value?.first {
             it is PromoListItemUiModel && it.uiState.isBebasOngkir
         } as PromoListItemUiModel
-        viewModel.updatePromoListAfterClickPromoItem(boPromo)
-        testDispatchers.coroutineDispatcher.advanceUntilIdle()
         val mvcWithSecondaryPromo = viewModel.promoListUiModel.value?.first {
             it is PromoListItemUiModel && it.uiData.secondaryCoupons.isNotEmpty()
         } as PromoListItemUiModel
+        viewModel.updatePromoListAfterClickPromoItem(boPromo)
+        testDispatchers.coroutineDispatcher.advanceUntilIdle()
         viewModel.updatePromoListAfterClickPromoItem(mvcWithSecondaryPromo)
         testDispatchers.coroutineDispatcher.advanceUntilIdle()
 
@@ -179,6 +179,88 @@ class PromoCheckoutViewModelClashingTest : BasePromoCheckoutViewModelTest() {
         assert(selectedBoPromoCount == 1)
         assert(clashingMvcSecondaryPromoCount == 1)
         assert(viewModel.fragmentUiModel.value?.uiData?.benefitAdjustmentMessage == "")
+    }
+
+    @Test
+    fun `WHEN multiple order select BO Promo THEN calculate clashing and set MVC to secondary`() {
+        // Given
+        val response = GetPromoListDataProvider.provideCouponListRecommendationWithMultipleOrderMvcSecondaryResponse()
+        coEvery { getCouponListRecommendationUseCase.setParams(any(), any()) } just Runs
+        coEvery { getCouponListRecommendationUseCase.execute(any(), any()) } answers {
+            firstArg<(CouponListRecommendationResponse) -> Unit>().invoke(response)
+        }
+        viewModel.getPromoList(PromoRequest(), "")
+
+        every { analytics.eventClickSelectKupon(any(), any(), any()) } just Runs
+        every { analytics.eventClickSelectPromo(any(), any()) } just Runs
+        every { analytics.eventClickDeselectKupon(any(), any(), any()) } just Runs
+        every { analytics.eventClickDeselectPromo(any(), any()) } just Runs
+
+        // When
+        val boPromo = viewModel.promoListUiModel.value?.first {
+            it is PromoListItemUiModel && it.uiState.isBebasOngkir
+        } as PromoListItemUiModel
+        viewModel.updatePromoListAfterClickPromoItem(boPromo)
+        testDispatchers.coroutineDispatcher.advanceUntilIdle()
+
+        // Then
+        val selectedBoPromoCount = viewModel.promoListUiModel.value?.count {
+            it is PromoListItemUiModel && it.uiState.isBebasOngkir && it.uiState.isSelected
+        } ?: 0
+        val enabledMvcSecondaryPromoCount = viewModel.promoListUiModel.value?.count {
+            it is PromoListItemUiModel && it.uiData.shopId > 0 && it.uiData.currentClashingPromo.isEmpty() && !it.uiState.isDisabled
+        } ?: 0
+        assert(viewModel.promoListUiModel.value != null)
+        assert(selectedBoPromoCount == 1)
+        assert(enabledMvcSecondaryPromoCount == 2)
+        assert(viewModel.fragmentUiModel.value?.uiData?.benefitAdjustmentMessage != "")
+    }
+
+    @Test
+    fun `WHEN multiple order select BO Promo with MVC secondary selected then unselect BO Promo THEN set first MVC promo to primary then second MVC promo to secondary`() {
+        // Given
+        val response = GetPromoListDataProvider.provideCouponListRecommendationWithMultipleOrderMvcSecondaryResponse()
+        coEvery { getCouponListRecommendationUseCase.setParams(any(), any()) } just Runs
+        coEvery { getCouponListRecommendationUseCase.execute(any(), any()) } answers {
+            firstArg<(CouponListRecommendationResponse) -> Unit>().invoke(response)
+        }
+        viewModel.getPromoList(PromoRequest(), "")
+
+        every { analytics.eventClickSelectKupon(any(), any(), any()) } just Runs
+        every { analytics.eventClickSelectPromo(any(), any()) } just Runs
+        every { analytics.eventClickDeselectKupon(any(), any(), any()) } just Runs
+        every { analytics.eventClickDeselectPromo(any(), any()) } just Runs
+
+        // When
+        val boPromo = viewModel.promoListUiModel.value?.first {
+            it is PromoListItemUiModel && it.uiState.isBebasOngkir
+        } as PromoListItemUiModel
+        val mvcWithSecondaryPromos = viewModel.promoListUiModel.value?.filter {
+            it is PromoListItemUiModel && it.uiData.secondaryCoupons.isNotEmpty()
+        } as List<PromoListItemUiModel>
+        viewModel.updatePromoListAfterClickPromoItem(boPromo)
+        testDispatchers.coroutineDispatcher.advanceUntilIdle()
+        viewModel.updatePromoListAfterClickPromoItem(mvcWithSecondaryPromos[0])
+        testDispatchers.coroutineDispatcher.advanceUntilIdle()
+        viewModel.updatePromoListAfterClickPromoItem(mvcWithSecondaryPromos[1])
+        testDispatchers.coroutineDispatcher.advanceUntilIdle()
+        viewModel.updatePromoListAfterClickPromoItem(boPromo)
+        testDispatchers.coroutineDispatcher.advanceUntilIdle()
+
+        // Then
+        val selectedBoPromoCount = viewModel.promoListUiModel.value?.count {
+            it is PromoListItemUiModel && it.uiState.isBebasOngkir && it.uiState.isSelected
+        } ?: 0
+        val selectedMvcWithPrimaryPromo = viewModel.promoListUiModel.value?.count {
+            it is PromoListItemUiModel && it.uiData.shopId > 0 && it.uiData.currentClashingPromo.isEmpty() && it.uiState.isSelected
+        } ?: 0
+        val selectedMvcWithSecondaryPromo = viewModel.promoListUiModel.value?.count {
+            it is PromoListItemUiModel && it.uiData.shopId > 0 && it.uiData.useSecondaryPromo && it.uiData.currentClashingSecondaryPromo.isEmpty() && it.uiState.isSelected
+        } ?: 0
+        assert(viewModel.promoListUiModel.value != null)
+        assert(selectedBoPromoCount == 0)
+        assert(selectedMvcWithPrimaryPromo == 1)
+        assert(selectedMvcWithSecondaryPromo == 1)
     }
 
     @Test
