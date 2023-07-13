@@ -2,6 +2,7 @@ package com.tokopedia.scp_rewards.common.utils
 
 import android.media.MediaPlayer
 import android.util.Log
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -39,6 +40,7 @@ class AudioFactory private constructor(){
                         prepareAsync()
                     } catch (err: Throwable) {
                         onError?.invoke()
+                        FirebaseCrashlytics.getInstance().recordException(err)
                     }
                 }
             }

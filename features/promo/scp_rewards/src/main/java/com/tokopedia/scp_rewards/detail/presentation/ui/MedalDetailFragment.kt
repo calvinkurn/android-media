@@ -408,7 +408,7 @@ class MedalDetailFragment : BaseDaggerFragment() {
     }
 
     private fun setupToolbar(toolbar: androidx.appcompat.widget.Toolbar) {
-        (activity as AppCompatActivity?)?.apply {
+        (activity as? AppCompatActivity)?.apply {
             setSupportActionBar(toolbar)
             supportActionBar?.apply {
                 setDisplayShowTitleEnabled(false)
@@ -421,7 +421,7 @@ class MedalDetailFragment : BaseDaggerFragment() {
     }
 
     private fun setWhiteStatusBar() {
-        (activity as AppCompatActivity?)?.apply {
+        (activity as? AppCompatActivity)?.apply {
             window?.statusBarColor = Color.WHITE
             binding.toolbar.setBackgroundColor(Color.WHITE)
             setToolbarBackButtonTint(R.color.Unify_NN900)
@@ -437,7 +437,7 @@ class MedalDetailFragment : BaseDaggerFragment() {
     }
 
     private fun setTransparentStatusBar() {
-        (activity as AppCompatActivity?)?.apply {
+        (activity as? AppCompatActivity)?.apply {
             activity?.window?.statusBarColor = Color.TRANSPARENT
             binding.toolbar.setBackgroundColor(Color.TRANSPARENT)
             setToolbarBackButtonTint(R.color.Unify_NN0)

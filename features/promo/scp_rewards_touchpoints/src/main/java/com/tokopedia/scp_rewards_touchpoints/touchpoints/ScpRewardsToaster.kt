@@ -22,10 +22,10 @@ import com.tokopedia.unifycomponents.toPx
 object ScpRewardsToaster {
     private val emptyClickListener = View.OnClickListener { }
 
-    var onCTAClick: View.OnClickListener = emptyClickListener
-    lateinit var ctaText: String
-    private val WITHOUT_CTA = 0
-    private val WITH_CTA = 1
+    private var onCTAClick: View.OnClickListener = emptyClickListener
+    private var ctaText: String = ""
+    private const val WITHOUT_CTA = 0
+    private const val WITH_CTA = 1
 
 
     /**

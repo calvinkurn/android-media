@@ -20,7 +20,7 @@ class CabinetView(
     attrs: AttributeSet?
 ) : RecyclerView(context, attrs), MedalCallbackListener {
 
-    private lateinit var listener: MedalCallbackListener
+    private var listener: MedalCallbackListener? = null
 
     private val cabinetMedalSectionAdapter: BaseAdapter<MedalViewTypeFactory> by lazy {
         BaseAdapter(MedalViewTypeFactory(this))
@@ -54,38 +54,26 @@ class CabinetView(
     }
 
     override fun onMedalClick(medalItem: MedalItem) {
-        if (::listener.isInitialized) {
-            listener.onMedalClick(medalItem)
-        }
+        listener?.onMedalClick(medalItem)
     }
 
     override fun onSeeMoreClick(medalData: MedalData) {
-        if (::listener.isInitialized) {
-            listener.onSeeMoreClick(medalData)
-        }
+        listener?.onSeeMoreClick(medalData)
     }
 
     override fun onMedalLoad(medalItem: MedalItem) {
-        if (::listener.isInitialized) {
-            listener.onMedalLoad(medalItem)
-        }
+        listener?.onMedalLoad(medalItem)
     }
 
     override fun onMedalFailed(medalItem: MedalItem) {
-        if (::listener.isInitialized) {
-            listener.onMedalFailed(medalItem)
-        }
+        listener?.onMedalFailed(medalItem)
     }
 
     override fun onSeeMoreLoad(medalData: MedalData) {
-        if (::listener.isInitialized) {
-            listener.onSeeMoreLoad(medalData)
-        }
+        listener?.onSeeMoreLoad(medalData)
     }
 
     override fun onBannerClick(bannerData: BannerData?, position: Int?) {
-        if (::listener.isInitialized) {
-            listener.onBannerClick(bannerData, position)
-        }
+        listener?.onBannerClick(bannerData, position)
     }
 }

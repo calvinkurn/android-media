@@ -25,6 +25,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import kotlinx.coroutines.CancellationException
@@ -51,6 +52,7 @@ fun CoroutineScope.launchCatchError(
                 try {
                     onError(t)
                 } catch (e: Throwable) {
+                    FirebaseCrashlytics.getInstance().recordException(e)
                 }
             }
         }
