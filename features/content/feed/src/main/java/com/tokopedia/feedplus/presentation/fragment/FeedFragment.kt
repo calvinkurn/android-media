@@ -808,6 +808,8 @@ class FeedFragment :
             val menuSheet = childFragmentManager.findFragmentByTag(TAG_FEED_MENU_BOTTOMSHEET) as? ContentThreeDotsMenuBottomSheet
             when (it) {
                 is Success -> {
+                    (childFragmentManager.findFragmentByTag(ContentSubmitReportBottomSheet.TAG) as? ContentSubmitReportBottomSheet)?.dismiss()
+                    (childFragmentManager.findFragmentByTag(ContentReportBottomSheet.TAG) as? ContentReportBottomSheet)?.dismiss()
                     menuSheet?.dismiss()
                     showToast(
                         message = getString(feedR.string.feed_success_report_video),
