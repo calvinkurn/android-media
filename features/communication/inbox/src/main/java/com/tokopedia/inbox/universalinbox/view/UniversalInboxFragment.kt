@@ -268,20 +268,22 @@ class UniversalInboxFragment @Inject constructor(
     }
 
     private fun observeDriverCounter() {
-        viewLifecycleOwner.removeObservers(viewModel.driverChatCounter)
-        viewModel.driverChatCounter.observe(viewLifecycleOwner) {
-            viewModel.driverChatData = it // Always save data
-            /**
-             * First time flow
-             * 1. Load widget
-             * 2. Inside load widget, mapper get driver ui model also with driver counter
-             */
-            if (!adapter.isWidgetMetaAdded()) {
-                loadWidgetMetaAndCounter()
-            } else {
-                when (it) {
-                    is Success -> onSuccessGetDriverChat(it.data.first, it.data.second)
-                    is Fail -> onErrorGetDriverChat(it.throwable)
+        viewModel.driverChatCounter?.let { liveData ->
+            viewLifecycleOwner.removeObservers(liveData)
+            liveData.observe(viewLifecycleOwner) {
+                viewModel.driverChatData = it // Always save data
+                /**
+                 * First time flow
+                 * 1. Load widget
+                 * 2. Inside load widget, mapper get driver ui model also with driver counter
+                 */
+                if (!adapter.isWidgetMetaAdded()) {
+                    loadWidgetMetaAndCounter()
+                } else {
+                    when (it) {
+                        is Success -> onSuccessGetDriverChat(it.data.first, it.data.second)
+                        is Fail -> onErrorGetDriverChat(it.throwable)
+                    }
                 }
             }
         }

@@ -71,12 +71,12 @@ class UniversalInboxViewModel @Inject constructor(
     val morePageRecommendation: LiveData<Result<List<RecommendationItem>>>
         get() = _morePageRecommendation
 
-    private var _allChannelsLiveData: LiveData<List<ConversationsChannel>> = MutableLiveData()
+    private var _allChannelsLiveData: LiveData<List<ConversationsChannel>>? = null
 
-    val driverChatCounter: LiveData<Result<Pair<Int, Int>>>
+    val driverChatCounter: LiveData<Result<Pair<Int, Int>>>?
         get() {
             setAllDriverChannels()
-            return _allChannelsLiveData.switchMap {
+            return _allChannelsLiveData?.switchMap {
                 getDriverUnreadCount(it)
             }
         }
@@ -120,7 +120,9 @@ class UniversalInboxViewModel @Inject constructor(
 
     private fun setAllDriverChannels() {
         try {
-            _allChannelsLiveData = getDriverChatCounterUseCase.getAllChannels()
+            if (_allChannelsLiveData == null) {
+                _allChannelsLiveData = getDriverChatCounterUseCase.getAllChannels()
+            }
         } catch (throwable: Throwable) {
             Timber.d(throwable)
             _error.value = throwable
