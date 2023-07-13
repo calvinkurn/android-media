@@ -28,9 +28,7 @@ enum class NavSource {
 }
 
 fun String?.asNavSource(): NavSource {
-    if(this == null) return NavSource.DEFAULT
-    NavSource.values().forEach {
-        if (it.name == this) return it
-    }
-    return NavSource.DEFAULT
+    return NavSource.values().find {
+        it.name == this
+    } ?: NavSource.DEFAULT
 }
