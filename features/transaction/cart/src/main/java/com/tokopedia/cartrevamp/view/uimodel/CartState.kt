@@ -2,6 +2,7 @@ package com.tokopedia.cartrevamp.view.uimodel
 
 import androidx.lifecycle.LiveData
 import com.tokopedia.cartcommon.data.response.common.OutOfService
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.wishlistcommon.data.response.GetWishlistV2Response
 
@@ -39,6 +40,11 @@ sealed class UpdateCartCheckoutState {
     data class UnknownError(val message: String, val ctaText: String) : UpdateCartCheckoutState()
 
     data class Failed(val throwable: Throwable) : UpdateCartCheckoutState()
+}
+
+sealed class UpdateCartAndGetLastApplyState {
+    data class Success(val promoUiModel: PromoUiModel) : UpdateCartAndGetLastApplyState()
+    data class Failed(val throwable: Throwable) : UpdateCartAndGetLastApplyState()
 }
 
 sealed class LoadWishlistV2State {

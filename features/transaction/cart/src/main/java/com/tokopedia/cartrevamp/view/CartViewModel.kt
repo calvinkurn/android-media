@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.domain.usecase.AddToCartExternalUseCase
 import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
+import com.tokopedia.cart.data.model.response.promo.LastApplyPromo
 import com.tokopedia.cart.view.adapter.cart.CartAdapter
 import com.tokopedia.cart.view.analytics.EnhancedECommerceActionFieldData
 import com.tokopedia.cartcommon.data.request.updatecart.BundleInfo
@@ -26,6 +27,7 @@ import com.tokopedia.cartrevamp.domain.usecase.SetCartlistCheckboxStateUseCase
 import com.tokopedia.cartrevamp.domain.usecase.UpdateAndReloadCartUseCase
 import com.tokopedia.cartrevamp.domain.usecase.UpdateCartAndGetLastApplyUseCase
 import com.tokopedia.cartrevamp.view.mapper.CartUiModelMapper
+import com.tokopedia.cartrevamp.view.mapper.PromoRequestMapper
 import com.tokopedia.cartrevamp.view.uimodel.CartCheckoutButtonState
 import com.tokopedia.cartrevamp.view.uimodel.CartEmptyHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartGlobalEvent
@@ -51,6 +53,7 @@ import com.tokopedia.cartrevamp.view.uimodel.LoadRecentReviewState
 import com.tokopedia.cartrevamp.view.uimodel.LoadRecommendationState
 import com.tokopedia.cartrevamp.view.uimodel.LoadWishlistV2State
 import com.tokopedia.cartrevamp.view.uimodel.PromoSummaryDetailData
+import com.tokopedia.cartrevamp.view.uimodel.UpdateCartAndGetLastApplyState
 import com.tokopedia.cartrevamp.view.uimodel.UpdateCartCheckoutState
 import com.tokopedia.cartrevamp.view.uimodel.UpdateCartPromoState
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -63,9 +66,14 @@ import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceCheckout
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceProductCartMapData
 import com.tokopedia.purchase_platform.common.constant.CartConstant
+import com.tokopedia.purchase_platform.common.feature.promo.data.request.clear.ClearPromoOrder
+import com.tokopedia.purchase_platform.common.feature.promo.data.request.clear.ClearPromoOrderData
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.clear.ClearPromoRequest
+import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import com.tokopedia.purchase_platform.common.feature.sellercashback.ShipmentSellerCashbackModel
 import com.tokopedia.purchase_platform.common.schedulers.ExecutorSchedulers
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
@@ -145,6 +153,7 @@ class CartViewModel @Inject constructor(
     val wishlistV2State: CartMutableLiveData<LoadWishlistV2State?> = CartMutableLiveData(null)
     val recommendationState: CartMutableLiveData<LoadRecommendationState?> =
         CartMutableLiveData(null)
+    val updateCartAndGetLastApplyState: CartMutableLiveData<UpdateCartAndGetLastApplyState?> = CartMutableLiveData(null)
 
     companion object {
         private const val PERCENTAGE = 100.0f
@@ -1889,6 +1898,129 @@ class CartViewModel @Inject constructor(
             any.productUiModelList.let {
                 for (cartItemHolderData in it) {
                     cartItemHolderData.isSelected = selected
+                }
+            }
+        }
+    }
+
+    fun generateParamGetLastApplyPromo(): ValidateUsePromoRequest {
+        return when {
+            cartModel.isLastApplyResponseStillValid -> {
+                val lastApplyPromo = cartModel.cartListData?.promo?.lastApplyPromo ?: LastApplyPromo()
+                PromoRequestMapper.generateGetLastApplyRequestParams(
+                    lastApplyPromo,
+                    getSelectedCartGroupHolderData(),
+                    null
+                )
+            }
+
+            cartModel.lastValidateUseResponse != null -> {
+                val promoUiModel = cartModel.lastValidateUseResponse?.promoUiModel ?: PromoUiModel()
+                PromoRequestMapper.generateGetLastApplyRequestParams(
+                    promoUiModel,
+                    getSelectedCartGroupHolderData(),
+                    cartModel.lastValidateUseRequest
+                )
+            }
+
+            else -> {
+                PromoRequestMapper.generateGetLastApplyRequestParams(
+                    null,
+                    getSelectedCartGroupHolderData(),
+                    null
+                )
+            }
+        }
+    }
+
+    fun doUpdateCartAndGetLastApply(promoRequest: ValidateUsePromoRequest) {
+        val cartItemDataList = ArrayList<CartItemHolderData>()
+        getSelectedCartItemData().let { listCartItemData ->
+            for (data in listCartItemData) {
+                if (!data.isError) {
+                    cartItemDataList.add(data)
+                }
+            }
+        }
+
+        val updateCartRequestList = getUpdateCartRequest(cartItemDataList)
+        if (updateCartRequestList.isNotEmpty()) {
+            launch(dispatchers.io) {
+                try {
+                    cartModel.lastValidateUseRequest = promoRequest
+                    val updateCartWrapperRequest =
+                        UpdateCartWrapperRequest(
+                            updateCartRequestList = updateCartRequestList,
+                            source = UpdateCartAndGetLastApplyUseCase.PARAM_VALUE_SOURCE_UPDATE_QTY_NOTES,
+                            getLastApplyPromoRequest = promoRequest
+                        )
+                    val updateCartDataResponse = updateCartAndGetLastApplyUseCase(updateCartWrapperRequest)
+                    withContext(dispatchers.main) {
+                        updateCartDataResponse.updateCartData?.let { updateCartData ->
+                            if (updateCartData.isSuccess) {
+                                updateCartDataResponse.promoUiModel?.let { promoUiModel ->
+                                    syncCartGroupShopBoCodeWithPromoUiModel(promoUiModel)
+                                    cartModel.apply {
+                                        isLastApplyResponseStillValid = false
+                                        cartModel.lastValidateUseResponse = ValidateUsePromoRevampUiModel(
+                                            promoUiModel = promoUiModel
+                                        )
+                                        lastUpdateCartAndGetLastApplyResponse = updateCartDataResponse
+                                    }
+                                    updateCartAndGetLastApplyState.value = UpdateCartAndGetLastApplyState.Success(promoUiModel)
+                                }
+                            }
+                        }
+                    }
+                } catch (t: Throwable) {
+                    updateCartAndGetLastApplyState.value = UpdateCartAndGetLastApplyState.Failed(t)
+                }
+            }
+        } else {
+            globalEvent.value = CartGlobalEvent.ProgressLoading(false)
+        }
+    }
+
+    fun doClearAllPromo() {
+        cartModel.lastValidateUseRequest?.let {
+            val param = ClearPromoRequest(
+                ClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE,
+                orderData = ClearPromoOrderData(
+                    codes = it.codes,
+                    orders = it.orders.map { order ->
+                        ClearPromoOrder(
+                            uniqueId = order.uniqueId,
+                            boType = order.boType,
+                            codes = order.codes,
+                            shopId = order.shopId,
+                            warehouseId = order.warehouseId,
+                            isPo = order.isPo,
+                            poDuration = order.poDuration.toString(),
+                            cartStringGroup = order.cartStringGroup
+                        )
+                    }
+                )
+            )
+            launch {
+                try {
+                    clearCacheAutoApplyStackUseCase.setParams(param).executeOnBackground()
+                } catch (t: Throwable) {
+                    Timber.d(t)
+                }
+            }
+            cartModel.isLastApplyResponseStillValid = false
+            cartModel.lastValidateUseResponse = ValidateUsePromoRevampUiModel()
+        }
+    }
+
+    private fun syncCartGroupShopBoCodeWithPromoUiModel(promoUiModel: PromoUiModel) {
+        val groupDataList = getAllShopGroupDataList()
+        promoUiModel.voucherOrderUiModels.forEach { voucherOrder ->
+            if (
+                voucherOrder.shippingId > 0 && voucherOrder.spId > 0 && voucherOrder.isTypeLogistic() && voucherOrder.messageUiModel.state == "green"
+            ) {
+                groupDataList.firstOrNull { it.cartString == voucherOrder.cartStringGroup }?.apply {
+                    boCode = voucherOrder.code
                 }
             }
         }

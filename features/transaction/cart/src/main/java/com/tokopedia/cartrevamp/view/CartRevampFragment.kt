@@ -77,6 +77,7 @@ import com.tokopedia.cartrevamp.view.uimodel.DisabledAccordionHolderData
 import com.tokopedia.cartrevamp.view.uimodel.LoadRecentReviewState
 import com.tokopedia.cartrevamp.view.uimodel.LoadRecommendationState
 import com.tokopedia.cartrevamp.view.uimodel.LoadWishlistV2State
+import com.tokopedia.cartrevamp.view.uimodel.UpdateCartAndGetLastApplyState
 import com.tokopedia.cartrevamp.view.uimodel.UpdateCartCheckoutState
 import com.tokopedia.cartrevamp.view.uimodel.UpdateCartPromoState
 import com.tokopedia.cartrevamp.view.viewholder.CartRecommendationViewHolder
@@ -117,6 +118,7 @@ import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.Clear
 import com.tokopedia.purchase_platform.common.feature.promo.view.mapper.LastApplyUiMapper
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import com.tokopedia.purchase_platform.common.feature.sellercashback.SellerCashbackListener
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
@@ -386,40 +388,36 @@ class CartRevampFragment :
     }
 
     override fun onShopItemCheckChanged(index: Int, checked: Boolean) {
-//        viewModel.updateCartModel(
-//            viewModel.cartModel.copy(
-//                hasPerformChecklistChange = true
-//            )
-//        )
-//        viewModel.setShopSelected(index, checked)
-//        dPresenter.reCalculateSubTotal(cartAdapter.allAvailableShopGroupDataList)
-//        val data = cartAdapter.getData()[index]
-//        var isCollapsed = false
-//        var productSize = 1
-//        if (data is com.tokopedia.cart.view.uimodel.CartGroupHolderData) {
-//            isCollapsed = data.isCollapsed
-//            productSize += data.productUiModelList.size
-//            if (checked) {
-//                checkCartShopGroupTicker(data)
-//            }
-//        }
+        viewModel.cartModel.hasPerformChecklistChange = true
+        viewModel.setShopSelected(index, checked)
+        viewModel.reCalculateSubTotal(viewModel.getAllAvailableShopGroupDataList())
+        val data = viewModel.cartDataList.value[index]
+        var productSize = 1
+        if (data is CartGroupHolderData) {
+            productSize += data.productUiModelList.size
+            if (checked) {
+                checkCartShopGroupTicker(data)
+            }
+        }
+        viewModel.cartDataList.notifyObserver()
 //        if (isCollapsed) {
 //            onNeedToUpdateViewItem(index)
 //            onNeedToUpdateViewItem(index + 1)
 //        } else {
 //            onNeedToUpdateMultipleViewItem(index, productSize + 1)
 //        }
-//        validateGoToCheckout()
-//        dPresenter.saveCheckboxState(cartAdapter.allAvailableCartItemHolderData)
-//
-//        val params = generateGeneralParamGetLastApply()
-//        if (isNeedHitUpdateCartAndValidateUse(params)) {
-//            renderPromoCheckoutLoading()
-//            dPresenter.doUpdateCartAndGetLastApply(params)
-//        } else {
-//            updatePromoCheckoutManualIfNoSelected(getAllAppliedPromoCodes(params))
-//        }
-//
+        validateGoToCheckout()
+        viewModel.saveCheckboxState(viewModel.getAllAvailableCartItemHolderData())
+
+        val params = viewModel.generateParamGetLastApplyPromo()
+        if (isNeedHitUpdateCartAndValidateUse(params)) {
+            renderPromoCheckoutLoading()
+            viewModel.doUpdateCartAndGetLastApply(params)
+        } else {
+            updatePromoCheckoutManualIfNoSelected(getAllAppliedPromoCodes(params))
+        }
+
+        // TODO: update global check
 //        setCheckboxGlobalState()
 //        setGlobalDeleteVisibility()
     }
@@ -929,6 +927,23 @@ class CartRevampFragment :
         refreshHandler?.setPullEnabled(true)
     }
 
+    private fun getAllAppliedPromoCodes(params: ValidateUsePromoRequest): List<String> {
+        val allPromoApplied = arrayListOf<String>()
+        if (params.orders.isNotEmpty()) {
+            params.orders.forEach { orderItem ->
+                if (orderItem.codes.isNotEmpty()) {
+                    orderItem.codes.forEach { merchantCode ->
+                        allPromoApplied.add(merchantCode)
+                    }
+                }
+            }
+            params.codes.forEach { globalCode ->
+                allPromoApplied.add(globalCode)
+            }
+        }
+        return allPromoApplied
+    }
+
     private fun getAtcProductId(): Long {
         return arguments?.getLong(CartActivity.EXTRA_PRODUCT_ID) ?: 0L
     }
@@ -1349,6 +1364,8 @@ class CartRevampFragment :
 
         observeUpdateCartEvent()
 
+        observeUpdateCartAndGetLastApply()
+
         observeWishlist()
     }
 
@@ -1381,6 +1398,25 @@ class CartRevampFragment :
         binding?.topLayout?.textActionDelete?.setOnClickListener {
             onGlobalDeleteClicked()
         }
+    }
+
+    private fun isNeedHitUpdateCartAndValidateUse(params: ValidateUsePromoRequest): Boolean {
+        var isPromoApplied = false
+        val allPromoApplied = arrayListOf<String>()
+        if (params.orders.isNotEmpty()) {
+            params.orders.forEach { orderItem ->
+                if (orderItem.codes.isNotEmpty()) {
+                    orderItem.codes.forEach { merchantCode ->
+                        allPromoApplied.add(merchantCode)
+                    }
+                }
+            }
+            params.codes.forEach { globalCode ->
+                allPromoApplied.add(globalCode)
+            }
+        }
+        if (params.orders.isNotEmpty() && allPromoApplied.isNotEmpty()) isPromoApplied = true
+        return isPromoApplied
     }
 
     private fun loadRecommendation() {
@@ -1590,6 +1626,26 @@ class CartRevampFragment :
                     showToastMessageRed(data.throwable)
                 }
 
+                else -> {}
+            }
+        }
+    }
+
+    private fun observeUpdateCartAndGetLastApply() {
+        viewModel.updateCartAndGetLastApplyState.observe(viewLifecycleOwner) { data ->
+            when (data) {
+                is UpdateCartAndGetLastApplyState.Success -> {
+                    updatePromoCheckoutStickyButton(data.promoUiModel)
+                }
+                is UpdateCartAndGetLastApplyState.Failed -> {
+                    if (data.throwable is AkamaiErrorException) {
+                        viewModel.doClearAllPromo()
+                        if (!viewModel.cartModel.promoTicker.enable) {
+                            showToastMessageRed(data.throwable)
+                        }
+                    }
+                    renderPromoCheckoutButtonActiveDefault(emptyList())
+                }
                 else -> {}
             }
         }
@@ -1988,6 +2044,47 @@ class CartRevampFragment :
         viewModel.updatePromoSummaryData(lastApplyData)
     }
 
+    private fun renderPromoCheckoutButtonActiveDefault(listPromoApplied: List<String>) {
+        binding?.apply {
+            promoCheckoutBtnCart.state = ButtonPromoCheckoutView.State.ACTIVE
+            promoCheckoutBtnCart.margin = ButtonPromoCheckoutView.Margin.WITH_BOTTOM
+            promoCheckoutBtnCart.title =
+                getString(com.tokopedia.purchase_platform.common.R.string.promo_funnel_label)
+            promoCheckoutBtnCart.desc = ""
+            promoCheckoutBtnCart.setOnClickListener {
+                checkGoToPromo()
+                // analytics
+                PromoRevampAnalytics.eventCartClickPromoSection(
+                    listPromoApplied,
+                    false,
+                    userSession.userId
+                )
+            }
+        }
+    }
+
+    private fun renderPromoCheckoutButtonNoItemIsSelected() {
+        binding?.apply {
+            promoCheckoutBtnCart.state = ButtonPromoCheckoutView.State.ACTIVE
+            promoCheckoutBtnCart.margin = ButtonPromoCheckoutView.Margin.WITH_BOTTOM
+            promoCheckoutBtnCart.title =
+                getString(com.tokopedia.purchase_platform.common.R.string.promo_funnel_label)
+            promoCheckoutBtnCart.desc = getString(R.string.promo_desc_no_selected_item)
+            promoCheckoutBtnCart.setOnClickListener {
+                showToastMessageGreen(getString(R.string.promo_choose_item_cart))
+                PromoRevampAnalytics.eventCartViewPromoMessage(getString(R.string.promo_choose_item_cart))
+            }
+        }
+    }
+
+    private fun renderPromoCheckoutLoading() {
+        binding?.apply {
+            promoCheckoutBtnCart.state = ButtonPromoCheckoutView.State.LOADING
+            promoCheckoutBtnCart.margin = ButtonPromoCheckoutView.Margin.WITH_BOTTOM
+            promoCheckoutBtnCart.setOnClickListener { }
+        }
+    }
+
     private fun renderRecentView(recommendationWidget: RecommendationWidget?) {
         var cartRecentViewItemHolderDataList: MutableList<CartRecentViewItemHolderData> =
             ArrayList()
@@ -2050,11 +2147,7 @@ class CartRevampFragment :
             )
         }
 
-        viewModel.updateCartModel(
-            viewModel.cartModel.copy(
-                recommendationPage = viewModel.cartModel.recommendationPage + 1
-            )
-        )
+        viewModel.cartModel.recommendationPage = viewModel.cartModel.recommendationPage + 1
     }
 
     private fun renderTickerAnnouncement(cartData: CartData) {
@@ -2584,6 +2677,24 @@ class CartRevampFragment :
         cache.putInt(CartConstant.IS_HAS_CART, if (counter > 0) 1 else 0)
         cache.putInt(CartConstant.CACHE_TOTAL_CART, counter)
         cache.applyEditor()
+    }
+
+    private fun updatePromoCheckoutManualIfNoSelected(listPromoApplied: List<String>) {
+        if (viewModel.getSelectedCartGroupHolderData().isEmpty()) {
+            renderPromoCheckoutButtonNoItemIsSelected()
+        } else {
+            renderPromoCheckoutButtonActiveDefault(listPromoApplied)
+        }
+    }
+
+    private fun updatePromoCheckoutStickyButton(promoUiModel: PromoUiModel) {
+        val lastApplyUiModel =
+            LastApplyUiMapper.mapValidateUsePromoUiModelToLastApplyUiModel(promoUiModel)
+        renderPromoCheckoutButton(lastApplyUiModel)
+        viewModel.updatePromoSummaryData(lastApplyUiModel)
+        if (promoUiModel.globalSuccess) {
+            viewModel.cartModel.lastValidateUseResponse = ValidateUsePromoRevampUiModel(promoUiModel = promoUiModel)
+        }
     }
 
     private fun updateStateAfterFinishGetCartList() {
