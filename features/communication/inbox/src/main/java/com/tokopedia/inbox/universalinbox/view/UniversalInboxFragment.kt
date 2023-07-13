@@ -298,43 +298,68 @@ class UniversalInboxFragment @Inject constructor(
          * Second time flow
          * 1.A. Add if not added yet (for non-dynamic)
          * 1.B. Update counter if already added
+         *
+         * Edge cases
+         * 1. No active channel after update
+         * 2. Remove widget
          */
         val driverChatWidgetPosition = adapter.getWidgetPosition(GOJEK_TYPE)
-        if (driverChatWidgetPosition < Int.ZERO) {
-            viewModel.driverChatWidgetData?.let { (position, data) ->
-                adapter.addWidget(
-                    position,
-                    UniversalInboxWidgetUiModel(
-                        icon = data.icon.toIntOrZero(),
-                        title = data.title,
-                        subtext = data.subtext.replace(
-                            oldValue = GOJEK_REPLACE_TEXT,
-                            newValue = "$activeChannel",
-                            ignoreCase = true
-                        ),
-                        applink = data.applink,
-                        counter = unreadTotal,
-                        type = GOJEK_TYPE
-                    )
-                )
+        when {
+            (driverChatWidgetPosition < Int.ZERO) -> {
+                if (activeChannel > Int.ZERO) {
+                    addDriverWidget(activeChannel, unreadTotal)
+                }
             }
-        } else {
-            adapter.updateWidgetCounter(driverChatWidgetPosition, unreadTotal) {
-                // Replace default
-                if (it.subtext.contains(GOJEK_REPLACE_TEXT, true)) {
-                    it.subtext = it.subtext.replace(
+            (driverChatWidgetPosition >= Int.ZERO) -> {
+                if (activeChannel > Int.ZERO) {
+                    updateWidgetDriverCounter(driverChatWidgetPosition, activeChannel, unreadTotal)
+                } else {
+                    adapter.removeWidget(driverChatWidgetPosition)
+                }
+            }
+        }
+    }
+
+    private fun addDriverWidget(activeChannel: Int, unreadTotal: Int) {
+        viewModel.driverChatWidgetData?.let { (position, data) ->
+            adapter.addWidget(
+                position,
+                UniversalInboxWidgetUiModel(
+                    icon = data.icon.toIntOrZero(),
+                    title = data.title,
+                    subtext = data.subtext.replace(
                         oldValue = GOJEK_REPLACE_TEXT,
                         newValue = "$activeChannel",
                         ignoreCase = true
-                    )
-                } else {
-                    // Replace after update
-                    it.subtext = activeChannel.toString() + it.subtext.filter { char ->
-                        char.isLetter() || char.isWhitespace()
-                    }
+                    ),
+                    applink = data.applink,
+                    counter = unreadTotal,
+                    type = GOJEK_TYPE
+                )
+            )
+        }
+    }
+
+    private fun updateWidgetDriverCounter(
+        driverChatWidgetPosition: Int,
+        activeChannel: Int,
+        unreadTotal: Int
+    ) {
+        adapter.updateWidgetCounter(driverChatWidgetPosition, unreadTotal) {
+            // Replace default
+            if (it.subtext.contains(GOJEK_REPLACE_TEXT, true)) {
+                it.subtext = it.subtext.replace(
+                    oldValue = GOJEK_REPLACE_TEXT,
+                    newValue = "$activeChannel",
+                    ignoreCase = true
+                )
+            } else {
+                // Replace after update
+                it.subtext = activeChannel.toString() + it.subtext.filter { char ->
+                    char.isLetter() || char.isWhitespace()
                 }
-                it.isError = false
             }
+            it.isError = false
         }
     }
 

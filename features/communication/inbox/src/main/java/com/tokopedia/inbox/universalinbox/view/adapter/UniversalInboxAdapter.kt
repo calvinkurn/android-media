@@ -166,4 +166,10 @@ class UniversalInboxAdapter(
             notifyItemChanged(Int.ZERO)
         }
     }
+
+    fun removeWidget(position: Int) {
+        (itemList.firstOrNull() as? UniversalInboxWidgetMetaUiModel)
+            ?.widgetList?.removeAt(position)
+        notifyItemChanged(Int.ZERO) // notify item changed in page rv, first item
+    }
 }

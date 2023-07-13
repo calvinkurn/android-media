@@ -138,7 +138,7 @@ class UniversalInboxViewModel @Inject constructor(
                 var activeChannel = Int.ZERO
                 var unreadTotal = Int.ZERO
                 channelList.forEach { channel ->
-                    if (channel.expiresAt < System.currentTimeMillis()) {
+                    if (channel.expiresAt > System.currentTimeMillis()) {
                         activeChannel++
                         unreadTotal += channel.unreadCount
                     }
