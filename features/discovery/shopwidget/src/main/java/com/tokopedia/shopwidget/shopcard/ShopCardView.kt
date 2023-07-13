@@ -292,7 +292,7 @@ class ShopCardView : BaseCustomView {
             imageViewShopItemProductImage: AppCompatImageView?,
             textViewShopItemProductPrice: Typography?,
     ) {
-        imageViewShopItemProductImage?.setImageResource(com.tokopedia.unifyprinciples.R.color.Unify_N50)
+        imageViewShopItemProductImage?.setImageResource(com.tokopedia.unifyprinciples.R.color.Unify_NN50)
         textViewShopItemProductPrice?.text = ""
     }
 

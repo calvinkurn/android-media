@@ -4,7 +4,7 @@
 
     <!--Terms and Condition-->
     <string name="play_bro_tnc_title">Yaah, kamu belum bisa Live</string>
-    <string name="play_bro_tnc_condition_title">Pastikan tokomu memenuhi syarat berikut:</string>
+    <string name="play_bro_tnc_condition_title">Pastikan kamu punya toko dengan syarat ini:</string>
     <string name="play_bro_tnc_benefit_title">Keuntungan yang bisa kamu dapetin dari bikin Live:</string>
     <string name="play_bro_tnc_benefit_1">Membangun branding &amp; meningkatkan performa tokomu</string>
     <string name="play_bro_tnc_benefit_2">Bisa berinteraksi langsung dengan calon pembeli</string>

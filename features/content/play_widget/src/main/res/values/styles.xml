@@ -3,13 +3,13 @@
     <style name="PlayWidgetHeader.DefaultTitle" parent="@style/TextAppearance.AppCompat">
         <item name="android:ellipsize">end</item>
         <item name="android:lines">1</item>
-        <item name="android:textColor">@color/Unify_N700_96</item>
+        <item name="android:textColor">@color/Unify_NN950_96</item>
         <item name="typographyType">display_1</item>
         <item name="typographyWeight">bold</item>
     </style>
 
     <style name="PlayWidgetHeader.DefaultAction" parent="@style/TextAppearance.AppCompat">
-        <item name="android:textColor">@color/Unify_G500</item>
+        <item name="android:textColor">@color/Unify_GN500</item>
         <item name="typographyType">display_3</item>
         <item name="typographyWeight">bold</item>
     </style>

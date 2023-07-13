@@ -14,9 +14,9 @@
         android:layout_height="32dp"
         app:shop_lv_title="@string/shop_note_title"
         app:shop_lv_title_text_size="16sp"
-        app:shop_lv_title_color="@color/Unify_N700"
+        app:shop_lv_title_color="@color/Unify_NN950"
         app:shop_lv_content_text_size="14sp"
-        app:shop_lv_content_color="@color/Unify_G400" />
+        app:shop_lv_content_color="@color/Unify_GN500" />
 
     <FrameLayout
         android:layout_width="match_parent"

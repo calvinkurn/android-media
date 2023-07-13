@@ -13,7 +13,7 @@
         android:paddingTop="16dp"
         android:paddingBottom="16dp"
         android:text="@string/pm_benefits_that_you_can_get"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -33,7 +33,7 @@
         android:id="@+id/viewPmExpandableHorLine"
         android:layout_width="0dp"
         android:layout_height="0.8dp"
-        android:background="@color/Unify_N75"
+        android:background="@color/Unify_NN50"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvPmExpandableTitle" />
