@@ -34,7 +34,7 @@ class ChipsAdapter constructor(
 
     @SuppressLint("NotifyDataSetChanged")
     fun setData(data: List<ChipProperties>?) {
-        if (data == null) return
+        if (data.isNullOrEmpty()) return
 
         chipList.clear()
         chipList.addAll(data)
