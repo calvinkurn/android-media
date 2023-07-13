@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="promo_voucher_cd_voucher_icon">Voucher Icon</string>
+    <string name="promo_voucher_cd_voucher_supergraphic">Voucher Background</string>
+
+    <string name="promo_voucher_promo">Promo</string>
+    <string name="promo_voucher_use">Pakai</string>
+    <string name="promo_voucher_cashback">Cashback</string>
+    <string name="promo_voucher_free_shipping">Gratis Ongkir</string>
+    <string name="promo_voucher_discount">Diskon</string>
+    <string name="promo_voucher_buy">Beli</string>
+    <string name="promo_voucher_pay">Bayar</string>
+    <string name="promo_voucher_back_to_shipment">Balik ke Pengiriman</string>
+    <string name="promo_voucher_placeholder_buy">Beli (%d)</string>
+    <string name="promo_voucher_placeholder_total_price">Rp %s</string>
+    <string name="promo_voucher_placeholder_expired_date">Berakhir dalam <![CDATA[<b>%s</b>]]></string>
+    <string name="promo_voucher_placeholder_voucher_amount">Rp%s</string>
+    <string name="promo_voucher_placeholder_gopay_coins">%s GoPay Coins</string>
+    <string name="promo_voucher_placeholder_view_all_voucher">Lihat %d Promo Lainnya</string>
+    <string name="promo_voucher_placeholder_total_savings">Yay, kamu hemat <![CDATA[<b>Rp%s</b>]]> (1 promo)</string>
+    <string name="promo_voucher_placeholder_total_savings_multi_voucher">Wih, total hemat kamu <![CDATA[<b>Rp%s</b>]]> (%d promo)</string>
+    <string name="promo_voucher_total_price">Total Harga</string>
+    <string name="promo_voucher_view_tnc">Lihat Syarat &amp; Ketentuan Promo</string>
+    <string name="promo_voucher_tnc">Syarat &amp; Ketentuan Promo</string>
+    <string name="promo_voucher_enter_voucher_code">Punya kode promo? Masukin di sini &#10024;</string>
+</resources>
