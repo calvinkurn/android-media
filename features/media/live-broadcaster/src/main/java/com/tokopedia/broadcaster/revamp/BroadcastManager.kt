@@ -326,20 +326,7 @@ class BroadcastManager @Inject constructor(
 
                 effectManager.getHandler()?.post {
                     try {
-                        mEglCore = EglCore(null, EglCore.FLAG_RECORDABLE)
-                        mDisplaySurface = WindowSurface(mEglCore, holder.surface, false)
-                        mDisplaySurface?.makeCurrent()
-                        mStreamerWrapper?.pusherStreamer = createCodecStreamer(
-                            context,
-                            audioConfig,
-                            videoConfig
-                        )?.apply {
-                            startVideoCapture()
-                            startAudioCapture(mAudioCallback)
-                        }
-
-                        mCodecSurface = WindowSurface(mEglCore, mStreamerWrapper?.pusherStreamer?.encoderSurface, false)
-
+                        initializeSurfaceWithByteplusSDK(context, holder, audioConfig, videoConfig)
                     } catch (e: Throwable) {
                         Firebase.crashlytics.recordException(e)
                     }
@@ -402,6 +389,27 @@ class BroadcastManager @Inject constructor(
         )
 
         broadcastInitStateChanged(BroadcastInitState.Initialized)
+    }
+
+    private fun initializeSurfaceWithByteplusSDK(
+        context: Context,
+        holder: SurfaceHolder,
+        audioConfig: AudioConfig,
+        videoConfig: VideoConfig,
+    ) {
+        mEglCore = EglCore(null, EglCore.FLAG_RECORDABLE)
+        mDisplaySurface = WindowSurface(mEglCore, holder.surface, false)
+        mDisplaySurface?.makeCurrent()
+        mStreamerWrapper?.pusherStreamer = createCodecStreamer(
+            context,
+            audioConfig,
+            videoConfig
+        )?.apply {
+            startVideoCapture()
+            startAudioCapture(mAudioCallback)
+        }
+
+        mCodecSurface = WindowSurface(mEglCore, mStreamerWrapper?.pusherStreamer?.encoderSurface, false)
     }
 
     private fun createCodecStreamer(
