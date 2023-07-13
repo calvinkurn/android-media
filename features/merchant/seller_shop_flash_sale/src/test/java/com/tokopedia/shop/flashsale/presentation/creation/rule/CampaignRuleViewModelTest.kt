@@ -1,6 +1,7 @@
 package com.tokopedia.shop.flashsale.presentation.creation.rule
 
 import androidx.lifecycle.MutableLiveData
+import com.tokopedia.campaign.usecase.RolloutFeatureVariantsUseCase
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.shop.flashsale.domain.entity.CampaignUiModel
@@ -249,6 +250,33 @@ class CampaignRuleViewModelTest : CampaignRuleViewModelTestFixture() {
                 } returns result
 
                 getRollenceGradualRollout(shopId = shopId, irisSessionId = irisSessionId)
+
+                val actual = isGetGradualRollout.getOrAwaitValue(time = 0L, timeUnit = TimeUnit.SECONDS)
+                assertEquals(expected, actual)
+            }
+        }
+    }
+
+    @Test
+    fun `When getRollenceGradualRollout failed, observer will receive the error`() {
+        runBlocking {
+            with(viewModel) {
+                val dummyThrowable = MessageErrorException("Error")
+                val shopId = "12345"
+                val irisSesionId = "S0M3_1R1SS3SSION_ID"
+                val expected = Fail(dummyThrowable)
+                val params = RolloutFeatureVariantsUseCase.Param(
+                    iris_session_id = irisSesionId,
+                    id = shopId,
+                    rev = 0,
+                    client_id = AbTestPlatform.ANDROID_CLIENTID
+                )
+
+                coEvery {
+                    getRollenceGradualRolloutUseCase.execute(param = params)
+                } throws dummyThrowable
+
+                getRollenceGradualRollout(shopId, irisSesionId)
 
                 val actual = isGetGradualRollout.getOrAwaitValue(time = 0L, timeUnit = TimeUnit.SECONDS)
                 assertEquals(expected, actual)
