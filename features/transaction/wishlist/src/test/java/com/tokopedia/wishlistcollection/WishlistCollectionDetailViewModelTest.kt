@@ -1435,9 +1435,10 @@ class WishlistCollectionDetailViewModelTest {
 
     @Test
     fun `integration test affiliate cookie sdk from atc`() {
-        val wishlistId = "1"
+        val productId = "2"
         val wishlistItem = WishlistV2UiModel.Item(
-            wishlistId = wishlistId
+            shop = WishlistV2UiModel.Item.Shop(id = "1"),
+            id = productId
         )
 
         val affiliateUUID = "123"
@@ -1460,15 +1461,17 @@ class WishlistCollectionDetailViewModelTest {
         }
 
         with(slot.captured) {
-            Assert.assertEquals(wishlistId, this.pageId)
+            Assert.assertEquals(productId, this.pageId)
             Assert.assertTrue(source is AffiliateSdkPageSource.DirectATC)
         }
     }
 
     @Test
     fun `when init affiliate cookie from atc throw, no op`() {
+        val productId = "2"
         val wishlistItem = WishlistV2UiModel.Item(
-            wishlistId = "1"
+            shop = WishlistV2UiModel.Item.Shop(id = "1"),
+            id = productId
         )
 
         val affiliateUUID = "123"

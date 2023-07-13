@@ -57,6 +57,7 @@ class WishlistCollectionSharingUtils {
                         if (shareModel.ogImgUrl != null && shareModel.ogImgUrl?.isNotEmpty() == true) {
                             ogImageUrl = shareModel.ogImgUrl
                         }
+                        isAffiliate = shareModel.isAffiliate
                         linkAffiliateType = WISHLIST
                     }
                 )
