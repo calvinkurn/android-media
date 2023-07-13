@@ -24,6 +24,8 @@ buildscript {
 }
 
 android {
+    namespace 'com.tokopedia.filter'
+    testNamespace 'com.tokopedia.filter.test'
     buildFeatures {
         viewBinding true
     }

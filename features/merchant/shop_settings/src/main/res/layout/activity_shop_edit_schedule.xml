@@ -52,7 +52,7 @@
         <com.tokopedia.unifyprinciples.Typography
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@color/Unify_N700_32"
+            android:textColor="@color/Unify_NN950_32"
             app:typographyType="body_2"
             app:typographyWeight="reguler"
             android:layout_margin="16dp"

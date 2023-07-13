@@ -27,7 +27,7 @@ class CreditHistoryViewHolder(val view: View) : AbstractViewHolder<CreditHistory
                     if (!element.isReduction) {
                         com.tokopedia.topads.common.R.color.Unify_GN500
                     } else {
-                        com.tokopedia.topads.common.R.color.Unify_N700_96
+                        com.tokopedia.topads.common.R.color.Unify_NN950_96
                     }
                 ))
             }

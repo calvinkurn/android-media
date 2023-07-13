@@ -17,7 +17,7 @@
         android:layout_marginTop="@dimen/spacing_lvl3"
         android:gravity="center"
         android:text="@string/title_attachvoucher_empty"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         app:typographyType="heading_2"
         app:typographyWeight="bold" />
 
@@ -27,7 +27,7 @@
         android:layout_marginTop="@dimen/spacing_lvl2"
         android:gravity="center"
         android:text="@string/desc_attachvoucher_empty"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         app:typographyType="body_3" />
 
     <com.tokopedia.unifycomponents.UnifyButton
