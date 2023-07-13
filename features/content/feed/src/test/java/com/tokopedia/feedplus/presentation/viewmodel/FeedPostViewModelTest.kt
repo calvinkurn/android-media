@@ -27,20 +27,7 @@ import com.tokopedia.feedplus.data.FeedXCard
 import com.tokopedia.feedplus.domain.usecase.FeedCampaignCheckReminderUseCase
 import com.tokopedia.feedplus.domain.usecase.FeedCampaignReminderUseCase
 import com.tokopedia.feedplus.domain.usecase.FeedXHomeUseCase
-import com.tokopedia.feedplus.presentation.model.FeedAuthorModel
-import com.tokopedia.feedplus.presentation.model.FeedCardCampaignModel
-import com.tokopedia.feedplus.presentation.model.FeedCardCtaModel
-import com.tokopedia.feedplus.presentation.model.FeedCardImageContentModel
-import com.tokopedia.feedplus.presentation.model.FeedCardLivePreviewContentModel
-import com.tokopedia.feedplus.presentation.model.FeedCardVideoContentModel
-import com.tokopedia.feedplus.presentation.model.FeedCommentModel
-import com.tokopedia.feedplus.presentation.model.FeedFollowModel
-import com.tokopedia.feedplus.presentation.model.FeedLikeModel
-import com.tokopedia.feedplus.presentation.model.FeedModel
-import com.tokopedia.feedplus.presentation.model.FeedNoContentModel
-import com.tokopedia.feedplus.presentation.model.FeedPaginationModel
-import com.tokopedia.feedplus.presentation.model.FeedShareModel
-import com.tokopedia.feedplus.presentation.model.FeedViewModel
+import com.tokopedia.feedplus.presentation.model.*
 import com.tokopedia.feedplus.presentation.model.type.AuthorType
 import com.tokopedia.feedplus.presentation.uiview.FeedCampaignRibbonType
 import com.tokopedia.feedplus.presentation.util.common.FeedLikeAction
@@ -53,11 +40,7 @@ import com.tokopedia.mvcwidget.TokopointsCatalogMVCSummary
 import com.tokopedia.mvcwidget.TokopointsCatalogMVCSummaryResponse
 import com.tokopedia.mvcwidget.usecases.MVCSummaryUseCase
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.topads.sdk.domain.model.Cpm
-import com.tokopedia.topads.sdk.domain.model.CpmData
-import com.tokopedia.topads.sdk.domain.model.CpmModel
-import com.tokopedia.topads.sdk.domain.model.CpmShop
-import com.tokopedia.topads.sdk.domain.model.TopAdsHeadlineResponse
+import com.tokopedia.topads.sdk.domain.model.*
 import com.tokopedia.topads.sdk.domain.usecase.GetTopAdsHeadlineUseCase
 import com.tokopedia.topads.sdk.utils.TopAdsAddressHelper
 import com.tokopedia.unit.test.rule.UnconfinedTestRule
@@ -327,6 +310,10 @@ class FeedPostViewModelTest {
                 FeedTaggedProductUiModel.CampaignType.NoCampaign,
                 FeedTaggedProductUiModel.CampaignStatus.Unknown,
                 false
+            ),
+            FeedTaggedProductUiModel.Affiliate(
+                "xxx",
+                "play"
             )
         )
 
@@ -359,6 +346,10 @@ class FeedPostViewModelTest {
                 FeedTaggedProductUiModel.CampaignType.NoCampaign,
                 FeedTaggedProductUiModel.CampaignStatus.Unknown,
                 false
+            ),
+            FeedTaggedProductUiModel.Affiliate(
+                "xxx",
+                "play"
             )
         )
 
@@ -401,6 +392,10 @@ class FeedPostViewModelTest {
                 FeedTaggedProductUiModel.CampaignType.NoCampaign,
                 FeedTaggedProductUiModel.CampaignStatus.Unknown,
                 false
+            ),
+            FeedTaggedProductUiModel.Affiliate(
+                "xxx",
+                "play"
             )
         )
         val dummyAtcResult = AddToCartDataModel(
@@ -447,6 +442,10 @@ class FeedPostViewModelTest {
                 FeedTaggedProductUiModel.CampaignType.NoCampaign,
                 FeedTaggedProductUiModel.CampaignStatus.Unknown,
                 false
+            ),
+            FeedTaggedProductUiModel.Affiliate(
+                "xxx",
+                "play"
             )
         )
 
@@ -479,6 +478,10 @@ class FeedPostViewModelTest {
                 FeedTaggedProductUiModel.CampaignType.NoCampaign,
                 FeedTaggedProductUiModel.CampaignStatus.Unknown,
                 false
+            ),
+            FeedTaggedProductUiModel.Affiliate(
+                "xxx",
+                "play"
             )
         )
 
@@ -521,6 +524,10 @@ class FeedPostViewModelTest {
                 FeedTaggedProductUiModel.CampaignType.NoCampaign,
                 FeedTaggedProductUiModel.CampaignStatus.Unknown,
                 false
+            ),
+            FeedTaggedProductUiModel.Affiliate(
+                "xxx",
+                "play"
             )
         )
         val dummyAtcResult = AddToCartDataModel(

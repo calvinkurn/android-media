@@ -18,6 +18,8 @@ buildscript {
 }
 
 android {
+    namespace 'com.tokopedia.people'
+    testNamespace 'com.tokopedia.people.test'
     packagingOptions {
         exclude 'META-INF/**'
     }
