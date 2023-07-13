@@ -48,6 +48,7 @@ import dagger.Lazy
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
+import java.net.URLEncoder
 import javax.inject.Inject
 
 class WishlistCollectionDetailViewModel @Inject constructor(
@@ -388,9 +389,10 @@ class WishlistCollectionDetailViewModel @Inject constructor(
         affiliateChannel: String,
         wishlistCollectionId: String
     ) {
+        val encodedAffiliateUUID = URLEncoder.encode(affiliateUuid, ENCODING_UTF_8)
         launchCatchError(block = {
             affiliateCookieHelper.get().initCookie(
-                affiliateUUID = affiliateUuid,
+                affiliateUUID = encodedAffiliateUUID,
                 affiliateChannel = affiliateChannel,
                 affiliatePageDetail = AffiliatePageDetail(
                     pageId = wishlistCollectionId,
@@ -408,6 +410,7 @@ class WishlistCollectionDetailViewModel @Inject constructor(
         wishlistItemOnAtc: WishlistV2UiModel.Item
     ) {
         if (affiliateUUID.isNotEmpty()) {
+            val encodedAffiliateUUID = URLEncoder.encode(affiliateUUID, ENCODING_UTF_8)
             launchCatchError(block = {
                 val affiliateSource = AffiliateSdkPageSource.DirectATC(
                     AffiliateAtcSource.SHOP_PAGE,
@@ -415,7 +418,7 @@ class WishlistCollectionDetailViewModel @Inject constructor(
                     null
                 )
                 affiliateCookieHelper.get().initCookie(
-                    affiliateUUID = affiliateUUID,
+                    affiliateUUID = encodedAffiliateUUID,
                     affiliateChannel = affiliateChannel,
                     affiliatePageDetail = AffiliatePageDetail(
                         pageId = wishlistItemOnAtc.id,
@@ -435,5 +438,6 @@ class WishlistCollectionDetailViewModel @Inject constructor(
     companion object {
         private const val WISHLIST_PAGE_NAME = "wishlist"
         private const val EMPTY_WISHLIST_PAGE_NAME = "empty_wishlist"
+        private const val ENCODING_UTF_8 = "UTF-8"
     }
 }
