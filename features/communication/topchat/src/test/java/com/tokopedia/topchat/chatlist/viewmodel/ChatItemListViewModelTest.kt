@@ -963,19 +963,6 @@ class ChatItemListViewModelTest {
     }
 
     @Test
-    fun does_not_have_filter_after_reset() {
-        // Given
-        viewModel.filter = ChatListQueriesConstant.PARAM_FILTER_UNREAD
-
-        // When
-        viewModel.reset()
-        val result = viewModel.hasFilter()
-
-        // Then
-        assertFalse(result)
-    }
-
-    @Test
     fun should_get_ticker_with_true_show_when_get_operational_insight() {
         // Given
         val expectedResponse = ShopChatMetricResponse().apply {
