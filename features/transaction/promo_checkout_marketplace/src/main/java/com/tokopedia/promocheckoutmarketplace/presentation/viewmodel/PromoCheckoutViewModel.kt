@@ -1837,11 +1837,11 @@ class PromoCheckoutViewModel @Inject constructor(
                     adjustedPromo.uiState.isSelected
                 ) {
                     if (promo.uiData.clashingInfos.isNotEmpty()) {
-                        checkAndSetClashOnSelectionEvent(
-                            promo,
-                            adjustedPromo,
-                            isApplyRecommendedPromo
-                        )
+                        promoListUiModel.value?.forEach {
+                            if (it is PromoListItemUiModel) {
+                                checkAndSetClashOnSelectionEvent(it, adjustedPromo, isApplyRecommendedPromo)
+                            }
+                        }
                     }
                     _tmpUiModel.value = Update(promo)
                 }
