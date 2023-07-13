@@ -19,7 +19,7 @@ import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.splitByThousand
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.promousage.R
-import com.tokopedia.promousage.databinding.PromoCheckoutBottomshetPromoVoucherListBinding
+import com.tokopedia.promousage.databinding.PromoUsageBottomshetPromoVoucherListBinding
 import com.tokopedia.promousage.di.DaggerPromoUsageComponent
 import com.tokopedia.promousage.view.bottomsheet.EntryPoint
 import com.tokopedia.promousage.view.bottomsheet.Voucher
@@ -54,7 +54,7 @@ class PromoUsageBottomSheet: BottomSheetDialogFragment() {
     }
 
 
-    private var binding by autoClearedNullable<PromoCheckoutBottomshetPromoVoucherListBinding>()
+    private var binding by autoClearedNullable<PromoUsageBottomshetPromoVoucherListBinding>()
 
 
     @Inject
@@ -78,7 +78,7 @@ class PromoUsageBottomSheet: BottomSheetDialogFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = PromoCheckoutBottomshetPromoVoucherListBinding.inflate(inflater, container, false)
+        binding = PromoUsageBottomshetPromoVoucherListBinding.inflate(inflater, container, false)
         return binding?.root
     }
 

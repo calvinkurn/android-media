@@ -18,7 +18,6 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.promousage.view.PromoUsageBottomSheet
 import com.tokopedia.unifycomponents.toPx
 
 private const val SUBSTRING_INDEX_NOT_FOUND = -1

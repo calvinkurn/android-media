@@ -31,7 +31,7 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/childRecyclerView"
         android:layout_width="match_parent"
-        tools:listitem="@layout/promo_checkout_item_voucher"
+        tools:listitem="@layout/promo_usage_item_voucher"
         tools:itemCount="5"
         android:layout_below="@id/tpgSectionTitle"
         android:layout_height="wrap_content"/>

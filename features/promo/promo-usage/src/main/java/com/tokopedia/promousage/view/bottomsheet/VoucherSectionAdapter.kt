@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.promousage.databinding.PromoCheckoutItemVoucherSectionBinding
+import com.tokopedia.promousage.databinding.PromoUsageItemVoucherSectionBinding
 
 class VoucherSectionAdapter : RecyclerView.Adapter<VoucherSectionAdapter.ViewHolder>() {
     
@@ -34,7 +34,7 @@ class VoucherSectionAdapter : RecyclerView.Adapter<VoucherSectionAdapter.ViewHol
     private var onViewAllVoucherClick: (Int) -> Unit = {}
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val binding = PromoCheckoutItemVoucherSectionBinding.inflate(
+        val binding = PromoUsageItemVoucherSectionBinding.inflate(
             LayoutInflater.from(parent.context),
             parent,
             false
@@ -50,7 +50,7 @@ class VoucherSectionAdapter : RecyclerView.Adapter<VoucherSectionAdapter.ViewHol
         holder.bind(differ.currentList[position])
     }
 
-    inner class ViewHolder(private val binding: PromoCheckoutItemVoucherSectionBinding) :
+    inner class ViewHolder(private val binding: PromoUsageItemVoucherSectionBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
         init {

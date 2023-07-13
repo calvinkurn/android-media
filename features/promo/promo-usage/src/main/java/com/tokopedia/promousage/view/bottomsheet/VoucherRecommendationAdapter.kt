@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.promousage.databinding.PromoCheckoutItemVoucherBinding
+import com.tokopedia.promousage.databinding.PromoUsageItemVoucherBinding
 
 class VoucherRecommendationAdapter : RecyclerView.Adapter<VoucherRecommendationAdapter.ViewHolder>() {
 
@@ -29,7 +29,7 @@ class VoucherRecommendationAdapter : RecyclerView.Adapter<VoucherRecommendationA
     private var onVoucherClick: (Int) -> Unit = {}
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val binding = PromoCheckoutItemVoucherBinding.inflate(
+        val binding = PromoUsageItemVoucherBinding.inflate(
             LayoutInflater.from(parent.context),
             parent,
             false
@@ -45,7 +45,7 @@ class VoucherRecommendationAdapter : RecyclerView.Adapter<VoucherRecommendationA
         holder.bind(differ.currentList[position])
     }
 
-    inner class ViewHolder(private val binding: PromoCheckoutItemVoucherBinding) :
+    inner class ViewHolder(private val binding: PromoUsageItemVoucherBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
         init {

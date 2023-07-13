@@ -19,7 +19,7 @@ import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.splitByThousand
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.promousage.R
-import com.tokopedia.promousage.databinding.VoucherViewBinding
+import com.tokopedia.promousage.databinding.PromoUsageVoucherViewBinding
 import com.tokopedia.unifycomponents.toPx
 
 class VoucherView @JvmOverloads constructor(
@@ -29,11 +29,11 @@ class VoucherView @JvmOverloads constructor(
 ) : LinearLayout(context, attrs, defStyleAttr) {
 
 
-    private var binding: VoucherViewBinding? = null
+    private var binding: PromoUsageVoucherViewBinding? = null
 
 
     init {
-        binding = VoucherViewBinding.inflate(
+        binding = PromoUsageVoucherViewBinding.inflate(
             LayoutInflater.from(context),
             this,
             true

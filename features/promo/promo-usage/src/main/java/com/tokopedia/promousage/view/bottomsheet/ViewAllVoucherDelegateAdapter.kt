@@ -3,8 +3,8 @@ package com.tokopedia.promousage.view.bottomsheet
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.promousage.databinding.PromoCheckoutItemVoucherViewAllBinding
 import com.tokopedia.promousage.R
+import com.tokopedia.promousage.databinding.PromoUsageItemVoucherViewAllBinding
 
 class ViewAllVoucherDelegateAdapter(
     private val sectionIndex: Int,
@@ -13,7 +13,7 @@ class ViewAllVoucherDelegateAdapter(
 
 
     override fun createViewHolder(parent: ViewGroup): RecyclerView.ViewHolder {
-        val binding = PromoCheckoutItemVoucherViewAllBinding.inflate(
+        val binding = PromoUsageItemVoucherViewAllBinding.inflate(
             LayoutInflater.from(parent.context),
             parent,
             false
@@ -25,7 +25,7 @@ class ViewAllVoucherDelegateAdapter(
         viewHolder.bind(item)
     }
 
-    inner class ViewHolder(private val binding: PromoCheckoutItemVoucherViewAllBinding) :
+    inner class ViewHolder(private val binding: PromoUsageItemVoucherViewAllBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
         init {
