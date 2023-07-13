@@ -3,7 +3,6 @@ package com.tokopedia.homenav.mainnav.view.analytics
 import com.tokopedia.searchbar.navigation_component.NavSource
 
 internal object MainNavTrackingConst {
-    const val CLICK_NAVIGATION_DRAWER = "clickNavigationDrawer"
     const val GLOBAL_MENU = "global menu"
 
     // page Source section
@@ -24,7 +23,6 @@ internal object MainNavTrackingConst {
     private const val PAGE_SOURCE_NOTIF = "notification"
     private const val PAGE_SOURCE_PDP = "pdp"
     private const val PAGE_SOURCE_SHOP = "shoppage"
-    private const val PAGE_SOURCE_SOS = "sos"
     private const val PAGE_SOURCE_SRP = "search result"
     private const val PAGE_SOURCE_SRP_UNIVERSAL = "srp universal"
     private const val PAGE_SOURCE_THANK_YOU = "thankyou page"
@@ -40,7 +38,8 @@ internal object MainNavTrackingConst {
             NavSource.CART -> PAGE_SOURCE_CART
             NavSource.CATALOG -> PAGE_SOURCE_CATALOG
             NavSource.CLP -> PAGE_SOURCE_CLP
-            NavSource.DISCOVERY -> PAGE_SOURCE_DISCOVERY
+            NavSource.DISCOVERY,
+            NavSource.SOS -> PAGE_SOURCE_DISCOVERY
             NavSource.DT -> PAGE_SOURCE_DT
             NavSource.FEED -> PAGE_SOURCE_FEED
             NavSource.HOME -> PAGE_SOURCE_HOME
@@ -52,7 +51,6 @@ internal object MainNavTrackingConst {
             NavSource.NOTIFICATION -> PAGE_SOURCE_NOTIF
             NavSource.PDP -> PAGE_SOURCE_PDP
             NavSource.SHOP -> PAGE_SOURCE_SHOP
-            NavSource.SOS -> PAGE_SOURCE_DISCOVERY
             NavSource.SRP -> PAGE_SOURCE_SRP
             NavSource.SRP_UNIVERSAL -> PAGE_SOURCE_SRP_UNIVERSAL
             NavSource.THANKYOU -> PAGE_SOURCE_THANK_YOU
