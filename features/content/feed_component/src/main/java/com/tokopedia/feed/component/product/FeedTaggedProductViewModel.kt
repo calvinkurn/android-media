@@ -30,11 +30,13 @@ class FeedTaggedProductViewModel @Inject constructor(
     private var cursor = ""
     private var prevActivityId = ""
 
-    fun fetchFeedProduct(activityId: String) {
+    fun fetchFeedProduct(activityId: String, products: List<FeedTaggedProductUiModel>) {
         viewModelScope.launch {
             try {
                 if (activityId != prevActivityId) cursor = ""
+
                 val currentList: List<FeedTaggedProductUiModel> = when {
+                    products.isNotEmpty() -> products
                     _feedTagProductList.value is Success && activityId == prevActivityId -> (_feedTagProductList.value as Success).data
                     else -> emptyList()
                 }
@@ -42,14 +44,19 @@ class FeedTaggedProductViewModel @Inject constructor(
                 val response = withContext(dispatchers.io) {
                     feedXGetActivityProductsUseCase(
                         feedXGetActivityProductsUseCase.getFeedDetailParam(
-                            activityId, cursor
+                            activityId,
+                            cursor
                         )
                     ).data
                 }
 
                 cursor = response.nextCursor
 
-                val mappedData = response.products.map {
+                val mappedData = response.products.filter { new ->
+                    currentList.firstOrNull { current ->
+                        current.id == new.id
+                    } == null
+                }.map {
                     ProductMapper.transform(it, response.campaign)
                 }
                 _feedTagProductList.value = Success(currentList + mappedData)
@@ -61,5 +68,4 @@ class FeedTaggedProductViewModel @Inject constructor(
             }
         }
     }
-
 }

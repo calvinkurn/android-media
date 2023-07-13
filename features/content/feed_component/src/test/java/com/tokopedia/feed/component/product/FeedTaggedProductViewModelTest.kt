@@ -5,6 +5,7 @@ import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCampaign
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXGQLResponse
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXGetActivityProductsResponse
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
+import com.tokopedia.feedcomponent.domain.mapper.ProductMapper
 import com.tokopedia.feedcomponent.domain.usecase.FeedXGetActivityProductsUseCase
 import com.tokopedia.unit.test.rule.UnconfinedTestRule
 import com.tokopedia.usecase.coroutines.Fail
@@ -61,7 +62,7 @@ internal class FeedTaggedProductViewModelTest {
         coEvery { feedXGetActivityProductsUseCase(any()) } throws Throwable("Failed")
 
         // when
-        viewModel.fetchFeedProduct(activityId)
+        viewModel.fetchFeedProduct(activityId, emptyList())
 
         // then
         assert(viewModel.feedTagProductList.value is Fail)
@@ -73,6 +74,13 @@ internal class FeedTaggedProductViewModelTest {
     fun fetchFeedProduct_whenSuccess_shouldBeSuccess() {
         // given
         val activityId = "123456"
+        val dummyData = getDummyData()
+        val productList = dummyData.data.products.map {
+            ProductMapper.transform(
+                it,
+                dummyData.data.campaign
+            )
+        }
         coEvery {
             feedXGetActivityProductsUseCase.getFeedDetailParam(
                 activityId,
@@ -82,7 +90,28 @@ internal class FeedTaggedProductViewModelTest {
         coEvery { feedXGetActivityProductsUseCase(any()) } returns getDummyData()
 
         // when
-        viewModel.fetchFeedProduct(activityId)
+        viewModel.fetchFeedProduct(activityId, productList)
+
+        // then
+        assert(viewModel.feedTagProductList.value is Success)
+        val response = viewModel.feedTagProductList.value as Success
+        assert(response.data.size == getDummyData().data.products.size)
+    }
+
+    @Test
+    fun fetchFeedProduct_whenSuccessWithoutDefault_shouldBeSuccess() {
+        // given
+        val activityId = "123456"
+        coEvery {
+            feedXGetActivityProductsUseCase.getFeedDetailParam(
+                activityId,
+                ""
+            )
+        } returns mapOf()
+        coEvery { feedXGetActivityProductsUseCase(any()) } returns getDummyData()
+
+        // when
+        viewModel.fetchFeedProduct(activityId, emptyList())
 
         // then
         assert(viewModel.feedTagProductList.value is Success)
@@ -98,7 +127,7 @@ internal class FeedTaggedProductViewModelTest {
                 FeedXProduct(),
                 FeedXProduct(),
                 FeedXProduct(),
-                FeedXProduct(),
+                FeedXProduct()
             ),
             isFollowed = true,
             contentType = "content type",
@@ -107,6 +136,4 @@ internal class FeedTaggedProductViewModelTest {
             hasVoucher = false
         )
     )
-
-
 }
