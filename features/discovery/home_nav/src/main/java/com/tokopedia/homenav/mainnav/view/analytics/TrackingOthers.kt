@@ -23,7 +23,7 @@ object TrackingOthers: BaseTrackerConst() {
             BaseTrackerBuilder()
                 .appendEvent(CLICK_HOMEPAGE)
                 .appendEventCategory(GLOBAL_MENU)
-                .appendEventAction(Action.CLICK.format("business unit list"))
+                .appendEventAction("click on business unit list")
                 .appendEventLabel(title)
                 .appendCurrentSite(CurrentSite.DEFAULT)
                 .appendBusinessUnit(BusinessUnit.DEFAULT)

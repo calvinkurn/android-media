@@ -295,7 +295,7 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
                 homeNavMenuDataModel.sectionId == MainNavConst.Section.ACTIVITY
             ) {
                 if (homeNavMenuDataModel.applink.isNotEmpty()) {
-                    if (!handleClickFromPageSource(homeNavMenuDataModel.applink)) {
+                    handleClickFromPageSource(homeNavMenuDataModel.applink) {
                         RouteManager.route(context, homeNavMenuDataModel.applink)
                     }
                 } else {
@@ -305,19 +305,16 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
                         bundleOf("title" to homeNavMenuDataModel.itemTitle, BUNDLE_MENU_ITEM to homeNavMenuDataModel)
                     )
                 }
-                TrackingOthers.onClickBusinessUnitItem(homeNavMenuDataModel.itemTitle, pageSource, pageSourcePath)
             } else {
                 RouteManager.route(requireContext(), homeNavMenuDataModel.applink)
             }
         }
     }
 
-    private fun handleClickFromPageSource(applink: String): Boolean {
+    private fun handleClickFromPageSource(applink: String, routing: (String) -> Unit) {
         if (validateTargetMenu(applink)) {
             activity?.onBackPressed()
-            return true
-        }
-        return false
+        } else routing.invoke(applink)
     }
 
     private fun validateTargetMenu(applink: String): Boolean {
@@ -331,12 +328,12 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
         applink == ApplinkConst.WISHLIST && pageSource == NavSource.HOME_WISHLIST
 
     private fun hitClickTrackingBasedOnId(homeNavMenuDataModel: HomeNavMenuDataModel) {
-        when (homeNavMenuDataModel.id) {
-            ID_ALL_TRANSACTION -> TrackingTransactionSection.clickOnAllTransaction(pageSource, pageSourcePath)
-            ID_TICKET -> TrackingTransactionSection.clickOnTicket(pageSource, pageSourcePath)
-            ID_REVIEW -> TrackingTransactionSection.clickOnReview(pageSource, pageSourcePath)
-            ID_HOME -> TrackingOthers.onClickBackToHome(pageSource, pageSourcePath)
-            else -> TrackingOthers.clickOnUserMenu(homeNavMenuDataModel.trackerName, pageSource, pageSourcePath)
+        if(homeNavMenuDataModel.sectionId == MainNavConst.Section.BU_ICON) {
+            TrackingOthers.onClickBusinessUnitItem(homeNavMenuDataModel.itemTitle, pageSource, pageSourcePath)
+        } else if(homeNavMenuDataModel.id == ID_HOME) {
+            TrackingOthers.onClickBackToHome(pageSource, pageSourcePath)
+        } else {
+            TrackingOthers.clickOnUserMenu(homeNavMenuDataModel.trackerName, pageSource, pageSourcePath)
         }
     }
 
@@ -361,7 +358,7 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
             ClientMenuGenerator.IDENTIFIER_TITLE_WISHLIST -> TrackingTransactionSection.clickOnWishlistViewAll(pageSource, pageSourcePath)
             ClientMenuGenerator.IDENTIFIER_TITLE_REVIEW -> TrackingTransactionSection.clickOnReviewViewAll(pageSource, pageSourcePath)
         }
-        if (!handleClickFromPageSource(homeNavTitleDataModel.applink)) {
+        handleClickFromPageSource(homeNavTitleDataModel.applink) {
             RouteManager.route(context, homeNavTitleDataModel.applink)
         }
     }
@@ -426,9 +423,7 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
         } else {
             TrackingTransactionSection.getClickViewAllTransaction(pageSource, pageSourcePath)
         }
-        if (!handleClickFromPageSource(applink)) {
-            RouteManager.route(context, applink)
-        }
+        handleClickFromPageSource(applink) { RouteManager.route(context, applink) }
     }
 
     override fun onOrderCardImpressed(trackingLabel: String, orderId: String, position: Int) {
@@ -446,9 +441,7 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
     override fun onViewAllWishlistClicked() {
         TrackingTransactionSection.clickOnWishlistViewAll(pageSource, pageSourcePath)
         val applink = ApplinkConst.WISHLIST
-        if (!handleClickFromPageSource(applink)) {
-            RouteManager.route(context, applink)
-        }
+        handleClickFromPageSource(applink) { RouteManager.route(context, applink) }
     }
 
     override fun onViewAllReviewClicked() {
