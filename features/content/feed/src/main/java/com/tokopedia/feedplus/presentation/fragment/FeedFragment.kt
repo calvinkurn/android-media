@@ -53,7 +53,17 @@ import com.tokopedia.feedplus.presentation.adapter.FeedPostAdapter
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_NOT_SELECTED
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_SELECTED
 import com.tokopedia.feedplus.presentation.adapter.listener.FeedListener
-import com.tokopedia.feedplus.presentation.model.*
+import com.tokopedia.feedplus.presentation.model.FeedAuthorModel
+import com.tokopedia.feedplus.presentation.model.FeedCardCampaignModel
+import com.tokopedia.feedplus.presentation.model.FeedCardImageContentModel
+import com.tokopedia.feedplus.presentation.model.FeedCardLivePreviewContentModel
+import com.tokopedia.feedplus.presentation.model.FeedCardProductModel
+import com.tokopedia.feedplus.presentation.model.FeedCardVideoContentModel
+import com.tokopedia.feedplus.presentation.model.FeedDataModel
+import com.tokopedia.feedplus.presentation.model.FeedMainEvent
+import com.tokopedia.feedplus.presentation.model.FeedNoContentModel
+import com.tokopedia.feedplus.presentation.model.FeedShareModel
+import com.tokopedia.feedplus.presentation.model.FeedTrackerDataModel
 import com.tokopedia.feedplus.presentation.uiview.FeedCampaignRibbonType
 import com.tokopedia.feedplus.presentation.uiview.FeedProductTagView
 import com.tokopedia.feedplus.presentation.util.VideoPlayerManager
@@ -212,7 +222,6 @@ class FeedFragment :
     private var mAuthor: FeedAuthorModel? = null
     private var mProducts: List<FeedCardProductModel>? = null
     private var mHasVoucher: Boolean = false
-    private var mCampaign: FeedCardCampaignModel? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -1248,16 +1257,15 @@ class FeedFragment :
         products: List<FeedCardProductModel>?,
         hasVoucher: Boolean,
         trackerData: FeedTrackerDataModel?,
-        campaign: FeedCardCampaignModel?
     ) {
         mAuthor = author
         mProducts = products
         mHasVoucher = hasVoucher
         currentTrackerData = trackerData
-        mCampaign = campaign
     }
 
     private fun openFeedTaggedProductBottomSheet(
+        activityId: String,
         author: FeedAuthorModel?,
         products: List<FeedCardProductModel>?,
         hasVoucher: Boolean,
@@ -1280,7 +1288,7 @@ class FeedFragment :
         }
 
         if (trackerData != null) trackOpenProductTagBottomSheet(trackerData)
-        saveFeedTaggedProductArgs(author, products, hasVoucher, trackerData, campaign)
+        saveFeedTaggedProductArgs(author, products, hasVoucher, trackerData)
 
         productBottomSheet.show(
             activityId = activityId,
@@ -1309,11 +1317,11 @@ class FeedFragment :
         atcVariantBottomSheet.showNow(childFragmentManager, VARIANT_BOTTOM_SHEET_TAG)
         atcVariantBottomSheet.setOnDismissListener {
             openFeedTaggedProductBottomSheet(
+                activityId = currentTrackerData?.activityId.orEmpty(),
                 author = mAuthor,
                 products = mProducts,
                 hasVoucher = mHasVoucher,
                 trackerData = currentTrackerData,
-                campaign = mCampaign,
             )
         }
     }

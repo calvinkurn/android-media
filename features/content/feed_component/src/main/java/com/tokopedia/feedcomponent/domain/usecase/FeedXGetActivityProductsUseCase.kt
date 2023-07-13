@@ -29,6 +29,9 @@ class FeedXGetActivityProductsUseCase @Inject constructor(
                 products {
                     id
                     shopID
+                    isParent
+                    parentID
+                    hasVariant
                     name
                     coverURL
                     webLink
