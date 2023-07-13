@@ -5,20 +5,20 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.promocheckoutmarketplace.presentation.bottomsheet.DelegateAdapterItem
-import com.tokopedia.promocheckoutmarketplace.presentation.bottomsheet.EntryPoint
-import com.tokopedia.promocheckoutmarketplace.presentation.bottomsheet.ViewAllVoucher
-import com.tokopedia.promocheckoutmarketplace.presentation.bottomsheet.Voucher
-import com.tokopedia.promocheckoutmarketplace.presentation.bottomsheet.VoucherSection
-import com.tokopedia.promocheckoutmarketplace.presentation.bottomsheet.VoucherSource
-import com.tokopedia.promocheckoutmarketplace.presentation.bottomsheet.VoucherState
-import com.tokopedia.promocheckoutmarketplace.presentation.bottomsheet.VoucherType
+import com.tokopedia.promousage.view.bottomsheet.DelegateAdapterItem
+import com.tokopedia.promousage.view.bottomsheet.EntryPoint
+import com.tokopedia.promousage.view.bottomsheet.ViewAllVoucher
+import com.tokopedia.promousage.view.bottomsheet.Voucher
+import com.tokopedia.promousage.view.bottomsheet.VoucherSection
+import com.tokopedia.promousage.view.bottomsheet.VoucherSource
+import com.tokopedia.promousage.view.bottomsheet.VoucherState
+import com.tokopedia.promousage.view.bottomsheet.VoucherType
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.delay
 import javax.inject.Inject
 
-class PromoVoucherListViewModel @Inject constructor(
+class PromoUsageViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.main) {
 
