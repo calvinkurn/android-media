@@ -85,7 +85,7 @@ class TrackingPageFragment : BaseDaggerFragment(), TrackingHistoryAdapter.OnImag
         fun createFragment(
             orderId: String?,
             orderTxId: String?,
-            groupType: String?,
+            groupType: Int?,
             liveTrackingUrl: String?,
             caller: String?
         ): TrackingPageFragment {
@@ -93,7 +93,7 @@ class TrackingPageFragment : BaseDaggerFragment(), TrackingHistoryAdapter.OnImag
                 arguments = Bundle().apply {
                     putString(ARGUMENTS_ORDER_ID, orderId)
                     putString(ARGUMENTS_ORDER_TX_ID, orderTxId)
-                    putString(ARGUMENTS_GROUP_TYPE, groupType)
+                    putInt(ARGUMENTS_GROUP_TYPE, groupType ?: 0)
                     putString(ARGUMENTS_TRACKING_URL, liveTrackingUrl)
                     putString(ARGUMENTS_CALLER, caller)
                 }
@@ -115,7 +115,7 @@ class TrackingPageFragment : BaseDaggerFragment(), TrackingHistoryAdapter.OnImag
 
     private var mOrderId: String? = null
     private var mOrderTxId: String? = null
-    private var mGroupType: String? = null
+    private var mGroupType: Int? = null
     private var mTrackingUrl: String? = null
     private var mCaller: String? = null
     private var mCountDownTimer: CountDownTimer? = null
@@ -134,7 +134,7 @@ class TrackingPageFragment : BaseDaggerFragment(), TrackingHistoryAdapter.OnImag
         if (arguments != null) {
             mOrderId = arguments?.getString(ARGUMENTS_ORDER_ID)
             mOrderTxId = arguments?.getString(ARGUMENTS_ORDER_TX_ID)
-            mGroupType = arguments?.getString(ARGUMENTS_GROUP_TYPE)
+            mGroupType = arguments?.getInt(ARGUMENTS_GROUP_TYPE)
             mTrackingUrl = arguments?.getString(ARGUMENTS_TRACKING_URL)
             mCaller = arguments?.getString(ARGUMENTS_CALLER)
         }
@@ -213,9 +213,7 @@ class TrackingPageFragment : BaseDaggerFragment(), TrackingHistoryAdapter.OnImag
 
     private fun fetchData() {
         mOrderId?.let { orderId ->
-            val orderTxId = mOrderTxId ?: ""
-            val groupType = if (mGroupType != null) mGroupType.toString() else ""
-            viewModel.getTrackingData(orderId, orderTxId, groupType)
+            viewModel.getTrackingData(orderId, mOrderTxId, mGroupType)
 
             if ((!mTrackingUrl.isNullOrEmpty()) && mCaller != null && mCaller.equals("seller", ignoreCase = true)) {
                 viewModel.retryAvailability(orderId)

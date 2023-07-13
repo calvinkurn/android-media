@@ -19,7 +19,7 @@ data class GetTrackingParam(
         val orderTxId: String = "",
 
         @SerializedName("group_type")
-        val groupType: String = "",
+        val groupType: Int = 0,
 
         @SerializedName("from")
         val from: String = ""

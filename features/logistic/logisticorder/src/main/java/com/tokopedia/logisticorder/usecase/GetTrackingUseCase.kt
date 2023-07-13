@@ -25,15 +25,15 @@ class GetTrackingUseCase @Inject constructor(
 
     fun getParam(
         orderId: String,
-        orderTxId: String,
-        groupType: String,
+        orderTxId: String?,
+        groupType: Int?,
         from: String
     ): GetTrackingParam {
         return GetTrackingParam(
             GetTrackingParam.TrackingParam(
                 orderId = orderId,
-                orderTxId = orderTxId,
-                groupType = groupType,
+                orderTxId = orderTxId ?: "",
+                groupType = groupType ?: 0,
                 from = from
             )
         )

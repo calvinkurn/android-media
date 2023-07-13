@@ -22,7 +22,7 @@ class TrackingPageActivity : BaseSimpleActivity() {
             val urlLiveTracking = intent?.data?.getQueryParameter(URL_LIVE_TRACKING)
             val orderCaller = intent?.data?.getQueryParameter(ORDER_CALLER)
             val orderTxId = intent?.data?.getQueryParameter(TX_ID)
-            val groupType = intent?.data?.getQueryParameter(GROUP_TYPE)
+            val groupType = intent?.data?.getQueryParameter(GROUP_TYPE)?.toIntOrNull()
             fragment = TrackingPageFragment.createFragment(
                 orderId,
                 orderTxId,
