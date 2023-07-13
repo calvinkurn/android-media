@@ -351,13 +351,15 @@ class BroadcastManager @Inject constructor(
                         BroadcasterException(BroadcasterErrorType.ServiceUnrecoverable)
                     )
                 )
+                return
             }
-            catch (throwable: Throwable) {
+            catch (_: Throwable) {
                 broadcastInitStateChanged(
                     BroadcastInitState.ByteplusInitializationError(
                         BroadcasterException(BroadcasterErrorType.ServiceUnrecoverable)
                     )
                 )
+                return
             }
         }
 
