@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="promo_dms_voucher_recom_gradient_start">#763AD7</color>
+    <color name="promo_dms_voucher_recom_gradient_end">#11CEBC</color>
+</resources>

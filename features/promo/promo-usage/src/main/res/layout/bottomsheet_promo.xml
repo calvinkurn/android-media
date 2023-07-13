@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/bottom_sheet_wrapper"
+    android:orientation="vertical"
+
+    android:background="@drawable/bottomsheet_background_and_shadow"
+
+    app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
+    app:behavior_peekHeight="@dimen/bottom_sheet_default_peek"
+    app:behavior_hideable="true"
+
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/promo_usage_bg_bottomsheet_header_overlay"
+        android:orientation="horizontal">
+
+        <com.tokopedia.iconunify.IconUnify
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            app:icon_color_light_enable="@color/Unify_NN0"
+            app:icon_color_night_enable="@color/Unify_NN0"
+            app:icon_name="COURIER_FAST"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:layout_width="match_parent"
+            android:textColor="@color/Unify_NN0"
+            app:typographyType="paragraph_3"
+            android:layout_height="wrap_content"
+            android:text="@string/promo_voucher_promo_overlay_text" />
+
+    </LinearLayout>
+
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:foreground="@drawable/promo_usage_bg_confetti"
+        android:background="@drawable/promo_usage_bg_bottomsheet_header"
+        android:orientation="horizontal">
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/bottom_sheet_close"
+            android:layout_width="wrap_content"
+            android:layout_height="24dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="16dp"
+            app:icon_color_light_enable="@color/Unify_NN0"
+            app:icon_color_night_enable="@color/Unify_NN0"
+            app:icon_name="CLOSE"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/bottom_sheet_title"
+            android:layout_width="match_parent"
+            android:layout_marginTop="8dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:textColor="@color/Unify_NN0"
+            app:layout_constraintBottom_toBottomOf="@+id/bottom_sheet_close"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/bottom_sheet_close"
+            app:layout_constraintTop_toTopOf="@+id/bottom_sheet_close"
+            app:typographyType="heading_3"
+            tools:text="Promo" />
+    </LinearLayout>
+
+
+</LinearLayout>

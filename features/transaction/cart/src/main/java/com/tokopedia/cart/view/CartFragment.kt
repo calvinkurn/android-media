@@ -126,6 +126,7 @@ import com.tokopedia.productbundlewidget.model.BundleDetailUiModel
 import com.tokopedia.promocheckout.common.view.widget.ButtonPromoCheckoutView
 import com.tokopedia.promousage.domain.entity.EntryPoint
 import com.tokopedia.promousage.view.bottomsheet.PromoUsageBottomSheet
+import com.tokopedia.promousage.view.custom.PromoBottomSheet
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCart
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics
 import com.tokopedia.purchase_platform.common.analytics.EPharmacyAnalytics
@@ -4586,7 +4587,10 @@ class CartFragment :
     }
 
      private fun showPromoCheckoutBottomSheet() {
-         val bottomSheet = PromoUsageBottomSheet.newInstance(entryPoint = EntryPoint.CART_PAGE)
+         val view = LayoutInflater.from(context?: return).inflate(R.layout.promo_usage_bottomshet_promo_voucher_list, null, false)
+         val bottomSheet = PromoBottomSheet.newInstance()
+         bottomSheet.setChild(view)
+         //val bottomSheet = PromoUsageBottomSheet.newInstance(entryPoint = EntryPoint.CART_PAGE)
          bottomSheet.show(childFragmentManager, bottomSheet.tag)
     }
 }
