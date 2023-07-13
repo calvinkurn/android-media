@@ -14,6 +14,8 @@ interface CheckoutAdapterListener {
 
     fun onClickCancelNewUpsellCard(shipmentUpsellModel: ShipmentNewUpsellModel)
 
+    fun onViewFreeShippingPlusBadge()
+
     fun onClickAddOnProductLevel(product: CheckoutProductModel, addOnWording: AddOnGiftingWordingModel)
 
     fun onImpressionAddOnProductLevel(productId: String)

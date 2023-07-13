@@ -429,7 +429,7 @@ class CheckoutDataConverter @Inject constructor() {
         return CheckoutProductModel(
             cartStringGroup = groupShop.cartString,
             shouldShowShopInfo = product.shouldShowShopInfo,
-//            shopTypeInfoData = product.shopTypeInfoData,
+            shopTypeInfoData = product.shopTypeInfoData,
             cartStringOrder = groupShopV2.cartStringOrder,
             originWarehouseIds = product.originWarehouseIds,
             cartId = product.cartId,
@@ -438,11 +438,11 @@ class CheckoutDataConverter @Inject constructor() {
             name = product.productName,
             shopId = groupShopV2.shop.shopId.toString(),
             shopName = product.shopName,
-            currency = product.productPriceCurrency,
+//            currency = product.productPriceCurrency,
             imageUrl = product.productImageSrc200Square,
             price = if (product.productWholesalePrice != 0.0) product.productWholesalePrice else product.productPrice,
             isWholesalePrice = product.productWholesalePrice != 0.0,
-            originalPrice = product.productOriginalPrice,
+//            originalPrice = product.productOriginalPrice,
             quantity = product.productQuantity,
             weight = product.productWeight.toDouble(),
             weightFmt = product.productWeightFmt,
@@ -501,8 +501,16 @@ class CheckoutDataConverter @Inject constructor() {
             warehouseId = groupShop.fulfillmentId.toString(),
             isTokoCabang = groupShop.isFulfillment,
             cartItemPosition = index,
-            addOnOrderLevelModel = addOnWordingModel,
-            addOnProduct = product.addOnProduct
+            addOnProduct = product.addOnProduct,
+            uiGroupType = groupShop.uiGroupType,
+            groupInfoName = groupShop.groupInfoName,
+            groupInfoBadgeUrl = groupShop.groupInfoBadgeUrl,
+            groupInfoDescription = groupShop.groupInfoDescription,
+            groupInfoDescriptionBadgeUrl = groupShop.groupInfoDescriptionBadgeUrl,
+            groupPreOrderInfo = if (groupShop.shipmentInformationData.preorder.isPreorder) groupShop.shipmentInformationData.preorder.duration else "",
+            freeShippingBadgeUrl = groupShop.shipmentInformationData.freeShippingGeneral.badgeUrl,
+            isFreeShippingPlus = groupShop.shipmentInformationData.freeShippingGeneral.isBoTypePlus(),
+            shouldShowGroupInfo = index == 0
         )
     }
 

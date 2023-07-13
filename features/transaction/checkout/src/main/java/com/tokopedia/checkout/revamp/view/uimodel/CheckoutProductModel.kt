@@ -1,21 +1,21 @@
 package com.tokopedia.checkout.revamp.view.uimodel
 
+import com.tokopedia.logisticcart.shipping.model.ShopTypeInfoData
 import com.tokopedia.purchase_platform.common.feature.addons.data.model.AddOnProductDataModel
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.model.EthicalDrugDataModel
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingDataModel
-import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingWordingModel
 
 data class CheckoutProductModel(
     override val cartStringGroup: String,
+
+    // product data
     val cartId: Long = 0,
-    val shopId: String = "",
-    val shopName: String = "",
     val productId: Long = 0,
     val productCatId: Long = 0,
     val name: String = "",
     val price: Double = 0.0,
-    val originalPrice: Double = 0.0,
-    val currency: Int = 0,
+//    val originalPrice: Double = 0.0,
+//    val currency: Int = 0,
     val variant: String = "",
     val variantParentId: String = "",
     val weightUnit: Int = 0,
@@ -33,7 +33,6 @@ data class CheckoutProductModel(
     val fInsurance: Boolean = false,
     val fCancelPartial: Boolean = false,
     var isError: Boolean = false,
-    var isShopError: Boolean = false,
     var errorMessage: String = "",
     val errorMessageDescription: String = "",
     val isProtectionAvailable: Boolean = false,
@@ -74,15 +73,33 @@ data class CheckoutProductModel(
     val addOnGiftingProductLevelModel: AddOnGiftingDataModel = AddOnGiftingDataModel(),
     val addOnDefaultFrom: String = "",
     val addOnDefaultTo: String = "",
-    val isTokoCabang: Boolean = false,
-    val warehouseId: String = "",
     val ethicalDrugDataModel: EthicalDrugDataModel = EthicalDrugDataModel(),
     val cartItemPosition: Int = 0,
     var isLastItemInOrder: Boolean = false,
-    val addOnOrderLevelModel: AddOnGiftingWordingModel = AddOnGiftingWordingModel(),
     val shouldShowShopInfo: Boolean = false,
-//    val shopTypeInfoData: ShopTypeInfoData = ShopTypeInfoData(),
-    val cartStringOrder: String = "",
     val originWarehouseIds: List<Long> = emptyList(),
-    val addOnProduct: AddOnProductDataModel = AddOnProductDataModel()
+    val addOnProduct: AddOnProductDataModel = AddOnProductDataModel(),
+
+    // shop data
+    val shopId: String = "",
+    val shopName: String = "",
+    var isShopError: Boolean = false,
+    val isTokoCabang: Boolean = false,
+    val warehouseId: String = "",
+    val shopTypeInfoData: ShopTypeInfoData = ShopTypeInfoData(),
+    val cartStringOrder: String = "",
+
+    // group data
+    val uiGroupType: Int = 0,
+    val groupInfoName: String = "",
+    val groupInfoBadgeUrl: String = "",
+    val groupInfoDescription: String = "",
+    val groupInfoDescriptionBadgeUrl: String = "",
+    val orderNumber: Int = 0,
+    val groupPreOrderInfo: String = "",
+    val freeShippingBadgeUrl: String = "",
+    val isFreeShippingPlus: Boolean = false, // flag for plus badge tracker
+    var hasSeenFreeShippingBadge: Boolean = false, // flag for tracker
+    val shopLocation: String = "",
+    val shouldShowGroupInfo: Boolean = false
 ) : CheckoutItem

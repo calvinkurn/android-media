@@ -258,6 +258,10 @@ class CheckoutFragment : BaseDaggerFragment(), CheckoutAdapterListener, UploadPr
         TODO("Not yet implemented")
     }
 
+    override fun onViewFreeShippingPlusBadge() {
+        // todo
+    }
+
     override fun uploadPrescriptionAction(
         uploadPrescriptionUiModel: UploadPrescriptionUiModel,
         buttonText: String,
