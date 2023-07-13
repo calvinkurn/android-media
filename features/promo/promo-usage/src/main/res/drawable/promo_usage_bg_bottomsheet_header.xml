@@ -5,7 +5,7 @@
         android:topRightRadius="16dp" />
     <gradient
         android:angle="0"
-        android:startColor="@color/promo_dms_voucher_recom_gradient_start"
-        android:endColor="@color/promo_dms_voucher_recom_gradient_end"
-        android:type="linear"/>
+        android:endColor="#28B9E1"
+        android:startColor="#4a7bcb"
+        android:type="linear" />
 </shape>
