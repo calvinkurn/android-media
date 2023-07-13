@@ -95,11 +95,8 @@ class UniversalShareBottomSheetTest {
                 }
             }
         ) {
-            Espresso.onView(RecyclerViewMatcher(R.id.lst_chip).atPosition(0)).perform(ViewActions.click())
-            Thread.sleep(500) // nit: delay to click the second chip item
-            Espresso.onView(RecyclerViewMatcher(R.id.lst_chip).atPosition(1)).perform(ViewActions.click())
             Espresso.onView(withId(R.id.lst_chip)).check(matches(isDisplayed()))
-
+            Espresso.onView(RecyclerViewMatcher(R.id.lst_chip).atPosition(0)).perform(ViewActions.click())
             assert(onTitleChipPropertiesSelected.isNotEmpty())
         }
     }
@@ -125,7 +122,7 @@ class UniversalShareBottomSheetTest {
     }
 
     @Test
-    fun `bottom-sheet_show_chip_component_without_default_selection_state`() {
+    fun `bottom-sheet_show_chip_component_with_first_item_as_default_selection_state`() {
         runTest(
             UniversalShareBottomSheetStub().apply {
                 setChipList(chipComponentList())

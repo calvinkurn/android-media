@@ -1336,16 +1336,10 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
     private fun setChipContentList() {
         if (chipListData == null) return
 
-        /**
-         * The initial chip state should be always placed at the first item,
-         * hence we have to sort it based on [isSelected] attribute.
-         */
-        val chips = chipListData?.sortedByDescending { it.isSelected }
-
         // validation the chip list visibility
-        isShowChipList = chips?.isNotEmpty() == true
+        isShowChipList = chipListData?.isNotEmpty() == true
 
-        chipListAdapter.setData(chips)
+        chipListAdapter.setData(chipListData)
     }
 
     private fun setUserVisualData() {

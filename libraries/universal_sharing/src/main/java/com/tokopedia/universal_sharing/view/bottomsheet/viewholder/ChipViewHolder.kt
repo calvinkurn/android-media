@@ -41,7 +41,7 @@ class ChipViewHolder(
     private fun bindState(element: ChipProperties) {
         val isSelected = listener?.isSelected(element) ?: false
 
-        val state = if (isSelected && element.isSelected) {
+        val state = if (isSelected) {
             TYPE_SELECTED
         } else {
             TYPE_NORMAL

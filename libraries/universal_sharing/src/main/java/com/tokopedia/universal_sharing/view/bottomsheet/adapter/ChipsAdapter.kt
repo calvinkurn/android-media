@@ -29,7 +29,7 @@ class ChipsAdapter constructor(
     }
 
     override fun isSelected(chip: ChipProperties): Boolean {
-        return selectedFilter == chip
+        return selectedFilter?.id == chip.id && selectedFilter?.isSelected == true
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -44,10 +44,17 @@ class ChipsAdapter constructor(
     }
 
     private fun setDefaultChipSelectedState(data: List<ChipProperties>?) {
-        if (data == null) return
-        if (data.isEmpty()) return
+        if (data.isNullOrEmpty()) return
 
-        selectedFilter = data.find { it.isSelected } ?: return
+        val hasSelectedData = data.firstOrNull { it.isSelected }
+
+        /**
+         * In case there's no [isSelected] status is true,
+         * then let's make the first item as default selection state
+         */
+        fun getAndSetSelectedStatusAtFirstItem() = data.first().also { it.isSelected = true }
+
+        selectedFilter = hasSelectedData ?: getAndSetSelectedStatusAtFirstItem()
         selectedFilter?.let { notifyChipChanged(it) }
     }
 
