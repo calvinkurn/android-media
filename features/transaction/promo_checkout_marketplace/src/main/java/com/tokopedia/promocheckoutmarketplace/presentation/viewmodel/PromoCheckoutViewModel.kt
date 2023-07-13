@@ -1430,33 +1430,6 @@ class PromoCheckoutViewModel @Inject constructor(
                     // Update view
                     _tmpUiModel.value = Update(promoItem)
 
-                    // Send tracker
-                    if (promoItem.uiState.isSelected) {
-                        analytics.eventClickSelectKupon(
-                            getPageSource(),
-                            promoItem.uiData.promoCode,
-                            promoItem.uiState.isCausingOtherPromoClash
-                        )
-                        if (promoItem.uiState.isAttempted) {
-                            analytics.eventClickSelectPromo(
-                                getPageSource(),
-                                promoItem.uiData.promoCode
-                            )
-                        }
-                    } else {
-                        analytics.eventClickDeselectKupon(
-                            getPageSource(),
-                            promoItem.uiData.promoCode,
-                            promoItem.uiState.isCausingOtherPromoClash
-                        )
-                        if (promoItem.uiState.isAttempted) {
-                            analytics.eventClickDeselectPromo(
-                                getPageSource(),
-                                promoItem.uiData.promoCode
-                            )
-                        }
-                    }
-
                     // Update header sub total and sibling check uncheck state
                     updateHeaderAndSiblingState(promoItem, element)
 
@@ -1474,6 +1447,38 @@ class PromoCheckoutViewModel @Inject constructor(
 
                     // Calculate total benefit
                     calculateAndRenderTotalBenefit()
+
+                    // Send tracker
+                    val clickedPromoCode = if (promoItem.uiData.useSecondaryPromo) {
+                        promoItem.uiData.secondaryCoupons.first().code
+                    } else {
+                        promoItem.uiData.promoCode
+                    }
+                    if (promoItem.uiState.isSelected) {
+                        analytics.eventClickSelectKupon(
+                            getPageSource(),
+                            clickedPromoCode,
+                            promoItem.uiState.isCausingOtherPromoClash
+                        )
+                        if (promoItem.uiState.isAttempted) {
+                            analytics.eventClickSelectPromo(
+                                getPageSource(),
+                                promoItem.uiData.promoCode
+                            )
+                        }
+                    } else {
+                        analytics.eventClickDeselectKupon(
+                            getPageSource(),
+                            clickedPromoCode,
+                            promoItem.uiState.isCausingOtherPromoClash
+                        )
+                        if (promoItem.uiState.isAttempted) {
+                            analytics.eventClickDeselectPromo(
+                                getPageSource(),
+                                promoItem.uiData.promoCode
+                            )
+                        }
+                    }
                 }
             }
         }
