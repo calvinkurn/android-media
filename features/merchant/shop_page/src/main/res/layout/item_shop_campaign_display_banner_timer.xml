@@ -92,6 +92,7 @@
                     android:id="@+id/time_description_container"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
                     android:orientation="horizontal"
                     app:layout_constraintLeft_toLeftOf="@id/timer"
                     app:layout_constraintRight_toRightOf="@id/timer"
@@ -127,7 +128,6 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="0.22"
                         android:gravity="end"
-                        android:paddingEnd="1dp"
                         android:text="@string/shop_campaign_tab_timer_seconds"
                         app:typographyType="small" />
                 </LinearLayout>
