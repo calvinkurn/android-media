@@ -284,7 +284,9 @@ open class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFrag
         setupToolbarLifecycle()
         toolbar?.switchToLightToolbar()
         val view = View.inflate(
-            this, R.layout.partial_inbox_nav_content_view, null
+            this,
+            R.layout.partial_inbox_nav_content_view,
+            null
         ).also {
             navHeader.bindNavHeaderView(it)
             navHeader.bindValue()
@@ -324,15 +326,9 @@ open class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFrag
             icon.addIcon(IconList.ID_SEARCH) { }
         }
         icon.addIcon(IconList.ID_CART) { }
-        if (ableToShowGlobalNav()) {
-            icon.addIcon(IconList.ID_NAV_GLOBAL) { }
-        }
+        icon.addIcon(IconList.ID_NAV_GLOBAL) { }
         toolbar?.setIcon(icon)
         toolbar?.setBadgeCounter(IconList.ID_CART, InboxConfig.notifications.totalCart)
-    }
-
-    private fun ableToShowGlobalNav(): Boolean {
-        return InboxConfig.page != InboxFragmentType.NOTIFICATION || isShowBottomNav
     }
 
     private fun setupView() {
@@ -438,16 +434,18 @@ open class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFrag
             analytic.trackDismissOnBoarding(role, onBoardingCoachMark?.currentIndex)
         }
         analytic.trackShowOnBoardingOnStep(role, 0)
-        onBoardingCoachMark?.setStepListener(InboxOnBoardingListener(
-            onStepCoach = { currentIndex: Int,
-                            _: CoachMark2Item,
-                            direction: String,
-                            previousIndex: Int ->
-                analytic.trackShowOnBoardingOnStep(role, currentIndex)
-                analytic.trackClickOnBoardingCta(role, previousIndex, direction)
-                onChangeOnBoardingStep(currentIndex, anchors)
-            }
-        ))
+        onBoardingCoachMark?.setStepListener(
+            InboxOnBoardingListener(
+                onStepCoach = { currentIndex: Int,
+                    _: CoachMark2Item,
+                    direction: String,
+                    previousIndex: Int ->
+                    analytic.trackShowOnBoardingOnStep(role, currentIndex)
+                    analytic.trackClickOnBoardingCta(role, previousIndex, direction)
+                    onChangeOnBoardingStep(currentIndex, anchors)
+                }
+            )
+        )
     }
 
     private fun onChangeOnBoardingStep(currentIndex: Int, anchors: ArrayList<CoachMark2Item>) {
@@ -517,7 +515,8 @@ open class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFrag
 
     private fun setupBackground() {
         val whiteColor = ContextCompat.getColor(
-            this, com.tokopedia.unifyprinciples.R.color.Unify_Background
+            this,
+            com.tokopedia.unifyprinciples.R.color.Unify_Background
         )
         window.decorView.setBackgroundColor(whiteColor)
     }
@@ -528,7 +527,8 @@ open class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFrag
                 window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
             }
             window.statusBarColor = ContextCompat.getColor(
-                this, com.tokopedia.unifyprinciples.R.color.Unify_Background
+                this,
+                com.tokopedia.unifyprinciples.R.color.Unify_Background
             )
         }
     }
@@ -538,7 +538,8 @@ open class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFrag
             if (result is Success) {
                 InboxConfig.notifications = result.data
                 InboxConfig.notifications.adjustTotalCounterBasedOn(
-                    InboxConfig.page, isShowBottomNav
+                    InboxConfig.page,
+                    isShowBottomNav
                 )
                 updateBadgeCounter()
             }

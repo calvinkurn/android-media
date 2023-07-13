@@ -921,14 +921,17 @@ class PromoCheckoutViewModel @Inject constructor(
                 order.codes.add(promoCode)
             } else if (promoListItemUiModel.uiState.isBebasOngkir) {
                 // if coupon is bebas ongkir promo, then set shipping id and sp id
-                val boData = additionalBoData.firstOrNull { order.uniqueId == it.uniqueId }
+                val boData =
+                    additionalBoData.firstOrNull { order.cartStringGroup == it.cartStringGroup }
                 if (boData != null) {
                     order.let {
                         if (!it.codes.contains(boData.code)) {
                             // if code is not already in request param, then add bo additional data
                             it.shippingId = boData.shippingId
                             it.spId = boData.shipperProductId
-                            it.codes.add(boData.code)
+                            if (order.uniqueId == boData.uniqueId) {
+                                it.codes.add(boData.code)
+                            }
                         } else {
                             // if code already in request param, set shipping id and sp id again
                             // in case user changes address from other page and the courier info changes
@@ -1150,7 +1153,8 @@ class PromoCheckoutViewModel @Inject constructor(
                     shopId = order.shopId,
                     isPo = order.isPo,
                     poDuration = order.poDuration.toString(),
-                    warehouseId = order.warehouseId
+                    warehouseId = order.warehouseId,
+                    cartStringGroup = order.cartStringGroup
                 )
                 orders.add(clearOrder)
             }

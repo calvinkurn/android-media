@@ -1,0 +1,50 @@
+{
+  "readme": "Digital PDP paket data recommendation",
+  "mode": "exact",
+  "query": [
+    {
+      "eventAction": "impression last transaction icon",
+      "eventCategory": "digital - homepage",
+      "eventLabel": ".*_.*",
+      "event": "view_item_list",
+      "clientId": ".*",
+      "businessUnit": "recharge",
+      "currentSite": "tokopediadigitalRecharge",
+      "userId": ".*",
+      "sessionIris": ".*",
+      "items": [
+        {
+          "item_id": ".*",
+          "price": ".*",
+          "index": ".*",
+          "item_name": ".*",
+          "item_brand": ".*",
+          "item_variant": ".*",
+          "item_category": ".*"
+        }
+      ]
+    },
+    {
+      "eventAction": "click last transaction icon",
+      "eventCategory": "digital - homepage",
+      "eventLabel": ".*_.*_.*",
+      "event": "select_content",
+      "clientId": ".*",
+      "businessUnit": "recharge",
+      "currentSite": "tokopediadigitalRecharge",
+      "item_list": ".*",
+      "userId": ".*",
+      "sessionIris": ".*",
+      "items": [
+        {
+          "item_id": ".*",
+          "price": ".*",
+          "index": ".*",
+          "item_name": ".*",
+          "item_brand": ".*",
+          "item_variant": ".*",
+          "item_category": ".*"
+        }
+      ]
+    }]
+}

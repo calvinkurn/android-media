@@ -6,13 +6,16 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.domain.pojo.roomsettings.RoomSettingFraudAlertUiModel
+import com.tokopedia.topchat.databinding.ItemTopchatRoomSettingFraudAlertBinding
 import com.tokopedia.unifycomponents.HtmlLinkHelper
-import kotlinx.android.synthetic.main.item_topchat_room_setting_fraud_alert.view.*
+import com.tokopedia.utils.view.binding.viewBinding
 
 class RoomSettingFraudAlertViewHolder constructor(
         itemView: View?,
         private val listener: Listener
 ) : AbstractViewHolder<RoomSettingFraudAlertUiModel>(itemView) {
+
+    private val binding: ItemTopchatRoomSettingFraudAlertBinding? by viewBinding()
 
     interface Listener {
         fun onClickBlockChatFraudAlert()
@@ -26,8 +29,8 @@ class RoomSettingFraudAlertViewHolder constructor(
     private fun bindAlertText(alert: RoomSettingFraudAlertUiModel) {
         val htmlText = HtmlLinkHelper(itemView.context, alert.text)
         bindLinkClick(htmlText)
-        itemView.tvText?.movementMethod = LinkMovementMethod.getInstance()
-        itemView.tvText?.text = htmlText.spannedString
+        binding?.txtTitle?.movementMethod = LinkMovementMethod.getInstance()
+        binding?.txtTitle?.text = htmlText.spannedString
     }
 
     private fun bindLinkClick(htmlText: HtmlLinkHelper) {

@@ -18,6 +18,8 @@ buildscript {
 }
 
 android {
+    namespace 'com.tokopedia.affiliate_toko'
+    testNamespace 'com.tokopedia.affiliate_toko.test'
     buildFeatures{
         viewBinding true
     }
