@@ -23,7 +23,6 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -314,7 +313,6 @@ open class HomeRevampFragment :
         private const val DEFAULT_MARGIN_VALUE = 0
         private const val POSITION_ARRAY_Y = 1
         private const val isPageRefresh = true
-        private const val PERFORMANCE_TRACE_HOME = "home"
 
         @JvmStatic
         fun newInstance(scrollToRecommendList: Boolean): HomeRevampFragment {
@@ -418,11 +416,7 @@ open class HomeRevampFragment :
 
     private val navToolbarMicroInteraction: NavToolbarMicroInteraction? by navToolbarMicroInteraction()
 
-    private val performanceTrace = BlocksPerformanceTrace(
-        context?.applicationContext,
-        PERFORMANCE_TRACE_HOME,
-        lifecycleScope
-        )
+    private var performanceTrace: BlocksPerformanceTrace? = null
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -430,6 +424,7 @@ open class HomeRevampFragment :
         mainParentStatusBarListener = context as MainParentStatusBarListener
         homePerformanceMonitoringListener = castContextToHomePerformanceMonitoring(context)
         homeCoachmarkListener = castContextToHomeCoachmarkListener(context)
+        performanceTrace = homePerformanceMonitoringListener?.blocksPerformanceMonitoring
         requestStatusBarDark()
     }
 
@@ -582,7 +577,7 @@ open class HomeRevampFragment :
             viewLifecycleOwner.lifecycle.addObserver(fragmentFramePerformanceIndexMonitoring)
         }
         navToolbar = view.findViewById(R.id.navToolbar)
-        performanceTrace.addViewPerformanceBlocks(navToolbar)
+        performanceTrace?.addViewPerformanceBlocks(navToolbar)
         statusBarBackground = view.findViewById(R.id.status_bar_bg)
         homeRecyclerView = view.findViewById(R.id.home_fragment_recycler_view)
         homeRecyclerView?.setHasFixedSize(true)
@@ -1079,7 +1074,7 @@ open class HomeRevampFragment :
         if (activityStateListener != null) {
             activityStateListener!!.onPause()
         }
-        performanceTrace.finishOnPaused()
+        performanceTrace?.finishOnPaused()
     }
 
     override fun onStop() {
@@ -1208,26 +1203,26 @@ open class HomeRevampFragment :
                         hideLoading()
                         showNetworkError(getErrorStringWithDefault(throwable))
                         onPageLoadTimeEnd()
-                        performanceTrace.setPageState(BlocksPerformanceTrace.BlocksPerfState.STATE_PARTIALLY_ERROR)
+                        performanceTrace?.setPageState(BlocksPerformanceTrace.BlocksPerfState.STATE_PARTIALLY_ERROR)
                     }
                     status === Result.Status.ERROR_PAGINATION -> {
                         hideLoading()
                         showNetworkError(getErrorStringWithDefault(throwable))
-                        performanceTrace.setPageState(BlocksPerformanceTrace.BlocksPerfState.STATE_PARTIALLY_ERROR)
+                        performanceTrace?.setPageState(BlocksPerformanceTrace.BlocksPerfState.STATE_PARTIALLY_ERROR)
                     }
                     status === Result.Status.ERROR_ATF -> {
                         hideLoading()
                         showNetworkError(getErrorStringWithDefault(throwable))
                         adapter?.resetChannelErrorState()
                         adapter?.resetAtfErrorState()
-                        performanceTrace.setPageState(BlocksPerformanceTrace.BlocksPerfState.STATE_PARTIALLY_ERROR)
+                        performanceTrace?.setPageState(BlocksPerformanceTrace.BlocksPerfState.STATE_PARTIALLY_ERROR)
                     }
                     status == Result.Status.ERROR_GENERAL -> {
                         val errorString = getErrorStringWithDefault(throwable)
                         showNetworkError(errorString)
                         NetworkErrorHelper.showEmptyState(activity, root, errorString) { onRefresh() }
                         onPageLoadTimeEnd()
-                        performanceTrace.setPageState(BlocksPerformanceTrace.BlocksPerfState.STATE_ERROR)
+                        performanceTrace?.setPageState(BlocksPerformanceTrace.BlocksPerfState.STATE_ERROR)
                     }
                     else -> {
                         showLoading()
@@ -1329,7 +1324,7 @@ open class HomeRevampFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        performanceTrace.init(
+        performanceTrace?.init(
             v = view.rootView,
             touchListenerActivity = activity as? TouchListenerActivity,
         ) { summaryModel: BlocksSummaryModel, capturedBlocks: Set<String> -> }
@@ -1351,7 +1346,7 @@ open class HomeRevampFragment :
                 visitableListCount = data.size,
                 scrollPosition = layoutManager?.findLastVisibleItemPosition()
             )
-            performanceTrace.setBlock(data)
+            performanceTrace?.setBlock(data)
             adapter?.submitList(data)
         }
     }
