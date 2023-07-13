@@ -4,12 +4,12 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.checkout.databinding.ItemCheckoutAddressBinding
+import com.tokopedia.checkout.databinding.ItemCheckoutButtonPaymentBinding
+import com.tokopedia.checkout.databinding.ItemCheckoutCostBinding
 import com.tokopedia.checkout.databinding.ItemCheckoutOrderBinding
 import com.tokopedia.checkout.databinding.ItemCheckoutProductBinding
 import com.tokopedia.checkout.databinding.ItemPromoCheckoutBinding
-import com.tokopedia.checkout.databinding.ItemShipmentButtonPaymentBinding
 import com.tokopedia.checkout.databinding.ItemUpsellNewImprovementBinding
-import com.tokopedia.checkout.databinding.ViewItemShipmentCostDetailsBinding
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutAddressModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutButtonPaymentModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutCostModel
@@ -126,11 +126,11 @@ class CheckoutAdapter(
             }
 
             CheckoutCostViewHolder.VIEW_TYPE -> {
-                CheckoutCostViewHolder(ViewItemShipmentCostDetailsBinding.inflate(inflater, parent, false), inflater)
+                CheckoutCostViewHolder(ItemCheckoutCostBinding.inflate(inflater, parent, false), inflater)
             }
 
             else -> {
-                CheckoutButtonPaymentViewHolder(ItemShipmentButtonPaymentBinding.inflate(inflater, parent, false))
+                CheckoutButtonPaymentViewHolder(ItemCheckoutButtonPaymentBinding.inflate(inflater, parent, false))
             }
         }
     }
