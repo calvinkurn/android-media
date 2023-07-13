@@ -1,8 +1,11 @@
 apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+apply from: "$rootProject.projectDir/buildconfig/kotlin/core-kapt.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
+apply plugin: 'kotlin-parcelize'
 
 android {
+    namespace 'com.tokopedia.topchat'
+    testNamespace 'com.tokopedia.topchat.test'
     buildFeatures {
         viewBinding true
     }
@@ -20,16 +23,11 @@ buildscript {
 }
 
 android {
+    namespace 'com.tokopedia.topchat'
+    testNamespace 'com.tokopedia.topchat.test'
     defaultConfig {
         multiDexEnabled true
         testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
-    }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
-    }
-    kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_11
     }
     testOptions {
         animationsDisabled = true
@@ -116,7 +114,6 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.networkDependencies.glide
 
-    implementation rootProject.ext.miscDependencies.dagger
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     implementation rootProject.ext.miscDependencies.lifecycleRuntimeKtx
     implementation rootProject.ext.miscDependencies.viewPager2
@@ -124,9 +121,12 @@ dependencies {
     implementation rootProject.ext.miscDependencies.window
     implementation rootProject.ext.miscDependencies.viewModelKtx
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
-    annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
     implementation rootProject.ext.miscDependencies.fragmentKtx
     implementation rootProject.ext.miscDependencies.coreKtx
+
+    compileOnly rootProject.ext.miscDependencies.javaxAnnotation
+    implementation rootProject.ext.miscDependencies.dagger
+    kapt rootProject.ext.miscDependencies.daggerCompiler
 
     implementation rootProject.ext.playServicesDependencies.maps
     implementation rootProject.ext.debugToolsDependencies.chuck

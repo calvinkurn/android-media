@@ -70,6 +70,8 @@ import com.tokopedia.topads.sdk.domain.model.TopAdsGetDynamicSlottingDataProduct
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.topads.sdk.domain.model.TopadsIsAdsQuery
 import com.tokopedia.topads.sdk.domain.model.TopadsStatus
+import com.tokopedia.universal_sharing.view.model.AffiliateInput
+import com.tokopedia.universal_sharing.view.model.GenerateAffiliateLinkEligibility
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -1140,6 +1142,8 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
 
         viewModel.getProductP1(productParams, true, "", userLocationLocal = getUserLocationCache())
 
+        verify { viewModel.onResetAlreadyRecomHit() }
+
         Assert.assertTrue(
             getPdpLayoutUseCase.requestParams.getString(
                 PARAM_PRODUCT_ID,
@@ -1185,6 +1189,8 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         )
 
         viewModel.getProductP1(productParams, true, " ", userLocationLocal = getUserLocationCache())
+
+        verify { viewModel.onResetAlreadyRecomHit() }
 
         Assert.assertTrue(
             getPdpLayoutUseCase.requestParams.getString(PARAM_PRODUCT_ID, "").isEmpty()
@@ -1274,6 +1280,8 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         `co every p1 success`(dataP1, getMockP2Data(), miniCart)
 
         viewModel.getProductP1(productParams, true, "", userLocationLocal = getUserLocationCache())
+
+        verify { viewModel.onResetAlreadyRecomHit() }
 
         `co verify p1 success`()
 
@@ -1470,6 +1478,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             refreshPage = true,
             userLocationLocal = getUserLocationCache()
         )
+        verify { viewModel.onResetAlreadyRecomHit() }
 
         val p1Result = (viewModel.productLayout.value as Success).data
         Assert.assertTrue(p1Result.none { it.name() == ProductDetailConstant.TRADE_IN })
@@ -1520,6 +1529,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             refreshPage = true,
             userLocationLocal = getUserLocationCache()
         )
+        verify { viewModel.onResetAlreadyRecomHit() }
 
         val p1Result = (viewModel.productLayout.value as Success).data
         Assert.assertTrue(p1Result.none { it.type() == ProductDetailConstant.PRODUCT_LIST })
@@ -1565,6 +1575,8 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             refreshPage = true,
             userLocationLocal = getUserLocationCache()
         )
+        verify { viewModel.onResetAlreadyRecomHit() }
+
         val p1Result = (viewModel.productLayout.value as Success).data
         Assert.assertTrue(p1Result.none { it.name() == ProductDetailConstant.AR_BUTTON })
     }
@@ -1959,7 +1971,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         `co every p1 success`(dataP1, getMockP2Data(), miniCart)
 
         viewModel.getProductP1(productParams, true, "", userLocationLocal = getUserLocationCache())
-
+        verify { viewModel.onResetAlreadyRecomHit() }
         `co verify p1 success`()
     }
 
@@ -3024,6 +3036,37 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         Assert.assertTrue(spykViewModel.getVariant() == variantExpected)
     }
     // endregion
+
+    @Test
+    fun `success check affiliate eligibility`() {
+        val mockData = GenerateAffiliateLinkEligibility()
+        val mockParam = AffiliateInput()
+
+        coEvery {
+            affiliateEligibilityCheckUseCase.executeOnBackground()
+        } returns mockData
+
+        viewModel.checkAffiliateEligibility(mockParam)
+        coVerify {
+            affiliateEligibilityCheckUseCase.executeOnBackground()
+        }
+        assertTrue(viewModel.resultAffiliate.value is Success)
+    }
+
+    fun `error check affiliate eligibility`() {
+        val mockError = Exception()
+        val mockParam = AffiliateInput()
+
+        coEvery {
+            affiliateEligibilityCheckUseCase.executeOnBackground()
+        } throws mockError
+
+        viewModel.checkAffiliateEligibility(mockParam)
+        coVerify {
+            affiliateEligibilityCheckUseCase.executeOnBackground()
+        }
+        assertTrue(viewModel.resultAffiliate.value is Fail)
+    }
 
     companion object {
         const val PARAM_PRODUCT_ID = "productID"

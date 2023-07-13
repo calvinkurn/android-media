@@ -19,6 +19,12 @@
             android:alpha="0.2"
             motion:layout_constraintBottom_toTopOf="parent" />
         <Constraint
+            android:id="@+id/imgAnnivToped"
+            android:layout_width="96dp"
+            android:layout_height="wrap_content"
+            android:alpha="0.2"
+            motion:layout_constraintTop_toTopOf="parent" />
+        <Constraint
             android:id="@+id/layout_sah_new_other_info"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -34,6 +40,12 @@
             android:id="@+id/iv_sah_new_other_curved_header"
             android:layout_width="match_parent"
             android:layout_height="@dimen/sah_new_other_header_background_height"
+            android:alpha="1"
+            motion:layout_constraintTop_toTopOf="parent" />
+        <Constraint
+            android:id="@+id/imgAnnivToped"
+            android:layout_width="96dp"
+            android:layout_height="wrap_content"
             android:alpha="1"
             motion:layout_constraintTop_toTopOf="parent" />
         <Constraint
