@@ -42,7 +42,7 @@ class EPharmacyPrescriptionAttachmentViewModelTest {
 
     private val ePharmacyProduct = mockk<EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo.Product>(relaxed = true)
     private val ePharmacyProductsInfo = EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo("", arrayListOf(ePharmacyProduct), "23", "", "", "", "")
-    private val ePharmacyGroup = EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup(null, EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ConsultationSource("abc", 1, mockk(), "", "", ""), "1", null, null, null, arrayListOf(ePharmacyProductsInfo), null)
+    private val ePharmacyGroup = EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup(null, EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ConsultationSource("abc", 1, mockk(), "", "", "", ""), "1", null, null, null, arrayListOf(ePharmacyProductsInfo), null)
     private val responseGroup = EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData("Hi ", "test", arrayListOf(ePharmacyGroup), EPharmacyPrepareProductsGroupResponse.EPharmacyToaster("PRESCRIPTION_ATTACH_SUCCESS", "sfa", "1"), null)
     private val responseData = EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData(responseGroup)
 

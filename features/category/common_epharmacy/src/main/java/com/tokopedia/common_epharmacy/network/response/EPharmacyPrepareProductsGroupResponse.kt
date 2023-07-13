@@ -111,8 +111,8 @@ data class EPharmacyPrepareProductsGroupResponse(
                     val enablerLogoUrl: String?,
                     @SerializedName("pwa_link")
                     val pwaLink: String?,
-                    //@SerializedName("price")
-                    val price: String? = "Rp.10.000",
+                    @SerializedName("price")
+                    val price: String? = "",
                     @SerializedName("status")
                     val status: String?
                 ) : Parcelable {
@@ -122,8 +122,8 @@ data class EPharmacyPrepareProductsGroupResponse(
                         val closeDays: List<String?>?,
                         @SerializedName("daily")
                         val daily: Daily?,
-                        //@SerializedName("duration")
-                        val duration: String? = "15 Merit",
+                        @SerializedName("duration")
+                        val duration: String? = ""
                     ) : Parcelable {
                         @Parcelize
                         data class Daily(
