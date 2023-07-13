@@ -12,7 +12,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.inbox.R
-import com.tokopedia.inbox.common.viewmatcher.withRecyclerView
+import com.tokopedia.inbox.universalinbox.stub.common.withRecyclerView
 import com.tokopedia.test.application.matcher.hasTotalItemOf
 
 object WidgetResult {

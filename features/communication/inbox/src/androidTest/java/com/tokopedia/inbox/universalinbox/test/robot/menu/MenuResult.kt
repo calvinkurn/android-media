@@ -14,8 +14,8 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.inbox.R
-import com.tokopedia.inbox.common.viewmatcher.withRecyclerView
 import com.tokopedia.inbox.universalinbox.stub.common.atPositionCheckInstanceOf
+import com.tokopedia.inbox.universalinbox.stub.common.withRecyclerView
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxMenuSectionUiModel
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxMenuUiModel

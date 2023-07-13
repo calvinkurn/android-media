@@ -128,7 +128,7 @@ open class AddEditProductPreviewActivity: TabletAdaptiveActivity() {
             // set to dark mode color support
             val color = androidx.core.content.ContextCompat.getColor(
                 this,
-                com.tokopedia.unifyprinciples.R.color.Unify_N700
+                com.tokopedia.unifyprinciples.R.color.Unify_NN950
             )
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 it.navigationIcon?.colorFilter = BlendModeColorFilter(color, BlendMode.SRC_IN)

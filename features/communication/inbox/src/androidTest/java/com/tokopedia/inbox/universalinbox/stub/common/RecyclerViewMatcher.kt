@@ -1,5 +1,6 @@
 package com.tokopedia.inbox.universalinbox.stub.common
 
+import android.content.res.Resources
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.ViewAssertion
@@ -7,6 +8,8 @@ import androidx.test.espresso.matcher.BoundedMatcher
 import androidx.test.espresso.matcher.ViewMatchers
 import com.tokopedia.inbox.universalinbox.view.adapter.UniversalInboxAdapter
 import org.hamcrest.Description
+import org.hamcrest.Matcher
+import org.hamcrest.TypeSafeMatcher
 import org.hamcrest.core.IsInstanceOf
 import org.hamcrest.core.IsNot
 
@@ -44,4 +47,46 @@ fun withTotalItem(expectedCount: Int): BoundedMatcher<View, RecyclerView> {
             return adapter?.itemCount == expectedCount
         }
     }
+}
+
+class RecyclerViewMatcher(private val recyclerViewId: Int) {
+    fun atPositionOnView(position: Int, targetViewId: Int): Matcher<View> {
+        return object : TypeSafeMatcher<View>() {
+            var resources: Resources? = null
+            var childView: View? = null
+            override fun describeTo(description: Description?) {
+                var idDescription = recyclerViewId.toString()
+                if (resources != null) {
+                    idDescription = try {
+                        resources!!.getResourceName(recyclerViewId)
+                    } catch (var4: Resources.NotFoundException) {
+                        "${Integer.valueOf(recyclerViewId)} (resource name not found)"
+                    }
+                }
+                description?.appendText("with id: $idDescription")
+            }
+
+            override fun matchesSafely(view: View): Boolean {
+                resources = view.resources
+                if (childView == null) {
+                    val recyclerView = view.rootView.findViewById(recyclerViewId) as? RecyclerView
+                    childView = if (recyclerView != null && recyclerView.id == recyclerViewId) {
+                        recyclerView.findViewHolderForAdapterPosition(position)!!.itemView
+                    } else {
+                        return false
+                    }
+                }
+                return if (targetViewId == -1) {
+                    view == childView
+                } else {
+                    val targetView: View? = childView?.findViewById(targetViewId)
+                    view == targetView
+                }
+            }
+        }
+    }
+}
+
+fun withRecyclerView(recyclerViewId: Int): RecyclerViewMatcher {
+    return RecyclerViewMatcher(recyclerViewId)
 }

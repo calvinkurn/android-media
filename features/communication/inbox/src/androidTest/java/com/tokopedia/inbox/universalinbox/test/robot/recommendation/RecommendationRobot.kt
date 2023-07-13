@@ -3,7 +3,7 @@ package com.tokopedia.inbox.universalinbox.test.robot.recommendation
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions
 import com.tokopedia.inbox.R
-import com.tokopedia.inbox.common.viewmatcher.withRecyclerView
+import com.tokopedia.inbox.universalinbox.stub.common.withRecyclerView
 
 object RecommendationRobot {
     fun clickProductOnPosition(position: Int) {

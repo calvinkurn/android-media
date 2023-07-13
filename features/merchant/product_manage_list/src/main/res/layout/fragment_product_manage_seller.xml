@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="16dp"
-        android:background="@color/Unify_Y200"
+        android:background="@color/Unify_YN100"
         android:clickable="true"
         android:focusable="true"
         android:visibility="gone"

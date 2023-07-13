@@ -62,7 +62,7 @@
             android:layout_marginBottom="12dp"
             android:gravity="center"
             android:text="Learn More"
-            android:textColor="@color/Unify_G400"
+            android:textColor="@color/Unify_GN500"
             android:textSize="16sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
