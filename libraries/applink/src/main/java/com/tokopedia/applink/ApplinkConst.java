@@ -516,7 +516,7 @@ public interface ApplinkConst {
     }
 
     interface ScpRewards{
-        String CELEBRATION_BASE = "celebration";
+        String CELEBRATION_BASE = "celebration/{slug}";
         String MEDAL_DETAIL_BASE = "detail";
         String MEDAL_CABINET = "medali";
         String SEE_MORE_MEDAL = "more";
