@@ -10,6 +10,7 @@ import android.nfc.Tag
 import android.nfc.tech.IsoDep
 import android.os.Build
 import android.os.Bundle
+import android.os.DeadObjectException
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -105,7 +106,11 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
     override fun processTagIntent(intent: Intent) {
         if (isTagNfcValid(intent)) {
             // nfc enabled and process Mandiri NFC as default
-            executeCard(intent)
+            try {
+                executeCard(intent)
+            } catch (e: DeadObjectException) {
+                showCommonMessageError()
+            }
         }
     }
 
@@ -134,13 +139,7 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
                         DigitalEmoneyGqlQuery.rechargeEmoneyInquiryBalance,
                         0)
             } else {
-                context?.let { context ->
-                    val errorMessage = ErrorHandler.getErrorMessagePair(context, MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD), errorHanlderBuilder)
-                    showError(errorMessage.first.orEmpty(),
-                        context.resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_check_balance_problem_label)+" "+errorMessage.second,
-                        context.resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_failed_read_card_link),
-                        true)
-                }
+                showCommonMessageError()
             }
         } else if(CardUtils.isBrizziCard(intent)) {
             processBrizzi(intent)
@@ -439,6 +438,16 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
             getString(com.tokopedia.keys.R.string.qazwsxedc)
         } else {
             getString(com.tokopedia.keys.R.string.plmoknijb)
+        }
+    }
+
+    private fun showCommonMessageError() {
+        context?.let { context ->
+            val errorMessage = ErrorHandler.getErrorMessagePair(context, MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD), errorHanlderBuilder)
+            showError(errorMessage.first.orEmpty(),
+                context.resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_check_balance_problem_label)+" "+errorMessage.second,
+                context.resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_failed_read_card_link),
+                true)
         }
     }
 
