@@ -13,7 +13,6 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.recommendation_widget_common.widget.global.IRecommendationWidgetView
 import com.tokopedia.recommendation_widget_common.widget.header.RecommendationHeaderListener
 import com.tokopedia.recommendation_widget_common.widget.vertical.RecommendationVerticalMapper.mapVisitableList
-import com.tokopedia.recommendation_widget_common.widget.vertical.model.RecommendationVerticalModel
 import com.tokopedia.trackingoptimizer.TrackingQueue
 
 class RecommendationVerticalView :

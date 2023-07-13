@@ -1,4 +1,4 @@
-package com.tokopedia.recommendation_widget_common.widget.vertical.viewholder
+package com.tokopedia.recommendation_widget_common.widget.vertical
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -8,7 +8,6 @@ import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.recommendation_widget_common.R
 import com.tokopedia.recommendation_widget_common.databinding.ItemRecomVerticalProductcardBinding
 import com.tokopedia.recommendation_widget_common.widget.carousel.global.RecommendationCarouselTracking
-import com.tokopedia.recommendation_widget_common.widget.vertical.model.RecommendationVerticalProductCardModel
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.trackingoptimizer.TrackingQueue
 
@@ -18,7 +17,7 @@ class RecommendationVerticalProductCardViewHolder(
 ) : AbstractViewHolder<RecommendationVerticalProductCardModel>(itemView) {
     companion object {
         val LAYOUT = R.layout.item_recom_vertical_productcard
-        private const val CLASS_NAME = "com.tokopedia.recommendation_widget_common.widget.vertical.viewholder.RecommendationVerticalProductCardViewHolder"
+        private const val CLASS_NAME = "com.tokopedia.recommendation_widget_common.widget.vertical.RecommendationVerticalProductCardViewHolder"
     }
 
     private val binding = ItemRecomVerticalProductcardBinding.bind(itemView)

@@ -1,7 +1,6 @@
-package com.tokopedia.recommendation_widget_common.widget.vertical.model
+package com.tokopedia.recommendation_widget_common.widget.vertical
 
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
-import com.tokopedia.recommendation_widget_common.widget.vertical.RecommendationVerticalTypeFactory
 
 data class RecommendationVerticalSeeMoreModel(
     val appLink: String = "",

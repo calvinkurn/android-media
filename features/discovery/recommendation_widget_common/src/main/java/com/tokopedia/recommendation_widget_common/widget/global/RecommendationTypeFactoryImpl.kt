@@ -9,7 +9,7 @@ import com.tokopedia.recommendation_widget_common.widget.comparison_bpc.Recommen
 import com.tokopedia.recommendation_widget_common.widget.loading.RecommendationCarouselShimmeringModel
 import com.tokopedia.recommendation_widget_common.widget.loading.RecommendationCarouselShimmeringView
 import com.tokopedia.recommendation_widget_common.widget.vertical.RecommendationVerticalView
-import com.tokopedia.recommendation_widget_common.widget.vertical.model.RecommendationVerticalModel
+import com.tokopedia.recommendation_widget_common.widget.vertical.RecommendationVerticalModel
 
 /**
  * Created by frenzel on 11/03/23

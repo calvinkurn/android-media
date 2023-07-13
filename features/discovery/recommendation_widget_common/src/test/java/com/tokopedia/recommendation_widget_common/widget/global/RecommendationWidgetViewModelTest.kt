@@ -13,7 +13,7 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.recommendation_widget_common.widget.carousel.global.RecommendationCarouselModel
 import com.tokopedia.recommendation_widget_common.widget.comparison_bpc.RecommendationComparisonBpcModel
 import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetState
-import com.tokopedia.recommendation_widget_common.widget.vertical.model.RecommendationVerticalModel
+import com.tokopedia.recommendation_widget_common.widget.vertical.RecommendationVerticalModel
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk

@@ -1,4 +1,4 @@
-package com.tokopedia.recommendation_widget_common.widget.vertical.viewholder
+package com.tokopedia.recommendation_widget_common.widget.vertical
 
 import android.view.View
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
@@ -6,7 +6,6 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.recommendation_widget_common.R
 import com.tokopedia.recommendation_widget_common.databinding.ItemRecomVerticalSeeMoreBinding
-import com.tokopedia.recommendation_widget_common.widget.vertical.model.RecommendationVerticalSeeMoreModel
 
 class RecommendationVerticalSeeMoreViewHolder(
     itemView: View

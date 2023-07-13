@@ -1,10 +1,9 @@
-package com.tokopedia.recommendation_widget_common.widget.vertical.model
+package com.tokopedia.recommendation_widget_common.widget.vertical
 
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetTrackingModel
-import com.tokopedia.recommendation_widget_common.widget.vertical.RecommendationVerticalTypeFactory
 
 data class RecommendationVerticalProductCardModel(
     val productModel: ProductCardModel,

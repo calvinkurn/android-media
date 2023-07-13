@@ -4,7 +4,6 @@ import androidx.recyclerview.widget.DiffUtil
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.recommendation_widget_common.widget.vertical.model.RecommendationVerticalVisitable
 
 class RecommendationVerticalAdapter(
     typeFactory: RecommendationVerticalTypeFactory

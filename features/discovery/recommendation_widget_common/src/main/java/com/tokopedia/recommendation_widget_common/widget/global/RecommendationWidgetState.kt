@@ -7,7 +7,7 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.recommendation_widget_common.widget.carousel.global.RecommendationCarouselModel
 import com.tokopedia.recommendation_widget_common.widget.comparison_bpc.RecommendationComparisonBpcModel
 import com.tokopedia.recommendation_widget_common.widget.loading.RecommendationCarouselShimmeringModel
-import com.tokopedia.recommendation_widget_common.widget.vertical.model.RecommendationVerticalModel
+import com.tokopedia.recommendation_widget_common.widget.vertical.RecommendationVerticalModel
 
 data class RecommendationWidgetState(
     val widgetMap: Map<String, List<RecommendationVisitable>> = mapOf(),

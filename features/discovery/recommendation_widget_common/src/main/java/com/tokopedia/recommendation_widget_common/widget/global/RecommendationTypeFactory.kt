@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import com.tokopedia.recommendation_widget_common.widget.carousel.global.RecommendationCarouselModel
 import com.tokopedia.recommendation_widget_common.widget.comparison_bpc.RecommendationComparisonBpcModel
 import com.tokopedia.recommendation_widget_common.widget.loading.RecommendationCarouselShimmeringModel
-import com.tokopedia.recommendation_widget_common.widget.vertical.model.RecommendationVerticalModel
+import com.tokopedia.recommendation_widget_common.widget.vertical.RecommendationVerticalModel
 
 /**
  * Created by frenzel on 11/03/23

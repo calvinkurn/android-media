@@ -1,7 +1,6 @@
 package com.tokopedia.recommendation_widget_common.widget.vertical
 
 import androidx.recyclerview.widget.DiffUtil
-import com.tokopedia.recommendation_widget_common.widget.vertical.model.RecommendationVerticalVisitable
 
 class RecommendationVerticalDiffUtilCallback(
     private val oldList: List<RecommendationVerticalVisitable>,
