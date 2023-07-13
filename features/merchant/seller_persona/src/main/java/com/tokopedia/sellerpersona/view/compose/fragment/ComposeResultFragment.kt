@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
+import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
@@ -21,6 +22,7 @@ import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.sellerpersona.R
 import com.tokopedia.sellerpersona.analytics.SellerPersonaTracking
 import com.tokopedia.sellerpersona.common.Utils
@@ -28,6 +30,8 @@ import com.tokopedia.sellerpersona.data.local.PersonaSharedPref
 import com.tokopedia.sellerpersona.databinding.FragmentPersonaResultBinding
 import com.tokopedia.sellerpersona.view.activity.SellerPersonaActivity
 import com.tokopedia.sellerpersona.view.adapter.PersonaSimpleListAdapter
+import com.tokopedia.sellerpersona.view.compose.screen.PersonaResultScreen
+import com.tokopedia.sellerpersona.view.compose.viewmodel.ComposePersonaResultViewModel
 import com.tokopedia.sellerpersona.view.model.PersonaDataUiModel
 import com.tokopedia.sellerpersona.view.model.PersonaStatus
 import com.tokopedia.sellerpersona.view.viewmodel.PersonaResultViewModel
@@ -58,8 +62,8 @@ class ComposeResultFragment : Fragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    private val viewModel: PersonaResultViewModel by lazy {
-        ViewModelProvider(this, viewModelFactory)[PersonaResultViewModel::class.java]
+    private val viewModel: ComposePersonaResultViewModel by lazy {
+        ViewModelProvider(this, viewModelFactory)[ComposePersonaResultViewModel::class.java]
     }
     private val args: ComposeResultFragmentArgs by navArgs()
     private val backPressedCallback by lazy {
@@ -77,6 +81,20 @@ class ComposeResultFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         inject()
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        return ComposeView(inflater.context).apply {
+           setContent {
+               NestTheme {
+                   PersonaResultScreen(viewModel::onEvent)
+               }
+           }
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

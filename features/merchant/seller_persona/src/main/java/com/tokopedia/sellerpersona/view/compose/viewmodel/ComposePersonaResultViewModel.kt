@@ -1,11 +1,13 @@
 package com.tokopedia.sellerpersona.view.compose.viewmodel
 
+import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.sellerpersona.common.Constants
 import com.tokopedia.sellerpersona.data.remote.usecase.GetPersonaDataUseCase
 import com.tokopedia.sellerpersona.data.remote.usecase.TogglePersonaUseCase
+import com.tokopedia.sellerpersona.view.compose.model.ResultUiEvent
 import com.tokopedia.sellerpersona.view.compose.model.UiState
 import com.tokopedia.sellerpersona.view.model.PersonaDataUiModel
 import com.tokopedia.sellerpersona.view.model.PersonaStatus
@@ -13,9 +15,12 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
@@ -37,15 +42,22 @@ class ComposePersonaResultViewModel @Inject constructor(
     val togglePersonaStatus: StateFlow<UiState<PersonaStatus>>
         get() = _togglePersonaStatus.asStateFlow()
 
+    private val _uiEvent = MutableSharedFlow<ResultUiEvent>(replay = 1)
+    val uiEvent = _uiEvent.asSharedFlow()
+
+    fun onEvent(event: ResultUiEvent) = viewModelScope.launch {
+        _uiEvent.emit(event)
+    }
+
     fun fetchPersonaData() {
         launchCatchError(block = {
             val result = getPersonaDataUseCase.get().execute(
                 userSession.get().shopId,
                 Constants.PERSONA_PAGE_PARAM
             )
-            _personaData.postValue(Success(result))
+            _personaData.emit(UiState.Success(result))
         }, onError = {
-            _personaData.postValue(Fail(it))
+            _personaData.emit(UiState.Error(it))
         })
     }
 
