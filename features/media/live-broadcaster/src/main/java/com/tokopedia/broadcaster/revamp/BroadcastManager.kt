@@ -345,7 +345,9 @@ class BroadcastManager @Inject constructor(
                     }
                 }
             }
-            catch (_: ExceptionInInitializerError) {
+            catch (e: ExceptionInInitializerError) {
+                Firebase.crashlytics.recordException(e)
+
                 broadcastInitStateChanged(
                     BroadcastInitState.ByteplusInitializationError(
                         BroadcasterException(BroadcasterErrorType.ServiceUnrecoverable)
@@ -353,7 +355,9 @@ class BroadcastManager @Inject constructor(
                 )
                 return
             }
-            catch (_: Throwable) {
+            catch (throwable: Throwable) {
+                Firebase.crashlytics.recordException(throwable)
+
                 broadcastInitStateChanged(
                     BroadcastInitState.ByteplusInitializationError(
                         BroadcasterException(BroadcasterErrorType.ServiceUnrecoverable)
