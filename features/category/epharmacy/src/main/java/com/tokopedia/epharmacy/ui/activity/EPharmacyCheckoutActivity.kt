@@ -8,8 +8,9 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.epharmacy.R
 import com.tokopedia.epharmacy.di.DaggerEPharmacyComponent
 import com.tokopedia.epharmacy.di.EPharmacyComponent
-import com.tokopedia.epharmacy.ui.fragment.EPharmacyPrescriptionAttachmentPageFragment
+import com.tokopedia.epharmacy.ui.fragment.EPharmacyCheckoutFragment
 import com.tokopedia.epharmacy.utils.EPHARMACY_CONSULTATION_SOURCE_ID
+import com.tokopedia.epharmacy.utils.EPHARMACY_ENABLER_ID
 import com.tokopedia.epharmacy.utils.EPHARMACY_GROUP_ID
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.user.session.UserSessionInterface
@@ -42,7 +43,7 @@ class EPharmacyCheckoutActivity : BaseSimpleActivity(), HasComponent<EPharmacyCo
 
     private fun initArguments() {
         groupId = intent?.extras?.getString(EPHARMACY_GROUP_ID, "") ?: ""
-        //enablerId = intent?.extras?.getString(EPHARMACY_ENABLER_ID, "") ?: ""
+        enablerId = intent?.extras?.getString(EPHARMACY_ENABLER_ID, "") ?: ""
         consultationId = intent?.extras?.getString(EPHARMACY_CONSULTATION_SOURCE_ID, "") ?: ""
     }
 
@@ -51,7 +52,11 @@ class EPharmacyCheckoutActivity : BaseSimpleActivity(), HasComponent<EPharmacyCo
     override fun getParentViewResourceID(): Int = R.id.e_pharmacy_parent_view
 
     override fun getNewFragment(): Fragment {
-        return EPharmacyPrescriptionAttachmentPageFragment.newInstance()
+        return EPharmacyCheckoutFragment.newInstance(Bundle().apply {
+            putString(EPHARMACY_GROUP_ID,groupId)
+            putString(EPHARMACY_ENABLER_ID,enablerId)
+            putString(EPHARMACY_CONSULTATION_SOURCE_ID,consultationId)
+        })
     }
 
     override fun getComponent() = ePharmacyComponent

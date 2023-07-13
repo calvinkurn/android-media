@@ -21,6 +21,11 @@ abstract class EPharmacyVMModule {
 
     @Binds
     @IntoMap
+    @ViewModelKey(EPharmacyCheckoutViewModel::class)
+    internal abstract fun ePharmacyCheckoutViewModel(viewModel: EPharmacyCheckoutViewModel): ViewModel
+
+    @Binds
+    @IntoMap
     @ViewModelKey(UploadPrescriptionViewModel::class)
     internal abstract fun uploadPrescriptionViewModel(viewModel: UploadPrescriptionViewModel): ViewModel
 
@@ -38,9 +43,4 @@ abstract class EPharmacyVMModule {
     @IntoMap
     @ViewModelKey(EPharmacyReminderBsViewModel::class)
     internal abstract fun ePharmacyReminderBsViewModel(viewModel: EPharmacyReminderBsViewModel): ViewModel
-
-    @Binds
-    @IntoMap
-    @ViewModelKey(EPharmacyCheckoutViewModel::class)
-    internal abstract fun ePharmacyCheckoutViewModel(viewModel: EPharmacyCheckoutViewModel): ViewModel
 }

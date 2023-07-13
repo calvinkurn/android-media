@@ -9,7 +9,6 @@ import androidx.constraintlayout.widget.Group
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.epharmacy.R
-import com.tokopedia.epharmacy.databinding.EpharmacyCheckoutChatDokterFragmentBinding
 import com.tokopedia.epharmacy.di.EPharmacyComponent
 import com.tokopedia.epharmacy.network.params.CartGeneralAddToCartInstantParams
 import com.tokopedia.epharmacy.network.response.EPharmacyCheckoutResponse
@@ -22,13 +21,11 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.Toaster.LENGTH_LONG
 import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
@@ -37,12 +34,11 @@ class EPharmacyCheckoutFragment : BaseDaggerFragment() {
 
     private var ePharmacyLoader: ConstraintLayout? = null
     private var ePharmacyData: Group? = null
+    private var ePharmacyGlobalError: GlobalError? = null
 
     private var consultationId = ""
     private var enablerId = ""
     private var groupId = ""
-
-    private var binding by autoClearedNullable<EpharmacyCheckoutChatDokterFragmentBinding>()
 
     @JvmField
     @Inject
@@ -84,6 +80,7 @@ class EPharmacyCheckoutFragment : BaseDaggerFragment() {
         view.apply {
             ePharmacyLoader = findViewById(R.id.epharmacy_loader)
             ePharmacyData = findViewById(R.id.epharmacy_data)
+            ePharmacyGlobalError = findViewById(R.id.epharmacy_global_error)
         }
     }
 
@@ -96,33 +93,17 @@ class EPharmacyCheckoutFragment : BaseDaggerFragment() {
         return CartGeneralAddToCartInstantParams(
             CartGeneralAddToCartInstantParams.CartGeneralAddToCartInstantRequestBusinessData(
                 "8811b325f-d0cf-4ba9-8d0a-3bce7e8c96c0",
-                arrayListOf(
-                    CartGeneralAddToCartInstantParams.CartGeneralAddToCartInstantRequestBusinessData.CartGeneralAddToCartInstantRequestProductData(
-                        "ECONSUL",
-                        1,
-                        CartGeneralAddToCartInstantParams.CartGeneralAddToCartInstantRequestBusinessData.CartGeneralAddToCartInstantRequestProductData.CartGeneralCustomStruct(
-                            "311ba2ed6a5b4105fbfdb0a8b745d22fe1b3ecc0efff5c6b9f7ce12351533558",
-                            1,
-                            123
-                        ),
-                        "paidconsultation",
-                        ""
-                    )
-                )
-            ),
-            "android"
+                arrayListOf(CartGeneralAddToCartInstantParams.CartGeneralAddToCartInstantRequestBusinessData.CartGeneralAddToCartInstantRequestProductData(
+                    "ECONSUL",
+                    1,
+                    CartGeneralAddToCartInstantParams.CartGeneralAddToCartInstantRequestBusinessData.CartGeneralAddToCartInstantRequestProductData.CartGeneralCustomStruct(
+                        "311ba2ed6a5b4105fbfdb0a8b745d22fe1b3ecc0efff5c6b9f7ce12351533558",1,123
+                    ),
+                    "paidconsultation",
+                    ""
+                ))
+            ), "android"
         )
-    }
-
-    private fun addShimmer() {
-        ePharmacyData?.hide()
-        ePharmacyLoader?.show()
-        binding?.epharmacyGlobalError?.hide()
-    }
-
-    private fun removeShimmer() {
-        ePharmacyLoader?.hide()
-        ePharmacyData?.show()
     }
 
     private fun observerEPharmacyDetail() {
@@ -151,32 +132,21 @@ class EPharmacyCheckoutFragment : BaseDaggerFragment() {
     }
 
     private fun updateUi(data: EPharmacyCheckoutResponse) {
-        if (data.cartGeneralAddToCartInstant?.data?.success == 1) {
+        if(data.cartGeneralAddToCartInstant?.data?.success == 1){
             setData(data.cartGeneralAddToCartInstant)
-        } else {
+        }else {
             setApiError(data.cartGeneralAddToCartInstant?.data?.message)
         }
     }
 
     private fun setData(cartGeneralAddToCartInstant: EPharmacyCheckoutResponse.CartGeneralAddToCartInstant) {
         cartGeneralAddToCartInstant.data?.data?.businessData?.firstOrNull()?.let { info ->
-            setTitle(info.customResponse?.title)
-            setCartInfo(info.cartGroups?.firstOrNull()?.carts?.firstOrNull())
-            setSummaryInfo(info.shoppingSummary?.product)
+
         }
     }
 
-    private fun setTitle(title: String?) {
-    }
-
-    private fun setCartInfo(cart: EPharmacyCheckoutResponse.CartGeneralAddToCartInstant.Data.Data.BusinessData.CartGroup.Cart?) {
-    }
-
-    private fun setSummaryInfo(product: EPharmacyCheckoutResponse.CartGeneralAddToCartInstant.Data.Data.BusinessData.ShoppingSummary.Product?) {
-    }
-
     private fun setApiError(message: String?) {
-        // ePharmacyData?.hide()
+        ePharmacyData?.hide()
         setGlobalErrors(GlobalError.PAGE_FULL, message)
     }
 
@@ -190,10 +160,10 @@ class EPharmacyCheckoutFragment : BaseDaggerFragment() {
     }
 
     private fun setGlobalErrors(errorType: Int, message: String? = "") {
-        binding?.epharmacyGlobalError?.apply {
-            visible()
+        ePharmacyGlobalError?.apply {
+            show()
             setType(errorType)
-            if (!message.isNullOrBlank()) {
+            if(!message.isNullOrBlank()){
                 errorDescription.text = message
             }
             setActionClickListener {
@@ -209,6 +179,17 @@ class EPharmacyCheckoutFragment : BaseDaggerFragment() {
                 Toaster.build(safeView, message, LENGTH_LONG, type).show()
             }
         }
+    }
+
+    private fun addShimmer() {
+        ePharmacyData?.hide()
+        ePharmacyLoader?.show()
+        ePharmacyGlobalError?.hide()
+    }
+
+    private fun removeShimmer() {
+        ePharmacyLoader?.hide()
+        ePharmacyData?.show()
     }
 
     override fun getScreenName() = EPHARMACY_CHECKOUT_PAGE

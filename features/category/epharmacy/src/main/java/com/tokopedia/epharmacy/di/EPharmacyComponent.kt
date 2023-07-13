@@ -16,6 +16,8 @@ import dagger.Component
 @Component(modules = [EPharmacyModule::class, EPharmacyVMModule::class], dependencies = [BaseAppComponent::class])
 interface EPharmacyComponent {
 
+    fun inject(fragment: EPharmacyCheckoutFragment)
+
     fun inject(ePharmacyActivity: EPharmacyActivity) {}
 
     fun inject(ePharmacyAttachPrescriptionActivity: EPharmacyAttachPrescriptionActivity) {}
@@ -31,6 +33,4 @@ interface EPharmacyComponent {
     fun inject(miniConsultationMasterBottomSheetInfo: MiniConsultationMasterBottomSheetInfo)
 
     fun inject(chooserBottomSheet: EPharmacyChooserBottomSheet)
-
-    fun inject(ePharmacyCheckoutFragment: EPharmacyCheckoutFragment)
 }
