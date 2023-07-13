@@ -89,7 +89,7 @@ class ContentThreeDotsMenuBottomSheet : BottomSheetUnify(), ContentReportViewHol
     }
 
     private val reportSheet by lazyThreadSafetyNone {
-        ContentReportBottomSheet.getFragment(childFragmentManager, requireActivity().classLoader)
+        ContentReportBottomSheet.getOrCreate(childFragmentManager, requireActivity().classLoader)
             .apply {
                 setListener(object : ContentReportBottomSheet.Listener {
                     override fun onCloseButtonClicked() {
@@ -111,7 +111,7 @@ class ContentThreeDotsMenuBottomSheet : BottomSheetUnify(), ContentReportViewHol
     }
 
     private val submissionReportSheet by lazyThreadSafetyNone {
-        ContentSubmitReportBottomSheet.getOrCreateFragment(
+        ContentSubmitReportBottomSheet.getOrCreate(
             childFragmentManager,
             requireActivity().classLoader
         ).apply {

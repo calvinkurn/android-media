@@ -164,7 +164,7 @@ class ContentSubmitReportBottomSheet : BottomSheetUnify() {
             return fragmentManager.findFragmentByTag(TAG) as? ContentSubmitReportBottomSheet
         }
 
-        fun getOrCreateFragment(
+        fun getOrCreate(
             fragmentManager: FragmentManager,
             classLoader: ClassLoader
         ): ContentSubmitReportBottomSheet {

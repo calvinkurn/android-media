@@ -135,7 +135,7 @@ class ContentReportBottomSheet : BottomSheetUnify() {
             return fragmentManager.findFragmentByTag(TAG) as? ContentReportBottomSheet
         }
 
-        fun getFragment(
+        fun getOrCreate(
             fragmentManager: FragmentManager,
             classLoader: ClassLoader
         ): ContentReportBottomSheet {
