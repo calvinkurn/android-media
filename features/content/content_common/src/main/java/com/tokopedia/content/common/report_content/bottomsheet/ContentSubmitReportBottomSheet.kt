@@ -27,11 +27,9 @@ class ContentSubmitReportBottomSheet : BottomSheetUnify() {
 
     private var mListener: Listener? = null
 
-    private val errorFieldPrefix: String = "Isi"
-
     private var minChar: Int = 0
 
-    private lateinit var item: PlayUserReportReasoningUiModel.Reasoning
+    private var item: PlayUserReportReasoningUiModel.Reasoning = PlayUserReportReasoningUiModel.Reasoning.Empty
 
     private val maxSheetHeight by lazyThreadSafetyNone {
         (getScreenHeight() * HEIGHT_PERCENTAGE).roundToInt()
@@ -129,7 +127,7 @@ class ContentSubmitReportBottomSheet : BottomSheetUnify() {
     }
 
     private fun getFieldMessage(isError: Boolean): String {
-        val prefix = if (isError) errorFieldPrefix else ""
+        val prefix = if (isError) ERROR_FIELD_PREFIX else ""
         return getString(commonR.string.content_user_report_text_area_min, prefix, minChar)
     }
 
@@ -160,12 +158,13 @@ class ContentSubmitReportBottomSheet : BottomSheetUnify() {
     companion object {
         private val TAG = "ContentSubmitReportBottomSheet"
         private const val HEIGHT_PERCENTAGE = 0.75
+        private const val ERROR_FIELD_PREFIX: String = "Isi"
 
         fun get(fragmentManager: FragmentManager): ContentSubmitReportBottomSheet? {
             return fragmentManager.findFragmentByTag(TAG) as? ContentSubmitReportBottomSheet
         }
 
-        fun getFragment(
+        fun getOrCreateFragment(
             fragmentManager: FragmentManager,
             classLoader: ClassLoader
         ): ContentSubmitReportBottomSheet {

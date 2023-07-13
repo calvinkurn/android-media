@@ -9,7 +9,16 @@ sealed class PlayUserReportReasoningUiModel {
         val title: String,
         val detail: String,
         val submissionData: UserReportOptions.OptionAdditionalField
-    ) : PlayUserReportReasoningUiModel()
+    ) : PlayUserReportReasoningUiModel() {
+        companion object {
+            val Empty = Reasoning(
+                reasoningId = 0,
+                title = "",
+                detail = "",
+                submissionData = UserReportOptions.OptionAdditionalField()
+            )
+        }
+    }
 
-    object Placeholder: PlayUserReportReasoningUiModel()
+    object Placeholder : PlayUserReportReasoningUiModel()
 }

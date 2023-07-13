@@ -111,7 +111,7 @@ class ContentThreeDotsMenuBottomSheet : BottomSheetUnify(), ContentReportViewHol
     }
 
     private val submissionReportSheet by lazyThreadSafetyNone {
-        ContentSubmitReportBottomSheet.getFragment(
+        ContentSubmitReportBottomSheet.getOrCreateFragment(
             childFragmentManager,
             requireActivity().classLoader
         ).apply {
@@ -218,7 +218,7 @@ class ContentThreeDotsMenuBottomSheet : BottomSheetUnify(), ContentReportViewHol
             return fragmentManager.findFragmentByTag(TAG) as? ContentThreeDotsMenuBottomSheet
         }
 
-        fun getFragment(
+        fun getOrCreateFragment(
             fragmentManager: FragmentManager,
             classLoader: ClassLoader
         ): ContentThreeDotsMenuBottomSheet {

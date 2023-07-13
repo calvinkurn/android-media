@@ -290,7 +290,7 @@ class FeedFragment :
         feedAnalytics.eventClickThreeDots(trackerModel)
         activity?.let {
             val feedMenuSheet =
-                ContentThreeDotsMenuBottomSheet.getFragment(
+                ContentThreeDotsMenuBottomSheet.getOrCreateFragment(
                     childFragmentManager,
                     it.classLoader
                 )
