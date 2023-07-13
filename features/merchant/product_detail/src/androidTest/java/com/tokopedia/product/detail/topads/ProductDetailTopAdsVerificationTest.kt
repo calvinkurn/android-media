@@ -11,8 +11,8 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.util.CenterLayoutManager
 import com.tokopedia.product.detail.view.activity.ProductDetailActivity
+import com.tokopedia.product.detail.view.viewholder.PdpRecommendationWidgetViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductRecommendationViewHolder
-import com.tokopedia.product.detail.view.viewholder.ProductRecommendationWidgetViewHolder
 import com.tokopedia.test.application.assertion.topads.TopAdsAssertion
 import com.tokopedia.test.application.environment.callback.TopAdsVerificatorInterface
 import com.tokopedia.test.application.espresso_component.CommonActions.clickOnEachItemRecyclerView
@@ -77,7 +77,7 @@ class ProductDetailTopAdsVerificationTest {
         val viewHolder = recyclerView.findViewHolderForAdapterPosition(i)
         if (
             viewHolder is ProductRecommendationViewHolder ||
-            viewHolder is ProductRecommendationWidgetViewHolder
+            viewHolder is PdpRecommendationWidgetViewHolder
         ) {
             waitForData()
             val childRecyclerView: RecyclerView? = viewHolder.getChildRecyclerView()

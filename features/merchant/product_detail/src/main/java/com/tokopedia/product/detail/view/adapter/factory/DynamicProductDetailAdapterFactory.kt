@@ -27,7 +27,6 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductMiniSocialProofD
 import com.tokopedia.product.detail.data.model.datamodel.ProductMiniSocialProofStockDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMostHelpfulReviewDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductNotifyMeDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationWidgetUiModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecomWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationVerticalDataModel
@@ -88,6 +87,5 @@ interface DynamicProductDetailAdapterFactory {
     // This is the new centralized recom widget model.
     // After migration, all recom widgets will only be mapped into this model
     fun type(data: PdpRecommendationWidgetDataModel): Int
-    fun type(productRecommendationWidgetUiModel: ProductRecommendationWidgetUiModel): Int
     fun createViewHolder(view: View, type: Int): AbstractViewHolder<*>
 }

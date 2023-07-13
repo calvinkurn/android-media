@@ -49,7 +49,6 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductRecomWidgetDataM
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationVerticalDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationVerticalPlaceholderDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationWidgetUiModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductShipmentDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductShopAdditionalDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductShopCredibilityDataModel
@@ -71,6 +70,7 @@ import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_7
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_9_TOKONOW
+import com.tokopedia.product.detail.data.util.ProductDetailConstant.RECOM_VERTICAL
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.VIEW_TO_VIEW
 import com.tokopedia.recommendation_widget_common.extension.LAYOUTTYPE_HORIZONTAL_ATC
 import com.tokopedia.recommendation_widget_common.extension.toProductCardModels
@@ -289,7 +289,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 }
             }
 
-            updateGlobalRecommendationWidget(productId, loadInitialData)
+            updateVerticalRecommendationWidget(productId, loadInitialData)
 
             if (loadInitialData) {
                 verticalRecommendationItems.clear()
@@ -1208,28 +1208,26 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         }
     }
 
-    private fun updateGlobalRecommendationWidget(productId: String, loadInitialData: Boolean) {
-        DynamicProductDetailMapper.getGlobalRecommendationWidgetComponentNames().forEach { key ->
-            updateData(key, loadInitialData) {
-                (mapOfData[key] as? ProductRecommendationWidgetUiModel)?.run {
-                    val globalRecomWidgetTrackingModel = RecommendationWidgetTrackingModel(
-                        androidPageName = RecommendationCarouselTrackingConst.Category.PDP,
-                        eventActionImpression = RecommendationCarouselTrackingConst.Action.IMPRESSION_ON_PRODUCT_RECOMMENDATION_PDP,
-                        eventActionClick = RecommendationCarouselTrackingConst.Action.CLICK_ON_PRODUCT_RECOMMENDATION_PDP,
-                        listPageName = RecommendationCarouselTrackingConst.List.PDP
+    private fun updateVerticalRecommendationWidget(productId: String, loadInitialData: Boolean) {
+        if (mapOfData.containsKey(RECOM_VERTICAL)) {
+            updateData(RECOM_VERTICAL, loadInitialData) {
+                val globalRecomWidgetTrackingModel = RecommendationWidgetTrackingModel(
+                    androidPageName = RecommendationCarouselTrackingConst.Category.PDP,
+                    eventActionImpression = RecommendationCarouselTrackingConst.Action.IMPRESSION_ON_PRODUCT_RECOMMENDATION_PDP,
+                    eventActionClick = RecommendationCarouselTrackingConst.Action.CLICK_ON_PRODUCT_RECOMMENDATION_PDP,
+                    listPageName = RecommendationCarouselTrackingConst.List.PDP
+                )
+                val globalRecomWidgetMetadata = RecommendationWidgetMetadata(
+                    pageSource = RecommendationWidgetSource.PDP.xSourceValue,
+                    pageName = RECOM_VERTICAL,
+                    productIds = if (productId.isBlank()) listOf() else listOf(productId)
+                )
+                mapOfData[RECOM_VERTICAL] = PdpRecommendationWidgetDataModel(
+                    RecommendationWidgetModel(
+                        metadata = globalRecomWidgetMetadata,
+                        trackingModel = globalRecomWidgetTrackingModel
                     )
-                    val globalRecomWidgetMetadata = RecommendationWidgetMetadata(
-                        pageSource = RecommendationWidgetSource.PDP.xSourceValue,
-                        pageName = key,
-                        productIds = if (productId.isBlank()) listOf() else listOf(productId)
-                    )
-                    mapOfData[key] = copy(
-                        recommendationWidget = RecommendationWidgetModel(
-                            metadata = globalRecomWidgetMetadata,
-                            trackingModel = globalRecomWidgetTrackingModel
-                        )
-                    )
-                }
+                )
             }
         }
     }

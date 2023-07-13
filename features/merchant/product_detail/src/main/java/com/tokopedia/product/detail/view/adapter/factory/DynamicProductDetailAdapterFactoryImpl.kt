@@ -37,7 +37,6 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductRecomWidgetDataM
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationVerticalDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationVerticalPlaceholderDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationWidgetUiModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductReportDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductShipmentDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductShopAdditionalDataModel
@@ -76,7 +75,6 @@ import com.tokopedia.product.detail.view.viewholder.ProductRecomWidgetViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductRecommendationVerticalPlaceholderViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductRecommendationVerticalViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductRecommendationViewHolder
-import com.tokopedia.product.detail.view.viewholder.ProductRecommendationWidgetViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductReportViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductReviewViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductShimmeringViewHolder
@@ -264,10 +262,6 @@ class DynamicProductDetailAdapterFactoryImpl(
         return OngoingCampaignViewHolder.LAYOUT
     }
 
-    override fun type(productRecommendationWidgetUiModel: ProductRecommendationWidgetUiModel): Int {
-        return ProductRecommendationWidgetViewHolder.LAYOUT
-    }
-
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
             FintechWidgetViewHolder.LAYOUT -> FintechWidgetViewHolder(view, listener)
@@ -371,7 +365,6 @@ class DynamicProductDetailAdapterFactoryImpl(
                 listener = listener
             )
             OngoingCampaignViewHolder.LAYOUT -> OngoingCampaignViewHolder(view, listener)
-            ProductRecommendationWidgetViewHolder.LAYOUT -> ProductRecommendationWidgetViewHolder(view, listener)
             else -> super.createViewHolder(view, type)
         }
     }

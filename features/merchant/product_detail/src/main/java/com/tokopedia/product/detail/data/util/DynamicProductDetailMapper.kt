@@ -62,7 +62,6 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductNotifyMeDataMode
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecomWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationVerticalPlaceholderDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationWidgetUiModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductReportDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductShipmentDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductShopAdditionalDataModel
@@ -89,6 +88,7 @@ import com.tokopedia.product.detail.data.util.ProductDetailConstant.SHOPADS_CARO
 import com.tokopedia.product.detail.view.util.checkIfNumber
 import com.tokopedia.product.detail.view.widget.CampaignRibbon
 import com.tokopedia.product.share.ProductData
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.Detail
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ProductrevGetReviewMedia
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaImageThumbnailUiModel
@@ -151,13 +151,8 @@ object DynamicProductDetailMapper {
                         SHOPADS_CAROUSEL -> {
                             listOfComponent.add(TopadsHeadlineUiModel(type = component.type, name = component.componentName))
                         }
-                        in getGlobalRecommendationWidgetComponentNames() -> {
-                            listOfComponent.add(
-                                ProductRecommendationWidgetUiModel(
-                                    type = component.type,
-                                    name = component.componentName,
-                                )
-                            )
+                        RECOM_VERTICAL -> {
+                            listOfComponent.add(ProductRecommendationDataModel(type = component.type, name = component.componentName, recomWidgetData = RecommendationWidget()))
                         }
                         else ->
                             listOfComponent.add(ProductRecommendationDataModel(type = component.type, name = component.componentName, position = index))
@@ -896,9 +891,5 @@ object DynamicProductDetailMapper {
             name = name,
             data = mainData
         )
-    }
-
-    fun getGlobalRecommendationWidgetComponentNames(): Array<String> {
-        return arrayOf(RECOM_VERTICAL)
     }
 }
