@@ -8,7 +8,6 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.scp_rewards_common.grayscale
 import com.tokopedia.scp_rewards_common.loadImageOrFallback
 import com.tokopedia.scp_rewards_common.loadLottieFromUrl
-import com.tokopedia.scp_rewards_common.showTextOrHide
 import com.tokopedia.scp_rewards_widgets.R
 import com.tokopedia.scp_rewards_widgets.databinding.ItemMedalLayoutBinding
 
@@ -44,10 +43,8 @@ class MedalViewHolder(
 
     private fun ItemMedalLayoutBinding.showMedal(item: MedalItem) {
         handleLottieCelebration(item)
-        tvMedalTitle.visible()
+        handleTextSection(item)
         tvMedalCaption.visible()
-        tvMedalSubTitle.showTextOrHide(item.provider)
-        tvMedalTitle.text = item.name
         tvMedalCaption.text = item.extraInfo
         listener?.onMedalLoad(item)
         if (item.isDisabled == true) {
@@ -62,6 +59,19 @@ class MedalViewHolder(
             this.root.setOnClickListener { listener.onMedalClick(item) }
         }
         handleProgressBar(item)
+    }
+
+    private fun ItemMedalLayoutBinding.handleTextSection(item: MedalItem) {
+        if (item.provider.isNullOrEmpty()) {
+            tvMedalTitle.setLines(2)
+            tvMedalSubTitle.gone()
+        } else {
+            tvMedalTitle.setLines(1)
+            tvMedalSubTitle.text = item.provider
+            tvMedalSubTitle.visible()
+        }
+        tvMedalTitle.text = item.name
+        tvMedalTitle.visible()
     }
 
     private fun ItemMedalLayoutBinding.handleProgressBar(item: MedalItem) {
