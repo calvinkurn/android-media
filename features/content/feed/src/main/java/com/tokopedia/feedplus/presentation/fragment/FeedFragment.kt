@@ -1303,6 +1303,7 @@ class FeedFragment :
     private fun openVariantBottomSheet(product: FeedTaggedProductUiModel) {
         atcVariantViewModel.setAtcBottomSheetParams(
             ProductVariantBottomSheetParams(
+                trackerCdListName = currentTrackerData?.activityId.orEmpty(),
                 productId = product.id,
                 shopId = product.shop.id,
                 showQtyEditor = false,
