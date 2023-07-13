@@ -295,9 +295,8 @@ class FeedPostViewModelTest {
 
         val dummyData = FeedTaggedProductUiModel(
             id = "dummyId",
-            isParent = false,
-            parentID = "",
-            hasVariant = false,
+            parentID = "123",
+            showGlobalVariant = false,
             shop = FeedTaggedProductUiModel.Shop(
                 "dummy-shop-id",
                 "dummy Name"
@@ -314,7 +313,7 @@ class FeedPostViewModelTest {
                 FeedTaggedProductUiModel.CampaignStatus.Unknown,
                 false
             ),
-            FeedTaggedProductUiModel.Affiliate(
+            affiliate = FeedTaggedProductUiModel.Affiliate(
                 "xxx",
                 "play"
             )
@@ -334,9 +333,8 @@ class FeedPostViewModelTest {
         // given
         val dummyData = FeedTaggedProductUiModel(
             id = "dummyId",
-            isParent = false,
-            parentID = "",
-            hasVariant = false,
+            parentID = "123",
+            showGlobalVariant = false,
             shop = FeedTaggedProductUiModel.Shop(
                 "dummy-shop-id",
                 "dummy Name"
@@ -353,7 +351,7 @@ class FeedPostViewModelTest {
                 FeedTaggedProductUiModel.CampaignStatus.Unknown,
                 false
             ),
-            FeedTaggedProductUiModel.Affiliate(
+            affiliate = FeedTaggedProductUiModel.Affiliate(
                 "xxx",
                 "play"
             )
@@ -383,9 +381,8 @@ class FeedPostViewModelTest {
         // given
         val dummyData = FeedTaggedProductUiModel(
             id = "dummyId",
-            isParent = false,
-            parentID = "",
-            hasVariant = false,
+            parentID = "123",
+            showGlobalVariant = false,
             shop = FeedTaggedProductUiModel.Shop(
                 "dummy-shop-id",
                 "dummy Name"
@@ -402,7 +399,7 @@ class FeedPostViewModelTest {
                 FeedTaggedProductUiModel.CampaignStatus.Unknown,
                 false
             ),
-            FeedTaggedProductUiModel.Affiliate(
+            affiliate = FeedTaggedProductUiModel.Affiliate(
                 "xxx",
                 "play"
             )
@@ -436,9 +433,8 @@ class FeedPostViewModelTest {
 
         val dummyData = FeedTaggedProductUiModel(
             id = "dummyId",
-            isParent = false,
-            parentID = "",
-            hasVariant = false,
+            parentID = "123",
+            showGlobalVariant = false,
             shop = FeedTaggedProductUiModel.Shop(
                 "dummy-shop-id",
                 "dummy Name"
@@ -455,7 +451,7 @@ class FeedPostViewModelTest {
                 FeedTaggedProductUiModel.CampaignStatus.Unknown,
                 false
             ),
-            FeedTaggedProductUiModel.Affiliate(
+            affiliate = FeedTaggedProductUiModel.Affiliate(
                 "xxx",
                 "play"
             )
@@ -475,9 +471,8 @@ class FeedPostViewModelTest {
         // given
         val dummyData = FeedTaggedProductUiModel(
             id = "dummyId",
-            isParent = false,
-            parentID = "",
-            hasVariant = false,
+            parentID = "123",
+            showGlobalVariant = false,
             shop = FeedTaggedProductUiModel.Shop(
                 "dummy-shop-id",
                 "dummy Name"
@@ -494,7 +489,7 @@ class FeedPostViewModelTest {
                 FeedTaggedProductUiModel.CampaignStatus.Unknown,
                 false
             ),
-            FeedTaggedProductUiModel.Affiliate(
+            affiliate = FeedTaggedProductUiModel.Affiliate(
                 "xxx",
                 "play"
             )
@@ -524,9 +519,8 @@ class FeedPostViewModelTest {
         // given
         val dummyData = FeedTaggedProductUiModel(
             id = "dummyId",
-            isParent = false,
-            parentID = "",
-            hasVariant = false,
+            parentID = "123",
+            showGlobalVariant = false,
             shop = FeedTaggedProductUiModel.Shop(
                 "dummy-shop-id",
                 "dummy Name"
@@ -543,7 +537,7 @@ class FeedPostViewModelTest {
                 FeedTaggedProductUiModel.CampaignStatus.Unknown,
                 false
             ),
-            FeedTaggedProductUiModel.Affiliate(
+            affiliate = FeedTaggedProductUiModel.Affiliate(
                 "xxx",
                 "play"
             )
