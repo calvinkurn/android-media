@@ -25,7 +25,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/unify_space_12"
             android:text="1"
-            android:textColor="@color/Unify_G500"
+            android:textColor="@color/Unify_GN500"
             app:layout_constraintBottom_toBottomOf="@id/arrowBack"
             app:layout_constraintEnd_toStartOf="@+id/arrowForward"
             app:layout_constraintTop_toTopOf="@+id/arrowBack"
@@ -48,7 +48,7 @@
             android:layout_marginStart="@dimen/unify_space_16"
             android:layout_marginEnd="@dimen/unify_space_4"
             android:text="@string/data_explorer_select_page_text"
-            android:textColor="@color/Unify_G500"
+            android:textColor="@color/Unify_GN500"
             app:layout_constraintBottom_toBottomOf="@id/arrowForward"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/arrowForward"
@@ -65,7 +65,7 @@
             app:layout_constraintTop_toTopOf="parent"
             android:textSize="@dimen/unify_font_14"
             android:text="@string/data_explorer_page_number_initial_text"
-            android:textColor="@color/Unify_N700_96"
+            android:textColor="@color/Unify_NN950_96"
             />
 
 

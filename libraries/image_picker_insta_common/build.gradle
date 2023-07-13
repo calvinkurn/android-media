@@ -18,6 +18,8 @@ buildscript {
 }
 
 android {
+    namespace 'com.tokopedia.imagepicker_insta.common'
+    testNamespace 'com.tokopedia.imagepicker_insta.common.test'
     packagingOptions {
         exclude 'META-INF/**'
     }

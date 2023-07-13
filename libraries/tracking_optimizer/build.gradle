@@ -24,6 +24,11 @@ project.ext {
     artifactName = "tracking_optimizer-release"
 }
 
+android {
+    namespace 'com.tokopedia.trackingoptimizer'
+    testNamespace 'com.tokopedia.trackingoptimizer.test'
+}
+
 dependencies {
     implementation rootProject.ext.miscDependencies.gson
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)

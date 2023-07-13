@@ -13,7 +13,7 @@
         android:layout_toStartOf="@+id/ivProductIcon"
         android:ellipsize="end"
         android:singleLine="true"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         android:textSize="@dimen/cm_sp_14" />
 
         <ImageView

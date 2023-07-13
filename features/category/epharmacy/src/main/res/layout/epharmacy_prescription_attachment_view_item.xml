@@ -40,7 +40,7 @@
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginStart="16dp"
         android:layout_marginTop="2dp"
-        android:textColor="@color/Unify_N700_68"
+        android:textColor="@color/Unify_NN950_68"
         app:typographyType="display_3"
         android:text="@string/epharmacy_partner_resmi"
         tools:visibility="visible"

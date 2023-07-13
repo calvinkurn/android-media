@@ -253,7 +253,7 @@ class ShopCampaignNplViewHolder(
             val colorText = if (isRemindMe) {
                 com.tokopedia.unifyprinciples.R.color.Unify_Background
             } else {
-                com.tokopedia.unifyprinciples.R.color.Unify_N700_68
+                com.tokopedia.unifyprinciples.R.color.Unify_NN950_68
             }
             setTextColor(MethodChecker.getColor(itemView.context, colorText))
             if (totalNotifyWording.isEmpty()) {
