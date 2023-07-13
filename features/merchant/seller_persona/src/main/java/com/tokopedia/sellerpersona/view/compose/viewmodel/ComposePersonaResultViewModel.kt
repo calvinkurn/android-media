@@ -1,7 +1,7 @@
 package com.tokopedia.sellerpersona.view.compose.viewmodel
 
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.sellerpersona.common.Constants
@@ -11,8 +11,6 @@ import com.tokopedia.sellerpersona.view.compose.model.ResultUiEvent
 import com.tokopedia.sellerpersona.view.compose.model.UiState
 import com.tokopedia.sellerpersona.view.model.PersonaDataUiModel
 import com.tokopedia.sellerpersona.view.model.PersonaStatus
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -21,6 +19,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
@@ -32,13 +31,13 @@ class ComposePersonaResultViewModel @Inject constructor(
     private val togglePersonaUseCase: Lazy<TogglePersonaUseCase>,
     private val userSession: Lazy<UserSessionInterface>,
     private val dispatchers: CoroutineDispatchers
-) : BaseViewModel(dispatchers.io) {
+) : ViewModel() {
 
-    private val _personaData = MutableStateFlow<UiState<PersonaDataUiModel>>(UiState.Default)
-    val personaData: StateFlow<UiState<PersonaDataUiModel>>
-        get() = _personaData.asStateFlow()
+    private val _state = MutableStateFlow<UiState<PersonaDataUiModel>>(UiState.Loading)
+    val state: StateFlow<UiState<PersonaDataUiModel>>
+        get() = _state.asStateFlow()
 
-    private val _togglePersonaStatus = MutableStateFlow<UiState<PersonaStatus>>(UiState.Default)
+    private val _togglePersonaStatus = MutableStateFlow<UiState<PersonaStatus>>(UiState.None)
     val togglePersonaStatus: StateFlow<UiState<PersonaStatus>>
         get() = _togglePersonaStatus.asStateFlow()
 
@@ -46,29 +45,41 @@ class ComposePersonaResultViewModel @Inject constructor(
     val uiEvent = _uiEvent.asSharedFlow()
 
     fun onEvent(event: ResultUiEvent) = viewModelScope.launch {
-        _uiEvent.emit(event)
+        when (event) {
+            is ResultUiEvent.TogglePersona -> {
+
+            }
+            is ResultUiEvent.ApplyChanges -> {
+
+            }
+            is ResultUiEvent.RetakeQuiz -> {
+
+            }
+        }
     }
 
     fun fetchPersonaData() {
-        launchCatchError(block = {
+        viewModelScope.launchCatchError(block = {
             val result = getPersonaDataUseCase.get().execute(
                 userSession.get().shopId,
                 Constants.PERSONA_PAGE_PARAM
             )
-            _personaData.emit(UiState.Success(result))
+            _state.emit(UiState.Success(result))
         }, onError = {
-            _personaData.emit(UiState.Error(it))
+            _state.emit(UiState.Error(it))
         })
     }
 
-    fun toggleUserPersona(status: PersonaStatus) {
-        launchCatchError(block = {
-            val toggleStatus = togglePersonaUseCase.get().execute(
-                userSession.get().shopId, status
-            )
-            _togglePersonaStatus.postValue(Success(toggleStatus))
+    private fun toggleUserPersona(status: PersonaStatus) {
+        viewModelScope.launchCatchError(block = {
+            val toggleStatus = withContext(dispatchers.io) {
+                togglePersonaUseCase.get().execute(
+                    userSession.get().shopId, status
+                )
+            }
+            _togglePersonaStatus.emit(UiState.Success(toggleStatus))
         }, onError = {
-            _togglePersonaStatus.postValue(Fail(it))
+            _togglePersonaStatus.emit(UiState.Error(it))
         })
     }
 }

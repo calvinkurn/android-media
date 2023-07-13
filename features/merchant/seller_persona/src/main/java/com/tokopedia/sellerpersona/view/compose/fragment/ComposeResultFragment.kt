@@ -5,41 +5,34 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.res.stringResource
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.navArgs
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.sellerhome.SellerHomeApplinkConst
-import com.tokopedia.dialog.DialogUnify
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
-import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.observe
-import com.tokopedia.kotlin.extensions.view.parseAsHtml
-import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.kotlin.model.ImpressHolder
-import com.tokopedia.media.loader.loadImage
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.sellerpersona.R
-import com.tokopedia.sellerpersona.analytics.SellerPersonaTracking
-import com.tokopedia.sellerpersona.common.Utils
 import com.tokopedia.sellerpersona.data.local.PersonaSharedPref
-import com.tokopedia.sellerpersona.databinding.FragmentPersonaResultBinding
 import com.tokopedia.sellerpersona.view.activity.SellerPersonaActivity
-import com.tokopedia.sellerpersona.view.adapter.PersonaSimpleListAdapter
+import com.tokopedia.sellerpersona.view.compose.model.UiState
+import com.tokopedia.sellerpersona.view.compose.screen.ResultLoadingState
 import com.tokopedia.sellerpersona.view.compose.screen.PersonaResultScreen
+import com.tokopedia.sellerpersona.view.compose.common.ErrorStateComponent
 import com.tokopedia.sellerpersona.view.compose.viewmodel.ComposePersonaResultViewModel
 import com.tokopedia.sellerpersona.view.model.PersonaDataUiModel
 import com.tokopedia.sellerpersona.view.model.PersonaStatus
-import com.tokopedia.sellerpersona.view.viewmodel.PersonaResultViewModel
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.utils.resources.isDarkMode
 import javax.inject.Inject
 
 /**
@@ -84,16 +77,24 @@ class ComposeResultFragment : Fragment() {
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         return ComposeView(inflater.context).apply {
-           setContent {
-               NestTheme {
-                   PersonaResultScreen(viewModel::onEvent)
-               }
-           }
+            setContent {
+                NestTheme {
+                    val state = viewModel.state.collectAsState()
+                    when (state.value) {
+                        is UiState.Loading -> ResultLoadingState()
+                        is UiState.Error -> {
+                            val actionText = stringResource(id = R.string.sp_reload)
+                            ErrorStateComponent(actionText)
+                        }
+
+                        is UiState.Success -> PersonaResultScreen(state.value, viewModel::onEvent)
+                        else -> {}
+                    }
+                }
+            }
         }
     }
 
@@ -102,8 +103,6 @@ class ComposeResultFragment : Fragment() {
         fetchPersonaData()
 
         setupView()
-        observePersonaData()
-        observePersonaToggleStatus()
         setupOnBackPressed()
     }
 
@@ -113,8 +112,7 @@ class ComposeResultFragment : Fragment() {
         )
     }
 
-    private fun handleOnBackPressed() {
-        /*context?.let {
+    private fun handleOnBackPressed() {/*context?.let {
             val paramPersona = args.paramPersona
             val isAnyChanges = binding?.switchSpActivatePersona?.isChecked != isPersonaActive
             if (paramPersona.isNotBlank() || (paramPersona.isBlank() && isAnyChanges)) {
@@ -145,14 +143,14 @@ class ComposeResultFragment : Fragment() {
         }*/
     }
 
-    private fun observePersonaToggleStatus() {
-        viewLifecycleOwner.observe(viewModel.togglePersonaStatus) {
-            when (it) {
-                is Success -> setOnToggleSuccess(it.data)
-                is Fail -> showToggleErrorMessage()
-            }
-        }
-    }
+//    private fun observePersonaToggleStatus() {
+//        viewLifecycleOwner.observe(viewModel.togglePersonaStatus) {
+//            when (it) {
+//                is Success -> setOnToggleSuccess(it.data)
+//                is Fail -> showToggleErrorMessage()
+//            }
+//        }
+//    }
 
     private fun setOnToggleSuccess(status: PersonaStatus) {
         isPersonaActive = status == PersonaStatus.ACTIVE
@@ -195,18 +193,19 @@ class ComposeResultFragment : Fragment() {
         }
     }
 
-    private fun observePersonaData() {
-        viewLifecycleOwner.observe(viewModel.personaData) {
-            dismissLoadingState()
-            when (it) {
-                is Success -> {
-                    this.personaData = it.data
-                    showPersonaData()
-                }
-                is Fail -> handleError()
-            }
-        }
-    }
+//    private fun observePersonaData() {
+//        viewLifecycleOwner.observe(viewModel.state) {
+//            dismissLoadingState()
+//            when (it) {
+//                is Success -> {
+//                    this.personaData = it.data
+//                    showPersonaData()
+//                }
+//
+//                is Fail -> handleError()
+//            }
+//        }
+//    }
 
     private fun handleError() {
 //        binding?.run {

@@ -36,6 +36,24 @@
     </fragment>
 
     <fragment
+        android:id="@+id/composeResultFragment"
+        android:name="com.tokopedia.sellerpersona.view.compose.fragment.ComposeResultFragment"
+        android:label="@string/sp_this_is_your_seller_type"
+        tools:layout="@layout/fragment_persona_result">
+        <action
+            android:id="@+id/actionResultFragmentToQuestionnaireFragment"
+            app:destination="@id/questionnaireFragment" />
+        <action
+            android:id="@+id/actionResultFragmentToSelectTypeFragment"
+            app:destination="@id/selectTypeFragment"
+            app:enterAnim="@anim/nav_default_enter_anim" />
+        <argument
+            android:name="param_persona"
+            android:defaultValue=""
+            app:argType="string" />
+    </fragment>
+
+    <fragment
         android:id="@+id/questionnaireFragment"
         android:name="com.tokopedia.sellerpersona.view.fragment.PersonaQuestionnaireFragment"
         android:label="@string/sp_opening_page_type"

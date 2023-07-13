@@ -139,12 +139,12 @@ class SellerPersonaActivity : BaseActivity(), HasComponent<SellerPersonaComponen
             val inflater = navController.navInflater
             val graph = inflater.inflate(R.navigation.nav_graph)
 
-            val hasPersona = data.persona.isNotBlank()
+            val hasPersona = false//data.persona.isNotBlank()
             val defaultDestination = if (hasPersona) {
-                R.id.resultFragment
+                R.id.composeResultFragment
             } else {
                 markAsPersonaFirstVisit()
-                R.id.openingFragment
+                R.id.composeOpeningFragment
             }
             graph.setStartDestination(defaultDestination)
 
