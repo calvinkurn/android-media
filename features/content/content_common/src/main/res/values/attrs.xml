@@ -21,9 +21,4 @@
     <declare-styleable name="FeedFloatingButton">
         <attr name="fab_text" format="string" />
     </declare-styleable>
-
-    <declare-styleable name="PlayLikeBubbleView">
-        <attr name="bouncing" format="boolean"/>
-        <attr name="maxShot" format="integer"/>
-    </declare-styleable>
 </resources>
