@@ -74,9 +74,10 @@ class FeedExoPlayer(val context: Context) {
             override fun onPlayerError(error: ExoPlaybackException) {
                 super.onPlayerError(error)
 
-                if (error.sourceException is BehindLiveWindowException) {
-                    videoStateListener?.onBehindLiveWindow(exoPlayer.playWhenReady)
-                }
+                if (error.type != ExoPlaybackException.TYPE_SOURCE) return
+                if (error.sourceException !is BehindLiveWindowException) return
+
+                videoStateListener?.onBehindLiveWindow(exoPlayer.playWhenReady)
             }
         })
     }
