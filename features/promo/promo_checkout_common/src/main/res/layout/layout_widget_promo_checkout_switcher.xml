@@ -67,4 +67,47 @@
 
     </FrameLayout>
 
+    <FrameLayout
+        android:id="@+id/error_promo_checkout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/background_promo_checkout_teal_rounded"
+        android:visibility="gone">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="12dp">
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tv_error_promo_checkout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Promo gagal ditampilkan. Coba lagi, yuk!"
+                android:textColor="@color/Unify_NN950"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/ic_error_promo_checkout"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:typographyType="display_3"
+                app:typographyWeight="reguler" />
+
+            <com.tokopedia.iconunify.IconUnify
+                android:id="@+id/ic_error_promo_checkout"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="4dp"
+                app:icon_name="RELOAD"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/tv_error_promo_checkout"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </FrameLayout>
+
 </FrameLayout>
