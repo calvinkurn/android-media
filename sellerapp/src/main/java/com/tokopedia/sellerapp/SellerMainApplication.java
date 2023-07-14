@@ -122,7 +122,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Co
         initEmbrace();
 
         if (GlobalConfig.isAllowDebuggingTools()) {
-            initCassave();
+            initCassava();
         }
         TrackApp.initTrackApp(this);
 
@@ -151,7 +151,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Co
         }
     }
 
-    private void initCassave() {
+    private void initCassava() {
         new Cassava.Builder(this)
                 .setRemoteValidator(new RemoteSpec() {
                     @NonNull
