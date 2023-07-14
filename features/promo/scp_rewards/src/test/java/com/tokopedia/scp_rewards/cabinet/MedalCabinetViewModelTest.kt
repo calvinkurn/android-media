@@ -1,6 +1,7 @@
 package com.tokopedia.scp_rewards.cabinet
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.scp_rewards.cabinet.analytics.MedalCabinetAnalytics
 import com.tokopedia.scp_rewards.cabinet.domain.GetUserMedaliUseCase
 import com.tokopedia.scp_rewards.cabinet.domain.MedaliSectionUseCase
 import com.tokopedia.scp_rewards.cabinet.domain.model.MedaliCabinetData
@@ -34,6 +35,7 @@ class MedalCabinetViewModelTest {
     private lateinit var medalCabinetViewModel: MedalCabinetViewModel
     private val getUserMedalUseCase = mockk<GetUserMedaliUseCase>()
     private val getMedalSectionUseCase = mockk<MedaliSectionUseCase>()
+    private val medalCabinetAnalytics = mockk<MedalCabinetAnalytics>(relaxed = true)
 
     companion object {
         private val medaliSlug = "INJECT_BADGE_1"
@@ -41,7 +43,7 @@ class MedalCabinetViewModelTest {
 
     @Before
     fun setup() {
-        medalCabinetViewModel = MedalCabinetViewModel(getMedalSectionUseCase, getUserMedalUseCase)
+        medalCabinetViewModel = MedalCabinetViewModel(getMedalSectionUseCase, getUserMedalUseCase, medalCabinetAnalytics)
         viewStates = mutableListOf()
         medalCabinetViewModel.cabinetLiveData.observeForever { viewStates.add(it) }
     }
@@ -55,8 +57,7 @@ class MedalCabinetViewModelTest {
             medalCabinetViewModel.getHomePage(medaliSlug)
 
             assertEquals(viewStates[0], Loading)
-            // TODO: fix this testcase
-            assertEquals(viewStates[1] is Success<*>, false)
+            assertEquals(viewStates[1] is Success<*>, true)
             assertEquals((viewStates[1] as Success<MedaliCabinetData>).data.header != null, true)
             assertEquals((viewStates[1] as Success<MedaliCabinetData>).data.earnedMedaliData != null, true)
             assertEquals((viewStates[1] as Success<MedaliCabinetData>).data.progressMedaliData != null, true)

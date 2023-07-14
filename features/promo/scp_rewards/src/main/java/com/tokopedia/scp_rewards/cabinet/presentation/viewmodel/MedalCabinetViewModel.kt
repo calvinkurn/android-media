@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.tokopedia.scp_rewards.cabinet.analytics.MedalCabinetAnalyticsImpl
+import com.tokopedia.scp_rewards.cabinet.analytics.MedalCabinetAnalytics
 import com.tokopedia.scp_rewards.cabinet.domain.GetUserMedaliUseCase
 import com.tokopedia.scp_rewards.cabinet.domain.MedaliSectionUseCase
 import com.tokopedia.scp_rewards.cabinet.domain.model.MedaliCabinetData
@@ -33,7 +33,8 @@ import kotlin.coroutines.CoroutineContext
 
 class MedalCabinetViewModel @Inject constructor(
     private val medaliSectionUseCase: MedaliSectionUseCase,
-    private val userMedaliUseCase: GetUserMedaliUseCase
+    private val userMedaliUseCase: GetUserMedaliUseCase,
+    private val medalCabinetAnalytics: MedalCabinetAnalytics
 ) :
     ViewModel() {
     companion object {
@@ -71,10 +72,10 @@ class MedalCabinetViewModel @Inject constructor(
             val progressMedaliRes = progressMedaliJob.await()?.getData(SUCCESS_CODE)
 
             if (earnedMedaliRes == null) {
-                MedalCabinetAnalyticsImpl.sendViewUnlockedMedalSectionApiErrorEvent()
+                medalCabinetAnalytics.sendViewUnlockedMedalSectionApiErrorEvent()
             }
             if (progressMedaliRes == null) {
-                MedalCabinetAnalyticsImpl.sendViewLockedMedalSectionApiErrorEvent()
+                medalCabinetAnalytics.sendViewLockedMedalSectionApiErrorEvent()
             }
 
             MedaliListMapper.apply {

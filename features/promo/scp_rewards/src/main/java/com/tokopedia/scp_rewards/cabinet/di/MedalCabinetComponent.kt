@@ -8,7 +8,7 @@ import dagger.Component
 
 @MedalDetailScope
 @Component(
-    modules = [MedalCabinetViewModelModule::class],
+    modules = [MedalCabinetViewModelModule::class, MedalCabinetModule::class],
     dependencies = [BaseAppComponent::class]
 )
 interface MedalCabinetComponent {
