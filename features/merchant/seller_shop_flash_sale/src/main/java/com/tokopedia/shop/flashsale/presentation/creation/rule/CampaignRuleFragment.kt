@@ -76,6 +76,7 @@ import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
@@ -105,6 +106,9 @@ class CampaignRuleFragment :
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
+    @Inject
+    lateinit var userSession: UserSessionInterface
+
     private val sellerEduArticleUrl = "https://www.tokopedia.com/help/seller/article/pertanyaan-seputar-flash-sale-toko"
     private val campaignId by lazy { arguments?.getLong(BundleConstant.BUNDLE_KEY_CAMPAIGN_ID) }
     private val pageMode by lazy {
@@ -119,7 +123,6 @@ class CampaignRuleFragment :
 
     private var errorToaster: Snackbar? = null
     private var irisSession: IrisSession? = null
-    private var userSession: UserSession? = null
 
     private val tncCheckboxChangeListener = object : CompoundButton.OnCheckedChangeListener {
         override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
@@ -355,13 +358,11 @@ class CampaignRuleFragment :
 
     // Get Rollence Gradual Rollout to check whether the new feature is available to user or not
     private fun getRollenceGradualRollout() {
-        userSession?.let {
-            irisSession?.let { iris_session ->
-                viewModel.getRollenceGradualRollout(
-                    shopId = it.shopId,
-                    irisSessionId = iris_session.getSessionId()
-                )
-            }
+        irisSession?.let { iris_session ->
+            viewModel.getRollenceGradualRollout(
+                shopId = userSession.shopId,
+                irisSessionId = iris_session.getSessionId()
+            )
         }
     }
 
