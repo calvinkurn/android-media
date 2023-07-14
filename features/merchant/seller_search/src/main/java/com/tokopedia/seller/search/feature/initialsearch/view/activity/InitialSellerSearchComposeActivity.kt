@@ -7,13 +7,28 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.seller.search.R
 import com.tokopedia.seller.search.common.GlobalSearchSellerComponentBuilder
+import com.tokopedia.seller.search.common.plt.GlobalSearchSellerPerformanceMonitoring
+import com.tokopedia.seller.search.common.plt.GlobalSearchSellerPerformanceMonitoringListener
+import com.tokopedia.seller.search.common.plt.GlobalSearchSellerPerformanceMonitoringType
 import com.tokopedia.seller.search.feature.initialsearch.di.component.DaggerInitialSearchComponent
 import com.tokopedia.seller.search.feature.initialsearch.di.component.InitialSearchComponent
 import com.tokopedia.seller.search.feature.initialsearch.di.module.InitialSearchModule
 import com.tokopedia.seller.search.feature.initialsearch.view.fragment.InitialSearchFragment
 import com.tokopedia.seller.search.feature.suggestion.view.fragment.SuggestionSearchFragment
+import com.tokopedia.user.session.UserSessionInterface
+import javax.inject.Inject
 
-class InitialSellerSearchComposeActivity : BaseActivity(), HasComponent<InitialSearchComponent> {
+class InitialSellerSearchComposeActivity :
+    BaseActivity(),
+    HasComponent<InitialSearchComponent>,
+    GlobalSearchSellerPerformanceMonitoringListener {
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
+
+    private val performanceMonitoring: GlobalSearchSellerPerformanceMonitoring by lazy {
+        GlobalSearchSellerPerformanceMonitoring(GlobalSearchSellerPerformanceMonitoringType.SEARCH_SELLER)
+    }
 
     private var searchSuggestionFragment: SuggestionSearchFragment? = null
     private var initialSearchFragment: InitialSearchFragment? = null
@@ -40,6 +55,18 @@ class InitialSellerSearchComposeActivity : BaseActivity(), HasComponent<InitialS
 
     private fun initInjector() {
         component.inject(this)
+    }
+
+    override fun startNetworkPerformanceMonitoring() {
+        performanceMonitoring.startNetworkGlobalSearchSellerPerformanceMonitoring()
+    }
+
+    override fun startRenderPerformanceMonitoring() {
+        performanceMonitoring.startRenderGlobalSearchSellerPerformanceMonitoring()
+    }
+
+    override fun finishMonitoring() {
+        performanceMonitoring.stopPerformanceMonitoring()
     }
 
     private fun initFragments() {
