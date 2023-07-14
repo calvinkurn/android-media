@@ -39,7 +39,7 @@ class SellerSeamlessLoginActivity : BaseSimpleActivity(), HasComponent<LoginComp
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        toolbar.setTitleTextColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
+        toolbar.setTitleTextColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_NN950_96))
         setWhiteStatusBarIfSellerApp()
     }
 

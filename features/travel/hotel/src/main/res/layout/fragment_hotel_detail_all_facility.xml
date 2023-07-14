@@ -10,19 +10,19 @@
         style="?tabTheme"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/Unify_N0"
+        android:background="@color/Unify_NN0"
         android:elevation="@dimen/spacing_lvl1"
-        app:tabIndicatorColor="@color/Unify_G400"
+        app:tabIndicatorColor="@color/Unify_GN500"
         app:tabMode="scrollable"
-        app:tabSelectedTextColor="@color/Unify_G500"
+        app:tabSelectedTextColor="@color/Unify_GN500"
         app:tabTextAppearance="@style/TitlePageWhiteIndicator.Hotel"
-        app:tabTextColor="@color/Unify_N700_32" />
+        app:tabTextColor="@color/Unify_NN950_32" />
 
     <com.tokopedia.abstraction.base.view.widget.TouchViewPager
         android:id="@+id/view_pager"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:background="@color/Unify_N0" />
+        android:background="@color/Unify_NN0" />
 
 </LinearLayout>

@@ -74,7 +74,6 @@ import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -201,7 +200,7 @@ class OrderSummaryPageViewModel @Inject constructor(
                 orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.DISABLE)
             }
             if (result.imageUpload.showImageUpload) {
-                var prescriptionIds = cartProcessor.getPrescriptionId(result.imageUpload.checkoutId)
+                val prescriptionIds = cartProcessor.getPrescriptionId(result.imageUpload.checkoutId)
                 uploadPrescriptionUiModel.value = uploadPrescriptionUiModel.value.copy(
                     showImageUpload = result.imageUpload.showImageUpload,
                     uploadImageText = result.imageUpload.text,
@@ -983,10 +982,7 @@ class OrderSummaryPageViewModel @Inject constructor(
 
     fun finalUpdate(onSuccessCheckout: (CheckoutOccResult) -> Unit, skipCheckIneligiblePromo: Boolean) {
         if (orderTotal.value.buttonState == OccButtonState.NORMAL && orderPromo.value.state == OccButtonState.NORMAL && !orderShipment.value.isLoading) {
-            if (uploadPrescriptionUiModel.value.showImageUpload == true &&
-                (uploadPrescriptionUiModel.value.uploadedImageCount ?: 0) < 1 &&
-                uploadPrescriptionUiModel.value.frontEndValidation
-            ) {
+            if (uploadPrescriptionUiModel.value.showImageUpload && uploadPrescriptionUiModel.value.uploadedImageCount < 1 && uploadPrescriptionUiModel.value.frontEndValidation) {
                 uploadPrescriptionUiModel.value =
                     uploadPrescriptionUiModel.value.copy(isError = true)
                 return

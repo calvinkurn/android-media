@@ -8,6 +8,7 @@ import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.interceptor.TkpdBaseInterceptor;
 import com.tokopedia.network.refreshtoken.AccessTokenRefresh;
 import com.tokopedia.network.utils.CommonUtils;
+import com.tokopedia.network.utils.ThemeUtils;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -210,7 +211,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
     protected Map<String, String> getHeaderMap(
             String path, String strParam, String method, String authKey, String contentTypeHeader) {
         UserSessionInterface userSessionInterface = new UserSession(context);
-        return AuthHelper.generateHeaders(path, strParam, method, authKey, contentTypeHeader, userSession.getUserId(), userSessionInterface);
+        return AuthHelper.generateHeaders(path, strParam, method, authKey, contentTypeHeader, userSession.getUserId(), userSessionInterface, ThemeUtils.getHeader(context));
     }
 
     protected void generateHeader(Map<String, String> authHeaders, Request originRequest, Request.Builder newRequest) {

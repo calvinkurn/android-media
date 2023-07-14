@@ -16,6 +16,8 @@ buildscript {
 }
 
 android {
+    namespace 'com.tokopedia.media.editor'
+    testNamespace 'com.tokopedia.media.editor.test'
     defaultConfig {
         multiDexEnabled true
         consumerProguardFiles 'proguard-rules.pro'

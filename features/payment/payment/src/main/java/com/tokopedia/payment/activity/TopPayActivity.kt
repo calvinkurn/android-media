@@ -32,7 +32,6 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.applink.internal.ApplinkConstInternalPayment
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.common.payment.PaymentConstant
 import com.tokopedia.common.payment.PaymentLoggingClient
@@ -48,6 +47,7 @@ import com.tokopedia.network.authentication.*
 import com.tokopedia.network.authentication.AuthKey.Companion.KEY_WSV4
 import com.tokopedia.network.constant.ErrorNetMessage
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.network.utils.ThemeUtils
 import com.tokopedia.payment.R
 import com.tokopedia.payment.fingerprint.di.DaggerFingerprintComponent
 import com.tokopedia.payment.fingerprint.di.FingerprintModule
@@ -120,8 +120,6 @@ class TopPayActivity :
 
     private var reloadUrl = ""
 
-    private var paymentTimestampLogger: PaymentTimestampLogger? = null
-
     private val webViewOnKeyListener: View.OnKeyListener
         get() = View.OnKeyListener { _, keyCode, event ->
             if (event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_BACK) {
@@ -137,28 +135,19 @@ class TopPayActivity :
             window?.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
             window?.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                window?.statusBarColor = resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_G500, null)
+                window?.statusBarColor = resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_GN500, null)
             } else {
-                window?.statusBarColor = resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_G500)
+                window?.statusBarColor = resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_GN500)
             }
         }
         initInjector()
         intent.extras?.let {
             setupBundlePass(it)
         }
-        initTimestampLogger()
         initView()
         initVar()
         setViewListener()
         setActionVar()
-    }
-
-    private fun initTimestampLogger() {
-        val checkoutTimestamp =
-            intent.getLongExtra(ApplinkConstInternalPayment.CHECKOUT_TIMESTAMP, 0L)
-        if (checkoutTimestamp > 0) {
-            paymentTimestampLogger = PaymentTimestampLogger(remoteConfig)
-        }
     }
 
     private fun initInjector() {
@@ -254,7 +243,6 @@ class TopPayActivity :
         } else {
             scroogeWebView?.postUrl(WebViewHelper.appendGAClientIdAsQueryParam(url, this) ?: "", postData)
         }
-        paymentTimestampLogger?.paymentStartLoadTimestamp = System.currentTimeMillis()
     }
 
     private fun isInsufficientBookingStockUrl(url: String): Boolean {
@@ -726,8 +714,6 @@ class TopPayActivity :
             hasFinishedFirstLoad = true
             presenter.clearTimeoutSubscription()
             hideProgressLoading()
-            paymentTimestampLogger?.paymentFinishLoadTimestamp = System.currentTimeMillis()
-            paymentTimestampLogger?.sendLog()
         }
 
         override fun onReceivedSslError(view: WebView?, handler: SslErrorHandler?, error: SslError?) {
@@ -883,7 +869,7 @@ class TopPayActivity :
     }
 
     private fun generateWebviewHeaders(path: String, strParam: String): MutableMap<String, String> {
-        val header = AuthHelper.getDefaultHeaderMapOld(path, strParam, "GET", CONTENT_TYPE, KEY_WSV4, DATE_FORMAT, userSession.userId, userSession)
+        val header = AuthHelper.getDefaultHeaderMapOld(path, strParam, "GET", CONTENT_TYPE, KEY_WSV4, DATE_FORMAT, userSession.userId, userSession, ThemeUtils.getHeader(this))
         header[HEADER_TKPD_USER_AGENT] = DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_DEVICE
         header[HEADER_TKPD_SESSION_ID] = userSession.deviceId
         return header

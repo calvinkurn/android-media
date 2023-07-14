@@ -293,8 +293,8 @@ class AccountHeaderViewHolder(itemView: View,
                                 profileMembership.tokopointPointAmount
                             )
                             val span = SpannableString(spanText)
-                            span.setSpan(ForegroundColorSpan(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96)), 0, profileMembership.tokopointExternalAmount.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                            span.setSpan(ForegroundColorSpan(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68)), profileMembership.tokopointExternalAmount.length + 1, spanText.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                            span.setSpan(ForegroundColorSpan(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_96)), 0, profileMembership.tokopointExternalAmount.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                            span.setSpan(ForegroundColorSpan(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_68)), profileMembership.tokopointExternalAmount.length + 1, spanText.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                             tvOvo.setText(span, TextView.BufferType.SPANNABLE)
                             usrOvoBadge.setImageUrl(profileMembership.tokopointBadgeUrl)
                         }

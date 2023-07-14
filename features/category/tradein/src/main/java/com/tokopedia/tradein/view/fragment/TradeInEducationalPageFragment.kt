@@ -83,7 +83,7 @@ class TradeInEducationalPageFragment : TkpdBaseV4Fragment() {
             override fun updateDrawState(ds: TextPaint) {
                 super.updateDrawState(ds)
                 ds.isUnderlineText = false
-                ds.color = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
+                ds.color = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
                 ds.typeface = Typeface.create(Typeface.DEFAULT_BOLD, Typeface.BOLD)
             }
         }

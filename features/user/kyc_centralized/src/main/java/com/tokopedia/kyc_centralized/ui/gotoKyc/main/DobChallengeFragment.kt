@@ -46,6 +46,8 @@ class DobChallengeFragment : BaseDaggerFragment() {
 
     private val args: DobChallengeFragmentArgs by navArgs()
 
+    private var datePicker : DateTimePickerUnify? = null
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
@@ -207,36 +209,44 @@ class DobChallengeFragment : BaseDaggerFragment() {
             maxDate
         }
 
-        val datePicker = DateTimePickerUnify(
-            context = requireContext(), minDate = minDate, defaultDate = defaultDate, maxDate = maxDate
-        )
-
-        datePicker.setTitle(getString(R.string.goto_kyc_dob_challenge_choose_dob))
-
-        datePicker.datePickerButton.setOnClickListener {
-            val selectedDatePicker = datePicker.getDate()
-            pickedDate = selectedDatePicker.get(Calendar.DAY_OF_MONTH)
-            pickedMonth = selectedDatePicker.get(Calendar.MONTH)
-            pickedYear = selectedDatePicker.get(Calendar.YEAR)
-            val selectedDate = formatDateParam(
-                dayOfMonth = pickedDate,
-                month = pickedMonth + 1,
-                year = pickedYear
+        if (datePicker == null) {
+            datePicker = DateTimePickerUnify(
+                context = requireContext(), minDate = minDate, defaultDate = defaultDate, maxDate = maxDate
             )
-            this.selectedDate = selectedDate
-            val date = DateFormatUtils.formatDate(
-                DateFormatUtils.FORMAT_YYYY_MM_DD, DateFormatUtils.FORMAT_DD_MMMM_YYYY, selectedDate
-            )
-            binding?.fieldDob?.editText?.setText(date)
-            binding?.btnConfirmation?.isEnabled = true
-            binding?.fieldDob?.apply {
-                isInputError = false
-                setMessage(" ")
+
+            datePicker?.let { datePickerUnify ->
+                datePickerUnify.setTitle(getString(R.string.goto_kyc_dob_challenge_choose_dob))
+
+                datePickerUnify.datePickerButton.setOnClickListener {
+                    val selectedDatePicker = datePickerUnify.getDate()
+                    pickedDate = selectedDatePicker.get(Calendar.DAY_OF_MONTH)
+                    pickedMonth = selectedDatePicker.get(Calendar.MONTH)
+                    pickedYear = selectedDatePicker.get(Calendar.YEAR)
+                    val selectedDate = formatDateParam(
+                        dayOfMonth = pickedDate,
+                        month = pickedMonth + 1,
+                        year = pickedYear
+                    )
+                    this.selectedDate = selectedDate
+                    val date = DateFormatUtils.formatDate(
+                        DateFormatUtils.FORMAT_YYYY_MM_DD, DateFormatUtils.FORMAT_DD_MMMM_YYYY, selectedDate
+                    )
+                    binding?.fieldDob?.editText?.setText(date)
+                    binding?.btnConfirmation?.isEnabled = true
+                    binding?.fieldDob?.apply {
+                        isInputError = false
+                        setMessage(" ")
+                    }
+                    datePickerUnify.dismiss()
+                }
+
+                datePickerUnify.setOnDismissListener {
+                    datePicker = null
+                }
+
+                datePickerUnify.show(childFragmentManager, TAG_BOTTOM_SHEET_DATE_PICKER)
             }
-            datePicker.dismiss()
         }
-
-        datePicker.show(childFragmentManager, TAG_BOTTOM_SHEET_DATE_PICKER)
     }
 
     private fun showDobChallengeFailedBottomSheet(cooldownTimeInSeconds: String, maximumAttemptsAllowed: String) {

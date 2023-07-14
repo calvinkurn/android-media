@@ -11,7 +11,7 @@
         android:id="@+id/text_view_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/Unify_N700_32"
+        android:textColor="@color/Unify_NN950_32"
         android:textSize="14sp"
         tools:text="@string/app_name"/>
 
@@ -31,7 +31,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="2dp"
             android:layout_weight="1"
-            android:textColor="@color/Unify_G400"
+            android:textColor="@color/Unify_GN500"
             android:textSize="16sp"
             tools:text="@string/app_name"/>
 
@@ -45,5 +45,5 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/Unify_N700_20"/>
+        android:background="@color/Unify_NN950_20"/>
 </LinearLayout>

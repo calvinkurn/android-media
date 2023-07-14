@@ -107,7 +107,7 @@ class ShopHomeFlashSaleViewHolder(
     private fun configNonFestivity(element: ShopHomeFlashSaleUiModel) {
         val defaultTitleColor = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN950)
         val defaultSubTitleColor = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN950)
-        val defaultCtaColor = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
+        val defaultCtaColor = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
         val defaultInformationIconColor = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN900)
         flashSaleCampaignNameView?.setTextColor(defaultTitleColor)
         timerDescriptionView?.setTextColor(defaultSubTitleColor)
