@@ -428,18 +428,13 @@ class ShipmentCartItemViewHolder(
     }
 
     private fun renderAddOnProduct(cartItemModel: CartItemModel) {
-        binding.itemShipmentAddonProduct.apply {
-            icProductAddon.visible()
-            tvTitleAddonProduct.visible()
-            llAddonProductItems.visible()
-        }
-        val addOnProduct = cartItemModel.addOnProduct
-        if (addOnProduct.listAddOnProductData.isEmpty()) {
+        if (cartItemModel.addOnProduct.listAddOnProductData.isEmpty()) {
             binding.llAddonProduct.gone()
         } else {
             binding.llAddonProduct.visible()
             binding.itemShipmentAddonProduct.llAddonProductItems.removeAllViews()
             binding.itemShipmentAddonProduct.apply {
+                tvTitleAddonProduct.visible()
                 tvTitleAddonProduct.text = cartItemModel.addOnProduct.title
                 if (cartItemModel.addOnProduct.bottomsheet.isShown) {
                     tvSeeAllAddonProduct.apply {
@@ -453,11 +448,9 @@ class ShipmentCartItemViewHolder(
                     tvSeeAllAddonProduct.gone()
                 }
             }
+
             cartItemModel.addOnProduct.listAddOnProductData.forEach { addon ->
-                if (addon.addOnDataName.isEmpty()) {
-                    binding.itemShipmentAddonProduct.llAddonProductItems.visibility = View.GONE
-                } else {
-                    binding.itemShipmentAddonProduct.llAddonProductItems.visible()
+                if (addon.addOnDataName.isNotBlank()) {
                     val addOnView = ItemShipmentAddonProductItemBinding.inflate(layoutInflater, null, false)
                     addOnView.apply {
                         tvShipmentAddOnName.text = addon.addOnDataName
@@ -491,18 +484,14 @@ class ShipmentCartItemViewHolder(
 
     private fun renderAddOnBundlingProduct(cartItemModel: CartItemModel) {
         binding.llAddonProduct.gone()
-        binding.itemShipmentAddonProductBundling.apply {
-            icProductAddon.visible()
-            tvTitleAddonProduct.visible()
-            llAddonProductItems.visible()
-        }
-        val addOnProduct = cartItemModel.addOnProduct
-        if (addOnProduct.listAddOnProductData.isEmpty()) {
+        if (cartItemModel.addOnProduct.listAddOnProductData.isEmpty()) {
             binding.llAddonProductBundling.gone()
         } else {
             binding.llAddonProductBundling.visible()
+            binding.itemShipmentAddonProductBundling.llAddonProductItems.visible()
             binding.itemShipmentAddonProductBundling.llAddonProductItems.removeAllViews()
             binding.itemShipmentAddonProductBundling.apply {
+                tvTitleAddonProduct.visible()
                 tvTitleAddonProduct.text = cartItemModel.addOnProduct.title
                 if (cartItemModel.addOnProduct.bottomsheet.isShown) {
                     tvSeeAllAddonProduct.visible()
@@ -514,16 +503,14 @@ class ShipmentCartItemViewHolder(
                 }
             }
             cartItemModel.addOnProduct.listAddOnProductData.forEach { addon ->
-                if (addon.addOnDataName.isEmpty()) {
-                    binding.itemShipmentAddonProductBundling.llAddonProductItems.visibility = View.GONE
-                } else {
-                    binding.itemShipmentAddonProductBundling.llAddonProductItems.visible()
+                if (addon.addOnDataName.isNotBlank()) {
                     val addOnView = ItemShipmentAddonProductItemBinding.inflate(layoutInflater, null, false)
                     addOnView.apply {
                         cbAddonItem.isChecked = (addon.addOnDataStatus == ADD_ON_PRODUCT_STATUS_CHECK)
                         cbAddonItem.setOnCheckedChangeListener { compoundButton, isChecked ->
                             listener?.onCheckboxAddonProductListener(isChecked, addon, cartItemModel, bindingAdapterPosition)
                         }
+                        icProductAddonInfo.visible()
                         icProductAddonInfo.setOnClickListener {
                             listener?.onClickAddonProductInfoIcon(addon.addOnDataInfoLink)
                         }

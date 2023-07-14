@@ -133,6 +133,7 @@ import com.tokopedia.purchase_platform.common.constant.ARGS_PROMO_REQUEST
 import com.tokopedia.purchase_platform.common.constant.ARGS_VALIDATE_USE_DATA_RESULT
 import com.tokopedia.purchase_platform.common.constant.ARGS_VALIDATE_USE_REQUEST
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant
+import com.tokopedia.purchase_platform.common.constant.AddOnConstant.ADD_ON_PRODUCT_STATUS_CHECK
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant.QUERY_PARAM_ADDON_PRODUCT
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant.QUERY_PARAM_CART_ID
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant.QUERY_PARAM_IS_TOKOCABANG
@@ -375,9 +376,22 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                     if (listProducts[index].cartId == cartId) {
                         val addonProduct = listProducts[index].addOnsProductData
                         addOnProductDataResult.changedAddons.forEach { addOnUiModel ->
-                            addonProduct.data.forEach { addon ->
-                                if (addOnUiModel.id == addon.id) {
-                                    addon.status = addOnUiModel.getSelectedStatus().value
+                            addonProduct.data.forEach { addonExisting ->
+                                if (addOnUiModel.addOnType == addonExisting.type &&
+                                    addOnUiModel.getSelectedStatus().value == ADD_ON_PRODUCT_STATUS_CHECK
+                                ) {
+                                    println("++ addon name baru = ${addOnUiModel.name}")
+                                    addonExisting.apply {
+                                        id = addOnUiModel.id
+                                        uniqueId = addOnUiModel.uniqueId
+                                        price = addOnUiModel.price
+                                        infoLink = addOnUiModel.eduLink
+                                        name = addOnUiModel.name
+                                        status = addOnUiModel.getSelectedStatus().value
+                                        type = addOnUiModel.addOnType
+                                    }
+                                } else {
+                                    addonExisting.status = addOnUiModel.getSelectedStatus().value
                                 }
                             }
                         }
@@ -1583,6 +1597,8 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                     QUERY_PARAM_IS_TOKOCABANG to product.isFulfillment
                 )
             )
+
+            println("++ applink = " + applink)
 
             activity?.let {
                 val intent = RouteManager.getIntent(it, applink)
