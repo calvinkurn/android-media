@@ -17,6 +17,7 @@ import com.tokopedia.promousage.domain.entity.list.TermAndCondition
 import com.tokopedia.promousage.domain.entity.list.VoucherCode
 import com.tokopedia.promousage.domain.entity.list.VoucherRecommendation
 import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.delay
 import javax.inject.Inject
@@ -343,38 +344,39 @@ class PromoUsageViewModel @Inject constructor(
 
     }
 
-    fun onClickChevron(
-        currentVoucherAccordions: List<VoucherAccordion>,
-        selectedVoucherAccordion: VoucherAccordion
-    ) {
-        val isExpanded = selectedVoucherAccordion.isExpanded
-        if (isExpanded) {
-            collapseSection(currentVoucherAccordions, selectedVoucherAccordion)
+    fun onClickChevron(selectedVoucherAccordion: VoucherAccordion) {
+        val currentItems = items.value?.currentItemsOrEmpty() ?: return
+
+        val accordions = currentItems.map { item ->
+            if (item is VoucherAccordion) {
+                if (item.title == selectedVoucherAccordion.title) {
+
+                    val isExpanded = selectedVoucherAccordion.isExpanded
+                    if (isExpanded) {
+                        selectedVoucherAccordion.copy(isExpanded = false)
+                    } else {
+                        selectedVoucherAccordion.copy(isExpanded = true)
+                    }
+
+                } else {
+                    item
+                }
+            } else {
+                item
+            }
+        }
+
+
+
+        _items.postValue(Success(accordions))
+    }
+
+
+    private fun Result<List<DelegateAdapterItem>>.currentItemsOrEmpty(): List<DelegateAdapterItem> {
+        return if (this is Success) {
+            this.data
         } else {
-            expandSection(currentVoucherAccordions, selectedVoucherAccordion)
+            emptyList()
         }
     }
-
-    private fun expandSection(currentVoucherAccordions: List<VoucherAccordion>, voucherAccordion: VoucherAccordion) {
-        val updatedVoucherSections = currentVoucherAccordions.map { currentVoucherSection ->
-            if (currentVoucherSection.title == voucherAccordion.title) {
-                currentVoucherSection.copy(isExpanded = true)
-            } else {
-                currentVoucherSection
-            }
-        }
-        _items.postValue(Success(updatedVoucherSections))
-    }
-
-    private fun collapseSection(currentVoucherAccordions: List<VoucherAccordion>, voucherAccordion: VoucherAccordion) {
-        val updatedVoucherSections = currentVoucherAccordions.map { currentVoucherSection ->
-            if (currentVoucherSection.title == voucherAccordion.title) {
-                currentVoucherSection.copy(isExpanded = false)
-            } else {
-                currentVoucherSection
-            }
-        }
-        _items.postValue(Success(updatedVoucherSections))
-    }
-
 }

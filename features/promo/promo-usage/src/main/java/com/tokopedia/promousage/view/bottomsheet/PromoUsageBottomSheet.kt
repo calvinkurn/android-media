@@ -76,7 +76,6 @@ class PromoUsageBottomSheet: BottomSheetDialogFragment() {
     private var isSkipCollapseState: Boolean = false
     private var displayMetrix = DisplayMetrics()
     private var bottomSheetBehaviorDefaultState = BottomSheetBehavior.STATE_COLLAPSED
-    private var child: View? = null
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -354,6 +353,7 @@ class PromoUsageBottomSheet: BottomSheetDialogFragment() {
 
     private val onVoucherAccordionClick = { accordion : VoucherAccordion ->
 
+        viewModel.onClickChevron(accordion)
     }
 
     private val onViewAllVoucherCtaClick = { accordion : VoucherAccordion ->
