@@ -19,7 +19,7 @@ class VoucherRecommendationDelegateAdapter(
 ) : DelegateAdapter<VoucherRecommendation, VoucherRecommendationDelegateAdapter.ViewHolder>(VoucherRecommendation::class.java) {
 
     companion object {
-        private const val PADDING_BOTTOM_DP = 8
+        private const val PADDING_BOTTOM_DP = 16
     }
 
     override fun createViewHolder(parent: ViewGroup): RecyclerView.ViewHolder {
@@ -39,6 +39,7 @@ class VoucherRecommendationDelegateAdapter(
         RecyclerView.ViewHolder(binding.root) {
 
         init {
+            binding.recyclerView.applyPaddingToLastItem(PADDING_BOTTOM_DP)
             binding.btnRecommendationUseVoucher.setOnClickListener { onButtonUseRecommendedVoucherClick() }
         }
 
@@ -49,8 +50,6 @@ class VoucherRecommendationDelegateAdapter(
             binding.recyclerView.apply {
                 layoutManager = LinearLayoutManager(binding.recyclerView.context)
                 adapter = voucherAdapter
-
-                applyPaddingToLastItem(PADDING_BOTTOM_DP)
             }
 
             voucherAdapter.submit(recommendation.vouchers)
