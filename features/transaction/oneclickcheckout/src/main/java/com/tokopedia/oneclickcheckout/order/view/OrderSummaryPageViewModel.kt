@@ -773,28 +773,47 @@ class OrderSummaryPageViewModel @Inject constructor(
             )
             orderPayment.value = orderPayment.value.copy(walletData = newWalletData)
             if (shouldRevalidatePromo) {
+                var param = cartProcessor.generateUpdateCartParam(
+                    orderCart,
+                    orderProfile.value,
+                    orderShipment.value,
+                    orderPayment.value
+                )
+                if (param == null) {
+                    globalEvent.value = OccGlobalEvent.Error(errorMessage = DEFAULT_LOCAL_ERROR_MESSAGE)
+                } else {
+                    param = param.copy(
+                        skipShippingValidation = cartProcessor.shouldSkipShippingValidationWhenUpdateCart(
+                            orderShipment.value
+                        ),
+                        source = SOURCE_UPDATE_OCC_PAYMENT
+                    )
+                    // ignore result, result is important only in final update
+                    cartProcessor.updatePreference(param)
+                }
                 validateUsePromo()
             } else {
                 calculateTotal(skipDynamicFee = true)
             }
-            if (isSilent) {
-                return@launch
+            if (!isSilent) {
+                orderSummaryAnalytics.eventViewTenureOption(selectedInstallmentTerm.installmentTerm.toString())
+                if (!shouldRevalidatePromo) {
+                    var param: UpdateCartOccRequest = cartProcessor.generateUpdateCartParam(
+                        orderCart,
+                        orderProfile.value,
+                        orderShipment.value,
+                        orderPayment.value
+                    ) ?: return@launch
+                    param = param.copy(
+                        skipShippingValidation = cartProcessor.shouldSkipShippingValidationWhenUpdateCart(
+                            orderShipment.value
+                        ),
+                        source = SOURCE_UPDATE_OCC_PAYMENT
+                    )
+                    // ignore result, result is important only in final update
+                    cartProcessor.updatePreference(param)
+                }
             }
-            orderSummaryAnalytics.eventViewTenureOption(selectedInstallmentTerm.installmentTerm.toString())
-            var param: UpdateCartOccRequest = cartProcessor.generateUpdateCartParam(
-                orderCart,
-                orderProfile.value,
-                orderShipment.value,
-                orderPayment.value
-            ) ?: return@launch
-            param = param.copy(
-                skipShippingValidation = cartProcessor.shouldSkipShippingValidationWhenUpdateCart(
-                    orderShipment.value
-                ),
-                source = SOURCE_UPDATE_OCC_PAYMENT
-            )
-            // ignore result, result is important only in final update
-            cartProcessor.updatePreference(param)
         }
     }
 

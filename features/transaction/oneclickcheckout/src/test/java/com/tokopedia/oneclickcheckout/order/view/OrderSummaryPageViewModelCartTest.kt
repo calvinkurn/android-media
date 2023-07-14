@@ -846,6 +846,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
 
         // Then
         coVerify {
+            updateCartOccUseCase.executeSuspend(any())
             validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground()
         }
     }
@@ -1982,9 +1983,9 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
 
         // Then
         coVerify(ordering = Ordering.ORDERED) {
+            updateCartOccUseCase.executeSuspend(any())
             validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground()
             goCicilInstallmentOptionUseCase.executeSuspend(any())
-            updateCartOccUseCase.executeSuspend(any())
         }
     }
 
