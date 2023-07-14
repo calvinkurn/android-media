@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <ViewSwitcher
+        android:id="@+id/switcher_promo_checkout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inAnimation="@anim/anim_slide_up_in"
+        android:outAnimation="@anim/anim_slide_up_out"
+        android:visibility="visible">
+
+        <include layout="@layout/layout_widget_promo_checkout" />
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/Unify_NN50">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="16dp"
+                android:paddingVertical="12dp">
+
+                <com.tokopedia.unifycomponents.ImageUnify
+                    android:id="@+id/iv_promo_checkout_left_2"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_marginEnd="8dp"
+                    app:layout_constraintEnd_toStartOf="@+id/tv_promo_checkout_title_2"
+                    app:layout_constraintHorizontal_chainStyle="packed"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextSwitcher
+                    android:id="@+id/tv_promo_checkout_title_2"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:inAnimation="@anim/anim_slide_up_in"
+                    android:outAnimation="@anim/anim_slide_up_out"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/ic_promo_checkout_right_2"
+                    app:layout_constraintStart_toEndOf="@id/iv_promo_checkout_left_2"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:lines="1"
+                        android:text="Verifikasi nomor HP biar bisa pakai promo!Verifikasi nomor HP biar bisa pakai promo!"
+                        app:typographyType="display_3"
+                        app:typographyWeight="reguler" />
+
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:lines="1"
+                        app:typographyType="display_3"
+                        app:typographyWeight="bold" />
+
+                </TextSwitcher>
+
+                <com.tokopedia.iconunify.IconUnify
+                    android:id="@+id/ic_promo_checkout_right_2"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginStart="4dp"
+                    app:icon_name="CHEVRON_UP"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/tv_promo_checkout_title_2"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </FrameLayout>
+
+    </ViewSwitcher>
+
+    <FrameLayout
+        android:id="@+id/loader_promo_checkout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/Unify_TN100"
+        android:visibility="gone">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="12dp">
+
+            <com.tokopedia.unifycomponents.LoaderUnify
+                android:id="@+id/iv_promo_checkout_left"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginEnd="8dp"
+                app:layout_constraintEnd_toStartOf="@+id/tv_promo_checkout_title"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:loader_type="circle" />
+
+            <com.tokopedia.unifycomponents.LoaderUnify
+                android:id="@+id/tv_promo_checkout_title"
+                android:layout_width="0dp"
+                android:layout_height="12dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/ic_promo_checkout_right"
+                app:layout_constraintStart_toEndOf="@id/iv_promo_checkout_left"
+                app:layout_constraintTop_toTopOf="parent"
+                app:loader_type="line" />
+
+            <com.tokopedia.unifycomponents.LoaderUnify
+                android:id="@+id/ic_promo_checkout_right"
+                android:layout_width="86dp"
+                android:layout_height="12dp"
+                android:layout_marginStart="8dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/tv_promo_checkout_title"
+                app:layout_constraintTop_toTopOf="parent"
+                app:loader_type="line" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </FrameLayout>
+
+</FrameLayout>
