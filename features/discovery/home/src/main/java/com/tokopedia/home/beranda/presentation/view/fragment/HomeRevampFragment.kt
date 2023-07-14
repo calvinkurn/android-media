@@ -67,6 +67,7 @@ import com.tokopedia.home.analytics.HomePageTrackingV2.HomeBanner.getOverlayBann
 import com.tokopedia.home.analytics.HomePageTrackingV2.HomeBanner.getOverlayBannerImpression
 import com.tokopedia.home.analytics.v2.BestSellerWidgetTracker
 import com.tokopedia.home.analytics.v2.LegoBannerTracking
+import com.tokopedia.home.analytics.v2.LoginWidgetTracking
 import com.tokopedia.home.analytics.v2.PopularKeywordTracking
 import com.tokopedia.home.analytics.v2.RecommendationListTracking
 import com.tokopedia.home.beranda.data.model.HomeChooseAddressData
@@ -267,6 +268,7 @@ open class HomeRevampFragment :
         private const val DEFAULT_WALLET_APPLINK_REQUEST_CODE = 111
         private const val REQUEST_CODE_LOGIN_STICKY_LOGIN = 130
         private const val REQUEST_CODE_LOGIN = 131
+        private const val REQUEST_CODE_LOGIN_WIDGET_LOGIN = 133
         private const val REQUEST_CODE_REVIEW = 999
         private const val EXTRA_SHOP_ID = "EXTRA_SHOP_ID"
         private const val REVIEW_CLICK_AT = "rating"
@@ -648,7 +650,6 @@ open class HomeRevampFragment :
             refreshLayoutOld = view.findViewById(R.id.home_swipe_refresh_layout)
         }
 
-        stickyLoginView = view.findViewById(R.id.sticky_login_text)
         root = view.findViewById(R.id.root)
         if (arguments != null) {
             scrollToRecommendList = requireArguments().getBoolean(SCROLL_RECOMMEND_LIST)
@@ -973,19 +974,27 @@ open class HomeRevampFragment :
         }
     }
 
-    override fun goToLogin() {
+    override fun onLoginWidgetClick() {
+        LoginWidgetTracking.sendLoginClick()
+        goToLogin(REQUEST_CODE_LOGIN_WIDGET_LOGIN)
+    }
+
+    fun goToLogin(requestCode: Int) {
         context?.let {
             val intent = RouteManager.getIntent(it, ApplinkConst.LOGIN)
-            startActivityForResult(intent, REQUEST_CODE_LOGIN_STICKY_LOGIN)
+            startActivityForResult(intent, requestCode)
         }
     }
 
     private fun initStickyLogin() {
+        stickyLoginView = if(!HomeRollenceController.isUsingAtf2Variant())
+            view?.findViewById(R.id.sticky_login_text) else null
+        if(stickyLoginView == null) return
         stickyLoginView?.page = StickyLoginConstant.Page.HOME
         stickyLoginView?.lifecycleOwner = viewLifecycleOwner
         stickyLoginView?.setStickyAction(object : StickyLoginAction {
             override fun onClick() {
-                goToLogin()
+                goToLogin(REQUEST_CODE_LOGIN_STICKY_LOGIN)
             }
 
             override fun onDismiss() {
@@ -1703,7 +1712,8 @@ open class HomeRevampFragment :
                     it.finish()
                 }
             }
-            REQUEST_CODE_LOGIN_STICKY_LOGIN -> {
+            REQUEST_CODE_LOGIN_STICKY_LOGIN,
+            REQUEST_CODE_LOGIN_WIDGET_LOGIN -> {
                 if (resultCode == Activity.RESULT_OK && data != null) {
                     val isSuccessRegister = data.getBooleanExtra(ApplinkConstInternalGlobal.PARAM_IS_SUCCESS_REGISTER, false)
                     if (isSuccessRegister && getUserSession().isLoggedIn) {

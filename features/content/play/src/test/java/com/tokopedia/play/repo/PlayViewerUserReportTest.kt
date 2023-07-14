@@ -1,10 +1,10 @@
 package com.tokopedia.play.repo
 
-import com.tokopedia.play.data.UserReportOptions
-import com.tokopedia.play.data.UserReportSubmissionResponse
+import com.tokopedia.content.common.report_content.model.UserReportOptions
+import com.tokopedia.content.common.report_content.model.UserReportSubmissionResponse
 import com.tokopedia.play.data.repository.PlayViewerUserReportRepositoryImpl
-import com.tokopedia.play.domain.GetUserReportListUseCase
-import com.tokopedia.play.domain.PostUserReportUseCase
+import com.tokopedia.content.common.usecase.GetUserReportListUseCase
+import com.tokopedia.content.common.usecase.PostUserReportUseCase
 import com.tokopedia.play.domain.repository.PlayViewerUserReportRepository
 import com.tokopedia.play.helper.ClassBuilder
 import com.tokopedia.play.util.assertFalse
@@ -158,7 +158,8 @@ class PlayViewerUserReportTest {
     fun `get reasoning list is success`(){
         runTest {
             val response = UserReportOptions.Response(
-                data = listOf(UserReportOptions(
+                data = listOf(
+                    UserReportOptions(
                     id = 1,
                     value = "Harga melanggar etika",
                     detail = ""
@@ -174,7 +175,8 @@ class PlayViewerUserReportTest {
                     id = 9,
                     value = "Melanggar etik",
                     detail = ""
-                ))
+                )
+                )
             )
 
             coEvery { getUserReportListUseCase.executeOnBackground() } returns response
