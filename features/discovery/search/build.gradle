@@ -71,7 +71,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.shopWidget)
     implementation projectOrAar(rootProject.ext.features.shopCommon)
     implementation projectOrAar(rootProject.ext.features.filter)
-    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
     implementation projectOrAar(rootProject.ext.features.recommendationWidgetCommon)
     implementation projectOrAar(rootProject.ext.libraries.trackingOptimizer)
     implementation projectOrAar(rootProject.ext.libraries.iris)

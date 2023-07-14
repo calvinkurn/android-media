@@ -1,4 +1,4 @@
-package com.tokopedia.kotlin.extensions
+package com.tokopedia.utils.kotlin.extensions
 
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder

@@ -1,4 +1,4 @@
-package com.tokopedia.kotlin.extensions
+package com.tokopedia.utils.kotlin.extensions
 
 import android.content.SharedPreferences.Editor
 import io.mockk.MockKAnnotations

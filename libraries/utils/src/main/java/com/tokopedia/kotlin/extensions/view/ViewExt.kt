@@ -22,7 +22,7 @@ import android.widget.TextView
 import androidx.annotation.ColorRes
 import androidx.annotation.DimenRes
 import androidx.core.content.ContextCompat
-import com.tokopedia.kotlin.extensions.R
+import com.tokopedia.utils.R
 import com.tokopedia.kotlin.model.ImpressHolder
 import timber.log.Timber
 

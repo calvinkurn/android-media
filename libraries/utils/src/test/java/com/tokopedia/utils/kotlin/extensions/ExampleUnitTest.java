@@ -1,4 +1,4 @@
-package com.tokopedia.kotlin.extensions;
+package com.tokopedia.utils.kotlin.extensions;
 
 import org.junit.Test;
 

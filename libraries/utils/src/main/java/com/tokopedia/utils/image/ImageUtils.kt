@@ -16,7 +16,7 @@ import com.bumptech.glide.request.target.BitmapImageViewTarget
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.bumptech.glide.signature.ObjectKey
-import com.tokopedia.kotlin.extensions.R
+import com.tokopedia.utils.R
 
 object ImageUtils {
 

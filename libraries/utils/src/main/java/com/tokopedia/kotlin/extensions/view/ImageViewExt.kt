@@ -4,7 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.widget.ImageView
 import androidx.annotation.DrawableRes
-import com.tokopedia.kotlin.extensions.R
+import com.tokopedia.utils.R
 import com.tokopedia.utils.image.ImageUtils
 import com.tokopedia.utils.resources.DrawableUtils
 
