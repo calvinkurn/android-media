@@ -5,8 +5,10 @@ import android.os.Bundle
 import com.google.android.play.core.splitcompat.SplitCompat
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.tokochat_common.R
 import com.tokopedia.tokochat_common.databinding.TokochatListBaseActivityBinding
+import com.tokopedia.tokochat_common.util.TokoChatViewUtil.setBackIconUnify
 
 abstract class TokoChatListBaseActivity<T>: BaseSimpleActivity(), HasComponent<T> {
 
@@ -26,11 +28,23 @@ abstract class TokoChatListBaseActivity<T>: BaseSimpleActivity(), HasComponent<T
         setupFragmentFactory()
         super.onCreate(savedInstanceState)
         setupViewBinding()
+        setupChatListToolbar()
     }
 
     private fun setupViewBinding() {
         viewBinding = TokochatListBaseActivityBinding.inflate(layoutInflater)
         setContentView(viewBinding?.root)
+    }
+
+    private fun setupChatListToolbar() {
+        viewBinding?.tokochatListToolbar?.apply {
+            isShowBackButton = true
+            title = getString(R.string.title_chatlist)
+            setSupportActionBar(this)
+            setBackIconUnify()
+            contentInsetStartWithNavigation = Int.ZERO
+            contentInsetEndWithActions = Int.ZERO
+        }
     }
 
     override fun getParentViewResourceID(): Int {
