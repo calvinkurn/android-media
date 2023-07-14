@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    package="com.tokopedia.usercomponents">
+    xmlns:tools="http://schemas.android.com/tools">
 
     <application
         android:debuggable="true"
@@ -9,7 +8,7 @@
         tools:replace="android:label"
         android:theme="@style/Theme.AppCompat.NoActionBar">
 
-        <activity android:name=".userconsent.fakes.FakeUserConsentDebugActivity"/>
-        <activity android:name=".explicit.fake_view.ExplicitDebugActivity"/>
+        <activity android:name="com.tokopedia.usercomponents.userconsent.fakes.FakeUserConsentDebugActivity"/>
+        <activity android:name="com.tokopedia.usercomponents.explicit.fake_view.ExplicitDebugActivity"/>
     </application>
 </manifest>
