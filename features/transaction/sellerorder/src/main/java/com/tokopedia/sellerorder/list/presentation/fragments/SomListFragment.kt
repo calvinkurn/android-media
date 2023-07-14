@@ -2914,10 +2914,13 @@ open class SomListFragment :
             }
             viewModel.setSortOrderBy(SomFilterUtil.getDefaultSortBy(highLightStatusKey))
             showCoachMarkAutoTabbing(highLightStatusKey)
-            viewModel.setFirstPageOpened(false)
             refreshOrders(shouldScrollToTop, false)
         } else if (result.data.refreshOrder) {
             refreshOrders(shouldScrollToTop, false)
+        }
+
+        if (viewModel.getIsFirstPageOpened()) {
+            viewModel.setFirstPageOpened(false)
         }
     }
 
