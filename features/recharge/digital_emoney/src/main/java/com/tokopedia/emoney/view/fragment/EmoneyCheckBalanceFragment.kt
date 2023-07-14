@@ -16,6 +16,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.MENU_ID_ELECTRONIC_MONEY
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital
@@ -110,6 +111,7 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
                 executeCard(intent)
             } catch (e: DeadObjectException) {
                 showCommonMessageError()
+                FirebaseCrashlytics.getInstance().recordException(e)
             }
         }
     }
