@@ -8,7 +8,7 @@ import com.tokopedia.checkout.databinding.ItemCheckoutButtonPaymentBinding
 import com.tokopedia.checkout.databinding.ItemCheckoutCostBinding
 import com.tokopedia.checkout.databinding.ItemCheckoutOrderBinding
 import com.tokopedia.checkout.databinding.ItemCheckoutProductBinding
-import com.tokopedia.checkout.databinding.ItemPromoCheckoutBinding
+import com.tokopedia.checkout.databinding.ItemCheckoutPromoBinding
 import com.tokopedia.checkout.databinding.ItemUpsellNewImprovementBinding
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutAddressModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutButtonPaymentModel
@@ -123,7 +123,7 @@ class CheckoutAdapter(
             }
 
             CheckoutPromoViewHolder.VIEW_TYPE -> {
-                CheckoutPromoViewHolder(ItemPromoCheckoutBinding.inflate(inflater, parent, false))
+                CheckoutPromoViewHolder(ItemCheckoutPromoBinding.inflate(inflater, parent, false))
             }
 
             CheckoutCostViewHolder.VIEW_TYPE -> {
