@@ -111,7 +111,7 @@ class PromoUsageBottomSheet: BottomSheetDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupView()
-        observeBottomsheetContent()
+        observeBottomSheetContent()
         viewModel.getVouchers()
     }
 
@@ -125,26 +125,20 @@ class PromoUsageBottomSheet: BottomSheetDialogFragment() {
         val maxPeekHeight: Int = screenHeight - BOTTOM_SHEET_MARGIN_TOP_IN_DP.toPx()
         frameDialogView.layoutParams.height = maxPeekHeight
 
-
         val bottomSheet = BottomSheetBehavior.from(frameDialogView)
         bottomSheet.peekHeight = maxPeekHeight
     }
 
-    private fun observeBottomsheetContent() {
+    private fun observeBottomSheetContent() {
         viewModel.items.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Success -> {
                     showContent()
-
                     handleBottomCardViewAppearance(entryPoint)
-
                     showTotalSavingsSection(3, 40_000)
-
                     recyclerViewAdapter.submit(result.data)
                 }
-
                 is Fail -> {
-                    binding?.cardViewTotalPrice?.gone()
                     hideContent()
                 }
             }
@@ -258,6 +252,7 @@ class PromoUsageBottomSheet: BottomSheetDialogFragment() {
             layoutBottomSheetHeader.gone()
             recyclerView.gone()
             layoutTotalSavings.gone()
+            binding?.cardViewTotalPrice?.gone()
         }
     }
 
