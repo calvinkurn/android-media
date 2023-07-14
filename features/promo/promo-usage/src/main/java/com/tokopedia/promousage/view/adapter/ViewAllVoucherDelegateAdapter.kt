@@ -6,11 +6,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.promousage.R
 import com.tokopedia.promousage.databinding.PromoUsageItemVoucherViewAllBinding
 import com.tokopedia.promousage.domain.entity.list.ViewAllVoucher
+import com.tokopedia.promousage.domain.entity.list.VoucherAccordion
 import com.tokopedia.promousage.util.composite.DelegateAdapter
 
 class ViewAllVoucherDelegateAdapter(
-    private val sectionIndex: Int,
-    private val onViewAllVoucherClick: (Int) -> Unit
+    private val section: VoucherAccordion,
+    private val onViewAllVoucherClick: (VoucherAccordion) -> Unit
 ) : DelegateAdapter<ViewAllVoucher, ViewAllVoucherDelegateAdapter.ViewHolder>(ViewAllVoucher::class.java) {
 
 
@@ -31,7 +32,7 @@ class ViewAllVoucherDelegateAdapter(
         RecyclerView.ViewHolder(binding.root) {
 
         init {
-            binding.root.setOnClickListener { onViewAllVoucherClick(sectionIndex) }
+            binding.root.setOnClickListener { onViewAllVoucherClick(section) }
         }
 
         fun bind(voucher: ViewAllVoucher) {

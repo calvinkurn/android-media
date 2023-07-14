@@ -13,9 +13,9 @@ import com.tokopedia.promousage.domain.entity.list.VoucherAccordion
 import com.tokopedia.promousage.util.composite.DelegateAdapter
 
 class VoucherAccordionDelegateAdapter(
-    private val onSectionClick: (Int) -> Unit,
+    private val onSectionClick: (VoucherAccordion) -> Unit,
     private val onVoucherClick: (Voucher) -> Unit,
-    private val onViewAllVoucherClick: (Int) -> Unit
+    private val onViewAllVoucherClick: (VoucherAccordion) -> Unit
 ) : DelegateAdapter<VoucherAccordion, VoucherAccordionDelegateAdapter.ViewHolder>(VoucherAccordion::class.java) {
 
     override fun createViewHolder(parent: ViewGroup): RecyclerView.ViewHolder {
@@ -37,10 +37,6 @@ class VoucherAccordionDelegateAdapter(
     inner class ViewHolder(private val binding: PromoUsageItemVoucherSectionBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        init {
-            binding.root.setOnClickListener { onSectionClick(bindingAdapterPosition) }
-        }
-
         fun bind(section: VoucherAccordion) {
             bindChevron(section)
             bindVouchers(section, onVoucherClick, onViewAllVoucherClick)
@@ -61,11 +57,11 @@ class VoucherAccordionDelegateAdapter(
         private fun bindVouchers(
             section: VoucherAccordion,
             onVoucherClick: (Voucher) -> Unit,
-            onViewAllVoucherClick: (Int) -> Unit
+            onViewAllVoucherClick: (VoucherAccordion) -> Unit
         ) {
             val voucherAdapter = CompositeAdapter.Builder()
                 .add(VoucherAccordionChildDelegateAdapter(onVoucherClick))
-                .add(ViewAllVoucherDelegateAdapter(bindingAdapterPosition, onViewAllVoucherClick))
+                .add(ViewAllVoucherDelegateAdapter(section, onViewAllVoucherClick))
                 .build()
 
 
@@ -75,6 +71,8 @@ class VoucherAccordionDelegateAdapter(
             }
 
             binding.childRecyclerView.isVisible = section.isExpanded
+            binding.root.setOnClickListener { onSectionClick(section) }
+
             voucherAdapter.submit(section.vouchers)
         }
 

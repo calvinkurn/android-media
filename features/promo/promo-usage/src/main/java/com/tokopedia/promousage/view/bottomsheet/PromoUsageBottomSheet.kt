@@ -30,6 +30,7 @@ import com.tokopedia.promousage.databinding.PromoUsageBottomshetBinding
 import com.tokopedia.promousage.di.DaggerPromoUsageComponent
 import com.tokopedia.promousage.domain.entity.EntryPoint
 import com.tokopedia.promousage.domain.entity.list.Voucher
+import com.tokopedia.promousage.domain.entity.list.VoucherAccordion
 import com.tokopedia.promousage.view.adapter.VoucherRecommendationDelegateAdapter
 import com.tokopedia.promousage.view.adapter.VoucherAccordionDelegateAdapter
 import com.tokopedia.promousage.util.composite.CompositeAdapter
@@ -60,8 +61,8 @@ class PromoUsageBottomSheet: BottomSheetDialogFragment() {
 
     private val recyclerViewAdapter by lazy {
         CompositeAdapter.Builder()
-            .add(VoucherRecommendationDelegateAdapter(onVoucherClick))
-            .add(VoucherAccordionDelegateAdapter(onVoucherSectionClick, onVoucherClick, onViewAllVoucherClick))
+            .add(VoucherRecommendationDelegateAdapter(onVoucherClick, onButtonUseRecommendedVoucherClick))
+            .add(VoucherAccordionDelegateAdapter(onVoucherAccordionClick, onVoucherClick, onViewAllVoucherCtaClick))
             .add(TermAndConditionDelegateAdapter(onTermAndConditionHyperlinkClick))
             .add(VoucherCodeDelegateAdapter(onApplyVoucherCodeCtaClick))
             .build()
@@ -361,14 +362,13 @@ class PromoUsageBottomSheet: BottomSheetDialogFragment() {
 
     }
 
-    private val onVoucherSectionClick = { index : Int ->
+    private val onVoucherAccordionClick = { accordion : VoucherAccordion ->
 
     }
 
-    private val onViewAllVoucherClick = { index : Int ->
+    private val onViewAllVoucherCtaClick = { accordion : VoucherAccordion ->
 
     }
-
 
     private val onButtonUseRecommendedVoucherClick = {
 
@@ -378,7 +378,9 @@ class PromoUsageBottomSheet: BottomSheetDialogFragment() {
 
     }
 
-    private val onTermAndConditionHyperlinkClick = { showTermAndConditionBottomSheet() }
+    private val onTermAndConditionHyperlinkClick = {
+        showTermAndConditionBottomSheet()
+    }
 }
 
 
