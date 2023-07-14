@@ -535,69 +535,56 @@ class OrderProductCard(
             loaderIcProductAddon.gone()
             loaderTvTitle.gone()
 
-            if (addOnsProductData.data.isNotEmpty()) {
-                if (addOnsProductData.data.size > 1) {
-                    loopAddOn@ for (addOn in addOnsProductData.data) {
-                        if (addOn.status == ADD_ON_PRODUCT_STATUS_CHECK) {
-                            setAddOnLayoutData(addOn, llAddonProductItems)
-                            break@loopAddOn
+            addOnsProductData.data.forEach { addOn ->
+                val addOnView = ItemShipmentAddonProductItemBinding.inflate(
+                    inflater,
+                    null,
+                    false
+                )
+
+                addOnView.apply {
+                    // set data on the views
+                    setAddOnProductName(
+                        binding = addOnView,
+                        addOn = addOn
+                    )
+                    setAddOnProductPrice(
+                        binding = addOnView,
+                        addOn = addOn
+                    )
+                    setAddOnProductStatus(
+                        binding = addOnView,
+                        addOn = addOn
+                    )
+
+                    // set addon listeners
+                    cbAddonItem.setOnCheckedChangeListener { _, isChecked ->
+                        changeAddOnProductStatus(
+                            addOn = addOn
+                        )
+                        checkAddOnProductItemJob = launch {
+                            delay(DEBOUNCE_CHECK_ADD_ON_PRODUCT_MS)
+                            listener.onCheckAddOnProduct(
+                                newAddOnProductData = addOn,
+                                product = product
+                            )
+                            orderSummaryAnalytics.eventClickAddOnProductWidget(addOn.type, product.productId, isChecked)
                         }
                     }
-                } else {
-                    setAddOnLayoutData(addOnsProductData.data.first(), llAddonProductItems)
+                    icProductAddonInfo.showIfWithBlock(addOn.infoLink.isNotBlank()) {
+                        setOnClickListener {
+                            listener.onClickAddOnProductInfoIcon(
+                                url = addOn.infoLink
+                            )
+                        }
+                    }
                 }
+
+                // add addon to the layout
+                llAddonProductItems.addView(addOnView.root)
+                orderSummaryAnalytics.eventViewAddOnProductWidget(addOn.type, product.productId)
             }
         }
-    }
-
-    private fun setAddOnLayoutData(addOn: AddOnsProductDataModel.Data, llAddonProductItems: LinearLayout) {
-        val addOnView = ItemShipmentAddonProductItemBinding.inflate(
-            inflater,
-            null,
-            false
-        )
-
-        addOnView.apply {
-            // set data on the views
-            setAddOnProductName(
-                binding = addOnView,
-                addOn = addOn
-            )
-            setAddOnProductPrice(
-                binding = addOnView,
-                addOn = addOn
-            )
-            setAddOnProductStatus(
-                binding = addOnView,
-                addOn = addOn
-            )
-
-            // set addon listeners
-            cbAddonItem.setOnCheckedChangeListener { _, isChecked ->
-                changeAddOnProductStatus(
-                    addOn = addOn
-                )
-                checkAddOnProductItemJob = launch {
-                    delay(DEBOUNCE_CHECK_ADD_ON_PRODUCT_MS)
-                    listener.onCheckAddOnProduct(
-                        newAddOnProductData = addOn,
-                        product = product
-                    )
-                    orderSummaryAnalytics.eventClickAddOnProductWidget(addOn.type, product.productId, isChecked)
-                }
-            }
-            icProductAddonInfo.showIfWithBlock(addOn.infoLink.isNotBlank()) {
-                setOnClickListener {
-                    listener.onClickAddOnProductInfoIcon(
-                        url = addOn.infoLink
-                    )
-                }
-            }
-        }
-
-        // add addon to the layout
-        llAddonProductItems.addView(addOnView.root)
-        orderSummaryAnalytics.eventViewAddOnProductWidget(addOn.type, product.productId)
     }
 
     private fun setAddOnProductName(
