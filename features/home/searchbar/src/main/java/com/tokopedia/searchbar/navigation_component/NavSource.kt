@@ -24,6 +24,7 @@ enum class NavSource {
     TOKOFOOD,
     TOKONOW,
     UOH,
+    USER_PROFILE,
     WISHLIST
 }
 

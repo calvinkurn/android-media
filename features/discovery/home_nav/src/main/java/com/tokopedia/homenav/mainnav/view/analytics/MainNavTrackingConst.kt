@@ -18,6 +18,7 @@ internal object MainNavTrackingConst {
     private const val PAGE_SOURCE_DISCOVERY = "discopage"
     private const val PAGE_SOURCE_DT = "dilayani page"
     private const val PAGE_SOURCE_FEED = "feed"
+    private const val PAGE_SOURCE_FEED_PROFILE = "feed profile"
     private const val PAGE_SOURCE_HOME = "homepage"
     private const val PAGE_SOURCE_MVC = "merchant voucher"
     private const val PAGE_SOURCE_NOTIF = "notification"
@@ -62,6 +63,7 @@ internal object MainNavTrackingConst {
             NavSource.THANKYOU -> PAGE_SOURCE_THANK_YOU
             NavSource.TOKOFOOD -> PAGE_SOURCE_TOKOFOOD
             NavSource.TOKONOW -> PAGE_SOURCE_TOKONOW
+            NavSource.USER_PROFILE -> PAGE_SOURCE_FEED_PROFILE
             else -> "null"
         }
         return FORMAT_PAGE_SOURCE.format(pageSource, parsedPath)

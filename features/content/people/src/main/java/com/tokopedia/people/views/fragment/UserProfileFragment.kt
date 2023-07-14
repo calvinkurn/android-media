@@ -918,7 +918,7 @@ class UserProfileFragment @Inject constructor(
                 userProfileTracker.clickBurgerMenu(userSession.userId, self = viewModel.isSelfProfile)
                 RouteManager.route(
                     activity,
-                    bundleOf(Pair(ApplinkConsInternalNavigation.PARAM_PAGE_SOURCE, NavSource.FEED.toString())),
+                    bundleOf(Pair(ApplinkConsInternalNavigation.PARAM_PAGE_SOURCE, NavSource.USER_PROFILE.toString())),
                     APPLINK_MENU
                 )
             }
