@@ -92,7 +92,6 @@ internal class VariantLayoutStrategyControl : VariantLayoutStrategy {
         else 0
     }
 
-    override fun isSingleLine(willShowVariant: Boolean): Boolean = willShowVariant
     private fun LinearLayout.addLabelVariantColor(
         labelVariant: ProductCardModel.LabelGroupVariant,
         hasMarginStart: Boolean,
@@ -138,7 +137,7 @@ internal class VariantLayoutStrategyControl : VariantLayoutStrategy {
         typography.weightType = Typography.BOLD
         typography.setType(Typography.SMALL)
         typography.text = "+${labelVariant.title}"
-        typography.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+        typography.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_68))
         typography.layoutParams = layoutParams
         typography.tag = LABEL_VARIANT_TAG
 

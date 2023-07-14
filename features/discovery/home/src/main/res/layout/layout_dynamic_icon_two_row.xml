@@ -45,7 +45,7 @@
         android:hyphenationFrequency="none"
         android:lineSpacingExtra="4sp"
         android:maxLines="2"
-        android:textColor="@color/Unify_N700_68"
+        android:textColor="@color/Unify_NN950_68"
         android:textStyle="normal"
         app:typographyType="small"
         tools:text="Ajukan" />

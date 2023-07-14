@@ -11,7 +11,7 @@
         android:id="@+id/relativeLayoutUsePromoGlobal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/Unify_N0">
+        android:background="@color/Unify_NN0">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -50,7 +50,7 @@
                 android:layout_toRightOf="@id/ic_button_coupon"
                 android:gravity="center"
                 android:text="@string/ticker_promo_stacking_title_coupon_label"
-                android:textColor="@color/Unify_G400"
+                android:textColor="@color/Unify_GN500"
                 app:typographyType="display_3" />
 
             <LinearLayout
@@ -73,7 +73,7 @@
                     android:paddingLeft="3dp"
                     android:paddingEnd="3dp"
                     android:paddingRight="3dp"
-                    android:textColor="@color/Unify_N0"
+                    android:textColor="@color/Unify_NN0"
                     app:typographyType="small"
                     tools:text="1" />
 
@@ -89,7 +89,7 @@
                 android:layout_marginEnd="10dp"
                 android:layout_marginRight="10dp"
                 android:text="Cek"
-                android:textColor="@color/Unify_N700_68"
+                android:textColor="@color/Unify_NN950_68"
                 android:visibility="gone"
                 app:typographyType="body_3" />
 
@@ -179,7 +179,7 @@
                             android:layout_marginRight="5dp"
                             android:ellipsize="end"
                             android:maxLines="2"
-                            android:textColor="@color/Unify_N700_96"
+                            android:textColor="@color/Unify_NN950_96"
                             android:textSize="13sp"
                             tools:text="Kupon Gratis Ongkir JT Rp 50000" />
 
@@ -192,7 +192,7 @@
                             android:layout_marginBottom="3dp"
                             android:lineSpacingExtra="2sp"
                             android:maxLines="2"
-                            android:textColor="@color/Unify_N700_68"
+                            android:textColor="@color/Unify_NN950_68"
                             android:textSize="13sp"
                             android:visibility="gone"
                             tools:text="Pilih Kurir terlebih dahulu untuk memastikan benefit yang akan didapat" />
@@ -207,7 +207,7 @@
                         android:layout_alignBottom="@+id/layout_content"
                         android:layout_centerInParent="true"
                         android:alpha="0.6"
-                        android:background="@color/Unify_N0"
+                        android:background="@color/Unify_NN0"
                         android:visibility="gone">
 
                         <com.tokopedia.unifycomponents.LoaderUnify

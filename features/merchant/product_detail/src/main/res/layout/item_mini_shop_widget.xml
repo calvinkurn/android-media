@@ -10,7 +10,7 @@
         android:id="@+id/separator"
         android:layout_width="match_parent"
         android:layout_height="2dp"
-        android:background="@color/Unify_N50"
+        android:background="@color/Unify_NN50"
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -31,7 +31,7 @@
             android:scaleType="centerCrop"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:src="@color/Unify_G400" />
+            tools:src="@color/Unify_GN500" />
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/shop_badge"
@@ -70,7 +70,7 @@
             android:layout_marginStart="12dp"
             android:ellipsize="end"
             android:maxLines="1"
-            android:textColor="@color/Unify_N700_68"
+            android:textColor="@color/Unify_NN950_68"
             app:layout_constraintBottom_toBottomOf="@id/shop_ava"
             app:layout_constraintLeft_toRightOf="@id/shop_ava"
             app:layout_constraintTop_toBottomOf="@id/shop_name"

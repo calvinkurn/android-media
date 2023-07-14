@@ -55,4 +55,9 @@
 
     <string name="balance_widget_failed_to_load">Gagal Dimuat</string>
 
+    <string name="login_widget_title">Hai, %s!</string>
+    <string name="login_widget_name_default">Topper</string>
+    <string name="login_widget_subtitle_saved">Cek update di akunmu, yuk~</string>
+    <string name="login_widget_subtitle_non_saved">Akses semua fitur, yuk~</string>
+    <string name="login_widget_button">Masuk</string>
 </resources>
