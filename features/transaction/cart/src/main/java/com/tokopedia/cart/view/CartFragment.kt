@@ -126,7 +126,6 @@ import com.tokopedia.productbundlewidget.model.BundleDetailUiModel
 import com.tokopedia.promocheckout.common.view.widget.ButtonPromoCheckoutView
 import com.tokopedia.promousage.domain.entity.EntryPoint
 import com.tokopedia.promousage.view.bottomsheet.PromoUsageBottomSheet
-import com.tokopedia.promousage.view.custom.PromoBottomSheet
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCart
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics
 import com.tokopedia.purchase_platform.common.analytics.EPharmacyAnalytics
