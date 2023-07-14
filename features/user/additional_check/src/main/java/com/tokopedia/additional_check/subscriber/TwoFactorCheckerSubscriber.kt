@@ -201,9 +201,7 @@ class TwoFactorCheckerSubscriber : Application.ActivityLifecycleCallbacks {
     private fun checking(activity: Activity, isBiometricAvailable: Boolean) {
         viewModel.getOffering(isBiometricAvailable, {
             handleResponseOfferingData(activity, it)
-        }, {
-            it.printStackTrace()
-        })
+        }, {})
     }
 
     override fun onActivityDestroyed(activity: Activity) {}
