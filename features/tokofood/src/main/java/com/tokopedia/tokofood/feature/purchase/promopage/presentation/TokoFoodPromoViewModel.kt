@@ -14,7 +14,7 @@ import dagger.Lazy
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class TokoFoodPromoViewModel @Inject constructor(
+open class TokoFoodPromoViewModel @Inject constructor(
     private val promoListTokoFoodUseCase: Lazy<PromoListTokoFoodUseCase>,
     private val dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main) {

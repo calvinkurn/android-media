@@ -14,7 +14,7 @@ import com.tokopedia.unifycomponents.ChipsUnify
 
 class FilterChipAdapter(val list: List<String>, val listener: OnClickListener,
                         private val onResetChipListener: ResetChipListener,
-                        @ColorRes val selectedColor: Int = com.tokopedia.unifyprinciples.R.color.Unify_G300)
+                        @ColorRes val selectedColor: Int = com.tokopedia.unifyprinciples.R.color.Unify_GN300)
     : RecyclerView.Adapter<FilterChipAdapter.ViewHolder>() {
 
     var selectOnlyOneChip = false
