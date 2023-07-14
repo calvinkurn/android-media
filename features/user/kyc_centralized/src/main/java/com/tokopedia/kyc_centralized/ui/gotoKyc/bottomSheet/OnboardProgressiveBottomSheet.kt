@@ -228,7 +228,7 @@ class OnboardProgressiveBottomSheet: BottomSheetUnify() {
                     ds.isFakeBoldText = true
                     ds.color = MethodChecker.getColor(
                         context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_G500
+                        com.tokopedia.unifyprinciples.R.color.Unify_GN500
                     )
                 }
             },

@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/Unify_N50">
+    android:background="@color/Unify_NN50">
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -26,7 +26,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/flight_dp_20"
-                android:background="@color/Unify_N0"
+                android:background="@color/Unify_NN0"
                 android:orientation="vertical"
                 android:paddingStart="@dimen/spacing_lvl4"
                 android:paddingLeft="@dimen/spacing_lvl4"
@@ -52,7 +52,7 @@
                     style="@style/TravelHintTextInputLayout"
                     android:layout_weight="1"
                     android:hint="@string/flight_booking_passenger_first_name_hint"
-                    android:textColorHint="@color/Unify_N700_20">
+                    android:textColorHint="@color/Unify_NN950_20">
 
                     <com.tokopedia.travel.passenger.presentation.widget.InstantAutoCompleteTextView
                         android:id="@+id/et_first_name"
@@ -65,7 +65,7 @@
                         android:inputType="textNoSuggestions|textVisiblePassword|textFilter"
                         android:nextFocusForward="@+id/til_last_name"
                         android:singleLine="true"
-                        android:textColor="@color/Unify_N700_96"
+                        android:textColor="@color/Unify_NN950_96"
                         tools:text="Jessica"/>
                 </com.tokopedia.travel.passenger.presentation.widget.TkpdHintTextInputLayout>
 
@@ -124,7 +124,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/flight_dp_10"
-                android:background="@color/Unify_N0"
+                android:background="@color/Unify_NN0"
                 android:orientation="vertical"
                 android:paddingTop="@dimen/flight_dp_10"
                 android:paddingBottom="@dimen/flight_dp_10"
@@ -141,7 +141,7 @@
                     android:paddingEnd="@dimen/padding_16"
                     android:paddingRight="@dimen/padding_16"
                     android:text="@string/flight_passenger_data_passport_label"
-                    android:textColor="@color/Unify_N700_96"
+                    android:textColor="@color/Unify_NN950_96"
                     app:typographyType="heading_3" />
 
                 <com.tokopedia.unifyprinciples.Typography
@@ -154,7 +154,7 @@
                     android:paddingEnd="@dimen/padding_16"
                     android:paddingRight="@dimen/padding_16"
                     android:text="@string/flight_passenger_data_passport_description"
-                    android:textColor="@color/Unify_N700_96"
+                    android:textColor="@color/Unify_NN950_96"
                     app:typographyType="body_3" />
 
                 <com.tokopedia.unifycomponents.TextFieldUnify
@@ -229,7 +229,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/flight_dp_10"
                 android:layout_marginBottom="@dimen/flight_dp_10"
-                android:background="@color/Unify_N0"
+                android:background="@color/Unify_NN0"
                 android:orientation="vertical"
                 android:paddingStart="@dimen/padding_16"
                 android:paddingLeft="@dimen/padding_16"
@@ -246,7 +246,7 @@
                     android:layout_marginTop="@dimen/spacing_lvl4"
                     android:layout_marginBottom="@dimen/spacing_lvl4"
                     android:text="@string/flight_booking_passenger_luggage_label"
-                    android:textColor="@color/Unify_N700_96"
+                    android:textColor="@color/Unify_NN950_96"
                     app:typographyType="heading_3" />
 
                 <androidx.recyclerview.widget.RecyclerView
@@ -261,7 +261,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/flight_dp_10"
                 android:layout_marginBottom="@dimen/flight_dp_10"
-                android:background="@color/Unify_N0"
+                android:background="@color/Unify_NN0"
                 android:orientation="vertical"
                 android:paddingStart="@dimen/padding_16"
                 android:paddingLeft="@dimen/padding_16"
@@ -278,7 +278,7 @@
                     android:layout_marginTop="@dimen/spacing_lvl4"
                     android:layout_marginBottom="@dimen/spacing_lvl4"
                     android:text="@string/flight_booking_passenger_meal_label"
-                    android:textColor="@color/Unify_N700_96"
+                    android:textColor="@color/Unify_NN950_96"
                     app:typographyType="heading_3" />
 
                 <androidx.recyclerview.widget.RecyclerView

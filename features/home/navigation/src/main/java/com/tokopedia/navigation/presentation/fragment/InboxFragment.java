@@ -273,7 +273,7 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
         layoutManager = new StaggeredGridLayoutManager(DEFAULT_SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL);
         endlessRecyclerViewScrollListener = getEndlessRecyclerViewScrollListener();
         recyclerView.setLayoutManager(layoutManager);
-        swipeRefreshLayout.setColorSchemeResources(com.tokopedia.unifyprinciples.R.color.Unify_G400);
+        swipeRefreshLayout.setColorSchemeResources(com.tokopedia.unifyprinciples.R.color.Unify_GN500);
 
         swipeRefreshLayout.setOnRefreshListener(() -> presenter.getInboxData());
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {

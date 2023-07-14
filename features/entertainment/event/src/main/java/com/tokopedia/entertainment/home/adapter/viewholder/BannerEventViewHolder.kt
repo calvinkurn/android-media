@@ -33,7 +33,7 @@ class BannerEventViewHolder(itemView: View, val listener: TrackingListener) : Ab
         itemView.banner_home_ent?.setOnPromoScrolledListener(this)
         itemView.banner_home_ent?.setOnPromoLoadedListener(this)
         itemView.banner_home_ent?.setOnPromoDragListener(this)
-        itemView.banner_home_ent?.setBannerSeeAllTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
+        itemView.banner_home_ent?.setBannerSeeAllTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
         itemView.banner_home_ent?.setBannerIndicator(Indicator.GREEN)
     }
 

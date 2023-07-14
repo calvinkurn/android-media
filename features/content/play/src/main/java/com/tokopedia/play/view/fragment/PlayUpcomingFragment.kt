@@ -34,7 +34,16 @@ import com.tokopedia.play.util.withCache
 import com.tokopedia.play.view.activity.PlayActivity
 import com.tokopedia.play.view.type.ScreenOrientation2
 import com.tokopedia.play.view.type.isCompact
-import com.tokopedia.play.view.uimodel.action.*
+import com.tokopedia.play.view.uimodel.action.ClickFollowUpcomingAction
+import com.tokopedia.play.view.uimodel.action.ClickPartnerNameUpcomingAction
+import com.tokopedia.play.view.uimodel.action.ClickShareUpcomingAction
+import com.tokopedia.play.view.uimodel.action.ClickSharingOptionUpcomingAction
+import com.tokopedia.play.view.uimodel.action.ClickUpcomingButton
+import com.tokopedia.play.view.uimodel.action.ExpandDescriptionUpcomingAction
+import com.tokopedia.play.view.uimodel.action.OpenUpcomingPageResultAction
+import com.tokopedia.play.view.uimodel.action.ScreenshotTakenUpcomingAction
+import com.tokopedia.play.view.uimodel.action.TapCover
+import com.tokopedia.play.view.uimodel.action.UpcomingTimerFinish
 import com.tokopedia.play.view.uimodel.event.PlayUpcomingUiEvent
 import com.tokopedia.play.view.uimodel.event.UiString
 import com.tokopedia.play.view.uimodel.recom.PlayChannelDetailUiModel
@@ -59,7 +68,6 @@ import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.model.ShareModel
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
@@ -83,7 +91,7 @@ class PlayUpcomingFragment @Inject constructor(
     private val partnerInfoView by viewComponent { PartnerInfoViewComponent(it, this) }
     private val upcomingTimer by viewComponent { UpcomingTimerViewComponent(it, R.id.view_upcoming_timer, this) }
     private val actionButton by viewComponent { UpcomingActionButtonViewComponent(it, R.id.btn_action, this) }
-    private val shareExperienceView by viewComponent { ShareExperienceViewComponent(it, R.id.view_upcoming_share_experience, childFragmentManager, this, this, requireContext(), dispatchers, ShareExperienceViewComponent.Source.Upcoming) }
+    private val shareExperienceView by viewComponent { ShareExperienceViewComponent(it, R.id.view_upcoming_share_experience, childFragmentManager, this, this, requireContext(), ShareExperienceViewComponent.Source.Upcoming) }
     private val description by viewComponent { UpcomingDescriptionViewComponent(it, R.id.tv_upcoming_description, this) }
 
     private val toaster by viewLifecycleBound(
@@ -232,10 +240,7 @@ class PlayUpcomingFragment @Inject constructor(
                         ) { event.action() }
                     }
                     PlayUpcomingUiEvent.RefreshChannelEvent -> playParentViewModel.refreshChannel()
-                    is PlayUpcomingUiEvent.SaveTemporarySharingImage -> shareExperienceView.saveTemporaryImage(event.imageUrl)
-                    is PlayUpcomingUiEvent.OpenSharingOptionEvent -> {
-                        shareExperienceView.showSharingOptions(event.title, event.coverUrl, event.userId, event.channelId)
-                    }
+                    is PlayUpcomingUiEvent.OpenSharingOptionEvent -> openShareBottomSheet(event)
                     is PlayUpcomingUiEvent.OpenSelectedSharingOptionEvent -> {
                         SharingUtil.executeShareIntent(event.shareModel, event.linkerShareResult, activity, view, event.shareString)
                     }
@@ -412,11 +417,6 @@ class PlayUpcomingFragment @Inject constructor(
         playUpcomingViewModel.submitAction(ClickShareUpcomingAction)
     }
 
-    override fun onShareOpenBottomSheet(view: ShareExperienceViewComponent) {
-        playUpcomingViewModel.submitAction(ShowShareExperienceUpcomingAction)
-        if (playUpcomingViewModel.isCustomSharingAllowed) analytic.impressShareBottomSheet(channelId, playUpcomingViewModel.partnerId, playUpcomingViewModel.channelType.value)
-    }
-
     override fun onShareOptionClick(view: ShareExperienceViewComponent, shareModel: ShareModel) {
         analytic.clickSharingOption(channelId, playUpcomingViewModel.partnerId, playUpcomingViewModel.channelType.value, shareModel.channel, view.isScreenshotBottomSheet)
         playUpcomingViewModel.submitAction(ClickSharingOptionUpcomingAction(shareModel))
@@ -435,10 +435,6 @@ class PlayUpcomingFragment @Inject constructor(
         analytic.clickSharePermission(channelId, playUpcomingViewModel.partnerId, playUpcomingViewModel.channelType.value, label)
     }
 
-    override fun onHandleShareFallback(view: ShareExperienceViewComponent) {
-        playUpcomingViewModel.submitAction(CopyLinkUpcomingAction)
-    }
-
     override fun onShareIconImpressed(view: ShareExperienceViewComponent) {
         analytic.impressShare(channelId)
     }
@@ -446,6 +442,13 @@ class PlayUpcomingFragment @Inject constructor(
     override fun onTextClicked(view: UpcomingDescriptionViewComponent) {
         if (playUpcomingViewModel.isExpanded) analytic.clickSeeLessDescription(channelId) else analytic.clickSeeAllDescription(channelId)
         playUpcomingViewModel.submitAction(ExpandDescriptionUpcomingAction)
+    }
+
+    private fun openShareBottomSheet(event: PlayUpcomingUiEvent.OpenSharingOptionEvent) {
+        shareExperienceView.showSharingOptions(event.title, event.coverUrl, event.userId, event.channelId)
+        if (playUpcomingViewModel.isCustomSharingAllowed) {
+            analytic.impressShareBottomSheet(channelId, playUpcomingViewModel.partnerId, playUpcomingViewModel.channelType.value)
+        }
     }
 
     private fun copyToClipboard(content: String) {

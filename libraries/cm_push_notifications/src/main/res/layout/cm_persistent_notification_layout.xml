@@ -5,7 +5,7 @@
     android:id="@+id/ll_mainPersist"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/Unify_N100_44"
+    android:background="@color/Unify_NN200_44"
     android:gravity="center"
     android:orientation="horizontal"
     android:padding="5dp">
@@ -42,7 +42,7 @@
             android:maxLines="1"
             android:paddingLeft="2dp"
             android:paddingRight="2dp"
-            android:textColor="@color/Unify_N700_96"
+            android:textColor="@color/Unify_NN950_96"
             android:textSize="10sp" />
 
     </LinearLayout>
@@ -74,7 +74,7 @@
             android:maxLines="1"
             android:paddingLeft="2dp"
             android:paddingRight="2dp"
-            android:textColor="@color/Unify_N700_96"
+            android:textColor="@color/Unify_NN950_96"
             android:textSize="10sp" />
 
     </LinearLayout>
@@ -106,7 +106,7 @@
             android:maxLines="1"
             android:paddingLeft="2dp"
             android:paddingRight="2dp"
-            android:textColor="@color/Unify_N700_96"
+            android:textColor="@color/Unify_NN950_96"
             android:textSize="10sp" />
 
     </LinearLayout>
@@ -138,7 +138,7 @@
             android:maxLines="1"
             android:paddingLeft="2dp"
             android:paddingRight="2dp"
-            android:textColor="@color/Unify_N700_96"
+            android:textColor="@color/Unify_NN950_96"
             android:textSize="10sp" />
 
     </LinearLayout>
