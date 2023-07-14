@@ -271,6 +271,7 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
 import com.tokopedia.recommendation_widget_common.widget.carousel.global.RecommendationCarouselTracking
+import com.tokopedia.recommendation_widget_common.widget.global.recommendationWidgetViewModel
 import com.tokopedia.recommendation_widget_common.widget.viewtoview.ViewToViewItemData
 import com.tokopedia.recommendation_widget_common.widget.viewtoview.ViewToViewTracker
 import com.tokopedia.recommendation_widget_common.widget.viewtoview.bottomsheet.ViewToViewBottomSheet
@@ -452,6 +453,7 @@ open class DynamicProductDetailFragment :
     private val viewModel by lazy {
         ViewModelProvider(this, viewModelFactory)[DynamicProductDetailViewModel::class.java]
     }
+    private val recommendationWidgetViewModel by recommendationWidgetViewModel()
 
     private val nplFollowersButton: PartialButtonShopFollowersView? by lazy {
         binding?.baseBtnFollow?.root?.run {
@@ -659,6 +661,7 @@ open class DynamicProductDetailFragment :
         recommendationCarouselPositionSavedState.clear()
         shouldRefreshProductInfoBottomSheet = true
         shouldRefreshShippingBottomSheet = true
+        recommendationWidgetViewModel?.refresh()
         super.onSwipeRefresh()
     }
 
