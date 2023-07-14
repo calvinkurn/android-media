@@ -349,28 +349,27 @@ class PromoUsageViewModel @Inject constructor(
 
         val accordions = currentItems.map { item ->
             if (item is VoucherAccordion) {
-                if (item.title == selectedVoucherAccordion.title) {
-
-                    val isExpanded = selectedVoucherAccordion.isExpanded
-                    if (isExpanded) {
-                        selectedVoucherAccordion.copy(isExpanded = false)
-                    } else {
-                        selectedVoucherAccordion.copy(isExpanded = true)
-                    }
-
-                } else {
-                    item
-                }
+                updateExpandCollapseState(item, selectedVoucherAccordion)
             } else {
                 item
             }
         }
 
-
-
+        
         _items.postValue(Success(accordions))
     }
 
+    private fun updateExpandCollapseState(
+        item: VoucherAccordion,
+        selectedVoucherAccordion: VoucherAccordion
+    ): VoucherAccordion {
+        return if (item.title == selectedVoucherAccordion.title) {
+            val isExpanded = selectedVoucherAccordion.isExpanded
+            selectedVoucherAccordion.copy(isExpanded = !isExpanded)
+        } else {
+            item
+        }
+    }
 
     private fun Result<List<DelegateAdapterItem>>.currentItemsOrEmpty(): List<DelegateAdapterItem> {
         return if (this is Success) {
