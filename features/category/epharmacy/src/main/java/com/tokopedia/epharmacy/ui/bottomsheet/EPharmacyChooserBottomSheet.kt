@@ -26,13 +26,15 @@ class EPharmacyChooserBottomSheet : BottomSheetUnify() {
     private var enablerName = ""
     private var duration = ""
     private var price = ""
+    private var isOnlyConsultation = false
     companion object {
         fun newInstance(
             enableImageURL: String,
             groupId: String,
             enablerName: String,
             price: String?,
-            duration: String?
+            duration: String?,
+            isOnlyConsult: Boolean
         ): EPharmacyChooserBottomSheet {
             return EPharmacyChooserBottomSheet().apply {
                 showCloseIcon = false
@@ -47,6 +49,7 @@ class EPharmacyChooserBottomSheet : BottomSheetUnify() {
                     putString(EPHARMACY_ENABLER_NAME, enablerName)
                     putString(EPHARMACY_CONS_PRICE, price)
                     putString(EPHARMACY_CONS_DURATION, duration)
+                    putBoolean(EPHARMACY_IS_ONLY_CONSULT, isOnlyConsult)
                 }
             }
         }
@@ -93,16 +96,25 @@ class EPharmacyChooserBottomSheet : BottomSheetUnify() {
         enablerName = arguments?.getString(EPHARMACY_ENABLER_NAME) ?: ""
         price = arguments?.getString(EPHARMACY_CONS_PRICE) ?: ""
         duration = arguments?.getString(EPHARMACY_CONS_DURATION) ?: ""
+        isOnlyConsultation = arguments?.getBoolean(EPHARMACY_IS_ONLY_CONSULT) ?: false
     }
 
     private fun setupBottomSheetUiData() {
         binding?.run {
             context?.resources?.let { res ->
-                chooserUpload.lblPAPTittleOptionBottomsheet.text = res.getString(com.tokopedia.epharmacy.R.string.epharmacy_upload_resep_dokter_chooser_title)
-                chooserUpload.lblPAPDescriptionOptionBottomsheet.text = res.getString(com.tokopedia.epharmacy.R.string.epharmacy_upload_resep_dokter_chooser_subtitle)
+                if(isOnlyConsultation){
+                    chooserUpload.parent.hide()
+                }else {
+                    chooserUpload.parent.show()
+                    chooserUpload.lblPAPTittleOptionBottomsheet.text = res.getString(com.tokopedia.epharmacy.R.string.epharmacy_upload_resep_dokter_chooser_title)
+                    chooserUpload.lblPAPDescriptionOptionBottomsheet.text = res.getString(com.tokopedia.epharmacy.R.string.epharmacy_upload_resep_dokter_chooser_subtitle)
+                    chooserUpload.stepIcon.loadImage(UPLOAD_CHOOSER_IMAGE_URL)
+                    chooserUpload.parent.setOnClickListener {
+                        uploadResepAction()
+                    }
+                }
                 chooserMiniConsultation.lblPAPTittleOptionBottomsheet.text = res.getString(com.tokopedia.epharmacy.R.string.epharmacy_mini_consult_chooser_title)
                 chooserMiniConsultation.lblPAPDescriptionOptionBottomsheet.text = res.getString(com.tokopedia.epharmacy.R.string.eepharmacy_mini_consult_chooser_subtitle)
-                chooserUpload.stepIcon.loadImage(UPLOAD_CHOOSER_IMAGE_URL)
                 chooserMiniConsultation.stepIcon.loadImage(MINI_CONS_CHOOSER_IMAGE_URL)
                 chooserMiniConsultation.baruLabel.show()
                 if (enableImageURL.isNotBlank()) {
@@ -112,9 +124,6 @@ class EPharmacyChooserBottomSheet : BottomSheetUnify() {
                     bottomImageLogo.hide()
                 }
 
-                chooserUpload.parent.setOnClickListener {
-                    uploadResepAction()
-                }
                 chooserMiniConsultation.parent.setOnClickListener {
                     miniConsultationAction()
                 }

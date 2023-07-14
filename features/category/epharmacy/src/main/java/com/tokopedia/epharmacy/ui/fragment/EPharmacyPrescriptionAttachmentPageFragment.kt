@@ -45,6 +45,7 @@ import com.tokopedia.epharmacy.utils.EPHARMACY_CONS_PRICE
 import com.tokopedia.epharmacy.utils.EPHARMACY_ENABLER_ID
 import com.tokopedia.epharmacy.utils.EPHARMACY_ENABLER_NAME
 import com.tokopedia.epharmacy.utils.EPHARMACY_GROUP_ID
+import com.tokopedia.epharmacy.utils.EPHARMACY_IS_ONLY_CONSULT
 import com.tokopedia.epharmacy.utils.EPHARMACY_TOKO_CONSULTATION_ID
 import com.tokopedia.epharmacy.utils.EPharmacyAttachmentUiUpdater
 import com.tokopedia.epharmacy.utils.EPharmacyButtonState
@@ -531,7 +532,7 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
     ) {
         when (prescriptionCTA?.actionType) {
             PrescriptionActionType.REDIRECT_PWA.type -> {
-                startMiniConsultation(enablerName, groupId)
+                startAttachmentChooser(chooserLogo, groupId, enablerName, price, duration, true)
             }
             PrescriptionActionType.REDIRECT_UPLOAD.type -> {
                 startPhotoUpload(enablerName, groupId)
@@ -557,7 +558,8 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
         ePharmacyGroupId: String?,
         enablerName: String?,
         price: String?,
-        duration: String?
+        duration: String?,
+        isOnlyConsult: Boolean = false
     ) {
         RouteManager.getIntent(activity, EPHARMACY_CHOOSER_APPLINK).apply {
             putExtra(ENABLER_IMAGE_URL, enablerImage)
@@ -565,6 +567,7 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
             putExtra(EPHARMACY_ENABLER_NAME, enablerName)
             putExtra(EPHARMACY_CONS_PRICE, price)
             putExtra(EPHARMACY_CONS_DURATION, duration)
+            putExtra(EPHARMACY_IS_ONLY_CONSULT, isOnlyConsult)
         }.also {
             startActivityForResult(it, EPHARMACY_CHOOSER_REQUEST_CODE)
         }
