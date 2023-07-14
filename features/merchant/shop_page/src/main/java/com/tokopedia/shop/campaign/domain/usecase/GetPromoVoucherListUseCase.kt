@@ -78,7 +78,7 @@ class GetPromoVoucherListUseCase @Inject constructor(
     }
   }
 }
-"""
+""".trimIndent()
 
         override fun getOperationNameList(): List<String> = listOf(OPERATION_NAME)
         override fun getQuery(): String = QUERY
