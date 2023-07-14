@@ -38,7 +38,7 @@ abstract class BaseChatToolbarActivity : BaseChatActivity() {
         setSupportActionBar(toolbar)
 
         supportActionBar?.run {
-            setBackgroundDrawable(ColorDrawable(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0)))
+            setBackgroundDrawable(ColorDrawable(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_NN0)))
             setDisplayHomeAsUpEnabled(true)
             setDisplayShowHomeEnabled(true)
             setHomeButtonEnabled(true)
@@ -46,7 +46,7 @@ abstract class BaseChatToolbarActivity : BaseChatActivity() {
             val upArrow = MethodChecker.getDrawable(applicationContext, R.drawable.ic_action_back)
             if (upArrow != null) {
                 upArrow.setColorFilter(
-                    MethodChecker.getColor(this@BaseChatToolbarActivity, com.tokopedia.unifyprinciples.R.color.Unify_N500),
+                    MethodChecker.getColor(this@BaseChatToolbarActivity, com.tokopedia.unifyprinciples.R.color.Unify_NN600),
                     PorterDuff.Mode.SRC_ATOP
                 )
                 this.setHomeAsUpIndicator(upArrow)

@@ -87,8 +87,8 @@ class InsuranceViewHolder(
             val textView = DoubleTextView(itemView.context, LinearLayout.HORIZONTAL).apply {
                 setTopText(it.key)
                 setBottomText(it.value)
-                setTopTextColor(MethodChecker.getColor(itemView.context, unifyPrinciplesR.color.Unify_N700_44))
-                setBottomTextColor(MethodChecker.getColor(itemView.context, unifyPrinciplesR.color.Unify_N700_68))
+                setTopTextColor(MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_44))
+                setBottomTextColor(MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_68))
                 setBottomTextStyle(TEXT_STYLE_BOLD)
                 setBottomTextSize(TEXT_SIZE_LARGE)
             }

@@ -448,6 +448,9 @@ object DeeplinkMainApp {
             DLP.startsWith(
                 "recipe/autocomplete",
                 DeeplinkMapperTokopediaNow::getRegisteredNavigationTokopediaNowRecipeAutoComplete
+            ),
+            DLP.startsWith(
+                "see-all-category", ApplinkConstInternalTokopediaNow::SEE_ALL_CATEGORY
             )
         ),
         "occ" to mutableListOf(

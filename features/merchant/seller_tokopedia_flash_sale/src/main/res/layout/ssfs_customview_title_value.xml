@@ -17,7 +17,7 @@
         android:backgroundTint="@color/Unify_GN100"
         app:icon_name="CHECK_BIG"
         android:visibility="gone"
-        app:icon_color_light_enable="@color/Unify_G500"
+        app:icon_color_light_enable="@color/Unify_GN500"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/tfTitle"

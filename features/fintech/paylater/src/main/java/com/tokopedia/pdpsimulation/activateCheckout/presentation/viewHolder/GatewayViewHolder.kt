@@ -43,7 +43,7 @@ class GatewayViewHolder(
             individualGatewayItemContainer.cardType = CardUnify.TYPE_BORDER_ACTIVE
             radioGatewaySelector.isChecked = true
         } else {
-            individualInsideCardContainer.setBackgroundColor((context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0)))
+            individualInsideCardContainer.setBackgroundColor((context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_NN0)))
             individualGatewayItemContainer.cardType = CardUnify.TYPE_BORDER
             if (!checkoutData.disable)
                 radioGatewaySelector.isChecked = false

@@ -1252,7 +1252,6 @@ class TokoNowCategoryFragment :
 
     private fun createTitleCallback() = CategoryTitleCallback(
         context = context,
-        warehouseId = viewModel.getWarehouseId(),
         onClickMoreCategories = ::clickMoreCategories
     )
 
