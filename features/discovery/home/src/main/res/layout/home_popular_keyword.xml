@@ -58,7 +58,7 @@
             android:layout_marginLeft="@dimen/home_component_margin_default"
             android:visibility="gone"
             tools:visibility="visible"
-            tools:background="@color/Unify_N700"
+            tools:background="@color/Unify_NN950"
             tools:text="Berakhir dalam"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/channel_pk_title"/>
@@ -69,7 +69,7 @@
             android:layout="@layout/view_stub_iv_reload"
             android:layout_width="20dp"
             android:layout_height="20dp"
-            tools:background="@color/Unify_N700"
+            tools:background="@color/Unify_NN950"
             android:layout_marginRight="4dp"
             app:layout_constraintRight_toLeftOf="@+id/tv_reload"
             app:layout_constraintTop_toTopOf="@+id/loader_popular_keyword_title"
@@ -162,5 +162,5 @@
         android:layout_height="wrap_content"
         android:visibility="gone"
         tools:visibility="visible"
-        tools:background="@color/Unify_B500"/>
+        tools:background="@color/Unify_BN500"/>
 </LinearLayout>

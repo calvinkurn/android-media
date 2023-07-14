@@ -17,7 +17,7 @@
         android:layout_marginTop="12dp"
         android:visibility="gone"
         app:typographyType="heading_4"
-        android:textColor="@color/Unify_N700"
+        android:textColor="@color/Unify_NN950"
         app:typographyWeight="bold"
         tools:text="Title"
         android:ellipsize="end"

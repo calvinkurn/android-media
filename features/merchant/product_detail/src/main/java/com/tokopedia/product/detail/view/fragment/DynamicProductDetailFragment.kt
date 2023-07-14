@@ -5014,7 +5014,7 @@ open class DynamicProductDetailFragment :
 
     private fun updateActionButtonShadow() {
         if (stickyLoginView?.isShowing() == true) {
-            actionButtonView.setBackground(com.tokopedia.unifyprinciples.R.color.Unify_N0)
+            actionButtonView.setBackground(com.tokopedia.unifyprinciples.R.color.Unify_NN0)
         } else {
             val drawable = context?.let { _context ->
                 ContextCompat.getDrawable(
