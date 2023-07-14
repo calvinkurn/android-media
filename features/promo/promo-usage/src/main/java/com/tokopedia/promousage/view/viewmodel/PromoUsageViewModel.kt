@@ -240,8 +240,8 @@ class PromoUsageViewModel @Inject constructor(
         )
     )
 
-    private val _items = MutableLiveData<com.tokopedia.usecase.coroutines.Result<List<DelegateAdapterItem>>>()
-    val items: LiveData<com.tokopedia.usecase.coroutines.Result<List<DelegateAdapterItem>>>
+    private val _items = MutableLiveData<Result<List<DelegateAdapterItem>>>()
+    val items: LiveData<Result<List<DelegateAdapterItem>>>
         get() = _items
 
     fun getVouchers() {
@@ -278,7 +278,21 @@ class PromoUsageViewModel @Inject constructor(
         )
     }
 
+    fun onClickVoucherAccordion(selectedVoucherAccordion: VoucherAccordion) {
+        val currentItems = items.value?.currentItemsOrEmpty() ?: return
 
+        val updatedItems = currentItems.map { item ->
+            if (item is VoucherAccordion && item.title == selectedVoucherAccordion.title) {
+                val isExpanded = selectedVoucherAccordion.isExpanded
+                selectedVoucherAccordion.copy(isExpanded = !isExpanded)
+            } else {
+                item
+            }
+        }
+
+
+        _items.postValue(Success(updatedItems))
+    }
 
     fun onClickViewAllVoucher(selectedVoucherAccordion: VoucherAccordion) {
         val currentItems = items.value?.currentItemsOrEmpty() ?: return
@@ -311,33 +325,6 @@ class PromoUsageViewModel @Inject constructor(
 
     }
 
-    fun onClickChevron(selectedVoucherAccordion: VoucherAccordion) {
-        val currentItems = items.value?.currentItemsOrEmpty() ?: return
-
-        val updatedItems = currentItems.map { item ->
-            if (item is VoucherAccordion) {
-                updateExpandCollapseState(item, selectedVoucherAccordion)
-            } else {
-                item
-            }
-        }
-
-        
-        _items.postValue(Success(updatedItems))
-    }
-
-    private fun updateExpandCollapseState(
-        item: VoucherAccordion,
-        selectedVoucherAccordion: VoucherAccordion
-    ): VoucherAccordion {
-        return if (item.title == selectedVoucherAccordion.title) {
-            val isExpanded = selectedVoucherAccordion.isExpanded
-            selectedVoucherAccordion.copy(isExpanded = !isExpanded)
-        } else {
-            item
-        }
-    }
-
     private fun Result<List<DelegateAdapterItem>>.currentItemsOrEmpty(): List<DelegateAdapterItem> {
         return if (this is Success) {
             this.data
@@ -367,12 +354,15 @@ class PromoUsageViewModel @Inject constructor(
     }
 
     private fun List<DelegateAdapterItem>.expandAll(): List<DelegateAdapterItem> {
-        val formatted = this.toMutableList()
+        //Inside VoucherAccordion there are 2 items [Voucher, ViewAllVoucher] model
+        val updatedVoucherAccordionItems = this.toMutableList()
 
-        formatted.removeAll { it is ViewAllVoucher }
+        //Remove ViewAllVoucher to make view all CTA gone
+        updatedVoucherAccordionItems.removeAll { it is ViewAllVoucher }
 
-        val expandedVouchers = formatted.map {
-            val voucher = it as Voucher
+        //Change Voucher visible state to true to make all voucher visible
+        val expandedVouchers = updatedVoucherAccordionItems.map { item ->
+            val voucher = item as Voucher
             voucher.copy(visible = true)
         }
 

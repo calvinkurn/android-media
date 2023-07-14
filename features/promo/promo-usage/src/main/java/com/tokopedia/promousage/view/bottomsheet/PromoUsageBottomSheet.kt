@@ -346,7 +346,7 @@ class PromoUsageBottomSheet: BottomSheetDialogFragment() {
     }
 
     private val onVoucherAccordionClick = { accordion : VoucherAccordion ->
-        viewModel.onClickChevron(accordion)
+        viewModel.onClickVoucherAccordion(accordion)
     }
 
     private val onViewAllVoucherCtaClick = { accordion : VoucherAccordion ->
