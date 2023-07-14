@@ -39,7 +39,7 @@ class LayananSectionView : RelativeLayout {
                 setBackgroundDrawable(gradient)
             }
         } catch (e: Exception) {
-            e.printStackTrace()
+            // do nothing
         }
 
         with(binding) {

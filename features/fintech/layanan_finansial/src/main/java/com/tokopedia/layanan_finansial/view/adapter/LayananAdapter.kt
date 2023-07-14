@@ -21,6 +21,7 @@ import com.tokopedia.layanan_finansial.view.Analytics.LAYANAN_FINANSILA_click_AC
 import com.tokopedia.layanan_finansial.view.models.LayananListItem
 import com.tokopedia.media.loader.loadImage
 import java.util.Arrays
+import java.util.Locale
 import kotlin.collections.HashMap
 
 class LayananAdapter(private val list: List<LayananListItem>) : RecyclerView.Adapter<LayananAdapter.LayananViewHolder>() {
@@ -64,7 +65,15 @@ class LayananAdapter(private val list: List<LayananListItem>) : RecyclerView.Ada
                     status.hide()
                 }
                 root.setOnClickListener {
-                    RouteManager.route(itemView.context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, layananListItem.url))
+                    RouteManager.route(
+                        itemView.context,
+                        String.format(
+                            Locale.getDefault(),
+                            "%s?url=%s",
+                            ApplinkConst.WEBVIEW,
+                            layananListItem.url
+                        )
+                    )
                     val label = "product: ${layananListItem.name}, status: ${layananListItem.datalayerStatus}"
                     Analytics.sendEcomerceEvent(EVENT_PROMO_CLICK, LAYANAN_FINANSIAL_CATEGORY, LAYANAN_FINANSILA_click_ACTION, label, createEcommerceMap(position = layoutPosition, item = layananListItem))
                 }
