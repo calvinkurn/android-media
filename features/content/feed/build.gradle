@@ -62,6 +62,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.baseList)
     implementation projectOrAar(rootProject.ext.features.affiliateCommon)
+    implementation projectOrAar(rootProject.ext.features.affiliateSDK)
     implementation projectOrAar(rootProject.ext.features.topAdsSdk)
     implementation projectOrAar(rootProject.ext.features.feedComponent)
     implementation projectOrAar(rootProject.ext.features.contentCommon)

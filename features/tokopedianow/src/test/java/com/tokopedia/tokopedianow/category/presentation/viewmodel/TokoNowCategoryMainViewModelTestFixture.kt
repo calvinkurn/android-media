@@ -175,7 +175,8 @@ open class TokoNowCategoryMainViewModelTestFixture {
     ) {
         addressData = LocalCacheModel(
             warehouse_id = warehouseId,
-            shop_id = shopId
+            shop_id = shopId,
+            warehouses = warehouses
         )
         localAddress.mockPrivateField(
             name = privateFieldLocalAddress,
