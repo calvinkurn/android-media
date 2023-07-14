@@ -22,47 +22,12 @@ import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
-import com.tokopedia.applink.find.DeepLinkMapperFind.getRegisteredFind
-import com.tokopedia.applink.fintech.DeeplinkMapperFintech
-import com.tokopedia.applink.fintech.DeeplinkMapperFintech.getRegisteredNavigationForFintech
-import com.tokopedia.applink.fintech.DeeplinkMapperFintech.getRegisteredNavigationForLayanan
-import com.tokopedia.applink.gamification.DeeplinkMapperGamification
-import com.tokopedia.applink.home.DeeplinkMapperHome.getRegisteredExplore
-import com.tokopedia.applink.home.DeeplinkMapperHome.getRegisteredNavigationHome
-import com.tokopedia.applink.home.DeeplinkMapperHome.getRegisteredNavigationHomeContentExplore
-import com.tokopedia.applink.home.DeeplinkMapperHome.getRegisteredNavigationHomeFeed
-import com.tokopedia.applink.home.DeeplinkMapperHome.getRegisteredNavigationHomeOfficialStore
-import com.tokopedia.applink.imagepicker.DeeplinkMapperImagePicker
-import com.tokopedia.applink.inbox.DeeplinkMapperInbox
-import com.tokopedia.applink.internal.ApplinkConsInternalHome
-import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
-import com.tokopedia.applink.internal.ApplinkConstInternalCategory.getDiscoveryDeeplink
-import com.tokopedia.applink.internal.ApplinkConstInternalContent
-import com.tokopedia.applink.internal.ApplinkConstInternalDilayaniTokopedia
-import com.tokopedia.applink.internal.ApplinkConstInternalFeed
-import com.tokopedia.applink.internal.ApplinkConstInternalFintech
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.applink.internal.ApplinkConstInternalMechant
-import com.tokopedia.applink.internal.ApplinkConstInternalMedia
-import com.tokopedia.applink.internal.ApplinkConstInternalOperational
-import com.tokopedia.applink.internal.ApplinkConstInternalOrder
-import com.tokopedia.applink.internal.ApplinkConstInternalPayment
-import com.tokopedia.applink.internal.ApplinkConstInternalPromo
-import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform
-import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
-import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
-import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
-import com.tokopedia.applink.internal.ApplinkConstInternalTravel
-import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
-import com.tokopedia.applink.logistic.DeeplinkMapperLogistic
 import com.tokopedia.applink.marketplace.DeeplinkMapperMarketplace.getRegisteredNavigationMarketplace
 import com.tokopedia.applink.marketplace.DeeplinkMapperMarketplace.getShopPageInternalAppLink
 import com.tokopedia.applink.merchant.DeeplinkMapperMerchant
 import com.tokopedia.applink.model.Always
-import com.tokopedia.applink.model.DLPLogic
 import com.tokopedia.applink.model.DLP
+import com.tokopedia.applink.model.DLPLogic
 import com.tokopedia.applink.order.DeeplinkMapperOrder
 import com.tokopedia.applink.powermerchant.PowerMerchantDeepLinkMapper
 import com.tokopedia.applink.productmanage.DeepLinkMapperProductManage
@@ -122,7 +87,8 @@ object DeeplinkMapper {
 
             DeeplinkConstant.SCHEME_TOKOPEDIA -> {
                 val query = getQuery(deeplink, uri)
-                val tempDeeplink = getRegisteredNavigation(context, getTokopediaSchemeList(), uri, deeplink)
+                val tempDeeplink =
+                    getRegisteredNavigation(context, getTokopediaSchemeList(), uri, deeplink)
                 UriUtil.appendDiffDeeplinkWithQuery(tempDeeplink, query)
             }
 
@@ -228,9 +194,9 @@ object DeeplinkMapper {
     fun getRegisteredNavigationFromHttp(context: Context, uri: Uri, deeplink: String): String {
         val pathSize = uri.pathSegments.size
         if (pathSize == 1 && (
-            uri.pathSegments[0] == TOKOPOINTS ||
-                uri.pathSegments[0] == ApplinkConst.RewardFallback.Reward.REWARDS
-            )
+                uri.pathSegments[0] == TOKOPOINTS ||
+                    uri.pathSegments[0] == ApplinkConst.RewardFallback.Reward.REWARDS
+                )
         ) {
             return ApplinkConstInternalPromo.TOKOPOINTS_HOME
         }
@@ -358,7 +324,7 @@ object DeeplinkMapper {
         return ""
     }
 
-    fun getList(sourceMap: Map<String, MutableList<DLP>>, uri:Uri):MutableList<DLP>?{
+    fun getList(sourceMap: Map<String, MutableList<DLP>>, uri: Uri): MutableList<DLP>? {
         return sourceMap[uri.host ?: ""]
     }
 
@@ -431,7 +397,9 @@ object DeeplinkMapper {
                 deeplink
             )
 
-            deeplink.startsWithPattern(ApplinkConstInternalUserPlatform.GOTO_KYC) -> DeeplinkMapperUser.getRegisteredNavigationUser(deeplink)
+            deeplink.startsWithPattern(ApplinkConstInternalUserPlatform.GOTO_KYC) -> DeeplinkMapperUser.getRegisteredNavigationUser(
+                deeplink
+            )
 
             else -> return ""
         }

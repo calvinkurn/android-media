@@ -8,8 +8,10 @@ import com.tokopedia.atc_common.domain.model.response.ErrorReporterModel
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.content.common.comment.model.CountComment
 import com.tokopedia.content.common.comment.usecase.GetCountCommentsUseCase
+import com.tokopedia.content.common.model.FeedComplaintSubmitReportResponse
 import com.tokopedia.content.common.model.TrackVisitChannelResponse
 import com.tokopedia.content.common.usecase.BroadcasterReportTrackViewerUseCase
+import com.tokopedia.content.common.usecase.FeedComplaintSubmitReportUseCase
 import com.tokopedia.content.common.usecase.TrackVisitChannelBroadcasterUseCase
 import com.tokopedia.feed.component.product.FeedTaggedProductUiModel
 import com.tokopedia.feedcomponent.data.pojo.UpcomingCampaignResponse
@@ -84,6 +86,7 @@ class FeedPostViewModelTest {
     private val getCountCommentsUseCase: GetCountCommentsUseCase = mockk()
     private val trackVisitChannelUseCase: TrackVisitChannelBroadcasterUseCase = mockk()
     private val trackReportViewerUseCase: BroadcasterReportTrackViewerUseCase = mockk()
+    private val submitReportUseCase: FeedComplaintSubmitReportUseCase = mockk()
 
     private lateinit var viewModel: FeedPostViewModel
 
@@ -105,6 +108,7 @@ class FeedPostViewModelTest {
             getCountCommentsUseCase,
             trackVisitChannelUseCase,
             trackReportViewerUseCase,
+            submitReportUseCase,
             testDispatcher
         )
     }
@@ -991,6 +995,60 @@ class FeedPostViewModelTest {
         )
 
         viewModel.trackVisitChannel(getDummyFeedModel().items[1] as FeedCardVideoContentModel)
+    }
+
+    @Test
+    fun onReportContent_whenFailUsecase_shouldChangeValueToFail() {
+        // given
+        coEvery { submitReportUseCase(any()) } throws MessageErrorException("Failed to fetch")
+
+        // when
+        viewModel.reportContent(FeedComplaintSubmitReportUseCase.Param("", "", "", ""))
+
+        // then
+        val response = viewModel.reportResponse.value
+        assert(response is Fail)
+        assert((response as Fail).throwable is MessageErrorException)
+        assert(response.throwable.message == "Failed to fetch")
+    }
+
+    @Test
+    fun onReportContent_whenNotSuccess_shouldChangeValueToFail() {
+        // given
+        val dummyResponse = FeedComplaintSubmitReportResponse(
+            data = FeedComplaintSubmitReportResponse.FeedComplaintSubmitReport(
+                success = false
+            )
+        )
+        coEvery { submitReportUseCase(any()) } returns dummyResponse
+
+        // when
+        viewModel.reportContent(FeedComplaintSubmitReportUseCase.Param("", "", "", ""))
+
+        // then
+        val response = viewModel.reportResponse.value
+        assert(response is Fail)
+        assert((response as Fail).throwable is MessageErrorException)
+        assert(response.throwable.message == "Error in Reporting")
+    }
+
+    @Test
+    fun onReportContent_whenSuccess_shouldChangeValueToSuccess() {
+        // given
+        val dummyResponse = FeedComplaintSubmitReportResponse(
+            data = FeedComplaintSubmitReportResponse.FeedComplaintSubmitReport(
+                success = true
+            )
+        )
+        coEvery { submitReportUseCase(any()) } returns dummyResponse
+
+        // when
+        viewModel.reportContent(FeedComplaintSubmitReportUseCase.Param("", "", "", ""))
+
+        // then
+        val response = viewModel.reportResponse.value
+        assert(response is Success)
+        assert((response as Success).data == dummyResponse)
     }
 
     private fun provideDefaultFeedPostMockData() {

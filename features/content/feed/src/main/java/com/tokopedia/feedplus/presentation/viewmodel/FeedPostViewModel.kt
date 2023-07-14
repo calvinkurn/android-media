@@ -10,10 +10,10 @@ import com.tokopedia.abstraction.common.network.exception.ResponseErrorException
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.content.common.comment.usecase.GetCountCommentsUseCase
-import com.tokopedia.content.common.usecase.BroadcasterReportTrackViewerUseCase
-import com.tokopedia.content.common.usecase.TrackVisitChannelBroadcasterUseCase
 import com.tokopedia.content.common.model.FeedComplaintSubmitReportResponse
+import com.tokopedia.content.common.usecase.BroadcasterReportTrackViewerUseCase
 import com.tokopedia.content.common.usecase.FeedComplaintSubmitReportUseCase
+import com.tokopedia.content.common.usecase.TrackVisitChannelBroadcasterUseCase
 import com.tokopedia.createpost.common.domain.entity.SubmitPostData
 import com.tokopedia.feed.component.product.FeedTaggedProductUiModel
 import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowUseCase
@@ -92,6 +92,7 @@ class FeedPostViewModel @Inject constructor(
     private val getCountCommentsUseCase: GetCountCommentsUseCase,
     private val trackVisitChannelUseCase: TrackVisitChannelBroadcasterUseCase,
     private val trackReportTrackViewerUseCase: BroadcasterReportTrackViewerUseCase,
+    private val submitReportUseCase: FeedComplaintSubmitReportUseCase,
     private val dispatchers: CoroutineDispatchers
 ) : ViewModel() {
 
@@ -813,6 +814,28 @@ class FeedPostViewModel @Inject constructor(
                 )
             }.executeOnBackground()
         }) {
+        }
+    }
+
+    /**
+     * Report
+     */
+    private val _reportResponse = MutableLiveData<Result<FeedComplaintSubmitReportResponse>>()
+    val reportResponse: LiveData<Result<FeedComplaintSubmitReportResponse>>
+        get() = _reportResponse
+
+    fun reportContent(feedReportRequestParamModel: FeedComplaintSubmitReportUseCase.Param) {
+        viewModelScope.launchCatchError(block = {
+            val response = withContext(dispatchers.io) {
+                submitReportUseCase(feedReportRequestParamModel)
+            }
+            if (response.data.success.not()) {
+                throw MessageErrorException("Error in Reporting")
+            } else {
+                _reportResponse.value = Success(response)
+            }
+        }) {
+            _reportResponse.value = Fail(it)
         }
     }
 
