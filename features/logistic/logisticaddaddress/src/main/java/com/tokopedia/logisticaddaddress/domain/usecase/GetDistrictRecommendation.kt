@@ -9,6 +9,7 @@ import com.tokopedia.network.exception.MessageErrorException
 import rx.Observable
 import javax.inject.Inject
 
+@Deprecated("Please use GetDistrictRecommendation")
 class GetDistrictRecommendation @Inject constructor(
     val queryMap: Map<String, String>,
     val gql: GraphqlUseCase,

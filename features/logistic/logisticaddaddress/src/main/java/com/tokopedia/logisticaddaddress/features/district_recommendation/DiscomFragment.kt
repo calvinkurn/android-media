@@ -11,6 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.ViewCompat
+import androidx.lifecycle.ViewModelProvider
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
@@ -25,7 +26,6 @@ import com.tokopedia.logisticCommon.data.entity.address.Token
 import com.tokopedia.logisticCommon.data.entity.response.Data
 import com.tokopedia.logisticCommon.util.MapsAvailabilityHelper
 import com.tokopedia.logisticaddaddress.R
-import com.tokopedia.logisticaddaddress.common.AddNewAddressUtils
 import com.tokopedia.logisticaddaddress.common.ChipsItemDecoration
 import com.tokopedia.logisticaddaddress.databinding.FragmentDistrictRecommendationBinding
 import com.tokopedia.logisticaddaddress.di.districtrecommendation.DaggerDistrictRecommendationComponent
@@ -36,15 +36,17 @@ import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomC
 import com.tokopedia.logisticaddaddress.features.district_recommendation.adapter.DistrictAdapterTypeFactory
 import com.tokopedia.logisticaddaddress.features.district_recommendation.adapter.DistrictTypeFactory
 import com.tokopedia.logisticaddaddress.features.district_recommendation.adapter.PopularCityAdapter
+import com.tokopedia.logisticaddaddress.utils.AddNewAddressUtils
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.utils.lifecycle.autoCleared
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import javax.inject.Inject
 
 class DiscomFragment :
     BaseSearchListFragment<Address, DistrictTypeFactory>(),
-    DiscomContract.View,
     PopularCityAdapter.ActionListener {
 
     private var mToken: Token? = null
@@ -55,7 +57,7 @@ class DiscomFragment :
     private var isLocalization: Boolean? = null
     private var hasRequestedLocation: Boolean = false
 
-    private var binding by autoCleared<FragmentDistrictRecommendationBinding>()
+    private var binding by autoClearedNullable<FragmentDistrictRecommendationBinding>()
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -64,7 +66,11 @@ class DiscomFragment :
     lateinit var addressMapper: AddressMapper
 
     @Inject
-    lateinit var presenter: DiscomContract.Presenter
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    private val viewModel: DiscomViewModel by lazy {
+        ViewModelProvider(this, viewModelFactory)[DiscomViewModel::class.java]
+    }
 
     override fun initInjector() {
         val appComponent = getComponent(BaseAppComponent::class.java)
@@ -72,7 +78,6 @@ class DiscomFragment :
             .baseAppComponent(appComponent)
             .build()
         districtRecommendationComponent.inject(this)
-        presenter.attach(this)
     }
 
     override fun onAttach(context: Context) {
@@ -93,7 +98,7 @@ class DiscomFragment :
     }
 
     private fun setPermissionHelper() {
-        if (isLocalization == true && presenter.getLocationAvailability()) {
+        if (isLocalization == true && viewModel.isMapsAvailable) {
             permissionCheckerHelper =
                 PermissionCheckerHelper()
         }
@@ -101,17 +106,22 @@ class DiscomFragment :
 
     private fun checkLocationAvailability() {
         context?.let {
-            presenter.setLocationAvailability(MapsAvailabilityHelper.isMapsAvailable(it))
+            viewModel.isMapsAvailable = MapsAvailabilityHelper.isMapsAvailable(it)
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         binding = FragmentDistrictRecommendationBinding.inflate(inflater, container, false)
-        return binding.root
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initObserver()
         showInitialLoadMessage()
         searchInputView.setSearchHint(getString(R.string.hint_district_recommendation_search))
         searchInputView.setDelayTextChanged(DEBOUNCE_DELAY_IN_MILIS)
@@ -119,16 +129,20 @@ class DiscomFragment :
             searchInputView.searchText = ""
             analytics?.gtmOnClearTextDistrictRecommendationInput()
         }
-        binding.swipeRefreshLayout.isEnabled = false
+        binding?.swipeRefreshLayout?.isEnabled = false
 
         if (isLocalization == true) {
             setCurrentLocationView()
-            binding.llDiscomPopularCity.visibility = View.VISIBLE
+            binding?.llDiscomPopularCity?.visibility = View.VISIBLE
             searchInputView.searchTextView.apply {
                 setOnFocusChangeListener { _, hasFocus ->
                     if (hasFocus) ChooseAddressTracking.onClickFieldSearchKotaKecamatan(userSession.userId)
                 }
-                setOnClickListener { ChooseAddressTracking.onClickFieldSearchKotaKecamatan(userSession.userId) }
+                setOnClickListener {
+                    ChooseAddressTracking.onClickFieldSearchKotaKecamatan(
+                        userSession.userId
+                    )
+                }
             }
 
             val cityList = view.context.resources.getStringArray(R.array.cityList)
@@ -136,26 +150,66 @@ class DiscomFragment :
                 .setOrientation(ChipsLayoutManager.HORIZONTAL)
                 .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)
                 .build()
-            binding.rvDiscomChipsPopularCity.let { ViewCompat.setLayoutDirection(it, ViewCompat.LAYOUT_DIRECTION_LTR) }
+            binding?.rvDiscomChipsPopularCity?.let {
+                ViewCompat.setLayoutDirection(
+                    it,
+                    ViewCompat.LAYOUT_DIRECTION_LTR
+                )
+            }
             popularCityAdapter = PopularCityAdapter(this)
             popularCityAdapter?.cityList = cityList.toMutableList()
 
-            binding.rvDiscomChipsPopularCity.apply {
-                val dist = context?.resources?.getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_8)
+            binding?.rvDiscomChipsPopularCity?.apply {
+                val dist =
+                    context?.resources?.getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_8)
                 layoutManager = chipsLayoutManager
                 adapter = popularCityAdapter
                 dist?.let { ChipsItemDecoration(it) }?.let { addItemDecoration(it) }
             }
         } else {
-            binding.rlDiscomCurrentLocation.visibility = View.GONE
-            binding.discomCurrentLocationDivider.visibility = View.GONE
-            binding.llDiscomPopularCity.visibility = View.GONE
+            binding?.rlDiscomCurrentLocation?.visibility = View.GONE
+            binding?.discomCurrentLocationDivider?.visibility = View.GONE
+            binding?.llDiscomPopularCity?.visibility = View.GONE
+        }
+    }
+
+    private fun initObserver() {
+        viewModel.autoFill.observe(viewLifecycleOwner) {
+            when (it) {
+                is Success -> {
+                    setResultDistrict(it.data.data, it.data.lat, it.data.long)
+                }
+
+                is Fail -> {
+                    showToasterError(it.throwable.message.orEmpty())
+                }
+            }
+        }
+
+        viewModel.districtRecommendation.observe(viewLifecycleOwner) {
+            when (it) {
+                is Success -> {
+                    if (it.data.addresses.isNotEmpty()) {
+                        renderData(it.data.addresses, it.data.isNextAvailable)
+                    } else {
+                        showEmpty()
+                    }
+                }
+
+                is Fail -> {
+                    showGetListError(it.throwable)
+                }
+            }
+        }
+
+        viewModel.loading.observe(viewLifecycleOwner) {
+            setLoadingState(it)
         }
     }
 
     private fun setCurrentLocationView() {
-        if (presenter.getLocationAvailability()) {
-            binding.rlDiscomCurrentLocation.apply {
+        if (viewModel.isMapsAvailable) {
+            binding?.rlDiscomCurrentLocation?.apply {
                 visible()
                 setOnClickListener {
                     ChooseAddressTracking.onClickGunakanLokasiIni(userSession.userId)
@@ -163,10 +217,10 @@ class DiscomFragment :
                 }
             }
             activity?.let { fusedLocationClient = FusedLocationProviderClient(it) }
-            binding.discomCurrentLocationDivider.visible()
+            binding?.discomCurrentLocationDivider?.visible()
         } else {
-            binding.rlDiscomCurrentLocation.gone()
-            binding.discomCurrentLocationDivider.gone()
+            binding?.rlDiscomCurrentLocation?.gone()
+            binding?.discomCurrentLocationDivider?.gone()
         }
     }
 
@@ -183,19 +237,10 @@ class DiscomFragment :
         super.onDetach()
     }
 
-    override fun onDestroy() {
-        presenter.detach()
-        super.onDestroy()
-    }
-
     override fun loadData(page: Int) {
         if (isAdded) {
             if (!TextUtils.isEmpty(searchInputView.searchText) && searchInputView.searchText.length >= MINIMUM_SEARCH_KEYWORD_CHAR) {
-                if (mToken != null) {
-                    presenter.loadData(searchInputView.searchText, page, mToken!!)
-                } else {
-                    presenter.loadData(searchInputView.searchText, page)
-                }
+                viewModel.loadData(searchInputView.searchText, page)
             } else {
                 showInitialLoadMessage()
             }
@@ -217,14 +262,20 @@ class DiscomFragment :
         analytics?.gtmOnDistrictDropdownSelectionItemClicked(address.districtName)
         activity?.let {
             val resultIntent = Intent().apply {
-                putExtra(INTENT_DISTRICT_RECOMMENDATION_ADDRESS, addressMapper.convertAddress(address))
+                putExtra(
+                    INTENT_DISTRICT_RECOMMENDATION_ADDRESS,
+                    addressMapper.convertAddress(address)
+                )
                 putExtra(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_DISTRICT_ID, address.districtId)
                 putExtra(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_DISTRICT_NAME, address.districtName)
                 putExtra(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_CITY_ID, address.cityId)
                 putExtra(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_CITY_NAME, address.cityName)
                 putExtra(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_PROVINCE_ID, address.provinceId)
                 putExtra(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_PROVINCE_NAME, address.provinceName)
-                putStringArrayListExtra(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_ZIPCODES, address.zipCodes)
+                putStringArrayListExtra(
+                    INTENT_DISTRICT_RECOMMENDATION_ADDRESS_ZIPCODES,
+                    address.zipCodes
+                )
                 putExtra(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_LATITUDE, "")
                 putExtra(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_LONGITUDE, "")
             }
@@ -245,11 +296,11 @@ class DiscomFragment :
         loadData(defaultInitialPage)
     }
 
-    override fun renderData(list: List<Address>, hasNextPage: Boolean) {
+    private fun renderData(list: List<Address>, hasNextPage: Boolean) {
         super.renderList(list, hasNextPage)
 
         setSwipeRefreshSection(true)
-        binding.llDiscomPopularCity.visibility = View.GONE
+        binding?.llDiscomPopularCity?.visibility = View.GONE
 
         if (currentPage == defaultInitialPage && hasNextPage) {
             val page = currentPage + defaultInitialPage
@@ -257,7 +308,7 @@ class DiscomFragment :
         }
     }
 
-    override fun setLoadingState(active: Boolean) {
+    private fun setLoadingState(active: Boolean) {
         if (active) {
             super.showLoading()
         } else {
@@ -266,7 +317,7 @@ class DiscomFragment :
     }
 
     override fun showEmpty() {
-        binding.tvMessage.text = getString(R.string.message_search_address_no_result)
+        binding?.tvMessage?.text = getString(R.string.message_search_address_no_result)
         setSwipeRefreshSection(false)
     }
 
@@ -275,16 +326,16 @@ class DiscomFragment :
         setSwipeRefreshSection(false)
 
         if (isLocalization == true) {
-            binding.llDiscomPopularCity.visibility = View.VISIBLE
+            binding?.llDiscomPopularCity?.visibility = View.VISIBLE
         }
     }
 
     private fun setMessageSection(active: Boolean) {
-        binding.tvMessage.visibility = if (active) View.VISIBLE else View.GONE
+        binding?.tvMessage?.visibility = if (active) View.VISIBLE else View.GONE
     }
 
     private fun setSwipeRefreshSection(active: Boolean) {
-        binding.swipeRefreshLayout.visibility = if (active) View.VISIBLE else View.GONE
+        binding?.swipeRefreshLayout?.visibility = if (active) View.VISIBLE else View.GONE
     }
 
     fun requestPermissionLocation() {
@@ -318,7 +369,7 @@ class DiscomFragment :
             fusedLocationClient?.lastLocation?.addOnSuccessListener { data ->
                 if (data != null) {
                     ChooseAddressTracking.onClickAllowLocationKotaKecamatan(userSession.userId)
-                    presenter.autoFill(data.latitude, data.longitude)
+                    viewModel.reverseGeoCode(data.latitude, data.longitude)
                 } else {
                     fusedLocationClient?.requestLocationUpdates(
                         AddNewAddressUtils.getLocationRequest(),
@@ -333,9 +384,18 @@ class DiscomFragment :
         }
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        permissionCheckerHelper?.onRequestPermissionsResult(context, requestCode, permissions, grantResults)
+        permissionCheckerHelper?.onRequestPermissionsResult(
+            context,
+            requestCode,
+            permissions,
+            grantResults
+        )
     }
 
     private fun showDialogAskGps() {
@@ -361,7 +421,10 @@ class DiscomFragment :
         return object : LocationCallback() {
             override fun onLocationResult(locationResult: LocationResult) {
                 if (!hasRequestedLocation) {
-                    presenter.autoFill(locationResult.lastLocation.latitude, locationResult.lastLocation.longitude)
+                    viewModel.reverseGeoCode(
+                        locationResult.lastLocation.latitude,
+                        locationResult.lastLocation.longitude
+                    )
                     hasRequestedLocation = true
                 }
             }
@@ -405,12 +468,13 @@ class DiscomFragment :
         }
 
         @JvmStatic
-        fun newInstance(token: Token, isLocalization: Boolean): DiscomFragment = DiscomFragment().apply {
-            arguments = Bundle().apply {
-                putParcelable(ARGUMENT_DATA_TOKEN, token)
-                putBoolean(IS_LOCALIZATION, isLocalization)
+        fun newInstance(token: Token, isLocalization: Boolean): DiscomFragment =
+            DiscomFragment().apply {
+                arguments = Bundle().apply {
+                    putParcelable(ARGUMENT_DATA_TOKEN, token)
+                    putBoolean(IS_LOCALIZATION, isLocalization)
+                }
             }
-        }
     }
 
     override fun onCityChipClicked(city: String) {
@@ -418,20 +482,26 @@ class DiscomFragment :
         searchInputView.searchText = city
     }
 
-    override fun setResultDistrict(data: Data, lat: Double, long: Double) {
+    private fun setResultDistrict(data: Data, lat: Double, long: Double) {
         val arrayListZipCodes = arrayListOf<String>()
         arrayListZipCodes.add(data.postalCode)
         analytics?.gtmOnDistrictDropdownSelectionItemClicked(data.districtName)
         activity?.let {
             val resultIntent = Intent().apply {
-                putExtra(INTENT_DISTRICT_RECOMMENDATION_ADDRESS, addressMapper.convertAutofillResponse(data))
+                putExtra(
+                    INTENT_DISTRICT_RECOMMENDATION_ADDRESS,
+                    addressMapper.convertAutofillResponse(data)
+                )
                 putExtra(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_DISTRICT_ID, data.districtId)
                 putExtra(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_DISTRICT_NAME, data.districtName)
                 putExtra(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_CITY_ID, data.cityId)
                 putExtra(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_CITY_NAME, "")
                 putExtra(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_PROVINCE_ID, data.provinceId)
                 putExtra(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_PROVINCE_NAME, "")
-                putStringArrayListExtra(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_ZIPCODES, arrayListZipCodes)
+                putStringArrayListExtra(
+                    INTENT_DISTRICT_RECOMMENDATION_ADDRESS_ZIPCODES,
+                    arrayListZipCodes
+                )
                 putExtra(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_LATITUDE, lat)
                 putExtra(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_LONGITUDE, long)
             }
@@ -440,12 +510,12 @@ class DiscomFragment :
         }
     }
 
-    override fun showToasterError(message: String) {
+    private fun showToasterError(message: String) {
         val toaster = Toaster
         view?.let { v ->
             toaster.build(
                 v,
-                getString(R.string.toaster_failed_get_district),
+                message,
                 Toaster.LENGTH_SHORT,
                 Toaster.TYPE_ERROR,
                 ""

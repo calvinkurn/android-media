@@ -1,7 +1,7 @@
 package com.tokopedia.logisticaddaddress.features.common
 
-import com.tokopedia.logisticaddaddress.common.AddNewAddressUtils
 import com.tokopedia.logisticaddaddress.common.AddressConstants
+import com.tokopedia.logisticaddaddress.utils.AddNewAddressUtils
 import org.junit.Assert
 import org.junit.Test
 

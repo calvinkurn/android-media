@@ -1,9 +1,9 @@
 package com.tokopedia.logisticaddaddress.features.district_recommendation
 
-import com.tokopedia.logisticCommon.data.entity.address.Token
 import com.tokopedia.logisticCommon.data.entity.response.Data
 import com.tokopedia.logisticaddaddress.domain.model.Address
 
+@Deprecated("Please use MVVM with DiscomViewModel")
 interface DiscomContract {
 
     interface View {
@@ -19,7 +19,6 @@ interface DiscomContract {
         fun attach(view: View)
         fun detach()
         fun loadData(query: String, page: Int)
-        fun loadData(query: String, page: Int, token: Token)
         fun autoFill(lat: Double, long: Double)
         fun setLocationAvailability(available: Boolean)
         fun getLocationAvailability(): Boolean

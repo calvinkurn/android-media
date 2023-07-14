@@ -1,4 +1,4 @@
-package com.tokopedia.logisticaddaddress.common
+package com.tokopedia.logisticaddaddress.utils
 
 import android.annotation.TargetApi
 import android.app.Activity
@@ -13,6 +13,7 @@ import androidx.core.content.ContextCompat
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.LocationSettingsRequest
+import com.tokopedia.logisticaddaddress.common.AddressConstants
 import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.PERMISSION_DENIED
 import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.PERMISSION_DONT_ASK_AGAIN
 import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.PERMISSION_GRANTED

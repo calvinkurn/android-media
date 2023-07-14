@@ -37,7 +37,6 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.logisticCommon.data.entity.response.Data
 import com.tokopedia.logisticaddaddress.R
-import com.tokopedia.logisticaddaddress.common.AddNewAddressUtils
 import com.tokopedia.logisticaddaddress.common.ChipsItemDecoration
 import com.tokopedia.logisticaddaddress.common.adapter.ZipCodeChipsAdapter
 import com.tokopedia.logisticaddaddress.databinding.BottomsheetDistcrictReccomendationRevampBinding
@@ -50,6 +49,7 @@ import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.isEdit
 import com.tokopedia.logisticaddaddress.features.district_recommendation.adapter.DiscomAdapterRevamp
 import com.tokopedia.logisticaddaddress.features.district_recommendation.adapter.PopularCityAdapter
 import com.tokopedia.logisticaddaddress.utils.AddAddressConstant
+import com.tokopedia.logisticaddaddress.utils.AddNewAddressUtils
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -58,6 +58,7 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import javax.inject.Inject
 
+@Deprecated("Please use DiscomActivity")
 class DiscomBottomSheetRevamp :
     BottomSheetUnify(),
     ZipCodeChipsAdapter.ActionListener,

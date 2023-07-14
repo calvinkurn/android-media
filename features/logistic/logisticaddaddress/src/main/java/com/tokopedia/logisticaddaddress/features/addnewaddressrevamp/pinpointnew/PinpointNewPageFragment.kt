@@ -59,7 +59,6 @@ import com.tokopedia.logisticCommon.util.getLatLng
 import com.tokopedia.logisticCommon.util.rxPinPoint
 import com.tokopedia.logisticCommon.util.toCompositeSubs
 import com.tokopedia.logisticaddaddress.R
-import com.tokopedia.logisticaddaddress.common.AddNewAddressUtils
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_ADDRESS_STATE
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_FROM_ADDRESS_FORM
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_GMS_AVAILABILITY
@@ -71,7 +70,6 @@ import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_NEGATIVE_F
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_RESET_TO_SEARCH_PAGE
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_SAVE_DATA_UI_MODEL
 import com.tokopedia.logisticaddaddress.common.AddressConstants.KEY_ADDRESS_DATA
-import com.tokopedia.logisticaddaddress.common.uimodel.get_district.GetDistrictDataUiModel
 import com.tokopedia.logisticaddaddress.databinding.BottomsheetLocationUndefinedBinding
 import com.tokopedia.logisticaddaddress.databinding.BottomsheetLocationUnmatchedBinding
 import com.tokopedia.logisticaddaddress.databinding.FragmentPinpointNewBinding
@@ -89,6 +87,7 @@ import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.isPinpointO
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.pinpointnew.uimodel.MapsGeocodeState
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.search.SearchPageActivity
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.toAddressUiState
+import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.uimodel.GetDistrictDataUiModel
 import com.tokopedia.logisticaddaddress.features.pinpoint.webview.PinpointWebviewActivity
 import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.EXTRA_PLACE_ID
 import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.IMAGE_OUTSIDE_INDONESIA
@@ -98,6 +97,7 @@ import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.PERMISSION_DENI
 import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.PERMISSION_DONT_ASK_AGAIN
 import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.PERMISSION_GRANTED
 import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.PERMISSION_NOT_DEFINED
+import com.tokopedia.logisticaddaddress.utils.AddNewAddressUtils
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton

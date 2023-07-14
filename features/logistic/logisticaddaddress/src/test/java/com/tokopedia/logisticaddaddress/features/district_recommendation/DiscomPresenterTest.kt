@@ -1,15 +1,11 @@
 package com.tokopedia.logisticaddaddress.features.district_recommendation
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.logisticCommon.data.entity.address.Token
 import com.tokopedia.logisticCommon.data.entity.response.Data
 import com.tokopedia.logisticCommon.data.entity.response.KeroMapsAutofill
 import com.tokopedia.logisticCommon.domain.usecase.RevGeocodeUseCase
 import com.tokopedia.logisticaddaddress.domain.mapper.DistrictRecommendationMapper
-import com.tokopedia.logisticaddaddress.domain.model.Address
-import com.tokopedia.logisticaddaddress.domain.model.AddressResponse
 import com.tokopedia.logisticaddaddress.domain.usecase.GetDistrictRecommendation
-import com.tokopedia.logisticaddaddress.domain.usecase.GetDistrictRequestUseCase
 import com.tokopedia.logisticaddaddress.helper.DiscomDummyProvider
 import io.mockk.MockKAnnotations
 import io.mockk.every
@@ -21,7 +17,6 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import rx.Observable
-import rx.Subscriber
 
 class DiscomPresenterTest {
 
@@ -31,7 +26,6 @@ class DiscomPresenterTest {
     private val firstPage = 1
 
     private val view: DiscomContract.View = mockk(relaxed = true)
-    private val getDistrictRequestUseCase: GetDistrictRequestUseCase = mockk(relaxUnitFun = true)
     private val getDistrictRecommendation: GetDistrictRecommendation = mockk(relaxUnitFun = true)
     private val revGeocodeUseCase: RevGeocodeUseCase = mockk(relaxed = true)
     private val mapper = DistrictRecommendationMapper()
@@ -43,7 +37,7 @@ class DiscomPresenterTest {
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        presenter = DiscomPresenter(getDistrictRequestUseCase, revGeocodeUseCase, getDistrictRecommendation, mapper)
+        presenter = DiscomPresenter(revGeocodeUseCase, getDistrictRecommendation, mapper)
         presenter.attach(view)
     }
 
@@ -98,80 +92,6 @@ class DiscomPresenterTest {
         verifyOrder {
             view.setLoadingState(true)
             view.setLoadingState(false)
-            view.showEmpty()
-        }
-    }
-
-    @Test
-    fun `load data with token data`() {
-        val expected = AddressResponse().apply {
-            addresses = arrayListOf(
-                Address().apply { cityName = "Jakarta" }
-            )
-            isNextAvailable = false
-        }
-        every {
-            getDistrictRequestUseCase.execute(any(), any())
-        } answers {
-            secondArg<Subscriber<AddressResponse>>().onNext(expected)
-        }
-
-        presenter.loadData("jak", firstPage, Token())
-
-        verifyOrder {
-            view.renderData(expected.addresses, expected.isNextAvailable)
-        }
-    }
-
-    @Test
-    fun `load data with token data with no response`() {
-        val expected = null
-        every {
-            getDistrictRequestUseCase.execute(any(), any())
-        } answers {
-            secondArg<Subscriber<AddressResponse>>().onNext(expected)
-        }
-
-        presenter.loadData("jak", firstPage, Token())
-
-        verifyOrder(inverse = true) {
-            view.setLoadingState(true)
-            view.setLoadingState(false)
-            view.renderData(any(), any())
-        }
-    }
-
-    @Test
-    fun `load data with token data return error`() {
-        every {
-            getDistrictRequestUseCase.execute(any(), any())
-        } answers {
-            secondArg<Subscriber<AddressResponse>>().onError(throwable)
-        }
-
-        presenter.loadData("jak", firstPage, Token())
-
-        verifyOrder {
-            view.showGetListError(throwable)
-        }
-    }
-
-    @Test
-    fun `load data with token data return empty`() {
-        val expected = AddressResponse().apply {
-            addresses = arrayListOf()
-            isNextAvailable = false
-        }
-
-        every {
-            getDistrictRequestUseCase.execute(any(), any())
-        } answers {
-            secondArg<Subscriber<AddressResponse>>().onNext(expected)
-        }
-
-        presenter.loadData("jak", firstPage, Token())
-
-        verifyOrder {
             view.showEmpty()
         }
     }
@@ -272,7 +192,6 @@ class DiscomPresenterTest {
         presenter.detach()
 
         verifyOrder {
-            getDistrictRequestUseCase.unsubscribe()
             getDistrictRecommendation.unsubscribe()
         }
     }

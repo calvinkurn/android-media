@@ -1,4 +1,4 @@
-package com.tokopedia.logisticaddaddress.common.uimodel.get_district
+package com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.uimodel
 
 /**
  * Created by fwidjaja on 2019-05-16.

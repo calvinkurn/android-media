@@ -1,4 +1,4 @@
-package com.tokopedia.logisticaddaddress.data.entity.mapsgeocode
+package com.tokopedia.logisticaddaddress.domain.model.mapsgeocode
 
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.graphql.data.GqlParam

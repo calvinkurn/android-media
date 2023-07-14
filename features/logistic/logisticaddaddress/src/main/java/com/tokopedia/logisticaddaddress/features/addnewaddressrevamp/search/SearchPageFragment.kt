@@ -43,7 +43,6 @@ import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.domain.model.Place
 import com.tokopedia.logisticCommon.util.MapsAvailabilityHelper
 import com.tokopedia.logisticaddaddress.R
-import com.tokopedia.logisticaddaddress.common.AddNewAddressUtils
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_ADDRESS_STATE
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_FROM_ADDRESS_FORM
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_FROM_PINPOINT
@@ -71,6 +70,7 @@ import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.PERMISSION_DENI
 import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.PERMISSION_DONT_ASK_AGAIN
 import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.PERMISSION_GRANTED
 import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.PERMISSION_NOT_DEFINED
+import com.tokopedia.logisticaddaddress.utils.AddNewAddressUtils
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success

@@ -1,4 +1,4 @@
-package com.tokopedia.logisticaddaddress.common.uimodel.district_boundary
+package com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.uimodel
 
 /**
  * Created by fwidjaja on 2019-06-10.

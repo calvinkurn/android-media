@@ -1,20 +1,16 @@
 package com.tokopedia.logisticaddaddress.features.district_recommendation
 
-import com.tokopedia.logisticCommon.data.entity.address.Token
 import com.tokopedia.logisticCommon.domain.usecase.RevGeocodeUseCase
 import com.tokopedia.logisticaddaddress.common.AddressConstants
 import com.tokopedia.logisticaddaddress.domain.mapper.DistrictRecommendationMapper
 import com.tokopedia.logisticaddaddress.domain.model.AddressResponse
 import com.tokopedia.logisticaddaddress.domain.usecase.GetDistrictRecommendation
-import com.tokopedia.logisticaddaddress.domain.usecase.GetDistrictRequestUseCase
 import com.tokopedia.logisticaddaddress.domain.usecase.GetDistrictUseCase
 import com.tokopedia.logisticaddaddress.utils.SimpleIdlingResource
-import com.tokopedia.usecase.RequestParams
-import rx.Subscriber
 import javax.inject.Inject
 
+@Deprecated("Please use MVVM with DiscomViewModel")
 class DiscomPresenter @Inject constructor(
-    private val restUsecase: GetDistrictRequestUseCase,
     private val revGeocodeUseCase: RevGeocodeUseCase,
     private val gqlUsecase: GetDistrictRecommendation,
     private val mapper: DistrictRecommendationMapper
@@ -28,7 +24,6 @@ class DiscomPresenter @Inject constructor(
     }
 
     override fun detach() {
-        restUsecase.unsubscribe()
         gqlUsecase.unsubscribe()
         view = null
     }
@@ -55,22 +50,6 @@ class DiscomPresenter @Inject constructor(
             )
     }
 
-    /**
-     * Loads district recommendations by rest api, it uses mandatory kero token to
-     * request, if the token is not provided, please use the graphql version
-     * @see DiscomPresenter.loadData
-     */
-    override fun loadData(query: String, page: Int, token: Token) {
-        view?.setLoadingState(true)
-        val params = RequestParams.create().apply {
-            putString(GetDistrictRequestUseCase.PARAM_QUERY, query)
-            putString(GetDistrictRequestUseCase.PARAM_PAGE, page.toString())
-            putString(GetDistrictRequestUseCase.PARAM_TOKEN, token.districtRecommendation)
-            putString(GetDistrictRequestUseCase.PARAM_UT, token.ut.toString())
-        }
-        restUsecase.execute(params, getLoadDataObserver())
-    }
-
     private fun deliverToView(response: AddressResponse) {
         view?.let {
             it.setLoadingState(false)
@@ -80,19 +59,6 @@ class DiscomPresenter @Inject constructor(
                 it.showEmpty()
             }
         }
-    }
-
-    private fun getLoadDataObserver() = object : Subscriber<AddressResponse>() {
-        override fun onNext(response: AddressResponse?) {
-            response?.let { deliverToView(it) }
-        }
-
-        override fun onError(e: Throwable?) {
-            view?.setLoadingState(false)
-            view?.showGetListError(e ?: Throwable())
-        }
-
-        override fun onCompleted() {}
     }
 
     override fun autoFill(lat: Double, long: Double) {

@@ -1,4 +1,4 @@
-package com.tokopedia.logisticaddaddress.common.uimodel.district_boundary
+package com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.uimodel
 
 import com.google.android.gms.maps.model.LatLng
 
