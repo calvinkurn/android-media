@@ -2,11 +2,11 @@
 <!--<shape xmlns:android="http://schemas.android.com/apk/res/android" >-->
 <!--<size android:width="1dp" />-->
 <!--<size android:height="10dp"/>-->
-<!--<solid android:color="@color/Unify_N75" />-->
+<!--<solid android:color="@color/Unify_NN50" />-->
 <!--</shape>-->
 <inset xmlns:android="http://schemas.android.com/apk/res/android" android:insetTop="20dp" android:insetBottom="20dp">
     <shape>
         <size android:width="1dp"/>
-        <solid android:color="@color/Unify_N75"/>
+        <solid android:color="@color/Unify_NN50"/>
     </shape>
 </inset>

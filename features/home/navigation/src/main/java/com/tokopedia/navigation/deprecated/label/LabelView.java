@@ -88,12 +88,12 @@ public class LabelView extends BaseCustomView {
             imageHeight = (int) styledAttributes.getDimension(R.styleable.LabelView_nav_lv_image_height, imageWidth);
             imageMarginRight = (int) styledAttributes.getDimension(R.styleable.LabelView_nav_lv_image_margin_right, getResources().getDimension(R.dimen.unify_space_8));
             titleText = styledAttributes.getString(R.styleable.LabelView_nav_lv_title);
-            titleColorValue = styledAttributes.getColor(R.styleable.LabelView_nav_lv_title_color, ContextCompat.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_68));
-            subtitleColorValue = styledAttributes.getColor(R.styleable.LabelView_nav_lv_sub_title_color, ContextCompat.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_32));
+            titleColorValue = styledAttributes.getColor(R.styleable.LabelView_nav_lv_title_color, ContextCompat.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_NN950_68));
+            subtitleColorValue = styledAttributes.getColor(R.styleable.LabelView_nav_lv_sub_title_color, ContextCompat.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_NN950_32));
             subTitleText = styledAttributes.getString(R.styleable.LabelView_nav_lv_sub_title);
             contentText = styledAttributes.getString(R.styleable.LabelView_nav_lv_content);
             badgeCounter = styledAttributes.getInt(R.styleable.LabelView_nav_lv_badge, 0);
-            contentColorValue = styledAttributes.getColor(R.styleable.LabelView_nav_lv_content_color, ContextCompat.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_44));
+            contentColorValue = styledAttributes.getColor(R.styleable.LabelView_nav_lv_content_color, ContextCompat.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_NN950_44));
             contentTextStyleValue = styledAttributes.getInt(R.styleable.LabelView_nav_lv_content_text_style, Typeface.NORMAL);
             titleTextStyleValue = styledAttributes.getInt(R.styleable.LabelView_nav_lv_title_text_style, Typeface.NORMAL);
             maxLines = styledAttributes.getInt(R.styleable.LabelView_nav_lv_content_max_lines, 1);
@@ -192,9 +192,9 @@ public class LabelView extends BaseCustomView {
             contentTextView.setTextColor(contentColorValue);
             subTitleTextView.setTextColor(subtitleColorValue);
         } else {
-            titleTextView.setTextColor(ContextCompat.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_32));
-            contentTextView.setTextColor(ContextCompat.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_32));
-            subTitleTextView.setTextColor(ContextCompat.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_32));
+            titleTextView.setTextColor(ContextCompat.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_NN950_32));
+            contentTextView.setTextColor(ContextCompat.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_NN950_32));
+            subTitleTextView.setTextColor(ContextCompat.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_NN950_32));
         }
     }
 

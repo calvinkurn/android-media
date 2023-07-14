@@ -66,6 +66,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation projectOrAar(rootProject.ext.libraries.logger)
+    implementation rootProject.ext.firebase.crashlytics
 
     implementation projectOrAar(rootProject.ext.features.questWidget)
 

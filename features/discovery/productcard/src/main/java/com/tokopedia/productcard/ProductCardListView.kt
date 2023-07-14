@@ -3,7 +3,6 @@ package com.tokopedia.productcard
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
-import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.FrameLayout
@@ -14,6 +13,7 @@ import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.productcard.layout.LayoutStrategyBestSeller
 import com.tokopedia.productcard.utils.ViewId
 import com.tokopedia.productcard.utils.ViewStubId
 import com.tokopedia.productcard.utils.expandTouchArea
@@ -29,9 +29,7 @@ import com.tokopedia.productcard.utils.renderLabelCampaign
 import com.tokopedia.productcard.utils.renderStockBar
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.remoteconfig.RemoteConfigKey.PRODUCT_CARD_ENABLE_INTERACTION
-import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.ProgressBarUnify
 import com.tokopedia.unifycomponents.UnifyButton
@@ -199,7 +197,11 @@ class ProductCardListView: ConstraintLayout, IProductCardView {
 
         renderProductCardRibbon(productCardModel, false)
 
-        imageProduct?.loadImageRounded(productCardModel.productImageUrl)
+        imageProduct?.loadImageRounded(
+            productCardModel.productImageUrl,
+            productCardModel.layoutStrategy.imageCornerRadius()
+        )
+        productCardModel.layoutStrategy.setImageSize(mediaAnchorProduct)
 
         val isShowCampaign = productCardModel.isShowLabelCampaign()
         renderLabelCampaign(
@@ -241,7 +243,10 @@ class ProductCardListView: ConstraintLayout, IProductCardView {
 
         imageVideoIdentifier?.showWithCondition(productCardModel.hasVideo)
 
-        renderProductCardContent(productCardModel, isWideContent = true)
+        renderProductCardContent(
+            productCardModel,
+            isWideContent = productCardModel.layoutStrategy !is LayoutStrategyBestSeller
+        )
 
         renderStockBar(progressBarStock, textViewStockLabel, productCardModel)
 
