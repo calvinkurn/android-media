@@ -1,10 +1,8 @@
 package com.tokopedia.promousage.view.bottomsheet
 
-import android.app.Activity
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
-import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -67,14 +65,6 @@ class PromoUsageBottomSheet: BottomSheetDialogFragment() {
     }
 
     private var binding by autoClearedNullable<PromoUsageBottomshetBinding>()
-    private var bottomSheet = BottomSheetBehavior<View>()
-    private var isDragable: Boolean = false
-    private var isHideable: Boolean = false
-    private var isFullpage: Boolean = false
-    private var customPeekHeight: Int = 200
-    private var isSkipCollapseState: Boolean = false
-    private var displayMetrix = DisplayMetrics()
-    private var bottomSheetBehaviorDefaultState = BottomSheetBehavior.STATE_COLLAPSED
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -111,15 +101,9 @@ class PromoUsageBottomSheet: BottomSheetDialogFragment() {
         binding = PromoUsageBottomshetBinding.inflate(inflater, container, false)
 
         binding?.bottomSheetTitle?.text = context?.getString(R.string.promo_voucher_promo)
-
         binding?.bottomSheetClose?.setOnClickListener { dismissAllowingStateLoss() }
 
-        dialog?.setOnShowListener {
-            showListener()
-        }
-
-
-        (requireContext() as Activity).windowManager.defaultDisplay.getMetrics(displayMetrix)
+        dialog?.setOnShowListener { applyBottomSheetMaxHeightRule() }
 
         return binding?.root
     }
@@ -127,88 +111,26 @@ class PromoUsageBottomSheet: BottomSheetDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupView()
-        observeVouchers()
+        observeBottomsheetContent()
         viewModel.getVouchers()
     }
 
-    private fun applyBottomSheetHeightMaxRule() {
-        val screenHeight = getScreenHeight()
-        val maxPeekHeight: Int = screenHeight - BOTTOM_SHEET_MARGIN_TOP_IN_DP.toPx()
-    }
-
-    private fun showListener() {
-
+    private fun applyBottomSheetMaxHeightRule() {
         val frameDialogView = binding?.bottomSheetWrapper?.parent as View
         frameDialogView.setBackgroundColor(Color.TRANSPARENT)
 
         frameDialogView.bringToFront()
 
-        bottomSheet = BottomSheetBehavior.from(frameDialogView)
+        val screenHeight = getScreenHeight()
+        val maxPeekHeight: Int = screenHeight - BOTTOM_SHEET_MARGIN_TOP_IN_DP.toPx()
+        frameDialogView.layoutParams.height = maxPeekHeight
 
-        /**
-         * set peekheight so user cant drag down the bottomsheet
-         */
-        if (isFullpage && !isDragable) {    // full page & not dragable
-            frameDialogView.layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
 
-            bottomSheet.peekHeight = displayMetrix.heightPixels
-        } else if (!isFullpage && !isDragable) { // not full page & not dragable
-            bottomSheet.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
-                override fun onSlide(p0: View, p1: Float) {
-
-                }
-
-                override fun onStateChanged(p0: View, p1: Int) {
-                    /**
-                     * Set peekheight here because need to get view height, view height can be get after rendered
-                     * peek height obtained from wrapper parent height because parent background have another padding from 9patch
-                     */
-                    bottomSheet.peekHeight = (binding?.bottomSheetWrapper?.parent as View).height
-
-                    if (isHideable && p1 == BottomSheetBehavior.STATE_HIDDEN) {
-                        dismiss()
-                    }
-                }
-            })
-        } else { // dragable
-            var mPeekHeight = customPeekHeight.toPx()
-            if (isSkipCollapseState) {
-                if (isFullpage) {
-                    mPeekHeight = displayMetrix.heightPixels
-                } else {
-                    mPeekHeight = (binding?.bottomSheetWrapper?.parent as View).height
-                }
-            }
-            bottomSheet.peekHeight = mPeekHeight
-            bottomSheet.state = bottomSheetBehaviorDefaultState
-
-            if (isFullpage) {
-                frameDialogView.layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
-            }
-
-            bottomSheet.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
-                override fun onSlide(p0: View, p1: Float) {
-
-                }
-
-                override fun onStateChanged(p0: View, p1: Int) {
-                    if (p1 == BottomSheetBehavior.STATE_HIDDEN) {
-                        dismiss()
-                    }
-                }
-            })
-        }
-
-        bottomSheet.isHideable = isHideable
-        bottomSheet.state = if (!isDragable || isFullpage) {
-            BottomSheetBehavior.STATE_EXPANDED
-        } else {
-            BottomSheetBehavior.STATE_COLLAPSED
-        }
-
+        val bottomSheet = BottomSheetBehavior.from(frameDialogView)
+        bottomSheet.peekHeight = maxPeekHeight
     }
 
-    private fun observeVouchers() {
+    private fun observeBottomsheetContent() {
         viewModel.items.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Success -> {
