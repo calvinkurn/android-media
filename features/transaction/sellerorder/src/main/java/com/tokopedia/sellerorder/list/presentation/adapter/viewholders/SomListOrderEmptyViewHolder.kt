@@ -40,7 +40,7 @@ class SomListOrderEmptyViewHolder(
             setIllustration(element.imageUrl)
             setTitle(element.title)
             setDescription(element.description)
-            if (element.showButton) {
+            if (element.buttonText.isNotBlank()) {
                 setButtonText(element.buttonText)
                 setButtonAppLink(element.buttonAppLink)
                 binding?.btnEmptyState?.show()
