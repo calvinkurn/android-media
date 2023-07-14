@@ -1,4 +1,4 @@
-package com.tokopedia.product.detail.view.fragment.fpi.manually
+package com.tokopedia.analytics.performance.fpi.manually
 
 import android.os.Bundle
 import android.view.View

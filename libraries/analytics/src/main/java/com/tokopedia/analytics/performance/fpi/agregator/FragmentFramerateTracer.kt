@@ -1,4 +1,4 @@
-package com.tokopedia.product.detail.view.fragment.fpi.agregator
+package com.tokopedia.analytics.performance.fpi.agregator
 
 import android.app.Activity
 import androidx.core.app.FrameMetricsAggregator

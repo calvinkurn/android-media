@@ -1,4 +1,4 @@
-package com.tokopedia.product.detail.view.fragment.fpi.agregator
+package com.tokopedia.analytics.performance.fpi.agregator
 
 interface OnHiddenChangedListener {
     fun onHidden(hidden: Boolean)

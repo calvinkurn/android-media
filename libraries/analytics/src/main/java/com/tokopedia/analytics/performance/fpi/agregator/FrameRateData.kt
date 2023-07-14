@@ -1,4 +1,4 @@
-package com.tokopedia.product.detail.view.fragment.fpi.agregator
+package com.tokopedia.analytics.performance.fpi.agregator
 
 class FrameRateData(val frames: Long = 0, val slow: Long = 0, val frozen: Long = 0) {
     override fun toString(): String {

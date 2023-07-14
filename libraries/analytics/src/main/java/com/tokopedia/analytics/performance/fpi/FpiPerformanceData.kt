@@ -1,6 +1,10 @@
 package com.tokopedia.analytics.performance.fpi
 
-class FpiPerformanceData(var allFrames: Int = 0, var jankyFrames: Int = 0) {
+class FpiPerformanceData(
+    var allFrames: Int = 0,
+    var jankyFrames: Int = 0,
+    var totalDuration: Double = 0.0
+) {
     var allFramesTag = "all_frames"
     var jankyFramesTag = "janky_frames"
     var jankyFramesPercentageTag = "janky_frames_percentage"
@@ -9,7 +13,10 @@ class FpiPerformanceData(var allFrames: Int = 0, var jankyFrames: Int = 0) {
         get() = if (this.allFrames == 0) 0 else (this.jankyFrames.toFloat() / this.allFrames.toFloat() * 100).toInt()
 
     val framePerformanceIndex: Int
-        get() = if (this.allFrames == 0) 0 else 100-jankyFramePercentage
+        get() = if (this.allFrames == 0) 0 else 100 - jankyFramePercentage
+
+    val fps: Double
+        get() = totalDuration / allFrames
 
     fun incrementAllFrames() {
         this.allFrames++

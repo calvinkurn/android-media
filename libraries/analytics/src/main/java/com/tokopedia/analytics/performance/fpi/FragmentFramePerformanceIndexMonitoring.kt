@@ -5,11 +5,7 @@ import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.view.FrameMetrics
-import android.view.View
-import android.view.ViewGroup
-import android.view.ViewTreeObserver
 import android.view.Window
-import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
@@ -17,9 +13,8 @@ import androidx.lifecycle.LifecycleOwner
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.cachemanager.CacheManager
 import com.tokopedia.cachemanager.PersistentCacheManager
+import com.tokopedia.kotlin.extensions.view.orZero
 import kotlinx.coroutines.*
-import timber.log.Timber
-import java.lang.ref.WeakReference
 import kotlin.coroutines.CoroutineContext
 import kotlin.math.pow
 
@@ -38,12 +33,12 @@ class FragmentFramePerformanceIndexMonitoring : LifecycleEventObserver, Coroutin
     var fragment: Fragment? = null
     private var cacheManager: CacheManager? = null
     private var pageName: String? = null
-    private val durationDivider = 10.0.pow(6.0) //
+    private val durationDivider = 10.0.pow(6.0)
 
     var mainPerformanceData: FpiPerformanceData? = FpiPerformanceData()
     private set
 
-    protected val masterJob = SupervisorJob()
+    private val masterJob = SupervisorJob()
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.IO + masterJob
@@ -123,13 +118,9 @@ class FragmentFramePerformanceIndexMonitoring : LifecycleEventObserver, Coroutin
     private suspend fun startFrameMetrics() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && onFrameMetricAvailableListener == null) {
             withContext(Dispatchers.Main) {
-                onFrameMetricAvailableListener = Window.OnFrameMetricsAvailableListener { window, frameMetrics, _ ->
+                onFrameMetricAvailableListener = Window.OnFrameMetricsAvailableListener { _, frameMetrics, _ ->
                     val frameMetricsCopy = FrameMetrics(frameMetrics)
                     recordFrames(frameMetricsCopy)
-
-                    /*(window.decorView as? ViewGroup)?.let {
-                        getAllViews(it)
-                    }*/
                 }
                 onFrameMetricAvailableListener?.let {
                     fragment?.activity?.window?.addOnFrameMetricsAvailableListener(it, Handler(Looper.getMainLooper()))
@@ -138,70 +129,16 @@ class FragmentFramePerformanceIndexMonitoring : LifecycleEventObserver, Coroutin
         }
     }
 
-    private val viewTreeMap = mutableMapOf<String, Set<Long>>()
-    @RequiresApi(Build.VERSION_CODES.N)
-    private fun getAllViews(
-        viewGroup: ViewGroup
-    ) {
-        for (i in 0 until viewGroup.childCount) {
-            val childView = viewGroup.getChildAt(i)
-            val globalLayoutProcess =
-                GlobalLayoutProcess(viewRef = WeakReference(childView)) { name, time ->
-                    val current = viewTreeMap[name].orEmpty().toMutableSet()
-                    current.add(time)
-                    viewTreeMap[name] = current
-                    Timber.tag("GlobalLayoutProcess").d("$name -> $current ms")
-                }
-            childView.viewTreeObserver.addOnPreDrawListener(globalLayoutProcess)
-            childView.viewTreeObserver.addOnGlobalLayoutListener(globalLayoutProcess)
-
-            if (childView is ViewGroup) {
-                getAllViews(childView)
-            }
-        }
-    }
-
-    inner class GlobalLayoutProcess(
-        val viewRef: WeakReference<View>,
-        val completed: (viewName: String, time: Long) -> Unit
-    ) : ViewTreeObserver.OnGlobalLayoutListener, ViewTreeObserver.OnPreDrawListener {
-
-        private val view by lazy { viewRef.get() }
-        private var startTime = 0L
-        private var hasEmit: Boolean = false
-
-        override fun onGlobalLayout() {
-            if (startTime == 0L || hasEmit) return
-
-            val view = view ?: return
-            val context = view.context
-            view.viewTreeObserver.removeOnGlobalLayoutListener(this)
-
-            val viewName = try {
-                context.resources.getResourceName(view.id)
-            } catch (e: Throwable) {
-                view.id.toString()
-            }
-
-            val total = System.currentTimeMillis() - startTime
-            completed(viewName, total)
-            hasEmit = true
-        }
-
-        override fun onPreDraw(): Boolean {
-            startTime = System.currentTimeMillis()
-            view?.viewTreeObserver?.removeOnPreDrawListener(this)
-            return true
-        }
-    }
-
     private fun recordFrames(frameMetricsCopy: FrameMetrics) {
         mainPerformanceData?.incrementAllFrames()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             val totalDurationMs = frameMetricsCopy.getMetric(FrameMetrics.TOTAL_DURATION).div(durationDivider)
+            mainPerformanceData?.totalDuration = mainPerformanceData?.totalDuration.orZero() + totalDurationMs
+
             if (totalDurationMs > DEFAULT_WARNING_LEVEL_MS) {
                 mainPerformanceData?.incremenetJankyFrames()
             }
+
             mainPerformanceData?.let { onFrameListener?.onFrameRendered(it) }
         }
     }
@@ -221,12 +158,6 @@ class FragmentFramePerformanceIndexMonitoring : LifecycleEventObserver, Coroutin
         if (isActive && !masterJob.isCancelled){
             masterJob.children.map { it.cancel() }
         }
-    }
-
-    fun onDestroyView() {
-        Timber.tag("viewTreeMap").d(viewTreeMap.map {
-            "${it.key} -> ${it.value}ms"
-        }.joinToString("\n"))
     }
 
     override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
