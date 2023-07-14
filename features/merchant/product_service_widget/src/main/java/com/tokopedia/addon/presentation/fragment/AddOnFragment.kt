@@ -11,9 +11,9 @@ import com.tokopedia.addon.presentation.listener.AddOnComponentListener
 import com.tokopedia.addon.presentation.uimodel.AddOnExtraConstant
 import com.tokopedia.addon.presentation.uimodel.AddOnGroupUIModel
 import com.tokopedia.addon.presentation.uimodel.AddOnPageResult
+import com.tokopedia.addon.presentation.uimodel.AddOnParam
 import com.tokopedia.addon.presentation.uimodel.AddOnUIModel
 import com.tokopedia.addon.tracking.AddOnBottomsheetTracking
-import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -26,22 +26,18 @@ class AddOnFragment : BaseDaggerFragment(), AddOnComponentListener {
 
     companion object {
         fun newInstance(
-            productId: Long,
+            addOnWidgetParam: AddOnParam,
             pageSource: String,
             cartId: Long,
             selectedAddonIds: List<String>,
-            warehouseId: Long,
-            isTokocabang: Boolean,
             atcSource: String
         ): AddOnFragment {
             val fragment = AddOnFragment()
             val bundle = Bundle().apply {
-                putLong(AddOnExtraConstant.PRODUCT_ID, productId)
+                putParcelable(AddOnExtraConstant.ADDON_WIDGET_PARAM, addOnWidgetParam)
                 putString(AddOnExtraConstant.PAGE_SOURCE, pageSource)
                 putStringArrayList(AddOnExtraConstant.SELECTED_ADDON_IDS, ArrayList(selectedAddonIds))
                 putLong(AddOnExtraConstant.CART_ID, cartId)
-                putLong(AddOnExtraConstant.WAREHOUSE_ID, warehouseId)
-                putBoolean(AddOnExtraConstant.IS_TOKOCABANG, isTokocabang)
                 putString(AddOnExtraConstant.ATC_SOURCE, atcSource)
             }
             fragment.arguments = bundle
@@ -52,12 +48,11 @@ class AddOnFragment : BaseDaggerFragment(), AddOnComponentListener {
     private var binding by autoClearedNullable<FragmentBottomsheetAddonBinding>()
     private var onSaveAddonListener: (aggregatedData: AddOnPageResult) -> Unit = {}
     private var tempChangedAddons: List<AddOnUIModel> = emptyList()
-    private val productId by lazy { arguments?.getLong(AddOnExtraConstant.PRODUCT_ID) }
+    private val addOnWidgetParam: AddOnParam? by lazy {
+        arguments?.getParcelable(AddOnExtraConstant.ADDON_WIDGET_PARAM) }
     private val pageSource by lazy { arguments?.getString(AddOnExtraConstant.PAGE_SOURCE) }
     private val cartId by lazy { arguments?.getLong(AddOnExtraConstant.CART_ID) }
     private val selectedAddonIds by lazy { arguments?.getStringArrayList(AddOnExtraConstant.SELECTED_ADDON_IDS) }
-    private val warehouseId by lazy { arguments?.getLong(AddOnExtraConstant.WAREHOUSE_ID) }
-    private val isTokocabang by lazy { arguments?.getBoolean(AddOnExtraConstant.IS_TOKOCABANG).orFalse() }
     private val atcSource by lazy { arguments?.getString(AddOnExtraConstant.ATC_SOURCE).orEmpty() }
 
     @Inject
@@ -86,7 +81,7 @@ class AddOnFragment : BaseDaggerFragment(), AddOnComponentListener {
         binding?.addonWidget?.apply {
             setListener(this@AddOnFragment)
             setSelectedAddons(selectedAddonIds.orEmpty())
-            getAddonData(productId.toString(), warehouseId.toString(), isTokocabang)
+            getAddonData(addOnWidgetParam ?: AddOnParam())
         }
         binding?.btnSave?.setOnClickListener {
             binding?.addonWidget?.saveAddOnState(cartId.orZero(), atcSource)
