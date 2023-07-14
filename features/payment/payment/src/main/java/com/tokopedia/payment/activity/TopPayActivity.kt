@@ -63,6 +63,7 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.webview.WebViewHelper
+import com.tokopedia.webview.ext.decode
 import kotlinx.android.synthetic.main.activity_top_pay_payment_module.*
 import rx.Observable
 import rx.Subscriber
@@ -892,7 +893,7 @@ class TopPayActivity :
     }
 
     private fun isURLReloadParamExist(url: String): Boolean {
-        val decodedURL = URLDecoder.decode(url, "UTF-8")
+        val decodedURL = url.decode()
         return decodedURL.contains("payment_reload=true")
     }
 
