@@ -2,10 +2,12 @@ package com.tokopedia.addon.domain.usecase
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.addon.domain.model.AddOnRequest
+import com.tokopedia.addon.domain.model.Additional
 import com.tokopedia.addon.domain.model.GetAddOnByProductRequest
 import com.tokopedia.addon.domain.model.GetAddOnByProductResponse
 import com.tokopedia.addon.domain.model.Source
 import com.tokopedia.addon.domain.model.TypeFilters
+import com.tokopedia.addon.presentation.uimodel.AddOnParam
 import com.tokopedia.common.ProductServiceWidgetConstant.SQUAD_VALUE_ADDON
 import com.tokopedia.common.ProductServiceWidgetConstant.USECASE_ADDON_VALUE
 import com.tokopedia.gifting.presentation.uimodel.AddOnType
@@ -97,9 +99,7 @@ class GetAddOnByProductUseCase @Inject constructor(
     }
 
     fun setParams(
-        productId: String,
-        warehouseId: String,
-        isTokocabang: Boolean,
+        param: AddOnParam,
         typeFilters: List<AddOnType>
     ) {
         val requestParams = RequestParams.create()
@@ -107,12 +107,20 @@ class GetAddOnByProductUseCase @Inject constructor(
             PARAM_INPUT, GetAddOnByProductRequest(
                 addOnRequest = listOf(
                     AddOnRequest(
-                        productId = productId,
-                        warehouseId = warehouseId,
-                        addOnLevel = if (isTokocabang) ADDON_LEVEL_TC else ADDON_LEVEL_NON_TC,
+                        productId = param.productId,
+                        warehouseId = param.warehouseId,
+                        addOnLevel = if (param.isTokocabang) ADDON_LEVEL_TC else ADDON_LEVEL_NON_TC,
                         typeFilters = typeFilters.map {
                             TypeFilters(it.name)
-                        }
+                        },
+                        additional = Additional(
+                            categoryID = param.categoryID,
+                            shopID = param.shopID,
+                            quantity = param.quantity,
+                            price = param.price,
+                            discountedPrice = param.discountedPrice,
+                            condition = param.condition,
+                        ),
                     )
                 ),
                 source = Source(usecase = USECASE_ADDON_VALUE, squad = SQUAD_VALUE_ADDON)
