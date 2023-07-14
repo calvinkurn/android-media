@@ -192,7 +192,6 @@ class TestMainNavViewModel {
 
     @Test
     fun `given launch global menu when using default page source then do show back to home icon`() {
-        val defaultPageSource = "Default"
         val clientMenuGenerator = mockk<ClientMenuGenerator>()
         every { clientMenuGenerator.getMenu(menuId = any(), notifCount = any(), sectionId = any()) }
             .answers { HomeNavMenuDataModel(id = firstArg(), notifCount = secondArg(), sectionId = thirdArg()) }
@@ -204,7 +203,7 @@ class TestMainNavViewModel {
         viewModel = createViewModel(clientMenuGenerator = clientMenuGenerator)
         viewModel.setInitialState()
         viewModel.setPageSource()
-        Assert.assertEquals(defaultPageSource, viewModel.getPageSource())
+        Assert.assertEquals(NavSource.DEFAULT, viewModel.getPageSource())
 
         val visitableList = viewModel.mainNavLiveData.value?.dataList ?: listOf()
         val backToHomeMenu = visitableList.find { it is HomeNavMenuDataModel && it.id == ClientMenuGenerator.ID_HOME } as HomeNavMenuDataModel?
