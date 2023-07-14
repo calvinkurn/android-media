@@ -31,7 +31,6 @@ import org.junit.Assert.assertThat
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import timber.log.Timber
 
 @RunWith(AndroidJUnit4::class)
 class DataStoreMigrationWorkerTest {
@@ -118,7 +117,7 @@ class DataStoreMigrationWorkerTest {
             UserSessionMap.map.clear()
             assertEquals(userSession.tokenType, dataStore.getTokenType().first())
 
-            userSession.setToken("0","0")
+            userSession.setToken("0", "0")
             UserSessionMap.map.clear()
             assertEquals(userSession.tokenType, dataStore.getTokenType().first())
 
