@@ -99,7 +99,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/layoutBottomSheetHeader"
-        android:layout_above="@id/cardViewTotalPrice"
+        android:layout_above="@id/layoutTotalSavings"
         tools:itemCount="3"
         tools:listitem="@layout/promo_usage_item_voucher_section" />
 
