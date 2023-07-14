@@ -11,11 +11,17 @@ import com.tokopedia.promousage.databinding.PromoUsageItemVoucherRecommendationB
 import com.tokopedia.promousage.domain.entity.list.Voucher
 import com.tokopedia.promousage.domain.entity.list.VoucherRecommendation
 import com.tokopedia.promousage.util.composite.DelegateAdapter
+import com.tokopedia.promousage.util.extension.applyPaddingToLastItem
 
 class VoucherRecommendationDelegateAdapter(private val onVoucherClick: (Voucher) -> Unit) :
     DelegateAdapter<VoucherRecommendation, VoucherRecommendationDelegateAdapter.ViewHolder>(
         VoucherRecommendation::class.java
     ) {
+
+    companion object {
+        private const val PADDING_BOTTOM_DP = 10
+    }
+
     override fun createViewHolder(parent: ViewGroup): RecyclerView.ViewHolder {
         val binding = PromoUsageItemVoucherRecommendationBinding.inflate(
             LayoutInflater.from(parent.context),
@@ -39,6 +45,8 @@ class VoucherRecommendationDelegateAdapter(private val onVoucherClick: (Voucher)
             binding.recyclerView.apply {
                 layoutManager = LinearLayoutManager(binding.recyclerView.context)
                 adapter = voucherAdapter
+
+                applyPaddingToLastItem(PADDING_BOTTOM_DP)
             }
 
             voucherAdapter.submit(recommendation.vouchers)

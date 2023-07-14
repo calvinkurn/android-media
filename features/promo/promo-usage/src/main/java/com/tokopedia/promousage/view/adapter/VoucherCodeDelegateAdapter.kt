@@ -28,7 +28,7 @@ class VoucherCodeDelegateAdapter(
     }
 
     override fun bindViewHolder(item: VoucherCode, viewHolder: ViewHolder) {
-        viewHolder.bind(item)
+        viewHolder.bind()
     }
 
     inner class ViewHolder(private val binding: PromoUsageItemVoucherCodeBinding) :
@@ -38,7 +38,7 @@ class VoucherCodeDelegateAdapter(
             binding.root.setOnClickListener { onApplyVoucherCodeCtaClick() }
         }
 
-        fun bind(voucher: VoucherCode) {
+        fun bind() {
             handleVoucherFound()
         }
 

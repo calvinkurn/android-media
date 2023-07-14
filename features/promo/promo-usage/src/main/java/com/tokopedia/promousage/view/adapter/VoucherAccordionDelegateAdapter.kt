@@ -27,7 +27,10 @@ class VoucherAccordionDelegateAdapter(
         return ViewHolder(binding)
     }
 
-    override fun bindViewHolder(item: VoucherAccordion, viewHolder: VoucherAccordionDelegateAdapter.ViewHolder) {
+    override fun bindViewHolder(
+        item: VoucherAccordion,
+        viewHolder: VoucherAccordionDelegateAdapter.ViewHolder
+    ) {
         viewHolder.bind(item)
     }
 

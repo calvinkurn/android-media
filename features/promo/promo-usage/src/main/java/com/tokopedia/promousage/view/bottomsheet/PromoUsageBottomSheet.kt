@@ -337,17 +337,21 @@ class PromoUsageBottomSheet: BottomSheetDialogFragment() {
 
     private fun showContent() {
         binding?.run {
-            scrollView.visible()
+            shimmer.root.gone()
+            layoutBottomSheetOverlay.visible()
+            layoutBottomSheetHeader.visible()
+            recyclerView.visible()
             layoutTotalSavings.visible()
-            promoShimmer.root.gone()
         }
     }
 
     private fun hideContent() {
         binding?.run {
-            scrollView.gone()
+            shimmer.root.gone()
+            layoutBottomSheetOverlay.gone()
+            layoutBottomSheetHeader.gone()
+            recyclerView.gone()
             layoutTotalSavings.gone()
-            promoShimmer.root.gone()
         }
     }
 
@@ -366,7 +370,7 @@ class PromoUsageBottomSheet: BottomSheetDialogFragment() {
     }
 
 
-    private val onButtonUseVoucherClick = {
+    private val onButtonUseRecommendedVoucherClick = {
 
     }
 
