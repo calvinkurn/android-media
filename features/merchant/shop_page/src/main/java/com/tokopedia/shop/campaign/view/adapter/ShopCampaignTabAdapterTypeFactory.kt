@@ -145,13 +145,6 @@ class ShopCampaignTabAdapterTypeFactory(
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
         val viewHolder = when (type) {
-//            ShopCampaignProductBundleParentWidgetViewHolder.LAYOUT -> ShopCampaignProductBundleParentWidgetViewHolder(
-//                parent,
-//                multipleProductBundleListener,
-//                singleProductBundleListener,
-//                widgetConfigListener,
-//                bundlingParentListener
-//            )
             ShopCampaignDisplayBannerTimerPlaceholderViewHolder.LAYOUT -> ShopCampaignDisplayBannerTimerPlaceholderViewHolder(
                 parent
             )

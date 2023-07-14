@@ -68,7 +68,7 @@ class GetVoucherDetailUseCase @Inject constructor(
     minimumUsage
   }
 }
-"""
+""".trimIndent()
 
         override fun getOperationNameList(): List<String> = listOf(OPERATION_NAME)
         override fun getQuery(): String = QUERY
