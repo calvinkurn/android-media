@@ -51,7 +51,7 @@ dependencies {
     implementation rootProject.ext.playServicesDependencies.analytics
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
     implementation rootProject.ext.supportLibDependencies.preferenceV7
-    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
+    implementation projectOrAar(rootProject.ext.libraries.utils)
 
     implementation rootProject.ext.miscDependencies.exoPlayer
 

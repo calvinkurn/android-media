@@ -83,10 +83,12 @@ import com.tokopedia.product.detail.data.util.ProductDetailConstant.GLOBAL_BUNDL
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_7
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_9_TOKONOW
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PRODUCT_BUNDLING
+import com.tokopedia.product.detail.data.util.ProductDetailConstant.RECOM_VERTICAL
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.SHOPADS_CAROUSEL
 import com.tokopedia.product.detail.view.util.checkIfNumber
 import com.tokopedia.product.detail.view.widget.CampaignRibbon
 import com.tokopedia.product.share.ProductData
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.Detail
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ProductrevGetReviewMedia
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaImageThumbnailUiModel
@@ -148,6 +150,9 @@ object DynamicProductDetailMapper {
                             listOfComponent.add(ProductRecomWidgetDataModel(type = component.type, name = component.componentName, position = index))
                         SHOPADS_CAROUSEL -> {
                             listOfComponent.add(TopadsHeadlineUiModel(type = component.type, name = component.componentName))
+                        }
+                        RECOM_VERTICAL -> {
+                            listOfComponent.add(ProductRecommendationDataModel(type = component.type, name = component.componentName, recomWidgetData = RecommendationWidget()))
                         }
                         else ->
                             listOfComponent.add(ProductRecommendationDataModel(type = component.type, name = component.componentName, position = index))

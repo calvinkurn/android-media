@@ -174,10 +174,10 @@ class SellerHomeNavigator(
             val chatFragmentAsync = async { sellerHomeRouter?.getChatListFragment() }
             val somListFragmentAsync = async(Dispatchers.Main) {
                 sellerHomeRouter?.getSomListFragment(
-                    SomTabConst.STATUS_NEW_ORDER,
+                    "",
                     SomTabConst.DEFAULT_ORDER_TYPE_FILTER,
-                    String.EMPTY,
-                    String.EMPTY
+                    "",
+                    ""
                 )
             }
             val otherSettingsFragmentAsync = async { OtherMenuFragment.createInstance() }
