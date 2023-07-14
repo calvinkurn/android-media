@@ -9,7 +9,6 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -19,7 +18,7 @@ import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.splitByThousand
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.promousage.R
-import com.tokopedia.promousage.databinding.PromoUsageBottomshetPromoVoucherListBinding
+import com.tokopedia.promousage.databinding.PromoUsageBottomshetBinding
 import com.tokopedia.promousage.di.DaggerPromoUsageComponent
 import com.tokopedia.promousage.domain.entity.EntryPoint
 import com.tokopedia.promousage.domain.entity.Voucher
@@ -55,7 +54,7 @@ class PromoUsageBottomSheet: PromoBottomSheet() {
     }
 
 
-    private var binding by autoClearedNullable<PromoUsageBottomshetPromoVoucherListBinding>()
+    private var binding by autoClearedNullable<PromoUsageBottomshetBinding>()
 
 
     @Inject
@@ -79,7 +78,7 @@ class PromoUsageBottomSheet: PromoBottomSheet() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = PromoUsageBottomshetPromoVoucherListBinding.inflate(inflater, container, false)
+        binding = PromoUsageBottomshetBinding.inflate(inflater, container, false)
         setChild(binding?.root)
         return super.onCreateView(inflater, container, savedInstanceState)
     }
