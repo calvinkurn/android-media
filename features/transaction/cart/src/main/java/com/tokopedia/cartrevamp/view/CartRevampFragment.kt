@@ -90,6 +90,7 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.pxToDp
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
@@ -459,7 +460,6 @@ class CartRevampFragment :
     }
 
     override fun checkCartShopGroupTicker(cartGroupHolderData: CartGroupHolderData) {
-
     }
 
     override fun onCartDataEnableToCheckout() {
@@ -874,7 +874,6 @@ class CartRevampFragment :
     }
 
     override fun onCashbackUpdated(amount: Int) {
-
     }
 
     override fun onBackPressed() {
@@ -937,7 +936,7 @@ class CartRevampFragment :
 
                 handleSelectedAmountVisibilityOnScroll(dy)
                 handlePromoButtonVisibilityOnScroll(dy)
-//                handleStickySelectedAmountVisibility(recyclerView)
+                handleStickySelectedAmountVisibility(recyclerView)
             }
         })
     }
@@ -952,15 +951,6 @@ class CartRevampFragment :
 
     private fun animateSelectedAmountToHiddenPosition(valueY: Float) {
         binding?.rlTopLayout?.animate()?.y(valueY)?.setDuration(0)?.start()
-    }
-
-    private fun animateSelectedAmountToStartingPosition() {
-        binding?.apply {
-            val initialPosition = navToolbar.y + navToolbar.height + SELECTED_AMOUNT_POSITION_BUFFER.dpToPx(
-                resources.displayMetrics
-            )
-            rlTopLayout.animate().y(-initialPosition).setDuration(0).start()
-        }
     }
 
     private fun animatePromoButtonToStartingPosition() {
@@ -1358,34 +1348,6 @@ class CartRevampFragment :
         }
     }
 
-//    private fun handleSelectedAmountVisibility(dy: Int) {
-//        val rlTopLayout = binding?.rlTopLayout ?: return
-//        var valueY = rlTopLayout.y
-//        if (dy < 0) {
-//            valueY -= dy
-//        }
-//        SELECTED_AMOUNT_TRANSLATION_LENGTH -= dy
-//        if (dy != 0) {
-//            if (initialSelectedAmountPosition == 0f && SELECTED_AMOUNT_TRANSLATION_LENGTH + dy == 0f) {
-//                // Initial position of View if previous initialization attempt failed
-//                initialSelectedAmountPosition = rlTopLayout.y
-//            }
-//
-//            if (SELECTED_AMOUNT_TRANSLATION_LENGTH != 0f) {
-//                if (dy > 0 && valueY > initialSelectedAmountPosition) {
-//                    // Prevent scroll up move button exceed initial view position
-////                    animateSelectedAmountToStartingPosition()
-//                } else if (valueY >= rlTopLayout.height - initialSelectedAmountPosition) {
-//                    // Prevent scroll down move button too far
-//                    animateSelectedAmountToHiddenPosition(valueY)
-//                }
-//            } else {
-//                // Set to initial position if scroll up to top
-////                animateSelectedAmountToStartingPosition()
-//            }
-//        }
-//    }
-
     private fun handleSelectedAmountVisibilityOnScroll(dy: Int) {
         val rlTopLayout = binding?.rlTopLayout ?: return
         var valueY = rlTopLayout.y
@@ -1405,10 +1367,6 @@ class CartRevampFragment :
                     // Prevent scroll down move button too far
                     animateSelectedAmountToHiddenPosition(valueY)
                 }
-            } else {
-                Log.d("<RESULT>", "handleSelectedAmountVisibilityOnScroll: KAEPANGILG GA")
-                // Set to initial position if scroll up to top
-//                animateSelectedAmountToStartingPosition()
             }
         }
     }
@@ -1433,9 +1391,6 @@ class CartRevampFragment :
                     // Prevent scroll down move button too far
                     animatePromoButtonToHiddenPosition(valueY)
                 }
-            } else {
-                // Set to initial position if scroll up to top
-                animatePromoButtonToStartingPosition()
             }
         }
     }
@@ -1448,9 +1403,9 @@ class CartRevampFragment :
         val adapterData = viewModel.cartDataList.value
         if (topItemPosition >= adapterData.size) return
 
-        if (viewModel.getAllAvailableCartItemData().isNotEmpty()
-            && viewModel.hasSelectedCartItem()
-            && recyclerView.canScrollVertically(-1)
+        if (viewModel.getAllAvailableCartItemData().isNotEmpty() &&
+            viewModel.hasSelectedCartItem() &&
+            recyclerView.canScrollVertically(-1)
         ) {
             setTopLayoutVisibility(true)
         } else {
@@ -1762,7 +1717,8 @@ class CartRevampFragment :
         viewModel.selectedAmountState.observe(viewLifecycleOwner) { selectedAmount ->
             if (selectedAmount != 0) {
                 binding?.topLayout?.textSelectedAmount?.text = String.format(
-                    getString(R.string.cart_label_selected_amount), selectedAmount
+                    getString(R.string.cart_label_selected_amount),
+                    selectedAmount
                 )
             }
             onNeedToUpdateViewItem(0)
@@ -2759,7 +2715,7 @@ class CartRevampFragment :
         if (viewModel.hasSelectedCartItem()) {
             binding?.rlTopLayout?.visible()
         } else {
-            binding?.rlTopLayout?.gone()
+            binding?.rlTopLayout?.invisible()
         }
     }
 
@@ -2891,7 +2847,7 @@ class CartRevampFragment :
                 isShowToolbarShadow = true
             }
         } else {
-            binding?.rlTopLayout?.gone()
+            binding?.rlTopLayout?.invisible()
         }
 
         setToolbarShadowVisibility(isShowToolbarShadow)
