@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/bottom_sheet_wrapper"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/bottomsheet_background_and_shadow"
+    android:background="@drawable/promo_usage_bg_bottomsheet"
     android:orientation="vertical"
     app:behavior_hideable="true"
     app:behavior_peekHeight="@dimen/bottom_sheet_default_peek"
@@ -38,7 +39,7 @@
     </LinearLayout>
 
 
-    <!--Bottomsheet Header (Title, Close Icon-->
+    <!--Bottomsheet Header (Title, Close Icon)-->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
