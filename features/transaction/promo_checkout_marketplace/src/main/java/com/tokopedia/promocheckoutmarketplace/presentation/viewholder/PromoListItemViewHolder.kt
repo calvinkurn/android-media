@@ -41,15 +41,15 @@ class PromoListItemViewHolder(
 
     private val colorTextEnabledDefault = ContextCompat.getColor(
         itemView.context,
-        com.tokopedia.unifyprinciples.R.color.Unify_N700_96
+        com.tokopedia.unifyprinciples.R.color.Unify_NN950_96
     )
     private val colorTextEnabledLowEmphasis = ContextCompat.getColor(
         itemView.context,
-        com.tokopedia.unifyprinciples.R.color.Unify_N700_68
+        com.tokopedia.unifyprinciples.R.color.Unify_NN950_68
     )
     private val colorTextDisabled = ContextCompat.getColor(
         itemView.context,
-        com.tokopedia.unifyprinciples.R.color.Unify_N700_32
+        com.tokopedia.unifyprinciples.R.color.Unify_NN950_32
     )
     private var colorBackgroundSelected =
         ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_GN50)

@@ -322,7 +322,9 @@ object DeeplinkDFMapper : CoroutineScope {
 
 
             // Content
-            add(DFP({ it.startsWithPattern(ApplinkConstInternalContent.PROFILE_DETAIL) }, DF_PEOPLE, R.string.applink_title_people))
+            add(DFP({ it.startsWithPattern(ApplinkConstInternalContent.PROFILE_DETAIL)
+                || it.startsWithPattern(ApplinkConstInternalContent.PROFILE_SETTINGS)
+            }, DF_PEOPLE, R.string.applink_title_people))
             add(DFP({ it.startsWithPattern(PLAY_DETAIL) }, DF_BASE, R.string.applink_title_play))
             add(DFP({ it.startsWithPattern(PLAY_RECOM) }, DF_BASE, R.string.applink_title_play))
             add(DFP({ it.startsWithPattern(COMMENT) }, DF_BASE, R.string.applink_kol_title_comment))
@@ -734,6 +736,7 @@ object DeeplinkDFMapper : CoroutineScope {
                 it.startsWith(TokopediaNow.HOME) ||
                     it.startsWith(TokopediaNow.CATEGORY) ||
                     it.startsWith(TokopediaNow.OLD_CATEGORY) ||
+                    it.startsWith(TokopediaNow.SEE_ALL_CATEGORY) ||
                     it.startsWith(TokopediaNow.SEARCH) ||
                     it.startsWith(TokopediaNow.REPURCHASE) ||
                     it.startsWithPattern(TokopediaNow.RECIPE_DETAIL) ||
@@ -744,6 +747,7 @@ object DeeplinkDFMapper : CoroutineScope {
                     it.startsWith(ApplinkConstInternalTokopediaNow.HOME) ||
                     it.startsWith(ApplinkConstInternalTokopediaNow.CATEGORY) ||
                     it.startsWith(ApplinkConstInternalTokopediaNow.OLD_CATEGORY) ||
+                    it.startsWith(ApplinkConstInternalTokopediaNow.SEE_ALL_CATEGORY) ||
                     it.startsWith(ApplinkConstInternalTokopediaNow.SEARCH) ||
                     it.startsWith(ApplinkConstInternalTokopediaNow.REPURCHASE) ||
                     it.startsWithPattern(ApplinkConstInternalTokopediaNow.RECIPE_DETAIL) ||

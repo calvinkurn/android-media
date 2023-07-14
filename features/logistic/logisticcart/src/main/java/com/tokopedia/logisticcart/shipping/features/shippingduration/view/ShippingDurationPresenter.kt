@@ -250,6 +250,7 @@ class ShippingDurationPresenter @Inject constructor(
             shippingParam.destinationLongitude =
                 shipmentDetailData.shipmentCartData!!.destinationLongitude
         }
+        shippingParam.groupType = shipmentDetailData.shipmentCartData!!.groupType
         return shippingParam
     }
 

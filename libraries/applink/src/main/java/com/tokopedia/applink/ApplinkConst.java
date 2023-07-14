@@ -203,6 +203,8 @@ public interface ApplinkConst {
     String REGISTER = "tokopedia://registration";
     String REGISTER_INIT = "tokopedia://register-init";
     String PROFILE = "tokopedia://people/{user_id}";
+
+    String PROFILE_SETTINGS = "tokopedia://people-settings/{user_id}";
     String PROFILE_AFTER_POST = "tokopedia://people/{user_id}?after_post=true";
     String PROFILE_AFTER_EDIT = "tokopedia://people/{user_id}?after_edit=true";
     String PROFILE_SUCCESS_POST = "tokopedia://people/{user_id}?success_post=true";
@@ -624,6 +626,7 @@ public interface ApplinkConst {
         String RECIPE_HOME = "tokopedia://now/recipe";
         String RECIPE_SEARCH = "tokopedia://now/recipe/search";
         String RECIPE_AUTO_COMPLETE = "tokopedia://now/recipe/autocomplete";
+        String SEE_ALL_CATEGORY = "tokopedia://now/see-all-category";
     }
 
     interface TokoFood {

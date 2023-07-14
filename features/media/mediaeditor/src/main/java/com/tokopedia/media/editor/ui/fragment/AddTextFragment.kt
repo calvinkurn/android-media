@@ -59,6 +59,8 @@ class AddTextFragment @Inject constructor(
         set(value) {
             field = value
             viewModel.textData.textAlignment = value
+
+            setAlignment()
         }
 
     private val textColorItemRef: Array<AddTextColorItemView?> = Array(2) { null }
@@ -138,8 +140,8 @@ class AddTextFragment @Inject constructor(
 
     private fun initListener() {
         viewBinding?.let {
-            it.alignmentIcon.setOnClickListener { _ ->
-                setAlignment(it.alignmentIcon)
+            it.alignmentIcon.setOnClickListener {
+                alignmentIndex = alignmentIndex.increaseIndex()
             }
 
             it.textColor.setOnClickListener { _ ->
@@ -224,9 +226,7 @@ class AddTextFragment @Inject constructor(
     }
 
     // alignment click listener
-    private fun setAlignment(icon: IconUnify) {
-        alignmentIndex = alignmentIndex.increaseIndex()
-
+    private fun setAlignment() {
         if (alignmentIndex > AddTextAlignment.LEFT) alignmentIndex = AddTextAlignment.CENTER
 
         val gravity: Int
@@ -247,8 +247,10 @@ class AddTextFragment @Inject constructor(
             }
         }
 
-        viewBinding?.addTextInput?.gravity = gravity
-        icon.setImage(iconRef)
+        viewBinding?.let {
+            it.addTextInput.gravity = gravity
+            it.alignmentIcon.setImage(iconRef)
+        }
     }
 
     // change between color wheel & text style

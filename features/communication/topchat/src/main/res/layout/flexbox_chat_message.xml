@@ -17,7 +17,7 @@
             android:id="@+id/tp_header_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@color/Unify_N700_96"
+            android:textColor="@color/Unify_NN950_96"
             app:typographyType="heading_4"
             tools:text="Dikirim ke rumah saya" />
 
@@ -25,7 +25,7 @@
             android:id="@+id/tp_header_cta"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@color/Unify_G500"
+            android:textColor="@color/Unify_GN500"
             app:typographyType="body_1"
             tools:text="Ubah Alamat" />
 
@@ -34,7 +34,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_topchat_1"
             android:layout_marginTop="@dimen/unify_space_12"
-            android:background="@color/Unify_N75" />
+            android:background="@color/Unify_NN50" />
     </LinearLayout>
 
 
@@ -97,7 +97,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|start"
         android:layout_marginTop="@dimen/dp_topchat_6"
-        android:textColor="@color/Unify_N700_44"
+        android:textColor="@color/Unify_NN950_44"
         android:textIsSelectable="false"
         android:visibility="gone"
         app:typographyType="body_3"

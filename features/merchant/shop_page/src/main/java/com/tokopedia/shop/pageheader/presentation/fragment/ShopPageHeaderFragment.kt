@@ -1374,9 +1374,9 @@ class ShopPageHeaderFragment :
 
     private fun updateBackButtonColorForSellerViewToolbar() {
         context?.let { context ->
-            var color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N500)
+            var color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN600)
             if (context.isDarkMode()) {
-                color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N200)
+                color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN500)
             }
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 toolbar?.navigationIcon?.colorFilter = BlendModeColorFilter(color, BlendMode.SRC_IN)
@@ -2207,7 +2207,7 @@ class ShopPageHeaderFragment :
                 setTextColor(
                     MethodChecker.getColor(
                         context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_N700_68
+                        com.tokopedia.unifyprinciples.R.color.Unify_NN950_68
                     )
                 )
                 text = getString(R.string.shop_page_error_sub_title_get_p1)
@@ -3090,7 +3090,7 @@ class ShopPageHeaderFragment :
     }
 
     private fun showUniversalShareBottomSheet(path: String? = null) {
-        universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
+        universalShareBottomSheet = UniversalShareBottomSheet.createInstance(view).apply {
             init(this@ShopPageHeaderFragment)
             path?.let {
                 setImageOnlySharingOption(true)

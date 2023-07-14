@@ -348,6 +348,10 @@ class DigitalCartViewModel @Inject constructor(
         updateCheckoutSummaryWithFintechProduct(fintechProduct, isChecked)
     }
 
+    fun updateProductConsentPayload(consentPayload: String) {
+        requestCheckoutParam.productConsentPayload = consentPayload
+    }
+
     private fun updateRequestCheckoutParamWithCrossSellData(
         digitalCrossSellData: DigitalCrossSellData,
         isChecked: Boolean

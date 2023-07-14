@@ -34,7 +34,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/circular_view_pager"
-        tools:background="@color/Unify_G500"
+        tools:background="@color/Unify_GN500"
         tools:layout_height="@dimen/layout_lvl1"
         tools:layout_width="@dimen/banner_width" />
 
@@ -49,7 +49,7 @@
         android:focusable="true"
         android:focusableInTouchMode="false"
         android:text="@string/recharge_home_banner_see_all_label"
-        android:textColor="@color/Unify_G500"
+        android:textColor="@color/Unify_GN500"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/circular_view_pager"

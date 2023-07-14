@@ -20,6 +20,8 @@ buildscript {
 }
 
 android {
+    namespace 'com.tokopedia.home_component'
+    testNamespace 'com.tokopedia.home_component.test'
     buildFeatures {
         viewBinding true
     }
@@ -58,12 +60,13 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
 
     implementation projectOrAar(rootProject.ext.features.resourcesCommon)
-    implementation projectOrAar(rootProject.ext.libraries.analytics)
+    api projectOrAar(rootProject.ext.libraries.analytics)
     implementation rootProject.ext.miscDependencies.traceroute
 
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation projectOrAar(rootProject.ext.libraries.logger)
+    implementation rootProject.ext.firebase.crashlytics
 
     implementation projectOrAar(rootProject.ext.features.questWidget)
 
