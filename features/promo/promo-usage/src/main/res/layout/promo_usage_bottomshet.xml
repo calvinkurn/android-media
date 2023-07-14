@@ -120,62 +120,8 @@
                     tools:itemCount="3"
                     tools:listitem="@layout/promo_usage_item_voucher_section" />
 
-                <View
-                    android:id="@+id/topDivider"
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginTop="16dp"
-                    android:background="@color/Unify_NN200"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/recyclerView" />
 
-                <com.tokopedia.unifycomponents.TextAreaUnify2
-                    android:id="@+id/tauVoucherCode"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="24dp"
-                    android:layout_marginEnd="16dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/topDivider"
-                    app:unify_text_field_label="@string/promo_voucher_enter_voucher_code"
-                    app:unify_text_field_label_static="false" />
 
-                <com.tokopedia.promousage.view.custom.VoucherView
-                    android:id="@+id/userInputVoucherView"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginEnd="16dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tauVoucherCode" />
-
-                <View
-                    android:id="@+id/bottomDivider"
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginTop="24dp"
-                    android:background="@color/Unify_NN200"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/userInputVoucherView" />
-
-                <com.tokopedia.unifyprinciples.Typography
-                    android:id="@+id/tpgTnc"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:gravity="center"
-                    android:paddingBottom="16dp"
-                    android:text="@string/promo_voucher_view_tnc"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/bottomDivider"
-                    app:typographyType="display_3"
-                    tools:visibility="gone" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -32,11 +32,9 @@ import com.tokopedia.promousage.domain.entity.EntryPoint
 import com.tokopedia.promousage.domain.entity.list.Voucher
 import com.tokopedia.promousage.view.adapter.VoucherRecommendationDelegateAdapter
 import com.tokopedia.promousage.view.adapter.VoucherAccordionDelegateAdapter
-import com.tokopedia.promousage.domain.entity.VoucherSource
-import com.tokopedia.promousage.domain.entity.VoucherState
-import com.tokopedia.promousage.domain.entity.VoucherType
 import com.tokopedia.promousage.util.composite.CompositeAdapter
-import com.tokopedia.promousage.util.extension.setHyperlinkText
+import com.tokopedia.promousage.view.adapter.TermAndConditionDelegateAdapter
+import com.tokopedia.promousage.view.adapter.VoucherCodeDelegateAdapter
 import com.tokopedia.promousage.view.viewmodel.PromoUsageViewModel
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.usecase.coroutines.Fail
@@ -64,6 +62,8 @@ class PromoUsageBottomSheet: BottomSheetDialogFragment() {
         CompositeAdapter.Builder()
             .add(VoucherRecommendationDelegateAdapter(onVoucherClick))
             .add(VoucherAccordionDelegateAdapter(onVoucherSectionClick, onVoucherClick, onViewAllVoucherClick))
+            .add(TermAndConditionDelegateAdapter(onTermAndConditionHyperlinkClick))
+            .add(VoucherCodeDelegateAdapter(onApplyVoucherCodeCtaClick))
             .build()
     }
 
@@ -233,8 +233,6 @@ class PromoUsageBottomSheet: BottomSheetDialogFragment() {
                     handleBottomCardViewAppearance(entryPoint)
 
                     showTotalSavingsSection(3, 40_000)
-                    handleVoucherFound()
-
 
                     recyclerViewAdapter.submit(result.data)
                 }
@@ -252,12 +250,6 @@ class PromoUsageBottomSheet: BottomSheetDialogFragment() {
         setupRecyclerView()
 
         binding?.run {
-            tpgTnc.setHyperlinkText(
-                fullText = context?.getString(R.string.promo_voucher_view_tnc).orEmpty(),
-                hyperlinkSubstring = context?.getString(R.string.promo_voucher_tnc).orEmpty(),
-                ignoreCase = true,
-                onHyperlinkClick = { showTermAndConditionBottomSheet() }
-            )
 
             val formattedTotalPrice = 15_000.splitByThousand()
             tpgTotalPrice.text = context?.getString(
@@ -359,29 +351,7 @@ class PromoUsageBottomSheet: BottomSheetDialogFragment() {
         }
     }
 
-    private fun handleVoucherFound() {
-        val voucher = Voucher(
-            100,
-            100_000,
-            "Cashback - Voucher Code User Input",
-            "2 hari",
-            "https://images.tokopedia.net/img/android/promo/ic_voucher_cashback/ic_voucher_cashback.png",
-            "https://images.tokopedia.net/img/android/promo/bg_supergraphic_cashback/bg_supergraphic_cashback.png",
-            VoucherType.CASHBACK,
-            VoucherState.Selected,
-            VoucherSource.UserInput("TOKOPEDIAXBCA"),
-            false
-        )
 
-        binding?.run {
-            userInputVoucherView.visible()
-            userInputVoucherView.bind(voucher)
-        }
-    }
-
-    private fun handleVoucherNotFound() {
-        binding?.userInputVoucherView?.gone()
-    }
 
     private val onVoucherClick = { selectedVoucher : Voucher ->
 
@@ -395,9 +365,16 @@ class PromoUsageBottomSheet: BottomSheetDialogFragment() {
 
     }
 
+
     private val onButtonUseVoucherClick = {
 
     }
+
+    private val onApplyVoucherCodeCtaClick = {
+
+    }
+
+    private val onTermAndConditionHyperlinkClick = { showTermAndConditionBottomSheet() }
 }
 
 

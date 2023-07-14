@@ -13,6 +13,8 @@ import com.tokopedia.promousage.domain.entity.list.VoucherAccordion
 import com.tokopedia.promousage.domain.entity.VoucherSource
 import com.tokopedia.promousage.domain.entity.VoucherState
 import com.tokopedia.promousage.domain.entity.VoucherType
+import com.tokopedia.promousage.domain.entity.list.TermAndCondition
+import com.tokopedia.promousage.domain.entity.list.VoucherCode
 import com.tokopedia.promousage.domain.entity.list.VoucherRecommendation
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -263,7 +265,9 @@ class PromoUsageViewModel @Inject constructor(
                         "${discountVouchers.size} promo buat diskon kamu",
                         true,
                         discountVouchers
-                    )
+                    ),
+                    VoucherCode,
+                    TermAndCondition
                 )
                 _items.postValue(Success(items))
             },
