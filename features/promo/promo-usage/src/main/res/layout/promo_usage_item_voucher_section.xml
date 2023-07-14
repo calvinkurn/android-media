@@ -11,6 +11,7 @@
         android:layout_width="wrap_content"
         android:layout_marginTop="12dp"
         android:layout_marginBottom="12dp"
+        android:layout_marginStart="16dp"
         tools:text="2 promo buat pembayaran tertentu"
         android:gravity="center"
         app:typographyType="display_2"
@@ -24,6 +25,7 @@
         android:layout_height="24dp"
         android:layout_marginTop="12dp"
         android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         android:layout_marginBottom="12dp"
         android:layout_alignParentEnd="true"
         app:icon_name="CHEVRON_DOWN"/>
@@ -32,6 +34,8 @@
         android:id="@+id/childRecyclerView"
         android:layout_width="match_parent"
         tools:listitem="@layout/promo_usage_item_voucher"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         tools:itemCount="5"
         android:layout_below="@id/tpgSectionTitle"
         android:layout_height="wrap_content"/>

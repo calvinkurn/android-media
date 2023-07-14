@@ -16,11 +16,12 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.kotlin.extensions.view.setTextColorCompat
 import com.tokopedia.kotlin.extensions.view.splitByThousand
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.promousage.R
 import com.tokopedia.promousage.databinding.PromoUsageVoucherViewBinding
-import com.tokopedia.promousage.domain.entity.Voucher
+import com.tokopedia.promousage.domain.entity.list.Voucher
 import com.tokopedia.promousage.domain.entity.VoucherSource
 import com.tokopedia.promousage.domain.entity.VoucherState
 import com.tokopedia.promousage.domain.entity.VoucherType
@@ -161,9 +162,7 @@ class VoucherView @JvmOverloads constructor(
         }
 
     }
-    private fun TextView.setTextColorCompat(colorResId: Int) {
-        setTextColor(ContextCompat.getColor(context ?: return, colorResId))
-    }
+
 
     private fun TextView.setVoucherAmountTextColor(voucher: Voucher) {
         val voucherAmountTextColorResId = when {
@@ -235,17 +234,29 @@ class VoucherView @JvmOverloads constructor(
             strokeWidth = stokeWidth.toPx().toFloat()
 
             val backgroundColor = if (isVoucherSelected) {
-                ContextCompat.getColor(context ?: return@apply, R.color.Unify_GN50)
+                ContextCompat.getColor(
+                    context ?: return@apply,
+                    com.tokopedia.unifyprinciples.R.color.Unify_GN50
+                )
             } else {
-                ContextCompat.getColor(context ?: return@apply , R.color.Unify_NN0)
+                ContextCompat.getColor(
+                    context ?: return@apply,
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN0
+                )
             }
             setTint(backgroundColor)
 
 
             val shapeStrokeColor = if (isVoucherSelected) {
-                ContextCompat.getColor(context ?: return@apply, R.color.Unify_GN500)
+                ContextCompat.getColor(
+                    context ?: return@apply,
+                    com.tokopedia.unifyprinciples.R.color.Unify_GN500
+                )
             } else {
-                ContextCompat.getColor(context ?: return@apply , R.color.Unify_NN200)
+                ContextCompat.getColor(
+                    context ?: return@apply,
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN200
+                )
             }
             strokeColor = ColorStateList.valueOf(shapeStrokeColor)
         }

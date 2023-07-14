@@ -46,7 +46,7 @@ class CompositeAdapter(
     }
 
 
-    fun getItems(): List<DelegateAdapterItem> {
+    fun snapshot(): List<DelegateAdapterItem> {
         return this.items
     }
 

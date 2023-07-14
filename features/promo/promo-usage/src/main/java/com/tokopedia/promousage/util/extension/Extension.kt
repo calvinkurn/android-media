@@ -4,6 +4,7 @@ import android.graphics.ColorMatrix
 import android.graphics.ColorMatrixColorFilter
 import android.graphics.Rect
 import android.graphics.Typeface
+import android.os.Build
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.TextPaint
@@ -116,4 +117,9 @@ fun RecyclerView.applyPaddingToLastItem(paddingBottomInDp: Int = PADDING_BOTTOM_
             }
         }
     })
+}
+fun View.foregroundDrawable(drawableResourceId: Int) {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        this.foreground = ContextCompat.getDrawable(this.context, drawableResourceId)
+    }
 }

@@ -1,4 +1,4 @@
-package com.tokopedia.promousage.view.adapter
+package com.tokopedia.promousage.domain.entity.list
 
 import com.tokopedia.promousage.util.composite.DelegateAdapterItem
 
