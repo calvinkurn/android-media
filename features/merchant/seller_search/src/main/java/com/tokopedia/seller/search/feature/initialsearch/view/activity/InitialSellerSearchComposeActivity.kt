@@ -2,6 +2,7 @@ package com.tokopedia.seller.search.feature.initialsearch.view.activity
 
 import android.os.Bundle
 import androidx.activity.compose.setContent
+import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.nest.principles.ui.NestTheme
@@ -14,6 +15,7 @@ import com.tokopedia.seller.search.feature.initialsearch.di.component.DaggerInit
 import com.tokopedia.seller.search.feature.initialsearch.di.component.InitialSearchComponent
 import com.tokopedia.seller.search.feature.initialsearch.di.module.InitialSearchModule
 import com.tokopedia.seller.search.feature.initialsearch.view.fragment.InitialSearchFragment
+import com.tokopedia.seller.search.feature.initialsearch.view.viewmodel.InitialSearchActivityComposeViewModel
 import com.tokopedia.seller.search.feature.suggestion.view.fragment.SuggestionSearchFragment
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
@@ -26,8 +28,15 @@ class InitialSellerSearchComposeActivity :
     @Inject
     lateinit var userSession: UserSessionInterface
 
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
     private val performanceMonitoring: GlobalSearchSellerPerformanceMonitoring by lazy {
         GlobalSearchSellerPerformanceMonitoring(GlobalSearchSellerPerformanceMonitoringType.SEARCH_SELLER)
+    }
+
+    private val viewModel: InitialSearchActivityComposeViewModel by lazy {
+        ViewModelProvider(this, viewModelFactory).get(InitialSearchActivityComposeViewModel::class.java)
     }
 
     private var searchSuggestionFragment: SuggestionSearchFragment? = null
