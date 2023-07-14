@@ -1,12 +1,11 @@
-package com.tokopedia.play.domain
+package com.tokopedia.content.common.usecase
 
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
-import com.tokopedia.play.data.UserReportSubmissionResponse
-import com.tokopedia.play.widget.ui.model.PartnerType
+import com.tokopedia.content.common.report_content.model.UserReportSubmissionResponse
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
@@ -44,7 +43,7 @@ class PostUserReportUseCase @Inject constructor(
             TIMESTAMP_PARAM to timestamp,
             DESCRIPTION_PARAM to reportDesc,
         ).apply {
-            if (partnerType == PartnerType.Buyer) put(USER_ID_PARAM, partnerId)
+            if (partnerType == PartnerType.User) put(USER_ID_PARAM, partnerId)
             else put(SHOP_ID_PARAM, partnerId)
         }
 
@@ -72,5 +71,19 @@ class PostUserReportUseCase @Inject constructor(
             }
         }
         """
+    }
+
+    enum class PartnerType {
+        Shop,
+        User;
+
+        companion object {
+            fun getTypeFromFeed(value: Int) : PartnerType {
+                return if (value == 3) User else Shop
+            }
+            fun getTypeFromPlay(value: String): PartnerType {
+                return if (value == "buyer") User else Shop
+            }
+        }
     }
 }

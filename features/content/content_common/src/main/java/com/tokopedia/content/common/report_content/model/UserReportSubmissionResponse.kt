@@ -1,4 +1,4 @@
-package com.tokopedia.play.data
+package com.tokopedia.content.common.report_content.model
 
 import com.google.gson.annotations.SerializedName
 

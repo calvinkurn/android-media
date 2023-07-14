@@ -1,12 +1,12 @@
-package com.tokopedia.play.ui.userreport.adapter.delegate
+package com.tokopedia.content.common.report_content.adapter.delegate
 
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.adapterdelegate.TypedAdapterDelegate
-import com.tokopedia.play.R
-import com.tokopedia.play.view.uimodel.PlayUserReportReasoningUiModel
+import com.tokopedia.content.common.R
+import com.tokopedia.content.common.report_content.model.PlayUserReportReasoningUiModel
 
 /**
  * @author by astidhiyaa on 10/12/21
