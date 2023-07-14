@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Color
-import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.view.LayoutInflater
@@ -69,21 +68,13 @@ class PromoUsageBottomSheet: BottomSheetDialogFragment() {
     }
 
     private var binding by autoClearedNullable<PromoUsageBottomshetBinding>()
-    private lateinit var frameDialogView: View
     private var bottomSheet = BottomSheetBehavior<View>()
     private var isDragable: Boolean = false
     private var isHideable: Boolean = false
     private var isFullpage: Boolean = false
     private var customPeekHeight: Int = 200
-    private var showKnob: Boolean = true
-    private var showHeader: Boolean = true
-    private var showCloseIcon: Boolean = true
-    private var overlayClickDismiss: Boolean = true
-    private var clearContentPadding: Boolean = false
-    private var isKeyboardOverlap: Boolean = true
     private var isSkipCollapseState: Boolean = false
     private var displayMetrix = DisplayMetrics()
-    private var whiteContainerBackground: Drawable? = null
     private var bottomSheetBehaviorDefaultState = BottomSheetBehavior.STATE_COLLAPSED
     private var child: View? = null
 
@@ -110,6 +101,8 @@ class PromoUsageBottomSheet: BottomSheetDialogFragment() {
         binding = PromoUsageBottomshetBinding.inflate(inflater, container, false)
 
         binding?.bottomSheetTitle?.text = context?.getString(R.string.promo_voucher_promo)
+
+        binding?.bottomSheetClose?.setOnClickListener { dismissAllowingStateLoss() }
 
         dialog?.setOnShowListener {
             showListener(it)
@@ -208,9 +201,6 @@ class PromoUsageBottomSheet: BottomSheetDialogFragment() {
             BottomSheetBehavior.STATE_COLLAPSED
         }
 
-        // ======================================
-
-        //showDialogListener()
     }
 
     private fun setupDependencyInjection() {
