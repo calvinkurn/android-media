@@ -19,7 +19,7 @@ class VoucherRecommendationDelegateAdapter(private val onVoucherClick: (Voucher)
     ) {
 
     companion object {
-        private const val PADDING_BOTTOM_DP = 10
+        private const val PADDING_BOTTOM_DP = 8
     }
 
     override fun createViewHolder(parent: ViewGroup): RecyclerView.ViewHolder {

@@ -216,12 +216,12 @@ class PromoUsageViewModel @Inject constructor(
         Voucher(
             30,
             100_000,
-            "Discount - Loading",
+            "Cashback - Normal",
             "2 hari",
             "https://images.tokopedia.net/img/android/promo/ic_voucher_cashback/ic_voucher_cashback.png",
             "https://images.tokopedia.net/img/android/promo/bg_supergraphic_cashback/bg_supergraphic_cashback.png",
-            VoucherType.DISCOUNT,
-            VoucherState.Loading,
+            VoucherType.CASHBACK,
+            VoucherState.Normal,
             VoucherSource.Promo,
             true
         ),
@@ -250,7 +250,7 @@ class PromoUsageViewModel @Inject constructor(
                 delay(2_000)
 
                 val items = listOf<DelegateAdapterItem>(
-                    VoucherRecommendation("Kami bisa hemat Rp30.000 dari 2 promo", recommendationVouchers),
+                    VoucherRecommendation("Kamu bisa hemat Rp30.000 dari 2 promo!", recommendationVouchers),
                     VoucherAccordion(
                         "${cashbackVouchers.size} promo buat cashback",
                         true,
