@@ -584,9 +584,9 @@ class HomeAdapterFactory(
                 homePayLaterWidgetListener
             )
             CueWidgetCategoryViewHolder.LAYOUT -> viewHolder = CueWidgetCategoryViewHolder(view, cueWidgetCategoryListener)
-            VpsWidgetViewHolder.LAYOUT -> viewHolder = VpsWidgetViewHolder(view, vpsWidgetListener, homeComponentListener, parentRecycledViewPool)
+            VpsWidgetViewHolder.LAYOUT -> viewHolder = VpsWidgetViewHolder(view, vpsWidgetListener, homeComponentListener)
             MissionWidgetViewHolder.LAYOUT -> viewHolder = MissionWidgetViewHolder(view, missionWidgetComponentListener, cardInteraction = true)
-            Lego4ProductViewHolder.LAYOUT -> viewHolder = Lego4ProductViewHolder(view, legoProductListener, homeComponentListener, parentRecycledViewPool, cardInteraction = true)
+            Lego4ProductViewHolder.LAYOUT -> viewHolder = Lego4ProductViewHolder(view, legoProductListener, homeComponentListener, cardInteraction = true)
             MixLeftPaddingComponentViewHolder.LAYOUT ->
                 viewHolder =
                     MixLeftPaddingComponentViewHolder(
@@ -613,7 +613,7 @@ class HomeAdapterFactory(
                         cardInteraction = true
                     )
             DealsWidgetViewHolder.LAYOUT ->
-                viewHolder = DealsWidgetViewHolder(view, vpsWidgetListener, homeComponentListener, parentRecycledViewPool)
+                viewHolder = DealsWidgetViewHolder(view, vpsWidgetListener, homeComponentListener)
             FlashSaleViewHolder.LAYOUT -> viewHolder = FlashSaleViewHolder(view, flashSaleWidgetListener, homeComponentListener, parentRecycledViewPool)
             com.tokopedia.home_component.viewholders.BestSellerViewHolder.LAYOUT ->
                 viewHolder = com.tokopedia.home_component.viewholders.BestSellerViewHolder(
