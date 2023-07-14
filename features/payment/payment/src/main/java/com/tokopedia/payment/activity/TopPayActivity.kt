@@ -63,12 +63,12 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.webview.WebViewHelper
-import com.tokopedia.webview.ext.decode
 import kotlinx.android.synthetic.main.activity_top_pay_payment_module.*
 import rx.Observable
 import rx.Subscriber
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
+import timber.log.Timber
 import java.io.ByteArrayOutputStream
 import java.io.UnsupportedEncodingException
 import java.net.URLDecoder
@@ -893,8 +893,12 @@ class TopPayActivity :
     }
 
     private fun isURLReloadParamExist(url: String): Boolean {
-        val decodedURL = url.decode()
-        return decodedURL.contains("payment_reload=true")
+        val decodedURL = try {
+            URLDecoder.decode(url, CHARSET_UTF_8)
+        } catch (e: Exception) {
+            ""
+        }
+        return decodedURL.contains(PAYMENT_RELOAD_IS_TRUE)
     }
 
     private fun redirectToLinkAjaApp(url: String) {
@@ -907,7 +911,9 @@ class TopPayActivity :
             if (isIntentSafe) {
                 startActivity(linkAjaIntent)
             }
-        } catch (e: ActivityNotFoundException) { }
+        } catch (e: ActivityNotFoundException) {
+            Timber.e(e)
+        }
     }
 
     companion object {
@@ -943,6 +949,8 @@ class TopPayActivity :
 
         private const val REQUEST_CODE_LINK_ACCOUNT = 101
         private const val REQURST_CODE_AUTO_RELOAD = 103
+
+        private const val PAYMENT_RELOAD_IS_TRUE = "payment_reload=true"
 
         @JvmStatic
         fun createInstance(context: Context, paymentPassData: PaymentPassData?): Intent {
