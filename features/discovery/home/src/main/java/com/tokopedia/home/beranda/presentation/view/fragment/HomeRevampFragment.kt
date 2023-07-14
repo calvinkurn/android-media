@@ -36,6 +36,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.listener.TouchListenerActivity
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarRetry
+import com.tokopedia.analytics.performance.fpi.BaseFpiMonitoringFragment
 import com.tokopedia.analytics.performance.fpi.FpiPerformanceData
 import com.tokopedia.analytics.performance.fpi.FragmentFramePerformanceIndexMonitoring
 import com.tokopedia.analytics.performance.fpi.FragmentFramePerformanceIndexMonitoring.OnFrameListener
@@ -245,7 +246,7 @@ import javax.inject.Inject
 @OptIn(FlowPreview::class, kotlinx.coroutines.ExperimentalCoroutinesApi::class)
 @SuppressLint("SyntheticAccessor")
 open class HomeRevampFragment :
-    BaseDaggerFragment(),
+    BaseFpiMonitoringFragment(),
     OnRefreshListener,
     HomeCategoryListener,
     AllNotificationListener,
@@ -394,7 +395,6 @@ open class HomeRevampFragment :
     private var isLightThemeStatusBar = false
     private val impressionScrollListeners: MutableMap<String, RecyclerView.OnScrollListener> = HashMap()
     private var mLastClickTime = System.currentTimeMillis()
-    private val fragmentFramePerformanceIndexMonitoring = FragmentFramePerformanceIndexMonitoring()
     private var pageLoadTimeCallback: PageLoadTimePerformanceInterface? = null
     private var isOnRecyclerViewLayoutAdded = false
     private var fragmentCreatedForFirstTime = false
@@ -575,13 +575,6 @@ open class HomeRevampFragment :
             false
         )
         BenchmarkHelper.endSystraceSection()
-        fragmentFramePerformanceIndexMonitoring.init(
-            PAGE_NAME_FPI_HOME,
-            this,
-            object : OnFrameListener {
-                override fun onFrameRendered(fpiPerformanceData: FpiPerformanceData) {}
-            }
-        )
         navToolbar = view.findViewById(R.id.navToolbar)
         performanceTrace.addViewPerformanceBlocks(navToolbar)
         statusBarBackground = view.findViewById(R.id.status_bar_bg)
@@ -2347,7 +2340,6 @@ open class HomeRevampFragment :
     override fun onHiddenChanged(hidden: Boolean) {
         super.onHiddenChanged(hidden)
         userVisibleHint = !hidden
-        fragmentFramePerformanceIndexMonitoring.onFragmentHidden(hidden)
     }
 
     override fun hideEggOnScroll() {
@@ -2515,8 +2507,10 @@ open class HomeRevampFragment :
     }
 
     override fun getFramePerformanceIndexData(): FragmentFramePerformanceIndexMonitoring {
-        return fragmentFramePerformanceIndexMonitoring
+        return getFrameMetric()
     }
+
+    override fun getFpiPageName() = PAGE_NAME_FPI_HOME
 
     override fun onDetach() {
         if (this::viewModel.isInitialized) {

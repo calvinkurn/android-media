@@ -213,4 +213,6 @@ abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactor
     }
 
     protected fun getProductDetailActivity() = activity as? ProductDetailActivity
+
+    override fun getFpiPageName() = "PDP"
 }
