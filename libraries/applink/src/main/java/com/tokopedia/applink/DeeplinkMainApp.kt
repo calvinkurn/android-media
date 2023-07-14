@@ -957,6 +957,9 @@ object DeeplinkMainApp {
                 ShopAdminDeepLinkMapper::getInternalAppLinkAdminAccepted
             )
         ),
+        "shop-nib" to mutableListOf(
+            DLP.matchPattern("", ApplinkConstInternalMechant.SHOP_NIB_CUSTOMER_APP)
+        ),
         "shop-penalty" to mutableListOf(
             DLP.matchPattern("") { ctx, _, _, _ ->
                 ShopScoreDeepLinkMapper.getInternalApplinkPenalty(ctx)
