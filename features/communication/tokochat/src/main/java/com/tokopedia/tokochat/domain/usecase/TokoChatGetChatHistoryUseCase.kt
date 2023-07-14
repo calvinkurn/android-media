@@ -1,7 +1,6 @@
 package com.tokopedia.tokochat.domain.usecase
 
 import androidx.lifecycle.LiveData
-import com.gojek.conversations.babble.channel.data.ChannelType
 import com.gojek.conversations.database.chats.ConversationsMessage
 import com.tokochat.tokochat_config_common.di.qualifier.TokoChatQualifier
 import com.tokochat.tokochat_config_common.repository.TokoChatRepository
@@ -16,9 +15,5 @@ class TokoChatGetChatHistoryUseCase @Inject constructor(
 
     fun loadPreviousMessage() {
         repository.getConversationRepository().loadPreviousMessages()
-    }
-
-    fun getTotalUnreadCount(types: List<ChannelType>) : LiveData<Int> {
-        return repository.getConversationRepository().getUnreadCount(types)
     }
 }
