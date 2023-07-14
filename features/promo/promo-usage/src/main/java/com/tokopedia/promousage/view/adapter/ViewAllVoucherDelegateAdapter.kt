@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.promousage.R
 import com.tokopedia.promousage.databinding.PromoUsageItemVoucherViewAllBinding
+import com.tokopedia.promousage.domain.entity.list.ViewAllVoucher
 import com.tokopedia.promousage.util.composite.DelegateAdapter
 
 class ViewAllVoucherDelegateAdapter(
@@ -38,7 +39,6 @@ class ViewAllVoucherDelegateAdapter(
                 R.string.promo_voucher_placeholder_view_all_voucher,
                 voucher.collapsedVoucherCount
             )
-
         }
     }
 

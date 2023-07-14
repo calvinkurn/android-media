@@ -106,58 +106,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <ImageView
-                    android:id="@+id/ivBgRecommendation"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:background="@drawable/promo_usage_bg_recommendation_gradient"
-                    app:layout_constraintBottom_toBottomOf="@id/recyclerViewVoucherRecommendation"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <com.tokopedia.unifyprinciples.Typography
-                    android:id="@+id/tpgRecommendationTitle"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="8dp"
-                    android:ellipsize="end"
-                    android:maxLines="2"
-                    android:textColor="@color/promo_dms_white"
-                    app:layout_constraintEnd_toStartOf="@+id/btnRecommendationUseVoucher"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:typographyType="heading_3"
-                    tools:text="Kamu bisa hemat Rp30.000 dari 2 promo!" />
-
-                <com.tokopedia.unifycomponents.UnifyButton
-                    android:id="@+id/btnRecommendationUseVoucher"
-                    android:layout_width="96dp"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:layout_marginEnd="16dp"
-                    android:text="@string/promo_voucher_use"
-                    app:layout_constraintBottom_toBottomOf="@+id/tpgRecommendationTitle"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/tpgRecommendationTitle"
-                    app:unifyButtonSize="medium"
-                    app:unifyButtonVariant="ghost" />
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/recyclerViewVoucherRecommendation"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginEnd="16dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/btnRecommendationUseVoucher"
-                    tools:itemCount="3"
-                    tools:listitem="@layout/promo_usage_item_voucher" />
-
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recyclerView"
@@ -168,7 +116,7 @@
                     android:layout_marginEnd="16dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/recyclerViewVoucherRecommendation"
+                    app:layout_constraintTop_toTopOf="parent"
                     tools:itemCount="3"
                     tools:listitem="@layout/promo_usage_item_voucher_section" />
 

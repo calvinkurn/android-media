@@ -20,7 +20,7 @@ import com.tokopedia.kotlin.extensions.view.splitByThousand
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.promousage.R
 import com.tokopedia.promousage.databinding.PromoUsageVoucherViewBinding
-import com.tokopedia.promousage.domain.entity.Voucher
+import com.tokopedia.promousage.domain.entity.list.Voucher
 import com.tokopedia.promousage.domain.entity.VoucherSource
 import com.tokopedia.promousage.domain.entity.VoucherState
 import com.tokopedia.promousage.domain.entity.VoucherType

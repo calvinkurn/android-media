@@ -29,13 +29,13 @@ import com.tokopedia.promousage.R
 import com.tokopedia.promousage.databinding.PromoUsageBottomshetBinding
 import com.tokopedia.promousage.di.DaggerPromoUsageComponent
 import com.tokopedia.promousage.domain.entity.EntryPoint
-import com.tokopedia.promousage.domain.entity.Voucher
-import com.tokopedia.promousage.view.adapter.VoucherRecommendationAdapter
-import com.tokopedia.promousage.view.adapter.VoucherSectionAdapter
+import com.tokopedia.promousage.domain.entity.list.Voucher
+import com.tokopedia.promousage.view.adapter.VoucherRecommendationDelegateAdapter
+import com.tokopedia.promousage.view.adapter.VoucherAccordionDelegateAdapter
 import com.tokopedia.promousage.domain.entity.VoucherSource
 import com.tokopedia.promousage.domain.entity.VoucherState
 import com.tokopedia.promousage.domain.entity.VoucherType
-import com.tokopedia.promousage.util.extension.applyPaddingToLastItem
+import com.tokopedia.promousage.util.composite.CompositeAdapter
 import com.tokopedia.promousage.util.extension.setHyperlinkText
 import com.tokopedia.promousage.view.viewmodel.PromoUsageViewModel
 import com.tokopedia.unifycomponents.toPx
@@ -60,6 +60,12 @@ class PromoUsageBottomSheet: BottomSheetDialogFragment() {
         }
     }
 
+    private val recyclerViewAdapter by lazy {
+        CompositeAdapter.Builder()
+            .add(VoucherRecommendationDelegateAdapter(onVoucherClick))
+            .add(VoucherAccordionDelegateAdapter(onVoucherSectionClick, onVoucherClick, onViewAllVoucherClick))
+            .build()
+    }
 
     private var binding by autoClearedNullable<PromoUsageBottomshetBinding>()
     private lateinit var frameDialogView: View
@@ -85,8 +91,6 @@ class PromoUsageBottomSheet: BottomSheetDialogFragment() {
 
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider[PromoUsageViewModel::class.java] }
-    private val voucherRecommendationAdapter = VoucherRecommendationAdapter()
-    private val voucherSectionAdapter = VoucherSectionAdapter()
     private val entryPoint by lazy {
         arguments?.getSerializable(BUNDLE_KEY_ENTRY_POINT) as? EntryPoint ?: EntryPoint.CART_PAGE
     }
@@ -120,7 +124,6 @@ class PromoUsageBottomSheet: BottomSheetDialogFragment() {
         super.onViewCreated(view, savedInstanceState)
         setupView()
         observeVouchers()
-        observeRecommendationVouchers()
         viewModel.getVouchers()
     }
 
@@ -222,16 +225,18 @@ class PromoUsageBottomSheet: BottomSheetDialogFragment() {
     }
 
     private fun observeVouchers() {
-        viewModel.sections.observe(viewLifecycleOwner) { result ->
+        viewModel.items.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Success -> {
                     showContent()
 
                     handleBottomCardViewAppearance(entryPoint)
 
-                    voucherSectionAdapter.submit(result.data)
                     showTotalSavingsSection(3, 40_000)
                     handleVoucherFound()
+
+
+                    recyclerViewAdapter.submit(result.data)
                 }
 
                 is Fail -> {
@@ -242,24 +247,11 @@ class PromoUsageBottomSheet: BottomSheetDialogFragment() {
         }
     }
 
-    private fun observeRecommendationVouchers() {
-        viewModel.recommendationVouchers.observe(viewLifecycleOwner) { result ->
-            when (result) {
-                is Success -> {
-
-                }
-
-                is Fail -> {
-
-                }
-            }
-        }
-    }
 
     private fun setupView() {
+        setupRecyclerView()
 
         binding?.run {
-            tpgRecommendationTitle.text = "Kamu bisa hemat Rp30.000 dari 2 promo"
             tpgTnc.setHyperlinkText(
                 fullText = context?.getString(R.string.promo_voucher_view_tnc).orEmpty(),
                 hyperlinkSubstring = context?.getString(R.string.promo_voucher_tnc).orEmpty(),
@@ -282,14 +274,9 @@ class PromoUsageBottomSheet: BottomSheetDialogFragment() {
                 viewModel.onButtonBackToShipmentClick()
                 dismiss()
             }
-            btnRecommendationUseVoucher.setOnClickListener {
-                viewModel.onButtonBackToShipmentClick()
-                dismiss()
-            }
+
         }
 
-        setupVoucherRecommendationRecyclerView()
-        setupVoucherSectionRecyclerView()
     }
 
     private fun handleBottomCardViewAppearance(entryPoint: EntryPoint) {
@@ -326,69 +313,11 @@ class PromoUsageBottomSheet: BottomSheetDialogFragment() {
 
     }
 
-    private fun setupVoucherSectionRecyclerView() {
+    private fun setupRecyclerView() {
         binding?.recyclerView?.apply {
             layoutManager = LinearLayoutManager(context ?: return)
-            adapter = voucherSectionAdapter
+            adapter = recyclerViewAdapter
         }
-
-        voucherSectionAdapter.setOnSectionClick { selectedItemPosition ->
-            val allSections = voucherSectionAdapter.snapshot()
-            val selectedVoucherSection = voucherSectionAdapter.getItemAtOrNull(selectedItemPosition) ?: return@setOnSectionClick
-            viewModel.onClickChevron(allSections, selectedVoucherSection)
-        }
-
-        voucherSectionAdapter.setOnVoucherClick { selectedVoucher ->
-            viewModel.onVoucherSelected(selectedVoucher)
-        }
-
-        voucherSectionAdapter.setOnViewAllVoucherClick { selectedItemPosition ->
-            val allSections = voucherSectionAdapter.snapshot()
-            val selectedVoucherSection = voucherSectionAdapter.getItemAtOrNull(selectedItemPosition) ?: return@setOnViewAllVoucherClick
-            viewModel.onClickViewAllVoucher(allSections, selectedVoucherSection)
-        }
-    }
-
-    private fun setupVoucherRecommendationRecyclerView() {
-        binding?.recyclerViewVoucherRecommendation?.apply {
-            layoutManager = LinearLayoutManager(context ?: return)
-            adapter = voucherRecommendationAdapter
-            applyPaddingToLastItem()
-        }
-
-        voucherRecommendationAdapter.setOnVoucherClick { selectedItemPosition ->
-            val allVouchers = voucherRecommendationAdapter.snapshot()
-            val selectedVoucher = voucherRecommendationAdapter.getItemAtOrNull(selectedItemPosition) ?: return@setOnVoucherClick
-            viewModel.onVoucherSelected(selectedVoucher)
-        }
-
-        voucherRecommendationAdapter.submit(listOf(
-            Voucher(
-                300,
-                100_000,
-                "Cashback - Loading",
-                "2 hari",
-                "https://images.tokopedia.net/img/android/promo/ic_voucher_cashback/ic_voucher_cashback.png",
-                "https://images.tokopedia.net/img/android/promo/bg_supergraphic_cashback/bg_supergraphic_cashback.png",
-                VoucherType.CASHBACK,
-                VoucherState.Normal,
-                VoucherSource.Promo,
-                true
-            ),
-
-            Voucher(
-                400,
-                100_000,
-                "Cashback - Normal",
-                "2 hari",
-                "https://images.tokopedia.net/img/android/promo/ic_voucher_cashback/ic_voucher_cashback.png",
-                "https://images.tokopedia.net/img/android/promo/bg_supergraphic_cashback/bg_supergraphic_cashback.png",
-                VoucherType.CASHBACK,
-                VoucherState.Normal,
-                VoucherSource.Promo,
-                true
-            ),
-        ))
     }
 
     private fun showTotalSavingsSection(selectedVoucherCount: Int, totalVoucherAmount: Long) {
@@ -454,7 +383,21 @@ class PromoUsageBottomSheet: BottomSheetDialogFragment() {
         binding?.userInputVoucherView?.gone()
     }
 
+    private val onVoucherClick = { selectedVoucher : Voucher ->
 
+    }
+
+    private val onVoucherSectionClick = { index : Int ->
+
+    }
+
+    private val onViewAllVoucherClick = { index : Int ->
+
+    }
+
+    private val onButtonUseVoucherClick = {
+
+    }
 }
 
 

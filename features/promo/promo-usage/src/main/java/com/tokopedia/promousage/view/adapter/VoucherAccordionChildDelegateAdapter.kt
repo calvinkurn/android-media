@@ -6,11 +6,11 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.promousage.databinding.PromoUsageItemVoucherBinding
 import com.tokopedia.promousage.util.composite.DelegateAdapter
-import com.tokopedia.promousage.domain.entity.Voucher
+import com.tokopedia.promousage.domain.entity.list.Voucher
 
-class VoucherDelegateAdapter(
+class VoucherAccordionChildDelegateAdapter(
     private val onVoucherClick: (Voucher) -> Unit
-) : DelegateAdapter<Voucher, VoucherDelegateAdapter.ViewHolder>(Voucher::class.java) {
+) : DelegateAdapter<Voucher, VoucherAccordionChildDelegateAdapter.ViewHolder>(Voucher::class.java) {
 
     override fun createViewHolder(parent: ViewGroup): RecyclerView.ViewHolder {
         val binding = PromoUsageItemVoucherBinding.inflate(
@@ -29,13 +29,14 @@ class VoucherDelegateAdapter(
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(voucher: Voucher) {
-            if (voucher.shouldVisible) {
+            if (voucher.visible) {
                 binding.voucherView.bind(voucher)
             }
 
-            binding.voucherView.isVisible = voucher.shouldVisible
+            binding.voucherView.isVisible = voucher.visible
 
             binding.root.setOnClickListener { onVoucherClick(voucher) }
         }
     }
+
 }
