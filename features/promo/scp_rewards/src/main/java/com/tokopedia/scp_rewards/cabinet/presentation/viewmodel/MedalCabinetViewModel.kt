@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.tokopedia.scp_rewards.cabinet.analytics.MedalCabinetAnalyticsImpl
 import com.tokopedia.scp_rewards.cabinet.domain.GetUserMedaliUseCase
 import com.tokopedia.scp_rewards.cabinet.domain.MedaliSectionUseCase
 import com.tokopedia.scp_rewards.cabinet.domain.model.MedaliCabinetData
@@ -68,6 +69,14 @@ class MedalCabinetViewModel @Inject constructor(
 
             val earnedMedaliRes = earnedMedaliJob.await()?.getData(SUCCESS_CODE)
             val progressMedaliRes = progressMedaliJob.await()?.getData(SUCCESS_CODE)
+
+            if (earnedMedaliRes == null) {
+                MedalCabinetAnalyticsImpl.sendViewUnlockedMedalSectionApiErrorEvent()
+            }
+            if (progressMedaliRes == null) {
+                MedalCabinetAnalyticsImpl.sendViewLockedMedalSectionApiErrorEvent()
+            }
+
             MedaliListMapper.apply {
                 _cabinetLiveData.postValue(
                     Success(

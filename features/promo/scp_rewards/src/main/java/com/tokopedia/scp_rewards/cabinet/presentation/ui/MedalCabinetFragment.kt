@@ -125,13 +125,6 @@ class MedalCabinetFragment : BaseDaggerFragment() {
                     medalCabinetData.progressMedaliData ?: MedalData()
                 )
             )
-
-            if (medalCabinetData.earnedMedaliData == null) {
-                MedalCabinetAnalyticsImpl.sendViewUnlockedMedalSectionApiErrorEvent()
-            }
-            if (medalCabinetData.progressMedaliData == null) {
-                MedalCabinetAnalyticsImpl.sendViewLockedMedalSectionApiErrorEvent()
-            }
             if (medalCabinetData.earnedMedaliData?.bannerData != null) {
                 MedalCabinetAnalyticsImpl.sendViewBannerEvent(medalCabinetData.earnedMedaliData.bannerData?.creativeName.orEmpty(), medalCabinetData.earnedMedaliData.id.toString())
             } else if (medalCabinetData.progressMedaliData?.bannerData != null) {
