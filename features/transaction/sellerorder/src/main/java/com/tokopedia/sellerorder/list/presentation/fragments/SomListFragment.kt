@@ -2268,6 +2268,18 @@ open class SomListFragment :
         somListEmptyStateUiModel: SomListEmptyStateUiModel?,
         isTopAdsActive: Boolean
     ): Visitable<SomListAdapterTypeFactory> {
+        return somListEmptyStateUiModel?.let {
+            if (Utils.isEnableOperationalGuideline()) {
+                it
+            } else {
+                getOldEmptyState(isTopAdsActive)
+            }
+        } ?: getOldEmptyState(isTopAdsActive)
+    }
+
+    private fun getOldEmptyState(
+        isTopAdsActive: Boolean
+    ): SomListEmptyStateUiModel {
         val isSellerApp = GlobalConfig.isSellerApp()
         val isNewOrderFilterSelected =
             somListOrderStatusFilterTab?.isNewOrderFilterSelected() == true
@@ -2276,36 +2288,34 @@ open class SomListFragment :
         ) == true
         val isSearchQueryApplied =
             somListHeaderBinding?.searchBarSomList?.searchBarTextField?.text?.isNotBlank() == true
-        return somListEmptyStateUiModel.let {
-            it
-                ?: if (isSellerApp && !isTopAdsActive && isNewOrderFilterSelected &&
-                    !isNonStatusOrderFilterApplied && !isSearchQueryApplied
-                ) {
-                    SomListEmptyStateUiModel(
-                        imageUrl = SomConsts.SOM_LIST_EMPTY_STATE_NO_FILTER_ILLUSTRATION,
-                        title = context?.resources?.getString(R.string.empty_peluang_title).orEmpty(),
-                        description = context?.resources?.getString(R.string.empty_peluang_desc_non_topads_no_filter)
-                            .orEmpty(),
-                        buttonText = context?.resources?.getString(R.string.btn_cek_peluang_non_topads)
-                            .orEmpty(),
-                        buttonAppLink = ApplinkConstInternalTopAds.TOPADS_CREATE_ADS,
-                        showButton = true
-                    )
-                } else if (isNonStatusOrderFilterApplied || isSearchQueryApplied) {
-                    SomListEmptyStateUiModel(
-                        imageUrl = SomConsts.SOM_LIST_EMPTY_STATE_WITH_FILTER_ILLUSTRATION,
-                        title = context?.resources?.getString(R.string.som_list_empty_state_not_found_title)
-                            .orEmpty()
-                    )
-                } else {
-                    SomListEmptyStateUiModel(
-                        imageUrl = SomConsts.SOM_LIST_EMPTY_STATE_NO_FILTER_ILLUSTRATION,
-                        title = context?.resources?.getString(R.string.empty_peluang_title)
-                            .orEmpty(),
-                        description = context?.resources?.getString(R.string.som_list_empty_state_description_no_topads_no_filter)
-                            .orEmpty()
-                    )
-                }
+
+        return if (isSellerApp && !isTopAdsActive && isNewOrderFilterSelected &&
+            !isNonStatusOrderFilterApplied && !isSearchQueryApplied
+        ) {
+            SomListEmptyStateUiModel(
+                imageUrl = SomConsts.SOM_LIST_EMPTY_STATE_NO_FILTER_ILLUSTRATION,
+                title = context?.resources?.getString(R.string.empty_peluang_title).orEmpty(),
+                description = context?.resources?.getString(R.string.empty_peluang_desc_non_topads_no_filter)
+                    .orEmpty(),
+                buttonText = context?.resources?.getString(R.string.btn_cek_peluang_non_topads)
+                    .orEmpty(),
+                buttonAppLink = ApplinkConstInternalTopAds.TOPADS_CREATE_ADS,
+                showButton = true
+            )
+        } else if (isNonStatusOrderFilterApplied || isSearchQueryApplied) {
+            SomListEmptyStateUiModel(
+                imageUrl = SomConsts.SOM_LIST_EMPTY_STATE_WITH_FILTER_ILLUSTRATION,
+                title = context?.resources?.getString(R.string.som_list_empty_state_not_found_title)
+                    .orEmpty()
+            )
+        } else {
+            SomListEmptyStateUiModel(
+                imageUrl = SomConsts.SOM_LIST_EMPTY_STATE_NO_FILTER_ILLUSTRATION,
+                title = context?.resources?.getString(R.string.empty_peluang_title)
+                    .orEmpty(),
+                description = context?.resources?.getString(R.string.som_list_empty_state_description_no_topads_no_filter)
+                    .orEmpty()
+            )
         }
     }
 
