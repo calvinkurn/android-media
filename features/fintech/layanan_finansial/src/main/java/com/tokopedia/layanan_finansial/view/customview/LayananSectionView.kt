@@ -10,6 +10,7 @@ import android.widget.RelativeLayout
 import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.layanan_finansial.databinding.LayananSectionViewBinding
 import com.tokopedia.layanan_finansial.view.adapter.LayananAdapter
 import com.tokopedia.layanan_finansial.view.models.LayananSectionModel
@@ -39,7 +40,7 @@ class LayananSectionView : RelativeLayout {
                 setBackgroundDrawable(gradient)
             }
         } catch (e: Exception) {
-            // do nothing
+            FirebaseCrashlytics.getInstance().recordException(e)
         }
 
         with(binding) {

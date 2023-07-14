@@ -44,7 +44,9 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.track)
     implementation projectOrAar(rootProject.ext.libraries.analytics)
     implementation projectOrAar(rootProject.ext.features.topAdsSdk)
-
+    implementation (rootProject.ext.firebase.crashlytics) {
+        transitive = true
+    }
 
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.archCoreTesting
