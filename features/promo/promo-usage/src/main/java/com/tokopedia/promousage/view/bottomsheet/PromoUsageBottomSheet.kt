@@ -1,7 +1,6 @@
 package com.tokopedia.promousage.view.bottomsheet
 
 import android.app.Activity
-import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
@@ -86,6 +85,18 @@ class PromoUsageBottomSheet: BottomSheetDialogFragment() {
         arguments?.getSerializable(BUNDLE_KEY_ENTRY_POINT) as? EntryPoint ?: EntryPoint.CART_PAGE
     }
 
+    private fun setupDependencyInjection() {
+        activity?.let {
+            val baseAppComponent = it.application
+            if (baseAppComponent is BaseMainApplication) {
+                DaggerPromoUsageComponent.builder()
+                    .baseAppComponent(baseAppComponent.baseAppComponent)
+                    .build()
+                    .inject(this)
+            }
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setupDependencyInjection()
@@ -104,7 +115,7 @@ class PromoUsageBottomSheet: BottomSheetDialogFragment() {
         binding?.bottomSheetClose?.setOnClickListener { dismissAllowingStateLoss() }
 
         dialog?.setOnShowListener {
-            showListener(it)
+            showListener()
         }
 
 
@@ -125,12 +136,7 @@ class PromoUsageBottomSheet: BottomSheetDialogFragment() {
         val maxPeekHeight: Int = screenHeight - BOTTOM_SHEET_MARGIN_TOP_IN_DP.toPx()
     }
 
-    private fun showListener(dialogInterface: DialogInterface?) {
-        //dialog?.setCanceledOnTouchOutside(overlayClickDismiss)
-
-        //bottomSheetClose.setOnClickListener(closeListener)
-
-        //BottomSheetUnify.actionLayout(bottomSheetAction, actionText, actionIcon, actionListener)
+    private fun showListener() {
 
         val frameDialogView = binding?.bottomSheetWrapper?.parent as View
         frameDialogView.setBackgroundColor(Color.TRANSPARENT)
@@ -200,18 +206,6 @@ class PromoUsageBottomSheet: BottomSheetDialogFragment() {
             BottomSheetBehavior.STATE_COLLAPSED
         }
 
-    }
-
-    private fun setupDependencyInjection() {
-        activity?.let {
-            val baseAppComponent = it.application
-            if (baseAppComponent is BaseMainApplication) {
-                DaggerPromoUsageComponent.builder()
-                    .baseAppComponent(baseAppComponent.baseAppComponent)
-                    .build()
-                    .inject(this)
-            }
-        }
     }
 
     private fun observeVouchers() {
@@ -352,12 +346,11 @@ class PromoUsageBottomSheet: BottomSheetDialogFragment() {
     }
 
     private val onVoucherAccordionClick = { accordion : VoucherAccordion ->
-
         viewModel.onClickChevron(accordion)
     }
 
     private val onViewAllVoucherCtaClick = { accordion : VoucherAccordion ->
-
+        viewModel.onClickViewAllVoucher(accordion)
     }
 
     private val onButtonUseRecommendedVoucherClick = {

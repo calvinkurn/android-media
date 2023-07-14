@@ -278,54 +278,21 @@ class PromoUsageViewModel @Inject constructor(
         )
     }
 
-    private fun List<Voucher>.toCollapsibleList(): List<DelegateAdapterItem> {
-        if (isEmpty()) return emptyList()
 
-        val formattedVouchers = mutableListOf<DelegateAdapterItem>()
 
-        val numberOfExpandedVoucher = count { it.visible }
+    fun onClickViewAllVoucher(selectedVoucherAccordion: VoucherAccordion) {
+        val currentItems = items.value?.currentItemsOrEmpty() ?: return
 
-        val lastIndexOfExpandedVoucher = indexOfLast { it.visible }
-
-        val collapsedVoucherCount = size - numberOfExpandedVoucher
-        val viewAllWidgetItem = ViewAllVoucher(collapsedVoucherCount)
-
-        formattedVouchers.addAll(this)
-
-        //Modify the list ordering. Placing view all widget item after last index of expanded voucher
-        formattedVouchers.add(lastIndexOfExpandedVoucher + 1, viewAllWidgetItem)
-
-        return formattedVouchers
-    }
-
-    fun onClickViewAllVoucher(
-        allVoucherAccordions: List<VoucherAccordion>,
-        selectedVoucherAccordion: VoucherAccordion
-    ) {
-        val sections = mutableListOf<VoucherAccordion>()
-
-        allVoucherAccordions.forEach { voucherSection ->
-            val updatedVoucherSection = if (voucherSection.title == selectedVoucherAccordion.title) {
-                val vouchersOnly = voucherSection.vouchers.toMutableList()
-
-                //Remove view all voucher widget from the list
-                vouchersOnly.removeAll { it is ViewAllVoucher }
-
-                //Make all the voucher within the same section to be visible
-                val updatedVouchers = vouchersOnly.map {
-                    val voucher = it as Voucher
-                    voucher.copy(visible = true)
-                }
-
-                voucherSection.copy(vouchers = updatedVouchers)
+        val updatedItems = currentItems.map { item ->
+            if (item is VoucherAccordion && item.title == selectedVoucherAccordion.title) {
+                val expandedVouchers = item.vouchers.expandAll()
+                item.copy(vouchers = expandedVouchers)
             } else {
-                voucherSection
+                item
             }
-
-            sections.add(updatedVoucherSection)
         }
 
-        _items.postValue(Success(sections))
+        _items.postValue(Success(updatedItems))
     }
 
     fun onButtonBuyClick(entryPoint: EntryPoint) {
@@ -347,7 +314,7 @@ class PromoUsageViewModel @Inject constructor(
     fun onClickChevron(selectedVoucherAccordion: VoucherAccordion) {
         val currentItems = items.value?.currentItemsOrEmpty() ?: return
 
-        val accordions = currentItems.map { item ->
+        val updatedItems = currentItems.map { item ->
             if (item is VoucherAccordion) {
                 updateExpandCollapseState(item, selectedVoucherAccordion)
             } else {
@@ -356,7 +323,7 @@ class PromoUsageViewModel @Inject constructor(
         }
 
         
-        _items.postValue(Success(accordions))
+        _items.postValue(Success(updatedItems))
     }
 
     private fun updateExpandCollapseState(
@@ -377,5 +344,38 @@ class PromoUsageViewModel @Inject constructor(
         } else {
             emptyList()
         }
+    }
+
+    private fun List<Voucher>.toCollapsibleList(): List<DelegateAdapterItem> {
+        if (isEmpty()) return emptyList()
+
+        val formattedVouchers = mutableListOf<DelegateAdapterItem>()
+
+        val numberOfExpandedVoucher = count { it.visible }
+
+        val lastIndexOfExpandedVoucher = indexOfLast { it.visible }
+
+        val collapsedVoucherCount = size - numberOfExpandedVoucher
+        val viewAllWidgetItem = ViewAllVoucher(collapsedVoucherCount)
+
+        formattedVouchers.addAll(this)
+
+        //Modify the list ordering. Placing view all widget item after last index of expanded voucher
+        formattedVouchers.add(lastIndexOfExpandedVoucher + 1, viewAllWidgetItem)
+
+        return formattedVouchers
+    }
+
+    private fun List<DelegateAdapterItem>.expandAll(): List<DelegateAdapterItem> {
+        val formatted = this.toMutableList()
+
+        formatted.removeAll { it is ViewAllVoucher }
+
+        val expandedVouchers = formatted.map {
+            val voucher = it as Voucher
+            voucher.copy(visible = true)
+        }
+
+        return expandedVouchers
     }
 }
