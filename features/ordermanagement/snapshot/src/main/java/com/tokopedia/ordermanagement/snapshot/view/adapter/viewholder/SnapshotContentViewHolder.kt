@@ -8,6 +8,8 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.viewpager2.widget.ViewPager2
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.imageassets.TokopediaImageUrl
+import com.tokopedia.imageassets.utils.loadProductImage
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.setMargin
@@ -137,7 +139,14 @@ class SnapshotContentViewHolder(itemView: View, private val actionListener: Snap
                     actionListener?.onSnapshotImgClicked(adapterPosition)
                 }
                 productImages.firstOrNull()?.imageUrl?.let {
-                    ivHeader.loadImage(it)
+                    ivHeader.loadProductImage(
+                        url = it,
+                        archivedUrl = TokopediaImageUrl.IMG_ARCHIVED_PRODUCT_LARGE,
+                        cornerRadius = 0f,
+                        onLoaded = { isArchived ->
+                            actionListener?.onProductImageLoaded(isArchived)
+                        }
+                    )
                 }
             }
         }
