@@ -1,6 +1,8 @@
 package com.tokopedia.analytics.performance.fpi
 
 import android.annotation.SuppressLint
+import android.content.Context
+import android.util.TypedValue
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.MotionEvent
@@ -17,7 +19,9 @@ import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.getScreenWidth
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntSafely
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
+import io.hansel.a.y
 
 /**
  * Created by yovi.putra on 05/07/23"
@@ -49,7 +53,7 @@ class FpiMonitoringDelegateImpl :
     private var fpsInfoText: Typography? = null
     private var renderTimeText: Typography? = null
 
-    private val defaultColor = com.tokopedia.unifyprinciples.R.color.Unify_GN400
+    private val defaultColor = com.tokopedia.unifyprinciples.R.color.Unify_GN500
     private val warningColor = com.tokopedia.unifyprinciples.R.color.Unify_YN300
     private val errorColor = com.tokopedia.unifyprinciples.R.color.Unify_RN500
     // base on median of main-app firebase performance
@@ -87,7 +91,8 @@ class FpiMonitoringDelegateImpl :
         // use a global layout listener to prevent crashes when the activity has not been already
         view.addOneTimeGlobalLayoutListener {
             val halfScreen = getScreenWidth() - fpiLayout.width
-            fpiPopUp?.showAtLocation(view, Gravity.NO_GRAVITY, halfScreen, 0)
+            val toolbarHeight = getToolbarHeight(mContext)
+            fpiPopUp?.showAtLocation(view, Gravity.NO_GRAVITY, halfScreen, toolbarHeight)
         }
     }
 
@@ -119,6 +124,16 @@ class FpiMonitoringDelegateImpl :
 
     private fun updatePositionPopup(x: Float, y: Float) {
         fpiPopUp?.update(x.toIntSafely(), y.toIntSafely(), -1, -1, true)
+    }
+
+    private fun getToolbarHeight(context: Context): Int {
+        val tv = TypedValue()
+        return if (context.theme.resolveAttribute(android.R.attr.actionBarSize, tv, true)) {
+            val actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data, context.resources.displayMetrics)
+            actionBarHeight + 20.toPx()
+        } else {
+            0
+        }
     }
     // endregion
 
