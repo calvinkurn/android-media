@@ -16,7 +16,7 @@ const val EPHARMACY_PRESCRIPTION_IDS = "epharmacy_prescription_ids"
 const val EPHARMACY_GROUP_ID = "epharmacy_group_id"
 const val EPHARMACY_ENABLER_NAME = "epharmacy_enabler_name"
 const val EPHARMACY_ENABLER_ID = "epharmacy_enabler_id"
-const val EPHARMACY_CONSULTATION_SOURCE_ID = "epharmacy_consultation_source_id"
+const val EPHARMACY_TOKO_CONSULTATION_ID = "epharmacy_toko_consultation_id"
 const val EPHARMACY_CONS_DURATION = "epharmacy_cons_duration"
 const val EPHARMACY_CONS_PRICE = "epharmacy_cons_price"
 

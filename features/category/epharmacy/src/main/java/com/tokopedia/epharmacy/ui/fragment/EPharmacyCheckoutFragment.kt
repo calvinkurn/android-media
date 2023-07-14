@@ -9,13 +9,14 @@ import androidx.constraintlayout.widget.Group
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.epharmacy.R
+import com.tokopedia.epharmacy.databinding.EpharmacyCheckoutChatDokterFragmentBinding
 import com.tokopedia.epharmacy.di.EPharmacyComponent
 import com.tokopedia.epharmacy.network.params.CartGeneralAddToCartInstantParams
 import com.tokopedia.epharmacy.network.response.EPharmacyCheckoutResponse
 import com.tokopedia.epharmacy.utils.CategoryKeys.Companion.EPHARMACY_CHECKOUT_PAGE
-import com.tokopedia.epharmacy.utils.EPHARMACY_CONSULTATION_SOURCE_ID
 import com.tokopedia.epharmacy.utils.EPHARMACY_ENABLER_ID
 import com.tokopedia.epharmacy.utils.EPHARMACY_GROUP_ID
+import com.tokopedia.epharmacy.utils.EPHARMACY_TOKO_CONSULTATION_ID
 import com.tokopedia.epharmacy.viewmodel.EPharmacyCheckoutViewModel
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
@@ -26,6 +27,7 @@ import com.tokopedia.unifycomponents.Toaster.LENGTH_LONG
 import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
@@ -36,9 +38,11 @@ class EPharmacyCheckoutFragment : BaseDaggerFragment() {
     private var ePharmacyData: Group? = null
     private var ePharmacyGlobalError: GlobalError? = null
 
-    private var consultationId = ""
+    private var tokoConsultationId = ""
     private var enablerId = ""
     private var groupId = ""
+
+    private var binding by autoClearedNullable<EpharmacyCheckoutChatDokterFragmentBinding>()
 
     @JvmField
     @Inject
@@ -69,7 +73,7 @@ class EPharmacyCheckoutFragment : BaseDaggerFragment() {
     private fun initArguments() {
         groupId = arguments?.getString(EPHARMACY_GROUP_ID, "") ?: ""
         enablerId = arguments?.getString(EPHARMACY_ENABLER_ID, "") ?: ""
-        consultationId = arguments?.getString(EPHARMACY_CONSULTATION_SOURCE_ID, "") ?: ""
+        tokoConsultationId = arguments?.getString(EPHARMACY_TOKO_CONSULTATION_ID, "") ?: ""
     }
 
     private fun setUpObservers() {
@@ -93,16 +97,21 @@ class EPharmacyCheckoutFragment : BaseDaggerFragment() {
         return CartGeneralAddToCartInstantParams(
             CartGeneralAddToCartInstantParams.CartGeneralAddToCartInstantRequestBusinessData(
                 "8811b325f-d0cf-4ba9-8d0a-3bce7e8c96c0",
-                arrayListOf(CartGeneralAddToCartInstantParams.CartGeneralAddToCartInstantRequestBusinessData.CartGeneralAddToCartInstantRequestProductData(
-                    "ECONSUL",
-                    1,
-                    CartGeneralAddToCartInstantParams.CartGeneralAddToCartInstantRequestBusinessData.CartGeneralAddToCartInstantRequestProductData.CartGeneralCustomStruct(
-                        "311ba2ed6a5b4105fbfdb0a8b745d22fe1b3ecc0efff5c6b9f7ce12351533558",1,123
-                    ),
-                    "paidconsultation",
-                    ""
-                ))
-            ), "android"
+                arrayListOf(
+                    CartGeneralAddToCartInstantParams.CartGeneralAddToCartInstantRequestBusinessData.CartGeneralAddToCartInstantRequestProductData(
+                        "ECONSUL",
+                        1,
+                        CartGeneralAddToCartInstantParams.CartGeneralAddToCartInstantRequestBusinessData.CartGeneralAddToCartInstantRequestProductData.CartGeneralCustomStruct(
+                            groupId,
+                            enablerId,
+                            tokoConsultationId
+                        ),
+                        "paidconsultation",
+                        ""
+                    )
+                )
+            ),
+            "android"
         )
     }
 
@@ -132,17 +141,28 @@ class EPharmacyCheckoutFragment : BaseDaggerFragment() {
     }
 
     private fun updateUi(data: EPharmacyCheckoutResponse) {
-        if(data.cartGeneralAddToCartInstant?.data?.success == 1){
+        if (data.cartGeneralAddToCartInstant?.cartGeneralAddToCartInstantData?.success == 1) {
             setData(data.cartGeneralAddToCartInstant)
-        }else {
-            setApiError(data.cartGeneralAddToCartInstant?.data?.message)
+        } else {
+            setApiError(data.cartGeneralAddToCartInstant?.cartGeneralAddToCartInstantData?.message)
         }
     }
 
     private fun setData(cartGeneralAddToCartInstant: EPharmacyCheckoutResponse.CartGeneralAddToCartInstant) {
-        cartGeneralAddToCartInstant.data?.data?.businessData?.firstOrNull()?.let { info ->
-
+        cartGeneralAddToCartInstant.cartGeneralAddToCartInstantData?.businessDataList?.businessData?.firstOrNull()?.let { info ->
+            setTitle(info.customResponse?.title)
+            setCartInfo(info.cartGroups?.firstOrNull()?.carts?.firstOrNull())
+            setSummaryInfo(info.shoppingSummary?.product)
         }
+    }
+
+    private fun setTitle(title: String?) {
+    }
+
+    private fun setCartInfo(firstOrNull: EPharmacyCheckoutResponse.CartGeneralAddToCartInstant.CartGeneralAddToCartInstantData.BusinessDataList.BusinessData.CartGroup.Cart?) {
+    }
+
+    private fun setSummaryInfo(product: EPharmacyCheckoutResponse.CartGeneralAddToCartInstant.CartGeneralAddToCartInstantData.BusinessDataList.BusinessData.ShoppingSummary.Product?) {
     }
 
     private fun setApiError(message: String?) {
@@ -163,7 +183,7 @@ class EPharmacyCheckoutFragment : BaseDaggerFragment() {
         ePharmacyGlobalError?.apply {
             show()
             setType(errorType)
-            if(!message.isNullOrBlank()){
+            if (!message.isNullOrBlank()) {
                 errorDescription.text = message
             }
             setActionClickListener {

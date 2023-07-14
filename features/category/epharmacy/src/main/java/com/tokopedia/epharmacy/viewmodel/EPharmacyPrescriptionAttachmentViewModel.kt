@@ -62,7 +62,7 @@ class EPharmacyPrescriptionAttachmentViewModel @Inject constructor(
         )
     }
 
-    fun getConsultationDetails(consultationId: Long) {
+    fun getConsultationDetails(consultationId: String) {
         ePharmacyGetConsultationDetailsUseCase.cancelJobs()
         ePharmacyGetConsultationDetailsUseCase.getConsultationDetails(
             ::onSuccessGetConsultationDetails,

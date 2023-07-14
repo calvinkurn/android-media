@@ -1,8 +1,7 @@
 package com.tokopedia.epharmacy.network.response
 
-
-import com.google.gson.annotations.SerializedName
 import com.google.gson.annotations.Expose
+import com.google.gson.annotations.SerializedName
 
 data class EPharmacyCheckoutResponse(
     @SerializedName("cart_general_add_to_cart_instant")
@@ -12,12 +11,12 @@ data class EPharmacyCheckoutResponse(
     data class CartGeneralAddToCartInstant(
         @SerializedName("data")
         @Expose
-        val `data`: Data?
+        val cartGeneralAddToCartInstantData: CartGeneralAddToCartInstantData?
     ) {
-        data class Data(
+        data class CartGeneralAddToCartInstantData(
             @SerializedName("data")
             @Expose
-            val `data`: Data?,
+            val businessDataList: BusinessDataList?,
             @SerializedName("message")
             @Expose
             val message: String?,
@@ -25,7 +24,7 @@ data class EPharmacyCheckoutResponse(
             @Expose
             val success: Int?
         ) {
-            data class Data(
+            data class BusinessDataList(
                 @SerializedName("business_data")
                 @Expose
                 val businessData: List<BusinessData?>?

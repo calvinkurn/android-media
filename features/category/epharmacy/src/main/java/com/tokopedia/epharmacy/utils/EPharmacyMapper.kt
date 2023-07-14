@@ -27,7 +27,7 @@ object EPharmacyMapper {
             "15 Merit",
             group.consultationData?.prescription,
             group.consultationData?.partnerConsultationId,
-            group.consultationData?.tokoConsultationId.toLongOrZero(),
+            group.consultationData?.tokoConsultationId,
             group.prescriptionImages,
             group.prescriptionSource,
             group.consultationSource,

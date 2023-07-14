@@ -14,6 +14,7 @@ object EPharmacyInitiateConsultationQuery : GqlQueryInterface {
                     error_code
                 }
                 data {
+                    toko_consultation_id
                     consultation_source {
                         id
                         enabler_name

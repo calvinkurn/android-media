@@ -14,7 +14,7 @@ class CartGeneralAddToCartInstantParams(
         var business_id: String,
         @SerializedName("product_list")
         var productList: List<CartGeneralAddToCartInstantRequestProductData>
-    ){
+    ) {
         data class CartGeneralAddToCartInstantRequestProductData(
             @SerializedName("product_id")
             var productId: String,
@@ -25,15 +25,15 @@ class CartGeneralAddToCartInstantParams(
             @SerializedName("shop_id")
             var shopId: String,
             @SerializedName("note")
-            var note: String,
-        ){
+            var note: String
+        ) {
             data class CartGeneralCustomStruct(
                 @SerializedName("epharmacy_group_id")
                 var epharmacyGroupId: String,
                 @SerializedName("enabler_id")
-                var enablerId: Int,
+                var enablerId: String,
                 @SerializedName("toko_consultation_id")
-                var tokoConsultationId: Int
+                var tokoConsultationId: String
             )
         }
     }

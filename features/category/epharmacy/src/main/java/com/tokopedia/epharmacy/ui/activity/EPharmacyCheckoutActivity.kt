@@ -9,16 +9,16 @@ import com.tokopedia.epharmacy.R
 import com.tokopedia.epharmacy.di.DaggerEPharmacyComponent
 import com.tokopedia.epharmacy.di.EPharmacyComponent
 import com.tokopedia.epharmacy.ui.fragment.EPharmacyCheckoutFragment
-import com.tokopedia.epharmacy.utils.EPHARMACY_CONSULTATION_SOURCE_ID
 import com.tokopedia.epharmacy.utils.EPHARMACY_ENABLER_ID
 import com.tokopedia.epharmacy.utils.EPHARMACY_GROUP_ID
+import com.tokopedia.epharmacy.utils.EPHARMACY_TOKO_CONSULTATION_ID
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 class EPharmacyCheckoutActivity : BaseSimpleActivity(), HasComponent<EPharmacyComponent> {
 
-    private var consultationId = ""
+    private var tokoConsultationId = ""
     private var enablerId = ""
     private var groupId = ""
 
@@ -34,17 +34,16 @@ class EPharmacyCheckoutActivity : BaseSimpleActivity(), HasComponent<EPharmacyCo
         ePharmacyComponent.inject(this)
         super.onCreate(savedInstanceState)
         setPageTitle()
-        initArguments()
     }
 
     private fun setPageTitle() {
         updateTitle(getString(R.string.epharmacy_checkout_page_title))
     }
 
-    private fun initArguments() {
+    private fun extractParameters() {
         groupId = intent?.extras?.getString(EPHARMACY_GROUP_ID, "") ?: ""
         enablerId = intent?.extras?.getString(EPHARMACY_ENABLER_ID, "") ?: ""
-        consultationId = intent?.extras?.getString(EPHARMACY_CONSULTATION_SOURCE_ID, "") ?: ""
+        tokoConsultationId = intent?.extras?.getString(EPHARMACY_TOKO_CONSULTATION_ID, "") ?: ""
     }
 
     override fun getLayoutRes() = R.layout.epharmacy_activity
@@ -52,11 +51,14 @@ class EPharmacyCheckoutActivity : BaseSimpleActivity(), HasComponent<EPharmacyCo
     override fun getParentViewResourceID(): Int = R.id.e_pharmacy_parent_view
 
     override fun getNewFragment(): Fragment {
-        return EPharmacyCheckoutFragment.newInstance(Bundle().apply {
-            putString(EPHARMACY_GROUP_ID,groupId)
-            putString(EPHARMACY_ENABLER_ID,enablerId)
-            putString(EPHARMACY_CONSULTATION_SOURCE_ID,consultationId)
-        })
+        extractParameters()
+        return EPharmacyCheckoutFragment.newInstance(
+            Bundle().apply {
+                putString(EPHARMACY_GROUP_ID, groupId)
+                putString(EPHARMACY_ENABLER_ID, enablerId)
+                putString(EPHARMACY_TOKO_CONSULTATION_ID, tokoConsultationId)
+            }
+        )
     }
 
     override fun getComponent() = ePharmacyComponent
