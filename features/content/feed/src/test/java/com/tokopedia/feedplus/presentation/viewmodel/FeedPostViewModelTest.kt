@@ -10,6 +10,8 @@ import com.tokopedia.content.common.comment.model.CountComment
 import com.tokopedia.content.common.comment.usecase.GetCountCommentsUseCase
 import com.tokopedia.content.common.model.TrackVisitChannelResponse
 import com.tokopedia.content.common.usecase.BroadcasterReportTrackViewerUseCase
+import com.tokopedia.content.common.usecase.GetUserReportListUseCase
+import com.tokopedia.content.common.usecase.PostUserReportUseCase
 import com.tokopedia.content.common.usecase.TrackVisitChannelBroadcasterUseCase
 import com.tokopedia.feed.component.product.FeedTaggedProductUiModel
 import com.tokopedia.feedcomponent.data.pojo.UpcomingCampaignResponse
@@ -84,6 +86,8 @@ class FeedPostViewModelTest {
     private val getCountCommentsUseCase: GetCountCommentsUseCase = mockk()
     private val trackVisitChannelUseCase: TrackVisitChannelBroadcasterUseCase = mockk()
     private val trackReportViewerUseCase: BroadcasterReportTrackViewerUseCase = mockk()
+    private val getReportListUseCase: GetUserReportListUseCase = mockk()
+    private val postReportUseCase : PostUserReportUseCase = mockk()
 
     private lateinit var viewModel: FeedPostViewModel
 
@@ -105,6 +109,8 @@ class FeedPostViewModelTest {
             getCountCommentsUseCase,
             trackVisitChannelUseCase,
             trackReportViewerUseCase,
+            getReportListUseCase,
+            postReportUseCase,
             testDispatcher
         )
     }

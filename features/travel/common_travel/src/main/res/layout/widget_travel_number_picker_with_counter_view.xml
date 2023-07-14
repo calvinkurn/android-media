@@ -34,7 +34,7 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_marginBottom="@dimen/spacing_lvl2"
-            android:background="@color/Unify_N150" />
+            android:background="@color/Unify_NN400" />
 
     </LinearLayout>
 

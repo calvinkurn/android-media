@@ -54,7 +54,7 @@ class SomDetailHeaderViewHolder(
                         setLabel(getWarehouseLabelString(context))
                         show()
                         unlockFeature = true
-                        setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+                        setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_68))
                     }
                 } else {
                     warehouseLabel.hide()
@@ -140,9 +140,9 @@ class SomDetailHeaderViewHolder(
             val statusOrderColor = if (statusCode == STATUS_CODE_ORDER_CANCELLED ||
                 statusCode == STATUS_CODE_ORDER_AUTO_CANCELLED ||
                 statusCode == STATUS_CODE_ORDER_REJECTED) {
-                com.tokopedia.unifyprinciples.R.color.Unify_R600
+                com.tokopedia.unifyprinciples.R.color.Unify_RN500
             } else {
-                com.tokopedia.unifyprinciples.R.color.Unify_N700_96
+                com.tokopedia.unifyprinciples.R.color.Unify_NN950_96
             }
             setTextColor(MethodChecker.getColor(context, statusOrderColor))
         }
