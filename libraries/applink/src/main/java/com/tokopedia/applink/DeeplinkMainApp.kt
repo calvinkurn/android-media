@@ -376,6 +376,13 @@ object DeeplinkMainApp {
             ),
             DLP.startsWith("onboarding", ApplinkConstInternalMarketplace.ONBOARDING)
         ),
+        "medali" to mutableListOf(
+            DLP.startsWith(ApplinkConst.ScpRewards.CELEBRATION_BOTTOMSHEET) { _, uri, _, _ -> getCelebrationBottomsheetDeeplink(uri) },
+            DLP.startsWith(ApplinkConst.ScpRewards.SCP_TOASTER) { ctx, uri, _, _ -> invokeScpToasterUniversalAppLink(ctx, uri) },
+            DLP.startsWith(ApplinkConst.ScpRewards.MEDAL_DETAIL_BASE) { _, uri, _, _ -> getInternalDeeplinkForScpMedalDetail(uri) },
+            DLP.startsWith(ApplinkConst.ScpRewards.SEE_MORE_MEDAL) { _, uri, _, _ -> getInternalDeeplinkForScpMedalCabinetSeeMore(uri) },
+            DLP.matchPattern(""){ _, uri, _, _ -> getInternalDeeplinkForScpMedalCabinet(uri) }
+        ),
         "media-editor" to mutableListOf(
             DLP.matchPattern("", ApplinkConstInternalMedia.INTERNAL_MEDIA_EDITOR)
         ),
@@ -1025,14 +1032,6 @@ object DeeplinkMainApp {
             DLP.matchPattern("{video_id}") { _, _, _, idList ->
                 UriUtil.buildUri(ApplinkConstInternalGlobal.YOUTUBE_PLAYER, idList?.getOrNull(0))
             }
-        ),
-        "medali" to mutableListOf(
-            DLP.startsWith(ApplinkConst.ScpRewards.CELEBRATION_BOTTOMSHEET) { _, uri, _, _ -> getCelebrationBottomsheetDeeplink(uri) },
-            DLP.startsWith(ApplinkConst.ScpRewards.SCP_TOASTER) { ctx, uri, _, _ -> invokeScpToasterUniversalAppLink(ctx, uri) },
-            DLP.matchPattern(ApplinkConst.ScpRewards.CELEBRATION_BASE) { _, uri, _, _ -> getInternalDeeplinkForScpCelebration(uri) },
-            DLP.startsWith(ApplinkConst.ScpRewards.MEDAL_DETAIL_BASE) { _, uri, _, _ -> getInternalDeeplinkForScpMedalDetail(uri) },
-            DLP.startsWith(ApplinkConst.ScpRewards.SEE_MORE_MEDAL) { _, uri, _, _ -> getInternalDeeplinkForScpMedalCabinetSeeMore(uri) },
-            DLP.matchPattern(""){ _, uri, _, _ -> getInternalDeeplinkForScpMedalCabinet(uri) }
         ),
 
     )
