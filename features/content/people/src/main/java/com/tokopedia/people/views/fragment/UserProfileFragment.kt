@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.view.ViewGroup.MarginLayoutParams
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
+import androidx.core.os.bundleOf
 import androidx.core.view.updateMarginsRelative
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -19,6 +20,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.config.GlobalConfig
@@ -78,6 +80,7 @@ import com.tokopedia.people.views.uimodel.profile.ProfileTabUiModel
 import com.tokopedia.people.views.uimodel.profile.ProfileType
 import com.tokopedia.people.views.uimodel.profile.ProfileUiModel
 import com.tokopedia.people.views.uimodel.state.UserProfileUiState
+import com.tokopedia.searchbar.navigation_component.NavSource
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.floatingbutton.FloatingButtonItem
@@ -913,7 +916,11 @@ class UserProfileFragment @Inject constructor(
 
             setOnClickListener {
                 userProfileTracker.clickBurgerMenu(userSession.userId, self = viewModel.isSelfProfile)
-                RouteManager.route(activity, APPLINK_MENU)
+                RouteManager.route(
+                    activity,
+                    bundleOf(Pair(ApplinkConsInternalNavigation.PARAM_PAGE_SOURCE, NavSource.FEED.toString())),
+                    APPLINK_MENU
+                )
             }
         }
     }
