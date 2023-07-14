@@ -27,8 +27,8 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     companion object {
         // This a reminder to developer.
         // If this size is modified, please also add unit test for the added deeplink.
-        const val SIZE_HOST = 155
-        const val SIZE_PATH = 257
+        const val SIZE_HOST = 156
+        const val SIZE_PATH = 258
     }
 
     override fun setup() {
@@ -2739,5 +2739,13 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
         val expectedInternalDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://global/youtube-player/123/"
         val appLink = UriUtil.buildUri(ApplinkConst.YOUTUBE_PLAYER, "123")
         assertEqualsDeepLinkMapper(appLink, expectedInternalDeepLink)
+    }
+
+    @Test
+    fun `check shop nib applink`() {
+        assertEqualsDeepLinkMapper(
+            ApplinkConst.SHOP_NIB_CUSTOMER_APP,
+            ApplinkConstInternalMechant.SHOP_NIB_CUSTOMER_APP
+        )
     }
 }
