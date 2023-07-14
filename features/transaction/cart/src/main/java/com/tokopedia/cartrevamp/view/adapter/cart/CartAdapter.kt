@@ -19,6 +19,7 @@ import com.tokopedia.cart.databinding.ItemCartWishlistBinding
 import com.tokopedia.cart.databinding.ItemEmptyCartBinding
 import com.tokopedia.cart.databinding.ItemGroupBinding
 import com.tokopedia.cart.databinding.ItemSelectAllBinding
+import com.tokopedia.cart.databinding.ItemSelectedAmountBinding
 import com.tokopedia.cartrevamp.view.ActionListener
 import com.tokopedia.cartrevamp.view.adapter.diffutil.CartDiffUtilCallback
 import com.tokopedia.cartrevamp.view.adapter.recentview.CartRecentViewAdapter
@@ -162,8 +163,8 @@ class CartAdapter constructor(
         when (viewType) {
             CartSelectedAmountViewHolder.LAYOUT -> {
                 val binding =
-                    ItemSelectAllBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-                return CartSelectedAmountViewHolder(binding, actionListener, compositeSubscription)
+                    ItemSelectedAmountBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+                return CartSelectedAmountViewHolder(binding, actionListener)
             }
 
             CartChooseAddressViewHolder.LAYOUT -> {

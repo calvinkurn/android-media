@@ -43,6 +43,7 @@ import com.tokopedia.cartrevamp.view.uimodel.CartRecentViewHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartRecentViewItemHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartRecommendationItemHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartSectionHeaderHolderData
+import com.tokopedia.cartrevamp.view.uimodel.CartSelectedAmountHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartShopBottomHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartShopGroupTickerState
 import com.tokopedia.cartrevamp.view.uimodel.CartState
@@ -2233,6 +2234,10 @@ class CartViewModel @Inject constructor(
     fun updateSelectedAmount() {
         val allSelectedAvailableCartItems = getSelectedAvailableCartItemData()
         val totalSelected = allSelectedAvailableCartItems.count { it.isSelected }
+        val selectedAmountHolderData = cartDataList.value.first()
+        if (selectedAmountHolderData is CartSelectedAmountHolderData) {
+            selectedAmountHolderData.selectedAmount = totalSelected
+        }
         selectedAmountState.value = totalSelected
     }
 }
