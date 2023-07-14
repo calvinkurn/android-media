@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/popup_container"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:paddingVertical="4dp"
     android:paddingHorizontal="8dp"
     android:orientation="vertical"
-    android:gravity="center"
-    android:background="@color/Unify_Overlay_Lvl3"
+    android:gravity="end"
+    android:background="@color/Unify_NN0_44"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
@@ -14,15 +15,30 @@
         android:id="@+id/fpiPercentage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textSize="10sp"
         app:typographyType="body_2"
         app:typographyWeight="bold"
-        tools:text="10%"/>
+        tools:ignore="SmallSp"
+        tools:text="10%" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/fpiRenderTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="10sp"
+        app:typographyType="body_2"
+        app:typographyWeight="bold"
+        tools:ignore="SmallSp"
+        tools:text="16ms" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/fpiFps"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textSize="10sp"
         app:typographyType="body_2"
-        tools:text="60fps"/>
+        app:typographyWeight="bold"
+        tools:ignore="SmallSp"
+        tools:text="60fps" />
 
 </androidx.appcompat.widget.LinearLayoutCompat>

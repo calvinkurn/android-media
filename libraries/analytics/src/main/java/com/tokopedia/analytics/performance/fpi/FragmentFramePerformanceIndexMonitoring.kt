@@ -133,7 +133,7 @@ class FragmentFramePerformanceIndexMonitoring : LifecycleEventObserver, Coroutin
         mainPerformanceData?.incrementAllFrames()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             val totalDurationMs = frameMetricsCopy.getMetric(FrameMetrics.TOTAL_DURATION).div(durationDivider)
-            mainPerformanceData?.totalDuration = mainPerformanceData?.totalDuration.orZero() + totalDurationMs
+            mainPerformanceData?.incDuration(totalDurationMs.orZero())
 
             if (totalDurationMs > DEFAULT_WARNING_LEVEL_MS) {
                 mainPerformanceData?.incremenetJankyFrames()

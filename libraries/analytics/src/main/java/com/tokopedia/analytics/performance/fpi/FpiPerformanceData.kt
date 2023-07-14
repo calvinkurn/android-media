@@ -3,7 +3,8 @@ package com.tokopedia.analytics.performance.fpi
 class FpiPerformanceData(
     var allFrames: Int = 0,
     var jankyFrames: Int = 0,
-    var totalDuration: Double = 0.0
+    var allTotalDurationMs: Double = 0.0,
+    var totalDurationMs: Double = 0.0
 ) {
     var allFramesTag = "all_frames"
     var jankyFramesTag = "janky_frames"
@@ -16,7 +17,7 @@ class FpiPerformanceData(
         get() = if (this.allFrames == 0) 0 else 100 - jankyFramePercentage
 
     val fps: Double
-        get() = totalDuration / allFrames
+        get() = allFrames / allTotalDurationMs.msToSecond()
 
     fun incrementAllFrames() {
         this.allFrames++
@@ -25,4 +26,11 @@ class FpiPerformanceData(
     fun incremenetJankyFrames() {
         this.jankyFrames++
     }
+
+    fun incDuration(duration: Double) {
+        this.allTotalDurationMs += duration
+        this.totalDurationMs = duration
+    }
+
+    private fun Double.msToSecond() = this.div(1000)
 }

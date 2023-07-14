@@ -14,6 +14,8 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 import com.tokopedia.analytics.R
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
+import com.tokopedia.kotlin.extensions.view.getScreenWidth
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.unifyprinciples.Typography
 
@@ -45,14 +47,18 @@ class FpiMonitoringDelegateImpl :
     private var fpiPopUp: PopupWindow? = null
     private var jankyInfoText: Typography? = null
     private var fpsInfoText: Typography? = null
+    private var renderTimeText: Typography? = null
 
-    private val defaultColor = com.tokopedia.unifyprinciples.R.color.Unify_GN500
+    private val defaultColor = com.tokopedia.unifyprinciples.R.color.Unify_GN400
     private val warningColor = com.tokopedia.unifyprinciples.R.color.Unify_YN300
-    private val errorColor = com.tokopedia.unifyprinciples.R.color.Unify_RN600
+    private val errorColor = com.tokopedia.unifyprinciples.R.color.Unify_RN500
+    // base on median of main-app firebase performance
     private val warningPercentage = 40
     private val dangerPercentage = 30
     private val warningFps = 50
     private val dangerFps = 30
+    private val warningJankyFrame = 16
+    private val dangerJankyFrame = 34
 
     override fun onViewCreated(fragment: Fragment) {
         fpiMonitoring.init(
@@ -73,48 +79,38 @@ class FpiMonitoringDelegateImpl :
 
         jankyInfoText = fpiLayout.findViewById(R.id.fpiPercentage)
         fpsInfoText = fpiLayout.findViewById(R.id.fpiFps)
+        renderTimeText = fpiLayout.findViewById(R.id.fpiRenderTime)
         fpiPopUp = PopupWindow(fpiLayout, sizeParam, sizeParam).apply {
             setUpPopUp(popupWindow = this)
         }
 
+        // use a global layout listener to prevent crashes when the activity has not been already
         view.addOneTimeGlobalLayoutListener {
-            fpiPopUp?.showAtLocation(view, (Gravity.CENTER or Gravity.TOP), 0, 0)
+            val halfScreen = getScreenWidth() - fpiLayout.width
+            fpiPopUp?.showAtLocation(view, Gravity.NO_GRAVITY, halfScreen, 0)
         }
     }
 
+    // region popup
     @SuppressLint("ClickableViewAccessibility")
     private fun setUpPopUp(popupWindow: PopupWindow) {
         var widgetDX = 0F
         var widgetDY = 0F
-        var widgetXOrigin = 0F
-        var widgetYOrigin = 0F
 
         popupWindow.setTouchInterceptor { v, event ->
             when(event.action){
                 MotionEvent.ACTION_DOWN -> {
-                    widgetDX = v.x - event.rawX
-                    widgetDY = v.y - event.rawY
-                    // save widget origin coordinate
-                    widgetXOrigin = v.x
-                    widgetYOrigin = v.y
+                    widgetDX = v.x - event.x
+                    widgetDY = v.y - event.y
                 }
                 MotionEvent.ACTION_MOVE -> {
                     // Screen border Collision
                     var newX = event.rawX + widgetDX
                     newX = 0F.coerceAtLeast(newX)
-                    newX = v.width.toFloat().coerceAtMost(newX)
 
                     var newY = event.rawY + widgetDY
                     newY = 0F.coerceAtLeast(newY)
-                    newY = v.height.toFloat().coerceAtMost(newY)
                     updatePositionPopup(x = newX, y = newY)
-                }
-                MotionEvent.ACTION_UP -> {
-                    // Back to original position
-                    updatePositionPopup(x = widgetXOrigin, y = widgetYOrigin)
-                }
-                else -> {
-                    return@setTouchInterceptor false
                 }
             }
             true
@@ -124,14 +120,12 @@ class FpiMonitoringDelegateImpl :
     private fun updatePositionPopup(x: Float, y: Float) {
         fpiPopUp?.update(x.toIntSafely(), y.toIntSafely(), -1, -1, true)
     }
-
-    override fun onHiddenChanged(hidden: Boolean) {
-        fpiMonitoring.onFragmentHidden(isHidden = hidden)
-    }
+    // endregion
 
     override fun onFrameRendered(fpiPerformanceData: FpiPerformanceData) {
         updatePercentage(fpiData = fpiPerformanceData)
         updateFps(fpiData = fpiPerformanceData)
+        updateRenderingTime(fpiData = fpiPerformanceData)
     }
 
     // region percentage information
@@ -190,12 +184,54 @@ class FpiMonitoringDelegateImpl :
     }
     // endregion
 
+    // region render time
+    private fun updateRenderingTime(fpiData: FpiPerformanceData) {
+        val duration = fpiData.totalDurationMs
+        updateRenderingTimeInfo(duration = duration)
+        updateRenderingTimeColor(duration = duration)
+    }
+
+    private fun updateRenderingTimeInfo(duration: Double) {
+        var renderTime = duration
+        var lable = "ms"
+
+        if (duration  > 1000) {
+            renderTime = duration.div(1000.0)
+            lable = "s"
+        }
+
+        val sFps = String.format("%.2f%s", renderTime, lable)
+        renderTimeText?.text = sFps
+    }
+
+    private fun updateRenderingTimeColor(duration: Double) {
+        val context = fpiMonitoring.fragment?.context ?: return
+        val activeColor = if (duration > dangerJankyFrame) {
+            errorColor
+        } else if (duration > warningJankyFrame) {
+            warningColor
+        } else {
+            defaultColor
+        }
+
+        val textColor = runCatching { ContextCompat.getColor(context, activeColor) }.getOrElse { 0 }
+
+        renderTimeText?.setTextColor(textColor)
+    }
+    // endregion
+
+    override fun onHiddenChanged(hidden: Boolean) {
+        fpiMonitoring.onFragmentHidden(isHidden = hidden)
+    }
+
     override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
         when (event) {
             Lifecycle.Event.ON_DESTROY -> {
                 fpiPopUp?.dismiss()
                 fpiPopUp = null
                 jankyInfoText = null
+                fpsInfoText = null
+                renderTimeText = null
             }
 
             else -> {
