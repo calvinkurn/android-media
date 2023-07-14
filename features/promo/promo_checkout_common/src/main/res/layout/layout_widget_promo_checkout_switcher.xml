@@ -8,6 +8,7 @@
         android:id="@+id/switcher_promo_checkout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:animateFirstView="false"
         android:inAnimation="@anim/anim_slide_up_in"
         android:outAnimation="@anim/anim_slide_up_out"
         android:visibility="visible">
