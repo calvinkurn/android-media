@@ -11,7 +11,7 @@
         android:id="@+id/ivBgRecommendation"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:background="@drawable/promo_usage_bg_recommendation_gradient"
+        android:background="@drawable/promo_usage_bg_bottomsheet_voucher_recommendation"
         app:layout_constraintBottom_toBottomOf="@id/recyclerView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

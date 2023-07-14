@@ -42,7 +42,7 @@
 
 
     <!--Bottomsheet Header (Title, Close Icon)-->
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/layoutBottomSheetHeader"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -50,41 +50,34 @@
         android:visibility="gone"
         tools:visibility="visible"
         android:background="@drawable/promo_usage_bg_bottomsheet_header"
-        android:foreground="@drawable/promo_usage_bg_confetti"
         android:orientation="horizontal">
 
-        <com.tokopedia.iconunify.IconUnify
+        <ImageView
             android:id="@+id/bottom_sheet_close"
-            android:layout_width="wrap_content"
+            android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:layout_marginBottom="16dp"
-            app:icon_color_light_enable="@color/promo_dms_white"
-            app:icon_color_night_enable="@color/promo_dms_white"
-            app:icon_name="CLOSE"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:adjustViewBounds="true"
+            android:background="@drawable/promo_usage_ic_close_white" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/bottom_sheet_title"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignTop="@id/bottom_sheet_close"
+            android:layout_alignBottom="@id/bottom_sheet_close"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="16dp"
+            android:layout_toRightOf="@id/bottom_sheet_close"
             android:ellipsize="end"
             android:maxLines="1"
             android:singleLine="true"
             android:textColor="@color/promo_dms_white"
-            app:layout_constraintBottom_toBottomOf="@+id/bottom_sheet_close"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/bottom_sheet_close"
-            app:layout_constraintTop_toTopOf="@+id/bottom_sheet_close"
             app:typographyType="heading_3"
             tools:text="Promo" />
 
-    </LinearLayout>
+    </RelativeLayout>
 
 
     <include
