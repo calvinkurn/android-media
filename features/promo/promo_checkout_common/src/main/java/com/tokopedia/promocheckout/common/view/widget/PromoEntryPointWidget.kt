@@ -5,11 +5,8 @@ import android.util.AttributeSet
 import com.tokopedia.promocheckout.common.R
 import com.tokopedia.unifycomponents.BaseCustomView
 
-/**
- * Created by fwidjaja on 2020-02-27.
- */
-class ButtonPromoCheckoutWidget @JvmOverloads constructor(
-        context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
+open class PromoEntryPointWidget @JvmOverloads constructor(
+    context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : BaseCustomView(context, attrs, defStyleAttr)  {
 
     private fun getLayout(): Int {
