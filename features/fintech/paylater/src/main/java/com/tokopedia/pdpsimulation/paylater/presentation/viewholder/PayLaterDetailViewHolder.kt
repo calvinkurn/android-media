@@ -211,6 +211,8 @@ class PayLaterDetailViewHolder(itemView: View, private val interaction: PayLater
             linkingStatus = detail.linkingStatus ?: ""
             action = PdpSimulationAnalytics.CLICK_CTA_PARTNER_CARD
             promoName = detail.promoName.orEmpty()
+            previousRate = detail.previousRate
+            newRate = detail.newRate
         }
 
     @SuppressLint("PII Data Exposure")
