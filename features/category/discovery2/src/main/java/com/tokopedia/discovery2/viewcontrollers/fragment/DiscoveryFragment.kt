@@ -1102,7 +1102,7 @@ open class DiscoveryFragment :
                 }
             } else {
                 navToolbar.setIcon(
-                    IconBuilder(IconBuilderFlag(NavSource.DISCOVERY, pageEndPoint))
+                    IconBuilder(getNavIconBuilderFlag())
                         .addIcon(
                             iconId = IconList.ID_SHARE,
                             disableRouteManager = true,
@@ -1324,7 +1324,7 @@ open class DiscoveryFragment :
 
     private fun setCartAndNavIcon() {
         navToolbar.setIcon(
-            IconBuilder(IconBuilderFlag(NavSource.DISCOVERY, pageEndPoint))
+            IconBuilder(getNavIconBuilderFlag())
                 .addIcon(iconId = IconList.ID_CART, onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.CART) }, disableDefaultGtmTracker = true)
                 .addIcon(iconId = IconList.ID_NAV_GLOBAL, onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.GLOBAL_MENU) }, disableDefaultGtmTracker = true)
         )
@@ -2269,5 +2269,10 @@ open class DiscoveryFragment :
         if(currentCompPosition != null && currentCompPosition + 1 < discoveryAdapter.itemCount) {
             smoothScrollToComponentWithPosition(currentCompPosition + 1)
         }
+    }
+
+    private fun getNavIconBuilderFlag(): IconBuilderFlag {
+        val pageSource = if(isFromCategory) NavSource.CLP else NavSource.DISCOVERY
+        return IconBuilderFlag(pageSource, pageEndPoint)
     }
 }
