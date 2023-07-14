@@ -50,7 +50,7 @@
             android:ellipsize="end"
             android:textColor="@color/feed_dms_bottom_action_text"
             app:typographyType="paragraph_2"
-            tools:text="Ketik komentarmu..." />
+            tools:text="@string/feed_bottom_action_comment_label" />
     </LinearLayout>
 
     <com.tokopedia.unifycomponents.LoaderUnify

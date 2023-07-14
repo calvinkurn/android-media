@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.MenuItem
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
-import com.tokopedia.applink.internal.ApplinkConstInternalContent.UF_EXTRA_FEED_RELEVANT_POST
 import com.tokopedia.feedplus.databinding.ActivityFeedDetailBinding
 import com.tokopedia.feedplus.presentation.fragment.FeedBaseFragment.Companion.TAB_FIRST_INDEX
 import com.tokopedia.feedplus.presentation.fragment.FeedBaseFragment.Companion.TAB_TYPE_FOR_YOU
@@ -42,7 +41,7 @@ class FeedDetailActivity : BaseActivity() {
 
     private fun setupView() {
         val extrasData = Bundle().apply {
-            putString(UF_EXTRA_FEED_RELEVANT_POST, postId)
+            putString(ApplinkConstInternalContent.UF_EXTRA_FEED_SOURCE_ID, postId)
             intent.extras?.let {
                 putAll(it)
             }

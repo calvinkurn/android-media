@@ -67,17 +67,6 @@ import com.tokopedia.feedplus.presentation.model.FeedPostEvent
 import com.tokopedia.feedplus.presentation.model.FeedShareModel
 import com.tokopedia.feedplus.presentation.model.FeedTrackerDataModel
 import com.tokopedia.feedplus.presentation.model.PostSourceModel
-import com.tokopedia.feedplus.presentation.model.FeedAuthorModel
-import com.tokopedia.feedplus.presentation.model.FeedCardCampaignModel
-import com.tokopedia.feedplus.presentation.model.FeedCardImageContentModel
-import com.tokopedia.feedplus.presentation.model.FeedCardLivePreviewContentModel
-import com.tokopedia.feedplus.presentation.model.FeedCardProductModel
-import com.tokopedia.feedplus.presentation.model.FeedCardVideoContentModel
-import com.tokopedia.feedplus.presentation.model.FeedDataModel
-import com.tokopedia.feedplus.presentation.model.FeedMainEvent
-import com.tokopedia.feedplus.presentation.model.FeedNoContentModel
-import com.tokopedia.feedplus.presentation.model.FeedShareModel
-import com.tokopedia.feedplus.presentation.model.FeedTrackerDataModel
 import com.tokopedia.feedplus.presentation.uiview.FeedCampaignRibbonType
 import com.tokopedia.feedplus.presentation.uiview.FeedProductTagView
 import com.tokopedia.feedplus.presentation.util.VideoPlayerManager
@@ -227,6 +216,7 @@ class FeedFragment :
 
                 val position = getCurrentPosition()
                 adapter.select(position)
+
             }
         }
     }
@@ -1015,7 +1005,6 @@ class FeedFragment :
                         is FeedPostEvent.PreCacheVideos -> {
                             preCacheVideo(event.videoUrls)
                         }
-                        else -> {}
                     }
 
                     feedPostViewModel.consumeEvent(event)
@@ -1470,15 +1459,84 @@ class FeedFragment :
         (childFragmentManager.findFragmentByTag(UniversalShareBottomSheet.TAG) as? UniversalShareBottomSheet)?.dismiss()
     }
 
+    private fun updateBottomActionView(position: Int) {
+        with(binding) {
+            val currentItem =
+                if (adapter.currentList.size > position) adapter.currentList[position] else null
+
+            if (currentItem == null) {
+                containerBottomAction.hide()
+                return@with
+            }
+
+            when {
+                currentItem.data is FeedCardImageContentModel && currentItem.data.showComment -> {
+                    val model = currentItem.data
+                    tyBottomAction.text = getString(feedR.string.feed_bottom_action_comment_label)
+                    containerBottomAction.setOnClickListener {
+                        onCommentClick(
+                            trackerModel = trackerModelMapper.transformImageContentToTrackerModel(
+                                model
+                            ),
+                            contentId = model.id,
+                            isPlayContent = false,
+                            rowNumber = position
+                        )
+                    }
+                    containerBottomAction.show()
+                }
+                currentItem.data is FeedCardImageContentModel -> {
+                    val model = currentItem.data
+                    tyBottomAction.text = getString(feedR.string.feed_bottom_action_share_label)
+                    containerBottomAction.setOnClickListener {
+                        onSharePostClicked(
+                            data = model.share,
+                            trackerModel = trackerModelMapper.transformImageContentToTrackerModel(
+                                model
+                            )
+                        )
+                    }
+                    containerBottomAction.show()
+                }
+                currentItem.data is FeedCardVideoContentModel && !currentItem.data.isTypeProductHighlight -> {
+                    val model = currentItem.data
+                    tyBottomAction.text = getString(feedR.string.feed_bottom_action_comment_label)
+                    containerBottomAction.setOnClickListener {
+                        onCommentClick(
+                            trackerModel = trackerModelMapper.transformVideoContentToTrackerModel(
+                                model
+                            ),
+                            contentId = model.id,
+                            isPlayContent = model.isPlayContent,
+                            rowNumber = position
+                        )
+                    }
+                    containerBottomAction.show()
+                }
+                currentItem.data is FeedCardVideoContentModel -> {
+                    val model = currentItem.data
+                    tyBottomAction.text = getString(feedR.string.feed_bottom_action_share_label)
+                    containerBottomAction.setOnClickListener {
+                        onSharePostClicked(
+                            data = model.share,
+                            trackerModel = trackerModelMapper.transformVideoContentToTrackerModel(
+                                model
+                            )
+                        )
+                    }
+                    containerBottomAction.show()
+                }
+                else -> containerBottomAction.hide()
+            }
+        }
+    }
+
     companion object {
         private const val ARGUMENT_DATA = "ARGUMENT_DATA"
         private const val ARGUMENT_ENTRY_POINT = "ARGUMENT_ENTRY_POINT"
         private const val ARGUMENT_IS_CDP = "ARGUMENT_IS_CDP"
 
-        private const val MINIMUM_ENDLESS_CALL = 3
-
         private const val ZERO = 0
-        private const val ONE = 1
 
         private const val TAG_FEED_MENU_BOTTOMSHEET = "TAG_FEED_MENU_BOTTOMSHEET"
         private const val TAG_FEED_PRODUCT_BOTTOM_SHEET = "TAG_FEED_PRODUCT_BOTTOMSHEET"
