@@ -1,11 +1,14 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="rectangle">
+
     <corners
         android:topLeftRadius="16dp"
         android:topRightRadius="16dp" />
+
     <gradient
         android:angle="0"
-        android:endColor="#1cbebf"
-        android:startColor="#4a7bcb"
+        android:startColor="@color/promo_dms_bottom_sheet_header_gradient_start"
+        android:endColor="@color/promo_dms_bottom_sheet_header_gradient_end"
         android:type="linear" />
+
 </shape>

@@ -13,8 +13,8 @@
 
     <gradient
         android:angle="0"
-        android:startColor="@color/promo_dms_bottom_sheet_overlay_gradient_start"
-        android:endColor="@color/promo_dms_bottom_sheet_overlay_gradient_end"
+        android:startColor="@color/promo_dms_bottom_sheet_header_overlay_gradient_start"
+        android:endColor="@color/promo_dms_bottom_sheet_header_overlay_gradient_end"
         android:type="linear" />
 
 </shape>

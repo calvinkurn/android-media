@@ -3,9 +3,13 @@
     <color name="promo_dms_voucher_recom_gradient_start">#763AD7</color>
     <color name="promo_dms_voucher_recom_gradient_end">#11CEBC</color>
 
-    <!--Not using Nest color because we want the same color on both light and dark mode for bottom sheet overlay -->
-    <color name="promo_dms_bottom_sheet_overlay_gradient_start">#06649E</color>
-    <color name="promo_dms_bottom_sheet_overlay_gradient_end">#11CEBC</color>
+    <!--Not using Nest color because we want the same color on both light and dark mode for bottom sheet header overlay -->
+    <color name="promo_dms_bottom_sheet_header_overlay_gradient_start">#06649E</color>
+    <color name="promo_dms_bottom_sheet_header_overlay_gradient_end">#11CEBC</color>
+
+    <!--Not using Nest color because we want the same color on both light and dark mode for bottom sheet header -->
+    <color name="promo_dms_bottom_sheet_header_gradient_start">#4a7bcb</color>
+    <color name="promo_dms_bottom_sheet_header_gradient_end">#1cbebf</color>
 
     <color name="promo_dms_white">#FFFFFF</color>
 
