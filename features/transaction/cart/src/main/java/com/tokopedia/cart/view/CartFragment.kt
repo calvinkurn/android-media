@@ -18,7 +18,6 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import android.view.animation.DecelerateInterpolator
 import android.widget.ImageView
-import android.widget.TextSwitcher
 import androidx.annotation.Keep
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -206,8 +205,6 @@ class CartFragment :
     CartToolbarListener,
     SellerCashbackListener,
     CartBundlingBottomSheetListener {
-
-    private var testingCounter = 1
 
     private var binding by autoClearedNullable<FragmentCartBinding>()
 
@@ -939,9 +936,9 @@ class CartFragment :
                 delay(DELAY_SHOW_PROMO_BUTTON_AFTER_SCROLL)
                 binding?.apply {
                     val initialPosition =
-                        bottomLayout.y - llPromoCheckout.height/* + PROMO_POSITION_BUFFER.dpToPx(
+                        bottomLayout.y - llPromoCheckout.height + PROMO_POSITION_BUFFER.dpToPx(
                             resources.displayMetrics
-                        )*/
+                        )
                     llPromoCheckout.animate().y(initialPosition)
                         .setDuration(PROMO_ANIMATION_DURATION).start()
                 }
@@ -2793,20 +2790,18 @@ class CartFragment :
     override fun renderPromoCheckoutButtonActiveDefault(listPromoApplied: List<String>) {
         binding?.apply {
             promoCheckoutBtnCart.state = ButtonPromoCheckoutView.State.ACTIVE
-//            promoCheckoutBtnCart.margin = ButtonPromoCheckoutView.Margin.WITH_BOTTOM
+            promoCheckoutBtnCart.margin = ButtonPromoCheckoutView.Margin.WITH_BOTTOM
             promoCheckoutBtnCart.title =
                 getString(com.tokopedia.purchase_platform.common.R.string.promo_funnel_label)
             promoCheckoutBtnCart.desc = ""
             promoCheckoutBtnCart.setOnClickListener {
-                testingCounter++
-                promoCheckoutBtnCart.findViewById<TextSwitcher>(com.tokopedia.promocheckout.common.R.id.tv_promo_checkout_title).setText("testing yoi $testingCounter")
-//                checkGoToPromo()
-//                // analytics
-//                PromoRevampAnalytics.eventCartClickPromoSection(
-//                    listPromoApplied,
-//                    false,
-//                    userSession.userId
-//                )
+                checkGoToPromo()
+                // analytics
+                PromoRevampAnalytics.eventCartClickPromoSection(
+                    listPromoApplied,
+                    false,
+                    userSession.userId
+                )
             }
         }
     }
@@ -2814,7 +2809,7 @@ class CartFragment :
     private fun renderPromoCheckoutButtonNoItemIsSelected() {
         binding?.apply {
             promoCheckoutBtnCart.state = ButtonPromoCheckoutView.State.ACTIVE
-//            promoCheckoutBtnCart.margin = ButtonPromoCheckoutView.Margin.WITH_BOTTOM
+            promoCheckoutBtnCart.margin = ButtonPromoCheckoutView.Margin.WITH_BOTTOM
             promoCheckoutBtnCart.title =
                 getString(com.tokopedia.purchase_platform.common.R.string.promo_funnel_label)
             promoCheckoutBtnCart.desc = getString(R.string.promo_desc_no_selected_item)
@@ -2829,12 +2824,12 @@ class CartFragment :
         val tickerPromoData = dPresenter.getTickerPromoData()
         if (dPresenter.getShowChoosePromoWidget()) {
             binding?.promoCheckoutBtnCart?.visible()
-            binding?.llPromoCheckoutShadow?.gone()
+            binding?.llPromoCheckoutShadow?.visible()
 
             val isApplied: Boolean
 
             binding?.promoCheckoutBtnCart?.state = ButtonPromoCheckoutView.State.ACTIVE
-//            binding?.promoCheckoutBtnCart?.margin = ButtonPromoCheckoutView.Margin.WITH_BOTTOM
+            binding?.promoCheckoutBtnCart?.margin = ButtonPromoCheckoutView.Margin.WITH_BOTTOM
 
             val title: String = when {
                 lastApplyData.additionalInfo.messageInfo.message.isNotEmpty() -> {
@@ -2867,24 +2862,20 @@ class CartFragment :
 
             binding?.promoCheckoutBtnCart?.title = title
             binding?.promoCheckoutBtnCart?.setOnClickListener {
-                binding?.promoCheckoutBtnCart?.state = ButtonPromoCheckoutView.State.LOADING
-//                testingCounter++
-//                binding?.promoCheckoutBtnCart?.findViewById<TextSwitcher>(com.tokopedia.promocheckout.common.R.id.tv_promo_checkout_title)?.setText("testing yoi $testingCounter")
-//                binding?.promoCheckoutBtnCart?.findViewById<ViewSwitcher>(com.tokopedia.promocheckout.common.R.id.switcher_promo_checkout)?.showNext()
-//                if (cartAdapter.selectedCartItemData.isEmpty()) {
-//                    showToastMessageGreen(getString(R.string.promo_choose_item_cart))
-//                    PromoRevampAnalytics.eventCartViewPromoMessage(getString(R.string.promo_choose_item_cart))
-//                } else {
-//                    checkGoToPromo()
-//                    // analytics
-//                    PromoRevampAnalytics.eventCartClickPromoSection(
-//                        getAllPromosApplied(
-//                            lastApplyData
-//                        ),
-//                        isApplied,
-//                        userSession.userId
-//                    )
-//                }
+                if (cartAdapter.selectedCartItemData.isEmpty()) {
+                    showToastMessageGreen(getString(R.string.promo_choose_item_cart))
+                    PromoRevampAnalytics.eventCartViewPromoMessage(getString(R.string.promo_choose_item_cart))
+                } else {
+                    checkGoToPromo()
+                    // analytics
+                    PromoRevampAnalytics.eventCartClickPromoSection(
+                        getAllPromosApplied(
+                            lastApplyData
+                        ),
+                        isApplied,
+                        userSession.userId
+                    )
+                }
             }
             if (isApplied) {
                 PromoRevampAnalytics.eventCartViewPromoAlreadyApplied()
@@ -2932,7 +2923,7 @@ class CartFragment :
     private fun renderPromoCheckoutLoading() {
         binding?.apply {
             promoCheckoutBtnCart.state = ButtonPromoCheckoutView.State.LOADING
-//            promoCheckoutBtnCart.margin = ButtonPromoCheckoutView.Margin.WITH_BOTTOM
+            promoCheckoutBtnCart.margin = ButtonPromoCheckoutView.Margin.WITH_BOTTOM
             promoCheckoutBtnCart.setOnClickListener { }
         }
     }

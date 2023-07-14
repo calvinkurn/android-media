@@ -11,7 +11,7 @@
         android:animateFirstView="false"
         android:inAnimation="@anim/anim_slide_up_in"
         android:outAnimation="@anim/anim_slide_up_out"
-        android:visibility="visible">
+        android:visibility="gone">
 
         <include layout="@layout/layout_widget_promo_checkout" />
 
@@ -24,7 +24,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/background_promo_checkout_teal"
-        android:visibility="gone">
+        android:visibility="visible">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"

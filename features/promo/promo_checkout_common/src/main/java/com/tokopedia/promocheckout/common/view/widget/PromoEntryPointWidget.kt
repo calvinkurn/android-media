@@ -7,6 +7,7 @@ import android.view.View
 import android.widget.TextSwitcher
 import android.widget.ViewSwitcher
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.graphics.ColorUtils
 import androidx.core.view.get
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.iconunify.IconUnify
@@ -16,23 +17,23 @@ import com.tokopedia.unifycomponents.ImageUnify
 
 open class PromoEntryPointWidget @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
-) : BaseCustomView(context, attrs, defStyleAttr)  {
+) : BaseCustomView(context, attrs, defStyleAttr) {
 
     private fun getLayout(): Int {
         return R.layout.layout_widget_promo_checkout_switcher
     }
 
-    private var loadingView: View? = null
-    private var switcherView: ViewSwitcher? = null
-    private var activeView: View? = null
-    private var activeViewRightIcon: IconUnify? = null
-    private var activeViewLeftImage: ImageUnify? = null
-    private var activeViewWording: TextSwitcher? = null
-    private var inActiveView: View? = null
-    private var inActiveViewLeftImage: ImageUnify? = null
-    private var inActiveViewWording: TextSwitcher? = null
-    private var inActiveViewRightIcon: IconUnify? = null
-    private var errorView: View? = null
+    internal var loadingView: View? = null
+    internal var switcherView: ViewSwitcher? = null
+    internal var activeView: View? = null
+    internal var activeViewRightIcon: IconUnify? = null
+    internal var activeViewLeftImage: ImageUnify? = null
+    internal var activeViewWording: TextSwitcher? = null
+    internal var inActiveView: View? = null
+    internal var inActiveViewLeftImage: ImageUnify? = null
+    internal var inActiveViewWording: TextSwitcher? = null
+    internal var inActiveViewRightIcon: IconUnify? = null
+    internal var errorView: View? = null
 
     init {
         inflate(context, getLayout(), this)
@@ -52,26 +53,61 @@ open class PromoEntryPointWidget @JvmOverloads constructor(
         inActiveViewWording = inActiveView?.findViewById(R.id.tv_promo_checkout_title)
         inActiveViewRightIcon = inActiveView?.findViewById(R.id.ic_promo_checkout_right)
 
-        val loadingBackground = ResourcesCompat.getDrawable(resources, R.drawable.background_promo_checkout_teal_gradient, null)
-//        val n0Color = ResourcesCompat.getColor(resources, com.tokopedia.unifyprinciples.R.color.Unify_NN1000, null)
-//        val t100Color = ResourcesCompat.getColor(resources, com.tokopedia.unifyprinciples.R.color.Unify_TN100, null)
-//        val t100ColorAlpha = ColorUtils.setAlphaComponent(t100Color, 56)
-//        (loadingBackground as? GradientDrawable)?.colors = intArrayOf(t100ColorAlpha, n0Color)
-        loadingView?.background = loadingBackground
-        activeView?.background = ResourcesCompat.getDrawable(resources, R.drawable.background_promo_checkout_teal_gradient, null)
-        val inActiveBackground = ResourcesCompat.getDrawable(
+        setupViewBackgrounds()
+    }
+
+    internal open fun setupViewBackgrounds() {
+        val loadingBackground = ResourcesCompat.getDrawable(
             resources,
-            R.drawable.background_promo_checkout_teal,
+            R.drawable.background_promo_checkout_teal_gradient,
             null
         )
-        (inActiveBackground as? GradientDrawable)?.setColor(ResourcesCompat.getColor(resources, com.tokopedia.unifyprinciples.R.color.Unify_NN50, null))
+        val n0Color = ResourcesCompat.getColor(
+            resources,
+            com.tokopedia.unifyprinciples.R.color.Unify_NN0,
+            null
+        )
+        val t100Color = ResourcesCompat.getColor(
+            resources,
+            com.tokopedia.unifyprinciples.R.color.Unify_TN100,
+            null
+        )
+        val t100ColorAlpha = ColorUtils.setAlphaComponent(t100Color, 56)
+        val loadingDrawable = loadingBackground as? GradientDrawable
+        loadingDrawable?.mutate()
+        loadingDrawable?.colors = intArrayOf(t100ColorAlpha, n0Color)
+        loadingView?.background = loadingBackground
+        val inActiveBackground = ResourcesCompat.getDrawable(
+            resources,
+            R.drawable.background_promo_checkout_teal_gradient,
+            null
+        )
+        val gradientDrawable = inActiveBackground as? GradientDrawable
+        gradientDrawable?.mutate()
+        val nn50Color = ResourcesCompat.getColor(
+            resources,
+            com.tokopedia.unifyprinciples.R.color.Unify_NN50,
+            null
+        )
+        val nn50ColorAlpha = ColorUtils.setAlphaComponent(nn50Color, 163)
+        gradientDrawable?.colors = intArrayOf(
+            nn50ColorAlpha,
+            n0Color
+        )
         inActiveView?.background = inActiveBackground
+        activeView?.background = loadingBackground
         val errorBackground = ResourcesCompat.getDrawable(
             resources,
             R.drawable.background_promo_checkout_teal,
             null
         )
-        (errorBackground as? GradientDrawable)?.setColor(ResourcesCompat.getColor(resources, com.tokopedia.unifyprinciples.R.color.Unify_YN50, null))
+        (errorBackground as? GradientDrawable)?.setColor(
+            ResourcesCompat.getColor(
+                resources,
+                com.tokopedia.unifyprinciples.R.color.Unify_YN50,
+                null
+            )
+        )
         errorView?.background = errorBackground
     }
 
@@ -90,7 +126,12 @@ open class PromoEntryPointWidget @JvmOverloads constructor(
         }
     }
 
-    fun showInactive(leftImageUrl: String, wording: String, animate: Boolean = false, onClickListener: () -> Unit = {}) {
+    fun showInactive(
+        leftImageUrl: String,
+        wording: String,
+        animate: Boolean = false,
+        onClickListener: () -> Unit = {}
+    ) {
         if (animate && switcherView?.visibility == View.VISIBLE) {
             switcherView?.visibility = View.VISIBLE
             inActiveViewLeftImage?.setImageUrl(leftImageUrl)
@@ -117,7 +158,14 @@ open class PromoEntryPointWidget @JvmOverloads constructor(
         }
     }
 
-    fun showActive(leftImageUrl: String, wording: String, rightIcon: Int, animate: Boolean = false, animateWording: Boolean = false, onClickListener: () -> Unit = {}) {
+    fun showActive(
+        leftImageUrl: String,
+        wording: String,
+        rightIcon: Int,
+        animate: Boolean = false,
+        animateWording: Boolean = false,
+        onClickListener: () -> Unit = {}
+    ) {
         if (animate && switcherView?.visibility == View.VISIBLE) {
             switcherView?.visibility = View.VISIBLE
             activeViewLeftImage?.setImageUrl(leftImageUrl)

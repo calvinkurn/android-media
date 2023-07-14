@@ -83,6 +83,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_above="@id/bottom_layout"
+                    android:layout_marginBottom="-10dp"
                     android:orientation="vertical"
                     android:visibility="gone"
                     tools:visibility="visible">
@@ -99,7 +100,6 @@
                         android:layout_height="wrap_content"
                         android:background="@color/Unify_BN50"
                         android:orientation="horizontal"
-                        android:visibility="gone"
                         android:paddingBottom="10dp">
 
                         <com.tokopedia.unifyprinciples.Typography
@@ -131,7 +131,7 @@
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
-                    <com.tokopedia.promocheckout.common.view.widget.PromoEntryPointRoundedTopWidget
+                    <com.tokopedia.promocheckout.common.view.widget.ButtonPromoCheckoutView
                         android:id="@+id/promo_checkout_btn_cart"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
