@@ -1,5 +1,9 @@
 package com.tokopedia.addon.presentation.uimodel
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
 data class AddOnParam(
     val productId: String = "",
     val warehouseId: String = "",
@@ -10,4 +14,4 @@ data class AddOnParam(
     val price: Long = 0,
     val discountedPrice: Long = 0,
     val condition: String = ""
-)
+) : Parcelable
