@@ -29,9 +29,15 @@ internal object MainNavTrackingConst {
     private const val PAGE_SOURCE_TOKOFOOD = "food"
     private const val PAGE_SOURCE_TOKONOW = "now"
     private const val PAGE_SOURCE_WISHLIST = "wishlist"
+
+    private const val PAGE_SOURCE_PATH_SOS = "sos"
     // end of page source section
 
     fun NavSource.asTrackingPageSource(pageSourcePath: String = ""): String {
+        val parsedPath = if(this == NavSource.SOS)
+            PAGE_SOURCE_PATH_SOS
+        else pageSourcePath.ifEmpty { "null" }
+
         val pageSource = when(this) {
             NavSource.ACCOUNT -> PAGE_SOURCE_ACCOUNT
             NavSource.AFFILIATE -> PAGE_SOURCE_AFFILIATE
@@ -58,9 +64,6 @@ internal object MainNavTrackingConst {
             NavSource.TOKONOW -> PAGE_SOURCE_TOKONOW
             else -> "null"
         }
-        return FORMAT_PAGE_SOURCE.format(
-            pageSource,
-            pageSourcePath.ifEmpty { "null" }
-        )
+        return FORMAT_PAGE_SOURCE.format(pageSource, parsedPath)
     }
 }
