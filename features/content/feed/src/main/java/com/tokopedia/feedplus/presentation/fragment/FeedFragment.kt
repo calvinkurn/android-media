@@ -438,8 +438,8 @@ class FeedFragment :
         val item = adapter?.list?.get(currentIndex) ?: return 0
 
         return when (item) {
-            is FeedCardVideoContentModel -> videoPlayerManager.occupy(item.id).getExoPlayer().currentPosition
-            is FeedCardLivePreviewContentModel -> videoPlayerManager.occupy(item.id).getExoPlayer().currentPosition
+            is FeedCardVideoContentModel -> videoPlayerManager.getPlayerById(item.id)?.getExoPlayer()?.currentPosition.orZero()
+            is FeedCardLivePreviewContentModel -> videoPlayerManager.getPlayerById(item.id)?.getExoPlayer()?.currentPosition.orZero()
             else -> 0
         }
     }
