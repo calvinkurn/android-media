@@ -2851,7 +2851,9 @@ open class SomListFragment :
             viewModel.setTabActiveFromAppLink(tabActiveFilter)
             viewModel.setFirstPageOpened(true)
         } else {
-            viewModel.setTabActiveFromAppLink(arguments?.getString(TAB_ACTIVE) ?: STATUS_ALL_ORDER)
+            val tabActive = arguments?.getString(TAB_ACTIVE)
+                ?: if (GlobalConfig.isSellerApp()) SomConsts.STATUS_NEW_ORDER else STATUS_ALL_ORDER
+            viewModel.setTabActiveFromAppLink(tabActive)
         }
     }
 
