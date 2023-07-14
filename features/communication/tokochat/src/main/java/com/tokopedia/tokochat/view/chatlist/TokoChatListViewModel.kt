@@ -21,7 +21,7 @@ class TokoChatListViewModel @Inject constructor(
     private val mapper: TokoChatListUiMapper,
     private val cacheManager: TokoChatCacheManager,
     private val dispatcher: CoroutineDispatchers
-): BaseViewModel(dispatcher.main) {
+) : BaseViewModel(dispatcher.main) {
 
     private val _chatListData = MutableLiveData<Result<List<TokoChatListItemUiModel>>>()
     val chatListData: LiveData<Result<List<TokoChatListItemUiModel>>>
@@ -43,6 +43,8 @@ class TokoChatListViewModel @Inject constructor(
                         it.forEach { channel ->
                             result.add(mapper.mapToChatListItem(channel))
                         }
+                        // Set to -1 to mark as no more data
+                        chatChannelUseCase.setLastTimeStamp(it.lastOrNull()?.createdAt ?: -1)
                         _chatListData.value = Success(result)
                     },
                     onError = {
@@ -78,13 +80,14 @@ class TokoChatListViewModel @Inject constructor(
     private fun setChannelList() {
         try {
             if (_channelList == null) {
-                _channelList = chatChannelUseCase.getAllCachedChannels(listOf(
-                    ChannelType.GroupBooking
-                ))
+                _channelList = chatChannelUseCase.getAllCachedChannels(
+                    listOf(
+                        ChannelType.GroupBooking
+                    )
+                )
             }
         } catch (throwable: Throwable) {
             _error.value = Pair(throwable, ::setChannelList.name)
         }
     }
 }
-

@@ -17,6 +17,8 @@ open class TokoChatChannelUseCase @Inject constructor(
     private val repository: TokoChatRepository
 ) {
 
+    private var lastTimeStamp: Long = 0
+
     fun initGroupBookingChat(
         orderId: String,
         serviceType: Int,
@@ -72,18 +74,30 @@ open class TokoChatChannelUseCase @Inject constructor(
         onSuccess: (List<ConversationsChannel>) -> Unit,
         onError: (ConversationsNetworkError?) -> Unit
     ) {
-        repository.getConversationRepository().getAllChannels(
-            getChannelRequest = GetChannelRequest(
-                types = channelTypes
-            ),
-            onSuccess = onSuccess,
-            onError = onError
-        )
+        if (lastTimeStamp >= 0) {
+            val timeStamp = if (lastTimeStamp <= 0L) {
+                System.currentTimeMillis()
+            } else {
+                lastTimeStamp
+            }
+            repository.getConversationRepository().getAllChannels(
+                getChannelRequest = GetChannelRequest(
+                    types = channelTypes,
+                    timestamp = timeStamp
+                ),
+                onSuccess = onSuccess,
+                onError = onError
+            )
+        }
     }
 
     fun getAllCachedChannels(
         channelTypes: List<ChannelType>
     ): LiveData<List<ConversationsChannel>> {
         return repository.getConversationRepository().getAllCachedChannels(channelTypes)
+    }
+
+    fun setLastTimeStamp(timeStamp: Long) {
+        this.lastTimeStamp = timeStamp
     }
 }

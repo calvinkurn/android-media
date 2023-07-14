@@ -22,7 +22,7 @@ import javax.inject.Inject
 
 class TokoChatListFragment @Inject constructor(
     private val viewModel: TokoChatListViewModel
-):
+) :
     TokoChatListBaseFragment<TokochatChatlistFragmentBinding>(),
     TokoChatListItemListener {
 
@@ -89,7 +89,7 @@ class TokoChatListFragment @Inject constructor(
     }
 
     override fun onLoadMore() {
-
+        loadChatData()
     }
 
     private fun notifyWhenAllowed(position: Int) {
