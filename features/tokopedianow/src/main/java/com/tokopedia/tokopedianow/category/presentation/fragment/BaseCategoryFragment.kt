@@ -43,7 +43,6 @@ import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.category.analytic.CategoryAnalytic
 import com.tokopedia.tokopedianow.category.presentation.adapter.CategoryAdapter
-import com.tokopedia.tokopedianow.category.presentation.adapter.differ.CategoryDiffer
 import com.tokopedia.tokopedianow.category.presentation.callback.TokoNowViewCallback
 import com.tokopedia.tokopedianow.category.presentation.viewmodel.BaseCategoryViewModel
 import com.tokopedia.tokopedianow.common.base.adapter.BaseTokopediaNowDiffer
@@ -55,6 +54,7 @@ import com.tokopedia.tokopedianow.common.util.TokoNowUniversalShareUtil
 import com.tokopedia.tokopedianow.common.view.NoAddressEmptyStateView
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateOocViewHolder
 import com.tokopedia.tokopedianow.databinding.FragmentTokopedianowCategoryBaseBinding
+import com.tokopedia.unifycomponents.TabsUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.universal_sharing.view.bottomsheet.ScreenshotDetector
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
@@ -136,31 +136,22 @@ abstract class BaseCategoryFragment : Fragment(), ScreenShotListener,
     private var binding by autoClearedNullable<FragmentTokopedianowCategoryBaseBinding>()
 
     private val adapter: CategoryAdapter by lazy {
-        CategoryAdapter(createAdapterTypeFactory(), CategoryDiffer())
+        CategoryAdapter(createAdapterTypeFactory(), createAdapterDiffer())
     }
 
-    abstract val viewModel: BaseCategoryViewModel
+    protected abstract val viewModel: BaseCategoryViewModel
 
-    abstract fun createAdapterTypeFactory(): BaseAdapterTypeFactory
+    protected abstract fun createAdapterTypeFactory(): BaseAdapterTypeFactory
 
-    abstract fun createAdapterDiffer(): BaseTokopediaNowDiffer
+    protected abstract fun createAdapterDiffer(): BaseTokopediaNowDiffer
 
-    abstract fun initInjector()
+    protected abstract fun initInjector()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         shareTokonow = createShareTokonow()
         setCategoryViewModelData()
         setupScreenshotDetector()
-    }
-
-    private fun setCategoryViewModelData() {
-        viewModel.apply {
-            categoryIdL1 = this@BaseCategoryFragment.categoryIdL1
-            categoryIdL2 = this@BaseCategoryFragment.categoryIdL2
-            currentCategoryId = this@BaseCategoryFragment.currentCategoryId
-            queryParamMap = this@BaseCategoryFragment.queryParamMap
-        }
     }
 
     override fun onCreateView(
@@ -174,7 +165,6 @@ abstract class BaseCategoryFragment : Fragment(), ScreenShotListener,
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        showShimmeringLayout()
         observeLiveData()
         setupView()
     }
@@ -280,6 +270,7 @@ abstract class BaseCategoryFragment : Fragment(), ScreenShotListener,
     }
 
     protected open fun observeLiveData() {
+        observePageLoading()
         observeVisitableList()
         observeMiniCart()
         observeAddToCart()
@@ -289,20 +280,6 @@ abstract class BaseCategoryFragment : Fragment(), ScreenShotListener,
         observeOutOfCoverageState()
         observeToolbarNotification()
         observeOpenLoginPage()
-    }
-
-    protected open fun setupNavigationToolbar(navToolbar: NavToolbar) {
-        navToolbar.apply {
-            setToolbarPageName(PAGE_NAME)
-            setIcon(
-                IconBuilder()
-                    .addShare()
-                    .addCart()
-                    .addNavGlobal()
-            )
-            setupSearchbar()
-            bringToFront()
-        }
     }
 
     protected open fun setupRecyclerView(
@@ -318,10 +295,20 @@ abstract class BaseCategoryFragment : Fragment(), ScreenShotListener,
         }
     }
 
+    protected open fun setupTabLayout(tab: TabsUnify) {
+        // override to setup tab layout
+    }
+
     protected open fun onGetMiniCartSuccess(
         data: MiniCartSimplifiedData
     ) {
         showMiniCart(data)
+    }
+
+    protected open fun observeVisitableList() {
+        observe(viewModel.visitableListLiveData) {
+            submitList(it)
+        }
     }
 
     protected fun submitList(items: List<Visitable<*>>) {
@@ -382,19 +369,20 @@ abstract class BaseCategoryFragment : Fragment(), ScreenShotListener,
         activity?.startActivityForResult(intent, RequestCode.REQUEST_CODE_LOGIN)
     }
 
-    private fun getMiniCartHeight(): Int {
-        val space16 = context?.resources?.getDimension(
-            com.tokopedia.unifyprinciples.R.dimen.unify_space_16
-        )?.toInt().orZero()
-        return binding?.miniCartWidget?.height.orZero() - space16
-    }
-
     protected fun updateToolbarNotification() {
         binding?.navToolbar?.updateNotification()
     }
 
-    protected fun removeScrollListener() {
-        binding?.rvCategory?.removeOnScrollListener(onScrollListener)
+    protected fun removeScrollListener(listener: RecyclerView.OnScrollListener? = onScrollListener) {
+        listener?.let {
+            binding?.rvCategory?.removeOnScrollListener(it)
+        }
+    }
+
+    protected fun addScrollListener(listener: RecyclerView.OnScrollListener?) {
+        listener?.let {
+            binding?.rvCategory?.addOnScrollListener(it)
+        }
     }
 
     protected fun createTokoNowViewCallback() = TokoNowViewCallback(
@@ -403,9 +391,13 @@ abstract class BaseCategoryFragment : Fragment(), ScreenShotListener,
         viewModel.refreshLayout()
     }
 
-    private fun observeVisitableList() {
-        observe(viewModel.visitableListLiveData) {
-            submitList(it)
+    private fun observePageLoading() {
+        observe(viewModel.isPageLoading) { loading ->
+            if(loading) {
+                showShimmeringLayout()
+            } else {
+                showMainLayout()
+            }
         }
     }
 
@@ -448,7 +440,6 @@ abstract class BaseCategoryFragment : Fragment(), ScreenShotListener,
     private fun observeRefreshState() {
         viewModel.refreshState.observe(viewLifecycleOwner) {
             binding?.apply {
-                showShimmeringLayout()
                 rvCategory.removeOnScrollListener(onScrollListener)
                 rvCategory.addOnScrollListener(onScrollListener)
             }
@@ -475,12 +466,22 @@ abstract class BaseCategoryFragment : Fragment(), ScreenShotListener,
         }
     }
 
+    private fun setCategoryViewModelData() {
+        viewModel.apply {
+            categoryIdL1 = this@BaseCategoryFragment.categoryIdL1
+            categoryIdL2 = this@BaseCategoryFragment.categoryIdL2
+            currentCategoryId = this@BaseCategoryFragment.currentCategoryId
+            queryParamMap = this@BaseCategoryFragment.queryParamMap
+        }
+    }
+
     private fun setupView() {
         binding?.apply {
             setNavToolbarHeight(navToolbar)
             setupRecyclerView(rvCategory, navToolbar)
             setupRefreshLayout(strRefreshLayout)
             setupNavigationToolbar(navToolbar)
+            setupTabLayout(tabLayout)
         }
     }
 
@@ -495,6 +496,22 @@ abstract class BaseCategoryFragment : Fragment(), ScreenShotListener,
                 isRefreshing = false
                 refreshLayout()
             }
+        }
+    }
+
+    private fun setupNavigationToolbar(navToolbar: NavToolbar) {
+        navToolbar.apply {
+            viewLifecycleOwner.lifecycle.addObserver(navToolbar)
+            setupToolbarWithStatusBar(activity = requireActivity())
+            setToolbarPageName(PAGE_NAME)
+            setIcon(
+                IconBuilder()
+                    .addShare()
+                    .addCart()
+                    .addNavGlobal()
+            )
+            setupSearchbar()
+            bringToFront()
         }
     }
 
@@ -537,6 +554,13 @@ abstract class BaseCategoryFragment : Fragment(), ScreenShotListener,
         } else {
             hideMiniCart()
         }
+    }
+
+    private fun getMiniCartHeight(): Int {
+        val space16 = context?.resources?.getDimension(
+            com.tokopedia.unifyprinciples.R.dimen.unify_space_16
+        )?.toInt().orZero()
+        return binding?.miniCartWidget?.height.orZero() - space16
     }
 
     private fun refreshLayout() = viewModel.refreshLayout()

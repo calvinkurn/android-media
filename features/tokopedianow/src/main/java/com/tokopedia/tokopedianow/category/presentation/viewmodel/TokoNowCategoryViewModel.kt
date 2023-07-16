@@ -13,7 +13,6 @@ import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.productcard.compact.productcard.presentation.uimodel.ProductCardCompactUiModel
-import com.tokopedia.tokopedianow.category.di.module.CategoryParamModule.Companion.NOW_CATEGORY_L1
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryNavigationMapper.mapToCategoryNavigation
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryRecommendationMapper.mapToCategoryRecommendation
 import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.DEFAULT_PRODUCT_QUANTITY
@@ -35,7 +34,6 @@ import com.tokopedia.tokopedianow.category.domain.usecase.GetCategoryDetailUseCa
 import com.tokopedia.tokopedianow.category.domain.usecase.GetCategoryProductUseCase
 import com.tokopedia.tokopedianow.category.presentation.model.CategoryAtcTrackerModel
 import com.tokopedia.tokopedianow.category.presentation.model.CategoryL2Model
-import com.tokopedia.tokopedianow.category.presentation.model.CategoryOpenScreenTrackerModel
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryNavigationUiModel
 import com.tokopedia.tokopedianow.category.presentation.util.CategoryLayoutType.CATEGORY_SHOWCASE
 import com.tokopedia.tokopedianow.category.presentation.util.CategoryLayoutType.MORE_PROGRESS_BAR
@@ -51,12 +49,9 @@ import com.tokopedia.tokopedianow.common.service.NowAffiliateService
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel
 import com.tokopedia.unifycomponents.ticker.TickerData
-import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
-import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
-import javax.inject.Named
 
 class TokoNowCategoryViewModel @Inject constructor(
     private val getCategoryDetailUseCase: GetCategoryDetailUseCase,
@@ -287,11 +282,14 @@ class TokoNowCategoryViewModel @Inject constructor(
                     categoryNavigationUiModel = categoryNavigationUiModel
                 )
 
-                _categoryFirstPage.postValue(Success(visitableList))
+                updateVisitableListLiveData()
+                hidePageLoading()
+                getFirstPage()
+//                _categoryFirstPage.postValue(Success(visitableList))
                 sendOpenScreenL1Tracker(detailResponse)
             },
             onError = {
-                _categoryFirstPage.postValue(Fail(it))
+//                _categoryFirstPage.postValue(Fail(it))
             }
         )
     }

@@ -10,6 +10,9 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2Mapper.addChooseAddress
+import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2Mapper.addHeaderSpace
+import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2Mapper.mapToCategoryUiModel
+import com.tokopedia.tokopedianow.category.domain.usecase.GetCategoryLayoutUseCase
 import com.tokopedia.tokopedianow.category.domain.usecase.GetCategoryProductUseCase
 import com.tokopedia.tokopedianow.category.presentation.model.CategoryL2Model
 import com.tokopedia.tokopedianow.common.domain.usecase.GetProductAdsUseCase
@@ -22,6 +25,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 class TokoNowCategoryL2ViewModel @Inject constructor(
+    private val getCategoryLayout: GetCategoryLayoutUseCase,
     getCategoryProductUseCase: GetCategoryProductUseCase,
     getProductAdsUseCase: GetProductAdsUseCase,
     getTargetedTickerUseCase: GetTargetedTickerUseCase,
@@ -49,12 +53,39 @@ class TokoNowCategoryL2ViewModel @Inject constructor(
     dispatchers = dispatchers
 ) {
 
-    private val _onError = MutableLiveData<Throwable>()
+    private val _categoryTab = MutableLiveData<List<String>>()
 
-    val onError: LiveData<Throwable> = _onError
+    val categoryTab: LiveData<List<String>> = _categoryTab
 
     override fun loadFirstPage(tickerList: List<TickerData>) {
-        loadCategoryPage()
+        launchCatchError(
+            block = {
+                val getCategoryLayoutResponse = getCategoryLayout.execute(categoryIdL2)
+                val categoryNameList = getCategoryLayoutResponse.getCategoryNameList()
+                val components = getCategoryLayoutResponse.components
+
+                visitableList.clear()
+                visitableList.addHeaderSpace(navToolbarHeight)
+                visitableList.addChooseAddress(getAddressData())
+
+                visitableList.mapToCategoryUiModel(
+                    components,
+                    categoryNameList
+                )
+
+                hidePageLoading()
+                updateVisitableListLiveData()
+                updateCategoryTab(categoryNameList)
+                sendOpenScreenTracker(id = "", name = "", url = "")
+            },
+            onError = {
+
+            }
+        )
+    }
+
+    private fun updateCategoryTab(categoryNameList: List<String>) {
+        _categoryTab.postValue(categoryNameList)
     }
 
     override suspend fun loadNextPage() {
@@ -78,21 +109,5 @@ class TokoNowCategoryL2ViewModel @Inject constructor(
         categoryL2Model: CategoryL2Model
     ) {
 
-    }
-
-    private fun loadCategoryPage() {
-        launchCatchError(
-            block = {
-                visitableList.clear()
-
-                visitableList.addChooseAddress(getAddressData())
-
-                updateVisitableListLiveData()
-//                sendOpenScreenTracker()
-            },
-            onError = {
-                _onError.postValue(it)
-            }
-        )
     }
 }

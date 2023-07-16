@@ -46,48 +46,43 @@ import com.tokopedia.tokopedianow.common.viewholder.categorymenu.TokoNowCategory
 import com.tokopedia.tokopedianow.common.viewholder.categorymenu.TokoNowCategoryMenuViewHolder.TokoNowCategoryMenuListener
 
 class CategoryAdapterTypeFactory(
-    private val categoryTitleListener: CategoryTitleListener? = null,
-    private val categoryNavigationListener: CategoryNavigationListener? = null,
-    private val categoryShowcaseItemListener: CategoryShowcaseItemListener? = null,
-    private val categoryShowcaseHeaderListener: TokoNowDynamicHeaderListener? = null,
-    private val tokoNowView: TokoNowView? = null,
-    private val tokoNowChooseAddressWidgetListener: TokoNowChooseAddressWidgetListener? = null,
-    private val tokoNowCategoryMenuListener: TokoNowCategoryMenuListener? = null,
-    private val tokoNowProductRecommendationListener: TokoNowProductRecommendationListener? = null,
-    private val productCardCompactListener: ProductCardCompactView.ProductCardCompactListener? = null,
-    private val productCardCompactSimilarProductTrackerListener: ProductCardCompactSimilarProductTrackerListener? = null,
-    private val productAdsCarouselListener: ProductAdsCarouselListener? = null,
-    private val recycledViewPool: RecyclerView.RecycledViewPool? = null,
-    private val lifecycleOwner: LifecycleOwner? = null
-): BaseAdapterTypeFactory(),
-    CategoryTypeFactory,
-    TokoNowChooseAddressWidgetTypeFactory,
+    private val categoryTitleListener: CategoryTitleListener,
+    private val categoryNavigationListener: CategoryNavigationListener,
+    private val categoryShowcaseItemListener: CategoryShowcaseItemListener,
+    private val categoryShowcaseHeaderListener: TokoNowDynamicHeaderListener,
+    private val tokoNowCategoryMenuListener: TokoNowCategoryMenuListener,
+    private val tokoNowProductRecommendationListener: TokoNowProductRecommendationListener,
+    private val productCardCompactListener: ProductCardCompactView.ProductCardCompactListener,
+    private val productCardCompactSimilarProductTrackerListener: ProductCardCompactSimilarProductTrackerListener,
+    private val recycledViewPool: RecyclerView.RecycledViewPool,
+    private val lifecycleOwner: LifecycleOwner,
+    tokoNowChooseAddressWidgetListener: TokoNowChooseAddressWidgetListener,
+    productAdsCarouselListener: ProductAdsCarouselListener,
+    tokoNowView: TokoNowView
+) : BaseCategoryAdapterTypeFactory(
+    tokoNowChooseAddressWidgetListener,
+    productAdsCarouselListener,
+    tokoNowView
+), CategoryTypeFactory,
     TokoNowCategoryMenuTypeFactory,
     TokoNowProductRecommendationTypeFactory,
     TokoNowProgressBarTypeFactory,
-    TokoNowTickerTypeFactory,
-    TokoNowAdsCarouselTypeFactory
-{
+    TokoNowTickerTypeFactory {
+
     /* Category Component Ui Model */
-    override fun type(uiModel: CategoryHeaderSpaceUiModel): Int = CategoryHeaderSpaceViewHolder.LAYOUT
     override fun type(uiModel: CategoryTitleUiModel): Int = CategoryTitleViewHolder.LAYOUT
     override fun type(uiModel: CategoryNavigationUiModel): Int = CategoryNavigationViewHolder.LAYOUT
     override fun type(uiModel: CategoryShowcaseUiModel): Int = CategoryShowcaseViewHolder.LAYOUT
 
     /* Common Component Ui Model */
-    override fun type(uiModel: TokoNowChooseAddressWidgetUiModel): Int = TokoNowChooseAddressWidgetViewHolder.LAYOUT
     override fun type(uiModel: TokoNowCategoryMenuUiModel): Int = TokoNowCategoryMenuViewHolder.LAYOUT
     override fun type(uiModel: TokoNowProductRecommendationUiModel): Int = TokoNowProductRecommendationViewHolder.LAYOUT
     override fun type(uiModel: TokoNowProgressBarUiModel): Int = TokoNowProgressBarViewHolder.LAYOUT
     override fun type(uiModel: TokoNowTickerUiModel): Int = TokoNowTickerViewHolder.LAYOUT
-    override fun type(uiModel: TokoNowAdsCarouselUiModel): Int = TokoNowAdsCarouselViewHolder.LAYOUT
-
+    
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when(type) {
             /* Category Component View Holder */
-            CategoryHeaderSpaceViewHolder.LAYOUT -> CategoryHeaderSpaceViewHolder(
-                itemView = view
-            )
             CategoryTitleViewHolder.LAYOUT -> CategoryTitleViewHolder(
                 itemView = view,
                 listener = categoryTitleListener
@@ -107,11 +102,6 @@ class CategoryAdapterTypeFactory(
             )
 
             /* Common Component View Holder */
-            TokoNowChooseAddressWidgetViewHolder.LAYOUT -> TokoNowChooseAddressWidgetViewHolder(
-                itemView = view,
-                tokoNowView = tokoNowView,
-                tokoNowChooseAddressWidgetListener = tokoNowChooseAddressWidgetListener
-            )
             TokoNowCategoryMenuViewHolder.LAYOUT -> TokoNowCategoryMenuViewHolder(
                 itemView = view,
                 listener = tokoNowCategoryMenuListener
@@ -126,9 +116,6 @@ class CategoryAdapterTypeFactory(
             TokoNowTickerViewHolder.LAYOUT -> TokoNowTickerViewHolder(
                 itemView = view
             )
-            TokoNowAdsCarouselViewHolder.LAYOUT -> {
-                TokoNowAdsCarouselViewHolder(view, productAdsCarouselListener)
-            }
             else -> super.createViewHolder(view, type)
         }
     }

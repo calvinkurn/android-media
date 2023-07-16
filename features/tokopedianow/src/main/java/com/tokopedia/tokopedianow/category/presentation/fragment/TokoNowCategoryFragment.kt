@@ -83,19 +83,6 @@ class TokoNowCategoryFragment : BaseCategoryFragment() {
         )[TokoNowCategoryViewModel::class.java]
     }
 
-    override fun observeLiveData() {
-        super.observeLiveData()
-        observeCategoryHeader()
-        observeScrollNotNeeded()
-        observeAtcDataTracker()
-        observeProductRecommendationAddToCart()
-        observeProductRecommendationRemoveCartItem()
-        observeProductRecommendationUpdateCartItem()
-        observeProductRecommendationToolbarNotification()
-        observeProductRecommendationAtcDataTracker()
-        observeOpenScreenTracker()
-    }
-
     override fun createAdapterTypeFactory(): CategoryAdapterTypeFactory {
         return CategoryAdapterTypeFactory(
             categoryTitleListener = createTitleCallback(),
@@ -116,20 +103,17 @@ class TokoNowCategoryFragment : BaseCategoryFragment() {
 
     override fun createAdapterDiffer() = CategoryDiffer()
 
-    override fun initInjector() {
-        DaggerCategoryComponent.builder()
-            .baseAppComponent((requireContext().applicationContext as BaseMainApplication).baseAppComponent)
-            .categoryContextModule(CategoryContextModule(requireContext()))
-            .build()
-            .inject(this)
-    }
-
-    override fun setupNavigationToolbar(navToolbar: NavToolbar) {
-        super.setupNavigationToolbar(navToolbar)
-        activity?.let {
-            navToolbar.setupToolbarWithStatusBar(activity = it)
-            viewLifecycleOwner.lifecycle.addObserver(navToolbar)
-        }
+    override fun observeLiveData() {
+        super.observeLiveData()
+        observeCategoryHeader()
+        observeScrollNotNeeded()
+        observeAtcDataTracker()
+        observeProductRecommendationAddToCart()
+        observeProductRecommendationRemoveCartItem()
+        observeProductRecommendationUpdateCartItem()
+        observeProductRecommendationToolbarNotification()
+        observeProductRecommendationAtcDataTracker()
+        observeOpenScreenTracker()
     }
 
     override fun setupRecyclerView(recyclerView: RecyclerView, navToolbar: NavToolbar) {
@@ -146,6 +130,14 @@ class TokoNowCategoryFragment : BaseCategoryFragment() {
     override fun onGetMiniCartSuccess(data: MiniCartSimplifiedData) {
         super.onGetMiniCartSuccess(data)
         productRecommendationViewModel.updateMiniCartSimplified(data)
+    }
+
+    override fun initInjector() {
+        DaggerCategoryComponent.builder()
+            .baseAppComponent((requireContext().applicationContext as BaseMainApplication).baseAppComponent)
+            .categoryContextModule(CategoryContextModule(requireContext()))
+            .build()
+            .inject(this)
     }
 
     /**

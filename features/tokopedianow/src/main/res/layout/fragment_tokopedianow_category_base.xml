@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
-    android:background="@color/Unify_Background"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:background="@color/Unify_Background">
 
     <View
         android:id="@+id/v_status_bar_background"
@@ -20,43 +19,42 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:minHeight="?actionBarSize"
+        android:translationZ="3dp"
         app:contentInsetLeft="0dp"
         app:contentInsetStart="0dp"
-        android:translationZ="3dp"
         app:toolbarAlwaysShowShadow="false"
         app:toolbarBackButton="back"
         app:toolbarContentType="typeSearchbar"
         app:toolbarInitialFillColor="transparent"
-        app:toolbarInvertSearchBarColor="true"
-        app:toolbarInitialTheme="light" />
+        app:toolbarInitialTheme="light"
+        app:toolbarInvertSearchBarColor="true" />
 
     <com.tokopedia.globalerror.GlobalError
         android:id="@+id/global_error"
-        android:visibility="gone"
-        android:translationZ="2dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:translationZ="2dp"
+        android:visibility="gone"
         app:layout_anchor="@id/nav_toolbar"
-        app:layout_anchorGravity="bottom"
-        android:layout_gravity="bottom"/>
+        app:layout_anchorGravity="bottom" />
 
     <com.tokopedia.tokopedianow.common.view.NoAddressEmptyStateView
         android:id="@+id/ooc_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:translationZ="2dp"
+        android:layout_gravity="bottom"
         android:paddingTop="61dp"
-        android:visibility="visible"
+        android:translationZ="2dp"
+        android:visibility="gone"
         app:layout_anchor="@id/nav_toolbar"
-        app:layout_anchorGravity="bottom"
-        android:layout_gravity="bottom"/>
+        app:layout_anchorGravity="bottom" />
 
     <include
         android:id="@+id/category_shimmering"
         layout="@layout/layout_tokopedianow_category_base_shimmering"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -65,9 +63,30 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/main_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:animateLayoutChanges="true"
-        android:orientation="horizontal">
+        android:layout_height="match_parent">
+
+        <!--        <com.tokopedia.tokopedianow.common.view.LinearStickySingleHeaderView-->
+        <!--            android:id="@+id/sticky_view"-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="0dp"-->
+        <!--            app:layout_constraintBottom_toTopOf="@id/mini_cart_widget"-->
+        <!--            app:layout_constraintEnd_toEndOf="parent"-->
+        <!--            app:layout_constraintStart_toStartOf="parent"-->
+        <!--            app:layout_constraintTop_toBottomOf="@id/space">-->
+
+        <!--            <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh-->
+        <!--                android:id="@+id/str_refresh_layout"-->
+        <!--                android:layout_width="match_parent"-->
+        <!--                android:layout_height="match_parent">-->
+
+        <!--                <androidx.recyclerview.widget.RecyclerView-->
+        <!--                    android:id="@+id/rv_category"-->
+        <!--                    android:layout_width="match_parent"-->
+        <!--                    android:layout_height="match_parent"-->
+        <!--                    android:clipToPadding="false" />-->
+
+        <!--            </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>-->
+        <!--        </com.tokopedia.tokopedianow.common.view.LinearStickySingleHeaderView>-->
 
         <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
             android:id="@+id/str_refresh_layout"
@@ -98,10 +117,16 @@
         <com.tokopedia.minicart.common.widget.MiniCartWidget
             android:id="@+id/mini_cart_widget"
             android:layout_width="0dp"
-            android:visibility="gone"
             android:layout_height="wrap_content"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
+
+        <com.tokopedia.unifycomponents.TabsUnify
+            android:id="@+id/tab_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

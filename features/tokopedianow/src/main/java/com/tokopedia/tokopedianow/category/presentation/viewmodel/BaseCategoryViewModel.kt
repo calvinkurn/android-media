@@ -69,12 +69,16 @@ abstract class BaseCategoryViewModel(
     private val _updateToolbarNotification: MutableLiveData<Boolean> = MutableLiveData()
     private val _refreshState = MutableLiveData<Unit>()
     private val _outOfCoverageState = MutableLiveData<Unit>()
+    private val _isPageLoading = MutableLiveData<Boolean>()
+    private val _pageError = MutableLiveData<Throwable>()
 
     val openScreenTracker: LiveData<CategoryOpenScreenTrackerModel> = _openScreenTracker
     val visitableListLiveData: LiveData<List<Visitable<*>>> = _visitableListLiveData
     val updateToolbarNotification = _updateToolbarNotification
     val refreshState: LiveData<Unit> = _refreshState
     val outOfCoverageState: LiveData<Unit> = _outOfCoverageState
+    val isPageLoading: LiveData<Boolean> = _isPageLoading
+    val pageError: LiveData<Throwable> = _pageError
 
     protected val visitableList = mutableListOf<Visitable<*>>()
 
@@ -157,7 +161,16 @@ abstract class BaseCategoryViewModel(
         visitableList.removeItem(visitableId)
     }
 
+    protected fun showPageLoading() {
+        _isPageLoading.postValue(true)
+    }
+
+    protected fun hidePageLoading() {
+        _isPageLoading.postValue(false)
+    }
+
     fun onViewCreated() {
+        showPageLoading()
         initAffiliateCookie()
         processLoadDataPage()
     }
