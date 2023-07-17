@@ -6,7 +6,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.asFlow
 import androidx.lifecycle.viewModelScope
 import com.gojek.conversations.babble.channel.data.ChannelType
-import com.gojek.conversations.channel.ConversationsChannel
 import com.gojek.conversations.utils.ConversationsConstants
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
@@ -36,8 +35,6 @@ class TokoChatListViewModel @Inject constructor(
     val chatListData: LiveData<Result<List<TokoChatListItemUiModel>>>
         get() = _chatListData
 
-    private var _channelList: LiveData<List<ConversationsChannel>>? = null
-
     private val _error = MutableLiveData<Pair<Throwable, String>>()
     val error: LiveData<Pair<Throwable, String>>
         get() = _error
@@ -66,6 +63,7 @@ class TokoChatListViewModel @Inject constructor(
                 loadChatList(batchSize)
             }.catch {
                 _error.value = Pair(it, ::getChatListFlow.name)
+                _chatListData.value = Fail(it)
             }
     }
 
@@ -95,20 +93,6 @@ class TokoChatListViewModel @Inject constructor(
                 _error.value = Pair(throwable, ::loadChatList.name)
                 _chatListData.value = Fail(throwable)
             }
-        }
-    }
-
-    private fun setChannelList() {
-        try {
-            if (_channelList == null) {
-                _channelList = chatChannelUseCase.getAllCachedChannels(
-                    listOf(
-                        ChannelType.GroupBooking
-                    )
-                )
-            }
-        } catch (throwable: Throwable) {
-            _error.value = Pair(throwable, ::setChannelList.name)
         }
     }
 }
