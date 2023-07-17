@@ -55,7 +55,7 @@ class RegisterProgressiveUseCase @Inject constructor(
     }
 
     companion object {
-        private const val KEY_EXHAUSTED = "KYC_CHALLENGE_ATTEMPTS_EXHAUSTED"
+        private const val KEY_EXHAUSTED = "KYC_CHALLENGE_CREATION_QUOTA_EXCEEDED"
     }
 }
 
