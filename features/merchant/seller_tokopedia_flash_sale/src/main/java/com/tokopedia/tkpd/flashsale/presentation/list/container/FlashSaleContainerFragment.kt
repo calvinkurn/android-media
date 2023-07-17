@@ -27,7 +27,6 @@ import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
-import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.seller_tokopedia_flash_sale.R
 import com.tokopedia.seller_tokopedia_flash_sale.databinding.StfsFragmentFlashSaleListContainerBinding
 import com.tokopedia.tkpd.flashsale.di.component.DaggerTokopediaFlashSaleComponent
@@ -68,7 +67,6 @@ class FlashSaleContainerFragment : BaseDaggerFragment() {
     @Inject
     lateinit var tracker: FlashSaleListPageTracker
 
-    private lateinit var remoteConfig: RemoteConfigInstance
     private var binding by autoClearedNullable<StfsFragmentFlashSaleListContainerBinding>()
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(FlashSaleContainerViewModel::class.java) }
@@ -372,5 +370,4 @@ class FlashSaleContainerFragment : BaseDaggerFragment() {
         val eventLabel = "$description - $linkUrl"
         tracker.sendClickReadArticleEvent(eventLabel)
     }
-
 }
