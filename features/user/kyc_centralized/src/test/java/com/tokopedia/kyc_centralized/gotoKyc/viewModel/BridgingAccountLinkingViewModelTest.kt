@@ -7,7 +7,7 @@ import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.CheckEligibilityResult
 import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.CheckEligibilityUseCase
 import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.RegisterProgressiveResult
 import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.RegisterProgressiveUseCase
-import com.tokopedia.kyc_centralized.ui.gotoKyc.main.BridgingAccountLinkingViewModel
+import com.tokopedia.kyc_centralized.ui.gotoKyc.main.bridgingAccountLinking.BridgingAccountLinkingViewModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import io.mockk.coEvery
 import io.mockk.mockk

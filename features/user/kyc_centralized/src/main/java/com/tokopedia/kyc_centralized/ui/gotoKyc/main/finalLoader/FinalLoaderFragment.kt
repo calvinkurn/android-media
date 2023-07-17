@@ -1,4 +1,4 @@
-package com.tokopedia.kyc_centralized.ui.gotoKyc.main
+package com.tokopedia.kyc_centralized.ui.gotoKyc.main.finalLoader
 
 import android.content.Intent
 import android.os.Bundle
@@ -21,6 +21,8 @@ import com.tokopedia.kyc_centralized.di.GoToKycComponent
 import com.tokopedia.kyc_centralized.ui.gotoKyc.analytics.GotoKycAnalytics
 import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.ProjectInfoResult
 import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.RegisterProgressiveResult
+import com.tokopedia.kyc_centralized.ui.gotoKyc.main.dobChallenge.DobChallengeParam
+import com.tokopedia.kyc_centralized.ui.gotoKyc.main.statusSubmission.StatusSubmissionParam
 import com.tokopedia.kyc_centralized.ui.gotoKyc.utils.getGotoKycErrorMessage
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.utils.lifecycle.autoClearedNullable

@@ -33,9 +33,9 @@ import com.tokopedia.kyc_centralized.ui.gotoKyc.bottomSheet.OnboardProgressiveBo
 import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.AccountLinkingStatusResult
 import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.CheckEligibilityResult
 import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.ProjectInfoResult
-import com.tokopedia.kyc_centralized.ui.gotoKyc.main.GotoKycMainActivity
-import com.tokopedia.kyc_centralized.ui.gotoKyc.main.GotoKycMainParam
-import com.tokopedia.kyc_centralized.ui.gotoKyc.main.GotoKycRouterFragment
+import com.tokopedia.kyc_centralized.ui.gotoKyc.main.mainRouter.GotoKycMainActivity
+import com.tokopedia.kyc_centralized.ui.gotoKyc.main.mainRouter.GotoKycMainParam
+import com.tokopedia.kyc_centralized.ui.gotoKyc.main.mainRouter.GotoKycRouterFragment
 import com.tokopedia.kyc_centralized.ui.gotoKyc.utils.getGotoKycErrorMessage
 import com.tokopedia.kyc_centralized.ui.gotoKyc.utils.removeGotoKycImage
 import com.tokopedia.kyc_centralized.ui.gotoKyc.utils.removeGotoKycPreference

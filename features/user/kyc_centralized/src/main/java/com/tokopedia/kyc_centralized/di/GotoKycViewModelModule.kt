@@ -6,10 +6,10 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.kyc_centralized.ui.gotoKyc.bottomSheet.OnboardProgressiveViewModel
-import com.tokopedia.kyc_centralized.ui.gotoKyc.main.BridgingAccountLinkingViewModel
-import com.tokopedia.kyc_centralized.ui.gotoKyc.main.DobChallengeViewModel
-import com.tokopedia.kyc_centralized.ui.gotoKyc.main.FinalLoaderViewModel
-import com.tokopedia.kyc_centralized.ui.gotoKyc.main.StatusSubmissionViewModel
+import com.tokopedia.kyc_centralized.ui.gotoKyc.main.bridgingAccountLinking.BridgingAccountLinkingViewModel
+import com.tokopedia.kyc_centralized.ui.gotoKyc.main.dobChallenge.DobChallengeViewModel
+import com.tokopedia.kyc_centralized.ui.gotoKyc.main.finalLoader.FinalLoaderViewModel
+import com.tokopedia.kyc_centralized.ui.gotoKyc.main.statusSubmission.StatusSubmissionViewModel
 import com.tokopedia.kyc_centralized.ui.gotoKyc.transparent.GotoKycTransparentViewModel
 import dagger.Binds
 import dagger.Module
