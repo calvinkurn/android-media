@@ -41,6 +41,7 @@ import com.tokopedia.flight.booking.data.FlightCart
 import com.tokopedia.flight.booking.data.FlightCartViewEntity
 import com.tokopedia.flight.booking.data.FlightCheckoutData
 import com.tokopedia.flight.booking.data.FlightContactData
+import com.tokopedia.flight.booking.data.FlightPriceDetailEntity
 import com.tokopedia.flight.booking.data.FlightPromoViewEntity
 import com.tokopedia.flight.booking.data.FlightVerify
 import com.tokopedia.flight.booking.data.QueryAddToCart
@@ -214,6 +215,10 @@ class FlightBookingFragment : BaseDaggerFragment() {
             EXTRA_AMENITY_PRICE_DATA,
             bookingViewModel.getAmenityPriceData() as ArrayList<out Parcelable>
         )
+        if (bookingViewModel.getAdminFeePriceData().isNotEmpty()) outState.putParcelableArrayList(
+            EXTRA_ADMIN_FEE_PRICE_DATA,
+            bookingViewModel.getAdminFeePriceData() as ArrayList<out Parcelable>
+        )
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -264,6 +269,10 @@ class FlightBookingFragment : BaseDaggerFragment() {
 
         bookingViewModel.flightAmenityPriceData.observe(viewLifecycleOwner, Observer {
             renderAmenityPriceData(it)
+        })
+
+        bookingViewModel.flightAdminFeePriceData.observe(viewLifecycleOwner, Observer {
+            renderAdminFeesData(it)
         })
 
         bookingViewModel.errorToastMessageData.observe(viewLifecycleOwner, Observer {
@@ -625,32 +634,45 @@ class FlightBookingFragment : BaseDaggerFragment() {
         flightInsuranceAdapter.updateList(insurances)
     }
 
-    private fun renderPriceData(priceList: List<FlightCart.PriceDetail>) {
+    private fun renderPriceData(priceList: List<FlightPriceDetailEntity>) {
         if (!::flightPriceAdapter.isInitialized) {
-            flightPriceAdapter = FlightBookingPriceAdapter()
+            flightPriceAdapter = FlightBookingPriceAdapter(
+                priceListener = object : FlightBookingPriceAdapter.PriceListener {
+                    override fun onPriceChangeListener(totalPrice: String, totalPriceNumeric: Int) {
+                        binding?.tvTotalPaymentAmount?.text = totalPrice
+                        totalCartPrice = totalPriceNumeric
+                    }
+                },
+                priceDetailInfoListener = object: FlightBookingPriceAdapter.PriceDetailInfoListener {
+                    override fun onInfoIconClick(priceDetail: FlightPriceDetailEntity) {
+                        // TODO: [Misael] Show admin fee info bottom sheet
+                        Toast.makeText(context, "Admin Fee Info", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            )
             val layoutManager = LinearLayoutManager(activity, RecyclerView.VERTICAL, false)
             binding?.rvFlightPriceDetail?.layoutManager = layoutManager
             binding?.rvFlightPriceDetail?.setHasFixedSize(true)
             binding?.rvFlightPriceDetail?.adapter = flightPriceAdapter
-            flightPriceAdapter.listener = object : FlightBookingPriceAdapter.PriceListener {
-                override fun onPriceChangeListener(totalPrice: String, totalPriceNumeric: Int) {
-                    binding?.tvTotalPaymentAmount?.text = totalPrice
-                    totalCartPrice = totalPriceNumeric
-                }
-            }
         }
         flightPriceAdapter.updateRoutePriceList(priceList)
     }
 
-    private fun renderOtherPriceData(priceList: List<FlightCart.PriceDetail>) {
+    private fun renderOtherPriceData(priceList: List<FlightPriceDetailEntity>) {
         if (::flightPriceAdapter.isInitialized) {
             flightPriceAdapter.updateOthersPriceList(priceList)
         }
     }
 
-    private fun renderAmenityPriceData(priceList: List<FlightCart.PriceDetail>) {
+    private fun renderAmenityPriceData(priceList: List<FlightPriceDetailEntity>) {
         if (::flightPriceAdapter.isInitialized) {
             flightPriceAdapter.updateAmenityPriceList(priceList)
+        }
+    }
+
+    private fun renderAdminFeesData(adminFees: List<FlightPriceDetailEntity>) {
+        if (::flightPriceAdapter.isInitialized) {
+            flightPriceAdapter.updateAdminFeePriceList(adminFees)
         }
     }
 
@@ -794,15 +816,19 @@ class FlightBookingFragment : BaseDaggerFragment() {
             ?: listOf<FlightBookingPassengerModel>()
         bookingViewModel.setPassengerModels(passengerModels)
 
+        // TODO: [Misael] check set & get parcelable
         val priceData = args.getParcelableArrayList(EXTRA_PRICE_DATA)
-            ?: listOf<FlightCart.PriceDetail>()
+            ?: listOf<FlightPriceDetailEntity>()
         bookingViewModel.setPriceData(priceData)
         val otherPriceData = args.getParcelableArrayList(EXTRA_OTHER_PRICE_DATA)
-            ?: listOf<FlightCart.PriceDetail>()
+            ?: listOf<FlightPriceDetailEntity>()
         bookingViewModel.setOtherPriceData(otherPriceData)
         val amenityPriceData = args.getParcelableArrayList(EXTRA_AMENITY_PRICE_DATA)
-            ?: listOf<FlightCart.PriceDetail>()
+            ?: listOf<FlightPriceDetailEntity>()
         bookingViewModel.setAmenityPriceData(amenityPriceData)
+        val adminFeesData = args.getParcelableArrayList(EXTRA_ADMIN_FEE_PRICE_DATA)
+            ?: listOf<FlightPriceDetailEntity>()
+        bookingViewModel.setAdminFeePriceData(adminFeesData)
 
         refreshCart()
     }
@@ -1403,6 +1429,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
         const val EXTRA_PRICE_DATA = "EXTRA_PRICE_DATA"
         const val EXTRA_OTHER_PRICE_DATA = "EXTRA_OTHER_PRICE_DATA"
         const val EXTRA_AMENITY_PRICE_DATA = "EXTRA_AMENITY_PRICE_DATA"
+        const val EXTRA_ADMIN_FEE_PRICE_DATA = "EXTRA_ADMIN_FEE_PRICE_DATA"
         const val EXTRA_CART_ID = "EXTRA_BOOKING_CART_ID"
         const val EXTRA_FLIGHT_BOOKING_PARAM = "EXTRA_FLIGHT_BOOKING_PARAM"
 

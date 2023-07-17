@@ -87,6 +87,11 @@ internal object FlightGetCartQuery{
                       price
                       priceNumeric
                   }
+                  adminFee {
+                    label
+                    price
+                    priceNumeric
+                  }
                   mandatoryDOB
                   mandatoryIdentificationNumber
                   amenityOptions {

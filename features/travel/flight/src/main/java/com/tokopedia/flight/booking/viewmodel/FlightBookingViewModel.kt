@@ -20,6 +20,7 @@ import com.tokopedia.flight.booking.data.FlightCart
 import com.tokopedia.flight.booking.data.FlightCartViewEntity
 import com.tokopedia.flight.booking.data.FlightCheckoutData
 import com.tokopedia.flight.booking.data.FlightCheckoutParam
+import com.tokopedia.flight.booking.data.FlightPriceDetailEntity
 import com.tokopedia.flight.booking.data.FlightPromoViewEntity
 import com.tokopedia.flight.booking.data.FlightVerify
 import com.tokopedia.flight.booking.data.FlightVerifyParam
@@ -100,17 +101,21 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
         get() = mutableTickerData
 
     //priceListData
-    private val _flightPriceData = MutableLiveData<List<FlightCart.PriceDetail>>()
-    val flightPriceData: LiveData<List<FlightCart.PriceDetail>>
+    private val _flightPriceData = MutableLiveData<List<FlightPriceDetailEntity>>()
+    val flightPriceData: LiveData<List<FlightPriceDetailEntity>>
         get() = _flightPriceData
 
-    private val _flightOtherPriceData = MutableLiveData<List<FlightCart.PriceDetail>>()
-    val flightOtherPriceData: LiveData<List<FlightCart.PriceDetail>>
+    private val _flightOtherPriceData = MutableLiveData<List<FlightPriceDetailEntity>>()
+    val flightOtherPriceData: LiveData<List<FlightPriceDetailEntity>>
         get() = _flightOtherPriceData
 
-    private val _flightAmenityPriceData = MutableLiveData<List<FlightCart.PriceDetail>>()
-    val flightAmenityPriceData: LiveData<List<FlightCart.PriceDetail>>
+    private val _flightAmenityPriceData = MutableLiveData<List<FlightPriceDetailEntity>>()
+    val flightAmenityPriceData: LiveData<List<FlightPriceDetailEntity>>
         get() = _flightAmenityPriceData
+
+    private val _flightAdminFeesData = MutableLiveData<List<FlightPriceDetailEntity>>()
+    val flightAdminFeePriceData: LiveData<List<FlightPriceDetailEntity>>
+        get() = _flightAdminFeesData
 
     private val _errorCancelVoucher = MutableLiveData<Int>()
     val errorCancelVoucher: LiveData<Int>
@@ -130,6 +135,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
         _flightPriceData.value = listOf()
         _flightOtherPriceData.value = listOf()
         _flightAmenityPriceData.value = listOf()
+        _flightAdminFeesData.value = listOf()
         _flightPromoResult.value = FlightPromoViewEntity()
         _flightPassengersData.value = listOf()
     }
@@ -165,7 +171,10 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
                         _flightPassengersData.postValue(FlightBookingMapper.mapToFlightPassengerEntity(data.cartData.flight.adult,
                                 data.cartData.flight.child, data.cartData.flight.infant))
                     }
-                    _flightPriceData.postValue(data.cartData.flight.priceDetail)
+                    _flightPriceData.postValue(
+                        FlightBookingMapper.mapPriceDetailToEntity(data.cartData.flight.priceDetail))
+                    _flightAdminFeesData.postValue(
+                        FlightBookingMapper.mapAdminFeeToPriceDetailEntity(data.cartData.flight.adminFee))
                     _flightCartResult.postValue(Success(FlightBookingMapper.mapToFlightCartView(data, isRefreshCart)))
                 }
                 retryCount = 0
@@ -448,15 +457,19 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
         _flightPassengersData.value = passengerModels
     }
 
-    fun setPriceData(priceData: List<FlightCart.PriceDetail>) {
+    fun setPriceData(priceData: List<FlightPriceDetailEntity>) {
         _flightPriceData.value = priceData
     }
 
-    fun setOtherPriceData(priceData: List<FlightCart.PriceDetail>) {
+    fun setOtherPriceData(priceData: List<FlightPriceDetailEntity>) {
         _flightOtherPriceData.value = priceData
     }
 
-    fun setAmenityPriceData(priceData: List<FlightCart.PriceDetail>) {
+    fun setAmenityPriceData(priceData: List<FlightPriceDetailEntity>) {
+        _flightAmenityPriceData.value = priceData
+    }
+
+    fun setAdminFeePriceData(priceData: List<FlightPriceDetailEntity>) {
         _flightAmenityPriceData.value = priceData
     }
 
@@ -564,7 +577,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
                     FlightCurrencyFormatUtil.convertToIdrPrice(value), value))
             grandTotalAmenityPrice += value
         }
-        _flightAmenityPriceData.value = prices
+        _flightAmenityPriceData.value = FlightBookingMapper.mapPriceDetailToEntity(prices)
         return grandTotalAmenityPrice
     }
 
@@ -576,7 +589,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
     }
 
     fun updateFlightPriceData(priceDetail: List<FlightCart.PriceDetail>) {
-        _flightPriceData.value = priceDetail
+        _flightPriceData.value = FlightBookingMapper.mapPriceDetailToEntity(priceDetail)
     }
 
     fun updateFlightDetailPriceData(newPrices: List<FlightCart.NewPrice>) {
@@ -600,9 +613,12 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
             if (index == -1) {
                 insuranceTemp.add(insurance)
                 flightBookingParam.insurances = insuranceTemp
-                otherPrices.add(FlightCart.PriceDetail(label = String.format("%s (x%d)", insurance.name, flightPassengersData.value!!.size),
-                        priceNumeric = insurance.totalPriceNumeric, price = FlightCurrencyFormatUtil.convertToIdrPrice(insurance.totalPriceNumeric),
-                        priceDetailId = insurance.id))
+                otherPrices.add(FlightPriceDetailEntity(
+                    label = String.format("%s (x%d)", insurance.name, flightPassengersData.value!!.size),
+                    priceNumeric = insurance.totalPriceNumeric,
+                    price = FlightCurrencyFormatUtil.convertToIdrPrice(insurance.totalPriceNumeric),
+                    priceDetailId = insurance.id)
+                )
             }
 
         } else {
@@ -828,16 +844,20 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
         else ""
     }
 
-    fun getPriceData(): List<FlightCart.PriceDetail> {
+    fun getPriceData(): List<FlightPriceDetailEntity> {
         return flightPriceData.value!!
     }
 
-    fun getOtherPriceData(): List<FlightCart.PriceDetail> {
+    fun getOtherPriceData(): List<FlightPriceDetailEntity> {
         return flightOtherPriceData.value!!
     }
 
-    fun getAmenityPriceData(): List<FlightCart.PriceDetail> {
+    fun getAmenityPriceData(): List<FlightPriceDetailEntity> {
         return flightAmenityPriceData.value!!
+    }
+
+    fun getAdminFeePriceData(): List<FlightPriceDetailEntity> {
+        return flightAdminFeePriceData.value!!
     }
 
     companion object {

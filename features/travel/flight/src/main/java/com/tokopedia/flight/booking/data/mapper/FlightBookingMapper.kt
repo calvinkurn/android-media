@@ -2,6 +2,7 @@ package com.tokopedia.flight.booking.data.mapper
 
 import com.tokopedia.flight.booking.data.FlightCart
 import com.tokopedia.flight.booking.data.FlightCartViewEntity
+import com.tokopedia.flight.booking.data.FlightPriceDetailEntity
 import com.tokopedia.flight.booking.data.FlightPromoViewEntity
 import com.tokopedia.flight.common.util.FlightCurrencyFormatUtil
 import com.tokopedia.flight.detail.view.model.FlightDetailModel
@@ -332,6 +333,32 @@ class FlightBookingMapper {
                 list.add(flightDetailViewModel)
             }
             return list
+        }
+
+        fun mapPriceDetailToEntity(priceDetails: List<FlightCart.PriceDetail>): List<FlightPriceDetailEntity> {
+            return priceDetails.map {
+                FlightPriceDetailEntity(
+                    label = it.label,
+                    price = it.price,
+                    priceNumeric = it.priceNumeric,
+                    priceDetailId = it.priceDetailId,
+                )
+            }
+        }
+
+
+        fun mapAdminFeeToPriceDetailEntity(adminFee: FlightCart.AdminFee): List<FlightPriceDetailEntity> {
+            if (adminFee.label.isEmpty() && adminFee.price.isEmpty()) return listOf()
+
+            val priceDetails = listOf<FlightPriceDetailEntity>().toMutableList()
+            priceDetails.add(FlightPriceDetailEntity(
+                label = adminFee.label,
+                price = adminFee.price,
+                priceNumeric = adminFee.priceNumeric,
+                popUpTitle = adminFee.popUpTitle,
+                popUpDescription = adminFee.popUpDescription
+            ))
+            return priceDetails
         }
 
         private fun transformToStopDetail(stopDetails: List<FlightCart.StopDetail>): List<FlightStopOverModel> {
