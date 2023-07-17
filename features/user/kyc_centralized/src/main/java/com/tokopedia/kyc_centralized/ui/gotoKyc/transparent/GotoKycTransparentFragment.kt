@@ -172,6 +172,8 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
         }
 
         viewModel.checkEligibility.observe(viewLifecycleOwner) {
+            binding?.gotoKycLoader?.invisible()
+
             when (it) {
                 is CheckEligibilityResult.Progressive -> {
                     handleProgressiveFlow(it.encryptedName)
