@@ -97,7 +97,7 @@ class CalendarWidgetCarouselViewModel(
         }
     }
 
-    private suspend fun reSyncProductCardHeight(list: ArrayList<ComponentsItem>): Int {
+    suspend fun reSyncProductCardHeight(list: ArrayList<ComponentsItem>): Int {
         val calendarCardModelArray = ArrayList<DataItem>()
         list.forEach {
             it.data?.firstOrNull()?.let { dataItem ->

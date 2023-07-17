@@ -24,6 +24,8 @@ buildscript {
 }
 
 android {
+    namespace 'com.tokopedia.filter'
+    testNamespace 'com.tokopedia.filter.test'
     buildFeatures {
         viewBinding true
     }
@@ -33,7 +35,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.resourcesCommon)
     implementation projectOrAar(rootProject.ext.libraries.tkpddesign)
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
-    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
     implementation projectOrAar(rootProject.ext.libraries.track)
     implementation projectOrAar(rootProject.ext.libraries.trackingOptimizer)
     implementation projectOrAar(rootProject.ext.libraries.applink)

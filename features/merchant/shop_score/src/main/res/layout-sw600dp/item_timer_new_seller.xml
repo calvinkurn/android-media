@@ -61,7 +61,7 @@
             android:layout_marginTop="16dp"
             android:layout_marginBottom="16dp"
             android:text="@string/shop_performance_learn"
-            android:textColor="@color/Unify_G500"
+            android:textColor="@color/Unify_GN500"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@id/guidelineVertical"
             app:layout_constraintTop_toBottomOf="@id/tv_shop_performance_new_seller"

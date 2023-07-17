@@ -46,7 +46,7 @@
         android:id="@+id/status_bar_bg"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_25"
-        android:background="@color/Unify_G500"
+        android:background="@color/Unify_GN500"
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.tokopedia.minicart.common.widget.MiniCartWidget

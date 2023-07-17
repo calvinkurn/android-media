@@ -29,7 +29,7 @@ class ShopFavouriteListActivity : BaseSimpleActivity(), HasComponent<ShopFavouri
             }
         }
         super.onCreate(savedInstanceState)
-        toolbar.setTitleTextColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
+        toolbar.setTitleTextColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_NN950_96))
         toolbar.background = ColorDrawable(
                 MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_Background)
         )

@@ -53,7 +53,9 @@ class RechargeOrderDetailFragment : BaseDaggerFragment(),
     RechargeOrderDetailStaticButtonViewHolder.ActionListener,
     RechargeOrderDetailAboutOrderViewHolder.ActionListener,
     RechargeOrderDetailActionButtonSectionViewHolder.ActionListener,
-    RecommendationWidgetListener {
+    RecommendationWidgetListener,
+    RechargeOrderDetailPaymentViewHolder.RechargeOrderDetailPaymentListener
+{
 
     private lateinit var binding: FragmentRechargeOrderDetailBinding
 
@@ -79,6 +81,7 @@ class RechargeOrderDetailFragment : BaseDaggerFragment(),
     private val typeFactory: RechargeOrderDetailTypeFactory by lazy {
         RechargeOrderDetailTypeFactory(
             digitalRecommendationData,
+            this,
             this,
             this,
             this,
@@ -254,6 +257,10 @@ class RechargeOrderDetailFragment : BaseDaggerFragment(),
         widgetPosition: Int
     ) {
         RouteManager.route(context, appLink)
+    }
+
+    override fun onClickTnC(applink: String) {
+        RouteManager.route(context, applink)
     }
 
     private fun fetchData() {
