@@ -11,10 +11,13 @@
         android:id="@+id/rv_play_category_widget"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginStart="@dimen/unify_space_8"
+        android:layout_marginTop="@dimen/unify_space_8"
+        android:layout_marginEnd="@dimen/unify_space_8"
         android:orientation="vertical"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         tools:listitem="@layout/item_play_explore_category_card"
-        tools:visibility="gone" />
+        tools:visibility="visible" />
 
     <include
         android:id="@+id/view_explore_widget_empty"
