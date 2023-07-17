@@ -53,7 +53,7 @@ dependencies {
     kapt rootProject.ext.dbDependencies.dbRoomCompiler
 
 
-    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
+    implementation projectOrAar(rootProject.ext.libraries.utils)
 
     //test
     testImplementation rootProject.ext.testDependencies.junit

@@ -167,7 +167,7 @@ class SellerHomeNavigator(
         chatFragment = sellerHomeRouter?.getChatListFragment()
         somListFragment = sellerHomeRouter?.getSomListFragment(
             context,
-            SomTabConst.STATUS_NEW_ORDER,
+            "",
             SomTabConst.DEFAULT_ORDER_TYPE_FILTER,
             "",
             ""

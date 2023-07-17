@@ -21,6 +21,36 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/container_promo_loading"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="12dp"
+            android:visibility="gone"
+            tools:visibility="gone">
+
+            <com.tokopedia.unifycomponents.LoaderUnify
+                android:id="@+id/promo_loader_1"
+                android:layout_width="0dp"
+                android:layout_height="12dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintWidth_percent="0.8"
+                app:loader_type="line" />
+
+            <com.tokopedia.unifycomponents.LoaderUnify
+                android:id="@+id/promo_loader_2"
+                android:layout_width="0dp"
+                android:layout_height="12dp"
+                android:layout_marginTop="12dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/promo_loader_1"
+                app:layout_constraintWidth_percent="0.6"
+                app:loader_type="line" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/container_constraint_promo_checkout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
