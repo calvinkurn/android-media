@@ -255,6 +255,7 @@ class AddEditProductDescriptionFragment :
         observeProductVideo()
         observeIsHampersProduct()
         observeHasDTStock()
+        observeIsRemovingSingleVariant()
 
         // PLT Monitoring
         stopPreparePagePerformanceMonitoring()
@@ -545,6 +546,12 @@ class AddEditProductDescriptionFragment :
                     showDTDisableVariantChangeDialog()
                 }
             }
+        }
+    }
+
+    private fun observeIsRemovingSingleVariant() {
+        descriptionViewModel.isRemovingSingleVariant.observe(viewLifecycleOwner) {
+            if (it) sendDataBack()
         }
     }
 

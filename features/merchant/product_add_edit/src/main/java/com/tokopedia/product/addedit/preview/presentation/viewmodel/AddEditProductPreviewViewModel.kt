@@ -143,6 +143,10 @@ class AddEditProductPreviewViewModel @Inject constructor(
         !it.shipmentInputModel.isUsingParentWeight && !it.variantInputModel.hasVariant()
     }
 
+    val isRemovingSingleVariant = Transformations.map(productInputModel) {
+        it.isRemovingSingleVariant
+    }
+
     private val mImageUrlOrPathList = MutableLiveData<MutableList<String>>()
     val imageUrlOrPathList: LiveData<MutableList<String>> get() = mImageUrlOrPathList
 

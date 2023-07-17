@@ -31,7 +31,8 @@ data class ProductInputModel(
     var isDataChanged: Boolean = false,
     var isDuplicate: Boolean = false,
     var hasDTStock: Boolean = false,
-    var isCampaignActive: Boolean = false
+    var isCampaignActive: Boolean = false,
+    var isRemovingSingleVariant: Boolean = false
 ) : Parcelable {
     @IgnoredOnParcel
     var lastVariantData = ProductVariantInputModel()

@@ -17,6 +17,7 @@ import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.header.HeaderUnify
+import com.tokopedia.imageassets.TokopediaImageUrl
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
@@ -546,8 +547,10 @@ class AddEditProductVariantDetailFragment :
             setDescription(getString(R.string.product_add_edit_single_product_variant_dialog_desc))
             setPrimaryCTAText(getString(R.string.product_add_edit_single_product_variant_dialog_delete))
             setSecondaryCTAText(getString(R.string.action_back))
-            setImageUrl("http://placekitten.com/g/300/300")
+            setImageUrl(TokopediaImageUrl.AEP_SINGLE_VARIANT_WARNING)
             setPrimaryCTAClickListener {
+                viewModel.convertToNonVariant()
+                sendResultData()
                 dismiss()
             }
             setSecondaryCTAClickListener {
@@ -561,20 +564,24 @@ class AddEditProductVariantDetailFragment :
         invokeFieldsValidation()
         if (viewModel.getInputDataValidStatus()) {
             viewModel.updateProductInputModel()
-            viewModel.productInputModel.value?.apply {
-                val cacheManagerId = arguments?.getString(
-                    AddEditProductConstants.EXTRA_CACHE_MANAGER_ID
-                ).orEmpty()
-                SaveInstanceCacheManager(requireContext(), cacheManagerId)
-                    .put(EXTRA_PRODUCT_INPUT_MODEL, this)
+            sendResultData()
+        }
+    }
 
-                val intent = Intent().putExtra(
-                    AddEditProductConstants.EXTRA_CACHE_MANAGER_ID,
-                    cacheManagerId
-                )
-                activity?.setResult(Activity.RESULT_OK, intent)
-                activity?.finish()
-            }
+    private fun sendResultData() {
+        viewModel.productInputModel.value?.apply {
+            val cacheManagerId = arguments?.getString(
+                AddEditProductConstants.EXTRA_CACHE_MANAGER_ID
+            ).orEmpty()
+            SaveInstanceCacheManager(requireContext(), cacheManagerId)
+                .put(EXTRA_PRODUCT_INPUT_MODEL, this)
+
+            val intent = Intent().putExtra(
+                AddEditProductConstants.EXTRA_CACHE_MANAGER_ID,
+                cacheManagerId
+            )
+            activity?.setResult(Activity.RESULT_OK, intent)
+            activity?.finish()
         }
     }
 
