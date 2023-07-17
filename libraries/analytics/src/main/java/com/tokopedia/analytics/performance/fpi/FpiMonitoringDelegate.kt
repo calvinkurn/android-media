@@ -50,7 +50,7 @@ class FpiMonitoringDelegateImpl :
         private const val PREF_KEY = "fpi_monitoring_popup"
 
         // base on median of main-app firebase performance
-        private const val WARNING_PERCENTAGE = 40
+        private const val WARNING_PERCENTAGE = 20
         private const val DANGER_PERCENTAGE = 30
         private const val FPS_WARNING = 50
         private const val FPS_DANGER = 30
@@ -181,7 +181,7 @@ class FpiMonitoringDelegateImpl :
 
     // region percentage information
     private fun updatePercentage(fpiData: FpiPerformanceData) {
-        val percentage = fpiData.framePerformanceIndex
+        val percentage = fpiData.jankyFramePercentage
         updatePercentageInfo(percentage = percentage)
         updatePercentageColor(percentage)
     }
