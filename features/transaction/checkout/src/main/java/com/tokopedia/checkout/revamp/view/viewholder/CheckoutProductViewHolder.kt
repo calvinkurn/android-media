@@ -15,7 +15,7 @@ import com.tokopedia.checkout.revamp.view.uimodel.CheckoutProductModel
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant
-import com.tokopedia.purchase_platform.common.databinding.ItemShipmentAddonProductItemBinding
+import com.tokopedia.purchase_platform.common.databinding.ItemAddOnProductBinding
 import com.tokopedia.purchase_platform.common.utils.getHtmlFormat
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.utils.currency.CurrencyFormatUtil
@@ -47,8 +47,58 @@ class CheckoutProductViewHolder(
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private fun renderBundleItem(product: CheckoutProductModel) {
+        hideProductViews()
+        renderGroupInfo(product)
+        renderShopInfo(product)
 
+        bundleBinding.ivProductBundleImage.setImageUrl(product.imageUrl)
+        bundleBinding.tvProductBundleName.text = "${product.quantity} x ${product.name}"
+        if (product.variant.isNotBlank()) {
+            bundleBinding.textVariantBundle.text = product.variant
+            bundleBinding.textVariantBundle.isVisible = true
+        } else {
+            bundleBinding.textVariantBundle.isVisible = false
+        }
+
+        if (product.bundlingItemPosition == 0) {
+            bundleBinding.tvCheckoutBundleName.text = product.bundleTitle
+            val priceInRp =
+                CurrencyFormatUtil.convertPriceValueToIdrFormat(product.bundlePrice, false)
+                    .removeDecimalSuffix()
+            val qty = product.bundleQuantity
+            bundleBinding.tvCheckoutBundlePrice.text = "$qty x $priceInRp"
+            bundleBinding.tvCheckoutBundle.isVisible = true
+            bundleBinding.tvCheckoutBundleSeparator.isVisible = true
+            bundleBinding.tvCheckoutBundleName.isVisible = true
+            bundleBinding.tvCheckoutBundlePrice.isVisible = true
+        } else {
+            bundleBinding.tvCheckoutBundle.isVisible = false
+            bundleBinding.tvCheckoutBundleSeparator.isVisible = false
+            bundleBinding.tvCheckoutBundleName.isVisible = false
+            bundleBinding.tvCheckoutBundlePrice.isVisible = false
+        }
+
+        if (product.noteToSeller.isNotEmpty()) {
+            bundleBinding.tvProductBundleNote.text = "\"${product.noteToSeller}\""
+            bundleBinding.tvProductBundleNote.isVisible = true
+        } else {
+            bundleBinding.tvProductBundleNote.isVisible = false
+        }
+    }
+
+    private fun hideProductViews() {
+        productBinding.apply {
+            ivProductImage.isVisible = false
+            tvProductName.isVisible = false
+            textVariant.isVisible = false
+            tvProductPrice.isVisible = false
+            tvOptionalNoteToSeller.isVisible = false
+            tvCheckoutAddons.isVisible = false
+            tvCheckoutAddonsSeeAll.isVisible = false
+            llAddonProductItems.isVisible = false
+        }
     }
 
     @SuppressLint("SetTextI18n")
@@ -73,7 +123,7 @@ class CheckoutProductViewHolder(
         productBinding.tvProductPrice.text = "$qty x $priceInRp"
 
         if (product.noteToSeller.isNotEmpty()) {
-            productBinding.tvOptionalNoteToSeller.text = product.noteToSeller
+            productBinding.tvOptionalNoteToSeller.text = "\"${product.noteToSeller}\""
             productBinding.tvOptionalNoteToSeller.isVisible = true
         } else {
             productBinding.tvOptionalNoteToSeller.isVisible = false
@@ -171,6 +221,7 @@ class CheckoutProductViewHolder(
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private fun renderAddOnProduct(product: CheckoutProductModel) {
         val addOnProduct = product.addOnProduct
         if (addOnProduct.listAddOnProductData.isEmpty()) {
@@ -196,18 +247,15 @@ class CheckoutProductViewHolder(
             addOnProduct.listAddOnProductData.forEach { addon ->
                 if (addon.addOnDataName.isNotEmpty()) {
                     val addOnView =
-                        ItemShipmentAddonProductItemBinding.inflate(layoutInflater, null, false)
+                        ItemAddOnProductBinding.inflate(layoutInflater, productBinding.llAddonProductItems, false)
                     addOnView.apply {
-                        tvShipmentAddOnName.text = addon.addOnDataName
-                        tvShipmentAddOnName.setOnClickListener {
-                            cbAddonItem.isChecked = cbAddonItem.isChecked.not()
-                        }
-                        tvShipmentAddOnPrice.text = CurrencyFormatUtil
+                        tvProductAddonName.text = addon.addOnDataName
+                        tvProductAddonPrice.text = " (${CurrencyFormatUtil
                             .convertPriceValueToIdrFormat(addon.addOnDataPrice.toLong(), false)
-                            .removeDecimalSuffix()
-                        cbAddonItem.isChecked =
+                            .removeDecimalSuffix()})"
+                        cbProductAddon.isChecked =
                             (addon.addOnDataStatus == AddOnConstant.ADD_ON_PRODUCT_STATUS_CHECK)
-                        cbAddonItem.setOnCheckedChangeListener { _, isChecked ->
+                        cbProductAddon.setOnCheckedChangeListener { _, isChecked ->
                             delayChangeCheckboxAddOnState?.cancel()
                             delayChangeCheckboxAddOnState = GlobalScope.launch(Dispatchers.Main) {
                                 delay(DEBOUNCE_TIME_ADDON)
@@ -226,7 +274,7 @@ class CheckoutProductViewHolder(
                                 }
                             }
                         }
-                        icProductAddonInfo.setOnClickListener {
+                        tvProductAddonName.setOnClickListener {
                             listener.onClickAddonProductInfoIcon(addon.addOnDataInfoLink)
                         }
                     }

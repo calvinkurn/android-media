@@ -576,7 +576,7 @@ class CheckoutFragment : BaseDaggerFragment(), CheckoutAdapterListener, UploadPr
     }
 
     override fun onImpressionAddOnProductService(addonType: Int, productId: String) {
-        TODO("Not yet implemented")
+        // todo
     }
 
     override fun onClickLihatSemuaAddOnProductWidget() {
@@ -590,7 +590,7 @@ class CheckoutFragment : BaseDaggerFragment(), CheckoutAdapterListener, UploadPr
     }
 
     override fun onImpressionAddOnGiftingProductLevel(productId: String) {
-        TODO("Not yet implemented")
+        // todo
     }
 
     override fun openAddOnGiftingOrderLevelBottomSheet(order: CheckoutOrderModel) {
