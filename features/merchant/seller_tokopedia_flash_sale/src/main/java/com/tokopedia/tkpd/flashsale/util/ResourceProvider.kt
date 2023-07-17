@@ -2,6 +2,7 @@ package com.tokopedia.tkpd.flashsale.util
 
 import android.content.Context
 import androidx.annotation.StringRes
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.seller_tokopedia_flash_sale.R
 import javax.inject.Inject
@@ -12,6 +13,7 @@ class ResourceProvider @Inject constructor(@ApplicationContext private val conte
         return try {
             context?.getString(id, *args).orEmpty()
         } catch (t: Throwable) {
+            FirebaseCrashlytics.getInstance().recordException(t)
             null
         }
     }
@@ -28,5 +30,4 @@ class ResourceProvider @Inject constructor(@ApplicationContext private val conte
             content
         }
     }
-
 }
