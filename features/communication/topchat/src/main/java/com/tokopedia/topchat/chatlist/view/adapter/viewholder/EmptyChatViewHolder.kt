@@ -11,8 +11,8 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.analytic.ChatListAnalytic
 import com.tokopedia.topchat.chatlist.view.uimodel.EmptyChatModel
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
-import kotlinx.android.synthetic.main.empty_chat.view.*
 
 /**
  * @author : Steven 2019-08-07
@@ -28,6 +28,7 @@ class EmptyChatViewHolder constructor(
     }
 
     val title: Typography = itemView.findViewById(R.id.title_empty_chat_list)
+    val btnCta: UnifyButton = itemView.findViewById(R.id.btn_cta)
     val subtitle: Typography = itemView.findViewById(R.id.subtitle)
     val image: ImageView = itemView.findViewById(R.id.thumbnail_empty_chat_list)
 
@@ -54,7 +55,7 @@ class EmptyChatViewHolder constructor(
     }
 
     private fun bindCta(element: EmptyChatModel) {
-        itemView.btnCta?.apply {
+        btnCta.apply {
             if (element.ctaText.isEmpty() || element.ctaApplink.isEmpty()) {
                 hide()
             } else {

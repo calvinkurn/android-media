@@ -14,6 +14,11 @@ buildscript {
     }
 }
 
+android {
+    namespace 'com.tokopedia.mapviewer'
+    testNamespace 'com.tokopedia.mapviewer.test'
+}
+
 dependencies {
     implementation rootProject.ext.supportLibDependencies.supportV13
     implementation rootProject.ext.supportLibDependencies.appCompactV7

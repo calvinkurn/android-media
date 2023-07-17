@@ -8,7 +8,7 @@
     android:layout_marginEnd="16dp"
     android:layout_marginBottom="8dp"
     android:text="@string/order_tracking_detail_payment_label"
-    android:textColor="@color/Unify_N700_96"
+    android:textColor="@color/Unify_NN950_96"
     app:layout_constraintTop_toTopOf="parent"
     app:typographyType="display_2"
     app:typographyWeight="bold"/>

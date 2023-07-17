@@ -23,7 +23,7 @@ class TokoChatHistoryChatViewModelTest : TokoChatViewModelTestFixture() {
             } returns MutableLiveData(dummyListMessage)
 
             // When
-            val result = viewModel.getChatHistory(CHANNEL_ID_DUMMY).observeAwaitValue()
+            val result = viewModel.getChatHistory(CHANNEL_ID_DUMMY)?.observeAwaitValue()
 
             // Then
             Assert.assertEquals(dummyListMessage, result)
@@ -39,7 +39,7 @@ class TokoChatHistoryChatViewModelTest : TokoChatViewModelTestFixture() {
             } throws throwableDummy
 
             // When
-            viewModel.getChatHistory(CHANNEL_ID_DUMMY).observeAwaitValue()
+            viewModel.getChatHistory(CHANNEL_ID_DUMMY)?.observeAwaitValue()
 
             // Then
             Assert.assertEquals(

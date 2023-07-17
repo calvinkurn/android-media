@@ -164,7 +164,6 @@ public abstract class SellerRouterApplication extends MainApplication implements
 
     private void initResourceDownloadManager() {
         (new DeferredResourceInitializer()).initializeResourceDownloadManager(context);
-        initIris();
     }
 
     private void initIris() {
@@ -428,13 +427,13 @@ public abstract class SellerRouterApplication extends MainApplication implements
 
     @NotNull
     @Override
-    public Fragment getSomListFragment(@NotNull Context context, @Nullable String tabPage, @NotNull String orderType, @NotNull String searchKeyword, @NotNull String orderId) {
+    public Fragment getSomListFragment(@Nullable String tabPage, @NotNull String orderType, @NotNull String searchKeyword, @NotNull String orderId) {
         Bundle bundle = new Bundle();
-        tabPage = (null == tabPage || "".equals(tabPage)) ? SomConsts.STATUS_NEW_ORDER : tabPage;
+        tabPage = (null == tabPage || "".equals(tabPage)) ? "" : tabPage;
         bundle.putString(SomConsts.TAB_ACTIVE, tabPage);
         bundle.putString(SomConsts.FILTER_ORDER_TYPE, orderType);
         bundle.putString(QUERY_PARAM_SEARCH, searchKeyword);
-        if (DeviceScreenInfo.isTablet(context)) {
+        if (DeviceScreenInfo.isTablet(this)) {
             if (orderId.trim().length() > 0) {
                 bundle.putString(DeeplinkMapperOrder.QUERY_PARAM_ORDER_ID, orderId);
             }
