@@ -136,6 +136,7 @@ ext {
             liveBroadcaster                 : ":features:media:live-broadcaster",
             mediaeditor		                : ":features:media:mediaeditor",
             mediapicker		                : ":features:media:mediapicker",
+            universalEditor		        	: ":features:media:universal-editor",
             mediapickerCommon		        : ":features:media:mediapicker-common",
 
             goldMerchantCommon              : ":features:merchant:gold_merchant_common",
