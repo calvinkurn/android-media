@@ -1,11 +1,13 @@
 package com.tokopedia.checkout.revamp.view
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -17,24 +19,36 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.checkout.databinding.FragmentCheckoutBinding
 import com.tokopedia.checkout.databinding.HeaderCheckoutBinding
+import com.tokopedia.checkout.databinding.ToastRectangleBinding
 import com.tokopedia.checkout.revamp.di.CheckoutModule
 import com.tokopedia.checkout.revamp.di.DaggerCheckoutComponent
 import com.tokopedia.checkout.revamp.view.adapter.CheckoutAdapter
 import com.tokopedia.checkout.revamp.view.adapter.CheckoutAdapterListener
 import com.tokopedia.checkout.revamp.view.adapter.CheckoutDiffUtilCallback
-import com.tokopedia.checkout.revamp.view.uimodel.CheckoutAddressModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPageState
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutProductModel
 import com.tokopedia.checkout.view.ShipmentFragment
 import com.tokopedia.checkout.view.uimodel.ShipmentNewUpsellModel
 import com.tokopedia.loaderdialog.LoaderDialog
+import com.tokopedia.localizationchooseaddress.domain.mapper.TokonowWarehouseMapper
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
+import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.logisticCommon.data.constant.AddEditAddressSource
+import com.tokopedia.logisticCommon.data.constant.AddressConstant
+import com.tokopedia.logisticCommon.data.constant.LogisticConstant
 import com.tokopedia.logisticCommon.data.constant.ManageAddressSource
+import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
+import com.tokopedia.logisticCommon.data.entity.address.Token
+import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass
+import com.tokopedia.logisticCommon.util.PinpointRolloutHelper
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics
+import com.tokopedia.purchase_platform.common.constant.CartConstant
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
 import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException
 import com.tokopedia.purchase_platform.common.feature.addons.data.model.AddOnProductDataItemModel
@@ -200,11 +214,16 @@ class CheckoutFragment : BaseDaggerFragment(), CheckoutAdapterListener, UploadPr
         )
     }
 
+    @SuppressLint("SetTextI18n")
     private fun observeData() {
         viewModel.listData.observe(viewLifecycleOwner) {
             val diffResult = DiffUtil.calculateDiff(CheckoutDiffUtilCallback(it, adapter.list))
             adapter.list = it
             diffResult.dispatchUpdatesTo(adapter)
+
+            it.address()?.recipientAddressModel?.also {address ->
+                header.tvCheckoutHeaderAddressName.text = "${address.addressName} • ${address.recipientName}"
+            }
         }
 
         viewModel.pageState.observe(viewLifecycleOwner) {
@@ -236,6 +255,29 @@ class CheckoutFragment : BaseDaggerFragment(), CheckoutAdapterListener, UploadPr
                 }
 
                 is CheckoutPageState.NoAddress -> {
+                    val token = Token()
+                    token.ut = it.cartShipmentAddressFormData.keroUnixTime
+                    token.districtRecommendation = it.cartShipmentAddressFormData.keroDiscomToken
+                    if (it.eligible) {
+                        val intent =
+                            RouteManager.getIntent(activity, ApplinkConstInternalLogistic.ADD_ADDRESS_V3)
+                        intent.putExtra(CheckoutConstant.KERO_TOKEN, token)
+                        intent.putExtra(
+                            ChooseAddressBottomSheet.EXTRA_REF,
+                            CartConstant.SCREEN_NAME_CART_NEW_USER
+                        )
+                        intent.putExtra(ApplinkConstInternalLogistic.PARAM_SOURCE, AddEditAddressSource.CART.source)
+                        startActivityForResult(intent, LogisticConstant.ADD_NEW_ADDRESS_CREATED_FROM_EMPTY)
+                    } else {
+                        val intent =
+                            RouteManager.getIntent(activity, ApplinkConstInternalLogistic.ADD_ADDRESS_V2)
+                        intent.putExtra(CheckoutConstant.KERO_TOKEN, token)
+                        intent.putExtra(
+                            ChooseAddressBottomSheet.EXTRA_REF,
+                            CartConstant.SCREEN_NAME_CART_NEW_USER
+                        )
+                        startActivityForResult(intent, LogisticConstant.ADD_NEW_ADDRESS_CREATED_FROM_EMPTY)
+                    }
                 }
 
                 is CheckoutPageState.NoMatchedAddress -> {
@@ -281,13 +323,21 @@ class CheckoutFragment : BaseDaggerFragment(), CheckoutAdapterListener, UploadPr
             CheckoutConstant.REQUEST_CODE_CHECKOUT_ADDRESS -> {
                 onResultFromRequestCodeAddressOptions(resultCode, data)
             }
+
+            LogisticConstant.ADD_NEW_ADDRESS_CREATED_FROM_EMPTY -> {
+                onResultFromAddNewAddress(resultCode, data)
+            }
+
+            REQUEST_CODE_COURIER_PINPOINT -> {
+                onResultFromCourierPinpoint(resultCode, data)
+            }
         }
     }
 
     private fun onResultFromRequestCodeAddressOptions(resultCode: Int, data: Intent?) {
         when (resultCode) {
             CheckoutConstant.RESULT_CODE_ACTION_CHECKOUT_CHANGE_ADDRESS -> {
-                val currentAddress = viewModel.listData.value.firstOrNullInstanceOf(CheckoutAddressModel::class.java)?.recipientAddressModel
+                val currentAddress = viewModel.listData.value.address()?.recipientAddressModel
                 val chosenAddressModel =
                     data!!.getParcelableExtra<ChosenAddressModel>(CheckoutConstant.EXTRA_SELECTED_ADDRESS_DATA)
                 if (currentAddress != null && chosenAddressModel != null) {
@@ -311,6 +361,85 @@ class CheckoutFragment : BaseDaggerFragment(), CheckoutAdapterListener, UploadPr
         }
     }
 
+    private fun onResultFromAddNewAddress(resultCode: Int, data: Intent?) {
+        val activity: Activity? = activity
+        if (activity != null) {
+            if (resultCode == Activity.RESULT_CANCELED) {
+                activity.finish()
+            } else {
+                if (data != null) {
+                    val addressDataModel = data.getParcelableExtra<SaveAddressDataModel>(
+                        LogisticConstant.EXTRA_ADDRESS_NEW
+                    )
+                    addressDataModel?.let { updateLocalCacheAddressData(it) }
+                }
+                viewModel.loadSAF(
+                    isReloadData = false,
+                    skipUpdateOnboardingState = false,
+                    isReloadAfterPriceChangeHigher = false
+                )
+            }
+        }
+    }
+
+    @Suppress("ImplicitDefaultLocale")
+    private fun updateLocalCacheAddressData(saveAddressDataModel: SaveAddressDataModel) {
+        val activity: Activity? = activity
+        if (activity != null) {
+            ChooseAddressUtils.updateLocalizingAddressDataFromOther(
+                activity,
+                saveAddressDataModel.id.toString(),
+                saveAddressDataModel.cityId.toString(),
+                saveAddressDataModel.districtId.toString(),
+                saveAddressDataModel.latitude,
+                saveAddressDataModel.longitude,
+                String.format(
+                    "%s %s",
+                    saveAddressDataModel.addressName,
+                    saveAddressDataModel.receiverName
+                ),
+                saveAddressDataModel.postalCode,
+                saveAddressDataModel.shopId.toString(),
+                saveAddressDataModel.warehouseId.toString(),
+                TokonowWarehouseMapper.mapWarehousesAddAddressModelToLocal(saveAddressDataModel.warehouses),
+                saveAddressDataModel.serviceType,
+                ""
+            )
+        }
+    }
+
+    private fun onResultFromCourierPinpoint(resultCode: Int, data: Intent?) {
+        if (resultCode == Activity.RESULT_OK && data!!.extras != null) {
+            val locationPass = getLocationPassFromIntent(data)
+            if (locationPass != null) {
+                viewModel.editAddressPinpoint(
+                    locationPass.latitude,
+                    locationPass.longitude,
+                    locationPass
+                )
+            }
+        } else {
+//            shipmentAdapter.lastServiceId = 0
+        }
+    }
+
+    private fun getLocationPassFromIntent(data: Intent): LocationPass? {
+        var locationPass =
+            data.extras!!.getParcelable<LocationPass>(LogisticConstant.EXTRA_EXISTING_LOCATION)
+        if (locationPass == null) {
+            val addressData =
+                data.getParcelableExtra<SaveAddressDataModel>(AddressConstant.EXTRA_SAVE_DATA_UI_MODEL)
+            if (addressData != null) {
+                locationPass = LocationPass()
+                locationPass.latitude = addressData.latitude
+                locationPass.longitude = addressData.longitude
+                locationPass.districtName = addressData.districtName
+                locationPass.cityName = addressData.cityName
+            }
+        }
+        return locationPass
+    }
+
     fun showLoading() {
         if (context != null && loader?.dialog?.isShowing != true) {
             loader = LoaderDialog(context!!)
@@ -324,7 +453,59 @@ class CheckoutFragment : BaseDaggerFragment(), CheckoutAdapterListener, UploadPr
         }
     }
 
+    fun navigateToSetPinpoint(message: String, locationPass: LocationPass?) {
+//        sendAnalyticsOnClickEditPinPointErrorValidation(message)
+        if (view != null) {
+            val toastRectangleBinding = ToastRectangleBinding.inflate(layoutInflater, null, false)
+            toastRectangleBinding.tvMessage.text = message
+            val toast = Toast(activity)
+            toast.duration = Toast.LENGTH_LONG
+            toast.view = toastRectangleBinding.root
+            toast.show()
+        } else {
+            Toast.makeText(activity, message, Toast.LENGTH_LONG).show()
+        }
+        if (activity != null) {
+            navigateToPinpointActivity(locationPass)
+        }
+    }
+
+    private fun navigateToPinpointActivity(locationPass: LocationPass?) {
+        val activity: Activity? = activity
+        if (activity != null) {
+            if (PinpointRolloutHelper.eligibleForRevamp(activity, true)) {
+                val bundle = Bundle()
+                bundle.putBoolean(AddressConstant.EXTRA_IS_GET_PINPOINT_ONLY, true)
+                if (locationPass?.latitude != null &&
+                    locationPass.latitude.isNotEmpty() && locationPass.longitude != null &&
+                    locationPass.longitude.isNotEmpty()
+                ) {
+                    bundle.putDouble(AddressConstant.EXTRA_LAT, locationPass.latitude.toDouble())
+                    bundle.putDouble(
+                        AddressConstant.EXTRA_LONG,
+                        locationPass.longitude.toDouble()
+                    )
+                }
+                bundle.putString(AddressConstant.EXTRA_CITY_NAME, locationPass?.cityName)
+                bundle.putString(AddressConstant.EXTRA_DISTRICT_NAME, locationPass?.districtName)
+                val intent = RouteManager.getIntent(activity, ApplinkConstInternalLogistic.PINPOINT)
+                intent.putExtra(AddressConstant.EXTRA_BUNDLE, bundle)
+                startActivityForResult(intent, REQUEST_CODE_COURIER_PINPOINT)
+            } else {
+                val intent =
+                    RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.GEOLOCATION)
+                val bundle = Bundle()
+                bundle.putParcelable(LogisticConstant.EXTRA_EXISTING_LOCATION, locationPass)
+                bundle.putBoolean(LogisticConstant.EXTRA_IS_FROM_MARKETPLACE_CART, true)
+                intent.putExtras(bundle)
+                startActivityForResult(intent, REQUEST_CODE_COURIER_PINPOINT)
+            }
+        }
+    }
+
     companion object {
+
+        private const val REQUEST_CODE_COURIER_PINPOINT = 13
 
         fun newInstance(
             isOneClickShipment: Boolean,
@@ -418,6 +599,10 @@ class CheckoutFragment : BaseDaggerFragment(), CheckoutAdapterListener, UploadPr
 
     override fun addOnGiftingOrderLevelImpression(products: List<CheckoutProductModel>) {
         TODO("Not yet implemented")
+    }
+
+    override fun onChangeShippingDuration() {
+
     }
 
     // endregion

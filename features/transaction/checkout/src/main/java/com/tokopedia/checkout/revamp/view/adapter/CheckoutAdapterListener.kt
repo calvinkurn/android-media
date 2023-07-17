@@ -17,7 +17,12 @@ interface CheckoutAdapterListener {
 
     fun onViewFreeShippingPlusBadge()
 
-    fun onCheckboxAddonProductListener(isChecked: Boolean, addOnProductDataItemModel: AddOnProductDataItemModel, product: CheckoutProductModel, bindingAdapterPosition: Int)
+    fun onCheckboxAddonProductListener(
+        isChecked: Boolean,
+        addOnProductDataItemModel: AddOnProductDataItemModel,
+        product: CheckoutProductModel,
+        bindingAdapterPosition: Int
+    )
 
     fun onClickAddonProductInfoIcon(addOnDataInfoLink: String)
 
@@ -33,9 +38,9 @@ interface CheckoutAdapterListener {
 
     fun onImpressionAddOnGiftingProductLevel(productId: String)
 
-    fun openAddOnGiftingOrderLevelBottomSheet(
-        order: CheckoutOrderModel
-    )
+    fun openAddOnGiftingOrderLevelBottomSheet(order: CheckoutOrderModel)
 
     fun addOnGiftingOrderLevelImpression(products: List<CheckoutProductModel>)
+
+    fun onChangeShippingDuration()
 }

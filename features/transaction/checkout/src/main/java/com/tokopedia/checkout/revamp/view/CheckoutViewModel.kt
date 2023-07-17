@@ -30,6 +30,7 @@ import com.tokopedia.checkout.view.converter.ShipmentDataRequestConverter
 import com.tokopedia.checkout.view.uimodel.ShipmentAddOnSummaryModel
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
+import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
@@ -97,7 +98,7 @@ class CheckoutViewModel @Inject constructor(
         get() = recipientAddressModel.cornerId
 
     val recipientAddressModel: RecipientAddressModel
-        get() = (listData.value.firstOrNull { it is CheckoutAddressModel } as? CheckoutAddressModel)?.recipientAddressModel
+        get() = listData.value.address()?.recipientAddressModel
             ?: RecipientAddressModel()
 
     private var isUsingDdp = false
@@ -210,6 +211,10 @@ class CheckoutViewModel @Inject constructor(
                     ) + items + epharmacy + promo + cost + buttonPayment
                     pageState.value = saf
                 }
+            } else if (saf is CheckoutPageState.CheckNoAddress) {
+                logisticProcessor.checkIsUserEligibleForRevampAna(saf.cartShipmentAddressFormData) { checkoutPageState: CheckoutPageState ->
+                    pageState.value = checkoutPageState
+                }
             } else {
                 withContext(dispatchers.main) {
                     pageState.value = saf
@@ -219,9 +224,11 @@ class CheckoutViewModel @Inject constructor(
         }
     }
 
-    fun changeAddress(newRecipientAddressModel: RecipientAddressModel?,
-                      chosenAddressModel: ChosenAddressModel?,
-                      isHandleFallback: Boolean) {
+    fun changeAddress(
+        newRecipientAddressModel: RecipientAddressModel?,
+        chosenAddressModel: ChosenAddressModel?,
+        isHandleFallback: Boolean
+    ) {
         viewModelScope.launch(dispatchers.immediate) {
             pageState.value = CheckoutPageState.Loading
             val changeAddressResult = cartProcessor.changeShippingAddress(
@@ -232,13 +239,24 @@ class CheckoutViewModel @Inject constructor(
                 isTradeIn
             )
             if (changeAddressResult.isSuccess) {
-                commonToaster.emit(CheckoutPageToaster(Toaster.TYPE_NORMAL, changeAddressResult.toasterMessage))
+                commonToaster.emit(
+                    CheckoutPageToaster(
+                        Toaster.TYPE_NORMAL,
+                        changeAddressResult.toasterMessage
+                    )
+                )
                 loadSAF(true, true, false)
             } else {
-                commonToaster.emit(CheckoutPageToaster(Toaster.TYPE_ERROR, changeAddressResult.toasterMessage, changeAddressResult.throwable))
+                commonToaster.emit(
+                    CheckoutPageToaster(
+                        Toaster.TYPE_ERROR,
+                        changeAddressResult.toasterMessage,
+                        changeAddressResult.throwable
+                    )
+                )
                 pageState.value = CheckoutPageState.Normal
                 if (isHandleFallback) {
-                    val address = listData.value.firstOrNullInstanceOf(CheckoutAddressModel::class.java)?.recipientAddressModel
+                    val address = listData.value.address()?.recipientAddressModel
                     if (address != null) {
                         if (address.selectedTabIndex == RecipientAddressModel.TAB_ACTIVE_ADDRESS_DEFAULT) {
                             address.selectedTabIndex =
@@ -256,6 +274,22 @@ class CheckoutViewModel @Inject constructor(
         }
     }
 
+    fun editAddressPinpoint(
+        latitude: String,
+        longitude: String,
+        locationPass: LocationPass?
+    ) {
+        viewModelScope.launch(dispatchers.immediate) {
+            pageState.value = CheckoutPageState.Loading
+            val editAddressResult =
+                logisticProcessor.editAddressPinpoint(latitude, longitude, recipientAddressModel)
+            pageState.value = CheckoutPageState.Normal
+            if (editAddressResult.isSuccess) {
+
+            }
+        }
+    }
+
     override fun onCleared() {
         super.onCleared()
         Log.i("qwertyuiop", "done clear")
@@ -267,8 +301,14 @@ class CheckoutViewModel @Inject constructor(
     }
 }
 
-internal fun<R> List<CheckoutItem>.firstOrNullInstanceOf(kClass: Class<R>): R? {
+internal fun <R> List<CheckoutItem>.firstOrNullInstanceOf(kClass: Class<R>): R? {
     val item = firstOrNull { kClass.isInstance(it) }
     @Suppress("UNCHECKED_CAST")
     return item as? R
+}
+
+internal fun List<CheckoutItem>.address(): CheckoutAddressModel? {
+    val item = getOrNull(1)
+    @Suppress("UNCHECKED_CAST")
+    return item as? CheckoutAddressModel
 }
