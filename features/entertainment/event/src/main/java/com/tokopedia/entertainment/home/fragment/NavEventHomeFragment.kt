@@ -196,7 +196,7 @@ class NavEventHomeFragment :
 
         val navIcon = toolbar_home.navigationIcon
 
-        context?.let { ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N700_96) }?.let {
+        context?.let { ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_NN950_96) }?.let {
             navIcon?.setColorFilter(it, PorterDuff.Mode.SRC_ATOP)
         }
         (activity as EventNavigationActivity).supportActionBar?.setHomeAsUpIndicator(navIcon)

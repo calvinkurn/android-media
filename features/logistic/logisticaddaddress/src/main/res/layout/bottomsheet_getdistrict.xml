@@ -64,7 +64,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentLeft="true"
-                android:textColor="@color/Unify_N700_96"
+                android:textColor="@color/Unify_NN950_96"
                 android:textSize="16sp"
                 android:textStyle="bold"
                 app:typographyType="body_1"
@@ -82,8 +82,8 @@
                 android:layout_marginRight="8dp"
                 android:contentDescription="@string/research_description"
                 android:visibility="visible"
-                app:icon_color_light_enable="@color/Unify_N700_68"
-                app:icon_color_night_enable="@color/Unify_N700_68"
+                app:icon_color_light_enable="@color/Unify_NN950_68"
+                app:icon_color_night_enable="@color/Unify_NN950_68"
                 app:icon_name="SEARCH" />
 
         </RelativeLayout>
@@ -93,7 +93,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:textColor="@color/Unify_N700_68"
+            android:textColor="@color/Unify_NN950_68"
             android:textSize="12sp"
             app:typographyType="body_3"
             tools:text="Wirogunan Mergangsan Kota Yogyakarta Daerah Istimewa Yogyakarta" />
@@ -126,7 +126,7 @@
                     android:overScrollMode="always"
                     android:scrollbarStyle="insideInset"
                     android:scrollbars="vertical"
-                    android:textColor="@color/Unify_N700_68"
+                    android:textColor="@color/Unify_NN950_68"
                     android:textSize="15sp" />
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -147,7 +147,7 @@
                     android:paddingEnd="2dp"
                     android:paddingRight="2dp"
                     android:text="@string/tv_detail_address_placeholder"
-                    android:textColor="@color/Unify_N700_68"
+                    android:textColor="@color/Unify_NN950_68"
                     android:textSize="12sp"
                     app:typographyType="body_3" />
 
@@ -161,7 +161,7 @@
                     android:paddingLeft="2dp"
                     android:paddingEnd="2dp"
                     android:paddingRight="2dp"
-                    android:textColor="@color/Unify_N700_68"
+                    android:textColor="@color/Unify_NN950_68"
                     android:textSize="12sp" />
 
             </RelativeLayout>
@@ -207,7 +207,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentLeft="true"
-                android:textColor="@color/Unify_N700_96"
+                android:textColor="@color/Unify_NN950_96"
                 app:typographyType="heading_4"
                 tools:text="@string/invalid_title" />
 
@@ -223,8 +223,8 @@
                 android:layout_marginRight="8dp"
                 android:contentDescription="@string/research_description"
                 android:visibility="visible"
-                app:icon_color_light_enable="@color/Unify_N700_68"
-                app:icon_color_night_enable="@color/Unify_N700_68"
+                app:icon_color_light_enable="@color/Unify_NN950_68"
+                app:icon_color_night_enable="@color/Unify_NN950_68"
                 app:icon_name="SEARCH" />
 
         </RelativeLayout>
@@ -234,7 +234,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:textColor="@color/Unify_N700_68"
+            android:textColor="@color/Unify_NN950_68"
             app:typographyType="body_3"
             tools:text="Tenang, kamu tetap dapat memilih lokasi ini dengan menambahkan detail..." />
 

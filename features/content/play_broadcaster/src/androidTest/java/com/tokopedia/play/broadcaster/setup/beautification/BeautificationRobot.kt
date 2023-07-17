@@ -123,6 +123,7 @@ class BeautificationRobot {
         } returns channelPausedResponse
 
         launch()
+            .performDelay(1000)
             .clickDialogPrimaryCTA()
 
     }

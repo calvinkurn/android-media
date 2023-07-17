@@ -5,7 +5,7 @@
     android:viewportHeight="25">
     <path
         android:fillAlpha="0.68"
-        android:fillColor="@color/Unify_N700"
+        android:fillColor="@color/Unify_NN950"
         android:pathData="M12.234,0.563L12.234,0.563A12,12 0,0 1,24.234 12.563L24.234,12.563A12,12 0,0 1,12.234 24.563L12.234,24.563A12,12 0,0 1,0.234 12.563L0.234,12.563A12,12 0,0 1,12.234 0.563z"
         android:strokeAlpha="0.68" />
     <path

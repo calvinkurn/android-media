@@ -17,20 +17,22 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.media.editor.analytics.editorhome.EditorHomeAnalytics
 import com.tokopedia.media.editor.analytics.getToolEditorText
-import com.tokopedia.media.editor.R as editorR
 import com.tokopedia.media.editor.base.BaseEditorFragment
 import com.tokopedia.media.editor.data.FeatureToggleManager
 import com.tokopedia.media.editor.databinding.FragmentMainEditorBinding
 import com.tokopedia.media.editor.ui.activity.detail.DetailEditorActivity
 import com.tokopedia.media.editor.ui.activity.main.EditorViewModel
 import com.tokopedia.media.editor.ui.component.DrawerUiComponent
-import com.tokopedia.media.editor.ui.widget.EditorViewPager
 import com.tokopedia.media.editor.ui.component.ToolsUiComponent
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorUiModel
-import com.tokopedia.media.editor.utils.*
+import com.tokopedia.media.editor.ui.widget.EditorViewPager
+import com.tokopedia.media.editor.utils.cropCenterImage
+import com.tokopedia.media.editor.utils.getImageSize
+import com.tokopedia.media.editor.utils.showErrorLoadToaster
 import com.tokopedia.media.loader.loadImageWithEmptyTarget
 import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
+import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
 import com.tokopedia.picker.common.ImageRatioType
 import com.tokopedia.picker.common.basecomponent.uiComponent
 import com.tokopedia.picker.common.types.EditorToolType
@@ -38,6 +40,7 @@ import com.tokopedia.picker.common.utils.isVideoFormat
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
+import com.tokopedia.media.editor.R as editorR
 
 class EditorFragment @Inject constructor(
     private val editorHomeAnalytics: EditorHomeAnalytics,
@@ -59,6 +62,16 @@ class EditorFragment @Inject constructor(
 
     fun isShowDialogConfirmation(): Boolean {
         return viewModel.getEditState(activeImageUrl)?.editList?.isNotEmpty() ?: false
+    }
+
+    override fun onPause() {
+        viewBinding?.viewPager?.releaseImage()
+        super.onPause()
+    }
+
+    override fun onResume() {
+        viewBinding?.viewPager?.reloadImage()
+        super.onResume()
     }
 
     override fun onCreateView(
@@ -123,9 +136,20 @@ class EditorFragment @Inject constructor(
         if (data.editList.size == 0 && !data.isVideo) {
             val filePath = data.getOriginalUrl()
 
+            getImageSize(filePath).let {
+                val (width, height) = it
+                if (viewModel.isMemoryOverflow(width, height)) {
+                    loader?.dismiss()
+                    activity?.finish()
+                    return
+                }
+            }
+
             loadImageWithEmptyTarget(requireContext(),
                 filePath,
                 properties = {
+                    useCache(IS_USING_CACHE)
+                    setCacheStrategy(CACHE_STRATEGY)
                     listener(
                         onError = {
                             it?.let { exception ->
@@ -162,23 +186,25 @@ class EditorFragment @Inject constructor(
     private fun imageCrop(bitmap: Bitmap, originalPath: String) {
         val cropRatio = viewModel.editorParam.value?.autoCropRatio() ?: ImageRatioType.RATIO_1_1
         val imageRatio = bitmap.width.toFloat() / bitmap.height
-        if (viewModel.isMemoryOverflow(bitmap.width, bitmap.height)) {
-            activity?.finish()
-        }
-        cropCenterImage(bitmap, cropRatio)?.apply {
-            viewModel.saveToCache(
-                first,
-                sourcePath = originalPath
-            )?.apply {
-                val newEditorDetailUiModel = EditorDetailUiModel(
-                    originalUrl = originalPath,
-                    editorToolType = EditorToolType.CROP,
-                    resultUrl = this.absolutePath,
-                    originalRatio = imageRatio
-                )
 
-                newEditorDetailUiModel.cropRotateValue = second
-                viewModel.addEditState(originalPath, newEditorDetailUiModel, false)
+        cropCenterImage(bitmap, cropRatio)?.let { cropRotateData ->
+            viewModel.cropImage(bitmap, cropRotateData)?.let { croppedBitmap ->
+                viewModel.saveToCache(
+                    croppedBitmap,
+                    sourcePath = originalPath
+                )?.let {
+                    croppedBitmap.recycle()
+
+                    val newEditorDetailUiModel = EditorDetailUiModel(
+                        originalUrl = originalPath,
+                        editorToolType = EditorToolType.CROP,
+                        resultUrl = it.absolutePath,
+                        originalRatio = imageRatio
+                    )
+
+                    newEditorDetailUiModel.cropRotateValue = cropRotateData
+                    viewModel.addEditState(originalPath, newEditorDetailUiModel, false)
+                }
             }
         }
     }
@@ -446,6 +472,9 @@ class EditorFragment @Inject constructor(
         private const val TOAST_REDO = 1
         private const val UNDO_REDO_NOTIFY_TIME = 1500L
         private const val NANO_DIVIDER = 1000000
+
+        const val IS_USING_CACHE = false
+        val CACHE_STRATEGY = MediaCacheStrategy.NONE
     }
 
 }

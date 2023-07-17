@@ -47,6 +47,8 @@ object UniversalShareConst {
 
         // using image that generated from the image generator
         const val KEY_CONTEXTUAL_IMAGE = "contextual_image"
+
+        const val MEDIA_VALUE_PLACEHOLDER = "{media_image}"
     }
 
     object SizeScreenShoot {
