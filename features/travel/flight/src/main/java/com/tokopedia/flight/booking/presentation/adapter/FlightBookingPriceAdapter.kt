@@ -6,9 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.flight.booking.data.FlightPriceDetailEntity
 import com.tokopedia.flight.common.util.FlightCurrencyFormatUtil
 import com.tokopedia.flight.databinding.ItemFlightBookingV3PriceBinding
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
-import com.tokopedia.kotlin.extensions.view.show
 
 /**
  * @author by jessica on 2019-11-04
@@ -17,7 +15,7 @@ import com.tokopedia.kotlin.extensions.view.show
 class FlightBookingPriceAdapter(
     private var priceListener: PriceListener? = null,
     private var priceDetailInfoListener: PriceDetailInfoListener? = null
-): RecyclerView.Adapter<FlightBookingPriceAdapter.ViewHolder>() {
+) : RecyclerView.Adapter<FlightBookingPriceAdapter.ViewHolder>() {
 
     var routePriceList: List<FlightPriceDetailEntity> = listOf()
     var amenityPriceList: List<FlightPriceDetailEntity> = listOf()
@@ -27,23 +25,27 @@ class FlightBookingPriceAdapter(
     var routePriceCount: Int = 0
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
-            ViewHolder(
-                ItemFlightBookingV3PriceBinding.inflate(
-                    LayoutInflater.from(parent.context),
-                    parent,
-                    false
-                ),
-                priceDetailInfoListener
-            )
+        ViewHolder(
+            ItemFlightBookingV3PriceBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent,
+                false
+            ),
+            priceDetailInfoListener
+        )
 
     override fun getItemCount(): Int = routePriceList.size + othersPriceList.size + amenityPriceList.size + adminPriceList.size
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        if (position < routePriceList.size) holder.bind(routePriceList[position])
-        else if (position < amenityPriceList.size + routePriceList.size) holder.bind(amenityPriceList[position - routePriceList.size])
-        else if (position < othersPriceList.size + amenityPriceList.size + routePriceList.size)
+        if (position < routePriceList.size) {
+            holder.bind(routePriceList[position])
+        } else if (position < amenityPriceList.size + routePriceList.size) {
+            holder.bind(amenityPriceList[position - routePriceList.size])
+        } else if (position < othersPriceList.size + amenityPriceList.size + routePriceList.size) {
             holder.bind(othersPriceList[position - routePriceList.size - amenityPriceList.size])
-        else holder.bind(adminPriceList[position - routePriceList.size - amenityPriceList.size - othersPriceList.size])
+        } else {
+            holder.bind(adminPriceList[position - routePriceList.size - amenityPriceList.size - othersPriceList.size])
+        }
     }
 
     fun updateRoutePriceList(list: List<FlightPriceDetailEntity>) {
@@ -88,7 +90,7 @@ class FlightBookingPriceAdapter(
     class ViewHolder(
         private val binding: ItemFlightBookingV3PriceBinding,
         private val priceDetailInfoListener: PriceDetailInfoListener?
-    ): RecyclerView.ViewHolder(binding.root) {
+    ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(price: FlightPriceDetailEntity) {
             with(binding) {
@@ -96,24 +98,23 @@ class FlightBookingPriceAdapter(
                 tvPriceAmount.text = price.price
 
                 iconPriceDetailInfo.shouldShowWithAction(price.popUpTitle.isNotEmpty() && price.popUpDescription.isNotEmpty()) {
-                    priceDetailInfoListener?.onInfoIconClick(price)
+                    iconPriceDetailInfo.setOnClickListener {
+                        priceDetailInfoListener?.onInfoIconClick(price)
+                    }
                 }
             }
         }
-
 
         companion object {
             val LAYOUT = com.tokopedia.flight.R.layout.item_flight_booking_v3_price
         }
     }
 
-    interface PriceListener{
+    interface PriceListener {
         fun onPriceChangeListener(totalPrice: String, totalPriceNumeric: Int)
     }
 
     interface PriceDetailInfoListener {
         fun onInfoIconClick(priceDetail: FlightPriceDetailEntity)
     }
-
 }
-

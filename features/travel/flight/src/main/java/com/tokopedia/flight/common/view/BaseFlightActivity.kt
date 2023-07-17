@@ -11,7 +11,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.common.travel.widget.TravelMenuBottomSheet
 import com.tokopedia.flight.FlightComponentInstance
 import com.tokopedia.flight.R
-import com.tokopedia.flight.common.constant.FlightUrl
+import com.tokopedia.flight.booking.constant.FlightUrl
 import com.tokopedia.flight.common.di.component.FlightComponent
 import com.tokopedia.flight.common.util.FlightAnalytics
 import com.tokopedia.user.session.UserSessionInterface
@@ -20,7 +20,8 @@ import javax.inject.Inject
 /**
  * @author by furqan on 10/06/2021
  */
-abstract class BaseFlightActivity : BaseSimpleActivity(),
+abstract class BaseFlightActivity :
+    BaseSimpleActivity(),
     TravelMenuBottomSheet.TravelMenuListener {
 
     @Inject

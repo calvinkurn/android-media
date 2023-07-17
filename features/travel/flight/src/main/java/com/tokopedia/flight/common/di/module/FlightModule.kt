@@ -9,8 +9,8 @@ import com.tokopedia.abstraction.common.di.scope.ApplicationScope
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor
 import com.tokopedia.common.travel.utils.TrackingCrossSellUtil
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.flight.booking.constant.FlightUrl
 import com.tokopedia.flight.cancellation.data.FlightCancellationCloudDataSource
-import com.tokopedia.flight.common.constant.FlightUrl
 import com.tokopedia.flight.common.data.model.FlightErrorResponse
 import com.tokopedia.flight.common.data.repository.FlightRepositoryImpl
 import com.tokopedia.flight.common.data.source.cloud.api.FlightApi
@@ -19,7 +19,6 @@ import com.tokopedia.flight.common.di.qualifier.FlightChuckQualifier
 import com.tokopedia.flight.common.di.qualifier.FlightQualifier
 import com.tokopedia.flight.common.di.scope.FlightScope
 import com.tokopedia.flight.common.domain.FlightRepository
-import com.tokopedia.flight.resend_eticket.domain.FlightOrderResendEmailUseCase
 import com.tokopedia.flight.search.data.FlightRouteDao
 import com.tokopedia.flight.search.data.cache.db.FlightSearchRoomDb
 import com.tokopedia.flight.search.data.cache.db.dao.FlightComboDao
@@ -126,8 +125,7 @@ class FlightModule {
 
     @FlightScope
     @Provides
-    fun provideFlightRepository(flightCancellationCloudDataSource: FlightCancellationCloudDataSource)
-            : FlightRepository =
+    fun provideFlightRepository(flightCancellationCloudDataSource: FlightCancellationCloudDataSource): FlightRepository =
         FlightRepositoryImpl(flightCancellationCloudDataSource)
 
     @FlightScope

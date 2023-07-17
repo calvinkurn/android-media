@@ -1,4 +1,4 @@
-package com.tokopedia.flight.common.constant
+package com.tokopedia.flight.booking.constant
 
 import com.tokopedia.url.TokopediaUrl
 

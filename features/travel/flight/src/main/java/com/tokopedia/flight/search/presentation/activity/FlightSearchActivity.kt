@@ -16,9 +16,9 @@ import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.flight.R
 import com.tokopedia.flight.airport.presentation.model.FlightAirportModel
+import com.tokopedia.flight.booking.constant.FlightFlowConstant
+import com.tokopedia.flight.booking.constant.FlightFlowExtraConstant
 import com.tokopedia.flight.booking.presentation.activity.FlightBookingActivity
-import com.tokopedia.flight.common.constant.FlightFlowConstant
-import com.tokopedia.flight.common.constant.FlightFlowExtraConstant
 import com.tokopedia.flight.common.util.FlightAnalyticsCategory
 import com.tokopedia.flight.common.util.FlightAnalyticsDefaults
 import com.tokopedia.flight.common.util.FlightAnalyticsScreenName

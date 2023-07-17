@@ -7,7 +7,7 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.flight.FlightComponentInstance
-import com.tokopedia.flight.common.constant.FlightUrl.FLIGHT_HOMEPAGE_HELP_URL
+import com.tokopedia.flight.booking.constant.FlightUrl.FLIGHT_HOMEPAGE_HELP_URL
 import com.tokopedia.flight.common.view.BaseFlightActivity
 import com.tokopedia.flight.homepage.di.DaggerFlightHomepageComponent
 import com.tokopedia.flight.homepage.di.FlightHomepageComponent
@@ -25,17 +25,21 @@ class FlightHomepageActivity : BaseFlightActivity(), HasComponent<FlightHomepage
     override fun onCreate(savedInstanceState: Bundle?) {
         intent.data?.let {
             if (!it.getQueryParameter(EXTRA_TRIP).isNullOrEmpty() &&
-                    !it.getQueryParameter(EXTRA_ADULT).isNullOrEmpty() &&
-                    !it.getQueryParameter(EXTRA_CHILD).isNullOrEmpty() &&
-                    !it.getQueryParameter(EXTRA_INFANT).isNullOrEmpty() &&
-                    !it.getQueryParameter(EXTRA_CLASS).isNullOrEmpty()) {
+                !it.getQueryParameter(EXTRA_ADULT).isNullOrEmpty() &&
+                !it.getQueryParameter(EXTRA_CHILD).isNullOrEmpty() &&
+                !it.getQueryParameter(EXTRA_INFANT).isNullOrEmpty() &&
+                !it.getQueryParameter(EXTRA_CLASS).isNullOrEmpty()
+            ) {
                 extrasTrip = it.getQueryParameter(EXTRA_TRIP) ?: ""
                 extrasAdult = it.getQueryParameter(EXTRA_ADULT) ?: ""
                 extrasChild = it.getQueryParameter(EXTRA_CHILD) ?: ""
                 extrasInfant = it.getQueryParameter(EXTRA_INFANT) ?: ""
                 extrasClass = it.getQueryParameter(EXTRA_CLASS) ?: ""
-                extrasAutoSearch = if (!it.getQueryParameter(EXTRA_AUTO_SEARCH).isNullOrEmpty())
-                    it.getQueryParameter(EXTRA_AUTO_SEARCH) ?: "0" else "0"
+                extrasAutoSearch = if (!it.getQueryParameter(EXTRA_AUTO_SEARCH).isNullOrEmpty()) {
+                    it.getQueryParameter(EXTRA_AUTO_SEARCH) ?: "0"
+                } else {
+                    "0"
+                }
             }
         }
 
@@ -43,25 +47,26 @@ class FlightHomepageActivity : BaseFlightActivity(), HasComponent<FlightHomepage
     }
 
     override fun getNewFragment(): Fragment =
-            if (extrasTrip.isNotEmpty() && extrasAdult.isNotEmpty() && extrasChild.isNotEmpty() &&
-                    extrasInfant.isNotEmpty() && extrasClass.isNotEmpty() && extrasAutoSearch.isNotEmpty()) {
-                FlightHomepageFragment.getInstance(
-                        extrasTrip,
-                        extrasAdult,
-                        extrasChild,
-                        extrasInfant,
-                        extrasClass,
-                        extrasAutoSearch,
-                        intent.data?.toString() ?: ""
-                )
-            } else {
-                FlightHomepageFragment.getInstance(intent.data?.toString() ?: "")
-            }
+        if (extrasTrip.isNotEmpty() && extrasAdult.isNotEmpty() && extrasChild.isNotEmpty() &&
+            extrasInfant.isNotEmpty() && extrasClass.isNotEmpty() && extrasAutoSearch.isNotEmpty()
+        ) {
+            FlightHomepageFragment.getInstance(
+                extrasTrip,
+                extrasAdult,
+                extrasChild,
+                extrasInfant,
+                extrasClass,
+                extrasAutoSearch,
+                intent.data?.toString() ?: ""
+            )
+        } else {
+            FlightHomepageFragment.getInstance(intent.data?.toString() ?: "")
+        }
 
     override fun getComponent(): FlightHomepageComponent =
-            DaggerFlightHomepageComponent.builder()
-                    .flightComponent(FlightComponentInstance.getFlightComponent(application))
-                    .build()
+        DaggerFlightHomepageComponent.builder()
+            .flightComponent(FlightComponentInstance.getFlightComponent(application))
+            .build()
 
     override fun navigateToHelpPage() {
         RouteManager.route(this, FLIGHT_HOMEPAGE_HELP_URL)
@@ -76,7 +81,6 @@ class FlightHomepageActivity : BaseFlightActivity(), HasComponent<FlightHomepage
         private const val EXTRA_AUTO_SEARCH = "auto_search"
 
         fun getCallingIntent(context: Context): Intent =
-                Intent(context, FlightHomepageActivity::class.java)
-
+            Intent(context, FlightHomepageActivity::class.java)
     }
 }
