@@ -71,6 +71,7 @@ open class TokoChatChannelUseCase @Inject constructor(
 
     fun getAllChannel(
         channelTypes: List<ChannelType>,
+        batchSize: Int,
         onSuccess: (List<ConversationsChannel>) -> Unit,
         onError: (ConversationsNetworkError?) -> Unit
     ) {
@@ -83,7 +84,8 @@ open class TokoChatChannelUseCase @Inject constructor(
             repository.getConversationRepository().getAllChannels(
                 getChannelRequest = GetChannelRequest(
                     types = channelTypes,
-                    timestamp = timeStamp
+                    timestamp = timeStamp,
+                    batchSize = batchSize
                 ),
                 onSuccess = onSuccess,
                 onError = onError

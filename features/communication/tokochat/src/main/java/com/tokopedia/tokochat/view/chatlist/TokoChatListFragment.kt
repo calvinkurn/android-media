@@ -1,10 +1,14 @@
 package com.tokopedia.tokochat.view.chatlist
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalCommunication
@@ -17,6 +21,8 @@ import com.tokopedia.tokochat_common.view.chatlist.listener.TokoChatListItemList
 import com.tokopedia.tokochat_common.view.chatlist.uimodel.TokoChatListItemUiModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -44,11 +50,15 @@ class TokoChatListFragment @Inject constructor(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        loadChatData()
+        initChatListData()
     }
 
-    private fun loadChatData() {
-        viewModel.loadChatList()
+    private fun initChatListData() {
+        lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.getChatListFlow().collect()
+            }
+        }
     }
 
     override fun initObservers() {
@@ -60,8 +70,9 @@ class TokoChatListFragment @Inject constructor(
                 is Fail -> {}
             }
         }
-        viewModel.allCachedChannels().observe(viewLifecycleOwner) {
-            addOrUpdateChatItem(it)
+
+        viewModel.error.observe(viewLifecycleOwner) {
+            Log.d("TOKOCHAT-LIST", it.first.stackTraceToString())
         }
     }
 
@@ -89,7 +100,7 @@ class TokoChatListFragment @Inject constructor(
     }
 
     override fun onLoadMore() {
-        loadChatData()
+        viewModel.loadChatList()
     }
 
     private fun notifyWhenAllowed(position: Int) {
