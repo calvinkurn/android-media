@@ -5,7 +5,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import com.tokopedia.tokochat.di.TokoChatActivityComponentFactory
 import com.tokopedia.tokochat.di.TokoChatComponent
-import com.tokopedia.tokochat_common.view.chatlist.TokoChatListBaseActivity
+import com.tokopedia.tokochat.common.view.chatlist.TokoChatListBaseActivity
 import javax.inject.Inject
 
 class TokoChatListActivity: TokoChatListBaseActivity<TokoChatComponent>() {

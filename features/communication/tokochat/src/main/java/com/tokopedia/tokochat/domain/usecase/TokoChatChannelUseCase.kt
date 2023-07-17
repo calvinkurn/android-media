@@ -10,7 +10,7 @@ import com.gojek.conversations.extensions.ConversationsExtensionProvider
 import com.gojek.conversations.groupbooking.ConversationsGroupBookingListener
 import com.gojek.conversations.groupbooking.GroupBookingChannelDetails
 import com.gojek.conversations.network.ConversationsNetworkError
-import com.tokochat.tokochat_config_common.repository.TokoChatRepository
+import com.tokopedia.tokochat.config.repository.TokoChatRepository
 import javax.inject.Inject
 
 open class TokoChatChannelUseCase @Inject constructor(

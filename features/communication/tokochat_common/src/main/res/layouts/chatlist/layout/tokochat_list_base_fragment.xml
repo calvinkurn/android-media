@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout">
 
-    <com.tokopedia.tokochat_common.view.chatroom.customview.TokoChatBgImageView
+    <com.tokopedia.tokochat.common.view.chatroom.customview.TokoChatBgImageView
         android:id="@+id/tokochat_list_iv_bg"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

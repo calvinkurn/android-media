@@ -14,11 +14,11 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalCommunication
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.tokochat.databinding.TokochatChatlistFragmentBinding
-import com.tokopedia.tokochat_common.util.TokoChatValueUtil
-import com.tokopedia.tokochat_common.view.chatlist.TokoChatListBaseFragment
-import com.tokopedia.tokochat_common.view.chatlist.adapter.TokoChatListBaseAdapter
-import com.tokopedia.tokochat_common.view.chatlist.listener.TokoChatListItemListener
-import com.tokopedia.tokochat_common.view.chatlist.uimodel.TokoChatListItemUiModel
+import com.tokopedia.tokochat.common.util.TokoChatValueUtil
+import com.tokopedia.tokochat.common.view.chatlist.TokoChatListBaseFragment
+import com.tokopedia.tokochat.common.view.chatlist.adapter.TokoChatListBaseAdapter
+import com.tokopedia.tokochat.common.view.chatlist.listener.TokoChatListItemListener
+import com.tokopedia.tokochat.common.view.chatlist.uimodel.TokoChatListItemUiModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.flow.collect

@@ -1,6 +1,6 @@
 package com.tokopedia.tokochat.di
 
-import com.tokochat.tokochat_config_common.di.component.TokoChatConfigComponent
+import com.tokopedia.tokochat.config.di.component.TokoChatConfigComponent
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.tokochat.view.chatlist.TokoChatListActivity

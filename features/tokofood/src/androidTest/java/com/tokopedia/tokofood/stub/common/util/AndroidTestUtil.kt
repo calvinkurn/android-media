@@ -1,6 +1,6 @@
 package com.tokopedia.tokofood.stub.common.util
 
-import com.tokopedia.tokochat_common.util.CommonUtil
+import com.tokopedia.tokochat.common.util.CommonUtil
 import java.io.IOException
 import java.lang.reflect.Type
 

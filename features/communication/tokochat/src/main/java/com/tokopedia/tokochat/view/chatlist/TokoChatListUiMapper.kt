@@ -4,7 +4,7 @@ import android.content.Context
 import com.gojek.conversations.channel.ConversationsChannel
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.tokochat_common.view.chatlist.uimodel.TokoChatListItemUiModel
+import com.tokopedia.tokochat.common.view.chatlist.uimodel.TokoChatListItemUiModel
 import javax.inject.Inject
 
 class TokoChatListUiMapper@Inject constructor(
