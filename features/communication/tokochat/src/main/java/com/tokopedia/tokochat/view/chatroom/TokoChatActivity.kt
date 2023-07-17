@@ -7,9 +7,9 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.tokochat.di.TokoChatActivityComponentFactory
 import com.tokopedia.tokochat.di.TokoChatComponent
 import com.tokopedia.tokochat.util.TokoChatValueUtil
-import com.tokopedia.tokochat_common.util.TokoChatValueUtil.IS_FROM_BUBBLE_KEY
-import com.tokopedia.tokochat_common.util.TokoChatViewUtil.setBackIconUnify
-import com.tokopedia.tokochat_common.view.chatroom.TokoChatBaseActivity
+import com.tokopedia.tokochat.common.util.TokoChatValueUtil.IS_FROM_BUBBLE_KEY
+import com.tokopedia.tokochat.common.util.TokoChatViewUtil.setBackIconUnify
+import com.tokopedia.tokochat.common.view.chatroom.TokoChatBaseActivity
 
 /**
  * Base Applink: [com.tokopedia.applink.ApplinkConst.TOKO_CHAT]

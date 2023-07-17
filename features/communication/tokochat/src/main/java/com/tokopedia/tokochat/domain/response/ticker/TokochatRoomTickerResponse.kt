@@ -1,6 +1,5 @@
 package com.tokopedia.tokochat.domain.response.ticker
 
-
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.kotlin.extensions.view.ZERO
 

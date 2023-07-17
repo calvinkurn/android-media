@@ -3,7 +3,7 @@ package com.tokopedia.tokochat.view.chatlist
 import androidx.fragment.app.Fragment
 import com.tokopedia.tokochat.di.TokoChatActivityComponentFactory
 import com.tokopedia.tokochat.di.TokoChatComponent
-import com.tokopedia.tokochat_common.view.chatlist.TokoChatListBaseActivity
+import com.tokopedia.tokochat.common.view.chatlist.TokoChatListBaseActivity
 
 class TokoChatListActivity: TokoChatListBaseActivity<TokoChatComponent>() {
 
