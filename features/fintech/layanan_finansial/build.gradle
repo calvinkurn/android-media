@@ -1,6 +1,7 @@
 apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+apply from: "$rootProject.projectDir/buildconfig/kotlin/core-kapt.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
+apply plugin: 'kotlin-parcelize'
 
 buildscript {
     repositories {
@@ -16,6 +17,10 @@ buildscript {
 android {
     namespace 'com.tokopedia.layanan_finansial'
     testNamespace 'com.tokopedia.layanan_finansial.test'
+
+    buildFeatures {
+        viewBinding true
+    }
 }
 
 dependencies {
@@ -34,11 +39,14 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.graphql)
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
     implementation rootProject.ext.miscDependencies.dagger
+    kapt rootProject.ext.miscDependencies.daggerCompiler
     implementation projectOrAar(rootProject.ext.libraries.baseList)
     implementation projectOrAar(rootProject.ext.libraries.track)
     implementation projectOrAar(rootProject.ext.libraries.analytics)
     implementation projectOrAar(rootProject.ext.features.topAdsSdk)
-
+    implementation (rootProject.ext.firebase.crashlytics) {
+        transitive = true
+    }
 
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.archCoreTesting
