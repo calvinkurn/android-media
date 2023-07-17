@@ -4889,7 +4889,6 @@ open class ShopPageHomeFragment :
 
     protected fun refreshShopHeader(){
         (parentFragment as? ShopPageHeaderFragment)?.apply {
-            resetSelectedPosition()
             refreshData()
         }
     }
