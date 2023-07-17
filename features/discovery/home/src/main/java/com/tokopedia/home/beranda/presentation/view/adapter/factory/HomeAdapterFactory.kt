@@ -543,9 +543,6 @@ class HomeAdapterFactory(
             ErrorStateChannelThreeViewHolder.LAYOUT ->
                 viewHolder =
                     ErrorStateChannelThreeViewHolder(view, listener)
-            HomeInitialShimmerViewHolder.LAYOUT ->
-                viewHolder =
-                    HomeInitialShimmerViewHolder(view, listener)
             ShimmeringChannelViewHolder.LAYOUT ->
                 viewHolder =
                     ShimmeringChannelViewHolder(view, listener)
@@ -604,14 +601,6 @@ class HomeAdapterFactory(
             BannerRevampViewHolder.LAYOUT ->
                 viewHolder =
                     BannerRevampViewHolder(view, bannerComponentListener, cardInteraction = true)
-            MixLeftPaddingComponentViewHolder.LAYOUT ->
-                viewHolder =
-                    MixLeftPaddingComponentViewHolder(
-                        view,
-                        mixLeftComponentListener,
-                        homeComponentListener,
-                        cardInteraction = true
-                    )
             DealsWidgetViewHolder.LAYOUT ->
                 viewHolder = DealsWidgetViewHolder(view, vpsWidgetListener, homeComponentListener)
             FlashSaleViewHolder.LAYOUT -> viewHolder = FlashSaleViewHolder(view, flashSaleWidgetListener, homeComponentListener, parentRecycledViewPool)

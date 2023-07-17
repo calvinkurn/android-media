@@ -64,4 +64,10 @@ class VideoPlayerManager(
         return FeedExoPlayer(context)
     }
 
+    fun getPlayerById(id: String) : FeedExoPlayer? {
+        return videoMap.entries.firstOrNull {
+            it.value == id
+        }?.key
+    }
+
 }

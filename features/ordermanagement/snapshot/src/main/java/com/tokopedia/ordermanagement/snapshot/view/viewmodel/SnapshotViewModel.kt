@@ -15,8 +15,10 @@ import javax.inject.Inject
 /**
  * Created by fwidjaja on 1/25/21.
  */
-class SnapshotViewModel @Inject constructor(private val dispatcher: CoroutineDispatchers,
-                                            private val snapshotUseCase: SnapshotUseCase) : BaseViewModel(dispatcher.main) {
+class SnapshotViewModel @Inject constructor(
+    private val dispatcher: CoroutineDispatchers,
+    private val snapshotUseCase: SnapshotUseCase
+) : BaseViewModel(dispatcher.main) {
 
     private val _snapshotResponse = MutableLiveData<Result<GetOrderSnapshot>>()
     val snapshotResponse: LiveData<Result<GetOrderSnapshot>>

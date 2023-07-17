@@ -316,7 +316,7 @@ class ShipmentCartItemViewHolder(
                 ImageHandler.loadImage2(
                     binding.imageBundle,
                     cartItemModel.bundleIconUrl,
-                    com.tokopedia.kotlin.extensions.R.drawable.ic_loading_placeholder
+                    com.tokopedia.utils.R.drawable.ic_loading_placeholder
                 )
             }
 

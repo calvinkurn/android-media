@@ -59,7 +59,6 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.preferenceV7
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
-    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
 
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.miscDependencies.dagger

@@ -219,6 +219,7 @@
         "name": "Non-Dilayani Tokopedia"
       }
     ],
+    "highlighted_status_key": "new_order",
     "status": "OK"
   }
 }
