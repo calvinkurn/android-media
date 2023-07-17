@@ -9,7 +9,7 @@ import com.tokopedia.cart.databinding.ItemCartChooseAddressBinding
 import com.tokopedia.cart.databinding.ItemCartDisabledAccordionBinding
 import com.tokopedia.cart.databinding.ItemCartDisabledHeaderBinding
 import com.tokopedia.cart.databinding.ItemCartDisabledReasonBinding
-import com.tokopedia.cart.databinding.ItemCartProductBinding
+import com.tokopedia.cart.databinding.ItemCartProductRevampBinding
 import com.tokopedia.cart.databinding.ItemCartRecentViewBinding
 import com.tokopedia.cart.databinding.ItemCartRecommendationBinding
 import com.tokopedia.cart.databinding.ItemCartSectionHeaderBinding
@@ -17,8 +17,7 @@ import com.tokopedia.cart.databinding.ItemCartShopBottomBinding
 import com.tokopedia.cart.databinding.ItemCartTopAdsHeadlineBinding
 import com.tokopedia.cart.databinding.ItemCartWishlistBinding
 import com.tokopedia.cart.databinding.ItemEmptyCartBinding
-import com.tokopedia.cart.databinding.ItemGroupBinding
-import com.tokopedia.cart.databinding.ItemSelectAllBinding
+import com.tokopedia.cart.databinding.ItemGroupRevampBinding
 import com.tokopedia.cart.databinding.ItemSelectedAmountBinding
 import com.tokopedia.cartrevamp.view.ActionListener
 import com.tokopedia.cartrevamp.view.adapter.diffutil.CartDiffUtilCallback
@@ -178,7 +177,7 @@ class CartAdapter constructor(
 
             CartGroupViewHolder.LAYOUT -> {
                 val binding =
-                    ItemGroupBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+                    ItemGroupRevampBinding.inflate(LayoutInflater.from(parent.context), parent, false)
                 return CartGroupViewHolder(
                     binding,
                     actionListener,
@@ -188,7 +187,7 @@ class CartAdapter constructor(
             }
 
             CartItemViewHolder.TYPE_VIEW_ITEM_CART -> {
-                val binding = ItemCartProductBinding.inflate(
+                val binding = ItemCartProductRevampBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
                     false

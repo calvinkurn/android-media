@@ -21,6 +21,7 @@ import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.cart.R
 import com.tokopedia.cart.databinding.ItemAddonCartIdentifierBinding
 import com.tokopedia.cart.databinding.ItemCartProductBinding
+import com.tokopedia.cart.databinding.ItemCartProductRevampBinding
 import com.tokopedia.cartrevamp.data.model.response.shopgroupsimplified.Action
 import com.tokopedia.cartrevamp.data.model.response.shopgroupsimplified.ProductInformationWithIcon
 import com.tokopedia.cartrevamp.view.adapter.cart.CartItemAdapter
@@ -49,7 +50,7 @@ import java.util.*
 
 @SuppressLint("ClickableViewAccessibility")
 class CartItemViewHolder constructor(
-    private val binding: ItemCartProductBinding,
+    private val binding: ItemCartProductRevampBinding,
     private var actionListener: CartItemAdapter.ActionListener?
 ) : RecyclerView.ViewHolder(binding.root) {
 
@@ -61,22 +62,22 @@ class CartItemViewHolder constructor(
     private var informationLabel: MutableList<String> = mutableListOf()
     private var qtyTextWatcher: TextWatcher? = null
 
-    init {
-        setNoteTouchListener()
-    }
+//    init {
+//        setNoteTouchListener()
+//    }
 
     @SuppressLint("ClickableViewAccessibility")
-    private fun setNoteTouchListener() {
-        binding.textFieldNotes.setOnTouchListener { view, event ->
-            if (view.id == R.id.text_field_notes) {
-                view.parent.requestDisallowInterceptTouchEvent(true)
-                when (event.action and MotionEvent.ACTION_MASK) {
-                    MotionEvent.ACTION_UP -> view.parent.requestDisallowInterceptTouchEvent(false)
-                }
-            }
-            false
-        }
-    }
+//    private fun setNoteTouchListener() {
+//        binding.textFieldNotes.setOnTouchListener { view, event ->
+//            if (view.id == R.id.text_field_notes) {
+//                view.parent.requestDisallowInterceptTouchEvent(true)
+//                when (event.action and MotionEvent.ACTION_MASK) {
+//                    MotionEvent.ACTION_UP -> view.parent.requestDisallowInterceptTouchEvent(false)
+//                }
+//            }
+//            false
+//        }
+//    }
 
     fun clear() {
         actionListener = null
@@ -133,14 +134,14 @@ class CartItemViewHolder constructor(
                         BUNDLING_SEPARATOR_MARGIN_START.dpToPx(itemView.resources.displayMetrics)
                 }
 
-                val textFieldNotesParams =
-                    textFieldNotes.layoutParams as ViewGroup.MarginLayoutParams
-                textFieldNotesParams.leftMargin = marginStart
-                val textNotesParams = textNotes.layoutParams as ViewGroup.MarginLayoutParams
-                textNotesParams.leftMargin = marginStart
-                val textNotesFilledParams =
-                    textNotesFilled.layoutParams as ViewGroup.MarginLayoutParams
-                textNotesFilledParams.leftMargin = marginStart
+//                val textFieldNotesParams =
+//                    textFieldNotes.layoutParams as ViewGroup.MarginLayoutParams
+//                textFieldNotesParams.leftMargin = marginStart
+//                val textNotesParams = textNotes.layoutParams as ViewGroup.MarginLayoutParams
+//                textNotesParams.leftMargin = marginStart
+//                val textNotesFilledParams =
+//                    textNotesFilled.layoutParams as ViewGroup.MarginLayoutParams
+//                textNotesFilledParams.leftMargin = marginStart
             }
         } else {
             with(binding) {
@@ -168,27 +169,24 @@ class CartItemViewHolder constructor(
                 constraintSet.applyTo(containerProductInformation)
                 renderCheckBoxProduct(data)
 
-                val textFieldNotesParams =
-                    textFieldNotes.layoutParams as ViewGroup.MarginLayoutParams
-                textFieldNotesParams.leftMargin = 0
-                val textNotesParams = textNotes.layoutParams as ViewGroup.MarginLayoutParams
-                textNotesParams.leftMargin = 0
-                val textNotesFilledParams =
-                    textNotesFilled.layoutParams as ViewGroup.MarginLayoutParams
-                textNotesFilledParams.leftMargin = 0
+//                val textFieldNotesParams =
+//                    textFieldNotes.layoutParams as ViewGroup.MarginLayoutParams
+//                textFieldNotesParams.leftMargin = 0
+//                val textNotesParams = textNotes.layoutParams as ViewGroup.MarginLayoutParams
+//                textNotesParams.leftMargin = 0
+//                val textNotesFilledParams =
+//                    textNotesFilled.layoutParams as ViewGroup.MarginLayoutParams
+//                textNotesFilledParams.leftMargin = 0
             }
         }
     }
 
     private fun renderProductAction(data: CartItemHolderData) {
         with(binding) {
-            textNotes.gone()
-            textNotesFilled.gone()
-            textNotesChange.gone()
-            textFieldNotes.gone()
-            textMoveToWishlist.gone()
-            textProductUnavailableAction.gone()
-            buttonDeleteCart.gone()
+            buttonChangeNote.gone()
+            buttonToggleWishlist.gone()
+//            textProductUnavailableAction.gone()
+//            buttonDeleteCart.gone()
         }
         if (data.actionsData.isNotEmpty()) {
             data.actionsData.forEach {
@@ -197,11 +195,11 @@ class CartItemViewHolder constructor(
                         renderProductNotes(data)
                     }
                     Action.ACTION_WISHLIST, Action.ACTION_WISHLISTED -> {
-                        if (data.isBundlingItem) {
-                            binding.textMoveToWishlist.gone()
-                        } else {
+//                        if (data.isBundlingItem) {
+//                            binding.textMoveToWishlist.gone()
+//                        } else {
                             renderActionWishlist(it, data)
-                        }
+//                        }
                     }
                     Action.ACTION_CHECKOUTBROWSER, Action.ACTION_SIMILARPRODUCT, Action.ACTION_FOLLOWSHOP, Action.ACTION_VERIFICATION -> {
                         when {
@@ -228,7 +226,7 @@ class CartItemViewHolder constructor(
     }
 
     private fun renderActionDelete(data: CartItemHolderData) {
-        adjustButtonDeleteConstraint(data)
+//        adjustButtonDeleteConstraint(data)
         binding.buttonDeleteCart.setOnClickListener {
             if (adapterPosition != RecyclerView.NO_POSITION) {
                 actionListener?.onCartItemDeleteButtonClicked(data)
@@ -237,34 +235,34 @@ class CartItemViewHolder constructor(
         binding.buttonDeleteCart.show()
     }
 
-    private fun adjustButtonDeleteConstraint(data: CartItemHolderData) {
-        with(binding) {
-            if (data.isError) {
-                val constraintSet = ConstraintSet()
-                constraintSet.clone(containerProductAction)
-                constraintSet.connect(
-                    R.id.button_delete_cart,
-                    ConstraintSet.END,
-                    R.id.text_product_unavailable_action,
-                    ConstraintSet.START,
-                    0
-                )
-                constraintSet.applyTo(containerProductAction)
-            } else {
-                val constraintSet = ConstraintSet()
-                constraintSet.clone(containerProductAction)
-                constraintSet.connect(
-                    R.id.button_delete_cart,
-                    ConstraintSet.END,
-                    R.id.qty_editor_product,
-                    ConstraintSet.START,
-                    itemView.context.resources.getDimension(com.tokopedia.abstraction.R.dimen.dp_16)
-                        .toInt()
-                )
-                constraintSet.applyTo(containerProductAction)
-            }
-        }
-    }
+//    private fun adjustButtonDeleteConstraint(data: CartItemHolderData) {
+//        with(binding) {
+//            if (data.isError) {
+//                val constraintSet = ConstraintSet()
+//                constraintSet.clone(containerProductAction)
+//                constraintSet.connect(
+//                    R.id.button_delete_cart,
+//                    ConstraintSet.END,
+//                    R.id.text_product_unavailable_action,
+//                    ConstraintSet.START,
+//                    0
+//                )
+//                constraintSet.applyTo(containerProductAction)
+//            } else {
+//                val constraintSet = ConstraintSet()
+//                constraintSet.clone(containerProductAction)
+//                constraintSet.connect(
+//                    R.id.button_delete_cart,
+//                    ConstraintSet.END,
+//                    R.id.qty_editor_product,
+//                    ConstraintSet.START,
+//                    itemView.context.resources.getDimension(com.tokopedia.abstraction.R.dimen.dp_16)
+//                        .toInt()
+//                )
+//                constraintSet.applyTo(containerProductAction)
+//            }
+//        }
+//    }
 
     private fun renderCheckBoxProduct(data: CartItemHolderData) {
         val checkboxProduct = binding.checkboxProduct
@@ -383,16 +381,16 @@ class CartItemViewHolder constructor(
             binding.productBundlingInfo.gone()
         }
 
-        if (data.isBundlingItem && !data.isMultipleBundleProduct && data.bundleLabelQuantity > 0) {
-            val labelBundleQuantityText = String.format(
-                itemView.context.getString(R.string.label_cart_bundle_product_quantity),
-                data.bundleLabelQuantity
-            )
-            binding.labelBundleQuantity.text = labelBundleQuantityText
-            binding.labelBundleQuantity.show()
-        } else {
-            binding.labelBundleQuantity.gone()
-        }
+//        if (data.isBundlingItem && !data.isMultipleBundleProduct && data.bundleLabelQuantity > 0) {
+//            val labelBundleQuantityText = String.format(
+//                itemView.context.getString(R.string.label_cart_bundle_product_quantity),
+//                data.bundleLabelQuantity
+//            )
+//            binding.labelBundleQuantity.text = labelBundleQuantityText
+//            binding.labelBundleQuantity.show()
+//        } else {
+//            binding.labelBundleQuantity.gone()
+//        }
     }
 
     private fun renderProductActionSection(data: CartItemHolderData) {
@@ -446,33 +444,39 @@ class CartItemViewHolder constructor(
                 }
             }
 
-            if (data.bundleIconUrl.isNotBlank()) {
-                imageBundle.loadImage(data.bundleIconUrl)
-                imageBundle.show()
-            } else {
-                imageBundle.gone()
-            }
+//            if (data.bundleIconUrl.isNotBlank()) {
+//                imageBundle.loadImage(data.bundleIconUrl)
+//                imageBundle.show()
+//            } else {
+//                imageBundle.gone()
+//            }
         }
     }
 
     private fun renderProductName(data: CartItemHolderData) {
-        binding.textProductName.text = Utils.getHtmlFormat(data.productName)
+        val marginTop = itemView.context.resources.getDimension(R.dimen.dp_2).toInt()
+        if (data.isBundlingItem && !data.isMultipleBundleProduct && data.bundleLabelQuantity > 0) {
+            val textProductNameLayoutParams =
+                binding.textProductName.layoutParams as ViewGroup.MarginLayoutParams
+            textProductNameLayoutParams.topMargin = marginTop
+            val labelBundleQuantityText = String.format(
+                itemView.context.getString(R.string.cart_label_product_name_with_quantity),
+                data.bundleLabelQuantity,
+                data.productName
+            )
+            binding.textProductName.text = Utils.getHtmlFormat(labelBundleQuantityText)
+        } else {
+            val textProductNameLayoutParams =
+                binding.textProductName.layoutParams as ViewGroup.MarginLayoutParams
+            textProductNameLayoutParams.topMargin = 0
+            binding.textProductName.text = Utils.getHtmlFormat(data.productName)
+        }
         binding.textProductName.setOnClickListener(
             getOnClickProductItemListener(
                 adapterPosition,
                 data
             )
         )
-        val marginTop = itemView.context.resources.getDimension(R.dimen.dp_2).toInt()
-        if (data.isBundlingItem && !data.isMultipleBundleProduct && data.bundleLabelQuantity > 0) {
-            val textProductNameLayoutParams =
-                binding.textProductName.layoutParams as ViewGroup.MarginLayoutParams
-            textProductNameLayoutParams.topMargin = marginTop
-        } else {
-            val textProductNameLayoutParams =
-                binding.textProductName.layoutParams as ViewGroup.MarginLayoutParams
-            textProductNameLayoutParams.topMargin = 0
-        }
     }
 
     private fun renderImage(data: CartItemHolderData) {
@@ -496,7 +500,9 @@ class CartItemViewHolder constructor(
                     actionListener?.onProductAddOnClicked(data)
                 }
             }
+            binding.cartAddOnSeparator.show()
         } else {
+            binding.cartAddOnSeparator.gone()
             binding.itemAddonCart.root.gone()
         }
     }
@@ -658,7 +664,8 @@ class CartItemViewHolder constructor(
             binding.textSlashPrice.show()
         } else {
             binding.textSlashPrice.gone()
-            binding.labelSlashPricePercentage.gone()
+            // TODO: change with banner slash price percentage in product image
+//            binding.labelSlashPricePercentage.gone()
         }
     }
 
@@ -682,8 +689,9 @@ class CartItemViewHolder constructor(
         binding.textSlashPrice.text =
             CurrencyFormatUtil.convertPriceValueToIdrFormat(data.productOriginalPrice, false)
                 .removeDecimalSuffix()
-        binding.labelSlashPricePercentage.text = data.productSlashPriceLabel
-        binding.labelSlashPricePercentage.show()
+        // TODO: change with banner slash price percentage in product image
+//        binding.labelSlashPricePercentage.text = data.productSlashPriceLabel
+//        binding.labelSlashPricePercentage.show()
         informationLabel.add(LABEL_DISCOUNT)
     }
 
@@ -718,12 +726,12 @@ class CartItemViewHolder constructor(
 
     private fun renderProductNotes(element: CartItemHolderData) {
         with(binding) {
-            textNotes.setOnClickListener {
-                renderProductNotesEditable(element)
-            }
-            textNotesChange.setOnClickListener {
-                renderProductNotesEditable(element)
-            }
+//            textNotes.setOnClickListener {
+//                renderProductNotesEditable(element)
+//            }
+//            textNotesChange.setOnClickListener {
+//                renderProductNotesEditable(element)
+//            }
 
             if (element.notes.isNotBlank()) {
                 renderProductNotesFilled(element)
@@ -735,80 +743,80 @@ class CartItemViewHolder constructor(
 
     private fun renderProductNotesEditable(element: CartItemHolderData) {
         with(binding) {
-            textFieldNotes.editText.inputType =
-                InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_MULTI_LINE
-            textFieldNotes.editText.imeOptions = EditorInfo.IME_ACTION_DONE
-            textFieldNotes.editText.setRawInputType(InputType.TYPE_CLASS_TEXT)
-            textFieldNotes.setPlaceholder(Utils.getHtmlFormat(element.placeholderNote))
-            textFieldNotes.context?.let {
-                textFieldNotes.editText.setOnEditorActionListener { v, actionId, _ ->
-                    if (actionId == EditorInfo.IME_ACTION_DONE) {
-                        KeyboardHandler.DropKeyboard(it, v)
-                        textFieldNotes.editText.clearFocus()
-                        if (element.notes.isNotBlank()) {
-                            renderProductNotesFilled(element)
-                        } else {
-                            renderProductNotesEmpty(element)
-                        }
-                        true
-                    } else {
-                        false
-                    }
-                }
-            }
-
-            textNotes.gone()
-            textFieldNotes.show()
-            textNotesChange.gone()
-            textNotesFilled.gone()
-            textNotesFilled.text = Utils.getHtmlFormat(element.notes)
-            textFieldNotes.setCounter(element.maxNotesLength)
-            textFieldNotes.editText.setText(Utils.getHtmlFormat(element.notes))
-            textFieldNotes.editText.setSelection(textFieldNotes.editText.length())
-            textFieldNotes.editText.addTextChangedListener(object : TextWatcher {
-                override fun beforeTextChanged(
-                    s: CharSequence?,
-                    start: Int,
-                    count: Int,
-                    after: Int
-                ) {
-                }
-
-                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                    val notes = s.toString()
-                    element.notes = notes
-                }
-
-                override fun afterTextChanged(s: Editable?) {
-                }
-            })
-            textFieldNotes.editText.setOnFocusChangeListener { v, hasFocus ->
-                if (!hasFocus) {
-                    KeyboardHandler.DropKeyboard(v.context, v)
-                }
-            }
-            textFieldNotes.editText.requestFocus()
-            showSoftKeyboard(textFieldNotes.context, textFieldNotes.editText)
+//            textFieldNotes.editText.inputType =
+//                InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_MULTI_LINE
+//            textFieldNotes.editText.imeOptions = EditorInfo.IME_ACTION_DONE
+//            textFieldNotes.editText.setRawInputType(InputType.TYPE_CLASS_TEXT)
+//            textFieldNotes.setPlaceholder(Utils.getHtmlFormat(element.placeholderNote))
+//            textFieldNotes.context?.let {
+//                textFieldNotes.editText.setOnEditorActionListener { v, actionId, _ ->
+//                    if (actionId == EditorInfo.IME_ACTION_DONE) {
+//                        KeyboardHandler.DropKeyboard(it, v)
+//                        textFieldNotes.editText.clearFocus()
+//                        if (element.notes.isNotBlank()) {
+//                            renderProductNotesFilled(element)
+//                        } else {
+//                            renderProductNotesEmpty(element)
+//                        }
+//                        true
+//                    } else {
+//                        false
+//                    }
+//                }
+//            }
+//
+//            textNotes.gone()
+//            textFieldNotes.show()
+//            textNotesChange.gone()
+//            textNotesFilled.gone()
+//            textNotesFilled.text = Utils.getHtmlFormat(element.notes)
+//            textFieldNotes.setCounter(element.maxNotesLength)
+//            textFieldNotes.editText.setText(Utils.getHtmlFormat(element.notes))
+//            textFieldNotes.editText.setSelection(textFieldNotes.editText.length())
+//            textFieldNotes.editText.addTextChangedListener(object : TextWatcher {
+//                override fun beforeTextChanged(
+//                    s: CharSequence?,
+//                    start: Int,
+//                    count: Int,
+//                    after: Int
+//                ) {
+//                }
+//
+//                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+//                    val notes = s.toString()
+//                    element.notes = notes
+//                }
+//
+//                override fun afterTextChanged(s: Editable?) {
+//                }
+//            })
+//            textFieldNotes.editText.setOnFocusChangeListener { v, hasFocus ->
+//                if (!hasFocus) {
+//                    KeyboardHandler.DropKeyboard(v.context, v)
+//                }
+//            }
+//            textFieldNotes.editText.requestFocus()
+//            showSoftKeyboard(textFieldNotes.context, textFieldNotes.editText)
         }
     }
 
     private fun renderProductNotesEmpty(element: CartItemHolderData) {
         with(binding) {
-            textNotes.show()
-            textNotesFilled.gone()
-            textNotesChange.gone()
-            textFieldNotes.gone()
+//            textNotes.show()
+//            textNotesFilled.gone()
+//            textNotesChange.gone()
+//            textFieldNotes.gone()
         }
     }
 
     private fun renderProductNotesFilled(element: CartItemHolderData) {
         with(binding) {
-            textFieldNotes.gone()
-            textNotesFilled.text = Utils.getHtmlFormat(element.notes)
-            setProductNotesWidth(element)
-            textNotesFilled.show()
-            textNotesChange.show()
-            textNotes.gone()
+//            textFieldNotes.gone()
+//            textNotesFilled.text = Utils.getHtmlFormat(element.notes)
+//            setProductNotesWidth(element)
+//            textNotesFilled.show()
+//            textNotesChange.show()
+//            textNotes.gone()
         }
     }
 
@@ -827,15 +835,15 @@ class CartItemViewHolder constructor(
                 maxNotesWidth -= bundlingSeparatorMargin
             }
 
-            textNotesFilled.measure(0, 0)
-            val currentWidth = textNotesFilled.measuredWidth
-            if (currentWidth >= maxNotesWidth) {
-                textNotesFilled.layoutParams?.width = maxNotesWidth
-                textNotesFilled.requestLayout()
-            } else {
-                textNotesFilled.layoutParams?.width = currentWidth
-                textNotesFilled.requestLayout()
-            }
+//            textNotesFilled.measure(0, 0)
+//            val currentWidth = textNotesFilled.measuredWidth
+//            if (currentWidth >= maxNotesWidth) {
+//                textNotesFilled.layoutParams?.width = maxNotesWidth
+//                textNotesFilled.requestLayout()
+//            } else {
+//                textNotesFilled.layoutParams?.width = currentWidth
+//                textNotesFilled.requestLayout()
+//            }
         }
     }
 
@@ -960,35 +968,35 @@ class CartItemViewHolder constructor(
     }
 
     private fun renderActionWishlist(action: Action, data: CartItemHolderData) {
-        val textMoveToWishlist = binding.textMoveToWishlist
-        if (data.isWishlisted && action.id == Action.ACTION_WISHLISTED) {
-            textMoveToWishlist.text = action.message
-            textMoveToWishlist.setTextColor(
-                ContextCompat.getColor(
-                    itemView.context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_N700_44
-                )
-            )
-            textMoveToWishlist.setOnClickListener { }
-        } else if (!data.isWishlisted && action.id == Action.ACTION_WISHLIST) {
-            textMoveToWishlist.text = action.message
-            textMoveToWishlist.setTextColor(
-                ContextCompat.getColor(
-                    itemView.context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_N700_68
-                )
-            )
-            textMoveToWishlist.setOnClickListener {
-                actionListener?.onWishlistCheckChanged(
-                    data.productId,
-                    data.cartId,
-                    binding.iuImageProduct,
-                    data.isError,
-                    data.errorType
-                )
-            }
-        }
-        textMoveToWishlist.show()
+//        val textMoveToWishlist = binding.textMoveToWishlist
+//        if (data.isWishlisted && action.id == Action.ACTION_WISHLISTED) {
+//            textMoveToWishlist.text = action.message
+//            textMoveToWishlist.setTextColor(
+//                ContextCompat.getColor(
+//                    itemView.context,
+//                    com.tokopedia.unifyprinciples.R.color.Unify_N700_44
+//                )
+//            )
+//            textMoveToWishlist.setOnClickListener { }
+//        } else if (!data.isWishlisted && action.id == Action.ACTION_WISHLIST) {
+//            textMoveToWishlist.text = action.message
+//            textMoveToWishlist.setTextColor(
+//                ContextCompat.getColor(
+//                    itemView.context,
+//                    com.tokopedia.unifyprinciples.R.color.Unify_N700_68
+//                )
+//            )
+//            textMoveToWishlist.setOnClickListener {
+//                actionListener?.onWishlistCheckChanged(
+//                    data.productId,
+//                    data.cartId,
+//                    binding.iuImageProduct,
+//                    data.isError,
+//                    data.errorType
+//                )
+//            }
+//        }
+//        textMoveToWishlist.show()
     }
 
     private fun getOnClickProductItemListener(
