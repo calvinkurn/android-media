@@ -1,29 +1,18 @@
 package com.tokopedia.media.editor.data.repository
 
-import android.content.ContentValues
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.net.Uri
-import android.os.Build
-import android.os.Environment
-import android.provider.MediaStore
-import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.media.editor.ui.uimodel.BitmapCreation
 import com.tokopedia.media.editor.utils.getEditorSaveFolderPath
-import com.tokopedia.picker.common.utils.wrapper.PickerFile.Companion.asPickerFile
-import com.tokopedia.utils.file.FileUtil
+import com.tokopedia.media.editor.utils.showErrorGeneralToaster
 import com.tokopedia.utils.image.ImageProcessingUtil
+import kotlinx.coroutines.withContext
 import java.io.File
-import java.io.FileInputStream
-import java.io.FileOutputStream
-import java.io.IOException
-import java.io.InputStream
-import java.io.OutputStream
-import java.nio.channels.FileChannel
-import java.util.concurrent.CountDownLatch
 import javax.inject.Inject
 
 interface SaveImageRepository {
@@ -41,6 +30,8 @@ interface SaveImageRepository {
 }
 
 class SaveImageRepositoryImpl @Inject constructor(
+    @ApplicationContext private val context: Context,
+    private val dispatchers: CoroutineDispatchers,
     private val bitmapConverter: BitmapConverterRepository,
     private val bitmapCreation: BitmapCreationRepository,
 ) : SaveImageRepository {
@@ -62,6 +53,7 @@ class SaveImageRepositoryImpl @Inject constructor(
         imageAddedUrl: String,
         sourcePath: String
     ): String {
+        var errorCode = NO_ERROR
         var resultBitmap: Bitmap? = null
         bitmapConverter.uriToBitmap(Uri.parse(imageBaseUrl))?.let { baseBitmap ->
             resultBitmap = baseBitmap
@@ -91,8 +83,25 @@ class SaveImageRepositoryImpl @Inject constructor(
                         Paint()
                     )
                 }
+            } ?: run {
+                errorCode = ERROR_LOAD_FAILED_ADDED_SOURCE
+            }
+        } ?: run {
+            errorCode = ERROR_LOAD_FAILED_BASE
+        }
+
+        if (errorCode != NO_ERROR){
+            val errorMsg = if (errorCode == ERROR_LOAD_FAILED_BASE) {
+                ERROR_LOAD_FAILED_BASE_TEXT
+            } else {
+                ERROR_LOAD_FAILED_ADDED_SOURCE_TEXT
+            }
+
+            withContext(dispatchers.main) {
+                showErrorGeneralToaster(context, "Failed flatten - failed load$errorMsg")
             }
         }
+
         return resultBitmap?.let {
             saveToCache(it, sourcePath = sourcePath)?.path ?: ""
         } ?: ""
@@ -100,5 +109,13 @@ class SaveImageRepositoryImpl @Inject constructor(
 
     companion object {
         private const val XY_FLATTEN_COORDINATE = 0f
+
+        private const val NO_ERROR = -1
+
+        private const val ERROR_LOAD_FAILED_BASE = 0
+        private const val ERROR_LOAD_FAILED_BASE_TEXT = "Base"
+
+        private const val ERROR_LOAD_FAILED_ADDED_SOURCE = 1
+        private const val ERROR_LOAD_FAILED_ADDED_SOURCE_TEXT = "Added Source"
     }
 }

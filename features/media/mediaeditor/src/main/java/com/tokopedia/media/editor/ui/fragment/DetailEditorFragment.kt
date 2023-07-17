@@ -593,6 +593,13 @@ class DetailEditorFragment @Inject constructor(
                         }
                     )
                 )
+            } ?: run {
+                viewBinding?.editorFragmentDetailRoot?.let { view ->
+                    showErrorLoadToaster(
+                        view,
+                        null
+                    )
+                }
             }
         }
     }
