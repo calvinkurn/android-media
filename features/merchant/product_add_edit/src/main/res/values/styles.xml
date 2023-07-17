@@ -2,19 +2,19 @@
 <resources>
 
     <style name="bold">
-        <item name="android:textColor">@color/Unify_N700</item>
+        <item name="android:textColor">@color/Unify_NN950</item>
         <item name="android:textStyle">bold</item>
     </style>
 
     <style name="AppCompatAlertDialogStyle" parent="Theme.AppCompat.Light.Dialog.Alert">
-        <item name="colorAccent">@color/Unify_G600</item>
-        <item name="android:textColorPrimary">@color/Unify_N600</item>
-        <item name="android:background">@color/Unify_N0</item>
+        <item name="colorAccent">@color/Unify_GN600</item>
+        <item name="android:textColorPrimary">@color/Unify_NN800</item>
+        <item name="android:background">@color/Unify_NN0</item>
     </style>
 
     <style name="TextDarkMode">
-        <item name="android:textColor">@color/Unify_N700</item>
-        <item name="android:textColorPrimary">@color/Unify_N700</item>
-        <item name="android:textColorSecondary">@color/Unify_N500</item>
+        <item name="android:textColor">@color/Unify_NN950</item>
+        <item name="android:textColorPrimary">@color/Unify_NN950</item>
+        <item name="android:textColorSecondary">@color/Unify_NN600</item>
     </style>
 </resources>

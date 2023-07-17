@@ -34,7 +34,7 @@ object ShipmentAddOnProductServiceMapper {
             addOns = listOf(
                 AddOnRequest().apply {
                     addOnLevel = AddOnConstant.ADD_ON_LEVEL_PRODUCT
-                    addOnKey = ""
+                    addOnKey = cartItemModel.cartId.toString()
                     cartProducts = listOf(
                         CartProduct(
                             cartId = cartItemModel.cartId,

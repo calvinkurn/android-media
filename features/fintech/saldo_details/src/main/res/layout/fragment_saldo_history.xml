@@ -18,7 +18,7 @@
         android:paddingEnd="@dimen/sd_dp_18"
         android:paddingRight="@dimen/sd_dp_18"
         android:text="@string/sp_transaction_history_heading"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         app:typographyType="heading_4" />
 
     <com.tokopedia.unifycomponents.CardUnify
@@ -43,14 +43,14 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 android:layout_marginStart="@dimen/unify_space_8"
-                app:icon_color_light_enable="@color/Unify_N500"
-                app:icon_color_night_enable="@color/Unify_N500"/>
+                app:icon_color_light_enable="@color/Unify_NN600"
+                app:icon_color_night_enable="@color/Unify_NN600"/>
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tvSelectedDateRange"
                 android:layout_width="@dimen/layout_lvl0"
                 android:layout_height="wrap_content"
-                android:textColor="@color/Unify_N700_68"
+                android:textColor="@color/Unify_NN950_68"
                 tools:text="1 Des 2020 - 31 Des 2020"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/selectDateIcon"
@@ -66,8 +66,8 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:icon_color_light_enable="@color/Unify_N500"
-                app:icon_color_night_enable="@color/Unify_N500"/>
+                app:icon_color_light_enable="@color/Unify_NN600"
+                app:icon_color_night_enable="@color/Unify_NN600"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -87,10 +87,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:tabGravity="fill"
-            app:tabIndicatorColor="@color/Unify_G400"
+            app:tabIndicatorColor="@color/Unify_GN500"
             app:tabMode="scrollable"
-            app:tabSelectedTextColor="@color/Unify_G400"
-            app:tabTextColor="@color/Unify_N700_44" />
+            app:tabSelectedTextColor="@color/Unify_GN500"
+            app:tabTextColor="@color/Unify_NN950_44" />
 
         <com.tokopedia.saldodetails.commom.design.HeightWrappingViewPager
             android:id="@+id/transactionHistoryViewPager"

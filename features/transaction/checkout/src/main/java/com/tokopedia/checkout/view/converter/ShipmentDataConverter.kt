@@ -21,7 +21,6 @@ import com.tokopedia.logisticcart.shipping.model.CoachmarkPlusData
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItem
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemTopModel
-import com.tokopedia.logisticcart.shipping.model.ShipmentSubtotalAddOn
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingWordingModel
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnWordingData
 import com.tokopedia.purchase_platform.common.utils.isNotBlankOrZero
@@ -278,7 +277,7 @@ class ShipmentDataConverter @Inject constructor() {
                 hasGeolocation = userAddress.longitude.isNotEmpty() && userAddress.latitude.isNotEmpty(),
                 courierSelectionErrorTitle = groupShop.courierSelectionErrorData.title,
                 courierSelectionErrorDescription = groupShop.courierSelectionErrorData.description,
-                subtotalAddOnMap =  mapSubtotalAddons(groupShop.listSubtotalAddOn)
+                subtotalAddOnMap = mapSubtotalAddons(groupShop.listSubtotalAddOn)
             )
             for (cartItemModel in cartItemModels) {
                 if (cartItemModel.ethicalDrugDataModel.needPrescription && !cartItemModel.isError) {
@@ -491,7 +490,8 @@ class ShipmentDataConverter @Inject constructor() {
             isTokoCabang = groupShop.isFulfillment,
             cartItemPosition = index,
             addOnOrderLevelModel = addOnWordingModel,
-            addOnProduct = product.addOnProduct
+            addOnProduct = product.addOnProduct,
+            campaignId = product.campaignId
         )
     }
 

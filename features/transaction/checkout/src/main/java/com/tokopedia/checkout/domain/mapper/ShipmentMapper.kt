@@ -415,6 +415,7 @@ class ShipmentMapper @Inject constructor() {
                     addOnGiftingProduct = mapAddOnsGiftingData(product.addOns)
                     ethicalDrugs = mapEthicalDrugData(product.ethicalDrugResponse)
                     addOnProduct = mapAddOnsProductData(product.addOnsProduct, product.productQuantity)
+                    campaignId = product.campaignId
                 }
                 productListResult.add(productResult)
             }

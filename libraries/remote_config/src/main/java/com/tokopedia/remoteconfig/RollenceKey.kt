@@ -92,6 +92,9 @@ object RollenceKey {
     // Tokochat Bubbles
     const val TOKOCHAT_BUBBLES = "tokochat_bubble_chat"
 
+    // Seller Order Management
+    const val KEY_SOM_OG = "android_som_og"
+
     // Share affiliate
     const val AFFILIATE_SHARE_ICON = "ShareAff_pdpshop"
 }

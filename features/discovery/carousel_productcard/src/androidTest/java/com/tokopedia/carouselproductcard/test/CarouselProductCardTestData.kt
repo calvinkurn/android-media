@@ -683,38 +683,40 @@ fun createCarouselMPS(): List<ProductCardModel> {
 }
 
 private fun createCarouselRibbonTopStockBarProductCard(): List<ProductCardModel> {
+    val labelRibbon = LabelGroup(position = "ribbon", type = "red", title = "90% OFF")
+
     return listOf(
         ProductCardModel(
             productImageUrl = "https://images.tokopedia.net/img/cache/200-square/product-1/2019/12/29/234900908/234900908_33fe7619-52b3-4d5d-9bc9-672549dea45b_1728_1728.jpg",
             formattedPrice = "Rp10.000",
             slashedPrice = "Rp100.0000",
-            ribbonText = "90%",
             isTopStockBar = true,
             stockBarLabel = "Segera Habis",
             stockBarPercentage = 80,
             stockBarLabelColor = "#6D7588",
+            labelGroupList = listOf(labelRibbon),
             freeOngkir = ProductCardModel.FreeOngkir(isActive = true, imageUrl = "https://images.tokopedia.net/img/ic_bebas_ongkir.png"),
         ),
         ProductCardModel(
             productImageUrl = "https://images.tokopedia.net/img/cache/200-square/product-1/2019/12/29/234900908/234900908_33fe7619-52b3-4d5d-9bc9-672549dea45b_1728_1728.jpg",
             formattedPrice = "Rp10.000",
             slashedPrice = "Rp100.0000",
-            ribbonText = "90%",
             isTopStockBar = true,
             stockBarLabel = "Segera Habis",
             stockBarPercentage = 80,
             stockBarLabelColor = "#6D7588",
+            labelGroupList = listOf(labelRibbon),
             freeOngkir = ProductCardModel.FreeOngkir(isActive = true, imageUrl = "https://images.tokopedia.net/img/ic_bebas_ongkir.png"),
         ),
         ProductCardModel(
             productImageUrl = "https://images.tokopedia.net/img/cache/200-square/product-1/2019/12/29/234900908/234900908_33fe7619-52b3-4d5d-9bc9-672549dea45b_1728_1728.jpg",
             formattedPrice = "Rp10.000",
             slashedPrice = "Rp100.0000",
-            ribbonText = "90%",
             isTopStockBar = true,
             stockBarLabel = "Segera Habis",
             stockBarPercentage = 75,
             stockBarLabelColor = "#6D7588",
+            labelGroupList = listOf(labelRibbon),
             freeOngkir = ProductCardModel.FreeOngkir(isActive = true, imageUrl = "https://images.tokopedia.net/img/ic_bebas_ongkir.png"),
         ),
     )

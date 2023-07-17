@@ -71,6 +71,7 @@ import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_7
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_9_TOKONOW
+import com.tokopedia.product.detail.data.util.ProductDetailConstant.RECOM_VERTICAL
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.VIEW_TO_VIEW
 import com.tokopedia.recommendation_widget_common.extension.LAYOUTTYPE_HORIZONTAL_ATC
 import com.tokopedia.recommendation_widget_common.extension.toProductCardModels
@@ -79,6 +80,7 @@ import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationC
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
+import com.tokopedia.recommendation_widget_common.widget.carousel.global.RecommendationCarouselTrackingConst
 import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetMetadata
 import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetModel
 import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetSource
@@ -287,6 +289,8 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                     this.productId = dataP1.basic.productID
                 }
             }
+
+            updateVerticalRecommendationWidget(productId, loadInitialData)
 
             if (loadInitialData) {
                 verticalRecommendationItems.clear()
@@ -1202,6 +1206,30 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                         }
                     }
                 }
+            }
+        }
+    }
+
+    private fun updateVerticalRecommendationWidget(productId: String, loadInitialData: Boolean) {
+        if (mapOfData.containsKey(RECOM_VERTICAL)) {
+            updateData(RECOM_VERTICAL, loadInitialData) {
+                val globalRecomWidgetTrackingModel = RecommendationWidgetTrackingModel(
+                    androidPageName = RecommendationCarouselTrackingConst.Category.PDP,
+                    eventActionImpression = RecommendationCarouselTrackingConst.Action.IMPRESSION_ON_PRODUCT_RECOMMENDATION_PDP,
+                    eventActionClick = RecommendationCarouselTrackingConst.Action.CLICK_ON_PRODUCT_RECOMMENDATION_PDP,
+                    listPageName = RecommendationCarouselTrackingConst.List.PDP
+                )
+                val globalRecomWidgetMetadata = RecommendationWidgetMetadata(
+                    pageSource = RecommendationWidgetSource.PDP.xSourceValue,
+                    pageName = RECOM_VERTICAL,
+                    productIds = if (productId.isBlank()) listOf() else listOf(productId)
+                )
+                mapOfData[RECOM_VERTICAL] = PdpRecommendationWidgetDataModel(
+                    RecommendationWidgetModel(
+                        metadata = globalRecomWidgetMetadata,
+                        trackingModel = globalRecomWidgetTrackingModel
+                    )
+                )
             }
         }
     }
