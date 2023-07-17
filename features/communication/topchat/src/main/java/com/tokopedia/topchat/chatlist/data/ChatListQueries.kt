@@ -27,14 +27,4 @@ object ChatListQueries {
            }
         }
     """.trimIndent()
-
-    val QUERY_CHAT_BLAST_SELLER_METADATA = """
-        query {
-          chatBlastSellerMetadata {
-            status
-            url
-            urlBroadcast
-          }
-        }
-    """.trimIndent()
 }

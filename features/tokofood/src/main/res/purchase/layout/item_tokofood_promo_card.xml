@@ -70,7 +70,7 @@
                 android:layout_marginEnd="4dp"
                 android:layout_marginTop="8dp"
                 android:gravity="center_vertical"
-                android:textColor="@color/Unify_N700_96"
+                android:textColor="@color/Unify_NN950_96"
                 app:layout_constraintEnd_toStartOf="@+id/imaginary_view_tokofood"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/promo_highlight_identifier_tokofood"
@@ -102,7 +102,7 @@
                     android:id="@+id/text_time_validity_tokofood"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/Unify_N700_68"
+                    android:textColor="@color/Unify_NN950_68"
                     app:typographyType="display_3"
                     tools:text="Berakhir 20 menit lagi!" />
 
@@ -113,7 +113,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_marginTop="10dp"
-                android:background="@color/Unify_N75"
+                android:background="@color/Unify_NN50"
                 app:layout_constraintTop_toBottomOf="@+id/container_time_validity_tokofood" />
 
             <LinearLayout
@@ -146,7 +146,7 @@
                     android:layout_marginTop="6dp"
                     android:layout_marginBottom="6dp"
                     android:gravity="center_vertical"
-                    android:textColor="@color/Unify_N700_68"
+                    android:textColor="@color/Unify_NN950_68"
                     app:typographyType="display_3"
                     tools:text="Tidak Indonesia Indonesia Indonesia Indonesia Indonesia Indonesia yang dipilih." />
 

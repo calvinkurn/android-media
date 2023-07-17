@@ -20,7 +20,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="6dp"
         android:text="@string/pm_check_pm_pro_status_info"
-        android:textColor="@color/Unify_G500"
+        android:textColor="@color/Unify_GN500"
         app:layout_constraintBottom_toBottomOf="@id/icPmProStatusInfo"
         app:layout_constraintStart_toEndOf="@+id/icPmProStatusInfo"
         app:layout_constraintTop_toTopOf="@id/icPmProStatusInfo"

@@ -9,11 +9,20 @@ import com.tokopedia.play.robot.play.createPlayViewModelRobot
 import com.tokopedia.play.util.assertEqualTo
 import com.tokopedia.play.util.isEqualToIgnoringFields
 import com.tokopedia.play.util.share.PlayShareExperience
-import com.tokopedia.play.view.uimodel.action.*
-import com.tokopedia.play.view.uimodel.event.*
+import com.tokopedia.play.view.uimodel.action.ClickShareAction
+import com.tokopedia.play.view.uimodel.action.ClickSharingOptionAction
+import com.tokopedia.play.view.uimodel.action.CloseSharingOptionAction
+import com.tokopedia.play.view.uimodel.action.ScreenshotTakenAction
+import com.tokopedia.play.view.uimodel.action.SharePermissionAction
+import com.tokopedia.play.view.uimodel.event.CloseShareExperienceBottomSheet
+import com.tokopedia.play.view.uimodel.event.CopyToClipboardEvent
+import com.tokopedia.play.view.uimodel.event.ErrorGenerateShareLink
+import com.tokopedia.play.view.uimodel.event.OpenSelectedSharingOptionEvent
+import com.tokopedia.play.view.uimodel.event.OpenSharingOptionEvent
+import com.tokopedia.play.view.uimodel.event.ShowInfoEvent
+import com.tokopedia.play.view.uimodel.event.UiString
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
-import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.model.ShareModel
 import io.mockk.coEvery
 import io.mockk.every
@@ -70,12 +79,17 @@ class PlayViewModelShareExperienceTest {
     }
 
     @Test
-    fun `when user click share action, it should emit event to save temporary sharing image`() {
+    fun `when user click share action, it should emit show share bottom sheet event`() {
         /** Prepare */
         every { mockPlayNewAnalytic.clickShareButton(any(), any(), any()) } returns Unit
         coEvery { mockPlayShareExperience.isCustomSharingAllow() } returns true
 
-        val mockEvent = SaveTemporarySharingImage(imageUrl = channelInfo.coverUrl)
+        val mockEvent = OpenSharingOptionEvent(
+            title = channelInfo.title,
+            coverUrl = channelInfo.coverUrl,
+            userId = "",
+            channelId = channelId
+        )
 
         val robot = createPlayViewModelRobot(
             dispatchers = testDispatcher,
@@ -96,38 +110,6 @@ class PlayViewModelShareExperienceTest {
             verify { mockPlayNewAnalytic.clickShareButton(channelId, partnerId, channelType) }
 
             event.last().assertEqualTo(mockEvent)
-        }
-    }
-
-    @Test
-    fun `when app failed to save temporary image, it should emit copy link event`() {
-        /** Prepare */
-        coEvery { mockPlayShareExperience.isCustomSharingAllow() } returns true
-
-        val mockCopyEvent = CopyToClipboardEvent(
-            shareInfo.content
-        )
-        val mockShowInfoEvent = ShowInfoEvent(
-            UiString.Resource(123)
-        )
-
-        val robot = createPlayViewModelRobot(
-            dispatchers = testDispatcher,
-            playAnalytic = mockPlayNewAnalytic,
-            playShareExperience = mockPlayShareExperience
-        ) {
-            createPage(channelData)
-            focusPage(channelData)
-        }
-
-        robot.use {
-            /** Test */
-            val event = it.recordEvent {
-                submitAction(CopyLinkAction)
-            }
-
-            event[0].assertEqualTo(mockCopyEvent)
-            event[1].isEqualToIgnoringFields(mockShowInfoEvent, ShowInfoEvent::message)
         }
     }
 
@@ -156,7 +138,7 @@ class PlayViewModelShareExperienceTest {
         robot.use {
             /** Test */
             val event = it.recordEvent {
-                submitAction(ShowShareExperienceAction)
+                submitAction(ClickShareAction)
             }
 
             /** Verify */
@@ -190,7 +172,7 @@ class PlayViewModelShareExperienceTest {
         robot.use {
             /** Test */
             val event = it.recordEvent {
-                submitAction(ShowShareExperienceAction)
+                submitAction(ClickShareAction)
             }
 
             /** Verify */

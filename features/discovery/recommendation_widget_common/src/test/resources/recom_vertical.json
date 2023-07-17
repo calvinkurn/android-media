@@ -1,0 +1,619 @@
+{
+  "productRecommendationWidget": {
+    "data": [
+      {
+        "tID": "Py6JPpDSG-DNpH8ZKHGSyuGdhEU=",
+        "source": "custom",
+        "title": "Pilihan lainnya untukmu",
+        "subtitle": "",
+        "foreignTitle": "Recommendation for you",
+        "widgetUrl": "",
+        "pageName": "pdp_vertical",
+        "seeMoreAppLink": "tokopedia://rekomendasi/2170611118/d/?ref=pdp_vertical_1758&product_ids=2170611118",
+        "layoutType": "limit-vertical",
+        "pagination": {
+          "currentPage": 1,
+          "nextPage": 2,
+          "prevPage": -1,
+          "hasNext": true
+        },
+        "campaign": {
+          "appLandingPageLink": "",
+          "landingPageLink": "",
+          "thematicID": 0,
+          "assets": {
+            "banner": {
+              "apps": ""
+            }
+          }
+        },
+        "recommendation": [
+          {
+            "id": 1717267118,
+            "name": "Piyama Baju Tidur Wanita Import Fashion Karakter Lengan Pendek CP 7309",
+            "categoryBreadcrumbs": "Fashion Wanita/Baju Tidur Wanita/Set Piyama Wanita",
+            "url": "https://www.tokopedia.com/umisukaofficial/piyama-baju-tidur-wanita-import-fashion-karakter-lengan-pendek-cp-7309",
+            "appUrl": "tokopedia://product/1717267118",
+            "clickUrl": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEH_nFosUfo_yObm-xgVY789CBUsthbm-FQRo2PcB5QiUEHZFiPcBWgZUEH_yd6A1pH_UhoaFiyRCsUstdo_nDUMVj9RosQR-BUstaopKXopJpHsyOopeNosJhHprDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_1o-r7BW_sCsQABE3BPc8ujagfBvq1BRZ3BRq3JausujHsBN3jyN8Bja69Bq17jfZ32Cq1hAZSuiHsuk3Bo-ojBku92o8j-D_s-g8jh1_MBqz7O7_jP-HJN2HAz6zcxk_VzzoV291Mh6zV-2_1zu8BB_Z9o-Q_BNyuPjrc-D63Wq3J-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7-Nys-ZHujp1MgxuOV2_fB-P7B2PfBiH72F3s-DPuKp_MYiH7-MyuPzq1Y2Z9P-q9P2yOx3QcoXQcgjz7gXyRB-ojB2Z9o-QjNkysoGQVKaZSBiHfzE3Bo-ojBkZ_ovepep_uzo81Nku_o6zcDa_uzV8jNNZ9o-QjNkysoGQVKp_Mhg3J2ky1o-ojBk__-o8_eF_920o1Nke9P6zVjh_S2sHJBXHA7ibm-Orfua9fBjUstiHmUDUSoBrRo2QfNwq3ei6i-sg3xZ_j-igVJRy_udeMWX83oVoSnf6jVee_jhyjK7zsofZOYyzJoUy7PU1SgAzOugzBC3QMoGu_VCgSomQjOM_RzjZfxgoJozb1t7oBgvqs-EQMHhgMB9ZMJhqBjhyaOfySzc_uu9_JtWHJVEo_BouA1dQ9tdes-H1fYxqJDWgf-dzJYp1ABee7rFr72Z_APW8iOo6JNUo_CGQfBX_J2pupoIUiFiy3hSUstirfh5PIz2QMPwyS-5PRoBUiFiQSuWyMua9fYM9fVjraUEH_jDUMNOQ3-BrBYxgIowrMuhUstOoaFiyfV79fBjraUE3pJRo_KDH_KhoiFh6AJR9ZFiQBYsy3Njq3zxPcuwy3zpUsth6ZFiy3-wPcupPmUEUjdibm-FQRo79fVDgaUEUSoDQRz7q3NS9f-aQRPpgZUDUSgBrSo2Qfdi6i-fHiUDUMoDP9o7g9-wq3zwPsUi6sJFHpK7bm-2rOYj83NxQ3Bs9RoDQRz7q3NSUs27rSuBbm-FrMBsguYiq3ei6sKOHmFigfYxQVY2gmUEHR7?t=android&r=https%3A%2F%2Fwww.tokopedia.com%2Fumisukaofficial%2Fpiyama-baju-tidur-wanita-import-fashion-karakter-lengan-pendek-cp-7309%3Fsrc%3Dtopads&is_search=1&keywords=recom&sid=cehRNBbdQ7a5xBknycE6p6%3AAPA91bH4F3vK_XDCHcGHRvCGUYFPVncJU1AfsBnMfOtdKhY4CQ-J46VOj2znc1fiWJa1jY1c-vbtFMUWLJ-0Az59MT58mz8B2LSoahK-gbxDOsP9PCG0sJRL7mz-M8NH50JoinLJsW3G&src=recom_widget_pdp_vertical&page=1&management_type=1&dv=android-3.226",
+            "wishlistUrl": "https://ta.tokopedia.com/promo/v1/wishlists/8a-xgVY2gmUEH_nFosUfo_yObm-xgVY789CBUsthbm-FQRo2PcB5QiUEHZFiPcBWgZUEH_yd6A1pH_UhoaFiyRCsUstdo_nDUMVj9RosQR-BUstaopKXopJpHsyOopeNosJhHprDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_1o-r7BW_sCsQABE3BPc8ujagfBvq1BRZ3BRq3JausujHsBN3jyN8Bja69Bq17jfZ32Cq1hAZSuiHsuk3Bo-ojBku92o8j-D_s-g8jh1_MBqz7O7_jP-HJN2HAz6zcxk_VzzoV291Mh6zV-2_1zu8BB_Z9o-Q_BNyuPjrc-D63Wq3J-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7-Nys-ZHujp1MgxuOV2_fB-P7B2PfBiH72F3s-DPuKp_MYiH7-MyuPzq1Y2Z9P-q9P2yOx3QcoXQcgjz7gXyRB-ojB2Z9o-QjNkysoGQVKaZSBiHfzE3Bo-ojBkZ_ovepep_uzo81Nku_o6zcDa_uzV8jNNZ9o-QjNkysoGQVKp_Mhg3J2ky1o-ojBk__-o8_eF_920o1Nke9P6zVjh_S2sHJBXHA7ibm-Orfua9fBjUstiHmUDUSoBrRo2QfNwq3ei6i-sg3xZ_j-igVJRy_udeMWX83oVoSnf6jVee_jhyjK7zsofZOYyzJoUy7PU1SgAzOugzBC3QMoGu_VCgSomQjOM_RzjZfxgoJozb1t7oBgvqs-EQMHhgMB9ZMJhqBjhyaOfySzc_uu9_JtWHJVEo_BouA1dQ9tdes-H1fYxqJDWgf-dzJYp1ABee7rFr72Z_APW8iOo6JNUo_CGQfBX_J2pupoIUiFiy3hSUstirfh5PIz2QMPwyS-5PRoBUiFiQSuWyMua9fYM9fVjraUEH_jDUMNOQ3-BrBYxgIowrMuhUstOoaFiyfV79fBjraUE3pJRo_KDH_KhoiFh6AJR9ZFiQBYsy3Njq3zxPcuwy3zpUsth6ZFiy3-wPcupPmUEUjdibm-FQRo79fVDgaUEUSoDQRz7q3NS9f-aQRPpgZUDUSgBrSo2Qfdi6i-fHiUDUMoDP9o7g9-wq3zwPsUi6sJFHpK7bm-2rOYj83NxQ3Bs9RoDQRz7q3NSUs27rSuBbm-FrMBsguYiq3ei6sKOHmFigfYxQVY2gmUEHR7?is_search=1&page=1&dv=android-3.226&product_id=1717267118&management_type=1&sid=cehRNBbdQ7a5xBknycE6p6%3AAPA91bH4F3vK_XDCHcGHRvCGUYFPVncJU1AfsBnMfOtdKhY4CQ-J46VOj2znc1fiWJa1jY1c-vbtFMUWLJ-0Az59MT58mz8B2LSoahK-gbxDOsP9PCG0sJRL7mz-M8NH50JoinLJsW3G&uid=0&r=https%3A%2F%2Fwww.tokopedia.com%2Fumisukaofficial%2Fpiyama-baju-tidur-wanita-import-fashion-karakter-lengan-pendek-cp-7309%3Fsrc%3Dtopads&keywords=recom&t=android&src=recom_widget_pdp_vertical",
+            "trackerImageUrl": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6sJFHAyaos1foZFiy3zwPIBFgZUEHZFircYpq9z2Qfdi6sJDUSz2Q31i6sJf6AKOHpJaH_rDUSCxPcKi6i-2Q3VSg9HXPcY0QRCBgcBxbMNBPmY2Q3r5yfVsqc15HpnFbOghyMoW_Z4aHAUpbpH5Hsj56cusHAjFHp1WypyRHZ77HfeOb3Uhy3JWHpusoMyRHAHOgsUpbM2FgaUDUMVj9RosQR-BUstaopKXopJpHsyOopeNosJhHprDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_1o-r7BW_sCsQABE3BPc8ujagfBvq1BRZ3BRq3JausujHsBN3jyN8Bja69Bq17jfZ32Cq1hAZSuiHsuk3Bo-ojBku92o8j-D_s-g8jh1_MBqz7O7_jP-HJN2HAz6zcxk_VzzoV291Mh6zV-2_1zu8BB_Z9o-Q_BNyuPjrc-D63Wq3J-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7-Nys-ZHujp1MgxuOV2_fB-P7B2PfBiH72F3s-DPuKp_MYiH7-MyuPzq1Y2Z9P-q9P2yOx3QcoXQcgjz7gXyRB-ojB2Z9o-QjNkysoGQVKaZSBiHfzE3Bo-ojBkZ_ovepep_uzo81Nku_o6zcDa_uzV8jNNZ9o-QjNkysoGQVKp_Mhg3J2ky1o-ojBk__-o8_eF_920o1Nke9P6zVjh_S2sHJBXHA7ibm-Orfua9fBjUstiHmUDUSoBrRo2QfNwq3ei6i-sg3xZ_j-igVJRy_udeMWX83oVoSnf6jVee_jhyjK7zsofZOYyzJoUy7PU1SgAzOugzBC3QMoGu_VCgSomQjOM_RzjZfxgoJozb1t7oBgvqs-EQMHhgMB9ZMJhqBjhyaOfySzc_uu9_JtWHJVEo_BouA1dQ9tdes-H1fYxqJDWgf-dzJYp1ABee7rFr72Z_APW8iOo6JNUo_CGQfBX_J2pupoIUiFiy3hSUstirfh5PIz2QMPwyS-5PRoBUiFiQSuWyMua9fYM9fVjraUEH_jDUMNOQ3-BrBYxgIowrMuhUstOoaFiQBYsy3Njq3zxPcuwy3zpUsth6ZFiy3-wPcupPmUEUjdibm-FQRo79fVDgaUE3a-pQcY7PcBXgOYirMYRrf1i9ZFiPMuarfB5QiUEUSyaUiFiyfhOrRzBrBY2gVYfHiUEH_np6AeDUMBp9fzNQMVWq3owrfh5PIz2QMri6SzaP31DUSCaq3oB9f-2gmUE6A1Fbm-SQfVD9fBjUstpwe?keywords=recom&src=recom_widget_pdp_vertical&dv=android-3.226&is_search=1&page=1&management_type=1&t=android&sid=cehRNBbdQ7a5xBknycE6p6%3AAPA91bH4F3vK_XDCHcGHRvCGUYFPVncJU1AfsBnMfOtdKhY4CQ-J46VOj2znc1fiWJa1jY1c-vbtFMUWLJ-0Az59MT58mz8B2LSoahK-gbxDOsP9PCG0sJRL7mz-M8NH50JoinLJsW3G",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/3/29/8ec09035-c671-43d5-b1aa-35c6f7035f23.jpg",
+            "price": "Rp 67.000",
+            "priceInt": 67000,
+            "discountPercentage": 0,
+            "slashedPrice": "",
+            "slashedPriceInt": 0,
+            "isWishlist": false,
+            "minOrder": 1,
+            "maxOrder": 0,
+            "shop": {
+              "id": 5423007,
+              "name": "Umisuka Official",
+              "city": "Jakarta Pusat",
+              "isGold": true,
+              "isOfficial": false
+            },
+            "departmentId": 1817,
+            "labels": [
+              {
+                "title": "Cashback",
+                "color": "#42b549"
+              }
+            ],
+            "labelgroup": [
+              {
+                "position": "promo",
+                "title": "Cashback",
+                "type": "lightGreen",
+                "url": ""
+              },
+              {
+                "position": "price",
+                "title": "Cashback",
+                "type": "lightGreen",
+                "url": ""
+              },
+              {
+                "position": "eta",
+                "title": "Tiba 7 - 10 Jul",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "integrity",
+                "title": "Terjual 30+",
+                "type": "textDarkGrey",
+                "url": ""
+              }
+            ],
+            "badges": [
+              {
+                "title": "Power Merchant Pro",
+                "imageUrl": "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/Power%20Merchant%20Pro@2x.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": true,
+              "imageUrl": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png"
+            },
+            "rating": 5,
+            "countReview": 21,
+            "ratingAverage": "4.8",
+            "recommendationType": "graph_embedding_v7",
+            "stock": 5,
+            "isTopads": true,
+            "specificationLabels": [],
+            "parentID": 0
+          },
+          {
+            "id": 2060071550,
+            "name": "Piyama Baju Tidur Wanita Import Fashion Karakter Lengan Pendek CP 7319",
+            "categoryBreadcrumbs": "Fashion Wanita/Baju Tidur Wanita/Set Piyama Wanita",
+            "url": "https://www.tokopedia.com/umisukaofficial/piyama-baju-tidur-wanita-import-fashion-karakter-lengan-pendek-cp-7319",
+            "appUrl": "tokopedia://product/2060071550",
+            "clickUrl": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEH_UF6AyOHpyFbm-xgVY789CBUsthbm-FQRo2PcB5QiUEHiFiPcBWgZUEH_yd6A1pH_UhoaFiyRCsUstdo_nDUMVj9RosQR-BUstaopjXoAeFHAn7HAnaop1O6mFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoe7BpZ3O6HcoD692qu7gN3_-Sq1Y2Z9P-q9P2y_-3o3ea69BqzsBE3_UN8u2_Z_g-qjV2_JoGP3Uao32q17jfZ32u8jOEeMh6HBBE_Vz6qu2I_9z6z7jF_MjFoJNJqc2HuVJ73BPZQJNJ1MBozVuE3uo-r7BW69BxufzFyMFNqO2yeMgxuOV2_fB-P7B2PfBiH72F3s-DPuKpeSBiHBUh3_oZgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Ao6QfUpeMgxuOV2_fB-P7B2PfBs3VgDyfNDgMzIzMNs81jfZ3B-r7BX_M2iH72D3A-G83UpgI2q17jfZ32-H7Y_oAC6zJVR_1zzP7OJZ_o6uV17Z3BRq3Ha_SgsQugMyp-3qcoW_MY-qMY2_92uoJhk__z6uVBE_1zCoJOJqpC6qj1aZ3dFvZUDUSupg9-wq3ei6iUFUiFirfuprfB5QBY2gmUEUMoBqV-6eM-j1_Pxo9xmqfNNy71frAyEeuCC6_ViZAzcHRgb9OxJe7xsz7xZPjoIuuBc1VgXy72uH1VMr7-X_3gvPczbqVj7eOJWZsefujYkHS2XypVMquPGy_Vk3_Vsb9giPJgouuPHZi7Fe9tO61O1o_xW8sxmHjh_QfVtZaOSySxJ_Roe6uCAzpCpZB-HofOEb17d_jKOHJ25q3NHZSo9H7ribm-xQcri6i-pQcY7PcBXgOYirMYRrf1ibm-XP3Oig9-wQfgwy3zpUsth6ZFiQSuWyMua9fVjrOYag9Ji6s1Rbm-sy9zwq3zpUs2QH_rO6mFh6AJfbAJdH_PPbm-X9foxQMz2gcV7guYxgIHi6sJNbm-xyBY7g9o7Usti_iUDUSC5rRzwy3hSUstirfh5PIz2QMPwyS-5PRoBUiFiPMuarfB5QiUEUSyaUiFiyfhOrRzBrBY2gVYfHiUEH_np6AeDUMBp9fzNQMVWq3owrfh5PIz2QMri6SzaP31DUSCaq3oB9f-2gmUE6A1Fbm-SQfVD9fBjUstpwe?r=https%3A%2F%2Fwww.tokopedia.com%2Fumisukaofficial%2Fpiyama-baju-tidur-wanita-import-fashion-karakter-lengan-pendek-cp-7319%3Fsrc%3Dtopads&is_search=1&sid=cehRNBbdQ7a5xBknycE6p6%3AAPA91bH4F3vK_XDCHcGHRvCGUYFPVncJU1AfsBnMfOtdKhY4CQ-J46VOj2znc1fiWJa1jY1c-vbtFMUWLJ-0Az59MT58mz8B2LSoahK-gbxDOsP9PCG0sJRL7mz-M8NH50JoinLJsW3G&page=1&src=recom_widget_pdp_vertical&t=android&dv=android-3.226&keywords=recom&management_type=1",
+            "wishlistUrl": "https://ta.tokopedia.com/promo/v1/wishlists/8a-xgVY2gmUEH_UF6AyOHpyFbm-xgVY789CBUsthbm-FQRo2PcB5QiUEHiFiPcBWgZUEH_yd6A1pH_UhoaFiyRCsUstdo_nDUMVj9RosQR-BUstaopjXoAeFHAn7HAnaop1O6mFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoe7BpZ3O6HcoD692qu7gN3_-Sq1Y2Z9P-q9P2y_-3o3ea69BqzsBE3_UN8u2_Z_g-qjV2_JoGP3Uao32q17jfZ32u8jOEeMh6HBBE_Vz6qu2I_9z6z7jF_MjFoJNJqc2HuVJ73BPZQJNJ1MBozVuE3uo-r7BW69BxufzFyMFNqO2yeMgxuOV2_fB-P7B2PfBiH72F3s-DPuKpeSBiHBUh3_oZgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Ao6QfUpeMgxuOV2_fB-P7B2PfBs3VgDyfNDgMzIzMNs81jfZ3B-r7BX_M2iH72D3A-G83UpgI2q17jfZ32-H7Y_oAC6zJVR_1zzP7OJZ_o6uV17Z3BRq3Ha_SgsQugMyp-3qcoW_MY-qMY2_92uoJhk__z6uVBE_1zCoJOJqpC6qj1aZ3dFvZUDUSupg9-wq3ei6iUFUiFirfuprfB5QBY2gmUEUMoBqV-6eM-j1_Pxo9xmqfNNy71frAyEeuCC6_ViZAzcHRgb9OxJe7xsz7xZPjoIuuBc1VgXy72uH1VMr7-X_3gvPczbqVj7eOJWZsefujYkHS2XypVMquPGy_Vk3_Vsb9giPJgouuPHZi7Fe9tO61O1o_xW8sxmHjh_QfVtZaOSySxJ_Roe6uCAzpCpZB-HofOEb17d_jKOHJ25q3NHZSo9H7ribm-xQcri6i-pQcY7PcBXgOYirMYRrf1ibm-XP3Oig9-wQfgwy3zpUsth6ZFiQSuWyMua9fVjrOYag9Ji6s1Rbm-sy9zwq3zpUs2QH_rO6mFh6AJfbAJdH_PPbm-X9foxQMz2gcV7guYxgIHi6sJNbm-xyBY7g9o7Usti_iUDUSC5rRzwy3hSUstirfh5PIz2QMPwyS-5PRoBUiFiPMuarfB5QiUEUSyaUiFiyfhOrRzBrBY2gVYfHiUEH_np6AeDUMBp9fzNQMVWq3owrfh5PIz2QMri6SzaP31DUSCaq3oB9f-2gmUE6A1Fbm-SQfVD9fBjUstpwe?t=android&sid=cehRNBbdQ7a5xBknycE6p6%3AAPA91bH4F3vK_XDCHcGHRvCGUYFPVncJU1AfsBnMfOtdKhY4CQ-J46VOj2znc1fiWJa1jY1c-vbtFMUWLJ-0Az59MT58mz8B2LSoahK-gbxDOsP9PCG0sJRL7mz-M8NH50JoinLJsW3G&management_type=1&r=https%3A%2F%2Fwww.tokopedia.com%2Fumisukaofficial%2Fpiyama-baju-tidur-wanita-import-fashion-karakter-lengan-pendek-cp-7319%3Fsrc%3Dtopads&page=1&is_search=1&uid=0&product_id=2060071550&keywords=recom&dv=android-3.226&src=recom_widget_pdp_vertical",
+            "trackerImageUrl": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6sJaHAKfo_HfHmFiy3zwPIBFgZUEHZFircYpq9z2Qfdi6sUDUSz2Q31i6sJf6AKOHpJaH_rDUSCxPcKi6i-2Q3VSg9HXPcY0QRCBgcBxbMNBPmY2Q3r5yfVsqc15HpnFbOghyMoW_Z4aHAUpbpH5Hsj5g_PBH_1ag_eWg3JNgZ77gsJRb_Kf6AyWHAJNg_jOysHhoA-xbM2FgaUDUMVj9RosQR-BUstaopjXoAeFHAn7HAnaop1O6mFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoe7BpZ3O6HcoD692qu7gN3_-Sq1Y2Z9P-q9P2y_-3o3ea69BqzsBE3_UN8u2_Z_g-qjV2_JoGP3Uao32q17jfZ32u8jOEeMh6HBBE_Vz6qu2I_9z6z7jF_MjFoJNJqc2HuVJ73BPZQJNJ1MBozVuE3uo-r7BW69BxufzFyMFNqO2yeMgxuOV2_fB-P7B2PfBiH72F3s-DPuKpeSBiHBUh3_oZgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Ao6QfUpeMgxuOV2_fB-P7B2PfBs3VgDyfNDgMzIzMNs81jfZ3B-r7BX_M2iH72D3A-G83UpgI2q17jfZ32-H7Y_oAC6zJVR_1zzP7OJZ_o6uV17Z3BRq3Ha_SgsQugMyp-3qcoW_MY-qMY2_92uoJhk__z6uVBE_1zCoJOJqpC6qj1aZ3dFvZUDUSupg9-wq3ei6iUFUiFirfuprfB5QBY2gmUEUMoBqV-6eM-j1_Pxo9xmqfNNy71frAyEeuCC6_ViZAzcHRgb9OxJe7xsz7xZPjoIuuBc1VgXy72uH1VMr7-X_3gvPczbqVj7eOJWZsefujYkHS2XypVMquPGy_Vk3_Vsb9giPJgouuPHZi7Fe9tO61O1o_xW8sxmHjh_QfVtZaOSySxJ_Roe6uCAzpCpZB-HofOEb17d_jKOHJ25q3NHZSo9H7ribm-xQcri6i-pQcY7PcBXgOYirMYRrf1ibm-XP3Oig9-wQfgwy3zpUsth6ZFiQSuWyMua9fVjrOYag9Ji6s1Rbm-X9foxQMz2gcV7guYxgIHi6sJNbm-xyBY7g9o7Usti_iUDUSC5rRzwy3hSUs2QUSoDQRz7q3NS9f-aQRPpgZ-Pbm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUsthHAHdomFiq9owgIBXy3O2yOYpQcY7PcBXgaUEPI-OgZFirI-2yfuwyMBjUstdo_nDUMP5y3hwq3ei6soY?is_search=1&page=1&management_type=1&t=android&sid=cehRNBbdQ7a5xBknycE6p6%3AAPA91bH4F3vK_XDCHcGHRvCGUYFPVncJU1AfsBnMfOtdKhY4CQ-J46VOj2znc1fiWJa1jY1c-vbtFMUWLJ-0Az59MT58mz8B2LSoahK-gbxDOsP9PCG0sJRL7mz-M8NH50JoinLJsW3G&dv=android-3.226&src=recom_widget_pdp_vertical&keywords=recom",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/3/29/e7e152e4-ea9e-4f17-8686-019e95b3142a.jpg",
+            "price": "Rp 67.000",
+            "priceInt": 67000,
+            "discountPercentage": 0,
+            "slashedPrice": "",
+            "slashedPriceInt": 0,
+            "isWishlist": false,
+            "minOrder": 1,
+            "maxOrder": 0,
+            "shop": {
+              "id": 5423007,
+              "name": "Umisuka Official",
+              "city": "Jakarta Pusat",
+              "isGold": true,
+              "isOfficial": false
+            },
+            "departmentId": 1817,
+            "labels": [
+              {
+                "title": "Cashback",
+                "color": "#42b549"
+              }
+            ],
+            "labelgroup": [
+              {
+                "position": "promo",
+                "title": "Cashback",
+                "type": "lightGreen",
+                "url": ""
+              },
+              {
+                "position": "price",
+                "title": "Cashback",
+                "type": "lightGreen",
+                "url": ""
+              },
+              {
+                "position": "eta",
+                "title": "Tiba 7 - 10 Jul",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "integrity",
+                "title": "Terjual 9",
+                "type": "textDarkGrey",
+                "url": ""
+              }
+            ],
+            "badges": [
+              {
+                "title": "Power Merchant Pro",
+                "imageUrl": "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/Power%20Merchant%20Pro@2x.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": true,
+              "imageUrl": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png"
+            },
+            "rating": 5,
+            "countReview": 5,
+            "ratingAverage": "5.0",
+            "recommendationType": "graph_embedding_v7",
+            "stock": 3,
+            "isTopads": true,
+            "specificationLabels": [],
+            "parentID": 0
+          },
+          {
+            "id": 1661088617,
+            "name": "Piyama Baju Tidur Wanita Import Fashion Karakter Lengan Pendek CP 7303",
+            "categoryBreadcrumbs": "Fashion Wanita/Baju Tidur Wanita/Set Piyama Wanita",
+            "url": "https://www.tokopedia.com/umisukaofficial/piyama-baju-tidur-wanita-import-fashion-karakter-lengan-pendek-cp-7303",
+            "appUrl": "tokopedia://product/1661088617",
+            "clickUrl": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUE6_rp6_JaopHDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUstpbm-7q3OBUsthosKdo_HhHsJRbm-srcHi6sKOHmFiy3zwrfo5rM1i6sUR6ZdaHsUfH_Uf6_K7HAKDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_1o-r7BW_sCsQABE3BPc8ujagfBvq1BRZ3BRq3JausujHsBN3jyN8Bja69Bq17jfZ32Cq1hAZSuiHsuk3Bo-ojBku92o8j-D_s-g8jh1_MBqz7O7_jP-HJN2HAz6zcxk_VzzoV291Mh6zV-2_1zu8BB_Z9o-Q_BNyuPjrc-D63Wq3J-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7-Nys-ZHujp1MgxuOV2_fB-P7B2PfBiH72F3s-DPuKp_MYiH7-MyuPzq1Y2Z9P-q9P2yOx3QcoXQcgjz7gXyRB-ojB2Z9o-QjNkysoGQVKaZSBiHfzE3Bo-ojBkZ_ov1pzN_32-HjO1Z_-vucrF_1zSq1hAZS2gHsBN3ByN8B29zSBgHMP2_fB-8jOJyRu6zJuE_7z081YJ19P68BJO_7zzq3gzv_7ibm-Orfua9fBjUstiHmUDUSoBrRo2QfNwq3ei6i-sg3xZ_j-igVJRy_udeMWX83oVoSnf6jVee_jhyjK7zsofZOYyzJoUy7PU1SgAzOugzBC3QMoGu_VCgSomQjOM_RzjZfxgoJozb1t7oBgvqs-EQMHhgMB9ZMJhqBjhyaOfySzc_uu9_JtWHJVEo_BouA1dQ9tdes-H1fYxqJDWgf-dzJYp1ABee7rFr72Z_APW8iOo6JNUo_CGQfBX_J2pupoIUiFiy3hSUstirfh5PIz2QMPwyS-5PRoBUiFiQSuWyMua9fYM9fVjraUEH_jDUMNOQ3-BrBYxgIowrMuhUstOoaFiyfV79fBjraUE3pJRo_KDH_KhoiFh6AJR9ZFiQBYsy3Njq3zxPcuwy3zpUsth6ZFiy3-wPcupPmUEUjdibm-FQRo79fVDgaUEUSoDQRz7q3NS9f-aQRPpgZUDUSgBrSo2Qfdi6i-fHiUDUMoDP9o7g9-wq3zwPsUi6sJFHpK7bm-2rOYj83NxQ3Bs9RoDQRz7q3NSUs27rSuBbm-FrMBsguYiq3ei6sKOHmFigfYxQVY2gmUEHR7?src=recom_widget_pdp_vertical&t=android&r=https%3A%2F%2Fwww.tokopedia.com%2Fumisukaofficial%2Fpiyama-baju-tidur-wanita-import-fashion-karakter-lengan-pendek-cp-7303%3Fsrc%3Dtopads&keywords=recom&sid=cehRNBbdQ7a5xBknycE6p6%3AAPA91bH4F3vK_XDCHcGHRvCGUYFPVncJU1AfsBnMfOtdKhY4CQ-J46VOj2znc1fiWJa1jY1c-vbtFMUWLJ-0Az59MT58mz8B2LSoahK-gbxDOsP9PCG0sJRL7mz-M8NH50JoinLJsW3G&page=1&management_type=1&dv=android-3.226&is_search=1",
+            "wishlistUrl": "https://ta.tokopedia.com/promo/v1/wishlists/8a-xgVY2gmUE6_rp6_JaopHDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUstpbm-7q3OBUsthosKdo_HhHsJRbm-srcHi6sKOHmFiy3zwrfo5rM1i6sUR6ZdaHsUfH_Uf6_K7HAKDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_1o-r7BW_sCsQABE3BPc8ujagfBvq1BRZ3BRq3JausujHsBN3jyN8Bja69Bq17jfZ32Cq1hAZSuiHsuk3Bo-ojBku92o8j-D_s-g8jh1_MBqz7O7_jP-HJN2HAz6zcxk_VzzoV291Mh6zV-2_1zu8BB_Z9o-Q_BNyuPjrc-D63Wq3J-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7-Nys-ZHujp1MgxuOV2_fB-P7B2PfBiH72F3s-DPuKp_MYiH7-MyuPzq1Y2Z9P-q9P2yOx3QcoXQcgjz7gXyRB-ojB2Z9o-QjNkysoGQVKaZSBiHfzE3Bo-ojBkZ_ov1pzN_32-HjO1Z_-vucrF_1zSq1hAZS2gHsBN3ByN8B29zSBgHMP2_fB-8jOJyRu6zJuE_7z081YJ19P68BJO_7zzq3gzv_7ibm-Orfua9fBjUstiHmUDUSoBrRo2QfNwq3ei6i-sg3xZ_j-igVJRy_udeMWX83oVoSnf6jVee_jhyjK7zsofZOYyzJoUy7PU1SgAzOugzBC3QMoGu_VCgSomQjOM_RzjZfxgoJozb1t7oBgvqs-EQMHhgMB9ZMJhqBjhyaOfySzc_uu9_JtWHJVEo_BouA1dQ9tdes-H1fYxqJDWgf-dzJYp1ABee7rFr72Z_APW8iOo6JNUo_CGQfBX_J2pupoIUiFiy3hSUstirfh5PIz2QMPwyS-5PRoBUiFiQSuWyMua9fYM9fVjraUEH_jDUMNOQ3-BrBYxgIowrMuhUstOoaFiyfV79fBjraUE3pJRo_KDH_KhoiFh6AJR9ZFiQBYsy3Njq3zxPcuwy3zpUsth6ZFiy3-wPcupPmUEUjdibm-FQRo79fVDgaUEUSoDQRz7q3NS9f-aQRPpgZUDUSgBrSo2Qfdi6i-fHiUDUMoDP9o7g9-wq3zwPsUi6sJFHpK7bm-2rOYj83NxQ3Bs9RoDQRz7q3NSUs27rSuBbm-FrMBsguYiq3ei6sKOHmFigfYxQVY2gmUEHR7?r=https%3A%2F%2Fwww.tokopedia.com%2Fumisukaofficial%2Fpiyama-baju-tidur-wanita-import-fashion-karakter-lengan-pendek-cp-7303%3Fsrc%3Dtopads&is_search=1&keywords=recom&product_id=1661088617&page=1&sid=cehRNBbdQ7a5xBknycE6p6%3AAPA91bH4F3vK_XDCHcGHRvCGUYFPVncJU1AfsBnMfOtdKhY4CQ-J46VOj2znc1fiWJa1jY1c-vbtFMUWLJ-0Az59MT58mz8B2LSoahK-gbxDOsP9PCG0sJRL7mz-M8NH50JoinLJsW3G&src=recom_widget_pdp_vertical&management_type=1&dv=android-3.226&uid=0&t=android",
+            "trackerImageUrl": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6sjRHpjhHsrpbm-xgVY789CBUsthbm-FQRo2PcB5QiUEHaFiPcBWgZUEH_yd6A1pH_UhoaFircV7qmUEUMBWy3PBraN7QfW5rcujq3JXQMu7bfBWgaYsy3otgZ4pHAn5uSViyfOobpUFHsU5oZ4Nbfgj63yFosxsb_-MocyWoc1d6Z7dHABjb_UNo_UO6_oB6_eaHmNkrcribm-xgVYpyfYagZUEHsrNbsUaHsyhHsyN6AeF6mFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoe7BpZ3O6HcoD692qu7gN3_-Sq1Y2Z9P-q9P2y_-3o3ea69BqzsBE3_UN8u2_Z_g-qjV2_JoGP3Uao32q17jfZ32u8jOEeMh6HBBE_Vz6qu2I_9z6z7jF_MjFoJNJqc2HuVJ73BPZQJNJ1MBozVuE3uo-r7BW69BxufzFyMFNqO2yeMgxuOV2_fB-P7B2PfBiH72F3s-DPuKpeSBiHBUh3_oZgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Ao6QfUpeMgxuOV2_fB-P7B2PfBs3VgDyfNDgMzIzMNs81jfZ3B-r7BX_M2iH72D3A-G83UpgI2q17jfZ32-H7Y_oIBoqjja_uz-HjY1gpCozcP2_JoG8Bja69BqusBE3BPc8ujagfBvq1BE_1zsP1NJz92vzcWN_7zzP7NE1_uvzVV2gBJYvZUDUSupg9-wq3ei6iUFUiFirfuprfB5QBY2gmUEUMoBqV-6eM-j1_Pxo9xmqfNNy71frAyEeuCC6_ViZAzcHRgb9OxJe7xsz7xZPjoIuuBc1VgXy72uH1VMr7-X_3gvPczbqVj7eOJWZsefujYkHS2XypVMquPGy_Vk3_Vsb9giPJgouuPHZi7Fe9tO61O1o_xW8sxmHjh_QfVtZaOSySxJ_Roe6uCAzpCpZB-HofOEb17d_jKOHJ25q3NHZSo9H7ribm-xQcri6i-pQcY7PcBXgOYirMYRrf1ibm-XP3Oig9-wQfgwy3zpUsth6ZFiQSuWyMua9fVjrOYag9Ji6s1Rbm-X9foxQMz2gcV7guYxgIHi6sJNbm-xyBY7g9o7Usti_iUDUSC5rRzwy3hSUs2QUSoDQRz7q3NS9f-aQRPpgZ-Pbm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUsthHAHdomFiq9owgIBXy3O2yOYpQcY7PcBXgaUEPI-OgZFirI-2yfuwyMBjUstdo_nDUMP5y3hwq3ei6soY?t=android&dv=android-3.226&sid=cehRNBbdQ7a5xBknycE6p6%3AAPA91bH4F3vK_XDCHcGHRvCGUYFPVncJU1AfsBnMfOtdKhY4CQ-J46VOj2znc1fiWJa1jY1c-vbtFMUWLJ-0Az59MT58mz8B2LSoahK-gbxDOsP9PCG0sJRL7mz-M8NH50JoinLJsW3G&src=recom_widget_pdp_vertical&keywords=recom&management_type=1&is_search=1&page=1",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2022/5/9/fd9f068c-2f4f-4e89-809d-2952593e9420.jpg",
+            "price": "Rp 67.000",
+            "priceInt": 67000,
+            "discountPercentage": 0,
+            "slashedPrice": "",
+            "slashedPriceInt": 0,
+            "isWishlist": false,
+            "minOrder": 1,
+            "maxOrder": 0,
+            "shop": {
+              "id": 5423007,
+              "name": "Umisuka Official",
+              "city": "Jakarta Pusat",
+              "isGold": true,
+              "isOfficial": false
+            },
+            "departmentId": 1817,
+            "labels": [
+              {
+                "title": "Cashback",
+                "color": "#42b549"
+              }
+            ],
+            "labelgroup": [
+              {
+                "position": "promo",
+                "title": "Cashback",
+                "type": "lightGreen",
+                "url": ""
+              },
+              {
+                "position": "price",
+                "title": "Cashback",
+                "type": "lightGreen",
+                "url": ""
+              },
+              {
+                "position": "eta",
+                "title": "Tiba 7 - 10 Jul",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "integrity",
+                "title": "Terjual 30+",
+                "type": "textDarkGrey",
+                "url": ""
+              }
+            ],
+            "badges": [
+              {
+                "title": "Power Merchant Pro",
+                "imageUrl": "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/Power%20Merchant%20Pro@2x.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": true,
+              "imageUrl": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png"
+            },
+            "rating": 4,
+            "countReview": 15,
+            "ratingAverage": "4.5",
+            "recommendationType": "graph_embedding_v7",
+            "stock": 15,
+            "isTopads": true,
+            "specificationLabels": [],
+            "parentID": 0
+          },
+          {
+            "id": 1719837845,
+            "name": "Piyama Baju Tidur Wanita Import Fashion Karakter Lengan Pendek CP 7311",
+            "categoryBreadcrumbs": "Fashion Wanita/Baju Tidur Wanita/Set Piyama Wanita",
+            "url": "https://www.tokopedia.com/umisukaofficial/piyama-baju-tidur-wanita-import-fashion-karakter-lengan-pendek-cp-7311",
+            "appUrl": "tokopedia://product/1719837845",
+            "clickUrl": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEH_nFoprRosJpbm-xgVY789CBUsthbm-FQRo2PcB5QiUEomFiPcBWgZUEH_yd6A1pH_UhoaFiyRCsUstdo_nDUMVj9RosQR-BUsta6AnXosHFoAKFH_jpHsHabm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1OAZ9o-Q1dFyfFN8B29zSBgHMP2_fB-P7B2PfBxHByOgAUN8u2c692gHsBN3Bo-ojBke3BHe72OysUOqB2_Z_g-qBuE_92mQJda392HuJN23jPoPJNIZ_C6q_n7_jztqjh11_zquO-D_jzZq1OJu92g17BpZ37N83V9gICiQAB03BxmgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Aom83Ua1sVgHO-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7N5ysomgMV913Bvq1BRZ3BRq3oyuMhsQMhMgJPcQMoNZ_g-q1BpZ3N6qMUpZMhyHj2Nysoj8B2_Z_g-qjj7_1H7HjOEe_CvzJVd_Ozo81OEZ3BHe72E3_UN8u23692qu7gN3_-Sq1Y2Z92ozcoO_92081NE_9B6ucWd_Bz08JO2Zsjibm-Orfua9fBjUstiHmUDUSoBrRo2QfNwq3ei6i-sg3xZ_j-igVJRy_udeMWX83oVoSnf6jVee_jhyjK7zsofZOYyzJoUy7PU1SgAzOugzBC3QMoGu_VCgSomQjOM_RzjZfxgoJozb1t7oBgvqs-EQMHhgMB9ZMJhqBjhyaOfySzc_uu9_JtWHJVEo_BouA1dQ9tdes-H1fYxqJDWgf-dzJYp1ABee7rFr72Z_APW8iOo6JNUo_CGQfBX_J2pupoIUiFiy3hSUstirfh5PIz2QMPwyS-5PRoBUiFiQSuWyMua9fYM9fVjraUEH_jDUMNOQ3-BrBYxgIowrMuhUstOoaFiyfV79fBjraUE3pJRo_KDH_KhoiFh6AJR9ZFiQBYsy3Njq3zxPcuwy3zpUsth6ZFiy3-wPcupPmUEUjdibm-FQRo79fVDgaUEUSoDQRz7q3NS9f-aQRPpgZUDUSgBrSo2Qfdi6i-fHiUDUMoDP9o7g9-wq3zwPsUi6seO6AHObm-2rOYj83NxQ3Bs9RoDQRz7q3NSUs27rSuBbm-FrMBsguYiq3ei6sKOHmFigfYxQVY2gmUEHR7?keywords=recom&page=1&r=https%3A%2F%2Fwww.tokopedia.com%2Fumisukaofficial%2Fpiyama-baju-tidur-wanita-import-fashion-karakter-lengan-pendek-cp-7311%3Fsrc%3Dtopads&src=recom_widget_pdp_vertical&t=android&management_type=1&sid=cehRNBbdQ7a5xBknycE6p6%3AAPA91bH4F3vK_XDCHcGHRvCGUYFPVncJU1AfsBnMfOtdKhY4CQ-J46VOj2znc1fiWJa1jY1c-vbtFMUWLJ-0Az59MT58mz8B2LSoahK-gbxDOsP9PCG0sJRL7mz-M8NH50JoinLJsW3G&is_search=1&dv=android-3.226",
+            "wishlistUrl": "https://ta.tokopedia.com/promo/v1/wishlists/8a-xgVY2gmUEH_nFoprRosJpbm-xgVY789CBUsthbm-FQRo2PcB5QiUEomFiPcBWgZUEH_yd6A1pH_UhoaFiyRCsUstdo_nDUMVj9RosQR-BUsta6AnXosHFoAKFH_jpHsHabm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1OAZ9o-Q1dFyfFN8B29zSBgHMP2_fB-P7B2PfBxHByOgAUN8u2c692gHsBN3Bo-ojBke3BHe72OysUOqB2_Z_g-qBuE_92mQJda392HuJN23jPoPJNIZ_C6q_n7_jztqjh11_zquO-D_jzZq1OJu92g17BpZ37N83V9gICiQAB03BxmgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Aom83Ua1sVgHO-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7N5ysomgMV913Bvq1BRZ3BRq3oyuMhsQMhMgJPcQMoNZ_g-q1BpZ3N6qMUpZMhyHj2Nysoj8B2_Z_g-qjj7_1H7HjOEe_CvzJVd_Ozo81OEZ3BHe72E3_UN8u23692qu7gN3_-Sq1Y2Z92ozcoO_92081NE_9B6ucWd_Bz08JO2Zsjibm-Orfua9fBjUstiHmUDUSoBrRo2QfNwq3ei6i-sg3xZ_j-igVJRy_udeMWX83oVoSnf6jVee_jhyjK7zsofZOYyzJoUy7PU1SgAzOugzBC3QMoGu_VCgSomQjOM_RzjZfxgoJozb1t7oBgvqs-EQMHhgMB9ZMJhqBjhyaOfySzc_uu9_JtWHJVEo_BouA1dQ9tdes-H1fYxqJDWgf-dzJYp1ABee7rFr72Z_APW8iOo6JNUo_CGQfBX_J2pupoIUiFiy3hSUstirfh5PIz2QMPwyS-5PRoBUiFiQSuWyMua9fYM9fVjraUEH_jDUMNOQ3-BrBYxgIowrMuhUstOoaFiyfV79fBjraUE3pJRo_KDH_KhoiFh6AJR9ZFiQBYsy3Njq3zxPcuwy3zpUsth6ZFiy3-wPcupPmUEUjdibm-FQRo79fVDgaUEUSoDQRz7q3NS9f-aQRPpgZUDUSgBrSo2Qfdi6i-fHiUDUMoDP9o7g9-wq3zwPsUi6seO6AHObm-2rOYj83NxQ3Bs9RoDQRz7q3NSUs27rSuBbm-FrMBsguYiq3ei6sKOHmFigfYxQVY2gmUEHR7?management_type=1&t=android&uid=0&product_id=1719837845&keywords=recom&sid=cehRNBbdQ7a5xBknycE6p6%3AAPA91bH4F3vK_XDCHcGHRvCGUYFPVncJU1AfsBnMfOtdKhY4CQ-J46VOj2znc1fiWJa1jY1c-vbtFMUWLJ-0Az59MT58mz8B2LSoahK-gbxDOsP9PCG0sJRL7mz-M8NH50JoinLJsW3G&r=https%3A%2F%2Fwww.tokopedia.com%2Fumisukaofficial%2Fpiyama-baju-tidur-wanita-import-fashion-karakter-lengan-pendek-cp-7311%3Fsrc%3Dtopads&is_search=1&page=1&dv=android-3.226&src=recom_widget_pdp_vertical",
+            "trackerImageUrl": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6sJFHArRopyhHaFiy3zwPIBFgZUEHZFircYpq9z2Qfdi6seDUSz2Q31i6sJf6AKOHpJaH_rDUSCxPcKi6i-2Q3VSg9HXPcY0QRCBgcBxbMNBPmY2Q3r5yfVsqc15HpnFbOghyMoW_Z4aHAUpbpH5Hsj5ypVBgMJdH3JWy_jpgi77ysyNb3VBHpjWHcJOoc-MyfURHA1pbM2FgaUDUMVj9RosQR-BUsta6AnXosHFoAKFH_jpHsHabm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1OAZ9o-Q1dFyfFN8B29zSBgHMP2_fB-P7B2PfBxHByOgAUN8u2c692gHsBN3Bo-ojBke3BHe72OysUOqB2_Z_g-qBuE_92mQJda392HuJN23jPoPJNIZ_C6q_n7_jztqjh11_zquO-D_jzZq1OJu92g17BpZ37N83V9gICiQAB03BxmgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Aom83Ua1sVgHO-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7N5ysomgMV913Bvq1BRZ3BRq3oyuMhsQMhMgJPcQMoNZ_g-q1BpZ3N6qMUpZMhyHj2Nysoj8B2_Z_g-qjj7_1H7HjOEe_CvzJVd_Ozo81OEZ3BHe72E3_UN8u23692qu7gN3_-Sq1Y2Z92ozcoO_92081NE_9B6ucWd_Bz08JO2Zsjibm-Orfua9fBjUstiHmUDUSoBrRo2QfNwq3ei6i-sg3xZ_j-igVJRy_udeMWX83oVoSnf6jVee_jhyjK7zsofZOYyzJoUy7PU1SgAzOugzBC3QMoGu_VCgSomQjOM_RzjZfxgoJozb1t7oBgvqs-EQMHhgMB9ZMJhqBjhyaOfySzc_uu9_JtWHJVEo_BouA1dQ9tdes-H1fYxqJDWgf-dzJYp1ABee7rFr72Z_APW8iOo6JNUo_CGQfBX_J2pupoIUiFiy3hSUstirfh5PIz2QMPwyS-5PRoBUiFiQSuWyMua9fYM9fVjraUEH_jDUMNOQ3-BrBYxgIowrMuhUstOoaFiQBYsy3Njq3zxPcuwy3zpUsth6ZFiy3-wPcupPmUEUjdibm-FQRo79fVDgaUE3a-pQcY7PcBXgOYirMYRrf1i9ZFiPMuarfB5QiUEUSyaUiFiyfhOrRzBrBY2gVYfHiUEoA1dHp1DUMBp9fzNQMVWq3owrfh5PIz2QMri6SzaP31DUSCaq3oB9f-2gmUE6A1Fbm-SQfVD9fBjUstpwe?keywords=recom&page=1&src=recom_widget_pdp_vertical&dv=android-3.226&is_search=1&sid=cehRNBbdQ7a5xBknycE6p6%3AAPA91bH4F3vK_XDCHcGHRvCGUYFPVncJU1AfsBnMfOtdKhY4CQ-J46VOj2znc1fiWJa1jY1c-vbtFMUWLJ-0Az59MT58mz8B2LSoahK-gbxDOsP9PCG0sJRL7mz-M8NH50JoinLJsW3G&management_type=1&t=android",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/3/29/c1efa81a-a93f-4b69-ae39-0a54bfcb7053.jpg",
+            "price": "Rp 67.000",
+            "priceInt": 67000,
+            "discountPercentage": 0,
+            "slashedPrice": "",
+            "slashedPriceInt": 0,
+            "isWishlist": false,
+            "minOrder": 1,
+            "maxOrder": 0,
+            "shop": {
+              "id": 5423007,
+              "name": "Umisuka Official",
+              "city": "Jakarta Pusat",
+              "isGold": true,
+              "isOfficial": false
+            },
+            "departmentId": 1817,
+            "labels": [
+              {
+                "title": "Cashback",
+                "color": "#42b549"
+              }
+            ],
+            "labelgroup": [
+              {
+                "position": "promo",
+                "title": "Cashback",
+                "type": "lightGreen",
+                "url": ""
+              },
+              {
+                "position": "price",
+                "title": "Cashback",
+                "type": "lightGreen",
+                "url": ""
+              },
+              {
+                "position": "eta",
+                "title": "Tiba 7 - 10 Jul",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "integrity",
+                "title": "Terjual 40+",
+                "type": "textDarkGrey",
+                "url": ""
+              }
+            ],
+            "badges": [
+              {
+                "title": "Power Merchant Pro",
+                "imageUrl": "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/Power%20Merchant%20Pro@2x.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": true,
+              "imageUrl": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png"
+            },
+            "rating": 5,
+            "countReview": 33,
+            "ratingAverage": "4.8",
+            "recommendationType": "graph_embedding_v7",
+            "stock": 11,
+            "isTopads": true,
+            "specificationLabels": [],
+            "parentID": 0
+          },
+          {
+            "id": 1719842032,
+            "name": "Piyama Baju Tidur Wanita Import Fashion Karakter Lengan Pendek CP 7312",
+            "categoryBreadcrumbs": "Fashion Wanita/Baju Tidur Wanita/Set Piyama Wanita",
+            "url": "https://www.tokopedia.com/umisukaofficial/piyama-baju-tidur-wanita-import-fashion-karakter-lengan-pendek-cp-7312",
+            "appUrl": "tokopedia://product/1719842032",
+            "clickUrl": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEH_nFoprRosJabm-xgVY789CBUsthbm-FQRo2PcB5QiUEoZFiPcBWgZUEH_yd6A1pH_UhoaFiyRCsUstdo_nDUMVj9RosQR-BUstaopjXosyp6AK7o_jNoprFoaFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoe7BpZ3O6HcoD692qu7gN3_-Sq1Y2Z9P-q9P2y_-3o3ea69BqzsBE3_UN8u2_Z_g-qjV2_JoGP3Uao32q17jfZ32u8jOEeMh6HBBE_Vz6qu2I_9z6z7jF_MjFoJNJqc2HuVJ73BPZQJNJ1MBozVuE3uo-r7BW69BxufzFyMFNqO2yeMgxuOV2_fB-P7B2PfBiH72F3s-DPuKpeSBiHBUh3_oZgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Ao6QfUpeMgxuOV2_fB-P7B2PfBs3VgDyfNDgMzIzMNs81jfZ3B-r7BX_M2iH72D3A-G83UpgI2q17jfZ32-H7Y_oA-6qj77_7zzH1Y1qpo68jJpZ3BRq3Ha_SgsQugMyp-3qcoW_MY-qMY2_92-8Jhkz9xvzJJa_S2z81OE__V68jB2gBJYvZUDUSupg9-wq3ei6iUFUiFirfuprfB5QBY2gmUEUMoBqV-6eM-j1_Pxo9xmqfNNy71frAyEeuCC6_ViZAzcHRgb9OxJe7xsz7xZPjoIuuBc1VgXy72uH1VMr7-X_3gvPczbqVj7eOJWZsefujYkHS2XypVMquPGy_Vk3_Vsb9giPJgouuPHZi7Fe9tO61O1o_xW8sxmHjh_QfVtZaOSySxJ_Roe6uCAzpCpZB-HofOEb17d_jKOHJ25q3NHZSo9H7ribm-xQcri6i-pQcY7PcBXgOYirMYRrf1ibm-XP3Oig9-wQfgwy3zpUsth6ZFiQSuWyMua9fVjrOYag9Ji6s1Rbm-sy9zwq3zpUs2QH_rO6mFh6AJfbAJdH_PPbm-X9foxQMz2gcV7guYxgIHi6sJNbm-xyBY7g9o7Usti_iUDUSC5rRzwy3hSUstirfh5PIz2QMPwyS-5PRoBUiFiPMuarfB5QiUEUSyaUiFiyfhOrRzBrBY2gVYfHiUEH_np6AeDUMBp9fzNQMVWq3owrfh5PIz2QMri6SzaP31DUSCaq3oB9f-2gmUE6A1Fbm-SQfVD9fBjUstpwe?t=android&page=1&sid=cehRNBbdQ7a5xBknycE6p6%3AAPA91bH4F3vK_XDCHcGHRvCGUYFPVncJU1AfsBnMfOtdKhY4CQ-J46VOj2znc1fiWJa1jY1c-vbtFMUWLJ-0Az59MT58mz8B2LSoahK-gbxDOsP9PCG0sJRL7mz-M8NH50JoinLJsW3G&r=https%3A%2F%2Fwww.tokopedia.com%2Fumisukaofficial%2Fpiyama-baju-tidur-wanita-import-fashion-karakter-lengan-pendek-cp-7312%3Fsrc%3Dtopads&keywords=recom&management_type=1&dv=android-3.226&src=recom_widget_pdp_vertical&is_search=1",
+            "wishlistUrl": "https://ta.tokopedia.com/promo/v1/wishlists/8a-xgVY2gmUEH_nFoprRosJabm-xgVY789CBUsthbm-FQRo2PcB5QiUEoZFiPcBWgZUEH_yd6A1pH_UhoaFiyRCsUstdo_nDUMVj9RosQR-BUstaopjXosyp6AK7o_jNoprFoaFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoe7BpZ3O6HcoD692qu7gN3_-Sq1Y2Z9P-q9P2y_-3o3ea69BqzsBE3_UN8u2_Z_g-qjV2_JoGP3Uao32q17jfZ32u8jOEeMh6HBBE_Vz6qu2I_9z6z7jF_MjFoJNJqc2HuVJ73BPZQJNJ1MBozVuE3uo-r7BW69BxufzFyMFNqO2yeMgxuOV2_fB-P7B2PfBiH72F3s-DPuKpeSBiHBUh3_oZgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Ao6QfUpeMgxuOV2_fB-P7B2PfBs3VgDyfNDgMzIzMNs81jfZ3B-r7BX_M2iH72D3A-G83UpgI2q17jfZ32-H7Y_oA-6qj77_7zzH1Y1qpo68jJpZ3BRq3Ha_SgsQugMyp-3qcoW_MY-qMY2_92-8Jhkz9xvzJJa_S2z81OE__V68jB2gBJYvZUDUSupg9-wq3ei6iUFUiFirfuprfB5QBY2gmUEUMoBqV-6eM-j1_Pxo9xmqfNNy71frAyEeuCC6_ViZAzcHRgb9OxJe7xsz7xZPjoIuuBc1VgXy72uH1VMr7-X_3gvPczbqVj7eOJWZsefujYkHS2XypVMquPGy_Vk3_Vsb9giPJgouuPHZi7Fe9tO61O1o_xW8sxmHjh_QfVtZaOSySxJ_Roe6uCAzpCpZB-HofOEb17d_jKOHJ25q3NHZSo9H7ribm-xQcri6i-pQcY7PcBXgOYirMYRrf1ibm-XP3Oig9-wQfgwy3zpUsth6ZFiQSuWyMua9fVjrOYag9Ji6s1Rbm-sy9zwq3zpUs2QH_rO6mFh6AJfbAJdH_PPbm-X9foxQMz2gcV7guYxgIHi6sJNbm-xyBY7g9o7Usti_iUDUSC5rRzwy3hSUstirfh5PIz2QMPwyS-5PRoBUiFiPMuarfB5QiUEUSyaUiFiyfhOrRzBrBY2gVYfHiUEH_np6AeDUMBp9fzNQMVWq3owrfh5PIz2QMri6SzaP31DUSCaq3oB9f-2gmUE6A1Fbm-SQfVD9fBjUstpwe?r=https%3A%2F%2Fwww.tokopedia.com%2Fumisukaofficial%2Fpiyama-baju-tidur-wanita-import-fashion-karakter-lengan-pendek-cp-7312%3Fsrc%3Dtopads&t=android&is_search=1&uid=0&src=recom_widget_pdp_vertical&keywords=recom&sid=cehRNBbdQ7a5xBknycE6p6%3AAPA91bH4F3vK_XDCHcGHRvCGUYFPVncJU1AfsBnMfOtdKhY4CQ-J46VOj2znc1fiWJa1jY1c-vbtFMUWLJ-0Az59MT58mz8B2LSoahK-gbxDOsP9PCG0sJRL7mz-M8NH50JoinLJsW3G&dv=android-3.226&page=1&management_type=1&product_id=1719842032",
+            "trackerImageUrl": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6sJFHArRopyhHiFiy3zwPIBFgZUEHZFircYpq9z2Qfdi6s1DUSz2Q31i6sJf6AKOHpJaH_rDUSCxPcKi6i-2Q3VSg9HXPcY0QRCBgcBxbMNBPmY2Q3r5yfVsqc15HpnFbOghyMoW_Z4aHAUpbpH5Hsj5y_J7opJpyMeWg3Udyi776_jpb3Jdy_jWy3Uho_PM6_-s6cUfbM2FgaUDUMVj9RosQR-BUstaopjXosyp6AK7o_jNoprFoaFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoe7BpZ3O6HcoD692qu7gN3_-Sq1Y2Z9P-q9P2y_-3o3ea69BqzsBE3_UN8u2_Z_g-qjV2_JoGP3Uao32q17jfZ32u8jOEeMh6HBBE_Vz6qu2I_9z6z7jF_MjFoJNJqc2HuVJ73BPZQJNJ1MBozVuE3uo-r7BW69BxufzFyMFNqO2yeMgxuOV2_fB-P7B2PfBiH72F3s-DPuKpeSBiHBUh3_oZgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Ao6QfUpeMgxuOV2_fB-P7B2PfBs3VgDyfNDgMzIzMNs81jfZ3B-r7BX_M2iH72D3A-G83UpgI2q17jfZ32-H7Y_oA-6qj77_7zzH1Y1qpo68jJpZ3BRq3Ha_SgsQugMyp-3qcoW_MY-qMY2_92-8Jhkz9xvzJJa_S2z81OE__V68jB2gBJYvZUDUSupg9-wq3ei6iUFUiFirfuprfB5QBY2gmUEUMoBqV-6eM-j1_Pxo9xmqfNNy71frAyEeuCC6_ViZAzcHRgb9OxJe7xsz7xZPjoIuuBc1VgXy72uH1VMr7-X_3gvPczbqVj7eOJWZsefujYkHS2XypVMquPGy_Vk3_Vsb9giPJgouuPHZi7Fe9tO61O1o_xW8sxmHjh_QfVtZaOSySxJ_Roe6uCAzpCpZB-HofOEb17d_jKOHJ25q3NHZSo9H7ribm-xQcri6i-pQcY7PcBXgOYirMYRrf1ibm-XP3Oig9-wQfgwy3zpUsth6ZFiQSuWyMua9fVjrOYag9Ji6s1Rbm-X9foxQMz2gcV7guYxgIHi6sJNbm-xyBY7g9o7Usti_iUDUSC5rRzwy3hSUs2QUSoDQRz7q3NS9f-aQRPpgZ-Pbm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUsthHAHdomFiq9owgIBXy3O2yOYpQcY7PcBXgaUEPI-OgZFirI-2yfuwyMBjUstdo_nDUMP5y3hwq3ei6soY?src=recom_widget_pdp_vertical&management_type=1&t=android&sid=cehRNBbdQ7a5xBknycE6p6%3AAPA91bH4F3vK_XDCHcGHRvCGUYFPVncJU1AfsBnMfOtdKhY4CQ-J46VOj2znc1fiWJa1jY1c-vbtFMUWLJ-0Az59MT58mz8B2LSoahK-gbxDOsP9PCG0sJRL7mz-M8NH50JoinLJsW3G&is_search=1&page=1&dv=android-3.226&keywords=recom",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/3/29/a14713bd-eb8b-4993-a8a9-ab157f92c8b6.jpg",
+            "price": "Rp 67.000",
+            "priceInt": 67000,
+            "discountPercentage": 0,
+            "slashedPrice": "",
+            "slashedPriceInt": 0,
+            "isWishlist": false,
+            "minOrder": 1,
+            "maxOrder": 0,
+            "shop": {
+              "id": 5423007,
+              "name": "Umisuka Official",
+              "city": "Jakarta Pusat",
+              "isGold": true,
+              "isOfficial": false
+            },
+            "departmentId": 1817,
+            "labels": [
+              {
+                "title": "Cashback",
+                "color": "#42b549"
+              }
+            ],
+            "labelgroup": [
+              {
+                "position": "promo",
+                "title": "Cashback",
+                "type": "lightGreen",
+                "url": ""
+              },
+              {
+                "position": "price",
+                "title": "Cashback",
+                "type": "lightGreen",
+                "url": ""
+              },
+              {
+                "position": "eta",
+                "title": "Tiba 7 - 10 Jul",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "integrity",
+                "title": "Terjual 30+",
+                "type": "textDarkGrey",
+                "url": ""
+              }
+            ],
+            "badges": [
+              {
+                "title": "Power Merchant Pro",
+                "imageUrl": "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/Power%20Merchant%20Pro@2x.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": true,
+              "imageUrl": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png"
+            },
+            "rating": 5,
+            "countReview": 19,
+            "ratingAverage": "4.8",
+            "recommendationType": "graph_embedding_v7",
+            "stock": 1,
+            "isTopads": true,
+            "specificationLabels": [],
+            "parentID": 0
+          },
+          {
+            "id": 6805914095,
+            "name": "Baju Tidur Wanita Piyama Lengan Pendek Motif Kartun BT01 ke 1",
+            "categoryBreadcrumbs": "Fashion Wanita/Baju Tidur Wanita/Set Piyama Wanita",
+            "url": "https://www.tokopedia.com/scuad/baju-tidur-wanita-piyama-lengan-pendek-motif-kartun-bt01-ke-1-096bt01mickey14",
+            "appUrl": "tokopedia://product/6805914095",
+            "clickUrl": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEH_HNHs1RoAJ7bm-xgVY789CBUsthbm-FQRo2PcB5QiUEoaFiPcBWgZUEH_yd6A1pH_UhoaFiyRCsUstao_nDUMVj9RosQR-BUstaosnXHsnfoprFHAr7o_UFHpyDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_1o-r7BW_sCsQABE3BPc8ujagfBvq1Bd_1zCq1hAZS-q3cFpysoGqOKp_M2iH72DZ325q1OAZ9o-Q_ufyMO6QJBkQfB6uJOE_1PuHO2k_9zoHj2039jFHVBk1_-HucrF_7PoPJNJqchqzO1F_jP-P7N1_Mx-q9P2ysoGrVtaQIuyHB-Dy7yNrV2AZ_g-qjV2_JoGPMoWQcNxupuMy7xGPB2UuM2jzsBF3jo-ojBke3BHe72fyfODQMV9o3gsHMxfy7yNrV2AZ_g-qjV2_JoG8cz9uSBBusjF3uPj8jBkQfB-q9P2yp-6PMoWuMggQj2fgAo6QJBkQfBoqBBR_c2-P7NkypoozJJp_jzu81OJ__--q9P2yp-6PMoWuMgsHBgtyfO6Q7BkQfBo8juN_c2zHJYJ392oqjON_BzgH1OEqR2-QsnYUiFiP9oBrBY2gmUEUsnibm-pg9opq3YX9fBjUstiyfut1jNmyMzzofJO8J-0QSBsz_gFos2C1JJNH3-UoJypPjWw3JzAZcoIZV-fe7Pu31geuMNsZB1he3gpeMNogjY7gJWt3_zA1ZOGoAg3_fta8MNsH3g2u72xH32gH3HWPM-7zjOuu7hGb_CC8s1N_ueO6cOE6JUa_Vo5y3xbb3Pi8JzvrOnN1JoIHIoG1jFRQ9tW__x6ZA1FZMY2QjhGrOrpzaUDUMVDgaUEUSoDQRz7q3NS9f-aQRPpgZUDUMNOQ3-BrBY5gBYxgIHi6sJNbm-XP3Oig9-wy3zp9R-BrZUEo_rDUMoxPVY2gIHi6BDhop1dbAJdH_yDH_KhoO7DUMNwyfVXgcBjy9zB9fVjraUEH_jDUMVi9RzBrRei6i-6UiFircYpPVYxQcri6i-pQcY7PcBXgOYirMYRrf1ibm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUstpo_rfHaFiq9owgIBXy3O2yOYpQcY7PcBXgaUEPI-OgZFirI-2yfuwyMBjUstao_nDUMP5y3hwq3ei6soY?sid=cehRNBbdQ7a5xBknycE6p6%3AAPA91bH4F3vK_XDCHcGHRvCGUYFPVncJU1AfsBnMfOtdKhY4CQ-J46VOj2znc1fiWJa1jY1c-vbtFMUWLJ-0Az59MT58mz8B2LSoahK-gbxDOsP9PCG0sJRL7mz-M8NH50JoinLJsW3G&keywords=recom&t=android&dv=android-3.226&management_type=1&is_search=1&page=1&r=https%3A%2F%2Fwww.tokopedia.com%2Fscuad%2Fbaju-tidur-wanita-piyama-lengan-pendek-motif-kartun-bt01-ke-1-096bt01mickey14%3Fsrc%3Dtopads&src=recom_widget_pdp_vertical",
+            "wishlistUrl": "https://ta.tokopedia.com/promo/v1/wishlists/8a-xgVY2gmUEH_HNHs1RoAJ7bm-xgVY789CBUsthbm-FQRo2PcB5QiUEoaFiPcBWgZUEH_yd6A1pH_UhoaFiyRCsUstao_nDUMVj9RosQR-BUstaosnXHsnfoprFHAr7o_UFHpyDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_1o-r7BW_sCsQABE3BPc8ujagfBvq1Bd_1zCq1hAZS-q3cFpysoGqOKp_M2iH72DZ325q1OAZ9o-Q_ufyMO6QJBkQfB6uJOE_1PuHO2k_9zoHj2039jFHVBk1_-HucrF_7PoPJNJqchqzO1F_jP-P7N1_Mx-q9P2ysoGrVtaQIuyHB-Dy7yNrV2AZ_g-qjV2_JoGPMoWQcNxupuMy7xGPB2UuM2jzsBF3jo-ojBke3BHe72fyfODQMV9o3gsHMxfy7yNrV2AZ_g-qjV2_JoG8cz9uSBBusjF3uPj8jBkQfB-q9P2yp-6PMoWuMggQj2fgAo6QJBkQfBoqBBR_c2-P7NkypoozJJp_jzu81OJ__--q9P2yp-6PMoWuMgsHBgtyfO6Q7BkQfBo8juN_c2zHJYJ392oqjON_BzgH1OEqR2-QsnYUiFiP9oBrBY2gmUEUsnibm-pg9opq3YX9fBjUstiyfut1jNmyMzzofJO8J-0QSBsz_gFos2C1JJNH3-UoJypPjWw3JzAZcoIZV-fe7Pu31geuMNsZB1he3gpeMNogjY7gJWt3_zA1ZOGoAg3_fta8MNsH3g2u72xH32gH3HWPM-7zjOuu7hGb_CC8s1N_ueO6cOE6JUa_Vo5y3xbb3Pi8JzvrOnN1JoIHIoG1jFRQ9tW__x6ZA1FZMY2QjhGrOrpzaUDUMVDgaUEUSoDQRz7q3NS9f-aQRPpgZUDUMNOQ3-BrBY5gBYxgIHi6sJNbm-XP3Oig9-wy3zp9R-BrZUEo_rDUMoxPVY2gIHi6BDhop1dbAJdH_yDH_KhoO7DUMNwyfVXgcBjy9zB9fVjraUEH_jDUMVi9RzBrRei6i-6UiFircYpPVYxQcri6i-pQcY7PcBXgOYirMYRrf1ibm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUstpo_rfHaFiq9owgIBXy3O2yOYpQcY7PcBXgaUEPI-OgZFirI-2yfuwyMBjUstao_nDUMP5y3hwq3ei6soY?is_search=1&t=android&uid=0&product_id=6805914095&keywords=recom&dv=android-3.226&page=1&r=https%3A%2F%2Fwww.tokopedia.com%2Fscuad%2Fbaju-tidur-wanita-piyama-lengan-pendek-motif-kartun-bt01-ke-1-096bt01mickey14%3Fsrc%3Dtopads&management_type=1&src=recom_widget_pdp_vertical&sid=cehRNBbdQ7a5xBknycE6p6%3AAPA91bH4F3vK_XDCHcGHRvCGUYFPVncJU1AfsBnMfOtdKhY4CQ-J46VOj2znc1fiWJa1jY1c-vbtFMUWLJ-0Az59MT58mz8B2LSoahK-gbxDOsP9PCG0sJRL7mz-M8NH50JoinLJsW3G",
+            "trackerImageUrl": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6sJp6_UOopehomFiy3zwPIBFgZUEHZFircYpq9z2Qfdi6srDUSz2Q31i6sJf6AKOHpJaH_rDUSCxPcKi6i-2Q3VSg9HXPcY0QRCBgcBxbMNBPmY2Q3r5yfVsqc15HpnFbOghyMoW_Z4aHAUhbpJhbpJpbpeaH_UhgAoxb3VxHceWoc1RyZOig3UNb3JOg_PBoMVxopJaoiNFQMribm-xgVYpyfYagZUEHsyFbsUFosrRHAnRoA1aHAHfbm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1OAZ9o-Q1dFyfFN8B29zSBgHMP2_fB-8JOJe3BHe72a3BxDHfUpZMWyH7NkysoGQJBkQfBoe7BpZ37OPM-W_Mh-qMY2_Bzo8jOIu_oqqjO7__-GqOBNHACgqBJa_VzSHJYI_9z6zcxD3jPuHJNIZ9P6uJNtZ3BRq3UpZSCqHMhO3A-ZQcoc69Cqe7jfZ32Cq1hAZSgsQ3hXyurOgMoUZSgqZVgkgJyNrV2AZ_g-qjV2_JoGPMoWQcNxupuMyp-tPMoc69Cqe7jfZ32Cq1hAZSxjuOgNguyNHVB9gI2-qMY2Z3BRq3Ha_SgsQugM33NGPMep_Mh-qMY2_32gP7hkZ9P6qMHp_1zCH7NJu9BozJ7aZ3BRq3Ha_SgsQugMyp-3qcoW_MY-qMY2_92V81hk1_CvzVBE_32o81N13_Vo8MWEZ3dFvZUDUSupg9-wq3ei6iUFUiFirfuprfB5QBY2gmUEUMoBqV-6eM-j1_Pxo9xmqfNNy71frAyEeuCC6_ViZAzcHRgb9OxJe7xsz7xZPjoIuuBc1VgXy72uH1VMr7-X_3gvPczbqVj7eOJWZsefujYkHS2XypVMquPGy_Vk3_Vsb9giPJgouuPHZi7Fe9tO61O1o_xW8sxmHjh_QfVtZaOSySxJ_Roe6uCAzpCpZB-HofOEb17d_jKOHJ25q3NHZSo9H7ribm-xQcri6i-pQcY7PcBXgOYirMYRrf1ibm-XP3Oig9-wQfgwy3zpUsth6ZFiQSuWyMua9fVjrOYag9Ji6s1Rbm-X9foxQMz2gcV7guYxgIHi6sJNbm-xyBY7g9o7Usti_iUDUSC5rRzwy3hSUs2QUSoDQRz7q3NS9f-aQRPpgZ-Pbm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUstpo_rfHaFiq9owgIBXy3O2yOYpQcY7PcBXgaUEPI-OgZFirI-2yfuwyMBjUstao_nDUMP5y3hwq3ei6soY?t=android&is_search=1&management_type=1&sid=cehRNBbdQ7a5xBknycE6p6%3AAPA91bH4F3vK_XDCHcGHRvCGUYFPVncJU1AfsBnMfOtdKhY4CQ-J46VOj2znc1fiWJa1jY1c-vbtFMUWLJ-0Az59MT58mz8B2LSoahK-gbxDOsP9PCG0sJRL7mz-M8NH50JoinLJsW3G&keywords=recom&src=recom_widget_pdp_vertical&dv=android-3.226&page=1",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2021/11/13/42121d3a-aa0d-4e7a-beb9-a5e7e6aa7126.png",
+            "price": "Rp 31.850",
+            "priceInt": 31850,
+            "discountPercentage": 0,
+            "slashedPrice": "",
+            "slashedPriceInt": 0,
+            "isWishlist": false,
+            "minOrder": 0,
+            "maxOrder": 0,
+            "shop": {
+              "id": 2320061,
+              "name": "scuad",
+              "city": "Kota Tangerang",
+              "isGold": true,
+              "isOfficial": false
+            },
+            "departmentId": 1817,
+            "labels": [
+              {
+                "title": "Cashback",
+                "color": "#42b549"
+              }
+            ],
+            "labelgroup": [
+              {
+                "position": "promo",
+                "title": "Cashback",
+                "type": "lightGreen",
+                "url": ""
+              },
+              {
+                "position": "eta",
+                "title": "Tiba 7 - 10 Jul",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "integrity",
+                "title": "Terjual 100+",
+                "type": "textDarkGrey",
+                "url": ""
+              }
+            ],
+            "badges": [
+              {
+                "title": "Power Merchant Pro",
+                "imageUrl": "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/Power%20Merchant%20Pro@2x.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": true,
+              "imageUrl": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png"
+            },
+            "rating": 5,
+            "countReview": 39,
+            "ratingAverage": "4.8",
+            "recommendationType": "graph_embedding_v7",
+            "stock": 4,
+            "isTopads": true,
+            "specificationLabels": [],
+            "parentID": 2411207596
+          },
+          {
+            "id": 3059251199,
+            "name": "baju tidur / piyama wanita / import / kartun",
+            "categoryBreadcrumbs": "Fashion Wanita/Baju Tidur Wanita/Set Piyama Wanita",
+            "url": "https://www.tokopedia.com/sallysweet/baju-tidur-piyama-wanita-import-kartun-pink",
+            "appUrl": "tokopedia://product/3059251199",
+            "clickUrl": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEH_Hho_nN6_yFbm-xgVY789CBUsthbm-FQRo2PcB5QiUEH_JDUSz2Q31i6sJf6AKOHpJaH_rDUMoFyaUEH_JFHmFiy3zwrfo5rM1i6sUNHidpHsUhHpjpoAKNHsUObm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1OAZ9o-Q1dFyfFN8B29zSBgHMP2_fB-P7B2PfBxHByOgAUN8u2c692gHsBN3Bo-ojBke3BHe72OysUOqB2_Z_g-qBuE_92mQJda392HuJN23jPoPJNIZ_C6q_n7_jztqjh11_zquO-D_jzZq1OJu92g17BpZ37N83V9gICiQAB03BxmgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Aom83Ua1sVgHO-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7N5ysomgMV913Bvq1BRZ3BRq3oyuMhsQMhMgJPcQMoNZ_g-q1BpZ3N6qMUpZMhyHj2Nysoj8B2_Z_g-qjjO_3j78jOkZ9xo8MWE_jzSo1OkZ_V-q9P2yp-6PMoWuMgsHBgtyfO6Q7BkQfBo8j7a_c2-P7O1__zoqMD7_uzuoJO1e_V-QsnYUiFiP9oBrBY2gmUEUsnibm-pg9opq3YX9fBjUstiyfut1jNmyMzzofJO8J-0QSBsz_gFos2C1JJNH3-UoJypPjWw3JzAZcoIZV-fe7Pu31geuMNsZB1he3gpeMNogjY7gJWt3_zA1ZOGoAg3_fta8MNsH3g2u72xH32gH3HWPM-7zjOuu7hGb_CC8s1N_ueO6cOE6JUa_Vo5y3xbb3Pi8JzvrOnN1JoIHIoG1jFRQ9tW__x6ZA1FZMY2QjhGrOrpzaUDUMVDgaUEUSoDQRz7q3NS9f-aQRPpgZUDUMNOQ3-BrBY5gBYxgIHi6sJNbm-XP3Oig9-wy3zp9R-BrZUEo_rDUMoxPVY2gIHi6BDhop1dbAJdH_yDH_KhoO7DUMNwyfVXgcBjy9zB9fVjraUEH_jDUMVi9RzBrRei6i-6UiFircYpPVYxQcri6i-pQcY7PcBXgOYirMYRrf1ibm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUstaoAJaomFiq9owgIBXy3O2yOYpQcY7PcBXgaUEPI-OgZFirI-2yfuwyMBjUsthH_nFbm-SQfVD9fBjUstpwe?sid=cehRNBbdQ7a5xBknycE6p6%3AAPA91bH4F3vK_XDCHcGHRvCGUYFPVncJU1AfsBnMfOtdKhY4CQ-J46VOj2znc1fiWJa1jY1c-vbtFMUWLJ-0Az59MT58mz8B2LSoahK-gbxDOsP9PCG0sJRL7mz-M8NH50JoinLJsW3G&is_search=1&t=android&management_type=2&r=https%3A%2F%2Fwww.tokopedia.com%2Fsallysweet%2Fbaju-tidur-piyama-wanita-import-kartun-pink%3Fsrc%3Dtopads&dv=android-3.226&src=recom_widget_pdp_vertical&keywords=recom&page=1",
+            "wishlistUrl": "https://ta.tokopedia.com/promo/v1/wishlists/8a-xgVY2gmUEH_Hho_nN6_yFbm-xgVY789CBUsthbm-FQRo2PcB5QiUEH_JDUSz2Q31i6sJf6AKOHpJaH_rDUMoFyaUEH_JFHmFiy3zwrfo5rM1i6sUNHidpHsUhHpjpoAKNHsUObm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1OAZ9o-Q1dFyfFN8B29zSBgHMP2_fB-P7B2PfBxHByOgAUN8u2c692gHsBN3Bo-ojBke3BHe72OysUOqB2_Z_g-qBuE_92mQJda392HuJN23jPoPJNIZ_C6q_n7_jztqjh11_zquO-D_jzZq1OJu92g17BpZ37N83V9gICiQAB03BxmgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Aom83Ua1sVgHO-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7N5ysomgMV913Bvq1BRZ3BRq3oyuMhsQMhMgJPcQMoNZ_g-q1BpZ3N6qMUpZMhyHj2Nysoj8B2_Z_g-qjjO_3j78jOkZ9xo8MWE_jzSo1OkZ_V-q9P2yp-6PMoWuMgsHBgtyfO6Q7BkQfBo8j7a_c2-P7O1__zoqMD7_uzuoJO1e_V-QsnYUiFiP9oBrBY2gmUEUsnibm-pg9opq3YX9fBjUstiyfut1jNmyMzzofJO8J-0QSBsz_gFos2C1JJNH3-UoJypPjWw3JzAZcoIZV-fe7Pu31geuMNsZB1he3gpeMNogjY7gJWt3_zA1ZOGoAg3_fta8MNsH3g2u72xH32gH3HWPM-7zjOuu7hGb_CC8s1N_ueO6cOE6JUa_Vo5y3xbb3Pi8JzvrOnN1JoIHIoG1jFRQ9tW__x6ZA1FZMY2QjhGrOrpzaUDUMVDgaUEUSoDQRz7q3NS9f-aQRPpgZUDUMNOQ3-BrBY5gBYxgIHi6sJNbm-XP3Oig9-wy3zp9R-BrZUEo_rDUMoxPVY2gIHi6BDhop1dbAJdH_yDH_KhoO7DUMNwyfVXgcBjy9zB9fVjraUEH_jDUMVi9RzBrRei6i-6UiFircYpPVYxQcri6i-pQcY7PcBXgOYirMYRrf1ibm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUstaoAJaomFiq9owgIBXy3O2yOYpQcY7PcBXgaUEPI-OgZFirI-2yfuwyMBjUsthH_nFbm-SQfVD9fBjUstpwe?keywords=recom&t=android&dv=android-3.226&r=https%3A%2F%2Fwww.tokopedia.com%2Fsallysweet%2Fbaju-tidur-piyama-wanita-import-kartun-pink%3Fsrc%3Dtopads&src=recom_widget_pdp_vertical&is_search=1&management_type=2&uid=0&product_id=3059251199&sid=cehRNBbdQ7a5xBknycE6p6%3AAPA91bH4F3vK_XDCHcGHRvCGUYFPVncJU1AfsBnMfOtdKhY4CQ-J46VOj2znc1fiWJa1jY1c-vbtFMUWLJ-0Az59MT58mz8B2LSoahK-gbxDOsP9PCG0sJRL7mz-M8NH50JoinLJsW3G&page=1",
+            "trackerImageUrl": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6sJpH_1F6_jfHmFiy3zwPIBFgZUEHZFircYpq9z2Qfdi6sJhbm-7q3OBUsthosKdo_HhHsJRbm-Fy9ztUstiq3OxgfupbSz5qfYFg3z2yZNXg9e5q3OSbfoxyfxBbpHFHmY3r3-sQ175HsnaHa4hbpJRbfuig3yh6_nRb3osofHWoAHp6ZOxg_Jpb31f6AJNHAyFHs-soiNkrcribm-xgVYpyfYagZUEHsjabsHaHsJp6_H76AjaHs1DUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_1o-r7BW_sCsQABE3BPc8ujagfBvq1BRZ3BRq3JausujHsBN3jyN8Bja69Bq17jfZ32Cq1hAZSuiHsuk3Bo-ojBku92o8j-D_s-g8jh1_MBqz7O7_jP-HJN2HAz6zcxk_VzzoV291Mh6zV-2_1zu8BB_Z9o-Q_BNyuPjrc-D63Wq3J-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7-Nys-ZHujp1MgxuOV2_fB-P7B2PfBiH72F3s-DPuKp_MYiH7-MyuPzq1Y2Z9P-q9P2yOx3QcoXQcgjz7gXyRB-ojB2Z9o-QjNkysoGQVKaZSBiHfzE3Bo-ojBkZ_uoq_zE_32-8JOEqR26zcrO_32-H1B2PfBsHjNfyfO3gMHauMxsQ1N5Z325q1OE__-HqjBR_uzooJOkqpzouV17_uzCH1BXHA7ibm-Orfua9fBjUstiHmUDUSoBrRo2QfNwq3ei6i-sg3xZ_j-igVJRy_udeMWX83oVoSnf6jVee_jhyjK7zsofZOYyzJoUy7PU1SgAzOugzBC3QMoGu_VCgSomQjOM_RzjZfxgoJozb1t7oBgvqs-EQMHhgMB9ZMJhqBjhyaOfySzc_uu9_JtWHJVEo_BouA1dQ9tdes-H1fYxqJDWgf-dzJYp1ABee7rFr72Z_APW8iOo6JNUo_CGQfBX_J2pupoIUiFiy3hSUstirfh5PIz2QMPwyS-5PRoBUiFiQSuWyMua9fYM9fVjraUEH_jDUMNOQ3-BrBYxgIowrMuhUstOoaFiQBYsy3Njq3zxPcuwy3zpUsth6ZFiy3-wPcupPmUEUjdibm-FQRo79fVDgaUE3a-pQcY7PcBXgOYirMYRrf1i9ZFiPMuarfB5QiUEUSyaUiFiyfhOrRzBrBY2gVYfHiUEHsehHseDUMBp9fzNQMVWq3owrfh5PIz2QMri6SzaP31DUSCaq3oB9f-2gmUEH_JFHmFigfYxQVY2gmUEHR7?page=1&dv=android-3.226&sid=cehRNBbdQ7a5xBknycE6p6%3AAPA91bH4F3vK_XDCHcGHRvCGUYFPVncJU1AfsBnMfOtdKhY4CQ-J46VOj2znc1fiWJa1jY1c-vbtFMUWLJ-0Az59MT58mz8B2LSoahK-gbxDOsP9PCG0sJRL7mz-M8NH50JoinLJsW3G&src=recom_widget_pdp_vertical&management_type=2&t=android&keywords=recom&is_search=1",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/1/17/ebef1907-cc7c-4339-ae13-e681906022c6.jpg",
+            "price": "Rp 65.000",
+            "priceInt": 65000,
+            "discountPercentage": 0,
+            "slashedPrice": "",
+            "slashedPriceInt": 0,
+            "isWishlist": false,
+            "minOrder": 0,
+            "maxOrder": 0,
+            "shop": {
+              "id": 12591146,
+              "name": "sally sweet",
+              "city": "Kota Tangerang",
+              "isGold": true,
+              "isOfficial": false
+            },
+            "departmentId": 1817,
+            "labels": [],
+            "labelgroup": [
+              {
+                "position": "eta",
+                "title": "Tiba 7 - 10 Jul",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "integrity",
+                "title": "Terjual 30+",
+                "type": "textDarkGrey",
+                "url": ""
+              }
+            ],
+            "badges": [
+              {
+                "title": "Power Merchant Pro",
+                "imageUrl": "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/Power%20Merchant%20Pro@2x.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": true,
+              "imageUrl": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png"
+            },
+            "rating": 5,
+            "countReview": 18,
+            "ratingAverage": "4.9",
+            "recommendationType": "graph_embedding_v7",
+            "stock": 6,
+            "isTopads": true,
+            "specificationLabels": [],
+            "parentID": 2327545227
+          },
+          {
+            "id": 7077110646,
+            "name": "Piyama Karakter Set Import Baju Tidur Wanita Kaos Lengan Pendek / LAZY",
+            "categoryBreadcrumbs": "Fashion Wanita/Baju Tidur Wanita/Set Piyama Wanita",
+            "url": "https://www.tokopedia.com/lazystore99/piyama-karakter-set-import-baju-tidur-wanita-kaos-lengan-pendek-lazy-cream-bear-m-l",
+            "appUrl": "tokopedia://product/7077110646",
+            "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category=1817&event=click&experimentVersion=v1.4&page=1&page_name=pdp_vertical&pid=7077110646&pos=8&recommendation=graph_embedding_v7&rectype=graph_embedding_v7&redirect=https://www.tokopedia.com/lazystore99/piyama-karakter-set-import-baju-tidur-wanita-kaos-lengan-pendek-lazy-cream-bear-m-l?catid1817=%26ref=pdp_vertical_pa1_po8%26src=r3graph_embedding_v7&tid=Py6JPpDSG-DNpH8ZKHGSyuGdhEU=&uid=0&unique_id=&utime=1688531217&widget=r3_widget&xdevice=android-3.226",
+            "wishlistUrl": "",
+            "trackerImageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2022/11/27/97f3da0e-a150-45b3-a457-b8fef8c3f15b.jpg",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2022/11/27/97f3da0e-a150-45b3-a457-b8fef8c3f15b.jpg",
+            "price": "Rp 80.000",
+            "priceInt": 80000,
+            "discountPercentage": 0,
+            "slashedPrice": "",
+            "slashedPriceInt": 0,
+            "isWishlist": false,
+            "minOrder": 0,
+            "maxOrder": 0,
+            "shop": {
+              "id": 3429666,
+              "name": "Lazy Store 99",
+              "city": "Jakarta Barat",
+              "isGold": true,
+              "isOfficial": false
+            },
+            "departmentId": 1817,
+            "labels": [],
+            "labelgroup": [
+              {
+                "position": "eta",
+                "title": "Tiba 7 - 10 Jul",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "integrity",
+                "title": "Terjual 1",
+                "type": "textDarkGrey",
+                "url": ""
+              }
+            ],
+            "badges": [
+              {
+                "title": "Power Merchant Pro",
+                "imageUrl": "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/Power%20Merchant%20Pro@2x.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": true,
+              "imageUrl": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png"
+            },
+            "rating": 5,
+            "countReview": 1,
+            "ratingAverage": "5.0",
+            "recommendationType": "graph_embedding_v7",
+            "stock": 4,
+            "isTopads": false,
+            "specificationLabels": [],
+            "parentID": 7077110643
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -16,13 +16,13 @@
         app:typographyWeight="bold"
         app:typographyType="body_2"
         android:layout_marginTop="18dp"
-        android:textColor="@color/Unify_N700"/>
+        android:textColor="@color/Unify_NN950"/>
 
     <View
         android:id="@+id/divider"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/Unify_N75"
+        android:background="@color/Unify_NN50"
         android:layout_marginTop="16dp" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -33,13 +33,13 @@
         app:typographyWeight="bold"
         app:typographyType="body_2"
         android:layout_marginTop="18dp"
-        android:textColor="@color/Unify_N700"/>
+        android:textColor="@color/Unify_NN950"/>
 
     <View
         android:id="@+id/divider_utama_choose"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/Unify_N75"
+        android:background="@color/Unify_NN50"
         android:layout_marginTop="16dp" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -49,7 +49,7 @@
         android:text="@string/delete_address"
         app:typographyWeight="bold"
         app:typographyType="body_2"
-        android:textColor="@color/Unify_N700"
+        android:textColor="@color/Unify_NN950"
         android:layout_marginTop="18dp"
         android:layout_marginBottom="18dp" />
 
