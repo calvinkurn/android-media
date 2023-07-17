@@ -58,7 +58,6 @@ import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.remoteconfig.RemoteConfigKey.HOME_ENABLE_AUTO_REFRESH_WISHLIST
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
@@ -356,14 +355,6 @@ class WishlistCollectionDetailFragment :
         bottomSheetCollection = null
         bottomSheetCollectionSettings = null
         super.onDestroyView()
-    }
-
-    private fun isAutoRefreshEnabled(): Boolean {
-        return try {
-            return getFirebaseRemoteConfig()?.getBoolean(HOME_ENABLE_AUTO_REFRESH_WISHLIST) ?: false
-        } catch (e: Exception) {
-            false
-        }
     }
 
     private fun getFirebaseRemoteConfig(): FirebaseRemoteConfigImpl? {
