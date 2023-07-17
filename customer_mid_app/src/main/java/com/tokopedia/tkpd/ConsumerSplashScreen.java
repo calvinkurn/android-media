@@ -10,7 +10,7 @@ import android.webkit.URLUtil;
 
 import androidx.annotation.NonNull;
 
-//import com.newrelic.agent.android.NewRelic;
+import com.newrelic.agent.android.NewRelic;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.app.common.SplashScreen;
 import com.tokopedia.applink.ApplinkConst;
@@ -144,7 +144,7 @@ public class ConsumerSplashScreen extends SplashScreen {
             @NotNull
             @Override
             public Boolean execute() {
-//                initializationNewRelic();
+                initializationNewRelic();
                 CMPushNotificationManager.getInstance()
                         .refreshFCMTokenFromForeground(FCMCacheManager.getRegistrationId(ConsumerSplashScreen.this.getApplicationContext()), false);
 
@@ -157,12 +157,12 @@ public class ConsumerSplashScreen extends SplashScreen {
                 RemoteConfigKey.ENABLE_SEQ4_ASYNC, ConsumerSplashScreen.this, true);
     }
 
-//    private void initializationNewRelic() {
-//        boolean isEnableInitNrInAct = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_INIT_NR_IN_ACTIVITY);
-//        if (isEnableInitNrInAct) {
-//            NewRelic.withApplicationToken(Keys.NEW_RELIC_TOKEN_MA).start(this.getApplication());
-//        }
-//    }
+    private void initializationNewRelic() {
+        boolean isEnableInitNrInAct = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_INIT_NR_IN_ACTIVITY);
+        if (isEnableInitNrInAct) {
+            NewRelic.withApplicationToken(Keys.NEW_RELIC_TOKEN_MA).start(this.getApplication());
+        }
+    }
 
     private void syncFcmToken() {
         SyncFcmTokenService.Companion.startService(this);
