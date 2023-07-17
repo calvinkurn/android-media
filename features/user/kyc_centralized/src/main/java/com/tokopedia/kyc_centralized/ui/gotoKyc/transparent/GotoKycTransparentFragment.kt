@@ -198,7 +198,8 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
                     viewModel.checkEligibility()
                 }
                 is AccountLinkingStatusResult.NotLinked -> {
-                    viewModel.checkEligibility()
+                    binding?.gotoKycLoader?.invisible()
+                    handleNonProgressiveFlow()
                 }
                 is AccountLinkingStatusResult.Failed -> {
                     binding?.gotoKycLoader?.hide()
