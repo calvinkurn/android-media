@@ -8,6 +8,7 @@ import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
 import rx.Observable
 import javax.inject.Inject
 
+@Deprecated("please use coroutine use case GetRatesWithScheduleDeliveryCoroutineUseCase")
 class GetRatesWithScheduleUseCase @Inject constructor(
     private val getRatesUseCase: GetRatesUseCase,
     private val getScheduleDeliveryUseCase: GetScheduleDeliveryUseCase,
