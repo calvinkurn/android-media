@@ -81,7 +81,7 @@ ext {
 
     JunitVersion = '4.12'
     JunitJupiterVersion = '5.7.2'
-    MockkVersion = '1.11.0'
+    MockkVersion = '1.13.5'
     kotlinTestVersion = '1.5.31'
     KotlinMockitoVersion = '1.5.0'
     SpekVersion = "1.1.5"
