@@ -22,6 +22,13 @@ class AddonsCallbackImpl(
     fragment: PostAtcBottomSheet
 ) : BaseCallbackImpl(fragment), AddonsCallback {
 
+    private val transition: AutoTransition by lazy {
+        AutoTransition().apply {
+            duration = 150
+            interpolator = AccelerateDecelerateInterpolator()
+        }
+    }
+
     private var latestInfo = ""
     override fun onLoadingSaveAddons() {
         val fragment = fragment ?: return
@@ -29,9 +36,6 @@ class AddonsCallbackImpl(
             val context = fragment.context ?: return
             val loadingText = context.getString(R.string.pdp_post_atc_footer_info_loading)
             postAtcFooterInfo.text = loadingText
-            val transition = AutoTransition()
-            transition.duration = 150
-            transition.interpolator = AccelerateDecelerateInterpolator()
             TransitionManager.beginDelayedTransition(root, transition)
             postAtcFooterInfo.show()
         }
@@ -40,12 +44,9 @@ class AddonsCallbackImpl(
     override fun onSuccessSaveAddons(itemCount: Int) {
         val fragment = fragment ?: return
         fragment.footer?.apply {
-            val transition = AutoTransition()
-            transition.duration = 150
-            transition.interpolator = AccelerateDecelerateInterpolator()
-            TransitionManager.beginDelayedTransition(root, transition)
             if (itemCount == 0) {
                 latestInfo = ""
+                TransitionManager.beginDelayedTransition(root, transition)
                 postAtcFooterInfo.hide()
             } else {
                 val context = fragment.context ?: return

@@ -656,7 +656,8 @@ class AtcVariantBottomSheet :
             isFulfillment = cartData.isFulfillment,
             selectedAddonsIds = cartData.addOns.mapNotNull { item ->
                 item.id.takeIf { item.status == 1 }
-            }
+            },
+            quantity = cartData.quantity
         )
     }
 

@@ -3667,7 +3667,8 @@ open class DynamicProductDetailFragment :
             },
             isFulfillment = cartDataModel.isFulfillment,
             pageSource = PostAtcHelper.Source.PDP,
-            warehouseId = cartDataModel.warehouseId
+            warehouseId = cartDataModel.warehouseId,
+            quantity = cartDataModel.quantity
         )
     }
 

@@ -16,6 +16,7 @@ object PostAtcHelper {
     const val PARAM_IS_FULFILLMENT = "is_fulfillment"
     const val PARAM_PAGE_SOURCE = "pageSource"
     const val PARAM_WAREHOUSE_ID = "warehouse_id"
+    const val PARAM_QUANTITY = "quantity"
 
     fun start(
         context: Context,
@@ -26,6 +27,7 @@ object PostAtcHelper {
         pageSource: Source = Source.Default,
         selectedAddonsIds: List<String> = emptyList(),
         warehouseId: String = "",
+        quantity: Int
     ) {
         val intent = getIntent(
             context,
@@ -35,7 +37,8 @@ object PostAtcHelper {
             layoutId,
             pageSource,
             selectedAddonsIds,
-            warehouseId
+            warehouseId,
+            quantity
         )
         context.startActivity(intent)
     }
@@ -48,7 +51,8 @@ object PostAtcHelper {
         layoutId: String = "",
         pageSource: Source = Source.Default,
         selectedAddonsIds: List<String> = emptyList(),
-        warehouseId: String = ""
+        warehouseId: String = "",
+        quantity: Int
     ): Intent {
         return RouteManager.getIntent(
             context,
@@ -61,6 +65,7 @@ object PostAtcHelper {
             putExtra(PARAM_PAGE_SOURCE, pageSource.name)
             putExtra(PARAM_SELECTED_ADDONS_IDS, ArrayList(selectedAddonsIds))
             putExtra(PARAM_WAREHOUSE_ID, warehouseId)
+            putExtra(PARAM_QUANTITY, quantity)
         }
     }
 
