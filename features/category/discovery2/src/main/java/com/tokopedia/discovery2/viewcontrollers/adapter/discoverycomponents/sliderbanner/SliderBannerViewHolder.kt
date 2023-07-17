@@ -77,8 +77,8 @@ class SliderBannerViewHolder(itemView: View, private val fragment: Fragment) :
             val radius = resources.getDimensionPixelSize(R.dimen.dp_4)
             val padding = resources.getDimensionPixelSize(R.dimen.dp_5)
             val indicatorPadding = resources.getDimensionPixelSize(R.dimen.dp_8)
-            val activeColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Y400)
-            val inActiveColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N150)
+            val activeColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_YN400)
+            val inActiveColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN400)
             return BannerDotIndicator(radius, padding, indicatorPadding, activeColor, inActiveColor, BannerDotIndicator.SLIDER_BANNER_INDICATOR, this@SliderBannerViewHolder)
         }
     }

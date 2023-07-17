@@ -48,5 +48,6 @@ internal object LayoutStrategyFactory {
             ProductListType.GIMMICK -> LayoutStrategyReposition()
             ProductListType.PORTRAIT -> LayoutStrategyPortrait()
             ProductListType.ETA -> LayoutStrategyEta()
+            ProductListType.BEST_SELLER -> LayoutStrategyBestSeller()
         }
 }

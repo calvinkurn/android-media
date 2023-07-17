@@ -16,7 +16,7 @@
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:text="@string/catalog_spesification"
         app:typographyType="heading_4"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         />
 
     <androidx.recyclerview.widget.RecyclerView
@@ -46,7 +46,7 @@
         android:layout_marginEnd="@dimen/spacing_lvl4"
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:visibility="gone"
-        android:background="@color/Unify_N75"
+        android:background="@color/Unify_NN50"
         />
 
 

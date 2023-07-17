@@ -316,7 +316,7 @@ class PromoCheckoutFragment :
 
     private fun initializeSwipeRefreshLayout() {
         activity?.let {
-            viewBinding?.swipeRefreshLayout?.setColorSchemeColors(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_G400))
+            viewBinding?.swipeRefreshLayout?.setColorSchemeColors(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
         }
         viewBinding?.swipeRefreshLayout?.setOnRefreshListener {
             reloadData()

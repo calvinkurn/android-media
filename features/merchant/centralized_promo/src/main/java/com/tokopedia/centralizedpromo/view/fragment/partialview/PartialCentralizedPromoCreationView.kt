@@ -112,7 +112,7 @@ class PartialCentralizedPromoCreationView(
 
     override fun getCoachMarkItem() = with(promoCreationBinding) {
         promoCreationBinding.tvCentralizedPromoCreationTitle.setBackgroundColor(
-            ContextCompat.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+            ContextCompat.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_NN0)
         )
         CoachMarkItem(
             promoCreationBinding.tvCentralizedPromoCreationTitle,

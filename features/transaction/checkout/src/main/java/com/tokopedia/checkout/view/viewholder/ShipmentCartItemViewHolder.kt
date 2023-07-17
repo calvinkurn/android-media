@@ -141,7 +141,7 @@ class ShipmentCartItemViewHolder(
                 productInfo.setTextColor(
                     ContextCompat.getColor(
                         itemView.context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_N700_68
+                        com.tokopedia.unifyprinciples.R.color.Unify_NN950_68
                     )
                 )
                 productInfo.setType(SMALL)
@@ -332,7 +332,7 @@ class ShipmentCartItemViewHolder(
                 ImageHandler.loadImage2(
                     binding.imageBundle,
                     cartItemModel.bundleIconUrl,
-                    com.tokopedia.kotlin.extensions.R.drawable.ic_loading_placeholder
+                    com.tokopedia.utils.R.drawable.ic_loading_placeholder
                 )
             }
 
