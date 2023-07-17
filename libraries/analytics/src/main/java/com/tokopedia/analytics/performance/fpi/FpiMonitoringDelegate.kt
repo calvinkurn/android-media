@@ -22,6 +22,7 @@ import com.tokopedia.kotlin.extensions.view.getScreenWidth
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
+import java.util.*
 
 /**
  * Created by yovi.putra on 05/07/23"
@@ -138,7 +139,7 @@ class FpiMonitoringDelegateImpl :
         var widgetDY = 0F
 
         popupWindow.setTouchInterceptor { v, event ->
-            when(event.action){
+            when (event.action) {
                 MotionEvent.ACTION_DOWN -> {
                     widgetDX = v.x - event.x
                     widgetDY = v.y - event.y
@@ -214,7 +215,7 @@ class FpiMonitoringDelegateImpl :
     }
 
     private fun updateFpsInfo(fps: Double) {
-        val sFps = String.format("%.2f%s", fps, "fps")
+        val sFps = stringFormat("%.2f%s", fps, "fps")
         fpsInfoText?.text = sFps
     }
 
@@ -245,12 +246,12 @@ class FpiMonitoringDelegateImpl :
         var renderTime = duration
         var lable = "ms"
 
-        if (duration  > 1000) {
+        if (duration > 1000) {
             renderTime = duration.div(1000.0)
             lable = "s"
         }
 
-        val sFps = String.format("%.2f%s", renderTime, lable)
+        val sFps = stringFormat("%.2f%s", renderTime, lable)
         renderTimeText?.text = sFps
     }
 
@@ -272,12 +273,16 @@ class FpiMonitoringDelegateImpl :
 
     // region controller
     private fun isActive(): Boolean {
-        val context =  fpiMonitoring.fragment?.context ?: return false
+        val context = fpiMonitoring.fragment?.context ?: return false
         return GlobalConfig.DEBUG && context.isFpiMonitoringEnable()
     }
 
     private fun Context.isFpiMonitoringEnable(): Boolean = getSharedPreferences(
-        PREF_KEY, BaseActivity.MODE_PRIVATE
+        PREF_KEY,
+        BaseActivity.MODE_PRIVATE
     ).getBoolean(PREF_KEY, false)
+
+    private fun stringFormat(format: String, vararg args: Any?) =
+        String.format(Locale.getDefault(), format, args)
     // endregion
 }
