@@ -10,10 +10,11 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.payment.setting.R
+import com.tokopedia.payment.setting.databinding.FragmentCreditCardDetailBinding
 import com.tokopedia.payment.setting.detail.analytics.PaymentSettingDetailAnalytics
 import com.tokopedia.payment.setting.detail.model.DataResponseDeleteCC
 import com.tokopedia.payment.setting.detail.view.viewmodel.DetailCreditCardViewModel
@@ -24,8 +25,7 @@ import com.tokopedia.payment.setting.util.getSpacedTextPayment
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.android.synthetic.main.fragment_credit_card_detail.*
-import kotlinx.android.synthetic.main.fragment_credit_card_detail.view.*
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
 class DetailCreditCardFragment : BaseDaggerFragment() {
@@ -35,6 +35,8 @@ class DetailCreditCardFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var analytics: PaymentSettingDetailAnalytics
+
+    private var binding by autoClearedNullable<FragmentCreditCardDetailBinding>()
 
     private val viewModel: DetailCreditCardViewModel by lazy(LazyThreadSafetyMode.NONE) {
         val viewModelProvider = ViewModelProviders.of(this, viewModelFactory.get())
@@ -58,21 +60,20 @@ class DetailCreditCardFragment : BaseDaggerFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(
-            R.layout.fragment_credit_card_detail,
-            container,
-            false
-        )
+        binding = FragmentCreditCardDetailBinding.inflate(inflater, container, false)
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         progressDialog.setMessage(getString(com.tokopedia.abstraction.R.string.title_loading))
-        settingListPaymentModel?.run {
-            ImageHandler.LoadImage(view.imageCCBackground, this.backgroundImage)
-            creditCardNumber.text = this.maskedNumber?.getSpacedTextPayment()
-            creditCardExpiryText.text = this.getExpiredDate()
-            buttonDeleteCC.setOnClickListener { showDeleteCcDialog() }
+        binding?.run {
+            settingListPaymentModel?.let {
+                imageCCBackground.loadImage(it.backgroundImage)
+                creditCardNumber.text = it.maskedNumber?.getSpacedTextPayment()
+                creditCardExpiryText.text = it.getExpiredDate()
+                buttonDeleteCC.setOnClickListener { showDeleteCcDialog() }
+            }
         }
         observeViewModel()
         analytics.sendEventViewCardDetail()

@@ -14,6 +14,11 @@ buildscript {
     }
 }
 
+android {
+    namespace 'com.tokopedia.reputation.common'
+    testNamespace 'com.tokopedia.reputation.common.test'
+}
+
 dependencies {
     implementation projectOrAar(rootProject.ext.libraries.graphql)
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)

@@ -17,6 +17,11 @@ buildscript {
     }
 }
 
+android {
+    namespace 'com.tokopedia.iris'
+    testNamespace 'com.tokopedia.iris.test'
+}
+
 dependencies {
 
     implementation projectOrAar(rootProject.ext.features.resourcesCommon)

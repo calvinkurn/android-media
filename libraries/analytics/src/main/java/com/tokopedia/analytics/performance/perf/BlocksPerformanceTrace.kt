@@ -81,6 +81,12 @@ class BlocksPerformanceTrace(
     }
 
     init {
+        context?.applicationContext?.let {
+            val remoteConfig = FirebaseRemoteConfigImpl(context)
+            this.isPerformanceTraceEnabled = remoteConfig.getBoolean(
+                ENABLE_PERFORMANCE_TRACE, true
+            )
+        }
         initialize(context, scope, onLaunchTimeFinished)
     }
 
