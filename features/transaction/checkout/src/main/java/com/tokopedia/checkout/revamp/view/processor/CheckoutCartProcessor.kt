@@ -1,16 +1,23 @@
 package com.tokopedia.checkout.revamp.view.processor
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.checkout.data.model.request.changeaddress.DataChangeAddressRequest
 import com.tokopedia.checkout.data.model.request.saf.ShipmentAddressFormRequest
 import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData
 import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressGqlUseCase
+import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressRequest
 import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormV4UseCase
 import com.tokopedia.checkout.domain.usecase.ReleaseBookingUseCase
 import com.tokopedia.checkout.domain.usecase.SaveShipmentStateGqlUseCase
+import com.tokopedia.checkout.revamp.view.uimodel.CheckoutItem
+import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPageState
+import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
+import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.address.UserAddress
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.purchase_platform.common.feature.dynamicdatapassing.domain.UpdateDynamicDataPassingUseCase
+import com.tokopedia.usecase.RequestParams
 import dagger.Lazy
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -147,4 +154,120 @@ class CheckoutCartProcessor @Inject constructor(
 //        shipmentPlatformFeeData = cartShipmentAddressFormData.shipmentPlatformFee
 //        listSummaryAddOnModel = ShipmentAddOnProductServiceMapper.mapSummaryAddOns(cartShipmentAddressFormData)
     }
+
+    suspend fun changeShippingAddress(
+        items: List<CheckoutItem>,
+        newRecipientAddressModel: RecipientAddressModel?,
+        chosenAddressModel: ChosenAddressModel?,
+        isOneClickShipment: Boolean,
+        isTradeInDropOff: Boolean
+    ): ChangeAddressResult {
+        return withContext(dispatchers.io) {
+            val dataChangeAddressRequests: MutableList<DataChangeAddressRequest> = ArrayList()
+            for (item in items) {
+                if (item is CheckoutOrderModel) {
+                    for (product in item.products) {
+                        val dataChangeAddressRequest = DataChangeAddressRequest()
+                        dataChangeAddressRequest.quantity = product.quantity
+                        dataChangeAddressRequest.productId = product.productId
+                        dataChangeAddressRequest.notes = product.noteToSeller
+                        dataChangeAddressRequest.cartIdStr = product.cartId.toString()
+                        if (newRecipientAddressModel != null) {
+                            if (isTradeInDropOff) {
+                                dataChangeAddressRequest.addressId =
+                                    newRecipientAddressModel.locationDataModel.addrId
+                                dataChangeAddressRequest.isIndomaret = true
+                            } else {
+                                dataChangeAddressRequest.addressId = newRecipientAddressModel.id
+                                dataChangeAddressRequest.isIndomaret = false
+                            }
+                        }
+                        if (chosenAddressModel != null) {
+                            dataChangeAddressRequest.addressId =
+                                chosenAddressModel.addressId.toString()
+                        }
+                        dataChangeAddressRequests.add(dataChangeAddressRequest)
+                    }
+                }
+            }
+            val params: MutableMap<String, Any> = HashMap()
+            params[ChangeShippingAddressGqlUseCase.PARAM_CARTS] = dataChangeAddressRequests
+            params[ChangeShippingAddressGqlUseCase.PARAM_ONE_CLICK_SHIPMENT] = isOneClickShipment
+            val requestParam = RequestParams.create()
+            requestParam.putObject(
+                ChangeShippingAddressGqlUseCase.CHANGE_SHIPPING_ADDRESS_PARAMS,
+                params
+            )
+            try {
+                val setShippingAddressData = changeShippingAddressGqlUseCase.get().invoke(
+                    ChangeShippingAddressRequest(
+                        dataChangeAddressRequests,
+                        isOneClickShipment
+                    )
+                )
+//                if (view != null) {
+//                    view!!.hideLoading()
+//                    view!!.setHasRunningApiCall(false)
+                if (setShippingAddressData.isSuccess) {
+//                        if (setShippingAddressData.messages.isEmpty()) {
+//                            view!!.showToastNormal(view!!.getStringResource(R.string.label_change_address_success))
+//                        } else {
+//                            view!!.showToastNormal(setShippingAddressData.messages[0])
+//                        }
+                    return@withContext ChangeAddressResult(
+                        isSuccess = true,
+                        toasterMessage = setShippingAddressData.messages.firstOrNull() ?: ""
+                    )
+//                        hitClearAllBo()
+//                        view!!.renderChangeAddressSuccess(reloadCheckoutPage)
+                } else {
+                    return@withContext ChangeAddressResult(
+                        isSuccess = false,
+                        toasterMessage = setShippingAddressData.messages.joinToString(" ")
+                    )
+//                        if (setShippingAddressData.messages.isNotEmpty()) {
+//                            val stringBuilder = StringBuilder()
+//                            for (errorMessage in setShippingAddressData.messages) {
+//                                stringBuilder.append(errorMessage).append(" ")
+//                            }
+//                            view!!.showToastError(stringBuilder.toString())
+//                            if (isHandleFallback) {
+//                                view!!.renderChangeAddressFailed(reloadCheckoutPage)
+//                            }
+//                        } else {
+//                            view!!.showToastError(view!!.getStringResource(R.string.label_change_address_failed))
+//                            if (isHandleFallback) {
+//                                view!!.renderChangeAddressFailed(reloadCheckoutPage)
+//                            }
+//                        }
+//                    }
+                }
+            } catch (t: Throwable) {
+//                if (view != null) {
+//                    view!!.hideLoading()
+//                    view!!.setHasRunningApiCall(false)
+                Timber.d(t)
+//                    val errorMessage: String? = if (t is AkamaiErrorException) {
+//                        t.message
+//                    } else {
+//                        ErrorHandler.getErrorMessage(
+//                            view!!.activity,
+//                            t
+//                        )
+//                    }
+                return@withContext ChangeAddressResult(isSuccess = false, throwable = t)
+//                    view!!.showToastError(errorMessage)
+//                    if (isHandleFallback) {
+//                        view!!.renderChangeAddressFailed(reloadCheckoutPage)
+//                    }
+//                }
+            }
+        }
+    }
 }
+
+data class ChangeAddressResult(
+    val isSuccess: Boolean,
+    val toasterMessage: String = "",
+    val throwable: Throwable? = null,
+)

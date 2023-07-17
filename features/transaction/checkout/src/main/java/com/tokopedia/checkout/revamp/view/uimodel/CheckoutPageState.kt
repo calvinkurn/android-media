@@ -11,4 +11,11 @@ sealed class CheckoutPageState {
     class NoMatchedAddress(val state: Int): CheckoutPageState()
     object EmptyData : CheckoutPageState()
     class Success(val cartShipmentAddressFormData: CartShipmentAddressFormData): CheckoutPageState()
+    object Normal: CheckoutPageState()
 }
+
+data class CheckoutPageToaster(
+    val toasterType: Int,
+    val toasterMessage: String = "",
+    val throwable: Throwable? = null
+)

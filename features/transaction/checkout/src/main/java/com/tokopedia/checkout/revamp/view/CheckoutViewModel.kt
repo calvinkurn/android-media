@@ -22,11 +22,13 @@ import com.tokopedia.checkout.revamp.view.uimodel.CheckoutCostModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutEpharmacyModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutItem
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPageState
+import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPageToaster
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPromoModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutTickerModel
 import com.tokopedia.checkout.view.CheckoutMutableLiveData
 import com.tokopedia.checkout.view.converter.ShipmentDataRequestConverter
 import com.tokopedia.checkout.view.uimodel.ShipmentAddOnSummaryModel
+import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
@@ -34,9 +36,11 @@ import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourier
 import com.tokopedia.purchase_platform.common.feature.dynamicdatapassing.data.request.DynamicDataPassingParamRequest
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.model.UploadPrescriptionUiModel
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementHolderData
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.flow
@@ -76,6 +80,8 @@ class CheckoutViewModel @Inject constructor(
 
     val pageState: CheckoutMutableLiveData<CheckoutPageState> =
         CheckoutMutableLiveData(CheckoutPageState.Loading)
+
+    val commonToaster: MutableSharedFlow<CheckoutPageToaster> = MutableSharedFlow()
 
     var isOneClickShipment: Boolean = false
 
@@ -213,6 +219,43 @@ class CheckoutViewModel @Inject constructor(
         }
     }
 
+    fun changeAddress(newRecipientAddressModel: RecipientAddressModel?,
+                      chosenAddressModel: ChosenAddressModel?,
+                      isHandleFallback: Boolean) {
+        viewModelScope.launch(dispatchers.immediate) {
+            pageState.value = CheckoutPageState.Loading
+            val changeAddressResult = cartProcessor.changeShippingAddress(
+                listData.value,
+                newRecipientAddressModel,
+                chosenAddressModel,
+                isOneClickShipment,
+                isTradeIn
+            )
+            if (changeAddressResult.isSuccess) {
+                commonToaster.emit(CheckoutPageToaster(Toaster.TYPE_NORMAL, changeAddressResult.toasterMessage))
+                loadSAF(true, true, false)
+            } else {
+                commonToaster.emit(CheckoutPageToaster(Toaster.TYPE_ERROR, changeAddressResult.toasterMessage, changeAddressResult.throwable))
+                pageState.value = CheckoutPageState.Normal
+                if (isHandleFallback) {
+                    val address = listData.value.firstOrNullInstanceOf(CheckoutAddressModel::class.java)?.recipientAddressModel
+                    if (address != null) {
+                        if (address.selectedTabIndex == RecipientAddressModel.TAB_ACTIVE_ADDRESS_DEFAULT) {
+                            address.selectedTabIndex =
+                                RecipientAddressModel.TAB_ACTIVE_ADDRESS_TRADE_IN
+                            address.isIgnoreSelectionAction = true
+                        } else if (address.selectedTabIndex == RecipientAddressModel.TAB_ACTIVE_ADDRESS_TRADE_IN) {
+                            address.locationDataModel = null
+                            address.dropOffAddressDetail = ""
+                            address.dropOffAddressName = ""
+                        }
+                        listData.value = listData.value
+                    }
+                }
+            }
+        }
+    }
+
     override fun onCleared() {
         super.onCleared()
         Log.i("qwertyuiop", "done clear")
@@ -222,4 +265,10 @@ class CheckoutViewModel @Inject constructor(
             "parent job: ${viewModelScope.coroutineContext.job?.children?.find { !it.isCompleted }}"
         )
     }
+}
+
+internal fun<R> List<CheckoutItem>.firstOrNullInstanceOf(kClass: Class<R>): R? {
+    val item = firstOrNull { kClass.isInstance(it) }
+    @Suppress("UNCHECKED_CAST")
+    return item as? R
 }
