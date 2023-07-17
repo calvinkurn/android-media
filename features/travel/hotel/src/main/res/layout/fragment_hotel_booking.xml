@@ -17,7 +17,7 @@
         android:id="@+id/hotel_booking_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/Unify_N0">
+        android:background="@color/Unify_NN0">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -59,7 +59,7 @@
                         android:id="@+id/tv_hotel_info_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/Unify_N700_96"
+                        android:textColor="@color/Unify_NN950_96"
                         app:typographyType="heading_3"
                         tools:text="Avissa Suites" />
 
@@ -83,7 +83,7 @@
                             android:paddingTop="@dimen/spacing_lvl1"
                             android:paddingRight="@dimen/hotel_6dp"
                             android:paddingBottom="@dimen/spacing_lvl1"
-                            android:textColor="@color/Unify_N200"
+                            android:textColor="@color/Unify_NN500"
                             app:typographyType="small"
                             app:typographyWeight="bold"
                             tools:text="Hotel" />
@@ -96,7 +96,7 @@
                         android:layout_height="wrap_content"
                         android:ellipsize="end"
                         android:maxLines="2"
-                        android:textColor="@color/Unify_N700_68"
+                        android:textColor="@color/Unify_NN950_68"
                         app:typographyType="body_3"
                         tools:text="Jalan Cihampelas No 211-217 Bandung 40131, Cihampelas" />
                 </LinearLayout>
@@ -117,7 +117,7 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/layout_lvl1"
-                android:background="@color/Unify_N75" />
+                android:background="@color/Unify_NN50" />
 
             <com.tokopedia.hotel.common.presentation.widget.RoomDurationView
                 android:id="@+id/booking_room_duration_info"
@@ -144,7 +144,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/layout_lvl1"
-                    android:textColor="@color/Unify_N700_96"
+                    android:textColor="@color/Unify_NN950_96"
                     android:textStyle="bold"
                     app:typographyType="heading_4"
                     tools:text="Kamar Deluxe Double" />
@@ -155,7 +155,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/spacing_lvl1"
                     tools:text="@string/hotel_booking_pay_at_hotel_label"
-                    android:textColor="@color/Unify_N700_68"
+                    android:textColor="@color/Unify_NN950_68"
                     android:visibility="gone"
                     app:drawableLeftCompat="@drawable/ic_hotel_16"
                     app:typographyType="body_3"
@@ -167,7 +167,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/spacing_lvl1"
-                    android:textColor="@color/Unify_N700_68"
+                    android:textColor="@color/Unify_NN950_68"
                     app:typographyType="body_3"
                     tools:text="2 Kamar • 2 Tamu" />
 
@@ -176,7 +176,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/hotel_booking_free_breakfast"
-                    android:textColor="@color/Unify_N700_68"
+                    android:textColor="@color/Unify_NN950_68"
                     android:visibility="visible"
                     app:typographyType="body_3" />
 
@@ -224,7 +224,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/layout_lvl1"
                         android:text="@string/hotel_booking_add_request_label"
-                        android:textColor="@color/Unify_G400"
+                        android:textColor="@color/Unify_GN500"
                         app:typographyType="body_2" />
 
                 </LinearLayout>
@@ -253,7 +253,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/hotel_booking_request_form_notice"
-                        android:textColor="@color/Unify_N700_68"
+                        android:textColor="@color/Unify_NN950_68"
                         app:typographyType="body_3" />
 
                 </LinearLayout>
@@ -263,7 +263,7 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/layout_lvl1"
-                android:background="@color/Unify_N75" />
+                android:background="@color/Unify_NN50" />
 
             <LinearLayout
                 android:id="@+id/contact_detail_container"
@@ -281,7 +281,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/layout_lvl1"
                     android:text="@string/hotel_booking_contact_detail_title"
-                    android:textColor="@color/Unify_N700_96"
+                    android:textColor="@color/Unify_NN950_96"
                     app:typographyType="heading_4" />
 
                 <com.tokopedia.unifyprinciples.Typography
@@ -290,7 +290,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/hotel_12dp"
                     android:text="@string/hotel_booking_contact_detail_info"
-                    android:textColor="@color/Unify_N700_68"
+                    android:textColor="@color/Unify_NN950_68"
                     app:typographyType="body_3" />
 
                 <com.tokopedia.travel.passenger.presentation.widget.TravellerInfoWidget
@@ -312,7 +312,7 @@
                         android:checked="true"
                         android:padding="@dimen/spacing_lvl3"
                         android:text="@string/hotel_booking_contact_self"
-                        android:textColor="@color/Unify_N700_96"
+                        android:textColor="@color/Unify_NN950_96"
                         android:textSize="@dimen/unify_font_16" />
 
                     <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
@@ -323,7 +323,7 @@
                         android:layout_marginBottom="@dimen/spacing_lvl3"
                         android:padding="@dimen/spacing_lvl3"
                         android:text="@string/hotel_booking_contact_guest"
-                        android:textColor="@color/Unify_N700_96"
+                        android:textColor="@color/Unify_NN950_96"
                         android:textSize="@dimen/unify_font_16" />
 
                 </RadioGroup>
@@ -349,7 +349,7 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/layout_lvl1"
-                android:background="@color/Unify_N75" />
+                android:background="@color/Unify_NN50" />
 
             <LinearLayout
                 android:id="@+id/booking_pay_now_promo_container"
@@ -366,7 +366,7 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/layout_lvl1"
-                    android:background="@color/Unify_N75" />
+                    android:background="@color/Unify_NN50" />
 
             </LinearLayout>
 
@@ -387,7 +387,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/hotel_12dp"
                     android:text="@string/hotel_booking_invoice_title"
-                    android:textColor="@color/Unify_N700_96"
+                    android:textColor="@color/Unify_NN950_96"
                     android:textStyle="bold"
                     app:typographyType="heading_4" />
 
@@ -401,7 +401,7 @@
                         android:id="@+id/tv_room_price_label"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/Unify_N700_68"
+                        android:textColor="@color/Unify_NN950_68"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         app:typographyType="body_3"
@@ -411,7 +411,7 @@
                         android:id="@+id/tv_room_price"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/Unify_N700_96"
+                        android:textColor="@color/Unify_NN950_96"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         app:typographyType="body_3"
@@ -431,7 +431,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/hotel_booking_tax_label"
-                        android:textColor="@color/Unify_N700_68"
+                        android:textColor="@color/Unify_NN950_68"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         app:typographyType="body_3"
@@ -442,7 +442,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/hotel_booking_tax_included"
-                        android:textColor="@color/Unify_N700_96"
+                        android:textColor="@color/Unify_NN950_96"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         app:typographyType="body_3"
@@ -455,7 +455,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/hotel_1dp"
                     android:layout_marginBottom="@dimen/layout_lvl2"
-                    android:background="@color/Unify_N75" />
+                    android:background="@color/Unify_NN50" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/invoice_estimated_price_container"
@@ -467,7 +467,7 @@
                         android:id="@+id/tv_room_estimated_price_label"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/Unify_N700_96"
+                        android:textColor="@color/Unify_NN950_96"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
@@ -492,7 +492,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/hotel_booking_invoice_foreign_currency_label"
-                    android:textColor="@color/Unify_N700_68"
+                    android:textColor="@color/Unify_NN950_68"
                     android:visibility="gone"
                     app:typographyType="body_3"
                     tools:text="Sebagai referensi, estimasi harga dalam rupiah sebesar Rp 400.000"
@@ -512,7 +512,7 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/layout_lvl1"
-                    android:background="@color/Unify_N75" />
+                    android:background="@color/Unify_NN50" />
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/tv_booking_important_notes"
@@ -523,7 +523,7 @@
                     android:paddingRight="@dimen/layout_lvl2"
                     android:paddingBottom="@dimen/layout_lvl1"
                     android:text="@string/hotel_booking_important_notes"
-                    android:textColor="@color/Unify_N700_68"
+                    android:textColor="@color/Unify_NN950_68"
                     app:typographyType="body_3" />
 
             </LinearLayout>

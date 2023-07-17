@@ -81,7 +81,7 @@ internal class ProductSummaryViewHolder private constructor() {
             get() = itemView.context
 
         private val fgColor: ForegroundColorSpan
-            get() = ForegroundColorSpan(MethodChecker.getColor(ctx, unifyR.color.Unify_G500))
+            get() = ForegroundColorSpan(MethodChecker.getColor(ctx, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
 
         @SuppressLint("ResourceType")
         fun bind(item: ProductSummaryAdapter.Model.Body) {
