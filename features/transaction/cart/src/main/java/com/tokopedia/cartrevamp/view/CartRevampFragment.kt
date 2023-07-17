@@ -936,7 +936,7 @@ class CartRevampFragment :
 
                 handleSelectedAmountVisibilityOnScroll(dy)
                 handlePromoButtonVisibilityOnScroll(dy)
-                handleStickySelectedAmountVisibility(recyclerView)
+                handleFloatingSelectedAmountVisibility(recyclerView)
             }
         })
     }
@@ -1350,31 +1350,22 @@ class CartRevampFragment :
 
     private fun handleSelectedAmountVisibilityOnScroll(dy: Int) {
         val rlTopLayout = binding?.rlTopLayout ?: return
-        var valueY = rlTopLayout.y
-        valueY -= dy
+        var valueY = rlTopLayout.y - (abs(dy) / 1.5f)
         SELECTED_AMOUNT_TRANSLATION_LENGTH += dy
         if (dy != 0) {
             if (initialSelectedAmountPosition == 0f && SELECTED_AMOUNT_TRANSLATION_LENGTH - dy == 0f) {
-                // Initial position of View if previous initialization attempt failed
                 initialSelectedAmountPosition = binding?.llPromoCheckout?.y ?: 0f
             }
 
             if (SELECTED_AMOUNT_TRANSLATION_LENGTH != 0f) {
-                if (dy < 0 && valueY < initialSelectedAmountPosition) {
-                    // Prevent scroll up move button exceed initial view position
-//                    animateSelectedAmountToStartingPosition()
-                } else if (valueY <= rlTopLayout.height + initialSelectedAmountPosition) {
-                    // Prevent scroll down move button too far
-                    animateSelectedAmountToHiddenPosition(valueY)
-                }
+                animateSelectedAmountToHiddenPosition(valueY)
             }
         }
     }
 
     private fun handlePromoButtonVisibilityOnScroll(dy: Int) {
         val llPromoCheckout = binding?.llPromoCheckout ?: return
-        var valueY = llPromoCheckout.y
-        valueY += abs(dy)
+        val valueY = llPromoCheckout.y + abs(dy)
 
         TRANSLATION_LENGTH += dy
         if (dy != 0) {
@@ -1395,7 +1386,7 @@ class CartRevampFragment :
         }
     }
 
-    private fun handleStickySelectedAmountVisibility(recyclerView: RecyclerView) {
+    private fun handleFloatingSelectedAmountVisibility(recyclerView: RecyclerView) {
         val topItemPosition =
             (recyclerView.layoutManager as GridLayoutManager).findFirstVisibleItemPosition()
         if (topItemPosition == RecyclerView.NO_POSITION) return
@@ -1403,13 +1394,16 @@ class CartRevampFragment :
         val adapterData = viewModel.cartDataList.value
         if (topItemPosition >= adapterData.size) return
 
+        val firstVisibleItemData = adapterData[topItemPosition]
+
         if (viewModel.getAllAvailableCartItemData().isNotEmpty() &&
             viewModel.hasSelectedCartItem() &&
-            recyclerView.canScrollVertically(-1)
+            firstVisibleItemData !is CartSelectedAmountHolderData
         ) {
             setTopLayoutVisibility(true)
         } else {
             setTopLayoutVisibility(false)
+            handleSelectedAmountVisibilityOnIdle(RecyclerView.SCROLL_STATE_IDLE)
         }
     }
 
