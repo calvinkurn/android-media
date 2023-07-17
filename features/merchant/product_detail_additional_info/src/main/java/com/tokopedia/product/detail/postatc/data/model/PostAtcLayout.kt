@@ -28,7 +28,16 @@ data class PostAtcLayout(
         val shopId: String = "",
 
         @SerializedName("category")
-        val category: Category = Category()
+        val category: Category = Category(),
+
+        @SerializedName("price")
+        val price: Double = -1.0,
+
+        @SerializedName("originalPrice")
+        val originalPrice: Double = -1.0,
+
+        @SerializedName("condition")
+        val condition: String = ""
     )
 
     data class Category(

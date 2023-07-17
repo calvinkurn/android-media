@@ -143,7 +143,6 @@ class PostAtcBottomSheet : BottomSheetUnify() {
 
     private fun setupBottomSheet(inflater: LayoutInflater, container: ViewGroup?) {
         clearContentPadding = true
-        isHideable = true
 
         val title = context?.getString(R.string.pdp_post_atc_title) ?: ""
         setTitle(title)
