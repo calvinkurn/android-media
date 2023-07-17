@@ -31,11 +31,10 @@ class WishlistCollectionTickerItemViewHolder(
     private val firebaseRemoteConfig = FirebaseRemoteConfigImpl(itemView.context)
 
     fun bind(item: WishlistCollectionTypeLayoutData, isTickerClosed: Boolean) {
-
         if (firebaseRemoteConfig.getString(
                 RollenceKey.WISHLIST_AFFILIATE_TICKER,
                 ""
-            ) != RollenceKey.WISHLIST_AFFILIATE_TICKER
+            ) == RollenceKey.WISHLIST_AFFILIATE_TICKER
         ) {
             showAffiliateTicker()
             return
