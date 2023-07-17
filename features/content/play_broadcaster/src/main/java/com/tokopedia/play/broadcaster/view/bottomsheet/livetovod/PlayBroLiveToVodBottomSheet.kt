@@ -8,8 +8,8 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.content.common.R
 import com.tokopedia.content.common.util.Router
+import com.tokopedia.play.broadcaster.R
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import javax.inject.Inject
 
@@ -17,12 +17,11 @@ class PlayBroLiveToVodBottomSheet @Inject constructor(
     private val router: Router,
 ) : BottomSheetUnify() {
 
-    // todo change appLink
     private fun generateLearnMoreAppLink(): String {
         return getString(
             R.string.up_webview_template,
             ApplinkConst.WEBVIEW,
-            getString(com.tokopedia.play.broadcaster.R.string.play_shorts_affiliate_success_learn_more_web_link),
+            getString(com.tokopedia.content.common.R.string.ugc_get_to_know_more_link),
         )
     }
 

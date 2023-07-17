@@ -63,12 +63,11 @@ class PlayBroadcastReportFragment @Inject constructor(
 
     override fun getScreenName(): String = "Play Report Page"
 
-    // todo change appLink
     private fun generateLearnMoreAppLink(): String {
         return getString(
             com.tokopedia.content.common.R.string.up_webview_template,
             ApplinkConst.WEBVIEW,
-            getString(R.string.play_shorts_affiliate_success_learn_more_web_link),
+            getString(com.tokopedia.content.common.R.string.ugc_get_to_know_more_link),
         )
     }
 
