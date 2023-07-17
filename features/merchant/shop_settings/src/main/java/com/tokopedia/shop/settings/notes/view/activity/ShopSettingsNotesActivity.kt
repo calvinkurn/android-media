@@ -54,7 +54,7 @@ class ShopSettingsNotesActivity :
 
     private fun setUpActionBar() {
         binding?.appBarLayout?.toolbar?.apply {
-            setTitleTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700))
+            setTitleTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950))
             setSupportActionBar(this)
         }
         if (supportActionBar != null) {

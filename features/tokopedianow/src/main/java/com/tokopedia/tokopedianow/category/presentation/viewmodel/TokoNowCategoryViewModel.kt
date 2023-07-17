@@ -345,7 +345,7 @@ class TokoNowCategoryViewModel @Inject constructor(
                 }
 
                 val detailResponse = getCategoryDetailUseCase.execute(
-                    warehouseId = getWarehouseId(),
+                    warehouses = addressData.getWarehousesData(),
                     categoryIdL1 = categoryIdL1
                 )
 
