@@ -1,6 +1,5 @@
 package com.tokopedia.feedplus.presentation.adapter.viewholder
 
-import android.net.Uri
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.lifecycle.Lifecycle
@@ -8,10 +7,7 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.exoplayer2.Player
-import com.google.android.exoplayer2.SimpleExoPlayer
-import com.google.android.exoplayer2.source.hls.HlsMediaSource
-import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
-import com.google.android.exoplayer2.util.Util
+import com.tokopedia.feedcomponent.view.widget.FeedExoPlayer
 import com.tokopedia.feedplus.databinding.ItemFeedFollowProfileBinding
 import com.tokopedia.feedplus.databinding.ItemFeedFollowProfileShimmerBinding
 import com.tokopedia.feedplus.presentation.adapter.FeedFollowProfileAdapter
@@ -19,8 +15,9 @@ import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.presentation.adapter.listener.FeedFollowRecommendationListener
 import com.tokopedia.feedplus.presentation.model.FeedFollowRecommendationModel
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 
 /**
@@ -36,11 +33,11 @@ class FeedFollowProfileViewHolder private constructor() {
     ) : RecyclerView.ViewHolder(binding.root) {
 
         private val player by lazyThreadSafetyNone {
-            SimpleExoPlayer.Builder(itemView.context).build()
+            FeedExoPlayer(itemView.context)
         }
 
         init {
-            player.addListener(object : Player.EventListener {
+            player.getExoPlayer().addListener(object : Player.EventListener {
                 override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
                     when (playbackState) {
                         Player.STATE_ENDED -> {
@@ -61,6 +58,7 @@ class FeedFollowProfileViewHolder private constructor() {
                 override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
                     when (event) {
                         Lifecycle.Event.ON_DESTROY -> {
+                            player.setVideoStateListener(null)
                             player.release()
                         }
                         else -> {}
@@ -68,22 +66,16 @@ class FeedFollowProfileViewHolder private constructor() {
                 }
             })
 
-            binding.playerView.player = player
+            binding.playerView.player = player.getExoPlayer()
         }
 
         fun bind(model: FeedFollowProfileAdapter.Model.Profile) {
-            val mediaSource = HlsMediaSource.Factory(
-                DefaultDataSourceFactory(
-                    itemView.context,
-                    Util.getUserAgent(itemView.context, "Tokopedia Android")
-                )
-            ).createMediaSource(Uri.parse(model.data.videoUrl))
-            player.prepare(mediaSource)
 
             if (model.isSelected) {
-                player.playWhenReady = true
+                player.start(model.data.videoUrl, isMute = false)
             } else {
                 player.stop()
+                binding.playerView.hide()
             }
 
             binding.imgProfile.setImageUrl(model.data.imageUrl)
