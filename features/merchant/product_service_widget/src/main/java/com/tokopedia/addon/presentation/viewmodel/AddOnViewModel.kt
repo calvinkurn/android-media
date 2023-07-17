@@ -9,7 +9,9 @@ import com.tokopedia.addon.domain.usecase.GetAddOnByProductUseCase
 import com.tokopedia.addon.presentation.uimodel.AddOnGroupUIModel
 import com.tokopedia.addon.presentation.uimodel.AddOnMapper
 import com.tokopedia.addon.presentation.uimodel.AddOnPageResult
+import com.tokopedia.addon.presentation.uimodel.AddOnParam
 import com.tokopedia.gifting.domain.usecase.GetAddOnUseCase
+import com.tokopedia.gifting.presentation.uimodel.AddOnType
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.purchase_platform.common.feature.addons.domain.SaveAddOnStateUseCase
@@ -76,11 +78,12 @@ class AddOnViewModel @Inject constructor(
         return AddOnPageResult.AggregatedData(isGetDataSuccess = true)
     }
 
-    fun getAddOn(productId: String, warehouseId: String, isTokocabang: Boolean, isSimplified: Boolean) {
+    fun getAddOn(param: AddOnParam, isSimplified: Boolean) {
         this.isSimplified = isSimplified
         launchCatchError(block = {
             val result = withContext(dispatchers.io) {
-                getAddOnUseCase.setParams(productId, warehouseId, isTokocabang)
+                getAddOnUseCase.setParams(param, listOf(AddOnType.INSTALLATION_TYPE,
+                    AddOnType.PRODUCT_PROTECTION_INSURANCE_TYPE))
                 getAddOnUseCase.executeOnBackground()
             }
             val addonGroups = AddOnMapper.mapAddonToUiModel(result)

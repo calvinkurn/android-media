@@ -484,7 +484,8 @@ class OrderProductCard(
                 setSeeAllAddOnsProduct(
                     binding = this,
                     addOnsProductData = addOnsProductData,
-                    product = product
+                    product = product,
+                    shop = shop
                 )
                 setAddOnsProductItem(
                     binding = this,
@@ -504,7 +505,8 @@ class OrderProductCard(
     private fun setSeeAllAddOnsProduct(
         binding: ItemShipmentAddonProductBinding,
         addOnsProductData: AddOnsProductDataModel,
-        product: OrderProduct
+        product: OrderProduct,
+        shop: OrderShop
     ) {
         binding.tvSeeAllAddonProduct.showIfWithBlock(
             predicate = addOnsProductData.bottomsheet.title.isNotBlank() &&
@@ -515,7 +517,7 @@ class OrderProductCard(
         }
         binding.tvSeeAllAddonProduct.setOnClickListener {
             orderSummaryAnalytics.eventClickLihatSemuaAddOnProductWidget()
-            listener.onClickSeeAllAddOnProductService(product, addOnsProductData)
+            listener.onClickSeeAllAddOnProductService(product, addOnsProductData, shop)
         }
     }
 
@@ -544,10 +546,6 @@ class OrderProductCard(
 
                 addOnView.apply {
                     // set data on the views
-                    setAddOnProductName(
-                        binding = addOnView,
-                        addOn = addOn
-                    )
                     setAddOnProductName(
                         binding = addOnView,
                         addOn = addOn
@@ -665,7 +663,7 @@ class OrderProductCard(
 
         fun onClickAddOnProductInfoIcon(url: String)
 
-        fun onClickSeeAllAddOnProductService(product: OrderProduct, addOnsProductData: AddOnsProductDataModel)
+        fun onClickSeeAllAddOnProductService(product: OrderProduct, addOnsProductData: AddOnsProductDataModel, shop: OrderShop)
     }
 
     companion object {

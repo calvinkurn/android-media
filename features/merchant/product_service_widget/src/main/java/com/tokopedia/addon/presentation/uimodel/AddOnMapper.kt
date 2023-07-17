@@ -89,6 +89,7 @@ object AddOnMapper {
     ): SaveAddOnStateRequest {
         val addons = flatmapToChangedAddonSelection(addonGroups)
         val request = AddOnRequest(
+            addOnKey = cartId.toString(),
             addOnLevel = addonGroups?.firstOrNull()?.addOnLevel.orEmpty(),
             cartProducts = listOf(
                 CartProduct(
@@ -124,9 +125,11 @@ object AddOnMapper {
 
     fun deepCopyAddonGroup(addonGroups: List<AddOnGroupUIModel>): List<AddOnGroupUIModel> {
         return addonGroups.map { group ->
-            group.copy(addon = group.addon.map { addon ->
-                addon.copy()
-            })
+            group.copy(
+                addon = group.addon.map { addon ->
+                    addon.copy()
+                }
+            )
         }
     }
 
