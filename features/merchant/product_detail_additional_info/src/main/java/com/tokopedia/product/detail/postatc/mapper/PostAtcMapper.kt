@@ -54,8 +54,14 @@ private fun toAddonsUiModel(
             title = data.title,
             productId = postAtcInfo.productId,
             warehouseId = postAtcInfo.warehouseId,
-            isTokoCabang = postAtcInfo.isFulfillment,
-            selectedAddonsIds = postAtcInfo.selectedAddonsIds
+            isFulfillment = postAtcInfo.isFulfillment,
+            selectedAddonsIds = postAtcInfo.selectedAddonsIds,
+            categoryId = postAtcInfo.categoryId,
+            shopId = postAtcInfo.shopId,
+            quantity = postAtcInfo.quantity.toLong(),
+            price = postAtcInfo.originalPrice,
+            discountedPrice = postAtcInfo.price,
+            condition = postAtcInfo.condition
         )
     )
 }

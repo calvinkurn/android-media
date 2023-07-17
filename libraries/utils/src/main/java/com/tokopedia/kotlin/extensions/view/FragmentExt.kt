@@ -26,6 +26,10 @@ fun Fragment.getStringArg(key: String, defValue: String = ""): Lazy<String> = la
     arguments?.getString(key, defValue) ?: defValue
 }
 
+fun Fragment.getIntArg(key: String, defValue: Int = 0): Lazy<Int> = lazy {
+    arguments?.getInt(key, defValue) ?: defValue
+}
+
 fun Fragment.getStringArrayListArg(
     key: String,
     defValue: List<String> = emptyList()
