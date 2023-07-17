@@ -92,7 +92,7 @@ data class GetCategoryLayoutResponse(
 
     data class Component(
         @SerializedName("id")
-        val id: Int? = null,
+        val id: String,
         @SerializedName("name")
         val name: String? = null,
         @SerializedName("type")

@@ -63,7 +63,6 @@ abstract class BaseCategoryViewModel(
         private const val INVALID_ID = 0L
     }
 
-
     private val _openScreenTracker: MutableLiveData<CategoryOpenScreenTrackerModel> = MutableLiveData()
     private val _visitableListLiveData = MutableLiveData<List<Visitable<*>>>()
     private val _updateToolbarNotification: MutableLiveData<Boolean> = MutableLiveData()

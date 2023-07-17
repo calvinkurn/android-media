@@ -6,7 +6,7 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.tokopedianow.R
-import com.tokopedia.tokopedianow.category.presentation.fragment.DemoObjectFragment.DemoCollectionAdapter
+import com.tokopedia.tokopedianow.category.presentation.adapter.viewpager.CategoryL2TabViewPagerAdapter
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryL2TabUiModel
 import com.tokopedia.tokopedianow.common.view.TokoNowView
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowCategoryL2TabBinding
@@ -25,8 +25,11 @@ class CategoryL2TabViewHolder(
         val LAYOUT: Int = R.layout.item_tokopedianow_category_l2_tab
     }
 
+    private val viewPagerAdapter by lazy {
+        CategoryL2TabViewPagerAdapter(tokoNowView.getFragmentPage())
+    }
+
     private val binding: ItemTokopedianowCategoryL2TabBinding? by viewBinding()
-    private val viewPagerAdapter by lazy { DemoCollectionAdapter(tokoNowView.getFragmentPage()) }
 
     init {
         binding?.apply {
@@ -37,7 +40,10 @@ class CategoryL2TabViewHolder(
     override fun bind(data: CategoryL2TabUiModel) {
         binding?.apply {
             val tabTitleList = data.tabTitleList
+            val componentList = data.componentList
+
             viewPagerAdapter.titleList = tabTitleList
+            viewPagerAdapter.components = componentList
 
             TabsUnifyMediator(tabUnify, viewPager) { tab, position ->
                 val title = tabTitleList.getOrNull(position).orEmpty()

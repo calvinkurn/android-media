@@ -12,6 +12,25 @@ import com.tokopedia.tokopedianow.common.model.TokoNowChooseAddressWidgetUiModel
 
 object CategoryL2Mapper {
 
+    private val SUPPORTED_LAYOUT_TYPES = listOf(
+        TABS_HORIZONTAL_SCROLL
+    )
+
+    fun MutableList<Visitable<*>>.mapToCategoryUiModel(
+        componentsResponse: List<Component>,
+        categoryNameList: List<String>
+    ) {
+        componentsResponse.filter { SUPPORTED_LAYOUT_TYPES.contains(it.type) }.forEach { componentResponse ->
+            when(componentResponse.type) {
+                TABS_HORIZONTAL_SCROLL -> addCategoryTab(
+                    componentsResponse,
+                    componentResponse,
+                    categoryNameList
+                )
+            }
+        }
+    }
+
     fun MutableList<Visitable<*>>.addChooseAddress(addressData: LocalCacheModel)  {
         add(TokoNowChooseAddressWidgetUiModel(addressData = addressData))
     }
@@ -30,20 +49,10 @@ object CategoryL2Mapper {
     }
 
     fun MutableList<Visitable<*>>.addCategoryTab(
-        response: Component,
+        componentListResponse: List<Component>,
+        componentResponse: Component,
         categoryNameList: List<String>
     ) {
-        add(CategoryL2TabUiModel(categoryNameList))
-    }
-
-    fun MutableList<Visitable<*>>.mapToCategoryUiModel(
-        components: List<Component>,
-        categoryNameList: List<String>
-    ) {
-        components.forEach {
-            when(it.type) {
-                TABS_HORIZONTAL_SCROLL -> addCategoryTab(it, categoryNameList)
-            }
-        }
+        add(CategoryL2TabUiModel(categoryNameList, componentListResponse))
     }
 }

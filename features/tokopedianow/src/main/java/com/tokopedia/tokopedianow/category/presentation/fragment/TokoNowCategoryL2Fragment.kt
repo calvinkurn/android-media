@@ -13,7 +13,7 @@ import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
 import com.tokopedia.tokopedianow.category.di.component.DaggerCategoryL2Component
-import com.tokopedia.tokopedianow.category.di.module.CategoryL2ContextModule
+import com.tokopedia.tokopedianow.category.di.module.CategoryContextModule
 import com.tokopedia.tokopedianow.category.presentation.adapter.differ.CategoryL2Differ
 import com.tokopedia.tokopedianow.category.presentation.adapter.typefactory.CategoryL2AdapterTypeFactory
 import com.tokopedia.tokopedianow.category.presentation.callback.TokoNowChooseAddressWidgetCallback
@@ -89,7 +89,7 @@ class TokoNowCategoryL2Fragment : BaseCategoryFragment() {
     override fun initInjector() {
         DaggerCategoryL2Component.builder()
             .baseAppComponent((requireContext().applicationContext as BaseMainApplication).baseAppComponent)
-            .categoryL2ContextModule(CategoryL2ContextModule(requireContext()))
+            .categoryContextModule(CategoryContextModule(requireContext()))
             .build()
             .inject(this)
     }
