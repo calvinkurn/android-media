@@ -2,6 +2,7 @@ package com.tokopedia.logisticcart.scheduledelivery.domain.usecase
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
+import com.tokopedia.logisticcart.scheduledelivery.domain.entity.response.ScheduleDeliveryRatesResponse
 import com.tokopedia.logisticcart.scheduledelivery.domain.mapper.ScheduleDeliveryMapper
 import com.tokopedia.logisticcart.shipping.model.RatesParam
 import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData
@@ -22,18 +23,18 @@ class GetRatesWithScheduleDeliveryCoroutineUseCase @Inject constructor(
             val shippingRecommendationData = ShippingRecommendationData()
             val ratesResponse = async { getRatesCoroutineUseCase(params.first) }
             val schellyResponse = async { getScheduleDeliveryUseCase(mapper.map(params.first, params.second)) }
-            shippingRecommendationData.combineWithRates(ratesResponse.await())
-            shippingRecommendationData.scheduleDeliveryData = schellyResponse.await().ongkirGetScheduledDeliveryRates.scheduleDeliveryData
+            shippingRecommendationData.combine(ratesResponse.await(), schellyResponse.await())
             return@coroutineScope shippingRecommendationData
         }
     }
-    private fun ShippingRecommendationData.combineWithRates(ratesResponse: ShippingRecommendationData) {
+    private fun ShippingRecommendationData.combine(ratesResponse: ShippingRecommendationData, scheduleDeliveryData: ScheduleDeliveryRatesResponse) {
         this.shippingDurationUiModels = ratesResponse.shippingDurationUiModels
         this.logisticPromo = ratesResponse.logisticPromo
         this.listLogisticPromo = ratesResponse.listLogisticPromo
         this.preOrderModel = ratesResponse.preOrderModel
         this.errorMessage = ratesResponse.errorMessage
         this.errorId = ratesResponse.errorId
+        this.scheduleDeliveryData = scheduleDeliveryData.ongkirGetScheduledDeliveryRates.scheduleDeliveryData
     }
 
     override fun graphqlQuery(): String {
