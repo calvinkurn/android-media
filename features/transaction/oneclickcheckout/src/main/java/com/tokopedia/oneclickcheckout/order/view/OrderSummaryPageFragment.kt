@@ -133,12 +133,16 @@ import com.tokopedia.purchase_platform.common.constant.ARGS_PROMO_REQUEST
 import com.tokopedia.purchase_platform.common.constant.ARGS_VALIDATE_USE_DATA_RESULT
 import com.tokopedia.purchase_platform.common.constant.ARGS_VALIDATE_USE_REQUEST
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant
-import com.tokopedia.purchase_platform.common.constant.AddOnConstant.ADD_ON_PRODUCT_STATUS_CHECK
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant.QUERY_PARAM_ADDON_PRODUCT
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant.QUERY_PARAM_CART_ID
+import com.tokopedia.purchase_platform.common.constant.AddOnConstant.QUERY_PARAM_CATEGORY_ID
+import com.tokopedia.purchase_platform.common.constant.AddOnConstant.QUERY_PARAM_DISCOUNTED_PRICE
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant.QUERY_PARAM_IS_TOKOCABANG
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant.QUERY_PARAM_PAGE_ATC_SOURCE
+import com.tokopedia.purchase_platform.common.constant.AddOnConstant.QUERY_PARAM_PRICE
+import com.tokopedia.purchase_platform.common.constant.AddOnConstant.QUERY_PARAM_QUANTITY
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant.QUERY_PARAM_SELECTED_ADDON_IDS
+import com.tokopedia.purchase_platform.common.constant.AddOnConstant.QUERY_PARAM_SHOP_ID
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant.SOURCE_ONE_CLICK_CHECKOUT
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
 import com.tokopedia.purchase_platform.common.constant.PAGE_OCC
@@ -158,6 +162,7 @@ import com.tokopedia.purchase_platform.common.feature.promonoteligible.PromoNotE
 import com.tokopedia.purchase_platform.common.feature.promonoteligible.PromoNotEligibleBottomSheet
 import com.tokopedia.purchase_platform.common.feature.purchaseprotection.domain.PurchaseProtectionPlanData
 import com.tokopedia.purchase_platform.common.utils.isNotBlankOrZero
+import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
@@ -377,10 +382,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                         val addonProduct = listProducts[index].addOnsProductData
                         addOnProductDataResult.changedAddons.forEach { addOnUiModel ->
                             addonProduct.data.forEach { addonExisting ->
-                                if (addOnUiModel.addOnType == addonExisting.type &&
-                                    addOnUiModel.getSelectedStatus().value == ADD_ON_PRODUCT_STATUS_CHECK
-                                ) {
-                                    println("++ addon name baru = ${addOnUiModel.name}")
+                                if (addOnUiModel.addOnType == addonExisting.type) {
                                     addonExisting.apply {
                                         id = addOnUiModel.id
                                         uniqueId = addOnUiModel.uniqueId
@@ -390,8 +392,6 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                                         status = addOnUiModel.getSelectedStatus().value
                                         type = addOnUiModel.addOnType
                                     }
-                                } else {
-                                    addonExisting.status = addOnUiModel.getSelectedStatus().value
                                 }
                             }
                         }
@@ -1574,8 +1574,11 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
             )
         }
 
-        override fun onClickSeeAllAddOnProductService(product: OrderProduct, addOnsProductData: AddOnsProductDataModel) {
-            // tokopedia://addon/2148784281/?cartId=123123&selectedAddonIds=111,222,333&source=cart&warehouseId=789789&isTokocabang=false
+        override fun onClickSeeAllAddOnProductService(product: OrderProduct, addOnsProductData: AddOnsProductDataModel, shop: OrderShop) {
+            // tokopedia://addon/2150637806/?cartId=341303&selectedAddonIds=4730&source=cart&
+            // warehouseId=789789&isTokocabang=false&atcSource=normal&categoryId=2134&shopId=481108&
+            // quantity=99923&price=1500000&discountedPrice=1500000&condition=NEW
+
             val productId = product.productId
             val cartId = product.cartId
 
@@ -1586,6 +1589,16 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                 }
             }
 
+            var price = 0.0
+            var discountedPrice = 0.0
+            if (product.campaignId == "0") {
+                price = product.productPrice
+                discountedPrice = product.productPrice
+            } else {
+                price = product.originalPrice
+                discountedPrice = product.productPrice
+            }
+
             val applinkAddon = ADDON.replace(QUERY_PARAM_ADDON_PRODUCT, productId)
             val applink = UriUtil.buildUriAppendParams(
                 applinkAddon,
@@ -1594,10 +1607,14 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                     QUERY_PARAM_SELECTED_ADDON_IDS to addOnIds.toString().replace("[", "").replace("]", ""),
                     QUERY_PARAM_PAGE_ATC_SOURCE to SOURCE_ONE_CLICK_CHECKOUT,
                     QUERY_PARAM_WAREHOUSE_ID to product.warehouseId,
-                    QUERY_PARAM_IS_TOKOCABANG to product.isFulfillment
+                    QUERY_PARAM_IS_TOKOCABANG to product.isFulfillment,
+                    QUERY_PARAM_CATEGORY_ID to product.categoryId,
+                    QUERY_PARAM_SHOP_ID to shop.shopId,
+                    QUERY_PARAM_QUANTITY to product.orderQuantity,
+                    QUERY_PARAM_PRICE to price.toString().removeDecimalSuffix(),
+                    QUERY_PARAM_DISCOUNTED_PRICE to discountedPrice.toString().removeDecimalSuffix()
                 )
             )
-
             println("++ applink = " + applink)
 
             activity?.let {

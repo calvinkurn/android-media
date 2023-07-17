@@ -89,5 +89,6 @@ data class CartItemModel(
     val shopTypeInfoData: ShopTypeInfoData = ShopTypeInfoData(),
     val cartStringOrder: String = "",
     val originWarehouseIds: List<Long> = emptyList(),
-    val addOnProduct: AddOnProductDataModel = AddOnProductDataModel()
+    val addOnProduct: AddOnProductDataModel = AddOnProductDataModel(),
+    val campaignId: Int = -1
 ) : Parcelable, ShipmentCartItem

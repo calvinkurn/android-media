@@ -31,4 +31,10 @@ object AddOnConstant {
     const val QUERY_PARAM_IS_TOKOCABANG = "isTokoCabang"
     const val QUERY_PARAM_ADDON_PRODUCT = "{addon_id}"
     const val QUERY_PARAM_WAREHOUSE_ID = "warehouseId"
+    const val QUERY_PARAM_CATEGORY_ID = "categoryId"
+    const val QUERY_PARAM_SHOP_ID = "shopId"
+    const val QUERY_PARAM_QUANTITY = "quantity"
+    const val QUERY_PARAM_PRICE = "price"
+    const val QUERY_PARAM_DISCOUNTED_PRICE = "discountedPrice"
+    const val CONDITIONS = "conditions"
 }

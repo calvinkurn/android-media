@@ -3913,6 +3913,16 @@ class ShipmentFragment :
             }
         }
 
+        var price = 0.0
+        var discountedPrice = 0.0
+        if (cartItemModel.campaignId == 0) {
+            price = cartItemModel.price
+            discountedPrice = cartItemModel.price
+        } else {
+            price = cartItemModel.originalPrice
+            discountedPrice = cartItemModel.price
+        }
+
         val applinkAddon = ApplinkConst.ADDON.replace(AddOnConstant.QUERY_PARAM_ADDON_PRODUCT, productId.toString())
         val applink = UriUtil.buildUriAppendParams(
             applinkAddon,
@@ -3921,7 +3931,12 @@ class ShipmentFragment :
                 AddOnConstant.QUERY_PARAM_SELECTED_ADDON_IDS to addOnIds.toString().replace("[", "").replace("]", ""),
                 AddOnConstant.QUERY_PARAM_PAGE_ATC_SOURCE to SOURCE_NORMAL_CHECKOUT,
                 ApplinkConstInternalMechant.QUERY_PARAM_WAREHOUSE_ID to cartItemModel.warehouseId,
-                AddOnConstant.QUERY_PARAM_IS_TOKOCABANG to cartItemModel.isTokoCabang
+                AddOnConstant.QUERY_PARAM_IS_TOKOCABANG to cartItemModel.isTokoCabang,
+                AddOnConstant.QUERY_PARAM_CATEGORY_ID to cartItemModel.productCatId,
+                AddOnConstant.QUERY_PARAM_SHOP_ID to cartItemModel.shopId,
+                AddOnConstant.QUERY_PARAM_QUANTITY to cartItemModel.quantity,
+                AddOnConstant.QUERY_PARAM_PRICE to price,
+                AddOnConstant.QUERY_PARAM_DISCOUNTED_PRICE to discountedPrice
             )
         )
 
@@ -4299,7 +4314,7 @@ class ShipmentFragment :
                 val cartIdAddOn = addOnProductDataResult.cartId
                 val needUpdateAddOnItem = shipmentAdapter.getAddOnProductServicePosition(cartIdAddOn)
 
-                run loopAddOnProduct@ {
+                run loopAddOnProduct@{
                     needUpdateAddOnItem.second?.addOnProduct?.listAddOnProductData?.forEach { addOnProductDataItemModel ->
                         for (addonUiModel in addOnProductDataResult.changedAddons) {
                             if (addonUiModel.id == addOnProductDataItemModel.addOnDataId.toString()) {

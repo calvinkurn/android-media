@@ -4559,6 +4559,16 @@ class CartFragment :
             addOnIds.add(it.id)
         }
 
+        var price = 0.0
+        var discountedPrice = 0.0
+        if (cartItemData.campaignId == "0") {
+            price = cartItemData.productPrice
+            discountedPrice = cartItemData.productPrice
+        } else {
+            price = cartItemData.productOriginalPrice
+            discountedPrice = cartItemData.productPrice
+        }
+
         val applinkAddon = ApplinkConst.ADDON.replace(AddOnConstant.QUERY_PARAM_ADDON_PRODUCT, productId.toString())
         val applink = UriUtil.buildUriAppendParams(
             applinkAddon,
@@ -4567,7 +4577,12 @@ class CartFragment :
                 AddOnConstant.QUERY_PARAM_SELECTED_ADDON_IDS to addOnIds,
                 AddOnConstant.QUERY_PARAM_PAGE_ATC_SOURCE to AddOnConstant.SOURCE_NORMAL_CHECKOUT,
                 AddOnConstant.QUERY_PARAM_WAREHOUSE_ID to cartItemData.warehouseId,
-                AddOnConstant.QUERY_PARAM_IS_TOKOCABANG to cartItemData.isFulfillment
+                AddOnConstant.QUERY_PARAM_IS_TOKOCABANG to cartItemData.isFulfillment,
+                AddOnConstant.QUERY_PARAM_CATEGORY_ID to cartItemData.categoryId,
+                AddOnConstant.QUERY_PARAM_SHOP_ID to cartItemData.shopHolderData.shopId,
+                AddOnConstant.QUERY_PARAM_QUANTITY to cartItemData.quantity,
+                AddOnConstant.QUERY_PARAM_PRICE to price,
+                AddOnConstant.QUERY_PARAM_DISCOUNTED_PRICE to discountedPrice
             )
         )
 
