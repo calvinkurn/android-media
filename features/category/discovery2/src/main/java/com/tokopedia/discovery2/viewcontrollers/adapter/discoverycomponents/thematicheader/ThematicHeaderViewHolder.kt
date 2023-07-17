@@ -6,6 +6,8 @@ import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import com.airbnb.lottie.LottieAnimationView
+import com.airbnb.lottie.LottieCompositionFactory
+import com.airbnb.lottie.RenderMode
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
@@ -16,6 +18,10 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.unifyprinciples.Typography
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class ThematicHeaderViewHolder(itemView: View, private val fragment: Fragment) :
     AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
@@ -56,15 +62,17 @@ class ThematicHeaderViewHolder(itemView: View, private val fragment: Fragment) :
             if (!subtitle.isNullOrEmpty()) {
                 lihatSubTitleTextView.text = subtitle
             }
-            if(!lottieImage.isNullOrEmpty()){
-                setupLottie(color, lottieImage)
-
-            }else{
+            if (!lottieImage.isNullOrEmpty()) {
+                thematicHeaderViewModel?.let { viewModel ->
+                    if (!viewModel.fetchLottieState()) {
+                        setupLottie(color, lottieImage)
+                    }
+                }
+            } else {
                 backgroundImageView.visible()
                 backgroundLottie.invisible()
                 setupBackground(color, image)
             }
-
         }
     }
 
@@ -90,9 +98,14 @@ class ThematicHeaderViewHolder(itemView: View, private val fragment: Fragment) :
                 backgroundImageView.setBackgroundColor(Color.parseColor(color))
             }
             if (lottieImageURL.isNotEmpty()) {
-                backgroundLottie.run {
-                    setAnimationFromUrl(lottieImageURL)
-                    playAnimation()
+                CoroutineScope(Dispatchers.Main).launch {
+                    delay(240)
+                    LottieCompositionFactory.fromUrl(itemView.context, lottieImageURL)?.addListener { result ->
+                        backgroundLottie.setComposition(result)
+                        backgroundLottie.setRenderMode(RenderMode.HARDWARE)
+                        backgroundLottie.playAnimation()
+                        thematicHeaderViewModel?.setLottieState(true)
+                    }
                 }
             }
         } catch (e: Exception) {
