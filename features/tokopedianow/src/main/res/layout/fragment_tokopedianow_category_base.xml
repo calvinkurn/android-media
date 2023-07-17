@@ -124,7 +124,7 @@
             app:layout_constraintStart_toStartOf="parent" />
 
         <com.tokopedia.unifycomponents.TabsUnify
-            android:id="@+id/tab_layout"
+            android:id="@+id/tabs_unify"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toTopOf="parent" />

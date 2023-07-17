@@ -1,8 +1,11 @@
 package com.tokopedia.tokopedianow.category.presentation.fragment
 
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.OnScrollListener
+import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.kotlin.extensions.view.hide
@@ -18,6 +21,7 @@ import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryL2TabUiM
 import com.tokopedia.tokopedianow.category.presentation.viewholder.CategoryL2TabViewHolder.CategoryL2TabListener
 import com.tokopedia.tokopedianow.category.presentation.viewmodel.TokoNowCategoryL2ViewModel
 import com.tokopedia.tokopedianow.common.listener.ProductAdsCarouselListener
+import com.tokopedia.tokopedianow.databinding.FragmentTokopedianowCategoryBaseBinding
 import com.tokopedia.unifycomponents.TabsUnify
 import javax.inject.Inject
 
@@ -62,6 +66,14 @@ class TokoNowCategoryL2Fragment : BaseCategoryFragment() {
 
     override fun createAdapterDiffer() = CategoryL2Differ()
 
+    override fun setupView(binding: FragmentTokopedianowCategoryBaseBinding?) {
+        super.setupView(binding)
+        binding?.apply {
+            setupMainLayout()
+            setupTabLayout()
+        }
+    }
+
     override fun observeLiveData() {
         super.observeLiveData()
         observeTabCategoryNameList()
@@ -74,10 +86,6 @@ class TokoNowCategoryL2Fragment : BaseCategoryFragment() {
         }
     }
 
-    override fun setupTabLayout(tab: TabsUnify) {
-        floatingTab = tab
-    }
-
     override fun initInjector() {
         DaggerCategoryL2Component.builder()
             .baseAppComponent((requireContext().applicationContext as BaseMainApplication).baseAppComponent)
@@ -86,10 +94,39 @@ class TokoNowCategoryL2Fragment : BaseCategoryFragment() {
             .inject(this)
     }
 
+    private fun FragmentTokopedianowCategoryBaseBinding.setupMainLayout() {
+        navToolbar.post {
+            val statusBarHeight = vStatusBarBackground.height
+            val marginTop = statusBarHeight + navToolbarHeight
+            val layoutParams = mainLayout.layoutParams as CoordinatorLayout.LayoutParams
+            layoutParams.topMargin = marginTop
+            mainLayout.layoutParams = layoutParams
+        }
+    }
+
+    private fun FragmentTokopedianowCategoryBaseBinding.setupTabLayout() {
+        tabsUnify.tabLayout.addOnTabSelectedListener(object : OnTabSelectedListener {
+            override fun onTabSelected(tab: TabLayout.Tab) {
+                viewModel.onTabSelected(tab.position)
+            }
+
+            override fun onTabUnselected(tab: TabLayout.Tab?) {
+            }
+
+            override fun onTabReselected(tab: TabLayout.Tab?) {
+            }
+
+        })
+        floatingTab = tabsUnify
+    }
+
     private fun observeTabCategoryNameList() {
         observe(viewModel.categoryTab) {
-            it.forEach { title ->
-                floatingTab?.addNewTab(title)
+            floatingTab?.apply {
+                tabLayout.removeAllTabs()
+                it.forEach { title ->
+                    addNewTab(title)
+                }
             }
         }
     }

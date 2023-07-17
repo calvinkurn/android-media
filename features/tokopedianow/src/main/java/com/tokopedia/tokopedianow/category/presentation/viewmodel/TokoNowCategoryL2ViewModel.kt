@@ -10,11 +10,11 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2Mapper.addChooseAddress
-import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2Mapper.addHeaderSpace
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2Mapper.mapToCategoryUiModel
 import com.tokopedia.tokopedianow.category.domain.usecase.GetCategoryLayoutUseCase
 import com.tokopedia.tokopedianow.category.domain.usecase.GetCategoryProductUseCase
 import com.tokopedia.tokopedianow.category.presentation.model.CategoryL2Model
+import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryL2TabUiModel
 import com.tokopedia.tokopedianow.common.domain.usecase.GetProductAdsUseCase
 import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase
 import com.tokopedia.tokopedianow.common.service.NowAffiliateService
@@ -38,7 +38,7 @@ class TokoNowCategoryL2ViewModel @Inject constructor(
     addressData: TokoNowLocalAddress,
     userSession: UserSessionInterface,
     dispatchers: CoroutineDispatchers
-): BaseCategoryViewModel(
+) : BaseCategoryViewModel(
     getCategoryProductUseCase = getCategoryProductUseCase,
     getProductAdsUseCase = getProductAdsUseCase,
     getTargetedTickerUseCase = getTargetedTickerUseCase,
@@ -61,35 +61,28 @@ class TokoNowCategoryL2ViewModel @Inject constructor(
         launchCatchError(
             block = {
                 val getCategoryLayoutResponse = getCategoryLayout.execute(categoryIdL2)
-                val categoryNameList = getCategoryLayoutResponse.getCategoryNameList()
+                val categoryTabList = getCategoryLayoutResponse.getCategoryNameList()
                 val components = getCategoryLayoutResponse.components
 
                 visitableList.clear()
-                visitableList.addHeaderSpace(navToolbarHeight)
                 visitableList.addChooseAddress(getAddressData())
 
                 visitableList.mapToCategoryUiModel(
                     components,
-                    categoryNameList
+                    categoryTabList
                 )
 
                 hidePageLoading()
                 updateVisitableListLiveData()
-                updateCategoryTab(categoryNameList)
+                updateCategoryTab(categoryTabList)
                 sendOpenScreenTracker(id = "", name = "", url = "")
             },
             onError = {
-
             }
         )
     }
 
-    private fun updateCategoryTab(categoryNameList: List<String>) {
-        _categoryTab.postValue(categoryNameList)
-    }
-
     override suspend fun loadNextPage() {
-
     }
 
     override fun onSuccessGetCategoryProduct(
@@ -100,14 +93,23 @@ class TokoNowCategoryL2ViewModel @Inject constructor(
         val header = searchProduct.header
         val data = searchProduct.data
         val productList = data.productList.filter { !it.isOos() }
-
-
     }
 
     override fun onErrorGetCategoryProduct(
         error: Throwable,
         categoryL2Model: CategoryL2Model
     ) {
+    }
 
+    fun onTabSelected(position: Int) {
+        val tab = visitableList.filterIsInstance<CategoryL2TabUiModel>().first()
+        val newTabUiModel = tab.copy(selectedTabPosition = position)
+        val index = visitableList.indexOf(tab)
+        visitableList[index] = newTabUiModel
+        updateVisitableListLiveData()
+    }
+
+    private fun updateCategoryTab(categoryNameList: List<String>) {
+        _categoryTab.postValue(categoryNameList)
     }
 }

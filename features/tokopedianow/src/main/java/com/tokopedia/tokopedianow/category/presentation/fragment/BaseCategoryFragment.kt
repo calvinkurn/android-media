@@ -54,7 +54,6 @@ import com.tokopedia.tokopedianow.common.util.TokoNowUniversalShareUtil
 import com.tokopedia.tokopedianow.common.view.NoAddressEmptyStateView
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateOocViewHolder
 import com.tokopedia.tokopedianow.databinding.FragmentTokopedianowCategoryBaseBinding
-import com.tokopedia.unifycomponents.TabsUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.universal_sharing.view.bottomsheet.ScreenshotDetector
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
@@ -166,7 +165,7 @@ abstract class BaseCategoryFragment : Fragment(), ScreenShotListener,
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         observeLiveData()
-        setupView()
+        setupView(binding)
     }
 
     override fun onResume() {
@@ -282,6 +281,17 @@ abstract class BaseCategoryFragment : Fragment(), ScreenShotListener,
         observeOpenLoginPage()
     }
 
+    protected open fun setupView(
+        binding: FragmentTokopedianowCategoryBaseBinding?
+    ) {
+        binding?.apply {
+            setNavToolbarHeight(navToolbar)
+            setupRecyclerView(rvCategory, navToolbar)
+            setupRefreshLayout(strRefreshLayout)
+            setupNavigationToolbar(navToolbar)
+        }
+    }
+
     protected open fun setupRecyclerView(
         recyclerView: RecyclerView,
         navToolbar: NavToolbar
@@ -293,10 +303,6 @@ abstract class BaseCategoryFragment : Fragment(), ScreenShotListener,
             setRecycledViewPool(recycledViewPool)
             animation = null
         }
-    }
-
-    protected open fun setupTabLayout(tab: TabsUnify) {
-        // override to setup tab layout
     }
 
     protected open fun onGetMiniCartSuccess(
@@ -472,16 +478,6 @@ abstract class BaseCategoryFragment : Fragment(), ScreenShotListener,
             categoryIdL2 = this@BaseCategoryFragment.categoryIdL2
             currentCategoryId = this@BaseCategoryFragment.currentCategoryId
             queryParamMap = this@BaseCategoryFragment.queryParamMap
-        }
-    }
-
-    private fun setupView() {
-        binding?.apply {
-            setNavToolbarHeight(navToolbar)
-            setupRecyclerView(rvCategory, navToolbar)
-            setupRefreshLayout(strRefreshLayout)
-            setupNavigationToolbar(navToolbar)
-            setupTabLayout(tabLayout)
         }
     }
 

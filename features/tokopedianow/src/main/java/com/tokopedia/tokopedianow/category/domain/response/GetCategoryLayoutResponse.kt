@@ -17,7 +17,7 @@ data class GetCategoryLayoutResponse(
         val components: List<Component> = emptyList()
     ) {
         fun getCategoryNameList(): List<String> {
-            return components.find { it.name == TABS_HORIZONTAL_SCROLL }
+            return components.find { it.type == TABS_HORIZONTAL_SCROLL }
                 ?.getTabCategoryNameList()
                 ?: emptyList()
         }
