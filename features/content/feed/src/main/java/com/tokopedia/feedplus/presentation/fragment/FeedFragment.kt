@@ -18,6 +18,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2.SCROLL_STATE_IDLE
+import com.tkpd.atcvariant.view.bottomsheet.AtcVariantBottomSheet
+import com.tkpd.atcvariant.view.viewmodel.AtcVariantSharedViewModel
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -56,7 +58,17 @@ import com.tokopedia.feedplus.presentation.adapter.FeedPostAdapter
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_NOT_SELECTED
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_SELECTED
 import com.tokopedia.feedplus.presentation.adapter.listener.FeedListener
-import com.tokopedia.feedplus.presentation.model.*
+import com.tokopedia.feedplus.presentation.model.FeedAuthorModel
+import com.tokopedia.feedplus.presentation.model.FeedCardCampaignModel
+import com.tokopedia.feedplus.presentation.model.FeedCardImageContentModel
+import com.tokopedia.feedplus.presentation.model.FeedCardLivePreviewContentModel
+import com.tokopedia.feedplus.presentation.model.FeedCardProductModel
+import com.tokopedia.feedplus.presentation.model.FeedCardVideoContentModel
+import com.tokopedia.feedplus.presentation.model.FeedDataModel
+import com.tokopedia.feedplus.presentation.model.FeedMainEvent
+import com.tokopedia.feedplus.presentation.model.FeedNoContentModel
+import com.tokopedia.feedplus.presentation.model.FeedShareModel
+import com.tokopedia.feedplus.presentation.model.FeedTrackerDataModel
 import com.tokopedia.feedplus.presentation.uiview.FeedCampaignRibbonType
 import com.tokopedia.feedplus.presentation.uiview.FeedProductTagView
 import com.tokopedia.feedplus.presentation.util.VideoPlayerManager
@@ -66,6 +78,7 @@ import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.linker.interfaces.ShareCallback
@@ -73,6 +86,8 @@ import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.linker.model.LinkerError
 import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.product.detail.common.VariantPageSource
+import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantBottomSheetParams
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
@@ -103,6 +118,10 @@ class FeedFragment :
     private var data: FeedDataModel? = null
     private var adapter: FeedPostAdapter? = null
     private var currentTrackerData: FeedTrackerDataModel? = null
+
+    private val atcVariantViewModel by lazyThreadSafetyNone {
+        ViewModelProvider(requireActivity())[AtcVariantSharedViewModel::class.java]
+    }
 
     private val videoPlayerManager by lazy { VideoPlayerManager(requireContext()) }
 
@@ -213,6 +232,10 @@ class FeedFragment :
         }
     }
 
+    private var mAuthor: FeedAuthorModel? = null
+    private var mProducts: List<FeedCardProductModel>? = null
+    private var mHasVoucher: Boolean = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         childFragmentManager.fragmentFactory = fragmentFactory
@@ -277,8 +300,9 @@ class FeedFragment :
 
     override fun onDestroyView() {
         _binding = null
-        (childFragmentManager.findFragmentByTag(TAG_FEED_PRODUCT_BOTTOM_SHEET) as? FeedTaggedProductBottomSheet)?.dismiss()
-        (childFragmentManager.findFragmentByTag(TAG_FEED_MENU_BOTTOMSHEET) as? ContentThreeDotsMenuBottomSheet)?.dismiss()
+        dismissFeedProductBottomSheet()
+        dismissFeedMenuBottomSheet()
+        dismissAtcVariantBottomSheet()
         dismissShareBottomSheet()
         super.onDestroyView()
 
@@ -1209,35 +1233,13 @@ class FeedFragment :
         hasVoucher: Boolean,
         trackerData: FeedTrackerDataModel?
     ) {
-        if (products.isEmpty()) return
-
-        val productBottomSheet = FeedTaggedProductBottomSheet().apply {
-            setCustomListener(this@FeedFragment)
-        }
-
-        fun trackOpenProductTagBottomSheet(data: FeedTrackerDataModel) {
-            feedMvcAnalytics.trackerData = data
-            currentTrackerData = data
-            feedAnalytics.eventViewProductListBottomSheets(
-                data,
-                products
-            )
-
-            productBottomSheet.setOnDismissListener {
-                feedAnalytics.eventClickCloseProductListBottomSheet(data)
-            }
-        }
-
-        if (trackerData != null) trackOpenProductTagBottomSheet(trackerData)
-
-        productBottomSheet.show(
+        openFeedTaggedProductBottomSheet(
             activityId = activityId,
-            viewModelOwner = this,
-            viewModelFactory = viewModelFactory,
-            manager = childFragmentManager,
-            tag = TAG_FEED_PRODUCT_BOTTOM_SHEET
+            author = author,
+            products = products,
+            hasVoucher = hasVoucher,
+            trackerData = trackerData,
         )
-        if (hasVoucher && author.type.isShop) getMerchantVoucher(author.id)
     }
 
     private fun getMerchantVoucher(shopId: String) {
@@ -1363,12 +1365,101 @@ class FeedFragment :
                 )
             }
 
-            if (userSession.isLoggedIn) {
-                feedPostViewModel.addProductToCart(product)
-            } else {
-                feedPostViewModel.suspendAddProductToCart(product)
-                addToCartLoginResult.launch(RouteManager.getIntent(context, ApplinkConst.LOGIN))
+            checkAddToCartAction(product)
+        }
+    }
+
+    private fun checkAddToCartAction(product: FeedTaggedProductUiModel) {
+        when {
+            userSession.isLoggedIn -> {
+                if (product.showGlobalVariant) {
+                    dismissFeedProductBottomSheet()
+                    openVariantBottomSheet(product)
+                }
+                else feedPostViewModel.addProductToCart(product)
             }
+            !userSession.isLoggedIn -> {
+                if (product.showGlobalVariant) RouteManager.route(context, ApplinkConst.LOGIN)
+                else {
+                    feedPostViewModel.suspendAddProductToCart(product)
+                    addToCartLoginResult.launch(RouteManager.getIntent(context, ApplinkConst.LOGIN))
+                }
+            }
+            else -> return
+        }
+    }
+
+    private fun saveFeedTaggedProductArgs(
+        author: FeedAuthorModel?,
+        products: List<FeedCardProductModel>?,
+        hasVoucher: Boolean,
+        trackerData: FeedTrackerDataModel?,
+    ) {
+        mAuthor = author
+        mProducts = products
+        mHasVoucher = hasVoucher
+        currentTrackerData = trackerData
+    }
+
+    private fun openFeedTaggedProductBottomSheet(
+        activityId: String,
+        author: FeedAuthorModel?,
+        products: List<FeedCardProductModel>?,
+        hasVoucher: Boolean,
+        trackerData: FeedTrackerDataModel?,
+    ) {
+        if (products.isNullOrEmpty()) return
+
+        val productBottomSheet = FeedTaggedProductBottomSheet().apply {
+            setCustomListener(this@FeedFragment)
+        }
+
+        fun trackOpenProductTagBottomSheet(data: FeedTrackerDataModel) {
+            feedMvcAnalytics.trackerData = data
+            currentTrackerData = data
+            feedAnalytics.eventViewProductListBottomSheets(data, products)
+
+            productBottomSheet.setOnDismissListener {
+                feedAnalytics.eventClickCloseProductListBottomSheet(data)
+            }
+        }
+
+        if (trackerData != null) trackOpenProductTagBottomSheet(trackerData)
+        saveFeedTaggedProductArgs(author, products, hasVoucher, trackerData)
+
+        productBottomSheet.show(
+            activityId = activityId,
+            viewModelOwner = this,
+            viewModelFactory = viewModelFactory,
+            manager = childFragmentManager,
+            tag = TAG_FEED_PRODUCT_BOTTOM_SHEET,
+        )
+        if (hasVoucher && author?.type?.isShop == true) getMerchantVoucher(author.id)
+    }
+
+    private fun openVariantBottomSheet(product: FeedTaggedProductUiModel) {
+        atcVariantViewModel.setAtcBottomSheetParams(
+            ProductVariantBottomSheetParams(
+                trackerCdListName = currentTrackerData?.activityId.orEmpty(),
+                productId = product.id,
+                shopId = product.shop.id,
+                showQtyEditor = false,
+                isTokoNow = false,
+                pageSource = VariantPageSource.FEED_PAGESOURCE.source,
+                dismissAfterTransaction = false,
+            )
+        )
+
+        val atcVariantBottomSheet = AtcVariantBottomSheet()
+        atcVariantBottomSheet.showNow(childFragmentManager, VARIANT_BOTTOM_SHEET_TAG)
+        atcVariantBottomSheet.setOnDismissListener {
+            openFeedTaggedProductBottomSheet(
+                activityId = currentTrackerData?.activityId.orEmpty(),
+                author = mAuthor,
+                products = mProducts,
+                hasVoucher = mHasVoucher,
+                trackerData = currentTrackerData,
+            )
         }
     }
 
@@ -1524,11 +1615,25 @@ class FeedFragment :
         )
     }
 
+    private fun dismissFeedProductBottomSheet() {
+        (childFragmentManager.findFragmentByTag(TAG_FEED_PRODUCT_BOTTOM_SHEET) as? FeedTaggedProductBottomSheet)?.dismiss()
+    }
+
+    private fun dismissFeedMenuBottomSheet() {
+        (childFragmentManager.findFragmentByTag(TAG_FEED_MENU_BOTTOMSHEET) as? ContentThreeDotsMenuBottomSheet)?.dismiss()
+    }
+
+    private fun dismissAtcVariantBottomSheet() {
+        (childFragmentManager.findFragmentByTag(VARIANT_BOTTOM_SHEET_TAG) as? AtcVariantBottomSheet)?.dismiss()
+    }
+
     private fun dismissShareBottomSheet() {
         (childFragmentManager.findFragmentByTag(UniversalShareBottomSheet.TAG) as? UniversalShareBottomSheet)?.dismiss()
     }
 
     companion object {
+        private const val VARIANT_BOTTOM_SHEET_TAG = "atc variant bs"
+
         private const val ARGUMENT_DATA = "ARGUMENT_DATA"
         private const val ARGUMENT_ENTRY_POINT = "ARGUMENT_ENTRY_POINT"
 
