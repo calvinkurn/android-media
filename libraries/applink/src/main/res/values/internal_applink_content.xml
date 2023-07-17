@@ -14,6 +14,7 @@
     <string name="path_comment" translatable="false">/comment/.*\</string>
 
     <string name="host_profile" translatable="false">people</string>
+    <string name="path_profile_settings" translatable="false">/settings/.*\</string>
     <string name="path_profile_detail" translatable="false">/.*\</string>
 
     <string name="applink_title_on_boarding">Onboarding</string>

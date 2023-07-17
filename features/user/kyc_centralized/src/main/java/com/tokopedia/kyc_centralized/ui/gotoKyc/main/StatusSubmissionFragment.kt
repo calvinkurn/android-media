@@ -300,7 +300,7 @@ class StatusSubmissionFragment : BaseDaggerFragment() {
     override fun initInjector() {}
 
     companion object {
-        private const val PATH_TOKOPEDIA_CARE = "help/article/alasan-verifikasi-data-diri-belum-terpenuhi?lang=id?isBack=true"
+        private const val PATH_TOKOPEDIA_CARE = "help/article/a-3881?nref='goto-kyc'"
         private const val TAG_BOTTOM_SHEET_DETAIL_BENEFIT = "tag bottom sheet detail benefit"
     }
 }
