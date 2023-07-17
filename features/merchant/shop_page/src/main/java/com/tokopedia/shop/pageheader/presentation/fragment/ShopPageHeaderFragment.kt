@@ -596,13 +596,17 @@ class ShopPageHeaderFragment :
                 if (!isMyShop) {
                     shopPageTracking?.clickScrollToTop(shopId, userId)
                 }
-                val selectedFragment = viewPagerAdapterHeader?.getRegisteredFragment(viewPager?.currentItem.orZero())
-                (selectedFragment as? InterfaceShopPageClickScrollToTop)?.let {
-                    it.scrollToTop()
-                }
+                scrollSelectedTabToTop()
             }
         }
         hideShopPageFab()
+    }
+
+    private fun scrollSelectedTabToTop(isUserClick: Boolean = true) {
+        val selectedFragment = viewPagerAdapterHeader?.getRegisteredFragment(viewPager?.currentItem.orZero())
+        (selectedFragment as? InterfaceShopPageClickScrollToTop)?.let {
+            it.scrollToTop(isUserClick)
+        }
     }
 
     private fun initViewPager() {
@@ -3513,10 +3517,13 @@ class ShopPageHeaderFragment :
         }
     }
 
-    fun selectShopTab(tabName: String) {
+    fun selectShopTab(tabName: String, isScrollToTop: Boolean = false) {
         val selectedTabPosition = getTabPositionBasedOnTabName(tabName)
         viewPager?.setCurrentItem(selectedTabPosition, false)
         tabLayout?.getTabAt(selectedTabPosition)?.select()
+        if(isScrollToTop) {
+            scrollSelectedTabToTop(false)
+        }
     }
 
 }
