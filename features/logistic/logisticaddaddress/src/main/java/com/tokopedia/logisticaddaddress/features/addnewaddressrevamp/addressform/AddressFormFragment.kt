@@ -1227,7 +1227,6 @@ class AddressFormFragment :
     }
 
     private fun setUserConsent() {
-        binding?.userConsent?.gone()
         binding?.userConsentWidget?.visible()
 
         binding?.userConsentWidget?.apply {
