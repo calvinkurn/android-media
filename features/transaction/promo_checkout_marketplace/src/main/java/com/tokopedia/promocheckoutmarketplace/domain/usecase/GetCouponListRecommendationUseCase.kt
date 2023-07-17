@@ -120,6 +120,7 @@ class GetCouponListRecommendationUseCase @Inject constructor(
                                     additional_bo_datas {
                                         code
                                         unique_id
+                                        cart_string_group
                                         shipping_id
                                         sp_id
                                         benefit_amount

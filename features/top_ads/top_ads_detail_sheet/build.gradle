@@ -13,6 +13,11 @@ buildscript {
     }
 }
 
+android {
+    namespace 'com.tokopedia.topads.detail_sheet'
+    testNamespace 'com.tokopedia.topads.detail_sheet.test'
+}
+
 dependencies {
 
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)

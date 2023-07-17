@@ -34,6 +34,7 @@ import com.tokopedia.sellerorder.list.presentation.models.RefreshOrder
 import com.tokopedia.sellerorder.list.presentation.models.SomListBulkAcceptOrderStatusUiModel
 import com.tokopedia.sellerorder.list.presentation.models.SomListBulkAcceptOrderUiModel
 import com.tokopedia.sellerorder.list.presentation.models.SomListBulkRequestPickupUiModel
+import com.tokopedia.sellerorder.list.presentation.models.SomListEmptyStateUiModel
 import com.tokopedia.sellerorder.list.presentation.models.SomListHeaderIconsInfoUiModel
 import com.tokopedia.sellerorder.list.presentation.models.SomListOrderUiModel
 import com.tokopedia.sellerorder.util.TestHelper
@@ -126,13 +127,15 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
         SomListBulkAcceptOrderStatusUiModel.Data(
             success = 1,
             totalOrder = 3
-        ), listOf()
+        ),
+        listOf()
     )
     private val allSuccessBulkAcceptOrderStatus = SomListBulkAcceptOrderStatusUiModel(
         SomListBulkAcceptOrderStatusUiModel.Data(
             success = 3,
             totalOrder = 3
-        ), listOf()
+        ),
+        listOf()
     )
 
     @Before
@@ -307,7 +310,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
     @Test
     fun bulkAcceptOrder_shouldSuccess() = coroutineTestRule.runTest {
         val orderIds = listOf("0", "1", "2")
-        viewModel.bulkAcceptOrderResult.observe({lifecycle}) {}
+        viewModel.bulkAcceptOrderResult.observe({ lifecycle }) {}
         doSuccessBulkAcceptOrder(orderIds)
         coVerify(ordering = Ordering.SEQUENCE) {
             bulkAcceptOrderUseCase.setParams(orderIds, userSessionInterface.userId)
@@ -319,7 +322,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
     @Test
     fun bulkAcceptOrder_shouldFailed() = coroutineTestRule.runTest {
         val orderIds = listOf("0", "1", "2")
-        viewModel.bulkAcceptOrderResult.observe({lifecycle}) {}
+        viewModel.bulkAcceptOrderResult.observe({ lifecycle }) {}
         doFailedBulkAcceptOrder(orderIds)
         coVerify(ordering = Ordering.SEQUENCE) {
             bulkAcceptOrderUseCase.setParams(orderIds, userSessionInterface.userId)
@@ -330,7 +333,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
 
     @Test
     fun getBulkAcceptOrderStatus_shouldNotExecuteWhenBulkAcceptOrderIsFail() = coroutineTestRule.runTest {
-        viewModel.bulkAcceptOrderStatusResult.observe({lifecycle}) {}
+        viewModel.bulkAcceptOrderStatusResult.observe({ lifecycle }) {}
         bulkAcceptOrder_shouldFailed()
         coVerify(inverse = true) {
             bulkAcceptOrderStatusUseCase.executeOnBackground()
@@ -344,7 +347,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
         coEvery {
             bulkAcceptOrderStatusUseCase.executeOnBackground()
         } returns allSuccessBulkAcceptOrderStatus
-        viewModel.bulkAcceptOrderStatusResult.observe({lifecycle}) {}
+        viewModel.bulkAcceptOrderStatusResult.observe({ lifecycle }) {}
         doSuccessBulkAcceptOrder(orderIds)
         coVerify(ordering = Ordering.ORDERED) {
             bulkAcceptOrderUseCase.setParams(orderIds, userSessionInterface.userId)
@@ -373,7 +376,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
                 allSuccessBulkAcceptOrderStatus
             }
         }
-        viewModel.bulkAcceptOrderStatusResult.observe({lifecycle}) {}
+        viewModel.bulkAcceptOrderStatusResult.observe({ lifecycle }) {}
         doSuccessBulkAcceptOrder(orderIds)
         coVerify(ordering = Ordering.ORDERED) {
             bulkAcceptOrderUseCase.setParams(orderIds, userSessionInterface.userId)
@@ -389,7 +392,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
     }
 
     @Test
-    fun getBulkAcceptOrderStatus_shouldFailedThenSuccessAfterAutoRetry() = runTest{
+    fun getBulkAcceptOrderStatus_shouldFailedThenSuccessAfterAutoRetry() = runTest {
         var count = 0
         val orderIds = listOf("0", "1", "2")
         coEvery {
@@ -402,7 +405,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
                 allSuccessBulkAcceptOrderStatus
             }
         }
-        viewModel.bulkAcceptOrderStatusResult.observe({lifecycle}) {}
+        viewModel.bulkAcceptOrderStatusResult.observe({ lifecycle }) {}
         doSuccessBulkAcceptOrder(orderIds)
         advanceTimeBy(5000)
         coVerify(ordering = Ordering.ORDERED, timeout = 5000) {
@@ -434,7 +437,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
                 allSuccessBulkAcceptOrderStatus
             }
         }
-        viewModel.bulkAcceptOrderStatusResult.observe({lifecycle}) {}
+        viewModel.bulkAcceptOrderStatusResult.observe({ lifecycle }) {}
         doSuccessBulkAcceptOrder(orderIds)
         coVerify(ordering = Ordering.ORDERED) {
             bulkAcceptOrderUseCase.setParams(orderIds, userSessionInterface.userId)
@@ -455,7 +458,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
         coEvery {
             bulkAcceptOrderStatusUseCase.executeOnBackground()
         } returns partialSuccessGetBulkAcceptOrderStatus
-        viewModel.bulkAcceptOrderStatusResult.observe({lifecycle}) {}
+        viewModel.bulkAcceptOrderStatusResult.observe({ lifecycle }) {}
         doSuccessBulkAcceptOrder(orderIds)
         coVerify(ordering = Ordering.ORDERED, timeout = 5000) {
             bulkAcceptOrderUseCase.setParams(orderIds, userSessionInterface.userId)
@@ -484,7 +487,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
                 throw Throwable()
             }
         }
-        viewModel.bulkAcceptOrderStatusResult.observe({lifecycle}) {}
+        viewModel.bulkAcceptOrderStatusResult.observe({ lifecycle }) {}
         doSuccessBulkAcceptOrder(orderIds)
         coVerify(ordering = Ordering.ORDERED, timeout = 5000) {
             bulkAcceptOrderUseCase.setParams(orderIds, userSessionInterface.userId)
@@ -505,7 +508,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
         coEvery {
             bulkAcceptOrderStatusUseCase.executeOnBackground()
         } throws Throwable()
-        viewModel.bulkAcceptOrderStatusResult.observe({lifecycle}) {}
+        viewModel.bulkAcceptOrderStatusResult.observe({ lifecycle }) {}
         doSuccessBulkAcceptOrder(orderIds)
         coVerify(ordering = Ordering.ORDERED, timeout = 5000) {
             bulkAcceptOrderUseCase.setParams(orderIds, userSessionInterface.userId)
@@ -607,7 +610,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
         val bulkRequestPickupResultData = SomListBulkRequestPickupUiModel(
             data = SomListBulkRequestPickupUiModel.Data()
         )
-        viewModel.bulkRequestPickupResult.observe({lifecycle}) {}
+        viewModel.bulkRequestPickupResult.observe({ lifecycle }) {}
         doSuccessBulkRequestPickup(bulkRequestPickupResultData)
         advanceTimeBy(5000)
         coVerify {
@@ -659,7 +662,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
             )
         )
 
-        viewModel.bulkRequestPickupFinalResultMediator.observe( {lifecycle}) {}
+        viewModel.bulkRequestPickupFinalResultMediator.observe({ lifecycle }) {}
 
         viewModel.bulkRequestPickup(orderIds)
         advanceTimeBy(20000)
@@ -711,7 +714,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
             multiShippingStatusUseCase.executeOnBackground()
         } returns MultiShippingStatusUiModel()
 
-        viewModel.bulkRequestPickupFinalResultMediator.observe( {lifecycle}) {}
+        viewModel.bulkRequestPickupFinalResultMediator.observe({ lifecycle }) {}
 
         viewModel.bulkRequestPickup(orderIds)
         advanceTimeBy(5000)
@@ -737,7 +740,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
             multiShippingStatusUseCase.executeOnBackground()
         } throws Throwable()
 
-        viewModel.bulkRequestPickupFinalResultMediator.observe( {lifecycle}) {}
+        viewModel.bulkRequestPickupFinalResultMediator.observe({ lifecycle }) {}
 
         viewModel.bulkRequestPickup(orderIds)
         advanceTimeBy(20000)
@@ -771,7 +774,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
             multiShippingStatusUseCase.executeOnBackground()
         } returns multiShippingStatusUiModel
 
-        viewModel.bulkRequestPickupFinalResultMediator.observe( {lifecycle}) {}
+        viewModel.bulkRequestPickupFinalResultMediator.observe({ lifecycle }) {}
 
         viewModel.bulkRequestPickup(orderIds)
         advanceTimeBy(5000)
@@ -807,7 +810,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
             multiShippingStatusUseCase.executeOnBackground()
         } returns multiShippingStatusUiModel
 
-        viewModel.bulkRequestPickupFinalResultMediator.observe( {lifecycle}) {}
+        viewModel.bulkRequestPickupFinalResultMediator.observe({ lifecycle }) {}
         viewModel.bulkRequestPickup(orderIds)
         advanceTimeBy(20000)
         coVerify(exactly = 1) {
@@ -873,7 +876,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
             multiShippingStatusUseCase.executeOnBackground()
         } returns multiShippingStatusUiModel
 
-        viewModel.bulkRequestPickupFinalResultMediator.observe( {lifecycle}) {}
+        viewModel.bulkRequestPickupFinalResultMediator.observe({ lifecycle }) {}
 
         viewModel.bulkRequestPickup(orderIds)
         advanceTimeBy(20000)
@@ -917,7 +920,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
             multiShippingStatusUseCase.executeOnBackground()
         } returns multiShippingStatusUiModel
 
-        viewModel.bulkRequestPickupFinalResultMediator.observe( {lifecycle}) {}
+        viewModel.bulkRequestPickupFinalResultMediator.observe({ lifecycle }) {}
 
         viewModel.bulkRequestPickup(orderIds)
         advanceTimeBy(20000)
@@ -993,7 +996,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
             multiShippingStatusUseCase.executeOnBackground()
         } returns multiShippingStatusUiModel
 
-        viewModel.bulkRequestPickupFinalResultMediator.observe( {lifecycle}) {}
+        viewModel.bulkRequestPickupFinalResultMediator.observe({ lifecycle }) {}
 
         runTest {
             viewModel.bulkRequestPickup(orderIds)
@@ -1039,7 +1042,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
             multiShippingStatusUseCase.executeOnBackground()
         } returns multiShippingStatusUiModel
 
-        viewModel.bulkRequestPickupFinalResultMediator.observe( {lifecycle}) {}
+        viewModel.bulkRequestPickupFinalResultMediator.observe({ lifecycle }) {}
 
         viewModel.bulkRequestPickup(orderIds)
         advanceTimeBy(20000)
@@ -1104,7 +1107,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
             multiShippingStatusUseCase.executeOnBackground()
         } returns multiShippingStatusUiModel
 
-        viewModel.bulkRequestPickupFinalResultMediator.observe( {lifecycle}) {}
+        viewModel.bulkRequestPickupFinalResultMediator.observe({ lifecycle }) {}
 
         runTest {
             viewModel.bulkRequestPickup(orderIds)
@@ -1144,7 +1147,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
             multiShippingStatusUseCase.executeOnBackground()
         } returns multiShippingStatusUiModel
 
-        viewModel.bulkRequestPickupFinalResultMediator.observe( {lifecycle}) {}
+        viewModel.bulkRequestPickupFinalResultMediator.observe({ lifecycle }) {}
 
         viewModel.bulkRequestPickup(orderIds)
         advanceTimeBy(20000)
@@ -1215,7 +1218,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
             multiShippingStatusUseCase.executeOnBackground()
         } returns multiShippingStatusUiModel
 
-        viewModel.bulkRequestPickupFinalResultMediator.observe( {lifecycle}) {}
+        viewModel.bulkRequestPickupFinalResultMediator.observe({ lifecycle }) {}
 
         viewModel.bulkRequestPickup(orderIds)
         advanceTimeBy(5000)
@@ -1259,7 +1262,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
             multiShippingStatusUseCase.executeOnBackground()
         } returns multiShippingStatusUiModel
 
-        viewModel.bulkRequestPickupFinalResultMediator.observe( {lifecycle}) {}
+        viewModel.bulkRequestPickupFinalResultMediator.observe({ lifecycle }) {}
 
         viewModel.bulkRequestPickup(orderIds)
         advanceTimeBy(20000)
@@ -1359,7 +1362,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
             multiShippingStatusUseCase.executeOnBackground()
         } returns multiShippingStatusUiModel
 
-        viewModel.bulkRequestPickupFinalResultMediator.observe( {lifecycle}) {}
+        viewModel.bulkRequestPickupFinalResultMediator.observe({ lifecycle }) {}
 
         viewModel.bulkRequestPickup(orderIds)
         advanceTimeBy(20000)
@@ -1377,7 +1380,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
     }
 
     @Test
-    fun getMultiShippingStatus_shouldReturnFailRetryAfterAllFailEligibleThenAutoRetry() = runTest{
+    fun getMultiShippingStatus_shouldReturnFailRetryAfterAllFailEligibleThenAutoRetry() = runTest {
         val orderIds = listOf("0", "1", "2", "4", "5", "6", "7")
         val batchId = "1234566"
         var somListBulkRequestPickupUiModel = SomListBulkRequestPickupUiModel.Data(jobId = batchId, totalOnProcess = 7)
@@ -1397,7 +1400,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
             multiShippingStatusUseCase.executeOnBackground()
         } returns multiShippingStatusUiModel
 
-        viewModel.bulkRequestPickupFinalResultMediator.observe( {lifecycle}) {}
+        viewModel.bulkRequestPickupFinalResultMediator.observe({ lifecycle }) {}
         viewModel.bulkRequestPickup(orderIds)
         advanceTimeBy(20000)
 
@@ -1459,9 +1462,9 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
             "json/som_list_get_order_filter_success_response.json"
         )
         coEvery {
-            somListGetFilterListUseCase.executeOnBackground(any())
+            somListGetFilterListUseCase.executeOnBackground()
         } answers {
-            FilterResultMapper().mapResponseToUiModel(mockResponse, args.first() as Boolean)
+            FilterResultMapper().mapResponseToUiModel(mockResponse, false)
         }
 
         getAdminPermission_shouldSuccess()
@@ -1469,8 +1472,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
         viewModel.getFilters(true)
 
         coVerify(exactly = 1) {
-            somListGetFilterListUseCase.executeOnBackground(true)
-            somListGetFilterListUseCase.executeOnBackground(false)
+            somListGetFilterListUseCase.executeOnBackground()
         }
 
         val result = viewModel.filterResult.observeAwaitValue()
@@ -1484,10 +1486,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
             "json/som_list_get_order_filter_success_response.json"
         )
         coEvery {
-            somListGetFilterListUseCase.executeOnBackground(true)
-        } throws Throwable()
-        coEvery {
-            somListGetFilterListUseCase.executeOnBackground(false)
+            somListGetFilterListUseCase.executeOnBackground()
         } returns FilterResultMapper().mapResponseToUiModel(mockResponse, false)
 
         getAdminPermission_shouldSuccess()
@@ -1495,8 +1494,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
         viewModel.getFilters(true)
 
         coVerify(exactly = 1) {
-            somListGetFilterListUseCase.executeOnBackground(true)
-            somListGetFilterListUseCase.executeOnBackground(false)
+            somListGetFilterListUseCase.executeOnBackground()
         }
 
         val result = viewModel.filterResult.observeAwaitValue()
@@ -1510,10 +1508,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
             "json/som_list_get_order_filter_success_response.json"
         )
         coEvery {
-            somListGetFilterListUseCase.executeOnBackground(true)
-        } returns FilterResultMapper().mapResponseToUiModel(mockResponse, true)
-        coEvery {
-            somListGetFilterListUseCase.executeOnBackground(false)
+            somListGetFilterListUseCase.executeOnBackground()
         } throws Throwable()
 
         getAdminPermission_shouldSuccess()
@@ -1521,8 +1516,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
         viewModel.getFilters(true)
 
         coVerify(exactly = 1) {
-            somListGetFilterListUseCase.executeOnBackground(true)
-            somListGetFilterListUseCase.executeOnBackground(false)
+            somListGetFilterListUseCase.executeOnBackground()
         }
 
         val result = viewModel.filterResult.observeAwaitValue()
@@ -1533,7 +1527,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
     @Test
     fun `filterResult should equals to Fail when get filters from cache and cloud is failed`() = coroutineTestRule.runTest {
         coEvery {
-            somListGetFilterListUseCase.executeOnBackground(any())
+            somListGetFilterListUseCase.executeOnBackground()
         } throws Throwable()
 
         getAdminPermission_shouldSuccess()
@@ -1541,8 +1535,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
         viewModel.getFilters(true)
 
         coVerify(exactly = 1) {
-            somListGetFilterListUseCase.executeOnBackground(true)
-            somListGetFilterListUseCase.executeOnBackground(false)
+            somListGetFilterListUseCase.executeOnBackground()
         }
 
         val result = viewModel.filterResult.observeAwaitValue()
@@ -1556,10 +1549,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
             "json/som_list_get_order_filter_success_response.json"
         )
         coEvery {
-            somListGetFilterListUseCase.executeOnBackground(true)
-        } throws Throwable()
-        coEvery {
-            somListGetFilterListUseCase.executeOnBackground(false)
+            somListGetFilterListUseCase.executeOnBackground()
         } returns FilterResultMapper().mapResponseToUiModel(mockResponse, false)
 
         getAdminPermission_shouldSuccess()
@@ -1567,8 +1557,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
         viewModel.getFilters(true)
 
         coVerify(exactly = 1) {
-            somListGetFilterListUseCase.executeOnBackground(true)
-            somListGetFilterListUseCase.executeOnBackground(false)
+            somListGetFilterListUseCase.executeOnBackground()
         }
 
         val result = viewModel.filterResult.observeAwaitValue()
@@ -1582,10 +1571,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
             "json/som_list_get_order_filter_success_response.json"
         )
         coEvery {
-            somListGetFilterListUseCase.executeOnBackground(true)
-        } throws Throwable()
-        coEvery {
-            somListGetFilterListUseCase.executeOnBackground(false)
+            somListGetFilterListUseCase.executeOnBackground()
         } returns FilterResultMapper().mapResponseToUiModel(mockResponse, false)
 
         getAdminPermission_shouldSuccess()
@@ -1593,8 +1579,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
         viewModel.getFilters(false)
 
         coVerify(exactly = 1) {
-            somListGetFilterListUseCase.executeOnBackground(true)
-            somListGetFilterListUseCase.executeOnBackground(false)
+            somListGetFilterListUseCase.executeOnBackground()
         }
 
         val result = viewModel.filterResult.observeAwaitValue()
@@ -1609,9 +1594,9 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
         )
 
         coEvery {
-            somListGetFilterListUseCase.executeOnBackground(any())
+            somListGetFilterListUseCase.executeOnBackground()
         } answers {
-            FilterResultMapper().mapResponseToUiModel(mockResponse, args.first() as Boolean)
+            FilterResultMapper().mapResponseToUiModel(mockResponse, false)
         }
 
         getAdminPermission_shouldSuccess()
@@ -1619,13 +1604,12 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
         viewModel.getFilters(true)
 
         coVerify(exactly = 1) {
-            somListGetFilterListUseCase.executeOnBackground(true)
-            somListGetFilterListUseCase.executeOnBackground(false)
+            somListGetFilterListUseCase.executeOnBackground()
         }
 
         val result = viewModel.filterResult.observeAwaitValue()
 
-        assert(result is Success && !result.data.refreshOrder)
+        assert(result is Success && result.data.refreshOrder)
     }
 
     @Test
@@ -1688,6 +1672,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
 
         assertFalse(viewModel.somListHeaderIconsInfoResult.observeAwaitValue() is Success)
     }
+
     @Test
     fun getOrderList_shouldSuccessAndClearAllFailedRefreshOrder() = coroutineTestRule.runTest {
         val orderId = "1234567890"
@@ -1701,7 +1686,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
             if (counter++ == 0) {
                 throw Throwable()
             } else {
-                ("0" to listOf())
+                Triple("0", listOf(), SomListEmptyStateUiModel())
             }
         }
 
@@ -1713,7 +1698,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
             somListGetOrderListUseCase.executeOnBackground(any())
         }
 
-        assert(viewModel.orderListResult.observeAwaitValue() is Success && !viewModel.hasNextPage() && !viewModel.containsFailedRefreshOrder)
+        assert(viewModel.orderListWrapperResult.observeAwaitValue() is Success && !viewModel.hasNextPage() && !viewModel.containsFailedRefreshOrder)
         assert(viewModel.isLoadingOrder.observeAwaitValue() == false)
     }
 
@@ -1730,7 +1715,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
             if (counter++ == 0) {
                 throw Throwable()
             } else {
-                ("0" to listOf())
+                Triple("0", listOf(), SomListEmptyStateUiModel())
             }
         }
 
@@ -1742,7 +1727,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
             somListGetOrderListUseCase.executeOnBackground(any())
         }
 
-        assert(viewModel.orderListResult.observeAwaitValue() is Success && !viewModel.hasNextPage() && viewModel.containsFailedRefreshOrder)
+        assert(viewModel.orderListWrapperResult.observeAwaitValue() is Success && !viewModel.hasNextPage() && viewModel.containsFailedRefreshOrder)
         assert(viewModel.isLoadingOrder.observeAwaitValue() == false)
     }
 
@@ -1751,7 +1736,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
         val getOrderListJob = mockk<Job>(relaxed = true)
         coEvery {
             somListGetOrderListUseCase.executeOnBackground(any())
-        } returns ("0" to listOf())
+        } returns Triple("0", listOf(), SomListEmptyStateUiModel())
 
         somGetOrderListJobField.set(viewModel, getOrderListJob)
         viewModel.getOrderList()
@@ -1761,7 +1746,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
             getOrderListJob.cancel()
         }
 
-        assert(viewModel.orderListResult.observeAwaitValue() is Success && !viewModel.hasNextPage())
+        assert(viewModel.orderListWrapperResult.observeAwaitValue() is Success && !viewModel.hasNextPage())
     }
 
     @Test
@@ -1776,7 +1761,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
             somListGetOrderListUseCase.executeOnBackground(any())
         }
 
-        assert(viewModel.orderListResult.observeAwaitValue() is Fail)
+        assert(viewModel.orderListWrapperResult.observeAwaitValue() is Fail)
         assert(viewModel.isLoadingOrder.observeAwaitValue() == false)
     }
 
@@ -1784,7 +1769,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
     fun getOrderList_shouldNotSuccess_whenCannotShowOrderData() = coroutineTestRule.runTest {
         coEvery {
             somListGetOrderListUseCase.executeOnBackground(any())
-        } returns ("0" to listOf())
+        } returns Triple("0", listOf(), SomListEmptyStateUiModel())
 
         somCanShowOrderDataField.set(viewModel, MediatorLiveData<Boolean>().apply { value = false })
 
@@ -1794,7 +1779,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
             somListGetOrderListUseCase.executeOnBackground(any())
         }
 
-        assertFalse(viewModel.orderListResult.observeAwaitValue() is Success)
+        assertFalse(viewModel.orderListWrapperResult.observeAwaitValue() is Success)
     }
 
     @Test
@@ -1805,7 +1790,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
 
         coEvery {
             somListGetOrderListUseCase.executeOnBackground(any())
-        } returns ("0" to listOf(order))
+        } returns Triple("0", listOf(order), null)
 
         viewModel.refreshSelectedOrder(orderId, invoice)
 
@@ -1849,7 +1834,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
         } returns true
         coEvery {
             somListGetOrderListUseCase.executeOnBackground(any())
-        } returns ("0" to listOf(order))
+        } returns Triple("0", listOf(order), null)
 
         viewModel.refreshSelectedOrder(orderId, invoice)
 
@@ -2045,10 +2030,12 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
     @Test
     fun setStatusOrderFilterTest() = coroutineTestRule.runTest {
         val statusOrderIds = listOf(220, 400)
+        val statusKey = "new_order"
         setGetDataOrderListParams()
-        viewModel.setStatusOrderFilter(statusOrderIds)
+        viewModel.setStatusOrderFilter(statusOrderIds, statusKey)
 
         assert(viewModel.getDataOrderListParams().statusList == statusOrderIds)
+        assert(viewModel.getDataOrderListParams().statusKey == statusKey)
     }
 
     @Test
@@ -2392,14 +2379,28 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
     @Test
     fun getTabActive_shouldReturnCorrespondingOrderStatusFilterKeyWhenFilterResultIsNotNull() {
         `filterResult should equals to Success when get filters from cache and cloud is success`()
-        viewModel.setStatusOrderFilter(listOf(220))
+        val statusKey = "new_order"
+        viewModel.setStatusOrderFilter(listOf(220), statusKey)
         assertEquals("new_order", viewModel.getTabActive())
+        assertEquals(statusKey, viewModel.getDataOrderListParams().statusKey)
     }
 
     @Test
     fun getTabActive_shouldReturnOrderStatusFilterFromAppLinkWhenFilterResultIsNull() {
         viewModel.setTabActiveFromAppLink("new_order")
-        assertEquals("new_order", viewModel.getTabActive())
+        assertEquals("new_order", viewModel.getTabActiveFromAppLink())
+    }
+
+    @Test
+    fun getIsFirstPageOpened_shouldReturnSuccessWhenFirstPageOpenedIsTrue() {
+        viewModel.setFirstPageOpened(true)
+        assertEquals(true, viewModel.getIsFirstPageOpened())
+    }
+
+    @Test
+    fun getIsFirstPageOpened_shouldReturnSuccessWhenFirstPageOpenedIsFalse() {
+        viewModel.setFirstPageOpened(false)
+        assertEquals(false, viewModel.getIsFirstPageOpened())
     }
 
     private fun doSuccessBulkAcceptOrder(

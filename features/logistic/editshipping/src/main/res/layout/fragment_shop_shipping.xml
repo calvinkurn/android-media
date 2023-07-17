@@ -65,7 +65,7 @@
                     android:gravity="center"
                     android:padding="10dp"
                     android:text="@string/submit_but"
-                    android:textColor="@color/Unify_N0"
+                    android:textColor="@color/Unify_NN0"
                     android:textStyle="bold"
                     android:visibility="gone" />
             </LinearLayout>

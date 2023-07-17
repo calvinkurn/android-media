@@ -6,6 +6,8 @@ import com.tokopedia.productcard.layout.image.ImageLayoutStrategy
 import com.tokopedia.productcard.layout.image.ImageLayoutStrategyControl
 import com.tokopedia.productcard.layout.label.LabelLayoutStrategy
 import com.tokopedia.productcard.layout.label.LabelLayoutStrategyControl
+import com.tokopedia.productcard.layout.name.NameLayoutStrategy
+import com.tokopedia.productcard.layout.name.NameLayoutStrategyControl
 import com.tokopedia.productcard.layout.shadow.ShadowLayoutStrategy
 import com.tokopedia.productcard.layout.shadow.ShadowLayoutStrategyControl
 import com.tokopedia.productcard.layout.stockbar.StockBarLayoutStrategy
@@ -19,6 +21,7 @@ internal class LayoutStrategyControl(
     shadowLayoutStrategy: ShadowLayoutStrategy,
 ) : LayoutStrategy,
     ImageLayoutStrategy by ImageLayoutStrategyControl(),
+    NameLayoutStrategy by NameLayoutStrategyControl(),
     LabelLayoutStrategy by LabelLayoutStrategyControl(),
     VariantLayoutStrategy by VariantLayoutStrategyControl(),
     EtaLayoutStrategy by EtaLayoutStrategyControl(),

@@ -27,8 +27,8 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     companion object {
         // This a reminder to developer.
         // If this size is modified, please also add unit test for the added deeplink.
-        const val SIZE_HOST = 154
-        const val SIZE_PATH = 255
+        const val SIZE_HOST = 157
+        const val SIZE_PATH = 263
     }
 
     override fun setup() {
@@ -997,6 +997,13 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
         val expectedDeepLink =
             "${DeeplinkConstant.SCHEME_INTERNAL}://people/123456?success_post=true"
         val appLink = UriUtil.buildUri(ApplinkConst.PROFILE_SUCCESS_POST, "123456")
+        assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
+    }
+
+    @Test
+    fun `check profile settings appLink then should return tokopedia internal profile settings in customerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://people-settings/123456"
+        val appLink = UriUtil.buildUri(ApplinkConst.PROFILE_SETTINGS, "123456")
         assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
     }
 
@@ -2202,6 +2209,13 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     }
 
     @Test
+    fun `check tokonow see all category appLink then should return tokopedia internal tokonow see all category in customerapp`() {
+        val expectedDeepLink = ApplinkConstInternalTokopediaNow.SEE_ALL_CATEGORY
+        val actualDeeplink = ApplinkConst.TokopediaNow.SEE_ALL_CATEGORY
+        assertEqualsDeepLinkMapper(actualDeeplink, expectedDeepLink)
+    }
+
+    @Test
     fun `check manual ads creation applink`() {
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://topads/create-manual-ads"
         assertEqualsDeepLinkMapper(
@@ -2725,5 +2739,13 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
         val expectedInternalDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://global/youtube-player/123/"
         val appLink = UriUtil.buildUri(ApplinkConst.YOUTUBE_PLAYER, "123")
         assertEqualsDeepLinkMapper(appLink, expectedInternalDeepLink)
+    }
+
+    @Test
+    fun `check shop nib applink`() {
+        assertEqualsDeepLinkMapper(
+            ApplinkConst.SHOP_NIB_CUSTOMER_APP,
+            ApplinkConstInternalMechant.SHOP_NIB_CUSTOMER_APP
+        )
     }
 }

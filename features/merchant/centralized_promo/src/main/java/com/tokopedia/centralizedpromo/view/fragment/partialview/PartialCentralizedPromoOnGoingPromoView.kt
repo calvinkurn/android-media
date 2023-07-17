@@ -94,7 +94,7 @@ class PartialCentralizedPromoOnGoingPromoView(
 
     override fun getCoachMarkItem() = with(ongoingPromoBinding) {
         rvCentralizedPromoOnGoingPromo.setBackgroundColor(
-            root.context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_N0)
+            root.context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_NN0)
         )
         CoachMarkItem(
             rvCentralizedPromoOnGoingPromo,

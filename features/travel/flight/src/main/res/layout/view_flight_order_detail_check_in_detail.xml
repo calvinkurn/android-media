@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl2"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         app:typographyType="body_1"
         app:typographyWeight="bold"
         tools:text="Web Check In" />
@@ -29,7 +29,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/Unify_N0"
+            android:background="@color/Unify_NN0"
             android:padding="@dimen/spacing_lvl4">
 
             <androidx.appcompat.widget.AppCompatImageView
@@ -46,7 +46,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/spacing_lvl4"
-                android:textColor="@color/Unify_N700_96"
+                android:textColor="@color/Unify_NN950_96"
                 app:layout_constraintBottom_toTopOf="@id/tgFlightOrderTopButtonBottomText"
                 app:layout_constraintLeft_toRightOf="@id/ivFlightOrderTopButtonLeftIcon"
                 app:layout_constraintTop_toTopOf="parent"
@@ -58,7 +58,7 @@
                 android:id="@+id/tgFlightOrderTopButtonBottomText"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:textColor="@color/Unify_N700_68"
+                android:textColor="@color/Unify_NN950_68"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toLeftOf="@id/tgFlightOrderTopButtonTopText"
                 app:layout_constraintTop_toBottomOf="@id/tgFlightOrderTopButtonTopText"
@@ -88,7 +88,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/Unify_N0"
+            android:background="@color/Unify_NN0"
             android:padding="@dimen/spacing_lvl4">
 
             <androidx.appcompat.widget.AppCompatImageView
@@ -105,7 +105,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/spacing_lvl4"
-                android:textColor="@color/Unify_N700_96"
+                android:textColor="@color/Unify_NN950_96"
                 app:layout_constraintBottom_toTopOf="@id/tgFlightOrderBottomButtonBottomText"
                 app:layout_constraintLeft_toRightOf="@id/ivFlightOrderBottomButtonLeftIcon"
                 app:layout_constraintTop_toTopOf="parent"
@@ -117,7 +117,7 @@
                 android:id="@+id/tgFlightOrderBottomButtonBottomText"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:textColor="@color/Unify_N700_68"
+                android:textColor="@color/Unify_NN950_68"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toLeftOf="@id/tgFlightOrderBottomButtonTopText"
                 app:layout_constraintTop_toBottomOf="@id/tgFlightOrderBottomButtonTopText"

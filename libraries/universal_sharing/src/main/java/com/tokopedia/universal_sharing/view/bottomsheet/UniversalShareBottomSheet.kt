@@ -626,7 +626,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
 
     fun getImageFromMedia(getImageFromMediaFlag: Boolean) {
         getImageFromMedia = getImageFromMediaFlag
-        savedImagePath = "{media_image}"
+        savedImagePath = UniversalShareConst.ImageType.MEDIA_VALUE_PLACEHOLDER
     }
 
     fun setImageGeneratorParam(param: ImageGeneratorParamModel) {

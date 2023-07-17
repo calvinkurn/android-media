@@ -2,6 +2,8 @@ apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 
 android {
+    namespace 'com.tokopedia.navigation_common'
+    testNamespace 'com.tokopedia.navigation_common.test'
     compileSdkVersion rootProject.ext.compileSdkVersion
 
     defaultConfig {

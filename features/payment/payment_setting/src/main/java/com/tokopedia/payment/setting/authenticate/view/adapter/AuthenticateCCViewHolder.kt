@@ -5,16 +5,22 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.payment.setting.R
 import com.tokopedia.payment.setting.authenticate.model.TypeAuthenticateCreditCard
-import kotlinx.android.synthetic.main.item_authenticate_view_holder.view.*
+import com.tokopedia.payment.setting.databinding.ItemAuthenticateViewHolderBinding
 
-class AuthenticateCCViewHolder(val onAdapterInteractionListener: BaseListAdapter.OnAdapterInteractionListener<TypeAuthenticateCreditCard>, view: View?)
-    : AbstractViewHolder<TypeAuthenticateCreditCard>(view) {
+class AuthenticateCCViewHolder(
+    private val onAdapterInteractionListener: BaseListAdapter.OnAdapterInteractionListener<TypeAuthenticateCreditCard>,
+    view: View
+) : AbstractViewHolder<TypeAuthenticateCreditCard>(view) {
+
+    private val binding = ItemAuthenticateViewHolderBinding.bind(itemView)
 
     override fun bind(element: TypeAuthenticateCreditCard?) {
-        itemView.radioSelectedAuth.isChecked =  element?.isSelected ?: false
-        itemView.descriptionAuthType.text = element?.description
-        itemView.titleAuthenticate.text = element?.title
-        itemView.radioSelectedAuth.setOnClickListener { onAdapterInteractionListener.onItemClicked(element)}
+        with(binding) {
+            radioSelectedAuth.isChecked = element?.isSelected ?: false
+            descriptionAuthType.text = element?.description
+            titleAuthenticate.text = element?.title
+            radioSelectedAuth.setOnClickListener { onAdapterInteractionListener.onItemClicked(element) }
+        }
     }
 
     companion object {

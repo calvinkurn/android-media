@@ -4,6 +4,8 @@ apply plugin: 'io.hansel.preprocessor.module'
 apply plugin: 'kotlin-parcelize'
 
 android {
+    namespace 'com.tokopedia.common_digital'
+    testNamespace 'com.tokopedia.common_digital.test'
     buildFeatures {
         viewBinding true
     }
@@ -47,7 +49,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
     implementation projectOrAar(rootProject.ext.libraries.applink)
     implementation projectOrAar(rootProject.ext.libraries.commonNetwork)
-    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
     implementation projectOrAar(rootProject.ext.libraries.utils)
     implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
     kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
