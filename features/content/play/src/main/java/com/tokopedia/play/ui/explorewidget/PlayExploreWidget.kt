@@ -101,7 +101,7 @@ class PlayExploreWidget @Inject constructor(
     }
 
     private fun setupTab(categories: List<String>) {
-        if(categories.size > 1)
+        if (categories.size > 1)
             tabs[categories.first()] = fgCategory
         tabs[categories.last()] = fgExplore
 
@@ -121,8 +121,10 @@ class PlayExploreWidget @Inject constructor(
         viewLifecycleOwner.lifecycleScope.launchWhenCreated {
             viewModel.uiState.withCache().collectLatest { cachedState ->
                 if (cachedState.isChanged { it.channel.exploreWidgetConfig } && cachedState.value.channel.exploreWidgetConfig.hasCategory) {
-                    binding.tabPlayExploreWidget.getUnifyTabLayout().getTabAt(0)?.setCustomText(viewModel.exploreWidgetTabs.first())
-                    binding.tabPlayExploreWidget.getUnifyTabLayout().getTabAt(1)?.setCustomText(viewModel.exploreWidgetTabs.last())
+                    binding.tabPlayExploreWidget.getUnifyTabLayout().getTabAt(0)
+                        ?.setCustomText(viewModel.exploreWidgetTabs.first())
+                    binding.tabPlayExploreWidget.getUnifyTabLayout().getTabAt(1)
+                        ?.setCustomText(viewModel.exploreWidgetTabs.last())
                 }
 
                 if (analytic != null || cachedState.value.channel.channelInfo.id.isBlank()) return@collectLatest
@@ -164,7 +166,7 @@ class PlayExploreWidget @Inject constructor(
         if (!isAdded) showNow(manager, TAG)
     }
 
-    fun setFactory(factory: Factory){
+    fun setFactory(factory: Factory) {
         this.factory = factory
     }
 
@@ -175,7 +177,7 @@ class PlayExploreWidget @Inject constructor(
     }
 
     override fun onCancel(dialog: DialogInterface) {
-         viewModel.submitAction(DismissExploreWidget)
+        viewModel.submitAction(DismissExploreWidget)
         super.onCancel(dialog)
     }
 
@@ -193,11 +195,11 @@ class PlayExploreWidget @Inject constructor(
         override fun getItemCount(): Int = tabs.size
 
         override fun createFragment(position: Int): Fragment =
-            tabs.values.elementAt(position) //TODO() handle null or else
+            tabs.values.elementAt(position)
     }
 
     interface Factory {
-        fun getViewModelFactory() : ViewModelProvider
+        fun getViewModelFactory(): ViewModelProvider
     }
 
     companion object {

@@ -4,12 +4,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.adapterdelegate.TypedAdapterDelegate
-import com.tokopedia.play.ui.explorewidget.viewholder.CategoryWidgetViewHolder
-import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
-import com.tokopedia.play.widget.ui.model.PlayWidgetItemUiModel
 import com.tokopedia.play.R
 import com.tokopedia.play.databinding.ItemPlayExploreCategoryCardBinding
 import com.tokopedia.play.databinding.ItemPlayExploreCategoryShimmerBinding
+import com.tokopedia.play.ui.explorewidget.viewholder.CategoryWidgetViewHolder
+import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetItemUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetShimmerUiModel
 
 /**

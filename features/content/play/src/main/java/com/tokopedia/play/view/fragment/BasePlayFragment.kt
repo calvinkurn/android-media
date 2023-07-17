@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.play.R
 import com.tokopedia.play.view.viewmodel.PlayViewModel
+import java.lang.Exception
 import java.net.UnknownHostException
 
 /**
@@ -15,12 +16,20 @@ open class BasePlayFragment : Fragment() {
     protected lateinit var viewModel: PlayViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        val parentFragment = requireParentFragment()
-        val grandParent = parentFragment.requireParentFragment()
-        val child = grandParent.requireParentFragment()
-        viewModel = ViewModelProvider(
-            child, (child as PlayFragment).viewModelProviderFactory
-        )[PlayViewModel::class.java]
+        try {
+            val parentFragment = requireParentFragment()
+            val grandParent = parentFragment.requireParentFragment()
+            val child = grandParent.requireParentFragment()
+            val fg = when {
+                parentFragment is PlayFragment -> parentFragment
+                grandParent is PlayFragment -> grandParent
+                child is PlayFragment -> child
+                else -> parentFragment as PlayFragment
+            }
+            viewModel = ViewModelProvider(
+                child, fg.viewModelProviderFactory
+            )[PlayViewModel::class.java]
+        } catch (e: Exception){}
         super.onCreate(savedInstanceState)
     }
 
