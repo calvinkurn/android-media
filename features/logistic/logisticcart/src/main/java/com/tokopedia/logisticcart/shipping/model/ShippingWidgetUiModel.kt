@@ -17,7 +17,7 @@ data class ShippingWidgetUiModel(
     // CourierItemData.etaErrorCode
     val etaErrorCode: Int = 0,
     // CourierItemData.etaText
-    val courierEtaText: String = "",
+    val estimatedTimeArrival: String = "",
 
     // Bebas ongkir & NOW Shipment
     val hideShipperName: Boolean = false,
@@ -31,7 +31,7 @@ data class ShippingWidgetUiModel(
     // showNormalShippingCourier
     val currentAddress: RecipientAddressModel,
     // CourierItemData.estimatedTimeDelivery
-    val serviceEtaText: String = "",
+    val estimatedTimeDelivery: String = "",
 
     // CourierItemData.name
     val courierName: String = "",
