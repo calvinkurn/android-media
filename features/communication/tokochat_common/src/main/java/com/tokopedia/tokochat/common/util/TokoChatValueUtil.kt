@@ -19,12 +19,6 @@ object TokoChatValueUtil {
      */
     const val TOKOFOOD = "tokofood"
     const val TOKOFOOD_SERVICE_TYPE = 5
-    fun getSource(serviceType: Int): String {
-        return when (serviceType) {
-            TOKOFOOD_SERVICE_TYPE -> TOKOFOOD
-            else -> ""
-        }
-    }
 
     /**
      * Message status
@@ -43,7 +37,7 @@ object TokoChatValueUtil {
     const val HEADER_DATE_FORMAT = "d MMMM, yyyy"
     fun getRelativeDate(
         date: String = "",
-        dateTimestamp: Long,
+        dateTimestamp: Long
     ): String {
         return when {
             DateUtils.isToday(dateTimestamp) -> RELATIVE_TODAY

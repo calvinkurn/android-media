@@ -6,13 +6,13 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.asFlow
 import androidx.lifecycle.viewModelScope
 import com.gojek.conversations.babble.channel.data.ChannelType
+import com.gojek.conversations.channel.ConversationsChannel
 import com.gojek.conversations.utils.ConversationsConstants
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.tokochat.domain.usecase.TokoChatChannelUseCase
-import com.tokopedia.tokochat.common.util.TokoChatCacheManager
 import com.tokopedia.tokochat.common.view.chatlist.uimodel.TokoChatListItemUiModel
+import com.tokopedia.tokochat.domain.usecase.TokoChatChannelUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -27,13 +27,16 @@ import javax.inject.Inject
 class TokoChatListViewModel @Inject constructor(
     private val chatChannelUseCase: TokoChatChannelUseCase,
     private val mapper: TokoChatListUiMapper,
-    private val cacheManager: TokoChatCacheManager,
     private val dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main) {
 
     private val _chatListData = MutableLiveData<Result<List<TokoChatListItemUiModel>>>()
     val chatListData: LiveData<Result<List<TokoChatListItemUiModel>>>
         get() = _chatListData
+
+    private val _chatListPair = MutableLiveData<Map<String, Int>>()
+    val chatListPair: LiveData<Map<String, Int>>
+        get() = _chatListPair
 
     private val _error = MutableLiveData<Pair<Throwable, String>>()
     val error: LiveData<Pair<Throwable, String>>
@@ -60,28 +63,24 @@ class TokoChatListViewModel @Inject constructor(
                 } else {
                     resultSize
                 }
-                loadChatList(batchSize)
+                loadChatList(batchSize, isNextPage = true)
             }.catch {
                 _error.value = Pair(it, ::getChatListFlow.name)
                 _chatListData.value = Fail(it)
             }
     }
 
-    fun loadChatList(batchSize: Int = ConversationsConstants.DEFAULT_BATCH_SIZE) {
+    fun loadChatList(
+        batchSize: Int = ConversationsConstants.DEFAULT_BATCH_SIZE,
+        isNextPage: Boolean = false
+    ) {
         viewModelScope.launch {
             try {
-                val result = arrayListOf<TokoChatListItemUiModel>()
                 chatChannelUseCase.getAllChannel(
                     channelTypes = listOf(ChannelType.GroupBooking),
                     batchSize = batchSize,
                     onSuccess = {
-                        val listUiModel = it.map { channel ->
-                            mapper.mapToChatListItem(channel)
-                        }
-                        result.addAll(listUiModel)
-                        // Set to -1 to mark as no more data
-                        chatChannelUseCase.setLastTimeStamp(it.lastOrNull()?.createdAt ?: -1)
-                        _chatListData.value = Success(result)
+                        onSuccessFetchChatList(it)
                     },
                     onError = {
                         it?.let { error ->
@@ -94,5 +93,21 @@ class TokoChatListViewModel @Inject constructor(
                 _chatListData.value = Fail(throwable)
             }
         }
+    }
+
+    private fun onSuccessFetchChatList(channelList: List<ConversationsChannel>) {
+        val result = arrayListOf<TokoChatListItemUiModel>()
+        val listUiModel = channelList.map { channel ->
+            mapper.mapToChatListItem(channel)
+        }
+        result.addAll(listUiModel)
+        // Set to -1 to mark as no more data
+        chatChannelUseCase.setLastTimeStamp(channelList.lastOrNull()?.createdAt ?: -1)
+        _chatListData.value = Success(result)
+        emitChatListPairData(result)
+    }
+
+    private fun emitChatListPairData(channelList: List<TokoChatListItemUiModel>) {
+        _chatListPair.value = mapper.mapToTypeCounter(channelList)
     }
 }
