@@ -2,26 +2,32 @@ package com.tokopedia.seller.search.feature.initialsearch.view.activity
 
 import android.os.Bundle
 import androidx.activity.compose.setContent
+import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.remember
 import androidx.lifecycle.ViewModelProvider
-import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.nest.principles.ui.NestTheme
-import com.tokopedia.seller.search.R
 import com.tokopedia.seller.search.common.GlobalSearchSellerComponentBuilder
+import com.tokopedia.seller.search.common.GlobalSearchSellerConstant
 import com.tokopedia.seller.search.common.plt.GlobalSearchSellerPerformanceMonitoring
 import com.tokopedia.seller.search.common.plt.GlobalSearchSellerPerformanceMonitoringListener
 import com.tokopedia.seller.search.common.plt.GlobalSearchSellerPerformanceMonitoringType
+import com.tokopedia.seller.search.feature.analytics.SellerSearchTracking
 import com.tokopedia.seller.search.feature.initialsearch.di.component.DaggerInitialSearchComponent
 import com.tokopedia.seller.search.feature.initialsearch.di.component.InitialSearchComponent
 import com.tokopedia.seller.search.feature.initialsearch.di.module.InitialSearchModule
+import com.tokopedia.seller.search.feature.initialsearch.view.compose.InitialSearchActivityScreen
 import com.tokopedia.seller.search.feature.initialsearch.view.fragment.InitialSearchFragment
+import com.tokopedia.seller.search.feature.initialsearch.view.model.compose.GlobalSearchUiEffect
 import com.tokopedia.seller.search.feature.initialsearch.view.viewmodel.InitialSearchActivityComposeViewModel
 import com.tokopedia.seller.search.feature.suggestion.view.fragment.SuggestionSearchFragment
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 class InitialSellerSearchComposeActivity :
-    BaseActivity(),
+    AppCompatActivity(),
     HasComponent<InitialSearchComponent>,
     GlobalSearchSellerPerformanceMonitoringListener {
 
@@ -43,13 +49,28 @@ class InitialSellerSearchComposeActivity :
     private var initialSearchFragment: InitialSearchFragment? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
         initInjector()
-        initFragments()
+        performanceMonitoring.initGlobalSearchSellerPerformanceMonitoring()
+        overridePendingTransition(0, 0)
+        super.onCreate(savedInstanceState)
+//        initFragments()
+        fetchSearchPlaceholder()
+        setSearchKeyword()
 
         setContent {
             NestTheme {
-//                InitialSearchActivityScreen()
+                val uiState = viewModel.globalSearchUiState.collectAsState()
+
+                val suggestionSearchFragment = remember { SuggestionSearchFragment() }
+                val initialSearchFragment = remember { InitialSearchFragment() }
+
+                InitialSearchActivityScreen(
+                    uiEffect = ::onUiEffect,
+                    uiState = uiState.value,
+                    fragmentManager = supportFragmentManager,
+                    suggestionSearchFragment = suggestionSearchFragment,
+                    initialSearchFragment = initialSearchFragment
+                )
             }
         }
     }
@@ -62,8 +83,38 @@ class InitialSellerSearchComposeActivity :
             .build()
     }
 
+    private fun fetchSearchPlaceholder() {
+        viewModel.getSearchPlaceholder()
+    }
+
+    private fun setSearchKeyword() {
+        viewModel.setTypingSearch(getKeywordFromIntent())
+    }
+
+    private fun getKeywordFromIntent(): String =
+        intent?.data?.getQueryParameter(GlobalSearchSellerConstant.KEYWORD).orEmpty()
+
     private fun initInjector() {
         component.inject(this)
+    }
+
+    private fun onUiEffect(event: GlobalSearchUiEffect) {
+        when (event) {
+            is GlobalSearchUiEffect.OnSearchBarCleared -> {
+                SellerSearchTracking.clickClearSearchBoxEvent(userSession.userId)
+                viewModel.setTypingSearch(String.EMPTY)
+            }
+            is GlobalSearchUiEffect.OnKeyboardSearchSubmit -> {
+                viewModel.setTypingSearch(event.searchBarKeyword)
+            }
+            is GlobalSearchUiEffect.OnKeywordTextChanged -> {
+                viewModel.setTypingSearch(event.searchBarKeyword)
+            }
+            is GlobalSearchUiEffect.OnBackButtonClicked -> {
+                SellerSearchTracking.clickBackButtonSearchEvent(userSession.userId, event.searchBarKeyword)
+                finish()
+            }
+        }
     }
 
     override fun startNetworkPerformanceMonitoring() {
@@ -76,20 +127,5 @@ class InitialSellerSearchComposeActivity :
 
     override fun finishMonitoring() {
         performanceMonitoring.stopPerformanceMonitoring()
-    }
-
-    private fun initFragments() {
-        searchSuggestionFragment = SuggestionSearchFragment()
-        initialSearchFragment = InitialSearchFragment()
-
-        searchSuggestionFragment?.let { searchSuggestionFragment ->
-            initialSearchFragment?.let { initialSearchFragment ->
-                supportFragmentManager.beginTransaction()
-                    .hide(searchSuggestionFragment)
-                    .add(android.R.id.content, searchSuggestionFragment)
-                    .add(android.R.id.content, initialSearchFragment)
-                    .commit()
-            }
-        }
     }
 }

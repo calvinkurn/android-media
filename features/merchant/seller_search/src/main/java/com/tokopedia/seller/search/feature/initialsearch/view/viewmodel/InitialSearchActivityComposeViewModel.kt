@@ -7,6 +7,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.seller.search.common.domain.GetSellerSearchPlaceholderUseCase
 import com.tokopedia.seller.search.feature.initialsearch.view.model.compose.GlobalSearchUiState
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -54,6 +55,7 @@ class InitialSearchActivityComposeViewModel @Inject constructor(
         searchTypingStateFlow.tryEmit(keyword)
     }
 
+    @OptIn(FlowPreview::class)
     private fun getSearchKeyword() {
         viewModelScope.launch {
             searchTypingStateFlow

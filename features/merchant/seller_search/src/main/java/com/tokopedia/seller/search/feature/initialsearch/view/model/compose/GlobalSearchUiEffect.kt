@@ -5,5 +5,4 @@ sealed class GlobalSearchUiEffect {
     data class OnBackButtonClicked(val searchBarKeyword: String) : GlobalSearchUiEffect()
     data class OnKeyboardSearchSubmit(val searchBarKeyword: String) : GlobalSearchUiEffect()
     data class OnKeywordTextChanged(val searchBarKeyword: String) : GlobalSearchUiEffect()
-    data class OnBackPressed(val searchBarKeyword: String) : GlobalSearchUiEffect()
 }
