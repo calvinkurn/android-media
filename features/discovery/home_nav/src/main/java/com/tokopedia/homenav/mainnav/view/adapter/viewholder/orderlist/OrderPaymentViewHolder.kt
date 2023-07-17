@@ -88,7 +88,7 @@ class OrderPaymentViewHolder(itemView: View, val mainNavListener: MainNavListene
                     context.getString(R.string.transaction_item_default_status)
 
         binding?.orderPaymentStatus?.setTextColor(
-                ContextCompat.getColor(context, R.color.Unify_YN400)
+                ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_YN400)
         )
 
         itemView.setOnClickListener {

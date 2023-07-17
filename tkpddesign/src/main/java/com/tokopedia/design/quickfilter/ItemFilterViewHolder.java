@@ -53,7 +53,7 @@ public class ItemFilterViewHolder extends BaseItemFilterViewHolder {
             filterName.setTextColor(ContextCompat.getColor(filterName.getContext(), com.tokopedia.unifyprinciples.R.color.Unify_G500));
         } else {
             drawableBorder.setColor(ContextCompat.getColor(layoutBorder.getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N100));
-            drawableInside.setColor(ContextCompat.getColor(layoutInside.getContext(), R.color.Unify_N0));
+            drawableInside.setColor(ContextCompat.getColor(layoutInside.getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N0));
             filterName.setTextColor(ContextCompat.getColor(filterName.getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_68));
         }
     }

@@ -39,7 +39,7 @@ class EditKeywordItemViewHolder(
 
     companion object {
         @LayoutRes
-        var LAYOUT = R.layout.topads_create_layout_budget_list_item
+        var LAYOUT = com.tokopedia.topads.common.R.layout.topads_create_layout_budget_list_item
 
         private const val SPECIFIC_TYPE = "Spesifik"
         private const val BROAD_TYPE = "Luas"

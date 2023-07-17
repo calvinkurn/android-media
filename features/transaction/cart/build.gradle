@@ -33,6 +33,7 @@ buildscript {
 
 dependencies {
 
+    implementation projectOrAar(rootProject.ext.libraries.tkpddesign)
     implementation rootProject.ext.supportLibDependencies.appCompactV7
     implementation rootProject.ext.supportLibDependencies.cardViewV7
     implementation rootProject.ext.supportLibDependencies.constraintLayout

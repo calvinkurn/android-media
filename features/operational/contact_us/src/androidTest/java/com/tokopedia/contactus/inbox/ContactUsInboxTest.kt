@@ -74,7 +74,7 @@ class ContactUsInboxTest {
             launchInboxPage(mActivityTestRule,Intent())
             fakeGqlRepository.setResponseTypeForError(false)
         }.doing {
-            click(R.id.globalerrors_action)
+            click(com.tokopedia.globalerror.R.id.globalerrors_action)
         }.verify {
             R.id.rv_email_list.isVisible()
             R.id.home_global_error.isGone()

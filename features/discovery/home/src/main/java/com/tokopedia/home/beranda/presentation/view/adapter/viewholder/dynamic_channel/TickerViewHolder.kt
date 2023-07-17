@@ -51,7 +51,7 @@ class TickerViewHolder(itemView: View, private val listener: HomeCategoryListene
 
                 tickerComponent.postDelayed({
                     try {
-                        view.findViewById<View>(R.id.ticker_content_multiple).requestLayout()
+                        view.findViewById<View>(com.tokopedia.unifycomponents.R.id.ticker_content_multiple).requestLayout()
                     } catch (e: Exception) {
                         e.printStackTrace()
                     }

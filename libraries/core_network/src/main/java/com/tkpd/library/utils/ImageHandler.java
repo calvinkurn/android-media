@@ -76,7 +76,7 @@ public class ImageHandler extends com.tokopedia.abstraction.common.utils.image.I
             Drawable drawable = AppCompatResources.getDrawable(imageview.getContext(), resId);
             Glide.with(imageview.getContext())
                     .load("")
-                    .placeholder(R.drawable.loading_page)
+                    .placeholder(com.tokopedia.abstraction.R.drawable.loading_page)
                     .dontAnimate()
                     .error(drawable)
                     .into(imageview);
@@ -117,8 +117,8 @@ public class ImageHandler extends com.tokopedia.abstraction.common.utils.image.I
             Glide.with(context)
                     .load(url)
                     .dontAnimate()
-                    .placeholder(R.drawable.loading_page)
-                    .error(R.drawable.error_drawable)
+                    .placeholder(com.tokopedia.abstraction.R.drawable.loading_page)
+                    .error(com.tokopedia.abstraction.R.drawable.error_drawable)
                     .skipMemoryCache(true)
                     .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                     .into(imageview);
@@ -131,7 +131,7 @@ public class ImageHandler extends com.tokopedia.abstraction.common.utils.image.I
                     .load(url)
                     .dontAnimate()
                     .placeholder(placeholder)
-                    .error(R.drawable.error_drawable)
+                    .error(com.tokopedia.abstraction.R.drawable.error_drawable)
                     .skipMemoryCache(true)
                     .diskCacheStrategy(DiskCacheStrategy.DATA)
                     .into(imageview);
@@ -165,8 +165,8 @@ public class ImageHandler extends com.tokopedia.abstraction.common.utils.image.I
                         .load(url)
                         .fitCenter()
                         .dontAnimate()
-                        .placeholder(R.drawable.loading_page)
-                        .error(R.drawable.error_drawable)
+                        .placeholder(com.tokopedia.abstraction.R.drawable.loading_page)
+                        .error(com.tokopedia.abstraction.R.drawable.error_drawable)
                         .into(imageview);
             } catch (Exception e) {
             }
@@ -180,8 +180,8 @@ public class ImageHandler extends com.tokopedia.abstraction.common.utils.image.I
                     .load(url)
                     .fitCenter()
                     .dontAnimate()
-                    .placeholder(R.drawable.loading_page)
-                    .error(R.drawable.error_drawable)
+                    .placeholder(com.tokopedia.abstraction.R.drawable.loading_page)
+                    .error(com.tokopedia.abstraction.R.drawable.error_drawable)
                     .into(simpleTarget);
         }
     }

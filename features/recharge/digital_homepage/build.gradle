@@ -35,6 +35,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.coroutineCore
     implementation projectOrAar(rootProject.ext.libraries.imageAssets)
     implementation rootProject.ext.miscDependencies.coroutineAndroid
+    implementation projectOrAar(rootProject.ext.features.productCard)
 
     implementation rootProject.ext.networkDependencies.retrofit
     implementation rootProject.ext.networkDependencies.converterGson

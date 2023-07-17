@@ -51,7 +51,7 @@ public class SnackbarManager {
             @ColorRes int actionColorRes,
             @ColorRes int backGroundColor
     ) {
-        return make(view, text, duration, R.color.Unify_N0, actionColorRes, backGroundColor, 0);
+        return make(view, text, duration, com.tokopedia.unifyprinciples.R.color.Unify_N0, actionColorRes, backGroundColor, 0);
     }
 
     public static View getContentView (Activity activity) {

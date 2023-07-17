@@ -16,7 +16,7 @@ class HomeLeftCarouselAtcProductCardViewHolder(
 
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.item_product_card_compact_carousel
+        val LAYOUT = com.tokopedia.productcard.compact.R.layout.item_product_card_compact_carousel
     }
 
     private var binding: ItemProductCardCompactCarouselBinding? by viewBinding()

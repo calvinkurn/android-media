@@ -37,7 +37,7 @@ fun ImageView.loadImageFitCenter(url: String, fpmItemLabel: String = ""){
     val performanceMonitoring = getPerformanceMonitoring(url, fpmItemLabel)
     this.loadImage(url) {
         fitCenter()
-        setPlaceHolder(R.drawable.placeholder_grey)
+        setPlaceHolder(com.tokopedia.topads.sdk.R.drawable.placeholder_grey)
         listener({ _, mediaDataSource ->
             handleOnResourceReady(mediaDataSource, performanceMonitoring, fpmItemLabel)
         }, {
@@ -61,7 +61,7 @@ fun ImageView.loadMiniImage(url: String, width: Int, height: Int, fpmItemLabel: 
     val performanceMonitoring = getPerformanceMonitoring(url, fpmItemLabel)
     this.loadImage(url) {
         overrideSize(Resize(width, height))
-        setPlaceHolder(R.drawable.placeholder_grey)
+        setPlaceHolder(com.tokopedia.topads.sdk.R.drawable.placeholder_grey)
         fitCenter()
         listener({ _, mediaDataSource ->
             listener?.successLoad()
@@ -76,7 +76,7 @@ fun ImageView.loadImageCenterCrop(url: String){
     this.loadImage(url) {
         centerCrop()
         setRoundedRadius(15.toFloat())
-        setPlaceHolder(R.drawable.placeholder_grey)
+        setPlaceHolder(com.tokopedia.topads.sdk.R.drawable.placeholder_grey)
     }
 }
 

@@ -109,7 +109,7 @@ class CategoryListFragment: BaseDaggerFragment(), HomeNavListener {
         binding?.categoryGlobalError?.let {globalError ->
             globalError.errorSecondaryAction.hide()
             globalError.show()
-            globalError.findViewById<UnifyButton>(R.id.globalerrors_action)?.text = getString(R.string.category_back_menu)
+            globalError.findViewById<UnifyButton>(com.tokopedia.globalerror.R.id.globalerrors_action)?.text = getString(R.string.category_back_menu)
             globalError.setActionClickListener {
                 activity?.let { activity ->
                     Navigation.findNavController(activity, R.id.fragment_container).navigateUp()

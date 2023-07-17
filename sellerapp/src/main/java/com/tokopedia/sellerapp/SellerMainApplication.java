@@ -13,7 +13,7 @@ import androidx.appcompat.app.AppCompatDelegate;
 import androidx.work.Configuration;
 
 import com.google.android.play.core.splitcompat.SplitCompat;
-import com.tokopedia.abstraction.relic.NewRelicInteractionActCall;
+//import com.tokopedia.abstraction.relic.NewRelicInteractionActCall;
 import com.tokopedia.additional_check.subscriber.TwoFactorCheckerSubscriber;
 import com.tokopedia.analytics.performance.fpi.FrameMetricsMonitoring;
 import com.tokopedia.analytics.performance.util.EmbraceMonitoring;
@@ -308,7 +308,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Co
     }
 
     private void registerActivityLifecycleCallbacks() {
-        registerActivityLifecycleCallbacks(new NewRelicInteractionActCall());
+//        registerActivityLifecycleCallbacks(new NewRelicInteractionActCall());
         registerActivityLifecycleCallbacks(new SessionActivityLifecycleCallbacks());
         if (GlobalConfig.isAllowDebuggingTools()) {
             registerActivityLifecycleCallbacks(new ViewInspectorSubscriber());

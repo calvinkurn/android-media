@@ -88,7 +88,7 @@ fun ImageView.loadMiniImage(
 ) {
     val performanceMonitoring = getPerformanceMonitoring(url, fpmItemLabel)
     this.loadImage(url) {
-        setPlaceHolder(R.drawable.placeholder_grey)
+        setPlaceHolder(com.tokopedia.topads.sdk.R.drawable.placeholder_grey)
         overrideSize(Resize(width, height))
         listener({ resource, dataSource ->
             onLoaded()

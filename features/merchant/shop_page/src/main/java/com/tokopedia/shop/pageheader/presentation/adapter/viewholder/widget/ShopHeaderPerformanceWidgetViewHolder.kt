@@ -46,7 +46,7 @@ class ShopHeaderPerformanceWidgetViewHolder(
             if (itemDecorationCount == 0) {
                 val itemDecoration = ShopPageHorizontalItemDivider(
                     MethodChecker.getDrawable(itemView.context, R.drawable.bg_shop_performance_item_separator),
-                    itemView.context.resources.getDimensionPixelSize(R.dimen.dp_1)
+                    itemView.context.resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_1)
                 )
                 addItemDecoration(itemDecoration)
             }

@@ -74,8 +74,8 @@ class SliderBannerViewHolder(itemView: View, private val fragment: Fragment) :
 
     private fun getBannerDotIndicator(context: Context): BannerDotIndicator {
         context.run {
-            val radius = resources.getDimensionPixelSize(R.dimen.dp_4)
-            val padding = resources.getDimensionPixelSize(R.dimen.dp_5)
+            val radius = resources.getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_4)
+            val padding = resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_5)
             val indicatorPadding = resources.getDimensionPixelSize(R.dimen.dp_8)
             val activeColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_YN400)
             val inActiveColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN400)

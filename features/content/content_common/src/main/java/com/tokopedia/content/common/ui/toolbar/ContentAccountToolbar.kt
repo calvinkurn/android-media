@@ -10,8 +10,8 @@ import androidx.core.content.ContextCompat.getColor
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
-import com.tokopedia.content.common.R.color.Unify_NN1000
-import com.tokopedia.content.common.R.color.Unify_NN950
+import com.tokopedia.unifyprinciples.R.color.Unify_NN1000
+import com.tokopedia.unifyprinciples.R.color.Unify_NN950
 import com.tokopedia.content.common.R.color.content_dms_soft_dark
 import com.tokopedia.content.common.R.color.content_dms_soft_gray
 import com.tokopedia.content.common.databinding.ContentAccountToolbarBinding

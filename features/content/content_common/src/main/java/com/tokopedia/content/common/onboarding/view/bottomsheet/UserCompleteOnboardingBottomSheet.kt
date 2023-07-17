@@ -28,6 +28,7 @@ import javax.inject.Inject
 import android.view.inputmethod.EditorInfo
 import androidx.fragment.app.viewModels
 import com.tokopedia.content.common.util.hideKeyboard
+import kotlinx.coroutines.flow.distinctUntilChangedBy
 
 
 /**
@@ -124,7 +125,9 @@ class UserCompleteOnboardingBottomSheet @Inject constructor(
 
     private fun setupObserver() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            viewModel.uiState.withCache().collectLatest {
+            viewModel.uiState.withCache()
+                .distinctUntilChangedBy {  }
+                .collectLatest {
                 renderLayout(it.prevValue, it.value)
             }
         }

@@ -151,7 +151,7 @@ public class ImageLoader {
         if (imageView != null) {
             Glide.with(imageView.getContext()).clear(imageView);
             imageView.setImageDrawable(
-                    getDrawable(imageView.getContext(), R.drawable.ic_loading_image)
+                    getDrawable(imageView.getContext(), com.tokopedia.design.R.drawable.ic_loading_image)
             );
         }
     }

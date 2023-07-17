@@ -222,7 +222,7 @@ class AffiliateEducationLandingPage :
                 }
             }
         )
-        navToolbar.findViewById<EditText>(R.id.et_search)
+        navToolbar.findViewById<EditText>(com.tokopedia.searchbar.R.id.et_search)
             ?.setOnFocusChangeListener { v: View, hasFocus ->
                 (v as EditText).hint = if (hasFocus) {
                     getString(R.string.affiliate_landing_page_search_active_placeholder)

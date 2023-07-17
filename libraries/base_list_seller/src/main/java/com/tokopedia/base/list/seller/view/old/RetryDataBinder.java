@@ -31,8 +31,8 @@ public class RetryDataBinder extends DataBinder<RetryDataBinder.ViewHolder> {
 
         public ViewHolder(View itemView) {
             super(itemView);
-            retry = (TextView) itemView.findViewById(R.id.retry_but);
-            retryTitle = (TextView) itemView.findViewById(R.id.retry_text);
+            retry = (TextView) itemView.findViewById(com.tokopedia.abstraction.R.id.retry_but);
+            retryTitle = (TextView) itemView.findViewById(com.tokopedia.abstraction.R.id.retry_text);
         }
     }
 
@@ -45,7 +45,7 @@ public class RetryDataBinder extends DataBinder<RetryDataBinder.ViewHolder> {
     @Override
     public RetryDataBinder.ViewHolder newViewHolder(ViewGroup parent) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.design_retry, null);
+                .inflate(com.tokopedia.abstraction.R.layout.design_retry, null);
         view.setLayoutParams(new AbsListView.LayoutParams(-1, ViewGroup.LayoutParams.WRAP_CONTENT));
         return new ViewHolder(view);
     }

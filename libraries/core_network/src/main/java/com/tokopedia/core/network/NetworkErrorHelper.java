@@ -37,7 +37,7 @@ public class NetworkErrorHelper {
 
     public static SnackbarRetry createSnackbarWithAction(
             Activity activity, String message, int duration, final RetryClickedListener listener) {
-        return createSnackbarWithAction(activity, message, duration, activity.getString(R.string.title_try_again), listener);
+        return createSnackbarWithAction(activity, message, duration, activity.getString(com.tokopedia.abstraction.R.string.title_try_again), listener);
     }
 
     public static SnackbarRetry createSnackbarWithAction(
@@ -48,7 +48,7 @@ public class NetworkErrorHelper {
     public static void showSnackbar(Activity activity) {
         if (activity != null) {
             Toaster.INSTANCE.make(activity.findViewById(android.R.id.content),
-                    activity.getResources().getString(R.string.msg_network_error),
+                    activity.getResources().getString(com.tokopedia.abstraction.R.string.msg_network_error),
                     Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR, "", v->{});
         }
     }
@@ -68,120 +68,6 @@ public class NetworkErrorHelper {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    public static void showEmptyState(Context context, final View rootview, final RetryClickedListener listener) {
-        try {
-            rootview.findViewById(R.id.main_retry).setVisibility(View.VISIBLE);
-        } catch (NullPointerException e) {
-            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
-            params.gravity = Gravity.CENTER;
-            params.weight = 1.0f;
-            View retryLoad = inflater.inflate(R.layout.item_base_network_error, (ViewGroup) rootview);
-            View retryButon = retryLoad.findViewById(R.id.retry_but);
-            if (listener != null) {
-                retryButon.setOnClickListener(new View.OnClickListener() {
-
-                    @Override
-                    public void onClick(View v) {
-                        rootview.findViewById(R.id.main_retry).setVisibility(View.GONE);
-                        listener.onRetryClicked();
-                    }
-                });
-            } else {
-                retryButon.setVisibility(View.GONE);
-            }
-        }
-    }
-
-    @SuppressLint("NewApi")
-    public static void showEmptyState(Context context, final View rootview,
-                                      @Nullable String titleMessage,
-                                      @Nullable String subTitleMessage,
-                                      @Nullable String titleRetry,
-                                      @DrawableRes int iconRes,
-                                      @Nullable final RetryClickedListener listener) {
-        try {
-            rootview.findViewById(R.id.main_retry).setVisibility(View.VISIBLE);
-        } catch (NullPointerException e) {
-            LayoutInflater inflater = LayoutInflater.from(context);
-            LinearLayout.LayoutParams params
-                    = new LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT
-            );
-            params.gravity = Gravity.CENTER;
-            params.weight = 1.0f;
-            View retryLoad = inflater.inflate(R.layout.item_base_network_error, (ViewGroup) rootview);
-            TextView retryButon = (TextView) retryLoad.findViewById(R.id.retry_but);
-            TextView tvTitleMessage = (TextView) retryLoad.findViewById(R.id.retry_text);
-            TextView tvSubTitleMessage = (TextView) retryLoad.findViewById(R.id.retry_description);
-            ImageView ivIcon = (ImageView) retryLoad.findViewById(R.id.image_error);
-            if (subTitleMessage != null) tvSubTitleMessage.setText(subTitleMessage);
-            if (titleMessage != null) tvTitleMessage.setText(titleMessage);
-            if (titleRetry != null) retryButon.setText(titleRetry);
-            if (iconRes != 0) {
-                //noinspection deprecation
-                ivIcon.setImageDrawable(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP ?
-                        context.getDrawable(iconRes) : context.getResources().getDrawable(iconRes));
-            }
-            if (listener != null) {
-                retryButon.setOnClickListener(new View.OnClickListener() {
-
-                    @Override
-                    public void onClick(View v) {
-                        rootview.findViewById(R.id.main_retry).setVisibility(View.GONE);
-                        listener.onRetryClicked();
-                    }
-                });
-            }
-        }
-    }
-
-    public static void removeEmptyState(View rootview) {
-        try {
-            rootview.findViewById(R.id.main_retry).setVisibility(View.GONE);
-        } catch (NullPointerException e) {
-        }
-    }
-
-    public static void showEmptyState(Context context, final View rootview, String message, final RetryClickedListener listener) {
-        try {
-            rootview.findViewById(R.id.main_retry).setVisibility(View.VISIBLE);
-        } catch (NullPointerException e) {
-            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
-            params.gravity = Gravity.CENTER;
-            params.weight = 1.0f;
-            View retryLoad = inflater.inflate(R.layout.item_base_network_error, (ViewGroup) rootview);
-            View retryButon = retryLoad.findViewById(R.id.retry_but);
-            TextView msgRetry = (TextView) retryLoad.findViewById(R.id.retry_text);
-            if (message != null) {
-                msgRetry.setText(message);
-            }
-            if (listener != null) {
-                retryButon.setOnClickListener(new View.OnClickListener() {
-
-                    @Override
-                    public void onClick(View v) {
-                        rootview.findViewById(R.id.main_retry).setVisibility(View.GONE);
-                        listener.onRetryClicked();
-                    }
-                });
-            } else {
-                retryButon.setVisibility(View.GONE);
-            }
-        }
-
-    }
-
-    public static void hideEmptyState(final View rootview) {
-        try {
-            rootview.findViewById(R.id.main_retry).setVisibility(View.GONE);
-        } catch (NullPointerException e) {
-            e.printStackTrace();
-        }
-
     }
 
     public interface RetryClickedListener {

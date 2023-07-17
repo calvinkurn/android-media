@@ -26,6 +26,7 @@ android {
 
 dependencies {
     implementation projectOrAar(rootProject.ext.features.commonCategory)
+    implementation projectOrAar(rootProject.ext.libraries.tkpddesign)
     implementation projectOrAar(rootProject.ext.features.resourcesCommon)
     implementation projectOrAar(rootProject.ext.features.discoveryCommon)
     implementation projectOrAar(rootProject.ext.features.filter)
