@@ -5,9 +5,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:background="@color/Unify_NN100"/>
+        app:loader_type="rect"
+        tools:background="@color/Unify_NN100" />
 
 </com.tokopedia.unifycomponents.CardUnify2>
