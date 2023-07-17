@@ -1,23 +1,17 @@
 package com.tokopedia.topads.sdk.repository
 
-import com.google.gson.reflect.TypeToken
-import com.tokopedia.common.network.coroutines.RestRequestInteractor
-import com.tokopedia.common.network.coroutines.repository.RestRepository
-import com.tokopedia.common.network.data.model.RequestType
-import com.tokopedia.common.network.data.model.RestCacheStrategy
-import com.tokopedia.common.network.data.model.RestRequest
 import com.tokopedia.gql_query_annotation.GqlQuery
-import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.network.data.model.response.DataResponse
+import com.tokopedia.gql_query_annotation.GqlQueryInterface
+import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
+import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.model.CacheType
+import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.topads.sdk.TopAdsConstants.TdnBannerConstants.TYPE_SINGLE
-import com.tokopedia.topads.sdk.UrlTopAdsSdk.getTopAdsImageViewUrl
 import com.tokopedia.topads.sdk.domain.interactor.DIMEN_ID
 import com.tokopedia.topads.sdk.domain.model.TopAdsBannerResponse
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
-import com.tokopedia.usecase.RequestParams
-import java.lang.reflect.Type
 
-private const val KEY_IRIS_SESSION_ID = "iris_session_id"
 private const val DISPLAY_BANNER_PARAMS = "displayBannnerParams"
 private const val TOP_ADS_BANNER_QUERY =
     """query topadsDisplayBannerAdsV3(${'$'}displayBannnerParams: String) {
@@ -78,53 +72,40 @@ private const val TOP_ADS_BANNER_QUERY =
 }"""
 
 @GqlQuery("TopAdsBannerQuery", TOP_ADS_BANNER_QUERY)
-open class TopAdsRepository {
+open class TopAdsRepository() {
 
-    protected open val restRepository: RestRepository by lazy { RestRequestInteractor.getInstance().restRepository }
+    protected open val graphqlRepository: GraphqlRepository by lazy { GraphqlInteractor.getInstance().graphqlRepository }
 
     suspend fun getImageData(
-        queryParams: MutableMap<String, Any>,
-        sessionId: String
+        queryParams: MutableMap<String, Any>
     ): ArrayList<TopAdsImageViewModel> {
-        val response = this.postData<TopAdsBannerResponse>(
-            getTopAdsImageViewUrl(),
-            object : TypeToken<DataResponse<TopAdsBannerResponse>>() {}.type,
-            queryMap = queryParams,
-            sessionId = sessionId
+        val response = this.getGQLData(
+            TopAdsBannerResponse::class.java,
+            queryParams
         )
 
         return mapToListOfTopAdsImageViewModel(response, queryParams)
     }
 
-    private suspend fun <T : Any> postData(
-        url: String,
-        typeOf: Type,
-        requestType: RequestType = RequestType.POST,
-        queryMap: MutableMap<String, Any> = RequestParams.EMPTY.parameters,
-        sessionId: String,
-        cacheType: com.tokopedia.common.network.data.model.CacheType = com.tokopedia.common.network.data.model.CacheType.ALWAYS_CLOUD
+    private suspend fun <T : Any> getGQLData(
+        gqlResponseType: Class<T>,
+        gqlParams: Map<String, Any>,
+        cacheType: CacheType = CacheType.CLOUD_THEN_CACHE
     ): T {
         try {
-            val restRequest = RestRequest.Builder(url, typeOf)
-                .setRequestType(requestType)
-                .setBody(
-                    GraphqlRequest(
-                        TopAdsBannerQuery.GQL_QUERY,
-                        TopAdsBannerResponse::class.java,
-                        mapOf(DISPLAY_BANNER_PARAMS to getQueryMapAsString(queryMap))
-                    )
-                )
-                .setHeaders(mapOf(KEY_IRIS_SESSION_ID to sessionId))
-                .setCacheStrategy(RestCacheStrategy.Builder(cacheType).build())
-                .build()
-            val r = restRepository.getResponse(restRequest)
-            return r.getData<DataResponse<TopAdsBannerResponse>>().data as T
+            val gqlUseCase = GraphqlUseCase<T>(graphqlRepository)
+            gqlUseCase.setTypeClass(gqlResponseType)
+            gqlUseCase.setGraphqlQuery(GqlQuery)
+            gqlUseCase.setRequestParams(mapOf(DISPLAY_BANNER_PARAMS to getQueryMapAsString(gqlParams)))
+
+            gqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(cacheType).build())
+            return gqlUseCase.executeOnBackground()
         } catch (t: Throwable) {
             throw t
         }
     }
 
-    private fun getQueryMapAsString(queryMap: MutableMap<String, Any>): String {
+    private fun getQueryMapAsString(queryMap: Map<String, Any>): String {
         return queryMap.entries.joinToString("&")
     }
 
@@ -185,5 +166,73 @@ open class TopAdsRepository {
             }
         }
         return Triple(imageUrl, imageWidth, imageHeight)
+    }
+
+    object GqlQuery : GqlQueryInterface {
+        private const val OPERATION_NAME = "topadsDisplayBannerAdsV3"
+        private val QUERY = """
+            query $OPERATION_NAME(${'$'}displayBannnerParams: String) {
+              $OPERATION_NAME(displayBannnerParams:${'$'}displayBannnerParams){
+                data {
+                  id
+                  ad_ref_key
+                  ad_view_url
+                  ad_click_url
+                  applinks
+                  banner {
+                    Name
+                    Position
+                    LayoutType
+                    Images{
+                      Dimension {
+                        Id
+                        Height
+                        Width
+                      }
+                      Url
+                    }
+                    CategoryIDs
+                    Shop
+                    {
+                      ShopID
+                      ShopName
+                      ShopImage {
+                        cover
+                        cover_ecs
+                        s_ecs
+                        s_url
+                        xs_ecs
+                        xs_url
+                      }
+                      ShopDomain
+                      ShopTagline
+                      ShopCityName
+                      ShopIsOfficial
+                      IsPowerMerchant
+                      IsPowerMerchantBadge
+                    }
+                  } 
+                }
+                header {
+                  total_data
+                  pagination {
+                    kind
+                    next_page_token
+                    current_page
+                  }
+                  auto_scroll {
+                    enable
+                    timer
+                  }
+                }
+              }
+            }
+        """.trimIndent()
+
+        override fun getOperationNameList(): List<String> = listOf(OPERATION_NAME)
+
+        override fun getQuery(): String = QUERY
+
+        override fun getTopOperationName(): String = OPERATION_NAME
     }
 }
