@@ -20,6 +20,7 @@ object DeeplinkMapperCommunication {
     const val ROLLENCE_TYPE_B = "inbox_varB"
 
     const val TOKOCHAT_REMOTE_CONFIG = "android_enable_tokochat"
+    const val TOKOCHAT_LIST_REMOTE_CONFIG = "android_enable_tokochat_list"
 
     /**
      * Remote Config util
@@ -71,6 +72,14 @@ object DeeplinkMapperCommunication {
                 DeeplinkConstant.SCHEME_TOKOPEDIA_SLASH,
                 ApplinkConstInternalCommunication.INTERNAL_COMMUNICATION + "/"
             )
+        } else {
+            ApplinkConstInternalOrder.UNIFY_ORDER_TOKOFOOD
+        }
+    }
+
+    fun getRegisteredNavigationTokoChatList(context: Context, deeplink: String): String {
+        return if (isRemoteConfigActive(context, deeplink)) {
+            ApplinkConstInternalCommunication.TOKOCHAT_LIST
         } else {
             ApplinkConstInternalOrder.UNIFY_ORDER_TOKOFOOD
         }
