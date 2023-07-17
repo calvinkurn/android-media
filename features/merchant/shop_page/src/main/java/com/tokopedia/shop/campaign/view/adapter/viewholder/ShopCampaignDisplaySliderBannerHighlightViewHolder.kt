@@ -20,7 +20,6 @@ import com.tokopedia.shop.campaign.view.listener.ShopCampaignInterface
 import com.tokopedia.shop.campaign.view.model.ShopWidgetDisplaySliderBannerHighlightUiModel
 import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.databinding.ItemShopCampaignSliderBannerHighlightBinding
-import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
 
@@ -28,8 +27,7 @@ class ShopCampaignDisplaySliderBannerHighlightViewHolder(
     itemView: View,
     private val listener: Listener,
     private val shopCampaignInterface: ShopCampaignInterface
-) : AbstractViewHolder<ShopWidgetDisplaySliderBannerHighlightUiModel>(itemView),
-    SliderBannerHighlightLayoutManager.Listener {
+) : AbstractViewHolder<ShopWidgetDisplaySliderBannerHighlightUiModel>(itemView) {
 
     companion object {
         @LayoutRes
@@ -68,7 +66,7 @@ class ShopCampaignDisplaySliderBannerHighlightViewHolder(
         ShopCampaignDisplaySliderBannerHighlightAdapter(listener, uiModel)
     }
     private val layoutManagerSliderBannerHighlight: SliderBannerHighlightLayoutManager by lazy {
-        SliderBannerHighlightLayoutManager(itemView.context, this)
+        SliderBannerHighlightLayoutManager(itemView.context)
     }
     private val rvCircularLoopScrollListener = object : RecyclerView.OnScrollListener() {
         override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
@@ -171,23 +169,6 @@ class ShopCampaignDisplaySliderBannerHighlightViewHolder(
 
     private fun setTitle(uiModel: ShopWidgetDisplaySliderBannerHighlightUiModel) {
         textTitle?.text = uiModel.header.title
-    }
-
-    override fun onCheckPrevNextButton(
-        firstVisibleItemPos: Int,
-        lastVisibleItemPos: Int,
-        itemCount: Int
-    ) {
-        if (firstVisibleItemPos == Int.ZERO) {
-            buttonPrev?.gone()
-            buttonNext?.show()
-        } else if (lastVisibleItemPos == itemCount - Int.ONE) {
-            buttonNext?.gone()
-            buttonPrev?.show()
-        } else {
-            buttonPrev?.show()
-            buttonNext?.show()
-        }
     }
 
     private fun getTotalProductSize(): Int {
