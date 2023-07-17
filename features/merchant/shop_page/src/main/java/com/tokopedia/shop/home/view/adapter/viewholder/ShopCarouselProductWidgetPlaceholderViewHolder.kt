@@ -11,7 +11,7 @@ import com.tokopedia.shop.home.view.adapter.ShopCarouselProductPlaceholderAdapte
 import com.tokopedia.shop.home.view.model.BaseShopHomeWidgetUiModel
 import com.tokopedia.utils.view.binding.viewBinding
 
-class ShopHomeCarousellProductPlaceholderViewHolder(
+class ShopCarouselProductWidgetPlaceholderViewHolder(
     itemView: View
 ) : AbstractViewHolder<BaseShopHomeWidgetUiModel>(itemView) {
 

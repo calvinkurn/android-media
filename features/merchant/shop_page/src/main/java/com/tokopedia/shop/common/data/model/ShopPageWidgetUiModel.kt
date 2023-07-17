@@ -1,6 +1,6 @@
 package com.tokopedia.shop.common.data.model
 
-data class ShopPageWidgetLayoutUiModel(
+data class ShopPageWidgetUiModel(
     val widgetId: String = "",
     val widgetMasterId: String = "",
     val widgetTitle: String = "",
