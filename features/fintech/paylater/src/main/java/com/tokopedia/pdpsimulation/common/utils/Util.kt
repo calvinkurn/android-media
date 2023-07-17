@@ -8,17 +8,12 @@ object Util {
 
     fun getTextRBPRemoteConfig(context: Context?, old: CharSequence?, new: CharSequence?): CharSequence {
         return context?.let {
-            val remoteConfig = FirebaseRemoteConfigImpl(context)
-            val shouldUseNewField =
-                remoteConfig.getBoolean(
-                    RemoteConfigKey.ANDROID_FINTECH_ENABLE_RISK_BASED_PRICING,
-                    false
-                )
-            if (shouldUseNewField) new else old
+            if (isRBPOn(context)) new else old
         } ?: ""
     }
 
     fun isRBPOn(context: Context?): Boolean {
+        return true
         return context?.let {
             val remoteConfig = FirebaseRemoteConfigImpl(context)
             remoteConfig.getBoolean(
