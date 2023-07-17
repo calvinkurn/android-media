@@ -90,6 +90,7 @@ class TrackingMapper {
         return (result.toString() to outputTracking)
     }
 
+    @Suppress("SwallowedException")
     fun transformListPerfEvent(tracking: List<PerformanceTracking>): Pair<String, List<PerformanceTracking>> {
         val result = JSONObject()
         val data = JSONArray()
@@ -204,6 +205,7 @@ class TrackingMapper {
             }
         }
 
+        @Suppress("SwallowedException")
         fun reformatPerformanceEvent(
             irisPerformanceData: IrisPerformanceData,
             sessionId: String

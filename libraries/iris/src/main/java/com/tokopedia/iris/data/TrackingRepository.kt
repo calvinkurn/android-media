@@ -88,6 +88,7 @@ class TrackingRepository private constructor(
             }
         }
 
+    @SuppressLint("DefaultLocale")
     suspend fun savePerformanceEvent(data: String) =
         withContext(Dispatchers.IO) {
             try {
@@ -124,6 +125,7 @@ class TrackingRepository private constructor(
         }
     }
 
+    @SuppressLint("DefaultLocale")
     private fun getFromOldestPerf(maxRow: Int): List<PerformanceTracking> {
         return try {
             trackingPerfDao.getFromOldest(maxRow)
@@ -151,6 +153,7 @@ class TrackingRepository private constructor(
         }
     }
 
+    @SuppressLint("DefaultLocale")
     fun deletePerf(data: List<PerformanceTracking>) {
         try {
             trackingPerfDao.delete(data)

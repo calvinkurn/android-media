@@ -13,6 +13,7 @@ object ConfigurationMapper {
             Configuration()
         }
     }
+    @Suppress("SwallowedException")
     fun parsePerf(json: String) : PerfConfiguration {
         return try{
             Gson().fromJson(json, PerfConfiguration::class.java)

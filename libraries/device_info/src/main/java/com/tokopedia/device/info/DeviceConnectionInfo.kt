@@ -161,6 +161,7 @@ object DeviceConnectionInfo {
         return manager.networkOperatorName
     }
 
+    @Suppress("SwallowedException")
     @JvmStatic
     fun isPowerSaveMode(context: Context): Boolean {
         return try {
