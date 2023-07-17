@@ -12,7 +12,6 @@ import com.tokopedia.common_sdk_affiliate_toko.model.AffiliateSdkPageSource
 import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateAtcSource
 import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.kotlin.extensions.view.encodeToUtf8
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetSingleRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
@@ -391,7 +390,7 @@ class WishlistCollectionDetailViewModel @Inject constructor(
     ) {
         launchCatchError(block = {
             affiliateCookieHelper.get().initCookie(
-                affiliateUUID = affiliateUuid.encodeToUtf8(),
+                affiliateUUID = affiliateUuid,
                 affiliateChannel = affiliateChannel,
                 affiliatePageDetail = AffiliatePageDetail(
                     pageId = wishlistCollectionId,
@@ -416,7 +415,7 @@ class WishlistCollectionDetailViewModel @Inject constructor(
                     null
                 )
                 affiliateCookieHelper.get().initCookie(
-                    affiliateUUID = affiliateUUID.encodeToUtf8(),
+                    affiliateUUID = affiliateUUID,
                     affiliateChannel = affiliateChannel,
                     affiliatePageDetail = AffiliatePageDetail(
                         pageId = wishlistItemOnAtc.id,
