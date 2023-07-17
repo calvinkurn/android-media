@@ -29,7 +29,6 @@ import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.seller_tokopedia_flash_sale.R
 import com.tokopedia.tkpd.flashsale.common.bottomsheet.sse_submission_error.FlashSaleProductListSseSubmissionErrorBottomSheet
 import com.tokopedia.tkpd.flashsale.common.dialog.FlashSaleProductSseSubmissionDialog
@@ -122,7 +121,6 @@ class FlashSaleManageProductListFragment :
             CoachMark2(it)
         }
     }
-    private lateinit var remoteConfig: RemoteConfigInstance
     private var currentOffset: Int = 0
     private var sseProgressDialog: FlashSaleProductSseSubmissionProgressDialog? = null
     private val flashSaleAdapter by lazy {
@@ -163,9 +161,11 @@ class FlashSaleManageProductListFragment :
             pageSize = 10,
             onLoadNextPage = {
                 flashSaleAdapter.addItem(LoadingItem)
-            }, onLoadNextPageFinished = {
+            },
+            onLoadNextPageFinished = {
                 flashSaleAdapter.removeItem(LoadingItem)
-            })
+            }
+        )
         rvProductList?.apply {
             attachOnScrollListener({
                 coachMark?.dismissCoachMark()
@@ -196,7 +196,7 @@ class FlashSaleManageProductListFragment :
         )
     }
 
-    private fun setupTicker(isShowTicker: Boolean, tickerList : List<RemoteTicker>) {
+    private fun setupTicker(isShowTicker: Boolean, tickerList: List<RemoteTicker>) {
         if (isShowTicker) {
             var tickerDataList: MutableList<TickerData> = mutableListOf()
             ticker?.apply {
@@ -486,13 +486,13 @@ class FlashSaleManageProductListFragment :
 
     private fun configCoachMarkForFirstProductItem() {
         rvProductList?.viewTreeObserver?.addOnGlobalLayoutListener(object :
-            ViewTreeObserver.OnGlobalLayoutListener {
-            override fun onGlobalLayout() {
-                rvProductList?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
-                showCoachMarkOnFirstProductItem()
-                setSharedPrefCoachMarkAlreadyShown()
-            }
-        })
+                ViewTreeObserver.OnGlobalLayoutListener {
+                override fun onGlobalLayout() {
+                    rvProductList?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
+                    showCoachMarkOnFirstProductItem()
+                    setSharedPrefCoachMarkAlreadyShown()
+                }
+            })
     }
 
     private fun setSharedPrefCoachMarkAlreadyShown() {
@@ -582,10 +582,11 @@ class FlashSaleManageProductListFragment :
 
     private fun setLoadingShimmeringData(isLoadingProductList: Boolean) {
         flashSaleAdapter.apply {
-            if (isLoadingProductList)
+            if (isLoadingProductList) {
                 addItem(FlashSaleManageProductListShimmeringItem)
-            else
+            } else {
                 removeItem(FlashSaleManageProductListShimmeringItem)
+            }
         }
     }
 
@@ -609,8 +610,9 @@ class FlashSaleManageProductListFragment :
     }
 
     override fun onBackArrowClicked() {
-        if (sseProgressDialog?.isShowing() == false)
+        if (sseProgressDialog?.isShowing() == false) {
             showClickBackDialog()
+        }
     }
 
     override fun onFragmentBackPressed(): Boolean {
@@ -765,5 +767,4 @@ class FlashSaleManageProductListFragment :
     override fun onGlobalErrorActionClickRetry() {
         getReservedProductList()
     }
-
 }
