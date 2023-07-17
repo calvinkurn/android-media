@@ -40,6 +40,12 @@
         app:typographyType="paragraph_3"
         app:typographyWeight="reguler"/>
 
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/groupTicker"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="bgTicker,ivTicker,tvTicker"/>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvInstallmentDetail"
         android:layout_width="match_parent"

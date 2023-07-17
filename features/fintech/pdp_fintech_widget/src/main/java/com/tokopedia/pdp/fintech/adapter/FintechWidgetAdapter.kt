@@ -81,7 +81,7 @@ class FintechWidgetAdapter(val context: Context, var widgetClickListner: WidgetC
     {
         if (it.isNotBlank()) {
             holder.headerPartner.visibility = View.VISIBLE
-            holder.headerPartner.text = "Cicil 12x Rp9.999.999"
+            holder.headerPartner.text = it.parseAsHtml()
         } else
             removeViewVisibility(holder.headerPartner)
     }
@@ -91,7 +91,7 @@ class FintechWidgetAdapter(val context: Context, var widgetClickListner: WidgetC
     {
         if (it.isNotBlank()) {
             holder.subheaderPartner.visibility = View.VISIBLE
-            holder.subheaderPartner.text = "Hore, biaya cicilan kamu turun!"
+            holder.subheaderPartner.text = it.parseAsHtml()
         } else
             removeViewVisibility(holder.subheaderPartner)
     }

@@ -16,6 +16,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.afterTextChanged
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.pdpsimulation.R
 import com.tokopedia.pdpsimulation.activateCheckout.domain.model.CheckoutData
@@ -237,8 +238,34 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
         paylaterGetOptimizedModel = it.data
         removeErrorInTenure()
         setTenureDetailData()
+        setAdditionalInformation()
     }
 
+    private fun setAdditionalInformation() {
+        payLaterActivationViewModel.gatewayToChipMap[payLaterActivationViewModel.selectedGatewayId]?.let { checkoutData ->
+            gatewayDetailLayout.groupAdditionalInformation.shouldShowWithAction(
+                checkoutData.additionalInformation.title.isNotEmpty()
+            ) {
+                gatewayDetailLayout.additionalInformationTitle.text = checkoutData.additionalInformation.title
+                gatewayDetailLayout.additionalInformationIcon.setImageUrl(checkoutData.additionalInformation.image)
+            }
+
+            gatewayDetailLayout.additionalInformationBottomsheetIcon.shouldShowWithAction(
+                checkoutData.additionalInformation.bottomSheet.show
+            ) {
+                gatewayDetailLayout.additionalInformationBottomsheetIcon.setOnClickListener {
+                    DownRateBottomsheet.show(
+                        DownRateBottomsheet.createBundle(
+                            checkoutData.additionalInformation.bottomSheet.image,
+                            checkoutData.additionalInformation.bottomSheet.title,
+                            checkoutData.additionalInformation.bottomSheet.description
+                        ),
+                        childFragmentManager
+                    )
+                }
+            }
+        }
+    }
 
     private fun sendOccImpressionEvent() {
         try {
@@ -535,12 +562,6 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
         gatewayDetailLayout.changePayLaterPartner.setOnClickListener {
             changePartnerLogic()
         }
-        gatewayDetailLayout.additionalInformationBottomsheetIcon.setOnClickListener {
-            DownRateBottomsheet.show(
-                DownRateBottomsheet.createBundle("", "", ""),
-                childFragmentManager
-            )
-        }
         quantityTextWatcher()
         detailHeader.quantityEditor.setValueChangedListener { newValue, _, _ ->
             quantity = newValue
@@ -576,7 +597,10 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
                     quantity.toString(),
                     checkoutData.userAmount ?: "",
                     payLaterActivationViewModel.variantName,
-                    checkoutData.tenureDetail.getOrNull(selectedTenurePosition)?.promoName.orEmpty()
+                    checkoutData.tenureDetail.getOrNull(selectedTenurePosition)?.promoName.orEmpty(),
+                    payLaterActivationViewModel.price.toString(),
+                    checkoutData.tenureDetail.getOrNull(selectedTenurePosition)?.previousRate.orEmpty(),
+                    checkoutData.tenureDetail.getOrNull(selectedTenurePosition)?.newRate.orEmpty()
                 )
             )
         }
@@ -792,6 +816,8 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
                     checkoutData.tenureDetail[newPositionToSelect].tenure.toString(),
                     checkoutData.gatewayCode.orEmpty(),
                     promoName,
+                    checkoutData.tenureDetail.getOrNull(selectedTenurePosition)?.previousRate.orEmpty(),
+                    checkoutData.tenureDetail.getOrNull(selectedTenurePosition)?.newRate.orEmpty()
                 )
             )
         }

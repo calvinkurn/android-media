@@ -1,8 +1,30 @@
 package com.tokopedia.pdpsimulation.common.utils
 
+import android.content.Context
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigKey
+
 object Util {
 
-    fun getText(old: String, new: String, shouldUseNew: Boolean = false): String {
-        return if (shouldUseNew) new else old
+    fun getTextRBPRemoteConfig(context: Context?, old: CharSequence?, new: CharSequence?): CharSequence {
+        return context?.let {
+            val remoteConfig = FirebaseRemoteConfigImpl(context)
+            val shouldUseNewField =
+                remoteConfig.getBoolean(
+                    RemoteConfigKey.ANDROID_FINTECH_ENABLE_RISK_BASED_PRICING,
+                    false
+                )
+            if (shouldUseNewField) new else old
+        } ?: ""
+    }
+
+    fun isRBPOn(context: Context?): Boolean {
+        return context?.let {
+            val remoteConfig = FirebaseRemoteConfigImpl(context)
+            remoteConfig.getBoolean(
+                RemoteConfigKey.ANDROID_FINTECH_ENABLE_RISK_BASED_PRICING,
+                false
+            )
+        } ?: false
     }
 }
