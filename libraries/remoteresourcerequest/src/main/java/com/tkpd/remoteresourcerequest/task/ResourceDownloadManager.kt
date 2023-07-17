@@ -275,7 +275,7 @@ class ResourceDownloadManager private constructor() {
 
     private fun onDownloadFailed(task: DeferredResourceTask) {
         task.deferredImageView?.let { imageReference ->
-            imageReference.get()?.setImageResource(com.tokopedia.kotlin.extensions.R.drawable.ic_loading_error)
+            imageReference.get()?.setImageResource(com.tokopedia.utils.R.drawable.ic_loading_error)
         }
         task.notifyDownloadFailed()
     }
