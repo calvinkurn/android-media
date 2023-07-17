@@ -129,7 +129,7 @@ class MiniCartProductViewHolder(
                 textQtyLeft.text = element.productQtyLeft
                 textQtyLeft.show()
                 if (element.productVariantName.isNotBlank()) {
-                    textQtyLeft.setPadding(itemView.resources.getDimensionPixelOffset(R.dimen.dp_4), itemView.resources.getDimensionPixelOffset(com.tokopedia.abstraction.R.dimen.dp_2), 0, 0)
+                    textQtyLeft.setPadding(itemView.resources.getDimensionPixelOffset(com.tokopedia.abstraction.R.dimen.dp_4), itemView.resources.getDimensionPixelOffset(com.tokopedia.abstraction.R.dimen.dp_2), 0, 0)
                 } else {
                     textQtyLeft.setPadding(0, 0, 0, 0)
                 }
@@ -748,7 +748,7 @@ class MiniCartProductViewHolder(
                 constraintSet.connect(
                     R.id.text_notes,
                     ConstraintSet.BOTTOM,
-                    R.id.delete_button,
+                    com.tokopedia.design.R.id.delete_button,
                     ConstraintSet.TOP
                 )
                 constraintSet.applyTo(containerProduct)

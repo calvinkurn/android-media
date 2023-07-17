@@ -151,8 +151,8 @@ abstract class BaseChatViewStateImpl(
     override fun loadAvatar(avatarUrl: String) {
         val avatar = toolbar.findViewById<ImageView>(R.id.user_avatar)
         avatar.loadImageCircle(avatarUrl, properties = {
-            setPlaceHolder(R.drawable.ic_loading_toped)
-            setErrorDrawable(R.drawable.ic_loading_toped)
+            setPlaceHolder(com.tokopedia.abstraction.R.drawable.ic_loading_toped)
+            setErrorDrawable(com.tokopedia.abstraction.R.drawable.ic_loading_toped)
         })
     }
 

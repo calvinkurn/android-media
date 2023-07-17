@@ -31,7 +31,7 @@ class KeyTipsSheet : BottomSheetUnify() {
         isHideable = true
         isDragable = true
         showCloseIcon = false
-        context?.getString(R.string.topads_empty_tip_memilih_kata_kunci_title)?.let { setTitle(it) }
+        context?.getString(com.tokopedia.topads.common.R.string.topads_empty_tip_memilih_kata_kunci_title)?.let { setTitle(it) }
         desc1 = contentView.findViewById(R.id.desc1)
         desc2 = contentView.findViewById(R.id.desc2)
         desc3 = contentView.findViewById(R.id.desc3)

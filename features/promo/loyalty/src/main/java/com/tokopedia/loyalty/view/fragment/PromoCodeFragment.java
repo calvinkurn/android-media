@@ -88,7 +88,7 @@ public class PromoCodeFragment extends BaseDaggerFragment implements IPromoCodeV
 
     protected void initView(View view) {
         progressDialog = new ProgressDialog(getActivity());
-        progressDialog.setMessage(getString(R.string.title_loading));
+        progressDialog.setMessage(getString(com.tokopedia.abstraction.R.string.title_loading));
         voucherCodeFieldHolder = view.findViewById(R.id.til_et_voucher_code);
         final EditText voucherCodeField = view.findViewById(R.id.et_voucher_code);
         TextView submitVoucherButton = view.findViewById(R.id.btn_check_voucher);

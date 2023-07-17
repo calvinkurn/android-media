@@ -121,7 +121,7 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
 
         @Suppress("DEPRECATION")
         progressDialog = ProgressDialog(activity)
-        progressDialog?.setMessage(getString(R.string.title_loading))
+        progressDialog?.setMessage(getString(com.tokopedia.abstraction.R.string.title_loading))
 
         layoutMerchantVoucher = view.findViewById(R.id.layout_merchant_voucher)
         rvVoucherList = view.findViewById(R.id.rvVoucherList)
@@ -196,7 +196,7 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
         if (progressDialog == null) {
             progressDialog = ProgressDialog(activity)
             progressDialog?.setCancelable(false)
-            progressDialog?.setMessage(getString(R.string.title_loading))
+            progressDialog?.setMessage(getString(com.tokopedia.abstraction.R.string.title_loading))
         }
         if (progressDialog!!.isShowing()) {
             progressDialog?.dismiss()
@@ -368,7 +368,7 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
 
     override fun configView(parentView: View?) {
         super.configView(parentView)
-        parentView?.findViewById<View>(R.id.layout_title)?.setOnClickListener(null)
+        parentView?.findViewById<View>(com.tokopedia.design.R.id.layout_title)?.setOnClickListener(null)
     }
 
     private fun hideKeyboard() {

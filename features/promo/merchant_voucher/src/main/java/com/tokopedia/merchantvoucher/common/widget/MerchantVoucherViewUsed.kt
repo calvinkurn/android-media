@@ -91,7 +91,7 @@ class MerchantVoucherViewUsed : CustomVoucherView {
                     context,
                     iv_voucher_type,
                     voucherImageUrl,
-                    R.drawable.ic_loading_image
+                com.tokopedia.design.R.drawable.ic_loading_image
             )
             val voucherTitle = context.getString(R.string.voucher_title_x_x,
                     merchantVoucherViewModel.getTypeString(context),
@@ -99,7 +99,7 @@ class MerchantVoucherViewUsed : CustomVoucherView {
             val spannedVoucherTitle = SpanText(
                     voucherTitle,
                     merchantVoucherViewModel.getAmountShortString()
-            ).addBoldSpanWithFontFamily("sans-serif").changeTextSize(resources.getDimensionPixelSize(R.dimen.sp_20)).getCharSequence()
+            ).addBoldSpanWithFontFamily("sans-serif").changeTextSize(resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.sp_20)).getCharSequence()
             tvVoucherTitle.text = spannedVoucherTitle
             val voucherDesc = merchantVoucherViewModel.getMinSpendLongString(context)
             tvVoucherDesc.text = SpanText(
@@ -132,7 +132,7 @@ class MerchantVoucherViewUsed : CustomVoucherView {
                 (merchantVoucherViewModel.status == MerchantVoucherStatusTypeDef.TYPE_IN_USE) -> {
                     MethodChecker.setBackground(
                             btnUseVoucher,
-                            MethodChecker.getDrawable(context, R.drawable.bg_used_voucher)
+                            MethodChecker.getDrawable(context, com.tokopedia.design.R.drawable.bg_used_voucher)
                     )
                     btnUseVoucher.setTextColor(
                             MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN0)

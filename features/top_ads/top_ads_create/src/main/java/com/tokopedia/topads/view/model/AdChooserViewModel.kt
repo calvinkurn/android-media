@@ -45,7 +45,7 @@ class AdChooserViewModel @Inject constructor(
                 val data = withContext(dispatcher.io) {
                     val request = RequestHelper.getGraphQlRequest(GraphqlHelper.loadRawString(
                         context.resources,
-                        R.raw.query_autoads_shop_info),
+                        com.tokopedia.topads.common.R.raw.query_autoads_shop_info),
                         AdCreationOption::class.java,
                         hashMapOf(SHOP_Id to userSession.shopId, ParamObject.SOURCE to SourceConstant.SOURCE_ANDROID_AD_CHOOSER))
                     val cacheStrategy = RequestHelper.getCacheStrategy()
@@ -77,7 +77,7 @@ class AdChooserViewModel @Inject constructor(
                 val data = withContext(dispatcher.io) {
                     val request = RequestHelper.getGraphQlRequest(GraphqlHelper.loadRawString(
                         context.resources,
-                        R.raw.query_auto_ads_status),
+                        com.tokopedia.topads.common.R.raw.query_auto_ads_status),
                         AutoAdsResponse::class.java,
                         hashMapOf(SHOP_Id to userSession.shopId, ParamObject.SOURCE to "android.topads_ad_chooser"))
                     val cacheStrategy = RequestHelper.getCacheStrategy()

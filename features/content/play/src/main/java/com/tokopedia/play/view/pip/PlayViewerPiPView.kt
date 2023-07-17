@@ -139,7 +139,7 @@ class PlayViewerPiPView : ConstraintLayout {
         setBackgroundColor(
                 MethodChecker.getColor(rootView.context,
                         if (pipInfo.videoStream.orientation.isHorizontal) R.color.play_dms_background
-                        else R.color.transparent
+                        else com.tokopedia.universal_sharing.R.color.transparent
                 )
         )
     }

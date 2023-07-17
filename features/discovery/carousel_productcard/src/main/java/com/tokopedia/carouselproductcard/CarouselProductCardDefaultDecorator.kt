@@ -16,9 +16,9 @@ internal class CarouselProductCardDefaultDecorator : RecyclerView.ItemDecoration
         val itemCount = state.itemCount
 
         if (parent.getChildAdapterPosition(view) == 0) {
-            outRect.left = view.context.resources.getDimensionPixelSize(R.dimen.dp_16)
+            outRect.left = view.context.resources.getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_16)
         } else if (itemCount > 0 && itemPosition == itemCount - 1) {
-            outRect.right = view.context.resources.getDimensionPixelSize(R.dimen.dp_16)
+            outRect.right = view.context.resources.getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_16)
         }
     }
 }

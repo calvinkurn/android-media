@@ -1,8 +1,8 @@
 package com.tokopedia.productcard.utils
 
 import androidx.annotation.DimenRes
-import com.tokopedia.productcard.R.dimen.dp_12
-import com.tokopedia.productcard.R.dimen.dp_13
+import com.tokopedia.abstraction.R.dimen.dp_12
+import com.tokopedia.abstraction.R.dimen.dp_14
 
 internal const val LIGHT_GREY = "lightGrey"
 internal const val LIGHT_BLUE = "lightBlue"
@@ -76,7 +76,7 @@ internal const val WORDING_TERSEDIA = "Tersedia"
 internal val FIRE_WIDTH = dp_12
 
 @DimenRes
-internal val FIRE_HEIGHT = dp_13
+internal val FIRE_HEIGHT = dp_14
 
 internal const val QUANTITY_EDITOR_DEBOUNCE_IN_MS: Long = 1000
 

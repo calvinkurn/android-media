@@ -107,7 +107,7 @@ public class PromoCouponFragment extends BaseDaggerFragment
         refreshHandler = new RefreshHandler(getActivity(), view.findViewById(R.id.swipe_refresh_layout), this);
         refreshHandler.startRefresh();
         progressDialog = new ProgressDialog(getActivity());
-        progressDialog.setMessage(getString(R.string.title_loading));
+        progressDialog.setMessage(getString(com.tokopedia.abstraction.R.string.title_loading));
         mainView = view.findViewById(R.id.main_view_coupon);
         couponListRecyclerView = view.findViewById(R.id.coupon_recycler_view);
         couponListRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));

@@ -217,11 +217,11 @@ abstract class ProductCardView: BaseCustomView {
 
     protected open fun configureTextViewLocationConstraintBasedOnPosition(imageTopAds: View, textViewShopLocation: View) {
         if(isTextLocationIsAtBottomOfCard()) {
-            setViewConstraint(textViewShopLocation.id, ConstraintSet.END, imageTopAds.id, ConstraintSet.START, com.tokopedia.design.R.dimen.dp_4)
+            setViewConstraint(textViewShopLocation.id, ConstraintSet.END, imageTopAds.id, ConstraintSet.START, com.tokopedia.abstraction.R.dimen.dp_4)
         }
         else {
             imageProduct?.doIfVisible { imageProduct ->
-                setViewConstraint(textViewShopLocation.id, ConstraintSet.END, imageProduct.id, ConstraintSet.END, com.tokopedia.design.R.dimen.dp_8)
+                setViewConstraint(textViewShopLocation.id, ConstraintSet.END, imageProduct.id, ConstraintSet.END, com.tokopedia.abstraction.R.dimen.dp_8)
             }
         }
     }

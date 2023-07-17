@@ -35,7 +35,7 @@ class HomeBannerFeedViewHolder(itemView: View) : SmartAbstractViewHolder<BannerR
                 .asBitmap()
                 .load(element.imageUrl)
                 .dontAnimate()
-                .placeholder(R.drawable.loading_page)
+                .placeholder(com.tokopedia.topads.sdk.R.drawable.loading_page)
                 .error(R.drawable.error_drawable)
                 .into(bannerImageView)
 

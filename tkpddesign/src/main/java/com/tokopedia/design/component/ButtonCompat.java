@@ -146,7 +146,7 @@ public class ButtonCompat extends AppCompatButton {
     private void defineType() {
         switch (mType) {
             case PRIMARY:
-                initDraw(R.color.Unify_N0, R.drawable.bg_button_green);
+                initDraw(com.tokopedia.unifyprinciples.R.color.Unify_N0, R.drawable.bg_button_green);
                 super.setEnabled(true);
                 break;
             case PRIMARY_DISABLED:
@@ -157,10 +157,10 @@ public class ButtonCompat extends AppCompatButton {
                 initDraw(com.tokopedia.unifyprinciples.R.color.Unify_N200, R.drawable.bg_button_white_border);
                 break;
             case TRANSACTION:
-                initDraw(R.color.Unify_N0, R.drawable.bg_button_orange);
+                initDraw(com.tokopedia.unifyprinciples.R.color.Unify_N0, R.drawable.bg_button_orange);
                 break;
             case WHITE_TRANSPARENT:
-                initDraw(R.color.Unify_N0, R.drawable.bg_button_white_transparent);
+                initDraw(com.tokopedia.unifyprinciples.R.color.Unify_N0, R.drawable.bg_button_white_transparent);
             case GHOST:
                 initDraw(com.tokopedia.unifyprinciples.R.color.Unify_G500, R.drawable.bg_button_green_border);
                 break;

@@ -28,7 +28,7 @@ class GroupInfoUseCase @Inject constructor(@ActivityContext val context: Context
     }
 
     private fun getQuery(): String {
-        return GraphqlHelper.loadRawString(context?.resources, R.raw.query_get_group_info)
+        return GraphqlHelper.loadRawString(context?.resources, com.tokopedia.topads.common.R.raw.query_get_group_info)
     }
 
     private val cacheStrategy: GraphqlCacheStrategy = GraphqlCacheStrategy

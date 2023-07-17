@@ -143,7 +143,7 @@ public class PromoListFragment extends BaseDaggerFragment implements IPromoListV
     @Override
     public void renderPromoDataList(List<PromoData> promoDataList, boolean firstTimeLoad) {
         if (refreshHandler.isRefreshing()) refreshHandler.finishRefresh();
-        View errorView = containerList.findViewById(R.id.main_retry);
+        View errorView = containerList.findViewById(com.tokopedia.abstraction.R.id.main_retry);
         if (errorView != null) errorView.setVisibility(View.GONE);
         if (firstTimeLoad) {
             adapter.addAllItems(promoDataList);
@@ -375,7 +375,7 @@ public class PromoListFragment extends BaseDaggerFragment implements IPromoListV
             quickFilterItem.setName(promoSubMenuDataList.get(i).getTitle());
             quickFilterItem.setType(promoSubMenuDataList.get(i).getId());
             quickFilterItem.setSelected(promoSubMenuDataList.get(i).isSelected());
-            quickFilterItem.setColorBorder(R.color.tkpd_main_green);
+            quickFilterItem.setColorBorder(com.tokopedia.abstraction.R.color.tkpd_main_green);
             quickFilterItemList.add(quickFilterItem);
         }
 

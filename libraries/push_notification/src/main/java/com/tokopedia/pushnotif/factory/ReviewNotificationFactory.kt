@@ -188,9 +188,9 @@ class ReviewNotificationFactory(context: Context) : BaseNotificationFactory(cont
             val id = context.resources.getIdentifier("rate_$i", "id", context.packageName)
             // Here you can use any resource for selected and unselected ratings
             if (i <= reviewPosition) {
-                notificationLayout.setImageViewResource(id, R.drawable.ic_stars_active_xxl)
+                notificationLayout.setImageViewResource(id, com.tokopedia.design.R.drawable.ic_stars_active_xxl)
             } else {
-                notificationLayout.setImageViewResource(id, R.drawable.ic_stars_disable_xxl)
+                notificationLayout.setImageViewResource(id, com.tokopedia.design.R.drawable.ic_stars_disable_xxl)
             }
         }
     }
@@ -200,7 +200,7 @@ class ReviewNotificationFactory(context: Context) : BaseNotificationFactory(cont
             Glide.with(context.applicationContext)
                     .asBitmap()
                     .load(imgUrl)
-                    .error(R.drawable.ic_big_notif_customerapp)
+                    .error(com.tokopedia.resources.common.R.drawable.ic_big_notif_customerapp)
                     .into(object : CustomTarget<Bitmap>() {
                         override fun onLoadCleared(placeholder: Drawable?) { }
 

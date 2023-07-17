@@ -244,7 +244,7 @@ class EditAdOthersFragment : BaseDaggerFragment() {
         }
         startDate.textFieldInput.isFocusable = false
         endDate.textFieldInput.isFocusable = false
-        val padding = resources.getDimensionPixelSize(com.tokopedia.topads.common.R.dimen.dp_8)
+        val padding = resources.getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_8)
         startDate.textFieldIcon1.setPadding(padding, padding, padding, padding)
         endDate.textFieldIcon1.setPadding(padding, padding, padding, padding)
         context?.run {
@@ -341,9 +341,9 @@ class EditAdOthersFragment : BaseDaggerFragment() {
         val tooltipView =
             layoutInflater.inflate(com.tokopedia.topads.common.R.layout.tooltip_custom_view, null)
                 .apply {
-                    val tvToolTipText = this.findViewById<Typography>(R.id.tooltip_text)
+                    val tvToolTipText = this.findViewById<Typography>(com.tokopedia.topads.common.R.id.tooltip_text)
                     tvToolTipText?.text = getString(R.string.topads_headline_schedule_tooltip_text)
-                    val imgTooltipIcon = this.findViewById<ImageUnify>(R.id.tooltip_icon)
+                    val imgTooltipIcon = this.findViewById<ImageUnify>(com.tokopedia.topads.common.R.id.tooltip_icon)
                     imgTooltipIcon?.setImageDrawable(context?.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_tips))
                 }
         tooltipBtn.addItem(tooltipView)
@@ -354,11 +354,11 @@ class EditAdOthersFragment : BaseDaggerFragment() {
                 add(TipsUiRowModel(R.string.topads_headline_tips_schedule_row1))
                 add(TipsUiHeaderModel(R.string.topads_headline_tips_budget_header))
                 add(TipsUiRowModel(R.string.topads_headline_tips_budget_row1,
-                    R.drawable.topads_create_ic_checklist))
+                    com.tokopedia.topads.common.R.drawable.topads_create_ic_checklist))
                 add(TipsUiRowModel(R.string.topads_headline_tips_budget_row2,
-                    R.drawable.topads_create_ic_checklist))
+                    com.tokopedia.topads.common.R.drawable.topads_create_ic_checklist))
                 add(TipsUiRowModel(R.string.topads_headline_tips_budget_row3,
-                    R.drawable.topads_create_ic_checklist))
+                    com.tokopedia.topads.common.R.drawable.topads_create_ic_checklist))
             }
             val tipsListSheet =
                 context?.let { it1 -> TipsListSheet.newInstance(it1, tipsList = tipsList) }

@@ -47,7 +47,7 @@ class CreationOnboardingFragScreen2 : BaseDaggerFragment() {
         val slideImage = view.findViewById<DeferredImageView>(R.id.slideImage)
         title?.text = getString(R.string.topads_create_onboarding_screen_title2)
         desc?.text = getString(R.string.topads_create_onboarding_screen_desc2)
-        dotImage?.setImageDrawable(context?.getResDrawable(R.drawable.topads_indi_2))
+        dotImage?.setImageDrawable(context?.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_indi_2))
         slideImage?.loadRemoteImageDrawable(IMAGE_PATH)
     }
 }

@@ -38,9 +38,9 @@ class FeedFloatingButton : LinearLayout, View.OnClickListener {
 
     private fun initAttrs(context: Context, attrs: AttributeSet?) {
         if (attrs != null) {
-            val attributeArray = context.obtainStyledAttributes(attrs, R.styleable.FeedFloatingButton)
+            val attributeArray = context.obtainStyledAttributes(attrs, com.tokopedia.content.common.R.styleable.FeedFloatingButton)
 
-             tvFab.text = attributeArray.getString(R.styleable.FeedFloatingButton_fab_text) ?: context.getString(com.tokopedia.content.common.R.string.feed_fab_create_content)
+             tvFab.text = attributeArray.getString(com.tokopedia.content.common.R.styleable.FeedFloatingButton_fab_text) ?: context.getString(com.tokopedia.content.common.R.string.feed_fab_create_content)
             attributeArray.recycle()
         }
     }

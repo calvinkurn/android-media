@@ -197,14 +197,14 @@ public class ScroogeActivity extends AppCompatActivity implements FilePickerInte
             public synchronized void onReceivedSslError(WebView view, final SslErrorHandler handler, SslError error) {
                 super.onReceivedSslError(view, handler, error);
                 final AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
-                builder.setMessage(R.string.cs_notification_error_ssl_cert_invalid);
-                builder.setPositiveButton(R.string.title_ok, new DialogInterface.OnClickListener() {
+                builder.setMessage(com.tokopedia.network.R.string.cs_notification_error_ssl_cert_invalid);
+                builder.setPositiveButton(com.tokopedia.abstraction.R.string.title_ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         handler.proceed();
                     }
                 });
-                builder.setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
+                builder.setNegativeButton(com.tokopedia.abstraction.R.string.dialog_cancel, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         handler.cancel();
