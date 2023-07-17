@@ -9,8 +9,6 @@ import androidx.core.text.inSpans
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.SPACE
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
@@ -31,11 +29,6 @@ class WishlistCollectionTickerItemViewHolder(
 ) : RecyclerView.ViewHolder(binding.root) {
 
     private val firebaseRemoteConfig = FirebaseRemoteConfigImpl(itemView.context)
-
-    companion object {
-        private const val SOURCE_KEY = "source"
-        private const val SOURCE_WISHLIST = "wishlist"
-    }
 
     fun bind(item: WishlistCollectionTypeLayoutData, isTickerClosed: Boolean) {
 
@@ -87,10 +80,7 @@ class WishlistCollectionTickerItemViewHolder(
                 inSpans(
                     spans = arrayOf(
                         setOnClickListener {
-                            RouteManager.route(
-                                itemView.context,
-                                "${ApplinkConst.AFFILIATE_TOKO_ONBOARDING}?$SOURCE_KEY=$SOURCE_WISHLIST"
-                            )
+                            actionListener?.onAffiliateTickerCtaClick()
                         },
                         ForegroundColorSpan(
                             MethodChecker.getColor(
