@@ -26,7 +26,6 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform
 import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform.WISHLIST_COLLECTION_DETAIL_INTERNAL
@@ -59,6 +58,7 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey.HOME_ENABLE_AUTO_REFRESH_WISHLIST
+import com.tokopedia.searchbar.navigation_component.NavSource
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
@@ -1258,12 +1258,11 @@ class WishlistCollectionDetailFragment :
     }
 
     private fun setupIconToolbar() {
-        val pageSource: String
         val icons: IconBuilder
         binding?.run {
             if (activityWishlistV2 != PARAM_HOME) {
                 wishlistCollectionDetailNavtoolbar.setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_BACK)
-                icons = IconBuilder().apply {
+                icons = IconBuilder(IconBuilderFlag(pageSource = NavSource.WISHLIST)).apply {
                     if (collectionType == TYPE_COLLECTION_PRIVATE_SELF ||
                         collectionType == TYPE_COLLECTION_PUBLIC_SELF ||
                         collectionType == TYPE_COLLECTION_PUBLIC_OTHERS
@@ -1274,9 +1273,8 @@ class WishlistCollectionDetailFragment :
                     addIcon(iconId = IconList.ID_NAV_GLOBAL) {}
                 }
             } else {
-                pageSource = ApplinkConsInternalNavigation.SOURCE_HOME_WISHLIST_V2
                 wishlistCollectionDetailNavtoolbar.setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_NONE)
-                icons = IconBuilder(IconBuilderFlag(pageSource = pageSource)).apply {
+                icons = IconBuilder(IconBuilderFlag(pageSource = NavSource.HOME_WISHLIST)).apply {
                     if (collectionType == TYPE_COLLECTION_PUBLIC_SELF || collectionType == TYPE_COLLECTION_PUBLIC_OTHERS) {
                         addIcon(iconId = IconList.ID_SHARE) {}
                     }

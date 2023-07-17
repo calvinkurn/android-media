@@ -132,7 +132,7 @@ class ShippingScheduleWidget : ConstraintLayout {
             isEnable = available,
             title = getTitleOtherOption(),
             description = if (available) deliveryProduct.textEta else text,
-            label = deliveryProduct.promoText,
+            label = deliveryProduct.promoText.convertToSpannedString(),
             isSelected = isSelected,
             isShowCoachMark = scheduleDeliveryPreferences?.isDisplayedCoachmark?.not() ?: true,
             onSelectedWidgetListener = {
@@ -274,7 +274,7 @@ class ShippingScheduleWidget : ConstraintLayout {
                 ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950)
             )
             tvLabelShipment.setTextColor(
-                ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N600)
+                ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN800)
             )
         } else {
             rbShipment.isEnabled = false

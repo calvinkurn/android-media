@@ -13,13 +13,18 @@ buildscript {
     }
 }
 
+android {
+    namespace 'com.tokopedia.imagepreviewslider'
+    testNamespace 'com.tokopedia.imagepreviewslider.test'
+}
+
 dependencies {
     implementation rootProject.ext.miscDependencies.stfalconImageViewer
 
     implementation projectOrAar(rootProject.ext.features.resourcesCommon)
     implementation projectOrAar(rootProject.ext.libraries.tkpddesign)
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
-    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
+    implementation projectOrAar(rootProject.ext.libraries.utils)
 
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
