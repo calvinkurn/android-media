@@ -41,6 +41,7 @@ import com.tokopedia.affiliate.ui.custom.LottieBottomNavbar
 import com.tokopedia.affiliate.ui.fragment.AffiliateAdpFragment
 import com.tokopedia.affiliate.ui.fragment.AffiliateIncomeFragment
 import com.tokopedia.affiliate.ui.fragment.AffiliatePromoFragment
+import com.tokopedia.affiliate.ui.fragment.AffiliatePromoWebViewFragment
 import com.tokopedia.affiliate.ui.fragment.education.AffiliateEducationLandingPage
 import com.tokopedia.affiliate.viewmodel.AffiliateViewModel
 import com.tokopedia.affiliate_toko.R
@@ -333,7 +334,7 @@ class AffiliateActivity :
     override fun menuClicked(position: Int, id: Int, isNotFromBottom: Boolean): Boolean {
         when (position) {
             ADP_MENU -> openFragment(AffiliateAdpFragment.getFragmentInstance(this, this))
-            PROMO_MENU -> openFragment(AffiliatePromoFragment.getFragmentInstance())
+            PROMO_MENU -> openFragment(AffiliatePromoWebViewFragment.getFragmentInstance())
             INCOME_MENU -> openFragment(
                 AffiliateIncomeFragment.getFragmentInstance(
                     userSessionInterface?.name.orEmpty(),

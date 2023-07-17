@@ -2,9 +2,8 @@ package com.tokopedia.affiliate
 
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
-import com.tokopedia.applink.user.DeeplinkMapperUser
 import com.tokopedia.unifyprinciples.Typography
-import java.util.*
+import java.util.Locale
 
 const val AFFILIATE_LOGIN_REQUEST_CODE = 1023
 const val AFFILIATE_REGISTER_REQUEST_CODE = 1024
@@ -81,7 +80,8 @@ val uri = String.format(
 
 const val SOURCE_AFFILIATE = "Tokopedia Affiliate"
 
-val APP_LINK_KYC = ApplinkConstInternalUserPlatform.getGotoKYCApplink(PROJECT_ID.toString(), SOURCE_AFFILIATE, uri)
+val APP_LINK_KYC =
+    ApplinkConstInternalUserPlatform.getGotoKYCApplink(PROJECT_ID.toString(), SOURCE_AFFILIATE, uri)
 
 const val AFFILIATE_MICRO_SITE_LINK = "https://affiliate.tokopedia.com/"
 
@@ -247,3 +247,7 @@ val SOCIAL_CHANNEL_LINK = mapOf(
 )
 const val AFFILIATE_SSE_URL_STAGING = "https://sse-staging.tokopedia.com/affiliate/sse/connect"
 const val AFFILIATE_SSE_URL_PROD = "https://sse.tokopedia.com/affiliate/sse/connect"
+const val PROMO_WEBVIEW_URL_STAGING =
+    "https://424-staging-feature.tokopedia.com/browse?module=affiliate"
+const val PROMO_WEBVIEW_URL_PROD =
+    "https://424-staging-feature.tokopedia.com/browse?module=affiliate"
