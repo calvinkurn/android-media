@@ -3,6 +3,7 @@ package com.tokopedia.checkout.revamp.view.viewholder
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup.MarginLayoutParams
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.checkout.R
@@ -12,6 +13,7 @@ import com.tokopedia.checkout.databinding.LayoutCheckoutProductBundleBinding
 import com.tokopedia.checkout.domain.model.cartshipmentform.GroupShop
 import com.tokopedia.checkout.revamp.view.adapter.CheckoutAdapterListener
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutProductModel
+import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant
@@ -62,7 +64,7 @@ class CheckoutProductViewHolder(
             bundleBinding.textVariantBundle.isVisible = false
         }
 
-        if (product.bundlingItemPosition == 0) {
+        if (product.bundlingItemPosition == 1) {
             bundleBinding.tvCheckoutBundleName.text = product.bundleTitle
             val priceInRp =
                 CurrencyFormatUtil.convertPriceValueToIdrFormat(product.bundlePrice, false)
@@ -73,11 +75,13 @@ class CheckoutProductViewHolder(
             bundleBinding.tvCheckoutBundleSeparator.isVisible = true
             bundleBinding.tvCheckoutBundleName.isVisible = true
             bundleBinding.tvCheckoutBundlePrice.isVisible = true
+            (bundleBinding.vBundlingProductSeparator.layoutParams as? MarginLayoutParams)?.topMargin = 8.dpToPx(itemView.resources.displayMetrics)
         } else {
             bundleBinding.tvCheckoutBundle.isVisible = false
             bundleBinding.tvCheckoutBundleSeparator.isVisible = false
             bundleBinding.tvCheckoutBundleName.isVisible = false
             bundleBinding.tvCheckoutBundlePrice.isVisible = false
+            (bundleBinding.vBundlingProductSeparator.layoutParams as? MarginLayoutParams)?.topMargin = 0
         }
 
         if (product.noteToSeller.isNotEmpty()) {
@@ -86,6 +90,9 @@ class CheckoutProductViewHolder(
         } else {
             bundleBinding.tvProductBundleNote.isVisible = false
         }
+
+        renderAddOnProductBundle(product)
+        renderAddOnGiftingProductLevel(product)
     }
 
     private fun hideProductViews() {
@@ -280,6 +287,74 @@ class CheckoutProductViewHolder(
                     }
                     productBinding.llAddonProductItems.addView(addOnView.root)
                     productBinding.llAddonProductItems.visible()
+                    listener.onImpressionAddOnProductService(
+                        addon.addOnDataType,
+                        product.productId.toString()
+                    )
+                }
+            }
+        }
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun renderAddOnProductBundle(product: CheckoutProductModel) {
+        val addOnProduct = product.addOnProduct
+        if (addOnProduct.listAddOnProductData.isEmpty()) {
+            bundleBinding.tvCheckoutBundleAddons.gone()
+            bundleBinding.tvCheckoutBundleAddonsSeeAll.gone()
+            bundleBinding.llAddonProductBundleItems.gone()
+        } else {
+            bundleBinding.llAddonProductBundleItems.removeAllViews()
+            if (addOnProduct.bottomsheet.isShown) {
+                bundleBinding.tvCheckoutBundleAddons.text = addOnProduct.title
+                bundleBinding.tvCheckoutBundleAddonsSeeAll.apply {
+                    visible()
+                    setOnClickListener {
+                        listener.onClickSeeAllAddOnProductService(product)
+                    }
+                }
+                listener.onClickLihatSemuaAddOnProductWidget()
+            } else {
+                bundleBinding.tvCheckoutBundleAddons.gone()
+                bundleBinding.tvCheckoutBundleAddonsSeeAll.gone()
+            }
+            val layoutInflater = LayoutInflater.from(itemView.context)
+            addOnProduct.listAddOnProductData.forEach { addon ->
+                if (addon.addOnDataName.isNotEmpty()) {
+                    val addOnView =
+                        ItemAddOnProductBinding.inflate(layoutInflater, bundleBinding.llAddonProductBundleItems, false)
+                    addOnView.apply {
+                        tvProductAddonName.text = addon.addOnDataName
+                        tvProductAddonPrice.text = " (${CurrencyFormatUtil
+                            .convertPriceValueToIdrFormat(addon.addOnDataPrice.toLong(), false)
+                            .removeDecimalSuffix()})"
+                        cbProductAddon.isChecked =
+                            (addon.addOnDataStatus == AddOnConstant.ADD_ON_PRODUCT_STATUS_CHECK)
+                        cbProductAddon.setOnCheckedChangeListener { _, isChecked ->
+                            delayChangeCheckboxAddOnState?.cancel()
+                            delayChangeCheckboxAddOnState = GlobalScope.launch(Dispatchers.Main) {
+                                delay(DEBOUNCE_TIME_ADDON)
+                                if (bindingAdapterPosition != RecyclerView.NO_POSITION) {
+                                    listener.onCheckboxAddonProductListener(
+                                        isChecked,
+                                        addon,
+                                        product,
+                                        bindingAdapterPosition
+                                    )
+                                    listener.onClickAddOnsProductWidget(
+                                        addon.addOnDataType,
+                                        product.productId.toString(),
+                                        isChecked
+                                    )
+                                }
+                            }
+                        }
+                        tvProductAddonName.setOnClickListener {
+                            listener.onClickAddonProductInfoIcon(addon.addOnDataInfoLink)
+                        }
+                    }
+                    bundleBinding.llAddonProductBundleItems.addView(addOnView.root)
+                    bundleBinding.llAddonProductBundleItems.visible()
                     listener.onImpressionAddOnProductService(
                         addon.addOnDataType,
                         product.productId.toString()
