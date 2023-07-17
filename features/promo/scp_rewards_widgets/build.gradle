@@ -1,0 +1,52 @@
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+apply plugin: 'io.hansel.preprocessor.module'
+
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+        maven { url 'https://maven-hansel.tokopedia.com/maven' }
+    }
+    dependencies {
+        classpath rootProject.ext.miscDependencies.hansel
+    }
+}
+
+android {
+    buildFeatures {
+        viewBinding true
+    }
+}
+
+dependencies {
+    //Unify Dependencies
+    implementation rootProject.ext.unifyDependencies.principles
+    implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.header
+    implementation rootProject.ext.unifyDependencies.icons
+    implementation rootProject.ext.unifyDependencies.global_error
+    implementation projectOrAar(rootProject.ext.features.scpRewardsCommon)
+
+    implementation projectOrAar(rootProject.ext.libraries.utils)
+    //Image Dependecies
+    implementation rootProject.ext.networkDependencies.glide
+
+    //abstraction
+    implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
+    implementation projectOrAar(rootProject.ext.libraries.baseList)
+
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
+    implementation rootProject.ext.miscDependencies.lottie
+}
+
+project.ext {
+    artifactId = 'scp-rewards-widgets'
+    groupId = 'com.tokopedia.promo'
+    versionName = "0.0.1"
+    artifactName = "scp_rewards_widgets-release"
+}
+
+
+apply from: '../../../publish_local.gradle'
+apply from: '../../../jacoco_task.gradle'

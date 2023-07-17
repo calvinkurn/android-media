@@ -23,7 +23,6 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -67,6 +66,7 @@ import com.tokopedia.home.analytics.HomePageTrackingV2.HomeBanner.getOverlayBann
 import com.tokopedia.home.analytics.HomePageTrackingV2.HomeBanner.getOverlayBannerImpression
 import com.tokopedia.home.analytics.v2.BestSellerWidgetTracker
 import com.tokopedia.home.analytics.v2.LegoBannerTracking
+import com.tokopedia.home.analytics.v2.LoginWidgetTracking
 import com.tokopedia.home.analytics.v2.PopularKeywordTracking
 import com.tokopedia.home.analytics.v2.RecommendationListTracking
 import com.tokopedia.home.beranda.data.model.HomeChooseAddressData
@@ -267,6 +267,7 @@ open class HomeRevampFragment :
         private const val DEFAULT_WALLET_APPLINK_REQUEST_CODE = 111
         private const val REQUEST_CODE_LOGIN_STICKY_LOGIN = 130
         private const val REQUEST_CODE_LOGIN = 131
+        private const val REQUEST_CODE_LOGIN_WIDGET_LOGIN = 133
         private const val REQUEST_CODE_REVIEW = 999
         private const val EXTRA_SHOP_ID = "EXTRA_SHOP_ID"
         private const val REVIEW_CLICK_AT = "rating"
@@ -318,7 +319,6 @@ open class HomeRevampFragment :
         private const val DEFAULT_MARGIN_VALUE = 0
         private const val POSITION_ARRAY_Y = 1
         private const val isPageRefresh = true
-        private const val PERFORMANCE_TRACE_HOME = "home"
 
         @JvmStatic
         fun newInstance(scrollToRecommendList: Boolean): HomeRevampFragment {
@@ -422,11 +422,7 @@ open class HomeRevampFragment :
 
     private val navToolbarMicroInteraction: NavToolbarMicroInteraction? by navToolbarMicroInteraction()
 
-    private val performanceTrace = BlocksPerformanceTrace(
-        context?.applicationContext,
-        PERFORMANCE_TRACE_HOME,
-        lifecycleScope
-        )
+    private var performanceTrace: BlocksPerformanceTrace? = null
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -434,6 +430,7 @@ open class HomeRevampFragment :
         mainParentStatusBarListener = context as MainParentStatusBarListener
         homePerformanceMonitoringListener = castContextToHomePerformanceMonitoring(context)
         homeCoachmarkListener = castContextToHomeCoachmarkListener(context)
+        performanceTrace = homePerformanceMonitoringListener?.blocksPerformanceMonitoring
         requestStatusBarDark()
     }
 
@@ -586,7 +583,7 @@ open class HomeRevampFragment :
             viewLifecycleOwner.lifecycle.addObserver(fragmentFramePerformanceIndexMonitoring)
         }
         navToolbar = view.findViewById(R.id.navToolbar)
-        performanceTrace.addViewPerformanceBlocks(navToolbar)
+        performanceTrace?.addViewPerformanceBlocks(navToolbar)
         statusBarBackground = view.findViewById(R.id.status_bar_bg)
         homeRecyclerView = view.findViewById(R.id.home_fragment_recycler_view)
         homeRecyclerView?.setHasFixedSize(true)
@@ -648,7 +645,6 @@ open class HomeRevampFragment :
             refreshLayoutOld = view.findViewById(R.id.home_swipe_refresh_layout)
         }
 
-        stickyLoginView = view.findViewById(R.id.sticky_login_text)
         root = view.findViewById(R.id.root)
         if (arguments != null) {
             scrollToRecommendList = requireArguments().getBoolean(SCROLL_RECOMMEND_LIST)
@@ -973,19 +969,27 @@ open class HomeRevampFragment :
         }
     }
 
-    override fun goToLogin() {
+    override fun onLoginWidgetClick() {
+        LoginWidgetTracking.sendLoginClick()
+        goToLogin(REQUEST_CODE_LOGIN_WIDGET_LOGIN)
+    }
+
+    fun goToLogin(requestCode: Int) {
         context?.let {
             val intent = RouteManager.getIntent(it, ApplinkConst.LOGIN)
-            startActivityForResult(intent, REQUEST_CODE_LOGIN_STICKY_LOGIN)
+            startActivityForResult(intent, requestCode)
         }
     }
 
     private fun initStickyLogin() {
+        stickyLoginView = if(!HomeRollenceController.isUsingAtf2Variant())
+            view?.findViewById(R.id.sticky_login_text) else null
+        if(stickyLoginView == null) return
         stickyLoginView?.page = StickyLoginConstant.Page.HOME
         stickyLoginView?.lifecycleOwner = viewLifecycleOwner
         stickyLoginView?.setStickyAction(object : StickyLoginAction {
             override fun onClick() {
-                goToLogin()
+                goToLogin(REQUEST_CODE_LOGIN_STICKY_LOGIN)
             }
 
             override fun onDismiss() {
@@ -1083,7 +1087,7 @@ open class HomeRevampFragment :
         if (activityStateListener != null) {
             activityStateListener!!.onPause()
         }
-        performanceTrace.finishOnPaused()
+        performanceTrace?.finishOnPaused()
     }
 
     override fun onStop() {
@@ -1212,26 +1216,26 @@ open class HomeRevampFragment :
                         hideLoading()
                         showNetworkError(getErrorStringWithDefault(throwable))
                         onPageLoadTimeEnd()
-                        performanceTrace.setPageState(BlocksPerformanceTrace.BlocksPerfState.STATE_PARTIALLY_ERROR)
+                        performanceTrace?.setPageState(BlocksPerformanceTrace.BlocksPerfState.STATE_PARTIALLY_ERROR)
                     }
                     status === Result.Status.ERROR_PAGINATION -> {
                         hideLoading()
                         showNetworkError(getErrorStringWithDefault(throwable))
-                        performanceTrace.setPageState(BlocksPerformanceTrace.BlocksPerfState.STATE_PARTIALLY_ERROR)
+                        performanceTrace?.setPageState(BlocksPerformanceTrace.BlocksPerfState.STATE_PARTIALLY_ERROR)
                     }
                     status === Result.Status.ERROR_ATF -> {
                         hideLoading()
                         showNetworkError(getErrorStringWithDefault(throwable))
                         adapter?.resetChannelErrorState()
                         adapter?.resetAtfErrorState()
-                        performanceTrace.setPageState(BlocksPerformanceTrace.BlocksPerfState.STATE_PARTIALLY_ERROR)
+                        performanceTrace?.setPageState(BlocksPerformanceTrace.BlocksPerfState.STATE_PARTIALLY_ERROR)
                     }
                     status == Result.Status.ERROR_GENERAL -> {
                         val errorString = getErrorStringWithDefault(throwable)
                         showNetworkError(errorString)
                         NetworkErrorHelper.showEmptyState(activity, root, errorString) { onRefresh() }
                         onPageLoadTimeEnd()
-                        performanceTrace.setPageState(BlocksPerformanceTrace.BlocksPerfState.STATE_ERROR)
+                        performanceTrace?.setPageState(BlocksPerformanceTrace.BlocksPerfState.STATE_ERROR)
                     }
                     else -> {
                         showLoading()
@@ -1333,7 +1337,7 @@ open class HomeRevampFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        performanceTrace.init(
+        performanceTrace?.init(
             v = view.rootView,
             touchListenerActivity = activity as? TouchListenerActivity,
         ) { summaryModel: BlocksSummaryModel, capturedBlocks: Set<String> -> }
@@ -1355,7 +1359,7 @@ open class HomeRevampFragment :
                 visitableListCount = data.size,
                 scrollPosition = layoutManager?.findLastVisibleItemPosition()
             )
-            performanceTrace.setBlock(data)
+            performanceTrace?.setBlock(data)
             adapter?.submitList(data)
         }
     }
@@ -1703,7 +1707,8 @@ open class HomeRevampFragment :
                     it.finish()
                 }
             }
-            REQUEST_CODE_LOGIN_STICKY_LOGIN -> {
+            REQUEST_CODE_LOGIN_STICKY_LOGIN,
+            REQUEST_CODE_LOGIN_WIDGET_LOGIN -> {
                 if (resultCode == Activity.RESULT_OK && data != null) {
                     val isSuccessRegister = data.getBooleanExtra(ApplinkConstInternalGlobal.PARAM_IS_SUCCESS_REGISTER, false)
                     if (isSuccessRegister && getUserSession().isLoggedIn) {

@@ -1,0 +1,77 @@
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/constraintLayoutToaster"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/scp_rewards_toaster_bg_normal"
+    android:paddingHorizontal="4dp"
+    android:paddingVertical="4dp">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/frame_icon"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_marginEnd="5dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/iv_icon"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        app:layout_constraintBottom_toBottomOf="@id/frame_icon"
+        app:layout_constraintEnd_toEndOf="@id/frame_icon"
+        app:layout_constraintStart_toStartOf="@id/frame_icon"
+        app:layout_constraintTop_toTopOf="@id/frame_icon" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="vertical"
+        android:paddingLeft="5dp"
+        android:paddingRight="@dimen/toaster_text_horizontal_padding"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/frame_icon"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/scp_toaster_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="Ada medali baru buatmu!"
+            android:textColor="@color/toaster_text_color"
+            app:typographyType="display_2"
+            app:typographyWeight="bold" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/scp_toaster_description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="Jagoan Rumah Tangga Unilever"
+            android:textColor="@color/toaster_text_color"
+            app:typographyType="display_3" />
+
+    </LinearLayout>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/snackbar_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:maxWidth="@dimen/toaster_max_width"
+        android:minWidth="0dp"
+        tools:text="Cek"
+        android:textAllCaps="false"
+        android:textColor="@color/toaster_text_color"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="display_3"
+        app:typographyWeight="bold" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+

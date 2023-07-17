@@ -51,6 +51,9 @@ public interface ApplinkConst {
     String SHOP_PENALTY_DETAIL = "tokopedia://shop-penalty-detail";
     String SHOP_FOLLOWER_LIST = "tokopedia://shop/{shop_id}/follower";
     String SHOP_SETTINGS_CUSTOMER_APP = "tokopedia://shop/{shop_id}/settings";
+
+    String SHOP_NIB_CUSTOMER_APP = "tokopedia://shop-nib";
+
     String TOKOPEDIA_CHAT_AUTO_REPLY_SETTINGS = "tokopedia://webview?url=https://m.tokopedia.com/chat/setting/auto-reply";
     //shop widget
     String SHOP_OPERATIONAL_HOUR = "tokopedia://shop/{shop_id}/operational-hour";
@@ -513,6 +516,15 @@ public interface ApplinkConst {
         String CATALOG_LIST_VALUE = "tukar-point";
         String COUPON_LIST = "kupon-saya";
         String HISTORY = "tokopedia://tokopoints/history";
+    }
+
+    interface ScpRewards{
+        String CELEBRATION_BASE = "celebration/{slug}";
+        String MEDAL_DETAIL_BASE = "detail";
+        String MEDAL_CABINET = "medali";
+        String SEE_MORE_MEDAL = "more";
+        String CELEBRATION_BOTTOMSHEET = "celebration-bottomsheet";
+        String SCP_TOASTER = "celebration_toaster";
     }
 
     String OQR_PIN_URL_ENTRY_LINK = "tokopedia://ovoqrthanks/";
