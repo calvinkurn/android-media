@@ -11,8 +11,7 @@ import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxWidgetMetaU
 class UniversalInboxWidgetLayoutManager(
     context: Context?,
     orientation: Int,
-    reverseLayout: Boolean,
-    private val uiModel: UniversalInboxWidgetMetaUiModel
+    reverseLayout: Boolean
 ) : LinearLayoutManager(context, orientation, reverseLayout) {
 
 

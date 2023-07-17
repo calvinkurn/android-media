@@ -96,6 +96,10 @@ object RollenceKey {
     // FS Toko OOS Gradual Rollout
     const val FLASH_SALE_OUT_OF_STOCK_GRADUAL_ROLLOUT = "fst_oosimprovement"
 
+    // Seller Order Management
+    const val KEY_SOM_OG = "android_som_og"
+
+
     // Share affiliate
     const val AFFILIATE_SHARE_ICON = "ShareAff_pdpshop"
 

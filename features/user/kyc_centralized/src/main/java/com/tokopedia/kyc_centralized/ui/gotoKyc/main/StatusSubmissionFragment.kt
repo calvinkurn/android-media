@@ -10,6 +10,7 @@ import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.text.HtmlCompat
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.navArgs
 import com.airbnb.lottie.LottieComposition
 import com.airbnb.lottie.LottieCompositionFactory
@@ -25,11 +26,17 @@ import com.tokopedia.kyc_centralized.R
 import com.tokopedia.kyc_centralized.common.KYCConstant
 import com.tokopedia.kyc_centralized.common.KycStatus
 import com.tokopedia.kyc_centralized.databinding.FragmentGotoKycStatusSubmissionBinding
+import com.tokopedia.kyc_centralized.di.GoToKycComponent
 import com.tokopedia.kyc_centralized.ui.gotoKyc.analytics.GotoKycAnalytics
+import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.ProjectInfoResult
 import com.tokopedia.kyc_centralized.ui.gotoKyc.transparent.GotoKycTransparentFragment
+import com.tokopedia.kyc_centralized.ui.gotoKyc.utils.getGotoKycErrorMessage
+import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import javax.inject.Inject
 
 class StatusSubmissionFragment : BaseDaggerFragment() {
 
@@ -45,11 +52,15 @@ class StatusSubmissionFragment : BaseDaggerFragment() {
     private var projectId: String = ""
 
     private var bottomSheetDetailBenefit: BenefitDetailBottomSheet? = null
+    private var loaderRefreshStatus: LoaderDialog? = null
 
     private val startReVerifyKycForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
         activity?.setResult(result.resultCode)
         activity?.finish()
     }
+
+    @Inject
+    lateinit var viewModel: StatusSubmissionViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -73,6 +84,7 @@ class StatusSubmissionFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         setUpView()
         initListener()
+        initObserver()
         initToolbar()
         initBackPressedListener()
     }
@@ -93,6 +105,48 @@ class StatusSubmissionFragment : BaseDaggerFragment() {
         binding?.unifyToolbar?.setNavigationOnClickListener {
             activity?.setResult(Activity.RESULT_OK)
             activity?.finish()
+        }
+    }
+
+    private fun initObserver() {
+        viewModel.kycStatus.observe(viewLifecycleOwner) {
+            setUpLoaderStatus(false)
+            when (it) {
+                is ProjectInfoResult.StatusSubmission -> {
+                    status = it.status
+                    rejectionReason = it.rejectionReason
+                    setUpView()
+                }
+                else -> {
+                    val throwable = if (it is ProjectInfoResult.Failed) {
+                        it.throwable
+                    } else {
+                        null
+                    }
+                    showToaster(throwable)
+                }
+            }
+        }
+    }
+
+    private fun showToaster(throwable: Throwable?) {
+        val message = throwable.getGotoKycErrorMessage(requireContext())
+        Toaster.build(requireView(), message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+    }
+
+    private fun setUpLoaderStatus(isLoading: Boolean) {
+        if (isLoading) {
+            if (loaderRefreshStatus == null) {
+                loaderRefreshStatus = LoaderDialog(requireActivity())
+                loaderRefreshStatus?.apply {
+                    setLoadingText("")
+                    dialog.setOverlayClose(false)
+                    show()
+                }
+            }
+        } else {
+            loaderRefreshStatus?.dismiss()
+            loaderRefreshStatus = null
         }
     }
 
@@ -128,7 +182,15 @@ class StatusSubmissionFragment : BaseDaggerFragment() {
 
     private fun initListener() {
         binding?.layoutStatusSubmission?.btnSecondary?.setOnClickListener {
-            goToTokopediaCare()
+            when (status) {
+                KycStatus.PENDING.code.toString() -> {
+                    setUpLoaderStatus(true)
+                    viewModel.kycStatus(projectId)
+                }
+                else -> {
+                    goToTokopediaCare()
+                }
+            }
         }
 
         binding?.layoutStatusSubmission?.btnPrimary?.setOnClickListener {
@@ -173,6 +235,8 @@ class StatusSubmissionFragment : BaseDaggerFragment() {
             tvDescription.hide()
             btnPrimary.text = getString(R.string.goto_kyc_status_rejected_button_primary)
             btnSecondary.text = getString(R.string.goto_kyc_status_rejected_button_secondary)
+            btnPrimary.show()
+            btnSecondary.show()
             cardReason.show()
             tvReason.text = rejectionReason
         }
@@ -246,7 +310,8 @@ class StatusSubmissionFragment : BaseDaggerFragment() {
             } else {
                 getString(R.string.goto_kyc_status_pending_button, sourcePage)
             }
-            btnSecondary.hide()
+            btnSecondary.text = getString(R.string.goto_kyc_status_pending_refresh_status)
+            btnSecondary.show()
 
             btnPrimary.showWithCondition(!isAccountPage)
         }
@@ -297,10 +362,12 @@ class StatusSubmissionFragment : BaseDaggerFragment() {
 
     override fun getScreenName(): String = ""
 
-    override fun initInjector() {}
+    override fun initInjector() {
+        getComponent(GoToKycComponent::class.java).inject(this)
+    }
 
     companion object {
-        private const val PATH_TOKOPEDIA_CARE = "help/article/alasan-verifikasi-data-diri-belum-terpenuhi?lang=id?isBack=true"
+        private const val PATH_TOKOPEDIA_CARE = "help/article/a-3881?nref='goto-kyc'"
         private const val TAG_BOTTOM_SHEET_DETAIL_BENEFIT = "tag bottom sheet detail benefit"
     }
 }

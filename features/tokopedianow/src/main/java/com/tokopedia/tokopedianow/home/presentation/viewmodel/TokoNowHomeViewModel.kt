@@ -93,6 +93,7 @@ import com.tokopedia.tokopedianow.home.domain.mapper.RealTimeRecomMapper.mapReal
 import com.tokopedia.tokopedianow.home.domain.mapper.RealTimeRecomMapper.mapRealTimeRecommendation
 import com.tokopedia.tokopedianow.home.domain.mapper.RealTimeRecomMapper.mapRefreshRealTimeRecommendation
 import com.tokopedia.tokopedianow.home.domain.mapper.RealTimeRecomMapper.removeRealTimeRecommendation
+import com.tokopedia.tokopedianow.home.domain.mapper.RecomParamMapper.mapToRecomRequestParam
 import com.tokopedia.tokopedianow.home.domain.mapper.VisitableMapper.getVisitableId
 import com.tokopedia.tokopedianow.home.domain.model.HomeRemoveAbleWidget
 import com.tokopedia.tokopedianow.home.domain.model.SearchPlaceholder
@@ -370,7 +371,7 @@ class TokoNowHomeViewModel @Inject constructor(
     }
 
     fun getMiniCart(shopId: List<String>, warehouseId: String?) {
-        if (!shopId.isNullOrEmpty() && warehouseId.toLongOrZero() != 0L && userSession.isLoggedIn) {
+        if (shopId.isNotEmpty() && warehouseId.toLongOrZero() != 0L && userSession.isLoggedIn) {
             getMiniCartJob?.cancel()
             launchCatchError(block = {
                 getMiniCartUseCase.setParams(shopId, MiniCartSource.TokonowHome)
@@ -619,8 +620,8 @@ class TokoNowHomeViewModel @Inject constructor(
 
             _homeLayoutList.postValue(Success(data))
         }, onError = {
-            removeWidget(item.id)
-        })
+                removeWidget(item.id)
+            })
     }
 
     fun updatePlayWidget(channelId: String, totalView: String) {
@@ -734,14 +735,14 @@ class TokoNowHomeViewModel @Inject constructor(
             val data = referralEvaluateJoinUseCase.execute(referralData)
             _referralEvaluate.postValue(Success(data.gamiReferralEvaluteJoinResponse.toHomeReceiverDialogUiModel()))
         }, onError = {
-            _referralEvaluate.postValue(Fail(it))
-        })
+                _referralEvaluate.postValue(Fail(it))
+            })
     }
 
     fun switchProductCarouselChipTab(channelId: String, chipId: String) {
         val carouselModel = homeLayoutItemList.getProductCarouselChipsItem(channelId)
         val currentSelectedChipId = getCurrentSelectedChipId(carouselModel)
-        if(carouselModel == null || currentSelectedChipId == chipId) return
+        if (carouselModel == null || currentSelectedChipId == chipId) return
         switchProductCarouselChipJob?.cancel()
 
         launchCatchError(block = {
@@ -758,7 +759,6 @@ class TokoNowHomeViewModel @Inject constructor(
 
             _homeLayoutList.postValue(Success(data))
         }) {
-
         }.let {
             switchProductCarouselChipJob = it
         }
@@ -909,7 +909,6 @@ class TokoNowHomeViewModel @Inject constructor(
             val selectedChip = chipList.first()
             getCarouselChipsProductList(carouselModel, selectedChip)
         }) {
-
         }
     }
 
@@ -1142,14 +1141,8 @@ class TokoNowHomeViewModel @Inject constructor(
         carouselModel: HomeProductCarouselChipsUiModel,
         selectedChip: TokoNowChipUiModel
     ) {
-        val pageName = selectedChip.param
-        val recommendationWidgets = getRecommendationUseCase.getData(
-            GetRecommendationRequestParam(
-                pageName = pageName,
-                xSource = X_SOURCE_RECOMMENDATION_PARAM,
-                xDevice = X_DEVICE_RECOMMENDATION_PARAM,
-            )
-        )
+        val requestParam = mapToRecomRequestParam(selectedChip.param)
+        val recommendationWidgets = getRecommendationUseCase.getData(requestParam)
         val recommendationWidget = recommendationWidgets.first()
 
         homeLayoutItemList.mapProductCarouselChipsWidget(

@@ -9,6 +9,7 @@ import com.tokopedia.kyc_centralized.ui.gotoKyc.bottomSheet.OnboardProgressiveVi
 import com.tokopedia.kyc_centralized.ui.gotoKyc.main.BridgingAccountLinkingViewModel
 import com.tokopedia.kyc_centralized.ui.gotoKyc.main.DobChallengeViewModel
 import com.tokopedia.kyc_centralized.ui.gotoKyc.main.FinalLoaderViewModel
+import com.tokopedia.kyc_centralized.ui.gotoKyc.main.StatusSubmissionViewModel
 import com.tokopedia.kyc_centralized.ui.gotoKyc.transparent.GotoKycTransparentViewModel
 import dagger.Binds
 import dagger.Module
@@ -41,6 +42,11 @@ abstract class GotoKycViewModelModule {
     @IntoMap
     @ViewModelKey(FinalLoaderViewModel::class)
     abstract fun finalLoaderViewModel(viewModel: FinalLoaderViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(StatusSubmissionViewModel::class)
+    abstract fun statusSubmissionViewModel(viewModel: StatusSubmissionViewModel): ViewModel
 
     @Binds
     @ActivityScope

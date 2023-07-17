@@ -121,7 +121,7 @@ class CardViewHolder(
                 )
                 containerCard.setBackgroundResource(selectableItemBg.resourceId)
             } else {
-                containerCard.setBackgroundColor(root.context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_N0))
+                containerCard.setBackgroundColor(root.context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_NN0))
             }
 
             if (shouldLoadAnimation) {

@@ -302,7 +302,7 @@ class BridgingAccountLinkingFragment : BaseDaggerFragment() {
                 override fun updateDrawState(ds: TextPaint) {
                     ds.color = MethodChecker.getColor(
                         context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_G500
+                        com.tokopedia.unifyprinciples.R.color.Unify_GN500
                     )
                     ds.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
                 }
@@ -354,7 +354,7 @@ class BridgingAccountLinkingFragment : BaseDaggerFragment() {
 
     private fun showPermissionRejected() {
         Toaster.build(
-            requireView().rootView,
+            requireView(),
             getString(R.string.goto_kyc_permission_camera_denied),
             Toaster.LENGTH_LONG,
             Toaster.TYPE_ERROR,
@@ -377,7 +377,7 @@ class BridgingAccountLinkingFragment : BaseDaggerFragment() {
 
     companion object {
         private const val BACK_BTN_APPLINK = "tokopedia://back"
-        private const val TOKOPEDIA_CARE_PATH = "help"
+        private const val TOKOPEDIA_CARE_PATH = "help/article/nama-yang-muncul-bukan-nama-saya?lang=id?isBack=true"
         private const val TOKOPEDIA_CARE_STRING_FORMAT = "%s?url=%s"
         private const val PACKAGE = "package"
     }
