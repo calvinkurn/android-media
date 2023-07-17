@@ -16,7 +16,7 @@
         tools:ignore="MissingApplicationIcon">
 
         <activity
-            android:name="com.tokopedia.editor.MainEditorActivity"
+            android:name="com.tokopedia.editor.ui.main.MainEditorActivity"
             android:exported="false"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity">
