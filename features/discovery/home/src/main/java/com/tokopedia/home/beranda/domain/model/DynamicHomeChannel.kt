@@ -191,6 +191,7 @@ data class DynamicHomeChannel(
             const val LAYOUT_BANNER_ADS: String = "banner_ads"
             const val LAYOUT_VERTICAL_BANNER_ADS: String = "tdn_vertical_carousel"
             const val LAYOUT_BEST_SELLING: String = "best_selling"
+            const val LAYOUT_BEST_SELLING_LIST: String = "best_selling_list"
             const val LAYOUT_BANNER_CAROUSEL_V2 = "banner_carousel_v2"
             const val LAYOUT_LEGO_6_AUTO: String = "6_image_auto"
             const val LAYOUT_CAMPAIGN_WIDGET: String = "campaign_widget"

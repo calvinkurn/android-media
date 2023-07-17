@@ -99,7 +99,7 @@ class ChatbotImageUploadViewHolder(
         changeHourColor(
             MethodChecker.getColor(
                 itemView.context,
-                com.tokopedia.unifyprinciples.R.color.Unify_N0
+                com.tokopedia.unifyprinciples.R.color.Unify_NN0
             )
         )
         attachment?.scaleType = ImageView.ScaleType.CENTER_CROP

@@ -38,10 +38,12 @@ import com.tokopedia.inboxcommon.RoleType
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.searchbar.navigation_component.NavSource
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.ContentType.TOOLBAR_TYPE_CUSTOM
 import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.ContentType.TOOLBAR_TYPE_TITLE
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
+import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.toPx
@@ -151,7 +153,7 @@ open class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFrag
         setupObserver()
         setupToolbar()
         setupInitialPage()
-        setupInitialToolbar()
+        updateToolbarIcon()
         setupBottomNav()
         setupSwitcher()
         setupOnBoarding()
@@ -284,7 +286,9 @@ open class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFrag
         setupToolbarLifecycle()
         toolbar?.switchToLightToolbar()
         val view = View.inflate(
-            this, R.layout.partial_inbox_nav_content_view, null
+            this,
+            R.layout.partial_inbox_nav_content_view,
+            null
         ).also {
             navHeader.bindNavHeaderView(it)
             navHeader.bindValue()
@@ -318,21 +322,17 @@ open class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFrag
         toolbar?.let { this.lifecycle.addObserver(it) }
     }
 
-    private fun updateToolbarIcon(hasChatSearch: Boolean = false) {
-        val icon = IconBuilder()
-        if (hasChatSearch) {
+    private fun updateToolbarIcon() {
+        val icon = IconBuilder(IconBuilderFlag(InboxConfig.page.getNavSource()))
+        if (InboxConfig.page == InboxFragmentType.CHAT) {
             icon.addIcon(IconList.ID_SEARCH) { }
         }
         icon.addIcon(IconList.ID_CART) { }
-        if (ableToShowGlobalNav()) {
+        if (InboxConfig.page == InboxFragmentType.NOTIFICATION) {
             icon.addIcon(IconList.ID_NAV_GLOBAL) { }
         }
         toolbar?.setIcon(icon)
         toolbar?.setBadgeCounter(IconList.ID_CART, InboxConfig.notifications.totalCart)
-    }
-
-    private fun ableToShowGlobalNav(): Boolean {
-        return InboxConfig.page != InboxFragmentType.NOTIFICATION || isShowBottomNav
     }
 
     private fun setupView() {
@@ -438,16 +438,18 @@ open class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFrag
             analytic.trackDismissOnBoarding(role, onBoardingCoachMark?.currentIndex)
         }
         analytic.trackShowOnBoardingOnStep(role, 0)
-        onBoardingCoachMark?.setStepListener(InboxOnBoardingListener(
-            onStepCoach = { currentIndex: Int,
-                            _: CoachMark2Item,
-                            direction: String,
-                            previousIndex: Int ->
-                analytic.trackShowOnBoardingOnStep(role, currentIndex)
-                analytic.trackClickOnBoardingCta(role, previousIndex, direction)
-                onChangeOnBoardingStep(currentIndex, anchors)
-            }
-        ))
+        onBoardingCoachMark?.setStepListener(
+            InboxOnBoardingListener(
+                onStepCoach = { currentIndex: Int,
+                    _: CoachMark2Item,
+                    direction: String,
+                    previousIndex: Int ->
+                    analytic.trackShowOnBoardingOnStep(role, currentIndex)
+                    analytic.trackClickOnBoardingCta(role, previousIndex, direction)
+                    onChangeOnBoardingStep(currentIndex, anchors)
+                }
+            )
+        )
     }
 
     private fun onChangeOnBoardingStep(currentIndex: Int, anchors: ArrayList<CoachMark2Item>) {
@@ -517,7 +519,8 @@ open class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFrag
 
     private fun setupBackground() {
         val whiteColor = ContextCompat.getColor(
-            this, com.tokopedia.unifyprinciples.R.color.Unify_Background
+            this,
+            com.tokopedia.unifyprinciples.R.color.Unify_Background
         )
         window.decorView.setBackgroundColor(whiteColor)
     }
@@ -528,7 +531,8 @@ open class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFrag
                 window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
             }
             window.statusBarColor = ContextCompat.getColor(
-                this, com.tokopedia.unifyprinciples.R.color.Unify_Background
+                this,
+                com.tokopedia.unifyprinciples.R.color.Unify_Background
             )
         }
     }
@@ -538,7 +542,8 @@ open class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFrag
             if (result is Success) {
                 InboxConfig.notifications = result.data
                 InboxConfig.notifications.adjustTotalCounterBasedOn(
-                    InboxConfig.page, isShowBottomNav
+                    InboxConfig.page,
+                    isShowBottomNav
                 )
                 updateBadgeCounter()
             }
@@ -572,28 +577,25 @@ open class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFrag
                         R.id.menu_inbox_notification -> {
                             cacheState.saveInitialPageCache(InboxFragmentType.NOTIFICATION)
                             onBottomNavSelected(InboxFragmentType.NOTIFICATION)
-                            updateToolbarIcon()
                             InboxConfig.page = InboxFragmentType.NOTIFICATION
                         }
                         R.id.menu_inbox_chat -> {
                             cacheState.saveInitialPageCache(InboxFragmentType.CHAT)
                             onBottomNavSelected(InboxFragmentType.CHAT)
-                            updateToolbarIcon(true)
                             InboxConfig.page = InboxFragmentType.CHAT
                         }
                         R.id.menu_inbox_discussion -> {
                             cacheState.saveInitialPageCache(InboxFragmentType.DISCUSSION)
                             onBottomNavSelected(InboxFragmentType.DISCUSSION)
-                            updateToolbarIcon()
                             InboxConfig.page = InboxFragmentType.DISCUSSION
                         }
                         R.id.menu_inbox_review -> {
                             cacheState.saveInitialPageCache(InboxFragmentType.REVIEW)
                             onBottomNavSelected(InboxFragmentType.REVIEW)
-                            updateToolbarIcon()
                             InboxConfig.page = InboxFragmentType.REVIEW
                         }
                     }
+                    updateToolbarIcon()
                     analytic.trackOpenInboxPage(InboxConfig.page, InboxConfig.role)
                     analytic.trackClickBottomNaveMenu(InboxConfig.page, InboxConfig.role)
                     return@setOnNavigationItemSelectedListener true
@@ -611,13 +613,14 @@ open class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFrag
         viewModel.getNotifications(userSession.shopId)
     }
 
-    private fun setupInitialToolbar() {
-        val isChatPage = InboxConfig.page == InboxFragmentType.CHAT
-        updateToolbarIcon(isChatPage)
-    }
-
     private fun onBottomNavSelected(@InboxFragmentType page: Int) {
         navigator?.onPageSelected(page)
+    }
+
+    private fun Int.getNavSource(): NavSource {
+        return if(this == InboxFragmentType.NOTIFICATION)
+            NavSource.NOTIFICATION
+        else NavSource.DEFAULT
     }
 
     override fun attachBaseContext(newBase: Context?) {

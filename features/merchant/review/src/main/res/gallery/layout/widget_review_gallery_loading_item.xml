@@ -24,7 +24,7 @@
             android:id="@+id/review_gallery_image_load_error"
             android:layout_width="match_parent"
             android:layout_height="@dimen/layout_lvl0"
-            android:background="@color/Unify_N50"
+            android:background="@color/Unify_NN50"
             android:src="@drawable/imagestate_error"
             android:visibility="gone"
             app:layout_constraintDimensionRatio="1:1"

@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="@color/Unify_N0"
+    android:background="@color/Unify_NN0"
     android:paddingVertical="12dp"
     android:paddingStart="12dp"
     tools:viewBindingIgnore="true">
