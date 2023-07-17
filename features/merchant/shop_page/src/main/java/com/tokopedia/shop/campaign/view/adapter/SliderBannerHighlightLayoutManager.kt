@@ -6,26 +6,16 @@ import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.kotlin.extensions.view.orZero
 import kotlin.math.abs
 import kotlin.math.sqrt
 
 class SliderBannerHighlightLayoutManager(
-    context: Context,
-    private val listener: Listener
+    context: Context
 ) : LinearLayoutManager(context, HORIZONTAL, false) {
 
     companion object {
         private const val INT_TWO = 2
         private const val SCALING_CONST = 0.2f
-    }
-
-    interface Listener {
-        fun onCheckPrevNextButton(
-            firstVisibleItemPos: Int,
-            lastVisibleItemPos: Int,
-            itemCount: Int
-        )
     }
 
     private var recyclerView: RecyclerView? = null
@@ -41,11 +31,6 @@ class SliderBannerHighlightLayoutManager(
     override fun onLayoutCompleted(state: RecyclerView.State?) {
         super.onLayoutCompleted(state)
         scaleChild()
-//        listener.onCheckPrevNextButton(
-//            findFirstVisibleItemPosition(),
-//            findLastVisibleItemPosition(),
-//            recyclerView?.adapter?.itemCount.orZero()
-//        )
     }
 
     override fun scrollHorizontallyBy(
@@ -56,11 +41,6 @@ class SliderBannerHighlightLayoutManager(
         return if (orientation == HORIZONTAL) {
             super.scrollHorizontallyBy(dx, recycler, state).also {
                 scaleChild()
-//                listener.onCheckPrevNextButton(
-//                    findFirstVisibleItemPosition(),
-//                    findLastVisibleItemPosition(),
-//                    recyclerView?.adapter?.itemCount.orZero()
-//                )
             }
         } else {
             Int.ZERO
