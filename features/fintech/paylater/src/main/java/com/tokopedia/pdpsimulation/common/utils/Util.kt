@@ -6,10 +6,10 @@ import com.tokopedia.remoteconfig.RemoteConfigKey
 
 object Util {
 
-    fun getTextRBPRemoteConfig(context: Context?, old: CharSequence?, new: CharSequence?): CharSequence {
+    fun getTextRBPRemoteConfig(context: Context?, old: CharSequence?, new: CharSequence?): CharSequence? {
         return context?.let {
             if (isRBPOn(context)) new else old
-        } ?: ""
+        } ?: old
     }
 
     fun isRBPOn(context: Context?): Boolean {

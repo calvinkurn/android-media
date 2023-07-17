@@ -183,7 +183,21 @@ class PayLaterDetailViewHolder(itemView: View, private val interaction: PayLater
                 ),
                 element.priceSection.installmentPerMonth
             )
-            if (!Util.isRBPOn(context)) {
+
+            if (Util.isRBPOn(context)) {
+                tvTenureMultiplier.shouldShowWithAction(element.priceSection.tenure != Int.ONE) {
+                    tvTenureMultiplier.text = context.getString(R.string.paylater_x_tenure, element.priceSection.tenure)
+                }
+
+                tvPrefixInstallment.shouldShowWithAction(element.priceSection.prefix.isNotEmpty()) {
+                    tvPrefixInstallment.text = element.priceSection.prefix
+                }
+
+                tvOriginalInstallment.shouldShowWithAction(element.priceSection.originalPerMonth.isNotEmpty()) {
+                    tvOriginalInstallment.paintFlags = tvOriginalInstallment.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+                    tvOriginalInstallment.text = element.priceSection.originalPerMonth
+                }
+            } else {
                 if (element.tenure != Int.ONE) {
                     tvTenureMultiplier.visible()
                     tvTenureMultiplier.text =
@@ -192,19 +206,6 @@ class PayLaterDetailViewHolder(itemView: View, private val interaction: PayLater
                     tvTenureMultiplier.gone()
                     tvInstallmentAmount.text = element.optionalTenureHeader
                 }
-            } else {
-                tvTenureMultiplier.shouldShowWithAction(element.priceSection.tenure != Int.ONE) {
-                    tvTenureMultiplier.text = context.getString(R.string.paylater_x_tenure, element.priceSection.tenure)
-                }
-            }
-
-            tvPrefixInstallment.shouldShowWithAction(element.priceSection.prefix.isNotEmpty()) {
-                tvPrefixInstallment.text = element.priceSection.prefix
-            }
-
-            tvOriginalInstallment.shouldShowWithAction(element.priceSection.originalPerMonth.isNotEmpty()) {
-                tvOriginalInstallment.paintFlags = tvOriginalInstallment.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
-                tvOriginalInstallment.text = element.priceSection.originalPerMonth
             }
 
             if (element.subheader.isNullOrEmpty()) {

@@ -44,6 +44,7 @@ import com.tokopedia.pdpsimulation.common.constants.PARAM_PRODUCT_ID
 import com.tokopedia.pdpsimulation.common.constants.PARAM_PRODUCT_TENURE
 import com.tokopedia.pdpsimulation.common.di.component.PdpSimulationComponent
 import com.tokopedia.pdpsimulation.common.domain.model.GetProductV3
+import com.tokopedia.pdpsimulation.common.utils.Util
 import com.tokopedia.pdpsimulation.paylater.PdpSimulationCallback
 import com.tokopedia.pdpsimulation.paylater.domain.model.InstallmentDetails
 import com.tokopedia.pdpsimulation.paylater.helper.BottomSheetNavigator
@@ -242,16 +243,18 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
     }
 
     private fun setAdditionalInformation() {
+        if (context == null) return
+
         payLaterActivationViewModel.gatewayToChipMap[payLaterActivationViewModel.selectedGatewayId]?.let { checkoutData ->
             gatewayDetailLayout.groupAdditionalInformation.shouldShowWithAction(
-                checkoutData.additionalInformation.title.isNotEmpty()
+                checkoutData.additionalInformation.title.isNotEmpty() && Util.isRBPOn(context)
             ) {
                 gatewayDetailLayout.additionalInformationTitle.text = checkoutData.additionalInformation.title
                 gatewayDetailLayout.additionalInformationIcon.setImageUrl(checkoutData.additionalInformation.image)
             }
 
             gatewayDetailLayout.additionalInformationBottomsheetIcon.shouldShowWithAction(
-                checkoutData.additionalInformation.bottomSheet.show
+                checkoutData.additionalInformation.bottomSheet.show && Util.isRBPOn(context)
             ) {
                 gatewayDetailLayout.additionalInformationBottomsheetIcon.setOnClickListener {
                     DownRateBottomsheet.show(
