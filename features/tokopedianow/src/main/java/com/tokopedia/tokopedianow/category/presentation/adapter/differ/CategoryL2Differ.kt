@@ -1,6 +1,7 @@
 package com.tokopedia.tokopedianow.category.presentation.adapter.differ
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryL2TabUiModel
 import com.tokopedia.tokopedianow.common.base.adapter.BaseTokopediaNowDiffer
 import com.tokopedia.tokopedianow.common.model.TokoNowAdsCarouselUiModel
 
@@ -14,7 +15,10 @@ class CategoryL2Differ : BaseTokopediaNowDiffer() {
 
         return if (oldItem is TokoNowAdsCarouselUiModel && newItem is TokoNowAdsCarouselUiModel) {
             oldItem.id == newItem.id && oldItem.state == newItem.state
-        } else {
+        } else if (oldItem is CategoryL2TabUiModel && newItem is CategoryL2TabUiModel) {
+            oldItem.tabTitleList == newItem.tabTitleList
+        }
+        else {
             oldItem == newItem
         }
     }
@@ -28,6 +32,8 @@ class CategoryL2Differ : BaseTokopediaNowDiffer() {
         val newItem = newList[newItemPosition]
 
         return if (oldItem is TokoNowAdsCarouselUiModel && newItem is TokoNowAdsCarouselUiModel) {
+            oldItem.getChangePayload(newItem)
+        } else if (oldItem is CategoryL2TabUiModel && newItem is CategoryL2TabUiModel) {
             oldItem.getChangePayload(newItem)
         } else {
             super.getChangePayload(oldItemPosition, newItemPosition)

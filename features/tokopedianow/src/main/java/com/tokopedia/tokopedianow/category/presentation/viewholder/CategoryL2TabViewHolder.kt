@@ -14,12 +14,11 @@ import com.tokopedia.unifycomponents.TabsUnifyMediator
 import com.tokopedia.unifycomponents.setCustomText
 import com.tokopedia.utils.view.binding.viewBinding
 
-
 class CategoryL2TabViewHolder(
     itemView: View,
     private val listener: CategoryL2TabListener,
     private val tokoNowView: TokoNowView
-): AbstractViewHolder<CategoryL2TabUiModel>(itemView) {
+) : AbstractViewHolder<CategoryL2TabUiModel>(itemView) {
 
     companion object {
         @LayoutRes
@@ -27,16 +26,22 @@ class CategoryL2TabViewHolder(
     }
 
     private val binding: ItemTokopedianowCategoryL2TabBinding? by viewBinding()
+    private val viewPagerAdapter by lazy { DemoCollectionAdapter(tokoNowView.getFragmentPage()) }
+
+    init {
+        binding?.apply {
+            viewPager.adapter = viewPagerAdapter
+        }
+    }
 
     override fun bind(data: CategoryL2TabUiModel) {
         binding?.apply {
-            val demoCollectionAdapter = DemoCollectionAdapter(tokoNowView.getFragmentPage())
-            viewPager.adapter = demoCollectionAdapter
+            val tabTitleList = data.tabTitleList
+            viewPagerAdapter.titleList = tabTitleList
 
             TabsUnifyMediator(tabUnify, viewPager) { tab, position ->
-                data.tabTitleList.getOrNull(position)?.let {
-                    tab.setCustomText(it)
-                }
+                val title = tabTitleList.getOrNull(position).orEmpty()
+                if (title.isNotBlank()) tab.setCustomText(title)
             }
 
             tabUnify.tabLayout.addOnTabSelectedListener(object : OnTabSelectedListener {
@@ -48,6 +53,13 @@ class CategoryL2TabViewHolder(
                 override fun onTabReselected(tab: TabLayout.Tab) {
                 }
             })
+        }
+    }
+
+    override fun bind(data: CategoryL2TabUiModel, payloads: MutableList<Any>) {
+        if (payloads.firstOrNull() == true) {
+            val selectedTabPosition = data.selectedTabPosition
+            binding?.tabUnify?.tabLayout?.getTabAt(selectedTabPosition)?.select()
         }
     }
 
