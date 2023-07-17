@@ -93,7 +93,11 @@ class AffiliateActivity :
             fromHelpAppLink = data.pathSegments.contains(PAGE_SEGMENT_HELP)
             if (data.pathSegments?.contains(PAGE_SEGMENT_ONBOARDING) == true) {
                 if (data.queryParameterNames.isNotEmpty()) {
-                    showLoginPortal(intent?.data?.getQueryParameter(data.queryParameterNames.first()))
+                    showLoginPortal(
+                        data.queryParameterNames.first() to intent?.data?.getQueryParameter(
+                            data.queryParameterNames.first()
+                        )
+                    )
                 } else {
                     showLoginPortal()
                 }
@@ -139,7 +143,12 @@ class AffiliateActivity :
                     if (intent?.data?.queryParameterNames.isNullOrEmpty()) {
                         showLoginPortal()
                     } else {
-                        showLoginPortal(intent?.data?.getQueryParameter(intent.data?.queryParameterNames?.first()))
+                        showLoginPortal(
+                            intent?.data?.queryParameterNames?.first()
+                                .orEmpty() to intent?.data?.getQueryParameter(
+                                intent.data?.queryParameterNames?.first()
+                            )
+                        )
                     }
                 }
 
@@ -169,8 +178,8 @@ class AffiliateActivity :
         }
     }
 
-    private fun showLoginPortal(productId: String? = null) {
-        AffiliateRegistrationActivity.newInstance(this, productId = productId)
+    private fun showLoginPortal(queryData: Pair<String, String?>? = null) {
+        AffiliateRegistrationActivity.newInstance(this, queryData = queryData)
         finish()
     }
 
