@@ -29,8 +29,10 @@ import com.tokopedia.feedplus.presentation.fragment.FeedBaseFragment
 import com.tokopedia.feedplus.presentation.model.FeedCardImageContentModel
 import com.tokopedia.feedplus.presentation.model.FeedCardLivePreviewContentModel
 import com.tokopedia.feedplus.presentation.model.FeedCardVideoContentModel
+import com.tokopedia.feedplus.presentation.model.FeedFollowRecommendationModel
 import com.tokopedia.feedplus.presentation.model.FeedLikeModel
 import com.tokopedia.feedplus.presentation.model.FeedModel
+import com.tokopedia.feedplus.presentation.model.FeedPaginationModel
 import com.tokopedia.feedplus.presentation.model.FeedReminderResultModel
 import com.tokopedia.feedplus.presentation.model.FollowShopModel
 import com.tokopedia.feedplus.presentation.model.LikeFeedDataModel

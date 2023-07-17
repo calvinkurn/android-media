@@ -7,8 +7,23 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/Unify_NN1000">
+        android:layout_height="match_parent">
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/img_thumbnail"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="center"
+            />
+
+        <com.google.android.exoplayer2.ui.PlayerView
+            android:id="@+id/player_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:resize_mode="zoom"
+            app:use_controller="false" />
 
         <com.tokopedia.iconunify.IconUnify
             android:id="@+id/ic_close"
@@ -34,11 +49,10 @@
             android:layout_width="52dp"
             android:layout_height="52dp"
             android:background="@drawable/bg_feed_follow_profile"
-            app:layout_constraintTop_toTopOf="@id/img_profile"
             app:layout_constraintBottom_toBottomOf="@id/img_profile"
-            app:layout_constraintStart_toStartOf="@id/img_profile"
             app:layout_constraintEnd_toEndOf="@id/img_profile"
-            />
+            app:layout_constraintStart_toStartOf="@id/img_profile"
+            app:layout_constraintTop_toTopOf="@id/img_profile" />
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/img_profile"

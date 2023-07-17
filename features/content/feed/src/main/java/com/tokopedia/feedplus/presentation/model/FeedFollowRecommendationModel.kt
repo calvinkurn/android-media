@@ -22,6 +22,7 @@ data class FeedFollowRecommendationModel(
         val badge: String,
         val type: String,
         val imageUrl: String,
+        val thumbnailUrl: String,
         val videoUrl: String,
         val isFollow: Boolean,
     )

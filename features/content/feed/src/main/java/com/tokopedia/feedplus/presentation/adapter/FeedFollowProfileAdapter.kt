@@ -1,5 +1,6 @@
 package com.tokopedia.feedplus.presentation.adapter
 
+import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.adapterdelegate.BaseDiffUtilAdapter
 import com.tokopedia.feedplus.presentation.adapter.delegate.FeedFollowProfileAdapterDelegate
@@ -11,13 +12,20 @@ import com.tokopedia.feedplus.presentation.model.FeedFollowRecommendationModel
  * Created By : Jonathan Darwin on July 04, 2023
  */
 class FeedFollowProfileAdapter(
+    lifecycleOwner: LifecycleOwner,
     profileListener: FeedFollowProfileViewHolder.Profile.Listener,
     private val followRecommendationListener: FeedFollowRecommendationListener,
 ) : BaseDiffUtilAdapter<FeedFollowProfileAdapter.Model>() {
 
     init {
         delegatesManager
-            .addDelegate(FeedFollowProfileAdapterDelegate.Profile(profileListener, followRecommendationListener))
+            .addDelegate(
+                FeedFollowProfileAdapterDelegate.Profile(
+                    lifecycleOwner,
+                    profileListener,
+                    followRecommendationListener
+                )
+            )
             .addDelegate(FeedFollowProfileAdapterDelegate.Loading())
     }
 

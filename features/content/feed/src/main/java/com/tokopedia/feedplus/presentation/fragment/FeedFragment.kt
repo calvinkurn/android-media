@@ -803,6 +803,7 @@ class FeedFragment :
             adapter = FeedPostAdapter(
                 FeedAdapterTypeFactory(
                     this,
+                    viewLifecycleOwner,
                     binding.rvFeedPost,
                     trackerModelMapper,
                     feedFollowRecommendationListener,

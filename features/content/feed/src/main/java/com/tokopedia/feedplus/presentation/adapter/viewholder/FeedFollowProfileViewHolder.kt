@@ -1,9 +1,17 @@
 package com.tokopedia.feedplus.presentation.adapter.viewholder
 
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.google.android.exoplayer2.Player
+import com.google.android.exoplayer2.SimpleExoPlayer
+import com.google.android.exoplayer2.source.hls.HlsMediaSource
+import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
+import com.google.android.exoplayer2.util.Util
 import com.tokopedia.feedplus.databinding.ItemFeedFollowProfileBinding
 import com.tokopedia.feedplus.databinding.ItemFeedFollowProfileShimmerBinding
 import com.tokopedia.feedplus.presentation.adapter.FeedFollowProfileAdapter
@@ -11,6 +19,9 @@ import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.presentation.adapter.listener.FeedFollowRecommendationListener
 import com.tokopedia.feedplus.presentation.model.FeedFollowRecommendationModel
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 
 /**
  * Created By : Jonathan Darwin on July 04, 2023
@@ -19,20 +30,64 @@ class FeedFollowProfileViewHolder private constructor() {
 
     class Profile(
         private val binding: ItemFeedFollowProfileBinding,
+        private val lifecycleOwner: LifecycleOwner,
         private val listener: Listener,
         private val followRecommendationListener: FeedFollowRecommendationListener
     ) : RecyclerView.ViewHolder(binding.root) {
 
+        private val player by lazyThreadSafetyNone {
+            SimpleExoPlayer.Builder(itemView.context).build()
+        }
+
+        init {
+            player.addListener(object : Player.EventListener {
+                override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
+                    when (playbackState) {
+                        Player.STATE_ENDED -> {
+                            binding.playerView.hide()
+                        }
+                        Player.STATE_READY -> {
+                            binding.playerView.show()
+                        }
+                        Player.STATE_BUFFERING -> {
+                            // don't do anything when buffering, just follow the previous state
+                        }
+                        else -> binding.playerView.hide()
+                    }
+                }
+            })
+
+            lifecycleOwner.lifecycle.addObserver(object : LifecycleEventObserver {
+                override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
+                    when (event) {
+                        Lifecycle.Event.ON_DESTROY -> {
+                            player.release()
+                        }
+                        else -> {}
+                    }
+                }
+            })
+
+            binding.playerView.player = player
+        }
+
         fun bind(model: FeedFollowProfileAdapter.Model.Profile) {
-            /** TODO: setup exoPlayer */
+            val mediaSource = HlsMediaSource.Factory(
+                DefaultDataSourceFactory(
+                    itemView.context,
+                    Util.getUserAgent(itemView.context, "Tokopedia Android")
+                )
+            ).createMediaSource(Uri.parse(model.data.videoUrl))
+            player.prepare(mediaSource)
 
             if (model.isSelected) {
-                /** TODO: play video */
+                player.playWhenReady = true
             } else {
-                /** TODO: pause video */
+                player.stop()
             }
 
             binding.imgProfile.setImageUrl(model.data.imageUrl)
+            binding.imgThumbnail.setImageUrl(model.data.thumbnailUrl)
             binding.tvProfileName.text = model.data.name
             binding.btnFollow.apply {
                 if (model.data.isFollow) {
@@ -78,6 +133,7 @@ class FeedFollowProfileViewHolder private constructor() {
         companion object {
             fun create(
                 parent: ViewGroup,
+                lifecycleOwner: LifecycleOwner,
                 listener: Listener,
                 followRecommendationListener: FeedFollowRecommendationListener
             ) = Profile(
@@ -86,6 +142,7 @@ class FeedFollowProfileViewHolder private constructor() {
                     parent,
                     false
                 ),
+                lifecycleOwner,
                 listener,
                 followRecommendationListener
             )

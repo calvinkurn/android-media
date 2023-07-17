@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewParent
+import androidx.lifecycle.LifecycleOwner
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -37,6 +38,7 @@ import com.tokopedia.feedplus.presentation.model.FeedNoContentModel
  */
 class FeedAdapterTypeFactory(
     context: FeedFragment,
+    private val lifecycleOwner: LifecycleOwner,
     private val parentToBeDisabled: ViewParent?,
     private val trackerMapper: MapperFeedModelToTrackerDataModel,
     private val followRecommendationListener: FeedFollowRecommendationListener,
@@ -102,6 +104,7 @@ class FeedAdapterTypeFactory(
                     parent as ViewGroup,
                     false
                 ),
+                lifecycleOwner,
                 followRecommendationListener
             )
             LoadingMoreViewHolder.LAYOUT -> FeedLoadMoreViewHolder(

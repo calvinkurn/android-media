@@ -2,6 +2,7 @@ package com.tokopedia.feedplus.presentation.adapter.delegate
 
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.LifecycleOwner
 import com.tokopedia.adapterdelegate.TypedAdapterDelegate
 import com.tokopedia.feedplus.presentation.adapter.FeedFollowProfileAdapter
 import com.tokopedia.feedplus.presentation.adapter.listener.FeedFollowRecommendationListener
@@ -14,6 +15,7 @@ import com.tokopedia.content.common.R as contentCommonR
 class FeedFollowProfileAdapterDelegate private constructor() {
 
     class Profile(
+        private val lifecycleOwner: LifecycleOwner,
         private val listener: FeedFollowProfileViewHolder.Profile.Listener,
         private val followRecommendationListener: FeedFollowRecommendationListener,
     ) : TypedAdapterDelegate<
@@ -35,6 +37,7 @@ class FeedFollowProfileAdapterDelegate private constructor() {
         ): FeedFollowProfileViewHolder.Profile {
             return FeedFollowProfileViewHolder.Profile.create(
                 parent,
+                lifecycleOwner,
                 listener,
                 followRecommendationListener
             )

@@ -1,6 +1,7 @@
 package com.tokopedia.feedplus.presentation.adapter.viewholder
 
 import androidx.annotation.LayoutRes
+import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -18,10 +19,12 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
  */
 class FeedFollowRecommendationViewHolder(
     private val binding: ItemFeedFollowRecommendationBinding,
+    private val lifecycleOwner: LifecycleOwner,
     private val listener: FeedFollowRecommendationListener
 ) : AbstractViewHolder<FeedFollowRecommendationModel>(binding.root) {
 
     private val profileAdapter = FeedFollowProfileAdapter(
+        lifecycleOwner = lifecycleOwner,
         profileListener = object : FeedFollowProfileViewHolder.Profile.Listener {
             override fun onScrollProfile(position: Int) {
                 binding.rvFollowRecommendation.smoothScrollToPosition(position)
@@ -39,6 +42,7 @@ class FeedFollowRecommendationViewHolder(
         binding.rvFollowRecommendation.addItemDecoration(FeedFollowProfileItemDecoration(itemView.context))
         snapHelper.attachToRecyclerView(binding.rvFollowRecommendation)
         binding.rvFollowRecommendation.adapter = profileAdapter
+        binding.rvFollowRecommendation.itemAnimator = null
 
         binding.rvFollowRecommendation.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
