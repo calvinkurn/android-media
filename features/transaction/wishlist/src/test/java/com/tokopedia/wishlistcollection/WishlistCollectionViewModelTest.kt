@@ -14,10 +14,12 @@ import com.tokopedia.wishlist.data.model.response.DeleteWishlistProgressResponse
 import com.tokopedia.wishlist.domain.DeleteWishlistProgressUseCase
 import com.tokopedia.wishlistcollection.data.model.WishlistCollectionTypeLayoutData
 import com.tokopedia.wishlistcollection.data.params.UpdateWishlistCollectionParams
+import com.tokopedia.wishlistcollection.data.response.AffiliateUserDetailOnBoardingBottomSheetResponse
 import com.tokopedia.wishlistcollection.data.response.DeleteWishlistCollectionResponse
 import com.tokopedia.wishlistcollection.data.response.GetWishlistCollectionResponse
 import com.tokopedia.wishlistcollection.data.response.GetWishlistCollectionSharingDataResponse
 import com.tokopedia.wishlistcollection.data.response.UpdateWishlistCollectionResponse
+import com.tokopedia.wishlistcollection.domain.AffiliateUserDetailOnBoardingBottomSheetUseCase
 import com.tokopedia.wishlistcollection.domain.DeleteWishlistCollectionUseCase
 import com.tokopedia.wishlistcollection.domain.GetWishlistCollectionSharingDataUseCase
 import com.tokopedia.wishlistcollection.domain.GetWishlistCollectionUseCase
@@ -63,6 +65,9 @@ class WishlistCollectionViewModelTest {
 
     @RelaxedMockK
     lateinit var updateWishlistCollectionUseCase: UpdateWishlistCollectionUseCase
+
+    @RelaxedMockK
+    lateinit var affiliateUserDetailOnBoardingBottomSheetUseCase: AffiliateUserDetailOnBoardingBottomSheetUseCase
 
     private var collectionWishlistResponseDataStatusOkErrorEmpty = GetWishlistCollectionResponse(
         getWishlistCollections = GetWishlistCollectionResponse.GetWishlistCollections(status = "OK", errorMessage = emptyList())
@@ -178,6 +183,14 @@ class WishlistCollectionViewModelTest {
         GetWishlistCollectionSharingDataResponse.GetWishlistCollectionSharingData(status = "ERROR", errorMessage = arrayListOf("error"))
     )
 
+    private var getAffiliateUserDetail_registered = AffiliateUserDetailOnBoardingBottomSheetResponse(
+        AffiliateUserDetailOnBoardingBottomSheetResponse.AffiliateUserDetail(isRegistered = true)
+    )
+
+    private var getAffiliateUserDetail_unregistered = AffiliateUserDetailOnBoardingBottomSheetResponse(
+        AffiliateUserDetailOnBoardingBottomSheetResponse.AffiliateUserDetail(isRegistered = false)
+    )
+
     private var collectionId = 1L
 
     @Before
@@ -192,6 +205,7 @@ class WishlistCollectionViewModelTest {
                 singleRecommendationUseCase,
                 deleteWishlistProgressUseCase,
                 getWishlistCollectionSharingDataUseCase,
+                affiliateUserDetailOnBoardingBottomSheetUseCase,
                 updateWishlistCollectionUseCase
             )
         )
@@ -636,5 +650,50 @@ class WishlistCollectionViewModelTest {
 
         // then
         assert(wishlistCollectionViewModel.getWishlistCollectionSharingDataResult.value is Fail)
+    }
+
+    @Test
+    fun `Execute getAffiliateUserDetail Success Registered`() {
+        // given
+        coEvery {
+            affiliateUserDetailOnBoardingBottomSheetUseCase(Unit)
+        } returns getAffiliateUserDetail_registered
+
+        // when
+        wishlistCollectionViewModel.getAffiliateUserDetail()
+
+        // then
+        assert(wishlistCollectionViewModel.isUserAffiliate.value is Success)
+        assert((wishlistCollectionViewModel.isUserAffiliate.value as Success).data.isRegistered)
+    }
+
+    @Test
+    fun `Execute getAffiliateUserDetail Success Not Registered`() {
+        // given
+        coEvery {
+            affiliateUserDetailOnBoardingBottomSheetUseCase(Unit)
+        } returns getAffiliateUserDetail_unregistered
+
+        // when
+        wishlistCollectionViewModel.getAffiliateUserDetail()
+
+        // then
+        assert(wishlistCollectionViewModel.isUserAffiliate.value is Success)
+        assert(!(wishlistCollectionViewModel.isUserAffiliate.value as Success).data.isRegistered)
+    }
+
+    @Test
+    fun `Execute getAffiliateUserDetail Failed`() {
+        // given
+        coEvery {
+            affiliateUserDetailOnBoardingBottomSheetUseCase(Unit)
+        } throws throwable.throwable
+
+        // when
+        wishlistCollectionViewModel.getAffiliateUserDetail()
+
+        // then
+        assert(wishlistCollectionViewModel.isUserAffiliate.value is Fail)
+        assert((wishlistCollectionViewModel.isUserAffiliate.value as Fail).throwable == throwable.throwable)
     }
 }
