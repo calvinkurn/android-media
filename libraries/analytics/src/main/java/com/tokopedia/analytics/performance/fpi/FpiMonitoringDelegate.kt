@@ -215,7 +215,7 @@ class FpiMonitoringDelegateImpl :
     }
 
     private fun updateFpsInfo(fps: Double) {
-        val sFps = stringFormat("%.2f%s", fps, "fps")
+        val sFps = String.format(Locale.getDefault(), "%.2f%s", fps, "fps")
         fpsInfoText?.text = sFps
     }
 
@@ -251,7 +251,7 @@ class FpiMonitoringDelegateImpl :
             lable = "s"
         }
 
-        val sFps = stringFormat("%.2f%s", renderTime, lable)
+        val sFps = String.format(Locale.getDefault(), "%.2f%s", renderTime, lable)
         renderTimeText?.text = sFps
     }
 
@@ -281,8 +281,5 @@ class FpiMonitoringDelegateImpl :
         PREF_KEY,
         BaseActivity.MODE_PRIVATE
     ).getBoolean(PREF_KEY, false)
-
-    private fun stringFormat(format: String, vararg args: Any?) =
-        String.format(Locale.getDefault(), format, args)
     // endregion
 }
