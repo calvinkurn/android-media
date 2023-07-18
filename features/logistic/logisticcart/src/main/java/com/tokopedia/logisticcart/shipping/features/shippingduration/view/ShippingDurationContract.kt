@@ -8,6 +8,7 @@ import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.Servi
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.logisticcart.shipping.model.PreOrderModel
 import com.tokopedia.logisticcart.shipping.model.Product
+import com.tokopedia.logisticcart.shipping.model.RatesParam
 import com.tokopedia.logisticcart.shipping.model.RatesViewModelType
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
@@ -92,5 +93,13 @@ interface ShippingDurationContract {
         )
 
         fun onLogisticPromoClicked(data: LogisticPromoUiModel)
+
+        fun loadDuration(
+            selectedSpId: Int,
+            selectedServiceId: Int,
+            ratesParam: RatesParam,
+            isRatesTradeInApi: Boolean,
+            isOcc: Boolean
+        )
     }
 }

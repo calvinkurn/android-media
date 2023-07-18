@@ -95,20 +95,21 @@ class ShippingDurationPresenter @Inject constructor(
                 .warehouseId(warehouseId)
                 .build()
             loadDuration(
-                param,
-                isRatesTradeInApi = isTradeInDropOff
+                ratesParam = param,
+                isRatesTradeInApi = isTradeInDropOff,
+                selectedSpId = selectedSpId,
+                selectedServiceId = selectedServiceId,
+                isOcc = isOcc
             )
         }
     }
 
-    private fun loadDuration(
+    override fun loadDuration(
         selectedSpId: Int,
         selectedServiceId: Int,
-        shopShipmentList: List<ShopShipment>,
         ratesParam: RatesParam,
         isRatesTradeInApi: Boolean,
-        isOcc: Boolean,
-        disableCourierPromo: Boolean
+        isOcc: Boolean
     ) {
         val observable: Observable<ShippingRecommendationData> = if (isRatesTradeInApi) {
             ratesApiUseCase.execute(ratesParam)
@@ -119,7 +120,7 @@ class ShippingDurationPresenter @Inject constructor(
             .map { shippingRecommendationData: ShippingRecommendationData ->
                 stateConverter.fillState(
                     shippingRecommendationData,
-                    shopShipmentList,
+                    ratesParam.shopShipments,
                     selectedSpId,
                     selectedServiceId
                 )
@@ -144,14 +145,6 @@ class ShippingDurationPresenter @Inject constructor(
                                 it.showNoCourierAvailable(shippingRecommendationData.errorMessage)
                                 it.stopTrace()
                             } else if (shippingRecommendationData.shippingDurationUiModels.isNotEmpty()) {
-                                if (disableCourierPromo) {
-                                    for (shippingDurationUiModel in shippingRecommendationData.shippingDurationUiModels) {
-                                        shippingDurationUiModel.serviceData.isPromo = 0
-                                        for (productData in shippingDurationUiModel.serviceData.products) {
-                                            productData.promoCode = ""
-                                        }
-                                    }
-                                }
                                 shippingData = shippingRecommendationData
                                 it.showData(
                                     convertServiceListToUiModel(

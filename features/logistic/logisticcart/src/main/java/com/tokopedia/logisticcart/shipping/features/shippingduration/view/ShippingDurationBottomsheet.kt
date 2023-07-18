@@ -67,20 +67,31 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
         activity: Activity,
         fragmentManager: FragmentManager,
         shippingDurationBottomsheetListener: ShippingDurationBottomsheetListener?,
-        param: RatesParam,
-        shopCity: String,
-        orderWeight: Long
+        ratesParam: RatesParam,
+        selectedSpId: Int,
+        selectedServiceId: Int,
+        isRatesTradeInApi: Boolean,
+        isDisableOrderPrioritas: Boolean,
+        recipientAddressModel: RecipientAddressModel?,
+        cartPosition: Int,
+        isOcc: Boolean
     ) {
         this.activity = activity
         this.shippingDurationBottomsheetListener = shippingDurationBottomsheetListener
-        initData(
-            shipmentDetailData, selectedServiceId, shopShipmentList, recipientAddressModel,
-            cartPosition, codHistory, isLeasing, pslCode, products, cartString,
-            isDisableOrderPrioritas, isTradeInDropOff, isFulFillment, preOrderTime, mvc, cartData,
-            warehouseId
-        )
-        initBottomSheet(activity)
+        initBottomSheet(activity) {
+            showLoading()
+            presenter?.loadDuration(
+                selectedSpId = selectedSpId,
+                selectedServiceId = selectedServiceId,
+                ratesParam = ratesParam,
+                isRatesTradeInApi = isRatesTradeInApi,
+                isOcc = isOcc
+            )
+        }
         initView(activity)
+        this.isDisableOrderPrioritas = isDisableOrderPrioritas
+        this.mRecipientAddress = recipientAddressModel
+        this.mCartPosition = cartPosition
         this.isOcc = isOcc
         bottomSheet?.show(fragmentManager, this.javaClass.simpleName)
     }
@@ -116,13 +127,13 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
             isDisableOrderPrioritas, isTradeInDropOff, isFulFillment, preOrderTime, mvc, cartData,
             warehouseId
         )
-        initBottomSheet(activity)
+        initBottomSheet(activity, ::loadData)
         initView(activity)
         this.isOcc = isOcc
         bottomSheet?.show(fragmentManager, this.javaClass.simpleName)
     }
 
-    private fun initBottomSheet(activity: Activity) {
+    private fun initBottomSheet(activity: Activity, doAfterShowBottomSheet: () -> Unit) {
         bottomSheet = BottomSheetUnify()
         bottomSheet?.showCloseIcon = true
         bottomSheet?.setTitle(activity.getString(R.string.title_bottomsheet_shipment_duration))
@@ -133,7 +144,7 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
         bottomSheet?.setShowListener {
             chooseCourierTracePerformance = PerformanceMonitoring.start(CHOOSE_COURIER_TRACE)
             presenter?.attachView(this)
-            loadData()
+            doAfterShowBottomSheet()
         }
         bottomSheet?.setOnDismissListener {
             presenter?.detachView()
