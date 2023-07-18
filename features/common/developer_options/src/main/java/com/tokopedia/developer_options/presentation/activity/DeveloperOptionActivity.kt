@@ -400,17 +400,7 @@ class DeveloperOptionActivity :
     private fun userIdListener() = object : UserIdViewHolder.UserIdListener {
         override fun onClickUserIdButton() {
             userSession?.userId?.apply {
-                val clipboard = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
-                val clip = ClipData.newPlainText("Copied UserId", this)
-                clipboard.setPrimaryClip(clip)
-                showToaster(
-                    String.format(
-                        resources.getString(
-                            R.string.copy_user_id,
-                            userSession?.userId
-                        ).toBlankOrString()
-                    )
-                )
+                copyToClipboard(this)
             }
         }
 
@@ -420,21 +410,24 @@ class DeveloperOptionActivity :
     private fun shopIdListener() = object : ShopIdViewHolder.ShopIdListener {
         override fun onClickShopIdButton() {
             userSession?.shopId?.apply {
-                val clipboard = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
-                val clip = ClipData.newPlainText("Copied Shop Id ", this)
-                clipboard.setPrimaryClip(clip)
-                showToaster(
-                    String.format(
-                        resources.getString(
-                            R.string.copy_shop_id,
-                            userSession?.shopId
-                        ).toBlankOrString()
-                    )
-                )
+                copyToClipboard(this)
             }
         }
 
         override fun getShopId(): String = userSession?.shopId.orEmpty()
+    }
+    private fun copyToClipboard(id: String) {
+        val clipboard = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
+        val clip = ClipData.newPlainText("Copied Id ", id)
+        clipboard.setPrimaryClip(clip)
+        showToaster(
+            String.format(
+                resources.getString(
+                    R.string.copy_id,
+                    id
+                ).toBlankOrString()
+            )
+        )
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
