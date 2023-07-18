@@ -266,33 +266,6 @@ class DtHomeRecommendationViewModelTest {
     }
 
     @Test
-    fun `verify when load next with null data`() {
-        // Inject
-        val mockResponse = spyk(
-            GetDtHomeRecommendationResponse(
-                GetHomeRecommendationProductV2(
-                    products = arrayListOf(spyk(Product())),
-                    positions = arrayListOf(Position(type = TYPE_PRODUCT))
-                )
-            )
-        )
-
-//        // Given
-//        coEvery {
-//            dtGetRecommendationForYouUseCase(any())
-//        } returns mockResponse
-
-        // When
-//        viewModel.loadInitialPage("")
-        viewModel.loadNextData(2)
-
-        // Then
-//        assertNotNull(
-//            viewModel.homeRecommendationLiveData.value?.homeRecommendations?.first()
-//        )
-    }
-
-    @Test
     fun `verify when load next data after initial page is error`() {
         // Given
         coEvery {
