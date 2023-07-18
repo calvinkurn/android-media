@@ -38,10 +38,12 @@ import com.tokopedia.inboxcommon.RoleType
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.searchbar.navigation_component.NavSource
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.ContentType.TOOLBAR_TYPE_CUSTOM
 import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.ContentType.TOOLBAR_TYPE_TITLE
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
+import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.toPx
@@ -151,7 +153,7 @@ open class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFrag
         setupObserver()
         setupToolbar()
         setupInitialPage()
-        setupInitialToolbar()
+        updateToolbarIcon()
         setupBottomNav()
         setupSwitcher()
         setupOnBoarding()
@@ -320,13 +322,15 @@ open class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFrag
         toolbar?.let { this.lifecycle.addObserver(it) }
     }
 
-    private fun updateToolbarIcon(hasChatSearch: Boolean = false) {
-        val icon = IconBuilder()
-        if (hasChatSearch) {
+    private fun updateToolbarIcon() {
+        val icon = IconBuilder(IconBuilderFlag(InboxConfig.page.getNavSource()))
+        if (InboxConfig.page == InboxFragmentType.CHAT) {
             icon.addIcon(IconList.ID_SEARCH) { }
         }
         icon.addIcon(IconList.ID_CART) { }
-        icon.addIcon(IconList.ID_NAV_GLOBAL) { }
+        if (InboxConfig.page == InboxFragmentType.NOTIFICATION) {
+            icon.addIcon(IconList.ID_NAV_GLOBAL) { }
+        }
         toolbar?.setIcon(icon)
         toolbar?.setBadgeCounter(IconList.ID_CART, InboxConfig.notifications.totalCart)
     }
@@ -573,28 +577,25 @@ open class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFrag
                         R.id.menu_inbox_notification -> {
                             cacheState.saveInitialPageCache(InboxFragmentType.NOTIFICATION)
                             onBottomNavSelected(InboxFragmentType.NOTIFICATION)
-                            updateToolbarIcon()
                             InboxConfig.page = InboxFragmentType.NOTIFICATION
                         }
                         R.id.menu_inbox_chat -> {
                             cacheState.saveInitialPageCache(InboxFragmentType.CHAT)
                             onBottomNavSelected(InboxFragmentType.CHAT)
-                            updateToolbarIcon(true)
                             InboxConfig.page = InboxFragmentType.CHAT
                         }
                         R.id.menu_inbox_discussion -> {
                             cacheState.saveInitialPageCache(InboxFragmentType.DISCUSSION)
                             onBottomNavSelected(InboxFragmentType.DISCUSSION)
-                            updateToolbarIcon()
                             InboxConfig.page = InboxFragmentType.DISCUSSION
                         }
                         R.id.menu_inbox_review -> {
                             cacheState.saveInitialPageCache(InboxFragmentType.REVIEW)
                             onBottomNavSelected(InboxFragmentType.REVIEW)
-                            updateToolbarIcon()
                             InboxConfig.page = InboxFragmentType.REVIEW
                         }
                     }
+                    updateToolbarIcon()
                     analytic.trackOpenInboxPage(InboxConfig.page, InboxConfig.role)
                     analytic.trackClickBottomNaveMenu(InboxConfig.page, InboxConfig.role)
                     return@setOnNavigationItemSelectedListener true
@@ -612,13 +613,14 @@ open class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFrag
         viewModel.getNotifications(userSession.shopId)
     }
 
-    private fun setupInitialToolbar() {
-        val isChatPage = InboxConfig.page == InboxFragmentType.CHAT
-        updateToolbarIcon(isChatPage)
-    }
-
     private fun onBottomNavSelected(@InboxFragmentType page: Int) {
         navigator?.onPageSelected(page)
+    }
+
+    private fun Int.getNavSource(): NavSource {
+        return if(this == InboxFragmentType.NOTIFICATION)
+            NavSource.NOTIFICATION
+        else NavSource.DEFAULT
     }
 
     override fun attachBaseContext(newBase: Context?) {

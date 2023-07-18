@@ -1,14 +1,8 @@
 package com.tokopedia.topads.dashboard.domain.interactor
 
-import com.google.gson.reflect.TypeToken
-import com.tokopedia.common.network.coroutines.RestRequestInteractor
-import com.tokopedia.common.network.coroutines.repository.RestRepository
-import com.tokopedia.common.network.data.model.RequestType
-import com.tokopedia.common.network.data.model.RestRequest
 import com.tokopedia.gql_query_annotation.GqlQuery
-import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.network.data.model.response.DataResponse
-import com.tokopedia.topads.common.constant.TopAdsCommonConstant
+import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.common.data.internal.ParamObject.END_DATE
 import com.tokopedia.topads.common.data.internal.ParamObject.GOAL_ID
@@ -58,32 +52,32 @@ private const val TOP_ADS_GET_GROUP_STATISTICS_QUERY: String =
 @GqlQuery("GetTopadsDashboardGroupStatisticsQuery", TOP_ADS_GET_GROUP_STATISTICS_QUERY)
 class TopAdsGetGroupStatisticsUseCase @Inject constructor(
     private val userSession: UserSessionInterface,
+    graphqlRepository: GraphqlRepository
 ) {
 
-    private val restRepository: RestRepository by lazy { RestRequestInteractor.getInstance().restRepository }
+    private val graphql by lazy { GraphqlUseCase<GroupStatisticsResponse>(graphqlRepository) }
 
-    suspend fun execute(requestParams: RequestParams?): GroupStatisticsResponse {
-        try {
-            val token = object : TypeToken<DataResponse<GroupStatisticsResponse>>() {}.type
-            val query = GetTopadsDashboardGroupStatisticsQuery.GQL_QUERY
-            val request = GraphqlRequest(
-                query, GroupStatisticsResponse::class.java, requestParams?.parameters
-            )
-            val restRequest = RestRequest.Builder(TopAdsCommonConstant.TOPADS_GRAPHQL_TA_URL, token)
-                .setBody(request)
-                .setRequestType(RequestType.POST)
-                .build()
+    suspend fun execute(requestParams: RequestParams): GroupStatisticsResponse {
+        graphql.apply {
+            setGraphqlQuery(GetTopadsDashboardGroupStatisticsQuery.GQL_QUERY)
+            setTypeClass(GroupStatisticsResponse::class.java)
+        }
 
-            return restRepository.getResponse(restRequest)
-                .getData<DataResponse<GroupStatisticsResponse>>().data
-        } catch (e: Exception) {
-            throw e
+        return graphql.run {
+            setRequestParams(requestParams.parameters)
+            executeOnBackground()
         }
     }
 
     fun setParams(
-        search: String, page: Int, sort: String, status: Int?,
-        startDate: String, endDate: String, groupids: List<String>, goalId: Int = 0,
+        search: String,
+        page: Int,
+        sort: String,
+        status: Int?,
+        startDate: String,
+        endDate: String,
+        groupids: List<String>,
+        goalId: Int = 0
     ): RequestParams {
         val requestParams = RequestParams.create()
         val queryMap = HashMap<String, Any?>()

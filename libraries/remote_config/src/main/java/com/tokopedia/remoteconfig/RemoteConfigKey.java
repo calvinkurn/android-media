@@ -247,4 +247,5 @@ public class RemoteConfigKey {
     public static final String IS_SHOP_PENALTY_NEW_PAGE = "android_shop_penalty_new";
 
     public static final String SCP_REWARDS_MEDALI_TOUCH_POINT = "android_scp_rewards_medali_touch_point";
+
 }
