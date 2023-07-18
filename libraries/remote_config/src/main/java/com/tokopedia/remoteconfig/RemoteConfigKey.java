@@ -248,5 +248,5 @@ public class RemoteConfigKey {
 
     public static final String SCP_REWARDS_MEDALI_TOUCH_POINT = "android_scp_rewards_medali_touch_point";
 
-    public static final String IS_ENABLE_ORDER_STATUS_DETAIL_TEST = "is_enable_order_status_detail_test";
+    public static final String IS_ENABLE_ORDER_STATUS_DETAIL_TEST = "android_is_enable_order_status_detail_test";
 }
