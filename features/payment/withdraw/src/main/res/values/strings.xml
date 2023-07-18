@@ -120,4 +120,6 @@
     <string name="swd_ticker_rp_info">Sebagai pengguna Rekening Premium, kamu cuma bisa tarik saldo ke rekening ini.</string>
     <string name="swd_coachmark_gopay_wd_title">Sekarang bisa tarik saldo ke Gopay!</string>
     <string name="swd_coachmark_gopay_wd_description">Tinggal satu klik, kamu bisa tarik Saldo Tokopedia langsung ke saldo GoPay.</string>
+
+    <string name="swd_dialog_gopay_redirection_cta">Buka Aplikasi</string>
 </resources>

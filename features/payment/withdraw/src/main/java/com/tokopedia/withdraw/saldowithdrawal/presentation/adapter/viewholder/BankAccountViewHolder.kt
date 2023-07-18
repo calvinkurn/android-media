@@ -11,6 +11,7 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
@@ -26,6 +27,7 @@ import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import com.tokopedia.withdraw.R
 import com.tokopedia.withdraw.saldowithdrawal.domain.model.BankAccount
 import com.tokopedia.withdraw.saldowithdrawal.presentation.adapter.BankAccountAdapter
+import com.tokopedia.withdraw.saldowithdrawal.presentation.dialog.GopayRedirectionBottomSheet
 import kotlinx.android.synthetic.main.swd_item_bank_account.view.*
 
 class BankAccountViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -142,7 +144,7 @@ class BankAccountViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         btnBankSelector.shouldShowWithAction(bankAccount.walletAppData.ctaLink.isNotEmpty()) {
             btnBankSelector.text = bankAccount.walletAppData.ctaCopyWriting
             btnBankSelector.setOnClickListener {
-                RouteManager.route(it.context, bankAccount.walletAppData.ctaLink)
+                listener.onButtonClicked(bankAccount.walletAppData.ctaLink)
             }
         }
 

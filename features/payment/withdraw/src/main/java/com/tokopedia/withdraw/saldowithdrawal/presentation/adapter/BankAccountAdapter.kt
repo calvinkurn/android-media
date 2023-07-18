@@ -119,13 +119,14 @@ class BankAccountAdapter(private val withdrawAnalytics: WithdrawAnalytics,
     }
 
     fun getSelectedBankAccount(): BankAccount? {
-        return if (!::currentSelectedBankAccount.isInitialized)
+        return if (!::currentSelectedBankAccount.isInitialized || !bankAccountList.contains(currentSelectedBankAccount))
             null
         else
             currentSelectedBankAccount
     }
 
     interface BankAdapterListener {
+        fun onButtonClicked(applink: String)
         fun onBankAccountChanged()
 
         fun openAddBankAccount()

@@ -14,7 +14,9 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.coachmark.*
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
@@ -36,6 +38,7 @@ import com.tokopedia.withdraw.saldowithdrawal.domain.model.CheckEligible
 import com.tokopedia.withdraw.saldowithdrawal.domain.model.GopayData
 import com.tokopedia.withdraw.saldowithdrawal.presentation.adapter.BankAccountAdapter
 import com.tokopedia.withdraw.saldowithdrawal.presentation.dialog.DisabledAccountBottomSheet
+import com.tokopedia.withdraw.saldowithdrawal.presentation.dialog.GopayRedirectionBottomSheet
 import com.tokopedia.withdraw.saldowithdrawal.presentation.dialog.GopayWithdrawLimitBottomSheet
 import com.tokopedia.withdraw.saldowithdrawal.presentation.dialog.RekPremBankAccountInfoBottomSheet
 import com.tokopedia.withdraw.saldowithdrawal.presentation.viewmodel.RekeningPremiumViewModel
@@ -359,6 +362,21 @@ abstract class BaseWithdrawalFragment : BaseDaggerFragment(), BankAccountAdapter
 
     private fun trackOpenBankAccountSetting() {
         analytics.get().onClickManageAccount()
+    }
+
+    override fun onButtonClicked(applink: String) {
+        if (GlobalConfig.isSellerApp()) {
+            activity?.let {
+                GopayRedirectionBottomSheet.getInstance(
+                    "",
+                    "",
+                    "",
+                    applink
+                ).show(it.supportFragmentManager, GopayRedirectionBottomSheet.TAG)
+            }
+        } else {
+            RouteManager.route(context, applink)
+        }
     }
 
     override fun openAddBankAccount() {
