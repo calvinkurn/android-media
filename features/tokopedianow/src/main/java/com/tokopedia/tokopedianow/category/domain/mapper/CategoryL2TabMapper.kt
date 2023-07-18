@@ -2,7 +2,7 @@ package com.tokopedia.tokopedianow.category.domain.mapper
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.filter.common.data.DynamicFilterModel
-import com.tokopedia.tokopedianow.category.domain.response.GetCategoryLayoutResponse
+import com.tokopedia.tokopedianow.category.domain.response.GetCategoryLayoutResponse.Component
 import com.tokopedia.tokopedianow.category.presentation.constant.CategoryComponentName.Companion.PRODUCT_LIST_FILTER
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryQuickFilterUiModel
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategorySortFilterItemUiModel
@@ -15,9 +15,7 @@ object CategoryL2TabMapper {
         PRODUCT_LIST_FILTER
     )
 
-    fun MutableList<Visitable<*>>.mapToCategoryTabLayout(
-        components: List<GetCategoryLayoutResponse.Component>,
-    ) {
+    fun MutableList<Visitable<*>>.mapToCategoryTabLayout(components: List<Component>) {
         components.filter { SUPPORTED_LAYOUT_TYPES.contains(it.type) }.forEach {
             when(it.type) {
                 PRODUCT_LIST_FILTER -> addQuickFilter(it)
@@ -26,7 +24,7 @@ object CategoryL2TabMapper {
     }
 
     fun MutableList<Visitable<*>>.addQuickFilter(
-        response: GetCategoryLayoutResponse.Component
+        response: Component
     ) {
         add(CategoryQuickFilterUiModel(id = response.id))
     }
@@ -50,8 +48,12 @@ object CategoryL2TabMapper {
         }
     }
     
-    fun MutableList<Visitable<*>>.filterLayoutNotLoaded(): MutableList<Visitable<*>> {
+    fun MutableList<Visitable<*>>.filterNotLoadedLayout(): MutableList<Visitable<*>> {
         return filter { it.getLayoutState() == TokoNowLayoutState.LOADING }.toMutableList()
+    }
+
+    fun List<Component>.filterTabComponents(): List<Component> {
+        return filter { SUPPORTED_LAYOUT_TYPES.contains(it.type) }
     }
 
     private fun MutableList<Visitable<*>>.getItemIndex(visitableId: String?): Int? {

@@ -31,7 +31,7 @@ class TokoNowCategoryL2TabFragment : Fragment() {
             components: List<GetCategoryLayoutResponse.Component>
         ): TokoNowCategoryL2TabFragment {
             return TokoNowCategoryL2TabFragment().apply {
-                categoryComponents = components
+                this.components = components
             }
         }
     }
@@ -57,7 +57,7 @@ class TokoNowCategoryL2TabFragment : Fragment() {
 
     private var binding by autoClearedNullable<FragmentTokopedianowL2TabBinding>()
 
-    var categoryComponents = listOf<GetCategoryLayoutResponse.Component>()
+    var components = listOf<GetCategoryLayoutResponse.Component>()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -98,7 +98,7 @@ class TokoNowCategoryL2TabFragment : Fragment() {
     }
 
     private fun onViewCreated() {
-        viewModel.onViewCreated(categoryComponents)
+        viewModel.onViewCreated(components)
     }
 
     private fun injectDependencies() {

@@ -2,6 +2,7 @@ package com.tokopedia.tokopedianow.category.domain.mapper
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.filterTabComponents
 import com.tokopedia.tokopedianow.category.domain.response.GetCategoryLayoutResponse.BasicInfo
 import com.tokopedia.tokopedianow.category.domain.response.GetCategoryLayoutResponse.Component
 import com.tokopedia.tokopedianow.category.presentation.constant.CategoryComponentName.Companion.TABS_HORIZONTAL_SCROLL
@@ -53,6 +54,7 @@ object CategoryL2Mapper {
         componentResponse: Component,
         categoryNameList: List<String>
     ) {
-        add(CategoryL2TabUiModel(categoryNameList, componentListResponse))
+        val tabComponents = componentListResponse.filterTabComponents()
+        add(CategoryL2TabUiModel(categoryNameList, tabComponents))
     }
 }

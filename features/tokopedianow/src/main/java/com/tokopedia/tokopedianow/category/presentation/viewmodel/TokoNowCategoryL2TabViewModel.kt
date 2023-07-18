@@ -11,7 +11,7 @@ import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
-import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.filterLayoutNotLoaded
+import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.filterNotLoadedLayout
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.mapToCategoryTabLayout
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.mapToQuickFilter
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryParamMapper
@@ -57,13 +57,13 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
     
     private val visitableList = mutableListOf<Visitable<*>>()
 
-    fun onViewCreated(categoryComponents: List<Component>) {
+    fun onViewCreated(components: List<Component>) {
         launchCatchError(block = {
             visitableList.clear()
 
-            visitableList.mapToCategoryTabLayout(categoryComponents)
+            visitableList.mapToCategoryTabLayout(components)
             
-            visitableList.filterLayoutNotLoaded().forEach {
+            visitableList.filterNotLoadedLayout().forEach {
                 when(it) {
                     is CategoryQuickFilterUiModel -> getQuickFilterAsync(it).await()
                 }
