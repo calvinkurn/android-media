@@ -23,6 +23,7 @@ import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.nest.principles.utils.ImageSource
 import com.tokopedia.play.broadcaster.R
+import com.tokopedia.play.broadcaster.ui.model.livetovod.SpanAnnotationTextModel
 import com.tokopedia.play.broadcaster.ui.model.livetovod.TickerBottomSheetPageType
 import com.tokopedia.play.broadcaster.ui.model.livetovod.TickerBottomSheetUiModel
 
@@ -47,6 +48,80 @@ private fun LiveToVodBottomSheetContent(
     onButtonClick: () -> Unit,
     onActionTextPressed: (appLink: String) -> Unit,
 ) = with(data) {
+    @Composable
+    fun List<TickerBottomSheetUiModel.MainText>.MainText(
+        onActionTextPressed: (appLink: String) -> Unit
+    ) {
+        @Composable
+        fun TickerBottomSheetUiModel.MainText.TitleText() {
+            NestTypography(
+                text = title,
+                modifier = Modifier.padding(top = 16.dp),
+                textStyle = NestTheme.typography.heading2
+                    .copy(
+                        textAlign = TextAlign.Center,
+                        color = colorResource(id = R.color.Unify_NN1000),
+                    ),
+            )
+        }
+
+        @Composable
+        fun TickerBottomSheetUiModel.MainText.DescriptionText(
+            onActionTextPressed: (appLink: String) -> Unit
+        ) {
+            val descriptionText = generateSpanText(fullText = description, action = action)
+
+            NestTypography(
+                text = descriptionText,
+                modifier = Modifier.padding(top = 8.dp),
+                textStyle = NestTheme.typography.body1
+                    .copy(
+                        textAlign = TextAlign.Center,
+                        color = colorResource(id = R.color.Unify_NN1000),
+                    ),
+                onClickText = { offset ->
+                    descriptionText.getStringAnnotations(offset, offset)
+                        .firstOrNull()?.let { span ->
+                            action.map { current ->
+                                if (span.item != current.item) return@map
+                                onActionTextPressed.invoke(current.link)
+                            }
+                        }
+                }
+            )
+        }
+
+        with(first()) {
+            TitleText()
+            DescriptionText(onActionTextPressed)
+        }
+    }
+
+    @Composable
+    fun TickerBottomSheetUiModel.BottomText.BottomText(
+        onActionTextPressed: (appLink: String) -> Unit
+    ) {
+        val bottomText = generateSpanText(fullText = description, action = action)
+        NestTypography(
+            text = bottomText,
+            modifier = Modifier.padding(top = 8.dp, bottom = 16.dp),
+            textStyle = NestTheme.typography.body2
+                .copy(
+                    textAlign = TextAlign.Center,
+                    color = colorResource(id = R.color.Unify_NN1000)
+                ),
+            onClickText = { offset ->
+                bottomText.getStringAnnotations(offset, offset)
+                    .firstOrNull()?.let { span ->
+                        action.map { current ->
+                            if (span.item != current.item) return@map
+                            onActionTextPressed.invoke(current.link)
+                        }
+                    }
+            },
+        )
+    }
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
@@ -72,105 +147,6 @@ private fun LiveToVodBottomSheetContent(
 }
 
 @Composable
-private fun List<TickerBottomSheetUiModel.MainText>.MainText(
-    onActionTextPressed: (appLink: String) -> Unit
-) {
-    @Composable
-    fun TickerBottomSheetUiModel.MainText.TitleText() {
-        NestTypography(
-            text = title,
-            modifier = Modifier.padding(top = 16.dp),
-            textStyle = NestTheme.typography.heading2
-                .copy(
-                    textAlign = TextAlign.Center,
-                    color = colorResource(id = R.color.Unify_NN1000),
-                ),
-        )
-    }
-
-    @Composable
-    fun TickerBottomSheetUiModel.MainText.DescriptionText(
-        onActionTextPressed: (appLink: String) -> Unit
-    ) {
-        val descriptionText = generateSpanText(fullText = description, action = action)
-
-        NestTypography(
-            text = descriptionText,
-            modifier = Modifier.padding(top = 8.dp),
-            textStyle = NestTheme.typography.body1
-                .copy(
-                    textAlign = TextAlign.Center,
-                    color = colorResource(id = R.color.Unify_NN1000),
-                ),
-            onClickText = { offset ->
-                descriptionText.getStringAnnotations(offset, offset)
-                    .firstOrNull()?.let { span ->
-                        action.map { current ->
-                            if (span.item != current.item) return@map
-                            onActionTextPressed.invoke(current.link)
-                        }
-                    }
-            }
-        )
-    }
-
-    with(first()) {
-        TitleText()
-        DescriptionText(onActionTextPressed)
-    }
-}
-
-@Composable
-private fun TickerBottomSheetUiModel.BottomText.BottomText(
-    onActionTextPressed: (appLink: String) -> Unit
-) {
-    val bottomText = generateSpanText(fullText = description, action = action)
-    NestTypography(
-        text = bottomText,
-        modifier = Modifier.padding(top = 8.dp, bottom = 16.dp),
-        textStyle = NestTheme.typography.body2
-            .copy(
-                textAlign = TextAlign.Center,
-                color = colorResource(id = R.color.Unify_NN1000)
-            ),
-        onClickText = { offset ->
-            bottomText.getStringAnnotations(offset, offset)
-                .firstOrNull()?.let { span ->
-                    action.map { current ->
-                        if (span.item != current.item) return@map
-                        onActionTextPressed.invoke(current.link)
-                    }
-                }
-        },
-    )
-}
-
-@Composable
-@Preview(showBackground = true)
-internal fun Preview() {
-    PlayBroadcasterLiveToVodBottomSheetScreen(
-        data = TickerBottomSheetUiModel(
-            mainText = listOf(
-                TickerBottomSheetUiModel.MainText(
-                    action = listOf(),
-                    title = "Test Title",
-                    description = "Test Description",
-                )
-            ),
-            page = "",
-            type = TickerBottomSheetPageType.BOTTOM_SHEET,
-            imageURL = stringResource(id = R.string.play_shorts_affiliate_success),
-            bottomText = TickerBottomSheetUiModel.BottomText(
-                action = listOf(),
-                description = "Test Description"
-            )
-        ),
-        onBackPressed = {},
-        onActionTextPressed = {},
-    )
-}
-
-@Composable
 private fun generateSpanText(
     fullText: String,
     action: List<TickerBottomSheetUiModel.Action>,
@@ -180,7 +156,7 @@ private fun generateSpanText(
         if (!newFullText.contains(data.item)) return AnnotatedString(fullText)
         val index = newFullText.indexOf(data.item)
         newFullText = newFullText.replaceFirst(data.item, data.text)
-        AnnotationModel(
+        SpanAnnotationTextModel(
             item = data.item,
             start = index,
             end = index + data.text.length
@@ -210,8 +186,27 @@ private fun generateSpanText(
     return spannableText
 }
 
-data class AnnotationModel(
-    val item: String,
-    val start: Int,
-    val end: Int,
-)
+@Composable
+@Preview(showBackground = true)
+internal fun Preview() {
+    PlayBroadcasterLiveToVodBottomSheetScreen(
+        data = TickerBottomSheetUiModel(
+            mainText = listOf(
+                TickerBottomSheetUiModel.MainText(
+                    action = listOf(),
+                    title = "Test Title",
+                    description = "Test Description",
+                )
+            ),
+            page = "",
+            type = TickerBottomSheetPageType.BOTTOM_SHEET,
+            imageURL = stringResource(id = R.string.play_shorts_affiliate_success),
+            bottomText = TickerBottomSheetUiModel.BottomText(
+                action = listOf(),
+                description = "Test Description"
+            )
+        ),
+        onBackPressed = {},
+        onActionTextPressed = {},
+    )
+}
