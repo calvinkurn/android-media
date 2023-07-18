@@ -424,4 +424,21 @@ class DtHomeRecommendationViewModelTest {
                 ).product.isWishlist
         )
     }
+
+    @Test
+    fun `verify when update wishlist not found position isFailed null _homeRecommendationLiveData`() {
+        // When
+        viewModel.updateWishlist("9999", 99999, true)
+
+        // Then
+        verify(exactly = 0) {
+            homeRecommendationDataModelObserver.onChanged(
+                HomeRecommendationDataModel(
+                    homeRecommendations = listOf(
+                        HomeRecommendationError()
+                    )
+                )
+            )
+        }
+    }
 }
