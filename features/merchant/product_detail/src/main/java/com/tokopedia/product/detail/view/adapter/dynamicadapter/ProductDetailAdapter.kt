@@ -15,6 +15,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.HideViewHolder
 import com.tokopedia.product.detail.data.model.datamodel.ContentWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
 import com.tokopedia.product.detail.data.model.datamodel.PageErrorDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductAPlusImageDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductLoadingDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecomWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
@@ -160,5 +161,11 @@ class ProductDetailAdapter(asyncDifferConfig: AsyncDifferConfig<DynamicPdpDataMo
     ) {
         listener?.updateNavigationTabPosition()
         super.onCurrentListChanged(previousList, currentList)
+    }
+
+    fun getSeeMoreAPlusTogglePosition(): Int {
+        return currentList.indexOfFirst {
+            it is ProductAPlusImageDataModel && it.showOnCollapsed && it.ctaText.isNotBlank()
+        }
     }
 }

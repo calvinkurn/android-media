@@ -32,6 +32,7 @@ import com.tokopedia.product.detail.data.model.datamodel.OneLinersDataModel
 import com.tokopedia.product.detail.data.model.datamodel.OngoingCampaignDataModel
 import com.tokopedia.product.detail.data.model.datamodel.PdpComparisonWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.PdpRecommendationWidgetDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductAPlusImageDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductBundlingDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductContentDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductContentMainData
@@ -1174,19 +1175,47 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         updateAction.invoke()
     }
 
-    fun getCurrentDataModels(): List<DynamicPdpDataModel> {
-        val mutableItems = mapOfData.values.toMutableList()
+    fun getInitialItems(collapsed: Boolean): List<DynamicPdpDataModel> {
+        return mapOfData
+            .values
+            .toMutableList()
+            .adjustAPlusMedia(collapsed)
+            .toList()
+    }
 
-        val indexVerticalRecommendation = mutableItems.indexOfLast {
+    fun getCurrentDataModels(collapsed: Boolean): List<DynamicPdpDataModel> {
+        return mapOfData
+            .values
+            .toMutableList()
+            .adjustAPlusMedia(collapsed)
+            .addVerticalRecommendation()
+            .toList()
+    }
+
+    private fun MutableList<DynamicPdpDataModel>.addVerticalRecommendation(): MutableList<DynamicPdpDataModel> {
+        val indexVerticalRecommendation = indexOfLast {
             it is ProductRecommendationVerticalPlaceholderDataModel
         }
 
-        if (indexVerticalRecommendation == -1) return mutableItems
-        verticalRecommendationItems.forEachIndexed { index, item ->
-            item.position = index + 1
+        if (indexVerticalRecommendation != -1) {
+            verticalRecommendationItems.forEachIndexed { index, item ->
+                item.position = index + 1
+            }
+            addAll(indexVerticalRecommendation + 1, verticalRecommendationItems)
         }
-        mutableItems.addAll(indexVerticalRecommendation + 1, verticalRecommendationItems)
-        return mutableItems
+        return this
+    }
+
+    private fun MutableList<DynamicPdpDataModel>.adjustAPlusMedia(
+        collapsed: Boolean
+    ): MutableList<DynamicPdpDataModel> {
+        if (collapsed) removeAll { it is ProductAPlusImageDataModel && !it.showOnCollapsed }
+        forEachIndexed { index, dataModel ->
+            if (dataModel is ProductAPlusImageDataModel) {
+                this[index] = dataModel.copy(collapsed = collapsed)
+            }
+        }
+        return this
     }
 
     private fun updateCustomInfoTitleP2(p2: ProductInfoP2UiData) {

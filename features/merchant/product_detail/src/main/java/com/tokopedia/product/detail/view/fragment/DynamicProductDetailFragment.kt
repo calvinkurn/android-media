@@ -595,6 +595,8 @@ open class DynamicProductDetailFragment :
         ProductMediaRecomBottomSheetManager(childFragmentManager, this)
     }
 
+    private var aPlusMediaCollapsed: Boolean = true
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initBtnAction()
@@ -3284,7 +3286,7 @@ open class DynamicProductDetailFragment :
     }
 
     private fun updateUi() {
-        val newData = pdpUiUpdater?.getCurrentDataModels().orEmpty()
+        val newData = pdpUiUpdater?.getCurrentDataModels(aPlusMediaCollapsed).orEmpty()
         submitList(newData)
     }
 
@@ -3324,7 +3326,7 @@ open class DynamicProductDetailFragment :
         }
 
         setupProductVideoCoordinator()
-        submitInitialList(pdpUiUpdater?.mapOfData?.values?.toList().orEmpty())
+        submitInitialList(pdpUiUpdater?.getInitialItems(aPlusMediaCollapsed).orEmpty())
     }
 
     private fun setupProductVideoCoordinator() {
@@ -3549,6 +3551,15 @@ open class DynamicProductDetailFragment :
 
     override fun onProductMediaRecomBottomSheetDismissed() {
         viewModel.dismissProductMediaRecomBottomSheet()
+    }
+
+    override fun onToggleAPlus(collapse: Boolean) {
+        aPlusMediaCollapsed = collapse
+        updateUi()
+        if (aPlusMediaCollapsed) {
+            val seeMorePosition = adapter.getSeeMoreAPlusTogglePosition()
+            if (seeMorePosition != RecyclerView.NO_POSITION) scrollToPosition(seeMorePosition)
+        }
     }
 
     private fun goToAtcVariant(customCartRedirection: Map<String, CartTypeData>? = null) {

@@ -156,7 +156,18 @@ data class ComponentData(
     // endregion
 
     @SerializedName("variantCampaign")
-    val variantCampaign: VariantCampaign = VariantCampaign()
+    val variantCampaign: VariantCampaign = VariantCampaign(),
+
+    // region a plus image data
+    @SerializedName("aPlusTitle")
+    val aPlusTitle: String = "",
+    @SerializedName("aPlusMedia")
+    val aPlusMedia: List<APlusMedia> = listOf(),
+    @SerializedName("aPlusShow")
+    val aPlusShow: Boolean = false,
+    @SerializedName("aPlusCtaText")
+    val aPlusCtaText: String = ""
+    // endregion
 ) {
     companion object {
         private const val PRODUCT_IMAGE_TYPE = "image"
@@ -232,4 +243,11 @@ data class VariantCampaign(
     val campaigns: List<com.tokopedia.product.detail.common.data.model.variant.VariantCampaign> = emptyList(),
     @SerializedName("thematicCampaigns")
     val thematicCampaigns: List<ThematicCampaign> = emptyList()
+)
+
+data class APlusMedia(
+    @SerializedName("url")
+    val url: String,
+    @SerializedName("ratio")
+    val ratio: String
 )

@@ -43,6 +43,7 @@ import com.tokopedia.product.detail.data.model.datamodel.LoadingDataModel
 import com.tokopedia.product.detail.data.model.datamodel.MediaDataModel
 import com.tokopedia.product.detail.data.model.datamodel.OneLinersDataModel
 import com.tokopedia.product.detail.data.model.datamodel.OngoingCampaignDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductAPlusImageDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductBundlingDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductCategoryCarouselDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductContentDataModel
@@ -302,6 +303,23 @@ object DynamicProductDetailMapper {
                     listOfComponent.add(
                         ProductShopReviewDataModel(type = component.type, name = component.componentName)
                     )
+                }
+                ProductDetailConstant.A_PLUS_IMAGE -> {
+                    val aPlusData = component.componentData.firstOrNull()
+                    val aPlusMediaData = aPlusData?.aPlusMedia?.firstOrNull()
+                    if (aPlusMediaData != null) {
+                        listOfComponent.add(
+                            ProductAPlusImageDataModel(
+                                type = component.type,
+                                name = component.componentName,
+                                url = aPlusMediaData.url,
+                                ratio = aPlusMediaData.ratio,
+                                title = aPlusData.aPlusTitle,
+                                showOnCollapsed = aPlusData.aPlusShow,
+                                ctaText = aPlusData.aPlusCtaText
+                            )
+                        )
+                    }
                 }
             }
         }
