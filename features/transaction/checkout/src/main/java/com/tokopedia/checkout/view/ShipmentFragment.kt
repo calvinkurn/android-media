@@ -4318,7 +4318,7 @@ class ShipmentFragment :
 
                 run loopAddOnProduct@{
                     needUpdateAddOnItem.second?.addOnProduct?.listAddOnProductData?.forEach { addOnExisting ->
-                        for (addOnUiModel in addOnProductDataResult.changedAddons) {
+                        for (addOnUiModel in addOnProductDataResult.aggregatedData.selectedAddons) {
                             if (addOnUiModel.addOnType == addOnExisting.type) {
                                 addOnExisting.apply {
                                     id = addOnUiModel.id.toLongOrZero()

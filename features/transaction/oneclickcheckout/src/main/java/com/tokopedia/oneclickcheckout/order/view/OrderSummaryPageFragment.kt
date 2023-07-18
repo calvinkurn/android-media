@@ -380,7 +380,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                 for (index in listProducts.indices) {
                     if (listProducts[index].cartId == cartId) {
                         val addonProduct = listProducts[index].addOnsProductData
-                        addOnProductDataResult.changedAddons.forEach { addOnUiModel ->
+                        addOnProductDataResult.aggregatedData.selectedAddons.forEach { addOnUiModel ->
                             addonProduct.data.forEach { addonExisting ->
                                 if (addOnUiModel.addOnType == addonExisting.type) {
                                     addonExisting.apply {
