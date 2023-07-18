@@ -9,5 +9,6 @@ import com.tokopedia.kotlin.extensions.view.EMPTY
 data class PersonaDataUiModel(
     val persona: String = String.EMPTY,
     val personaStatus: PersonaStatus = PersonaStatus.UNDEFINED,
-    val personaData: PersonaUiModel = PersonaUiModel()
+    val personaData: PersonaUiModel = PersonaUiModel(),
+    val isSwitchChecked: Boolean = false
 )

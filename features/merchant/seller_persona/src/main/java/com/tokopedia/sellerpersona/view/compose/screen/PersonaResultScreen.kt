@@ -1,44 +1,316 @@
 package com.tokopedia.sellerpersona.view.compose.screen
 
-import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.MaterialTheme
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredHeight
+import androidx.compose.foundation.layout.requiredSize
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListScope
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.Divider
+import androidx.compose.material.Icon
+import androidx.compose.material.Switch
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import com.tokopedia.kotlin.extensions.view.parseAsHtml
+import com.tokopedia.nest.components.ButtonVariant
+import com.tokopedia.nest.components.NestButton
+import com.tokopedia.nest.components.NestImage
 import com.tokopedia.nest.components.loader.NestLoader
 import com.tokopedia.nest.components.loader.NestLoaderSize
 import com.tokopedia.nest.components.loader.NestLoaderType
+import com.tokopedia.nest.principles.NestTypography
+import com.tokopedia.nest.principles.ui.NestNN
+import com.tokopedia.nest.principles.ui.NestTheme
+import com.tokopedia.sellerpersona.R
+import com.tokopedia.sellerpersona.common.Utils
 import com.tokopedia.sellerpersona.view.compose.model.ResultUiEvent
-import com.tokopedia.sellerpersona.view.compose.model.UiState
 import com.tokopedia.sellerpersona.view.model.PersonaDataUiModel
+import com.tokopedia.sellerpersona.view.model.PersonaStatus
+import com.tokopedia.sellerpersona.view.model.PersonaUiModel
+import com.tokopedia.iconunify.R as iconUnifyR
 
 /**
  * Created by @ilhamsuaib on 12/07/23.
  */
 
-@Composable
-internal fun ResultLoadingState() {
-    NestLoader(
-        variant = NestLoaderType.Circular(
-            size = NestLoaderSize.Small
-        )
-    )
-}
+private const val PERSONA_TITLE = "\uD83C\uDF1F %s \uD83C\uDF1F"
+private const val CORPORATE_EMPLOYEE = "corporate-employee"
 
 @Composable
 internal fun PersonaResultScreen(
-    state: UiState<PersonaDataUiModel>,
-    onEvent: (ResultUiEvent) -> Unit
+    data: PersonaDataUiModel, onEvent: (ResultUiEvent) -> Unit
 ) {
+    LazyColumn(modifier = Modifier.fillMaxSize()) {
+        item {
+            ResultHeaderSectionUi(data.personaData)
+        }
+        renderResultContentSectionUi(data)
+        item {
+            ResultFooterSectionUi(data, onEvent)
+        }
+    }
+}
+
+@Composable
+private fun ResultFooterSectionUi(data: PersonaDataUiModel, onEvent: (ResultUiEvent) -> Unit) {
+    val context = LocalContext.current
     Column(
         modifier = Modifier
-            .background(MaterialTheme.colors.background)
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState())
+            .padding(top = 16.dp, start = 16.dp, end = 16.dp)
+            .fillMaxWidth()
     ) {
+        Divider(
+            color = NestTheme.colors.NN._50, thickness = 1.dp, modifier = Modifier.fillMaxWidth()
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(end = 16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column(modifier = Modifier.fillMaxWidth()) {
+                NestTypography(
+                    text = stringResource(
+                        R.string.sp_result_persona_seller_type_status, data.personaData.headerTitle
+                    ), textStyle = NestTheme.typography.display3.copy(
+                        color = NestTheme.colors.NN._900
+                    )
+                )
+                val activeStatus = remember {
+                    if (data.personaStatus.isActive()) {
+                        R.string.sp_active
+                    } else {
+                        R.string.sp_inactive
+                    }
+                }
+                NestTypography(
+                    text = stringResource(activeStatus),
+                    textStyle = NestTheme.typography.display3.copy(
+                        color = NestTheme.colors.NN._600
+                    )
+                )
+            }
+            Switch(checked = data.isSwitchChecked, onCheckedChange = {
+                onEvent(ResultUiEvent.CheckChanged(it))
+            })
+        }
+        NestTypography(
+            text = stringResource(R.string.sp_persona_activation_content_description),
+            textStyle = NestTheme.typography.display3.copy(
+                color = NestTheme.colors.NN._600
+            ),
+            modifier = Modifier.padding(top = 16.dp)
+        )
+        Spacer(modifier = Modifier.height(24.dp))
+        NestButton(
+            text = stringResource(R.string.sp_apply), onClick = {
+                onEvent(ResultUiEvent.ApplyChanges)
+            }, modifier = Modifier.fillMaxWidth()
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+        NestButton(
+            text = stringResource(R.string.sp_retry_questionnaire), onClick = {
+                onEvent(ResultUiEvent.RetakeQuiz)
+            }, modifier = Modifier.fillMaxWidth(), variant = ButtonVariant.GHOST_ALTERNATE
+        )
+        val hexColor = remember {
+            Utils.getHexColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
+        }
+        NestTypography(
+            text = stringResource(
+                R.string.sp_persona_result_select_manual, hexColor
+            ).parseAsHtml(), textStyle = NestTheme.typography.display3.copy(
+                color = NestTheme.colors.NN._600, textAlign = TextAlign.Center
+            ), modifier = Modifier
+                .padding(top = 26.dp, bottom = 18.dp)
+                .fillMaxWidth()
+        )
+    }
+}
 
+private fun LazyListScope.renderResultContentSectionUi(data: PersonaDataUiModel) {
+    item {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 16.dp, end = 16.dp)
+        ) {
+            NestTypography(
+                modifier = Modifier.padding(top = 16.dp), text = stringResource(
+                    R.string.sp_result_list_section_gedongan, data.personaData.headerTitle
+                ), textStyle = NestTheme.typography.heading2.copy(
+                    color = NestTheme.colors.NN._900
+                )
+            )
+            Divider(
+                color = NestTheme.colors.NN._50,
+                thickness = 1.dp,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 16.dp, bottom = 16.dp)
+            )
+        }
+    }
+    items(items = data.personaData.itemList) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 16.dp, end = 16.dp)
+        ) {
+            Icon(
+                painter = painterResource(iconUnifyR.drawable.iconunify_check),
+                contentDescription = null,
+                tint = NestTheme.colors.GN._500,
+                modifier = Modifier.size(24.dp)
+            )
+            NestTypography(
+                modifier = Modifier.padding(
+                    top = 6.dp, bottom = 6.dp, start = 8.dp
+                ), text = it, textStyle = NestTheme.typography.display2.copy(
+                    color = NestTheme.colors.NN._950
+                )
+            )
+        }
+    }
+    item {
+        Divider(
+            color = NestTheme.colors.NN._50,
+            thickness = 1.dp,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(all = 16.dp)
+        )
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(start = 16.dp, end = 16.dp)
+        ) {
+            Icon(
+                painter = painterResource(iconUnifyR.drawable.iconunify_lightbulb),
+                contentDescription = null,
+                tint = NestTheme.colors.GN._500,
+                modifier = Modifier.size(24.dp)
+            )
+            NestTypography(
+                modifier = Modifier.padding(start = 8.dp),
+                text = stringResource(R.string.sp_result_create_admin_account),
+                textStyle = NestTheme.typography.display3.copy(
+                    color = NestTheme.colors.NN._600
+                )
+            )
+        }
+    }
+}
+
+@Composable
+private fun ResultHeaderSectionUi(persona: PersonaUiModel) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .requiredHeight(246.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        NestImage(
+            imageUrl = persona.backgroundImage, modifier = Modifier.fillMaxSize()
+        )
+        Column(
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            NestImage(
+                imageUrl = persona.avatarImage,
+                modifier = Modifier
+                    .requiredSize(120.dp)
+                    .clip(CircleShape)
+            )
+            Spacer(modifier = Modifier.requiredHeight(16.dp))
+            NestTypography(
+                modifier = Modifier.fillMaxWidth(),
+                text = stringResource(R.string.sp_result_seller_type),
+                textStyle = NestTheme.typography.display3.copy(
+                    color = NestNN.light._0, textAlign = TextAlign.Center
+                )
+            )
+            NestTypography(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 2.dp),
+                text = String.format(PERSONA_TITLE, persona.headerTitle),
+                textStyle = NestTheme.typography.heading2.copy(
+                    color = NestNN.light._0, textAlign = TextAlign.Center
+                )
+            )
+            NestTypography(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 2.dp), text = stringResource(
+                    R.string.sp_result_account_type, persona.headerSubTitle
+                ), textStyle = NestTheme.typography.small.copy(
+                    color = NestNN.light._0,
+                    textAlign = TextAlign.Center,
+                    fontWeight = FontWeight.Bold
+                )
+            )
+        }
+    }
+}
+
+@Composable
+fun ResultLoadingState() {
+    Box(
+        modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center
+    ) {
+        NestLoader(
+            variant = NestLoaderType.Circular(
+                size = NestLoaderSize.Small
+            )
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun PreviewPersonaResultScreen() {
+    NestTheme(darkTheme = false) {
+        PersonaResultScreen(data = PersonaDataUiModel(
+            persona = "corporate-supervisor-owner",
+            personaStatus = PersonaStatus.ACTIVE,
+            personaData = PersonaUiModel(
+                value = "corporate-supervisor-owner",
+                headerTitle = "Gedongan",
+                headerSubTitle = "Pemilik Toko",
+                avatarImage = "https://images.tokopedia.net/img/android/sellerapp/seller_persona/img_persona_avatar_gedongan-min.png",
+                backgroundImage = "https://images.tokopedia.net/img/android/sellerapp/seller_persona/img_persona_background_gedongan-min.png",
+                bodyTitle = "Pilih tipe ini jika kamu:",
+                itemList = listOf(
+                    "Menerima 1-10 pesanan per hari",
+                    "Punya toko fisik (offline)",
+                    "Punya pegawai yang mengurus operasional toko",
+                    "Sering mencari peluang untuk strategi baru"
+                )
+            ),
+            isSwitchChecked = true
+        ), onEvent = {})
     }
 }

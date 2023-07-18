@@ -63,7 +63,8 @@ class GetPersonaDataUseCase @Inject constructor(
         return PersonaDataUiModel(
             persona = data.persona,
             personaStatus = getPersonaStatusType(data.status),
-            personaData = persona
+            personaData = persona,
+            isSwitchChecked = getPersonaStatusType(data.status).isActive()
         )
     }
 

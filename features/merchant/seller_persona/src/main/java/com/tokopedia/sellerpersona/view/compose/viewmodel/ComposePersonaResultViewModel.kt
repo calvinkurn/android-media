@@ -7,6 +7,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.sellerpersona.common.Constants
 import com.tokopedia.sellerpersona.data.remote.usecase.GetPersonaDataUseCase
 import com.tokopedia.sellerpersona.data.remote.usecase.TogglePersonaUseCase
+import com.tokopedia.sellerpersona.view.compose.model.PersonaResultState
 import com.tokopedia.sellerpersona.view.compose.model.ResultUiEvent
 import com.tokopedia.sellerpersona.view.compose.model.UiState
 import com.tokopedia.sellerpersona.view.model.PersonaDataUiModel
@@ -33,9 +34,9 @@ class ComposePersonaResultViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers
 ) : ViewModel() {
 
-    private val _state = MutableStateFlow<UiState<PersonaDataUiModel>>(UiState.Loading)
-    val state: StateFlow<UiState<PersonaDataUiModel>>
-        get() = _state.asStateFlow()
+    private val _personaState = MutableStateFlow(PersonaResultState(isLoading = true))
+    val personaState: StateFlow<PersonaResultState>
+        get() = _personaState.asStateFlow()
 
     private val _togglePersonaStatus = MutableStateFlow<UiState<PersonaStatus>>(UiState.None)
     val togglePersonaStatus: StateFlow<UiState<PersonaStatus>>
@@ -49,25 +50,54 @@ class ComposePersonaResultViewModel @Inject constructor(
             is ResultUiEvent.TogglePersona -> {
 
             }
+
             is ResultUiEvent.ApplyChanges -> {
 
             }
-            is ResultUiEvent.RetakeQuiz -> {
 
+            is ResultUiEvent.CheckChanged -> onCheckedChanged(event.isChecked)
+
+            is ResultUiEvent.Reload -> fetchPersonaData()
+            else -> {
+                _uiEvent.emit(event)
+                _uiEvent.emit(ResultUiEvent.None)
             }
         }
     }
 
+    private suspend fun onCheckedChanged(isChecked: Boolean) {
+        val lastState = _personaState.value
+        val checkedChangedState = lastState.copy(
+            isLoading = false, data = lastState.data.copy(isSwitchChecked = isChecked), error = null
+        )
+        _personaState.emit(checkedChangedState)
+    }
+
     fun fetchPersonaData() {
         viewModelScope.launchCatchError(block = {
+            _personaState.emit(getLoadingState())
             val result = getPersonaDataUseCase.get().execute(
-                userSession.get().shopId,
-                Constants.PERSONA_PAGE_PARAM
+                shopId = userSession.get().shopId, page = Constants.PERSONA_PAGE_PARAM
             )
-            _state.emit(UiState.Success(result))
+            _personaState.emit(getSuccessState(result))
         }, onError = {
-            _state.emit(UiState.Error(it))
+            _personaState.emit(getErrorState(it))
         })
+    }
+
+    private fun getSuccessState(data: PersonaDataUiModel): PersonaResultState {
+        val lastState = _personaState.value
+        return lastState.copy(isLoading = false, data = data, error = null)
+    }
+
+    private fun getLoadingState(): PersonaResultState {
+        val lastState = _personaState.value
+        return lastState.copy(isLoading = true, data = lastState.data, error = null)
+    }
+
+    private fun getErrorState(throwable: Throwable): PersonaResultState {
+        val lastState = _personaState.value
+        return lastState.copy(isLoading = false, data = lastState.data, error = throwable)
     }
 
     private fun toggleUserPersona(status: PersonaStatus) {

@@ -139,7 +139,7 @@ class SellerPersonaActivity : BaseActivity(), HasComponent<SellerPersonaComponen
             val inflater = navController.navInflater
             val graph = inflater.inflate(R.navigation.nav_graph)
 
-            val hasPersona = false//data.persona.isNotBlank()
+            val hasPersona = data.persona.isNotBlank()
             val defaultDestination = if (hasPersona) {
                 R.id.composeResultFragment
             } else {

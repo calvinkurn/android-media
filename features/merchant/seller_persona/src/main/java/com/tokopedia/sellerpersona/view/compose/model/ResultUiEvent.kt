@@ -8,6 +8,9 @@ import com.tokopedia.sellerpersona.view.model.PersonaStatus
 
 sealed class ResultUiEvent {
     data class TogglePersona(val isEnabled: Boolean) : ResultUiEvent()
-    data class ApplyChanges(val status: PersonaStatus) : ResultUiEvent()
+    data class CheckChanged(val isChecked: Boolean) : ResultUiEvent()
+    object ApplyChanges : ResultUiEvent()
+    object Reload : ResultUiEvent()
     object RetakeQuiz : ResultUiEvent()
+    object None : ResultUiEvent()
 }
