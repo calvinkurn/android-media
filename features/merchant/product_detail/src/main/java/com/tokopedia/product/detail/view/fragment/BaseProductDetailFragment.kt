@@ -9,8 +9,8 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
-import com.tokopedia.analytics.performance.fpi.BaseFpiMonitoringFragment
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
@@ -28,7 +28,7 @@ import javax.inject.Inject
 /**
  * Created by Yehezkiel on 05/01/21
  */
-abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactory> : BaseFpiMonitoringFragment() {
+abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactory> : BaseDaggerFragment() {
 
     var productAdapter: ProductDetailAdapter? = null
     var productDaggerComponent: ProductDetailComponent? = null
@@ -56,12 +56,7 @@ abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactor
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         context?.let {
-            activity?.window?.decorView?.setBackgroundColor(
-                androidx.core.content.ContextCompat.getColor(
-                    it,
-                    com.tokopedia.unifyprinciples.R.color.Unify_Background
-                )
-            )
+            activity?.window?.decorView?.setBackgroundColor(androidx.core.content.ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_Background))
         }
         setHasOptionsMenu(true)
         productAdapter = createAdapterInstance()
@@ -213,6 +208,4 @@ abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactor
     }
 
     protected fun getProductDetailActivity() = activity as? ProductDetailActivity
-
-    override fun getFpiPageName() = "PDP"
 }

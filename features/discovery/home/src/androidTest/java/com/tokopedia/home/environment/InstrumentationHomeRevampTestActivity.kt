@@ -9,7 +9,6 @@ import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.analytics.performance.fpi.BaseFpiMonitoringFragment
 import com.tokopedia.analytics.performance.fpi.FpiPerformanceData
 import com.tokopedia.analytics.performance.fpi.FragmentFramePerformanceIndexMonitoring
 import com.tokopedia.analytics.performance.perf.BlocksPerformanceTrace
@@ -76,19 +75,12 @@ class InstrumentationHomeRevampTestActivity :
             }
         }
 
-        initializeFragmentFramePerformanceIndex(homeFragment)
         val fragmentTransaction = supportFragmentManager
             .beginTransaction()
         fragmentTransaction
             .replace(R.id.container_home, homeFragment)
         fragmentTransaction.addToBackStack(null)
         fragmentTransaction.commit()
-    }
-
-    private fun initializeFragmentFramePerformanceIndex(homeFragment: Fragment) {
-        if (homeFragment is BaseFpiMonitoringFragment) {
-            fragmentFramePerformanceIndexMonitoring = homeFragment.getFrameMetric()
-        }
     }
 
     override fun getFpiPerformanceResultData(): FpiPerformanceData? {

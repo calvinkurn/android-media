@@ -13,7 +13,6 @@ import android.net.Uri
 import android.os.*
 import android.text.TextUtils
 import android.util.DisplayMetrics
-import android.view.Choreographer
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -35,10 +34,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.listener.TouchListenerActivity
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarRetry
-import com.tokopedia.analytics.performance.fpi.BaseFpiMonitoringFragment
-import com.tokopedia.analytics.performance.fpi.FpiPerformanceData
 import com.tokopedia.analytics.performance.fpi.FragmentFramePerformanceIndexMonitoring
-import com.tokopedia.analytics.performance.fpi.FragmentFramePerformanceIndexMonitoring.OnFrameListener
 import com.tokopedia.analytics.performance.perf.*
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
@@ -152,12 +148,9 @@ import com.tokopedia.home.widget.ToggleableSwipeRefreshLayout
 import com.tokopedia.home_component.HomeComponentRollenceController
 import com.tokopedia.home_component.customview.pullrefresh.LayoutIconPullRefreshView
 import com.tokopedia.home_component.customview.pullrefresh.ParentIconSwipeRefreshLayout
-import com.tokopedia.home_component.listener.BestSellerListener
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.util.toDpInt
-import com.tokopedia.home_component.visitable.BestSellerChipProductDataModel
-import com.tokopedia.home_component.visitable.BestSellerProductDataModel
 import com.tokopedia.iris.Iris
 import com.tokopedia.iris.IrisAnalytics.Companion.getInstance
 import com.tokopedia.iris.util.IrisSession
@@ -228,9 +221,6 @@ import com.tokopedia.weaver.Weaver.Companion.executeWeaveCoRoutineWithFirebase
 import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
 import dagger.Lazy
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
 import rx.Observable
 import rx.schedulers.Schedulers
 import java.io.UnsupportedEncodingException
@@ -246,7 +236,7 @@ import javax.inject.Inject
 @OptIn(FlowPreview::class, kotlinx.coroutines.ExperimentalCoroutinesApi::class)
 @SuppressLint("SyntheticAccessor")
 open class HomeRevampFragment :
-    BaseFpiMonitoringFragment(),
+    BaseDaggerFragment(),
     OnRefreshListener,
     HomeCategoryListener,
     AllNotificationListener,
@@ -256,7 +246,6 @@ open class HomeRevampFragment :
     HomeFeedsListener,
     HomeReviewListener,
     PopularKeywordListener,
-    FramePerformanceIndexInterface,
     PlayWidgetListener,
     RecommendationWidgetListener,
     CMHomeWidgetCallback,
@@ -2510,12 +2499,6 @@ open class HomeRevampFragment :
         }
         return pageLoadTimeCallback
     }
-
-    override fun getFramePerformanceIndexData(): FragmentFramePerformanceIndexMonitoring {
-        return getFrameMetric()
-    }
-
-    override fun getFpiPageName() = PAGE_NAME_FPI_HOME
 
     override fun onDetach() {
         if (this::viewModel.isInitialized) {
