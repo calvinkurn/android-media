@@ -58,7 +58,9 @@ class ShippingCourierBottomsheet : ShippingCourierContract.View, ShippingCourier
         shippingCourierUiModels: List<ShippingCourierUiModel>?,
         recipientAddressModel: RecipientAddressModel?,
         cartPosition: Int,
-        isOcc: Boolean
+        isOcc: Boolean,
+        weight: Double,
+        shopCity: String
     ) {
         this.activity = activity
         this.shippingCourierBottomsheetListener = shippingCourierBottomsheetListener
