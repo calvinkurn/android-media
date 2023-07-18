@@ -10,52 +10,43 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.tokopedia.nest.components.NestButton
 import com.tokopedia.nest.components.NestImage
 import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
+import com.tokopedia.nest.principles.utils.ImageSource
 import com.tokopedia.play.broadcaster.R
+import com.tokopedia.play.broadcaster.ui.model.livetovod.TickerBottomSheetPageType
+import com.tokopedia.play.broadcaster.ui.model.livetovod.TickerBottomSheetUiModel
 
 @Composable
 fun PlayBroadcasterLiveToVodBottomSheetScreen(
+    data: TickerBottomSheetUiModel,
     onBackPressed: () -> Unit,
-    onLearnMorePressed: () -> Unit,
+    onActionTextPressed: (appLink: String) -> Unit,
 ) {
     NestTheme {
         LiveToVodBottomSheetContent(
-            onButtonClick = { onBackPressed.invoke() },
-            onLearnMorePressed = { onLearnMorePressed.invoke() },
+            data = data,
+            onButtonClick = onBackPressed,
+            onActionTextPressed = onActionTextPressed,
         )
     }
 }
 
 @Composable
 private fun LiveToVodBottomSheetContent(
+    data: TickerBottomSheetUiModel,
     onButtonClick: () -> Unit,
-    onLearnMorePressed: () -> Unit,
-) {
-    val textLearnMore = buildAnnotatedString {
-        append(stringResource(id = R.string.play_prepare_broadcaster_disable_live_to_vod_learn_more_text_bottom_sheet))
-        withStyle(
-            style = SpanStyle(
-                fontWeight = FontWeight.Bold,
-                color = colorResource(id = com.tokopedia.unifyprinciples.R.color.Unify_GN500),
-            )
-        ) {
-            pushStringAnnotation(tag = LEARN_MORE_TEXT_TAG, annotation = LEARN_MORE_TEXT_TAG)
-            append(" ")
-            append(stringResource(id = R.string.play_prepare_broadcaster_disable_live_to_vod_learn_more))
-            append(" ")
-        }
-    }
-
+    onActionTextPressed: (appLink: String) -> Unit,
+) = with(data) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
@@ -63,29 +54,12 @@ private fun LiveToVodBottomSheetContent(
             .padding(start = 8.dp, end = 8.dp),
     ) {
         NestImage(
-            imageUrl = stringResource(id = R.string.play_shorts_affiliate_success),
+            source = ImageSource.Remote(source = data.imageURL),
             modifier = Modifier
                 .width(350.dp)
                 .height(280.dp),
         )
-        NestTypography(
-            text = stringResource(id = R.string.play_prepare_broadcaster_disable_live_to_vod_title_bottom_sheet),
-            modifier = Modifier.padding(top = 16.dp),
-            textStyle = NestTheme.typography.heading2
-                .copy(
-                    textAlign = TextAlign.Center,
-                    color = colorResource(id = R.color.Unify_NN0)
-                ),
-        )
-        NestTypography(
-            text = stringResource(id = R.string.play_prepare_broadcaster_disable_live_to_vod_description_bottom_sheet),
-            modifier = Modifier.padding(top = 8.dp),
-            textStyle = NestTheme.typography.body1
-                .copy(
-                    textAlign = TextAlign.Center,
-                    color = colorResource(id = R.color.Unify_NN1000)
-                ),
-        )
+        mainText.TextMain(onActionTextPressed)
         NestButton(
             text = stringResource(id = R.string.play_ok),
             onClick = { onButtonClick.invoke() },
@@ -93,31 +67,151 @@ private fun LiveToVodBottomSheetContent(
                 .fillMaxWidth()
                 .padding(top = 16.dp),
         )
-        NestTypography(
-            text = textLearnMore,
-            modifier = Modifier.padding(top = 8.dp, bottom = 16.dp),
-            textStyle = NestTheme.typography.body2
-                .copy(
-                    textAlign = TextAlign.Center,
-                    color = colorResource(id = R.color.Unify_NN1000)
-                ),
-            onClickText = { offset ->
-                textLearnMore.getStringAnnotations(offset, offset)
-                    .firstOrNull()?.let { span ->
-                        if (span.item == LEARN_MORE_TEXT_TAG) onLearnMorePressed.invoke()
-                    }
-            },
-        )
+        bottomText.TextBottom(onActionTextPressed)
     }
 }
 
 @Composable
-@Preview(showBackground = true)
-fun Preview() {
-    PlayBroadcasterLiveToVodBottomSheetScreen(
-        onBackPressed = {},
-        onLearnMorePressed = {},
+private fun List<TickerBottomSheetUiModel.MainText>.TextMain(
+    onActionTextPressed: (appLink: String) -> Unit
+) {
+    @Composable
+    fun TickerBottomSheetUiModel.MainText.TextTitle() {
+        NestTypography(
+            text = title,
+            modifier = Modifier.padding(top = 16.dp),
+            textStyle = NestTheme.typography.heading2
+                .copy(
+                    textAlign = TextAlign.Center,
+                    color = colorResource(id = R.color.Unify_NN1000),
+                ),
+        )
+    }
+
+    @Composable
+    fun TickerBottomSheetUiModel.MainText.TextDescription(
+        onActionTextPressed: (appLink: String) -> Unit
+    ) {
+        val textDescription = generateSpanText(fullText = description, action = action)
+
+        NestTypography(
+            text = textDescription,
+            modifier = Modifier.padding(top = 8.dp),
+            textStyle = NestTheme.typography.body1
+                .copy(
+                    textAlign = TextAlign.Center,
+                    color = colorResource(id = R.color.Unify_NN1000),
+                ),
+            onClickText = { offset ->
+                textDescription.getStringAnnotations(offset, offset)
+                    .firstOrNull()?.let { span ->
+                        action.map { current ->
+                            if (span.item != current.item) return@map
+                            onActionTextPressed.invoke(current.link)
+                        }
+                    }
+            }
+        )
+    }
+
+    with(first()) {
+        TextTitle()
+        TextDescription(onActionTextPressed)
+    }
+}
+
+@Composable
+private fun TickerBottomSheetUiModel.BottomText.TextBottom(
+    onActionTextPressed: (appLink: String) -> Unit
+) {
+    val textBottom = generateSpanText(fullText = description, action = action)
+    NestTypography(
+        text = textBottom,
+        modifier = Modifier.padding(top = 8.dp, bottom = 16.dp),
+        textStyle = NestTheme.typography.body2
+            .copy(
+                textAlign = TextAlign.Center,
+                color = colorResource(id = R.color.Unify_NN1000)
+            ),
+        onClickText = { offset ->
+            textBottom.getStringAnnotations(offset, offset)
+                .firstOrNull()?.let { span ->
+                    action.map { current ->
+                        if (span.item != current.item) return@map
+                        onActionTextPressed.invoke(current.link)
+                    }
+                }
+        },
     )
 }
 
-private const val LEARN_MORE_TEXT_TAG = "learn_more_text_tag"
+@Composable
+@Preview(showBackground = true)
+internal fun Preview() {
+    PlayBroadcasterLiveToVodBottomSheetScreen(
+        data = TickerBottomSheetUiModel(
+            mainText = listOf(
+                TickerBottomSheetUiModel.MainText(
+                    action = listOf(),
+                    title = "Test Title",
+                    description = "Test Description",
+                )
+            ),
+            page = "",
+            type = TickerBottomSheetPageType.BOTTOM_SHEET,
+            imageURL = stringResource(id = R.string.play_shorts_affiliate_success),
+            bottomText = TickerBottomSheetUiModel.BottomText(
+                action = listOf(),
+                description = "Test Description"
+            )
+        ),
+        onBackPressed = {},
+        onActionTextPressed = {},
+    )
+}
+
+@Composable
+private fun generateSpanText(
+    fullText: String,
+    action: List<TickerBottomSheetUiModel.Action>,
+): AnnotatedString {
+    var newFullText = fullText
+    val mappedText = action.map { data ->
+        if (!newFullText.contains(data.item)) return AnnotatedString(fullText)
+        val index = newFullText.indexOf(data.item)
+        newFullText = newFullText.replaceFirst(data.item, data.text)
+        AnnotationModel(
+            item = data.item,
+            start = index,
+            end = index + data.text.length
+        )
+    }
+
+    val spannableText = buildAnnotatedString {
+        append(newFullText)
+        mappedText.forEach { map ->
+            addStyle(
+                style = SpanStyle(
+                    fontWeight = FontWeight.Bold,
+                    color = colorResource(id = com.tokopedia.unifyprinciples.R.color.Unify_GN500),
+                ),
+                start = map.start,
+                end = map.end,
+            )
+            addStringAnnotation(
+                tag = map.item,
+                annotation = map.item,
+                start = map.start,
+                end = map.end,
+            )
+        }
+    }
+
+    return spannableText
+}
+
+data class AnnotationModel(
+    val item: String,
+    val start: Int,
+    val end: Int,
+)
