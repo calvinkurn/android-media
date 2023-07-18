@@ -4,6 +4,8 @@ import androidx.lifecycle.viewModelScope
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.mvvm.ViewModel
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.recommendation_widget_common.widget.cart.CartService
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
@@ -13,6 +15,7 @@ import javax.inject.Inject
 class RecommendationWidgetViewModel @Inject constructor(
     state: RecommendationWidgetState = RecommendationWidgetState(),
     private val getRecommendationWidgetUseCase: GetRecommendationUseCase,
+    private val cartService: dagger.Lazy<CartService>,
 ): androidx.lifecycle.ViewModel(),
     ViewModel<RecommendationWidgetState> {
 
@@ -41,6 +44,11 @@ class RecommendationWidgetViewModel @Inject constructor(
                 }
             }
         }
+
+        if (model.miniCart.hasValidShopId)
+            cartService.get().getMiniCart { miniCartData ->
+                updateState { it.refreshMiniCart(miniCartData) }
+            }
     }
 
     private suspend fun tryGetRecommendationWidget(model: RecommendationWidgetModel) {
@@ -65,5 +73,22 @@ class RecommendationWidgetViewModel @Inject constructor(
 
     fun refresh() {
         updateState { it.clear() }
+    }
+
+    fun onAddToCartNonVariant(
+        productRecommendation: RecommendationItem,
+        updatedQuantity: Int,
+    ) {
+        val productId = productRecommendation.productId.toString()
+
+        cartService.get().handleCart(
+            productId = productId,
+            shopId = productRecommendation.shopId.toString(),
+            currentQuantity = productRecommendation.quantity,
+            updatedQuantity = updatedQuantity,
+            miniCartItem = stateValue.getMiniCartItemProduct(productId),
+        ) { miniCartData ->
+            updateState { it.refreshMiniCart(miniCartData) }
+        }
     }
 }

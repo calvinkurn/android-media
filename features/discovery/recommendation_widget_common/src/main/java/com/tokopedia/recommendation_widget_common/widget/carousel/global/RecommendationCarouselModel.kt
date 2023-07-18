@@ -1,5 +1,6 @@
 package com.tokopedia.recommendation_widget_common.widget.carousel.global
 
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.recommendation_widget_common.widget.global.RecommendationTypeFactory
 import com.tokopedia.recommendation_widget_common.widget.global.RecommendationVisitable
@@ -20,6 +21,10 @@ data class RecommendationCarouselModel(
     val isTokonow: Boolean = this.metadata.pageName == PAGE_NAME_TOKONOW
     val hasData: Boolean
         get() = widget.recommendationItemList.isNotEmpty()
+
+    fun getItem(index: Int): RecommendationItem? {
+        return widget.recommendationItemList.getOrNull(index)
+    }
 
     companion object {
         private const val PAGE_NAME_TOKONOW = "pdp_9_tokonow"

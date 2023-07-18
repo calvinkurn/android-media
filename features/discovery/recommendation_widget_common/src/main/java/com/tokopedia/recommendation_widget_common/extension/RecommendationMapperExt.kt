@@ -203,7 +203,7 @@ private fun RecommendationEntity.RecommendationData.isTokonow(): Boolean {
 }
 
 private fun RecommendationEntity.RecommendationData.getItemQuantityBasedOnLayoutType(): Int {
-    return if (this.isTokonow()) DEFAULT_QTY_0 else DEFAULT_QTY_1
+    return if (this.hasQuantityEditor()) DEFAULT_QTY_0 else DEFAULT_QTY_1
 }
 
 fun List<RecommendationLabel>.hasLabelGroupFulfillment(): Boolean {
@@ -211,14 +211,12 @@ fun List<RecommendationLabel>.hasLabelGroupFulfillment(): Boolean {
 }
 
 private fun RecommendationEntity.RecommendationData.getAtcType(): RecommendationItem.AddToCartType {
-    return if (layoutType == LAYOUTTYPE_HORIZONTAL_ATC || layoutType == LAYOUTTYPE_INFINITE_ATC) {
-        RecommendationItem.AddToCartType.QuantityEditor
-    } else if (pageName.contains(PAGENAME_IDENTIFIER_RECOM_ATC)) {
-        RecommendationItem.AddToCartType.DirectAtc
-    } else {
-        RecommendationItem.AddToCartType.None
-    }
+    return if (hasQuantityEditor()) RecommendationItem.AddToCartType.QuantityEditor
+    else RecommendationItem.AddToCartType.None
 }
+
+private fun RecommendationEntity.RecommendationData.hasQuantityEditor() =
+    isTokonow() || layoutType == PAGENAME_IDENTIFIER_RECOM_ATC
 
 fun RecommendationEntity.RecommendationCampaign.mapToBannerData(): RecommendationBanner? {
     assets?.banner?.let {
