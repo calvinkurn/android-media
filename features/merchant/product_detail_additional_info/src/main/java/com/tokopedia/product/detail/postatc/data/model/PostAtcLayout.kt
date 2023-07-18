@@ -31,10 +31,10 @@ data class PostAtcLayout(
         val category: Category = Category(),
 
         @SerializedName("price")
-        val price: Double = -1.0,
+        val price: Double = 0.0,
 
         @SerializedName("originalPrice")
-        val originalPrice: Double = -1.0,
+        val originalPrice: Double = 0.0,
 
         @SerializedName("condition")
         val condition: String = ""
