@@ -1589,18 +1589,15 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                 }
             }
 
-            val price: String
-            val discountedPrice: String
+            val price: Double
+            val discountedPrice: Double
             if (product.campaignId == "0") {
-                price = product.productPrice.toString().removeSingleDecimalSuffix()
-                discountedPrice = product.productPrice.toString().removeSingleDecimalSuffix()
+                price = product.productPrice
+                discountedPrice = product.productPrice
             } else {
-                price = product.originalPrice.toString().removeSingleDecimalSuffix()
-                discountedPrice = product.productPrice.toString().removeSingleDecimalSuffix()
+                price = product.originalPrice
+                discountedPrice = product.productPrice
             }
-
-            println("++ price = $price")
-            println("++ discountedPrice = $discountedPrice")
 
             val applinkAddon = ADDON.replace(QUERY_PARAM_ADDON_PRODUCT, productId)
             val applink = UriUtil.buildUriAppendParams(
@@ -1614,8 +1611,8 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                     QUERY_PARAM_CATEGORY_ID to product.categoryId,
                     QUERY_PARAM_SHOP_ID to shop.shopId,
                     QUERY_PARAM_QUANTITY to product.orderQuantity,
-                    QUERY_PARAM_PRICE to price,
-                    QUERY_PARAM_DISCOUNTED_PRICE to discountedPrice
+                    QUERY_PARAM_PRICE to price.toString().removeSingleDecimalSuffix(),
+                    QUERY_PARAM_DISCOUNTED_PRICE to discountedPrice.toString().removeSingleDecimalSuffix()
                 )
             )
             println("++ applink = " + applink)

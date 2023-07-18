@@ -158,6 +158,7 @@ import com.tokopedia.purchase_platform.common.feature.sellercashback.SellerCashb
 import com.tokopedia.purchase_platform.common.feature.sellercashback.ShipmentSellerCashbackModel
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementHolderData
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
+import com.tokopedia.purchase_platform.common.utils.removeSingleDecimalSuffix
 import com.tokopedia.purchase_platform.common.utils.rxCompoundButtonCheckDebounce
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
@@ -4559,8 +4560,8 @@ class CartFragment :
             addOnIds.add(it.id)
         }
 
-        var price = 0.0
-        var discountedPrice = 0.0
+        val price: Double
+        val discountedPrice: Double
         if (cartItemData.campaignId == "0") {
             price = cartItemData.productPrice
             discountedPrice = cartItemData.productPrice
@@ -4569,7 +4570,7 @@ class CartFragment :
             discountedPrice = cartItemData.productPrice
         }
 
-        val applinkAddon = ApplinkConst.ADDON.replace(AddOnConstant.QUERY_PARAM_ADDON_PRODUCT, productId.toString())
+        val applinkAddon = ApplinkConst.ADDON.replace(AddOnConstant.QUERY_PARAM_ADDON_PRODUCT, productId)
         val applink = UriUtil.buildUriAppendParams(
             applinkAddon,
             mapOf(
@@ -4581,8 +4582,8 @@ class CartFragment :
                 AddOnConstant.QUERY_PARAM_CATEGORY_ID to cartItemData.categoryId,
                 AddOnConstant.QUERY_PARAM_SHOP_ID to cartItemData.shopHolderData.shopId,
                 AddOnConstant.QUERY_PARAM_QUANTITY to cartItemData.quantity,
-                AddOnConstant.QUERY_PARAM_PRICE to price,
-                AddOnConstant.QUERY_PARAM_DISCOUNTED_PRICE to discountedPrice
+                AddOnConstant.QUERY_PARAM_PRICE to price.toString().removeSingleDecimalSuffix(),
+                AddOnConstant.QUERY_PARAM_DISCOUNTED_PRICE to discountedPrice.toString().removeSingleDecimalSuffix()
             )
         )
 

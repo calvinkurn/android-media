@@ -204,6 +204,7 @@ import com.tokopedia.purchase_platform.common.feature.promonoteligible.NotEligib
 import com.tokopedia.purchase_platform.common.feature.sellercashback.SellerCashbackListener
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementHolderData
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
+import com.tokopedia.purchase_platform.common.utils.removeSingleDecimalSuffix
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
@@ -3935,8 +3936,8 @@ class ShipmentFragment :
                 AddOnConstant.QUERY_PARAM_CATEGORY_ID to cartItemModel.productCatId,
                 AddOnConstant.QUERY_PARAM_SHOP_ID to cartItemModel.shopId,
                 AddOnConstant.QUERY_PARAM_QUANTITY to cartItemModel.quantity,
-                AddOnConstant.QUERY_PARAM_PRICE to price,
-                AddOnConstant.QUERY_PARAM_DISCOUNTED_PRICE to discountedPrice
+                AddOnConstant.QUERY_PARAM_PRICE to price.toString().removeSingleDecimalSuffix(),
+                AddOnConstant.QUERY_PARAM_DISCOUNTED_PRICE to discountedPrice.toString().removeSingleDecimalSuffix()
             )
         )
 
