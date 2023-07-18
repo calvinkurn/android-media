@@ -139,7 +139,7 @@ class RotateFilterRepositoryImpl @Inject constructor(
                 prevImageHeight = it.height()
         }
 
-        val prevScale = cropImageView.currentScale
+        val currentScale = cropImageView.currentScale
         var newScale = initialRatioZoom
 
         // isRatioRotated = false mean initial ratio going to rotate 90 degree
@@ -159,13 +159,18 @@ class RotateFilterRepositoryImpl @Inject constructor(
                 rotatedRatioZoom = if (diffWidth <= TOLERANCE_SIZE_VALUE && diffHeight <= TOLERANCE_SIZE_VALUE) {
                     initialScale
                 } else {
-                    (newTargetWidth.height() / prevImageWidth) * prevScale
+                    (newTargetWidth.height() / prevImageWidth) * currentScale
                 }
             }
+
             newScale = rotatedRatioZoom
+
+            if (initialRatioZoom == 0f) {
+                initialRatioZoom = currentScale
+            }
         }
 
-        if (newScale > prevScale) {
+        if (newScale > currentScale) {
             cropImageView.zoomInImage(newScale)
         } else {
             cropImageView.zoomOutImage(newScale)
