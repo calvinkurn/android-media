@@ -1,4 +1,4 @@
-package com.tokopedia.kyc_centralized.ui.gotoKyc.main.statusSubmission
+package com.tokopedia.kyc_centralized.ui.gotoKyc.main.status
 
 import android.animation.ValueAnimator
 import android.app.Activity

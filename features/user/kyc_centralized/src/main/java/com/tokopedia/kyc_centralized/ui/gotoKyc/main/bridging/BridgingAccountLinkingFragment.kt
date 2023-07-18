@@ -1,4 +1,4 @@
-package com.tokopedia.kyc_centralized.ui.gotoKyc.main.bridgingAccountLinking
+package com.tokopedia.kyc_centralized.ui.gotoKyc.main.bridging
 
 import android.Manifest
 import android.app.Activity
@@ -39,9 +39,9 @@ import com.tokopedia.kyc_centralized.di.GoToKycComponent
 import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.AccountLinkingStatusResult
 import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.CheckEligibilityResult
 import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.RegisterProgressiveResult
-import com.tokopedia.kyc_centralized.ui.gotoKyc.main.dobChallenge.DobChallengeParam
-import com.tokopedia.kyc_centralized.ui.gotoKyc.main.statusSubmission.StatusSubmissionParam
-import com.tokopedia.kyc_centralized.ui.gotoKyc.main.captureDocument.CaptureKycDocumentsParam
+import com.tokopedia.kyc_centralized.ui.gotoKyc.main.challenge.DobChallengeParam
+import com.tokopedia.kyc_centralized.ui.gotoKyc.main.status.StatusSubmissionParam
+import com.tokopedia.kyc_centralized.ui.gotoKyc.main.capture.CaptureKycDocumentsParam
 import com.tokopedia.kyc_centralized.ui.gotoKyc.utils.getGotoKycErrorMessage
 import com.tokopedia.kyc_centralized.util.KycSharedPreference
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder

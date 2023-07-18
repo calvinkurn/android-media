@@ -1,4 +1,4 @@
-package com.tokopedia.kyc_centralized.ui.gotoKyc.main.bridgingAccountLinking
+package com.tokopedia.kyc_centralized.ui.gotoKyc.main.bridging
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize

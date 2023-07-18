@@ -1,4 +1,4 @@
-package com.tokopedia.kyc_centralized.ui.gotoKyc.main.onboardAccount
+package com.tokopedia.kyc_centralized.ui.gotoKyc.main.onboard
 
 import android.os.Bundle
 import android.view.LayoutInflater

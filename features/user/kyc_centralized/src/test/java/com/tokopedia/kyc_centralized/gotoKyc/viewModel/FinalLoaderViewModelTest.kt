@@ -5,7 +5,7 @@ import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.ProjectInfoResult
 import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.ProjectInfoUseCase
 import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.RegisterProgressiveResult
 import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.RegisterProgressiveUseCase
-import com.tokopedia.kyc_centralized.ui.gotoKyc.main.finalLoader.FinalLoaderViewModel
+import com.tokopedia.kyc_centralized.ui.gotoKyc.main.submit.FinalLoaderViewModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import io.mockk.coEvery
 import io.mockk.mockk

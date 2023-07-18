@@ -1,4 +1,4 @@
-package com.tokopedia.kyc_centralized.ui.gotoKyc.main.captureDocument
+package com.tokopedia.kyc_centralized.ui.gotoKyc.main.capture
 
 import android.Manifest
 import android.app.Activity
@@ -30,7 +30,7 @@ import com.tokopedia.kyc_centralized.common.KYCConstant
 import com.tokopedia.kyc_centralized.databinding.FragmentGotoKycFinalLoaderBinding
 import com.tokopedia.kyc_centralized.di.GoToKycComponent
 import com.tokopedia.kyc_centralized.ui.gotoKyc.analytics.GotoKycAnalytics
-import com.tokopedia.kyc_centralized.ui.gotoKyc.main.finalLoader.FinalLoaderParam
+import com.tokopedia.kyc_centralized.ui.gotoKyc.main.submit.FinalLoaderParam
 import com.tokopedia.kyc_centralized.ui.gotoKyc.utils.isConnectionAvailable
 import com.tokopedia.kyc_centralized.ui.gotoKyc.utils.removeGotoKycImage
 import com.tokopedia.kyc_centralized.ui.gotoKyc.utils.removeGotoKycPreference

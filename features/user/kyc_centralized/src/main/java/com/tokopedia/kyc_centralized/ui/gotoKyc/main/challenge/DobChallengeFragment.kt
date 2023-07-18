@@ -1,4 +1,4 @@
-package com.tokopedia.kyc_centralized.ui.gotoKyc.main.dobChallenge
+package com.tokopedia.kyc_centralized.ui.gotoKyc.main.challenge
 
 import android.app.Activity
 import android.os.Bundle
@@ -24,7 +24,7 @@ import com.tokopedia.kyc_centralized.ui.gotoKyc.analytics.GotoKycAnalytics
 import com.tokopedia.kyc_centralized.ui.gotoKyc.bottomSheet.DobChallengeExhaustedBottomSheet
 import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.GetChallengeResult
 import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.SubmitChallengeResult
-import com.tokopedia.kyc_centralized.ui.gotoKyc.main.finalLoader.FinalLoaderParam
+import com.tokopedia.kyc_centralized.ui.gotoKyc.main.submit.FinalLoaderParam
 import com.tokopedia.kyc_centralized.ui.gotoKyc.utils.getGotoKycErrorMessage
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.utils.lifecycle.autoClearedNullable

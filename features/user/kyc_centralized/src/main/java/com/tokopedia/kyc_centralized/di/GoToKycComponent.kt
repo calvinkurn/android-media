@@ -4,13 +4,13 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.kyc_centralized.ui.gotoKyc.bottomSheet.OnboardNonProgressiveBottomSheet
 import com.tokopedia.kyc_centralized.ui.gotoKyc.bottomSheet.OnboardProgressiveBottomSheet
-import com.tokopedia.kyc_centralized.ui.gotoKyc.main.bridgingAccountLinking.BridgingAccountLinkingFragment
-import com.tokopedia.kyc_centralized.ui.gotoKyc.main.captureDocument.CaptureKycDocumentsFragment
-import com.tokopedia.kyc_centralized.ui.gotoKyc.main.dobChallenge.DobChallengeFragment
-import com.tokopedia.kyc_centralized.ui.gotoKyc.main.finalLoader.FinalLoaderFragment
-import com.tokopedia.kyc_centralized.ui.gotoKyc.main.mainRouter.GotoKycRouterFragment
-import com.tokopedia.kyc_centralized.ui.gotoKyc.main.statusSubmission.StatusSubmissionFragment
-import com.tokopedia.kyc_centralized.ui.gotoKyc.main.onboardAccount.OnboardBenefitFragment
+import com.tokopedia.kyc_centralized.ui.gotoKyc.main.bridging.BridgingAccountLinkingFragment
+import com.tokopedia.kyc_centralized.ui.gotoKyc.main.capture.CaptureKycDocumentsFragment
+import com.tokopedia.kyc_centralized.ui.gotoKyc.main.challenge.DobChallengeFragment
+import com.tokopedia.kyc_centralized.ui.gotoKyc.main.submit.FinalLoaderFragment
+import com.tokopedia.kyc_centralized.ui.gotoKyc.main.router.GotoKycRouterFragment
+import com.tokopedia.kyc_centralized.ui.gotoKyc.main.status.StatusSubmissionFragment
+import com.tokopedia.kyc_centralized.ui.gotoKyc.main.onboard.OnboardBenefitFragment
 import com.tokopedia.kyc_centralized.ui.gotoKyc.transparent.GotoKycTransparentFragment
 import dagger.Component
 
