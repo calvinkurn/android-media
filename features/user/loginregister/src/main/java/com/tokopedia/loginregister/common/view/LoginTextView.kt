@@ -78,7 +78,7 @@ class LoginTextView : FrameLayout {
             textColor = attr.getColor(
                 R.styleable.LoginTextView_textColor, MethodChecker.getColor(
                     context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_N700_68
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN950_68
                 )
             )
             borderColorCustom = attr.getInt(R.styleable.LoginTextView_borderColor, 0)
@@ -139,7 +139,7 @@ class LoginTextView : FrameLayout {
             BORDER_SIZE,
             MethodChecker.getColor(
                 context,
-                com.tokopedia.unifyprinciples.R.color.Unify_N700_32
+                com.tokopedia.unifyprinciples.R.color.Unify_NN950_32
             )
         )
     }

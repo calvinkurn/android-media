@@ -10,9 +10,6 @@ public class RemoteConfigKey {
     public static final String MAINAPP_WALLET_LABEL_NAME = "mainapp_wallet_label_name";
     public static final String MAINAPP_WALLET_LABEL_REGISTER = "mainapp_wallet_label_register";
 
-    public static final String CUSTOMER_ENABLE_ROBUST = "android_customer_robust_enable";
-    public static final String SELLER_ENABLE_ROBUST = "android_sellerapp_robust_enable";
-
     public static final String APP_SHARE_DESCRIPTION = "app_share_description";
     public static final String MAINAPP_ACTIVATE_BRANCH_LINKS = "mainapp_activate_branch_links";
 
@@ -248,4 +245,7 @@ public class RemoteConfigKey {
     public static final String FEED_NEW_ICON = "FeedNewIcon";
 
     public static final String IS_SHOP_PENALTY_NEW_PAGE = "android_shop_penalty_new";
+
+    public static final String SCP_REWARDS_MEDALI_TOUCH_POINT = "android_scp_rewards_medali_touch_point";
+
 }

@@ -20,6 +20,11 @@ buildscript {
     }
 }
 
+android {
+    namespace 'com.tokopedia.home_page_banner'
+    testNamespace 'com.tokopedia.home_page_banner.test'
+}
+
 dependencies {
     implementation projectOrAar(rootProject.ext.features.resourcesCommon)
     implementation projectOrAar(rootProject.ext.libraries.analytics)

@@ -38,7 +38,7 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="8dp"
-            android:background="@color/Unify_N50" />
+            android:background="@color/Unify_NN50" />
     </LinearLayout>
 
     <ScrollView
@@ -61,6 +61,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         tools:ignore="UnifyComponentUsage"
+        app:cardBackgroundColor="@color/Unify_NN0"
         app:cardElevation="16dp">
 
         <com.tokopedia.unifycomponents.UnifyButton

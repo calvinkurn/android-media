@@ -19,7 +19,7 @@
     <string name="ssn_select">Pilih</string>
 
     <!--Submission Success Page-->
-    <string name="ssn_success_register_title">Yay, NIB-mu sudah terdaftar</string>
+    <string name="ssn_success_register_title">Yay, NIB-mu sudah terdaftar!</string>
     <string name="ssn_success_register_description">Dengan Nomor Induk Berusaha, kamu bisa lebih mudah berjualan.</string>
     <string name="ssn_back_to_home">Kembali ke Home</string>
 

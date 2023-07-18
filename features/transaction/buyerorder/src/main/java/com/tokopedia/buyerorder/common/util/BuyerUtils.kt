@@ -80,14 +80,8 @@ object BuyerUtils {
 
     inline fun clickActionButton(
         context: Context,
-        uri: String,
-        isDownloadable: Boolean,
-        onDownloadable: (String) -> Unit
+        uri: String
     ){
-        if (isUridownloadable(uri, isDownloadable)){
-            onDownloadable.invoke(uri)
-        } else {
-            RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, uri)
-        }
+        RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, uri)
     }
 }

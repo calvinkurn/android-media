@@ -271,6 +271,7 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
 import com.tokopedia.recommendation_widget_common.widget.carousel.global.RecommendationCarouselTracking
+import com.tokopedia.recommendation_widget_common.widget.global.recommendationWidgetViewModel
 import com.tokopedia.recommendation_widget_common.widget.viewtoview.ViewToViewItemData
 import com.tokopedia.recommendation_widget_common.widget.viewtoview.ViewToViewTracker
 import com.tokopedia.recommendation_widget_common.widget.viewtoview.bottomsheet.ViewToViewBottomSheet
@@ -282,8 +283,10 @@ import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ProductrevGetReviewMedia
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.util.ReviewMediaGalleryRouter
+import com.tokopedia.searchbar.navigation_component.NavSource
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
+import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScrollListener
 import com.tokopedia.shop.common.constant.ShopStatusDef
@@ -452,6 +455,7 @@ open class DynamicProductDetailFragment :
     private val viewModel by lazy {
         ViewModelProvider(this, viewModelFactory)[DynamicProductDetailViewModel::class.java]
     }
+    private val recommendationWidgetViewModel by recommendationWidgetViewModel()
 
     private val nplFollowersButton: PartialButtonShopFollowersView? by lazy {
         binding?.baseBtnFollow?.root?.run {
@@ -502,6 +506,7 @@ open class DynamicProductDetailFragment :
 
     // Prevent several method at onResume to being called when first open page.
     private var firstOpenPage: Boolean? = null
+    private var isAffiliateShareIcon = false
 
     // View
     private lateinit var actionButtonView: PartialButtonActionView
@@ -658,6 +663,7 @@ open class DynamicProductDetailFragment :
         recommendationCarouselPositionSavedState.clear()
         shouldRefreshProductInfoBottomSheet = true
         shouldRefreshShippingBottomSheet = true
+        recommendationWidgetViewModel?.refresh()
         super.onSwipeRefresh()
     }
 
@@ -698,6 +704,7 @@ open class DynamicProductDetailFragment :
         observeOneTimeMethod()
         observeProductMediaRecomData()
         observeBottomSheetEdu()
+        observeAffiliateEligibility()
     }
 
     private fun observeBottomSheetEdu() {
@@ -2944,13 +2951,30 @@ open class DynamicProductDetailFragment :
                     affiliateChannel = affiliateChannel
                 )
             }
-
             onSuccessGetDataP2(it, boeData, ratesData, shipmentPlus)
+            checkAffiliateEligibility(it.shopInfo)
             getProductDetailActivity()?.stopMonitoringP2Data()
             ProductDetailServerLogger.logBreadCrumbSuccessGetDataP2(
                 isSuccess = it.shopInfo.shopCore.shopID.isNotEmpty()
             )
             stickyLoginView?.loadContent()
+        }
+    }
+
+    private fun observeAffiliateEligibility() {
+        viewModel.resultAffiliate.observe(viewLifecycleOwner) {
+            if (it is Success && it.data.eligibleCommission?.isEligible.orFalse()) {
+                updateToolbarShareAffiliate()
+            }
+        }
+    }
+
+    private fun checkAffiliateEligibility(shopInfo: ShopInfo) {
+        if (isShareAffiliateIconEnabled() && !GlobalConfig.isSellerApp()) {
+            viewModel.getDynamicProductInfoP1?.let { dataP1 ->
+                val affiliateInput = generateAffiliateShareData(dataP1, shopInfo, viewModel.variantData)
+                viewModel.checkAffiliateEligibility(affiliateInput)
+            }
         }
     }
 
@@ -3854,7 +3878,8 @@ open class DynamicProductDetailFragment :
                 productInfo.basic.productID,
                 viewModel.userId,
                 zeroIfEmpty(productInfo.data.campaign.campaignID),
-                zeroIfEmpty(pdpUiUpdater?.productBundlingData?.bundleInfo?.bundleId)
+                zeroIfEmpty(pdpUiUpdater?.productBundlingData?.bundleInfo?.bundleId),
+                isAffiliateShareIcon
             )
             shareProduct(productInfo)
         }
@@ -4331,11 +4356,11 @@ open class DynamicProductDetailFragment :
             )
 
             setIcon(
-                IconBuilder()
+                IconBuilder(builderFlags = IconBuilderFlag(pageSource = NavSource.PDP))
                     .addIcon(IconList.ID_SEARCH, disableRouteManager = true) {
                         goToApplink(getLocalSearchApplink())
                     }
-                    .addIcon(getShareIcon()) {
+                    .addIcon(IconList.ID_SHARE) {
                         onClickShareProduct()
                     }
                     .addIcon(IconList.ID_CART) {}
@@ -4348,16 +4373,19 @@ open class DynamicProductDetailFragment :
         }
     }
 
-    private fun getShareIcon(): Int {
-        val isAbTestEnabled = RemoteConfigInstance.getInstance().abTestPlatform.getString(
-            RollenceKey.PDP_SHOW_SHARE_AFFILIATE
-        ) == RollenceKey.PDP_SHOW_SHARE_AFFILIATE
-
-        if (isAbTestEnabled) {
-            return IconList.ID_SHARE_AB_TEST
-        } else {
-            return IconList.ID_SHARE
+    private fun updateToolbarShareAffiliate() {
+        if (isShareAffiliateIconEnabled() && !GlobalConfig.isSellerApp()) {
+            isAffiliateShareIcon = true
+            navToolbar?.updateIcon(IconList.ID_SHARE, IconList.ID_SHARE_AB_TEST) ?: return
         }
+    }
+
+    private fun isShareAffiliateIconEnabled(): Boolean {
+        val isAbTestEnabled = RemoteConfigInstance.getInstance().abTestPlatform.getString(
+            RollenceKey.AFFILIATE_SHARE_ICON
+        ) == RollenceKey.AFFILIATE_SHARE_ICON
+
+        return isAbTestEnabled
     }
 
     private fun getDarkToolbarIconColor(): Int = ContextCompat.getColor(
@@ -4991,7 +5019,7 @@ open class DynamicProductDetailFragment :
 
     private fun updateActionButtonShadow() {
         if (stickyLoginView?.isShowing() == true) {
-            actionButtonView.setBackground(com.tokopedia.unifyprinciples.R.color.Unify_N0)
+            actionButtonView.setBackground(com.tokopedia.unifyprinciples.R.color.Unify_NN0)
         } else {
             val drawable = context?.let { _context ->
                 ContextCompat.getDrawable(
