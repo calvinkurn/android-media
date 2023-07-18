@@ -3,7 +3,7 @@ package com.tokopedia.tokopedianow.searchcategory.presentation.model
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.productcard.compact.productcard.presentation.uimodel.ProductCardCompactUiModel
-import com.tokopedia.tokopedianow.searchcategory.presentation.typefactory.BaseSearchCategoryTypeFactory
+import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowProductItemTypeFactory
 
 data class ProductItemDataView(
     /**
@@ -25,9 +25,9 @@ data class ProductItemDataView(
     val shopType: String = "",
     val categoryBreadcrumbs: String = "",
     val type: String = "",
-) : Visitable<BaseSearchCategoryTypeFactory>, ImpressHolder() {
+) : Visitable<TokoNowProductItemTypeFactory>, ImpressHolder() {
 
-    override fun type(typeFactory: BaseSearchCategoryTypeFactory?) =
+    override fun type(typeFactory: TokoNowProductItemTypeFactory?) =
             typeFactory?.type(this) ?: 0
 
     data class Shop(

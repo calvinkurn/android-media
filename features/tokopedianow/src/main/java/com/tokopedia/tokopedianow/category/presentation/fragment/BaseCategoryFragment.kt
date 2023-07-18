@@ -311,12 +311,6 @@ abstract class BaseCategoryFragment : Fragment(), ScreenShotListener,
         showMiniCart(data)
     }
 
-    protected open fun observeVisitableList() {
-        observe(viewModel.visitableListLiveData) {
-            submitList(it)
-        }
-    }
-
     protected fun submitList(items: List<Visitable<*>>) {
         adapter.submitList(items)
     }
@@ -395,6 +389,12 @@ abstract class BaseCategoryFragment : Fragment(), ScreenShotListener,
         fragment = this@BaseCategoryFragment
     ) {
         viewModel.refreshLayout()
+    }
+
+    private fun observeVisitableList() {
+        observe(viewModel.visitableListLiveData) {
+            submitList(it)
+        }
     }
 
     private fun observePageLoading() {

@@ -16,7 +16,7 @@ class CategoryL2Differ : BaseTokopediaNowDiffer() {
         return if (oldItem is TokoNowAdsCarouselUiModel && newItem is TokoNowAdsCarouselUiModel) {
             oldItem.id == newItem.id && oldItem.state == newItem.state
         } else if (oldItem is CategoryL2TabUiModel && newItem is CategoryL2TabUiModel) {
-            oldItem.tabTitleList == newItem.tabTitleList
+            oldItem.titleList == newItem.titleList
         }
         else {
             oldItem == newItem

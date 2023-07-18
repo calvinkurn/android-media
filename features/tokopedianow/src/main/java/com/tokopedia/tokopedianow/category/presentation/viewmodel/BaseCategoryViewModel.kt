@@ -14,7 +14,6 @@ import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
-import com.tokopedia.network.authentication.AuthHelper
 import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.mapProductAdsCarousel
 import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.removeItem
 import com.tokopedia.tokopedianow.category.domain.usecase.GetCategoryProductUseCase
@@ -107,11 +106,7 @@ abstract class BaseCategoryViewModel(
     protected suspend fun getCategoryProductAsync(
         categoryL2Model: CategoryL2Model,
     ): Deferred<Unit?> = asyncCatchError(block = {
-        val response = getCategoryProductUseCase.execute(
-            chooseAddressData = getAddressData(),
-            categoryIdL2 = categoryL2Model.id,
-            uniqueId = getUniqueId()
-        )
+        val response = getCategoryProductUseCase.execute(categoryL2Model.id)
         onSuccessGetCategoryProduct(response, categoryL2Model)
     }) {
         onErrorGetCategoryProduct(it, categoryL2Model)
@@ -252,12 +247,6 @@ abstract class BaseCategoryViewModel(
         } else {
             emptyList()
         }
-    }
-
-    private fun getUniqueId() = if (isLoggedIn()) {
-        AuthHelper.getMD5Hash(getUserId())
-    } else {
-        AuthHelper.getMD5Hash(getDeviceId())
     }
 
     private fun Long.isValidId() = this != INVALID_ID

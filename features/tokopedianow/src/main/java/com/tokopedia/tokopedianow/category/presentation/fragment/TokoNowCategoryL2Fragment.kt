@@ -7,7 +7,6 @@ import androidx.recyclerview.widget.RecyclerView.OnScrollListener
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.show
@@ -17,6 +16,7 @@ import com.tokopedia.tokopedianow.category.di.module.CategoryContextModule
 import com.tokopedia.tokopedianow.category.presentation.adapter.differ.CategoryL2Differ
 import com.tokopedia.tokopedianow.category.presentation.adapter.typefactory.CategoryL2AdapterTypeFactory
 import com.tokopedia.tokopedianow.category.presentation.callback.TokoNowChooseAddressWidgetCallback
+import com.tokopedia.tokopedianow.category.presentation.model.CategoryL2TabModel
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryL2TabUiModel
 import com.tokopedia.tokopedianow.category.presentation.viewholder.CategoryL2TabViewHolder.CategoryL2TabListener
 import com.tokopedia.tokopedianow.category.presentation.viewmodel.TokoNowCategoryL2ViewModel
@@ -45,8 +45,9 @@ class TokoNowCategoryL2Fragment : BaseCategoryFragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    private var floatingTab: TabsUnify? = null
-    private var floatingTabScrollListener: OnScrollListener? = null
+    private var tabsUnify: TabsUnify? = null
+    private var tabScrollListener: OnScrollListener? = null
+    private val tabSelectedListener by lazy { createOnTabSelectedListener() }
 
     override val viewModel: TokoNowCategoryL2ViewModel by lazy {
         ViewModelProvider(
@@ -76,14 +77,7 @@ class TokoNowCategoryL2Fragment : BaseCategoryFragment() {
 
     override fun observeLiveData() {
         super.observeLiveData()
-        observeTabCategoryNameList()
-    }
-
-    override fun observeVisitableList() {
-        observe(viewModel.visitableListLiveData) {
-            setupTabScrollListener(it)
-            submitList(it)
-        }
+        observeCategoryTabs()
     }
 
     override fun initInjector() {
@@ -105,52 +99,57 @@ class TokoNowCategoryL2Fragment : BaseCategoryFragment() {
     }
 
     private fun FragmentTokopedianowCategoryBaseBinding.setupTabLayout() {
-        tabsUnify.tabLayout.addOnTabSelectedListener(object : OnTabSelectedListener {
-            override fun onTabSelected(tab: TabLayout.Tab) {
-                viewModel.onTabSelected(tab.position)
-            }
-
-            override fun onTabUnselected(tab: TabLayout.Tab?) {
-            }
-
-            override fun onTabReselected(tab: TabLayout.Tab?) {
-            }
-
-        })
-        floatingTab = tabsUnify
+        this@TokoNowCategoryL2Fragment.tabsUnify = tabsUnify
     }
 
-    private fun observeTabCategoryNameList() {
-        observe(viewModel.categoryTab) {
-            floatingTab?.apply {
-                tabLayout.removeAllTabs()
-                it.forEach { title ->
-                    addNewTab(title)
-                }
+    private fun observeCategoryTabs() {
+        observe(viewModel.categoryTabs) {
+            addCategoryTab(it)
+            setupTabScrollListener()
+            setupTabSelectedListener(it)
+        }
+    }
+
+    private fun addCategoryTab(it: List<CategoryL2TabModel>) {
+        tabsUnify?.apply {
+            tabLayout.removeAllTabs()
+            it.forEach { tab ->
+                addNewTab(tab.name)
             }
         }
     }
 
-    private fun setupTabScrollListener(visitables: List<Visitable<*>>) {
-        visitables.find { it is CategoryL2TabUiModel }?.let {
-            val tabIndex = visitables.indexOf(it)
-            removeScrollListener(floatingTabScrollListener)
-            setFloatingTabScrollListener(tabIndex)
-            addScrollListener(floatingTabScrollListener)
+    private fun setupTabScrollListener() {
+        val tabIndex = viewModel.getTabPosition()
+        removeScrollListener(tabScrollListener)
+        setFloatingTabScrollListener(tabIndex)
+        addScrollListener(tabScrollListener)
+    }
+
+    private fun setupTabSelectedListener(
+        categoryL2TabModels: List<CategoryL2TabModel>
+    ) {
+        tabsUnify?.tabLayout?.apply {
+            val selectedTabPosition = categoryL2TabModels
+                .indexOfFirst { it.id == categoryIdL2 }
+            removeOnTabSelectedListener(tabSelectedListener)
+            getTabAt(selectedTabPosition)?.select()
+            addOnTabSelectedListener(tabSelectedListener)
+            tabMode = TabLayout.MODE_SCROLLABLE
         }
     }
 
     private fun setFloatingTabScrollListener(tabIndex: Int) {
-        floatingTabScrollListener = object: OnScrollListener() {
+        tabScrollListener = object: OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 recyclerView.findViewHolderForAdapterPosition(tabIndex)?.let { viewHolder ->
                     val topPosition = viewHolder.itemView.top
 
                     if(topPosition < 0) {
-                        floatingTab?.show()
+                        tabsUnify?.show()
                     } else {
-                        floatingTab?.hide()
+                        tabsUnify?.hide()
                     }
                 }
             }
@@ -160,7 +159,7 @@ class TokoNowCategoryL2Fragment : BaseCategoryFragment() {
     private fun createTabListener(): CategoryL2TabListener {
         return object : CategoryL2TabListener {
             override fun onTabSelected(position: Int) {
-                floatingTab?.tabLayout
+                tabsUnify?.tabLayout
                     ?.getTabAt(position)?.select()
             }
         }
@@ -199,6 +198,18 @@ class TokoNowCategoryL2Fragment : BaseCategoryFragment() {
             position: Int,
             product: ProductCardCompactCarouselItemUiModel
         ) {
+        }
+    }
+
+    private fun createOnTabSelectedListener() = object : OnTabSelectedListener {
+        override fun onTabSelected(tab: TabLayout.Tab) {
+            viewModel.onTabSelected(tab.position)
+        }
+
+        override fun onTabUnselected(tab: TabLayout.Tab?) {
+        }
+
+        override fun onTabReselected(tab: TabLayout.Tab?) {
         }
     }
 }

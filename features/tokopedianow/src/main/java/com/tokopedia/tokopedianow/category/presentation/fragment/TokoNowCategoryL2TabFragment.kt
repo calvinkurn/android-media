@@ -14,12 +14,13 @@ import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
 import com.tokopedia.tokopedianow.category.di.component.DaggerCategoryL2TabComponent
 import com.tokopedia.tokopedianow.category.di.module.CategoryContextModule
-import com.tokopedia.tokopedianow.category.domain.response.GetCategoryLayoutResponse
+import com.tokopedia.tokopedianow.category.domain.response.GetCategoryLayoutResponse.Component
 import com.tokopedia.tokopedianow.category.presentation.adapter.CategoryL2TabAdapter
 import com.tokopedia.tokopedianow.category.presentation.adapter.differ.CategoryL2TabDiffer
 import com.tokopedia.tokopedianow.category.presentation.adapter.typefactory.CategoryL2TabAdapterTypeFactory
 import com.tokopedia.tokopedianow.category.presentation.viewmodel.TokoNowCategoryL2TabViewModel
 import com.tokopedia.tokopedianow.common.listener.ProductAdsCarouselListener
+import com.tokopedia.tokopedianow.common.util.RecyclerViewGridUtil.addProductItemDecoration
 import com.tokopedia.tokopedianow.databinding.FragmentTokopedianowL2TabBinding
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.QuickFilterListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewholder.ProductItemViewHolder
@@ -30,9 +31,11 @@ class TokoNowCategoryL2TabFragment : Fragment() {
 
     companion object {
         fun newInstance(
-            components: List<GetCategoryLayoutResponse.Component>
+            categoryIdL2: String = "",
+            components: List<Component>
         ): TokoNowCategoryL2TabFragment {
             return TokoNowCategoryL2TabFragment().apply {
+                this.categoryIdL2 = categoryIdL2
                 this.components = components
             }
         }
@@ -62,7 +65,16 @@ class TokoNowCategoryL2TabFragment : Fragment() {
 
     private var binding by autoClearedNullable<FragmentTokopedianowL2TabBinding>()
 
-    var components = listOf<GetCategoryLayoutResponse.Component>()
+    private var categoryIdL2: String = ""
+    private var components = listOf<Component>()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        viewModel.apply {
+            this.categoryIdL2 = this@TokoNowCategoryL2TabFragment.categoryIdL2
+            this.components = this@TokoNowCategoryL2TabFragment.components
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -103,6 +115,7 @@ class TokoNowCategoryL2TabFragment : Fragment() {
                     }
                 }
             }
+            addProductItemDecoration()
         }
     }
 

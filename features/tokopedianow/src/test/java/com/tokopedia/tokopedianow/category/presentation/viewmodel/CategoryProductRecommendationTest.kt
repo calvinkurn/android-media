@@ -24,13 +24,7 @@ class CategoryProductRecommendationTest : TokoNowCategoryViewModelTestFixture() 
         )
         onCategoryDetail_thenReturns()
         onTargetedTicker_thenReturns()
-        onCategoryProduct_thenReturns(
-            uniqueId = getUniqueId(
-                isLoggedIn = isLoggedIn,
-                userId = userId,
-                deviceId = deviceId
-            )
-        )
+        onCategoryProduct_thenReturns()
 
         viewModel.onViewCreated()
         viewModel.getFirstPage()

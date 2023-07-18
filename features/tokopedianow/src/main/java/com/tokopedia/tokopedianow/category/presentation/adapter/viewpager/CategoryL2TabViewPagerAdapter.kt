@@ -9,10 +9,12 @@ class CategoryL2TabViewPagerAdapter(fragment: Fragment) : FragmentStateAdapter(f
 
     var titleList: List<String> = emptyList()
     var components: List<Component> = emptyList()
+    var categoryL2Ids: List<String> = emptyList()
 
     override fun getItemCount(): Int = titleList.count()
 
     override fun createFragment(position: Int): Fragment {
-        return TokoNowCategoryL2TabFragment.newInstance(components)
+        val categoryIdL2 = categoryL2Ids.getOrNull(position).orEmpty()
+        return TokoNowCategoryL2TabFragment.newInstance(categoryIdL2, components)
     }
 }

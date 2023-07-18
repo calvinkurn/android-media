@@ -113,7 +113,7 @@ data class GetCategoryLayoutResponse(
 
     data class ComponentData(
         @SerializedName("id")
-        val id: String? = null,
+        val id: String = "",
         @SerializedName("name")
         val name: String? = null,
         @SerializedName("text")
@@ -123,7 +123,7 @@ data class GetCategoryLayoutResponse(
         @SerializedName("applinks")
         val type: String? = null,
         @SerializedName("categoryName")
-        val categoryName: String? = null,
+        val categoryName: String = "",
         @SerializedName("url")
         val url: String? = null,
         @SerializedName("isAdult")

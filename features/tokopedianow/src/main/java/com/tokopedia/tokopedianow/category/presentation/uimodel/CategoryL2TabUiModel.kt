@@ -5,8 +5,10 @@ import com.tokopedia.tokopedianow.category.domain.response.GetCategoryLayoutResp
 import com.tokopedia.tokopedianow.category.presentation.adapter.typefactory.listener.CategoryL2TypeFactory
 
 data class CategoryL2TabUiModel(
-    val tabTitleList: List<String>,
+    val id: String,
+    val titleList: List<String>,
     val componentList: List<Component>,
+    val categoryL2Ids: List<String>,
     val selectedTabPosition: Int = 0
 ) : Visitable<CategoryL2TypeFactory> {
 

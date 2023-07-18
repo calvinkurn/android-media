@@ -54,7 +54,12 @@ class TokoNowLocalAddress @Inject constructor(@ApplicationContext private val co
         localAddressData = data
     }
 
-    fun getAddressData() = localAddressData
+    fun getAddressData(): LocalCacheModel {
+        if(isChoosenAddressUpdated()) {
+            localAddressData = ChooseAddressUtils.getLocalizingAddressData(context)
+        }
+        return localAddressData
+    }
 
     fun isOutOfCoverage() = getWarehouseId() == OOC_WAREHOUSE_ID
 

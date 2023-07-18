@@ -6,12 +6,13 @@ import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.fil
 import com.tokopedia.tokopedianow.category.domain.response.GetCategoryLayoutResponse.BasicInfo
 import com.tokopedia.tokopedianow.category.domain.response.GetCategoryLayoutResponse.Component
 import com.tokopedia.tokopedianow.category.presentation.constant.CategoryComponentType.Companion.TABS_HORIZONTAL_SCROLL
-import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryHeaderSpaceUiModel
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryL2HeaderUiModel
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryL2TabUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowChooseAddressWidgetUiModel
 
 object CategoryL2Mapper {
+
+    private const val DEFAULT_INDEX = 0
 
     private val SUPPORTED_LAYOUT_TYPES = listOf(
         TABS_HORIZONTAL_SCROLL
@@ -19,14 +20,14 @@ object CategoryL2Mapper {
 
     fun MutableList<Visitable<*>>.mapToCategoryUiModel(
         componentsResponse: List<Component>,
-        categoryNameList: List<String>
+        categoryIdL2: String
     ) {
         componentsResponse.filter { SUPPORTED_LAYOUT_TYPES.contains(it.type) }.forEach { componentResponse ->
             when(componentResponse.type) {
                 TABS_HORIZONTAL_SCROLL -> addCategoryTab(
                     componentsResponse,
                     componentResponse,
-                    categoryNameList
+                    categoryIdL2
                 )
             }
         }
@@ -34,10 +35,6 @@ object CategoryL2Mapper {
 
     fun MutableList<Visitable<*>>.addChooseAddress(addressData: LocalCacheModel)  {
         add(TokoNowChooseAddressWidgetUiModel(addressData = addressData))
-    }
-
-    fun MutableList<Visitable<*>>.addHeaderSpace(space: Int) {
-        add(CategoryHeaderSpaceUiModel(space = space))
     }
 
     fun MutableList<Visitable<*>>.addHeader(basicInfoResponse: BasicInfo) {
@@ -52,9 +49,23 @@ object CategoryL2Mapper {
     fun MutableList<Visitable<*>>.addCategoryTab(
         componentListResponse: List<Component>,
         componentResponse: Component,
-        categoryNameList: List<String>
+        categoryIdL2: String
     ) {
+        val categoryNameList = componentResponse.getTabCategoryNameList()
         val tabComponents = componentListResponse.filterTabComponents()
-        add(CategoryL2TabUiModel(categoryNameList, tabComponents))
+        val categoryL2Ids = componentResponse.data.map { it.id }
+        val selectedTabPosition = if(categoryL2Ids.contains(categoryIdL2)) {
+            categoryL2Ids.indexOf(categoryIdL2)
+        } else {
+            DEFAULT_INDEX
+        }
+
+        add(CategoryL2TabUiModel(
+            id = componentResponse.id,
+            titleList = categoryNameList,
+            componentList = tabComponents,
+            categoryL2Ids = categoryL2Ids,
+            selectedTabPosition = selectedTabPosition
+        ))
     }
 }

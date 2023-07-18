@@ -2,15 +2,18 @@ package com.tokopedia.tokopedianow.category.domain.mapper
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.filter.common.data.DynamicFilterModel
+import com.tokopedia.tokopedianow.category.domain.mapper.CategoryProductItemMapper.mapResponseToProductItem
 import com.tokopedia.tokopedianow.category.domain.response.GetCategoryLayoutResponse.Component
 import com.tokopedia.tokopedianow.category.presentation.constant.CategoryComponentType.Companion.FEATURED_PRODUCT
 import com.tokopedia.tokopedianow.category.presentation.constant.CategoryComponentType.Companion.PRODUCT_LIST_FILTER
 import com.tokopedia.tokopedianow.category.presentation.constant.CategoryComponentType.Companion.PRODUCT_LIST_INFINITE_SCROLL
 import com.tokopedia.tokopedianow.category.presentation.constant.CategoryComponentType.Companion.STATIC_TEXT
+import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryProductListUiModel
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryQuickFilterUiModel
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategorySortFilterItemUiModel
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.model.TokoNowAdsCarouselUiModel
+import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel
 
 object CategoryL2TabMapper {
 
@@ -25,14 +28,17 @@ object CategoryL2TabMapper {
         components.filter { SUPPORTED_LAYOUT_TYPES.contains(it.type) }.forEach {
             when(it.type) {
                 PRODUCT_LIST_FILTER -> addQuickFilter(it)
+                PRODUCT_LIST_INFINITE_SCROLL -> addProductList(it)
             }
         }
     }
 
-    fun MutableList<Visitable<*>>.addQuickFilter(
-        response: Component
-    ) {
+    private fun MutableList<Visitable<*>>.addQuickFilter(response: Component) {
         add(CategoryQuickFilterUiModel(id = response.id))
+    }
+
+    private fun MutableList<Visitable<*>>.addProductList(response: Component) {
+        add(CategoryProductListUiModel(id = response.id))
     }
 
     fun MutableList<Visitable<*>>.mapToQuickFilter(
@@ -51,6 +57,12 @@ object CategoryL2TabMapper {
                 itemList = filterItemList,
                 state = TokoNowLayoutState.LOADED
             )
+        }
+    }
+
+    fun MutableList<Visitable<*>>.addProductCardItems(response: AceSearchProductModel) {
+        response.searchProduct.data.productList.forEachIndexed { index, product ->
+            add(mapResponseToProductItem(index, product))
         }
     }
     
@@ -87,6 +99,7 @@ object CategoryL2TabMapper {
         return when (this) {
             is TokoNowAdsCarouselUiModel -> state
             is CategoryQuickFilterUiModel -> state
+            is CategoryProductListUiModel -> state
             else -> null
         }
     }

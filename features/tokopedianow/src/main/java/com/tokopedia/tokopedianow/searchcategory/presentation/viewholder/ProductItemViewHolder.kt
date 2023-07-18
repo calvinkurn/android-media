@@ -15,9 +15,9 @@ import com.tokopedia.utils.view.binding.viewBinding
 
 class ProductItemViewHolder(
     itemView: View,
-    private val listener: ProductItemListener,
+    private val listener: ProductItemListener?,
     private val productCardCompactListener: ProductCardCompactListener? = null,
-    private val productCardCompactSimilarProductTrackerListener: ProductCardCompactSimilarProductTrackerListener,
+    private val productCardCompactSimilarProductTrackerListener: ProductCardCompactSimilarProductTrackerListener?,
 ): AbstractViewHolder<ProductItemDataView>(itemView), ProductCardCompactWishlistButtonView.WishlistButtonListener {
 
     companion object {
@@ -33,18 +33,18 @@ class ProductItemViewHolder(
                 model = element.productCardModel
             )
             setOnClickListener {
-                listener.onProductClick(
+                listener?.onProductClick(
                     productItemDataView = element
                 )
             }
             setOnClickQuantityEditorListener { quantity ->
-                listener.onProductNonVariantQuantityChanged(
+                listener?.onProductNonVariantQuantityChanged(
                     productItemDataView = element,
                     quantity = quantity
                 )
             }
             setOnClickQuantityEditorVariantListener {
-                listener.onProductChooseVariantClicked(
+                listener?.onProductChooseVariantClicked(
                     productItemDataView = element
                 )
             }
@@ -58,10 +58,10 @@ class ProductItemViewHolder(
                 productCardCompactListener = productCardCompactListener
             )
             setOnBlockAddToCartListener {
-                listener.onProductCardAddToCartBlocked()
+                listener?.onProductCardAddToCartBlocked()
             }
             addOnImpressionListener(element) {
-                listener.onProductImpressed(
+                listener?.onProductImpressed(
                     productItemDataView = element
                 )
             }
@@ -84,7 +84,7 @@ class ProductItemViewHolder(
         type: Int,
         ctaClickListener: (() -> Unit)?
     ) {
-        listener.onWishlistButtonClicked(
+        listener?.onWishlistButtonClicked(
             productId = productId,
             isWishlistSelected = isWishlistSelected,
             descriptionToaster = descriptionToaster,

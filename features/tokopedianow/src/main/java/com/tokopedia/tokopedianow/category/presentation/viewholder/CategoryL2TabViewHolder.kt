@@ -29,6 +29,20 @@ class CategoryL2TabViewHolder(
         CategoryL2TabViewPagerAdapter(tokoNowView.getFragmentPage())
     }
 
+    private val tabSelectedListener by lazy {
+        object : OnTabSelectedListener {
+            override fun onTabSelected(tab: TabLayout.Tab) {
+                listener.onTabSelected(tab.position)
+            }
+
+            override fun onTabUnselected(tab: TabLayout.Tab) {
+            }
+
+            override fun onTabReselected(tab: TabLayout.Tab) {
+            }
+        }
+    }
+
     private val binding: ItemTokopedianowCategoryL2TabBinding? by viewBinding()
 
     init {
@@ -39,33 +53,37 @@ class CategoryL2TabViewHolder(
 
     override fun bind(data: CategoryL2TabUiModel) {
         binding?.apply {
-            val tabTitleList = data.tabTitleList
+            val tabTitleList = data.titleList
             val componentList = data.componentList
 
-            viewPagerAdapter.titleList = tabTitleList
-            viewPagerAdapter.components = componentList
+            viewPagerAdapter.apply {
+                this.titleList = tabTitleList
+                this.components = componentList
+                this.categoryL2Ids = data.categoryL2Ids
+            }
 
             TabsUnifyMediator(tabUnify, viewPager) { tab, position ->
                 val title = tabTitleList.getOrNull(position).orEmpty()
                 if (title.isNotBlank()) tab.setCustomText(title)
             }
 
-            tabUnify.tabLayout.addOnTabSelectedListener(object : OnTabSelectedListener {
-                override fun onTabSelected(tab: TabLayout.Tab) {
-                    listener.onTabSelected(tab.position)
-                }
-                override fun onTabUnselected(tab: TabLayout.Tab) {
-                }
-                override fun onTabReselected(tab: TabLayout.Tab) {
-                }
-            })
+            setupTabLayout(data)
         }
     }
 
     override fun bind(data: CategoryL2TabUiModel, payloads: MutableList<Any>) {
         if (payloads.firstOrNull() == true) {
+            setupTabLayout(data)
+
+        }
+    }
+
+    private fun setupTabLayout(data: CategoryL2TabUiModel) {
+        binding?.tabUnify?.apply {
             val selectedTabPosition = data.selectedTabPosition
-            binding?.tabUnify?.tabLayout?.getTabAt(selectedTabPosition)?.select()
+            tabLayout.removeOnTabSelectedListener(tabSelectedListener)
+            tabLayout.getTabAt(selectedTabPosition)?.select()
+            tabLayout.addOnTabSelectedListener(tabSelectedListener)
         }
     }
 

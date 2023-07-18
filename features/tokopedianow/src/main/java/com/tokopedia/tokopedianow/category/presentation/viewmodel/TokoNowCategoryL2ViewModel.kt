@@ -11,9 +11,12 @@ import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWa
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2Mapper.addChooseAddress
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2Mapper.mapToCategoryUiModel
+import com.tokopedia.tokopedianow.category.domain.response.GetCategoryLayoutResponse.CategoryGetDetailModular
 import com.tokopedia.tokopedianow.category.domain.usecase.GetCategoryLayoutUseCase
 import com.tokopedia.tokopedianow.category.domain.usecase.GetCategoryProductUseCase
+import com.tokopedia.tokopedianow.category.presentation.constant.CategoryComponentType.Companion.TABS_HORIZONTAL_SCROLL
 import com.tokopedia.tokopedianow.category.presentation.model.CategoryL2Model
+import com.tokopedia.tokopedianow.category.presentation.model.CategoryL2TabModel
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryL2TabUiModel
 import com.tokopedia.tokopedianow.common.domain.usecase.GetProductAdsUseCase
 import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase
@@ -53,24 +56,20 @@ class TokoNowCategoryL2ViewModel @Inject constructor(
     dispatchers = dispatchers
 ) {
 
-    private val _categoryTab = MutableLiveData<List<String>>()
+    private val _categoryTabs = MutableLiveData<List<CategoryL2TabModel>>()
 
-    val categoryTab: LiveData<List<String>> = _categoryTab
+    val categoryTabs: LiveData<List<CategoryL2TabModel>> = _categoryTabs
 
     override fun loadFirstPage(tickerList: List<TickerData>) {
         launchCatchError(
             block = {
                 val getCategoryLayoutResponse = getCategoryLayout.execute(categoryIdL2)
-                val categoryTabList = getCategoryLayoutResponse.getCategoryNameList()
+                val categoryTabList = mapToCategoryTabList(getCategoryLayoutResponse)
                 val components = getCategoryLayoutResponse.components
 
                 visitableList.clear()
                 visitableList.addChooseAddress(getAddressData())
-
-                visitableList.mapToCategoryUiModel(
-                    components,
-                    categoryTabList
-                )
+                visitableList.mapToCategoryUiModel(components, categoryIdL2)
 
                 hidePageLoading()
                 updateVisitableListLiveData()
@@ -109,7 +108,17 @@ class TokoNowCategoryL2ViewModel @Inject constructor(
         updateVisitableListLiveData()
     }
 
-    private fun updateCategoryTab(categoryNameList: List<String>) {
-        _categoryTab.postValue(categoryNameList)
+    fun getTabPosition(): Int {
+        return visitableList.indexOfFirst { it is CategoryL2TabUiModel }
+    }
+
+    private fun mapToCategoryTabList(response: CategoryGetDetailModular): List<CategoryL2TabModel> {
+        return response.components
+            .firstOrNull { it.type == TABS_HORIZONTAL_SCROLL }?.data.orEmpty()
+            .map { CategoryL2TabModel(it.id, it.categoryName)}
+    }
+
+    private fun updateCategoryTab(categoryTabs: List<CategoryL2TabModel>) {
+        _categoryTabs.postValue(categoryTabs)
     }
 }

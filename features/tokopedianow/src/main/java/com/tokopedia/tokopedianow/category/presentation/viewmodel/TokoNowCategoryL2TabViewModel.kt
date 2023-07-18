@@ -7,15 +7,16 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
-import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.filterNotLoadedLayout
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.mapToCategoryTabLayout
+import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.addProductCardItems
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.mapToQuickFilter
-import com.tokopedia.tokopedianow.category.domain.mapper.CategoryParamMapper
 import com.tokopedia.tokopedianow.category.domain.response.GetCategoryLayoutResponse.Component
+import com.tokopedia.tokopedianow.category.domain.usecase.GetCategoryProductUseCase
+import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryProductListUiModel
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryQuickFilterUiModel
 import com.tokopedia.tokopedianow.common.base.viewmodel.BaseTokoNowViewModel
 import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase
@@ -29,7 +30,7 @@ import javax.inject.Inject
 
 class TokoNowCategoryL2TabViewModel @Inject constructor(
     private val getSortFilterUseCase: GetSortFilterUseCase,
-    private val categoryParamMapper: CategoryParamMapper,
+    private val getCategoryProductUseCase: GetCategoryProductUseCase,
     getTargetedTickerUseCase: GetTargetedTickerUseCase,
     getMiniCartUseCase: GetMiniCartListSimplifiedUseCase,
     addToCartUseCase: AddToCartUseCase,
@@ -57,15 +58,18 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
     
     private val visitableList = mutableListOf<Visitable<*>>()
 
+    var categoryIdL2: String = ""
+    var components = listOf<Component>()
+
     fun onViewCreated(components: List<Component>) {
         launchCatchError(block = {
             visitableList.clear()
-
             visitableList.mapToCategoryTabLayout(components)
             
             visitableList.filterNotLoadedLayout().forEach {
                 when(it) {
                     is CategoryQuickFilterUiModel -> getQuickFilterAsync(it).await()
+                    is CategoryProductListUiModel -> getProductListAsync(it).await()
                 }
             }
         }) {
@@ -75,8 +79,9 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
 
     private fun getQuickFilterAsync(item: CategoryQuickFilterUiModel): Deferred<Unit?> {
         return asyncCatchError(block = {
-            val params = createQuickFilterRequestParams()
-            val response = getSortFilterUseCase.execute(params)
+            val response = getSortFilterUseCase.execute(
+                source = QUICK_FILTER_TOKONOW_DIRECTORY
+            )
             visitableList.mapToQuickFilter(item, response)
             updateVisitableListLiveData()
         }) {
@@ -84,10 +89,14 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
         }
     }
 
-    private fun createQuickFilterRequestParams(): Map<String?, Any?> {
-        return categoryParamMapper.createRequestParams().also {
-            it[SearchApiConst.NAVSOURCE] = QUICK_FILTER_TOKONOW_DIRECTORY
-            it[SearchApiConst.SOURCE] = QUICK_FILTER_TOKONOW_DIRECTORY
+    private fun getProductListAsync(item: CategoryProductListUiModel): Deferred<Unit?> {
+        return asyncCatchError(block = {
+            val response = getCategoryProductUseCase.execute(categoryIdL2)
+            visitableList.addProductCardItems(response)
+            visitableList.remove(item)
+            updateVisitableListLiveData()
+        }) {
+
         }
     }
 

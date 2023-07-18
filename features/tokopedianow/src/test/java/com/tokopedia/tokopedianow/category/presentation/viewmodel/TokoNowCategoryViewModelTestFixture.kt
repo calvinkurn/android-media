@@ -14,6 +14,7 @@ import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.domain.model.LocalWarehouseModel
+import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
 import com.tokopedia.minicart.common.data.response.minicartlist.MiniCartGqlResponse
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.network.authentication.AuthHelper
@@ -128,6 +129,9 @@ open class TokoNowCategoryViewModelTestFixture {
     @RelaxedMockK
     lateinit var getTargetedTickerUseCase: GetTargetedTickerUseCase
 
+    @RelaxedMockK
+    lateinit var getShopAndWarehouseUseCase: GetChosenAddressWarehouseLocUseCase
+
     /**
      * variable with annotation section
      */
@@ -149,15 +153,15 @@ open class TokoNowCategoryViewModelTestFixture {
             getCategoryDetailUseCase = getCategoryDetailUseCase,
             getCategoryProductUseCase = getCategoryProductUseCase,
             getProductAdsUseCase = getProductAdsUseCase,
+            getTargetedTickerUseCase = getTargetedTickerUseCase,
+            getShopAndWarehouseUseCase = getShopAndWarehouseUseCase,
             addressData = localAddress,
-            categoryIdL1 = categoryIdL1,
             userSession = userSession,
             getMiniCartUseCase = getMiniCartUseCase,
             addToCartUseCase = addToCartUseCase,
             updateCartUseCase = updateCartUseCase,
             deleteCartUseCase = deleteCartUseCase,
             affiliateService = affiliateService,
-            getTargetedTickerUseCase = getTargetedTickerUseCase,
             dispatchers = CoroutineTestDispatchersProvider
         )
 
@@ -233,14 +237,10 @@ open class TokoNowCategoryViewModelTestFixture {
         } throws Exception()
     }
 
-    protected fun onCategoryProduct_thenReturns(uniqueId: String) {
+    protected fun onCategoryProduct_thenReturns() {
         categoryProductResponseMap.forEach { (categoryIdL2, categoryProductResponse) ->
             coEvery {
-                getCategoryProductUseCase.execute(
-                    addressData,
-                    uniqueId,
-                    categoryIdL2
-                )
+                getCategoryProductUseCase.execute(categoryIdL2)
             } returns categoryProductResponse
         }
     }
@@ -261,16 +261,12 @@ open class TokoNowCategoryViewModelTestFixture {
             if (expectedCategoryIdL2Failed == categoryIdL2) {
                 coEvery {
                     getCategoryProductUseCase.execute(
-                        addressData,
-                        uniqueId,
                         categoryIdL2
                     )
                 } throws Exception()
             } else {
                 coEvery {
                     getCategoryProductUseCase.execute(
-                        addressData,
-                        uniqueId,
                         categoryIdL2
                     )
                 } returns categoryProductResponse
