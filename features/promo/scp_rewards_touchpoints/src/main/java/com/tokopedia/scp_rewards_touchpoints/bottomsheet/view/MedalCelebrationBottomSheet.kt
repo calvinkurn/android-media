@@ -21,7 +21,6 @@ import android.view.ViewGroup
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.PathInterpolator
 import android.view.inputmethod.InputMethodManager
-import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.animation.addListener
 import androidx.core.content.ContextCompat
@@ -36,7 +35,6 @@ import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.hide
@@ -55,8 +53,8 @@ import com.tokopedia.scp_rewards_touchpoints.bottomsheet.utils.launchLink
 import com.tokopedia.scp_rewards_touchpoints.bottomsheet.utils.parseColor
 import com.tokopedia.scp_rewards_touchpoints.bottomsheet.viewmodel.MedalCelebrationViewModel
 import com.tokopedia.scp_rewards_touchpoints.common.Error
-import com.tokopedia.scp_rewards_touchpoints.common.HIDDEN
 import com.tokopedia.scp_rewards_touchpoints.common.Loading
+import com.tokopedia.scp_rewards_touchpoints.common.PRIMARY_STYLE
 import com.tokopedia.scp_rewards_touchpoints.common.Success
 import com.tokopedia.scp_rewards_touchpoints.common.di.DaggerCelebrationComponent
 import com.tokopedia.scp_rewards_touchpoints.databinding.CelebrationBottomSheetFragmentLayoutBinding
@@ -210,7 +208,7 @@ class MedalCelebrationBottomSheet : BottomSheetUnify() {
 
     private fun setupCloseButtonBehaviour() {
         binding?.btnClose?.setOnClickListener {
-            CelebrationBottomSheetAnalytics.clickCloseBottomSheet(medaliSlug, getBenefitCta(autoApply = true)?.couponCode ?: "")
+            CelebrationBottomSheetAnalytics.clickCloseBottomSheet(medaliSlug, getBenefitCta(PRIMARY_STYLE)?.couponCode ?: "")
             dismiss()
         }
     }
@@ -396,7 +394,7 @@ class MedalCelebrationBottomSheet : BottomSheetUnify() {
         }
     }
 
-    private fun hideAllBenefitCta(){
+    private fun hideAllBenefitCta() {
         binding?.mainView?.couponUi?.apply {
             btnPrimary.hide()
             btnSecondary.hide()
@@ -421,10 +419,9 @@ class MedalCelebrationBottomSheet : BottomSheetUnify() {
                 badgeName.text = scpRewardsCelebrationPage?.celebrationPage?.medaliName
                 val benefitList = scpRewardsCelebrationPage?.celebrationPage?.benefitButton ?: listOf()
                 benefitList.forEach { benefitBtn ->
-                    if(benefitBtn.isAutoApply){
+                    if (benefitBtn.unifiedStyle == PRIMARY_STYLE) {
                         couponUi.btnPrimary.text = benefitBtn.text
-                    }
-                    else{
+                    } else {
                         couponUi.btnSecondary.text = benefitBtn.text
                     }
                 }
@@ -590,7 +587,7 @@ class MedalCelebrationBottomSheet : BottomSheetUnify() {
         playSound()
         handler.postDelayed(
             {
-                CelebrationBottomSheetAnalytics.impressionCelebrationBottomSheet(medaliSlug, getBenefitCta(autoApply = true)?.couponCode ?: "")
+                CelebrationBottomSheetAnalytics.impressionCelebrationBottomSheet(medaliSlug, getBenefitCta(PRIMARY_STYLE)?.couponCode ?: "")
                 showCelebrationConfetti()
                 showStarsConfetti()
             },
@@ -603,38 +600,30 @@ class MedalCelebrationBottomSheet : BottomSheetUnify() {
             binding?.mainView?.couponUi?.apply {
                 val benefitList = scpRewardsCelebrationPage?.celebrationPage?.benefitButton ?: listOf()
                 benefitList.forEach { benefit ->
-                    if(benefit.isAutoApply){
+                    val button = if (benefit.unifiedStyle == PRIMARY_STYLE) {
                         btnPrimary.show()
-                        btnPrimary.setOnClickListener {
+                        btnPrimary
+                    } else {
+                        btnSecondary.show()
+                        btnSecondary
+                    }
+                    val primaryBenefit = getBenefitCta(PRIMARY_STYLE)
+                    button.setOnClickListener {
+                        if (benefit.isAutoApply) {
                             medalCelebrationViewModel.autoApplyCoupon(
                                 couponCode = benefit.couponCode,
                                 benefitData = benefit
                             )
-                            CelebrationBottomSheetAnalytics.clickPrimaryCta(medaliSlug, benefit.couponCode)
-                        }
-                    }
-                    else{
-                        val primaryBenefit = getBenefitCta(autoApply = true)
-                        btnSecondary.show()
-                        btnSecondary.setOnClickListener {
-                            CelebrationBottomSheetAnalytics.clickSecondaryCta(medaliSlug, primaryBenefit?.couponCode ?: "")
-                            RouteManager.route(context, getBenefitCta(autoApply = false)?.appLink)
+                        } else {
+                            context?.launchLink(benefit.appLink, benefit.url)
                             activity?.finish()
                         }
+                        if (benefit.unifiedStyle == PRIMARY_STYLE) {
+                            CelebrationBottomSheetAnalytics.clickPrimaryCta(medaliSlug, primaryBenefit?.couponCode ?: "")
+                        } else {
+                            CelebrationBottomSheetAnalytics.clickSecondaryCta(medaliSlug, primaryBenefit?.couponCode ?: "")
+                        }
                     }
-                }
-                val benefitCta = getBenefitCta(autoApply = true)
-                btnSecondary.setOnClickListener {
-                    CelebrationBottomSheetAnalytics.clickSecondaryCta(medaliSlug, benefitCta?.couponCode ?: "")
-                    RouteManager.route(context, getBenefitCta(autoApply = false)?.appLink)
-                    activity?.finish()
-                }
-                btnPrimary.setOnClickListener {
-                    medalCelebrationViewModel.autoApplyCoupon(
-                        couponCode = benefitCta?.couponCode ?: "",
-                        benefitData = benefitCta
-                    )
-                    CelebrationBottomSheetAnalytics.clickPrimaryCta(medaliSlug, benefitCta?.couponCode ?: "")
                 }
             }
         }
@@ -734,7 +723,6 @@ class MedalCelebrationBottomSheet : BottomSheetUnify() {
     private fun animateRest() {
         binding?.mainView?.apply {
             context?.let {
-                val dimen40 = it.resources.getDimension(R.dimen.dimen_40).toInt()
                 val dimen44 = it.resources.getDimension(R.dimen.dimen_44).toInt()
                 fadeView(
                     view = celebrationHeading,
@@ -900,11 +888,9 @@ class MedalCelebrationBottomSheet : BottomSheetUnify() {
         }
     }
 
-    private fun getBenefitCta(autoApply:Boolean): ScpRewardsCelebrationModel.RewardsGetMedaliCelebrationPage.CelebrationPage.BenefitButton? {
+    private fun getBenefitCta(buttonType: String): ScpRewardsCelebrationModel.RewardsGetMedaliCelebrationPage.CelebrationPage.BenefitButton? {
         return if (medalCelebrationViewModel.badgeLiveData.value is Success<*>) {
-            (medalCelebrationViewModel.badgeLiveData.value as Success<ScpRewardsCelebrationModel>).data.getBenefitCta(
-                autoApply = autoApply
-            )
+            (medalCelebrationViewModel.badgeLiveData.value as Success<ScpRewardsCelebrationModel>).data.getBenefitCta(buttonType)
         } else {
             null
         }
@@ -916,7 +902,6 @@ class MedalCelebrationBottomSheet : BottomSheetUnify() {
         private const val ROTATION_DURATION = 5000L
         private const val ANIMATION_INITIAL_DELAY = 400L
         private const val ASSET_TOTAL_COUNT = 6
-        private const val FALLBACK_DELAY = 2000L
         private const val MDPI_SCREEN_SIZE = 5.0
 
         // UI States
