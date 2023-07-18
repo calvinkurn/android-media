@@ -10,12 +10,15 @@ import androidx.fragment.app.FragmentManager
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.play.broadcaster.R
+import com.tokopedia.play.broadcaster.ui.model.livetovod.TickerBottomSheetUiModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import javax.inject.Inject
 
 class PlayBroLiveToVodBottomSheet @Inject constructor(
     private val router: Router,
 ) : BottomSheetUnify() {
+
+    private var mData: TickerBottomSheetUiModel = TickerBottomSheetUiModel.Empty
 
     private fun generateLearnMoreAppLink(): String {
         return getString(
@@ -45,6 +48,10 @@ class PlayBroLiveToVodBottomSheet @Inject constructor(
             }
         })
         return super.onCreateView(inflater, container, savedInstanceState)
+    }
+
+    fun setupData(data: TickerBottomSheetUiModel) {
+        mData = data
     }
 
     fun show(fragmentManager: FragmentManager) {

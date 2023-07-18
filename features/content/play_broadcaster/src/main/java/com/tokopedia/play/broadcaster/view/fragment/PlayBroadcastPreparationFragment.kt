@@ -58,6 +58,8 @@ import com.tokopedia.play.broadcaster.ui.model.PlayBroadcastPreparationBannerMod
 import com.tokopedia.play.broadcaster.ui.model.PlayBroadcastPreparationBannerModel.Companion.TYPE_DASHBOARD
 import com.tokopedia.play.broadcaster.ui.model.PlayBroadcastPreparationBannerModel.Companion.TYPE_SHORTS
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
+import com.tokopedia.play.broadcaster.ui.model.livetovod.TickerBottomSheetPageType
+import com.tokopedia.play.broadcaster.ui.model.livetovod.TickerBottomSheetUiModel
 import com.tokopedia.play.broadcaster.ui.model.page.PlayBroPageSource
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkState
 import com.tokopedia.play.broadcaster.ui.state.ScheduleUiModel
@@ -217,6 +219,8 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         setupInsets()
         setupListener()
         setupObserver()
+
+        checkConfig()
     }
 
     override fun onStart() {
@@ -406,6 +410,9 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                 val isShowCoachMark = parentViewModel.isShowSetupCoverCoachMark
                 childFragment.needToShowCoachMark(isShowCoachMark)
                 if (isShowCoachMark) parentViewModel.submitAction(PlayBroadcastAction.SetShowSetupCoverCoachMark)
+            }
+            is PlayBroLiveToVodBottomSheet -> {
+                childFragment.setupData(parentViewModel.tickerBottomSheetConfig)
             }
         }
     }
@@ -597,6 +604,12 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         observeViewEvent()
     }
 
+    private fun checkConfig() {
+        parentViewModel.submitAction(PlayBroadcastAction.GetTickerBottomSheetConfig(
+            page = TickerBottomSheetPageType.BOTTOM_SHEET,
+        ))
+    }
+
     private fun getCoachMarkSwitchAccount(): CoachMark2Item? {
         val isSwitchAccountCoachMarkShown = !coachMarkSharedPref.hasBeenShown(Key.SwitchAccount, userSession.userId)
         if (!isSwitchAccountCoachMarkShown) return null
@@ -741,6 +754,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                 renderSchedulePicker(prevState?.schedule, state.schedule)
                 renderAccountStateInfo(prevState?.accountStateInfo, state.accountStateInfo)
                 renderBannerPreparationPage(prevState?.bannerPreparation, state.bannerPreparation)
+                renderBottomSheetDisableLiveToVod(prevState?.tickerBottomSheetConfig, state.tickerBottomSheetConfig)
             }
         }
     }
@@ -977,6 +991,18 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                 analytic.onViewCoachMarkPerformanceDashboardPrepPage(parentViewModel.authorId)
                 setupCoachMark(coachMark)
             }
+        }
+    }
+
+    private fun renderBottomSheetDisableLiveToVod(
+        prev: TickerBottomSheetUiModel?,
+        state: TickerBottomSheetUiModel,
+    ) {
+        if (prev == state) return
+
+        when (state.type) {
+            TickerBottomSheetPageType.BOTTOM_SHEET -> openDisableLiveToVodBottomSheet()
+            else -> return
         }
     }
 

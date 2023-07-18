@@ -2,12 +2,6 @@ package com.tokopedia.play.broadcaster.view.viewmodel
 
 import android.os.Bundle
 import androidx.lifecycle.*
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.broadcaster.revamp.util.statistic.BroadcasterMetric
@@ -33,6 +27,7 @@ import com.tokopedia.play.broadcaster.domain.model.socket.PinnedMessageSocketRes
 import com.tokopedia.play.broadcaster.domain.model.socket.SectionedProductTagSocketResponse
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
 import com.tokopedia.play.broadcaster.domain.usecase.*
+import com.tokopedia.play.broadcaster.domain.usecase.livetovod.GetTickerBottomSheetRequest
 import com.tokopedia.play.broadcaster.pusher.state.PlayBroadcasterState
 import com.tokopedia.play.broadcaster.pusher.timer.PlayBroadcastTimer
 import com.tokopedia.play.broadcaster.pusher.timer.PlayBroadcastTimerState
@@ -54,6 +49,8 @@ import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizFormDataUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizFormStateUiModel
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveSetupUiModel
+import com.tokopedia.play.broadcaster.ui.model.livetovod.TickerBottomSheetPageType
+import com.tokopedia.play.broadcaster.ui.model.livetovod.TickerBottomSheetUiModel
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageUiModel
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
@@ -234,6 +231,10 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     private val _schedule = MutableStateFlow(ScheduleUiModel.Empty)
     private val _beautificationConfig = MutableStateFlow(BeautificationConfigUiModel.Empty)
 
+    private val _tickerBottomSheetConfig = MutableStateFlow(TickerBottomSheetUiModel.Empty)
+    val tickerBottomSheetConfig: TickerBottomSheetUiModel
+        get() = _tickerBottomSheetConfig.value
+
     private val _allowRetryDownloadAsset = MutableStateFlow(true)
 
     var warningInfoType: WarningType = WarningType.UNKNOWN
@@ -380,9 +381,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                         isEnabled = isTitleMenuChecked,
                     )
                 }
-                else -> {
-                    it
-                }
             }
         }
     }
@@ -407,6 +405,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         _title,
         _cover,
         _beautificationConfig,
+        _tickerBottomSheetConfig
     ) { channelState,
         pinnedMessage,
         productMap,
@@ -425,7 +424,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         menuListUiState,
         title,
         cover,
-        beautificationConfig, ->
+        beautificationConfig,
+        tickerBottomSheetConfig, ->
         PlayBroadcastUiState(
             channel = channelState,
             pinnedMessage = pinnedMessage,
@@ -446,6 +446,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             title = title,
             cover = cover,
             beautificationConfig = beautificationConfig,
+            tickerBottomSheetConfig = tickerBottomSheetConfig,
         )
     }.stateIn(
         viewModelScope,
@@ -521,6 +522,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             is PlayBroadcastAction.GetConfiguration -> handleGetConfiguration(event.selectedType)
             is PlayBroadcastAction.SwitchAccount -> handleSwitchAccount(event.needLoading)
             is PlayBroadcastAction.SuccessOnBoardingUGC -> handleSuccessOnBoardingUGC()
+            is PlayBroadcastAction.GetTickerBottomSheetConfig -> handleTickerBottomSheetConfig(event.page)
 
             /** Game */
             is PlayBroadcastAction.ClickGameOption -> handleClickGameOption(event.gameType)
@@ -787,6 +789,14 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 initQuizFormData()
                 handleActiveInteractive()
             }
+        }) { }
+    }
+
+    private fun handleTickerBottomSheetConfig(page: TickerBottomSheetPageType) {
+        viewModelScope.launchCatchError(block = {
+            _tickerBottomSheetConfig.value = repo.getTickerBottomSheetConfig(
+                GetTickerBottomSheetRequest(page = page)
+            )
         }) { }
     }
 
