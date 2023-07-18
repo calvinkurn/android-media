@@ -27,6 +27,7 @@ import com.tokopedia.kyc_centralized.R
 import com.tokopedia.kyc_centralized.analytics.UserIdentificationAnalytics
 import com.tokopedia.kyc_centralized.analytics.UserIdentificationAnalytics.Companion.createInstance
 import com.tokopedia.kyc_centralized.common.KYCConstant
+import com.tokopedia.kyc_centralized.common.KycServerLogger
 import com.tokopedia.kyc_centralized.common.KycStatus
 import com.tokopedia.kyc_centralized.databinding.FragmentUserIdentificationInfoBinding
 import com.tokopedia.kyc_centralized.di.ActivityComponentFactory
@@ -125,6 +126,12 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(),
             key = KYCConstant.SharedPreference.KEY_KYC_FLOW_TYPE,
             value = KYCConstant.SharedPreference.VALUE_KYC_FLOW_TYPE_CKYC
         )
+
+        KycServerLogger.sendLogStatusSavePreferenceKyc(
+            flow = KycServerLogger.FLOW_CKYC,
+            isSuccess = isSuccessSavePreference
+        )
+
         if (isSuccessSavePreference) {
             if (isSourceSeller) {
                 goToFormActivity()

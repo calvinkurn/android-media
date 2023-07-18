@@ -17,6 +17,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kyc_centralized.common.KYCConstant
+import com.tokopedia.kyc_centralized.common.KycServerLogger
 import com.tokopedia.kyc_centralized.common.KycUrl
 import com.tokopedia.kyc_centralized.databinding.FragmentUserIdentificationInfoSimpleBinding
 import com.tokopedia.kyc_centralized.di.UserIdentificationCommonComponent
@@ -97,6 +98,12 @@ class UserIdentificationInfoSimpleFragment : BaseDaggerFragment() {
             key = KYCConstant.SharedPreference.KEY_KYC_FLOW_TYPE,
             value = KYCConstant.SharedPreference.VALUE_KYC_FLOW_TYPE_ALA_CARTE
         )
+
+        KycServerLogger.sendLogStatusSavePreferenceKyc(
+            flow = KycServerLogger.FLOW_ALA_CARTE,
+            isSuccess = isSuccessSavePreference
+        )
+
         if (isSuccessSavePreference) {
             initAction()
         } else {

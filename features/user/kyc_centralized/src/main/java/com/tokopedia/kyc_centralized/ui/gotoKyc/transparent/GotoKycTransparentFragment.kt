@@ -25,6 +25,7 @@ import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.kyc_centralized.common.KYCConstant
+import com.tokopedia.kyc_centralized.common.KycServerLogger
 import com.tokopedia.kyc_centralized.databinding.FragmentGotoKycLoaderBinding
 import com.tokopedia.kyc_centralized.di.GoToKycComponent
 import com.tokopedia.kyc_centralized.ui.gotoKyc.bottomSheet.AwaitingApprovalGopayBottomSheet
@@ -137,6 +138,12 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
     private fun saveInitDataToPreference() {
         binding?.gotoKycLoader?.show()
         val isSuccessSavePreference = kycSharedPreference.saveProjectId(viewModel.projectId)
+
+        KycServerLogger.sendLogStatusSavePreferenceKyc(
+            flow = KycServerLogger.FLOW_GOTO_KYC,
+            isSuccess = isSuccessSavePreference
+        )
+
         if (isSuccessSavePreference) {
             if (isReVerify) {
                 viewModel.accountLikingStatus()
