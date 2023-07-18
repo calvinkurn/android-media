@@ -10,11 +10,9 @@ import com.tokopedia.entertainment.R
 import com.tokopedia.entertainment.databinding.PartialEventPdpInformationBinding
 import com.tokopedia.entertainment.pdp.data.ValueAccordion
 import com.tokopedia.entertainment.pdp.data.pdp.EventPDPInformationEntity
-import com.tokopedia.entertainment.pdp.listener.OnBindItemListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifyprinciples.Typography
-import kotlinx.android.synthetic.main.partial_event_pdp_information.view.*
 
 class EventPDPInformationViewHolder(val binding: PartialEventPdpInformationBinding) :
         AbstractViewHolder<EventPDPInformationEntity>(binding.root) {

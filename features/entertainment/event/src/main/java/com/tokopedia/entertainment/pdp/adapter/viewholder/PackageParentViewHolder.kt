@@ -64,7 +64,7 @@ class PackageParentViewHolder(
 
     private fun mapPackageV3ToAccordionData(value: PackageV3, isRecommendation: Boolean)
             : AccordionDataUnify {
-        val eventPDPTicketAdapter = EventPDPTicketItemPackageAdapter(onBindItemTicketListener, onCoachmarkListener)
+        val eventPDPTicketAdapter = EventPDPTicketItemPackageAdapter(onBindItemTicketListener)
         val expandableLayout = View.inflate(itemView.context, R.layout.ent_ticket_rv_expandable_item, null)
         expandableLayout.findViewById<RecyclerView>(R.id.rv_accordion_expandable).apply {
             adapter = eventPDPTicketAdapter
