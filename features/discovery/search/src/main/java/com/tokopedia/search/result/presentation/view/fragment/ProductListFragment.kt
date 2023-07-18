@@ -686,6 +686,7 @@ class ProductListFragment: BaseDaggerFragment(),
         super.onPause()
 
         onBoardingListenerDelegate.dismissCoachmark()
+        trackingQueue?.sendAll()
     }
 
     //region product item (organic and topads) impression, click, and 3 dots click

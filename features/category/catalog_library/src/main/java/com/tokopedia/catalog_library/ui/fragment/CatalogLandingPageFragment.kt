@@ -299,6 +299,11 @@ class CatalogLandingPageFragment : CatalogProductsBaseFragment(), CatalogLibrary
         }
     }
 
+    override fun onPause() {
+        super.onPause()
+        trackingQueue?.sendAll()
+    }
+
     private fun sendOpenScreenEvent() {
         if (!trackingSent) {
             CatalogAnalyticsCategoryLandingPage.openScreenCategoryLandingPage(

@@ -921,6 +921,12 @@ abstract class BaseSearchCategoryFragment:
 
     protected abstract fun sendDeleteCartTrackingEvent(productId: String)
 
+    override fun onPause() {
+        super.onPause()
+
+        trackingQueue?.sendAll()
+    }
+
     override fun onResume() {
         super.onResume()
 

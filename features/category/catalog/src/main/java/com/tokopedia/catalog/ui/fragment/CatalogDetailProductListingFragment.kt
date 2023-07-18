@@ -719,6 +719,7 @@ class CatalogDetailProductListingFragment :
 
     override fun onPause() {
         super.onPause()
+        trackingQueue.sendAll()
         if (isUserScrolledList) {
             viewModel.lastSeenProductPosition = (lastAttachItemPosition + lastDetachedItemPosition) / 2
         }

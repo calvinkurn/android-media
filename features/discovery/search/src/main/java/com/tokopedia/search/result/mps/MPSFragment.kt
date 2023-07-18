@@ -41,8 +41,8 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 class MPSFragment @Inject constructor(
     private val viewModelFactory: ViewModelProvider.Factory,
     private val trackingQueue: TrackingQueue,
-    private val iris: Iris
-) :
+    private val iris: Iris,
+):
     TkpdBaseV4Fragment(),
     SearchView,
     ChooseAddressListener,
@@ -107,9 +107,9 @@ class MPSFragment @Inject constructor(
                 context,
                 viewModel,
                 trackingQueue,
-                iris
+                iris,
             ),
-            emptyStateListener = this
+            emptyStateListener = this,
         )
 
         mpsListAdapter = MPSListAdapter(mpsTypeFactory, this)
@@ -122,7 +122,7 @@ class MPSFragment @Inject constructor(
     }
 
     private fun endlessScrollListener(layoutManager: LayoutManager?): EndlessScrollListener =
-        object : EndlessScrollListener(layoutManager) {
+        object: EndlessScrollListener(layoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
                 viewModel?.onViewLoadMore()
             }
@@ -178,6 +178,12 @@ class MPSFragment @Inject constructor(
         }.showRetrySnackbar()
     }
 
+    override fun onPause() {
+        super.onPause()
+
+        trackingQueue.sendAll()
+    }
+
     override fun onResume() {
         super.onResume()
 
@@ -196,7 +202,7 @@ class MPSFragment @Inject constructor(
 
     override fun onCurrentListChanged(
         previousList: List<Visitable<*>>,
-        currentList: List<Visitable<*>>
+        currentList: List<Visitable<*>>,
     ) {
         endlessScrollListener?.updateStateAfterGetData()
     }
@@ -214,11 +220,11 @@ class MPSFragment @Inject constructor(
         @JvmStatic
         internal fun newInstance(
             classLoader: ClassLoader,
-            fragmentFactory: FragmentFactory
+            fragmentFactory: FragmentFactory,
         ): MPSFragment {
             return fragmentFactory.instantiate(
                 classLoader,
-                MPSFragment::class.java.name
+                MPSFragment::class.java.name,
             ) as MPSFragment
         }
     }

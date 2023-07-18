@@ -63,6 +63,11 @@ open class CategoryBrowseActivity : BaseSimpleActivity(), CategoryChangeListener
         pageLoadTimePerformanceMonitoring?.startPreparePagePerformanceMonitoring()
     }
 
+    override fun onPause() {
+        super.onPause()
+        getActivityTrackingQueue().sendAll()
+    }
+
     override fun setupLayout(savedInstanceState: Bundle?) {
         super.setupLayout(savedInstanceState)
         toolbar.setNavigationIcon(R.drawable.cat_ic_action_back)

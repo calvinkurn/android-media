@@ -327,6 +327,11 @@ class CatalogBrandLandingPageFragment : CatalogProductsBaseFragment(), CatalogLi
         }
     }
 
+    override fun onPause() {
+        super.onPause()
+        trackingQueue?.sendAll()
+    }
+
     fun dismissKategoriBottomSheet() {
         CatalogAnalyticsBrandLandingPage.sendClickCloseBottomSheetButtonEvent(
             "$brandNameStr - $brandIdStr",

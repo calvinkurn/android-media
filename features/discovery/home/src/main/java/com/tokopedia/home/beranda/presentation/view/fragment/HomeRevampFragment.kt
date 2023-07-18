@@ -1079,6 +1079,7 @@ open class HomeRevampFragment :
         playWidgetOnVisibilityChanged(isViewResumed = false)
         super.onPause()
         adapter?.onPauseBanner()
+        getTrackingQueueObj()?.sendAll()
         if (activityStateListener != null) {
             activityStateListener!!.onPause()
         }

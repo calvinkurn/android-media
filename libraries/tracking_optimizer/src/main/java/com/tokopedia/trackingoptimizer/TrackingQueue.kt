@@ -102,6 +102,7 @@ class TrackingQueue(ctx: Context) {
      * because this method is called within an ActivityLifeCycleCallbacks
      * validation is added, to start the service only if tracking queue is available
      */
+    @Deprecated("No need to call this manually.")
     fun sendAll() {
         getTrackingQueueObject(context).sendAll()
     }

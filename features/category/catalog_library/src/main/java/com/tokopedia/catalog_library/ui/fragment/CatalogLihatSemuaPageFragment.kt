@@ -344,4 +344,9 @@ class CatalogLihatSemuaPageFragment : CatalogLibraryBaseFragment(), CatalogLibra
             eventLabel
         }
     }
+
+    override fun onPause() {
+        super.onPause()
+        trackingQueue?.sendAll()
+    }
 }
