@@ -224,18 +224,20 @@ class CampaignRuleFragment :
             viewModel.setOosStatus(isEnableTransaction = isEnableTransaction)
         }
 
-        binding.chipsUniqueAccountYes.setOnClickListener {
-            viewModel.onNotRequireUniqueAccountSelected()
-        }
-        binding.chipsUniqueAccountNo.setOnClickListener {
-            viewModel.onRequireUniqueAccountSelected()
+        binding.radioUniqueAccountHandling.setOnCheckedChangeListener { _, checkedId ->
+            if (checkedId == R.id.radio_unique_account_yes) {
+                viewModel.onNotRequireUniqueAccountSelected()
+            } else {
+                viewModel.onRequireUniqueAccountSelected()
+            }
         }
 
-        binding.chipsCampaignRelationYes.setOnClickListener {
-            viewModel.onAllowCampaignRelation()
-        }
-        binding.chipsCampaignRelationNo.setOnClickListener {
-            viewModel.onDisallowCampaignRelation()
+        binding.radioHandlingCampaignRelations.setOnCheckedChangeListener { _, checkedId ->
+            if (checkedId == R.id.radio_option_campaign_relations_yes) {
+                viewModel.onAllowCampaignRelation()
+            } else {
+                viewModel.onDisallowCampaignRelation()
+            }
         }
 
         binding.checkboxCampaignRuleTnc.setOnCheckedChangeListener(tncCheckboxChangeListener)
@@ -429,16 +431,16 @@ class CampaignRuleFragment :
 
     private fun onUniqueAccountRequired() {
         val binding = binding ?: return
-        binding.chipsUniqueAccountYes.chipType = ChipsUnify.TYPE_NORMAL
-        binding.chipsUniqueAccountNo.chipType = ChipsUnify.TYPE_SELECTED
+        binding.radioUniqueAccountYes.isChecked = false
+        binding.radioUniqueAccountNo.isChecked = true
         binding.tipsUniqueAccount.visible()
         binding.groupAllowCampaignRelation.visible()
     }
 
     private fun onUniqueAccountNotRequired() {
         val binding = binding ?: return
-        binding.chipsUniqueAccountYes.chipType = ChipsUnify.TYPE_SELECTED
-        binding.chipsUniqueAccountNo.chipType = ChipsUnify.TYPE_NORMAL
+        binding.radioUniqueAccountYes.isChecked = true
+        binding.radioUniqueAccountNo.isChecked = false
         binding.tipsUniqueAccount.hide()
         binding.groupAllowCampaignRelation.hide()
     }
@@ -483,8 +485,8 @@ class CampaignRuleFragment :
 
     private fun renderNotCampaignRelation() {
         val binding = binding ?: return
-        binding.chipsCampaignRelationYes.chipType = ChipsUnify.TYPE_SELECTED
-        binding.chipsCampaignRelationNo.chipType = ChipsUnify.TYPE_NORMAL
+        binding.radioOptionCampaignRelationsYes.isSelected = true
+        binding.radioOptionCampaignRelationsNo.isSelected = false
     }
 
     private fun showRelatedCampaignsGroup() {
@@ -499,8 +501,8 @@ class CampaignRuleFragment :
 
     private fun renderCampaignRelation() {
         val binding = binding ?: return
-        binding.chipsCampaignRelationYes.chipType = ChipsUnify.TYPE_NORMAL
-        binding.chipsCampaignRelationNo.chipType = ChipsUnify.TYPE_SELECTED
+        binding.radioOptionCampaignRelationsYes.isSelected = false
+        binding.radioOptionCampaignRelationsNo.isSelected = true
     }
 
     private fun setUpRelatedCampaignRecyclerView() {
