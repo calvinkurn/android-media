@@ -4,7 +4,7 @@ import com.tokopedia.discovery.common.constants.SearchConstant.GQL.KEY_PARAMS
 import com.tokopedia.discovery.common.utils.UrlParamUtils
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.tokopedianow.category.domain.mapper.AceSearchParamMapper
+import com.tokopedia.tokopedianow.common.domain.mapper.AceSearchParamMapper
 import com.tokopedia.tokopedianow.category.domain.query.AceSearchProduct
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel
 import com.tokopedia.usecase.RequestParams
