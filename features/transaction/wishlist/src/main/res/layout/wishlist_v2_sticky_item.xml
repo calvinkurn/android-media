@@ -44,7 +44,7 @@
             android:layout_marginTop="12dp"
             android:layout_marginBottom="12dp"
             android:layout_marginEnd="16dp"
-            android:textColor="@color/Unify_G500"
+            android:textColor="@color/Unify_GN500"
             app:typographyType="body_2"
             app:typographyWeight="bold"/>
 
@@ -53,7 +53,7 @@
             android:layout_width="1dp"
             android:layout_height="24dp"
             android:layout_toStartOf="@id/wishlist_manage_label"
-            android:background="@color/Unify_N75"
+            android:background="@color/Unify_NN50"
             android:layout_marginEnd="8dp"
             android:layout_marginTop="12dp"
             android:layout_alignBottom="@id/wishlist_manage_label"/>

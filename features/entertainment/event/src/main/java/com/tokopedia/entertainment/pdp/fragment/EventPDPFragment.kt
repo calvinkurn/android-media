@@ -7,6 +7,8 @@ import android.graphics.PorterDuff
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
@@ -127,6 +129,10 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_event_pdp, container, false)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -341,7 +347,7 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
 
         val navIcon = event_pdp_toolbar.navigationIcon
 
-        context?.let { ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0) }?.let {
+        context?.let { ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_NN0) }?.let {
             navIcon?.setColorFilter(it, PorterDuff.Mode.SRC_ATOP)
         }
         (activity as EventNavigationActivity).supportActionBar?.setHomeAsUpIndicator(navIcon)
@@ -356,12 +362,12 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
                     var color = 0
                     if (Math.abs(verticalOffset) - appBarLayout.totalScrollRange == 0) {
                         event_pdp_collapsing_toolbar.title = productDetailData.title
-                        color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96)
+                        color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_96)
                         widget_event_pdp_tab_section.setScrolledMode()
                         widget_event_pdp_tab_section.show()
                     } else if (verticalOffset == 0) {
                         event_pdp_collapsing_toolbar.title = ""
-                        color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+                        color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN0)
                         widget_event_pdp_tab_section.setNullMode()
                         widget_event_pdp_tab_section.hide()
                     }

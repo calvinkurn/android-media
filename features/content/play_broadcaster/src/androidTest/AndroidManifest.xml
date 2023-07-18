@@ -1,15 +1,14 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:versionCode="1"
-    android:versionName="1.0.0"
-    package="com.tokopedia.play.broadcaster">
+    android:versionName="1.0.0">
 
     <application
         android:label="Play Broadcaster Test"
         tools:replace="android:label">
 
         <activity
-            android:name=".shorts.container.PlayShortsTestActivity"
+            android:name="com.tokopedia.play.broadcaster.shorts.container.PlayShortsTestActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             />
 

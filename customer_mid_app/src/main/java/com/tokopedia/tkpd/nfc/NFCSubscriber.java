@@ -31,7 +31,7 @@ public class NFCSubscriber implements Application.ActivityLifecycleCallbacks {
                 (intent.getAction() == NfcAdapter.ACTION_TAG_DISCOVERED ||
                         intent.getAction() == NfcAdapter.ACTION_TECH_DISCOVERED)) {
             Intent newIntent;
-            if (CardUtils.isEmoneyCard(intent) || CardUtils.isTapcashCard(intent)) {
+            if (CardUtils.isEmoneyCard(intent) || CardUtils.isTapcashCard(intent) || CardUtils.isJakCard(intent) || CardUtils.isJakCardDev(intent)) {
                 newIntent = RouteManager.getIntent(context, ApplinkConsInternalDigital.INTERNAL_SMARTCARD_EMONEY, DigitalExtraParam.EXTRA_NFC);
             } else if (CardUtils.isBrizziCard(intent)){
                 newIntent = RouteManager.getIntent(context, ApplinkConsInternalDigital.INTERNAL_SMARTCARD_BRIZZI, DigitalExtraParam.EXTRA_NFC);
@@ -105,6 +105,8 @@ public class NFCSubscriber implements Application.ActivityLifecycleCallbacks {
             try {
                 nfcAdapter.disableForegroundDispatch(activity);
             } catch (SecurityException e) {
+                FirebaseCrashlytics.getInstance().recordException(e);
+            } catch (IllegalStateException e) {
                 FirebaseCrashlytics.getInstance().recordException(e);
             }
     }

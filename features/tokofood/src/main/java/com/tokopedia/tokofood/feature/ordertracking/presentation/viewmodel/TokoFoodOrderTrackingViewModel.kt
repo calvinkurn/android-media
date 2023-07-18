@@ -43,7 +43,7 @@ import javax.inject.Inject
 
 @ExperimentalCoroutinesApi
 @FlowPreview
-class TokoFoodOrderTrackingViewModel @Inject constructor(
+open class TokoFoodOrderTrackingViewModel @Inject constructor(
     val userSession: UserSessionInterface,
     private val savedStateHandle: SavedStateHandle,
     private val coroutineDispatchers: CoroutineDispatchers,
@@ -169,7 +169,10 @@ class TokoFoodOrderTrackingViewModel @Inject constructor(
 
     fun getUnReadChatCount(channelId: String): LiveData<Result<Int>> {
         return try {
-            Transformations.map(getUnReadChatCountUseCase.get().unReadCount(channelId)) {
+            Transformations.map(
+                getUnReadChatCountUseCase.get().unReadCount(channelId)
+                    ?: MutableLiveData(Int.ZERO) // Zero if unRead LiveData is null
+            ) {
                 if (it != null) {
                     Success(it)
                 } else {

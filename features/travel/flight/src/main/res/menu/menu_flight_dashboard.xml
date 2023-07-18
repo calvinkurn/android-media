@@ -1,10 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/action_dppo_consent"
+        android:orderInCategory="100"
+        android:icon="@drawable/iconunify_information"
+        android:iconTint="@color/Unify_NN900"
+        app:itemIconSize="12dp"
+        android:title=""
+        android:visible="false"
+        app:showAsAction="always" />
+
     <item
         android:id="@+id/action_overflow_menu"
         android:orderInCategory="100"
         app:showAsAction="always"
+        android:iconTint="@color/Unify_NN900"
+        app:itemIconSize="12dp"
         android:icon="@drawable/ic_toolbar_overflow_level_two_black"
         android:title="" />
 </menu>

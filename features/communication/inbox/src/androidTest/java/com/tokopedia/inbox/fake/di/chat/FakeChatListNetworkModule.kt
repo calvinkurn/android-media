@@ -3,6 +3,8 @@ package com.tokopedia.inbox.fake.di.chat
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.inbox.fake.common.FakeUserSession
 import com.tokopedia.inbox.fake.domain.chat.websocket.FakeTopchatWebSocket
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.topchat.common.websocket.*
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -44,5 +46,13 @@ class FakeChatListNetworkModule {
         fakeTopchatWebSocket: FakeTopchatWebSocket
     ): TopchatWebSocket {
         return fakeTopchatWebSocket
+    }
+
+    // -- separator -- //
+
+    @ActivityScope
+    @Provides
+    fun provideAbTestPlatform(): AbTestPlatform {
+        return RemoteConfigInstance.getInstance().abTestPlatform
     }
 }

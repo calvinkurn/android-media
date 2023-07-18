@@ -14,7 +14,6 @@
     <string name="widget_gagal_ditampilkan">Hiks, kontennya nggak mau muncul</string>
 
     <string name="home_error_connection">Oops, internet terputus. Cek ulang koneksimu.</string>
-    <string name="home_transition_root">root_play</string>
     <string name="home_transition_video">video_play</string>
 
     <string name="discovery_home_title_error">Ada gangguan di rumah Toped</string>
@@ -42,13 +41,10 @@
     <string name="content_desc_tokopoint">Tokopoint</string>
     <string name="content_desc_error_state_icon">Image error</string>
     <string name="content_desc_error_state_channel">Content error</string>
-    <string name="content_desc_home_background">Home background</string>
     <string name="content_desc_feed_banner">Feed Banner</string>
     <string name="content_desc_close_review">Tutup Review</string>
-    <string name="content_desc_background_spotlight">Background spotlight</string>
     <string name="content_desc_background_business">Background business</string>
     <string name="content_desc_loading_icon_business">Loading icon business</string>
-    <string name="content_desc_thumbnail_image_play">Thumbnail image Play</string>
     <string name="content_desc_reload">Reload</string>
     <string name="content_desc_image_home_error">Gambar error home</string>
 
@@ -59,4 +55,9 @@
 
     <string name="balance_widget_failed_to_load">Gagal Dimuat</string>
 
+    <string name="login_widget_title">Hai, %s!</string>
+    <string name="login_widget_name_default">Topper</string>
+    <string name="login_widget_subtitle_saved">Cek update di akunmu, yuk~</string>
+    <string name="login_widget_subtitle_non_saved">Akses semua fitur, yuk~</string>
+    <string name="login_widget_button">Masuk</string>
 </resources>
