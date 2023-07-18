@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -54,14 +55,13 @@ class TokoNowCategoryL2TabFragment : Fragment() {
         )
     }
 
-    private val viewModel: TokoNowCategoryL2TabViewModel by lazy {
-        ViewModelProvider(
-            requireActivity(),
-            viewModelFactory
-        )[TokoNowCategoryL2TabViewModel::class.java]
+    private val categoryAdapter by lazy {
+        CategoryL2TabAdapter(adapterTypeFactory, CategoryL2TabDiffer())
     }
 
-    private val adapter by lazy { CategoryL2TabAdapter(adapterTypeFactory, CategoryL2TabDiffer()) }
+    private val viewModel: TokoNowCategoryL2TabViewModel by viewModels {
+        viewModelFactory
+    }
 
     private var binding by autoClearedNullable<FragmentTokopedianowL2TabBinding>()
 
@@ -86,6 +86,7 @@ class TokoNowCategoryL2TabFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         setupRecyclerView()
         observeLiveData()
         onViewCreated()
@@ -103,12 +104,12 @@ class TokoNowCategoryL2TabFragment : Fragment() {
 
     private fun setupRecyclerView() {
         binding?.recyclerView?.apply {
-            adapter = this@TokoNowCategoryL2TabFragment.adapter
+            adapter = categoryAdapter
             layoutManager = GridLayoutManager(context, SPAN_COUNT).apply {
                 addOnScrollListener(createEndlessScrollListener(this))
                 spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
                     override fun getSpanSize(position: Int): Int {
-                        return when (adapter?.getItemViewType(position)) {
+                        return when (categoryAdapter.getItemViewType(position)) {
                             ProductItemViewHolder.LAYOUT -> SPAN_FULL_SPACE
                             else -> SPAN_COUNT
                         }
@@ -121,12 +122,12 @@ class TokoNowCategoryL2TabFragment : Fragment() {
 
     private fun observeLiveData() {
         observe(viewModel.visitableListLiveData) {
-            adapter.submitList(it)
+            categoryAdapter.submitList(it)
         }
     }
 
     private fun onViewCreated() {
-        viewModel.onViewCreated(components)
+        viewModel.onViewCreated()
     }
 
     private fun injectDependencies() {
@@ -137,49 +138,51 @@ class TokoNowCategoryL2TabFragment : Fragment() {
             .inject(this)
     }
 
-    private fun createEndlessScrollListener(
-        layoutManager: GridLayoutManager
-    ): EndlessRecyclerViewScrollListener {
-        return object : EndlessRecyclerViewScrollListener(layoutManager) {
-            override fun onLoadMore(page: Int, totalItemsCount: Int) {
+    private fun createProductAdsCarouselListener(): ProductAdsCarouselListener {
+        return object : ProductAdsCarouselListener {
+            override fun onProductCardClicked(
+                position: Int,
+                title: String,
+                product: ProductCardCompactCarouselItemUiModel
+            ) {
 
             }
-        }
-    }
 
-    private fun createProductAdsCarouselListener() = object : ProductAdsCarouselListener {
-        override fun onProductCardClicked(
-            position: Int,
-            title: String,
-            product: ProductCardCompactCarouselItemUiModel
-        ) {
+            override fun onProductCardImpressed(
+                position: Int,
+                title: String,
+                product: ProductCardCompactCarouselItemUiModel
+            ) {
+            }
 
-        }
+            override fun onProductCardQuantityChanged(
+                position: Int,
+                product: ProductCardCompactCarouselItemUiModel,
+                quantity: Int
+            ) {
+            }
 
-        override fun onProductCardImpressed(
-            position: Int,
-            title: String,
-            product: ProductCardCompactCarouselItemUiModel
-        ) {
-        }
-
-        override fun onProductCardQuantityChanged(
-            position: Int,
-            product: ProductCardCompactCarouselItemUiModel,
-            quantity: Int
-        ) {
-        }
-
-        override fun onProductCardAddVariantClicked(
-            position: Int,
-            product: ProductCardCompactCarouselItemUiModel
-        ) {
+            override fun onProductCardAddVariantClicked(
+                position: Int,
+                product: ProductCardCompactCarouselItemUiModel
+            ) {
+            }
         }
     }
 
     private fun createQuickFilterListener(): QuickFilterListener {
         return object : QuickFilterListener {
             override fun openFilterPage() {
+
+            }
+        }
+    }
+
+    private fun createEndlessScrollListener(
+        layoutManager: GridLayoutManager
+    ): EndlessRecyclerViewScrollListener {
+        return object : EndlessRecyclerViewScrollListener(layoutManager) {
+            override fun onLoadMore(page: Int, totalItemsCount: Int) {
 
             }
         }

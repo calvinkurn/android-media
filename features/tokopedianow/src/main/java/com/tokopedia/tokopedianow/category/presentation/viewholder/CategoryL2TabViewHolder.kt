@@ -7,6 +7,7 @@ import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.category.presentation.adapter.viewpager.CategoryL2TabViewPagerAdapter
+import com.tokopedia.tokopedianow.category.presentation.fragment.TokoNowCategoryL2TabFragment
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryL2TabUiModel
 import com.tokopedia.tokopedianow.common.view.TokoNowView
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowCategoryL2TabBinding
@@ -28,6 +29,7 @@ class CategoryL2TabViewHolder(
     private val viewPagerAdapter by lazy {
         CategoryL2TabViewPagerAdapter(tokoNowView.getFragmentPage())
     }
+
     private val tabSelectedListener by lazy { createTabSelectedListener() }
 
     private val binding: ItemTokopedianowCategoryL2TabBinding? by viewBinding()
@@ -44,11 +46,17 @@ class CategoryL2TabViewHolder(
         setupTabLayout(data)
     }
 
+    override fun bind(data: CategoryL2TabUiModel, payloads: MutableList<Any>) {
+        if (payloads.firstOrNull() == true) {
+            setupTabLayout(data)
+        }
+    }
+
     private fun setupViewPager(data: CategoryL2TabUiModel) {
-        viewPagerAdapter.apply {
-            titleList = data.titleList
-            components = data.componentList
-            categoryL2Ids = data.categoryL2Ids
+        data.categoryL2Ids.forEach {
+            val fragment = TokoNowCategoryL2TabFragment
+                .newInstance(it, data.componentList)
+            viewPagerAdapter.addFragment(fragment)
         }
     }
 
@@ -58,12 +66,6 @@ class CategoryL2TabViewHolder(
                 val title = data.titleList.getOrNull(position).orEmpty()
                 if (title.isNotBlank()) tab.setCustomText(title)
             }
-        }
-    }
-
-    override fun bind(data: CategoryL2TabUiModel, payloads: MutableList<Any>) {
-        if (payloads.firstOrNull() == true) {
-            setupTabLayout(data)
         }
     }
 

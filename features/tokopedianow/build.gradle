@@ -105,6 +105,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.dagger
     implementation rootProject.ext.miscDependencies.lifecycleRuntimeKtx
     implementation rootProject.ext.miscDependencies.lottie
+    implementation rootProject.ext.miscDependencies.fragmentKtx
 
     implementation rootProject.ext.networkDependencies.glide
 

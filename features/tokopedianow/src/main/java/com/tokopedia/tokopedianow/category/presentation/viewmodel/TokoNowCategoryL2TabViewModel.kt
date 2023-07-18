@@ -61,7 +61,7 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
     var categoryIdL2: String = ""
     var components = listOf<Component>()
 
-    fun onViewCreated(components: List<Component>) {
+    fun onViewCreated() {
         launchCatchError(block = {
             visitableList.clear()
             visitableList.mapToCategoryTabLayout(components)
