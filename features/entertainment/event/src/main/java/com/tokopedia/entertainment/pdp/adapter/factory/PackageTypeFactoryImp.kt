@@ -8,7 +8,6 @@ import com.tokopedia.entertainment.pdp.adapter.viewholder.EventPDPTicketBannerVi
 import com.tokopedia.entertainment.pdp.adapter.viewholder.PackageParentViewHolder
 import com.tokopedia.entertainment.pdp.data.EventPDPTicketBanner
 import com.tokopedia.entertainment.pdp.data.EventPDPTicketGroup
-import com.tokopedia.entertainment.pdp.data.PackageV3
 import com.tokopedia.entertainment.pdp.listener.OnBindItemTicketListener
 import com.tokopedia.entertainment.pdp.listener.OnCoachmarkListener
 
