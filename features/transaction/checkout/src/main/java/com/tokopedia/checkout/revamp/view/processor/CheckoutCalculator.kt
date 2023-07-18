@@ -1,7 +1,377 @@
 package com.tokopedia.checkout.revamp.view.processor
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.checkout.domain.mapper.ShipmentMapper
+import com.tokopedia.checkout.revamp.view.buttonPayment
+import com.tokopedia.checkout.revamp.view.cost
+import com.tokopedia.checkout.revamp.view.crossSellGroup
+import com.tokopedia.checkout.revamp.view.uimodel.CheckoutButtonPaymentModel
+import com.tokopedia.checkout.revamp.view.uimodel.CheckoutCostModel
+import com.tokopedia.checkout.revamp.view.uimodel.CheckoutCrossSellGroupModel
+import com.tokopedia.checkout.revamp.view.uimodel.CheckoutCrossSellModel
+import com.tokopedia.checkout.revamp.view.uimodel.CheckoutDonationModel
+import com.tokopedia.checkout.revamp.view.uimodel.CheckoutEgoldModel
+import com.tokopedia.checkout.revamp.view.uimodel.CheckoutItem
+import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderModel
+import com.tokopedia.checkout.revamp.view.upsell
+import com.tokopedia.checkout.view.uimodel.CrossSellModel
+import com.tokopedia.checkout.view.uimodel.CrossSellOrderSummaryModel
+import com.tokopedia.checkout.view.uimodel.EgoldAttributeModel
+import com.tokopedia.checkout.view.uimodel.EgoldTieringModel
+import com.tokopedia.checkout.view.uimodel.ShipmentAddOnSummaryModel
+import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
+import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
+import com.tokopedia.utils.currency.CurrencyFormatUtil
 import javax.inject.Inject
 
 class CheckoutCalculator @Inject constructor(private val dispatchers: CoroutineDispatchers) {
+
+    private fun hasSetAllCourier(listData: List<CheckoutItem>): Boolean {
+        for (itemData in listData) {
+            if (itemData is CheckoutOrderModel && itemData.shipment == null && !itemData.isError) {
+                return false
+            }
+        }
+        return true
+    }
+
+    fun updateShipmentCostModel(listData: List<CheckoutItem>): List<CheckoutItem> {
+        var totalWeight = 0.0
+        var totalPrice: Double
+        var additionalFee = 0.0
+        var totalItemPrice = 0.0
+        var tradeInPrice = 0.0
+        var totalItem = 0
+        var totalPurchaseProtectionPrice = 0.0
+        var totalPurchaseProtectionItem = 0
+        var shippingFee = 0.0
+        var insuranceFee = 0.0
+        var totalBookingFee = 0
+        var hasAddOnSelected = false
+        var totalAddOnGiftingPrice = 0.0
+        var totalAddOnProductServicePrice = 0.0
+        var qtyAddOn = 0
+        var totalPriceAddOn = 0.0
+        val countMapSummaries = hashMapOf<Int, Pair<Double, Int>>()
+        val listShipmentAddOnSummary: ArrayList<ShipmentAddOnSummaryModel> = arrayListOf()
+        val checkoutCostModel = listData.cost()!!
+        for (shipmentData in listData) {
+            if (shipmentData is CheckoutOrderModel) {
+                val cartItemModels = shipmentData.products
+                for (cartItem in cartItemModels) {
+                    if (!cartItem.isError) {
+                        totalWeight += cartItem.weight * cartItem.quantity
+                        totalItem += cartItem.quantity
+                        if (cartItem.isProtectionOptIn) {
+                            totalPurchaseProtectionItem += cartItem.quantity
+                            totalPurchaseProtectionPrice += cartItem.protectionPrice
+                        }
+                        if (cartItem.isValidTradeIn) {
+                            tradeInPrice += cartItem.oldDevicePrice.toDouble()
+                        }
+                        if (cartItem.isBundlingItem) {
+                            if (cartItem.bundlingItemPosition == ShipmentMapper.BUNDLING_ITEM_HEADER) {
+                                totalItemPrice += cartItem.bundleQuantity * cartItem.bundlePrice
+                            }
+                        } else {
+                            totalItemPrice += cartItem.quantity * cartItem.price
+                        }
+                        if (cartItem.addOnGiftingProductLevelModel.status == 1) {
+                            if (cartItem.addOnGiftingProductLevelModel.addOnsDataItemModelList.isNotEmpty()) {
+                                for (addOnsData in cartItem.addOnGiftingProductLevelModel.addOnsDataItemModelList) {
+                                    totalAddOnGiftingPrice += addOnsData.addOnPrice
+                                    hasAddOnSelected = true
+                                }
+                            }
+                        }
+                        if (cartItem.addOnProduct.listAddOnProductData.isNotEmpty()) {
+                            for (addOnProductService in cartItem.addOnProduct.listAddOnProductData) {
+                                if (addOnProductService.addOnDataStatus == 1) {
+                                    totalAddOnProductServicePrice += (addOnProductService.addOnDataPrice * cartItem.quantity)
+                                    if (countMapSummaries.containsKey(addOnProductService.addOnDataType)) {
+                                        qtyAddOn += cartItem.quantity
+                                    } else {
+                                        qtyAddOn = cartItem.quantity
+                                    }
+                                    totalPriceAddOn = qtyAddOn * addOnProductService.addOnDataPrice
+                                    countMapSummaries[addOnProductService.addOnDataType] = totalPriceAddOn to qtyAddOn
+                                }
+                            }
+                        }
+                    }
+                }
+//                if (shipmentData.selectedShipmentDetailData != null && !shipmentData.isError) {
+//                    val useInsurance = shipmentData.selectedShipmentDetailData!!.useInsurance
+//                    val isTradeInPickup = isTradeInByDropOff
+//                    if (isTradeInPickup) {
+//                        if (shipmentData.selectedShipmentDetailData!!.selectedCourierTradeInDropOff != null) {
+//                            shippingFee += shipmentData.selectedShipmentDetailData!!
+//                                .selectedCourierTradeInDropOff!!.shipperPrice.toDouble()
+//                            if (useInsurance != null && useInsurance) {
+//                                insuranceFee += shipmentData.selectedShipmentDetailData!!
+//                                    .selectedCourierTradeInDropOff!!.insurancePrice.toDouble()
+//                            }
+//                            additionalFee += shipmentData.selectedShipmentDetailData!!
+//                                .selectedCourierTradeInDropOff!!.additionalPrice.toDouble()
+//                        } else {
+//                            shippingFee = 0.0
+//                            insuranceFee = 0.0
+//                            additionalFee = 0.0
+//                        }
+//                    } else if (shipmentData.selectedShipmentDetailData!!.selectedCourier != null) {
+//                        shippingFee += shipmentData.selectedShipmentDetailData!!
+//                            .selectedCourier!!.selectedShipper.shipperPrice.toDouble()
+//                        if (useInsurance != null && useInsurance) {
+//                            insuranceFee += shipmentData.selectedShipmentDetailData!!
+//                                .selectedCourier!!.selectedShipper.insurancePrice.toDouble()
+//                        }
+//                        additionalFee += shipmentData.selectedShipmentDetailData!!
+//                            .selectedCourier!!.additionalPrice.toDouble()
+//                    }
+//                }
+                if (shipmentData.isLeasingProduct) {
+                    totalBookingFee += shipmentData.bookingFee
+                }
+                val addOnsDataModel = shipmentData.addOnsOrderLevelModel
+                if (addOnsDataModel.status == 1 && addOnsDataModel.addOnsDataItemModelList.isNotEmpty()) {
+                    for ((addOnPrice) in addOnsDataModel.addOnsDataItemModelList) {
+                        totalAddOnGiftingPrice += addOnPrice
+                        hasAddOnSelected = true
+                    }
+                }
+            }
+        }
+        val shipmentCost = checkoutCostModel
+        var finalShippingFee = shippingFee - shipmentCost.shippingDiscountAmount
+        if (finalShippingFee < 0) {
+            finalShippingFee = 0.0
+        }
+        totalPrice =
+            totalItemPrice + finalShippingFee + insuranceFee + totalPurchaseProtectionPrice + additionalFee + totalBookingFee -
+            shipmentCost.productDiscountAmount - tradeInPrice + totalAddOnGiftingPrice + totalAddOnProductServicePrice
+        shipmentCost.totalWeight = totalWeight
+        shipmentCost.additionalFee = additionalFee
+        shipmentCost.totalItemPrice = totalItemPrice
+        shipmentCost.totalItem = totalItem
+        shipmentCost.shippingFee = shippingFee
+        shipmentCost.insuranceFee = insuranceFee
+        shipmentCost.totalPurchaseProtectionItem = totalPurchaseProtectionItem
+        shipmentCost.purchaseProtectionFee = totalPurchaseProtectionPrice
+        shipmentCost.tradeInPrice = tradeInPrice
+        shipmentCost.totalAddOnPrice = totalAddOnGiftingPrice
+        shipmentCost.hasAddOn = hasAddOnSelected
+//        if (shipmentDonationModel != null && shipmentDonationModel!!.isChecked) {
+//            shipmentCost.donation = shipmentDonationModel!!.donation.nominal.toDouble()
+//        } else {
+//            if (shipmentCost.donation > 0) {
+//                shipmentCost.donation = 0.0
+//            }
+//        }
+        totalPrice += shipmentCost.donation
+        shipmentCost.totalPrice = totalPrice
+        var upsellCost: CheckoutCrossSellModel? = null
+        val upsellModel = listData.upsell()
+        if (upsellModel != null && upsellModel.upsell.isSelected && upsellModel.upsell.isShow) {
+            val crossSellModel = CrossSellModel()
+            crossSellModel.orderSummary =
+                CrossSellOrderSummaryModel(upsellModel.upsell.summaryInfo, "")
+            crossSellModel.price = upsellModel.upsell.price.toDouble()
+            upsellCost = CheckoutCrossSellModel(crossSellModel, true, true, -1)
+        }
+        val listCheckedCrossModel = ArrayList<CheckoutCrossSellModel>()
+        val crossSellGroup = listData.crossSellGroup() ?: CheckoutCrossSellGroupModel()
+        for (crossSellModel in crossSellGroup.crossSellList.asReversed()) {
+            when (crossSellModel) {
+                is CheckoutCrossSellModel -> {
+                    if (crossSellModel.isChecked) {
+                        listCheckedCrossModel.add(crossSellModel)
+                        totalPrice += crossSellModel.crossSellModel.price
+                        shipmentCost.totalPrice = totalPrice
+                    }
+                }
+                is CheckoutDonationModel -> {
+                    if (crossSellModel.donation.isChecked) {
+                        shipmentCost.donation = crossSellModel.donation.nominal.toDouble()
+                    } else {
+                        if (shipmentCost.donation > 0) {
+                            shipmentCost.donation = 0.0
+                        }
+                    }
+                    totalPrice += shipmentCost.donation
+                }
+                is CheckoutEgoldModel -> {
+                    val egoldAttribute = crossSellModel.egoldAttributeModel
+                    if (egoldAttribute.isEligible) {
+                        crossSellModel.egoldAttributeModel = updateEmasCostModel(shipmentCost, egoldAttribute)
+                        if (egoldAttribute.isChecked) {
+                            totalPrice += egoldAttribute.buyEgoldValue.toDouble()
+                            shipmentCost.totalPrice = totalPrice
+                            shipmentCost.emasPrice = egoldAttribute.buyEgoldValue.toDouble()
+                        } else if (shipmentCost.emasPrice > 0) {
+                            shipmentCost.emasPrice = 0.0
+                        }
+                    }
+                }
+            }
+        }
+        if (upsellCost != null) {
+            listCheckedCrossModel.add(upsellCost)
+            totalPrice += upsellCost.crossSellModel.price
+            shipmentCost.totalPrice = totalPrice
+        }
+        shipmentCost.listCrossSell = listCheckedCrossModel
+//        val egoldAttribute = egoldAttributeModel.value
+//        if (egoldAttribute != null && egoldAttribute.isEligible) {
+//            egoldAttributeModel.value = updateEmasCostModel(shipmentCost, egoldAttribute)
+//            if (egoldAttribute.isChecked) {
+//                totalPrice += egoldAttribute.buyEgoldValue.toDouble()
+//                shipmentCost.totalPrice = totalPrice
+//                shipmentCost.emasPrice = egoldAttribute.buyEgoldValue.toDouble()
+//            } else if (shipmentCost.emasPrice > 0) {
+//                shipmentCost.emasPrice = 0.0
+//            }
+//        }
+        shipmentCost.bookingFee = totalBookingFee
+
+//        for (entry in countMapSummaries) {
+//            val addOnWording = summariesAddOnUiModel[entry.key]?.replace(CartConstant.QTY_ADDON_REPLACE, entry.value.second.toString())
+//            val addOnPrice = CurrencyFormatUtil.convertPriceValueToIdrFormat(entry.value.first, false).removeDecimalSuffix()
+//            val summaryAddOn = ShipmentAddOnSummaryModel(
+//                wording = addOnWording ?: "",
+//                type = entry.key,
+//                qty = entry.value.second,
+//                priceLabel = addOnPrice,
+//                priceValue = entry.value.first
+//            )
+//            listShipmentAddOnSummary.add(summaryAddOn)
+//        }
+
+//        listSummaryAddOnModel = listShipmentAddOnSummary
+//        shipmentCost.listAddOnSummary = listSummaryAddOnModel
+//        checkoutCostModel.value = shipmentCost
+        val buttonPaymentModel = updateCheckoutButtonData(listData, shipmentCost)
+
+        return listData.toMutableList().apply {
+            set(size - 1, buttonPaymentModel)
+        }
+    }
+
+    private fun updateEmasCostModel(
+        shipmentCost: CheckoutCostModel,
+        egoldAttribute: EgoldAttributeModel
+    ): EgoldAttributeModel {
+        val totalPrice = shipmentCost.totalPrice.toLong()
+        var valueTOCheck = 0
+        val buyEgoldValue: Long
+        if (egoldAttribute.isTiering) {
+            egoldAttribute.egoldTieringModelArrayList.sortWith { o1, o2 -> (o1.minTotalAmount - o2.minTotalAmount).toInt() }
+            var egoldTieringModel = EgoldTieringModel()
+            for (data in egoldAttribute.egoldTieringModelArrayList) {
+                if (totalPrice >= data.minTotalAmount) {
+                    valueTOCheck = (totalPrice % data.basisAmount).toInt()
+                    egoldTieringModel = data
+                }
+            }
+            buyEgoldValue = calculateBuyEgoldValue(
+                valueTOCheck,
+                egoldTieringModel.minAmount.toInt(),
+                egoldTieringModel.maxAmount.toInt(),
+                egoldTieringModel.basisAmount
+            )
+        } else {
+            valueTOCheck = (totalPrice % LAST_THREE_DIGIT_MODULUS).toInt()
+            buyEgoldValue = calculateBuyEgoldValue(
+                valueTOCheck,
+                egoldAttribute.minEgoldRange,
+                egoldAttribute.maxEgoldRange,
+                LAST_THREE_DIGIT_MODULUS
+            )
+        }
+        egoldAttribute.buyEgoldValue = buyEgoldValue
+        return egoldAttribute
+    }
+
+    private fun calculateBuyEgoldValue(
+        valueTOCheck: Int,
+        minRange: Int,
+        maxRange: Int,
+        basisAmount: Long
+    ): Long {
+        if (basisAmount == 0L) {
+            return 0
+        }
+        var buyEgoldValue: Long = 0
+        for (i in minRange..maxRange) {
+            if ((valueTOCheck + i) % basisAmount == 0L) {
+                buyEgoldValue = i.toLong()
+                break
+            }
+        }
+        return buyEgoldValue
+    }
+
+    private fun updateCheckoutButtonData(listData: List<CheckoutItem>, shipmentCost: CheckoutCostModel): CheckoutButtonPaymentModel {
+        var cartItemCounter = 0
+        var cartItemErrorCounter = 0
+        var hasLoadingItem = false
+        for (shipmentCartItemModel in listData) {
+            if (shipmentCartItemModel is CheckoutOrderModel) {
+//                if (shipmentCartItemModel.selectedShipmentDetailData != null) {
+//                    if ((shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier != null && !isTradeInByDropOff) || (shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourierTradeInDropOff != null && isTradeInByDropOff)) {
+//                        if (!hasLoadingItem) {
+//                            hasLoadingItem = validateLoadingItem(shipmentCartItemModel)
+//                        }
+//                        cartItemCounter++
+//                    }
+//                }
+                if (shipmentCartItemModel.isError) {
+                    cartItemErrorCounter++
+                }
+            }
+        }
+        val checkoutOrderModels = listData.filterIsInstance(CheckoutOrderModel::class.java)
+        if (cartItemCounter > 0 && cartItemCounter <= checkoutOrderModels.size) {
+            val priceTotal: Double =
+                if (shipmentCost.totalPrice <= 0) 0.0 else shipmentCost.totalPrice
+//            val platformFee: Double = if (shipmentCost.dynamicPlatformFee.fee <= 0) 0.0 else shipmentCost.dynamicPlatformFee.fee
+            val finalPrice = priceTotal /*+ platformFee*/
+            val priceTotalFormatted =
+                CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                    finalPrice,
+                    false
+                ).removeDecimalSuffix()
+            return updateShipmentButtonPaymentModel(listData.buttonPayment()!!, enable = !hasLoadingItem, totalPrice = priceTotalFormatted)
+        } else {
+            return updateShipmentButtonPaymentModel(
+                listData.buttonPayment()!!,
+                enable = cartItemErrorCounter < checkoutOrderModels.size,
+                totalPrice = "-"
+            )
+        }
+    }
+
+    private fun validateLoadingItem(shipmentCartItemModel: ShipmentCartItemModel): Boolean {
+        return shipmentCartItemModel.isStateLoadingCourierState
+    }
+
+    fun updateShipmentButtonPaymentModel(
+        buttonPaymentModel: CheckoutButtonPaymentModel,
+        enable: Boolean? = null,
+        totalPrice: String? = null,
+        loading: Boolean? = null
+    ): CheckoutButtonPaymentModel {
+        return buttonPaymentModel.copy(
+            enable = enable ?: buttonPaymentModel.enable,
+            totalPrice = totalPrice ?: buttonPaymentModel.totalPrice,
+            loading = /*if (isValidatingFinalPromo) {
+                true
+            } else {*/
+            loading ?: buttonPaymentModel.loading
+            /*}*/
+        )
+    }
+
+    companion object {
+        private const val LAST_THREE_DIGIT_MODULUS: Long = 1000
+    }
 }

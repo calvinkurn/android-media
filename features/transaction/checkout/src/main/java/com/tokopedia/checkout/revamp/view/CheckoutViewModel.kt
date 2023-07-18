@@ -32,6 +32,7 @@ import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPageState
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPageToaster
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPromoModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutTickerModel
+import com.tokopedia.checkout.revamp.view.uimodel.CheckoutUpsellModel
 import com.tokopedia.checkout.view.CheckoutMutableLiveData
 import com.tokopedia.checkout.view.converter.ShipmentDataRequestConverter
 import com.tokopedia.checkout.view.uimodel.ShipmentAddOnSummaryModel
@@ -215,14 +216,16 @@ class CheckoutViewModel @Inject constructor(
 
                 val crossSellGroup = CheckoutCrossSellGroupModel()
                 val crossSellList = arrayListOf<CheckoutCrossSellItem>()
-                crossSellList.addAll(saf.cartShipmentAddressFormData.crossSell.mapIndexed { index, crossSellModel ->
-                    CheckoutCrossSellModel(
-                        crossSellModel,
-                        crossSellModel.isChecked,
-                        crossSellModel.checkboxDisabled,
-                        index
-                    )
-                })
+                crossSellList.addAll(
+                    saf.cartShipmentAddressFormData.crossSell.mapIndexed { index, crossSellModel ->
+                        CheckoutCrossSellModel(
+                            crossSellModel,
+                            crossSellModel.isChecked,
+                            crossSellModel.checkboxDisabled,
+                            index
+                        )
+                    }
+                )
                 if (saf.cartShipmentAddressFormData.egoldAttributes != null) {
                     crossSellList.add(CheckoutEgoldModel(saf.cartShipmentAddressFormData.egoldAttributes!!))
                 }
@@ -237,8 +240,9 @@ class CheckoutViewModel @Inject constructor(
                         ticker,
                         address,
                         upsell
-                    ) + items + epharmacy + promo + cost + crossSellGroup + buttonPayment
+                    ) + items + listOf(epharmacy, promo, cost, crossSellGroup, buttonPayment)
                     pageState.value = saf
+                    calculateTotal()
                 }
             } else if (saf is CheckoutPageState.CheckNoAddress) {
                 logisticProcessor.checkIsUserEligibleForRevampAna(saf.cartShipmentAddressFormData) { checkoutPageState: CheckoutPageState ->
@@ -314,7 +318,6 @@ class CheckoutViewModel @Inject constructor(
                 logisticProcessor.editAddressPinpoint(latitude, longitude, recipientAddressModel)
             pageState.value = CheckoutPageState.Normal
             if (editAddressResult.isSuccess) {
-
             }
         }
     }
@@ -331,6 +334,10 @@ class CheckoutViewModel @Inject constructor(
 
     fun setMiniConsultationResult(results: ArrayList<EPharmacyMiniConsultationResult>) {
         addOnProcessor.setMiniConsultationResult(results, listData.value)
+    }
+
+    fun calculateTotal() {
+        listData.value = calculator.updateShipmentCostModel(listData.value)
     }
 
     override fun onCleared() {
@@ -354,4 +361,28 @@ internal fun List<CheckoutItem>.address(): CheckoutAddressModel? {
     val item = getOrNull(1)
     @Suppress("UNCHECKED_CAST")
     return item as? CheckoutAddressModel
+}
+
+internal fun List<CheckoutItem>.upsell(): CheckoutUpsellModel? {
+    val item = getOrNull(2)
+    @Suppress("UNCHECKED_CAST")
+    return item as? CheckoutUpsellModel
+}
+
+internal fun List<CheckoutItem>.cost(): CheckoutCostModel? {
+    val item = getOrNull(size - 3)
+    @Suppress("UNCHECKED_CAST")
+    return item as? CheckoutCostModel
+}
+
+internal fun List<CheckoutItem>.crossSellGroup(): CheckoutCrossSellGroupModel? {
+    val item = getOrNull(size - 2)
+    @Suppress("UNCHECKED_CAST")
+    return item as? CheckoutCrossSellGroupModel
+}
+
+internal fun List<CheckoutItem>.buttonPayment(): CheckoutButtonPaymentModel? {
+    val item = getOrNull(size - 1)
+    @Suppress("UNCHECKED_CAST")
+    return item as? CheckoutButtonPaymentModel
 }
