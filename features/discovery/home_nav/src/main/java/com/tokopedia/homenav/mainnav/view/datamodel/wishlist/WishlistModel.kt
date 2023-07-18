@@ -11,7 +11,8 @@ import com.tokopedia.kotlin.model.ImpressHolder
 
 @MePage(MePage.Widget.WISHLIST)
 data class WishlistModel(
-        val navWishlistModel: NavWishlistModel
+        val navWishlistModel: NavWishlistModel,
+        val position: Int
 ): WishlistNavVisitable, ImpressHolder() {
 
     override fun type(factory: WishlistTypeFactory): Int {

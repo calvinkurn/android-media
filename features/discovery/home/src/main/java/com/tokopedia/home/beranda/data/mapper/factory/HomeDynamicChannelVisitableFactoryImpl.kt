@@ -51,6 +51,7 @@ class HomeDynamicChannelVisitableFactoryImpl(
         private const val VALUE_BANNER_UNKNOWN = "banner unknown"
         private const val VALUE_BANNER_DEFAULT = "default"
         private const val VALUE_BANNER_UNKNOWN_LAYOUT_TYPE = "lego banner unknown"
+        private const val VALUE_EMPTY_APPLINK = "-"
 
         private const val CUE_WIDGET_MIN_SIZE = 4
         private const val VPS_WIDGET_SIZE = 4
@@ -165,6 +166,9 @@ class HomeDynamicChannelVisitableFactoryImpl(
                 }
                 DynamicHomeChannel.Channels.LAYOUT_BEST_SELLING -> {
                     createBestSellingWidget(channel)
+                }
+                DynamicHomeChannel.Channels.LAYOUT_BEST_SELLING_LIST -> {
+                    createBestSellingListWidget(channel, position)
                 }
                 DynamicHomeChannel.Channels.LAYOUT_BANNER_CAROUSEL_V2 -> {
                     createBannerChannel(channel, position)
@@ -396,6 +400,20 @@ class HomeDynamicChannelVisitableFactoryImpl(
                 )
             )
         }
+    }
+
+    private fun createBestSellingListWidget(
+        channel: DynamicHomeChannel.Channels,
+        verticalPosition: Int,
+    ) {
+        visitableList.add(
+            BestSellerDataModel(
+                channelModel = DynamicChannelComponentMapper.mapHomeChannelToComponent(
+                    channel = channel.copy(header = channel.header.copy(applink = VALUE_EMPTY_APPLINK)),
+                    verticalPosition = verticalPosition,
+                ),
+            )
+        )
     }
 
     private fun createCampaignWidget(

@@ -4,13 +4,14 @@
   "query": [
     {
       "event": "clickHomepage",
-      "eventAction": "click on .*",
+      "eventAction": "click on user menu",
       "eventCategory": "global menu",
       "eventLabel": ".*",
+      "pageSource": ".*",
       "businessUnit": "home & browse",
       "currentSite": "tokopediamarketplace",
-      "userId": ".*",
-      "sessionIris": ".*"
+      "sessionIris": ".*",
+      "trackerId": "18485"
     }
   ]
 }

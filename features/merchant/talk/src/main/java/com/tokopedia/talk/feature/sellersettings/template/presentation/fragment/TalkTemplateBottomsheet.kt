@@ -94,7 +94,7 @@ class TalkTemplateBottomsheet : BottomSheetUnify(), HasComponent<TalkTemplateCom
                     deleteTemplate()
                 }
                 bottomSheetAction.apply {
-                    setTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+                    setTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_NN950_68))
                     this.typeface = com.tokopedia.unifyprinciples.getTypeface(context, BOLD_REOURCE)
                 }
             }

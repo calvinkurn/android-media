@@ -219,6 +219,7 @@
     <string name="goto_kyc_status_pending_minutes">%s menit</string>
     <string name="goto_kyc_status_pending_seconds">%s detik</string>
     <string name="goto_kyc_status_pending_button">Balik ke %s</string>
+    <string name="goto_kyc_status_pending_refresh_status">Cek Status Verifikasi</string>
     <string name="goto_kyc_status_verified_title">Hore, dokumenmu berhasil terverifikasi!</string>
     <string name="goto_kyc_status_verified_subtitle">Tenang, data yang kamu berikan akan dijaga kerahasiannya dan disimpan di sistem kami.</string>
     <string name="goto_kyc_back_to_source">Balik</string>
