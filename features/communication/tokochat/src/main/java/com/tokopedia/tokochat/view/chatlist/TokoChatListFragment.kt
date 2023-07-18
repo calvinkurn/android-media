@@ -12,7 +12,6 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalCommunication
-import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.tokochat.analytics.TokoChatAnalytics
 import com.tokopedia.tokochat.common.view.chatlist.TokoChatListBaseFragment
 import com.tokopedia.tokochat.common.view.chatlist.adapter.TokoChatListBaseAdapter
@@ -20,11 +19,11 @@ import com.tokopedia.tokochat.common.view.chatlist.listener.TokoChatListItemList
 import com.tokopedia.tokochat.common.view.chatlist.uimodel.TokoChatListItemUiModel
 import com.tokopedia.tokochat.common.view.chatlist.uimodel.TokoChatListItemUiModel.Companion.getServiceTypeName
 import com.tokopedia.tokochat.databinding.TokochatChatlistFragmentBinding
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 class TokoChatListFragment @Inject constructor(
@@ -63,14 +62,20 @@ class TokoChatListFragment @Inject constructor(
                 viewModel.getChatListFlow().collectLatest {
                     when (it) {
                         is Success -> {
-                            addOrUpdateChatItem(it.data)
-
+                            setChatListData(it.data)
                             if (!isCompleted) {
                                 viewModel.loadNextPageChatList(it.data.size)
                                 isCompleted = true
                             }
                         }
-                        is Fail -> {}
+                        is Fail -> {
+                            Toaster.build(
+                                requireView(),
+                                it.throwable.toString(),
+                                Toaster.LENGTH_LONG,
+                                Toaster.TYPE_ERROR
+                            ).show()
+                        }
                     }
                 }
             }
@@ -88,41 +93,12 @@ class TokoChatListFragment @Inject constructor(
         }
     }
 
-    private fun addOrUpdateChatItem(items: List<TokoChatListItemUiModel>) {
-        items.forEach {
-            val position = adapter.getChatListPosition(it)
-            if (position >= Int.ZERO) {
-                updateChatItem(position, it)
-            } else {
-                addNewChatItem(it)
-            }
-        }
-    }
-
-    private fun addNewChatItem(item: TokoChatListItemUiModel) {
-        adapter.addItem(item)
-        baseBinding?.tokochatListRv?.post {
-            adapter.notifyItemInserted(adapter.lastIndex)
-        }
-    }
-
-    private fun updateChatItem(position: Int, item: TokoChatListItemUiModel) {
-        adapter.updateChatListAt(position, item)
-        notifyWhenAllowed(position)
+    private fun setChatListData(newData: List<TokoChatListItemUiModel>) {
+        adapter.setItemsAndAnimateChanges(newData)
     }
 
     override fun onLoadMore() {
         viewModel.loadNextPageChatList()
-    }
-
-    private fun notifyWhenAllowed(position: Int) {
-        try {
-            baseBinding?.tokochatListRv?.post {
-                adapter.notifyItemChanged(position)
-            }
-        } catch (throwable: Throwable) {
-            Timber.d(throwable)
-        }
     }
 
     override fun onClickChatItem(element: TokoChatListItemUiModel) {
@@ -134,7 +110,7 @@ class TokoChatListFragment @Inject constructor(
             chatDuration = element.getRelativeTime()
         )
         context?.let {
-            val source = "?${ApplinkConst.TokoChat.PARAM_SOURCE}=${serviceName}"
+            val source = "?${ApplinkConst.TokoChat.PARAM_SOURCE}=$serviceName"
             val paramOrderIdGojek = "&${ApplinkConst.TokoChat.ORDER_ID_GOJEK}=${element.orderId}"
             val applink = "${ApplinkConstInternalCommunication.TOKO_CHAT}$source$paramOrderIdGojek"
             val intent = RouteManager.getIntent(it, applink)
