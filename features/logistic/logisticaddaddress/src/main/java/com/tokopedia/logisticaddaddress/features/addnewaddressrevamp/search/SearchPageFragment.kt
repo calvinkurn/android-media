@@ -94,10 +94,7 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
         fun newInstance(bundle: Bundle): SearchPageFragment {
             return SearchPageFragment().apply {
                 arguments = Bundle().apply {
-                    putParcelable(
-                        EXTRA_SAVE_DATA_UI_MODEL,
-                        bundle.getParcelable(EXTRA_SAVE_DATA_UI_MODEL)
-                    )
+                    putParcelable(EXTRA_SAVE_DATA_UI_MODEL, bundle.getParcelable(EXTRA_SAVE_DATA_UI_MODEL))
                     putBoolean(EXTRA_IS_POSITIVE_FLOW, bundle.getBoolean(EXTRA_IS_POSITIVE_FLOW))
                     putBoolean(EXTRA_FROM_PINPOINT, bundle.getBoolean(EXTRA_FROM_PINPOINT))
                     putBoolean(EXTRA_IS_POLYGON, bundle.getBoolean(EXTRA_IS_POLYGON))
@@ -779,30 +776,4 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
         }
     }
 
-    companion object {
-        private const val RESULT_PERMISSION_CODE = 1234
-
-        private const val REQUEST_ADDRESS_FORM_PAGE = 1599
-        private const val REQUEST_PINPOINT_PAGE = 1998
-        private const val REQUEST_CODE_PERMISSION = 9876
-        private const val REQUEST_CHECK_SETTINGS = 1986
-
-        private const val LOCATION_REQUEST_INTERVAL = 10000L
-        private const val LOCATION_REQUEST_FASTEST_INTERVAL = 2000L
-        private const val GPS_DELAY = 1000L
-
-        fun newInstance(bundle: Bundle): SearchPageFragment {
-            return SearchPageFragment().apply {
-                arguments = Bundle().apply {
-                    putParcelable(EXTRA_SAVE_DATA_UI_MODEL, bundle.getParcelable(EXTRA_SAVE_DATA_UI_MODEL))
-                    putBoolean(EXTRA_IS_POSITIVE_FLOW, bundle.getBoolean(EXTRA_IS_POSITIVE_FLOW))
-                    putBoolean(EXTRA_FROM_PINPOINT, bundle.getBoolean(EXTRA_FROM_PINPOINT))
-                    putBoolean(EXTRA_IS_POLYGON, bundle.getBoolean(EXTRA_IS_POLYGON))
-                    putBoolean(EXTRA_IS_EDIT, bundle.getBoolean(EXTRA_IS_EDIT))
-                    putString(PARAM_SOURCE, bundle.getString(PARAM_SOURCE, ""))
-                    putBoolean(EXTRA_IS_GET_PINPOINT_ONLY, bundle.getBoolean(EXTRA_IS_GET_PINPOINT_ONLY))
-                }
-            }
-        }
-    }
 }
