@@ -26,8 +26,9 @@ class BannerCarouselViewModel(val application: Application, val component: Compo
     private val componentData: MutableLiveData<ComponentsItem> = MutableLiveData()
     private var isDarkMode: Boolean = false
 
+    @JvmField
     @Inject
-    lateinit var bannerUseCase: BannerUseCase
+    var bannerUseCase: BannerUseCase? = null
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + SupervisorJob()
@@ -42,14 +43,18 @@ class BannerCarouselViewModel(val application: Application, val component: Compo
         componentData.value = component
         component.data?.let {
             if (it.isNotEmpty()) {
-                bannerCarouselList.value = DiscoveryDataMapper.mapListToComponentList(it, ComponentNames.BannerCarouselItemView.componentName,
-                        component.name, position, component.properties?.design
-                        ?: "")
+                bannerCarouselList.value = DiscoveryDataMapper.mapListToComponentList(
+                    it,
+                    ComponentNames.BannerCarouselItemView.componentName,
+                    component.name,
+                    position,
+                    component.properties?.design
+                        ?: ""
+                )
             }
         }
         title.value = component.properties?.bannerTitle ?: ""
     }
-
 
     override fun onAttachToViewHolder() {
         super.onAttachToViewHolder()
@@ -59,11 +64,17 @@ class BannerCarouselViewModel(val application: Application, val component: Compo
     private fun fetchBannerData() {
         if (component.properties?.dynamic == true) {
             launchCatchError(block = {
-                if (bannerUseCase.loadFirstPageComponents(component.id, component.pageEndPoint,isDarkMode)) {
+                if (bannerUseCase?.loadFirstPageComponents(component.id, component.pageEndPoint, isDarkMode) == true) {
                     if (!component.data.isNullOrEmpty()) {
-                        bannerCarouselList.value = DiscoveryDataMapper.mapListToComponentList(component.data!!, ComponentNames.BannerCarouselItemView.componentName,
-                                component.name, position, component.properties?.design
-                                ?: "", properties = component.properties)
+                        bannerCarouselList.value = DiscoveryDataMapper.mapListToComponentList(
+                            component.data!!,
+                            ComponentNames.BannerCarouselItemView.componentName,
+                            component.name,
+                            position,
+                            component.properties?.design
+                                ?: "",
+                            properties = component.properties
+                        )
                         title.value = component.properties?.bannerTitle ?: ""
                     } else {
                         _hideShimmer.value = true
@@ -72,15 +83,15 @@ class BannerCarouselViewModel(val application: Application, val component: Compo
                     componentData.value = component
                 }
             }, onError = {
-                component.noOfPagesLoaded = 1
-                if (it is UnknownHostException || it is SocketTimeoutException) {
-                    component.verticalProductFailState = true
-                    _showErrorState.value = true
-                } else {
-                    _hideShimmer.value = true
-                    title.value = ""
-                }
-            })
+                    component.noOfPagesLoaded = 1
+                    if (it is UnknownHostException || it is SocketTimeoutException) {
+                        component.verticalProductFailState = true
+                        _showErrorState.value = true
+                    } else {
+                        _hideShimmer.value = true
+                        title.value = ""
+                    }
+                })
         }
     }
 
@@ -104,8 +115,8 @@ class BannerCarouselViewModel(val application: Application, val component: Compo
         fetchBannerData()
     }
 
-    fun checkForDarkMode(context: Context?){
-        if(context != null) {
+    fun checkForDarkMode(context: Context?) {
+        if (context != null) {
             isDarkMode = context.isDarkMode()
         }
     }

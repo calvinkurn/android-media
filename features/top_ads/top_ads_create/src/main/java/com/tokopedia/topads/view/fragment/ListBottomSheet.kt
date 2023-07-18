@@ -16,7 +16,7 @@ import com.tokopedia.topads.view.activity.SeePerformanceTopadsActivity.Companion
 import com.tokopedia.topads.view.activity.SeePerformanceTopadsActivity.Companion.ADS_PLACEMENT_FILTER_TYPE_IN_SEARCH
 import com.tokopedia.topads.view.activity.SeePerformanceTopadsActivity.Companion.ADS_PLACEMENT_FILTER_TYPE_IN_RECOMMENDATION
 import com.tokopedia.topads.view.adapter.ItemListAdapter
-import com.tokopedia.topads.view.adapter.ItemListTypeFactory
+import com.tokopedia.topads.view.adapter.ListBottomSheetItemFactory
 import com.tokopedia.topads.view.uimodel.ItemListUiModel
 import com.tokopedia.topads.view.utils.ScheduleSlotListener
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -27,7 +27,7 @@ class ListBottomSheet:
     private var itemList: List<ItemListUiModel> = listOf()
 
     private val adapterItemList: ItemListAdapter by lazy {
-        ItemListAdapter(ItemListTypeFactory(this))
+        ItemListAdapter(ListBottomSheetItemFactory(this))
     }
 
     override fun onCreateView(

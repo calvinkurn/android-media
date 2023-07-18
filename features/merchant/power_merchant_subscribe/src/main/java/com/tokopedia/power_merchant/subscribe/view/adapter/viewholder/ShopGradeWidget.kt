@@ -272,7 +272,7 @@ class ShopGradeWidget(
     private fun getPmShopGradeInfo(element: WidgetShopGradeUiModel): String {
         val textColor = PMCommonUtils.getHexColor(
             itemView.context,
-            com.tokopedia.unifyprinciples.R.color.Unify_N700_96
+            com.tokopedia.unifyprinciples.R.color.Unify_NN950_96
         )
         return if (element.pmStatus == PMStatusConst.ACTIVE) {
             if (element.isNewSeller) {
@@ -318,12 +318,12 @@ class ShopGradeWidget(
             in minScore..element.shopScoreThreshold -> {
                 PMCommonUtils.getHexColor(
                     itemView.context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_R600
+                    com.tokopedia.unifyprinciples.R.color.Unify_RN500
                 )
             }
             else -> PMCommonUtils.getHexColor(
                 itemView.context,
-                com.tokopedia.unifyprinciples.R.color.Unify_N700_96
+                com.tokopedia.unifyprinciples.R.color.Unify_NN950_96
             )
         }
     }

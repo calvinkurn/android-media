@@ -197,10 +197,10 @@ object ViewUtil {
                 R.color.topchat_dms_message_shadow
             } else {
                 // Do not change this to nest color (NN600)
-                com.tokopedia.unifyprinciples.R.color.Unify_N700_20
+                com.tokopedia.unifyprinciples.R.color.Unify_NN950_20
             }
         } catch (ignored: Throwable) {
-            com.tokopedia.unifyprinciples.R.color.Unify_N700_20
+            com.tokopedia.unifyprinciples.R.color.Unify_NN950_20
         }
     }
 

@@ -11,6 +11,8 @@ import com.tokopedia.product.detail.common.ProductCartHelper
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.ProductTrackingConstant
 import com.tokopedia.product.detail.common.ProductTrackingConstant.Action.CLICK_ANNOTATION_RECOM_CHIP
+import com.tokopedia.product.detail.common.ProductTrackingConstant.Action.CLICK_SHARE_AFFILIATE_ICON
+import com.tokopedia.product.detail.common.ProductTrackingConstant.Action.CLICK_SHARE_REGULER
 import com.tokopedia.product.detail.common.ProductTrackingConstant.TrackerId.TRACKER_ID_CLICK_THUMBNAIL
 import com.tokopedia.product.detail.common.ProductTrackingConstant.TrackerId.TRACKER_ID_IMPRESS_THUMBNAIL
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
@@ -693,12 +695,13 @@ object DynamicProductDetailTracking {
             TrackingUtil.addComponentTracker(mapEvent, productInfo, componentTrackDataModel, ProductTrackingConstant.Action.CLICK_READ_MORE)
         }
 
-        fun eventClickPdpShare(productId: String, userId: String, campaignId: String, bundleId: String) {
+        fun eventClickPdpShare(productId: String, userId: String, campaignId: String, bundleId: String, isAffiliateShareIcon: Boolean) {
+            val shareType = if (isAffiliateShareIcon) CLICK_SHARE_AFFILIATE_ICON else CLICK_SHARE_REGULER
             val mapEvent = TrackAppUtils.gtmData(
                 ProductTrackingConstant.PDP.EVENT_CLICK_COMMUNICATION,
                 ProductTrackingConstant.Category.TOP_NAV_SHARE_PDP,
                 ProductTrackingConstant.Action.CLICK_SHARE_PDP,
-                "$productId - $campaignId - $bundleId"
+                "$shareType - $productId - $campaignId - $bundleId"
             )
             mapEvent[ProductTrackingConstant.Tracking.KEY_BUSINESS_UNIT] = ProductTrackingConstant.Tracking.VALUE_BUSINESS_UNIT_SHARING
             mapEvent[ProductTrackingConstant.Tracking.KEY_CURRENT_SITE] = ProductTrackingConstant.Tracking.CURRENT_SITE

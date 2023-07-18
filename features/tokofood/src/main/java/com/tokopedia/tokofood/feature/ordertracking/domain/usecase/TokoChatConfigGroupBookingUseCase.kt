@@ -4,7 +4,7 @@ import com.gojek.conversations.groupbooking.ConversationsGroupBookingListener
 import com.tokochat.tokochat_config_common.repository.TokoChatRepository
 import javax.inject.Inject
 
-class TokoChatConfigGroupBookingUseCase @Inject constructor(
+open class TokoChatConfigGroupBookingUseCase @Inject constructor(
     private val repository: TokoChatRepository
 ) {
 
@@ -13,7 +13,7 @@ class TokoChatConfigGroupBookingUseCase @Inject constructor(
         serviceType: Int = TOKOFOOD_SERVICE_TYPE,
         conversationsGroupBookingListener: ConversationsGroupBookingListener
     ) {
-        repository.getConversationRepository().initGroupBookingChat(
+        repository.getConversationRepository()?.initGroupBookingChat(
             orderId,
             serviceType,
             conversationsGroupBookingListener

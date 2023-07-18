@@ -19,12 +19,14 @@ import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.widget_recycler_view.view.*
 
-class SliderBannerViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView),
-        DiscoveryBannerView.DiscoveryBannerViewInteraction, BannerDotIndicator.ClickSeeAllInterface {
+class SliderBannerViewHolder(itemView: View, private val fragment: Fragment) :
+    AbstractViewHolder(itemView),
+    DiscoveryBannerView.DiscoveryBannerViewInteraction,
+    BannerDotIndicator.ClickSeeAllInterface {
 
     private val sliderBannerTitle: Typography = itemView.findViewById(R.id.title)
     private val sliderBannerView: DiscoveryBannerView = itemView.findViewById(R.id.slider_banner_view)
-    private lateinit var sliderBannerViewModel: SliderBannerViewModel
+    private var sliderBannerViewModel: SliderBannerViewModel? = null
     private var sliderBannerRecycleAdapter: DiscoveryRecycleAdapter = DiscoveryRecycleAdapter(fragment)
     private var sliderBannerPagerSnapHelper: SliderBannerPagerSnapHelper? = null
 
@@ -39,13 +41,19 @@ class SliderBannerViewHolder(itemView: View, private val fragment: Fragment) : A
     }
 
     private fun setUpObservers() {
-        sliderBannerViewModel.getComponentsLiveData().observe(fragment.viewLifecycleOwner, Observer { item ->
-            sliderBannerTitle.setTextAndCheckShow(item.title)
-        })
+        sliderBannerViewModel?.getComponentsLiveData()?.observe(
+            fragment.viewLifecycleOwner,
+            Observer { item ->
+                sliderBannerTitle.setTextAndCheckShow(item.title)
+            }
+        )
 
-        sliderBannerViewModel.getListDataLiveData().observe(fragment.viewLifecycleOwner, Observer { item ->
-            sliderBannerRecycleAdapter.setDataList(item)
-        })
+        sliderBannerViewModel?.getListDataLiveData()?.observe(
+            fragment.viewLifecycleOwner,
+            Observer { item ->
+                sliderBannerRecycleAdapter.setDataList(item)
+            }
+        )
     }
 
     override fun attachRecyclerView() {
@@ -69,8 +77,8 @@ class SliderBannerViewHolder(itemView: View, private val fragment: Fragment) : A
             val radius = resources.getDimensionPixelSize(R.dimen.dp_4)
             val padding = resources.getDimensionPixelSize(R.dimen.dp_5)
             val indicatorPadding = resources.getDimensionPixelSize(R.dimen.dp_8)
-            val activeColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Y400)
-            val inActiveColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N150)
+            val activeColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_YN400)
+            val inActiveColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN400)
             return BannerDotIndicator(radius, padding, indicatorPadding, activeColor, inActiveColor, BannerDotIndicator.SLIDER_BANNER_INDICATOR, this@SliderBannerViewHolder)
         }
     }

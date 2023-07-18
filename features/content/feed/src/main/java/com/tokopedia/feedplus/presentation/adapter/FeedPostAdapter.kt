@@ -4,10 +4,7 @@ import androidx.recyclerview.widget.DiffUtil
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_CLEAR_MODE
-import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_LIKED_UNLIKED
-import com.tokopedia.feedplus.presentation.model.FeedCardImageContentModel
-import com.tokopedia.feedplus.presentation.model.FeedCardVideoContentModel
-import com.tokopedia.feedplus.presentation.model.FeedLikeModel
+import com.tokopedia.feedplus.presentation.model.FeedNoContentModel
 import com.tokopedia.feedplus.presentation.util.FeedDiffUtilCallback
 
 /**
@@ -20,13 +17,25 @@ class FeedPostAdapter(typeFactory: FeedAdapterTypeFactory) :
         val diffResult = DiffUtil.calculateDiff(FeedDiffUtilCallback(visitables, newList))
         diffResult.dispatchUpdatesTo(this)
 
-        visitables.clear()
-        visitables.addAll(newList)
+        setElements(newList.toList())
     }
 
     fun showClearView(position: Int) {
-        if ((list?.size ?: 0) > position) {
+        if ((visitables?.size ?: 0) > position) {
             notifyItemChanged(position, FEED_POST_CLEAR_MODE)
+        }
+    }
+
+    fun addNoMoreContent(model: FeedNoContentModel) {
+        if (visitables.lastOrNull() !is FeedNoContentModel) {
+            addElement(model)
+        }
+    }
+
+    override fun showLoading() {
+        try {
+            super.showLoading()
+        } catch (_: Throwable) {
         }
     }
 }

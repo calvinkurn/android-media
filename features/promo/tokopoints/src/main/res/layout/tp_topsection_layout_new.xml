@@ -37,7 +37,7 @@
         android:layout_toEndOf="@id/img_egg"
         android:ellipsize="end"
         android:maxLines="1"
-        android:textColor="@color/Unify_N0"
+        android:textColor="@color/Unify_NN0"
         app:typographyType="heading_3"
         app:typographyWeight="bold"
         tools:text="Classic Member" />
@@ -128,7 +128,7 @@
                 android:clipChildren="false"
                 android:clipToPadding="false"
                 app:unify_progress_bar_color_type="color_green"
-                app:unify_progress_bar_from_color="@color/Unify_G100"
+                app:unify_progress_bar_from_color="@color/Unify_GN50"
                 app:unify_progress_bar_height="10" />
 
             <com.tokopedia.unifycomponents.ImageUnify
@@ -161,7 +161,7 @@
             android:layout_marginEnd="@dimen/unify_space_12"
             android:layout_marginBottom="12dp"
             android:lineSpacingExtra="4sp"
-            android:textColor="@color/Unify_Y200"
+            android:textColor="@color/Unify_YN100"
             android:translationY="-1.84sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -182,7 +182,7 @@
         android:layout_marginTop="9dp"
         android:layout_marginEnd="10dp"
         android:layout_marginRight="10dp"
-        android:background="@color/Unify_N0"
+        android:background="@color/Unify_NN0"
         android:visibility="visible">
 
         <com.tokopedia.tokopoints.view.customview.DynamicItemActionView

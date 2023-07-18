@@ -36,7 +36,7 @@
                 android:layout_width="wrap_content"
                 android:textSize="14sp"
                 android:layout_height="wrap_content"
-                android:textColor="@color/Unify_N700_96"
+                android:textColor="@color/Unify_NN950_96"
                 app:typographyType="heading_5"
                 tools:text="Cathay Pacific" />
 
@@ -47,7 +47,7 @@
                 android:layout_below="@+id/airline_name"
                 android:layout_alignStart="@+id/airline_name"
                 android:layout_alignLeft="@+id/airline_name"
-                android:textColor="@color/Unify_N700_68"
+                android:textColor="@color/Unify_NN950_68"
                 app:typographyType="body_3"
                 tools:text="CP - 321" />
 
@@ -58,7 +58,7 @@
                 android:layout_below="@+id/airline_code"
                 android:layout_alignStart="@+id/airline_name"
                 android:layout_alignLeft="@+id/airline_name"
-                android:textColor="@color/Unify_N700_68"
+                android:textColor="@color/Unify_NN950_68"
                 android:visibility="gone"
                 app:typographyType="body_3"
                 tools:text="Dioperasikan oleh Garuda Indonesia"
@@ -76,7 +76,7 @@
 
             <com.tokopedia.unifyprinciples.Typography
                 app:typographyType="small"
-                android:textColor="@color/Unify_N700_68"
+                android:textColor="@color/Unify_NN950_68"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/airline_refundable_info"
@@ -111,7 +111,7 @@
             android:layout_marginEnd="@dimen/spacing_lvl2"
             android:layout_marginRight="@dimen/spacing_lvl2"
             android:text="@string/flight_label_booking_code_pnr"
-            android:textColor="@color/Unify_N700_68"
+            android:textColor="@color/Unify_NN950_68"
             app:typographyType="body_3" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -120,7 +120,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/spacing_lvl2"
             android:layout_marginRight="@dimen/spacing_lvl2"
-            android:textColor="@color/Unify_G500"
+            android:textColor="@color/Unify_GN500"
             app:typographyType="body_2"
             app:typographyWeight="bold"
             tools:text="323088926194" />
@@ -137,5 +137,5 @@
         android:layout_height="1dp"
         android:layout_below="@+id/container_pnr"
         android:layout_marginTop="@dimen/margin_8"
-        android:background="@color/Unify_N75" />
+        android:background="@color/Unify_NN50" />
 </RelativeLayout>

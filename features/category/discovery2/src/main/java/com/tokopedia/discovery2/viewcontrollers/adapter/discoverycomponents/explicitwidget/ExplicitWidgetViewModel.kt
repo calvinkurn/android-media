@@ -15,8 +15,10 @@ import kotlin.coroutines.CoroutineContext
 
 class ExplicitWidgetViewModel(val application: Application, val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
     private val explicitWidgetData: SingleLiveEvent<ComponentsItem> = SingleLiveEvent()
+
+    @JvmField
     @Inject
-    lateinit var explicitViewContract: ExplicitViewModel
+    var explicitViewContract: ExplicitViewModel? = null
 
     fun getComponentData(): SingleLiveEvent<ComponentsItem> = explicitWidgetData
 
@@ -34,9 +36,8 @@ class ExplicitWidgetViewModel(val application: Application, val components: Comp
 
     override fun initDaggerInject() {
         DaggerDiscoveryComponent.builder()
-                .baseAppComponent((application.applicationContext as BaseMainApplication).baseAppComponent)
-                .build()
-                .inject(this)
+            .baseAppComponent((application.applicationContext as BaseMainApplication).baseAppComponent)
+            .build()
+            .inject(this)
     }
-
 }
