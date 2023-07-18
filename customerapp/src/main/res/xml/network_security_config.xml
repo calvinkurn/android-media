@@ -5,7 +5,6 @@
             <!-- Trust user added CAs while debuggable only -->
             <certificates src="system" />
             <certificates src="user" />
-            <certificates src="@raw/selfsigned"/>
         </trust-anchors>
     </debug-overrides>
     <domain-config cleartextTrafficPermitted="true">
