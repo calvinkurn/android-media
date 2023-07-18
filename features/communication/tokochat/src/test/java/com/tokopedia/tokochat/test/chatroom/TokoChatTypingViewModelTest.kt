@@ -1,4 +1,4 @@
-package com.tokopedia.tokochat.test
+package com.tokopedia.tokochat.test.chatroom
 
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.tokochat.base.TokoChatViewModelTestFixture
