@@ -12,9 +12,9 @@ const val PERSONA_STATUS_NOT_ROLLED_OUT = 3
 enum class PersonaStatus(val value: Int) {
     INACTIVE(PERSONA_STATUS_INACTIVE),
     ACTIVE(PERSONA_STATUS_ACTIVE),
-    UNDEFINED(PERSONA_STATUS_UNDEFINED);
+    UNDEFINED(PERSONA_STATUS_UNDEFINED)
+}
 
-    fun isActive(): Boolean {
-        return this == ACTIVE
-    }
+fun PersonaStatus.isActive(): Boolean {
+    return this == PersonaStatus.ACTIVE
 }
