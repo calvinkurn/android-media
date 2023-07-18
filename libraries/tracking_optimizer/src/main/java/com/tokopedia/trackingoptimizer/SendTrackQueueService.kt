@@ -37,22 +37,19 @@ class SendTrackQueueService : Service(), CoroutineScope {
 
     companion object {
         fun start(context: Context) {
-            // allowing only 1 service at a time
-            if (atomicInteger.get() < 1) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    val jobScheduler = context.getSystemService(Context.JOB_SCHEDULER_SERVICE) as? JobScheduler
-                        ?: return
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                val jobScheduler = context.getSystemService(Context.JOB_SCHEDULER_SERVICE) as? JobScheduler
+                    ?: return
 
-                    val bundle = PersistableBundle()
+                val bundle = PersistableBundle()
 
-                    jobScheduler.schedule(JobInfo.Builder(281,
-                        ComponentName(context, SendTrackQueueJobService::class.java))
-                        .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
-                        .setExtras(bundle)
-                        .build())
-                } else {
-                    context.startService(Intent(context, SendTrackQueueService::class.java))
-                }
+                jobScheduler.schedule(JobInfo.Builder(281,
+                    ComponentName(context, SendTrackQueueJobService::class.java))
+                    .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
+                    .setExtras(bundle)
+                    .build())
+            } else {
+                context.startService(Intent(context, SendTrackQueueService::class.java))
             }
         }
     }

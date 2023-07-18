@@ -111,6 +111,7 @@ class TrackingQueue(ctx: Context) {
 internal class TrackingQueueSingleton(ctx: Context) : CoroutineScope {
 
     val context = ctx.applicationContext
+    var mightHaveData = false
 
     override val coroutineContext: CoroutineContext
         get() = TrackingExecutors.executor + TrackingExecutors.handler
@@ -126,6 +127,7 @@ internal class TrackingQueueSingleton(ctx: Context) : CoroutineScope {
         }
         launch {
             newTrackingRepository.put(map)
+            mightHaveData = true
         }
     }
 
@@ -136,6 +138,7 @@ internal class TrackingQueueSingleton(ctx: Context) : CoroutineScope {
     ) {
         launch {
             newTrackingRepository.putEE(event, customDimension, enhanceECommerceMap)
+            mightHaveData = true
         }
     }
 
@@ -145,6 +148,7 @@ internal class TrackingQueueSingleton(ctx: Context) : CoroutineScope {
     ) {
         launch {
             newTrackingRepository.putEE(map, enhanceECommerceMap)
+            mightHaveData = true
         }
     }
 
@@ -157,16 +161,14 @@ internal class TrackingQueueSingleton(ctx: Context) : CoroutineScope {
         // launch in different coroutine scope.
         launch(Dispatchers.Default) {
             try {
-                if (isTrackingQueueAvailable()) {
-                    withContext(coroutineContext) {
-                        try {
-                            SendTrackQueueService.start(context)
-                        } catch (e: Throwable) {
-                            // prevent illegal state exception when service is launch when app in background (in O)
-                        }
-                    }
+                // atomicInteger to allow only 1 service at a time
+                // isTrackingQueueAvailable is to check if the db has any data to send
+                if (atomicInteger.get() < 1 && (mightHaveData || isTrackingQueueAvailable())) {
+                    SendTrackQueueService.start(context)
+                    mightHaveData = false
                 }
-            } catch (ignored: Throwable) { }
+            } catch (ignored: Throwable) {
+            }
         }
     }
 }
