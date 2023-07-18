@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.text.ClickableText
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -50,7 +49,7 @@ private fun LiveToVodBottomSheetContent(
                 color = colorResource(id = com.tokopedia.unifyprinciples.R.color.Unify_GN500),
             )
         ) {
-            pushStringAnnotation(tag = LEARN_MORE_TEXT_TAG, annotation = LEARN_MORE_TEXT_ANNOTATION)
+            pushStringAnnotation(tag = LEARN_MORE_TEXT_TAG, annotation = LEARN_MORE_TEXT_TAG)
             append(" ")
             append(stringResource(id = R.string.play_prepare_broadcaster_disable_live_to_vod_learn_more))
             append(" ")
@@ -94,20 +93,20 @@ private fun LiveToVodBottomSheetContent(
                 .fillMaxWidth()
                 .padding(top = 16.dp),
         )
-        ClickableText(
+        NestTypography(
             text = textLearnMore,
             modifier = Modifier.padding(top = 8.dp, bottom = 16.dp),
-            style = NestTheme.typography.body2
+            textStyle = NestTheme.typography.body2
                 .copy(
                     textAlign = TextAlign.Center,
                     color = colorResource(id = R.color.Unify_NN1000)
                 ),
-            onClick = { offset ->
+            onClickText = { offset ->
                 textLearnMore.getStringAnnotations(offset, offset)
                     .firstOrNull()?.let { span ->
-                        if (span.item == LEARN_MORE_TEXT_ANNOTATION) onLearnMorePressed.invoke()
+                        if (span.item == LEARN_MORE_TEXT_TAG) onLearnMorePressed.invoke()
                     }
-            }
+            },
         )
     }
 }
@@ -121,5 +120,4 @@ fun Preview() {
     )
 }
 
-const val LEARN_MORE_TEXT_TAG = "learn_more_text_tag"
-const val LEARN_MORE_TEXT_ANNOTATION = "learn_more_text_annotation"
+private const val LEARN_MORE_TEXT_TAG = "learn_more_text_tag"

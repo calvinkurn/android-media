@@ -87,7 +87,7 @@
                         android:text="@string/shop_operational_hour_is_on_holiday"
                         android:layout_marginStart="12dp"
                         android:translationZ="1dp"
-                        android:textColor="@color/Unify_N700_96"
+                        android:textColor="@color/Unify_NN950_96"
                         app:layout_constraintLeft_toRightOf="@id/img_shop_holiday"
                         app:layout_constraintBottom_toTopOf="@id/tv_holiday_end"
                         app:layout_constraintTop_toTopOf="@id/img_shop_holiday"
@@ -99,7 +99,7 @@
                         android:layout_height="wrap_content"
                         app:typographyType="body_3"
                         app:typographyWeight="reguler"
-                        android:textColor="@color/Unify_N700_68"
+                        android:textColor="@color/Unify_NN950_68"
                         tools:text="sampai 10/10/2021"
                         app:layout_constraintLeft_toLeftOf="@id/tv_is_on_holiday_text"
                         app:layout_constraintTop_toBottomOf="@id/tv_is_on_holiday_text"
@@ -152,7 +152,7 @@
                 <com.tokopedia.iconunify.IconUnify
                     android:id="@+id/ic_edit_ops_hour"
                     app:icon_name="EDIT"
-                    app:icon_color_light_enable="@color/Unify_N700"
+                    app:icon_color_light_enable="@color/Unify_NN950"
                     app:icon_enable_state="true"
                     android:visibility="visible"
                     android:layout_width="24dp"
@@ -172,7 +172,7 @@
                     android:layout_marginTop="10dp"
                     android:text="@string/shop_operational_hour_desc_set_hour"
                     app:typographyType="body_3"
-                    android:textColor="@color/Unify_N700_68"
+                    android:textColor="@color/Unify_NN950_68"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tv_title_shop_ops_hour"
                     app:layout_constraintEnd_toStartOf="@id/ic_edit_ops_hour"
@@ -212,7 +212,7 @@
                 android:layout_marginTop="8dp"
                 android:text="@string/shop_operational_hour_desc_holiday"
                 app:typographyType="body_3"
-                android:textColor="@color/Unify_N700_68"
+                android:textColor="@color/Unify_NN950_68"
                 />
 
             <RelativeLayout

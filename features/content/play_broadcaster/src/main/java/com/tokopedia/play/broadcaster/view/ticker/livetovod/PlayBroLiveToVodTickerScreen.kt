@@ -14,8 +14,6 @@ import com.tokopedia.nest.components.ticker.TickerType
 import com.tokopedia.nest.components.ticker.TickerVariant
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.play.broadcaster.R
-import com.tokopedia.play.broadcaster.view.bottomsheet.livetovod.LEARN_MORE_TEXT_ANNOTATION
-import com.tokopedia.play.broadcaster.view.bottomsheet.livetovod.LEARN_MORE_TEXT_TAG
 
 @Composable
 fun PlayBroLiveToVodTickerScreen(
@@ -43,7 +41,7 @@ private fun LiveToVodTickerContent(
                 color = colorResource(id = com.tokopedia.unifyprinciples.R.color.Unify_GN500),
             )
         ) {
-            pushStringAnnotation(tag = LEARN_MORE_TEXT_TAG, annotation = LEARN_MORE_TEXT_ANNOTATION)
+            pushStringAnnotation(tag = LEARN_MORE_TEXT_TAG, annotation = LEARN_MORE_TEXT_TAG)
             append(" ")
             append(stringResource(id = R.string.play_prepare_broadcaster_disable_live_to_vod_learn_more))
             append(" ")
@@ -58,7 +56,13 @@ private fun LiveToVodTickerContent(
                 tickerVariant = TickerVariant.FULL,
             )
         ),
-        onDismissed = { onDismissedPressed.invoke() }
+        onDismissed = { onDismissedPressed.invoke() },
+        onClickText = { offset ->
+            textDescription.getStringAnnotations(offset, offset)
+                .firstOrNull()?.let { span ->
+                    if (span.item == LEARN_MORE_TEXT_TAG) onLearnMorePressed.invoke()
+                }
+        },
     )
 }
 
@@ -70,3 +74,5 @@ fun Preview() {
         onLearnMorePressed = {},
     )
 }
+
+private const val LEARN_MORE_TEXT_TAG = "learn_more_text_tag"
