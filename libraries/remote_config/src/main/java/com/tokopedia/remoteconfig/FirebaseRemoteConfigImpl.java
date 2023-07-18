@@ -66,13 +66,13 @@ public class FirebaseRemoteConfigImpl implements RemoteConfig {
 
     @Override
     public boolean getBoolean(String key, boolean defaultValue) {
-        if (isDebug()) {
-            String cacheValue = sharedPrefs.getString(key, null);
-
-            if (cacheValue != null) {
-                return cacheValue.equalsIgnoreCase("true");
-            }
-        }
+//        if (isDebug()) {
+//            String cacheValue = sharedPrefs.getString(key, null);
+//
+//            if (cacheValue != null) {
+//                return cacheValue.equalsIgnoreCase("true");
+//            }
+//        }
 
         if (firebaseRemoteConfig != null) {
             String value = firebaseRemoteConfig.getString(key);
