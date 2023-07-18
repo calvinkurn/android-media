@@ -190,8 +190,8 @@ class RegisterEmailFragment : BaseDaggerFragment() {
             val termPrivacy = SpannableString(getString(R.string.text_term_and_privacy))
             termPrivacy.setSpan(clickableSpan(PAGE_TERM_AND_CONDITION), SPAN_TERM_AND_CONDITION_START, SPAN_TERM_AND_CONDITION_END, SPAN_TERM_AND_CONDITION_FLAGS)
             termPrivacy.setSpan(clickableSpan(PAGE_PRIVACY_POLICY), SPAN_PRIVACY_POLICY_START, SPAN_PRIVACY_POLICY_END, SPAN_PRIVACY_POLICY_FLAGS)
-            termPrivacy.setSpan(ForegroundColorSpan(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_G500)), SPAN_TERM_AND_CONDITION_START, SPAN_TERM_AND_CONDITION_END, SPAN_TERM_AND_CONDITION_FLAGS)
-            termPrivacy.setSpan(ForegroundColorSpan(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_G500)), SPAN_PRIVACY_POLICY_START, SPAN_PRIVACY_POLICY_END, SPAN_PRIVACY_POLICY_FLAGS)
+            termPrivacy.setSpan(ForegroundColorSpan(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_GN500)), SPAN_TERM_AND_CONDITION_START, SPAN_TERM_AND_CONDITION_END, SPAN_TERM_AND_CONDITION_FLAGS)
+            termPrivacy.setSpan(ForegroundColorSpan(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_GN500)), SPAN_PRIVACY_POLICY_START, SPAN_PRIVACY_POLICY_END, SPAN_PRIVACY_POLICY_FLAGS)
             registerNextTAndC?.setText(termPrivacy, TextView.BufferType.SPANNABLE)
             registerNextTAndC?.movementMethod = LinkMovementMethod.getInstance()
             registerNextTAndC?.isSelected = false
@@ -207,7 +207,7 @@ class RegisterEmailFragment : BaseDaggerFragment() {
             override fun updateDrawState(ds: TextPaint) {
                 super.updateDrawState(ds)
                 ds.isUnderlineText = false
-                ds.color = ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_G400)
+                ds.color = ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_GN500)
             }
         }
     }
@@ -217,7 +217,7 @@ class RegisterEmailFragment : BaseDaggerFragment() {
         spannable.setSpan(object : ClickableSpan() {
             override fun onClick(view: View) {}
             override fun updateDrawState(ds: TextPaint) {
-                context?.resources?.let { ds.color = it.getColor(com.tokopedia.unifyprinciples.R.color.Unify_G400) }
+                context?.resources?.let { ds.color = it.getColor(com.tokopedia.unifyprinciples.R.color.Unify_GN500) }
             }
         }, sourceString.indexOf(hyperlinkString), sourceString.length, 0)
         return spannable
