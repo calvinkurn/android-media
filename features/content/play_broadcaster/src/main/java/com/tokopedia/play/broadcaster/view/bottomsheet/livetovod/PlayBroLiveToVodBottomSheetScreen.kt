@@ -59,7 +59,7 @@ private fun LiveToVodBottomSheetContent(
                 .width(350.dp)
                 .height(280.dp),
         )
-        mainText.TextMain(onActionTextPressed)
+        mainText.MainText(onActionTextPressed)
         NestButton(
             text = stringResource(id = R.string.play_ok),
             onClick = { onButtonClick.invoke() },
@@ -67,16 +67,16 @@ private fun LiveToVodBottomSheetContent(
                 .fillMaxWidth()
                 .padding(top = 16.dp),
         )
-        bottomText.TextBottom(onActionTextPressed)
+        bottomText.BottomText(onActionTextPressed)
     }
 }
 
 @Composable
-private fun List<TickerBottomSheetUiModel.MainText>.TextMain(
+private fun List<TickerBottomSheetUiModel.MainText>.MainText(
     onActionTextPressed: (appLink: String) -> Unit
 ) {
     @Composable
-    fun TickerBottomSheetUiModel.MainText.TextTitle() {
+    fun TickerBottomSheetUiModel.MainText.TitleText() {
         NestTypography(
             text = title,
             modifier = Modifier.padding(top = 16.dp),
@@ -89,13 +89,13 @@ private fun List<TickerBottomSheetUiModel.MainText>.TextMain(
     }
 
     @Composable
-    fun TickerBottomSheetUiModel.MainText.TextDescription(
+    fun TickerBottomSheetUiModel.MainText.DescriptionText(
         onActionTextPressed: (appLink: String) -> Unit
     ) {
-        val textDescription = generateSpanText(fullText = description, action = action)
+        val descriptionText = generateSpanText(fullText = description, action = action)
 
         NestTypography(
-            text = textDescription,
+            text = descriptionText,
             modifier = Modifier.padding(top = 8.dp),
             textStyle = NestTheme.typography.body1
                 .copy(
@@ -103,7 +103,7 @@ private fun List<TickerBottomSheetUiModel.MainText>.TextMain(
                     color = colorResource(id = R.color.Unify_NN1000),
                 ),
             onClickText = { offset ->
-                textDescription.getStringAnnotations(offset, offset)
+                descriptionText.getStringAnnotations(offset, offset)
                     .firstOrNull()?.let { span ->
                         action.map { current ->
                             if (span.item != current.item) return@map
@@ -115,18 +115,18 @@ private fun List<TickerBottomSheetUiModel.MainText>.TextMain(
     }
 
     with(first()) {
-        TextTitle()
-        TextDescription(onActionTextPressed)
+        TitleText()
+        DescriptionText(onActionTextPressed)
     }
 }
 
 @Composable
-private fun TickerBottomSheetUiModel.BottomText.TextBottom(
+private fun TickerBottomSheetUiModel.BottomText.BottomText(
     onActionTextPressed: (appLink: String) -> Unit
 ) {
-    val textBottom = generateSpanText(fullText = description, action = action)
+    val bottomText = generateSpanText(fullText = description, action = action)
     NestTypography(
-        text = textBottom,
+        text = bottomText,
         modifier = Modifier.padding(top = 8.dp, bottom = 16.dp),
         textStyle = NestTheme.typography.body2
             .copy(
@@ -134,7 +134,7 @@ private fun TickerBottomSheetUiModel.BottomText.TextBottom(
                 color = colorResource(id = R.color.Unify_NN1000)
             ),
         onClickText = { offset ->
-            textBottom.getStringAnnotations(offset, offset)
+            bottomText.getStringAnnotations(offset, offset)
                 .firstOrNull()?.let { span ->
                     action.map { current ->
                         if (span.item != current.item) return@map
