@@ -8,7 +8,9 @@ import android.net.Uri
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.media.editor.ui.uimodel.BitmapCreation
+import com.tokopedia.media.editor.utils.GENERAL_ERROR
 import com.tokopedia.media.editor.utils.getEditorSaveFolderPath
+import com.tokopedia.media.editor.utils.newRelicLog
 import com.tokopedia.media.editor.utils.showErrorGeneralToaster
 import com.tokopedia.utils.image.ImageProcessingUtil
 import kotlinx.coroutines.withContext
@@ -26,7 +28,7 @@ interface SaveImageRepository {
         imageBaseUrl: String,
         imageAddedUrl: String,
         sourcePath: String
-    ): String
+    ): String?
 }
 
 class SaveImageRepositoryImpl @Inject constructor(
@@ -52,7 +54,7 @@ class SaveImageRepositoryImpl @Inject constructor(
         imageBaseUrl: String,
         imageAddedUrl: String,
         sourcePath: String
-    ): String {
+    ): String? {
         var errorCode = NO_ERROR
         var resultBitmap: Bitmap? = null
         bitmapConverter.uriToBitmap(Uri.parse(imageBaseUrl))?.let { baseBitmap ->
@@ -98,8 +100,14 @@ class SaveImageRepositoryImpl @Inject constructor(
             }
 
             withContext(dispatchers.main) {
-                showErrorGeneralToaster(context, "Failed flatten - failed load$errorMsg")
+                newRelicLog(
+                    mapOf(
+                        GENERAL_ERROR to "Failed flatten - failed load$errorMsg"
+                    )
+                )
             }
+
+            return null
         }
 
         return resultBitmap?.let {
