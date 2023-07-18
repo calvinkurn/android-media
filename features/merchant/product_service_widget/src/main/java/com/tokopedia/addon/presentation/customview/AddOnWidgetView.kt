@@ -184,23 +184,6 @@ class AddOnWidgetView : BaseCustomView {
         llSeeAll?.isVisible = isSimplified
     }
 
-    fun getAddonData(
-        productId: String,
-        warehouseId: String,
-        isTokocabang: Boolean,
-        isSimplified: Boolean = false
-    ) {
-        viewModel.getAddOn(
-            AddOnParam(
-                productId = productId,
-                warehouseId = warehouseId,
-                isTokocabang = isTokocabang
-            ),
-            isSimplified
-        )
-        llSeeAll?.isVisible = isSimplified
-    }
-
     fun setSelectedAddons(selectedAddonIds: List<String>) {
         viewModel.setPreselectedAddOn(selectedAddonIds)
     }
