@@ -43,14 +43,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/promo_title_period"
-                android:textColor="@color/Unify_N700_68"
+                android:textColor="@color/Unify_NN950_68"
                 app:typographyType="body_3" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/textPeriod"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/Unify_N700_96"
+                android:textColor="@color/Unify_NN950_96"
                 app:typographyType="body_1"
                 tools:text="16 Aug 2019" />
 
@@ -92,7 +92,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
                 android:layout_marginRight="8dp"
-                android:textColor="@color/Unify_N700_68"
+                android:textColor="@color/Unify_NN950_68"
                 android:visibility="visible"
                 app:typographyType="body_3"
                 tools:text="tanpa minimum " />
@@ -101,7 +101,7 @@
                 android:id="@+id/textMinTrans"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/Unify_N700_96"
+                android:textColor="@color/Unify_NN950_96"
                 android:visibility="visible"
                 app:typographyType="body_1"
                 tools:text="Rp 3000000" />

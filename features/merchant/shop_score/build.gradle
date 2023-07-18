@@ -15,6 +15,8 @@ buildscript {
 }
 
 android {
+    namespace 'com.tokopedia.shop.score'
+    testNamespace 'com.tokopedia.shop.score.test'
     buildFeatures{
         viewBinding true
     }
@@ -40,9 +42,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.applink)
     implementation projectOrAar(rootProject.ext.libraries.graphql)
-    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
     implementation projectOrAar(rootProject.ext.libraries.baseList)
-    implementation projectOrAar(rootProject.ext.libraries.youtubeutil)
     implementation projectOrAar(rootProject.ext.libraries.utils)
     implementation projectOrAar(rootProject.ext.libraries.deviceInfo)
     implementation projectOrAar(rootProject.ext.libraries.analytics)
@@ -64,6 +64,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.coach_mark
     implementation rootProject.ext.unifyDependencies.empty_state
     implementation rootProject.ext.unifyDependencies.header
+    implementation rootProject.ext.unifyDependencies.iconNotification
     implementation rootProject.ext.miscDependencies.chips
 
     implementation rootProject.ext.supportLibDependencies.recyclerViewV7
@@ -82,10 +83,12 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation projectOrAar(rootProject.ext.libraries.usersession)
     implementation projectOrAar(rootProject.ext.libraries.network)
+    implementation projectOrAar(rootProject.ext.libraries.imageAssets)
     implementation rootProject.ext.playServicesDependencies.core
 
     compileOnly rootProject.ext.miscDependencies.javaxAnnotation
     kapt rootProject.ext.miscDependencies.daggerCompiler
+    kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
 
     androidTestImplementation rootProject.ext.miscDependencies.coroutineTest
 

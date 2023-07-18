@@ -27,7 +27,7 @@
         android:paddingEnd="4dp"
         android:paddingBottom="2dp"
         android:text="@string/swd_special_offer"
-        android:textColor="@color/Unify_B500"
+        android:textColor="@color/Unify_BN500"
         android:visibility="visible"
         app:layout_constraintStart_toEndOf="@id/ivBankIcon"
         app:layout_constraintTop_toTopOf="parent"

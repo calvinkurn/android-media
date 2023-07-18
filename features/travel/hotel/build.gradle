@@ -20,6 +20,8 @@ buildscript {
 }
 
 android {
+    namespace 'com.tokopedia.hotel'
+    testNamespace 'com.tokopedia.hotel.test'
     packagingOptions {
         exclude 'META-INF/**'
     }
@@ -55,6 +57,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.imageAssets)
     implementation projectOrAar(rootProject.ext.libraries.baseList)
     implementation projectOrAar(rootProject.ext.features.commonTravel)
+    implementation projectOrAar(rootProject.ext.features.commonDigital)
     implementation projectOrAar(rootProject.ext.features.travelCountryCode)
     implementation projectOrAar(rootProject.ext.features.travelPassenger)
     implementation projectOrAar(rootProject.ext.features.commonPayment)
@@ -64,7 +67,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.travelCalendar)
     implementation projectOrAar(rootProject.ext.libraries.analytics)
     implementation projectOrAar(rootProject.ext.libraries.applink)
-    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
     implementation projectOrAar(rootProject.ext.libraries.utils)
     implementation projectOrAar(rootProject.ext.libraries.locationmanager)
     implementation projectOrAar(rootProject.ext.libraries.track)

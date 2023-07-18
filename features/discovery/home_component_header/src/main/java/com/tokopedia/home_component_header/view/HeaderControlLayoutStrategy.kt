@@ -9,16 +9,19 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
+import com.tokopedia.home_component_header.R
 import com.tokopedia.home_component_header.model.ChannelHeader
 import com.tokopedia.home_component_header.util.ViewUtils.invertIfDarkMode
 import com.tokopedia.home_component_header.util.getLink
-import com.tokopedia.home_component_header.R
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 
-class HeaderControlLayoutStrategy: HeaderLayoutStrategy {
+class HeaderControlLayoutStrategy : HeaderLayoutStrategy {
+    var seeAllButton: TextView? = null
+    var seeAllButtonUnify: UnifyButton? = null
+
     override fun getLayout(): Int = R.layout.home_common_channel_header
 
     override fun renderCta(
@@ -65,10 +68,10 @@ class HeaderControlLayoutStrategy: HeaderLayoutStrategy {
         hasSeeMoreApplink: Boolean,
         listener: HomeChannelHeaderListener?
     ) {
-        var seeAllButton: TextView? = null
         if (hasSeeMoreApplink) {
             seeAllButton = if (stubSeeAllButton is ViewStub &&
-                !isViewStubHasBeenInflated(stubSeeAllButton)) {
+                !isViewStubHasBeenInflated(stubSeeAllButton)
+            ) {
                 val stubSeeAllView = stubSeeAllButton.inflate()
                 stubSeeAllView?.findViewById(R.id.see_all_button)
             } else {
@@ -82,6 +85,7 @@ class HeaderControlLayoutStrategy: HeaderLayoutStrategy {
                 listener?.onSeeAllClick(channelHeader.getLink())
             }
         } else {
+            seeAllButtonUnify?.hide()
             seeAllButton?.hide()
         }
     }
@@ -97,11 +101,11 @@ class HeaderControlLayoutStrategy: HeaderLayoutStrategy {
          * Requirement:
          * Show unify button of see more button for dc sprint if back image is not empty
          */
-        var seeAllButtonUnify: UnifyButton? = null
         if (hasSeeMoreApplink) {
             if (channelHeader.backImage.isNotBlank()) {
                 seeAllButtonUnify = if (stubSeeAllButtonUnify is ViewStub &&
-                    !isViewStubHasBeenInflated(stubSeeAllButtonUnify)) {
+                    !isViewStubHasBeenInflated(stubSeeAllButtonUnify)
+                ) {
                     val stubSeeAllButtonView = stubSeeAllButtonUnify.inflate()
                     stubSeeAllButtonView?.findViewById(R.id.see_all_button_unify)
                 } else {
@@ -113,6 +117,7 @@ class HeaderControlLayoutStrategy: HeaderLayoutStrategy {
 
             seeAllButtonUnify?.show()
         } else {
+            seeAllButton?.hide()
             seeAllButtonUnify?.hide()
         }
     }
@@ -124,8 +129,11 @@ class HeaderControlLayoutStrategy: HeaderLayoutStrategy {
         headerColorMode: Int?
     ) {
         channelTitle?.setTextColor(
-            if (channelHeader.textColor.isNotEmpty()) Color.parseColor(channelHeader.textColor).invertIfDarkMode(context)
-            else ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700).invertIfDarkMode(context)
+            if (channelHeader.textColor.isNotEmpty()) {
+                Color.parseColor(channelHeader.textColor).invertIfDarkMode(context)
+            } else {
+                ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950).invertIfDarkMode(context)
+            }
         )
     }
 
@@ -136,8 +144,11 @@ class HeaderControlLayoutStrategy: HeaderLayoutStrategy {
         headerColorMode: Int?
     ) {
         channelSubtitle?.setTextColor(
-            if (channelHeader.textColor.isNotEmpty()) Color.parseColor(channelHeader.textColor).invertIfDarkMode(context)
-            else ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700).invertIfDarkMode(context)
+            if (channelHeader.textColor.isNotEmpty()) {
+                Color.parseColor(channelHeader.textColor).invertIfDarkMode(context)
+            } else {
+                ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950).invertIfDarkMode(context)
+            }
         )
     }
 
@@ -150,7 +161,7 @@ class HeaderControlLayoutStrategy: HeaderLayoutStrategy {
         hasExpiredTime: Boolean,
         channelHeaderContainer: ConstraintLayout?
     ) {
-        if(channelHeader.backImage.isNotBlank()) {
+        if (channelHeader.backImage.isNotBlank()) {
             if (channelHeader.subtitle.isEmpty() && hasExpiredTime) {
                 val constraintSet = ConstraintSet()
                 constraintSet.clone(channelHeaderContainer)
@@ -186,7 +197,6 @@ class HeaderControlLayoutStrategy: HeaderLayoutStrategy {
         channelHeaderContainer: ConstraintLayout?,
         resources: Resources
     ) {
-
     }
 
     override fun setContainerPadding(
@@ -194,8 +204,10 @@ class HeaderControlLayoutStrategy: HeaderLayoutStrategy {
         hasExpiredTime: Boolean,
         resources: Resources
     ) {
-        if(hasExpiredTime) {
+        if (hasExpiredTime) {
             channelHeaderContainer.setPadding(channelHeaderContainer.paddingLeft, channelHeaderContainer.paddingTop, channelHeaderContainer.paddingRight, resources.getDimensionPixelSize(R.dimen.home_channel_header_bottom_padding_with_timer_old))
-        } else channelHeaderContainer.setPadding(channelHeaderContainer.paddingLeft, channelHeaderContainer.paddingTop, channelHeaderContainer.paddingRight, resources.getDimensionPixelSize(R.dimen.home_channel_header_bottom_padding))
+        } else {
+            channelHeaderContainer.setPadding(channelHeaderContainer.paddingLeft, channelHeaderContainer.paddingTop, channelHeaderContainer.paddingRight, resources.getDimensionPixelSize(R.dimen.home_channel_header_bottom_padding))
+        }
     }
 }

@@ -5,11 +5,11 @@ import com.google.gson.annotations.SerializedName
 
 data class ErrorReporterResponse(
 
-        @SerializedName("eligible")
-        @Expose
-        var eligible: Boolean = false,
+    @SerializedName("eligible")
+    @Expose
+    var eligible: Boolean = false,
 
-        @SerializedName("texts")
-        @Expose
-        var texts: ErrorReporterTextResponse = ErrorReporterTextResponse()
+    @SerializedName("texts")
+    @Expose
+    var texts: ErrorReporterTextResponse = ErrorReporterTextResponse()
 )

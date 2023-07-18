@@ -50,6 +50,13 @@ object KYCConstant {
     const val consentCollectionIdProduction = "bf7c9ba1-a4a9-447e-bbee-974c905a95ac"
     const val consentCollectionIdStaging = "8db1d162-15ea-45c1-9b69-20b256e39e44"
 
+    const val collectionIdGotoKycProgressiveStaging = "b41f13da-f6ef-425a-b65e-f07bbb42821c"
+    const val collectionIdGotoKycProgressiveProduction = "172a03bf-1385-425f-9ffe-94ea7119e77d"
+    const val collectionIdGotoKycNonProgressiveStaging = "6c4e768e-a059-4e90-a011-f11f587d8739"
+    const val collectionIdGotoKycNonProgressiveProduction = "23d6102a-a625-4036-964a-aa039198605a"
+
+    const val PROJECT_ID_ACCOUNT = "7"
+
     object SharedPreference {
         /*
         * WARNING!!!
@@ -60,5 +67,23 @@ object KYCConstant {
 
         const val VALUE_KYC_FLOW_TYPE_ALA_CARTE = "ala carte"
         const val VALUE_KYC_FLOW_TYPE_CKYC = "ckyc"
+    }
+
+    object GotoDataSource {
+        const val TOKO_KYC = "0"
+        const val GOTO_NON_PROGRESSIVE = "1"
+        const val GOTO_PROGRESSIVE = "2"
+    }
+
+    object GotoKycFlow {
+        const val NON_PROGRESSIVE = "NON_PROGRESSIVE_ELIGIBLE"
+        const val PROGRESSIVE = "PROGRESSIVE_ELIGIBLE"
+        const val AWAITING_APPROVAL_GOPAY = "KYC_AWAITING_APPROVAL"
+        const val ONEKYC_BLOCKED = "ONEKYC_BLOCKED"
+    }
+
+    object ActivityResult {
+        const val RESULT_FINISH = 99
+        const val RELOAD = 98
     }
 }

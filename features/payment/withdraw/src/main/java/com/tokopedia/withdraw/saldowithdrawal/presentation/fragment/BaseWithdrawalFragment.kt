@@ -306,7 +306,7 @@ abstract class BaseWithdrawalFragment : BaseDaggerFragment(), BankAccountAdapter
         val spannableString = SpannableString(readMoreText)
         val startIndex = 0
         val endIndex = spannableString.length
-        val color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
+        val color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
         spannableString.setSpan(color, startIndex, endIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         spannableString.setSpan(
             object : ClickableSpan() {
@@ -429,7 +429,7 @@ abstract class BaseWithdrawalFragment : BaseDaggerFragment(), BankAccountAdapter
                     CoachMarkContentPosition.TOP,
                     ContextCompat.getColor(
                         requireContext(),
-                        com.tokopedia.unifyprinciples.R.color.Unify_N700_68
+                        com.tokopedia.unifyprinciples.R.color.Unify_NN950_68
                     )
                 )
             )
