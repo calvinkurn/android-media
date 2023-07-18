@@ -73,6 +73,7 @@ class FeedFollowProfileViewHolder private constructor() {
 
             if (model.isSelected) {
                 player.start(model.data.videoUrl, isMute = false)
+                followRecommendationListener.onImpressProfile(model.data)
             } else {
                 player.stop()
                 binding.playerView.hide()

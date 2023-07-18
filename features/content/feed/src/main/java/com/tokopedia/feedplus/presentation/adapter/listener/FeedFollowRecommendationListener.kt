@@ -7,6 +7,10 @@ import com.tokopedia.feedplus.presentation.model.FeedFollowRecommendationModel
  */
 interface FeedFollowRecommendationListener {
 
+    fun onImpressProfile(
+        profile: FeedFollowRecommendationModel.Profile
+    )
+
     fun onClickFollow(
         profile: FeedFollowRecommendationModel.Profile
     )

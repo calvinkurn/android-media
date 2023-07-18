@@ -213,6 +213,12 @@ class FeedFragment :
     }
 
     private val feedFollowRecommendationListener = object : FeedFollowRecommendationListener {
+
+        override fun onImpressProfile(profile: FeedFollowRecommendationModel.Profile) {
+            /** TODO: handle this */
+            println("JOE LOG impress $profile")
+        }
+
         override fun onClickFollow(profile: FeedFollowRecommendationModel.Profile) {
             /** TODO: handle this */
         }

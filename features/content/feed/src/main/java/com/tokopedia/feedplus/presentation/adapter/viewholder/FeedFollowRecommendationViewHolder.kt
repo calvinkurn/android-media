@@ -77,8 +77,10 @@ class FeedFollowRecommendationViewHolder(
     ) {
         if (model == null) return
 
+        var isNeedForceScroll = false
         val finalSelectedPosition = if (selectedPosition >= model.data.size) {
-            model.data.size - 1
+            isNeedForceScroll = true
+            (model.data.size - 1).coerceAtLeast(0)
         } else {
             selectedPosition
         }
@@ -98,6 +100,9 @@ class FeedFollowRecommendationViewHolder(
         val isDataAvailable = finalList.isNotEmpty()
 
         profileAdapter.setItemsAndAnimateChanges(finalList)
+
+        if (isNeedForceScroll)
+            binding.rvFollowRecommendation.smoothScrollToPosition(finalSelectedPosition)
 
         binding.clMain.showWithCondition(isDataAvailable)
         binding.feedNoContent.root.showWithCondition(!isDataAvailable)
