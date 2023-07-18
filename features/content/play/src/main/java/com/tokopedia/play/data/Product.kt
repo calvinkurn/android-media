@@ -52,13 +52,13 @@ data class Product(
         val rating: String = "",
         @SerializedName("sold_quantity")
         val soldQuantity: String = "",
-        @SerializedName("SocialProofRank")
+        @SerializedName("social_proof_rank")
         val rankFmt: String = "",
-        @SerializedName("SocialProofRawValue")
+        @SerializedName("social_proof_raw_value")
         val rank: Int = 0,
-        @SerializedName("SocialProofTagColor")
+        @SerializedName("social_proof_tag_color")
         val ribbonColors: List<String> = emptyList(),
-        @SerializedName("SocialProofTypeValue")
+        @SerializedName("social_proof_type_value")
         val rankType: String = "",
 ){
     data class ProductButton(
