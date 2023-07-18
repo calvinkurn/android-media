@@ -34,6 +34,10 @@ class ThematicHeaderViewHolder(itemView: View, private val fragment: Fragment) :
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         thematicHeaderViewModel = discoveryBaseViewModel as ThematicHeaderViewModel
+        if (thematicHeaderViewModel?.fetchLottieState() == true) {
+            backgroundLottie.progress = 1f
+            backgroundLottie.cancelAnimation()
+        }
     }
 
     override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
@@ -65,6 +69,7 @@ class ThematicHeaderViewHolder(itemView: View, private val fragment: Fragment) :
             if (!lottieImage.isNullOrEmpty()) {
                 thematicHeaderViewModel?.let { viewModel ->
                     if (!viewModel.fetchLottieState()) {
+                        thematicHeaderViewModel?.setLottieState(true)
                         setupLottie(color, lottieImage)
                     }
                 }
@@ -104,7 +109,6 @@ class ThematicHeaderViewHolder(itemView: View, private val fragment: Fragment) :
                         backgroundLottie.setComposition(result)
                         backgroundLottie.setRenderMode(RenderMode.HARDWARE)
                         backgroundLottie.playAnimation()
-                        thematicHeaderViewModel?.setLottieState(true)
                     }
                 }
             }
