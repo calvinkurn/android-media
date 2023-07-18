@@ -126,12 +126,20 @@ internal class TrackingQueueSingleton(ctx: Context) : CoroutineScope {
         TrackRepository(context)
     }
 
+    private fun getTimeOutPut(): Long {
+        return TIMEOUT_PUT
+    }
+
+    private fun getTimeOutSend(): Long {
+        return TIMEOUT_SEND
+    }
+
     internal fun putEETracking(map: HashMap<String, Any>? = null) {
         if (map?.containsKey(ECOMMERCE) != true) {
             return
         }
         launch {
-            withTimeout(TIMEOUT_PUT) {
+            withTimeout(getTimeOutPut()) {
                 try {
                     newTrackingRepository.put(map)
                     mightHaveData = true
@@ -147,7 +155,7 @@ internal class TrackingQueueSingleton(ctx: Context) : CoroutineScope {
         customDimension: HashMap<String, Any>? = null
     ) {
         launch {
-            withTimeout(TIMEOUT_PUT) {
+            withTimeout(getTimeOutPut()) {
                 try {
                     newTrackingRepository.putEE(event, customDimension, enhanceECommerceMap)
                     mightHaveData = true
@@ -162,7 +170,7 @@ internal class TrackingQueueSingleton(ctx: Context) : CoroutineScope {
         enhanceECommerceMap: HashMap<String, Any>?
     ) {
         launch {
-            withTimeout(TIMEOUT_PUT) {
+            withTimeout(getTimeOutPut()) {
                 try {
                     newTrackingRepository.putEE(map, enhanceECommerceMap)
                     mightHaveData = true
@@ -180,7 +188,7 @@ internal class TrackingQueueSingleton(ctx: Context) : CoroutineScope {
         // send all tracking in db to gtm
         // launch in different coroutine scope.
         launch(Dispatchers.Default) {
-            withTimeout(TIMEOUT_SEND) {
+            withTimeout(getTimeOutSend()) {
                 try {
                     // atomicInteger to allow only 1 service at a time
                     // isTrackingQueueAvailable is to check if the db has any data to send
