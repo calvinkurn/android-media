@@ -61,6 +61,7 @@ import com.tokopedia.scp_rewards_touchpoints.common.Success
 import com.tokopedia.scp_rewards_touchpoints.common.di.DaggerCelebrationComponent
 import com.tokopedia.scp_rewards_touchpoints.databinding.CelebrationBottomSheetFragmentLayoutBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.toDp
@@ -152,7 +153,7 @@ class MedalCelebrationBottomSheet : BottomSheetUnify() {
             when (it) {
                 is Success<*> -> {
                     changeStatusBarIconsToLight()
-                    showMainView()
+                    setupBackground()
                     downloadAssets()
                 }
                 is Error -> {
@@ -196,19 +197,13 @@ class MedalCelebrationBottomSheet : BottomSheetUnify() {
         }
     }
 
-    private fun showMainView() {
-        binding?.apply {
-            mainFlipper.displayedChild = HAPPY_STATE
-        }
-        setupBackground()
-    }
-
     @SuppressLint("Range")
     private fun setupBackground() {
         (medalCelebrationViewModel.badgeLiveData.value as Success<ScpRewardsCelebrationModel>).data.apply {
             binding?.apply {
                 bgColor = scpRewardsCelebrationPage?.celebrationPage?.backgroundColor
-                mainView.container.backgroundTintList = ColorStateList.valueOf(Color.parseColor(bgColor))
+                parentContainer.backgroundTintList = ColorStateList.valueOf(Color.parseColor(bgColor))
+                loader.type = LoaderUnify.TYPE_DECORATIVE_WHITE
             }
         }
     }
@@ -370,8 +365,7 @@ class MedalCelebrationBottomSheet : BottomSheetUnify() {
     }
 
     private fun showAnimatedView() {
-        binding?.mainView?.animationViewFlipper?.displayedChild =
-            HAPPY_STATE
+        binding?.mainFlipper?.displayedChild = HAPPY_STATE
         initViewSetup()
         setupCouponCtaListeners()
         handler.postDelayed(
@@ -387,7 +381,6 @@ class MedalCelebrationBottomSheet : BottomSheetUnify() {
         binding?.mainView?.apply {
             celebrationHeading.alpha = 0f
             badgeName.alpha = 0f
-//            badgeDescription.alpha = 0f
             sunflare.alpha = 0f
             sponsorCard.alpha = 0f
             spotlight.alpha = 0f
@@ -659,9 +652,6 @@ class MedalCelebrationBottomSheet : BottomSheetUnify() {
         val listener = object : Animator.AnimatorListener {
             override fun onAnimationStart(animation: Animator) {}
             override fun onAnimationEnd(animation: Animator) {
-//                if (isFallbackCase || mandatoryAssetFailure) {
-//                    startRedirection()
-//                }
             }
             override fun onAnimationCancel(animation: Animator) {}
             override fun onAnimationRepeat(animation: Animator) {}
@@ -682,15 +672,6 @@ class MedalCelebrationBottomSheet : BottomSheetUnify() {
             binding?.mainView?.couponUi?.couponImage?.isEdgeControl = true
             binding?.mainView?.couponUi?.couponImage?.circularEdgeColor = Color.parseColor(bgColor)
             coupon_image
-        }
-        if(medalCelebrationViewModel.badgeLiveData.value is Success<*>){
-          val status = (medalCelebrationViewModel.badgeLiveData.value as Success<ScpRewardsCelebrationModel>).data.scpRewardsCelebrationPage?.celebrationPage?.benefit?.first()?.status
-          if(status == HIDDEN){
-              binding?.mainView?.couponUi?.couponImage?.scaleType = ImageView.ScaleType.CENTER_CROP
-          }
-            else{
-              binding?.mainView?.couponUi?.couponImage?.scaleType = ImageView.ScaleType.FIT_CENTER
-          }
         }
         binding?.mainView?.couponUi?.couponImage?.setImageDrawable(couponDrawable)
         context?.let {
