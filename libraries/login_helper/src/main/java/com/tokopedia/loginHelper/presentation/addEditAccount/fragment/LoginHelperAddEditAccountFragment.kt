@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -43,9 +44,7 @@ class LoginHelperAddEditAccountFragment : BaseDaggerFragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    private val viewModel: LoginHelperAddEditAccountViewModel by lazy(LazyThreadSafetyMode.NONE) {
-        ViewModelProvider(this, viewModelFactory)[LoginHelperAddEditAccountViewModel::class.java]
-    }
+    private val viewModel: LoginHelperAddEditAccountViewModel by viewModels { viewModelFactory }
 
     @Inject
     lateinit var saveToLocalCoachmark: SaveToLocalCoachmark

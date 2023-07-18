@@ -6,6 +6,7 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -63,9 +64,7 @@ class LoginHelperFragment : BaseDaggerFragment(), LoginHelperClickListener {
 
     private var loginHelperAdapter: LoginHelperRecyclerAdapter? = null
 
-    private val viewModel: LoginHelperViewModel by lazy(LazyThreadSafetyMode.NONE) {
-        ViewModelProvider(this, viewModelFactory)[LoginHelperViewModel::class.java]
-    }
+    private val viewModel: LoginHelperViewModel by viewModels { viewModelFactory }
 
     override fun onCreateView(
         inflater: LayoutInflater,
