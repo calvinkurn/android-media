@@ -116,7 +116,10 @@ class PostAtcViewModel @Inject constructor(
             categoryName = category.name,
             footer = footer,
             layoutName = data.name,
-            shopId = basicInfo.shopId
+            shopId = basicInfo.shopId,
+            price = basicInfo.price,
+            originalPrice = basicInfo.originalPrice,
+            condition = basicInfo.condition
         )
     }
 }
