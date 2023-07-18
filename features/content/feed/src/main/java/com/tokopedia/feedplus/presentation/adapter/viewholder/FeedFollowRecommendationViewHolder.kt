@@ -77,10 +77,16 @@ class FeedFollowRecommendationViewHolder(
     ) {
         if (model == null) return
 
+        val finalSelectedPosition = if (selectedPosition >= model.data.size) {
+            model.data.size - 1
+        } else {
+            selectedPosition
+        }
+
         val mappedList = model.data.mapIndexed { idx, item ->
             FeedFollowProfileAdapter.Model.Profile(
                 data = item,
-                isSelected = idx == selectedPosition,
+                isSelected = idx == finalSelectedPosition,
             )
         }
 
