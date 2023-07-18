@@ -173,33 +173,6 @@
                     android:text="@string/sfs_no" />
             </RadioGroup>
 
-<!--            <com.tokopedia.unifycomponents.ChipsUnify-->
-<!--                android:id="@+id/chips_unique_account_yes"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_marginStart="16dp"-->
-<!--                android:layout_marginTop="16dp"-->
-<!--                android:layout_marginEnd="8dp"-->
-<!--                app:chipSize="small"-->
-<!--                app:chipText="@string/sfs_yes"-->
-<!--                app:layout_constraintEnd_toStartOf="@+id/chips_unique_account_no"-->
-<!--                app:layout_constraintHorizontal_bias="0"-->
-<!--                app:layout_constraintHorizontal_chainStyle="packed"-->
-<!--                app:layout_constraintStart_toStartOf="parent"-->
-<!--                app:layout_constraintTop_toBottomOf="@+id/tg_unique_account_label" />-->
-
-<!--            <com.tokopedia.unifycomponents.ChipsUnify-->
-<!--                android:id="@+id/chips_unique_account_no"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_marginTop="16dp"-->
-<!--                android:layout_marginEnd="16dp"-->
-<!--                app:chipSize="small"-->
-<!--                app:chipText="@string/sfs_no"-->
-<!--                app:layout_constraintEnd_toEndOf="parent"-->
-<!--                app:layout_constraintStart_toEndOf="@+id/chips_unique_account_yes"-->
-<!--                app:layout_constraintTop_toBottomOf="@+id/tg_unique_account_label" />-->
-
             <com.tokopedia.unifycomponents.TipsUnify
                 android:id="@+id/tips_unique_account"
                 android:layout_width="0dp"
@@ -253,33 +226,6 @@
                 app:layout_constraintTop_toBottomOf="@+id/tips_unique_account"
                 app:typographyType="paragraph_3"
                 app:typographyWeight="bold" />
-
-<!--            <com.tokopedia.unifycomponents.ChipsUnify-->
-<!--                android:id="@+id/chips_campaign_relation_yes"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_marginStart="16dp"-->
-<!--                android:layout_marginTop="16dp"-->
-<!--                android:layout_marginEnd="8dp"-->
-<!--                app:chipSize="small"-->
-<!--                app:chipText="@string/sfs_yes"-->
-<!--                app:layout_constraintEnd_toStartOf="@+id/chips_campaign_relation_no"-->
-<!--                app:layout_constraintHorizontal_bias="0"-->
-<!--                app:layout_constraintHorizontal_chainStyle="packed"-->
-<!--                app:layout_constraintStart_toStartOf="parent"-->
-<!--                app:layout_constraintTop_toBottomOf="@+id/tg_campaign_relation" />-->
-
-<!--            <com.tokopedia.unifycomponents.ChipsUnify-->
-<!--                android:id="@+id/chips_campaign_relation_no"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_marginTop="16dp"-->
-<!--                android:layout_marginEnd="16dp"-->
-<!--                app:chipSize="small"-->
-<!--                app:chipText="@string/sfs_no"-->
-<!--                app:layout_constraintEnd_toEndOf="parent"-->
-<!--                app:layout_constraintStart_toEndOf="@+id/chips_campaign_relation_yes"-->
-<!--                app:layout_constraintTop_toBottomOf="@+id/tg_campaign_relation" />-->
 
             <RadioGroup
                 android:id="@+id/radio_handling_campaign_relations"
@@ -373,8 +319,6 @@
                 android:visibility="gone"
                 app:constraint_referenced_ids="tg_campaign_relation, radio_handling_campaign_relations"
                 />
-
-
 
             <View
                 android:id="@+id/divider_campaign_rule_oos_section"
