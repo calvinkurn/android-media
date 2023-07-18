@@ -12,10 +12,6 @@ class FpiPerformanceData(
         private const val PERCENTAGE = 100
     }
 
-    var allFramesTag = "all_frames"
-    var jankyFramesTag = "janky_frames"
-    var jankyFramesPercentageTag = "janky_frames_percentage"
-
     val jankyFramePercentage: Int
         get() = if (this.allFrames == 0) 0 else (this.jankyFrames.toFloat() / this.allFrames.toFloat() * PERCENTAGE).toInt()
 
@@ -39,5 +35,12 @@ class FpiPerformanceData(
     fun incrementDuration(duration: Double) {
         this.allTotalDurationMs += duration
         this.totalDurationMs = duration
+    }
+
+    fun reset() {
+        allFrames = 0
+        jankyFrames = 0
+        allTotalDurationMs = 0.0
+        totalDurationMs = 0.0
     }
 }

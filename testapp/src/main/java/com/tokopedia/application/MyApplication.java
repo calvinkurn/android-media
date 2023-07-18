@@ -17,6 +17,7 @@ import com.tkpd.remoteresourcerequest.task.ResourceDownloadManager;
 import com.tokochat.tokochat_config_common.util.TokoChatConnection;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.analytics.performance.fpi.FrameMetricsMonitoring;
 import com.tokopedia.analyticsdebugger.cassava.Cassava;
 import com.tokopedia.analyticsdebugger.cassava.data.RemoteSpec;
 import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
@@ -98,6 +99,7 @@ public class MyApplication extends BaseMainApplication
 
         NetworkClient.init(this);
         registerActivityLifecycleCallbacks(new GqlActivityCallback());
+        registerActivityLifecycleCallbacks(new FrameMetricsMonitoring(this));
 
         if (BuildConfig.DEBUG) {
             Timber.plant(new Timber.DebugTree());
