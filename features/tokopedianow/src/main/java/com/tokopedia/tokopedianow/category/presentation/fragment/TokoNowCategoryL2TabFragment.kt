@@ -7,8 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.GridLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
 import com.tokopedia.tokopedianow.category.di.component.DaggerCategoryL2TabComponent
@@ -21,6 +22,7 @@ import com.tokopedia.tokopedianow.category.presentation.viewmodel.TokoNowCategor
 import com.tokopedia.tokopedianow.common.listener.ProductAdsCarouselListener
 import com.tokopedia.tokopedianow.databinding.FragmentTokopedianowL2TabBinding
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.QuickFilterListener
+import com.tokopedia.tokopedianow.searchcategory.presentation.viewholder.ProductItemViewHolder
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
@@ -34,6 +36,9 @@ class TokoNowCategoryL2TabFragment : Fragment() {
                 this.components = components
             }
         }
+
+        private const val SPAN_COUNT = 3
+        private const val SPAN_FULL_SPACE = 1
     }
 
     @Inject
@@ -87,7 +92,17 @@ class TokoNowCategoryL2TabFragment : Fragment() {
     private fun setupRecyclerView() {
         binding?.recyclerView?.apply {
             adapter = this@TokoNowCategoryL2TabFragment.adapter
-            layoutManager = LinearLayoutManager(context)
+            layoutManager = GridLayoutManager(context, SPAN_COUNT).apply {
+                addOnScrollListener(createEndlessScrollListener(this))
+                spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+                    override fun getSpanSize(position: Int): Int {
+                        return when (adapter?.getItemViewType(position)) {
+                            ProductItemViewHolder.LAYOUT -> SPAN_FULL_SPACE
+                            else -> SPAN_COUNT
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -107,6 +122,16 @@ class TokoNowCategoryL2TabFragment : Fragment() {
             .categoryContextModule(CategoryContextModule(requireContext()))
             .build()
             .inject(this)
+    }
+
+    private fun createEndlessScrollListener(
+        layoutManager: GridLayoutManager
+    ): EndlessRecyclerViewScrollListener {
+        return object : EndlessRecyclerViewScrollListener(layoutManager) {
+            override fun onLoadMore(page: Int, totalItemsCount: Int) {
+
+            }
+        }
     }
 
     private fun createProductAdsCarouselListener() = object : ProductAdsCarouselListener {
