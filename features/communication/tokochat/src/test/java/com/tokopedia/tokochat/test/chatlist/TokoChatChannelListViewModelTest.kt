@@ -12,6 +12,7 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.every
 import io.mockk.invoke
+import io.mockk.verify
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.runBlocking
@@ -138,13 +139,38 @@ class TokoChatChannelListViewModelTest : TokoChatListViewModelTestFixture() {
             } returns result
 
             // When
-            viewModel.loadNextPageChatList()
+            viewModel.loadNextPageChatList(isLoadMore = false)
 
             // Then
             Assert.assertEquals(
                 result,
                 viewModel.chatListPair.value
             )
+        }
+    }
+
+    @Test
+    fun `should return channel list when success get from remote and load more`() {
+        runBlocking {
+            // Given
+            val result = mapOf<String, Int>()
+            every {
+                chatChannelUseCase.getAllChannel(any(), any(), captureLambda(), any())
+            } answers {
+                val onSuccessDummy = lambda<(List<ConversationsChannel>) -> Unit>()
+                onSuccessDummy.invoke(listOf())
+            }
+            every {
+                mapper.mapToTypeCounter(any())
+            } returns result
+
+            // When
+            viewModel.loadNextPageChatList(isLoadMore = true)
+
+            // Then
+            verify(exactly = 1) {
+                chatChannelUseCase.setLastTimeStamp(any())
+            }
         }
     }
 
@@ -164,7 +190,7 @@ class TokoChatChannelListViewModelTest : TokoChatListViewModelTestFixture() {
             } returns result
 
             // When
-            viewModel.loadNextPageChatList()
+            viewModel.loadNextPageChatList(isLoadMore = false)
 
             // Then
             Assert.assertEquals(
@@ -191,7 +217,7 @@ class TokoChatChannelListViewModelTest : TokoChatListViewModelTestFixture() {
             } returns result
 
             // When
-            viewModel.loadNextPageChatList(localSize = 100)
+            viewModel.loadNextPageChatList(localSize = 100, isLoadMore = false)
 
             // Then
             Assert.assertEquals(
@@ -217,7 +243,7 @@ class TokoChatChannelListViewModelTest : TokoChatListViewModelTestFixture() {
             }
 
             // When
-            viewModel.loadNextPageChatList()
+            viewModel.loadNextPageChatList(isLoadMore = false)
 
             // Then
             Assert.assertEquals(
@@ -242,7 +268,7 @@ class TokoChatChannelListViewModelTest : TokoChatListViewModelTestFixture() {
             }
 
             // When
-            viewModel.loadNextPageChatList()
+            viewModel.loadNextPageChatList(isLoadMore = false)
 
             // Then
             Assert.assertEquals(
@@ -261,7 +287,7 @@ class TokoChatChannelListViewModelTest : TokoChatListViewModelTestFixture() {
             } throws throwableDummy
 
             // When
-            viewModel.loadNextPageChatList()
+            viewModel.loadNextPageChatList(isLoadMore = false)
 
             // Then
             Assert.assertEquals(
@@ -283,7 +309,8 @@ class TokoChatChannelListViewModelTest : TokoChatListViewModelTestFixture() {
                         5, "", "", "", "",
                         null, null, null, null
                     ),
-                    null, null
+                    null,
+                    null
                 )
             ),
             ConversationsChannel(
@@ -296,7 +323,8 @@ class TokoChatChannelListViewModelTest : TokoChatListViewModelTestFixture() {
                         0, "", "", "", "",
                         null, null, null, null
                     ),
-                    null, null
+                    null,
+                    null
                 )
             )
         )
