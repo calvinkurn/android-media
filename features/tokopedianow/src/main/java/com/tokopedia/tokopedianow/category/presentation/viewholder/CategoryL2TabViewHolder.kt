@@ -70,11 +70,12 @@ class CategoryL2TabViewHolder(
     }
 
     private fun setupTabLayout(data: CategoryL2TabUiModel) {
-        binding?.tabUnify?.tabLayout?.apply {
+        binding?.tabUnify?.apply {
             val selectedTabPosition = data.selectedTabPosition
-            removeOnTabSelectedListener(tabSelectedListener)
-            getTabAt(selectedTabPosition)?.select()
-            addOnTabSelectedListener(tabSelectedListener)
+            tabLayout.removeOnTabSelectedListener(tabSelectedListener)
+            tabLayout.getTabAt(selectedTabPosition)?.select()
+            tabLayout.addOnTabSelectedListener(tabSelectedListener)
+            customTabMode = TabLayout.MODE_SCROLLABLE
         }
     }
 

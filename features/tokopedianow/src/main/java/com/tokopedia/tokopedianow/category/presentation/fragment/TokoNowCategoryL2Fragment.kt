@@ -17,7 +17,6 @@ import com.tokopedia.tokopedianow.category.presentation.adapter.differ.CategoryL
 import com.tokopedia.tokopedianow.category.presentation.adapter.typefactory.CategoryL2AdapterTypeFactory
 import com.tokopedia.tokopedianow.category.presentation.callback.TokoNowChooseAddressWidgetCallback
 import com.tokopedia.tokopedianow.category.presentation.model.CategoryL2TabModel
-import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryL2TabUiModel
 import com.tokopedia.tokopedianow.category.presentation.viewholder.CategoryL2TabViewHolder.CategoryL2TabListener
 import com.tokopedia.tokopedianow.category.presentation.viewmodel.TokoNowCategoryL2ViewModel
 import com.tokopedia.tokopedianow.common.listener.ProductAdsCarouselListener
@@ -129,13 +128,13 @@ class TokoNowCategoryL2Fragment : BaseCategoryFragment() {
     private fun setupTabSelectedListener(
         categoryL2TabModels: List<CategoryL2TabModel>
     ) {
-        tabsUnify?.tabLayout?.apply {
+        tabsUnify?.apply {
             val selectedTabPosition = categoryL2TabModels
                 .indexOfFirst { it.id == categoryIdL2 }
-            removeOnTabSelectedListener(tabSelectedListener)
-            getTabAt(selectedTabPosition)?.select()
-            addOnTabSelectedListener(tabSelectedListener)
-            tabMode = TabLayout.MODE_SCROLLABLE
+            tabLayout.removeOnTabSelectedListener(tabSelectedListener)
+            tabLayout.getTabAt(selectedTabPosition)?.select()
+            tabLayout.addOnTabSelectedListener(tabSelectedListener)
+            customTabMode = TabLayout.MODE_SCROLLABLE
         }
     }
 
