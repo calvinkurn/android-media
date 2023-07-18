@@ -13,6 +13,7 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.unifyprinciples.UnifyMotion
 import com.tokopedia.scp_rewards_touchpoints.R
 import com.tokopedia.scp_rewards_touchpoints.bottomsheet.utils.loadImage
+import com.tokopedia.scp_rewards_touchpoints.common.util.ViewUtil.rotate
 import com.tokopedia.scp_rewards_touchpoints.touchpoints.model.ScpToasterData
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -156,20 +157,9 @@ object ScpRewardsToaster {
 
         toasterCustomBottomHeight = 0
 
-        rotateSunflare(frame_icon)
+        frame_icon.rotate()
 
         return tempSnackBar
-    }
-
-    private fun rotateSunflare(frame_icon: ImageUnify) {
-        frame_icon.apply {
-            ObjectAnimator.ofFloat(this, View.ROTATION, 0f, 360f).apply {
-                duration = 5000
-                interpolator = null
-                repeatCount = ValueAnimator.INFINITE
-                start()
-            }
-        }
     }
 }
 

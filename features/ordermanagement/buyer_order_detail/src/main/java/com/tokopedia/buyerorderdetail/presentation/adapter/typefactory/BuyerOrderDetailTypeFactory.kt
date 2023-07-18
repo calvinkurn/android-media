@@ -44,8 +44,10 @@ import com.tokopedia.buyerorderdetail.presentation.model.PlainHeaderUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.PlatformFeeInfoUiModel
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.PofHeaderLabelViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.PofRefundInfoViewHolder
+import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.ScpRewardsMedalTouchPointViewHolder
 import com.tokopedia.buyerorderdetail.presentation.model.PofRefundInfoUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
+import com.tokopedia.buyerorderdetail.presentation.model.ScpRewardsMedalTouchPointUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.ShipmentInfoUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.SimpleCopyableKeyValueUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.ThickDividerUiModel
@@ -113,6 +115,7 @@ open class BuyerOrderDetailTypeFactory(
             ProductListToggleViewHolder.LAYOUT -> ProductListToggleViewHolder(parent, productListToggleListener)
             PofHeaderLabelViewHolder.LAYOUT -> PofHeaderLabelViewHolder(parent)
             PofRefundInfoViewHolder.LAYOUT -> PofRefundInfoViewHolder(parent, pofRefundInfoListener)
+            ScpRewardsMedalTouchPointViewHolder.LAYOUT -> ScpRewardsMedalTouchPointViewHolder(parent)
             else -> super.createViewHolder(parent, type)
         }
     }
@@ -222,4 +225,6 @@ open class BuyerOrderDetailTypeFactory(
     fun type(pofRefundInfoUiModel: PofRefundInfoUiModel): Int {
         return PofRefundInfoViewHolder.LAYOUT
     }
+
+    fun type(scpRewardsMedalTouchPointUiModel: ScpRewardsMedalTouchPointUiModel): Int = ScpRewardsMedalTouchPointViewHolder.LAYOUT
 }
