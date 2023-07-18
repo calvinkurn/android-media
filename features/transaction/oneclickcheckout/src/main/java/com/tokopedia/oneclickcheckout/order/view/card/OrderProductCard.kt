@@ -508,16 +508,16 @@ class OrderProductCard(
         product: OrderProduct,
         shop: OrderShop
     ) {
-        binding.tvSeeAllAddonProduct.showIfWithBlock(
-            predicate = addOnsProductData.bottomsheet.title.isNotBlank() &&
-                addOnsProductData.bottomsheet.applink.isNotBlank() &&
-                addOnsProductData.bottomsheet.isShown
-        ) {
-            text = addOnsProductData.bottomsheet.title
-        }
-        binding.tvSeeAllAddonProduct.setOnClickListener {
-            orderSummaryAnalytics.eventClickLihatSemuaAddOnProductWidget()
-            listener.onClickSeeAllAddOnProductService(product, addOnsProductData, shop)
+        if (addOnsProductData.bottomsheet.isShown) {
+            binding.tvSeeAllAddonProduct.apply {
+                text = addOnsProductData.bottomsheet.title
+                setOnClickListener {
+                    orderSummaryAnalytics.eventClickLihatSemuaAddOnProductWidget()
+                    listener.onClickSeeAllAddOnProductService(product, addOnsProductData, shop)
+                }
+            }
+        } else {
+            binding.tvSeeAllAddonProduct.gone()
         }
     }
 

@@ -65,7 +65,8 @@
         app:typographyWeight="reguler"
         app:typographyType="display_3"
         android:textColor="@color/Unify_GN500"
-        android:text="Lihat Semua"/>
+        tools:text="Lihat Semua"
+        android:visibility="gone"/>
 
     <LinearLayout
         android:id="@+id/ll_addon_product_items"
