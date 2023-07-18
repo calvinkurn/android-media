@@ -68,11 +68,11 @@ class CategoryL2TabViewHolder(
     }
 
     private fun setupTabLayout(data: CategoryL2TabUiModel) {
-        binding?.tabUnify?.apply {
+        binding?.tabUnify?.tabLayout?.apply {
             val selectedTabPosition = data.selectedTabPosition
-            tabLayout.removeOnTabSelectedListener(tabSelectedListener)
-            tabLayout.getTabAt(selectedTabPosition)?.select()
-            tabLayout.addOnTabSelectedListener(tabSelectedListener)
+            removeOnTabSelectedListener(tabSelectedListener)
+            getTabAt(selectedTabPosition)?.select()
+            addOnTabSelectedListener(tabSelectedListener)
         }
     }
 
