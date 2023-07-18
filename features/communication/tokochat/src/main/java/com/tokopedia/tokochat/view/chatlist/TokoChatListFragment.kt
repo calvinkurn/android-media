@@ -13,15 +13,15 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalCommunication
 import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.tokochat.databinding.TokochatChatlistFragmentBinding
 import com.tokopedia.tokochat.common.util.TokoChatValueUtil
 import com.tokopedia.tokochat.common.view.chatlist.TokoChatListBaseFragment
 import com.tokopedia.tokochat.common.view.chatlist.adapter.TokoChatListBaseAdapter
 import com.tokopedia.tokochat.common.view.chatlist.listener.TokoChatListItemListener
 import com.tokopedia.tokochat.common.view.chatlist.uimodel.TokoChatListItemUiModel
+import com.tokopedia.tokochat.databinding.TokochatChatlistFragmentBinding
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -55,22 +55,26 @@ class TokoChatListFragment @Inject constructor(
 
     private fun initChatListData() {
         lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.getChatListFlow().collect()
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                var isCompleted = false
+                viewModel.getChatListFlow().collectLatest {
+                    when (it) {
+                        is Success -> {
+                            addOrUpdateChatItem(it.data)
+
+                            if (!isCompleted) {
+                                viewModel.loadNextPageChatList(it.data.size)
+                                isCompleted = true
+                            }
+                        }
+                        is Fail -> {}
+                    }
+                }
             }
         }
     }
 
     override fun initObservers() {
-        viewModel.chatListData.observe(viewLifecycleOwner) {
-            when (it) {
-                is Success -> {
-                    addOrUpdateChatItem(it.data)
-                }
-                is Fail -> {}
-            }
-        }
-
         viewModel.error.observe(viewLifecycleOwner) {
             Log.d("TOKOCHAT-LIST", it.first.stackTraceToString())
         }
@@ -100,7 +104,7 @@ class TokoChatListFragment @Inject constructor(
     }
 
     override fun onLoadMore() {
-        viewModel.loadChatList()
+        viewModel.loadNextPageChatList()
     }
 
     private fun notifyWhenAllowed(position: Int) {
