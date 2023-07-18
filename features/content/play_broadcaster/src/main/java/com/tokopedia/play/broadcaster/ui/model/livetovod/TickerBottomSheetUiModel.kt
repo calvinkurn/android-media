@@ -19,7 +19,7 @@ data class TickerBottomSheetUiModel(
     )
 
     data class Action(
-        val index: String,
+        val key: String,
         val text: String,
         val link: String,
     )

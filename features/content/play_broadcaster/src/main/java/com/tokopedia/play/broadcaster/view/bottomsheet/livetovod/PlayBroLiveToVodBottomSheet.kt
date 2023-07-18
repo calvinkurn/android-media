@@ -20,11 +20,11 @@ class PlayBroLiveToVodBottomSheet @Inject constructor(
 
     private var mData: TickerBottomSheetUiModel = TickerBottomSheetUiModel.Empty
 
-    private fun generateLearnMoreAppLink(): String {
+    private fun generateInAppLink(appLink: String): String {
         return getString(
             R.string.up_webview_template,
             ApplinkConst.WEBVIEW,
-            getString(com.tokopedia.content.common.R.string.ugc_get_to_know_more_link),
+            appLink,
         )
     }
 
@@ -37,11 +37,12 @@ class PlayBroLiveToVodBottomSheet @Inject constructor(
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 PlayBroadcasterLiveToVodBottomSheetScreen(
+                    data = mData,
                     onBackPressed = { dismiss() },
-                    onLearnMorePressed = {
+                    onActionTextPressed = { appLink ->
                         router.route(
                             requireContext(),
-                            generateLearnMoreAppLink(),
+                            generateInAppLink(appLink),
                         )
                     },
                 )
