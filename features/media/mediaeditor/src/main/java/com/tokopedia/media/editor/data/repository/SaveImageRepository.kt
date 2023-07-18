@@ -1,17 +1,14 @@
 package com.tokopedia.media.editor.data.repository
 
-import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.net.Uri
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.media.editor.ui.uimodel.BitmapCreation
 import com.tokopedia.media.editor.utils.GENERAL_ERROR
 import com.tokopedia.media.editor.utils.getEditorSaveFolderPath
 import com.tokopedia.media.editor.utils.newRelicLog
-import com.tokopedia.media.editor.utils.showErrorGeneralToaster
 import com.tokopedia.utils.image.ImageProcessingUtil
 import kotlinx.coroutines.withContext
 import java.io.File
@@ -32,7 +29,6 @@ interface SaveImageRepository {
 }
 
 class SaveImageRepositoryImpl @Inject constructor(
-    @ApplicationContext private val context: Context,
     private val dispatchers: CoroutineDispatchers,
     private val bitmapConverter: BitmapConverterRepository,
     private val bitmapCreation: BitmapCreationRepository,
