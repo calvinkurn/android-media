@@ -19,6 +19,7 @@ import com.tokopedia.logisticcart.shipping.features.shippingduration.di.DaggerSh
 import com.tokopedia.logisticcart.shipping.features.shippingduration.di.ShippingDurationModule
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.logisticcart.shipping.model.Product
+import com.tokopedia.logisticcart.shipping.model.RatesParam
 import com.tokopedia.logisticcart.shipping.model.RatesViewModelType
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
@@ -61,6 +62,28 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
     var shippingDurationAdapter: ShippingDurationAdapter? = null
 
     private var mIsCorner = false
+
+    fun show(
+        activity: Activity,
+        fragmentManager: FragmentManager,
+        shippingDurationBottomsheetListener: ShippingDurationBottomsheetListener?,
+        param: RatesParam,
+        shopCity: String,
+        orderWeight: Long
+    ) {
+        this.activity = activity
+        this.shippingDurationBottomsheetListener = shippingDurationBottomsheetListener
+        initData(
+            shipmentDetailData, selectedServiceId, shopShipmentList, recipientAddressModel,
+            cartPosition, codHistory, isLeasing, pslCode, products, cartString,
+            isDisableOrderPrioritas, isTradeInDropOff, isFulFillment, preOrderTime, mvc, cartData,
+            warehouseId
+        )
+        initBottomSheet(activity)
+        initView(activity)
+        this.isOcc = isOcc
+        bottomSheet?.show(fragmentManager, this.javaClass.simpleName)
+    }
 
     fun show(
         activity: Activity,

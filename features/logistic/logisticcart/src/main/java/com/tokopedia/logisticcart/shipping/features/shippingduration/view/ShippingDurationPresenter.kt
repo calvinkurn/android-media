@@ -84,21 +84,19 @@ class ShippingDurationPresenter @Inject constructor(
             shipmentDetailData.selectedCourier?.let { selectedCourier ->
                 selectedSpId = selectedCourier.shipperProductId
             }
+            val param = RatesParam.Builder(shopShipmentList, shippingParam)
+                .isCorner(isCorner)
+                .codHistory(codHistory)
+                .isLeasing(isLeasing)
+                .promoCode(pslCode)
+                .mvc(mvc)
+                .isOcc(isOcc)
+                .cartData(cartData)
+                .warehouseId(warehouseId)
+                .build()
             loadDuration(
-                selectedSpId = selectedSpId,
-                selectedServiceId = selectedServiceId,
-                codHistory = codHistory,
-                isCorner = isCorner,
-                isLeasing = isLeasing,
-                shopShipmentList = shopShipmentList,
-                isRatesTradeInApi = isTradeInDropOff,
-                shippingParam = shippingParam,
-                pslCode = pslCode,
-                mvc = mvc,
-                cartData = cartData,
-                isOcc = isOcc,
-                disableCourierPromo = isDisableCourierPromo,
-                warehouseId = warehouseId
+                param,
+                isRatesTradeInApi = isTradeInDropOff
             )
         }
     }
@@ -106,33 +104,16 @@ class ShippingDurationPresenter @Inject constructor(
     private fun loadDuration(
         selectedSpId: Int,
         selectedServiceId: Int,
-        codHistory: Int,
-        isCorner: Boolean,
-        isLeasing: Boolean,
         shopShipmentList: List<ShopShipment>,
+        ratesParam: RatesParam,
         isRatesTradeInApi: Boolean,
-        shippingParam: ShippingParam,
-        pslCode: String,
-        mvc: String,
-        cartData: String,
         isOcc: Boolean,
-        disableCourierPromo: Boolean,
-        warehouseId: String
+        disableCourierPromo: Boolean
     ) {
-        val param = RatesParam.Builder(shopShipmentList, shippingParam)
-            .isCorner(isCorner)
-            .codHistory(codHistory)
-            .isLeasing(isLeasing)
-            .promoCode(pslCode)
-            .mvc(mvc)
-            .isOcc(isOcc)
-            .cartData(cartData)
-            .warehouseId(warehouseId)
-            .build()
         val observable: Observable<ShippingRecommendationData> = if (isRatesTradeInApi) {
-            ratesApiUseCase.execute(param)
+            ratesApiUseCase.execute(ratesParam)
         } else {
-            ratesUseCase.execute(param)
+            ratesUseCase.execute(ratesParam)
         }
         observable
             .map { shippingRecommendationData: ShippingRecommendationData ->
