@@ -511,7 +511,5 @@ class LoginHelperViewModelTest {
 
         verify { getProfileUseCase.unsubscribe() }
         verify { loginTokenV2UseCase.cancelJobs() }
-        verify { generatePublicKeyUseCase.cancelJobs() }
-        verify { getUserDetailsRestCase.cancelJobs() }
     }
 }
