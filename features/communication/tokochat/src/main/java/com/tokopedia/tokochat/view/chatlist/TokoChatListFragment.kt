@@ -18,10 +18,11 @@ import com.tokopedia.tokochat.common.view.chatlist.TokoChatListBaseFragment
 import com.tokopedia.tokochat.common.view.chatlist.adapter.TokoChatListBaseAdapter
 import com.tokopedia.tokochat.common.view.chatlist.listener.TokoChatListItemListener
 import com.tokopedia.tokochat.common.view.chatlist.uimodel.TokoChatListItemUiModel
+import com.tokopedia.tokochat.common.view.chatlist.uimodel.TokoChatListItemUiModel.Companion.getServiceTypeName
 import com.tokopedia.tokochat.databinding.TokochatChatlistFragmentBinding
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -57,28 +58,31 @@ class TokoChatListFragment @Inject constructor(
 
     private fun initChatListData() {
         lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.getChatListFlow().collect()
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                var isCompleted = false
+                viewModel.getChatListFlow().collectLatest {
+                    when (it) {
+                        is Success -> {
+                            addOrUpdateChatItem(it.data)
+
+                            if (!isCompleted) {
+                                viewModel.loadNextPageChatList(it.data.size)
+                                isCompleted = true
+                            }
+                        }
+                        is Fail -> {}
+                    }
+                }
             }
         }
     }
 
     override fun initObservers() {
-        viewModel.chatListData.observe(viewLifecycleOwner) {
-            when (it) {
-                is Success -> {
-                    addOrUpdateChatItem(it.data)
-                }
-                is Fail -> {}
-            }
-        }
-
         viewModel.chatListPair.observe(viewLifecycleOwner) {
             if (it.isNotEmpty()) {
                 tokoChatAnalytics.viewDriverChatList(it)
             }
         }
-
         viewModel.error.observe(viewLifecycleOwner) {
             Log.d("TOKOCHAT-LIST", it.first.stackTraceToString())
         }
@@ -108,7 +112,7 @@ class TokoChatListFragment @Inject constructor(
     }
 
     override fun onLoadMore() {
-        viewModel.loadChatList(isNextPage = true)
+        viewModel.loadNextPageChatList()
     }
 
     private fun notifyWhenAllowed(position: Int) {
@@ -122,14 +126,15 @@ class TokoChatListFragment @Inject constructor(
     }
 
     override fun onClickChatItem(element: TokoChatListItemUiModel) {
+        val serviceName = getServiceTypeName(element.serviceType)
         tokoChatAnalytics.clickDriverChatList(
             gojekOrderId = element.orderId,
-            serviceTypeName = element.getServiceTypeName(),
+            serviceTypeName = serviceName,
             counter = element.counter,
             chatDuration = element.getRelativeTime()
         )
         context?.let {
-            val source = "?${ApplinkConst.TokoChat.PARAM_SOURCE}=${element.getServiceTypeName()}"
+            val source = "?${ApplinkConst.TokoChat.PARAM_SOURCE}=${serviceName}"
             val paramOrderIdGojek = "&${ApplinkConst.TokoChat.ORDER_ID_GOJEK}=${element.orderId}"
             val applink = "${ApplinkConstInternalCommunication.TOKO_CHAT}$source$paramOrderIdGojek"
             val intent = RouteManager.getIntent(it, applink)

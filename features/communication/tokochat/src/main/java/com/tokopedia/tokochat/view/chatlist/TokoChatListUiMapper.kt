@@ -6,6 +6,7 @@ import com.gojek.conversations.channel.ConversationsChannel
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.tokochat.common.view.chatlist.uimodel.TokoChatListItemUiModel
+import com.tokopedia.tokochat.common.view.chatlist.uimodel.TokoChatListItemUiModel.Companion.getServiceTypeName
 import javax.inject.Inject
 
 class TokoChatListUiMapper@Inject constructor(
@@ -28,12 +29,13 @@ class TokoChatListUiMapper@Inject constructor(
         )
     }
 
-    fun mapToTypeCounter(chatListItems: List<TokoChatListItemUiModel>): Map<String, Int> {
+    fun mapToTypeCounter(channelList: List<ConversationsChannel>): Map<String, Int> {
         val result = ArrayMap<String, Int>()
-        chatListItems.forEach {
-            val serviceTypeName = it.getServiceTypeName()
-            val lastCounter: Int = result.getOrDefault(it.getServiceTypeName(), Int.ZERO)
-            result[serviceTypeName] = lastCounter + it.counter
+        channelList.forEach {
+            val serviceTypeName = getServiceTypeName(
+                it.metadata?.orderInfo?.serviceType ?: Int.ZERO)
+            val lastCounter: Int = result.getOrDefault(serviceTypeName, Int.ZERO)
+            result[serviceTypeName] = lastCounter + it.unreadCount
         }
         return result
     }

@@ -21,10 +21,12 @@ data class TokoChatListItemUiModel(
         )
     }
 
-    fun getServiceTypeName(): String {
-        return when (serviceType) {
-            TOKOFOOD_SERVICE_TYPE -> TOKOFOOD
-            else -> ""
+    companion object {
+        fun getServiceTypeName(serviceType: Int): String {
+            return when (serviceType) {
+                TOKOFOOD_SERVICE_TYPE -> TOKOFOOD
+                else -> ""
+            }
         }
     }
 }
