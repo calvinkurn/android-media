@@ -37,7 +37,7 @@ class SmartBillsOnboardingFragment : BaseDaggerFragment() {
             val bulletSpan: BulletSpan
             val gapWidth = dpToPx(activity, BULLET_GAP_WIDTH_PX)
             val radius = dpToPx(activity, BULLET_RADIUS_PX)
-            val bulletColor = ContextCompat.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_N700)
+            val bulletColor = ContextCompat.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_NN950)
             bulletSpan = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                 BulletSpan(gapWidth, bulletColor, radius)
             } else {

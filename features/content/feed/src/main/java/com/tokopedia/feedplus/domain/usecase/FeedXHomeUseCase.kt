@@ -343,10 +343,17 @@ class FeedXHomeUseCase @Inject constructor(
             
             fragment FeedXProduct on FeedXProduct {
               id
+              isParent
+              parentID
+              hasVariant
               name
               coverURL
               webLink
               appLink
+              affiliate {
+                id
+                channel
+              }
               star
               price
               priceFmt

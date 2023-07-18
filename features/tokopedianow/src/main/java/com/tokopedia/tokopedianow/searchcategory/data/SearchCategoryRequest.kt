@@ -4,6 +4,8 @@ import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.discovery.common.utils.UrlParamUtils.generateUrlParamString
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.tokopedianow.common.domain.model.GetProductAdsResponse
+import com.tokopedia.tokopedianow.common.domain.query.GetProductAdsQuery
 import com.tokopedia.tokopedianow.home.domain.model.GetRepurchaseResponse
 import com.tokopedia.tokopedianow.home.domain.query.GetRepurchaseWidget
 import com.tokopedia.tokopedianow.home.domain.usecase.GetRepurchaseWidgetUseCase
@@ -14,6 +16,7 @@ import com.tokopedia.tokopedianow.searchcategory.domain.model.DynamicChannelMode
 import com.tokopedia.tokopedianow.searchcategory.domain.model.GetFeedbackFieldModel
 import com.tokopedia.tokopedianow.searchcategory.domain.model.QuickFilterModel
 import com.tokopedia.tokopedianow.searchcategory.utils.CATEGORY_ID
+import com.tokopedia.tokopedianow.searchcategory.utils.PRODUCT_ADS_PARAMS
 import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW_QUERY_PARAMS
 import com.tokopedia.tokopedianow.searchcategory.utils.TYPE
 import com.tokopedia.tokopedianow.searchcategory.utils.WAREHOUSE_ID
@@ -22,6 +25,12 @@ import com.tokopedia.usecase.RequestParams
 internal fun getTokonowQueryParam(requestParams: RequestParams): Map<String?, Any> {
     return requestParams.parameters[TOKONOW_QUERY_PARAMS] as? Map<String?, Any> ?: mapOf()
 }
+
+internal fun createGetProductAdsRequest(requestParams: RequestParams) = GraphqlRequest(
+    GetProductAdsQuery.getQuery(),
+    GetProductAdsResponse::class.java,
+    mapOf(GetProductAdsQuery.DISPLAY_PARAMS to requestParams.parameters[PRODUCT_ADS_PARAMS])
+)
 
 internal fun createAceSearchProductRequest(params: Map<String?, Any>) = GraphqlRequest(
     ACE_SEARCH_PRODUCT_QUERY,

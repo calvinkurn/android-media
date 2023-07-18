@@ -26,7 +26,7 @@
         android:maxLines="2"
         android:padding="8dp"
         android:background="@color/Unify_Background"
-        android:textColor="@color/Unify_N700_68"
+        android:textColor="@color/Unify_NN950_68"
         android:textAlignment="center"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

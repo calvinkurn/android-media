@@ -46,7 +46,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:src="@color/Unify_G500"
+            tools:src="@color/Unify_GN500"
             tools:visibility="visible" />
 
         <com.tokopedia.unifycomponents.Label
@@ -108,7 +108,7 @@
             android:layout_marginBottom="@dimen/unify_space_2"
             android:ellipsize="end"
             android:maxLines="1"
-            android:textColor="@color/Unify_N700_96"
+            android:textColor="@color/Unify_NN950_96"
             app:layout_constraintBottom_toBottomOf="@id/dgu_campaign_image_background"
             app:layout_constraintLeft_toLeftOf="@id/dgu_campaign_image_background"
             app:layout_constraintRight_toRightOf="@id/dgu_campaign_image_background"
@@ -156,8 +156,8 @@
             android:layout_width="@dimen/layout_lvl2"
             android:layout_height="@dimen/layout_lvl2"
             android:layout_marginLeft="@dimen/unify_space_8"
-            app:icon_color_light_enable="@color/Unify_Y300"
-            app:icon_color_night_enable="@color/Unify_Y300"
+            app:icon_color_light_enable="@color/Unify_YN300"
+            app:icon_color_night_enable="@color/Unify_YN300"
             app:icon_enable_state="true"
             app:icon_name="STAR_FILLED"
             app:layout_constraintBottom_toBottomOf="@id/dgu_review_star_rating_value"
@@ -199,7 +199,7 @@
             android:layout_marginLeft="@dimen/unify_space_8"
             android:layout_marginTop="@dimen/unify_space_4"
             android:background="@drawable/bg_dgu_blue_square_rating"
-            android:textColor="@color/Unify_N0"
+            android:textColor="@color/Unify_NN0"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@id/dgu_review_star_rating_value"
             app:typographyType="small"

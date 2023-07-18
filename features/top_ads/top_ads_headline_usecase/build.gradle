@@ -13,6 +13,11 @@ buildscript {
     }
 }
 
+android {
+    namespace 'com.tokopedia.top_ads_headline_usecase'
+    testNamespace 'com.tokopedia.top_ads_headline_usecase.test'
+}
+
 dependencies {
     implementation projectOrAar(rootProject.ext.libraries.graphql)
     implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation

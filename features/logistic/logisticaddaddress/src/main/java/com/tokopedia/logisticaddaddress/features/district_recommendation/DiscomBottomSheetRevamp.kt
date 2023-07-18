@@ -31,7 +31,6 @@ import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.LocationSettingsRequest
 import com.google.android.gms.location.LocationSettingsStatusCodes
-import com.google.android.gms.tasks.OnFailureListener
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.dialog.DialogUnify
@@ -706,17 +705,20 @@ class DiscomBottomSheetRevamp :
                     isGpsOn = true
                 }
                 .addOnFailureListener(
-                    requireActivity(),
-                    OnFailureListener { e ->
-                        when ((e as ApiException).statusCode) {
+                    requireActivity()
+                ) { e ->
+                    if (e is ApiException) {
+                        when (e.statusCode) {
                             LocationSettingsStatusCodes.RESOLUTION_REQUIRED ->
-
                                 try {
                                     // Show the dialog by calling startResolutionForResult(), and check the
                                     // result in onActivityResult().
-                                    val rae = e as ResolvableApiException
-                                    val intentSenderRequest = IntentSenderRequest.Builder(rae.resolution.intentSender).build()
-                                    gpsResultResolutionContract.launch(intentSenderRequest)
+                                    if (e is ResolvableApiException) {
+                                        val intentSenderRequest =
+                                            IntentSenderRequest.Builder(e.resolution.intentSender)
+                                                .build()
+                                        gpsResultResolutionContract.launch(intentSenderRequest)
+                                    }
                                 } catch (sie: IntentSender.SendIntentException) {
                                     sie.printStackTrace()
                                 }
@@ -728,7 +730,7 @@ class DiscomBottomSheetRevamp :
                             }
                         }
                     }
-                )
+                }
         }
         return isGpsOn
     }

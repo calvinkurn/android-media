@@ -40,6 +40,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.logisticCommon.data.constant.AddressConstant
@@ -86,6 +87,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
+import timber.log.Timber
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -93,7 +95,7 @@ import javax.inject.Inject
 
 @FlowPreview
 @ExperimentalCoroutinesApi
-class TokoFoodPurchaseFragment :
+open class TokoFoodPurchaseFragment :
     BaseMultiFragment(),
     TokoFoodPurchaseActionListener,
     TokoFoodPurchaseToolbarListener,
@@ -125,7 +127,7 @@ class TokoFoodPurchaseFragment :
         }
     }
 
-    private var rvAdapter: TokoFoodPurchaseAdapter? = null
+    protected var rvAdapter: TokoFoodPurchaseAdapter? = null
     private var toolbar: TokoFoodPurchaseToolbar? = null
     private var loaderDialog: LoaderDialog? = null
     private var consentBottomSheet: TokoFoodPurchaseConsentBottomSheet? = null
@@ -133,7 +135,7 @@ class TokoFoodPurchaseFragment :
     private var shopId = ""
     private var currentCartIdList: List<String> = listOf()
     private var isPaymentButtonLoading: Boolean = false
-    private var canPaymentButtonClicked: Boolean = false
+    private var canPaymentButtonClicked: Boolean = true
 
     override fun onAttachActivity(context: Context?) {
         super.onAttachActivity(context)
@@ -210,12 +212,16 @@ class TokoFoodPurchaseFragment :
 
     private fun loadData() {
         showLoadingLayout()
-        context?.let {
-            ChooseAddressUtils.getLocalizingAddressData(it).let { addressData ->
-                viewModel.setIsHasPinpoint(addressData.address_id, addressData.latLong.isNotEmpty())
-            }
+        getLocalCacheModel()?.let { addressData ->
+            viewModel.setIsHasPinpoint(addressData.address_id, addressData.latLong.isNotEmpty())
         }
         viewModel.loadData()
+    }
+
+    open fun getLocalCacheModel(): LocalCacheModel? {
+        return context?.let {
+            ChooseAddressUtils.getLocalizingAddressData(it)
+        }
     }
 
     private fun showLoading() {
@@ -1060,7 +1066,11 @@ class TokoFoodPurchaseFragment :
             val paymentCheckoutString = ApplinkConstInternalPayment.PAYMENT_CHECKOUT
             val intent = RouteManager.getIntent(context, paymentCheckoutString)
             intent.putExtra(PaymentConstant.EXTRA_PARAMETER_TOP_PAY_DATA, checkoutResultData)
-            startActivityForResult(intent, REQUEST_CODE_PAYMENT)
+            try {
+                startActivityForResult(intent, REQUEST_CODE_PAYMENT)
+            } catch (ex: Exception) {
+                Timber.e(ex)
+            }
         }
     }
 
