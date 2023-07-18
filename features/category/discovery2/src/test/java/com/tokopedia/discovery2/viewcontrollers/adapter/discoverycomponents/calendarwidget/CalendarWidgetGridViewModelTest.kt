@@ -26,11 +26,9 @@ class CalendarWidgetGridViewModelTest {
     }
     private val application: Application = mockk()
 
-    private val viewModel: CalendarWidgetGridViewModel = spyk(CalendarWidgetGridViewModel(application, componentsItem, 99))
-
-    private val calenderWidgetUseCase: ProductCardsUseCase by lazy {
-        mockk()
-    }
+    private val viewModel: CalendarWidgetGridViewModel =
+        spyk(CalendarWidgetGridViewModel(application, componentsItem, 99))
+    private val calenderWidgetUseCase: ProductCardsUseCase = mockk()
 
     @Before
     @Throws(Exception::class)
@@ -61,7 +59,12 @@ class CalendarWidgetGridViewModelTest {
         runBlocking {
             viewModel.calenderWidgetUseCase = calenderWidgetUseCase
             every { componentsItem.properties?.calendarType } returns "dynamic"
-            coEvery { viewModel.calenderWidgetUseCase?.loadFirstPageComponents(any(), any()) } returns true
+            coEvery {
+                calenderWidgetUseCase.loadFirstPageComponents(
+                    any(),
+                    any()
+                )
+            } returns true
 
             viewModel.onAttachToViewHolder()
 

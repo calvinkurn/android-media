@@ -51,7 +51,7 @@ class GetOccCartData(
     val popUp: PopUp = PopUp(),
     @SerializedName("add_on_wording")
     val addOnWording: AddOnGiftingWording = AddOnGiftingWording(),
-    @SerializedName("summary_add_ons")
+    @SerializedName("add_ons_summary")
     val summaryAddOns: List<SummaryAddOnProductResponse> = listOf()
 )
 

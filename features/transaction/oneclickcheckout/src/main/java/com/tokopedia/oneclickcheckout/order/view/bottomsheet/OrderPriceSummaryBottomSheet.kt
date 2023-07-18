@@ -117,9 +117,9 @@ class OrderPriceSummaryBottomSheet {
         orderCost: OrderCost,
         inflater: LayoutInflater
     ) {
-        //will show addons product layout at least one of the addons is selected
+        // will show addons product layout at least one of the addons is selected
         binding.llAddonsProduct.showIfWithBlock(orderCost.addOnsProductSelectedList.isNotEmpty()) {
-            //traverse list of summary add ons
+            // traverse list of summary add ons
             orderCost.summaryAddOnsProduct.forEach { summaryAddOnProduct ->
                 // addons product selected are filtered based on summary type to know how many total quantities and price
                 val addOnsProductSelectedFiltered = orderCost.addOnsProductSelectedList.filter { it.type == summaryAddOnProduct.type }
@@ -289,6 +289,6 @@ class OrderPriceSummaryBottomSheet {
     }
 
     internal companion object {
-        private const val SUMMARY_WORD_TO_BE_REPLACED = "{{qty}}"
+        private const val SUMMARY_WORD_TO_BE_REPLACED = "{{total}}"
     }
 }

@@ -26,7 +26,7 @@
             android:layout_centerVertical="true"
             android:padding="16dp"
             android:text="@string/label_promo_suggestion_title"
-            android:textColor="@color/Unify_N700_96"
+            android:textColor="@color/Unify_NN950_96"
             app:layout_constraintEnd_toStartOf="@+id/button_close"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"

@@ -141,8 +141,8 @@ class LihatSemuaViewHolder(itemView: View, private val fragment: Fragment) : Abs
                 lihatTitleTextView.setTextColor(MethodChecker.getColor(it, R.color.discovery2_dms_white))
                 lihatSubTitleTextView.setTextColor(MethodChecker.getColor(it, R.color.discovery2_dms_white_95))
             } else {
-                lihatTitleTextView.setTextColor(MethodChecker.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
-                lihatSubTitleTextView.setTextColor(MethodChecker.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+                lihatTitleTextView.setTextColor(MethodChecker.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_NN950_96))
+                lihatSubTitleTextView.setTextColor(MethodChecker.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_NN950_68))
             }
         }
     }

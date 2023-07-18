@@ -88,7 +88,7 @@
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/iconunify_chevron_right"
-                app:tint="@color/Unify_N500" />
+                app:tint="@color/Unify_NN900" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
 
@@ -100,7 +100,7 @@
 <!--            android:layout_marginStart="12dp"-->
 <!--            android:layout_marginTop="6dp"-->
 <!--            android:lines="1"-->
-<!--            android:textColor="@color/Unify_N700"-->
+<!--            android:textColor="@color/Unify_NN900"-->
 <!--            app:layout_constraintLeft_toRightOf="@id/image_coupon"-->
 <!--            app:layout_constraintRight_toLeftOf="@+id/image_chevron"-->
 <!--            app:layout_constraintTop_toTopOf="parent"-->
@@ -117,7 +117,7 @@
 <!--            app:layout_constraintLeft_toLeftOf="@+id/tvTitle"-->
 <!--            app:layout_constraintTop_toBottomOf="@+id/tvTitle"-->
 <!--            app:typographyType="body_3"-->
-<!--            android:textColor="@color/Unify_N700"-->
+<!--            android:textColor="@color/Unify_NN900"-->
 <!--            tools:text="Masih ada 6 Kupon Toko lainnya!" />-->
 
 

@@ -8,23 +8,27 @@ import android.widget.ImageView
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.v2.CategoryWidgetTracking
-import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.helper.glide.FPM_CATEGORY_WIDGET_ITEM
 import com.tokopedia.home.beranda.helper.glide.loadImageRounded
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.CategoryWidgetSpacingItemDecoration
-import com.tokopedia.home.beranda.presentation.view.helper.HomeChannelWidgetUtil
 import com.tokopedia.home.databinding.HomeDcCategoryWidgetBinding
+import com.tokopedia.home_component.customview.HeaderListener
+import com.tokopedia.home_component.model.ChannelGrid
+import com.tokopedia.home_component.model.ChannelModel
+import com.tokopedia.home_component.util.ChannelWidgetUtil
 import com.tokopedia.home_component.util.toDpInt
+import com.tokopedia.home_component.visitable.CategoryWidgetDataModel
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
 import java.util.*
 
 class CategoryWidgetViewHolder(val view: View, private val categoryListener: HomeCategoryListener) :
-        DynamicChannelViewHolder(view, categoryListener) {
+    AbstractViewHolder<CategoryWidgetDataModel>(view) {
 
     private var binding: HomeDcCategoryWidgetBinding? by viewBinding()
 
@@ -34,45 +38,55 @@ class CategoryWidgetViewHolder(val view: View, private val categoryListener: Hom
         private const val CATEGORY_WIDGET_SPAN_COUNT = 2
     }
 
-    override fun setupContent(channel: DynamicHomeChannel.Channels) {
+    override fun bind(element: CategoryWidgetDataModel) {
         val recyclerView = binding?.recycleList
-        if (!channel.isCache) {
+        val channel = element.channelModel
+        if (!element.isCache) {
             itemView.addOnImpressionListener(channel) {
                 categoryListener.putEEToIris(
-                        CategoryWidgetTracking.getCategoryWidgetBannerImpression(
-                                channel.grids.toList(),
-                                categoryListener.userId,
-                                true,
-                                channel) as HashMap<String, Any>)
+                    CategoryWidgetTracking.getCategoryWidgetBannerImpression(
+                        channel.channelGrids.toList(),
+                        categoryListener.userId,
+                        true,
+                        channel
+                    ) as HashMap<String, Any>
+                )
             }
         }
-        recyclerView?.adapter = CategoryWidgetItemAdapter(channel, categoryListener, adapterPosition)
+        recyclerView?.adapter = CategoryWidgetItemAdapter(channel, categoryListener, channel.verticalPosition)
         recyclerView?.layoutManager = GridLayoutManager(
-                view.context,
-                CATEGORY_WIDGET_SPAN_COUNT,
-                GridLayoutManager.HORIZONTAL,
-                false)
+            view.context,
+            CATEGORY_WIDGET_SPAN_COUNT,
+            GridLayoutManager.HORIZONTAL,
+            false
+        )
 
         if (recyclerView?.itemDecorationCount == 0) {
             val dimens = 0f.toDpInt()
-            recyclerView?.addItemDecoration(CategoryWidgetSpacingItemDecoration(
+            recyclerView?.addItemDecoration(
+                CategoryWidgetSpacingItemDecoration(
                     CATEGORY_WIDGET_SPAN_COUNT,
                     dimens
-            ))
+                )
+            )
         }
+        setChannelHeader(channel)
         setChannelDivider(channel)
     }
 
-    override fun getViewHolderClassName(): String {
-        return CategoryWidgetViewHolder::class.java.toString()
+    private fun setChannelHeader(channel: ChannelModel) {
+        binding?.homeComponentHeaderView?.setChannel(
+            channel,
+            object : HeaderListener {
+                override fun onSeeAllClick(link: String) {
+                    CategoryWidgetTracking.sendCategoryWidgetSeeAllClick(channel, categoryListener.userId)
+                }
+            }
+        )
     }
 
-    override fun onSeeAllClickTracker(channel: DynamicHomeChannel.Channels, applink: String) {
-        CategoryWidgetTracking.sendCategoryWidgetSeeAllClick(channel, categoryListener.userId)
-    }
-
-    private fun setChannelDivider(channel: DynamicHomeChannel.Channels) {
-        HomeChannelWidgetUtil.validateHomeComponentDivider(
+    private fun setChannelDivider(channel: ChannelModel) {
+        ChannelWidgetUtil.validateHomeComponentDivider(
             channelModel = channel,
             dividerTop = binding?.homeComponentDividerHeader,
             dividerBottom = binding?.homeComponentDividerFooter
@@ -80,11 +94,11 @@ class CategoryWidgetViewHolder(val view: View, private val categoryListener: Hom
     }
 
     class CategoryWidgetItemAdapter(
-            private val channels: DynamicHomeChannel.Channels,
-            private val listener: HomeCategoryListener?,
-            private val parentPosition: Int
-    ): RecyclerView.Adapter<CategoryWidgetItemViewHolder>() {
-        private var grids: Array<DynamicHomeChannel.Grid> = channels.grids
+        private val channels: ChannelModel,
+        private val listener: HomeCategoryListener?,
+        private val parentPosition: Int
+    ) : RecyclerView.Adapter<CategoryWidgetItemViewHolder>() {
+        private var grids: List<ChannelGrid> = channels.channelGrids
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoryWidgetItemViewHolder {
             val layout = R.layout.home_dc_category_widget_item
@@ -102,20 +116,19 @@ class CategoryWidgetViewHolder(val view: View, private val categoryListener: Hom
             holder.categoryName.text = grid.name
             holder.itemView.setOnClickListener {
                 listener?.sendEETracking(
-                        CategoryWidgetTracking.getCategoryWidgetBannerClick(
-                                channels.id,
-                                listener.userId,
-                                (position+1).toString(),
-                                grid,
-                                channels
-                        ) as HashMap<String, Any>
+                    CategoryWidgetTracking.getCategoryWidgetBannerClick(
+                        listener.userId,
+                        (position + 1).toString(),
+                        grid,
+                        channels
+                    ) as HashMap<String, Any>
                 )
                 listener?.onSectionItemClicked(grid.applink)
             }
         }
     }
 
-    class CategoryWidgetItemViewHolder(view: View): RecyclerView.ViewHolder(view) {
+    class CategoryWidgetItemViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val categoryImageView: ImageView = view.findViewById(R.id.category_image)
         val categoryName: Typography = view.findViewById(R.id.category_item_name)
 

@@ -8,26 +8,24 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.kotlin.extensions.view.getBooleanArg
+import com.tokopedia.kotlin.extensions.view.getStringArg
+import com.tokopedia.kotlin.extensions.view.getStringArrayListArg
+import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.databinding.PostAtcBottomSheetBinding
-import com.tokopedia.product.detail.postatc.base.ComponentTrackData
+import com.tokopedia.product.detail.databinding.ViewPostAtcFooterBinding
 import com.tokopedia.product.detail.postatc.base.PostAtcAdapter
+import com.tokopedia.product.detail.postatc.base.PostAtcCallback
 import com.tokopedia.product.detail.postatc.base.PostAtcLayoutManager
-import com.tokopedia.product.detail.postatc.base.PostAtcListener
 import com.tokopedia.product.detail.postatc.base.PostAtcUiModel
 import com.tokopedia.product.detail.postatc.di.DaggerPostAtcComponent
 import com.tokopedia.product.detail.postatc.di.PostAtcModule
-import com.tokopedia.product.detail.postatc.tracker.CommonTracker
 import com.tokopedia.product.detail.postatc.tracker.PostAtcTracking
-import com.tokopedia.product.detail.postatc.tracker.RecommendationTracking
 import com.tokopedia.product.detail.postatc.view.component.error.ErrorUiModel
 import com.tokopedia.product.detail.postatc.view.component.fallback.FallbackUiModel
 import com.tokopedia.product.detail.postatc.view.component.loading.LoadingUiModel
 import com.tokopedia.product.detail.postatc.view.component.recommendation.RecommendationUiModel
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.recommendation_widget_common.viewutil.doSuccessOrFail
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -39,27 +37,36 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 
-class PostAtcBottomSheet : BottomSheetUnify(), PostAtcListener {
+class PostAtcBottomSheet : BottomSheetUnify() {
 
     companion object {
         const val TAG = "post_atc_bs"
 
         private const val ARG_PRODUCT_ID = "productId"
         private const val ARG_CART_ID = "cartId"
+        private const val ARG_IS_FULFILLMENT = "is_fulfillment"
         private const val ARG_LAYOUT_ID = "layoutId"
         private const val ARG_PAGE_SOURCE = "pageSource"
+        private const val ARG_SELECTED_ADDONS_IDS = "selected_addons_ids"
+        private const val ARG_WAREHOUSE_ID = "warehouse_id"
 
         fun instance(
             productId: String,
             cartId: String,
+            isFulfillment: Boolean,
             layoutId: String,
-            pageSource: String
+            pageSource: String,
+            selectedAddonsIds: List<String>,
+            warehouseId: String,
         ) = PostAtcBottomSheet().apply {
             arguments = Bundle().apply {
                 putString(ARG_PRODUCT_ID, productId)
                 putString(ARG_CART_ID, cartId)
+                putBoolean(ARG_IS_FULFILLMENT, isFulfillment)
                 putString(ARG_LAYOUT_ID, layoutId)
                 putString(ARG_PAGE_SOURCE, pageSource)
+                putStringArrayList(ARG_SELECTED_ADDONS_IDS, ArrayList(selectedAddonsIds))
+                putString(ARG_WAREHOUSE_ID, warehouseId)
             }
         }
     }
@@ -80,28 +87,27 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcListener {
             .build()
     }
 
-    private val viewModel by lazy {
+    val viewModel by lazy {
         ViewModelProvider(this, viewModelFactory)[PostAtcViewModel::class.java]
     }
 
-    private val adapter = PostAtcAdapter(this)
+    internal var binding: PostAtcBottomSheetBinding? = null
+        private set
+    private val argProductId: String by getStringArg(ARG_PRODUCT_ID)
+    private val argCartId: String by getStringArg(ARG_CART_ID)
+    private val argIsFulfillment: Boolean by getBooleanArg(ARG_IS_FULFILLMENT)
+    private val argLayoutId: String by getStringArg(ARG_LAYOUT_ID)
+    private val argPageSource by getStringArg(ARG_PAGE_SOURCE)
+    private val argSelectedAddonsIds: List<String> by getStringArrayListArg(ARG_SELECTED_ADDONS_IDS)
+    private val argWarehouseId: String by getStringArg(ARG_WAREHOUSE_ID)
 
-    private var binding: PostAtcBottomSheetBinding? = null
-    private var productId: String? = null
-    private var cartId: String? = null
-    private var layoutId: String? = null
-    private var pageSource: String? = null
-    private var commonTracker: CommonTracker? = null
+    private val callback = PostAtcCallback(this)
+    internal val adapter = PostAtcAdapter(callback)
+
+    internal var footer: ViewPostAtcFooterBinding? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         component.inject(this)
-
-        commonTracker = CommonTracker(userSession, viewModel.postAtcInfo)
-        productId = arguments?.getString(ARG_PRODUCT_ID) ?: ""
-        cartId = arguments?.getString(ARG_CART_ID) ?: ""
-        layoutId = arguments?.getString(ARG_LAYOUT_ID) ?: ""
-        pageSource = arguments?.getString(ARG_PAGE_SOURCE) ?: ""
-
         return super.onCreate(savedInstanceState)
     }
 
@@ -114,78 +120,10 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcListener {
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
-    private fun setupBottomSheet(inflater: LayoutInflater, container: ViewGroup?) {
-        clearContentPadding = true
-        isHideable = true
-        showKnob = true
-        showHeader = false
-
-        binding = PostAtcBottomSheetBinding.inflate(inflater, container, false).also {
-            setupView(it)
-            setChild(it.root)
-        }
-    }
-
-    private fun setupView(binding: PostAtcBottomSheetBinding) = binding.apply {
-        postAtcRv.layoutManager = PostAtcLayoutManager()
-        postAtcRv.adapter = adapter
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         observeViewModel()
         initData()
-    }
-
-    private fun observeViewModel() = with(viewModel) {
-        layouts.observe(viewLifecycleOwner, layoutsObserver)
-        recommendations.observe(viewLifecycleOwner, recommendationsObserver)
-    }
-
-    private fun initData() {
-        /**
-         * Init Loading
-         */
-        adapter.replaceComponents(listOf(LoadingUiModel()))
-
-        viewModel.fetchLayout(
-            productId.orEmpty(),
-            cartId.orEmpty(),
-            layoutId.orEmpty(),
-            pageSource.orEmpty()
-        )
-    }
-
-    private val layoutsObserver = Observer<Result<List<PostAtcUiModel>>> { result ->
-        result.doSuccessOrFail(success = {
-            adapter.replaceComponents(it.data)
-        }, fail = {
-                showError(it)
-            })
-        commonTracker?.let {
-            PostAtcTracking.impressionPostAtcBottomSheet(trackingQueue, it.get())
-        }
-    }
-
-    private val recommendationsObserver =
-        Observer<Pair<Int, Result<RecommendationWidget>>> { result ->
-            val uiModelId = result.first
-            result.second.doSuccessOrFail(success = {
-                val data = it.data
-                adapter.updateComponent<RecommendationUiModel>(uiModelId) {
-                    widget = data
-                }
-            }, fail = {
-                    adapter.removeComponent(uiModelId)
-                })
-        }
-
-    private fun showError(it: Throwable) {
-        if (it is SocketTimeoutException || it is UnknownHostException || it is ConnectException) {
-            adapter.replaceComponents(listOf(ErrorUiModel(errorType = GlobalError.NO_CONNECTION)))
-        } else {
-            adapter.replaceComponents(listOf(FallbackUiModel(cartId = cartId.orEmpty())))
-        }
     }
 
     override fun onDismiss(dialog: DialogInterface) {
@@ -203,74 +141,91 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcListener {
         adapter.stop()
     }
 
-    private fun goToCart(cartId: String) {
-        val intent = RouteManager.getIntent(context, ApplinkConst.CART)
-        intent.putExtra("cart_id", cartId)
-        startActivity(intent)
-        dismissAllowingStateLoss()
-    }
+    private fun setupBottomSheet(inflater: LayoutInflater, container: ViewGroup?) {
+        clearContentPadding = true
+        isHideable = true
 
-    /**
-     * Listener Area - Start
-     */
+        val title = context?.getString(R.string.pdp_post_atc_title) ?: ""
+        setTitle(title)
 
-    override fun goToAppLink(appLink: String) {
-        RouteManager.route(context, appLink)
-    }
-
-    override fun refreshPage() {
-        initData()
-    }
-
-    override fun fetchRecommendation(pageName: String, uniqueId: Int) {
-        val productId = arguments?.getString(ARG_PRODUCT_ID) ?: return
-        viewModel.fetchRecommendation(productId, pageName, uniqueId)
-    }
-
-    override fun impressComponent(componentTrackData: ComponentTrackData) {
-        /**
-         * Currently No OP, will needed in future
-         */
-    }
-
-    override fun onClickLihatKeranjang(
-        cartId: String,
-        componentTrackData: ComponentTrackData
-    ) {
-        commonTracker?.let {
-            PostAtcTracking.sendClickLihatKeranjang(
-                it.get(),
-                componentTrackData
-            )
-        }
-
-        goToCart(cartId)
-    }
-
-    override fun onClickRecommendationItem(recommendationItem: RecommendationItem) {
-        val productId = recommendationItem.productId.toString()
-        commonTracker?.let {
-            RecommendationTracking.onClickProductCard(it, recommendationItem, trackingQueue)
-        }
-        onClickProduct(productId)
-    }
-
-    override fun onImpressRecommendationItem(recommendationItem: RecommendationItem) {
-        commonTracker?.let {
-            RecommendationTracking.onImpressionProductCard(it, recommendationItem, trackingQueue)
+        binding = PostAtcBottomSheetBinding.inflate(inflater, container, false).also {
+            setupView(it)
+            setChild(it.root)
         }
     }
 
-    /**
-     * Listener Area - End
-     */
+    private fun setupView(binding: PostAtcBottomSheetBinding) = binding.apply {
+        postAtcRv.layoutManager = PostAtcLayoutManager()
+        postAtcRv.adapter = adapter
+    }
 
-    var onClickProduct: (String) -> Unit = { productId ->
-        RouteManager.route(
-            context,
-            ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
-            productId
+    private fun observeViewModel() = with(viewModel) {
+        layouts.observe(viewLifecycleOwner, layoutsObserver)
+        recommendations.observe(viewLifecycleOwner, recommendationsObserver)
+    }
+
+    private val layoutsObserver = Observer<Result<List<PostAtcUiModel>>> { result ->
+        result.doSuccessOrFail(success = {
+            adapter.replaceComponents(it.data)
+            updateFooter()
+        }, fail = {
+            showError(it)
+        })
+        PostAtcTracking.impressionPostAtcBottomSheet(
+            trackingQueue,
+            userSession.userId,
+            viewModel.postAtcInfo
         )
-        dismiss()
+    }
+
+    private val recommendationsObserver =
+        Observer<Pair<Int, Result<RecommendationWidget>>> { result ->
+            val uiModelId = result.first
+            result.second.doSuccessOrFail(success = {
+                val data = it.data
+                adapter.updateComponent<RecommendationUiModel>(uiModelId) {
+                    widget = data
+                }
+            }, fail = {
+                adapter.removeComponent(uiModelId)
+            })
+        }
+
+    private fun updateFooter() {
+        val data = viewModel.postAtcInfo.footer
+        if (!data.shouldShow) return
+
+        val footerView = binding?.postAtcViewStubFooter?.inflate() ?: return
+        footer = ViewPostAtcFooterBinding.bind(footerView).apply {
+            postAtcFooterProductImage.setImageUrl(data.image)
+            postAtcFooterButtonMain.text = data.buttonText
+            postAtcFooterButtonMain.setOnClickListener {
+                callback.goToCart(data.cartId)
+            }
+        }
+    }
+
+    private fun showError(it: Throwable) {
+        if (it is SocketTimeoutException || it is UnknownHostException || it is ConnectException) {
+            adapter.replaceComponents(listOf(ErrorUiModel(errorType = GlobalError.NO_CONNECTION)))
+        } else {
+            adapter.replaceComponents(listOf(FallbackUiModel(cartId = argCartId)))
+        }
+    }
+
+    internal fun initData() {
+        /**
+         * Init Loading
+         */
+        adapter.replaceComponents(listOf(LoadingUiModel()))
+        viewModel.initializeParameters(
+            argProductId,
+            argCartId,
+            argIsFulfillment,
+            argLayoutId,
+            argPageSource,
+            argSelectedAddonsIds,
+            argWarehouseId
+        )
     }
 }

@@ -33,6 +33,14 @@ object GetPostAtcLayoutQuery : GqlQueryInterface {
                         name
                     }
                 }
+                postATCInfo {
+                    title
+                    image
+                    button {
+                        text
+                        cartID
+                    }
+                }
                 components {
                     name
                     type
@@ -45,6 +53,9 @@ object GetPostAtcLayoutQuery : GqlQueryInterface {
                                 text
                                 cartID
                             }
+                        }
+                        ... on pdpProductPostATCAddOns {
+                            title
                         }
                     }
                 }

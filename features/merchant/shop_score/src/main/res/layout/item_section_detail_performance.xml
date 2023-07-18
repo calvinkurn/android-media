@@ -18,14 +18,14 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
-        android:textColor="@color/Unify_N700"
+        android:textColor="@color/Unify_NN950"
         android:text="@string/title_detail_performa"/>
     
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvPerformanceDetailDate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/Unify_N700_68"
+        android:textColor="@color/Unify_NN950_68"
         app:typographyType="display_3"
         android:layout_marginStart="16dp"
         android:layout_marginTop="4dp"
@@ -36,7 +36,7 @@
         android:id="@+id/tvPerformanceDetailDateNewSeller"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/Unify_N700_68"
+        android:textColor="@color/Unify_NN950_68"
         app:typographyType="display_3"
         android:layout_marginStart="16dp"
         android:layout_marginTop="4dp"

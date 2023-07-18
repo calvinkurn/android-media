@@ -151,7 +151,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="start"
                 android:text="@string/budget_range"
-                android:textColor="@color/Unify_N700_96"
+                android:textColor="@color/Unify_NN950_96"
                 app:layout_constraintBottom_toTopOf="@+id/seekbar"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="1.0"

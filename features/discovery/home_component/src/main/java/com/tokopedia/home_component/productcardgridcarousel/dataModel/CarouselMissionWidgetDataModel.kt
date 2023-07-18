@@ -24,6 +24,7 @@ class CarouselMissionWidgetDataModel(
     val buType: String = "",
     val isTopads: Boolean = false,
     val isCarousel: Boolean = false,
+    val shopId: String = "",
     val subtitleHeight: Int = 0,
     val missionWidgetComponentListener: MissionWidgetComponentListener,
     val channel: ChannelModel,

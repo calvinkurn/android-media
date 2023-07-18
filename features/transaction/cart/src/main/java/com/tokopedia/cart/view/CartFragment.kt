@@ -136,6 +136,7 @@ import com.tokopedia.purchase_platform.common.constant.ARGS_PAGE_SOURCE
 import com.tokopedia.purchase_platform.common.constant.ARGS_PROMO_REQUEST
 import com.tokopedia.purchase_platform.common.constant.ARGS_VALIDATE_USE_DATA_RESULT
 import com.tokopedia.purchase_platform.common.constant.ARGS_VALIDATE_USE_REQUEST
+import com.tokopedia.purchase_platform.common.constant.AddOnConstant
 import com.tokopedia.purchase_platform.common.constant.CartConstant
 import com.tokopedia.purchase_platform.common.constant.CartConstant.CART_ERROR_GLOBAL
 import com.tokopedia.purchase_platform.common.constant.CartConstant.IS_TESTING_FLOW
@@ -2437,7 +2438,7 @@ class CartFragment :
                 binding?.llCartContainer?.setBackgroundColor(
                     ContextCompat.getColor(
                         it,
-                        com.tokopedia.unifyprinciples.R.color.Unify_N50
+                        com.tokopedia.unifyprinciples.R.color.Unify_NN50
                     )
                 )
             }
@@ -2445,7 +2446,7 @@ class CartFragment :
             it.window.decorView.setBackgroundColor(
                 ContextCompat.getColor(
                     it,
-                    com.tokopedia.unifyprinciples.R.color.Unify_N50
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN50
                 )
             )
         }
@@ -4557,11 +4558,34 @@ class CartFragment :
         cartItemData.addOnsProduct.listData.forEach {
             addOnIds.add(it.id)
         }
-        val warehouseId = cartItemData.warehouseId
-        val isTokoCabang = cartItemData.isFulfillment // need to confirm
-        val applink = "tokopedia://addon/" + productId + "/?cartId=" + cartId +
-            "&selectedAddonIds=" + addOnIds.toString() + "&source=cart&warehouseId=" + warehouseId + "&isTokocabang=" + isTokoCabang
-        println("++ applink = " + applink)
+
+        var price = 0.0
+        var discountedPrice = 0.0
+        if (cartItemData.campaignId == "0") {
+            price = cartItemData.productPrice
+            discountedPrice = cartItemData.productPrice
+        } else {
+            price = cartItemData.productOriginalPrice
+            discountedPrice = cartItemData.productPrice
+        }
+
+        val applinkAddon = ApplinkConst.ADDON.replace(AddOnConstant.QUERY_PARAM_ADDON_PRODUCT, productId.toString())
+        val applink = UriUtil.buildUriAppendParams(
+            applinkAddon,
+            mapOf(
+                AddOnConstant.QUERY_PARAM_CART_ID to cartId,
+                AddOnConstant.QUERY_PARAM_SELECTED_ADDON_IDS to addOnIds,
+                AddOnConstant.QUERY_PARAM_PAGE_ATC_SOURCE to AddOnConstant.SOURCE_NORMAL_CHECKOUT,
+                AddOnConstant.QUERY_PARAM_WAREHOUSE_ID to cartItemData.warehouseId,
+                AddOnConstant.QUERY_PARAM_IS_TOKOCABANG to cartItemData.isFulfillment,
+                AddOnConstant.QUERY_PARAM_CATEGORY_ID to cartItemData.categoryId,
+                AddOnConstant.QUERY_PARAM_SHOP_ID to cartItemData.shopHolderData.shopId,
+                AddOnConstant.QUERY_PARAM_QUANTITY to cartItemData.quantity,
+                AddOnConstant.QUERY_PARAM_PRICE to price,
+                AddOnConstant.QUERY_PARAM_DISCOUNTED_PRICE to discountedPrice
+            )
+        )
+
         activity?.let {
             val intent = RouteManager.getIntent(it, applink)
             startActivityForResult(intent, NAVIGATION_ADDON)
@@ -4574,11 +4598,22 @@ class CartFragment :
 
             if (addOnProductDataResult.aggregatedData.isGetDataSuccess) {
                 val cartId = addOnProductDataResult.cartId
-                val newAddOnWording = "${addOnProductDataResult.aggregatedData.title} <b>(${addOnProductDataResult.aggregatedData.price})</b>"
+                var newAddOnWording = ""
+                if (addOnProductDataResult.aggregatedData.title.isNotEmpty() && addOnProductDataResult.aggregatedData.price > 0) {
+                    newAddOnWording = "${addOnProductDataResult.aggregatedData.title} <b>(${addOnProductDataResult.aggregatedData.price})</b>"
+                }
                 cartAdapter.updateAddOnByCartId(addOnProductDataResult.cartId.toString(), newAddOnWording)
             } else {
                 showToastMessageRed(addOnProductDataResult.aggregatedData.getDataErrorMessage)
             }
         }
+    }
+
+    override fun onAddOnsProductWidgetImpression(addOnType: Int, productId: String) {
+        cartPageAnalytics.eventViewAddOnsProductWidgetCart(addOnType, productId)
+    }
+
+    override fun onClickAddOnsProductWidgetCart(addOnType: Int, productId: String) {
+        cartPageAnalytics.eventClickAddOnsWidgetCart(addOnType, productId)
     }
 }

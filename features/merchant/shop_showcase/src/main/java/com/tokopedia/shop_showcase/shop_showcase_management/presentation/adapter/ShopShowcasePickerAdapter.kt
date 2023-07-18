@@ -131,11 +131,11 @@ class ShopShowcasePickerAdapter(
 
         private fun setDisableState(ctx: Context, state: Boolean) {
             if(state) {
-                tvShowcaseNamePicker?.setTextColor(ContextCompat.getColor(ctx, com.tokopedia.unifyprinciples.R.color.Unify_N700))
+                tvShowcaseNamePicker?.setTextColor(ContextCompat.getColor(ctx, com.tokopedia.unifyprinciples.R.color.Unify_NN950))
                 tvShowcaseNamePicker?.alpha = DISABLE_TEXT_OPACITY
                 btnCheckboxPicker?.isEnabled = false
             } else {
-                tvShowcaseNamePicker?.setTextColor(ContextCompat.getColor(ctx, com.tokopedia.unifyprinciples.R.color.Unify_G900))
+                tvShowcaseNamePicker?.setTextColor(ContextCompat.getColor(ctx, com.tokopedia.unifyprinciples.R.color.Unify_GN950))
                 tvShowcaseNamePicker?.alpha = ENABLE_TEXT_OPACITY
                 btnCheckboxPicker?.isEnabled = true
             }

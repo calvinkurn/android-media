@@ -143,15 +143,15 @@ class FlightOrderDetailWebCheckInViewHolder(val binding: ItemFlightOrderDetailWe
 
     private fun setupCheckInStatusBlue() {
         with(binding) {
-            tgFlightOrderWebCheckInStatus.setTextColor(MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_B500))
-            OrderDetailUtils.changeShapeColor(itemView.context, tgFlightOrderWebCheckInStatus.background, com.tokopedia.unifyprinciples.R.color.Unify_B100)
+            tgFlightOrderWebCheckInStatus.setTextColor(MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_BN500))
+            OrderDetailUtils.changeShapeColor(itemView.context, tgFlightOrderWebCheckInStatus.background, com.tokopedia.unifyprinciples.R.color.Unify_BN50)
         }
     }
 
     private fun setupCheckInStatusGrey() {
         with(binding) {
-            tgFlightOrderWebCheckInStatus.setTextColor(MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
-            OrderDetailUtils.changeShapeColor(itemView.context, tgFlightOrderWebCheckInStatus.background, com.tokopedia.unifyprinciples.R.color.Unify_N50)
+            tgFlightOrderWebCheckInStatus.setTextColor(MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_68))
+            OrderDetailUtils.changeShapeColor(itemView.context, tgFlightOrderWebCheckInStatus.background, com.tokopedia.unifyprinciples.R.color.Unify_NN50)
         }
     }
 

@@ -38,19 +38,28 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 
-class AffiliateSaldoWithdrawalDetailFragment : BaseViewModelFragment<WithdrawalDetailViewModel>(){
+class AffiliateSaldoWithdrawalDetailFragment : BaseViewModelFragment<WithdrawalDetailViewModel>() {
 
     @Inject
-    lateinit var viewModelProvider: ViewModelProvider.Factory
+    @JvmField
+    var viewModelProvider: ViewModelProvider.Factory? = null
 
-    private lateinit var withdrawalDetailViewModel : WithdrawalDetailViewModel
+    private var withdrawalDetailViewModel: WithdrawalDetailViewModel? = null
 
     private val transactionId: String by lazy {
         arguments?.getString(TRANSACTION_ID) ?: "0"
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.affiliate_saldo_fragment_withdrawl_detail, container, false)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        return inflater.inflate(
+            R.layout.affiliate_saldo_fragment_withdrawl_detail,
+            container,
+            false
+        )
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -62,20 +71,20 @@ class AffiliateSaldoWithdrawalDetailFragment : BaseViewModelFragment<WithdrawalD
 
     private fun loadWithdrawalDetail() {
         view?.findViewById<LoaderUnify>(R.id.withdrawalProgress)?.visible()
-        withdrawalDetailViewModel.getWithdrawalInfo(transactionId)
+        withdrawalDetailViewModel?.getWithdrawalInfo(transactionId)
     }
 
     private fun initAdapter() {
         view?.findViewById<RecyclerView>(R.id.rvWithdrawalStatus)?.apply {
             adapter = AffiliateSaldoWithdrawalStatusAdapter(arrayListOf())
             layoutManager =
-                    LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+                LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             isNestedScrollingEnabled = false
         }
     }
 
     private fun initObservers() {
-        withdrawalDetailViewModel.withdrawalInfoLiveData.observe(viewLifecycleOwner) {
+        withdrawalDetailViewModel?.withdrawalInfoLiveData?.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> onSuccessWithdrawalDetailLoaded(it.data)
                 is Fail -> onErrorLoading(it.throwable)
@@ -91,7 +100,6 @@ class AffiliateSaldoWithdrawalDetailFragment : BaseViewModelFragment<WithdrawalD
             else -> setGlobalErrors(GlobalError.SERVER_ERROR)
         }
     }
-
 
     private fun setGlobalErrors(errorType: Int) {
         view?.findViewById<Group>(R.id.dataGroup)?.gone()
@@ -117,11 +125,12 @@ class AffiliateSaldoWithdrawalDetailFragment : BaseViewModelFragment<WithdrawalD
         data.ticker?.let { ticker ->
             view?.findViewById<Ticker>(R.id.saldoTicker)?.apply {
                 show()
-                if(!ticker.tickerTitle.isNullOrBlank()){
+                if (!ticker.tickerTitle.isNullOrBlank()) {
                     tickerTitle = ticker.tickerTitle
                     setTextDescription(ticker.tickerDescription ?: "")
+                } else {
+                    hide()
                 }
-                else { hide() }
             }
         }
         view?.findViewById<Typography>(R.id.tvWithdrawalAmount)?.text = data.amountFormatted
@@ -140,14 +149,21 @@ class AffiliateSaldoWithdrawalDetailFragment : BaseViewModelFragment<WithdrawalD
             setLabel(data.statusLabel?.labelText ?: "")
         }
     }
+
     private fun setFeeDetailBreakup(data: WithdrawalInfoData) {
-        view?.findViewById<AffiliateWithdrawalDetailsList>(R.id.llWithdrawalDetail)?.setData(data.feeDetailData, context?.getString(R.string.affiliate_saldo_withdrawal_info_details))
+        view?.findViewById<AffiliateWithdrawalDetailsList>(R.id.llWithdrawalDetail)?.setData(
+            data.feeDetailData,
+            context?.getString(R.string.affiliate_saldo_withdrawal_info_details)
+        )
     }
 
     private fun setWithdrawalStatusData(data: WithdrawalInfoData) {
-        (view?.findViewById<RecyclerView>(R.id.rvWithdrawalStatus)?.adapter as? AffiliateSaldoWithdrawalStatusAdapter)?.apply {
+        (
+            view?.findViewById<RecyclerView>(R.id.rvWithdrawalStatus)
+                ?.adapter as? AffiliateSaldoWithdrawalStatusAdapter
+            )?.apply {
             historyList = data.withdrawalInfoHistory
-            notifyItemRangeChanged(0,historyList.size)
+            notifyItemRangeChanged(0, historyList.size)
         }
     }
 
@@ -158,9 +174,18 @@ class AffiliateSaldoWithdrawalDetailFragment : BaseViewModelFragment<WithdrawalD
 
     private fun getFeeDetailData(data: WithdrawalInfoData) = context?.let { context ->
         arrayListOf(
-                FeeDetailData(context.getString(R.string.affiliate_saldo_withdrawal_amount), data.amountFormatted),
-                FeeDetailData(context.getString(R.string.affiliate_saldo_withdrawal_fee), data.feeFormatted),
-                FeeDetailData(context.getString(R.string.affiliate_saldo_transferred_amount), data.transferredAmountFormatted)
+            FeeDetailData(
+                context.getString(R.string.affiliate_saldo_withdrawal_amount),
+                data.amountFormatted
+            ),
+            FeeDetailData(
+                context.getString(R.string.affiliate_saldo_withdrawal_fee),
+                data.feeFormatted
+            ),
+            FeeDetailData(
+                context.getString(R.string.affiliate_saldo_transferred_amount),
+                data.transferredAmountFormatted
+            )
         )
     }
 
@@ -173,7 +198,7 @@ class AffiliateSaldoWithdrawalDetailFragment : BaseViewModelFragment<WithdrawalD
         }
     }
 
-    override fun getVMFactory(): ViewModelProvider.Factory {
+    override fun getVMFactory(): ViewModelProvider.Factory? {
         return viewModelProvider
     }
 
@@ -182,10 +207,10 @@ class AffiliateSaldoWithdrawalDetailFragment : BaseViewModelFragment<WithdrawalD
     }
 
     private fun getComponent(): AffiliateComponent =
-            DaggerAffiliateComponent
-                    .builder()
-                    .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
-                    .build()
+        DaggerAffiliateComponent
+            .builder()
+            .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
+            .build()
 
     override fun getViewModelType(): Class<WithdrawalDetailViewModel> {
         return WithdrawalDetailViewModel::class.java
@@ -194,5 +219,4 @@ class AffiliateSaldoWithdrawalDetailFragment : BaseViewModelFragment<WithdrawalD
     override fun setViewModel(viewModel: BaseViewModel) {
         withdrawalDetailViewModel = viewModel as WithdrawalDetailViewModel
     }
-
 }
