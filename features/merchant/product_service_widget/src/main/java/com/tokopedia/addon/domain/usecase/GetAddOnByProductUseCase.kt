@@ -23,6 +23,7 @@ class GetAddOnByProductUseCase @Inject constructor(
     companion object {
         private const val ADDON_LEVEL_NON_TC = "PRODUCT_ADDON"
         private const val ADDON_LEVEL_TC = "ORDER_ADDON"
+        private const val ADDON_FILTER_QUANTITY = 3
         private const val PARAM_INPUT = "input"
         private val query = """ 
             query getAddOn(${'$'}input: GetAddOnByProductRequest) {
@@ -111,7 +112,10 @@ class GetAddOnByProductUseCase @Inject constructor(
                         warehouseId = param.warehouseId,
                         addOnLevel = if (param.isTokocabang) ADDON_LEVEL_TC else ADDON_LEVEL_NON_TC,
                         typeFilters = typeFilters.map {
-                            TypeFilters(it.name)
+                            TypeFilters(
+                                type = it.name,
+                                quantity = ADDON_FILTER_QUANTITY
+                            )
                         },
                         additional = Additional(
                             categoryID = param.categoryID,
