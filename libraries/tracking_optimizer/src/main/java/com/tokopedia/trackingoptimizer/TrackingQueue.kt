@@ -114,8 +114,6 @@ internal class TrackingQueueSingleton(ctx: Context) : CoroutineScope {
 
     companion object {
         var mightHaveData = true
-        val TIMEOUT_PUT = 2000L // in ms
-        val TIMEOUT_SEND = 2000L // in ms
     }
 
     override val coroutineContext: CoroutineContext
@@ -126,25 +124,15 @@ internal class TrackingQueueSingleton(ctx: Context) : CoroutineScope {
         TrackRepository(context)
     }
 
-    private fun getTimeOutPut(): Long {
-        return TIMEOUT_PUT
-    }
-
-    private fun getTimeOutSend(): Long {
-        return TIMEOUT_SEND
-    }
-
     internal fun putEETracking(map: HashMap<String, Any>? = null) {
         if (map?.containsKey(ECOMMERCE) != true) {
             return
         }
         launch {
-            withTimeout(getTimeOutPut()) {
-                try {
-                    newTrackingRepository.put(map)
-                    mightHaveData = true
-                } catch (ignored: Throwable) {
-                }
+            try {
+                newTrackingRepository.put(map)
+                mightHaveData = true
+            } catch (ignored: Throwable) {
             }
         }
     }
@@ -155,12 +143,10 @@ internal class TrackingQueueSingleton(ctx: Context) : CoroutineScope {
         customDimension: HashMap<String, Any>? = null
     ) {
         launch {
-            withTimeout(getTimeOutPut()) {
-                try {
-                    newTrackingRepository.putEE(event, customDimension, enhanceECommerceMap)
-                    mightHaveData = true
-                } catch (ignored: Throwable) {
-                }
+            try {
+                newTrackingRepository.putEE(event, customDimension, enhanceECommerceMap)
+                mightHaveData = true
+            } catch (ignored: Throwable) {
             }
         }
     }
@@ -170,12 +156,10 @@ internal class TrackingQueueSingleton(ctx: Context) : CoroutineScope {
         enhanceECommerceMap: HashMap<String, Any>?
     ) {
         launch {
-            withTimeout(getTimeOutPut()) {
-                try {
-                    newTrackingRepository.putEE(map, enhanceECommerceMap)
-                    mightHaveData = true
-                } catch (ignored: Throwable) {
-                }
+            try {
+                newTrackingRepository.putEE(map, enhanceECommerceMap)
+                mightHaveData = true
+            } catch (ignored: Throwable) {
             }
         }
     }
@@ -188,15 +172,13 @@ internal class TrackingQueueSingleton(ctx: Context) : CoroutineScope {
         // send all tracking in db to gtm
         // launch in different coroutine scope.
         launch(Dispatchers.Default) {
-            withTimeout(getTimeOutSend()) {
-                try {
-                    // atomicInteger to allow only 1 service at a time
-                    // isTrackingQueueAvailable is to check if the db has any data to send
-                    if (atomicInteger.get() < 1 && mightHaveData) {
-                        SendTrackQueueService.start(context)
-                    }
-                } catch (ignored: Throwable) {
+            try {
+                // atomicInteger to allow only 1 service at a time
+                // isTrackingQueueAvailable is to check if the db has any data to send
+                if (atomicInteger.get() < 1 && mightHaveData) {
+                    SendTrackQueueService.start(context)
                 }
+            } catch (ignored: Throwable) {
             }
         }
     }
