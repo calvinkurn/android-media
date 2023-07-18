@@ -624,7 +624,7 @@ class PlayBroadcastUiMapper @Inject constructor(
             bottomText = TickerBottomSheetUiModel.BottomText(
                 action = bottomText.action.map { action ->
                     TickerBottomSheetUiModel.Action(
-                        key = action.index,
+                        item = action.index,
                         text = action.text,
                         link = action.link,
                     )
@@ -635,7 +635,7 @@ class PlayBroadcastUiMapper @Inject constructor(
                 TickerBottomSheetUiModel.MainText(
                     action = mainText.action.map { action ->
                         TickerBottomSheetUiModel.Action(
-                            key = action.index,
+                            item = action.index,
                             text = action.text,
                             link = action.link,
                         )
