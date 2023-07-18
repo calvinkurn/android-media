@@ -61,4 +61,5 @@
     <string name="cart_label_change">Ganti</string>
     <string name="cart_label_packet">Paket</string>
     <string name="cart_label_product_name_with_quantity">%s x %s</string>
+    <string name="cart_label_discount_percentage">-%s</string>
 </resources>

@@ -255,7 +255,7 @@ class CartRevampFragment :
         const val WORDING_GO_TO_HOMEPAGE = "Kembali ke Homepage"
         const val HEIGHT_DIFF_CONSTRAINT = 100
         const val DELAY_SHOW_PROMO_BUTTON_AFTER_SCROLL = 750L
-        const val DELAY_SHOW_SELECTED_AMOUNT_AFTER_SCROLL = 750L
+        const val DELAY_SHOW_SELECTED_AMOUNT_AFTER_SCROLL = 600L
         const val PROMO_ANIMATION_DURATION = 500L
         const val SELECTED_AMOUNT_ANIMATION_DURATION = 500L
         const val PROMO_POSITION_BUFFER = 10
@@ -697,7 +697,7 @@ class CartRevampFragment :
     }
 
     override fun onViewFreeShippingPlusBadge() {
-        TODO("Not yet implemented")
+        cartPageAnalytics.eventViewGotoplusTicker()
     }
 
     override fun showCartBundlingBottomSheet(data: CartBundlingBottomSheetData) {
@@ -850,7 +850,12 @@ class CartRevampFragment :
     }
 
     override fun onSimilarProductUrlClicked(data: CartItemHolderData) {
-        TODO("Not yet implemented")
+        if (data.isBundlingItem) {
+            cartPageAnalytics.eventClickMoreLikeThisOnBundleProduct(data.bundleId, data.bundleType)
+        } else {
+            cartPageAnalytics.eventClickMoreLikeThis()
+        }
+        routeToApplink(data.selectedUnavailableActionLink)
     }
 
     override fun onShowActionSeeOtherProduct(productId: String, errorType: String) {
@@ -2494,6 +2499,12 @@ class CartRevampFragment :
         viewModel.processUpdateCartData(false)
     }
 
+    private fun routeToApplink(appLink: String) {
+        activity?.let {
+            RouteManager.route(it, appLink)
+        }
+    }
+
     private fun routeToCheckoutPage() {
         activity?.let {
             val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.CHECKOUT)
@@ -2604,7 +2615,7 @@ class CartRevampFragment :
         }
     }
 
-    fun sendATCTrackingURL(recommendationItem: RecommendationItem) {
+    private fun sendATCTrackingURL(recommendationItem: RecommendationItem) {
         val productId = recommendationItem.productId.toString()
         val productName = recommendationItem.name
         val imageUrl = recommendationItem.imageUrl
@@ -2621,7 +2632,7 @@ class CartRevampFragment :
         }
     }
 
-    fun sendATCTrackingURL(bannerShopProductUiModel: BannerShopProductUiModel) {
+    private fun sendATCTrackingURL(bannerShopProductUiModel: BannerShopProductUiModel) {
         val productId = bannerShopProductUiModel.productId.toString()
         val productName = bannerShopProductUiModel.productName
         val imageUrl = bannerShopProductUiModel.imageUrl

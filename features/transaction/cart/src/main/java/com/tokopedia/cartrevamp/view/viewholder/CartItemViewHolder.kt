@@ -3,11 +3,9 @@ package com.tokopedia.cartrevamp.view.viewholder
 import android.annotation.SuppressLint
 import android.graphics.Paint
 import android.text.Editable
-import android.text.InputType
 import android.text.TextUtils
 import android.text.TextWatcher
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
@@ -20,12 +18,14 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.cart.R
 import com.tokopedia.cart.databinding.ItemAddonCartIdentifierBinding
-import com.tokopedia.cart.databinding.ItemCartProductBinding
 import com.tokopedia.cart.databinding.ItemCartProductRevampBinding
 import com.tokopedia.cartrevamp.data.model.response.shopgroupsimplified.Action
 import com.tokopedia.cartrevamp.data.model.response.shopgroupsimplified.ProductInformationWithIcon
 import com.tokopedia.cartrevamp.view.adapter.cart.CartItemAdapter
 import com.tokopedia.cartrevamp.view.uimodel.CartItemHolderData
+import com.tokopedia.cartrevamp.view.uimodel.CartItemHolderData.Companion.BUNDLING_ITEM_FOOTER
+import com.tokopedia.cartrevamp.view.uimodel.CartItemHolderData.Companion.BUNDLING_ITEM_HEADER
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.getScreenWidth
 import com.tokopedia.kotlin.extensions.view.gone
@@ -37,7 +37,6 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadIcon
 import com.tokopedia.purchase_platform.common.utils.Utils
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
-import com.tokopedia.purchase_platform.common.utils.showSoftKeyboard
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import kotlinx.coroutines.Dispatchers
@@ -103,10 +102,16 @@ class CartItemViewHolder constructor(
         if (data.isBundlingItem) {
             with(binding) {
                 checkboxProduct.gone()
-                vBundlingProductSeparator.show()
-                val marginStart =
-                    IMAGE_PRODUCT_MARGIN_START.dpToPx(itemView.resources.displayMetrics)
-                val marginTop = itemView.context.resources.getDimension(R.dimen.dp_4).toInt()
+                val marginStart: Int
+                if (data.isMultipleBundleProduct) {
+                    marginStart =
+                        IMAGE_PRODUCT_MARGIN_START.dpToPx(itemView.resources.displayMetrics)
+                    vBundlingProductSeparator.show()
+                } else {
+                    marginStart =
+                        BUNDLING_SEPARATOR_MARGIN_START.dpToPx(itemView.resources.displayMetrics)
+                    vBundlingProductSeparator.gone()
+                }
                 val constraintSet = ConstraintSet()
                 constraintSet.clone(containerProductInformation)
                 constraintSet.connect(
@@ -120,8 +125,7 @@ class CartItemViewHolder constructor(
                     R.id.iu_image_product,
                     ConstraintSet.TOP,
                     R.id.container_product_information,
-                    ConstraintSet.TOP,
-                    marginTop
+                    ConstraintSet.TOP
                 )
                 constraintSet.applyTo(containerProductInformation)
                 renderCheckBoxBundle(data)
@@ -148,8 +152,7 @@ class CartItemViewHolder constructor(
                 vBundlingProductSeparator.gone()
                 checkboxProduct.show()
                 val marginStart =
-                    IMAGE_PRODUCT_MARGIN_START.dpToPx(itemView.resources.displayMetrics)
-                val marginTop = itemView.context.resources.getDimension(R.dimen.dp_4).toInt()
+                    IMAGE_PRODUCT_MARGIN_START_6.dpToPx(itemView.resources.displayMetrics)
                 val constraintSet = ConstraintSet()
                 constraintSet.clone(containerProductInformation)
                 constraintSet.connect(
@@ -163,8 +166,7 @@ class CartItemViewHolder constructor(
                     R.id.iu_image_product,
                     ConstraintSet.TOP,
                     R.id.container_product_information,
-                    ConstraintSet.TOP,
-                    marginTop
+                    ConstraintSet.TOP
                 )
                 constraintSet.applyTo(containerProductInformation)
                 renderCheckBoxProduct(data)
@@ -185,8 +187,8 @@ class CartItemViewHolder constructor(
         with(binding) {
             buttonChangeNote.gone()
             buttonToggleWishlist.gone()
-//            textProductUnavailableAction.gone()
-//            buttonDeleteCart.gone()
+            textProductUnavailableAction.gone()
+            buttonDeleteCart.gone()
         }
         if (data.actionsData.isNotEmpty()) {
             data.actionsData.forEach {
@@ -194,31 +196,30 @@ class CartItemViewHolder constructor(
                     Action.ACTION_NOTES -> {
                         renderProductNotes(data)
                     }
+
                     Action.ACTION_WISHLIST, Action.ACTION_WISHLISTED -> {
-//                        if (data.isBundlingItem) {
-//                            binding.textMoveToWishlist.gone()
-//                        } else {
-                            renderActionWishlist(it, data)
-//                        }
+                        renderActionWishlist(it, data)
                     }
+
                     Action.ACTION_CHECKOUTBROWSER, Action.ACTION_SIMILARPRODUCT, Action.ACTION_FOLLOWSHOP, Action.ACTION_VERIFICATION -> {
                         when {
                             data.selectedUnavailableActionId == Action.ACTION_CHECKOUTBROWSER && it.id == Action.ACTION_CHECKOUTBROWSER -> {
                                 renderActionCheckoutInBrowser(it, data)
                             }
+
                             data.selectedUnavailableActionId == Action.ACTION_SIMILARPRODUCT && it.id == Action.ACTION_SIMILARPRODUCT -> {
                                 renderActionSimilarProduct(it, data)
+                                renderActionDelete(data)
                             }
+
                             data.selectedUnavailableActionId == Action.ACTION_FOLLOWSHOP && it.id == Action.ACTION_FOLLOWSHOP -> {
                                 renderFollowShop(it, data)
                             }
+
                             data.selectedUnavailableActionId == Action.ACTION_VERIFICATION && it.id == Action.ACTION_VERIFICATION -> {
                                 renderVerification(it, data)
                             }
                         }
-                    }
-                    Action.ACTION_DELETE -> {
-                        renderActionDelete(data)
                     }
                 }
             }
@@ -303,8 +304,8 @@ class CartItemViewHolder constructor(
         val checkboxBundle = binding.checkboxBundle
         if (data.isError) {
             checkboxBundle.gone()
-            val padding16 = itemView.resources.getDimensionPixelSize(R.dimen.dp_16)
-            binding.productBundlingInfo.setPadding(padding16, 0, 0, 0)
+            val padding12 = itemView.resources.getDimensionPixelSize(R.dimen.dp_12)
+            binding.productBundlingInfo.setPadding(padding12, 0, 0, 0)
             return
         }
         binding.productBundlingInfo.setPadding(0, 0, 0, 0)
@@ -347,8 +348,14 @@ class CartItemViewHolder constructor(
                 )
             }
             if (shopHolderData.shopTypeInfo.shopBadge.isNotBlank()) {
-                ImageHandler.loadImageWithoutPlaceholder(binding.imageShopBadge, shopHolderData.shopTypeInfo.shopBadge)
-                binding.imageShopBadge.contentDescription = itemView.context.getString(com.tokopedia.purchase_platform.common.R.string.pp_cd_image_shop_badge_with_shop_type, shopHolderData.shopTypeInfo.title)
+                ImageHandler.loadImageWithoutPlaceholder(
+                    binding.imageShopBadge,
+                    shopHolderData.shopTypeInfo.shopBadge
+                )
+                binding.imageShopBadge.contentDescription = itemView.context.getString(
+                    com.tokopedia.purchase_platform.common.R.string.pp_cd_image_shop_badge_with_shop_type,
+                    shopHolderData.shopTypeInfo.title
+                )
                 binding.imageShopBadge.show()
             } else {
                 binding.imageShopBadge.gone()
@@ -359,6 +366,7 @@ class CartItemViewHolder constructor(
     }
 
     private fun renderProductInfo(data: CartItemHolderData) {
+        validateProductContainerMargin(data)
         renderBundlingInfo(data)
         renderProductName(data)
         renderImage(data)
@@ -371,6 +379,17 @@ class CartItemViewHolder constructor(
         renderProductActionSection(data)
         renderProductAddOns(data)
         sendAnalyticsInformationLabel(data)
+    }
+
+    private fun validateProductContainerMargin(data: CartItemHolderData) {
+        val containerProductInformationParams = binding.containerProductInformation.layoutParams as ViewGroup.MarginLayoutParams
+        val marginTop = IMAGE_PRODUCT_MARGIN_START.dpToPx(itemView.resources.displayMetrics)
+        if (data.isBundlingItem && data.isMultipleBundleProduct && data.bundlingItemPosition != BUNDLING_ITEM_HEADER) {
+            containerProductInformationParams.topMargin = 0
+        }
+        else {
+            containerProductInformationParams.topMargin = marginTop
+        }
     }
 
     private fun renderBundlingInfo(data: CartItemHolderData) {
@@ -395,18 +414,127 @@ class CartItemViewHolder constructor(
 
     private fun renderProductActionSection(data: CartItemHolderData) {
         if (data.isBundlingItem) {
-            if (data.isMultipleBundleProduct && (data.bundlingItemPosition == CartItemHolderData.BUNDLING_ITEM_HEADER || data.bundlingItemPosition == CartItemHolderData.BUNDLING_ITEM_DEFAULT)) {
-                binding.containerProductAction.gone()
+            if (data.isMultipleBundleProduct && (data.bundlingItemPosition == BUNDLING_ITEM_HEADER || data.bundlingItemPosition == CartItemHolderData.BUNDLING_ITEM_DEFAULT)) {
+                binding.containerProductQuantityAction.invisible()
                 binding.holderItemCartDivider.gone()
             } else {
-                binding.containerProductAction.show()
+                binding.containerProductQuantityAction.show()
                 binding.holderItemCartDivider.visibility =
                     if (data.isFinalItem) View.GONE else View.VISIBLE
             }
+            binding.buttonChangeNote.show()
+            binding.buttonToggleWishlist.show()
         } else {
-            binding.containerProductAction.show()
+            binding.containerProductQuantityAction.show()
+            binding.buttonChangeNote.show()
+            binding.buttonToggleWishlist.show()
             binding.holderItemCartDivider.visibility =
                 if (data.isFinalItem) View.GONE else View.VISIBLE
+        }
+        adjustProductActionConstraint(data)
+        adjustBundlingProductSeparatorConstraint(data)
+    }
+
+    private fun adjustProductActionConstraint(data: CartItemHolderData) {
+        val constraintSet = ConstraintSet()
+        constraintSet.apply {
+            clone(binding.containerProductInformation)
+            val margin = PRODUCT_ACTION_MARGIN.dpToPx(itemView.resources.displayMetrics)
+            if (data.isBundlingItem && data.isMultipleBundleProduct) {
+                connect(
+                    R.id.button_change_note,
+                    ConstraintSet.TOP,
+                    R.id.item_addon_cart,
+                    ConstraintSet.BOTTOM,
+                    margin
+                )
+                connect(
+                    R.id.button_toggle_wishlist,
+                    ConstraintSet.TOP,
+                    R.id.item_addon_cart,
+                    ConstraintSet.BOTTOM,
+                    margin
+                )
+                clear(R.id.button_change_note, ConstraintSet.BOTTOM)
+                clear(R.id.button_toggle_wishlist, ConstraintSet.BOTTOM)
+                if (data.bundlingItemPosition == BUNDLING_ITEM_FOOTER) {
+                    connect(
+                        R.id.qty_editor_product,
+                        ConstraintSet.TOP,
+                        R.id.button_change_note,
+                        ConstraintSet.BOTTOM
+                    )
+                } else {
+                    connect(
+                        R.id.qty_editor_product,
+                        ConstraintSet.TOP,
+                        R.id.item_addon_cart,
+                        ConstraintSet.BOTTOM,
+                        margin
+                    )
+                }
+            } else {
+                connect(
+                    R.id.button_change_note,
+                    ConstraintSet.TOP,
+                    R.id.qty_editor_product,
+                    ConstraintSet.TOP,
+                    margin
+                )
+                connect(
+                    R.id.button_change_note,
+                    ConstraintSet.BOTTOM,
+                    R.id.qty_editor_product,
+                    ConstraintSet.BOTTOM,
+                    margin
+                )
+                connect(
+                    R.id.button_toggle_wishlist,
+                    ConstraintSet.TOP,
+                    R.id.qty_editor_product,
+                    ConstraintSet.TOP,
+                    margin
+                )
+                connect(
+                    R.id.button_toggle_wishlist,
+                    ConstraintSet.BOTTOM,
+                    R.id.qty_editor_product,
+                    ConstraintSet.BOTTOM,
+                    margin
+                )
+                connect(
+                    R.id.qty_editor_product,
+                    ConstraintSet.TOP,
+                    R.id.item_addon_cart,
+                    ConstraintSet.BOTTOM,
+                    margin
+                )
+            }
+            applyTo(binding.containerProductInformation)
+        }
+    }
+
+    private fun adjustBundlingProductSeparatorConstraint(data: CartItemHolderData) {
+        val constraintSet = ConstraintSet()
+        constraintSet.apply {
+            clone(binding.containerProductInformation)
+            if (data.isBundlingItem && data.isMultipleBundleProduct && data.bundlingItemPosition == BUNDLING_ITEM_FOOTER) {
+                connect(
+                    R.id.v_bundling_product_separator,
+                    ConstraintSet.BOTTOM,
+                    R.id.button_change_note,
+                    ConstraintSet.BOTTOM
+                )
+            }
+            else {
+                connect(
+                    R.id.v_bundling_product_separator,
+                    ConstraintSet.BOTTOM,
+                    ConstraintSet.PARENT_ID,
+                    ConstraintSet.BOTTOM
+                )
+            }
+            applyTo(binding.containerProductInformation)
         }
     }
 
@@ -418,7 +546,10 @@ class CartItemViewHolder constructor(
                     .removeDecimalSuffix()
 
             if (data.bundleSlashPriceLabel.isNotBlank()) {
-                labelBundleSlashPricePercentage.text = data.bundleSlashPriceLabel
+                labelBundleSlashPricePercentage.text = String.format(
+                    itemView.context.getString(R.string.cart_label_discount_percentage),
+                    data.bundleSlashPriceLabel
+                )
                 labelBundleSlashPricePercentage.show()
             } else {
                 labelBundleSlashPricePercentage.gone()
@@ -454,6 +585,8 @@ class CartItemViewHolder constructor(
     }
 
     private fun renderProductName(data: CartItemHolderData) {
+        validateErrorView(binding.textProductName, data.isError)
+
         val marginTop = itemView.context.resources.getDimension(R.dimen.dp_2).toInt()
         if (data.isBundlingItem && !data.isMultipleBundleProduct && data.bundleLabelQuantity > 0) {
             val textProductNameLayoutParams =
@@ -473,13 +606,27 @@ class CartItemViewHolder constructor(
         }
         binding.textProductName.setOnClickListener(
             getOnClickProductItemListener(
-                adapterPosition,
+                absoluteAdapterPosition,
                 data
             )
         )
     }
 
     private fun renderImage(data: CartItemHolderData) {
+        val layoutParams = binding.iuImageProduct.layoutParams
+        if (data.isBundlingItem) {
+            layoutParams.apply {
+                width = 56.dpToPx(itemView.resources.displayMetrics)
+                height = 56.dpToPx(itemView.resources.displayMetrics)
+
+            }
+        } else {
+            layoutParams.apply {
+                width = 80.dpToPx(itemView.resources.displayMetrics)
+                height = 80.dpToPx(itemView.resources.displayMetrics)
+            }
+        }
+        binding.iuImageProduct.layoutParams = layoutParams
         data.productImage.let {
             binding.iuImageProduct.loadImage(it)
         }
@@ -500,9 +647,13 @@ class CartItemViewHolder constructor(
                     actionListener?.onProductAddOnClicked(data)
                 }
             }
-            binding.cartAddOnSeparator.show()
+            if (data.variant.isNotBlank()) {
+                binding.cartAddOnSeparator.show()
+            }
+            else {
+                binding.cartAddOnSeparator.gone()
+            }
         } else {
-            binding.cartAddOnSeparator.gone()
             binding.itemAddonCart.root.gone()
         }
     }
@@ -625,6 +776,8 @@ class CartItemViewHolder constructor(
     }
 
     private fun renderPrice(data: CartItemHolderData) {
+        validateErrorView(binding.textProductPrice, data.isError)
+
         if (data.wholesalePriceFormatted != null) {
             binding.textProductPrice.text = data.wholesalePriceFormatted
                 ?: ""
@@ -637,6 +790,8 @@ class CartItemViewHolder constructor(
     }
 
     private fun renderSlashPrice(data: CartItemHolderData) {
+        if (data.isBundlingItem)
+            return
         val hasPriceOriginal = data.productOriginalPrice > 0
         val hasWholesalePrice = data.wholesalePrice > 0
         val hasPriceDrop = data.productInitialPriceBeforeDrop > 0 &&
@@ -664,8 +819,7 @@ class CartItemViewHolder constructor(
             binding.textSlashPrice.show()
         } else {
             binding.textSlashPrice.gone()
-            // TODO: change with banner slash price percentage in product image
-//            binding.labelSlashPricePercentage.gone()
+            binding.groupSlashPricePercentage.gone()
         }
     }
 
@@ -689,9 +843,8 @@ class CartItemViewHolder constructor(
         binding.textSlashPrice.text =
             CurrencyFormatUtil.convertPriceValueToIdrFormat(data.productOriginalPrice, false)
                 .removeDecimalSuffix()
-        // TODO: change with banner slash price percentage in product image
-//        binding.labelSlashPricePercentage.text = data.productSlashPriceLabel
-//        binding.labelSlashPricePercentage.show()
+        binding.labelSlashPricePercentage.text = data.productSlashPriceLabel
+        binding.groupSlashPricePercentage.show()
         informationLabel.add(LABEL_DISCOUNT)
     }
 
@@ -714,12 +867,7 @@ class CartItemViewHolder constructor(
             textProductVariant.show()
             paddingRight = itemView.resources.getDimensionPixelOffset(R.dimen.dp_4)
         } else {
-            if (data.productQtyLeft.isNotBlank()) {
-                textProductVariant.text = ""
-                textProductVariant.invisible()
-            } else {
-                textProductVariant.gone()
-            }
+            textProductVariant.gone()
         }
         textProductVariant.setPadding(0, paddingTop, paddingRight, 0)
     }
@@ -732,7 +880,7 @@ class CartItemViewHolder constructor(
 //            textNotesChange.setOnClickListener {
 //                renderProductNotesEditable(element)
 //            }
-
+            binding.buttonChangeNote.show()
             if (element.notes.isNotBlank()) {
                 renderProductNotesFilled(element)
             } else {
@@ -850,7 +998,7 @@ class CartItemViewHolder constructor(
     private fun renderQuantity(data: CartItemHolderData, viewHolderListener: ViewHolderListener?) {
         val qtyEditorProduct = binding.qtyEditorProduct
         if (data.isError) {
-            qtyEditorProduct.gone()
+            binding.containerProductQuantityAction.invisible()
             return
         }
         qtyEditorProduct.show()
@@ -969,6 +1117,32 @@ class CartItemViewHolder constructor(
 
     private fun renderActionWishlist(action: Action, data: CartItemHolderData) {
 //        val textMoveToWishlist = binding.textMoveToWishlist
+        if (data.isWishlisted && action.id == Action.ACTION_WISHLISTED) {
+            val inWishlistColor = ContextCompat.getColor(
+                itemView.context,
+                com.tokopedia.unifyprinciples.R.color.Unify_RN500
+            )
+            binding.buttonToggleWishlist.setImage(
+                IconUnify.HEART_FILLED,
+                inWishlistColor,
+                inWishlistColor,
+                inWishlistColor,
+                inWishlistColor
+            )
+        }
+        else {
+            val notInWishlistColor = ContextCompat.getColor(
+                itemView.context,
+                com.tokopedia.unifyprinciples.R.color.Unify_NN500
+            )
+            binding.buttonToggleWishlist.setImage(
+                IconUnify.HEART,
+                notInWishlistColor,
+                notInWishlistColor,
+                notInWishlistColor,
+                notInWishlistColor
+            )
+        }
 //        if (data.isWishlisted && action.id == Action.ACTION_WISHLISTED) {
 //            textMoveToWishlist.text = action.message
 //            textMoveToWishlist.setTextColor(
@@ -996,7 +1170,7 @@ class CartItemViewHolder constructor(
 //                )
 //            }
 //        }
-//        textMoveToWishlist.show()
+        binding.buttonToggleWishlist.show()
     }
 
     private fun getOnClickProductItemListener(
@@ -1041,12 +1215,12 @@ class CartItemViewHolder constructor(
                     actionListener?.onSimilarProductUrlClicked(data)
                 }
             }
-            setTextColor(
-                ContextCompat.getColor(
-                    context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_N700_68
-                )
-            )
+//            setTextColor(
+//                ContextCompat.getColor(
+//                    context,
+//                    com.tokopedia.unifyprinciples.R.color.Unify_N700_68
+//                )
+//            )
             actionListener?.onShowActionSeeOtherProduct(data.productId, data.errorType)
             show()
         }
@@ -1092,11 +1266,28 @@ class CartItemViewHolder constructor(
         with(binding) {
             if (cartItemHolderData.isError) {
                 productBundlingInfo.alpha = ALPHA_HALF
-                containerProductInformation.alpha = ALPHA_HALF
             } else {
                 productBundlingInfo.alpha = ALPHA_FULL
-                containerProductInformation.alpha = ALPHA_FULL
             }
+        }
+    }
+
+    private fun validateErrorView(typography: Typography, isError: Boolean) {
+        if (isError) {
+            typography.setTextColor(
+                ContextCompat.getColor(
+                    itemView.context,
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN400
+                )
+            )
+        }
+        else {
+            typography.setTextColor(
+                ContextCompat.getColor(
+                    itemView.context,
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN600
+                )
+            )
         }
     }
 
@@ -1122,9 +1313,11 @@ class CartItemViewHolder constructor(
         const val ALPHA_HALF = 0.5f
         const val ALPHA_FULL = 1.0f
 
+        private const val IMAGE_PRODUCT_MARGIN_START_6 = 6
         private const val IMAGE_PRODUCT_MARGIN_START = 12
+        private const val PRODUCT_ACTION_MARGIN = 16
         private const val TEXT_NOTES_CHANGE_WIDTH = 40
-        private const val BUNDLING_SEPARATOR_MARGIN_START = 32
+        private const val BUNDLING_SEPARATOR_MARGIN_START = 38
         private const val BUNDLING_SEPARATOR_WIDTH = 48
     }
 }

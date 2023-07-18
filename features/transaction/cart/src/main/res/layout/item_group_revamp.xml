@@ -22,8 +22,7 @@
         android:layout_height="wrap_content"
         android:paddingStart="16dp"
         android:paddingTop="16dp"
-        android:paddingEnd="16dp"
-        android:paddingBottom="12dp">
+        android:paddingEnd="16dp">
 
         <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
             android:id="@+id/cb_select_shop"

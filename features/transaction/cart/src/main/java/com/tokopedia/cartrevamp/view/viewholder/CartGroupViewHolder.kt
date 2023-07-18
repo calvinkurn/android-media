@@ -2,6 +2,7 @@ package com.tokopedia.cartrevamp.view.viewholder
 
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintSet
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
@@ -25,6 +26,7 @@ import com.tokopedia.purchase_platform.common.utils.Utils
 import com.tokopedia.purchase_platform.common.utils.rxViewClickDebounce
 import com.tokopedia.unifycomponents.ticker.Ticker.Companion.SHAPE_LOOSE
 import com.tokopedia.unifycomponents.ticker.Ticker.Companion.TYPE_WARNING
+import com.tokopedia.unifyprinciples.Typography
 import rx.Subscriber
 import rx.subscriptions.CompositeSubscription
 import java.text.NumberFormat
@@ -115,6 +117,29 @@ class CartGroupViewHolder(
     }
 
     private fun renderGroupName(cartGroupHolderData: CartGroupHolderData) {
+        if (cartGroupHolderData.isError) {
+            binding.tvShopName.apply {
+                setTextColor(
+                    ContextCompat.getColor(
+                        itemView.context,
+                        com.tokopedia.unifyprinciples.R.color.Unify_NN600
+                    )
+                )
+                weightType = Typography.REGULAR
+            }
+        }
+        else {
+            binding.tvShopName.apply {
+                setTextColor(
+                    ContextCompat.getColor(
+                        itemView.context,
+                        com.tokopedia.unifyprinciples.R.color.Unify_NN950
+                    )
+                )
+                weightType = Typography.BOLD
+            }
+        }
+
         binding.tvShopName.text = Utils.getHtmlFormat(cartGroupHolderData.groupName)
         if (cartGroupHolderData.isError) {
             val shopId = cartGroupHolderData.productUiModelList.getOrNull(0)?.shopHolderData?.shopId
@@ -192,18 +217,18 @@ class CartGroupViewHolder(
 
     private fun renderCheckBox(cartGroupHolderData: CartGroupHolderData) {
         with(binding) {
-            val padding10 = SHOP_HEADER_PADDING_10.dpToPx(itemView.resources.displayMetrics)
+            val padding12 = SHOP_HEADER_PADDING_12.dpToPx(itemView.resources.displayMetrics)
             val padding16 = itemView.resources.getDimensionPixelSize(R.dimen.dp_16)
             if (!cartGroupHolderData.isError) {
                 cbSelectShop.show()
 //                cbSelectShop.isEnabled = true
                 cbSelectShop.isChecked = cartGroupHolderData.isAllSelected
                 cbSelectShop.skipAnimation()
-                clShopHeader.setPadding(padding10, padding16, padding10, padding10)
+                clShopHeader.setPadding(padding16, padding16, padding16, padding12)
                 initCheckboxWatcherDebouncer(cartGroupHolderData, compositeSubscription)
             } else {
                 cbSelectShop.gone()
-                clShopHeader.setPadding(padding16, padding16, padding10, padding10)
+                clShopHeader.setPadding(padding16, padding16, padding12, padding12)
             }
         }
     }
@@ -249,19 +274,17 @@ class CartGroupViewHolder(
     private fun validateFulfillmentLayout(cartGroupHolderData: CartGroupHolderData) {
         with(binding) {
             val constraintSet = ConstraintSet()
+            constraintSet.clone(clShopHeader)
             if (cartGroupHolderData.fulfillmentName.isNotBlank()) {
                 constraintSet.apply {
-                    clone(clShopHeader)
                     clear(R.id.image_shop_badge, ConstraintSet.BOTTOM)
-                    applyTo(clShopHeader)
                 }
             } else {
                 constraintSet.apply {
-                    clone(clShopHeader)
-                    connect(R.id.imageShopBadge, ConstraintSet.BOTTOM, R.id.cb_select_shop, ConstraintSet.BOTTOM)
-                    applyTo(clShopHeader)
+                    connect(R.id.image_shop_badge, ConstraintSet.BOTTOM, R.id.cb_select_shop, ConstraintSet.BOTTOM)
                 }
             }
+            constraintSet.applyTo(clShopHeader)
         }
     }
 
@@ -412,6 +435,6 @@ class CartGroupViewHolder(
 //        const val KEY_HAS_SHOWN_ICON_PIN_ONBOARDING = "KEY_HAS_SHOWN_ICON_PIN_ONBOARDING"
 
         private const val ITEM_DECORATION_PADDING_LEFT = 48
-        private const val SHOP_HEADER_PADDING_10 = 10
+        private const val SHOP_HEADER_PADDING_12 = 12
     }
 }
