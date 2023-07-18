@@ -652,9 +652,6 @@ class MedalCelebrationBottomSheet : BottomSheetUnify() {
         val listener = object : Animator.AnimatorListener {
             override fun onAnimationStart(animation: Animator) {}
             override fun onAnimationEnd(animation: Animator) {
-//                if (isFallbackCase || mandatoryAssetFailure) {
-//                    startRedirection()
-//                }
             }
             override fun onAnimationCancel(animation: Animator) {}
             override fun onAnimationRepeat(animation: Animator) {}
@@ -675,15 +672,6 @@ class MedalCelebrationBottomSheet : BottomSheetUnify() {
             binding?.mainView?.couponUi?.couponImage?.isEdgeControl = true
             binding?.mainView?.couponUi?.couponImage?.circularEdgeColor = Color.parseColor(bgColor)
             coupon_image
-        }
-        if(medalCelebrationViewModel.badgeLiveData.value is Success<*>){
-          val status = (medalCelebrationViewModel.badgeLiveData.value as Success<ScpRewardsCelebrationModel>).data.scpRewardsCelebrationPage?.celebrationPage?.benefit?.first()?.status
-          if(status == HIDDEN){
-              binding?.mainView?.couponUi?.couponImage?.scaleType = ImageView.ScaleType.CENTER_CROP
-          }
-            else{
-              binding?.mainView?.couponUi?.couponImage?.scaleType = ImageView.ScaleType.FIT_CENTER
-          }
         }
         binding?.mainView?.couponUi?.couponImage?.setImageDrawable(couponDrawable)
         context?.let {
