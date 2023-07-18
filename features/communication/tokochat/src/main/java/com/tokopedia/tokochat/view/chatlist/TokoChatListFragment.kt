@@ -64,9 +64,8 @@ class TokoChatListFragment @Inject constructor(
                     when (it) {
                         is Success -> {
                             addOrUpdateChatItem(it.data)
-
                             if (!isCompleted) {
-                                viewModel.loadNextPageChatList(it.data.size)
+                                viewModel.loadNextPageChatList(it.data.size, isLoadMore = false)
                                 isCompleted = true
                             }
                         }
@@ -112,7 +111,7 @@ class TokoChatListFragment @Inject constructor(
     }
 
     override fun onLoadMore() {
-        viewModel.loadNextPageChatList()
+        viewModel.loadNextPageChatList(isLoadMore = true)
     }
 
     private fun notifyWhenAllowed(position: Int) {
@@ -134,7 +133,7 @@ class TokoChatListFragment @Inject constructor(
             chatDuration = element.getRelativeTime()
         )
         context?.let {
-            val source = "?${ApplinkConst.TokoChat.PARAM_SOURCE}=${serviceName}"
+            val source = "?${ApplinkConst.TokoChat.PARAM_SOURCE}=$serviceName"
             val paramOrderIdGojek = "&${ApplinkConst.TokoChat.ORDER_ID_GOJEK}=${element.orderId}"
             val applink = "${ApplinkConstInternalCommunication.TOKO_CHAT}$source$paramOrderIdGojek"
             val intent = RouteManager.getIntent(it, applink)

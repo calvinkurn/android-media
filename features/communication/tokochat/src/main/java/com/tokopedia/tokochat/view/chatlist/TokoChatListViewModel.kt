@@ -55,7 +55,10 @@ class TokoChatListViewModel @Inject constructor(
             }
     }
 
-    fun loadNextPageChatList(localSize: Int = Int.ZERO) {
+    fun loadNextPageChatList(
+        localSize: Int = Int.ZERO,
+        isLoadMore: Boolean
+    ) {
         try {
             chatChannelUseCase.getAllChannel(
                 channelTypes = listOf(ChannelType.GroupBooking),
@@ -63,7 +66,9 @@ class TokoChatListViewModel @Inject constructor(
                 onSuccess = {
                     // Set to -1 to mark as no more data
                     setPaginationTimeStamp(it.lastOrNull()?.createdAt ?: -1)
-                    emitChatListPairData(channelList = it)
+                    if (!isLoadMore) {
+                        emitChatListPairData(channelList = it)
+                    }
                 },
                 onError = {
                     it?.let { error ->
