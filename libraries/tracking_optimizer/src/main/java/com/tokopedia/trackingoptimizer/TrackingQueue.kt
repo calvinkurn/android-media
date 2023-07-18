@@ -1,5 +1,6 @@
 package com.tokopedia.trackingoptimizer
 
+import android.annotation.SuppressLint
 import android.content.Context
 import com.tokopedia.trackingoptimizer.constant.Constant.Companion.ECOMMERCE
 import com.tokopedia.trackingoptimizer.db.model.TrackingEEDbModel
@@ -43,14 +44,24 @@ import kotlin.coroutines.CoroutineContext
  * hit 2: consists of 5000bytes C + 1000 bytes D
  */
 
-class TrackingQueue(val context: Context) : CoroutineScope {
+class TrackingQueue(ctx: Context) {
 
-    override val coroutineContext: CoroutineContext
-        get() = TrackingExecutors.executor + TrackingExecutors.handler
+    val context = ctx.applicationContext
 
-    val newTrackingRepository: TrackRepositoryImpl<TrackingRegularDbModel, TrackingEEDbModel,
-        TrackingEEFullDbModel, TrackingScreenNameDbModel> by lazy {
-        TrackRepository(context)
+    companion object {
+        @SuppressLint("StaticFieldLeak")
+        internal var trackingQueueObj: TrackingQueueSingleton? = null
+    }
+
+    private fun getTrackingQueueObject(ctx: Context): TrackingQueueSingleton {
+        var obj = trackingQueueObj
+        return if (obj == null) {
+            obj = TrackingQueueSingleton(ctx)
+            trackingQueueObj = obj
+            obj
+        } else {
+            obj
+        }
     }
 
     /**
@@ -59,12 +70,7 @@ class TrackingQueue(val context: Context) : CoroutineScope {
      * The other keys will be considered as custom dimensions
      */
     fun putEETracking(map: HashMap<String, Any>? = null) {
-        if (!(map?.containsKey(ECOMMERCE) == true)) {
-            return
-        }
-        launch {
-            newTrackingRepository.put(map)
-        }
+        getTrackingQueueObject(context).putEETracking(map)
     }
 
     /**
@@ -76,9 +82,7 @@ class TrackingQueue(val context: Context) : CoroutineScope {
         enhanceECommerceMap: HashMap<String, Any>,
         customDimension: HashMap<String, Any>? = null
     ) {
-        launch {
-            newTrackingRepository.putEE(event, customDimension, enhanceECommerceMap)
-        }
+        getTrackingQueueObject(context).putEETracking(event, enhanceECommerceMap, customDimension)
     }
 
     /**
@@ -89,13 +93,7 @@ class TrackingQueue(val context: Context) : CoroutineScope {
         map: HashMap<String, Any>? = null,
         enhanceECommerceMap: HashMap<String, Any>?
     ) {
-        launch {
-            newTrackingRepository.putEE(map, enhanceECommerceMap)
-        }
-    }
-
-    private fun isTrackingQueueAvailable(): Boolean {
-        return newTrackingRepository.getAllEE()?.isNotEmpty() ?: false
+        getTrackingQueueObject(context).putEETracking(map, enhanceECommerceMap)
     }
 
     /**
@@ -105,15 +103,69 @@ class TrackingQueue(val context: Context) : CoroutineScope {
      * validation is added, to start the service only if tracking queue is available
      */
     fun sendAll() {
-        // send all tracking in db to gtm
+        getTrackingQueueObject(context).sendAll()
+    }
+}
+
+internal class TrackingQueueSingleton(ctx: Context) : CoroutineScope {
+
+    val context = ctx.applicationContext
+
+    override val coroutineContext: CoroutineContext
+        get() = TrackingExecutors.executor + TrackingExecutors.handler
+
+    val newTrackingRepository: TrackRepositoryImpl<TrackingRegularDbModel, TrackingEEDbModel,
+            TrackingEEFullDbModel, TrackingScreenNameDbModel> by lazy {
+        TrackRepository(context)
+    }
+
+    internal fun putEETracking(map: HashMap<String, Any>? = null) {
+        if (map?.containsKey(ECOMMERCE) != true) {
+            return
+        }
         launch {
+            newTrackingRepository.put(map)
+        }
+    }
+
+    internal fun putEETracking(
+        event: EventModel,
+        enhanceECommerceMap: HashMap<String, Any>,
+        customDimension: HashMap<String, Any>? = null
+    ) {
+        launch {
+            newTrackingRepository.putEE(event, customDimension, enhanceECommerceMap)
+        }
+    }
+
+    internal fun putEETracking(
+        map: HashMap<String, Any>? = null,
+        enhanceECommerceMap: HashMap<String, Any>?
+    ) {
+        launch {
+            newTrackingRepository.putEE(map, enhanceECommerceMap)
+        }
+    }
+
+    private fun isTrackingQueueAvailable(): Boolean {
+        return newTrackingRepository.hasDataToSend()
+    }
+
+    internal fun sendAll() {
+        // send all tracking in db to gtm
+        // launch in different coroutine scope.
+        launch(Dispatchers.Default) {
             try {
                 if (isTrackingQueueAvailable()) {
-                    SendTrackQueueService.start(context)
+                    withContext(coroutineContext) {
+                        try {
+                            SendTrackQueueService.start(context)
+                        } catch (e: Throwable) {
+                            // prevent illegal state exception when service is launch when app in background (in O)
+                        }
+                    }
                 }
-            } catch (e: Throwable) {
-                // prevent illegal state exception when service is launch when app in background (in O)
-            }
+            } catch (ignored: Throwable) { }
         }
     }
 }

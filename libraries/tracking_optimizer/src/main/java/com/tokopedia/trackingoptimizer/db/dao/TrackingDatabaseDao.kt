@@ -20,4 +20,6 @@ interface TrackingDatabaseDao<T : TrackingDbModel> {
     fun deleteTable()
     fun getTrackingModel(key: String): T?
     fun getTrackingModelList(): Array<T>?
+
+    fun hasRowExist(): Boolean
 }
