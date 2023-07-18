@@ -20,8 +20,10 @@ import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.searchbar.data.HintData
+import com.tokopedia.searchbar.navigation_component.NavSource
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
+import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.thankyou_native.R
 import com.tokopedia.thankyou_native.TkpdIdlingResource
@@ -269,7 +271,7 @@ class ThankYouPageActivity :
             }
             this@ThankYouPageActivity.lifecycle.addObserver(this)
             setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_BACK)
-            if (hideSearchBar.not()) setIcon(IconBuilder().addIcon(IconList.ID_NAV_GLOBAL) {})
+            if (hideSearchBar.not()) setIcon(IconBuilder(builderFlags = IconBuilderFlag(pageSource = NavSource.THANKYOU)).addIcon(IconList.ID_NAV_GLOBAL) {})
             if (hideGlobalMenu.not()) setupSearchbar(listOf(HintData(GLOBAL_NAV_HINT)))
             setToolbarPageName(title)
             show()

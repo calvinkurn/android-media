@@ -16,7 +16,7 @@
         android:layout_below="@+id/date"
         android:layout_alignParentEnd="true"
         android:layout_marginStart="@dimen/chatcommon_3dp"
-        android:textColor="@color/Unify_N700_32"
+        android:textColor="@color/Unify_NN950_32"
         app:typographyType="small"
         tools:text="Pengguna" />
 
@@ -31,7 +31,7 @@
         android:gravity="center_vertical"
         android:lineSpacingExtra="@dimen/chatcommon_3sp"
         android:text="●"
-        android:textColor="@color/Unify_N200"
+        android:textColor="@color/Unify_NN500"
         android:textSize="@dimen/chatcommon_5sp"
         android:textStyle="normal" />
 
@@ -42,7 +42,7 @@
         android:layout_below="@+id/date"
         android:layout_marginBottom="@dimen/chatcommon_5dp"
         android:layout_toStartOf="@id/dot"
-        android:textColor="@color/Unify_N700_44"
+        android:textColor="@color/Unify_NN950_44"
         app:typographyType="display_3"
         tools:text="@tools:sample/lorem/random" />
 
@@ -54,7 +54,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="@dimen/layout_lvl2"
         android:textAllCaps="true"
-        android:textColor="@color/Unify_N200"
+        android:textColor="@color/Unify_NN500"
         app:typographyType="display_3"
         tools:text="13:16 wib" />
 
@@ -64,7 +64,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/name"
         android:layout_alignParentEnd="true"
-        app:cardBackgroundColor="@color/Unify_N0"
+        app:cardBackgroundColor="@color/Unify_NN0"
         app:cardCornerRadius="@dimen/chatcommon_3dp"
         app:cardElevation="@dimen/layout_lvl0"
         app:cardPreventCornerOverlap="false"
@@ -127,7 +127,7 @@
         android:layout_below="@id/card_group_chat_message"
         android:layout_alignEnd="@id/card_group_chat_message"
         android:layout_marginTop="@dimen/chatcommon_3dp"
-        android:textColor="@color/Unify_N300"
+        android:textColor="@color/Unify_NN500"
         app:typographyType="small"
         tools:text="10:13 pm"
         tools:visibility="visible" />

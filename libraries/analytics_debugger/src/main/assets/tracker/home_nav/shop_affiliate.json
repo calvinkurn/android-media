@@ -7,11 +7,11 @@
       "eventAction": "click on profile section - login",
       "eventCategory": "global menu",
       "eventLabel": ".*",
+      "pageSource": ".*",
       "businessUnit": "home & browse",
       "currentSite": "tokopediamarketplace",
-      "userId": ".*",
-      "clientId": ".*",
-      "sessionIris": ".*"
+      "sessionIris": ".*",
+      "trackerId": "18479"
     }
   ]
 }

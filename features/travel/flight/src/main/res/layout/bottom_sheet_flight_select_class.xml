@@ -23,7 +23,7 @@
             android:layout_marginTop="@dimen/spacing_lvl4"
             android:layout_marginBottom="@dimen/spacing_lvl4"
             android:layoutDirection="rtl"
-            android:textColor="@color/Unify_N700_96"
+            android:textColor="@color/Unify_NN950_96"
             app:bold="true"
             tools:text="Ekonomi" />
 
@@ -35,7 +35,7 @@
             android:layout_marginTop="@dimen/spacing_lvl4"
             android:layout_marginBottom="@dimen/spacing_lvl4"
             android:layoutDirection="rtl"
-            android:textColor="@color/Unify_N700_96"
+            android:textColor="@color/Unify_NN950_96"
             app:bold="true"
             tools:text="Bisnis" />
 
@@ -47,7 +47,7 @@
             android:layout_marginTop="@dimen/spacing_lvl4"
             android:layout_marginBottom="@dimen/spacing_lvl4"
             android:layoutDirection="rtl"
-            android:textColor="@color/Unify_N700_96"
+            android:textColor="@color/Unify_NN950_96"
             app:bold="true"
             tools:text="Utama" />
 

@@ -39,7 +39,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.iris)
     implementation projectOrAar(rootProject.ext.libraries.irisSession)
     implementation projectOrAar(rootProject.ext.libraries.track)
-    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
     implementation projectOrAar(rootProject.ext.libraries.interceptors)
     implementation projectOrAar(rootProject.ext.features.common_promo)
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)

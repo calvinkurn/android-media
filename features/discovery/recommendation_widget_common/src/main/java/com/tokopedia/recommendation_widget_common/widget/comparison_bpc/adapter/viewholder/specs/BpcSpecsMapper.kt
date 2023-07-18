@@ -64,9 +64,9 @@ object BpcSpecsMapper {
 
     private fun getColorCompareItem(parentInEdgeStart: Boolean): Int {
         return if (parentInEdgeStart) {
-            com.tokopedia.unifyprinciples.R.color.Unify_N50
+            com.tokopedia.unifyprinciples.R.color.Unify_NN50
         } else {
-            com.tokopedia.unifyprinciples.R.color.Unify_N0
+            com.tokopedia.unifyprinciples.R.color.Unify_NN0
         }
     }
 

@@ -372,7 +372,7 @@ class FlightSearchFormView @JvmOverloads constructor(context: Context, attrs: At
         text.setSpan(RelativeSizeSpan(RELATIVE_SPAN_SIZE),
                 0, text.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         text.setSpan(
-                ForegroundColorSpan(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700)),
+                ForegroundColorSpan(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950)),
                 0, text.length,
                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         return text

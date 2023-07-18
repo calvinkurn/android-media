@@ -20,7 +20,7 @@ object StripedUnderlineUtil {
             s.removeSpan(urlSpan)
             urlSpan = URLSpanNoUnderline(urlSpan.url)
             s.setSpan(urlSpan, start, end, 0)
-            s.setSpan(ForegroundColorSpan(ContextCompat.getColor(textView.context, com.tokopedia.unifyprinciples.R.color.Unify_G500)), start, end, 0)
+            s.setSpan(ForegroundColorSpan(ContextCompat.getColor(textView.context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)), start, end, 0)
         }
         textView.text = s
     }

@@ -107,14 +107,14 @@ class IntroOvoFragment : BaseDaggerFragment(), IntroOvoContract.View {
                     super.updateDrawState(ds)
                     ds.isUnderlineText = false
                     ds.color =
-                        ContextCompat.getColor(it, com.tokopedia.unifycomponents.R.color.Unify_G500)
+                        ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
                 }
             }
             ss.setSpan(
                 ForegroundColorSpan(
                     ContextCompat.getColor(
                         it,
-                        com.tokopedia.unifycomponents.R.color.Unify_G500
+                        com.tokopedia.unifyprinciples.R.color.Unify_GN500
                     )
                 ),
                 31,
