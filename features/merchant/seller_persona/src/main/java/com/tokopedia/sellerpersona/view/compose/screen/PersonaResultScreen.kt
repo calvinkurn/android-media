@@ -97,15 +97,8 @@ private fun ResultFooterSectionUi(data: PersonaDataUiModel, onEvent: (ResultUiEv
                         color = NestTheme.colors.NN._900
                     )
                 )
-                val activeStatus = remember {
-                    if (data.personaStatus.isActive()) {
-                        R.string.sp_active
-                    } else {
-                        R.string.sp_inactive
-                    }
-                }
                 NestTypography(
-                    text = stringResource(activeStatus),
+                    text = stringResource(data.getActiveStatusStringRes()),
                     textStyle = NestTheme.typography.display3.copy(
                         color = NestTheme.colors.NN._600
                     )
@@ -123,12 +116,14 @@ private fun ResultFooterSectionUi(data: PersonaDataUiModel, onEvent: (ResultUiEv
             modifier = Modifier.padding(top = 16.dp)
         )
         Spacer(modifier = Modifier.height(24.dp))
-        NestButton(
-            text = stringResource(R.string.sp_apply), onClick = {
-                onEvent(ResultUiEvent.ApplyChanges)
-            }, modifier = Modifier.fillMaxWidth()
-        )
-        Spacer(modifier = Modifier.height(16.dp))
+        if (data.isApplyButtonVisible()) {
+            NestButton(
+                text = stringResource(data.getApplyButtonStringRes()), onClick = {
+                    onEvent(ResultUiEvent.ApplyChanges(data.persona, data.isSwitchChecked))
+                }, modifier = Modifier.fillMaxWidth()
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+        }
         NestButton(
             text = stringResource(R.string.sp_retry_questionnaire), onClick = {
                 onEvent(ResultUiEvent.RetakeQuiz)
@@ -188,37 +183,39 @@ private fun LazyListScope.renderResultContentSectionUi(data: PersonaDataUiModel)
             NestTypography(
                 modifier = Modifier.padding(
                     top = 6.dp, bottom = 6.dp, start = 8.dp
-                ), text = it, textStyle = NestTheme.typography.display2.copy(
+                ), textStyle = NestTheme.typography.display2.copy(
                     color = NestTheme.colors.NN._950
-                )
+                ), text = it
             )
         }
     }
-    item {
-        Divider(
-            color = NestTheme.colors.NN._50,
-            thickness = 1.dp,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(all = 16.dp)
-        )
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(start = 16.dp, end = 16.dp)
-        ) {
-            Icon(
-                painter = painterResource(iconUnifyR.drawable.iconunify_lightbulb),
-                contentDescription = null,
-                tint = NestTheme.colors.GN._500,
-                modifier = Modifier.size(24.dp)
+    if (data.persona == CORPORATE_EMPLOYEE && data.isShopOwner) {
+        item {
+            Divider(
+                color = NestTheme.colors.NN._50,
+                thickness = 1.dp,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(all = 16.dp)
             )
-            NestTypography(
-                modifier = Modifier.padding(start = 8.dp),
-                text = stringResource(R.string.sp_result_create_admin_account),
-                textStyle = NestTheme.typography.display3.copy(
-                    color = NestTheme.colors.NN._600
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.padding(start = 16.dp, end = 16.dp)
+            ) {
+                Icon(
+                    painter = painterResource(iconUnifyR.drawable.iconunify_lightbulb),
+                    contentDescription = null,
+                    tint = NestTheme.colors.GN._500,
+                    modifier = Modifier.size(24.dp)
                 )
-            )
+                NestTypography(
+                    modifier = Modifier.padding(start = 8.dp),
+                    text = stringResource(R.string.sp_result_create_admin_account),
+                    textStyle = NestTheme.typography.display3.copy(
+                        color = NestTheme.colors.NN._600
+                    )
+                )
+            }
         }
     }
 }

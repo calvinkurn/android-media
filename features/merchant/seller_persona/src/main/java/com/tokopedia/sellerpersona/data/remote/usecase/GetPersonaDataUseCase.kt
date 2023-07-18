@@ -4,10 +4,12 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.sellerpersona.data.local.PersonaSharedPref
 import com.tokopedia.sellerpersona.data.remote.model.PersonaStatusModel
 import com.tokopedia.sellerpersona.view.model.PersonaDataUiModel
 import com.tokopedia.sellerpersona.view.model.PersonaStatus
 import com.tokopedia.sellerpersona.view.model.PersonaUiModel
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -19,6 +21,8 @@ import javax.inject.Inject
 class GetPersonaDataUseCase @Inject constructor(
     private val getPersonaStatusUseCase: GetPersonaStatusUseCase,
     private val getPersonaListUseCase: GetPersonaListUseCase,
+    private val sharedPref: PersonaSharedPref,
+    private val userSession: UserSessionInterface,
     private val dispatchers: CoroutineDispatchers
 ) {
 
@@ -60,11 +64,14 @@ class GetPersonaDataUseCase @Inject constructor(
             )
             throw MessageErrorException(message)
         }
+        val personaStatus = getPersonaStatusType(data.status)
         return PersonaDataUiModel(
             persona = data.persona,
-            personaStatus = getPersonaStatusType(data.status),
+            personaStatus = personaStatus,
             personaData = persona,
-            isSwitchChecked = getPersonaStatusType(data.status).isActive()
+            isSwitchChecked = personaStatus.isActive(),
+            isShopOwner = userSession.isShopOwner,
+            isFirstVisit = sharedPref.isFirstVisit
         )
     }
 

@@ -53,12 +53,10 @@ internal fun ErrorStateComponent(
                 .fillMaxWidth()
         )
         NestTypography(
-            modifier = Modifier
-                .fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth(),
             text = title,
             textStyle = NestTheme.typography.heading2.copy(
-                color = NestTheme.colors.NN._950,
-                textAlign = TextAlign.Center
+                color = NestTheme.colors.NN._950, textAlign = TextAlign.Center
             )
         )
         if (description.isNotBlank()) {
@@ -68,12 +66,10 @@ internal fun ErrorStateComponent(
                     .fillMaxWidth()
             )
             NestTypography(
-                modifier = Modifier
-                    .fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth(),
                 text = description,
                 textStyle = NestTheme.typography.paragraph2.copy(
-                    color = NestTheme.colors.NN._600,
-                    textAlign = TextAlign.Center
+                    color = NestTheme.colors.NN._600, textAlign = TextAlign.Center
                 )
             )
         }
@@ -82,15 +78,12 @@ internal fun ErrorStateComponent(
                 .requiredHeight(24.dp)
                 .fillMaxWidth()
         )
-        NestButton(
-            modifier = Modifier
-                .fillMaxWidth(),
+        NestButton(modifier = Modifier.fillMaxWidth(),
             text = actionText,
             variant = ButtonVariant.FILLED,
             onClick = {
                 onActionClicked?.invoke()
-            }
-        )
+            })
     }
 }
 
@@ -98,7 +91,6 @@ internal fun ErrorStateComponent(
 @Composable
 fun ErrorStateComponentPreview() {
     ErrorStateComponent(
-        actionText = "Muat Ulang",
-        title = "Oops, informasi gagal ditampilkan"
+        actionText = "Muat Ulang", title = "Oops, informasi gagal ditampilkan"
     )
 }

@@ -27,12 +27,11 @@ import com.tokopedia.sellerpersona.analytics.SellerPersonaTracking
 import com.tokopedia.sellerpersona.data.local.PersonaSharedPref
 import com.tokopedia.sellerpersona.view.activity.SellerPersonaActivity
 import com.tokopedia.sellerpersona.view.compose.common.ErrorStateComponent
+import com.tokopedia.sellerpersona.view.compose.model.ResultArgsUiModel
 import com.tokopedia.sellerpersona.view.compose.model.ResultUiEvent
 import com.tokopedia.sellerpersona.view.compose.screen.PersonaResultScreen
 import com.tokopedia.sellerpersona.view.compose.screen.ResultLoadingState
 import com.tokopedia.sellerpersona.view.compose.viewmodel.ComposePersonaResultViewModel
-import com.tokopedia.sellerpersona.view.model.PersonaDataUiModel
-import com.tokopedia.sellerpersona.view.model.PersonaStatus
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.flow.collectLatest
@@ -43,11 +42,6 @@ import javax.inject.Inject
  */
 
 class ComposeResultFragment : Fragment() {
-
-    companion object {
-        private const val PERSONA_TITLE = "\uD83C\uDF1F %s \uD83C\uDF1F"
-        private const val CORPORATE_EMPLOYEE = "corporate-employee"
-    }
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -71,9 +65,7 @@ class ComposeResultFragment : Fragment() {
         }
     }
     private var isPersonaActive = false
-    private var isSwitchChecked: Boolean = false
 
-    private var personaData: PersonaDataUiModel? = null
     private val impressHolder by lazy { ImpressHolder() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -85,46 +77,46 @@ class ComposeResultFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         return ComposeView(inflater.context).apply {
-                setContent {
-                    LaunchedEffect(key1 = Unit, block = {
-                        viewModel.fetchPersonaData()
+            setContent {
 
-                        viewModel.uiEvent.collectLatest {
-                            when (it) {
-                                is ResultUiEvent.RetakeQuiz -> retakeQuiz()
-                                is ResultUiEvent.ApplyChanges -> {}
-                                is ResultUiEvent.CheckChanged -> onSwitchCheckedChanged(it.isChecked)
-                                is ResultUiEvent.TogglePersona -> {}
-                                else -> {/* no-op */
-                                }
+                LaunchedEffect(key1 = Unit, block = {
+                    viewModel.setArguments(getResultArguments())
+                    viewModel.fetchPersonaData()
+
+                    viewModel.uiEvent.collectLatest {
+                        when (it) {
+                            is ResultUiEvent.RetakeQuiz -> retakeQuiz()
+                            is ResultUiEvent.ApplyChanges -> sendClickApplyTracker(it)
+                            is ResultUiEvent.OnPersonaStatusChanged -> onPersonaStatusChanged(it)
+                            else -> {/* no-op */
                             }
                         }
-                    })
+                    }
+                })
 
-                    NestTheme {
-                        Surface(color = MaterialTheme.colors.background) {
-                            val state = viewModel.personaState.collectAsState()
-                            val isLoading = state.value.isLoading
-                            val isError = state.value.error != null
-                            when {
-                                isLoading -> ResultLoadingState()
-                                isError -> ErrorStateComponent(
-                                    actionText = stringResource(id = R.string.sp_reload),
+                NestTheme {
+                    Surface(color = MaterialTheme.colors.background) {
+                        val state = viewModel.personaState.collectAsState()
+
+                        val isLoading = state.value.isLoading
+                        val isError = state.value.error != null
+
+                        when {
+                            isLoading -> ResultLoadingState()
+                            isError -> {
+                                ErrorStateComponent(actionText = stringResource(id = R.string.sp_reload),
                                     title = stringResource(id = R.string.sp_common_global_error_title),
                                     onActionClicked = {
-                                        viewModel::onEvent
-                                    }
-                                )
-
-                                else -> {
-                                    val data = state.value.data
-                                    PersonaResultScreen(data, viewModel::onEvent)
-                                }
+                                        viewModel.onEvent(ResultUiEvent.Reload)
+                                    })
                             }
+
+                            else -> PersonaResultScreen(state.value.data, viewModel::onEvent)
                         }
                     }
                 }
             }
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -134,14 +126,29 @@ class ComposeResultFragment : Fragment() {
         setupOnBackPressed()
     }
 
+    private fun getResultArguments(): ResultArgsUiModel {
+        return ResultArgsUiModel(paramPersona = args.paramPersona)
+    }
+
+    private fun onPersonaStatusChanged(data: ResultUiEvent.OnPersonaStatusChanged) {
+        if (data.isSuccess) {
+            goToSellerHome()
+        } else {
+            showToggleErrorMessage()
+        }
+    }
+
+    private fun sendClickApplyTracker(data: ResultUiEvent.ApplyChanges) {
+        SellerPersonaTracking.sendClickSellerPersonaResultSavePersonaEvent(
+            persona = data.persona,
+            isActive = data.isActive
+        )
+    }
+
     private fun setupOnBackPressed() {
         activity?.onBackPressedDispatcher?.addCallback(
             viewLifecycleOwner, backPressedCallback
         )
-    }
-
-    private fun onSwitchCheckedChanged(isChecked: Boolean) {
-        this.isSwitchChecked = isChecked
     }
 
     private fun retakeQuiz() {
@@ -182,20 +189,6 @@ class ComposeResultFragment : Fragment() {
                 activity?.finish()
             }
         }
-    }
-
-//    private fun observePersonaToggleStatus() {
-//        viewLifecycleOwner.observe(viewModel.togglePersonaStatus) {
-//            when (it) {
-//                is Success -> setOnToggleSuccess(it.data)
-//                is Fail -> showToggleErrorMessage()
-//            }
-//        }
-//    }
-
-    private fun setOnToggleSuccess(status: PersonaStatus) {
-        isPersonaActive = status == PersonaStatus.ACTIVE
-        goToSellerHome()
     }
 
     private fun goToSellerHome() {
