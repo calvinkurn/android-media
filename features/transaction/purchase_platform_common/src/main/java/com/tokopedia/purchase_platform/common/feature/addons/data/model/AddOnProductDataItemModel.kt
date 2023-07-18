@@ -5,12 +5,12 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class AddOnProductDataItemModel(
-    var addOnDataId: Long = 0L,
-    var addOnDataPrice: Double = 0.0,
-    var addOnDataUniqueId: String = "",
-    var addOnDataInfoLink: String = "",
-    var addOnDataName: String = "",
-    var addOnDataStatus: Int = -1,
-    var addOnDataType: Int = -1,
-    var addOnDataQty: Int = -1
+    var id: Long = 0L,
+    var price: Double = 0.0,
+    var uniqueId: String = "",
+    var infoLink: String = "",
+    var name: String = "",
+    var status: Int = -1,
+    var type: Int = -1,
+    var qty: Int = -1
 ) : Parcelable

@@ -751,8 +751,8 @@ class ShipmentCartItemBottomViewHolder(
                     if (cartItemModel.addOnProduct.listAddOnProductData.isNotEmpty()) {
                         renderSubtotalAddOn(cartItemModel, itemView.context, shipmentCartItemModel.subtotalAddOnMap)
                         cartItemModel.addOnProduct.listAddOnProductData.forEach {
-                            if (it.addOnDataStatus == 1) {
-                                totalAddOnProductPrice += it.addOnDataPrice * cartItemModel.quantity
+                            if (it.status == 1) {
+                                totalAddOnProductPrice += it.price * cartItemModel.quantity
                             }
                         }
                     }
@@ -1209,10 +1209,10 @@ class ShipmentCartItemBottomViewHolder(
         val listShipmentAddOnSubtotalModel = arrayListOf<ShipmentAddOnSubtotalModel>()
         cartItemModel.addOnProduct.listAddOnProductData.forEach {
             for ((key, value) in subtotalAddOnMap) {
-                if (it.addOnDataType == key && it.addOnDataStatus == 1) {
+                if (it.type == key && it.status == 1) {
                     val shipmentAddOnSubtotalModel = ShipmentAddOnSubtotalModel(
                         wording = value.replace(CartConstant.QTY_ADDON_REPLACE, cartItemModel.quantity.toString()),
-                        priceLabel = CurrencyFormatUtil.convertPriceValueToIdrFormat((it.addOnDataPrice * cartItemModel.quantity), false).removeDecimalSuffix()
+                        priceLabel = CurrencyFormatUtil.convertPriceValueToIdrFormat((it.price * cartItemModel.quantity), false).removeDecimalSuffix()
                     )
                     listShipmentAddOnSubtotalModel.add(shipmentAddOnSubtotalModel)
                 }

@@ -450,33 +450,33 @@ class ShipmentCartItemViewHolder(
             }
 
             cartItemModel.addOnProduct.listAddOnProductData.forEach { addon ->
-                if (addon.addOnDataName.isNotBlank()) {
+                if (addon.name.isNotBlank()) {
                     val addOnView = ItemShipmentAddonProductItemBinding.inflate(layoutInflater, null, false)
                     addOnView.apply {
-                        tvShipmentAddOnName.text = addon.addOnDataName
+                        tvShipmentAddOnName.text = addon.name
                         tvShipmentAddOnName.setOnClickListener {
                             cbAddonItem.isChecked = cbAddonItem.isChecked.not()
                         }
                         tvShipmentAddOnPrice.text = CurrencyFormatUtil
-                            .convertPriceValueToIdrFormat(addon.addOnDataPrice.toLong(), false)
+                            .convertPriceValueToIdrFormat(addon.price.toLong(), false)
                             .removeDecimalSuffix()
-                        cbAddonItem.isChecked = (addon.addOnDataStatus == ADD_ON_PRODUCT_STATUS_CHECK)
+                        cbAddonItem.isChecked = (addon.status == ADD_ON_PRODUCT_STATUS_CHECK)
                         cbAddonItem.setOnCheckedChangeListener { compoundButton, isChecked ->
                             delayChangeCheckboxAddOnState?.cancel()
                             delayChangeCheckboxAddOnState = GlobalScope.launch(Dispatchers.Main) {
                                 delay(DEBOUNCE_TIME_ADDON)
                                 if (bindingAdapterPosition != RecyclerView.NO_POSITION) {
                                     listener?.onCheckboxAddonProductListener(isChecked, addon, cartItemModel, bindingAdapterPosition)
-                                    listener?.onClickAddOnsProductWidget(addon.addOnDataType, cartItemModel.productId.toString(), isChecked)
+                                    listener?.onClickAddOnsProductWidget(addon.type, cartItemModel.productId.toString(), isChecked)
                                 }
                             }
                         }
                         icProductAddonInfo.setOnClickListener {
-                            listener?.onClickAddonProductInfoIcon(addon.addOnDataInfoLink)
+                            listener?.onClickAddonProductInfoIcon(addon.infoLink)
                         }
                     }
                     binding.itemShipmentAddonProduct.llAddonProductItems.addView(addOnView.root)
-                    listener?.onImpressionAddOnProductService(addon.addOnDataType, cartItemModel.productId.toString())
+                    listener?.onImpressionAddOnProductService(addon.type, cartItemModel.productId.toString())
                 }
             }
         }
@@ -503,28 +503,28 @@ class ShipmentCartItemViewHolder(
                 }
             }
             cartItemModel.addOnProduct.listAddOnProductData.forEach { addon ->
-                if (addon.addOnDataName.isNotBlank()) {
+                if (addon.name.isNotBlank()) {
                     val addOnView = ItemShipmentAddonProductItemBinding.inflate(layoutInflater, null, false)
                     addOnView.apply {
-                        cbAddonItem.isChecked = (addon.addOnDataStatus == ADD_ON_PRODUCT_STATUS_CHECK)
+                        cbAddonItem.isChecked = (addon.status == ADD_ON_PRODUCT_STATUS_CHECK)
                         cbAddonItem.setOnCheckedChangeListener { compoundButton, isChecked ->
                             listener?.onCheckboxAddonProductListener(isChecked, addon, cartItemModel, bindingAdapterPosition)
                         }
                         icProductAddonInfo.visible()
                         icProductAddonInfo.setOnClickListener {
-                            listener?.onClickAddonProductInfoIcon(addon.addOnDataInfoLink)
+                            listener?.onClickAddonProductInfoIcon(addon.infoLink)
                         }
                     }
                     val addOnName = addOnView.tvShipmentAddOnName
                     addOnName.apply {
-                        text = addon.addOnDataName
+                        text = addon.name
                         setOnClickListener {
                             addOnView.cbAddonItem.isChecked = addOnView.cbAddonItem.isChecked.not()
                         }
                     }
                     val addOnPrice = addOnView.tvShipmentAddOnPrice
                     addOnPrice.text = CurrencyFormatUtil
-                        .convertPriceValueToIdrFormat(addon.addOnDataPrice.toLong(), false)
+                        .convertPriceValueToIdrFormat(addon.price.toLong(), false)
                         .removeDecimalSuffix()
                     binding.itemShipmentAddonProductBundling.llAddonProductItems.addView(addOnView.root)
                 }

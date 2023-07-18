@@ -401,15 +401,15 @@ class ShipmentViewModel @Inject constructor(
                         }
                         if (cartItem.addOnProduct.listAddOnProductData.isNotEmpty()) {
                             for (addOnProductService in cartItem.addOnProduct.listAddOnProductData) {
-                                if (addOnProductService.addOnDataStatus == 1) {
-                                    totalAddOnProductServicePrice += (addOnProductService.addOnDataPrice * cartItem.quantity)
-                                    if (countMapSummaries.containsKey(addOnProductService.addOnDataType)) {
+                                if (addOnProductService.status == 1) {
+                                    totalAddOnProductServicePrice += (addOnProductService.price * cartItem.quantity)
+                                    if (countMapSummaries.containsKey(addOnProductService.type)) {
                                         qtyAddOn += cartItem.quantity
                                     } else {
                                         qtyAddOn = cartItem.quantity
                                     }
-                                    totalPriceAddOn = qtyAddOn * addOnProductService.addOnDataPrice
-                                    countMapSummaries[addOnProductService.addOnDataType] = totalPriceAddOn to qtyAddOn
+                                    totalPriceAddOn = qtyAddOn * addOnProductService.price
+                                    countMapSummaries[addOnProductService.type] = totalPriceAddOn to qtyAddOn
                                 }
                             }
                         }
@@ -527,7 +527,7 @@ class ShipmentViewModel @Inject constructor(
                 type = entry.key,
                 qty = entry.value.second,
                 priceLabel = addOnPrice,
-                priceValue = entry.value.first
+                priceValue = entry.value.first.toLong()
             )
             listShipmentAddOnSummary.add(summaryAddOn)
         }
@@ -5609,11 +5609,11 @@ class ShipmentViewModel @Inject constructor(
                         listCartProduct.add(cartProduct)
                         product.addOnProduct.listAddOnProductData.forEach { addonProduct ->
                             val addOnDataRequest = AddOnDataRequest(
-                                addOnId = addonProduct.addOnDataId,
+                                addOnId = addonProduct.id,
                                 addOnQty = 1,
-                                addOnUniqueId = addonProduct.addOnDataUniqueId,
-                                addOnType = addonProduct.addOnDataType,
-                                addOnStatus = addonProduct.addOnDataStatus
+                                addOnUniqueId = addonProduct.uniqueId,
+                                addOnType = addonProduct.type,
+                                addOnStatus = addonProduct.status
                             )
                             listAddOnDataRequest.add(addOnDataRequest)
                         }
