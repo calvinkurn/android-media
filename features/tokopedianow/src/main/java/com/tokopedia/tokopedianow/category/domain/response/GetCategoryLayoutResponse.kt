@@ -1,7 +1,7 @@
 package com.tokopedia.tokopedianow.category.domain.response
 
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.tokopedianow.category.presentation.constant.CategoryComponentName.Companion.TABS_HORIZONTAL_SCROLL
+import com.tokopedia.tokopedianow.category.presentation.constant.CategoryComponentType.Companion.TABS_HORIZONTAL_SCROLL
 
 data class GetCategoryLayoutResponse(
     @SerializedName("categoryGetDetailModular")

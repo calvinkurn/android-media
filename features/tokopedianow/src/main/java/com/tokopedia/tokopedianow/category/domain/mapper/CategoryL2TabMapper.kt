@@ -3,7 +3,7 @@ package com.tokopedia.tokopedianow.category.domain.mapper
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.tokopedianow.category.domain.response.GetCategoryLayoutResponse.Component
-import com.tokopedia.tokopedianow.category.presentation.constant.CategoryComponentName.Companion.PRODUCT_LIST_FILTER
+import com.tokopedia.tokopedianow.category.presentation.constant.CategoryComponentType.Companion.PRODUCT_LIST_FILTER
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryQuickFilterUiModel
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategorySortFilterItemUiModel
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
