@@ -30,6 +30,7 @@ import com.tokopedia.feedplus.presentation.model.FeedCardCtaGradientModel
 import com.tokopedia.feedplus.presentation.model.FeedCardCtaModel
 import com.tokopedia.feedplus.presentation.model.FeedCardImageContentModel
 import com.tokopedia.feedplus.presentation.model.FeedCardLivePreviewContentModel
+import com.tokopedia.feedplus.presentation.model.FeedCardProductAffiliate
 import com.tokopedia.feedplus.presentation.model.FeedCardProductModel
 import com.tokopedia.feedplus.presentation.model.FeedCardVideoContentModel
 import com.tokopedia.feedplus.presentation.model.FeedCommentItemModel
@@ -234,10 +235,19 @@ class MapperFeedXHome @Inject constructor(
     private fun transformProduct(product: FeedXProduct): FeedCardProductModel =
         FeedCardProductModel(
             id = product.id,
+            isParent = product.isParent,
+            parentID = product.parentID,
+            hasVariant = product.hasVariant,
             name = product.name,
             coverUrl = product.coverUrl,
             weblink = product.weblink,
             applink = product.applink,
+            affiliate = product.affiliate.let {
+                FeedCardProductAffiliate(
+                    it.id,
+                    it.channel
+                )
+            },
             star = product.star,
             price = product.price,
             priceFmt = product.priceFmt,

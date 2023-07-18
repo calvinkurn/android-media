@@ -13,7 +13,6 @@ import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.data.Properties
-import com.tokopedia.discovery2.data.categorynavigationresponse.ChildItem
 import com.tokopedia.discovery2.data.productcarditem.Badges
 import com.tokopedia.filter.common.data.DataValue
 import com.tokopedia.filter.common.data.DynamicFilterModel

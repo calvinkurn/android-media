@@ -24,7 +24,8 @@ import kotlinx.coroutines.delay
 class ProductVariantStockViewHolder(
     itemView: View,
     private val listener: ProductVariantStockListener,
-    private val campaignListener: ProductCampaignInfoListener
+    private val campaignListener: ProductCampaignInfoListener,
+    private val onClickDilayaniTokopediaIdentifier:() -> Unit
 ) : AbstractViewHolder<ProductVariant>(itemView) {
 
     companion object {
@@ -54,6 +55,15 @@ class ProductVariantStockViewHolder(
 
     private fun setProductName(variant: ProductVariant) {
         binding?.textProductName?.text = variant.name
+        if (variant.hasDTStock){
+            binding?.textProductName?.setCompoundDrawablesWithIntrinsicBounds(Int.ZERO,Int.ZERO,R.drawable.ic_dilayani_tokopedia,Int.ZERO)
+            binding?.textProductName?.setOnClickListener {
+                onClickDilayaniTokopediaIdentifier.invoke()
+            }
+        }else{
+            binding?.textProductName?.setCompoundDrawablesWithIntrinsicBounds(Int.ZERO,Int.ZERO,Int.ZERO,Int.ZERO)
+            binding?.textProductName?.setOnClickListener(null)
+        }
     }
 
     private fun setupStockQuantityEditor(variant: ProductVariant) {

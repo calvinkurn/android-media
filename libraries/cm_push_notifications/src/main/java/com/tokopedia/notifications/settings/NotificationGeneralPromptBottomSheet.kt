@@ -15,6 +15,7 @@ import com.tokopedia.notifications.common.NotificationReminderPromptGtmTracker
 import com.tokopedia.notifications.common.NotificationSettingsGtmEvents
 import com.tokopedia.notifications.databinding.CmLayoutNotificationsGeneralPromptBinding
 import com.tokopedia.notifications.utils.NotificationSettingsUtils
+import com.tokopedia.notifications.utils.NotificationUserSettingsTracker
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -22,6 +23,7 @@ import com.tokopedia.user.session.UserSessionInterface
 class NotificationGeneralPromptBottomSheet : BottomSheetUnify() {
 
     private var binding: CmLayoutNotificationsGeneralPromptBinding? = null
+    private var bypassCloseEventTracking = false
 
     private val userSession: UserSessionInterface by lazy(LazyThreadSafetyMode.NONE) {
         UserSession(context)
@@ -170,7 +172,9 @@ class NotificationGeneralPromptBottomSheet : BottomSheetUnify() {
 
     override fun onDismiss(dialog: DialogInterface) {
         super.onDismiss(dialog)
-        sendEventClose()
+        if(!bypassCloseEventTracking) {
+            sendEventClose()
+        }
     }
 
     private fun onTurnOnNotificationClick(activity: FragmentActivity?) {
@@ -180,6 +184,7 @@ class NotificationGeneralPromptBottomSheet : BottomSheetUnify() {
         }
         lastTimeClicked = SystemClock.elapsedRealtime()
         sendEventClickCta()
+        bypassCloseEventTracking = true
         if (isReminderPrompt && activity != null) {
             OpenAppNotificationSettingPage().goToAppNotificationSettingsPage(activity)
             dismiss()
@@ -236,11 +241,18 @@ class NotificationGeneralPromptBottomSheet : BottomSheetUnify() {
 
     private fun sendEventPostNotificationPermissionResult(grantResults: IntArray) {
         val context = context ?: return
-
+        sendNotificationUserSetting()
         if (grantResults.firstOrNull() == PackageManager.PERMISSION_GRANTED) {
             NotificationSettingsGtmEvents(userSession, context).sendActionAllowEvent(context)
         } else {
             NotificationSettingsGtmEvents(userSession, context).sendActionNotAllowEvent(context)
+        }
+    }
+
+    private fun sendNotificationUserSetting() {
+        val context = context?.applicationContext ?: return
+        if (userSession.isLoggedIn) {
+            NotificationUserSettingsTracker(context).sendNotificationUserSettings()
         }
     }
 

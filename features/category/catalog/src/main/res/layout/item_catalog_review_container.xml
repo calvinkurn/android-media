@@ -18,7 +18,7 @@
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:text="@string/catalog_ulasan"
         app:typographyType="heading_4"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         />
 
     <com.tokopedia.unifycomponents.CardUnify
@@ -39,14 +39,16 @@
             android:orientation="horizontal"
             android:gravity="start|center_vertical"
             >
-            <androidx.appcompat.widget.AppCompatImageView
+
+            <com.tokopedia.iconunify.IconUnify
                 android:id="@+id/rating_review_star_catalog"
-                android:layout_width="@dimen/unify_space_24"
-                android:layout_height="@dimen/unify_space_24"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_gravity="center_vertical"
                 android:visibility="gone"
-                tools:visibility="visible"
-                app:srcCompat="@drawable/catalog_ic_rating_star_item"
-                />
+                app:icon_color_light_enable="@color/Unify_YN300"
+                app:icon_name="STAR_FILLED"
+                app:unify_image_type="rect" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/review_rating_catalog"
@@ -67,14 +69,14 @@
                 android:layout_marginStart="@dimen/spacing_lvl1"
                 app:typographyType="body_3"
                 android:text="@string/catalog_rating_total"
-                android:textColor="@color/Unify_N700_32"
+                android:textColor="@color/Unify_NN950_32"
                 />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/review_count_catalog"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/Unify_N700_68"
+                android:textColor="@color/Unify_NN950_68"
                 android:visibility="gone"
                 app:typographyType="body_3"
                 tools:visibility="visible"
@@ -116,7 +118,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/layout_lvl2"
         android:text="@string/catalog_lihat_semua"
-        android:textColor="@color/Unify_G500"
+        android:textColor="@color/Unify_GN500"
         android:visibility="gone"
         app:layout_constraintTop_toBottomOf="@id/review_rv_catalog"
         app:layout_constraintStart_toStartOf="parent"

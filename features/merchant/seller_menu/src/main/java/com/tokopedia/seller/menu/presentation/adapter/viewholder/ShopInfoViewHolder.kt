@@ -9,11 +9,18 @@ import com.google.android.material.imageview.ShapeableImageView
 import com.google.android.material.shape.CornerFamily
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.gm.common.constant.PMProURL
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.parseAsHtml
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.seller.menu.R
 import com.tokopedia.seller.menu.common.analytics.SellerMenuTracker
@@ -21,21 +28,24 @@ import com.tokopedia.seller.menu.common.analytics.SettingTrackingListener
 import com.tokopedia.seller.menu.common.analytics.sendSettingShopInfoClickTracking
 import com.tokopedia.seller.menu.common.analytics.sendSettingShopInfoImpressionTracking
 import com.tokopedia.seller.menu.common.constant.Constant
-import com.tokopedia.seller.menu.common.constant.SellerBaseUrl
-import com.tokopedia.seller.menu.common.view.bottomsheet.RMTransactionBottomSheet
-import com.tokopedia.seller.menu.databinding.LayoutSellerMenuShopInfoBinding
 import com.tokopedia.seller.menu.common.view.uimodel.UserShopInfoWrapper
 import com.tokopedia.seller.menu.common.view.uimodel.base.PowerMerchantProStatus
 import com.tokopedia.seller.menu.common.view.uimodel.base.PowerMerchantStatus
 import com.tokopedia.seller.menu.common.view.uimodel.base.RegularMerchant
 import com.tokopedia.seller.menu.common.view.uimodel.base.ShopType
-import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.*
+import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.BalanceUiModel
+import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.ShopAvatarUiModel
+import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.ShopBadgeUiModel
+import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.ShopFollowersUiModel
+import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.ShopStatusUiModel
+import com.tokopedia.seller.menu.databinding.LayoutSellerMenuShopInfoBinding
 import com.tokopedia.seller.menu.presentation.uimodel.ShopInfoUiModel
 import com.tokopedia.unifycomponents.LocalLoad
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.webview.WebViewHelper
 import java.util.*
 
 class ShopInfoViewHolder(
@@ -50,15 +60,17 @@ class ShopInfoViewHolder(
         @LayoutRes
         val LAYOUT = R.layout.layout_seller_menu_shop_info
 
-        private val GREY_TEXT_COLOR = com.tokopedia.unifyprinciples.R.color.Unify_N700_68
+        private val GREY_TEXT_COLOR = com.tokopedia.unifyprinciples.R.color.Unify_NN950_68
 
-        private val TEAL_TEXT_COLOR = com.tokopedia.unifyprinciples.R.color.Unify_T500
-        private val YELLOW_TEXT_COLOR = com.tokopedia.unifyprinciples.R.color.Unify_Y400
+        private val TEAL_TEXT_COLOR = com.tokopedia.unifyprinciples.R.color.Unify_TN500
+        private val YELLOW_TEXT_COLOR = com.tokopedia.unifyprinciples.R.color.Unify_YN400
 
         private const val EXTRA_SHOP_ID = "EXTRA_SHOP_ID"
         private const val TICKER_TYPE_WARNING = "warning"
         private const val TICKER_TYPE_DANGER = "danger"
         private const val STATUS_INCUBATE_OS = 6
+
+        private const val ALLOW_OVERRIDE_URL_FORMAT = "%s?allow_override=%b&url=%s"
     }
 
     private val context by lazy { itemView.context }
@@ -141,8 +153,7 @@ class ShopInfoViewHolder(
                     tickerShopInfo.tickerType = tickerType
                     tickerShopInfo.setDescriptionClickEvent(object : TickerCallback {
                         override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                            RouteManager.route(context, linkUrl.toString())
-
+                            goToSlaWebView(linkUrl)
                         }
 
                         override fun onDismiss() {
@@ -183,7 +194,7 @@ class ShopInfoViewHolder(
                 binding.successShopInfoLayout.shopScore.setTextColor(
                     ContextCompat.getColor(
                         context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_N700_96
+                        com.tokopedia.unifyprinciples.R.color.Unify_NN950_96
                     )
                 )
                 binding.successShopInfoLayout.shopScoreMaxLabel.hide()
@@ -192,7 +203,7 @@ class ShopInfoViewHolder(
                 binding.successShopInfoLayout.shopScore.setTextColor(
                     ContextCompat.getColor(
                         context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_G500
+                        com.tokopedia.unifyprinciples.R.color.Unify_GN500
                     )
                 )
                 binding.successShopInfoLayout.shopScoreMaxLabel.show()
@@ -455,7 +466,7 @@ class ShopInfoViewHolder(
             setTextColor(
                 ContextCompat.getColor(
                     context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_G500
+                    com.tokopedia.unifyprinciples.R.color.Unify_GN500
                 )
             )
         }
@@ -472,7 +483,7 @@ class ShopInfoViewHolder(
             setTextColor(
                 ContextCompat.getColor(
                     context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_N700_68
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN950_68
                 )
             )
             isClickable = false
@@ -494,7 +505,7 @@ class ShopInfoViewHolder(
             setTextColor(
                 ContextCompat.getColor(
                     context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_G500
+                    com.tokopedia.unifyprinciples.R.color.Unify_GN500
                 )
             )
         }
@@ -688,6 +699,24 @@ class ShopInfoViewHolder(
             ApplinkConstInternalMarketplace.SHOP_PAGE,
             userSession?.shopId
         )
+    }
+
+    private fun goToSlaWebView(linkUrl: CharSequence) {
+        val link = linkUrl.toString()
+        if (WebViewHelper.isUrlValid(linkUrl.toString())) {
+            RouteManager.route(
+                context,
+                String.format(
+                    Locale.getDefault(),
+                    ALLOW_OVERRIDE_URL_FORMAT,
+                    ApplinkConst.WEBVIEW,
+                    false,
+                    link
+                )
+            )
+        } else {
+            RouteManager.route(context, link)
+        }
     }
 
     interface ShopInfoListener {

@@ -79,7 +79,7 @@ class CreateAutoAdsFragment : AutoAdsBaseBudgetFragment(), View.OnClickListener 
         val endIndex = spannableText.length
         context?.let {
             spannableText.setSpan(ContextCompat.getColor(it,
-                com.tokopedia.unifyprinciples.R.color.Unify_G500),
+                com.tokopedia.unifyprinciples.R.color.Unify_GN500),
                 startIndex,
                 endIndex,
                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)

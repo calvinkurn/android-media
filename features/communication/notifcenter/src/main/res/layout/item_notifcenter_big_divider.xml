@@ -9,6 +9,6 @@
         android:id="@+id/view_divider"
         android:layout_width="match_parent"
         android:layout_height="@dimen/layout_lvl1"
-        android:background="@color/Unify_N50" />
+        android:background="@color/Unify_NN50" />
 
 </FrameLayout>

@@ -4,16 +4,21 @@ import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.home.analytics.v2.BusinessUnitTracking
 import com.tokopedia.home.beranda.data.model.HomeWidget
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.BusinessUnitItemDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.widget_business.*
 
 @SuppressLint("SyntheticAccessor")
-class BusinessUnitItemAdapter(private val tabIndex: Int, private val tabName: String,
-                              private val listenerBusinessTrackerTracker: NewBusinessUnitViewHolder.BusinessUnitItemTrackerListener,
-                              private val cardInteraction: Boolean = false
+class BusinessUnitItemAdapter(
+    private val tabIndex: Int,
+    private val tabId: String,
+    private val tabName: String,
+    private val channelId: String,
+    private val campaignCode: String,
+    private val listenerBusinessTrackerTracker: NewBusinessUnitViewHolder.BusinessUnitItemTrackerListener,
+    private val cardInteraction: Boolean = false,
+    private val userId: String = "",
 ) : RecyclerView.Adapter<SizeSmallBusinessViewHolder>(){
     private var list: List<BusinessUnitItemDataModel> = listOf()
     private var positionWidgetOnHome = -1
@@ -22,11 +27,38 @@ class BusinessUnitItemAdapter(private val tabIndex: Int, private val tabName: St
         //increase tab index by 1 as  PO requested @rico.ocir
         override fun onClicked(position: Int) {
             val element = getItem(position)
-            listenerBusinessTrackerTracker.onClickTracking(BusinessUnitTracking.getBusinessUnitClick(BusinessUnitTracking.mapToPromotionTracker(element, positionWidgetOnHome)) as HashMap<String, Any>)
+            listenerBusinessTrackerTracker.onClickTracking(
+                BusinessUnitTracking.getBusinessUnitClick(
+                    bannerId = tabId,
+                    headerName = tabName,
+                    channelId = channelId,
+                    userType = element.content.userType,
+                    categoryName = element.content.contentName,
+                    tabPosition = tabIndex,
+                    position = position,
+                    businessUnit = element.content.businessUnit,
+                    recommendationLogic = element.content.itemType,
+                    campaignCode = campaignCode,
+                    userId = userId,
+                ) as HashMap<String, Any>
+            )
         }
 
         override fun onImpressed(element: BusinessUnitItemDataModel, position: Int) {
-            listenerBusinessTrackerTracker.onImpressTracking(BusinessUnitTracking.getBusinessUnitView(BusinessUnitTracking.mapToPromotionTracker(element, positionWidgetOnHome)) as HashMap<String, Any>)
+            listenerBusinessTrackerTracker.onImpressTracking(
+                BusinessUnitTracking.getBusinessUnitView(
+                    bannerId = tabId,
+                    headerName = tabName,
+                    channelId = channelId,
+                    userType = element.content.userType,
+                    categoryName = element.content.contentName,
+                    tabPosition = tabIndex,
+                    position = position,
+                    businessUnit = element.content.businessUnit,
+                    recommendationLogic = element.content.itemType,
+                    userId = userId,
+                ) as HashMap<String, Any>
+            )
         }
     }
 

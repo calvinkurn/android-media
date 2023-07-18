@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.discovery.common.utils.toDpInt
+import com.tokopedia.homenav.MePage
 import com.tokopedia.homenav.R
 import com.tokopedia.homenav.databinding.HolderReviewListBinding
 import com.tokopedia.homenav.mainnav.view.adapter.typefactory.ReviewTypeFactoryImpl
@@ -22,6 +23,8 @@ import com.tokopedia.utils.view.binding.viewBinding
 /**
  * Created by Frenzel on 18/04/22
  */
+
+@MePage(MePage.Widget.REVIEW)
 class ReviewViewHolder(itemView: View,
                        val mainNavListener: MainNavListener
 ): AbstractViewHolder<ReviewListDataModel>(itemView) {
@@ -51,7 +54,7 @@ class ReviewViewHolder(itemView: View,
             )
         }
         val visitableList = mutableListOf<Visitable<*>>()
-        visitableList.addAll(element.reviewList.map { ReviewModel(it) })
+        visitableList.addAll(element.reviewList.mapIndexed { index, it -> ReviewModel(it, index) })
         if(visitableList.isEmpty()){
             visitableList.add(EmptyStateReviewDataModel())
         } else if(element.showViewAll){

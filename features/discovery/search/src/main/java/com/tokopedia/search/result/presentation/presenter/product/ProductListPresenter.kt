@@ -74,6 +74,7 @@ import com.tokopedia.search.result.product.responsecode.ResponseCodeImpl
 import com.tokopedia.search.result.product.responsecode.ResponseCodeProvider
 import com.tokopedia.search.result.product.safesearch.SafeSearchPresenter
 import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationPresenterDelegate
+import com.tokopedia.search.result.product.similarsearch.SimilarSearchOnBoardingPresenterDelegate
 import com.tokopedia.search.result.product.suggestion.SuggestionPresenter
 import com.tokopedia.search.result.product.ticker.TickerPresenter
 import com.tokopedia.search.result.product.visitable.VisitableFactory
@@ -150,6 +151,7 @@ class ProductListPresenter @Inject constructor(
     @Named(SearchConstant.AB_TEST_REMOTE_CONFIG)
     private val remoteConfig: RemoteConfig,
     private val responseCodeImpl: ResponseCodeImpl,
+    private val similarSearchOnBoardingPresenterDelegate: SimilarSearchOnBoardingPresenterDelegate,
 ): BaseDaggerPresenter<ProductListSectionContract.View>(),
     ProductListSectionContract.Presenter,
     Pagination by paginationImpl,
@@ -1300,6 +1302,11 @@ class ProductListPresenter @Inject constructor(
             dimension90,
             externalReference,
             chooseAddressDelegate.getChooseAddressParams(),
+        )
+
+        similarSearchOnBoardingPresenterDelegate.checkShouldDisplaySimilarSearchThreeDotsCoachmark(
+            item,
+            adapterPosition,
         )
 
         view.routeToProductDetail(item, adapterPosition)

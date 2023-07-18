@@ -31,8 +31,8 @@
                 android:hint="@string/travel_contact_data_name_hint"
                 android:importantForAutofill="no"
                 android:inputType="textNoSuggestions|textVisiblePassword|textFilter"
-                android:textColor="@color/Unify_N700_96"
-                android:textColorHint="@color/Unify_N700_32" />
+                android:textColor="@color/Unify_NN950_96"
+                android:textColorHint="@color/Unify_NN950_32" />
 
         </com.tokopedia.travel.passenger.presentation.widget.TkpdHintTextInputLayout>
 
@@ -53,7 +53,7 @@
             android:layout_height="wrap_content"
             android:paddingLeft="@dimen/spacing_lvl1"
             android:text="@string/travel_contact_data_phone_number_title"
-            android:textColor="@color/Unify_N700_68"
+            android:textColor="@color/Unify_NN950_68"
             app:fontSize="micro"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/til_contact_email"

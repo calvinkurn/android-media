@@ -21,7 +21,7 @@ class TokoChatTypingViewModelTest : TokoChatViewModelTestFixture() {
             } returns MutableLiveData(typingStatusListDummy)
 
             // When
-            val result = viewModel.getTypingStatus().observeAwaitValue()
+            val result = viewModel.getTypingStatus()?.observeAwaitValue()
 
             // Then
             coVerify(exactly = 1) {
