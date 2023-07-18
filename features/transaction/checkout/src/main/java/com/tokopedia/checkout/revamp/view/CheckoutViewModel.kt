@@ -3,13 +3,13 @@ package com.tokopedia.checkout.revamp.view
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.gson.Gson
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.analytics.performance.util.EmbraceKey
 import com.tokopedia.analytics.performance.util.EmbraceMonitoring
 import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection
 import com.tokopedia.checkout.domain.mapper.ShipmentAddOnProductServiceMapper
 import com.tokopedia.checkout.domain.model.cartshipmentform.ShipmentPlatformFeeData
+import com.tokopedia.checkout.domain.model.platformfee.PaymentFeeCheckoutRequest
 import com.tokopedia.checkout.revamp.view.converter.CheckoutDataConverter
 import com.tokopedia.checkout.revamp.view.processor.CheckoutAddOnProcessor
 import com.tokopedia.checkout.revamp.view.processor.CheckoutCalculator
@@ -36,11 +36,11 @@ import com.tokopedia.checkout.revamp.view.uimodel.CheckoutUpsellModel
 import com.tokopedia.checkout.view.CheckoutMutableLiveData
 import com.tokopedia.checkout.view.converter.ShipmentDataRequestConverter
 import com.tokopedia.checkout.view.uimodel.ShipmentAddOnSummaryModel
+import com.tokopedia.checkout.view.uimodel.ShipmentPaymentFeeModel
 import com.tokopedia.common_epharmacy.network.response.EPharmacyMiniConsultationResult
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass
-import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
 import com.tokopedia.purchase_platform.common.feature.dynamicdatapassing.data.request.DynamicDataPassingParamRequest
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.model.UploadPrescriptionUiModel
@@ -68,12 +68,10 @@ class CheckoutViewModel @Inject constructor(
     private val checkoutProcessor: CheckoutProcessor,
     private val calculator: CheckoutCalculator,
     private val dataConverter: CheckoutDataConverter,
-    private val shippingCourierConverter: ShippingCourierConverter,
     private val shipmentDataRequestConverter: ShipmentDataRequestConverter,
     private val mTrackerShipment: CheckoutAnalyticsCourierSelection,
     private val mTrackerPurchaseProtection: CheckoutAnalyticsPurchaseProtection,
     private val userSessionInterface: UserSessionInterface,
-    private val gson: Gson,
     private val dispatchers: CoroutineDispatchers
 ) : ViewModel() {
 
@@ -338,6 +336,33 @@ class CheckoutViewModel @Inject constructor(
 
     fun calculateTotal() {
         listData.value = calculator.updateShipmentCostModel(listData.value)
+        viewModelScope.launch(dispatchers.main) {
+            val paymentFeeCheckoutRequest = PaymentFeeCheckoutRequest(
+                gatewayCode = "",
+                profileCode = shipmentPlatformFeeData.profileCode,
+                paymentAmount = listData.value.cost()!!.totalPrice,
+                additionalData = shipmentPlatformFeeData.additionalData
+            )
+            val paymentFee = paymentProcessor.getDynamicPaymentFee(paymentFeeCheckoutRequest)
+            if (paymentFee != null) {
+                val checkoutItems = listData.value
+                val platformFeeModel = ShipmentPaymentFeeModel()
+                for (fee in paymentFee.data) {
+                    if (fee.code.equals(PLATFORM_FEE_CODE, ignoreCase = true)) {
+                        platformFeeModel.title = fee.title
+                        platformFeeModel.fee = fee.fee
+                        platformFeeModel.minRange = fee.minRange
+                        platformFeeModel.maxRange = fee.maxRange
+                        platformFeeModel.isShowTooltip = fee.showTooltip
+                        platformFeeModel.tooltip = fee.tooltipInfo
+                        platformFeeModel.isShowSlashed = fee.showSlashed
+                        platformFeeModel.slashedFee = fee.slashedFee.toDouble()
+                    }
+                }
+                checkoutItems.toMutableList()[checkoutItems.size - 3] = checkoutItems.cost()!!.copy(dynamicPlatformFee = platformFeeModel)
+            }
+            listData.value = calculator.updateShipmentCostModel(listData.value)
+        }
     }
 
     override fun onCleared() {
@@ -348,6 +373,10 @@ class CheckoutViewModel @Inject constructor(
             "qwertyuiop",
             "parent job: ${viewModelScope.coroutineContext.job?.children?.find { !it.isCompleted }}"
         )
+    }
+
+    companion object {
+        private const val PLATFORM_FEE_CODE = "platform_fee"
     }
 }
 

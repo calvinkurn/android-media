@@ -333,7 +333,7 @@ class CheckoutCalculator @Inject constructor(private val dispatchers: CoroutineD
         if (cartItemCounter > 0 && cartItemCounter <= checkoutOrderModels.size) {
             val priceTotal: Double =
                 if (shipmentCost.totalPrice <= 0) 0.0 else shipmentCost.totalPrice
-//            val platformFee: Double = if (shipmentCost.dynamicPlatformFee.fee <= 0) 0.0 else shipmentCost.dynamicPlatformFee.fee
+            val platformFee: Double = if (shipmentCost.dynamicPlatformFee.fee <= 0) 0.0 else shipmentCost.dynamicPlatformFee.fee
             val finalPrice = priceTotal /*+ platformFee*/
             val priceTotalFormatted =
                 CurrencyFormatUtil.convertPriceValueToIdrFormat(

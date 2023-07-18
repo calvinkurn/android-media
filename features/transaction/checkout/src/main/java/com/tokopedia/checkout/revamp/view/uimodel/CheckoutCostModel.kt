@@ -1,5 +1,7 @@
 package com.tokopedia.checkout.revamp.view.uimodel
 
+import com.tokopedia.checkout.view.uimodel.ShipmentPaymentFeeModel
+
 data class CheckoutCostModel(
     override val cartStringGroup: String = "",
     var totalItem: Int = 0,
@@ -31,7 +33,7 @@ data class CheckoutCostModel(
     var cashbackLabel: String? = null,
     var cashbackAmount: Int = 0,
     var totalAddOnPrice: Double = 0.0,
-    var hasAddOn: Boolean = false
-//    var dynamicPlatformFee: ShipmentPaymentFeeModel = ShipmentPaymentFeeModel(),
+    var hasAddOn: Boolean = false,
+    var dynamicPlatformFee: ShipmentPaymentFeeModel = ShipmentPaymentFeeModel()
 //    var listAddOnSummary: List<ShipmentAddOnSummaryModel> = emptyList()
 ) : CheckoutItem
