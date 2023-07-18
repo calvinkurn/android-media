@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.checkout.databinding.ItemCheckoutAddressBinding
 import com.tokopedia.checkout.databinding.ItemCheckoutButtonPaymentBinding
 import com.tokopedia.checkout.databinding.ItemCheckoutCostBinding
+import com.tokopedia.checkout.databinding.ItemCheckoutCrossSellBinding
 import com.tokopedia.checkout.databinding.ItemCheckoutOrderBinding
 import com.tokopedia.checkout.databinding.ItemCheckoutProductBinding
 import com.tokopedia.checkout.databinding.ItemCheckoutPromoBinding
@@ -13,6 +14,7 @@ import com.tokopedia.checkout.databinding.ItemUpsellNewImprovementBinding
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutAddressModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutButtonPaymentModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutCostModel
+import com.tokopedia.checkout.revamp.view.uimodel.CheckoutCrossSellGroupModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutEpharmacyModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutItem
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderModel
@@ -23,6 +25,7 @@ import com.tokopedia.checkout.revamp.view.uimodel.CheckoutUpsellModel
 import com.tokopedia.checkout.revamp.view.viewholder.CheckoutAddressViewHolder
 import com.tokopedia.checkout.revamp.view.viewholder.CheckoutButtonPaymentViewHolder
 import com.tokopedia.checkout.revamp.view.viewholder.CheckoutCostViewHolder
+import com.tokopedia.checkout.revamp.view.viewholder.CheckoutCrossSellViewHolder
 import com.tokopedia.checkout.revamp.view.viewholder.CheckoutOrderViewHolder
 import com.tokopedia.checkout.revamp.view.viewholder.CheckoutProductViewHolder
 import com.tokopedia.checkout.revamp.view.viewholder.CheckoutPromoViewHolder
@@ -49,6 +52,7 @@ class CheckoutAdapter(
             is CheckoutEpharmacyModel -> UploadPrescriptionViewHolder.ITEM_VIEW_UPLOAD
             is CheckoutPromoModel -> CheckoutPromoViewHolder.VIEW_TYPE
             is CheckoutCostModel -> CheckoutCostViewHolder.VIEW_TYPE
+            is CheckoutCrossSellGroupModel -> CheckoutCrossSellViewHolder.VIEW_TYPE
             is CheckoutButtonPaymentModel -> CheckoutButtonPaymentViewHolder.VIEW_TYPE
             else -> -1
         }
@@ -130,6 +134,10 @@ class CheckoutAdapter(
                 CheckoutCostViewHolder(ItemCheckoutCostBinding.inflate(inflater, parent, false), inflater)
             }
 
+            CheckoutCrossSellViewHolder.VIEW_TYPE -> {
+                CheckoutCrossSellViewHolder(ItemCheckoutCrossSellBinding.inflate(inflater, parent, false))
+            }
+
             else -> {
                 CheckoutButtonPaymentViewHolder(ItemCheckoutButtonPaymentBinding.inflate(inflater, parent, false))
             }
@@ -172,6 +180,10 @@ class CheckoutAdapter(
 
             is CheckoutCostModel -> {
                 (holder as CheckoutCostViewHolder).bind(item)
+            }
+
+            is CheckoutCrossSellGroupModel -> {
+                (holder as CheckoutCrossSellViewHolder).bind(item)
             }
 
             is CheckoutButtonPaymentModel -> {

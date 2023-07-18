@@ -21,6 +21,11 @@ import com.tokopedia.checkout.revamp.view.processor.CheckoutPromoProcessor
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutAddressModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutButtonPaymentModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutCostModel
+import com.tokopedia.checkout.revamp.view.uimodel.CheckoutCrossSellGroupModel
+import com.tokopedia.checkout.revamp.view.uimodel.CheckoutCrossSellItem
+import com.tokopedia.checkout.revamp.view.uimodel.CheckoutCrossSellModel
+import com.tokopedia.checkout.revamp.view.uimodel.CheckoutDonationModel
+import com.tokopedia.checkout.revamp.view.uimodel.CheckoutEgoldModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutEpharmacyModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutItem
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPageState
@@ -35,7 +40,6 @@ import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter
-import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
 import com.tokopedia.purchase_platform.common.feature.dynamicdatapassing.data.request.DynamicDataPassingParamRequest
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.model.UploadPrescriptionUiModel
@@ -64,7 +68,6 @@ class CheckoutViewModel @Inject constructor(
     private val calculator: CheckoutCalculator,
     private val dataConverter: CheckoutDataConverter,
     private val shippingCourierConverter: ShippingCourierConverter,
-    private val stateConverter: RatesResponseStateConverter,
     private val shipmentDataRequestConverter: ShipmentDataRequestConverter,
     private val mTrackerShipment: CheckoutAnalyticsCourierSelection,
     private val mTrackerPurchaseProtection: CheckoutAnalyticsPurchaseProtection,
@@ -210,6 +213,23 @@ class CheckoutViewModel @Inject constructor(
 
                 val cost = CheckoutCostModel()
 
+                val crossSellGroup = CheckoutCrossSellGroupModel()
+                val crossSellList = arrayListOf<CheckoutCrossSellItem>()
+                crossSellList.addAll(saf.cartShipmentAddressFormData.crossSell.mapIndexed { index, crossSellModel ->
+                    CheckoutCrossSellModel(
+                        crossSellModel,
+                        crossSellModel.isChecked,
+                        crossSellModel.checkboxDisabled,
+                        index
+                    )
+                })
+                if (saf.cartShipmentAddressFormData.egoldAttributes != null) {
+                    crossSellList.add(CheckoutEgoldModel(saf.cartShipmentAddressFormData.egoldAttributes!!))
+                }
+                if (saf.cartShipmentAddressFormData.donation != null) {
+                    crossSellList.add(CheckoutDonationModel(saf.cartShipmentAddressFormData.donation!!))
+                }
+
                 val buttonPayment = CheckoutButtonPaymentModel()
 
                 withContext(dispatchers.main) {
@@ -217,7 +237,7 @@ class CheckoutViewModel @Inject constructor(
                         ticker,
                         address,
                         upsell
-                    ) + items + epharmacy + promo + cost + buttonPayment
+                    ) + items + epharmacy + promo + cost + crossSellGroup + buttonPayment
                     pageState.value = saf
                 }
             } else if (saf is CheckoutPageState.CheckNoAddress) {
