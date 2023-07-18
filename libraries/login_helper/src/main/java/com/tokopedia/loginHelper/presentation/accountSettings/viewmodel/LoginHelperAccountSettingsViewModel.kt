@@ -2,6 +2,7 @@ package com.tokopedia.loginHelper.presentation.accountSettings.viewmodel
 
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.loginHelper.presentation.accountSettings.viewmodel.state.LoginHelperAccountSettingsAction
 import com.tokopedia.loginHelper.presentation.accountSettings.viewmodel.state.LoginHelperAccountSettingsEvent
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -33,18 +34,32 @@ class LoginHelperAccountSettingsViewModel @Inject constructor(
     }
 
     private fun handleBackButtonTap() {
-        _uiAction.tryEmit(LoginHelperAccountSettingsAction.GoToLoginHelperHome)
+        _uiAction.tryEmit(
+            LoginHelperAccountSettingsAction.RouteToPage(ApplinkConstInternalGlobal.LOGIN_HELPER)
+        )
     }
 
     private fun handleGoToAddAccount() {
-        _uiAction.tryEmit(LoginHelperAccountSettingsAction.GoToAddAccount)
+        _uiAction.tryEmit(
+            LoginHelperAccountSettingsAction.RouteToPage(
+                ApplinkConstInternalGlobal.LOGIN_HELPER_ADD_EDIT_ACCOUNT
+            )
+        )
     }
 
     private fun handleGoToEditAccount() {
-        _uiAction.tryEmit(LoginHelperAccountSettingsAction.GoToEditAccount)
+        _uiAction.tryEmit(
+            LoginHelperAccountSettingsAction.RouteToPage(
+                ApplinkConstInternalGlobal.LOGIN_HELPER_SEARCH_ACCOUNT
+            )
+        )
     }
 
     private fun handleGoToDeleteAccount() {
-        _uiAction.tryEmit(LoginHelperAccountSettingsAction.GoToDeleteAccount)
+        _uiAction.tryEmit(
+            LoginHelperAccountSettingsAction.RouteToPage(
+                ApplinkConstInternalGlobal.LOGIN_HELPER_SEARCH_ACCOUNT
+            )
+        )
     }
 }

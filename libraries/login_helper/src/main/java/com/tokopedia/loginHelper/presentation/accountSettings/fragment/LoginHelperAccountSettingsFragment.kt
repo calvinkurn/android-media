@@ -1,6 +1,5 @@
 package com.tokopedia.loginHelper.presentation.accountSettings.fragment
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,7 +11,6 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.loginHelper.databinding.FragmentLoginHelperAccountSettingsBinding
@@ -20,8 +18,6 @@ import com.tokopedia.loginHelper.di.component.DaggerLoginHelperComponent
 import com.tokopedia.loginHelper.presentation.accountSettings.viewmodel.LoginHelperAccountSettingsViewModel
 import com.tokopedia.loginHelper.presentation.accountSettings.viewmodel.state.LoginHelperAccountSettingsAction
 import com.tokopedia.loginHelper.presentation.accountSettings.viewmodel.state.LoginHelperAccountSettingsEvent
-import com.tokopedia.loginHelper.presentation.addEditAccount.LoginHelperAddEditAccountActivity
-import com.tokopedia.loginHelper.presentation.searchAccount.LoginHelperSearchActivity
 import com.tokopedia.url.TokopediaUrl.Companion.getInstance
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.launch
@@ -70,11 +66,12 @@ class LoginHelperAccountSettingsFragment : BaseDaggerFragment() {
 
     private fun handleAction(action: LoginHelperAccountSettingsAction) {
         when (action) {
-            is LoginHelperAccountSettingsAction.GoToLoginHelperHome -> backToPreviousScreen()
-            is LoginHelperAccountSettingsAction.GoToAddAccount -> goToAddAccountScreen()
-            is LoginHelperAccountSettingsAction.GoToEditAccount -> goToEditDeleteAccountScreen()
-            is LoginHelperAccountSettingsAction.GoToDeleteAccount -> goToEditDeleteAccountScreen()
+            is LoginHelperAccountSettingsAction.RouteToPage -> goToPage(action.route)
         }
+    }
+
+    private fun goToPage(route: String) {
+        RouteManager.route(context, route)
     }
 
     private fun FragmentLoginHelperAccountSettingsBinding.setUpHeader() {
@@ -100,24 +97,6 @@ class LoginHelperAccountSettingsFragment : BaseDaggerFragment() {
         btnRemoveAccount.setOnClickListener {
             viewModel.processEvent(LoginHelperAccountSettingsEvent.GoToDeleteAccount)
         }
-    }
-
-    override fun onFragmentBackPressed(): Boolean {
-        backToPreviousScreen()
-        return true
-    }
-
-    private fun backToPreviousScreen() {
-        RouteManager.route(context, ApplinkConstInternalGlobal.LOGIN_HELPER)
-    }
-
-    private fun goToAddAccountScreen() {
-        context?.let { LoginHelperAddEditAccountActivity.buildAddAccountModeIntent(it) }
-    }
-
-    private fun goToEditDeleteAccountScreen() {
-        val intent = Intent(activity, LoginHelperSearchActivity::class.java)
-        startActivity(intent)
     }
 
     private fun HeaderUnify.setUpHeader() {
