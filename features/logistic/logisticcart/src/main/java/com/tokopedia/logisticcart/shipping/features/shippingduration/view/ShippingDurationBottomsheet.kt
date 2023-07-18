@@ -74,8 +74,8 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
         isDisableOrderPrioritas: Boolean,
         recipientAddressModel: RecipientAddressModel?,
         cartPosition: Int,
-        weight: Double,
-        shopCity: String,
+        weight: Double? = null,
+        shopCity: String? = null,
         isOcc: Boolean
     ) {
         this.activity = activity
