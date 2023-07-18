@@ -87,6 +87,8 @@ dependencies {
     implementation rootProject.ext.miscDependencies.lifecycleRuntimeKtx
     implementation rootProject.ext.miscDependencies.viewModelKtx
 
+    implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
+
     implementation rootProject.ext.firebase.crashlytics
 
     kapt rootProject.ext.miscDependencies.daggerCompiler

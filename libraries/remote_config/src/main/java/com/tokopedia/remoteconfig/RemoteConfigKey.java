@@ -245,4 +245,6 @@ public class RemoteConfigKey {
     public static final String FEED_NEW_ICON = "FeedNewIcon";
 
     public static final String IS_SHOP_PENALTY_NEW_PAGE = "android_shop_penalty_new";
+
+    public static final String IS_ENABLE_ORDER_STATUS_DETAIL_TEST = "is_enable_order_status_detail_test";
 }
