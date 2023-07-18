@@ -47,7 +47,7 @@
     <string name="play_prepare_broadcaster_disable_live_to_vod_learn_more_text_bottom_sheet">Yuk, cari tahun ifno tentang perubahan fitur ini!</string>
     <string name="play_prepare_broadcaster_disable_live_to_vod_learn_more">Pelajari.</string>
     <string name="play_prepare_broadcaster_disable_live_to_vod_title_ticker">Live akan tidak bisa di-posting per 1 Agu 2023"</string>
-    <string name="play_prepare_broadcaster_disable_live_to_vod_description_ticker">Live-mu yang sudah di-posting jadi video juga akan dihapus pada tanggal tersebut, ya. Pelajari</string>
+    <string name="play_prepare_broadcaster_disable_live_to_vod_description_ticker">Live-mu yang sudah di-posting jadi video juga akan dihapus pada tanggal tersebut, ya.</string>
 
     <!--Cover-->
     <string name="play_prepare_cover_title_title">Tambah Cover</string>
