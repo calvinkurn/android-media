@@ -281,7 +281,6 @@
                 android:background="@drawable/product_card_best_seller_background"
                 android:paddingStart="8dp"
                 android:paddingEnd="8dp"
-                android:layout_marginTop="@dimen/product_card_label_best_seller_margintop"
                 android:textColor="@color/Unify_Static_White"
                 android:gravity="center_vertical"
                 tools:text="# 1"
