@@ -28,20 +28,7 @@ class CategoryL2TabViewHolder(
     private val viewPagerAdapter by lazy {
         CategoryL2TabViewPagerAdapter(tokoNowView.getFragmentPage())
     }
-
-    private val tabSelectedListener by lazy {
-        object : OnTabSelectedListener {
-            override fun onTabSelected(tab: TabLayout.Tab) {
-                listener.onTabSelected(tab.position)
-            }
-
-            override fun onTabUnselected(tab: TabLayout.Tab) {
-            }
-
-            override fun onTabReselected(tab: TabLayout.Tab) {
-            }
-        }
-    }
+    private val tabSelectedListener by lazy { createTabSelectedListener() }
 
     private val binding: ItemTokopedianowCategoryL2TabBinding? by viewBinding()
 
@@ -52,29 +39,31 @@ class CategoryL2TabViewHolder(
     }
 
     override fun bind(data: CategoryL2TabUiModel) {
+        setupViewPager(data)
+        setupTabMediator(data)
+        setupTabLayout(data)
+    }
+
+    private fun setupViewPager(data: CategoryL2TabUiModel) {
+        viewPagerAdapter.apply {
+            titleList = data.titleList
+            components = data.componentList
+            categoryL2Ids = data.categoryL2Ids
+        }
+    }
+
+    private fun setupTabMediator(data: CategoryL2TabUiModel) {
         binding?.apply {
-            val tabTitleList = data.titleList
-            val componentList = data.componentList
-
-            viewPagerAdapter.apply {
-                this.titleList = tabTitleList
-                this.components = componentList
-                this.categoryL2Ids = data.categoryL2Ids
-            }
-
             TabsUnifyMediator(tabUnify, viewPager) { tab, position ->
-                val title = tabTitleList.getOrNull(position).orEmpty()
+                val title = data.titleList.getOrNull(position).orEmpty()
                 if (title.isNotBlank()) tab.setCustomText(title)
             }
-
-            setupTabLayout(data)
         }
     }
 
     override fun bind(data: CategoryL2TabUiModel, payloads: MutableList<Any>) {
         if (payloads.firstOrNull() == true) {
             setupTabLayout(data)
-
         }
     }
 
@@ -84,6 +73,18 @@ class CategoryL2TabViewHolder(
             tabLayout.removeOnTabSelectedListener(tabSelectedListener)
             tabLayout.getTabAt(selectedTabPosition)?.select()
             tabLayout.addOnTabSelectedListener(tabSelectedListener)
+        }
+    }
+
+    private fun createTabSelectedListener() = object : OnTabSelectedListener {
+        override fun onTabSelected(tab: TabLayout.Tab) {
+            listener.onTabSelected(tab.position)
+        }
+
+        override fun onTabUnselected(tab: TabLayout.Tab) {
+        }
+
+        override fun onTabReselected(tab: TabLayout.Tab) {
         }
     }
 
