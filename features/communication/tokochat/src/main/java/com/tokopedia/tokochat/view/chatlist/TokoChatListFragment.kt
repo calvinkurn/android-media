@@ -64,7 +64,7 @@ class TokoChatListFragment @Inject constructor(
                         is Success -> {
                             setChatListData(it.data)
                             if (!isCompleted) {
-                                viewModel.loadNextPageChatList(it.data.size)
+                                viewModel.loadNextPageChatList(it.data.size, isLoadMore = false)
                                 isCompleted = true
                             }
                         }
@@ -98,7 +98,7 @@ class TokoChatListFragment @Inject constructor(
     }
 
     override fun onLoadMore() {
-        viewModel.loadNextPageChatList()
+        viewModel.loadNextPageChatList(isLoadMore = true)
     }
 
     override fun onClickChatItem(element: TokoChatListItemUiModel) {
