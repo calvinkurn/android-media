@@ -3,6 +3,12 @@ package com.tokopedia.checkout.revamp.view.processor
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.checkout.data.model.request.changeaddress.DataChangeAddressRequest
 import com.tokopedia.checkout.data.model.request.saf.ShipmentAddressFormRequest
+import com.tokopedia.checkout.data.model.request.saveshipmentstate.SaveShipmentStateRequest
+import com.tokopedia.checkout.data.model.request.saveshipmentstate.ShipmentStateProductData
+import com.tokopedia.checkout.data.model.request.saveshipmentstate.ShipmentStateProductPreorder
+import com.tokopedia.checkout.data.model.request.saveshipmentstate.ShipmentStateRequestData
+import com.tokopedia.checkout.data.model.request.saveshipmentstate.ShipmentStateShippingInfoData
+import com.tokopedia.checkout.data.model.request.saveshipmentstate.ShipmentStateShopProductData
 import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData
 import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressGqlUseCase
 import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressRequest
@@ -12,13 +18,20 @@ import com.tokopedia.checkout.domain.usecase.SaveShipmentStateGqlUseCase
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutItem
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPageState
+import com.tokopedia.checkout.view.converter.ShipmentDataRequestConverter
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.address.UserAddress
+import com.tokopedia.logisticcart.shipping.model.CourierItemData
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.purchase_platform.common.feature.dynamicdatapassing.data.request.DynamicDataPassingParamRequest
 import com.tokopedia.purchase_platform.common.feature.dynamicdatapassing.domain.UpdateDynamicDataPassingUseCase
 import com.tokopedia.usecase.RequestParams
 import dagger.Lazy
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 import javax.inject.Inject
@@ -261,6 +274,146 @@ class CheckoutCartProcessor @Inject constructor(
 //                        view!!.renderChangeAddressFailed(reloadCheckoutPage)
 //                    }
 //                }
+            }
+        }
+    }
+
+    suspend fun processSaveShipmentState(shipmentCartItemModel: CheckoutOrderModel, recipientAddressModel: RecipientAddressModel) {
+        withContext(dispatchers.io) {
+            try {
+                val params =
+                    generateSaveShipmentStateRequestSingleAddress(listOf(shipmentCartItemModel), recipientAddressModel)
+                if (params.requestDataList.first().shopProductDataList.isNotEmpty()) {
+                    saveShipmentStateGqlUseCase(params)
+                }
+            } catch (e: Throwable) {
+                Timber.d(e)
+            }
+        }
+    }
+
+    suspend fun processSaveShipmentState(listData: List<CheckoutItem>, recipientAddressModel: RecipientAddressModel) {
+        withContext(dispatchers.io) {
+            try {
+                val params = generateSaveShipmentStateRequestSingleAddress(
+                    listData.filterIsInstance(CheckoutOrderModel::class.java), recipientAddressModel
+                )
+                if (params.requestDataList.first().shopProductDataList.isNotEmpty()) {
+                    saveShipmentStateGqlUseCase(params)
+                }
+            } catch (e: Throwable) {
+                Timber.d(e)
+            }
+        }
+    }
+
+    private fun generateSaveShipmentStateRequestSingleAddress(shipmentCartItemModels: List<CheckoutOrderModel>, recipientAddressModel: RecipientAddressModel): SaveShipmentStateRequest {
+        val shipmentStateShopProductDataList: MutableList<ShipmentStateShopProductData> =
+            java.util.ArrayList()
+        val shipmentStateRequestDataList: MutableList<ShipmentStateRequestData> =
+            java.util.ArrayList()
+        for (shipmentCartItemModel in shipmentCartItemModels) {
+            setSaveShipmentStateData(shipmentCartItemModel, shipmentStateShopProductDataList)
+        }
+        val shipmentStateRequestData = ShipmentStateRequestData()
+        shipmentStateRequestData.addressId = recipientAddressModel.id
+        shipmentStateRequestData.shopProductDataList = shipmentStateShopProductDataList
+        shipmentStateRequestDataList.add(shipmentStateRequestData)
+        return SaveShipmentStateRequest(shipmentStateRequestDataList)
+    }
+
+    private fun setSaveShipmentStateData(
+        shipmentCartItemModel: CheckoutOrderModel,
+        shipmentStateShopProductDataList: MutableList<ShipmentStateShopProductData>
+    ) {
+        var courierData: CourierItemData? = null
+//        if (shipmentCartItemModel.selectedShipmentDetailData != null) {
+//            courierData = if (view!!.isTradeInByDropOff) {
+//                shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourierTradeInDropOff
+//            } else {
+//                shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier
+//            }
+//        }
+        if (courierData != null) {
+            val shipmentStateProductDataList: MutableList<ShipmentStateProductData> =
+                java.util.ArrayList()
+            for (cartItemModel in shipmentCartItemModel.products) {
+                val shipmentStateProductData = ShipmentStateProductData()
+                shipmentStateProductData.shopId = cartItemModel.shopId.toLongOrZero()
+                shipmentStateProductData.productId = cartItemModel.productId
+                if (cartItemModel.isPreOrder) {
+                    val shipmentStateProductPreorder = ShipmentStateProductPreorder()
+                    shipmentStateProductPreorder.durationDay = cartItemModel.preOrderDurationDay
+                    shipmentStateProductData.productPreorder = shipmentStateProductPreorder
+                }
+                shipmentStateProductDataList.add(shipmentStateProductData)
+            }
+            val ratesFeature = ShipmentDataRequestConverter.generateRatesFeature(courierData)
+            val shipmentStateShippingInfoData = ShipmentStateShippingInfoData()
+            shipmentStateShippingInfoData.shippingId =
+                courierData.selectedShipper.shipperId.toLong()
+            shipmentStateShippingInfoData.spId =
+                courierData.selectedShipper.shipperProductId.toLong()
+            shipmentStateShippingInfoData.ratesFeature = ratesFeature
+            val shipmentStateShopProductData = ShipmentStateShopProductData()
+            shipmentStateShopProductData.cartStringGroup = shipmentCartItemModel.cartStringGroup
+            shipmentStateShopProductData.shopId = shipmentCartItemModel.shopId
+//            shipmentStateShopProductData.finsurance =
+//                if (shipmentCartItemModel.selectedShipmentDetailData!!.useInsurance != null &&
+//                    shipmentCartItemModel.selectedShipmentDetailData!!.useInsurance!!
+//                ) {
+//                    1
+//                } else {
+//                    0
+//                }
+            shipmentStateShopProductData.isPreorder =
+                if (shipmentCartItemModel.isProductIsPreorder) 1 else 0
+            shipmentStateShopProductData.warehouseId = shipmentCartItemModel.fulfillmentId
+            shipmentStateShopProductData.shippingInfoData = shipmentStateShippingInfoData
+            shipmentStateShopProductData.productDataList = shipmentStateProductDataList
+            shipmentStateShopProductData.validationMetadata =
+                shipmentCartItemModel.validationMetadata
+            shipmentStateShopProductDataList.add(shipmentStateShopProductData)
+        }
+    }
+
+    suspend fun updateDynamicData(
+        dynamicDataPassingParamRequest: DynamicDataPassingParamRequest,
+        isFireAndForget: Boolean
+    ) {
+        withContext(dispatchers.io) {
+            updateDynamicDataPassingUseCase.setParams(
+                dynamicDataPassingParamRequest,
+                isFireAndForget
+            )
+            try {
+                val ddpResponse = updateDynamicDataPassingUseCase.executeOnBackground()
+                if (!isFireAndForget) {
+                    // do checkout
+                }
+            } catch (t: Throwable) {
+                Timber.d(t)
+                // toast error
+            }
+        }
+    }
+
+    suspend fun validateDynamicData(dynamicDataPassingParamRequest: DynamicDataPassingParamRequest) {
+        updateDynamicData(dynamicDataPassingParamRequest, false)
+    }
+
+    @OptIn(DelicateCoroutinesApi::class)
+    fun releaseBooking(listData: List<CheckoutItem>) {
+        // As deals product is using OCS, the shipment should only contain 1 product
+        val productId =
+            listData.filterIsInstance(CheckoutOrderModel::class.java).firstOrNull()?.products?.firstOrNull()?.productId ?: 0
+        if (productId != 0L) {
+            GlobalScope.launch {
+                try {
+                    releaseBookingUseCase.get().invoke(productId)
+                } catch (t: Throwable) {
+                    Timber.d(t)
+                }
             }
         }
     }

@@ -9,4 +9,7 @@ class CheckoutPromoProcessor @Inject constructor(
     private val clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase,
     private val validateUsePromoRevampUseCase: ValidateUsePromoRevampUseCase,
     private val dispatchers: CoroutineDispatchers
-)
+) {
+
+
+}

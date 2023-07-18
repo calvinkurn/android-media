@@ -182,4 +182,9 @@ class CheckoutAdapter(
             }
         }
     }
+
+    val uploadPrescriptionPosition: Int
+        get() {
+            return list.indexOfLast { it is CheckoutEpharmacyModel }
+        }
 }

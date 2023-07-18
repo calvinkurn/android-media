@@ -7,4 +7,7 @@ import javax.inject.Inject
 class CheckoutProcessor @Inject constructor(
     private val checkoutGqlUseCase: CheckoutUseCase,
     private val dispatchers: CoroutineDispatchers
-)
+) {
+
+
+}

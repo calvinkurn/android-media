@@ -14,12 +14,15 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
+import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.checkout.R
 import com.tokopedia.checkout.databinding.FragmentCheckoutBinding
 import com.tokopedia.checkout.databinding.HeaderCheckoutBinding
 import com.tokopedia.checkout.databinding.ToastRectangleBinding
@@ -28,11 +31,21 @@ import com.tokopedia.checkout.revamp.di.DaggerCheckoutComponent
 import com.tokopedia.checkout.revamp.view.adapter.CheckoutAdapter
 import com.tokopedia.checkout.revamp.view.adapter.CheckoutAdapterListener
 import com.tokopedia.checkout.revamp.view.adapter.CheckoutDiffUtilCallback
+import com.tokopedia.checkout.revamp.view.uimodel.CheckoutEpharmacyModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPageState
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutProductModel
 import com.tokopedia.checkout.view.ShipmentFragment
 import com.tokopedia.checkout.view.uimodel.ShipmentNewUpsellModel
+import com.tokopedia.checkout.webview.UpsellWebViewActivity
+import com.tokopedia.coachmark.CoachMark2
+import com.tokopedia.coachmark.CoachMark2Item
+import com.tokopedia.coachmark.CoachMarkPreference
+import com.tokopedia.common_epharmacy.EPHARMACY_CONSULTATION_RESULT_EXTRA
+import com.tokopedia.common_epharmacy.EPHARMACY_REDIRECT_CART_RESULT_CODE
+import com.tokopedia.common_epharmacy.EPHARMACY_REDIRECT_CHECKOUT_RESULT_CODE
+import com.tokopedia.common_epharmacy.network.response.EPharmacyMiniConsultationResult
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.localizationchooseaddress.domain.mapper.TokonowWarehouseMapper
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
@@ -47,7 +60,9 @@ import com.tokopedia.logisticCommon.data.entity.address.Token
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass
 import com.tokopedia.logisticCommon.util.PinpointRolloutHelper
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics
+import com.tokopedia.purchase_platform.common.analytics.EPharmacyAnalytics
 import com.tokopedia.purchase_platform.common.constant.CartConstant
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
 import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException
@@ -55,17 +70,29 @@ import com.tokopedia.purchase_platform.common.feature.addons.data.model.AddOnPro
 import com.tokopedia.purchase_platform.common.feature.checkout.ShipmentFormRequest
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.model.UploadPrescriptionUiModel
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.view.UploadPrescriptionListener
+import com.tokopedia.purchase_platform.common.feature.ethicaldrug.view.UploadPrescriptionViewHolder
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.PopUpData
 import com.tokopedia.purchase_platform.common.utils.animateGone
 import com.tokopedia.purchase_platform.common.utils.animateShow
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.lifecycle.autoCleared
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 class CheckoutFragment : BaseDaggerFragment(), CheckoutAdapterListener, UploadPrescriptionListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    @Inject
+    lateinit var checkoutAnalyticsCourierSelection: CheckoutAnalyticsCourierSelection
+
+    @Inject
+    lateinit var ePharmacyAnalytics: EPharmacyAnalytics
 
     private val viewModel: CheckoutViewModel by lazy {
         ViewModelProvider(this, viewModelFactory)[CheckoutViewModel::class.java]
@@ -78,6 +105,11 @@ class CheckoutFragment : BaseDaggerFragment(), CheckoutAdapterListener, UploadPr
     private val adapter: CheckoutAdapter = CheckoutAdapter(this, this)
 
     private var loader: LoaderDialog? = null
+
+    private var toasterErrorAkamai: Snackbar? = null
+
+    private var shipmentTracePerformance: PerformanceMonitoring? = null
+    private var isShipmentTraceStopped = false
 
     private val isPlusSelected: Boolean
         get() = arguments?.getBoolean(ShipmentFragment.ARG_IS_PLUS_SELECTED, false) ?: false
@@ -135,6 +167,20 @@ class CheckoutFragment : BaseDaggerFragment(), CheckoutAdapterListener, UploadPr
                 .checkoutModule(CheckoutModule(this))
                 .build()
                 .inject(this)
+        }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        if (viewModel.pageState.value == CheckoutPageState.Loading) {
+            shipmentTracePerformance = PerformanceMonitoring.start(SHIPMENT_TRACE)
+        }
+    }
+
+    fun stopTrace() {
+        if (!isShipmentTraceStopped) {
+            shipmentTracePerformance?.stopTrace()
+            isShipmentTraceStopped = true
         }
     }
 
@@ -229,12 +275,17 @@ class CheckoutFragment : BaseDaggerFragment(), CheckoutAdapterListener, UploadPr
         viewModel.pageState.observe(viewLifecycleOwner) {
             when (it) {
                 is CheckoutPageState.CacheExpired -> {
+                    onCacheExpired(it.errorMessage)
+                    stopTrace()
                 }
 
                 is CheckoutPageState.CheckNoAddress -> {
+                    // no-op
                 }
 
                 CheckoutPageState.EmptyData -> {
+                    onEmptyData()
+                    stopTrace()
                 }
 
                 is CheckoutPageState.Error -> {
@@ -248,6 +299,7 @@ class CheckoutFragment : BaseDaggerFragment(), CheckoutAdapterListener, UploadPr
                             getString(com.tokopedia.purchase_platform.common.R.string.checkout_flow_error_global_message)
                     }
                     Toaster.build(binding.root, errorMessage, type = Toaster.TYPE_ERROR).show()
+                    stopTrace()
                 }
 
                 CheckoutPageState.Loading -> {
@@ -278,14 +330,30 @@ class CheckoutFragment : BaseDaggerFragment(), CheckoutAdapterListener, UploadPr
                         )
                         startActivityForResult(intent, LogisticConstant.ADD_NEW_ADDRESS_CREATED_FROM_EMPTY)
                     }
+                    stopTrace()
                 }
 
                 is CheckoutPageState.NoMatchedAddress -> {
+                    onNoMatchedAddress(it.state)
+                    stopTrace()
                 }
 
                 is CheckoutPageState.Success -> {
                     hideLoading()
                     binding.rvCheckout.isVisible = true
+                    if (it.cartShipmentAddressFormData.popUpMessage.isNotEmpty()) {
+                        showToastNormal(it.cartShipmentAddressFormData.popUpMessage)
+                    }
+                    val popUpData = it.cartShipmentAddressFormData.popup
+                    if (popUpData.title.isNotEmpty() && popUpData.description.isNotEmpty()) {
+                        showPopUp(popUpData)
+                    }
+                    stopTrace()
+                    if (it.cartShipmentAddressFormData.epharmacyData.showImageUpload) {
+                        val uploadPrescriptionUiModel =
+                            (viewModel.listData.value.firstOrNullInstanceOf(CheckoutEpharmacyModel::class.java) as? CheckoutEpharmacyModel)?.epharmacy
+                        delayEpharmacyProcess(uploadPrescriptionUiModel)
+                    }
                 }
 
                 is CheckoutPageState.Normal -> {
@@ -312,6 +380,79 @@ class CheckoutFragment : BaseDaggerFragment(), CheckoutAdapterListener, UploadPr
         }
     }
 
+    private fun onCacheExpired(message: String?) {
+        if (activity != null && view != null) {
+            val intent = Intent()
+            intent.putExtra(CheckoutConstant.EXTRA_CACHE_EXPIRED_ERROR_MESSAGE, message)
+            activity!!.setResult(CheckoutConstant.RESULT_CHECKOUT_CACHE_EXPIRED, intent)
+            activity!!.finish()
+        }
+    }
+
+    private fun onEmptyData() {
+        if (activity != null) {
+            activity!!.finish()
+        }
+    }
+
+    private fun onNoMatchedAddress(
+        addressState: Int
+    ) {
+        val intent = RouteManager.getIntent(activity, ApplinkConstInternalLogistic.MANAGE_ADDRESS)
+        intent.putExtra(CheckoutConstant.EXTRA_PREVIOUS_STATE_ADDRESS, addressState)
+        intent.putExtra(CheckoutConstant.EXTRA_IS_FROM_CHECKOUT_SNIPPET, true)
+        intent.putExtra(ApplinkConstInternalLogistic.PARAM_SOURCE, ManageAddressSource.CART.source)
+        startActivityForResult(intent, CheckoutConstant.REQUEST_CODE_CHECKOUT_ADDRESS)
+    }
+
+    private fun showToastNormal(message: String) {
+        view?.let { v ->
+            val actionText =
+                activity!!.getString(com.tokopedia.purchase_platform.common.R.string.checkout_flow_toaster_action_ok)
+            val listener = View.OnClickListener { }
+            Toaster.build(
+                v,
+                message,
+                Toaster.LENGTH_SHORT,
+                Toaster.TYPE_NORMAL,
+                actionText,
+                listener
+            )
+                .show()
+        }
+    }
+
+    private fun showPopUp(popUpData: PopUpData) {
+        if (activity != null) {
+            val popUpDialog =
+                DialogUnify(activity!!, DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE)
+            popUpDialog.setTitle(popUpData.title)
+            popUpDialog.setDescription(popUpData.description)
+            popUpDialog.setPrimaryCTAText(popUpData.button.text)
+            popUpDialog.setPrimaryCTAClickListener {
+                popUpDialog.dismiss()
+            }
+            popUpDialog.show()
+        }
+    }
+
+    fun showToastErrorAkamai(message: String?) {
+        if (toasterErrorAkamai == null) {
+            val actionText =
+                activity!!.getString(com.tokopedia.purchase_platform.common.R.string.checkout_flow_toaster_action_ok)
+            toasterErrorAkamai = Toaster.build(
+                view!!,
+                message!!,
+                Toaster.LENGTH_LONG,
+                Toaster.TYPE_ERROR,
+                actionText
+            )
+        }
+        if (toasterErrorAkamai?.isShownOrQueued == false) {
+            toasterErrorAkamai?.show()
+        }
+    }
+
     fun onBackPressed(): Boolean {
         activity?.finish()
         return true
@@ -330,6 +471,18 @@ class CheckoutFragment : BaseDaggerFragment(), CheckoutAdapterListener, UploadPr
 
             REQUEST_CODE_COURIER_PINPOINT -> {
                 onResultFromCourierPinpoint(resultCode, data)
+            }
+
+            REQUEST_CODE_UPSELL -> {
+                onResultFromUpsell(data)
+            }
+
+            REQUEST_CODE_UPLOAD_PRESCRIPTION -> {
+                onUploadPrescriptionResult(data, false)
+            }
+
+            REQUEST_CODE_MINI_CONSULTATION -> {
+                onMiniConsultationResult(resultCode, data)
             }
         }
     }
@@ -507,6 +660,16 @@ class CheckoutFragment : BaseDaggerFragment(), CheckoutAdapterListener, UploadPr
 
         private const val REQUEST_CODE_COURIER_PINPOINT = 13
 
+        private const val REQUEST_CODE_UPSELL = 777
+
+        const val REQUEST_CODE_UPLOAD_PRESCRIPTION = 10021
+        const val REQUEST_CODE_MINI_CONSULTATION = 10022
+
+        private const val SHIPMENT_TRACE = "mp_shipment"
+
+        private const val KEY_UPLOAD_PRESCRIPTION_IDS_EXTRA = "epharmacy_prescription_ids"
+        private const val KEY_PREFERENCE_COACHMARK_EPHARMACY = "has_seen_epharmacy_coachmark"
+
         fun newInstance(
             isOneClickShipment: Boolean,
             leasingId: String,
@@ -539,15 +702,44 @@ class CheckoutFragment : BaseDaggerFragment(), CheckoutAdapterListener, UploadPr
     }
 
     override fun onViewNewUpsellCard(shipmentUpsellModel: ShipmentNewUpsellModel) {
-        // todo
+        checkoutAnalyticsCourierSelection.eventViewNewUpsell(shipmentUpsellModel.isSelected)
     }
 
     override fun onClickApplyNewUpsellCard(shipmentUpsellModel: ShipmentNewUpsellModel) {
-        TODO("Not yet implemented")
+        startActivityForResult(
+            UpsellWebViewActivity.getStartIntent(
+                requireContext(),
+                shipmentUpsellModel.appLink,
+                showToolbar = true,
+                allowOverride = true,
+                needLogin = false,
+                title = ""
+            ),
+            REQUEST_CODE_UPSELL
+        )
+        checkoutAnalyticsCourierSelection.eventClickNewUpsell(shipmentUpsellModel.isSelected)
     }
 
     override fun onClickCancelNewUpsellCard(shipmentUpsellModel: ShipmentNewUpsellModel) {
-        TODO("Not yet implemented")
+        viewModel.isPlusSelected = false
+//        viewModel.cancelUpsell(
+//            true,
+//            true,
+//            false
+//        )
+        checkoutAnalyticsCourierSelection.eventClickNewUpsell(shipmentUpsellModel.isSelected)
+    }
+
+    private fun onResultFromUpsell(data: Intent?) {
+        if (data != null && data.hasExtra(CartConstant.CHECKOUT_IS_PLUS_SELECTED)) {
+            viewModel.isPlusSelected =
+                data.getBooleanExtra(CartConstant.CHECKOUT_IS_PLUS_SELECTED, false)
+            viewModel.loadSAF(
+                isReloadData = true,
+                skipUpdateOnboardingState = true,
+                isReloadAfterPriceChangeHigher = false
+            )
+        }
     }
 
     override fun onViewFreeShippingPlusBadge() {
@@ -607,11 +799,202 @@ class CheckoutFragment : BaseDaggerFragment(), CheckoutAdapterListener, UploadPr
 
     // endregion
 
+    // region epharmacy
     override fun uploadPrescriptionAction(
         uploadPrescriptionUiModel: UploadPrescriptionUiModel,
         buttonText: String,
         buttonNotes: String
     ) {
-        TODO("Not yet implemented")
+        if (!uploadPrescriptionUiModel.consultationFlow) {
+            ePharmacyAnalytics.sendPrescriptionWidgetClick(uploadPrescriptionUiModel.checkoutId)
+            val uploadPrescriptionIntent = RouteManager.getIntent(
+                activity,
+                UploadPrescriptionViewHolder.EPharmacyAppLink
+            )
+            uploadPrescriptionIntent.putExtra(
+                ShipmentFragment.EXTRA_CHECKOUT_ID_STRING,
+                uploadPrescriptionUiModel.checkoutId
+            )
+            startActivityForResult(uploadPrescriptionIntent,
+                ShipmentFragment.REQUEST_CODE_UPLOAD_PRESCRIPTION
+            )
+        } else {
+            val uploadPrescriptionIntent = RouteManager.getIntent(
+                activity,
+                UploadPrescriptionViewHolder.EPharmacyMiniConsultationAppLink
+            )
+            startActivityForResult(uploadPrescriptionIntent,
+                ShipmentFragment.REQUEST_CODE_MINI_CONSULTATION
+            )
+            ePharmacyAnalytics.clickLampirkanResepDokter(
+                uploadPrescriptionUiModel.getWidgetState(),
+                buttonText,
+                buttonNotes,
+                uploadPrescriptionUiModel.epharmacyGroupIds,
+                uploadPrescriptionUiModel.enablerNames,
+                uploadPrescriptionUiModel.shopIds,
+                uploadPrescriptionUiModel.cartIds
+            )
+        }
+    }
+
+    private fun delayEpharmacyProcess(uploadPrescriptionUiModel: UploadPrescriptionUiModel?) {
+        viewLifecycleOwner.lifecycleScope.launch {
+            try {
+                delay(1_000)
+                if (isActive && activity != null) {
+                    if (uploadPrescriptionUiModel?.consultationFlow == true) {
+                        viewModel.fetchEpharmacyData()
+                    }
+                }
+            } catch (t: Throwable) {
+                Timber.d(t)
+            }
+        }
+    }
+
+    fun showCoachMarkEpharmacy(uploadPrescriptionUiModel: UploadPrescriptionUiModel) {
+        if (activity != null && !CoachMarkPreference.hasShown(
+                activity!!,
+                KEY_PREFERENCE_COACHMARK_EPHARMACY
+            )
+        ) {
+            val uploadPrescriptionPosition = adapter.uploadPrescriptionPosition
+            binding.rvCheckout.scrollToPosition(uploadPrescriptionPosition)
+            binding.rvCheckout.post {
+                if (activity != null) {
+                    val viewHolder =
+                        binding?.rvCheckout?.findViewHolderForAdapterPosition(
+                            uploadPrescriptionPosition
+                        )
+                    if (viewHolder is UploadPrescriptionViewHolder) {
+                        val item = CoachMark2Item(
+                            viewHolder.itemView,
+                            activity!!.getString(R.string.checkout_epharmacy_coachmark_title),
+                            activity!!.getString(R.string.checkout_epharmacy_coachmark_description),
+                            CoachMark2.POSITION_TOP
+                        )
+                        val list = ArrayList<CoachMark2Item>()
+                        list.add(item)
+                        val coachMark = CoachMark2(requireContext())
+                        coachMark.showCoachMark(list, null, 0)
+                        CoachMarkPreference.setShown(
+                            activity!!,
+                            KEY_PREFERENCE_COACHMARK_EPHARMACY,
+                            true
+                        )
+                        ePharmacyAnalytics.viewBannerPesananButuhResepInCheckoutPage(
+                            uploadPrescriptionUiModel.epharmacyGroupIds,
+                            uploadPrescriptionUiModel.enablerNames,
+                            uploadPrescriptionUiModel.shopIds,
+                            uploadPrescriptionUiModel.cartIds
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    private fun onUploadPrescriptionResult(data: Intent?, isApi: Boolean) {
+        if (data != null && data.extras != null &&
+            data.extras!!.containsKey(KEY_UPLOAD_PRESCRIPTION_IDS_EXTRA) && activity != null
+        ) {
+            val uploadModel = viewModel.listData.value.getOrNull(adapter.uploadPrescriptionPosition)
+            if (uploadModel is CheckoutEpharmacyModel) {
+                val prescriptions = data.extras!!.getStringArrayList(
+                    KEY_UPLOAD_PRESCRIPTION_IDS_EXTRA
+                )
+                uploadModel.epharmacy.isError = false
+                if (!isApi || !prescriptions.isNullOrEmpty()) {
+                    viewModel.setPrescriptionIds(prescriptions!!)
+                }
+                if (!isApi) {
+                    showToastNormal(activity!!.getString(com.tokopedia.purchase_platform.common.R.string.pp_epharmacy_upload_success_text))
+                }
+                updateUploadPrescription()
+            }
+        }
+    }
+
+    private fun onMiniConsultationResult(resultCode: Int, data: Intent?) {
+        if (resultCode == EPHARMACY_REDIRECT_CART_RESULT_CODE) {
+            finish()
+        } else if (resultCode == EPHARMACY_REDIRECT_CHECKOUT_RESULT_CODE) {
+            if (data == null) {
+                return
+            }
+            val results = data.getParcelableArrayListExtra<EPharmacyMiniConsultationResult>(
+                EPHARMACY_CONSULTATION_RESULT_EXTRA
+            )
+            if (results != null) {
+                viewModel.setMiniConsultationResult(results)
+            }
+        }
+    }
+
+    fun updateUploadPrescription() {
+        adapter.notifyItemChanged(adapter.uploadPrescriptionPosition)
+    }
+
+    fun showPrescriptionReminderDialog(uploadPrescriptionUiModel: UploadPrescriptionUiModel) {
+        val epharmacyGroupIds = uploadPrescriptionUiModel.epharmacyGroupIds
+        val hasAttachedPrescription =
+            uploadPrescriptionUiModel.uploadedImageCount > 0 || uploadPrescriptionUiModel.hasInvalidPrescription
+        val reminderDialog =
+            DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
+        reminderDialog.setTitle(getString(R.string.checkout_epharmacy_reminder_prescription_dialog_title))
+        reminderDialog.setDescription(getString(R.string.checkout_epharmacy_reminder_prescription_dialog_description))
+        reminderDialog.setPrimaryCTAText(getString(R.string.checkout_epharmacy_reminder_prescription_dialog_positive_button))
+        reminderDialog.setSecondaryCTAText(getString(R.string.checkout_epharmacy_reminder_prescription_dialog_negative_button))
+        reminderDialog.setPrimaryCTAClickListener {
+            ePharmacyAnalytics.clickLanjutBayarInAbandonPage(
+                epharmacyGroupIds,
+                hasAttachedPrescription
+            )
+            reminderDialog.dismiss()
+        }
+        reminderDialog.setSecondaryCTAClickListener {
+            ePharmacyAnalytics.clickKeluarInAbandonPage(
+                epharmacyGroupIds,
+                hasAttachedPrescription
+            )
+            reminderDialog.dismiss()
+            finish()
+        }
+        reminderDialog.show()
+        ePharmacyAnalytics.viewAbandonCheckoutPage(
+            activity!!,
+            epharmacyGroupIds,
+            hasAttachedPrescription
+        )
+    }
+
+//    fun updateShipmentCartItemGroup(shipmentCartItemModel: ShipmentCartItemModel) {
+//        adapter.updateShipmentCartItemGroup(shipmentCartItemModel)
+//    }
+
+    private fun sendAnalyticsEpharmacyClickPembayaran() {
+        val viewHolder = binding.rvCheckout.findViewHolderForAdapterPosition(adapter.uploadPrescriptionPosition)
+        val epharmacyItem = viewModel.listData.value.getOrNull(adapter.uploadPrescriptionPosition)
+        if (viewHolder is UploadPrescriptionViewHolder && epharmacyItem is CheckoutEpharmacyModel) {
+            if (epharmacyItem.epharmacy.consultationFlow && epharmacyItem.epharmacy.showImageUpload) {
+                ePharmacyAnalytics.clickPilihPembayaran(
+                    viewHolder.getButtonNotes(),
+                    epharmacyItem.epharmacy.epharmacyGroupIds,
+                    false,
+                    "success"
+                )
+            }
+        }
+    }
+    // endregion
+
+    private fun finish() {
+        if (activity != null) {
+//            releaseBookingIfAny()
+//            shipmentViewModel.clearAllBoOnTemporaryUpsell()
+//            activity?.setResult(resultCode)
+            activity?.finish()
+        }
     }
 }

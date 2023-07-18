@@ -5,6 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.analytics.performance.util.EmbraceKey
+import com.tokopedia.analytics.performance.util.EmbraceMonitoring
 import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection
 import com.tokopedia.checkout.domain.mapper.ShipmentAddOnProductServiceMapper
 import com.tokopedia.checkout.domain.model.cartshipmentform.ShipmentPlatformFeeData
@@ -28,6 +30,7 @@ import com.tokopedia.checkout.revamp.view.uimodel.CheckoutTickerModel
 import com.tokopedia.checkout.view.CheckoutMutableLiveData
 import com.tokopedia.checkout.view.converter.ShipmentDataRequestConverter
 import com.tokopedia.checkout.view.uimodel.ShipmentAddOnSummaryModel
+import com.tokopedia.common_epharmacy.network.response.EPharmacyMiniConsultationResult
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass
@@ -133,6 +136,11 @@ class CheckoutViewModel @Inject constructor(
         }
     }
 
+    fun stopEmbraceTrace() {
+        val emptyMap: Map<String, Any> = HashMap()
+        EmbraceMonitoring.stopMoments(EmbraceKey.KEY_ACT_BUY, null, emptyMap)
+    }
+
     fun loadSAF(
         isReloadData: Boolean,
         skipUpdateOnboardingState: Boolean,
@@ -150,6 +158,7 @@ class CheckoutViewModel @Inject constructor(
                 isReloadData,
                 isReloadAfterPriceChangeHigher
             )
+            stopEmbraceTrace()
             if (saf is CheckoutPageState.Success) {
                 val tickerData = saf.cartShipmentAddressFormData.tickerData
                 var ticker = CheckoutTickerModel(ticker = TickerAnnouncementHolderData())
@@ -288,6 +297,20 @@ class CheckoutViewModel @Inject constructor(
 
             }
         }
+    }
+
+    fun fetchEpharmacyData() {
+        viewModelScope.launch(dispatchers.immediate) {
+            addOnProcessor.fetchEpharmacyData(listData.value)
+        }
+    }
+
+    fun setPrescriptionIds(prescriptionIds: ArrayList<String>) {
+        addOnProcessor.setPrescriptionIds(prescriptionIds, listData.value)
+    }
+
+    fun setMiniConsultationResult(results: ArrayList<EPharmacyMiniConsultationResult>) {
+        addOnProcessor.setMiniConsultationResult(results, listData.value)
     }
 
     override fun onCleared() {
