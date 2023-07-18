@@ -127,7 +127,7 @@ class HomeEducationalInformationWidgetViewHolder(
     private fun ItemTokopedianowHomeEducationalInformationWidgetBinding.setChevronDefault() {
         val unifyColor = ContextCompat.getColor(
             itemView.context,
-            com.tokopedia.unifyprinciples.R.color.Unify_G500
+            com.tokopedia.unifyprinciples.R.color.Unify_GN500
         )
 
         sivChevronDown.colorFilter = BlendModeColorFilterCompat.createBlendModeColorFilterCompat(

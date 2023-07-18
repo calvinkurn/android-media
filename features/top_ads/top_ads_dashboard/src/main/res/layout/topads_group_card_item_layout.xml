@@ -50,7 +50,7 @@
         android:id="@+id/groupCardCountWarning"
         android:layout_width="16dp"
         android:layout_height="16dp"
-        app:icon_color_light_enable="@color/Unify_R500"
+        app:icon_color_light_enable="@color/Unify_RN500"
         app:icon_name="WARNING"
         app:layout_constraintStart_toStartOf="@id/guideline"
         app:layout_constraintTop_toTopOf="parent" />

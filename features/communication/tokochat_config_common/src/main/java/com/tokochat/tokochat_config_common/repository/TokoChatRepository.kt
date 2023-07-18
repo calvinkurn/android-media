@@ -26,11 +26,12 @@ open class TokoChatRepository @Inject constructor(
     private val job = Job()
     private val mainScope = CoroutineScope(job + Dispatchers.Main)
 
-    fun getConversationRepository(): ConversationsRepository {
+    @Synchronized
+    fun getConversationRepository(): ConversationsRepository? {
         if (ConversationsRepository.instance == null) {
             initConversationRepository()
         }
-        return ConversationsRepository.instance!!
+        return ConversationsRepository.instance
     }
 
     /**

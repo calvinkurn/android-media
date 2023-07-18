@@ -1,17 +1,16 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:versionCode="1"
-    android:versionName="1.0.0"
-    package="com.tokopedia.tkpd.feed_component">
+    android:versionName="1.0.0">
     <application
         android:label="Feed Plus Test"
         tools:ignore="HardcodedDebugMode"
         tools:replace="android:label">
         <activity
-            android:name=".InstrumentationFeedPlusTestActivity"
+            android:name="com.tokopedia.tkpd.feed_component.InstrumentationFeedPlusTestActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
 
-        <activity android:name=".container.FeedContainerTestActivity"
+        <activity android:name="com.tokopedia.tkpd.feed_component.container.FeedContainerTestActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
     </application>
 </manifest>

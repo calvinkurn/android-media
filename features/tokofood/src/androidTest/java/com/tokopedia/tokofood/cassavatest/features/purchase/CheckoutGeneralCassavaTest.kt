@@ -1,9 +1,9 @@
 package com.tokopedia.tokofood.cassavatest.features.purchase
 
-import com.tokopedia.tokofood.cassavatest.base.BaseTokoFoodCassavaTest
+import com.tokopedia.tokofood.cassavatest.base.TokoFoodPurchaseCassavaTest
 import org.junit.Test
 
-class CheckoutGeneralCassavaTest: BaseTokoFoodCassavaTest() {
+class CheckoutGeneralCassavaTest: TokoFoodPurchaseCassavaTest() {
 
     override fun setup() {
         super.setup()
@@ -15,7 +15,7 @@ class CheckoutGeneralCassavaTest: BaseTokoFoodCassavaTest() {
     @Test
     fun clickGoToPaymentButton() {
         clickPurchaseButton()
-        validateTracker(CHECKOUT_GENERAL_PAGE)
+        validateTracker(CHECKOUT_GENERAL)
         dismissPage()
     }
 

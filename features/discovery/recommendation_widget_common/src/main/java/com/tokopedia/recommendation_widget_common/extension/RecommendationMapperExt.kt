@@ -5,6 +5,7 @@ import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
 import com.tokopedia.minicart.common.domain.data.getMiniCartItemParentProduct
 import com.tokopedia.minicart.common.domain.data.getMiniCartItemProduct
 import com.tokopedia.productcard.ProductCardModel
+import com.tokopedia.productcard.ProductCardModel.ProductListType
 import com.tokopedia.recommendation_widget_common.data.RecommendationEntity
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationBanner
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
@@ -124,7 +125,8 @@ fun RecommendationItem.toProductCardModel(
     hasAddToCartButton: Boolean = false,
     addToCartButtonType: Int = UnifyButton.Type.TRANSACTION,
     hasThreeDots: Boolean = false,
-    cardInteraction: Boolean = false
+    cardInteraction: Boolean = false,
+    productCardListType: ProductListType = ProductListType.CONTROL,
 ): ProductCardModel {
     var variant: ProductCardModel.Variant? = null
     var nonVariant: ProductCardModel.NonVariant? = null
@@ -162,7 +164,8 @@ fun RecommendationItem.toProductCardModel(
         addToCartButtonType = addToCartButtonType,
         variant = if (isProductHasParentID()) variant else null,
         nonVariant = if (isProductHasParentID()) null else nonVariant,
-        cardInteraction = cardInteraction
+        cardInteraction = cardInteraction,
+        productListType = productCardListType,
     )
 }
 

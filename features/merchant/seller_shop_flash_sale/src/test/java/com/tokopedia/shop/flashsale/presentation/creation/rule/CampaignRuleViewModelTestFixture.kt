@@ -2,6 +2,7 @@ package com.tokopedia.shop.flashsale.presentation.creation.rule
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
+import com.tokopedia.campaign.usecase.RolloutFeatureVariantsUseCase
 import com.tokopedia.shop.flashsale.common.tracker.ShopFlashSaleTracker
 import com.tokopedia.shop.flashsale.domain.entity.CampaignUiModel
 import com.tokopedia.shop.flashsale.domain.entity.MerchantCampaignTNC.TncRequest
@@ -12,7 +13,6 @@ import com.tokopedia.shop.flashsale.domain.usecase.GetSellerCampaignDetailUseCas
 import com.tokopedia.shop.flashsale.domain.usecase.aggregate.ValidateCampaignCreationEligibilityUseCase
 import com.tokopedia.unit.test.rule.AbstractTestRule
 import com.tokopedia.unit.test.rule.CoroutineTestRule
-import com.tokopedia.unit.test.rule.UnconfinedTestRule
 import com.tokopedia.usecase.coroutines.Result
 import io.mockk.MockKAnnotations
 import io.mockk.impl.annotations.RelaxedMockK
@@ -33,6 +33,9 @@ open class CampaignRuleViewModelTestFixture {
 
     @RelaxedMockK
     lateinit var validateCampaignCreationEligibilityUseCase: ValidateCampaignCreationEligibilityUseCase
+
+    @RelaxedMockK
+    lateinit var getRollenceGradualRolloutUseCase: RolloutFeatureVariantsUseCase
 
     @RelaxedMockK
     lateinit var tracker: ShopFlashSaleTracker
@@ -90,7 +93,7 @@ open class CampaignRuleViewModelTestFixture {
 
     lateinit var viewModel: CampaignRuleViewModel
 
-    open fun provideTestRule(): TestRule  = CoroutineTestRule()
+    open fun provideTestRule(): TestRule = CoroutineTestRule()
 
     fun dispatchers() = (testRule as AbstractTestRule).dispatchers
 
@@ -103,7 +106,8 @@ open class CampaignRuleViewModelTestFixture {
             doSellerCampaignCreationUseCase,
             validateCampaignCreationEligibilityUseCase,
             tracker,
-            dispatchers()
+            dispatchers(),
+            getRollenceGradualRolloutUseCase
         )
 
         with(viewModel) {
@@ -145,5 +149,4 @@ open class CampaignRuleViewModelTestFixture {
             addRelatedCampaignButtonEvent.removeObserver(addRelatedCampaignButtonEventObserver)
         }
     }
-
 }

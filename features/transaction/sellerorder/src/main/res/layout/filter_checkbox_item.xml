@@ -17,7 +17,7 @@
         android:text="@string/same_day"
         app:typographyWeight="bold"
         app:typographyType="body_2"
-        android:textColor="@color/Unify_N700_96"/>
+        android:textColor="@color/Unify_NN950_96"/>
 
     <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
         android:id="@+id/cb_filter"
