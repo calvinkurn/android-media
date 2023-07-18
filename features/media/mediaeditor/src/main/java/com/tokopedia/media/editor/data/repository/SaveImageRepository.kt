@@ -4,13 +4,11 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.net.Uri
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.media.editor.ui.uimodel.BitmapCreation
 import com.tokopedia.media.editor.utils.GENERAL_ERROR
 import com.tokopedia.media.editor.utils.getEditorSaveFolderPath
 import com.tokopedia.media.editor.utils.newRelicLog
 import com.tokopedia.utils.image.ImageProcessingUtil
-import kotlinx.coroutines.withContext
 import java.io.File
 import javax.inject.Inject
 
@@ -29,7 +27,6 @@ interface SaveImageRepository {
 }
 
 class SaveImageRepositoryImpl @Inject constructor(
-    private val dispatchers: CoroutineDispatchers,
     private val bitmapConverter: BitmapConverterRepository,
     private val bitmapCreation: BitmapCreationRepository,
 ) : SaveImageRepository {
@@ -95,13 +92,11 @@ class SaveImageRepositoryImpl @Inject constructor(
                 ERROR_LOAD_FAILED_ADDED_SOURCE_TEXT
             }
 
-            withContext(dispatchers.main) {
-                newRelicLog(
-                    mapOf(
-                        GENERAL_ERROR to "Failed flatten - failed load$errorMsg"
-                    )
+            newRelicLog(
+                mapOf(
+                    GENERAL_ERROR to "Failed flatten - failed load$errorMsg"
                 )
-            }
+            )
 
             return null
         }
