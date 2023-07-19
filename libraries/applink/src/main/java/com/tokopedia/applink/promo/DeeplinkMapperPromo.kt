@@ -7,6 +7,7 @@ import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 
+
 object DeeplinkMapperPromo {
     fun getRegisteredNavigationTokopoints(deeplink: String) =
         when (deeplink) {
@@ -18,8 +19,8 @@ object DeeplinkMapperPromo {
     fun getDynamicDeeplinkForTokopoints(deeplink: String): String {
         val uri = Uri.parse(deeplink)
         return when {
-            (deeplink.contains(ApplinkConst.TOKOPEDIA_REWARD) && uri.pathSegments.isEmpty()) ||
-                (deeplink.contains(ApplinkConst.TOKOPOINTS) && uri.pathSegments.isEmpty()) -> {
+            (deeplink.contains(ApplinkConst.TOKOPEDIA_REWARD) && uri.pathSegments.isEmpty())
+                    || (deeplink.contains(ApplinkConst.TOKOPOINTS) && uri.pathSegments.isEmpty()) -> {
                 getSourceDeeplink(deeplink)
             }
             else -> {
@@ -83,7 +84,7 @@ object DeeplinkMapperPromo {
                 )
             }
             deepLinkInternal.contains(ApplinkConst.TokoPoints.CATALOG_LIST_NEW) &&
-                uri.pathSegments[0] == ApplinkConst.TokoPoints.CATALOG_LIST_NEW -> {
+                    uri.pathSegments[0] == ApplinkConst.TokoPoints.CATALOG_LIST_NEW -> {
                 return deepLinkInternal.replace(
                     ApplinkConst.TokoPoints.CATALOG_LIST_NEW,
                     ApplinkConst.TokoPoints.CATALOG_LIST_VALUE
@@ -96,7 +97,7 @@ object DeeplinkMapperPromo {
     }
 
     // To handle Tokomember applinks with params
-    fun getDynamicDeeplinkForTokomember(deeplink: String): String {
+    fun getDynamicDeeplinkForTokomember(deeplink: String) : String{
         val uri = Uri.parse(deeplink)
         return when {
             deeplink.contains(ApplinkConst.Tokomember.PROGRAM_EXTENSION) -> getDeeplinkForProgramExtension(uri)
@@ -104,53 +105,50 @@ object DeeplinkMapperPromo {
         }
     }
 
-    fun getDeeplinkForProgramExtension(deeplink: Uri): String {
-        if (UriUtil.matchWithPattern(ApplinkConst.SellerApp.TOKOMEMBER_PROGRAM_EXTENSION, deeplink) != null) {
+    fun getDeeplinkForProgramExtension(deeplink: Uri):String{
+        if(UriUtil.matchWithPattern(ApplinkConst.SellerApp.TOKOMEMBER_PROGRAM_EXTENSION,deeplink)!=null){
             val programId = deeplink.lastPathSegment
-            return UriUtil.buildUri(ApplinkConstInternalSellerapp.TOKOMEMBER_PROGRAM_EXTENSION, programId)
+            return UriUtil.buildUri(ApplinkConstInternalSellerapp.TOKOMEMBER_PROGRAM_EXTENSION,programId)
         }
         return ""
     }
 
-    fun getRegisteredNavigationPromoFromHttp(deeplink: Uri): String {
+    fun getRegisteredNavigationPromoFromHttp(deeplink:Uri) : String{
         val query = deeplink.encodedQuery
-        val queryString = if (query.isNullOrEmpty()) "" else "?$query"
+        val queryString = if(query.isNullOrEmpty()) "" else "?${query}"
         val path = deeplink.encodedPath ?: ""
         val regexMap = getPromoRegexMap()
-        when {
-            isMatchPattern(regexMap[ApplinkConst.Tokomember.COUPON_DETAIL], path) -> {
+        when{
+            isMatchPattern(regexMap[ApplinkConst.Tokomember.COUPON_DETAIL],path) -> {
                 val applink = ApplinkConstInternalSellerapp.TOKOMEMBER_COUPON_DETAIL
                 val couponId = deeplink.lastPathSegment
-                return UriUtil.buildUri(applink, couponId) + queryString
+                return UriUtil.buildUri(applink,couponId) + queryString
             }
             else -> ""
         }
         return ""
     }
 
-    fun getPromoRegexMap(): MutableMap<String, Regex> {
+    fun getPromoRegexMap() : MutableMap<String,Regex> {
         val couponDetailRegex = "^(/.*/voucher/[0-9]+)"
         return mutableMapOf(
-            ApplinkConst.Tokomember.COUPON_DETAIL to Regex(couponDetailRegex)
+            ApplinkConst.Tokomember.COUPON_DETAIL to  Regex(couponDetailRegex)
         )
     }
-    fun getCelebrationBottomsheetDeeplink(deeplink: Uri): String {
-        return if (deeplink.pathSegments.size < 2) {
-            ""
-        } else {
-            UriUtil.buildUri(
-                ApplinkConstInternalPromo.CELEBRATION_BOTTOMSHEET,
-                deeplink.pathSegments.last()
-            )
-        }
-    }
+fun getCelebrationBottomsheetDeeplink(deeplink: Uri): String {
+    return if (deeplink.pathSegments.size < 2) ""
+    else UriUtil.buildUri(
+        ApplinkConstInternalPromo.CELEBRATION_BOTTOMSHEET,
+        deeplink.pathSegments.last()
+    )
+}
 
     fun invokeScpToasterUniversalAppLink(context: Context, deeplink: Uri): String {
         // PArse deeplink to get order id
         return ""
     }
 
-    fun isMatchPattern(pattern: Regex?, link: String): Boolean {
+    fun isMatchPattern(pattern:Regex?,link:String) : Boolean{
         return pattern?.matches(link) ?: false
     }
 
@@ -186,3 +184,4 @@ object DeeplinkMapperPromo {
         return ""
     }
 }
+
