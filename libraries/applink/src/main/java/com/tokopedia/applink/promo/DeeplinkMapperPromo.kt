@@ -1,9 +1,7 @@
 package com.tokopedia.applink.promo
 
-import android.content.Context
 import android.net.Uri
 import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.ApplinkConst.ScpRewards.SEE_MORE_MEDAL
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
@@ -143,16 +141,6 @@ fun getCelebrationBottomsheetDeeplink(deeplink: Uri): String {
         deeplink.pathSegments.last()
     )
 }
-
-fun invokeScpToasterUniversalAppLink(context: Context, deeplink: Uri): String{
-    //PArse deeplink to get order id
-    return UriUtil.appendDeeplinkWithQuery(
-        ApplinkConstInternalPromo.CELEBRATION_TOASTER,
-        deeplink.query ?: ""
-    )
-
-}
-
 
     fun isMatchPattern(pattern:Regex?,link:String) : Boolean{
         return pattern?.matches(link) ?: false
