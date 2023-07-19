@@ -25,6 +25,34 @@ data class TickerBottomSheetUiModel(
     )
 
     companion object {
+        val Dummy = TickerBottomSheetUiModel(
+            mainText = listOf(
+                MainText(
+                    action = listOf(
+                        Action(
+                            item = "key item 1",
+                            text = "text link",
+                            link = "tokopedia.com",
+                        )
+                    ),
+                    title = "Test Title",
+                    description = "Test Description",
+                )
+            ),
+            page = "",
+            type = TickerBottomSheetPageType.BOTTOM_SHEET,
+            imageURL = "tokopedia.com",
+            bottomText = BottomText(
+                action = listOf(
+                    Action(
+                        item = "key item 1",
+                        text = "text link",
+                        link = "tokopedia.com",
+                    )
+                ),
+                description = "Test Description"
+            )
+        )
         val Empty = TickerBottomSheetUiModel(
             page = TickerBottomSheetPageType.UNKNOWN.value,
             type = TickerBottomSheetPageType.UNKNOWN,

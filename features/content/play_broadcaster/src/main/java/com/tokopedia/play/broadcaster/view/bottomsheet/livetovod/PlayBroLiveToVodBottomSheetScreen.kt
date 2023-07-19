@@ -24,7 +24,6 @@ import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.nest.principles.utils.ImageSource
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.ui.model.livetovod.SpanAnnotationTextModel
-import com.tokopedia.play.broadcaster.ui.model.livetovod.TickerBottomSheetPageType
 import com.tokopedia.play.broadcaster.ui.model.livetovod.TickerBottomSheetUiModel
 
 @Composable
@@ -190,22 +189,7 @@ private fun generateSpanText(
 @Preview(showBackground = true)
 internal fun Preview() {
     PlayBroadcasterLiveToVodBottomSheetScreen(
-        data = TickerBottomSheetUiModel(
-            mainText = listOf(
-                TickerBottomSheetUiModel.MainText(
-                    action = listOf(),
-                    title = "Test Title",
-                    description = "Test Description",
-                )
-            ),
-            page = "",
-            type = TickerBottomSheetPageType.BOTTOM_SHEET,
-            imageURL = stringResource(id = R.string.play_shorts_affiliate_success),
-            bottomText = TickerBottomSheetUiModel.BottomText(
-                action = listOf(),
-                description = "Test Description"
-            )
-        ),
+        data = TickerBottomSheetUiModel.Dummy,
         onBackPressed = {},
         onActionTextPressed = {},
     )

@@ -16,17 +16,22 @@ import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.databinding.FragmentPlayBroadcastReportBinding
 import com.tokopedia.play.broadcaster.setup.product.viewmodel.ViewModelFactoryProvider
+import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastSummaryAction
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastSummaryEvent
 import com.tokopedia.play.broadcaster.ui.model.TrafficMetricType
 import com.tokopedia.play.broadcaster.ui.model.TrafficMetricUiModel
 import com.tokopedia.play.broadcaster.ui.model.isGameParticipants
+import com.tokopedia.play.broadcaster.ui.model.livetovod.TickerBottomSheetPageType
+import com.tokopedia.play.broadcaster.ui.model.livetovod.TickerBottomSheetUiModel
 import com.tokopedia.play.broadcaster.ui.state.ChannelSummaryUiState
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroInteractiveBottomSheet
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play.broadcaster.view.partial.SummaryInfoViewComponent
 import com.tokopedia.play.broadcaster.view.ticker.livetovod.PlayBroLiveToVodTickerScreen
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastSummaryViewModel
+import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
+import com.tokopedia.play.broadcaster.view.viewmodel.factory.PlayBroadcastViewModelFactory
 import com.tokopedia.play_common.lifecycle.viewLifecycleBound
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.util.PlayToaster
@@ -39,6 +44,7 @@ import javax.inject.Inject
  * @author by jessica on 26/05/20
  */
 class PlayBroadcastReportFragment @Inject constructor(
+    private val parentViewModelFactoryCreator: PlayBroadcastViewModelFactory.Creator,
     private val analytic: PlayBroadcastAnalytic,
     private val router: Router,
 ) : PlayBaseBroadcastFragment(), SummaryInfoViewComponent.Listener {
@@ -47,6 +53,9 @@ class PlayBroadcastReportFragment @Inject constructor(
 
     private val viewModel: PlayBroadcastSummaryViewModel by activityViewModels {
         (parentFragment as ViewModelFactoryProvider).getFactory()
+    }
+    private val parentViewModel: PlayBroadcastViewModel by activityViewModels {
+        parentViewModelFactoryCreator.create(requireActivity())
     }
 
     private var _binding: FragmentPlayBroadcastReportBinding? = null
@@ -63,11 +72,11 @@ class PlayBroadcastReportFragment @Inject constructor(
 
     override fun getScreenName(): String = "Play Report Page"
 
-    private fun generateLearnMoreAppLink(): String {
+    private fun generateInAppLink(appLink: String): String {
         return getString(
             com.tokopedia.content.common.R.string.up_webview_template,
             ApplinkConst.WEBVIEW,
-            getString(com.tokopedia.content.common.R.string.ugc_get_to_know_more_link),
+            appLink,
         )
     }
 
@@ -80,6 +89,8 @@ class PlayBroadcastReportFragment @Inject constructor(
         super.onViewCreated(view, savedInstanceState)
         setupView(view)
         setupObserver()
+
+        checkConfig()
     }
 
     override fun onDestroyView() {
@@ -89,25 +100,6 @@ class PlayBroadcastReportFragment @Inject constructor(
 
     private fun setupView(view: View) {
         summaryInfoView.entranceAnimation(view as ViewGroup)
-
-        binding.composeViewTicker.apply {
-            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
-            setContent {
-                PlayBroLiveToVodTickerScreen(
-                    onDismissedPressed = {
-                        showWithCondition(false)
-                    },
-                    onLearnMorePressed = {
-                        router.route(
-                            requireContext(),
-                            generateLearnMoreAppLink(),
-                        )
-                    },
-                )
-            }
-            // todo adjust config from BE later
-            showWithCondition(true)
-        }
 
         binding.icBroSummaryBack.setOnClickListener {
             viewModel.submitAction(PlayBroadcastSummaryAction.ClickCloseReportPage)
@@ -138,6 +130,11 @@ class PlayBroadcastReportFragment @Inject constructor(
                 renderReport(it.prevValue?.liveReport?.trafficMetricsResult, it.value.liveReport.trafficMetricsResult)
             }
         }
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            parentViewModel.uiState.withCache().collectLatest { (prevState, state) ->
+                renderTickerDisableLiveToVod(prevState?.tickerBottomSheetConfig, state.tickerBottomSheetConfig)
+            }
+        }
     }
 
     private fun observeEvent() {
@@ -157,6 +154,14 @@ class PlayBroadcastReportFragment @Inject constructor(
                 }
             }
         }
+    }
+
+    private fun checkConfig() {
+        parentViewModel.submitAction(
+            PlayBroadcastAction.GetTickerBottomSheetConfig(
+                page = TickerBottomSheetPageType.TICKER,
+            )
+        )
     }
 
     private fun renderChannelHeader(prev: ChannelSummaryUiState?, value: ChannelSummaryUiState) {
@@ -191,6 +196,32 @@ class PlayBroadcastReportFragment @Inject constructor(
             else -> {
                 //no-op
             }
+        }
+    }
+
+    private fun renderTickerDisableLiveToVod(
+        prev: TickerBottomSheetUiModel?,
+        state: TickerBottomSheetUiModel,
+    ) {
+        if (prev == state || state.type != TickerBottomSheetPageType.TICKER) return
+
+        binding.composeViewTicker.apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+            setContent {
+                PlayBroLiveToVodTickerScreen(
+                    data = state,
+                    onDismissedPressed = {
+                        showWithCondition(false)
+                    },
+                    onActionTextPressed = { appLink ->
+                        router.route(
+                            requireContext(),
+                            generateInAppLink(appLink),
+                        )
+                    },
+                )
+            }
+            showWithCondition(true)
         }
     }
 
