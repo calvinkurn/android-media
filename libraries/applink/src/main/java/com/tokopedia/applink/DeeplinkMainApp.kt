@@ -377,6 +377,7 @@ object DeeplinkMainApp {
             DLP.startsWith("onboarding", ApplinkConstInternalMarketplace.ONBOARDING)
         ),
         "medali" to mutableListOf(
+            DLP.matchPattern(ApplinkConst.ScpRewards.CELEBRATION_BASE) { _, uri, _, _ -> getInternalDeeplinkForScpCelebration(uri) },
             DLP.startsWith(ApplinkConst.ScpRewards.CELEBRATION_BOTTOMSHEET) { _, uri, _, _ -> getCelebrationBottomsheetDeeplink(uri) },
             DLP.startsWith(ApplinkConst.ScpRewards.SCP_TOASTER) { ctx, uri, _, _ -> invokeScpToasterUniversalAppLink(ctx, uri) },
             DLP.startsWith(ApplinkConst.ScpRewards.MEDAL_DETAIL_BASE) { _, uri, _, _ -> getInternalDeeplinkForScpMedalDetail(uri) },

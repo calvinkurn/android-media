@@ -176,7 +176,7 @@ class MerchantVoucherUseCase @Inject constructor(private val repository: Merchan
         queryParameterMapWithoutRpc?.let {
             queryParameterMap.putAll(it)
         }
-        queryParameterMap.putAll(Utils.addAddressQueryMap(userAddressData))
+        queryParameterMap.putAll(Utils.addAddressQueryMapWithWareHouse(userAddressData))
         return queryParameterMap
     }
 }

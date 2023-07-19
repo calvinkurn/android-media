@@ -29,7 +29,7 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
         // This a reminder to developer.
         // If this size is modified, please also add unit test for the added deeplink.
         const val SIZE_HOST = 156
-        const val SIZE_PATH = 263
+        const val SIZE_PATH = 264
     }
 
     override fun setup() {
@@ -43,7 +43,7 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
         // This test is a reminder for developer.
         // If there is any mapping changed/added/deleted, developer should change the SIZE_MAPPER
         // also there developer should also add the corresponding unit test for the deeplink.
-        assertEquals(DeeplinkMapper.getTokopediaSchemeList().size, SIZE_HOST)
+        assertEquals(SIZE_HOST, DeeplinkMapper.getTokopediaSchemeList().size)
         var totalPath = 0
         var key = ""
         var alphabeticalOrder = true
