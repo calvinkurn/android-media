@@ -17,6 +17,7 @@ import com.tokopedia.tokochat.common.util.TokoChatValueUtil
 import com.tokopedia.tokochat.common.view.chatlist.TokoChatListBaseFragment
 import com.tokopedia.tokochat.common.view.chatlist.adapter.TokoChatListBaseAdapter
 import com.tokopedia.tokochat.common.view.chatlist.listener.TokoChatListItemListener
+import com.tokopedia.tokochat.common.view.chatlist.uimodel.TokoChatListEmptyUiModel
 import com.tokopedia.tokochat.common.view.chatlist.uimodel.TokoChatListItemUiModel
 import com.tokopedia.tokochat.databinding.TokochatChatlistFragmentBinding
 import com.tokopedia.usecase.coroutines.Fail
@@ -66,8 +67,7 @@ class TokoChatListFragment @Inject constructor(
                 viewModel.getChatListFlow().collectLatest {
                     when (it) {
                         is Success -> {
-                            removeInitialShimmering()
-                            addOrUpdateChatItem(it.data)
+                            setChatListData(it.data)
                             if (!isCompleted) {
                                 loadChatListData(it.data.size)
                                 isCompleted = true
@@ -79,6 +79,15 @@ class TokoChatListFragment @Inject constructor(
                     }
                 }
             }
+        }
+    }
+
+    private fun setChatListData(newData: List<TokoChatListItemUiModel>) {
+        removeInitialShimmering()
+        if (newData.isEmpty()) {
+            addEmptyChatItem()
+        } else {
+            adapter.setItemsAndAnimateChanges(newData)
         }
     }
 
@@ -125,41 +134,16 @@ class TokoChatListFragment @Inject constructor(
         initChatListData()
     }
 
-    private fun addOrUpdateChatItem(items: List<TokoChatListItemUiModel>) {
-        items.forEach {
-            val position = adapter.getChatListPosition(it)
-            if (position >= Int.ZERO) {
-                updateChatItem(position, it)
-            } else {
-                addNewChatItem(it)
-            }
-        }
-    }
-
-    private fun addNewChatItem(item: TokoChatListItemUiModel) {
-        adapter.addItem(item)
+    private fun addEmptyChatItem() {
+        adapter.clearAllItems()
+        adapter.addItem(TokoChatListEmptyUiModel())
         baseBinding?.tokochatListRv?.post {
             adapter.notifyItemInserted(adapter.lastIndex)
         }
     }
 
-    private fun updateChatItem(position: Int, item: TokoChatListItemUiModel) {
-        adapter.updateChatListAt(position, item)
-        notifyWhenAllowed(position)
-    }
-
     override fun onLoadMore() {
         viewModel.loadNextPageChatList {}
-    }
-
-    private fun notifyWhenAllowed(position: Int) {
-        try {
-            baseBinding?.tokochatListRv?.post {
-                adapter.notifyItemChanged(position)
-            }
-        } catch (throwable: Throwable) {
-            Timber.d(throwable)
-        }
     }
 
     override fun onClickChatItem(position: Int, element: TokoChatListItemUiModel) {

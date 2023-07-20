@@ -9,7 +9,8 @@ import com.tokopedia.tokochat.common.view.chatlist.uimodel.TokoChatListShimmerUi
 class TokoChatListShimmerDelegate:
     TypedAdapterDelegate<TokoChatListShimmerUiModel, Any, TokoChatListItemShimmerViewHolder>(
         TokoChatListItemShimmerViewHolder.LAYOUT
-    ) {
+    )
+{
 
     override fun onBindViewHolder(
         item: TokoChatListShimmerUiModel,

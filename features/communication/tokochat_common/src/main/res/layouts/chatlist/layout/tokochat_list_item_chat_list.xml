@@ -61,7 +61,7 @@
             app:typographyType="display_2"
             android:ellipsize="end"
             android:maxLines="1"
-            android:text="Kartolo · GoSend" />
+            tools:text="Kartolo · GoSend" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tokochat_list_tv_message"
@@ -74,7 +74,7 @@
             app:typographyType="paragraph_3"
             android:ellipsize="end"
             android:maxLines="1"
-            android:text="Kak saya otw ya, udah mau samp..." />
+            tools:text="Kak saya otw ya, udah mau samp..." />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tokochat_list_tv_business_name"
@@ -88,7 +88,7 @@
             app:typographyType="small"
             android:ellipsize="end"
             android:maxLines="1"
-            android:text="Micahel Jordan Official Store, Karet.." />
+            tools:text="Micahel Jordan Official Store, Karet.." />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -1,9 +1,11 @@
 package com.tokopedia.tokochat.common.view.chatlist.adapter
 
 import com.tokopedia.adapterdelegate.BaseCommonAdapter
+import com.tokopedia.tokochat.common.view.chatlist.adapter.delegate.TokoChatListEmptyItemDelegate
 import com.tokopedia.tokochat.common.view.chatlist.adapter.delegate.TokoChatListItemDelegate
 import com.tokopedia.tokochat.common.view.chatlist.adapter.delegate.TokoChatListShimmerDelegate
 import com.tokopedia.tokochat.common.view.chatlist.listener.TokoChatListItemListener
+import com.tokopedia.tokochat.common.view.chatlist.uimodel.TokoChatListEmptyUiModel
 import com.tokopedia.tokochat.common.view.chatlist.uimodel.TokoChatListItemUiModel
 import com.tokopedia.tokochat.common.view.chatlist.uimodel.TokoChatListShimmerUiModel
 
@@ -14,29 +16,18 @@ class TokoChatListBaseAdapter(
     init {
         delegatesManager.addDelegate(TokoChatListItemDelegate(itemListener))
         delegatesManager.addDelegate(TokoChatListShimmerDelegate())
-    }
-
-    fun getChatListPosition(uiModel: TokoChatListItemUiModel): Int {
-        var position = -1
-        itemList.forEachIndexed { index, item ->
-            if (item is TokoChatListItemUiModel && uiModel.orderId == item.orderId) {
-                position = index
-                return@forEachIndexed
-            }
-        }
-        return position
-    }
-
-    fun updateChatListAt(position: Int, uiModel: TokoChatListItemUiModel) {
-        if (itemList.size <= position) {
-            return
-        }
-        itemList[position] = uiModel
+        delegatesManager.addDelegate(TokoChatListEmptyItemDelegate())
     }
 
     fun isShimmeringExist(): Boolean {
         return itemList.find {
             it is TokoChatListShimmerUiModel
+        } != null
+    }
+
+    fun isEmptyViewExist(): Boolean {
+        return itemList.find {
+            it is TokoChatListEmptyUiModel
         } != null
     }
 

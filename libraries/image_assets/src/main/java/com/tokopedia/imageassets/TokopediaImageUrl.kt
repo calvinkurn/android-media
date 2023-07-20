@@ -371,4 +371,5 @@ object TokopediaImageUrl {
     const val IMG_TOKOCHAT_BUBBLES_AWARENESS_BIG = "https://images.tokopedia.net/img/android/tokochat_common/img_tokochat_awareness_big.png"
     const val IMG_TOKOCHAT_BUBBLES_AWARENESS_1 = "https://images.tokopedia.net/img/android/tokochat_common/img_tokochat_awareness_1.png"
     const val IMG_TOKOCHAT_BUBBLES_AWARENESS_2 = "https://images.tokopedia.net/img/android/tokochat_common/img_tokochat_awareness_2.png"
+    const val IMG_TOKOCHAT_LIST_EMPTY = "https://images.tokopedia.net/img/android/communication/tokochat/tokochat_list_empty.png"
 }
