@@ -162,6 +162,7 @@ import com.tokopedia.purchase_platform.common.utils.removeSingleDecimalSuffix
 import com.tokopedia.purchase_platform.common.utils.rxCompoundButtonCheckDebounce
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.searchbar.navigation_component.NavSource
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
@@ -1013,7 +1014,7 @@ class CartFragment :
                     backButtonClickListener = ::onBackPressed
                 )
                 setIcon(
-                    IconBuilder(IconBuilderFlag(pageSource = CART_PAGE)).addIcon(
+                    IconBuilder(IconBuilderFlag(pageSource = NavSource.CART)).addIcon(
                         iconId = IconList.ID_NAV_ANIMATED_WISHLIST,
                         disableDefaultGtmTracker = true,
                         onClick = ::onNavigationToolbarWishlistClicked
