@@ -1880,8 +1880,15 @@ class ShopPageHeaderFragment :
                 hideScrollToTopButton()
                 hideShopPageFab()
                 isTabClickByUser = false
+                checkShouldScrollTabToTopWhenTabSelected()
             }
         })
+    }
+
+    private fun checkShouldScrollTabToTopWhenTabSelected() {
+        if (getSelectedTabName() == ShopPageHeaderTabName.CAMPAIGN) {
+            scrollSelectedTabToTop(isUserClick = false)
+        }
     }
 
     private fun checkShouldSendCampaignTabOpenScreenTracker() {
