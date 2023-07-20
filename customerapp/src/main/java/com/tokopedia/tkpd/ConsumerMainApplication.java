@@ -104,7 +104,7 @@ public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMain
         super.onCreate();
         setupAppScreenMode();
         setupAlphaObserver();
-        registerActivityLifecycleCallbacks();
+        registerAppLifecycleCallbacks();
     }
 
     public void CheckAndTraceAppStartIfEnabled() {
@@ -190,7 +190,7 @@ public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMain
         }).build();
     }
 
-    private void registerActivityLifecycleCallbacks() {
+    private void registerAppLifecycleCallbacks() {
         registerActivityLifecycleCallbacks(new FrameMetricsMonitoring(this));
     }
 }
