@@ -1917,7 +1917,7 @@ class PlayViewModel @AssistedInject constructor(
             }
             is ChannelDetailsWithRecomResponse.ExploreWidgetConfig -> {
                 _channelDetail.update { channel ->
-                    channel.copy(exploreWidgetConfig = channel.exploreWidgetConfig.copy(categoryName = result.categoryName, categoryGroup = result.group, hasCategory = result.hasCategory, categoryLevel = result.categoryLvl, categoryId = result.categoryId))
+                    channel.copy(exploreWidgetConfig = channel.exploreWidgetConfig.copy(categoryName = result.categoryName.ifBlank { DEFAULT_TAB }, categoryGroup = result.group, hasCategory = result.hasCategory, categoryLevel = result.categoryLvl, categoryId = result.categoryId))
                 }
                 _categoryWidget.update { w -> w.copy(data = emptyList()) }
                 widgetQuery.value = widgetQuery.value.mapValues {
