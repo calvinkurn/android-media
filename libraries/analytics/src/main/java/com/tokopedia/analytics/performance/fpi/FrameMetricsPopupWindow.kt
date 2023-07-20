@@ -24,14 +24,11 @@ import java.util.*
  **/
 
 
-class FloatingFrameMetrics(
+class FrameMetricsPopupWindow(
     private val applicationContext: Context
 ) : PopupWindow() {
 
     companion object {
-        // ref to DeveloperOptionActivity.PREF_KEY_FPI_MONITORING_POPUP
-        private const val PREF_KEY = "fpi_monitoring_popup"
-
         // base on median of main-app firebase performance
         private const val WARNING_PERCENTAGE = 20
         private const val DANGER_PERCENTAGE = 30
@@ -110,7 +107,7 @@ class FloatingFrameMetrics(
                     newX = 0F.coerceAtLeast(newX)
 
                     var newY = event.rawY + widgetDY
-                    //newY = 0F.coerceAtLeast(newY)
+                    newY = 0F.coerceAtLeast(newY)
                     updatePositionPopup(x = newX, y = newY)
                 }
             }

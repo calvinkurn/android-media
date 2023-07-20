@@ -21,7 +21,6 @@ import kotlin.math.pow
  * Project name: android-tokopedia-core
  **/
 
-
 class FrameMetricsMonitoring(
     private val applicationContext: Context
 ) : Application.ActivityLifecycleCallbacks {
@@ -45,14 +44,14 @@ class FrameMetricsMonitoring(
         Handler(Looper.getMainLooper())
     }
 
-    private val floatingFrameMetrics by lazyThreadSafetyNone {
-        FloatingFrameMetrics(applicationContext)
+    private val frameMetricsPopupWindow by lazyThreadSafetyNone {
+        FrameMetricsPopupWindow(applicationContext)
     }
 
     override fun onActivityResumed(activity: Activity) {
         if (isActive()) {
             start(activity)
-            floatingFrameMetrics.show(activity) {
+            frameMetricsPopupWindow.show(activity) {
                 reset()
             }
         }
@@ -94,12 +93,12 @@ class FrameMetricsMonitoring(
             fpiData.incrementJankyFrames()
         }
 
-        floatingFrameMetrics.updateInfo(fpiData = fpiData)
+        frameMetricsPopupWindow.updateInfo(fpiData = fpiData)
     }
 
     private fun reset() {
         fpiData.reset()
-        floatingFrameMetrics.updateInfo(fpiData)
+        frameMetricsPopupWindow.updateInfo(fpiData)
     }
 
     private fun isActive(): Boolean =
