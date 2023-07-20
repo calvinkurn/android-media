@@ -1,15 +1,17 @@
 package com.tokopedia.checkout.revamp.view.uimodel
 
 import android.os.Parcelable
-import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.InsuranceData
+import com.tokopedia.logisticcart.shipping.model.CourierItemData
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
+import com.tokopedia.logisticcart.shipping.model.ShopShipment
+import com.tokopedia.logisticcart.shipping.model.ShopTypeInfoData
 import com.tokopedia.promocheckout.common.view.uimodel.VoucherLogisticItemUiModel
+import com.tokopedia.purchase_platform.common.feature.bometadata.BoMetadata
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingDataModel
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingWordingModel
 import kotlinx.parcelize.Parcelize
-import kotlin.math.roundToInt
 
 data class CheckoutOrderModel(
     override val cartStringGroup: String,
@@ -23,7 +25,7 @@ data class CheckoutOrderModel(
     val isTriggerScrollToErrorProduct: Boolean = false,
     var isCustomEpharmacyError: Boolean = false,
 
-    var shipment: CheckoutOrderShipment = CheckoutOrderShipment(),
+    val shipment: CheckoutOrderShipment = CheckoutOrderShipment(),
 
     // Shop data
     val shopId: Long = 0,
@@ -34,7 +36,8 @@ data class CheckoutOrderModel(
     val isFreeShippingPlus: Boolean = false, // flag for plus badge tracker
     var shopLocation: String = "",
     val shopAlertMessage: String = "",
-//    val shopTypeInfoData: ShopTypeInfoData = ShopTypeInfoData(),
+    val shopTypeInfoData: ShopTypeInfoData = ShopTypeInfoData(),
+    val shopShipmentList: List<ShopShipment> = emptyList(),
     val isTokoNow: Boolean = false,
     val shopTickerTitle: String = "",
     val shopTicker: String = "",
@@ -85,6 +88,14 @@ data class CheckoutOrderModel(
     val fulfillmentBadgeUrl: String = "",
     val fulfillmentId: Long = 0,
 
+    val postalCode: String = "",
+    val latitude: String = "",
+    val longitude: String = "",
+    val districtId: String = "",
+    val keroToken: String = "",
+    val keroUnixTime: String = "",
+    val boMetadata: BoMetadata = BoMetadata(),
+
     // promo stacking
     var hasPromoList: Boolean = false,
     var voucherLogisticItemUiModel: VoucherLogisticItemUiModel? = null,
@@ -92,9 +103,6 @@ data class CheckoutOrderModel(
     val isLeasingProduct: Boolean = false,
     val bookingFee: Int = 0,
     val listPromoCodes: List<String> = emptyList(),
-
-    val isDropshipperDisable: Boolean = false,
-    val isOrderPrioritasDisable: Boolean = false,
 
     val isHasSetDropOffLocation: Boolean = false,
 
@@ -166,25 +174,8 @@ data class CoachmarkPlusData(
 
 data class CheckoutOrderShipment(
     val isLoading: Boolean = false,
-    val isDisabled: Boolean = false,
-    val serviceName: String? = null,
-    val serviceId: Int? = null,
-    val serviceDuration: String? = null,
-    val serviceEta: String? = null,
-    val whitelabelDescription: String? = null,
-    val shippingEta: String? = null,
-    val serviceErrorMessage: String? = null,
-    val isServicePickerEnable: Boolean = false,
-    var needPinpoint: Boolean = false,
-    val shipperName: String? = null,
-    val shipperId: Int? = null,
-    val shipperProductId: Int? = null,
-    val ratesId: String? = null,
-    val ut: String? = null,
-    val checksum: String? = null,
-    val shippingPrice: Int? = null,
-    val logisticPromoTickerMessage: String? = null,
-    val isShowLogisticPromoTickerMessage: Boolean = true,
+    val courierItemData: CourierItemData? = null,
+    val shippingCourierUiModels: List<ShippingCourierUiModel> = emptyList(),
     val logisticPromoViewModel: LogisticPromoUiModel? = null,
     val logisticPromoShipping: ShippingCourierUiModel? = null,
     val isApplyLogisticPromo: Boolean = false,
@@ -194,63 +185,63 @@ data class CheckoutOrderShipment(
     // Analytics
     var hasTriggerViewMessageTracking: Boolean = false
 ) {
-    fun isValid(): Boolean {
-        return getRealShipperProductId() > 0 && !serviceName.isNullOrEmpty()
-    }
-
-    fun getRealServiceId(): Int {
-        return logisticPromoShipping?.serviceData?.serviceId
-            ?: serviceId.toZeroIfNull()
-    }
-
-    fun getRealShipperProductId(): Int {
-        return logisticPromoShipping?.productData?.shipperProductId
-            ?: shipperProductId.toZeroIfNull()
-    }
-
-    fun getRealShipperId(): Int {
-        return logisticPromoShipping?.productData?.shipperId ?: shipperId.toZeroIfNull()
-    }
-
-    fun getRealRatesId(): String {
-        return logisticPromoShipping?.ratesId ?: ratesId ?: ""
-    }
-
-    fun getRealUt(): String {
-        return logisticPromoShipping?.productData?.unixTime ?: ut ?: ""
-    }
-
-    fun getRealChecksum(): String {
-        return logisticPromoShipping?.productData?.checkSum ?: checksum ?: ""
-    }
-
-    fun getRealOriginalPrice(): Int {
-        return if (isApplyLogisticPromo && logisticPromoShipping != null && logisticPromoViewModel != null) {
-            logisticPromoViewModel.shippingRate
-        } else {
-            shippingPrice ?: 0
-        }
-    }
-
-    fun getRealShippingPrice(): Int {
-        return if (isApplyLogisticPromo && logisticPromoShipping != null && logisticPromoViewModel != null) {
-            logisticPromoViewModel.discountedRate
-        } else {
-            shippingPrice ?: 0
-        }
-    }
-
-    fun isUseInsurance(): Boolean {
-        return insurance.isCheckInsurance && insurance.insuranceData != null
-    }
-
-    fun getRealInsurancePrice(): Int {
-        return if (insurance.isCheckInsurance && insurance.insuranceData != null) {
-            insurance.insuranceData.insurancePrice.roundToInt()
-        } else {
-            0
-        }
-    }
+//    fun isValid(): Boolean {
+//        return getRealShipperProductId() > 0 && !serviceName.isNullOrEmpty()
+//    }
+//
+//    fun getRealServiceId(): Int {
+//        return logisticPromoShipping?.serviceData?.serviceId
+//            ?: serviceId.toZeroIfNull()
+//    }
+//
+//    fun getRealShipperProductId(): Int {
+//        return logisticPromoShipping?.productData?.shipperProductId
+//            ?: shipperProductId.toZeroIfNull()
+//    }
+//
+//    fun getRealShipperId(): Int {
+//        return logisticPromoShipping?.productData?.shipperId ?: shipperId.toZeroIfNull()
+//    }
+//
+//    fun getRealRatesId(): String {
+//        return logisticPromoShipping?.ratesId ?: ratesId ?: ""
+//    }
+//
+//    fun getRealUt(): String {
+//        return logisticPromoShipping?.productData?.unixTime ?: ut ?: ""
+//    }
+//
+//    fun getRealChecksum(): String {
+//        return logisticPromoShipping?.productData?.checkSum ?: checksum ?: ""
+//    }
+//
+//    fun getRealOriginalPrice(): Int {
+//        return if (isApplyLogisticPromo && logisticPromoShipping != null && logisticPromoViewModel != null) {
+//            logisticPromoViewModel.shippingRate
+//        } else {
+//            shippingPrice ?: 0
+//        }
+//    }
+//
+//    fun getRealShippingPrice(): Int {
+//        return if (isApplyLogisticPromo && logisticPromoShipping != null && logisticPromoViewModel != null) {
+//            logisticPromoViewModel.discountedRate
+//        } else {
+//            shippingPrice ?: 0
+//        }
+//    }
+//
+//    fun isUseInsurance(): Boolean {
+//        return insurance.isCheckInsurance && insurance.insuranceData != null
+//    }
+//
+//    fun getRealInsurancePrice(): Int {
+//        return if (insurance.isCheckInsurance && insurance.insuranceData != null) {
+//            insurance.insuranceData.insurancePrice.roundToInt()
+//        } else {
+//            0
+//        }
+//    }
 }
 
 data class CheckoutOrderInsurance(

@@ -28,6 +28,7 @@ import com.tokopedia.checkout.revamp.view.uimodel.CheckoutDonationModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutEgoldModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutEpharmacyModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutItem
+import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPageState
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPageToaster
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPromoModel
@@ -41,6 +42,10 @@ import com.tokopedia.common_epharmacy.network.response.EPharmacyMiniConsultation
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass
+import com.tokopedia.logisticcart.shipping.model.CodModel
+import com.tokopedia.logisticcart.shipping.model.CourierItemData
+import com.tokopedia.logisticcart.shipping.model.Product
+import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
 import com.tokopedia.purchase_platform.common.feature.dynamicdatapassing.data.request.DynamicDataPassingParamRequest
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.model.UploadPrescriptionUiModel
@@ -106,6 +111,12 @@ class CheckoutViewModel @Inject constructor(
         get() = listData.value.address()?.recipientAddressModel
             ?: RecipientAddressModel()
 
+    val isTradeInByDropOff: Boolean
+        get() {
+            val recipientAddressModel = this.recipientAddressModel
+            return recipientAddressModel.selectedTabIndex == 1
+        }
+
     private var isUsingDdp = false
 
     private var dynamicDataParam: DynamicDataPassingParamRequest = DynamicDataPassingParamRequest()
@@ -113,6 +124,12 @@ class CheckoutViewModel @Inject constructor(
     private var shipmentPlatformFeeData: ShipmentPlatformFeeData = ShipmentPlatformFeeData()
 
     var dynamicData = ""
+
+    var cartDataForRates = ""
+        private set
+
+    var codData: CodModel? = null
+        private set
 
     // add ons product
     // list summary add on - ready to render
@@ -187,6 +204,8 @@ class CheckoutViewModel @Inject constructor(
                 shipmentPlatformFeeData = saf.cartShipmentAddressFormData.shipmentPlatformFee
                 listSummaryAddOnModel =
                     ShipmentAddOnProductServiceMapper.mapSummaryAddOns(saf.cartShipmentAddressFormData)
+                cartDataForRates = saf.cartShipmentAddressFormData.cartData
+                codData = saf.cartShipmentAddressFormData.cod
 
                 val items = dataConverter.getCheckoutItems(
                     saf.cartShipmentAddressFormData,
@@ -359,7 +378,8 @@ class CheckoutViewModel @Inject constructor(
                         platformFeeModel.slashedFee = fee.slashedFee.toDouble()
                     }
                 }
-                checkoutItems.toMutableList()[checkoutItems.size - 3] = checkoutItems.cost()!!.copy(dynamicPlatformFee = platformFeeModel)
+                checkoutItems.toMutableList()[checkoutItems.size - 3] =
+                    checkoutItems.cost()!!.copy(dynamicPlatformFee = platformFeeModel)
             }
             listData.value = calculator.updateShipmentCostModel(listData.value)
         }
@@ -373,6 +393,45 @@ class CheckoutViewModel @Inject constructor(
             "qwertyuiop",
             "parent job: ${viewModelScope.coroutineContext.job?.children?.find { !it.isCompleted }}"
         )
+    }
+
+    fun getProductForRatesRequest(order: CheckoutOrderModel): ArrayList<Product> {
+        val products = arrayListOf<Product>()
+        for (cartItemModel in order.products) {
+            if (!cartItemModel.isError) {
+                val product = Product()
+                product.productId = cartItemModel.productId
+                product.isFreeShipping = cartItemModel.isFreeShipping
+                product.isFreeShippingTc = cartItemModel.isFreeShippingExtra
+                products.add(product)
+            }
+        }
+        return products
+    }
+
+    fun generateRatesMvcParam(cartStringGroup: String): String {
+        return ""
+    }
+
+    fun setSelectedCourier(
+        cartPosition: Int,
+        courierItemData: CourierItemData,
+        shippingCourierUiModels: List<ShippingCourierUiModel>
+    ) {
+        val checkoutItems = listData.value.toMutableList()
+        val checkoutOrderModel = checkoutItems[cartPosition] as CheckoutOrderModel
+        val shipment = checkoutOrderModel.shipment
+        val newShipment = shipment.copy(
+            isLoading = false,
+            courierItemData = courierItemData,
+            shippingCourierUiModels = shippingCourierUiModels
+        )
+        checkoutItems[cartPosition] = checkoutOrderModel.copy(shipment = newShipment)
+        listData.value = checkoutItems
+        viewModelScope.launch {
+            cartProcessor.processSaveShipmentState(checkoutOrderModel, listData.value.address()!!.recipientAddressModel)
+        }
+//        listData.value = listData.value
     }
 
     companion object {
