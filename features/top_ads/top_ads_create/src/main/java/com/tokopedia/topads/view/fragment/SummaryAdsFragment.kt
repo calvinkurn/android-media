@@ -438,7 +438,7 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
             txtDailyBudget?.setError(true)
             txtDailyBudget?.setMessage(
                 String.format(
-                    getString(com.tokopedia.topads.common.R.string.angarran_harrian_min_bid_error),
+                    getString(com.tokopedia.topads.common.R.string.topads_common_angarran_harrian_min_bid_error),
                     Utils.convertToCurrency(minBudget.toLong())
                 )
             )
@@ -458,7 +458,7 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
             txtDailyBudget?.setError(true)
             txtDailyBudget?.setMessage(
                 String.format(
-                    getString(com.tokopedia.topads.common.R.string.angarran_harrian_max_bid_error),
+                    getString(com.tokopedia.topads.common.R.string.topads_common_angarran_harrian_max_bid_error),
                     Utils.convertToCurrency(MAXIMUM_LIMIT.toLong())
                 )
             )
