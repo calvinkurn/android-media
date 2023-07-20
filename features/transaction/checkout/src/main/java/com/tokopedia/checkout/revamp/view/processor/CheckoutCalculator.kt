@@ -100,35 +100,34 @@ class CheckoutCalculator @Inject constructor(private val dispatchers: CoroutineD
                         }
                     }
                 }
-//                if (shipmentData.selectedShipmentDetailData != null && !shipmentData.isError) {
+                if (shipmentData.shipment.courierItemData != null && !shipmentData.isError) {
 //                    val useInsurance = shipmentData.selectedShipmentDetailData!!.useInsurance
-//                    val isTradeInPickup = isTradeInByDropOff
-//                    if (isTradeInPickup) {
-//                        if (shipmentData.selectedShipmentDetailData!!.selectedCourierTradeInDropOff != null) {
-//                            shippingFee += shipmentData.selectedShipmentDetailData!!
-//                                .selectedCourierTradeInDropOff!!.shipperPrice.toDouble()
-//                            if (useInsurance != null && useInsurance) {
-//                                insuranceFee += shipmentData.selectedShipmentDetailData!!
-//                                    .selectedCourierTradeInDropOff!!.insurancePrice.toDouble()
-//                            }
-//                            additionalFee += shipmentData.selectedShipmentDetailData!!
-//                                .selectedCourierTradeInDropOff!!.additionalPrice.toDouble()
-//                        } else {
-//                            shippingFee = 0.0
-//                            insuranceFee = 0.0
-//                            additionalFee = 0.0
-//                        }
-//                    } else if (shipmentData.selectedShipmentDetailData!!.selectedCourier != null) {
-//                        shippingFee += shipmentData.selectedShipmentDetailData!!
-//                            .selectedCourier!!.selectedShipper.shipperPrice.toDouble()
+                    /*val isTradeInPickup = isTradeInByDropOff
+                    if (isTradeInPickup) {
+                        if (shipmentData.selectedShipmentDetailData!!.selectedCourierTradeInDropOff != null) {
+                            shippingFee += shipmentData.selectedShipmentDetailData!!
+                                .selectedCourierTradeInDropOff!!.shipperPrice.toDouble()
+                            if (useInsurance != null && useInsurance) {
+                                insuranceFee += shipmentData.selectedShipmentDetailData!!
+                                    .selectedCourierTradeInDropOff!!.insurancePrice.toDouble()
+                            }
+                            additionalFee += shipmentData.selectedShipmentDetailData!!
+                                .selectedCourierTradeInDropOff!!.additionalPrice.toDouble()
+                        } else {
+                            shippingFee = 0.0
+                            insuranceFee = 0.0
+                            additionalFee = 0.0
+                        }
+                    } else if (shipmentData.selectedShipmentDetailData!!.selectedCourier != null) {*/
+                        shippingFee += shipmentData.shipment
+                            .courierItemData.selectedShipper.shipperPrice.toDouble()
 //                        if (useInsurance != null && useInsurance) {
 //                            insuranceFee += shipmentData.selectedShipmentDetailData!!
 //                                .selectedCourier!!.selectedShipper.insurancePrice.toDouble()
 //                        }
-//                        additionalFee += shipmentData.selectedShipmentDetailData!!
-//                            .selectedCourier!!.additionalPrice.toDouble()
+                        additionalFee += shipmentData.shipment.courierItemData.additionalPrice.toDouble()
 //                    }
-//                }
+                }
                 if (shipmentData.isLeasingProduct) {
                     totalBookingFee += shipmentData.bookingFee
                 }
@@ -141,7 +140,7 @@ class CheckoutCalculator @Inject constructor(private val dispatchers: CoroutineD
                 }
             }
         }
-        val shipmentCost = checkoutCostModel
+        val shipmentCost = checkoutCostModel.copy()
         var finalShippingFee = shippingFee - shipmentCost.shippingDiscountAmount
         if (finalShippingFee < 0) {
             finalShippingFee = 0.0
@@ -252,6 +251,7 @@ class CheckoutCalculator @Inject constructor(private val dispatchers: CoroutineD
         val buttonPaymentModel = updateCheckoutButtonData(listData, shipmentCost)
 
         return listData.toMutableList().apply {
+            set(size - 3, shipmentCost)
             set(size - 1, buttonPaymentModel)
         }
     }

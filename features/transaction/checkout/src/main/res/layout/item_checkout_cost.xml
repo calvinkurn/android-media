@@ -54,12 +54,12 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
+        android:text="Total Ongkos Kirim"
         android:textColor="@color/Unify_NN600"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_checkout_cost_item_price_value"
         app:typographyType="display_3"
-        app:typographyWeight="reguler"
-        tools:text="Total Ongkos Kirim" />
+        app:typographyWeight="reguler" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_checkout_cost_shipping_value"
@@ -77,6 +77,47 @@
         app:typographyWeight="reguler"
         tools:text="Rp2.910.000,00 Rp2.905.000,00" />
 
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loader_platform_fee_label"
+        android:layout_width="140dp"
+        android:layout_height="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_checkout_cost_shipping_value"
+        app:loader_type="rect" />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loader_platform_fee_value"
+        android:layout_width="48dp"
+        android:layout_height="16dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="4dp"
+        android:gravity="end"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1"
+        app:layout_constraintStart_toEndOf="@id/loader_platform_fee_label"
+        app:layout_constraintTop_toBottomOf="@id/tv_checkout_cost_shipping_value"
+        app:loader_type="rect" />
+
+    <com.tokopedia.unifycomponents.ticker.Ticker
+        android:id="@+id/ticker_platform_fee_info"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_alignWithParentIfMissing="true"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="12dp"
+        android:visibility="visible"
+        app:closeButtonVisibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/loader_platform_fee_label"
+        app:tickerShapeType="loose"
+        app:tickerType="warning" />
+
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_checkout_cost_platform_fee_title"
         android:layout_width="wrap_content"
@@ -85,7 +126,7 @@
         android:layout_marginTop="8dp"
         android:textColor="@color/Unify_NN600"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_checkout_cost_shipping_value"
+        app:layout_constraintTop_toBottomOf="@id/ticker_platform_fee_info"
         app:typographyType="display_3"
         app:typographyWeight="reguler"
         tools:text="Total Biaya Jasa Aplikasi" />
@@ -101,7 +142,7 @@
         android:textColor="@color/Unify_NN950"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/tv_checkout_cost_platform_fee_title"
-        app:layout_constraintTop_toBottomOf="@id/tv_checkout_cost_shipping_value"
+        app:layout_constraintTop_toBottomOf="@id/ticker_platform_fee_info"
         app:typographyType="display_3"
         app:typographyWeight="reguler"
         tools:text="Rp2.910.000,00 Rp2.905.000,00" />
@@ -190,7 +231,7 @@
         app:layout_constraintTop_toBottomOf="@id/v_divider_cost_total"
         app:typographyType="display_3"
         app:typographyWeight="reguler"
-        tools:text="Total Belanja" />
+        android:text="Total Belanja" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_checkout_cost_total_value"

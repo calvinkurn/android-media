@@ -378,8 +378,10 @@ class CheckoutViewModel @Inject constructor(
                         platformFeeModel.slashedFee = fee.slashedFee.toDouble()
                     }
                 }
-                checkoutItems.toMutableList()[checkoutItems.size - 3] =
-                    checkoutItems.cost()!!.copy(dynamicPlatformFee = platformFeeModel)
+                val newCost = checkoutItems.cost()!!.copy(dynamicPlatformFee = platformFeeModel)
+                val itemMutableList = checkoutItems.toMutableList()
+                itemMutableList[checkoutItems.size - 3] = newCost
+                listData.value = itemMutableList
             }
             listData.value = calculator.updateShipmentCostModel(listData.value)
         }
@@ -421,17 +423,19 @@ class CheckoutViewModel @Inject constructor(
         val checkoutItems = listData.value.toMutableList()
         val checkoutOrderModel = checkoutItems[cartPosition] as CheckoutOrderModel
         val shipment = checkoutOrderModel.shipment
+        shippingCourierUiModels.forEach { it.isSelected = it.productData.shipperProductId == courierItemData.shipperProductId }
         val newShipment = shipment.copy(
             isLoading = false,
             courierItemData = courierItemData,
             shippingCourierUiModels = shippingCourierUiModels
         )
-        checkoutItems[cartPosition] = checkoutOrderModel.copy(shipment = newShipment)
+        val newOrder = checkoutOrderModel.copy(shipment = newShipment)
+        checkoutItems[cartPosition] = newOrder
         listData.value = checkoutItems
         viewModelScope.launch {
-            cartProcessor.processSaveShipmentState(checkoutOrderModel, listData.value.address()!!.recipientAddressModel)
+            cartProcessor.processSaveShipmentState(newOrder, listData.value.address()!!.recipientAddressModel)
         }
-//        listData.value = listData.value
+        calculateTotal()
     }
 
     companion object {

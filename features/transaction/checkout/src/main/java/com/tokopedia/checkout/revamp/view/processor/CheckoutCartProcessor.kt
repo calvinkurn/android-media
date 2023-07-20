@@ -309,9 +309,9 @@ class CheckoutCartProcessor @Inject constructor(
 
     private fun generateSaveShipmentStateRequestSingleAddress(shipmentCartItemModels: List<CheckoutOrderModel>, recipientAddressModel: RecipientAddressModel): SaveShipmentStateRequest {
         val shipmentStateShopProductDataList: MutableList<ShipmentStateShopProductData> =
-            java.util.ArrayList()
+            ArrayList()
         val shipmentStateRequestDataList: MutableList<ShipmentStateRequestData> =
-            java.util.ArrayList()
+            ArrayList()
         for (shipmentCartItemModel in shipmentCartItemModels) {
             setSaveShipmentStateData(shipmentCartItemModel, shipmentStateShopProductDataList)
         }
@@ -326,7 +326,7 @@ class CheckoutCartProcessor @Inject constructor(
         shipmentCartItemModel: CheckoutOrderModel,
         shipmentStateShopProductDataList: MutableList<ShipmentStateShopProductData>
     ) {
-        var courierData: CourierItemData? = null
+        var courierData: CourierItemData? = shipmentCartItemModel.shipment.courierItemData
 //        if (shipmentCartItemModel.selectedShipmentDetailData != null) {
 //            courierData = if (view!!.isTradeInByDropOff) {
 //                shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourierTradeInDropOff
@@ -334,9 +334,10 @@ class CheckoutCartProcessor @Inject constructor(
 //                shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier
 //            }
 //        }
+//        courierData = shipmentCartItemModel.shipment.courierItemData
         if (courierData != null) {
             val shipmentStateProductDataList: MutableList<ShipmentStateProductData> =
-                java.util.ArrayList()
+                ArrayList()
             for (cartItemModel in shipmentCartItemModel.products) {
                 val shipmentStateProductData = ShipmentStateProductData()
                 shipmentStateProductData.shopId = cartItemModel.shopId.toLongOrZero()

@@ -1094,6 +1094,7 @@ class CheckoutFragment : BaseDaggerFragment(), CheckoutAdapterListener, UploadPr
         selectedServiceId: Int,
         logisticPromo: LogisticPromoUiModel
     ) {
+
     }
 
     override fun onNoCourierAvailable(message: String?) {
