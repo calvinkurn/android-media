@@ -618,6 +618,7 @@ class ShipmentMapper @Inject constructor() {
                     status = item.status
                     type = item.type
                     qty = productQuantity
+                    uniqueId = item.uniqueId
                 }
             )
         }
