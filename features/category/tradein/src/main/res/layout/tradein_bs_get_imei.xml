@@ -22,7 +22,7 @@
         android:layout_marginTop="16dp"
         android:lineSpacingExtra="4sp"
         android:text="@string/tradein_imei_di_pengaturan"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         app:layout_constraintTop_toBottomOf="@id/wrapper_imei"
         app:typographyType="heading_6"
         app:typographyWeight="bold" />
@@ -33,7 +33,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:text="@string/tradein_bs_info"
-        android:textColor="@color/Unify_N700_68"
+        android:textColor="@color/Unify_NN950_68"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/exchange_text"
         app:typographyType="body_3" />

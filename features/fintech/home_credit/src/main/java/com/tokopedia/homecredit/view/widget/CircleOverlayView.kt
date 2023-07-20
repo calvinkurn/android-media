@@ -64,7 +64,7 @@ class CircleOverlayView : LinearLayout {
             height / 2 + ktpRectHeight + ovalAndKtpRectDiffHeight + ovalVerticleShift
         )
         val paint = Paint(Paint.ANTI_ALIAS_FLAG)
-        paint.color = resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_G500)
+        paint.color = resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_GN500)
         paint.alpha = 255
         osCanvas.drawRect(mainRectangle, paint)
         paint.xfermode = PorterDuffXfermode(PorterDuff.Mode.DST_OUT)

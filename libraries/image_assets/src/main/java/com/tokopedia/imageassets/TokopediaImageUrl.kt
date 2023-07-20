@@ -371,6 +371,8 @@ object TokopediaImageUrl {
     const val IMG_TOKOCHAT_BUBBLES_AWARENESS_BIG = "https://images.tokopedia.net/img/android/tokochat_common/img_tokochat_awareness_big.png"
     const val IMG_TOKOCHAT_BUBBLES_AWARENESS_1 = "https://images.tokopedia.net/img/android/tokochat_common/img_tokochat_awareness_1.png"
     const val IMG_TOKOCHAT_BUBBLES_AWARENESS_2 = "https://images.tokopedia.net/img/android/tokochat_common/img_tokochat_awareness_2.png"
+    const val IMG_ARCHIVED_PRODUCT_LARGE = "https://images.tokopedia.net/img/android/order_management/img_product_archived_large.png"
+    const val IMG_ARCHIVED_PRODUCT_SMALL = "https://images.tokopedia.net/img/android/order_management/img_product_archived_small.png"
     const val IMG_14TH_ANNIV = "https://images.tokopedia.net/img/img/android/sellerhome/anniversary/img_14th_aniv_illustration.png"
     const val IMG_14TH_ANNIV_TOPED = "https://images.tokopedia.net/img/img/android/sellerhome/anniversary/img_14th_aniv_toped.png"
     const val IMG_14TH_ANNIV_HOME_RM = "https://images.tokopedia.net/img/android/seller_home/img_14th_anniv_rm_background_effect.png"

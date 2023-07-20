@@ -42,6 +42,7 @@ class ShareAddressFromNotifTest {
             repo.isValidAddressFromNotif = true
             selectFirstAddress()
             clickShareAddressButton()
+            intendingIntent()
             clickAgreeButton()
         } validateAnalytics {
             hasPassedAnalytics(cassavaRule, QUERY_ID)

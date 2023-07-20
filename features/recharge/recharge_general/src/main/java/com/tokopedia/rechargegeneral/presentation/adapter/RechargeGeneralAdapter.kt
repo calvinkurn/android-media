@@ -27,7 +27,7 @@ class RechargeGeneralAdapter(val context: Context,
 
         errorNetworkModel.run {
             errorMessage = errMsg
-            subErrorMessage = "${context.getString(com.tokopedia.kotlin.extensions.R.string.title_try_again)}. Kode Error: ($errCode)"
+            subErrorMessage = "${context.getString(com.tokopedia.utils.R.string.title_try_again)}. Kode Error: ($errCode)"
             onRetryListener = ErrorNetworkModel.OnRetryListener {
                 showLoading()
                 loaderListener.loadData()

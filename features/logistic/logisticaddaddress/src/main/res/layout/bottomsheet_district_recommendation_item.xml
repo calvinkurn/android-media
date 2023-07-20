@@ -12,7 +12,7 @@
         android:layout_height="19dp"
         android:layout_marginEnd="18dp"
         app:srcCompat="@drawable/ic_green_pointer"
-        android:tint="@color/Unify_N200"
+        android:tint="@color/Unify_NN500"
         android:contentDescription="@string/pointer"
         android:layout_alignParentTop="true"
         android:layout_marginTop="12dp"/>
@@ -35,7 +35,7 @@
         android:id="@+id/divider_district_recommendation"
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
-        android:background="@color/Unify_N100"
+        android:background="@color/Unify_NN200"
         android:layout_marginBottom="10dp"/>
 
 </RelativeLayout>
