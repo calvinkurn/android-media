@@ -554,7 +554,7 @@ class PlayViewModel @AssistedInject constructor(
     val exploreWidgetConfig: PlayWidgetConfigUiModel
         get() = _exploreWidget.value.widgets.firstOrNull()?.item?.config ?: PlayWidgetConfigUiModel.Empty
 
-    val widgetInfo : ExploreWidgetConfig
+    val widgetInfo: ExploreWidgetConfig
         get() = _channelDetail.value.exploreWidgetConfig
 
     private val widgetQuery = MutableStateFlow(emptyMap<ExploreWidgetType, WidgetParamUiModel>())
@@ -1069,14 +1069,13 @@ class PlayViewModel @AssistedInject constructor(
             is SendWarehouseId -> handleWarehouse(action.id, action.isOOC)
             OpenCart -> openWithLogin(ApplinkConstInternalMarketplace.CART, REQUEST_CODE_LOGIN_CART)
             DismissFollowPopUp -> _isFollowPopUpShown.update { it.copy(shouldShow = false) }
-            is FetchWidgets-> {
+            is FetchWidgets -> {
                 _isBottomSheetsShown.update { true }
-               refreshWidget(action.type)
+                refreshWidget(action.type)
             }
             is NextPageWidgets -> refreshWidget(action.type)
             is ClickChipWidget -> onChipAction(action.item)
             RefreshWidget -> {
-                _categoryWidget.update { it.copy(data = emptyList()) }
                 widgetQuery.value = widgetQuery.value.mapValues {
                     val config = _channelDetail.value.exploreWidgetConfig
                     if (ExploreWidgetType.Default == it.key) {
@@ -1921,8 +1920,11 @@ class PlayViewModel @AssistedInject constructor(
                 }
                 _categoryWidget.update { w -> w.copy(data = emptyList()) }
                 widgetQuery.value = widgetQuery.value.mapValues {
-                    if (it.key == ExploreWidgetType.Category) it.value.copy(isRefresh = true, group = result.group, sourceType = result.sourceType, sourceId = result.sourceId, cursor = "")
-                    else it.value
+                    if (it.key == ExploreWidgetType.Category) {
+                        it.value.copy(isRefresh = true, group = result.group, sourceType = result.sourceType, sourceId = result.sourceId, cursor = "")
+                    } else {
+                        it.value
+                    }
                 }
             }
         }
@@ -2826,7 +2828,8 @@ class PlayViewModel @AssistedInject constructor(
                 it.copy(
                     state = ExploreWidgetState.Fail(
                         error = exception,
-                        onRetry = { updateDefaultWidget(param) })
+                        onRetry = { updateDefaultWidget(param) }
+                    )
                 )
             }
         }
@@ -2836,8 +2839,9 @@ class PlayViewModel @AssistedInject constructor(
         if (!param.isRefresh) return
 
         viewModelScope.launchCatchError(block = {
-            if (_categoryWidget.value.data.isEmpty())
+            if (_categoryWidget.value.data.isEmpty()) {
                 _categoryWidget.update { widget -> widget.copy(state = ExploreWidgetState.Loading) }
+            }
 
             val cursor = when {
                 param.hasNextPage -> param.cursor
@@ -2866,7 +2870,8 @@ class PlayViewModel @AssistedInject constructor(
                 it.copy(
                     state = ExploreWidgetState.Fail(
                         error = exception,
-                        onRetry = { updateCategoryWidget(param) })
+                        onRetry = { updateCategoryWidget(param) }
+                    )
                 )
             }
         }
@@ -2897,7 +2902,7 @@ class PlayViewModel @AssistedInject constructor(
             }
         }
     }
-    private fun refreshWidget (widget: ExploreWidgetType) {
+    private fun refreshWidget(widget: ExploreWidgetType) {
         widgetQuery.value = widgetQuery.value.mapValues {
             if (widget == it.key) {
                 it.value.copy(isRefresh = true)
