@@ -155,7 +155,8 @@ object FeatureRecommendationMapper {
                     bannerItems.add(
                         BannerItem(
                             bannerData[i].asJsonObject[KEY_ASSET_URL].asString,
-                            bannerData[i].asJsonObject[KEY_APPLINK].asString
+                            bannerData[i].asJsonObject[KEY_APPLINK].asString,
+                            bannerData[i].asJsonObject[KEY_ID].asLong,
                         )
                     )
                 }
@@ -210,6 +211,7 @@ object FeatureRecommendationMapper {
     private const val KEY_BANNER_DATA = "banner_data"
     private const val KEY_ASSET_URL = "asset_url"
     private const val KEY_APPLINK = "applink"
+    private const val KEY_ID = "id"
     const val TYPE_TOKOMEMBER = "tokomember"
     const val TYPE_TDN_PRODUCT = "tdn_product"
 }

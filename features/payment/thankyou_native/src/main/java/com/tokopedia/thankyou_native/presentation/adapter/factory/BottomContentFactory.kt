@@ -7,11 +7,13 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.thankyou_native.presentation.adapter.model.*
 import com.tokopedia.thankyou_native.presentation.adapter.viewholder.bottomcontent.*
 import com.tokopedia.thankyou_native.presentation.views.RegisterMemberShipListener
+import com.tokopedia.thankyou_native.presentation.views.listener.BannerListener
 import com.tokopedia.thankyou_native.presentation.views.listener.MarketplaceRecommendationListener
 
 class BottomContentFactory(
     private val registerMemberShipListener: RegisterMemberShipListener,
-    private val marketplaceRecommendationListener: MarketplaceRecommendationListener
+    private val marketplaceRecommendationListener: MarketplaceRecommendationListener,
+    private val bannerListener: BannerListener
 ): BaseAdapterTypeFactory() {
 
     override fun createViewHolder(parent: View?, type: Int): AbstractViewHolder<out Visitable<*>> {
@@ -21,7 +23,7 @@ class BottomContentFactory(
             MarketplaceRecommendationItemViewHolder.LAYOUT_ID -> return MarketplaceRecommendationItemViewHolder(parent, marketplaceRecommendationListener)
             DigitalRecommendationItemViewHolder.LAYOUT_ID -> return DigitalRecommendationItemViewHolder(parent)
             HeadlineAdsItemViewHolder.LAYOUT_ID -> return HeadlineAdsItemViewHolder(parent)
-            BannerItemViewHolder.LAYOUT_ID -> return BannerItemViewHolder(parent)
+            BannerItemViewHolder.LAYOUT_ID -> return BannerItemViewHolder(parent, bannerListener)
         }
         return super.createViewHolder(parent, type)
     }
