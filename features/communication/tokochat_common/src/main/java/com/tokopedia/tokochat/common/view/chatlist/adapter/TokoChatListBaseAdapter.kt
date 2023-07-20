@@ -2,8 +2,10 @@ package com.tokopedia.tokochat.common.view.chatlist.adapter
 
 import com.tokopedia.adapterdelegate.BaseCommonAdapter
 import com.tokopedia.tokochat.common.view.chatlist.adapter.delegate.TokoChatListItemDelegate
+import com.tokopedia.tokochat.common.view.chatlist.adapter.delegate.TokoChatListShimmerDelegate
 import com.tokopedia.tokochat.common.view.chatlist.listener.TokoChatListItemListener
 import com.tokopedia.tokochat.common.view.chatlist.uimodel.TokoChatListItemUiModel
+import com.tokopedia.tokochat.common.view.chatlist.uimodel.TokoChatListShimmerUiModel
 
 class TokoChatListBaseAdapter(
     itemListener: TokoChatListItemListener
@@ -11,6 +13,7 @@ class TokoChatListBaseAdapter(
 
     init {
         delegatesManager.addDelegate(TokoChatListItemDelegate(itemListener))
+        delegatesManager.addDelegate(TokoChatListShimmerDelegate())
     }
 
     fun getChatListPosition(uiModel: TokoChatListItemUiModel): Int {
@@ -29,6 +32,12 @@ class TokoChatListBaseAdapter(
             return
         }
         itemList[position] = uiModel
+    }
+
+    fun isShimmeringExist(): Boolean {
+        return itemList.find {
+            it is TokoChatListShimmerUiModel
+        } != null
     }
 
     override fun areItemsTheSame(oldItem: Any, newItem: Any): Boolean {

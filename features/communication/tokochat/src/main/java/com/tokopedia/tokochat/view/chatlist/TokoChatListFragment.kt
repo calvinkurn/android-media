@@ -19,7 +19,6 @@ import com.tokopedia.tokochat.common.view.chatlist.adapter.TokoChatListBaseAdapt
 import com.tokopedia.tokochat.common.view.chatlist.listener.TokoChatListItemListener
 import com.tokopedia.tokochat.common.view.chatlist.uimodel.TokoChatListItemUiModel
 import com.tokopedia.tokochat.databinding.TokochatChatlistFragmentBinding
-import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.Job
@@ -59,19 +58,24 @@ class TokoChatListFragment @Inject constructor(
     }
 
     private fun initChatListData() {
+        toggleRecyclerViewLayout(true)
+        addInitialShimmering()
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 var isCompleted = false
                 viewModel.getChatListFlow().collectLatest {
                     when (it) {
                         is Success -> {
+                            removeInitialShimmering()
                             addOrUpdateChatItem(it.data)
                             if (!isCompleted) {
                                 loadChatListData(it.data.size)
                                 isCompleted = true
                             }
                         }
-                        is Fail -> {}
+                        is Fail -> {
+                            showErrorLayout()
+                        }
                     }
                 }
             }
@@ -82,9 +86,17 @@ class TokoChatListFragment @Inject constructor(
         toggleSwipeRefreshState(true)
         viewModel.loadNextPageChatList(size) { isSuccess ->
             if (!isSuccess) {
-
+                showErrorLayout()
             }
             toggleSwipeRefreshState(false)
+        }
+    }
+
+    private fun showErrorLayout() {
+        adapter.clearAllItems()
+        toggleRecyclerViewLayout(false)
+        showGlobalErrorLayout {
+            resetChatList()
         }
     }
 
@@ -97,12 +109,6 @@ class TokoChatListFragment @Inject constructor(
     override fun initObservers() {
         viewModel.error.observe(viewLifecycleOwner) {
             Log.d("TOKOCHAT-LIST", it.first.stackTraceToString())
-            Toaster.build(
-                requireView(),
-                it.first.stackTraceToString(),
-                Toaster.LENGTH_LONG,
-                Toaster.TYPE_ERROR
-            ).show()
         }
     }
 
