@@ -6,6 +6,7 @@ import android.view.MotionEvent
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.entertainment.R
+import com.tokopedia.entertainment.databinding.EntPdpFormEdittextItemBinding
 import com.tokopedia.entertainment.pdp.adapter.EventPDPFormAdapter.Companion.EMPTY_TYPE
 import com.tokopedia.entertainment.pdp.adapter.EventPDPFormAdapter.Companion.REGEX_TYPE
 import com.tokopedia.entertainment.pdp.common.util.EventConst.BLANK_LIST
@@ -25,7 +26,7 @@ import com.tokopedia.entertainment.pdp.listener.OnClickFormListener
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.ent_pdp_form_edittext_item.view.*
+import com.tokopedia.utils.view.binding.viewBinding
 import org.json.JSONArray
 import org.json.JSONObject
 import java.util.regex.Pattern
@@ -39,12 +40,13 @@ class EventPDPTextFieldViewHolder(val view: View,
     var positionActiveForm = 0
     var keyActiveBottomSheet = ""
 
+    private var binding: EntPdpFormEdittextItemBinding? by viewBinding()
     fun bind(element: Form, position: Int) {
-        with(itemView) {
+        binding?.run {
 
             keyActiveBottomSheet = getKeyActive(element)
             positionActiveForm = position
-            if (position > 0) txtValue.setMargin(0, context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3).toPx().toInt(), 0, 0)
+            if (position > 0) txtValue.setMargin(0, root.context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3).toPx().toInt(), 0, 0)
 
             if (element.elementType.equals(ELEMENT_TEXT) || !element.elementType.equals(ELEMENT_LIST)) {
                 txtValue.textFieldWrapper.hint = element.title
@@ -79,7 +81,7 @@ class EventPDPTextFieldViewHolder(val view: View,
             }
 
 
-            if (element.value.isNotBlank() && !element.value.equals(resources.getString(R.string.ent_checkout_data_nullable_form))) {
+            if (element.value.isNotBlank() && !element.value.equals(root.context.resources.getString(R.string.ent_checkout_data_nullable_form))) {
                 if (element.elementType.equals(ELEMENT_TEXT) || !element.elementType.equals(ELEMENT_LIST)) txtValue.textFieldInput.setText(element.value)
                 if (element.elementType.equals(ELEMENT_LIST)) {
                     txtValue.setMessage(element.title)
@@ -126,7 +128,7 @@ class EventPDPTextFieldViewHolder(val view: View,
 
             if (element.isError) {
                 if (element.errorType == EMPTY_TYPE) {
-                    txtValue.setMessage(resources.getString(R.string.ent_pdp_form_error_all_msg, element.title))
+                    txtValue.setMessage(root.resources.getString(R.string.ent_pdp_form_error_all_msg, element.title))
                 } else if (element.errorType == REGEX_TYPE) {
                     txtValue.setMessage(element.errorMessage)
                 }
