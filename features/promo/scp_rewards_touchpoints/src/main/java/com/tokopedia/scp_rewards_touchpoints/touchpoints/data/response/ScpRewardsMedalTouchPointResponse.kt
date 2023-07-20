@@ -1,10 +1,10 @@
-package com.tokopedia.scp_rewards_touchpoints.touchpoints.model
+package com.tokopedia.scp_rewards_touchpoints.touchpoints.data.response
 
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ZERO
 
-data class ScpRewardsMedaliTouchPointModel(
+data class ScpRewardsMedalTouchPointResponse(
      @SerializedName("scpRewardsMedaliTouchpointOrder")
      val scpRewardsMedaliTouchpointOrder: ScpRewardsMedaliTouchpointOrder = ScpRewardsMedaliTouchpointOrder()
 ){

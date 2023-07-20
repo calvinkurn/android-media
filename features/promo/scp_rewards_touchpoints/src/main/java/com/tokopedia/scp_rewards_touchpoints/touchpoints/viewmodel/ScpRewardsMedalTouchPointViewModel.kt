@@ -10,12 +10,12 @@ import com.tokopedia.scp_rewards_touchpoints.common.Error
 import com.tokopedia.scp_rewards_touchpoints.common.Loading
 import com.tokopedia.scp_rewards_touchpoints.common.ScpResult
 import com.tokopedia.scp_rewards_touchpoints.common.Success
-import com.tokopedia.scp_rewards_touchpoints.touchpoints.domain.ScpRewardsMedaliTouchPointUseCase
+import com.tokopedia.scp_rewards_touchpoints.touchpoints.domain.ScpRewardsMedalTouchPointUseCase
 import kotlinx.coroutines.delay
 import javax.inject.Inject
 
-class ScpRewardsMedaliTouchPointViewModel @Inject constructor(
-    private val touchPointUseCase: ScpRewardsMedaliTouchPointUseCase,
+class ScpRewardsMedalTouchPointViewModel @Inject constructor(
+    private val medalTouchPointUseCase: ScpRewardsMedalTouchPointUseCase,
     dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.io) {
 
@@ -23,10 +23,10 @@ class ScpRewardsMedaliTouchPointViewModel @Inject constructor(
         private const val DEFAULT_DELAY = 1000L
     }
 
-    private val _touchPointData: MutableLiveData<ScpResult> = MutableLiveData()
-    val touchPointData: LiveData<ScpResult> = _touchPointData
+    private val _medalTouchPointData: MutableLiveData<ScpResult> = MutableLiveData()
+    val medalTouchPointData: LiveData<ScpResult> = _medalTouchPointData
 
-    fun getTouchPoint(
+    fun getMedalTouchPoint(
         orderId: Long,
         pageName: String = String.EMPTY,
         sourceName: String,
@@ -34,28 +34,28 @@ class ScpRewardsMedaliTouchPointViewModel @Inject constructor(
     ) {
         launchCatchError(
             block = {
-                _touchPointData.postValue(Loading)
+                _medalTouchPointData.postValue(Loading)
                 delay(
                     timeMillis = delayDuration
                 )
-                val response = touchPointUseCase.getTouchPoint(
+                val response = medalTouchPointUseCase.getTouchPoint(
                     orderId = orderId,
                     pageName = pageName,
                     sourceName = sourceName
                 )
                 if (response.scpRewardsMedaliTouchpointOrder.medaliTouchpointOrder.retryChecking.isRetryable) {
-                    getTouchPoint(
+                    getMedalTouchPoint(
                         orderId = orderId,
                         pageName = pageName,
                         sourceName = sourceName,
                         delayDuration = response.scpRewardsMedaliTouchpointOrder.medaliTouchpointOrder.retryChecking.durationToRetry
                     )
                 } else {
-                    _touchPointData.postValue(Success(response))
+                    _medalTouchPointData.postValue(Success(response))
                 }
             },
             onError = {
-                _touchPointData.postValue(Error(it))
+                _medalTouchPointData.postValue(Error(it))
             }
         )
     }

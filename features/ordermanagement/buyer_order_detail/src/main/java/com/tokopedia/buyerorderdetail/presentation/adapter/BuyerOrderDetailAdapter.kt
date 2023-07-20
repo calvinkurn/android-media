@@ -27,7 +27,7 @@ import com.tokopedia.buyerorderdetail.presentation.model.TickerUiModel
 import com.tokopedia.buyerorderdetail.presentation.uistate.BuyerOrderDetailUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.OrderInsuranceUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.OrderResolutionTicketStatusUiState
-import com.tokopedia.scp_rewards_touchpoints.touchpoints.uimodel.ScpRewardsMedalTouchPointWidgetUiModel
+import com.tokopedia.scp_rewards_touchpoints.touchpoints.adapter.uimodel.ScpRewardsMedalTouchPointWidgetUiModel
 
 @Suppress("UNCHECKED_CAST")
 open class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailTypeFactory) :

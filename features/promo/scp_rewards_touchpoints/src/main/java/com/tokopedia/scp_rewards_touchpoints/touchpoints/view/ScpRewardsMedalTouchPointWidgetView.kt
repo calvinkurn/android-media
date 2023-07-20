@@ -1,10 +1,10 @@
-package com.tokopedia.scp_rewards_touchpoints.bottomsheet.view
+package com.tokopedia.scp_rewards_touchpoints.touchpoints.view
 
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.cardview.widget.CardView
-import com.tokopedia.scp_rewards_touchpoints.bottomsheet.model.ScpRewardsMedalTouchPointModel
+import com.tokopedia.scp_rewards_touchpoints.touchpoints.data.model.ScpRewardsMedalTouchPointModel
 import com.tokopedia.scp_rewards_touchpoints.bottomsheet.utils.loadImage
 import com.tokopedia.scp_rewards_touchpoints.common.util.ViewUtil.rotate
 import com.tokopedia.scp_rewards_touchpoints.databinding.LayoutScpRewardsMedalTouchPointWidgetViewBinding
@@ -29,12 +29,12 @@ class ScpRewardsMedalTouchPointWidgetView @JvmOverloads constructor(
     private fun LayoutScpRewardsMedalTouchPointWidgetViewBinding.setupUi(
         model: ScpRewardsMedalTouchPointModel
     ) {
-        acivBackgroundWidget.loadImage(model.backgroundWidgetImage)
-        iuBackgroundIcon.loadImage(model.backgroundIconImage)
-        iuSunburstIcon.loadImage(model.sunburstImage)
-        iuIcon.loadImage(model.iconImage)
         scpToasterTitle.text = model.title
-        scpToasterDescription.text = model.description
+        scpToasterSubtitle.text = model.subtitle
+        iuIcon.loadImage(model.iconImage)
+        iuSunburstIcon.loadImage(model.sunburstImage)
+        iuBackgroundIcon.loadImage(model.backgroundIconImage)
+        acivBackgroundWidget.loadImage(model.backgroundWidgetImage)
     }
 
     fun setData(

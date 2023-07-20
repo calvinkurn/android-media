@@ -12,8 +12,8 @@ import com.tokopedia.scp_rewards_touchpoints.common.Loading
 import com.tokopedia.scp_rewards_touchpoints.common.Success
 import com.tokopedia.scp_rewards_touchpoints.common.di.CelebrationComponent
 import com.tokopedia.scp_rewards_touchpoints.databinding.ActivityTestBinding
-import com.tokopedia.scp_rewards_touchpoints.touchpoints.model.ScpRewardsMedaliTouchPointModel
-import com.tokopedia.scp_rewards_touchpoints.touchpoints.viewmodel.ScpRewardsMedaliTouchPointViewModel
+import com.tokopedia.scp_rewards_touchpoints.touchpoints.data.response.ScpRewardsMedalTouchPointResponse
+import com.tokopedia.scp_rewards_touchpoints.touchpoints.viewmodel.ScpRewardsMedalTouchPointViewModel
 import com.tokopedia.scp_rewards_touchpoints.touchpoints.ScpToasterHelper
 import javax.inject.Inject
 
@@ -26,9 +26,9 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
 
-    private val scpTouchPointViewModel by lazy {
+    private val scpMedalTouchPointViewModel by lazy {
         val viewModelProvider = ViewModelProvider(this, viewModelFactory.get())
-        viewModelProvider[ScpRewardsMedaliTouchPointViewModel::class.java]
+        viewModelProvider[ScpRewardsMedalTouchPointViewModel::class.java]
     }
 
     override fun initInjector() {
@@ -64,16 +64,16 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
             if (binding?.input?.editText?.text?.isEmpty() == true) {
                 Toast.makeText(context, "Please enter order id", Toast.LENGTH_LONG).show()
             } else {
-                scpTouchPointViewModel.getTouchPoint(binding?.input?.editText?.text?.toString()?.toLong() ?: 0, "", "order_history_list_page")
+                scpMedalTouchPointViewModel.getMedalTouchPoint(binding?.input?.editText?.text?.toString()?.toLong() ?: 0, "", "order_history_list_page")
             }
         }
     }
     private fun observeData() {
-        scpTouchPointViewModel.touchPointData.observe(this) {
+        scpMedalTouchPointViewModel.medalTouchPointData.observe(this) {
             when (it) {
                 is Success<*> -> {
                     binding?.btnToaster?.isLoading = false
-                    val data = (it.data as ScpRewardsMedaliTouchPointModel)
+                    val data = (it.data as ScpRewardsMedalTouchPointResponse)
                     if (data.scpRewardsMedaliTouchpointOrder.isShown) {
                         view?.let { v ->
                             ScpToasterHelper.showToaster(

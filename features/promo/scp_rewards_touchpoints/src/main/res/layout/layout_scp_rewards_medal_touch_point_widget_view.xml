@@ -54,7 +54,7 @@
         android:layout_marginEnd="12dp"
         android:gravity="bottom"
         android:textColor="@color/Unify_NN950"
-        app:layout_constraintBottom_toTopOf="@+id/scp_toaster_description"
+        app:layout_constraintBottom_toTopOf="@+id/scp_toaster_subtitle"
         app:layout_constraintEnd_toStartOf="@+id/icu_chevron"
         app:layout_constraintStart_toEndOf="@+id/iu_sunburst_icon"
         app:layout_constraintTop_toTopOf="parent"
@@ -64,7 +64,7 @@
         tools:text="Ada medali baru buatmu!" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/scp_toaster_description"
+        android:id="@+id/scp_toaster_subtitle"
         android:layout_width="0dp"
         android:layout_height="16dp"
         android:layout_marginStart="12dp"
