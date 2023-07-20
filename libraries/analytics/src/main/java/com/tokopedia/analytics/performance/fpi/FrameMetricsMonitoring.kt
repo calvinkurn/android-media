@@ -102,7 +102,7 @@ class FrameMetricsMonitoring(
     }
 
     private fun isActive(): Boolean =
-        GlobalConfig.DEBUG && applicationContext.isFpiMonitoringEnable()
+        GlobalConfig.isAllowDebuggingTools() && applicationContext.isFpiMonitoringEnable()
 
     private fun Context.isFpiMonitoringEnable(): Boolean = getSharedPreferences(
         PREF_KEY,
