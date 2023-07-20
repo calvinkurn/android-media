@@ -4576,7 +4576,7 @@ class CartFragment :
             applinkAddon,
             mapOf(
                 AddOnConstant.QUERY_PARAM_CART_ID to cartId,
-                AddOnConstant.QUERY_PARAM_SELECTED_ADDON_IDS to addOnIds,
+                AddOnConstant.QUERY_PARAM_SELECTED_ADDON_IDS to addOnIds.toString().replace("[", "").replace("]", ""),
                 AddOnConstant.QUERY_PARAM_PAGE_ATC_SOURCE to AddOnConstant.SOURCE_NORMAL_CHECKOUT,
                 AddOnConstant.QUERY_PARAM_WAREHOUSE_ID to cartItemData.warehouseId,
                 AddOnConstant.QUERY_PARAM_IS_TOKOCABANG to cartItemData.isFulfillment,
@@ -4587,6 +4587,8 @@ class CartFragment :
                 AddOnConstant.QUERY_PARAM_DISCOUNTED_PRICE to discountedPrice.toString().removeSingleDecimalSuffix()
             )
         )
+
+        println("++ applink = $applink")
 
         activity?.let {
             val intent = RouteManager.getIntent(it, applink)
@@ -4601,10 +4603,11 @@ class CartFragment :
             if (addOnProductDataResult.aggregatedData.isGetDataSuccess) {
                 val cartId = addOnProductDataResult.cartId
                 var newAddOnWording = ""
-                if (addOnProductDataResult.aggregatedData.title.isNotEmpty() && addOnProductDataResult.aggregatedData.price > 0) {
+                if (addOnProductDataResult.aggregatedData.title.isNotEmpty()) {
                     newAddOnWording = "${addOnProductDataResult.aggregatedData.title} <b>(${addOnProductDataResult.aggregatedData.price})</b>"
                 }
-                cartAdapter.updateAddOnByCartId(addOnProductDataResult.cartId.toString(), newAddOnWording)
+
+                cartAdapter.updateAddOnByCartId(addOnProductDataResult.cartId.toString(), newAddOnWording, addOnProductDataResult.aggregatedData.selectedAddons)
             } else {
                 showToastMessageRed(addOnProductDataResult.aggregatedData.getDataErrorMessage)
             }
