@@ -53,7 +53,6 @@ import com.tokopedia.mvc.domain.entity.ShareComponentMetaData
 import com.tokopedia.mvc.domain.entity.Voucher
 import com.tokopedia.mvc.domain.entity.VoucherCreationQuota
 import com.tokopedia.mvc.domain.entity.enums.BenefitType
-import com.tokopedia.mvc.domain.entity.enums.ProgramStatus
 import com.tokopedia.mvc.domain.entity.enums.PromoType
 import com.tokopedia.mvc.domain.entity.enums.PromotionStatus
 import com.tokopedia.mvc.domain.entity.enums.VoucherServiceType
@@ -887,7 +886,7 @@ class MvcListFragment :
     private fun deleteVoucher(voucher: Voucher) {
         if (voucher.isFromVps() ||
             voucher.isGetSubsidy() ||
-            voucher.subsidyDetail.programDetail.programStatus == ProgramStatus.ONGOING
+            !voucher.isEditable
         ) {
             if (voucher.subsidyDetail.programDetail.promotionStatus == PromotionStatus.APPROVED ||
                 voucher.subsidyDetail.programDetail.promotionStatus == PromotionStatus.REGISTERED

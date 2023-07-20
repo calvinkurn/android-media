@@ -61,7 +61,6 @@ import com.tokopedia.mvc.domain.entity.GenerateVoucherImageMetadata
 import com.tokopedia.mvc.domain.entity.VoucherDetailData
 import com.tokopedia.mvc.domain.entity.VoucherDetailWithVoucherCreationMetadata
 import com.tokopedia.mvc.domain.entity.enums.BenefitType
-import com.tokopedia.mvc.domain.entity.enums.ProgramStatus
 import com.tokopedia.mvc.domain.entity.enums.PromoType
 import com.tokopedia.mvc.domain.entity.enums.PromotionStatus
 import com.tokopedia.mvc.domain.entity.enums.SubsidyInfo
@@ -1172,7 +1171,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
     private fun deleteOrStopVoucher(data: VoucherDetailData) {
         if (data.isFromVps() ||
             data.isGetSubsidy() ||
-            data.subsidyDetail.programDetail.programStatus == ProgramStatus.ONGOING
+            !data.isEditable
         ) {
             if (data.subsidyDetail.programDetail.promotionStatus == PromotionStatus.APPROVED ||
                 data.subsidyDetail.programDetail.promotionStatus == PromotionStatus.REGISTERED
