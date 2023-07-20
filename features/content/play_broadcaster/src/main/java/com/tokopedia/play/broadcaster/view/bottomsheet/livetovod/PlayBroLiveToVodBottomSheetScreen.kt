@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -46,7 +45,7 @@ private fun LiveToVodBottomSheetContent(
         withStyle(
             style = SpanStyle(
                 fontWeight = FontWeight.Bold,
-                color = colorResource(id = com.tokopedia.unifyprinciples.R.color.Unify_GN500),
+                color = NestTheme.colors.GN._500,
             )
         ) {
             pushStringAnnotation(tag = LEARN_MORE_TEXT_TAG, annotation = LEARN_MORE_TEXT_TAG)
@@ -74,7 +73,7 @@ private fun LiveToVodBottomSheetContent(
             textStyle = NestTheme.typography.heading2
                 .copy(
                     textAlign = TextAlign.Center,
-                    color = colorResource(id = R.color.Unify_NN0)
+                    color = NestTheme.colors.NN._0,
                 ),
         )
         NestTypography(
@@ -83,7 +82,7 @@ private fun LiveToVodBottomSheetContent(
             textStyle = NestTheme.typography.body1
                 .copy(
                     textAlign = TextAlign.Center,
-                    color = colorResource(id = R.color.Unify_NN1000)
+                    color = NestTheme.colors.NN._1000,
                 ),
         )
         NestButton(
@@ -99,7 +98,7 @@ private fun LiveToVodBottomSheetContent(
             textStyle = NestTheme.typography.body2
                 .copy(
                     textAlign = TextAlign.Center,
-                    color = colorResource(id = R.color.Unify_NN1000)
+                    color = NestTheme.colors.NN._1000,
                 ),
             onClickText = { offset ->
                 textLearnMore.getStringAnnotations(offset, offset)

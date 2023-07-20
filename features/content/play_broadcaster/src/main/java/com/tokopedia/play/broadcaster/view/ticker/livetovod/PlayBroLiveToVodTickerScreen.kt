@@ -1,7 +1,6 @@
 package com.tokopedia.play.broadcaster.view.ticker.livetovod
 
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -38,7 +37,7 @@ private fun LiveToVodTickerContent(
         withStyle(
             style = SpanStyle(
                 fontWeight = FontWeight.Bold,
-                color = colorResource(id = com.tokopedia.unifyprinciples.R.color.Unify_GN500),
+                color = NestTheme.colors.GN._500,
             )
         ) {
             pushStringAnnotation(tag = LEARN_MORE_TEXT_TAG, annotation = LEARN_MORE_TEXT_TAG)
