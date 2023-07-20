@@ -2283,16 +2283,20 @@ open class DiscoveryFragment :
         Utils.setParameterMapUtil(queryParams, queryParameterMapWithRpc, queryParameterMapWithoutRpc)
 
         val activeTab = queryParameterMapWithoutRpc[ACTIVE_TAB]?.toIntOrNull()
-
+        val componentId = queryParameterMapWithoutRpc[COMPONENT_ID]?.toIntOrNull()
+        discoveryPageData[discoveryViewModel.pageIdentifier]?.let {
+            it.queryParamMapWithRpc.putAll(queryParameterMapWithRpc)
+            it.queryParamMapWithoutRpc.putAll(queryParameterMapWithoutRpc)
+        }
         if (activeTab != null) {
-
-            discoveryPageData[discoveryViewModel.pageIdentifier]?.let {
-                it.queryParamMapWithRpc.putAll(queryParameterMapWithRpc)
-                it.queryParamMapWithoutRpc.putAll(queryParameterMapWithoutRpc)
-            }
-
+            pinnedAlreadyScrolled = false
             this.arguments?.putString(FORCED_NAVIGATION, "true")
+            if (componentId != null) {
+                this.arguments?.putString(COMPONENT_ID, componentId.toString())
+            }
             discoveryViewModel.getDiscoveryData(discoveryViewModel.getQueryParameterMapFromBundle(arguments), userAddressData, true)
+        } else if (componentId != null) {
+            scrollToComponentWithID(componentId.toString())
         }
     }
 }
