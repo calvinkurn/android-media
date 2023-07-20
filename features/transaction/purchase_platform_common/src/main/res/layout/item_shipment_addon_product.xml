@@ -66,6 +66,7 @@
         app:typographyType="display_3"
         android:textColor="@color/Unify_GN500"
         tools:text="Lihat Semua"
+        tools:visibility="visible"
         android:visibility="gone"/>
 
     <LinearLayout

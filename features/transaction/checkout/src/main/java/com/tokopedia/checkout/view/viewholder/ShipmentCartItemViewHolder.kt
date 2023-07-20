@@ -437,11 +437,10 @@ class ShipmentCartItemViewHolder(
                 tvTitleAddonProduct.visible()
                 tvTitleAddonProduct.text = cartItemModel.addOnProduct.title
                 if (cartItemModel.addOnProduct.bottomsheet.isShown) {
-                    tvSeeAllAddonProduct.apply {
-                        visible()
-                        setOnClickListener {
-                            listener?.onClickSeeAllAddOnProductService(cartItemModel)
-                        }
+                    tvSeeAllAddonProduct.visible()
+                    tvSeeAllAddonProduct.text = cartItemModel.addOnProduct.bottomsheet.title
+                    tvSeeAllAddonProduct.setOnClickListener {
+                        listener?.onClickSeeAllAddOnProductService(cartItemModel)
                     }
                     listener?.onClickLihatSemuaAddOnProductWidget()
                 } else {
