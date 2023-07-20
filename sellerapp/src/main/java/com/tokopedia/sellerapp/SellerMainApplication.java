@@ -313,6 +313,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Co
             registerActivityLifecycleCallbacks(new ViewInspectorSubscriber());
             registerActivityLifecycleCallbacks(new DevOptsSubscriber());
             registerActivityLifecycleCallbacks(new JourneySubscriber());
+            registerActivityLifecycleCallbacks(new FrameMetricsMonitoring(this));
         }
         registerActivityLifecycleCallbacks(new TwoFactorCheckerSubscriber());
         registerActivityLifecycleCallbacks(new MediaLoaderActivityLifecycle(this));
@@ -321,7 +322,6 @@ public class SellerMainApplication extends SellerRouterApplication implements Co
         registerActivityLifecycleCallbacks(new GqlActivityCallback());
         registerActivityLifecycleCallbacks(new NotificationGeneralPromptLifecycleCallbacks());
         registerActivityLifecycleCallbacks(new Frame());
-        registerActivityLifecycleCallbacks(new FrameMetricsMonitoring(this));
     }
 
     @Override
