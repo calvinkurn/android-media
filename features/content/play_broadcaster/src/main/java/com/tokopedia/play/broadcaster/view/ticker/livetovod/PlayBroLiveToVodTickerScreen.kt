@@ -35,30 +35,36 @@ private fun LiveToVodTickerContent(
     data: TickerBottomSheetUiModel,
     onDismissedPressed: () -> Unit,
     onActionTextPressed: (appLink: String) -> Unit,
-) = with(data.mainText.first()) {
-    val descriptionText = generateSpanText(
-        fullText = description,
-        action = action,
-    )
+) = with(data.mainText) {
 
-    NestTicker(
-        ticker = listOf(
+    val nestTickerData = mutableListOf<NestTickerData>()
+    forEach { tickerData ->
+        val descriptionText = generateSpanText(
+            fullText = tickerData.description,
+            action = tickerData.action,
+        )
+        nestTickerData.add(
             NestTickerData(
-                tickerTitle = title,
+                tickerTitle = tickerData.title,
                 tickerDescription = descriptionText,
                 tickerType = TickerType.ANNOUNCEMENT,
                 tickerVariant = TickerVariant.FULL,
             )
-        ),
+        )
+    }
+
+    NestTicker(
+        ticker = nestTickerData,
         onDismissed = { onDismissedPressed.invoke() },
         onClickText = { offset ->
-            descriptionText.getStringAnnotations(offset, offset)
-                .firstOrNull()?.let { span ->
-                    action.map { current ->
-                        if (span.item != current.item) return@map
-                        onActionTextPressed.invoke(current.link)
-                    }
-                }
+//            TODO change implementation after updated version from unify compose merged
+//            descriptionText.getStringAnnotations(offset, offset)
+//                .firstOrNull()?.let { span ->
+//                    action.map { current ->
+//                        if (span.item != current.item) return@map
+//                        onActionTextPressed.invoke(current.link)
+//                    }
+//                }
         },
     )
 }
