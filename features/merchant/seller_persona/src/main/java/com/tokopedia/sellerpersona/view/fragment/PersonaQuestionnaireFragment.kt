@@ -226,22 +226,17 @@ class PersonaQuestionnaireFragment : BaseFragment<FragmentPersonaQuestionnaireBi
     private fun submitAnswer() {
         binding?.run {
             val answers = pagerAdapter.getPages().map { pager ->
-                QuestionnaireAnswerParam(
-                    id = pager.id.toLongOrZero(),
-                    answers = pager.options.orEmpty().filter { it.isSelected }.map { it.value }
-                )
+                QuestionnaireAnswerParam(id = pager.id.toLongOrZero(),
+                    answers = pager.options.orEmpty().filter { it.isSelected }.map { it.value })
             }
             showSubmitQuizLoadingState()
             viewModel.submitAnswer(answers)
             viewModel.setPersonaResult.observeOnce(viewLifecycleOwner) {
                 when (it) {
                     is Success -> {
-                        val action = PersonaQuestionnaireFragmentDirections
-                            .actionQuestionnaireToResult(
-                                paramPersona = it.data
-                            )
-                        findNavController().navigate(action)
+                        onSuccessPersonaResult(it.data)
                     }
+
                     is Fail -> {
                         dismissSubmitQuizLoadingState()
                         showErrorToaster()
@@ -249,6 +244,16 @@ class PersonaQuestionnaireFragment : BaseFragment<FragmentPersonaQuestionnaireBi
                 }
             }
         }
+    }
+
+    private fun onSuccessPersonaResult(persona: String) {
+        val isComposeEnabled = true
+        val action = if (isComposeEnabled) {
+            PersonaQuestionnaireFragmentDirections.actionQuestionnaireToResultCompose(paramPersona = persona)
+        } else {
+            PersonaQuestionnaireFragmentDirections.actionQuestionnaireToResult(paramPersona = persona)
+        }
+        findNavController().navigate(action)
     }
 
     private fun showSubmitQuizLoadingState() {

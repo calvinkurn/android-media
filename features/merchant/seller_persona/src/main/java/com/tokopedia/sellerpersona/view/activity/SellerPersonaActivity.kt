@@ -139,17 +139,28 @@ class SellerPersonaActivity : BaseActivity(), HasComponent<SellerPersonaComponen
             val inflater = navController.navInflater
             val graph = inflater.inflate(R.navigation.nav_graph)
 
-            val hasPersona = data.persona.isNotBlank()
-            val defaultDestination = if (hasPersona) {
-                R.id.composeResultFragment
-            } else {
-                markAsPersonaFirstVisit()
-                R.id.composeOpeningFragment
-            }
+            val defaultDestination = getDefaultDestination(data.persona)
             graph.setStartDestination(defaultDestination)
 
             navController.graph = graph
             setupToolbar(navController)
+        }
+    }
+
+    private fun getDefaultDestination(persona: String): Int {
+        val isComposeEnabled = true
+        val hasPersona = persona.isNotBlank()
+        return when {
+            isComposeEnabled && hasPersona -> R.id.composeResultFragment
+            isComposeEnabled && !hasPersona -> {
+                markAsPersonaFirstVisit()
+                R.id.composeOpeningFragment
+            }
+            hasPersona -> R.id.resultFragment
+            else -> {
+                markAsPersonaFirstVisit()
+                R.id.openingFragment
+            }
         }
     }
 

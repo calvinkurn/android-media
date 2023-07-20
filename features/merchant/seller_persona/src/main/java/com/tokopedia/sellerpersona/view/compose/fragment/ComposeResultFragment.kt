@@ -20,7 +20,6 @@ import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.sellerhome.SellerHomeApplinkConst
 import com.tokopedia.dialog.DialogUnify
-import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.sellerpersona.R
 import com.tokopedia.sellerpersona.analytics.SellerPersonaTracking
@@ -32,6 +31,7 @@ import com.tokopedia.sellerpersona.view.compose.model.ResultUiEvent
 import com.tokopedia.sellerpersona.view.compose.screen.PersonaResultScreen
 import com.tokopedia.sellerpersona.view.compose.screen.ResultLoadingState
 import com.tokopedia.sellerpersona.view.compose.viewmodel.ComposePersonaResultViewModel
+import com.tokopedia.sellerpersona.view.model.isActive
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.flow.collectLatest
@@ -65,8 +65,7 @@ class ComposeResultFragment : Fragment() {
         }
     }
     private var isPersonaActive = false
-
-    private val impressHolder by lazy { ImpressHolder() }
+    private var isAnyChanges = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -80,14 +79,14 @@ class ComposeResultFragment : Fragment() {
             setContent {
 
                 LaunchedEffect(key1 = Unit, block = {
-                    viewModel.setArguments(getResultArguments())
-                    viewModel.fetchPersonaData()
+                    viewModel.fetchPersonaData(getResultArguments())
 
                     viewModel.uiEvent.collectLatest {
                         when (it) {
                             is ResultUiEvent.RetakeQuiz -> retakeQuiz()
                             is ResultUiEvent.ApplyChanges -> sendClickApplyTracker(it)
                             is ResultUiEvent.OnPersonaStatusChanged -> onPersonaStatusChanged(it)
+                            is ResultUiEvent.CheckChanged -> onCheckedChanged(it)
                             else -> {/* no-op */
                             }
                         }
@@ -111,7 +110,7 @@ class ComposeResultFragment : Fragment() {
                                     })
                             }
 
-                            else -> PersonaResultScreen(state.value.data, viewModel::onEvent)
+                            else -> PersonaResultScreen(state.value, viewModel::onEvent)
                         }
                     }
                 }
@@ -122,16 +121,21 @@ class ComposeResultFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setupView()
         setupOnBackPressed()
     }
 
     private fun getResultArguments(): ResultArgsUiModel {
-        return ResultArgsUiModel(paramPersona = args.paramPersona)
+        val paramPersona = args.paramPersona
+        return ResultArgsUiModel(paramPersona = paramPersona)
+    }
+
+    private fun onCheckedChanged(data: ResultUiEvent.CheckChanged) {
+        isAnyChanges = data.isChecked != isPersonaActive
     }
 
     private fun onPersonaStatusChanged(data: ResultUiEvent.OnPersonaStatusChanged) {
-        if (data.isSuccess) {
+        isPersonaActive = data.personaStatus.isActive()
+        if (data.isSuccess()) {
             goToSellerHome()
         } else {
             showToggleErrorMessage()
@@ -140,8 +144,7 @@ class ComposeResultFragment : Fragment() {
 
     private fun sendClickApplyTracker(data: ResultUiEvent.ApplyChanges) {
         SellerPersonaTracking.sendClickSellerPersonaResultSavePersonaEvent(
-            persona = data.persona,
-            isActive = data.isActive
+            persona = data.persona, isActive = data.isActive
         )
     }
 
@@ -162,7 +165,6 @@ class ComposeResultFragment : Fragment() {
     private fun handleOnBackPressed() {
         context?.let {
             val paramPersona = args.paramPersona
-            val isAnyChanges = false//binding?.switchSpActivatePersona?.isChecked != isPersonaActive
             if (paramPersona.isNotBlank() || (paramPersona.isBlank() && isAnyChanges)) {
                 val dialog = DialogUnify(
                     it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE
@@ -212,7 +214,6 @@ class ComposeResultFragment : Fragment() {
 
     private fun showToggleErrorMessage() {
         view?.run {
-            dismissLoadingButton()
             val dp64 = context.resources.getDimensionPixelSize(
                 com.tokopedia.unifyprinciples.R.dimen.layout_lvl7
             )
@@ -225,191 +226,6 @@ class ComposeResultFragment : Fragment() {
                 context.getString(R.string.sp_oke)
             ).show()
         }
-    }
-
-//    private fun observePersonaData() {
-//        viewLifecycleOwner.observe(viewModel.state) {
-//            dismissLoadingState()
-//            when (it) {
-//                is Success -> {
-//                    this.personaData = it.data
-//                    showPersonaData()
-//                }
-//
-//                is Fail -> handleError()
-//            }
-//        }
-//    }
-
-    private fun handleError() {
-//        binding?.run {
-//            dismissLoadingState()
-//            tvSpLblActivatePersonaStatus.gone()
-//            btnSpApplyPersona.gone()
-//            groupSpResultComponents.gone()
-//            errorViewPersonaResult.visible()
-//            errorViewPersonaResult.setOnActionClicked {
-//                viewModel.fetchPersonaData()
-//            }
-//        }
-    }
-
-    private fun showPersonaData() {
-//        val data = personaData ?: return
-//        binding?.run {
-//            errorViewPersonaResult.gone()
-//            groupSpResultComponents.visible()
-//            isPersonaActive = data.personaStatus == PersonaStatus.ACTIVE
-//
-//            setTextPersonaActiveStatus(true)
-//            setTipsVisibility(data.persona)
-//            setupSwitcher()
-//            setupApplyButton()
-//
-//            val persona = data.personaData
-//            imgSpResultAvatar.loadImage(persona.avatarImage)
-//            imgSpResultBackdrop.loadImage(persona.backgroundImage)
-//            rvSpResultInfoList.adapter = PersonaSimpleListAdapter().apply {
-//                setItems(persona.itemList)
-//                isSelectedMode = !root.context.isDarkMode()
-//            }
-//            tvSpSellerType.text = String.format(PERSONA_TITLE, persona.headerTitle)
-//            tvSpSellerTypeNote.text = root.context.getString(
-//                R.string.sp_result_account_type, persona.headerSubTitle
-//            )
-//            tvSpResultInfoTitle.text = root.context.getString(
-//                R.string.sp_result_list_section_gedongan, persona.headerTitle
-//            )
-//
-//            btnSpApplyPersona.setOnClickListener {
-//                toggleSellerPersona()
-//                SellerPersonaTracking.sendClickSellerPersonaResultSavePersonaEvent(
-//                    persona.value,
-//                    switchSpActivatePersona.isChecked
-//                )
-//            }
-//        }
-    }
-
-    private fun toggleSellerPersona() {
-//        binding?.run {
-//            val status = if (switchSpActivatePersona.isChecked) {
-//                PersonaStatus.ACTIVE
-//            } else {
-//                PersonaStatus.INACTIVE
-//            }
-//            viewModel.toggleUserPersona(status)
-//            btnSpApplyPersona.isLoading = true
-//        }
-    }
-
-    private fun setupApplyButton() {
-//        binding?.run {
-//            if (args.paramPersona.isNotBlank()) {
-//                btnSpApplyPersona.visible()
-//                setApplyButtonText()
-//            } else {
-//                btnSpApplyPersona.gone()
-//            }
-//        }
-    }
-
-    private fun setApplyButtonText() {
-//        binding?.run {
-//            btnSpApplyPersona.text = if (sharedPref.isFirstVisit) {
-//                root.context.getString(R.string.sp_apply)
-//            } else {
-//                root.context.getString(R.string.sp_apply_changes)
-//            }
-//        }
-    }
-
-    private fun setupSwitcher() {
-//        binding?.run {
-//            if (args.paramPersona.isBlank()) {
-//                switchSpActivatePersona.isChecked = isPersonaActive
-//                setTextPersonaActiveStatus(isPersonaActive)
-//            }
-//            switchSpActivatePersona.setOnCheckedChangeListener { _, isChecked ->
-//                if (args.paramPersona.isBlank()) {
-//                    if (isPersonaActive != isChecked) {
-//                        btnSpApplyPersona.visible()
-//                        setApplyButtonText()
-//                    } else {
-//                        btnSpApplyPersona.gone()
-//                    }
-//                }
-//                setTextPersonaActiveStatus(isChecked)
-//                SellerPersonaTracking.sendClickSellerPersonaResultToggleActiveEvent()
-//            }
-//        }
-    }
-
-    private fun setTextPersonaActiveStatus(isActive: Boolean) {
-//        val activeStatus = if (isActive) {
-//            R.string.sp_active
-//        } else {
-//            R.string.sp_inactive
-//        }
-//        binding?.run {
-//            tvSpLblActivatePersonaStatus.visible()
-//            tvSpLblActivatePersonaStatus.text = root.context.getString(activeStatus)
-//        }
-    }
-
-    private fun setTipsVisibility(persona: String) {
-//        binding?.run {
-//            if (persona == CORPORATE_EMPLOYEE && userSession.isShopOwner) {
-//                dividerSpResultBottom.visible()
-//                icSpOwnerInfo.visible()
-//                tvSpLblOwnerInfo.visible()
-//            } else {
-//                dividerSpResultBottom.gone()
-//                icSpOwnerInfo.gone()
-//                tvSpLblOwnerInfo.gone()
-//            }
-//        }
-    }
-
-    private fun showLoadingState() {
-//        binding?.run {
-//            loaderSpResult.visible()
-//            groupSpResultComponents.gone()
-//        }
-    }
-
-    private fun dismissLoadingState() {
-//        binding?.loaderSpResult?.gone()
-    }
-
-    private fun setupView() {
-//        binding?.run {
-//            val hexColor = Utils.getHexColor(
-//                root.context, com.tokopedia.unifyprinciples.R.color.Unify_GN500
-//            )
-//            tvSpSelectManualType.text = root.context.getString(
-//                R.string.sp_persona_result_select_manual, hexColor
-//            ).parseAsHtml()
-//            btnSpRetryQuestionnaire.setOnClickListener {
-//                it.findNavController()
-//                    .navigate(R.id.actionResultFragmentToQuestionnaireFragment)
-//                SellerPersonaTracking.sendClickSellerPersonaResultRetakeQuizEvent()
-//            }
-//            tvSpSelectManualType.setOnClickListener {
-//                val action = PersonaResultFragmentDirections
-//                    .actionResultFragmentToSelectTypeFragment(personaData?.persona)
-//                it.findNavController().navigate(action)
-//                SellerPersonaTracking.sendClickSellerPersonaResultSelectPersonaEvent()
-//            }
-//
-//            root.addOnImpressionListener(impressHolder) {
-//                SellerPersonaTracking.sendImpressionSellerPersonaResultEvent()
-//            }
-//        }
-    }
-
-    private fun dismissLoadingButton() {
-//        binding?.btnSpApplyPersona?.isLoading = false
     }
 
     private fun inject() {

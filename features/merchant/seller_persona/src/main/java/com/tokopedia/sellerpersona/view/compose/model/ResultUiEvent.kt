@@ -1,14 +1,20 @@
 package com.tokopedia.sellerpersona.view.compose.model
 
+import com.tokopedia.sellerpersona.view.model.PersonaStatus
+
 /**
  * Created by @ilhamsuaib on 12/07/23.
  */
 
 sealed class ResultUiEvent {
     data class OnPersonaStatusChanged(
-        val isSuccess: Boolean = false,
+        val personaStatus: PersonaStatus = PersonaStatus.INACTIVE,
         val throwable: Throwable? = null
-    ) : ResultUiEvent()
+    ) : ResultUiEvent() {
+        fun isSuccess(): Boolean {
+            return throwable == null
+        }
+    }
 
     data class CheckChanged(val isChecked: Boolean) : ResultUiEvent()
     data class ApplyChanges(val persona: String, val isActive: Boolean) : ResultUiEvent()

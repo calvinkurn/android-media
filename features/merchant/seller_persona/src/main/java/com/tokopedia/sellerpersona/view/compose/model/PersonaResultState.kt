@@ -8,7 +8,6 @@ import com.tokopedia.sellerpersona.view.model.PersonaDataUiModel
 
 data class PersonaResultState(
     val isLoading: Boolean = true,
-    val data: PersonaDataUiModel = PersonaDataUiModel(),
     val error: Throwable? = null,
-    val args: ResultArgsUiModel = ResultArgsUiModel()
+    val data: PersonaDataUiModel = PersonaDataUiModel()
 )

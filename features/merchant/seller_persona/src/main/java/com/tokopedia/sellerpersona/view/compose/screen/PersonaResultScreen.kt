@@ -43,6 +43,7 @@ import com.tokopedia.nest.principles.ui.NestNN
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.sellerpersona.R
 import com.tokopedia.sellerpersona.common.Utils
+import com.tokopedia.sellerpersona.view.compose.model.PersonaResultState
 import com.tokopedia.sellerpersona.view.compose.model.ResultUiEvent
 import com.tokopedia.sellerpersona.view.model.PersonaDataUiModel
 import com.tokopedia.sellerpersona.view.model.PersonaStatus
@@ -58,15 +59,15 @@ private const val CORPORATE_EMPLOYEE = "corporate-employee"
 
 @Composable
 internal fun PersonaResultScreen(
-    data: PersonaDataUiModel, onEvent: (ResultUiEvent) -> Unit
+    state: PersonaResultState, onEvent: (ResultUiEvent) -> Unit
 ) {
     LazyColumn(modifier = Modifier.fillMaxSize()) {
         item {
-            ResultHeaderSectionUi(data.personaData)
+            ResultHeaderSectionUi(state.data.personaData)
         }
-        renderResultContentSectionUi(data)
+        renderResultContentSectionUi(state.data)
         item {
-            ResultFooterSectionUi(data, onEvent)
+            ResultFooterSectionUi(state.data, onEvent)
         }
     }
 }
@@ -118,9 +119,11 @@ private fun ResultFooterSectionUi(data: PersonaDataUiModel, onEvent: (ResultUiEv
         Spacer(modifier = Modifier.height(24.dp))
         if (data.isApplyButtonVisible()) {
             NestButton(
-                text = stringResource(data.getApplyButtonStringRes()), onClick = {
+                text = stringResource(data.getApplyButtonStringRes()),
+                onClick = {
                     onEvent(ResultUiEvent.ApplyChanges(data.persona, data.isSwitchChecked))
-                }, modifier = Modifier.fillMaxWidth()
+                },
+                modifier = Modifier.fillMaxWidth()
             )
             Spacer(modifier = Modifier.height(16.dp))
         }
@@ -135,26 +138,29 @@ private fun ResultFooterSectionUi(data: PersonaDataUiModel, onEvent: (ResultUiEv
         NestTypography(
             text = stringResource(
                 R.string.sp_persona_result_select_manual, hexColor
-            ).parseAsHtml(), textStyle = NestTheme.typography.display3.copy(
+            ).parseAsHtml(),
+            textStyle = NestTheme.typography.display3.copy(
                 color = NestTheme.colors.NN._600, textAlign = TextAlign.Center
-            ), modifier = Modifier
+            ),
+            modifier = Modifier
                 .padding(top = 26.dp, bottom = 18.dp)
                 .fillMaxWidth()
         )
     }
 }
 
-private fun LazyListScope.renderResultContentSectionUi(data: PersonaDataUiModel) {
-    item {
+private fun LazyListScope.renderResultContentSectionUi(data: PersonaDataUiModel) { item {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(start = 16.dp, end = 16.dp)
         ) {
             NestTypography(
-                modifier = Modifier.padding(top = 16.dp), text = stringResource(
+                modifier = Modifier.padding(top = 16.dp),
+                text = stringResource(
                     R.string.sp_result_list_section_gedongan, data.personaData.headerTitle
-                ), textStyle = NestTheme.typography.heading2.copy(
+                ),
+                textStyle = NestTheme.typography.heading2.copy(
                     color = NestTheme.colors.NN._900
                 )
             )
@@ -172,7 +178,7 @@ private fun LazyListScope.renderResultContentSectionUi(data: PersonaDataUiModel)
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = 16.dp, end = 16.dp)
+                .padding(start = 12.dp, end = 16.dp)
         ) {
             Icon(
                 painter = painterResource(iconUnifyR.drawable.iconunify_check),
@@ -183,9 +189,11 @@ private fun LazyListScope.renderResultContentSectionUi(data: PersonaDataUiModel)
             NestTypography(
                 modifier = Modifier.padding(
                     top = 6.dp, bottom = 6.dp, start = 8.dp
-                ), textStyle = NestTheme.typography.display2.copy(
+                ),
+                textStyle = NestTheme.typography.display2.copy(
                     color = NestTheme.colors.NN._950
-                ), text = it
+                ),
+                text = it
             )
         }
     }
@@ -206,7 +214,7 @@ private fun LazyListScope.renderResultContentSectionUi(data: PersonaDataUiModel)
                     painter = painterResource(iconUnifyR.drawable.iconunify_lightbulb),
                     contentDescription = null,
                     tint = NestTheme.colors.GN._500,
-                    modifier = Modifier.size(24.dp)
+                    modifier = Modifier.size(20.dp)
                 )
                 NestTypography(
                     modifier = Modifier.padding(start = 8.dp),
@@ -290,24 +298,26 @@ fun ResultLoadingState() {
 @Composable
 fun PreviewPersonaResultScreen() {
     NestTheme(darkTheme = false) {
-        PersonaResultScreen(data = PersonaDataUiModel(
-            persona = "corporate-supervisor-owner",
-            personaStatus = PersonaStatus.ACTIVE,
-            personaData = PersonaUiModel(
-                value = "corporate-supervisor-owner",
-                headerTitle = "Gedongan",
-                headerSubTitle = "Pemilik Toko",
-                avatarImage = "https://images.tokopedia.net/img/android/sellerapp/seller_persona/img_persona_avatar_gedongan-min.png",
-                backgroundImage = "https://images.tokopedia.net/img/android/sellerapp/seller_persona/img_persona_background_gedongan-min.png",
-                bodyTitle = "Pilih tipe ini jika kamu:",
-                itemList = listOf(
-                    "Menerima 1-10 pesanan per hari",
-                    "Punya toko fisik (offline)",
-                    "Punya pegawai yang mengurus operasional toko",
-                    "Sering mencari peluang untuk strategi baru"
-                )
-            ),
-            isSwitchChecked = true
+        PersonaResultScreen(state = PersonaResultState(
+            isLoading = false,
+            data = PersonaDataUiModel(
+                persona = "corporate-supervisor-owner",
+                personaStatus = PersonaStatus.ACTIVE,
+                personaData = PersonaUiModel(
+                    value = "corporate-supervisor-owner",
+                    headerTitle = "Gedongan",
+                    headerSubTitle = "Pemilik Toko",
+                    avatarImage = "https://images.tokopedia.net/img/android/sellerapp/seller_persona/img_persona_avatar_gedongan-min.png",
+                    backgroundImage = "https://images.tokopedia.net/img/android/sellerapp/seller_persona/img_persona_background_gedongan-min.png",
+                    bodyTitle = "Pilih tipe ini jika kamu:",
+                    itemList = listOf(
+                        "Menerima 1-10 pesanan per hari",
+                        "Punya toko fisik (offline)",
+                        "Punya pegawai yang mengurus operasional toko",
+                        "Sering mencari peluang untuk strategi baru"
+                    )
+                ),
+            )
         ), onEvent = {})
     }
 }
