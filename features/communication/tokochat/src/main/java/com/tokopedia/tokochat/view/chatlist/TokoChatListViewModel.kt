@@ -16,6 +16,7 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.transformLatest
@@ -42,7 +43,7 @@ class TokoChatListViewModel @Inject constructor(
                 it.map { channel ->
                     mapper.mapToChatListItem(channel)
                 }
-            }
+            }.flowOn(dispatcher.io)
             .transformLatest { value ->
                 emit(Success(value) as Result<List<TokoChatListItemUiModel>>)
             }
@@ -52,7 +53,10 @@ class TokoChatListViewModel @Inject constructor(
             }
     }
 
-    fun loadNextPageChatList(localSize: Int = Int.ZERO) {
+    fun loadNextPageChatList(
+        localSize: Int = Int.ZERO,
+        onCompleted: (Boolean) -> Unit = {}
+    ) {
         try {
             chatChannelUseCase.getAllChannel(
                 channelTypes = listOf(ChannelType.GroupBooking),
@@ -60,11 +64,13 @@ class TokoChatListViewModel @Inject constructor(
                 onSuccess = {
                     // Set to -1 to mark as no more data
                     setPaginationTimeStamp(it.lastOrNull()?.createdAt ?: -1)
+                    onCompleted(true)
                 },
                 onError = {
                     it?.let { error ->
                         _error.value = Pair(error, ::loadNextPageChatList.name)
                     }
+                    onCompleted(false)
                 }
             )
         } catch (throwable: Throwable) {

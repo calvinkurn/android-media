@@ -18,7 +18,7 @@ abstract class TokoChatListBaseFragment<viewBinding : ViewBinding> : BaseDaggerF
     protected var baseBinding: TokochatListBaseFragmentBinding? by autoClearedNullable()
     abstract var adapter: TokoChatListBaseAdapter
 
-    private var endlessRecyclerViewScrollListener: TokoChatEndlessScrollListener? = null
+    protected var endlessRecyclerViewScrollListener: TokoChatEndlessScrollListener? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,

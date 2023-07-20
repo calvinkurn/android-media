@@ -19,8 +19,10 @@ import com.tokopedia.tokochat.common.view.chatlist.adapter.TokoChatListBaseAdapt
 import com.tokopedia.tokochat.common.view.chatlist.listener.TokoChatListItemListener
 import com.tokopedia.tokochat.common.view.chatlist.uimodel.TokoChatListItemUiModel
 import com.tokopedia.tokochat.databinding.TokochatChatlistFragmentBinding
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -31,6 +33,8 @@ class TokoChatListFragment @Inject constructor(
 ) :
     TokoChatListBaseFragment<TokochatChatlistFragmentBinding>(),
     TokoChatListItemListener {
+
+    private var chatListJob: Job? = null
 
     override var adapter: TokoChatListBaseAdapter = TokoChatListBaseAdapter(
         itemListener = this
@@ -51,6 +55,7 @@ class TokoChatListFragment @Inject constructor(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initChatListData()
+        initListeners()
     }
 
     private fun initChatListData() {
@@ -61,9 +66,8 @@ class TokoChatListFragment @Inject constructor(
                     when (it) {
                         is Success -> {
                             addOrUpdateChatItem(it.data)
-
                             if (!isCompleted) {
-                                viewModel.loadNextPageChatList(it.data.size)
+                                loadChatListData(it.data.size)
                                 isCompleted = true
                             }
                         }
@@ -74,10 +78,45 @@ class TokoChatListFragment @Inject constructor(
         }
     }
 
+    private fun loadChatListData(size: Int) {
+        toggleSwipeRefreshState(true)
+        viewModel.loadNextPageChatList(size) { isSuccess ->
+            if (!isSuccess) {
+
+            }
+            toggleSwipeRefreshState(false)
+        }
+    }
+
+    private fun toggleSwipeRefreshState(value: Boolean) {
+        if (baseBinding?.tokochatListLayoutSwipeRefresh?.isRefreshing != value) {
+            baseBinding?.tokochatListLayoutSwipeRefresh?.isRefreshing = value
+        }
+    }
+
     override fun initObservers() {
         viewModel.error.observe(viewLifecycleOwner) {
             Log.d("TOKOCHAT-LIST", it.first.stackTraceToString())
+            Toaster.build(
+                requireView(),
+                it.first.stackTraceToString(),
+                Toaster.LENGTH_LONG,
+                Toaster.TYPE_ERROR
+            ).show()
         }
+    }
+
+    private fun initListeners() {
+        baseBinding?.tokochatListLayoutSwipeRefresh?.setOnRefreshListener {
+            resetChatList()
+        }
+    }
+
+    private fun resetChatList() {
+        endlessRecyclerViewScrollListener?.resetState()
+        adapter.clearAllItemsAndAnimateChanges()
+        chatListJob?.cancel()
+        initChatListData()
     }
 
     private fun addOrUpdateChatItem(items: List<TokoChatListItemUiModel>) {
@@ -104,7 +143,7 @@ class TokoChatListFragment @Inject constructor(
     }
 
     override fun onLoadMore() {
-        viewModel.loadNextPageChatList()
+        viewModel.loadNextPageChatList {}
     }
 
     private fun notifyWhenAllowed(position: Int) {
