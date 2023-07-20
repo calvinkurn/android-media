@@ -191,6 +191,6 @@ public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMain
     }
 
     private void registerActivityLifecycleCallbacks() {
-        registerActivityLifecycleCallbacks(new FrameMetricsMonitoring());
+        registerActivityLifecycleCallbacks(new FrameMetricsMonitoring(this));
     }
 }

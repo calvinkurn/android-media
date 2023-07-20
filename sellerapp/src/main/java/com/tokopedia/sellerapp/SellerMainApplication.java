@@ -321,7 +321,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Co
         registerActivityLifecycleCallbacks(new GqlActivityCallback());
         registerActivityLifecycleCallbacks(new NotificationGeneralPromptLifecycleCallbacks());
         registerActivityLifecycleCallbacks(new Frame());
-        registerActivityLifecycleCallbacks(new FrameMetricsMonitoring());
+        registerActivityLifecycleCallbacks(new FrameMetricsMonitoring(this));
     }
 
     @Override
