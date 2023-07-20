@@ -68,14 +68,6 @@ class TokoNowCategoryL2TabFragment : Fragment() {
     private var categoryIdL2: String = ""
     private var components = listOf<Component>()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        viewModel.apply {
-            this.categoryIdL2 = this@TokoNowCategoryL2TabFragment.categoryIdL2
-            this.components = this@TokoNowCategoryL2TabFragment.components
-        }
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -102,9 +94,12 @@ class TokoNowCategoryL2TabFragment : Fragment() {
         super.onAttach(context)
     }
 
+    fun loadMore() {
+        viewModel.loadMore()
+    }
+
     private fun setupRecyclerView() {
         binding?.recyclerView?.apply {
-            adapter = categoryAdapter
             layoutManager = GridLayoutManager(context, SPAN_COUNT).apply {
                 addOnScrollListener(createEndlessScrollListener(this))
                 spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
@@ -116,6 +111,7 @@ class TokoNowCategoryL2TabFragment : Fragment() {
                     }
                 }
             }
+            adapter = categoryAdapter
             addProductItemDecoration()
         }
     }
@@ -127,7 +123,7 @@ class TokoNowCategoryL2TabFragment : Fragment() {
     }
 
     private fun onViewCreated() {
-        viewModel.onViewCreated()
+        viewModel.onViewCreated(categoryIdL2, components)
     }
 
     private fun injectDependencies() {

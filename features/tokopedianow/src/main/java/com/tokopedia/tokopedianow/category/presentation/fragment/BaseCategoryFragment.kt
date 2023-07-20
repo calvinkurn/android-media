@@ -95,6 +95,9 @@ abstract class BaseCategoryFragment : Fragment(), ScreenShotListener,
     protected var currentCategoryId = String.EMPTY
     protected var queryParamMap: HashMap<String, String>? = hashMapOf()
 
+    protected val recyclerView: RecyclerView?
+        get() = binding?.rvCategory
+
     protected val shopId: String
         get() = viewModel.getShopId().toString()
 

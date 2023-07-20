@@ -80,7 +80,7 @@ abstract class BaseCategoryViewModel(
 
     protected val visitableList = mutableListOf<Visitable<*>>()
 
-    private var moreShowcaseJob: Job? = null
+    private var loadMoreJob: Job? = null
 
     var navToolbarHeight = 0
 
@@ -93,18 +93,22 @@ abstract class BaseCategoryViewModel(
 
     protected abstract suspend fun loadNextPage()
 
-    protected abstract fun onSuccessGetCategoryProduct(
+    protected open fun onSuccessGetCategoryProduct(
         response: AceSearchProductModel,
         categoryL2Model: CategoryL2Model
-    )
+    ) {
 
-    protected abstract fun onErrorGetCategoryProduct(
+    }
+
+    protected open fun onErrorGetCategoryProduct(
         error: Throwable,
         categoryL2Model: CategoryL2Model
-    )
+    ) {
+
+    }
 
     protected suspend fun getCategoryProductAsync(
-        categoryL2Model: CategoryL2Model,
+        categoryL2Model: CategoryL2Model
     ): Deferred<Unit?> = asyncCatchError(block = {
         val response = getCategoryProductUseCase.execute(categoryL2Model.id)
         onSuccessGetCategoryProduct(response, categoryL2Model)
@@ -179,9 +183,9 @@ abstract class BaseCategoryViewModel(
     }
 
     fun onScroll(isAtTheBottomOfThePage: Boolean) {
-        val isJobCompleted = moreShowcaseJob?.isCompleted == true
-        if (isAtTheBottomOfThePage && (moreShowcaseJob == null || isJobCompleted)) {
-            moreShowcaseJob = launchCatchError(block = {
+        val isJobCompleted = loadMoreJob?.isCompleted == true
+        if (isAtTheBottomOfThePage && (loadMoreJob == null || isJobCompleted)) {
+            loadMoreJob = launchCatchError(block = {
                 loadNextPage()
             }) {
 
@@ -192,7 +196,7 @@ abstract class BaseCategoryViewModel(
     fun refreshLayout() {
         getMiniCart()
         updateAddressData()
-        moreShowcaseJob = null
+        loadMoreJob = null
         _refreshState.value = Unit
     }
 

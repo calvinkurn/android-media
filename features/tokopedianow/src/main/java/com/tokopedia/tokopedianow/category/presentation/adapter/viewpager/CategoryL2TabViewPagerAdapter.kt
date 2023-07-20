@@ -8,6 +8,8 @@ class CategoryL2TabViewPagerAdapter(fragment: Fragment) : FragmentStateAdapter(f
 
     private val fragments = mutableListOf<TokoNowCategoryL2TabFragment>()
 
+    private var selectedTabPosition: Int = 0
+
     override fun getItemCount(): Int = fragments.count()
 
     override fun createFragment(position: Int): Fragment {
@@ -16,5 +18,13 @@ class CategoryL2TabViewPagerAdapter(fragment: Fragment) : FragmentStateAdapter(f
 
     fun addFragment(fragment: TokoNowCategoryL2TabFragment) {
         fragments.add(fragment)
+    }
+
+    fun setSelectedTabPosition(position: Int) {
+        selectedTabPosition = position
+    }
+
+    fun loadMore() {
+        fragments[selectedTabPosition].loadMore()
     }
 }

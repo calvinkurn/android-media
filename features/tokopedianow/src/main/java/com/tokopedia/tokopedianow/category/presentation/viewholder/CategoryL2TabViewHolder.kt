@@ -44,11 +44,13 @@ class CategoryL2TabViewHolder(
         setupViewPager(data)
         setupTabMediator(data)
         setupTabLayout(data)
+        setTabPosition(data)
     }
 
     override fun bind(data: CategoryL2TabUiModel, payloads: MutableList<Any>) {
         if (payloads.firstOrNull() == true) {
             setupTabLayout(data)
+            setTabPosition(data)
         }
     }
 
@@ -79,6 +81,11 @@ class CategoryL2TabViewHolder(
         }
     }
 
+    private fun setTabPosition(data: CategoryL2TabUiModel) {
+        val position = data.selectedTabPosition
+        viewPagerAdapter.setSelectedTabPosition(position)
+    }
+
     private fun createTabSelectedListener() = object : OnTabSelectedListener {
         override fun onTabSelected(tab: TabLayout.Tab) {
             listener.onTabSelected(tab.position)
@@ -89,6 +96,10 @@ class CategoryL2TabViewHolder(
 
         override fun onTabReselected(tab: TabLayout.Tab) {
         }
+    }
+
+    fun loadMore() {
+        viewPagerAdapter.loadMore()
     }
 
     interface CategoryL2TabListener {

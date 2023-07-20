@@ -26,6 +26,7 @@ import com.tokopedia.tokopedianow.searchcategory.domain.usecase.GetSortFilterUse
 import com.tokopedia.tokopedianow.searchcategory.utils.QUICK_FILTER_TOKONOW_DIRECTORY
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.Job
 import javax.inject.Inject
 
 class TokoNowCategoryL2TabViewModel @Inject constructor(
@@ -58,22 +59,44 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
     
     private val visitableList = mutableListOf<Visitable<*>>()
 
-    var categoryIdL2: String = ""
-    var components = listOf<Component>()
+    private var page = 1
+    private var getProductJob: Job? = null
 
-    fun onViewCreated() {
+    private var categoryIdL2: String = ""
+
+    fun onViewCreated(categoryIdL2: String, components: List<Component>) {
+        setCategoryIdL2(categoryIdL2)
+        loadFirstPage(components)
+    }
+
+    fun loadMore() {
+        if(getProductJob?.isCompleted != false) {
+            launchCatchError(block = {
+                getProductList()
+                page++
+            }) {
+
+            }.let {
+                getProductJob = it
+            }
+        }
+    }
+
+    private fun loadFirstPage(components: List<Component>) {
         launchCatchError(block = {
             visitableList.clear()
             visitableList.mapToCategoryTabLayout(components)
-            
             visitableList.filterNotLoadedLayout().forEach {
-                when(it) {
+                when (it) {
                     is CategoryQuickFilterUiModel -> getQuickFilterAsync(it).await()
                     is CategoryProductListUiModel -> getProductListAsync(it).await()
                 }
             }
+            page++
         }) {
-            
+
+        }.let {
+            getProductJob = it
         }
     }
 
@@ -91,13 +114,21 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
 
     private fun getProductListAsync(item: CategoryProductListUiModel): Deferred<Unit?> {
         return asyncCatchError(block = {
-            val response = getCategoryProductUseCase.execute(categoryIdL2)
-            visitableList.addProductCardItems(response)
             visitableList.remove(item)
-            updateVisitableListLiveData()
+            getProductList()
         }) {
 
         }
+    }
+
+    private suspend fun getProductList() {
+        val response = getCategoryProductUseCase.execute(categoryIdL2, page, 9)
+        visitableList.addProductCardItems(response)
+        updateVisitableListLiveData()
+    }
+
+    private fun setCategoryIdL2(categoryIdL2: String) {
+        this.categoryIdL2 = categoryIdL2
     }
 
     private fun updateVisitableListLiveData() {

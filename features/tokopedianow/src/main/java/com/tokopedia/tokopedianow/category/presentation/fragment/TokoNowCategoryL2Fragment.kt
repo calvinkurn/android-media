@@ -17,6 +17,7 @@ import com.tokopedia.tokopedianow.category.presentation.adapter.differ.CategoryL
 import com.tokopedia.tokopedianow.category.presentation.adapter.typefactory.CategoryL2AdapterTypeFactory
 import com.tokopedia.tokopedianow.category.presentation.callback.TokoNowChooseAddressWidgetCallback
 import com.tokopedia.tokopedianow.category.presentation.model.CategoryL2TabModel
+import com.tokopedia.tokopedianow.category.presentation.viewholder.CategoryL2TabViewHolder
 import com.tokopedia.tokopedianow.category.presentation.viewholder.CategoryL2TabViewHolder.CategoryL2TabListener
 import com.tokopedia.tokopedianow.category.presentation.viewmodel.TokoNowCategoryL2ViewModel
 import com.tokopedia.tokopedianow.common.listener.ProductAdsCarouselListener
@@ -77,6 +78,7 @@ class TokoNowCategoryL2Fragment : BaseCategoryFragment() {
     override fun observeLiveData() {
         super.observeLiveData()
         observeCategoryTabs()
+        observeLoadMore()
     }
 
     override fun initInjector() {
@@ -106,6 +108,12 @@ class TokoNowCategoryL2Fragment : BaseCategoryFragment() {
             addCategoryTab(it)
             setupTabScrollListener()
             setupTabSelectedListener(it)
+        }
+    }
+
+    private fun observeLoadMore() {
+        observe(viewModel.loadMore) {
+            onLoadMore()
         }
     }
 
@@ -151,6 +159,15 @@ class TokoNowCategoryL2Fragment : BaseCategoryFragment() {
                         tabsUnify?.hide()
                     }
                 }
+            }
+        }
+    }
+
+    private fun onLoadMore() {
+        val tabPosition = viewModel.getTabPosition()
+        recyclerView?.findViewHolderForAdapterPosition(tabPosition)?.let {
+            if (it is CategoryL2TabViewHolder) {
+                it.loadMore()
             }
         }
     }

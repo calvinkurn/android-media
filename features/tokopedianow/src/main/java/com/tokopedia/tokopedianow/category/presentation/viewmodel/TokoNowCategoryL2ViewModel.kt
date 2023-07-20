@@ -15,14 +15,12 @@ import com.tokopedia.tokopedianow.category.domain.response.GetCategoryLayoutResp
 import com.tokopedia.tokopedianow.category.domain.usecase.GetCategoryLayoutUseCase
 import com.tokopedia.tokopedianow.category.domain.usecase.GetCategoryProductUseCase
 import com.tokopedia.tokopedianow.category.presentation.constant.CategoryComponentType.Companion.TABS_HORIZONTAL_SCROLL
-import com.tokopedia.tokopedianow.category.presentation.model.CategoryL2Model
 import com.tokopedia.tokopedianow.category.presentation.model.CategoryL2TabModel
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryL2TabUiModel
 import com.tokopedia.tokopedianow.common.domain.usecase.GetProductAdsUseCase
 import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase
 import com.tokopedia.tokopedianow.common.service.NowAffiliateService
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
-import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel
 import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
@@ -57,8 +55,10 @@ class TokoNowCategoryL2ViewModel @Inject constructor(
 ) {
 
     private val _categoryTabs = MutableLiveData<List<CategoryL2TabModel>>()
+    private val _loadMore = MutableLiveData<Unit>()
 
     val categoryTabs: LiveData<List<CategoryL2TabModel>> = _categoryTabs
+    val loadMore: LiveData<Unit> = _loadMore
 
     override fun loadFirstPage(tickerList: List<TickerData>) {
         launchCatchError(
@@ -82,22 +82,7 @@ class TokoNowCategoryL2ViewModel @Inject constructor(
     }
 
     override suspend fun loadNextPage() {
-    }
-
-    override fun onSuccessGetCategoryProduct(
-        response: AceSearchProductModel,
-        categoryL2Model: CategoryL2Model
-    ) {
-        val searchProduct = response.searchProduct
-        val header = searchProduct.header
-        val data = searchProduct.data
-        val productList = data.productList.filter { !it.isOos() }
-    }
-
-    override fun onErrorGetCategoryProduct(
-        error: Throwable,
-        categoryL2Model: CategoryL2Model
-    ) {
+        _loadMore.postValue(Unit)
     }
 
     fun onTabSelected(position: Int) {

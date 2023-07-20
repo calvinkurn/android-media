@@ -29,11 +29,15 @@ class GetCategoryProductUseCase @Inject constructor(
         }
     }
 
-    suspend fun execute(categoryIdL2: String): AceSearchProductModel {
+    suspend fun execute(
+        categoryIdL2: String,
+        page: Int = PAGE_VALUE,
+        rows: Int = ROWS_VALUE
+    ): AceSearchProductModel {
         return graphql.run {
             val queryParams = aceSearchParamMapper.createRequestParams(
-                page = PAGE_VALUE,
-                rows = ROWS_VALUE,
+                page = page,
+                rows = rows,
                 srpPageId = categoryIdL2,
                 source = SOURCE_VALUE
             )
