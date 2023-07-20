@@ -72,7 +72,8 @@ class SaveImageRepositoryImpl @Inject constructor(
 
                 val canvas = Canvas(baseBitmap)
                 finalBitmap?.let {
-                    canvas.drawBitmap(it,
+                    canvas.drawBitmap(
+                        it,
                         XY_FLATTEN_COORDINATE,
                         XY_FLATTEN_COORDINATE,
                         Paint()
@@ -85,7 +86,7 @@ class SaveImageRepositoryImpl @Inject constructor(
             errorCode = ERROR_LOAD_FAILED_BASE
         }
 
-        if (errorCode != NO_ERROR){
+        if (errorCode != NO_ERROR) {
             val errorMsg = if (errorCode == ERROR_LOAD_FAILED_BASE) {
                 ERROR_LOAD_FAILED_BASE_TEXT
             } else {

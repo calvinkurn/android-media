@@ -135,8 +135,8 @@ class RotateFilterRepositoryImpl @Inject constructor(
         var prevImageWidth: Float
         var prevImageHeight: Float
         cropOverlay.cropViewRect.let {
-                prevImageWidth = it.width()
-                prevImageHeight = it.height()
+            prevImageWidth = it.width()
+            prevImageHeight = it.height()
         }
 
         val currentScale = cropImageView.currentScale
@@ -156,11 +156,12 @@ class RotateFilterRepositoryImpl @Inject constructor(
                 val diffWidth = abs(newTargetWidth.width() - prevImageWidth)
                 val diffHeight = abs(newTargetWidth.height() - prevImageHeight)
 
-                rotatedRatioZoom = if (diffWidth <= TOLERANCE_SIZE_VALUE && diffHeight <= TOLERANCE_SIZE_VALUE) {
-                    initialScale
-                } else {
-                    (newTargetWidth.height() / prevImageWidth) * currentScale
-                }
+                rotatedRatioZoom =
+                    if (diffWidth <= TOLERANCE_SIZE_VALUE && diffHeight <= TOLERANCE_SIZE_VALUE) {
+                        initialScale
+                    } else {
+                        (newTargetWidth.height() / prevImageWidth) * currentScale
+                    }
             }
 
             newScale = rotatedRatioZoom
