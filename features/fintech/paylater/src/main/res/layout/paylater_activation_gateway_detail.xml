@@ -94,14 +94,15 @@
         app:layout_constraintStart_toEndOf="@id/additionalInformationIcon"
         app:layout_constraintTop_toTopOf="@id/additionalInformationIcon"
         app:layout_constraintBottom_toBottomOf="@id/additionalInformationIcon"
-        app:typographyType="heading_6"
+        app:typographyType="heading_5"
         tools:text="Hore, biaya cicilan kamu turun!" />
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/additionalInformationBottomsheetIcon"
-        android:layout_width="16dp"
-        android:layout_height="16dp"
-        android:layout_marginStart="@dimen/unify_space_4"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="2dp"
         app:layout_constraintStart_toEndOf="@id/additionalInformationTitle"
         app:layout_constraintBottom_toBottomOf="@id/additionalInformationTitle"
         app:layout_constraintTop_toTopOf="@id/additionalInformationTitle"

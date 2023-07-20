@@ -18,11 +18,11 @@
         android:id="@+id/ivTicker"
         android:layout_width="60dp"
         android:layout_height="48dp"
-        android:layout_marginStart="16dp"
         android:paddingStart="6dp"
         android:paddingEnd="6dp"
         android:paddingTop="6dp"
         android:paddingBottom="6dp"
+        android:scaleType="fitCenter"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"/>
 
@@ -31,7 +31,6 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:textColor="@color/Unify_NN950"
-        android:layout_marginEnd="16dp"
         android:paddingEnd="12dp"
         app:layout_constraintStart_toEndOf="@id/ivTicker"
         app:layout_constraintEnd_toEndOf="parent"
