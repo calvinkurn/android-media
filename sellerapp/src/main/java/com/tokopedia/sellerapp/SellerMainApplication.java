@@ -68,7 +68,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import javax.crypto.SecretKey;
-
+import com.tokopedia.analytics.performance.fpi.FrameMetricsMonitoring;
 import io.embrace.android.embracesdk.Embrace;
 import kotlin.Pair;
 import kotlin.jvm.functions.Function1;
@@ -320,6 +320,8 @@ public class SellerMainApplication extends SellerRouterApplication implements Co
         registerActivityLifecycleCallbacks(new SellerFeedbackScreenshot(getApplicationContext()));
         registerActivityLifecycleCallbacks(new GqlActivityCallback());
         registerActivityLifecycleCallbacks(new NotificationGeneralPromptLifecycleCallbacks());
+        registerActivityLifecycleCallbacks(new Frame());
+        registerActivityLifecycleCallbacks(new FrameMetricsMonitoring());
     }
 
     @Override
