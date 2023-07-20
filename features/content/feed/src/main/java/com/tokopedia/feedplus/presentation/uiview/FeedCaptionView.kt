@@ -32,7 +32,7 @@ class FeedCaptionView(
     private val textView: TextView,
     private val fadingLayout: FeedCaptionFadingLayout,
     private val listener: FeedListener,
-    private val captionListener: Listener,
+    private val captionListener: Listener
 ) {
 
     var fullText = ""
@@ -115,7 +115,6 @@ class FeedCaptionView(
             textView.post { setupSelengkapnya() }
         }
         textView.scrollTo(0, 0)
-        textView.invalidate()
         isCollapsed = true
 
         fadingLayout.setBottomFadingEdgeBounds(0)
@@ -132,16 +131,18 @@ class FeedCaptionView(
         captionListener.onExpanded(this)
 
         textView.scrollTo(0, 0)
-        textView.invalidate()
         isCollapsed = false
 
-        if (textView.lineCount > MAX_LINES_COLLAPSED) {
-            fadingLayout.setBottomFadingEdgeBounds(
-                if (textView.canScrollVertically(1)) FADING_EDGE_HEIGHT else 0
-            )
-            fadingLayout.setTopFadingEdgeBounds(
-                if (textView.canScrollVertically(-1)) FADING_EDGE_HEIGHT else 0
-            )
+        textView.requestLayout()
+        textView.doOnLayout {
+            if (textView.lineCount > MAX_LINES_COLLAPSED) {
+                fadingLayout.setBottomFadingEdgeBounds(
+                    if (textView.canScrollVertically(1)) FADING_EDGE_HEIGHT else 0
+                )
+                fadingLayout.setTopFadingEdgeBounds(
+                    if (textView.canScrollVertically(-1)) FADING_EDGE_HEIGHT else 0
+                )
+            }
         }
     }
 
@@ -208,7 +209,6 @@ class FeedCaptionView(
 object EmptyMovementMethod : MovementMethod {
 
     override fun initialize(p0: TextView?, p1: Spannable?) {
-
     }
 
     override fun onKeyDown(p0: TextView?, p1: Spannable?, p2: Int, p3: KeyEvent?): Boolean {
@@ -224,7 +224,6 @@ object EmptyMovementMethod : MovementMethod {
     }
 
     override fun onTakeFocus(p0: TextView?, p1: Spannable?, p2: Int) {
-
     }
 
     override fun onTrackballEvent(p0: TextView?, p1: Spannable?, p2: MotionEvent?): Boolean {
