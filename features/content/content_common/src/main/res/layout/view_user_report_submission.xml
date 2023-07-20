@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cl_user_report_submission_sheet"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/Unify_Background"
+    android:clickable="true"
+    android:focusable="true"
+    app:behavior_hideable="true"
+    app:behavior_skipCollapsed="true"
+    tools:parentTag="androidx.coordinatorlayout.widget.CoordinatorLayout">
+
+    <com.tokopedia.content.common.ui.custom.ContentHeaderView
+        android:id="@+id/header_content_report_submission"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_user_report_submission_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/spacing_lvl4"
+        android:paddingTop="@dimen/spacing_lvl4"
+        android:paddingRight="@dimen/spacing_lvl4"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/header_content_report_submission"
+        app:layout_constraintVertical_bias="0.0">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_user_report_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="body_1"
+            app:typographyWeight="bold"
+            tools:text="Salah Kategori" />
+
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_user_report_desc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl4"
+            android:ellipsize="end"
+            android:textColor="@color/Unify_NN600"
+            app:layout_constraintEnd_toEndOf="@+id/tv_user_report_title"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/tv_user_report_title"
+            app:layout_constraintTop_toBottomOf="@+id/tv_user_report_title"
+            app:typographyType="body_2"
+            tools:text="Memasukkan produk di kategori yang tidak sesuai. Contoh: Menjual tas dalam kategori Makanan &amp; Minuman." />
+
+        <com.tokopedia.unifycomponents.TextAreaUnify2
+            android:id="@+id/et_detail_report"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl5"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/tv_user_report_desc"
+            app:layout_constraintTop_toBottomOf="@+id/tv_user_report_desc"
+            app:unify_text_field_input_type="text"
+            tools:unify_text_field_label="Detail Laporan"
+            tools:unify_text_field_message="Min. 30 Karakter" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_user_report_footer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl4"
+            android:ellipsize="end"
+            android:text="@string/content_user_report_footer"
+            app:layout_constraintStart_toStartOf="@+id/et_detail_report"
+            app:layout_constraintTop_toBottomOf="@+id/et_detail_report"
+            app:typographyType="body_3"
+            tools:visibility="visible" />
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/btn_action"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/layout_lvl5"
+            android:layout_marginTop="@dimen/content_common_space_12"
+            android:elevation="@dimen/spacing_lvl2"
+            android:enabled="false"
+            android:text="@string/content_user_report_submission_button"
+            android:visibility="visible"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/tv_user_report_footer"
+            app:layout_constraintTop_toBottomOf="@+id/tv_user_report_footer"
+            app:unifyButtonType="main"
+            tools:visibility="visible" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
+
+

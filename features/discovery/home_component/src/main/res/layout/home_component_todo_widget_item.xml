@@ -134,7 +134,7 @@
                 android:ellipsize="end"
                 android:gravity="center_vertical"
                 android:maxLines="1"
-                android:textColor="@color/Unify_N700_44"
+                android:textColor="@color/Unify_NN950_44"
                 android:visibility="gone"
                 app:layout_constraintStart_toEndOf="@id/label_discount_todo_widget"
                 app:layout_constraintTop_toTopOf="@id/label_discount_todo_widget"

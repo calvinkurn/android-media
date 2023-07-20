@@ -7,7 +7,7 @@ import com.tokopedia.tokofood.common.domain.response.KeroGetAddressResponse
 import com.tokopedia.tokofood.feature.purchase.purchasepage.domain.query.KeroGetAddressQuery
 import javax.inject.Inject
 
-class KeroGetAddressUseCase @Inject constructor(
+open class KeroGetAddressUseCase @Inject constructor(
     graphqlRepository: GraphqlRepository
 ) : GraphqlUseCase<KeroGetAddressResponse>(graphqlRepository) {
 

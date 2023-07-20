@@ -28,8 +28,8 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     companion object {
         // This a reminder to developer.
         // If this size is modified, please also add unit test for the added deeplink.
-        const val SIZE_HOST = 154
-        const val SIZE_PATH = 256
+        const val SIZE_HOST = 156
+        const val SIZE_PATH = 264
     }
 
     override fun setup() {
@@ -43,7 +43,7 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
         // This test is a reminder for developer.
         // If there is any mapping changed/added/deleted, developer should change the SIZE_MAPPER
         // also there developer should also add the corresponding unit test for the deeplink.
-        assertEquals(DeeplinkMapper.getTokopediaSchemeList().size, SIZE_HOST)
+        assertEquals(SIZE_HOST, DeeplinkMapper.getTokopediaSchemeList().size)
         var totalPath = 0
         var key = ""
         var alphabeticalOrder = true
@@ -68,7 +68,7 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
                 }
             }
         }
-        assertEquals(totalPath, SIZE_PATH)
+        assertEquals(SIZE_PATH, totalPath)
         // alphabetical order improve readability in code
         if (!alphabeticalOrder) {
             throw RuntimeException(entryKeyNotAlphabetical.joinToString(", ") + " is not alphabetical")
@@ -2210,6 +2210,13 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     }
 
     @Test
+    fun `check tokonow see all category appLink then should return tokopedia internal tokonow see all category in customerapp`() {
+        val expectedDeepLink = ApplinkConstInternalTokopediaNow.SEE_ALL_CATEGORY
+        val actualDeeplink = ApplinkConst.TokopediaNow.SEE_ALL_CATEGORY
+        assertEqualsDeepLinkMapper(actualDeeplink, expectedDeepLink)
+    }
+
+    @Test
     fun `check manual ads creation applink`() {
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://topads/create-manual-ads"
         assertEqualsDeepLinkMapper(
@@ -2750,5 +2757,13 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
         val appLink = "tokopedia://content/$postId?$query"
 
         assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
+    }
+
+    @Test
+    fun `check shop nib applink`() {
+        assertEqualsDeepLinkMapper(
+            ApplinkConst.SHOP_NIB_CUSTOMER_APP,
+            ApplinkConstInternalMechant.SHOP_NIB_CUSTOMER_APP
+        )
     }
 }

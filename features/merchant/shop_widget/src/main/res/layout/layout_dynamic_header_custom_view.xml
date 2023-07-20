@@ -44,7 +44,7 @@
         android:fontFamily="sans-serif-medium"
         android:gravity="end"
         android:lineSpacingExtra="3sp"
-        android:textColor="@color/Unify_G500"
+        android:textColor="@color/Unify_GN500"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_goneMarginLeft="16dp"

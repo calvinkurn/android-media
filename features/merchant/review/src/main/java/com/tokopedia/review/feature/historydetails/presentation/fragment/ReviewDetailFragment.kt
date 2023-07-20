@@ -355,7 +355,7 @@ class ReviewDetailFragment : BaseDaggerFragment(),
                     setTextColor(
                         ContextCompat.getColor(
                             context,
-                            com.tokopedia.unifyprinciples.R.color.Unify_N700_32
+                            com.tokopedia.unifyprinciples.R.color.Unify_NN950_32
                         )
                     )
                     show()
@@ -366,7 +366,7 @@ class ReviewDetailFragment : BaseDaggerFragment(),
                     setTextColor(
                         ContextCompat.getColor(
                             context,
-                            com.tokopedia.unifyprinciples.R.color.Unify_N700_96
+                            com.tokopedia.unifyprinciples.R.color.Unify_NN950_96
                         )
                     )
                     show()
