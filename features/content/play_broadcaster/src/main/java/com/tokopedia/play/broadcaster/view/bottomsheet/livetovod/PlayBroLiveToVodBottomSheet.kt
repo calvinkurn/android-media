@@ -30,7 +30,7 @@ class PlayBroLiveToVodBottomSheet @Inject constructor(
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        setChild(ComposeView(requireContext()).apply {
+        val composeView = ComposeView(requireContext()).apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 PlayBroadcasterLiveToVodBottomSheetScreen(
@@ -43,7 +43,8 @@ class PlayBroLiveToVodBottomSheet @Inject constructor(
                     },
                 )
             }
-        })
+        }
+        setChild(composeView)
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
