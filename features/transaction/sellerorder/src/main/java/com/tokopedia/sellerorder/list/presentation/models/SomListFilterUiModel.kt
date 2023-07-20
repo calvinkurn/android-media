@@ -3,15 +3,21 @@ package com.tokopedia.sellerorder.list.presentation.models
 import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.list.domain.model.SomListGetOrderListParam
 
+// mappers -> loadFilters -> mergeWithCurrent -> Update Tabs -> select tab -> loadFilters
 data class SomListFilterUiModel(
     val statusList: List<Status> = listOf(),
     val sortByList: List<SortBy> = listOf(),
     var refreshOrder: Boolean = true,
     val fromCache: Boolean,
-    val quickFilterList: List<QuickFilter> = listOf()
+    val quickFilterList: List<QuickFilter> = listOf(),
+    val highLightedStatusKey: String
 ) {
 
-    fun mergeWithCurrent(getOrderListParam: SomListGetOrderListParam, tabActiveFromAppLink: String) {
+    fun mergeWithCurrent(
+        getOrderListParam: SomListGetOrderListParam,
+        tabActiveFromAppLink: String,
+        isFirstPageOpened: Boolean
+    ) {
         if (tabActiveFromAppLink.isNotBlank()) {
             statusList.find {
                 it.key == tabActiveFromAppLink
@@ -20,17 +26,32 @@ data class SomListFilterUiModel(
                 childStatuses.forEach { childStatus ->
                     childStatus.isChecked = true
                 }
+                getOrderListParam.statusKey = key
+                getOrderListParam.statusList = id
+            }
+        }
+        // highlightedStatusKey: new order, all order, confirm_shipping when it first load
+        else if (highLightedStatusKey.isNotBlank() && isFirstPageOpened) {
+            statusList.find {
+                it.key == highLightedStatusKey
+            }?.run {
+                isChecked = true
+                childStatuses.forEach { childStatus ->
+                    childStatus.isChecked = true
+                }
+                getOrderListParam.statusKey = key
                 getOrderListParam.statusList = id
             }
         } else {
             statusList.forEach { status ->
-                status.isChecked = if (status.key == SomConsts.STATUS_ALL_ORDER) {
-                    getOrderListParam.statusList.isEmpty()
+                if (status.key == SomConsts.STATUS_ALL_ORDER) {
+                    status.isChecked = getOrderListParam.statusList.isEmpty()
                 } else {
-                    getOrderListParam.statusList.any {
+                    status.isChecked = getOrderListParam.statusList.any {
                         it in status.id
                     }
                 }
+
                 status.childStatuses.forEach { childStatus ->
                     childStatus.isChecked = getOrderListParam.statusList.any {
                         it in childStatus.id
@@ -46,9 +67,11 @@ data class SomListFilterUiModel(
                 quickFilter.isOrderTypeFilter() -> {
                     getOrderListParam.orderTypeList.contains(quickFilter.id)
                 }
+
                 quickFilter.isShippingFilter() -> {
                     getOrderListParam.shippingList.contains(quickFilter.id)
                 }
+
                 else -> quickFilter.isChecked
             }
         }

@@ -1,15 +1,14 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:versionCode="1"
-    android:versionName="1.0.0"
-    package="com.tokopedia.home_recom">
+    android:versionName="1.0.0">
     <application
         android:label="Home Recom Test"
         tools:ignore="HardcodedDebugMode"
         tools:replace="android:debuggable,android:label"
         android:debuggable="true">
         <activity
-            android:name=".activity.HomeRecommendationActivityTest"
+            android:name="com.tokopedia.home_recom.activity.HomeRecommendationActivityTest"
             android:label="@string/recom_home_recommendation"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"/>

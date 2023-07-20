@@ -262,7 +262,7 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
         }
         headerToolbar?.addRightIcon(0)?.apply {
             clearImage()
-            setImageDrawable(getIconUnifyDrawable(context, IconUnify.EDIT, ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700)))
+            setImageDrawable(getIconUnifyDrawable(context, IconUnify.EDIT, ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950)))
             setOnClickListener {
                 TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEditEvent(
                     CLICK_GROUP_EDIT_ICON,

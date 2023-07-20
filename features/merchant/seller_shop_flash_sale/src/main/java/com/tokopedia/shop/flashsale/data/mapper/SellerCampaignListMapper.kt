@@ -70,7 +70,8 @@ class SellerCampaignListMapper @Inject constructor() {
                 thematicInfo = it.thematicInfo.toThematicInfoUiModel(),
                 reviewStartDate = it.reviewStartDate.epochToDate(),
                 reviewEndDate = it.reviewEndDate.epochToDate(),
-                packageInfo = it.toPackageInfo()
+                packageInfo = it.toPackageInfo(),
+                isOosImprovement = it.isOosImprovement
             )
         }
         return CampaignMeta(
