@@ -949,8 +949,8 @@ class TokoNowRepurchaseFragment:
     }
 
     private fun onScrollProductList() {
-        val layoutManager = rvRepurchase?.layoutManager as? StaggeredGridLayoutManager
-        val index = layoutManager?.findLastCompletelyVisibleItemPositions(null)
+        val layoutManager = rvRepurchase?.layoutManager as? GridLayoutManager
+        val index = layoutManager?.findLastCompletelyVisibleItemPosition()
         val itemCount = layoutManager?.itemCount.orZero()
         viewModel.onScrollProductList(index, itemCount)
     }
