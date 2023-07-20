@@ -15,6 +15,7 @@ import androidx.work.Configuration;
 import com.google.android.play.core.splitcompat.SplitCompat;
 import com.tokopedia.abstraction.relic.NewRelicInteractionActCall;
 import com.tokopedia.additional_check.subscriber.TwoFactorCheckerSubscriber;
+import com.tokopedia.analytics.performance.fpi.FrameMetricsMonitoring;
 import com.tokopedia.analytics.performance.util.EmbraceMonitoring;
 import com.tokopedia.analyticsdebugger.cassava.Cassava;
 import com.tokopedia.analyticsdebugger.cassava.data.RemoteSpec;
@@ -68,7 +69,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import javax.crypto.SecretKey;
-import com.tokopedia.analytics.performance.fpi.FrameMetricsMonitoring;
+
 import io.embrace.android.embracesdk.Embrace;
 import kotlin.Pair;
 import kotlin.jvm.functions.Function1;
@@ -321,7 +322,6 @@ public class SellerMainApplication extends SellerRouterApplication implements Co
         registerActivityLifecycleCallbacks(new SellerFeedbackScreenshot(getApplicationContext()));
         registerActivityLifecycleCallbacks(new GqlActivityCallback());
         registerActivityLifecycleCallbacks(new NotificationGeneralPromptLifecycleCallbacks());
-        registerActivityLifecycleCallbacks(new Frame());
     }
 
     @Override
