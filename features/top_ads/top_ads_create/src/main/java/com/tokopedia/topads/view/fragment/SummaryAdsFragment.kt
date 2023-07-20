@@ -234,17 +234,6 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
                 } catch (e: NumberFormatException) {
                 }
                 validateDailyBudget(budget)
-//                if (budget < suggestion && txtDailyBudget?.isVisible == true) {
-//                    txtDailyBudget?.setMessage(
-//                        String.format(
-//                            getString(R.string.topads_common_minimum_daily_budget),
-//                            minBudget
-//                        )
-//                    )
-//                    txtDailyBudget?.setError(true)
-//                    validation2 = false
-//                    actionEnable()
-//                }
             } else {
                 txtDailyBudget?.visibility = View.GONE
                 txtDailyBudget?.setError(false)
