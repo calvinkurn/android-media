@@ -14,6 +14,7 @@ import kotlinx.coroutines.Dispatchers
 
 @Module
 class PromoUsageModule {
+
     @PromoUsageScope
     @Provides
     fun provideGraphQlRepository(): GraphqlRepository = GraphqlInteractor.getInstance().graphqlRepository

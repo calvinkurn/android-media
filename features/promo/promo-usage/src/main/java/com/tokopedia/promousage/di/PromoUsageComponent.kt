@@ -5,7 +5,10 @@ import com.tokopedia.promousage.view.bottomsheet.PromoUsageBottomSheet
 import dagger.Component
 
 @PromoUsageScope
-@Component(modules = [PromoUsageViewModelModule::class, PromoUsageModule::class], dependencies = [BaseAppComponent::class])
+@Component(
+    dependencies = [BaseAppComponent::class],
+    modules = [PromoUsageViewModelModule::class, PromoUsageModule::class]
+)
 interface PromoUsageComponent {
     fun inject(bottomSheet: PromoUsageBottomSheet)
 }
