@@ -8,7 +8,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="2dp"
-        android:background="@color/Unify_N0">
+        android:background="@color/Unify_NN0">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"

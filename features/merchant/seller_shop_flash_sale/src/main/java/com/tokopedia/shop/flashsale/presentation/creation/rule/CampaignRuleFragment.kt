@@ -2,10 +2,15 @@ package com.tokopedia.shop.flashsale.presentation.creation.rule
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Typeface
 import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableString
+import android.text.Spanned
 import android.text.SpannedString
+import android.text.TextPaint
+import android.text.method.LinkMovementMethod
+import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
 import android.view.LayoutInflater
@@ -22,14 +27,18 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.campaign.data.response.RollenceGradualRollout
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsFragmentCampaignRuleBinding
 import com.tokopedia.shop.flashsale.common.constant.BundleConstant
@@ -41,6 +50,7 @@ import com.tokopedia.shop.flashsale.common.extension.showError
 import com.tokopedia.shop.flashsale.common.extension.showLoading
 import com.tokopedia.shop.flashsale.common.extension.stopLoading
 import com.tokopedia.shop.flashsale.common.extension.toBulletSpan
+import com.tokopedia.shop.flashsale.common.util.FlashSaleTokoUtil
 import com.tokopedia.shop.flashsale.di.component.DaggerShopFlashSaleComponent
 import com.tokopedia.shop.flashsale.domain.entity.CampaignUiModel
 import com.tokopedia.shop.flashsale.domain.entity.MerchantCampaignTNC
@@ -65,10 +75,13 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
-class CampaignRuleFragment : BaseDaggerFragment(),
+class CampaignRuleFragment :
+    BaseDaggerFragment(),
     OnRemoveRelatedCampaignListener,
     MerchantCampaignTNCBottomSheet.ConfirmationClickListener,
     ChooseRelatedCampaignBottomSheetListener,
@@ -93,6 +106,10 @@ class CampaignRuleFragment : BaseDaggerFragment(),
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
+    @Inject
+    lateinit var userSession: UserSessionInterface
+
+    private val sellerEduArticleUrl = "https://www.tokopedia.com/help/seller/article/pertanyaan-seputar-flash-sale-toko"
     private val campaignId by lazy { arguments?.getLong(BundleConstant.BUNDLE_KEY_CAMPAIGN_ID) }
     private val pageMode by lazy {
         arguments?.getParcelable(BundleConstant.BUNDLE_KEY_PAGE_MODE) ?: PageMode.CREATE
@@ -105,6 +122,7 @@ class CampaignRuleFragment : BaseDaggerFragment(),
     private var relatedCampaignAdapter: RelatedCampaignAdapter? = null
 
     private var errorToaster: Snackbar? = null
+    private var irisSession: IrisSession? = null
 
     private val tncCheckboxChangeListener = object : CompoundButton.OnCheckedChangeListener {
         override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
@@ -126,10 +144,13 @@ class CampaignRuleFragment : BaseDaggerFragment(),
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         binding = SsfsFragmentCampaignRuleBinding.inflate(inflater, container, false)
+        if (irisSession == null && container != null) irisSession = IrisSession(container.context)
+        userSession = UserSession(context)
         return binding?.root
     }
 
@@ -147,14 +168,17 @@ class CampaignRuleFragment : BaseDaggerFragment(),
     }
 
     private fun setUpView() {
+        getRollenceGradualRollout()
         handlePageMode()
         setUpToolbar()
         setUpClickListeners()
         setUpUniqueAccountTips()
         setUpTNCText()
         setUpRelatedCampaignRecyclerView()
+        observeOutOfStockStatus()
         observeCampaign()
         observeSelectedPaymentMethod()
+        observeSelectedOosState()
         observeUniqueAccountSelected()
         observeCampaignRelationSelected()
         observeRelatedCampaignRemovedEvent()
@@ -195,6 +219,11 @@ class CampaignRuleFragment : BaseDaggerFragment(),
             viewModel.onRegularPaymentMethodSelected()
         }
 
+        binding.radioOosHandlingOptions.setOnCheckedChangeListener { _, checkedId ->
+            val isEnableTransaction = checkedId == R.id.radio_oos_option_can_transact
+            viewModel.setOosStatus(isEnableTransaction = isEnableTransaction)
+        }
+
         binding.chipsUniqueAccountYes.setOnClickListener {
             viewModel.onNotRequireUniqueAccountSelected()
         }
@@ -223,25 +252,27 @@ class CampaignRuleFragment : BaseDaggerFragment(),
             viewModel.onAddRelatedCampaignButtonClicked()
         }
 
-        childFragmentManager.registerFragmentLifecycleCallbacks(object :
-            FragmentManager.FragmentLifecycleCallbacks() {
-            override fun onFragmentResumed(fm: FragmentManager, f: Fragment) {
-                super.onFragmentResumed(fm, f)
-                when (f) {
-                    is MerchantCampaignTNCBottomSheet -> {
-                        f.setConfirmationClickListener(this@CampaignRuleFragment)
-                    }
-                    is ChooseRelatedCampaignBottomSheet -> {
-                        f.setChooseRelatedCampaignListener(this@CampaignRuleFragment)
-                    }
-                    is CreateCampaignConfirmationDialog -> {
-                        f.setCreateCampaignConfirmationListener(this@CampaignRuleFragment)
+        childFragmentManager.registerFragmentLifecycleCallbacks(
+            object :
+                FragmentManager.FragmentLifecycleCallbacks() {
+                override fun onFragmentResumed(fm: FragmentManager, f: Fragment) {
+                    super.onFragmentResumed(fm, f)
+                    when (f) {
+                        is MerchantCampaignTNCBottomSheet -> {
+                            f.setConfirmationClickListener(this@CampaignRuleFragment)
+                        }
+                        is ChooseRelatedCampaignBottomSheet -> {
+                            f.setChooseRelatedCampaignListener(this@CampaignRuleFragment)
+                        }
+                        is CreateCampaignConfirmationDialog -> {
+                            f.setCreateCampaignConfirmationListener(this@CampaignRuleFragment)
+                        }
                     }
                 }
-            }
-        }, false)
+            },
+            false
+        )
     }
-
 
     private fun handlePageMode() {
         if (pageMode == PageMode.UPDATE || pageMode == PageMode.DRAFT) {
@@ -274,6 +305,41 @@ class CampaignRuleFragment : BaseDaggerFragment(),
         binding.checkboxCampaignRuleTnc.text = getTNCText()
     }
 
+    private fun setupOosHandler(isShowOosSection: Boolean) {
+        val binding = binding ?: return
+        if (isShowOosSection) {
+            binding.viewGroupOosHandling.visible()
+            binding.tgCampaignFsOosTitle.apply {
+                val txtOosWording: String = getText(R.string.campaign_rule_fs_out_of_stock_title).toString()
+                text = getOosSpan(txtOosWording)
+                movementMethod = LinkMovementMethod.getInstance()
+            }
+        } else {
+            binding.viewGroupOosHandling.gone()
+        }
+    }
+
+    private fun getOosSpan(spanString: String): CharSequence? {
+        val spannableString = SpannableString(spanString)
+        val urlLink = "${ApplinkConst.WEBVIEW}?url=$sellerEduArticleUrl"
+        val clickableSpan = object : ClickableSpan() {
+            override fun onClick(p0: View) {
+                RouteManager.route(context, urlLink)
+            }
+
+            override fun updateDrawState(ds: TextPaint) {
+                super.updateDrawState(ds)
+                ds.isUnderlineText = false
+                ds.color = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
+                ds.typeface = Typeface.DEFAULT_BOLD
+            }
+        }
+        val start = (spanString.length - 15)
+        val end = spanString.length
+        spannableString.setSpan(clickableSpan, start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        return spannableString
+    }
+
     private fun observeSelectedPaymentMethod() {
         viewModel.selectedPaymentType.observe(viewLifecycleOwner) { selectedPaymentMethod ->
             when (selectedPaymentMethod) {
@@ -281,6 +347,22 @@ class CampaignRuleFragment : BaseDaggerFragment(),
                 PaymentType.REGULAR -> onRegularPaymentMethodSelected()
                 else -> clearSelectedPaymentMethod()
             }
+        }
+    }
+
+    private fun observeSelectedOosState() {
+        viewModel.selectedOosState.observe(viewLifecycleOwner) { it ->
+            showOosStateRadioSelected(it)
+        }
+    }
+
+    // Get Rollence Gradual Rollout to check whether the new feature is available to user or not
+    private fun getRollenceGradualRollout() {
+        irisSession?.let { iris_session ->
+            viewModel.getRollenceGradualRollout(
+                shopId = userSession.shopId,
+                irisSessionId = iris_session.getSessionId()
+            )
         }
     }
 
@@ -300,6 +382,15 @@ class CampaignRuleFragment : BaseDaggerFragment(),
         val binding = binding ?: return
         binding.chipsInstantPaymentMethod.chipType = ChipsUnify.TYPE_NORMAL
         binding.chipsRegularPaymentMethod.chipType = ChipsUnify.TYPE_NORMAL
+    }
+
+    private fun showOosStateRadioSelected(oosState: Boolean) {
+        val binding = binding ?: return
+        if (oosState) {
+            binding.radioOosOptionCanTransact.isChecked = true
+        } else {
+            binding.radioOosOptionCanNotTransact.isChecked = true
+        }
     }
 
     private fun showPaymentMethodBottomSheet() {
@@ -330,7 +421,7 @@ class CampaignRuleFragment : BaseDaggerFragment(),
                 false -> onUniqueAccountRequired()
                 true -> onUniqueAccountNotRequired()
                 else -> {
-                    //no-op
+                    // no-op
                 }
             }
         }
@@ -358,7 +449,7 @@ class CampaignRuleFragment : BaseDaggerFragment(),
                 true -> renderNotCampaignRelation()
                 false -> renderCampaignRelation()
                 else -> {
-                    //no-op
+                    // no-op
                 }
             }
         }
@@ -385,7 +476,7 @@ class CampaignRuleFragment : BaseDaggerFragment(),
             true -> choosePreviousCampaignButton.enable()
             false -> choosePreviousCampaignButton.disable()
             else -> {
-                //no-op
+                // no-op
             }
         }
     }
@@ -420,7 +511,7 @@ class CampaignRuleFragment : BaseDaggerFragment(),
             addItemDecoration(
                 RelatedCampaignItemDecoration(
                     RELATED_CAMPAIGN_OFFSET_DP.toPx(),
-                    RELATED_CAMPAIGN_OFFSET_DP.toPx(),
+                    RELATED_CAMPAIGN_OFFSET_DP.toPx()
                 )
             )
             layoutManager = ChipsLayoutManager.newBuilder(context)
@@ -438,7 +529,7 @@ class CampaignRuleFragment : BaseDaggerFragment(),
         Toaster.build(
             binding.wrapperCampaignRuleContent,
             getString(R.string.campaign_rule_previous_campaign_item_removed),
-            actionText = getString(R.string.campaign_rule_previous_campaign_item_removed_cta),
+            actionText = getString(R.string.campaign_rule_previous_campaign_item_removed_cta)
         )
             .setAnchorView(binding.cardButtonWrapper)
             .show()
@@ -591,9 +682,43 @@ class CampaignRuleFragment : BaseDaggerFragment(),
                     hideSaveDraftButtonLoading()
                 }
                 else -> {
-                    //no-op
+                    // no-op
                 }
             }
+        }
+    }
+
+    private fun observeOutOfStockStatus() {
+        viewModel.isGetGradualRollout.observe(viewLifecycleOwner) { result ->
+            when (result) {
+                is Success -> {
+                    val isFeatureAvailable = isUserGetGradualRollout(result.data)
+                    setupOosHandler(isShowOosSection = isFeatureAvailable)
+                }
+                is Fail -> {
+                    // Disable UI OOS
+                    setupOosHandler(isShowOosSection = false)
+                }
+            }
+        }
+    }
+
+    private fun isUserGetGradualRollout(data: RollenceGradualRollout): Boolean {
+        // Validate the list if it's not empty
+        // If it's not empty, get the index 0 & read the value
+        // Update the liveData based on the value is empty or not
+
+        val rollenceList = FlashSaleTokoUtil().getKeysByPrefix(
+            prefix = RollenceKey.FLASH_SALE_OUT_OF_STOCK_GRADUAL_ROLLOUT,
+            dataRollout = data.dataRollout
+        )
+
+        return if (rollenceList.isNotEmpty()) {
+            val rollenceValue = rollenceList[RollenceKey.FLASH_SALE_OUT_OF_STOCK_GRADUAL_ROLLOUT]
+            val isGettingRollenceGradualRollout = rollenceValue != ""
+            isGettingRollenceGradualRollout
+        } else {
+            false
         }
     }
 
@@ -617,7 +742,7 @@ class CampaignRuleFragment : BaseDaggerFragment(),
                     showCreateCampaignConfirmationDialog()
                 }
                 else -> {
-                    //no-op
+                    // no-op
                 }
             }
         }
@@ -644,7 +769,7 @@ class CampaignRuleFragment : BaseDaggerFragment(),
             CampaignRuleValidationResult.InvalidPaymentMethod -> showErrorMessageToaster(R.string.campaign_rule_invalid_payment_type_message)
             CampaignRuleValidationResult.TNCNotAccepted -> showErrorMessageToaster(R.string.campaign_rule_tnc_not_accepted_message)
             else -> {
-                //no-op
+                // no-op
             }
         }
     }
@@ -702,7 +827,6 @@ class CampaignRuleFragment : BaseDaggerFragment(),
         dialog.show()
     }
 
-
     private fun routeToPmSubscribePage() {
         val intent = RouteManager.getIntent(
             context,
@@ -735,7 +859,7 @@ class CampaignRuleFragment : BaseDaggerFragment(),
     private fun routeToCampaignListPage(isSaveDraft: Boolean = false) {
         val context = context ?: return
 
-        //Add some spare time caused by Backend write operation delay
+        // Add some spare time caused by Backend write operation delay
         doOnDelayFinished(REDIRECTION_TO_CAMPAIGN_LIST_PAGE_DELAY) {
             CampaignListActivity.start(
                 context,

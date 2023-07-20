@@ -31,7 +31,7 @@
         android:enabled="false"
         android:textSize="@dimen/sp_16"
         android:maxLines="1"
-        android:textColorHint="@color/Unify_N200"
+        android:textColorHint="@color/Unify_NN500"
         android:background="@null"
         android:layout_weight="1"/>
 

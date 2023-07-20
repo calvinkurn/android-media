@@ -353,9 +353,9 @@ class SomFilterViewModelTest : SomFilterViewModelTestFixture() {
         val idFilter = SomConsts.FILTER_SORT
         val mockSomFilterUiModels = getMockSomFilterList()
         val indexOfSelectedSortFilterItem = mockSomFilterUiModels.filterIsInstance<SomFilterUiModel>()
-                .find {
-                    it.nameFilter == idFilter
-                }!!.somFilterData.indexOfFirst { it.id == SomConsts.SORT_BY_PAYMENT_DATE_ASCENDING }
+            .find {
+                it.nameFilter == idFilter
+            }!!.somFilterData.indexOfFirst { it.id == SomConsts.SORT_BY_PAYMENT_DATE_ASCENDING }
         coEvery {
             getSomOrderFilterUseCase.execute()
         } returns mockSomFilterUiModels
@@ -592,7 +592,7 @@ class SomFilterViewModelTest : SomFilterViewModelTestFixture() {
             }!!.somFilterData
             .find {
                 it.isSelected
-            }?.id ?: SomConsts.SORT_BY_PAYMENT_DATE_DESCENDING.toLong()
+            }?.id ?: SomConsts.SORT_BY_DEADLINE_DATE_ASCENDING.toLong()
     }
 
     private fun getSelectedStatusOrderFilterIds(somFilterUiModels: List<BaseSomFilter>): List<Int> {
