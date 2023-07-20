@@ -480,8 +480,10 @@ class FeedCampaignRibbonView(
 
             with(binding) {
                 startDelayProcess(THREE_SECOND) {
-                    root.setTransition(root.currentState, animationStateList[animationIndex])
-                    root.transitionToEnd()
+                    if (animationStateList.size > animationIndex) {
+                        root.setTransition(root.currentState, animationStateList[animationIndex])
+                        root.transitionToEnd()
+                    }
                     runLoopAnimation(index + ONE)
                 }
             }
