@@ -18,7 +18,6 @@ import com.tokopedia.buyerorderdetail.presentation.model.PlainHeaderUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.PlatformFeeInfoUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.PofRefundInfoUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
-import com.tokopedia.buyerorderdetail.presentation.model.ScpRewardsMedalTouchPointUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.ShipmentInfoUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.SimpleCopyableKeyValueUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.ThickDividerUiModel
@@ -28,6 +27,7 @@ import com.tokopedia.buyerorderdetail.presentation.model.TickerUiModel
 import com.tokopedia.buyerorderdetail.presentation.uistate.BuyerOrderDetailUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.OrderInsuranceUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.OrderResolutionTicketStatusUiState
+import com.tokopedia.scp_rewards_touchpoints.touchpoints.uimodel.ScpRewardsMedalTouchPointWidgetUiModel
 
 @Suppress("UNCHECKED_CAST")
 open class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailTypeFactory) :
@@ -196,7 +196,7 @@ open class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailType
     }
 
     private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addScpRewardsMedalTouchPointSection() {
-        add(ScpRewardsMedalTouchPointUiModel())
+        add(ScpRewardsMedalTouchPointWidgetUiModel() as Visitable<BuyerOrderDetailTypeFactory>)
     }
 
     private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addOrderStatusHeaderSection(
