@@ -11,6 +11,8 @@
     <string name="sp_apply_changes">Simpan Perubahan</string>
     <string name="sp_retry_questionnaire">Ulangi Kuis</string>
     <string name="sp_persona_result_select_manual"><![CDATA[Hasil kurang sesuai? <font color=\"%1$s\"><b>Pilih Sendiri Tipemu</b></font>]]></string>
+    <string name="sp_persona_result_manual_select_1">Hasil kurang sesuai?</string>
+    <string name="sp_persona_result_manual_select_2"> Pilih Sendiri Tipemu</string>
     <string name="sp_opening_page_type">Tipe Seller Apakah Kamu?</string>
     <string name="sp_this_is_your_seller_type">Ini tipe Seller kamu!</string>
     <string name="sp_result_create_admin_account">Beritahu pemilik toko untuk membuat akun khusus admin, ya.</string>

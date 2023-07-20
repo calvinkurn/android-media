@@ -15,34 +15,34 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.Switch
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.nest.components.ButtonVariant
 import com.tokopedia.nest.components.NestButton
 import com.tokopedia.nest.components.NestImage
+import com.tokopedia.nest.components.NestImageType
 import com.tokopedia.nest.components.loader.NestLoader
 import com.tokopedia.nest.components.loader.NestLoaderSize
 import com.tokopedia.nest.components.loader.NestLoaderType
 import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestNN
 import com.tokopedia.nest.principles.ui.NestTheme
+import com.tokopedia.nest.principles.utils.ImageSource
 import com.tokopedia.sellerpersona.R
-import com.tokopedia.sellerpersona.common.Utils
 import com.tokopedia.sellerpersona.view.compose.model.PersonaResultState
 import com.tokopedia.sellerpersona.view.compose.model.ResultUiEvent
 import com.tokopedia.sellerpersona.view.model.PersonaDataUiModel
@@ -74,7 +74,6 @@ internal fun PersonaResultScreen(
 
 @Composable
 private fun ResultFooterSectionUi(data: PersonaDataUiModel, onEvent: (ResultUiEvent) -> Unit) {
-    val context = LocalContext.current
     Column(
         modifier = Modifier
             .padding(top = 16.dp, start = 16.dp, end = 16.dp)
@@ -119,11 +118,9 @@ private fun ResultFooterSectionUi(data: PersonaDataUiModel, onEvent: (ResultUiEv
         Spacer(modifier = Modifier.height(24.dp))
         if (data.isApplyButtonVisible()) {
             NestButton(
-                text = stringResource(data.getApplyButtonStringRes()),
-                onClick = {
+                text = stringResource(data.getApplyButtonStringRes()), onClick = {
                     onEvent(ResultUiEvent.ApplyChanges(data.persona, data.isSwitchChecked))
-                },
-                modifier = Modifier.fillMaxWidth()
+                }, modifier = Modifier.fillMaxWidth()
             )
             Spacer(modifier = Modifier.height(16.dp))
         }
@@ -132,35 +129,55 @@ private fun ResultFooterSectionUi(data: PersonaDataUiModel, onEvent: (ResultUiEv
                 onEvent(ResultUiEvent.RetakeQuiz)
             }, modifier = Modifier.fillMaxWidth(), variant = ButtonVariant.GHOST_ALTERNATE
         )
-        val hexColor = remember {
-            Utils.getHexColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
-        }
-        NestTypography(
-            text = stringResource(
-                R.string.sp_persona_result_select_manual, hexColor
-            ).parseAsHtml(),
-            textStyle = NestTheme.typography.display3.copy(
-                color = NestTheme.colors.NN._600, textAlign = TextAlign.Center
-            ),
-            modifier = Modifier
-                .padding(top = 26.dp, bottom = 18.dp)
-                .fillMaxWidth()
-        )
+
+        ManualSelectPersonaComponent(data.persona, onEvent)
     }
 }
 
-private fun LazyListScope.renderResultContentSectionUi(data: PersonaDataUiModel) { item {
+@Composable
+private fun ManualSelectPersonaComponent(persona: String, onEvent: (ResultUiEvent) -> Unit) {
+    val clickableTextColor = NestTheme.colors.GN._500
+    val notClickable = stringResource(R.string.sp_persona_result_manual_select_1)
+    val clickable = stringResource(R.string.sp_persona_result_manual_select_2)
+    val annotatedString = buildAnnotatedString {
+        append(notClickable)
+        withStyle(
+            style = SpanStyle(
+                fontWeight = FontWeight.Bold, color = clickableTextColor
+            )
+        ) {
+            pushStringAnnotation(tag = clickable, annotation = clickable)
+            append(" $clickable")
+        }
+    }
+    NestTypography(
+        text = annotatedString,
+        textStyle = NestTheme.typography.display3.copy(
+            color = NestTheme.colors.NN._600, textAlign = TextAlign.Center
+        ),
+        modifier = Modifier
+            .padding(top = 26.dp, bottom = 18.dp)
+            .fillMaxWidth(),
+        onClickText = { offset ->
+            annotatedString.getStringAnnotations(offset, offset).firstOrNull()?.let { span ->
+                when (span.item) {
+                    clickable -> onEvent(ResultUiEvent.SelectPersona(persona))
+                }
+            }
+        })
+}
+
+private fun LazyListScope.renderResultContentSectionUi(data: PersonaDataUiModel) {
+    item {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(start = 16.dp, end = 16.dp)
         ) {
             NestTypography(
-                modifier = Modifier.padding(top = 16.dp),
-                text = stringResource(
+                modifier = Modifier.padding(top = 16.dp), text = stringResource(
                     R.string.sp_result_list_section_gedongan, data.personaData.headerTitle
-                ),
-                textStyle = NestTheme.typography.heading2.copy(
+                ), textStyle = NestTheme.typography.heading2.copy(
                     color = NestTheme.colors.NN._900
                 )
             )
@@ -189,11 +206,9 @@ private fun LazyListScope.renderResultContentSectionUi(data: PersonaDataUiModel)
             NestTypography(
                 modifier = Modifier.padding(
                     top = 6.dp, bottom = 6.dp, start = 8.dp
-                ),
-                textStyle = NestTheme.typography.display2.copy(
+                ), textStyle = NestTheme.typography.display2.copy(
                     color = NestTheme.colors.NN._950
-                ),
-                text = it
+                ), text = it
             )
         }
     }
@@ -237,17 +252,21 @@ private fun ResultHeaderSectionUi(persona: PersonaUiModel) {
         contentAlignment = Alignment.Center
     ) {
         NestImage(
-            imageUrl = persona.backgroundImage, modifier = Modifier.fillMaxSize()
+            source = ImageSource.Remote(source = persona.backgroundImage),
+            modifier = Modifier.fillMaxSize(),
+            contentScale = ContentScale.Crop
         )
         Column(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             NestImage(
-                imageUrl = persona.avatarImage,
-                modifier = Modifier
-                    .requiredSize(120.dp)
-                    .clip(CircleShape)
+                source = ImageSource.Remote(
+                    source = persona.avatarImage, loaderType = ImageSource.Remote.LoaderType.NONE
+                ),
+                contentScale = ContentScale.Crop,
+                type = NestImageType.Circle,
+                modifier = Modifier.requiredSize(120.dp)
             )
             Spacer(modifier = Modifier.requiredHeight(16.dp))
             NestTypography(
@@ -299,8 +318,7 @@ fun ResultLoadingState() {
 fun PreviewPersonaResultScreen() {
     NestTheme(darkTheme = false) {
         PersonaResultScreen(state = PersonaResultState(
-            isLoading = false,
-            data = PersonaDataUiModel(
+            isLoading = false, data = PersonaDataUiModel(
                 persona = "corporate-supervisor-owner",
                 personaStatus = PersonaStatus.ACTIVE,
                 personaData = PersonaUiModel(

@@ -44,7 +44,7 @@ class ComposePersonaResultViewModel @Inject constructor(
     fun onEvent(event: ResultUiEvent) = viewModelScope.launch {
         when (event) {
             is ResultUiEvent.ApplyChanges -> onApplyClicked(event)
-            is ResultUiEvent.CheckChanged -> onCheckedChanged(event.isChecked)
+            is ResultUiEvent.CheckChanged -> onCheckedChanged(event)
             is ResultUiEvent.Reload -> reloadPage()
             else -> {
                 _uiEvent.emit(event)
@@ -105,10 +105,10 @@ class ComposePersonaResultViewModel @Inject constructor(
         _personaState.emit(buttonLoadingState)
     }
 
-    private suspend fun onCheckedChanged(isChecked: Boolean) {
+    private suspend fun onCheckedChanged(event: ResultUiEvent.CheckChanged) {
         val lastState = _personaState.value
         val checkedChangedState = lastState.copy(
-            isLoading = false, data = lastState.data.copy(isSwitchChecked = isChecked), error = null
+            isLoading = false, data = lastState.data.copy(isSwitchChecked = event.isChecked), error = null
         )
         _personaState.emit(checkedChangedState)
     }

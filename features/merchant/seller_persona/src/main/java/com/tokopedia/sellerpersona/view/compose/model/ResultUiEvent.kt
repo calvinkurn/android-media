@@ -18,6 +18,7 @@ sealed class ResultUiEvent {
 
     data class CheckChanged(val isChecked: Boolean) : ResultUiEvent()
     data class ApplyChanges(val persona: String, val isActive: Boolean) : ResultUiEvent()
+    data class SelectPersona(val currentPersona: String) : ResultUiEvent()
     object Reload : ResultUiEvent()
     object RetakeQuiz : ResultUiEvent()
     object None : ResultUiEvent()
