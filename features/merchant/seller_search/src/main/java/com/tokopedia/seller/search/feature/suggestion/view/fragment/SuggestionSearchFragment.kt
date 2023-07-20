@@ -32,9 +32,14 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
 
-class SuggestionSearchFragment : BaseDaggerFragment(),
-    ProductSearchListener, OrderSearchListener, NavigationSearchListener, FaqSearchListener,
-    HighlightSuggestionSearchListener, ArticleSearchListener {
+class SuggestionSearchFragment :
+    BaseDaggerFragment(),
+    ProductSearchListener,
+    OrderSearchListener,
+    NavigationSearchListener,
+    FaqSearchListener,
+    HighlightSuggestionSearchListener,
+    ArticleSearchListener {
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -71,7 +76,8 @@ class SuggestionSearchFragment : BaseDaggerFragment(),
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(R.layout.suggestion_search_fragment, container, false)
@@ -104,7 +110,7 @@ class SuggestionSearchFragment : BaseDaggerFragment(),
                     stopSearchResultPagePerformanceMonitoring()
                 }
                 else -> {
-                    //no-op
+                    // no-op
                 }
             }
         })
@@ -168,12 +174,12 @@ class SuggestionSearchFragment : BaseDaggerFragment(),
     private fun stopSearchResultPagePerformanceMonitoring() {
         binding?.run {
             rvSearchSuggestionSeller.viewTreeObserver?.addOnGlobalLayoutListener(object :
-                ViewTreeObserver.OnGlobalLayoutListener {
-                override fun onGlobalLayout() {
-                    (activity as? GlobalSearchSellerPerformanceMonitoringListener)?.finishMonitoring()
-                    rvSearchSuggestionSeller.viewTreeObserver?.removeOnGlobalLayoutListener(this)
-                }
-            })
+                    ViewTreeObserver.OnGlobalLayoutListener {
+                    override fun onGlobalLayout() {
+                        (activity as? GlobalSearchSellerPerformanceMonitoringListener)?.finishMonitoring()
+                        rvSearchSuggestionSeller.viewTreeObserver?.removeOnGlobalLayoutListener(this)
+                    }
+                })
         }
     }
 
@@ -249,7 +255,6 @@ class SuggestionSearchFragment : BaseDaggerFragment(),
         moreRedirectToWebView(element.title, element.appActionLink)
     }
 
-
     override fun onArticleMoreClicked(element: TitleHasMoreSellerSearchUiModel) {
         moreRedirectToWebView(element.title, element.appActionLink)
     }
@@ -277,7 +282,7 @@ class SuggestionSearchFragment : BaseDaggerFragment(),
 
     private fun moreRedirectToWebView(
         title: String,
-        appUrl: String,
+        appUrl: String
     ) {
         SellerSearchTracking.clickOtherResult(userId, title, searchKeyword)
         val appUrlFormatted = appUrl.addWWWPrefix
@@ -304,4 +309,9 @@ class SuggestionSearchFragment : BaseDaggerFragment(),
         dropKeyBoard()
     }
 
+    companion object {
+        fun newInstance(): SuggestionSearchFragment {
+            return SuggestionSearchFragment()
+        }
+    }
 }

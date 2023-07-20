@@ -254,4 +254,10 @@ class InitialSearchFragment : BaseDaggerFragment(), HistorySearchListener {
         (activity as? GlobalSearchSellerPerformanceMonitoringListener)?.startNetworkPerformanceMonitoring()
         viewModel.getSellerSearch(keyword = searchKeyword, shopId = shopId)
     }
+
+    companion object {
+        fun newInstance(): InitialSearchFragment {
+            return InitialSearchFragment()
+        }
+    }
 }

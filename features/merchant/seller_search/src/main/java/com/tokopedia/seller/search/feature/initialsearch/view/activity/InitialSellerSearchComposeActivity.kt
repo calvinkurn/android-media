@@ -4,7 +4,6 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.remember
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.kotlin.extensions.view.EMPTY
@@ -61,15 +60,10 @@ class InitialSellerSearchComposeActivity :
             NestTheme {
                 val uiState = viewModel.globalSearchUiState.collectAsState()
 
-                val suggestionSearchFragment = remember { SuggestionSearchFragment() }
-                val initialSearchFragment = remember { InitialSearchFragment() }
-
                 InitialSearchActivityScreen(
                     uiEffect = ::onUiEffect,
                     uiState = uiState.value,
-                    fragmentManager = supportFragmentManager,
-                    suggestionSearchFragment = suggestionSearchFragment,
-                    initialSearchFragment = initialSearchFragment
+                    supportFragmentManager = supportFragmentManager
                 )
             }
         }

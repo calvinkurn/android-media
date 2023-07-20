@@ -7,14 +7,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.platform.SoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -30,17 +29,15 @@ fun GlobalSellerSearchView(
     modifier: Modifier,
     uiState: GlobalSearchUiState,
     uiEffect: (GlobalSearchUiEffect) -> Unit,
-    onSearchBarTextChanged: (String) -> Unit
+    onSearchBarTextChanged: (String) -> Unit,
+    focusRequester: FocusRequester,
+    keyboardController: SoftwareKeyboardController?
 ) {
     Row(
         modifier = modifier
             .fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        val keyboardController = LocalSoftwareKeyboardController.current
-
-        val focusRequester = remember { FocusRequester() }
-
         Image(
             modifier = Modifier
                 .padding(start = 12.dp)
@@ -60,6 +57,7 @@ fun GlobalSellerSearchView(
                     horizontal = 16.dp,
                     vertical = 8.dp
                 )
+                .focusRequester(focusRequester)
                 .onFocusChanged { focusState ->
                     if (focusState.isFocused) {
                         focusRequester.requestFocus()
