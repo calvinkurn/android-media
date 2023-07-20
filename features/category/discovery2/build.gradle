@@ -100,6 +100,7 @@ dependencies {
     // miscDependencies Dependency
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
+    implementation rootProject.ext.miscDependencies.lottie
     testImplementation rootProject.ext.miscDependencies.coroutineTest
     testImplementation rootProject.ext.miscDependencies.coroutineCore
     androidTestImplementation rootProject.ext.miscDependencies.coroutineTest

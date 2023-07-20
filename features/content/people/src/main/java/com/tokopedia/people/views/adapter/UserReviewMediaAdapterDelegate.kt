@@ -2,6 +2,7 @@ package com.tokopedia.people.views.adapter
 
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.LifecycleOwner
 import com.tokopedia.adapterdelegate.TypedAdapterDelegate
 import com.tokopedia.content.common.R
 import com.tokopedia.people.views.viewholder.UserReviewMediaViewHolder
@@ -34,6 +35,7 @@ class UserReviewMediaAdapterDelegate private constructor() {
     }
 
     class Video(
+        private val lifecycleOwner: LifecycleOwner,
         private val listener: UserReviewMediaAdapter.Listener,
     ) : TypedAdapterDelegate<UserReviewMediaAdapter.Model.Video, UserReviewMediaAdapter.Model, UserReviewMediaViewHolder.Video>
         (R.layout.view_cc_empty) {
@@ -49,6 +51,7 @@ class UserReviewMediaAdapterDelegate private constructor() {
             basicView: View
         ): UserReviewMediaViewHolder.Video {
             return UserReviewMediaViewHolder.Video.create(
+                lifecycleOwner,
                 parent,
                 listener
             )
