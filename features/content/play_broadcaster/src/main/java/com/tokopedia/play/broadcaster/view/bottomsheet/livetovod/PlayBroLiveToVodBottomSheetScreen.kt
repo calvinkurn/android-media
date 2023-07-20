@@ -112,7 +112,7 @@ private fun LiveToVodBottomSheetContent(
 
 @Composable
 @Preview(showBackground = true)
-fun Preview() {
+internal fun Preview() {
     PlayBroadcasterLiveToVodBottomSheetScreen(
         onBackPressed = {},
         onLearnMorePressed = {},

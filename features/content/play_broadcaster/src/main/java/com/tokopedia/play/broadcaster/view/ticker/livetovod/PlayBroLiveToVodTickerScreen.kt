@@ -67,7 +67,7 @@ private fun LiveToVodTickerContent(
 
 @Composable
 @Preview(showBackground = true)
-fun Preview() {
+internal fun Preview() {
     PlayBroLiveToVodTickerScreen(
         onDismissedPressed = {},
         onLearnMorePressed = {},
