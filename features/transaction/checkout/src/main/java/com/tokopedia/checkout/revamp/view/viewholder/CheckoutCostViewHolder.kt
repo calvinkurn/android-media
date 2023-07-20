@@ -1,11 +1,13 @@
 package com.tokopedia.checkout.revamp.view.viewholder
 
 import android.content.Context
+import android.graphics.Paint
 import android.view.LayoutInflater
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.checkout.R
 import com.tokopedia.checkout.databinding.ItemCheckoutCostBinding
+import com.tokopedia.checkout.revamp.view.adapter.CheckoutAdapterListener
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutCostModel
 import com.tokopedia.checkout.view.uimodel.ShipmentPaymentFeeModel
 import com.tokopedia.kotlin.extensions.view.gone
@@ -17,7 +19,8 @@ import com.tokopedia.utils.currency.CurrencyFormatUtil
 
 class CheckoutCostViewHolder(
     private val binding: ItemCheckoutCostBinding,
-    private val layoutInflater: LayoutInflater
+    private val layoutInflater: LayoutInflater,
+    private val listener: CheckoutAdapterListener
 ) : RecyclerView.ViewHolder(binding.root) {
 
     fun bind(cost: CheckoutCostModel) {
@@ -114,20 +117,20 @@ class CheckoutCostViewHolder(
                 binding.tvCheckoutCostPlatformFeeValue.visible()
 
                 if (platformFeeModel.isShowSlashed) {
-//                    binding.tvPlatformSlashedFeeValue.visible()
-//                    binding.tvPlatformSlashedFeeValue.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
-//                    binding.tvPlatformSlashedFeeValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(
-//                        platformFeeModel.slashedFee.toLong(),
-//                        false
-//                    ).removeDecimalSuffix()
-//
+                    binding.tvCheckoutCostPlatformFeeSlashedValue.visible()
+                    binding.tvCheckoutCostPlatformFeeSlashedValue.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
+                    binding.tvCheckoutCostPlatformFeeSlashedValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                        platformFeeModel.slashedFee.toLong(),
+                        false
+                    ).removeDecimalSuffix()
+
                     binding.tvCheckoutCostPlatformFeeValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(
                         platformFeeModel.fee.toLong(),
                         false
                     ).removeDecimalSuffix()
                     binding.tvCheckoutCostPlatformFeeValue.setTextColor(ContextCompat.getColor(binding.tvCheckoutCostPlatformFeeValue.context, com.tokopedia.unifyprinciples.R.color.Unify_TN500))
                 } else {
-//                    binding.tvPlatformSlashedFeeValue.gone()
+                    binding.tvCheckoutCostPlatformFeeSlashedValue.gone()
                     binding.tvCheckoutCostPlatformFeeValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(
                         platformFeeModel.fee.toLong(),
                         false
@@ -136,12 +139,12 @@ class CheckoutCostViewHolder(
                 }
 
                 if (platformFeeModel.isShowTooltip) {
-//                    binding.icPlatformFeeInfo.visible()
-//                    binding.icPlatformFeeInfo.setOnClickListener {
-//                        shipmentAdapterActionListener.showPlatformFeeTooltipInfoBottomSheet(platformFeeModel)
-//                    }
+                    binding.icCheckoutCostPlatformFee.visible()
+                    binding.icCheckoutCostPlatformFee.setOnClickListener {
+                        listener.showPlatformFeeTooltipInfoBottomSheet(platformFeeModel)
+                    }
                 } else {
-//                    binding.icPlatformFeeInfo.gone()
+                    binding.icCheckoutCostPlatformFee.gone()
                 }
             }
         }

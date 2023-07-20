@@ -131,7 +131,7 @@ class CheckoutAdapter(
             }
 
             CheckoutCostViewHolder.VIEW_TYPE -> {
-                CheckoutCostViewHolder(ItemCheckoutCostBinding.inflate(inflater, parent, false), inflater)
+                CheckoutCostViewHolder(ItemCheckoutCostBinding.inflate(inflater, parent, false), inflater, listener)
             }
 
             CheckoutCrossSellViewHolder.VIEW_TYPE -> {

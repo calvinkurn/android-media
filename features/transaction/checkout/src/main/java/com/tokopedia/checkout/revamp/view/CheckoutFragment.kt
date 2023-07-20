@@ -25,6 +25,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.checkout.R
 import com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics
 import com.tokopedia.checkout.analytics.CornerAnalytics
+import com.tokopedia.checkout.databinding.BottomSheetPlatformFeeInfoBinding
 import com.tokopedia.checkout.databinding.FragmentCheckoutBinding
 import com.tokopedia.checkout.databinding.HeaderCheckoutBinding
 import com.tokopedia.checkout.databinding.ToastRectangleBinding
@@ -38,8 +39,8 @@ import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPageState
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutProductModel
 import com.tokopedia.checkout.view.ShipmentFragment
-import com.tokopedia.checkout.view.converter.RatesDataConverter
 import com.tokopedia.checkout.view.uimodel.ShipmentNewUpsellModel
+import com.tokopedia.checkout.view.uimodel.ShipmentPaymentFeeModel
 import com.tokopedia.checkout.webview.UpsellWebViewActivity
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
@@ -91,8 +92,11 @@ import com.tokopedia.purchase_platform.common.feature.ethicaldrug.view.UploadPre
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.PopUpData
 import com.tokopedia.purchase_platform.common.utils.animateGone
 import com.tokopedia.purchase_platform.common.utils.animateShow
+import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.currency.CurrencyFormatUtil
 import com.tokopedia.utils.lifecycle.autoCleared
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.map
@@ -120,6 +124,9 @@ class CheckoutFragment : BaseDaggerFragment(), CheckoutAdapterListener, UploadPr
 
     @Inject
     lateinit var shippingCourierConverter: ShippingCourierConverter
+
+    @Inject
+    lateinit var userSessionInterface: UserSessionInterface
 
     private val viewModel: CheckoutViewModel by lazy {
         ViewModelProvider(this, viewModelFactory)[CheckoutViewModel::class.java]
@@ -844,7 +851,7 @@ class CheckoutFragment : BaseDaggerFragment(), CheckoutAdapterListener, UploadPr
             }
             val activity: Activity? = activity
             if (activity != null) {
-                val pslCode = RatesDataConverter.getLogisticPromoCode(order)
+//                val pslCode = RatesDataConverter.getLogisticPromoCode(order)
                 val products = viewModel.getProductForRatesRequest(order)
                 val shippingDurationBottomsheet = ShippingDurationBottomsheet()
                 shippingDurationBottomsheet.show(
@@ -858,7 +865,7 @@ class CheckoutFragment : BaseDaggerFragment(), CheckoutAdapterListener, UploadPr
                     cartPosition = cartPosition,
                     codHistory = codHistory,
                     isLeasing = order.isLeasingProduct,
-                    pslCode = pslCode,
+                    pslCode = order.shipment.courierItemData?.logPromoCode ?: "",
                     products = products,
                     cartString = order.cartStringGroup,
                     isDisableOrderPrioritas = true,
@@ -1094,7 +1101,70 @@ class CheckoutFragment : BaseDaggerFragment(), CheckoutAdapterListener, UploadPr
         selectedServiceId: Int,
         logisticPromo: LogisticPromoUiModel
     ) {
-
+        // do not set courier to shipment item before success validate use
+        checkoutAnalyticsCourierSelection.eventClickPromoLogisticTicker(promoCode)
+//        setStateLoadingCourierStateAtIndex(
+//            cartPosition,
+//            true
+//        )
+        val courierItemData = shippingCourierConverter.convertToCourierItemDataWithPromo(
+            courierData,
+            logisticPromo
+        )
+        val cartString = viewModel.listData.value[cartPosition].cartStringGroup
+        if (!flagNeedToSetPinpoint) {
+            val shipmentCartItemModel =
+                viewModel.listData.value[cartPosition] as CheckoutOrderModel
+            val validateUsePromoRequest = viewModel.generateValidateUsePromoRequest().copy()
+            if (promoCode.isNotEmpty()) {
+                for (order in validateUsePromoRequest.orders) {
+                    if (order.cartStringGroup == shipmentCartItemModel.cartStringGroup && !order.codes.contains(
+                            promoCode
+                        )
+                    ) {
+                        if (shipmentCartItemModel.voucherLogisticItemUiModel != null) {
+                            // remove previous logistic promo code
+                            order.codes.remove(shipmentCartItemModel.voucherLogisticItemUiModel!!.code)
+                        }
+                        order.codes.add(promoCode)
+                        order.boCode = promoCode
+                    }
+                }
+            }
+            val shipmentCartItemModelLists = viewModel.listData.value.filterIsInstance(CheckoutOrderModel::class.java)
+            if (shipmentCartItemModelLists.isNotEmpty() && !shipmentCartItemModel.isFreeShippingPlus) {
+                for (tmpShipmentCartItemModel in shipmentCartItemModelLists) {
+                    for (order in validateUsePromoRequest.orders) {
+                        if (shipmentCartItemModel.cartStringGroup != tmpShipmentCartItemModel.cartStringGroup && tmpShipmentCartItemModel.cartStringGroup == order.cartStringGroup && tmpShipmentCartItemModel.voucherLogisticItemUiModel != null &&
+                            !tmpShipmentCartItemModel.isFreeShippingPlus
+                        ) {
+                            order.codes.remove(tmpShipmentCartItemModel.voucherLogisticItemUiModel!!.code)
+                            order.boCode = ""
+                        }
+                    }
+                }
+            }
+            for (ordersItem in validateUsePromoRequest.orders) {
+                if (ordersItem.cartStringGroup == shipmentCartItemModel.cartStringGroup) {
+                    ordersItem.spId = courierItemData.shipperProductId
+                    ordersItem.shippingId = courierItemData.shipperId
+                    ordersItem.freeShippingMetadata = courierItemData.freeShippingMetadata
+                    ordersItem.boCampaignId = courierItemData.boCampaignId
+                    ordersItem.shippingSubsidy = courierItemData.shippingSubsidy
+                    ordersItem.benefitClass = courierItemData.benefitClass
+                    ordersItem.shippingPrice = courierItemData.shippingRate.toDouble()
+                    ordersItem.etaText = courierItemData.etaText!!
+                }
+            }
+            viewModel.doValidateUseLogisticPromoNew(
+                cartPosition,
+                cartString,
+                validateUsePromoRequest,
+                promoCode,
+                showLoading = true,
+                courierItemData
+            )
+        }
     }
 
     override fun onNoCourierAvailable(message: String?) {
@@ -1187,6 +1257,20 @@ class CheckoutFragment : BaseDaggerFragment(), CheckoutAdapterListener, UploadPr
 
     override fun onCourierShipmentRecommendationCloseClicked() {
         // todo
+    }
+
+    override fun showPlatformFeeTooltipInfoBottomSheet(platformFeeModel: ShipmentPaymentFeeModel) {
+        val bottomSheetPlatformFeeInfoBinding = BottomSheetPlatformFeeInfoBinding.inflate(LayoutInflater.from(context))
+        bottomSheetPlatformFeeInfoBinding.tvPlatformFeeInfo.text = platformFeeModel.tooltip
+        val bottomSheetUnify = BottomSheetUnify()
+        bottomSheetUnify.setTitle(getString(R.string.platform_fee_title_info, platformFeeModel.title))
+        bottomSheetUnify.showCloseIcon = true
+        bottomSheetUnify.setChild(bottomSheetPlatformFeeInfoBinding.root)
+        bottomSheetUnify.show(childFragmentManager, null)
+        checkoutAnalyticsCourierSelection.eventClickPlatformFeeInfoButton(
+            userSessionInterface.userId,
+            CurrencyFormatUtil.convertPriceValueToIdrFormat(platformFeeModel.fee.toLong(), false).removeDecimalSuffix()
+        )
     }
 
     // endregion

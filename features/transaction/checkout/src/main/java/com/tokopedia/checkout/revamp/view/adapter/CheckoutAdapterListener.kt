@@ -3,6 +3,7 @@ package com.tokopedia.checkout.revamp.view.adapter
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutProductModel
 import com.tokopedia.checkout.view.uimodel.ShipmentNewUpsellModel
+import com.tokopedia.checkout.view.uimodel.ShipmentPaymentFeeModel
 import com.tokopedia.purchase_platform.common.feature.addons.data.model.AddOnProductDataItemModel
 
 interface CheckoutAdapterListener {
@@ -45,4 +46,6 @@ interface CheckoutAdapterListener {
     fun onChangeShippingDuration(order: CheckoutOrderModel, position: Int)
 
     fun onChangeShippingCourier(order: CheckoutOrderModel, position: Int)
+
+    fun showPlatformFeeTooltipInfoBottomSheet(platformFeeModel: ShipmentPaymentFeeModel)
 }

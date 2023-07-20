@@ -69,7 +69,7 @@ class CheckoutOrderViewHolder(
                 binding.shippingWidget.prepareLoadCourierState()
                 binding.shippingWidget.hideShippingStateLoading()
                 binding.shippingWidget.showLayoutNoSelectedShipping(RecipientAddressModel())
-            } else {
+            } else if (courierItemData.logPromoCode.isNullOrEmpty()) {
                 binding.shippingWidget.prepareLoadCourierState()
                 binding.shippingWidget.hideShippingStateLoading()
                 binding.shippingWidget.showContainerShippingExperience()
@@ -119,6 +119,57 @@ class CheckoutOrderViewHolder(
                         insuranceData = InsuranceData()
                     ),
                     RecipientAddressModel()
+                )
+            } else {
+                binding.shippingWidget.prepareLoadCourierState()
+                binding.shippingWidget.hideShippingStateLoading()
+                binding.shippingWidget.showContainerShippingExperience()
+                binding.shippingWidget.showLayoutFreeShippingCourier(RecipientAddressModel())
+                binding.shippingWidget.renderFreeShippingCourier(
+                    ShippingWidgetUiModel(
+                        courierErrorTitle = order.courierSelectionErrorTitle,
+                        // renderErrorCourierState - shipmentCartItemModel.courierSelectionErrorDescription
+                        courierErrorDescription = order.courierSelectionErrorDescription,
+
+                        // renderShippingVibrationAnimation
+                        isShippingBorderRed = false,
+                        // renderShippingVibrationAnimation
+                        isTriggerShippingVibrationAnimation = false,
+
+                        // CourierItemData.etaErrorCode
+                        etaErrorCode = courierItemData.etaErrorCode,
+                        // CourierItemData.etaText
+                        estimatedTimeArrival = courierItemData.etaText ?: "",
+
+                        // Bebas ongkir & NOW Shipment
+                        hideShipperName = courierItemData.isHideShipperName,
+                        freeShippingTitle = courierItemData.freeShippingChosenCourierTitle,
+                        // Now Shipment
+                        // label
+                        logPromoDesc = "",
+                        voucherLogisticExists = false,
+                        isHasShownCourierError = false,
+
+                        // showNormalShippingCourier
+                        currentAddress = RecipientAddressModel(),
+                        // CourierItemData.estimatedTimeDelivery
+                        estimatedTimeDelivery = courierItemData.estimatedTimeDelivery ?: "",
+
+                        // CourierItemData.name
+                        courierName = courierItemData.name ?: "",
+                        // CourierItemData.shipperPrice
+                        courierShipperPrice = courierItemData.shipperPrice,
+
+                        merchantVoucher = courierItemData.merchantVoucherProductModel,
+                        ontimeDelivery = courierItemData.ontimeDelivery,
+                        cashOnDelivery = courierItemData.codProductData,
+
+                        // CourierItemData.durationCardDescription
+                        whitelabelEtaText = courierItemData.durationCardDescription,
+
+                        scheduleDeliveryUiModel = null,
+                        insuranceData = InsuranceData()
+                    )
                 )
             }
         }

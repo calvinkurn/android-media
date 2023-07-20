@@ -49,6 +49,7 @@ import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
 import com.tokopedia.purchase_platform.common.feature.dynamicdatapassing.data.request.DynamicDataPassingParamRequest
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.model.UploadPrescriptionUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementHolderData
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
@@ -436,6 +437,38 @@ class CheckoutViewModel @Inject constructor(
             cartProcessor.processSaveShipmentState(newOrder, listData.value.address()!!.recipientAddressModel)
         }
         calculateTotal()
+    }
+
+    fun generateValidateUsePromoRequest(): ValidateUsePromoRequest {
+        return promoProcessor.generateValidateUsePromoRequest(listData.value, isTradeIn, isTradeInByDropOff, isOneClickShipment)
+    }
+
+    fun doValidateUseLogisticPromoNew(
+        cartPosition: Int,
+        cartString: String,
+        validateUsePromoRequest: ValidateUsePromoRequest,
+        promoCode: String,
+        showLoading: Boolean,
+        courierItemData: CourierItemData
+    ) {
+        viewModelScope.launch {
+            if (showLoading) {
+                val checkoutItems = listData.value.toMutableList()
+                val checkoutOrderModel = checkoutItems[cartPosition] as CheckoutOrderModel
+                checkoutItems[cartPosition] =
+                    checkoutOrderModel.copy(shipment = checkoutOrderModel.shipment.copy(isLoading = true))
+                listData.value = checkoutItems
+            }
+            val newItems = promoProcessor.validateUseLogisticPromo(
+                validateUsePromoRequest,
+                cartString,
+                promoCode,
+                listData.value,
+                courierItemData
+            )
+            listData.value = newItems
+            calculateTotal()
+        }
     }
 
     companion object {
