@@ -3,7 +3,6 @@ package com.tokopedia.analytics.performance.fpi
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
-import android.util.TypedValue
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.MotionEvent
@@ -12,11 +11,10 @@ import android.view.ViewGroup
 import android.widget.PopupWindow
 import androidx.core.content.ContextCompat
 import com.tokopedia.analytics.R
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.getScreenWidth
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntSafely
-import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import java.util.*
 
@@ -48,48 +46,54 @@ class FloatingFrameMetrics(
     }
 
     // Widget for Report UI
-    private var fpiLayout: View? = null
+    private var fpiContainer: View? = null
     private var fpiPopUp: PopupWindow? = null
     private var jankyInfoText: Typography? = null
     private var fpsInfoText: Typography? = null
     private var renderTimeText: Typography? = null
+    private var reloadIcon: IconUnify? = null
 
+    private var reloadOnClick: (() -> Unit)? = null
     private val sizeParam = ViewGroup.LayoutParams.WRAP_CONTENT
     private var positionX = 0
     private var positionY = 0
 
     init {
-        fpiLayout = LayoutInflater.from(applicationContext).inflate(R.layout.fpi_monitoring, null)
+        val fpiLayout =
+            LayoutInflater.from(applicationContext).inflate(R.layout.fpi_monitoring, null)
+        fpiContainer = fpiLayout?.findViewById(R.id.popup_container)
         jankyInfoText = fpiLayout?.findViewById(R.id.fpiPercentage)
         fpsInfoText = fpiLayout?.findViewById(R.id.fpiFps)
         renderTimeText = fpiLayout?.findViewById(R.id.fpiRenderTime)
+        reloadIcon = fpiLayout?.findViewById(R.id.reload)
         fpiPopUp = PopupWindow(fpiLayout, sizeParam, sizeParam)
-        setOnTouch()
+        setOnEvent()
     }
 
-    fun show(activity: Activity) {
+    fun show(activity: Activity, reloadOnClick: () -> Unit) {
         // use a global layout listener to prevent crashes when the activity has not been already
+        this.reloadOnClick = reloadOnClick
         fpiPopUp?.dismiss()
 
         activity.findViewById<View>(android.R.id.content).let {
             it.addOneTimeGlobalLayoutListener {
-                positionX = if (positionX == 0) {
-                    getScreenWidth() - fpiLayout?.width.orZero()
-                } else {
-                    positionX
-                }
-                positionY = if (positionY == 0) {
-                    getToolbarHeight(applicationContext)
-                } else {
-                    positionY
-                }
+                positionX = if (positionX == 0) getScreenWidth()
+                else positionX
                 fpiPopUp?.showAtLocation(it, Gravity.NO_GRAVITY, positionX, positionY)
             }
         }
     }
 
+
+    private fun setOnEvent() {
+        setOnDraggable()
+        reloadIcon?.setOnClickListener {
+            reloadOnClick?.invoke()
+        }
+    }
+
     @SuppressLint("ClickableViewAccessibility")
-    private fun setOnTouch() {
+    private fun setOnDraggable() {
         var widgetDX = 0F
         var widgetDY = 0F
 
@@ -106,11 +110,11 @@ class FloatingFrameMetrics(
                     newX = 0F.coerceAtLeast(newX)
 
                     var newY = event.rawY + widgetDY
-                    newY = 0F.coerceAtLeast(newY)
+                    //newY = 0F.coerceAtLeast(newY)
                     updatePositionPopup(x = newX, y = newY)
                 }
             }
-            true
+            false
         }
     }
 
@@ -118,17 +122,6 @@ class FloatingFrameMetrics(
         positionX = x.toIntSafely()
         positionY = y.toIntSafely()
         fpiPopUp?.update(positionX, positionY, -1, -1, true)
-    }
-
-    private fun getToolbarHeight(context: Context): Int {
-        val tv = TypedValue()
-        return if (context.theme.resolveAttribute(android.R.attr.actionBarSize, tv, true)) {
-            val actionBarHeight =
-                TypedValue.complexToDimensionPixelSize(tv.data, context.resources.displayMetrics)
-            actionBarHeight + 20.toPx()
-        } else {
-            0
-        }
     }
 
     fun updateInfo(fpiData: FpiPerformanceData) {
@@ -173,7 +166,7 @@ class FloatingFrameMetrics(
     }
 
     private fun updateFpsInfo(fps: Double) {
-        val sFps = String.format(Locale.getDefault(), "%.2f%s", fps, "fps")
+        val sFps = String.format(Locale.getDefault(), "%.0f%s", fps, "fps")
         fpsInfoText?.text = sFps
     }
 

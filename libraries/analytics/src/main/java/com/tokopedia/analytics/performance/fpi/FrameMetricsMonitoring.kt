@@ -52,7 +52,9 @@ class FrameMetricsMonitoring(
     override fun onActivityResumed(activity: Activity) {
         if (isActive()) {
             start(activity)
-            floatingFrameMetrics.show(activity)
+            floatingFrameMetrics.show(activity) {
+                reset()
+            }
         }
     }
 
@@ -63,13 +65,12 @@ class FrameMetricsMonitoring(
                 activity.window.removeOnFrameMetricsAvailableListener(it)
             }
             frameMetricAvailableListener.remove(pageName)
+            reset()
         }
     }
 
     private fun start(activity: Activity) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            fpiData.reset()
-
             val pageName = activity.getPageName()
             val listener = Window.OnFrameMetricsAvailableListener { _, metrics, _ ->
                 val frameMetricsCopy = FrameMetrics(metrics)
@@ -96,6 +97,11 @@ class FrameMetricsMonitoring(
         floatingFrameMetrics.updateInfo(fpiData = fpiData)
     }
 
+    private fun reset() {
+        fpiData.reset()
+        floatingFrameMetrics.updateInfo(fpiData)
+    }
+
     private fun isActive(): Boolean =
         GlobalConfig.DEBUG && applicationContext.isFpiMonitoringEnable()
 
@@ -104,7 +110,7 @@ class FrameMetricsMonitoring(
         BaseActivity.MODE_PRIVATE
     ).getBoolean(PREF_KEY, false)
 
-    private fun Long.toMillis() = this.div(10.0.pow(6.0))
+    private fun Long.toMillis() = div(10.0.pow(6.0))
 
     private fun Activity.getPageName() = javaClass.simpleName
 

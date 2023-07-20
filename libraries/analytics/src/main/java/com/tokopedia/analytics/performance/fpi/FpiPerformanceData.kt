@@ -20,6 +20,7 @@ class FpiPerformanceData(
 
     val fps: Double
         get() {
+            if (allFrames == 0) return 0.0
             val averageFrameDuration = allTotalDurationMs.div(allFrames)
             return ONE_SECOND.div(averageFrameDuration)
         }
