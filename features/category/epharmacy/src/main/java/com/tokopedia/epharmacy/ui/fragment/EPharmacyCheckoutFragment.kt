@@ -14,6 +14,7 @@ import com.tokopedia.epharmacy.di.EPharmacyComponent
 import com.tokopedia.epharmacy.network.params.CartGeneralAddToCartInstantParams
 import com.tokopedia.epharmacy.network.response.EPharmacyCheckoutResponse
 import com.tokopedia.epharmacy.utils.CategoryKeys.Companion.EPHARMACY_CHECKOUT_PAGE
+import com.tokopedia.epharmacy.utils.EPHARMACY_ANDROID_SOURCE
 import com.tokopedia.epharmacy.utils.EPHARMACY_ENABLER_ID
 import com.tokopedia.epharmacy.utils.EPHARMACY_GROUP_ID
 import com.tokopedia.epharmacy.utils.EPHARMACY_TOKO_CONSULTATION_ID
@@ -31,6 +32,8 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
+import com.tokopedia.epharmacy.network.response.EPharmacyCheckoutResponse.CartGeneralAddToCartInstant.CartGeneralAddToCartInstantData.BusinessDataList.BusinessData.CartGroup.Cart as EPCart
+import com.tokopedia.epharmacy.network.response.EPharmacyCheckoutResponse.CartGeneralAddToCartInstant.CartGeneralAddToCartInstantData.BusinessDataList.BusinessData.ShoppingSummary as EPCheckoutSummary
 
 class EPharmacyCheckoutFragment : BaseDaggerFragment() {
 
@@ -111,7 +114,7 @@ class EPharmacyCheckoutFragment : BaseDaggerFragment() {
                     )
                 )
             ),
-            "android"
+            EPHARMACY_ANDROID_SOURCE
         )
     }
 
@@ -152,17 +155,30 @@ class EPharmacyCheckoutFragment : BaseDaggerFragment() {
         cartGeneralAddToCartInstant.cartGeneralAddToCartInstantData?.businessDataList?.businessData?.firstOrNull()?.let { info ->
             setTitle(info.customResponse?.title)
             setCartInfo(info.cartGroups?.firstOrNull()?.carts?.firstOrNull())
-            setSummaryInfo(info.shoppingSummary?.product)
+            setSummaryInfo(info.shoppingSummary)
         }
     }
 
     private fun setTitle(title: String?) {
+        if (!title.isNullOrBlank()) {
+            binding?.titleChatDokter?.text = title
+        }
     }
 
-    private fun setCartInfo(firstOrNull: EPharmacyCheckoutResponse.CartGeneralAddToCartInstant.CartGeneralAddToCartInstantData.BusinessDataList.BusinessData.CartGroup.Cart?) {
+    private fun setCartInfo(cart: EPCart?) {
+        binding?.apply {
+            epharmacyCheckoutDetailView.serviceTypeValue.text = cart?.customResponse?.serviceType
+            epharmacyCheckoutDetailView.serviceProviderValue.text = cart?.customResponse?.enablerName
+            epharmacyCheckoutDetailView.durationValue.text = "${cart?.customResponse?.durationMinutes} Menit"
+            epharmacyCheckoutDetailView.serviceTypeValue.text = cart?.priceFmt
+        }
     }
 
-    private fun setSummaryInfo(product: EPharmacyCheckoutResponse.CartGeneralAddToCartInstant.CartGeneralAddToCartInstantData.BusinessDataList.BusinessData.ShoppingSummary.Product?) {
+    private fun setSummaryInfo(summary: EPCheckoutSummary?) {
+        binding?.apply {
+            subtotal.text = summary?.product?.title
+            subtotalValue.text = summary?.totalBillFmt
+        }
     }
 
     private fun setApiError(message: String?) {
