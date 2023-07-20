@@ -199,7 +199,7 @@ object DeeplinkMainApp {
                 "explore/{tab_name}/{category_id}",
                 DeeplinkMapperHome::getRegisteredNavigationHomeContentExplore
             ),
-            DLP.matchPattern("{post_id}", DeeplinkMapperContent::getKolDeepLink)
+            DLP.matchPattern("{source_id}", DeeplinkMapperContent::getContentFeedDeeplink)
         ),
         "customercare" to mutableListOf(
             DLP.matchPattern("", ApplinkConstInternalOperational.INTERNAL_INBOX_LIST)
@@ -377,6 +377,7 @@ object DeeplinkMainApp {
             DLP.startsWith("onboarding", ApplinkConstInternalMarketplace.ONBOARDING)
         ),
         "medali" to mutableListOf(
+            DLP.matchPattern(ApplinkConst.ScpRewards.CELEBRATION_BASE) { _, uri, _, _ -> getInternalDeeplinkForScpCelebration(uri) },
             DLP.startsWith(ApplinkConst.ScpRewards.CELEBRATION_BOTTOMSHEET) { _, uri, _, _ -> getCelebrationBottomsheetDeeplink(uri) },
             DLP.startsWith(ApplinkConst.ScpRewards.SCP_TOASTER) { ctx, uri, _, _ -> invokeScpToasterUniversalAppLink(ctx, uri) },
             DLP.startsWith(ApplinkConst.ScpRewards.MEDAL_DETAIL_BASE) { _, uri, _, _ -> getInternalDeeplinkForScpMedalDetail(uri) },
@@ -511,13 +512,11 @@ object DeeplinkMainApp {
             DLP.matchPattern(
                 "{user_id}",
                 DeeplinkMapperContent::getProfileDeeplink
-            )
-        ),
-        "people-settings" to mutableListOf(
+            ),
             DLP.matchPattern(
-                "{user_id}",
-                DeeplinkMapperContent::getRegisteredNavigation
-            )
+                "settings/{user_id}",
+                DeeplinkMapperContent::getProfileDeeplink
+            ),
         ),
         "pesawat" to mutableListOf(
             DLP.matchPattern("order", DeeplinkMapperUoh::getRegisteredNavigationUohOrder),
