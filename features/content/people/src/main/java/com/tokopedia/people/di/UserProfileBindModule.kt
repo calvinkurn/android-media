@@ -2,7 +2,6 @@ package com.tokopedia.people.di
 
 import com.tokopedia.people.analytic.tracker.UserProfileGeneralTracker
 import com.tokopedia.people.analytic.tracker.UserProfileGeneralTrackerImpl
-import com.tokopedia.people.analytic.tracker.UserProfileTracker
 import com.tokopedia.people.analytic.tracker.review.UserProfileReviewTracker
 import com.tokopedia.people.analytic.tracker.review.UserProfileReviewTrackerImpl
 import com.tokopedia.people.data.UserFollowRepository

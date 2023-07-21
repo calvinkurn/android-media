@@ -101,6 +101,7 @@ import com.tokopedia.common_epharmacy.EPHARMACY_REDIRECT_CART_RESULT_CODE
 import com.tokopedia.common_epharmacy.EPHARMACY_REDIRECT_CHECKOUT_RESULT_CODE
 import com.tokopedia.common_epharmacy.network.response.EPharmacyMiniConsultationResult
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.common.ChosenAddress
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressTokonow
 import com.tokopedia.localizationchooseaddress.domain.mapper.TokonowWarehouseMapper.mapWarehousesAddAddressModelToLocal
@@ -204,6 +205,7 @@ import com.tokopedia.purchase_platform.common.feature.promonoteligible.NotEligib
 import com.tokopedia.purchase_platform.common.feature.sellercashback.SellerCashbackListener
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementHolderData
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
+import com.tokopedia.purchase_platform.common.utils.removeSingleDecimalSuffix
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
@@ -3884,13 +3886,13 @@ class ShipmentFragment :
 
     override fun onCheckboxAddonProductListener(isChecked: Boolean, addOnProductDataItemModel: AddOnProductDataItemModel, cartItemModel: CartItemModel, bindingAdapterPosition: Int) {
         if (isChecked) {
-            addOnProductDataItemModel.addOnDataStatus = ADD_ON_PRODUCT_STATUS_CHECK
+            addOnProductDataItemModel.status = ADD_ON_PRODUCT_STATUS_CHECK
         } else {
-            addOnProductDataItemModel.addOnDataStatus = ADD_ON_PRODUCT_STATUS_UNCHECK
+            addOnProductDataItemModel.status = ADD_ON_PRODUCT_STATUS_UNCHECK
         }
         cartItemModel.addOnProduct.listAddOnProductData.forEach {
-            if (it.addOnDataUniqueId == addOnProductDataItemModel.addOnDataUniqueId) {
-                it.addOnDataStatus = addOnProductDataItemModel.addOnDataStatus
+            if (it.uniqueId == addOnProductDataItemModel.uniqueId) {
+                it.status = addOnProductDataItemModel.status
             }
         }
         shipmentViewModel.saveAddOnsProduct(cartItemModel)
@@ -3908,13 +3910,13 @@ class ShipmentFragment :
         val cartId = cartItemModel.cartId
         val addOnIds = arrayListOf<Long>()
         cartItemModel.addOnProduct.listAddOnProductData.forEach { addOnItem ->
-            if (addOnItem.addOnDataStatus == ADD_ON_PRODUCT_STATUS_CHECK) {
-                addOnIds.add(addOnItem.addOnDataId)
+            if (addOnItem.status == ADD_ON_PRODUCT_STATUS_CHECK) {
+                addOnIds.add(addOnItem.id)
             }
         }
 
-        var price = 0.0
-        var discountedPrice = 0.0
+        var price: Double
+        var discountedPrice: Double
         if (cartItemModel.campaignId == 0) {
             price = cartItemModel.price
             discountedPrice = cartItemModel.price
@@ -3935,8 +3937,8 @@ class ShipmentFragment :
                 AddOnConstant.QUERY_PARAM_CATEGORY_ID to cartItemModel.productCatId,
                 AddOnConstant.QUERY_PARAM_SHOP_ID to cartItemModel.shopId,
                 AddOnConstant.QUERY_PARAM_QUANTITY to cartItemModel.quantity,
-                AddOnConstant.QUERY_PARAM_PRICE to price,
-                AddOnConstant.QUERY_PARAM_DISCOUNTED_PRICE to discountedPrice
+                AddOnConstant.QUERY_PARAM_PRICE to price.toString().removeSingleDecimalSuffix(),
+                AddOnConstant.QUERY_PARAM_DISCOUNTED_PRICE to discountedPrice.toString().removeSingleDecimalSuffix()
             )
         )
 
@@ -4315,10 +4317,18 @@ class ShipmentFragment :
                 val needUpdateAddOnItem = shipmentAdapter.getAddOnProductServicePosition(cartIdAddOn)
 
                 run loopAddOnProduct@{
-                    needUpdateAddOnItem.second?.addOnProduct?.listAddOnProductData?.forEach { addOnProductDataItemModel ->
-                        for (addonUiModel in addOnProductDataResult.changedAddons) {
-                            if (addonUiModel.id == addOnProductDataItemModel.addOnDataId.toString()) {
-                                addOnProductDataItemModel.addOnDataStatus = addonUiModel.getSelectedStatus().value
+                    needUpdateAddOnItem.second?.addOnProduct?.listAddOnProductData?.forEach { addOnExisting ->
+                        for (addOnUiModel in addOnProductDataResult.aggregatedData.selectedAddons) {
+                            if (addOnUiModel.addOnType == addOnExisting.type) {
+                                addOnExisting.apply {
+                                    id = addOnUiModel.id.toLongOrZero()
+                                    uniqueId = addOnUiModel.uniqueId
+                                    price = addOnUiModel.price.toDouble()
+                                    infoLink = addOnUiModel.eduLink
+                                    name = addOnUiModel.name
+                                    status = addOnUiModel.getSelectedStatus().value
+                                    type = addOnUiModel.addOnType
+                                }
                                 onNeedUpdateViewItem(needUpdateAddOnItem.first)
                                 return@loopAddOnProduct
                             }

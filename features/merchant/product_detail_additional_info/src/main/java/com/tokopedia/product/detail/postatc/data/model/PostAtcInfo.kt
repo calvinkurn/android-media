@@ -12,7 +12,11 @@ data class PostAtcInfo(
     val pageSource: String = "",
     val selectedAddonsIds: List<String> = emptyList(),
     val shopId: String = "",
-    val warehouseId: String = ""
+    val warehouseId: String = "",
+    val quantity: Int = 0,
+    val price: Double = 0.0,
+    val originalPrice: Double = 0.0,
+    val condition: String = ""
 ) {
     data class Footer(
         val image: String = "",

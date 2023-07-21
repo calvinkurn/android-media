@@ -18,12 +18,12 @@ class AddonsViewHolder(
     private var dataHash = -1
 
     override fun bind(element: AddonsUiModel) = with(binding.postAtcAddonsWidget) {
-        val data = element.data
+        val data = element.data ?: return
         if (dataHash != data.hashCode()) {
             setSelectedAddons(data.selectedAddonsIds)
             setTitleText(data.title)
             setAutosaveAddon(data.cartId.toLongOrZero(), "normal")
-            getAddonData(data.productId, data.warehouseId, data.isTokoCabang)
+            getAddonData(data.addonsWidgetParam)
             binding.postAtcAddonsWidget.setListener(this@AddonsViewHolder)
             dataHash = data.hashCode()
         }
