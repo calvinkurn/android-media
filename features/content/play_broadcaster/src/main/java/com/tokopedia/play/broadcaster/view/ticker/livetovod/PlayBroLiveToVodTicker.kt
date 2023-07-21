@@ -15,7 +15,7 @@ import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.play.broadcaster.R
 
 @Composable
-fun PlayBroLiveToVodTickerScreen(
+fun PlayBroLiveToVodTicker(
     onDismissedPressed: () -> Unit,
     onLearnMorePressed: () -> Unit,
 ) {
@@ -68,7 +68,7 @@ private fun LiveToVodTickerContent(
 @Composable
 @Preview(showBackground = true)
 internal fun Preview() {
-    PlayBroLiveToVodTickerScreen(
+    PlayBroLiveToVodTicker(
         onDismissedPressed = {},
         onLearnMorePressed = {},
     )
