@@ -95,6 +95,7 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
         initAffiliateCookie()
         setCategoryIdL2(categoryIdL2)
         loadFirstPage(components)
+        getMiniCart()
     }
 
     fun loadMore() {
