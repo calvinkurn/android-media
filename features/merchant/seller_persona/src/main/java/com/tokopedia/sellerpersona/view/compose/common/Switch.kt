@@ -30,7 +30,6 @@ import com.tokopedia.nest.principles.ui.NestTheme
 private val TrackWidth = 42.dp
 private val ThumbDiameter = 22.dp
 private val ThumbAndTrackSpace = 3.dp
-private val SwitchWidth = TrackWidth
 
 private const val BiasEnd = 1f
 private const val BiasStart = -1f
@@ -51,9 +50,10 @@ fun Switch(
 
     val alignment by animateAlignmentAsState(if (switchState.value) BiasEnd else BiasStart)
 
+    // switch track
     Box(
         modifier = Modifier
-            .width(SwitchWidth)
+            .width(TrackWidth)
             .background(
                 color = if (switchState.value) checkedTrackColor else uncheckedTrackColor,
                 shape = RoundedCornerShape(percent = 50)
@@ -66,6 +66,7 @@ fun Switch(
             }, contentAlignment = alignment
     ) {
 
+        // switch thumb
         Box(
             modifier = Modifier
                 .size(size = ThumbDiameter)
