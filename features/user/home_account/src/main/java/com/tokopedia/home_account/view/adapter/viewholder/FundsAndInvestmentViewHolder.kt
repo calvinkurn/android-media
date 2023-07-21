@@ -62,7 +62,7 @@ class FundsAndInvestmentViewHolder(
                 binding?.imageAction?.visible()
                 binding?.imageAction?.context?.let {
                     val colorGreen =
-                        ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_G500)
+                        ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
                     binding?.imageAction?.setImage(IconUnify.RELOAD, colorGreen, colorGreen)
                 }
             }
@@ -79,7 +79,7 @@ class FundsAndInvestmentViewHolder(
                 binding?.imageAction?.context?.let {
                     val colorNeutral = ContextCompat.getColor(
                         it,
-                        com.tokopedia.unifyprinciples.R.color.Unify_N700
+                        com.tokopedia.unifyprinciples.R.color.Unify_NN950
                     )
                     binding?.imageAction?.setImage(
                         IconUnify.CHEVRON_RIGHT,

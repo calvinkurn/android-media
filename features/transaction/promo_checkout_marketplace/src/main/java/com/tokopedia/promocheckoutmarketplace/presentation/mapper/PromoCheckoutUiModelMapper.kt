@@ -60,6 +60,11 @@ class PromoCheckoutUiModelMapper @Inject constructor() {
                                     if (couponListRecommendation.data.promoRecommendation.codes.contains(it.code)) {
                                         totalBenefit += it.benefitAmount
                                     }
+                                    it.secondaryCoupons.forEach {
+                                        if (couponListRecommendation.data.promoRecommendation.codes.contains(it.code)) {
+                                            totalBenefit += it.benefitAmount
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -136,6 +141,7 @@ class PromoCheckoutUiModelMapper @Inject constructor() {
         couponSection: CouponSection,
         headerIdentifierId: Int,
         selectedPromo: List<String>,
+        recommendedPromo: List<String>,
         index: Int = 0
     ): PromoListItemUiModel {
         val promoItem = PromoListItemUiModel(
@@ -154,6 +160,8 @@ class PromoCheckoutUiModelMapper @Inject constructor() {
                 clashingInfos = couponItem.clashingInfos
                 boClashingInfos = couponItem.boClashingInfos
                 boAdditionalData = couponItem.additionalBoData
+                benefitAdjustmentMessage = couponItem.benefitAdjustmentMessage
+                secondaryCoupons = couponItem.secondaryCoupons
                 val tmpCurrentClashingPromoList = ArrayList<String>()
                 var tmpClashingIconUrl = ""
                 val tmpErrorMessage = StringBuilder()
@@ -168,12 +176,38 @@ class PromoCheckoutUiModelMapper @Inject constructor() {
                     }
                 }
                 currentClashingPromo = tmpCurrentClashingPromoList
-
-                if (tmpErrorMessage.isEmpty()) {
-                    tmpErrorMessage.append(couponItem.message)
+                val tmpCurrentClashingSecondaryPromoList = ArrayList<String>()
+                var tmpClashingSecondaryIconUrl = ""
+                val tmpErrorMessageSecondary = StringBuilder()
+                if (secondaryCoupons.isNotEmpty()) {
+                    selectedPromo.forEach { promoCode ->
+                        val clashingInfo =
+                            secondaryCoupons.first().clashingInfos.firstOrNull { clashingInfo -> clashingInfo.code == promoCode }
+                        if (clashingInfo != null) {
+                            tmpCurrentClashingSecondaryPromoList.add(promoCode)
+                            tmpErrorMessageSecondary.clear()
+                            tmpErrorMessageSecondary.append(clashingInfo.message)
+                            tmpClashingSecondaryIconUrl = clashingInfo.icon
+                        }
+                    }
                 }
-                errorMessage = tmpErrorMessage.toString()
-                errorIcon = tmpClashingIconUrl
+                currentClashingSecondaryPromo = tmpCurrentClashingSecondaryPromoList
+
+                if (hasClashingPromo) {
+                    if (currentClashingSecondaryPromo.isNotEmpty()) {
+                        if (tmpErrorMessageSecondary.isEmpty()) {
+                            tmpErrorMessageSecondary.append(secondaryCoupons.first().message)
+                        }
+                        errorMessage = tmpErrorMessageSecondary.toString()
+                        errorIcon = tmpClashingSecondaryIconUrl
+                    } else if (currentClashingPromo.isNotEmpty()) {
+                        if (tmpErrorMessage.isEmpty()) {
+                            tmpErrorMessage.append(couponItem.message)
+                        }
+                        errorMessage = tmpErrorMessage.toString()
+                        errorIcon = tmpClashingIconUrl
+                    }
+                }
                 promoInfos = couponItem.promoInfos
                 remainingPromoCount = couponSubSection.couponGroups.firstOrNull {
                     it.id == couponItem.groupId
@@ -193,18 +227,21 @@ class PromoCheckoutUiModelMapper @Inject constructor() {
             },
             uiState = PromoListItemUiModel.UiState().apply {
                 isParentEnabled = couponSubSection.isEnabled
-                isPreSelected = couponItem.isSelected
-                isSelected = couponItem.isSelected
-                isAttempted = couponItem.isAttempted
+                isPreSelected = couponItem.isSelected || couponItem.secondaryCoupons.any { it.isSelected }
+                isSelected = couponItem.isSelected || couponItem.secondaryCoupons.any { it.isSelected }
+                isAttempted = couponItem.isAttempted || couponItem.secondaryCoupons.any { it.isAttempted }
                 isCausingOtherPromoClash = false
-                isHighlighted = couponItem.isHighlighted
+                isHighlighted = couponItem.isHighlighted || couponItem.secondaryCoupons.any { it.isHighlighted }
                 val lastPromo = couponSubSection.coupons.lastOrNull()
                 isLastPromoItem = lastPromo != null && (lastPromo.code == couponItem.code || lastPromo.groupId == couponItem.groupId)
                 isBebasOngkir = couponItem.isBebasOngkir
             }
         )
         promoItem.uiState.isDisabled = !promoItem.uiState.isParentEnabled || promoItem.uiData.errorMessage.isNotBlank()
-
+        if (recommendedPromo.isNotEmpty()) {
+            promoItem.uiState.isRecommended = recommendedPromo.contains(promoItem.uiData.promoCode) ||
+                promoItem.uiData.secondaryCoupons.any { recommendedPromo.contains(it.code) }
+        }
         return promoItem
     }
 

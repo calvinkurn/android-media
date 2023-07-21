@@ -20,7 +20,6 @@ import com.tokopedia.applink.gamification.DeeplinkMapperGamification
 import com.tokopedia.applink.home.DeeplinkMapperHome
 import com.tokopedia.applink.imagepicker.DeeplinkMapperImagePicker
 import com.tokopedia.applink.inbox.DeeplinkMapperInbox
-import com.tokopedia.applink.internal.ApplinkConsInternalHome
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory
 import com.tokopedia.applink.internal.ApplinkConstInternalDilayaniTokopedia
@@ -52,6 +51,11 @@ import com.tokopedia.applink.order.DeeplinkMapperOrder
 import com.tokopedia.applink.powermerchant.PowerMerchantDeepLinkMapper
 import com.tokopedia.applink.productmanage.DeepLinkMapperProductManage
 import com.tokopedia.applink.promo.DeeplinkMapperPromo
+import com.tokopedia.applink.promo.DeeplinkMapperPromo.getCelebrationBottomsheetDeeplink
+import com.tokopedia.applink.promo.DeeplinkMapperPromo.getInternalDeeplinkForScpMedalCabinet
+import com.tokopedia.applink.promo.DeeplinkMapperPromo.getInternalDeeplinkForScpMedalCabinetSeeMore
+import com.tokopedia.applink.promo.DeeplinkMapperPromo.getInternalDeeplinkForScpMedalDetail
+import com.tokopedia.applink.promo.DeeplinkMapperPromo.invokeScpToasterUniversalAppLink
 import com.tokopedia.applink.purchaseplatform.DeeplinkMapperUoh
 import com.tokopedia.applink.purchaseplatform.DeeplinkMapperWishlist
 import com.tokopedia.applink.recommendation.DeeplinkMapperRecommendation
@@ -106,10 +110,14 @@ object DeeplinkMainApp {
                 "onboarding",
                 DeeplinkMapperCategory::getRegisteredNavigationAffiliate
             ),
+            DLP.matchPattern(
+                "performa",
+                DeeplinkMapperCategory::getRegisteredNavigationAffiliate
+            ),
             DLP.startsWith(
                 "create_post_v2",
                 DeeplinkMapperContent::getContentCreatePostDeepLink
-            ),
+            )
         ),
         "amp" to mutableListOf(
             DLP.startsWith(
@@ -190,7 +198,7 @@ object DeeplinkMainApp {
                 "explore/{tab_name}/{category_id}",
                 DeeplinkMapperHome::getRegisteredNavigationHomeContentExplore
             ),
-            DLP.matchPattern("{post_id}", DeeplinkMapperContent::getKolDeepLink)
+            DLP.matchPattern("{source_id}", DeeplinkMapperContent::getContentFeedDeeplink)
         ),
         "customercare" to mutableListOf(
             DLP.matchPattern("", ApplinkConstInternalOperational.INTERNAL_INBOX_LIST)
@@ -325,7 +333,7 @@ object DeeplinkMainApp {
             DLP.matchPattern("v2", DeeplinkMapperImagePicker::getImagePickerV2Deeplink)
         ),
         "inbox" to mutableListOf(
-            DLP.goTo(ApplinkConsInternalHome.HOME_INBOX)
+            DLP.goTo(DeeplinkMapperCommunication::getRegisteredNavigationInbox)
         ),
         "inputinactivenumber" to mutableListOf(
             DLP.matchPattern("", DeeplinkMapperUser::getRegisteredNavigationUser)
@@ -366,6 +374,14 @@ object DeeplinkMainApp {
                 ApplinkConstInternalOrder.MARKETPLACE_INTERNAL_BUYER_PARTIAL_ORDER_FULFILLMENT
             ),
             DLP.startsWith("onboarding", ApplinkConstInternalMarketplace.ONBOARDING)
+        ),
+        "medali" to mutableListOf(
+            DLP.matchPattern(ApplinkConst.ScpRewards.CELEBRATION_BASE) { _, uri, _, _ -> getInternalDeeplinkForScpCelebration(uri) },
+            DLP.startsWith(ApplinkConst.ScpRewards.CELEBRATION_BOTTOMSHEET) { _, uri, _, _ -> getCelebrationBottomsheetDeeplink(uri) },
+            DLP.startsWith(ApplinkConst.ScpRewards.SCP_TOASTER) { ctx, uri, _, _ -> invokeScpToasterUniversalAppLink(ctx, uri) },
+            DLP.startsWith(ApplinkConst.ScpRewards.MEDAL_DETAIL_BASE) { _, uri, _, _ -> getInternalDeeplinkForScpMedalDetail(uri) },
+            DLP.startsWith(ApplinkConst.ScpRewards.SEE_MORE_MEDAL) { _, uri, _, _ -> getInternalDeeplinkForScpMedalCabinetSeeMore(uri) },
+            DLP.matchPattern("") { _, uri, _, _ -> getInternalDeeplinkForScpMedalCabinet(uri) }
         ),
         "media-editor" to mutableListOf(
             DLP.matchPattern("", ApplinkConstInternalMedia.INTERNAL_MEDIA_EDITOR)
@@ -445,6 +461,10 @@ object DeeplinkMainApp {
             DLP.startsWith(
                 "recipe/autocomplete",
                 DeeplinkMapperTokopediaNow::getRegisteredNavigationTokopediaNowRecipeAutoComplete
+            ),
+            DLP.startsWith(
+                "see-all-category",
+                ApplinkConstInternalTokopediaNow::SEE_ALL_CATEGORY
             )
         ),
         "occ" to mutableListOf(
@@ -492,7 +512,11 @@ object DeeplinkMainApp {
             DLP.matchPattern(
                 "{user_id}",
                 DeeplinkMapperContent::getProfileDeeplink
-            )
+            ),
+            DLP.matchPattern(
+                "settings/{user_id}",
+                DeeplinkMapperContent::getProfileDeeplink
+            ),
         ),
         "pesawat" to mutableListOf(
             DLP.matchPattern("order", DeeplinkMapperUoh::getRegisteredNavigationUohOrder),
@@ -613,7 +637,7 @@ object DeeplinkMainApp {
                     ApplinkConstInternalPromo.PROMO_DETAIL,
                     idList?.getOrNull(0)
                 )
-            },
+            }
         ),
         "promoNative" to mutableListOf(
             DLP.matchPattern("") { _, _, _, _ ->
@@ -753,7 +777,7 @@ object DeeplinkMainApp {
             DLP.matchPattern("profile", DeeplinkMapperUser::getRegisteredNavigationUser),
             DLP.matchPattern("address", ApplinkConstInternalLogistic.MANAGE_ADDRESS),
             DLP.matchPattern("payment", ApplinkConstInternalUserPlatform.PAYMENT_SETTING),
-            DLP.matchPattern("account", ApplinkConstInternalUserPlatform.ACCOUNT_SETTING),
+            DLP.matchPattern("account", ApplinkConstInternalUserPlatform.ACCOUNT_SETTING)
         ),
         "settings" to mutableListOf(
             DLP.matchPattern(
@@ -788,7 +812,9 @@ object DeeplinkMainApp {
             },
             DLP.matchPattern("{shop_id}") { ctx, uri, deeplink, idList ->
                 DeeplinkMapperMarketplace.getShopPageInternalAppLink(
-                    ctx, uri, deeplink,
+                    ctx,
+                    uri,
+                    deeplink,
                     UriUtil.buildUri(
                         ApplinkConstInternalMarketplace.SHOP_PAGE,
                         idList?.getOrNull(0)
@@ -798,7 +824,9 @@ object DeeplinkMainApp {
             },
             DLP.matchPattern("{shop_id}/home") { ctx, uri, deeplink, idList ->
                 DeeplinkMapperMarketplace.getShopPageInternalAppLink(
-                    ctx, uri, deeplink,
+                    ctx,
+                    uri,
+                    deeplink,
                     UriUtil.buildUri(
                         ApplinkConstInternalMarketplace.SHOP_PAGE_HOME,
                         idList?.getOrNull(0)
@@ -808,7 +836,9 @@ object DeeplinkMainApp {
             },
             DLP.matchPattern("{shop_id}/product") { ctx, uri, deeplink, idList ->
                 DeeplinkMapperMarketplace.getShopPageInternalAppLink(
-                    ctx, uri, deeplink,
+                    ctx,
+                    uri,
+                    deeplink,
                     UriUtil.buildUri(
                         ApplinkConstInternalMarketplace.SHOP_PAGE_PRODUCT,
                         idList?.getOrNull(0)
@@ -818,7 +848,9 @@ object DeeplinkMainApp {
             },
             DLP.matchPattern("{shop_id}/feed") { ctx, uri, deeplink, idList ->
                 DeeplinkMapperMarketplace.getShopPageInternalAppLink(
-                    ctx, uri, deeplink,
+                    ctx,
+                    uri,
+                    deeplink,
                     UriUtil.buildUri(
                         ApplinkConstInternalMarketplace.SHOP_PAGE_FEED,
                         idList?.getOrNull(0)
@@ -828,7 +860,9 @@ object DeeplinkMainApp {
             },
             DLP.matchPattern("{shop_id}/review") { ctx, uri, deeplink, idList ->
                 DeeplinkMapperMarketplace.getShopPageInternalAppLink(
-                    ctx, uri, deeplink,
+                    ctx,
+                    uri,
+                    deeplink,
                     UriUtil.buildUri(
                         ApplinkConstInternalMarketplace.SHOP_PAGE_REVIEW,
                         idList?.getOrNull(0)
@@ -838,7 +872,9 @@ object DeeplinkMainApp {
             },
             DLP.matchPattern("{shop_id}/follower") { ctx, uri, deeplink, idList ->
                 DeeplinkMapperMarketplace.getShopPageInternalAppLink(
-                    ctx, uri, deeplink,
+                    ctx,
+                    uri,
+                    deeplink,
                     UriUtil.buildUri(
                         ApplinkConstInternalMarketplace.SHOP_FAVOURITE_LIST_WITH_SHOP_ID,
                         idList?.getOrNull(0)
@@ -848,7 +884,9 @@ object DeeplinkMainApp {
             },
             DLP.matchPattern("{shop_id}/settings") { ctx, uri, deeplink, idList ->
                 DeeplinkMapperMarketplace.getShopPageInternalAppLink(
-                    ctx, uri, deeplink,
+                    ctx,
+                    uri,
+                    deeplink,
                     UriUtil.buildUri(
                         ApplinkConstInternalMarketplace.SHOP_PAGE_SETTING_CUSTOMER_APP_WITH_SHOP_ID,
                         idList?.getOrNull(0)
@@ -858,7 +896,9 @@ object DeeplinkMainApp {
             },
             DLP.matchPattern("{shop_id}/info") { ctx, uri, deeplink, idList ->
                 DeeplinkMapperMarketplace.getShopPageInternalAppLink(
-                    ctx, uri, deeplink,
+                    ctx,
+                    uri,
+                    deeplink,
                     UriUtil.buildUri(
                         ApplinkConstInternalMarketplace.SHOP_PAGE_INFO,
                         idList?.getOrNull(0)
@@ -868,7 +908,9 @@ object DeeplinkMainApp {
             },
             DLP.matchPattern("{shop_id}/note") { ctx, uri, deeplink, idList ->
                 DeeplinkMapperMarketplace.getShopPageInternalAppLink(
-                    ctx, uri, deeplink,
+                    ctx,
+                    uri,
+                    deeplink,
                     UriUtil.buildUri(
                         ApplinkConstInternalMarketplace.SHOP_PAGE_NOTE,
                         idList?.getOrNull(0)
@@ -914,9 +956,12 @@ object DeeplinkMainApp {
                 ShopAdminDeepLinkMapper::getInternalAppLinkAdminAccepted
             )
         ),
+        "shop-nib" to mutableListOf(
+            DLP.matchPattern("", ApplinkConstInternalMechant.SHOP_NIB_CUSTOMER_APP)
+        ),
         "shop-penalty" to mutableListOf(
-            DLP.matchPattern("") { ctx, _, _, _ ->
-                ShopScoreDeepLinkMapper.getInternalApplinkPenalty(ctx)
+            DLP.matchPattern("") { context, _, _, _ ->
+                ShopScoreDeepLinkMapper.getInternalApplinkPenalty(context)
             }
         ),
         "shop-penalty-detail" to mutableListOf(
@@ -992,7 +1037,7 @@ object DeeplinkMainApp {
             DLP.matchPattern("{video_id}") { _, _, _, idList ->
                 UriUtil.buildUri(ApplinkConstInternalGlobal.YOUTUBE_PLAYER, idList?.getOrNull(0))
             }
-        ),
+        )
 
     )
 }

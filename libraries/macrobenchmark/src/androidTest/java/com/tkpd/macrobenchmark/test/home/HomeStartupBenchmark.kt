@@ -25,11 +25,9 @@ import org.junit.runners.Parameterized
 @RunWith(Parameterized::class)
 class HomeStartupBenchmark(startupMode: StartupMode): BaseStartupBenchmark(startupMode) {
     override fun setupEnvironment() {
-        MacroDevOps.skipOnboarding()
     }
 
     override fun setupMock() {
-        MacroDevOps.setupEnvironment(MacroIntent.Mock.getHomeMockIntent())
     }
 
     override fun getIntent() = MacroIntent.Home.getHomeIntent()

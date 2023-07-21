@@ -47,6 +47,24 @@ object DateUtil {
         }
     }
 
+    fun timeIsUnderThresholdWeek(date: Long, threshold: Long): Boolean {
+        return try {
+            val endDateMillis = date * ONE_THOUSAND
+            val endDate = Date(endDateMillis)
+            val now = System.currentTimeMillis()
+            val diff = (endDate.time - now).toFloat()
+            if (diff < 0) {
+                // End date is out dated
+                false
+            } else {
+                TimeUnit.MILLISECONDS.toDays(endDate.time - now) <= threshold
+            }
+        } catch (e: Throwable) {
+            FirebaseCrashlytics.getInstance().recordException(e)
+            false
+        }
+    }
+
     /**
      * @param date in unix time
      * @return 0 if the date is outdated or error

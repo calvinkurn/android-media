@@ -72,6 +72,7 @@ const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_TODO_WIDGET = "tracker/home/todo_wi
 const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_FLASH_SALE_WIDGET = "tracker/home/flash_sale_widget.json"
 const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_BALANCE_WIDGET = "tracker/home/balance_widget.json"
 const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_DYNAMIC_ICON = "tracker/home/home_icon.json"
+const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_LOGIN_WIDGET = "tracker/home/login_widget.json"
 
 private const val CHOOSE_ADDRESS_PREFERENCE_NAME = "coahmark_choose_address"
 private const val CHOOSE_ADDRESS_EXTRA_IS_COACHMARK = "EXTRA_IS_COACHMARK"

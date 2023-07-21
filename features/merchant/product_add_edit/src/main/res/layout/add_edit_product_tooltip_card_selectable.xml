@@ -19,7 +19,7 @@
         android:id="@+id/tv_tips_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/Unify_N500"
+        android:textColor="@color/Unify_NN600"
         android:layout_marginTop="4dp"
         android:layout_marginStart="12dp"
         app:layout_constraintStart_toEndOf="@+id/iv_tips_bulb"

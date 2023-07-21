@@ -11,12 +11,14 @@ import com.tokopedia.dilayanitokopedia.domain.usecase.GetRecommendationForYouUse
 import com.tokopedia.dilayanitokopedia.ui.recommendation.DtHomeRecommendationViewModel
 import com.tokopedia.dilayanitokopedia.ui.recommendation.adapter.datamodel.HomeRecommendationDataModel
 import com.tokopedia.dilayanitokopedia.ui.recommendation.adapter.datamodel.HomeRecommendationError
+import com.tokopedia.dilayanitokopedia.ui.recommendation.adapter.datamodel.HomeRecommendationItemDataModel
 import com.tokopedia.dilayanitokopedia.ui.recommendation.adapter.datamodel.HomeRecommendationLoading
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import io.mockk.coEvery
 import io.mockk.mockk
 import io.mockk.spyk
 import io.mockk.verify
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
@@ -225,6 +227,45 @@ class DtHomeRecommendationViewModelTest {
     }
 
     @Test
+    fun `verify when load next data after initial page is correct but finished`() {
+        // Inject
+        val mockResponse = spyk(
+            GetDtHomeRecommendationResponse(
+                GetHomeRecommendationProductV2(
+                    products = arrayListOf(spyk(Product())),
+                    positions = arrayListOf(Position(type = TYPE_PRODUCT))
+                )
+            )
+        )
+
+        // Given
+        coEvery {
+            dtGetRecommendationForYouUseCase(any())
+        } returns mockResponse
+
+        // When
+        viewModel.loadInitialPage("")
+        viewModel.loadNextData(2)
+
+        // Then
+        assertNotNull(
+            viewModel.homeRecommendationLiveData.value?.homeRecommendations?.first()
+        )
+    }
+
+    @Test
+    fun `verify when load next data after initial page is correct but not load more`() {
+        // When
+        viewModel.loadInitialPage("")
+        viewModel.loadNextData(2)
+
+        // Then
+        assertNotNull(
+            viewModel.homeRecommendationLiveData.value?.homeRecommendations?.first()
+        )
+    }
+
+    @Test
     fun `verify when load next data after initial page is error`() {
         // Given
         coEvery {
@@ -244,5 +285,133 @@ class DtHomeRecommendationViewModelTest {
         assertNotNull(
             viewModel.homeRecommendationLiveData.value?.homeRecommendations?.first()
         )
+    }
+
+    @Test
+    fun `verify when update wishlist with position found isSuccess`() {
+        val mockResponse = spyk(
+            GetDtHomeRecommendationResponse(
+                GetHomeRecommendationProductV2(
+                    products = arrayListOf(
+                        spyk(
+                            Product()
+                        )
+                    ),
+                    positions = arrayListOf(
+                        Position(
+                            type = TYPE_PRODUCT
+                        )
+                    )
+                )
+            )
+        )
+
+        // Given
+        coEvery {
+            dtGetRecommendationForYouUseCase(any())
+        } returns mockResponse
+
+        // When
+        viewModel.loadInitialPage("")
+        viewModel.updateWishlist("0", 0, true)
+
+        // Then
+        assertTrue(
+            (
+                viewModel.homeRecommendationLiveData.value?.homeRecommendations?.toMutableList()
+                    ?.get(0) as HomeRecommendationItemDataModel
+                ).product.isWishlist
+        )
+    }
+
+    @Test
+    fun `verify when update wishlist not found position isSuccess`() {
+        val mockResponse = spyk(
+            GetDtHomeRecommendationResponse(
+                GetHomeRecommendationProductV2(
+                    products = arrayListOf(
+                        spyk(
+                            Product()
+                        )
+                    ),
+                    positions = arrayListOf(
+                        Position(
+                            type = TYPE_PRODUCT
+                        )
+                    )
+                )
+            )
+        )
+
+        // Given
+        coEvery {
+            dtGetRecommendationForYouUseCase(any())
+        } returns mockResponse
+
+        // When
+        viewModel.loadInitialPage("")
+        viewModel.updateWishlist("0", 99999, true)
+
+        // Then
+        assertTrue(
+            (
+                viewModel.homeRecommendationLiveData.value?.homeRecommendations?.toMutableList()
+                    ?.get(0) as HomeRecommendationItemDataModel
+                ).product.isWishlist
+        )
+    }
+
+    @Test
+    fun `verify when update wishlist not found position isFailed`() {
+        val mockResponse = spyk(
+            GetDtHomeRecommendationResponse(
+                GetHomeRecommendationProductV2(
+                    products = arrayListOf(
+                        spyk(
+                            Product()
+                        )
+                    ),
+                    positions = arrayListOf(
+                        Position(
+                            type = TYPE_PRODUCT
+                        )
+                    )
+                )
+            )
+        )
+
+        // Given
+        coEvery {
+            dtGetRecommendationForYouUseCase(any())
+        } returns mockResponse
+
+        // When
+        viewModel.loadInitialPage("")
+        viewModel.updateWishlist("9999", 99999, true)
+
+        // Then
+        assertFalse(
+            (
+                viewModel.homeRecommendationLiveData.value?.homeRecommendations?.toMutableList()
+                    ?.get(0) as HomeRecommendationItemDataModel
+                ).product.isWishlist
+        )
+    }
+
+    @Test
+    fun `verify when update wishlist not found position isFailed null _homeRecommendationLiveData`() {
+        // When
+        viewModel.updateWishlist("9999", 99999, true)
+
+        // Then
+        verify(exactly = 0) {
+            homeRecommendationDataModelObserver.onChanged(
+                HomeRecommendationDataModel(
+                    homeRecommendations = listOf(
+                        HomeRecommendationError()
+                    )
+                )
+            )
+        }
     }
 }

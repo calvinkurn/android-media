@@ -19,6 +19,7 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.payment.setting.R
 import com.tokopedia.payment.setting.add.view.activity.AddCreditCardActivity
 import com.tokopedia.payment.setting.authenticate.view.activity.AuthenticateCreditCardActivity
+import com.tokopedia.payment.setting.databinding.FragmentSettingListPaymentBinding
 import com.tokopedia.payment.setting.detail.view.activity.DetailCreditCardActivity
 import com.tokopedia.payment.setting.di.SettingPaymentComponent
 import com.tokopedia.payment.setting.list.analytics.PaymentSettingListAnalytics
@@ -32,8 +33,7 @@ import com.tokopedia.payment.setting.list.view.listener.SettingListActionListene
 import com.tokopedia.payment.setting.list.view.viewmodel.SettingsListViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.android.synthetic.main.fragment_setting_list_payment.*
-import kotlinx.android.synthetic.main.fragment_setting_list_payment.view.*
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
 class SettingListPaymentFragment :
@@ -48,6 +48,8 @@ class SettingListPaymentFragment :
     @Inject
     lateinit var analytics: PaymentSettingListAnalytics
 
+    private var binding by autoClearedNullable<FragmentSettingListPaymentBinding>()
+
     private val settingsListViewModel: SettingsListViewModel by lazy(LazyThreadSafetyMode.NONE) {
         val viewModelProvider = ViewModelProviders.of(this, viewModelFactory.get())
         viewModelProvider.get(SettingsListViewModel::class.java)
@@ -60,7 +62,8 @@ class SettingListPaymentFragment :
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_setting_list_payment, container, false)
+        binding = FragmentSettingListPaymentBinding.inflate(inflater, container, false)
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -71,7 +74,7 @@ class SettingListPaymentFragment :
             ContextCompat.getDrawable(it, R.drawable.divider_list_card)?.let { it1 -> dividerItemDecoration.setDrawable(it1) }
             getRecyclerView(view)?.addItemDecoration(dividerItemDecoration)
         }
-        view.authenticateCreditCard.setOnClickListener {
+        binding?.authenticateCreditCard?.setOnClickListener {
             analytics.sendEventClickAuthenticate()
             activity?.run {
                 showLoadingDialog()
@@ -269,13 +272,17 @@ class SettingListPaymentFragment :
     }
 
     private fun hideAuthPaymentView() {
-        dividerListPayment?.visibility = View.GONE
-        authenticateCreditCard?.visibility = View.GONE
+        binding?.run {
+            dividerListPayment.visibility = View.GONE
+            authenticateCreditCard.visibility = View.GONE
+        }
     }
 
     private fun showAuthPaymentView() {
-        dividerListPayment?.visibility = View.VISIBLE
-        authenticateCreditCard?.visibility = View.VISIBLE
+        binding?.run {
+            dividerListPayment?.visibility = View.VISIBLE
+            authenticateCreditCard?.visibility = View.VISIBLE
+        }
     }
 
     override fun getRecyclerViewResourceId() = R.id.recycler_view
