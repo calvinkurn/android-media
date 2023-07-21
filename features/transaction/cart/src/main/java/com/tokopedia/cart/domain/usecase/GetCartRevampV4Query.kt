@@ -88,6 +88,10 @@ const val CART_REVAMP_V4_QUERY =
                 promo_value
                 seller_cashback_wording
                 seller_cashback_value
+                add_ons {
+                    wording
+                    type
+                }
               }
               promo_summary {
                 title

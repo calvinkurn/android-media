@@ -1456,7 +1456,7 @@ class CartAdapter constructor(
     }
 
     fun updateAddOnByCartId(cartId: String, newAddOnWording: String, selectedAddons: List<AddOnUIModel>) {
-        var position = 0
+        val position: Int
         loop@ for ((index, item) in cartDataList.withIndex()) {
             if (item is CartItemHolderData) {
                 if (item.cartId == cartId) {
