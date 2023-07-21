@@ -252,16 +252,16 @@ class CheckoutProductViewHolder(
             }
             val layoutInflater = LayoutInflater.from(itemView.context)
             addOnProduct.listAddOnProductData.forEach { addon ->
-                if (addon.addOnDataName.isNotEmpty()) {
+                if (addon.name.isNotEmpty()) {
                     val addOnView =
                         ItemAddOnProductBinding.inflate(layoutInflater, productBinding.llAddonProductItems, false)
                     addOnView.apply {
-                        tvProductAddonName.text = addon.addOnDataName
+                        tvProductAddonName.text = addon.name
                         tvProductAddonPrice.text = " (${CurrencyFormatUtil
-                            .convertPriceValueToIdrFormat(addon.addOnDataPrice.toLong(), false)
+                            .convertPriceValueToIdrFormat(addon.price, false)
                             .removeDecimalSuffix()})"
                         cbProductAddon.isChecked =
-                            (addon.addOnDataStatus == AddOnConstant.ADD_ON_PRODUCT_STATUS_CHECK)
+                            (addon.status == AddOnConstant.ADD_ON_PRODUCT_STATUS_CHECK)
                         cbProductAddon.setOnCheckedChangeListener { _, isChecked ->
                             delayChangeCheckboxAddOnState?.cancel()
                             delayChangeCheckboxAddOnState = GlobalScope.launch(Dispatchers.Main) {
@@ -274,7 +274,7 @@ class CheckoutProductViewHolder(
                                         bindingAdapterPosition
                                     )
                                     listener.onClickAddOnsProductWidget(
-                                        addon.addOnDataType,
+                                        addon.type,
                                         product.productId.toString(),
                                         isChecked
                                     )
@@ -282,13 +282,13 @@ class CheckoutProductViewHolder(
                             }
                         }
                         tvProductAddonName.setOnClickListener {
-                            listener.onClickAddonProductInfoIcon(addon.addOnDataInfoLink)
+                            listener.onClickAddonProductInfoIcon(addon.infoLink)
                         }
                     }
                     productBinding.llAddonProductItems.addView(addOnView.root)
                     productBinding.llAddonProductItems.visible()
                     listener.onImpressionAddOnProductService(
-                        addon.addOnDataType,
+                        addon.type,
                         product.productId.toString()
                     )
                 }
@@ -320,16 +320,16 @@ class CheckoutProductViewHolder(
             }
             val layoutInflater = LayoutInflater.from(itemView.context)
             addOnProduct.listAddOnProductData.forEach { addon ->
-                if (addon.addOnDataName.isNotEmpty()) {
+                if (addon.name.isNotEmpty()) {
                     val addOnView =
                         ItemAddOnProductBinding.inflate(layoutInflater, bundleBinding.llAddonProductBundleItems, false)
                     addOnView.apply {
-                        tvProductAddonName.text = addon.addOnDataName
+                        tvProductAddonName.text = addon.name
                         tvProductAddonPrice.text = " (${CurrencyFormatUtil
-                            .convertPriceValueToIdrFormat(addon.addOnDataPrice.toLong(), false)
+                            .convertPriceValueToIdrFormat(addon.price, false)
                             .removeDecimalSuffix()})"
                         cbProductAddon.isChecked =
-                            (addon.addOnDataStatus == AddOnConstant.ADD_ON_PRODUCT_STATUS_CHECK)
+                            (addon.status == AddOnConstant.ADD_ON_PRODUCT_STATUS_CHECK)
                         cbProductAddon.setOnCheckedChangeListener { _, isChecked ->
                             delayChangeCheckboxAddOnState?.cancel()
                             delayChangeCheckboxAddOnState = GlobalScope.launch(Dispatchers.Main) {
@@ -342,7 +342,7 @@ class CheckoutProductViewHolder(
                                         bindingAdapterPosition
                                     )
                                     listener.onClickAddOnsProductWidget(
-                                        addon.addOnDataType,
+                                        addon.type,
                                         product.productId.toString(),
                                         isChecked
                                     )
@@ -350,13 +350,13 @@ class CheckoutProductViewHolder(
                             }
                         }
                         tvProductAddonName.setOnClickListener {
-                            listener.onClickAddonProductInfoIcon(addon.addOnDataInfoLink)
+                            listener.onClickAddonProductInfoIcon(addon.infoLink)
                         }
                     }
                     bundleBinding.llAddonProductBundleItems.addView(addOnView.root)
                     bundleBinding.llAddonProductBundleItems.visible()
                     listener.onImpressionAddOnProductService(
-                        addon.addOnDataType,
+                        addon.type,
                         product.productId.toString()
                     )
                 }

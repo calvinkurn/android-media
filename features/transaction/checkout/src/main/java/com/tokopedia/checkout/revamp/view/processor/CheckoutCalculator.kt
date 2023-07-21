@@ -86,15 +86,15 @@ class CheckoutCalculator @Inject constructor(private val dispatchers: CoroutineD
                         }
                         if (cartItem.addOnProduct.listAddOnProductData.isNotEmpty()) {
                             for (addOnProductService in cartItem.addOnProduct.listAddOnProductData) {
-                                if (addOnProductService.addOnDataStatus == 1) {
-                                    totalAddOnProductServicePrice += (addOnProductService.addOnDataPrice * cartItem.quantity)
-                                    if (countMapSummaries.containsKey(addOnProductService.addOnDataType)) {
+                                if (addOnProductService.status == 1) {
+                                    totalAddOnProductServicePrice += (addOnProductService.price * cartItem.quantity)
+                                    if (countMapSummaries.containsKey(addOnProductService.type)) {
                                         qtyAddOn += cartItem.quantity
                                     } else {
                                         qtyAddOn = cartItem.quantity
                                     }
-                                    totalPriceAddOn = qtyAddOn * addOnProductService.addOnDataPrice
-                                    countMapSummaries[addOnProductService.addOnDataType] = totalPriceAddOn to qtyAddOn
+                                    totalPriceAddOn = qtyAddOn * addOnProductService.price
+                                    countMapSummaries[addOnProductService.type] = totalPriceAddOn to qtyAddOn
                                 }
                             }
                         }
