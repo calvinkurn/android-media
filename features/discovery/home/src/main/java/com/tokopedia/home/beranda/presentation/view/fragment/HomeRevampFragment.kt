@@ -1332,11 +1332,6 @@ open class HomeRevampFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        performanceTrace?.init(
-            v = view.rootView,
-            touchListenerActivity = activity as? TouchListenerActivity,
-        ) { summaryModel: BlocksSummaryModel, capturedBlocks: Set<String> -> }
         observeSearchHint()
     }
 

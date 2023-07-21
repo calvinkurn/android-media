@@ -10,16 +10,16 @@ import com.tokopedia.home_component.visitable.DynamicIconComponentDataModel
 /**
  * Created by dhaba
  */
-class DynamicIconMacroAdapter(private val listener: DynamicIconComponentListener, private val isRevamp: Boolean = false) : RecyclerView.Adapter<DynamicIconMacroItemViewHolder>() {
+class DynamicIconAdapter(private val listener: DynamicIconComponentListener, private val isRevamp: Boolean = false) : RecyclerView.Adapter<DynamicIconItemViewHolder>() {
     private val iconList = mutableListOf<DynamicIconComponent.DynamicIcon>()
     private var position: Int = 0
     private var type: Int = 1
     private var isCache: Boolean = false
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DynamicIconMacroItemViewHolder {
-        return DynamicIconMacroItemViewHolder(
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DynamicIconItemViewHolder {
+        return DynamicIconItemViewHolder(
             LayoutInflater.from(parent.context).inflate(
-                if (isRevamp) DynamicIconMacroItemViewHolder.LAYOUT_REVAMP else DynamicIconMacroItemViewHolder.LAYOUT,
+                if (isRevamp) DynamicIconItemViewHolder.LAYOUT_REVAMP else DynamicIconItemViewHolder.LAYOUT,
                 parent,
                 false
             ),
@@ -28,11 +28,11 @@ class DynamicIconMacroAdapter(private val listener: DynamicIconComponentListener
         )
     }
 
-    override fun onBindViewHolder(holder: DynamicIconMacroItemViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: DynamicIconItemViewHolder, position: Int) {
         val isScrollable =
-            if (isRevamp && iconList.size > DynamicIconViewHolder.SCROLLABLE_ITEM_MACRO_REVAMP) true
-            else if (isRevamp && iconList.size <= DynamicIconViewHolder.SCROLLABLE_ITEM_MACRO_REVAMP) false
-            else iconList.size > DynamicIconViewHolder.SCROLLABLE_ITEM_MACRO
+            if (isRevamp && iconList.size > DynamicIconViewHolder.SCROLLABLE_ITEM_REVAMP) true
+            else if (isRevamp && iconList.size <= DynamicIconViewHolder.SCROLLABLE_ITEM_REVAMP) false
+            else iconList.size > DynamicIconViewHolder.SCROLLABLE_ITEM
         iconList.getOrNull(position)?.let {
             holder
                 .bind(it, isScrollable, this.position, type, isCache)
