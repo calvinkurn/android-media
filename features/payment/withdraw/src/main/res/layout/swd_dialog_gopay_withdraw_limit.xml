@@ -37,7 +37,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <ImageView
+            <com.tokopedia.unifycomponents.ImageUnify
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
                 android:src="@drawable/swd_gopay_ticker_supergraphic"
@@ -46,7 +46,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"/>
 
-            <ImageView
+            <com.tokopedia.unifycomponents.ImageUnify
                 android:id="@+id/icGopayLimitDialog"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
