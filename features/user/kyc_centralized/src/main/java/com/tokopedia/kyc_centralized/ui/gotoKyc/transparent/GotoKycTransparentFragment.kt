@@ -25,9 +25,11 @@ import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.kyc_centralized.common.KYCConstant
+import com.tokopedia.kyc_centralized.common.KycServerLogger
 import com.tokopedia.kyc_centralized.databinding.FragmentGotoKycLoaderBinding
 import com.tokopedia.kyc_centralized.di.GoToKycComponent
 import com.tokopedia.kyc_centralized.ui.gotoKyc.bottomSheet.AwaitingApprovalGopayBottomSheet
+import com.tokopedia.kyc_centralized.ui.gotoKyc.bottomSheet.FailedSavePreferenceBottomSheet
 import com.tokopedia.kyc_centralized.ui.gotoKyc.bottomSheet.OnboardNonProgressiveBottomSheet
 import com.tokopedia.kyc_centralized.ui.gotoKyc.bottomSheet.OnboardProgressiveBottomSheet
 import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.AccountLinkingStatusResult
@@ -118,7 +120,6 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
         val projectId = activity?.intent?.extras?.getString(ApplinkConstInternalUserPlatform.PARAM_PROJECT_ID)
         val source = activity?.intent?.extras?.getString(ApplinkConstInternalUserPlatform.PARAM_SOURCE)
         isReVerify = activity?.intent?.extras?.getBoolean(IS_RE_VERIFY).orFalse()
-        kycSharedPreference.saveProjectId(projectId.toString())
         validationParameter(projectId = projectId, source = source)
         initObserver()
     }
@@ -131,12 +132,29 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
             viewModel.setProjectId(projectId)
             viewModel.setSource(source.orEmpty())
 
+            saveInitDataToPreference()
+        }
+    }
+
+    private fun saveInitDataToPreference() {
+        binding?.gotoKycLoader?.show()
+        val isSuccessSavePreference = kycSharedPreference.saveProjectId(viewModel.projectId)
+
+        KycServerLogger.sendLogStatusSavePreferenceKyc(
+            flow = KycServerLogger.FLOW_GOTO_KYC,
+            isSuccess = isSuccessSavePreference
+        )
+
+        if (isSuccessSavePreference) {
             if (isReVerify) {
                 viewModel.accountLikingStatus()
             } else {
                 // please, make sure project id already set in viewModel
                 viewModel.getProjectInfo(viewModel.projectId.toIntSafely())
             }
+        } else {
+            binding?.gotoKycLoader?.invisible()
+            showFailedSavePreferenceBottomSheet()
         }
     }
 
@@ -371,6 +389,24 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
         }
     }
 
+    private fun showFailedSavePreferenceBottomSheet() {
+        val failedSavePreferenceBottomSheet = FailedSavePreferenceBottomSheet()
+
+        failedSavePreferenceBottomSheet.show(
+            childFragmentManager,
+            TAG_BOTTOM_SHEET_FAILED_SAVE_PREFERENCE
+        )
+
+        failedSavePreferenceBottomSheet.setOnDismissWithDataListener { isReload ->
+            if (isReload) {
+                saveInitDataToPreference()
+            } else {
+                activity?.setResult(Activity.RESULT_CANCELED)
+                activity?.finish()
+            }
+        }
+    }
+
     private fun showToaster(throwable: Throwable?) {
         val message = throwable?.getGotoKycErrorMessage(requireContext())
         Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
@@ -387,6 +423,7 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
         private const val TAG_BOTTOM_SHEET_AWAITING_APPROVAL_GOPAY = "bottom_sheet_awaiting_approval_gopay"
         private const val TAG_BOTTOM_SHEET_ONBOARD_NON_PROGRESSIVE = "bottom_sheet_non_progressive"
         private const val TAG_BOTTOM_SHEET_ONBOARD_PROGRESSIVE = "bottom_sheet_progressive"
+        private const val TAG_BOTTOM_SHEET_FAILED_SAVE_PREFERENCE = "bottom_sheet_failed_save_preference"
         private const val TAG_BOTTOM_SHEET_DOB_CHALLENGE_EXHAUSTED = "bottom_sheet_dob_challenge_exhausted"
 
         fun createInstance(): Fragment = GotoKycTransparentFragment()
