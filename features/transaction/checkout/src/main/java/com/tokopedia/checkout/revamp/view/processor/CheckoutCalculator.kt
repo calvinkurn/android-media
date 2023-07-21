@@ -86,15 +86,15 @@ class CheckoutCalculator @Inject constructor(private val dispatchers: CoroutineD
                         }
                         if (cartItem.addOnProduct.listAddOnProductData.isNotEmpty()) {
                             for (addOnProductService in cartItem.addOnProduct.listAddOnProductData) {
-                                if (addOnProductService.addOnDataStatus == 1) {
-                                    totalAddOnProductServicePrice += (addOnProductService.addOnDataPrice * cartItem.quantity)
-                                    if (countMapSummaries.containsKey(addOnProductService.addOnDataType)) {
+                                if (addOnProductService.status == 1) {
+                                    totalAddOnProductServicePrice += (addOnProductService.price * cartItem.quantity)
+                                    if (countMapSummaries.containsKey(addOnProductService.type)) {
                                         qtyAddOn += cartItem.quantity
                                     } else {
                                         qtyAddOn = cartItem.quantity
                                     }
-                                    totalPriceAddOn = qtyAddOn * addOnProductService.addOnDataPrice
-                                    countMapSummaries[addOnProductService.addOnDataType] = totalPriceAddOn to qtyAddOn
+                                    totalPriceAddOn = qtyAddOn * addOnProductService.price
+                                    countMapSummaries[addOnProductService.type] = totalPriceAddOn to qtyAddOn
                                 }
                             }
                         }
@@ -119,13 +119,13 @@ class CheckoutCalculator @Inject constructor(private val dispatchers: CoroutineD
                             additionalFee = 0.0
                         }
                     } else if (shipmentData.selectedShipmentDetailData!!.selectedCourier != null) {*/
-                        shippingFee += shipmentData.shipment
-                            .courierItemData.selectedShipper.shipperPrice.toDouble()
+                    shippingFee += shipmentData.shipment
+                        .courierItemData.selectedShipper.shipperPrice.toDouble()
 //                        if (useInsurance != null && useInsurance) {
 //                            insuranceFee += shipmentData.selectedShipmentDetailData!!
 //                                .selectedCourier!!.selectedShipper.insurancePrice.toDouble()
 //                        }
-                        additionalFee += shipmentData.shipment.courierItemData.additionalPrice.toDouble()
+                    additionalFee += shipmentData.shipment.courierItemData.additionalPrice.toDouble()
 //                    }
                 }
                 if (shipmentData.isLeasingProduct) {
