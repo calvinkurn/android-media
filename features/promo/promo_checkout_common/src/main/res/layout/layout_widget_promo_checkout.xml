@@ -8,16 +8,17 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingHorizontal="16dp"
-        android:paddingVertical="12dp">
+        android:layout_height="wrap_content">
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/iv_promo_checkout_left"
             android:layout_width="32dp"
             android:layout_height="32dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="12dp"
             android:layout_marginEnd="8dp"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginBottom="12dp"
+            app:layout_constraintBottom_toTopOf="@id/barrier_bottom_promo_checkout_header"
             app:layout_constraintEnd_toStartOf="@+id/tv_promo_checkout_title"
             app:layout_constraintHorizontal_chainStyle="packed"
             app:layout_constraintStart_toStartOf="parent"
@@ -27,9 +28,12 @@
             android:id="@+id/tv_promo_checkout_title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="12dp"
             android:inAnimation="@anim/anim_slide_up_in"
             android:outAnimation="@anim/anim_slide_up_out"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/barrier_bottom_promo_checkout_header"
             app:layout_constraintEnd_toStartOf="@+id/ic_promo_checkout_right"
             app:layout_constraintStart_toEndOf="@id/iv_promo_checkout_left"
             app:layout_constraintTop_toTopOf="parent">
@@ -57,13 +61,40 @@
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_marginStart="4dp"
-            android:layout_marginTop="4dp"
-            android:layout_marginBottom="4dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="12dp"
             app:icon_name="CHEVRON_UP"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/barrier_bottom_promo_checkout_header"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/tv_promo_checkout_title"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/barrier_bottom_promo_checkout_header"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="bottom"
+            app:constraint_referenced_ids="iv_promo_checkout_left,tv_promo_checkout_title,ic_promo_checkout_right" />
+
+        <com.tokopedia.unifycomponents.DividerUnify
+            android:id="@+id/divider_promo_checkout"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/barrier_bottom_promo_checkout_header" />
+
+        <LinearLayout
+            android:id="@+id/ll_promo_checkout_summary"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/divider_promo_checkout" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -20,11 +21,79 @@
     </ViewSwitcher>
 
     <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/background_promo_checkout_active_teal_rounded"
+        android:visibility="gone">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="12dp">
+
+            <com.tokopedia.unifycomponents.ImageUnify
+                android:id="@+id/iv_promo_checkout_left"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginEnd="8dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/tv_promo_checkout_title"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tv_promo_checkout_title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toTopOf="@id/tv_promo_checkout_desc"
+                app:layout_constraintEnd_toStartOf="@+id/ic_promo_checkout_right"
+                app:layout_constraintStart_toEndOf="@id/iv_promo_checkout_left"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_chainStyle="packed"
+                app:typographyType="display_3"
+                app:typographyWeight="reguler"
+                tools:text="Kamu bisa hemat Rp100.000" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tv_promo_checkout_desc"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="2dp"
+                android:layout_marginEnd="4dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/ic_promo_checkout_right"
+                app:layout_constraintStart_toEndOf="@id/iv_promo_checkout_left"
+                app:layout_constraintTop_toBottomOf="@id/tv_promo_checkout_title"
+                app:typographyType="small"
+                app:typographyWeight="reguler"
+                tools:text="1 promo dipakai" />
+
+            <com.tokopedia.iconunify.IconUnify
+                android:id="@+id/ic_promo_checkout_right"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="4dp"
+                app:icon_name="CHEVRON_UP"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/tv_promo_checkout_title"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </FrameLayout>
+
+    <FrameLayout
         android:id="@+id/loader_promo_checkout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/background_promo_checkout_teal"
-        android:visibility="visible">
+        android:visibility="gone">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"

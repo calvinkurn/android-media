@@ -3,7 +3,9 @@ package com.tokopedia.promocheckout.common.view.widget
 import android.content.Context
 import android.graphics.drawable.GradientDrawable
 import android.util.AttributeSet
+import android.view.LayoutInflater
 import android.view.View
+import android.widget.LinearLayout
 import android.widget.TextSwitcher
 import android.widget.ViewSwitcher
 import androidx.core.content.res.ResourcesCompat
@@ -12,8 +14,11 @@ import androidx.core.view.get
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.promocheckout.common.R
+import com.tokopedia.promocheckout.common.view.uimodel.PromoEntryPointSummaryItem
 import com.tokopedia.unifycomponents.BaseCustomView
+import com.tokopedia.unifycomponents.DividerUnify
 import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifyprinciples.Typography
 
 open class PromoEntryPointWidget @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
@@ -25,10 +30,14 @@ open class PromoEntryPointWidget @JvmOverloads constructor(
 
     internal var loadingView: View? = null
     internal var switcherView: ViewSwitcher? = null
+
     internal var activeView: View? = null
     internal var activeViewRightIcon: IconUnify? = null
     internal var activeViewLeftImage: ImageUnify? = null
     internal var activeViewWording: TextSwitcher? = null
+    internal var activeViewDivider: DividerUnify? = null
+    internal var activeViewSummaryLayout: LinearLayout? = null
+
     internal var inActiveView: View? = null
     internal var inActiveViewLeftImage: ImageUnify? = null
     internal var inActiveViewWording: TextSwitcher? = null
@@ -44,14 +53,22 @@ open class PromoEntryPointWidget @JvmOverloads constructor(
         loadingView = findViewById(R.id.loader_promo_checkout)
         errorView = findViewById(R.id.error_promo_checkout)
         switcherView = findViewById(R.id.switcher_promo_checkout)
+
         activeView = switcherView?.get(0)
         activeViewLeftImage = activeView?.findViewById(R.id.iv_promo_checkout_left)
         activeViewWording = activeView?.findViewById(R.id.tv_promo_checkout_title)
         activeViewRightIcon = activeView?.findViewById(R.id.ic_promo_checkout_right)
+        activeViewDivider = activeView?.findViewById(R.id.divider_promo_checkout)
+        activeViewSummaryLayout = activeView?.findViewById(R.id.ll_promo_checkout_summary)
+
         inActiveView = switcherView?.get(1)
         inActiveViewLeftImage = inActiveView?.findViewById(R.id.iv_promo_checkout_left)
         inActiveViewWording = inActiveView?.findViewById(R.id.tv_promo_checkout_title)
         inActiveViewRightIcon = inActiveView?.findViewById(R.id.ic_promo_checkout_right)
+        inActiveView?.findViewById<DividerUnify>(R.id.divider_promo_checkout)?.visibility =
+            View.GONE
+        inActiveView?.findViewById<LinearLayout>(R.id.ll_promo_checkout_summary)?.visibility =
+            View.GONE
 
         setupViewBackgrounds()
     }
@@ -166,6 +183,8 @@ open class PromoEntryPointWidget @JvmOverloads constructor(
         animateWording: Boolean = false,
         onClickListener: () -> Unit = {}
     ) {
+        activeViewSummaryLayout?.visibility = View.GONE
+        activeViewDivider?.visibility = View.GONE
         if (animate && switcherView?.visibility == View.VISIBLE) {
             switcherView?.visibility = View.VISIBLE
             activeViewLeftImage?.setImageUrl(leftImageUrl)
@@ -188,6 +207,63 @@ open class PromoEntryPointWidget @JvmOverloads constructor(
             switcherView?.visibility = View.VISIBLE
             errorView?.visibility = View.GONE
             loadingView?.visibility = View.GONE
+        }
+        activeView?.setOnClickListener {
+            onClickListener.invoke()
+        }
+    }
+
+    fun showApplied(
+        leftImageUrl: String,
+        wording: String,
+        rightIcon: Int,
+        summaries: List<PromoEntryPointSummaryItem>,
+        animate: Boolean = false,
+        animateWording: Boolean = false,
+        onClickListener: () -> Unit = {}
+    ) {
+        if (animate && switcherView?.visibility == View.VISIBLE) {
+            switcherView?.visibility = View.VISIBLE
+            activeViewLeftImage?.setImageUrl(leftImageUrl)
+            activeViewRightIcon?.setImage(rightIcon)
+            if (switcherView?.displayedChild != 0) {
+                // only trigger view switch animation if currently showing different view
+                activeViewWording?.setCurrentText(MethodChecker.fromHtml(wording))
+                switcherView?.displayedChild = 0
+            } else if (animateWording) {
+                activeViewWording?.setText(MethodChecker.fromHtml(wording))
+            }
+            errorView?.visibility = View.GONE
+            loadingView?.visibility = View.GONE
+        } else {
+            switcherView?.reset()
+            activeViewLeftImage?.setImageUrl(leftImageUrl)
+            activeViewWording?.setCurrentText(MethodChecker.fromHtml(wording))
+            activeViewRightIcon?.setImage(rightIcon)
+            switcherView?.displayedChild = 0
+            switcherView?.visibility = View.VISIBLE
+            errorView?.visibility = View.GONE
+            loadingView?.visibility = View.GONE
+        }
+        if (summaries.isNotEmpty()) {
+            activeViewSummaryLayout?.visibility = View.VISIBLE
+            activeViewDivider?.visibility = View.VISIBLE
+
+            activeViewSummaryLayout?.apply {
+                removeAllViews()
+                summaries.forEach {
+                    val summaryView = LayoutInflater.from(this.context)
+                        .inflate(R.layout.layout_item_promo_checkout_summary, this, false)
+                    summaryView.findViewById<Typography>(R.id.tv_promo_checkout_summary_title).text =
+                        it.title
+                    summaryView.findViewById<Typography>(R.id.tv_promo_checkout_summary_value).text =
+                        it.value
+                    this.addView(summaryView)
+                }
+            }
+        } else {
+            activeViewSummaryLayout?.visibility = View.GONE
+            activeViewDivider?.visibility = View.GONE
         }
         activeView?.setOnClickListener {
             onClickListener.invoke()
