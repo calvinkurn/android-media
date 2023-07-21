@@ -32,6 +32,9 @@ object GetPostAtcLayoutQuery : GqlQueryInterface {
                         id
                         name
                     }
+                    price
+                    originalPrice
+                    condition
                 }
                 postATCInfo {
                     title

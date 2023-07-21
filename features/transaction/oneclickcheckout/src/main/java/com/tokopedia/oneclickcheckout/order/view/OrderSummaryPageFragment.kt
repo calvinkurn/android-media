@@ -162,7 +162,7 @@ import com.tokopedia.purchase_platform.common.feature.promonoteligible.PromoNotE
 import com.tokopedia.purchase_platform.common.feature.promonoteligible.PromoNotEligibleBottomSheet
 import com.tokopedia.purchase_platform.common.feature.purchaseprotection.domain.PurchaseProtectionPlanData
 import com.tokopedia.purchase_platform.common.utils.isNotBlankOrZero
-import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
+import com.tokopedia.purchase_platform.common.utils.removeSingleDecimalSuffix
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
@@ -380,7 +380,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                 for (index in listProducts.indices) {
                     if (listProducts[index].cartId == cartId) {
                         val addonProduct = listProducts[index].addOnsProductData
-                        addOnProductDataResult.changedAddons.forEach { addOnUiModel ->
+                        addOnProductDataResult.aggregatedData.selectedAddons.forEach { addOnUiModel ->
                             addonProduct.data.forEach { addonExisting ->
                                 if (addOnUiModel.addOnType == addonExisting.type) {
                                     addonExisting.apply {
@@ -1589,8 +1589,8 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                 }
             }
 
-            var price = 0.0
-            var discountedPrice = 0.0
+            val price: Double
+            val discountedPrice: Double
             if (product.campaignId == "0") {
                 price = product.productPrice
                 discountedPrice = product.productPrice
@@ -1611,8 +1611,8 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                     QUERY_PARAM_CATEGORY_ID to product.categoryId,
                     QUERY_PARAM_SHOP_ID to shop.shopId,
                     QUERY_PARAM_QUANTITY to product.orderQuantity,
-                    QUERY_PARAM_PRICE to price.toString().removeDecimalSuffix(),
-                    QUERY_PARAM_DISCOUNTED_PRICE to discountedPrice.toString().removeDecimalSuffix()
+                    QUERY_PARAM_PRICE to price.toString().removeSingleDecimalSuffix(),
+                    QUERY_PARAM_DISCOUNTED_PRICE to discountedPrice.toString().removeSingleDecimalSuffix()
                 )
             )
             println("++ applink = " + applink)

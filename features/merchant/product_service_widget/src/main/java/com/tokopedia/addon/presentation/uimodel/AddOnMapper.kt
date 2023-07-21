@@ -68,9 +68,9 @@ object AddOnMapper {
         }
     }
 
-    fun getSelectedAddons(addOnGroupUIModels: List<AddOnGroupUIModel>): List<AddOnUIModel> {
+    fun getSelectedAddons(addOnGroupUIModels: List<AddOnGroupUIModel>?): List<AddOnUIModel> {
         val resultValue: MutableList<AddOnUIModel> = mutableListOf()
-        addOnGroupUIModels.forEach { addOnGroupUIModel ->
+        addOnGroupUIModels.orEmpty().forEach { addOnGroupUIModel ->
             resultValue.addAll(
                 addOnGroupUIModel.addon.filter { it.isSelected }
             )

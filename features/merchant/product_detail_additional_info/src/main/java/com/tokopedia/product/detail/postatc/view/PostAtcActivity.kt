@@ -10,6 +10,7 @@ import com.tokopedia.product.detail.common.PostAtcHelper.PARAM_CART_ID
 import com.tokopedia.product.detail.common.PostAtcHelper.PARAM_IS_FULFILLMENT
 import com.tokopedia.product.detail.common.PostAtcHelper.PARAM_LAYOUT_ID
 import com.tokopedia.product.detail.common.PostAtcHelper.PARAM_PAGE_SOURCE
+import com.tokopedia.product.detail.common.PostAtcHelper.PARAM_QUANTITY
 import com.tokopedia.product.detail.common.PostAtcHelper.PARAM_SELECTED_ADDONS_IDS
 import com.tokopedia.product.detail.common.PostAtcHelper.PARAM_WAREHOUSE_ID
 import com.tokopedia.product.detail.common.showImmediately
@@ -48,6 +49,7 @@ class PostAtcActivity : BaseSimpleActivity() {
         val pageSource = extras.getString(PARAM_PAGE_SOURCE, "")
         val selectedAddonsIds = extras.getStringArrayList(PARAM_SELECTED_ADDONS_IDS) ?: emptyList()
         val warehouseId = extras.getString(PARAM_WAREHOUSE_ID, "")
+        val quantity = extras.getInt(PARAM_QUANTITY, 0)
 
         showImmediately(supportFragmentManager, PostAtcBottomSheet.TAG) {
             PostAtcBottomSheet.instance(
@@ -57,7 +59,8 @@ class PostAtcActivity : BaseSimpleActivity() {
                 layoutId,
                 pageSource,
                 selectedAddonsIds,
-                warehouseId
+                warehouseId,
+                quantity
             )
         }
     }

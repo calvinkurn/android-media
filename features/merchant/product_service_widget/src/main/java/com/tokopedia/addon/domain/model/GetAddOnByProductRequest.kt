@@ -32,7 +32,10 @@ data class Additional (
 
 data class TypeFilters (
     @SerializedName("Type")
-    var type: String = ""
+    var type: String = "",
+
+    @SerializedName("Quantity")
+    var quantity: Int = 0
 )
 
 data class AddOnRequest (

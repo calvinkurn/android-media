@@ -50,6 +50,7 @@ data class AddOnPageResult(
     data class AggregatedData(
         val title: String = "",
         val price: Long = 0,
+        val selectedAddons: List<AddOnUIModel> = emptyList(),
         var isGetDataSuccess: Boolean = false,
         val getDataErrorMessage: String = ""
     ) : Parcelable
