@@ -398,6 +398,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                     }
                 }
                 adapter.notifyItemChanged(adapter.getAddOnProductServiceIndex(cartId))
+                viewModel.calculateTotal()
             } else {
                 view?.let { v ->
                     Toaster.build(v, addOnProductDataResult.aggregatedData.getDataErrorMessage, type = Toaster.TYPE_ERROR).show()
