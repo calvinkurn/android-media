@@ -1,5 +1,6 @@
 package com.tokopedia.media.editor.ui.activity
 
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import com.tokopedia.media.editor.data.repository.SaveImageRepository
 import com.tokopedia.media.editor.ui.activity.main.EditorViewModel
@@ -9,40 +10,48 @@ import io.mockk.mockk
 import org.junit.Assert.*
 import org.junit.Test
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.media.editor.data.repository.AddLogoFilterRepository
 import com.tokopedia.media.editor.data.repository.BitmapCreationRepository
 import com.tokopedia.media.editor.ui.uimodel.EditorAddLogoUiModel
+import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel
+import com.tokopedia.media.editor.ui.uimodel.EditorCropRotateUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorUiModel
 import com.tokopedia.media.editor.utils.getTokopediaCacheDir
 import com.tokopedia.picker.common.PICKER_URL_FILE_CODE
 import com.tokopedia.picker.common.types.EditorToolType
+import com.tokopedia.unit.test.ext.getOrAwaitValue
+import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.file.FileUtil
+import io.mockk.coEvery
 import org.junit.Rule
-import io.mockk.Runs
 import io.mockk.every
-import io.mockk.just
 import io.mockk.mockkStatic
 import io.mockk.verify
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.shadows.ShadowBitmapFactory
 
 @RunWith(RobolectricTestRunner::class)
+@OptIn(ExperimentalCoroutinesApi::class)
 class EditorViewModelTest {
     @get:Rule
     val instantExecutorRule = InstantTaskExecutorRule()
 
+    @get:Rule
+    val coroutineScopeRule = CoroutineTestRule()
+
     private val saveImageRepo = mockk<SaveImageRepository>()
     private val userSession = mockk<UserSessionInterface>()
-    private val addLogoRepository = mockk<AddLogoFilterRepository>()
     private val bitmapCreationRepository = mockk<BitmapCreationRepository>()
 
     private val viewModel = EditorViewModel(
         saveImageRepo,
-        addLogoRepository,
         userSession,
-        bitmapCreationRepository
+        bitmapCreationRepository,
+        coroutineScopeRule.dispatchers
     )
 
     @Test
@@ -198,74 +207,80 @@ class EditorViewModelTest {
 
     @Suppress("UNCHECKED_CAST")
     @Test
-    fun `save image to gallery`() {
+    fun `on page finish return result`() {
         // Given
         val dataList = createUiModelState(0, -1)
         dataList[2].editList.clear()
         dataList[3].editList.clear()
 
         // When
-        every { saveImageRepo.saveToGallery(any(), any()) }.answers {
-            (args[1] as (List<String>, Exception?) -> Unit).invoke(pathSampleList, null)
+        viewModel.finishPage(
+            dataList
+        )
+
+        assertNotNull(viewModel.editorResult.getOrAwaitValue())
+    }
+
+    @Test
+    fun `on page finish with overlay logo`() {
+        // Given
+        val dataList = createUiModelState(-1, -1)
+        dataList[0].editList[0].addLogoValue.overlayLogoUrl = "overlay.png"
+
+        // When
+        coEvery { saveImageRepo.flattenImage(any(), any(), any()) } returns "result_overlay.png"
+        viewModel.finishPage(
+            dataList
+        )
+
+        viewModel.editorResult.getOrAwaitValue().let { finalUrlList ->
+            assertNotNull(finalUrlList)
+            assertEquals(dataList.size, finalUrlList.size)
         }
-        viewModel.saveToGallery(
-            dataList,
-            onFinish = { _, _ -> }
+    }
+
+    @Test
+    fun `on page finish with overlay text`() {
+        // Given
+        val dataList = createUiModelState(-1, -1)
+        dataList[0].editList[0].addTextValue = EditorAddTextUiModel(
+            textValue = "content",
+            textImagePath = "overlay.png"
+        )
+
+        // When
+        coEvery { saveImageRepo.flattenImage(any(), any(), any()) } returns "result_overlay.png"
+        viewModel.finishPage(
+            dataList
         )
 
         // Then
-        verify { saveImageRepo.saveToGallery(any(), any()) }
+        viewModel.editorResult.getOrAwaitValue().let { finalUrlList ->
+            assertNotNull(finalUrlList)
+            assertEquals(dataList.size, finalUrlList.size)
+        }
     }
 
-    @Suppress("UNCHECKED_CAST")
     @Test
-    fun `save image to gallery with overlay logo`() {
+    fun `on page finish with failed generate overlay text`() {
         // Given
-        val tempOverlayUrl = "temp_url"
-        val dataList = createUiModelState(0, -1)
-        dataList.first().apply {
-            editList.add(
-                EditorDetailUiModel(
-                    resultUrl = this.getOriginalUrl(),
-                    editorToolType = EditorToolType.ADD_LOGO,
-                    addLogoValue = EditorAddLogoUiModel(
-                        overlayLogoUrl = tempOverlayUrl
-                    )
-                )
-            )
-        }
+        val dataList = createUiModelState(-1, -1)
+        dataList[0].editList[0].addTextValue = EditorAddTextUiModel(
+            textValue = "content"
+        )
 
         // When
-        every { addLogoRepository.flattenImage(any(), any(), any()) } returns addLogoPath
-        every { saveImageRepo.saveToGallery(any(), any()) }.answers {
-            (args[1] as (List<String>, Exception?) -> Unit).invoke(pathSampleList, null)
-        }
-        viewModel.saveToGallery(dataList) { _, _ -> }
-
-        // Then
-        verify { saveImageRepo.saveToGallery(any(), any()) }
-    }
-
-    @Suppress("UNCHECKED_CAST")
-    @Test
-    fun `save captured image to gallery`() {
-        // Given
-        val cameraDataIndex = pathSampleList.size - 1
-        val dataList = createUiModelState(cameraDataIndex, cameraDataIndex)
-
-        // When
-        mockkStatic(FileUtil::class)
-        every { getTokopediaCacheDir() } returns tokopediaCacheDir
-        every { saveImageRepo.saveToGallery(any(), any()) }.answers {
-            (args[1] as (List<String>, Exception?) -> Unit).invoke(pathSampleList, null)
-        }
-        viewModel.saveToGallery(
-            dataList,
-            onFinish = { _, _ -> }
+        coEvery { saveImageRepo.flattenImage(any(), any(), any()) } returns "result_overlay.png"
+        viewModel.finishPage(
+            dataList
         )
 
         // Then
-        verify { saveImageRepo.saveToGallery(any(), any()) }
+        viewModel.editorResult.getOrAwaitValue().let { finalUrlList ->
+            // Then
+            assertNotNull(finalUrlList)
+            assertEquals(dataList.size, finalUrlList.size)
+        }
     }
 
     @Test
@@ -340,6 +355,26 @@ class EditorViewModelTest {
         assertEquals(false, isMemoryOverflow)
     }
 
+    @Test
+    fun `check crop is success`() {
+        // Given
+        val source = ShadowBitmapFactory.create("", BitmapFactory.Options())
+        var resultSource: Bitmap? = null
+        val cropRotateData = EditorCropRotateUiModel(
+            offsetX = 10,
+            offsetY = 20,
+            imageWidth = 100,
+            imageHeight = 100
+        )
+
+        // When
+        every { bitmapCreationRepository.createBitmap(any()) } returns source
+        resultSource = viewModel.cropImage(source, cropRotateData)
+
+        // Then
+        assertNotNull(resultSource)
+    }
+
     private fun createUiModelState(excludeIndex: Int, cameraIndex: Int): List<EditorUiModel> {
         return pathSampleList.mapIndexed { index, path ->
             val stateList = listOf<EditorDetailUiModel>().toMutableList()
@@ -367,11 +402,10 @@ class EditorViewModelTest {
             "/storage/sdcard/Pictures/Image1.jpg",
             "/storage/sdcard/Pictures/Image2.jpeg",
             "/storage/sdcard/Pictures/$PICKER_URL_FILE_CODE.jpeg",
-            "$tokopediaCacheDir/$PICKER_URL_FILE_CODE.png",
+            "${getTokopediaCacheDir()}/$PICKER_URL_FILE_CODE.png",
             "/storage/sdcard/Pictures/Image3.png"
         )
 
         private const val videoKey = "/storage/sdcard/Pictures/Video1.mp4"
-        private const val userShopId = "13580123"
     }
 }

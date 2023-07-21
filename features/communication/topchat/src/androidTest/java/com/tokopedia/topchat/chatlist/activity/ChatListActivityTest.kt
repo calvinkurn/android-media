@@ -13,6 +13,8 @@ import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.assertion.withItemCount
 import com.tokopedia.topchat.chatlist.activity.base.ChatListTest
+import com.tokopedia.topchat.chatlist.activity.robot.broadcast.BroadcastResult
+import com.tokopedia.topchat.chatlist.activity.robot.broadcastResult
 import com.tokopedia.topchat.chatlist.domain.pojo.whitelist.ChatWhitelistFeatureResponse
 import com.tokopedia.topchat.matchers.withIndex
 import com.tokopedia.topchat.matchers.withTotalItem
@@ -41,7 +43,7 @@ class ChatListActivityTest : ChatListTest() {
             .check(matches(withText("Belum ada chat, nih")))
         onView(withId(R.id.subtitle))
             .check(matches(withText("Coba ngobrol dengan teman penjual, yuk!")))
-        onView(withId(R.id.btnCta))
+        onView(withId(R.id.btn_cta))
             .check(matches(not(isDisplayed())))
     }
 
@@ -63,6 +65,7 @@ class ChatListActivityTest : ChatListTest() {
     fun empty_chat_list_seller_buyer() {
         // Given
         chatListUseCase.response = exEmptyChatListPojo
+        setLastSeenTab(isSellerTab = true)
         userSession.setIsShopOwner(true)
 
         // When
@@ -75,9 +78,9 @@ class ChatListActivityTest : ChatListTest() {
             .check(matches(withText("Belum ada chat, nih")))
         onView(allOf(withId(R.id.subtitle), isCompletelyDisplayed()))
             .check(matches(withText("Yuk, bikin tokomu ramai pengunjung dengan beriklan dan promosikan produk-produkmu.")))
-        onView(allOf(withId(R.id.btnCta), isCompletelyDisplayed()))
+        onView(allOf(withId(R.id.btn_cta), isCompletelyDisplayed()))
             .check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
-        onView(allOf(withId(R.id.btnCta), isCompletelyDisplayed()))
+        onView(allOf(withId(R.id.btn_cta), isCompletelyDisplayed()))
             .check(matches(withText("Coba Iklan dan Promosi")))
     }
 
@@ -107,7 +110,7 @@ class ChatListActivityTest : ChatListTest() {
         onView(withId(R.id.menu_chat_filter)).perform(click())
 
         // Then
-        onView(withId(R.id.rvMenu)).check(withItemCount(equalTo(3)))
+        onView(withId(R.id.rv_menu)).check(withItemCount(equalTo(3)))
     }
 
     @Test
@@ -125,7 +128,7 @@ class ChatListActivityTest : ChatListTest() {
         onView(withId(R.id.menu_chat_filter)).perform(click())
 
         // Then
-        onView(withId(R.id.rvMenu)).check(withItemCount(equalTo(4)))
+        onView(withId(R.id.rv_menu)).check(withItemCount(equalTo(4)))
     }
 
     @Test
@@ -140,6 +143,114 @@ class ChatListActivityTest : ChatListTest() {
         onView(withId(R.id.menu_chat_filter)).perform(click())
 
         // Then
-        onView(withId(R.id.rvMenu)).check(withItemCount(equalTo(2)))
+        onView(withId(R.id.rv_menu)).check(withItemCount(equalTo(2)))
+    }
+
+    @Test
+    fun should_show_mvc_icon_when_user_on_buyer_tab_and_rollence_active() {
+        // Given
+        chatListUseCase.response = exBroadcastChatListPojo
+        userSession.setIsShopOwner(true)
+        setLastSeenTab(isSellerTab = false)
+        setRollenceMVCIcon(isActive = true)
+
+        // When
+        startChatListActivity()
+
+        // Then
+        BroadcastResult.assertMVCVoucherVisible(isVisible = true)
+    }
+
+    @Test
+    fun should_not_show_icon_when_user_on_buyer_tab_and_rollence_inactive() {
+        // Given
+        chatListUseCase.response = exBroadcastChatListPojo
+        userSession.setIsShopOwner(true)
+        setLastSeenTab(isSellerTab = false)
+        setRollenceMVCIcon(isActive = false)
+
+        // When
+        startChatListActivity()
+
+        // Then
+        BroadcastResult.assertMVCVoucherVisible(isVisible = false)
+    }
+
+    @Test
+    fun should_not_show_icon_when_user_on_seller_tab() {
+        // Given
+        chatListUseCase.response = exBroadcastChatListPojo
+        userSession.setIsShopOwner(true)
+        setLastSeenTab(isSellerTab = true)
+        setRollenceMVCIcon(isActive = true)
+
+        // When
+        startChatListActivity()
+
+        // Then
+        Thread.sleep(500)
+        BroadcastResult.assertMVCVoucherVisible(isVisible = false)
+    }
+
+    @Test
+    fun should_show_broadcast_fab_with_label() {
+        // Given
+        chatListUseCase.response = exSize5ChatListPojo
+        userSession.setIsShopOwner(true)
+        setLastSeenTab(isSellerTab = true)
+        setLabelNew(true)
+        setRollenceLabelNew(true)
+
+        // When
+        startChatListActivity()
+
+        // Then
+        broadcastResult {
+            assertBroadcastFABLayout(true)
+            assertBroadcastFAB(true)
+            assertBroadcastFABLabel(true)
+        }
+
+        // Clean-up
+        setLabelNew(false)
+        setRollenceLabelNew(false)
+    }
+
+    @Test
+    fun should_show_broadcast_fab_without_label() {
+        // Given
+        chatListUseCase.response = exSize5ChatListPojo
+        userSession.setIsShopOwner(true)
+        setLastSeenTab(isSellerTab = true)
+        setLabelNew(false)
+        setRollenceLabelNew(true)
+
+        // When
+        startChatListActivity()
+
+        // Then
+        broadcastResult {
+            assertBroadcastFABLayout(true)
+            assertBroadcastFAB(true)
+            assertBroadcastFABLabel(false)
+        }
+    }
+
+    @Test
+    fun should_not_show_broadcast_fab() {
+        // Given
+        chatListUseCase.response = exSize5ChatListPojo
+        userSession.setIsShopOwner(false)
+        setLastSeenTab(isSellerTab = true)
+
+        // When
+        startChatListActivity()
+
+        // Then
+        broadcastResult {
+            assertBroadcastFABLayout(false)
+            assertBroadcastFAB(false)
+            assertBroadcastFABLabel(false)
+        }
     }
 }

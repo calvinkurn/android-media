@@ -1,17 +1,15 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel
 
 import android.os.Bundle
-import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeTypeFactory
 import com.tokopedia.kotlin.model.ImpressHolder
 
 data class HomeHeaderDataModel(
-        var needToShowUserWallet: Boolean = false,
         var needToShowChooseAddress: Boolean = true,
         var headerDataModel: HeaderDataModel? = HeaderDataModel()
-) : ImpressHolder(), HomeVisitable {
+) : ImpressHolder(), HomeVisitable{
     var createdTimeMillis = ""
     private var isCache: Boolean = false
     private var trackingData: Map<String, Any>? = null

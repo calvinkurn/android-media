@@ -3,7 +3,7 @@ package com.tokopedia.feedplus.domain.usecase
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.feedplus.data.FeedXHomeEntity
-import com.tokopedia.feedplus.domain.mapper.MapperFeedHome
+import com.tokopedia.feedplus.domain.mapper.MapperFeedXHome
 import com.tokopedia.feedplus.presentation.model.FeedModel
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -15,6 +15,7 @@ import javax.inject.Inject
  */
 class FeedXHomeUseCase @Inject constructor(
     @ApplicationContext private val graphqlRepository: GraphqlRepository,
+    private val uiMapper: MapperFeedXHome,
     dispatcher: CoroutineDispatchers
 ) : CoroutineUseCase<Map<String, Any>, FeedModel>(dispatcher.io) {
 
@@ -24,7 +25,7 @@ class FeedXHomeUseCase @Inject constructor(
                 graphqlQuery(),
                 params
             )
-        return MapperFeedHome.transform(response.feedXHome)
+        return uiMapper.transform(response.feedXHome)
     }
 
     override fun graphqlQuery(): String = """
@@ -141,6 +142,8 @@ class FeedXHomeUseCase @Inject constructor(
               text
               appLink
               webLink
+              performanceSummaryPageLink
+              insightSummaryPageLink
               like {
                 label
                 count
@@ -340,10 +343,17 @@ class FeedXHomeUseCase @Inject constructor(
             
             fragment FeedXProduct on FeedXProduct {
               id
+              isParent
+              parentID
+              hasVariant
               name
               coverURL
               webLink
               appLink
+              affiliate {
+                id
+                channel
+              }
               star
               price
               priceFmt
@@ -383,14 +393,16 @@ class FeedXHomeUseCase @Inject constructor(
     }
 
     fun createPostDetailParams(postId: String): Map<String, Any> {
-        val params = mapOf<String, Any>(
-            PARAMS_SOURCE to SOURCE_DETAIL,
-            PARAMS_SOURCE_ID to postId,
-            PARAMS_CURSOR to "",
-            PARAMS_LIMIT to LIMIT_DETAIL
-        )
+        return createParamsWithId(postId, SOURCE_DETAIL)
+    }
 
-        return mapOf(PARAMS_REQUEST to params)
+    fun createParamsWithId(sourceId: String, source: String?): Map<String, Any> {
+        return createParams(
+            source = source ?: SOURCE_DETAIL,
+            cursor = "",
+            limit = LIMIT_DETAIL,
+            detailId = sourceId
+        )
     }
 
     companion object {

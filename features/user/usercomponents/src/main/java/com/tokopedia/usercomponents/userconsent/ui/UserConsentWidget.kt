@@ -98,9 +98,13 @@ class UserConsentWidget :
 
         viewBinding?.apply {
             singleConsent.apply {
-                checkboxPurposes.setOnCheckedChangeListener { buttonView, isChecked ->
+                checkboxPurposes.setOnCheckedChangeListener { _, isChecked ->
                     collection?.purposes?.let {
-                        userConsentAnalytics.trackOnPurposeCheck(isChecked, it)
+                        userConsentAnalytics.trackOnPurposeCheck(
+                            isChecked = isChecked,
+                            purposes = it,
+                            collectionId = consentCollectionParam?.collectionId.orEmpty()
+                        )
                         it.forEach { purposeDataModel ->
                             purposeDataModel.transactionType = if (isChecked) CONSENT_OPT_IN else CONSENT_OPT_OUT
                         }
@@ -119,7 +123,10 @@ class UserConsentWidget :
 
     fun submitConsent() {
         collection?.purposes?.let {
-            userConsentAnalytics.trackOnActionButtonClicked(it)
+            userConsentAnalytics.trackOnActionButtonClicked(
+                purposes = it,
+                collectionId = consentCollectionParam?.collectionId.orEmpty()
+            )
         }
 
         if (needConsent != false) {
@@ -255,8 +262,15 @@ class UserConsentWidget :
 
     private fun onSuccessGetConsentCollection(consentType: ConsentType?) {
         collection?.let {
-            userConsentAnalytics.trackOnConsentView(it.purposes)
-            userConsentDescription = UserConsentDescription(this, it)
+            userConsentAnalytics.trackOnConsentView(
+                purposes = it.purposes,
+                collectionId = consentCollectionParam?.collectionId.orEmpty()
+            )
+            userConsentDescription = UserConsentDescription(
+                delegate = this,
+                collectionDataModel = it,
+                collectionId = consentCollectionParam?.collectionId.orEmpty()
+            )
         }
 
         renderView(consentType)
@@ -264,7 +278,10 @@ class UserConsentWidget :
 
     fun generatePayloadData(): String {
         collection?.purposes?.let {
-            userConsentAnalytics.trackOnActionButtonClicked(it)
+            userConsentAnalytics.trackOnActionButtonClicked(
+                purposes = it,
+                collectionId = consentCollectionParam?.collectionId.orEmpty()
+            )
         }
 
         return if (needConsent == false) {
@@ -366,7 +383,10 @@ class UserConsentWidget :
     }
 
     private fun renderDefaultTemplate(consentType: UserConsentType) {
-        userConsentDescription = UserConsentDescription(this)
+        userConsentDescription = UserConsentDescription(
+            delegate = this,
+            collectionId = consentCollectionParam?.collectionId.orEmpty()
+        )
 
         viewBinding?.apply {
             setLoader(false)
@@ -446,7 +466,11 @@ class UserConsentWidget :
         purposeDataModel: PurposeDataModel
     ) {
         onCheckedChangeListener.invoke(isChecked)
-        userConsentAnalytics.trackOnPurposeCheckOnOptional(isChecked, purposeDataModel)
+        userConsentAnalytics.trackOnPurposeCheckOnOptional(
+            isChecked = isChecked,
+            purposes = purposeDataModel,
+            collectionId = consentCollectionParam?.collectionId.orEmpty()
+        )
 
         val isAllChecked = userConsentPurposeAdapter?.listCheckBoxView?.all {
             it.isChecked
@@ -496,7 +520,7 @@ class UserConsentWidget :
     override val textAgreementDefaultTncPolicyOptional: String
         get() = context?.resources?.getString(R.string.user_consent_agreement_default_term_condition_policy_optional).orEmpty()
     override val unifyG500: Int
-        get() = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
+        get() = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
 
     override fun openWebview(url: String) {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.WEBVIEW, url)
@@ -518,11 +542,14 @@ class UserConsentWidget :
     }
 
     fun onDestroy() {
+        removeConsentCollectionObserver()
+        lifecycleOwner = null
+    }
+
+    fun removeConsentCollectionObserver() {
         lifecycleOwner?.let {
             viewModel?.consentCollection?.removeObservers(it)
         }
-
-        lifecycleOwner = null
     }
     fun setOnCheckedChangeListener(listener: (Boolean) -> Unit) {
         onCheckedChangeListener = listener

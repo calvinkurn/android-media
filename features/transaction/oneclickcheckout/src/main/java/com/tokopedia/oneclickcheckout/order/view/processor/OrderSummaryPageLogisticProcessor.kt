@@ -185,9 +185,9 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(
             return null to productList
         }
         return ShipmentDetailData().apply {
-            shopId = orderShop.shopId.toString()
+            shopId = orderShop.shopId
             preorder = preOrder
-            addressId = address.addressId.toString()
+            addressId = address.addressId
             shipmentCartData = ShipmentCartData(
                 originDistrictId = orderShop.districtId,
                 originPostalCode = orderShop.postalCode,
@@ -205,7 +205,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(
                 preOrderDuration = productPreOrderDuration,
                 isFulfillment = orderShop.isFulfillment,
                 boMetadata = orderShop.boMetadata,
-                destinationDistrictId = address.districtId.toString(),
+                destinationDistrictId = address.districtId,
                 destinationPostalCode = address.postalCode,
                 destinationLatitude = address.latitude,
                 destinationLongitude = address.longitude
@@ -382,7 +382,8 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(
                     "",
                     null,
                     null,
-                    null
+                    null,
+                    throwable = t.cause ?: t
                 )
             }
         }
@@ -1043,5 +1044,6 @@ class ResultRates(
     val autoApplyPromo: LogisticPromoUiModel? = null,
     val shippingErrorId: String? = null,
     val preselectedSpId: String? = null,
-    val overweight: Double? = null
+    val overweight: Double? = null,
+    val throwable: Throwable? = null
 )

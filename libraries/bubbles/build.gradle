@@ -13,14 +13,25 @@ buildscript {
     }
 }
 
+android {
+    namespace 'com.tokopedia.bubbles'
+    testNamespace 'com.tokopedia.bubbles.test'
+}
+
 dependencies {
     implementation projectOrAar(rootProject.ext.features.pushNotificationCommon)
-    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
+    implementation projectOrAar(rootProject.ext.libraries.utils)
     implementation projectOrAar(rootProject.ext.libraries.applink)
     implementation projectOrAar(rootProject.ext.libraries.track)
     implementation projectOrAar(rootProject.ext.libraries.usersession)
 
+    implementation rootProject.ext.miscDependencies.coreKtx
+
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
+
+    implementation (rootProject.ext.firebase.crashlytics) {
+        transitive = true
+    }
 
     kapt rootProject.ext.networkDependencies.glideProcessor
     implementation rootProject.ext.networkDependencies.glide

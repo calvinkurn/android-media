@@ -16,6 +16,7 @@ import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.tokopedianow.common.domain.model.GetCategoryListResponse.CategoryListResponse
 import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference
+import com.tokopedia.tokopedianow.common.domain.model.WarehouseData
 import com.tokopedia.tokopedianow.common.domain.usecase.GetCategoryListUseCase
 import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase
 import com.tokopedia.tokopedianow.common.domain.usecase.SetUserPreferenceUseCase
@@ -48,8 +49,8 @@ import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import org.junit.Assert.assertTrue
 import org.junit.Assert
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
 import java.lang.reflect.Field
@@ -125,6 +126,8 @@ abstract class TokoNowRepurchaseViewModelTestFixture {
         privateLocalCacheModel = viewModel::class.java.getDeclaredField("localCacheModel").apply {
             isAccessible = true
         }
+
+        onGetUserLoggedIn_thenReturn(isLoggedIn = true)
     }
 
     protected fun verifyShowLayoutSuccess(expectedResponse: RepurchaseLayoutUiModel) {
@@ -239,11 +242,11 @@ abstract class TokoNowRepurchaseViewModelTestFixture {
     }
 
     protected fun onGetCategoryList_thenReturn(categoryListResponse: CategoryListResponse) {
-        coEvery { getCategoryListUseCase.execute(warehouseId = any(), depth = any()) } returns categoryListResponse
+        coEvery { getCategoryListUseCase.execute(warehouses = any(), depth = any()) } returns categoryListResponse
     }
 
     protected fun onGetCategoryList_thenReturn(error: Throwable) {
-        coEvery { getCategoryListUseCase.execute(warehouseId = any(), depth = any()) } throws error
+        coEvery { getCategoryListUseCase.execute(warehouses = any(), depth = any()) } throws error
     }
 
     protected fun onGetRepurchaseProductList_thenReturn(response: GetRepurchaseProductListResponse) {
@@ -326,8 +329,8 @@ abstract class TokoNowRepurchaseViewModelTestFixture {
         coEvery { setUserPreferenceUseCase.execute(any(), any()) } throws error
     }
 
-    protected fun verifyGetCategoryListUseCaseCalled() {
-        coVerify(exactly = 1) { getCategoryListUseCase.execute("1", TokoNowRepurchaseFragment.CATEGORY_LEVEL_DEPTH) }
+    protected fun verifyGetCategoryListUseCaseCalled(warehouses: List<WarehouseData>, times: Int = 1) {
+        coVerify(exactly = times) { getCategoryListUseCase.execute(warehouses, TokoNowRepurchaseFragment.CATEGORY_LEVEL_DEPTH) }
     }
 
     protected fun onGetLayoutList_thenReturnNull() {
@@ -346,32 +349,20 @@ abstract class TokoNowRepurchaseViewModelTestFixture {
         verify { addToCartUseCase.execute(any(), any()) }
     }
 
-    protected fun verifyAddToCartUseCaseNotCalled() {
-        verify(exactly = 0) { addToCartUseCase.execute(any(), any()) }
-    }
-
     protected fun verifyDeleteCartUseCaseCalled() {
         verify { deleteCartUseCase.execute(any(), any()) }
-    }
-
-    protected fun verifyDeleteCartUseCaseNotCalled() {
-        verify(exactly = 0) { deleteCartUseCase.execute(any(), any()) }
     }
 
     protected fun verifyUpdateCartUseCaseCalled() {
         verify { updateCartUseCase.execute(any(), any()) }
     }
 
-    protected fun verifyUpdateCartUseCaseNotCalled() {
-        verify(exactly = 0) { updateCartUseCase.execute(any(), any()) }
-    }
-
     protected fun verifyGetProductUseCaseCalled() {
-        coVerify { getRepurchaseProductListUseCase.execute(any()) }
+        coVerify { getRepurchaseProductListUseCase.execute(param = any()) }
     }
 
     protected fun verifyGetProductUseCaseCalled(param: GetRepurchaseProductListParam) {
-        coVerify { getRepurchaseProductListUseCase.execute(param) }
+        coVerify { getRepurchaseProductListUseCase.execute(param = param) }
     }
 
     protected fun verifyGetProductUseCaseCalled(times: Int = 1) {

@@ -9,6 +9,7 @@ import com.tokopedia.tokopedianow.search.presentation.model.CategoryJumperDataVi
 import com.tokopedia.tokopedianow.searchcategory.assertBannerDataView
 import com.tokopedia.tokopedianow.searchcategory.assertCategoryFilterDataView
 import com.tokopedia.tokopedianow.searchcategory.assertChooseAddressDataView
+import com.tokopedia.tokopedianow.searchcategory.assertProductAdsCarousel
 import com.tokopedia.tokopedianow.searchcategory.assertProductCountDataView
 import com.tokopedia.tokopedianow.searchcategory.assertQuickFilterDataView
 import com.tokopedia.tokopedianow.searchcategory.jsonToObject
@@ -104,7 +105,15 @@ class SearchFirstPageTest: BaseSearchPageLoadTest() {
         val expectedProductList = searchModel.searchProduct.data.productList
         val actualProductItemDataViewList = visitableList.filterIsInstance<ProductItemDataView>()
 
+        verifyProductAdsCarousel(visitableList, searchModel)
         verifyProductItemDataViewList(expectedProductList, actualProductItemDataViewList, 1)
+    }
+
+    private fun verifyProductAdsCarousel(
+        visitableList: List<Visitable<*>>,
+        searchModel: SearchModel
+    ) {
+        visitableList[6].assertProductAdsCarousel(searchModel.productAds)
     }
 
     private fun `Then assert visitable list footer 2h`(

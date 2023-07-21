@@ -104,7 +104,7 @@
         android:visibility="gone"
         android:layout_marginStart="2dp"
         android:layout_marginTop="2dp"
-        app:icon_color_light_enable="@color/Unify_G500"
+        app:icon_color_light_enable="@color/Unify_GN500"
         app:icon_name="CHEVRON_RIGHT"
         app:layout_constraintBottom_toBottomOf="@id/textSimilarProduct"
         app:layout_constraintStart_toEndOf="@id/textSimilarProduct"

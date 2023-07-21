@@ -180,6 +180,8 @@ open abstract class NfcCheckBalanceFragment : BaseDaggerFragment() {
             return OPERATOR_NAME_BRIZZI
         } else if(issuerId == ISSUER_ID_TAP_CASH){
             return OPERATOR_NAME_TAPCASH
+        } else if (issuerId == ISSUER_ID_JAKCARD) {
+            return OPERATOR_NAME_JAKCARD
         }
         return OPERATOR_NAME_EMONEY
     }
@@ -333,10 +335,12 @@ open abstract class NfcCheckBalanceFragment : BaseDaggerFragment() {
         const val ISSUER_ID_EMONEY = 1
         const val ISSUER_ID_BRIZZI = 2
         const val ISSUER_ID_TAP_CASH = 3
+        const val ISSUER_ID_JAKCARD = 4
 
         const val OPERATOR_NAME_EMONEY = "emoney"
         const val OPERATOR_NAME_BRIZZI = "brizzi"
         const val OPERATOR_NAME_TAPCASH = "tapcash"
+        const val OPERATOR_NAME_JAKCARD = "jakcard"
 
         const val ETOLL_CATEGORY_ID = "34"
 

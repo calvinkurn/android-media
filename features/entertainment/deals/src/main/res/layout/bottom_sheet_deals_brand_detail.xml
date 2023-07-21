@@ -17,7 +17,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/tg_desc_detail_brand"
         app:typographyType="body_2"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         android:layout_marginBottom="@dimen/spacing_lvl4"
         />
 

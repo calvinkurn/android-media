@@ -20,6 +20,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.tokochat.domain.cache.TokoChatBubblesCache
 import com.tokopedia.tokochat.domain.response.extension.TokoChatExtensionPayload
 import com.tokopedia.tokochat.domain.response.orderprogress.TokoChatOrderProgressResponse
 import com.tokopedia.tokochat.domain.response.orderprogress.param.TokoChatOrderProgressParam
@@ -35,6 +36,7 @@ import com.tokopedia.tokochat.domain.usecase.TokoChatOrderProgressUseCase
 import com.tokopedia.tokochat.domain.usecase.TokoChatRegistrationChannelUseCase
 import com.tokopedia.tokochat.domain.usecase.TokoChatSendMessageUseCase
 import com.tokopedia.tokochat.domain.usecase.TokoChatUploadImageUseCase
+import com.tokopedia.tokochat.util.TokoChatValueUtil.BUBBLES_PREF
 import com.tokopedia.tokochat.util.TokoChatValueUtil.IMAGE_EXTENSION
 import com.tokopedia.tokochat.util.TokoChatValueUtil.PICTURE
 import com.tokopedia.tokochat.util.TokoChatViewUtil
@@ -54,7 +56,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.emptyFlow
@@ -131,6 +132,7 @@ class TokoChatViewModel @Inject constructor(
     var isFromTokoFoodPostPurchase = false
     var pushNotifTemplateKey = ""
     var channelId = ""
+    var isFromBubble = false
 
     @Volatile
     var imageAttachmentMap = mutableMapOf<String, String>()
@@ -230,7 +232,7 @@ class TokoChatViewModel @Inject constructor(
         }
     }
 
-    fun getChatHistory(channelId: String): LiveData<List<ConversationsMessage>> {
+    fun getChatHistory(channelId: String): LiveData<List<ConversationsMessage>>? {
         return try {
             getChatHistoryUseCase(channelId)
         } catch (throwable: Throwable) {
@@ -271,7 +273,7 @@ class TokoChatViewModel @Inject constructor(
         }
     }
 
-    fun getTypingStatus(): LiveData<List<String>> {
+    fun getTypingStatus(): LiveData<List<String>>? {
         return try {
             getTypingUseCase.getTypingStatus()
         } catch (throwable: Throwable) {
@@ -347,7 +349,7 @@ class TokoChatViewModel @Inject constructor(
         return registrationChannelUseCase.getUserId()
     }
 
-    fun getMemberLeft(): MutableLiveData<String> {
+    fun getMemberLeft(): MutableLiveData<String>? {
         return try {
             chatChannelUseCase.getMemberLeftLiveData()
         } catch (throwable: Throwable) {
@@ -390,7 +392,7 @@ class TokoChatViewModel @Inject constructor(
         }
     }
 
-    fun getLiveChannel(channelId: String): LiveData<ConversationsChannel?> {
+    fun getLiveChannel(channelId: String): LiveData<ConversationsChannel?>? {
         return try {
             chatChannelUseCase.getLiveChannel(channelId)
         } catch (throwable: Throwable) {
@@ -600,6 +602,36 @@ class TokoChatViewModel @Inject constructor(
                 _error.value = Pair(throwable, ::getUserConsent.name)
             }
         }
+    }
+
+    fun shouldShowTickerBubblesCache(): Boolean {
+        val cacheResult = cacheManager.loadCache(BUBBLES_PREF, TokoChatBubblesCache::class.java)
+        // If no cache from Awareness bottom sheet, return false
+        return if (cacheResult != null) {
+            // True only if channel id is the same & ticker is not closed
+            cacheResult.channelId == channelId && cacheResult.hasShownTicker == false
+        } else {
+            false
+        }
+    }
+
+    fun shouldShowBottomsheetBubblesCache(): Boolean {
+        val cacheResult = cacheManager.loadCache(BUBBLES_PREF, TokoChatBubblesCache::class.java)
+        return cacheResult == null
+    }
+
+    fun setBubblesPref(
+        hasShownBottomSheet: Boolean = true,
+        hasShownTicker: Boolean
+    ) {
+        cacheManager.saveCache(
+            BUBBLES_PREF,
+            TokoChatBubblesCache(
+                channelId = channelId,
+                hasShownBottomSheet = hasShownBottomSheet, // Need true to show ticker
+                hasShownTicker = hasShownTicker // If true, ticker won't show again
+            )
+        )
     }
 
     companion object {

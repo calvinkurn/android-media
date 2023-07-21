@@ -15,6 +15,8 @@ buildscript {
 }
 
 android {
+    namespace 'com.tokopedia.reviewcommon'
+    testNamespace 'com.tokopedia.reviewcommon.test'
     buildFeatures {
         viewBinding true
         compose true
@@ -30,8 +32,7 @@ dependencies {
 
     implementation projectOrAar(rootProject.ext.libraries.applink)
     implementation projectOrAar(rootProject.ext.libraries.baseList)
-    implementation projectOrAar(rootProject.ext.libraries.commonCompose)
-    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
+    implementation projectOrAar(rootProject.ext.libraries.utils)
     implementation projectOrAar(rootProject.ext.libraries.network)
     implementation projectOrAar(rootProject.ext.libraries.track)
     implementation projectOrAar(rootProject.ext.libraries.trackingOptimizer)
@@ -50,6 +51,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.unifyDependencies.principles
+    implementation rootProject.ext.unifyDependencies.nestPrinciples
 
     // Unit Test
     testImplementation rootProject.ext.testDependencies.archCoreTesting

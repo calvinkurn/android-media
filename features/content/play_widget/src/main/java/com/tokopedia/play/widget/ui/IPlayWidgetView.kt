@@ -5,7 +5,7 @@ import com.tokopedia.play.widget.ui.listener.PlayWidgetInternalListener
 /**
  * Created by jegul on 22/10/20
  */
-internal interface IPlayWidgetView {
+interface IPlayWidgetView {
 
     fun setWidgetInternalListener(listener: PlayWidgetInternalListener?)
 }

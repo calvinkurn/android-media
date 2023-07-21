@@ -4,6 +4,8 @@ apply plugin: 'io.hansel.preprocessor.module'
 apply plugin: 'kotlin-parcelize'
 
 android {
+    namespace 'com.tokopedia.tokopedianow'
+    testNamespace 'com.tokopedia.tokopedianow.test'
     buildFeatures {
         viewBinding true
     }
@@ -53,7 +55,6 @@ dependencies {
 
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.baseList)
-    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
     implementation projectOrAar(rootProject.ext.libraries.track)
     implementation projectOrAar(rootProject.ext.libraries.applink)
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
@@ -68,6 +69,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.deviceInfo)
     implementation projectOrAar(rootProject.ext.libraries.videoplayer)
     implementation projectOrAar(rootProject.ext.features.wishlistCommonV2)
+    implementation projectOrAar(rootProject.ext.features.productServiceWidget)
 
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components

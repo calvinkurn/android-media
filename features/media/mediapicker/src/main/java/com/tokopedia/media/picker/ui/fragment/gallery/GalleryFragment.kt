@@ -1,5 +1,8 @@
+@file:SuppressLint("NotifyDataSetChanged")
+
 package com.tokopedia.media.picker.ui.fragment.gallery
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -11,6 +14,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_IDLE
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
@@ -152,6 +156,9 @@ open class GalleryFragment @Inject constructor(
             uiModel.bucketId = id
 
             endlessScrollListener.resetState()
+            // force move to top every single bucketId has changed
+            binding?.lstMedia?.smoothScrollToPosition(0)
+
             viewModel.loadMedia(uiModel.bucketId)
         }
     }
@@ -206,12 +213,16 @@ open class GalleryFragment @Inject constructor(
         viewModel.medias.observe(viewLifecycleOwner) {
             if (it.isNotEmpty()) {
                 if (uiModel.hasChangeAlbum) {
-                    featureAdapter.setItemsAndAnimateChanges(it)
+                    val isNotComputingLayout = binding?.lstMedia?.isComputingLayout != true
+                    val isRecyclerViewIdle = binding?.lstMedia?.scrollState == SCROLL_STATE_IDLE
 
-                    // force move to top every single bucketId has changed
-                    binding?.lstMedia?.smoothScrollToPosition(0)
+                    if (isNotComputingLayout && isRecyclerViewIdle) {
+                        featureAdapter.setItems(it)
+                        featureAdapter.notifyDataSetChanged()
+                    }
                 } else {
-                    featureAdapter.addItemsAndAnimateChanges(it)
+                    featureAdapter.addItems(it)
+                    featureAdapter.notifyItemRangeInserted(featureAdapter.getItems().size, it.size)
                     endlessScrollListener.updateStateAfterGetData()
                 }
             }

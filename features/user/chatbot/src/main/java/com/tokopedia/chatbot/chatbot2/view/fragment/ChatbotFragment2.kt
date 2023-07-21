@@ -75,6 +75,8 @@ import com.tokopedia.chatbot.ChatbotConstant.CsatRating.RATING_ONE
 import com.tokopedia.chatbot.ChatbotConstant.CsatRating.RATING_THREE
 import com.tokopedia.chatbot.ChatbotConstant.CsatRating.RATING_TWO
 import com.tokopedia.chatbot.ChatbotConstant.DynamicAttachment.DYNAMIC_ATTACHMENT
+import com.tokopedia.chatbot.ChatbotConstant.DynamicAttachment.DYNAMIC_REPLY_CSAT_NO
+import com.tokopedia.chatbot.ChatbotConstant.DynamicAttachment.DYNAMIC_REPLY_CSAT_YES
 import com.tokopedia.chatbot.ChatbotConstant.DynamicAttachment.REPLY_BOX_TOGGLE_VALUE
 import com.tokopedia.chatbot.ChatbotConstant.ONE_SECOND_IN_MILLISECONDS
 import com.tokopedia.chatbot.ChatbotConstant.REQUEST_CODE_CHATBOT_ONBOARDING
@@ -100,6 +102,7 @@ import com.tokopedia.chatbot.chatbot2.data.csatRating.websocketCsatRatingRespons
 import com.tokopedia.chatbot.chatbot2.data.csatRating.websocketCsatRatingResponse.WebSocketCsatResponse
 import com.tokopedia.chatbot.chatbot2.data.dynamicAttachment.DynamicAttachment
 import com.tokopedia.chatbot.chatbot2.data.newsession.TopBotNewSessionResponse
+import com.tokopedia.chatbot.chatbot2.data.rejectreasons.DynamicAttachmentRejectReasons
 import com.tokopedia.chatbot.chatbot2.data.submitchatcsat.ChipSubmitChatCsatInput
 import com.tokopedia.chatbot.chatbot2.di.ChatbotModule
 import com.tokopedia.chatbot.chatbot2.di.DaggerChatbotComponent
@@ -120,8 +123,10 @@ import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.listener.QuickRepl
 import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.listener.StickyActionButtonClickListener
 import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.listener.VideoUploadListener
 import com.tokopedia.chatbot.chatbot2.view.bottomsheet.ChatbotMediaRetryBottomSheet
+import com.tokopedia.chatbot.chatbot2.view.bottomsheet.ChatbotRejectReasonsBottomSheet
 import com.tokopedia.chatbot.chatbot2.view.bottomsheet.ChatbotReplyBottomSheet
 import com.tokopedia.chatbot.chatbot2.view.bottomsheet.adapter.ChatbotReplyBottomSheetAdapter
+import com.tokopedia.chatbot.chatbot2.view.bottomsheet.listener.ChatbotRejectReasonsChipListener
 import com.tokopedia.chatbot.chatbot2.view.customview.chatroom.BigReplyBox
 import com.tokopedia.chatbot.chatbot2.view.customview.chatroom.BigReplyBoxBottomSheet
 import com.tokopedia.chatbot.chatbot2.view.customview.chatroom.BigReplyBoxBottomSheet.Companion.MINIMUM_NUMBER_OF_WORDS
@@ -135,6 +140,7 @@ import com.tokopedia.chatbot.chatbot2.view.listener.SmoothScroller
 import com.tokopedia.chatbot.chatbot2.view.uimodel.chatactionbubble.ChatActionBubbleUiModel
 import com.tokopedia.chatbot.chatbot2.view.uimodel.chatactionbubble.ChatActionSelectionBubbleUiModel
 import com.tokopedia.chatbot.chatbot2.view.uimodel.csatoptionlist.CsatOptionsUiModel
+import com.tokopedia.chatbot.chatbot2.view.uimodel.dynamicattachment.DynamicAttachmentTextUiModel
 import com.tokopedia.chatbot.chatbot2.view.uimodel.helpfullquestion.ChatOptionListUiModel
 import com.tokopedia.chatbot.chatbot2.view.uimodel.helpfullquestion.HelpFullQuestionsUiModel
 import com.tokopedia.chatbot.chatbot2.view.uimodel.quickreply.QuickReplyListUiModel
@@ -163,6 +169,7 @@ import com.tokopedia.chatbot.chatbot2.view.viewmodel.state.ChatbotChatSeparatorS
 import com.tokopedia.chatbot.chatbot2.view.viewmodel.state.ChatbotDynamicAttachmentMediaButtonState
 import com.tokopedia.chatbot.chatbot2.view.viewmodel.state.ChatbotImageUploadFailureState
 import com.tokopedia.chatbot.chatbot2.view.viewmodel.state.ChatbotOpenCsatState
+import com.tokopedia.chatbot.chatbot2.view.viewmodel.state.ChatbotRejectReasonsState
 import com.tokopedia.chatbot.chatbot2.view.viewmodel.state.ChatbotSendChatRatingState
 import com.tokopedia.chatbot.chatbot2.view.viewmodel.state.ChatbotSocketErrorState
 import com.tokopedia.chatbot.chatbot2.view.viewmodel.state.ChatbotSocketReceiveEvent
@@ -190,6 +197,8 @@ import com.tokopedia.chatbot.view.util.OnboardingVideoDismissListener
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.imagepreview.ImagePreviewActivity
 import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
@@ -201,6 +210,7 @@ import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.util.getParamBoolean
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.picker.common.MediaPicker
 import com.tokopedia.picker.common.PageSource
@@ -240,7 +250,9 @@ class ChatbotFragment2 :
     ChatbotReplyBottomSheetAdapter.ReplyBubbleBottomSheetListener,
     com.tokopedia.chatbot.chatbot2.view.listener.ChatbotSendButtonListener,
     com.tokopedia.chatbot.chatbot2.view.customview.chatroom.listener.ReplyBoxClickListener,
-    DynamicStickyButtonListener {
+    ChatbotRejectReasonsBottomSheet.ChatbotRejectReasonsListener,
+    DynamicStickyButtonListener,
+    ChatbotRejectReasonsChipListener {
 
     @Inject
     lateinit var session: UserSessionInterface
@@ -302,6 +314,7 @@ class ChatbotFragment2 :
     private var isGetChatFromOnClick = false
     private var replyBubbleBottomSheet: ChatbotReplyBottomSheet? = null
     private var mediaRetryBottomSheet: ChatbotMediaRetryBottomSheet? = null
+    private var bigReplyBoxPlaceHolder: String = ""
 
     // Used for resetting the usecase when user replies to message from not page 1
     private var messageSentNotFromFirstPage = false
@@ -323,9 +336,14 @@ class ChatbotFragment2 :
     private var showAddAttachmentMenu: Boolean = true
     private var showUploadImageButton: Boolean = true
     private var showUploadVideoButton: Boolean = false
+    private var isDismissClickOnRejectReasons: Boolean = false
 
     private var bigReplyBoxBottomSheet: BigReplyBoxBottomSheet? = null
+    private var dynamicAttachmentRejectReasons: DynamicAttachmentRejectReasons? = null
+    private var reasonsBottomSheet: ChatbotRejectReasonsBottomSheet? = null
+    private var rejectReasonsText: String = ""
 
+    val selectedList = mutableListOf<DynamicAttachmentRejectReasons.RejectReasonFeedbackForm.RejectReasonReasonChip>()
     companion object {
         private const val ONCLICK_REPLY_TIME_OFFSET_FOR_REPLY_BUBBLE = 5000
         private const val GUIDELINE_VALUE_FOR_REPLY_BUBBLE = 65
@@ -602,7 +620,7 @@ class ChatbotFragment2 :
 
         val startTime = SendableUiModel.generateStartTime()
         val msg = smallReplyBox?.getMessage() ?: ""
-        var quickReplyUiModel = QuickReplyUiModel(msg, msg, msg)
+        val quickReplyUiModel = QuickReplyUiModel(msg, msg, msg)
 
         viewModel.sendQuickReplyInvoice(
             messageId,
@@ -675,6 +693,7 @@ class ChatbotFragment2 :
         smallReplyBox = getBindingView().smallReplyBox
         bigReplyBox = getBindingView().bigReplyBox
         guideline = smallReplyBox?.getGuidelineForReplyBubble()
+        smallReplyBox?.replyBoxClickListener = this
 
         replyBubbleContainer = smallReplyBox?.getReplyBubbleContainer()
 
@@ -701,6 +720,8 @@ class ChatbotFragment2 :
         startObservingViewModels()
 
         pageSource = getParamString(PAGE_SOURCE, arguments, savedInstanceState)
+        val isChatbotActive = getParamBoolean(ChatbotActivity.IS_CHATBOT_ACTIVE, arguments, savedInstanceState, true)
+        checkIsChatbotServerActive(isChatbotActive)
         handlingForMessageIdValidity(messageId)
         viewModel.setPageSourceValue(pageSource)
 
@@ -988,6 +1009,16 @@ class ChatbotFragment2 :
                 }
             }
         }
+
+        viewModel.dynamicAttachmentRejectReasonState.observe(viewLifecycleOwner) {
+            when (it) {
+                is ChatbotRejectReasonsState.ChatbotRejectReasonData -> {
+                    getViewState()?.handleQuickReplyFromDynamicAttachment(true, it.rejectReasons)
+                    dynamicAttachmentRejectReasons = it.rejectReasons
+                    hideKeyboard()
+                }
+            }
+        }
     }
 
     private fun handleAddAttachmentButtonViewState(toShow: Boolean) {
@@ -1260,6 +1291,7 @@ class ChatbotFragment2 :
     ) {
         processDynamicAttachmentFromHistoryForContentCode100(chatroomViewModel)
         processDynamicAttachmentFromHistoryForContentCode101(chatroomViewModel)
+        processDynamicAttachmentFromHistoryForContentCode107(chatroomViewModel)
         val list = filterChatList(chatroomViewModel)
 
         updateViewData(chatroomViewModel)
@@ -1355,6 +1387,17 @@ class ChatbotFragment2 :
                 }
             }
         }
+    }
+
+    private fun processDynamicAttachmentFromHistoryForContentCode107(chatroom: ChatroomViewModel) {
+        val uiModel = chatroom.listChat.getOrElse(0) { return }
+        if (uiModel !is DynamicAttachmentTextUiModel) {
+            return
+        }
+        if (uiModel.attachmentType != DYNAMIC_ATTACHMENT) {
+            return
+        }
+        uiModel.rejectReasons?.let { data -> viewModel.handleDynamicAttachmentRejectReasons(data) }
     }
 
     private fun onSuccessResetChatToFirstPage(
@@ -1471,11 +1514,62 @@ class ChatbotFragment2 :
         }
     }
 
-    override fun onQuickReplyClicked(model: QuickReplyUiModel) {
+    override fun onQuickReplyClicked(model: QuickReplyUiModel, isFromDynamicAttachment: Boolean) {
+        if (isFromDynamicAttachment) {
+            if (model.action == DYNAMIC_REPLY_CSAT_YES) {
+                processDynamicAttachmentButtonAction(model)
+            } else if (model.action == DYNAMIC_REPLY_CSAT_NO) {
+                openRejectReasonsBottomSheet()
+            }
+        } else {
+            handleQuickReply(model)
+        }
+    }
+
+    private fun processDynamicAttachmentButtonAction(model: QuickReplyUiModel) {
+        getViewState()?.hideQuickReplyOnClick()
+        selectedList.clear()
+        reasonsBottomSheet?.clearChipList()
+        rejectReasonsText = ""
+        viewModel.sendDynamicAttachment108ForAcknowledgement(
+            messageId,
+            opponentId,
+            model,
+            SendableUiModel.generateStartTime(),
+            Int.ZERO,
+            isDismissClickOnRejectReasons
+        )
+        reasonsBottomSheet?.updateSendButtonStatus(false)
+        isDismissClickOnRejectReasons = false
+    }
+
+    private fun handleQuickReply(model: QuickReplyUiModel) {
         chatbotAnalytics.get().eventClick(ACTION_QUICK_REPLY_BUTTON_CLICKED)
-        viewModel.sendQuickReply(messageId, model, SendableUiModel.generateStartTime(), opponentId)
+        viewModel.sendQuickReply(
+            messageId,
+            model,
+            SendableUiModel.generateStartTime(),
+            opponentId
+        )
         getViewState()?.hideQuickReplyOnClick()
         hideCsatRatingView()
+    }
+
+    private fun openRejectReasonsBottomSheet() {
+        dynamicAttachmentRejectReasons?.let {
+            if (reasonsBottomSheet == null) {
+                reasonsBottomSheet = ChatbotRejectReasonsBottomSheet.newInstance(
+                    it,
+                    selectedList,
+                    rejectReasonsText
+                )
+            }
+        }
+        reasonsBottomSheet?.setUpListener(this)
+        reasonsBottomSheet?.setUpChipClickListener(this)
+        reasonsBottomSheet?.setText(rejectReasonsText)
+        reasonsBottomSheet?.updateSendButtonStatus(false)
+        reasonsBottomSheet?.show(childFragmentManager, "")
     }
 
     override fun onImageUploadClicked(imageUrl: String, replyTime: String, isSecure: Boolean) {
@@ -1634,7 +1728,8 @@ class ChatbotFragment2 :
 
     override fun setBigReplyBoxTitle(text: String, placeholder: String) {
         handleReplyBox(false)
-        bigReplyBox?.setText(placeholder)
+        bigReplyBoxPlaceHolder = placeholder
+        bigReplyBox?.setText(bigReplyBoxPlaceHolder)
         bigReplyBox?.shouldShowAddAttachmentButton(showAddAttachmentMenu)
         replyBoxBottomSheetPlaceHolder = placeholder
         replyBoxBottomSheetTitle = text
@@ -2640,6 +2735,9 @@ class ChatbotFragment2 :
 
     override fun getMessageContentFromBottomSheet(msg: String) {
         val startTime = SendableUiModel.generateStartTime()
+        if (msg == bigReplyBoxPlaceHolder) {
+            return
+        }
         enableTyping()
         hideKeyboard()
         viewModel.sendMessage(
@@ -2655,6 +2753,10 @@ class ChatbotFragment2 :
     }
 
     override fun dismissBigReplyBoxBottomSheet(msg: String, wordLength: Int) {
+        if (msg.isEmpty()) {
+            bigReplyBox?.setText(bigReplyBoxPlaceHolder)
+            return
+        }
         bigReplyBox?.setText(msg)
         if (wordLength >= MINIMUM_NUMBER_OF_WORDS) {
             bigReplyBox?.enableSendButton()
@@ -2795,5 +2897,48 @@ class ChatbotFragment2 :
         )
         getViewState()?.removeDynamicStickyButton()
         getViewState()?.scrollToBottom()
+    }
+
+    private fun checkIsChatbotServerActive(isChatbotActive: Boolean) {
+        if (!isChatbotActive) {
+            setErrorLayoutForServer()
+        }
+    }
+
+    override fun submitRejectReasonsViaSocket(
+        selectedReasons: List<DynamicAttachmentRejectReasons.RejectReasonFeedbackForm.RejectReasonReasonChip>,
+        reasonText: String,
+        helpfulQuestion: DynamicAttachmentRejectReasons.RejectReasonHelpfulQuestion?
+    ) {
+        getViewState()?.hideQuickReplyOnClick()
+        hideKeyboard()
+        selectedList.clear()
+        reasonsBottomSheet?.clearChipList()
+        rejectReasonsText = ""
+        val list = mutableListOf<Long>()
+        selectedReasons.forEach {
+            list.add(it.code)
+        }
+        viewModel.sendDynamicAttachment108(
+            list,
+            reasonText,
+            messageId,
+            opponentId,
+            SendableUiModel.generateStartTime(),
+            helpfulQuestion,
+            Int.ONE,
+            isDismissClickOnRejectReasons
+        )
+        isDismissClickOnRejectReasons = false
+        reasonsBottomSheet?.updateSendButtonStatus(false)
+    }
+
+    override fun isDismissClicked(isDismissClickOnRejectReasons: Boolean, text: String) {
+        this.isDismissClickOnRejectReasons = isDismissClickOnRejectReasons
+        this.rejectReasonsText = text
+    }
+
+    override fun onChipClick(count: Int) {
+        reasonsBottomSheet?.checkChipCounter(count)
     }
 }

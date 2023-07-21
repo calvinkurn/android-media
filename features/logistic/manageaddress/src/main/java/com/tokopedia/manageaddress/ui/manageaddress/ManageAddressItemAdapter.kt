@@ -30,15 +30,12 @@ class ManageAddressItemAdapter : RecyclerView.Adapter<ManageAddressItemAdapter.M
     private var isItemClicked = false
     private var mainAddressListener: MainAddressItemAdapterListener? = null
     private var isNeedToShareAddress = false
-    private var isEligibleShareAddress = false
     private var fromFriendAddressListener: FromFriendAddressItemAdapterListener? = null
 
     fun setMainAddressListener(
-        isEligibleShareAddress: Boolean,
         isNeedToShareAddress: Boolean,
         listener: MainAddressItemAdapterListener
     ) {
-        this.isEligibleShareAddress = isEligibleShareAddress
         this.isNeedToShareAddress = isNeedToShareAddress
         this.mainAddressListener = listener
     }
@@ -158,11 +155,7 @@ class ManageAddressItemAdapter : RecyclerView.Adapter<ManageAddressItemAdapter.M
                     showIconGift()
                     setPrimaryButton(data)
                 } else {
-                    if (isEligibleShareAddress) {
-                        binding.iconShare.visible()
-                    } else {
-                        binding.iconShare.gone()
-                    }
+                    binding.iconShare.visible()
                     binding.imgGift.gone()
                     setPrimaryButton(data)
                 }
@@ -195,11 +188,11 @@ class ManageAddressItemAdapter : RecyclerView.Adapter<ManageAddressItemAdapter.M
 
         private fun setVisibility(peopleAddress: RecipientAddressModel) {
             if (peopleAddress.latitude.isNullOrZero() || peopleAddress.longitude.isNullOrZero()) {
-                val colorGrey = ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96)
+                val colorGrey = ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_96)
                 binding.imgLocationState.setImage(IconUnify.LOCATION_OFF, colorGrey, colorGrey)
                 binding.tvPinpointState.text = itemView.context.getString(R.string.no_pinpoint)
             } else {
-                val colorGreen = ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
+                val colorGreen = ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
                 binding.imgLocationState.setImage(IconUnify.LOCATION, colorGreen, colorGreen)
                 binding.tvPinpointState.text = itemView.context.getString(R.string.pinpoint)
             }

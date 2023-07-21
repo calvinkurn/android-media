@@ -1,6 +1,7 @@
 package com.tokopedia.feedplus.presentation.model
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.content.common.report_content.model.FeedMenuItem
 import com.tokopedia.feedcomponent.domain.mapper.TYPE_FEED_X_CARD_PLAY
 import com.tokopedia.feedplus.data.FeedXCard.Companion.TYPE_FEED_X_CARD_PRODUCTS_HIGHLIGHT
 import com.tokopedia.feedplus.presentation.adapter.FeedAdapterTypeFactory
@@ -32,12 +33,10 @@ data class FeedCardVideoContentModel(
     val comments: FeedCommentModel,
     val share: FeedShareModel,
     val followers: FeedFollowModel,
-    val reportable: Boolean,
-    val editable: Boolean,
-    val deletable: Boolean,
+    val menuItems: List<FeedMenuItem>,
     val detailScore: List<FeedScoreModel>,
     val publishedAt: String,
-    val playChannelId: String,
+    val playChannelId: String
 ) : Visitable<FeedAdapterTypeFactory> {
 
     val isTypeProductHighlight: Boolean
@@ -48,6 +47,8 @@ data class FeedCardVideoContentModel(
 
     val contentScore = detailScore.firstOrNull { it.isContentScore }?.value
         ?: if (detailScore.isNotEmpty()) detailScore.first().value else ""
+
+    val videoUrl: String = media.firstOrNull()?.mediaUrl.orEmpty()
 
     override fun type(typeFactory: FeedAdapterTypeFactory): Int = typeFactory.type(this)
 }

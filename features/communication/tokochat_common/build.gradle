@@ -20,6 +20,8 @@ buildscript {
 }
 
 android {
+    namespace 'com.tokopedia.tokochat_common'
+    testNamespace 'com.tokopedia.tokochat_common.test'
     buildFeatures {
         viewBinding true
     }
@@ -42,7 +44,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.baseList)
     implementation projectOrAar(rootProject.ext.libraries.applink)
-    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
     implementation projectOrAar(rootProject.ext.libraries.utils)
     implementation projectOrAar(rootProject.ext.libraries.usersession)
     implementation projectOrAar(rootProject.ext.libraries.adapterDelegate)
@@ -63,6 +64,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.miscDependencies.viewModelKtx
     implementation rootProject.ext.miscDependencies.dagger
+    implementation rootProject.ext.miscDependencies.viewPager2
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
 
     implementation rootProject.ext.networkDependencies.glide

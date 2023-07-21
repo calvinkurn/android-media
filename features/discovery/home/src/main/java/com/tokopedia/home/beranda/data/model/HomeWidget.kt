@@ -161,8 +161,20 @@ class HomeWidget(
             @SuppressLint("Invalid Data Type")
             @SerializedName("template_id")
             @Expose
-            val templateId: Int = -1
+            val templateId: Int = -1,
+            @SerializedName("widget_tracking")
+            @Expose
+            val widgetTracking: WidgetTracking = WidgetTracking(),
     ): ImpressHolder() {
+
+        val userType: String
+            get() = widgetTracking.userType
+
+        val itemType: String
+            get() = widgetTracking.itemType
+
+        val businessUnit: String
+            get() = widgetTracking.businessUnit
 
         constructor(parcel: Parcel) : this(
                 parcel.readInt(),
@@ -214,4 +226,18 @@ class HomeWidget(
             }
         }
     }
+
+    data class WidgetTracking(
+        @SerializedName("user_type")
+        @Expose
+        val userType: String = "",
+
+        @SerializedName("item_type")
+        @Expose
+        val itemType: String = "",
+
+        @SerializedName("business_unit")
+        @Expose
+        val businessUnit: String = "",
+    )
 }

@@ -18,6 +18,8 @@ buildscript {
 }
 
 android {
+    namespace 'com.tokopedia.logisticseller'
+    testNamespace 'com.tokopedia.logisticseller.test'
     defaultConfig {
         multiDexEnabled true
         vectorDrawables {
@@ -50,8 +52,6 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.recyclerViewV7
 
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
-    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
-    implementation projectOrAar(rootProject.ext.libraries.commonCompose)
     implementation projectOrAar(rootProject.ext.libraries.applink)
     implementation projectOrAar(rootProject.ext.libraries.graphql)
     implementation projectOrAar(rootProject.ext.libraries.utils)
@@ -65,6 +65,8 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.dialog
     implementation rootProject.ext.unifyDependencies.list
     implementation rootProject.ext.unifyDependencies.icons
+    implementation rootProject.ext.unifyDependencies.nestComponents
+    implementation rootProject.ext.unifyDependencies.header
 
     implementation rootProject.ext.miscDependencies.coroutineCore
     implementation rootProject.ext.miscDependencies.dagger

@@ -94,8 +94,6 @@
     <string name="seller_home_logout_button">Ya, Keluar</string>
     <string name="seller_home_cancel">Batal</string>
     <string name="seller_home_loading">Loading...</string>
-    <string name="sah_rebate_coach_mark_title">Sebagai Power Merchant PRO, kamu bisa ikutan Program Reward, lho!</string>
-    <string name="sah_rebate_coach_mark_description">Pantau terus kemajuan tokomu dalam mencapai target di tiap periode dan dapatkan Reward-nya.</string>
     <string name="sah_unification_coach_mark_title">Apa kabar produkmu hari ini?</string>
     <string name="sah_unification_coach_mark_description">Ketahui dengan cepat keadaan produkmu untuk atur strategi selanjutnya.</string>
     <string name="shop_operational_hour_24_hour">24 Jam</string>

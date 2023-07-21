@@ -4,6 +4,7 @@ import android.animation.Animator
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.res.Configuration
 import android.graphics.Color
 import android.os.Handler
 import android.os.Looper
@@ -31,6 +32,18 @@ import com.tokopedia.unifyprinciples.UnifyMotion
 import com.tokopedia.utils.resources.isDarkMode
 
 class LottieBottomNavbar : LinearLayout {
+
+    private var mDarkModeContext = getDarkModeContext()
+    private val isDarkMode: Boolean
+        get() = if (mIsForceDarkMode) {
+            true
+        } else {
+            context.isDarkMode()
+        }
+    private val modeAwareContext: Context
+        get() = if (isDarkMode) mDarkModeContext else context
+    private var mIsForceDarkMode = false
+
     private val badgeTextViewList: MutableList<TextView>? = mutableListOf()
     private var emptyBadgeLayoutParam: FrameLayout.LayoutParams? = null
     private var badgeLayoutParam: FrameLayout.LayoutParams? = null
@@ -41,20 +54,28 @@ class LottieBottomNavbar : LinearLayout {
     private var titleList: MutableList<TextView> = ArrayList()
     private var containerList: MutableList<FrameLayout> = ArrayList()
     private var itemCount: Int = 1
-    private var buttonContainerBackgroundColor: Int = androidx.core.content.ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
     private var buttonsHeight: Float = DEFAULT_HEIGHT
     private var selectedItem: Int? = null
     private var containerWidth: Int = 0
     private var navbarContainer: LinearLayout? = null
-    private var buttonColor: Int = androidx.core.content.ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N300)
-    private var activeButtonColor: Int = Color.TRANSPARENT
-    private val isDarkMode = context?.isDarkMode() ?: false
+
+    private var buttonContainerBackgroundLightColor: Int = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN0)
+    private var buttonLightColor: Int = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN500)
+
+    private var buttonContainerBackgroundDarkColor: Int = ContextCompat.getColor(mDarkModeContext, com.tokopedia.unifyprinciples.R.color.Unify_NN0)
+    private var buttonDarkColor: Int = ContextCompat.getColor(mDarkModeContext, com.tokopedia.unifyprinciples.R.color.Unify_NN500)
 
     private var currentRippleScale = 0f
     private val interpolatorEnter = UnifyMotion.EASE_OVERSHOOT
     private val interpolatorExit = UnifyMotion.EASE_IN_OUT
     private val durationEnter = UnifyMotion.T3
     private val durationExit = UnifyMotion.T2
+
+    private val buttonContainerBackgroundColor: Int
+        get() = if (mIsForceDarkMode) buttonContainerBackgroundDarkColor else buttonContainerBackgroundLightColor
+
+    private val buttonColor: Int
+        get() = if (mIsForceDarkMode) buttonDarkColor else buttonLightColor
 
     constructor(ctx: Context, attrs: AttributeSet) : super(ctx, attrs) {
         getLayoutAtr(attrs)
@@ -87,6 +108,15 @@ class LottieBottomNavbar : LinearLayout {
         adjustBadgePosition()
     }
 
+    fun forceDarkMode(isDarkMode: Boolean) {
+        if (context.isDarkMode()) return
+        if (isDarkMode == mIsForceDarkMode) return
+
+        mIsForceDarkMode = isDarkMode
+        setupMenuItems(modeAwareContext)
+        requestLayout()
+    }
+
     fun setBadge(badgeValue: Int = 0, iconPosition: Int, visibility: Int = View.VISIBLE) {
         val badge: View? = navbarContainer?.getChildAt(iconPosition)
         val badgeText = badge?.findViewById<TextView>(R.id.notification_badge)
@@ -100,7 +130,7 @@ class LottieBottomNavbar : LinearLayout {
                 1f.toDpInt()
             )
             badgeText?.text = ""
-            badgeText?.background = ContextCompat.getDrawable(context, R.drawable.bg_badge_circle)
+            badgeText?.background = ContextCompat.getDrawable(modeAwareContext, R.drawable.bg_badge_circle)
         } else {
             badgeText?.layoutParams = badgeLayoutParam
             badgeText?.setPadding(
@@ -110,12 +140,19 @@ class LottieBottomNavbar : LinearLayout {
                 2f.toDpInt()
             )
 
-            badgeText?.background = ContextCompat.getDrawable(context, R.drawable.bg_badge_circular)
+            badgeText?.background = ContextCompat.getDrawable(modeAwareContext, R.drawable.bg_badge_circular)
             badgeText?.text = badgeValue.toString()
         }
 
         badgeText?.bringToFront()
         badgeText?.visibility = visibility
+    }
+
+    private fun getDarkModeContext(): Context {
+        val newConfig = Configuration(resources.configuration).apply {
+            this.uiMode = Configuration.UI_MODE_NIGHT_YES or (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK.inv())
+        }
+        return context.createConfigurationContext(newConfig)
     }
 
     private fun adjustBadgePosition() {
@@ -166,22 +203,28 @@ class LottieBottomNavbar : LinearLayout {
     }
 
     private fun getLayoutAtr(attrs: AttributeSet) {
-        val a = context.obtainStyledAttributes(attrs, R.styleable.LottieBottomNavbar)
+        val styledAttributes = context.obtainStyledAttributes(attrs, R.styleable.LottieBottomNavbar)
+        val darkModeStyledAttributes = mDarkModeContext.obtainStyledAttributes(attrs, R.styleable.LottieBottomNavbar)
         val defaultButtonHeight = DEFAULT_HEIGHT * context.resources.displayMetrics.density
 
-        buttonContainerBackgroundColor = a.getColor(R.styleable.LottieBottomNavbar_buttonContainerBackgroundColor, androidx.core.content.ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
-        buttonsHeight = a.getDimension(R.styleable.LottieBottomNavbar_buttonsHeight, defaultButtonHeight)
+        buttonsHeight = styledAttributes.getDimension(R.styleable.LottieBottomNavbar_buttonsHeight, defaultButtonHeight)
 
-        buttonColor = a.getColor(R.styleable.LottieBottomNavbar_buttonColor, ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N200))
-        activeButtonColor = a.getColor(R.styleable.LottieBottomNavbar_activeButtonColor, ContextCompat.getColor(context, com.tokopedia.navigation.R.color.transparent))
-        a.recycle()
+        buttonContainerBackgroundLightColor = styledAttributes.getColor(R.styleable.LottieBottomNavbar_buttonContainerBackgroundColor, androidx.core.content.ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN0))
+        buttonContainerBackgroundDarkColor = darkModeStyledAttributes.getColor(R.styleable.LottieBottomNavbar_buttonContainerBackgroundColor, androidx.core.content.ContextCompat.getColor(mDarkModeContext, com.tokopedia.unifyprinciples.R.color.Unify_NN0))
+
+        buttonLightColor = styledAttributes.getColor(R.styleable.LottieBottomNavbar_buttonColor, ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN500))
+        buttonDarkColor = darkModeStyledAttributes.getColor(R.styleable.LottieBottomNavbar_buttonColor, ContextCompat.getColor(mDarkModeContext, com.tokopedia.unifyprinciples.R.color.Unify_NN500))
+
+        styledAttributes.recycle()
+        darkModeStyledAttributes.recycle()
 
         weightSum = 1f
         orientation = VERTICAL
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    private fun setupMenuItems() {
+    private fun setupMenuItems(context: Context) {
+        removeAllViews()
         // menu item width is equal: container width / size of menu item
         val itemWidth = containerWidth / itemCount
 
@@ -266,7 +309,7 @@ class LottieBottomNavbar : LinearLayout {
                 }
             }
 
-            iconList.add(index, Pair(icon, false))
+            iconList.add(index, Pair(icon, selectedItem == index))
 
             val imageContainer = FrameLayout(context)
             val fLayoutParams = FrameLayout.LayoutParams(
@@ -526,7 +569,7 @@ class LottieBottomNavbar : LinearLayout {
         }
 
         // change currently selected item color
-        val activeSelectedItemColor = ContextCompat.getColor(context, menu[newPosition].activeButtonColor)
+        val activeSelectedItemColor = ContextCompat.getColor(modeAwareContext, menu[newPosition].activeButtonColor)
         val newSelectedItemPair = iconList[newPosition]
         val newSelectedItem = newSelectedItemPair.first
         if (!newSelectedItemPair.second) {
@@ -555,7 +598,7 @@ class LottieBottomNavbar : LinearLayout {
         itemCount = this.menu.size
         resizeContainer()
 
-        setupMenuItems()
+        setupMenuItems(modeAwareContext)
         invalidate()
     }
 

@@ -24,7 +24,6 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.affiliatecommon.data.util.AffiliatePreference
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.coachmark.CoachMark
 import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
@@ -52,11 +51,11 @@ import com.tokopedia.feedplus.view.coachmark.FeedOnboardingCoachmark
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.imagepicker_insta.common.trackers.TrackerProvider
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.navigation_common.listener.AllNotificationListener
 import com.tokopedia.navigation_common.listener.FragmentListener
 import com.tokopedia.navigation_common.listener.MainParentStatusBarListener
@@ -65,6 +64,7 @@ import com.tokopedia.play_common.shortsuploader.PlayShortsUploader
 import com.tokopedia.play_common.shortsuploader.analytic.PlayShortsUploadAnalytic
 import com.tokopedia.play_common.shortsuploader.const.PlayShortsUploadConst
 import com.tokopedia.searchbar.data.HintData
+import com.tokopedia.searchbar.navigation_component.NavSource
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
@@ -82,7 +82,7 @@ import kotlinx.android.synthetic.main.fragment_feed_plus_container.*
 import kotlinx.android.synthetic.main.partial_feed_error.*
 import timber.log.Timber
 import javax.inject.Inject
-import com.tokopedia.feedcomponent.R as feedComponentR
+import com.tokopedia.content.common.R as contentCommonR
 
 /**
  * @author by milhamj on 25/07/18.
@@ -325,7 +325,7 @@ class FeedPlusContainerFragment :
 
     private fun getToolbarIcons(): IconBuilder {
         val icons =
-            IconBuilder(IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_HOME))
+            IconBuilder(IconBuilderFlag(pageSource = NavSource.FEED))
                 .addIcon(getInboxIcon()) { onInboxButtonClick() }
 
         icons.addIcon(IconList.ID_NOTIFICATION) { onNotificationClick() }
@@ -830,7 +830,7 @@ class FeedPlusContainerFragment :
                 )
                 intent.putExtra(
                     BundleData.TITLE,
-                    getString(feedComponentR.string.feed_post_sebagai)
+                    getString(contentCommonR.string.feed_post_sebagai)
                 )
                 intent.putExtra(
                     BundleData.APPLINK_FOR_GALLERY_PROCEED,

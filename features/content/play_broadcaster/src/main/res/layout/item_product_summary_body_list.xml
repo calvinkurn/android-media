@@ -63,24 +63,52 @@
             android:layout_marginEnd="@dimen/spacing_lvl3"
             android:ellipsize="end"
             android:maxLines="2"
-            android:textColor="@color/Unify_N700_96"
+            android:textColor="@color/Unify_NN950_96"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/iv_product_summary_image"
             app:layout_constraintTop_toBottomOf="@+id/tv_pinned_product_carousel_info"
             app:layout_goneMarginTop="0dp"
-            app:typographyType="body_3"
+            app:typographyType="display_3"
             tools:text="2 Lines Product Name on List View on SRP 2 Lines Product Name on List View on SRP 2 Lines Product Name on List View on SRP" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_commission_fmt"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl3"
+            android:maxLines="1"
+            android:textColor="@color/Unify_NN600"
+            app:layout_constraintStart_toStartOf="@id/tv_product_summary_name"
+            app:layout_constraintTop_toBottomOf="@id/tv_product_summary_name"
+            app:typographyType="display_3"
+            app:typographyWeight="bold"
+            tools:text="Komisi Rp100.000" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_commission_extra"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl2"
+            android:background="@drawable/bg_commission_extra"
+            android:maxLines="1"
+            android:paddingHorizontal="@dimen/spacing_lvl2"
+            android:textColor="@color/Unify_GN500"
+            app:layout_constraintStart_toEndOf="@id/tv_commission_fmt"
+            app:layout_constraintTop_toTopOf="@id/tv_commission_fmt"
+            app:typographyType="display_3"
+            app:typographyWeight="bold"
+            android:text="@string/play_shorts_affiliate_commission_extra" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_product_summary_price"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_lvl2"
+            android:layout_marginTop="@dimen/spacing_lvl3"
             android:maxLines="1"
-            android:textColor="@color/Unify_N700_96"
-            app:layout_constraintStart_toStartOf="@id/tv_product_summary_name"
-            app:layout_constraintTop_toBottomOf="@id/tv_product_summary_name"
-            app:typographyType="body_1"
+            android:textColor="@color/Unify_NN950_96"
+            app:layout_constraintStart_toStartOf="@id/tv_commission_fmt"
+            app:layout_constraintTop_toBottomOf="@id/tv_commission_fmt"
+            app:typographyType="display_1"
             app:typographyWeight="bold"
             tools:text="Rp 370.000" />
 
@@ -104,7 +132,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_lvl2"
             android:layout_marginBottom="@dimen/spacing_lvl1"
-            android:textColor="@color/Unify_N700_32"
+            android:textColor="@color/Unify_NN950_32"
             app:layout_constraintBottom_toBottomOf="@+id/label_product_summary_discount"
             app:layout_constraintStart_toEndOf="@+id/label_product_summary_discount"
             app:layout_constraintTop_toTopOf="@+id/label_product_summary_discount"
@@ -147,7 +175,7 @@
             app:typographyType="small"
             app:typographyWeight="bold"
             tools:text="@string/play_bro_pinned_product_info"
-            tools:textColor="@color/Unify_G500"
+            tools:textColor="@color/Unify_GN500"
             tools:visibility="gone" />
 
         <com.tokopedia.iconunify.IconUnify
@@ -155,10 +183,10 @@
             android:layout_width="@dimen/play_dp_12"
             android:layout_height="@dimen/play_dp_12"
             android:layout_marginStart="@dimen/spacing_lvl4"
-            app:icon_color_light_disabled="@color/Unify_Y500"
-            app:icon_color_light_enable="@color/Unify_G500"
-            app:icon_color_night_disabled="@color/Unify_P500"
-            app:icon_color_night_enable="@color/Unify_B500"
+            app:icon_color_light_disabled="@color/Unify_YN500"
+            app:icon_color_light_enable="@color/Unify_GN500"
+            app:icon_color_night_disabled="@color/Unify_PN500"
+            app:icon_color_night_enable="@color/Unify_BN500"
             app:icon_name="PUSH_PIN_FILLED"
             app:layout_constraintStart_toEndOf="@id/iv_product_summary_image"
             app:layout_constraintTop_toTopOf="@id/iv_product_summary_image"

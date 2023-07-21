@@ -5,6 +5,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.carouselproductcard.paging.CarouselPagingGroupChangeDirection
+import com.tokopedia.carouselproductcard.paging.CarouselPagingGroupChangeDirection.NO_DIRECTION
 import com.tokopedia.cmhomewidget.domain.usecase.DeleteCMHomeWidgetUseCase
 import com.tokopedia.cmhomewidget.domain.usecase.GetCMHomeWidgetDataUseCase
 import com.tokopedia.gopayhomewidget.domain.usecase.ClosePayLaterWidgetUseCase
@@ -39,7 +41,6 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomeHeaderDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomePayLaterWidgetDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.NewBusinessUnitWidgetDataModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PlayCardDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PopularKeywordListDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.ReviewDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.TickerDataModel
@@ -48,8 +49,8 @@ import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.model.ReminderEnum
 import com.tokopedia.home_component.usecase.todowidget.DismissTodoWidgetUseCase
+import com.tokopedia.home_component.visitable.BestSellerChipProductDataModel
 import com.tokopedia.home_component.visitable.MissionWidgetListDataModel
-import com.tokopedia.home_component.visitable.QuestWidgetModel
 import com.tokopedia.home_component.visitable.RecommendationListCarouselDataModel
 import com.tokopedia.home_component.visitable.ReminderWidgetModel
 import com.tokopedia.home_component.visitable.TodoWidgetListDataModel
@@ -65,10 +66,10 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import com.tokopedia.home_component.visitable.BestSellerDataModel as BestSellerRevampDataModel
 
 @FlowPreview
 @SuppressLint("SyntheticAccessor")
@@ -383,6 +384,31 @@ open class HomeRevampViewModel @Inject constructor(
         }
     }
 
+    fun getRecommendationWidget(
+        selectedChipProduct: BestSellerChipProductDataModel,
+        currentDataModel: BestSellerRevampDataModel,
+        scrollDirection: CarouselPagingGroupChangeDirection = NO_DIRECTION,
+    ) {
+        if (selectedChipProduct.productModelList.isNotEmpty()) return
+
+        findWidget<BestSellerRevampDataModel>(
+            predicate = { it.visitableId() == currentDataModel.visitableId() },
+            actionOnFound = { _, index ->
+                launch {
+                    updateWidget(
+                        visitable = homeRecommendationUseCase.get().onHomeBestSellerFilterClick(
+                            currentBestSellerDataModel = currentDataModel,
+                            selectedFilterChip = selectedChipProduct.chip,
+                            scrollDirection = scrollDirection,
+                        ),
+                        visitableToChange = currentDataModel,
+                        position = index
+                    )
+                }
+            }
+        )
+    }
+
     fun getOneClickCheckoutHomeComponent(channel: ChannelModel, grid: ChannelGrid, position: Int) {
         launchCatchError(coroutineContext, block = {
             _oneClickCheckoutHomeComponent.postValue(
@@ -406,14 +432,6 @@ open class HomeRevampViewModel @Inject constructor(
                     _errorEventLiveData.postValue(Event(Throwable()))
                 }
             }
-        }
-    }
-
-    fun updateBannerTotalView(channelId: String?, totalView: String?) {
-        if (channelId == null || totalView == null) return
-        findWidget<PlayCardDataModel>(predicate = { it.playCardHome?.channelId == channelId }) { playCard, index ->
-            val newPlayCard = playCard.copy(playCardHome = playCard.playCardHome?.copy(totalView = totalView))
-            updateWidget(newPlayCard, index)
         }
     }
 
@@ -594,7 +612,13 @@ open class HomeRevampViewModel @Inject constructor(
     fun getPlayWidgetWhenShouldRefresh() {
         findWidget<CarouselPlayWidgetDataModel> { playWidget, index ->
             launchCatchError(block = {
-                updateWidget(playWidget.copy(widgetState = homePlayUseCase.get().onGetPlayWidgetWhenShouldRefresh()), index)
+                updateWidget(
+                    playWidget.copy(
+                        widgetState = homePlayUseCase.get()
+                            .onGetPlayWidgetWhenShouldRefresh(playWidget.homeChannel.layout)
+                    ),
+                    index
+                )
             }) {
                 deleteWidget(playWidget, index)
             }
@@ -667,13 +691,6 @@ open class HomeRevampViewModel @Inject constructor(
             updateHomeData(homeDataModel)
         }
     }
-
-    fun deleteQuestWidget() {
-        findWidget<QuestWidgetModel> { questWidgetModel, index ->
-            deleteWidget(questWidgetModel, index)
-        }
-    }
-
     fun getCMHomeWidgetData(isForceRefresh: Boolean = true) {
         findWidget<CMHomeWidgetDataModel> { cmHomeWidgetDataModel, index ->
             launchCatchError(coroutineContext, {

@@ -53,6 +53,7 @@ open class GetChatListMessageUseCase @Inject constructor(
                 pinStatus
                 isReplyByTopbot
                 label
+                labelIconURL
               }
             }
             hasNext

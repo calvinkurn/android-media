@@ -36,6 +36,7 @@ import com.google.android.gms.location.LocationSettingsStatusCodes
 import com.google.android.gms.tasks.OnFailureListener
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.PARAM_SOURCE
+import com.tokopedia.logisticCommon.data.constant.AddressConstant.EXTRA_IS_GET_PINPOINT_ONLY
 import com.tokopedia.logisticCommon.data.constant.LogisticConstant
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.domain.model.Place
@@ -45,7 +46,6 @@ import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_FROM_ADDRE
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_FROM_PINPOINT
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_GMS_AVAILABILITY
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_IS_EDIT
-import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_IS_GET_PINPOINT_ONLY
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_IS_POLYGON
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_IS_POSITIVE_FLOW
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_LAT
@@ -132,7 +132,7 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
                 isEdit = it.getBoolean(EXTRA_IS_EDIT, false),
                 source = it.getString(PARAM_SOURCE, ""),
                 addressData = it.getParcelable(EXTRA_SAVE_DATA_UI_MODEL),
-                isGetPinPointOnly = it.getBoolean(EXTRA_IS_GET_PINPOINT_ONLY),
+                isGetPinPointOnly = it.getBoolean(EXTRA_IS_GET_PINPOINT_ONLY)
             )
         }
     }
@@ -219,7 +219,7 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
         }
         when (permissionState) {
             PERMISSION_GRANTED -> {
-                if (!viewModel.isEdit) {
+                if (!viewModel.isEdit && !viewModel.isGetPinPointOnly) {
                     AddNewAddressRevampAnalytics.onClickAllowLocationSearch(userSession.userId)
                 }
                 if (AddNewAddressUtils.isGpsEnabled(context)) {
@@ -228,14 +228,16 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
                     showBottomSheetLocUndefined(false)
                 }
             }
+
             PERMISSION_DENIED -> {
-                if (!viewModel.isEdit) {
+                if (!viewModel.isEdit && !viewModel.isGetPinPointOnly) {
                     AddNewAddressRevampAnalytics.onClickDontAllowLocationSearch(userSession.userId)
                 }
             }
+
             PERMISSION_DONT_ASK_AGAIN -> {
                 showBottomSheetLocUndefined(true)
-                if (!viewModel.isEdit) {
+                if (!viewModel.isEdit && !viewModel.isGetPinPointOnly) {
                     AddNewAddressRevampAnalytics.onClickDontAllowLocationSearch(userSession.userId)
                 }
             }
@@ -303,19 +305,23 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
         binding?.searchPageInput?.searchBarTextField?.run {
             setOnFocusChangeListener { _, hasFocus ->
                 if (hasFocus) {
-                    if (!viewModel.isEdit) {
-                        AddNewAddressRevampAnalytics.onClickFieldCariLokasi(userSession.userId)
-                    } else {
-                        EditAddressRevampAnalytics.onClickFieldCariLokasi(userSession.userId)
+                    if (!viewModel.isGetPinPointOnly) {
+                        if (!viewModel.isEdit) {
+                            AddNewAddressRevampAnalytics.onClickFieldCariLokasi(userSession.userId)
+                        } else {
+                            EditAddressRevampAnalytics.onClickFieldCariLokasi(userSession.userId)
+                        }
                     }
                 }
             }
 
             setOnClickListener {
-                if (!viewModel.isEdit) {
-                    AddNewAddressRevampAnalytics.onClickFieldCariLokasi(userSession.userId)
-                } else {
-                    EditAddressRevampAnalytics.onClickFieldCariLokasi(userSession.userId)
+                if (!viewModel.isGetPinPointOnly) {
+                    if (!viewModel.isEdit) {
+                        AddNewAddressRevampAnalytics.onClickFieldCariLokasi(userSession.userId)
+                    } else {
+                        EditAddressRevampAnalytics.onClickFieldCariLokasi(userSession.userId)
+                    }
                 }
             }
 
@@ -342,10 +348,12 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
     private fun setViewListener() {
         fusedLocationClient = FusedLocationProviderClient(requireActivity())
         binding?.rlSearchCurrentLocation?.setOnClickListener {
-            if (!viewModel.isEdit) {
-                AddNewAddressRevampAnalytics.onClickGunakanLokasiSaatIniSearch(userSession.userId)
-            } else {
-                EditAddressRevampAnalytics.onClickGunakanLokasiSaatIniSearch(userSession.userId)
+            if (!viewModel.isGetPinPointOnly) {
+                if (!viewModel.isEdit) {
+                    AddNewAddressRevampAnalytics.onClickGunakanLokasiSaatIniSearch(userSession.userId)
+                } else {
+                    EditAddressRevampAnalytics.onClickGunakanLokasiSaatIniSearch(userSession.userId)
+                }
             }
             if (allPermissionsGranted()) {
                 permissionState = PERMISSION_GRANTED
@@ -374,7 +382,7 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
 
         bottomSheetLocUndefined?.apply {
             setCloseClickListener {
-                if (!viewModel.isEdit) {
+                if (!viewModel.isEdit && !viewModel.isGetPinPointOnly) {
                     AddNewAddressRevampAnalytics.onClickXOnBlockGpsSearch(userSession.userId)
                 }
                 dismiss()
@@ -396,7 +404,7 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
             tvLocUndefined.text = getString(R.string.txt_location_not_detected)
             tvInfoLocUndefined.text = getString(R.string.txt_info_location_not_detected)
             btnActivateLocation.setOnClickListener {
-                if (!viewModel.isEdit) {
+                if (!viewModel.isEdit && !viewModel.isGetPinPointOnly) {
                     AddNewAddressRevampAnalytics.onClickAktifkanLayananLokasiSearch(userSession.userId)
                 }
                 if (!isDontAskAgain) {
@@ -445,22 +453,21 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
                 .addOnFailureListener(
                     context,
                     OnFailureListener { e ->
-                        when ((e as ApiException).statusCode) {
-                            LocationSettingsStatusCodes.RESOLUTION_REQUIRED ->
-
-                                try {
-                                    // Show the dialog by calling startResolutionForResult(), and check the
-                                    // result in onActivityResult().
-                                    val rae = e as ResolvableApiException
-                                    val intentSenderRequest = IntentSenderRequest.Builder(rae.resolution.intentSender).build()
-                                    gpsResultResolutionContract.launch(intentSenderRequest)
-                                } catch (sie: IntentSender.SendIntentException) {
-                                    sie.printStackTrace()
+                        if (e is ApiException) {
+                            when (e.statusCode) {
+                                LocationSettingsStatusCodes.RESOLUTION_REQUIRED ->
+                                    try {
+                                        if (e is ResolvableApiException) {
+                                            val intentSenderRequest = IntentSenderRequest.Builder(e.resolution.intentSender).build()
+                                            gpsResultResolutionContract.launch(intentSenderRequest)
+                                        }
+                                    } catch (sie: IntentSender.SendIntentException) {
+                                        sie.printStackTrace()
+                                    }
+                                LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE -> {
+                                    val errorMessage = "Location settings are inadequate, and cannot be " + "fixed here. Fix in Settings."
+                                    Toast.makeText(context, errorMessage, Toast.LENGTH_LONG).show()
                                 }
-
-                            LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE -> {
-                                val errorMessage = "Location settings are inadequate, and cannot be " + "fixed here. Fix in Settings."
-                                Toast.makeText(context, errorMessage, Toast.LENGTH_LONG).show()
                             }
                         }
                     }
@@ -561,10 +568,12 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
         }
 
     override fun onItemClicked(placeId: String) {
-        if (!viewModel.isEdit) {
-            AddNewAddressRevampAnalytics.onClickDropdownSuggestion(userSession.userId)
-        } else {
-            EditAddressRevampAnalytics.onClickDropdownSuggestionAlamat(userSession.userId)
+        if (!viewModel.isGetPinPointOnly) {
+            if (!viewModel.isEdit) {
+                AddNewAddressRevampAnalytics.onClickDropdownSuggestion(userSession.userId)
+            } else {
+                EditAddressRevampAnalytics.onClickDropdownSuggestionAlamat(userSession.userId)
+            }
         }
         viewModel.isPolygon = false
         if (!viewModel.isPositiveFlow && viewModel.isFromPinpoint) {
@@ -580,7 +589,13 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
         }
     }
 
-    private fun goToPinpointPage(placeId: String?, latitude: Double?, longitude: Double?, isFromAddressForm: Boolean, isPositiveFlow: Boolean) {
+    private fun goToPinpointPage(
+        placeId: String?,
+        latitude: Double?,
+        longitude: Double?,
+        isFromAddressForm: Boolean,
+        isPositiveFlow: Boolean
+    ) {
         val bundle = Bundle()
         bundle.putString(EXTRA_PLACE_ID, placeId)
         latitude?.let { bundle.putDouble(EXTRA_LAT, it) }
@@ -619,6 +634,7 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
         private const val REQUEST_ADDRESS_FORM_PAGE = 1599
         private const val REQUEST_PINPOINT_PAGE = 1998
         private const val REQUEST_CODE_PERMISSION = 9876
+        private const val REQUEST_CHECK_SETTINGS = 1986
 
         private const val LOCATION_REQUEST_INTERVAL = 10000L
         private const val LOCATION_REQUEST_FASTEST_INTERVAL = 2000L

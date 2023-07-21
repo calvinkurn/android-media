@@ -29,8 +29,17 @@ class TopchatCacheManagerImpl @Inject constructor(
             .apply()
     }
 
-    override fun getPreviousState(stateCacheKey: String): Boolean {
-        return sharedPreferences.getBoolean(stateCacheKey, false)
+    override fun getPreviousState(stateCacheKey: String, defaultValue: Boolean): Boolean {
+        return sharedPreferences.getBoolean(stateCacheKey, defaultValue)
     }
 
+    override fun saveLongCache(cacheKey: String, value: Long) {
+        sharedPreferences.edit()
+            .putLong(cacheKey, value)
+            .apply()
+    }
+
+    override fun getLongCache(cacheKey: String, defaultValue: Long): Long {
+        return sharedPreferences.getLong(cacheKey, defaultValue)
+    }
 }

@@ -6,17 +6,18 @@ import com.gojek.icp.identity.loginsso.data.models.Profile
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.encryption.security.RsaUtils
 import com.tokopedia.encryption.security.decodeBase64
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.loginregister.common.domain.pojo.ActivateUserData
+import com.tokopedia.loginregister.common.domain.pojo.DiscoverData
+import com.tokopedia.loginregister.common.domain.pojo.DynamicBannerDataModel
+import com.tokopedia.loginregister.common.domain.pojo.TickerInfoPojo
 import com.tokopedia.loginregister.common.domain.usecase.ActivateUserUseCase
-import com.tokopedia.loginregister.common.view.banner.data.DynamicBannerDataModel
-import com.tokopedia.loginregister.common.view.banner.domain.usecase.DynamicBannerUseCase
-import com.tokopedia.loginregister.common.view.ticker.domain.pojo.TickerInfoPojo
-import com.tokopedia.loginregister.common.view.ticker.domain.usecase.TickerInfoUseCase
-import com.tokopedia.loginregister.discover.pojo.DiscoverData
-import com.tokopedia.loginregister.discover.usecase.DiscoverUseCase
+import com.tokopedia.loginregister.common.domain.usecase.DiscoverUseCase
+import com.tokopedia.loginregister.common.domain.usecase.DynamicBannerUseCase
+import com.tokopedia.loginregister.common.domain.usecase.TickerInfoUseCase
 import com.tokopedia.loginregister.goto_seamless.GotoSeamlessHelper
 import com.tokopedia.loginregister.goto_seamless.GotoSeamlessPreference
 import com.tokopedia.loginregister.goto_seamless.model.GetTemporaryKeyParam
@@ -46,7 +47,6 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class LoginEmailPhoneViewModel @Inject constructor(
@@ -141,7 +141,6 @@ class LoginEmailPhoneViewModel @Inject constructor(
     val dynamicBannerResponse: LiveData<Result<DynamicBannerDataModel>>
         get() = mutableDynamicBannerResponse
 
-
     private val mutableLoginBiometricResponse = MutableLiveData<Result<LoginToken>>()
     val loginBiometricResponse: LiveData<Result<LoginToken>>
         get() = mutableLoginBiometricResponse
@@ -160,7 +159,7 @@ class LoginEmailPhoneViewModel @Inject constructor(
             val response = registerCheckUseCase.executeOnBackground()
             if (response.data.errors.isEmpty()) {
                 mutableRegisterCheckResponse.value = Success(response.data)
-            } else{
+            } else {
                 mutableRegisterCheckResponse.value = Fail(MessageErrorException(response.data.errors.first()))
             }
         }, {
@@ -252,7 +251,7 @@ class LoginEmailPhoneViewModel @Inject constructor(
 
     fun loginEmailV2(email: String, password: String, useHash: Boolean) {
         launchCatchError(coroutineContext, {
-            val keyData = generatePublicKeyUseCase.executeOnBackground().keyData
+            val keyData = generatePublicKeyUseCase().keyData
             if (keyData.key.isNotEmpty()) {
                 var finalPassword = password
                 if (useHash) {
@@ -344,23 +343,17 @@ class LoginEmailPhoneViewModel @Inject constructor(
 
     fun getTickerInfo() {
         launchCatchError(coroutineContext, {
-            val params = TickerInfoUseCase.createRequestParam(TickerInfoUseCase.LOGIN_PAGE)
-            val ticker = withContext(dispatchers.io) {
-                tickerInfoUseCase.createObservable(params).toBlocking().single()
-            }
+            val ticker = tickerInfoUseCase(TickerInfoUseCase.LOGIN_PAGE)
             mutableGetTickerInfoResponse.value = Success(ticker)
         }, {
             mutableGetTickerInfoResponse.value = Fail(it)
         })
     }
 
-    fun getDynamicBannerData(page: String) {
+    fun getDynamicBannerData() {
         launchCatchError(coroutineContext, {
-            val params = DynamicBannerUseCase.createRequestParams(page)
-            dynamicBannerUseCase.createParams(params)
-            dynamicBannerUseCase.executeOnBackground().run {
-                mutableDynamicBannerResponse.postValue(Success(this))
-            }
+            val model = dynamicBannerUseCase(DynamicBannerUseCase.Page.LOGIN)
+            mutableDynamicBannerResponse.value = Success(model)
         }, {
             mutableDynamicBannerResponse.postValue(Fail(it))
         })
@@ -387,11 +380,9 @@ class LoginEmailPhoneViewModel @Inject constructor(
     }
 
     fun clearBackgroundTask() {
-        tickerInfoUseCase.unsubscribe()
         loginTokenUseCase.unsubscribe()
         getProfileUseCase.unsubscribe()
     }
-
 
     suspend fun isGojekProfileExist(): Boolean {
         return try {
@@ -403,6 +394,7 @@ class LoginEmailPhoneViewModel @Inject constructor(
     }
 
     suspend fun isFingerprintRegistered(): Boolean {
+        if (GlobalConfig.isSellerApp()) return false
         return try {
             registerCheckFingerprintUseCase(Unit)
         } catch (ignored: Exception) {

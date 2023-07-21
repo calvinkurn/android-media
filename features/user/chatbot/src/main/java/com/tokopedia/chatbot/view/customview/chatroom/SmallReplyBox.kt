@@ -12,6 +12,7 @@ import android.widget.LinearLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.Guideline
 import com.tokopedia.chatbot.R
+import com.tokopedia.chatbot.chatbot2.view.customview.chatroom.listener.ReplyBoxClickListener
 import com.tokopedia.chatbot.util.ViewUtil
 import com.tokopedia.chatbot.view.customview.reply.ReplyBubbleAreaMessage
 import com.tokopedia.chatbot.view.customview.video_onboarding.VideoUploadOnBoarding
@@ -30,6 +31,7 @@ class SmallReplyBox(context: Context, attributeSet: AttributeSet) :
     private var addAttachmentMenu: ImageView? = null
     private var guideline: Guideline? = null
     var sendButton: ImageView? = null
+    var replyBoxClickListener: ReplyBoxClickListener? = null
 
     private var textWatcher: TextWatcher? = null
     var listener: ChatbotSendButtonListener? = null
@@ -71,6 +73,9 @@ class SmallReplyBox(context: Context, attributeSet: AttributeSet) :
         }
         context?.resources?.getString(R.string.cb_bot_reply_text)?.toBlankOrString()
             ?.let { setHint(it) }
+        addAttachmentMenu?.setOnClickListener {
+            replyBoxClickListener?.onAttachmentMenuClicked()
+        }
     }
 
     fun setHint(hint: String) {
@@ -81,7 +86,7 @@ class SmallReplyBox(context: Context, attributeSet: AttributeSet) :
         }
     }
 
-    fun showCoachMark(videoUploadOnBoarding: VideoUploadOnBoarding){
+    fun showCoachMark(videoUploadOnBoarding: VideoUploadOnBoarding) {
         videoUploadOnBoarding.showVideoBubbleOnBoarding(
             addAttachmentMenu,
             context
@@ -91,7 +96,6 @@ class SmallReplyBox(context: Context, attributeSet: AttributeSet) :
     fun clearChatText() {
         commentEditText?.editText?.setText("")
     }
-
 
     fun addTextChangedListener() {
         commentEditText?.editText?.addTextChangedListener(textWatcher)
@@ -109,7 +113,7 @@ class SmallReplyBox(context: Context, attributeSet: AttributeSet) :
             R.dimen.dp_chatbot_20,
             R.dimen.dp_chatbot_20,
             R.dimen.dp_chatbot_20,
-            com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
+            com.tokopedia.unifyprinciples.R.color.Unify_NN950_20,
             R.dimen.dp_chatbot_2,
             R.dimen.dp_chatbot_1,
             Gravity.CENTER

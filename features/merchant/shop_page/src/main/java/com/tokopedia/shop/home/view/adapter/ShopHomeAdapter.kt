@@ -14,7 +14,7 @@ import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.play.widget.ui.PlayWidgetState
 import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 import com.tokopedia.shop.R
-import com.tokopedia.shop.common.data.model.ShopPageWidgetLayoutUiModel
+import com.tokopedia.shop.common.data.model.ShopPageWidgetUiModel
 import com.tokopedia.shop.common.util.ShopProductViewGridType
 import com.tokopedia.shop.common.util.ShopUtil.setElement
 import com.tokopedia.shop.home.WidgetName
@@ -166,6 +166,32 @@ open class ShopHomeAdapter(
                     shopHomeVoucherUiModel.isNewData = true
                     newList.setElement(index, shopHomeVoucherUiModel)
                 }
+            }
+        }
+        submitList(newList)
+    }
+
+    fun setProductComparisonData(uiModel: ShopHomePersoProductComparisonUiModel) {
+        val newList = getNewVisitableItems()
+        newList.indexOfFirst { it is ShopHomePersoProductComparisonUiModel }.let { index ->
+            if (index >= 0) {
+                if ((uiModel.recommendationWidget == null && !uiModel.isError)) {
+                    newList.removeAt(index)
+                } else {
+                    uiModel.widgetState = WidgetState.FINISH
+                    uiModel.isNewData = true
+                    newList.setElement(index, uiModel)
+                }
+            }
+        }
+        submitList(newList)
+    }
+
+    fun removeProductComparisonWidget() {
+        val newList = getNewVisitableItems()
+        newList.indexOfFirst { it is ShopHomePersoProductComparisonUiModel }.let { index ->
+            if (index >= 0) {
+                newList.removeAt(index)
             }
         }
         submitList(newList)
@@ -410,6 +436,17 @@ open class ShopHomeAdapter(
         submitList(newList)
     }
 
+    fun showBannerTimerRemindMeLoading() {
+        val newList = getNewVisitableItems()
+        newList.filterIsInstance<ShopWidgetDisplayBannerTimerUiModel>().onEach { nplCampaignUiModel ->
+            nplCampaignUiModel.let {
+                it.data?.showRemindMeLoading = true
+                it.isNewData = true
+            }
+        }
+        submitList(newList)
+    }
+
     fun getNplCampaignUiModel(campaignId: String): ShopHomeNewProductLaunchCampaignUiModel? {
         return visitables.filterIsInstance<ShopHomeNewProductLaunchCampaignUiModel>().firstOrNull {
             it.data?.firstOrNull()?.campaignId == campaignId
@@ -522,7 +559,7 @@ open class ShopHomeAdapter(
         submitList(newList)
     }
 
-    fun updateShopHomeWidgetStateToLoading(listWidgetLayout: MutableList<ShopPageWidgetLayoutUiModel>) {
+    fun updateShopHomeWidgetStateToLoading(listWidgetLayout: MutableList<ShopPageWidgetUiModel>) {
         listWidgetLayout.onEach { widgetLayout ->
             visitables.filterIsInstance<Visitable<*>>().firstOrNull {
                 when (it) {
@@ -598,7 +635,11 @@ open class ShopHomeAdapter(
         return visitables.filterIsInstance<ShopHomeVoucherUiModel>().firstOrNull()
     }
 
-    fun removeShopHomeWidget(listShopWidgetLayout: List<ShopPageWidgetLayoutUiModel>) {
+    fun getPersoProductComparisonWidgetUiModel(): ShopHomePersoProductComparisonUiModel? {
+        return visitables.filterIsInstance<ShopHomePersoProductComparisonUiModel>().firstOrNull()
+    }
+
+    fun removeShopHomeWidget(listShopWidgetLayout: List<ShopPageWidgetUiModel>) {
         val newList = getNewVisitableItems()
         listShopWidgetLayout.onEach { shopWidgetLayout ->
             newList.filterIsInstance<Visitable<*>>().indexOfFirst {

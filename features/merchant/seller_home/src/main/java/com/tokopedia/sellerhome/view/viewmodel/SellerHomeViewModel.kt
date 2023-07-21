@@ -5,9 +5,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.sellerhome.common.SellerHomeConst
-import com.tokopedia.sellerhome.common.config.SellerHomeRemoteConfig
 import com.tokopedia.sellerhome.domain.model.ShippingLoc
 import com.tokopedia.sellerhome.domain.usecase.GetShopInfoByIdUseCase
 import com.tokopedia.sellerhome.domain.usecase.GetShopLocationUseCase
@@ -72,11 +72,10 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.util.*
+import java.util.Date
 import javax.inject.Inject
 
 /**
@@ -109,7 +108,6 @@ class SellerHomeViewModel @Inject constructor(
     private val getShopStateInfoUseCase: Lazy<GetShopStateInfoUseCase>,
     private val sellerHomeLayoutHelper: Lazy<SellerHomeLayoutHelper>,
     private val widgetSse: Lazy<SellerHomeWidgetSSE>,
-    private val remoteConfig: SellerHomeRemoteConfig,
     private val dispatcher: CoroutineDispatchers
 ) : CustomBaseViewModel(dispatcher) {
 
@@ -221,31 +219,24 @@ class SellerHomeViewModel @Inject constructor(
     fun getTicker() {
         launchCatchError(block = {
             val useCase = getTickerUseCase.get()
-            try {
-                _homeTicker.value = Success(
+            val result = try {
+                useCase.execute(
+                    shopId = userSession.get().shopId,
+                    page = TICKER_PAGE_NAME,
+                    isFromCache = false
+                )
+            } catch (networkException: Exception) {
+                try {
                     useCase.execute(
                         shopId = userSession.get().shopId,
                         page = TICKER_PAGE_NAME,
-                        isFromCache = false
+                        isFromCache = true
                     )
-                )
-            } catch (networkException: Exception) {
-                if (remoteConfig.isSellerHomeDashboardCachingEnabled()) {
-                    try {
-                        _homeTicker.value = Success(
-                            useCase.execute(
-                                shopId = userSession.get().shopId,
-                                page = TICKER_PAGE_NAME,
-                                isFromCache = true
-                            )
-                        )
-                    } catch (_: Exception) {
-                        throw networkException
-                    }
-                } else {
+                } catch (_: Exception) {
                     throw networkException
                 }
             }
+            _homeTicker.value = Success(result)
         }, onError = {
             _homeTicker.value = Fail(it)
         })
@@ -258,13 +249,13 @@ class SellerHomeViewModel @Inject constructor(
      *
      * @param   heightDp    height of device screen in dp
      */
-    fun getWidgetLayout(heightDp: Float? = null) {
+    fun getWidgetLayout(heightDp: Float? = null, trigger: String = String.EMPTY) {
         launchCatchError(block = {
-            val params = GetLayoutUseCase.getRequestParams(shopId, SELLER_HOME_PAGE_NAME)
+            val params = GetLayoutUseCase.getRequestParams(shopId, SELLER_HOME_PAGE_NAME, trigger)
             val useCase = getLayoutUseCase.get()
             useCase.params = params
             if (heightDp == null) {
-                getLayoutWithLazyLoad(useCase, _widgetLayout) { layout ->
+                executeUseCase(useCase, _widgetLayout) { layout ->
                     saveRawWidgets(layout.widgetList)
                 }
             } else {
@@ -285,7 +276,7 @@ class SellerHomeViewModel @Inject constructor(
             val params = GetCardDataUseCase.getRequestParams(dataKeys, dynamicParameter)
             val useCase = getCardDataUseCase.get()
             useCase.params = params
-            getLayoutWithLazyLoad(useCase, _cardWidgetData)
+            executeUseCase(useCase, _cardWidgetData)
         }, onError = {
             _cardWidgetData.value = Fail(it)
         })
@@ -298,7 +289,7 @@ class SellerHomeViewModel @Inject constructor(
             )
             val useCase = getLineGraphDataUseCase.get()
             useCase.params = params
-            getLayoutWithLazyLoad(useCase, _lineGraphWidgetData)
+            executeUseCase(useCase, _lineGraphWidgetData)
         }, onError = {
             _lineGraphWidgetData.value = Fail(it)
         })
@@ -310,7 +301,7 @@ class SellerHomeViewModel @Inject constructor(
             val params = GetProgressDataUseCase.getRequestParams(today, dataKeys)
             val useCase = getProgressDataUseCase.get()
             useCase.params = params
-            getLayoutWithLazyLoad(useCase, _progressWidgetData)
+            executeUseCase(useCase, _progressWidgetData)
         }, onError = {
             _progressWidgetData.value = Fail(it)
         })
@@ -325,7 +316,7 @@ class SellerHomeViewModel @Inject constructor(
             )
             val useCase = getPostDataUseCase.get()
             useCase.params = params
-            getLayoutWithLazyLoad(useCase, _postListWidgetData)
+            executeUseCase(useCase, _postListWidgetData)
         }, onError = {
             _postListWidgetData.value = Fail(it)
         })
@@ -336,7 +327,7 @@ class SellerHomeViewModel @Inject constructor(
             val params = GetCarouselDataUseCase.getRequestParams(dataKeys)
             val useCase = getCarouselDataUseCase.get()
             useCase.params = params
-            getLayoutWithLazyLoad(useCase, _carouselWidgetData)
+            executeUseCase(useCase, _carouselWidgetData)
         }, onError = {
             _carouselWidgetData.value = Fail(it)
         })
@@ -352,7 +343,7 @@ class SellerHomeViewModel @Inject constructor(
             val params = GetTableDataUseCase.getRequestParams(dataKeys, dynamicParam)
             val useCase = getTableDataUseCase.get()
             useCase.params = params
-            getLayoutWithLazyLoad(useCase, _tableWidgetData)
+            executeUseCase(useCase, _tableWidgetData)
         }, onError = {
             _tableWidgetData.value = Fail(it)
         })
@@ -363,7 +354,7 @@ class SellerHomeViewModel @Inject constructor(
             val params = GetPieChartDataUseCase.getRequestParams(dataKeys, dynamicParameter)
             val useCase = getPieChartDataUseCase.get()
             useCase.params = params
-            getLayoutWithLazyLoad(useCase, _pieChartWidgetData)
+            executeUseCase(useCase, _pieChartWidgetData)
         }, onError = {
             _pieChartWidgetData.value = Fail(it)
         })
@@ -374,7 +365,7 @@ class SellerHomeViewModel @Inject constructor(
             val params = GetBarChartDataUseCase.getRequestParams(dataKeys, dynamicParameter)
             val useCase = getBarChartDataUseCase.get()
             useCase.params = params
-            getLayoutWithLazyLoad(useCase, _barChartWidgetData)
+            executeUseCase(useCase, _barChartWidgetData)
         }, onError = {
             _barChartWidgetData.value = Fail(it)
         })
@@ -387,7 +378,7 @@ class SellerHomeViewModel @Inject constructor(
             )
             val useCase = getMultiLineGraphUseCase.get()
             useCase.params = params
-            getLayoutWithLazyLoad(useCase, _multiLineGraphWidgetData)
+            executeUseCase(useCase, _multiLineGraphWidgetData)
         }, onError = {
             _multiLineGraphWidgetData.value = Fail(it)
         })
@@ -398,7 +389,7 @@ class SellerHomeViewModel @Inject constructor(
             val params = GetAnnouncementDataUseCase.createRequestParams(dataKeys)
             val useCase = getAnnouncementUseCase.get()
             useCase.params = params
-            getLayoutWithLazyLoad(useCase, _announcementWidgetData)
+            executeUseCase(useCase, _announcementWidgetData)
         }, onError = {
             _announcementWidgetData.value = Fail(it)
         })
@@ -409,7 +400,7 @@ class SellerHomeViewModel @Inject constructor(
             val params = GetRecommendationDataUseCase.createParams(dataKeys)
             val useCase = getRecommendationUseCase.get()
             useCase.params = params
-            getLayoutWithLazyLoad(useCase, _recommendationWidgetData)
+            executeUseCase(useCase, _recommendationWidgetData)
         }, onError = {
             _recommendationWidgetData.value = Fail(it)
         })
@@ -420,7 +411,7 @@ class SellerHomeViewModel @Inject constructor(
             val params = GetMilestoneDataUseCase.createParams(dataKeys)
             val useCase = getMilestoneDataUseCase.get()
             useCase.params = params
-            getLayoutWithLazyLoad(useCase, _milestoneWidgetData)
+            executeUseCase(useCase, _milestoneWidgetData)
         }, onError = {
             _milestoneWidgetData.value = Fail(it)
         })
@@ -431,7 +422,7 @@ class SellerHomeViewModel @Inject constructor(
             val params = GetCalendarDataUseCase.createParams(dataKeys)
             val useCase = getCalendarDataUseCase.get()
             useCase.params = params
-            getLayoutWithLazyLoad(useCase, _calendarWidgetData)
+            executeUseCase(useCase, _calendarWidgetData)
         }, onError = {
             _calendarWidgetData.value = Fail(it)
         })
@@ -442,7 +433,7 @@ class SellerHomeViewModel @Inject constructor(
             val useCase = getUnificationDataUseCase.get()
             val shopId = userSession.get().shopId
             useCase.setParam(shopId, widgets, dynamicParameter)
-            getLayoutWithLazyLoad(useCase, _unificationWidgetData)
+            executeUseCase(useCase, _unificationWidgetData)
         }, onError = {
             _unificationWidgetData.value = Fail(it)
         })
@@ -453,7 +444,7 @@ class SellerHomeViewModel @Inject constructor(
             val useCase = getRichListDataUseCase.get()
             val param = GetRichListDataUseCase.createParam(dataKeys, shopId, SELLER_HOME_PAGE_NAME)
             useCase.params = param
-            getLayoutWithLazyLoad(useCase, _richListWidgetData)
+            executeUseCase(useCase, _richListWidgetData)
         }, onError = {
             _richListWidgetData.value = Fail(it)
         })
@@ -552,7 +543,7 @@ class SellerHomeViewModel @Inject constructor(
         executeOnBackground()
     }
 
-    private suspend fun <T : Any> getLayoutWithLazyLoad(
+    private suspend fun <T : Any> executeUseCase(
         useCase: BaseGqlUseCase<T>,
         liveData: MutableLiveData<Result<T>>,
         onSuccess: (widgets: T) -> Unit = {}
@@ -563,36 +554,28 @@ class SellerHomeViewModel @Inject constructor(
             liveData.value = Success(result)
             onSuccess(result)
         } catch (networkException: Exception) {
-            if (remoteConfig.isSellerHomeDashboardCachingEnabled()) {
-                try {
-                    useCase.setUseCache(true)
-                    val result = useCase.executeUseCase()
-                    liveData.value = Success(result)
-                    onSuccess(result)
-                } catch (_: Exception) {
-                    throw networkException
-                }
-            } else {
+            try {
+                useCase.setUseCache(true)
+                val result = useCase.executeUseCase()
+                liveData.value = Success(result)
+                onSuccess(result)
+            } catch (_: Exception) {
                 throw networkException
             }
         }
     }
 
     private suspend fun getLayoutWithLazyLoad(
-        useCase: BaseGqlUseCase<WidgetLayoutUiModel>,
+        useCase: GetLayoutUseCase,
         getTransformerFlow: suspend (widgets: WidgetLayoutUiModel, isFromCache: Boolean) -> Flow<List<BaseWidgetUiModel<*>>>
     ) {
-        if (remoteConfig.isSellerHomeDashboardCachingEnabled() && useCase.isFirstLoad) {
+        if (useCase.isFirstLoad) {
             useCase.isFirstLoad = false
             try {
                 useCase.setUseCache(true)
                 val useCaseResult: WidgetLayoutUiModel = useCase.executeOnBackground()
                 getTransformerFlow(useCaseResult, true).collect {
-                    _widgetLayout.value = Success(
-                        useCaseResult.copy(
-                            widgetList = it
-                        )
-                    )
+                    _widgetLayout.value = Success(useCaseResult.copy(widgetList = it))
                 }
             } catch (_: Exception) {
                 // ignore exception from cache
@@ -601,11 +584,7 @@ class SellerHomeViewModel @Inject constructor(
         useCase.setUseCache(false)
         val useCaseResult: WidgetLayoutUiModel = useCase.executeOnBackground()
         getTransformerFlow(useCaseResult, false).collect {
-            _widgetLayout.value = Success(
-                useCaseResult.copy(
-                    widgetList = it
-                )
-            )
+            _widgetLayout.value = Success(useCaseResult.copy(widgetList = it))
         }
     }
 }

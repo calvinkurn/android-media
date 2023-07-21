@@ -39,7 +39,6 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.ADD_PHONE
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
@@ -53,6 +52,7 @@ import com.tokopedia.discovery2.Constant
 import com.tokopedia.discovery2.Constant.DISCO_PAGE_SOURCE
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.Utils
+import com.tokopedia.discovery2.Utils.Companion.dpToPx
 import com.tokopedia.discovery2.Utils.Companion.toDecodedString
 import com.tokopedia.discovery2.analytics.AFFILIATE
 import com.tokopedia.discovery2.analytics.BaseDiscoveryAnalytics
@@ -149,6 +149,7 @@ import com.tokopedia.play.widget.const.PlayWidgetConst
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.searchbar.data.HintData
+import com.tokopedia.searchbar.navigation_component.NavSource
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
@@ -171,7 +172,7 @@ import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomShee
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.PermissionListener
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ScreenShotListener
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
-import com.tokopedia.universal_sharing.view.model.AffiliatePDPInput
+import com.tokopedia.universal_sharing.view.model.AffiliateInput
 import com.tokopedia.universal_sharing.view.model.PageDetail
 import com.tokopedia.universal_sharing.view.model.Product
 import com.tokopedia.universal_sharing.view.model.ShareModel
@@ -221,7 +222,6 @@ open class DiscoveryFragment :
     private lateinit var ivToTop: ImageView
     private lateinit var globalError: GlobalError
     private lateinit var navToolbar: NavToolbar
-    private var bottomNav: TabsUnify? = null
     private lateinit var discoveryAdapter: DiscoveryRecycleAdapter
     private var chooseAddressWidget: ChooseAddressWidget? = null
     private var chooseAddressWidgetDivider: View? = null
@@ -343,7 +343,7 @@ open class DiscoveryFragment :
         initChooseAddressWidget(view)
         initView(view)
         context?.let {
-            screenshotDetector = UniversalShareBottomSheet.createAndStartScreenShotDetector(
+            screenshotDetector = SharingUtil.createAndStartScreenShotDetector(
                 it,
                 this,
                 this,
@@ -384,7 +384,7 @@ open class DiscoveryFragment :
         if (arguments?.getString(DISCO_PAGE_SOURCE) == Constant.DiscoveryPageSource.HOME) {
             navToolbar.setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_NONE)
             navToolbar.setIcon(
-                IconBuilder(IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_HOME_SOS))
+                IconBuilder(IconBuilderFlag(NavSource.SOS))
                     .addIcon(
                         IconList.ID_MESSAGE,
                         onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.INBOX) },
@@ -407,8 +407,6 @@ open class DiscoveryFragment :
                     )
             )
         }
-        bottomNav = view.findViewById(R.id.bottomNav)
-        bottomNav?.tabLayout?.addOnTabSelectedListener(this)
     }
 
     private fun initView(view: View) {
@@ -819,17 +817,6 @@ open class DiscoveryFragment :
             }
         })
 
-        discoveryViewModel.getDiscoveryBottomNavLiveData().observe(viewLifecycleOwner, {
-            when (it) {
-                is Success -> {
-                    setBottomNavigationComp(it)
-                }
-                is Fail -> {
-                    bottomNav?.hide()
-                }
-            }
-        })
-
         discoveryViewModel.getDiscoveryAnchorTabLiveData().observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> {
@@ -1028,15 +1015,17 @@ open class DiscoveryFragment :
     private fun setupObserveAndShowAnchor() {
         if (!stickyHeaderShowing) {
             anchorViewHolder?.let {
-                if (!it.viewModel.getCarouselItemsListData().hasActiveObservers()) {
-                    anchorViewHolder?.setUpObservers(viewLifecycleOwner)
-                }
-                if (mAnchorHeaderView.findViewById<RecyclerView>(R.id.anchor_rv) == null) {
-                    mAnchorHeaderView.removeAllViews()
-                    (anchorViewHolder?.itemView?.parent as? FrameLayout)?.removeView(
-                        anchorViewHolder?.itemView
-                    )
-                    mAnchorHeaderView.addView(it.itemView)
+                it.viewModel?.let { anchorTabsViewModel ->
+                    if (!anchorTabsViewModel.getCarouselItemsListData().hasActiveObservers()) {
+                        anchorViewHolder?.setUpObservers(viewLifecycleOwner)
+                    }
+                    if (mAnchorHeaderView.findViewById<RecyclerView>(R.id.anchor_rv) == null) {
+                        mAnchorHeaderView.removeAllViews()
+                        (anchorViewHolder?.itemView?.parent as? FrameLayout)?.removeView(
+                            anchorViewHolder?.itemView
+                        )
+                        mAnchorHeaderView.addView(it.itemView)
+                    }
                 }
             }
         }
@@ -1086,33 +1075,6 @@ open class DiscoveryFragment :
         }
     }
 
-    private fun setBottomNavigationComp(it: Success<ComponentsItem>) {
-        if (bottomNav != null && !it.data.data.isNullOrEmpty()) {
-            bottomNav?.let { bottomTabHolder ->
-                bottomTabHolder.tabLayout.apply {
-                    tabMode = TabLayout.MODE_FIXED
-                    removeAllTabs()
-                    setBackgroundResource(0)
-                }
-                bottomTabHolder.getUnifyTabLayout().setSelectedTabIndicator(null)
-                it.data.data!!.forEach { item ->
-                    if (item.image.isNotEmpty()) {
-                        val tab = bottomTabHolder.tabLayout.newTab()
-                        tab.customView = LayoutInflater.from(this.context).inflate(R.layout.bottom_nav_item, bottomTabHolder, false).apply {
-                            findViewById<ImageUnify>(R.id.tab_image).loadImage(item.image)
-                            findViewById<Typography>(R.id.tab_text).apply {
-                                text = item.name
-                                setTextColor(getTabTextColor(this.context, item.fontColor))
-                            }
-                        }
-                        bottomTabHolder.tabLayout.addTab(tab, false)
-                    }
-                }
-                bottomTabHolder.show()
-            }
-        }
-    }
-
     private fun setToolBarPageInfoOnSuccess(data: PageInfo?) {
         handleShare(data)
         if (showOldToolbar) {
@@ -1140,7 +1102,7 @@ open class DiscoveryFragment :
                 }
             } else {
                 navToolbar.setIcon(
-                    IconBuilder()
+                    IconBuilder(getNavIconBuilderFlag())
                         .addIcon(
                             iconId = IconList.ID_SHARE,
                             disableRouteManager = true,
@@ -1176,7 +1138,7 @@ open class DiscoveryFragment :
             handleGlobalNavClick(Constant.TOP_NAV_BUTTON.SHARE)
         }
 
-        if (UniversalShareBottomSheet.isCustomSharingEnabled(context)) {
+        if (SharingUtil.isCustomSharingEnabled(context)) {
             sendUnifyShareGTM()
             showUniversalShareBottomSheet(data)
         } else {
@@ -1234,9 +1196,14 @@ open class DiscoveryFragment :
         return linkerShareData
     }
 
-    private fun showUniversalShareBottomSheet(data: PageInfo?) {
+    private fun showUniversalShareBottomSheet(data: PageInfo?, screenshotPath: String? = null) {
         data?.let { pageInfo ->
             universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
+                screenshotPath?.let { path ->
+                    setImageOnlySharingOption(true)
+                    setScreenShotImagePath(path)
+                }
+                setFeatureFlagRemoteConfigKey()
                 init(this@DiscoveryFragment)
                 setUtmCampaignData(
                     this@DiscoveryFragment.context?.resources?.getString(R.string.discovery) ?: UTM_DISCOVERY,
@@ -1253,10 +1220,9 @@ open class DiscoveryFragment :
                     pageInfo.share?.image ?: ""
                 )
                 setOgImageUrl(pageInfo.share?.image ?: "")
-            }
-            universalShareBottomSheet?.show(fragmentManager, this@DiscoveryFragment, screenshotDetector) {
+
                 if (this@DiscoveryFragment.isAffiliateInitialized) {
-                    val inputShare = AffiliatePDPInput().apply {
+                    val inputShare = AffiliateInput().apply {
                         pageDetail = PageDetail(
                             pageId = "0",
                             pageType = "campaign",
@@ -1268,11 +1234,12 @@ open class DiscoveryFragment :
                         product = Product()
                         shop = Shop(shopID = "0", shopStatus = 0, isOS = false, isPM = false)
                     }
-                    universalShareBottomSheet?.setAffiliateRequestHolder(inputShare)
-                    universalShareBottomSheet?.affiliateRequestDataReceived(true)
+                    enableAffiliateCommission(inputShare)
                 }
             }
-            shareType = UniversalShareBottomSheet.getShareBottomSheetType()
+
+            universalShareBottomSheet?.show(fragmentManager, this@DiscoveryFragment, screenshotDetector)
+            shareType = universalShareBottomSheet?.getShareBottomSheetType() ?: 0
             getDiscoveryAnalytics().trackUnifyShare(
                 VIEW_DISCOVERY_IRIS,
                 if (shareType == CUSTOM_SHARE_SHEET) VIEW_UNIFY_SHARE else VIEW_SCREENSHOT_SHARE,
@@ -1338,8 +1305,8 @@ open class DiscoveryFragment :
         getDiscoveryAnalytics().trackUnifyShare(EVENT_CLICK_DISCOVERY, UNIFY_CLICK_SHARE, getUserID())
     }
 
-    override fun screenShotTaken() {
-        showUniversalShareBottomSheet(pageInfoHolder)
+    override fun screenShotTaken(path: String) {
+        showUniversalShareBottomSheet(pageInfoHolder, path)
     }
 
     private fun setToolBarPageInfoOnFail() {
@@ -1357,7 +1324,7 @@ open class DiscoveryFragment :
 
     private fun setCartAndNavIcon() {
         navToolbar.setIcon(
-            IconBuilder()
+            IconBuilder(getNavIconBuilderFlag())
                 .addIcon(iconId = IconList.ID_CART, onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.CART) }, disableDefaultGtmTracker = true)
                 .addIcon(iconId = IconList.ID_NAV_GLOBAL, onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.GLOBAL_MENU) }, disableDefaultGtmTracker = true)
         )
@@ -1978,7 +1945,7 @@ open class DiscoveryFragment :
         return if (hasColouredHeader && isLightThemeStatusBar != false) {
             com.tokopedia.unifyprinciples.R.color.Unify_Static_White
         } else {
-            com.tokopedia.unifyprinciples.R.color.Unify_N700_96
+            com.tokopedia.unifyprinciples.R.color.Unify_NN950_96
         }
     }
 
@@ -2021,7 +1988,7 @@ open class DiscoveryFragment :
         view.layoutParams = layoutParams
 
         context?.let {
-            parentLayout.setBackgroundColor(MethodChecker.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_G900))
+            parentLayout.setBackgroundColor(MethodChecker.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_GN950))
         }
         parentLayout.addView(view)
         parentLayout.requestFocus()
@@ -2030,7 +1997,7 @@ open class DiscoveryFragment :
     fun hideCustomContent() {
         showSystemUi()
         context?.let {
-            parentLayout.setBackgroundColor(MethodChecker.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+            parentLayout.setBackgroundColor(MethodChecker.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_NN0))
         }
         coordinatorLayout.show()
         if (parentLayout.childCount > 1) {
@@ -2080,7 +2047,6 @@ open class DiscoveryFragment :
             } else {
                 miniCartWidget?.updateData(data)
             }
-            bottomNav?.hide()
         } else {
             miniCartWidget?.hide()
         }
@@ -2165,10 +2131,15 @@ open class DiscoveryFragment :
                     override fun getVerticalSnapPreference(): Int {
                         return SNAP_TO_START
                     }
+
+                    override fun calculateDyToMakeVisible(view: View?, snapPreference: Int): Int {
+                        return super.calculateDyToMakeVisible(view, snapPreference) + dpToPx(55).toInt()
+                    }
                 }
             smoothScroller.targetPosition = position
-            if (this.isResumed)
+            if (this.isResumed) {
                 staggeredGridLayoutManager?.startSmoothScroll(smoothScroller)
+            }
         } catch (e: Exception) {
         }
     }
@@ -2259,7 +2230,7 @@ open class DiscoveryFragment :
                 com.tokopedia.unifyprinciples.R.color.Unify_Static_White
             )
         } else {
-            ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+            ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN0)
         }
     }
 
@@ -2292,5 +2263,16 @@ open class DiscoveryFragment :
             initInjector()
             discoveryComponent.provideSubComponent()
         }
+    }
+
+    fun scrollToNextComponent(currentCompPosition: Int?) {
+        if(currentCompPosition != null && currentCompPosition + 1 < discoveryAdapter.itemCount) {
+            smoothScrollToComponentWithPosition(currentCompPosition + 1)
+        }
+    }
+
+    private fun getNavIconBuilderFlag(): IconBuilderFlag {
+        val pageSource = if(isFromCategory) NavSource.CLP else NavSource.DISCOVERY
+        return IconBuilderFlag(pageSource, pageEndPoint)
     }
 }

@@ -7,16 +7,17 @@ import android.content.res.Configuration
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.view.SurfaceHolder
-import android.view.SurfaceView
-import android.view.View
-import android.view.WindowManager
+import android.view.*
 import android.widget.FrameLayout
 import androidx.appcompat.widget.AppCompatImageView
+import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import com.google.android.play.core.splitinstall.SplitInstallHelper
+import com.google.firebase.crashlytics.ktx.crashlytics
+import com.google.firebase.ktx.Firebase
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
@@ -32,7 +33,9 @@ import com.tokopedia.content.common.types.ContentCommonUserType.KEY_AUTHOR_TYPE
 import com.tokopedia.content.common.types.ContentCommonUserType.TYPE_UNKNOWN
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PLAY_BROADCASTER_TRACE_PAGE
 import com.tokopedia.play.broadcaster.analytic.PLAY_BROADCASTER_TRACE_PREPARE_PAGE
@@ -40,15 +43,20 @@ import com.tokopedia.play.broadcaster.analytic.PLAY_BROADCASTER_TRACE_RENDER_PAG
 import com.tokopedia.play.broadcaster.analytic.PLAY_BROADCASTER_TRACE_REQUEST_NETWORK
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
+import com.tokopedia.play.broadcaster.analytic.beautification.PlayBroadcastBeautificationAnalyticStateHolder
 import com.tokopedia.play.broadcaster.di.DaggerActivityRetainedComponent
+import com.tokopedia.play.broadcaster.di.PlayBroadcastInjector
 import com.tokopedia.play.broadcaster.di.PlayBroadcastModule
 import com.tokopedia.play.broadcaster.pusher.PlayBroadcaster
 import com.tokopedia.play.broadcaster.pusher.state.PlayBroadcasterState
 import com.tokopedia.play.broadcaster.pusher.view.PlayLivePusherDebugView
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
+import com.tokopedia.play.broadcaster.ui.bridge.BeautificationUiBridge
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastEvent
 import com.tokopedia.play.broadcaster.ui.model.ChannelStatus
 import com.tokopedia.play.broadcaster.ui.model.ConfigurationUiModel
+import com.tokopedia.play.broadcaster.ui.model.beautification.FaceFilterUiModel
+import com.tokopedia.play.broadcaster.ui.model.beautification.PresetFilterUiModel
 import com.tokopedia.play.broadcaster.ui.model.config.BroadcastingConfigUiModel
 import com.tokopedia.play.broadcaster.util.delegate.retainedComponent
 import com.tokopedia.play.broadcaster.util.extension.channelNotFound
@@ -58,22 +66,27 @@ import com.tokopedia.play.broadcaster.util.idling.PlayBroadcasterIdlingResource
 import com.tokopedia.play.broadcaster.util.permission.PermissionHelperImpl
 import com.tokopedia.play.broadcaster.util.permission.PermissionResultListener
 import com.tokopedia.play.broadcaster.util.permission.PermissionStatusHandler
+import com.tokopedia.play.broadcaster.util.wrapper.PlayBroadcastValueWrapper
 import com.tokopedia.play.broadcaster.view.contract.PlayBaseCoordinator
 import com.tokopedia.play.broadcaster.view.contract.PlayBroadcasterContract
 import com.tokopedia.play.broadcaster.view.fragment.PlayBroadcastPreparationFragment
 import com.tokopedia.play.broadcaster.view.fragment.PlayBroadcastUserInteractionFragment
 import com.tokopedia.play.broadcaster.view.fragment.PlayPermissionFragment
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
+import com.tokopedia.play.broadcaster.view.fragment.beautification.BeautificationSetupFragment
 import com.tokopedia.play.broadcaster.view.fragment.loading.LoadingDialogFragment
 import com.tokopedia.play.broadcaster.view.fragment.summary.PlayBroadcastSummaryFragment
+import com.tokopedia.play.broadcaster.view.scale.BroadcasterFrameScalingManager
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.factory.PlayBroadcastViewModelFactory
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.util.extension.awaitResume
+import com.tokopedia.play_common.util.extension.withCache
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.jetbrains.annotations.TestOnly
 import javax.inject.Inject
@@ -81,6 +94,8 @@ import javax.inject.Inject
 /**
  * Created by mzennis on 19/05/20.
  */
+
+@Suppress("LateinitUsage")
 class PlayBroadcastActivity : BaseActivity(),
     PlayBaseCoordinator,
     PlayBroadcasterContract,
@@ -115,18 +130,38 @@ class PlayBroadcastActivity : BaseActivity(),
     @Inject
     lateinit var hydraConfigStore: HydraConfigStore
 
+    @Inject
+    lateinit var broadcasterFrameScalingManager: BroadcasterFrameScalingManager
+
+    @Inject
+    lateinit var beautificationUiBridge: BeautificationUiBridge
+
+    @Inject
+    lateinit var beautificationAnalyticStateHolder: PlayBroadcastBeautificationAnalyticStateHolder
+
+    @Inject
+    lateinit var valueWrapper: PlayBroadcastValueWrapper
+
     private lateinit var viewModel: PlayBroadcastViewModel
 
     private lateinit var containerSetup: FrameLayout
     private lateinit var globalErrorView: GlobalError
     private lateinit var aspectFrameLayout: AspectFrameLayout
     private lateinit var surfaceView: SurfaceView
+    private lateinit var surfaceCardView: CardView
 
     private var isRecreated = false
     private var isResultAfterAskPermission = false
     private var channelType = ChannelStatus.Unknown
 
     private var toasterBottomMargin = 0
+
+    private val offset8 by lazyThreadSafetyNone {
+        resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
+    }
+    private val offset16 by lazyThreadSafetyNone {
+        resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4)
+    }
 
     private var systemUiVisibility: Int
         get() = window.decorView.systemUiVisibility
@@ -148,8 +183,21 @@ class PlayBroadcastActivity : BaseActivity(),
     private val isPortrait: Boolean
         get() = resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT
 
+    private val dialogUnSupportedDevice by lazyThreadSafetyNone {
+        getDialog(
+            title = getString(R.string.play_dialog_unsupported_device_title),
+            desc = getString(R.string.play_dialog_unsupported_device_desc),
+            primaryCta = getString(R.string.play_broadcast_exit),
+            primaryListener = { dialog ->
+                dialog.dismiss()
+                finish()
+            }
+        )
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         inject()
+        loadEffectNativeLibrary()
         setFragmentFactory()
         startPageMonitoring()
         if (savedInstanceState != null) {
@@ -164,6 +212,7 @@ class PlayBroadcastActivity : BaseActivity(),
         isRecreated = (savedInstanceState != null)
 
         initView()
+        initListener()
 
         if (savedInstanceState != null) {
             populateSavedState(savedInstanceState)
@@ -229,15 +278,29 @@ class PlayBroadcastActivity : BaseActivity(),
         isResultAfterAskPermission = false
     }
 
-    override fun <T : Fragment> navigateToFragment(fragmentClass: Class<out T>, extras: Bundle, sharedElements: List<View>, onFragment: (T) -> Unit) {
+    override fun <T : Fragment> navigateToFragment(
+        fragmentClass: Class<out T>,
+        extras: Bundle,
+        sharedElements: List<View>,
+        onFragment: (T) -> Unit,
+        isAddToBackStack: Boolean,
+    ) {
         val fragmentTransaction = supportFragmentManager.beginTransaction()
         val destFragment = getFragmentByClassName(fragmentClass)
         val currentFragment = supportFragmentManager.findFragmentById(R.id.fl_container)
         if (currentFragment == null || currentFragment::class.java != fragmentClass) {
             destFragment.arguments = extras
             fragmentTransaction
-                    .replace(R.id.fl_container, destFragment, fragmentClass.name)
-                    .commit()
+                .apply {
+                    if(isAddToBackStack) {
+                        add(R.id.fl_container, destFragment, fragmentClass.name)
+                        addToBackStack(null)
+                    }
+                    else {
+                        replace(R.id.fl_container, destFragment, fragmentClass.name)
+                    }
+                }
+                .commit()
         }
     }
 
@@ -271,7 +334,8 @@ class PlayBroadcastActivity : BaseActivity(),
     }
 
     private fun inject() {
-        retainedComponent.inject(this)
+        val component = PlayBroadcastInjector.get() ?: retainedComponent
+        component.inject(this)
     }
 
     private fun initViewModel() {
@@ -299,16 +363,182 @@ class PlayBroadcastActivity : BaseActivity(),
         )
     }
 
+    private fun loadEffectNativeLibrary() {
+        try {
+            SplitInstallHelper.loadLibrary(this, "c++_shared")
+            SplitInstallHelper.loadLibrary(this, "effect")
+        } catch (throwable: Throwable) {
+            Firebase.crashlytics.recordException(throwable)
+        }
+    }
+
     private fun observeUiState() {
+        lifecycleScope.launchWhenStarted {
+            viewModel.uiState.withCache().collectLatest {
+                renderFaceFilter(it.prevValue?.beautificationConfig?.selectedFaceFilter, it.value.beautificationConfig.selectedFaceFilter)
+                renderPreset(it.prevValue?.beautificationConfig?.selectedPreset, it.value.beautificationConfig.selectedPreset)
+            }
+        }
+
         lifecycleScope.launchWhenStarted {
             viewModel.uiEvent.collect { event ->
                 when (event) {
                     is PlayBroadcastEvent.InitializeBroadcaster -> {
                         createBroadcaster(event.data)
                     }
+                    is PlayBroadcastEvent.BeautificationRebindEffect -> {
+                        rebindEffect(isFirstTimeOpenPage = false)
+                    }
+                    is PlayBroadcastEvent.BeautificationDownloadAssetFailed -> {
+                        analytic.viewFailDownloadPreset(
+                            viewModel.selectedAccount,
+                            beautificationAnalyticStateHolder.getPageSourceForAnalytic(),
+                            event.preset.id,
+                        )
+
+                        showToaster(
+                            err = event.throwable,
+                            customErrMessage = getString(R.string.play_broadcaster_fail_download_filter),
+                            duration = Toaster.LENGTH_SHORT,
+                            actionLabel = getString(R.string.play_broadcaster_retry),
+                            actionListener = {
+                                analytic.clickRetryDownloadPreset(
+                                    viewModel.selectedAccount,
+                                    beautificationAnalyticStateHolder.getPageSourceForAnalytic(),
+                                    event.preset.id,
+                                )
+                                viewModel.submitAction(PlayBroadcastAction.SelectPresetOption(event.preset))
+                            }
+                        )
+                    }
                     else -> {}
                 }
             }
+        }
+    }
+
+    private fun renderFaceFilter(
+        prev: FaceFilterUiModel?,
+        value: FaceFilterUiModel?,
+    ) {
+        if (prev == value) return
+        if(!::broadcaster.isInitialized) return
+
+        val selectedFaceFilter = value ?: return
+        applyFaceFilter(listOf(selectedFaceFilter))
+    }
+
+    private fun renderPreset(
+        prev: PresetFilterUiModel?,
+        value: PresetFilterUiModel?,
+    ) {
+        if (prev == value) return
+        if(!::broadcaster.isInitialized) return
+
+        val selectedPreset = value ?: return
+        applyPreset(selectedPreset)
+    }
+
+    private fun applyFaceFilter(
+        faceFilters: List<FaceFilterUiModel>,
+        withToaster: Boolean = true,
+    ): Boolean {
+        var isAllFilterApplied = true
+
+        faceFilters.forEach { faceFilter ->
+            if (faceFilter.isRemoveEffect) {
+                broadcaster.removeFaceFilter()
+            } else {
+                val isSuccess = broadcaster.setFaceFilter(
+                    faceFilter.id,
+                    if (faceFilter.active) faceFilter.value.toFloat() else 0f
+                )
+
+                if (isSuccess) return@forEach
+
+                isAllFilterApplied = false
+
+                if (!withToaster) return@forEach
+
+                analytic.viewFailApplyBeautyFilter(
+                    account = viewModel.selectedAccount,
+                    page = beautificationAnalyticStateHolder.pageSource.mapToAnalytic(),
+                    customFace = faceFilter.id,
+                )
+
+                showToaster(
+                    err = Exception("fail to apply face filter : ${faceFilter.id}"),
+                    customErrMessage = getString(R.string.play_broadcaster_fail_apply_filter),
+                    duration = Toaster.LENGTH_SHORT,
+                    actionLabel = getString(R.string.play_broadcaster_retry),
+                    actionListener = {
+                        analytic.clickRetryApplyBeautyFilter(
+                            account = viewModel.selectedAccount,
+                            page = beautificationAnalyticStateHolder.pageSource.mapToAnalytic(),
+                            customFace = faceFilter.id,
+                        )
+                        applyFaceFilter(listOf(faceFilter))
+                    }
+                )
+            }
+        }
+
+        return isAllFilterApplied
+    }
+
+    private fun applyPreset(
+        preset: PresetFilterUiModel,
+        withToaster: Boolean = true,
+    ): Boolean {
+        return if (preset.isRemoveEffect) {
+            broadcaster.removePreset()
+            true
+        } else {
+            val isSuccess = broadcaster.setPreset(preset.id, preset.value.toFloat())
+
+            if(!isSuccess && withToaster) {
+                showToaster(
+                    err = Exception("fail to apply preset : ${preset.id}"),
+                    customErrMessage = getString(R.string.play_broadcaster_fail_apply_filter),
+                    duration = Toaster.LENGTH_SHORT,
+                    actionLabel = getString(R.string.play_broadcaster_retry),
+                    actionListener = {
+                        applyPreset(preset)
+                    }
+                )
+            }
+
+            isSuccess
+        }
+    }
+
+    private fun rebindEffect(isFirstTimeOpenPage: Boolean) {
+        if (viewModel.isBeautificationEnabled) {
+            val isAllFaceFilterApplied = if (viewModel.selectedFaceFilter?.isRemoveEffect == true) {
+                viewModel.selectedFaceFilter?.let { applyFaceFilter(listOf(it), withToaster = false) }.orTrue()
+            } else {
+                applyFaceFilter(viewModel.faceFiltersWithoutNoneOption, withToaster = false)
+            }
+
+            val isPresetApplied = viewModel.selectedPreset?.let { applyPreset(it, withToaster = false) }.orTrue()
+
+            if(isFirstTimeOpenPage && (!isAllFaceFilterApplied || !isPresetApplied)) {
+                analytic.viewFailReapplyBeautyFilter(account = viewModel.selectedAccount)
+
+                showToaster(
+                    err = Exception("fail to apply face filter & preset for the first time"),
+                    customErrMessage = getString(R.string.play_broadcaster_fail_save_filter),
+                    duration = valueWrapper.rebindEffectToasterDuration,
+                    actionLabel = getString(R.string.play_broadcaster_retry),
+                    actionListener = {
+                        analytic.clickRetryReapplyBeautyFilter(account = viewModel.selectedAccount)
+                        rebindEffect(true)
+                    }
+                )
+            }
+        } else {
+            broadcaster.removeFaceFilter()
+            broadcaster.removePreset()
         }
     }
 
@@ -317,7 +547,50 @@ class PlayBroadcastActivity : BaseActivity(),
         globalErrorView = findViewById(R.id.global_error)
         aspectFrameLayout = findViewById(R.id.aspect_ratio_view)
         surfaceView = findViewById(R.id.surface_view)
+        surfaceCardView = findViewById(R.id.surface_card_view)
+
         surfaceView.holder.addCallback(this)
+    }
+
+    private fun initListener() {
+        broadcasterFrameScalingManager.setListener(object : BroadcasterFrameScalingManager.Listener {
+            override fun onStartScaleDown() {
+                surfaceCardView.radius = offset8.toFloat()
+            }
+
+            override fun onStartScaleUp() {
+                surfaceCardView.radius = 0f
+            }
+        })
+
+        aspectFrameLayout.setOnClickListener {
+            getCurrentFragment()?.let {
+                val isFaceFilterBottomSheetShown = BeautificationSetupFragment.getFragment(
+                    it.childFragmentManager,
+                    classLoader
+                ).isBottomSheetShown
+
+                if(isFaceFilterBottomSheetShown) {
+                    beautificationUiBridge.eventBus.emit(BeautificationUiBridge.Event.BeautificationBottomSheetDismissed)
+                }
+            }
+        }
+
+        lifecycleScope.launchWhenStarted {
+            beautificationUiBridge.eventBus.subscribe().collect { event ->
+                when(event) {
+                    is BeautificationUiBridge.Event.BeautificationBottomSheetShown -> {
+                        val fullPageHeight = findViewById<ViewGroup>(android.R.id.content).rootView.height
+                        val bottomSheetHeight = event.bottomSheetHeight
+
+                        broadcasterFrameScalingManager.scaleDown(aspectFrameLayout, bottomSheetHeight, fullPageHeight)
+                    }
+                    is BeautificationUiBridge.Event.BeautificationBottomSheetDismissed -> {
+                        broadcasterFrameScalingManager.scaleUp(aspectFrameLayout)
+                    }
+                }
+            }
+        }
     }
 
     private fun getConfiguration() {
@@ -371,8 +644,11 @@ class PlayBroadcastActivity : BaseActivity(),
                     else if (result.data.channelStatus == ChannelStatus.Pause) showDialogContinueLiveStreaming()
                     stopPageMonitoring()
 
-                    if(!PlayBroadcasterIdlingResource.idlingResource.isIdleNow)
+                    if (!PlayBroadcasterIdlingResource.idlingResource.isIdleNow)
                         PlayBroadcasterIdlingResource.decrement()
+
+                    if (GlobalConfig.DEBUG)
+                        debugView?.logChannelId(result.data.channelId)
                 }
                 is NetworkResult.Fail -> {
                     invalidatePerformanceData()
@@ -465,19 +741,13 @@ class PlayBroadcastActivity : BaseActivity(),
     }
 
     private fun showDialogWhenUnSupportedDevices() {
-        getDialog(
-                title = getString(R.string.play_dialog_unsupported_device_title),
-                desc = getString(R.string.play_dialog_unsupported_device_desc),
-                primaryCta = getString(R.string.play_broadcast_exit),
-                primaryListener = { dialog ->
-                    dialog.dismiss()
-                    finish()
-                }
-        ).show()
+        if (dialogUnSupportedDevice.isShowing) return
+        dialogUnSupportedDevice.show()
     }
 
     private fun showToaster(
         err: Throwable,
+        customErrMessage: String? = null,
         duration: Int = Toaster.LENGTH_INDEFINITE,
         actionLabel: String = "",
         actionListener: View.OnClickListener = View.OnClickListener { }
@@ -488,6 +758,7 @@ class PlayBroadcastActivity : BaseActivity(),
 
         findViewById<View>(android.R.id.content)?.showErrorToaster(
                 err = err,
+                customErrMessage = customErrMessage,
                 duration = duration,
                 actionLabel = actionLabel,
                 actionListener = actionListener,
@@ -505,8 +776,10 @@ class PlayBroadcastActivity : BaseActivity(),
     }
 
     private fun showLoading(isLoading: Boolean) {
-        if (isLoading && !isLoadingDialogVisible()) {
-            getLoadingFragment().show(supportFragmentManager)
+        if (isLoading) {
+            if(!isLoadingDialogVisible()) {
+                getLoadingFragment().show(supportFragmentManager)
+            }
         } else if (isLoadingDialogVisible()) {
             getLoadingFragment().dismiss()
         }
@@ -627,13 +900,15 @@ class PlayBroadcastActivity : BaseActivity(),
         broadcastingConfigUiModel: BroadcastingConfigUiModel,
     ) {
         lifecycleScope.launch(dispatcher.main) {
+            broadcaster.setupThread(viewModel.isBeautificationEnabled)
             delay(INIT_BROADCASTER_DELAY)
             broadcaster.setConfig(
                 audioRate = broadcastingConfigUiModel.audioRate,
                 videoRate = broadcastingConfigUiModel.videoBitrate,
                 videoFps = broadcastingConfigUiModel.fps
             )
-            broadcaster.create(holder, surfaceSize)
+            broadcaster.create(holder, surfaceSize, viewModel.isBeautificationEnabled)
+            rebindEffect(isFirstTimeOpenPage = true)
         }
     }
 
@@ -664,7 +939,16 @@ class PlayBroadcastActivity : BaseActivity(),
     }
 
     override fun onBroadcastInitStateChanged(state: BroadcastInitState) {
-        if (state is BroadcastInitState.Error) showDialogWhenUnSupportedDevices()
+        when(state) {
+            is BroadcastInitState.Error -> {
+                showDialogWhenUnSupportedDevices()
+            }
+            is BroadcastInitState.ByteplusInitializationError -> {
+                viewModel.submitAction(PlayBroadcastAction.RemoveBeautificationMenu)
+            }
+            else -> {}
+        }
+
         lifecycleScope.launch(dispatcher.main) {
             debugView?.logBroadcastInitState(state)
         }
