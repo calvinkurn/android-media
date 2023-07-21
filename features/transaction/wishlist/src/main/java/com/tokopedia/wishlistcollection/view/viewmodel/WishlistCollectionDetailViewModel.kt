@@ -44,7 +44,6 @@ import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
 import com.tokopedia.wishlistcommon.domain.UpdateWishlistCollectionUseCase
 import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts
-import dagger.Lazy
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -67,7 +66,7 @@ class WishlistCollectionDetailViewModel @Inject constructor(
     private val getWishlistCollectionTypeUseCase: GetWishlistCollectionTypeUseCase,
     private val addWishlistBulkUseCase: AddWishlistBulkUseCase,
     private val addToWishlistV2UseCase: AddToWishlistV2UseCase,
-    private val affiliateCookieHelper: Lazy<AffiliateCookieHelper>
+    private val affiliateCookieHelper: AffiliateCookieHelper
 ) : BaseViewModel(dispatcher.main) {
     private var recommSrc = ""
 
@@ -389,7 +388,7 @@ class WishlistCollectionDetailViewModel @Inject constructor(
         wishlistCollectionId: String
     ) {
         launchCatchError(block = {
-            affiliateCookieHelper.get().initCookie(
+            affiliateCookieHelper.initCookie(
                 affiliateUUID = affiliateUuid,
                 affiliateChannel = affiliateChannel,
                 affiliatePageDetail = AffiliatePageDetail(
@@ -414,7 +413,7 @@ class WishlistCollectionDetailViewModel @Inject constructor(
                     wishlistItemOnAtc.shop.id,
                     null
                 )
-                affiliateCookieHelper.get().initCookie(
+                affiliateCookieHelper.initCookie(
                     affiliateUUID = affiliateUUID,
                     affiliateChannel = affiliateChannel,
                     affiliatePageDetail = AffiliatePageDetail(
@@ -429,7 +428,7 @@ class WishlistCollectionDetailViewModel @Inject constructor(
     }
 
     fun createAffiliateLink(url: String): String {
-        return affiliateCookieHelper.get().createAffiliateLink(url)
+        return affiliateCookieHelper.createAffiliateLink(url)
     }
 
     companion object {
