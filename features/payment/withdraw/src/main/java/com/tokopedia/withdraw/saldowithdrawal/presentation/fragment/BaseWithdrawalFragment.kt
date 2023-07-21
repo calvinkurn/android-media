@@ -14,6 +14,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.coachmark.*
 import com.tokopedia.config.GlobalConfig
@@ -365,8 +366,8 @@ abstract class BaseWithdrawalFragment : BaseDaggerFragment(), BankAccountAdapter
     }
 
     override fun onButtonClicked(applink: String) {
-        if (GlobalConfig.isSellerApp() && (applink.contains(GOPAY_KYC) || applink.contains(
-                ACCOUNT_LINKING))) {
+        if (GlobalConfig.isSellerApp() && (applink.contains(ApplinkConst.GOPAY_KYC) || applink.contains(
+                ApplinkConst.LINK_ACCOUNT))) {
             activity?.let {
                 GopayRedirectionBottomSheet.getInstance(
                     "",
@@ -550,7 +551,5 @@ abstract class BaseWithdrawalFragment : BaseDaggerFragment(), BankAccountAdapter
     companion object {
         const val KEY_CAN_SHOW_RP_COACH_MARK = "com.tokopedia.withdraw.saldowithdrawal.rekprem_logo_coach_mark"
         const val KEY_CAN_SHOW_GOPAY_WITHDRAW_COACH_MARK = "com.tokopedia.withdraw.saldowithdrawal.gopay_withdraw_coach_mark"
-        private const val ACCOUNT_LINKING = "tokopedia://gojek-account-link"
-        private const val GOPAY_KYC = "tokopedia://payment/gopayKyc"
     }
 }

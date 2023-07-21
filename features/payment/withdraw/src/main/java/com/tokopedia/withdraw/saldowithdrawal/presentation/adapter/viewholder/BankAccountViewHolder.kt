@@ -1,5 +1,6 @@
 package com.tokopedia.withdraw.saldowithdrawal.presentation.adapter.viewholder
 
+import android.content.Context
 import android.os.Build
 import android.text.Html
 import android.text.Html.FROM_HTML_MODE_COMPACT
@@ -48,11 +49,30 @@ class BankAccountViewHolder(view: View) : RecyclerView.ViewHolder(view) {
                  isRpLogoVisible: Boolean) {
         val context = itemView.context
 
+        setBankImage(bankAccount)
+        setBankName(bankAccount)
+        setBankAccountNumber(context, bankAccount)
+        setBankAdminFee(context, bankAccount)
+        setWarningMessage(context, bankAccount)
+        setRPicon(bankAccount, isRpLogoVisible)
+        setSpecialOffer(bankAccount)
+        configDisabledView(context, bankAccount, listener, onBankAccountSelected)
+        setRadio(bankAccount)
+        setButton(bankAccount, listener)
+        setNotification(bankAccount)
+    }
+
+    private fun setBankImage(bankAccount: BankAccount) {
         bankAccount.bankImageUrl?.let {
             ivBankIcon.setImageUrl(it)
         }
+    }
 
+    private fun setBankName(bankAccount: BankAccount) {
         bankName.text = bankAccount.bankName
+    }
+
+    private fun setBankAccountNumber(context: Context, bankAccount: BankAccount) {
         bankAccountNumber.text = if (bankAccount.walletAppData.message.isNotEmpty()) {
             bankAccount.walletAppData.message
         }
@@ -62,7 +82,9 @@ class BankAccountViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         } else bankAccount.accountNo
 
         if (bankAccountNumber.text.isEmpty()) bankAccountNumber.hide() else bankAccountNumber.show()
+    }
 
+    private fun setBankAdminFee(context: Context, bankAccount: BankAccount) {
         if (bankAccount.isGopay()) {
             bankAdminFee.shouldShowWithAction(bankAccount.notes.isNotEmpty()) {
                 bankAdminFee.text = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
@@ -80,7 +102,9 @@ class BankAccountViewHolder(view: View) : RecyclerView.ViewHolder(view) {
             bankAdminFee.text = ""
             bankAdminFee.gone()
         }
+    }
 
+    private fun setWarningMessage(context: Context, bankAccount: BankAccount) {
         if (bankAccount.warningMessage.isNullOrEmpty())
             warningMessage.gone()
         else {
@@ -89,26 +113,39 @@ class BankAccountViewHolder(view: View) : RecyclerView.ViewHolder(view) {
             warningMessage.text = bankAccount.warningMessage
             warningMessage.setTextColor(ContextCompat.getColor(context, color))
         }
+    }
 
+    private fun setRPicon(bankAccount: BankAccount, isRpLogoVisible: Boolean) {
         if (bankAccount.haveRPProgram && isRpLogoVisible) {
             ivPremiumAccount.visible()
         } else {
             ivPremiumAccount.gone()
         }
+    }
 
+    private fun setSpecialOffer(bankAccount: BankAccount) {
         if (bankAccount.haveSpecialOffer) {
             tvSpecialOffer.visible()
         } else {
             tvSpecialOffer.gone()
         }
+    }
 
+    private fun configDisabledView(
+        context: Context,
+        bankAccount: BankAccount,
+        listener: BankAccountAdapter.BankAdapterListener,
+        onBankAccountSelected: (BankAccount) -> Unit
+    ) {
         if (bankAccount.status == INACTIVE_BANK_STATUS) {
             val disabledColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_32)
             bankName.setTextColor(disabledColor)
             bankAccountNumber.setTextColor(disabledColor)
             bankAdminFee.setTextColor(disabledColor)
+            ivBankIcon.alpha = ALPHA_DISABLED
             ivPremiumAccount.alpha = ALPHA_DISABLED
             tvSpecialOffer.alpha = ALPHA_DISABLED
+            notificationNew.alpha = ALPHA_DISABLED
             itemView.setOnClickListener { listener.onDisabledBankClick(bankAccount) }
             ivPremiumAccount.setOnClickListener { listener.onDisabledBankClick(bankAccount) }
             radioBankSelector.isEnabled = false
@@ -116,8 +153,10 @@ class BankAccountViewHolder(view: View) : RecyclerView.ViewHolder(view) {
             btnBankSelector.isEnabled = false
             btnBankSelector.isEnabled = false
         } else {
+            ivBankIcon.alpha = ALPHA_ENABLED
             ivPremiumAccount.alpha = ALPHA_ENABLED
             tvSpecialOffer.alpha = ALPHA_ENABLED
+            notificationNew.alpha = ALPHA_ENABLED
             bankName.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_96))
             bankAccountNumber.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_68))
             bankAdminFee.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_68))
@@ -128,7 +167,9 @@ class BankAccountViewHolder(view: View) : RecyclerView.ViewHolder(view) {
             btnBankSelector.isEnabled = true
             btnBankSelector.isEnabled = true
         }
+    }
 
+    private fun setRadio(bankAccount: BankAccount) {
         radioBankSelector.shouldShowWithAction(
             (bankAccount.walletAppData.ctaLink.isEmpty() &&
                 bankAccount.walletAppData.message.isEmpty() &&
@@ -140,14 +181,18 @@ class BankAccountViewHolder(view: View) : RecyclerView.ViewHolder(view) {
             }
             radioBankSelector.isChecked = bankAccount.isChecked && bankAccount.status != INACTIVE_BANK_STATUS
         }
+    }
 
+    private fun setButton(bankAccount: BankAccount, listener: BankAccountAdapter.BankAdapterListener) {
         btnBankSelector.shouldShowWithAction(bankAccount.walletAppData.ctaLink.isNotEmpty()) {
             btnBankSelector.text = bankAccount.walletAppData.ctaCopyWriting
             btnBankSelector.setOnClickListener {
                 listener.onButtonClicked(bankAccount.walletAppData.ctaLink)
             }
         }
+    }
 
+    private fun setNotification(bankAccount: BankAccount) {
         notificationNew.showWithCondition(bankAccount.isGopay())
     }
 

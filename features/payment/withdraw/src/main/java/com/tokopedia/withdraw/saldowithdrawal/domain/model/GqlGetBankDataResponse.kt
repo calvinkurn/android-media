@@ -4,6 +4,7 @@ import android.os.Parcel
 import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import kotlinx.android.parcel.Parcelize
 
 data class GqlGetBankDataResponse(
         @SerializedName("GetBankListWDV2")
@@ -27,6 +28,7 @@ data class GqlBankListResponse(
         val gopayData: GopayData = GopayData()
 )
 
+@Parcelize
 data class BankAccount(
         @SerializedName("bankID")
         @Expose
@@ -118,73 +120,12 @@ data class BankAccount(
         return bankID == GOPAY_ID && walletAppData.message.isEmpty()
     }
 
-    constructor(parcel: Parcel) : this(
-        parcel.readLong(),
-        parcel.readString(),
-        parcel.readString(),
-        parcel.readLong(),
-        parcel.readLong(),
-        parcel.readLong(),
-        parcel.readLong(),
-        parcel.readInt(),
-        parcel.readLong(),
-        parcel.readString(),
-        parcel.readInt(),
-        parcel.readString(),
-        parcel.readByte() != 0.toByte(),
-        parcel.readByte() != 0.toByte(),
-        parcel.readByte() != 0.toByte(),
-        parcel.readByte() != 0.toByte(),
-        parcel.readString(),
-        parcel.readInt(),
-        parcel.readString() ?: "",
-        parcel.readParcelable(WalletAppData::class.java.classLoader) ?: WalletAppData(),
-        parcel.readByte() != 0.toByte(),
-        parcel.readParcelable(GopayData::class.java.classLoader)
-    ) {
-    }
-
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeLong(bankID)
-        parcel.writeString(accountNo)
-        parcel.writeString(bankName)
-        parcel.writeLong(bankAccountID)
-        parcel.writeLong(minAmount)
-        parcel.writeLong(maxAmount)
-        parcel.writeLong(adminFee)
-        parcel.writeInt(status)
-        parcel.writeLong(isVerifiedAccount)
-        parcel.writeString(bankImageUrl)
-        parcel.writeInt(isDefaultBank)
-        parcel.writeString(accountName)
-        parcel.writeByte(if (isFraud) 1 else 0)
-        parcel.writeByte(if (haveRPProgram) 1 else 0)
-        parcel.writeByte(if (haveSpecialOffer) 1 else 0)
-        parcel.writeByte(if (defaultBankAccount) 1 else 0)
-        parcel.writeString(warningMessage)
-        parcel.writeInt(warningColor)
-        parcel.writeString(notes)
-        parcel.writeParcelable(walletAppData, flags)
-        parcel.writeByte(if (isChecked) 1 else 0)
-        parcel.writeParcelable(gopayData, flags)
-    }
-
-    override fun describeContents(): Int {
-        return 0
-    }
-
-    companion object CREATOR : Parcelable.Creator<BankAccount> {
+    companion object {
         private const val GOPAY_ID = 218L
-        override fun createFromParcel(parcel: Parcel): BankAccount {
-            return BankAccount(parcel)
-        }
-
-        override fun newArray(size: Int): Array<BankAccount?> {
-            return arrayOfNulls(size)
-        }
     }
 }
 
+@Parcelize
 data class GopayData(
     @SerializedName("limit")
     @Expose
@@ -201,40 +142,9 @@ data class GopayData(
     @SerializedName("bottomsheet_data")
     @Expose
     var bottomsheetData: BottomsheetData = BottomsheetData()
-): Parcelable {
-    constructor(parcel: Parcel) : this(
-        parcel.readString() ?: "",
-        parcel.readString() ?: "",
-        parcel.readString() ?: "",
-        parcel.readString() ?: "",
-        parcel.readParcelable(BottomsheetData::class.java.classLoader) ?: BottomsheetData()
-    ) {
-    }
+): Parcelable
 
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeString(limit)
-        parcel.writeString(limitCopyWriting)
-        parcel.writeString(imageUrl)
-        parcel.writeString(widgetNote)
-        parcel.writeParcelable(bottomsheetData, flags)
-    }
-
-    override fun describeContents(): Int {
-        return 0
-    }
-
-    companion object CREATOR : Parcelable.Creator<GopayData> {
-        override fun createFromParcel(parcel: Parcel): GopayData {
-            return GopayData(parcel)
-        }
-
-        override fun newArray(size: Int): Array<GopayData?> {
-            return arrayOfNulls(size)
-        }
-    }
-
-}
-
+@Parcelize
 data class BottomsheetData(
     @SerializedName("title")
     @Expose
@@ -244,35 +154,9 @@ data class BottomsheetData(
     var description: String = "",
     @SerializedName("balance")
     var balance: String = ""
-): Parcelable {
-    constructor(parcel: Parcel) : this(
-        parcel.readString() ?: "",
-        parcel.readString() ?: "",
-        parcel.readString() ?: ""
-    ) {
-    }
+): Parcelable
 
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeString(title)
-        parcel.writeString(description)
-        parcel.writeString(balance)
-    }
-
-    override fun describeContents(): Int {
-        return 0
-    }
-
-    companion object CREATOR : Parcelable.Creator<BottomsheetData> {
-        override fun createFromParcel(parcel: Parcel): BottomsheetData {
-            return BottomsheetData(parcel)
-        }
-
-        override fun newArray(size: Int): Array<BottomsheetData?> {
-            return arrayOfNulls(size)
-        }
-    }
-}
-
+@Parcelize
 data class WalletAppData(
     @SerializedName("message")
     @Expose
@@ -285,32 +169,4 @@ data class WalletAppData(
     @SerializedName("cta_link")
     @Expose
     var ctaLink: String = ""
-): Parcelable {
-    constructor(parcel: Parcel) : this(
-        parcel.readString() ?: "",
-        parcel.readString() ?: "",
-        parcel.readString() ?: ""
-    ) {
-    }
-
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeString(message)
-        parcel.writeString(ctaCopyWriting)
-        parcel.writeString(ctaLink)
-    }
-
-    override fun describeContents(): Int {
-        return 0
-    }
-
-    companion object CREATOR : Parcelable.Creator<WalletAppData> {
-        override fun createFromParcel(parcel: Parcel): WalletAppData {
-            return WalletAppData(parcel)
-        }
-
-        override fun newArray(size: Int): Array<WalletAppData?> {
-            return arrayOfNulls(size)
-        }
-    }
-
-}
+): Parcelable
