@@ -138,14 +138,6 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
         }
     }
 
-    fun onResume(components: List<Component>) {
-        if (addressData.isChoosenAddressUpdated()) {
-            refreshPage(components)
-        } else {
-            getMiniCart()
-        }
-    }
-
     private fun loadFirstPage(components: List<Component>) {
         launchCatchError(block = {
             visitableList.clear()
