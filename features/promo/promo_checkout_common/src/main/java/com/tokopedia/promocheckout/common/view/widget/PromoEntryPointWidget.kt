@@ -5,6 +5,7 @@ import android.graphics.drawable.GradientDrawable
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
+import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.TextSwitcher
 import android.widget.ViewSwitcher
@@ -37,6 +38,7 @@ class PromoEntryPointWidget @JvmOverloads constructor(
     private var activeViewWording: TextSwitcher? = null
     private var activeViewDivider: DividerUnify? = null
     private var activeViewSummaryLayout: LinearLayout? = null
+    private var activeViewConfettiFrame: FrameLayout? = null
 
     private var inActiveView: View? = null
     private var inActiveViewLeftImage: ImageUnify? = null
@@ -60,6 +62,7 @@ class PromoEntryPointWidget @JvmOverloads constructor(
         activeViewRightIcon = activeView?.findViewById(R.id.ic_promo_checkout_right)
         activeViewDivider = activeView?.findViewById(R.id.divider_promo_checkout)
         activeViewSummaryLayout = activeView?.findViewById(R.id.ll_promo_checkout_summary)
+        activeViewConfettiFrame = activeView?.findViewById(R.id.frame_promo_checkout_header)
 
         inActiveView = switcherView?.get(1)
         inActiveViewLeftImage = inActiveView?.findViewById(R.id.iv_promo_checkout_left)
@@ -68,6 +71,8 @@ class PromoEntryPointWidget @JvmOverloads constructor(
         inActiveView?.findViewById<DividerUnify>(R.id.divider_promo_checkout)?.visibility =
             View.GONE
         inActiveView?.findViewById<LinearLayout>(R.id.ll_promo_checkout_summary)?.visibility =
+            View.GONE
+        inActiveView?.findViewById<FrameLayout>(R.id.frame_promo_checkout_header)?.visibility =
             View.GONE
 
         setupViewBackgrounds(attrs)
@@ -207,10 +212,10 @@ class PromoEntryPointWidget @JvmOverloads constructor(
         animateWording: Boolean = false,
         onClickListener: () -> Unit = {}
     ) {
+        activeViewConfettiFrame?.visibility = View.GONE
         activeViewSummaryLayout?.visibility = View.GONE
         activeViewDivider?.visibility = View.GONE
         if (animate && switcherView?.visibility == View.VISIBLE) {
-            switcherView?.visibility = View.VISIBLE
             activeViewLeftImage?.setImageUrl(leftImageUrl)
             activeViewRightIcon?.setImage(rightIcon)
             if (switcherView?.displayedChild != 0) {
@@ -237,18 +242,18 @@ class PromoEntryPointWidget @JvmOverloads constructor(
         }
     }
 
-    fun showApplied(
-        leftImageUrl: String,
+    fun showActive(
         wording: String,
         rightIcon: Int,
-        summaries: List<PromoEntryPointSummaryItem>,
         animate: Boolean = false,
         animateWording: Boolean = false,
         onClickListener: () -> Unit = {}
     ) {
+        activeViewConfettiFrame?.visibility = View.GONE
+        activeViewSummaryLayout?.visibility = View.GONE
+        activeViewDivider?.visibility = View.GONE
         if (animate && switcherView?.visibility == View.VISIBLE) {
-            switcherView?.visibility = View.VISIBLE
-            activeViewLeftImage?.setImageUrl(leftImageUrl)
+            activeViewLeftImage?.setImageResource(R.drawable.ic_promo_coupon_yellow)
             activeViewRightIcon?.setImage(rightIcon)
             if (switcherView?.displayedChild != 0) {
                 // only trigger view switch animation if currently showing different view
@@ -261,9 +266,57 @@ class PromoEntryPointWidget @JvmOverloads constructor(
             loadingView?.visibility = View.GONE
         } else {
             switcherView?.reset()
-            activeViewLeftImage?.setImageUrl(leftImageUrl)
+            activeViewLeftImage?.setImageResource(R.drawable.ic_promo_coupon_yellow)
             activeViewWording?.setCurrentText(MethodChecker.fromHtml(wording))
             activeViewRightIcon?.setImage(rightIcon)
+            switcherView?.displayedChild = 0
+            switcherView?.visibility = View.VISIBLE
+            errorView?.visibility = View.GONE
+            loadingView?.visibility = View.GONE
+        }
+        activeView?.setOnClickListener {
+            onClickListener.invoke()
+        }
+    }
+
+    fun showApplied(
+        wording: String,
+        rightIcon: Int?,
+        summaries: List<PromoEntryPointSummaryItem>,
+        showConfetti: Boolean = false,
+        animate: Boolean = false,
+        animateWording: Boolean = false,
+        onClickListener: () -> Unit = {}
+    ) {
+        if (animate && switcherView?.visibility == View.VISIBLE) {
+            activeViewConfettiFrame?.visibility = if (showConfetti) View.VISIBLE else View.GONE
+            activeViewLeftImage?.setImageResource(R.drawable.ic_promo_applied_check)
+            if (rightIcon == null) {
+                activeViewRightIcon?.visibility = View.INVISIBLE
+            } else {
+                activeViewRightIcon?.visibility = View.VISIBLE
+                activeViewRightIcon?.setImage(rightIcon)
+            }
+            if (switcherView?.displayedChild != 0) {
+                // only trigger view switch animation if currently showing different view
+                activeViewWording?.setCurrentText(MethodChecker.fromHtml(wording))
+                switcherView?.displayedChild = 0
+            } else if (animateWording) {
+                activeViewWording?.setText(MethodChecker.fromHtml(wording))
+            }
+            errorView?.visibility = View.GONE
+            loadingView?.visibility = View.GONE
+        } else {
+            switcherView?.reset()
+            activeViewConfettiFrame?.visibility = if (showConfetti) View.VISIBLE else View.GONE
+            activeViewLeftImage?.setImageResource(R.drawable.ic_promo_applied_check)
+            activeViewWording?.setCurrentText(MethodChecker.fromHtml(wording))
+            if (rightIcon == null) {
+                activeViewRightIcon?.visibility = View.INVISIBLE
+            } else {
+                activeViewRightIcon?.visibility = View.VISIBLE
+                activeViewRightIcon?.setImage(rightIcon)
+            }
             switcherView?.displayedChild = 0
             switcherView?.visibility = View.VISIBLE
             errorView?.visibility = View.GONE

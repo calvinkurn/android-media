@@ -22,6 +22,7 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.checkout.R
 import com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics
 import com.tokopedia.checkout.analytics.CornerAnalytics
@@ -54,6 +55,8 @@ import com.tokopedia.common_epharmacy.EPHARMACY_REDIRECT_CHECKOUT_RESULT_CODE
 import com.tokopedia.common_epharmacy.network.response.EPharmacyMiniConsultationResult
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.loaderdialog.LoaderDialog
+import com.tokopedia.localizationchooseaddress.common.ChosenAddress
+import com.tokopedia.localizationchooseaddress.common.ChosenAddressTokonow
 import com.tokopedia.localizationchooseaddress.domain.mapper.TokonowWarehouseMapper
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet
@@ -83,8 +86,15 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics
 import com.tokopedia.purchase_platform.common.analytics.EPharmacyAnalytics
+import com.tokopedia.purchase_platform.common.constant.ARGS_BBO_PROMO_CODES
+import com.tokopedia.purchase_platform.common.constant.ARGS_CHOSEN_ADDRESS
+import com.tokopedia.purchase_platform.common.constant.ARGS_PAGE_SOURCE
+import com.tokopedia.purchase_platform.common.constant.ARGS_PROMO_MVC_LOCK_COURIER_FLOW
+import com.tokopedia.purchase_platform.common.constant.ARGS_PROMO_REQUEST
+import com.tokopedia.purchase_platform.common.constant.ARGS_VALIDATE_USE_REQUEST
 import com.tokopedia.purchase_platform.common.constant.CartConstant
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
+import com.tokopedia.purchase_platform.common.constant.PAGE_CHECKOUT
 import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException
 import com.tokopedia.purchase_platform.common.feature.addons.data.model.AddOnProductDataItemModel
 import com.tokopedia.purchase_platform.common.feature.bottomsheet.GeneralBottomSheet
@@ -93,6 +103,7 @@ import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.model.U
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.view.UploadPrescriptionListener
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.view.UploadPrescriptionViewHolder
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.PopUpData
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
 import com.tokopedia.purchase_platform.common.utils.animateGone
 import com.tokopedia.purchase_platform.common.utils.animateShow
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
@@ -108,7 +119,9 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
-class CheckoutFragment : BaseDaggerFragment(), CheckoutAdapterListener, UploadPrescriptionListener, ShippingDurationBottomsheetListener, ShippingCourierBottomsheetListener,
+
+class CheckoutFragment : BaseDaggerFragment(), CheckoutAdapterListener, UploadPrescriptionListener,
+    ShippingDurationBottomsheetListener, ShippingCourierBottomsheetListener,
     ExpireTimeDialogListener {
 
     @Inject
@@ -293,7 +306,8 @@ class CheckoutFragment : BaseDaggerFragment(), CheckoutAdapterListener, UploadPr
             diffResult.dispatchUpdatesTo(adapter)
 
             it.address()?.recipientAddressModel?.also { address ->
-                header.tvCheckoutHeaderAddressName.text = "${address.addressName} • ${address.recipientName}"
+                header.tvCheckoutHeaderAddressName.text =
+                    "${address.addressName} • ${address.recipientName}"
             }
         }
 
@@ -337,23 +351,38 @@ class CheckoutFragment : BaseDaggerFragment(), CheckoutAdapterListener, UploadPr
                     token.districtRecommendation = it.cartShipmentAddressFormData.keroDiscomToken
                     if (it.eligible) {
                         val intent =
-                            RouteManager.getIntent(activity, ApplinkConstInternalLogistic.ADD_ADDRESS_V3)
+                            RouteManager.getIntent(
+                                activity,
+                                ApplinkConstInternalLogistic.ADD_ADDRESS_V3
+                            )
                         intent.putExtra(CheckoutConstant.KERO_TOKEN, token)
                         intent.putExtra(
                             ChooseAddressBottomSheet.EXTRA_REF,
                             CartConstant.SCREEN_NAME_CART_NEW_USER
                         )
-                        intent.putExtra(ApplinkConstInternalLogistic.PARAM_SOURCE, AddEditAddressSource.CART.source)
-                        startActivityForResult(intent, LogisticConstant.ADD_NEW_ADDRESS_CREATED_FROM_EMPTY)
+                        intent.putExtra(
+                            ApplinkConstInternalLogistic.PARAM_SOURCE,
+                            AddEditAddressSource.CART.source
+                        )
+                        startActivityForResult(
+                            intent,
+                            LogisticConstant.ADD_NEW_ADDRESS_CREATED_FROM_EMPTY
+                        )
                     } else {
                         val intent =
-                            RouteManager.getIntent(activity, ApplinkConstInternalLogistic.ADD_ADDRESS_V2)
+                            RouteManager.getIntent(
+                                activity,
+                                ApplinkConstInternalLogistic.ADD_ADDRESS_V2
+                            )
                         intent.putExtra(CheckoutConstant.KERO_TOKEN, token)
                         intent.putExtra(
                             ChooseAddressBottomSheet.EXTRA_REF,
                             CartConstant.SCREEN_NAME_CART_NEW_USER
                         )
-                        startActivityForResult(intent, LogisticConstant.ADD_NEW_ADDRESS_CREATED_FROM_EMPTY)
+                        startActivityForResult(
+                            intent,
+                            LogisticConstant.ADD_NEW_ADDRESS_CREATED_FROM_EMPTY
+                        )
                     }
                     stopTrace()
                 }
@@ -509,6 +538,10 @@ class CheckoutFragment : BaseDaggerFragment(), CheckoutAdapterListener, UploadPr
 
             REQUEST_CODE_MINI_CONSULTATION -> {
                 onMiniConsultationResult(resultCode, data)
+            }
+
+            REQUEST_CODE_PROMO -> {
+                onResultFromPromo(resultCode, data)
             }
         }
     }
@@ -696,6 +729,8 @@ class CheckoutFragment : BaseDaggerFragment(), CheckoutAdapterListener, UploadPr
         const val REQUEST_CODE_UPLOAD_PRESCRIPTION = 10021
         const val REQUEST_CODE_MINI_CONSULTATION = 10022
 
+        private const val REQUEST_CODE_PROMO = 954
+
         private const val SHIPMENT_TRACE = "mp_shipment"
 
         private const val KEY_UPLOAD_PRESCRIPTION_IDS_EXTRA = "epharmacy_prescription_ids"
@@ -728,7 +763,10 @@ class CheckoutFragment : BaseDaggerFragment(), CheckoutAdapterListener, UploadPr
     override fun onChangeAddress() {
         val intent = RouteManager.getIntent(activity, ApplinkConstInternalLogistic.MANAGE_ADDRESS)
         intent.putExtra(CheckoutConstant.EXTRA_IS_FROM_CHECKOUT_CHANGE_ADDRESS, true)
-        intent.putExtra(ApplinkConstInternalLogistic.PARAM_SOURCE, ManageAddressSource.CHECKOUT.source)
+        intent.putExtra(
+            ApplinkConstInternalLogistic.PARAM_SOURCE,
+            ManageAddressSource.CHECKOUT.source
+        )
         startActivityForResult(intent, CheckoutConstant.REQUEST_CODE_CHECKOUT_ADDRESS)
     }
 
@@ -855,7 +893,10 @@ class CheckoutFragment : BaseDaggerFragment(), CheckoutAdapterListener, UploadPr
                     activity = activity,
                     fragmentManager = parentFragmentManager,
                     shippingDurationBottomsheetListener = this,
-                    shipmentDetailData = generateShippingBottomsheetParam(order, recipientAddressModel),
+                    shipmentDetailData = generateShippingBottomsheetParam(
+                        order,
+                        recipientAddressModel
+                    ),
                     selectedServiceId = order.shipment.courierItemData?.serviceId ?: -1,
                     shopShipmentList = order.shopShipmentList,
                     recipientAddressModel = recipientAddressModel,
@@ -920,7 +961,8 @@ class CheckoutFragment : BaseDaggerFragment(), CheckoutAdapterListener, UploadPr
             preorder = preOrder
             isBlackbox = order.isBlackbox
             this.isTradein = viewModel.isTradeIn
-            addressId = if (recipientAddressModel.selectedTabIndex == 1 && recipientAddressModel.locationDataModel != null) recipientAddressModel.locationDataModel.addrId else order.addressId
+            addressId =
+                if (recipientAddressModel.selectedTabIndex == 1 && recipientAddressModel.locationDataModel != null) recipientAddressModel.locationDataModel.addrId else order.addressId
             shipmentCartData = ShipmentCartData(
                 originDistrictId = order.districtId,
                 originPostalCode = order.postalCode,
@@ -1005,15 +1047,16 @@ class CheckoutFragment : BaseDaggerFragment(), CheckoutAdapterListener, UploadPr
                 (
                     recipientAddressModel!!.latitude == null ||
                         recipientAddressModel.latitude.equals(
-                                "0",
-                                ignoreCase = true
-                            ) || recipientAddressModel.longitude == null ||
+                            "0",
+                            ignoreCase = true
+                        ) || recipientAddressModel.longitude == null ||
                         recipientAddressModel.longitude.equals("0", ignoreCase = true)
                     )
             ) {
                 setPinpoint(cartPosition)
             } else {
-                val shipmentCartItemModel = viewModel.listData.value[cartPosition] as CheckoutOrderModel
+                val shipmentCartItemModel =
+                    viewModel.listData.value[cartPosition] as CheckoutOrderModel
 //                    shipmentAdapter.getShipmentCartItemModelByIndex(cartItemPosition)!!
                 if (viewModel.isTradeInByDropOff) {
 //                    shipmentAdapter.setSelectedCourierTradeInPickup(courierItemData)
@@ -1057,7 +1100,11 @@ class CheckoutFragment : BaseDaggerFragment(), CheckoutAdapterListener, UploadPr
 //                        shipmentAdapter.clearTotalPromoStackAmount()
 //                        shipmentViewModel.updateShipmentCostModel()
 //                    }
-                    viewModel.setSelectedCourier(cartPosition, courierItemData, shippingCourierUiModels)
+                    viewModel.setSelectedCourier(
+                        cartPosition,
+                        courierItemData,
+                        shippingCourierUiModels
+                    )
 //                    shipmentAdapter.setSelectedCourier(
 //                        cartItemPosition,
 //                        selectedCourier,
@@ -1128,7 +1175,8 @@ class CheckoutFragment : BaseDaggerFragment(), CheckoutAdapterListener, UploadPr
                     }
                 }
             }
-            val shipmentCartItemModelLists = viewModel.listData.value.filterIsInstance(CheckoutOrderModel::class.java)
+            val shipmentCartItemModelLists =
+                viewModel.listData.value.filterIsInstance(CheckoutOrderModel::class.java)
             if (shipmentCartItemModelLists.isNotEmpty() && !shipmentCartItemModel.isFreeShippingPlus) {
                 for (tmpShipmentCartItemModel in shipmentCartItemModelLists) {
                     for (order in validateUsePromoRequest.orders) {
@@ -1231,13 +1279,13 @@ class CheckoutFragment : BaseDaggerFragment(), CheckoutAdapterListener, UploadPr
 //            isCod
 //        )
         if (isNeedPinpoint || courierItemData.isUsePinPoint && (
-            recipientAddressModel!!.latitude == null ||
-                recipientAddressModel.latitude.equals(
+                recipientAddressModel!!.latitude == null ||
+                    recipientAddressModel.latitude.equals(
                         "0",
                         ignoreCase = true
                     ) || recipientAddressModel.longitude == null ||
-                recipientAddressModel.longitude.equals("0", ignoreCase = true)
-            )
+                    recipientAddressModel.longitude.equals("0", ignoreCase = true)
+                )
         ) {
             setPinpoint(cartPosition)
         } else {
@@ -1256,17 +1304,124 @@ class CheckoutFragment : BaseDaggerFragment(), CheckoutAdapterListener, UploadPr
         // todo
     }
 
+    override fun onClickPromoCheckout(lastApplyUiModel: LastApplyUiModel) {
+//        if (shipmentLoadingIndex == -1 && !shipmentViewModel.shipmentButtonPayment.value.loading) {
+//            if (lastApplyUiModel == null) return
+        val validateUseRequestParam = viewModel.generateValidateUsePromoRequest()
+        val promoRequestParam = viewModel.generateCouponListRecommendationRequest()
+        val intent =
+            RouteManager.getIntent(
+                activity,
+                ApplinkConstInternalPromo.PROMO_CHECKOUT_MARKETPLACE
+            )
+        intent.putExtra(ARGS_PAGE_SOURCE, PAGE_CHECKOUT)
+        intent.putExtra(ARGS_PROMO_REQUEST, promoRequestParam)
+        intent.putExtra(ARGS_VALIDATE_USE_REQUEST, validateUseRequestParam)
+        intent.putStringArrayListExtra(ARGS_BBO_PROMO_CODES, viewModel.getBboPromoCodes())
+        setChosenAddressForTradeInDropOff(intent)
+        setPromoExtraMvcLockCourierFlow(intent)
+        startActivityForResult(intent, REQUEST_CODE_PROMO)
+        if (isTradeIn) {
+            checkoutTradeInAnalytics.eventTradeInClickPromo(viewModel.isTradeInByDropOff)
+        }
+//        }
+    }
+
+    private fun setChosenAddressForTradeInDropOff(intent: Intent) {
+        val activity: Activity? = activity
+        val recipientAddressModel = viewModel.recipientAddressModel
+        if (activity != null && viewModel.isTradeInByDropOff) {
+            val lca = ChooseAddressUtils.getLocalizingAddressData(
+                activity.applicationContext
+            )
+            val locationDataModel = recipientAddressModel.locationDataModel
+            val chosenAddress: ChosenAddress = if (locationDataModel != null) {
+                ChosenAddress(
+                    ChosenAddress.MODE_ADDRESS,
+                    locationDataModel.addrId,
+                    locationDataModel.district,
+                    locationDataModel.postalCode,
+                    if (locationDataModel.latitude.isNotEmpty() &&
+                        locationDataModel.longitude.isNotEmpty()
+                    ) {
+                        locationDataModel.latitude + "," + locationDataModel.longitude
+                    } else {
+                        ""
+                    },
+                    ChosenAddressTokonow(
+                        lca.shop_id,
+                        lca.warehouse_id,
+                        lca.warehouses,
+                        lca.service_type,
+                        lca.warehouse_ids
+                    )
+                )
+            } else {
+                ChosenAddress(
+                    ChosenAddress.MODE_ADDRESS,
+                    recipientAddressModel.id,
+                    recipientAddressModel.destinationDistrictId,
+                    recipientAddressModel.postalCode,
+                    if (recipientAddressModel.latitude.isNotEmpty() &&
+                        recipientAddressModel.longitude.isNotEmpty()
+                    ) {
+                        recipientAddressModel.latitude + "," + recipientAddressModel.longitude
+                    } else {
+                        ""
+                    },
+                    ChosenAddressTokonow(
+                        lca.shop_id,
+                        lca.warehouse_id,
+                        lca.warehouses,
+                        lca.service_type,
+                        lca.warehouse_ids
+                    )
+                )
+            }
+            intent.putExtra(ARGS_CHOSEN_ADDRESS, chosenAddress)
+        }
+    }
+
+    private fun setPromoExtraMvcLockCourierFlow(
+        intent: Intent
+    ) {
+        var promoMvcLockCourierFlow = false
+        val promo = viewModel.listData.value.promo()
+        if (promo != null && promo.promo.additionalInfo.promoSpIds.isNotEmpty()) {
+            promoMvcLockCourierFlow = true
+        }
+        intent.putExtra(ARGS_PROMO_MVC_LOCK_COURIER_FLOW, promoMvcLockCourierFlow)
+    }
+
+    override fun onSendAnalyticsClickPromoCheckout(
+        isApplied: Boolean,
+        listAllPromoCodes: List<String>
+    ) {
+        // todo
+    }
+
+    override fun onSendAnalyticsViewPromoCheckoutApplied() {
+        // todo
+    }
+
     override fun showPlatformFeeTooltipInfoBottomSheet(platformFeeModel: ShipmentPaymentFeeModel) {
-        val bottomSheetPlatformFeeInfoBinding = BottomSheetPlatformFeeInfoBinding.inflate(LayoutInflater.from(context))
+        val bottomSheetPlatformFeeInfoBinding =
+            BottomSheetPlatformFeeInfoBinding.inflate(LayoutInflater.from(context))
         bottomSheetPlatformFeeInfoBinding.tvPlatformFeeInfo.text = platformFeeModel.tooltip
         val bottomSheetUnify = BottomSheetUnify()
-        bottomSheetUnify.setTitle(getString(R.string.platform_fee_title_info, platformFeeModel.title))
+        bottomSheetUnify.setTitle(
+            getString(
+                R.string.platform_fee_title_info,
+                platformFeeModel.title
+            )
+        )
         bottomSheetUnify.showCloseIcon = true
         bottomSheetUnify.setChild(bottomSheetPlatformFeeInfoBinding.root)
         bottomSheetUnify.show(childFragmentManager, null)
         checkoutAnalyticsCourierSelection.eventClickPlatformFeeInfoButton(
             userSessionInterface.userId,
-            CurrencyFormatUtil.convertPriceValueToIdrFormat(platformFeeModel.fee.toLong(), false).removeDecimalSuffix()
+            CurrencyFormatUtil.convertPriceValueToIdrFormat(platformFeeModel.fee.toLong(), false)
+                .removeDecimalSuffix()
         )
     }
 
@@ -1449,7 +1604,8 @@ class CheckoutFragment : BaseDaggerFragment(), CheckoutAdapterListener, UploadPr
 //    }
 
     private fun sendAnalyticsEpharmacyClickPembayaran() {
-        val viewHolder = binding.rvCheckout.findViewHolderForAdapterPosition(adapter.uploadPrescriptionPosition)
+        val viewHolder =
+            binding.rvCheckout.findViewHolderForAdapterPosition(adapter.uploadPrescriptionPosition)
         val epharmacyItem = viewModel.listData.value.getOrNull(adapter.uploadPrescriptionPosition)
         if (viewHolder is UploadPrescriptionViewHolder && epharmacyItem is CheckoutEpharmacyModel) {
             if (epharmacyItem.epharmacy.consultationFlow && epharmacyItem.epharmacy.showImageUpload) {
@@ -1520,6 +1676,112 @@ class CheckoutFragment : BaseDaggerFragment(), CheckoutAdapterListener, UploadPr
         releaseBookingIfAny()
     }
     // endregion
+
+    private fun onResultFromPromo(resultCode: Int, data: Intent?) {
+//        if (resultCode == Activity.RESULT_OK) {
+//            if (data!!.getStringExtra(ARGS_PROMO_ERROR) != null && data.getStringExtra(
+//                    ARGS_PROMO_ERROR
+//                ) == ARGS_FINISH_ERROR && activity != null
+//            ) {
+//                activity!!.finish()
+//            } else {
+//                shipmentViewModel.couponStateChanged = true
+//                val validateUsePromoRequest =
+//                    data.getParcelableExtra<ValidateUsePromoRequest>(ARGS_LAST_VALIDATE_USE_REQUEST)
+//                if (validateUsePromoRequest != null) {
+//                    var stillHasPromo = false
+//                    for (promoGlobalCode in validateUsePromoRequest.codes) {
+//                        if (promoGlobalCode.isNotEmpty()) {
+//                            stillHasPromo = true
+//                            break
+//                        }
+//                    }
+//                    if (!stillHasPromo) {
+//                        for (order in validateUsePromoRequest.orders) {
+//                            for (promoMerchantCode in order.codes) {
+//                                if (promoMerchantCode.isNotEmpty()) {
+//                                    stillHasPromo = true
+//                                    break
+//                                }
+//                            }
+//                        }
+//                    }
+//                    val validateUsePromoRevampUiModel =
+//                        data.getParcelableExtra<ValidateUsePromoRevampUiModel>(
+//                            ARGS_VALIDATE_USE_DATA_RESULT
+//                        )
+//                    if (validateUsePromoRevampUiModel != null) {
+//                        for (voucherOrdersItemUiModel in validateUsePromoRevampUiModel.promoUiModel.voucherOrderUiModels) {
+//                            for (order in validateUsePromoRequest.orders) {
+//                                if (voucherOrdersItemUiModel.uniqueId == order.uniqueId && voucherOrdersItemUiModel.isTypeLogistic()) {
+//                                    order.codes.remove(voucherOrdersItemUiModel.code)
+//                                    order.boCode = ""
+//                                }
+//                            }
+//                        }
+//                    }
+//                    shipmentViewModel.setLastValidateUseRequest(validateUsePromoRequest)
+//                    if (!stillHasPromo) {
+//                        doResetButtonPromoCheckout()
+//                    }
+//                }
+//                val validateUsePromoRevampUiModel =
+//                    data.getParcelableExtra<ValidateUsePromoRevampUiModel>(
+//                        ARGS_VALIDATE_USE_DATA_RESULT
+//                    )
+//                var reloadedUniqueIds = java.util.ArrayList<String>()
+//                if (validateUsePromoRevampUiModel != null) {
+//                    val messageInfo =
+//                        validateUsePromoRevampUiModel.promoUiModel.additionalInfoUiModel.errorDetailUiModel.message
+//                    shipmentViewModel.validateUsePromoRevampUiModel =
+//                        validateUsePromoRevampUiModel
+//                    doUpdateButtonPromoCheckout(validateUsePromoRevampUiModel.promoUiModel)
+//                    updatePromoTrackingData(validateUsePromoRevampUiModel.promoUiModel.trackingDetailUiModels)
+//                    sendEEStep3()
+//                    val validateBoResult =
+//                        shipmentViewModel.validateBoPromo(validateUsePromoRevampUiModel)
+//                    reloadedUniqueIds = validateBoResult.first
+//                    val unappliedUniqueIds = validateBoResult.second
+//                    if (messageInfo.isNotEmpty()) {
+//                        showToastNormal(messageInfo)
+//                    } else if (unappliedUniqueIds.size > 0) {
+//                        // when messageInfo is empty and has unapplied BO show hard coded toast
+//                        showToastNormal(getString(com.tokopedia.purchase_platform.common.R.string.pp_auto_unapply_bo_toaster_message))
+//                    }
+//                    doSetPromoBenefit(
+//                        validateUsePromoRevampUiModel.promoUiModel.benefitSummaryInfoUiModel.summaries
+//                    )
+//                }
+//                val clearPromoUiModel =
+//                    data.getParcelableExtra<ClearPromoUiModel>(ARGS_CLEAR_PROMO_RESULT)
+//                if (clearPromoUiModel != null) {
+//                    val promoUiModel = PromoUiModel()
+//                    promoUiModel.titleDescription =
+//                        clearPromoUiModel.successDataModel.defaultEmptyPromoMessage
+//                    val tickerAnnouncementHolderData =
+//                        shipmentViewModel.tickerAnnouncementHolderData.value
+//                    if (clearPromoUiModel.successDataModel.tickerMessage.isNotEmpty()) {
+//                        tickerAnnouncementHolderData.title = ""
+//                        tickerAnnouncementHolderData.message =
+//                            clearPromoUiModel.successDataModel.tickerMessage
+//                        shipmentViewModel.tickerAnnouncementHolderData.value =
+//                            tickerAnnouncementHolderData
+//                    }
+//                    doUpdateButtonPromoCheckout(promoUiModel)
+//                    shipmentViewModel.validateUsePromoRevampUiModel = null
+//                    shipmentViewModel.validateClearAllBoPromo()
+//                    shipmentAdapter.checkHasSelectAllCourier(false, -1, "", false, false)
+//                }
+//                val requiredToReloadRatesForMvcCourier =
+//                    data.getBooleanExtra(ARGS_PROMO_MVC_LOCK_COURIER_FLOW, false)
+//                val appliedMvcCartStrings =
+//                    data.getStringArrayListExtra(ARGS_APPLIED_MVC_CART_STRINGS)
+//                if (requiredToReloadRatesForMvcCourier) {
+//                    reloadCourierForMvc(appliedMvcCartStrings, reloadedUniqueIds)
+//                }
+//            }
+//        }
+    }
 
     private fun releaseBookingIfAny() {
         if (view != null && binding.countDown.visibility == View.VISIBLE) {

@@ -5,6 +5,7 @@ import com.tokopedia.checkout.domain.mapper.ShipmentMapper
 import com.tokopedia.checkout.revamp.view.buttonPayment
 import com.tokopedia.checkout.revamp.view.cost
 import com.tokopedia.checkout.revamp.view.crossSellGroup
+import com.tokopedia.checkout.revamp.view.promo
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutButtonPaymentModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutCostModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutCrossSellGroupModel
@@ -20,6 +21,8 @@ import com.tokopedia.checkout.view.uimodel.EgoldAttributeModel
 import com.tokopedia.checkout.view.uimodel.EgoldTieringModel
 import com.tokopedia.checkout.view.uimodel.ShipmentAddOnSummaryModel
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
+import com.tokopedia.promocheckout.common.view.uimodel.SummariesUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.SummariesItemUiModel
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import javax.inject.Inject
@@ -28,12 +31,61 @@ class CheckoutCalculator @Inject constructor(private val dispatchers: CoroutineD
 
     private fun hasSetAllCourier(listData: List<CheckoutItem>): Boolean {
         for (itemData in listData) {
-            if (itemData is CheckoutOrderModel && itemData.shipment == null && !itemData.isError) {
+            if (itemData is CheckoutOrderModel && itemData.shipment.courierItemData == null && !itemData.isError) {
                 return false
             }
         }
         return true
     }
+
+    fun setPromoBenefit(cost: CheckoutCostModel, summariesUiModels: List<SummariesItemUiModel>, listData: List<CheckoutItem>): CheckoutCostModel {
+        cost.isHasDiscountDetails = false
+        cost.discountAmount = 0
+        cost.discountLabel = ""
+        cost.shippingDiscountAmount = 0
+        cost.shippingDiscountLabel = ""
+        cost.productDiscountAmount = 0
+        cost.productDiscountLabel = ""
+        cost.cashbackAmount = 0
+        cost.cashbackLabel = ""
+        for (benefitSummary in summariesUiModels) {
+            if (benefitSummary.type == SummariesUiModel.TYPE_DISCOUNT) {
+                if (benefitSummary.details.isNotEmpty()) {
+                    cost.isHasDiscountDetails = true
+                    for (detail in benefitSummary.details) {
+                        if (detail.type == SummariesUiModel.TYPE_SHIPPING_DISCOUNT) {
+                            cost.shippingDiscountAmount = detail.amount
+                            cost.shippingDiscountLabel = detail.description
+                        } else if (detail.type == SummariesUiModel.TYPE_PRODUCT_DISCOUNT) {
+                            cost.productDiscountAmount = detail.amount
+                            cost.productDiscountLabel = detail.description
+                        }
+                    }
+                } else if (hasSetAllCourier(listData)) {
+                    cost.isHasDiscountDetails = false
+                    cost.discountAmount = benefitSummary.amount
+                    cost.discountLabel = benefitSummary.description
+                }
+            } else if (benefitSummary.type == SummariesUiModel.TYPE_CASHBACK) {
+                cost.cashbackAmount = benefitSummary.amount
+                cost.cashbackLabel = benefitSummary.description
+            }
+        }
+        return cost
+    }
+//
+//    fun resetPromoBenefit() {
+//        val shipmentCost = shipmentCostModel.value
+//        shipmentCost.isHasDiscountDetails = false
+//        shipmentCost.discountAmount = 0
+//        shipmentCost.discountLabel = ""
+//        shipmentCost.shippingDiscountAmount = 0
+//        shipmentCost.shippingDiscountLabel = ""
+//        shipmentCost.productDiscountAmount = 0
+//        shipmentCost.productDiscountLabel = ""
+//        shipmentCost.cashbackAmount = 0
+//        shipmentCost.cashbackLabel = ""
+//    }
 
     fun updateShipmentCostModel(listData: List<CheckoutItem>): List<CheckoutItem> {
         var totalWeight = 0.0
@@ -55,6 +107,7 @@ class CheckoutCalculator @Inject constructor(private val dispatchers: CoroutineD
         val countMapSummaries = hashMapOf<Int, Pair<Double, Int>>()
         val listShipmentAddOnSummary: ArrayList<ShipmentAddOnSummaryModel> = arrayListOf()
         val checkoutCostModel = listData.cost()!!
+        val promo = listData.promo()!!.promo
         for (shipmentData in listData) {
             if (shipmentData is CheckoutOrderModel) {
                 val cartItemModels = shipmentData.products
@@ -141,6 +194,7 @@ class CheckoutCalculator @Inject constructor(private val dispatchers: CoroutineD
             }
         }
         var shipmentCost = checkoutCostModel.copy()
+        shipmentCost = setPromoBenefit(shipmentCost, promo.benefitSummaryInfo.summaries, listData)
         var finalShippingFee = shippingFee - shipmentCost.shippingDiscountAmount
         if (finalShippingFee < 0) {
             finalShippingFee = 0.0

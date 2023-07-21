@@ -51,6 +51,7 @@ import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
 import com.tokopedia.purchase_platform.common.feature.dynamicdatapassing.data.request.DynamicDataPassingParamRequest
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.model.UploadPrescriptionUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementHolderData
 import com.tokopedia.unifycomponents.Toaster
@@ -458,6 +459,19 @@ class CheckoutViewModel @Inject constructor(
         )
     }
 
+    fun generateCouponListRecommendationRequest(): PromoRequest {
+        return promoProcessor.generateCouponListRecommendationRequest(
+            listData.value,
+            isTradeIn,
+            isTradeInByDropOff,
+            isOneClickShipment
+        )
+    }
+
+    fun getBboPromoCodes(): ArrayList<String> {
+        return ArrayList(promoProcessor.bboPromoCodes)
+    }
+
     fun doValidateUseLogisticPromoNew(
         cartPosition: Int,
         cartString: String,
@@ -527,6 +541,12 @@ internal fun List<CheckoutItem>.upsell(): CheckoutUpsellModel? {
     val item = getOrNull(2)
     @Suppress("UNCHECKED_CAST")
     return item as? CheckoutUpsellModel
+}
+
+internal fun List<CheckoutItem>.promo(): CheckoutPromoModel? {
+    val item = getOrNull(size - 4)
+    @Suppress("UNCHECKED_CAST")
+    return item as? CheckoutPromoModel
 }
 
 internal fun List<CheckoutItem>.cost(): CheckoutCostModel? {

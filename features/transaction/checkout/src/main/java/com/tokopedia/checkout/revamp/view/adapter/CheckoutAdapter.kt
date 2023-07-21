@@ -127,7 +127,7 @@ class CheckoutAdapter(
             }
 
             CheckoutPromoViewHolder.VIEW_TYPE -> {
-                CheckoutPromoViewHolder(ItemCheckoutPromoBinding.inflate(inflater, parent, false))
+                CheckoutPromoViewHolder(ItemCheckoutPromoBinding.inflate(inflater, parent, false), listener)
             }
 
             CheckoutCostViewHolder.VIEW_TYPE -> {
