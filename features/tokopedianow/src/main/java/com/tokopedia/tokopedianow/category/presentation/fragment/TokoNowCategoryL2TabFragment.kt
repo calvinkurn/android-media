@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
 import com.tokopedia.tokopedianow.category.di.component.DaggerCategoryL2TabComponent
@@ -143,7 +144,7 @@ class TokoNowCategoryL2TabFragment : Fragment() {
                 title: String,
                 product: ProductCardCompactCarouselItemUiModel
             ) {
-
+                RouteManager.route(context, product.appLink)
             }
 
             override fun onProductCardImpressed(
@@ -171,7 +172,6 @@ class TokoNowCategoryL2TabFragment : Fragment() {
     private fun createQuickFilterListener(): QuickFilterListener {
         return object : QuickFilterListener {
             override fun openFilterPage() {
-
             }
         }
     }
@@ -181,9 +181,7 @@ class TokoNowCategoryL2TabFragment : Fragment() {
     ): EndlessRecyclerViewScrollListener {
         return object : EndlessRecyclerViewScrollListener(layoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
-
             }
         }
     }
 }
-
