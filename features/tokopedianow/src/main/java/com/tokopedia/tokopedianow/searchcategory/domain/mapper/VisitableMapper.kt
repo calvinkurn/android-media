@@ -13,4 +13,16 @@ object VisitableMapper {
         }
         return null
     }
+
+    fun MutableList<Visitable<*>>.updateProductItem(productId: String, hasBeenWishlist: Boolean) {
+        filterIsInstance<ProductItemDataView>().find {
+            it.productCardModel.productId == productId
+        }?.let { product ->
+            product.productCardModel = product.productCardModel.copy(
+                hasBeenWishlist = hasBeenWishlist
+            )
+            val index = indexOf(product)
+            this[index] = product
+        }
+    }
 }

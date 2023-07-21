@@ -24,9 +24,9 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.viewholder.Product
 class CategoryL2TabAdapterTypeFactory(
     private var adsCarouselListener: ProductAdsCarouselListener?,
     private var quickFilterListener: QuickFilterListener?,
-    private val productItemListener: ProductItemListener? = null,
-    private val productCardCompactListener: ProductCardCompactListener? = null,
-    private val similarProductTrackerListener: ProductCardCompactSimilarProductTrackerListener? = null,
+    private var productItemListener: ProductItemListener?,
+    private var productCardCompactListener: ProductCardCompactListener?,
+    private var similarProductTrackerListener: ProductCardCompactSimilarProductTrackerListener?,
 ): BaseAdapterTypeFactory(), CategoryL2TabAdapterFactory, TokoNowAdsCarouselTypeFactory,
     TokoNowProductItemTypeFactory {
 
@@ -71,5 +71,8 @@ class CategoryL2TabAdapterTypeFactory(
     fun onDestroy() {
         adsCarouselListener = null
         quickFilterListener = null
+        productItemListener = null
+        productCardCompactListener = null
+        similarProductTrackerListener = null
     }
 }

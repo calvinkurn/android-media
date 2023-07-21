@@ -2,7 +2,10 @@ package com.tokopedia.tokopedianow.category.domain.mapper
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.filter.common.data.DynamicFilterModel
-import com.tokopedia.tokopedianow.category.domain.mapper.CategoryProductItemMapper.mapResponseToProductItem
+import com.tokopedia.minicart.common.domain.data.MiniCartItem
+import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
+import com.tokopedia.tokopedianow.category.domain.mapper.CategoryProductMapper.mapResponseToProductItem
+import com.tokopedia.tokopedianow.category.domain.mapper.CategoryProductMapper.updateProductCardItems
 import com.tokopedia.tokopedianow.category.domain.response.GetCategoryLayoutResponse.Component
 import com.tokopedia.tokopedianow.category.presentation.constant.CategoryComponentType.Companion.FEATURED_PRODUCT
 import com.tokopedia.tokopedianow.category.presentation.constant.CategoryComponentType.Companion.PRODUCT_LIST_FILTER
@@ -26,7 +29,7 @@ object CategoryL2TabMapper {
 
     fun MutableList<Visitable<*>>.mapToCategoryTabLayout(components: List<Component>) {
         components.filter { SUPPORTED_LAYOUT_TYPES.contains(it.type) }.forEach {
-            when(it.type) {
+            when (it.type) {
                 PRODUCT_LIST_FILTER -> addQuickFilter(it)
                 PRODUCT_LIST_INFINITE_SCROLL -> addProductList(it)
             }
@@ -60,12 +63,26 @@ object CategoryL2TabMapper {
         }
     }
 
-    fun MutableList<Visitable<*>>.addProductCardItems(response: AceSearchProductModel) {
+    fun MutableList<Visitable<*>>.addProductCardItems(
+        response: AceSearchProductModel,
+        miniCartData: MiniCartSimplifiedData?,
+        hasBlockedAddToCart: Boolean
+    ) {
         response.searchProduct.data.productList.forEachIndexed { index, product ->
-            add(mapResponseToProductItem(index, product))
+            add(mapResponseToProductItem(index, product, miniCartData, hasBlockedAddToCart))
         }
     }
-    
+
+    fun MutableList<Visitable<*>>.updateAllProductQuantity(
+        miniCartData: MiniCartSimplifiedData,
+        hasBlockedAddToCart: Boolean
+    ) {
+        val cartProductIds = miniCartData.miniCartItems.values.mapNotNull {
+            if (it is MiniCartItem.MiniCartItemProduct) it.productId else null
+        }
+        updateProductCardItems(cartProductIds, miniCartData, hasBlockedAddToCart)
+    }
+
     fun MutableList<Visitable<*>>.filterNotLoadedLayout(): MutableList<Visitable<*>> {
         return filter { it.getLayoutState() == TokoNowLayoutState.LOADING }.toMutableList()
     }
