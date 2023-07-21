@@ -329,6 +329,7 @@ class StatusSubmissionFragment : BaseDaggerFragment() {
 
         val intent = RouteManager.getIntent(activity, ApplinkConstInternalUserPlatform.GOTO_KYC).apply {
             putExtra(GotoKycTransparentFragment.IS_RE_VERIFY, true)
+            putExtra(ApplinkConstInternalUserPlatform.PARAM_SOURCE, sourcePage)
             putExtra(ApplinkConstInternalUserPlatform.PARAM_PROJECT_ID, projectId)
         }
         startReVerifyKycForResult.launch(intent)

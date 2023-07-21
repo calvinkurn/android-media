@@ -1,5 +1,4 @@
-package com.tokopedia.mvc.data.response
-
+package com.tokopedia.campaign.data.response
 
 import com.google.gson.annotations.SerializedName
 
@@ -23,7 +22,9 @@ data class GetTargetedTickerResponse(
             @SerializedName("Title")
             val title: String,
             @SerializedName("Type")
-            val type: String
+            val type: String,
+            @SerializedName("Metadata")
+            val metadata: List<MetaData>
         ) {
             data class Action(
                 @SerializedName("AppURL")
@@ -34,6 +35,13 @@ data class GetTargetedTickerResponse(
                 val type: String,
                 @SerializedName("WebURL")
                 val webURL: String
+            )
+
+            data class MetaData(
+                @SerializedName("Type")
+                val type: String,
+                @SerializedName("Values")
+                val values: List<String>
             )
         }
     }

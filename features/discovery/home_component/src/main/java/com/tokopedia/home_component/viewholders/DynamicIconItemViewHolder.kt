@@ -25,7 +25,7 @@ import com.tokopedia.utils.view.binding.viewBinding
 /**
  * Created by dhaba
  */
-class DynamicIconMacroItemViewHolder(
+class DynamicIconItemViewHolder(
     itemView: View,
     private val listener: DynamicIconComponentListener,
     isRevamp: Boolean

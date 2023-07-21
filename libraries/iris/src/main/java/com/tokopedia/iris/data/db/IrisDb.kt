@@ -8,15 +8,18 @@ import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.tokopedia.iris.util.DATABASE_NAME
 import com.tokopedia.iris.data.db.dao.TrackingDao
+import com.tokopedia.iris.data.db.dao.TrackingPerfDao
+import com.tokopedia.iris.data.db.table.PerformanceTracking
 import com.tokopedia.iris.data.db.table.Tracking
 
 /**
  * @author okasurya on 10/18/18.
  */
 
-@Database(entities = [Tracking::class], version = 2)
+@Database(entities = [Tracking::class, PerformanceTracking::class], version = 3)
 abstract class IrisDb : RoomDatabase() {
     abstract fun trackingDao(): TrackingDao
+    abstract fun trackingPerfDao(): TrackingPerfDao
 
     companion object {
         // For Singleton instantiation
@@ -39,9 +42,25 @@ abstract class IrisDb : RoomDatabase() {
             }
         }
 
+        @Suppress("SwallowedException")
+        val MIGRATION_2_3 = object : Migration(2, 3) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                try {
+                    database.execSQL("CREATE TABLE IF NOT EXISTS `tracking_perf` " +
+                            "(`event` TEXT NOT NULL, `userId` TEXT NOT NULL, " +
+                            "`deviceId` TEXT NOT NULL, `timeStamp` INTEGER NOT NULL, " +
+                            "`appVersion` TEXT NOT NULL DEFAULT '', `carrier` TEXT NOT NULL, " +
+                            "`lowPower` INTEGER NOT NULL, " +
+                            "`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL)")
+                } catch (e: Exception) {
+                    // noop
+                }
+            }
+        }
+
         private fun buildDatabase(context: Context): IrisDb {
             return Room.databaseBuilder(context, IrisDb::class.java, DATABASE_NAME)
-                .addMigrations(MIGRATION_1_2).build()
+                .addMigrations(MIGRATION_1_2).addMigrations(MIGRATION_2_3).build()
         }
     }
 }

@@ -89,6 +89,13 @@ class FinalLoaderFragment : BaseDaggerFragment() {
                 is RegisterProgressiveResult.Loading -> {
                     showScreenLoading(true)
                 }
+                is RegisterProgressiveResult.Exhausted -> {
+                    showScreenLoading(false)
+                    showDobChallengeExhaustedBottomSheet(
+                        cooldownTimeInSeconds = it.cooldownTimeInSeconds,
+                        maximumAttemptsAllowed = it.maximumAttemptsAllowed
+                    )
+                }
                 is RegisterProgressiveResult.RiskyUser -> {
                     val parameter = DobChallengeParam(
                         projectId = args.parameter.projectId,
@@ -182,6 +189,25 @@ class FinalLoaderFragment : BaseDaggerFragment() {
         }
     }
 
+    private fun showDobChallengeExhaustedBottomSheet(cooldownTimeInSeconds: String, maximumAttemptsAllowed: String) {
+        val dobChallengeExhaustedBottomSheet = DobChallengeExhaustedBottomSheet.newInstance(
+            projectId = args.parameter.projectId,
+            source = args.parameter.source,
+            cooldownTimeInSeconds = cooldownTimeInSeconds,
+            maximumAttemptsAllowed = maximumAttemptsAllowed
+        )
+
+        dobChallengeExhaustedBottomSheet.show(
+            childFragmentManager,
+            TAG_BOTTOM_SHEET_DOB_CHALLENGE_EXHAUSTED
+        )
+
+        dobChallengeExhaustedBottomSheet.setOnDismissListener {
+            activity?.setResult(KYCConstant.ActivityResult.RESULT_FINISH)
+            activity?.finish()
+        }
+    }
+
     private fun showScreenLoading(isLoading: Boolean) {
         binding?.apply {
             loader.showWithCondition(isLoading)
@@ -204,5 +230,9 @@ class FinalLoaderFragment : BaseDaggerFragment() {
 
     override fun initInjector() {
         getComponent(GoToKycComponent::class.java).inject(this)
+    }
+
+    companion object {
+        private const val TAG_BOTTOM_SHEET_DOB_CHALLENGE_EXHAUSTED = "bottom_sheet_dob_challenge_exhausted"
     }
 }

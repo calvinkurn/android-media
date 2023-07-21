@@ -1,5 +1,10 @@
-package com.tokopedia.mvc.domain.usecase
+package com.tokopedia.campaign.usecase
 
+
+import com.tokopedia.campaign.data.request.GetTargetedTickerRequest
+import com.tokopedia.campaign.data.response.GetTargetedTickerResponse
+import com.tokopedia.campaign.entity.RemoteTicker
+import com.tokopedia.campaign.mapper.GetTargetedTickerMapper
 import com.tokopedia.gql_query_annotation.GqlQueryInterface
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
@@ -7,10 +12,6 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.mvc.data.mapper.GetTargetedTickerMapper
-import com.tokopedia.mvc.data.request.GetTargetedTickerRequest
-import com.tokopedia.mvc.data.response.GetTargetedTickerResponse
-import com.tokopedia.mvc.domain.entity.RemoteTicker
 import javax.inject.Inject
 
 /**
@@ -77,6 +78,10 @@ class GetTargetedTickerUseCase @Inject constructor(
 
     data class Param(val page: String, val targets: List<Target> = emptyList()) {
         data class Target(val type: String, val values: List<String>)
+    }
+
+    companion object {
+        const val KEY_TYPE_ROLLENCE_NAME = "rollence_name"
     }
 
 }
