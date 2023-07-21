@@ -7,6 +7,7 @@ import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.category.presentation.adapter.viewpager.CategoryL2TabViewPagerAdapter
+import com.tokopedia.tokopedianow.category.presentation.callback.CategoryL2PageChangeCallback
 import com.tokopedia.tokopedianow.category.presentation.fragment.TokoNowCategoryL2TabFragment
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryL2TabUiModel
 import com.tokopedia.tokopedianow.common.view.TokoNowView
@@ -36,6 +37,8 @@ class CategoryL2TabViewHolder(
 
     init {
         binding?.apply {
+            val pageChangeCallback = CategoryL2PageChangeCallback(viewPager, tokoNowView)
+            viewPager.registerOnPageChangeCallback(pageChangeCallback)
             viewPager.adapter = viewPagerAdapter
         }
     }

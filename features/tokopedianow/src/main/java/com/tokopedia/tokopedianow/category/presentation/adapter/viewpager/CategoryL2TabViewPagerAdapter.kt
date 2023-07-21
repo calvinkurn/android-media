@@ -4,7 +4,10 @@ import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.tokopedia.tokopedianow.category.presentation.fragment.TokoNowCategoryL2TabFragment
 
-class CategoryL2TabViewPagerAdapter(fragment: Fragment) : FragmentStateAdapter(fragment) {
+class CategoryL2TabViewPagerAdapter(fragment: Fragment) : FragmentStateAdapter(
+    fragment.childFragmentManager,
+    fragment.lifecycle
+) {
 
     private val fragments = mutableListOf<TokoNowCategoryL2TabFragment>()
 

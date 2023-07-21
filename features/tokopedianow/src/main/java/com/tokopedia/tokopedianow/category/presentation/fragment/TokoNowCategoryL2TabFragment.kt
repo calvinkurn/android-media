@@ -98,24 +98,6 @@ class TokoNowCategoryL2TabFragment : Fragment() {
         viewModel.loadMore()
     }
 
-    private fun setupRecyclerView() {
-        binding?.recyclerView?.apply {
-            layoutManager = GridLayoutManager(context, SPAN_COUNT).apply {
-                addOnScrollListener(createEndlessScrollListener(this))
-                spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
-                    override fun getSpanSize(position: Int): Int {
-                        return when (categoryAdapter.getItemViewType(position)) {
-                            ProductItemViewHolder.LAYOUT -> SPAN_FULL_SPACE
-                            else -> SPAN_COUNT
-                        }
-                    }
-                }
-            }
-            adapter = categoryAdapter
-            addProductItemDecoration()
-        }
-    }
-
     private fun observeLiveData() {
         observe(viewModel.visitableListLiveData) {
             categoryAdapter.submitList(it)
@@ -124,6 +106,26 @@ class TokoNowCategoryL2TabFragment : Fragment() {
 
     private fun onViewCreated() {
         viewModel.onViewCreated(categoryIdL2, components)
+    }
+
+    private fun setupRecyclerView() {
+        binding?.recyclerView?.apply {
+            layoutManager = GridLayoutManager(context, SPAN_COUNT).apply {
+                addOnScrollListener(createEndlessScrollListener(this))
+                spanSizeLookup = createSpanSizeLookup()
+            }
+            adapter = categoryAdapter
+            addProductItemDecoration()
+        }
+    }
+
+    private fun createSpanSizeLookup() = object : GridLayoutManager.SpanSizeLookup() {
+        override fun getSpanSize(position: Int): Int {
+            return when (categoryAdapter.getItemViewType(position)) {
+                ProductItemViewHolder.LAYOUT -> SPAN_FULL_SPACE
+                else -> SPAN_COUNT
+            }
+        }
     }
 
     private fun injectDependencies() {
