@@ -111,7 +111,6 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
     }
 
     fun refreshPage(components: List<Component>) {
-        page = FIRST_PAGE
         loadFirstPage(components)
         getMiniCart()
     }
@@ -141,6 +140,7 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
 
     private fun loadFirstPage(components: List<Component>) {
         launchCatchError(block = {
+            page = FIRST_PAGE
             visitableList.clear()
             visitableList.mapToCategoryTabLayout(components)
             visitableList.filterNotLoadedLayout().forEach {
