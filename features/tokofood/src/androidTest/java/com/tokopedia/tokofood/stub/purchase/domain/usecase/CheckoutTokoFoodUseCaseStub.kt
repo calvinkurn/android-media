@@ -18,7 +18,7 @@ class CheckoutTokoFoodUseCaseStub(
         }
 
     override suspend fun execute(source: String): CartGeneralCartListData {
-        return responseStub.cartGeneralCartList.data
+        return executeOnBackground().cartGeneralCartList.data
     }
 
 }

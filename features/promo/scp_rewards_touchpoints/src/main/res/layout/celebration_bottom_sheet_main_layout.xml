@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_view_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/background_image"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:scaleType="centerCrop"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/spotlight"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:scaleType="fitXY"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/celebration_view"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:lottie_loop="true" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/celebration_heading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dimen_40"
+        android:textColor="@color/Unify_NN0"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="heading_2" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/sunflare"
+        android:layout_width="@dimen/dp_300"
+        android:layout_height="@dimen/dp_300"
+        android:scaleType="fitCenter"
+        app:layout_constraintBottom_toBottomOf="@+id/badge_image"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/badge_image" />
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/lottie_stars"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@+id/sunflare"
+        app:layout_constraintEnd_toEndOf="@+id/sunflare"
+        app:layout_constraintStart_toStartOf="@+id/sunflare"
+        app:layout_constraintTop_toTopOf="@+id/sunflare"
+        app:lottie_loop="true" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/badge_image"
+        android:layout_width="216dp"
+        android:layout_height="216dp"
+        android:layout_marginTop="@dimen/dp_24"
+        android:scaleType="fitCenter"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/celebration_heading" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/sponsor_card"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_24"
+        app:cardCornerRadius="@dimen/dp_20"
+        app:contentPaddingBottom="@dimen/dp_4"
+        app:contentPaddingLeft="@dimen/dp_8"
+        app:contentPaddingRight="@dimen/dp_8"
+        app:contentPaddingTop="@dimen/dp_4"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/badge_image">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/brand_tag"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/Unify_NN0"
+            app:typographyType="display_3"
+            app:typographyWeight="bold" />
+    </androidx.cardview.widget.CardView>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/badge_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_12"
+        android:textColor="@color/Unify_NN0"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/sponsor_card"
+        app:layout_goneMarginTop="@dimen/dp_24"
+        app:typographyType="heading_1" />
+
+
+    <include
+        android:id="@+id/coupon_ui"
+        layout="@layout/celebration_bottom_sheet_scp_coupon_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_20"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/badge_name" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+
+
+

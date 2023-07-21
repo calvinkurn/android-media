@@ -102,9 +102,9 @@ class PostImageEmphasizedViewHolder(
                 val fiveDaysMillis = TimeUnit.DAYS.toMillis(FIVE_CONST)
                 val isLessThenFiveDays = element.countdownDate.time < fiveDaysMillis
                 val timerBackground = if (isLessThenFiveDays) {
-                    root.context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_R500)
+                    root.context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_RN500)
                 } else {
-                    root.context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_Y400)
+                    root.context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_YN400)
                 }
                 timerShcPostItemTimer.setBackgroundColor(timerBackground)
                 timerShcPostItemTimer.visible()

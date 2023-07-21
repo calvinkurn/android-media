@@ -328,7 +328,7 @@ class BridgingAccountLinkingFragment : BaseDaggerFragment() {
                 override fun updateDrawState(ds: TextPaint) {
                     ds.color = MethodChecker.getColor(
                         context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_G500
+                        com.tokopedia.unifyprinciples.R.color.Unify_GN500
                     )
                     ds.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
                 }
@@ -380,7 +380,7 @@ class BridgingAccountLinkingFragment : BaseDaggerFragment() {
 
     private fun showPermissionRejected() {
         Toaster.build(
-            requireView().rootView,
+            requireView(),
             getString(R.string.goto_kyc_permission_camera_denied),
             Toaster.LENGTH_LONG,
             Toaster.TYPE_ERROR,
