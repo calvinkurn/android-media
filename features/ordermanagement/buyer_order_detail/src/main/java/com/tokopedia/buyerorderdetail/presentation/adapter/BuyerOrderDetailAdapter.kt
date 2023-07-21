@@ -27,6 +27,7 @@ import com.tokopedia.buyerorderdetail.presentation.model.TickerUiModel
 import com.tokopedia.buyerorderdetail.presentation.uistate.BuyerOrderDetailUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.OrderInsuranceUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.OrderResolutionTicketStatusUiState
+import com.tokopedia.buyerorderdetail.presentation.uistate.ScpRewardsMedalTouchPointWidgetUiState
 import com.tokopedia.scp_rewards_touchpoints.touchpoints.adapter.uimodel.ScpRewardsMedalTouchPointWidgetUiModel
 
 @Suppress("UNCHECKED_CAST")
@@ -42,8 +43,8 @@ open class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailType
             setupOrderResolutionSection(context, uiState.orderResolutionUiState)
             setupProductListSection(context, uiState.productListUiState.data)
             setupOrderInsuranceSection(context, uiState.orderInsuranceUiState)
-            setupScpRewardsTouchPointMedalSection()
             setupEpharmacyInfoSection(context, uiState.epharmacyInfoUiState.data)
+            setupScpRewardsMedalTouchPointSection(uiState.scpRewardsMedalTouchPointWidgetUiState)
             setupShipmentInfoSection(context, uiState.shipmentInfoUiState.data)
             setupPaymentInfoSection(context, uiState.paymentInfoUiState.data)
             setUpPhysicalRecommendationSection(uiState.pgRecommendationWidgetUiState.data)
@@ -114,8 +115,14 @@ open class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailType
         }
     }
 
-    private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.setupScpRewardsTouchPointMedalSection() {
-        addScpRewardsMedalTouchPointSection()
+    private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.setupScpRewardsMedalTouchPointSection(
+        scpRewardsMedalTouchPointWidgetUiState: ScpRewardsMedalTouchPointWidgetUiState
+    ) {
+        if (scpRewardsMedalTouchPointWidgetUiState is ScpRewardsMedalTouchPointWidgetUiState.HasData.Showing) {
+            addScpRewardsMedalTouchPointSection(
+                uiModel = scpRewardsMedalTouchPointWidgetUiState.uiModel
+            )
+        }
     }
 
     private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.setupEpharmacyInfoSection(
@@ -195,8 +202,10 @@ open class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailType
         add(ThinDividerUiModel())
     }
 
-    private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addScpRewardsMedalTouchPointSection() {
-        add(ScpRewardsMedalTouchPointWidgetUiModel() as Visitable<BuyerOrderDetailTypeFactory>)
+    private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addScpRewardsMedalTouchPointSection(
+        uiModel: ScpRewardsMedalTouchPointWidgetUiModel
+    ) {
+        add(uiModel as Visitable<BuyerOrderDetailTypeFactory>)
     }
 
     private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addOrderStatusHeaderSection(

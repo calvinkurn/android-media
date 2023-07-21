@@ -9,7 +9,11 @@ data class ScpRewardsMedalTouchPointWidgetUiModel(
     val title:String = String.EMPTY,
     val subtitle:String = String.EMPTY,
     val iconImage: String = String.EMPTY,
-    val sunburstImage: String = String.EMPTY
+    val sunburstImage: String = String.EMPTY,
+    val backgroundIconImage: String = String.EMPTY,
+    val backgroundWidgetImage: String = String.EMPTY,
+    val ctaAppLink: String = String.EMPTY,
+    val ctaIsShown: Boolean = false
 ): Visitable<ScpRewardsMedalTouchPointWidgetTypeFactory> {
     override fun type(typeFactory: ScpRewardsMedalTouchPointWidgetTypeFactory): Int = typeFactory.type(this)
 }

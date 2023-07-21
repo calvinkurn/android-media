@@ -46,6 +46,12 @@ data class ScpRewardsMedalTouchPointResponse(
             @SerializedName("medaliSunburstImageURL")
             val medaliSunburstImageURL: String = String.EMPTY,
 
+            @SerializedName("medaliIconImageURLWidget")
+            val medaliIconImageURLWidget: String = String.EMPTY,
+
+            @SerializedName("backgroundImageURL")
+            val backgroundImageURL: String = String.EMPTY,
+
             @SerializedName("infoMessage")
             val infoMessage: InfoMessage = InfoMessage(),
 
