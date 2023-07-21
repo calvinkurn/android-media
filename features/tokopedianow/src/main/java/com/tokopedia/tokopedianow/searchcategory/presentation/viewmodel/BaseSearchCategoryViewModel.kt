@@ -393,10 +393,12 @@ abstract class BaseSearchCategoryViewModel(
     protected open fun createRequestParams(): RequestParams {
         val tokonowQueryParam = createTokonowQueryParams()
         val productAdsParam = createProductAdsParam()
+            .generateQueryParams()
 
         val requestParams = RequestParams.create()
         requestParams.putObject(TOKONOW_QUERY_PARAMS, tokonowQueryParam)
-        requestParams.putObject(PRODUCT_ADS_PARAMS, productAdsParam.generateQueryParams())
+        requestParams.putObject(PRODUCT_ADS_PARAMS, productAdsParam)
+        requestParams.putObject(USER_WAREHOUSE_ID, warehouseId)
 
         return requestParams
     }
