@@ -62,4 +62,6 @@
     <string name="cart_label_packet">Paket</string>
     <string name="cart_label_product_name_with_quantity">%s x %s</string>
     <string name="cart_label_discount_percentage">-%s</string>
+    <string name="label_delete_with_amount">Hapus (%d)</string>
+    <string name="label_cannot_be_processed_no_value">Tidak bisa diproses</string>
 </resources>

@@ -229,6 +229,8 @@ class CartRevampFragment :
         private var FLAG_SHOULD_CLEAR_RECYCLERVIEW = false
         private var FLAG_IS_CART_EMPTY = false
 
+        private const val TOKONOW_SEE_OTHERS_OR_ALL_LIMIT = 10
+
         private const val SPAN_SIZE_ZERO = 0
         private const val SPAN_SIZE_ONE = 1
         private const val SPAN_SIZE_TWO = 2
@@ -620,11 +622,37 @@ class CartRevampFragment :
     }
 
     override fun onCollapseAvailableItem(index: Int) {
-        TODO("Not yet implemented")
+        val cartShopBottomHolderData = cartAdapter.getCartShopBottomHolderDataFromIndex(index)
+        if (cartShopBottomHolderData != null) {
+            cartShopBottomHolderData.shopData.isCollapsed = true
+            viewModel.cartDataList.value.removeAll(cartShopBottomHolderData.shopData.productUiModelList.toSet())
+            onNeedToUpdateViewItem(index)
+            onNeedToRemoveMultipleViewItem(index - cartShopBottomHolderData.shopData.productUiModelList.size, cartShopBottomHolderData.shopData.productUiModelList.size)
+            onNeedToUpdateViewItem(index - 1 - cartShopBottomHolderData.shopData.productUiModelList.size)
+            val layoutManager: RecyclerView.LayoutManager? = binding?.rvCart?.layoutManager
+            if (layoutManager != null) {
+                // TODO: remove offset
+//                val offset = resources.getDimensionPixelOffset(R.dimen.dp_40)
+                (layoutManager as LinearLayoutManager).scrollToPositionWithOffset(index - 1 - cartShopBottomHolderData.shopData.productUiModelList.size, 0)
+            }
+        }
     }
 
     override fun onExpandAvailableItem(index: Int) {
-        TODO("Not yet implemented")
+        val cartShopBottomHolderData = cartAdapter.getCartShopBottomHolderDataFromIndex(index)
+        if (cartShopBottomHolderData != null) {
+            // TODO: reinsert analytics
+//            if (cartShopBottomHolderData.shopData.productUiModelList.size > TOKONOW_SEE_OTHERS_OR_ALL_LIMIT) {
+//                cartPageAnalytics.eventClickLihatOnPlusLainnyaOnNowProduct(cartShopBottomHolderData.shopData.shop.shopId)
+//            } else {
+//                cartPageAnalytics.eventClickLihatSelengkapnyaOnNowProduct(cartShopBottomHolderData.shopData.shop.shopId)
+//            }
+            cartShopBottomHolderData.shopData.isCollapsed = false
+            viewModel.addItems(index, cartShopBottomHolderData.shopData.productUiModelList)
+            onNeedToInsertMultipleViewItem(index, cartShopBottomHolderData.shopData.productUiModelList.size)
+            onNeedToUpdateViewItem(index - 1)
+            onNeedToUpdateViewItem(index + cartShopBottomHolderData.shopData.productUiModelList.size)
+        }
     }
 
     override fun onCollapsedProductClicked(index: Int, cartItemHolderData: CartItemHolderData) {
@@ -639,7 +667,13 @@ class CartRevampFragment :
         data: DisabledAccordionHolderData,
         buttonWording: String
     ) {
-        TODO("Not yet implemented")
+        cartPageAnalytics.eventClickAccordionButtonOnUnavailableProduct(
+            userSession.userId,
+            buttonWording
+        )
+        data.isCollapsed = !data.isCollapsed
+        unavailableItemAccordionCollapseState = data.isCollapsed
+        collapseOrExpandDisabledItem(data)
     }
 
     override fun onDisabledCartItemProductClicked(cartItemHolderData: CartItemHolderData) {
@@ -1875,7 +1909,28 @@ class CartRevampFragment :
         routeToWishlist()
     }
 
+    private fun onNeedToInsertMultipleViewItem(positionStart: Int, itemCount: Int) {
+        cartAdapter.updateListWithoutDiffUtil(viewModel.cartDataList.value)
+        if (positionStart == RecyclerView.NO_POSITION) return
+        if (binding?.rvCart?.isComputingLayout == true) {
+            binding?.rvCart?.post { cartAdapter.notifyItemRangeInserted(positionStart, itemCount) }
+        } else {
+            cartAdapter.notifyItemRangeInserted(positionStart, itemCount)
+        }
+    }
+
+    private fun onNeedToRemoveMultipleViewItem(positionStart: Int, itemCount: Int) {
+        cartAdapter.updateListWithoutDiffUtil(viewModel.cartDataList.value)
+        if (positionStart == RecyclerView.NO_POSITION) return
+        if (binding?.rvCart?.isComputingLayout == true) {
+            binding?.rvCart?.post { cartAdapter.notifyItemRangeRemoved(positionStart, itemCount) }
+        } else {
+            cartAdapter.notifyItemRangeRemoved(positionStart, itemCount)
+        }
+    }
+
     private fun onNeedToUpdateViewItem(position: Int) {
+        cartAdapter.updateListWithoutDiffUtil(viewModel.cartDataList.value)
         if (position == RecyclerView.NO_POSITION) return
         if (binding?.rvCart?.isComputingLayout == true) {
             binding?.rvCart?.post { cartAdapter.notifyItemChanged(position) }

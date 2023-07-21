@@ -2,9 +2,8 @@ package com.tokopedia.cartrevamp.view.viewholder.now
 
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.cart.R
-import com.tokopedia.cart.databinding.ItemCartCollapsedProductBinding
+import com.tokopedia.cart.databinding.ItemCartCollapsedProductRevampBinding
 import com.tokopedia.cartrevamp.view.ActionListener
 import com.tokopedia.cartrevamp.view.uimodel.CartItemHolderData
 import com.tokopedia.kotlin.extensions.view.gone
@@ -15,41 +14,47 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 
-class CartCollapsedProductViewHolder(val viewBinding: ItemCartCollapsedProductBinding, val actionListener: ActionListener) : RecyclerView.ViewHolder(viewBinding.root) {
+class CartCollapsedProductViewHolder(private val viewBinding: ItemCartCollapsedProductRevampBinding, val actionListener: ActionListener) : RecyclerView.ViewHolder(viewBinding.root) {
 
     companion object {
-        var LAYOUT = R.layout.item_cart_collapsed_product
+        var LAYOUT = R.layout.item_cart_collapsed_product_revamp
     }
 
     fun bind(cartItemHolderData: CartItemHolderData) {
-        renderBundlingIcon(cartItemHolderData)
         renderImage(cartItemHolderData)
+        renderBundlingIcon(cartItemHolderData)
         renderVariant(cartItemHolderData)
         renderPrice(cartItemHolderData)
         renderQuantity(cartItemHolderData)
     }
 
     private fun renderBundlingIcon(cartItemHolderData: CartItemHolderData) {
-        if (cartItemHolderData.isBundlingItem) {
+        if (cartItemHolderData.isBundlingItem && !cartItemHolderData.isError) {
             viewBinding.imageBundleIcon.show()
             viewBinding.imageBundleIcon.loadImage(cartItemHolderData.bundleGrayscaleIconUrl)
         } else {
-            viewBinding.imageBundleIcon.hide()
+            viewBinding.imageBundleIcon.gone()
         }
     }
 
     private fun renderPrice(cartItemHolderData: CartItemHolderData) {
-        viewBinding.textProductPrice.text = if (cartItemHolderData.isBundlingItem) {
-            CurrencyFormatUtil.convertPriceValueToIdrFormat(cartItemHolderData.bundlePrice, false)
-        } else {
-            CurrencyFormatUtil.convertPriceValueToIdrFormat(cartItemHolderData.productPrice, false)
-        }.removeDecimalSuffix()
+        if (cartItemHolderData.isError) {
+            viewBinding.textProductPrice.gone()
+        }
+        else {
+            viewBinding.textProductPrice.show()
+            viewBinding.textProductPrice.text = if (cartItemHolderData.isBundlingItem) {
+                CurrencyFormatUtil.convertPriceValueToIdrFormat(cartItemHolderData.bundlePrice, false)
+            } else {
+                CurrencyFormatUtil.convertPriceValueToIdrFormat(cartItemHolderData.productPrice, false)
+            }.removeDecimalSuffix()
+        }
     }
 
     private fun renderImage(cartItemHolderData: CartItemHolderData) {
-        ImageHandler.loadImageWithoutPlaceholder(viewBinding.imageProduct, cartItemHolderData.productImage)
+        viewBinding.imageProduct.loadImage(cartItemHolderData.productImage)
         viewBinding.imageProduct.setOnClickListener {
-            val position = adapterPosition
+            val position = absoluteAdapterPosition
             if (position != RecyclerView.NO_POSITION) {
                 actionListener.onCollapsedProductClicked(position, cartItemHolderData)
             }
@@ -57,15 +62,21 @@ class CartCollapsedProductViewHolder(val viewBinding: ItemCartCollapsedProductBi
     }
 
     private fun renderQuantity(cartItemHolderData: CartItemHolderData) {
-        viewBinding.textProductQuantity.text = if (cartItemHolderData.isBundlingItem) {
-            itemView.resources.getString(R.string.label_collapsed_product_bundle_quantity, cartItemHolderData.bundleQuantity)
-        } else {
-            itemView.resources.getString(R.string.label_collapsed_product_quantity, cartItemHolderData.quantity)
+        if (cartItemHolderData.isError) {
+            viewBinding.textProductQuantity.gone()
+        }
+        else {
+            viewBinding.textProductQuantity.show()
+            viewBinding.textProductQuantity.text = if (cartItemHolderData.isBundlingItem) {
+                itemView.resources.getString(R.string.label_collapsed_product_bundle_quantity, cartItemHolderData.bundleQuantity)
+            } else {
+                itemView.resources.getString(R.string.label_collapsed_product_quantity, cartItemHolderData.quantity)
+            }
         }
     }
 
     private fun renderVariant(cartItemHolderData: CartItemHolderData) {
-        if (cartItemHolderData.variant.isNotBlank()) {
+        if (cartItemHolderData.variant.isNotBlank() && !cartItemHolderData.isError) {
             viewBinding.textVariantName.text = cartItemHolderData.variant
             viewBinding.textVariantName.show()
         } else {

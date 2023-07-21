@@ -52,6 +52,7 @@ import com.tokopedia.cartrevamp.view.uimodel.CartTrackerEvent
 import com.tokopedia.cartrevamp.view.uimodel.CartWishlistHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartWishlistItemHolderData
 import com.tokopedia.cartrevamp.view.uimodel.DisabledAccordionHolderData
+import com.tokopedia.cartrevamp.view.uimodel.DisabledCollapsedHolderData
 import com.tokopedia.cartrevamp.view.uimodel.DisabledItemHeaderHolderData
 import com.tokopedia.cartrevamp.view.uimodel.DisabledReasonHolderData
 import com.tokopedia.cartrevamp.view.uimodel.LoadRecentReviewState
@@ -140,8 +141,7 @@ class CartViewModel @Inject constructor(
 
     override val coroutineContext: CoroutineContext
         get() = SupervisorJob() + dispatchers.immediate
-
-    private var tmpAllUnavailableShop: MutableList<Any>? = null
+    
     var cartModel: CartModel = CartModel()
         private set
 
@@ -246,7 +246,7 @@ class CartViewModel @Inject constructor(
             }
         }
 
-        if (tmpAllUnavailableShop?.isNotEmpty() == true) {
+        if (cartModel.tmpAllUnavailableShop?.isNotEmpty() == true) {
             cartItemDataList.addAll(getCollapsedUnavailableCartItemData())
         }
 
@@ -402,7 +402,7 @@ class CartViewModel @Inject constructor(
 
     private fun getCollapsedUnavailableCartItemData(): List<CartItemHolderData> {
         val cartItemDataList = mutableListOf<CartItemHolderData>()
-        tmpAllUnavailableShop?.let {
+        cartModel.tmpAllUnavailableShop?.let {
             loop@ for (data in it) {
                 when (data) {
                     is CartGroupHolderData -> {
@@ -703,7 +703,7 @@ class CartViewModel @Inject constructor(
         var firstIndex = RecyclerView.NO_POSITION
         var lastIndex = 0
         for ((index, item) in cartDataList.value.withIndex()) {
-            if (firstIndex == RecyclerView.NO_POSITION && item is CartGroupHolderData && item.isError) {
+            if (firstIndex == RecyclerView.NO_POSITION && item is DisabledItemHeaderHolderData) {
                 firstIndex = index
             } else if (item is DisabledAccordionHolderData) {
                 lastIndex = index
@@ -711,53 +711,62 @@ class CartViewModel @Inject constructor(
             }
         }
         if (firstIndex > RecyclerView.NO_POSITION && lastIndex >= firstIndex && lastIndex <= cartDataList.value.size) {
+            val startIdxDisabledReason = firstIndex + 1
             val tmpAllUnavailableShop =
-                cartDataList.value.subList(firstIndex, lastIndex).toMutableList()
-            this.tmpAllUnavailableShop = tmpAllUnavailableShop
+                cartDataList.value.subList(startIdxDisabledReason, lastIndex).toMutableList()
+            cartModel.tmpAllUnavailableShop = tmpAllUnavailableShop
 
-            val tmpCollapsedUnavailableShop = mutableListOf<Any>()
-            val firstUnavailableShop = tmpAllUnavailableShop.firstOrNull()
-            firstUnavailableShop?.let { shop ->
-                if (shop is CartGroupHolderData) {
-                    val tmpProducts = getNonCollapsibleUnavailableProduct(shop)
-                    val cartShopHolderData = shop.deepCopy()
-                    cartShopHolderData.productUiModelList.clear()
-                    cartShopHolderData.productUiModelList.addAll(tmpProducts)
+            val tmpCollapsedUnavailableProducts = mutableListOf<CartItemHolderData>()
+            tmpAllUnavailableShop.forEach {
+                if (it is CartGroupHolderData) {
+                    tmpCollapsedUnavailableProducts += it.productUiModelList
+                }
+            }
+            val disabledCollapsedData = DisabledCollapsedHolderData(
+                productUiModelList = tmpCollapsedUnavailableProducts
+            )
+            cartModel.tmpCollapsedUnavailableShop = disabledCollapsedData
 
-                    tmpCollapsedUnavailableShop.add(cartShopHolderData)
-                    tmpCollapsedUnavailableShop.addAll(tmpProducts)
-                    cartModel = cartModel.copy(
-                        tmpCollapsedUnavailableShop = tmpCollapsedUnavailableShop
-                    )
-
-                    cartDataList.value.removeAll(tmpAllUnavailableShop)
-                    cartDataList.value.addAll(firstIndex, tmpCollapsedUnavailableShop)
-                    cartDataList.notifyObserver()
+            cartDataList.value.removeAll(tmpAllUnavailableShop)
+            cartDataList.value.add(startIdxDisabledReason, disabledCollapsedData)
+            cartDataList.notifyObserver()
+//            val firstUnavailableShop = tmpAllUnavailableShop.firstOrNull()
+//            firstUnavailableShop?.let { shop ->
+//                if (shop is CartGroupHolderData) {
+//                    val tmpProducts = getNonCollapsibleUnavailableProduct(shop)
+//                    val cartShopHolderData = shop.deepCopy()
+//                    cartShopHolderData.productUiModelList.clear()
+//                    cartShopHolderData.productUiModelList.addAll(tmpProducts)
+//
+//                    tmpCollapsedUnavailableShop.addAll(tmpProducts)
+//                    cartModel.tmpCollapsedUnavailableShop = tmpCollapsedUnavailableShop
+//
+//                    cartDataList.value.removeAll(tmpAllUnavailableShop)
+//                    cartDataList.value.addAll(firstIndex, tmpCollapsedUnavailableShop)
+//                    cartDataList.notifyObserver()
 //                    notifyItemRangeChanged(firstIndex, tmpCollapsedUnavailableShop.size)
 //                    notifyItemRangeRemoved(
 //                        firstIndex + tmpCollapsedUnavailableShop.size,
 //                        tmpAllUnavailableShop.size - tmpCollapsedUnavailableShop.size
 //                    )
-                }
-            }
+//                }
+//            }
         }
     }
 
     fun expandDisabledItems() {
         cartModel.tmpCollapsedUnavailableShop?.let { collapsedUnavailableItems ->
-            if (collapsedUnavailableItems.isNotEmpty()) {
-                val firstIndex = cartDataList.value.indexOf(collapsedUnavailableItems.first())
-                if (firstIndex != -1) {
-                    cartDataList.value.removeAll(collapsedUnavailableItems)
-                    collapsedUnavailableItems.clear()
+            val firstIndex = cartDataList.value.indexOf(collapsedUnavailableItems)
+            if (firstIndex != -1) {
+                cartDataList.value.remove(collapsedUnavailableItems)
+                cartModel.tmpCollapsedUnavailableShop = null
 
-                    tmpAllUnavailableShop?.let { unavailableItems ->
-                        cartDataList.value.addAll(firstIndex, unavailableItems)
-                        unavailableItems.clear()
-                        cartDataList.notifyObserver()
+                cartModel.tmpAllUnavailableShop?.let { unavailableItems ->
+                    cartDataList.value.addAll(firstIndex, unavailableItems)
+                    unavailableItems.clear()
+                    cartDataList.notifyObserver()
 //                        notifyItemRangeChanged(firstIndex, existingSize)
 //                        notifyItemRangeInserted(firstIndex + existingSize, newSize - existingSize)
-                    }
                 }
             }
         }

@@ -31,6 +31,7 @@ data class CartModel(
     var shipmentSellerCashbackModel: ShipmentSellerCashbackModel? = null,
 
     // adapter
-    var tmpCollapsedUnavailableShop: MutableList<Any>? = null,
-    var firstCartSectionHeaderPosition: Int = -1
+    var tmpCollapsedUnavailableShop: DisabledCollapsedHolderData? = null,
+    var firstCartSectionHeaderPosition: Int = -1,
+    var tmpAllUnavailableShop: MutableList<Any>? = null
 )

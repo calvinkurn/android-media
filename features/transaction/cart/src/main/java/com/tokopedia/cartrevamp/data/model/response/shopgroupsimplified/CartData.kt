@@ -41,5 +41,7 @@ data class CartData(
     @SerializedName("placeholder_note")
     val placeholderNote: String = "",
     @SerializedName("coachmark")
-    val coachmark: CoachmarkPlusResponse = CoachmarkPlusResponse()
+    val coachmark: CoachmarkPlusResponse = CoachmarkPlusResponse(),
+    @SerializedName("show_bundle_price")
+    val showBundlePrice: Boolean = false
 )

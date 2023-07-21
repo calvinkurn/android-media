@@ -7,7 +7,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.cart.databinding.HolderItemCartTickerErrorBinding
 import com.tokopedia.cart.databinding.ItemCartChooseAddressBinding
 import com.tokopedia.cart.databinding.ItemCartDisabledAccordionBinding
-import com.tokopedia.cart.databinding.ItemCartDisabledHeaderBinding
+import com.tokopedia.cart.databinding.ItemCartDisabledCollapsedBinding
+import com.tokopedia.cart.databinding.ItemCartDisabledHeaderRevampBinding
 import com.tokopedia.cart.databinding.ItemCartDisabledReasonBinding
 import com.tokopedia.cart.databinding.ItemCartProductRevampBinding
 import com.tokopedia.cart.databinding.ItemCartRecentViewBinding
@@ -37,6 +38,7 @@ import com.tokopedia.cartrevamp.view.uimodel.CartShopBottomHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartTopAdsHeadlineData
 import com.tokopedia.cartrevamp.view.uimodel.CartWishlistHolderData
 import com.tokopedia.cartrevamp.view.uimodel.DisabledAccordionHolderData
+import com.tokopedia.cartrevamp.view.uimodel.DisabledCollapsedHolderData
 import com.tokopedia.cartrevamp.view.uimodel.DisabledItemHeaderHolderData
 import com.tokopedia.cartrevamp.view.uimodel.DisabledReasonHolderData
 import com.tokopedia.cartrevamp.view.viewholder.CartChooseAddressViewHolder
@@ -53,6 +55,7 @@ import com.tokopedia.cartrevamp.view.viewholder.CartTickerErrorViewHolder
 import com.tokopedia.cartrevamp.view.viewholder.CartTopAdsHeadlineViewHolder
 import com.tokopedia.cartrevamp.view.viewholder.CartWishlistViewHolder
 import com.tokopedia.cartrevamp.view.viewholder.DisabledAccordionViewHolder
+import com.tokopedia.cartrevamp.view.viewholder.DisabledCollapsedViewHolder
 import com.tokopedia.cartrevamp.view.viewholder.DisabledItemHeaderViewHolder
 import com.tokopedia.cartrevamp.view.viewholder.DisabledReasonViewHolder
 import com.tokopedia.coachmark.CoachMark2
@@ -93,6 +96,11 @@ class CartAdapter constructor(
         cartDataList.addAll(newList)
 
         diffResult.dispatchUpdatesTo(this)
+    }
+
+    fun updateListWithoutDiffUtil(newList: ArrayList<Any>) {
+        cartDataList.clear()
+        cartDataList.addAll(newList)
     }
 
     val allDisabledCartItemData: List<CartItemHolderData>
@@ -153,6 +161,7 @@ class CartAdapter constructor(
             is DisabledItemHeaderHolderData -> DisabledItemHeaderViewHolder.LAYOUT
             is DisabledReasonHolderData -> DisabledReasonViewHolder.LAYOUT
             is DisabledAccordionHolderData -> DisabledAccordionViewHolder.LAYOUT
+            is DisabledCollapsedHolderData -> DisabledCollapsedViewHolder.LAYOUT
             else -> super.getItemViewType(position)
         }
     }
@@ -287,7 +296,7 @@ class CartAdapter constructor(
             }
 
             DisabledItemHeaderViewHolder.LAYOUT -> {
-                val binding = ItemCartDisabledHeaderBinding.inflate(
+                val binding = ItemCartDisabledHeaderRevampBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
                     false
@@ -311,6 +320,15 @@ class CartAdapter constructor(
                     false
                 )
                 return DisabledAccordionViewHolder(binding, actionListener)
+            }
+
+            DisabledCollapsedViewHolder.LAYOUT -> {
+                val binding = ItemCartDisabledCollapsedBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
+                )
+                return DisabledCollapsedViewHolder(binding, actionListener)
             }
 
             else -> throw RuntimeException("No view holder type found")
@@ -405,7 +423,8 @@ class CartAdapter constructor(
 
             DisabledItemHeaderViewHolder.LAYOUT -> {
                 val data = cartDataList[position] as DisabledItemHeaderHolderData
-                (holder as DisabledItemHeaderViewHolder).bind(data)
+                val dataBelowItemHeader = cartDataList.getOrNull(position + 1)
+                (holder as DisabledItemHeaderViewHolder).bind(data, dataBelowItemHeader !is DisabledCollapsedHolderData)
             }
 
             DisabledReasonViewHolder.LAYOUT -> {
@@ -416,6 +435,11 @@ class CartAdapter constructor(
             DisabledAccordionViewHolder.LAYOUT -> {
                 val data = cartDataList[position] as DisabledAccordionHolderData
                 (holder as DisabledAccordionViewHolder).bind(data)
+            }
+
+            DisabledCollapsedViewHolder.LAYOUT -> {
+                val data = cartDataList[position] as DisabledCollapsedHolderData
+                (holder as DisabledCollapsedViewHolder).bind(data)
             }
         }
     }

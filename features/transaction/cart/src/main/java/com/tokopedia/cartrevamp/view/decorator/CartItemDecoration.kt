@@ -46,7 +46,7 @@ class CartItemDecoration @Inject constructor() : RecyclerView.ItemDecoration() {
 
             is CartChooseAddressViewHolder -> {
                 try {
-                    if (parent.adapter?.getItemViewType(viewHolder.getAdapterPosition() - 1) == TickerAnnouncementViewHolder.LAYOUT) {
+                    if (parent.adapter?.getItemViewType(viewHolder.absoluteAdapterPosition - 1) == TickerAnnouncementViewHolder.LAYOUT) {
                         outRect.top = verticalSpaceHeight
                     } else {
                         outRect.top =
@@ -65,9 +65,9 @@ class CartItemDecoration @Inject constructor() : RecyclerView.ItemDecoration() {
 
             is CartGroupViewHolder -> {
                 try {
-                    if (parent.adapter?.getItemViewType(viewHolder.getAdapterPosition() - 1) == DisabledReasonViewHolder.LAYOUT) {
+                    if (parent.adapter?.getItemViewType(viewHolder.absoluteAdapterPosition - 1) == DisabledReasonViewHolder.LAYOUT) {
                         outRect.top = verticalSpaceHeight
-                    } else if (parent.adapter?.getItemViewType(viewHolder.getAdapterPosition() - 1) == CartItemViewHolder.TYPE_VIEW_ITEM_CART) {
+                    } else if (parent.adapter?.getItemViewType(viewHolder.absoluteAdapterPosition - 1) == CartItemViewHolder.TYPE_VIEW_ITEM_CART) {
                         outRect.top = (context?.resources?.getDimension(com.tokopedia.abstraction.R.dimen.dp_6)?.toInt() ?: 0) + verticalSpaceHeight
                     } else {
                         outRect.top =
@@ -92,7 +92,7 @@ class CartItemDecoration @Inject constructor() : RecyclerView.ItemDecoration() {
 
             is DisabledReasonViewHolder -> {
                 try {
-                    if (parent.adapter?.getItemViewType(viewHolder.getAdapterPosition() - 1) == DisabledItemHeaderViewHolder.LAYOUT) {
+                    if (parent.adapter?.getItemViewType(viewHolder.absoluteAdapterPosition - 1) == DisabledItemHeaderViewHolder.LAYOUT) {
                         outRect.top = verticalSpaceHeight
                     } else {
                         outRect.top =

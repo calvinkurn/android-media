@@ -31,7 +31,6 @@ import rx.Subscriber
 import rx.subscriptions.CompositeSubscription
 import java.text.NumberFormat
 import java.util.*
-import kotlin.collections.ArrayList
 import kotlin.math.min
 
 class CartGroupViewHolder(

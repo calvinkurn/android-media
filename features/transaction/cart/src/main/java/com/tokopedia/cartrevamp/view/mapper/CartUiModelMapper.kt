@@ -175,7 +175,7 @@ object CartUiModelMapper {
                 groupBadge = availableGroup.groupInformation.badgeUrl
                 groupAppLink = availableGroup.groupInformation.appLink
                 isFulfillment = availableGroup.isFulfillment
-                fulfillmentName = availableGroup.groupInformation.description
+                fulfillmentName = ""
                 fulfillmentBadgeUrl = availableGroup.groupInformation.descriptionBadgeUrl
                 estimatedTimeArrival = availableGroup.shipmentInformation.estimation
                 isShowPin = availableGroup.pinned.isPinned
@@ -199,8 +199,7 @@ object CartUiModelMapper {
                     isAllSelected = false
                     isPartialSelected = isPartialSelected(availableGroup)
                 }
-                isCollapsible =
-                    isTokoNow && cartData.availableSection.availableGroupGroups.size > 1 && productUiModelList.size > 1
+                isCollapsible = cartData.availableSection.availableGroupGroups.size > 1 && productUiModelList.size > 1
                 isCollapsed = isCollapsible
                 isError = false
                 promoCodes = availableGroup.promoCodes
@@ -391,8 +390,7 @@ object CartUiModelMapper {
 //                    shopTypeInfo = unavailableGroup.shop.shopTypeInfo
                     isAllSelected = false
                     isPartialSelected = false
-                    isCollapsible =
-                        isTokoNow && cartData.availableSection.availableGroupGroups.size > 1 &&
+                    isCollapsible = cartData.availableSection.availableGroupGroups.size > 1 &&
                         productUiModelList.size > 1
                     isCollapsed = isCollapsible
                     isError = true
