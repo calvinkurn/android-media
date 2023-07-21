@@ -190,6 +190,8 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
         }
 
         viewModel.checkEligibility.observe(viewLifecycleOwner) {
+            binding?.gotoKycLoader?.invisible()
+
             when (it) {
                 is CheckEligibilityResult.Progressive -> {
                     handleProgressiveFlow(it.encryptedName)
@@ -216,7 +218,8 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
                     viewModel.checkEligibility()
                 }
                 is AccountLinkingStatusResult.NotLinked -> {
-                    viewModel.checkEligibility()
+                    binding?.gotoKycLoader?.invisible()
+                    handleNonProgressiveFlow()
                 }
                 is AccountLinkingStatusResult.Failed -> {
                     binding?.gotoKycLoader?.hide()
