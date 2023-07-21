@@ -27,9 +27,9 @@ import com.tokopedia.nest.principles.ui.NestTheme
  * Created by @ilhamsuaib on 21/07/23.
  */
 
-private val TrackWidth = 42.dp
-private val ThumbDiameter = 22.dp
-private val ThumbAndTrackSpace = 3.dp
+private val TrackWidth = 44.dp
+private val ThumbDiameter = 24.dp
+private val ThumbAndTrackSpace = 2.dp
 
 private const val BiasEnd = 1f
 private const val BiasStart = -1f
