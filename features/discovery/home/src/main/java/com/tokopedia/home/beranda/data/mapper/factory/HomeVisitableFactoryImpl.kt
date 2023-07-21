@@ -7,7 +7,6 @@ import com.tokopedia.home.beranda.data.datasource.default_data_source.HomeDefaul
 import com.tokopedia.home.beranda.data.mapper.HomeDynamicChannelDataMapper
 import com.tokopedia.home.beranda.data.model.AtfData
 import com.tokopedia.home.beranda.domain.model.*
-import com.tokopedia.home.beranda.domain.model.HomeFlag
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.*
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.dynamic_icon.DynamicIconSectionDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderDataModel
@@ -20,7 +19,6 @@ import com.tokopedia.home.constant.AtfKey.TYPE_BANNER
 import com.tokopedia.home.constant.AtfKey.TYPE_CHANNEL
 import com.tokopedia.home.constant.AtfKey.TYPE_ICON
 import com.tokopedia.home.constant.AtfKey.TYPE_TICKER
-import com.tokopedia.home_component.HomeComponentRollenceController
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.model.DynamicIconComponent
@@ -385,8 +383,8 @@ class HomeVisitableFactoryImpl(
                         dimenMarginTop = com.tokopedia.home_component.R.dimen.home_banner_default_margin_vertical_design,
                         dimenMarginBottom = com.tokopedia.home_component.R.dimen.home_banner_default_margin_vertical_design,
                         cardInteraction = true,
-                        enableDotsAndInfiniteScroll = HomeComponentRollenceController.isHPBUsingDotsAndInfiniteScroll(),
-                        scrollTransitionDuration = HomeComponentRollenceController.getHPBDuration()
+                        enableDotsAndInfiniteScroll = true,
+                        scrollTransitionDuration = BannerDataModel.NEW_IDLE_DURATION
                     )
                 )
             }
