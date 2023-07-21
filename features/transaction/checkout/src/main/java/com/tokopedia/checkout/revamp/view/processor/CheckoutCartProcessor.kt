@@ -15,9 +15,11 @@ import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressRequest
 import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormV4UseCase
 import com.tokopedia.checkout.domain.usecase.ReleaseBookingUseCase
 import com.tokopedia.checkout.domain.usecase.SaveShipmentStateGqlUseCase
+import com.tokopedia.checkout.revamp.view.firstOrNullInstanceOf
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutItem
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPageState
+import com.tokopedia.checkout.revamp.view.uimodel.CheckoutProductModel
 import com.tokopedia.checkout.view.converter.ShipmentDataRequestConverter
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
@@ -407,7 +409,7 @@ class CheckoutCartProcessor @Inject constructor(
     fun releaseBooking(listData: List<CheckoutItem>) {
         // As deals product is using OCS, the shipment should only contain 1 product
         val productId =
-            listData.filterIsInstance(CheckoutOrderModel::class.java).firstOrNull()?.products?.firstOrNull()?.productId ?: 0
+            listData.firstOrNullInstanceOf(CheckoutProductModel::class.java)?.productId ?: 0
         if (productId != 0L) {
             GlobalScope.launch {
                 try {

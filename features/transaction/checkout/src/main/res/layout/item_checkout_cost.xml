@@ -32,21 +32,43 @@
         app:typographyWeight="reguler"
         tools:text="Total Harga (10 Barang)" />
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_checkout_cost_item_price_value"
+    <androidx.constraintlayout.helper.widget.Flow
+        android:id="@+id/flow_checkout_cost_item_price"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="12dp"
         android:layout_marginEnd="16dp"
-        android:gravity="end"
-        android:textColor="@color/Unify_NN950"
+        app:constraint_referenced_ids="tv_checkout_cost_item_price_slashed_value,tv_checkout_cost_item_price_value"
+        app:flow_horizontalAlign="end"
+        app:flow_horizontalBias="1"
+        app:flow_horizontalGap="4dp"
+        app:flow_horizontalStyle="packed"
+        app:flow_maxElementsWrap="2"
+        app:flow_verticalBias="0"
+        app:flow_verticalGap="4dp"
+        app:flow_wrapMode="chain"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/tv_checkout_cost_item_price_title"
-        app:layout_constraintTop_toBottomOf="@id/tv_checkout_cost_header"
+        app:layout_constraintTop_toTopOf="@id/tv_checkout_cost_item_price_title" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_checkout_cost_item_price_slashed_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_NN400"
         app:typographyType="display_3"
         app:typographyWeight="reguler"
-        tools:text="Rp2.910.000,00 Rp2.905.000,00" />
+        tools:text="Rp2.910.000,00" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_checkout_cost_item_price_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="end"
+        android:textColor="@color/Unify_NN950"
+        app:typographyType="display_3"
+        app:typographyWeight="reguler"
+        tools:text="Rp2.905.000,00" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_checkout_cost_shipping_title"
@@ -67,7 +89,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
-        app:constraint_referenced_ids="tv_checkout_cost_platform_fee_slashed_value,tv_checkout_cost_platform_fee_value"
+        app:constraint_referenced_ids="tv_checkout_cost_shipping_slashed_value,tv_checkout_cost_shipping_value"
         app:flow_horizontalAlign="end"
         app:flow_horizontalBias="1"
         app:flow_horizontalGap="4dp"
@@ -77,37 +99,23 @@
         app:flow_verticalGap="4dp"
         app:flow_wrapMode="chain"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/ic_checkout_cost_platform_fee"
-        app:layout_constraintTop_toTopOf="@id/tv_checkout_cost_platform_fee_title" />
+        app:layout_constraintStart_toEndOf="@id/tv_checkout_cost_shipping_title"
+        app:layout_constraintTop_toTopOf="@id/tv_checkout_cost_shipping_title" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_checkout_cost_shipping_slashed_value"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="16dp"
-        android:gravity="end"
         android:textColor="@color/Unify_NN400"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/tv_checkout_cost_shipping_title"
-        app:layout_constraintTop_toBottomOf="@id/tv_checkout_cost_item_price_value"
         app:typographyType="display_3"
         app:typographyWeight="reguler"
         tools:text="Rp2.910.000,00" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_checkout_cost_shipping_value"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="16dp"
-        android:gravity="end"
         android:textColor="@color/Unify_NN950"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/tv_checkout_cost_shipping_title"
-        app:layout_constraintTop_toBottomOf="@id/tv_checkout_cost_item_price_value"
         app:typographyType="display_3"
         app:typographyWeight="reguler"
         tools:text="Rp2.905.000,00" />

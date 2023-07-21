@@ -8,6 +8,7 @@ import com.tokopedia.analytics.performance.util.EmbraceKey
 import com.tokopedia.analytics.performance.util.EmbraceMonitoring
 import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection
 import com.tokopedia.checkout.domain.mapper.ShipmentAddOnProductServiceMapper
+import com.tokopedia.checkout.domain.model.cartshipmentform.CampaignTimerUi
 import com.tokopedia.checkout.domain.model.cartshipmentform.ShipmentPlatformFeeData
 import com.tokopedia.checkout.domain.model.platformfee.PaymentFeeCheckoutRequest
 import com.tokopedia.checkout.revamp.view.converter.CheckoutDataConverter
@@ -31,6 +32,7 @@ import com.tokopedia.checkout.revamp.view.uimodel.CheckoutItem
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPageState
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPageToaster
+import com.tokopedia.checkout.revamp.view.uimodel.CheckoutProductModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPromoModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutTickerModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutUpsellModel
@@ -94,6 +96,8 @@ class CheckoutViewModel @Inject constructor(
         CheckoutMutableLiveData(CheckoutPageState.Loading)
 
     val commonToaster: MutableSharedFlow<CheckoutPageToaster> = MutableSharedFlow()
+
+    private var campaignTimer: CampaignTimerUi? = null
 
     var isOneClickShipment: Boolean = false
 
@@ -207,6 +211,7 @@ class CheckoutViewModel @Inject constructor(
                     ShipmentAddOnProductServiceMapper.mapSummaryAddOns(saf.cartShipmentAddressFormData)
                 cartDataForRates = saf.cartShipmentAddressFormData.cartData
                 codData = saf.cartShipmentAddressFormData.cod
+                campaignTimer = saf.cartShipmentAddressFormData.campaignTimerUi
 
                 val items = dataConverter.getCheckoutItems(
                     saf.cartShipmentAddressFormData,
@@ -424,7 +429,9 @@ class CheckoutViewModel @Inject constructor(
         val checkoutItems = listData.value.toMutableList()
         val checkoutOrderModel = checkoutItems[cartPosition] as CheckoutOrderModel
         val shipment = checkoutOrderModel.shipment
-        shippingCourierUiModels.forEach { it.isSelected = it.productData.shipperProductId == courierItemData.shipperProductId }
+        shippingCourierUiModels.forEach {
+            it.isSelected = it.productData.shipperProductId == courierItemData.shipperProductId
+        }
         val newShipment = shipment.copy(
             isLoading = false,
             courierItemData = courierItemData,
@@ -434,13 +441,21 @@ class CheckoutViewModel @Inject constructor(
         checkoutItems[cartPosition] = newOrder
         listData.value = checkoutItems
         viewModelScope.launch {
-            cartProcessor.processSaveShipmentState(newOrder, listData.value.address()!!.recipientAddressModel)
+            cartProcessor.processSaveShipmentState(
+                newOrder,
+                listData.value.address()!!.recipientAddressModel
+            )
         }
         calculateTotal()
     }
 
     fun generateValidateUsePromoRequest(): ValidateUsePromoRequest {
-        return promoProcessor.generateValidateUsePromoRequest(listData.value, isTradeIn, isTradeInByDropOff, isOneClickShipment)
+        return promoProcessor.generateValidateUsePromoRequest(
+            listData.value,
+            isTradeIn,
+            isTradeInByDropOff,
+            isOneClickShipment
+        )
     }
 
     fun doValidateUseLogisticPromoNew(
@@ -470,6 +485,26 @@ class CheckoutViewModel @Inject constructor(
             calculateTotal()
         }
     }
+
+    // region campaign
+    fun getCampaignTimer(): CampaignTimerUi? {
+        return if (campaignTimer == null || !campaignTimer!!.showTimer) {
+            null
+        } else {
+            // Set necessary analytics attributes to be passed so the gtm will just trigger
+            // the method without collecting the data again (quite expensive)
+            campaignTimer!!.gtmProductId =
+                listData.value.firstOrNullInstanceOf(CheckoutProductModel::class.java)?.productId
+                    ?: 0
+            campaignTimer!!.gtmUserId = userSessionInterface.userId
+            campaignTimer
+        }
+    }
+
+    fun releaseBooking() {
+        cartProcessor.releaseBooking(listData.value)
+    }
+    // endregion
 
     companion object {
         private const val PLATFORM_FEE_CODE = "platform_fee"

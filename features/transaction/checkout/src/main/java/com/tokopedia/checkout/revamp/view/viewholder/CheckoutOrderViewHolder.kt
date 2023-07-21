@@ -59,8 +59,14 @@ class CheckoutOrderViewHolder(
         binding.shippingWidget.setupListener(this)
         binding.shippingWidget.hideTradeInShippingInfo()
 
-        // prepare load
-        if (order.shipment.isLoading) {
+        if (order.isError) {
+            // todo custom error wording
+            binding.shippingWidget.renderErrorCourierState(
+                ShippingWidgetUiModel(
+                    currentAddress = RecipientAddressModel()
+                )
+            )
+        } else if (order.shipment.isLoading) {
             binding.shippingWidget.prepareLoadCourierState()
             binding.shippingWidget.renderLoadingCourierState()
         } else {
@@ -69,11 +75,82 @@ class CheckoutOrderViewHolder(
                 binding.shippingWidget.prepareLoadCourierState()
                 binding.shippingWidget.hideShippingStateLoading()
                 binding.shippingWidget.showLayoutNoSelectedShipping(RecipientAddressModel())
-            } else if (courierItemData.logPromoCode.isNullOrEmpty()) {
+            } else if (order.isShowScheduleDelivery) {
                 binding.shippingWidget.prepareLoadCourierState()
                 binding.shippingWidget.hideShippingStateLoading()
                 binding.shippingWidget.showContainerShippingExperience()
-                binding.shippingWidget.renderNormalShippingCourier(
+                // todo selly
+                binding.shippingWidget.renderScheduleDeliveryWidget(
+                    ShippingWidgetUiModel(
+                        currentAddress = RecipientAddressModel()
+                    )
+                )
+            } else if (order.isDisableChangeCourier) {
+                binding.shippingWidget.prepareLoadCourierState()
+                binding.shippingWidget.hideShippingStateLoading()
+                binding.shippingWidget.showContainerShippingExperience()
+                // todo now
+                binding.shippingWidget.renderSingleShippingCourier(
+                    ShippingWidgetUiModel(
+                        currentAddress = RecipientAddressModel()
+                    )
+                )
+            } else if (courierItemData.logPromoCode?.isNotEmpty() == true) {
+                binding.shippingWidget.prepareLoadCourierState()
+                binding.shippingWidget.hideShippingStateLoading()
+                binding.shippingWidget.showContainerShippingExperience()
+                binding.shippingWidget.showLayoutFreeShippingCourier(RecipientAddressModel())
+                binding.shippingWidget.renderFreeShippingCourier(
+                    ShippingWidgetUiModel(
+                        courierErrorTitle = order.courierSelectionErrorTitle,
+                        // renderErrorCourierState - shipmentCartItemModel.courierSelectionErrorDescription
+                        courierErrorDescription = order.courierSelectionErrorDescription,
+
+                        // renderShippingVibrationAnimation
+                        isShippingBorderRed = false,
+                        // renderShippingVibrationAnimation
+                        isTriggerShippingVibrationAnimation = false,
+
+                        // CourierItemData.etaErrorCode
+                        etaErrorCode = courierItemData.etaErrorCode,
+                        // CourierItemData.etaText
+                        estimatedTimeArrival = courierItemData.etaText ?: "",
+
+                        // Bebas ongkir & NOW Shipment
+                        hideShipperName = courierItemData.isHideShipperName,
+                        freeShippingTitle = courierItemData.freeShippingChosenCourierTitle,
+                        // Now Shipment
+                        // label
+                        logPromoDesc = "",
+                        voucherLogisticExists = false,
+                        isHasShownCourierError = false,
+
+                        // showNormalShippingCourier
+                        currentAddress = RecipientAddressModel(),
+                        // CourierItemData.estimatedTimeDelivery
+                        estimatedTimeDelivery = courierItemData.estimatedTimeDelivery ?: "",
+
+                        // CourierItemData.name
+                        courierName = courierItemData.name ?: "",
+                        // CourierItemData.shipperPrice
+                        courierShipperPrice = courierItemData.shipperPrice,
+
+                        merchantVoucher = courierItemData.merchantVoucherProductModel,
+                        ontimeDelivery = courierItemData.ontimeDelivery,
+                        cashOnDelivery = courierItemData.codProductData,
+
+                        // CourierItemData.durationCardDescription
+                        whitelabelEtaText = courierItemData.durationCardDescription,
+
+                        scheduleDeliveryUiModel = null,
+                        insuranceData = InsuranceData()
+                    )
+                )
+            } else if (courierItemData.isHideChangeCourierCard) {
+                binding.shippingWidget.prepareLoadCourierState()
+                binding.shippingWidget.hideShippingStateLoading()
+                binding.shippingWidget.showContainerShippingExperience()
+                binding.shippingWidget.renderNormalShippingWithoutChooseCourierCard(
                     ShippingWidgetUiModel(
                         courierErrorTitle = order.courierSelectionErrorTitle,
                         // renderErrorCourierState - shipmentCartItemModel.courierSelectionErrorDescription
@@ -124,8 +201,7 @@ class CheckoutOrderViewHolder(
                 binding.shippingWidget.prepareLoadCourierState()
                 binding.shippingWidget.hideShippingStateLoading()
                 binding.shippingWidget.showContainerShippingExperience()
-                binding.shippingWidget.showLayoutFreeShippingCourier(RecipientAddressModel())
-                binding.shippingWidget.renderFreeShippingCourier(
+                binding.shippingWidget.renderNormalShippingCourier(
                     ShippingWidgetUiModel(
                         courierErrorTitle = order.courierSelectionErrorTitle,
                         // renderErrorCourierState - shipmentCartItemModel.courierSelectionErrorDescription
@@ -142,8 +218,8 @@ class CheckoutOrderViewHolder(
                         estimatedTimeArrival = courierItemData.etaText ?: "",
 
                         // Bebas ongkir & NOW Shipment
-                        hideShipperName = courierItemData.isHideShipperName,
-                        freeShippingTitle = courierItemData.freeShippingChosenCourierTitle,
+                        hideShipperName = false,
+                        freeShippingTitle = "",
                         // Now Shipment
                         // label
                         logPromoDesc = "",
@@ -169,7 +245,8 @@ class CheckoutOrderViewHolder(
 
                         scheduleDeliveryUiModel = null,
                         insuranceData = InsuranceData()
-                    )
+                    ),
+                    RecipientAddressModel()
                 )
             }
         }

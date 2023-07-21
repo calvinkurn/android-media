@@ -29,6 +29,7 @@ import com.tokopedia.checkout.databinding.BottomSheetPlatformFeeInfoBinding
 import com.tokopedia.checkout.databinding.FragmentCheckoutBinding
 import com.tokopedia.checkout.databinding.HeaderCheckoutBinding
 import com.tokopedia.checkout.databinding.ToastRectangleBinding
+import com.tokopedia.checkout.domain.model.cartshipmentform.CampaignTimerUi
 import com.tokopedia.checkout.revamp.di.CheckoutModule
 import com.tokopedia.checkout.revamp.di.DaggerCheckoutComponent
 import com.tokopedia.checkout.revamp.view.adapter.CheckoutAdapter
@@ -39,6 +40,8 @@ import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPageState
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutProductModel
 import com.tokopedia.checkout.view.ShipmentFragment
+import com.tokopedia.checkout.view.dialog.ExpireTimeDialogListener
+import com.tokopedia.checkout.view.dialog.ExpiredTimeDialog
 import com.tokopedia.checkout.view.uimodel.ShipmentNewUpsellModel
 import com.tokopedia.checkout.view.uimodel.ShipmentPaymentFeeModel
 import com.tokopedia.checkout.webview.UpsellWebViewActivity
@@ -98,14 +101,15 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import com.tokopedia.utils.lifecycle.autoCleared
+import com.tokopedia.utils.time.TimeHelper
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
-
-class CheckoutFragment : BaseDaggerFragment(), CheckoutAdapterListener, UploadPrescriptionListener, ShippingDurationBottomsheetListener, ShippingCourierBottomsheetListener {
+class CheckoutFragment : BaseDaggerFragment(), CheckoutAdapterListener, UploadPrescriptionListener, ShippingDurationBottomsheetListener, ShippingCourierBottomsheetListener,
+    ExpireTimeDialogListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -263,19 +267,6 @@ class CheckoutFragment : BaseDaggerFragment(), CheckoutAdapterListener, UploadPr
             }
         })
 
-//        binding.tvCheckoutTesting.setOnClickListener {
-//            if (header.tvCheckoutHeaderText.isVisible) {
-//                header.tvCheckoutHeaderText.animateGone()
-//                header.tvCheckoutHeaderAddressHeader.animateShow()
-//                header.tvCheckoutHeaderAddressName.animateShow()
-//            } else {
-//                header.tvCheckoutHeaderText.animateShow()
-//                header.tvCheckoutHeaderAddressHeader.animateGone()
-//                header.tvCheckoutHeaderAddressName.animateGone()
-//            }
-//            viewModel.test()
-//        }
-
         initViewModel()
     }
 
@@ -388,6 +379,7 @@ class CheckoutFragment : BaseDaggerFragment(), CheckoutAdapterListener, UploadPr
                             (viewModel.listData.value.firstOrNullInstanceOf(CheckoutEpharmacyModel::class.java) as? CheckoutEpharmacyModel)?.epharmacy
                         delayEpharmacyProcess(uploadPrescriptionUiModel)
                     }
+                    setCampaignTimer()
                 }
 
                 is CheckoutPageState.Normal -> {
@@ -688,6 +680,11 @@ class CheckoutFragment : BaseDaggerFragment(), CheckoutAdapterListener, UploadPr
                 startActivityForResult(intent, REQUEST_CODE_COURIER_PINPOINT)
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        checkCampaignTimer()
     }
 
     companion object {
@@ -1467,12 +1464,76 @@ class CheckoutFragment : BaseDaggerFragment(), CheckoutAdapterListener, UploadPr
     }
     // endregion
 
+    // region timer
+    /*
+     * This method is to solve expired dialog not shown up after time expired in background
+     * Little caveat: what if device's time is tempered and not synchronized with server?
+     * Later: consider serverTimeOffset, need more time
+     * */
+    private fun checkCampaignTimer() {
+        val timer = viewModel.getCampaignTimer()
+        if (timer != null && timer.showTimer) {
+            val diff = TimeHelper.timeSinceNow(timer.timerExpired)
+            showCampaignTimerExpiredDialog(timer, diff, checkoutAnalyticsCourierSelection)
+        }
+    }
+
+    private fun showCampaignTimerExpiredDialog(
+        timer: CampaignTimerUi,
+        diff: Long,
+        checkoutAnalyticsCourierSelection: CheckoutAnalyticsCourierSelection
+    ) {
+        if (isAdded) {
+            val fragmentManager = parentFragmentManager
+            if (diff <= 0) {
+                val dialog =
+                    ExpiredTimeDialog.newInstance(timer, checkoutAnalyticsCourierSelection, this)
+                dialog.show(fragmentManager, "expired dialog")
+            }
+        }
+    }
+
+    private fun setCampaignTimer() {
+        val timer = viewModel.getCampaignTimer()
+        if (timer != null && timer.showTimer) {
+            val diff = TimeHelper.timeBetweenRFC3339(timer.timerServer, timer.timerExpired)
+            binding.tvCountDown.visibility = View.VISIBLE
+            binding.countDown.visibility = View.VISIBLE
+            binding.tvCountDown.text = timer.timerDescription
+            binding.countDown.remainingMilliseconds = diff
+            binding.countDown.onFinish = {
+                val dialog =
+                    ExpiredTimeDialog.newInstance(
+                        timer,
+                        checkoutAnalyticsCourierSelection,
+                        this@CheckoutFragment
+                    )
+                dialog.show(parentFragmentManager, "expired dialog")
+            }
+        } else {
+            binding.tvCountDown.visibility = View.GONE
+            binding.countDown.visibility = View.GONE
+        }
+    }
+
+    override fun onPrimaryCTAClicked() {
+        releaseBookingIfAny()
+    }
+    // endregion
+
+    private fun releaseBookingIfAny() {
+        if (view != null && binding.countDown.visibility == View.VISIBLE) {
+            viewModel.releaseBooking()
+        }
+    }
+
     private fun finish() {
         if (activity != null) {
-//            releaseBookingIfAny()
+            releaseBookingIfAny()
 //            shipmentViewModel.clearAllBoOnTemporaryUpsell()
 //            activity?.setResult(resultCode)
             activity?.finish()
         }
     }
 }
+
