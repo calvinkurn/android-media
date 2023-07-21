@@ -17,7 +17,6 @@ import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
-import androidx.compose.material.Switch
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -43,6 +42,7 @@ import com.tokopedia.nest.principles.ui.NestNN
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.nest.principles.utils.ImageSource
 import com.tokopedia.sellerpersona.R
+import com.tokopedia.sellerpersona.view.compose.common.Switch
 import com.tokopedia.sellerpersona.view.compose.model.PersonaResultState
 import com.tokopedia.sellerpersona.view.compose.model.ResultUiEvent
 import com.tokopedia.sellerpersona.view.model.PersonaDataUiModel
@@ -85,11 +85,11 @@ private fun ResultFooterSectionUi(data: PersonaDataUiModel, onEvent: (ResultUiEv
         Spacer(modifier = Modifier.height(16.dp))
         Row(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(end = 16.dp),
-            verticalAlignment = Alignment.CenterVertically
+                .fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Column(modifier = Modifier.fillMaxWidth()) {
+            Column {
                 NestTypography(
                     text = stringResource(
                         R.string.sp_result_persona_seller_type_status, data.personaData.headerTitle
@@ -104,9 +104,9 @@ private fun ResultFooterSectionUi(data: PersonaDataUiModel, onEvent: (ResultUiEv
                     )
                 )
             }
-            Switch(checked = data.isSwitchChecked, onCheckedChange = {
+            Switch(isSwitchedOn = data.isSwitchChecked) {
                 onEvent(ResultUiEvent.CheckChanged(it))
-            })
+            }
         }
         NestTypography(
             text = stringResource(R.string.sp_persona_activation_content_description),
@@ -150,8 +150,7 @@ private fun ManualSelectPersonaComponent(persona: String, onEvent: (ResultUiEven
             append(" $clickable")
         }
     }
-    NestTypography(
-        text = annotatedString,
+    NestTypography(text = annotatedString,
         textStyle = NestTheme.typography.display3.copy(
             color = NestTheme.colors.NN._600, textAlign = TextAlign.Center
         ),
