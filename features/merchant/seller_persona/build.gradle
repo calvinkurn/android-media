@@ -81,7 +81,6 @@ dependencies {
     implementation rootProject.ext.composeDependencies.composeUi
     implementation rootProject.ext.composeDependencies.composePreview
     implementation rootProject.ext.composeDependencies.composeRuntime
-    implementation rootProject.ext.composeDependencies.composeCoil
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.supportLibDependencies.design
