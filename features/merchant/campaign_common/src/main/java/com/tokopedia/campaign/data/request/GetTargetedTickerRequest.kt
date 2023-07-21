@@ -1,4 +1,4 @@
-package com.tokopedia.mvc.data.request
+package com.tokopedia.campaign.data.request
 
 import com.google.gson.annotations.SerializedName
 
