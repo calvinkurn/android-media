@@ -96,8 +96,8 @@ class FeedMainViewModel @Inject constructor(
 
             return feedCreateContentData is Success &&
                 feedCreateContentData.data.find {
-                it.type == CreateContentType.CREATE_SHORT_VIDEO
-            } != null
+                    it.type == CreateContentType.CREATE_SHORT_VIDEO
+                } != null
         }
 
     init {
