@@ -10,11 +10,12 @@ import android.view.MotionEvent
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.imageassets.TokopediaImageUrl
+import com.tokopedia.imageassets.utils.loadProductImage
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.loadImageRounded
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
@@ -182,7 +183,10 @@ open class SomListOrderViewHolder(
     private fun setupProductList(element: SomListOrderUiModel) {
         binding?.run {
             ivSomListProduct.apply {
-                loadImageRounded(element.orderProduct.firstOrNull()?.picture.orEmpty())
+                loadProductImage(
+                    url = element.orderProduct.firstOrNull()?.picture.orEmpty(),
+                    archivedUrl = TokopediaImageUrl.IMG_ARCHIVED_PRODUCT_SMALL
+                )
                 if (element.tickerInfo.text.isNotBlank()) {
                     setMargin(12.toPx(), 6.5f.dpToPx().toInt(), Int.ZERO, Int.ZERO)
                 } else {

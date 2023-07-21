@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.addon.presentation.uimodel.AddOnUIModel
 import com.tokopedia.cart.databinding.HolderItemCartTickerErrorBinding
 import com.tokopedia.cart.databinding.ItemCartChooseAddressBinding
 import com.tokopedia.cart.databinding.ItemCartDisabledAccordionBinding
@@ -22,6 +23,7 @@ import com.tokopedia.cart.databinding.ItemSelectAllBinding
 import com.tokopedia.cart.view.ActionListener
 import com.tokopedia.cart.view.adapter.recentview.CartRecentViewAdapter
 import com.tokopedia.cart.view.adapter.wishlist.CartWishlistAdapter
+import com.tokopedia.cart.view.uimodel.CartAddOnProductData
 import com.tokopedia.cart.view.uimodel.CartChooseAddressHolderData
 import com.tokopedia.cart.view.uimodel.CartEmptyHolderData
 import com.tokopedia.cart.view.uimodel.CartGroupHolderData
@@ -1453,21 +1455,30 @@ class CartAdapter constructor(
         plusCoachMark = coachMark
     }
 
-    fun updateAddOnByCartId(cartId: String, newAddOnWording: String) {
+    fun updateAddOnByCartId(cartId: String, newAddOnWording: String, selectedAddons: List<AddOnUIModel>) {
         var position = 0
-        loop@ for ((index, any) in cartDataList.withIndex()) {
-            if (any is CartGroupHolderData) {
-                any.productUiModelList.let { cartItemHolderDataList ->
-                    innerLoop@ for (cartItemHolderData in cartItemHolderDataList) {
-                        if (cartItemHolderData.cartId == cartId) {
-                            position = index
-                            cartItemHolderData.addOnsProduct.widget.wording = newAddOnWording
-                        }
+        loop@ for ((index, item) in cartDataList.withIndex()) {
+            if (item is CartItemHolderData) {
+                if (item.cartId == cartId) {
+                    position = index
+                    item.addOnsProduct.widget.wording = newAddOnWording
+                    item.addOnsProduct.listData.clear()
+                    selectedAddons.forEach {
+                        item.addOnsProduct.listData.add(
+                            CartAddOnProductData(
+                                id = it.id,
+                                uniqueId = it.uniqueId,
+                                status = it.getSelectedStatus().value,
+                                type = it.addOnType,
+                                price = it.price.toDouble()
+                            )
+                        )
                     }
+                    notifyItemChanged(position)
+                    break@loop
                 }
             }
         }
-        notifyItemChanged(position)
     }
 
     override fun onNeedToRefreshSingleProduct(childPosition: Int) {

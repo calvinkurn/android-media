@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.getBooleanArg
+import com.tokopedia.kotlin.extensions.view.getIntArg
 import com.tokopedia.kotlin.extensions.view.getStringArg
 import com.tokopedia.kotlin.extensions.view.getStringArrayListArg
 import com.tokopedia.product.detail.R
@@ -49,6 +50,7 @@ class PostAtcBottomSheet : BottomSheetUnify() {
         private const val ARG_PAGE_SOURCE = "pageSource"
         private const val ARG_SELECTED_ADDONS_IDS = "selected_addons_ids"
         private const val ARG_WAREHOUSE_ID = "warehouse_id"
+        private const val ARG_QUANTITY = "quantity"
 
         fun instance(
             productId: String,
@@ -58,6 +60,7 @@ class PostAtcBottomSheet : BottomSheetUnify() {
             pageSource: String,
             selectedAddonsIds: List<String>,
             warehouseId: String,
+            quantity: Int
         ) = PostAtcBottomSheet().apply {
             arguments = Bundle().apply {
                 putString(ARG_PRODUCT_ID, productId)
@@ -67,6 +70,7 @@ class PostAtcBottomSheet : BottomSheetUnify() {
                 putString(ARG_PAGE_SOURCE, pageSource)
                 putStringArrayList(ARG_SELECTED_ADDONS_IDS, ArrayList(selectedAddonsIds))
                 putString(ARG_WAREHOUSE_ID, warehouseId)
+                putInt(ARG_QUANTITY, quantity)
             }
         }
     }
@@ -100,6 +104,7 @@ class PostAtcBottomSheet : BottomSheetUnify() {
     private val argPageSource by getStringArg(ARG_PAGE_SOURCE)
     private val argSelectedAddonsIds: List<String> by getStringArrayListArg(ARG_SELECTED_ADDONS_IDS)
     private val argWarehouseId: String by getStringArg(ARG_WAREHOUSE_ID)
+    private val argQuantity: Int by getIntArg(ARG_QUANTITY)
 
     private val callback = PostAtcCallback(this)
     internal val adapter = PostAtcAdapter(callback)
@@ -143,7 +148,6 @@ class PostAtcBottomSheet : BottomSheetUnify() {
 
     private fun setupBottomSheet(inflater: LayoutInflater, container: ViewGroup?) {
         clearContentPadding = true
-        isHideable = true
 
         val title = context?.getString(R.string.pdp_post_atc_title) ?: ""
         setTitle(title)
@@ -225,7 +229,8 @@ class PostAtcBottomSheet : BottomSheetUnify() {
             argLayoutId,
             argPageSource,
             argSelectedAddonsIds,
-            argWarehouseId
+            argWarehouseId,
+            argQuantity
         )
     }
 }

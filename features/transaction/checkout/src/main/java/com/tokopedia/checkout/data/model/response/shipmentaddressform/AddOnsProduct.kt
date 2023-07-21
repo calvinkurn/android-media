@@ -30,6 +30,9 @@ data class AddOnsProduct(
         @SerializedName("id")
         val id: Long = 0L,
 
+        @SerializedName("unique_id")
+        val uniqueId: String = "",
+
         @SerializedName("price")
         val price: Double = 0.0,
 

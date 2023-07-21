@@ -65,7 +65,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.45" />
+        app:layout_constraintGuide_begin="@dimen/dp_104" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/data_card_parent"

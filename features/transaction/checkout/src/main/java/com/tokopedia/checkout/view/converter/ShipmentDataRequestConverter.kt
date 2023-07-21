@@ -185,12 +185,12 @@ class ShipmentDataRequestConverter @Inject constructor(private val _gson: Gson) 
             }
         }
         addOnProduct.listAddOnProductData.forEach { addOnProductItem ->
-            if (addOnProductItem.addOnDataStatus == AddOnConstant.ADD_ON_PRODUCT_STATUS_CHECK) {
+            if (addOnProductItem.status == AddOnConstant.ADD_ON_PRODUCT_STATUS_CHECK) {
                 val addOnGiftingRequest = CheckoutGiftingAddOn()
-                addOnGiftingRequest.itemId = addOnProductItem.addOnDataId.toString()
-                addOnGiftingRequest.itemUniqueId = addOnProductItem.addOnDataUniqueId
+                addOnGiftingRequest.itemId = addOnProductItem.id.toString()
+                addOnGiftingRequest.itemUniqueId = addOnProductItem.uniqueId
                 addOnGiftingRequest.itemType = ADD_ONS_PRODUCT_SERVICE
-                addOnGiftingRequest.itemQty = addOnProductItem.addOnDataQty
+                addOnGiftingRequest.itemQty = addOnProductItem.qty
                 addOnGiftingRequest.itemMetadata = ""
                 listCheckoutGiftingAddOn.add(addOnGiftingRequest)
             }

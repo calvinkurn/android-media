@@ -109,8 +109,10 @@ import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.searchbar.data.HintData
+import com.tokopedia.searchbar.navigation_component.NavSource
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
+import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.seller_migration_common.analytics.SellerMigrationTracking
 import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants
@@ -289,12 +291,14 @@ class ShopPageHeaderFragment :
         private const val PATH_FEED = "feed"
         private const val PATH_REVIEW = "review"
         private const val PATH_NOTE = "note"
+        private const val PATH_CAMPAIGN = "campaign"
         private const val QUERY_SHOP_REF = "shop_ref"
         private const val QUERY_SHOP_ATTRIBUTION = "tracker_attribution"
         private const val QUERY_AFFILIATE_UUID = "aff_unique_id"
         private const val QUERY_AFFILIATE_CHANNEL = "channel"
         private const val QUERY_CAMPAIGN_ID = "campaign_id"
         private const val QUERY_VARIANT_ID = "variant_id"
+        private const val QUERY_TAB = "tab"
         private const val START_PAGE = 1
         private const val IS_FIRST_TIME_VISIT = "isFirstTimeVisit"
         private const val SOURCE = "shop page"
@@ -446,6 +450,7 @@ class ShopPageHeaderFragment :
         val layoutParams = viewBindingShopContentLayout?.layoutPartialShopPageHeader?.root?.layoutParams as? LinearLayout.LayoutParams
         layoutParams?.bottomMargin.orZero()
     }
+    private var queryParamTab: String = ""
 
     override fun getComponent() = activity?.run {
         DaggerShopPageHeaderComponent.builder().shopPageHeaderModule(ShopPageHeaderModule())
@@ -1129,6 +1134,7 @@ class ShopPageHeaderFragment :
                     if (lastPathSegment.orEmpty() == PATH_NOTE) {
                         shouldOpenShopNoteBottomSheet = true
                     }
+                    queryParamTab = getQueryParameter(QUERY_TAB).orEmpty()
                     shopRef = getQueryParameter(QUERY_SHOP_REF) ?: ""
                     shopAttribution = getQueryParameter(QUERY_SHOP_ATTRIBUTION) ?: ""
                     checkAffiliateAppLink(this)
@@ -1349,7 +1355,8 @@ class ShopPageHeaderFragment :
             etalaseId = "",
             isRefresh = isRefresh,
             widgetUserAddressLocalData = localCacheModel ?: LocalCacheModel(),
-            extParam = extParam
+            extParam = extParam,
+            tabName = getSelectedTabName().takeIf { it.isNotEmpty() } ?: queryParamTab
         )
     }
 
@@ -1390,7 +1397,7 @@ class ShopPageHeaderFragment :
         newNavigationToolbar?.apply {
             viewLifecycleOwner.lifecycle.addObserver(this)
             show()
-            val iconBuilder = IconBuilder()
+            val iconBuilder = IconBuilder(builderFlags = IconBuilderFlag(pageSource = NavSource.SHOP))
             iconBuilder.addIcon(IconList.ID_SHARE) { clickShopShare() }
             if (isCartShownInNewNavToolbar()) {
                 iconBuilder.addIcon(IconList.ID_CART) {}
@@ -1828,6 +1835,7 @@ class ShopPageHeaderFragment :
             }
         }
         viewPager?.setCurrentItem(selectedPosition, false)
+        setShopLayoutDataToSelectedTab()
         tabLayout?.getTabAt(selectedPosition)?.select()
         tabLayout?.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabReselected(tab: TabLayout.Tab) {
@@ -1862,11 +1870,43 @@ class ShopPageHeaderFragment :
                         }
                     }
                 }
+                checkShouldSendCampaignTabOpenScreenTracker()
                 hideScrollToTopButton()
                 hideShopPageFab()
                 isTabClickByUser = false
             }
         })
+    }
+
+    private fun checkShouldSendCampaignTabOpenScreenTracker() {
+        if (getSelectedTabName() == ShopPageHeaderTabName.CAMPAIGN) {
+            sendShopCampaignTabOpenScreenTracker()
+        }
+    }
+
+    private fun sendShopCampaignTabOpenScreenTracker() {
+        shopPageTracking?.sendOpenScreenShopCampaignTab(shopId, userId, isLogin)
+    }
+
+    private fun setShopLayoutDataToSelectedTab() {
+        val shopLayoutData = getShopLayoutDataBasedOnSelectedTab()
+        when (val selectedFragment = getSelectedFragmentInstance()) {
+            is ShopPageCampaignFragment -> {
+                selectedFragment.setListWidgetLayoutData(shopLayoutData)
+            }
+
+            is ShopPageHomeFragment -> {
+                selectedFragment.setListWidgetLayoutData(shopLayoutData)
+            }
+
+            else -> {}
+        }
+    }
+
+    private fun getShopLayoutDataBasedOnSelectedTab(): HomeLayoutData? {
+        return shopPageHeaderDataModel?.listDynamicTabData?.getOrNull(
+            getSelectedDynamicTabPosition()
+        )?.data?.homeLayoutData
     }
 
     private fun handleSelectedTab(tab: TabLayout.Tab, isActive: Boolean) {
@@ -2056,7 +2096,6 @@ class ShopPageHeaderFragment :
                         shopHeaderViewModel?.productListData?.let {
                             setInitialProductListData(it)
                         }
-                        setListWidgetLayoutData(it.data.homeLayoutData)
                         setHomeTabListBackgroundColor(it.listBackgroundColor)
                         setHomeTabBackgroundPatternImage(it.backgroundImage)
                         setHomeTabLottieUrl(it.lottieUrl)
@@ -2141,22 +2180,10 @@ class ShopPageHeaderFragment :
     private fun createCampaignTabFragment(
         tabData: ShopPageGetDynamicTabResponse.ShopPageGetDynamicTab.TabData
     ): Fragment {
-        return ShopPageCampaignFragment.createInstance(
-            shopId,
-            shopPageHeaderDataModel?.isOfficial ?: false,
-            shopPageHeaderDataModel?.isGoldMerchant ?: false,
-            shopPageHeaderDataModel?.shopName.orEmpty(),
-            shopAttribution ?: "",
-            shopRef,
-            shopPageHeaderDataModel?.isEnableDirectPurchase.orFalse()
-        ).apply {
-            setListWidgetLayoutData(
-                HomeLayoutData(
-                    widgetIdList = tabData.data.widgetIdList
-                )
-            )
-            setPageBackgroundColor(tabData.listBackgroundColor)
-            setPageTextColor(tabData.textColor)
+        return ShopPageCampaignFragment.createInstance(shopId).apply {
+            setCampaignTabListBackgroundColor(tabData.listBackgroundColor)
+            setListPatternImage(tabData.bgImages)
+            setIsDarkTheme(tabData.isDark)
         }
     }
 
@@ -3472,5 +3499,15 @@ class ShopPageHeaderFragment :
         if (isAffiliateInputValid(inputAffiliate.shop?.shopStatus ?: 0)) {
             shopHeaderViewModel?.checkAffiliate(inputAffiliate)
         }
+    }
+
+    fun selectShopTab(tabName: String) {
+        val selectedTabPosition = getTabPositionBasedOnTabName(tabName)
+        viewPager?.setCurrentItem(selectedTabPosition, false)
+        tabLayout?.getTabAt(selectedTabPosition)?.select()
+    }
+
+    fun resetSelectedPosition() {
+        viewPagerAdapterHeader?.clearTabData()
     }
 }

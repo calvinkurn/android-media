@@ -59,7 +59,6 @@ class LottieBottomNav : LinearLayout {
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        resizeContainer()
         val parentWidth = MeasureSpec.getSize(widthMeasureSpec)
         this.setMeasuredDimension(parentWidth, buttonsHeight.toInt())
 
@@ -138,7 +137,6 @@ class LottieBottomNav : LinearLayout {
             it.layoutParams = llLayoutParam
             it.invalidate()
         }
-        invalidate()
     }
 
     private fun getLayoutAtr(attrs: AttributeSet) {
@@ -158,6 +156,7 @@ class LottieBottomNav : LinearLayout {
         )
         activeButtonColor =
             a.getColor(R.styleable.LottieBottomNav_activeButtonColor, Color.TRANSPARENT)
+        a.recycle()
 
         weightSum = 1f
         orientation = VERTICAL
@@ -234,14 +233,13 @@ class LottieBottomNav : LinearLayout {
                 // we need to set our own failure listener to avoid crash
                 // especially for xiaomi android 8
             }
-            bottomMenu.animName?.let {
-                icon.setAnimation(bottomMenu.animName)
-                icon.speed = bottomMenu.animSpeed
-            }
             if (bottomMenu.animName == null) {
                 bottomMenu.imageName?.let {
                     icon.setImageResource(it)
                 }
+            } else {
+                icon.setAnimation(bottomMenu.animName)
+                icon.speed = bottomMenu.animSpeed
             }
 
             iconList.add(index, Pair(icon, false))
@@ -274,26 +272,20 @@ class LottieBottomNav : LinearLayout {
 
                 override fun onAnimationEnd(p0: Animator) {
                     if (selectedItem != index) {
-                        val bottomMenuSelected = bottomMenu
-                        val iconSelected = icon
-
-                        bottomMenuSelected.imageEnabledName?.let {
+                        bottomMenu.imageEnabledName?.let {
                             iconPlaceholder.setImageResource(it)
                         }
-                        bottomMenuSelected.animName?.let {
-                            iconSelected.setAnimation(it)
-                            iconSelected.speed = bottomMenuSelected.animSpeed
+                        bottomMenu.animName?.let {
+                            icon.setAnimation(it)
+                            icon.speed = bottomMenu.animSpeed
                         }
                     } else {
-                        val bottomMenuSelected = bottomMenu
-                        val iconSelected = icon
-
-                        bottomMenuSelected.imageName?.let {
+                        bottomMenu.imageName?.let {
                             iconPlaceholder.setImageResource(it)
                         }
-                        bottomMenuSelected.animToEnabledName?.let {
-                            iconSelected.setAnimation(it)
-                            iconSelected.speed = bottomMenuSelected.animToEnabledSpeed
+                        bottomMenu.animToEnabledName?.let {
+                            icon.setAnimation(it)
+                            icon.speed = bottomMenu.animToEnabledSpeed
                         }
                     }
 
@@ -362,17 +354,17 @@ class LottieBottomNav : LinearLayout {
         addView(navbarContainer)
     }
 
-    private fun handleItemClicked(index: Int, bottomMenu: BottomMenu) {
+    private fun handleItemClicked(index: Int, bottomMenu: BottomMenu, shouldAnimate: Boolean) {
         Handler(Looper.getMainLooper()).post {
             if (selectedItem != index) {
                 listener?.menuClicked(index, bottomMenu.id).orTrue()
-                changeColor(index)
+                changeColor(index, shouldAnimate)
                 selectedItem = index
             }
         }
     }
 
-    private fun changeColor(newPosition: Int) {
+    private fun changeColor(newPosition: Int, shouldAnimate: Boolean) {
         if (selectedItem == newPosition) {
             listener?.menuReselected(newPosition, menu[newPosition].id)
             return
@@ -408,7 +400,15 @@ class LottieBottomNav : LinearLayout {
         val newSelectedItem = newSelectedItemPair.first
         if (!newSelectedItemPair.second) {
             newSelectedItem.visibility = View.VISIBLE
-            newSelectedItem.playAnimation()
+            if (shouldAnimate) {
+                newSelectedItem.playAnimation()
+            } else {
+                menu[newPosition].imageName?.let {
+                    iconPlaceholderList[newPosition].setImageResource(it)
+                    iconList[newPosition].first.visibility = View.INVISIBLE
+                    iconPlaceholderList[newPosition].visibility = View.VISIBLE
+                }
+            }
         }
 
         iconList[newPosition] = Pair(newSelectedItem, true)
@@ -420,9 +420,9 @@ class LottieBottomNav : LinearLayout {
         selectedItem = newPosition
     }
 
-    fun setSelected(position: Int) {
+    fun setSelected(position: Int, shouldAnimate: Boolean = true) {
         if (menu.size > position) {
-            handleItemClicked(position, menu[position])
+            handleItemClicked(position, menu[position], shouldAnimate)
         }
     }
 
@@ -434,7 +434,6 @@ class LottieBottomNav : LinearLayout {
         resizeContainer()
 
         setupMenuItems()
-        invalidate()
     }
 
     fun setMenuClickListener(listener: IBottomClickListener) {
