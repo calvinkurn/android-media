@@ -235,6 +235,9 @@ class MapperFeedXHome @Inject constructor(
     private fun transformProduct(product: FeedXProduct): FeedCardProductModel =
         FeedCardProductModel(
             id = product.id,
+            isParent = product.isParent,
+            parentID = product.parentID,
+            hasVariant = product.hasVariant,
             name = product.name,
             coverUrl = product.coverUrl,
             weblink = product.weblink,

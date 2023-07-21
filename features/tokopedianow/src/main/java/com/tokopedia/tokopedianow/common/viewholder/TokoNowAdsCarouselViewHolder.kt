@@ -99,7 +99,7 @@ class TokoNowAdsCarouselViewHolder(
             }
 
             override fun onProductCardAddToCartBlocked() {
-
+                listener?.onProductCardAddToCartBlocked()
             }
         }
     }
