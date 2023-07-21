@@ -11,8 +11,10 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.base.view.fragment.lifecycle.FragmentLifecycleObserver.onFragmentSelected
 import com.tokopedia.abstraction.base.view.fragment.lifecycle.FragmentLifecycleObserver.onFragmentUnSelected
+import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.affiliate.AFFILIATE_PROMOTE_HOME
 import com.tokopedia.affiliate.AffiliateAnalytics
 import com.tokopedia.affiliate.COACHMARK_TAG
@@ -42,11 +44,10 @@ import com.tokopedia.affiliate.ui.fragment.AffiliatePromoFragment
 import com.tokopedia.affiliate.ui.fragment.education.AffiliateEducationLandingPage
 import com.tokopedia.affiliate.viewmodel.AffiliateViewModel
 import com.tokopedia.affiliate_toko.R
-import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelActivity
-import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.coachmark.CoachMarkPreference
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.remoteconfig.RemoteConfigInstance
@@ -61,26 +62,32 @@ import java.util.*
 import javax.inject.Inject
 
 class AffiliateActivity :
-    BaseViewModelActivity<AffiliateViewModel>(),
+    BaseSimpleActivity(),
+    HasComponent<AffiliateComponent>,
     IBottomClickListener,
     AffiliateBottomNavBarInterface,
     AffiliateActivityInterface {
+    private val affiliateComponent: AffiliateComponent by lazy(LazyThreadSafetyMode.NONE) { initInject() }
 
     @Inject
-    lateinit var userSessionInterface: UserSessionInterface
+    @JvmField
+    var userSessionInterface: UserSessionInterface? = null
 
     @Inject
-    lateinit var viewModelProvider: ViewModelProvider.Factory
+    @JvmField
+    var viewModelProvider: ViewModelProvider.Factory? = null
 
-    private lateinit var affiliateVM: AffiliateViewModel
+    private var affiliateVM: AffiliateViewModel? = null
     private var fragmentStack = Stack<String>()
     private var affiliateBottomNavigation: AffiliateBottomNavbar? = null
 
     private var fromHelpAppLink = false
     private var fromAppLink = false
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        affiliateComponent.injectActivity(this)
+        affiliateVM = viewModelProvider?.let { ViewModelProvider(this, it) }
+            ?.get(AffiliateViewModel::class.java)
         intent?.data?.let { data ->
             fromAppLink = data.pathSegments.contains(PAGE_SEGMENT_EDU_PAGE)
             fromHelpAppLink = data.pathSegments.contains(PAGE_SEGMENT_HELP)
@@ -97,10 +104,6 @@ class AffiliateActivity :
     }
 
     override fun getLayoutRes(): Int = R.layout.affiliate_layout
-
-    override fun getViewModelType(): Class<AffiliateViewModel> {
-        return AffiliateViewModel::class.java
-    }
 
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
@@ -145,32 +148,22 @@ class AffiliateActivity :
         }
     }
 
-    override fun getVMFactory(): ViewModelProvider.Factory {
-        return viewModelProvider
-    }
-
-    override fun initInject() {
-        getComponent().injectActivity(this)
-    }
-
-    private fun getComponent(): AffiliateComponent =
+    private fun initInject() =
         DaggerAffiliateComponent
             .builder()
             .baseAppComponent((application as BaseMainApplication).baseAppComponent)
             .build()
 
-    override fun setViewModel(viewModel: BaseViewModel) {
-        affiliateVM = viewModel as AffiliateViewModel
-    }
+    override fun getComponent(): AffiliateComponent = affiliateComponent
 
     override fun getNewFragment(): Fragment? {
         return null
     }
 
     private fun afterViewCreated() {
-        if (userSessionInterface.isLoggedIn) {
+        if (userSessionInterface?.isLoggedIn == true) {
             setObservers()
-            affiliateVM.getAffiliateValidateUser()
+            affiliateVM?.getAffiliateValidateUser()
         } else {
             showLoginPortal()
         }
@@ -289,8 +282,8 @@ class AffiliateActivity :
         AffiliateAnalytics.sendOpenScreenEvent(
             AffiliateAnalytics.EventKeys.OPEN_SCREEN,
             AffiliateAnalytics.ScreenKeys.AFFILIATE_HOME_SCREEN_NAME,
-            userSessionInterface.isLoggedIn,
-            userSessionInterface.userId
+            userSessionInterface?.isLoggedIn.orFalse(),
+            userSessionInterface?.userId.orEmpty()
         )
     }
 
@@ -343,8 +336,8 @@ class AffiliateActivity :
             PROMO_MENU -> openFragment(AffiliatePromoFragment.getFragmentInstance())
             INCOME_MENU -> openFragment(
                 AffiliateIncomeFragment.getFragmentInstance(
-                    userSessionInterface.name,
-                    userSessionInterface.profilePicture,
+                    userSessionInterface?.name.orEmpty(),
+                    userSessionInterface?.profilePicture.orEmpty(),
                     this
                 )
             )
@@ -363,7 +356,7 @@ class AffiliateActivity :
     override fun menuReselected(position: Int, id: Int) = Unit
 
     private fun setObservers() {
-        affiliateVM.getValidateUserdata().observe(this) { validateUserdata ->
+        affiliateVM?.getValidateUserdata()?.observe(this) { validateUserdata ->
             if (validateUserdata.validateAffiliateUserStatus.data?.isRegistered == true &&
                 validateUserdata.validateAffiliateUserStatus.data?.isEligible == true
             ) {
@@ -373,7 +366,7 @@ class AffiliateActivity :
             }
         }
 
-        affiliateVM.progressBar().observe(this) {
+        affiliateVM?.progressBar()?.observe(this) {
             if (it) {
                 findViewById<LoaderUnify>(R.id.affiliate_home_progress_bar)?.show()
             } else {
@@ -381,7 +374,7 @@ class AffiliateActivity :
             }
         }
 
-        affiliateVM.getErrorMessage().observe(this) { error ->
+        affiliateVM?.getErrorMessage()?.observe(this) { error ->
             when (error) {
                 is UnknownHostException, is SocketTimeoutException -> {
                     Toaster.build(
@@ -428,7 +421,7 @@ class AffiliateActivity :
             eventAction,
             AffiliateAnalytics.CategoryKeys.AFFILIATE_HOME_PAGE,
             "",
-            userSessionInterface.userId
+            userSessionInterface?.userId.orEmpty()
         )
     }
 

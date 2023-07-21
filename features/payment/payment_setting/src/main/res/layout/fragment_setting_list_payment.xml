@@ -35,7 +35,7 @@
             android:layout_gravity="center_vertical"
             android:layout_weight="1"
             android:text="@string/payment_label_auth_credit_card"
-            android:textColor="@color/Unify_N700"
+            android:textColor="@color/Unify_NN950"
             app:typographyType="heading_4" />
 
         <com.tokopedia.iconunify.IconUnify

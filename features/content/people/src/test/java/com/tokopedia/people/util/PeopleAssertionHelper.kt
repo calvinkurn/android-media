@@ -1,5 +1,6 @@
 package com.tokopedia.people.util
 
+import com.tokopedia.people.views.uimodel.event.UserProfileSettingsEvent
 import com.tokopedia.people.views.uimodel.event.UserProfileUiEvent
 import org.assertj.core.api.Assertions
 
@@ -37,6 +38,12 @@ fun <T : Any> List<T>.assertEmpty() {
 }
 
 fun UserProfileUiEvent.assertEvent(event: UserProfileUiEvent) {
+    Assertions
+        .assertThat(this)
+        .isInstanceOf(event::class.java)
+}
+
+fun UserProfileSettingsEvent.assertEvent(event: UserProfileSettingsEvent) {
     Assertions
         .assertThat(this)
         .isInstanceOf(event::class.java)

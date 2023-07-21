@@ -89,7 +89,7 @@
             app:typographyType="body_3"
             app:typographyWeight="bold"
             android:visibility="gone"
-            android:textColor="@color/Unify_N700_68"
+            android:textColor="@color/Unify_NN950_68"
             android:layout_marginStart="@dimen/unify_space_8"
             app:layout_constraintStart_toEndOf="@id/iconRp"
             app:layout_constraintTop_toTopOf="@id/iconRp"
@@ -135,7 +135,7 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/Unify_N50_32"
+                android:background="@color/Unify_NN50_32"
                 android:padding="@dimen/unify_space_8">
 
                 <com.tokopedia.unifyprinciples.Typography
@@ -187,7 +187,7 @@
                     android:id="@+id/klikCount"
                     style="@style/CardView.CountView"
                     android:layout_marginTop="@dimen/unify_space_4"
-                    android:textColor="@color/Unify_N700_96"
+                    android:textColor="@color/Unify_NN950_96"
                     app:layout_constraintEnd_toStartOf="@id/persentaseKlikCount"
                     app:layout_constraintStart_toEndOf="@id/tampilCount"
                     app:layout_constraintTop_toBottomOf="@id/klik"

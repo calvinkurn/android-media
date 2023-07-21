@@ -26,7 +26,7 @@ class UploaderUseCase @Inject constructor(
     private lateinit var file: File
 
     private var withTranscode = true
-    private var shouldCompress = false
+    private var shouldCompress = true
     private var isSecure = false
     private var isRetriable = true
     private var extraHeader: Map<String, String> = mapOf()
@@ -37,7 +37,7 @@ class UploaderUseCase @Inject constructor(
 
     override suspend fun execute(params: RequestParams): UploadResult {
         withTranscode = params.getBoolean(PARAM_WITH_TRANSCODE, true)
-        shouldCompress = params.getBoolean(PARAM_SHOULD_COMPRESS, false)
+        shouldCompress = params.getBoolean(PARAM_SHOULD_COMPRESS, true)
         sourceId = params.getString(PARAM_SOURCE_ID, "")
         file = params.getObject(PARAM_FILE_PATH) as File
         isSecure = params.getBoolean(PARAM_IS_SECURE, false)

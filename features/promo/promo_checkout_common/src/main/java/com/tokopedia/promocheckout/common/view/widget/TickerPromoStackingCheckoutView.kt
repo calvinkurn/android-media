@@ -133,7 +133,7 @@ class TickerPromoStackingCheckoutView @JvmOverloads constructor(
     private fun setViewFailed() {
         setViewCouponShow()
         val drawableBackground = layoutTickerFrameGlobal.background.current.mutate() as GradientDrawable
-        drawableBackground.setColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_R400))
+        drawableBackground.setColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_RN400))
 
         bg_active_up.setImageDrawable(
                 MethodChecker.getDrawable(getContext(),R.drawable.background_checkout_ticker_error_up))
@@ -144,7 +144,7 @@ class TickerPromoStackingCheckoutView @JvmOverloads constructor(
     private fun setViewActive() {
         setViewCouponShow()
         val drawableBackground = layoutTickerFrameGlobal.background.current.mutate() as GradientDrawable
-        drawableBackground.setColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G400))
+        drawableBackground.setColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
 
         bg_active_up.setImageDrawable(
                 MethodChecker.getDrawable(getContext(),R.drawable.background_checkout_ticker_active_up))
@@ -155,7 +155,7 @@ class TickerPromoStackingCheckoutView @JvmOverloads constructor(
     private fun setViewInactive() {
         setViewCouponShow()
         val drawableBackground = layoutTickerFrameGlobal.background.current.mutate() as GradientDrawable
-        drawableBackground.setColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Y400))
+        drawableBackground.setColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_YN400))
 
         bg_active_up.setImageDrawable(
                 MethodChecker.getDrawable(getContext(),R.drawable.background_checkout_ticker_inactive_up))
@@ -199,7 +199,7 @@ class TickerPromoStackingCheckoutView @JvmOverloads constructor(
 
     private fun setViewDisabled() {
         if (variant != Variant.GLOBAL) {
-            val nonActiveTextColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_20)
+            val nonActiveTextColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_20)
             title_button_coupon.setTextColor(nonActiveTextColor)
             title_action_coupon.setTextColor(nonActiveTextColor)
             setImageFilterGrayScale()
@@ -207,8 +207,8 @@ class TickerPromoStackingCheckoutView @JvmOverloads constructor(
     }
 
     private fun setViewEnabled() {
-        title_button_coupon.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G400))
-        title_action_coupon.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+        title_button_coupon.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
+        title_action_coupon.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_68))
         setImageFilterNormal()
     }
 

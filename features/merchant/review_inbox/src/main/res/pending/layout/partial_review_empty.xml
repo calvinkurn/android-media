@@ -40,7 +40,7 @@
         android:gravity="center"
         android:layout_marginStart="@dimen/layout_lvl6"
         android:layout_marginEnd="@dimen/layout_lvl6"
-        android:textColor="@color/Unify_N700_68"
+        android:textColor="@color/Unify_NN950_68"
         app:typographyType="body_2"
         app:typographyWeight="reguler"
         app:layout_constraintTop_toBottomOf="@id/reviewEmptyTitle"/>
