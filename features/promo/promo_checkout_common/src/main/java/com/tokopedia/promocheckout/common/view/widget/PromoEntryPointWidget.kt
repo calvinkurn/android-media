@@ -20,7 +20,7 @@ import com.tokopedia.unifycomponents.DividerUnify
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 
-open class PromoEntryPointWidget @JvmOverloads constructor(
+class PromoEntryPointWidget @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : BaseCustomView(context, attrs, defStyleAttr) {
 
@@ -28,28 +28,28 @@ open class PromoEntryPointWidget @JvmOverloads constructor(
         return R.layout.layout_widget_promo_checkout_switcher
     }
 
-    internal var loadingView: View? = null
-    internal var switcherView: ViewSwitcher? = null
+    private var loadingView: View? = null
+    private var switcherView: ViewSwitcher? = null
 
-    internal var activeView: View? = null
-    internal var activeViewRightIcon: IconUnify? = null
-    internal var activeViewLeftImage: ImageUnify? = null
-    internal var activeViewWording: TextSwitcher? = null
-    internal var activeViewDivider: DividerUnify? = null
-    internal var activeViewSummaryLayout: LinearLayout? = null
+    private var activeView: View? = null
+    private var activeViewRightIcon: IconUnify? = null
+    private var activeViewLeftImage: ImageUnify? = null
+    private var activeViewWording: TextSwitcher? = null
+    private var activeViewDivider: DividerUnify? = null
+    private var activeViewSummaryLayout: LinearLayout? = null
 
-    internal var inActiveView: View? = null
-    internal var inActiveViewLeftImage: ImageUnify? = null
-    internal var inActiveViewWording: TextSwitcher? = null
-    internal var inActiveViewRightIcon: IconUnify? = null
-    internal var errorView: View? = null
+    private var inActiveView: View? = null
+    private var inActiveViewLeftImage: ImageUnify? = null
+    private var inActiveViewWording: TextSwitcher? = null
+    private var inActiveViewRightIcon: IconUnify? = null
+    private var errorView: View? = null
 
     init {
         inflate(context, getLayout(), this)
-        setupViews()
+        setupViews(attrs)
     }
 
-    private fun setupViews() {
+    private fun setupViews(attrs: AttributeSet?) {
         loadingView = findViewById(R.id.loader_promo_checkout)
         errorView = findViewById(R.id.error_promo_checkout)
         switcherView = findViewById(R.id.switcher_promo_checkout)
@@ -70,62 +70,86 @@ open class PromoEntryPointWidget @JvmOverloads constructor(
         inActiveView?.findViewById<LinearLayout>(R.id.ll_promo_checkout_summary)?.visibility =
             View.GONE
 
-        setupViewBackgrounds()
+        setupViewBackgrounds(attrs)
     }
 
-    internal open fun setupViewBackgrounds() {
-        val loadingBackground = ResourcesCompat.getDrawable(
-            resources,
-            R.drawable.background_promo_checkout_teal_gradient,
-            null
-        )
-        val n0Color = ResourcesCompat.getColor(
-            resources,
-            com.tokopedia.unifyprinciples.R.color.Unify_NN0,
-            null
-        )
-        val t100Color = ResourcesCompat.getColor(
-            resources,
-            com.tokopedia.unifyprinciples.R.color.Unify_TN100,
-            null
-        )
-        val t100ColorAlpha = ColorUtils.setAlphaComponent(t100Color, 56)
-        val loadingDrawable = loadingBackground as? GradientDrawable
-        loadingDrawable?.mutate()
-        loadingDrawable?.colors = intArrayOf(t100ColorAlpha, n0Color)
-        loadingView?.background = loadingBackground
-        val inActiveBackground = ResourcesCompat.getDrawable(
-            resources,
-            R.drawable.background_promo_checkout_teal_gradient,
-            null
-        )
-        val gradientDrawable = inActiveBackground as? GradientDrawable
-        gradientDrawable?.mutate()
-        val nn50Color = ResourcesCompat.getColor(
-            resources,
-            com.tokopedia.unifyprinciples.R.color.Unify_NN50,
-            null
-        )
-        val nn50ColorAlpha = ColorUtils.setAlphaComponent(nn50Color, 163)
-        gradientDrawable?.colors = intArrayOf(
-            nn50ColorAlpha,
-            n0Color
-        )
-        inActiveView?.background = inActiveBackground
-        activeView?.background = loadingBackground
-        val errorBackground = ResourcesCompat.getDrawable(
-            resources,
-            R.drawable.background_promo_checkout_teal,
-            null
-        )
-        (errorBackground as? GradientDrawable)?.setColor(
-            ResourcesCompat.getColor(
-                resources,
-                com.tokopedia.unifyprinciples.R.color.Unify_YN50,
-                null
-            )
-        )
-        errorView?.background = errorBackground
+    internal open fun setupViewBackgrounds(attrs: AttributeSet?) {
+        val styledAttributes = context.obtainStyledAttributes(attrs, R.styleable.PromoEntryPointWidget)
+        try {
+            if (styledAttributes.getBoolean(R.styleable.PromoEntryPointWidget_rounded, false)) {
+                loadingView?.background = ResourcesCompat.getDrawable(resources, R.drawable.background_promo_checkout_teal_rounded, null)
+                activeView?.background = ResourcesCompat.getDrawable(resources, R.drawable.background_promo_checkout_active_teal_rounded, null)
+                val inActiveBackground = ResourcesCompat.getDrawable(
+                    resources,
+                    R.drawable.background_promo_checkout_teal_rounded,
+                    null
+                )
+                (inActiveBackground as? GradientDrawable)?.setColor(ResourcesCompat.getColor(resources, com.tokopedia.unifyprinciples.R.color.Unify_NN50, null))
+                inActiveView?.background = inActiveBackground
+                val errorBackground = ResourcesCompat.getDrawable(
+                    resources,
+                    R.drawable.background_promo_checkout_teal_rounded,
+                    null
+                )
+                (errorBackground as? GradientDrawable)?.setColor(ResourcesCompat.getColor(resources, com.tokopedia.unifyprinciples.R.color.Unify_YN50, null))
+                errorView?.background = errorBackground
+            } else {
+                val loadingBackground = ResourcesCompat.getDrawable(
+                    resources,
+                    R.drawable.background_promo_checkout_teal_gradient,
+                    null
+                )
+                val n0Color = ResourcesCompat.getColor(
+                    resources,
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN0,
+                    null
+                )
+                val t100Color = ResourcesCompat.getColor(
+                    resources,
+                    com.tokopedia.unifyprinciples.R.color.Unify_TN100,
+                    null
+                )
+                val t100ColorAlpha = ColorUtils.setAlphaComponent(t100Color, 56)
+                val loadingDrawable = loadingBackground as? GradientDrawable
+                loadingDrawable?.mutate()
+                loadingDrawable?.colors = intArrayOf(t100ColorAlpha, n0Color)
+                loadingView?.background = loadingBackground
+                val inActiveBackground = ResourcesCompat.getDrawable(
+                    resources,
+                    R.drawable.background_promo_checkout_teal_gradient,
+                    null
+                )
+                val gradientDrawable = inActiveBackground as? GradientDrawable
+                gradientDrawable?.mutate()
+                val nn50Color = ResourcesCompat.getColor(
+                    resources,
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN50,
+                    null
+                )
+                val nn50ColorAlpha = ColorUtils.setAlphaComponent(nn50Color, 163)
+                gradientDrawable?.colors = intArrayOf(
+                    nn50ColorAlpha,
+                    n0Color
+                )
+                inActiveView?.background = inActiveBackground
+                activeView?.background = loadingBackground
+                val errorBackground = ResourcesCompat.getDrawable(
+                    resources,
+                    R.drawable.background_promo_checkout_teal,
+                    null
+                )
+                (errorBackground as? GradientDrawable)?.setColor(
+                    ResourcesCompat.getColor(
+                        resources,
+                        com.tokopedia.unifyprinciples.R.color.Unify_YN50,
+                        null
+                    )
+                )
+                errorView?.background = errorBackground
+            }
+        } finally {
+            styledAttributes.recycle()
+        }
     }
 
     fun showLoading() {
