@@ -343,10 +343,16 @@ class BuyerOrderDetailViewModel @Inject constructor(
     }
 
     fun updateScpRewardsMedalTouchPointWidgetState(
-        data: MedaliTouchpointOrder
+        data: MedaliTouchpointOrder,
+        marginLeft: Int,
+        marginTop: Int,
+        marginRight: Int
     ) {
-        scpRewardsMedalTouchPointWidgetUiState.value = mapScpRewardsMedalTouchPointWidgetUiState(
-            data = data
+        scpRewardsMedalTouchPointWidgetUiState.value = ScpRewardsMedalTouchPointWidgetMapper.map(
+            data = data,
+            marginLeft = marginLeft,
+            marginTop = marginTop,
+            marginRight = marginRight
         )
     }
 
@@ -447,12 +453,6 @@ class BuyerOrderDetailViewModel @Inject constructor(
             orderInsuranceUiState.value
         )
     }
-
-    private fun mapScpRewardsMedalTouchPointWidgetUiState(
-        data: MedaliTouchpointOrder
-    ): ScpRewardsMedalTouchPointWidgetUiState = ScpRewardsMedalTouchPointWidgetMapper.map(
-        data = data
-    )
 
     private fun mapBuyerOrderDetailUiState(
         actionButtonsUiState: ActionButtonsUiState,
