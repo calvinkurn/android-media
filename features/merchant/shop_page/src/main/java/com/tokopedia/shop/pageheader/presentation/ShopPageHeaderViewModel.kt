@@ -181,7 +181,8 @@ class ShopPageHeaderViewModel @Inject constructor(
         etalaseId: String,
         isRefresh: Boolean,
         widgetUserAddressLocalData: LocalCacheModel,
-        extParam: String
+        extParam: String,
+        tabName: String
     ) {
         launchCatchError(block = {
             val shopP1DataAsync = asyncCatchError(
@@ -192,7 +193,8 @@ class ShopPageHeaderViewModel @Inject constructor(
                         shopDomain = shopDomain,
                         isRefresh = isRefresh,
                         extParam = extParam,
-                        widgetUserAddressLocalData = widgetUserAddressLocalData
+                        widgetUserAddressLocalData = widgetUserAddressLocalData,
+                        tabName = tabName
                     )
                 },
                 onError = {
@@ -333,7 +335,8 @@ class ShopPageHeaderViewModel @Inject constructor(
         shopDomain: String,
         isRefresh: Boolean,
         extParam: String,
-        widgetUserAddressLocalData: LocalCacheModel
+        widgetUserAddressLocalData: LocalCacheModel,
+        tabName: String
     ): NewShopPageHeaderP1 {
         val useCase = getShopPageP1DataUseCase.get()
         useCase.isFromCacheFirst = !isRefresh
@@ -341,7 +344,8 @@ class ShopPageHeaderViewModel @Inject constructor(
             shopId = shopId,
             shopDomain = shopDomain,
             extParam = extParam,
-            widgetUserAddressLocalData = widgetUserAddressLocalData
+            widgetUserAddressLocalData = widgetUserAddressLocalData,
+            tabName = tabName
         )
         return useCase.executeOnBackground()
     }

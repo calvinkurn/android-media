@@ -37,7 +37,9 @@ import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifyprinciples.stringToUnifyColor
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Calendar
+import java.util.Date
+import java.util.Locale
 
 /**
  * Created by fwidjaja on 2019-11-21.

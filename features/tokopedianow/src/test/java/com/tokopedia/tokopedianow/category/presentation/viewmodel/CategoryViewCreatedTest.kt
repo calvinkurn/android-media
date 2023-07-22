@@ -19,6 +19,11 @@ class CategoryViewCreatedTest : TokoNowCategoryMainViewModelTestFixture() {
 
     @Test
     fun `onViewCreated should return success result with loading showcase`() {
+        setAddressData(
+            warehouseId = warehouseId,
+            warehouses = getLocalWarehouseModelList(),
+            shopId = shopId
+        )
         onCategoryDetail_thenReturns()
         onTargetedTicker_thenReturns()
 
@@ -87,6 +92,11 @@ class CategoryViewCreatedTest : TokoNowCategoryMainViewModelTestFixture() {
 
     @Test
     fun `onViewCreated should return success result with loading showcase even though targeted ticker throws an error exception`() {
+        setAddressData(
+            warehouseId = warehouseId,
+            warehouses = getLocalWarehouseModelList(),
+            shopId = shopId
+        )
         onCategoryDetail_thenReturns()
         onTargetedTicker_thenThrows()
 

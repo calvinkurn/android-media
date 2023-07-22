@@ -94,6 +94,7 @@ class GetSellerCampaignListUseCase @Inject constructor(
                     package_id
                     package_name
                   }
+                  is_oos_improvement
                 }
                 total_campaign
                 total_campaign_active
