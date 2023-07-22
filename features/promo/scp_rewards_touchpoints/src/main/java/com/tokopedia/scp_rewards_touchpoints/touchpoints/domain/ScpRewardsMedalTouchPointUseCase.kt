@@ -55,6 +55,8 @@ query scpRewardsMedaliTouchpointOrder(${'$'}apiVersion: String, ${'$'}pageName: 
       medaliSlug
       medaliIconImageURL
       medaliSunburstImageURL
+      medaliIconImageURLWidget
+      backgroundImageURL
       infoMessage {
         title
         subtitle
