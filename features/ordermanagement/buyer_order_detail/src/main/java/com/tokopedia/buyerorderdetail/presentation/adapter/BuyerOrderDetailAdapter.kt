@@ -119,6 +119,7 @@ open class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailType
         scpRewardsMedalTouchPointWidgetUiState: ScpRewardsMedalTouchPointWidgetUiState
     ) {
         if (scpRewardsMedalTouchPointWidgetUiState is ScpRewardsMedalTouchPointWidgetUiState.HasData.Showing) {
+            addThickDividerSection()
             addScpRewardsMedalTouchPointSection(
                 uiModel = scpRewardsMedalTouchPointWidgetUiState.uiModel
             )
@@ -205,7 +206,7 @@ open class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailType
     private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addScpRewardsMedalTouchPointSection(
         uiModel: ScpRewardsMedalTouchPointWidgetUiModel
     ) {
-        add(uiModel as Visitable<BuyerOrderDetailTypeFactory>)
+        (uiModel as? Visitable<BuyerOrderDetailTypeFactory>)?.let { add(it) }
     }
 
     private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addOrderStatusHeaderSection(

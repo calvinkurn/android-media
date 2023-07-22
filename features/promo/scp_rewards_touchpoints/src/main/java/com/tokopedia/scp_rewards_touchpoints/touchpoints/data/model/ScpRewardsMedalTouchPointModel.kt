@@ -8,5 +8,6 @@ data class ScpRewardsMedalTouchPointModel(
     val iconImage: String = String.EMPTY,
     val sunburstImage: String = String.EMPTY,
     val backgroundIconImage: String = String.EMPTY,
-    val backgroundWidgetImage: String = String.EMPTY
+    val backgroundWidgetImage: String = String.EMPTY,
+    val chevronIsShown: Boolean = false
 )

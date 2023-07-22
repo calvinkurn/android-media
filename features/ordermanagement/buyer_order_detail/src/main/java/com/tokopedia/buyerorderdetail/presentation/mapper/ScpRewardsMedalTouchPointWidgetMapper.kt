@@ -3,6 +3,7 @@ package com.tokopedia.buyerorderdetail.presentation.mapper
 import com.tokopedia.buyerorderdetail.presentation.uistate.ScpRewardsMedalTouchPointWidgetUiState
 import com.tokopedia.scp_rewards_touchpoints.touchpoints.adapter.uimodel.ScpRewardsMedalTouchPointWidgetUiModel
 import com.tokopedia.scp_rewards_touchpoints.touchpoints.data.response.ScpRewardsMedalTouchPointResponse.ScpRewardsMedaliTouchpointOrder.MedaliTouchpointOrder
+import com.tokopedia.unifycomponents.toPx
 
 object ScpRewardsMedalTouchPointWidgetMapper {
     fun map(
@@ -23,6 +24,9 @@ object ScpRewardsMedalTouchPointWidgetMapper {
         backgroundIconImage = data.medaliIconImageURLWidget,
         backgroundWidgetImage = data.backgroundImageURL,
         ctaAppLink = data.cta.appLink,
-        ctaIsShown = data.cta.isShown
+        ctaIsShown = data.cta.isShown,
+        marginLeft = 16.toPx(),
+        marginTop = 22.toPx(),
+        marginRight = 16.toPx(),
     )
 }

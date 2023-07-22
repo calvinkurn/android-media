@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.cardview.widget.CardView
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.scp_rewards_touchpoints.touchpoints.data.model.ScpRewardsMedalTouchPointModel
 import com.tokopedia.scp_rewards_touchpoints.bottomsheet.utils.loadImage
 import com.tokopedia.scp_rewards_touchpoints.common.util.ViewUtil.rotate
@@ -35,6 +36,7 @@ class ScpRewardsMedalTouchPointWidgetView @JvmOverloads constructor(
         iuSunburstIcon.loadImage(model.sunburstImage)
         iuBackgroundIcon.loadImage(model.backgroundIconImage)
         acivBackgroundWidget.loadImage(model.backgroundWidgetImage)
+        icuChevron.showWithCondition(model.chevronIsShown)
     }
 
     fun setData(

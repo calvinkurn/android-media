@@ -2,6 +2,7 @@ package com.tokopedia.scp_rewards_touchpoints.touchpoints.adapter.viewholder
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.scp_rewards_touchpoints.R
 import com.tokopedia.scp_rewards_touchpoints.touchpoints.data.model.ScpRewardsMedalTouchPointModel
 import com.tokopedia.scp_rewards_touchpoints.databinding.ItemScpRewardsMedalTouchPointBinding
@@ -18,22 +19,36 @@ class ScpRewardsMedalTouchPointWidgetViewHolder(
 
     private val binding: ItemScpRewardsMedalTouchPointBinding? by viewBinding()
 
-    override fun bind(element: ScpRewardsMedalTouchPointWidgetUiModel?) {
-        binding?.root?.setData(model = ScpRewardsMedalTouchPointModel(
-            title = "mana dia",
-            subtitle = "dimana kah itu",
-            iconImage = "https://images.tokopedia.net/img/HThbdi/scp/2023/05/23/generalicon.png",
-            sunburstImage = "https://images.tokopedia.net/img/HThbdi/scp/2023/05/23/sunburst.png",
-            backgroundWidgetImage = "https://images.tokopedia.net/img/HThbdi/scp/2023/07/05/medali-pattern-widget.png",
-            backgroundIconImage = "https://images.tokopedia.net/img/HThbdi/scp/2023/07/13/icon_medali_background_3x.png"
-        )
-        )
-        binding?.root?.setOnClickListener {
-            listener?.onClickWidgetListener()
+    override fun bind(element: ScpRewardsMedalTouchPointWidgetUiModel) {
+        binding?.root?.apply {
+            setMargin(
+                left = element.marginLeft,
+                top = element.marginTop,
+                right = element.marginRight,
+                bottom = element.marginBottom
+            )
+            setData(
+                model = ScpRewardsMedalTouchPointModel(
+                    title = element.title,
+                    subtitle = element.subtitle,
+                    iconImage = element.iconImage,
+                    sunburstImage = element.sunburstImage,
+                    backgroundWidgetImage = element.backgroundWidgetImage,
+                    backgroundIconImage = element.backgroundIconImage,
+                    chevronIsShown = element.ctaIsShown
+                )
+            )
+            setOnClickListener {
+                listener?.onClickWidgetListener(
+                    appLink = element.ctaAppLink
+                )
+            }
         }
     }
 
     interface ScpRewardsMedalTouchPointWidgetListener {
-        fun onClickWidgetListener()
+        fun onClickWidgetListener(
+            appLink: String
+        )
     }
 }
