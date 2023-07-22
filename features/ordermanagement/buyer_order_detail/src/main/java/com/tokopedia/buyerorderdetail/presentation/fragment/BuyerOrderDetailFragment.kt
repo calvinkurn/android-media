@@ -33,6 +33,7 @@ import com.tokopedia.buyerorderdetail.di.BuyerOrderDetailComponent
 import com.tokopedia.buyerorderdetail.domain.models.FinishOrderResponse
 import com.tokopedia.buyerorderdetail.presentation.activity.BuyerOrderDetailActivity
 import com.tokopedia.buyerorderdetail.presentation.adapter.BuyerOrderDetailAdapter
+import com.tokopedia.buyerorderdetail.presentation.adapter.callback.ScpRewardsMedalTouchPointWidgetCallback
 import com.tokopedia.buyerorderdetail.presentation.adapter.typefactory.BuyerOrderDetailTypeFactory
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.CourierInfoViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.DigitalRecommendationViewHolder
@@ -79,7 +80,6 @@ import com.tokopedia.remoteconfig.RemoteConfigKey.SCP_REWARDS_MEDALI_TOUCH_POINT
 import com.tokopedia.scp_rewards_touchpoints.touchpoints.ScpToasterHelper
 import com.tokopedia.scp_rewards_touchpoints.touchpoints.analytics.ScpRewardsToasterAnalytics
 import com.tokopedia.scp_rewards_touchpoints.touchpoints.data.response.ScpRewardsMedalTouchPointResponse
-import com.tokopedia.scp_rewards_touchpoints.touchpoints.adapter.viewholder.ScpRewardsMedalTouchPointWidgetViewHolder
 import com.tokopedia.scp_rewards_touchpoints.touchpoints.viewmodel.ScpRewardsMedalTouchPointViewModel
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.LoaderUnify
@@ -463,6 +463,9 @@ open class BuyerOrderDetailFragment :
                         )
                         ScpRewardsToasterAnalytics.sendViewToasterEvent(
                             badgeId = data.scpRewardsMedaliTouchpointOrder.medaliTouchpointOrder.medaliID.toString()
+                        )
+                        viewModel.updateScpRewardsMedalTouchPointWidgetState(
+                            data = data.scpRewardsMedaliTouchpointOrder.medaliTouchpointOrder
                         )
                     }
                 }
@@ -891,12 +894,5 @@ open class BuyerOrderDetailFragment :
 
     private fun isScpRewardTouchPointEnabled(): Boolean = remoteConfig.getBoolean(SCP_REWARDS_MEDALI_TOUCH_POINT, true)
 
-    private fun scpRewardsMedalTouchPointWidgetCallback() = object : ScpRewardsMedalTouchPointWidgetViewHolder.ScpRewardsMedalTouchPointWidgetListener {
-        override fun onClickWidgetListener() {
-            scpMedalTouchPointViewModel.getMedalTouchPoint(
-                orderId = viewModel.getOrderId().toLongOrZero(),
-                sourceName = SOURCE_NAME_FOR_MEDAL_TOUCH_POINT
-            )
-        }
-    }
+    private fun scpRewardsMedalTouchPointWidgetCallback() = ScpRewardsMedalTouchPointWidgetCallback()
 }
