@@ -13,7 +13,6 @@ object Util {
     }
 
     fun isRBPOn(context: Context?): Boolean {
-        return true
         return context?.let {
             val remoteConfig = FirebaseRemoteConfigImpl(context)
             remoteConfig.getBoolean(
