@@ -67,7 +67,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.travelCalendar)
     implementation projectOrAar(rootProject.ext.libraries.analytics)
     implementation projectOrAar(rootProject.ext.libraries.applink)
-    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
     implementation projectOrAar(rootProject.ext.libraries.utils)
     implementation projectOrAar(rootProject.ext.libraries.locationmanager)
     implementation projectOrAar(rootProject.ext.libraries.track)

@@ -84,9 +84,10 @@ open class PlayVideoPlayer(val context: Context, cardType: PlayWidgetType) {
             override fun onPlayerError(error: ExoPlaybackException) {
                 super.onPlayerError(error)
 
-                if (error.sourceException is BehindLiveWindowException) {
-                    initPlayer(shouldRestartTimer = false)
-                }
+                if (error.type != ExoPlaybackException.TYPE_SOURCE) return
+                if (error.sourceException !is BehindLiveWindowException) return
+
+                initPlayer(shouldRestartTimer = false)
             }
         })
     }

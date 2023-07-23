@@ -690,7 +690,7 @@ class ShippingWidget : ConstraintLayout {
                     ForegroundColorSpan(
                         ContextCompat.getColor(
                             this,
-                            com.tokopedia.unifyprinciples.R.color.Unify_G500_96
+                            com.tokopedia.unifyprinciples.R.color.Unify_GN500_96
                         )
                     ),
                     pinpointErrorMessage.length,

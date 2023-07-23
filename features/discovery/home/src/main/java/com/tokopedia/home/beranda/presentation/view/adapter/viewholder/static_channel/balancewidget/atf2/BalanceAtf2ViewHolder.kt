@@ -132,7 +132,7 @@ class BalanceAtf2ViewHolder(v: View, private val totalItems: Int) : BaseBalanceV
             setImageDrawable(
                 ContextCompat.getDrawable(
                     itemView.context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_N75
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN50
                 )
             )
         }

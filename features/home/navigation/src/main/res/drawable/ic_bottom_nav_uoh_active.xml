@@ -13,18 +13,18 @@
       android:pathData="M8,11H15"
       android:strokeLineJoin="round"
       android:strokeWidth="1.5"
-      android:strokeColor="@color/Unify_N0"
+      android:strokeColor="@color/Unify_NN0"
       android:strokeLineCap="round"/>
   <path
       android:pathData="M8,7H12"
       android:strokeLineJoin="round"
       android:strokeWidth="1.5"
-      android:strokeColor="@color/Unify_N0"
+      android:strokeColor="@color/Unify_NN0"
       android:strokeLineCap="round"/>
   <path
       android:pathData="M8,15H15"
       android:strokeLineJoin="round"
       android:strokeWidth="1.5"
-      android:strokeColor="@color/Unify_N0"
+      android:strokeColor="@color/Unify_NN0"
       android:strokeLineCap="round"/>
 </vector>

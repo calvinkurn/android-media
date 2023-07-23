@@ -529,7 +529,7 @@ class ShipmentFragment :
         activity?.window?.decorView?.setBackgroundColor(
             ContextCompat.getColor(
                 activity,
-                com.tokopedia.unifyprinciples.R.color.Unify_N50
+                com.tokopedia.unifyprinciples.R.color.Unify_NN50
             )
         )
     }

@@ -48,11 +48,11 @@ class TalkInboxViewHolder(
         with(binding) {
             if (productThumbnail.isEmpty()) {
                 talkInboxProductThumbnail.setImageUrl(DELETED_PRODUCT_PLACEHOLDER)
-                talkInboxProductName.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_32))
+                talkInboxProductName.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_32))
                 return
             }
             talkInboxProductThumbnail.setImageUrl(productThumbnail)
-            talkInboxProductName.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+            talkInboxProductName.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_68))
         }
     }
 
@@ -63,7 +63,7 @@ class TalkInboxViewHolder(
     private fun setQuestion(question: String) {
         binding.talkInboxMessage.apply {
             text = HtmlCompat.fromHtml(question, HtmlCompat.FROM_HTML_MODE_LEGACY).toString().replace("\n", " ")
-            setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
+            setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_96))
             setWeight(Typography.BOLD)
         }
     }
@@ -82,14 +82,14 @@ class TalkInboxViewHolder(
                 0 -> {
                     talkInboxAnswerCount.apply {
                         text = context.getString(R.string.inbox_total_count_empty_seller)
-                        setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+                        setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_68))
                         setWeight(Typography.BOLD)
                     }
                 }
                 else -> {
                     talkInboxAnswerCount.apply {
                         text = context.getString(R.string.inbox_total_count, totalAnswer.toString())
-                        setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+                        setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_68))
                         setWeight(Typography.REGULAR)
                     }
                 }

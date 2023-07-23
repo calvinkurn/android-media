@@ -104,7 +104,7 @@ class ShopPageHeaderBasicInfoWidgetViewHolder(
 
         // Handle dark mode - last online status
         val lastOnlineColor = ShopUtil.getColorHexString(itemView.context, R.color.clr_dms_31353B)
-        val lastOnlineUnifyColor = ShopUtil.getColorHexString(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700)
+        val lastOnlineUnifyColor = ShopUtil.getColorHexString(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN950)
         val unifiedShopAdditionalInfo = shopAdditionalInfo.replace(lastOnlineColor, lastOnlineUnifyColor)
         shopBasicInfoAdditionalInfoTextView?.text = MethodChecker.fromHtml(unifiedShopAdditionalInfo)
 
