@@ -1,4 +1,4 @@
-package com.tokopedia.kyc_centralized.ui.gotoKyc.main
+package com.tokopedia.kyc_centralized.ui.gotoKyc.main.submit
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize

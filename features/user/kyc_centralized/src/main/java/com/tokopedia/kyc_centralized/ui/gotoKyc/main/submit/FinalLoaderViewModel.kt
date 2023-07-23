@@ -1,4 +1,4 @@
-package com.tokopedia.kyc_centralized.ui.gotoKyc.main
+package com.tokopedia.kyc_centralized.ui.gotoKyc.main.submit
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

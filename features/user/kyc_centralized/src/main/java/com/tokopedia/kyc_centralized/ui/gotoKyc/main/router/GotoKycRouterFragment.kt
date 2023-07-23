@@ -1,4 +1,4 @@
-package com.tokopedia.kyc_centralized.ui.gotoKyc.main
+package com.tokopedia.kyc_centralized.ui.gotoKyc.main.router
 
 import android.app.Activity
 import android.os.Build
@@ -11,6 +11,11 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kyc_centralized.databinding.FragmentGotoKycLoaderBinding
 import com.tokopedia.kyc_centralized.di.GoToKycComponent
+import com.tokopedia.kyc_centralized.ui.gotoKyc.main.challenge.DobChallengeParam
+import com.tokopedia.kyc_centralized.ui.gotoKyc.main.onboard.OnboardBenefitParam
+import com.tokopedia.kyc_centralized.ui.gotoKyc.main.bridging.BridgingAccountLinkingParam
+import com.tokopedia.kyc_centralized.ui.gotoKyc.main.capture.CaptureKycDocumentsParam
+import com.tokopedia.kyc_centralized.ui.gotoKyc.main.status.StatusSubmissionParam
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
 class GotoKycRouterFragment : BaseDaggerFragment() {

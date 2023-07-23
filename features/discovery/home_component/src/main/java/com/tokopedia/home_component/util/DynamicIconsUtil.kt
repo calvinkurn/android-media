@@ -9,7 +9,7 @@ import com.tokopedia.unifyprinciples.Typography
 /**
  * Created by dhaba
  */
-object DynamicIconsMacroUtil {
+object DynamicIconsUtil {
     private const val MAX_LINES_TITLE_HEIGHT = 2
     private const val DEFAULT_LAYOUT_SPEC = 0
 
@@ -38,7 +38,7 @@ object DynamicIconsMacroUtil {
         }
     }
 
-    fun findMaxDynamicIconsMacro(
+    fun findMaxDynamicIcons(
         icons: List<DynamicIconComponent.DynamicIcon>,
         context: Context
     ): Int {
@@ -85,7 +85,7 @@ object DynamicIconsMacroUtil {
         }
     }
 
-    fun findMaxDynamicIconsMacroRevamp(
+    fun findMaxDynamicIconsRevamp(
         icons: List<DynamicIconComponent.DynamicIcon>,
         context: Context
     ): Int {
