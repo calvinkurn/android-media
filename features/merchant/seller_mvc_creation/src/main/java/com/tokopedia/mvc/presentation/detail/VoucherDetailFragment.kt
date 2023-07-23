@@ -122,6 +122,8 @@ class VoucherDetailFragment : BaseDaggerFragment() {
             "https://www.tokopedia.com/help/seller/article/syarat-ketentuan-kupon-toko-saya"
         private const val TOKOPEDIA_CARE_STRING_FORMAT = "%s?url=%s"
         private const val TOKOPEDIA_CARE_PATH = "help"
+        private const val ILLUSTRATION_ENDED_VOUCHER = ""
+        private const val ILLUSTRATION_CARD_PERFORMANCE = ""
     }
 
     // binding

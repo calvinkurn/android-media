@@ -322,27 +322,4 @@ class MoreMenuViewModel @Inject constructor(
             )
         )
     }
-
-    // Can be used from bottomsheet recurring period
-    private fun getOtherScheduleListMenu(): List<MoreMenuUiModel> {
-        return listOf(
-            MoreMenuUiModel.Coupon(
-                StringHandler.ResourceString(R.string.voucher_bs_ubah_kuota)
-            ),
-            MoreMenuUiModel.Clipboard(
-                StringHandler.ResourceString(R.string.voucher_bs_ubah_lihat_detail)
-            ),
-            MoreMenuUiModel.ItemDivider,
-            MoreMenuUiModel.Broadcast(
-                StringHandler.ResourceString(R.string.voucher_bs_ubah_broadcast_chat)
-            ),
-            MoreMenuUiModel.Download(
-                StringHandler.ResourceString(R.string.voucher_bs_ubah_download)
-            ),
-            MoreMenuUiModel.ItemDivider,
-            MoreMenuUiModel.Clear(
-                StringHandler.ResourceString(R.string.voucher_bs_ubah_batalkan)
-            )
-        )
-    }
 }
