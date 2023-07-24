@@ -39,7 +39,6 @@ class GetFlashSaleListForSellerMetaUseCase @Inject constructor(
                      total_campaign
                      display_name
                    }
-                   ticker_non_multiloc_message
              }
        }
 
