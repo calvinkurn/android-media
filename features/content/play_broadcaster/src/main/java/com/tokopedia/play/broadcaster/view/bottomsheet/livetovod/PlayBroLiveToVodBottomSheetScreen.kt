@@ -29,13 +29,13 @@ import com.tokopedia.play.broadcaster.ui.model.livetovod.TickerBottomSheetUiMode
 @Composable
 fun PlayBroadcasterLiveToVodBottomSheetScreen(
     data: TickerBottomSheetUiModel,
-    onBackPressed: () -> Unit,
+    onButtonClick: () -> Unit,
     onActionTextPressed: (appLink: String) -> Unit,
 ) {
     NestTheme {
         LiveToVodBottomSheetContent(
             data = data,
-            onButtonClick = onBackPressed,
+            onButtonClick = onButtonClick,
             onActionTextPressed = onActionTextPressed,
         )
     }
@@ -190,7 +190,7 @@ private fun generateSpanText(
 internal fun Preview() {
     PlayBroadcasterLiveToVodBottomSheetScreen(
         data = TickerBottomSheetUiModel.Dummy,
-        onBackPressed = {},
+        onButtonClick = {},
         onActionTextPressed = {},
     )
 }

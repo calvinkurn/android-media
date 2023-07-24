@@ -523,6 +523,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             is PlayBroadcastAction.SwitchAccount -> handleSwitchAccount(event.needLoading)
             is PlayBroadcastAction.SuccessOnBoardingUGC -> handleSuccessOnBoardingUGC()
             is PlayBroadcastAction.GetTickerBottomSheetConfig -> handleTickerBottomSheetConfig(event.page)
+            is PlayBroadcastAction.SetLiveToVodPref -> handleLiveToVodPref(event.page)
 
             /** Game */
             is PlayBroadcastAction.ClickGameOption -> handleClickGameOption(event.gameType)
@@ -794,10 +795,23 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     private fun handleTickerBottomSheetConfig(page: TickerBottomSheetPageType) {
         viewModelScope.launchCatchError(block = {
-            _tickerBottomSheetConfig.value = repo.getTickerBottomSheetConfig(
-                GetTickerBottomSheetRequest(page = page)
-            )
+            val pref = when (page) {
+                TickerBottomSheetPageType.BOTTOM_SHEET -> sharedPref.getLiveToVodBottomSheetPref(selectedAccount.id)
+                TickerBottomSheetPageType.TICKER -> sharedPref.getLiveToVodTickerPref(selectedAccount.id)
+                TickerBottomSheetPageType.UNKNOWN -> false
+            }
+            _tickerBottomSheetConfig.value = if (pref) {
+                repo.getTickerBottomSheetConfig(GetTickerBottomSheetRequest(page))
+            } else TickerBottomSheetUiModel.Empty
         }) { }
+    }
+
+    private fun handleLiveToVodPref(page: TickerBottomSheetPageType) {
+        when (page) {
+            TickerBottomSheetPageType.BOTTOM_SHEET -> sharedPref.setLiveToVodBottomSheetPref(selectedAccount.id)
+            TickerBottomSheetPageType.TICKER -> sharedPref.setLiveToVodTickerPref(selectedAccount.id)
+            TickerBottomSheetPageType.UNKNOWN -> return
+        }
     }
 
     private suspend fun updateCurrentInteractiveStatus() {

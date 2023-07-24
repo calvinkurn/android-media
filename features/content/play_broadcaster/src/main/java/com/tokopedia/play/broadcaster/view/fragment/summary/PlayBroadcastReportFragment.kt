@@ -203,14 +203,26 @@ class PlayBroadcastReportFragment @Inject constructor(
         prev: TickerBottomSheetUiModel?,
         state: TickerBottomSheetUiModel,
     ) {
-        if (prev == state || state.type != TickerBottomSheetPageType.TICKER) return
+        if (prev == state) return
 
+        when (state.type) {
+            TickerBottomSheetPageType.TICKER -> openTickerDisableLiveToVod(state)
+            else -> return
+        }
+    }
+
+    private fun openTickerDisableLiveToVod(state: TickerBottomSheetUiModel) {
         binding.composeViewTicker.apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 PlayBroLiveToVodTickerScreen(
                     data = state,
                     onDismissedPressed = {
+                        parentViewModel.submitAction(
+                            PlayBroadcastAction.SetLiveToVodPref(
+                                TickerBottomSheetPageType.TICKER
+                            )
+                        )
                         showWithCondition(false)
                     },
                     onActionTextPressed = { appLink ->

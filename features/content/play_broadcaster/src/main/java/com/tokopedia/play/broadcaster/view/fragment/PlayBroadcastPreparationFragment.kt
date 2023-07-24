@@ -413,6 +413,13 @@ class PlayBroadcastPreparationFragment @Inject constructor(
             }
             is PlayBroLiveToVodBottomSheet -> {
                 childFragment.setupData(parentViewModel.tickerBottomSheetConfig)
+                childFragment.setupListener(object : PlayBroLiveToVodBottomSheet.Listener {
+                    override fun onButtonActionPressed() {
+                        parentViewModel.submitAction(
+                            PlayBroadcastAction.SetLiveToVodPref(TickerBottomSheetPageType.BOTTOM_SHEET)
+                        )
+                    }
+                })
             }
         }
     }

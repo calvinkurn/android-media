@@ -19,6 +19,7 @@ class PlayBroLiveToVodBottomSheet @Inject constructor(
 ) : BottomSheetUnify() {
 
     private var mData: TickerBottomSheetUiModel = TickerBottomSheetUiModel.Empty
+    private var mListener: Listener? = null
 
     private fun generateInAppLink(appLink: String): String {
         return getString(
@@ -38,7 +39,10 @@ class PlayBroLiveToVodBottomSheet @Inject constructor(
             setContent {
                 PlayBroadcasterLiveToVodBottomSheetScreen(
                     data = mData,
-                    onBackPressed = { dismiss() },
+                    onButtonClick = {
+                        mListener?.onButtonActionPressed()
+                        dismiss()
+                    },
                     onActionTextPressed = { appLink ->
                         router.route(
                             requireContext(),
@@ -55,9 +59,17 @@ class PlayBroLiveToVodBottomSheet @Inject constructor(
         mData = data
     }
 
+    fun setupListener(listener: Listener) {
+        mListener = listener
+    }
+
     fun show(fragmentManager: FragmentManager) {
         if (isAdded) return
         showNow(fragmentManager, TAG)
+    }
+
+    interface Listener {
+        fun onButtonActionPressed()
     }
 
     companion object {
