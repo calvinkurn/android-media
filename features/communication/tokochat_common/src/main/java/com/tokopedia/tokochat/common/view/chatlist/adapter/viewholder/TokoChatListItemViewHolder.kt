@@ -8,13 +8,13 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
-import com.tokopedia.tokochat_common.databinding.TokochatListItemChatListBinding
-import com.tokopedia.tokochat.common.view.chatlist.listener.TokoChatListItemListener
-import com.tokopedia.tokochat_common.R
+import com.tokopedia.tokochat.common.util.TokoChatTimeUtil.getRelativeDate
 import com.tokopedia.tokochat.common.util.TokoChatUrlUtil.IC_TOKOFOOD_SOURCE
-import com.tokopedia.tokochat.common.util.TokoChatValueUtil
 import com.tokopedia.tokochat.common.util.TokoChatValueUtil.TOKOFOOD_SERVICE_TYPE
+import com.tokopedia.tokochat.common.view.chatlist.listener.TokoChatListItemListener
 import com.tokopedia.tokochat.common.view.chatlist.uimodel.TokoChatListItemUiModel
+import com.tokopedia.tokochat_common.R
+import com.tokopedia.tokochat_common.databinding.TokochatListItemChatListBinding
 import com.tokopedia.unifycomponents.NotificationUnify
 import com.tokopedia.utils.view.binding.viewBinding
 
@@ -70,7 +70,7 @@ class TokoChatListItemViewHolder(
     }
 
     private fun bindTime(element: TokoChatListItemUiModel) {
-        binding?.tokochatListTvTime?.text = TokoChatValueUtil.getRelativeDate(
+        binding?.tokochatListTvTime?.text = getRelativeDate(
             dateTimestamp = element.createAt
         )
         binding?.tokochatListCounter?.setNotification(

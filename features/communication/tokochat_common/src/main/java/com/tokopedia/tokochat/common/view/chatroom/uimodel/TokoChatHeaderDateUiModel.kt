@@ -1,11 +1,11 @@
 package com.tokopedia.tokochat.common.view.chatroom.uimodel
 
-import com.tokopedia.tokochat.common.util.TokoChatValueUtil.getRelativeDate
+import com.tokopedia.tokochat.common.util.TokoChatTimeUtil.getRelativeDate
 
 /**
  * Date will be used when dateTimeStamp is not from today or yesterday
  */
-class TokoChatHeaderDateUiModel (
+class TokoChatHeaderDateUiModel(
     var date: String,
     var dateTimestamp: Long
 ) {
