@@ -6,11 +6,11 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.promousage.databinding.PromoUsageItemVoucherBinding
 import com.tokopedia.promousage.util.composite.DelegateAdapter
-import com.tokopedia.promousage.domain.entity.list.Voucher
+import com.tokopedia.promousage.domain.entity.Promo
 
 class VoucherAccordionChildDelegateAdapter(
-    private val onVoucherClick: (Voucher) -> Unit
-) : DelegateAdapter<Voucher, VoucherAccordionChildDelegateAdapter.ViewHolder>(Voucher::class.java) {
+    private val onVoucherClick: (Promo) -> Unit
+) : DelegateAdapter<Promo, VoucherAccordionChildDelegateAdapter.ViewHolder>(Promo::class.java) {
 
     override fun createViewHolder(parent: ViewGroup): RecyclerView.ViewHolder {
         val binding = PromoUsageItemVoucherBinding.inflate(
@@ -21,21 +21,21 @@ class VoucherAccordionChildDelegateAdapter(
         return ViewHolder(binding)
     }
 
-    override fun bindViewHolder(item: Voucher, viewHolder: ViewHolder) {
+    override fun bindViewHolder(item: Promo, viewHolder: ViewHolder) {
         viewHolder.bind(item)
     }
 
     inner class ViewHolder(private val binding: PromoUsageItemVoucherBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(voucher: Voucher) {
-            if (voucher.visible) {
-                binding.voucherView.bind(voucher)
+        fun bind(promo: Promo) {
+            if (promo.isVisible) {
+                binding.voucherView.bind(promo)
             }
 
-            binding.voucherView.isVisible = voucher.visible
+            binding.voucherView.isVisible = promo.isVisible
 
-            binding.root.setOnClickListener { onVoucherClick(voucher) }
+            binding.root.setOnClickListener { onVoucherClick(promo) }
         }
     }
 

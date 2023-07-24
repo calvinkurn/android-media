@@ -8,13 +8,13 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.promousage.databinding.PromoUsageItemVoucherSectionBinding
 import com.tokopedia.promousage.util.composite.CompositeAdapter
-import com.tokopedia.promousage.domain.entity.list.Voucher
+import com.tokopedia.promousage.domain.entity.Promo
 import com.tokopedia.promousage.domain.entity.list.VoucherAccordion
 import com.tokopedia.promousage.util.composite.DelegateAdapter
 
 class VoucherAccordionDelegateAdapter(
     private val onSectionClick: (VoucherAccordion) -> Unit,
-    private val onVoucherClick: (Voucher) -> Unit,
+    private val onVoucherClick: (Promo) -> Unit,
     private val onViewAllVoucherClick: (VoucherAccordion) -> Unit
 ) : DelegateAdapter<VoucherAccordion, VoucherAccordionDelegateAdapter.ViewHolder>(VoucherAccordion::class.java) {
 
@@ -56,7 +56,7 @@ class VoucherAccordionDelegateAdapter(
 
         private fun bindVouchers(
             section: VoucherAccordion,
-            onVoucherClick: (Voucher) -> Unit,
+            onVoucherClick: (Promo) -> Unit,
             onViewAllVoucherClick: (VoucherAccordion) -> Unit
         ) {
             val voucherAdapter = CompositeAdapter.Builder()

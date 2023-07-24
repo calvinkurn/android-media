@@ -26,10 +26,11 @@ import com.tokopedia.kotlin.extensions.view.setTextColorCompat
 import com.tokopedia.kotlin.extensions.view.splitByThousand
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.promousage.R
+import com.tokopedia.promousage.data.DummyData
 import com.tokopedia.promousage.databinding.PromoUsageBottomshetBinding
 import com.tokopedia.promousage.di.DaggerPromoUsageComponent
 import com.tokopedia.promousage.domain.entity.EntryPoint
-import com.tokopedia.promousage.domain.entity.list.Voucher
+import com.tokopedia.promousage.domain.entity.Promo
 import com.tokopedia.promousage.domain.entity.list.VoucherAccordion
 import com.tokopedia.promousage.view.adapter.VoucherRecommendationDelegateAdapter
 import com.tokopedia.promousage.view.adapter.VoucherAccordionDelegateAdapter
@@ -204,7 +205,8 @@ class PromoUsageBottomSheet: BottomSheetDialogFragment() {
     }
 
     private fun showTermAndConditionBottomSheet() {
-
+        val tncBottomSheet = PromoUsageTncBottomSheet.newInstance(DummyData.tncPromoCodes)
+        tncBottomSheet.show(childFragmentManager)
     }
 
     private fun setupRecyclerView() {
@@ -298,7 +300,7 @@ class PromoUsageBottomSheet: BottomSheetDialogFragment() {
     }
 
 
-    private val onVoucherClick = { selectedVoucher : Voucher ->
+    private val onVoucherClick = { selectedPromo : Promo ->
 
     }
 

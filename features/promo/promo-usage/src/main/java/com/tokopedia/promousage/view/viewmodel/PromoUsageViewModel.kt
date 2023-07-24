@@ -5,14 +5,12 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.promousage.data.DummyData
 import com.tokopedia.promousage.util.composite.DelegateAdapterItem
 import com.tokopedia.promousage.domain.entity.EntryPoint
 import com.tokopedia.promousage.domain.entity.list.ViewAllVoucher
-import com.tokopedia.promousage.domain.entity.list.Voucher
+import com.tokopedia.promousage.domain.entity.Promo
 import com.tokopedia.promousage.domain.entity.list.VoucherAccordion
-import com.tokopedia.promousage.domain.entity.VoucherSource
-import com.tokopedia.promousage.domain.entity.VoucherState
-import com.tokopedia.promousage.domain.entity.VoucherType
 import com.tokopedia.promousage.domain.entity.list.TermAndCondition
 import com.tokopedia.promousage.domain.entity.list.VoucherCode
 import com.tokopedia.promousage.domain.entity.list.VoucherRecommendation
@@ -26,219 +24,11 @@ class PromoUsageViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.main) {
 
-    private val cashbackVouchers = listOf(
-        Voucher(
-            1,
-            100_000,
-            "Cashback - Loading",
-            "2 hari",
-            "https://images.tokopedia.net/img/android/promo/ic_voucher_cashback/ic_voucher_cashback.png",
-            "https://images.tokopedia.net/img/android/promo/bg_supergraphic_cashback/bg_supergraphic_cashback.png",
-            VoucherType.CASHBACK,
-            VoucherState.Loading,
-            VoucherSource.Promo,
-            true
-        ),
-
-        Voucher(
-            2,
-            100_000,
-            "Cashback - Normal",
-            "2 hari",
-            "https://images.tokopedia.net/img/android/promo/ic_voucher_cashback/ic_voucher_cashback.png",
-            "https://images.tokopedia.net/img/android/promo/bg_supergraphic_cashback/bg_supergraphic_cashback.png",
-            VoucherType.CASHBACK,
-            VoucherState.Normal,
-            VoucherSource.Promo,
-            false
-        ),
-        Voucher(
-            3,
-            100_000,
-            "Cashback - Selected",
-            "2 hari",
-            "https://images.tokopedia.net/img/android/promo/ic_voucher_cashback/ic_voucher_cashback.png",
-            "https://images.tokopedia.net/img/android/promo/bg_supergraphic_cashback/bg_supergraphic_cashback.png",
-            VoucherType.CASHBACK,
-            VoucherState.Selected,
-            VoucherSource.Promo,
-            false
-        ),
-        Voucher(
-            4,
-            100_000,
-            "Cashback - Disabled",
-            "2 hari",
-            "https://images.tokopedia.net/img/android/promo/ic_voucher_cashback/ic_voucher_cashback.png",
-            "https://images.tokopedia.net/img/android/promo/bg_supergraphic_cashback/bg_supergraphic_cashback.png",
-            VoucherType.CASHBACK,
-            VoucherState.Disabled,
-            VoucherSource.Promo,
-            false
-        ),
-        Voucher(
-            5,
-            100_000,
-            "Cashback - Ineligible",
-            "2 hari",
-            "https://images.tokopedia.net/img/android/promo/ic_voucher_cashback/ic_voucher_cashback.png",
-            "https://images.tokopedia.net/img/android/promo/bg_supergraphic_cashback/bg_supergraphic_cashback.png",
-            VoucherType.CASHBACK,
-            VoucherState.Ineligible("Belum bisa dipakai barengan promo yang dipilih."),
-            VoucherSource.Promo,
-            false
-        ),
-    )
-    private val freeShippingVouchers = listOf(
-        Voucher(
-            6,
-            100_000,
-            "Free shipping - Loading",
-            "2 hari",
-            "https://images.tokopedia.net/img/android/promo/ic_voucher_cashback/ic_voucher_cashback.png",
-            "https://images.tokopedia.net/img/android/promo/bg_supergraphic_cashback/bg_supergraphic_cashback.png",
-            VoucherType.FREE_SHIPPING,
-            VoucherState.Loading,
-            VoucherSource.Promo,
-            true
-        ),
-        Voucher(
-            7,
-            100_000,
-            "Free shipping - Normal",
-            "2 hari",
-            "https://images.tokopedia.net/img/android/promo/ic_voucher_cashback/ic_voucher_cashback.png",
-            "https://images.tokopedia.net/img/android/promo/bg_supergraphic_cashback/bg_supergraphic_cashback.png",
-            VoucherType.FREE_SHIPPING,
-            VoucherState.Normal,
-            VoucherSource.Promo,
-            true
-        ),
-        Voucher(
-            8,
-            100_000,
-            "Free shipping - Selected",
-            "2 hari",
-            "https://images.tokopedia.net/img/android/promo/ic_voucher_cashback/ic_voucher_cashback.png",
-            "https://images.tokopedia.net/img/android/promo/bg_supergraphic_cashback/bg_supergraphic_cashback.png",
-            VoucherType.FREE_SHIPPING,
-            VoucherState.Selected,
-            VoucherSource.Promo,
-            true
-        ),
-        Voucher(
-            9,
-            100_000,
-            "Free shipping - Disabled",
-            "2 hari",
-            "https://images.tokopedia.net/img/android/promo/ic_voucher_cashback/ic_voucher_cashback.png",
-            "https://images.tokopedia.net/img/android/promo/bg_supergraphic_cashback/bg_supergraphic_cashback.png",
-            VoucherType.FREE_SHIPPING,
-            VoucherState.Disabled,
-            VoucherSource.Promo,
-            true
-        ),
-        Voucher(
-            10,
-            100_000,
-            "Free shipping - Ineligible",
-            "2 hari",
-            "https://images.tokopedia.net/img/android/promo/ic_voucher_cashback/ic_voucher_cashback.png",
-            "https://images.tokopedia.net/img/android/promo/bg_supergraphic_cashback/bg_supergraphic_cashback.png",
-            VoucherType.FREE_SHIPPING,
-            VoucherState.Ineligible("Belum bisa dipakai barengan promo yang dipilih."),
-            VoucherSource.Promo,
-            true
-        ),
-    )
-    private val discountVouchers = listOf(
-        Voucher(
-            11,
-            100_000,
-            "Discount - Loading",
-            "2 hari",
-            "https://images.tokopedia.net/img/android/promo/ic_voucher_cashback/ic_voucher_cashback.png",
-            "https://images.tokopedia.net/img/android/promo/bg_supergraphic_cashback/bg_supergraphic_cashback.png",
-            VoucherType.DISCOUNT,
-            VoucherState.Loading,
-            VoucherSource.Promo,
-            true
-        ),
-        Voucher(
-            12,
-            100_000,
-            "Discount - Normal",
-            "2 hari",
-            "https://images.tokopedia.net/img/android/promo/ic_voucher_cashback/ic_voucher_cashback.png",
-            "https://images.tokopedia.net/img/android/promo/bg_supergraphic_cashback/bg_supergraphic_cashback.png",
-            VoucherType.DISCOUNT,
-            VoucherState.Normal,
-            VoucherSource.Promo,
-            true
-        ),
-        Voucher(
-            13,
-            100_000,
-            "Discount - Selected",
-            "2 hari",
-            "https://images.tokopedia.net/img/android/promo/ic_voucher_cashback/ic_voucher_cashback.png",
-            "https://images.tokopedia.net/img/android/promo/bg_supergraphic_cashback/bg_supergraphic_cashback.png",
-            VoucherType.DISCOUNT,
-            VoucherState.Selected,
-            VoucherSource.Promo,
-            true
-        ),
-        Voucher(
-            14,
-            100_000,
-            "Discount - Disabled",
-            "2 hari",
-            "https://images.tokopedia.net/img/android/promo/ic_voucher_cashback/ic_voucher_cashback.png",
-            "https://images.tokopedia.net/img/android/promo/bg_supergraphic_cashback/bg_supergraphic_cashback.png",
-            VoucherType.DISCOUNT,
-            VoucherState.Disabled,
-            VoucherSource.Promo,
-            true
-        ),
-        Voucher(
-            15,
-            100_000,
-            "Discount - Ineligible",
-            "2 hari",
-            "https://images.tokopedia.net/img/android/promo/ic_voucher_cashback/ic_voucher_cashback.png",
-            "https://images.tokopedia.net/img/android/promo/bg_supergraphic_cashback/bg_supergraphic_cashback.png",
-            VoucherType.DISCOUNT,
-            VoucherState.Ineligible("Belum bisa dipakai barengan promo yang dipilih."),
-            VoucherSource.Promo,
-            true
-        ),
-    )
-    private val recommendationVouchers = listOf(
-        Voucher(
-            30,
-            100_000,
-            "Cashback - Normal",
-            "2 hari",
-            "https://images.tokopedia.net/img/android/promo/ic_voucher_cashback/ic_voucher_cashback.png",
-            "https://images.tokopedia.net/img/android/promo/bg_supergraphic_cashback/bg_supergraphic_cashback.png",
-            VoucherType.CASHBACK,
-            VoucherState.Normal,
-            VoucherSource.Promo,
-            true
-        ),
-        Voucher(
-            31,
-            100_000,
-            "Discount - Normal",
-            "2 hari",
-            "https://images.tokopedia.net/img/android/promo/ic_voucher_cashback/ic_voucher_cashback.png",
-            "https://images.tokopedia.net/img/android/promo/bg_supergraphic_cashback/bg_supergraphic_cashback.png",
-            VoucherType.DISCOUNT,
-            VoucherState.Normal,
-            VoucherSource.Promo,
-            true
-        )
-    )
+    // TODO: Remove dummy data when BE available
+    private val cashbackPromos = DummyData.cashbackPromos
+    private val freeShippingPromos = DummyData.freeShippingPromos
+    private val discountPromos = DummyData.discountPromos
+    private val recommendationPromos = DummyData.recommendedPromos
 
     private val _items = MutableLiveData<Result<List<DelegateAdapterItem>>>()
     val items: LiveData<Result<List<DelegateAdapterItem>>>
@@ -251,21 +41,21 @@ class PromoUsageViewModel @Inject constructor(
                 delay(2_000)
 
                 val items = listOf<DelegateAdapterItem>(
-                    VoucherRecommendation("Kamu bisa hemat Rp30.000 dari 2 promo!", recommendationVouchers),
+                    VoucherRecommendation("Kamu bisa hemat Rp30.000 dari 2 promo!", recommendationPromos),
                     VoucherAccordion(
-                        "${cashbackVouchers.size} promo buat cashback",
+                        "${cashbackPromos.size} promo buat cashback",
                         true,
-                        cashbackVouchers.toCollapsibleList()
+                        cashbackPromos.toCollapsibleList()
                     ),
                     VoucherAccordion(
-                        "${freeShippingVouchers.size} promo buat pengiriman kamu",
+                        "${freeShippingPromos.size} promo buat pengiriman kamu",
                         true,
-                        freeShippingVouchers
+                        freeShippingPromos.toCollapsibleList()
                     ),
                     VoucherAccordion(
-                        "${discountVouchers.size} promo buat diskon kamu",
+                        "${discountPromos.size} promo buat diskon kamu",
                         true,
-                        discountVouchers
+                        discountPromos.toCollapsibleList()
                     ),
                     VoucherCode,
                     TermAndCondition
@@ -299,7 +89,7 @@ class PromoUsageViewModel @Inject constructor(
 
         val updatedItems = currentItems.map { item ->
             if (item is VoucherAccordion && item.title == selectedVoucherAccordion.title) {
-                val expandedVouchers = item.vouchers.expandAll()
+                val expandedVouchers = item.vouchers.viewAll()
                 item.copy(vouchers = expandedVouchers)
             } else {
                 item
@@ -321,7 +111,7 @@ class PromoUsageViewModel @Inject constructor(
 
     }
 
-    fun onVoucherSelected(selectedVoucher: Voucher) {
+    fun onVoucherSelected(selectedPromo: Promo) {
 
     }
 
@@ -333,14 +123,14 @@ class PromoUsageViewModel @Inject constructor(
         }
     }
 
-    private fun List<Voucher>.toCollapsibleList(): List<DelegateAdapterItem> {
+    private fun List<Promo>.toCollapsibleList(): List<DelegateAdapterItem> {
         if (isEmpty()) return emptyList()
 
         val formattedVouchers = mutableListOf<DelegateAdapterItem>()
 
-        val numberOfExpandedVoucher = count { it.visible }
+        val numberOfExpandedVoucher = count { it.isVisible }
 
-        val lastIndexOfExpandedVoucher = indexOfLast { it.visible }
+        val lastIndexOfExpandedVoucher = indexOfLast { it.isVisible }
 
         val collapsedVoucherCount = size - numberOfExpandedVoucher
         val viewAllWidgetItem = ViewAllVoucher(collapsedVoucherCount)
@@ -353,19 +143,7 @@ class PromoUsageViewModel @Inject constructor(
         return formattedVouchers
     }
 
-    private fun List<DelegateAdapterItem>.expandAll(): List<DelegateAdapterItem> {
-        //Inside VoucherAccordion there are 2 items [Voucher, ViewAllVoucher] model
-        val updatedVoucherAccordionItems = this.toMutableList()
-
-        //Remove ViewAllVoucher to make view all CTA gone
-        updatedVoucherAccordionItems.removeAll { it is ViewAllVoucher }
-
-        //Change Voucher visible state to true to make all voucher visible
-        val expandedVouchers = updatedVoucherAccordionItems.map { item ->
-            val voucher = item as Voucher
-            voucher.copy(visible = true)
-        }
-
-        return expandedVouchers
+    private fun List<DelegateAdapterItem>.viewAll(): List<DelegateAdapterItem> {
+        return filterIsInstance<Promo>().map { it.copy(isVisible = true) }
     }
 }

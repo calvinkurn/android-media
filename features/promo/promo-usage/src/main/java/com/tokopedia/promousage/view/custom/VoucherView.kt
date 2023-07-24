@@ -12,7 +12,6 @@ import com.google.android.material.bottomappbar.BottomAppBarTopEdgeTreatment
 import com.google.android.material.shape.MaterialShapeDrawable
 import com.google.android.material.shape.OffsetEdgeTreatment
 import com.google.android.material.shape.ShapeAppearanceModel
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.loadImage
@@ -21,13 +20,12 @@ import com.tokopedia.kotlin.extensions.view.splitByThousand
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.promousage.R
 import com.tokopedia.promousage.databinding.PromoUsageVoucherViewBinding
-import com.tokopedia.promousage.domain.entity.list.Voucher
-import com.tokopedia.promousage.domain.entity.VoucherSource
-import com.tokopedia.promousage.domain.entity.VoucherState
-import com.tokopedia.promousage.domain.entity.VoucherType
+import com.tokopedia.promousage.domain.entity.Promo
+import com.tokopedia.promousage.domain.entity.PromoState
 import com.tokopedia.promousage.util.extension.grayscale
 import com.tokopedia.promousage.util.extension.onDrawn
 import com.tokopedia.promousage.util.extension.removeGrayscale
+import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.toPx
 
 class VoucherView @JvmOverloads constructor(
@@ -50,16 +48,16 @@ class VoucherView @JvmOverloads constructor(
         binding?.cardView?.elevation = 4f
     }
 
-    fun bind(voucher: Voucher) {
+    fun bind(promo: Promo) {
         binding?.run {
-            tpgVoucherTnc.text = voucher.termAndCondition
+            // TODO: Get from Promo.promoInfos[] with TYPE_PROMO_INFO
+            tpgVoucherTnc.text = promo.promoInfos[0].title
 
-            tpgVoucherExpiredDate.text = context?.getString(R.string.promo_voucher_placeholder_expired_date, voucher.expiredDate)
+            val cardDetail = promo.cardDetails[0]
+            imgVoucherIcon.loadImage(cardDetail.iconUrl)
+            imgSupergraphic.loadImage(cardDetail.backgroundUrl)
 
-            imgSupergraphic.loadImage(voucher.superGraphicImageUrl)
-            imgVoucherIcon.loadImage(voucher.iconImageUrl)
-
-            if (voucher.voucherState.isIneligible() || voucher.voucherState.isDisabled()) {
+            if (promo.state.isIneligible() || promo.state.isDisabled()) {
                 imgSupergraphic.grayscale()
                 imgVoucherIcon.grayscale()
             } else {
@@ -67,35 +65,56 @@ class VoucherView @JvmOverloads constructor(
                 imgVoucherIcon.removeGrayscale()
             }
 
-            imgCheckmark.isVisible = voucher.voucherState.isSelected()
+            imgCheckmark.isVisible = promo.state.isSelected()
 
-            tpgVoucherExpiredDate.text = MethodChecker.fromHtml(context?.getString(R.string.promo_voucher_placeholder_expired_date, voucher.expiredDate))
-            tpgVoucherExpiredDate.background = if (voucher.voucherState.isSelected()) {
-                ContextCompat.getDrawable(tpgVoucherExpiredDate.context, R.drawable.promo_usage_shape_voucher_selected)
+            // TODO: Get from Promo.expiryInfo
+            if (promo.expiryInfo.isNotBlank()) {
+                tpgVoucherExpiredDate.text = HtmlLinkHelper(context, promo.expiryInfo).spannedString
+                tpgVoucherExpiredDate.background = if (promo.state.isSelected()) {
+                    ContextCompat.getDrawable(
+                        tpgVoucherExpiredDate.context,
+                        R.drawable.promo_usage_shape_voucher_selected
+                    )
+                } else {
+                    ContextCompat.getDrawable(
+                        tpgVoucherExpiredDate.context,
+                        R.drawable.promo_usage_shape_voucher_expired_date
+                    )
+                }
+                tpgVoucherExpiredDate.isVisible = true
             } else {
-                ContextCompat.getDrawable(tpgVoucherExpiredDate.context, R.drawable.promo_usage_shape_voucher_expired_date)
+                tpgVoucherExpiredDate.isVisible = false
             }
 
-            when(voucher.voucherType) {
-                VoucherType.CASHBACK -> handleCashback(voucher)
-                VoucherType.FREE_SHIPPING -> handleFreeShipping(voucher)
-                VoucherType.DISCOUNT -> handleDiscount(voucher)
+            when(promo.benefitType) {
+                Promo.BENEFIT_TYPE_CASHBACK -> handleCashback(promo)
+                Promo.BENEFIT_TYPE_DISCOUNT -> handleDiscount(promo)
+                Promo.BENEFIT_TYPE_FREE_SHIPPING -> handleFreeShipping(promo)
             }
 
-            tpgVoucherCode.text = voucher.voucherSource.voucherCodeOrEmpty()
-            tpgVoucherCode.isVisible = voucher.voucherSource is VoucherSource.UserInput
+            tpgVoucherCode.text = if (promo.isAttempted) promo.code else ""
+            tpgVoucherCode.isVisible = promo.isAttempted
 
-            tpgIneligibleReason.text = voucher.voucherState.ineligibleMessageOrEmpty()
-            tpgIneligibleReason.isVisible = voucher.voucherState is VoucherState.Ineligible
+            if (promo.state.isIneligible()) {
+                val clashingInfo = promo.clashingInfos.firstOrNull {
+                    promo.currentClashingPromoCode.contains(it.code)
+                }
+                clashingInfo?.let {
+                    tpgIneligibleReason.text = it.message
+                    tpgIneligibleReason.isVisible = true
+                }
+            } else {
+                tpgIneligibleReason.isVisible = false
+            }
 
             cardView.onDrawn { cardViewHeightPx ->
                 cardView.background = createVoucherShape(
                     cardViewHeightPx = cardViewHeightPx,
-                    isVoucherSelected = voucher.voucherState.isSelected()
+                    isVoucherSelected = promo.state.isSelected()
                 )
             }
 
-            if (voucher.voucherState is VoucherState.Loading) {
+            if (promo.state is PromoState.Loading) {
                 tpgVoucherAmount.gone()
                 tpgVoucherTnc.gone()
                 topShimmer.visible()
@@ -113,11 +132,11 @@ class VoucherView @JvmOverloads constructor(
     }
 
 
-    private fun handleCashback(voucher: Voucher) {
+    private fun handleCashback(promo: Promo) {
         val voucherTypeTextColorResId = when {
-            voucher.voucherState.isSelected() -> com.tokopedia.unifyprinciples.R.color.Unify_GN500
-            voucher.voucherState.isDisabled() -> com.tokopedia.unifyprinciples.R.color.Unify_NN600
-            voucher.voucherState.isIneligible() -> com.tokopedia.unifyprinciples.R.color.Unify_NN600
+            promo.state.isSelected() -> com.tokopedia.unifyprinciples.R.color.Unify_GN500
+            promo.state.isDisabled() -> com.tokopedia.unifyprinciples.R.color.Unify_NN600
+            promo.state.isIneligible() -> com.tokopedia.unifyprinciples.R.color.Unify_NN600
             else -> com.tokopedia.unifyprinciples.R.color.Unify_BN500
         }
 
@@ -125,15 +144,15 @@ class VoucherView @JvmOverloads constructor(
             tpgVoucherType.text = context?.getString(R.string.promo_voucher_cashback)
             tpgVoucherType.setTextColorCompat(voucherTypeTextColorResId)
 
-            tpgVoucherAmount.text = context?.getString(R.string.promo_voucher_placeholder_gopay_coins, voucher.benefitAmount.splitByThousand())
-            tpgVoucherAmount.setVoucherAmountTextColor(voucher)
+            tpgVoucherAmount.text = context?.getString(R.string.promo_voucher_placeholder_gopay_coins, promo.benefitAmount.splitByThousand())
+            tpgVoucherAmount.setVoucherAmountTextColor(promo)
         }
     }
-    private fun handleFreeShipping(voucher: Voucher) {
+    private fun handleFreeShipping(promo: Promo) {
         val voucherTypeTextColorResId = when {
-            voucher.voucherState.isSelected() -> com.tokopedia.unifyprinciples.R.color.Unify_GN500
-            voucher.voucherState.isDisabled() -> com.tokopedia.unifyprinciples.R.color.Unify_NN600
-            voucher.voucherState.isIneligible() -> com.tokopedia.unifyprinciples.R.color.Unify_NN600
+            promo.state.isSelected() -> com.tokopedia.unifyprinciples.R.color.Unify_GN500
+            promo.state.isDisabled() -> com.tokopedia.unifyprinciples.R.color.Unify_NN600
+            promo.state.isIneligible() -> com.tokopedia.unifyprinciples.R.color.Unify_NN600
             else -> com.tokopedia.unifyprinciples.R.color.Unify_GN500
         }
 
@@ -141,15 +160,15 @@ class VoucherView @JvmOverloads constructor(
             tpgVoucherType.text = context?.getString(R.string.promo_voucher_free_shipping)
             tpgVoucherType.setTextColorCompat(voucherTypeTextColorResId)
 
-            tpgVoucherAmount.text = context?.getString(R.string.promo_voucher_placeholder_voucher_amount, voucher.benefitAmount.splitByThousand())
-            tpgVoucherAmount.setVoucherAmountTextColor(voucher)
+            tpgVoucherAmount.text = context?.getString(R.string.promo_voucher_placeholder_voucher_amount, promo.benefitAmount.splitByThousand())
+            tpgVoucherAmount.setVoucherAmountTextColor(promo)
         }
     }
-    private fun handleDiscount(voucher: Voucher) {
+    private fun handleDiscount(promo: Promo) {
         val voucherTypeTextColorResId = when {
-            voucher.voucherState.isSelected() -> com.tokopedia.unifyprinciples.R.color.Unify_GN500
-            voucher.voucherState.isDisabled() -> com.tokopedia.unifyprinciples.R.color.Unify_NN600
-            voucher.voucherState.isIneligible() -> com.tokopedia.unifyprinciples.R.color.Unify_NN600
+            promo.state.isSelected() -> com.tokopedia.unifyprinciples.R.color.Unify_GN500
+            promo.state.isDisabled() -> com.tokopedia.unifyprinciples.R.color.Unify_NN600
+            promo.state.isIneligible() -> com.tokopedia.unifyprinciples.R.color.Unify_NN600
             else -> com.tokopedia.unifyprinciples.R.color.Unify_YN500
         }
 
@@ -157,49 +176,33 @@ class VoucherView @JvmOverloads constructor(
             tpgVoucherType.text = context?.getString(R.string.promo_voucher_discount)
             tpgVoucherType.setTextColorCompat(voucherTypeTextColorResId)
 
-            tpgVoucherAmount.text = context?.getString(R.string.promo_voucher_placeholder_voucher_amount, voucher.benefitAmount.splitByThousand())
-            tpgVoucherAmount.setVoucherAmountTextColor(voucher)
+            tpgVoucherAmount.text = context?.getString(R.string.promo_voucher_placeholder_voucher_amount, promo.benefitAmount.splitByThousand())
+            tpgVoucherAmount.setVoucherAmountTextColor(promo)
         }
 
     }
 
 
-    private fun TextView.setVoucherAmountTextColor(voucher: Voucher) {
+    private fun TextView.setVoucherAmountTextColor(promo: Promo) {
         val voucherAmountTextColorResId = when {
-            voucher.voucherState.isDisabled() -> com.tokopedia.unifyprinciples.R.color.Unify_NN600
-            voucher.voucherState.isIneligible() -> com.tokopedia.unifyprinciples.R.color.Unify_NN600
+            promo.state.isDisabled() -> com.tokopedia.unifyprinciples.R.color.Unify_NN600
+            promo.state.isIneligible() -> com.tokopedia.unifyprinciples.R.color.Unify_NN600
             else -> com.tokopedia.unifyprinciples.R.color.Unify_NN950
         }
 
         setTextColorCompat(voucherAmountTextColorResId)
     }
 
-    private fun VoucherState.ineligibleMessageOrEmpty(): String {
-        return if (this is VoucherState.Ineligible) {
-            this.ineligibleReason
-        } else {
-            ""
-        }
+    private fun PromoState.isSelected(): Boolean {
+        return this == PromoState.Selected
     }
 
-    private fun VoucherSource.voucherCodeOrEmpty(): String {
-        return if (this is VoucherSource.UserInput) {
-            this.voucherCode
-        } else {
-            ""
-        }
+    private fun PromoState.isDisabled(): Boolean {
+        return this == PromoState.Disabled
     }
 
-    private fun VoucherState.isSelected(): Boolean {
-        return this == VoucherState.Selected
-    }
-
-    private fun VoucherState.isDisabled(): Boolean {
-        return this == VoucherState.Disabled
-    }
-
-    private fun VoucherState.isIneligible(): Boolean {
-        return this is VoucherState.Ineligible
+    private fun PromoState.isIneligible(): Boolean {
+        return this is PromoState.Ineligible
     }
 
     private fun createVoucherShape(cardViewHeightPx: Int, isVoucherSelected: Boolean): Drawable {
