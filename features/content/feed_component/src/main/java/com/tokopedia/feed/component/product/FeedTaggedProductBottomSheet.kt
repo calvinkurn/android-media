@@ -139,7 +139,7 @@ class FeedTaggedProductBottomSheet : BottomSheetUnify() {
         manager: FragmentManager,
         tag: String,
         products: List<FeedTaggedProductUiModel> = emptyList(),
-            cardType: FeedTaggedProductUiModel.SourceType
+        cardType: FeedTaggedProductUiModel.SourceType
     ) {
         this.isFirst = true
         this.activityId = activityId
