@@ -1,14 +1,12 @@
 package com.tokopedia.play.broadcaster.view.bottomsheet.livetovod
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
@@ -107,7 +105,7 @@ private fun LiveToVodBottomSheetContent(
             textStyle = NestTheme.typography.body2
                 .copy(
                     textAlign = TextAlign.Center,
-                    color = colorResource(id = R.color.Unify_NN1000)
+                    color = NestTheme.colors.NN._1000,
                 ),
             onClickText = { offset ->
                 bottomText.getStringAnnotations(offset, offset)
