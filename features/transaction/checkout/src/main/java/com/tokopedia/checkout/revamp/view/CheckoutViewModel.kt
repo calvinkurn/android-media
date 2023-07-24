@@ -51,8 +51,10 @@ import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
 import com.tokopedia.purchase_platform.common.feature.dynamicdatapassing.data.request.DynamicDataPassingParamRequest
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.model.UploadPrescriptionUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.data.request.clear.ClearPromoOrder
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementHolderData
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
@@ -432,6 +434,28 @@ class CheckoutViewModel @Inject constructor(
         val shipment = checkoutOrderModel.shipment
         shippingCourierUiModels.forEach {
             it.isSelected = it.productData.shipperProductId == courierItemData.shipperProductId
+        }
+        if (shipment.courierItemData?.logPromoCode?.isNotEmpty() == true) {
+            viewModelScope.launch {
+                val shouldClearPromoBenefit = promoProcessor.clearPromo(
+                    ClearPromoOrder(
+                        checkoutOrderModel.boUniqueId,
+                        checkoutOrderModel.boMetadata.boType,
+                        arrayListOf(shipment.courierItemData.logPromoCode!!),
+                        checkoutOrderModel.shopId,
+                        checkoutOrderModel.isProductIsPreorder,
+                        checkoutOrderModel.products.first().preOrderDurationDay.toString(),
+                        checkoutOrderModel.fulfillmentId,
+                        checkoutOrderModel.cartStringGroup
+                    )
+                )
+                if (shouldClearPromoBenefit) {
+                    val list = listData.value.toMutableList()
+                    val newPromo = list.promo()!!.copy(promo = LastApplyUiModel())
+                    list[list.size - 4] = newPromo
+                    listData.value = list
+                }
+            }
         }
         val newShipment = shipment.copy(
             isLoading = false,
