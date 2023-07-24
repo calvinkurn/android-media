@@ -25,7 +25,6 @@ import com.tokopedia.logisticCommon.data.constant.AddressConstant.EXTRA_EDIT_ADD
 import com.tokopedia.logisticCommon.data.constant.LogisticConstant.EXTRA_IS_STATE_CHOSEN_ADDRESS_CHANGED
 import com.tokopedia.logisticCommon.data.constant.ManageAddressSource
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
-import com.tokopedia.logisticCommon.util.LogisticUserConsentHelper
 import com.tokopedia.logisticCommon.util.MapsAvailabilityHelper
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.common.AddressConstants
@@ -320,6 +319,7 @@ class AddressFormFragment :
                 viewModel.clearLatLong()
                 binding?.cardAddressNegativeWidget?.setNotYetPinPoint()
             }
+
             else -> {
                 // no op
             }
@@ -408,7 +408,8 @@ class AddressFormFragment :
         }
 
         val addressDataFromPinpoint =
-            data?.getParcelableExtra<SaveAddressDataModel>(EXTRA_SAVE_DATA_UI_MODEL) ?: data?.getParcelableExtra(EXTRA_ADDRESS_NEW)
+            data?.getParcelableExtra<SaveAddressDataModel>(EXTRA_SAVE_DATA_UI_MODEL)
+                ?: data?.getParcelableExtra(EXTRA_ADDRESS_NEW)
 
         // if user make any changes from pinpoint page, then update data in this page
         if (addressDataFromPinpoint != null) {
@@ -628,9 +629,11 @@ class AddressFormFragment :
             AddressUiState.EditAddress -> {
                 observeEditAddress()
             }
+
             AddressUiState.AddAddress -> {
                 observeAddAddress()
             }
+
             else -> {
                 // no op
             }
@@ -675,9 +678,11 @@ class AddressFormFragment :
                     AddressUiState.AddAddress -> {
                         doSaveAddress()
                     }
+
                     AddressUiState.EditAddress -> {
                         doSaveEditAddress()
                     }
+
                     else -> {
                         // no op
                     }
@@ -745,6 +750,7 @@ class AddressFormFragment :
             )
         }
     }
+
     private fun renderForm(isEdit: Boolean, data: SaveAddressDataModel) {
         setOnTouchLabelAddress()
         setupRvLabelAddressChips()
@@ -918,6 +924,7 @@ class AddressFormFragment :
                         field.joinToString(",")
                     )
                 }
+
                 AddressUiState.AddAddress -> {
                     if (isPositiveFlow) {
                         AddNewAddressRevampAnalytics.onClickSimpanErrorPositive(
@@ -1145,9 +1152,11 @@ class AddressFormFragment :
                     AddressUiState.AddAddress -> {
                         AddNewAddressRevampAnalytics.onClickAturPinpointNegative(userSession.userId)
                     }
+
                     AddressUiState.EditAddress -> {
                         EditAddressRevampAnalytics.onClickAturPinPoint(userSession.userId)
                     }
+
                     else -> {
                         // no op
                     }
@@ -1188,6 +1197,7 @@ class AddressFormFragment :
                     AddressUiState.EditAddress -> {
                         EditAddressRevampAnalytics.onClickFieldLabelAlamat(userSession.userId)
                     }
+
                     AddressUiState.AddAddress -> {
                         if (isPositiveFlow) {
                             AddNewAddressRevampAnalytics.onClickFieldLabelAlamatPositive(userSession.userId)
@@ -1195,6 +1205,7 @@ class AddressFormFragment :
                             AddNewAddressRevampAnalytics.onClickFieldLabelAlamatNegative(userSession.userId)
                         }
                     }
+
                     else -> {
                         // no op
                     }
@@ -1205,6 +1216,7 @@ class AddressFormFragment :
                     AddressUiState.EditAddress -> {
                         EditAddressRevampAnalytics.onClickFieldAlamat(userSession.userId)
                     }
+
                     AddressUiState.AddAddress -> {
                         if (isPositiveFlow) {
                             AddNewAddressRevampAnalytics.onClickFieldAlamatPositive(userSession.userId)
@@ -1212,6 +1224,7 @@ class AddressFormFragment :
                             AddNewAddressRevampAnalytics.onClickFieldAlamatNegative(userSession.userId)
                         }
                     }
+
                     else -> {
                         // no op
                     }
@@ -1222,6 +1235,7 @@ class AddressFormFragment :
                     AddressUiState.EditAddress -> {
                         EditAddressRevampAnalytics.onClickFieldCatatanKurir(userSession.userId)
                     }
+
                     AddressUiState.AddAddress -> {
                         if (isPositiveFlow) {
                             AddNewAddressRevampAnalytics.onClickFieldCatatanKurirPositive(userSession.userId)
@@ -1229,6 +1243,7 @@ class AddressFormFragment :
                             AddNewAddressRevampAnalytics.onClickFieldCatatanKurirNegative(userSession.userId)
                         }
                     }
+
                     else -> {
                         // no op
                     }
@@ -1282,13 +1297,10 @@ class AddressFormFragment :
     private fun doSaveAddress() {
         setSaveAddressDataModel()
         viewModel.saveAddress(
-            consentJson = if (isDisableAddressImprovement) {
-                ""
-            } else {
-                binding?.userConsentWidget?.generatePayloadData().orEmpty()
-            },
+            consentJson = binding?.userConsentWidget?.generatePayloadData().orEmpty(),
             sourceValue = sourceValue
         )
+
     }
 
     private fun doSaveEditAddress() {
@@ -1426,28 +1438,7 @@ class AddressFormFragment :
     }
 
     private fun setUserConsent() {
-        if (isDisableAddressImprovement) {
-            binding?.userConsent?.visible()
-            binding?.userConsentWidget?.gone()
-
-            context?.apply {
-                LogisticUserConsentHelper.displayUserConsent(
-                    context = this,
-                    userId = userSession.userId,
-                    textView = binding?.userConsent,
-                    buttonText = getString(R.string.btn_simpan),
-                    screenName = if (addressUiState.isEdit()) {
-                        EditAddressRevampAnalytics.CATEGORY_EDIT_ADDRESS_PAGE
-                    } else if (isPositiveFlow) {
-                        LogisticUserConsentHelper.ANA_REVAMP_POSITIVE
-                    } else {
-                        LogisticUserConsentHelper.ANA_REVAMP_NEGATIVE
-                    }
-                )
-            }
-        } else {
-            binding?.userConsent?.gone()
-            binding?.userConsentWidget?.visible()
+        binding?.userConsentWidget?.visible()
 
             binding?.userConsentWidget?.apply {
                 setBtnSaveAddressEnable(addressUiState.isEdit())
@@ -1465,12 +1456,11 @@ class AddressFormFragment :
                 )
             )
         }
-    }
 
-    private fun setBtnSaveAddressEnable(isEnabled: Boolean) {
-        binding?.btnSaveAddressNew?.isEnabled = isEnabled
-    }
+        private fun setBtnSaveAddressEnable(isEnabled: Boolean) {
+            binding?.btnSaveAddressNew?.isEnabled = isEnabled
+        }
 
-    private val FragmentAddressFormBinding.addressForm: BaseFormAddressWidget
+        private val FragmentAddressFormBinding.addressForm: BaseFormAddressWidget
         get() = if (isPositiveFlow) this.formAddressPositiveWidget else this.formAddressNegativeWidget
-}
+    }

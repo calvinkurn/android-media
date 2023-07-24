@@ -50,6 +50,7 @@ import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
 import com.tokopedia.logisticCommon.data.constant.AddressConstant.EXTRA_CITY_NAME
 import com.tokopedia.logisticCommon.data.constant.AddressConstant.EXTRA_DISTRICT_NAME
 import com.tokopedia.logisticCommon.data.constant.AddressConstant.EXTRA_IS_GET_PINPOINT_ONLY
+import com.tokopedia.logisticCommon.data.constant.AddressConstant.EXTRA_WH_DISTRICT_ID
 import com.tokopedia.logisticCommon.data.constant.LogisticConstant.EXTRA_ADDRESS_NEW
 import com.tokopedia.logisticCommon.data.constant.PinpointSource
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
@@ -62,6 +63,8 @@ import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_ADDRESS_STATE
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_FROM_ADDRESS_FORM
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_GMS_AVAILABILITY
+import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_IS_EDIT
+import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_IS_EDIT_WAREHOUSE
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_IS_POLYGON
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_IS_POSITIVE_FLOW
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_LAT
@@ -172,6 +175,9 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
     private var permissionState: Int = PERMISSION_NOT_DEFINED
     private var isAccessAppPermissionFromSettings: Boolean = false
     private var isGmsAvailable: Boolean = true
+    private var isEditWarehouse: Boolean = false
+    private var whDistrictId: Long = 0
+
     private val requiredPermissions: Array<String>
         get() = arrayOf(
             Manifest.permission.ACCESS_FINE_LOCATION,
@@ -577,6 +583,8 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
                 lat = getDouble(EXTRA_LAT),
                 long = getDouble(EXTRA_LONG)
             )
+            isEditWarehouse = it.getBoolean(EXTRA_IS_EDIT_WAREHOUSE, false)
+            whDistrictId = it.getLong(EXTRA_WH_DISTRICT_ID, 0)
 
             getParcelable<SaveAddressDataModel>(EXTRA_SAVE_DATA_UI_MODEL)?.apply {
                 viewModel.setAddress(this)
@@ -950,7 +958,18 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
 
     private fun onChoosePinpoint() {
         if (addressUiState.isEditOrPinpointOnly()) {
-            setResultAddressFormNegative()
+            if (isEditWarehouse && whDistrictId != 0L && whDistrictId != viewModel.getAddress().districtId) {
+                view?.let {
+                    Toaster.build(
+                        it,
+                        getString(R.string.toaster_not_avail_shop_loc),
+                        Toaster.LENGTH_SHORT,
+                        type = Toaster.TYPE_ERROR
+                    ).show()
+                }
+            } else {
+                setResultAddressFormNegative()
+            }
         } else {
             if (isPositiveFlow) {
                 goToAddressForm()
@@ -1355,6 +1374,55 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
                 }
             )
             finish()
+        }
+    }
+
+    companion object {
+        private const val RESULT_PERMISSION_CODE = 1234
+        private const val REQUEST_CODE_PERMISSION = 9876
+        private const val REQUEST_ADDRESS_FORM_PAGE = 1599
+        private const val REQUEST_SEARCH_PAGE = 1995
+        private const val REQUEST_CODE_PINPOINT_LITE = 1986
+
+        private const val ZOOM_LEVEL = 16f
+        private const val MAP_BOUNDARY_STROKE_WIDTH = 3F
+        private const val LOCATION_REQUEST_INTERVAL = 10000L
+        private const val LOCATION_REQUEST_FASTEST_INTERVAL = 2000L
+        private const val GPS_DELAY = 1000L
+
+        const val FOREIGN_COUNTRY_MESSAGE = "Lokasi di luar Indonesia."
+        const val LOCATION_NOT_FOUND_MESSAGE = "Lokasi gagal ditemukan"
+        const val BOTTOMSHEET_OUT_OF_INDO = 1
+        const val BOTTOMSHEET_NOT_FOUND_LOC = 2
+
+        const val SUCCESS = "success"
+        const val NOT_SUCCESS = "not success"
+
+        fun newInstance(extra: Bundle): PinpointNewPageFragment {
+            return PinpointNewPageFragment().apply {
+                arguments = Bundle().apply {
+                    putString(EXTRA_PLACE_ID, extra.getString(EXTRA_PLACE_ID))
+                    putDouble(EXTRA_LAT, extra.getDouble(EXTRA_LAT))
+                    putDouble(EXTRA_LONG, extra.getDouble(EXTRA_LONG))
+                    putBoolean(EXTRA_IS_POSITIVE_FLOW, extra.getBoolean(EXTRA_IS_POSITIVE_FLOW))
+                    putBoolean(EXTRA_IS_POLYGON, extra.getBoolean(EXTRA_IS_POLYGON))
+                    putParcelable(
+                        EXTRA_SAVE_DATA_UI_MODEL,
+                        extra.getParcelable(EXTRA_SAVE_DATA_UI_MODEL)
+                    )
+                    putBoolean(EXTRA_FROM_ADDRESS_FORM, extra.getBoolean(EXTRA_FROM_ADDRESS_FORM))
+                    putBoolean(EXTRA_IS_EDIT, extra.getBoolean(EXTRA_IS_EDIT))
+                    putString(PARAM_SOURCE, extra.getString(PARAM_SOURCE))
+                    putBoolean(
+                        EXTRA_IS_GET_PINPOINT_ONLY,
+                        extra.getBoolean(EXTRA_IS_GET_PINPOINT_ONLY)
+                    )
+                    putString(EXTRA_DISTRICT_NAME, extra.getString(EXTRA_DISTRICT_NAME))
+                    putString(EXTRA_CITY_NAME, extra.getString(EXTRA_CITY_NAME))
+                    putBoolean(EXTRA_IS_EDIT_WAREHOUSE, extra.getBoolean(EXTRA_IS_EDIT_WAREHOUSE))
+                    putLong(EXTRA_WH_DISTRICT_ID, extra.getLong(EXTRA_WH_DISTRICT_ID))
+                }
+            }
         }
     }
 }

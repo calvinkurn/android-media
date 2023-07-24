@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/routerFragment"
-        android:name="com.tokopedia.kyc_centralized.ui.gotoKyc.main.GotoKycRouterFragment"
+        android:name="com.tokopedia.kyc_centralized.ui.gotoKyc.main.router.GotoKycRouterFragment"
         android:label="RouterFragment"
         tools:layout="@layout/fragment_goto_kyc_loader">
         <action
@@ -29,21 +29,21 @@
 
     <fragment
         android:id="@+id/statusSubmissionFragment"
-        android:name="com.tokopedia.kyc_centralized.ui.gotoKyc.main.StatusSubmissionFragment"
+        android:name="com.tokopedia.kyc_centralized.ui.gotoKyc.main.status.StatusSubmissionFragment"
         android:label="StatusSubmissionFragment"
         tools:layout="@layout/fragment_goto_kyc_status_submission">
         <argument
             android:name="parameter"
-            app:argType="com.tokopedia.kyc_centralized.ui.gotoKyc.main.StatusSubmissionParam"/>
+            app:argType="com.tokopedia.kyc_centralized.ui.gotoKyc.main.status.StatusSubmissionParam"/>
     </fragment>
     <fragment
         android:id="@+id/bridgingAccountLinkingFragment"
-        android:name="com.tokopedia.kyc_centralized.ui.gotoKyc.main.BridgingAccountLinkingFragment"
+        android:name="com.tokopedia.kyc_centralized.ui.gotoKyc.main.bridging.BridgingAccountLinkingFragment"
         android:label="BridgingAccountLinkingFragment"
         tools:layout="@layout/fragment_goto_kyc_bridging_account_linking">
         <argument
             android:name="parameter"
-            app:argType="com.tokopedia.kyc_centralized.ui.gotoKyc.main.BridgingAccountLinkingParam" />
+            app:argType="com.tokopedia.kyc_centralized.ui.gotoKyc.main.bridging.BridgingAccountLinkingParam" />
         <action
             android:id="@+id/action_bridgingAccountLinkingFragment_to_dobChallengeFragment"
             app:destination="@id/dobChallengeFragment"
@@ -64,12 +64,12 @@
     </fragment>
     <fragment
         android:id="@+id/dobChallengeFragment"
-        android:name="com.tokopedia.kyc_centralized.ui.gotoKyc.main.DobChallengeFragment"
+        android:name="com.tokopedia.kyc_centralized.ui.gotoKyc.main.challenge.DobChallengeFragment"
         android:label="DobChallengeFragment"
         tools:layout="@layout/fragment_goto_kyc_dob_challenge">
         <argument
             android:name="parameter"
-            app:argType="com.tokopedia.kyc_centralized.ui.gotoKyc.main.DobChallengeParam"/>
+            app:argType="com.tokopedia.kyc_centralized.ui.gotoKyc.main.challenge.DobChallengeParam"/>
         <action
             android:id="@+id/action_dobChallengeFragment_to_finalLoaderFragment"
             app:destination="@id/finalLoaderFragment"
@@ -80,21 +80,21 @@
     </fragment>
     <fragment
         android:id="@+id/onboardBenefitFragment"
-        android:name="com.tokopedia.kyc_centralized.ui.gotoKyc.main.OnboardBenefitFragment"
+        android:name="com.tokopedia.kyc_centralized.ui.gotoKyc.main.onboard.OnboardBenefitFragment"
         android:label="OnboardBenefitFragment"
         tools:layout="@layout/fragment_goto_kyc_onboard_benefit">
         <argument
             android:name="parameter"
-            app:argType="com.tokopedia.kyc_centralized.ui.gotoKyc.main.OnboardBenefitParam"/>
+            app:argType="com.tokopedia.kyc_centralized.ui.gotoKyc.main.onboard.OnboardBenefitParam"/>
     </fragment>
     <fragment
         android:id="@+id/finalLoaderFragment"
-        android:name="com.tokopedia.kyc_centralized.ui.gotoKyc.main.FinalLoaderFragment"
+        android:name="com.tokopedia.kyc_centralized.ui.gotoKyc.main.submit.FinalLoaderFragment"
         android:label="FinalLoaderFragment"
         tools:layout="@layout/fragment_goto_kyc_final_loader">
         <argument
             android:name="parameter"
-            app:argType="com.tokopedia.kyc_centralized.ui.gotoKyc.main.FinalLoaderParam"/>
+            app:argType="com.tokopedia.kyc_centralized.ui.gotoKyc.main.submit.FinalLoaderParam"/>
         <action
             android:id="@+id/action_finalLoaderFragment_to_statusSubmissionFragment"
             app:destination="@id/statusSubmissionFragment"
@@ -114,12 +114,12 @@
     </fragment>
     <fragment
         android:id="@+id/captureKycDocumentsFragment"
-        android:name="com.tokopedia.kyc_centralized.ui.gotoKyc.main.CaptureKycDocumentsFragment"
+        android:name="com.tokopedia.kyc_centralized.ui.gotoKyc.main.capture.CaptureKycDocumentsFragment"
         android:label="CaptureKycDocumentsFragment"
         tools:layout="@layout/fragment_goto_kyc_loader">
         <argument
             android:name="parameter"
-            app:argType="com.tokopedia.kyc_centralized.ui.gotoKyc.main.CaptureKycDocumentsParam"/>
+            app:argType="com.tokopedia.kyc_centralized.ui.gotoKyc.main.capture.CaptureKycDocumentsParam"/>
         <action
             android:id="@+id/action_captureKycDocumentsFragment_to_finalLoaderFragment"
             app:destination="@id/finalLoaderFragment" />

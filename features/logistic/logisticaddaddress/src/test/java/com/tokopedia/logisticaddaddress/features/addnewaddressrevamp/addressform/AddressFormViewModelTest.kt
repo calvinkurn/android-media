@@ -14,6 +14,9 @@ import com.tokopedia.logisticCommon.data.response.KeroAddAddress
 import com.tokopedia.logisticCommon.data.response.KeroEditAddressResponse
 import com.tokopedia.logisticCommon.data.response.KeroGetAddressResponse
 import com.tokopedia.logisticCommon.data.response.PinpointValidationResponse
+import com.tokopedia.logisticaddaddress.common.AddressConstants
+import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.uimodel.FieldType
+import com.tokopedia.url.Env
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -1129,7 +1132,6 @@ class AddressFormViewModelTest {
         // Inject
         val defaultName = "Mike"
         val defaultPhone = "0817389274839"
-
         // Given
         val saveDataModel = addressFormViewModel.generateSaveDataModel(
             saveDataModel = null,
@@ -1162,6 +1164,22 @@ class AddressFormViewModelTest {
             Assert.assertEquals(receiverName, defaultName)
             Assert.assertEquals(phone, defaultPhone)
         }
+    }
+
+    @Test
+    fun `verify get collection id edit address production is correctly`() {
+        // Given
+        coEvery { sharedPrefs.getString(any(), any()) } returns Env.LIVE.value
+
+        // When
+        addressFormViewModel.isEdit = true
+        TokopediaUrl.init(context)
+
+        // Then
+        Assert.assertEquals(
+            addressFormViewModel.getCollectionId(),
+            AddressConstants.EDIT_ADDRESS_COLLECTION_ID_PRODUCTION
+        )
     }
 
     @Test
