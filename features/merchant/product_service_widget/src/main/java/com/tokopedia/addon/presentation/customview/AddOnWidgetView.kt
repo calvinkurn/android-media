@@ -34,7 +34,8 @@ class AddOnWidgetView : BaseCustomView {
 
     @Inject
     lateinit var viewModel: AddOnViewModel
-    private var addonAdapter: AddOnAdapter = AddOnAdapter(::onAddonClickListener, ::onHelpClickListener)
+    private var addonAdapter: AddOnAdapter = AddOnAdapter(::onAddonClickListener,
+        ::onHelpClickListener, ::onItemImpressionListener)
     private var tfTitle: Typography? = null
     private var llSeeAll: LinearLayoutCompat? = null
     private var listener: AddOnComponentListener? = null
@@ -162,6 +163,10 @@ class AddOnWidgetView : BaseCustomView {
     private fun onHelpClickListener(position: Int, addOnUIModel: AddOnUIModel) {
         listener?.onAddonHelpClick(position, addOnUIModel)
         RouteManager.route(context, "${ApplinkConst.WEBVIEW}?url=${addOnUIModel.eduLink}")
+    }
+
+    private fun onItemImpressionListener(index: Int, indexChild: Int, addOnUIModel: AddOnUIModel) {
+        listener?.onAddOnItemImpression(index, indexChild, addOnUIModel)
     }
 
     fun setTitleText(text: String) {

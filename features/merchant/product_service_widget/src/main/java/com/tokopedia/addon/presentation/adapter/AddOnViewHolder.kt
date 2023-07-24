@@ -17,7 +17,8 @@ import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 class AddOnViewHolder(
     itemView: View,
     private val onClickListener: (index: Int, indexChild: Int, addOnUIModels: List<AddOnUIModel>) -> Unit,
-    private val onHelpClickListener: (index: Int, AddOnUIModel) -> Unit
+    private val onHelpClickListener: (index: Int, AddOnUIModel) -> Unit,
+    private val onItemImpressionListener: (index: Int, indexChild: Int, AddOnUIModel) -> Unit
 ): RecyclerView.ViewHolder(itemView) {
 
     companion object {
@@ -38,12 +39,20 @@ class AddOnViewHolder(
                 }
             )
             rvAddonChild.layoutManager = LinearLayoutManager(root.context, LinearLayoutManager.VERTICAL, false)
-            rvAddonChild.adapter = AddOnChildAdapter(::onChildClickListener, onHelpClickListener).apply {
+            rvAddonChild.adapter = AddOnChildAdapter(
+                ::onChildClickListener,
+                onHelpClickListener,
+                ::onChildItemImpressionListener
+            ).apply {
                 showDescription(isShowDescription)
                 setItems(item.addon)
             }
             tfHint.isVisible = isShowDescription
         }
+    }
+
+    private fun onChildItemImpressionListener(indexChild: Int, addOnUIModel: AddOnUIModel) {
+        onItemImpressionListener(bindingAdapterPosition, indexChild, addOnUIModel)
     }
 
     private fun onChildClickListener(indexChild: Int, addOnUIModels: List<AddOnUIModel>) {

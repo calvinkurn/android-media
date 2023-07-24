@@ -30,4 +30,6 @@ interface AddOnComponentListener {
         addonGroups: List<AddOnGroupUIModel>) {}
 
     fun onSaveAddonLoading() {}
+
+    fun onAddOnItemImpression(index: Int, indexChild: Int, addOnUIModel: AddOnUIModel) {}
 }

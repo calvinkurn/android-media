@@ -1,6 +1,7 @@
 package com.tokopedia.addon.presentation.uimodel
 
 import android.os.Parcelable
+import com.tokopedia.kotlin.model.ImpressHolder
 import kotlinx.parcelize.Parcelize
 import java.io.Serializable
 
@@ -17,7 +18,7 @@ data class AddOnUIModel(
     var uniqueId: String = "",
     var description: String = "",
     var shopId: String = ""
-) : Serializable {
+) : Serializable, ImpressHolder() {
     fun getSelectedStatus(): AddOnSelectedStatus {
         return when {
             isMandatory -> AddOnSelectedStatus.MANDATORY
