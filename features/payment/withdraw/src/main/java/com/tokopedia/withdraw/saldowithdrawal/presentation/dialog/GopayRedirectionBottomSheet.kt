@@ -15,14 +15,15 @@ import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.withdraw.R
+import timber.log.Timber
 
 class GopayRedirectionBottomSheet: BottomSheetUnify() {
 
-    private lateinit var image: String
-    private lateinit var title: String
-    private lateinit var description: String
-    private lateinit var applink: String
-    private lateinit var childView: View
+    private var image: String? = null
+    private var title: String? = null
+    private var description: String? = null
+    private var applink: String? = null
+    private var childView: View? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,19 +43,19 @@ class GopayRedirectionBottomSheet: BottomSheetUnify() {
     }
 
     private fun setUpView() {
-        val imageView = childView.findViewById<ImageUnify>(R.id.ivGopayRedirection)
-        val titleView = childView.findViewById<Typography>(R.id.tvGopayRedirectionTitle)
-        val descriptionView = childView.findViewById<Typography>(R.id.tvGopayRedirectionDescription)
-        val ctaView = childView.findViewById<UnifyButton>(R.id.btnGopayRedirectionCta)
+        val imageView = childView?.findViewById<ImageUnify>(R.id.ivGopayRedirection)
+        val titleView = childView?.findViewById<Typography>(R.id.tvGopayRedirectionTitle)
+        val descriptionView = childView?.findViewById<Typography>(R.id.tvGopayRedirectionDescription)
+        val ctaView = childView?.findViewById<UnifyButton>(R.id.btnGopayRedirectionCta)
 
-        imageView.setImageUrl(image)
-        titleView.shouldShowWithAction(title.isNotEmpty()) {
+        imageView?.setImageUrl(image.orEmpty())
+        titleView?.shouldShowWithAction(title.orEmpty().isNotEmpty()) {
             titleView.text = title
         }
-        descriptionView.shouldShowWithAction(description.isNotEmpty()) {
+        descriptionView?.shouldShowWithAction(description.orEmpty().isNotEmpty()) {
             descriptionView.text = description
         }
-        ctaView.setOnClickListener {
+        ctaView?.setOnClickListener {
             context?.let {
                 if (it.isAppInstalled(CUSTOMER_APP)) {
                     RouteManager.route(it, applink)
@@ -73,6 +74,7 @@ class GopayRedirectionBottomSheet: BottomSheetUnify() {
             try {
                 it.startActivity(goToMarket)
             } catch (e: ActivityNotFoundException) {
+                Timber.e(e)
                 it.startActivity(
                     Intent(
                         Intent.ACTION_VIEW,

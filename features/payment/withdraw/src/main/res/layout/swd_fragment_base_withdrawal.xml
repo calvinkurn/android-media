@@ -65,7 +65,7 @@
             app:layout_constraintTop_toTopOf="@id/tvGopayTickerTitle"
             app:layout_constraintBottom_toBottomOf="@id/tvGopayTickerDescription"/>
 
-        <ImageView
+        <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/ivGopayTickerIcon"
             android:layout_width="40dp"
             android:layout_height="32dp"

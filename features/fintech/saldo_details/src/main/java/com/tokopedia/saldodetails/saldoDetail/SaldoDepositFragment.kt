@@ -247,7 +247,7 @@ class SaldoDepositFragment : BaseDaggerFragment() {
             when (it) {
                 is Success -> {
                     if (it.data.saldo.isHaveError) {
-                        onSaldoBalanceLoadingError()
+                        onUserSaldoBalanceLoaded(it.data.saldo)
                     } else {
                         onUserSaldoBalanceLoaded(it.data.saldo)
                     }
