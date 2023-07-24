@@ -160,7 +160,11 @@ data class ShopLayoutWidget(
                 @SerializedName("childIDs")
                 val listChildId: List<String> = listOf(),
                 @SerializedName("parentID")
-                val parentId: String = ""
+                val parentId: String = "",
+                @SerializedName("linkType")
+                val linkType: String = "",
+                @SerializedName("timeInfo")
+                val timeInfo: TimeInfo = TimeInfo(),
 
         ) {
             data class ProductBundleDetailsItem(
@@ -285,6 +289,29 @@ data class ShopLayoutWidget(
                         val isActive: Boolean = false
                 )
             }
+
+            data class TimeInfo(
+                @SerializedName("timeDescription")
+                val timeDescription: String = "",
+                @SerializedName("timeCounter")
+                val timeCounter: Long = 0L,
+                @SerializedName("startDate")
+                val startDate: String = "",
+                @SerializedName("endDate")
+                val endDate: String = "",
+                @SerializedName("bgColor")
+                val bgColor: List<String> = listOf(),
+                @SerializedName("textColor")
+                val textColor: String = "",
+                @SerializedName("status")
+                val status: Int = -1,
+
+
+
+
+
+
+            )
         }
     }
 }

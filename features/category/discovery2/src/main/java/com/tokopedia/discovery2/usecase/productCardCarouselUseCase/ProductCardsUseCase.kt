@@ -4,7 +4,7 @@ import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.Constant.ChooseAddressQueryParams.RPC_PRODUCT_ID
 import com.tokopedia.discovery2.Constant.ChooseAddressQueryParams.RPC_USER_WAREHOUSE_ID
 import com.tokopedia.discovery2.Utils
-import com.tokopedia.discovery2.Utils.Companion.addAddressQueryMap
+import com.tokopedia.discovery2.Utils.Companion.addAddressQueryMapWithWareHouse
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.datamapper.discoComponentQuery
@@ -204,7 +204,7 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
 
         queryParameterMap[RPC_NEXT_PAGE] = nextPageKey ?: ""
 
-        queryParameterMap.putAll(addAddressQueryMap(userAddressData))
+        queryParameterMap.putAll(addAddressQueryMapWithWareHouse(userAddressData))
         if (userAddressData?.warehouse_id?.isNotEmpty() == true)
             queryParameterMap[RPC_USER_WAREHOUSE_ID] = userAddressData.warehouse_id
         if (!recomProdId.isNullOrEmpty())

@@ -59,6 +59,4 @@ class TokoNowLocalAddress @Inject constructor(@ApplicationContext private val co
     fun getShopId() = localAddressData.shop_id.toLongOrZero()
 
     fun getWarehousesData() = AddressMapper.mapToWarehousesData(localAddressData)
-
-    fun getWarehouseIds(): String = AddressMapper.mapToWarehouseIds(localAddressData)
 }

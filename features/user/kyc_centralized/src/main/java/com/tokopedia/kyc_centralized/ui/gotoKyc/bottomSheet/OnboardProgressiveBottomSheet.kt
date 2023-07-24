@@ -26,9 +26,9 @@ import com.tokopedia.kyc_centralized.databinding.LayoutGotoKycOnboardProgressive
 import com.tokopedia.kyc_centralized.di.DaggerGoToKycComponent
 import com.tokopedia.kyc_centralized.ui.gotoKyc.analytics.GotoKycAnalytics
 import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.RegisterProgressiveResult
-import com.tokopedia.kyc_centralized.ui.gotoKyc.main.GotoKycMainActivity
-import com.tokopedia.kyc_centralized.ui.gotoKyc.main.GotoKycMainParam
-import com.tokopedia.kyc_centralized.ui.gotoKyc.main.GotoKycRouterFragment
+import com.tokopedia.kyc_centralized.ui.gotoKyc.main.router.GotoKycMainActivity
+import com.tokopedia.kyc_centralized.ui.gotoKyc.main.router.GotoKycMainParam
+import com.tokopedia.kyc_centralized.ui.gotoKyc.main.router.GotoKycRouterFragment
 import com.tokopedia.kyc_centralized.ui.gotoKyc.utils.getGotoKycErrorMessage
 import com.tokopedia.kyc_centralized.util.KycSharedPreference
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
@@ -46,6 +46,10 @@ class OnboardProgressiveBottomSheet: BottomSheetUnify() {
     lateinit var kycSharedPreference: KycSharedPreference
 
     private var binding by autoClearedNullable<LayoutGotoKycOnboardProgressiveBinding>()
+
+    private var exhaustedParam = DobChallengeExhaustedParam()
+
+    private var dismissDialogWithDataListener: (DobChallengeExhaustedParam) -> Unit = {}
 
     private val startKycForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
         when (result.resultCode) {
@@ -159,6 +163,15 @@ class OnboardProgressiveBottomSheet: BottomSheetUnify() {
                 is RegisterProgressiveResult.Loading -> {
                     setButtonLoading(true)
                 }
+                is RegisterProgressiveResult.Exhausted -> {
+                    setButtonLoading(false)
+                    exhaustedParam.apply {
+                        isExhausted = true
+                        cooldownTimeInSeconds = it.cooldownTimeInSeconds
+                        maximumAttemptsAllowed = it.maximumAttemptsAllowed
+                    }
+                    dismiss()
+                }
                 is RegisterProgressiveResult.RiskyUser -> {
                     setButtonLoading(false)
                     val parameter = GotoKycMainParam(
@@ -259,11 +272,16 @@ class OnboardProgressiveBottomSheet: BottomSheetUnify() {
 
     override fun onDismiss(dialog: DialogInterface) {
         super.onDismiss(dialog)
+        dismissDialogWithDataListener(exhaustedParam)
 
         GotoKycAnalytics.sendClickOnButtonCloseOnboardingBottomSheet(
             projectId = projectId,
             kycFlowType = KYCConstant.GotoKycFlow.PROGRESSIVE
         )
+    }
+
+    fun setOnDismissWithDataListener(exhaustedParam: (DobChallengeExhaustedParam) -> Unit) {
+        dismissDialogWithDataListener = exhaustedParam
     }
 
     companion object {
@@ -284,3 +302,9 @@ class OnboardProgressiveBottomSheet: BottomSheetUnify() {
     }
 
 }
+
+data class DobChallengeExhaustedParam(
+    var isExhausted: Boolean = false,
+    var cooldownTimeInSeconds: String = "",
+    var maximumAttemptsAllowed: String = ""
+)

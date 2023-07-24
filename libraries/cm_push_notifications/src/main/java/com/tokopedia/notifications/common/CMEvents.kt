@@ -101,7 +101,7 @@ object IrisAnalyticsEvents {
 
     fun sendPushEvent(context: Context, eventName: String, baseNotificationModel: BaseNotificationModel) {
         if (baseNotificationModel.isTest) return
-        val irisAnalytics = IrisAnalytics(context)
+        val irisAnalytics = IrisAnalytics.getInstance(context)
         val values = addBaseValues(context, eventName, baseNotificationModel)
         if (baseNotificationModel.isAmplification) {
             values[LABEL] = AMPLIFICATION
@@ -169,7 +169,7 @@ object IrisAnalyticsEvents {
 
     fun sendAmplificationInAppEvent(context: Context, eventName: String, cmInApp: CMInApp) {
         if (cmInApp.isTest) return
-        val irisAnalytics = IrisAnalytics(context)
+        val irisAnalytics = IrisAnalytics.getInstance(context)
         trackEvent(context, irisAnalytics, addBaseValues(context, eventName, cmInApp).apply {
             put(LABEL, AMPLIFICATION)
         })

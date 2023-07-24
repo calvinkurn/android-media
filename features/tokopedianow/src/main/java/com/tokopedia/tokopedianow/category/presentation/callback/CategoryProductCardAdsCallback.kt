@@ -17,7 +17,8 @@ class CategoryProductCardAdsCallback(
     private val viewModel: TokoNowCategoryViewModel,
     private val analytic: CategoryProductAdsAnalytic,
     private val categoryIdL1: String,
-    private val startActivityResult: (Intent, Int) -> Unit
+    private val startActivityResult: (Intent, Int) -> Unit,
+    private val showToasterWhenAddToCartBlocked: () -> Unit = {}
 ) : ProductAdsCarouselListener {
 
     override fun onProductCardClicked(
@@ -65,5 +66,9 @@ class CategoryProductCardAdsCallback(
                 startActivitResult = startActivityResult
             )
         }
+    }
+
+    override fun onProductCardAddToCartBlocked() {
+        showToasterWhenAddToCartBlocked.invoke()
     }
 }
