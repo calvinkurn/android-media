@@ -49,4 +49,7 @@
     <string name="epharmacy_biaya_chat_dokter">Biaya Chat Dokter</string>
     <string name="epharmacy_jenis_layanan">Jenis Layanan</string>
     <string name="epharmacy_penyedia_layanan">Penyedia Layanan</string>
+    <string name="epharmacy_barang">barang</string>
+    <string name="epharmacy_pesanan_awal">Pesanan Awal</string>
+    <string name="epharmacy_sesuai_resep">Sesuai Resep</string>
 </resources>
