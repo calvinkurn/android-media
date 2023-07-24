@@ -606,7 +606,7 @@ class AffiliatePromoFragment :
                 setTextColor(
                     MethodChecker.getColor(
                         context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_G500
+                        com.tokopedia.unifyprinciples.R.color.Unify_GN500
                     )
                 )
             }
@@ -620,7 +620,7 @@ class AffiliatePromoFragment :
                 setTextColor(
                     MethodChecker.getColor(
                         context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_N700_44
+                        com.tokopedia.unifyprinciples.R.color.Unify_NN950_44
                     )
                 )
             }

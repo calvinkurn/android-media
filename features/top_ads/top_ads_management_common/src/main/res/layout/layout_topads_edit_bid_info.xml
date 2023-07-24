@@ -18,6 +18,6 @@
         android:layout_marginTop="@dimen/spacing_lvl1"
         android:layout_height="wrap_content"
         android:text="@string/top_ads_auto_bid_learn_more"
-        android:textColor="@color/Unify_G500"
+        android:textColor="@color/Unify_GN500"
         app:typographyType="body_3" />
 </LinearLayout>

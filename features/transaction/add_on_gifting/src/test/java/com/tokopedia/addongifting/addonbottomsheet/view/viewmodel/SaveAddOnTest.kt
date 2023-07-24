@@ -23,7 +23,7 @@ class SaveAddOnTest : BaseAddOnTest() {
         // Given
         val addOnProductData = AddOnProductData()
         val response = DataProvider.provideSaveAddOnDataSuccess()
-        coEvery { saveAddOnStateUseCase.setParams(any()) } just Runs
+        coEvery { saveAddOnStateUseCase.setParams(any(), false) } just Runs
         coEvery { saveAddOnStateUseCase.execute(any(), any()) } answers {
             firstArg<(SaveAddOnStateResponse) -> Unit>().invoke(response)
         }
@@ -47,7 +47,7 @@ class SaveAddOnTest : BaseAddOnTest() {
         // Given
         val addOnProductData = AddOnProductData()
         val response = DataProvider.provideSaveAddOnDataError()
-        coEvery { saveAddOnStateUseCase.setParams(any()) } just Runs
+        coEvery { saveAddOnStateUseCase.setParams(any(), false) } just Runs
         coEvery { saveAddOnStateUseCase.execute(any(), any()) } answers {
             firstArg<(SaveAddOnStateResponse) -> Unit>().invoke(response)
         }
@@ -70,7 +70,7 @@ class SaveAddOnTest : BaseAddOnTest() {
     fun `WHEN save add on got exception THEN ui state should be STATE_FAILED_SAVE_ADD_ON`() = runTest {
         // Given
         val addOnProductData = AddOnProductData()
-        coEvery { saveAddOnStateUseCase.setParams(any()) } just Runs
+        coEvery { saveAddOnStateUseCase.setParams(any(), false) } just Runs
         coEvery { saveAddOnStateUseCase.execute(any(), any()) } answers {
             secondArg<(Throwable) -> Unit>().invoke(ResponseErrorException())
         }

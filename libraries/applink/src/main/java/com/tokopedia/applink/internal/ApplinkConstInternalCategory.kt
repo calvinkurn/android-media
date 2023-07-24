@@ -34,7 +34,7 @@ object ApplinkConstInternalCategory {
     const val INTERNAL_FIND = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_FIND"
     const val INTERNAL_EXPLORE_CATEGORY = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_EXPLORE_CATEGORY"
     const val INTERNAL_BELANJA_CATEGORY = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_BELANJA_CATEGORY"
-    const val INTERNAL_CATALOG = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_CATALOG"
+    const val INTERNAL_CATALOG = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_CATALOG/"
     const val INTERNAL_E_PHARMACY = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_E_PHARMACY"
     const val INTERNAL_CATALOG_LIBRARY = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_CATALOG_LIBRARY"
 

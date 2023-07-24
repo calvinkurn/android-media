@@ -34,7 +34,7 @@ object MissionWidgetTracking : BaseTrackerConst() {
             const val DEFAULT_VALUE = ""
             const val DEFAULT_PRICE = 0f
             const val DEFAULT_BANNER_ID = "0"
-            const val ITEM_ID_FORMAT = "%s_%s_%s_%s"
+            const val ITEM_ID_FORMAT = "%s_%s_%s_%s_%s"
             const val DYNAMIC_CHANNEL_MISSION_WIDGET = "dynamic channel mission widget"
             const val BANNER = "banner"
             const val ITEM_NAME_FORMAT = "/ - p%s - %s - %s - %s - %s - %s"
@@ -83,6 +83,7 @@ object MissionWidgetTracking : BaseTrackerConst() {
             CustomAction.ITEM_ID_FORMAT.format(
                 element.id,
                 DEFAULT_BANNER_ID,
+                element.shopId,
                 targetingByNumber,
                 targetingByValue
             )
@@ -118,6 +119,7 @@ object MissionWidgetTracking : BaseTrackerConst() {
         val itemId = CustomAction.ITEM_ID_FORMAT.format(
             element.id,
             DEFAULT_BANNER_ID,
+            element.shopId,
             targetingByNumber,
             targetingByValue
         )

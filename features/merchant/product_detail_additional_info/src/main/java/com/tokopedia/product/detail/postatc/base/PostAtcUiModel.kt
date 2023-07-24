@@ -6,6 +6,7 @@ interface PostAtcUiModel {
     object Type {
         const val PRODUCT_INFO = "post_atc"
         const val RECOMMENDATION = "product_list"
+        const val ADDONS = "post_atc_add_ons"
     }
 
     val name: String

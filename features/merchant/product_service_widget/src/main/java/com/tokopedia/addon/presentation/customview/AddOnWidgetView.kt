@@ -14,6 +14,7 @@ import com.tokopedia.addon.presentation.adapter.AddOnAdapter
 import com.tokopedia.addon.presentation.listener.AddOnComponentListener
 import com.tokopedia.addon.presentation.uimodel.AddOnGroupUIModel
 import com.tokopedia.addon.presentation.uimodel.AddOnMapper
+import com.tokopedia.addon.presentation.uimodel.AddOnParam
 import com.tokopedia.addon.presentation.uimodel.AddOnUIModel
 import com.tokopedia.addon.presentation.viewmodel.AddOnViewModel
 import com.tokopedia.applink.ApplinkConst
@@ -171,13 +172,32 @@ class AddOnWidgetView : BaseCustomView {
         this.listener = listener
     }
 
+    /*
+    * Please use this function to show insurance addon data,
+    * otherwise it will not appeared, but still works for displaying installation addon data
+    */
+    fun getAddonData(
+        addOnParam: AddOnParam,
+        isSimplified: Boolean = false
+    ) {
+        viewModel.getAddOn(addOnParam, isSimplified)
+        llSeeAll?.isVisible = isSimplified
+    }
+
     fun getAddonData(
         productId: String,
         warehouseId: String,
         isTokocabang: Boolean,
         isSimplified: Boolean = false
     ) {
-        viewModel.getAddOn(productId, warehouseId, isTokocabang, isSimplified)
+        viewModel.getAddOn(
+            AddOnParam(
+                productId = productId,
+                warehouseId = warehouseId,
+                isTokocabang = isTokocabang
+            ),
+            isSimplified
+        )
         llSeeAll?.isVisible = isSimplified
     }
 
@@ -190,10 +210,14 @@ class AddOnWidgetView : BaseCustomView {
     }
 
     fun getAddOnAggregatedData(addOnIds: List<String>) {
-        viewModel.getAddOnAggregatedData(context, addOnIds)
+        viewModel.getAddOnAggregatedData(addOnIds)
     }
 
     fun setAutosaveAddon(cartId: Long, atcSource: String) {
         viewModel.setAutosave(cartId, atcSource)
+    }
+
+    fun getFetchedAddon(): List<AddOnGroupUIModel> {
+        return viewModel.getAddOnResult.value.orEmpty()
     }
 }

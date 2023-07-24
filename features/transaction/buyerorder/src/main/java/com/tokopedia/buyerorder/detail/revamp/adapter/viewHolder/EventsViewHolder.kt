@@ -304,29 +304,13 @@ class EventsViewHolder(
     }
 
     private fun viewClick(textView: TextView?, actionButton: ActionButton) {
-
-        val isDownloadable = if (actionButton.header.isNotEmpty()){
-            actionButton.headerObject.contentType.equals(CONTENT_TYPE, true)
-        } else {
-            false
-        }
-
-        when{
-            textView == null -> {
+        when (textView) {
+            null -> {
                 RouteManager.route(itemView.context, actionButton.body.appURL)
-            }
-            isDownloadable -> {
-                textView.setOnClickListener {
-                    clickActionButton(itemView.context, actionButton.body.appURL, true,){
-                        eventDetailsListener.askPermission(it, true, getString(R.string.oms_order_detail_ticket_title))
-                    }
-                }
             }
             else -> {
                 textView.setOnClickListener {
-                    clickActionButton(itemView.context, actionButton.body.appURL, false){
-                        eventDetailsListener.askPermission(it, false, "")
-                    }
+                    clickActionButton(itemView.context, actionButton.body.appURL)
                 }
             }
         }

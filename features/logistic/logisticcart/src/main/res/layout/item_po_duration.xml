@@ -14,7 +14,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:lineSpacingExtra="4sp"
-        android:textColor="@color/Unify_N700_68"
+        android:textColor="@color/Unify_NN950_68"
         app:typographyType="body_3"
         app:typographyWeight="reguler"
         android:layout_marginStart="16dp"
@@ -39,6 +39,6 @@
         android:layout_height="0.5dp"
         android:layout_below="@+id/lbl_pre_order"
         android:layout_marginTop="16dp"
-        android:background="@color/Unify_N100" />
+        android:background="@color/Unify_NN200" />
 
 </RelativeLayout>

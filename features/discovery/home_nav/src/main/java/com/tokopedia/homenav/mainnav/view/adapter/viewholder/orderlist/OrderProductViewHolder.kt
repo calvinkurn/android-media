@@ -50,8 +50,8 @@ class OrderProductViewHolder(itemView: View, val mainNavListener: MainNavListene
             val shimmer = binding?.orderProductImageShimmer
             Glide.with(itemView.context)
                     .load(productModel.navProductModel.imageUrl)
-                    .placeholder(com.tokopedia.kotlin.extensions.R.drawable.ic_loading_placeholder)
-                    .error(com.tokopedia.kotlin.extensions.R.drawable.ic_loading_placeholder)
+                    .placeholder(com.tokopedia.utils.R.drawable.ic_loading_placeholder)
+                    .error(com.tokopedia.utils.R.drawable.ic_loading_placeholder)
                     .dontAnimate()
                     .fitCenter()
                     .into(object : CustomTarget<Drawable>() {
@@ -85,7 +85,7 @@ class OrderProductViewHolder(itemView: View, val mainNavListener: MainNavListene
         //status
         binding?.orderProductStatus?.text = productModel.navProductModel.statusText
         binding?.orderProductStatus?.setTextColor(
-                ContextCompat.getColor(context, R.color.Unify_Y400)
+                ContextCompat.getColor(context, R.color.Unify_YN400)
         )
 
         //more than 1 product

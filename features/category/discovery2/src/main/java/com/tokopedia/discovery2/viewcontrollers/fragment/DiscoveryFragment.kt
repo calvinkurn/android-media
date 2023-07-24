@@ -1945,7 +1945,7 @@ open class DiscoveryFragment :
         return if (hasColouredHeader && isLightThemeStatusBar != false) {
             com.tokopedia.unifyprinciples.R.color.Unify_Static_White
         } else {
-            com.tokopedia.unifyprinciples.R.color.Unify_N700_96
+            com.tokopedia.unifyprinciples.R.color.Unify_NN950_96
         }
     }
 
@@ -1988,7 +1988,7 @@ open class DiscoveryFragment :
         view.layoutParams = layoutParams
 
         context?.let {
-            parentLayout.setBackgroundColor(MethodChecker.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_G900))
+            parentLayout.setBackgroundColor(MethodChecker.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_GN950))
         }
         parentLayout.addView(view)
         parentLayout.requestFocus()
@@ -1997,7 +1997,7 @@ open class DiscoveryFragment :
     fun hideCustomContent() {
         showSystemUi()
         context?.let {
-            parentLayout.setBackgroundColor(MethodChecker.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+            parentLayout.setBackgroundColor(MethodChecker.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_NN0))
         }
         coordinatorLayout.show()
         if (parentLayout.childCount > 1) {
@@ -2230,7 +2230,7 @@ open class DiscoveryFragment :
                 com.tokopedia.unifyprinciples.R.color.Unify_Static_White
             )
         } else {
-            ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+            ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN0)
         }
     }
 

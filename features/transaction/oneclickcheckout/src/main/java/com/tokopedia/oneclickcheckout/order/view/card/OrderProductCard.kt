@@ -86,7 +86,7 @@ class OrderProductCard(
         renderNotes()
         renderQuantity()
         renderPurchaseProtection()
-        renderAddOn(binding, product, shop)
+        renderAddOnGifting(binding, product, shop)
         renderAddOnsProduct()
     }
 
@@ -184,7 +184,7 @@ class OrderProductCard(
             flexboxOrderProductInfo.removeAllViews()
             if (!product.isError && product.wholesalePrice > 0) {
                 val textView = Typography(flexboxOrderProductInfo.context).apply {
-                    setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+                    setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_68))
                     setType(Typography.BODY_3)
                     text = root.context.getString(R.string.lbl_wholesale_product)
                 }
@@ -193,7 +193,7 @@ class OrderProductCard(
             if (!product.isError && product.productInformation.isNotEmpty()) {
                 for (information in product.productInformation) {
                     val textView = Typography(flexboxOrderProductInfo.context).apply {
-                        setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+                        setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_68))
                         setType(Typography.BODY_3)
                         text = if (flexboxOrderProductInfo.childCount > 0) "$information, " else information
                     }
@@ -435,7 +435,7 @@ class OrderProductCard(
         listener.onPurchaseProtectionCheckedChange(tmpIsChecked, product.productId)
     }
 
-    private fun renderAddOn(binding: CardOrderProductBinding, product: OrderProduct, shop: OrderShop) {
+    private fun renderAddOnGifting(binding: CardOrderProductBinding, product: OrderProduct, shop: OrderShop) {
         with(binding) {
             val addOn: AddOnGiftingDataModel = if (shop.isFulfillment) {
                 shop.addOn
@@ -448,7 +448,7 @@ class OrderProductCard(
                         state = ButtonGiftingAddOnView.State.ACTIVE
                         setAddOnButtonData(addOn)
                         setOnClickListener {
-                            listener.onClickAddOnButton(AddOnGiftingResponse.STATUS_SHOW_ENABLED_ADD_ON_BUTTON, addOn, product, shop)
+                            listener.onClickAddOnGiftingButton(AddOnGiftingResponse.STATUS_SHOW_ENABLED_ADD_ON_BUTTON, addOn, product, shop)
                             orderSummaryAnalytics.eventClickAddOnsDetail(product.productId)
                         }
                         show()
@@ -460,7 +460,7 @@ class OrderProductCard(
                         state = ButtonGiftingAddOnView.State.INACTIVE
                         setAddOnButtonData(addOn)
                         setOnClickListener {
-                            listener.onClickAddOnButton(AddOnGiftingResponse.STATUS_SHOW_DISABLED_ADD_ON_BUTTON, addOn, product, shop)
+                            listener.onClickAddOnGiftingButton(AddOnGiftingResponse.STATUS_SHOW_DISABLED_ADD_ON_BUTTON, addOn, product, shop)
                         }
                         show()
                         orderSummaryAnalytics.eventViewAddOnsWidget(product.productId)
@@ -484,7 +484,8 @@ class OrderProductCard(
                 setSeeAllAddOnsProduct(
                     binding = this,
                     addOnsProductData = addOnsProductData,
-                    product = product
+                    product = product,
+                    shop = shop
                 )
                 setAddOnsProductItem(
                     binding = this,
@@ -504,7 +505,8 @@ class OrderProductCard(
     private fun setSeeAllAddOnsProduct(
         binding: ItemShipmentAddonProductBinding,
         addOnsProductData: AddOnsProductDataModel,
-        product: OrderProduct
+        product: OrderProduct,
+        shop: OrderShop
     ) {
         binding.tvSeeAllAddonProduct.showIfWithBlock(
             predicate = addOnsProductData.bottomsheet.title.isNotBlank() &&
@@ -514,7 +516,8 @@ class OrderProductCard(
             text = addOnsProductData.bottomsheet.title
         }
         binding.tvSeeAllAddonProduct.setOnClickListener {
-            listener.onClickSeeAllAddOnProductService(product, addOnsProductData)
+            orderSummaryAnalytics.eventClickLihatSemuaAddOnProductWidget()
+            listener.onClickSeeAllAddOnProductService(product, addOnsProductData, shop)
         }
     }
 
@@ -547,10 +550,6 @@ class OrderProductCard(
                         binding = addOnView,
                         addOn = addOn
                     )
-                    setAddOnProductName(
-                        binding = addOnView,
-                        addOn = addOn
-                    )
                     setAddOnProductPrice(
                         binding = addOnView,
                         addOn = addOn
@@ -561,7 +560,7 @@ class OrderProductCard(
                     )
 
                     // set addon listeners
-                    cbAddonItem.setOnCheckedChangeListener { _, _ ->
+                    cbAddonItem.setOnCheckedChangeListener { _, isChecked ->
                         changeAddOnProductStatus(
                             addOn = addOn
                         )
@@ -571,6 +570,7 @@ class OrderProductCard(
                                 newAddOnProductData = addOn,
                                 product = product
                             )
+                            orderSummaryAnalytics.eventClickAddOnProductWidget(addOn.type, product.productId, isChecked)
                         }
                     }
                     icProductAddonInfo.showIfWithBlock(addOn.infoLink.isNotBlank()) {
@@ -584,6 +584,7 @@ class OrderProductCard(
 
                 // add addon to the layout
                 llAddonProductItems.addView(addOnView.root)
+                orderSummaryAnalytics.eventViewAddOnProductWidget(addOn.type, product.productId)
             }
         }
     }
@@ -656,13 +657,13 @@ class OrderProductCard(
 
         fun getLastPurchaseProtectionCheckState(productId: String): Int
 
-        fun onClickAddOnButton(addOnButtonType: Int, addOn: AddOnGiftingDataModel, product: OrderProduct, shop: OrderShop)
+        fun onClickAddOnGiftingButton(addOnButtonType: Int, addOn: AddOnGiftingDataModel, product: OrderProduct, shop: OrderShop)
 
         fun onCheckAddOnProduct(newAddOnProductData: AddOnsProductDataModel.Data, product: OrderProduct)
 
         fun onClickAddOnProductInfoIcon(url: String)
 
-        fun onClickSeeAllAddOnProductService(product: OrderProduct, addOnsProductData: AddOnsProductDataModel)
+        fun onClickSeeAllAddOnProductService(product: OrderProduct, addOnsProductData: AddOnsProductDataModel, shop: OrderShop)
     }
 
     companion object {

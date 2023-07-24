@@ -3,8 +3,10 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.sho
 import android.app.Application
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.discovery.common.utils.URLParser
-import com.tokopedia.discovery2.Utils.Companion.areFiltersApplied
+import com.tokopedia.discovery2.ComponentNames
+import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.ComponentsItem
+import com.tokopedia.discovery2.data.ErrorState
 import com.tokopedia.discovery2.datamapper.getComponent
 import com.tokopedia.discovery2.usecase.shopcardusecase.ShopCardUseCase
 import io.mockk.*
@@ -53,7 +55,7 @@ class ShopCardModelTest {
     @Test
     fun `test for useCase`() {
         val viewModel: ShopCardViewModel =
-                spyk(ShopCardViewModel(application, componentsItem, 99))
+            spyk(ShopCardViewModel(application, componentsItem, 99))
 
         val shopCardUseCase = mockk<ShopCardUseCase>()
         viewModel.shopCardUseCase = shopCardUseCase
@@ -99,7 +101,7 @@ class ShopCardModelTest {
 
     /**************************** test for handleErrorState() *******************************************/
     @Test
-    fun `test for handleErrorState`(){
+    fun `test for handleErrorState`() {
         every { componentsItem.verticalProductFailState } returns true
 
         viewModel.onAttachToViewHolder()
@@ -119,6 +121,7 @@ class ShopCardModelTest {
 
         TestCase.assertEquals(viewModel.hideShimmer().value, true)
     }
+
     @Test
     fun `test for fetchShopCardData when loadFirstPageComponents does not returns error`() {
         viewModel.shopCardUseCase = shopCardUseCase
@@ -144,6 +147,32 @@ class ShopCardModelTest {
     }
 
     @Test
+    fun `test for fetchShopCardData when loadFirstPageComponents returns true and list is empty`() {
+        val componentsItem: ComponentsItem = spyk()
+        val viewModel: ShopCardViewModel =
+            spyk(ShopCardViewModel(application, componentsItem, 99))
+        viewModel.shopCardUseCase = shopCardUseCase
+
+        mockkStatic(::getComponent)
+        every { getComponent(any(), any()) } returns componentsItem
+
+        val list = ArrayList<ComponentsItem>()
+        list.add(componentsItem)
+        every { viewModel.getShopList() } returns list
+        coEvery {
+            shopCardUseCase.loadFirstPageComponents(componentsItem.id, componentsItem.pageEndPoint)
+        } returns true
+
+        viewModel.fetchShopCardData()
+        TestCase.assertEquals(viewModel.syncData.value, true)
+        TestCase.assertEquals(componentsItem.verticalProductFailState, true)
+        TestCase.assertEquals(componentsItem.errorState, ErrorState.EmptyComponentState)
+        TestCase.assertEquals(componentsItem.shouldRefreshComponent, null)
+
+        unmockkStatic(::getComponent)
+    }
+
+    @Test
     fun `test for fetchShopCardData when loadFirstPageComponents returns false and list is not empty`() {
         viewModel.shopCardUseCase = shopCardUseCase
         val componentsItem = ComponentsItem(name = "xyz")
@@ -160,15 +189,17 @@ class ShopCardModelTest {
     }
 
     @Test
-    fun `test for fetchShopCardData when loadFirstPageComponents returns true and list is not empty`() {
+    fun `test for fetchShopCardData when loadFirstPageComponents returns true and list is not empty and next page not available`() {
+        val componentsItem: ComponentsItem = spyk()
+        val viewModel: ShopCardViewModel =
+            spyk(ShopCardViewModel(application, componentsItem, 99))
         viewModel.shopCardUseCase = shopCardUseCase
+
         val componentsItemTemp = ComponentsItem(name = "xyz")
         val list = ArrayList<ComponentsItem>()
         list.add(componentsItemTemp)
-        every { viewModel.getShopList() } returns list
+        every { componentsItem.getComponentsItem() } returns list
 
-        val componentItem1 = mockk<ArrayList<ComponentsItem>>(relaxed = true)
-        every { componentsItem.getComponentsItem() } returns componentItem1
         coEvery {
             shopCardUseCase.loadFirstPageComponents(componentsItem.id, componentsItem.pageEndPoint)
         } returns true
@@ -176,6 +207,39 @@ class ShopCardModelTest {
         viewModel.fetchShopCardData()
 
         TestCase.assertEquals(viewModel.syncData.value, true)
+        assert(viewModel.getShopCardItemsListData().value?.isNotEmpty() == true)
+        assert(viewModel.getShopCardItemsListData().value?.size == 1)
+    }
+
+    @Test
+    fun `test for fetchShopCardData when loadFirstPageComponents returns true and list is not empty and next page available`() {
+        val componentsItem: ComponentsItem = spyk()
+        val viewModel: ShopCardViewModel =
+            spyk(ShopCardViewModel(application, componentsItem, 99))
+        viewModel.shopCardUseCase = shopCardUseCase
+
+        val componentsItemTemp = ComponentsItem(name = "xyz")
+        val list = ArrayList<ComponentsItem>()
+        list.add(componentsItemTemp)
+        every { componentsItem.getComponentsItem() } returns list
+
+        mockkStatic(::getComponent)
+        every { getComponent(any(), any()) } returns componentsItem
+
+        coEvery {
+            shopCardUseCase.loadFirstPageComponents(componentsItem.id, componentsItem.pageEndPoint)
+        } returns true
+        mockkObject(Utils)
+        every { Utils.nextPageAvailable(componentsItem, any()) } returns true
+
+        viewModel.fetchShopCardData()
+
+        TestCase.assertEquals(viewModel.syncData.value, true)
+        assert(viewModel.getShopCardItemsListData().value?.isNotEmpty() == true)
+        assert(viewModel.getShopCardItemsListData().value?.size == 2)
+        assert(viewModel.getShopCardItemsListData().value?.last()?.name == ComponentNames.LoadMore.componentName)
+        unmockkObject(Utils)
+        unmockkStatic(::getComponent)
     }
 
     /**************************** end of fetchShopCardData() *******************************************/
@@ -254,7 +318,6 @@ class ShopCardModelTest {
         every { componentsItem.verticalProductFailState } returns false
 
         assert(!viewModel.shouldShowShimmer())
-
     }
 
     /**************************** test for fetchShopCardPaginatedData() *******************************************/
@@ -289,7 +352,9 @@ class ShopCardModelTest {
         viewModel.shopCardUseCase = shopCardUseCase
         coEvery {
             shopCardUseCase.getShopCardPaginatedData(
-                    componentsItem.id, componentsItem.pageEndPoint)
+                componentsItem.id,
+                componentsItem.pageEndPoint
+            )
         } returns true
         val list = ArrayList<ComponentsItem>()
         every { viewModel.getShopList() } returns list
@@ -304,14 +369,15 @@ class ShopCardModelTest {
         viewModel.shopCardUseCase = shopCardUseCase
         coEvery {
             shopCardUseCase.getShopCardPaginatedData(
-                    componentsItem.id, componentsItem.pageEndPoint)
+                componentsItem.id,
+                componentsItem.pageEndPoint
+            )
         } returns true
         every { viewModel.getShopList() } returns null
 
         viewModel.fetchShopCardPaginatedData()
 
         TestCase.assertEquals(viewModel.isLoadingData(), true)
-
     }
 
     @Test
@@ -320,7 +386,9 @@ class ShopCardModelTest {
         every { viewModel.getShopList() } returns null
         coEvery {
             shopCardUseCase.getShopCardPaginatedData(
-                    componentsItem.id, componentsItem.pageEndPoint)
+                componentsItem.id,
+                componentsItem.pageEndPoint
+            )
         } returns false
 
         viewModel.fetchShopCardPaginatedData()
@@ -334,7 +402,9 @@ class ShopCardModelTest {
         every { viewModel.getShopList() } returns list
         coEvery {
             shopCardUseCase.getShopCardPaginatedData(
-                    componentsItem.id, componentsItem.pageEndPoint)
+                componentsItem.id,
+                componentsItem.pageEndPoint
+            )
         } returns false
 
         viewModel.fetchShopCardPaginatedData()
@@ -345,7 +415,7 @@ class ShopCardModelTest {
     /**************************** end of fetchShopCardPaginatedData() *******************************************/
 
     @Test
-    fun `test for paginatedErrorData`(){
+    fun `test for paginatedErrorData`() {
         val componentItem = mockk<ArrayList<ComponentsItem>>(relaxed = true)
         every { componentsItem.getComponentsItem() } returns componentItem
 
@@ -353,7 +423,7 @@ class ShopCardModelTest {
     }
 
     @Test
-    fun `test for getShopCardList`(){
+    fun `test for getShopCardList`() {
         val componentItem = mockk<ArrayList<ComponentsItem>>(relaxed = true)
         every { componentsItem.getComponentsItem() } returns componentItem
 
@@ -361,15 +431,34 @@ class ShopCardModelTest {
     }
 
     @Test
-    fun `test for resetComponent`(){
+    fun `test for resetComponent`() {
         viewModel.resetComponent()
 
         TestCase.assertEquals(viewModel.components.noOfPagesLoaded, 0)
     }
 
     @Test
-    fun `test for component passed to VM`(){
+    fun `test for component passed to VM`() {
         TestCase.assertEquals(viewModel.components, componentsItem)
     }
 
+    @Test
+    fun `test for position passed`() {
+        assert(viewModel.position == 99)
+    }
+
+    @Test
+    fun `test for application passed`() {
+        assert(viewModel.application == application)
+    }
+
+    @Test
+    fun `test for getShopCardBackgroundData `() {
+        val viewModel: ShopCardViewModel =
+            spyk(ShopCardViewModel(application, componentsItem, 99))
+        assert(viewModel.getShopCardBackgroundData().value == null)
+
+        viewModel.onAttachToViewHolder()
+        assert(viewModel.getShopCardBackgroundData().value == componentsItem)
+    }
 }
