@@ -12,6 +12,11 @@ buildscript {
         classpath rootProject.ext.miscDependencies.hansel
     }
 }
+android {
+    namespace 'com.tokopedia.shakedetect'
+    testNamespace 'com.tokopedia.shakedetect.test'
+}
+
 dependencies {
 
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig

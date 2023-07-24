@@ -161,6 +161,7 @@ class EventPDPTicketItemPackageAdapter(
                     itemView.greenDivider.visibility = View.VISIBLE
                     itemView.bgTicket.background = ContextCompat.getDrawable(context, R.drawable.ent_pdp_ticket_active_bg)
                     itemView.quantityEditor.visibility = View.VISIBLE
+                    itemView.parent.clearChildFocus(itemView.findFocus())
                     itemView.quantityEditor.setValue(if (items.minQty.toIntSafely() < 1) MIN_QTY else items.minQty.toIntSafely())
                     itemView.quantityEditor.editText.visibility = View.VISIBLE
                     itemView.quantityEditor.addButton.visibility = View.VISIBLE
@@ -219,11 +220,11 @@ class EventPDPTicketItemPackageAdapter(
     private fun showSoldOut(itemView: View) {
         with(itemView) {
             bgTicket.background = ContextCompat.getDrawable(context, R.drawable.ent_pdp_ticket_sold_out)
-            txtTitle_ticket.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_44))
-            txtTermurah_ticket.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_44))
-            txtSubtitle_ticket.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_44))
+            txtTitle_ticket.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_NN950_44))
+            txtTermurah_ticket.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_NN950_44))
+            txtSubtitle_ticket.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_NN950_44))
             txtPrice_ticket.text = resources.getString(R.string.ent_pdp_ticket_sold_out)
-            txtPrice_ticket.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+            txtPrice_ticket.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_NN950_68))
         }
     }
 

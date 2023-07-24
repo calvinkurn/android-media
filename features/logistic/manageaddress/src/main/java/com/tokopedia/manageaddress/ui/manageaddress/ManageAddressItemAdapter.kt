@@ -188,11 +188,11 @@ class ManageAddressItemAdapter : RecyclerView.Adapter<ManageAddressItemAdapter.M
 
         private fun setVisibility(peopleAddress: RecipientAddressModel) {
             if (peopleAddress.latitude.isNullOrZero() || peopleAddress.longitude.isNullOrZero()) {
-                val colorGrey = ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96)
+                val colorGrey = ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_96)
                 binding.imgLocationState.setImage(IconUnify.LOCATION_OFF, colorGrey, colorGrey)
                 binding.tvPinpointState.text = itemView.context.getString(R.string.no_pinpoint)
             } else {
-                val colorGreen = ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
+                val colorGreen = ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
                 binding.imgLocationState.setImage(IconUnify.LOCATION, colorGreen, colorGreen)
                 binding.tvPinpointState.text = itemView.context.getString(R.string.pinpoint)
             }

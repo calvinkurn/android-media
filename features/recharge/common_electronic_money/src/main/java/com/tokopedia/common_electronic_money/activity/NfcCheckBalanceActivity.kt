@@ -8,7 +8,7 @@ open abstract class NfcCheckBalanceActivity : BaseSimpleActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        window.setBackgroundDrawableResource(com.tokopedia.unifyprinciples.R.color.Unify_N0)
+        window.setBackgroundDrawableResource(com.tokopedia.unifyprinciples.R.color.Unify_NN0)
     }
 
     override fun getLayoutRes(): Int {

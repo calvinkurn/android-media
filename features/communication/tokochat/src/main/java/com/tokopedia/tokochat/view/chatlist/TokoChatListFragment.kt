@@ -60,7 +60,7 @@ class TokoChatListFragment @Inject constructor(
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 var isCompleted = false
-                viewModel.getChatListFlow().collectLatest {
+                viewModel.getChatListFlow()?.collectLatest {
                     when (it) {
                         is Success -> {
                             addOrUpdateChatItem(it.data)

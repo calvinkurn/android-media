@@ -13,7 +13,7 @@ open class TokoChatConfigGroupBookingUseCase @Inject constructor(
         serviceType: Int = TOKOFOOD_SERVICE_TYPE,
         conversationsGroupBookingListener: ConversationsGroupBookingListener
     ) {
-        repository.getConversationRepository().initGroupBookingChat(
+        repository.getConversationRepository()?.initGroupBookingChat(
             orderId,
             serviceType,
             conversationsGroupBookingListener

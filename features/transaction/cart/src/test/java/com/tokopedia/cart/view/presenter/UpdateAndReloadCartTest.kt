@@ -4,14 +4,11 @@ import com.tokopedia.cart.data.model.response.shopgroupsimplified.CartData
 import com.tokopedia.cart.domain.model.updatecart.UpdateAndReloadCartListData
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException
-import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.every
-import io.mockk.just
 import io.mockk.verify
 import io.mockk.verifyOrder
 import org.junit.Test
-import rx.Observable
 
 class UpdateAndReloadCartTest : BaseCartTest() {
 
@@ -20,7 +17,7 @@ class UpdateAndReloadCartTest : BaseCartTest() {
         // GIVEN
         val emptyCartListData = UpdateAndReloadCartListData()
 
-        every { updateAndReloadCartUseCase.createObservable(any()) } returns Observable.just(emptyCartListData)
+        coEvery { updateAndReloadCartUseCase(any()) } returns emptyCartListData
 
         // WHEN
         cartListPresenter.processToUpdateAndReloadCartData("0")
@@ -42,13 +39,10 @@ class UpdateAndReloadCartTest : BaseCartTest() {
         }
         val updateAndReloadCartListData = UpdateAndReloadCartListData()
 
-        every { updateAndReloadCartUseCase.createObservable(any()) } returns Observable.just(updateAndReloadCartListData)
+        coEvery { updateAndReloadCartUseCase(any()) } returns updateAndReloadCartListData
 
         every { view.getAllAvailableCartDataList() } returns arrayListOf(cartItemData)
-        coEvery { getCartRevampV3UseCase.setParams(any(), any()) } just Runs
-        coEvery { getCartRevampV3UseCase.execute(any(), any()) } answers {
-            firstArg<(CartData) -> Unit>().invoke(CartData())
-        }
+        coEvery { getCartRevampV4UseCase(any()) } returns CartData()
 
         // WHEN
         cartListPresenter.processToUpdateAndReloadCartData("0")
@@ -70,7 +64,7 @@ class UpdateAndReloadCartTest : BaseCartTest() {
             notes = ""
         }
 
-        every { updateAndReloadCartUseCase.createObservable(any()) } returns Observable.error(exception)
+        coEvery { updateAndReloadCartUseCase(any()) } throws exception
         every { view.getAllAvailableCartDataList() } returns arrayListOf(cartItemData)
 
         // WHEN

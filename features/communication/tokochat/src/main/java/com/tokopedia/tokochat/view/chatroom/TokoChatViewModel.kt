@@ -233,7 +233,7 @@ class TokoChatViewModel @Inject constructor(
         }
     }
 
-    fun getChatHistory(channelId: String): LiveData<List<ConversationsMessage>> {
+    fun getChatHistory(channelId: String): LiveData<List<ConversationsMessage>>? {
         return try {
             getChatHistoryUseCase(channelId)
         } catch (throwable: Throwable) {
@@ -274,7 +274,7 @@ class TokoChatViewModel @Inject constructor(
         }
     }
 
-    fun getTypingStatus(): LiveData<List<String>> {
+    fun getTypingStatus(): LiveData<List<String>>? {
         return try {
             getTypingUseCase.getTypingStatus()
         } catch (throwable: Throwable) {
@@ -350,7 +350,7 @@ class TokoChatViewModel @Inject constructor(
         return registrationChannelUseCase.getUserId()
     }
 
-    fun getMemberLeft(): MutableLiveData<String> {
+    fun getMemberLeft(): MutableLiveData<String>? {
         return try {
             chatChannelUseCase.getMemberLeftLiveData()
         } catch (throwable: Throwable) {
@@ -393,7 +393,7 @@ class TokoChatViewModel @Inject constructor(
         }
     }
 
-    fun getLiveChannel(channelId: String): LiveData<ConversationsChannel?> {
+    fun getLiveChannel(channelId: String): LiveData<ConversationsChannel?>? {
         return try {
             chatChannelUseCase.getLiveChannel(channelId)
         } catch (throwable: Throwable) {

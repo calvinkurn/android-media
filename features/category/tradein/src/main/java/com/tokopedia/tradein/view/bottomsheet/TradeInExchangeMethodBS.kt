@@ -122,7 +122,7 @@ class TradeInExchangeMethodBS : BottomSheetUnify() {
                             when {
                                 !available -> com.tokopedia.unifyprinciples.R.color.Unify_NN400
                                 logistic.isDiagnosed -> com.tokopedia.unifyprinciples.R.color.Unify_GN500
-                                else -> com.tokopedia.unifyprinciples.R.color.Unify_N700_68
+                                else -> com.tokopedia.unifyprinciples.R.color.Unify_NN950_68
                             }
                         )
                     )
@@ -182,7 +182,7 @@ class TradeInExchangeMethodBS : BottomSheetUnify() {
                             when {
                                 !available -> com.tokopedia.unifyprinciples.R.color.Unify_NN400
                                 logistic.isDiagnosed -> com.tokopedia.unifyprinciples.R.color.Unify_GN500
-                                else -> com.tokopedia.unifyprinciples.R.color.Unify_N700_68
+                                else -> com.tokopedia.unifyprinciples.R.color.Unify_NN950_68
                             }
                         )
                     )
@@ -200,7 +200,7 @@ class TradeInExchangeMethodBS : BottomSheetUnify() {
             context,
             when {
                 !available -> com.tokopedia.unifyprinciples.R.color.Unify_NN400
-                else -> com.tokopedia.unifyprinciples.R.color.Unify_N700_96
+                else -> com.tokopedia.unifyprinciples.R.color.Unify_NN950_96
             }
         ))
     }
