@@ -4,15 +4,15 @@ import android.content.Context
 import android.graphics.Rect
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.content.common.ui.itemdecoration.FocusedCarouselItemDecoration
 import com.tokopedia.kotlin.extensions.view.getScreenWidth
-import com.tokopedia.play.widget.ui.carousel.PlayWidgetCarouselItemDecoration
 
 /**
  * Created By : Jonathan Darwin on July 04, 2023
  */
 class FeedFollowProfileItemDecoration(
     context: Context,
-) : PlayWidgetCarouselItemDecoration(context) {
+) : FocusedCarouselItemDecoration(context) {
 
     override val maxShrink: Float
         get() = 0.85f
