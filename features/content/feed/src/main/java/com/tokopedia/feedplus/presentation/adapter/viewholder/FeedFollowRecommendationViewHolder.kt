@@ -7,10 +7,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.databinding.ItemFeedFollowRecommendationBinding
+import com.tokopedia.feedplus.presentation.adapter.FeedContentAdapter
 import com.tokopedia.feedplus.presentation.adapter.FeedFollowProfileAdapter
+import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions
+import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloads
 import com.tokopedia.feedplus.presentation.adapter.itemdecoration.FeedFollowProfileItemDecoration
 import com.tokopedia.feedplus.presentation.adapter.layoutmanager.FeedFollowProfileLayoutManager
 import com.tokopedia.feedplus.presentation.adapter.listener.FeedFollowRecommendationListener
+import com.tokopedia.feedplus.presentation.adapter.util.FeedFollowProfilePayloadHelper
 import com.tokopedia.feedplus.presentation.model.FeedFollowRecommendationModel
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 
@@ -66,6 +70,31 @@ class FeedFollowRecommendationViewHolder(
         }
     }
 
+    fun bind(item: FeedContentAdapter.Item, payloads: MutableList<Any>) {
+        val selectedPayload = if (item.isSelected) FeedViewHolderPayloadActions.FEED_POST_SELECTED else FeedViewHolderPayloadActions.FEED_POST_NOT_SELECTED
+        val feedPayloads = payloads.firstOrNull { it is FeedViewHolderPayloads } as? FeedViewHolderPayloads
+        val newPayloads = if (feedPayloads != null && feedPayloads.payloads.contains(
+                FeedViewHolderPayloadActions.FEED_POST_SELECTED_CHANGED
+            )) {
+            payloads.toMutableList().also { it.add(selectedPayload) }
+        } else {
+            payloads
+        }
+        bind(item.data as FeedFollowRecommendationModel, newPayloads)
+    }
+
+    override fun bind(element: FeedFollowRecommendationModel?, payloads: MutableList<Any>) {
+        element?.let {
+            if (payloads.contains(FeedViewHolderPayloadActions.FEED_POST_SELECTED)) {
+                forcePlayVideo()
+            }
+
+            if (payloads.contains(FeedViewHolderPayloadActions.FEED_POST_NOT_SELECTED)) {
+                forceStopVideo()
+            }
+        }
+    }
+
     private fun setupHeader(model: FeedFollowRecommendationModel) {
         binding.tvTitle.text = model.title
         binding.tvDesc.text = model.description
@@ -112,6 +141,14 @@ class FeedFollowRecommendationViewHolder(
         binding.feedNoContent.btnShowOtherContent.setOnClickListener {
             listener.onClickViewOtherContent()
         }
+    }
+
+    private fun forcePlayVideo() {
+        profileAdapter.notifyItemChanged(getSelectedPosition(), FeedFollowProfilePayloadHelper.createPayload(isPlayVideo = true))
+    }
+
+    private fun forceStopVideo() {
+        profileAdapter.notifyItemChanged(getSelectedPosition(), FeedFollowProfilePayloadHelper.createPayload(isPlayVideo = false))
     }
 
     private fun getSelectedPosition(): Int {

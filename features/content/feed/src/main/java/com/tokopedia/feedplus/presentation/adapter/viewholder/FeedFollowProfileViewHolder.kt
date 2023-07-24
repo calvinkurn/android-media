@@ -1,5 +1,6 @@
 package com.tokopedia.feedplus.presentation.adapter.viewholder
 
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.lifecycle.Lifecycle
@@ -14,10 +15,10 @@ import com.tokopedia.feedplus.presentation.adapter.FeedFollowProfileAdapter
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.presentation.adapter.listener.FeedFollowRecommendationListener
+import com.tokopedia.feedplus.presentation.adapter.util.FeedFollowProfilePayloadHelper
 import com.tokopedia.feedplus.presentation.model.FeedFollowRecommendationModel
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 
 /**
@@ -93,6 +94,17 @@ class FeedFollowProfileViewHolder private constructor() {
             }
 
             setupListener(model)
+        }
+
+        fun bind(
+            model: FeedFollowProfileAdapter.Model.Profile,
+            payloads: Bundle
+        ) {
+            if (FeedFollowProfilePayloadHelper.isPlayVideo(payloads)) {
+                player.resume(shouldReset = true)
+            } else {
+                player.stop()
+            }
         }
 
         private fun setupListener(model: FeedFollowProfileAdapter.Model.Profile) {

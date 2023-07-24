@@ -1,5 +1,6 @@
 package com.tokopedia.feedplus.presentation.adapter.delegate
 
+import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
@@ -29,6 +30,15 @@ class FeedFollowProfileAdapterDelegate private constructor() {
             holder: FeedFollowProfileViewHolder.Profile
         ) {
             holder.bind(item)
+        }
+
+        override fun onBindViewHolderWithPayloads(
+            item: FeedFollowProfileAdapter.Model.Profile,
+            holder: FeedFollowProfileViewHolder.Profile,
+            payloads: Bundle
+        ) {
+            super.onBindViewHolderWithPayloads(item, holder, payloads)
+            holder.bind(item, payloads)
         }
 
         override fun onCreateViewHolder(

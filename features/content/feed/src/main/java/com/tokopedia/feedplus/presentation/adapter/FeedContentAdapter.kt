@@ -108,6 +108,13 @@ class FeedContentAdapter(
                     }
                 }
                 if (payloads.isNotEmpty()) FeedViewHolderPayloads(payloads) else null
+            } else if (oldItem.data is FeedFollowRecommendationModel && newItem.data is FeedFollowRecommendationModel) {
+                val payloads = buildList {
+                    if (oldItem.isSelected != newItem.isSelected) {
+                        add(FeedViewHolderPayloadActions.FEED_POST_SELECTED_CHANGED)
+                    }
+                }
+                if (payloads.isNotEmpty()) FeedViewHolderPayloads(payloads) else null
             } else {
                 null
             }
@@ -170,6 +177,9 @@ class FeedContentAdapter(
                     holder.bind(item, payloads)
                 }
                 holder is FeedPostLiveViewHolder && item.data is FeedCardLivePreviewContentModel -> {
+                    holder.bind(item, payloads)
+                }
+                holder is FeedFollowRecommendationViewHolder && item.data is FeedFollowRecommendationModel -> {
                     holder.bind(item, payloads)
                 }
                 holder is FeedNoContentViewHolder && item.data is FeedNoContentModel -> {
