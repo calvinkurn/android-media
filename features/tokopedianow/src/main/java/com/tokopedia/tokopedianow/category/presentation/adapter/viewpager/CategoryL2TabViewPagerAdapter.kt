@@ -30,4 +30,8 @@ class CategoryL2TabViewPagerAdapter(fragment: Fragment) : FragmentStateAdapter(
     fun loadMore() {
         fragments[selectedTabPosition].loadMore()
     }
+
+    fun onResume() {
+        fragments[selectedTabPosition].handleOnResume()
+    }
 }

@@ -105,6 +105,10 @@ class CategoryL2TabViewHolder(
         viewPagerAdapter.loadMore()
     }
 
+    fun onResume() {
+        viewPagerAdapter.onResume()
+    }
+
     interface CategoryL2TabListener {
         fun onTabSelected(position: Int)
     }

@@ -89,6 +89,11 @@ class TokoNowCategoryL2Fragment : BaseCategoryFragment() {
             .inject(this)
     }
 
+    override fun onResume() {
+        super.onResume()
+        handleOnResume()
+    }
+
     private fun FragmentTokopedianowCategoryBaseBinding.setupMainLayout() {
         navToolbar.post {
             val statusBarHeight = vStatusBarBackground.height
@@ -164,12 +169,27 @@ class TokoNowCategoryL2Fragment : BaseCategoryFragment() {
     }
 
     private fun onLoadMore() {
-        val tabPosition = viewModel.getTabPosition()
-        recyclerView?.findViewHolderForAdapterPosition(tabPosition)?.let {
-            if (it is CategoryL2TabViewHolder) {
-                it.loadMore()
-            }
+        findTabViewHolder {
+            it.loadMore()
         }
+    }
+
+    private fun handleOnResume() {
+        findTabViewHolder {
+            it.onResume()
+        }
+    }
+
+    private fun findTabViewHolder(
+        viewHolderMethod: (CategoryL2TabViewHolder) -> Unit
+    ) {
+        val tabPosition = viewModel.getTabPosition()
+        recyclerView?.findViewHolderForAdapterPosition(tabPosition)
+            ?.let {
+                if (it is CategoryL2TabViewHolder) {
+                    viewHolderMethod.invoke(it)
+                }
+            }
     }
 
     private fun createTabListener(): CategoryL2TabListener {

@@ -128,13 +128,12 @@ open class TokoNowCategoryL2TabFragment : Fragment() {
         super.onAttach(context)
     }
 
-    override fun onResume() {
-        super.onResume()
-        viewModel.onResume()
-    }
-
     fun loadMore() {
         viewModel.loadMore()
+    }
+
+    fun handleOnResume() {
+        viewModel.onResume()
     }
 
     private fun observeLiveData() {
