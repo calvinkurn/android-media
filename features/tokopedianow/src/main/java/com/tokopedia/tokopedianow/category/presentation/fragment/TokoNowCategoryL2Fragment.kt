@@ -151,23 +151,6 @@ class TokoNowCategoryL2Fragment : BaseCategoryFragment() {
         }
     }
 
-    private fun setFloatingTabScrollListener(tabIndex: Int) {
-        tabScrollListener = object: OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-                recyclerView.findViewHolderForAdapterPosition(tabIndex)?.let { viewHolder ->
-                    val topPosition = viewHolder.itemView.top
-
-                    if(topPosition < 0) {
-                        tabsUnify?.show()
-                    } else {
-                        tabsUnify?.hide()
-                    }
-                }
-            }
-        }
-    }
-
     private fun onLoadMore() {
         findTabViewHolder {
             it.loadMore()
@@ -246,6 +229,23 @@ class TokoNowCategoryL2Fragment : BaseCategoryFragment() {
         }
 
         override fun onTabReselected(tab: TabLayout.Tab?) {
+        }
+    }
+
+    private fun setFloatingTabScrollListener(tabIndex: Int) {
+        tabScrollListener = object: OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                recyclerView.findViewHolderForAdapterPosition(tabIndex)?.let { viewHolder ->
+                    val topPosition = viewHolder.itemView.top
+
+                    if(topPosition < 0) {
+                        tabsUnify?.show()
+                    } else {
+                        tabsUnify?.hide()
+                    }
+                }
+            }
         }
     }
 }
