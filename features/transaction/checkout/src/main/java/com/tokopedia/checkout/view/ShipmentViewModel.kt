@@ -83,14 +83,11 @@ import com.tokopedia.fingerprint.util.FingerPrintUtil.getPublicKey
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
-import com.tokopedia.logisticCommon.data.constant.AddressConstant
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.address.UserAddress
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass
-import com.tokopedia.logisticCommon.data.response.KeroAddrIsEligibleForAddressFeatureData
 import com.tokopedia.logisticCommon.domain.param.EditAddressParam
 import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
-import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase
 import com.tokopedia.logisticcart.scheduledelivery.domain.usecase.GetRatesWithScheduleUseCase
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
@@ -182,7 +179,6 @@ class ShipmentViewModel @Inject constructor(
     private val getShipmentAddressFormV4UseCase: GetShipmentAddressFormV4UseCase,
     private val saveShipmentStateGqlUseCase: SaveShipmentStateGqlUseCase,
     private val changeShippingAddressGqlUseCase: ChangeShippingAddressGqlUseCase,
-    private val eligibleForAddressUseCase: EligibleForAddressUseCase,
     private val editAddressUseCase: EditAddressUseCase,
     private val ratesUseCase: GetRatesUseCase,
     private val ratesApiUseCase: GetRatesApiUseCase,
@@ -317,7 +313,6 @@ class ShipmentViewModel @Inject constructor(
 
     fun detachView() {
         viewModelScope.coroutineContext.cancelChildren()
-        eligibleForAddressUseCase.cancelJobs()
         epharmacyUseCase.cancelJobs()
         updateDynamicDataPassingUseCase.cancelJobs()
         getPaymentFeeCheckoutUseCase.cancelJobs()
@@ -879,7 +874,7 @@ class ShipmentViewModel @Inject constructor(
         isOneClickShipment: Boolean
     ) {
         if (cartShipmentAddressFormData.errorCode == CartShipmentAddressFormData.ERROR_CODE_TO_OPEN_ADD_NEW_ADDRESS) {
-            checkIsUserEligibleForRevampAna(cartShipmentAddressFormData)
+            checkoutPageNoAddress(cartShipmentAddressFormData)
         } else if (cartShipmentAddressFormData.errorCode == CartShipmentAddressFormData.ERROR_CODE_TO_OPEN_ADDRESS_LIST) {
             view?.renderCheckoutPageNoMatchedAddress(
                 userAddress?.state ?: 0
@@ -995,20 +990,8 @@ class ShipmentViewModel @Inject constructor(
     // endregion
 
     // region add new address
-    private fun checkIsUserEligibleForRevampAna(cartShipmentAddressFormData: CartShipmentAddressFormData) {
-        eligibleForAddressUseCase.eligibleForAddressFeature({ response: KeroAddrIsEligibleForAddressFeatureData ->
-            view?.renderCheckoutPageNoAddress(
-                cartShipmentAddressFormData,
-                response.eligibleForRevampAna.eligible
-            )
-        }, { throwable: Throwable ->
-            var errorMessage = throwable.message
-            if (errorMessage == null) {
-                errorMessage =
-                    view?.getStringResource(com.tokopedia.abstraction.R.string.default_request_error_unknown_short)
-            }
-            view?.showToastError(errorMessage)
-        }, AddressConstant.ANA_REVAMP_FEATURE_ID)
+    private fun checkoutPageNoAddress(cartShipmentAddressFormData: CartShipmentAddressFormData) {
+        view?.renderCheckoutPageNoAddress(cartShipmentAddressFormData)
     }
     // endregion
 
@@ -1608,7 +1591,8 @@ class ShipmentViewModel @Inject constructor(
                     }
                 } else {
                     // do clear
-                    val shipmentCartItem = shipmentCartItemModelList.first { it is ShipmentCartItemModel && it.cartStringGroup == shipmentValidatePromoHolderData.cartString }
+                    val shipmentCartItem =
+                        shipmentCartItemModelList.first { it is ShipmentCartItemModel && it.cartStringGroup == shipmentValidatePromoHolderData.cartString }
                     if ((shipmentCartItem as ShipmentCartItemModel).voucherLogisticItemUiModel?.code != shipmentValidatePromoHolderData.promoCode) {
                         // skip due to clear on non-applied promo, this is due to the queuing system
                         promoQueue.remove()
@@ -2071,7 +2055,7 @@ class ShipmentViewModel @Inject constructor(
 
     private fun validateBBO(validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel) {
         val updatedCartStringGroup: ArrayList<String> = arrayListOf<String>()
-        voucherLoop@for (voucherOrder in validateUsePromoRevampUiModel.promoUiModel.voucherOrderUiModels) {
+        voucherLoop@ for (voucherOrder in validateUsePromoRevampUiModel.promoUiModel.voucherOrderUiModels) {
             if (voucherOrder.type.equals(
                     "logistic",
                     ignoreCase = true
