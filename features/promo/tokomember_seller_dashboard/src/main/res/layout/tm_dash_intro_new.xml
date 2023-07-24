@@ -47,7 +47,7 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         app:unify_image_corner_radius="0"
-                        app:unify_image_placeholder="@color/Unify_G100"
+                        app:unify_image_placeholder="@color/Unify_GN50"
                         app:unify_image_type="rect" />
 
                     <View
@@ -90,7 +90,7 @@
                         android:layout_marginStart="@dimen/unify_space_16"
                         android:layout_marginTop="@dimen/tm_dash_dp_80"
                         android:layout_marginEnd="@dimen/unify_space_16"
-                        android:textColor="@color/Unify_N0"
+                        android:textColor="@color/Unify_NN0"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
@@ -104,7 +104,7 @@
                         android:layout_marginStart="@dimen/unify_space_16"
                         android:layout_marginTop="@dimen/unify_space_12"
                         android:layout_marginEnd="@dimen/unify_space_16"
-                        android:textColor="@color/Unify_N0"
+                        android:textColor="@color/Unify_NN0"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/tvTitle"

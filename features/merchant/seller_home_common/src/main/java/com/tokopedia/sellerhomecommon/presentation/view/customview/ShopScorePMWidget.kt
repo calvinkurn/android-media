@@ -72,17 +72,17 @@ class ShopScorePMWidget : FrameLayout {
                     context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_NN950)
                 )
                 intArrayOf(
-                    context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_G400),
-                    context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_G600)
+                    context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_GN500),
+                    context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_GN600)
                 )
             }
             is State.Warning -> {
                 binding?.tvShcCurrentProgress?.setTextColor(
-                    context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_Y400)
+                    context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_YN400)
                 )
                 intArrayOf(
-                    context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_Y300),
-                    context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_Y400)
+                    context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_YN300),
+                    context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_YN400)
                 )
             }
             is State.Custom -> {
@@ -96,11 +96,11 @@ class ShopScorePMWidget : FrameLayout {
             }
             else -> {
                 binding?.tvShcCurrentProgress?.setTextColor(
-                    context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_R500)
+                    context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_RN500)
                 )
                 intArrayOf(
-                    context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_R400),
-                    context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_R500)
+                    context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_RN400),
+                    context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_RN500)
                 )
             }
         }

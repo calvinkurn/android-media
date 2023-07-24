@@ -11,18 +11,8 @@
       "currentSite": "tokopediamarketplace",
       "sessionIris": ".*",
       "userId": ".*",
-      "clientId": ".*"
-    },
-    {
-      "event": "clickHomepage",
-      "eventAction": "click view all favorite shop",
-      "eventCategory": "global menu",
-      "eventLabel": "",
-      "businessUnit": "home & browse",
-      "currentSite": "tokopediamarketplace",
-      "sessionIris": ".*",
       "clientId": ".*",
-      "userId": ".*"
+      "trackerId": "30860"
     },
     {
       "event": "clickHomepage",
@@ -33,7 +23,8 @@
       "currentSite": "tokopediamarketplace",
       "sessionIris": ".*",
       "clientId": ".*",
-      "userId": ".*"
+      "userId": ".*",
+      "trackerId": "40850"
     },
     {
       "event": "clickHomepage",
@@ -44,7 +35,8 @@
       "currentSite": "tokopediamarketplace",
       "sessionIris": ".*",
       "clientId": ".*",
-      "userId": ".*"
+      "userId": ".*",
+      "trackerId": "30859"
     }
   ]
 }

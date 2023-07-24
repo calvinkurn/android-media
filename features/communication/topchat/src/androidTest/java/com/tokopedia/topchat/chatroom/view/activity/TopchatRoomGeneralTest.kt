@@ -102,7 +102,7 @@ class TopchatRoomGeneralTest : TopchatRoomTest() {
             )
         )
 
-        onView(withId(R.id.tvText)).check(
+        onView(withId(R.id.txt_title)).check(
             matches(withSubstring("Hati-hati penipuan!"))
         )
     }

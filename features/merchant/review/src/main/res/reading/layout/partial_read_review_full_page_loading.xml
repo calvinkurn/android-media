@@ -59,7 +59,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_1"
         android:layout_marginTop="@dimen/layout_lvl3"
-        android:background="@color/Unify_N75"
+        android:background="@color/Unify_NN50"
         app:loader_corner_radius="4dp"
         app:loader_type="rect"
         app:layout_constraintTop_toBottomOf="@id/read_review_rating_star_loading" />

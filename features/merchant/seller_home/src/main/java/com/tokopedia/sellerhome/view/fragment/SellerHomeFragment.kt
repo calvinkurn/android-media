@@ -14,7 +14,6 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewGroup.LayoutParams
 import android.view.animation.AnimationUtils
 import android.view.animation.LayoutAnimationController
 import androidx.lifecycle.LiveData
@@ -28,6 +27,7 @@ import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -37,8 +37,10 @@ import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.empty_state.EmptyStateUnify
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.gm.common.utils.CoachMarkPrefHelper
+import com.tokopedia.imageassets.TokopediaImageUrl
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.EMPTY
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
@@ -79,7 +81,6 @@ import com.tokopedia.sellerhome.analytic.performance.SellerHomePerformanceMonito
 import com.tokopedia.sellerhome.analytic.performance.SellerHomePerformanceMonitoringConstant.SELLER_HOME_TABLE_TRACE
 import com.tokopedia.sellerhome.analytic.performance.SellerHomePerformanceMonitoringConstant.SELLER_HOME_UNIFICATION_TRACE
 import com.tokopedia.sellerhome.common.SellerHomeConst
-import com.tokopedia.sellerhome.common.config.SellerHomeRemoteConfig
 import com.tokopedia.sellerhome.common.errorhandler.SellerHomeErrorHandler
 import com.tokopedia.sellerhome.common.newrelic.SellerHomeNewRelic
 import com.tokopedia.sellerhome.data.SellerHomeSharedPref
@@ -171,7 +172,6 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.image.ImageProcessingUtil
-import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -238,9 +238,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     lateinit var userSession: UserSessionInterface
 
     @Inject
-    lateinit var remoteConfig: SellerHomeRemoteConfig
-
-    @Inject
     lateinit var newRelic: SellerHomeNewRelic
 
     @Inject
@@ -276,8 +273,8 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     private val notificationDotBadge by lazy {
         NotificationDotBadge()
     }
-    private val isNewLazyLoad by lazy {
-        Build.VERSION.SDK_INT > Build.VERSION_CODES.N_MR1 && remoteConfig.isSellerHomeDashboardNewLazyLoad()
+    private val isLazyLoadEnabled by lazy {
+        Build.VERSION.SDK_INT > Build.VERSION_CODES.N_MR1
     }
 
     private var notifCenterCount = 0
@@ -295,7 +292,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     private var universalShareBottomSheet: UniversalShareBottomSheet? = null
     private var shopShareData: ShopShareDataUiModel? = null
     private var shopImageFilePath: String = ""
-    private var binding by autoClearedNullable<FragmentSahBinding>()
+    private var binding: FragmentSahBinding? = null
     private var isNewSellerState: Boolean = false
 
     private val recyclerView: RecyclerView?
@@ -371,8 +368,9 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     }
 
     override fun onDestroy() {
-        super.onDestroy()
         shopShareHelper.removeTemporaryShopImage(shopImageFilePath)
+        binding = null
+        super.onDestroy()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -966,12 +964,14 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     }
 
     private fun getWidgetLayout() {
-        val deviceHeight = if (isNewLazyLoad) {
-            deviceDisplayHeight
-        } else {
-            null
+        lifecycleScope.launch(Dispatchers.IO) {
+            val deviceHeight = if (isLazyLoadEnabled) {
+                deviceDisplayHeight
+            } else {
+                null
+            }
+            sellerHomeViewModel.getWidgetLayout(deviceHeight, TRIGGER_INITIAL_LOAD)
         }
-        sellerHomeViewModel.getWidgetLayout(deviceHeight, TRIGGER_INITIAL_LOAD)
     }
 
     private fun showUnificationWidgetCoachMark() {
@@ -1185,7 +1185,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
         sahGlobalError.gone()
         emptyState?.gone()
-        val deviceHeight = if (isNewLazyLoad) {
+        val deviceHeight = if (isLazyLoadEnabled) {
             deviceDisplayHeight
         } else {
             null
@@ -1563,7 +1563,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
         var isWidgetHasError = false
         val newWidgetFromCache = widgets.firstOrNull()?.isFromCache ?: false
-        if (isNewLazyLoad) {
+        if (isLazyLoadEnabled) {
             startHomeLayoutRenderMonitoring()
             stopPltMonitoringIfNotCompleted(fromCache = newWidgetFromCache)
         }
@@ -1577,7 +1577,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 val newWidgets = arrayListOf<BaseWidgetUiModel<*>>()
                 widgets.forEach { newWidget ->
                     oldWidgets.find { isTheSameWidget(it, newWidget) }.let { oldWidget ->
-                        if (isNewLazyLoad) {
+                        if (isLazyLoadEnabled) {
                             // If there are card widgets exist in adapter data, set the previous value in the latest widget
                             // to enable animation after pull to refresh
                             if (newWidget is CardWidgetUiModel) {
@@ -1603,6 +1603,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                                                 newData.lastUpdated.needToUpdated
                                         }
                                     }
+                                    impressHolder = oldWidget.impressHolder
                                     isLoaded = oldWidget.isLoaded
                                     isLoading = oldWidget.isLoading
                                 }
@@ -1916,7 +1917,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             if (it is Success) {
                 val info = it.data
                 this.isNewSellerState = info.isNewSellerState
-                setViewBackgroundNewSeller()
                 if (info.subtitle.isBlank()) return@observe
 
                 if (info.subType == ShopStateInfoUiModel.SubType.TOAST) {
@@ -1930,86 +1930,46 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         }
     }
 
-    private fun setViewBackgroundNewSeller() {
-        binding?.run {
-            if (isNewSellerState) {
-                viewBgShopStatus.visible()
-                viewBgShopStatus.layoutParams.height = LayoutParams.MATCH_PARENT
-                viewBgShopStatus.setImageResource(R.drawable.sah_shop_state_bg_new_seller)
-                viewBgShopStatus.requestLayout()
-                imgSahNewSellerLeft.loadImage(SellerHomeConst.Images.IMG_NEW_SELLER_LEFT) {
-                    useCache(true)
-                    listener(onSuccess = { _, _ ->
-                        imgSahNewSellerLeft.visible()
-                    })
-                }
-
-                imgSahNewSellerRight.loadImage(SellerHomeConst.Images.IMG_NEW_SELLER_RIGHT) {
-                    useCache(true)
-                    listener(onSuccess = { _, _ ->
-                        imgSahNewSellerRight.visible()
-                    })
-                }
-            } else {
-                imgSahNewSellerLeft.gone()
-                imgSahNewSellerRight.gone()
-                setViewBackground()
-            }
-            setSectionWidgetTextColor()
-        }
-    }
-
-    private fun setSectionWidgetTextColor() {
-        recyclerView?.post {
-            val widgets = adapter.data.map {
-                if (it is SectionWidgetUiModel) {
-                    val titleTextColor: Int
-                    val subTitleTextColor: Int
-                    if (isNewSellerState) {
-                        titleTextColor = com.tokopedia.unifyprinciples.R.color.Unify_NN0
-                        subTitleTextColor = com.tokopedia.unifyprinciples.R.color.Unify_NN0
-                    } else {
-                        titleTextColor = com.tokopedia.unifyprinciples.R.color.Unify_N700_96
-                        subTitleTextColor = com.tokopedia.unifyprinciples.R.color.Unify_N700_68
-                    }
-                    return@map it.copy(
-                        titleTextColorId = titleTextColor, subTitleTextColorId = subTitleTextColor
-                    )
-                }
-                return@map it
-            }
-
-            notifyWidgetWithSdkChecking {
-                updateWidgets(widgets)
-            }
-        }
-    }
-
     private fun setViewBackground() = binding?.run {
         val isOfficialStore = userSession.isShopOfficialStore
         val isPowerMerchant = userSession.isPowerMerchantIdle || userSession.isGoldMerchant
         when {
-            isOfficialStore -> {
-                showRegularHomeBackground(R.drawable.sah_shop_state_bg_official_store)
-            }
-
-            isPowerMerchant -> {
-                showRegularHomeBackground(R.drawable.sah_shop_state_bg_power_merchant)
-            }
-
-            else -> {
-                viewBgShopStatus.gone()
-            }
+            isOfficialStore -> showHomeBackground(
+                backgroundResource = R.drawable.sah_shop_state_bg_official_store,
+                effectUrl = TokopediaImageUrl.IMG_14TH_ANNIV_HOME_OS
+            )
+            isPowerMerchant -> showHomeBackground(
+                backgroundResource = R.drawable.sah_shop_state_bg_power_merchant,
+                effectUrl = TokopediaImageUrl.IMG_14TH_ANNIV_HOME_PM
+            )
+            else -> showHomeBackground(
+                backgroundResource = R.drawable.sah_shop_state_bg_regular_merchant,
+                effectUrl = TokopediaImageUrl.IMG_14TH_ANNIV_HOME_RM
+            )
         }
+        show14thIllustration()
     }
 
-    private fun showRegularHomeBackground(backgroundResource: Int) {
+    private fun show14thIllustration() {
+        binding?.imgSahNewSellerRight?.visible()
+        binding?.imgSahNewSellerRight?.loadImage(TokopediaImageUrl.IMG_14TH_ANNIV)
+    }
+
+    private fun showHomeBackground(
+        backgroundResource: Int,
+        effectUrl: String
+    ) {
         binding?.run {
             val height = requireActivity().resources.getDimensionPixelSize(R.dimen.sah_dimen_280dp)
             viewBgShopStatus.layoutParams.height = height
             viewBgShopStatus.visible()
             viewBgShopStatus.setImageResource(backgroundResource)
             viewBgShopStatus.requestLayout()
+
+            imgBackgroundEffect.loadImage(effectUrl) {
+                setPlaceHolder(Int.ONE.inv())
+                setErrorDrawable(Int.ZERO)
+            }
         }
     }
 
@@ -2034,7 +1994,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
      * Load next unloaded indexed widget in adapter after the previous one is complete
      */
     private fun loadNextUnloadedWidget() {
-        if (isNewLazyLoad) {
+        if (isLazyLoadEnabled) {
             adapter.data?.find { it.isNeedToLoad() }?.let { newWidgets ->
                 getWidgetsData(listOf(newWidgets))
             }
@@ -2470,7 +2430,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     }
 
     private fun setRecyclerViewLayoutAnimation() {
-        if (isNewLazyLoad) {
+        if (isLazyLoadEnabled) {
             context?.let {
                 val animation: LayoutAnimationController = AnimationUtils.loadLayoutAnimation(
                     it, R.anim.seller_home_rv_layout_animation
@@ -2785,7 +2745,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         if (shopState == ShopStateUiModel.NewRegisteredShop) {
             showNewSellerDialog()
             isNewSellerState = true
-            setViewBackgroundNewSeller()
         } else if (shouldGetShopStateInfo) {
             getShopStateInfoIfEligible()
         }
@@ -2796,7 +2755,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             sellerHomeViewModel.getShopStateInfo()
         } else {
             isNewSellerState = false
-            setViewBackgroundNewSeller()
         }
     }
 
