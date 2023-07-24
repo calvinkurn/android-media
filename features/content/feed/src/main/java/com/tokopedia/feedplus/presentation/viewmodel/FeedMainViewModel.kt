@@ -96,8 +96,8 @@ class FeedMainViewModel @Inject constructor(
 
             return feedCreateContentData is Success &&
                 feedCreateContentData.data.find {
-                    it.type == CreateContentType.CREATE_SHORT_VIDEO
-                } != null
+                it.type == CreateContentType.CREATE_SHORT_VIDEO
+            } != null
         }
 
     init {
@@ -156,12 +156,12 @@ class FeedMainViewModel @Inject constructor(
         feedTabs.value?.let {
             if (it is Success) {
                 currentTabIndex.value?.let { idx ->
-                    it.data.getOrNull(idx)?.type ?: ""
-                } ?: ""
+                    it.data.getOrNull(idx)?.type.orEmpty()
+                }.orEmpty()
             } else {
                 ""
             }
-        } ?: ""
+        }.orEmpty()
 
     fun consumeEvent(event: FeedMainEvent) {
         viewModelScope.launch {
