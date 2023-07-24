@@ -163,6 +163,12 @@ class FeedXCardItem(
 class FeedXProduct(
     @SerializedName("id")
     val id: String = "",
+    @SerializedName("isParent")
+    val isParent: Boolean = false,
+    @SerializedName("parentID")
+    val parentID: String = "",
+    @SerializedName("hasVariant")
+    val hasVariant: Boolean = false,
     @SerializedName("shopID")
     val shopId: String = "",
     @SerializedName("shopName")

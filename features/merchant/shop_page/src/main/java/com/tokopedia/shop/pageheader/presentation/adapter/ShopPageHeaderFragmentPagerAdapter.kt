@@ -201,6 +201,10 @@ internal class ShopPageHeaderFragmentPagerAdapter(
         this.listShopPageTabModel = listShopPageHeaderTabModel
     }
 
+    fun clearTabData() {
+        this.listShopPageTabModel = emptyList()
+    }
+
     fun getFragmentPosition(classType: Class<*>): Int {
         var fragmentPosition = 0
         listShopPageTabModel.forEachIndexed { index, shopPageTabModel ->

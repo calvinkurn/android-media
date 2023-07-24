@@ -164,6 +164,7 @@ class UniversalInboxMenuTest : BaseUniversalInboxTest() {
         menuRobot {
             swipeDown()
         }
+        Thread.sleep(1000)
 
         // Then
         assertNotificationCounter("1")

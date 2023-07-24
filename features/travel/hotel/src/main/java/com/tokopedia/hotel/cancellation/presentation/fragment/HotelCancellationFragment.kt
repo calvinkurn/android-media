@@ -239,7 +239,7 @@ class HotelCancellationFragment : HotelBaseFragment() {
                         typography.setTextColor(
                             ContextCompat.getColor(
                                 requireContext(),
-                                com.tokopedia.unifyprinciples.R.color.Unify_N700_68
+                                com.tokopedia.unifyprinciples.R.color.Unify_NN950_68
                             )
                         )
                         cancelInfoBottomSheet.setChild(typography)

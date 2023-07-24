@@ -47,6 +47,8 @@ object ProductMapper {
                 id = product.affiliate.id,
                 channel = product.affiliate.channel
             ),
+            parentID = product.parentID,
+            showGlobalVariant = product.hasVariant && product.isParent,
             stock = if (product.isAvailable || sourceType == FeedTaggedProductUiModel.SourceType.NonOrganic)
                 FeedTaggedProductUiModel.Stock.Available else FeedTaggedProductUiModel.Stock.OutOfStock
         )

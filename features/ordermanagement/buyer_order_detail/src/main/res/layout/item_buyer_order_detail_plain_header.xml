@@ -8,6 +8,6 @@
     android:layout_marginEnd="@dimen/spacing_lvl4"
     android:paddingBottom="@dimen/spacing_lvl2"
     android:text="@string/label_payment_info"
-    android:textColor="@color/Unify_N700_96"
+    android:textColor="@color/Unify_NN950_96"
     app:layout_constraintTop_toTopOf="parent"
     app:typographyType="heading_5" />

@@ -4,7 +4,7 @@
         <aapt:attr name="android:fillColor">
             <gradient android:endX="180" android:endY="640" android:startX="180" android:startY="-1" android:type="linear">
                 <item android:color="@color/Unify_NN100" android:offset="0"/>
-                <item android:color="@color/Unify_N0" android:offset="1"/>
+                <item android:color="@color/Unify_NN0" android:offset="1"/>
             </gradient>
         </aapt:attr>
     </path>

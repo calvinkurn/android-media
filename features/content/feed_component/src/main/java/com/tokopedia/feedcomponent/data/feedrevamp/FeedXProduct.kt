@@ -8,6 +8,12 @@ import kotlinx.android.parcel.Parcelize
 @SuppressLint("Invalid Data Type")
 @Parcelize
 data class FeedXProduct(
+    @SerializedName("isParent")
+    val isParent: Boolean = false,
+    @SerializedName("parentID")
+    val parentID: String = "",
+    @SerializedName("hasVariant")
+    val hasVariant: Boolean = false,
     @SerializedName("appLink")
     var appLink: String = "",
     @SerializedName("bebasOngkirStatus")

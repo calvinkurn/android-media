@@ -7,6 +7,7 @@ import com.tokopedia.productcard.test.ProductCardModelMatcher
 import com.tokopedia.productcard.test.R
 import com.tokopedia.productcard.utils.*
 import com.tokopedia.productcard.ProductCardModel
+import com.tokopedia.productcard.ProductCardModel.LabelGroup
 import com.tokopedia.productcard.test.getProductCardModelMatcherData
 import com.tokopedia.productcard.test.utils.*
 import com.tokopedia.productcard.test.utils.freeOngkirImageUrl
@@ -20,6 +21,7 @@ internal val productCardListTestData = getProductCardModelMatcherData(false) + m
     it.add(testAddToCartAndRemoveFromWishlist())
     it.add(testDeleteProductButton())
     it.add(testSimilarProductButton(false))
+    it.add(testBestSellerLayout())
 }
 
 internal val productCardListViewStubTestData= getProductCardModelMatcherData(true) + mutableListOf<ProductCardModelMatcher>().also {
@@ -29,9 +31,9 @@ internal val productCardListViewStubTestData= getProductCardModelMatcherData(tru
 }
 
 private fun testAddToCartAndRemoveFromWishlist(): ProductCardModelMatcher {
-    val labelProductStatus = ProductCardModel.LabelGroup(position = LABEL_PRODUCT_STATUS, title = "Preorder", type = TRANSPARENT_BLACK)
-    val labelGimmick = ProductCardModel.LabelGroup(position = LABEL_GIMMICK, title = "Best Seller", type = "#FF8B00")
-    val labelPrice = ProductCardModel.LabelGroup(position = LABEL_PRICE, title = "Grosir", type = LIGHT_GREEN)
+    val labelProductStatus = LabelGroup(position = LABEL_PRODUCT_STATUS, title = "Preorder", type = TRANSPARENT_BLACK)
+    val labelGimmick = LabelGroup(position = LABEL_GIMMICK, title = "Best Seller", type = "#FF8B00")
+    val labelPrice = LabelGroup(position = LABEL_PRICE, title = "Grosir", type = LIGHT_GREEN)
 
     val productCardModel = ProductCardModel(
             productName = "Add to Cart Button and Remove from Wishlist",
@@ -45,7 +47,7 @@ private fun testAddToCartAndRemoveFromWishlist(): ProductCardModelMatcher {
             reviewCount = 60,
             freeOngkir = ProductCardModel.FreeOngkir(isActive = true, imageUrl = freeOngkirImageUrl),
             isTopAds = true,
-            labelGroupList = mutableListOf<ProductCardModel.LabelGroup>().also { labelGroups ->
+            labelGroupList = mutableListOf<LabelGroup>().also { labelGroups ->
                 labelGroups.add(labelProductStatus)
                 labelGroups.add(labelGimmick)
                 labelGroups.add(labelPrice)
@@ -125,6 +127,41 @@ private fun testSimilarProductButton(useViewStub: Boolean): ProductCardModelMatc
         if (useViewStub) it[R.id.buttonSeeSimilarProductStub] = isEnabled()
         else it[R.id.buttonSeeSimilarProduct] = isNotDisplayed()
     }
+
+    return ProductCardModelMatcher(productCardModel, productCardMatcher)
+}
+
+private fun testBestSellerLayout(): ProductCardModelMatcher {
+    val labelRibbon = LabelGroup(position = LABEL_RIBBON, type = GOLD, title = "#1")
+    val labelIntegrity = LabelGroup(position = LABEL_INTEGRITY, title = "Terjual 122", type = "#ae31353b")
+
+    val productCardModel = ProductCardModel(
+        productImageUrl = productImageUrl,
+        productName = "Best Seller Layout can only have 1 line in product name.............",
+        formattedPrice = "Rp8.999.000",
+        discountPercentage = "50%",
+        slashedPrice = "Rp8.000.000",
+        countSoldRating = "4.5",
+        labelGroupList = listOf(labelRibbon, labelIntegrity),
+        freeOngkir = ProductCardModel.FreeOngkir(isActive = true, imageUrl = freeOngkirImageUrl),
+        productListType = ProductCardModel.ProductListType.BEST_SELLER,
+    )
+
+    val productCardMatcher = mapOf(
+        R.id.productCardImage to isDisplayed(),
+        R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
+        R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
+        R.id.labelDiscount to isDisplayedWithText(productCardModel.discountPercentage),
+        R.id.textViewSlashedPrice to isDisplayedWithText(productCardModel.slashedPrice),
+        R.id.productCardImageSalesRatingFloat to isDisplayed(),
+        R.id.salesRatingFloat to isDisplayedWithText(productCardModel.countSoldRating),
+        R.id.salesRatingFloatLine to isDisplayed(),
+        R.id.textViewSales to isDisplayedWithText(labelIntegrity.title),
+        R.id.imageFreeOngkirPromo to isDisplayed(),
+        R.id.imageRibbonArch to isDisplayed(),
+        R.id.imageRibbonContent to isDisplayed(),
+        R.id.textRibbon to isDisplayedWithText(labelRibbon.title),
+    )
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)
 }

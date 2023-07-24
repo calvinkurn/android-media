@@ -566,7 +566,7 @@ class CartItemViewHolder constructor(
             setTextColor(
                 ContextCompat.getColor(
                     itemView.context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_N700_68
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN950_68
                 )
             )
             setType(Typography.BODY_3)
@@ -949,7 +949,7 @@ class CartItemViewHolder constructor(
             textMoveToWishlist.setTextColor(
                 ContextCompat.getColor(
                     itemView.context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_N700_44
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN950_44
                 )
             )
             textMoveToWishlist.setOnClickListener { }
@@ -958,7 +958,7 @@ class CartItemViewHolder constructor(
             textMoveToWishlist.setTextColor(
                 ContextCompat.getColor(
                     itemView.context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_N700_68
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN950_68
                 )
             )
             textMoveToWishlist.setOnClickListener {
@@ -1000,7 +1000,7 @@ class CartItemViewHolder constructor(
             setTextColor(
                 ContextCompat.getColor(
                     context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_N700_68
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN950_68
                 )
             )
             actionListener?.onShowTickerTobacco()
@@ -1019,7 +1019,7 @@ class CartItemViewHolder constructor(
             setTextColor(
                 ContextCompat.getColor(
                     context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_N700_68
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN950_68
                 )
             )
             actionListener?.onShowActionSeeOtherProduct(data.productId, data.errorType)
@@ -1038,7 +1038,7 @@ class CartItemViewHolder constructor(
             setTextColor(
                 ContextCompat.getColor(
                     context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_G500
+                    com.tokopedia.unifyprinciples.R.color.Unify_GN500
                 )
             )
             show()
@@ -1056,7 +1056,7 @@ class CartItemViewHolder constructor(
             setTextColor(
                 ContextCompat.getColor(
                     context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_N700_68
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN950_68
                 )
             )
             show()

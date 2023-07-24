@@ -11,6 +11,8 @@ import com.tokopedia.iris.util.Session
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.topchat.common.di.qualifier.TopchatContext
+import com.tokopedia.topchat.common.network.TopchatCacheManager
+import com.tokopedia.topchat.common.network.TopchatCacheManagerImpl
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
@@ -42,6 +44,12 @@ class ChatListModule {
     @Provides
     internal fun provideTopchatSharedPrefs(@TopchatContext context: Context): SharedPreferences {
         return context.getSharedPreferences("topchat_prefs", Context.MODE_PRIVATE)
+    }
+
+    @ActivityScope
+    @Provides
+    fun provideTopchatCacheManager(sharedPreferences: SharedPreferences): TopchatCacheManager {
+        return TopchatCacheManagerImpl(sharedPreferences)
     }
 
     @ActivityScope

@@ -4,14 +4,18 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.payment.setting.R
+import com.tokopedia.payment.setting.databinding.ItemEmptyViewPaymentBinding
 import com.tokopedia.payment.setting.list.view.listener.SettingListActionListener
-import kotlinx.android.synthetic.main.item_empty_view_payment.view.*
 
-class SettingListEmptyViewHolder(view: View?, val listenerEmptyViewHolder: SettingListActionListener?) :
-    AbstractViewHolder<Visitable<SettingListPaymentAdapterTypeFactory>>(view) {
+class SettingListEmptyViewHolder(
+    view: View?,
+    private val listenerEmptyViewHolder: SettingListActionListener?
+) : AbstractViewHolder<Visitable<SettingListPaymentAdapterTypeFactory>>(view) {
+
+    private val binding = ItemEmptyViewPaymentBinding.bind(itemView)
 
     override fun bind(element: Visitable<SettingListPaymentAdapterTypeFactory>?) {
-        itemView.buttonAddCard?.setOnClickListener {
+        binding.buttonAddCard?.setOnClickListener {
             listenerEmptyViewHolder?.onClickAddCard()
         }
     }
