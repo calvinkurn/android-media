@@ -1,9 +1,9 @@
 package com.tokopedia.withdraw.saldowithdrawal.presentation.adapter.viewholder
 
 import android.content.Context
+import android.graphics.PorterDuff
 import android.os.Build
 import android.text.Html
-import android.text.Html.FROM_HTML_MODE_COMPACT
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,8 +11,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
@@ -28,8 +26,8 @@ import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import com.tokopedia.withdraw.R
 import com.tokopedia.withdraw.saldowithdrawal.domain.model.BankAccount
 import com.tokopedia.withdraw.saldowithdrawal.presentation.adapter.BankAccountAdapter
-import com.tokopedia.withdraw.saldowithdrawal.presentation.dialog.GopayRedirectionBottomSheet
 import kotlinx.android.synthetic.main.swd_item_bank_account.view.*
+import com.tokopedia.unifyprinciples.R as principleR
 
 class BankAccountViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
@@ -53,7 +51,6 @@ class BankAccountViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         setBankName(bankAccount)
         setBankAccountNumber(context, bankAccount)
         setBankAdminFee(context, bankAccount)
-        setWarningMessage(context, bankAccount)
         setRPicon(bankAccount, isRpLogoVisible)
         setSpecialOffer(bankAccount)
         configDisabledView(context, bankAccount, listener, onBankAccountSelected)
@@ -138,34 +135,42 @@ class BankAccountViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         onBankAccountSelected: (BankAccount) -> Unit
     ) {
         if (bankAccount.status == INACTIVE_BANK_STATUS) {
-            val disabledColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_32)
+            val disabledColor = ContextCompat.getColor(context, principleR.color.Unify_NN400)
             bankName.setTextColor(disabledColor)
             bankAccountNumber.setTextColor(disabledColor)
             bankAdminFee.setTextColor(disabledColor)
+            warningMessage.setTextColor(disabledColor)
             ivBankIcon.alpha = ALPHA_DISABLED
             ivPremiumAccount.alpha = ALPHA_DISABLED
             tvSpecialOffer.alpha = ALPHA_DISABLED
-            notificationNew.alpha = ALPHA_DISABLED
             itemView.setOnClickListener { listener.onDisabledBankClick(bankAccount) }
             ivPremiumAccount.setOnClickListener { listener.onDisabledBankClick(bankAccount) }
             radioBankSelector.isEnabled = false
             radioBankSelector.isClickable = false
             btnBankSelector.isEnabled = false
             btnBankSelector.isEnabled = false
+            notificationNew.background.setColorFilter(
+                ContextCompat.getColor(context, principleR.color.Unify_NN300),
+                PorterDuff.Mode.SRC_ATOP
+            )
         } else {
             ivBankIcon.alpha = ALPHA_ENABLED
             ivPremiumAccount.alpha = ALPHA_ENABLED
             tvSpecialOffer.alpha = ALPHA_ENABLED
-            notificationNew.alpha = ALPHA_ENABLED
-            bankName.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_96))
-            bankAccountNumber.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_68))
-            bankAdminFee.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_68))
+            bankName.setTextColor(ContextCompat.getColor(context, principleR.color.Unify_NN950_96))
+            bankAccountNumber.setTextColor(ContextCompat.getColor(context, principleR.color.Unify_NN950_68))
+            bankAdminFee.setTextColor(ContextCompat.getColor(context, principleR.color.Unify_NN950_68))
             itemView.setOnClickListener { onBankAccountSelected(bankAccount) }
             ivPremiumAccount.setOnClickListener { listener.showPremiumAccountDialog(bankAccount) }
             radioBankSelector.isEnabled = true
             radioBankSelector.isClickable = true
             btnBankSelector.isEnabled = true
             btnBankSelector.isEnabled = true
+            notificationNew.background.setColorFilter(
+                ContextCompat.getColor(context, principleR.color.Unify_RN600),
+                PorterDuff.Mode.SRC_ATOP
+            )
+            setWarningMessage(context, bankAccount)
         }
     }
 
