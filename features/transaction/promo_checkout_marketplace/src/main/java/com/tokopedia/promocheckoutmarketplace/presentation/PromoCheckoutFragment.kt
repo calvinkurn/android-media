@@ -33,7 +33,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConsInternalDigital
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.coachmark.CoachMark2
@@ -75,6 +74,9 @@ import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoRecommen
 import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoSuggestionItemUiModel
 import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoSuggestionUiModel
 import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoTabUiModel
+import com.tokopedia.promocheckoutmarketplace.presentation.viewholder.PromoListItemViewHolder.Companion.STATE_DISABLED
+import com.tokopedia.promocheckoutmarketplace.presentation.viewholder.PromoListItemViewHolder.Companion.STATE_ENABLED
+import com.tokopedia.promocheckoutmarketplace.presentation.viewholder.PromoListItemViewHolder.Companion.STATE_SELECTED
 import com.tokopedia.promocheckoutmarketplace.presentation.viewmodel.ApplyPromoResponseAction
 import com.tokopedia.promocheckoutmarketplace.presentation.viewmodel.ClearPromoResponseAction
 import com.tokopedia.promocheckoutmarketplace.presentation.viewmodel.Delete
@@ -160,13 +162,12 @@ class PromoCheckoutFragment :
     // Activity result
     val gopayCicilLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
         if (it.resultCode == Activity.RESULT_OK) {
-            loadPromoData()
+            reloadData()
         }
     }
 
     companion object {
         const val REQUEST_CODE_PHONE_VERIFICATION = 9999
-        const val REQUEST_CODE_GOPAY_CICIL_WEBVIEW = 9998
         const val HAS_ELEVATION = 6
         const val NO_ELEVATION = 0
         const val KEYBOARD_HEIGHT_THRESHOLD = 100
@@ -181,6 +182,8 @@ class PromoCheckoutFragment :
 
         private const val DESTINATION_BACK = "back"
         private const val DESTINATION_REFRESH = "refresh"
+
+        private const val PROMO_GOPAY_LATER_CICIL = "GoPayLater Cicil"
 
         fun createInstance(
             pageSource: Int,
@@ -732,7 +735,7 @@ class PromoCheckoutFragment :
     }
 
     private fun observeActionableCTAApplink() {
-        viewModel.getApplinkNavigation.observe(viewLifecycleOwner) { applink ->
+        viewModel.getActionableApplinkNavigation.observe(viewLifecycleOwner) { applink ->
             val intent = RouteManager.getIntent(context, applink)
             gopayCicilLauncher.launch(intent)
         }
@@ -1161,7 +1164,7 @@ class PromoCheckoutFragment :
     }
 
     override fun onClickPromoListItem(element: PromoListItemUiModel, position: Int) {
-        viewModel.handlePromoListAfterClickPromoItem(element)
+        viewModel.handlePromoListAfterClickPromoItem(element, position)
 
         // dismiss coachmark if user click promo with coachmark
         val adapterItems = adapter.list
@@ -1209,6 +1212,15 @@ class PromoCheckoutFragment :
         }
     }
 
+    override fun onShowPromoActionable(element: PromoListItemUiModel, position: Int) {
+        analytics.sendImpressionPromoActivatedGopayCicilEvent(
+            viewModel.getPageSource(),
+            element.uiData.promoCode,
+            element.uiData.benefitAmount,
+            position
+        )
+    }
+
     override fun onTabSelected(element: PromoTabUiModel) {
         selectTab(element)
         analytics.eventClickTabPromoCategory(viewModel.getPageSource(), element.uiData.tabs[element.uiState.selectedTabPosition].title)
@@ -1218,7 +1230,11 @@ class PromoCheckoutFragment :
         viewBinding?.tabsPromoHeader?.tabsPromo?.getUnifyTabLayout()?.getTabAt(element.uiState.selectedTabPosition)?.select()
     }
 
-    override fun onShowPromoItem(element: PromoListItemUiModel, position: Int) {
+    override fun onShowPromoItem(
+        element: PromoListItemUiModel,
+        position: Int,
+        state: Int
+    ) {
         if (element.uiState.isParentEnabled) {
             analytics.eventImpressionEligiblePromoSection(viewModel.getPageSource(), position, element)
         } else {
@@ -1235,6 +1251,29 @@ class PromoCheckoutFragment :
 
         if (element.uiState.isHighlighted) {
             analytics.eventImpressionHighlightedPromoSection(viewModel.getPageSource(), position, element)
+        }
+
+        outerLoop@ for (promoInfo in element.uiData.promoInfos) {
+            for (method in promoInfo.methods) {
+                if (method == PROMO_GOPAY_LATER_CICIL) {
+                    if (state == STATE_ENABLED || state == STATE_SELECTED) {
+                        analytics.sendImpressionEligiblePromoSectionGopayCicilCartEvent(
+                            viewModel.getPageSource(),
+                            element.uiData.promoCode,
+                            element.uiData.benefitAmount,
+                            position
+                        )
+                        break@outerLoop
+                    } else if (state == STATE_DISABLED) {
+                        analytics.sendImpressionIneligiblePromoSectionGopayCicilPromoValidationEvent(
+                            viewModel.getPageSource(),
+                            element.uiData.promoCode,
+                            element.uiData.errorMessage
+                        )
+                        break@outerLoop
+                    }
+                }
+            }
         }
     }
 

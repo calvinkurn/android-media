@@ -503,10 +503,10 @@ class PromoCheckoutViewModelUICallbackTest : BasePromoCheckoutViewModelTest() {
         }
 
         // WHEN
-        viewModel.handlePromoListAfterClickPromoItem(selectedPromoItemWithActionableCTA!!)
+        viewModel.handlePromoListAfterClickPromoItem(selectedPromoItemWithActionableCTA!!, 0)
 
         // THEN
-        val applinkData = viewModel.getApplinkNavigation.value
+        val applinkData = viewModel.getActionableApplinkNavigation.value
         assert(applinkData == selectedPromoItemWithActionableCTA?.uiData?.cta?.applink)
     }
 
@@ -520,6 +520,7 @@ class PromoCheckoutViewModelUICallbackTest : BasePromoCheckoutViewModelTest() {
             firstArg<(CouponListRecommendationResponse) -> Unit>().invoke(response)
         }
         every { analytics.eventClickSelectKupon(any(), any(), any()) } just Runs
+        every { analytics.sendClickActivatedGopayCicilEvent(any(), any(), any(), any()) } just Runs
 
         viewModel.getPromoList(PromoRequest(), "")
 
@@ -535,7 +536,7 @@ class PromoCheckoutViewModelUICallbackTest : BasePromoCheckoutViewModelTest() {
         assert(!hasAnyPromoSelected)
 
         // WHEN
-        viewModel.handlePromoListAfterClickPromoItem(selectedPromoItemWithActionableCTA!!)
+        viewModel.handlePromoListAfterClickPromoItem(selectedPromoItemWithActionableCTA!!, 0)
 
         // THEN
         hasAnyPromoSelected = viewModel.isHasAnySelectedPromoItem()

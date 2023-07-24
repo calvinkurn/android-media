@@ -136,9 +136,9 @@ class PromoCheckoutViewModel @Inject constructor(
         get() = _getPromoSuggestionResponse
 
     // Live data to handle actionable CTA
-    private val _getApplinkNavigation = MutableLiveData<String>()
-    val getApplinkNavigation: LiveData<String>
-        get() = _getApplinkNavigation
+    private val _getActionableApplinkNavigation = MutableLiveData<String>()
+    val getActionableApplinkNavigation: LiveData<String>
+        get() = _getActionableApplinkNavigation
 
     // Page source : CART, CHECKOUT, OCC
     fun getPageSource(): Int {
@@ -1370,9 +1370,18 @@ class PromoCheckoutViewModel @Inject constructor(
         resetRecommendedPromo()
     }
 
-    fun handlePromoListAfterClickPromoItem(element: PromoListItemUiModel) {
+    fun handlePromoListAfterClickPromoItem(
+        element: PromoListItemUiModel,
+        position: Int
+    ) {
         if (element.uiState.isContainActionableCTA) {
-            _getApplinkNavigation.value = element.uiData.cta.applink
+            _getActionableApplinkNavigation.value = element.uiData.cta.applink
+            analytics.sendClickActivatedGopayCicilEvent(
+                getPageSource(),
+                element.uiData.promoCode,
+                element.uiData.benefitAmount,
+                position
+            )
         } else {
             updatePromoListAfterClickPromoItem(element)
         }

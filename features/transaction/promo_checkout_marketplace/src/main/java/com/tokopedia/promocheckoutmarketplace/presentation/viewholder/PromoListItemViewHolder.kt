@@ -13,9 +13,9 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.promocheckoutmarketplace.R
 import com.tokopedia.promocheckoutmarketplace.data.response.PromoInfo
@@ -89,7 +89,7 @@ class PromoListItemViewHolder(
             renderPromoState(viewBinding, element)
             setPromoItemClickListener(viewBinding, element)
             adapterPosition.takeIf { it != RecyclerView.NO_POSITION }?.let {
-                listener.onShowPromoItem(element, it)
+                listener.onShowPromoItem(element, it, getState(element))
             }
         }
     }
@@ -690,12 +690,11 @@ class PromoListItemViewHolder(
         element: PromoListItemUiModel
     ) {
         with(viewBinding) {
-            if (element.uiState.isContainActionableCTA) {
+            cardPromoActionable.shouldShowWithAction(element.uiState.isContainActionableCTA) {
                 textPromoActionable.text = element.uiData.cta.text
-                cardPromoActionable.show()
-            } else {
-                textPromoActionable.text = ""
-                cardPromoActionable.hide()
+                adapterPosition.takeIf { it != RecyclerView.NO_POSITION }?.let {
+                    listener.onShowPromoActionable(element, it)
+                }
             }
         }
     }
