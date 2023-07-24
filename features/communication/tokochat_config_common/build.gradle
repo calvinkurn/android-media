@@ -14,10 +14,15 @@ buildscript {
     }
 }
 
+android {
+    namespace 'com.tokochat.tokochat_config_common'
+    testNamespace 'com.tokochat.tokochat_config_common.test'
+}
+
 dependencies {
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
     implementation projectOrAar(rootProject.ext.libraries.usersession)
-    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
+    implementation projectOrAar(rootProject.ext.libraries.utils)
     implementation projectOrAar(rootProject.ext.libraries.network)
     implementation projectOrAar(rootProject.ext.libraries.akamaiBotLib)
     implementation projectOrAar(rootProject.ext.libraries.logger)

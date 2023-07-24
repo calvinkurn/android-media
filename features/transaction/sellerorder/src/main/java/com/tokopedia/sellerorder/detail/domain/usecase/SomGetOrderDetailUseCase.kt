@@ -119,6 +119,7 @@ class SomGetOrderDetailUseCase @Inject constructor(
                 deadline {
                   text
                   color
+                  style
                 }
                 insurance {
                   type

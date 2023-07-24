@@ -78,13 +78,13 @@ class ETollCardInfoView @JvmOverloads constructor(
 
         textLabelCardNumber.text = resources.getString(R.string.emoney_nfc_card_info_label_card_number)
         textCardNumber.text = attributesEmoneyInquiry.formattedCardNumber
-        textCardNumber.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700))
+        textCardNumber.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_NN950))
         textCardNumber.setTypeface(textCardNumber.typeface, Typeface.BOLD)
 
         textLabelBalance.text = resources.getString(R.string.emoney_nfc_card_info_label_card_balance)
         textRemainingBalance.text = CurrencyFormatUtil
             .convertPriceValueToIdrFormat(attributesEmoneyInquiry.lastBalance, true)
-        textRemainingBalance.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
+        textRemainingBalance.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_NN950_96))
 
         val simpleDateFormat = SimpleDateFormat(
             "dd MMM yyyy, HH:mm",
@@ -119,11 +119,11 @@ class ETollCardInfoView @JvmOverloads constructor(
         viewVisible()
         textLabelCardNumber.text = resources.getString(R.string.emoney_nfc_card_info_label_card_number)
         textCardNumber.text = resources.getString(R.string.emoney_nfc_card_info_is_not_available_yet)
-        textCardNumber.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700))
+        textCardNumber.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_NN950))
         textCardNumber.typeface = Typeface.DEFAULT
         textLabelBalance.text = resources.getString(R.string.emoney_nfc_card_info_label_card_balance)
         textRemainingBalance.text = resources.getString(R.string.emoney_nfc_card_info_is_not_available_yet)
-        textRemainingBalance.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700))
+        textRemainingBalance.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_NN950))
         textDate.text = ""
         imageIssuer.setImageDrawable(null)
     }

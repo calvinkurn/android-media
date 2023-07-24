@@ -32,20 +32,21 @@ class TokoChatListViewModel @Inject constructor(
     val error: LiveData<Pair<Throwable, String>>
         get() = _error
 
-    fun getChatListFlow(): Flow<Result<List<TokoChatListItemUiModel>>> {
+    fun getChatListFlow(): Flow<Result<List<TokoChatListItemUiModel>>>? {
         return chatChannelUseCase.getAllCachedChannels(listOf(ChannelType.GroupBooking))
-            .onStart {
+            ?.onStart {
                 setPaginationTimeStamp(0L) // reset
             }
-            .map {
+            ?.map {
                 it.map { channel ->
                     mapper.mapToChatListItem(channel)
                 }
-            }.flowOn(dispatcher.io)
-            .transformLatest { value ->
+            }
+            ?.flowOn(dispatcher.io)
+            ?.transformLatest { value ->
                 emit(Success(value) as Result<List<TokoChatListItemUiModel>>)
             }
-            .catch {
+            ?.catch {
                 _error.value = Pair(it, ::getChatListFlow.name)
                 emit(Fail(it))
             }

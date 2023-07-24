@@ -12,7 +12,6 @@ import dagger.Provides
 @Module
 class DetailedReviewMediaGalleryModule {
     @Provides
-    @DetailedReviewMediaGalleryScope
     fun provideTrackingQueue(@ApplicationContext context: Context): TrackingQueue {
         return TrackingQueue(context)
     }

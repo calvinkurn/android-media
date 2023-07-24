@@ -1,6 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.tokopedia.tokofood"
     android:versionCode="1"
     android:versionName="1.0.0">
 
@@ -8,7 +7,7 @@
         android:label="TokoFood Test"
         tools:replace="android:label">
         <activity
-            android:name=".stub.postpurchase.presentation.activity.TokoFoodOrderTrackingActivityStub"
+            android:name="com.tokopedia.tokofood.stub.postpurchase.presentation.activity.TokoFoodOrderTrackingActivityStub"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             android:exported="true"
             android:launchMode="singleTask"
@@ -24,6 +23,44 @@
                     android:host="@string/host_food"
                     android:path="@string/path_tokofood_post_purchase"
                     android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:theme="@style/Theme.WhiteUnify"
+            android:exported="false"
+            android:name="com.tokopedia.tokofood.stub.base.presentation.activity.BaseTokofoodActivityStub"
+            android:screenOrientation="portrait"
+            android:label="@string/title_tokofood">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_food"
+                    android:path="@string/path_tokofood_home"
+                    android:scheme="@string/internal_scheme" />
+
+                <data
+                    android:host="@string/host_food"
+                    android:path="@string/path_tokofood_merchant"
+                    android:scheme="@string/internal_scheme" />
+
+                <data
+                    android:host="@string/host_food"
+                    android:path="@string/path_tokofood_category"
+                    android:scheme="@string/internal_scheme" />
+
+                <data
+                    android:host="@string/host_food"
+                    android:path="@string/path_tokofood_purchase"
+                    android:scheme="@string/internal_scheme" />
+
+                <data
+                    android:host="@string/host_food"
+                    android:path="@string/path_tokofood_search"
+                    android:scheme="@string/internal_scheme" />
+
             </intent-filter>
         </activity>
     </application>

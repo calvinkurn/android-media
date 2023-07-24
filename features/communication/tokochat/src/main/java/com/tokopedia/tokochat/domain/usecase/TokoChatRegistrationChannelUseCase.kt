@@ -8,14 +8,14 @@ class TokoChatRegistrationChannelUseCase @Inject constructor(
     @TokoChatQualifier private val repository: TokoChatRepository
 ) {
     fun registerActiveChannel(channelUrl: String) {
-        repository.getConversationRepository().softRegisterChannel(channelUrl)
+        repository.getConversationRepository()?.softRegisterChannel(channelUrl)
     }
 
     fun deRegisterActiveChannel(channelUrl: String) {
-        repository.getConversationRepository().softDeregisterChannel(channelUrl)
+        repository.getConversationRepository()?.softDeregisterChannel(channelUrl)
     }
 
     fun getUserId(): String {
-        return repository.getConversationRepository().getUserId() ?: ""
+        return repository.getConversationRepository()?.getUserId() ?: ""
     }
 }
