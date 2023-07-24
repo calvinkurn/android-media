@@ -120,8 +120,12 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 
-class CheckoutFragment : BaseDaggerFragment(), CheckoutAdapterListener, UploadPrescriptionListener,
-    ShippingDurationBottomsheetListener, ShippingCourierBottomsheetListener,
+class CheckoutFragment :
+    BaseDaggerFragment(),
+    CheckoutAdapterListener,
+    UploadPrescriptionListener,
+    ShippingDurationBottomsheetListener,
+    ShippingCourierBottomsheetListener,
     ExpireTimeDialogListener {
 
     @Inject
@@ -303,7 +307,13 @@ class CheckoutFragment : BaseDaggerFragment(), CheckoutAdapterListener, UploadPr
         viewModel.listData.observe(viewLifecycleOwner) {
             val diffResult = DiffUtil.calculateDiff(CheckoutDiffUtilCallback(it, adapter.list))
             adapter.list = it
-            diffResult.dispatchUpdatesTo(adapter)
+            if (binding.rvCheckout.isComputingLayout) {
+                binding.rvCheckout.post {
+                    diffResult.dispatchUpdatesTo(adapter)
+                }
+            } else {
+                diffResult.dispatchUpdatesTo(adapter)
+            }
 
             it.address()?.recipientAddressModel?.also { address ->
                 header.tvCheckoutHeaderAddressName.text =
@@ -862,6 +872,10 @@ class CheckoutFragment : BaseDaggerFragment(), CheckoutAdapterListener, UploadPr
         TODO("Not yet implemented")
     }
 
+    override fun onLoadShippingState(order: CheckoutOrderModel, position: Int) {
+        viewModel.loadShipping(order, position)
+    }
+
     override fun onChangeShippingDuration(order: CheckoutOrderModel, position: Int) {
         showShippingDurationBottomsheet(
             order,
@@ -1047,9 +1061,9 @@ class CheckoutFragment : BaseDaggerFragment(), CheckoutAdapterListener, UploadPr
                 (
                     recipientAddressModel!!.latitude == null ||
                         recipientAddressModel.latitude.equals(
-                            "0",
-                            ignoreCase = true
-                        ) || recipientAddressModel.longitude == null ||
+                                "0",
+                                ignoreCase = true
+                            ) || recipientAddressModel.longitude == null ||
                         recipientAddressModel.longitude.equals("0", ignoreCase = true)
                     )
             ) {
@@ -1279,13 +1293,13 @@ class CheckoutFragment : BaseDaggerFragment(), CheckoutAdapterListener, UploadPr
 //            isCod
 //        )
         if (isNeedPinpoint || courierItemData.isUsePinPoint && (
-                recipientAddressModel!!.latitude == null ||
-                    recipientAddressModel.latitude.equals(
+            recipientAddressModel!!.latitude == null ||
+                recipientAddressModel.latitude.equals(
                         "0",
                         ignoreCase = true
                     ) || recipientAddressModel.longitude == null ||
-                    recipientAddressModel.longitude.equals("0", ignoreCase = true)
-                )
+                recipientAddressModel.longitude.equals("0", ignoreCase = true)
+            )
         ) {
             setPinpoint(cartPosition)
         } else {
@@ -1798,4 +1812,3 @@ class CheckoutFragment : BaseDaggerFragment(), CheckoutAdapterListener, UploadPr
         }
     }
 }
-

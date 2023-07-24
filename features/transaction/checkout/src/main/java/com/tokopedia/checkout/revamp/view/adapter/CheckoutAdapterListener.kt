@@ -44,6 +44,8 @@ interface CheckoutAdapterListener {
 
     fun addOnGiftingOrderLevelImpression(products: List<CheckoutProductModel>)
 
+    fun onLoadShippingState(order: CheckoutOrderModel, position: Int)
+
     fun onChangeShippingDuration(order: CheckoutOrderModel, position: Int)
 
     fun onChangeShippingCourier(order: CheckoutOrderModel, position: Int)

@@ -407,21 +407,53 @@ class CheckoutViewModel @Inject constructor(
     }
 
     fun getProductForRatesRequest(order: CheckoutOrderModel): ArrayList<Product> {
-        val products = arrayListOf<Product>()
-        for (cartItemModel in order.products) {
-            if (!cartItemModel.isError) {
-                val product = Product()
-                product.productId = cartItemModel.productId
-                product.isFreeShipping = cartItemModel.isFreeShipping
-                product.isFreeShippingTc = cartItemModel.isFreeShippingExtra
-                products.add(product)
-            }
-        }
-        return products
+        return logisticProcessor.getProductForRatesRequest(order)
     }
 
     fun generateRatesMvcParam(cartStringGroup: String): String {
-        return ""
+        return logisticProcessor.generateRatesMvcParam(cartStringGroup)
+    }
+
+    fun loadShipping(order: CheckoutOrderModel, cartPosition: Int) {
+        viewModelScope.launch(dispatchers.immediate) {
+            val checkoutItems = listData.value.toMutableList()
+            val checkoutOrderModel = checkoutItems[cartPosition] as CheckoutOrderModel
+            checkoutItems[cartPosition] = checkoutOrderModel.copy(shipment = checkoutOrderModel.shipment.copy(isLoading = true), isStateHasLoadCourierState = true)
+            listData.value = checkoutItems
+
+            val result = logisticProcessor.getRates(
+                logisticProcessor.getRatesParam(
+                    order,
+                    listData.value.address()!!.recipientAddressModel,
+                    isTradeIn,
+                    isTradeInByDropOff,
+                    codData,
+                    cartDataForRates
+                ),
+                order.shopShipmentList,
+                order.shippingId,
+                order.spId,
+                order
+            )
+            val list = listData.value.toMutableList()
+            val orderModel = list[cartPosition] as? CheckoutOrderModel
+            if (orderModel != null) {
+                val newOrderModel = orderModel.copy(
+                    shipment = orderModel.shipment.copy(
+                        isLoading = false,
+                        courierItemData = result?.first,
+                        shippingCourierUiModels = result?.second ?: emptyList()
+                    )
+                )
+                list[cartPosition] = newOrderModel
+                listData.value = list
+                cartProcessor.processSaveShipmentState(
+                    newOrderModel,
+                    listData.value.address()!!.recipientAddressModel
+                )
+                calculateTotal()
+            }
+        }
     }
 
     fun setSelectedCourier(

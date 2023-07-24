@@ -11,6 +11,7 @@ import com.tokopedia.checkout.databinding.ItemCheckoutOrderBinding
 import com.tokopedia.checkout.databinding.ItemCheckoutProductBinding
 import com.tokopedia.checkout.databinding.ItemCheckoutPromoBinding
 import com.tokopedia.checkout.databinding.ItemUpsellNewImprovementBinding
+import com.tokopedia.checkout.revamp.view.address
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutAddressModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutButtonPaymentModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutCostModel
@@ -167,7 +168,7 @@ class CheckoutAdapter(
             }
 
             is CheckoutOrderModel -> {
-                (holder as CheckoutOrderViewHolder).bind(item)
+                (holder as CheckoutOrderViewHolder).bind(item, list.address())
             }
 
             is CheckoutEpharmacyModel -> {

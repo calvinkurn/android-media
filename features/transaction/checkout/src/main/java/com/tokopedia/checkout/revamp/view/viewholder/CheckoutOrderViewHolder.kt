@@ -1,11 +1,14 @@
 package com.tokopedia.checkout.revamp.view.viewholder
 
+import android.text.TextUtils
+import android.util.Log
 import android.view.View
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.checkout.R
 import com.tokopedia.checkout.databinding.ItemCheckoutOrderBinding
 import com.tokopedia.checkout.revamp.view.adapter.CheckoutAdapterListener
+import com.tokopedia.checkout.revamp.view.uimodel.CheckoutAddressModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderModel
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.InsuranceData
@@ -21,10 +24,10 @@ class CheckoutOrderViewHolder(
 
     private lateinit var order: CheckoutOrderModel
 
-    fun bind(order: CheckoutOrderModel) {
+    fun bind(order: CheckoutOrderModel, addressModel: CheckoutAddressModel?) {
         this.order = order
         renderAddOnOrderLevel(order)
-        renderShippingWidget(order)
+        renderShippingWidget(order, addressModel)
     }
 
     private fun renderAddOnOrderLevel(order: CheckoutOrderModel) {
@@ -55,7 +58,7 @@ class CheckoutOrderViewHolder(
         }
     }
 
-    private fun renderShippingWidget(order: CheckoutOrderModel) {
+    private fun renderShippingWidget(order: CheckoutOrderModel, addressModel: CheckoutAddressModel?) {
         binding.shippingWidget.setupListener(this)
         binding.shippingWidget.hideTradeInShippingInfo()
 
@@ -75,6 +78,13 @@ class CheckoutOrderViewHolder(
                 binding.shippingWidget.prepareLoadCourierState()
                 binding.shippingWidget.hideShippingStateLoading()
                 binding.shippingWidget.showLayoutNoSelectedShipping(RecipientAddressModel())
+                // todo coachmark
+
+                //                showMultiplePlusOrderCoachmark(
+//                    shipmentCartItemModel,
+//                    shippingWidget.layoutStateNoSelectedShipping
+//                )
+                loadCourierState(order, addressModel?.recipientAddressModel)
             } else if (order.isShowScheduleDelivery) {
                 binding.shippingWidget.prepareLoadCourierState()
                 binding.shippingWidget.hideShippingStateLoading()
@@ -250,6 +260,101 @@ class CheckoutOrderViewHolder(
                 )
             }
         }
+    }
+
+    private fun loadCourierState(
+        shipmentCartItemModel: CheckoutOrderModel,
+        recipientAddressModel: RecipientAddressModel?
+//        ratesDataConverter: RatesDataConverter,
+//        saveStateType: Int
+    ) {
+//        with(binding) {
+//            val shipmentDetailData = shipmentCartItemModel.selectedShipmentDetailData
+//            if (shipmentCartItemModel.isStateLoadingCourierState) {
+//                renderLoadingCourierState()
+//            } else {
+//                var hasLoadCourier = false
+//                shippingWidget.hideShippingStateLoading()
+//                when (saveStateType) {
+//                    ShipmentCartItemBottomViewHolder.SHIPPING_SAVE_STATE_TYPE_TRADE_IN_DROP_OFF ->
+//                        hasLoadCourier =
+//                            shipmentDetailData?.selectedCourierTradeInDropOff != null
+//
+//                    ShipmentCartItemBottomViewHolder.SHIPPING_SAVE_STATE_TYPE_SHIPPING_EXPERIENCE ->
+//                        hasLoadCourier =
+//                            shipmentDetailData?.selectedCourier != null
+//                }
+        if (shipmentCartItemModel.isCustomPinpointError) {
+            renderErrorPinpointCourier()
+        } else if (shouldAutoLoadCourier(shipmentCartItemModel, recipientAddressModel)) {
+//                if (!hasLoadCourier) {
+//                    val tmpShipmentDetailData = ratesDataConverter.getShipmentDetailData(
+//                        shipmentCartItemModel,
+//                        recipientAddressModel
+//                    )
+//                    val hasLoadCourierState =
+//                        if (saveStateType == ShipmentCartItemBottomViewHolder.SHIPPING_SAVE_STATE_TYPE_TRADE_IN_DROP_OFF) {
+//                            shipmentCartItemModel.isStateHasLoadCourierTradeInDropOffState
+//                        } else {
+//                            shipmentCartItemModel.isStateHasLoadCourierState
+//                        }
+            if (!order.isStateHasLoadCourierState) {
+                val position = bindingAdapterPosition
+                if (position != RecyclerView.NO_POSITION) {
+                    listener.onLoadShippingState(order, position)
+//                            loadCourierStateData(
+//                                shipmentCartItemModel,
+//                                saveStateType,
+//                                tmpShipmentDetailData,
+//                                position
+//                            )
+                }
+            } else {
+//                        renderNoSelectedCourier(
+//                            shipmentCartItemModel,
+//                            recipientAddressModel,
+//                            saveStateType
+//                        )
+            }
+        } else {
+            Log.i("qwertyuiop", "no auto")
+        }
+//            } else {
+//                renderNoSelectedCourier(
+//                    shipmentCartItemModel,
+//                    recipientAddressModel,
+//                    saveStateType
+//                )
+//                showMultiplePlusOrderCoachmark(
+//                    shipmentCartItemModel,
+//                    shippingWidget.layoutStateNoSelectedShipping
+//                )
+//            }
+//        }
+    }
+//    }
+
+    private fun shouldAutoLoadCourier(
+        shipmentCartItemModel: CheckoutOrderModel,
+        recipientAddressModel: RecipientAddressModel?
+    ): Boolean {
+        return recipientAddressModel != null && (
+            recipientAddressModel.isTradeIn && recipientAddressModel.selectedTabIndex != 0 && shipmentCartItemModel.shippingId != 0 && shipmentCartItemModel.spId != 0 && !TextUtils.isEmpty(
+                recipientAddressModel.dropOffAddressName
+            ) || recipientAddressModel.isTradeIn && recipientAddressModel.selectedTabIndex == 0 && shipmentCartItemModel.shippingId != 0 && shipmentCartItemModel.spId != 0 && !TextUtils.isEmpty(
+                recipientAddressModel.provinceName
+            ) || !recipientAddressModel.isTradeIn && shipmentCartItemModel.shippingId != 0 && shipmentCartItemModel.spId != 0 && !TextUtils.isEmpty(
+                recipientAddressModel.provinceName
+            ) || !recipientAddressModel.isTradeIn && shipmentCartItemModel.boCode.isNotEmpty() && !TextUtils.isEmpty(
+                recipientAddressModel.provinceName
+            ) || // normal address auto apply BO
+                shipmentCartItemModel.isAutoCourierSelection
+            ) // tokopedia now
+    }
+
+    private fun renderErrorPinpointCourier() {
+//        binding.containerShippingOptions.root.visibility = View.VISIBLE
+        binding.shippingWidget.renderErrorPinpointCourier()
     }
 
     companion object {
