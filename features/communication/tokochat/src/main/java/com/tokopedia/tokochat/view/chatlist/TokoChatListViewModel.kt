@@ -1,14 +1,13 @@
 package com.tokopedia.tokochat.view.chatlist
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.gojek.conversations.babble.channel.data.ChannelType
-import com.gojek.conversations.utils.ConversationsConstants
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.tokochat.common.util.TokoChatCacheManager
+import com.tokopedia.tokochat.common.util.TokoChatValueUtil.BATCH_LIMIT
 import com.tokopedia.tokochat.common.view.chatlist.uimodel.TokoChatListItemUiModel
 import com.tokopedia.tokochat.domain.usecase.TokoChatChannelUseCase
 import com.tokopedia.usecase.coroutines.Fail
@@ -36,7 +35,6 @@ class TokoChatListViewModel @Inject constructor(
     fun getChatListFlow(): Flow<Result<List<TokoChatListItemUiModel>>> {
         return chatChannelUseCase.getAllCachedChannels(listOf(ChannelType.GroupBooking))
             .onStart {
-                Log.d("TOKOCHAT-lIST", "START-LOADING")
                 setPaginationTimeStamp(0L) // reset
             }
             .map {
@@ -79,8 +77,8 @@ class TokoChatListViewModel @Inject constructor(
     }
 
     private fun getBatchSize(localSize: Int): Int {
-        return if (localSize <= ConversationsConstants.DEFAULT_BATCH_SIZE) {
-            ConversationsConstants.DEFAULT_BATCH_SIZE
+        return if (localSize <= BATCH_LIMIT) {
+            BATCH_LIMIT
         } else {
             localSize
         }

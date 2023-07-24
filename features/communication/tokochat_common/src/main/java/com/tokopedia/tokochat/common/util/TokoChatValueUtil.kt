@@ -25,6 +25,7 @@ object TokoChatValueUtil {
             else -> ""
         }
     }
+    const val GOFOOD = " · GoSend"
 
     /**
      * Message status
@@ -103,4 +104,9 @@ object TokoChatValueUtil {
      * TokoChat Bubbles
      */
     const val IS_FROM_BUBBLE_KEY = "isFromBubble"
+
+    /**
+     * TokoChat List
+     */
+    const val BATCH_LIMIT = 10
 }

@@ -29,13 +29,13 @@ class TokoChatListItemViewHolder(
     fun bind(element: TokoChatListItemUiModel) {
         bindDriver(element)
         bindMessage(element)
-        bindTime(element)
-        bindCounter(element)
+        bindBusiness(element)
         bindListener(element)
     }
 
     private fun bindDriver(element: TokoChatListItemUiModel) {
-        binding?.tokochatListTvDriverName?.text = element.driverName
+        val driverText = "${element.driverName}${element.getStringOrderType()}"
+        binding?.tokochatListTvDriverName?.text = driverText
         if (imageUrl != element.imageUrl) {
             binding?.tokochatListIvDriver?.loadImage(element.imageUrl)
             imageUrl = element.imageUrl
@@ -48,14 +48,17 @@ class TokoChatListItemViewHolder(
     }
 
     private fun bindMessage(element: TokoChatListItemUiModel) {
-        binding?.tokochatListTvMessage?.apply {
-            if (element.message.isNotBlank()) {
-                text = element.message
-                show()
-            } else {
-                hide()
-            }
+        if (element.message.isNotBlank()) {
+            binding?.tokochatListTvMessage?.text = element.message
+            // Show counter & timestamp only when message is not empty
+            bindCounter(element)
+            bindTime(element)
+        } else {
+            binding?.tokochatListTvMessage?.text = getString(R.string.tokochat_list_default_message)
         }
+    }
+
+    private fun bindBusiness(element: TokoChatListItemUiModel) {
         binding?.tokochatListTvBusinessName?.apply {
             if (element.business.isNotBlank()) {
                 text = element.business

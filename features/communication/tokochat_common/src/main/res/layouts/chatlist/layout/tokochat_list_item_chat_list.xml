@@ -48,6 +48,7 @@
         android:layout_marginTop="12dp"
         android:layout_marginStart="8dp"
         android:layout_marginBottom="12dp"
+        app:layout_goneMarginEnd="54dp"
         app:layout_constraintHorizontal_weight="8">
 
         <com.tokopedia.unifyprinciples.Typography
@@ -109,7 +110,9 @@
         android:ellipsize="end"
         android:maxLines="1"
         app:layout_constraintHorizontal_weight="2"
-        android:text="Baru saja" />
+        android:visibility="gone"
+        tools:visibility="visible"
+        tools:text="Baru saja" />
 
     <com.tokopedia.unifycomponents.NotificationUnify
         android:id="@+id/tokochat_list_counter"
@@ -118,7 +121,9 @@
         app:layout_constraintTop_toBottomOf="@id/tokochat_list_tv_time"
         app:layout_constraintRight_toRightOf="parent"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="16dp"/>
+        android:layout_marginEnd="16dp"
+        android:visibility="gone"
+        tools:visibility="visible"/>
 
     <View
         android:layout_width="0dp"
