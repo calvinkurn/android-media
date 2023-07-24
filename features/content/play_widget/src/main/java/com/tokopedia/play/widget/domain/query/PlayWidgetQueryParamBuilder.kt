@@ -33,10 +33,19 @@ class PlayWidgetQueryParamBuilder {
             appendLine("${'$'}$PARAM_AUTHOR_TYPE: String,")
             append("${'$'}$PARAM_IS_WIFI: Boolean")
 
-            if(widgetType is PlayWidgetUseCase.WidgetType.PDPWidget) {
-                appendLine(",")
-                appendLine("${'$'}$PARAM_PRODUCT_ID: String,")
-                appendLine("${'$'}$PARAM_CATEGORY_ID: String")
+            when (widgetType) {
+                is PlayWidgetUseCase.WidgetType.PDPWidget -> {
+                    appendLine(",")
+                    appendLine("${'$'}$PARAM_PRODUCT_ID: String,")
+                    appendLine("${'$'}$PARAM_CATEGORY_ID: String")
+                }
+                is PlayWidgetUseCase.WidgetType.ShopPageExclusiveLaunch -> {
+                    appendLine(",")
+                    appendLine("${'$'}$PARAM_CAMPAIGN_ID: String")
+                }
+                else -> {
+                    //do nothing with other widget type
+                }
             }
         }
     }
@@ -51,10 +60,19 @@ class PlayWidgetQueryParamBuilder {
             appendLine("${PARAM_AUTHOR_TYPE}: ${'$'}${PARAM_AUTHOR_TYPE},")
             append("${PARAM_IS_WIFI}: ${'$'}${PARAM_IS_WIFI}")
 
-            if(widgetType is PlayWidgetUseCase.WidgetType.PDPWidget) {
-                appendLine(",")
-                appendLine("${PARAM_PRODUCT_ID}: ${'$'}${PARAM_PRODUCT_ID},")
-                appendLine("${PARAM_CATEGORY_ID}: ${'$'}${PARAM_CATEGORY_ID}")
+            when (widgetType) {
+                is PlayWidgetUseCase.WidgetType.PDPWidget -> {
+                    appendLine(",")
+                    appendLine("${PARAM_PRODUCT_ID}: ${'$'}${PARAM_PRODUCT_ID},")
+                    appendLine("${PARAM_CATEGORY_ID}: ${'$'}${PARAM_CATEGORY_ID}")
+                }
+                is PlayWidgetUseCase.WidgetType.ShopPageExclusiveLaunch -> {
+                    appendLine(",")
+                    appendLine("${PARAM_CAMPAIGN_ID}: ${'$'}${PARAM_CAMPAIGN_ID}")
+                }
+                else -> {
+                    //do nothing with other widget type
+                }
             }
 
             appendLine("})")
@@ -82,5 +100,6 @@ class PlayWidgetQueryParamBuilder {
         const val PARAM_PRODUCT_ID = "productIDs"
         const val PARAM_CATEGORY_ID = "categoryIDs"
         const val PARAM_CHANNEL_TAG = "channelTag"
+        const val PARAM_CAMPAIGN_ID = "campaignID"
     }
 }
