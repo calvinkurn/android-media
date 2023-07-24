@@ -16,9 +16,11 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.transformLatest
+import timber.log.Timber
 import javax.inject.Inject
 
 class TokoChatListViewModel @Inject constructor(
@@ -36,23 +38,28 @@ class TokoChatListViewModel @Inject constructor(
         get() = _error
 
     fun getChatListFlow(): Flow<Result<List<TokoChatListItemUiModel>>>? {
-        return chatChannelUseCase.getAllCachedChannels(listOf(ChannelType.GroupBooking))
-            ?.onStart {
-                Log.d("TOKOCHAT-lIST", "START-LOADING")
-                setPaginationTimeStamp(0L) // reset
-            }
-            ?.map {
-                it.map { channel ->
-                    mapper.mapToChatListItem(channel)
+        return try {
+            chatChannelUseCase.getAllCachedChannels(listOf(ChannelType.GroupBooking))
+                ?.onStart {
+                    Log.d("TOKOCHAT-lIST", "START-LOADING")
+                    setPaginationTimeStamp(0L) // reset
                 }
+                ?.map {
+                    filterExpiredChannelAndMap(it)
+                }
+                ?.transformLatest { value ->
+                    emit(Success(value) as Result<List<TokoChatListItemUiModel>>)
+                }
+                ?.catch {
+                    _error.value = Pair(it, ::getChatListFlow.name)
+                    emit(Fail(it))
+                }
+        } catch (throwable: Throwable) {
+            Timber.d(throwable)
+            flow {
+                emit(Fail(throwable))
             }
-            ?.transformLatest { value ->
-                emit(Success(value) as Result<List<TokoChatListItemUiModel>>)
-            }
-            ?.catch {
-                _error.value = Pair(it, ::getChatListFlow.name)
-                emit(Fail(it))
-            }
+        }
     }
 
     fun loadNextPageChatList(
@@ -95,5 +102,16 @@ class TokoChatListViewModel @Inject constructor(
 
     private fun emitChatListPairData(channelList: List<ConversationsChannel>) {
         _chatListPair.value = mapper.mapToTypeCounter(channelList)
+    }
+
+    private fun filterExpiredChannelAndMap(
+        channelList: List<ConversationsChannel>
+    ): List<TokoChatListItemUiModel> {
+        val filteredChannel = channelList.filter {
+            it.expiresAt > System.currentTimeMillis()
+        }
+        return filteredChannel.map {
+            mapper.mapToChatListItem(it)
+        }
     }
 }
