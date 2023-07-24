@@ -1499,4 +1499,18 @@ class WishlistCollectionDetailViewModelTest {
         }
         // no op, expect to be handled by Affiliate SDK
     }
+
+    @Test
+    fun `create affiliate link should call affiliate sdk`() {
+        // given
+        val productUrl = "https://www.tokopedia.com/logitech/logitech-b175-mouse-wireless-untuk-windows-mac-linux-dan-chromeos"
+
+        // when
+        wishlistCollectionDetailViewModel.createAffiliateLink(productUrl)
+
+        // then
+        verify {
+            affiliateCookieHelper.createAffiliateLink(any())
+        }
+    }
 }
