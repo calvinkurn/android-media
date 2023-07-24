@@ -1,10 +1,9 @@
 package com.tokopedia.play.broadcaster.view.bottomsheet.livetovod
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -20,6 +19,7 @@ import com.tokopedia.nest.components.NestButton
 import com.tokopedia.nest.components.NestImage
 import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
+import com.tokopedia.nest.principles.utils.ImageSource
 import com.tokopedia.play.broadcaster.R
 
 @Composable
@@ -57,23 +57,20 @@ private fun LiveToVodBottomSheetContent(
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(start = 8.dp, end = 8.dp),
+        modifier = Modifier.fillMaxWidth(),
     ) {
         NestImage(
-            imageUrl = stringResource(id = R.string.play_shorts_affiliate_success),
+            source = ImageSource.Remote(source = stringResource(id = R.string.play_shorts_affiliate_success)),
             modifier = Modifier
-                .width(350.dp)
-                .height(280.dp),
+                .aspectRatio(1f / 1f)
+                .padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
         )
         NestTypography(
             text = stringResource(id = R.string.play_prepare_broadcaster_disable_live_to_vod_title_bottom_sheet),
-            modifier = Modifier.padding(top = 16.dp),
             textStyle = NestTheme.typography.heading2
                 .copy(
                     textAlign = TextAlign.Center,
-                    color = NestTheme.colors.NN._0,
+                    color = NestTheme.colors.NN._1000,
                 ),
         )
         NestTypography(
