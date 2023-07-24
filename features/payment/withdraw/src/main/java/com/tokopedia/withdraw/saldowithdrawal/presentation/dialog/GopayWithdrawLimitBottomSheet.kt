@@ -9,8 +9,8 @@ import com.tokopedia.withdraw.R
 import com.tokopedia.withdraw.saldowithdrawal.domain.model.GopayData
 
 class GopayWithdrawLimitBottomSheet: BottomSheetUnify() {
-    private lateinit var childView: View
-    private lateinit var gopayData: GopayData
+    private var childView: View? = null
+    private var gopayData: GopayData? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,22 +31,22 @@ class GopayWithdrawLimitBottomSheet: BottomSheetUnify() {
     }
 
     private fun setUpView() {
-        if (!::gopayData.isInitialized) {
+        if (gopayData == null) {
             dismiss()
             return
         }
 
-        val titleView = childView.findViewById<Typography>(R.id.tvGopayDialogTitle)
-        val descriptionView = childView.findViewById<Typography>(R.id.tvGopayDialogDescription)
-        val tickerTitleView = childView.findViewById<Typography>(R.id.tvGopayLimitDialogTitle)
-        val tickerDescriptionView = childView.findViewById<Typography>(R.id.tvGopayTickerDescription)
-        val tickerLimitView = childView.findViewById<Typography>(R.id.tvGopayTickerLimit)
+        val titleView = childView?.findViewById<Typography>(R.id.tvGopayDialogTitle)
+        val descriptionView = childView?.findViewById<Typography>(R.id.tvGopayDialogDescription)
+        val tickerTitleView = childView?.findViewById<Typography>(R.id.tvGopayLimitDialogTitle)
+        val tickerDescriptionView = childView?.findViewById<Typography>(R.id.tvGopayTickerDescription)
+        val tickerLimitView = childView?.findViewById<Typography>(R.id.tvGopayTickerLimit)
 
-        titleView.text = gopayData.bottomsheetData.title
-        descriptionView.text = gopayData.bottomsheetData.description
-        tickerTitleView.text = gopayData.limitCopyWriting
-        tickerLimitView.text = gopayData.limit
-        tickerDescriptionView.text = gopayData.bottomsheetData.balance
+        titleView?.text = gopayData?.bottomsheetData?.title
+        descriptionView?.text = gopayData?.bottomsheetData.description
+        tickerTitleView?.text = gopayData?.limitCopyWriting
+        tickerLimitView?.text = gopayData?.limit
+        tickerDescriptionView?.text = gopayData?.bottomsheetData.balance
     }
 
     companion object {
