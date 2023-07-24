@@ -5,6 +5,8 @@ import android.graphics.Bitmap
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.graphics.scale
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.scp_rewards.R
 import com.tokopedia.scp_rewards.common.utils.downloadImage
 import com.tokopedia.scp_rewards.databinding.WidgetMedalLottieAnimationBinding
@@ -31,12 +33,17 @@ class MedalLottieAnimation(private val context: Context, attrs: AttributeSet?) :
 
     fun loadLottie(data: MedalHeaderData, onClickAction: (() -> Unit)? = null) {
         this.onClickAction = onClickAction
-        loadSparks(data.lottieSparklesUrl)
-        downloadImages(data, {
-            loadMedalBadge(data, it)
-        }, {
-            binding.lottieView.setImageResource(R.drawable.fallback_badge)
-        })
+        try {
+            loadSparks(data.lottieSparklesUrl)
+            downloadImages(data, {
+                loadMedalBadge(data, it)
+            }, {
+                binding.lottieView.setImageResource(R.drawable.fallback_badge)
+            })
+        } catch (ex: Throwable) {
+            // For Out of memory exceptions
+            FirebaseCrashlytics.getInstance().recordException(ex)
+        }
     }
 
     private fun loadSparks(lottieSparklesUrl: String?) {
@@ -52,7 +59,10 @@ class MedalLottieAnimation(private val context: Context, attrs: AttributeSet?) :
             lottieView.loadLottieFromUrl(
                 url = data.lottieUrl,
                 onLottieLoaded = {
-                    map.forEach { (key, bitmap) -> lottieView.updateBitmap(key, bitmap) }
+                    map.forEach { (key, bitmap) ->
+                        val imageAsset = lottieView.composition?.images?.get(key)
+                        lottieView.updateBitmap(key, bitmap?.scale(imageAsset?.width?: bitmap.width, imageAsset?.height?: bitmap.height))
+                    }
                     val markersList = listOf(
                         SHUTTER_AUTO_CLOSE,
                         SHUTTER_AUTO_OPEN,
