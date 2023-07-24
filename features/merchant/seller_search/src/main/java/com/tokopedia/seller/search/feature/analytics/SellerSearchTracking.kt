@@ -27,6 +27,10 @@ import com.tokopedia.seller.search.feature.analytics.SellerSearchTrackingConstan
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.interfaces.ContextAnalytics
 
+/*
+https://docs.google.com/spreadsheets/d/1AZjuQ_dg25EvEEWmE8MPMo0f1_DT4IyZPaNpt4cxidA/edit#gid=312411040
+ */
+
 object SellerSearchTracking {
 
     private val tracker: ContextAnalytics by lazy { TrackApp.getInstance().gtm }
@@ -40,7 +44,8 @@ object SellerSearchTracking {
     }
 
     fun clickBackButtonSearchEvent(userId: String, keyword: String) {
-        tracker.sendGeneralEvent(DataLayer.mapOf(
+        tracker.sendGeneralEvent(
+            DataLayer.mapOf(
                 EVENT, CLICK_SEARCH,
                 EVENT_CATEGORY, GLOBAL_SEARCH,
                 EVENT_ACTION, CLICK_BACK_BUTTON,
@@ -49,11 +54,13 @@ object SellerSearchTracking {
                 CURRENT_SITE, TOKOPEDIA_SELLER,
                 USER_ID, userId,
                 BUSINESS_UNIT, PHYSICAL_GOODS
-        ))
+            )
+        )
     }
 
     fun impressionEmptyResultEvent(userId: String) {
-        tracker.sendGeneralEvent(DataLayer.mapOf(
+        tracker.sendGeneralEvent(
+            DataLayer.mapOf(
                 EVENT, VIEW_SEARCH_IRIS,
                 EVENT_CATEGORY, GLOBAL_SEARCH,
                 EVENT_ACTION, IMPRESSION_EMPTY_RESULT,
@@ -62,11 +69,13 @@ object SellerSearchTracking {
                 CURRENT_SITE, TOKOPEDIA_SELLER,
                 USER_ID, userId,
                 BUSINESS_UNIT, PHYSICAL_GOODS
-        ))
+            )
+        )
     }
 
     fun clickDeleteAllSearchEvent(userId: String) {
-        tracker.sendGeneralEvent(DataLayer.mapOf(
+        tracker.sendGeneralEvent(
+            DataLayer.mapOf(
                 EVENT, CLICK_SEARCH,
                 EVENT_CATEGORY, GLOBAL_SEARCH,
                 EVENT_ACTION, CLICK_DELETE_ALL_SEARCH,
@@ -75,11 +84,13 @@ object SellerSearchTracking {
                 CURRENT_SITE, TOKOPEDIA_SELLER,
                 USER_ID, userId,
                 BUSINESS_UNIT, PHYSICAL_GOODS
-        ))
+            )
+        )
     }
 
     fun clickDeleteSelectedSearch(userId: String) {
-        tracker.sendGeneralEvent(DataLayer.mapOf(
+        tracker.sendGeneralEvent(
+            DataLayer.mapOf(
                 EVENT, CLICK_SEARCH,
                 EVENT_CATEGORY, GLOBAL_SEARCH,
                 EVENT_ACTION, CLICK_DELETE_SELECTED_SEARCH,
@@ -88,11 +99,13 @@ object SellerSearchTracking {
                 CURRENT_SITE, TOKOPEDIA_SELLER,
                 USER_ID, userId,
                 BUSINESS_UNIT, PHYSICAL_GOODS
-        ))
+            )
+        )
     }
 
     fun clickRecommendWordingEvent(userId: String) {
-        tracker.sendGeneralEvent(DataLayer.mapOf(
+        tracker.sendGeneralEvent(
+            DataLayer.mapOf(
                 EVENT, CLICK_SEARCH,
                 EVENT_CATEGORY, GLOBAL_SEARCH,
                 EVENT_ACTION, CLICK_RECOMMEND_WORDING,
@@ -101,11 +114,13 @@ object SellerSearchTracking {
                 CURRENT_SITE, TOKOPEDIA_SELLER,
                 USER_ID, userId,
                 BUSINESS_UNIT, PHYSICAL_GOODS
-        ))
+            )
+        )
     }
 
     fun clickClearSearchBoxEvent(userId: String) {
-        tracker.sendGeneralEvent(DataLayer.mapOf(
+        tracker.sendGeneralEvent(
+            DataLayer.mapOf(
                 EVENT, CLICK_SEARCH,
                 EVENT_CATEGORY, GLOBAL_SEARCH,
                 EVENT_ACTION, CLICK_X_SEARCH_BOX,
@@ -114,11 +129,13 @@ object SellerSearchTracking {
                 CURRENT_SITE, TOKOPEDIA_SELLER,
                 USER_ID, userId,
                 BUSINESS_UNIT, PHYSICAL_GOODS
-        ))
+            )
+        )
     }
 
     fun clickOtherResult(userId: String, section: String, keyword: String) {
-        tracker.sendGeneralEvent(DataLayer.mapOf(
+        tracker.sendGeneralEvent(
+            DataLayer.mapOf(
                 EVENT, CLICK_SEARCH,
                 EVENT_CATEGORY, GLOBAL_SEARCH,
                 EVENT_ACTION, CLICK_OTHER_RESULT,
@@ -127,11 +144,13 @@ object SellerSearchTracking {
                 CURRENT_SITE, TOKOPEDIA_SELLER,
                 USER_ID, userId,
                 BUSINESS_UNIT, PHYSICAL_GOODS
-        ))
+            )
+        )
     }
 
     fun clickOnSearchResult(userId: String, section: String, keyword: String) {
-        tracker.sendGeneralEvent(DataLayer.mapOf(
+        tracker.sendGeneralEvent(
+            DataLayer.mapOf(
                 EVENT, CLICK_SEARCH,
                 EVENT_CATEGORY, GLOBAL_SEARCH,
                 EVENT_ACTION, CLICK_ON_SEARCH_RESULT,
@@ -140,11 +159,13 @@ object SellerSearchTracking {
                 CURRENT_SITE, TOKOPEDIA_SELLER,
                 USER_ID, userId,
                 BUSINESS_UNIT, PHYSICAL_GOODS
-        ))
+            )
+        )
     }
 
     fun clickOnItemSearchHighlights(userId: String) {
-        tracker.sendGeneralEvent(DataLayer.mapOf(
+        tracker.sendGeneralEvent(
+            DataLayer.mapOf(
                 EVENT, CLICK_SEARCH,
                 EVENT_CATEGORY, GLOBAL_SEARCH,
                 EVENT_ACTION, SUGGESTED_SEARCH,
@@ -152,6 +173,7 @@ object SellerSearchTracking {
                 BUSINESS_UNIT, PHYSICAL_GOODS,
                 CURRENT_SITE, TOKOPEDIA_SELLER,
                 USER_ID, userId
-        ))
+            )
+        )
     }
 }

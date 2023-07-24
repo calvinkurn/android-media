@@ -117,13 +117,13 @@ class InitialSellerSearchComposeActivity :
                                 if (showSearchSuggestions) {
                                     suggestionSearchFragment?.suggestionSearch(it.searchBarKeyword)
                                         ?: (fragmentManager.findFragmentById(suggestionSearchContainerId) as? SuggestionSearchFragment)?.apply {
-                                        suggestionSearch(it.searchBarKeyword)
-                                    }
+                                            suggestionSearch(it.searchBarKeyword)
+                                        }
                                 } else {
                                     initialSearchFragment?.historySearch(it.searchBarKeyword)
                                         ?: (fragmentManager.findFragmentById(initialStateContainerId) as? InitialSearchFragment)?.apply {
-                                        historySearch(it.searchBarKeyword)
-                                    }
+                                            historySearch(it.searchBarKeyword)
+                                        }
                                 }
                             }
 
@@ -143,6 +143,11 @@ class InitialSellerSearchComposeActivity :
                 )
             }
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        SellerSearchTracking.sendScreenSearchEvent(userSession.userId)
     }
 
     override fun getComponent(): InitialSearchComponent {
@@ -205,10 +210,6 @@ class InitialSellerSearchComposeActivity :
 
     override fun finishMonitoring() {
         performanceMonitoring.stopPerformanceMonitoring()
-    }
-
-    override fun setUserIdFromFragment(userId: String) {
-        // no op
     }
 
     override fun showHistoryView() {
