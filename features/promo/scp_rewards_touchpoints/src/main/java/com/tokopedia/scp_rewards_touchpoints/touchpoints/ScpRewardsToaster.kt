@@ -15,7 +15,6 @@ import com.tokopedia.scp_rewards_touchpoints.R
 import com.tokopedia.scp_rewards_touchpoints.bottomsheet.utils.loadImage
 import com.tokopedia.scp_rewards_touchpoints.touchpoints.model.ScpToasterData
 import com.tokopedia.unifycomponents.ImageUnify
-import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.toPx
 
 
@@ -62,7 +61,7 @@ object ScpRewardsToaster {
 
     private fun initToaster(view: View,toasterData: ScpToasterData, type: Int = TYPE_NORMAL, cta: Int = WITHOUT_CTA): Snackbar? {
         val viewTarget : View = view
-        Toaster
+
         val tempSnackBar = Snackbar.make(viewTarget, "", toasterLength)
 
         val viewLayout = View.inflate(viewTarget.context, R.layout.scp_toaster, null)
