@@ -54,7 +54,9 @@
     <string name="content_desc_value_location">input lokasi pickup</string>
     <string name="content_desc_save_button">button simpan</string>
     <string name="lokasi_saat_ini">Lokasi saat ini</string>
+
     <string name="toaster_failed_get_district">Oops, alamat gagal dipilih. Silakan coba lagi.</string>
+    <string name="toaster_not_avail_shop_loc">Lokasi pinpoint (peta) tidak sesuai dengan kota/kecamatan mu. Harap ulangi pinpoint.</string>
 
     <string-array name="cityList">
         <item>Jakarta</item>

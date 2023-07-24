@@ -179,13 +179,6 @@ class AddressFormFragment :
         FieldType.RECEIVER_NAME
     )
 
-    // user consent
-    private val isDisableAddressImprovement: Boolean
-        get() = RemoteConfigInstance.getInstance().abTestPlatform.getString(
-            RollenceKey.KEY_ADDRESS_IMPROVEMENTS,
-            ""
-        ) == RollenceKey.KEY_ADDRESS_IMPROVEMENTS
-
     private val collectionId: String
         get() = if (TokopediaUrl.getInstance().TYPE == Env.STAGING) {
             if (addressUiState.isEdit()) {
@@ -1407,7 +1400,7 @@ class AddressFormFragment :
     }
 
     private fun checkLocation(addressData: SaveAddressDataModel) {
-        if (isDisableAddressImprovement.not() && viewModel.isDifferentLocation(
+        if (viewModel.isDifferentLocation(
                 address1 = addressData.address1,
                 address2 = addressData.address2
             )

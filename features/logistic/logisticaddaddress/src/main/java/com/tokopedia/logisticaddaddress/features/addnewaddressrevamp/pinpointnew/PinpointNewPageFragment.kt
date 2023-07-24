@@ -118,6 +118,10 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
         private const val RESULT_PERMISSION_CODE = 1234
         private const val REQUEST_CODE_PERMISSION = 9876
 
+        private const val REQUEST_ADDRESS_FORM_PAGE = 1599
+        private const val REQUEST_SEARCH_PAGE = 1995
+        private const val REQUEST_CODE_PINPOINT_LITE = 1986
+
         private const val ZOOM_LEVEL = 16f
         private const val MAP_BOUNDARY_STROKE_WIDTH = 3F
         private const val LOCATION_REQUEST_INTERVAL = 10000L
@@ -138,6 +142,7 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
             } else {
                 extra.getString(EXTRA_ADDRESS_STATE, AddressUiState.PinpointOnly.name)
             }
+
             return PinpointNewPageFragment().apply {
                 arguments = Bundle().apply {
                     putString(EXTRA_PLACE_ID, extra.getString(EXTRA_PLACE_ID))
@@ -150,10 +155,12 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
                         extra.getParcelable(EXTRA_SAVE_DATA_UI_MODEL)
                     )
                     putBoolean(EXTRA_FROM_ADDRESS_FORM, extra.getBoolean(EXTRA_FROM_ADDRESS_FORM))
-                    putString(EXTRA_ADDRESS_STATE, state)
                     putString(PARAM_SOURCE, extra.getString(PARAM_SOURCE))
+                    putString(EXTRA_ADDRESS_STATE, state)
                     putString(EXTRA_DISTRICT_NAME, extra.getString(EXTRA_DISTRICT_NAME))
                     putString(EXTRA_CITY_NAME, extra.getString(EXTRA_CITY_NAME))
+                    putBoolean(EXTRA_IS_EDIT_WAREHOUSE, extra.getBoolean(EXTRA_IS_EDIT_WAREHOUSE))
+                    putLong(EXTRA_WH_DISTRICT_ID, extra.getLong(EXTRA_WH_DISTRICT_ID))
                 }
             }
         }
@@ -447,9 +454,11 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
                         AddressUiState.EditAddress -> {
                             EditAddressRevampAnalytics.onClickBackPinpoint(userSession.userId)
                         }
+
                         AddressUiState.AddAddress -> {
                             AddNewAddressRevampAnalytics.onClickBackArrowPinpoint(userSession.userId)
                         }
+
                         else -> {
                             // no op
                         }
@@ -583,8 +592,8 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
                 lat = getDouble(EXTRA_LAT),
                 long = getDouble(EXTRA_LONG)
             )
-            isEditWarehouse = it.getBoolean(EXTRA_IS_EDIT_WAREHOUSE, false)
-            whDistrictId = it.getLong(EXTRA_WH_DISTRICT_ID, 0)
+            isEditWarehouse = getBoolean(EXTRA_IS_EDIT_WAREHOUSE, false)
+            whDistrictId = getLong(EXTRA_WH_DISTRICT_ID, 0)
 
             getParcelable<SaveAddressDataModel>(EXTRA_SAVE_DATA_UI_MODEL)?.apply {
                 viewModel.setAddress(this)
@@ -881,6 +890,7 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
                     AddressUiState.EditAddress -> {
                         EditAddressRevampAnalytics.onClickPilihLokasiIni(userSession.userId)
                     }
+
                     AddressUiState.AddAddress -> {
                         if (isPositiveFlow) {
                             AddNewAddressRevampAnalytics.onClickPilihLokasiPositive(userSession.userId)
@@ -891,6 +901,7 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
                             )
                         }
                     }
+
                     else -> {
                         // no op
                     }
@@ -925,9 +936,11 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
                     AddressUiState.EditAddress -> {
                         EditAddressRevampAnalytics.onClickGunakanLokasiSaatIniPinpoint(userSession.userId)
                     }
+
                     AddressUiState.AddAddress -> {
                         AddNewAddressRevampAnalytics.onClickGunakanLokasiSaatIniPinpoint(userSession.userId)
                     }
+
                     else -> {
                         // no op
                     }
@@ -944,9 +957,11 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
                     AddressUiState.EditAddress -> {
                         EditAddressRevampAnalytics.onClickCariUlangAlamat(userSession.userId)
                     }
+
                     AddressUiState.AddAddress -> {
                         AddNewAddressRevampAnalytics.onClickCariUlangAlamat(userSession.userId)
                     }
+
                     else -> {
                         // no op
                     }
@@ -986,11 +1001,11 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
     private fun allPermissionsGranted(): Boolean {
         for (permission in requiredPermissions) {
             if (activity?.let {
-                ContextCompat.checkSelfPermission(
+                    ContextCompat.checkSelfPermission(
                         it,
                         permission
                     )
-            } != PackageManager.PERMISSION_GRANTED
+                } != PackageManager.PERMISSION_GRANTED
             ) {
                 return false
             }
@@ -1251,11 +1266,13 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
                 AddressUiState.EditAddress -> {
                     EditAddressRevampAnalytics.onImpressBottomSheetAlamatTidakTerdeteksi(userSession.userId)
                 }
+
                 AddressUiState.AddAddress -> {
                     AddNewAddressRevampAnalytics.onImpressBottomSheetAlamatTidakTerdeteksi(
                         userSession.userId
                     )
                 }
+
                 else -> {
                     // no op
                 }
@@ -1377,52 +1394,5 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
         }
     }
 
-    companion object {
-        private const val RESULT_PERMISSION_CODE = 1234
-        private const val REQUEST_CODE_PERMISSION = 9876
-        private const val REQUEST_ADDRESS_FORM_PAGE = 1599
-        private const val REQUEST_SEARCH_PAGE = 1995
-        private const val REQUEST_CODE_PINPOINT_LITE = 1986
 
-        private const val ZOOM_LEVEL = 16f
-        private const val MAP_BOUNDARY_STROKE_WIDTH = 3F
-        private const val LOCATION_REQUEST_INTERVAL = 10000L
-        private const val LOCATION_REQUEST_FASTEST_INTERVAL = 2000L
-        private const val GPS_DELAY = 1000L
-
-        const val FOREIGN_COUNTRY_MESSAGE = "Lokasi di luar Indonesia."
-        const val LOCATION_NOT_FOUND_MESSAGE = "Lokasi gagal ditemukan"
-        const val BOTTOMSHEET_OUT_OF_INDO = 1
-        const val BOTTOMSHEET_NOT_FOUND_LOC = 2
-
-        const val SUCCESS = "success"
-        const val NOT_SUCCESS = "not success"
-
-        fun newInstance(extra: Bundle): PinpointNewPageFragment {
-            return PinpointNewPageFragment().apply {
-                arguments = Bundle().apply {
-                    putString(EXTRA_PLACE_ID, extra.getString(EXTRA_PLACE_ID))
-                    putDouble(EXTRA_LAT, extra.getDouble(EXTRA_LAT))
-                    putDouble(EXTRA_LONG, extra.getDouble(EXTRA_LONG))
-                    putBoolean(EXTRA_IS_POSITIVE_FLOW, extra.getBoolean(EXTRA_IS_POSITIVE_FLOW))
-                    putBoolean(EXTRA_IS_POLYGON, extra.getBoolean(EXTRA_IS_POLYGON))
-                    putParcelable(
-                        EXTRA_SAVE_DATA_UI_MODEL,
-                        extra.getParcelable(EXTRA_SAVE_DATA_UI_MODEL)
-                    )
-                    putBoolean(EXTRA_FROM_ADDRESS_FORM, extra.getBoolean(EXTRA_FROM_ADDRESS_FORM))
-                    putBoolean(EXTRA_IS_EDIT, extra.getBoolean(EXTRA_IS_EDIT))
-                    putString(PARAM_SOURCE, extra.getString(PARAM_SOURCE))
-                    putBoolean(
-                        EXTRA_IS_GET_PINPOINT_ONLY,
-                        extra.getBoolean(EXTRA_IS_GET_PINPOINT_ONLY)
-                    )
-                    putString(EXTRA_DISTRICT_NAME, extra.getString(EXTRA_DISTRICT_NAME))
-                    putString(EXTRA_CITY_NAME, extra.getString(EXTRA_CITY_NAME))
-                    putBoolean(EXTRA_IS_EDIT_WAREHOUSE, extra.getBoolean(EXTRA_IS_EDIT_WAREHOUSE))
-                    putLong(EXTRA_WH_DISTRICT_ID, extra.getLong(EXTRA_WH_DISTRICT_ID))
-                }
-            }
-        }
-    }
 }
