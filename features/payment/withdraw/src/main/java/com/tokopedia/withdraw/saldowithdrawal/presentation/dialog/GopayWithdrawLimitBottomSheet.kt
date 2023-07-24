@@ -43,10 +43,10 @@ class GopayWithdrawLimitBottomSheet: BottomSheetUnify() {
         val tickerLimitView = childView?.findViewById<Typography>(R.id.tvGopayTickerLimit)
 
         titleView?.text = gopayData?.bottomsheetData?.title
-        descriptionView?.text = gopayData?.bottomsheetData.description
+        descriptionView?.text = gopayData?.bottomsheetData?.description
         tickerTitleView?.text = gopayData?.limitCopyWriting
         tickerLimitView?.text = gopayData?.limit
-        tickerDescriptionView?.text = gopayData?.bottomsheetData.balance
+        tickerDescriptionView?.text = gopayData?.bottomsheetData?.balance
     }
 
     companion object {
