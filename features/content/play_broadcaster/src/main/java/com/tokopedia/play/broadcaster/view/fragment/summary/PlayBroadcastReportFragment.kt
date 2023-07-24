@@ -168,7 +168,11 @@ class PlayBroadcastReportFragment @Inject constructor(
         if(prev == value || value.isEmpty()) return
 
         summaryInfoView.setChannelHeader(value)
-        binding.btnPostVideo.isEnabled = value.isEligiblePostVideo
+        binding.flButtonSticky.showWithCondition(true)
+        binding.btnPostVideo.apply {
+            showWithCondition(value.showButtonPostVideo)
+            isEnabled = value.isEligiblePostVideo
+        }
     }
 
     private fun renderReport(prev: NetworkResult<List<TrafficMetricUiModel>>?, value: NetworkResult<List<TrafficMetricUiModel>>) {

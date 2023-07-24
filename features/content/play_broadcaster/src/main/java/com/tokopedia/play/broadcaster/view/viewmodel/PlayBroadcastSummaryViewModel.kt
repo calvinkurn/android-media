@@ -29,6 +29,7 @@ import com.tokopedia.play_common.types.PlayChannelStatusType
 import com.tokopedia.play_common.util.datetime.PlayDateTimeFormatter
 import com.tokopedia.play_common.util.error.DefaultErrorThrowable
 import com.tokopedia.play_common.util.extension.setValue
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
@@ -57,7 +58,8 @@ class PlayBroadcastSummaryViewModel @AssistedInject constructor(
     private val getRecommendedChannelTagsUseCase: GetRecommendedChannelTagsUseCase,
     private val setChannelTagsUseCase: SetChannelTagsUseCase,
     private val getChannelUseCase: GetChannelUseCase,
-    private val hydraConfigStore: HydraConfigStore
+    private val hydraConfigStore: HydraConfigStore,
+    private val remoteConfig: RemoteConfig,
 ) : ViewModel() {
 
     @AssistedFactory
@@ -85,6 +87,7 @@ class PlayBroadcastSummaryViewModel @AssistedInject constructor(
             date = it.date,
             duration = it.duration,
             isEligiblePostVideo = it.isEligiblePostVideo,
+            showButtonPostVideo = !remoteConfig.getBoolean(SHOW_LIVE_TO_VOD_BUTTON_KEY, true),
             author = it.author,
         )
     }
@@ -384,5 +387,6 @@ class PlayBroadcastSummaryViewModel @AssistedInject constructor(
     companion object {
         private const val LIVE_STATISTICS_DELAY = 300L
         private const val FETCH_REPORT_MAX_RETRY = 3
+        private const val SHOW_LIVE_TO_VOD_BUTTON_KEY = "android_show_live_to_vod_button_play_broadcaster"
     }
 }
