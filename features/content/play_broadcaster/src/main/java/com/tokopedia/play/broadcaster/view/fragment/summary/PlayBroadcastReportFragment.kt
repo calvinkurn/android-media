@@ -25,7 +25,7 @@ import com.tokopedia.play.broadcaster.ui.state.ChannelSummaryUiState
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroInteractiveBottomSheet
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play.broadcaster.view.partial.SummaryInfoViewComponent
-import com.tokopedia.play.broadcaster.view.ticker.livetovod.PlayBroLiveToVodTickerScreen
+import com.tokopedia.play.broadcaster.view.ticker.livetovod.PlayBroLiveToVodTicker
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastSummaryViewModel
 import com.tokopedia.play_common.lifecycle.viewLifecycleBound
 import com.tokopedia.play_common.model.result.NetworkResult
@@ -93,7 +93,7 @@ class PlayBroadcastReportFragment @Inject constructor(
         binding.composeViewTicker.apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
-                PlayBroLiveToVodTickerScreen(
+                PlayBroLiveToVodTicker(
                     onDismissedPressed = {
                         showWithCondition(false)
                     },
