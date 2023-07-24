@@ -33,6 +33,9 @@ class PostAtcViewModel @Inject constructor(
     var postAtcInfo: PostAtcInfo = PostAtcInfo()
         private set
 
+    /**
+     * Pass data from Arguments
+     */
     fun initializeParameters(
         productId: String,
         cartId: String,
@@ -40,7 +43,8 @@ class PostAtcViewModel @Inject constructor(
         layoutId: String,
         pageSource: String,
         selectedAddonsIds: List<String>,
-        warehouseId: String
+        warehouseId: String,
+        quantity: Int
     ) {
         postAtcInfo = postAtcInfo.copy(
             productId = productId,
@@ -49,7 +53,8 @@ class PostAtcViewModel @Inject constructor(
             layoutId = layoutId,
             pageSource = pageSource,
             selectedAddonsIds = selectedAddonsIds,
-            warehouseId = warehouseId
+            warehouseId = warehouseId,
+            quantity = quantity
         )
 
         fetchLayout()
@@ -111,7 +116,10 @@ class PostAtcViewModel @Inject constructor(
             categoryName = category.name,
             footer = footer,
             layoutName = data.name,
-            shopId = basicInfo.shopId
+            shopId = basicInfo.shopId,
+            price = basicInfo.price,
+            originalPrice = basicInfo.originalPrice,
+            condition = basicInfo.condition
         )
     }
 }

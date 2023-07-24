@@ -3,7 +3,6 @@ package com.tokopedia.homenav.mainnav.interactor
 import android.accounts.NetworkErrorException
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.homenav.base.datamodel.HomeNavMenuDataModel
 import com.tokopedia.homenav.base.datamodel.HomeNavTickerDataModel
@@ -18,6 +17,7 @@ import com.tokopedia.homenav.mainnav.view.datamodel.*
 import com.tokopedia.homenav.mainnav.view.datamodel.account.*
 import com.tokopedia.homenav.mainnav.view.presenter.MainNavViewModel
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.searchbar.navigation_component.NavSource
 import com.tokopedia.sessioncommon.data.admin.AdminData
 import com.tokopedia.sessioncommon.data.admin.AdminDataResponse
 import com.tokopedia.sessioncommon.data.admin.AdminDetailInformation
@@ -80,7 +80,7 @@ class TestMainNavViewModel {
     @Test
     fun `given launch global menu when from other pages than homepage then show back to home icon`() {
         val clientMenuGenerator = mockk<ClientMenuGenerator>()
-        val pageSource = "Other page"
+        val pageSource = NavSource.PDP
         every { clientMenuGenerator.getMenu(menuId = any(), notifCount = any(), sectionId = any()) }
             .answers { HomeNavMenuDataModel(id = firstArg(), notifCount = secondArg(), sectionId = thirdArg()) }
         every { clientMenuGenerator.getTicker(menuId = any()) }
@@ -102,7 +102,7 @@ class TestMainNavViewModel {
     @Test
     fun `given launch global menu when from homepage then do not show back to home icon`() {
         val clientMenuGenerator = mockk<ClientMenuGenerator>()
-        val pageSource = ApplinkConsInternalNavigation.SOURCE_HOME
+        val pageSource = NavSource.HOME
         every { clientMenuGenerator.getMenu(menuId = any(), notifCount = any(), sectionId = any()) }
             .answers { HomeNavMenuDataModel(id = firstArg(), notifCount = secondArg(), sectionId = thirdArg()) }
         every { clientMenuGenerator.getTicker(menuId = any()) }
@@ -123,7 +123,7 @@ class TestMainNavViewModel {
     @Test
     fun `given launch global menu when from uoh page then do not show back to home icon`() {
         val clientMenuGenerator = mockk<ClientMenuGenerator>()
-        val pageSource = ApplinkConsInternalNavigation.SOURCE_HOME_UOH
+        val pageSource = NavSource.HOME_UOH
         every { clientMenuGenerator.getMenu(menuId = any(), notifCount = any(), sectionId = any()) }
             .answers { HomeNavMenuDataModel(id = firstArg(), notifCount = secondArg(), sectionId = thirdArg()) }
         every { clientMenuGenerator.getTicker(menuId = any()) }
@@ -144,7 +144,7 @@ class TestMainNavViewModel {
     @Test
     fun `given launch global menu when from wishlist page then do not show back to home icon`() {
         val clientMenuGenerator = mockk<ClientMenuGenerator>()
-        val pageSource = ApplinkConsInternalNavigation.SOURCE_HOME_WISHLIST_V2
+        val pageSource = NavSource.HOME_WISHLIST
         every { clientMenuGenerator.getMenu(menuId = any(), notifCount = any(), sectionId = any()) }
             .answers { HomeNavMenuDataModel(id = firstArg(), notifCount = secondArg(), sectionId = thirdArg()) }
         every { clientMenuGenerator.getTicker(menuId = any()) }
@@ -163,37 +163,9 @@ class TestMainNavViewModel {
     }
 
     @Test
-    fun `given launch global menu when from wishlist collection page then do not show back to home icon`() {
-        val clientMenuGenerator = mockk<ClientMenuGenerator>()
-        val pageSource = ApplinkConsInternalNavigation.SOURCE_HOME_WISHLIST_COLLECTION
-        every { clientMenuGenerator.getMenu(menuId = any(), notifCount = any(), sectionId = any()) }
-            .answers {
-                HomeNavMenuDataModel(
-                    id = firstArg(),
-                    notifCount = secondArg(),
-                    sectionId = thirdArg()
-                )
-            }
-        every { clientMenuGenerator.getTicker(menuId = any()) }
-            .answers { HomeNavTickerDataModel() }
-        every { clientMenuGenerator.getSectionTitle(identifier = any()) }
-            .answers { (HomeNavTitleDataModel(identifier = firstArg())) }
-
-        viewModel = createViewModel(clientMenuGenerator = clientMenuGenerator)
-        viewModel.setPageSource(pageSource)
-        Assert.assertEquals(pageSource, viewModel.getPageSource())
-
-        val visitableList = viewModel.mainNavLiveData.value?.dataList ?: listOf()
-        val backToHomeMenu =
-            visitableList.find { it is HomeNavMenuDataModel && it.id == ClientMenuGenerator.ID_HOME }
-
-        Assert.assertNull(backToHomeMenu)
-    }
-
-    @Test
     fun `given launch global menu when from home sos page then do not show back to home icon`() {
         val clientMenuGenerator = mockk<ClientMenuGenerator>()
-        val pageSource = ApplinkConsInternalNavigation.SOURCE_HOME_SOS
+        val pageSource = NavSource.SOS
         every { clientMenuGenerator.getMenu(menuId = any(), notifCount = any(), sectionId = any()) }
             .answers {
                 HomeNavMenuDataModel(
@@ -220,7 +192,6 @@ class TestMainNavViewModel {
 
     @Test
     fun `given launch global menu when using default page source then do show back to home icon`() {
-        val defaultPageSource = "Default"
         val clientMenuGenerator = mockk<ClientMenuGenerator>()
         every { clientMenuGenerator.getMenu(menuId = any(), notifCount = any(), sectionId = any()) }
             .answers { HomeNavMenuDataModel(id = firstArg(), notifCount = secondArg(), sectionId = thirdArg()) }
@@ -232,7 +203,7 @@ class TestMainNavViewModel {
         viewModel = createViewModel(clientMenuGenerator = clientMenuGenerator)
         viewModel.setInitialState()
         viewModel.setPageSource()
-        Assert.assertEquals(defaultPageSource, viewModel.getPageSource())
+        Assert.assertEquals(NavSource.DEFAULT, viewModel.getPageSource())
 
         val visitableList = viewModel.mainNavLiveData.value?.dataList ?: listOf()
         val backToHomeMenu = visitableList.find { it is HomeNavMenuDataModel && it.id == ClientMenuGenerator.ID_HOME } as HomeNavMenuDataModel?
@@ -243,7 +214,7 @@ class TestMainNavViewModel {
     @Test
     fun `given launch global menu when from other pages first then launch from home should remove back button`() {
         val clientMenuGenerator = mockk<ClientMenuGenerator>()
-        val initialSource = "Other page"
+        val initialSource = NavSource.PDP
         var visitableList = listOf<Visitable<*>>()
         var backToHomeButton: HomeNavMenuDataModel? = null
         var backToHomeSeparator: SeparatorDataModel? = null
@@ -265,7 +236,7 @@ class TestMainNavViewModel {
         Assert.assertNotNull(backToHomeButton)
         Assert.assertNotNull(backToHomeSeparator)
 
-        val homeSource = ApplinkConsInternalNavigation.SOURCE_HOME
+        val homeSource = NavSource.HOME
         viewModel.setPageSource(homeSource)
         Assert.assertEquals(homeSource, viewModel.getPageSource())
         visitableList = viewModel.mainNavLiveData.value?.dataList ?: listOf()

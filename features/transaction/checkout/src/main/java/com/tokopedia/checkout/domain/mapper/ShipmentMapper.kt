@@ -611,13 +611,14 @@ class ShipmentMapper @Inject constructor() {
         addOnsDataList.forEach { item ->
             listAddOnDataItem.add(
                 AddOnProductDataItemModel().apply {
-                    addOnDataId = item.id
-                    addOnDataPrice = item.price
-                    addOnDataInfoLink = item.infoLink
-                    addOnDataName = item.name
-                    addOnDataStatus = item.status
-                    addOnDataType = item.type
-                    addOnDataQty = productQuantity
+                    id = item.id
+                    price = item.price
+                    infoLink = item.infoLink
+                    name = item.name
+                    status = item.status
+                    type = item.type
+                    qty = productQuantity
+                    uniqueId = item.uniqueId
                 }
             )
         }

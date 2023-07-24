@@ -699,7 +699,7 @@ class AddEditProductVariantFragment :
     ) {
         val product = viewModel.productInputModel.value
         val hasDTStock = product?.variantInputModel?.products?.find {
-            it.combination[layoutPosition] == position && it.hasDTStock
+            it.combination.getOrNull(layoutPosition) == position && it.hasDTStock
         } != null
 
         if (hasDTStock) {

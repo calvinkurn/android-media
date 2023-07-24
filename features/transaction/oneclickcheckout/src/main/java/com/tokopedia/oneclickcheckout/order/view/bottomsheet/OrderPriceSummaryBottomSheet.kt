@@ -289,6 +289,6 @@ class OrderPriceSummaryBottomSheet {
     }
 
     internal companion object {
-        private const val SUMMARY_WORD_TO_BE_REPLACED = "{{total}}"
+        private const val SUMMARY_WORD_TO_BE_REPLACED = "{{qty}}"
     }
 }

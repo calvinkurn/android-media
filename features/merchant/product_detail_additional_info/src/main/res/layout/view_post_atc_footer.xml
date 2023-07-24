@@ -22,6 +22,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="4dp"
+        android:layout_marginBottom="2dp"
         android:text="@string/pdp_post_atc_footer_description"
         android:textColor="@color/Unify_NN950"
         app:layout_constraintBottom_toTopOf="@id/post_atc_footer_info"
@@ -29,6 +30,7 @@
         app:layout_constraintStart_toEndOf="@id/post_atc_footer_product_image"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_chainStyle="packed"
+        app:layout_goneMarginBottom="0dp"
         app:typographyType="display_3" />
 
     <com.tokopedia.unifyprinciples.Typography

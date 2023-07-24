@@ -160,9 +160,11 @@ import com.tokopedia.purchase_platform.common.feature.sellercashback.SellerCashb
 import com.tokopedia.purchase_platform.common.feature.sellercashback.ShipmentSellerCashbackModel
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementHolderData
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
+import com.tokopedia.purchase_platform.common.utils.removeSingleDecimalSuffix
 import com.tokopedia.purchase_platform.common.utils.rxCompoundButtonCheckDebounce
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.searchbar.navigation_component.NavSource
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
@@ -1014,7 +1016,7 @@ class CartFragment :
                     backButtonClickListener = ::onBackPressed
                 )
                 setIcon(
-                    IconBuilder(IconBuilderFlag(pageSource = CART_PAGE)).addIcon(
+                    IconBuilder(IconBuilderFlag(pageSource = NavSource.CART)).addIcon(
                         iconId = IconList.ID_NAV_ANIMATED_WISHLIST,
                         disableDefaultGtmTracker = true,
                         onClick = ::onNavigationToolbarWishlistClicked
@@ -4562,8 +4564,8 @@ class CartFragment :
             addOnIds.add(it.id)
         }
 
-        var price = 0.0
-        var discountedPrice = 0.0
+        val price: Double
+        val discountedPrice: Double
         if (cartItemData.campaignId == "0") {
             price = cartItemData.productPrice
             discountedPrice = cartItemData.productPrice
@@ -4572,22 +4574,24 @@ class CartFragment :
             discountedPrice = cartItemData.productPrice
         }
 
-        val applinkAddon = ApplinkConst.ADDON.replace(AddOnConstant.QUERY_PARAM_ADDON_PRODUCT, productId.toString())
+        val applinkAddon = ApplinkConst.ADDON.replace(AddOnConstant.QUERY_PARAM_ADDON_PRODUCT, productId)
         val applink = UriUtil.buildUriAppendParams(
             applinkAddon,
             mapOf(
                 AddOnConstant.QUERY_PARAM_CART_ID to cartId,
-                AddOnConstant.QUERY_PARAM_SELECTED_ADDON_IDS to addOnIds,
+                AddOnConstant.QUERY_PARAM_SELECTED_ADDON_IDS to addOnIds.toString().replace("[", "").replace("]", ""),
                 AddOnConstant.QUERY_PARAM_PAGE_ATC_SOURCE to AddOnConstant.SOURCE_NORMAL_CHECKOUT,
                 AddOnConstant.QUERY_PARAM_WAREHOUSE_ID to cartItemData.warehouseId,
                 AddOnConstant.QUERY_PARAM_IS_TOKOCABANG to cartItemData.isFulfillment,
                 AddOnConstant.QUERY_PARAM_CATEGORY_ID to cartItemData.categoryId,
                 AddOnConstant.QUERY_PARAM_SHOP_ID to cartItemData.shopHolderData.shopId,
                 AddOnConstant.QUERY_PARAM_QUANTITY to cartItemData.quantity,
-                AddOnConstant.QUERY_PARAM_PRICE to price,
-                AddOnConstant.QUERY_PARAM_DISCOUNTED_PRICE to discountedPrice
+                AddOnConstant.QUERY_PARAM_PRICE to price.toString().removeSingleDecimalSuffix(),
+                AddOnConstant.QUERY_PARAM_DISCOUNTED_PRICE to discountedPrice.toString().removeSingleDecimalSuffix()
             )
         )
+
+        println("++ applink = $applink")
 
         activity?.let {
             val intent = RouteManager.getIntent(it, applink)
@@ -4602,10 +4606,11 @@ class CartFragment :
             if (addOnProductDataResult.aggregatedData.isGetDataSuccess) {
                 val cartId = addOnProductDataResult.cartId
                 var newAddOnWording = ""
-                if (addOnProductDataResult.aggregatedData.title.isNotEmpty() && addOnProductDataResult.aggregatedData.price > 0) {
+                if (addOnProductDataResult.aggregatedData.title.isNotEmpty()) {
                     newAddOnWording = "${addOnProductDataResult.aggregatedData.title} <b>(${addOnProductDataResult.aggregatedData.price})</b>"
                 }
-                cartAdapter.updateAddOnByCartId(addOnProductDataResult.cartId.toString(), newAddOnWording)
+
+                cartAdapter.updateAddOnByCartId(addOnProductDataResult.cartId.toString(), newAddOnWording, addOnProductDataResult.aggregatedData.selectedAddons)
             } else {
                 showToastMessageRed(addOnProductDataResult.aggregatedData.getDataErrorMessage)
             }
