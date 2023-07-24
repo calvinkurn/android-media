@@ -457,7 +457,7 @@ class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasCompone
                         override fun updateDrawState(ds: TextPaint) {
                             ds.isUnderlineText = false
                             ds.typeface = Typeface.DEFAULT_BOLD
-                            ds.color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
+                            ds.color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
                         }
                     }
                 )
@@ -485,7 +485,7 @@ class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasCompone
                         override fun updateDrawState(ds: TextPaint) {
                             ds.isUnderlineText = false
                             ds.typeface = Typeface.DEFAULT_BOLD
-                            ds.color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
+                            ds.color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
                         }
                     }
                 )

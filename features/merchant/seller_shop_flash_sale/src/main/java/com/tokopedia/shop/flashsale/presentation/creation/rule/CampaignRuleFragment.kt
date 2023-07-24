@@ -109,7 +109,7 @@ class CampaignRuleFragment :
     @Inject
     lateinit var userSession: UserSessionInterface
 
-    private val sellerEduArticleUrl = "https://seller.tokopedia.com/edu/cara-daftar-produk-flash-sale/"
+    private val sellerEduArticleUrl = "https://www.tokopedia.com/help/seller/article/pertanyaan-seputar-flash-sale-toko"
     private val campaignId by lazy { arguments?.getLong(BundleConstant.BUNDLE_KEY_CAMPAIGN_ID) }
     private val pageMode by lazy {
         arguments?.getParcelable(BundleConstant.BUNDLE_KEY_PAGE_MODE) ?: PageMode.CREATE
@@ -123,7 +123,6 @@ class CampaignRuleFragment :
 
     private var errorToaster: Snackbar? = null
     private var irisSession: IrisSession? = null
-//    private var userSession: UserSession? = null
 
     private val tncCheckboxChangeListener = object : CompoundButton.OnCheckedChangeListener {
         override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {

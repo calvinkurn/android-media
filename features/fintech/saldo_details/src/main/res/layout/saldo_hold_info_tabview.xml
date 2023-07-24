@@ -17,7 +17,7 @@
         android:id="@+id/viewflipper_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/Unify_N0">
+        android:background="@color/Unify_NN0">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/container_cl"
@@ -55,7 +55,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/sd_dp_20"
                 android:layout_marginEnd="@dimen/unify_space_16"
-                android:textColor="@color/Unify_G500"
+                android:textColor="@color/Unify_GN500"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/saldo_hold_info_ticker"
                 app:typographyType="heading_4"
@@ -66,7 +66,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/unify_space_8"
                 android:layout_marginTop="@dimen/sd_dp_20"
-                android:background="@color/Unify_N50"
+                android:background="@color/Unify_NN50"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_totalSaldoHold" />
 
@@ -85,10 +85,10 @@
                     style="?tabTheme"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:tabIndicatorColor="@color/Unify_G400"
+                    app:tabIndicatorColor="@color/Unify_GN500"
                     app:tabMode="fixed"
-                    app:tabSelectedTextColor="@color/Unify_G400"
-                    app:tabTextColor="@color/Unify_N700_68" />
+                    app:tabSelectedTextColor="@color/Unify_GN500"
+                    app:tabTextColor="@color/Unify_NN950_68" />
 
                 <androidx.viewpager.widget.ViewPager
                     android:id="@+id/view_pager_saldo_info_type"

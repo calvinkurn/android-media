@@ -8,7 +8,7 @@ import com.tokopedia.topchat.R
 object LongClickBubbleMenuResult {
 
     fun assertNoBottomSheet() {
-        onView(withId(R.id.rvMenu)).check(doesNotExist())
+        onView(withId(R.id.rv_menu)).check(doesNotExist())
     }
 
 }

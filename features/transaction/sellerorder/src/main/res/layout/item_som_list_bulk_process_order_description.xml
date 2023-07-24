@@ -5,5 +5,5 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:text="@string/som_list_bottom_sheet_bulk_accept_order_description"
-    android:textColor="@color/Unify_N700_96"
+    android:textColor="@color/Unify_NN950_96"
     app:typographyType="body_2" />

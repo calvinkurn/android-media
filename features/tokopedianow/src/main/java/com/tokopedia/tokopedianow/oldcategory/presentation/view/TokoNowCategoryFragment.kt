@@ -17,7 +17,9 @@ import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.TOKONOW_CLP
+import com.tokopedia.searchbar.navigation_component.NavSource
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
+import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking
 import com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking.Action.CLICK_ATC_CLP_PRODUCT_TOKONOW
@@ -141,7 +143,7 @@ class TokoNowCategoryFragment :
         }
     }
 
-    override fun createNavToolbarIconBuilder(): IconBuilder = IconBuilder()
+    override fun createNavToolbarIconBuilder(): IconBuilder = IconBuilder(builderFlags = IconBuilderFlag(pageSource = NavSource.TOKONOW))
         .addShare()
         .addCart()
         .addGlobalNav()

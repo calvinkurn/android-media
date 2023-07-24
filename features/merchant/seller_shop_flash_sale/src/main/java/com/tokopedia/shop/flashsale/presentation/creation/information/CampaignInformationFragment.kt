@@ -795,7 +795,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
 
             override fun updateDrawState(ds: TextPaint) {
                 super.updateDrawState(ds)
-                ds.color = MethodChecker.getColor(requireContext(),com.tokopedia.unifyprinciples.R.color.Unify_G500)
+                ds.color = MethodChecker.getColor(requireContext(),com.tokopedia.unifyprinciples.R.color.Unify_GN500)
                 ds.isUnderlineText = false
             }
         }

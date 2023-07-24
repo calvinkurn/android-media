@@ -26,6 +26,13 @@ import com.tokopedia.people.views.uimodel.profile.ProfileCreationInfoUiModel
 import com.tokopedia.people.views.uimodel.profile.ProfileStatsUiModel
 import com.tokopedia.people.views.uimodel.profile.ProfileTabUiModel
 import com.tokopedia.people.views.uimodel.profile.ProfileUiModel
+import com.tokopedia.people.views.uimodel.ProfileSettingsUiModel
+import com.tokopedia.people.model.ExtraStats
+import com.tokopedia.people.model.GetUserReviewListResponse
+import com.tokopedia.people.model.SetLikeStatusResponse
+import com.tokopedia.people.model.GetProfileSettingsResponse
+import com.tokopedia.people.utils.remoteconfig.UserProfileRemoteConfig
+import com.tokopedia.people.views.uimodel.UserReviewUiModel
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
@@ -35,6 +42,7 @@ import javax.inject.Inject
 class UserProfileUiMapperImpl @Inject constructor(
     private val userSession: UserSessionInterface,
     private val playShortsEntryPointRemoteConfig: PlayShortsEntryPointRemoteConfig,
+    private val userProfileRemoteConfig: UserProfileRemoteConfig,
 ) : UserProfileUiMapper {
 
     override fun mapUserProfile(response: ProfileHeaderBase): ProfileUiModel {
@@ -50,6 +58,7 @@ class UserProfileUiMapperImpl @Inject constructor(
                 totalPostFmt = response.profileHeader.stats.totalPostFmt,
                 totalFollowerFmt = response.profileHeader.stats.totalFollowerFmt,
                 totalFollowingFmt = response.profileHeader.stats.totalFollowingFmt,
+                totalReviewFmt = getReviewStats(response.profileHeader.stats.extraStats),
             ),
             shareLink = LinkUiModel(
                 webLink = response.profileHeader.profile.sharelink.weblink,
@@ -118,7 +127,11 @@ class UserProfileUiMapperImpl @Inject constructor(
     override fun mapProfileTab(response: UserProfileTabModel): ProfileTabUiModel {
         return with(response.feedXProfileTabs) {
             val expectedTabs = tabs.filter {
-                it.isActive && (it.key == TAB_KEY_FEEDS || it.key == TAB_KEY_VIDEO)
+                if (ProfileTabUiModel.mapToKey(it.key) == ProfileTabUiModel.Key.Review) {
+                    it.isActive && userProfileRemoteConfig.isEnableReviewTab()
+                } else {
+                    it.isActive && ProfileTabUiModel.mapToKey(it.key) != ProfileTabUiModel.Key.Unknown
+                }
             }
             ProfileTabUiModel(
                 showTabs = expectedTabs.size > 1,
@@ -126,8 +139,9 @@ class UserProfileUiMapperImpl @Inject constructor(
                     expectedTabs.map {
                         ProfileTabUiModel.Tab(
                             title = it.title,
-                            key = it.key,
+                            key = ProfileTabUiModel.mapToKey(it.key),
                             position = it.position,
+                            isNew = false,
                         )
                     }.sortedBy { it.position }
                 } else {
@@ -178,12 +192,83 @@ class UserProfileUiMapperImpl @Inject constructor(
         )
     }
 
+    override fun mapProfileSettings(response: GetProfileSettingsResponse): List<ProfileSettingsUiModel> {
+        return response.data.settingsProfile.map {
+            ProfileSettingsUiModel(
+                settingID = it.settingID,
+                title = it.title,
+                isEnabled = it.enabled,
+            )
+        }
+    }
+
+    override fun mapUserReviewList(
+        response: GetUserReviewListResponse,
+        currentPage: Int,
+    ): UserReviewUiModel {
+        return UserReviewUiModel(
+            reviewList = response.data.reviewList.map {
+                UserReviewUiModel.Review(
+                    feedbackID = it.feedbackID,
+                    product = UserReviewUiModel.Product(
+                        productID = it.product.productID,
+                        productName = it.product.productName,
+                        productImageURL = it.product.productImageURL,
+                        productPageURL = it.product.productPageURL,
+                        productStatus = it.product.productStatus,
+                        productVariant = UserReviewUiModel.ProductVariant(
+                            variantID = it.product.productVariant.variantID,
+                            variantName = it.product.productVariant.variantName,
+                        )
+                    ),
+                    rating = it.rating,
+                    reviewText = it.reviewText,
+                    reviewTime = it.reviewTime,
+                    attachments = it.videoAttachments.map { attachment ->
+                        UserReviewUiModel.Attachment.Video(
+                            attachmentID = attachment.attachmentID,
+                            mediaUrl = attachment.videoUrl,
+                        )
+                    } + it.attachments.map { attachment ->
+                        UserReviewUiModel.Attachment.Image(
+                            attachmentID = attachment.attachmentID,
+                            thumbnailUrl = attachment.thumbnailURL,
+                            fullSizeUrl = attachment.fullsizeURL,
+                        )
+                    }.take(MAX_REVIEW_MEDIA),
+                    likeDislike = UserReviewUiModel.LikeDislike(
+                        totalLike = it.likeDislike.totalLike,
+                        isLike = UserProfileLikeStatusMapper.isLike(it.likeDislike.likeStatus),
+                    ),
+                    isReviewTextExpanded = false,
+                )
+            },
+            page = currentPage + 1,
+            hasNext = response.data.hasNext,
+            status = UserReviewUiModel.Status.Success,
+        )
+    }
+
+    override fun mapSetLikeStatus(response: SetLikeStatusResponse): UserReviewUiModel.LikeDislike {
+        return UserReviewUiModel.LikeDislike(
+            totalLike = response.data.totalLike,
+            isLike = UserProfileLikeStatusMapper.isLike(response.data.likeStatus),
+        )
+    }
+
+    private fun getReviewStats(extraStats: List<ExtraStats>): String {
+        return extraStats.firstOrNull { it.field == EXTRA_STATS_REVIEWS }?.countFmt.orEmpty()
+    }
+
     companion object {
         private const val TYPE_POST = "post"
         private const val TYPE_LIVE_STREAM = "livestream"
         private const val TYPE_SHORT_VIDEO = "shortvideo"
         private const val TAB_KEY_FEEDS = "feeds"
         private const val TAB_KEY_VIDEO = "video"
+        private const val TAB_KEY_REVIEW = "review"
         private const val SUCCESS_UPDATE_REMINDER_CODE = 200
+        private const val EXTRA_STATS_REVIEWS = "reviews"
+        private const val MAX_REVIEW_MEDIA = 5
     }
 }

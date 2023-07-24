@@ -1885,8 +1885,9 @@ class ShopPageProductListFragment :
         }
     }
 
-    override fun scrollToTop() {
-        isClickToScrollToTop = true
+    override fun scrollToTop(isUserClick: Boolean) {
+        if(isUserClick)
+            isClickToScrollToTop = true
         getRecyclerView(view)?.scrollToPosition(0)
     }
 
