@@ -102,29 +102,31 @@ class SuggestionSearchFragment :
     }
 
     private fun observeLiveData() {
-        viewModel.getSellerSearch.observe(viewLifecycleOwner, {
+        viewModel.getSellerSearch.observe(viewLifecycleOwner) {
             (activity as? GlobalSearchSellerPerformanceMonitoringListener)?.startRenderPerformanceMonitoring()
             when (it) {
                 is Success -> {
                     setSuggestionSearch(it.data)
                     stopSearchResultPagePerformanceMonitoring()
                 }
+
                 else -> {
                     // no-op
                 }
             }
-        })
+        }
 
-        viewModel.insertSuccessSearch.observe(viewLifecycleOwner, {
+        viewModel.insertSuccessSearch.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
                     dropKeyBoard()
                 }
+
                 is Fail -> {
                     dropKeyBoard()
                 }
             }
-        })
+        }
     }
 
     private fun setSuggestionSearch(data: List<BaseSuggestionSearchSeller>) {
@@ -307,11 +309,5 @@ class SuggestionSearchFragment :
         val appUrlFormatted = appUrl.addWWWPrefix
         RouteManager.route(activity, appUrlFormatted)
         dropKeyBoard()
-    }
-
-    companion object {
-        fun newInstance(): SuggestionSearchFragment {
-            return SuggestionSearchFragment()
-        }
     }
 }

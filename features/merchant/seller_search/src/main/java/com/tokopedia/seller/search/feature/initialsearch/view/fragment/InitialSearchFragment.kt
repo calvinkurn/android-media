@@ -246,18 +246,11 @@ class InitialSearchFragment : BaseDaggerFragment(), HistorySearchListener {
 
     fun setHistoryViewUpdateListener(historyViewUpdateListener: HistoryViewUpdateListener) {
         this.historyViewUpdateListener = historyViewUpdateListener
-        this.historyViewUpdateListener?.setUserIdFromFragment(userId)
     }
 
     fun historySearch(keyword: String) {
         this.searchKeyword = keyword
         (activity as? GlobalSearchSellerPerformanceMonitoringListener)?.startNetworkPerformanceMonitoring()
         viewModel.getSellerSearch(keyword = searchKeyword, shopId = shopId)
-    }
-
-    companion object {
-        fun newInstance(): InitialSearchFragment {
-            return InitialSearchFragment()
-        }
     }
 }

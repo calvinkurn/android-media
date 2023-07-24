@@ -33,9 +33,13 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
-class InitialSellerSearchActivity : BaseActivity(), HasComponent<InitialSearchComponent>,
-    GlobalSearchView.GlobalSearchViewListener, GlobalSearchView.SearchTextBoxListener,
-    HistoryViewUpdateListener, SuggestionViewUpdateListener,
+class InitialSellerSearchActivity :
+    BaseActivity(),
+    HasComponent<InitialSearchComponent>,
+    GlobalSearchView.GlobalSearchViewListener,
+    GlobalSearchView.SearchTextBoxListener,
+    HistoryViewUpdateListener,
+    SuggestionViewUpdateListener,
     GlobalSearchSellerPerformanceMonitoringListener {
 
     @Inject
@@ -55,8 +59,6 @@ class InitialSellerSearchActivity : BaseActivity(), HasComponent<InitialSearchCo
 
     private var suggestionFragment: SuggestionSearchFragment? = null
     private var initialStateFragment: InitialSearchFragment? = null
-
-    private var userId = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         performanceMonitoring.initGlobalSearchSellerPerformanceMonitoring()
@@ -79,7 +81,7 @@ class InitialSellerSearchActivity : BaseActivity(), HasComponent<InitialSearchCo
     override fun onBackPressed() {
         super.onBackPressed()
         SellerSearchTracking.clickBackButtonSearchEvent(
-            userId,
+            userSession.userId,
             globalSearchView?.binding?.searchBarView?.searchBarTextField?.text?.trim().toString().orEmpty()
         )
     }
@@ -129,15 +131,11 @@ class InitialSellerSearchActivity : BaseActivity(), HasComponent<InitialSearchCo
     }
 
     override fun onClearTextBoxListener() {
-        SellerSearchTracking.clickClearSearchBoxEvent(userId)
+        SellerSearchTracking.clickClearSearchBoxEvent(userSession.userId)
     }
 
     override fun onBackButtonSearchBar(keyword: String) {
-        SellerSearchTracking.clickBackButtonSearchEvent(userId, keyword)
-    }
-
-    override fun setUserIdFromFragment(userId: String) {
-        this.userId = userId
+        SellerSearchTracking.clickBackButtonSearchEvent(userSession.userId, keyword)
     }
 
     override fun showHistoryView() {
@@ -148,11 +146,6 @@ class InitialSellerSearchActivity : BaseActivity(), HasComponent<InitialSearchCo
     override fun showSuggestionView() {
         mInitialStateView?.hide()
         mSuggestionView?.show()
-    }
-
-    override fun dropKeyboardHistory() {
-        globalSearchView?.clearFocus()
-        KeyboardHandler.DropKeyboard(this, globalSearchView)
     }
 
     override fun setKeywordSearchBarView(keyword: String) {

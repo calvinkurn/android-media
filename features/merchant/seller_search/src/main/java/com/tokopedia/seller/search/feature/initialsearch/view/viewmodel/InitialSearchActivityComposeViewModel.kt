@@ -5,11 +5,15 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.EMPTY
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.seller.search.common.domain.GetSellerSearchPlaceholderUseCase
+import com.tokopedia.seller.search.feature.initialsearch.view.model.compose.GlobalSearchUiEvent
 import com.tokopedia.seller.search.feature.initialsearch.view.model.compose.GlobalSearchUiState
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
@@ -28,10 +32,29 @@ class InitialSearchActivityComposeViewModel @Inject constructor(
     val globalSearchUiState: StateFlow<GlobalSearchUiState>
         get() = _globalSearchUiState.asStateFlow()
 
+    private val _uiEffect = MutableSharedFlow<GlobalSearchUiEvent>(replay = Int.ONE)
+    val uiEffect get() = _uiEffect.asSharedFlow()
+
     val searchTypingStateFlow = MutableStateFlow(String.EMPTY)
 
     init {
         getSearchKeyword()
+    }
+
+    fun onUiEffect(event: GlobalSearchUiEvent) {
+        viewModelScope.launch {
+            when (event) {
+                is GlobalSearchUiEvent.OnKeyboardSearchSubmit -> {
+                    setTypingSearch(event.searchBarKeyword)
+                }
+                is GlobalSearchUiEvent.OnKeywordTextChanged -> {
+                    setTypingSearch(event.searchBarKeyword)
+                }
+                else -> {
+                    _uiEffect.emit(event)
+                }
+            }
+        }
     }
 
     fun getSearchPlaceholder() {
@@ -62,9 +85,7 @@ class InitialSearchActivityComposeViewModel @Inject constructor(
                 .debounce(DEBOUNCE_DELAY_MILLIS)
                 .distinctUntilChanged()
                 .collectLatest { keyword ->
-                    _globalSearchUiState.update {
-                        it.copy(searchBarKeyword = keyword)
-                    }
+                    _uiEffect.emit(GlobalSearchUiEvent.OnSearchResultKeyword(keyword))
                 }
         }
     }

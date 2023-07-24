@@ -1,9 +1,15 @@
 package com.tokopedia.seller.search.feature.initialsearch.view.activity
 
 import android.os.Bundle
+import android.view.View
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.commit
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.kotlin.extensions.view.EMPTY
@@ -19,15 +25,18 @@ import com.tokopedia.seller.search.feature.initialsearch.di.component.InitialSea
 import com.tokopedia.seller.search.feature.initialsearch.di.module.InitialSearchModule
 import com.tokopedia.seller.search.feature.initialsearch.view.compose.InitialSearchActivityScreen
 import com.tokopedia.seller.search.feature.initialsearch.view.fragment.InitialSearchFragment
-import com.tokopedia.seller.search.feature.initialsearch.view.model.compose.GlobalSearchUiEffect
+import com.tokopedia.seller.search.feature.initialsearch.view.model.compose.GlobalSearchUiEvent
+import com.tokopedia.seller.search.feature.initialsearch.view.viewholder.HistoryViewUpdateListener
 import com.tokopedia.seller.search.feature.initialsearch.view.viewmodel.InitialSearchActivityComposeViewModel
 import com.tokopedia.seller.search.feature.suggestion.view.fragment.SuggestionSearchFragment
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
 class InitialSellerSearchComposeActivity :
     AppCompatActivity(),
     HasComponent<InitialSearchComponent>,
+    HistoryViewUpdateListener,
     GlobalSearchSellerPerformanceMonitoringListener {
 
     @Inject
@@ -41,29 +50,96 @@ class InitialSellerSearchComposeActivity :
     }
 
     private val viewModel: InitialSearchActivityComposeViewModel by lazy {
-        ViewModelProvider(this, viewModelFactory).get(InitialSearchActivityComposeViewModel::class.java)
+        ViewModelProvider(
+            this,
+            viewModelFactory
+        ).get(InitialSearchActivityComposeViewModel::class.java)
     }
 
-    private var searchSuggestionFragment: SuggestionSearchFragment? = null
-    private var initialSearchFragment: InitialSearchFragment? = null
-
     override fun onCreate(savedInstanceState: Bundle?) {
-        initInjector()
         performanceMonitoring.initGlobalSearchSellerPerformanceMonitoring()
         overridePendingTransition(0, 0)
         super.onCreate(savedInstanceState)
-//        initFragments()
+        initInjector()
         fetchSearchPlaceholder()
         setSearchKeyword()
 
         setContent {
             NestTheme {
+                val searchKeyword = remember { mutableStateOf("") }
+                val showSearchSuggestions =
+                    searchKeyword.value.length >= GlobalSearchSellerConstant.MIN_KEYWORD_SEARCH
+
+                val initialStateContainerId = remember { View.generateViewId() }
+                val suggestionSearchContainerId = remember { View.generateViewId() }
+
+                val fragmentManager = remember { supportFragmentManager }
+
+                val suggestionSearchFragment =
+                    remember { fragmentManager.findFragmentById(suggestionSearchContainerId) as? SuggestionSearchFragment }
+                val initialSearchFragment = remember {
+                    fragmentManager.findFragmentById(initialStateContainerId) as? InitialSearchFragment
+                }
+
                 val uiState = viewModel.globalSearchUiState.collectAsState()
 
+                LaunchedEffect(key1 = showSearchSuggestions, block = {
+                    showSearchFragment(
+                        fragmentManager,
+                        initialSearchFragment,
+                        suggestionSearchFragment,
+                        initialStateContainerId,
+                        suggestionSearchContainerId,
+                        showSearchSuggestions
+                    )
+                })
+
+                LaunchedEffect(key1 = showSearchSuggestions, block = {
+                    viewModel.uiEffect.collectLatest {
+                        when (it) {
+                            is GlobalSearchUiEvent.OnSearchBarCleared -> {
+                                SellerSearchTracking.clickClearSearchBoxEvent(userSession.userId)
+                                viewModel.setTypingSearch(String.EMPTY)
+                            }
+
+                            is GlobalSearchUiEvent.OnBackButtonClicked -> {
+                                SellerSearchTracking.clickBackButtonSearchEvent(
+                                    userSession.userId,
+                                    it.searchBarKeyword
+                                )
+                                finish()
+                            }
+
+                            is GlobalSearchUiEvent.OnUpdateSearchKeyword -> {
+                            }
+
+                            is GlobalSearchUiEvent.OnSearchResultKeyword -> {
+                                if (showSearchSuggestions) {
+                                    suggestionSearchFragment?.suggestionSearch(it.searchBarKeyword)
+                                        ?: (fragmentManager.findFragmentById(suggestionSearchContainerId) as? SuggestionSearchFragment)?.apply {
+                                        suggestionSearch(it.searchBarKeyword)
+                                    }
+                                } else {
+                                    initialSearchFragment?.historySearch(it.searchBarKeyword)
+                                        ?: (fragmentManager.findFragmentById(initialStateContainerId) as? InitialSearchFragment)?.apply {
+                                        historySearch(it.searchBarKeyword)
+                                    }
+                                }
+                            }
+
+                            else -> {
+                            }
+                        }
+                    }
+                })
+
                 InitialSearchActivityScreen(
-                    uiEffect = ::onUiEffect,
+                    uiEffect = viewModel::onUiEffect,
                     uiState = uiState.value,
-                    supportFragmentManager = supportFragmentManager
+                    stateKeyword = searchKeyword,
+                    showSearchSuggestions = showSearchSuggestions,
+                    initialStateContainerId = initialStateContainerId,
+                    suggestionSearchContainerId = suggestionSearchContainerId
                 )
             }
         }
@@ -92,21 +168,29 @@ class InitialSellerSearchComposeActivity :
         component.inject(this)
     }
 
-    private fun onUiEffect(event: GlobalSearchUiEffect) {
-        when (event) {
-            is GlobalSearchUiEffect.OnSearchBarCleared -> {
-                SellerSearchTracking.clickClearSearchBoxEvent(userSession.userId)
-                viewModel.setTypingSearch(String.EMPTY)
-            }
-            is GlobalSearchUiEffect.OnKeyboardSearchSubmit -> {
-                viewModel.setTypingSearch(event.searchBarKeyword)
-            }
-            is GlobalSearchUiEffect.OnKeywordTextChanged -> {
-                viewModel.setTypingSearch(event.searchBarKeyword)
-            }
-            is GlobalSearchUiEffect.OnBackButtonClicked -> {
-                SellerSearchTracking.clickBackButtonSearchEvent(userSession.userId, event.searchBarKeyword)
-                finish()
+    private fun showSearchFragment(
+        fragmentManager: FragmentManager?,
+        initialSearchFragment: InitialSearchFragment?,
+        suggestionSearchFragment: SuggestionSearchFragment?,
+        initialStateContainerId: Int,
+        suggestionSearchContainerId: Int,
+        showSearchSuggestions: Boolean
+    ) {
+        fragmentManager?.commit {
+            if (showSearchSuggestions) {
+                initialSearchFragment?.let { hide(it) }
+                if (suggestionSearchFragment == null) {
+                    add(suggestionSearchContainerId, SuggestionSearchFragment())
+                } else {
+                    show(suggestionSearchFragment)
+                }
+            } else {
+                suggestionSearchFragment?.let { hide(it) }
+                if (initialSearchFragment == null) {
+                    add(initialStateContainerId, InitialSearchFragment())
+                } else {
+                    show(initialSearchFragment)
+                }
             }
         }
     }
@@ -121,5 +205,16 @@ class InitialSellerSearchComposeActivity :
 
     override fun finishMonitoring() {
         performanceMonitoring.stopPerformanceMonitoring()
+    }
+
+    override fun setUserIdFromFragment(userId: String) {
+        // no op
+    }
+
+    override fun showHistoryView() {
+        // no op
+    }
+
+    override fun setKeywordSearchBarView(keyword: String) {
     }
 }
