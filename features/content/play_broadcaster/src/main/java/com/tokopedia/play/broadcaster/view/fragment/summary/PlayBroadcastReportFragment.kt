@@ -218,7 +218,7 @@ class PlayBroadcastReportFragment @Inject constructor(
         binding.composeViewTicker.apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
-                PlayBroLiveToVodTickerScreen(
+                PlayBroLiveToVodTicker(
                     data = state,
                     onDismissedPressed = {
                         parentViewModel.submitAction(

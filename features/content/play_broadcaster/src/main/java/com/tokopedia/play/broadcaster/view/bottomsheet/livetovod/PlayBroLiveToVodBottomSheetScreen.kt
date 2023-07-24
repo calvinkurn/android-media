@@ -53,11 +53,10 @@ private fun LiveToVodBottomSheetContent(
         fun TickerBottomSheetUiModel.MainText.TitleText() {
             NestTypography(
                 text = title,
-                modifier = Modifier.padding(top = 16.dp),
                 textStyle = NestTheme.typography.heading2
                     .copy(
                         textAlign = TextAlign.Center,
-                        color = colorResource(id = R.color.Unify_NN1000),
+                        color = NestTheme.colors.NN._1000,
                     ),
             )
         }
@@ -74,7 +73,7 @@ private fun LiveToVodBottomSheetContent(
                 textStyle = NestTheme.typography.body1
                     .copy(
                         textAlign = TextAlign.Center,
-                        color = colorResource(id = R.color.Unify_NN1000),
+                        color = NestTheme.colors.NN._1000,
                     ),
                 onClickText = { offset ->
                     descriptionText.getStringAnnotations(offset, offset)
@@ -128,8 +127,8 @@ private fun LiveToVodBottomSheetContent(
         NestImage(
             source = ImageSource.Remote(source = data.imageURL),
             modifier = Modifier
-                .width(350.dp)
-                .height(280.dp),
+                .aspectRatio(1f / 1f)
+                .padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
         )
         mainText.MainText(onActionTextPressed)
         NestButton(
@@ -166,7 +165,7 @@ private fun generateSpanText(
             addStyle(
                 style = SpanStyle(
                     fontWeight = FontWeight.Bold,
-                    color = colorResource(id = com.tokopedia.unifyprinciples.R.color.Unify_GN500),
+                    color = NestTheme.colors.GN._500,
                 ),
                 start = map.start,
                 end = map.end,

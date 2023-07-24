@@ -34,6 +34,7 @@ class PlayBroLiveToVodBottomSheet @Inject constructor(
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        overlayClickDismiss = false
         val composeView = ComposeView(requireContext()).apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
