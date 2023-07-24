@@ -11,6 +11,8 @@ import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUse
 import com.tokopedia.tokopedianow.common.constant.ServiceType.NOW_15M
 import com.tokopedia.tokopedianow.common.domain.usecase.SetUserPreferenceUseCase
 import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
+import com.tokopedia.tokopedianow.common.domain.mapper.AddressMapper
+import com.tokopedia.tokopedianow.common.domain.param.GetProductAdsParam
 import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase
 import com.tokopedia.tokopedianow.common.service.NowAffiliateService
 import com.tokopedia.tokopedianow.search.domain.mapper.CategoryJumperMapper.createCategoryJumperDataView
@@ -160,6 +162,17 @@ class TokoNowSearchViewModel @Inject constructor (
 
     override fun getRecomCategoryId(pageName: String): List<String> = listOf(recommendationCategoryId)
 
+    override fun createProductAdsParam(): GetProductAdsParam {
+        val query = queryParamMutable[SearchApiConst.Q].orEmpty()
+
+        return GetProductAdsParam(
+            query = query,
+            src = GetProductAdsParam.SRC_SEARCH_TOKONOW,
+            userId = userSession.userId,
+            addressData = chooseAddressData
+        )
+    }
+
     private fun onGetSearchFirstPageSuccess(searchModel: SearchModel) {
         val searchProduct = searchModel.searchProduct
         responseCode = searchModel.getResponseCode()
@@ -181,6 +194,7 @@ class TokoNowSearchViewModel @Inject constructor (
 
         val contentDataView = ContentDataView(
                 aceSearchProductData = searchProduct.data,
+                productAds = searchModel.productAds
         )
 
         val isActive = searchModel.feedbackFieldToggle.tokonowFeedbackFieldToggle.data.isActive
@@ -222,7 +236,10 @@ class TokoNowSearchViewModel @Inject constructor (
     }
 
     private fun onGetSearchLoadMorePageSuccess(searchModel: SearchModel) {
-        val contentDataView = ContentDataView(aceSearchProductData = searchModel.searchProduct.data)
+        val contentDataView = ContentDataView(
+            aceSearchProductData = searchModel.searchProduct.data,
+            productAds = searchModel.productAds
+        )
         onGetLoadMorePageSuccess(contentDataView)
     }
 

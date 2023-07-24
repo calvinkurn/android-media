@@ -13,6 +13,11 @@ buildscript {
     }
 }
 
+android {
+    namespace 'com.tokopedia.product_photo_adapter'
+    testNamespace 'com.tokopedia.product_photo_adapter.test'
+}
+
 dependencies {
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation rootProject.ext.supportLibDependencies.constraintLayout

@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.productcard.compact.productcard.presentation.customview.ProductCardCompactView
 import com.tokopedia.productcard.compact.similarproduct.presentation.listener.ProductCardCompactSimilarProductTrackerListener
+import com.tokopedia.tokopedianow.common.listener.ProductAdsCarouselListener
 import com.tokopedia.tokopedianow.common.view.TokoNowProductRecommendationView
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateNoResultViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateOocViewHolder
@@ -48,6 +49,7 @@ class SearchTypeFactoryImpl(
     productRecommendationOocListener: TokoNowProductRecommendationOocViewHolder.TokoNowRecommendationCarouselListener,
     productRecommendationListener: TokoNowProductRecommendationView.TokoNowProductRecommendationListener?,
     productCardCompactListener: ProductCardCompactView.ProductCardCompactListener,
+    productAdsCarouselListener: ProductAdsCarouselListener,
     private val suggestionListener: SuggestionListener,
     private val categoryJumperListener: CategoryJumperListener,
     private val ctaTokoNowHomeListener: CTATokoNowHomeListener,
@@ -68,7 +70,8 @@ class SearchTypeFactoryImpl(
     productCardCompactSimilarProductTrackerListener,
     productRecommendationBindOocListener,
     productRecommendationOocListener,
-    productRecommendationListener
+    productRecommendationListener,
+    productAdsCarouselListener
 ), SearchTypeFactory {
 
     override fun type(suggestionDataView: SuggestionDataView): Int {

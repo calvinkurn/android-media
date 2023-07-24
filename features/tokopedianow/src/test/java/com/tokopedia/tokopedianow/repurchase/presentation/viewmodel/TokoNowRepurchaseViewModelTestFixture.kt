@@ -126,6 +126,8 @@ abstract class TokoNowRepurchaseViewModelTestFixture {
         privateLocalCacheModel = viewModel::class.java.getDeclaredField("localCacheModel").apply {
             isAccessible = true
         }
+
+        onGetUserLoggedIn_thenReturn(isLoggedIn = true)
     }
 
     protected fun verifyShowLayoutSuccess(expectedResponse: RepurchaseLayoutUiModel) {

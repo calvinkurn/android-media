@@ -41,9 +41,17 @@ class PlayWidgetUseCase @Inject constructor(private val repository: GraphqlRepos
             PlayWidgetQueryParamBuilder.PARAM_IS_WIFI to isWifi
         )
 
-        if (widgetType is WidgetType.PDPWidget) {
-            param[PlayWidgetQueryParamBuilder.PARAM_PRODUCT_ID] = widgetType.productIdList.joinToString(",")
-            param[PlayWidgetQueryParamBuilder.PARAM_CATEGORY_ID] = widgetType.categoryIdList.joinToString(",")
+        when (widgetType) {
+            is WidgetType.PDPWidget -> {
+                param[PlayWidgetQueryParamBuilder.PARAM_PRODUCT_ID] = widgetType.productIdList.joinToString(",")
+                param[PlayWidgetQueryParamBuilder.PARAM_CATEGORY_ID] = widgetType.categoryIdList.joinToString(",")
+            }
+            is WidgetType.ShopPageExclusiveLaunch -> {
+                param[PlayWidgetQueryParamBuilder.PARAM_CAMPAIGN_ID] = widgetType.campaignId
+            }
+            else -> {
+                //do nothing with other widget type
+            }
         }
 
         this.params = param
@@ -154,10 +162,25 @@ class PlayWidgetUseCase @Inject constructor(private val repository: GraphqlRepos
         open val authorId: String = ""
         open val authorType: String = ""
         open val channelTag: String = ""
+        open val campaignId: String = ""
 
         data class ShopPage(val shopId: String) : WidgetType() {
             override val typeKey: String
                 get() = "SHOP_PAGE"
+
+            override val authorId: String
+                get() = shopId
+
+            override val authorType: String
+                get() = "shop"
+        }
+
+        data class ShopPageExclusiveLaunch(
+            val shopId: String,
+            override val campaignId: String = "",
+        ) : WidgetType() {
+            override val typeKey: String
+                get() = "SHOP_PAGE_EXCLUSIVE_LAUNCH"
 
             override val authorId: String
                 get() = shopId

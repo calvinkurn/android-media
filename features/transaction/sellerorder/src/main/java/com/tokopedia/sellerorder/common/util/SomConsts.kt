@@ -26,6 +26,7 @@ object SomConsts {
     const val FILTER_ORDER_TYPE = "filter_order_type"
     const val FROM_WIDGET_TAG = "from widget"
 
+    const val STATUS_HISTORY = "history"
     const val STATUS_ALL_ORDER = "all_order"
     const val STATUS_NEW_ORDER = "new_order"
 
@@ -137,6 +138,7 @@ object SomConsts {
     const val SORT_BY_PAYMENT_DATE_ASCENDING = 0L
     const val SORT_BY_TOTAL_OPEN_DESCENDING = 1L
     const val SORT_BY_PAYMENT_DATE_DESCENDING = 2L
+    const val SORT_BY_DEADLINE_DATE_ASCENDING = 3L
 
     // Som List Illustration
     const val SOM_LIST_EMPTY_STATE_NO_FILTER_ILLUSTRATION = TokopediaImageUrl.SOM_LIST_EMPTY_STATE_NO_FILTER_ILLUSTRATION
@@ -157,4 +159,8 @@ object SomConsts {
     const val DEFAULT_INVALID_ORDER_ID = "0"
 
     const val ENCODING_UTF_8 = "UTF-8"
+
+    const val DEADLINE_MORE_THAN_24_HOURS = 0
+    const val DEADLINE_BETWEEN_12_TO_24_HOURS = 1
+    const val DEADLINE_LOWER_THAN_12_HOURS = 2
 }

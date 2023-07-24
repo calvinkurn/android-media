@@ -1,13 +1,7 @@
 package com.tokopedia.topads.dashboard.domain.interactor
 
-import com.google.gson.reflect.TypeToken
-import com.tokopedia.common.network.coroutines.RestRequestInteractor
-import com.tokopedia.common.network.coroutines.repository.RestRepository
-import com.tokopedia.common.network.data.model.RequestType
-import com.tokopedia.common.network.data.model.RestRequest
-import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.network.data.model.response.DataResponse
-import com.tokopedia.topads.common.constant.TopAdsCommonConstant
+import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.common.data.internal.ParamObject.GROUPID
 import com.tokopedia.topads.common.data.internal.ParamObject.PRICE_BID
@@ -25,21 +19,20 @@ import javax.inject.Inject
  * Created by Pika on 29/5/20.
  */
 
+class TopAdsGroupActionUseCase @Inject constructor(private val userSession: UserSessionInterface, graphqlRepository: GraphqlRepository) {
 
-class TopAdsGroupActionUseCase @Inject constructor(private val userSession: UserSessionInterface) {
+    private val graphql by lazy { GraphqlUseCase<GroupActionResponse>(graphqlRepository) }
 
-    private val restRepository: RestRepository by lazy { RestRequestInteractor.getInstance().restRepository }
+    suspend fun execute(query: String, requestParams: RequestParams): GroupActionResponse {
+        graphql.apply {
+            setGraphqlQuery(query)
+            setTypeClass(GroupActionResponse::class.java)
+        }
 
-    suspend fun execute(query: String, requestParams: RequestParams?): GroupActionResponse {
-        val token = object : TypeToken<DataResponse<GroupActionResponse>>() {}.type
-        val request =
-            GraphqlRequest(query, GroupActionResponse::class.java, requestParams?.parameters)
-        val restRequest = RestRequest.Builder(TopAdsCommonConstant.TOPADS_GRAPHQL_TA_URL, token)
-            .setBody(request)
-            .setRequestType(RequestType.POST)
-            .build()
-        return restRepository.getResponse(restRequest)
-            .getData<DataResponse<GroupActionResponse>>().data
+        return graphql.run {
+            setRequestParams(requestParams.parameters)
+            executeOnBackground()
+        }
     }
 
     fun setParams(action: String, groupIds: List<String>): RequestParams {

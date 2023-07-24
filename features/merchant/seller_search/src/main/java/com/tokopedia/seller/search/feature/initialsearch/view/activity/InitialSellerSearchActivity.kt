@@ -168,7 +168,7 @@ class InitialSellerSearchActivity :
             setStatusBarColor(
                 ContextCompat.getColor(
                     this,
-                    com.tokopedia.unifyprinciples.R.color.Unify_N0
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN0
                 )
             )
             setLightStatusBar(true)
