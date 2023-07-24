@@ -283,10 +283,6 @@ class LottieBottomNav : LinearLayout {
                         bottomMenu.imageName?.let {
                             iconPlaceholder.setImageResource(it)
                         }
-                        bottomMenu.animToEnabledName?.let {
-                            icon.setAnimation(it)
-                            icon.speed = bottomMenu.animToEnabledSpeed
-                        }
                     }
 
                     iconList[index] = Pair(icon, false)
