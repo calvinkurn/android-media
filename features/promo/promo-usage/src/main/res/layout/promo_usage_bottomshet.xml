@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/bottom_sheet_wrapper"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bottomsheet_background"
+    android:orientation="vertical"
+    app:behavior_hideable="true"
+    app:behavior_peekHeight="@dimen/bottom_sheet_default_peek"
+    app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+
+    <!--Voucher Recommendation Info-->
+    <LinearLayout
+        android:id="@+id/layoutBottomSheetOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/promo_usage_bg_bottomsheet_header_overlay"
+        android:orientation="horizontal"
+        android:visibility="gone"
+        tools:visibility="visible">
+
+        <com.tokopedia.iconunify.IconUnify
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            app:icon_color_light_enable="@color/promo_dms_white"
+            app:icon_color_night_enable="@color/promo_dms_white"
+            app:icon_name="COURIER_FAST" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="4dp"
+            android:text="@string/promo_voucher_promo_overlay_text"
+            android:textColor="@color/promo_dms_white"
+            app:typographyType="paragraph_3" />
+
+    </LinearLayout>
+
+
+    <!--Bottomsheet Header (Title, Close Icon)-->
+    <RelativeLayout
+        android:id="@+id/layoutBottomSheetHeader"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="38dp"
+        android:visibility="gone"
+        tools:visibility="visible"
+        android:background="@drawable/promo_usage_bg_bottomsheet_header"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/bottom_sheet_close"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
+            android:adjustViewBounds="true"
+            android:background="@drawable/promo_usage_ic_close_white" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/bottom_sheet_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@id/bottom_sheet_close"
+            android:layout_alignBottom="@id/bottom_sheet_close"
+            android:layout_marginStart="8dp"
+            android:layout_toRightOf="@id/bottom_sheet_close"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:textColor="@color/promo_dms_white"
+            app:typographyType="heading_3"
+            tools:text="Promo" />
+
+    </RelativeLayout>
+
+
+    <include
+        android:id="@+id/shimmer"
+        layout="@layout/promo_usage_shimmer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:visibility="gone" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/layoutBottomSheetHeader"
+        android:layout_above="@id/layoutTotalSavings"
+        tools:itemCount="3"
+        tools:listitem="@layout/promo_usage_item_voucher_section" />
+
+    <!--Total Savings-->
+    <RelativeLayout
+        android:id="@+id/layoutTotalSavings"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/promo_usage_shape_voucher_summary"
+        android:visibility="gone"
+        android:layout_above="@id/cardViewTotalPrice"
+        tools:visibility="visible">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/ivCheckmark"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="12dp"
+            app:srcCompat="@drawable/promo_usage_ic_rounded_checkmark" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tpgTotalSavings"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@id/ivCheckmark"
+            android:layout_alignBottom="@id/ivCheckmark"
+            android:layout_gravity="center"
+            android:layout_marginStart="8dp"
+            android:layout_toEndOf="@id/ivCheckmark"
+            android:gravity="center|start"
+            android:textColor="@color/Unify_NN950"
+            app:typographyType="display_3"
+            tools:text="@string/promo_voucher_placeholder_total_savings" />
+
+    </RelativeLayout>
+
+    <!--Total Price -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardViewTotalPrice"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:visibility="gone"
+        app:cardBackgroundColor="@color/Unify_NN0"
+        app:cardElevation="4dp"
+        tools:visibility="visible">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tpgTotalPriceLabel"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:text="@string/promo_voucher_total_price"
+                app:layout_constraintEnd_toStartOf="@+id/buttonBuy"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/buttonBuy"
+                app:typographyType="display_3" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tpgTotalPrice"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                app:layout_constraintBottom_toBottomOf="@+id/buttonBuy"
+                app:layout_constraintEnd_toStartOf="@+id/buttonBuy"
+                app:layout_constraintStart_toStartOf="parent"
+                app:typographyType="display_2"
+                app:typographyWeight="bold"
+                tools:text="Rp 78.000" />
+
+            <com.tokopedia.unifycomponents.UnifyButton
+                android:id="@+id/buttonBuy"
+                android:layout_width="143dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="12dp"
+                android:text="@string/promo_voucher_buy"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:unifyButtonSize="medium" />
+
+            <com.tokopedia.unifycomponents.UnifyButton
+                android:id="@+id/buttonBackToShipment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="8dp"
+                android:text="@string/promo_voucher_back_to_shipment"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:unifyButtonSize="medium" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.cardview.widget.CardView>
+
+</RelativeLayout>
