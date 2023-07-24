@@ -1,6 +1,6 @@
 package com.tokopedia.mvc.presentation.creation.step3.uimodel
 
-import com.tokopedia.mvc.domain.entity.RemoteTicker
+import com.tokopedia.campaign.entity.RemoteTicker
 import com.tokopedia.mvc.domain.entity.VoucherConfiguration
 import com.tokopedia.mvc.domain.entity.enums.*
 

@@ -53,7 +53,7 @@
         android:id="@+id/common_topupbills_favorite_number_separator"
         android:layout_width="0dp"
         android:layout_height="1dp"
-        android:background="@color/Unify_N75"
+        android:background="@color/Unify_NN50"
         app:layout_constraintStart_toStartOf="@id/common_topup_bills_contact_name"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent" />

@@ -91,7 +91,7 @@ class ChatbotActivity : BaseChatToolbarActivity() {
     override fun setupToolbar() {
         super.setupToolbar()
         supportActionBar?.run {
-            setBackgroundDrawable(ColorDrawable(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0)))
+            setBackgroundDrawable(ColorDrawable(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_NN0)))
         }
         val userAvatar = findViewById<ImageView>(R.id.user_avatar)
         userAvatar.apply {

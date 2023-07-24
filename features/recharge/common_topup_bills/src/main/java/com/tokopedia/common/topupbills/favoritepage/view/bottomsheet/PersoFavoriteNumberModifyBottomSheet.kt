@@ -65,7 +65,7 @@ class PersoFavoriteNumberModifyBottomSheet : BottomSheetUnify() {
 
             context?.let { context ->
                 binding.commonTopupbillsFavoriteNumberPhoneField.textFiedlLabelText.setTextColor(
-                    context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N75)
+                    context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_NN50)
                 )
             }
         }

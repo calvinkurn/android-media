@@ -9,11 +9,11 @@ import javax.inject.Inject
 class TokoChatGetChatHistoryUseCase @Inject constructor(
     @TokoChatQualifier private val repository: TokoChatRepository
 ) {
-    operator fun invoke(channelUrl: String): LiveData<List<ConversationsMessage>> {
-        return repository.getConversationRepository().getChatHistory(channelUrl)
+    operator fun invoke(channelUrl: String): LiveData<List<ConversationsMessage>>? {
+        return repository.getConversationRepository()?.getChatHistory(channelUrl)
     }
 
     fun loadPreviousMessage() {
-        repository.getConversationRepository().loadPreviousMessages()
+        repository.getConversationRepository()?.loadPreviousMessages()
     }
 }
