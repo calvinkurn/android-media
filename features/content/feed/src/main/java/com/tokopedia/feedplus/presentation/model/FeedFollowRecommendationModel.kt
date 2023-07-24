@@ -7,6 +7,7 @@ import com.tokopedia.feedplus.presentation.adapter.FeedAdapterTypeFactory
  * Created By : Jonathan Darwin on July 04, 2023
  */
 data class FeedFollowRecommendationModel(
+    val id: String,
     val title: String,
     val description: String,
     val data: List<Profile>,
