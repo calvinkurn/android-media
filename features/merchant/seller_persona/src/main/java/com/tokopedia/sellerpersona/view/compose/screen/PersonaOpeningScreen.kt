@@ -1,5 +1,6 @@
 package com.tokopedia.sellerpersona.view.compose.screen
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -8,7 +9,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
@@ -38,67 +38,67 @@ fun PersonaOpeningScreen(
     LaunchedEffect(key1 = Unit, block = {
         onImpressed()
     })
-    Surface(color = MaterialTheme.colors.background) {
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Illustration(
-                modifier = Modifier
-                    .requiredWidth(280.dp)
-                    .requiredHeight(210.dp)
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color = MaterialTheme.colors.background),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Illustration(
+            modifier = Modifier
+                .requiredWidth(280.dp)
+                .requiredHeight(210.dp)
+        )
+        NestTypography(
+            modifier = Modifier
+                .fillMaxWidth()
+                .align(alignment = Alignment.CenterHorizontally)
+                .padding(start = 16.dp, end = 16.dp, top = 20.dp),
+            text = stringResource(id = R.string.sp_opening_title),
+            textStyle = NestTheme.typography.heading2.copy(
+                color = NestTheme.colors.NN._950,
+                textAlign = TextAlign.Center
             )
-            NestTypography(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .align(alignment = Alignment.CenterHorizontally)
-                    .padding(start = 16.dp, end = 16.dp, top = 20.dp),
-                text = stringResource(id = R.string.sp_opening_title),
-                textStyle = NestTheme.typography.heading2.copy(
-                    color = NestTheme.colors.NN._950,
-                    textAlign = TextAlign.Center
-                )
+        )
+        NestTypography(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 16.dp, end = 16.dp, top = 8.dp)
+                .align(alignment = Alignment.CenterHorizontally),
+            text = stringResource(id = R.string.sp_opening_sub_title),
+            textStyle = NestTheme.typography.display3.copy(
+                color = NestTheme.colors.NN._600,
+                textAlign = TextAlign.Center
             )
-            NestTypography(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 16.dp, end = 16.dp, top = 8.dp)
-                    .align(alignment = Alignment.CenterHorizontally),
-                text = stringResource(id = R.string.sp_opening_sub_title),
-                textStyle = NestTheme.typography.display3.copy(
-                    color = NestTheme.colors.NN._600,
-                    textAlign = TextAlign.Center
-                )
+        )
+        NestTypography(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 16.dp, end = 16.dp, top = 16.dp)
+                .align(alignment = Alignment.CenterHorizontally),
+            text = stringResource(id = R.string.sp_opening_footer),
+            textStyle = NestTheme.typography.small.copy(
+                color = NestTheme.colors.NN._600,
+                textAlign = TextAlign.Center
             )
-            NestTypography(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 16.dp, end = 16.dp, top = 16.dp)
-                    .align(alignment = Alignment.CenterHorizontally),
-                text = stringResource(id = R.string.sp_opening_footer),
-                textStyle = NestTheme.typography.small.copy(
-                    color = NestTheme.colors.NN._600,
-                    textAlign = TextAlign.Center
-                )
-            )
-            NestButton(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 16.dp, end = 16.dp, top = 24.dp),
-                text = stringResource(id = R.string.sp_start_quiz),
-                variant = ButtonVariant.FILLED,
-                onClick = onNext
-            )
-            NestButton(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 16.dp, end = 16.dp, top = 8.dp),
-                text = stringResource(id = R.string.sp_try_later),
-                variant = ButtonVariant.TEXT_ONLY,
-                onClick = onBack
-            )
-        }
+        )
+        NestButton(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 16.dp, end = 16.dp, top = 24.dp),
+            text = stringResource(id = R.string.sp_start_quiz),
+            variant = ButtonVariant.FILLED,
+            onClick = onNext
+        )
+        NestButton(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 16.dp, end = 16.dp, top = 8.dp),
+            text = stringResource(id = R.string.sp_try_later),
+            variant = ButtonVariant.TEXT_ONLY,
+            onClick = onBack
+        )
     }
 }
 
