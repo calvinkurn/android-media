@@ -39,7 +39,6 @@ import com.tokopedia.purchase_platform.common.utils.Utils
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.currency.CurrencyFormatUtil
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
@@ -67,8 +66,7 @@ class CartItemViewHolder constructor(
 //        setNoteTouchListener()
 //    }
 
-    @SuppressLint("ClickableViewAccessibility")
-//    private fun setNoteTouchListener() {
+    //    private fun setNoteTouchListener() {
 //        binding.textFieldNotes.setOnTouchListener { view, event ->
 //            if (view.id == R.id.text_field_notes) {
 //                view.parent.requestDisallowInterceptTouchEvent(true)
@@ -80,6 +78,7 @@ class CartItemViewHolder constructor(
 //        }
 //    }
 
+    @SuppressLint("ClickableViewAccessibility")
     fun clear() {
         actionListener = null
         viewHolderListener = null
@@ -540,8 +539,7 @@ class CartItemViewHolder constructor(
                     R.id.button_change_note,
                     ConstraintSet.BOTTOM
                 )
-            }
-            else {
+            } else {
                 connect(
                     R.id.v_bundling_product_separator,
                     ConstraintSet.BOTTOM,
@@ -633,7 +631,6 @@ class CartItemViewHolder constructor(
             layoutParams.apply {
                 width = 56.dpToPx(itemView.resources.displayMetrics)
                 height = 56.dpToPx(itemView.resources.displayMetrics)
-
             }
         } else {
             layoutParams.apply {
@@ -664,8 +661,7 @@ class CartItemViewHolder constructor(
             }
             if (data.variant.isNotBlank()) {
                 binding.cartAddOnSeparator.show()
-            }
-            else {
+            } else {
                 binding.cartAddOnSeparator.gone()
             }
         } else {
@@ -805,8 +801,9 @@ class CartItemViewHolder constructor(
     }
 
     private fun renderSlashPrice(data: CartItemHolderData) {
-        if (data.isBundlingItem)
+        if (data.isBundlingItem) {
             return
+        }
         val hasPriceOriginal = data.productOriginalPrice > 0
         val hasWholesalePrice = data.wholesalePrice > 0
         val hasPriceDrop = data.productInitialPriceBeforeDrop > 0 &&
@@ -1144,8 +1141,7 @@ class CartItemViewHolder constructor(
                 inWishlistColor,
                 inWishlistColor
             )
-        }
-        else {
+        } else {
             val notInWishlistColor = ContextCompat.getColor(
                 itemView.context,
                 com.tokopedia.unifyprinciples.R.color.Unify_NN500
@@ -1281,8 +1277,7 @@ class CartItemViewHolder constructor(
                     com.tokopedia.unifyprinciples.R.color.Unify_NN400
                 )
             )
-        }
-        else {
+        } else {
             typography.setTextColor(
                 ContextCompat.getColor(
                     itemView.context,
