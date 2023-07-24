@@ -50,6 +50,8 @@ public class RemoteConfigKey {
 
     public static final String IRIS_GTM_ENABLED_TOGGLE = "app_iris_gtm_enabled";
     public static final String IRIS_GTM_CONFIG_TOGGLE = "android_customer_iris_config";
+    public static final String IRIS_PERF_CONFIG = "android_customer_iris_perf_config";
+    public static final String IRIS_PERFORMANCE_TOGGLE = "android_customer_iris_performance_config";
     public static final String IRIS_WORK_MANAGER_ENABLE = "android_iris_work_manager_enabled";
 
 
