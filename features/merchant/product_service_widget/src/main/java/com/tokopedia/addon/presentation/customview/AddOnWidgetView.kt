@@ -197,8 +197,12 @@ class AddOnWidgetView : BaseCustomView {
         viewModel.saveAddOnState(cartId, source)
     }
 
-    fun getAddOnAggregatedData(addOnIds: List<String>) {
-        viewModel.getAddOnAggregatedData(addOnIds)
+    fun getAddOnAggregatedData(
+        addOnIds: List<String>,
+        addOnTypes: List<String>,
+        addOnWidgetParam: AddOnParam
+    ) {
+        viewModel.getAddOnAggregatedData(addOnIds, addOnTypes, addOnWidgetParam)
     }
 
     fun setAutosaveAddon(cartId: Long, atcSource: String) {

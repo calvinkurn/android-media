@@ -130,14 +130,18 @@ class AddOnViewModel @Inject constructor(
         }
     }
 
-    fun getAddOnAggregatedData(addOnIds: List<String>) {
+    fun getAddOnAggregatedData(
+        addOnIds: List<String>,
+        addOnTypes: List<String>,
+        addOnWidgetParam: AddOnParam
+    ) {
         if (addOnIds.isEmpty()) {
             mAggregatedData.value = generateEmptyAggregatedData()
             return
         }
         launchCatchError(block = {
             val result = withContext(dispatchers.io) {
-                getAddOnDetailUseCase.setParams(addOnIds)
+                getAddOnDetailUseCase.setParams(addOnIds, addOnTypes, addOnWidgetParam)
                 getAddOnDetailUseCase.executeOnBackground().getAddOnByID
             }
             mAggregatedData.value = AddOnPageResult.AggregatedData(

@@ -1,6 +1,7 @@
 package com.tokopedia.addon.presentation.uimodel
 
 import com.tokopedia.addon.domain.model.GetAddOnByProductResponse
+import com.tokopedia.gifting.presentation.uimodel.AddOnType
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
@@ -80,6 +81,12 @@ object AddOnMapper {
 
     fun getSelectedAddonsIds(addOnGroupUIModels: List<AddOnGroupUIModel>): List<String> {
         return getSelectedAddons(addOnGroupUIModels).map { it.id }
+    }
+
+    fun getSelectedAddonsTypes(addOnGroupUIModels: List<AddOnGroupUIModel>): List<String> {
+        return getSelectedAddons(addOnGroupUIModels).map {
+            AddOnType.values().getOrNull(it.addOnType.dec())?.name.orEmpty()
+        }
     }
 
     fun mapToSaveAddOnStateRequest(
