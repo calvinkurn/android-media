@@ -4335,6 +4335,8 @@ class ShipmentFragment :
                         }
                     }
                 }
+                updateCost()
+                shipmentAdapter.updateSubtotal()
             } else {
                 view?.let { v ->
                     Toaster.build(v, addOnProductDataResult.aggregatedData.getDataErrorMessage, type = Toaster.TYPE_ERROR).show()
