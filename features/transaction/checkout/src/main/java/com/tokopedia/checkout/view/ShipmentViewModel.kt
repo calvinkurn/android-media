@@ -404,14 +404,14 @@ class ShipmentViewModel @Inject constructor(
                                 if (addOnProductService.status == 1) {
                                     totalAddOnProductServicePrice += (addOnProductService.price * cartItem.quantity)
                                     qtyAddOn = if (countMapSummaries.containsKey(addOnProductService.type)) {
-                                        countMapSummaries[addOnProductService.type]?.second?.plus(cartItem.quantity) ?: 0
+                                        countMapSummaries[addOnProductService.type]?.second?.plus(cartItem.quantity) ?: cartItem.quantity
                                     } else {
                                         cartItem.quantity
                                     }
 
                                     val addOnPrice = cartItem.quantity * addOnProductService.price
                                     totalPriceAddOn = if (countMapSummaries.containsKey(addOnProductService.type)) {
-                                        countMapSummaries[addOnProductService.type]?.first?.plus(addOnPrice) ?: 0.0
+                                        countMapSummaries[addOnProductService.type]?.first?.plus(addOnPrice) ?: addOnPrice
                                     } else {
                                         addOnPrice
                                     }
