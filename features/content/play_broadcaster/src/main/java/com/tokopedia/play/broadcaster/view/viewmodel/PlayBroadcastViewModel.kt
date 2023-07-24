@@ -1774,7 +1774,15 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     /** Beautification */
     private fun handleRemoveBeautificationMenu() {
-        removePreparationMenu(DynamicPreparationMenu.Menu.FaceFilter)
+        viewModelScope.launch {
+            removePreparationMenu(DynamicPreparationMenu.Menu.FaceFilter)
+
+            _beautificationConfig.update { BeautificationConfigUiModel.Empty }
+
+            _uiEvent.emit(
+                PlayBroadcastEvent.InitializeBroadcaster(hydraConfigStore.getBroadcastingConfig())
+            )
+        }
     }
 
     private fun handleResetBeautification() {

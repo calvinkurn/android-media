@@ -9,7 +9,7 @@
         android:id="@+id/view_divider"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/Unify_N75"
+        android:background="@color/Unify_NN50"
         />
     <LinearLayout
         android:id="@+id/spec_layout"
@@ -28,7 +28,7 @@
             app:typographyWeight="bold"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@color/Unify_N700_96"
+            android:textColor="@color/Unify_NN950_96"
             android:lines="1"/>
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_spec_summary"
@@ -38,7 +38,7 @@
             android:maxLines="2"
             android:ellipsize="end"
             android:visibility="gone"
-            android:textColor="@color/Unify_N700_96"/>
+            android:textColor="@color/Unify_NN950_96"/>
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_specs_bullet"
             android:layout_width="match_parent"

@@ -1,4 +1,4 @@
 <vector xmlns:android="http://schemas.android.com/apk/res/android" android:width="32dp" android:height="32dp" android:viewportWidth="32" android:viewportHeight="32">
-    <path android:pathData="M0 16a16 16 0 1 1 32 0 16 16 0 1 1-32 0" android:fillColor="@color/Unify_N700_96" android:fillAlpha="0.68"/>
-    <path android:pathData="M17.667 16l4.62-4.62c0.486-0.486 0.508-1.26 0.05-1.717-0.458-0.458-1.231-0.436-1.717 0.05L16 14.333l-4.62-4.62c-0.486-0.486-1.26-0.508-1.717-0.05-0.458 0.458-0.436 1.231 0.05 1.717l4.62 4.62-4.62 4.62c-0.486 0.486-0.508 1.26-0.05 1.717 0.458 0.458 1.231 0.436 1.717-0.05l4.62-4.62 4.62 4.62c0.486 0.486 1.26 0.508 1.717 0.05 0.458-0.458 0.436-1.231-0.05-1.717L17.667 16z" android:fillColor="@color/Unify_N0"/>
+    <path android:pathData="M0 16a16 16 0 1 1 32 0 16 16 0 1 1-32 0" android:fillColor="@color/Unify_NN950_96" android:fillAlpha="0.68"/>
+    <path android:pathData="M17.667 16l4.62-4.62c0.486-0.486 0.508-1.26 0.05-1.717-0.458-0.458-1.231-0.436-1.717 0.05L16 14.333l-4.62-4.62c-0.486-0.486-1.26-0.508-1.717-0.05-0.458 0.458-0.436 1.231 0.05 1.717l4.62 4.62-4.62 4.62c-0.486 0.486-0.508 1.26-0.05 1.717 0.458 0.458 1.231 0.436 1.717-0.05l4.62-4.62 4.62 4.62c0.486 0.486 1.26 0.508 1.717 0.05 0.458-0.458 0.436-1.231-0.05-1.717L17.667 16z" android:fillColor="@color/Unify_NN0"/>
 </vector>

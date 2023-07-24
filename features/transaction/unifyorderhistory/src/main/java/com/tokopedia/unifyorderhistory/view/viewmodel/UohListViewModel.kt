@@ -134,6 +134,7 @@ class UohListViewModel @Inject constructor(
         UohIdlingResource.increment()
         launchCatchError(block = {
             val result = uohFinishOrderUseCase(paramFinishOrder)
+            result.finishOrderBuyer.orderId = paramFinishOrder.orderId
             _finishOrderResult.value = Success(result.finishOrderBuyer)
             UohIdlingResource.decrement()
         }, onError = {

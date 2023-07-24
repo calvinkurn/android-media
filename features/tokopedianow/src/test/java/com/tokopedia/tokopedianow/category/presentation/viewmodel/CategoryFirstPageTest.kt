@@ -20,6 +20,11 @@ class CategoryFirstPageTest: TokoNowCategoryMainViewModelTestFixture() {
         val userId = "12223"
         val deviceId = "11111"
 
+        setAddressData(
+            warehouseId = warehouseId,
+            warehouses = getLocalWarehouseModelList(),
+            shopId = shopId
+        )
         onUserSession_thenReturns(
             isLoggedIn = isLoggedIn,
             userId = userId,
@@ -111,6 +116,11 @@ class CategoryFirstPageTest: TokoNowCategoryMainViewModelTestFixture() {
         val deviceId = "11111"
         val expectedCategoryIdL2Failed = categoryProductResponseMap.keys.elementAt(1)
 
+        setAddressData(
+            warehouseId = warehouseId,
+            warehouses = getLocalWarehouseModelList(),
+            shopId = shopId
+        )
         onUserSession_thenReturns(
             isLoggedIn = isLoggedIn,
             userId = userId,
