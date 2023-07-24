@@ -37,6 +37,8 @@ class FeedFollowProfileViewHolder private constructor() {
             FeedExoPlayer(itemView.context)
         }
 
+        private var mProfile: FeedFollowProfileAdapter.Model.Profile? = null
+
         init {
             player.getExoPlayer().addListener(object : Player.EventListener {
                 override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
@@ -58,6 +60,14 @@ class FeedFollowProfileViewHolder private constructor() {
             lifecycleOwner.lifecycle.addObserver(object : LifecycleEventObserver {
                 override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
                     when (event) {
+                        Lifecycle.Event.ON_RESUME -> {
+                            if (mProfile?.isSelected == true) {
+                                player.resume(shouldReset = false)
+                            }
+                        }
+                        Lifecycle.Event.ON_PAUSE -> {
+                            player.pause()
+                        }
                         Lifecycle.Event.ON_DESTROY -> {
                             player.setVideoStateListener(null)
                             player.release()
@@ -71,6 +81,8 @@ class FeedFollowProfileViewHolder private constructor() {
         }
 
         fun bind(model: FeedFollowProfileAdapter.Model.Profile) {
+
+            mProfile = model
 
             if (model.isSelected) {
                 player.start(model.data.videoUrl, isMute = false)
