@@ -3,8 +3,8 @@ package com.tokopedia.tokochat.view.chatlist
 import android.util.ArrayMap
 import com.gojek.conversations.channel.ConversationsChannel
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.tokochat.common.util.TokoChatValueUtil.getSource
 import com.tokopedia.tokochat.common.view.chatlist.uimodel.TokoChatListItemUiModel
-import com.tokopedia.tokochat.common.view.chatlist.uimodel.TokoChatListItemUiModel.Companion.getServiceTypeName
 import javax.inject.Inject
 
 class TokoChatListUiMapper@Inject constructor() {
@@ -28,7 +28,7 @@ class TokoChatListUiMapper@Inject constructor() {
     fun mapToTypeCounter(channelList: List<ConversationsChannel>): Map<String, Int> {
         val result = ArrayMap<String, Int>()
         channelList.forEach {
-            val serviceTypeName = getServiceTypeName(
+            val serviceTypeName = getSource(
                 it.metadata?.orderInfo?.serviceType ?: Int.ZERO
             )
             val lastCounter: Int = result.getOrDefault(serviceTypeName, Int.ZERO)

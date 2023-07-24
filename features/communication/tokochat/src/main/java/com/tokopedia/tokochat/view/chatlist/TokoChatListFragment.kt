@@ -13,15 +13,17 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalCommunication
 import com.tokopedia.tokochat.analytics.TokoChatAnalytics
+import com.tokopedia.tokochat.common.util.TokoChatTimeUtil.getRelativeTime
+import com.tokopedia.tokochat.common.util.TokoChatValueUtil.getSource
 import com.tokopedia.tokochat.common.view.chatlist.TokoChatListBaseFragment
 import com.tokopedia.tokochat.common.view.chatlist.adapter.TokoChatListBaseAdapter
 import com.tokopedia.tokochat.common.view.chatlist.listener.TokoChatListItemListener
+import com.tokopedia.tokochat.common.view.chatlist.uimodel.TokoChatListEmptyUiModel
 import com.tokopedia.tokochat.common.view.chatlist.uimodel.TokoChatListItemUiModel
-import com.tokopedia.tokochat.common.view.chatlist.uimodel.TokoChatListItemUiModel.Companion.getServiceTypeName
 import com.tokopedia.tokochat.databinding.TokochatChatlistFragmentBinding
-import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -31,6 +33,8 @@ class TokoChatListFragment @Inject constructor(
 ) :
     TokoChatListBaseFragment<TokochatChatlistFragmentBinding>(),
     TokoChatListItemListener {
+
+    private var chatListJob: Job? = null
 
     override var adapter: TokoChatListBaseAdapter = TokoChatListBaseAdapter(
         itemListener = this
@@ -53,9 +57,12 @@ class TokoChatListFragment @Inject constructor(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initChatListData()
+        initListeners()
     }
 
     private fun initChatListData() {
+        toggleRecyclerViewLayout(true)
+        addInitialShimmering()
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 var isCompleted = false
@@ -64,21 +71,49 @@ class TokoChatListFragment @Inject constructor(
                         is Success -> {
                             setChatListData(it.data)
                             if (!isCompleted) {
-                                viewModel.loadNextPageChatList(it.data.size, isLoadMore = false)
+                                loadChatListData(it.data.size)
                                 isCompleted = true
                             }
                         }
                         is Fail -> {
-                            Toaster.build(
-                                requireView(),
-                                it.throwable.toString(),
-                                Toaster.LENGTH_LONG,
-                                Toaster.TYPE_ERROR
-                            ).show()
+                            showErrorLayout()
                         }
                     }
                 }
             }
+        }
+    }
+
+    private fun setChatListData(newData: List<TokoChatListItemUiModel>) {
+        removeInitialShimmering()
+        if (newData.isEmpty()) {
+            addEmptyChatItem()
+        } else {
+            adapter.setItemsAndAnimateChanges(newData)
+        }
+    }
+
+    private fun loadChatListData(size: Int) {
+        toggleSwipeRefreshState(true)
+        viewModel.loadNextPageChatList(size, false) { isSuccess ->
+            if (!isSuccess) {
+                showErrorLayout()
+            }
+            toggleSwipeRefreshState(false)
+        }
+    }
+
+    private fun showErrorLayout() {
+        adapter.clearAllItems()
+        toggleRecyclerViewLayout(false)
+        showGlobalErrorLayout {
+            resetChatList()
+        }
+    }
+
+    private fun toggleSwipeRefreshState(value: Boolean) {
+        if (baseBinding?.tokochatListLayoutSwipeRefresh?.isRefreshing != value) {
+            baseBinding?.tokochatListLayoutSwipeRefresh?.isRefreshing = value
         }
     }
 
@@ -93,8 +128,25 @@ class TokoChatListFragment @Inject constructor(
         }
     }
 
-    private fun setChatListData(newData: List<TokoChatListItemUiModel>) {
-        adapter.setItemsAndAnimateChanges(newData)
+    private fun initListeners() {
+        baseBinding?.tokochatListLayoutSwipeRefresh?.setOnRefreshListener {
+            resetChatList()
+        }
+    }
+
+    private fun resetChatList() {
+        endlessRecyclerViewScrollListener?.resetState()
+        adapter.clearAllItemsAndAnimateChanges()
+        chatListJob?.cancel()
+        initChatListData()
+    }
+
+    private fun addEmptyChatItem() {
+        adapter.clearAllItems()
+        adapter.addItem(TokoChatListEmptyUiModel())
+        baseBinding?.tokochatListRv?.post {
+            adapter.notifyItemInserted(adapter.lastIndex)
+        }
     }
 
     override fun onLoadMore() {
@@ -102,12 +154,12 @@ class TokoChatListFragment @Inject constructor(
     }
 
     override fun onClickChatItem(element: TokoChatListItemUiModel) {
-        val serviceName = getServiceTypeName(element.serviceType)
+        val serviceName = getSource(element.serviceType)
         tokoChatAnalytics.clickDriverChatList(
             gojekOrderId = element.orderId,
             serviceTypeName = serviceName,
             counter = element.counter,
-            chatDuration = element.getRelativeTime()
+            chatDuration = getRelativeTime(element.createAt)
         )
         context?.let {
             val source = "?${ApplinkConst.TokoChat.PARAM_SOURCE}=$serviceName"
