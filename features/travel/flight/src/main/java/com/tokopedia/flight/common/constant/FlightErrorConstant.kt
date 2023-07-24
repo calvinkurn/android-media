@@ -1,4 +1,4 @@
-package com.tokopedia.flight.booking.constant
+package com.tokopedia.flight.common.constant
 
 /**
  * @author by furqan on 07/06/2021

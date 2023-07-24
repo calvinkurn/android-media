@@ -5,8 +5,8 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.flight.airport.presentation.model.FlightAirportModel
-import com.tokopedia.flight.booking.constant.FlightFlowExtraConstant
 import com.tokopedia.flight.booking.presentation.activity.FlightBookingActivity
+import com.tokopedia.flight.common.constant.FlightFlowExtraConstant
 import com.tokopedia.flight.common.util.FlightAnalyticsScreenName
 import com.tokopedia.flight.common.util.FlightFlowUtil
 import com.tokopedia.flight.search.presentation.fragment.FlightSearchFragment

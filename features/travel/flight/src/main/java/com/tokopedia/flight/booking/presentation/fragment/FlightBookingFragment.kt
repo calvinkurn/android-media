@@ -37,8 +37,6 @@ import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
 import com.tokopedia.common.travel.widget.CountdownTimeView
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.flight.R
-import com.tokopedia.flight.booking.constant.FlightErrorConstant
-import com.tokopedia.flight.booking.constant.FlightFlowConstant
 import com.tokopedia.flight.booking.data.FlightBookingModel
 import com.tokopedia.flight.booking.data.FlightCart
 import com.tokopedia.flight.booking.data.FlightCartViewEntity
@@ -62,6 +60,8 @@ import com.tokopedia.flight.booking.presentation.adapter.FlightBookingPriceAdapt
 import com.tokopedia.flight.booking.presentation.adapter.FlightInsuranceAdapter
 import com.tokopedia.flight.booking.presentation.adapter.FlightJourneyAdapter
 import com.tokopedia.flight.booking.viewmodel.FlightBookingViewModel
+import com.tokopedia.flight.common.constant.FlightErrorConstant
+import com.tokopedia.flight.common.constant.FlightFlowConstant
 import com.tokopedia.flight.common.data.model.FlightError
 import com.tokopedia.flight.common.util.FlightAnalytics
 import com.tokopedia.flight.common.util.FlightCurrencyFormatUtil

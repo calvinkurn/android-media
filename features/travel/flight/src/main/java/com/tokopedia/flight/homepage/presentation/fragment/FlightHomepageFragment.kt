@@ -29,7 +29,7 @@ import com.tokopedia.common_digital.common.presentation.bottomsheet.DigitalDppoC
 import com.tokopedia.flight.R
 import com.tokopedia.flight.airport.presentation.bottomsheet.FlightAirportPickerBottomSheet
 import com.tokopedia.flight.airport.presentation.model.FlightAirportModel
-import com.tokopedia.flight.booking.constant.FlightUrl
+import com.tokopedia.flight.common.constant.FlightUrl
 import com.tokopedia.flight.common.util.FlightAnalyticsScreenName
 import com.tokopedia.flight.common.view.BaseFlightActivity
 import com.tokopedia.flight.databinding.FragmentFlightHomepageBinding

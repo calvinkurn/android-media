@@ -2,7 +2,7 @@ package com.tokopedia.flight.common.util
 
 import android.app.Activity
 import android.content.Intent
-import com.tokopedia.flight.booking.constant.FlightFlowExtraConstant
+import com.tokopedia.flight.common.constant.FlightFlowExtraConstant
 
 /**
  * Created by Furqan on 06/10/2021.
