@@ -953,6 +953,7 @@ class AddEditProductDetailFragment :
             productCategoryLayout?.show()
             productCategoryRecListView?.setToDisplayText(detailInputModel.categoryName, requireContext())
             productCategoryId = detailInputModel.categoryId
+            detailInputModel.categoryPrecision = 999f.toDouble()
         }
 
         // product wholesale
