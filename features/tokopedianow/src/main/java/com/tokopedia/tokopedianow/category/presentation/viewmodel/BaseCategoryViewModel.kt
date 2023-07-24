@@ -110,7 +110,9 @@ abstract class BaseCategoryViewModel(
     protected suspend fun getCategoryProductAsync(
         categoryL2Model: CategoryL2Model
     ): Deferred<Unit?> = asyncCatchError(block = {
-        val response = getCategoryProductUseCase.execute(categoryL2Model.id)
+        val response = getCategoryProductUseCase.execute(
+            categoryIdL2 = categoryL2Model.id
+        )
         onSuccessGetCategoryProduct(response, categoryL2Model)
     }) {
         onErrorGetCategoryProduct(it, categoryL2Model)

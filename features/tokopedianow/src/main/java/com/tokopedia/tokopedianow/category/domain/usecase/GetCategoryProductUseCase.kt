@@ -30,7 +30,8 @@ class GetCategoryProductUseCase @Inject constructor(
     }
 
     suspend fun execute(
-        categoryIdL2: String,
+        categoryIdL1: String = "",
+        categoryIdL2: String = "",
         page: Int = PAGE_VALUE,
         rows: Int = ROWS_VALUE
     ): AceSearchProductModel {
@@ -38,7 +39,8 @@ class GetCategoryProductUseCase @Inject constructor(
             val queryParams = aceSearchParamMapper.createRequestParams(
                 page = page,
                 rows = rows,
-                srpPageId = categoryIdL2,
+                srpPageId = categoryIdL1,
+                sc = categoryIdL2,
                 source = SOURCE_VALUE
             )
 

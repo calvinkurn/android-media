@@ -20,14 +20,16 @@ object CategoryL2Mapper {
 
     fun MutableList<Visitable<*>>.mapToCategoryUiModel(
         componentsResponse: List<Component>,
+        categoryIdL1: String,
         categoryIdL2: String
     ) {
         componentsResponse.filter { SUPPORTED_LAYOUT_TYPES.contains(it.type) }.forEach { componentResponse ->
             when(componentResponse.type) {
                 TABS_HORIZONTAL_SCROLL -> addCategoryTab(
-                    componentsResponse,
-                    componentResponse,
-                    categoryIdL2
+                    componentListResponse = componentsResponse,
+                    componentResponse = componentResponse,
+                    categoryIdL1 = categoryIdL1,
+                    categoryIdL2 = categoryIdL2
                 )
             }
         }
@@ -49,6 +51,7 @@ object CategoryL2Mapper {
     fun MutableList<Visitable<*>>.addCategoryTab(
         componentListResponse: List<Component>,
         componentResponse: Component,
+        categoryIdL1: String,
         categoryIdL2: String
     ) {
         val categoryNameList = componentResponse.getTabCategoryNameList()
@@ -64,6 +67,7 @@ object CategoryL2Mapper {
             id = componentResponse.id,
             titleList = categoryNameList,
             componentList = tabComponents,
+            categoryIdL1 = categoryIdL1,
             categoryL2Ids = categoryL2Ids,
             selectedTabPosition = selectedTabPosition
         ))

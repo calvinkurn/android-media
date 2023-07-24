@@ -60,7 +60,7 @@ class CategoryL2TabViewHolder(
     private fun setupViewPager(data: CategoryL2TabUiModel) {
         data.categoryL2Ids.forEach {
             val fragment = TokoNowCategoryL2TabFragment
-                .newInstance(it, data.componentList)
+                .newInstance(data.categoryIdL1, it, data.componentList)
             viewPagerAdapter.addFragment(fragment)
         }
     }

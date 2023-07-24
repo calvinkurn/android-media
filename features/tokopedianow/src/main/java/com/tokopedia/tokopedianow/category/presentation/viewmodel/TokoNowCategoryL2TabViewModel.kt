@@ -84,6 +84,7 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
     private var page = FIRST_PAGE
     private var getProductJob: Job? = null
 
+    private var categoryIdL1: String = ""
     private var categoryIdL2: String = ""
 
     init {
@@ -99,9 +100,16 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
         updateVisitableListLiveData()
     }
 
-    fun onViewCreated(categoryIdL2: String, components: List<Component>) {
+    fun onViewCreated(
+        categoryIdL1: String,
+        categoryIdL2: String,
+        components: List<Component>
+    ) {
+        setCategoryData(
+            categoryIdL1 = categoryIdL1,
+            categoryIdL2 = categoryIdL2
+        )
         initAffiliateCookie()
-        setCategoryIdL2(categoryIdL2)
         loadFirstPage(components)
     }
 
@@ -176,7 +184,9 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
     private fun getQuickFilterAsync(item: CategoryQuickFilterUiModel): Deferred<Unit?> {
         return asyncCatchError(block = {
             val response = getSortFilterUseCase.execute(
-                source = QUICK_FILTER_TOKONOW_DIRECTORY
+                source = QUICK_FILTER_TOKONOW_DIRECTORY,
+                srpPageId = categoryIdL2,
+                sc = categoryIdL2
             )
             visitableList.mapToQuickFilter(item, response)
             updateVisitableListLiveData()
@@ -224,6 +234,7 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
 
     private suspend fun getProductList() {
         val response = getCategoryProductUseCase.execute(
+            categoryIdL1 = categoryIdL1,
             categoryIdL2 = categoryIdL2,
             page = page,
             rows = PRODUCT_ROWS
@@ -236,7 +247,11 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
         updateVisitableListLiveData()
     }
 
-    private fun setCategoryIdL2(categoryIdL2: String) {
+    private fun setCategoryData(
+        categoryIdL1: String,
+        categoryIdL2: String
+    ) {
+        this.categoryIdL1 = categoryIdL1
         this.categoryIdL2 = categoryIdL2
     }
 

@@ -69,7 +69,7 @@ class TokoNowCategoryL2ViewModel @Inject constructor(
 
                 visitableList.clear()
                 visitableList.addChooseAddress(getAddressData())
-                visitableList.mapToCategoryUiModel(components, categoryIdL2)
+                visitableList.mapToCategoryUiModel(components, categoryIdL1, categoryIdL2)
 
                 hidePageLoading()
                 updateVisitableListLiveData()

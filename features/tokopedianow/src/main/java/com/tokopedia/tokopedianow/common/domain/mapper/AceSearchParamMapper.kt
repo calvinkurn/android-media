@@ -19,8 +19,9 @@ class AceSearchParamMapper @Inject constructor(
     fun createRequestParams(
         page: Int = DEFAULT_PAGE,
         rows: Int = SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_ROWS_PROFILE,
-        srpPageId: String = String.EMPTY,
-        source: String = String.EMPTY
+        srpPageId: String = "",
+        source: String = "",
+        sc: String = ""
     ): MutableMap<String?, Any?> {
         val addressData = addressData.getAddressData()
         val queryParams = mutableMapOf<String?, Any?>()
@@ -50,6 +51,10 @@ class AceSearchParamMapper @Inject constructor(
 
         if(srpPageId.isNotEmpty()) {
             queryParams[SearchApiConst.SRP_PAGE_ID] = srpPageId
+        }
+
+        if(sc.isNotEmpty()) {
+            queryParams[SearchApiConst.SC] = sc
         }
 
         if(source.isNotEmpty()) {

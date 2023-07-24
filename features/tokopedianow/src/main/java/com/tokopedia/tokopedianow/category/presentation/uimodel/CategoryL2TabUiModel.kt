@@ -8,6 +8,7 @@ data class CategoryL2TabUiModel(
     val id: String,
     val titleList: List<String>,
     val componentList: List<Component>,
+    val categoryIdL1: String,
     val categoryL2Ids: List<String>,
     val selectedTabPosition: Int = 0
 ) : Visitable<CategoryL2TypeFactory> {

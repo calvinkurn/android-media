@@ -53,10 +53,12 @@ open class TokoNowCategoryL2TabFragment : Fragment() {
 
     companion object {
         fun newInstance(
+            categoryIdL1: String = "",
             categoryIdL2: String = "",
             components: List<Component>
         ): TokoNowCategoryL2TabFragment {
             return TokoNowCategoryL2TabFragment().apply {
+                this.categoryIdL1 = categoryIdL1
                 this.categoryIdL2 = categoryIdL2
                 this.components = components
             }
@@ -92,6 +94,7 @@ open class TokoNowCategoryL2TabFragment : Fragment() {
     private var loginActivityResult: ActivityResultLauncher<Intent>? = null
     private var addToCartVariantResult: ActivityResultLauncher<Intent>? = null
 
+    private var categoryIdL1: String = ""
     private var categoryIdL2: String = ""
     private var components = listOf<Component>()
 
@@ -172,7 +175,11 @@ open class TokoNowCategoryL2TabFragment : Fragment() {
     }
 
     private fun onViewCreated() {
-        viewModel.onViewCreated(categoryIdL2, components)
+        viewModel.onViewCreated(
+            categoryIdL1 = categoryIdL1,
+            categoryIdL2 = categoryIdL2,
+            components = components
+        )
     }
 
     private fun registerActivityResults() {
