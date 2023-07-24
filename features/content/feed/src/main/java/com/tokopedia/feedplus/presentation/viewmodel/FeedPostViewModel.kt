@@ -14,6 +14,10 @@ import com.tokopedia.common_sdk_affiliate_toko.model.AffiliateSdkPageSource
 import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateAtcSource
 import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
 import com.tokopedia.content.common.comment.usecase.GetCountCommentsUseCase
+import com.tokopedia.content.common.report_content.model.PlayUserReportReasoningUiModel
+import com.tokopedia.content.common.report_content.model.UserReportOptions
+import com.tokopedia.content.common.usecase.GetUserReportListUseCase
+import com.tokopedia.content.common.usecase.PostUserReportUseCase
 import com.tokopedia.content.common.usecase.BroadcasterReportTrackViewerUseCase
 import com.tokopedia.content.common.usecase.TrackVisitChannelBroadcasterUseCase
 import com.tokopedia.content.common.util.UiEventManager
@@ -47,6 +51,7 @@ import com.tokopedia.feedplus.presentation.util.common.FeedLikeAction
 import com.tokopedia.kolcommon.domain.interactor.SubmitActionContentUseCase
 import com.tokopedia.kolcommon.domain.interactor.SubmitLikeContentUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.mvcwidget.TokopointsCatalogMVCSummary
@@ -101,6 +106,8 @@ class FeedPostViewModel @Inject constructor(
     private val affiliateCookieHelper: AffiliateCookieHelper,
     private val trackVisitChannelUseCase: TrackVisitChannelBroadcasterUseCase,
     private val trackReportTrackViewerUseCase: BroadcasterReportTrackViewerUseCase,
+    private val getReportUseCase: GetUserReportListUseCase,
+    private val postReportUseCase: PostUserReportUseCase,
     private val uiEventManager: UiEventManager<FeedPostEvent>,
     private val dispatchers: CoroutineDispatchers
 ) : ViewModel() {
@@ -140,6 +147,15 @@ class FeedPostViewModel @Inject constructor(
 
     val uiEvent: Flow<FeedPostEvent?>
         get() = uiEventManager.event
+
+    private val _userReport = MutableLiveData<Result<List<PlayUserReportReasoningUiModel>>>()
+    val userReportList get() =
+        _userReport.value ?: Success(emptyList())
+
+    private val _selectedReport = MutableLiveData<PlayUserReportReasoningUiModel.Reasoning>()
+    val selectedReport get() = _selectedReport.value
+    private val _isReported = MutableLiveData<Result<Unit>>()
+    val isReported : LiveData<Result<Unit>> get() = _isReported
 
     fun fetchFeedPosts(
         source: String,
@@ -841,6 +857,52 @@ class FeedPostViewModel @Inject constructor(
             }
         }) {
             _merchantVoucherLiveData.value = Fail(it)
+        }
+    }
+
+    fun getReport() {
+        viewModelScope.launchCatchError(block = {
+            val response = withContext(dispatchers.io) {
+                getReportUseCase.executeOnBackground()
+            }
+            val mapped = response.data.map { reasoning ->
+                PlayUserReportReasoningUiModel.Reasoning(
+                    reasoningId = reasoning.id,
+                    title = reasoning.value,
+                    detail = reasoning.detail,
+                    submissionData = if(reasoning.additionalField.isNotEmpty()) reasoning.additionalField.first() else UserReportOptions.OptionAdditionalField()
+                )
+            }
+            _userReport.value = Success(mapped)
+        }){
+            _userReport.value = Fail(it)
+        }
+    }
+
+    fun selectReport(item: PlayUserReportReasoningUiModel.Reasoning) {
+        _selectedReport.value = item
+    }
+
+    fun submitReport(desc: String, timestamp: Long, item: FeedCardVideoContentModel) {
+        viewModelScope.launchCatchError(block = {
+            val response = withContext(dispatchers.io) {
+                val request = postReportUseCase.createParam(
+                    channelId = item.playChannelId.toLongOrZero(),
+                    mediaUrl = item.media.firstOrNull()?.mediaUrl.orEmpty(),
+                    reasonId = selectedReport?.reasoningId.orZero(),
+                    timestamp = timestamp,
+                    reportDesc = desc,
+                    partnerId = item.author.id.toLongOrZero(),
+                    partnerType = PostUserReportUseCase.PartnerType.getTypeFromFeed(item.author.type.value),
+                    reporterId = userSession.userId.toLongOrZero()
+                )
+                postReportUseCase.setRequestParams(request.parameters)
+                postReportUseCase.executeOnBackground()
+            }
+            val isSuccess = response.submissionReport.status == "success"
+            _isReported.value = if (isSuccess) Success(Unit) else Fail(MessageErrorException())
+        }) {
+            _isReported.value = Fail(it)
         }
     }
 

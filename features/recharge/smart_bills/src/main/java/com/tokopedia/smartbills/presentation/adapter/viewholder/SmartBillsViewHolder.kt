@@ -248,11 +248,11 @@ class SmartBillsViewHolder(
 
     private fun getDueUrgencyColor(type: Int, context: Context): Int {
         return when (type) {
-            1 -> ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68)
-            2 -> ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Y400)
-            3 -> ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_R500)
-            4 -> ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_T600)
-            else -> ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68)
+            1 -> ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_68)
+            2 -> ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_YN400)
+            3 -> ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_RN500)
+            4 -> ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_TN600)
+            else -> ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_68)
         }
     }
 

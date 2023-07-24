@@ -14,9 +14,14 @@ buildscript {
     }
 }
 
+android {
+    namespace 'com.tokopedia.videoplayer'
+    testNamespace 'com.tokopedia.videoplayer.test'
+}
+
 dependencies {
     implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk7
-    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
+    implementation projectOrAar(rootProject.ext.libraries.utils)
     implementation rootProject.ext.miscDependencies.coroutineCore
     implementation rootProject.ext.miscDependencies.coroutineAndroid
 

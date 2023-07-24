@@ -271,6 +271,7 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
 import com.tokopedia.recommendation_widget_common.widget.carousel.global.RecommendationCarouselTracking
+import com.tokopedia.recommendation_widget_common.widget.global.recommendationWidgetViewModel
 import com.tokopedia.recommendation_widget_common.widget.viewtoview.ViewToViewItemData
 import com.tokopedia.recommendation_widget_common.widget.viewtoview.ViewToViewTracker
 import com.tokopedia.recommendation_widget_common.widget.viewtoview.bottomsheet.ViewToViewBottomSheet
@@ -282,8 +283,10 @@ import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ProductrevGetReviewMedia
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.util.ReviewMediaGalleryRouter
+import com.tokopedia.searchbar.navigation_component.NavSource
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
+import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScrollListener
 import com.tokopedia.shop.common.constant.ShopStatusDef
@@ -452,6 +455,7 @@ open class DynamicProductDetailFragment :
     private val viewModel by lazy {
         ViewModelProvider(this, viewModelFactory)[DynamicProductDetailViewModel::class.java]
     }
+    private val recommendationWidgetViewModel by recommendationWidgetViewModel()
 
     private val nplFollowersButton: PartialButtonShopFollowersView? by lazy {
         binding?.baseBtnFollow?.root?.run {
@@ -659,6 +663,7 @@ open class DynamicProductDetailFragment :
         recommendationCarouselPositionSavedState.clear()
         shouldRefreshProductInfoBottomSheet = true
         shouldRefreshShippingBottomSheet = true
+        recommendationWidgetViewModel?.refresh()
         super.onSwipeRefresh()
     }
 
@@ -4351,7 +4356,7 @@ open class DynamicProductDetailFragment :
             )
 
             setIcon(
-                IconBuilder()
+                IconBuilder(builderFlags = IconBuilderFlag(pageSource = NavSource.PDP))
                     .addIcon(IconList.ID_SEARCH, disableRouteManager = true) {
                         goToApplink(getLocalSearchApplink())
                     }
@@ -5014,7 +5019,7 @@ open class DynamicProductDetailFragment :
 
     private fun updateActionButtonShadow() {
         if (stickyLoginView?.isShowing() == true) {
-            actionButtonView.setBackground(com.tokopedia.unifyprinciples.R.color.Unify_N0)
+            actionButtonView.setBackground(com.tokopedia.unifyprinciples.R.color.Unify_NN0)
         } else {
             val drawable = context?.let { _context ->
                 ContextCompat.getDrawable(

@@ -6,7 +6,7 @@ import org.junit.runner.Description
 import org.junit.runners.model.Statement
 
 open class ActivityCustomRule(
-    private val inner: ActivityScenarioRule<*>
+    val inner: ActivityScenarioRule<*>
 ) : ExternalResource() {
 
     override fun apply(base: Statement, description: Description): Statement =
