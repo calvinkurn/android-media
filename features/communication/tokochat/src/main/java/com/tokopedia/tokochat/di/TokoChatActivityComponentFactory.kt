@@ -2,7 +2,7 @@ package com.tokopedia.tokochat.di
 
 import android.app.Application
 import androidx.annotation.VisibleForTesting
-import com.tokochat.tokochat_config_common.util.TokoChatConnection
+import com.tokopedia.tokochat.config.util.TokoChatConnection
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 
 open class TokoChatActivityComponentFactory {

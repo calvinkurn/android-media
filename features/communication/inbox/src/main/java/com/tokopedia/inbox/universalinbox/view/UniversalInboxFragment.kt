@@ -227,13 +227,11 @@ class UniversalInboxFragment @Inject constructor(
                     // Update notif & static menu counters
                     if (activity is UniversalInboxActivity) {
                         val notifUnread = it.data.notifCenterUnread.notifUnread.toIntOrZero()
-                        if (notifUnread > Int.ZERO) {
-                            (activity as UniversalInboxActivity).updateNotificationCounter(
-                                UniversalInboxViewUtil.getStringCounter(
-                                    notifUnread
-                                )
+                        (activity as UniversalInboxActivity).updateNotificationCounter(
+                            UniversalInboxViewUtil.getStringCounter(
+                                notifUnread
                             )
-                        }
+                        )
                     }
                     val updatedMenuList = adapter.updateAllCounters(it.data)
                     binding?.inboxRv?.post {
@@ -679,12 +677,12 @@ class UniversalInboxFragment @Inject constructor(
     }
 
     private fun removeLoadMoreLoading() {
-        if (adapter.getItems().isNotEmpty() &&
-            adapter.isRecommendationLoader(adapter.getItems().lastIndex)
-        ) {
-            adapter.removeItemAt(adapter.getItems().lastIndex)
-            binding?.inboxRv?.post {
-                adapter.notifyItemRemoved(adapter.getItems().size)
+        if (adapter.getItems().isNotEmpty()) {
+            adapter.getFirstLoadingPosition()?.let { index ->
+                adapter.removeItemAt(index)
+                binding?.inboxRv?.post {
+                    adapter.notifyItemRemoved(index)
+                }
             }
         }
     }

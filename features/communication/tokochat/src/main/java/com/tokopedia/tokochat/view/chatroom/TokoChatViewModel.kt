@@ -42,10 +42,11 @@ import com.tokopedia.tokochat.util.TokoChatValueUtil.PICTURE
 import com.tokopedia.tokochat.util.TokoChatViewUtil
 import com.tokopedia.tokochat.util.TokoChatViewUtil.Companion.getTokoChatPhotoPath
 import com.tokopedia.tokochat.view.chatroom.uimodel.TokoChatImageAttachmentExtensionProvider
-import com.tokopedia.tokochat_common.util.TokoChatCacheManager
-import com.tokopedia.tokochat_common.util.TokoChatCacheManagerImpl.Companion.TOKOCHAT_IMAGE_ATTACHMENT_MAP
-import com.tokopedia.tokochat_common.util.TokoChatValueUtil
-import com.tokopedia.tokochat_common.util.TokoChatValueUtil.IMAGE_ATTACHMENT_MSG
+import com.tokopedia.tokochat.common.util.TokoChatCacheManager
+import com.tokopedia.tokochat.common.util.TokoChatCacheManagerImpl.Companion.TOKOCHAT_IMAGE_ATTACHMENT_MAP
+import com.tokopedia.tokochat.common.util.TokoChatValueUtil
+import com.tokopedia.tokochat.common.util.TokoChatValueUtil.IMAGE_ATTACHMENT_MSG
+import com.tokopedia.tokochat.common.util.TokoChatValueUtil.TOKOFOOD_SERVICE_TYPE
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -232,7 +233,7 @@ class TokoChatViewModel @Inject constructor(
         }
     }
 
-    fun getChatHistory(channelId: String): LiveData<List<ConversationsMessage>> {
+    fun getChatHistory(channelId: String): LiveData<List<ConversationsMessage>>? {
         return try {
             getChatHistoryUseCase(channelId)
         } catch (throwable: Throwable) {
@@ -273,7 +274,7 @@ class TokoChatViewModel @Inject constructor(
         }
     }
 
-    fun getTypingStatus(): LiveData<List<String>> {
+    fun getTypingStatus(): LiveData<List<String>>? {
         return try {
             getTypingUseCase.getTypingStatus()
         } catch (throwable: Throwable) {
@@ -349,7 +350,7 @@ class TokoChatViewModel @Inject constructor(
         return registrationChannelUseCase.getUserId()
     }
 
-    fun getMemberLeft(): MutableLiveData<String> {
+    fun getMemberLeft(): MutableLiveData<String>? {
         return try {
             chatChannelUseCase.getMemberLeftLiveData()
         } catch (throwable: Throwable) {
@@ -392,7 +393,7 @@ class TokoChatViewModel @Inject constructor(
         }
     }
 
-    fun getLiveChannel(channelId: String): LiveData<ConversationsChannel?> {
+    fun getLiveChannel(channelId: String): LiveData<ConversationsChannel?>? {
         return try {
             chatChannelUseCase.getLiveChannel(channelId)
         } catch (throwable: Throwable) {
@@ -635,7 +636,6 @@ class TokoChatViewModel @Inject constructor(
     }
 
     companion object {
-        const val TOKOFOOD_SERVICE_TYPE = 5
         const val DELAY_UPDATE_ORDER_STATE = 5000L
         private const val DELAY_FETCH_IMAGE = 500L
         private const val ERROR_COMPRESSED_IMAGE_NULL = "Compressed image null"

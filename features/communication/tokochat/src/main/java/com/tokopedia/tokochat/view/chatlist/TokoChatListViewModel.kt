@@ -1,0 +1,86 @@
+package com.tokopedia.tokochat.view.chatlist
+
+import android.util.Log
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import com.gojek.conversations.babble.channel.data.ChannelType
+import com.gojek.conversations.utils.ConversationsConstants
+import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.tokochat.common.util.TokoChatCacheManager
+import com.tokopedia.tokochat.common.view.chatlist.uimodel.TokoChatListItemUiModel
+import com.tokopedia.tokochat.domain.usecase.TokoChatChannelUseCase
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.transformLatest
+import javax.inject.Inject
+
+class TokoChatListViewModel @Inject constructor(
+    private val chatChannelUseCase: TokoChatChannelUseCase,
+    private val mapper: TokoChatListUiMapper,
+    private val cacheManager: TokoChatCacheManager,
+    private val dispatcher: CoroutineDispatchers
+) : BaseViewModel(dispatcher.main) {
+
+    private val _error = MutableLiveData<Pair<Throwable, String>>()
+    val error: LiveData<Pair<Throwable, String>>
+        get() = _error
+
+    fun getChatListFlow(): Flow<Result<List<TokoChatListItemUiModel>>>? {
+        return chatChannelUseCase.getAllCachedChannels(listOf(ChannelType.GroupBooking))
+            ?.onStart {
+                Log.d("TOKOCHAT-lIST", "START-LOADING")
+                setPaginationTimeStamp(0L) // reset
+            }
+            ?.map {
+                it.map { channel ->
+                    mapper.mapToChatListItem(channel)
+                }
+            }
+            ?.transformLatest { value ->
+                emit(Success(value) as Result<List<TokoChatListItemUiModel>>)
+            }
+            ?.catch {
+                _error.value = Pair(it, ::getChatListFlow.name)
+                emit(Fail(it))
+            }
+    }
+
+    fun loadNextPageChatList(localSize: Int = Int.ZERO) {
+        try {
+            chatChannelUseCase.getAllChannel(
+                channelTypes = listOf(ChannelType.GroupBooking),
+                batchSize = getBatchSize(localSize),
+                onSuccess = {
+                    // Set to -1 to mark as no more data
+                    setPaginationTimeStamp(it.lastOrNull()?.createdAt ?: -1)
+                },
+                onError = {
+                    it?.let { error ->
+                        _error.value = Pair(error, ::loadNextPageChatList.name)
+                    }
+                }
+            )
+        } catch (throwable: Throwable) {
+            _error.value = Pair(throwable, ::loadNextPageChatList.name)
+        }
+    }
+
+    private fun getBatchSize(localSize: Int): Int {
+        return if (localSize <= ConversationsConstants.DEFAULT_BATCH_SIZE) {
+            ConversationsConstants.DEFAULT_BATCH_SIZE
+        } else {
+            localSize
+        }
+    }
+
+    private fun setPaginationTimeStamp(newTimeStamp: Long) {
+        chatChannelUseCase.setLastTimeStamp(newTimeStamp)
+    }
+}

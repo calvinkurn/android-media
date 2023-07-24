@@ -10,7 +10,7 @@ import com.tokopedia.tokochat.test.robot.header.HeaderResult
 import com.tokopedia.tokochat.test.robot.reply_area.ReplyAreaResult
 import com.tokopedia.tokochat.test.robot.reply_area.ReplyAreaRobot
 import com.tokopedia.tokochat_common.R
-import com.tokopedia.tokochat_common.util.OrderStatusType
+import com.tokopedia.tokochat.common.util.OrderStatusType
 import com.tokopedia.tokochat_common.util.TokoChatValueUtil.MAX_DISPLAYED_STRING
 import org.junit.Test
 
@@ -143,6 +143,7 @@ class TokoChatGeneralTest : BaseTokoChatTest() {
 
         // When
         launchChatRoomActivity()
+        Thread.sleep(2000)
 
         // Then
         ConsentResult.assertConsentChatBottomSheet(isDisplayed = true)

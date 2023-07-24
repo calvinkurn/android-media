@@ -169,7 +169,7 @@ class ShopInvoiceViewHolder(val view: View) : AbstractViewHolder<ShopInvoice>(vi
         descText.text = addOnSectionDescription
         descText.setType(Typography.DISPLAY_3)
         descText.setWeight(Typography.BOLD)
-        descText.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
+        descText.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_96))
         return descText
     }
 

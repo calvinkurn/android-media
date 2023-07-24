@@ -12,7 +12,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.tokochat_common.util.TokoChatValueUtil
+import com.tokopedia.tokochat.common.util.TokoChatValueUtil
 import com.tokopedia.tokofood.feature.ordertracking.domain.constants.OrderStatusType
 import com.tokopedia.tokofood.feature.ordertracking.domain.usecase.*
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.DriverPhoneNumberUiModel
@@ -169,7 +169,10 @@ open class TokoFoodOrderTrackingViewModel @Inject constructor(
 
     fun getUnReadChatCount(channelId: String): LiveData<Result<Int>> {
         return try {
-            Transformations.map(getUnReadChatCountUseCase.get().unReadCount(channelId)) {
+            Transformations.map(
+                getUnReadChatCountUseCase.get().unReadCount(channelId)
+                    ?: MutableLiveData(Int.ZERO) // Zero if unRead LiveData is null
+            ) {
                 if (it != null) {
                     Success(it)
                 } else {

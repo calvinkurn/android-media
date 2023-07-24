@@ -1,7 +1,7 @@
 package com.tokopedia.tokochat.di
 
 import android.content.Context
-import com.tokochat.tokochat_config_common.di.qualifier.TokoChatQualifier
+import com.tokopedia.tokochat.config.di.qualifier.TokoChatQualifier
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -9,9 +9,9 @@ import com.tokopedia.tokochat.data.repository.TokoChatImageRepository
 import com.tokopedia.tokochat.data.repository.api.TokoChatDownloadImageApi
 import com.tokopedia.tokochat.data.repository.api.TokoChatImageApi
 import com.tokopedia.tokochat.data.repository.api.TokoChatUploadImageApi
-import com.tokopedia.tokochat_common.util.TokoChatCacheManager
-import com.tokopedia.tokochat_common.util.TokoChatCacheManagerImpl
-import com.tokopedia.tokochat_common.util.TokoChatValueUtil
+import com.tokopedia.tokochat.common.util.TokoChatCacheManager
+import com.tokopedia.tokochat.common.util.TokoChatCacheManagerImpl
+import com.tokopedia.tokochat.common.util.TokoChatValueUtil
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module

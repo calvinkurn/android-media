@@ -6,10 +6,8 @@ import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.homenav.base.datamodel.HomeNavMenuDataModel
 import com.tokopedia.homenav.base.datamodel.HomeNavTitleDataModel
-import com.tokopedia.homenav.base.diffutil.HomeNavVisitable
 import com.tokopedia.homenav.common.util.ClientMenuGenerator
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.IDENTIFIER_TITLE_ALL_CATEGORIES
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.IDENTIFIER_TITLE_HELP_CENTER
@@ -21,7 +19,6 @@ import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_QR_COD
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_REVIEW
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_TOKOPEDIA_CARE
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_WISHLIST_MENU
-import com.tokopedia.homenav.common.util.Event
 import com.tokopedia.homenav.mainnav.MainNavConst
 import com.tokopedia.homenav.mainnav.data.pojo.shop.ShopData
 import com.tokopedia.homenav.mainnav.domain.model.AffiliateUserDetailData
@@ -58,6 +55,7 @@ import com.tokopedia.homenav.mainnav.view.datamodel.account.ProfileSellerDataMod
 import com.tokopedia.homenav.mainnav.view.datamodel.account.TokopediaPlusDataModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.searchbar.navigation_component.NavSource
 import com.tokopedia.sessioncommon.data.admin.AdminDataResponse
 import com.tokopedia.sessioncommon.domain.usecase.AccountAdminInfoUseCase
 import com.tokopedia.sessioncommon.util.AdminUserSessionUtil.refreshUserSessionAdminData
@@ -104,8 +102,7 @@ class MainNavViewModel @Inject constructor(
 
     private var navNotification: NavNotificationModel = NavNotificationModel()
 
-    private var pageSource: String = ""
-    private var pageSourceDefault: String = "Default"
+    private var pageSource: NavSource = NavSource.DEFAULT
     private var mainNavProfileCache: MainNavProfileCache? = null
 
     private var _mainNavListVisitable = mutableListOf<Visitable<*>>()
@@ -164,7 +161,7 @@ class MainNavViewModel @Inject constructor(
         } catch (_: Exception) { }
     }
 
-    fun setPageSource(pageSource: String = pageSourceDefault) {
+    fun setPageSource(pageSource: NavSource = NavSource.DEFAULT) {
         this.pageSource = pageSource
         if (isLaunchedFromHome()) {
             removeHomeBackButtonMenu()
@@ -176,14 +173,13 @@ class MainNavViewModel @Inject constructor(
     }
 
     private fun isLaunchedFromHome(): Boolean {
-        return pageSource == ApplinkConsInternalNavigation.SOURCE_HOME ||
-            pageSource == ApplinkConsInternalNavigation.SOURCE_HOME_UOH ||
-            pageSource == ApplinkConsInternalNavigation.SOURCE_HOME_WISHLIST_V2 ||
-            pageSource == ApplinkConsInternalNavigation.SOURCE_HOME_WISHLIST_COLLECTION ||
-            pageSource == ApplinkConsInternalNavigation.SOURCE_HOME_SOS
+        return pageSource == NavSource.HOME ||
+            pageSource == NavSource.HOME_UOH ||
+            pageSource == NavSource.HOME_WISHLIST ||
+            pageSource == NavSource.SOS
     }
 
-    fun getPageSource(): String {
+    fun getPageSource(): NavSource {
         return pageSource
     }
 

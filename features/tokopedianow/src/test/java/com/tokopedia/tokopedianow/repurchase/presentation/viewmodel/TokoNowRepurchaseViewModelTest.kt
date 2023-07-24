@@ -1189,7 +1189,6 @@ class TokoNowRepurchaseViewModelTest : TokoNowRepurchaseViewModelTestFixture() {
     @Test
     fun `given scrolledToLastItem and hasNext true when onScrollProductList should set loadMore success`() {
         val hasNext = true
-        val index = IntArray(1) { 0 }
 
         val productListResponse = GetRepurchaseProductListResponse(
             meta = GetRepurchaseProductMetaResponse(
@@ -1215,7 +1214,7 @@ class TokoNowRepurchaseViewModelTest : TokoNowRepurchaseViewModelTestFixture() {
 
         onGetRepurchaseProductList_thenReturn(loadMoreResponse)
 
-        viewModel.onScrollProductList(index, 1)
+        viewModel.onScrollProductList(0, 1)
 
         val layoutList = listOf(
             createRepurchaseProductUiModel(
@@ -1254,7 +1253,6 @@ class TokoNowRepurchaseViewModelTest : TokoNowRepurchaseViewModelTestFixture() {
     @Test
     fun `given miniCartData when onScrollProductList should update product quantity`() {
         val hasNext = true
-        val index = IntArray(1) { 0 }
         val quantity = 2
 
         val productListResponse = GetRepurchaseProductListResponse(
@@ -1300,7 +1298,7 @@ class TokoNowRepurchaseViewModelTest : TokoNowRepurchaseViewModelTestFixture() {
 
         onGetRepurchaseProductList_thenReturn(loadMoreResponse)
 
-        viewModel.onScrollProductList(index, 1)
+        viewModel.onScrollProductList(0, 1)
 
         val layoutList = listOf(
             createRepurchaseProductUiModel(
@@ -1343,7 +1341,6 @@ class TokoNowRepurchaseViewModelTest : TokoNowRepurchaseViewModelTestFixture() {
     @Test
     fun `given loadMore error when onScrollProductList should NOT set loadMore value`() {
         val hasNext = true
-        val index = IntArray(1) { 0 }
         val loadMoreError = NullPointerException()
 
         val productListResponse = GetRepurchaseProductListResponse(
@@ -1361,7 +1358,7 @@ class TokoNowRepurchaseViewModelTest : TokoNowRepurchaseViewModelTestFixture() {
 
         onGetRepurchaseProductList_thenReturn(loadMoreError)
 
-        viewModel.onScrollProductList(index, 1)
+        viewModel.onScrollProductList(0, 1)
 
         verifyGetProductUseCaseCalled(times = 2)
 
@@ -1385,7 +1382,7 @@ class TokoNowRepurchaseViewModelTest : TokoNowRepurchaseViewModelTestFixture() {
         onGetRepurchaseProductList_thenReturn(productListResponse)
 
         viewModel.getLayoutData()
-        viewModel.onScrollProductList(IntArray(0), 3)
+        viewModel.onScrollProductList(0, 3)
 
         verifyGetProductUseCaseCalled(times = 1)
     }
@@ -1393,7 +1390,6 @@ class TokoNowRepurchaseViewModelTest : TokoNowRepurchaseViewModelTestFixture() {
     @Test
     fun `given hasNext false when onScrollProductList should call getProductList use case ONCE`() {
         val hasNext = false
-        val index = IntArray(1) { 0 }
 
         val productListResponse = GetRepurchaseProductListResponse(
             meta = GetRepurchaseProductMetaResponse(
@@ -1407,7 +1403,7 @@ class TokoNowRepurchaseViewModelTest : TokoNowRepurchaseViewModelTestFixture() {
         onGetRepurchaseProductList_thenReturn(productListResponse)
 
         viewModel.getLayoutData()
-        viewModel.onScrollProductList(index, 1)
+        viewModel.onScrollProductList(0, 1)
 
         verifyGetProductUseCaseCalled(times = 1)
     }
@@ -1436,9 +1432,7 @@ class TokoNowRepurchaseViewModelTest : TokoNowRepurchaseViewModelTestFixture() {
 
     @Test
     fun `given hasNext null when onScrollProductList should NOT call getProductList use case`() {
-        val index = IntArray(1) { 0 }
-
-        viewModel.onScrollProductList(index, 1)
+        viewModel.onScrollProductList(0, 1)
 
         verifyGetProductUseCaseNotCalled()
     }

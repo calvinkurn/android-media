@@ -29,6 +29,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         tools:text="Rp7.300.000"
         app:typographyType="body_3"
-        android:textColor="@color/Unify_N700_96"/>
+        android:textColor="@color/Unify_NN950_96"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
