@@ -24,7 +24,7 @@
         android:id="@+id/overlay_review_media_image_player_see_more"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/Unify_N700_68"
+        android:background="@color/Unify_NN950_68"
         android:visibility="gone"
         tools:visibility="visible" />
 

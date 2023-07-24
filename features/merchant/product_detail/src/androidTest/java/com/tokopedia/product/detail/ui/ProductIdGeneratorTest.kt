@@ -62,54 +62,58 @@ class ProductIdGeneratorTest : BaseProductDetailUiTest() {
     }
 
     private val printConditions = listOf(
-            PrintCondition { view ->
-                val parent = (view.parent as? ViewGroup) ?: return@PrintCondition true
-                val packageName = parent::class.java.`package`?.name.orEmpty()
-                val className = parent::class.java.name
+        PrintCondition { view ->
+            val parent = (view.parent as? ViewGroup) ?: return@PrintCondition true
+            val packageName = parent::class.java.`package`?.name.orEmpty()
+            val className = parent::class.java.name
 
-                !packageName.startsWith("com.tokopedia")
-                        || !className.contains("unify", ignoreCase = true)
-            },
-            PrintCondition { view ->
-                view.id != View.NO_ID || view is ViewGroup
-            }
+            !packageName.startsWith("com.tokopedia") ||
+                !className.contains("unify", ignoreCase = true)
+        },
+        PrintCondition { view ->
+            view.id != View.NO_ID || view is ViewGroup
+        }
     )
 
     private val parentPrintCondition = listOf(
-            PrintCondition { view ->
-                val parent = (view.parent as? ViewGroup) ?: return@PrintCondition true
-                // don't print recyclerview child view, will be printed in separate process
-                parent !is RecyclerView
-            }
+        PrintCondition { view ->
+            val parent = (view.parent as? ViewGroup) ?: return@PrintCondition true
+            // don't print recyclerview child view, will be printed in separate process
+            parent !is RecyclerView
+        }
     ) + printConditions
 
-    private val parentViewPrinter = ViewHierarchyPrinter(parentPrintCondition,
-            customIdPrefix = "P",
-            packageName = BuildConfig.APPLICATION_ID)
-    private val vhViewPrinter = ViewHierarchyPrinter(printConditions,
-            customIdPrefix = "P",
-            packageName = BuildConfig.APPLICATION_ID)
+    private val parentViewPrinter = ViewHierarchyPrinter(
+        parentPrintCondition,
+        customIdPrefix = "P",
+        packageName = BuildConfig.LIBRARY_PACKAGE_NAME
+    )
+    private val vhViewPrinter = ViewHierarchyPrinter(
+        printConditions,
+        customIdPrefix = "P",
+        packageName = BuildConfig.LIBRARY_PACKAGE_NAME
+    )
 
     @Test
     fun captureParentFragmentId() {
         Espresso.onView(ViewMatchers.withId(R.id.rv_pdp))
-                .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
 
         val parentProductView = activity?.getPdpFragment()?.view
         val result = parentViewPrinter.printAsCSV(parentProductView!!)
         FileWriter().writeGeneratedViewIds(
-                "product_detail_fragment_resid.csv",
-                result
+            "product_detail_fragment_resid.csv",
+            result
         )
     }
 
     @Test
     fun captureVhId() {
         Espresso.onView(ViewMatchers.withId(R.id.rv_pdp))
-                .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
 
         val rvSize = activityCommonRule.activity.getPdpFragment().productAdapter?.currentList?.size
-                ?: 0
+            ?: 0
 
         Thread.sleep(2000)
 
@@ -122,14 +126,16 @@ class ProductIdGeneratorTest : BaseProductDetailUiTest() {
         }
     }
 
-    private fun printCsvAndSave(view: View?,
-                                fileName: String,
-                                viewHierarchyPrinter: ViewHierarchyPrinter) {
+    private fun printCsvAndSave(
+        view: View?,
+        fileName: String,
+        viewHierarchyPrinter: ViewHierarchyPrinter
+    ) {
         view?.let {
             val result = viewHierarchyPrinter.printAsCSV(view)
             FileWriter().writeGeneratedViewIds(
-                    "$fileName.csv",
-                    result
+                "$fileName.csv",
+                result
             )
         }
     }

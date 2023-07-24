@@ -74,6 +74,7 @@ import com.tokopedia.search.result.product.responsecode.ResponseCodeImpl
 import com.tokopedia.search.result.product.responsecode.ResponseCodeProvider
 import com.tokopedia.search.result.product.safesearch.SafeSearchPresenter
 import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationPresenterDelegate
+import com.tokopedia.search.result.product.similarsearch.SimilarSearchOnBoardingPresenterDelegate
 import com.tokopedia.search.result.product.suggestion.SuggestionPresenter
 import com.tokopedia.search.result.product.ticker.TickerPresenter
 import com.tokopedia.search.result.product.visitable.VisitableFactory
@@ -150,6 +151,7 @@ class ProductListPresenter @Inject constructor(
     @Named(SearchConstant.AB_TEST_REMOTE_CONFIG)
     private val remoteConfig: RemoteConfig,
     private val responseCodeImpl: ResponseCodeImpl,
+    private val similarSearchOnBoardingPresenterDelegate: SimilarSearchOnBoardingPresenterDelegate,
 ): BaseDaggerPresenter<ProductListSectionContract.View>(),
     ProductListSectionContract.Presenter,
     Pagination by paginationImpl,
@@ -175,6 +177,7 @@ class ProductListPresenter @Inject constructor(
         )
         private const val RESPONSE_CODE_RELATED = "3"
         private const val RESPONSE_CODE_SUGGESTION = "6"
+        private const val REQUEST_TIMEOUT_RESPONSE_CODE = "15"
     }
 
     private var compositeSubscription: CompositeSubscription? = CompositeSubscription()
@@ -1133,12 +1136,18 @@ class ProductListPresenter @Inject constructor(
                 SearchEventTracking.Label.GENERAL_SEARCH_EVENT_LABEL,
                 query,
                 getKeywordProcess(productDataView),
-                productDataView.responseCode,
+                getResponseCode(productDataView),
                 source,
                 getNavSourceForGeneralSearchTracking(),
                 getPageTitleForGeneralSearchTracking(),
                 productDataView.totalData
         )
+    }
+
+    private fun getResponseCode(productDataView: ProductDataView): String? {
+        return if(productDataView.productList.isEmpty() && productDataView.responseCode.equals("0")){
+             REQUEST_TIMEOUT_RESPONSE_CODE
+        } else productDataView.responseCode
     }
 
     private fun getTopNavSource(globalNavDataView: GlobalNavDataView?): String {
@@ -1300,6 +1309,11 @@ class ProductListPresenter @Inject constructor(
             dimension90,
             externalReference,
             chooseAddressDelegate.getChooseAddressParams(),
+        )
+
+        similarSearchOnBoardingPresenterDelegate.checkShouldDisplaySimilarSearchThreeDotsCoachmark(
+            item,
+            adapterPosition,
         )
 
         view.routeToProductDetail(item, adapterPosition)

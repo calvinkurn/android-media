@@ -5,13 +5,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.common.topupbills.R
+import com.tokopedia.common.topupbills.databinding.BottomSheetsTopupBillsMenuBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import kotlinx.android.synthetic.main.bottom_sheets_topup_bills_menu.view.*
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 
 /**
  * @author by resakemal on 26/08/19
  */
 class TopupBillsMenuBottomSheets : BottomSheetUnify() {
+
+    private var binding by autoClearedNullable<BottomSheetsTopupBillsMenuBinding>()
 
     lateinit var listener: MenuListener
 
@@ -22,24 +25,25 @@ class TopupBillsMenuBottomSheets : BottomSheetUnify() {
 
     private fun initChildLayout() {
         val view = View.inflate(context, R.layout.bottom_sheets_topup_bills_menu, null)
+        binding = BottomSheetsTopupBillsMenuBinding.bind(view)
         setChild(view)
         initView(view)
     }
 
     private fun initView(view: View) {
-        with(view) {
+        binding?.run {
             setTitle("")
-            menu_promo.setOnClickListener {
+            menuPromo.setOnClickListener {
                 if (::listener.isInitialized) listener.onPromoClicked()
                 dismiss()
             }
 
-            menu_help.setOnClickListener {
+            menuHelp.setOnClickListener {
                 if (::listener.isInitialized) listener.onHelpClicked()
                 dismiss()
             }
 
-            menu_order_list.setOnClickListener {
+            menuOrderList.setOnClickListener {
                 if (::listener.isInitialized) listener.onOrderListClicked()
                 dismiss()
             }
@@ -60,6 +64,5 @@ class TopupBillsMenuBottomSheets : BottomSheetUnify() {
         fun onPromoClicked()
 
         fun onHelpClicked()
-
     }
 }

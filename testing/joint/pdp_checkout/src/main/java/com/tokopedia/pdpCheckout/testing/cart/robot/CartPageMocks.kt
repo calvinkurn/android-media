@@ -4,7 +4,7 @@ import com.tokopedia.pdpCheckout.testing.R
 
 object CartPageMocks {
 
-    const val GET_CART_LIST_KEY = "cart_revamp_v3"
+    const val GET_CART_LIST_KEY = "cart_revamp_v4"
 
     val GET_CART_LIST_MOCK_DEFAULT_RESPONSE = R.raw.cart_analytics_default_response
     val GET_CART_LIST_MOCK_PROMO_RESPONSE = R.raw.cart_analytics_promo_response

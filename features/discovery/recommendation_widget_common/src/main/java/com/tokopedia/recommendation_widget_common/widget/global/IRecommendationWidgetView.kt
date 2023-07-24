@@ -7,4 +7,5 @@ interface IRecommendationWidgetView<T : RecommendationVisitable> {
 
     val layoutId: Int
     fun bind(model: T)
+    fun recycle()
 }

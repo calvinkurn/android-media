@@ -2,7 +2,7 @@ package com.tokopedia.homenav.mainnav.view.interactor
 
 import com.tokopedia.homenav.base.datamodel.HomeNavTitleDataModel
 import com.tokopedia.homenav.base.diffutil.HomeNavListener
-import com.tokopedia.homenav.mainnav.domain.model.NavFavoriteShopModel
+import com.tokopedia.homenav.mainnav.domain.model.NavReviewModel
 import com.tokopedia.homenav.mainnav.domain.model.NavWishlistModel
 import com.tokopedia.trackingoptimizer.TrackingQueue
 
@@ -12,7 +12,7 @@ interface MainNavListener : HomeNavListener {
 
     fun onProfileRegisterClicked()
 
-    fun onProfileSectionClicked()
+    fun onProfileSectionClicked(eventLabel: String, applink: String)
 
     fun onErrorProfileRefreshClicked(position: Int)
 
@@ -32,17 +32,21 @@ interface MainNavListener : HomeNavListener {
 
     fun onErrorWishlistClicked()
 
-    fun onWishlistCollectionClicked(wishlistModel: NavWishlistModel, position: Int)
+    fun onWishlistCardClicked(wishlistModel: NavWishlistModel, position: Int)
 
-    fun onErrorFavoriteShopClicked()
+    fun onWishlistCardImpressed(wishlistModel: NavWishlistModel, position: Int)
 
-    fun onFavoriteShopItemClicked(favoriteShopModel: NavFavoriteShopModel, position: Int)
+    fun onReviewCardClicked(element: NavReviewModel, position: Int, isClickStar: Boolean, ratingValue: String, uri: String)
 
-    fun showReviewProduct(uriReviewProduct: String)
+    fun onReviewCardImpressed(element: NavReviewModel, position: Int)
 
     fun onErrorReviewClicked()
 
-    fun onViewAllTransactionClicked(trackingLabel: String? = null)
+    fun onOrderCardClicked(applink: String, trackingLabel: String? = null)
+
+    fun onOrderCardImpressed(trackingLabel: String, orderId: String, position: Int)
 
     fun onViewAllWishlistClicked()
+
+    fun onViewAllReviewClicked()
 }

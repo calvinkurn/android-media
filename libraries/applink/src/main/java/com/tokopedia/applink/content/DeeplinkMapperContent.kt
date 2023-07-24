@@ -15,7 +15,8 @@ import com.tokopedia.applink.internal.ApplinkConstInternalContent.INTERNAL_FEED_
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.INTERNAL_PRODUCT_PICKER_FROM_SHOP
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.TAB_POSITION_EXPLORE
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.TAB_POSITION_VIDEO
-import com.tokopedia.applink.internal.ApplinkConstInternalContent.UF_EXTRA_FEED_RELEVANT_POST
+import com.tokopedia.applink.internal.ApplinkConstInternalContent.UF_EXTRA_FEED_SOURCE_ID
+import com.tokopedia.applink.internal.ApplinkConstInternalContent.UF_EXTRA_FEED_SOURCE_NAME
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.UF_TAB_POSITION_FOLLOWING
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.UF_TAB_POSITION_FOR_YOU
 import com.tokopedia.applink.startsWithPattern
@@ -25,6 +26,8 @@ import com.tokopedia.config.GlobalConfig
  * Created by jegul on 2019-11-04
  */
 object DeeplinkMapperContent {
+
+    private const val EXTRA_SOURCE_NAME = "source"
 
     fun getRegisteredNavigationContentFromHttp(uri: Uri, deepLink: String): String {
         return if (uri.pathSegments
@@ -61,7 +64,8 @@ object DeeplinkMapperContent {
     }
 
     fun getRegisteredNavigation(deeplink: String): String {
-        return deeplink.replace(DeeplinkConstant.SCHEME_TOKOPEDIA, DeeplinkConstant.SCHEME_INTERNAL)
+        return if (deeplink.startsWith(DeeplinkConstant.SCHEME_TOKOPEDIA)) deeplink.replaceFirst(DeeplinkConstant.SCHEME_TOKOPEDIA, DeeplinkConstant.SCHEME_INTERNAL)
+        else deeplink
     }
 
     fun isPostDetailDeepLink(uri: Uri): Boolean {
@@ -70,7 +74,7 @@ object DeeplinkMapperContent {
     }
 
     @OptIn(ExperimentalStdlibApi::class)
-    fun getKolDeepLink(deepLink: String): String {
+    fun getContentFeedDeeplink(deepLink: String): String {
         val uri = Uri.parse(deepLink)
         return UriUtil.buildUriAppendParams(
             ApplinkConsInternalHome.HOME_NAVIGATION,
@@ -79,7 +83,10 @@ object DeeplinkMapperContent {
                 put(EXTRA_FEED_TAB_POSITION, UF_TAB_POSITION_FOR_YOU)
 
                 val postId = uri.lastPathSegment ?: return@buildMap
-                put(UF_EXTRA_FEED_RELEVANT_POST, postId)
+                put(UF_EXTRA_FEED_SOURCE_ID, postId)
+
+                val sourceName = uri.getQueryParameter(EXTRA_SOURCE_NAME)
+                if (sourceName != null) put(UF_EXTRA_FEED_SOURCE_NAME, sourceName)
             }
         )
     }
