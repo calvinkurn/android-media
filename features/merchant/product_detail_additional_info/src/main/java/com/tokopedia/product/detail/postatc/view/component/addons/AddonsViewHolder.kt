@@ -23,7 +23,10 @@ class AddonsViewHolder(
             setSelectedAddons(data.selectedAddonsIds)
             setTitleText(data.title)
             setAutosaveAddon(data.cartId.toLongOrZero(), "normal")
-            getAddonData(data.addonsWidgetParam)
+            getAddonData(
+                addOnParam = data.addonsWidgetParam,
+                isSimplified = true
+            )
             binding.postAtcAddonsWidget.setListener(this@AddonsViewHolder)
             dataHash = data.hashCode()
         }
@@ -68,5 +71,4 @@ class AddonsViewHolder(
         callback.onSuccessSaveAddons(selectedAddonIds.size)
         super.onSaveAddonSuccess(selectedAddonIds, changedAddonSelections, addonGroups)
     }
-
 }
