@@ -133,7 +133,7 @@ dependencies {
 
     //Promo
     implementation projectOrAar(rootProject.ext.features.promoCheckout)
-    implementation projectOrAar(rootProject.ext.features.promo-usage)
+    implementation projectOrAar(rootProject.ext.features.promoUsage)
 
     //User
     implementation projectOrAar(rootProject.ext.features.settingnotif)
