@@ -42,13 +42,12 @@
                 app:layout_constraintTop_toTopOf="parent">
 
                 <com.tokopedia.unifycomponents.ImageUnify
-                    android:id="@+id/imageUnify"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:id="@+id/illustration_performance"
+                    android:layout_width="336dp"
+                    android:layout_height="48dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/illustration_card_performance" />
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/tpg_used_quota_label"

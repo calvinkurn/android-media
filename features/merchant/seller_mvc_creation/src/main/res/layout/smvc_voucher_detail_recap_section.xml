@@ -7,14 +7,13 @@
     android:background="@drawable/background_recap_illustration">
 
     <com.tokopedia.unifycomponents.ImageUnify
-        android:id="@+id/image_illustration"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:id="@+id/image_recap_illustration"
+        android:layout_width="277dp"
+        android:layout_height="140dp"
         android:layout_marginTop="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/illustration_ended_voucher" />
+        app:layout_constraintTop_toTopOf="parent"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tpg_voucher_name"
@@ -24,7 +23,7 @@
         android:gravity="center"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/image_illustration"
+        app:layout_constraintTop_toBottomOf="@id/image_recap_illustration"
         app:typographyType="body_1"
         app:typographyWeight="bold"
         tools:text="@string/smvc_placeholder_recap_voucher_name" />
@@ -88,13 +87,12 @@
                 app:layout_constraintTop_toTopOf="parent">
 
                 <com.tokopedia.unifycomponents.ImageUnify
-                    android:id="@+id/imageUnify"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:id="@+id/recap_performance_illustration"
+                    android:layout_width="336dp"
+                    android:layout_height="48dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/illustration_card_performance" />
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/tpg_used_quota_label"

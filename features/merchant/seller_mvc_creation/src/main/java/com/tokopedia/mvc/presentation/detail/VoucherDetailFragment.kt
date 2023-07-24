@@ -122,8 +122,8 @@ class VoucherDetailFragment : BaseDaggerFragment() {
             "https://www.tokopedia.com/help/seller/article/syarat-ketentuan-kupon-toko-saya"
         private const val TOKOPEDIA_CARE_STRING_FORMAT = "%s?url=%s"
         private const val TOKOPEDIA_CARE_PATH = "help"
-        private const val ILLUSTRATION_ENDED_VOUCHER = ""
-        private const val ILLUSTRATION_CARD_PERFORMANCE = ""
+        private const val ILLUSTRATION_ENDED_VOUCHER = "https://images.tokopedia.net/img/android/mvc/illustration_recap.png"
+        private const val ILLUSTRATION_CARD_PERFORMANCE = "https://images.tokopedia.net/img/android/mvc/bg_image.png"
     }
 
     // binding
@@ -322,6 +322,8 @@ class VoucherDetailFragment : BaseDaggerFragment() {
             }
         }
         recapBinding?.run {
+            imageRecapIllustration.setImageUrl(ILLUSTRATION_ENDED_VOUCHER)
+            recapPerformanceIllustration.setImageUrl(ILLUSTRATION_CARD_PERFORMANCE)
             tpgVoucherName.text =
                 getString(R.string.smvc_placeholder_recap_voucher_name, data.voucherName)
             iconChevron.setOnClickListener {
@@ -541,6 +543,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                 }
             }
             performanceBinding?.run {
+                illustrationPerformance.setImageUrl(ILLUSTRATION_CARD_PERFORMANCE)
                 iconChevron.setOnClickListener {
                     if (clParentExpandedCard.isVisible) {
                         TransitionManager.beginDelayedTransition(
