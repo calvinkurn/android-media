@@ -219,8 +219,6 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         setupInsets()
         setupListener()
         setupObserver()
-
-        checkConfig()
     }
 
     override fun onStart() {
@@ -609,12 +607,6 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         observeUiState()
         observeUiEvent()
         observeViewEvent()
-    }
-
-    private fun checkConfig() {
-        parentViewModel.submitAction(PlayBroadcastAction.GetTickerBottomSheetConfig(
-            page = TickerBottomSheetPageType.BOTTOM_SHEET,
-        ))
     }
 
     private fun getCoachMarkSwitchAccount(): CoachMark2Item? {

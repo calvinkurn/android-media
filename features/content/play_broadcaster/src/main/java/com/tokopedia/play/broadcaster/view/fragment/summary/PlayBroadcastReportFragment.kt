@@ -89,8 +89,6 @@ class PlayBroadcastReportFragment @Inject constructor(
         super.onViewCreated(view, savedInstanceState)
         setupView(view)
         setupObserver()
-
-        checkConfig()
     }
 
     override fun onDestroyView() {
@@ -156,7 +154,7 @@ class PlayBroadcastReportFragment @Inject constructor(
         }
     }
 
-    private fun checkConfig() {
+    private fun checkTickerLiveToVodConfig() {
         parentViewModel.submitAction(
             PlayBroadcastAction.GetTickerBottomSheetConfig(
                 page = TickerBottomSheetPageType.TICKER,
@@ -187,6 +185,7 @@ class PlayBroadcastReportFragment @Inject constructor(
                 binding.layoutPlaySummaryInfo.loaderSummary.gone()
                 summaryInfoView.hideError()
                 summaryInfoView.addTrafficMetrics(value.data)
+                checkTickerLiveToVodConfig()
             }
             is NetworkResult.Fail -> {
                 binding.layoutPlaySummaryInfo.loaderSummary.gone()

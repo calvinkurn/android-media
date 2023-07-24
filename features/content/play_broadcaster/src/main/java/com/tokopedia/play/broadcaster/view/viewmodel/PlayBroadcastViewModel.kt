@@ -699,6 +699,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 PlayBroadcastEvent.InitializeBroadcaster(hydraConfigStore.getBroadcastingConfig())
             )
 
+            handleTickerBottomSheetConfig(page = TickerBottomSheetPageType.BOTTOM_SHEET)
+
             _observableConfigInfo.value = NetworkResult.Success(configUiModel)
         }) {
             _observableConfigInfo.value = NetworkResult.Fail(it) { getBroadcasterAuthorConfig(selectedAccount) }
