@@ -3,6 +3,7 @@ package com.tokopedia.feed.component.product
 import android.content.Context
 import android.graphics.Paint
 import android.util.AttributeSet
+import android.util.Log
 import android.view.LayoutInflater
 import androidx.core.content.ContextCompat
 import com.tokopedia.feedcomponent.R
@@ -89,6 +90,10 @@ class FeedTaggedProductBottomSheetItemView(
 
     private fun bindCampaign(campaign: FeedTaggedProductUiModel.Campaign) {
         if (campaign.status is FeedTaggedProductUiModel.CampaignStatus.Ongoing) {
+
+            binding.pbStock.onValueChangeListener =  {prev, curr ->
+                Log.d("hello", "prev $prev -- current $curr")
+            }
             binding.pbStock.setValue(campaign.status.stockInPercent.roundToInt(), true)
             binding.pbStock.progressBarColor = intArrayOf(
                 ContextCompat.getColor(

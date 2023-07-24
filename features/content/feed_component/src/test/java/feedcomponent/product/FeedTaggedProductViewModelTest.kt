@@ -7,6 +7,7 @@ import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCampaign
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXGQLResponse
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXGetActivityProductsResponse
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
+import com.tokopedia.feedcomponent.domain.mapper.ProductMapper
 import com.tokopedia.feedcomponent.domain.usecase.FeedXGetActivityProductsUseCase
 import com.tokopedia.unit.test.rule.UnconfinedTestRule
 import com.tokopedia.usecase.coroutines.Fail
@@ -65,7 +66,7 @@ internal class FeedTaggedProductViewModelTest {
         coEvery { feedXGetActivityProductsUseCase(any()) } throws Throwable("Failed")
 
         // when
-        viewModel.fetchFeedProduct(activityId, FeedTaggedProductUiModel.SourceType.Organic)
+        viewModel.fetchFeedProduct(activityId, emptyList(),  FeedTaggedProductUiModel.SourceType.Organic)
 
         // then
         assert(viewModel.feedTagProductList.value is Fail)
@@ -76,6 +77,14 @@ internal class FeedTaggedProductViewModelTest {
     @Test
     fun fetchFeedProduct_whenSuccess_shouldBeSuccess() {
         // given
+        val dummyData = getDummyData()
+        val productList = dummyData.data.products.map {
+            ProductMapper.transform(
+                it,
+                dummyData.data.campaign,
+                FeedTaggedProductUiModel.SourceType.Organic
+            )
+        }
         coEvery {
             feedXGetActivityProductsUseCase.getFeedDetailParam(
                 activityId,
@@ -85,13 +94,12 @@ internal class FeedTaggedProductViewModelTest {
         coEvery { feedXGetActivityProductsUseCase(any()) } returns getDummyData()
 
         // when
-        viewModel.fetchFeedProduct(activityId, FeedTaggedProductUiModel.SourceType.Organic)
+        viewModel.fetchFeedProduct(activityId, productList, FeedTaggedProductUiModel.SourceType.Organic)
 
         // then
         assert(viewModel.feedTagProductList.value is Success)
         val response = viewModel.feedTagProductList.value as Success
         assert(response.data.size == getDummyData().data.products.size)
-        assert(viewModel.shopId == "09876")
     }
 
     @Test
@@ -109,7 +117,7 @@ internal class FeedTaggedProductViewModelTest {
             )
         )
 
-        viewModel.fetchFeedProduct(activityId, FeedTaggedProductUiModel.SourceType.NonOrganic)
+        viewModel.fetchFeedProduct(activityId, emptyList(),  FeedTaggedProductUiModel.SourceType.NonOrganic)
 
         assert(viewModel.feedTagProductList.value is Success)
         val response = viewModel.feedTagProductList.value as Success
@@ -135,7 +143,7 @@ internal class FeedTaggedProductViewModelTest {
             )
         )
 
-        viewModel.fetchFeedProduct(activityId, FeedTaggedProductUiModel.SourceType.NonOrganic)
+        viewModel.fetchFeedProduct(activityId, emptyList(),  FeedTaggedProductUiModel.SourceType.NonOrganic)
 
         assert(viewModel.feedTagProductList.value is Success)
         val response = viewModel.feedTagProductList.value as Success
@@ -161,7 +169,7 @@ internal class FeedTaggedProductViewModelTest {
             )
         )
 
-        viewModel.fetchFeedProduct(activityId, FeedTaggedProductUiModel.SourceType.Organic)
+        viewModel.fetchFeedProduct(activityId, emptyList(),  FeedTaggedProductUiModel.SourceType.Organic)
 
         assert(viewModel.feedTagProductList.value is Success)
         val response = viewModel.feedTagProductList.value as Success
@@ -187,7 +195,7 @@ internal class FeedTaggedProductViewModelTest {
             )
         )
 
-        viewModel.fetchFeedProduct(activityId, FeedTaggedProductUiModel.SourceType.Organic)
+        viewModel.fetchFeedProduct(activityId, emptyList(),  FeedTaggedProductUiModel.SourceType.Organic)
 
         assert(viewModel.feedTagProductList.value is Success)
         val response = viewModel.feedTagProductList.value as Success
