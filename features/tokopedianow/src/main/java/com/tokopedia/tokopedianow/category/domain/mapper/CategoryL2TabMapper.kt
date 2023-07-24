@@ -16,6 +16,10 @@ import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryProductL
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryQuickFilterUiModel
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategorySortFilterItemUiModel
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
+import com.tokopedia.tokopedianow.common.domain.mapper.ProductAdsMapper
+import com.tokopedia.tokopedianow.common.domain.mapper.ProductAdsMapper.addProductAdsCarousel
+import com.tokopedia.tokopedianow.common.domain.mapper.ProductAdsMapper.updateProductAdsQuantity
+import com.tokopedia.tokopedianow.common.domain.model.GetProductAdsResponse.ProductAdsResponse
 import com.tokopedia.tokopedianow.common.model.TokoNowAdsCarouselUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProgressBarUiModel
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel
@@ -34,6 +38,7 @@ object CategoryL2TabMapper {
             when (it.type) {
                 PRODUCT_LIST_FILTER -> addQuickFilter(it)
                 PRODUCT_LIST_INFINITE_SCROLL -> addProductList(it)
+                FEATURED_PRODUCT -> addProductAdsCarousel(it.id)
             }
         }
     }
@@ -65,6 +70,22 @@ object CategoryL2TabMapper {
         }
     }
 
+    fun MutableList<Visitable<*>>.mapProductAdsCarousel(
+        item: TokoNowAdsCarouselUiModel,
+        response: ProductAdsResponse,
+        miniCartData: MiniCartSimplifiedData?,
+        hasBlockedAddToCart: Boolean
+    ) {
+        updateItemById(item.id) {
+            ProductAdsMapper.mapProductAdsCarousel(
+                id = item.id,
+                response = response,
+                miniCartData = miniCartData,
+                hasBlockedAddToCart = hasBlockedAddToCart
+            )
+        }
+    }
+
     fun MutableList<Visitable<*>>.addProductCardItems(
         response: AceSearchProductModel,
         miniCartData: MiniCartSimplifiedData?,
@@ -83,6 +104,7 @@ object CategoryL2TabMapper {
             if (it is MiniCartItem.MiniCartItemProduct) it.productId else null
         }
         updateProductCardItems(cartProductIds, miniCartData, hasBlockedAddToCart)
+        updateProductAdsQuantity(cartProductIds, miniCartData, hasBlockedAddToCart)
     }
 
     fun MutableList<Visitable<*>>.addLoadMoreLoading() {

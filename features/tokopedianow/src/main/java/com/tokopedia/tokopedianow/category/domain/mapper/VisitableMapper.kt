@@ -405,9 +405,10 @@ internal object VisitableMapper {
     ) {
         updateItemById(PRODUCT_ADS_CAROUSEL) {
             ProductAdsMapper.mapProductAdsCarousel(
-                response,
-                miniCartData,
-                hasBlockedAddToCart
+                id = PRODUCT_ADS_CAROUSEL,
+                response = response,
+                miniCartData = miniCartData,
+                hasBlockedAddToCart = hasBlockedAddToCart
             )
         }
     }

@@ -59,6 +59,7 @@ import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstant
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.CURRENT_SITE_TOKOPEDIA_MARKET_PLACE
 import com.tokopedia.tokopedianow.common.constant.ServiceType
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
+import com.tokopedia.tokopedianow.common.constant.TokoNowStaticLayoutType.Companion.PRODUCT_ADS_CAROUSEL
 import com.tokopedia.tokopedianow.common.domain.mapper.ProductAdsMapper.mapProductAdsCarousel
 import com.tokopedia.tokopedianow.common.domain.mapper.TickerMapper
 import com.tokopedia.tokopedianow.common.domain.model.GetProductAdsResponse.ProductAdsResponse
@@ -752,9 +753,10 @@ abstract class BaseSearchCategoryViewModel(
     ) {
         if(response.productList.isNotEmpty()) {
             contentVisitableList.add(mapProductAdsCarousel(
-                response,
-                miniCartWidgetLiveData.value,
-                hasBlockedAddToCart
+                id = PRODUCT_ADS_CAROUSEL,
+                response = response,
+                miniCartData = miniCartWidgetLiveData.value,
+                hasBlockedAddToCart = hasBlockedAddToCart
             ))
         }
     }

@@ -10,8 +10,8 @@ class CategoryL2TabDiffer : BaseTokopediaNowDiffer() {
     private var newList: List<Visitable<*>> = emptyList()
 
     override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        val oldItem = oldList[oldItemPosition]
-        val newItem = newList[newItemPosition]
+        val oldItem = oldList.getOrNull(oldItemPosition)
+        val newItem = newList.getOrNull(newItemPosition)
 
         return if (oldItem is TokoNowAdsCarouselUiModel && newItem is TokoNowAdsCarouselUiModel) {
             oldItem.id == newItem.id && oldItem.state == newItem.state
@@ -23,12 +23,14 @@ class CategoryL2TabDiffer : BaseTokopediaNowDiffer() {
     }
 
     override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        return oldList[oldItemPosition] == newList[newItemPosition]
+        val oldItem = oldList.getOrNull(oldItemPosition)
+        val newItem = newList.getOrNull(newItemPosition)
+        return oldItem == newItem
     }
 
     override fun getChangePayload(oldItemPosition: Int, newItemPosition: Int): Any? {
-        val oldItem = oldList[oldItemPosition]
-        val newItem = newList[newItemPosition]
+        val oldItem = oldList.getOrNull(oldItemPosition)
+        val newItem = newList.getOrNull(newItemPosition)
 
         return if (oldItem is TokoNowAdsCarouselUiModel && newItem is TokoNowAdsCarouselUiModel) {
             oldItem.getChangePayload(newItem)

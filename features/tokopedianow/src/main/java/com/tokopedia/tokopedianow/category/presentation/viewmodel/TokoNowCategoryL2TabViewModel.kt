@@ -17,6 +17,7 @@ import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.addLoadMoreLoading
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.addProductCardItems
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.filterNotLoadedLayout
+import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.mapProductAdsCarousel
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.mapToCategoryTabLayout
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.mapToQuickFilter
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.removeLoadMoreLoading
@@ -26,7 +27,11 @@ import com.tokopedia.tokopedianow.category.domain.usecase.GetCategoryProductUseC
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryProductListUiModel
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryQuickFilterUiModel
 import com.tokopedia.tokopedianow.common.base.viewmodel.BaseTokoNowViewModel
+import com.tokopedia.tokopedianow.common.domain.param.GetProductAdsParam
+import com.tokopedia.tokopedianow.common.domain.param.GetProductAdsParam.Companion.SRC_DIRECTORY_TOKONOW
+import com.tokopedia.tokopedianow.common.domain.usecase.GetProductAdsUseCase
 import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase
+import com.tokopedia.tokopedianow.common.model.TokoNowAdsCarouselUiModel
 import com.tokopedia.tokopedianow.common.service.NowAffiliateService
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
 import com.tokopedia.tokopedianow.searchcategory.domain.mapper.VisitableMapper.updateProductItem
@@ -41,14 +46,15 @@ import javax.inject.Inject
 class TokoNowCategoryL2TabViewModel @Inject constructor(
     private val getSortFilterUseCase: GetSortFilterUseCase,
     private val getCategoryProductUseCase: GetCategoryProductUseCase,
+    private val getProductAdsUseCase: GetProductAdsUseCase,
+    private val addressData: TokoNowLocalAddress,
+    private val userSession: UserSessionInterface,
     getTargetedTickerUseCase: GetTargetedTickerUseCase,
     getMiniCartUseCase: GetMiniCartListSimplifiedUseCase,
     addToCartUseCase: AddToCartUseCase,
     updateCartUseCase: UpdateCartUseCase,
     deleteCartUseCase: DeleteCartUseCase,
     affiliateService: NowAffiliateService,
-    addressData: TokoNowLocalAddress,
-    userSession: UserSessionInterface,
     dispatchers: CoroutineDispatchers
 ) : BaseTokoNowViewModel(
     getTargetedTickerUseCase = getTargetedTickerUseCase,
@@ -97,7 +103,6 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
         initAffiliateCookie()
         setCategoryIdL2(categoryIdL2)
         loadFirstPage(components)
-        getMiniCart()
     }
 
     fun loadMore() {
@@ -142,15 +147,23 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
         }
     }
 
+    fun onResume() {
+        getMiniCart()
+    }
+
     private fun loadFirstPage(components: List<Component>) {
         launchCatchError(block = {
             page = FIRST_PAGE
+
             visitableList.clear()
             visitableList.mapToCategoryTabLayout(components)
+            updateVisitableListLiveData()
+
             visitableList.filterNotLoadedLayout().forEach {
                 when (it) {
                     is CategoryQuickFilterUiModel -> getQuickFilterAsync(it).await()
                     is CategoryProductListUiModel -> getProductListAsync(it).await()
+                    is TokoNowAdsCarouselUiModel -> getAdsProductListAsync(it).await()
                 }
             }
             page++
@@ -176,6 +189,36 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
             visitableList.remove(item)
             getProductList()
         }) {
+        }
+    }
+
+    private fun getAdsProductListAsync(item: TokoNowAdsCarouselUiModel): Deferred<Unit?> {
+        return asyncCatchError(block = {
+            val warehouseIds = addressData.getWarehouseIds()
+
+            val params = GetProductAdsParam(
+                categoryId = categoryIdL2,
+                warehouseIds = warehouseIds,
+                src = SRC_DIRECTORY_TOKONOW,
+                userId = userSession.userId
+            )
+
+            val response = getProductAdsUseCase.execute(params)
+
+            if(response.productList.isNotEmpty()) {
+                visitableList.mapProductAdsCarousel(
+                    item = item,
+                    response = response,
+                    miniCartData = miniCartData,
+                    hasBlockedAddToCart = hasBlockedAddToCart
+                )
+            } else {
+                visitableList.remove(item)
+            }
+
+            updateVisitableListLiveData()
+        }) {
+
         }
     }
 
