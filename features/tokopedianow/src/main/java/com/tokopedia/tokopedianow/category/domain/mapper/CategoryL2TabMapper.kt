@@ -11,11 +11,13 @@ import com.tokopedia.tokopedianow.category.presentation.constant.CategoryCompone
 import com.tokopedia.tokopedianow.category.presentation.constant.CategoryComponentType.Companion.PRODUCT_LIST_FILTER
 import com.tokopedia.tokopedianow.category.presentation.constant.CategoryComponentType.Companion.PRODUCT_LIST_INFINITE_SCROLL
 import com.tokopedia.tokopedianow.category.presentation.constant.CategoryComponentType.Companion.STATIC_TEXT
+import com.tokopedia.tokopedianow.category.presentation.constant.CategoryStaticLayoutId
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryProductListUiModel
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryQuickFilterUiModel
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategorySortFilterItemUiModel
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.model.TokoNowAdsCarouselUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowProgressBarUiModel
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel
 
 object CategoryL2TabMapper {
@@ -83,6 +85,14 @@ object CategoryL2TabMapper {
         updateProductCardItems(cartProductIds, miniCartData, hasBlockedAddToCart)
     }
 
+    fun MutableList<Visitable<*>>.addLoadMoreLoading() {
+        add(TokoNowProgressBarUiModel(CategoryStaticLayoutId.LOAD_MORE_PROGRESS_BAR))
+    }
+
+    fun MutableList<Visitable<*>>.removeLoadMoreLoading() {
+        removeItem(CategoryStaticLayoutId.LOAD_MORE_PROGRESS_BAR)
+    }
+
     fun MutableList<Visitable<*>>.filterNotLoadedLayout(): MutableList<Visitable<*>> {
         return filter { it.getLayoutState() == TokoNowLayoutState.LOADING }.toMutableList()
     }
@@ -108,6 +118,7 @@ object CategoryL2TabMapper {
         return when (this) {
             is TokoNowAdsCarouselUiModel -> id
             is CategoryQuickFilterUiModel -> id
+            is TokoNowProgressBarUiModel -> id
             else -> null
         }
     }

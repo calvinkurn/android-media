@@ -13,9 +13,12 @@ import com.tokopedia.tokopedianow.category.presentation.viewholder.CategoryProdu
 import com.tokopedia.tokopedianow.category.presentation.viewholder.CategoryQuickFilterViewHolder
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowAdsCarouselTypeFactory
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowProductItemTypeFactory
+import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowProgressBarTypeFactory
 import com.tokopedia.tokopedianow.common.listener.ProductAdsCarouselListener
 import com.tokopedia.tokopedianow.common.model.TokoNowAdsCarouselUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowProgressBarUiModel
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowAdsCarouselViewHolder
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowProgressBarViewHolder
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ProductItemListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.QuickFilterListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
@@ -27,28 +30,41 @@ class CategoryL2TabAdapterTypeFactory(
     private var productItemListener: ProductItemListener?,
     private var productCardCompactListener: ProductCardCompactListener?,
     private var similarProductTrackerListener: ProductCardCompactSimilarProductTrackerListener?,
-): BaseAdapterTypeFactory(), CategoryL2TabAdapterFactory, TokoNowAdsCarouselTypeFactory,
-    TokoNowProductItemTypeFactory {
-
+): BaseAdapterTypeFactory(),
+   CategoryL2TabAdapterFactory,
+   TokoNowAdsCarouselTypeFactory,
+   TokoNowProductItemTypeFactory,
+   TokoNowProgressBarTypeFactory
+{
+    // region TokoNow Common Component
     override fun type(uiModel: TokoNowAdsCarouselUiModel): Int = TokoNowAdsCarouselViewHolder.LAYOUT
 
+    override fun type(uiModel: TokoNowProgressBarUiModel): Int = TokoNowProgressBarViewHolder.LAYOUT
+    // endregion
+
+    // region Category Component
     override fun type(uiModel: CategoryQuickFilterUiModel): Int = CategoryQuickFilterViewHolder.LAYOUT
 
     override fun type(uiModel: CategoryProductListUiModel): Int = CategoryProductListViewHolder.LAYOUT
 
-    override fun type(productItemDataView: ProductItemDataView) = ProductItemViewHolder.LAYOUT
+    override fun type(productItemDataView: ProductItemDataView): Int = ProductItemViewHolder.LAYOUT
+    // endregion
 
-    override fun createViewHolder(
-        view: View,
-        type: Int
-    ): AbstractViewHolder<out Visitable<*>> {
+    override fun createViewHolder(view: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when(type) {
+            // region TokoNow Common Component
             TokoNowAdsCarouselViewHolder.LAYOUT -> {
                 TokoNowAdsCarouselViewHolder(
                     itemView = view,
                     listener = adsCarouselListener
                 )
             }
+            TokoNowProgressBarViewHolder.LAYOUT -> {
+                TokoNowProgressBarViewHolder(view)
+            }
+            // endregion
+
+            // region Category Component
             CategoryQuickFilterViewHolder.LAYOUT -> {
                 CategoryQuickFilterViewHolder(
                     itemView = view,
@@ -63,7 +79,10 @@ class CategoryL2TabAdapterTypeFactory(
                     productCardCompactSimilarProductTrackerListener = similarProductTrackerListener
                 )
             }
-            CategoryProductListViewHolder.LAYOUT -> CategoryProductListViewHolder(view)
+            CategoryProductListViewHolder.LAYOUT -> {
+                CategoryProductListViewHolder(view)
+            }
+            // endregion
             else -> super.createViewHolder(view, type)
         }
     }

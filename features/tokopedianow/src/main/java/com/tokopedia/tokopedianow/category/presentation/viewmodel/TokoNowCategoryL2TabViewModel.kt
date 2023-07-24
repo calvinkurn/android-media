@@ -14,10 +14,12 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
+import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.addLoadMoreLoading
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.addProductCardItems
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.filterNotLoadedLayout
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.mapToCategoryTabLayout
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.mapToQuickFilter
+import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.removeLoadMoreLoading
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.updateAllProductQuantity
 import com.tokopedia.tokopedianow.category.domain.response.GetCategoryLayoutResponse.Component
 import com.tokopedia.tokopedianow.category.domain.usecase.GetCategoryProductUseCase
@@ -39,13 +41,13 @@ import javax.inject.Inject
 class TokoNowCategoryL2TabViewModel @Inject constructor(
     private val getSortFilterUseCase: GetSortFilterUseCase,
     private val getCategoryProductUseCase: GetCategoryProductUseCase,
-    private val addressData: TokoNowLocalAddress,
     getTargetedTickerUseCase: GetTargetedTickerUseCase,
     getMiniCartUseCase: GetMiniCartListSimplifiedUseCase,
     addToCartUseCase: AddToCartUseCase,
     updateCartUseCase: UpdateCartUseCase,
     deleteCartUseCase: DeleteCartUseCase,
     affiliateService: NowAffiliateService,
+    addressData: TokoNowLocalAddress,
     userSession: UserSessionInterface,
     dispatchers: CoroutineDispatchers
 ) : BaseTokoNowViewModel(
@@ -101,7 +103,9 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
     fun loadMore() {
         if (getProductJob?.isCompleted != false) {
             launchCatchError(block = {
+                showLoadMoreLoading()
                 getProductList()
+                hideLoadMoreLoading()
                 page++
             }) {
             }.let {
@@ -191,6 +195,16 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
 
     private fun setCategoryIdL2(categoryIdL2: String) {
         this.categoryIdL2 = categoryIdL2
+    }
+
+    private fun showLoadMoreLoading() {
+        visitableList.addLoadMoreLoading()
+        updateVisitableListLiveData()
+    }
+
+    private fun hideLoadMoreLoading() {
+        visitableList.removeLoadMoreLoading()
+        updateVisitableListLiveData()
     }
 
     private fun updateVisitableListLiveData() {
