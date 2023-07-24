@@ -7,6 +7,7 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokochat.common.util.TokoChatTimeUtil.getRelativeDate
 import com.tokopedia.tokochat.common.util.TokoChatUrlUtil.IC_TOKOFOOD_SOURCE
@@ -48,14 +49,14 @@ class TokoChatListItemViewHolder(
     }
 
     private fun bindMessage(element: TokoChatListItemUiModel) {
-        if (element.message.isNotBlank()) {
+        val isMessageNotEmpty = element.message.isNotBlank()
+        if (isMessageNotEmpty) {
             binding?.tokochatListTvMessage?.text = element.message
-            // Show counter & timestamp only when message is not empty
-            bindCounter(element)
-            bindTime(element)
         } else {
             binding?.tokochatListTvMessage?.text = getString(R.string.tokochat_list_default_message)
         }
+        bindCounter(element, isMessageNotEmpty)
+        bindTime(element, isMessageNotEmpty)
     }
 
     private fun bindBusiness(element: TokoChatListItemUiModel) {
@@ -69,20 +70,18 @@ class TokoChatListItemViewHolder(
         }
     }
 
-    private fun bindTime(element: TokoChatListItemUiModel) {
-        binding?.tokochatListTvTime?.text = getRelativeDate(
-            dateTimestamp = element.createAt
-        )
-        binding?.tokochatListCounter?.setNotification(
-            notif = element.counter.toString(),
-            notificationType = NotificationUnify.COUNTER_TYPE,
-            NotificationUnify.COLOR_PRIMARY
-        )
+    private fun bindTime(element: TokoChatListItemUiModel, shouldShow: Boolean) {
+        binding?.tokochatListTvTime?.apply {
+            text = getRelativeDate(
+                dateTimestamp = element.createAt
+            )
+            showWithCondition(shouldShow)
+        }
     }
 
-    private fun bindCounter(element: TokoChatListItemUiModel) {
+    private fun bindCounter(element: TokoChatListItemUiModel, shouldShow: Boolean) {
         binding?.tokochatListCounter?.apply {
-            if (element.counter > Int.ZERO) {
+            if (element.counter > Int.ZERO && shouldShow) {
                 setNotification(
                     notif = element.counter.toString(),
                     notificationType = NotificationUnify.COUNTER_TYPE,
