@@ -26,15 +26,17 @@ class FeedFollowProfileItemDecoration(
         val position = parent.getChildAdapterPosition(view)
         val last = parent.adapter?.itemCount ?: 0
 
-        val offsetFirstAndLastItem = getScreenWidth().div(2) - view.layoutParams.width.div(2)
-
         when (position) {
-            0 -> outRect.left = offsetFirstAndLastItem
-            last - 1 -> outRect.right = offsetFirstAndLastItem
+            0 -> outRect.left = calculateFirstAndLastItemOffset(view)
+            last - 1 -> outRect.right = calculateFirstAndLastItemOffset(view)
             else -> {
                 outRect.left = offset6
                 outRect.right = offset6
             }
         }
+    }
+
+    private fun calculateFirstAndLastItemOffset(view: View): Int {
+        return getScreenWidth().div(2) - view.layoutParams.width.div(2)
     }
 }
