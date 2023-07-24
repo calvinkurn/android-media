@@ -5,6 +5,7 @@ import com.tokopedia.checkout.view.uimodel.ShipmentPaymentFeeModel
 data class CheckoutCostModel(
     override val cartStringGroup: String = "",
     val totalPrice: Double = 0.0,
+    val totalPriceString: String = "-",
     val totalItem: Int = 0,
     val originalItemPrice: Double = 0.0,
     val finalItemPrice: Double = 0.0,

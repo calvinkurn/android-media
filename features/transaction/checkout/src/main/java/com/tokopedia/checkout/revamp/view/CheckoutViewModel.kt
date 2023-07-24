@@ -39,7 +39,6 @@ import com.tokopedia.checkout.revamp.view.uimodel.CheckoutUpsellModel
 import com.tokopedia.checkout.view.CheckoutMutableLiveData
 import com.tokopedia.checkout.view.converter.ShipmentDataRequestConverter
 import com.tokopedia.checkout.view.uimodel.ShipmentAddOnSummaryModel
-import com.tokopedia.checkout.view.uimodel.ShipmentPaymentFeeModel
 import com.tokopedia.common_epharmacy.network.response.EPharmacyMiniConsultationResult
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
@@ -365,36 +364,17 @@ class CheckoutViewModel @Inject constructor(
     }
 
     fun calculateTotal() {
-        listData.value = calculator.updateShipmentCostModel(listData.value)
-        viewModelScope.launch(dispatchers.main) {
+        viewModelScope.launch(dispatchers.immediate) {
+            listData.value = calculator.calculateWithoutPayment(listData.value, isTradeInByDropOff)
+            var cost = listData.value.cost()!!
             val paymentFeeCheckoutRequest = PaymentFeeCheckoutRequest(
                 gatewayCode = "",
                 profileCode = shipmentPlatformFeeData.profileCode,
-                paymentAmount = listData.value.cost()!!.totalPrice,
+                paymentAmount = cost.totalPrice,
                 additionalData = shipmentPlatformFeeData.additionalData
             )
-            val paymentFee = paymentProcessor.getDynamicPaymentFee(paymentFeeCheckoutRequest)
-            if (paymentFee != null) {
-                val checkoutItems = listData.value
-                val platformFeeModel = ShipmentPaymentFeeModel()
-                for (fee in paymentFee.data) {
-                    if (fee.code.equals(PLATFORM_FEE_CODE, ignoreCase = true)) {
-                        platformFeeModel.title = fee.title
-                        platformFeeModel.fee = fee.fee
-                        platformFeeModel.minRange = fee.minRange
-                        platformFeeModel.maxRange = fee.maxRange
-                        platformFeeModel.isShowTooltip = fee.showTooltip
-                        platformFeeModel.tooltip = fee.tooltipInfo
-                        platformFeeModel.isShowSlashed = fee.showSlashed
-                        platformFeeModel.slashedFee = fee.slashedFee.toDouble()
-                    }
-                }
-                val newCost = checkoutItems.cost()!!.copy(dynamicPlatformFee = platformFeeModel)
-                val itemMutableList = checkoutItems.toMutableList()
-                itemMutableList[checkoutItems.size - 3] = newCost
-                listData.value = itemMutableList
-            }
-            listData.value = calculator.updateShipmentCostModel(listData.value)
+            cost = paymentProcessor.checkPlatformFee(shipmentPlatformFeeData, cost, paymentFeeCheckoutRequest)
+            listData.value = calculator.updateShipmentCostModel(listData.value, cost, isTradeInByDropOff)
         }
     }
 
@@ -519,14 +499,22 @@ class CheckoutViewModel @Inject constructor(
         courierItemData: CourierItemData,
         shippingCourierUiModels: List<ShippingCourierUiModel>
     ) {
-        val checkoutItems = listData.value.toMutableList()
-        val checkoutOrderModel = checkoutItems[cartPosition] as CheckoutOrderModel
-        val shipment = checkoutOrderModel.shipment
-        shippingCourierUiModels.forEach {
-            it.isSelected = it.productData.shipperProductId == courierItemData.shipperProductId
-        }
-        if (shipment.courierItemData?.logPromoCode?.isNotEmpty() == true) {
-            viewModelScope.launch {
+        viewModelScope.launch(dispatchers.immediate) {
+            val checkoutItems = listData.value.toMutableList()
+            val checkoutOrderModel = checkoutItems[cartPosition] as CheckoutOrderModel
+            val shipment = checkoutOrderModel.shipment
+            shippingCourierUiModels.forEach {
+                it.isSelected = it.productData.shipperProductId == courierItemData.shipperProductId
+            }
+            if (shipment.courierItemData?.logPromoCode?.isNotEmpty() == true) {
+                val newShipment = shipment.copy(
+                    isLoading = false,
+                    courierItemData = courierItemData,
+                    shippingCourierUiModels = shippingCourierUiModels
+                )
+                val newOrder = checkoutOrderModel.copy(shipment = newShipment)
+                checkoutItems[cartPosition] = newOrder
+                listData.value = checkoutItems
                 val shouldClearPromoBenefit = promoProcessor.clearPromo(
                     ClearPromoOrder(
                         checkoutOrderModel.boUniqueId,
@@ -546,22 +534,22 @@ class CheckoutViewModel @Inject constructor(
                     listData.value = list
                 }
             }
-        }
-        val newShipment = shipment.copy(
-            isLoading = false,
-            courierItemData = courierItemData,
-            shippingCourierUiModels = shippingCourierUiModels
-        )
-        val newOrder = checkoutOrderModel.copy(shipment = newShipment)
-        checkoutItems[cartPosition] = newOrder
-        listData.value = checkoutItems
-        viewModelScope.launch {
+            val list = listData.value.toMutableList()
+            val newOrder = list[cartPosition] as CheckoutOrderModel
+            val newShipment = shipment.copy(
+                isLoading = false,
+                courierItemData = courierItemData,
+                shippingCourierUiModels = shippingCourierUiModels
+            )
+//            val newOrder = checkoutOrderModel.copy(shipment = newShipment)
+            list[cartPosition] = newOrder.copy(shipment = newShipment)
+            listData.value = list
             cartProcessor.processSaveShipmentState(
                 newOrder,
                 listData.value.address()!!.recipientAddressModel
             )
+            calculateTotal()
         }
-        calculateTotal()
     }
 
     fun generateValidateUsePromoRequest(): ValidateUsePromoRequest {
@@ -635,7 +623,7 @@ class CheckoutViewModel @Inject constructor(
     // endregion
 
     companion object {
-        private const val PLATFORM_FEE_CODE = "platform_fee"
+        const val PLATFORM_FEE_CODE = "platform_fee"
     }
 }
 

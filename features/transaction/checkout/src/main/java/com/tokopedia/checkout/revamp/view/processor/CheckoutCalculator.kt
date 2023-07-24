@@ -20,7 +20,6 @@ import com.tokopedia.checkout.view.uimodel.CrossSellOrderSummaryModel
 import com.tokopedia.checkout.view.uimodel.EgoldAttributeModel
 import com.tokopedia.checkout.view.uimodel.EgoldTieringModel
 import com.tokopedia.checkout.view.uimodel.ShipmentAddOnSummaryModel
-import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
 import com.tokopedia.promocheckout.common.view.uimodel.SummariesUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.SummariesItemUiModel
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
@@ -73,21 +72,21 @@ class CheckoutCalculator @Inject constructor(private val dispatchers: CoroutineD
         }
         return cost
     }
-//
-//    fun resetPromoBenefit() {
-//        val shipmentCost = shipmentCostModel.value
-//        shipmentCost.isHasDiscountDetails = false
-//        shipmentCost.discountAmount = 0
-//        shipmentCost.discountLabel = ""
-//        shipmentCost.shippingDiscountAmount = 0
-//        shipmentCost.shippingDiscountLabel = ""
-//        shipmentCost.productDiscountAmount = 0
-//        shipmentCost.productDiscountLabel = ""
-//        shipmentCost.cashbackAmount = 0
-//        shipmentCost.cashbackLabel = ""
-//    }
 
-    fun updateShipmentCostModel(listData: List<CheckoutItem>): List<CheckoutItem> {
+    fun resetPromoBenefit(cost: CheckoutCostModel): CheckoutCostModel {
+        cost.isHasDiscountDetails = false
+        cost.discountAmount = 0
+        cost.discountLabel = ""
+        cost.shippingDiscountAmount = 0
+        cost.shippingDiscountLabel = ""
+        cost.productDiscountAmount = 0
+        cost.productDiscountLabel = ""
+        cost.cashbackAmount = 0
+        cost.cashbackLabel = ""
+        return cost
+    }
+
+    fun calculateWithoutPayment(listData: List<CheckoutItem>, isTradeInByDropOff: Boolean): List<CheckoutItem> {
         var totalWeight = 0.0
         var totalPrice: Double
         var additionalFee = 0.0
@@ -304,9 +303,76 @@ class CheckoutCalculator @Inject constructor(private val dispatchers: CoroutineD
 //        listSummaryAddOnModel = listShipmentAddOnSummary
 //        shipmentCost.listAddOnSummary = listSummaryAddOnModel
 //        checkoutCostModel.value = shipmentCost
-        val buttonPaymentModel = updateCheckoutButtonData(listData, shipmentCost)
+        shipmentCost = shipmentCost.copy(dynamicPlatformFee = shipmentCost.dynamicPlatformFee.copy(isLoading = true))
+
+        val buttonPaymentModel = updateCheckoutButtonData(listData, shipmentCost, isTradeInByDropOff)
 
         return listData.toMutableList().apply {
+            set(size - 3, shipmentCost)
+            set(size - 1, buttonPaymentModel)
+        }
+    }
+
+    fun updateShipmentCostModel(listData: List<CheckoutItem>, newCost: CheckoutCostModel, isTradeInByDropOff: Boolean): List<CheckoutItem> {
+        val newList = calculateWithoutPayment(listData, isTradeInByDropOff)
+        var shipmentCost = newList.cost()!!.copy(dynamicPlatformFee = newCost.dynamicPlatformFee)
+        var buttonPaymentModel = newList.buttonPayment()!!
+        var cartItemCounter = 0
+        var cartItemErrorCounter = 0
+        var hasLoadingItem = false
+        for (shipmentCartItemModel in newList) {
+            if (shipmentCartItemModel is CheckoutOrderModel) {
+//                if (shipmentCartItemModel.shipment.courierItemData != null) {
+                if ((shipmentCartItemModel.shipment.courierItemData != null && !isTradeInByDropOff) /*|| (shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourierTradeInDropOff != null && isTradeInByDropOff)*/) {
+                    if (!hasLoadingItem) {
+                        hasLoadingItem = validateLoadingItem(shipmentCartItemModel)
+                    }
+                    cartItemCounter++
+                }
+//                }
+                if (shipmentCartItemModel.isError) {
+                    cartItemErrorCounter++
+                }
+            }
+        }
+        val checkoutOrderModels = newList.filterIsInstance(CheckoutOrderModel::class.java)
+        if (cartItemCounter > 0 && cartItemCounter <= checkoutOrderModels.size) {
+            val priceTotal: Double =
+                if (shipmentCost.totalPrice <= 0) 0.0 else shipmentCost.totalPrice
+            val platformFee: Double = if (shipmentCost.dynamicPlatformFee.fee <= 0) 0.0 else shipmentCost.dynamicPlatformFee.fee
+            val finalPrice = priceTotal + platformFee
+            val priceTotalFormatted =
+                CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                    finalPrice,
+                    false
+                ).removeDecimalSuffix()
+            shipmentCost = shipmentCost.copy(totalPriceString = priceTotalFormatted)
+            buttonPaymentModel = buttonPaymentModel.copy(
+                enable = !hasLoadingItem ?: buttonPaymentModel.enable,
+                totalPrice = priceTotalFormatted ?: buttonPaymentModel.totalPrice
+                /*loading = if (isValidatingFinalPromo) {
+                true
+            } else {*/
+//                buttonPaymentModel.loading
+                /*}*/
+            )
+//            return updateShipmentButtonPaymentModel(listData.buttonPayment()!!, enable = !hasLoadingItem, totalPrice = priceTotalFormatted)
+        } else {
+            shipmentCost = shipmentCost.copy(totalPriceString = "-")
+            buttonPaymentModel = buttonPaymentModel.copy(
+                enable = cartItemErrorCounter < checkoutOrderModels.size,
+                totalPrice = "-"
+            )
+//            return updateShipmentButtonPaymentModel(
+//                listData.buttonPayment()!!,
+//                enable = cartItemErrorCounter < checkoutOrderModels.size,
+//                totalPrice = "-"
+//            )
+        }
+
+//        val buttonPaymentModel = updateCheckoutButtonData(listData, shipmentCost, isTradeInByDropOff)
+
+        return newList.toMutableList().apply {
             set(size - 3, shipmentCost)
             set(size - 1, buttonPaymentModel)
         }
@@ -366,19 +432,19 @@ class CheckoutCalculator @Inject constructor(private val dispatchers: CoroutineD
         return buyEgoldValue
     }
 
-    private fun updateCheckoutButtonData(listData: List<CheckoutItem>, shipmentCost: CheckoutCostModel): CheckoutButtonPaymentModel {
+    private fun updateCheckoutButtonData(listData: List<CheckoutItem>, shipmentCost: CheckoutCostModel, isTradeInByDropOff: Boolean): CheckoutButtonPaymentModel {
         var cartItemCounter = 0
         var cartItemErrorCounter = 0
         var hasLoadingItem = false
         for (shipmentCartItemModel in listData) {
             if (shipmentCartItemModel is CheckoutOrderModel) {
-//                if (shipmentCartItemModel.selectedShipmentDetailData != null) {
-//                    if ((shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier != null && !isTradeInByDropOff) || (shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourierTradeInDropOff != null && isTradeInByDropOff)) {
-//                        if (!hasLoadingItem) {
-//                            hasLoadingItem = validateLoadingItem(shipmentCartItemModel)
-//                        }
-//                        cartItemCounter++
-//                    }
+//                if (shipmentCartItemModel.shipment.courierItemData != null) {
+                if ((shipmentCartItemModel.shipment.courierItemData != null && !isTradeInByDropOff) /*|| (shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourierTradeInDropOff != null && isTradeInByDropOff)*/) {
+                    if (!hasLoadingItem) {
+                        hasLoadingItem = validateLoadingItem(shipmentCartItemModel)
+                    }
+                    cartItemCounter++
+                }
 //                }
                 if (shipmentCartItemModel.isError) {
                     cartItemErrorCounter++
@@ -390,7 +456,7 @@ class CheckoutCalculator @Inject constructor(private val dispatchers: CoroutineD
             val priceTotal: Double =
                 if (shipmentCost.totalPrice <= 0) 0.0 else shipmentCost.totalPrice
             val platformFee: Double = if (shipmentCost.dynamicPlatformFee.fee <= 0) 0.0 else shipmentCost.dynamicPlatformFee.fee
-            val finalPrice = priceTotal /*+ platformFee*/
+            val finalPrice = priceTotal + platformFee
             val priceTotalFormatted =
                 CurrencyFormatUtil.convertPriceValueToIdrFormat(
                     finalPrice,
@@ -406,8 +472,8 @@ class CheckoutCalculator @Inject constructor(private val dispatchers: CoroutineD
         }
     }
 
-    private fun validateLoadingItem(shipmentCartItemModel: ShipmentCartItemModel): Boolean {
-        return shipmentCartItemModel.isStateLoadingCourierState
+    private fun validateLoadingItem(shipmentCartItemModel: CheckoutOrderModel): Boolean {
+        return shipmentCartItemModel.isStateLoadingCourierState || shipmentCartItemModel.shipment.isLoading
     }
 
     fun updateShipmentButtonPaymentModel(

@@ -103,14 +103,7 @@ class CheckoutCostViewHolder(
         }
 
         binding.tvCheckoutCostTotalValue.setTextAndContentDescription(
-            if (cost.totalPrice == 0.0) {
-                "-"
-            } else {
-                CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                    cost.totalPrice,
-                    false
-                ).removeDecimalSuffix()
-            },
+            cost.totalPriceString,
             R.string.content_desc_tv_total_payment
         )
     }
