@@ -41,12 +41,12 @@ private const val TDN_SEARCH_DIMENSION = 3
 private const val HEADLINE_IMPRESSION_COUNT_FIRST_PAGE = "0"
 
 class SearchProductFirstPageGqlUseCase(
-    private val graphqlUseCase: GraphqlUseCase,
-    private val searchProductModelMapper: Func1<GraphqlResponse?, SearchProductModel?>,
-    private val topAdsImageViewUseCase: TopAdsImageViewUseCase,
-    private val coroutineDispatchers: CoroutineDispatchers,
-    private val searchLogger: SearchLogger
-) : UseCase<SearchProductModel>(), CoroutineScope {
+        private val graphqlUseCase: GraphqlUseCase,
+        private val searchProductModelMapper: Func1<GraphqlResponse?, SearchProductModel?>,
+        private val topAdsImageViewUseCase: TopAdsImageViewUseCase,
+        private val coroutineDispatchers: CoroutineDispatchers,
+        private val searchLogger: SearchLogger
+): UseCase<SearchProductModel>(), CoroutineScope {
 
     private val masterJob = SupervisorJob()
 
@@ -90,7 +90,7 @@ class SearchProductFirstPageGqlUseCase(
         return Observable.zip(
             gqlSearchProductObservable,
             topAdsImageViewModelObservable,
-            ::setTopAdsImageViewModelList
+            ::setTopAdsImageViewModelList,
         )
     }
 
@@ -154,15 +154,14 @@ class SearchProductFirstPageGqlUseCase(
 
     private fun MutableList<GraphqlRequest>.addGetLastFilterRequest(
         requestParams: RequestParams,
-        params: String
+        params: String,
     ) {
-        if (!requestParams.isSkipGetLastFilterWidget()) {
+        if (!requestParams.isSkipGetLastFilterWidget())
             add(createGetLastFilterRequest(params = params))
-        }
     }
 
     @GqlQuery("GetLastFilter", GET_LAST_FILTER_GQL_QUERY)
-    private fun createGetLastFilterRequest(params: String): GraphqlRequest =
+    private fun createGetLastFilterRequest(params: String: GraphqlRequest) =
         GraphqlRequest(
             GetLastFilter(),
             LastFilterModel::class.java,
@@ -195,7 +194,8 @@ class SearchProductFirstPageGqlUseCase(
                 )
                 emitter.onNext(topAdsImageViewModelList)
                 emitter.onCompleted()
-            } catch (throwable: Throwable) {
+            }
+            catch (throwable: Throwable) {
                 searchLogger.logTDNError(throwable)
                 emitter.onNext(listOf())
             }
@@ -206,16 +206,12 @@ class SearchProductFirstPageGqlUseCase(
         getQueryMap(query, TDN_SEARCH_INVENTORY_ID, "", TDN_SEARCH_ITEM_COUNT, TDN_SEARCH_DIMENSION, "")
 
     private fun Observable<List<TopAdsImageViewModel>>.tdnTimeout(): Observable<List<TopAdsImageViewModel>> {
-        val timeoutMs: Long = TDN_TIMEOUT
+        val timeoutMs : Long = TDN_TIMEOUT
 
-        return this.timeout(
-            timeoutMs,
-            TimeUnit.MILLISECONDS,
-            Observable.create({ emitter ->
-                searchLogger.logTDNError(RuntimeException("Timeout after $timeoutMs ms"))
-                emitter.onNext(listOf())
-            }, BUFFER)
-        )
+        return this.timeout(timeoutMs, TimeUnit.MILLISECONDS, Observable.create({ emitter ->
+            searchLogger.logTDNError(RuntimeException("Timeout after $timeoutMs ms"))
+            emitter.onNext(listOf())
+        }, BUFFER))
     }
 
     private fun setTopAdsImageViewModelList(

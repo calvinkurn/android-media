@@ -9,9 +9,9 @@ import com.tokopedia.search.result.domain.model.ProductTopAdsModel
 import com.tokopedia.usecase.RequestParams
 
 internal fun graphqlRequests(request: MutableList<GraphqlRequest>.() -> Unit) =
-    mutableListOf<GraphqlRequest>().apply {
-        request()
-    }
+        mutableListOf<GraphqlRequest>().apply {
+            request()
+        }
 
 internal fun MutableList<GraphqlRequest>.addAceSearchProductRequest(params: String) {
     add(createAceSearchProductRequest(params))
@@ -25,10 +25,7 @@ internal fun createAceSearchProductRequest(params: String): GraphqlRequest =
         mapOf(SearchConstant.GQL.KEY_PARAMS to params)
     )
 
-internal fun MutableList<GraphqlRequest>.addProductAdsRequest(
-    requestParams: RequestParams,
-    params: String
-) {
+internal fun MutableList<GraphqlRequest>.addProductAdsRequest(requestParams: RequestParams, params: String) {
     if (!requestParams.isSkipProductAds()) {
         add(createTopAdsProductRequest(params = params))
     }
@@ -44,7 +41,7 @@ internal fun createTopAdsProductRequest(params: String): GraphqlRequest =
 
 internal fun MutableList<GraphqlRequest>.addHeadlineAdsRequest(
     requestParams: RequestParams,
-    headlineParams: String
+    headlineParams: String,
 ) {
     if (!requestParams.isSkipHeadlineAds()) {
         add(createHeadlineAdsRequest(headlineParams = headlineParams))
