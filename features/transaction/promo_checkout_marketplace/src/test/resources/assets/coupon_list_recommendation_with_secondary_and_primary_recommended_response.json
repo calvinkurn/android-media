@@ -1,0 +1,2526 @@
+{
+  "coupon_list_recommendation": {
+    "message": [],
+    "error_code": "200",
+    "status": "OK",
+    "data": {
+      "error_page": {
+        "is_show_error_page": false,
+        "image": "",
+        "title": "",
+        "description": "",
+        "button": {
+          "text": "",
+          "destination": ""
+        }
+      },
+      "result_status": {
+        "code": "200",
+        "message": [
+          "OK"
+        ],
+        "reason": ""
+      },
+      "empty_state": {
+        "title": "",
+        "description": "",
+        "image_url": ""
+      },
+      "title": "",
+      "sub_title": "",
+      "promo_recommendation": {
+        "codes": [
+          "PRODIFBAOZ",
+          "PROMOCBOCEPR3OA4VMJ6"
+        ],
+        "message": "Kamu bisa hemat Rp49.276"
+      },
+      "coupon_sections": [
+        {
+          "title": "Gabungin promo biar makin hemat",
+          "sub_title": "",
+          "is_enabled": true,
+          "id": "",
+          "sub_sections": [
+            {
+              "title": "",
+              "sub_title": "Promo dipilih",
+              "icon_unify": "URL",
+              "icon_url": "https://images.tokopedia.net/img/img/promo/targeting/red_bo_20k.png",
+              "is_enabled": true,
+              "id": "bebas_ongkir",
+              "coupon_groups": [],
+              "coupons": [
+                {
+                  "promo_id": 0,
+                  "code": "BOINTRAISLANDTST10",
+                  "title": "Bebas Ongkir Rp20.000",
+                  "message": "",
+                  "coupon_app_link": "",
+                  "unique_id": "",
+                  "shop_id": 0,
+                  "benefit_amount": 20000,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "is_bebas_ongkir": true,
+                  "clashing_infos": [
+                    {
+                      "code": "PROMOCBOCEPR3OA4VMJ6",
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                      "icon": "INFORMATION"
+                    },
+                    {
+                      "code": "PROMOCBOCEPR3OA4VMAW",
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                      "icon": "INFORMATION"
+                    },
+                    {
+                      "code": "PROD9DSFWB",
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                      "icon": "INFORMATION"
+                    },
+                    {
+                      "code": "PRODYN1MLY",
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                      "icon": "INFORMATION"
+                    }
+                  ],
+                  "bo_clashing_infos": [],
+                  "additional_bo_datas": [
+                    {
+                      "code": "BOINTRAISLANDTST10",
+                      "unique_id": "12814905-0-12736404-198493049",
+                      "cart_string_group": "12814905-0-12736404-198493049",
+                      "shipping_id": 1,
+                      "sp_id": 1,
+                      "benefit_amount": 20000,
+                      "promo_id": 0,
+                      "shipping_subsidy": 0,
+                      "shipping_price": 27000,
+                      "benefit_class": "",
+                      "bo_campaign_id": 27,
+                      "eta_txt": "Estimasi tiba 22 - 24 Jul"
+                    }
+                  ],
+                  "currency_details_str": "",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 0,
+                  "is_group_header": true,
+                  "promo_infos": [
+                    {
+                      "type": "promo_info",
+                      "title": "Estimasi tiba 22 - 24 Jul",
+                      "icon": "NONE",
+                      "validation_type": "",
+                      "methods": []
+                    }
+                  ],
+                  "benefit_details": [
+                    {
+                      "amount_idr": 20000,
+                      "benefit_type": "discount",
+                      "data_type": "total_shipping_price"
+                    }
+                  ],
+                  "benefit_adjustment_message": "",
+                  "secondary_coupons": []
+                }
+              ]
+            },
+            {
+              "title": "prod-02",
+              "sub_title": "Promo dipilih",
+              "icon_unify": "",
+              "icon_url": "",
+              "is_enabled": true,
+              "id": "merchant_vouchers",
+              "coupon_groups": [
+                {
+                  "id": 19851978,
+                  "count": 1
+                },
+                {
+                  "id": 19764478,
+                  "count": 1
+                },
+                {
+                  "id": 19749975,
+                  "count": 1
+                },
+                {
+                  "id": 19764477,
+                  "count": 1
+                },
+                {
+                  "id": 19750128,
+                  "count": 1
+                }
+              ],
+              "coupons": [
+                {
+                  "promo_id": 20496629,
+                  "code": "PRODYN1MLY",
+                  "title": "Cashback Rp35.837",
+                  "message": "",
+                  "coupon_app_link": "HCKCSCP12814905-",
+                  "unique_id": "12814905-0-12736404-198493049",
+                  "shop_id": 12814905,
+                  "benefit_amount": 35837,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "is_bebas_ongkir": false,
+                  "clashing_infos": [
+                    {
+                      "code": "PROMOCBOCEPR3OA4VMJ6",
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                      "icon": "INFORMATION"
+                    },
+                    {
+                      "code": "PROMOCBOCEPR3OA4VMAW",
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                      "icon": "INFORMATION"
+                    },
+                    {
+                      "code": "BOINTRAISLANDTST10",
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                      "icon": "INFORMATION"
+                    }
+                  ],
+                  "bo_clashing_infos": [
+                    {
+                      "code": "https://images.tokopedia.net/img/blog/promo/2022/07/courier_fast%402x.png",
+                      "message": "Pengiriman PLUS/Bebas Ongkir tidak tersedia.",
+                      "icon": "https://images.tokopedia.net/img/blog/promo/2022/07/courier_fast%402x.png"
+                    }
+                  ],
+                  "additional_bo_datas": [],
+                  "currency_details_str": "(35.837 GoPay Coins)",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 19764478,
+                  "is_group_header": true,
+                  "promo_infos": [
+                    {
+                      "type": "promo_info",
+                      "title": "\u003cb\u003ePengiriman PLUS/Bebas Ongkir\u003c/b\u003e tidak tersedia.",
+                      "icon": "NONE",
+                      "validation_type": "promo",
+                      "methods": [
+                        "Bebas Ongkir"
+                      ]
+                    },
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 13 menit lagi!",
+                      "icon": "CLOCK",
+                      "validation_type": "",
+                      "methods": []
+                    }
+                  ],
+                  "benefit_details": [
+                    {
+                      "amount_idr": 35837,
+                      "benefit_type": "cashback",
+                      "data_type": "total_product_price"
+                    }
+                  ],
+                  "benefit_adjustment_message": "Promonya sudah disesuaikan supaya kamu bisa pilih promo lainnya.",
+                  "secondary_coupons": [
+                    {
+                      "promo_id": 20482090,
+                      "code": "PRODIFBAOZ",
+                      "title": "Cashback Rp26.878",
+                      "message": "",
+                      "coupon_app_link": "HCKCSCP12814905-",
+                      "unique_id": "12814905-0-12736404-198493049",
+                      "shop_id": 12814905,
+                      "benefit_amount": 26878,
+                      "is_recommended": true,
+                      "is_selected": false,
+                      "is_attempted": false,
+                      "is_bebas_ongkir": false,
+                      "clashing_infos": [],
+                      "bo_clashing_infos": [],
+                      "additional_bo_datas": [],
+                      "currency_details_str": "(26.878 GoPay Coins)",
+                      "is_highlighted": false,
+                      "promo_infos": [
+                        {
+                          "type": "promo_validity",
+                          "title": "Berakhir 19 menit lagi!",
+                          "icon": "CLOCK",
+                          "validation_type": "",
+                          "methods": []
+                        }
+                      ],
+                      "benefit_details": [
+                        {
+                          "amount_idr": 26878,
+                          "benefit_type": "cashback",
+                          "data_type": "total_product_price"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "promo_id": 20496628,
+                  "code": "PROD9DSFWB",
+                  "title": "Cashback Rp24.638",
+                  "message": "",
+                  "coupon_app_link": "HCKCSCP12814905-",
+                  "unique_id": "12814905-0-12736404-198493049",
+                  "shop_id": 12814905,
+                  "benefit_amount": 24638,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "is_bebas_ongkir": false,
+                  "clashing_infos": [
+                    {
+                      "code": "BOINTRAISLANDTST10",
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                      "icon": "INFORMATION"
+                    },
+                    {
+                      "code": "PROMOCBOCEPR3OA4VMJ6",
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                      "icon": "INFORMATION"
+                    },
+                    {
+                      "code": "PROMOCBOCEPR3OA4VMAW",
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                      "icon": "INFORMATION"
+                    }
+                  ],
+                  "bo_clashing_infos": [
+                    {
+                      "code": "https://images.tokopedia.net/img/blog/promo/2022/07/courier_fast%402x.png",
+                      "message": "Pengiriman PLUS/Bebas Ongkir tidak tersedia.",
+                      "icon": "https://images.tokopedia.net/img/blog/promo/2022/07/courier_fast%402x.png"
+                    }
+                  ],
+                  "additional_bo_datas": [],
+                  "currency_details_str": "(24.638 GoPay Coins)",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 19764477,
+                  "is_group_header": true,
+                  "promo_infos": [
+                    {
+                      "type": "promo_info",
+                      "title": "\u003cb\u003ePengiriman PLUS/Bebas Ongkir\u003c/b\u003e tidak tersedia.",
+                      "icon": "NONE",
+                      "validation_type": "promo",
+                      "methods": [
+                        "Bebas Ongkir"
+                      ]
+                    },
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 13 menit lagi!",
+                      "icon": "CLOCK",
+                      "validation_type": "",
+                      "methods": []
+                    }
+                  ],
+                  "benefit_details": [
+                    {
+                      "amount_idr": 24638,
+                      "benefit_type": "cashback",
+                      "data_type": "total_product_price"
+                    }
+                  ],
+                  "benefit_adjustment_message": "Promonya sudah disesuaikan supaya kamu bisa pilih promo lainnya.",
+                  "secondary_coupons": [
+                    {
+                      "promo_id": 20482243,
+                      "code": "PRODO5SJ9U",
+                      "title": "Cashback Rp20.158",
+                      "message": "",
+                      "coupon_app_link": "HCKCSCP12814905-",
+                      "unique_id": "12814905-0-12736404-198493049",
+                      "shop_id": 12814905,
+                      "benefit_amount": 20158,
+                      "is_recommended": false,
+                      "is_selected": false,
+                      "is_attempted": false,
+                      "is_bebas_ongkir": false,
+                      "clashing_infos": [],
+                      "bo_clashing_infos": [],
+                      "additional_bo_datas": [],
+                      "currency_details_str": "(20.158 GoPay Coins)",
+                      "is_highlighted": false,
+                      "promo_infos": [
+                        {
+                          "type": "promo_validity",
+                          "title": "Berakhir 19 menit lagi!",
+                          "icon": "CLOCK",
+                          "validation_type": "",
+                          "methods": []
+                        }
+                      ],
+                      "benefit_details": [
+                        {
+                          "amount_idr": 20158,
+                          "benefit_type": "cashback",
+                          "data_type": "total_product_price"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "promo_id": 20584234,
+                  "code": "PROD9LJQRN",
+                  "title": "Cashback Rp10.000",
+                  "message": "",
+                  "coupon_app_link": "HCKCSCP12814905-",
+                  "unique_id": "12814905-0-12736404-198493049",
+                  "shop_id": 12814905,
+                  "benefit_amount": 10000,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "is_bebas_ongkir": false,
+                  "clashing_infos": [],
+                  "bo_clashing_infos": [],
+                  "additional_bo_datas": [],
+                  "currency_details_str": "(10.000 GoPay Coins)",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 19851978,
+                  "is_group_header": true,
+                  "promo_infos": [
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 13 menit lagi!",
+                      "icon": "CLOCK",
+                      "validation_type": "",
+                      "methods": []
+                    }
+                  ],
+                  "benefit_details": [
+                    {
+                      "amount_idr": 10000,
+                      "benefit_type": "cashback",
+                      "data_type": "total_product_price"
+                    }
+                  ],
+                  "benefit_adjustment_message": "",
+                  "secondary_coupons": []
+                }
+              ]
+            },
+            {
+              "title": "Kupon saya",
+              "sub_title": "Promo dipilih",
+              "icon_unify": "COUPON",
+              "icon_url": "https://images.tokopedia.net/img/blog/promo/2022/01/My-Coupons.png",
+              "is_enabled": true,
+              "id": "my_coupons",
+              "coupon_groups": [
+                {
+                  "id": 19902666,
+                  "count": 2
+                }
+              ],
+              "coupons": [
+                {
+                  "promo_id": 16596617,
+                  "code": "PROMOCBOCEPR3OA4VMJ6",
+                  "title": "Cashback Rp22.398",
+                  "message": "",
+                  "coupon_app_link": "",
+                  "unique_id": "",
+                  "shop_id": 0,
+                  "benefit_amount": 22398,
+                  "is_recommended": true,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "is_bebas_ongkir": false,
+                  "clashing_infos": [
+                    {
+                      "code": "PROD9DSFWB",
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                      "icon": "INFORMATION"
+                    },
+                    {
+                      "code": "PRODYN1MLY",
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                      "icon": "INFORMATION"
+                    },
+                    {
+                      "code": "BOINTRAISLANDTST10",
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                      "icon": "INFORMATION"
+                    }
+                  ],
+                  "bo_clashing_infos": [
+                    {
+                      "code": "https://images.tokopedia.net/img/blog/promo/2022/07/courier_fast%402x.png",
+                      "message": "Pengiriman PLUS/Bebas Ongkir tidak tersedia.",
+                      "icon": "https://images.tokopedia.net/img/blog/promo/2022/07/courier_fast%402x.png"
+                    }
+                  ],
+                  "additional_bo_datas": [],
+                  "currency_details_str": "(22.398 GoPay Coins)",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 19902666,
+                  "is_group_header": true,
+                  "promo_infos": [
+                    {
+                      "type": "promo_info",
+                      "title": "\u003cb\u003ePengiriman PLUS/Bebas Ongkir\u003c/b\u003e tidak tersedia.",
+                      "icon": "NONE",
+                      "validation_type": "promo",
+                      "methods": [
+                        "Bebas Ongkir"
+                      ]
+                    },
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 7 jam lagi!",
+                      "icon": "CLOCK",
+                      "validation_type": "",
+                      "methods": []
+                    }
+                  ],
+                  "benefit_details": [
+                    {
+                      "amount_idr": 22398,
+                      "benefit_type": "cashback",
+                      "data_type": "total_product_price"
+                    }
+                  ],
+                  "benefit_adjustment_message": "",
+                  "secondary_coupons": []
+                },
+                {
+                  "promo_id": 16596617,
+                  "code": "PROMOCBOCEPR3OA4VMAW",
+                  "title": "Cashback Rp22.398",
+                  "message": "",
+                  "coupon_app_link": "",
+                  "unique_id": "",
+                  "shop_id": 0,
+                  "benefit_amount": 22398,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "is_bebas_ongkir": false,
+                  "clashing_infos": [
+                    {
+                      "code": "PROD9DSFWB",
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                      "icon": "INFORMATION"
+                    },
+                    {
+                      "code": "PRODYN1MLY",
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                      "icon": "INFORMATION"
+                    },
+                    {
+                      "code": "BOINTRAISLANDTST10",
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                      "icon": "INFORMATION"
+                    }
+                  ],
+                  "bo_clashing_infos": [
+                    {
+                      "code": "https://images.tokopedia.net/img/blog/promo/2022/07/courier_fast%402x.png",
+                      "message": "Pengiriman PLUS/Bebas Ongkir tidak tersedia.",
+                      "icon": "https://images.tokopedia.net/img/blog/promo/2022/07/courier_fast%402x.png"
+                    }
+                  ],
+                  "additional_bo_datas": [],
+                  "currency_details_str": "(22.398 GoPay Coins)",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 19902666,
+                  "is_group_header": false,
+                  "promo_infos": [
+                    {
+                      "type": "promo_info",
+                      "title": "\u003cb\u003ePengiriman PLUS/Bebas Ongkir\u003c/b\u003e tidak tersedia.",
+                      "icon": "NONE",
+                      "validation_type": "promo",
+                      "methods": [
+                        "Bebas Ongkir"
+                      ]
+                    },
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 7 jam lagi!",
+                      "icon": "CLOCK",
+                      "validation_type": "",
+                      "methods": []
+                    }
+                  ],
+                  "benefit_details": [
+                    {
+                      "amount_idr": 22398,
+                      "benefit_type": "cashback",
+                      "data_type": "total_product_price"
+                    }
+                  ],
+                  "benefit_adjustment_message": "",
+                  "secondary_coupons": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Promo yang belum bisa dipakai",
+          "sub_title": "",
+          "is_enabled": false,
+          "id": "",
+          "sub_sections": [
+            {
+              "title": "12327621_DamsMerch",
+              "sub_title": "Promo dipilih",
+              "icon_unify": "",
+              "icon_url": "",
+              "is_enabled": false,
+              "id": "ineligible_coupons",
+              "coupon_groups": [
+                {
+                  "id": 15937246,
+                  "count": 1
+                },
+                {
+                  "id": 19108383,
+                  "count": 1
+                },
+                {
+                  "id": 17897750,
+                  "count": 1
+                },
+                {
+                  "id": 16355448,
+                  "count": 1
+                }
+              ],
+              "coupons": [
+                {
+                  "promo_id": 17082452,
+                  "code": "1232TLNBRP",
+                  "title": "Promo Gratis Ongkir 1232TLNBRP",
+                  "message": "Promo bisa dipakai jika memilih barang dari toko ini",
+                  "coupon_app_link": "HCKCSCP12327621-",
+                  "unique_id": "",
+                  "shop_id": 12327621,
+                  "benefit_amount": 0,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "is_bebas_ongkir": false,
+                  "clashing_infos": [],
+                  "bo_clashing_infos": [],
+                  "additional_bo_datas": [],
+                  "currency_details_str": "",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 16355448,
+                  "is_group_header": true,
+                  "promo_infos": [
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 13 menit lagi!",
+                      "icon": "CLOCK",
+                      "validation_type": "",
+                      "methods": []
+                    }
+                  ],
+                  "benefit_details": [],
+                  "benefit_adjustment_message": "",
+                  "secondary_coupons": []
+                },
+                {
+                  "promo_id": 16663088,
+                  "code": "1232WNYHWR",
+                  "title": "Promo Discount 1232WNYHWR",
+                  "message": "Promo bisa dipakai jika memilih barang dari toko ini",
+                  "coupon_app_link": "HCKCSCP12327621-",
+                  "unique_id": "",
+                  "shop_id": 12327621,
+                  "benefit_amount": 0,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "is_bebas_ongkir": false,
+                  "clashing_infos": [],
+                  "bo_clashing_infos": [],
+                  "additional_bo_datas": [],
+                  "currency_details_str": "",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 15937246,
+                  "is_group_header": true,
+                  "promo_infos": [
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 13 menit lagi!",
+                      "icon": "CLOCK",
+                      "validation_type": "",
+                      "methods": []
+                    }
+                  ],
+                  "benefit_details": [],
+                  "benefit_adjustment_message": "",
+                  "secondary_coupons": []
+                },
+                {
+                  "promo_id": 19839598,
+                  "code": "1232SDW8ZY",
+                  "title": "Promo Gratis Ongkir 1232SDW8ZY",
+                  "message": "Promo bisa dipakai jika memilih barang dari toko ini",
+                  "coupon_app_link": "HCKCSCP12327621-",
+                  "unique_id": "",
+                  "shop_id": 12327621,
+                  "benefit_amount": 0,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "is_bebas_ongkir": false,
+                  "clashing_infos": [],
+                  "bo_clashing_infos": [],
+                  "additional_bo_datas": [],
+                  "currency_details_str": "",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 19108383,
+                  "is_group_header": true,
+                  "promo_infos": [
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 13 menit lagi!",
+                      "icon": "CLOCK",
+                      "validation_type": "",
+                      "methods": []
+                    }
+                  ],
+                  "benefit_details": [],
+                  "benefit_adjustment_message": "",
+                  "secondary_coupons": []
+                },
+                {
+                  "promo_id": 18627093,
+                  "code": "12320RTTNJ",
+                  "title": "Promo Gratis Ongkir 12320RTTNJ",
+                  "message": "Promo bisa dipakai jika memilih barang dari toko ini",
+                  "coupon_app_link": "HCKCSCP12327621-",
+                  "unique_id": "",
+                  "shop_id": 12327621,
+                  "benefit_amount": 0,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "is_bebas_ongkir": false,
+                  "clashing_infos": [],
+                  "bo_clashing_infos": [],
+                  "additional_bo_datas": [],
+                  "currency_details_str": "",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 17897750,
+                  "is_group_header": true,
+                  "promo_infos": [
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 13 menit lagi!",
+                      "icon": "CLOCK",
+                      "validation_type": "",
+                      "methods": []
+                    }
+                  ],
+                  "benefit_details": [],
+                  "benefit_adjustment_message": "",
+                  "secondary_coupons": []
+                }
+              ]
+            },
+            {
+              "title": "prod-04",
+              "sub_title": "Promo dipilih",
+              "icon_unify": "",
+              "icon_url": "",
+              "is_enabled": false,
+              "id": "",
+              "coupon_groups": [
+                {
+                  "id": 19843056,
+                  "count": 1
+                },
+                {
+                  "id": 19843079,
+                  "count": 1
+                },
+                {
+                  "id": 19843053,
+                  "count": 1
+                },
+                {
+                  "id": 19843073,
+                  "count": 1
+                },
+                {
+                  "id": 19843054,
+                  "count": 1
+                }
+              ],
+              "coupons": [
+                {
+                  "promo_id": 20575299,
+                  "code": "PRODIGDOIO",
+                  "title": "Promo Cashback PRODIGDOIO",
+                  "message": "Promo bisa dipakai jika memilih barang dari toko ini",
+                  "coupon_app_link": "HCKCSCP12814947-",
+                  "unique_id": "",
+                  "shop_id": 12814947,
+                  "benefit_amount": 0,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "is_bebas_ongkir": false,
+                  "clashing_infos": [],
+                  "bo_clashing_infos": [],
+                  "additional_bo_datas": [],
+                  "currency_details_str": "",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 19843053,
+                  "is_group_header": true,
+                  "promo_infos": [
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 13 menit lagi!",
+                      "icon": "CLOCK",
+                      "validation_type": "",
+                      "methods": []
+                    }
+                  ],
+                  "benefit_details": [],
+                  "benefit_adjustment_message": "",
+                  "secondary_coupons": []
+                },
+                {
+                  "promo_id": 20575319,
+                  "code": "PRODP40V5X",
+                  "title": "Promo Cashback PRODP40V5X",
+                  "message": "Promo bisa dipakai jika memilih barang dari toko ini",
+                  "coupon_app_link": "HCKCSCP12814947-",
+                  "unique_id": "",
+                  "shop_id": 12814947,
+                  "benefit_amount": 0,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "is_bebas_ongkir": false,
+                  "clashing_infos": [],
+                  "bo_clashing_infos": [],
+                  "additional_bo_datas": [],
+                  "currency_details_str": "",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 19843073,
+                  "is_group_header": true,
+                  "promo_infos": [
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 13 menit lagi!",
+                      "icon": "CLOCK",
+                      "validation_type": "",
+                      "methods": []
+                    }
+                  ],
+                  "benefit_details": [],
+                  "benefit_adjustment_message": "",
+                  "secondary_coupons": []
+                },
+                {
+                  "promo_id": 20575300,
+                  "code": "PRODCBPEQ2",
+                  "title": "Promo Cashback PRODCBPEQ2",
+                  "message": "Promo bisa dipakai jika memilih barang dari toko ini",
+                  "coupon_app_link": "HCKCSCP12814947-",
+                  "unique_id": "",
+                  "shop_id": 12814947,
+                  "benefit_amount": 0,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "is_bebas_ongkir": false,
+                  "clashing_infos": [],
+                  "bo_clashing_infos": [],
+                  "additional_bo_datas": [],
+                  "currency_details_str": "",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 19843054,
+                  "is_group_header": true,
+                  "promo_infos": [
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 13 menit lagi!",
+                      "icon": "CLOCK",
+                      "validation_type": "",
+                      "methods": []
+                    }
+                  ],
+                  "benefit_details": [],
+                  "benefit_adjustment_message": "",
+                  "secondary_coupons": []
+                },
+                {
+                  "promo_id": 20575302,
+                  "code": "PRODIUF52F",
+                  "title": "Promo Cashback PRODIUF52F",
+                  "message": "Promo bisa dipakai jika memilih barang dari toko ini",
+                  "coupon_app_link": "HCKCSCP12814947-",
+                  "unique_id": "",
+                  "shop_id": 12814947,
+                  "benefit_amount": 0,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "is_bebas_ongkir": false,
+                  "clashing_infos": [],
+                  "bo_clashing_infos": [],
+                  "additional_bo_datas": [],
+                  "currency_details_str": "",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 19843056,
+                  "is_group_header": true,
+                  "promo_infos": [
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 13 menit lagi!",
+                      "icon": "CLOCK",
+                      "validation_type": "",
+                      "methods": []
+                    }
+                  ],
+                  "benefit_details": [],
+                  "benefit_adjustment_message": "",
+                  "secondary_coupons": []
+                },
+                {
+                  "promo_id": 20575325,
+                  "code": "PRODWX7IJ0",
+                  "title": "Promo Cashback PRODWX7IJ0",
+                  "message": "Promo bisa dipakai jika memilih barang dari toko ini",
+                  "coupon_app_link": "HCKCSCP12814947-",
+                  "unique_id": "",
+                  "shop_id": 12814947,
+                  "benefit_amount": 0,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "is_bebas_ongkir": false,
+                  "clashing_infos": [],
+                  "bo_clashing_infos": [],
+                  "additional_bo_datas": [],
+                  "currency_details_str": "",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 19843079,
+                  "is_group_header": true,
+                  "promo_infos": [
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 13 menit lagi!",
+                      "icon": "CLOCK",
+                      "validation_type": "",
+                      "methods": []
+                    }
+                  ],
+                  "benefit_details": [],
+                  "benefit_adjustment_message": "",
+                  "secondary_coupons": []
+                }
+              ]
+            },
+            {
+              "title": "kilua-main",
+              "sub_title": "Promo dipilih",
+              "icon_unify": "",
+              "icon_url": "",
+              "is_enabled": false,
+              "id": "",
+              "coupon_groups": [
+                {
+                  "id": 18930338,
+                  "count": 1
+                },
+                {
+                  "id": 18223964,
+                  "count": 1
+                },
+                {
+                  "id": 19768267,
+                  "count": 1
+                },
+                {
+                  "id": 18778182,
+                  "count": 1
+                },
+                {
+                  "id": 18399731,
+                  "count": 1
+                },
+                {
+                  "id": 19768269,
+                  "count": 1
+                },
+                {
+                  "id": 18930385,
+                  "count": 1
+                },
+                {
+                  "id": 18930355,
+                  "count": 1
+                },
+                {
+                  "id": 18778153,
+                  "count": 1
+                },
+                {
+                  "id": 18778129,
+                  "count": 1
+                },
+                {
+                  "id": 18778168,
+                  "count": 1
+                }
+              ],
+              "coupons": [
+                {
+                  "promo_id": 19661376,
+                  "code": "KILUDZZIWB",
+                  "title": "Promo Discount KILUDZZIWB",
+                  "message": "Promo bisa dipakai jika memilih barang dari toko ini",
+                  "coupon_app_link": "HCKCSCP15028144-",
+                  "unique_id": "",
+                  "shop_id": 15028144,
+                  "benefit_amount": 0,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "is_bebas_ongkir": false,
+                  "clashing_infos": [],
+                  "bo_clashing_infos": [],
+                  "additional_bo_datas": [],
+                  "currency_details_str": "",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 18930385,
+                  "is_group_header": true,
+                  "promo_infos": [
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 13 menit lagi!",
+                      "icon": "CLOCK",
+                      "validation_type": "",
+                      "methods": []
+                    }
+                  ],
+                  "benefit_details": [],
+                  "benefit_adjustment_message": "",
+                  "secondary_coupons": []
+                },
+                {
+                  "promo_id": 19508850,
+                  "code": "KILUIVENAD",
+                  "title": "Promo Discount KILUIVENAD",
+                  "message": "Promo bisa dipakai jika memilih barang dari toko ini",
+                  "coupon_app_link": "HCKCSCP15028144-",
+                  "unique_id": "",
+                  "shop_id": 15028144,
+                  "benefit_amount": 0,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "is_bebas_ongkir": false,
+                  "clashing_infos": [],
+                  "bo_clashing_infos": [],
+                  "additional_bo_datas": [],
+                  "currency_details_str": "",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 18778129,
+                  "is_group_header": true,
+                  "promo_infos": [
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 13 menit lagi!",
+                      "icon": "CLOCK",
+                      "validation_type": "",
+                      "methods": []
+                    }
+                  ],
+                  "benefit_details": [],
+                  "benefit_adjustment_message": "",
+                  "secondary_coupons": []
+                },
+                {
+                  "promo_id": 19661345,
+                  "code": "KILU3IZWF4",
+                  "title": "Promo Cashback KILU3IZWF4",
+                  "message": "Promo bisa dipakai jika memilih barang dari toko ini",
+                  "coupon_app_link": "HCKCSCP15028144-",
+                  "unique_id": "",
+                  "shop_id": 15028144,
+                  "benefit_amount": 0,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "is_bebas_ongkir": false,
+                  "clashing_infos": [],
+                  "bo_clashing_infos": [],
+                  "additional_bo_datas": [],
+                  "currency_details_str": "",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 18930355,
+                  "is_group_header": true,
+                  "promo_infos": [
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 13 menit lagi!",
+                      "icon": "CLOCK",
+                      "validation_type": "",
+                      "methods": []
+                    }
+                  ],
+                  "benefit_details": [],
+                  "benefit_adjustment_message": "",
+                  "secondary_coupons": []
+                },
+                {
+                  "promo_id": 19508888,
+                  "code": "KILUMJT5QB",
+                  "title": "Promo Cashback KILUMJT5QB",
+                  "message": "Promo bisa dipakai jika memilih barang dari toko ini",
+                  "coupon_app_link": "HCKCSCP15028144-",
+                  "unique_id": "",
+                  "shop_id": 15028144,
+                  "benefit_amount": 0,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "is_bebas_ongkir": false,
+                  "clashing_infos": [],
+                  "bo_clashing_infos": [],
+                  "additional_bo_datas": [],
+                  "currency_details_str": "",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 18778168,
+                  "is_group_header": true,
+                  "promo_infos": [
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 13 menit lagi!",
+                      "icon": "CLOCK",
+                      "validation_type": "",
+                      "methods": []
+                    }
+                  ],
+                  "benefit_details": [],
+                  "benefit_adjustment_message": "",
+                  "secondary_coupons": []
+                },
+                {
+                  "promo_id": 19661325,
+                  "code": "KILUGMDAI2",
+                  "title": "Promo Gratis Ongkir KILUGMDAI2",
+                  "message": "Promo bisa dipakai jika memilih barang dari toko ini",
+                  "coupon_app_link": "HCKCSCP15028144-",
+                  "unique_id": "",
+                  "shop_id": 15028144,
+                  "benefit_amount": 0,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "is_bebas_ongkir": false,
+                  "clashing_infos": [],
+                  "bo_clashing_infos": [],
+                  "additional_bo_datas": [],
+                  "currency_details_str": "",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 18930338,
+                  "is_group_header": true,
+                  "promo_infos": [
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 13 menit lagi!",
+                      "icon": "CLOCK",
+                      "validation_type": "",
+                      "methods": []
+                    }
+                  ],
+                  "benefit_details": [],
+                  "benefit_adjustment_message": "",
+                  "secondary_coupons": []
+                },
+                {
+                  "promo_id": 18953796,
+                  "code": "KILU8X2P1V",
+                  "title": "Promo Cashback KILU8X2P1V",
+                  "message": "Promo bisa dipakai jika memilih barang dari toko ini",
+                  "coupon_app_link": "HCKCSCP15028144-",
+                  "unique_id": "",
+                  "shop_id": 15028144,
+                  "benefit_amount": 0,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "is_bebas_ongkir": false,
+                  "clashing_infos": [],
+                  "bo_clashing_infos": [],
+                  "additional_bo_datas": [],
+                  "currency_details_str": "",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 18223964,
+                  "is_group_header": true,
+                  "promo_infos": [
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 13 menit lagi!",
+                      "icon": "CLOCK",
+                      "validation_type": "",
+                      "methods": []
+                    }
+                  ],
+                  "benefit_details": [],
+                  "benefit_adjustment_message": "",
+                  "secondary_coupons": []
+                },
+                {
+                  "promo_id": 19508871,
+                  "code": "KILUP3MTXU",
+                  "title": "Promo Gratis Ongkir KILUP3MTXU",
+                  "message": "Promo bisa dipakai jika memilih barang dari toko ini",
+                  "coupon_app_link": "HCKCSCP15028144-",
+                  "unique_id": "",
+                  "shop_id": 15028144,
+                  "benefit_amount": 0,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "is_bebas_ongkir": false,
+                  "clashing_infos": [],
+                  "bo_clashing_infos": [],
+                  "additional_bo_datas": [],
+                  "currency_details_str": "",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 18778153,
+                  "is_group_header": true,
+                  "promo_infos": [
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 13 menit lagi!",
+                      "icon": "CLOCK",
+                      "validation_type": "",
+                      "methods": []
+                    }
+                  ],
+                  "benefit_details": [],
+                  "benefit_adjustment_message": "",
+                  "secondary_coupons": []
+                },
+                {
+                  "promo_id": 20500408,
+                  "code": "KILU962O2H",
+                  "title": "Promo Cashback KILU962O2H",
+                  "message": "Promo bisa dipakai jika memilih barang dari toko ini",
+                  "coupon_app_link": "HCKCSCP15028144-",
+                  "unique_id": "",
+                  "shop_id": 15028144,
+                  "benefit_amount": 0,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "is_bebas_ongkir": false,
+                  "clashing_infos": [],
+                  "bo_clashing_infos": [],
+                  "additional_bo_datas": [],
+                  "currency_details_str": "",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 19768267,
+                  "is_group_header": true,
+                  "promo_infos": [
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 13 menit lagi!",
+                      "icon": "CLOCK",
+                      "validation_type": "",
+                      "methods": []
+                    }
+                  ],
+                  "benefit_details": [],
+                  "benefit_adjustment_message": "",
+                  "secondary_coupons": []
+                },
+                {
+                  "promo_id": 19508900,
+                  "code": "KILUYT03PM",
+                  "title": "Promo Discount KILUYT03PM",
+                  "message": "Promo bisa dipakai jika memilih barang dari toko ini",
+                  "coupon_app_link": "HCKCSCP15028144-",
+                  "unique_id": "",
+                  "shop_id": 15028144,
+                  "benefit_amount": 0,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "is_bebas_ongkir": false,
+                  "clashing_infos": [],
+                  "bo_clashing_infos": [],
+                  "additional_bo_datas": [],
+                  "currency_details_str": "",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 18778182,
+                  "is_group_header": true,
+                  "promo_infos": [
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 13 menit lagi!",
+                      "icon": "CLOCK",
+                      "validation_type": "",
+                      "methods": []
+                    }
+                  ],
+                  "benefit_details": [],
+                  "benefit_adjustment_message": "",
+                  "secondary_coupons": []
+                },
+                {
+                  "promo_id": 19129723,
+                  "code": "KILUXV0LGP",
+                  "title": "Promo Gratis Ongkir KILUXV0LGP",
+                  "message": "Promo bisa dipakai jika memilih barang dari toko ini",
+                  "coupon_app_link": "HCKCSCP15028144-",
+                  "unique_id": "",
+                  "shop_id": 15028144,
+                  "benefit_amount": 0,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "is_bebas_ongkir": false,
+                  "clashing_infos": [],
+                  "bo_clashing_infos": [],
+                  "additional_bo_datas": [],
+                  "currency_details_str": "",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 18399731,
+                  "is_group_header": true,
+                  "promo_infos": [
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 13 menit lagi!",
+                      "icon": "CLOCK",
+                      "validation_type": "",
+                      "methods": []
+                    }
+                  ],
+                  "benefit_details": [],
+                  "benefit_adjustment_message": "",
+                  "secondary_coupons": []
+                },
+                {
+                  "promo_id": 20500410,
+                  "code": "KILU7WCDU6",
+                  "title": "kmkdmkwmdkm",
+                  "message": "Kupon ini bisa anda dapatkan dengan follow toko ini",
+                  "coupon_app_link": "HCKCSCP15028144-",
+                  "unique_id": "",
+                  "shop_id": 15028144,
+                  "benefit_amount": 0,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "is_bebas_ongkir": false,
+                  "clashing_infos": [],
+                  "bo_clashing_infos": [],
+                  "additional_bo_datas": [],
+                  "currency_details_str": "",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 19768269,
+                  "is_group_header": true,
+                  "promo_infos": [
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 29 menit lagi!",
+                      "icon": "CLOCK",
+                      "validation_type": "",
+                      "methods": []
+                    }
+                  ],
+                  "benefit_details": [],
+                  "benefit_adjustment_message": "",
+                  "secondary_coupons": []
+                }
+              ]
+            },
+            {
+              "title": "prod-01",
+              "sub_title": "Promo dipilih",
+              "icon_unify": "",
+              "icon_url": "",
+              "is_enabled": false,
+              "id": "",
+              "coupon_groups": [
+                {
+                  "id": 19747595,
+                  "count": 1
+                },
+                {
+                  "id": 19764475,
+                  "count": 1
+                },
+                {
+                  "id": 19747265,
+                  "count": 1
+                },
+                {
+                  "id": 19764476,
+                  "count": 1
+                }
+              ],
+              "coupons": [
+                {
+                  "promo_id": 20479709,
+                  "code": "PRODL7DV8T",
+                  "title": "Promo Cashback PRODL7DV8T",
+                  "message": "Promo bisa dipakai jika memilih barang dari toko ini",
+                  "coupon_app_link": "HCKCSCP12814862-",
+                  "unique_id": "",
+                  "shop_id": 12814862,
+                  "benefit_amount": 0,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "is_bebas_ongkir": false,
+                  "clashing_infos": [],
+                  "bo_clashing_infos": [],
+                  "additional_bo_datas": [],
+                  "currency_details_str": "",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 19747595,
+                  "is_group_header": true,
+                  "promo_infos": [
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 19 menit lagi!",
+                      "icon": "CLOCK",
+                      "validation_type": "",
+                      "methods": []
+                    }
+                  ],
+                  "benefit_details": [],
+                  "benefit_adjustment_message": "",
+                  "secondary_coupons": []
+                },
+                {
+                  "promo_id": 20496626,
+                  "code": "PRODPDLMGL",
+                  "title": "Promo Cashback PRODPDLMGL",
+                  "message": "Promo bisa dipakai jika memilih barang dari toko ini",
+                  "coupon_app_link": "HCKCSCP12814862-",
+                  "unique_id": "",
+                  "shop_id": 12814862,
+                  "benefit_amount": 0,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "is_bebas_ongkir": false,
+                  "clashing_infos": [],
+                  "bo_clashing_infos": [],
+                  "additional_bo_datas": [],
+                  "currency_details_str": "",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 19764475,
+                  "is_group_header": true,
+                  "promo_infos": [
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 13 menit lagi!",
+                      "icon": "CLOCK",
+                      "validation_type": "",
+                      "methods": []
+                    }
+                  ],
+                  "benefit_details": [],
+                  "benefit_adjustment_message": "",
+                  "secondary_coupons": []
+                },
+                {
+                  "promo_id": 20479380,
+                  "code": "PRODYGK1SJ",
+                  "title": "Promo Cashback PRODYGK1SJ",
+                  "message": "Promo bisa dipakai jika memilih barang dari toko ini",
+                  "coupon_app_link": "HCKCSCP12814862-",
+                  "unique_id": "",
+                  "shop_id": 12814862,
+                  "benefit_amount": 0,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "is_bebas_ongkir": false,
+                  "clashing_infos": [],
+                  "bo_clashing_infos": [],
+                  "additional_bo_datas": [],
+                  "currency_details_str": "",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 19747265,
+                  "is_group_header": true,
+                  "promo_infos": [
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 19 menit lagi!",
+                      "icon": "CLOCK",
+                      "validation_type": "",
+                      "methods": []
+                    }
+                  ],
+                  "benefit_details": [],
+                  "benefit_adjustment_message": "",
+                  "secondary_coupons": []
+                },
+                {
+                  "promo_id": 20496627,
+                  "code": "PRODADL7Q0",
+                  "title": "Promo Cashback PRODADL7Q0",
+                  "message": "Promo bisa dipakai jika memilih barang dari toko ini",
+                  "coupon_app_link": "HCKCSCP12814862-",
+                  "unique_id": "",
+                  "shop_id": 12814862,
+                  "benefit_amount": 0,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "is_bebas_ongkir": false,
+                  "clashing_infos": [],
+                  "bo_clashing_infos": [],
+                  "additional_bo_datas": [],
+                  "currency_details_str": "",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 19764476,
+                  "is_group_header": true,
+                  "promo_infos": [
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 13 menit lagi!",
+                      "icon": "CLOCK",
+                      "validation_type": "",
+                      "methods": []
+                    }
+                  ],
+                  "benefit_details": [],
+                  "benefit_adjustment_message": "",
+                  "secondary_coupons": []
+                }
+              ]
+            },
+            {
+              "title": "Kupon saya",
+              "sub_title": "Promo dipilih",
+              "icon_unify": "COUPON",
+              "icon_url": "https://images.tokopedia.net/img/blog/promo/2022/01/My-Coupons.png",
+              "is_enabled": false,
+              "id": "",
+              "coupon_groups": [
+                {
+                  "id": 19920923,
+                  "count": 4
+                },
+                {
+                  "id": 10122863,
+                  "count": 1
+                },
+                {
+                  "id": 19742712,
+                  "count": 1
+                },
+                {
+                  "id": 19742587,
+                  "count": 1
+                },
+                {
+                  "id": 15864927,
+                  "count": 1
+                },
+                {
+                  "id": 19920901,
+                  "count": 4
+                },
+                {
+                  "id": 19682303,
+                  "count": 1
+                },
+                {
+                  "id": 10122776,
+                  "count": 1
+                },
+                {
+                  "id": 10379185,
+                  "count": 1
+                },
+                {
+                  "id": 19682324,
+                  "count": 1
+                }
+              ],
+              "coupons": [
+                {
+                  "promo_id": 20653211,
+                  "code": "HGHAOVDT7X3OA4VMJG3Q",
+                  "title": "Kupon Diskon 5% sd 200RB Khusus Dilayani Tokopedia",
+                  "message": "Promo ini hanya berlaku untuk Dilayani Tokopedia.",
+                  "coupon_app_link": "",
+                  "unique_id": "",
+                  "shop_id": 0,
+                  "benefit_amount": 0,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "is_bebas_ongkir": false,
+                  "clashing_infos": [],
+                  "bo_clashing_infos": [],
+                  "additional_bo_datas": [],
+                  "currency_details_str": "",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 19920923,
+                  "is_group_header": true,
+                  "promo_infos": [
+                    {
+                      "type": "promo_info",
+                      "title": "\u003cb\u003ePengiriman PLUS/Bebas Ongkir\u003c/b\u003e tidak tersedia.",
+                      "icon": "NONE",
+                      "validation_type": "promo",
+                      "methods": [
+                        "Bebas Ongkir"
+                      ]
+                    },
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 7 jam lagi!",
+                      "icon": "CLOCK",
+                      "validation_type": "",
+                      "methods": []
+                    }
+                  ],
+                  "benefit_details": [],
+                  "benefit_adjustment_message": "",
+                  "secondary_coupons": []
+                },
+                {
+                  "promo_id": 10837260,
+                  "code": "CB041503OA4VM540XUET",
+                  "title": "Cashback 4% hingga Rp150.000",
+                  "message": "Promo hanya berlaku untuk transaksi pertamamu di Marketplace.",
+                  "coupon_app_link": "",
+                  "unique_id": "",
+                  "shop_id": 0,
+                  "benefit_amount": 0,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "is_bebas_ongkir": false,
+                  "clashing_infos": [],
+                  "bo_clashing_infos": [],
+                  "additional_bo_datas": [],
+                  "currency_details_str": "",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 10122776,
+                  "is_group_header": true,
+                  "promo_infos": [
+                    {
+                      "type": "promo_info",
+                      "title": "\u003cb\u003ePengiriman PLUS/Bebas Ongkir\u003c/b\u003e tidak tersedia.",
+                      "icon": "NONE",
+                      "validation_type": "promo",
+                      "methods": [
+                        "Bebas Ongkir"
+                      ]
+                    },
+                    {
+                      "type": "bottom_banner",
+                      "title": "Khusus Pengguna Baru",
+                      "icon": "USER",
+                      "validation_type": "",
+                      "methods": []
+                    },
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 7 jam lagi!",
+                      "icon": "CLOCK",
+                      "validation_type": "",
+                      "methods": []
+                    }
+                  ],
+                  "benefit_details": [],
+                  "benefit_adjustment_message": "",
+                  "secondary_coupons": []
+                },
+                {
+                  "promo_id": 20653211,
+                  "code": "HGHAOVDT7X3OA4VM5AE2",
+                  "title": "Kupon Diskon 5% sd 200RB Khusus Dilayani Tokopedia",
+                  "message": "Promo ini hanya berlaku untuk Dilayani Tokopedia.",
+                  "coupon_app_link": "",
+                  "unique_id": "",
+                  "shop_id": 0,
+                  "benefit_amount": 0,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "is_bebas_ongkir": false,
+                  "clashing_infos": [],
+                  "bo_clashing_infos": [],
+                  "additional_bo_datas": [],
+                  "currency_details_str": "",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 19920923,
+                  "is_group_header": false,
+                  "promo_infos": [
+                    {
+                      "type": "promo_info",
+                      "title": "\u003cb\u003ePengiriman PLUS/Bebas Ongkir\u003c/b\u003e tidak tersedia.",
+                      "icon": "NONE",
+                      "validation_type": "promo",
+                      "methods": [
+                        "Bebas Ongkir"
+                      ]
+                    },
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 7 jam lagi!",
+                      "icon": "CLOCK",
+                      "validation_type": "",
+                      "methods": []
+                    }
+                  ],
+                  "benefit_details": [],
+                  "benefit_adjustment_message": "",
+                  "secondary_coupons": []
+                },
+                {
+                  "promo_id": 20653211,
+                  "code": "HGHAOVDT7X3OA4VMAPF9",
+                  "title": "Kupon Diskon 5% sd 200RB Khusus Dilayani Tokopedia",
+                  "message": "Promo ini hanya berlaku untuk Dilayani Tokopedia.",
+                  "coupon_app_link": "",
+                  "unique_id": "",
+                  "shop_id": 0,
+                  "benefit_amount": 0,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "is_bebas_ongkir": false,
+                  "clashing_infos": [],
+                  "bo_clashing_infos": [],
+                  "additional_bo_datas": [],
+                  "currency_details_str": "",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 19920923,
+                  "is_group_header": false,
+                  "promo_infos": [
+                    {
+                      "type": "promo_info",
+                      "title": "\u003cb\u003ePengiriman PLUS/Bebas Ongkir\u003c/b\u003e tidak tersedia.",
+                      "icon": "NONE",
+                      "validation_type": "promo",
+                      "methods": [
+                        "Bebas Ongkir"
+                      ]
+                    },
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 7 jam lagi!",
+                      "icon": "CLOCK",
+                      "validation_type": "",
+                      "methods": []
+                    }
+                  ],
+                  "benefit_details": [],
+                  "benefit_adjustment_message": "",
+                  "secondary_coupons": []
+                },
+                {
+                  "promo_id": 20653211,
+                  "code": "HGHAOVDT7X3OA4VMN8V8",
+                  "title": "Kupon Diskon 5% sd 200RB Khusus Dilayani Tokopedia",
+                  "message": "Promo ini hanya berlaku untuk Dilayani Tokopedia.",
+                  "coupon_app_link": "",
+                  "unique_id": "",
+                  "shop_id": 0,
+                  "benefit_amount": 0,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "is_bebas_ongkir": false,
+                  "clashing_infos": [],
+                  "bo_clashing_infos": [],
+                  "additional_bo_datas": [],
+                  "currency_details_str": "",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 19920923,
+                  "is_group_header": false,
+                  "promo_infos": [
+                    {
+                      "type": "promo_info",
+                      "title": "\u003cb\u003ePengiriman PLUS/Bebas Ongkir\u003c/b\u003e tidak tersedia.",
+                      "icon": "NONE",
+                      "validation_type": "promo",
+                      "methods": [
+                        "Bebas Ongkir"
+                      ]
+                    },
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 7 jam lagi!",
+                      "icon": "CLOCK",
+                      "validation_type": "",
+                      "methods": []
+                    }
+                  ],
+                  "benefit_details": [],
+                  "benefit_adjustment_message": "",
+                  "secondary_coupons": []
+                },
+                {
+                  "promo_id": 10837388,
+                  "code": "DD031503OA4VMG03UHGQ",
+                  "title": "Diskon 3% hingga Rp150.000",
+                  "message": "Promo hanya berlaku untuk transaksi pertamamu di Marketplace.",
+                  "coupon_app_link": "",
+                  "unique_id": "",
+                  "shop_id": 0,
+                  "benefit_amount": 0,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "is_bebas_ongkir": false,
+                  "clashing_infos": [],
+                  "bo_clashing_infos": [],
+                  "additional_bo_datas": [],
+                  "currency_details_str": "",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 10122863,
+                  "is_group_header": true,
+                  "promo_infos": [
+                    {
+                      "type": "promo_info",
+                      "title": "\u003cb\u003ePengiriman PLUS/Bebas Ongkir\u003c/b\u003e tidak tersedia.",
+                      "icon": "NONE",
+                      "validation_type": "promo",
+                      "methods": [
+                        "Bebas Ongkir"
+                      ]
+                    },
+                    {
+                      "type": "bottom_banner",
+                      "title": "Khusus Pengguna Baru",
+                      "icon": "USER",
+                      "validation_type": "",
+                      "methods": []
+                    },
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 7 jam lagi!",
+                      "icon": "CLOCK",
+                      "validation_type": "",
+                      "methods": []
+                    }
+                  ],
+                  "benefit_details": [],
+                  "benefit_adjustment_message": "",
+                  "secondary_coupons": []
+                },
+                {
+                  "promo_id": 11082998,
+                  "code": "FSLOC1503OA4VMVBTH1G",
+                  "title": "Gratis Ongkir hingga  Rp50.000",
+                  "message": "Promo hanya berlaku untuk transaksi pertamamu di Marketplace.",
+                  "coupon_app_link": "",
+                  "unique_id": "",
+                  "shop_id": 0,
+                  "benefit_amount": 0,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "is_bebas_ongkir": false,
+                  "clashing_infos": [],
+                  "bo_clashing_infos": [],
+                  "additional_bo_datas": [],
+                  "currency_details_str": "",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 10379185,
+                  "is_group_header": true,
+                  "promo_infos": [
+                    {
+                      "type": "promo_info",
+                      "title": "\u003cb\u003ePengiriman PLUS/Bebas Ongkir\u003c/b\u003e tidak tersedia.",
+                      "icon": "NONE",
+                      "validation_type": "promo",
+                      "methods": [
+                        "Bebas Ongkir"
+                      ]
+                    },
+                    {
+                      "type": "bottom_banner",
+                      "title": "Khusus Pengguna Baru",
+                      "icon": "USER",
+                      "validation_type": "",
+                      "methods": []
+                    },
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 7 jam lagi!",
+                      "icon": "CLOCK",
+                      "validation_type": "",
+                      "methods": []
+                    }
+                  ],
+                  "benefit_details": [],
+                  "benefit_adjustment_message": "",
+                  "secondary_coupons": []
+                },
+                {
+                  "promo_id": 20414291,
+                  "code": "PEXIS07233OA4VMGKADT",
+                  "title": "Diskon 10% hingga Rp50.000",
+                  "message": "Promo ini hanya berlaku untuk Philips Lighting Store.",
+                  "coupon_app_link": "",
+                  "unique_id": "",
+                  "shop_id": 0,
+                  "benefit_amount": 0,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "is_bebas_ongkir": false,
+                  "clashing_infos": [],
+                  "bo_clashing_infos": [],
+                  "additional_bo_datas": [],
+                  "currency_details_str": "",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 19682324,
+                  "is_group_header": true,
+                  "promo_infos": [
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 11 hari lagi!",
+                      "icon": "CLOCK",
+                      "validation_type": "",
+                      "methods": []
+                    }
+                  ],
+                  "benefit_details": [],
+                  "benefit_adjustment_message": "",
+                  "secondary_coupons": []
+                },
+                {
+                  "promo_id": 20474784,
+                  "code": "DD100NB303OA4VM0WUQW",
+                  "title": "Diskon 100% hingga Rp30.000",
+                  "message": "Promo hanya berlaku untuk transaksi pertamamu di Marketplace.",
+                  "coupon_app_link": "",
+                  "unique_id": "",
+                  "shop_id": 0,
+                  "benefit_amount": 0,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "is_bebas_ongkir": false,
+                  "clashing_infos": [],
+                  "bo_clashing_infos": [],
+                  "additional_bo_datas": [],
+                  "currency_details_str": "",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 19742712,
+                  "is_group_header": true,
+                  "promo_infos": [
+                    {
+                      "type": "promo_info",
+                      "title": "\u003cb\u003ePengiriman PLUS/Bebas Ongkir\u003c/b\u003e tidak tersedia.",
+                      "icon": "NONE",
+                      "validation_type": "promo",
+                      "methods": [
+                        "Bebas Ongkir"
+                      ]
+                    },
+                    {
+                      "type": "bottom_banner",
+                      "title": "Khusus Pengguna Baru",
+                      "icon": "USER",
+                      "validation_type": "",
+                      "methods": []
+                    },
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 7 jam lagi!",
+                      "icon": "CLOCK",
+                      "validation_type": "",
+                      "methods": []
+                    }
+                  ],
+                  "benefit_details": [],
+                  "benefit_adjustment_message": "",
+                  "secondary_coupons": []
+                },
+                {
+                  "promo_id": 20474659,
+                  "code": "NU100CA33OA4VMH9HUDQ",
+                  "title": "Cashback 100% hingga Rp30.000",
+                  "message": "Promo hanya berlaku untuk transaksi pertamamu di Marketplace.",
+                  "coupon_app_link": "",
+                  "unique_id": "",
+                  "shop_id": 0,
+                  "benefit_amount": 0,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "is_bebas_ongkir": false,
+                  "clashing_infos": [],
+                  "bo_clashing_infos": [],
+                  "additional_bo_datas": [],
+                  "currency_details_str": "",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 19742587,
+                  "is_group_header": true,
+                  "promo_infos": [
+                    {
+                      "type": "promo_info",
+                      "title": "\u003cb\u003ePengiriman PLUS/Bebas Ongkir\u003c/b\u003e tidak tersedia.",
+                      "icon": "NONE",
+                      "validation_type": "promo",
+                      "methods": [
+                        "Bebas Ongkir"
+                      ]
+                    },
+                    {
+                      "type": "bottom_banner",
+                      "title": "Khusus Pengguna Baru",
+                      "icon": "USER",
+                      "validation_type": "",
+                      "methods": []
+                    },
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 7 jam lagi!",
+                      "icon": "CLOCK",
+                      "validation_type": "",
+                      "methods": []
+                    }
+                  ],
+                  "benefit_details": [],
+                  "benefit_adjustment_message": "",
+                  "secondary_coupons": []
+                },
+                {
+                  "promo_id": 16589768,
+                  "code": "FSKMFEB3OA4VM69F3X0B",
+                  "title": "Gratis Ongkir hingga Rp 20.000",
+                  "message": "Promo hanya berlaku untuk transaksi pertamamu di Marketplace.",
+                  "coupon_app_link": "",
+                  "unique_id": "",
+                  "shop_id": 0,
+                  "benefit_amount": 0,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "is_bebas_ongkir": false,
+                  "clashing_infos": [],
+                  "bo_clashing_infos": [],
+                  "additional_bo_datas": [],
+                  "currency_details_str": "",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 15864927,
+                  "is_group_header": true,
+                  "promo_infos": [
+                    {
+                      "type": "promo_info",
+                      "title": "\u003cb\u003ePengiriman PLUS/Bebas Ongkir\u003c/b\u003e tidak tersedia.",
+                      "icon": "NONE",
+                      "validation_type": "promo",
+                      "methods": [
+                        "Bebas Ongkir"
+                      ]
+                    },
+                    {
+                      "type": "bottom_banner",
+                      "title": "Khusus Pengguna Baru",
+                      "icon": "USER",
+                      "validation_type": "",
+                      "methods": []
+                    },
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 7 jam lagi!",
+                      "icon": "CLOCK",
+                      "validation_type": "",
+                      "methods": []
+                    }
+                  ],
+                  "benefit_details": [],
+                  "benefit_adjustment_message": "",
+                  "secondary_coupons": []
+                },
+                {
+                  "promo_id": 20653208,
+                  "code": "LOWAOVDT7X3OA4VM0K0V",
+                  "title": "Kupon Diskon 5% sd 15RB Khusus Dilayani Tokopedia",
+                  "message": "Promo ini hanya berlaku untuk Dilayani Tokopedia.",
+                  "coupon_app_link": "",
+                  "unique_id": "",
+                  "shop_id": 0,
+                  "benefit_amount": 0,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "is_bebas_ongkir": false,
+                  "clashing_infos": [],
+                  "bo_clashing_infos": [],
+                  "additional_bo_datas": [],
+                  "currency_details_str": "",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 19920901,
+                  "is_group_header": true,
+                  "promo_infos": [
+                    {
+                      "type": "promo_info",
+                      "title": "\u003cb\u003ePengiriman PLUS/Bebas Ongkir\u003c/b\u003e tidak tersedia.",
+                      "icon": "NONE",
+                      "validation_type": "promo",
+                      "methods": [
+                        "Bebas Ongkir"
+                      ]
+                    },
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 7 jam lagi!",
+                      "icon": "CLOCK",
+                      "validation_type": "",
+                      "methods": []
+                    }
+                  ],
+                  "benefit_details": [],
+                  "benefit_adjustment_message": "",
+                  "secondary_coupons": []
+                },
+                {
+                  "promo_id": 20653208,
+                  "code": "LOWAOVDT7X3OA4VMV36B",
+                  "title": "Kupon Diskon 5% sd 15RB Khusus Dilayani Tokopedia",
+                  "message": "Promo ini hanya berlaku untuk Dilayani Tokopedia.",
+                  "coupon_app_link": "",
+                  "unique_id": "",
+                  "shop_id": 0,
+                  "benefit_amount": 0,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "is_bebas_ongkir": false,
+                  "clashing_infos": [],
+                  "bo_clashing_infos": [],
+                  "additional_bo_datas": [],
+                  "currency_details_str": "",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 19920901,
+                  "is_group_header": false,
+                  "promo_infos": [
+                    {
+                      "type": "promo_info",
+                      "title": "\u003cb\u003ePengiriman PLUS/Bebas Ongkir\u003c/b\u003e tidak tersedia.",
+                      "icon": "NONE",
+                      "validation_type": "promo",
+                      "methods": [
+                        "Bebas Ongkir"
+                      ]
+                    },
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 7 jam lagi!",
+                      "icon": "CLOCK",
+                      "validation_type": "",
+                      "methods": []
+                    }
+                  ],
+                  "benefit_details": [],
+                  "benefit_adjustment_message": "",
+                  "secondary_coupons": []
+                },
+                {
+                  "promo_id": 20653208,
+                  "code": "LOWAOVDT7X3OA4VM5PUE",
+                  "title": "Kupon Diskon 5% sd 15RB Khusus Dilayani Tokopedia",
+                  "message": "Promo ini hanya berlaku untuk Dilayani Tokopedia.",
+                  "coupon_app_link": "",
+                  "unique_id": "",
+                  "shop_id": 0,
+                  "benefit_amount": 0,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "is_bebas_ongkir": false,
+                  "clashing_infos": [],
+                  "bo_clashing_infos": [],
+                  "additional_bo_datas": [],
+                  "currency_details_str": "",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 19920901,
+                  "is_group_header": false,
+                  "promo_infos": [
+                    {
+                      "type": "promo_info",
+                      "title": "\u003cb\u003ePengiriman PLUS/Bebas Ongkir\u003c/b\u003e tidak tersedia.",
+                      "icon": "NONE",
+                      "validation_type": "promo",
+                      "methods": [
+                        "Bebas Ongkir"
+                      ]
+                    },
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 7 jam lagi!",
+                      "icon": "CLOCK",
+                      "validation_type": "",
+                      "methods": []
+                    }
+                  ],
+                  "benefit_details": [],
+                  "benefit_adjustment_message": "",
+                  "secondary_coupons": []
+                },
+                {
+                  "promo_id": 20653208,
+                  "code": "LOWAOVDT7X3OA4VMXHCD",
+                  "title": "Kupon Diskon 5% sd 15RB Khusus Dilayani Tokopedia",
+                  "message": "Promo ini hanya berlaku untuk Dilayani Tokopedia.",
+                  "coupon_app_link": "",
+                  "unique_id": "",
+                  "shop_id": 0,
+                  "benefit_amount": 0,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "is_bebas_ongkir": false,
+                  "clashing_infos": [],
+                  "bo_clashing_infos": [],
+                  "additional_bo_datas": [],
+                  "currency_details_str": "",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 19920901,
+                  "is_group_header": false,
+                  "promo_infos": [
+                    {
+                      "type": "promo_info",
+                      "title": "\u003cb\u003ePengiriman PLUS/Bebas Ongkir\u003c/b\u003e tidak tersedia.",
+                      "icon": "NONE",
+                      "validation_type": "promo",
+                      "methods": [
+                        "Bebas Ongkir"
+                      ]
+                    },
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 7 jam lagi!",
+                      "icon": "CLOCK",
+                      "validation_type": "",
+                      "methods": []
+                    }
+                  ],
+                  "benefit_details": [],
+                  "benefit_adjustment_message": "",
+                  "secondary_coupons": []
+                },
+                {
+                  "promo_id": 20414218,
+                  "code": "PNEW07233OA4VM89F613",
+                  "title": "Diskon 50% hingga Rp10.000",
+                  "message": "Promo ini hanya berlaku untuk Philips Lighting Store.",
+                  "coupon_app_link": "",
+                  "unique_id": "",
+                  "shop_id": 0,
+                  "benefit_amount": 0,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "is_bebas_ongkir": false,
+                  "clashing_infos": [],
+                  "bo_clashing_infos": [],
+                  "additional_bo_datas": [],
+                  "currency_details_str": "",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 19682303,
+                  "is_group_header": true,
+                  "promo_infos": [
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 11 hari lagi!",
+                      "icon": "CLOCK",
+                      "validation_type": "",
+                      "methods": []
+                    }
+                  ],
+                  "benefit_details": [],
+                  "benefit_adjustment_message": "",
+                  "secondary_coupons": []
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "attempted_promo_code_error": {
+        "code": "",
+        "message": ""
+      },
+      "section_tabs": [
+        {
+          "id": "bebas_ongkir",
+          "title": "Bebas Ongkir"
+        },
+        {
+          "id": "my_coupons",
+          "title": "Kupon Saya"
+        },
+        {
+          "id": "merchant_vouchers",
+          "title": "Kupon Toko"
+        },
+        {
+          "id": "ineligible_coupons",
+          "title": "Belum Bisa Dipakai"
+        }
+      ],
+      "bottom_sheet": {
+        "title": "Promo dan Bebas Ongkir",
+        "content_title": "Lebih mudah pilih Bebas Ongkir di halaman promo",
+        "content_description": "\u003cul\u003e\u003cli\u003eKamu bisa bandingkan keuntungan pakai Bebas Ongkir atau promo lainnya di satu halaman.\u003c/li\u003e\u003cli\u003eKalau lihat syarat promo seperti gambar di atas, pilih pengiriman selain Bebas Ongkir.\u003c/li\u003e\u003c/ul\u003e",
+        "image_url": "https://images.tokopedia.net/img/blog/promo/2022/08/BO-Introduction-Banner.png",
+        "button_txt": "Oke, Saya Mengerti"
+      }
+    }
+  }
+}
