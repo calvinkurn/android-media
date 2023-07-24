@@ -20,6 +20,18 @@ data class ChannelModel(
         val name : String = "",
         val layout: String = ""
 ): ImpressHolder(){
+
+    fun updateHeader(defaultTitle: String, defaultSubtitle: String): ChannelModel {
+        val (title, subtitle) = channelHeader.getTitleSubtitle(defaultTitle, defaultSubtitle)
+
+        return copy(
+            channelHeader = channelHeader.copy(
+                name = title,
+                subtitle = subtitle,
+            )
+        )
+    }
+
     companion object{
         const val CHANNEL_HOME = "home"
         const val CHANNEL_OS = "os"

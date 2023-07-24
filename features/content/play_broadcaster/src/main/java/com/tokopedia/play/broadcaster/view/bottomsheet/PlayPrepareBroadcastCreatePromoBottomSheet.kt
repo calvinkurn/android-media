@@ -260,11 +260,11 @@ class PlayPrepareBroadcastCreatePromoBottomSheet : BottomSheetUnify() {
             ivPlayPrepareBroadcastWithPromoEdit.visibility = View.VISIBLE
 
             tvPlayPrepareBroadcastWithPromoTitle.setType(Typography.BODY_3)
-            tvPlayPrepareBroadcastWithPromoTitle.setTextColor(requireContext().resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+            tvPlayPrepareBroadcastWithPromoTitle.setTextColor(requireContext().resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_NN950_68))
             tvPlayPrepareBroadcastWithPromoTitle.text = getString(R.string.play_prepare_broadcast_promo_detail_title)
 
             tvPlayPrepareBroadcastWithPromoDescription.setType(Typography.BODY_1)
-            tvPlayPrepareBroadcastWithPromoDescription.setTextColor(requireContext().resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
+            tvPlayPrepareBroadcastWithPromoDescription.setTextColor(requireContext().resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_NN950_96))
             tvPlayPrepareBroadcastWithPromoDescription.text = HtmlCompat.fromHtml(
                 getString(
                     R.string.play_prepare_broadcast_promo_detail_description,
@@ -280,11 +280,11 @@ class PlayPrepareBroadcastCreatePromoBottomSheet : BottomSheetUnify() {
             ivPlayPrepareBroadcastWithPromoEdit.visibility = View.GONE
 
             tvPlayPrepareBroadcastWithPromoTitle.setType(Typography.HEADING_6)
-            tvPlayPrepareBroadcastWithPromoTitle.setTextColor(requireContext().resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
+            tvPlayPrepareBroadcastWithPromoTitle.setTextColor(requireContext().resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_NN950_96))
             tvPlayPrepareBroadcastWithPromoTitle.text = getString(R.string.play_prepare_broadcast_promo_with_promo_title)
 
             tvPlayPrepareBroadcastWithPromoDescription.setType(Typography.SMALL)
-            tvPlayPrepareBroadcastWithPromoDescription.setTextColor(requireContext().resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+            tvPlayPrepareBroadcastWithPromoDescription.setTextColor(requireContext().resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_NN950_68))
             tvPlayPrepareBroadcastWithPromoDescription.text = getString(R.string.play_prepare_broadcast_promo_with_promo_description)
 
             containerConstraintPlayWithPromo.requestLayout()

@@ -17,4 +17,5 @@ data class MissionWidgetDataModel(
     val buType: String = "",
     val isTopads: Boolean = false,
     val isCarousel: Boolean = false,
+    val shopId: String = ""
 )

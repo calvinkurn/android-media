@@ -13,6 +13,10 @@ data class PostAtcLayout(
     @Expose
     val basicInfo: BasicInfo = BasicInfo(),
 
+    @SerializedName("postATCInfo")
+    @Expose
+    val postAtcInfo: ProductPostAtcInfo = ProductPostAtcInfo(),
+
     @SerializedName("components")
     @Expose
     val components: List<Component> = emptyList()
@@ -24,7 +28,16 @@ data class PostAtcLayout(
         val shopId: String = "",
 
         @SerializedName("category")
-        val category: Category = Category()
+        val category: Category = Category(),
+
+        @SerializedName("price")
+        val price: Double = 0.0,
+
+        @SerializedName("originalPrice")
+        val originalPrice: Double = 0.0,
+
+        @SerializedName("condition")
+        val condition: String = ""
     )
 
     data class Category(
@@ -50,6 +63,31 @@ data class PostAtcLayout(
         @Expose
         val data: List<Data> = emptyList()
     )
+
+    data class ProductPostAtcInfo(
+        @SerializedName("title")
+        @Expose
+        val title: String = "",
+        @SerializedName("subTitle")
+        @Expose
+        val subtitle: String = "",
+        @SerializedName("image")
+        @Expose
+        val image: String = "",
+        @SerializedName("button")
+        @Expose
+        val button: Button = Button()
+    ) {
+        data class Button(
+            @SerializedName("text")
+            @Expose
+            val text: String = "",
+
+            @SerializedName("cartID")
+            @Expose
+            val cartId: String = ""
+        )
+    }
 }
 
 data class PostAtcLayoutResponse(

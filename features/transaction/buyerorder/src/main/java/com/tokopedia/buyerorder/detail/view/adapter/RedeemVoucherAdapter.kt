@@ -48,7 +48,7 @@ class RedeemVoucherAdapter( private val items:List<RedeemVoucherModel>): Recycle
                 tvCopyCode.setOnClickListener {
                     onCopiedListener?.invoke(data.voucherCode)
                     tvCopyCode.text = itemView.context.getString(R.string.deals_label_copied)
-                    tvCopyCode.setTextColor(ResourcesCompat.getColor(itemView.resources, com.tokopedia.unifyprinciples.R.color.Unify_N0_68, null))
+                    tvCopyCode.setTextColor(ResourcesCompat.getColor(itemView.resources, com.tokopedia.unifyprinciples.R.color.Unify_NN0_68, null))
                 }
             }
         }

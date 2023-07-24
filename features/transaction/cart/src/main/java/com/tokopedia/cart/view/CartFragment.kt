@@ -138,6 +138,7 @@ import com.tokopedia.purchase_platform.common.constant.ARGS_PAGE_SOURCE
 import com.tokopedia.purchase_platform.common.constant.ARGS_PROMO_REQUEST
 import com.tokopedia.purchase_platform.common.constant.ARGS_VALIDATE_USE_DATA_RESULT
 import com.tokopedia.purchase_platform.common.constant.ARGS_VALIDATE_USE_REQUEST
+import com.tokopedia.purchase_platform.common.constant.AddOnConstant
 import com.tokopedia.purchase_platform.common.constant.CartConstant
 import com.tokopedia.purchase_platform.common.constant.CartConstant.CART_ERROR_GLOBAL
 import com.tokopedia.purchase_platform.common.constant.CartConstant.IS_TESTING_FLOW
@@ -159,9 +160,11 @@ import com.tokopedia.purchase_platform.common.feature.sellercashback.SellerCashb
 import com.tokopedia.purchase_platform.common.feature.sellercashback.ShipmentSellerCashbackModel
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementHolderData
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
+import com.tokopedia.purchase_platform.common.utils.removeSingleDecimalSuffix
 import com.tokopedia.purchase_platform.common.utils.rxCompoundButtonCheckDebounce
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.searchbar.navigation_component.NavSource
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
@@ -1013,7 +1016,7 @@ class CartFragment :
                     backButtonClickListener = ::onBackPressed
                 )
                 setIcon(
-                    IconBuilder(IconBuilderFlag(pageSource = CART_PAGE)).addIcon(
+                    IconBuilder(IconBuilderFlag(pageSource = NavSource.CART)).addIcon(
                         iconId = IconList.ID_NAV_ANIMATED_WISHLIST,
                         disableDefaultGtmTracker = true,
                         onClick = ::onNavigationToolbarWishlistClicked
@@ -2439,7 +2442,7 @@ class CartFragment :
                 binding?.llCartContainer?.setBackgroundColor(
                     ContextCompat.getColor(
                         it,
-                        com.tokopedia.unifyprinciples.R.color.Unify_N50
+                        com.tokopedia.unifyprinciples.R.color.Unify_NN50
                     )
                 )
             }
@@ -2447,7 +2450,7 @@ class CartFragment :
             it.window.decorView.setBackgroundColor(
                 ContextCompat.getColor(
                     it,
-                    com.tokopedia.unifyprinciples.R.color.Unify_N50
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN50
                 )
             )
         }
@@ -4560,11 +4563,36 @@ class CartFragment :
         cartItemData.addOnsProduct.listData.forEach {
             addOnIds.add(it.id)
         }
-        val warehouseId = cartItemData.warehouseId
-        val isTokoCabang = cartItemData.isFulfillment // need to confirm
-        val applink = "tokopedia://addon/" + productId + "/?cartId=" + cartId +
-            "&selectedAddonIds=" + addOnIds.toString() + "&source=cart&warehouseId=" + warehouseId + "&isTokocabang=" + isTokoCabang
-        println("++ applink = " + applink)
+
+        val price: Double
+        val discountedPrice: Double
+        if (cartItemData.campaignId == "0") {
+            price = cartItemData.productPrice
+            discountedPrice = cartItemData.productPrice
+        } else {
+            price = cartItemData.productOriginalPrice
+            discountedPrice = cartItemData.productPrice
+        }
+
+        val applinkAddon = ApplinkConst.ADDON.replace(AddOnConstant.QUERY_PARAM_ADDON_PRODUCT, productId)
+        val applink = UriUtil.buildUriAppendParams(
+            applinkAddon,
+            mapOf(
+                AddOnConstant.QUERY_PARAM_CART_ID to cartId,
+                AddOnConstant.QUERY_PARAM_SELECTED_ADDON_IDS to addOnIds.toString().replace("[", "").replace("]", ""),
+                AddOnConstant.QUERY_PARAM_PAGE_ATC_SOURCE to AddOnConstant.SOURCE_NORMAL_CHECKOUT,
+                AddOnConstant.QUERY_PARAM_WAREHOUSE_ID to cartItemData.warehouseId,
+                AddOnConstant.QUERY_PARAM_IS_TOKOCABANG to cartItemData.isFulfillment,
+                AddOnConstant.QUERY_PARAM_CATEGORY_ID to cartItemData.categoryId,
+                AddOnConstant.QUERY_PARAM_SHOP_ID to cartItemData.shopHolderData.shopId,
+                AddOnConstant.QUERY_PARAM_QUANTITY to cartItemData.quantity,
+                AddOnConstant.QUERY_PARAM_PRICE to price.toString().removeSingleDecimalSuffix(),
+                AddOnConstant.QUERY_PARAM_DISCOUNTED_PRICE to discountedPrice.toString().removeSingleDecimalSuffix()
+            )
+        )
+
+        println("++ applink = $applink")
+
         activity?.let {
             val intent = RouteManager.getIntent(it, applink)
             startActivityForResult(intent, NAVIGATION_ADDON)
@@ -4577,8 +4605,12 @@ class CartFragment :
 
             if (addOnProductDataResult.aggregatedData.isGetDataSuccess) {
                 val cartId = addOnProductDataResult.cartId
-                val newAddOnWording = "${addOnProductDataResult.aggregatedData.title} <b>(${addOnProductDataResult.aggregatedData.price})</b>"
-                cartAdapter.updateAddOnByCartId(addOnProductDataResult.cartId.toString(), newAddOnWording)
+                var newAddOnWording = ""
+                if (addOnProductDataResult.aggregatedData.title.isNotEmpty()) {
+                    newAddOnWording = "${addOnProductDataResult.aggregatedData.title} <b>(${addOnProductDataResult.aggregatedData.price})</b>"
+                }
+
+                cartAdapter.updateAddOnByCartId(addOnProductDataResult.cartId.toString(), newAddOnWording, addOnProductDataResult.aggregatedData.selectedAddons)
             } else {
                 showToastMessageRed(addOnProductDataResult.aggregatedData.getDataErrorMessage)
             }
@@ -4591,5 +4623,13 @@ class CartFragment :
          //bottomSheet.setChild(view)
          val bottomSheet = PromoUsageBottomSheet.newInstance(entryPoint = EntryPoint.CART_PAGE)
          bottomSheet.show(childFragmentManager, bottomSheet.tag)
+    }
+
+    override fun onAddOnsProductWidgetImpression(addOnType: Int, productId: String) {
+        cartPageAnalytics.eventViewAddOnsProductWidgetCart(addOnType, productId)
+    }
+
+    override fun onClickAddOnsProductWidgetCart(addOnType: Int, productId: String) {
+        cartPageAnalytics.eventClickAddOnsWidgetCart(addOnType, productId)
     }
 }

@@ -81,7 +81,7 @@ class CategoryShowcaseAnalytic(
         isOos: Boolean,
         id: String,
         name: String,
-        price: Int,
+        price: Long,
         quantity: String
     ): Bundle {
         val items = Bundle()
@@ -174,7 +174,7 @@ class CategoryShowcaseAnalytic(
         warehouseId: String,
         isOos: Boolean,
         name: String,
-        price: Int,
+        price: Long,
         headerName: String,
         quantity: Int
     ) {

@@ -60,4 +60,8 @@ object DataProvider {
     fun provideShipmentAddressFormWithPlatformFeeDisabledResponse(): ShipmentAddressFormGqlResponse {
         return GSON.fromJson(FILE_UTIL.getJsonFromAsset("assets/saf_with_platform_fee_disabled.json"), ShipmentAddressFormGqlResponse::class.java)
     }
+
+    fun provideShipmentAddressFormWithAddOnsProductEnabledResponse(): ShipmentAddressFormGqlResponse {
+        return GSON.fromJson(FILE_UTIL.getJsonFromAsset("assets/saf_with_add_ons_product.json"), ShipmentAddressFormGqlResponse::class.java)
+    }
 }

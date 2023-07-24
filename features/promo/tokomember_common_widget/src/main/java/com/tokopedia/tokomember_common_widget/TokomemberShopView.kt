@@ -86,7 +86,7 @@ class TokomemberShopView @JvmOverloads constructor(
                 tvDescMembership.text = "Preview kartu member VIP (Level 2)."
                 containerBadge.background = context?.getDrawable(R.drawable.tm_dash_badge_vip)
                 tvShopType.text = VIP
-                tvShopType.setTextColor(ContextCompat.getColor(context,com.tokopedia.unifyprinciples.R.color.Unify_Y400))
+                tvShopType.setTextColor(ContextCompat.getColor(context,com.tokopedia.unifyprinciples.R.color.Unify_YN400))
             }
         }
     }

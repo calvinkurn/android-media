@@ -38,7 +38,7 @@
         android:layout_width="0dp"
         android:layout_height="56dp"
         android:visibility="gone"
-        android:background="@color/Unify_N0"
+        android:background="@color/Unify_NN0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"

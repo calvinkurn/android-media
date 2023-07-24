@@ -3,6 +3,7 @@ package com.tokopedia.shop.home.view.model
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.shop.home.view.adapter.ShopHomeAdapterTypeFactory
+import com.tokopedia.shop.home.view.adapter.ShopWidgetTypeFactory
 
 data class ShopHomePersoProductComparisonUiModel(
     override val widgetId: String = "",
@@ -16,7 +17,7 @@ data class ShopHomePersoProductComparisonUiModel(
 ) : BaseShopHomeWidgetUiModel() {
     val impressHolder = ImpressHolder()
 
-    override fun type(typeFactory: ShopHomeAdapterTypeFactory): Int {
+    override fun type(typeFactory: ShopWidgetTypeFactory): Int {
         return typeFactory.type(this)
     }
 }

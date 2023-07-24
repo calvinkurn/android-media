@@ -409,7 +409,7 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
     private fun drawCircle(radius: Int) {
         if (radius > 0) {
             val circleColor =
-                ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_G600)
+                ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_GN600)
             val alphaCircleColor = ColorUtils.setAlphaComponent(circleColor, 40)
             mMap?.addCircle(
                 CircleOptions().center(mLastLocation)

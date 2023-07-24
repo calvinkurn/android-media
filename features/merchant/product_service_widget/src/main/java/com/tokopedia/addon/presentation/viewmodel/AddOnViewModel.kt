@@ -1,6 +1,5 @@
 package com.tokopedia.addon.presentation.viewmodel
 
-import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
@@ -10,10 +9,11 @@ import com.tokopedia.addon.domain.usecase.GetAddOnByProductUseCase
 import com.tokopedia.addon.presentation.uimodel.AddOnGroupUIModel
 import com.tokopedia.addon.presentation.uimodel.AddOnMapper
 import com.tokopedia.addon.presentation.uimodel.AddOnPageResult
+import com.tokopedia.addon.presentation.uimodel.AddOnParam
 import com.tokopedia.gifting.domain.usecase.GetAddOnUseCase
+import com.tokopedia.gifting.presentation.uimodel.AddOnType
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.purchase_platform.common.feature.addons.domain.SaveAddOnStateUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -74,11 +74,16 @@ class AddOnViewModel @Inject constructor(
     var lastSelectedAddOn: List<AddOnGroupUIModel> = emptyList()
     var isSimplified = false
 
-    fun getAddOn(productId: String, warehouseId: String, isTokocabang: Boolean, isSimplified: Boolean) {
+    private fun generateEmptyAggregatedData(): AddOnPageResult.AggregatedData {
+        return AddOnPageResult.AggregatedData(isGetDataSuccess = true)
+    }
+
+    fun getAddOn(param: AddOnParam, isSimplified: Boolean) {
         this.isSimplified = isSimplified
         launchCatchError(block = {
             val result = withContext(dispatchers.io) {
-                getAddOnUseCase.setParams(productId, warehouseId, isTokocabang)
+                getAddOnUseCase.setParams(param, listOf(AddOnType.INSTALLATION_TYPE,
+                    AddOnType.PRODUCT_PROTECTION_INSURANCE_TYPE))
                 getAddOnUseCase.executeOnBackground()
             }
             val addonGroups = AddOnMapper.mapAddonToUiModel(result)
@@ -125,7 +130,11 @@ class AddOnViewModel @Inject constructor(
         }
     }
 
-    fun getAddOnAggregatedData(context: Context, addOnIds: List<String>) {
+    fun getAddOnAggregatedData(addOnIds: List<String>) {
+        if (addOnIds.isEmpty()) {
+            mAggregatedData.value = generateEmptyAggregatedData()
+            return
+        }
         launchCatchError(block = {
             val result = withContext(dispatchers.io) {
                 getAddOnDetailUseCase.setParams(addOnIds)
@@ -134,14 +143,15 @@ class AddOnViewModel @Inject constructor(
             mAggregatedData.value = AddOnPageResult.AggregatedData(
                 title = result.aggregatedData.title,
                 price = result.aggregatedData.price,
+                selectedAddons = AddOnMapper.getSelectedAddons(modifiedAddOnGroups.value),
                 isGetDataSuccess = result.error.messages.isEmpty(),
                 getDataErrorMessage = result.error.messages
             )
         }, onError = {
-                mAggregatedData.value = AddOnPageResult.AggregatedData(
-                    getDataErrorMessage = ErrorHandler.getErrorMessage(context, it)
-                )
-            })
+            mAggregatedData.value = AddOnPageResult.AggregatedData(
+                getDataErrorMessage = getAddOnDetailUseCase.getErrorString(it)
+            )
+        })
     }
 
     fun setAutosave(cartId: Long, atcSource: String) {

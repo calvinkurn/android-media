@@ -21,25 +21,21 @@ class AddOnBottomsheetActivity: BaseActivity() {
 
     private fun parseApplinkData() {
         RouteManager.getIntent(this, intent.data.toString()).data?.let { dataUri ->
-            val productId = AddOnApplinkMapper.getProductIdFromUri(dataUri)
             val pageSource = AddOnApplinkMapper.getPageSourceFromUri(dataUri)
             val cartId = AddOnApplinkMapper.getCartIdFromUri(dataUri)
             val selectedAddonIds = AddOnApplinkMapper.getSelectedAddonIdsFromUri(dataUri)
-            val warehouseId = AddOnApplinkMapper.getWarehouseIdFromUri(dataUri)
-            val isTokocabang = AddOnApplinkMapper.getIsTokocabangFromUri(dataUri)
             val atcSource = AddOnApplinkMapper.getAtcSourceFromUri(dataUri)
+            val addOnParam = AddOnApplinkMapper.getAddOnWidgetParamFromUri(dataUri)
 
             val bottomSheet = AddOnBottomSheet().apply {
                 setOnDismissListener {
                     finish()
                 }
             }.apply {
-                setProductId(productId)
+                setAddOnWidgetParam(addOnParam)
                 setPageSource(pageSource)
                 setCartId(cartId)
                 setSelectedAddonIds(selectedAddonIds)
-                setWarehouseId(warehouseId)
-                setIsTokocabang(isTokocabang)
                 setAtcSource(atcSource)
             }
             bottomSheet.show(supportFragmentManager, "")
