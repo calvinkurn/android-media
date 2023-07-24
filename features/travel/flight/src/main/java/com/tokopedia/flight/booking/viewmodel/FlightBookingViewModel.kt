@@ -115,9 +115,9 @@ class FlightBookingViewModel @Inject constructor(
     val flightAmenityPriceData: LiveData<List<FlightPriceDetailEntity>>
         get() = _flightAmenityPriceData
 
-    private val _flightAdminFeesData = MutableLiveData<List<FlightPriceDetailEntity>>()
+    private val _flightAdminFeePriceData = MutableLiveData<List<FlightPriceDetailEntity>>()
     val flightAdminFeePriceData: LiveData<List<FlightPriceDetailEntity>>
-        get() = _flightAdminFeesData
+        get() = _flightAdminFeePriceData
 
     private val _errorCancelVoucher = MutableLiveData<Int>()
     val errorCancelVoucher: LiveData<Int>
@@ -137,7 +137,7 @@ class FlightBookingViewModel @Inject constructor(
         _flightPriceData.value = listOf()
         _flightOtherPriceData.value = listOf()
         _flightAmenityPriceData.value = listOf()
-        _flightAdminFeesData.value = listOf()
+        _flightAdminFeePriceData.value = listOf()
         _flightPromoResult.value = FlightPromoViewEntity()
         _flightPassengersData.value = listOf()
     }
@@ -188,7 +188,7 @@ class FlightBookingViewModel @Inject constructor(
                     _flightPriceData.postValue(
                         FlightBookingMapper.mapPriceDetailToEntity(data.cartData.flight.priceDetail)
                     )
-                    _flightAdminFeesData.postValue(
+                    _flightAdminFeePriceData.postValue(
                         FlightBookingMapper.mapAdminFeeToPriceDetailEntity(data.cartData.flight.adminFee)
                     )
                     _flightCartResult.postValue(Success(FlightBookingMapper.mapToFlightCartView(data, isRefreshCart)))
@@ -501,7 +501,7 @@ class FlightBookingViewModel @Inject constructor(
     }
 
     fun setAdminFeePriceData(priceData: List<FlightPriceDetailEntity>) {
-        _flightAmenityPriceData.value = priceData
+        _flightAdminFeePriceData.value = priceData
     }
 
     fun onPassengerResultReceived(passengerModel: FlightBookingPassengerModel) {
@@ -606,7 +606,8 @@ class FlightBookingViewModel @Inject constructor(
                             "Makanan",
                             key
                         ),
-                        FlightCurrencyFormatUtil.convertToIdrPrice(value), value
+                        FlightCurrencyFormatUtil.convertToIdrPrice(value),
+                        value
                     )
                 )
             }
