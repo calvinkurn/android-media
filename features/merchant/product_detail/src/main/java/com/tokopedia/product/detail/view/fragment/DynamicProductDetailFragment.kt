@@ -17,6 +17,7 @@ import android.util.Log
 import android.util.SparseIntArray
 import android.view.KeyEvent
 import android.view.View
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
@@ -97,6 +98,7 @@ import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
+import com.tokopedia.mvcwidget.trackers.MvcSource
 import com.tokopedia.mvcwidget.views.MvcView
 import com.tokopedia.mvcwidget.views.activities.TransParentActivity
 import com.tokopedia.network.utils.URLGenerator.generateURLSessionLogin
@@ -162,6 +164,7 @@ import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
 import com.tokopedia.product.detail.data.model.datamodel.MediaDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMediaDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductMerchantVoucherSummaryDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductNotifyMeDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecomLayoutBasicData
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
@@ -283,8 +286,10 @@ import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ProductrevGetReviewMedia
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.util.ReviewMediaGalleryRouter
+import com.tokopedia.searchbar.navigation_component.NavSource
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
+import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScrollListener
 import com.tokopedia.shop.common.constant.ShopStatusDef
@@ -1023,11 +1028,6 @@ open class DynamicProductDetailFragment :
                         }
                     }
                 )
-            }
-            MvcView.REQUEST_CODE -> {
-                if (resultCode == MvcView.RESULT_CODE_OK && doActivityResult) {
-                    onSwipeRefresh()
-                }
             }
             REQUEST_CODE_ADD_WISHLIST_COLLECTION -> {
                 if (resultCode == Activity.RESULT_OK && data != null) {
@@ -2002,19 +2002,26 @@ open class DynamicProductDetailFragment :
         trackOnTickerClicked(tickerTitle, tickerType, componentTrackDataModel, tickerDescription)
         goToRecommendation()
     }
-
-    override fun onMerchantVoucherSummaryClicked(shopId: String, source: Int, productId: String) {
-        context?.let {
-            startActivityForResult(
-                TransParentActivity.getIntent(
-                    it,
-                    shopId,
-                    source,
-                    productId = productId
-                ),
-                MvcView.REQUEST_CODE
-            )
+    
+    private val mvcLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+        if (it.resultCode == MvcView.RESULT_CODE_OK && doActivityResult) {
+            onSwipeRefresh()
         }
+    }
+
+    override fun onMerchantVoucherSummaryClicked(
+        @MvcSource source: Int,
+        uiModel: ProductMerchantVoucherSummaryDataModel.UiModel
+    ) {
+        val mContext = context ?: return
+        val intent = TransParentActivity.getIntent(
+            context = mContext,
+            shopId = uiModel.shopId,
+            source = source,
+            productId = uiModel.productIdMVC,
+            additionalParamJson = uiModel.additionalData
+        )
+        mvcLauncher.launch(intent)
     }
 
     override fun isOwner(): Boolean = viewModel.isShopOwner()
@@ -4354,7 +4361,7 @@ open class DynamicProductDetailFragment :
             )
 
             setIcon(
-                IconBuilder()
+                IconBuilder(builderFlags = IconBuilderFlag(pageSource = NavSource.PDP))
                     .addIcon(IconList.ID_SEARCH, disableRouteManager = true) {
                         goToApplink(getLocalSearchApplink())
                     }
