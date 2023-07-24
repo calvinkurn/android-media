@@ -193,6 +193,8 @@ class AddEditProductDetailFragment :
     // product category
     private var productCategoryId: String = ""
     private var productCategoryName: String = ""
+    private var productCategoryConfidence: Double = 0f.toDouble()
+    private var productCategoryPrecision: Double = 0f.toDouble()
     private var productCategoryLayout: ViewGroup? = null
     private var productCategoryRecListView: ListUnify? = null
     private var productCategoryPickerButton: AppCompatTextView? = null
