@@ -61,11 +61,7 @@ class MoreMenuViewModel @Inject constructor(
                         getVoucherDetailEndedStoppedOptionsListMenu()
                     }
                 }
-        }
-//        else if (pageSource == OtherPeriodBottomSheet::class.java.simpleName) {
-//            menuItem = getOtherScheduleListMenu()
-//        }
-        else {
+        } else {
             if (voucher == null) {
                 return menuItem
             } else {

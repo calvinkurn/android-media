@@ -24,6 +24,8 @@ import com.tokopedia.campaign.utils.extension.stopLoading
 import com.tokopedia.campaign.utils.extension.toDate
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.imageassets.TokopediaImageUrl.ILLUSTRATION_MVC_DETAIL_CARD_PERFORMANCE
+import com.tokopedia.imageassets.TokopediaImageUrl.ILLUSTRATION_MVC_DETAIL_ENDED_VOUCHER
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.formatTo
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
@@ -122,8 +124,6 @@ class VoucherDetailFragment : BaseDaggerFragment() {
             "https://www.tokopedia.com/help/seller/article/syarat-ketentuan-kupon-toko-saya"
         private const val TOKOPEDIA_CARE_STRING_FORMAT = "%s?url=%s"
         private const val TOKOPEDIA_CARE_PATH = "help"
-        private const val ILLUSTRATION_ENDED_VOUCHER = "https://images.tokopedia.net/img/android/mvc/illustration_recap.png"
-        private const val ILLUSTRATION_CARD_PERFORMANCE = "https://images.tokopedia.net/img/android/mvc/bg_image.png"
     }
 
     // binding
@@ -322,8 +322,8 @@ class VoucherDetailFragment : BaseDaggerFragment() {
             }
         }
         recapBinding?.run {
-            imageRecapIllustration.setImageUrl(ILLUSTRATION_ENDED_VOUCHER)
-            recapPerformanceIllustration.setImageUrl(ILLUSTRATION_CARD_PERFORMANCE)
+            imageRecapIllustration.setImageUrl(ILLUSTRATION_MVC_DETAIL_ENDED_VOUCHER)
+            recapPerformanceIllustration.setImageUrl(ILLUSTRATION_MVC_DETAIL_CARD_PERFORMANCE)
             tpgVoucherName.text =
                 getString(R.string.smvc_placeholder_recap_voucher_name, data.voucherName)
             iconChevron.setOnClickListener {
@@ -543,7 +543,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                 }
             }
             performanceBinding?.run {
-                illustrationPerformance.setImageUrl(ILLUSTRATION_CARD_PERFORMANCE)
+                illustrationPerformance.setImageUrl(ILLUSTRATION_MVC_DETAIL_CARD_PERFORMANCE)
                 iconChevron.setOnClickListener {
                     if (clParentExpandedCard.isVisible) {
                         TransitionManager.beginDelayedTransition(
