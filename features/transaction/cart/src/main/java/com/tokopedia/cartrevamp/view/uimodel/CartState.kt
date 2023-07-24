@@ -1,8 +1,11 @@
 package com.tokopedia.cartrevamp.view.uimodel
 
+import android.widget.ImageView
 import androidx.lifecycle.LiveData
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.cartcommon.data.response.common.OutOfService
+import com.tokopedia.cartrevamp.domain.model.cartlist.AddCartToWishlistData
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
@@ -32,6 +35,14 @@ sealed class CartGlobalEvent {
 
     data class AdapterItemChanged(
         val position: Int
+    ) : CartGlobalEvent()
+
+    data class CheckGroupShopCartTicker(
+        val cartGroupHolderData: CartGroupHolderData
+    ) : CartGlobalEvent()
+
+    data class UpdateCartShopGroupTicker(
+        val cartGroupHolderData: CartGroupHolderData
     ) : CartGlobalEvent()
 }
 
@@ -72,6 +83,19 @@ sealed class UpdateCartCheckoutState {
 sealed class UpdateCartAndGetLastApplyState {
     data class Success(val promoUiModel: PromoUiModel) : UpdateCartAndGetLastApplyState()
     data class Failed(val throwable: Throwable) : UpdateCartAndGetLastApplyState()
+}
+
+sealed interface AddCartToWishlistEvent {
+    data class Success(
+        val data: AddCartToWishlistData,
+        val productId: String,
+        val isLastItem: Boolean,
+        val source: String,
+        val wishlistIcon: IconUnify,
+        val animatedWishlistImage: ImageView
+    ) : AddCartToWishlistEvent
+
+    data class Failed(val throwable: Throwable) : AddCartToWishlistEvent
 }
 
 sealed class LoadWishlistV2State {

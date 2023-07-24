@@ -29,6 +29,7 @@ data class CartModel(
     var cartTopAdsHeadlineData: CartTopAdsHeadlineData? = null,
     var cartLoadingHolderData: CartLoadingHolderData? = null,
     var shipmentSellerCashbackModel: ShipmentSellerCashbackModel? = null,
+    var lastCartShopGroupTickerCartString: String = "",
 
     // adapter
     var tmpCollapsedUnavailableShop: DisabledCollapsedHolderData? = null,

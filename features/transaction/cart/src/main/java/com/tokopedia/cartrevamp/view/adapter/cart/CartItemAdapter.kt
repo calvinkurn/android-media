@@ -3,6 +3,7 @@ package com.tokopedia.cartrevamp.view.adapter.cart
 import android.widget.ImageView
 import com.tokopedia.cartrevamp.data.model.response.shopgroupsimplified.Action
 import com.tokopedia.cartrevamp.view.uimodel.CartItemHolderData
+import com.tokopedia.iconunify.IconUnify
 
 class CartItemAdapter {
     interface ActionListener {
@@ -14,7 +15,7 @@ class CartItemAdapter {
         fun onCartItemLabelInputRemarkClicked()
         fun onCartItemCheckChanged(position: Int, cartItemHolderData: CartItemHolderData)
         fun onBundleItemCheckChanged(cartItemHolderData: CartItemHolderData)
-        fun onWishlistCheckChanged(productId: String, cartId: String, imageView: ImageView, isError: Boolean, errorType: String)
+        fun onWishlistCheckChanged(cartItemHolderData: CartItemHolderData, wishlistIcon: IconUnify, animatedWishlistImage: ImageView, position: Int)
         fun onNeedToRefreshSingleShop(cartItemHolderData: CartItemHolderData, itemPosition: Int)
         fun onNeedToRefreshWeight(cartItemHolderData: CartItemHolderData)
         fun onNeedToRecalculate()

@@ -39,6 +39,7 @@ import com.tokopedia.purchase_platform.common.utils.Utils
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.currency.CurrencyFormatUtil
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
@@ -57,6 +58,7 @@ class CartItemViewHolder constructor(
 
     private var dataSize: Int = 0
     private var delayChangeCheckboxState: Job? = null
+    private var delayChangeWishlistStatus: Job? = null
     private var delayChangeQty: Job? = null
     private var informationLabel: MutableList<String> = mutableListOf()
     private var qtyTextWatcher: TextWatcher? = null
@@ -83,6 +85,7 @@ class CartItemViewHolder constructor(
         viewHolderListener = null
         delayChangeCheckboxState?.cancel()
         delayChangeQty?.cancel()
+        delayChangeWishlistStatus?.cancel()
         qtyTextWatcher = null
     }
 
@@ -187,6 +190,7 @@ class CartItemViewHolder constructor(
         with(binding) {
             buttonChangeNote.gone()
             buttonToggleWishlist.gone()
+            ivAnimatedWishlist.gone()
             textProductUnavailableAction.gone()
             buttonDeleteCart.gone()
         }
@@ -198,7 +202,7 @@ class CartItemViewHolder constructor(
                     }
 
                     Action.ACTION_WISHLIST, Action.ACTION_WISHLISTED -> {
-                        renderActionWishlist(it, data)
+                        renderActionWishlist(data)
                     }
 
                     Action.ACTION_CHECKOUTBROWSER, Action.ACTION_SIMILARPRODUCT, Action.ACTION_FOLLOWSHOP, Action.ACTION_VERIFICATION -> {
@@ -366,7 +370,6 @@ class CartItemViewHolder constructor(
     }
 
     private fun renderProductInfo(data: CartItemHolderData) {
-        validateProductContainerMargin(data)
         renderBundlingInfo(data)
         renderProductName(data)
         renderImage(data)
@@ -381,19 +384,8 @@ class CartItemViewHolder constructor(
         sendAnalyticsInformationLabel(data)
     }
 
-    private fun validateProductContainerMargin(data: CartItemHolderData) {
-        val containerProductInformationParams = binding.containerProductInformation.layoutParams as ViewGroup.MarginLayoutParams
-        val marginTop = IMAGE_PRODUCT_MARGIN_START.dpToPx(itemView.resources.displayMetrics)
-        if (data.isBundlingItem && data.isMultipleBundleProduct && data.bundlingItemPosition != BUNDLING_ITEM_HEADER) {
-            containerProductInformationParams.topMargin = 0
-        }
-        else {
-            containerProductInformationParams.topMargin = marginTop
-        }
-    }
-
     private fun renderBundlingInfo(data: CartItemHolderData) {
-        if (data.isBundlingItem && data.bundlingItemPosition == CartItemHolderData.BUNDLING_ITEM_HEADER) {
+        if (data.isBundlingItem && data.bundlingItemPosition == BUNDLING_ITEM_HEADER) {
             binding.productBundlingInfo.show()
             renderBundlingInfoDetail(data)
         } else {
@@ -440,6 +432,7 @@ class CartItemViewHolder constructor(
         constraintSet.apply {
             clone(binding.containerProductInformation)
             val margin = PRODUCT_ACTION_MARGIN.dpToPx(itemView.resources.displayMetrics)
+            val marginTop = WISHLIST_BUNDLE_MARGIN_TOP.dpToPx(itemView.resources.displayMetrics)
             if (data.isBundlingItem && data.isMultipleBundleProduct) {
                 connect(
                     R.id.button_change_note,
@@ -455,8 +448,16 @@ class CartItemViewHolder constructor(
                     ConstraintSet.BOTTOM,
                     margin
                 )
+                connect(
+                    R.id.iv_animated_wishlist,
+                    ConstraintSet.TOP,
+                    R.id.item_addon_cart,
+                    ConstraintSet.BOTTOM,
+                    marginTop
+                )
                 clear(R.id.button_change_note, ConstraintSet.BOTTOM)
                 clear(R.id.button_toggle_wishlist, ConstraintSet.BOTTOM)
+                clear(R.id.iv_animated_wishlist, ConstraintSet.BOTTOM)
                 if (data.bundlingItemPosition == BUNDLING_ITEM_FOOTER) {
                     connect(
                         R.id.qty_editor_product,
@@ -496,7 +497,21 @@ class CartItemViewHolder constructor(
                     margin
                 )
                 connect(
+                    R.id.iv_animated_wishlist,
+                    ConstraintSet.TOP,
+                    R.id.qty_editor_product,
+                    ConstraintSet.TOP,
+                    margin
+                )
+                connect(
                     R.id.button_toggle_wishlist,
+                    ConstraintSet.BOTTOM,
+                    R.id.qty_editor_product,
+                    ConstraintSet.BOTTOM,
+                    margin
+                )
+                connect(
+                    R.id.iv_animated_wishlist,
                     ConstraintSet.BOTTOM,
                     R.id.qty_editor_product,
                     ConstraintSet.BOTTOM,
@@ -859,6 +874,7 @@ class CartItemViewHolder constructor(
     }
 
     private fun renderVariant(data: CartItemHolderData) {
+        validateErrorView(binding.textProductVariant, data.isError)
         var paddingRight = 0
         val paddingTop = itemView.resources.getDimensionPixelOffset(R.dimen.dp_2)
         val textProductVariant = binding.textProductVariant
@@ -1115,9 +1131,8 @@ class CartItemViewHolder constructor(
         }
     }
 
-    private fun renderActionWishlist(action: Action, data: CartItemHolderData) {
-//        val textMoveToWishlist = binding.textMoveToWishlist
-        if (data.isWishlisted && action.id == Action.ACTION_WISHLISTED) {
+    private fun renderActionWishlist(data: CartItemHolderData) {
+        if (data.isWishlisted) {
             val inWishlistColor = ContextCompat.getColor(
                 itemView.context,
                 com.tokopedia.unifyprinciples.R.color.Unify_RN500
@@ -1143,33 +1158,19 @@ class CartItemViewHolder constructor(
                 notInWishlistColor
             )
         }
-//        if (data.isWishlisted && action.id == Action.ACTION_WISHLISTED) {
-//            textMoveToWishlist.text = action.message
-//            textMoveToWishlist.setTextColor(
-//                ContextCompat.getColor(
-//                    itemView.context,
-//                    com.tokopedia.unifyprinciples.R.color.Unify_N700_44
-//                )
-//            )
-//            textMoveToWishlist.setOnClickListener { }
-//        } else if (!data.isWishlisted && action.id == Action.ACTION_WISHLIST) {
-//            textMoveToWishlist.text = action.message
-//            textMoveToWishlist.setTextColor(
-//                ContextCompat.getColor(
-//                    itemView.context,
-//                    com.tokopedia.unifyprinciples.R.color.Unify_N700_68
-//                )
-//            )
-//            textMoveToWishlist.setOnClickListener {
-//                actionListener?.onWishlistCheckChanged(
-//                    data.productId,
-//                    data.cartId,
-//                    binding.iuImageProduct,
-//                    data.isError,
-//                    data.errorType
-//                )
-//            }
-//        }
+        binding.buttonToggleWishlist.setOnClickListener {
+            delayChangeWishlistStatus?.cancel()
+            delayChangeWishlistStatus = GlobalScope.launch(Dispatchers.Main) {
+                delay(DEBOUNCE_TIME)
+                data.isWishlisted = !data.isWishlisted
+                actionListener?.onWishlistCheckChanged(
+                    data,
+                    binding.buttonToggleWishlist,
+                    binding.ivAnimatedWishlist,
+                    absoluteAdapterPosition
+                )
+            }
+        }
         binding.buttonToggleWishlist.show()
     }
 
@@ -1314,6 +1315,7 @@ class CartItemViewHolder constructor(
         const val ALPHA_FULL = 1.0f
 
         private const val IMAGE_PRODUCT_MARGIN_START_6 = 6
+        private const val WISHLIST_BUNDLE_MARGIN_TOP = 13
         private const val IMAGE_PRODUCT_MARGIN_START = 12
         private const val PRODUCT_ACTION_MARGIN = 16
         private const val TEXT_NOTES_CHANGE_WIDTH = 40

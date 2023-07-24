@@ -6,8 +6,8 @@ import com.tokopedia.cart.R
 import com.tokopedia.cart.databinding.ItemCartCollapsedProductRevampBinding
 import com.tokopedia.cartrevamp.view.ActionListener
 import com.tokopedia.cartrevamp.view.uimodel.CartItemHolderData
+import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
@@ -18,14 +18,29 @@ class CartCollapsedProductViewHolder(private val viewBinding: ItemCartCollapsedP
 
     companion object {
         var LAYOUT = R.layout.item_cart_collapsed_product_revamp
+
+        private const val TOKONOW_WIDTH = 80
+        private const val ERROR_WIDTH = 64
     }
 
     fun bind(cartItemHolderData: CartItemHolderData) {
+        validateContainerWidth(cartItemHolderData)
         renderImage(cartItemHolderData)
         renderBundlingIcon(cartItemHolderData)
         renderVariant(cartItemHolderData)
         renderPrice(cartItemHolderData)
         renderQuantity(cartItemHolderData)
+    }
+
+    private fun validateContainerWidth(cartItemHolderData: CartItemHolderData) {
+        val layoutParams = viewBinding.containerCollapsedProduct.layoutParams
+        if (cartItemHolderData.isError) {
+            layoutParams.width = ERROR_WIDTH.dpToPx(itemView.resources.displayMetrics)
+        }
+        else {
+            layoutParams.width = TOKONOW_WIDTH.dpToPx(itemView.resources.displayMetrics)
+        }
+        viewBinding.containerCollapsedProduct.layoutParams = layoutParams
     }
 
     private fun renderBundlingIcon(cartItemHolderData: CartItemHolderData) {

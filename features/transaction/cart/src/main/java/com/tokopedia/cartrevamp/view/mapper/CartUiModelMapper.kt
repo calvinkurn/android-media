@@ -199,7 +199,7 @@ object CartUiModelMapper {
                     isAllSelected = false
                     isPartialSelected = isPartialSelected(availableGroup)
                 }
-                isCollapsible = cartData.availableSection.availableGroupGroups.size > 1 && productUiModelList.size > 1
+                isCollapsible = cartData.availableSection.availableGroupGroups.size > 1 && productUiModelList.size > 3
                 isCollapsed = isCollapsible
                 isError = false
                 promoCodes = availableGroup.promoCodes
@@ -391,7 +391,7 @@ object CartUiModelMapper {
                     isAllSelected = false
                     isPartialSelected = false
                     isCollapsible = cartData.availableSection.availableGroupGroups.size > 1 &&
-                        productUiModelList.size > 1
+                        productUiModelList.size > 3
                     isCollapsed = isCollapsible
                     isError = true
                     warehouseId = unavailableGroup.warehouse.warehouseId.toLongOrZero()
