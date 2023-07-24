@@ -7,13 +7,17 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.promousage.util.composite.DelegateAdapterItem
 import com.tokopedia.promousage.domain.entity.EntryPoint
-import com.tokopedia.promousage.view.adapter.ViewAllVoucher
-import com.tokopedia.promousage.domain.entity.Voucher
-import com.tokopedia.promousage.domain.entity.VoucherSection
+import com.tokopedia.promousage.domain.entity.list.ViewAllVoucher
+import com.tokopedia.promousage.domain.entity.list.Voucher
+import com.tokopedia.promousage.domain.entity.list.VoucherAccordion
 import com.tokopedia.promousage.domain.entity.VoucherSource
 import com.tokopedia.promousage.domain.entity.VoucherState
 import com.tokopedia.promousage.domain.entity.VoucherType
+import com.tokopedia.promousage.domain.entity.list.TermAndCondition
+import com.tokopedia.promousage.domain.entity.list.VoucherCode
+import com.tokopedia.promousage.domain.entity.list.VoucherRecommendation
 import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.delay
 import javax.inject.Inject
@@ -21,8 +25,6 @@ import javax.inject.Inject
 class PromoUsageViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.main) {
-
-
 
     private val cashbackVouchers = listOf(
         Voucher(
@@ -87,7 +89,6 @@ class PromoUsageViewModel @Inject constructor(
             false
         ),
     )
-
     private val freeShippingVouchers = listOf(
         Voucher(
             6,
@@ -150,8 +151,6 @@ class PromoUsageViewModel @Inject constructor(
             true
         ),
     )
-
-
     private val discountVouchers = listOf(
         Voucher(
             11,
@@ -214,14 +213,36 @@ class PromoUsageViewModel @Inject constructor(
             true
         ),
     )
+    private val recommendationVouchers = listOf(
+        Voucher(
+            30,
+            100_000,
+            "Cashback - Normal",
+            "2 hari",
+            "https://images.tokopedia.net/img/android/promo/ic_voucher_cashback/ic_voucher_cashback.png",
+            "https://images.tokopedia.net/img/android/promo/bg_supergraphic_cashback/bg_supergraphic_cashback.png",
+            VoucherType.CASHBACK,
+            VoucherState.Normal,
+            VoucherSource.Promo,
+            true
+        ),
+        Voucher(
+            31,
+            100_000,
+            "Discount - Normal",
+            "2 hari",
+            "https://images.tokopedia.net/img/android/promo/ic_voucher_cashback/ic_voucher_cashback.png",
+            "https://images.tokopedia.net/img/android/promo/bg_supergraphic_cashback/bg_supergraphic_cashback.png",
+            VoucherType.DISCOUNT,
+            VoucherState.Normal,
+            VoucherSource.Promo,
+            true
+        )
+    )
 
-    private val _sections = MutableLiveData<com.tokopedia.usecase.coroutines.Result<List<VoucherSection>>>()
-    val sections: LiveData<com.tokopedia.usecase.coroutines.Result<List<VoucherSection>>>
-        get() = _sections
-
-    private val _recommendationVouchers = MutableLiveData<com.tokopedia.usecase.coroutines.Result<List<Voucher>>>()
-    val recommendationVouchers: LiveData<com.tokopedia.usecase.coroutines.Result<List<Voucher>>>
-        get() = _recommendationVouchers
+    private val _items = MutableLiveData<Result<List<DelegateAdapterItem>>>()
+    val items: LiveData<Result<List<DelegateAdapterItem>>>
+        get() = _items
 
     fun getVouchers() {
         launchCatchError(
@@ -229,106 +250,63 @@ class PromoUsageViewModel @Inject constructor(
             block = {
                 delay(2_000)
 
-                val mockedVouchers = listOf(
-                    VoucherSection(
+                val items = listOf<DelegateAdapterItem>(
+                    VoucherRecommendation("Kamu bisa hemat Rp30.000 dari 2 promo!", recommendationVouchers),
+                    VoucherAccordion(
                         "${cashbackVouchers.size} promo buat cashback",
                         true,
                         cashbackVouchers.toCollapsibleList()
                     ),
-                    VoucherSection(
+                    VoucherAccordion(
                         "${freeShippingVouchers.size} promo buat pengiriman kamu",
                         true,
                         freeShippingVouchers
                     ),
-                    VoucherSection(
+                    VoucherAccordion(
                         "${discountVouchers.size} promo buat diskon kamu",
                         true,
                         discountVouchers
-                    )
+                    ),
+                    VoucherCode,
+                    TermAndCondition
                 )
-                _sections.postValue(Success(mockedVouchers))
-                /* val recommendationVouchers = listOf(
-                     Voucher(
-                         300,
-                         100_000,
-                         "Cashback - Loading",
-                         "2 hari",
-                         "https://images.tokopedia.net/img/android/promo/ic_voucher_cashback/ic_voucher_cashback.png",
-                         "https://images.tokopedia.net/img/android/promo/bg_supergraphic_cashback/bg_supergraphic_cashback.png",
-                         VoucherType.CASHBACK,
-                         VoucherState.Normal,
-                         VoucherSource.Promo,
-                         true
-                     ),
-                     Voucher(
-                         400,
-                         100_000,
-                         "Cashback - Normal",
-                         "2 hari",
-                         "https://images.tokopedia.net/img/android/promo/ic_voucher_cashback/ic_voucher_cashback.png",
-                         "https://images.tokopedia.net/img/android/promo/bg_supergraphic_cashback/bg_supergraphic_cashback.png",
-                         VoucherType.CASHBACK,
-                         VoucherState.Normal,
-                         VoucherSource.Promo,
-                         true
-                     ),
-                 )
-                 _recommendationVouchers.value = Success(recommendationVouchers)*/
+                _items.postValue(Success(items))
             },
             onError = { throwable ->
-                _sections.postValue(Fail(throwable))
+                _items.postValue(Fail(throwable))
             }
         )
     }
 
-    private fun List<Voucher>.toCollapsibleList(): List<DelegateAdapterItem> {
-        if (isEmpty()) return emptyList()
+    fun onClickVoucherAccordion(selectedVoucherAccordion: VoucherAccordion) {
+        val currentItems = items.value?.currentItemsOrEmpty() ?: return
 
-        val formattedVouchers = mutableListOf<DelegateAdapterItem>()
-
-        val numberOfExpandedVoucher = count { it.shouldVisible }
-
-        val lastIndexOfExpandedVoucher = indexOfLast { it.shouldVisible }
-
-        val collapsedVoucherCount = size - numberOfExpandedVoucher
-        val viewAllWidgetItem = ViewAllVoucher(collapsedVoucherCount)
-
-        formattedVouchers.addAll(this)
-
-        //Modify the list ordering. Placing view all widget item after last index of expanded voucher
-        formattedVouchers.add(lastIndexOfExpandedVoucher + 1, viewAllWidgetItem)
-
-        return formattedVouchers
-    }
-
-    fun onClickViewAllVoucher(
-        allVoucherSections: List<VoucherSection>,
-        selectedVoucherSection: VoucherSection
-    ) {
-        val sections = mutableListOf<VoucherSection>()
-
-        allVoucherSections.forEach { voucherSection ->
-            val updatedVoucherSection = if (voucherSection.title == selectedVoucherSection.title) {
-                val vouchersOnly = voucherSection.vouchers.toMutableList()
-
-                //Remove view all voucher widget from the list
-                vouchersOnly.removeAll { it is ViewAllVoucher }
-
-                //Make all the voucher within the same section to be visible
-                val updatedVouchers = vouchersOnly.map {
-                    val voucher = it as Voucher
-                    voucher.copy(shouldVisible = true)
-                }
-
-                voucherSection.copy(vouchers = updatedVouchers)
+        val updatedItems = currentItems.map { item ->
+            if (item is VoucherAccordion && item.title == selectedVoucherAccordion.title) {
+                val isExpanded = selectedVoucherAccordion.isExpanded
+                selectedVoucherAccordion.copy(isExpanded = !isExpanded)
             } else {
-                voucherSection
+                item
             }
-
-            sections.add(updatedVoucherSection)
         }
 
-        _sections.postValue(Success(sections))
+
+        _items.postValue(Success(updatedItems))
+    }
+
+    fun onClickViewAllVoucher(selectedVoucherAccordion: VoucherAccordion) {
+        val currentItems = items.value?.currentItemsOrEmpty() ?: return
+
+        val updatedItems = currentItems.map { item ->
+            if (item is VoucherAccordion && item.title == selectedVoucherAccordion.title) {
+                val expandedVouchers = item.vouchers.expandAll()
+                item.copy(vouchers = expandedVouchers)
+            } else {
+                item
+            }
+        }
+
+        _items.postValue(Success(updatedItems))
     }
 
     fun onButtonBuyClick(entryPoint: EntryPoint) {
@@ -347,38 +325,47 @@ class PromoUsageViewModel @Inject constructor(
 
     }
 
-    fun onClickChevron(
-        currentVoucherSections: List<VoucherSection>,
-        selectedVoucherSection: VoucherSection
-    ) {
-        val isExpanded = selectedVoucherSection.isExpanded
-        if (isExpanded) {
-            collapseSection(currentVoucherSections, selectedVoucherSection)
+    private fun Result<List<DelegateAdapterItem>>.currentItemsOrEmpty(): List<DelegateAdapterItem> {
+        return if (this is Success) {
+            this.data
         } else {
-            expandSection(currentVoucherSections, selectedVoucherSection)
+            emptyList()
         }
     }
 
-    private fun expandSection(currentVoucherSections: List<VoucherSection>, voucherSection: VoucherSection) {
-        val updatedVoucherSections = currentVoucherSections.map { currentVoucherSection ->
-            if (currentVoucherSection.title == voucherSection.title) {
-                currentVoucherSection.copy(isExpanded = true)
-            } else {
-                currentVoucherSection
-            }
-        }
-        _sections.postValue(Success(updatedVoucherSections))
+    private fun List<Voucher>.toCollapsibleList(): List<DelegateAdapterItem> {
+        if (isEmpty()) return emptyList()
+
+        val formattedVouchers = mutableListOf<DelegateAdapterItem>()
+
+        val numberOfExpandedVoucher = count { it.visible }
+
+        val lastIndexOfExpandedVoucher = indexOfLast { it.visible }
+
+        val collapsedVoucherCount = size - numberOfExpandedVoucher
+        val viewAllWidgetItem = ViewAllVoucher(collapsedVoucherCount)
+
+        formattedVouchers.addAll(this)
+
+        //Modify the list ordering. Placing view all widget item after last index of expanded voucher
+        formattedVouchers.add(lastIndexOfExpandedVoucher + 1, viewAllWidgetItem)
+
+        return formattedVouchers
     }
 
-    private fun collapseSection(currentVoucherSections: List<VoucherSection>, voucherSection: VoucherSection) {
-        val updatedVoucherSections = currentVoucherSections.map { currentVoucherSection ->
-            if (currentVoucherSection.title == voucherSection.title) {
-                currentVoucherSection.copy(isExpanded = false)
-            } else {
-                currentVoucherSection
-            }
-        }
-        _sections.postValue(Success(updatedVoucherSections))
-    }
+    private fun List<DelegateAdapterItem>.expandAll(): List<DelegateAdapterItem> {
+        //Inside VoucherAccordion there are 2 items [Voucher, ViewAllVoucher] model
+        val updatedVoucherAccordionItems = this.toMutableList()
 
+        //Remove ViewAllVoucher to make view all CTA gone
+        updatedVoucherAccordionItems.removeAll { it is ViewAllVoucher }
+
+        //Change Voucher visible state to true to make all voucher visible
+        val expandedVouchers = updatedVoucherAccordionItems.map { item ->
+            val voucher = item as Voucher
+            voucher.copy(visible = true)
+        }
+
+        return expandedVouchers
+    }
 }
