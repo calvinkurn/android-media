@@ -53,7 +53,6 @@ import com.tokopedia.scp_rewards.common.utils.isNullOrZero
 import com.tokopedia.scp_rewards.common.utils.show
 import com.tokopedia.scp_rewards.databinding.CelebrationFragmentLayoutBinding
 import com.tokopedia.scp_rewards_common.parseColor
-import com.tokopedia.unifycomponents.UnifyButton
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
@@ -670,7 +669,13 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
         val error = scpError.error
         when {
             error is UnknownHostException || error is SocketTimeoutException -> {
-                binding?.errorView?.setType(GlobalError.NO_CONNECTION)
+                binding?.errorView?.apply {
+                    setType(GlobalError.NO_CONNECTION)
+                    setActionClickListener {
+                        CelebrationAnalytics.sendClickRetryCelebration(medaliSlug)
+                        resetPage()
+                    }
+                }
             }
             scpError.errorCode == NON_WHITELISTED_USER_ERROR_CODE -> {
                 binding?.errorView?.apply {
@@ -688,21 +693,9 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
             }
             else -> {
                 binding?.errorView?.apply {
-                    errorSecondaryAction.show()
-                    if (errorSecondaryAction is UnifyButton) {
-                        (errorSecondaryAction as UnifyButton).buttonVariant = UnifyButton.Variant.TEXT_ONLY
-                    }
-                    errorSecondaryAction.text = context?.getString(R.string.go_back_text)
-                    errorSecondaryAction.setTextColor(ContextCompat.getColor(context, R.color.dark_grey_nav_color))
-                    val buttonColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN0)
-                    errorSecondaryAction.setBackgroundColor(buttonColor)
                     setActionClickListener {
                         CelebrationAnalytics.sendClickRetryCelebration(medaliSlug)
                         resetPage()
-                    }
-                    setSecondaryActionClickListener {
-                        CelebrationAnalytics.sendClickGoBackCelebration(medaliSlug)
-                        activity?.finish()
                     }
                 }
             }
