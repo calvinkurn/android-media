@@ -98,21 +98,19 @@ class FeedFollowProfileViewHolder private constructor() {
         private fun setupListener(model: FeedFollowProfileAdapter.Model.Profile) {
             binding.root.setOnClickListener { listener.onScrollProfile(absoluteAdapterPosition) }
 
-            if (model.isSelected) {
-                binding.imgProfile.setOnClickListener { onClickProfile(model.data) }
-                binding.tvProfileName.setOnClickListener { onClickProfile(model.data) }
-                binding.btnFollow.setOnClickListener {
-                    followRecommendationListener.onClickFollow(model.data)
-                }
-                binding.icClose.setOnClickListener {
-                    followRecommendationListener.onCloseProfileRecommendation(model.data)
-                }
-            } else {
-                binding.imgProfile.setOnClickListener { listener.onScrollProfile(absoluteAdapterPosition) }
-                binding.tvProfileName.setOnClickListener { listener.onScrollProfile(absoluteAdapterPosition) }
-                binding.btnFollow.setOnClickListener { listener.onScrollProfile(absoluteAdapterPosition) }
-                binding.icClose.setOnClickListener { listener.onScrollProfile(absoluteAdapterPosition) }
+            binding.imgProfile.setOnClickListener { onClickProfile(model.data) }
+            binding.tvProfileName.setOnClickListener { onClickProfile(model.data) }
+            binding.btnFollow.setOnClickListener {
+                followRecommendationListener.onClickFollow(model.data)
             }
+            binding.icClose.setOnClickListener {
+                followRecommendationListener.onCloseProfileRecommendation(model.data)
+            }
+
+            binding.imgProfile.isClickable = model.isSelected
+            binding.tvProfileName.isClickable = model.isSelected
+            binding.btnFollow.isClickable = model.isSelected
+            binding.icClose.isClickable = model.isSelected
         }
 
         private fun onClickProfile(profile: FeedFollowRecommendationModel.Profile) {
