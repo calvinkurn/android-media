@@ -140,7 +140,7 @@ class CheckoutAdapter(
             }
 
             else -> {
-                CheckoutButtonPaymentViewHolder(ItemCheckoutButtonPaymentBinding.inflate(inflater, parent, false))
+                CheckoutButtonPaymentViewHolder(ItemCheckoutButtonPaymentBinding.inflate(inflater, parent, false), listener)
             }
         }
     }

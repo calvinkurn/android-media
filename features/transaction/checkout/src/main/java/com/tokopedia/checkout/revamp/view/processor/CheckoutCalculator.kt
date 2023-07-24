@@ -320,6 +320,7 @@ class CheckoutCalculator @Inject constructor(private val dispatchers: CoroutineD
         var cartItemCounter = 0
         var cartItemErrorCounter = 0
         var hasLoadingItem = false
+        var shouldShowInsuranceTnc = false
         for (shipmentCartItemModel in newList) {
             if (shipmentCartItemModel is CheckoutOrderModel) {
 //                if (shipmentCartItemModel.shipment.courierItemData != null) {
@@ -332,6 +333,12 @@ class CheckoutCalculator @Inject constructor(private val dispatchers: CoroutineD
 //                }
                 if (shipmentCartItemModel.isError) {
                     cartItemErrorCounter++
+                } else if (!shouldShowInsuranceTnc) {
+                    for (cartItemModel in shipmentCartItemModel.products) {
+                        if (cartItemModel.isProtectionOptIn) {
+                            shouldShowInsuranceTnc = true
+                        }
+                    }
                 }
             }
         }
@@ -348,6 +355,7 @@ class CheckoutCalculator @Inject constructor(private val dispatchers: CoroutineD
                 ).removeDecimalSuffix()
             shipmentCost = shipmentCost.copy(totalPriceString = priceTotalFormatted)
             buttonPaymentModel = buttonPaymentModel.copy(
+                useInsurance = shouldShowInsuranceTnc,
                 enable = !hasLoadingItem ?: buttonPaymentModel.enable,
                 totalPrice = priceTotalFormatted ?: buttonPaymentModel.totalPrice
                 /*loading = if (isValidatingFinalPromo) {
@@ -360,6 +368,7 @@ class CheckoutCalculator @Inject constructor(private val dispatchers: CoroutineD
         } else {
             shipmentCost = shipmentCost.copy(totalPriceString = "-")
             buttonPaymentModel = buttonPaymentModel.copy(
+                useInsurance = shouldShowInsuranceTnc,
                 enable = cartItemErrorCounter < checkoutOrderModels.size,
                 totalPrice = "-"
             )

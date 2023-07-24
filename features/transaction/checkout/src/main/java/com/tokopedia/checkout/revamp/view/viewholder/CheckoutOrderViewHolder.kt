@@ -28,6 +28,7 @@ class CheckoutOrderViewHolder(
         this.order = order
         renderAddOnOrderLevel(order)
         renderShippingWidget(order, addressModel)
+        renderVibration(order)
     }
 
     private fun renderAddOnOrderLevel(order: CheckoutOrderModel) {
@@ -58,7 +59,10 @@ class CheckoutOrderViewHolder(
         }
     }
 
-    private fun renderShippingWidget(order: CheckoutOrderModel, addressModel: CheckoutAddressModel?) {
+    private fun renderShippingWidget(
+        order: CheckoutOrderModel,
+        addressModel: CheckoutAddressModel?
+    ) {
         binding.shippingWidget.setupListener(this)
         binding.shippingWidget.hideTradeInShippingInfo()
 
@@ -355,6 +359,17 @@ class CheckoutOrderViewHolder(
     private fun renderErrorPinpointCourier() {
 //        binding.containerShippingOptions.root.visibility = View.VISIBLE
         binding.shippingWidget.renderErrorPinpointCourier()
+    }
+
+    private fun renderVibration(order: CheckoutOrderModel) {
+        binding.shippingWidget.renderShippingVibrationAnimation(
+            ShippingWidgetUiModel(
+                isShippingBorderRed = order.isShippingBorderRed,
+                isTriggerShippingVibrationAnimation = order.isTriggerShippingVibrationAnimation,
+                currentAddress = RecipientAddressModel()
+            )
+        )
+        order.isTriggerShippingVibrationAnimation = false
     }
 
     companion object {

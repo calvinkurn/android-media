@@ -45,6 +45,7 @@ import com.tokopedia.checkout.view.dialog.ExpireTimeDialogListener
 import com.tokopedia.checkout.view.dialog.ExpiredTimeDialog
 import com.tokopedia.checkout.view.uimodel.ShipmentNewUpsellModel
 import com.tokopedia.checkout.view.uimodel.ShipmentPaymentFeeModel
+import com.tokopedia.checkout.webview.CheckoutWebViewActivity
 import com.tokopedia.checkout.webview.UpsellWebViewActivity
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
@@ -114,7 +115,6 @@ import com.tokopedia.utils.currency.CurrencyFormatUtil
 import com.tokopedia.utils.lifecycle.autoCleared
 import com.tokopedia.utils.time.TimeHelper
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -424,11 +424,15 @@ class CheckoutFragment :
                 is CheckoutPageState.Normal -> {
                     hideLoading()
                 }
+
+                is CheckoutPageState.ScrollTo -> {
+                    binding.rvCheckout.scrollToPosition(it.index)
+                }
             }
         }
 
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            viewModel.commonToaster.map {
+            viewModel.commonToaster.collect {
                 var message = it.toasterMessage
                 if (message.isEmpty()) {
                     message = it.throwable?.message ?: ""
@@ -1439,6 +1443,20 @@ class CheckoutFragment :
         )
     }
 
+    override fun onInsuranceTncClicked() {
+        context?.let {
+            val intent = CheckoutWebViewActivity.newInstance(
+                it,
+                CartConstant.TERM_AND_CONDITION_URL,
+                getString(R.string.title_activity_checkout_tnc_webview)
+            )
+            startActivity(intent)
+        }
+    }
+
+    override fun onProcessToPayment() {
+        viewModel.checkout()
+    }
     // endregion
 
     // region epharmacy

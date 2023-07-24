@@ -57,4 +57,8 @@ interface CheckoutAdapterListener {
     fun onSendAnalyticsViewPromoCheckoutApplied()
 
     fun showPlatformFeeTooltipInfoBottomSheet(platformFeeModel: ShipmentPaymentFeeModel)
+
+    fun onInsuranceTncClicked()
+
+    fun onProcessToPayment()
 }

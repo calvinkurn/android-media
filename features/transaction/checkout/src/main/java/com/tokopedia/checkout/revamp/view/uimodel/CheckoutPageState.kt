@@ -12,6 +12,7 @@ sealed class CheckoutPageState {
     object EmptyData : CheckoutPageState()
     class Success(val cartShipmentAddressFormData: CartShipmentAddressFormData): CheckoutPageState()
     object Normal: CheckoutPageState()
+    class ScrollTo(val index: Int): CheckoutPageState()
 }
 
 data class CheckoutPageToaster(

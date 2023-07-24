@@ -5,5 +5,6 @@ data class CheckoutButtonPaymentModel(
     val enable: Boolean = false,
     val totalPrice: String = "-",
     val quantity: Int = 0,
-    var loading: Boolean = false
+    var loading: Boolean = false,
+    val useInsurance: Boolean = false
 ) : CheckoutItem

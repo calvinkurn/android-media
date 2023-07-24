@@ -572,7 +572,8 @@ class CheckoutPromoProcessor @Inject constructor(
                                     isLoading = false,
                                     courierItemData = courierItemData
                                 ),
-                                boUniqueId = voucherOrder.uniqueId
+                                boUniqueId = voucherOrder.uniqueId,
+                                isShippingBorderRed = false
                             )
 //                            if (view != null && recommendedCourier != null) {
 //                                view!!.setSelectedCourier(
@@ -654,7 +655,7 @@ class CheckoutPromoProcessor @Inject constructor(
         val orderIndex =
             checkoutItems.indexOfFirst { it is CheckoutOrderModel && it.cartStringGroup == cartString }
         val orderModel = checkoutItems[orderIndex] as CheckoutOrderModel
-        var newOrderModel = orderModel.copy(shipment = orderModel.shipment.copy(isLoading = false))
+        var newOrderModel = orderModel.copy(shipment = orderModel.shipment.copy(isLoading = false), isShippingBorderRed = false)
 //        if (view != null) {
 //            view!!.setStateLoadingCourierStateAtIndex(
 //                shipmentValidatePromoHolderData.cartPosition,

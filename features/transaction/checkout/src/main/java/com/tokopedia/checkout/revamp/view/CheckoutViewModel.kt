@@ -260,7 +260,7 @@ class CheckoutViewModel @Inject constructor(
                     crossSellList.add(CheckoutDonationModel(saf.cartShipmentAddressFormData.donation!!))
                 }
 
-                val buttonPayment = CheckoutButtonPaymentModel()
+                val buttonPayment = CheckoutButtonPaymentModel("")
 
                 withContext(dispatchers.main) {
                     listData.value = listOf(
@@ -508,7 +508,7 @@ class CheckoutViewModel @Inject constructor(
             }
             if (shipment.courierItemData?.logPromoCode?.isNotEmpty() == true) {
                 val newShipment = shipment.copy(
-                    isLoading = false,
+                    isLoading = true,
                     courierItemData = courierItemData,
                     shippingCourierUiModels = shippingCourierUiModels
                 )
@@ -535,14 +535,15 @@ class CheckoutViewModel @Inject constructor(
                 }
             }
             val list = listData.value.toMutableList()
-            val newOrder = list[cartPosition] as CheckoutOrderModel
+            var newOrder = list[cartPosition] as CheckoutOrderModel
             val newShipment = shipment.copy(
                 isLoading = false,
                 courierItemData = courierItemData,
                 shippingCourierUiModels = shippingCourierUiModels
             )
 //            val newOrder = checkoutOrderModel.copy(shipment = newShipment)
-            list[cartPosition] = newOrder.copy(shipment = newShipment)
+            newOrder = newOrder.copy(shipment = newShipment, isShippingBorderRed = false)
+            list[cartPosition] = newOrder
             listData.value = list
             cartProcessor.processSaveShipmentState(
                 newOrder,
@@ -587,7 +588,7 @@ class CheckoutViewModel @Inject constructor(
                 val checkoutItems = listData.value.toMutableList()
                 val checkoutOrderModel = checkoutItems[cartPosition] as CheckoutOrderModel
                 checkoutItems[cartPosition] =
-                    checkoutOrderModel.copy(shipment = checkoutOrderModel.shipment.copy(isLoading = true))
+                    checkoutOrderModel.copy(shipment = checkoutOrderModel.shipment.copy(isLoading = true), isShippingBorderRed = false)
                 listData.value = checkoutItems
             }
             val newItems = promoProcessor.validateUseLogisticPromo(
@@ -621,6 +622,42 @@ class CheckoutViewModel @Inject constructor(
         cartProcessor.releaseBooking(listData.value)
     }
     // endregion
+
+    fun checkout() {
+        viewModelScope.launch(dispatchers.immediate) {
+            pageState.value = CheckoutPageState.Loading
+            val items = listData.value.toMutableList()
+            var firstErrorIndex = -1
+            var continueCheckout = true
+            var hasValidOrder = false
+            items.forEachIndexed { index, checkoutItem ->
+                if (checkoutItem is CheckoutOrderModel) {
+                    if (!checkoutItem.isError && checkoutItem.shipment.courierItemData == null) {
+                        items[index] = checkoutItem.copy(
+                        isShippingBorderRed = true,
+                        isTriggerShippingVibrationAnimation = true
+                        )
+                        if (firstErrorIndex == -1) {
+                            firstErrorIndex = index
+                        }
+                    } else if (!checkoutItem.isError) {
+                        hasValidOrder = true
+                    }
+                }
+            }
+            if (firstErrorIndex > -1) {
+                commonToaster.emit(
+                    CheckoutPageToaster(
+                        Toaster.TYPE_NORMAL,
+                        "Pilih pengiriman dulu yuk sebelum lanjut bayar."
+                    )
+                )
+                pageState.value = CheckoutPageState.Normal
+                listData.value = items
+                pageState.value = CheckoutPageState.ScrollTo(firstErrorIndex)
+            }
+        }
+    }
 
     companion object {
         const val PLATFORM_FEE_CODE = "platform_fee"
