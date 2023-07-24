@@ -1168,7 +1168,8 @@ abstract class BaseSearchCategoryFragment:
             context = context,
             viewModel = getViewModel(),
             analytics = analytics,
-            startActivityResult = ::startActivityForResult
+            startActivityResult = ::startActivityForResult,
+            showToasterWhenAddToCartBlocked = ::showToasterWhenAddToCartBlocked
         )
     }
 

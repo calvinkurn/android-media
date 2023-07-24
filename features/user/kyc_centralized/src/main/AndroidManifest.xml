@@ -89,7 +89,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.gotoKyc.main.GotoKycMainActivity"
+            android:name=".ui.gotoKyc.main.router.GotoKycMainActivity"
             android:theme="@style/Theme.WhiteUnify"
             android:screenOrientation="portrait"
             android:exported="false"/>
