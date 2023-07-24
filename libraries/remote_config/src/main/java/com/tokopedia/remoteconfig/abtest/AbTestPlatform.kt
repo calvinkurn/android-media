@@ -52,9 +52,17 @@ class AbTestPlatform @JvmOverloads constructor(val context: Context) : RemoteCon
         throw RuntimeException("Method is not implemented yet")
     }
 
-    @Suppress("TooGenericExceptionCaught")
-    override fun getKeysByPrefix(prefix: String?): MutableSet<String> {
-        throw RuntimeException("Method is not implemented yet")
+    override fun getKeysByPrefix(prefix: String): MutableSet<String> {
+        return mutableSetOf<String>().apply {
+            for ((key, value) in sharedPreferences.all) {
+                val valueClassType = value?.let { it::class.java }
+                if (key.startsWith(prefix = prefix, ignoreCase = false) &&
+                    valueClassType == String::class.java
+                ) {
+                    add(key)
+                }
+            }
+        }
     }
 
     @Suppress("TooGenericExceptionCaught")
@@ -138,7 +146,9 @@ class AbTestPlatform @JvmOverloads constructor(val context: Context) : RemoteCon
                 context.resources,
                 R.raw.gql_rollout_feature_variant
             ),
-            AbTestVariantPojo::class.java, payloads, false
+            AbTestVariantPojo::class.java,
+            payloads,
+            false
         )
 
         graphqlUseCase.clearRequest()
@@ -165,7 +175,7 @@ class AbTestPlatform @JvmOverloads constructor(val context: Context) : RemoteCon
                     override fun onCompleted() { }
 
                     override fun onError(e: Throwable?) { }
-                } 
+                }
             }
     }
 

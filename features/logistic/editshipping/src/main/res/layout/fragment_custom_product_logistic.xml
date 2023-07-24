@@ -83,7 +83,7 @@
                         android:id="@+id/divider_shipping_editor_1"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/unify_space_8"
-                        android:background="@color/Unify_N50"
+                        android:background="@color/Unify_NN50"
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <com.tokopedia.unifyprinciples.Typography

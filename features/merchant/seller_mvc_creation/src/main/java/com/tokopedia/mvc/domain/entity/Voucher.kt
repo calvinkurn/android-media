@@ -2,7 +2,11 @@ package com.tokopedia.mvc.domain.entity
 
 import android.os.Parcelable
 import com.tokopedia.mvc.domain.entity.enums.BenefitType
+import com.tokopedia.mvc.domain.entity.enums.ProgramStatus
 import com.tokopedia.mvc.domain.entity.enums.PromoType
+import com.tokopedia.mvc.domain.entity.enums.PromotionStatus
+import com.tokopedia.mvc.domain.entity.enums.SubsidyInfo
+import com.tokopedia.mvc.domain.entity.enums.VoucherCreator
 import com.tokopedia.mvc.domain.entity.enums.VoucherStatus
 import com.tokopedia.mvc.domain.entity.enums.VoucherTargetBuyer
 import com.tokopedia.utils.date.DateUtil
@@ -45,7 +49,10 @@ data class Voucher(
     val targetBuyer: VoucherTargetBuyer = VoucherTargetBuyer.ALL_BUYER,
     val discountTypeFormatted: String = "",
     val productIds: List<ProductId> = listOf(),
-    val isParent: Boolean = false
+    val isParent: Boolean = false,
+    val labelVoucher: LabelVoucher = LabelVoucher(),
+    val isEditable: Boolean = false,
+    val subsidyDetail: SubsidyDetail = SubsidyDetail()
 ) : Parcelable {
     fun isOngoingPromo() = status == VoucherStatus.ONGOING
     fun isUpComingPromo() = status == VoucherStatus.NOT_STARTED
@@ -55,6 +62,42 @@ data class Voucher(
         val parentProductId: Long = 0,
         val childProductId: List<Long>? = listOf()
     ) : Parcelable
+
+    @Parcelize
+    data class LabelVoucher(
+        val labelQuota: Int = 0,
+        val labelQuotaFormatted: String = "",
+        val labelQuotaColorType: String = "default",
+        val labelCreator: VoucherCreator = VoucherCreator.SELLER,
+        val labelCreatorFormatted: String = "",
+        val labelCreatorColorType: String = "default",
+        val labelSubsidyInfo: SubsidyInfo = SubsidyInfo.NOT_SUBSIDIZED,
+        val labelSubsidyInfoFormatted: String = "",
+        val labelSubsidyInfoColorType: String = "default",
+        val labelBudgetsVoucher: List<LabelBudgetVoucher> = listOf()
+    ) : Parcelable {
+        @Parcelize
+        data class LabelBudgetVoucher(
+            val labelBudgetVoucher: Int = 0,
+            val labelBudgetVoucherFormatted: String = "",
+            val labelBudgetVoucherValue: Int = 0
+        ) : Parcelable
+    }
+
+    @Parcelize
+    data class SubsidyDetail(
+        val programDetail: ProgramDetail = ProgramDetail()
+    ) : Parcelable {
+        @Parcelize
+        data class ProgramDetail(
+            val programName: String = "",
+            val programStatus: ProgramStatus = ProgramStatus.ONGOING,
+            val programLabel: String = "",
+            val programLabelDetail: String = "",
+            val promotionStatus: PromotionStatus = PromotionStatus.REGISTERED,
+            val promotionLabel: String = ""
+        ) : Parcelable
+    }
 
     fun toVoucherConfiguration(): VoucherConfiguration {
         val selectedParentProductIds = productIds.map { parentProduct -> parentProduct.parentProductId }
@@ -78,5 +121,21 @@ data class Voucher(
             startPeriod = startTime.toDate(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z),
             endPeriod = finishTime.toDate(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z)
         )
+    }
+
+    fun isGetSubsidy(): Boolean {
+        return when (labelVoucher.labelSubsidyInfo) {
+            SubsidyInfo.NOT_SUBSIDIZED -> {
+                false
+            }
+
+            SubsidyInfo.FULL_SUBSIDIZED, SubsidyInfo.PARTIALLY_SUBSIDIZED -> {
+                true
+            }
+        }
+    }
+
+    fun isFromVps(): Boolean {
+        return labelVoucher.labelCreator == VoucherCreator.VPS
     }
 }

@@ -41,7 +41,7 @@ abstract class BaseTokoNowActivity : BaseActivity() {
                 var flags: Int = it.fragmentContainer.systemUiVisibility
                 flags = flags or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
                 it.fragmentContainer.systemUiVisibility = flags
-                window.statusBarColor = ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+                window.statusBarColor = ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_NN0)
             }
         }
 

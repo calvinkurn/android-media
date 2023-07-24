@@ -35,6 +35,7 @@ class GetSearchFirstPageUseCase(
 ): UseCase<SearchModel>() {
 
     override suspend fun executeOnBackground(): SearchModel {
+        val parameters = useCaseRequestParams.parameters
         val queryParams = getTokonowQueryParam(useCaseRequestParams)
         val categoryFilterParams = createCategoryFilterParams(queryParams)
         val quickFilterParams = createQuickFilterParams(queryParams)
@@ -43,7 +44,7 @@ class GetSearchFirstPageUseCase(
         graphqlUseCase.addRequest(
             request = createGetTargetedTickerRequest(
                 page = SEARCH_PAGE,
-                warehouseId = queryParams[SearchApiConst.USER_WAREHOUSE_ID].toString()
+                warehouseId = parameters[SearchApiConst.USER_WAREHOUSE_ID].toString()
             )
         )
         graphqlUseCase.addRequest(createGetProductAdsRequest(useCaseRequestParams))

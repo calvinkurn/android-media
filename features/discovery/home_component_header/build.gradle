@@ -54,7 +54,6 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.viewAllCard
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
-    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
 
     implementation projectOrAar(rootProject.ext.features.resourcesCommon)
     implementation projectOrAar(rootProject.ext.libraries.analytics)

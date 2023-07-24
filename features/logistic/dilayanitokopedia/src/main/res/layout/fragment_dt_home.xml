@@ -92,7 +92,7 @@
             android:id="@+id/dtHomeStatusBarBackground"
             android:layout_width="match_parent"
             android:layout_height="25dp"
-            android:background="@color/Unify_G500"
+            android:background="@color/Unify_GN500"
             android:visibility="visible"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -100,7 +100,7 @@
             android:id="@+id/divider_view"
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@color/Unify_N50"
+            android:background="@color/Unify_NN50"
             android:paddingTop="13dp"
             android:visibility="gone"
             app:layout_constraintStart_toStartOf="parent"

@@ -20,6 +20,8 @@ buildscript {
 }
 
 android {
+    namespace 'com.tokopedia.home_component'
+    testNamespace 'com.tokopedia.home_component.test'
     buildFeatures {
         viewBinding true
     }
@@ -46,7 +48,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.imageAssets)
     implementation projectOrAar(rootProject.ext.features.topAdsSdk)
     implementation projectOrAar(rootProject.ext.libraries.baseList)
-    implementation projectOrAar(rootProject.ext.libraries.utils)
     // Unify
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.icons
@@ -55,7 +56,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.viewAllCard
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
-    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
+    implementation projectOrAar(rootProject.ext.libraries.utils)
 
     implementation projectOrAar(rootProject.ext.features.resourcesCommon)
     api projectOrAar(rootProject.ext.libraries.analytics)
@@ -64,6 +65,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation projectOrAar(rootProject.ext.libraries.logger)
+    implementation rootProject.ext.firebase.crashlytics
 
     implementation projectOrAar(rootProject.ext.features.questWidget)
 
