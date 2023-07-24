@@ -1,4 +1,4 @@
-package com.tokopedia.kyc_centralized.ui.gotoKyc.main
+package com.tokopedia.kyc_centralized.ui.gotoKyc.main.status
 
 import android.animation.ValueAnimator
 import android.app.Activity
@@ -10,7 +10,6 @@ import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.text.HtmlCompat
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.navArgs
 import com.airbnb.lottie.LottieComposition
 import com.airbnb.lottie.LottieCompositionFactory
@@ -330,6 +329,7 @@ class StatusSubmissionFragment : BaseDaggerFragment() {
 
         val intent = RouteManager.getIntent(activity, ApplinkConstInternalUserPlatform.GOTO_KYC).apply {
             putExtra(GotoKycTransparentFragment.IS_RE_VERIFY, true)
+            putExtra(ApplinkConstInternalUserPlatform.PARAM_SOURCE, sourcePage)
             putExtra(ApplinkConstInternalUserPlatform.PARAM_PROJECT_ID, projectId)
         }
         startReVerifyKycForResult.launch(intent)

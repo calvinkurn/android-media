@@ -1,4 +1,4 @@
-package com.tokopedia.kyc_centralized.ui.gotoKyc.main
+package com.tokopedia.kyc_centralized.ui.gotoKyc.main.bridging
 
 import android.Manifest
 import android.app.Activity
@@ -36,9 +36,13 @@ import com.tokopedia.kyc_centralized.R
 import com.tokopedia.kyc_centralized.common.KYCConstant
 import com.tokopedia.kyc_centralized.databinding.FragmentGotoKycBridgingAccountLinkingBinding
 import com.tokopedia.kyc_centralized.di.GoToKycComponent
+import com.tokopedia.kyc_centralized.ui.gotoKyc.bottomSheet.DobChallengeExhaustedBottomSheet
 import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.AccountLinkingStatusResult
 import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.CheckEligibilityResult
 import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.RegisterProgressiveResult
+import com.tokopedia.kyc_centralized.ui.gotoKyc.main.challenge.DobChallengeParam
+import com.tokopedia.kyc_centralized.ui.gotoKyc.main.status.StatusSubmissionParam
+import com.tokopedia.kyc_centralized.ui.gotoKyc.main.capture.CaptureKycDocumentsParam
 import com.tokopedia.kyc_centralized.ui.gotoKyc.utils.getGotoKycErrorMessage
 import com.tokopedia.kyc_centralized.util.KycSharedPreference
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
@@ -150,6 +154,13 @@ class BridgingAccountLinkingFragment : BaseDaggerFragment() {
                 is RegisterProgressiveResult.Loading -> {
                     setButtonLoading(true)
                 }
+                is RegisterProgressiveResult.Exhausted -> {
+                    setButtonLoading(false)
+                    showDobChallengeExhaustedBottomSheet(
+                        cooldownTimeInSeconds = it.cooldownTimeInSeconds,
+                        maximumAttemptsAllowed = it.maximumAttemptsAllowed
+                    )
+                }
                 is RegisterProgressiveResult.RiskyUser -> {
                     setButtonLoading(false)
                     val parameter = DobChallengeParam(
@@ -174,6 +185,25 @@ class BridgingAccountLinkingFragment : BaseDaggerFragment() {
                     showToaster(it.throwable)
                 }
             }
+        }
+    }
+
+    private fun showDobChallengeExhaustedBottomSheet(cooldownTimeInSeconds: String, maximumAttemptsAllowed: String) {
+        val dobChallengeExhaustedBottomSheet = DobChallengeExhaustedBottomSheet.newInstance(
+            projectId = args.parameter.projectId,
+            source = args.parameter.source,
+            cooldownTimeInSeconds = cooldownTimeInSeconds,
+            maximumAttemptsAllowed = maximumAttemptsAllowed
+        )
+
+        dobChallengeExhaustedBottomSheet.show(
+            childFragmentManager,
+            TAG_BOTTOM_SHEET_DOB_CHALLENGE_EXHAUSTED
+        )
+
+        dobChallengeExhaustedBottomSheet.setOnDismissListener {
+            activity?.setResult(KYCConstant.ActivityResult.RESULT_FINISH)
+            activity?.finish()
         }
     }
 
@@ -380,5 +410,6 @@ class BridgingAccountLinkingFragment : BaseDaggerFragment() {
         private const val TOKOPEDIA_CARE_PATH = "help/article/nama-yang-muncul-bukan-nama-saya?lang=id?isBack=true"
         private const val TOKOPEDIA_CARE_STRING_FORMAT = "%s?url=%s"
         private const val PACKAGE = "package"
+        private const val TAG_BOTTOM_SHEET_DOB_CHALLENGE_EXHAUSTED = "bottom_sheet_dob_challenge_exhausted"
     }
 }

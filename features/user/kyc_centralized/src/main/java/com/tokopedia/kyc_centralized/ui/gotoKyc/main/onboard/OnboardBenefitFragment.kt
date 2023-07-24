@@ -1,4 +1,4 @@
-package com.tokopedia.kyc_centralized.ui.gotoKyc.main
+package com.tokopedia.kyc_centralized.ui.gotoKyc.main.onboard
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -12,6 +12,7 @@ import com.tokopedia.kyc_centralized.databinding.FragmentGotoKycOnboardBenefitBi
 import com.tokopedia.kyc_centralized.di.GoToKycComponent
 import com.tokopedia.kyc_centralized.ui.gotoKyc.analytics.GotoKycAnalytics
 import com.tokopedia.kyc_centralized.ui.gotoKyc.bottomSheet.AwaitingApprovalGopayBottomSheet
+import com.tokopedia.kyc_centralized.ui.gotoKyc.bottomSheet.DobChallengeExhaustedBottomSheet
 import com.tokopedia.kyc_centralized.ui.gotoKyc.bottomSheet.OnboardNonProgressiveBottomSheet
 import com.tokopedia.kyc_centralized.ui.gotoKyc.bottomSheet.OnboardProgressiveBottomSheet
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
@@ -85,6 +86,25 @@ class OnboardBenefitFragment: BaseDaggerFragment() {
         }
     }
 
+    private fun showDobChallengeExhaustedBottomSheet(cooldownTimeInSeconds: String, maximumAttemptsAllowed: String) {
+        val dobChallengeExhaustedBottomSheet = DobChallengeExhaustedBottomSheet.newInstance(
+            projectId = args.parameter.projectId,
+            source = args.parameter.sourcePage,
+            cooldownTimeInSeconds = cooldownTimeInSeconds,
+            maximumAttemptsAllowed = maximumAttemptsAllowed
+        )
+
+        dobChallengeExhaustedBottomSheet.show(
+            childFragmentManager,
+            TAG_BOTTOM_SHEET_DOB_CHALLENGE_EXHAUSTED
+        )
+
+        dobChallengeExhaustedBottomSheet.setOnDismissListener {
+            activity?.setResult(KYCConstant.ActivityResult.RESULT_FINISH)
+            activity?.finish()
+        }
+    }
+
     private fun showProgressiveBottomSheet(source: String, encryptedName: String) {
         val onBoardProgressiveBottomSheet = OnboardProgressiveBottomSheet.newInstance(
             projectId = args.parameter.projectId,
@@ -96,6 +116,15 @@ class OnboardBenefitFragment: BaseDaggerFragment() {
             childFragmentManager,
             TAG_BOTTOM_SHEET_ONBOARD_PROGRESSIVE
         )
+
+        onBoardProgressiveBottomSheet.setOnDismissWithDataListener { dobChallengeExhaustedParam ->
+            if (dobChallengeExhaustedParam.isExhausted) {
+                showDobChallengeExhaustedBottomSheet(
+                    cooldownTimeInSeconds = dobChallengeExhaustedParam.cooldownTimeInSeconds,
+                    maximumAttemptsAllowed = dobChallengeExhaustedParam.maximumAttemptsAllowed
+                )
+            }
+        }
     }
 
     private fun showNonProgressiveBottomSheet(projectId: String, source: String, isAccountLinked: Boolean) {
@@ -137,5 +166,6 @@ class OnboardBenefitFragment: BaseDaggerFragment() {
         private const val TAG_BOTTOM_SHEET_AWAITING_APPROVAL_GOPAY = "bottom_sheet_awaiting_approval_gopay"
         private const val TAG_BOTTOM_SHEET_ONBOARD_NON_PROGRESSIVE = "bottom_sheet_non_progressive"
         private const val TAG_BOTTOM_SHEET_ONBOARD_PROGRESSIVE = "bottom_sheet_progressive"
+        private const val TAG_BOTTOM_SHEET_DOB_CHALLENGE_EXHAUSTED = "bottom_sheet_dob_challenge_exhausted"
     }
 }

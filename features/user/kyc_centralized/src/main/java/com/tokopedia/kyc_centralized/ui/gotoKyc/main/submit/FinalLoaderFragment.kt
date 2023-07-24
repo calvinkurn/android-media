@@ -1,4 +1,4 @@
-package com.tokopedia.kyc_centralized.ui.gotoKyc.main
+package com.tokopedia.kyc_centralized.ui.gotoKyc.main.submit
 
 import android.content.Intent
 import android.os.Bundle
@@ -19,8 +19,11 @@ import com.tokopedia.kyc_centralized.common.KYCConstant
 import com.tokopedia.kyc_centralized.databinding.FragmentGotoKycFinalLoaderBinding
 import com.tokopedia.kyc_centralized.di.GoToKycComponent
 import com.tokopedia.kyc_centralized.ui.gotoKyc.analytics.GotoKycAnalytics
+import com.tokopedia.kyc_centralized.ui.gotoKyc.bottomSheet.DobChallengeExhaustedBottomSheet
 import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.ProjectInfoResult
 import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.RegisterProgressiveResult
+import com.tokopedia.kyc_centralized.ui.gotoKyc.main.challenge.DobChallengeParam
+import com.tokopedia.kyc_centralized.ui.gotoKyc.main.status.StatusSubmissionParam
 import com.tokopedia.kyc_centralized.ui.gotoKyc.utils.getGotoKycErrorMessage
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -86,6 +89,13 @@ class FinalLoaderFragment : BaseDaggerFragment() {
             when (it) {
                 is RegisterProgressiveResult.Loading -> {
                     showScreenLoading(true)
+                }
+                is RegisterProgressiveResult.Exhausted -> {
+                    showScreenLoading(false)
+                    showDobChallengeExhaustedBottomSheet(
+                        cooldownTimeInSeconds = it.cooldownTimeInSeconds,
+                        maximumAttemptsAllowed = it.maximumAttemptsAllowed
+                    )
                 }
                 is RegisterProgressiveResult.RiskyUser -> {
                     val parameter = DobChallengeParam(
@@ -180,6 +190,25 @@ class FinalLoaderFragment : BaseDaggerFragment() {
         }
     }
 
+    private fun showDobChallengeExhaustedBottomSheet(cooldownTimeInSeconds: String, maximumAttemptsAllowed: String) {
+        val dobChallengeExhaustedBottomSheet = DobChallengeExhaustedBottomSheet.newInstance(
+            projectId = args.parameter.projectId,
+            source = args.parameter.source,
+            cooldownTimeInSeconds = cooldownTimeInSeconds,
+            maximumAttemptsAllowed = maximumAttemptsAllowed
+        )
+
+        dobChallengeExhaustedBottomSheet.show(
+            childFragmentManager,
+            TAG_BOTTOM_SHEET_DOB_CHALLENGE_EXHAUSTED
+        )
+
+        dobChallengeExhaustedBottomSheet.setOnDismissListener {
+            activity?.setResult(KYCConstant.ActivityResult.RESULT_FINISH)
+            activity?.finish()
+        }
+    }
+
     private fun showScreenLoading(isLoading: Boolean) {
         binding?.apply {
             loader.showWithCondition(isLoading)
@@ -202,5 +231,9 @@ class FinalLoaderFragment : BaseDaggerFragment() {
 
     override fun initInjector() {
         getComponent(GoToKycComponent::class.java).inject(this)
+    }
+
+    companion object {
+        private const val TAG_BOTTOM_SHEET_DOB_CHALLENGE_EXHAUSTED = "bottom_sheet_dob_challenge_exhausted"
     }
 }

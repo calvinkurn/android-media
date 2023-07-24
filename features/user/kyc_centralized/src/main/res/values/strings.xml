@@ -296,5 +296,7 @@
     <string name="goto_kyc_try_again">Coba Lagi</string>
     <string name="goto_kyc_direct_to_setting">Ke Pengaturan</string>
     <string name="goto_kyc_internet_issue">Koneksi internetmu terganggu!</string>
+    <string name="goto_kyc_failed_load_data_title">Oops, gagal memuat data</string>
+    <string name="goto_kyc_failed_load_data_subtitle">Datanya gagal dimuat jadi belum bisa lanjut proses verifikasi. Coba lagi, ya.</string>
 
 </resources>
