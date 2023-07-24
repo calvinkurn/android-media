@@ -62,9 +62,6 @@ object RollenceKey {
     // Review
     const val CREATE_REVIEW_REVIEW_INSPIRATION_EXPERIMENT_NAME = "review_inspiration"
 
-    // Logistic
-    const val KEY_ADDRESS_IMPROVEMENTS = "address_improvements"
-
     // Fulfillment
     const val KEY_DISABLE_DILAYANI_TOKOPEDIA_HOMEPAGE = "disabledthomepage"
 
