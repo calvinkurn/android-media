@@ -403,12 +403,18 @@ class ShipmentViewModel @Inject constructor(
                             for (addOnProductService in cartItem.addOnProduct.listAddOnProductData) {
                                 if (addOnProductService.status == 1) {
                                     totalAddOnProductServicePrice += (addOnProductService.price * cartItem.quantity)
-                                    if (countMapSummaries.containsKey(addOnProductService.type)) {
-                                        qtyAddOn += cartItem.quantity
+                                    qtyAddOn = if (countMapSummaries.containsKey(addOnProductService.type)) {
+                                        countMapSummaries[addOnProductService.type]?.second?.plus(cartItem.quantity) ?: 0
                                     } else {
-                                        qtyAddOn = cartItem.quantity
+                                        cartItem.quantity
                                     }
-                                    totalPriceAddOn = qtyAddOn * addOnProductService.price
+
+                                    val addOnPrice = cartItem.quantity * addOnProductService.price
+                                    totalPriceAddOn = if (countMapSummaries.containsKey(addOnProductService.type)) {
+                                        countMapSummaries[addOnProductService.type]?.first?.plus(addOnPrice) ?: 0.0
+                                    } else {
+                                        addOnPrice
+                                    }
                                     countMapSummaries[addOnProductService.type] = totalPriceAddOn to qtyAddOn
                                 }
                             }
