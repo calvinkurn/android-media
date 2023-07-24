@@ -4,7 +4,10 @@ import android.content.SharedPreferences
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.campaign.entity.RemoteTicker
+import com.tokopedia.campaign.usecase.GetTargetedTickerUseCase
 import com.tokopedia.campaign.utils.constant.DateConstant
+import com.tokopedia.campaign.utils.constant.TickerConstant
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
@@ -57,6 +60,7 @@ class FlashSaleManageProductListViewModel @Inject constructor(
     private val doFlashSaleProductSubmissionUseCase: DoFlashSaleProductSubmissionUseCase,
     private val flashSaleTkpdProductSubmissionMonitoringSse: FlashSaleTkpdProductSubmissionMonitoringSse,
     private val sharedPreferences: SharedPreferences,
+    private val getTargetedTickerUseCase: GetTargetedTickerUseCase,
     private val getFlashSaleProductSubmissionProgressUseCase: GetFlashSaleProductSubmissionProgressUseCase,
     private val flashSaleMonitorSubmitProductSseMapper: FlashSaleMonitorSubmitProductSseMapper,
     private val doFlashSaleProductSubmitAcknowledgeUseCase: DoFlashSaleProductSubmitAcknowledgeUseCase
@@ -102,6 +106,9 @@ class FlashSaleManageProductListViewModel @Inject constructor(
             }
             is FlashSaleManageProductListUiEvent.UpdateProductData -> {
                 updateProductData(event.productData)
+            }
+            is FlashSaleManageProductListUiEvent.GetTickerData -> {
+                getTickerData(event.rollenceValueList)
             }
         }
     }
@@ -317,6 +324,29 @@ class FlashSaleManageProductListViewModel @Inject constructor(
         )
     }
 
+    private fun getTickerData(rollenceValueList: List<String>) {
+        launchCatchError(dispatchers.io, {
+            val targetParams: List<GetTargetedTickerUseCase.Param.Target> = listOf(
+                GetTargetedTickerUseCase.Param.Target(
+                    type = GetTargetedTickerUseCase.KEY_TYPE_ROLLENCE_NAME,
+                    values = rollenceValueList
+                )
+            )
+            val tickerParams = GetTargetedTickerUseCase.Param(
+                page = TickerConstant.REMOTE_TICKER_KEY_FLASH_SALE_TOKOPEDIA_MANAGE_PRODUCT,
+                targets = targetParams
+            )
+            val data = getTickerListData(tickerParams)
+            updateUiState {
+                it.copy(
+                    showTicker = data.isNotEmpty(),
+                    tickerList = data
+                )
+            }
+        }) {
+        }
+    }
+
     private fun getCampaignDetailBottomSheetData(campaignId: String) {
         launchCatchError(dispatchers.io, {
             val data = getCampaignDetailData(campaignId)
@@ -337,6 +367,10 @@ class FlashSaleManageProductListViewModel @Inject constructor(
 
     private suspend fun getCampaignDetailData(campaignId: String): FlashSale {
         return getFlashSaleDetailForSellerUseCase.execute(campaignId.toLongOrZero())
+    }
+
+    private suspend fun getTickerListData(param: GetTargetedTickerUseCase.Param): List<RemoteTicker> {
+        return getTargetedTickerUseCase.execute(param = param)
     }
 
     private fun getTimelineData(flashSale: FlashSale): MutableList<TimelineStepModel> {

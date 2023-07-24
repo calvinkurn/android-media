@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="80dp"
-    android:background="@color/Unify_N700">
+    android:background="@color/Unify_NN950">
 
     <ImageView
         android:id="@+id/video_thumbnail"
@@ -12,7 +12,7 @@
         android:layout_height="match_parent"
         android:layout_gravity="center"
         android:contentDescription="@null"
-        android:tint="@color/Unify_N700_20" />
+        android:tint="@color/Unify_NN950_20" />
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/btn_play"

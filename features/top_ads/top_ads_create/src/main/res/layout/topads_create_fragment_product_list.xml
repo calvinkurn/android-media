@@ -42,7 +42,7 @@
         android:id="@+id/view3"
         android:layout_width="1dp"
         android:layout_height="@dimen/dp_50"
-        android:background="@color/Unify_N75"
+        android:background="@color/Unify_NN50"
         app:layout_constraintBottom_toBottomOf="@+id/btn_sort"
         app:layout_constraintEnd_toStartOf="@+id/btn_filter"
         app:layout_constraintHorizontal_bias="0.5"

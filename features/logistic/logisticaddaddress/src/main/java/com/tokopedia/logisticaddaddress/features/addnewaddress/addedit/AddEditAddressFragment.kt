@@ -703,7 +703,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
     private fun setMismatchMapHeader() {
         disable_map_layout.visibility = View.VISIBLE
         icon_pointer.setImageDrawable(context?.resources?.getDrawable(R.drawable.ic_green_pointer))
-        context?.resources?.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N100)?.let { icon_pointer.setColorFilter(it) }
+        context?.resources?.getColor(com.tokopedia.unifyprinciples.R.color.Unify_NN200)?.let { icon_pointer.setColorFilter(it) }
         btn_map.apply {
             text = getString(R.string.define_pinpoint)
             val params = btn_map.layoutParams
@@ -744,7 +744,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
     private fun setCircuitBreakerOnHeader() {
         disable_map_layout.visibility = View.VISIBLE
         icon_pointer.setImageDrawable(context?.resources?.getDrawable(R.drawable.ic_green_pointer))
-        context?.resources?.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N100)?.let { icon_pointer.setColorFilter(it) }
+        context?.resources?.getColor(com.tokopedia.unifyprinciples.R.color.Unify_NN200)?.let { icon_pointer.setColorFilter(it) }
         btn_map.isClickable = false
     }
 

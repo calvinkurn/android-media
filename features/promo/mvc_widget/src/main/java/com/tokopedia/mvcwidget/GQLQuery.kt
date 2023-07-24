@@ -22,8 +22,8 @@ query mvcCatalogSummaryQuery(${'$'}shopID: String!,${'$'}limit: Int!,${'$'}apiVe
 """
 
 const val TP_CATALOG_MVC_LIST_QUERY = """
-    query tokopointsCatalogMVCList(${'$'}shopID: String!, ${'$'}productID: String, ${'$'}source: String!) {
-  tokopointsCatalogMVCList(shopID: ${'$'}shopID, productID: ${'$'}productID, source: ${'$'}source) {
+    query tokopointsCatalogMVCList(${'$'}shopID: String!, ${'$'}productID: String, ${'$'}source: String!, ${'$'}additionalParamJSON: String) {
+  tokopointsCatalogMVCList(shopID: ${'$'}shopID, productID: ${'$'}productID, source: ${'$'}source, additionalParamJSON: ${'$'}additionalParamJSON) {
     resultStatus {
       code
       status

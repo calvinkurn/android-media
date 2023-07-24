@@ -45,7 +45,9 @@ object ProductMapper {
             affiliate = FeedTaggedProductUiModel.Affiliate(
                 id = product.affiliate.id,
                 channel = product.affiliate.channel
-            )
+            ),
+            parentID = product.parentID,
+            showGlobalVariant = product.hasVariant && product.isParent,
         )
     }
 

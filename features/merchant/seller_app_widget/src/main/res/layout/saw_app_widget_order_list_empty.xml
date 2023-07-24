@@ -22,7 +22,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/layout_lvl2"
         android:textAlignment="center"
-        android:textColor="@color/Unify_N700"
+        android:textColor="@color/Unify_NN950"
         android:textSize="@dimen/unify_font_14"
         android:textStyle="bold"
         tools:text="@string/saw_order_new_order_on_empty_message" />
@@ -33,7 +33,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl2"
         android:textAlignment="center"
-        android:textColor="@color/Unify_N700_44"
+        android:textColor="@color/Unify_NN950_44"
         android:textSize="@dimen/unify_font_12"
         tools:text="@string/saw_order_new_order_on_empty_sub_message" />
 </LinearLayout>

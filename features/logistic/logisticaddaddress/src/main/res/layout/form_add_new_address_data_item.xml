@@ -18,7 +18,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:text="@string/address_based_on_pinpoint"
-        android:textColor="@color/Unify_N700_68"
+        android:textColor="@color/Unify_NN950_68"
         app:typographyType="body_3" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -26,7 +26,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="24dp"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         app:typographyType="body_2" />
 
     <com.google.android.material.textfield.TextInputLayout
@@ -48,7 +48,7 @@
             android:overScrollMode="always"
             android:scrollbarStyle="insideInset"
             android:scrollbars="vertical"
-            android:textColor="@color/Unify_N700_68"
+            android:textColor="@color/Unify_NN950_68"
             android:textSize="14sp" />
 
     </com.google.android.material.textfield.TextInputLayout>
@@ -65,7 +65,7 @@
             android:layout_alignParentStart="true"
             android:layout_alignParentLeft="true"
             android:text="@string/tv_detail_address_info"
-            android:textColor="@color/Unify_N700_68"
+            android:textColor="@color/Unify_NN950_68"
             app:typographyType="body_3" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -74,7 +74,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            android:textColor="@color/Unify_N700_68"
+            android:textColor="@color/Unify_NN950_68"
             app:typographyType="body_3"
             tools:ignore="RelativeOverlap" />
 
