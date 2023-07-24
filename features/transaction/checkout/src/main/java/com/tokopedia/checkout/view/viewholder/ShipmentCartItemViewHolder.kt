@@ -466,7 +466,6 @@ class ShipmentCartItemViewHolder(
                                 delay(DEBOUNCE_TIME_ADDON)
                                 if (bindingAdapterPosition != RecyclerView.NO_POSITION) {
                                     listener?.onCheckboxAddonProductListener(isChecked, addon, cartItemModel, bindingAdapterPosition)
-                                    listener?.onClickAddOnsProductWidget(addon.type, cartItemModel.productId.toString(), isChecked)
                                 }
                             }
                         }
@@ -552,8 +551,6 @@ class ShipmentCartItemViewHolder(
         fun onClickSeeAllAddOnProductService(cartItemModel: CartItemModel)
 
         fun onImpressionAddOnProductService(addonType: Int, productId: String)
-
-        fun onClickAddOnsProductWidget(addonType: Int, productId: String, isChecked: Boolean)
 
         fun onClickLihatSemuaAddOnProductWidget()
     }
