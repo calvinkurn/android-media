@@ -40,7 +40,7 @@ class ComposePersonaSelectTypeViewModel @Inject constructor(
     val setPersonaResult: LiveData<Result<String>>
         get() = _setPersonaResult
 
-    private val _state = MutableStateFlow(SelectTypeState(isLoading = true))
+    private val _state = MutableStateFlow(SelectTypeState(state = SelectTypeState.State.Loading))
     private val _setPersonaResult = MutableLiveData<Result<String>>()
 
     fun fetchPersonaList(args: PersonaArgsUiModel) {
@@ -58,7 +58,7 @@ class ComposePersonaSelectTypeViewModel @Inject constructor(
     }
 
     private suspend fun emitErrorState(e: Exception) {
-        val errorState = _state.value.copy(isLoading = false, exception = e)
+        val errorState = _state.value.copy(state = SelectTypeState.State.Error(e))
         _state.emit(errorState)
     }
 
@@ -68,14 +68,14 @@ class ComposePersonaSelectTypeViewModel @Inject constructor(
     ) {
         val currentState = _state.value
         val newData = currentState.data.copy(personaList = personaList, args = args)
-        val successState = currentState.copy(isLoading = false, exception = null, data = newData)
+        val successState = currentState.copy(state = SelectTypeState.State.Success, data = newData)
         _state.emit(successState)
     }
 
     private suspend fun emitLoadingState() {
-        if (_state.value.isLoading) return
+        if (_state.value.state is SelectTypeState.State.Loading) return
         val currentState = _state.value
-        val loadingState = currentState.copy(isLoading = true, exception = null)
+        val loadingState = currentState.copy(state = SelectTypeState.State.Loading)
         _state.emit(loadingState)
     }
 

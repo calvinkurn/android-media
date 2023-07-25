@@ -8,6 +8,6 @@ import com.tokopedia.sellerpersona.view.model.PersonaUiModel
 
 sealed class SelectTypeUiEvent {
     data class ClickPersonaCard(val persona: PersonaUiModel) : SelectTypeUiEvent()
-
     object ClickSelectButton : SelectTypeUiEvent()
+    object Reload : SelectTypeUiEvent()
 }

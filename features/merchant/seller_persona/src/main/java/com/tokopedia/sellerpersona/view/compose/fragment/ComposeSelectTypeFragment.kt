@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.navArgs
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.sellerpersona.view.activity.SellerPersonaActivity
 import com.tokopedia.sellerpersona.view.compose.model.args.PersonaArgsUiModel
 import com.tokopedia.sellerpersona.view.compose.screen.SelectPersonaTypeScreen
@@ -47,9 +48,10 @@ class ComposeSelectTypeFragment : Fragment() {
                     viewModel.fetchPersonaList(getSelectTypeArguments())
                 })
 
-                val state = viewModel.state.collectAsState()
-
-                SelectPersonaTypeScreen(state = state.value, onEvent = viewModel::onEvent)
+                NestTheme {
+                    val state = viewModel.state.collectAsState()
+                    SelectPersonaTypeScreen(data = state.value, onEvent = viewModel::onEvent)
+                }
             }
         }
     }

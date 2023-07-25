@@ -1,6 +1,7 @@
 package com.tokopedia.sellerpersona.view.compose.screen
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.LocalOverscrollConfiguration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -25,8 +26,10 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.RadioButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -49,6 +52,7 @@ import com.tokopedia.nest.principles.ui.NestNN
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.nest.principles.utils.ImageSource
 import com.tokopedia.sellerpersona.R
+import com.tokopedia.sellerpersona.view.compose.common.ErrorStateComponent
 import com.tokopedia.sellerpersona.view.compose.model.state.SelectTypeState
 import com.tokopedia.sellerpersona.view.compose.model.uievent.SelectTypeUiEvent
 import com.tokopedia.sellerpersona.view.model.PersonaUiModel
@@ -59,18 +63,24 @@ import com.tokopedia.sellerpersona.view.model.PersonaUiModel
 
 private const val SUB_TITLE_FORMAT = "(%s)"
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 internal fun SelectPersonaTypeScreen(
-    state: SelectTypeState, onEvent: (SelectTypeUiEvent) -> Unit
+    data: SelectTypeState, onEvent: (SelectTypeUiEvent) -> Unit
 ) {
-    val isLoading = state.isLoading
-    val isError = state.exception != null
-
-    Column(modifier = Modifier.fillMaxSize()) {
-        when {
-            isLoading -> PersonaTypeLoadingState()
-            isError -> PersonaTypeErrorState()
-            else -> PersonSuccessState(state.data, onEvent)
+    CompositionLocalProvider(
+        LocalOverscrollConfiguration provides null
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(color = MaterialTheme.colors.background)
+        ) {
+            when (data.state) {
+                is SelectTypeState.State.Loading -> PersonaTypeLoadingState()
+                is SelectTypeState.State.Error -> PersonaTypeErrorState(onEvent)
+                else -> PersonSuccessState(data.data, onEvent)
+            }
         }
     }
 }
@@ -87,13 +97,13 @@ private fun PersonSuccessState(
         val rowState = rememberLazyListState()
         LazyRow(
             modifier = Modifier.constrainAs(personaList) {
-                    top.linkTo(anchor = parent.top, margin = 16.dp)
-                    start.linkTo(anchor = parent.start)
-                    end.linkTo(anchor = parent.end)
-                    bottom.linkTo(anchor = divider.top, margin = 16.dp)
-                    width = Dimension.fillToConstraints
-                    height = Dimension.fillToConstraints
-                },
+                top.linkTo(anchor = parent.top, margin = 16.dp)
+                start.linkTo(anchor = parent.start)
+                end.linkTo(anchor = parent.end)
+                bottom.linkTo(anchor = divider.top, margin = 16.dp)
+                width = Dimension.fillToConstraints
+                height = Dimension.fillToConstraints
+            },
             state = rowState,
             flingBehavior = rememberSnapFlingBehavior(lazyListState = rowState)
         ) {
@@ -156,9 +166,9 @@ private fun PersonaTypeItemCard(persona: PersonaUiModel, onEvent: (SelectTypeUiE
 
             RadioButtonComponent(
                 modifier = Modifier.constrainAs(radio) {
-                        end.linkTo(parent.end)
-                        top.linkTo(parent.top)
-                    }, isChecked = persona.isSelected
+                    end.linkTo(parent.end)
+                    top.linkTo(parent.top)
+                }, isChecked = persona.isSelected
             ) {
                 onEvent(SelectTypeUiEvent.ClickPersonaCard(persona))
             }
@@ -177,9 +187,9 @@ private fun PersonaTypeItemCard(persona: PersonaUiModel, onEvent: (SelectTypeUiE
 
             NestTypography(
                 modifier = Modifier.constrainAs(tvSellerTypeLbl) {
-                        top.linkTo(avatar.bottom, margin = 12.dp)
-                        start.linkTo(anchor = startGuideline)
-                    },
+                    top.linkTo(avatar.bottom, margin = 12.dp)
+                    start.linkTo(anchor = startGuideline)
+                },
                 text = stringResource(R.string.sp_label_seller_type),
                 textStyle = NestTheme.typography.display2.copy(
                     color = getLabelTextColor(persona.isSelected)
@@ -187,17 +197,17 @@ private fun PersonaTypeItemCard(persona: PersonaUiModel, onEvent: (SelectTypeUiE
             )
             NestTypography(
                 modifier = Modifier.constrainAs(tvPersonaType) {
-                        top.linkTo(tvSellerTypeLbl.bottom, margin = 2.dp)
-                        start.linkTo(anchor = startGuideline)
-                    }, text = persona.headerTitle, textStyle = NestTheme.typography.heading1.copy(
+                    top.linkTo(tvSellerTypeLbl.bottom, margin = 2.dp)
+                    start.linkTo(anchor = startGuideline)
+                }, text = persona.headerTitle, textStyle = NestTheme.typography.heading1.copy(
                     color = getPersonaTypeTextColor(persona.isSelected)
                 )
             )
             NestTypography(
                 modifier = Modifier.constrainAs(tvSellerTypeStatus) {
-                        top.linkTo(tvPersonaType.bottom, margin = 2.dp)
-                        start.linkTo(anchor = startGuideline)
-                    },
+                    top.linkTo(tvPersonaType.bottom, margin = 2.dp)
+                    start.linkTo(anchor = startGuideline)
+                },
                 text = String.format(SUB_TITLE_FORMAT, persona.headerSubTitle),
                 textStyle = NestTheme.typography.heading5.copy(
                     color = getStatusTypeTextColor(persona.isSelected)
@@ -205,18 +215,18 @@ private fun PersonaTypeItemCard(persona: PersonaUiModel, onEvent: (SelectTypeUiE
             )
 
             Divider(modifier = Modifier.constrainAs(dividerItemSelectType) {
-                    top.linkTo(anchor = tvSellerTypeStatus.bottom, margin = 16.dp)
-                    start.linkTo(anchor = startGuideline)
-                    end.linkTo(anchor = endGuideline)
-                    width = Dimension.fillToConstraints
-                })
+                top.linkTo(anchor = tvSellerTypeStatus.bottom, margin = 16.dp)
+                start.linkTo(anchor = startGuideline)
+                end.linkTo(anchor = endGuideline)
+                width = Dimension.fillToConstraints
+            })
 
             val sectionTextColor = getSectionTextColor(persona.isSelected)
             NestTypography(
                 modifier = Modifier.constrainAs(tvSellerTypeLblInfo) {
-                        top.linkTo(dividerItemSelectType.bottom, margin = 16.dp)
-                        start.linkTo(anchor = startGuideline)
-                    },
+                    top.linkTo(dividerItemSelectType.bottom, margin = 16.dp)
+                    start.linkTo(anchor = startGuideline)
+                },
                 text = stringResource(R.string.sp_select_this_type_if),
                 textStyle = NestTheme.typography.display2.copy(
                     color = sectionTextColor
@@ -224,11 +234,11 @@ private fun PersonaTypeItemCard(persona: PersonaUiModel, onEvent: (SelectTypeUiE
             )
 
             LazyColumn(modifier = Modifier.constrainAs(columnSelectTypeInfo) {
-                    top.linkTo(anchor = tvSellerTypeLblInfo.bottom, margin = 16.dp)
-                    start.linkTo(startGuideline)
-                    end.linkTo(endGuideline)
-                    width = Dimension.fillToConstraints
-                }) {
+                top.linkTo(anchor = tvSellerTypeLblInfo.bottom, margin = 16.dp)
+                start.linkTo(startGuideline)
+                end.linkTo(endGuideline)
+                width = Dimension.fillToConstraints
+            }) {
                 items(items = persona.itemList) {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
@@ -319,8 +329,14 @@ private fun RadioButtonComponent(
 }
 
 @Composable
-private fun PersonaTypeErrorState() {
-
+private fun PersonaTypeErrorState(onEvent: (SelectTypeUiEvent) -> Unit) {
+    ErrorStateComponent(
+        actionText = stringResource(id = R.string.sp_reload),
+        title = stringResource(id = R.string.sp_common_global_error_title),
+        onActionClicked = {
+            onEvent(SelectTypeUiEvent.Reload)
+        }
+    )
 }
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -332,7 +348,8 @@ private fun PersonaTypeLoadingState() {
             .fillMaxSize()
             .padding(start = 8.dp, end = 8.dp, top = 16.dp, bottom = 16.dp),
         state = rowState,
-        flingBehavior = rememberSnapFlingBehavior(lazyListState = rowState)
+        flingBehavior = rememberSnapFlingBehavior(lazyListState = rowState),
+        userScrollEnabled = false
     ) {
         items(count = 3) {
             Row {
@@ -342,7 +359,7 @@ private fun PersonaTypeLoadingState() {
                         .width(300.dp)
                         .fillMaxHeight()
                         .border(
-                            width = 0.9.dp,
+                            width = 1.dp,
                             color = NestTheme.colors.NN._300,
                             shape = RoundedCornerShape(16.dp)
                         )
@@ -434,52 +451,55 @@ private fun Shimmer(modifier: Modifier) {
 @Composable
 fun Preview() {
     NestTheme(darkTheme = false) {
-        SelectPersonaTypeScreen(state = SelectTypeState(
-            isLoading = true, exception = null, data = SelectTypeState.Data(
-                personaList = listOf(
-                    PersonaUiModel(
-                        value = "corporate-supervisor-owner",
-                        headerTitle = "Gedongan",
-                        headerSubTitle = "Pemilik Toko",
-                        avatarImage = "https://images.tokopedia.net/img/android/sellerapp/seller_persona/img_persona_avatar_gedongan-min.png",
-                        backgroundImage = "https://images.tokopedia.net/img/android/sellerapp/seller_persona/img_persona_background_gedongan-min.png",
-                        bodyTitle = "Pilih tipe ini jika kamu:",
-                        itemList = listOf(
-                            "Menerima 1-10 pesanan per hari",
-                            "Punya toko fisik (offline)",
-                            "Punya pegawai yang mengurus operasional toko",
-                            "Sering mencari peluang untuk strategi baru"
-                        ),
-                        isSelected = true
-                    ), PersonaUiModel(
-                        value = "corporate-supervisor-owner",
-                        headerTitle = "Gedongan",
-                        headerSubTitle = "Pemilik Toko",
-                        avatarImage = "https://images.tokopedia.net/img/android/sellerapp/seller_persona/img_persona_avatar_gedongan-min.png",
-                        backgroundImage = "https://images.tokopedia.net/img/android/sellerapp/seller_persona/img_persona_background_gedongan-min.png",
-                        bodyTitle = "Pilih tipe ini jika kamu:",
-                        itemList = listOf(
-                            "Menerima 1-10 pesanan per hari",
-                            "Punya toko fisik (offline)",
-                            "Punya pegawai yang mengurus operasional toko",
-                            "Sering mencari peluang untuk strategi baru"
-                        )
-                    ), PersonaUiModel(
-                        value = "corporate-supervisor-owner",
-                        headerTitle = "Gedongan",
-                        headerSubTitle = "Pemilik Toko",
-                        avatarImage = "https://images.tokopedia.net/img/android/sellerapp/seller_persona/img_persona_avatar_gedongan-min.png",
-                        backgroundImage = "https://images.tokopedia.net/img/android/sellerapp/seller_persona/img_persona_background_gedongan-min.png",
-                        bodyTitle = "Pilih tipe ini jika kamu:",
-                        itemList = listOf(
-                            "Menerima 1-10 pesanan per hari",
-                            "Punya toko fisik (offline)",
-                            "Punya pegawai yang mengurus operasional toko",
-                            "Sering mencari peluang untuk strategi baru"
+        SelectPersonaTypeScreen(
+            data = SelectTypeState(
+                state = SelectTypeState.State.Error(Exception()),
+                data = SelectTypeState.Data(
+                    personaList = listOf(
+                        PersonaUiModel(
+                            value = "corporate-supervisor-owner",
+                            headerTitle = "Gedongan",
+                            headerSubTitle = "Pemilik Toko",
+                            avatarImage = "https://images.tokopedia.net/img/android/sellerapp/seller_persona/img_persona_avatar_gedongan-min.png",
+                            backgroundImage = "https://images.tokopedia.net/img/android/sellerapp/seller_persona/img_persona_background_gedongan-min.png",
+                            bodyTitle = "Pilih tipe ini jika kamu:",
+                            itemList = listOf(
+                                "Menerima 1-10 pesanan per hari",
+                                "Punya toko fisik (offline)",
+                                "Punya pegawai yang mengurus operasional toko",
+                                "Sering mencari peluang untuk strategi baru"
+                            ),
+                            isSelected = true
+                        ), PersonaUiModel(
+                            value = "corporate-supervisor-owner",
+                            headerTitle = "Gedongan",
+                            headerSubTitle = "Pemilik Toko",
+                            avatarImage = "https://images.tokopedia.net/img/android/sellerapp/seller_persona/img_persona_avatar_gedongan-min.png",
+                            backgroundImage = "https://images.tokopedia.net/img/android/sellerapp/seller_persona/img_persona_background_gedongan-min.png",
+                            bodyTitle = "Pilih tipe ini jika kamu:",
+                            itemList = listOf(
+                                "Menerima 1-10 pesanan per hari",
+                                "Punya toko fisik (offline)",
+                                "Punya pegawai yang mengurus operasional toko",
+                                "Sering mencari peluang untuk strategi baru"
+                            )
+                        ), PersonaUiModel(
+                            value = "corporate-supervisor-owner",
+                            headerTitle = "Gedongan",
+                            headerSubTitle = "Pemilik Toko",
+                            avatarImage = "https://images.tokopedia.net/img/android/sellerapp/seller_persona/img_persona_avatar_gedongan-min.png",
+                            backgroundImage = "https://images.tokopedia.net/img/android/sellerapp/seller_persona/img_persona_background_gedongan-min.png",
+                            bodyTitle = "Pilih tipe ini jika kamu:",
+                            itemList = listOf(
+                                "Menerima 1-10 pesanan per hari",
+                                "Punya toko fisik (offline)",
+                                "Punya pegawai yang mengurus operasional toko",
+                                "Sering mencari peluang untuk strategi baru"
+                            )
                         )
                     )
                 )
-            )
-        ), onEvent = {})
+            ), onEvent = {}
+        )
     }
 }
