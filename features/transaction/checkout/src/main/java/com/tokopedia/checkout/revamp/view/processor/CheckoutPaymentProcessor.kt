@@ -18,6 +18,9 @@ class CheckoutPaymentProcessor @Inject constructor(
 ) {
 
     suspend fun checkPlatformFee(shipmentPlatformFeeData: ShipmentPlatformFeeData, cost: CheckoutCostModel, request: PaymentFeeCheckoutRequest): CheckoutCostModel {
+        if (!cost.hasSelectAllShipping) {
+            return cost.copy(dynamicPlatformFee = ShipmentPaymentFeeModel(isLoading = false))
+        }
         if (shipmentPlatformFeeData.isEnable) {
             val platformFeeModel = cost.dynamicPlatformFee
             if (cost.totalPrice > platformFeeModel.minRange &&

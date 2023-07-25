@@ -363,7 +363,7 @@ class CheckoutViewModel @Inject constructor(
         addOnProcessor.setMiniConsultationResult(results, listData.value)
     }
 
-    fun calculateTotal() {
+    internal fun calculateTotal() {
         viewModelScope.launch(dispatchers.immediate) {
             listData.value = calculator.calculateWithoutPayment(listData.value, isTradeInByDropOff)
             var cost = listData.value.cost()!!

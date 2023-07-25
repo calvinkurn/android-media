@@ -107,6 +107,7 @@ class CheckoutCalculator @Inject constructor(private val dispatchers: CoroutineD
         val listShipmentAddOnSummary: ArrayList<ShipmentAddOnSummaryModel> = arrayListOf()
         val checkoutCostModel = listData.cost()!!
         val promo = listData.promo()!!.promo
+        var hasSelectAllShipping = true
         for (shipmentData in listData) {
             if (shipmentData is CheckoutOrderModel) {
                 val cartItemModels = shipmentData.products
@@ -179,6 +180,8 @@ class CheckoutCalculator @Inject constructor(private val dispatchers: CoroutineD
 //                        }
                     additionalFee += shipmentData.shipment.courierItemData.additionalPrice.toDouble()
 //                    }
+                } else if (!shipmentData.isError) {
+                    hasSelectAllShipping = false
                 }
                 if (shipmentData.isLeasingProduct) {
                     totalBookingFee += shipmentData.bookingFee
@@ -208,6 +211,7 @@ class CheckoutCalculator @Inject constructor(private val dispatchers: CoroutineD
         shipmentCost = shipmentCost.copy(totalItem = totalItem)
         shipmentCost = shipmentCost.copy(originalShippingFee = shippingFee)
         shipmentCost = shipmentCost.copy(finalShippingFee = finalShippingFee)
+        shipmentCost = shipmentCost.copy(hasSelectAllShipping = hasSelectAllShipping)
         shipmentCost = shipmentCost.copy(shippingInsuranceFee = insuranceFee)
         shipmentCost.totalPurchaseProtectionItem = totalPurchaseProtectionItem
         shipmentCost.purchaseProtectionFee = totalPurchaseProtectionPrice

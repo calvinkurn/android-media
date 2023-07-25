@@ -128,14 +128,18 @@ class CheckoutCostViewHolder(
             binding.tickerPlatformFeeInfo.gone()
             binding.tvCheckoutCostPlatformFeeTitle.gone()
             binding.tvCheckoutCostPlatformFeeValue.gone()
+            binding.tvCheckoutCostPlatformFeeSlashedValue.gone()
+            binding.icCheckoutCostPlatformFee.gone()
             binding.loaderPlatformFeeLabel.visible()
             binding.loaderPlatformFeeValue.visible()
         } else if (platformFeeModel.isShowTicker) {
             binding.loaderPlatformFeeLabel.gone()
             binding.tvCheckoutCostPlatformFeeValue.gone()
+            binding.tvCheckoutCostPlatformFeeSlashedValue.gone()
             binding.tvCheckoutCostPlatformFeeTitle.gone()
             binding.loaderPlatformFeeLabel.gone()
             binding.loaderPlatformFeeValue.gone()
+            binding.icCheckoutCostPlatformFee.gone()
             binding.tickerPlatformFeeInfo.visible()
             binding.tickerPlatformFeeInfo.setHtmlDescription(platformFeeModel.ticker)
             binding.tickerPlatformFeeInfo.setDescriptionClickEvent(object : TickerCallback {
@@ -153,7 +157,9 @@ class CheckoutCostViewHolder(
                 binding.loaderPlatformFeeLabel.gone()
                 binding.loaderPlatformFeeValue.gone()
                 binding.tvCheckoutCostPlatformFeeValue.gone()
+                binding.tvCheckoutCostPlatformFeeSlashedValue.gone()
                 binding.tvCheckoutCostPlatformFeeTitle.gone()
+                binding.icCheckoutCostPlatformFee.gone()
             } else {
                 binding.loaderPlatformFeeLabel.gone()
                 binding.loaderPlatformFeeValue.gone()
