@@ -222,7 +222,7 @@ class NavEventHomeFragment :
             context?.let {
                 ContextCompat.getColor(
                     it,
-                    com.tokopedia.unifyprinciples.R.color.Unify_N700_96
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN950_96
                 )
             }?.let {
                 navIcon?.setColorFilter(it, PorterDuff.Mode.SRC_ATOP)

@@ -200,11 +200,11 @@ class EventPDPTicketItemPackageAdapter(
         private fun showSoldOut() {
             with(binding) {
                 bgTicket.background = ContextCompat.getDrawable(root.context, R.drawable.ent_pdp_ticket_sold_out)
-                txtPilihTicket.setTextColor(root.context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_44))
-                txtTermurahTicket.setTextColor(root.context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_44))
-                txtSubtitleTicket.setTextColor(root.context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_44))
+                txtPilihTicket.setTextColor(root.context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_NN950_44))
+                txtTermurahTicket.setTextColor(root.context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_NN950_44))
+                txtSubtitleTicket.setTextColor(root.context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_NN950_44))
                 txtPriceTicket.text = root.context.resources.getString(R.string.ent_pdp_ticket_sold_out)
-                txtPriceTicket.setTextColor(root.context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+                txtPriceTicket.setTextColor(root.context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_NN950_68))
             }
         }
     }

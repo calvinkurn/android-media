@@ -19,7 +19,7 @@
         android:layout_margin="12dp"
         android:layout_gravity="center|left"
         android:gravity="center|left"
-        android:textColor="@color/Unify_G400"
+        android:textColor="@color/Unify_GN500"
         app:typographyType="heading_5"
         tools:text="Lihat Semua"
         />

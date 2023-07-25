@@ -30,7 +30,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/unify_space_8"
-        android:background="@color/Unify_R500"
+        android:background="@color/Unify_RN500"
         android:gravity="center_vertical"
         android:paddingHorizontal="@dimen/unify_space_12"
         android:paddingVertical="@dimen/dp_topchat_5" />
@@ -51,7 +51,7 @@
         android:paddingBottom="@dimen/spacing_lvl3"
         android:visibility="gone"
         app:useShadow="true"
-        app:voucherShadowColor="@color/Unify_N600"
+        app:voucherShadowColor="@color/Unify_NN800"
         tools:visibility="visible" />
 
     <com.tokopedia.topchat.chatroom.view.custom.ProductCarouselRecyclerView

@@ -18,7 +18,7 @@ class SortItemDecoration(context: Context) : RecyclerView.ItemDecoration() {
     private val dividerHeight = context.resources.getDimensionPixelOffset(R.dimen.content_common_space_1)
 
     private val mPaint = Paint().apply {
-        color = MethodChecker.getColor(context, unifyR.color.Unify_N75)
+        color = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN50)
     }
 
     override fun onDraw(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {

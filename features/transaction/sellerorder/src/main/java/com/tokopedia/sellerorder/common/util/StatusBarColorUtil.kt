@@ -27,7 +27,7 @@ class StatusBarColorUtil(activity: Activity) {
 
         with(window) {
             statusBarColor = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                ContextCompat.getColor(getActivity, com.tokopedia.unifycomponents.R.color.Unify_N700_68)
+                ContextCompat.getColor(getActivity, com.tokopedia.unifyprinciples.R.color.Unify_NN950_68)
             } else {
                 ContextCompat.getColor(getActivity, com.tokopedia.unifyprinciples.R.color.Unify_Static_Black)
             }

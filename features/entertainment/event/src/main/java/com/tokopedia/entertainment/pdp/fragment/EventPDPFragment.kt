@@ -371,7 +371,7 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
             context?.let {
                 ContextCompat.getColor(
                     it,
-                    com.tokopedia.unifyprinciples.R.color.Unify_N0
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN0
                 )
             }?.let {
                 navIcon?.setColorFilter(it, PorterDuff.Mode.SRC_ATOP)
@@ -397,7 +397,7 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
                             eventPdpCollapsingToolbar.title = productDetailData.title
                             color = ContextCompat.getColor(
                                 context,
-                                com.tokopedia.unifyprinciples.R.color.Unify_N700_96
+                                com.tokopedia.unifyprinciples.R.color.Unify_NN950_96
                             )
                             widgetEventPdpTabSection.setScrolledMode()
                             widgetEventPdpTabSection.show()
@@ -405,7 +405,7 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
                             eventPdpCollapsingToolbar.title = ""
                             color = ContextCompat.getColor(
                                 context,
-                                com.tokopedia.unifyprinciples.R.color.Unify_N0
+                                com.tokopedia.unifyprinciples.R.color.Unify_NN0
                             )
                             widgetEventPdpTabSection.setNullMode()
                             widgetEventPdpTabSection.hide()

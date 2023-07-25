@@ -66,14 +66,40 @@
                 tools:text="Title" />
 
             <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tvPrefixInstallment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/Unify_NN600"
+                app:layout_constraintStart_toStartOf="@+id/tvTitlePaymentPartner"
+                app:layout_constraintBottom_toBottomOf="@id/tvInstallmentAmount"
+                app:typographyType="body_3"
+                app:typographyWeight="reguler"
+                tools:text="Mulai" />
+
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tvInstallmentAmount"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/Unify_NN950"
-                app:layout_constraintStart_toStartOf="@+id/tvTitlePaymentPartner"
+                android:layout_marginStart="2dp"
+                app:layout_goneMarginStart="0dp"
+                app:layout_constraintStart_toEndOf="@+id/tvPrefixInstallment"
                 app:layout_constraintTop_toBottomOf="@+id/tvTitlePaymentPartner"
                 app:typographyType="body_1"
                 app:typographyWeight="bold"
+                tools:text="Rp1.250.000" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tvOriginalInstallment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="2dp"
+                android:textColor="@color/Unify_NN600"
+                app:layout_goneMarginStart="0dp"
+                app:layout_constraintStart_toEndOf="@+id/tvInstallmentAmount"
+                app:layout_constraintBottom_toBottomOf="@id/tvInstallmentAmount"
+                app:typographyType="body_2"
+                app:typographyWeight="reguler"
                 tools:text="Rp1.250.000" />
 
             <com.tokopedia.unifyprinciples.Typography
@@ -83,8 +109,7 @@
                 android:layout_marginStart="@dimen/unify_space_4"
                 android:textColor="@color/Unify_NN600"
                 app:layout_constraintBottom_toBottomOf="@+id/tvInstallmentAmount"
-                app:layout_constraintStart_toEndOf="@id/tvInstallmentAmount"
-                app:layout_constraintTop_toTopOf="@+id/tvInstallmentAmount"
+                app:layout_constraintStart_toEndOf="@id/tvOriginalInstallment"
                 app:typographyType="body_3"
                 tools:text="x 12" />
 
@@ -96,8 +121,7 @@
                 app:icon_name="INFORMATION"
                 app:icon_enable_state="true"
                 app:layout_constraintBottom_toBottomOf="@id/tvInstallmentAmount"
-                app:layout_constraintStart_toEndOf="@id/tvTenureMultiplier"
-                app:layout_constraintTop_toTopOf="@id/tvInstallmentAmount" />
+                app:layout_constraintStart_toEndOf="@id/tvTenureMultiplier"/>
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tvInstallmentDescription"

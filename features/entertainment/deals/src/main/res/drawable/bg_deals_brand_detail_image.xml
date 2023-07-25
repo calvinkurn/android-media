@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
-    <gradient android:angle="270" android:startColor="@color/Unify_N700_44" android:endColor="@color/dms_deal_brand_detail_transparent" android:type="linear"/>
+    <gradient android:angle="270" android:startColor="@color/Unify_NN950_44" android:endColor="@color/dms_deal_brand_detail_transparent" android:type="linear"/>
 </shape>
