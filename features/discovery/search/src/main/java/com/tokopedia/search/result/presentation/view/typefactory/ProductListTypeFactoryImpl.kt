@@ -78,6 +78,12 @@ import com.tokopedia.search.result.product.samesessionrecommendation.SameSession
 import com.tokopedia.search.result.product.searchintokopedia.SearchInTokopediaDataView
 import com.tokopedia.search.result.product.searchintokopedia.SearchInTokopediaListener
 import com.tokopedia.search.result.product.searchintokopedia.SearchInTokopediaViewHolder
+import com.tokopedia.search.result.product.semlessproduct.seamlesskeywordoptions.InspirationKeyboardCardView
+import com.tokopedia.search.result.product.semlessproduct.seamlesskeywordoptions.InspirationKeywordListener
+import com.tokopedia.search.result.product.semlessproduct.seamlesskeywordoptions.InspirationKeywordViewHolder
+import com.tokopedia.search.result.product.semlessproduct.seamlessproduct.InspirationProductItemDataView
+import com.tokopedia.search.result.product.semlessproduct.seamlessproduct.InspirationProductItemViewHolder
+import com.tokopedia.search.result.product.semlessproduct.seamlessproduct.InspirationProductListener
 import com.tokopedia.search.result.product.videowidget.InspirationCarouselVideoDataView
 import com.tokopedia.search.result.product.violation.ViolationDataView
 import com.tokopedia.search.result.product.violation.ViolationListener
@@ -118,6 +124,8 @@ class ProductListTypeFactoryImpl(
     private val sameSessionRecommendationListener: SameSessionRecommendationListener,
     private val recycledViewPool: RecyclerView.RecycledViewPool,
     private val isSneakPeekEnabled: Boolean = false,
+    private val inspirationKeywordListener: InspirationKeywordListener,
+    private val inspirationProductListener: InspirationProductListener
 ) : BaseAdapterTypeFactory(), ProductListTypeFactory {
 
     override fun type(cpmDataView: CpmDataView): Int {
@@ -234,6 +242,12 @@ class ProductListTypeFactoryImpl(
     override fun type(adsLowOrganicTitleDataView: AdsLowOrganicTitleDataView): Int =
         AdsLowOrganicTitleViewHolder.LAYOUT
 
+    override fun type(inspirationKeyboardCardView: InspirationKeyboardCardView): Int =
+        InspirationKeywordViewHolder.LAYOUT
+
+    override fun type(inspirationProductCardView: InspirationProductItemDataView): Int =
+        InspirationProductItemViewHolder.LAYOUT
+
     @Suppress("ComplexMethod")
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
@@ -297,6 +311,10 @@ class ProductListTypeFactoryImpl(
                 InspirationListAtcViewHolder(view, inspirationListAtcListener, recycledViewPool)
             AdsLowOrganicTitleViewHolder.LAYOUT ->
                 AdsLowOrganicTitleViewHolder(view)
+            InspirationKeywordViewHolder.LAYOUT ->
+                InspirationKeywordViewHolder(view, inspirationKeywordListener)
+            InspirationProductItemViewHolder.LAYOUT ->
+                InspirationProductItemViewHolder(view, inspirationProductListener)
 
             else -> super.createViewHolder(view, type)
         }

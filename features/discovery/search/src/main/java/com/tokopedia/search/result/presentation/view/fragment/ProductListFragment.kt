@@ -91,6 +91,8 @@ import com.tokopedia.search.result.product.onboarding.OnBoardingListenerDelegate
 import com.tokopedia.search.result.product.performancemonitoring.PerformanceMonitoringModule
 import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationListener
 import com.tokopedia.search.result.product.searchintokopedia.SearchInTokopediaListenerDelegate
+import com.tokopedia.search.result.product.semlessproduct.seamlesskeywordoptions.InspirationKeywordListenerDelegate
+import com.tokopedia.search.result.product.semlessproduct.seamlessproduct.InspirationProductListenerDelegate
 import com.tokopedia.search.result.product.suggestion.SuggestionListenerDelegate
 import com.tokopedia.search.result.product.tdn.TopAdsImageViewListenerDelegate
 import com.tokopedia.search.result.product.ticker.TickerListenerDelegate
@@ -499,6 +501,15 @@ class ProductListFragment: BaseDaggerFragment(),
             sameSessionRecommendationListener = sameSessionRecommendationListener,
             recycledViewPool = recycledViewPool,
             isSneakPeekEnabled = isSneakPeekEnabled,
+            inspirationKeywordListener = InspirationKeywordListenerDelegate(
+                presenter,
+                this,
+            ),
+            inspirationProductListener = InspirationProductListenerDelegate(
+                presenter,
+                this,
+                this
+            )
         )
     }
 
