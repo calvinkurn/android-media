@@ -1,4 +1,4 @@
-package com.tokopedia.sellerpersona.view.compose.model
+package com.tokopedia.sellerpersona.view.compose.model.uievent
 
 import com.tokopedia.sellerpersona.view.model.PersonaStatus
 

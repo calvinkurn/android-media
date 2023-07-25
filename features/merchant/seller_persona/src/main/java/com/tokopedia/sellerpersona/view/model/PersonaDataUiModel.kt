@@ -2,7 +2,7 @@ package com.tokopedia.sellerpersona.view.model
 
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.sellerpersona.R
-import com.tokopedia.sellerpersona.view.compose.model.ResultArgsUiModel
+import com.tokopedia.sellerpersona.view.compose.model.args.PersonaArgsUiModel
 
 /**
  * Created by @ilhamsuaib on 30/01/23.
@@ -17,7 +17,7 @@ data class PersonaDataUiModel(
     val isFirstVisit: Boolean = false,
 
     //fragment arguments
-    val args: ResultArgsUiModel = ResultArgsUiModel(),
+    val args: PersonaArgsUiModel = PersonaArgsUiModel(),
 
     //ui component state
     val isSwitchChecked: Boolean = false,

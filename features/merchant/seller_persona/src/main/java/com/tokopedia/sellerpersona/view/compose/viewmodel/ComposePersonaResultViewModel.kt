@@ -7,9 +7,9 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.sellerpersona.common.Constants
 import com.tokopedia.sellerpersona.data.remote.usecase.GetPersonaDataUseCase
 import com.tokopedia.sellerpersona.data.remote.usecase.TogglePersonaUseCase
-import com.tokopedia.sellerpersona.view.compose.model.PersonaResultState
-import com.tokopedia.sellerpersona.view.compose.model.ResultArgsUiModel
-import com.tokopedia.sellerpersona.view.compose.model.ResultUiEvent
+import com.tokopedia.sellerpersona.view.compose.model.state.PersonaResultState
+import com.tokopedia.sellerpersona.view.compose.model.args.PersonaArgsUiModel
+import com.tokopedia.sellerpersona.view.compose.model.uievent.ResultUiEvent
 import com.tokopedia.sellerpersona.view.model.PersonaDataUiModel
 import com.tokopedia.sellerpersona.view.model.PersonaStatus
 import com.tokopedia.user.session.UserSessionInterface
@@ -54,7 +54,7 @@ class ComposePersonaResultViewModel @Inject constructor(
     }
 
 
-    fun fetchPersonaData(args: ResultArgsUiModel) {
+    fun fetchPersonaData(args: PersonaArgsUiModel) {
         viewModelScope.launchCatchError(block = {
             _personaState.emit(getLoadingState())
             val result = getPersonaDataUseCase.get().execute(
@@ -114,7 +114,7 @@ class ComposePersonaResultViewModel @Inject constructor(
     }
 
     private fun getSuccessState(
-        args: ResultArgsUiModel, data: PersonaDataUiModel
+        args: PersonaArgsUiModel, data: PersonaDataUiModel
     ): PersonaResultState {
         val lastState = _personaState.value
         val isSwitchCheckedByDefault = args.paramPersona.isNotBlank()
@@ -134,7 +134,7 @@ class ComposePersonaResultViewModel @Inject constructor(
         return lastState.copy(isLoading = true, data = lastState.data, error = null)
     }
 
-    private fun getErrorState(args: ResultArgsUiModel, throwable: Throwable): PersonaResultState {
+    private fun getErrorState(args: PersonaArgsUiModel, throwable: Throwable): PersonaResultState {
         val lastState = _personaState.value
         return lastState.copy(
             isLoading = false, data = lastState.data.copy(args = args), error = throwable

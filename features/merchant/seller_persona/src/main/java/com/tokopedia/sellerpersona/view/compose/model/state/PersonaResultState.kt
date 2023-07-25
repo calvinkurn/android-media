@@ -1,4 +1,4 @@
-package com.tokopedia.sellerpersona.view.compose.model
+package com.tokopedia.sellerpersona.view.compose.model.state
 
 import com.tokopedia.sellerpersona.view.model.PersonaDataUiModel
 

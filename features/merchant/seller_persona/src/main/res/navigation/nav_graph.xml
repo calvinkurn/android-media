@@ -71,9 +71,26 @@
     </fragment>
 
     <fragment
+        android:id="@+id/composeSelectTypeFragment"
+        android:name="com.tokopedia.sellerpersona.view.compose.fragment.ComposeSelectTypeFragment"
+        android:label="@string/sp_select_seller_type"
+        tools:layout="@layout/fragment_persona_select_type">
+        <argument
+            android:name="param_persona"
+            app:argType="string"
+            app:nullable="true" />
+        <action
+            android:id="@+id/actionSelectTypeToResult"
+            app:destination="@id/resultFragment"
+            app:launchSingleTop="true"
+            app:popUpTo="@id/selectTypeFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+
+    <fragment
         android:id="@+id/composeOpeningFragment"
         android:name="com.tokopedia.sellerpersona.view.compose.fragment.ComposeOpeningFragment"
-        android:label="ComposeOpeningFragment"
+        android:label="@string/sp_opening_page_type"
         tools:layout="@layout/fragment_persona_opening">
         <action
             android:id="@+id/actionComposeOpeningToQuestionnaire"
@@ -89,8 +106,8 @@
             android:id="@+id/actionResultFragmentToQuestionnaireFragment"
             app:destination="@id/questionnaireFragment" />
         <action
-            android:id="@+id/actionResultFragmentToSelectTypeFragment"
-            app:destination="@id/selectTypeFragment"
+            android:id="@+id/actionToSelectTypeScreen"
+            app:destination="@id/composeSelectTypeFragment"
             app:enterAnim="@anim/nav_default_enter_anim" />
         <argument
             android:name="param_persona"

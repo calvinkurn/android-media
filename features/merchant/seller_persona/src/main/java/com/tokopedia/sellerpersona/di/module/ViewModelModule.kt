@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.sellerpersona.di.SellerPersonaScope
 import com.tokopedia.sellerpersona.view.compose.viewmodel.ComposePersonaResultViewModel
+import com.tokopedia.sellerpersona.view.compose.viewmodel.ComposePersonaSelectTypeViewModel
 import com.tokopedia.sellerpersona.view.viewmodel.PersonaResultViewModel
 import com.tokopedia.sellerpersona.view.viewmodel.PersonaSharedViewModel
 import com.tokopedia.sellerpersona.view.viewmodel.QuestionnaireViewModel
@@ -49,4 +50,9 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(ComposePersonaResultViewModel::class)
     abstract fun provideComposePersonaResultViewModel(viewModel: ComposePersonaResultViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(ComposePersonaSelectTypeViewModel::class)
+    abstract fun provideComposeSelectPersonaTypeViewModel(viewModel: ComposePersonaSelectTypeViewModel): ViewModel
 }

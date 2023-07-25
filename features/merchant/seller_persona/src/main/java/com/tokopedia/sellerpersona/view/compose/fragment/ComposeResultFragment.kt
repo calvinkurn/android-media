@@ -26,8 +26,8 @@ import com.tokopedia.sellerpersona.analytics.SellerPersonaTracking
 import com.tokopedia.sellerpersona.data.local.PersonaSharedPref
 import com.tokopedia.sellerpersona.view.activity.SellerPersonaActivity
 import com.tokopedia.sellerpersona.view.compose.common.ErrorStateComponent
-import com.tokopedia.sellerpersona.view.compose.model.ResultArgsUiModel
-import com.tokopedia.sellerpersona.view.compose.model.ResultUiEvent
+import com.tokopedia.sellerpersona.view.compose.model.args.PersonaArgsUiModel
+import com.tokopedia.sellerpersona.view.compose.model.uievent.ResultUiEvent
 import com.tokopedia.sellerpersona.view.compose.screen.PersonaResultScreen
 import com.tokopedia.sellerpersona.view.compose.screen.ResultLoadingState
 import com.tokopedia.sellerpersona.view.compose.viewmodel.ComposePersonaResultViewModel
@@ -129,9 +129,9 @@ class ComposeResultFragment : Fragment() {
         setupOnBackPressed()
     }
 
-    private fun getResultArguments(): ResultArgsUiModel {
+    private fun getResultArguments(): PersonaArgsUiModel {
         val paramPersona = args.paramPersona
-        return ResultArgsUiModel(paramPersona = paramPersona)
+        return PersonaArgsUiModel(paramPersona = paramPersona)
     }
 
     private fun onPersonaStatusChanged(data: ResultUiEvent.OnPersonaStatusChanged) {
@@ -165,8 +165,8 @@ class ComposeResultFragment : Fragment() {
 
     private fun selectPersonaType(data: ResultUiEvent.SelectPersona) {
         view?.let {
-            val action = PersonaResultFragmentDirections
-                .actionResultFragmentToSelectTypeFragment(data.currentPersona)
+            val action = ComposeResultFragmentDirections
+                .actionToSelectTypeScreen(data.currentPersona)
             Navigation.findNavController(it).navigate(action)
             SellerPersonaTracking.sendClickSellerPersonaResultSelectPersonaEvent()
         }
