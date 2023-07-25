@@ -420,8 +420,12 @@ class FeedCampaignRibbonView(
 
                     mCta?.texts?.let {
                         if (it.isNotEmpty()) {
-                            animationStateList.add(R.id.cta_with_coupon)
                             animationTextList.addAll(it)
+                            if (it.size > ONE) {
+                                animationStateList.add(R.id.cta_with_coupon)
+                            } else {
+                                animationStateList.add(R.id.cta_only)
+                            }
                         }
                     }
 
