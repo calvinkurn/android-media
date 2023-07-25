@@ -15,8 +15,10 @@ import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.StringRes
 import com.tokopedia.buyerorderdetail.presentation.model.TickerUiModel
 import com.tokopedia.buyerorderdetail.presentation.uistate.ProductListUiState
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 
 object ProductListUiStateMapper {
@@ -377,8 +379,11 @@ object ProductListUiStateMapper {
          * collapsed. The addOnList contains the order-level addons UI models which
          * limited by the MAX_PRODUCT_WHEN_COLLAPSED minus the number of mapped bundled and non-bundled product.
          */
-        val addOnList = getAddonsSectionOrderLevel(
-            addonInfo = addonInfo
+        // remainingSlot = 1 - 0 - 1 = -1
+        val (numOfRemovedAddOn, addOnList) = getAddonsSectionOrderLevel(
+            addonInfo = addonInfo,
+            collapseProductList = collapseProductList,
+            remainingSlot = MAX_PRODUCT_WHEN_COLLAPSED - productBundlingList.size - nonProductBundlingList.size
         )
         val (numOfRemovedUnfulfilled, unFulfilledProductList) = details?.partialFulfillment?.unfulfilled?.details?.let {
             getUnFulfilledProducts(
@@ -405,6 +410,7 @@ object ProductListUiStateMapper {
                 collapseProductList = collapseProductList,
                 numOfRemovedProductBundle = numOfRemovedProductBundle,
                 numOfRemovedNonProductBundle = numOfRemovedNonProductBundle,
+                numOfRemovedAddOn = numOfRemovedAddOn,
                 numOfRemovedUnFulfilledProduct = numOfRemovedUnfulfilled
             ),
             tickerInfo = tickerDetails
@@ -415,11 +421,12 @@ object ProductListUiStateMapper {
         collapseProductList: Boolean,
         numOfRemovedProductBundle: Int,
         numOfRemovedNonProductBundle: Int,
+        numOfRemovedAddOn: Int,
         numOfRemovedUnFulfilledProduct: Int
     ): ProductListUiModel.ProductListToggleUiModel? {
         return if (collapseProductList) {
             val numOfRemovedItems =
-                numOfRemovedProductBundle + numOfRemovedNonProductBundle + numOfRemovedUnFulfilledProduct
+                numOfRemovedProductBundle + numOfRemovedNonProductBundle + numOfRemovedAddOn + numOfRemovedUnFulfilledProduct
             if (numOfRemovedItems.isMoreThanZero()) {
                 ProductListUiModel.ProductListToggleUiModel(
                     collapsed = true,
@@ -577,8 +584,10 @@ object ProductListUiStateMapper {
     }
 
     private fun getAddonsSectionOrderLevel(
-        addonInfo: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.AddonInfo?
-    ): AddonsListUiModel? {
+        addonInfo: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.AddonInfo?,
+        collapseProductList: Boolean,
+        remainingSlot: Int
+    ): Pair<Int, AddonsListUiModel?> {
         val mappedAddOn = addonInfo?.let { addonInfo ->
             AddonsListUiModel(
                 addonsTitle = addonInfo.label,
@@ -600,11 +609,18 @@ object ProductListUiStateMapper {
                 }.orEmpty()
             )
         }
-        return if (mappedAddOn?.addonsItemList.isNullOrEmpty()) {
-            null
-        } else {
-            mappedAddOn
-        }
+
+        return mappedAddOn?.run {
+            if (collapseProductList) {
+                if (remainingSlot.isZero()) {
+                    Int.ONE to null
+                } else {
+                    (Int.ONE - remainingSlot).coerceAtLeast(Int.ZERO) to this
+                }
+            } else {
+                Int.ZERO to this
+            }
+        } ?: (Int.ZERO to null)
     }
 
     private fun getUnFulfilledProducts(
