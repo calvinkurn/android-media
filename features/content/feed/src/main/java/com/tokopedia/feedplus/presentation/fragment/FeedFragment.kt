@@ -1150,6 +1150,7 @@ class FeedFragment :
         when (item) {
             is FeedCardVideoContentModel -> pauseVideo(item.id)
             is FeedCardLivePreviewContentModel -> pauseVideo(item.id)
+            is FeedFollowRecommendationModel -> adapter.pauseFollowRecommendationVideo(currentIndex)
             else -> {}
         }
     }
@@ -1162,6 +1163,7 @@ class FeedFragment :
         when (item) {
             is FeedCardVideoContentModel -> resumeVideo(item.id)
             is FeedCardLivePreviewContentModel -> resumeVideo(item.id)
+            is FeedFollowRecommendationModel -> adapter.resumeFollowRecommendationVideo(currentIndex)
             else -> {}
         }
     }

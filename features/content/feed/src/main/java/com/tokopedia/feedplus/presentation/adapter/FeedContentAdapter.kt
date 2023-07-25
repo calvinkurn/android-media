@@ -235,6 +235,14 @@ class FeedContentAdapter(
         submitList(currentList - errorNetworkModel)
     }
 
+    fun pauseFollowRecommendationVideo(position: Int) {
+        notifyItemChanged(position, FeedViewHolderPayloadActions.FEED_FOLLOW_RECOM_PAUSE_VIDEO)
+    }
+
+    fun resumeFollowRecommendationVideo(position: Int) {
+        notifyItemChanged(position, FeedViewHolderPayloadActions.FEED_FOLLOW_RECOM_RESUME_VIDEO)
+    }
+
     fun addElement(element: Any) {
         val currentList = this.currentList
         submitList(currentList + Item(element, false))

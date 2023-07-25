@@ -12,6 +12,8 @@ object FeedViewHolderPayloadActions {
     const val FEED_POST_COMMENT_COUNT = 1066
     const val FEED_POST_REMINDER_CHANGED = 1077
     const val FEED_POST_SELECTED_CHANGED = 1088
+    const val FEED_FOLLOW_RECOM_RESUME_VIDEO = 1099
+    const val FEED_FOLLOW_RECOM_PAUSE_VIDEO = 2000
 }
 
 data class FeedViewHolderPayloads(
