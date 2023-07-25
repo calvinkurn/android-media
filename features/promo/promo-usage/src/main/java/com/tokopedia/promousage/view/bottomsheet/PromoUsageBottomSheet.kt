@@ -1,6 +1,7 @@
 package com.tokopedia.promousage.view.bottomsheet
 
 import android.content.Intent
+import android.content.res.Configuration
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
@@ -31,12 +32,12 @@ import com.tokopedia.promousage.di.DaggerPromoUsageComponent
 import com.tokopedia.promousage.domain.entity.EntryPoint
 import com.tokopedia.promousage.domain.entity.list.Voucher
 import com.tokopedia.promousage.domain.entity.list.VoucherAccordion
-import com.tokopedia.promousage.view.adapter.VoucherRecommendationDelegateAdapter
-import com.tokopedia.promousage.view.adapter.VoucherAccordionDelegateAdapter
 import com.tokopedia.promousage.util.composite.CompositeAdapter
 import com.tokopedia.promousage.util.extension.foregroundDrawable
 import com.tokopedia.promousage.view.adapter.TermAndConditionDelegateAdapter
+import com.tokopedia.promousage.view.adapter.VoucherAccordionDelegateAdapter
 import com.tokopedia.promousage.view.adapter.VoucherCodeDelegateAdapter
+import com.tokopedia.promousage.view.adapter.VoucherRecommendationDelegateAdapter
 import com.tokopedia.promousage.view.viewmodel.PromoUsageViewModel
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.usecase.coroutines.Fail
@@ -276,12 +277,26 @@ class PromoUsageBottomSheet: BottomSheetDialogFragment() {
             }
 
             bottomSheetTitle.setTextColorCompat(com.tokopedia.unifyprinciples.R.color.Unify_NN950)
-            bottomSheetClose.background = ContextCompat.getDrawable(
-                layoutBottomSheetHeader.context ?: return,
-                R.drawable.promo_usage_ic_close_black
-            )
+            val closeIconDrawable = if (isDarkMode()) {
+                ContextCompat.getDrawable(
+                    layoutBottomSheetHeader.context ?: return,
+                    R.drawable.promo_usage_ic_close_white
+                )
+            } else {
+                ContextCompat.getDrawable(
+                    layoutBottomSheetHeader.context ?: return,
+                    R.drawable.promo_usage_ic_close_black
+                )
+            }
+            bottomSheetClose.background = closeIconDrawable
         }
     }
+
+    private fun isDarkMode() : Boolean {
+        val nightModeFlags = context?.resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK)
+        return nightModeFlags == Configuration.UI_MODE_NIGHT_YES
+    }
+
     private fun handleScrollUpEvent() {
         binding?.run {
             layoutBottomSheetHeader.background = ContextCompat.getDrawable(
