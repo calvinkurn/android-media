@@ -23,7 +23,7 @@
             android:paddingLeft="16dp"
             android:paddingTop="10dp"
             android:paddingRight="16dp"
-            android:paddingBottom="10dp"
+            android:paddingBottom="4dp"
             app:showCheckMark="false"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -60,7 +60,6 @@
             android:paddingEnd="16dp"
             android:paddingStart="16dp"
             tools:text="11:00"
-            android:textColor="@color/Unify_RN500"
             app:typographyType="body_3"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/btn_read_more"/>
