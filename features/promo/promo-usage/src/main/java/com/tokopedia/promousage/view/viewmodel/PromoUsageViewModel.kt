@@ -267,11 +267,7 @@ class PromoUsageViewModel @Inject constructor(
                         true,
                         discountVouchers
                     ),
-                    VoucherCode(
-                        success = false,
-                        errorMessage = "",
-                        voucher = null,
-                    ),
+                    VoucherCode(errorMessage = "", voucher = null),
                     TermAndCondition
                 )
                 _items.postValue(Success(items))
@@ -336,7 +332,7 @@ class PromoUsageViewModel @Inject constructor(
             dispatchers.io,
             block = {
                 //TODO implement gql call to validate voucher code
-                delay(2_000)
+                delay(1_000)
 
                 val validatedVoucher = Voucher(
                     131,
@@ -351,13 +347,9 @@ class PromoUsageViewModel @Inject constructor(
                     true
                 )
 
-                val updatedItems = currentItems.map {item ->
+                val updatedItems = currentItems.map { item ->
                     if (item is VoucherCode) {
-                        item.copy(
-                            success = true,
-                            errorMessage = "",
-                            voucher = validatedVoucher
-                        )
+                        item.copy(errorMessage = "", voucher = validatedVoucher)
                     } else {
                         item
                     }

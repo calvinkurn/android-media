@@ -1,17 +1,10 @@
 package com.tokopedia.promousage.view.adapter
 
-import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.Paint
-import android.graphics.drawable.BitmapDrawable
-import android.graphics.drawable.Drawable
-import android.text.InputFilter
+import android.annotation.SuppressLint
 import android.text.InputType
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.core.widget.doOnTextChanged
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.gone
@@ -22,7 +15,7 @@ import com.tokopedia.promousage.domain.entity.list.VoucherCode
 import com.tokopedia.promousage.util.composite.DelegateAdapter
 import com.tokopedia.promousage.R
 import com.tokopedia.promousage.domain.entity.list.Voucher
-import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.promousage.util.TextDrawable
 
 class VoucherCodeDelegateAdapter(
     private val onApplyVoucherCodeCtaClick: (String) -> Unit,
@@ -50,21 +43,17 @@ class VoucherCodeDelegateAdapter(
         RecyclerView.ViewHolder(binding.root) {
 
         init {
+            setupCta()
+            binding.tauVoucherCode.isClearable = false
             binding.tauVoucherCode.textInputLayout.editText?.maxLines = SINGLE_LINE
             binding.tauVoucherCode.textInputLayout.editText?.inputType = InputType.TYPE_CLASS_TEXT
-            binding.tauVoucherCode.icon2.setImageResource(R.drawable.promo_usage_ic_use_voucher)
-            binding.tauVoucherCode.icon2.setOnClickListener {
-                val userInputVoucherCode = binding.tauVoucherCode.editText.text.toString()
-                onApplyVoucherCodeCtaClick(userInputVoucherCode)
-            }
-            binding.tauVoucherCode.isClearable = true
             binding.tauVoucherCode.editText.doOnTextChanged { _, _, _, count ->
                 if (count.isMoreThanZero()) {
-                    binding.tauVoucherCode.clearIconView.gone()
-                    binding.tauVoucherCode.icon2.visible()
-                    binding.tauVoucherCode.icon2.setImageResource(R.drawable.promo_usage_ic_use_voucher)
+                    //binding.tauVoucherCode.clearIconView.gone()
+                    //binding.tauVoucherCode.icon2.visible()
+                    //binding.tauVoucherCode.icon2.setImageResource(R.drawable.promo_usage_ic_use_voucher)
                 } else {
-                    binding.tauVoucherCode.icon2.gone()
+                    //binding.tauVoucherCode.icon2.gone()
                 }
             }
 
@@ -72,7 +61,7 @@ class VoucherCodeDelegateAdapter(
         }
 
         fun bind(item: VoucherCode) {
-            val isVoucherCodeValid = item.success && item.voucher != null
+            val isVoucherCodeValid = item.voucher != null
             if (isVoucherCodeValid) {
                 handleVoucherSuccess(item.voucher)
             } else {
@@ -88,6 +77,9 @@ class VoucherCodeDelegateAdapter(
                 }
                 tauVoucherCode.isInputError = false
                 tauVoucherCode.setMessage("")
+
+
+                tauVoucherCode.isClearable = false
             }
         }
 
@@ -97,35 +89,39 @@ class VoucherCodeDelegateAdapter(
 
                 //hide pakai CTA
 
-                tauVoucherCode.clearIconView.visible()
-                tauVoucherCode.isInputError = true
+
+                tauVoucherCode.isInputError = errorMessage.isNotEmpty()
                 tauVoucherCode.setMessage(errorMessage)
             }
         }
 
-        fun createDrawableFromString(context: Context, text: String): Drawable {
-            // Set up the paint for drawing text
-            val paint = Paint(Paint.ANTI_ALIAS_FLAG)
-            paint.color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
-            paint.textSize = 14f
-            paint.typeface = Typography.getFontType(context, true, Typography.PARAGRAPH_2)
-            paint.isAntiAlias = true
+        @SuppressLint("ClickableViewAccessibility")
+        private fun setupCta() {
+            binding.tauVoucherCode.iconContainer.post {
+                val rightDrawable = TextDrawable(
+                    binding.tauVoucherCode.context,
+                    binding.tauVoucherCode.context.getString(R.string.promo_voucher_use)
+                )
+                binding.tauVoucherCode.editText.setCompoundDrawables(
+                    null,
+                    null,
+                    rightDrawable,
+                    null
+                )
 
-            // Calculate the width and height of the text based on the paint settings
-            val width = paint.measureText(text).toInt()
-            val height = paint.fontMetrics.bottom.toInt()
+                binding.tauVoucherCode.editText.setOnTouchListener { view, motionEvent ->
 
-            // Create a bitmap with the calculated width and height
-            val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+                    if (motionEvent.action == MotionEvent.ACTION_UP) {
+                        if (motionEvent.rawX >= (binding.tauVoucherCode.editText.getRight() - binding.tauVoucherCode.editText.getCompoundDrawables()[2].getBounds().width())) {
+                            val voucherCode = binding.tauVoucherCode.editText.text.toString()
+                            onApplyVoucherCodeCtaClick(voucherCode)
+                            return@setOnTouchListener  true
+                        }
+                    }
 
-            // Create a canvas from the bitmap
-            val canvas = Canvas(bitmap)
-
-            // Draw the text on the canvas
-            canvas.drawText(text, 0f, height.toFloat(), paint)
-
-            // Create a BitmapDrawable from the bitmap and return it
-            return BitmapDrawable(context.resources, bitmap)
+                    return@setOnTouchListener false
+                }
+            }
         }
 
     }
