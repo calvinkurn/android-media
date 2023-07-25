@@ -460,7 +460,14 @@ class NotifcenterDetailUseCase @Inject constructor(
     }
 
     enum class NotificationDetailLoadType {
-        FIRST_PAGE, LOAD_MORE_NEW, LOAD_MORE_EARLIER
+        @SerializedName("FIRST_PAGE")
+        FIRST_PAGE,
+
+        @SerializedName("LOAD_MORE_NEW")
+        LOAD_MORE_NEW,
+
+        @SerializedName("LOAD_MORE_EARLIER")
+        LOAD_MORE_EARLIER
     }
 
     companion object {
