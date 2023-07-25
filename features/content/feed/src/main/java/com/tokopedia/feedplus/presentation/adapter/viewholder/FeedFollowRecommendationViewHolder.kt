@@ -80,14 +80,14 @@ class FeedFollowRecommendationViewHolder(
 
     override fun bind(element: FeedFollowRecommendationModel?, payloads: MutableList<Any>) {
         element?.let {
-            if (payloads.contains(FeedViewHolderPayloadActions.FEED_POST_SELECTED) ||
-                payloads.contains(FeedViewHolderPayloadActions.FEED_FOLLOW_RECOM_RESUME_VIDEO)) {
-                bind(it, selectedPosition = getSelectedPosition(), isViewHolderSelected = true)
-            }
-
             if (payloads.contains(FeedViewHolderPayloadActions.FEED_POST_NOT_SELECTED) ||
                 payloads.contains(FeedViewHolderPayloadActions.FEED_FOLLOW_RECOM_PAUSE_VIDEO)) {
                 bind(it, selectedPosition = getSelectedPosition(), isViewHolderSelected = false)
+            }
+
+            if (payloads.contains(FeedViewHolderPayloadActions.FEED_POST_SELECTED) ||
+                payloads.contains(FeedViewHolderPayloadActions.FEED_FOLLOW_RECOM_RESUME_VIDEO)) {
+                bind(it, selectedPosition = getSelectedPosition(), isViewHolderSelected = true)
             }
 
             payloads.forEach { payload ->
