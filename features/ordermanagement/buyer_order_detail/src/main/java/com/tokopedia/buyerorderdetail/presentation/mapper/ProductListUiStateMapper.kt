@@ -15,11 +15,8 @@ import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.StringRes
 import com.tokopedia.buyerorderdetail.presentation.model.TickerUiModel
 import com.tokopedia.buyerorderdetail.presentation.uistate.ProductListUiState
-import com.tokopedia.kotlin.extensions.orFalse
-import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
-import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 
 object ProductListUiStateMapper {
@@ -207,7 +204,6 @@ object ProductListUiStateMapper {
                 buyerOrderDetailData.addonInfo,
                 buyerOrderDetailData.orderId,
                 buyerOrderDetailData.orderStatus.id,
-                buyerOrderDetailData.isPof.orFalse(),
                 insuranceDetailData,
                 singleAtcRequestStates,
                 collapseProductList
@@ -236,7 +232,6 @@ object ProductListUiStateMapper {
                 buyerOrderDetailData.addonInfo,
                 buyerOrderDetailData.orderId,
                 buyerOrderDetailData.orderStatus.id,
-                buyerOrderDetailData.isPof.orFalse(),
                 insuranceDetailData,
                 singleAtcRequestStates,
                 collapseProductList
@@ -331,7 +326,6 @@ object ProductListUiStateMapper {
         addonInfo: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.AddonInfo?,
         orderId: String,
         orderStatusId: String,
-        isPof: Boolean,
         insuranceDetailData: GetInsuranceDetailResponse.Data.PpGetInsuranceDetail.Data.ProtectionProduct?,
         singleAtcResultFlow: Map<String, AddToCartSingleRequestState>,
         collapseProductList: Boolean
@@ -383,10 +377,8 @@ object ProductListUiStateMapper {
          * collapsed. The addOnList contains the order-level addons UI models which
          * limited by the MAX_PRODUCT_WHEN_COLLAPSED minus the number of mapped bundled and non-bundled product.
          */
-        val (numOfRemovedAddOn, addOnList) = getAddonsSectionOrderLevel(
-            addonInfo = addonInfo,
-            collapseProductList = collapseProductList,
-            remainingSlot = MAX_PRODUCT_WHEN_COLLAPSED - productBundlingList.size - nonProductBundlingList.size
+        val addOnList = getAddonsSectionOrderLevel(
+            addonInfo = addonInfo
         )
         val (numOfRemovedUnfulfilled, unFulfilledProductList) = details?.partialFulfillment?.unfulfilled?.details?.let {
             getUnFulfilledProducts(
@@ -413,7 +405,6 @@ object ProductListUiStateMapper {
                 collapseProductList = collapseProductList,
                 numOfRemovedProductBundle = numOfRemovedProductBundle,
                 numOfRemovedNonProductBundle = numOfRemovedNonProductBundle,
-                numOfRemovedAddOnsList = numOfRemovedAddOn,
                 numOfRemovedUnFulfilledProduct = numOfRemovedUnfulfilled
             ),
             tickerInfo = tickerDetails
@@ -424,12 +415,11 @@ object ProductListUiStateMapper {
         collapseProductList: Boolean,
         numOfRemovedProductBundle: Int,
         numOfRemovedNonProductBundle: Int,
-        numOfRemovedAddOnsList: Int,
         numOfRemovedUnFulfilledProduct: Int
     ): ProductListUiModel.ProductListToggleUiModel? {
         return if (collapseProductList) {
             val numOfRemovedItems =
-                numOfRemovedProductBundle + numOfRemovedNonProductBundle + numOfRemovedAddOnsList + numOfRemovedUnFulfilledProduct
+                numOfRemovedProductBundle + numOfRemovedNonProductBundle + numOfRemovedUnFulfilledProduct
             if (numOfRemovedItems.isMoreThanZero()) {
                 ProductListUiModel.ProductListToggleUiModel(
                     collapsed = true,
@@ -587,10 +577,8 @@ object ProductListUiStateMapper {
     }
 
     private fun getAddonsSectionOrderLevel(
-        addonInfo: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.AddonInfo?,
-        collapseProductList: Boolean,
-        remainingSlot: Int
-    ): Pair<Int, AddonsListUiModel?> {
+        addonInfo: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.AddonInfo?
+    ): AddonsListUiModel? {
         val mappedAddOn = addonInfo?.let { addonInfo ->
             AddonsListUiModel(
                 addonsTitle = addonInfo.label,
@@ -613,13 +601,9 @@ object ProductListUiStateMapper {
             )
         }
         return if (mappedAddOn?.addonsItemList.isNullOrEmpty()) {
-            Int.ZERO to null
+            null
         } else {
-            if (collapseProductList && remainingSlot.isZero()) {
-                Int.ONE to mappedAddOn
-            } else {
-                Int.ZERO to mappedAddOn
-            }
+            mappedAddOn
         }
     }
 

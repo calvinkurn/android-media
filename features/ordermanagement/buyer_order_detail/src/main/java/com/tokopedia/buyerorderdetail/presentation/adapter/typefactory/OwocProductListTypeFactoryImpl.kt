@@ -23,7 +23,7 @@ class OwocProductListTypeFactoryImpl(
     private val owocSectionGroupListener: OwocProductListListener,
     private val owocProductListHeaderListener: OwocProductListHeaderListener,
     private val recyclerviewPoolListener: OwocRecyclerviewPoolListener
-): BaseAdapterTypeFactory(), OwocProductListTypeFactory {
+) : BaseAdapterTypeFactory(), OwocProductListTypeFactory {
 
     override fun type(owocProductListHeaderUiModel: OwocProductListUiModel.ProductListHeaderUiModel): Int {
         return OwocProductListHeaderViewHolder.LAYOUT
@@ -45,7 +45,6 @@ class OwocProductListTypeFactoryImpl(
         return OwocAddonsViewHolder.LAYOUT
     }
 
-
     override fun type(owocThickDividerUiModel: OwocThickDividerUiModel): Int {
         return OwocThickDividerViewHolder.LAYOUT
     }
@@ -53,7 +52,7 @@ class OwocProductListTypeFactoryImpl(
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
             OwocProductListHeaderViewHolder.LAYOUT -> OwocProductListHeaderViewHolder(parent, owocProductListHeaderListener)
-            OwocProductViewHolder.LAYOUT -> OwocProductViewHolder(parent, navigator)
+            OwocProductViewHolder.LAYOUT -> OwocProductViewHolder(parent)
             OwocProductBundlingViewHolder.LAYOUT -> OwocProductBundlingViewHolder(parent, navigator, recyclerviewPoolListener)
             OwocProductListToggleViewHolder.LAYOUT -> OwocProductListToggleViewHolder(parent, owocSectionGroupListener)
             OwocAddonsViewHolder.LAYOUT -> OwocAddonsViewHolder(parent)
@@ -61,5 +60,4 @@ class OwocProductListTypeFactoryImpl(
             else -> super.createViewHolder(parent, type)
         }
     }
-
 }
