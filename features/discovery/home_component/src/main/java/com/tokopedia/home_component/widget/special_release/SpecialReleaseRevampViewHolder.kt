@@ -1,0 +1,91 @@
+package com.tokopedia.home_component.widget.special_release
+
+import android.view.View
+import androidx.annotation.LayoutRes
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.tokopedia.home_component.R
+import com.tokopedia.home_component.customview.HeaderListener
+import com.tokopedia.home_component.databinding.HomeComponentSpecialReleaseRevampBinding
+import com.tokopedia.home_component.model.ChannelModel
+import com.tokopedia.home_component.productcardgridcarousel.typeFactory.CommonCarouselProductCardTypeFactory
+import com.tokopedia.home_component.productcardgridcarousel.typeFactory.CommonCarouselProductCardTypeFactoryImpl
+import com.tokopedia.home_component.util.ChannelWidgetUtil
+import com.tokopedia.home_component.widget.common.CarouselListAdapter
+import com.tokopedia.home_component.widget.common.AbstractHomeViewHolder
+import com.tokopedia.utils.view.binding.viewBinding
+
+/**
+ * Created by frenzel
+ */
+class SpecialReleaseRevampViewHolder(
+    itemView: View,
+    private val specialReleaseRevampListener: SpecialReleaseRevampListener
+) : AbstractHomeViewHolder<SpecialReleaseRevampDataModel>(itemView) {
+
+    companion object {
+        @LayoutRes
+        val LAYOUT = R.layout.home_component_special_release_revamp
+    }
+
+    private val binding: HomeComponentSpecialReleaseRevampBinding? by viewBinding()
+    private val typeFactory: CommonCarouselProductCardTypeFactory by lazy { CommonCarouselProductCardTypeFactoryImpl() }
+    private val adapter: CarouselListAdapter<SpecialReleaseRevampItemDataModel, CommonCarouselProductCardTypeFactory> by lazy {
+        CarouselListAdapter(typeFactory, SpecialReleaseDiffUtil())
+    }
+
+    override fun bind(element: SpecialReleaseRevampDataModel) {
+        binding?.let {
+            initAdapter()
+            setData(element)
+            setHeaderComponent(element.channelModel)
+            setChannelDivider(element.channelModel)
+        }
+    }
+
+    override fun bind(element: SpecialReleaseRevampDataModel, payloads: MutableList<Any>) {
+        bind(element)
+    }
+
+    override fun initAdapter() {
+        val layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
+        binding?.homeComponentSpecialReleaseRv?.apply {
+            setLayoutManager(layoutManager)
+            if(itemDecorationCount == 0) {
+                addItemDecoration(SpecialReleaseRevampItemDecoration)
+            }
+            this.adapter = this@SpecialReleaseRevampViewHolder.adapter
+        }
+    }
+
+    override fun setChannelDivider(channelModel: ChannelModel) {
+        binding?.let {
+            ChannelWidgetUtil.validateHomeComponentDivider(
+                channelModel = channelModel,
+                dividerTop = it.homeComponentDividerHeader,
+                dividerBottom = it.homeComponentDividerFooter
+            )
+        }
+    }
+
+    override fun setHeaderComponent(channelModel: ChannelModel) {
+        binding?.homeComponentHeaderView?.setChannel(
+            channelModel,
+            object: HeaderListener {
+                override fun onSeeAllClick(link: String) {
+                    specialReleaseRevampListener.onSeeAllClick(channelModel, link)
+                }
+            }
+        )
+    }
+
+    override fun setData(model: SpecialReleaseRevampDataModel) {
+        val items = model.channelModel.channelGrids.map {
+            SpecialReleaseRevampItemDataModel(
+                it,
+                model.channelModel,
+                listener = specialReleaseRevampListener
+            )
+        }
+        adapter.submitList(items)
+    }
+}

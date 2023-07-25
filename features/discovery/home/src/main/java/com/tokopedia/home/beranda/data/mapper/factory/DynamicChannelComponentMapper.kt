@@ -110,7 +110,7 @@ object DynamicChannelComponentMapper {
                         shopName = it.shop.name,
                         shopProfileUrl = it.shop.imageUrl,
                         shopUrl = it.shop.url,
-                        shopApplink = it.shop.applink
+                        shopApplink = it.shop.applink,
                     ),
                     labelGroup = it.labelGroup.map { label ->
                         LabelGroup(

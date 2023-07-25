@@ -3,14 +3,19 @@ package com.tokopedia.home_component.mapper
 import com.tokopedia.home_component.model.*
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.unifycomponents.CardUnify2
+import com.tokopedia.unifycomponents.CardUnify2.Companion.ANIMATE_OVERLAY
+import com.tokopedia.unifycomponents.CardUnify2.Companion.ANIMATE_OVERLAY_BOUNCE
 
 object ChannelModelMapper {
     fun mapToProductCardModel(
         channelGrid: ChannelGrid,
-        cardInteration: Boolean = false,
+        cardInteration: Boolean? = null, //replaced with animateOnPress
+        animateOnPress: Int = ANIMATE_OVERLAY,
         isTopStockbar: Boolean = false,
-        cardType: Int = CardUnify2.TYPE_SHADOW
+        cardType: Int = CardUnify2.TYPE_SHADOW,
+        productCardListType: ProductCardModel.ProductListType = ProductCardModel.ProductListType.CONTROL,
     ): ProductCardModel {
+        val productCardAnimate = if(cardInteration == true) ANIMATE_OVERLAY_BOUNCE else animateOnPress
         return ProductCardModel(
             slashedPrice = channelGrid.slashedPrice,
             productName = channelGrid.name,
@@ -41,9 +46,10 @@ object ChannelModelMapper {
             ratingCount = channelGrid.rating,
             countSoldRating = channelGrid.ratingFloat,
             reviewCount = channelGrid.countReview,
-            cardInteraction = cardInteration,
+            animateOnPress = productCardAnimate,
             isTopStockBar = isTopStockbar,
-            cardType = cardType
+            cardType = cardType,
+            productListType = productCardListType
         )
     }
 }

@@ -11,12 +11,12 @@ import com.tokopedia.home_component.model.ChannelModel
 interface CommonProductCardCarouselListener {
 
     //product card click and impression
-    fun onProductCardImpressed(channel: ChannelModel, channelGrid: ChannelGrid, position: Int)
-    fun onProductCardClicked(channel: ChannelModel, channelGrid: ChannelGrid, position: Int, applink: String)
+    fun onProductCardImpressed(channel: ChannelModel, channelGrid: ChannelGrid, position: Int) { }
+    fun onProductCardClicked(channel: ChannelModel, channelGrid: ChannelGrid, position: Int, applink: String) { }
 
     //for see more card click
-    fun onSeeMoreCardClicked(channel: ChannelModel, applink: String)
+    fun onSeeMoreCardClicked(channel: ChannelModel, applink: String) { }
 
     //for empty card clicked
-    fun onEmptyCardClicked(channel: ChannelModel, applink: String, parentPos: Int)
+    fun onEmptyCardClicked(channel: ChannelModel, applink: String, parentPos: Int) { }
 }

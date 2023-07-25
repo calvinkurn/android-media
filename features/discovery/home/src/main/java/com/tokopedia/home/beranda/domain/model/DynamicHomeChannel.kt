@@ -5,7 +5,6 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.kotlin.model.ImpressHolder
-import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import kotlin.collections.ArrayList
 
 data class DynamicHomeChannel(
@@ -108,35 +107,6 @@ data class DynamicHomeChannel(
 
         private var position: Int = 0
 
-        private fun convertProductEnhanceProductMixDataLayer(channelId: String?, grids: Array<Grid>?, headerName: String?, type: String): List<Any> {
-            val list: MutableList<Any> = ArrayList()
-            if (grids != null) {
-                for (i in grids.indices) {
-                    val grid: Grid = grids[i]
-                    val topads = if (grid.isTopads) "topads" else "non topads"
-                    list.add(
-                        DataLayer.mapOf(
-                            "name", grid.name,
-                            "id", grid.id,
-                            "price",
-                            CurrencyFormatHelper.convertRupiahToInt(
-                                grid.price
-                            ).toString(),
-                            "brand", "none / other",
-                            "category", "none / other",
-                            "variant", "none / other",
-                            "list", "/ - p1 - dynamic channel mix - product - $topads - $type - ${grid.recommendationType} - $headerName",
-                            "position", (i + 1).toString(),
-                            "dimension83", if (grid.freeOngkir.isActive) "bebas ongkir" else "none/other",
-                            "dimension84", channelId,
-                            "dimension96", persoType + "_" + categoryID
-                        )
-                    )
-                }
-            }
-            return list
-        }
-
         fun convertPromoEnhanceLegoBannerDataLayerForCombination(): List<Any> {
             val list: MutableList<Any> = ArrayList()
             for (i in grids.indices) {
@@ -162,8 +132,6 @@ data class DynamicHomeChannel(
             this.position = position
         }
 
-        fun getPosition() = position
-
         companion object {
             const val LAYOUT_6_IMAGE: String = "6_image"
             const val LAYOUT_LEGO_3_IMAGE: String = "lego_3_image"
@@ -171,7 +139,6 @@ data class DynamicHomeChannel(
             const val LAYOUT_LEGO_2_IMAGE: String = "1x2_banner"
             const val LAYOUT_TOPADS: String = "topads"
             const val LAYOUT_HOME_WIDGET: String = "home_widget"
-            const val LAYOUT_BANNER_CAROUSEL: String = "banner_carousel"
             const val LAYOUT_REVIEW: String = "product_review"
             const val LAYOUT_PLAY_CAROUSEL_BANNER: String = "play_carousel"
             const val LAYOUT_PLAY_CAROUSEL_NEW_NO_PRODUCT: String = "play_widget_v2"
@@ -206,8 +173,8 @@ data class DynamicHomeChannel(
             const val LAYOUT_TODO_WIDGET_REVAMP: String = "todo_widget_carousel"
             const val LAYOUT_DEALS_WIDGET: String = "content_card"
             const val LAYOUT_FLASH_SALE_WIDGET: String = "kejar_diskon_carousel"
+            const val LAYOUT_SPECIAL_RELEASE_REVAMP: String = "rilisan_spesial"
             const val channelId: String = "channelId"
-            const val campaignCodeLabel: String = "campaignCode"
             const val DIVIDER_NO_DIVIDER = 0
         }
     }
