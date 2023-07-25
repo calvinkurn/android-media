@@ -106,6 +106,25 @@ class CheckoutOrderViewHolder(
                 // todo now
                 binding.shippingWidget.renderSingleShippingCourier(
                     ShippingWidgetUiModel(
+                        // CourierItemData.etaErrorCode
+                        etaErrorCode = courierItemData.etaErrorCode,
+                        // CourierItemData.etaText
+                        estimatedTimeArrival = courierItemData.etaText ?: "",
+
+                        // Bebas ongkir & NOW Shipment
+                        hideShipperName = courierItemData.isHideShipperName,
+                        freeShippingTitle = courierItemData.freeShippingChosenCourierTitle,
+                        // Now Shipment
+                        // label
+                        logPromoDesc = courierItemData.logPromoDesc ?: "",
+                        voucherLogisticExists = !courierItemData.logPromoCode.isNullOrEmpty(),
+                        isHasShownCourierError = false,
+
+                        // CourierItemData.name
+                        courierName = courierItemData.name ?: "",
+                        // CourierItemData.shipperPrice
+                        courierShipperPrice = courierItemData.shipperPrice,
+
                         currentAddress = RecipientAddressModel()
                     )
                 )
