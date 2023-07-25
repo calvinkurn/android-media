@@ -317,7 +317,9 @@ fun ResultLoadingState() {
 fun PreviewPersonaResultScreen() {
     NestTheme(darkTheme = false) {
         PersonaResultScreen(state = PersonaResultState(
-            isLoading = false, data = PersonaDataUiModel(
+            isLoading = false,
+            error = Throwable(),
+            data = PersonaDataUiModel(
                 persona = "corporate-supervisor-owner",
                 personaStatus = PersonaStatus.ACTIVE,
                 personaData = PersonaUiModel(
