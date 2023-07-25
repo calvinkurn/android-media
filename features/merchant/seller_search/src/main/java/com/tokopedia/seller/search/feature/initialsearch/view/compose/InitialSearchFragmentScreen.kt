@@ -2,11 +2,8 @@ package com.tokopedia.seller.search.feature.initialsearch.view.compose
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -15,12 +12,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester.Companion.createRefs
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -180,56 +174,71 @@ fun ItemHighlightChips() {
 
 @Composable
 fun ChipsLayoutManager(chips: List<String>) {
-    var availableWidth by remember { mutableStateOf(0.dp) }
+//    var availableWidth by remember { mutableStateOf(0.dp) }
+//
+//    BoxWithConstraints {
+//        availableWidth = maxWidth
+//
+//        var chipsInRow by remember { mutableStateOf(emptyList<String>()) }
+//
+//        Column {
+//            var currentRowWidth by remember { mutableStateOf(0.dp) }
+//
+//            chips.forEach { chipText ->
+//                val chipWidth = with(LocalDensity.current) {
+//                    (32 * chipText.length).dp
+//                }
+//                if (currentRowWidth + chipWidth <= availableWidth) {
+//                    currentRowWidth += chipWidth + 8.dp
+//                    chipsInRow = chipsInRow + chipText
+//                } else {
+//                    Row(
+//                        modifier = Modifier.fillMaxWidth(),
+//                        horizontalArrangement = Arrangement.Start
+//                    ) {
+//                        for (chip in chipsInRow) {
+//                            NestChips(
+//                                text = chip,
+//                                size = NestChipsSize.Medium,
+//                                state = NestChipsState.Default,
+//                                modifier = Modifier.padding(top = 8.dp)
+//                            )
+//                        }
+//                    }
+//                    chipsInRow = listOf(chipText)
+//                    currentRowWidth = chipWidth + 8.dp
+//                }
+//            }
+//
+//            if (chipsInRow.isNotEmpty()) {
+//                Row(
+//                    modifier = Modifier.fillMaxHeight(),
+//                    horizontalArrangement = Arrangement.Start
+//                ) {
+//                    for (chip in chipsInRow) {
+//                        NestChips(
+//                            text = chip,
+//                            size = NestChipsSize.Medium,
+//                            state = NestChipsState.Default,
+//                            modifier = Modifier.padding(top = 8.dp)
+//                        )
+//                    }
+//                }
+//            }
+//        }
+//    }
 
-    BoxWithConstraints {
-        availableWidth = maxWidth
-
-        var chipsInRow by remember { mutableStateOf(emptyList<String>()) }
-
-        Column {
-            var currentRowWidth by remember { mutableStateOf(0.dp) }
-
-            chips.forEach { chipText ->
-                val chipWidth = with(LocalDensity.current) {
-                    (32 * chipText.length).dp
-                }
-                if (currentRowWidth + chipWidth <= availableWidth) {
-                    currentRowWidth += chipWidth + 8.dp
-                    chipsInRow = chipsInRow + chipText
-                } else {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.Start
-                    ) {
-                        for (chip in chipsInRow) {
-                            NestChips(
-                                text = chip,
-                                size = NestChipsSize.Medium,
-                                state = NestChipsState.Default,
-                                modifier = Modifier.padding(top = 8.dp)
-                            )
-                        }
-                    }
-                    chipsInRow = listOf(chipText)
-                    currentRowWidth = chipWidth + 8.dp
-                }
-            }
-
-            if (chipsInRow.isNotEmpty()) {
-                Row(
-                    modifier = Modifier.fillMaxHeight(),
-                    horizontalArrangement = Arrangement.Start
-                ) {
-                    for (chip in chipsInRow) {
-                        NestChips(
-                            text = chip,
-                            size = NestChipsSize.Medium,
-                            state = NestChipsState.Default,
-                            modifier = Modifier.padding(top = 8.dp)
-                        )
-                    }
-                }
+    Column(modifier = Modifier.fillMaxWidth()) {
+        Row(
+            modifier = Modifier.padding(16.dp)
+        ) {
+            chips.forEach { chip ->
+                NestChips(
+                    text = chip,
+                    size = NestChipsSize.Medium,
+                    state = NestChipsState.Default,
+                    modifier = Modifier.padding(top = 8.dp)
+                )
             }
         }
     }
