@@ -2,6 +2,11 @@ package com.tokopedia.promousage.domain.entity.list
 
 import com.tokopedia.promousage.util.composite.DelegateAdapterItem
 
-object VoucherCode: DelegateAdapterItem {
-    override fun id() = ""
+data class VoucherCode(
+    val success: Boolean,
+    val errorMessage: String,
+    val voucher: Voucher? = null
+) :
+    DelegateAdapterItem {
+    override fun id() = errorMessage
 }

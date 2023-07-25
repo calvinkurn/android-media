@@ -65,7 +65,7 @@ class PromoUsageBottomSheet: BottomSheetDialogFragment() {
             .add(VoucherRecommendationDelegateAdapter(onVoucherClick, onButtonUseRecommendedVoucherClick))
             .add(VoucherAccordionDelegateAdapter(onVoucherAccordionClick, onVoucherClick, onViewAllVoucherCtaClick))
             .add(TermAndConditionDelegateAdapter(onTermAndConditionHyperlinkClick))
-            .add(VoucherCodeDelegateAdapter(onApplyVoucherCodeCtaClick))
+            .add(VoucherCodeDelegateAdapter(onApplyVoucherCodeCtaClick, onVoucherCodeClearIconClick))
             .build()
     }
 
@@ -314,13 +314,13 @@ class PromoUsageBottomSheet: BottomSheetDialogFragment() {
 
     }
 
-    private val onApplyVoucherCodeCtaClick = {
-
+    private val onApplyVoucherCodeCtaClick = { voucherCode : String ->
+        viewModel.onCtaUseVoucherCodeClick(voucherCode)
     }
 
-    private val onTermAndConditionHyperlinkClick = {
-        showTermAndConditionBottomSheet()
-    }
+    private val onVoucherCodeClearIconClick = { viewModel.onVoucherCodeClearIconClick() }
+
+    private val onTermAndConditionHyperlinkClick = { showTermAndConditionBottomSheet() }
 }
 
 

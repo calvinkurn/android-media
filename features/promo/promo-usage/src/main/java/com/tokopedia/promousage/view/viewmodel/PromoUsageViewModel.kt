@@ -267,7 +267,11 @@ class PromoUsageViewModel @Inject constructor(
                         true,
                         discountVouchers
                     ),
-                    VoucherCode,
+                    VoucherCode(
+                        success = false,
+                        errorMessage = "",
+                        voucher = null,
+                    ),
                     TermAndCondition
                 )
                 _items.postValue(Success(items))
@@ -322,6 +326,52 @@ class PromoUsageViewModel @Inject constructor(
     }
 
     fun onVoucherSelected(selectedVoucher: Voucher) {
+
+    }
+
+    fun onCtaUseVoucherCodeClick(voucherCode: String) {
+        val currentItems = items.value?.currentItemsOrEmpty() ?: return
+
+        launchCatchError(
+            dispatchers.io,
+            block = {
+                //TODO implement gql call to validate voucher code
+                delay(2_000)
+
+                val validatedVoucher = Voucher(
+                    131,
+                    100_000,
+                    "Discount - Normal",
+                    "2 hari",
+                    "https://images.tokopedia.net/img/android/promo/ic_voucher_cashback/ic_voucher_cashback.png",
+                    "https://images.tokopedia.net/img/android/promo/bg_supergraphic_cashback/bg_supergraphic_cashback.png",
+                    VoucherType.DISCOUNT,
+                    VoucherState.Selected,
+                    VoucherSource.UserInput(voucherCode),
+                    true
+                )
+
+                val updatedItems = currentItems.map {item ->
+                    if (item is VoucherCode) {
+                        item.copy(
+                            success = true,
+                            errorMessage = "",
+                            voucher = validatedVoucher
+                        )
+                    } else {
+                        item
+                    }
+                }
+
+                _items.postValue(Success(updatedItems))
+            },
+            onError = { throwable ->
+                _items.postValue(Fail(throwable))
+            }
+        )
+    }
+
+    fun onVoucherCodeClearIconClick() {
 
     }
 
