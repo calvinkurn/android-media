@@ -10,6 +10,7 @@ import androidx.core.graphics.BlendModeColorFilterCompat
 import androidx.core.graphics.BlendModeCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.gone
@@ -690,13 +691,27 @@ class PromoListItemViewHolder(
         element: PromoListItemUiModel
     ) {
         with(viewBinding) {
-            cardPromoActionable.shouldShowWithAction(element.uiState.isContainActionableCTA) {
-                textPromoActionable.text = element.uiData.cta.text
+            cardPromoActionable.shouldShowWithAction(element.uiState.isContainActionableGopayCicilCTA) {
+                textPromoActionable.text = MethodChecker.fromHtml(
+                    convertToHtmlUnifyColor(element.uiData.cta.text)
+                )
                 adapterPosition.takeIf { it != RecyclerView.NO_POSITION }?.let {
                     listener.onShowPromoActionable(element, it)
                 }
             }
         }
+    }
+
+    private fun convertToHtmlUnifyColor(htmlText: String): String {
+        val color = "#" + Integer.toHexString(
+            ContextCompat.getColor(
+                itemView.context,
+                com.tokopedia.unifyprinciples.R.color.Unify_GN500
+            )
+        ).substring(2)
+        return htmlText
+            .replace("<a>", "<font color=$color>")
+            .replace("</a>", "</font>")
     }
 
     private fun getPromoInformationDetailsCount(element: PromoListItemUiModel): Int {

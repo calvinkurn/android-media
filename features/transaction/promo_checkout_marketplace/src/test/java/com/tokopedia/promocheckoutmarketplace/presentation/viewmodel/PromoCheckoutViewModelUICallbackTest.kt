@@ -496,7 +496,7 @@ class PromoCheckoutViewModelUICallbackTest : BasePromoCheckoutViewModelTest() {
         var selectedPromoItemWithActionableCTA: PromoListItemUiModel? = null
         viewModel.promoListUiModel.value?.forEach {
             println(it)
-            if (it is PromoListItemUiModel && it.uiState.isContainActionableCTA) {
+            if (it is PromoListItemUiModel && it.uiState.isContainActionableGopayCicilCTA) {
                 selectedPromoItemWithActionableCTA = it
                 return@forEach
             }
@@ -526,7 +526,7 @@ class PromoCheckoutViewModelUICallbackTest : BasePromoCheckoutViewModelTest() {
 
         var selectedPromoItemWithActionableCTA: PromoListItemUiModel? = null
         viewModel.promoListUiModel.value?.forEach {
-            if (it is PromoListItemUiModel && !it.uiState.isContainActionableCTA && !it.uiState.isSelected) {
+            if (it is PromoListItemUiModel && !it.uiState.isContainActionableGopayCicilCTA && !it.uiState.isSelected) {
                 selectedPromoItemWithActionableCTA = it
                 return@forEach
             }

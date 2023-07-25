@@ -161,9 +161,7 @@ class PromoCheckoutFragment :
 
     // Activity result
     val gopayCicilLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-        if (it.resultCode == Activity.RESULT_OK) {
-            reloadData()
-        }
+        reloadData()
     }
 
     companion object {
@@ -736,7 +734,8 @@ class PromoCheckoutFragment :
 
     private fun observeActionableCTAApplink() {
         viewModel.getActionableApplinkNavigation.observe(viewLifecycleOwner) { applink ->
-            val intent = RouteManager.getIntent(context, applink)
+//            val intent = RouteManager.getIntent(context, applink)
+            val intent = RouteManager.getIntent(context, "tokopedia://webview?url=https%3A%2F%2Fwww.tokopedia.com%2Fpaylater%2Fswitcher%3Ffrom%3Dpromo")
             gopayCicilLauncher.launch(intent)
         }
     }

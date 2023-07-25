@@ -80,6 +80,6 @@ data class PromoListItemUiModel(
         var isUpdateSelectionStateAction: Boolean = false,
         var isLastPromoItem: Boolean = false,
         var isBebasOngkir: Boolean = false,
-        var isContainActionableCTA: Boolean = false
+        var isContainActionableGopayCicilCTA: Boolean = false
     )
 }

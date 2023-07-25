@@ -202,7 +202,10 @@ class PromoCheckoutUiModelMapper @Inject constructor() {
                 val lastPromo = couponSubSection.coupons.lastOrNull()
                 isLastPromoItem = lastPromo != null && (lastPromo.code == couponItem.code || lastPromo.groupId == couponItem.groupId)
                 isBebasOngkir = couponItem.isBebasOngkir
-                isContainActionableCTA = couponItem.cta.applink.isNotEmpty() && couponItem.cta.text.isNotEmpty()
+                isContainActionableGopayCicilCTA =
+                    couponItem.cta.applink.isNotEmpty() &&
+                    couponItem.cta.text.isNotEmpty() &&
+                    couponItem.cta.type == CTA_TYPE_REGISTER_GPL_CICIL
             }
         )
         promoItem.uiState.isDisabled = !promoItem.uiState.isParentEnabled || promoItem.uiData.errorMessage.isNotBlank()
@@ -288,5 +291,9 @@ class PromoCheckoutUiModelMapper @Inject constructor() {
                     bottomSheet.buttonText.isNotBlank()
             )
         )
+    }
+
+    companion object {
+        private const val CTA_TYPE_REGISTER_GPL_CICIL = "register_gpl_cicil"
     }
 }

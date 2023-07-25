@@ -1374,7 +1374,7 @@ class PromoCheckoutViewModel @Inject constructor(
         element: PromoListItemUiModel,
         position: Int
     ) {
-        if (element.uiState.isContainActionableCTA) {
+        if (element.uiState.isContainActionableGopayCicilCTA) {
             _getActionableApplinkNavigation.value = element.uiData.cta.applink
             analytics.sendClickActivatedGopayCicilEvent(
                 getPageSource(),
