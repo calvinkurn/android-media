@@ -2,6 +2,7 @@ package com.tokopedia.feedplus.presentation.adapter.viewholder
 
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
@@ -57,6 +58,7 @@ class FeedFollowProfileViewHolder private constructor() {
                 }
             })
 
+            /** resume & pause video based on viewlifecycle */
             lifecycleOwner.lifecycle.addObserver(object : LifecycleEventObserver {
                 override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
                     when (event) {
@@ -77,6 +79,14 @@ class FeedFollowProfileViewHolder private constructor() {
                 }
             })
 
+            binding.root.addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
+                override fun onViewAttachedToWindow(view: View) {}
+
+                override fun onViewDetachedFromWindow(view: View) {
+                    player.pause()
+                }
+            })
+
             binding.playerView.player = player.getExoPlayer()
         }
 
@@ -84,6 +94,7 @@ class FeedFollowProfileViewHolder private constructor() {
 
             mProfile = model
 
+            /** resume & pause video when user swipe the recommendation */
             if (model.isSelected) {
                 player.start(model.data.videoUrl, isMute = false)
                 followRecommendationListener.onImpressProfile(model.data)
@@ -108,12 +119,15 @@ class FeedFollowProfileViewHolder private constructor() {
             setupListener(model)
         }
 
+        /** resume & pause video when user swipe the content up & down */
         fun bind(
             model: FeedFollowProfileAdapter.Model.Profile,
             payloads: Bundle
         ) {
             if (FeedFollowProfilePayloadHelper.isPlayVideo(payloads)) {
-                player.resume(shouldReset = true)
+                if (mProfile?.isSelected == true) {
+                    player.resume(shouldReset = true)
+                }
             } else {
                 player.stop()
             }

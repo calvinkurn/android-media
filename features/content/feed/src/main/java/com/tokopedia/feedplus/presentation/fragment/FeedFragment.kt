@@ -253,7 +253,6 @@ class FeedFragment :
 
         override fun onImpressProfile(profile: FeedFollowRecommendationModel.Profile) {
             /** TODO: handle this */
-            println("JOE LOG impress $profile")
         }
 
         override fun onClickFollow(profile: FeedFollowRecommendationModel.Profile) {
