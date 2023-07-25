@@ -14,6 +14,7 @@ object FeedViewHolderPayloadActions {
     const val FEED_POST_SELECTED_CHANGED = 1088
     const val FEED_FOLLOW_RECOM_RESUME_VIDEO = 1099
     const val FEED_FOLLOW_RECOM_PAUSE_VIDEO = 2000
+    const val FEED_FOLLOW_RECOM_CHANGED = 2011
 }
 
 data class FeedViewHolderPayloads(

@@ -62,7 +62,7 @@ class FeedFollowRecommendationViewHolder(
     fun bind(item: FeedContentAdapter.Item) {
         val element = item.data as FeedFollowRecommendationModel
 
-        bind(element, item.isSelected)
+        bind(element, selectedPosition = getSelectedPosition(), isViewHolderSelected = item.isSelected)
     }
 
     fun bind(item: FeedContentAdapter.Item, payloads: MutableList<Any>) {
@@ -82,22 +82,39 @@ class FeedFollowRecommendationViewHolder(
         element?.let {
             if (payloads.contains(FeedViewHolderPayloadActions.FEED_POST_SELECTED) ||
                 payloads.contains(FeedViewHolderPayloadActions.FEED_FOLLOW_RECOM_RESUME_VIDEO)) {
-                bind(it, isViewHolderSelected = true)
+                bind(it, selectedPosition = getSelectedPosition(), isViewHolderSelected = true)
             }
 
             if (payloads.contains(FeedViewHolderPayloadActions.FEED_POST_NOT_SELECTED) ||
                 payloads.contains(FeedViewHolderPayloadActions.FEED_FOLLOW_RECOM_PAUSE_VIDEO)) {
-                bind(it, isViewHolderSelected = false)
+                bind(it, selectedPosition = getSelectedPosition(), isViewHolderSelected = false)
+            }
+
+            if (payloads.contains(FeedViewHolderPayloadActions.FEED_FOLLOW_RECOM_CHANGED)) {
+                bind(it, selectedPosition = 0, isViewHolderSelected = true)
+            }
+
+            payloads.forEach { payload ->
+                if (payload is FeedViewHolderPayloads) {
+                    bind(
+                        element,
+                        payload.payloads.toMutableList()
+                    )
+                }
             }
         }
     }
 
-    private fun bind(element: FeedFollowRecommendationModel, isViewHolderSelected: Boolean) {
+    private fun bind(
+        element: FeedFollowRecommendationModel,
+        selectedPosition: Int,
+        isViewHolderSelected: Boolean
+    ) {
         mData = element
 
         mData?.let { model ->
             setupHeader(model)
-            setupProfileList(model, getSelectedPosition(), isViewHolderSelected)
+            setupProfileList(model, selectedPosition, isViewHolderSelected)
             setupEmptyLayout()
         }
     }

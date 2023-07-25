@@ -113,6 +113,10 @@ class FeedContentAdapter(
                     if (oldItem.isSelected != newItem.isSelected) {
                         add(FeedViewHolderPayloadActions.FEED_POST_SELECTED_CHANGED)
                     }
+
+                    if (oldItem.data.data != newItem.data.data) {
+                        add(FeedViewHolderPayloadActions.FEED_FOLLOW_RECOM_CHANGED)
+                    }
                 }
                 if (payloads.isNotEmpty()) FeedViewHolderPayloads(payloads) else null
             } else {
