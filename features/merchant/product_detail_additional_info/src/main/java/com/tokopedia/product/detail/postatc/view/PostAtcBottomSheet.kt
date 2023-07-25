@@ -17,6 +17,7 @@ import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.databinding.PostAtcBottomSheetBinding
 import com.tokopedia.product.detail.databinding.ViewPostAtcFooterBinding
 import com.tokopedia.product.detail.postatc.base.PostAtcAdapter
+import com.tokopedia.product.detail.postatc.base.PostAtcBottomSheetDelegate
 import com.tokopedia.product.detail.postatc.base.PostAtcCallback
 import com.tokopedia.product.detail.postatc.base.PostAtcLayoutManager
 import com.tokopedia.product.detail.postatc.base.PostAtcUiModel
@@ -38,7 +39,7 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 
-class PostAtcBottomSheet : BottomSheetUnify() {
+class PostAtcBottomSheet : BottomSheetUnify(), PostAtcBottomSheetDelegate {
 
     companion object {
         const val TAG = "post_atc_bs"
@@ -76,27 +77,20 @@ class PostAtcBottomSheet : BottomSheetUnify() {
     }
 
     @Inject
-    lateinit var userSession: UserSessionInterface
+    override lateinit var userSession: UserSessionInterface
 
     @Inject
-    lateinit var trackingQueue: TrackingQueue
+    override lateinit var trackingQueue: TrackingQueue
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    private val component by lazy {
-        DaggerPostAtcComponent.builder()
-            .baseAppComponent((activity?.applicationContext as BaseMainApplication).baseAppComponent)
-            .postAtcModule(PostAtcModule())
-            .build()
-    }
+    private val component by getComponent()
+    override val viewModel by getViewModel()
 
-    val viewModel by lazy {
-        ViewModelProvider(this, viewModelFactory)[PostAtcViewModel::class.java]
-    }
+    private val callback = PostAtcCallback(this)
+    override val adapter = PostAtcAdapter(callback)
 
-    internal var binding: PostAtcBottomSheetBinding? = null
-        private set
     private val argProductId: String by getStringArg(ARG_PRODUCT_ID)
     private val argCartId: String by getStringArg(ARG_CART_ID)
     private val argIsFulfillment: Boolean by getBooleanArg(ARG_IS_FULFILLMENT)
@@ -106,10 +100,10 @@ class PostAtcBottomSheet : BottomSheetUnify() {
     private val argWarehouseId: String by getStringArg(ARG_WAREHOUSE_ID)
     private val argQuantity: Int by getIntArg(ARG_QUANTITY)
 
-    private val callback = PostAtcCallback(this)
-    internal val adapter = PostAtcAdapter(callback)
-
-    internal var footer: ViewPostAtcFooterBinding? = null
+    override var binding: PostAtcBottomSheetBinding? = null
+        private set
+    override var footer: ViewPostAtcFooterBinding? = null
+        private set
 
     override fun onCreate(savedInstanceState: Bundle?) {
         component.inject(this)
@@ -217,7 +211,7 @@ class PostAtcBottomSheet : BottomSheetUnify() {
         }
     }
 
-    internal fun initData() {
+    override fun initData() {
         /**
          * Init Loading
          */
@@ -232,5 +226,16 @@ class PostAtcBottomSheet : BottomSheetUnify() {
             argWarehouseId,
             argQuantity
         )
+    }
+
+    private fun getComponent() = lazy {
+        DaggerPostAtcComponent.builder()
+            .baseAppComponent((activity?.applicationContext as BaseMainApplication).baseAppComponent)
+            .postAtcModule(PostAtcModule())
+            .build()
+    }
+
+    private fun getViewModel() = lazy {
+        ViewModelProvider(this, viewModelFactory)[PostAtcViewModel::class.java]
     }
 }

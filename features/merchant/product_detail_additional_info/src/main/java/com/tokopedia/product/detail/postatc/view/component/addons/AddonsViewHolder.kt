@@ -43,9 +43,8 @@ class AddonsViewHolder(
         indexChild: Int,
         addOnGroupUIModels: List<AddOnGroupUIModel>
     ) {
-        /**
-         * TODO vindo - tracker use?
-         */
+        val addonsData = addOnGroupUIModels[index]
+        callback.onClickAddonsItem(indexChild, addonsData)
     }
 
     override fun onDataEmpty() {
