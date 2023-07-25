@@ -1,5 +1,6 @@
 package com.tokopedia.entertainment.search.activity
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -31,6 +32,7 @@ class EventCategoryActivity : BaseSimpleActivity(), HasComponent<EventSearchComp
 
     var binding: EntSearchDetailActivityBinding? = null
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = EntSearchDetailActivityBinding.inflate(layoutInflater)

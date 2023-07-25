@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.entertainment.databinding.EntLayoutBottomSheetBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 
 class MenuBottomSheet: BottomSheetUnify() {
 
@@ -17,7 +18,7 @@ class MenuBottomSheet: BottomSheetUnify() {
     }
 
     private var itemClickListener: ItemClickListener? = null
-    private lateinit var binding: EntLayoutBottomSheetBinding
+    private var binding by autoClearedNullable<EntLayoutBottomSheetBinding>()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -25,21 +26,21 @@ class MenuBottomSheet: BottomSheetUnify() {
         savedInstanceState: Bundle?
     ): View? {
         binding = EntLayoutBottomSheetBinding.inflate(LayoutInflater.from(context))
-        setChild(binding.root)
+        setChild(binding?.root)
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.txtPromo.setOnClickListener {
+        binding?.txtPromo?.setOnClickListener {
             itemClickListener?.onMenuPromoClick()
         }
 
-        binding.txtHelp.setOnClickListener {
+        binding?.txtHelp?.setOnClickListener {
             itemClickListener?.onMenuHelpClick()
         }
 
-        binding.txtTransaction.setOnClickListener {
+        binding?.txtTransaction?.setOnClickListener {
             itemClickListener?.onMenuTransactionListClick()
         }
     }

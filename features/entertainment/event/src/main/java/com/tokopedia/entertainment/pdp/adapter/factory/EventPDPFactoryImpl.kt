@@ -36,7 +36,7 @@ class EventPDPFactoryImpl(private val onBindItemListener: OnBindItemListener):Ba
             EventPDPHighlightViewHolder.LAYOUT -> {
                 val binding = PartialEventPdpDescriptionBinding.inflate(
                     LayoutInflater.from(view.context),
-                    view as ViewGroup?,
+                    view as? ViewGroup,
                     false
                 )
                 EventPDPHighlightViewHolder(binding, onBindItemListener)
@@ -44,7 +44,7 @@ class EventPDPFactoryImpl(private val onBindItemListener: OnBindItemListener):Ba
             EventPDPAboutViewHolder.LAYOUT -> {
                 val binding = PartialEventPdpAboutBinding.inflate(
                     LayoutInflater.from(view.context),
-                    view as ViewGroup?,
+                    view as? ViewGroup,
                     false
                 )
                 EventPDPAboutViewHolder(binding, onBindItemListener)
@@ -52,7 +52,7 @@ class EventPDPFactoryImpl(private val onBindItemListener: OnBindItemListener):Ba
             EventPDPFacilitiesViewHolder.LAYOUT -> {
                 val binding = PartialEventPdpFacilitiesBinding.inflate(
                     LayoutInflater.from(view.context),
-                    view as ViewGroup?,
+                    view as? ViewGroup,
                     false
                 )
                 EventPDPFacilitiesViewHolder(binding, onBindItemListener)
@@ -60,7 +60,7 @@ class EventPDPFactoryImpl(private val onBindItemListener: OnBindItemListener):Ba
             EventPDPLocationDetailViewHolder.LAYOUT -> {
                 val binding = PartialEventPdpDetailLokasiBinding.inflate(
                     LayoutInflater.from(view.context),
-                    view as ViewGroup?,
+                    view as? ViewGroup,
                     false
                 )
                 EventPDPLocationDetailViewHolder(binding, onBindItemListener)
@@ -68,7 +68,7 @@ class EventPDPFactoryImpl(private val onBindItemListener: OnBindItemListener):Ba
             EventPDPInformationViewHolder.LAYOUT -> {
                 val binding = PartialEventPdpInformationBinding.inflate(
                     LayoutInflater.from(view.context),
-                    view as ViewGroup?,
+                    view as? ViewGroup,
                     false
                 )
                 EventPDPInformationViewHolder(binding)

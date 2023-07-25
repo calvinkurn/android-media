@@ -1,5 +1,6 @@
 package com.tokopedia.entertainment.home.fragment
 
+import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.graphics.PorterDuff
 import android.graphics.drawable.BitmapDrawable
@@ -210,6 +211,7 @@ class NavEventHomeFragment :
         }
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private fun renderToolbar() {
         binding?.run {
             (activity as EventNavigationActivity).setSupportActionBar(toolbarHome)
