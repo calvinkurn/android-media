@@ -129,7 +129,7 @@ class ProductBottomSheetCardView: FrameLayout {
         binding.layoutRibbon.root.transitionToEnd()
         configRibbon(item.rankColors)
 
-        setOnClickListener {
+        binding.cardPlayPinned.setOnClickListener {
             if (!item.applink.isNullOrEmpty()) mListener?.onClicked(this, item, section)
         }
 
