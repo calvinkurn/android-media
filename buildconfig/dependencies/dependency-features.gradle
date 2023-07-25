@@ -2,6 +2,7 @@ ext {
 
     // Sort and categorize alphabetically by folder name
     features = [
+			buy_more_get_more		: ":features:merchant:buy_more_get_more",
 			sellerShopNib		: ":features:merchant:seller_shop_nib",
 			sellerPersona		: ":features:merchant:seller_persona",
 			sellerMvcCreation		: ":features:merchant:seller_mvc_creation",
