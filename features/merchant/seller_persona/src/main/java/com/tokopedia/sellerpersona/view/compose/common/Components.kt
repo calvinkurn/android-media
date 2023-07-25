@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.requiredWidth
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -16,6 +17,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.tokopedia.nest.components.ButtonSize
 import com.tokopedia.nest.components.ButtonVariant
 import com.tokopedia.nest.components.NestButton
 import com.tokopedia.nest.principles.NestTypography
@@ -78,9 +80,10 @@ internal fun ErrorStateComponent(
                 .requiredHeight(24.dp)
                 .fillMaxWidth()
         )
-        NestButton(modifier = Modifier.fillMaxWidth(),
+        NestButton(modifier = Modifier.wrapContentSize(),
             text = actionText,
             variant = ButtonVariant.FILLED,
+            size = ButtonSize.SMALL,
             onClick = {
                 onActionClicked?.invoke()
             })
