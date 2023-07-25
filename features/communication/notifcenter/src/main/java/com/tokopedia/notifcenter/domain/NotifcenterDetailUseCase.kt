@@ -1,5 +1,6 @@
 package com.tokopedia.notifcenter.domain
 
+import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
@@ -456,17 +457,12 @@ class NotifcenterDetailUseCase @Inject constructor(
         var fields: ArrayList<String> = arrayListOf()
     ) : GqlParam {
         var loadType: NotificationDetailLoadType = NotificationDetailLoadType.FIRST_PAGE
-        var lastKnownPosition: Int = -1
     }
 
+    @Keep
     enum class NotificationDetailLoadType {
-        @SerializedName("FIRST_PAGE")
         FIRST_PAGE,
-
-        @SerializedName("LOAD_MORE_NEW")
         LOAD_MORE_NEW,
-
-        @SerializedName("LOAD_MORE_EARLIER")
         LOAD_MORE_EARLIER
     }
 
