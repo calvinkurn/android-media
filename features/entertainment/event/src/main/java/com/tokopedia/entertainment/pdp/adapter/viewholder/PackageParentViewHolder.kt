@@ -18,7 +18,7 @@ import com.tokopedia.entertainment.pdp.data.EventPDPTicketGroup
 import com.tokopedia.entertainment.pdp.data.PackageItem
 import com.tokopedia.entertainment.pdp.data.PackageV3
 import com.tokopedia.entertainment.pdp.listener.OnBindItemTicketListener
-import com.tokopedia.entertainment.pdp.listener.OnCoachmarkListener
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import com.tokopedia.utils.view.binding.viewBinding
@@ -26,8 +26,7 @@ import java.util.Date
 
 class PackageParentViewHolder(
         view: View,
-        private val onBindItemTicketListener: OnBindItemTicketListener,
-        private val onCoachmarkListener: OnCoachmarkListener)
+        private val onBindItemTicketListener: OnBindItemTicketListener)
     : AbstractViewHolder<EventPDPTicketGroup>(view) {
 
     lateinit var eventPDPTracking: EventPDPTracking
@@ -42,7 +41,7 @@ class PackageParentViewHolder(
             onItemClick = { position, isExpanded ->
                 if (isExpanded) {
                     val rvTicketItem = getChildAt(position).findViewById<RecyclerView>(R.id.rv_accordion_expandable)
-                    for (i in 0 until rvTicketItem.childCount) {
+                    for (i in Int.ZERO until rvTicketItem.childCount) {
                         val adapter = rvTicketItem.adapter
                         adapter?.notifyItemChanged(i)
                     }
@@ -82,7 +81,7 @@ class PackageParentViewHolder(
         val subtitle = when (isRecommendation) {
             true -> Html.fromHtml("${getString(R.string.ent_pdp_available_date_label)}  " +
                         "<b>${DateUtils.dateToString(
-                            Date(value.dates[0].toLong() * SECOND_IN_MILIS),
+                            Date(value.dates[Int.ZERO].toLong() * SECOND_IN_MILIS),
                         DateUtils.DEFAULT_VIEW_FORMAT)}</b>")
             false -> getSubtitle(value.packageItems)
         }

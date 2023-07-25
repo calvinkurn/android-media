@@ -66,6 +66,7 @@ class EventCarouselEventViewHolder(itemView: View,
         private const val EMPTY_DATE = "0"
         private const val RESET_SPACE = 0
         private const val DATE_PATTERN = "dd\nMMM"
+        private const val SECONDS = 1000
 
     }
 
@@ -100,7 +101,7 @@ class EventCarouselEventViewHolder(itemView: View,
                 eventImage.loadImage(item.imageUrl)
                 eventLocation.text = item.location
                 eventTitle.text = item.title
-                eventDate.apply {
+                eventDate.run {
                     val dateFormated = formatedSchedule(item.date)
                     if (dateFormated.isNullOrEmpty()){
                         gone()
@@ -111,7 +112,7 @@ class EventCarouselEventViewHolder(itemView: View,
                     typeface = Typography.getFontType(context, true, Typography.DISPLAY_2)
                 }
 
-                eventPrice.apply {
+                eventPrice.run {
                     if (item.isFree){
                         text = resources.getString(R.string.ent_free_price)
                         tgEventHomeStartFrom.gone()
@@ -133,7 +134,7 @@ class EventCarouselEventViewHolder(itemView: View,
                     )
                 }
 
-                eventTitle.apply {
+                eventTitle.run {
                     val labelParams = this.layoutParams as ConstraintLayout.LayoutParams
                     if (item.location.isEmpty()) {
                         labelParams.topToBottom = binding.eventImage.id
@@ -155,7 +156,7 @@ class EventCarouselEventViewHolder(itemView: View,
                     layoutParams = labelParams
                 }
 
-                tgEventHomeStartFrom.apply {
+                tgEventHomeStartFrom.run {
                     if (item.location.isNotEmpty()) {
                         setMargin(
                             getDimens(unifyDimens.unify_space_0),
@@ -173,7 +174,7 @@ class EventCarouselEventViewHolder(itemView: View,
                     }
                 }
 
-                eventPrice.apply {
+                eventPrice.run {
                     if (item.location.isNotEmpty()) {
                         setMargin(
                             getDimens(unifyDimens.spacing_lvl2),
@@ -196,7 +197,7 @@ class EventCarouselEventViewHolder(itemView: View,
         private fun formatedSchedule(schedule: String): String? {
             return try {
                 if(!schedule.equals(EMPTY_DATE)) {
-                    val date = Date(schedule.toLong() * 1000)
+                    val date = Date(schedule.toLong() * SECONDS)
                     SimpleDateFormat(DATE_PATTERN).format(date).toUpperCase()
                 } else ""
             } catch (e: Exception) {

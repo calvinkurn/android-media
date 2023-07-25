@@ -23,6 +23,8 @@ import com.tokopedia.entertainment.pdp.data.checkout.AdditionalType
 import com.tokopedia.entertainment.pdp.data.checkout.mapper.EventFormMapper.getFamilyName
 import com.tokopedia.entertainment.pdp.data.checkout.mapper.EventFormMapper.getFirstName
 import com.tokopedia.entertainment.pdp.listener.OnClickFormListener
+import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.user.session.UserSessionInterface
@@ -46,7 +48,7 @@ class EventPDPTextFieldViewHolder(val view: View,
 
             keyActiveBottomSheet = getKeyActive(element)
             positionActiveForm = position
-            if (position > 0) txtValue.setMargin(0, root.context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3).toPx().toInt(), 0, 0)
+            if (position > Int.ZERO) txtValue.setMargin(Int.ZERO, root.context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3).toPx().toInt(), Int.ZERO, Int.ZERO)
 
             if (element.elementType.equals(ELEMENT_TEXT) || !element.elementType.equals(ELEMENT_LIST)) {
                 txtValue.textFieldWrapper.hint = element.title
@@ -89,11 +91,11 @@ class EventPDPTextFieldViewHolder(val view: View,
                     if (list.isNotEmpty()) {
 
                         val value = if (keyActiveBottomSheet.isNullOrEmpty()) {
-                            list.getValueByPosition(0)
+                            list.getValueByPosition(Int.ZERO)
                         } else list.get(keyActiveBottomSheet) ?: ""
 
                         val key = if (keyActiveBottomSheet.isNullOrEmpty()) {
-                            list.getKeyByPosition(0)
+                            list.getKeyByPosition(Int.ZERO)
                         } else keyActiveBottomSheet
 
                         if(element.required==1 && !key.equals(BLANK_LIST)){
@@ -168,8 +170,8 @@ class EventPDPTextFieldViewHolder(val view: View,
         val listValue: LinkedHashMap<String, String> = LinkedHashMap()
         if(value.isNotEmpty()) {
             val jsonArray = JSONArray(value)
-            for (i in 0..jsonArray.length() - 1) {
-                val key = (jsonArray.getJSONObject(i) as JSONObject).names()?.get(0)?.toString()
+            for (i in Int.ZERO..jsonArray.length() - Int.ONE) {
+                val key = (jsonArray.getJSONObject(i) as JSONObject).names()?.get(Int.ZERO)?.toString()
                 key?.let {
                     listValue.put(key, jsonArray.getJSONObject(i).getString(key))
                 }

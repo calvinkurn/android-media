@@ -100,7 +100,7 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicket, PackageTypeFacto
     private var eventVerifyRequest: VerifyRequest = VerifyRequest()
     private var hashItemMap: HashMap<String, ItemMap> = hashMapOf()
     private var pdpData: ProductDetailData = ProductDetailData()
-    private var packageTypeFactoryImp = PackageTypeFactoryImpl(this, this)
+    private var packageTypeFactoryImp = PackageTypeFactoryImpl(this)
 
     @Inject
     lateinit var viewModel: EventPDPTicketViewModel

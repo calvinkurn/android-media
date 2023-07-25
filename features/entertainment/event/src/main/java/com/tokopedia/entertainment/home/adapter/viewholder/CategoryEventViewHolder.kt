@@ -14,6 +14,7 @@ import com.tokopedia.entertainment.databinding.EntLayoutCategoryAdapterItemBindi
 import com.tokopedia.entertainment.databinding.EntLayoutViewholderCategoryBinding
 import com.tokopedia.entertainment.home.adapter.listener.TrackingListener
 import com.tokopedia.entertainment.home.adapter.viewmodel.CategoryModel
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.utils.view.binding.viewBinding
 
@@ -79,7 +80,7 @@ class CategoryEventViewHolder(itemView: View,
                 root.setOnClickListener {
                     RouteManager.route(root.context,
                         ApplinkConstInternalEntertainment.EVENT_CATEGORY, item.id, "", "")
-                    categoryEventListener.clickCategoryIcon(item, position + 1)
+                    categoryEventListener.clickCategoryIcon(item, position + Int.ONE)
                 }
             }
         }

@@ -44,6 +44,8 @@ import com.tokopedia.entertainment.home.widget.MenuBottomSheet
 import com.tokopedia.entertainment.navigation.EventNavigationActivity
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
+import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toBitmap
@@ -227,7 +229,7 @@ class NavEventHomeFragment :
             }
             (activity as EventNavigationActivity).supportActionBar?.setHomeAsUpIndicator(navIcon)
 
-            txtSearchHome.searchBarTextField.inputType = 0
+            txtSearchHome.searchBarTextField.inputType = Int.ZERO
             txtSearchHome.searchBarTextField.setOnTouchListener { v, event ->
                 when (event.action) {
                     MotionEvent.ACTION_DOWN -> openEventSearch()
@@ -367,12 +369,12 @@ class NavEventHomeFragment :
                     ContextCompat.getColor(ctx, com.tokopedia.unifyprinciples.R.color.Unify_NN900)
                 )
                 iconUnify?.toBitmap()?.let {
-                    getItem(0).setOnMenuItemClickListener {
+                    getItem(Int.ZERO).setOnMenuItemClickListener {
                         val bottomSheet = DigitalDppoConsentBottomSheet(description)
                         bottomSheet.show(childFragmentManager)
                         true
                     }
-                    getItem(0).icon = BitmapDrawable(
+                    getItem(Int.ZERO).icon = BitmapDrawable(
                         ctx.resources,
                         Bitmap.createScaledBitmap(it, TOOLBAR_ICON_SIZE, TOOLBAR_ICON_SIZE, true)
                     )
@@ -389,7 +391,7 @@ class NavEventHomeFragment :
                 ContextCompat.getColor(ctx, com.tokopedia.unifyprinciples.R.color.Unify_NN900)
             )
             iconUnify?.toBitmap()?.let {
-                getItem(1).setOnMenuItemClickListener {
+                getItem(Int.ONE).setOnMenuItemClickListener {
                     actionMenuMore()
                     true
                 }

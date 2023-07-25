@@ -124,7 +124,7 @@ class EventGridEventViewHolder(
                 image.loadImage(item.imageUrl)
                 txtLocation.text = item.location
                 txtTitle.text = item.title
-                txtPrice.apply {
+                txtPrice.run {
                     if (item.isFree) {
                         text = resources.getString(R.string.ent_free_price)
                         binding.txtStartTitle.gone()
@@ -147,7 +147,7 @@ class EventGridEventViewHolder(
                     )
                 }
 
-                txtTitle.apply {
+                txtTitle.run {
                     val labelParams = this.layoutParams as ConstraintLayout.LayoutParams
                     if (item.location.isEmpty()) {
                         labelParams.topToBottom = binding.image.id
@@ -157,7 +157,7 @@ class EventGridEventViewHolder(
                     layoutParams = labelParams
                 }
 
-                txtStartTitle.apply {
+                txtStartTitle.run {
                     if (item.location.isNotEmpty()) {
                         setMargin(
                             getDimens(unifyDimens.spacing_lvl3),

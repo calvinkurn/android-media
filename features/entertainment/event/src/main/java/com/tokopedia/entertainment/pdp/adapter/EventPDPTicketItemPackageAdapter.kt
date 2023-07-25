@@ -20,6 +20,8 @@ import com.tokopedia.entertainment.pdp.data.pdp.mapper.EventDateMapper.checkNotE
 import com.tokopedia.entertainment.pdp.data.pdp.mapper.EventDateMapper.checkStartSale
 import com.tokopedia.entertainment.pdp.data.pdp.mapper.EventDateMapper.getDate
 import com.tokopedia.entertainment.pdp.listener.OnBindItemTicketListener
+import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import java.util.Calendar
@@ -56,7 +58,7 @@ class EventPDPTicketItemPackageAdapter(
                 root.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
                     if (!hasFocus) {
                         val imm = root.context.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
-                        imm.hideSoftInputFromWindow(root.rootView.windowToken, 0)
+                        imm.hideSoftInputFromWindow(root.rootView.windowToken, Int.ZERO)
                     }
                 }
 
@@ -89,7 +91,7 @@ class EventPDPTicketItemPackageAdapter(
 
                 if (!isListenerRegistered) {
                     quantityEditor.setValue(items.minQty.toIntSafely())
-                    quantityEditor.minValue = items.minQty.toIntSafely() - 1
+                    quantityEditor.minValue = items.minQty.toIntSafely() - Int.ONE
                     quantityEditor.maxValue = items.maxQty.toIntSafely()
 
                     quantityEditor.setValueChangedListener { newValue, _, _ ->
@@ -119,7 +121,7 @@ class EventPDPTicketItemPackageAdapter(
                                     quantityEditor.visibility = View.GONE
                                     bgTicket.background = ContextCompat.getDrawable(root.context, R.drawable.ent_pdp_ticket_normal_bg)
                                 }
-                                if (txtTotal.toString().length > 1) { // zero first checker example: 01 -> 1, 02 -> 2
+                                if (txtTotal.toString().length > Int.ONE) { // zero first checker example: 01 -> 1, 02 -> 2
                                     if (txtTotal.toString().startsWith("0")) {
                                         txtTotal.toString().replaceFirst("^0+(?!$)", "")
                                         quantityEditor.setValue(txtTotal.toString().toIntSafely())
@@ -160,7 +162,7 @@ class EventPDPTicketItemPackageAdapter(
                     bgTicket.background = ContextCompat.getDrawable(root.context, R.drawable.ent_pdp_ticket_active_bg)
                     quantityEditor.visibility = View.VISIBLE
                     itemView.parent.clearChildFocus(itemView.findFocus())
-                    quantityEditor.setValue(if (items.minQty.toIntSafely() < 1) MIN_QTY else items.minQty.toIntSafely())
+                    quantityEditor.setValue(if (items.minQty.toIntSafely() < Int.ONE) MIN_QTY else items.minQty.toIntSafely())
                     quantityEditor.editText.visibility = View.VISIBLE
                     quantityEditor.addButton.visibility = View.VISIBLE
                     quantityEditor.subtractButton.visibility = View.VISIBLE
@@ -178,7 +180,7 @@ class EventPDPTicketItemPackageAdapter(
                 root.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
                     if (!hasFocus) {
                         val imm = root.context.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
-                        imm.hideSoftInputFromWindow(root.rootView.windowToken, 0)
+                        imm.hideSoftInputFromWindow(root.rootView.windowToken, Int.ZERO)
                     }
                 }
 
