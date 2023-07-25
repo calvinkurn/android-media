@@ -15,7 +15,7 @@ import com.tokopedia.promocheckout.common.data.PromoCheckoutCommonQueryConst
  */
 
 @GqlQuery("QueryAddToCart", QUERY_ADD_TO_CART)
-internal object FlightAddToCartQuery{
+internal object FlightAddToCartQuery {
     const val QUERY_ADD_TO_CART = """
         mutation addtocart(${'$'}param: FlightAddtoCartArgs!) {
           flightAddToCart(input:${'$'}param) {
@@ -29,7 +29,7 @@ internal object FlightAddToCartQuery{
 }
 
 @GqlQuery("QueryGetCart", QUERY_GET_CART)
-internal object FlightGetCartQuery{
+internal object FlightGetCartQuery {
     const val QUERY_GET_CART = """
         query getCart(${'$'}cartID:String!) {
             flightCart(cartID:${'$'}cartID) {
@@ -91,6 +91,8 @@ internal object FlightGetCartQuery{
                     label
                     price
                     priceNumeric
+                    popUpTitle
+                    popUpDescription
                   }
                   mandatoryDOB
                   mandatoryIdentificationNumber
@@ -230,7 +232,7 @@ internal object FlightGetCartQuery{
 }
 
 @GqlQuery("QueryCheckVoucher", QUERY_CHECK_VOUCHER)
-internal object FlightCheckVoucherQuery{
+internal object FlightCheckVoucherQuery {
     const val QUERY_CHECK_VOUCHER = """
         query flightVoucher(${'$'}cartID: String!, ${'$'}voucherCode: String!){
             flightVoucher(cartID: ${'$'}cartID, voucherCode: ${'$'}voucherCode) {
@@ -252,7 +254,7 @@ internal object FlightCheckVoucherQuery{
 }
 
 @GqlQuery("QueryVerifyCart", QUERY_VERIFY_CART)
-internal object FlightVerifyCartQuery{
+internal object FlightVerifyCartQuery {
     const val QUERY_VERIFY_CART = """
         mutation VerifyFlight(${'$'}data: FlightVerifyArgs!) {
           flightVerify(input:${'$'}data) {
@@ -306,7 +308,7 @@ internal object FlightVerifyCartQuery{
 }
 
 @GqlQuery("QueryCheckoutCart", QUERY_CHECKOUT_CART)
-internal object FlightCheckoutCartQuery{
+internal object FlightCheckoutCartQuery {
     const val QUERY_CHECKOUT_CART = """
         mutation CheckoutFlight(${'$'}data: FlightCheckoutArgs!) {
           flightCheckout(input:${'$'}data) {
@@ -346,7 +348,7 @@ internal object FlightCheckoutCartQuery{
 }
 
 @GqlQuery("QueryGetProfile", QUERY_GET_PROFILE)
-internal object FLightGetProfileQuery{
+internal object FLightGetProfileQuery {
     const val QUERY_GET_PROFILE = """
         query profile() {
           profile() {
@@ -377,6 +379,6 @@ internal object FLightGetProfileQuery{
 }
 
 @GqlQuery("QueryFlightCancelVoucher", FLIGHT_CANCEL_VOUCHER)
-internal object FlightCancelVoucherQuery{
+internal object FlightCancelVoucherQuery {
     const val FLIGHT_CANCEL_VOUCHER = PromoCheckoutCommonQueryConst.QUERY_FLIGHT_CANCEL_VOUCHER
 }
