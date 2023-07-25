@@ -2,9 +2,11 @@ package com.tokopedia.recommendation_widget_common.widget.carousel.global
 
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.recommendation_widget_common.widget.carousel.global.tracking.RecommendationCarouselWidgetTracking
 import com.tokopedia.recommendation_widget_common.widget.global.RecommendationTypeFactory
 import com.tokopedia.recommendation_widget_common.widget.global.RecommendationVisitable
 import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetMetadata
+import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetSource
 import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetTrackingModel
 
 /**
@@ -13,7 +15,12 @@ import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWi
 data class RecommendationCarouselModel(
     val visitable: RecommendationVisitable,
     val widget: RecommendationWidget,
+    val source: RecommendationWidgetSource?,
 ) : RecommendationVisitable by visitable {
+
+    val widgetTracking: RecommendationCarouselWidgetTracking? =
+        RecommendationCarouselWidgetTracking.Factory.create(widget, source)
+
     override fun type(typeFactory: RecommendationTypeFactory): Int {
         return typeFactory.type(this)
     }
@@ -33,9 +40,11 @@ data class RecommendationCarouselModel(
             metadata: RecommendationWidgetMetadata,
             trackingModel: RecommendationWidgetTrackingModel,
             widget: RecommendationWidget,
+            source: RecommendationWidgetSource?,
         ) = RecommendationCarouselModel(
             visitable = RecommendationVisitable.create(metadata, trackingModel),
             widget = widget,
+            source = source,
         )
     }
 }

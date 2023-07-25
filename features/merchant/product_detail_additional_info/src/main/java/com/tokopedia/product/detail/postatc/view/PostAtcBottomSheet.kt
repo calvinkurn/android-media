@@ -246,6 +246,8 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcBottomSheetDelegate {
             .build()
     }
 
+    override fun rootView(): View? = dialog?.window?.decorView
+
     private fun getViewModel() = lazy {
         ViewModelProvider(this, viewModelFactory)[PostAtcViewModel::class.java]
     }

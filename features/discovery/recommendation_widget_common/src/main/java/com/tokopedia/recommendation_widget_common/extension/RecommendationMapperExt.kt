@@ -164,7 +164,11 @@ fun RecommendationItem.toProductCardModel(
         labelGroupList = labelGroupList.map {
             ProductCardModel.LabelGroup(position = it.position, title = it.title, type = it.type, imageUrl = it.imageUrl)
         },
-        hasAddToCartButton = if (addToCartType == RecommendationItem.AddToCartType.None) hasAddToCartButton else true,
+        hasAddToCartButton = when (addToCartType) {
+            RecommendationItem.AddToCartType.None -> hasAddToCartButton
+            RecommendationItem.AddToCartType.DirectAtc -> true
+            RecommendationItem.AddToCartType.QuantityEditor -> false
+        },
         addToCartButtonType = addToCartButtonType,
         variant = if (isProductHasParentID()) variant else null,
         nonVariant = if (isProductHasParentID()) null else nonVariant,
@@ -216,7 +220,7 @@ private fun RecommendationEntity.RecommendationData.getAtcType(): Recommendation
 }
 
 private fun RecommendationEntity.RecommendationData.hasQuantityEditor() =
-    isTokonow() || layoutType == PAGENAME_IDENTIFIER_RECOM_ATC
+    isTokonow() || pageName.contains(PAGENAME_IDENTIFIER_RECOM_ATC)
 
 fun RecommendationEntity.RecommendationCampaign.mapToBannerData(): RecommendationBanner? {
     assets?.banner?.let {

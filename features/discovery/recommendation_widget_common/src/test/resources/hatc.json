@@ -10,7 +10,7 @@
         "widgetUrl": "",
         "pageName": "pdp_fbt_hatc",
         "seeMoreAppLink": "tokopedia://rekomendasi/1538031268/d/?ref\u003dpdp_fbt_hatc\u0026product_ids\u003d1538031268",
-        "layoutType": "hatc",
+        "layoutType": "custom-horizontal",
         "pagination": {
           "currentPage": 1,
           "nextPage": 2,
@@ -103,7 +103,7 @@
             "minOrder": 1,
             "maxOrder": 3,
             "shop": {
-              "id": 6655863,
+              "id": 10916130,
               "name": "kangbeauty",
               "city": "Kota Makassar",
               "isGold": true,
@@ -164,7 +164,7 @@
             "minOrder": 1,
             "maxOrder": 4,
             "shop": {
-              "id": 1250834,
+              "id": 10916130,
               "name": "Buss Indo",
               "city": "Kota Sukabumi",
               "isGold": true,
@@ -225,7 +225,7 @@
             "minOrder": 1,
             "maxOrder": 4,
             "shop": {
-              "id": 8806169,
+              "id": 10916130,
               "name": "MonVisage",
               "city": "Jakarta Barat",
               "isGold": true,
@@ -286,7 +286,7 @@
             "minOrder": 1,
             "maxOrder": 3,
             "shop": {
-              "id": 992958,
+              "id": 10916130,
               "name": "Korea Yoja",
               "city": "Jakarta Pusat",
               "isGold": true,
@@ -347,7 +347,7 @@
             "minOrder": 1,
             "maxOrder": 95,
             "shop": {
-              "id": 2920270,
+              "id": 10916130,
               "name": "DBA Room",
               "city": "Jakarta Barat",
               "isGold": true,
@@ -408,7 +408,7 @@
             "minOrder": 1,
             "maxOrder": 127,
             "shop": {
-              "id": 2552171,
+              "id": 10916130,
               "name": "Velove Studio",
               "city": "Kota Makassar",
               "isGold": false,
@@ -481,7 +481,7 @@
             "minOrder": 1,
             "maxOrder": 45,
             "shop": {
-              "id": 1277623,
+              "id": 10916130,
               "name": "onelipstickaday",
               "city": "Kota Surabaya",
               "isGold": true,
@@ -553,7 +553,7 @@
             "minOrder": 0,
             "maxOrder": 16,
             "shop": {
-              "id": 91621,
+              "id": 10916130,
               "name": "Grosir Laris",
               "city": "Jakarta Timur",
               "isGold": true,
@@ -614,7 +614,7 @@
             "minOrder": 1,
             "maxOrder": 96,
             "shop": {
-              "id": 6814859,
+              "id": 10916130,
               "name": "cherryblossomdps",
               "city": "Kota Denpasar",
               "isGold": true,
@@ -675,7 +675,7 @@
             "minOrder": 1,
             "maxOrder": 46,
             "shop": {
-              "id": 13900847,
+              "id": 10916130,
               "name": "Ayola Cosmetics",
               "city": "Kota Pekanbaru",
               "isGold": true,
@@ -736,7 +736,7 @@
             "minOrder": 1,
             "maxOrder": 96,
             "shop": {
-              "id": 8218465,
+              "id": 10916130,
               "name": "Whitelab Official Store",
               "city": "Jakarta Utara",
               "isGold": true,

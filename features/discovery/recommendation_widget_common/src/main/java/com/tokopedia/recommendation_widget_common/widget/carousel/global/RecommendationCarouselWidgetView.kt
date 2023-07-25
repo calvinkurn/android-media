@@ -5,32 +5,25 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.DefaultLifecycleObserver
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.carouselproductcard.CarouselProductCardListener
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
-import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.recommendation_widget_common.R
 import com.tokopedia.recommendation_widget_common.databinding.RecommendationWidgetCarouselLayoutBinding
 import com.tokopedia.recommendation_widget_common.extension.toProductCardModels
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.recommendation_widget_common.viewutil.asLifecycleOwner
 import com.tokopedia.recommendation_widget_common.widget.global.IRecommendationWidgetView
 import com.tokopedia.recommendation_widget_common.widget.global.recommendationWidgetViewModel
 import com.tokopedia.recommendation_widget_common.widget.header.RecommendationHeaderListener
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.trackingoptimizer.TrackingQueue
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.launch
 
 /**
  * Created by frenzel on 27/03/23
@@ -56,7 +49,7 @@ class RecommendationCarouselWidgetView :
     private val recommendationWidgetViewModel by recommendationWidgetViewModel()
 
     init {
-        (context as? LifecycleOwner)?.lifecycle?.addObserver(this)
+        context.asLifecycleOwner()?.lifecycle?.addObserver(this)
     }
 
     override val layoutId: Int
@@ -72,8 +65,8 @@ class RecommendationCarouselWidgetView :
 
         binding.recommendationHeaderView.bindData(model.widget, this)
 
-        binding.recommendationCarouselLoading.root.show()
-        binding.recommendationCarouselProduct.hide()
+        if (!binding.recommendationCarouselProduct.isVisible)
+            binding.recommendationCarouselLoading.root.show()
 
         binding.recommendationCarouselProduct.bindCarouselProductCardViewGrid(
             productCardModelList = model.widget.recommendationItemList.toProductCardModels(),
@@ -106,12 +99,18 @@ class RecommendationCarouselWidgetView :
                         productRecommendation.imageUrl,
                     )
 
-                RecommendationCarouselTracking.sendEventItemImpression(
-                    trackingQueue,
-                    model.widget,
-                    productRecommendation,
-                    model.trackingModel
-                )
+                if (model.widgetTracking != null)
+                    model.widgetTracking.sendEventItemImpression(
+                        trackingQueue,
+                        productRecommendation
+                    )
+                else
+                    RecommendationCarouselTracking.sendEventItemImpression(
+                        trackingQueue,
+                        model.widget,
+                        productRecommendation,
+                        model.trackingModel
+                    )
             }
         }
 
@@ -132,23 +131,23 @@ class RecommendationCarouselWidgetView :
                         productRecommendation.imageUrl
                     )
 
-                RecommendationCarouselTracking.sendEventItemClick(
-                    model.widget,
-                    productRecommendation,
-                    model.trackingModel
-                )
+                if (model.widgetTracking != null)
+                    model.widgetTracking.sendEventItemClick(productRecommendation)
+                else
+                    RecommendationCarouselTracking.sendEventItemClick(
+                        model.widget,
+                        productRecommendation,
+                        model.trackingModel
+                    )
 
-                RouteManager.route(
-                    context,
-                    productRecommendation.appUrl,
-                )
+                RouteManager.route(context, productRecommendation.appUrl)
             }
         }
 
     private fun seeMoreClickListener(model: RecommendationCarouselModel) =
         object : CarouselProductCardListener.OnSeeMoreClickListener {
             override fun onSeeMoreClick() {
-                RecommendationCarouselTracking.sendEventSeeMoreClick()
+                model.widgetTracking?.sendEventSeeAll()
                 RouteManager.route(context, model.widget.seeMoreAppLink)
             }
         }
@@ -162,6 +161,7 @@ class RecommendationCarouselWidgetView :
             ) {
                 val productRecommendation = model.getItem(carouselProductCardPosition) ?: return
                 recommendationWidgetViewModel?.onAddToCartNonVariant(
+                    model,
                     productRecommendation,
                     quantity,
                 )

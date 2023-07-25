@@ -5,6 +5,8 @@ import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommend
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.mvvm.ViewModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.recommendation_widget_common.widget.carousel.global.RecommendationCarouselModel
+import com.tokopedia.recommendation_widget_common.widget.carousel.global.tracking.RecommendationCarouselWidgetTrackingATC
 import com.tokopedia.recommendation_widget_common.widget.cart.CartService
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -44,11 +46,6 @@ class RecommendationWidgetViewModel @Inject constructor(
                 }
             }
         }
-
-        if (model.miniCart.hasValidShopId)
-            cartService.get().getMiniCart { miniCartData ->
-                updateState { it.refreshMiniCart(miniCartData) }
-            }
     }
 
     private suspend fun tryGetRecommendationWidget(model: RecommendationWidgetModel) {
@@ -65,6 +62,18 @@ class RecommendationWidgetViewModel @Inject constructor(
         )
 
         updateState { it.from(model, recommendationWidgetList) }
+
+        getMiniCart()
+    }
+
+    private fun getMiniCart() {
+        val shopId = stateValue.miniCartShopId
+        val miniCartSource = stateValue.miniCartSource
+
+        if (shopId.isNotEmpty() && miniCartSource != null)
+            cartService.get().getMiniCart(shopId, miniCartSource) { miniCartData ->
+                updateState { it.refreshMiniCart(miniCartData) }
+            }
     }
 
     private fun onGetRecommendationWidgetError(model: RecommendationWidgetModel) {
@@ -75,20 +84,64 @@ class RecommendationWidgetViewModel @Inject constructor(
         updateState { it.clear() }
     }
 
-    fun onAddToCartNonVariant(
-        productRecommendation: RecommendationItem,
+    internal fun onAddToCartNonVariant(
+        model: RecommendationCarouselModel,
+        item: RecommendationItem,
         updatedQuantity: Int,
     ) {
-        val productId = productRecommendation.productId.toString()
+        val miniCartSource = stateValue.miniCartSource ?: return
+        val productId = item.productId.toString()
 
         cartService.get().handleCart(
             productId = productId,
-            shopId = productRecommendation.shopId.toString(),
-            currentQuantity = productRecommendation.quantity,
+            shopId = item.shopId.toString(),
+            currentQuantity = item.quantity,
             updatedQuantity = updatedQuantity,
             miniCartItem = stateValue.getMiniCartItemProduct(productId),
-        ) { miniCartData ->
-            updateState { it.refreshMiniCart(miniCartData) }
-        }
+            miniCartSource = miniCartSource,
+            onSuccessAddToCart = { addToCartData, miniCartData ->
+                model.widgetTracking?.sendEventAddToCart(
+                    RecommendationCarouselWidgetTrackingATC(
+                        item,
+                        addToCartData.data.cartId,
+                        addToCartData.data.quantity,
+                    )
+                )
+
+                updateState {
+                    it.refreshMiniCart(
+                        miniCartData = miniCartData,
+                        successMessage = addToCartData.errorMessage.joinToString(separator = ", "),
+                    )
+                }
+            },
+            onSuccessUpdateCart = { updateCartData, miniCartData ->
+                model.widgetTracking?.sendEventUpdateCart()
+
+                updateState {
+                    it.refreshMiniCart(
+                        miniCartData = miniCartData,
+                        successMessage = updateCartData.error.joinToString(separator = ", "),
+                    )
+                }
+            },
+            onSuccessDeleteCart = { deleteCartData, miniCartData ->
+                model.widgetTracking?.sendEventDeleteCart()
+
+                updateState {
+                    it.refreshMiniCart(
+                        miniCartData = miniCartData,
+                        successMessage = deleteCartData.errorMessage.joinToString(separator = ", "),
+                    )
+                }
+            },
+            onError = { throwable ->
+                updateState { it.showErrorMessage(throwable.message ?: "") }
+            }
+        )
+    }
+
+    fun dismissMessage() {
+        updateState { it.dismissMessage() }
     }
 }
