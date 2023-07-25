@@ -14,7 +14,6 @@ import com.tokopedia.buyerorderdetail.common.utils.Utils
 import com.tokopedia.buyerorderdetail.presentation.adapter.OrderStatusLabelsAdapter
 import com.tokopedia.buyerorderdetail.presentation.model.OrderStatusUiModel
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifyprinciples.Typography
@@ -29,14 +28,10 @@ class OrderStatusHeaderViewHolder(
     }
 
     private val container = itemView?.findViewById<ConstraintLayout>(R.id.container)
-    private val buyerOrderDetailIndicator =
-        itemView?.findViewById<View>(R.id.buyerOrderDetailIndicator)
-    private val labelBuyerOrderDetailPreOrder =
-        itemView?.findViewById<Label>(R.id.labelBuyerOrderDetailPreOrder)
-    private val tvBuyerOrderDetailSeeDetail =
-        itemView?.findViewById<Typography>(R.id.tvBuyerOrderDetailSeeDetail)
-    private val tvBuyerOrderDetailStatusOrder =
-        itemView?.findViewById<Typography>(R.id.tvBuyerOrderDetailStatusOrder)
+    private val buyerOrderDetailIndicator = itemView?.findViewById<View>(R.id.buyerOrderDetailIndicator)
+    private val labelBuyerOrderDetailPreOrder = itemView?.findViewById<Label>(R.id.labelBuyerOrderDetailPreOrder)
+    private val tvBuyerOrderDetailSeeDetail = itemView?.findViewById<Typography>(R.id.tvBuyerOrderDetailSeeDetail)
+    private val tvBuyerOrderDetailStatusOrder = itemView?.findViewById<Typography>(R.id.tvBuyerOrderDetailStatusOrder)
 
     private val labelsAdapter = OrderStatusLabelsAdapter()
 
@@ -55,10 +50,7 @@ class OrderStatusHeaderViewHolder(
         }
     }
 
-    override fun bind(
-        element: OrderStatusUiModel.OrderStatusHeaderUiModel?,
-        payloads: MutableList<Any>
-    ) {
+    override fun bind(element: OrderStatusUiModel.OrderStatusHeaderUiModel?, payloads: MutableList<Any>) {
         payloads.firstOrNull()?.let {
             if (it is Pair<*, *>) {
                 val (oldItem, newItem) = it
@@ -95,7 +87,6 @@ class OrderStatusHeaderViewHolder(
 
     private fun setupSeeOrderStatusDetail(element: OrderStatusUiModel.OrderStatusHeaderUiModel) {
         tvBuyerOrderDetailSeeDetail?.apply {
-            show()
             setOnClickListener {
                 if (element.orderId.isBlank()) {
                     showToaster(context.getString(R.string.error_message_please_reload_order_detail))
@@ -111,8 +102,7 @@ class OrderStatusHeaderViewHolder(
     }
 
     private fun setupIndicatorColor(indicatorColor: String) {
-        buyerOrderDetailIndicator?.background =
-            Utils.getColoredIndicator(itemView.context, indicatorColor)
+        buyerOrderDetailIndicator?.background = Utils.getColoredIndicator(itemView.context, indicatorColor)
     }
 
     private fun setupStatusHeader(orderStatus: String) {
@@ -121,12 +111,7 @@ class OrderStatusHeaderViewHolder(
 
     private fun setupPreOrderLabel(preOrder: OrderStatusUiModel.OrderStatusHeaderUiModel.PreOrderUiModel) {
         if (preOrder.isPreOrder && preOrder.value.isNotBlank()) {
-            labelBuyerOrderDetailPreOrder?.setLabel(
-                itemView.context.getString(
-                    R.string.label_pre_order_duration,
-                    preOrder.value
-                )
-            )
+            labelBuyerOrderDetailPreOrder?.setLabel(itemView.context.getString(R.string.label_pre_order_duration, preOrder.value))
         } else {
             labelBuyerOrderDetailPreOrder?.gone()
         }

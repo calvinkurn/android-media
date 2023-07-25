@@ -215,12 +215,7 @@ open class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailType
         context: Context?,
         productListHeaderUiModel: ProductListUiModel.ProductListHeaderUiModel
     ) {
-        if (productListHeaderUiModel.shouldShow(context) && isEnableOrderStatusDetail(context)) add(productListHeaderUiModel)
-    }
-
-    private fun isEnableOrderStatusDetail(context: Context?): Boolean {
-        val remoteConfigImpl = FirebaseRemoteConfigImpl(context)
-        return remoteConfigImpl.getBoolean(RemoteConfigKey.IS_ENABLE_ORDER_STATUS_DETAIL_TEST, true)
+        if (productListHeaderUiModel.shouldShow(context) add(productListHeaderUiModel)
     }
 
     private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addTickerDetailsSection(
