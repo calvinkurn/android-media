@@ -2234,22 +2234,22 @@ class AddEditProductDetailFragment :
     }
 
     private fun showProductNameIconSuccess() {
-        showProductNameIconIndicator(com.tokopedia.unifyprinciples.R.color.Unify_G500, IconUnify.CHECK_CIRCLE)
+        showProductNameIconIndicator(com.tokopedia.unifyprinciples.R.color.Unify_GN500, IconUnify.CHECK_CIRCLE)
         productNameField?.isInputError = false
     }
 
     private fun showProductNameIconTypo() {
-        showProductNameIconIndicator(com.tokopedia.unifyprinciples.R.color.Unify_N700, IconUnify.INFORMATION)
+        showProductNameIconIndicator(com.tokopedia.unifyprinciples.R.color.Unify_NN950, IconUnify.INFORMATION)
         productNameField?.isInputError = false
     }
 
     private fun showProductNameIconNegative() {
-        showProductNameIconIndicator(com.tokopedia.unifyprinciples.R.color.Unify_Y300, IconUnify.INFORMATION)
+        showProductNameIconIndicator(com.tokopedia.unifyprinciples.R.color.Unify_YN300, IconUnify.INFORMATION)
         productNameField?.isInputError = false
     }
 
     private fun showProductNameIconError() {
-        showProductNameIconIndicator(com.tokopedia.unifyprinciples.R.color.Unify_R500, IconUnify.INFORMATION)
+        showProductNameIconIndicator(com.tokopedia.unifyprinciples.R.color.Unify_RN500, IconUnify.INFORMATION)
         productNameField?.isInputError = true
     }
 

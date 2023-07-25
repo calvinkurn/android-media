@@ -15,7 +15,6 @@ import com.tokopedia.content.common.databinding.FragmentShopProductBinding
 import com.tokopedia.content.common.producttag.analytic.coordinator.ProductImpressionCoordinator
 import com.tokopedia.content.common.producttag.util.extension.getVisibleItems
 import com.tokopedia.content.common.producttag.util.extension.isProductFound
-import com.tokopedia.content.common.producttag.util.extension.withCache
 import com.tokopedia.content.common.producttag.view.adapter.ProductTagCardAdapter
 import com.tokopedia.content.common.producttag.view.fragment.base.BaseProductTagChildFragment
 import com.tokopedia.content.common.producttag.view.uimodel.PagedState
@@ -24,6 +23,7 @@ import com.tokopedia.content.common.producttag.view.uimodel.action.ProductTagAct
 import com.tokopedia.content.common.producttag.view.uimodel.state.ProductTagUiState
 import com.tokopedia.content.common.producttag.view.viewmodel.ProductTagViewModel
 import com.tokopedia.content.common.util.hideKeyboard
+import com.tokopedia.content.common.util.withCache
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show

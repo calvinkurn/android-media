@@ -20,7 +20,7 @@
             android:layout_height="match_parent"
             android:text="@string/official_store"
             android:gravity="center_vertical"
-            android:textColor="@color/Unify_N700"
+            android:textColor="@color/Unify_NN950"
             app:typographyType="heading_5"
             app:typographyWeight="bold"
             app:layout_constraintStart_toStartOf="@id/middleGuideline"/>

@@ -484,7 +484,7 @@ class VideoDetailFragment :
                 likeText.setTextColor(
                     MethodChecker.getColor(
                         likeText.context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_G400
+                        com.tokopedia.unifyprinciples.R.color.Unify_GN500
                     )
                 )
             }
@@ -495,7 +495,7 @@ class VideoDetailFragment :
                 likeText.setTextColor(
                     MethodChecker.getColor(
                         likeText.context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_N0
+                        com.tokopedia.unifyprinciples.R.color.Unify_NN0
                     )
                 )
             }
@@ -506,7 +506,7 @@ class VideoDetailFragment :
                 likeText.setTextColor(
                     MethodChecker.getColor(
                         likeIcon.context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_N0
+                        com.tokopedia.unifyprinciples.R.color.Unify_NN0
                     )
                 )
             }

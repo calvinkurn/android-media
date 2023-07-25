@@ -26,6 +26,11 @@ buildscript {
     }
 }
 
+android {
+    namespace 'com.tokopedia.universal_sharing'
+    testNamespace 'com.tokopedia.universal_sharing.test'
+}
+
 kapt {
     correctErrorTypes = true
     useBuildCache = true
@@ -42,7 +47,6 @@ dependencies {
     } else {
         implementation projectOrAar(rootProject.ext.libraries.analyticsDebuggerNoop)
     }
-    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
     implementation rootProject.ext.networkDependencies.glide
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.linker)

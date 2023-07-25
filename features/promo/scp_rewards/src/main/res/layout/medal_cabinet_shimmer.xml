@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/bg_loader"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:loader_corner_radius="0dp"
+            app:loader_type="rect" />
+
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/text_loader_1"
+            android:layout_width="100dp"
+            android:layout_height="12dp"
+            android:layout_marginStart="14dp"
+            android:layout_marginTop="23dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/bg_loader"
+            app:loader_corner_radius="8dp"
+            app:loader_type="rect" />
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/medal_loader_1"
+            android:layout_width="84dp"
+            android:layout_height="84dp"
+            android:layout_marginStart="26dp"
+            android:layout_marginTop="20dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/text_loader_1"
+            app:loader_type="circle" />
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/medal_1_text_loader_1"
+            android:layout_width="94dp"
+            android:layout_height="9dp"
+            android:layout_marginTop="11dp"
+            app:layout_constraintEnd_toEndOf="@id/medal_loader_1"
+            app:layout_constraintStart_toStartOf="@+id/medal_loader_1"
+            app:layout_constraintTop_toBottomOf="@+id/medal_loader_1"
+            app:loader_corner_radius="8dp"
+            app:loader_type="rect" />
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/medal_1_text_loader_2"
+            android:layout_width="74dp"
+            android:layout_height="9dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintEnd_toEndOf="@id/medal_loader_1"
+            app:layout_constraintStart_toStartOf="@+id/medal_loader_1"
+            app:layout_constraintTop_toBottomOf="@+id/medal_1_text_loader_1"
+            app:loader_corner_radius="8dp"
+            app:loader_type="rect" />
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/medal_loader_2"
+            android:layout_width="84dp"
+            android:layout_height="84dp"
+            android:layout_marginStart="30dp"
+            android:layout_marginTop="20dp"
+            app:layout_constraintStart_toEndOf="@id/medal_loader_1"
+            app:layout_constraintTop_toBottomOf="@+id/text_loader_1"
+            app:loader_type="circle" />
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/medal_2_text_loader_1"
+            android:layout_width="94dp"
+            android:layout_height="9dp"
+            android:layout_marginTop="11dp"
+            app:layout_constraintStart_toStartOf="@id/medal_loader_2"
+            app:layout_constraintEnd_toEndOf="@id/medal_loader_2"
+            app:layout_constraintTop_toBottomOf="@+id/medal_loader_2"
+            app:loader_corner_radius="8dp"
+            app:loader_type="rect" />
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/medal_2_text_loader_2"
+            android:layout_width="74dp"
+            android:layout_height="9dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintStart_toStartOf="@id/medal_loader_2"
+            app:layout_constraintEnd_toEndOf="@id/medal_loader_2"
+            app:layout_constraintTop_toBottomOf="@+id/medal_2_text_loader_1"
+            app:loader_corner_radius="8dp"
+            app:loader_type="rect" />
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/medal_loader_3"
+            android:layout_width="84dp"
+            android:layout_height="84dp"
+            android:layout_marginStart="30dp"
+            android:layout_marginTop="20dp"
+            app:layout_constraintStart_toEndOf="@id/medal_loader_2"
+            app:layout_constraintTop_toBottomOf="@+id/text_loader_1"
+            app:loader_type="circle" />
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/medal_3_text_loader_1"
+            android:layout_width="94dp"
+            android:layout_height="9dp"
+            android:layout_marginTop="11dp"
+            app:layout_constraintStart_toStartOf="@id/medal_loader_3"
+            app:layout_constraintEnd_toEndOf="@id/medal_loader_3"
+            app:layout_constraintTop_toBottomOf="@+id/medal_loader_3"
+            app:loader_corner_radius="8dp"
+            app:loader_type="rect" />
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/medal_3_text_loader_2"
+            android:layout_width="74dp"
+            android:layout_height="9dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintStart_toStartOf="@id/medal_loader_3"
+            app:layout_constraintEnd_toEndOf="@id/medal_loader_3"
+            app:layout_constraintTop_toBottomOf="@+id/medal_3_text_loader_1"
+            app:loader_corner_radius="8dp"
+            app:loader_type="rect" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>
