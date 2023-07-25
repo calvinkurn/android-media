@@ -217,6 +217,7 @@ class TokoNowCategoryViewModel @Inject constructor(
     override fun createVisitableListWithEmptyProduct(
         violation: AceSearchProductModel.Violation
     ) {
+        super.createVisitableListWithEmptyProduct(violation)
         val categoryMenuIndex = minOf(visitableList.size, 2)
         val categoryMenuUIModel = TokoNowCategoryMenuUiModel(
             state = TokoNowLayoutState.LOADING
