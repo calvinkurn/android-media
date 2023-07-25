@@ -385,6 +385,9 @@ data class DataItem(
     @SerializedName("image")
     val image: String = "",
 
+    @SerializedName("lottie_image")
+    val lottieImage: String = "",
+
     @SerializedName("tracking_fields")
     val trackingFields: TrackingFields? = null,
 

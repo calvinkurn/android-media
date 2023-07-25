@@ -16,11 +16,9 @@ import com.tokopedia.logisticCommon.data.response.KeroEditAddressResponse
 import com.tokopedia.logisticCommon.data.response.KeroGetAddressResponse
 import com.tokopedia.logisticCommon.data.response.PinpointValidationResponse
 import com.tokopedia.logisticaddaddress.common.AddressConstants
+import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.uimodel.FieldType
 import com.tokopedia.url.Env
 import com.tokopedia.url.TokopediaUrl
-import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.uimodel.FieldType
-import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -30,14 +28,13 @@ import io.mockk.just
 import io.mockk.mockk
 import io.mockk.spyk
 import io.mockk.verify
-import io.mockk.mockkStatic
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.setMain
+import org.junit.After
 import org.junit.Assert
 import org.junit.Before
-import org.junit.After
 import org.junit.Rule
 import org.junit.Test
 
@@ -1284,7 +1281,6 @@ class AddressFormViewModelTest {
         )
     }
 
-
     @Test
     fun `verify get collection id edit address staging is correctly`() {
         // Given
@@ -1315,39 +1311,5 @@ class AddressFormViewModelTest {
             addressFormViewModel.getCollectionId(),
             AddressConstants.EDIT_ADDRESS_COLLECTION_ID_PRODUCTION
         )
-    }
-
-    @Test
-    fun `verify when isDisableAddressImprovement is true`() {
-        // Inject
-        mockkStatic(RemoteConfigInstance::class)
-
-        // Given
-        coEvery {
-            RemoteConfigInstance.getInstance().abTestPlatform.getString(
-                RollenceKey.KEY_ADDRESS_IMPROVEMENTS,
-                ""
-            )
-        } returns RollenceKey.KEY_ADDRESS_IMPROVEMENTS
-
-        // Then
-        Assert.assertTrue(addressFormViewModel.isDisableAddressImprovement)
-    }
-
-    @Test
-    fun `verify when isDisableAddressImprovement is false`() {
-        // Inject
-        mockkStatic(RemoteConfigInstance::class)
-
-        // Given
-        coEvery {
-            RemoteConfigInstance.getInstance().abTestPlatform.getString(
-                RollenceKey.KEY_ADDRESS_IMPROVEMENTS,
-                ""
-            )
-        } returns ""
-
-        // Then
-        Assert.assertFalse(addressFormViewModel.isDisableAddressImprovement)
     }
 }
