@@ -79,7 +79,7 @@ object ComparisonWidgetTracking : BaseTrackerConst() {
             shopType = it.shopType,
             quantity = if (it.quantity > DEFAULT_QUANTITY) it.quantity.toString() else DEFAULT_VALUE,
             cartId = it.cartId,
-            warehouseId = it.warehouseId
+            warehouseId = it.warehouseId.toString()
         )
     }
 }
