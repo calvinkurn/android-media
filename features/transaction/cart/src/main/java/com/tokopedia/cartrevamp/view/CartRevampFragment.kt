@@ -1,6 +1,7 @@
 package com.tokopedia.cartrevamp.view
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -8,13 +9,13 @@ import android.os.Handler
 import android.os.Looper
 import android.text.TextUtils
 import android.util.DisplayMetrics
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.CompoundButton
 import android.widget.ImageView
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.Keep
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
@@ -28,7 +29,6 @@ import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
 import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
-import com.google.gson.Gson
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
@@ -41,12 +41,14 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
+import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.atc_common.AtcConstant
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.cart.R
 import com.tokopedia.cart.databinding.FragmentCartRevampBinding
 import com.tokopedia.cart.view.CartActivity
 import com.tokopedia.cart.view.CartFragment
+import com.tokopedia.cart.view.ICartListPresenter
 import com.tokopedia.cartcommon.data.response.common.Button
 import com.tokopedia.cartcommon.data.response.common.OutOfService
 import com.tokopedia.cartrevamp.data.model.response.promo.LastApplyPromo
@@ -82,10 +84,12 @@ import com.tokopedia.cartrevamp.view.uimodel.CartShopGroupTickerState
 import com.tokopedia.cartrevamp.view.uimodel.CartState
 import com.tokopedia.cartrevamp.view.uimodel.CartTrackerEvent
 import com.tokopedia.cartrevamp.view.uimodel.CartWishlistItemHolderData
+import com.tokopedia.cartrevamp.view.uimodel.DeleteCartEvent
 import com.tokopedia.cartrevamp.view.uimodel.DisabledAccordionHolderData
 import com.tokopedia.cartrevamp.view.uimodel.LoadRecentReviewState
 import com.tokopedia.cartrevamp.view.uimodel.LoadRecommendationState
 import com.tokopedia.cartrevamp.view.uimodel.LoadWishlistV2State
+import com.tokopedia.cartrevamp.view.uimodel.UndoDeleteEvent
 import com.tokopedia.cartrevamp.view.uimodel.UpdateCartAndGetLastApplyState
 import com.tokopedia.cartrevamp.view.uimodel.UpdateCartCheckoutState
 import com.tokopedia.cartrevamp.view.uimodel.UpdateCartPromoState
@@ -114,8 +118,11 @@ import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnaly
 import com.tokopedia.purchase_platform.common.analytics.PromoRevampAnalytics
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceActionField
 import com.tokopedia.purchase_platform.common.base.BaseCheckoutFragment
+import com.tokopedia.purchase_platform.common.constant.ARGS_CLEAR_PROMO_RESULT
+import com.tokopedia.purchase_platform.common.constant.ARGS_LAST_VALIDATE_USE_REQUEST
 import com.tokopedia.purchase_platform.common.constant.ARGS_PAGE_SOURCE
 import com.tokopedia.purchase_platform.common.constant.ARGS_PROMO_REQUEST
+import com.tokopedia.purchase_platform.common.constant.ARGS_VALIDATE_USE_DATA_RESULT
 import com.tokopedia.purchase_platform.common.constant.ARGS_VALIDATE_USE_REQUEST
 import com.tokopedia.purchase_platform.common.constant.CartConstant
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
@@ -128,6 +135,7 @@ import com.tokopedia.purchase_platform.common.feature.promo.data.request.promoli
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.view.mapper.LastApplyUiMapper
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.clearpromo.ClearPromoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
@@ -404,19 +412,23 @@ class CartRevampFragment :
     }
 
     override fun onClickShopNow() {
-        TODO("Not yet implemented")
-    }
-
-    override fun getDefaultCartErrorMessage(): String {
-        TODO("Not yet implemented")
+        cartPageAnalytics.eventClickAtcCartClickBelanjaSekarangOnEmptyCart()
+        routeToHome()
     }
 
     override fun onCartGroupNameClicked(appLink: String) {
-        TODO("Not yet implemented")
+        routeToApplink(appLink)
     }
 
     override fun onCartShopNameClicked(shopId: String?, shopName: String?, isTokoNow: Boolean) {
-        TODO("Not yet implemented")
+        if (shopId != null && shopName != null) {
+            cartPageAnalytics.eventClickAtcCartClickShop(shopId, shopName)
+            if (isTokoNow) {
+                routeToTokoNowHomePage()
+            } else {
+                routeToShopPage(shopId)
+            }
+        }
     }
 
     override fun onShopItemCheckChanged(index: Int, checked: Boolean) {
@@ -979,7 +991,19 @@ class CartRevampFragment :
     }
 
     override fun onEditBundleClicked(cartItemHolderData: CartItemHolderData) {
-        TODO("Not yet implemented")
+        activity?.let {
+            cartPageAnalytics.eventClickUbahInProductBundlingPackageProductCard(
+                cartItemHolderData.bundleId,
+                cartItemHolderData.bundleType
+            )
+            val intent = RouteManager.getIntent(it, cartItemHolderData.editBundleApplink)
+            viewModel.cartModel.toBeDeletedBundleGroupId = cartItemHolderData.bundleGroupId
+            val editBundleActivityResult =
+                registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+                    onResultFromEditBundle(result.resultCode, result.data)
+                }
+            editBundleActivityResult.launch(intent)
+        }
     }
 
     override fun onTobaccoLiteUrlClicked(url: String, data: CartItemHolderData, action: Action) {
@@ -1012,7 +1036,10 @@ class CartRevampFragment :
     }
 
     override fun onVerificationClicked(applink: String) {
-        TODO("Not yet implemented")
+        activity?.also {
+            val intent = RouteManager.getIntentNoFallback(it, applink) ?: return
+            startActivityWithRefreshHandler(intent)
+        }
     }
 
     override fun onProductAddOnClicked(addOnId: CartItemHolderData) {
@@ -1645,6 +1672,8 @@ class CartRevampFragment :
 
         observeCheckoutButton()
 
+        observeDeleteCartEvent()
+
         observeGlobalEvent()
 
         observeRecentView()
@@ -1654,6 +1683,8 @@ class CartRevampFragment :
         observeSelectedAmount()
 
         observeUpdateCartEvent()
+
+        observeUndoDeleteEvent()
 
         observeUpdateCartAndGetLastApply()
 
@@ -1694,6 +1725,10 @@ class CartRevampFragment :
         }
         if (params.orders.isNotEmpty() && allPromoApplied.isNotEmpty()) isPromoApplied = true
         return isPromoApplied
+    }
+
+    private fun isTestingFlow(): Boolean {
+        return arguments?.getBoolean(CartConstant.IS_TESTING_FLOW, false) ?: false
     }
 
     private fun loadRecommendation() {
@@ -1788,7 +1823,6 @@ class CartRevampFragment :
 
     private fun observeCartDataList() {
         viewModel.cartDataList.observe(viewLifecycleOwner) { data ->
-            Log.d("<RESULT>", "observeCartDataList: ${Gson().toJson(data)}")
             cartAdapter.updateList(data)
         }
     }
@@ -1838,6 +1872,44 @@ class CartRevampFragment :
             when (state) {
                 CartCheckoutButtonState.ENABLE -> onCartDataEnableToCheckout()
                 else -> onCartDataDisableToCheckout()
+            }
+        }
+    }
+
+    private fun observeDeleteCartEvent() {
+        viewModel.deleteCartEvent.observe(viewLifecycleOwner) { event ->
+            event?.let {
+                when (event) {
+                    is DeleteCartEvent.Success -> {
+                        event.apply {
+                            renderLoadGetCartDataFinish()
+                            onDeleteCartDataSuccess(
+                                toBeDeletedCartIds,
+                                removeAllItems,
+                                forceExpandCollapsedUnavailableItems,
+                                addWishList,
+                                isFromGlobalCheckbox,
+                                isFromEditBundle
+                            )
+
+                            val params = generateParamGetLastApplyPromo()
+                            if (!removeAllItems && (isNeedHitUpdateCartAndValidateUse(params))) {
+                                renderPromoCheckoutLoading()
+                                viewModel.doUpdateCartAndGetLastApply(params)
+                            }
+                            viewModel.processUpdateCartCounter()
+                        }
+                    }
+                    is DeleteCartEvent.Failed -> {
+                        event.apply {
+                            if (forceExpandCollapsedUnavailableItems) {
+                                collapseOrExpandDisabledItem()
+                            }
+                            hideProgressLoading()
+                            showToastMessageRed(throwable)
+                        }
+                    }
+                }
             }
         }
     }
@@ -2022,6 +2094,23 @@ class CartRevampFragment :
         }
     }
 
+    private fun observeUndoDeleteEvent() {
+        viewModel.undoDeleteEvent.observe(viewLifecycleOwner) {
+            it?.let { event ->
+                when (event) {
+                    UndoDeleteEvent.Success -> {
+                        hideProgressLoading()
+                        onUndoDeleteCartDataSuccess()
+                    }
+                    is UndoDeleteEvent.Failed -> {
+                        hideProgressLoading()
+                        showToastMessageRed(event.throwable)
+                    }
+                }
+            }
+        }
+    }
+
     private fun observeUpdateCartAndGetLastApply() {
         viewModel.updateCartAndGetLastApplyState.observe(viewLifecycleOwner) { data ->
             when (data) {
@@ -2125,6 +2214,64 @@ class CartRevampFragment :
         showBottomSheetSummaryTransaction()
     }
 
+    private fun onDeleteCartDataSuccess(
+        deletedCartIds: List<String>,
+        removeAllItems: Boolean,
+        forceExpandCollapsedUnavailableItems: Boolean,
+        isMoveToWishlist: Boolean,
+        isFromGlobalCheckbox: Boolean,
+        isFromEditBundle: Boolean
+    ) {
+        var message =
+            String.format(getString(R.string.message_product_already_deleted), deletedCartIds.size)
+
+        if (isMoveToWishlist) {
+            message = String.format(
+                getString(R.string.message_product_already_moved_to_wishlist),
+                deletedCartIds.size
+            )
+            refreshWishlistAfterItemRemoveAndMoveToWishlist()
+        } else if (isFromEditBundle) {
+            message = getString(R.string.message_toaster_cart_change_bundle_success)
+        }
+
+        if (isFromGlobalCheckbox || isFromEditBundle) {
+            showToastMessageGreen(message)
+        } else {
+            showToastMessageGreen(
+                message,
+                getString(R.string.toaster_cta_cancel)
+            ) { onUndoDeleteClicked(deletedCartIds) }
+        }
+
+        val needRefresh = removeAllItems || isFromEditBundle
+        val updateListResult =
+            viewModel.removeProductByCartId(deletedCartIds, needRefresh, isFromGlobalCheckbox)
+        removeLocalCartItem(updateListResult, forceExpandCollapsedUnavailableItems)
+
+        hideProgressLoading()
+
+        setTopLayoutVisibility()
+
+        when {
+            removeAllItems -> {
+                refreshCartWithSwipeToRefresh()
+            }
+
+            isFromEditBundle -> {
+                refreshCartWithProgressDialog(ICartListPresenter.GET_CART_STATE_DEFAULT)
+            }
+
+            else -> {
+                setLastItemAlwaysSelected()
+            }
+        }
+    }
+
+    private fun onUndoDeleteCartDataSuccess() {
+        viewModel.processInitialGetCartData(getCartId(), false, false)
+    }
+
     private fun onNavigationToolbarNavGlobalClicked() {
         cartPageAnalytics.eventClickTopNavMenuNavToolbar(userSession.userId)
     }
@@ -2177,6 +2324,105 @@ class CartRevampFragment :
         routeToProductDetailPage(productId)
     }
 
+    private fun onResultFromEditBundle(resultCode: Int, data: Intent?) {
+        if (resultCode == Activity.RESULT_OK) {
+            val oldBundleId = data?.getStringExtra(CartFragment.KEY_OLD_BUNDLE_ID) ?: ""
+            val newBundleId = data?.getStringExtra(CartFragment.KEY_NEW_BUNLDE_ID) ?: ""
+            val isChangeVariant = data?.getBooleanExtra(CartFragment.KEY_IS_CHANGE_VARIANT, false) ?: false
+            val toBeDeletedBundleGroupId = viewModel.cartModel.toBeDeletedBundleGroupId
+            if (((oldBundleId.isNotBlank() && newBundleId.isNotBlank() && oldBundleId != newBundleId) || isChangeVariant) && toBeDeletedBundleGroupId.isNotEmpty()) {
+                val cartItems =
+                    cartAdapter.getCartItemByBundleGroupId(oldBundleId, toBeDeletedBundleGroupId)
+                viewModel.cartModel.toBeDeletedBundleGroupId = ""
+                if (cartItems.isNotEmpty()) {
+                    val allCartItemDataList = viewModel.getAllCartItemData()
+                    viewModel.processDeleteCartItem(
+                        allCartItemData = allCartItemDataList,
+                        removedCartItems = cartItems,
+                        addWishList = false,
+                        forceExpandCollapsedUnavailableItems = false,
+                        isFromGlobalCheckbox = true,
+                        isFromEditBundle = true
+                    )
+                }
+            } else {
+                refreshCartWithSwipeToRefresh()
+            }
+        }
+    }
+
+    private fun onResultFromPdp() {
+        if (!isTestingFlow()) {
+            refreshCartWithSwipeToRefresh()
+        }
+    }
+
+    private fun onResultFromPromoPage(resultCode: Int, data: Intent?) {
+        if (resultCode == Activity.RESULT_OK) {
+            data?.getParcelableExtra<ValidateUsePromoRequest>(ARGS_LAST_VALIDATE_USE_REQUEST)?.let {
+                viewModel.cartModel.lastValidateUseRequest = it
+            }
+
+            val validateUseUiModel = data?.getParcelableExtra<ValidateUsePromoRevampUiModel>(
+                ARGS_VALIDATE_USE_DATA_RESULT
+            )
+            if (validateUseUiModel != null) {
+                viewModel.validateBoPromo(validateUseUiModel)
+                viewModel.cartModel.apply {
+                    lastValidateUseResponse = validateUseUiModel
+                    lastUpdateCartAndGetLastApplyResponse = null
+                    isLastApplyResponseStillValid = false
+                }
+                updatePromoCheckoutStickyButton(validateUseUiModel.promoUiModel)
+            }
+
+            val clearPromoUiModel =
+                data?.getParcelableExtra<ClearPromoUiModel>(ARGS_CLEAR_PROMO_RESULT)
+            if (clearPromoUiModel != null) {
+                if (validateUseUiModel == null) {
+                    viewModel.cartModel.apply {
+                        isLastApplyResponseStillValid = false
+                        lastValidateUseResponse = null
+                        lastUpdateCartAndGetLastApplyResponse = null
+                    }
+                }
+                updatePromoCheckoutStickyButton(PromoUiModel(titleDescription = clearPromoUiModel.successDataModel.defaultEmptyPromoMessage))
+            }
+        }
+    }
+
+    private fun onResultFromShipmentPage(resultCode: Int, data: Intent?) {
+        FLAG_BEGIN_SHIPMENT_PROCESS = false
+        FLAG_SHOULD_CLEAR_RECYCLERVIEW = false
+
+        when (resultCode) {
+            CheckoutConstant.RESULT_CHECKOUT_CACHE_EXPIRED -> {
+                val message =
+                    data?.getStringExtra(CheckoutConstant.EXTRA_CACHE_EXPIRED_ERROR_MESSAGE)
+                showToastMessageRed(message ?: "")
+            }
+
+            else -> {
+                refreshCartWithProgressDialog(CartViewModel.GET_CART_STATE_DEFAULT)
+            }
+        }
+    }
+
+    private fun onUndoDeleteClicked(cartIds: List<String>) {
+        cartPageAnalytics.eventClickUndoAfterDeleteProduct(userSession.userId)
+        viewModel.processUndoDeleteCartItem(cartIds)
+    }
+
+    private fun refreshCartWithProgressDialog(getCartState: Int) {
+        resetRecentViewList()
+        if (viewModel.dataHasChanged()) {
+            showMainContainer()
+            viewModel.processToUpdateAndReloadCartData(getCartId(), getCartState)
+        } else {
+            viewModel.processInitialGetCartData(getCartId(), false, false, getCartState)
+        }
+    }
+
     private fun refreshCartWithSwipeToRefresh() {
         refreshHandler?.isRefreshing = true
         resetRecentViewList()
@@ -2199,6 +2445,10 @@ class CartRevampFragment :
         refreshHandler?.isRefreshing = true
         viewModel.resetData()
         viewModel.processInitialGetCartData(getCartId(), true, false)
+    }
+
+    private fun refreshWishlistAfterItemRemoveAndMoveToWishlist() {
+        viewModel.processGetWishlistV2Data()
     }
 
     private fun reloadAppliedPromoFromGlobalCheck() {
@@ -2878,7 +3128,11 @@ class CartRevampFragment :
                 CheckoutConstant.EXTRA_CHECKOUT_PAGE_SOURCE,
                 CheckoutConstant.CHECKOUT_PAGE_SOURCE_CART
             )
-            startActivityForResult(intent, NAVIGATION_SHIPMENT)
+            val shipmentActivityResult =
+                registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+                    onResultFromShipmentPage(result.resultCode, result.data)
+                }
+            shipmentActivityResult.launch(intent)
         }
     }
 
@@ -2897,7 +3151,11 @@ class CartRevampFragment :
                 ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
                 productId
             )
-            startActivityForResult(intent, NAVIGATION_PDP)
+            val pdpActivityResult =
+                registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+                    onResultFromPdp()
+                }
+            pdpActivityResult.launch(intent)
         }
     }
 
@@ -2911,14 +3169,32 @@ class CartRevampFragment :
             intent.putExtra(ARGS_PROMO_REQUEST, promoRequest)
             intent.putExtra(ARGS_VALIDATE_USE_REQUEST, validateUseRequest)
 
-            startActivityForResult(intent, NAVIGATION_PROMO)
+            val promoActivityResult =
+                registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+                    onResultFromPromoPage(result.resultCode, result.data)
+                }
+            promoActivityResult.launch(intent)
+        }
+    }
+
+    private fun routeToShopPage(shopId: String?) {
+        activity?.let {
+            val intent = RouteManager.getIntent(it, ApplinkConst.SHOP, shopId)
+            startActivityWithRefreshHandler(intent)
+        }
+    }
+
+    private fun routeToTokoNowHomePage() {
+        activity?.let {
+            val intent = RouteManager.getIntent(it, ApplinkConstInternalTokopediaNow.HOME)
+            startActivityWithRefreshHandler(intent)
         }
     }
 
     private fun routeToWishlist() {
         activity?.let {
             val intent = RouteManager.getIntent(it, ApplinkConst.NEW_WISHLIST)
-            startActivityForResult(intent, NAVIGATION_WISHLIST)
+            startActivityWithRefreshHandler(intent)
         }
     }
 
@@ -3080,6 +3356,13 @@ class CartRevampFragment :
 
     private fun setHasTriedToLoadRecommendation() {
         hasTriedToLoadRecommendation = true
+    }
+
+    private fun setLastItemAlwaysSelected() {
+        val tmpIsLastItem = viewModel.setLastItemAlwaysSelected()
+        if (tmpIsLastItem) {
+            binding?.checkboxGlobal?.isChecked = true
+        }
     }
 
     private fun setSelectedAmountVisibility() {
@@ -3365,6 +3648,14 @@ class CartRevampFragment :
             cartAllPerformanceMonitoring?.stopTrace()
             isTraceCartAllStopped = true
         }
+    }
+
+    private fun startActivityWithRefreshHandler(intent: Intent) {
+        val activityResultLauncher =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+                refreshCartWithSwipeToRefresh()
+            }
+        activityResultLauncher.launch(intent)
     }
 
     private fun triggerSendEnhancedEcommerceAddToCartSuccess(

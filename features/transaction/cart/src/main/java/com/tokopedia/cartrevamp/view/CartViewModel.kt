@@ -60,6 +60,7 @@ import com.tokopedia.cartrevamp.view.uimodel.CartTopAdsHeadlineData
 import com.tokopedia.cartrevamp.view.uimodel.CartTrackerEvent
 import com.tokopedia.cartrevamp.view.uimodel.CartWishlistHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartWishlistItemHolderData
+import com.tokopedia.cartrevamp.view.uimodel.DeleteCartEvent
 import com.tokopedia.cartrevamp.view.uimodel.DisabledAccordionHolderData
 import com.tokopedia.cartrevamp.view.uimodel.DisabledCollapsedHolderData
 import com.tokopedia.cartrevamp.view.uimodel.DisabledItemHeaderHolderData
@@ -68,6 +69,7 @@ import com.tokopedia.cartrevamp.view.uimodel.LoadRecentReviewState
 import com.tokopedia.cartrevamp.view.uimodel.LoadRecommendationState
 import com.tokopedia.cartrevamp.view.uimodel.LoadWishlistV2State
 import com.tokopedia.cartrevamp.view.uimodel.PromoSummaryDetailData
+import com.tokopedia.cartrevamp.view.uimodel.UndoDeleteEvent
 import com.tokopedia.cartrevamp.view.uimodel.UpdateCartAndGetLastApplyState
 import com.tokopedia.cartrevamp.view.uimodel.UpdateCartCheckoutState
 import com.tokopedia.cartrevamp.view.uimodel.UpdateCartPromoState
@@ -187,6 +189,8 @@ class CartViewModel @Inject constructor(
     val addToCartEvent: CartMutableLiveData<AddToCartEvent?> = CartMutableLiveData(null)
     val addCartToWishlistEvent: CartMutableLiveData<AddCartToWishlistEvent?> =
         CartMutableLiveData(null)
+    val deleteCartEvent: CartMutableLiveData<DeleteCartEvent?> = CartMutableLiveData(null)
+    val undoDeleteEvent: CartMutableLiveData<UndoDeleteEvent?> = CartMutableLiveData(null)
 
     private var cartShopGroupTickerJob: Job? = null
 
@@ -2816,6 +2820,118 @@ class CartViewModel @Inject constructor(
             .any { it.isSelected && it.isBundlingItem && it.bundleIds.isNotEmpty() }
         return cartGroupHolderData.cartShopGroupTicker.enableCartAggregator &&
             hasCheckedProductWithBundle && !hasCheckedBundleProduct
+    }
+
+    fun validateBoPromo(validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel) {
+        val groupDataList = getAllShopGroupDataList()
+        val boGroupUniqueIds = mutableSetOf<String>()
+        for (voucherOrderUiModel in validateUsePromoRevampUiModel.promoUiModel.voucherOrderUiModels) {
+            if (voucherOrderUiModel.shippingId > 0 && voucherOrderUiModel.spId > 0 && voucherOrderUiModel.type == "logistic") {
+                if (voucherOrderUiModel.messageUiModel.state == "green") {
+                    groupDataList.firstOrNull { it.cartString == voucherOrderUiModel.cartStringGroup }?.apply {
+                        boCode = voucherOrderUiModel.code
+                    }
+                    boGroupUniqueIds.add(voucherOrderUiModel.cartStringGroup)
+                }
+            }
+        }
+        for (group in groupDataList) {
+            if (group.boCode.isNotEmpty() && !boGroupUniqueIds.contains(group.cartString)) {
+                clearBo(group)
+            }
+        }
+    }
+
+    private fun clearBo(group: CartGroupHolderData) {
+        launch {
+            try {
+                val cartStringGroupSet = mutableSetOf<String>()
+                val cartPromoHolderData = PromoRequestMapper.mapSelectedCartGroupToPromoData(listOf(group))
+                clearCacheAutoApplyStackUseCase.setParams(
+                    ClearPromoRequest(
+                        serviceId = ClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE,
+                        orderData = ClearPromoOrderData(
+                            orders = cartPromoHolderData.values.map {
+                                val isNoCodeExistInCurrentGroup = !cartStringGroupSet.contains(it.cartStringGroup)
+                                if (isNoCodeExistInCurrentGroup) {
+                                    cartStringGroupSet.add(it.cartStringGroup)
+                                }
+                                ClearPromoOrder(
+                                    uniqueId = it.cartStringOrder,
+                                    boType = group.boMetadata.boType,
+                                    codes = if (isNoCodeExistInCurrentGroup) {
+                                        mutableListOf(group.boCode)
+                                    } else {
+                                        mutableListOf()
+                                    },
+                                    shopId = it.shopId.toLongOrZero(),
+                                    isPo = group.isPo,
+                                    poDuration = it.poDuration,
+                                    warehouseId = group.warehouseId,
+                                    cartStringGroup = group.cartString
+                                )
+                            }
+                        )
+                    )
+                ).executeOnBackground()
+            } catch (t: Throwable) {
+                Timber.d(t)
+            }
+        }
+
+        group.promoCodes = ArrayList(group.promoCodes).apply { remove(group.boCode) }
+        group.boCode = ""
+    }
+
+    fun processDeleteCartItem(
+        allCartItemData: List<CartItemHolderData>,
+        removedCartItems: List<CartItemHolderData>,
+        addWishList: Boolean,
+        forceExpandCollapsedUnavailableItems: Boolean,
+        isFromGlobalCheckbox: Boolean,
+        isFromEditBundle: Boolean
+    ) {
+        globalEvent.value = CartGlobalEvent.ProgressLoading(true)
+
+        val removeAllItems = allCartItemData.size == removedCartItems.size
+        val toBeDeletedCartIds = ArrayList<String>()
+        for (cartItemData in removedCartItems) {
+            toBeDeletedCartIds.add(cartItemData.cartId)
+        }
+
+        deleteCartUseCase.setParams(toBeDeletedCartIds, addWishList)
+        deleteCartUseCase.execute(
+            onSuccess = {
+                deleteCartEvent.value = DeleteCartEvent.Success(
+                    toBeDeletedCartIds,
+                    removeAllItems,
+                    forceExpandCollapsedUnavailableItems,
+                    addWishList,
+                    isFromGlobalCheckbox,
+                    isFromEditBundle
+                )
+            },
+            onError = { throwable ->
+                deleteCartEvent.value = DeleteCartEvent.Failed(
+                    forceExpandCollapsedUnavailableItems,
+                    throwable
+                )
+            }
+        )
+    }
+
+    fun processUndoDeleteCartItem(cartIds: List<String>) {
+        globalEvent.value = CartGlobalEvent.ProgressLoading(true)
+        undoDeleteCartUseCase.setParams(cartIds)
+        undoDeleteCartUseCase.execute(
+            onSuccess = {
+                undoDeleteEvent.value = UndoDeleteEvent.Success
+            },
+            onError = { throwable ->
+                Timber.e(throwable)
+                undoDeleteEvent.value = UndoDeleteEvent.Failed(throwable)
+            }
+        )
     }
 
     override fun onCleared() {

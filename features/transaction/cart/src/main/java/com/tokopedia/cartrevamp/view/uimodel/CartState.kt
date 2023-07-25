@@ -65,6 +65,28 @@ sealed interface CartTrackerEvent {
     data class ATCTrackingURLBanner(val bannerShop: BannerShopProductUiModel) : CartTrackerEvent
 }
 
+sealed interface DeleteCartEvent {
+    data class Success(
+        val toBeDeletedCartIds: ArrayList<String>,
+        val removeAllItems: Boolean,
+        val forceExpandCollapsedUnavailableItems: Boolean,
+        val addWishList: Boolean,
+        val isFromGlobalCheckbox: Boolean,
+        val isFromEditBundle: Boolean
+    ) : DeleteCartEvent
+
+    data class Failed(
+        val forceExpandCollapsedUnavailableItems: Boolean,
+        val throwable: Throwable
+    ) : DeleteCartEvent
+}
+
+sealed interface UndoDeleteEvent {
+    object Success : UndoDeleteEvent
+
+    data class Failed(val throwable: Throwable) : UndoDeleteEvent
+}
+
 sealed class UpdateCartCheckoutState {
     object None : UpdateCartCheckoutState()
     data class Success(
@@ -98,34 +120,34 @@ sealed interface AddCartToWishlistEvent {
     data class Failed(val throwable: Throwable) : AddCartToWishlistEvent
 }
 
-sealed class LoadWishlistV2State {
+sealed interface LoadWishlistV2State {
     data class Success(
         val wishlists: List<GetWishlistV2Response.Data.WishlistV2.Item>,
         val forceReload: Boolean
-    ) : LoadWishlistV2State()
+    ) : LoadWishlistV2State
 
-    object Failed : LoadWishlistV2State()
+    object Failed : LoadWishlistV2State
 }
 
-sealed class LoadRecommendationState {
+sealed interface LoadRecommendationState {
     data class Success(val recommendationWidgets: List<RecommendationWidget>) :
-        LoadRecommendationState()
+        LoadRecommendationState
 
-    object Failed : LoadRecommendationState()
+    object Failed : LoadRecommendationState
 }
 
-sealed class LoadRecentReviewState {
+sealed interface LoadRecentReviewState {
     data class Success(val recommendationWidgets: List<RecommendationWidget>) :
-        LoadRecentReviewState()
+        LoadRecentReviewState
 
-    data class Failed(val throwable: Throwable) : LoadRecentReviewState()
+    data class Failed(val throwable: Throwable) : LoadRecentReviewState
 }
 
-sealed class UpdateCartPromoState {
-    object None : UpdateCartPromoState()
-    object Success : UpdateCartPromoState()
+sealed interface UpdateCartPromoState {
+    object None : UpdateCartPromoState
+    object Success : UpdateCartPromoState
 
-    data class Failed(val throwable: Throwable) : UpdateCartPromoState()
+    data class Failed(val throwable: Throwable) : UpdateCartPromoState
 }
 
 @Suppress("UNCHECKED_CAST")

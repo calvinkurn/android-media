@@ -30,6 +30,7 @@ data class CartModel(
     var cartLoadingHolderData: CartLoadingHolderData? = null,
     var shipmentSellerCashbackModel: ShipmentSellerCashbackModel? = null,
     var lastCartShopGroupTickerCartString: String = "",
+    var toBeDeletedBundleGroupId: String = "",
 
     // adapter
     var tmpCollapsedUnavailableShop: DisabledCollapsedHolderData? = null,
