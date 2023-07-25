@@ -18,12 +18,17 @@ buildscript {
     }
 }
 
+android {
+    namespace 'com.tokopedia.createpost.common'
+    testNamespace 'com.tokopedia.createpost.common.test'
+}
+
 dependencies {
     implementation projectOrAar(rootProject.ext.features.affiliateCommon)
     implementation projectOrAar(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.features.mediauploader)
 
-    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
+    implementation projectOrAar(rootProject.ext.libraries.utils)
     implementation projectOrAar(rootProject.ext.libraries.usersession)
     implementation projectOrAar(rootProject.ext.libraries.track)
     implementation projectOrAar(rootProject.ext.libraries.analytics)

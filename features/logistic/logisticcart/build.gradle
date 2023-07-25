@@ -9,6 +9,8 @@ kapt {
 }
 
 android {
+    namespace 'com.tokopedia.logisticcart'
+    testNamespace 'com.tokopedia.logisticcart.test'
     buildFeatures {
         viewBinding true
     }
@@ -31,7 +33,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.baseList)
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.utils)
-    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
 
     implementation projectOrAar(rootProject.ext.features.logisticCommon)
     implementation projectOrAar(rootProject.ext.features.promoCheckoutCommon)

@@ -13,6 +13,11 @@ buildscript {
     }
 }
 
+android {
+    namespace 'com.tokopedia.fakeresponse'
+    testNamespace 'com.tokopedia.fakeresponse.test'
+}
+
 dependencies {
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])

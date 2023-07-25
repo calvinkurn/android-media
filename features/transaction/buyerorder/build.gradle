@@ -17,6 +17,8 @@ buildscript {
 }
 
 android {
+    namespace 'com.tokopedia.buyerorder'
+    testNamespace 'com.tokopedia.buyerorder.test'
     packagingOptions {
         exclude 'META-INF/**'
     }
@@ -56,7 +58,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.coreNetwork)
     implementation projectOrAar(rootProject.ext.libraries.utils)
     implementation projectOrAar(rootProject.ext.libraries.commonNetwork)
-    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
     implementation projectOrAar(rootProject.ext.libraries.webview)
     implementation projectOrAar(rootProject.ext.features.productCard)
     implementation projectOrAar(rootProject.ext.features.atc_common)
@@ -106,6 +107,7 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk8
     testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
+    testImplementation projectOrAar(rootProject.ext.features.homeComponentHeader)
 
     // ui test
     androidTestImplementation rootProject.ext.testDependencies.espressoCore

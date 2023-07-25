@@ -60,6 +60,22 @@ class OnboardProgressiveViewModelTest {
     }
 
     @Test
+    fun `when register progressive then return exhausted`() {
+        val projectId = "7"
+        val cooldownTimeInSeconds = "3600"
+        val maximumAttemptsAllowed = "3"
+        val expected = RegisterProgressiveResult.Exhausted(cooldownTimeInSeconds, maximumAttemptsAllowed)
+
+        coEvery { registerProgressiveUseCase(any()) } returns expected
+        viewModel.registerProgressive(projectId)
+
+        val result = viewModel.registerProgressive.getOrAwaitValue()
+        assertTrue(result is RegisterProgressiveResult.Exhausted)
+        assertEquals(cooldownTimeInSeconds, result.cooldownTimeInSeconds)
+        assertEquals(maximumAttemptsAllowed, result.maximumAttemptsAllowed)
+    }
+
+    @Test
     fun `when register progressive then failed`() {
         val throwable = Throwable()
         val projectId = "7"

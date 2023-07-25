@@ -45,7 +45,7 @@ ext {
     runnerVersion = "1.4.0"
     rulesVersion = "1.4.0"
     apolloVersion = '0.3.0'
-    lottieVersion = '3.4.1'
+    lottieVersion = '6.0.0'
     cardioVersion = '5.5.1'
     roomVersion = '2.4.3'
     sqliteFrameworkVersion = '2.1.0'
@@ -133,9 +133,9 @@ ext {
 
     unifyIconVersion = '0.0.4'
     unifyIconsVersion = '1.0.30'
-    unifyPrinciplesVersion = '1.4.6'
-    unifyComponentsVersion = '1.2.35'
-    unifyCoachMarkVersion = '1.2.22'
+    unifyPrinciplesVersion = '1.4.12'
+    unifyComponentsVersion = '1.2.31-rc02'
+    unifyCoachMarkVersion = '1.2.23'
     unifyCalendarVersion = '1.2.3'
     unifyBannerVersion = '1.0.6.2'
     unifyDialogVersion = '1.0.14.2'

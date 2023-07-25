@@ -14,6 +14,8 @@ buildscript {
     }
 }
 android {
+    namespace 'com.tokopedia.analyticsdebugger'
+    testNamespace 'com.tokopedia.analyticsdebugger.test'
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_11
     }
@@ -26,7 +28,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.tkpddesign)
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.baseList)
-    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
     implementation projectOrAar(rootProject.ext.libraries.graphql)
     implementation projectOrAar(rootProject.ext.libraries.keys)
     implementation projectOrAar(rootProject.ext.libraries.utils)

@@ -2,7 +2,7 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:bottom="@dimen/layout_lvl2">
         <shape android:shape="rectangle">
-            <solid android:color="@color/Unify_N0"/>
+            <solid android:color="@color/Unify_NN0"/>
             <size android:height="@dimen/hotel_28dp"/>
             <padding android:left="@dimen/layout_lvl1" android:right="@dimen/layout_lvl1" android:top="@dimen/spacing_lvl2" android:bottom="@dimen/spacing_lvl2"/>
             <corners android:radius="@dimen/layout_lvl5"/>
@@ -11,7 +11,7 @@
     <item android:gravity="center_horizontal|bottom">
         <rotate android:fromDegrees="45" android:toDegrees="45" android:pivotX="135%" android:pivotY="15%">
             <shape android:shape="rectangle">
-                <solid android:color="@color/Unify_N0"/>
+                <solid android:color="@color/Unify_NN0"/>
                 <size android:height="@dimen/hotel_10dp" android:width="@dimen/hotel_10dp"/>
                 <corners android:radius="@dimen/hotel_1dp"/>
             </shape>

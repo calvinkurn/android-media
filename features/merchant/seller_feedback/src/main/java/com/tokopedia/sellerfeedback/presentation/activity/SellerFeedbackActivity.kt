@@ -19,7 +19,7 @@ class SellerFeedbackActivity : BaseSimpleActivity() {
         super.onCreate(savedInstanceState)
         val colorId = ContextCompat.getColor(
             this@SellerFeedbackActivity,
-            com.tokopedia.unifyprinciples.R.color.Unify_N400
+            com.tokopedia.unifyprinciples.R.color.Unify_NN600
         )
 
         setupToolbar(colorId)

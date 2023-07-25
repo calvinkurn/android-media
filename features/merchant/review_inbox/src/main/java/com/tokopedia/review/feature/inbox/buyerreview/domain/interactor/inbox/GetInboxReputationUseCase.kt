@@ -33,7 +33,7 @@ open class GetInboxReputationUseCase @Inject constructor(
 
         private const val ROLE_BUYER: Int = 1
         private const val ROLE_SELLER: Int = 2
-        const val DEFAULT_TIME_FILTER: Int = 1
+        const val DEFAULT_TIME_FILTER: Int = 4 // Last 3 months
         private const val PARAM_KEYWORD: String = "keyword"
 
         private const val QUERY_NAME = "GetInboxReputationList"

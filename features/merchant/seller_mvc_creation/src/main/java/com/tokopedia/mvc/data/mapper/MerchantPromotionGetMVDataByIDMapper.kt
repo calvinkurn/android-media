@@ -2,8 +2,14 @@ package com.tokopedia.mvc.data.mapper
 
 import com.tokopedia.mvc.data.response.MerchantPromotionGetMVDataByIDResponse
 import com.tokopedia.mvc.domain.entity.VoucherDetailData
+import com.tokopedia.mvc.domain.entity.VoucherDetailData.SubsidyDetail.ProgramDetail
+import com.tokopedia.mvc.domain.entity.VoucherDetailData.SubsidyDetail.QuotaSubsidized
 import com.tokopedia.mvc.domain.entity.enums.BenefitType
+import com.tokopedia.mvc.domain.entity.enums.ProgramStatus
 import com.tokopedia.mvc.domain.entity.enums.PromoType
+import com.tokopedia.mvc.domain.entity.enums.PromotionStatus
+import com.tokopedia.mvc.domain.entity.enums.SubsidyInfo
+import com.tokopedia.mvc.domain.entity.enums.VoucherCreator
 import com.tokopedia.mvc.domain.entity.enums.VoucherStatus
 import com.tokopedia.mvc.domain.entity.enums.VoucherTargetBuyer
 import com.tokopedia.mvc.util.constant.DiscountTypeConstant
@@ -74,7 +80,10 @@ class MerchantPromotionGetMVDataByIDMapper @Inject constructor() {
                 totalPeriod = totalPeriod.coerceAtLeast(MIN_VALUE_TOTAL_PERIOD),
                 voucherLockType = voucherLockType,
                 voucherLockId = voucherLockId,
-                productIds = toProductIds()
+                productIds = toProductIds(),
+                labelVoucher = toLabelVoucher(),
+                isEditable = isEditable,
+                subsidyDetail = toSubsidyDetail()
             )
             voucherDetailData
         }
@@ -87,6 +96,54 @@ class MerchantPromotionGetMVDataByIDMapper @Inject constructor() {
                 it.chilProductId
             )
         }
+    }
+
+    private fun MerchantPromotionGetMVDataByIDResponse.MerchantPromotionGetMVDataByID.Data.toLabelVoucher(): VoucherDetailData.LabelVoucher {
+        return VoucherDetailData.LabelVoucher(
+            labelQuota = labelVoucher.labelQuota,
+            labelQuotaFormatted = labelVoucher.labelQuotaFormatted,
+            labelQuotaColorType = labelVoucher.labelQuotaColorType,
+            labelCreator = VoucherCreator.values().firstOrNull { value ->
+                value.id == labelVoucher.labelCreator
+            } ?: VoucherCreator.SELLER,
+            labelCreatorFormatted = labelVoucher.labelCreatorFormatted,
+            labelCreatorColorType = labelVoucher.labelCreatorColorType,
+            labelSubsidyInfo = SubsidyInfo.values().firstOrNull { value ->
+                value.id == labelVoucher.labelSubsidyInfo
+            } ?: SubsidyInfo.NOT_SUBSIDIZED,
+            labelSubsidyInfoFormatted = labelVoucher.labelSubsidyInfoFormatted,
+            labelSubsidyInfoColorType = labelVoucher.labelSubsidyInfoColorType,
+            labelBudgetsVoucher = labelVoucher.labelBudgetsVoucher.map {
+                VoucherDetailData.LabelVoucher.LabelBudgetVoucher(
+                    labelBudgetVoucherFormatted = it.labelBudgetVoucherFormatted,
+                    labelBudgetVoucher = it.labelBudgetVoucher,
+                    labelBudgetVoucherValue = it.labelBudgetVoucherValue
+                )
+            }
+        )
+    }
+
+    private fun MerchantPromotionGetMVDataByIDResponse.MerchantPromotionGetMVDataByID.Data.toSubsidyDetail(): VoucherDetailData.SubsidyDetail {
+        return VoucherDetailData.SubsidyDetail(
+            programDetail = ProgramDetail(
+                programName = subsidyDetail.programDetail.programName,
+                programStatus = ProgramStatus.values().firstOrNull { value ->
+                    value.id == subsidyDetail.programDetail.programStatus
+                } ?: ProgramStatus.ONGOING,
+                programLabel = subsidyDetail.programDetail.programLabel,
+                programLabelDetail = subsidyDetail.programDetail.programLabelDetail,
+                promotionStatus = PromotionStatus.values().firstOrNull { value ->
+                    value.id == subsidyDetail.programDetail.promotionStatus
+                } ?: PromotionStatus.REJECTED,
+                promotionLabel = subsidyDetail.programDetail.promotionLabel
+            ),
+            quotaSubsidized = QuotaSubsidized(
+                voucherQuota = subsidyDetail.quotaSubsidized.voucherQuota,
+                remainingQuota = subsidyDetail.quotaSubsidized.remainingQuota,
+                bookedGlobalQuota = subsidyDetail.quotaSubsidized.bookedGlobalQuota,
+                confirmedGlobalQuota = subsidyDetail.quotaSubsidized.confirmedGlobalQuota
+            )
+        )
     }
 
     private fun Int.toBenefitType(): BenefitType {
