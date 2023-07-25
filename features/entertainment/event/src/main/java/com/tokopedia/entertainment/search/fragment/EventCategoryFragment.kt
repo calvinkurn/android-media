@@ -181,7 +181,7 @@ class EventCategoryFragment : BaseDaggerFragment(), EventGridAdapter.EventGridLi
     private fun setupCategoryAdapter(){
         categoryTextAdapter = CategoryTextBubbleAdapter(::onCategoryClicked)
 
-        (activity as EventCategoryActivity).binding?.layoutInclude?.recyclerViewCategory?.run {
+        (activity as EventCategoryActivity).binding?.recyclerViewCategory?.run {
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
             adapter = categoryTextAdapter
@@ -203,7 +203,7 @@ class EventCategoryFragment : BaseDaggerFragment(), EventGridAdapter.EventGridLi
             categoryTextAdapter.notifyDataSetChanged()
 
             if(it.position != -1 && it.position < it.listCategory.size) {
-                (activity as EventCategoryActivity).binding?.layoutInclude?.recyclerViewCategory?.scrollToPosition(it.position)
+                (activity as EventCategoryActivity).binding?.recyclerViewCategory?.scrollToPosition(it.position)
             }
 
         })
