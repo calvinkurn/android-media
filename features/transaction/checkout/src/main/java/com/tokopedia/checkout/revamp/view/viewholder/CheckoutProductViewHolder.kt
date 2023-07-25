@@ -372,18 +372,20 @@ class CheckoutProductViewHolder(
             binding.buttonGiftingAddonProductLevel.visibility = View.GONE
         } else {
             if (addOns.status == 1) {
-                binding.buttonGiftingAddonProductLevel.state =
-                    com.tokopedia.purchase_platform.common.feature.gifting.view.ButtonGiftingAddOnView.State.ACTIVE
+                if (addOns.addOnsDataItemModelList.isNotEmpty()) {
+                    binding.buttonGiftingAddonProductLevel.showActive(
+                        addOns.addOnsButtonModel.title,
+                        addOns.addOnsButtonModel.description
+                    )
+                } else {
+                    binding.buttonGiftingAddonProductLevel.showEmptyState(
+                        addOns.addOnsButtonModel.title,
+                        addOns.addOnsButtonModel.description.ifEmpty { "(opsional)" }
+                    )
+                }
             } else if (addOns.status == 2) {
-                binding.buttonGiftingAddonProductLevel.state =
-                    com.tokopedia.purchase_platform.common.feature.gifting.view.ButtonGiftingAddOnView.State.INACTIVE
+                binding.buttonGiftingAddonProductLevel.showInactive(addOns.addOnsButtonModel.title, addOns.addOnsButtonModel.description)
             }
-            binding.buttonGiftingAddonProductLevel.title = addOns.addOnsButtonModel.title
-            binding.buttonGiftingAddonProductLevel.desc = addOns.addOnsButtonModel.description
-            binding.buttonGiftingAddonProductLevel.urlLeftIcon =
-                addOns.addOnsButtonModel.leftIconUrl
-            binding.buttonGiftingAddonProductLevel.urlRightIcon =
-                addOns.addOnsButtonModel.rightIconUrl
             binding.buttonGiftingAddonProductLevel.setOnClickListener {
                 listener.onClickAddOnGiftingProductLevel(
                     product

@@ -17,7 +17,7 @@ import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.Produ
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.UnavailableBottomSheetData
 
 object ShipmentAddOnMapper {
-    private const val QTY = "{{qty}}"
+    const val QTY = "{{qty}}"
 
     fun mapAddOnBottomSheetParam(
         addOnsDataModel: AddOnGiftingDataModel,

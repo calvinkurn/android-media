@@ -30,6 +30,7 @@ import com.tokopedia.checkout.databinding.BottomSheetPlatformFeeInfoBinding
 import com.tokopedia.checkout.databinding.FragmentCheckoutBinding
 import com.tokopedia.checkout.databinding.HeaderCheckoutBinding
 import com.tokopedia.checkout.databinding.ToastRectangleBinding
+import com.tokopedia.checkout.domain.mapper.ShipmentAddOnMapper
 import com.tokopedia.checkout.domain.model.cartshipmentform.CampaignTimerUi
 import com.tokopedia.checkout.revamp.di.CheckoutModule
 import com.tokopedia.checkout.revamp.di.DaggerCheckoutComponent
@@ -93,6 +94,7 @@ import com.tokopedia.purchase_platform.common.constant.ARGS_PAGE_SOURCE
 import com.tokopedia.purchase_platform.common.constant.ARGS_PROMO_MVC_LOCK_COURIER_FLOW
 import com.tokopedia.purchase_platform.common.constant.ARGS_PROMO_REQUEST
 import com.tokopedia.purchase_platform.common.constant.ARGS_VALIDATE_USE_REQUEST
+import com.tokopedia.purchase_platform.common.constant.AddOnConstant
 import com.tokopedia.purchase_platform.common.constant.CartConstant
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
 import com.tokopedia.purchase_platform.common.constant.PAGE_CHECKOUT
@@ -103,7 +105,14 @@ import com.tokopedia.purchase_platform.common.feature.checkout.ShipmentFormReque
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.model.UploadPrescriptionUiModel
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.view.UploadPrescriptionListener
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.view.UploadPrescriptionViewHolder
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnData
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnMetadata
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnNote
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnWordingData
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AvailableBottomSheetData
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.PopUpData
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.SaveAddOnStateResult
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.UnavailableBottomSheetData
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
 import com.tokopedia.purchase_platform.common.utils.animateGone
 import com.tokopedia.purchase_platform.common.utils.animateShow
@@ -119,6 +128,7 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.Product as GiftingProduct
 
 class CheckoutFragment :
     BaseDaggerFragment(),
@@ -546,6 +556,14 @@ class CheckoutFragment :
                 onResultFromUpsell(data)
             }
 
+            CheckoutConstant.REQUEST_ADD_ON_PRODUCT_LEVEL_BOTTOMSHEET -> {
+                onUpdateResultAddOnProductLevelBottomSheet(data)
+            }
+
+            CheckoutConstant.REQUEST_ADD_ON_ORDER_LEVEL_BOTTOMSHEET -> {
+                onUpdateResultAddOnOrderLevelBottomSheet(data)
+            }
+
             REQUEST_CODE_UPLOAD_PRESCRIPTION -> {
                 onUploadPrescriptionResult(data, false)
             }
@@ -861,11 +879,119 @@ class CheckoutFragment :
     override fun onClickAddOnGiftingProductLevel(
         product: CheckoutProductModel
     ) {
-        TODO("Not yet implemented")
+        if (activity != null) {
+            val addOnsDataModel = product.addOnGiftingProductLevelModel
+            val addOnBottomSheetModel = addOnsDataModel.addOnsBottomSheetModel
+
+            // No need to open add on bottom sheet if action = 0
+            if (addOnsDataModel.addOnsButtonModel.action == 0) return
+            var availableBottomSheetData = AvailableBottomSheetData()
+            var unavailableBottomSheetData = UnavailableBottomSheetData()
+            if (addOnsDataModel.status == ShipmentFragment.ADD_ON_STATUS_DISABLE) {
+//                unavailableBottomSheetData =
+//                    ShipmentAddOnMapper.mapUnavailableBottomSheetProductLevelData(
+//                        addOnBottomSheetModel,
+//                        cartItemModel
+//                    )
+//                val listUnavailableProduct = arrayListOf<com.tokopedia.purchase_platform.common.feature.gifting.domain.model.Product>()
+//                for ((productImageUrl, productName) in addOnBottomSheetModel.products) {
+//                    val product =
+//                        com.tokopedia.purchase_platform.common.feature.gifting.domain.model.Product()
+//                    product.cartId = cartItemModel.cartId.toString()
+//                    product.productId = cartItemModel.productId.toString()
+//                    product.productPrice = cartItemModel.price.toLong()
+//                    product.productQuantity = cartItemModel.quantity
+//                    product.productName = productName
+//                    product.productImageUrl = productImageUrl
+//                    product.productParentId = cartItemModel.variantParentId
+//                    listUnavailableProduct.add(product)
+//                }
+
+                unavailableBottomSheetData = UnavailableBottomSheetData(
+                    description = addOnBottomSheetModel.description,
+                    tickerMessage = addOnBottomSheetModel.ticker.text,
+                    unavailableProducts = addOnBottomSheetModel.products.map {
+                        GiftingProduct(
+                            product.cartId.toString(),
+                            product.productId.toString(),
+                            it.productName,
+                            it.productImageUrl,
+                            product.price.toLong(),
+                            product.quantity,
+                            product.variantParentId
+                        )
+                    }
+                )
+            }
+            if (addOnsDataModel.status == ShipmentFragment.ADD_ON_STATUS_ACTIVE) {
+                availableBottomSheetData = AvailableBottomSheetData(
+                    addOnInfoWording = AddOnWordingData(
+                        product.addOnGiftingWording.packagingAndGreetingCard.replace(ShipmentAddOnMapper.QTY, product.quantity.toString()),
+                        product.addOnGiftingWording.onlyGreetingCard.replace(ShipmentAddOnMapper.QTY, product.quantity.toString()),
+                        product.addOnGiftingWording.invoiceNotSendToRecipient
+                    ),
+                    shopName = product.shopName,
+                    products = listOf(GiftingProduct(
+                        product.cartId.toString(),
+                        product.productId.toString(),
+                        product.name,
+                        product.imageUrl,
+                        product.price.toLong(),
+                        product.quantity,
+                        product.variantParentId
+                    )),
+                    addOnSavedStates = product.addOnGiftingProductLevelModel.addOnsDataItemModelList.map {
+                        AddOnData(
+                            it.addOnId,
+                            it.addOnUniqueId,
+                            AddOnMetadata(
+                                AddOnNote(
+                                    it.addOnMetadata.addOnNoteItemModel.from,
+                                    it.addOnMetadata.addOnNoteItemModel.isCustomNote,
+                                    it.addOnMetadata.addOnNoteItemModel.notes,
+                                    it.addOnMetadata.addOnNoteItemModel.to
+                                )
+                            ),
+                            it.addOnPrice,
+                            it.addOnQty.toInt()
+                        )
+                    },
+                    cartString = product.cartStringGroup,
+                    isTokoCabang = product.isTokoCabang,
+                    warehouseId = product.warehouseId,
+                    defaultFrom = product.addOnDefaultFrom,
+                    defaultTo = product.addOnDefaultTo
+                )
+            }
+            val addOnProductData = ShipmentAddOnMapper.mapAddOnBottomSheetParam(
+                addOnsDataModel,
+                availableBottomSheetData,
+                unavailableBottomSheetData,
+                isOneClickShipment
+            )
+            val intent =
+                RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.ADD_ON_GIFTING)
+            intent.putExtra(AddOnConstant.EXTRA_ADD_ON_PRODUCT_DATA, addOnProductData)
+            intent.putExtra(AddOnConstant.EXTRA_ADD_ON_SOURCE, AddOnConstant.ADD_ON_SOURCE_CHECKOUT)
+            startActivityForResult(intent,
+                CheckoutConstant.REQUEST_ADD_ON_PRODUCT_LEVEL_BOTTOMSHEET
+            )
+            checkoutAnalyticsCourierSelection.eventClickAddOnsDetail(product.productId.toString())
+        }
     }
 
     override fun onImpressionAddOnGiftingProductLevel(productId: String) {
-        // todo
+        checkoutAnalyticsCourierSelection.eventViewAddOnsWidget(productId)
+    }
+
+    private fun onUpdateResultAddOnProductLevelBottomSheet(data: Intent?) {
+        if (data != null) {
+            val saveAddOnStateResult =
+                data.getParcelableExtra<SaveAddOnStateResult>(AddOnConstant.EXTRA_ADD_ON_PRODUCT_DATA_RESULT)
+            if (saveAddOnStateResult != null) {
+                viewModel.updateAddOnGiftingProductLevelDataBottomSheet(saveAddOnStateResult)
+            }
+        }
     }
 
     override fun openAddOnGiftingOrderLevelBottomSheet(order: CheckoutOrderModel) {
@@ -874,6 +1000,16 @@ class CheckoutFragment :
 
     override fun addOnGiftingOrderLevelImpression(products: List<CheckoutProductModel>) {
         TODO("Not yet implemented")
+    }
+
+    private fun onUpdateResultAddOnOrderLevelBottomSheet(data: Intent?) {
+//        if (data != null) {
+//            val saveAddOnStateResult =
+//                data.getParcelableExtra<SaveAddOnStateResult>(AddOnConstant.EXTRA_ADD_ON_PRODUCT_DATA_RESULT)
+//            if (saveAddOnStateResult != null) {
+//                viewModel.updateAddOnGiftingOrderLevelDataBottomSheet(saveAddOnStateResult)
+//            }
+//        }
     }
 
     override fun onLoadShippingState(order: CheckoutOrderModel, position: Int) {

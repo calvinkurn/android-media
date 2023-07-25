@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cl_cart_addon_info"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_gifting_rounded_grey"
+    android:paddingHorizontal="12dp"
+    android:paddingVertical="8dp">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/title_inactive_addon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_NN950"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/desc_inactive_addon"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="display_3"
+        app:typographyWeight="bold"
+        tools:text="Kirim sebagai Hadiah"
+        tools:visibility="gone" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/desc_inactive_addon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:textColor="@color/Unify_NN950"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/icon_right"
+        app:layout_constraintStart_toEndOf="@id/title_inactive_addon"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="small"
+        app:typographyWeight="reguler"
+        tools:text="(opsional)"
+        tools:visibility="gone" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/title_addon"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="12dp"
+        android:textColor="@color/Unify_NN950"
+        app:layout_constraintBottom_toTopOf="@id/desc_addon"
+        app:layout_constraintEnd_toStartOf="@id/icon_right"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed"
+        app:layout_goneMarginBottom="4dp"
+        app:typographyType="display_3"
+        app:typographyWeight="bold"
+        tools:text="Pelengkap Hadiah (Rp4.000)"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/desc_addon"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="12dp"
+        android:layout_marginBottom="4dp"
+        android:textColor="@color/Unify_NN600"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/icon_right"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/title_addon"
+        app:typographyType="display_3"
+        app:typographyWeight="reguler"
+        tools:text="Kemasan &amp; Kartu Ucapan"
+        tools:visibility="gone" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/icon_right"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        app:icon_color_light_enable="@color/Unify_NN500"
+        app:icon_color_night_enable="@color/Unify_NN500"
+        app:icon_name="CHEVRON_RIGHT"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

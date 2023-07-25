@@ -5018,7 +5018,7 @@ class ShipmentViewModel @Inject constructor(
             listAddOnDataItem.add(addOnDataItemModel)
         }
         addOnsDataModel.addOnsDataItemModelList = listAddOnDataItem
-        view?.updateAddOnsData(identifier, cartString, cartId)
+        updateAddOnsData(identifier, cartString, cartId)
         if (isUsingDynamicDataPassing()) {
             view?.updateAddOnsDynamicDataPassing(
                 addOnResult,
@@ -5027,6 +5027,23 @@ class ShipmentViewModel @Inject constructor(
                 cartId
             )
         }
+    }
+
+    fun updateAddOnsData(
+        identifier: Int,
+        cartString: String,
+        cartId: Long
+    ) {
+        // identifier : 0 = product level, 1  = order level
+//        if (identifier == 0) {
+//            onNeedUpdateViewItem(
+//                shipmentAdapter.getAddOnProductLevelPosition(cartString, cartId)
+//            )
+//        } else {
+//            onNeedUpdateViewItem(shipmentAdapter.getAddOnOrderLevelPosition(cartString))
+//        }
+//        shipmentViewModel.updateShipmentCostModel()
+//        shipmentAdapter.checkHasSelectAllCourier(true, -1, "", false, false)
     }
     // endregion
 

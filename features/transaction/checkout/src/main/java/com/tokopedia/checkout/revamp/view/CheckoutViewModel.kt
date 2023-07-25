@@ -50,6 +50,16 @@ import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
 import com.tokopedia.purchase_platform.common.feature.dynamicdatapassing.data.request.DynamicDataPassingParamRequest
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.model.UploadPrescriptionUiModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingBottomSheetModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingButtonModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingDataItemModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingDataModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingMetadataItemModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingNoteItemModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingProductItemModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingTickerModel
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnResult
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.SaveAddOnStateResult
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.clear.ClearPromoOrder
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
@@ -373,8 +383,13 @@ class CheckoutViewModel @Inject constructor(
                 paymentAmount = cost.totalPrice,
                 additionalData = shipmentPlatformFeeData.additionalData
             )
-            cost = paymentProcessor.checkPlatformFee(shipmentPlatformFeeData, cost, paymentFeeCheckoutRequest)
-            listData.value = calculator.updateShipmentCostModel(listData.value, cost, isTradeInByDropOff)
+            cost = paymentProcessor.checkPlatformFee(
+                shipmentPlatformFeeData,
+                cost,
+                paymentFeeCheckoutRequest
+            )
+            listData.value =
+                calculator.updateShipmentCostModel(listData.value, cost, isTradeInByDropOff)
         }
     }
 
@@ -386,6 +401,98 @@ class CheckoutViewModel @Inject constructor(
             "qwertyuiop",
             "parent job: ${viewModelScope.coroutineContext.job?.children?.find { !it.isCompleted }}"
         )
+    }
+
+    fun updateAddOnGiftingProductLevelDataBottomSheet(saveAddOnStateResult: SaveAddOnStateResult) {
+        val checkoutItems = listData.value.toMutableList()
+        for (addOnResult in saveAddOnStateResult.addOns) {
+            for (item in checkoutItems.withIndex()) {
+                val product = item.value
+                if (product is CheckoutProductModel) {
+//                    val cartItemModelList = shipmentCartItemModel.products
+//                    for (i in cartItemModelList.indices) {
+//                        val cartItemModel = cartItemModelList[i]
+                    val keyProductLevel =
+                        "${product.cartStringGroup}-${product.cartId}"
+                    if (keyProductLevel.equals(addOnResult.addOnKey, ignoreCase = true)) {
+                        checkoutItems[item.index] = product.copy(
+                            addOnGiftingProductLevelModel = setAddOnsGiftingData(
+                                product.addOnGiftingProductLevelModel.copy(),
+                                addOnResult,
+                                0,
+                                product.cartStringGroup,
+                                product.cartId
+                            )
+                        )
+//                        }
+                    }
+                }
+            }
+        }
+        listData.value = checkoutItems
+    }
+
+    private fun setAddOnsGiftingData(
+        addOnsDataModel: AddOnGiftingDataModel,
+        addOnResult: AddOnResult,
+        identifier: Int,
+        cartString: String,
+        cartId: Long
+    ): AddOnGiftingDataModel {
+        addOnsDataModel.status = addOnResult.status
+        val addOnButton = addOnResult.addOnButton
+        addOnsDataModel.addOnsButtonModel = AddOnGiftingButtonModel(
+            addOnButton.leftIconUrl,
+            addOnButton.rightIconUrl,
+            addOnButton.description,
+            addOnButton.action,
+            addOnButton.title
+        )
+        val addOnBottomSheet = addOnResult.addOnBottomSheet
+        val addOnBottomSheetModel = AddOnGiftingBottomSheetModel()
+        addOnBottomSheetModel.headerTitle = addOnBottomSheet.headerTitle
+        addOnBottomSheetModel.description = addOnBottomSheet.description
+        val addOnTickerModel = AddOnGiftingTickerModel()
+        addOnTickerModel.text = addOnBottomSheet.ticker.text
+        addOnBottomSheetModel.ticker = addOnTickerModel
+        val listProductAddOn = java.util.ArrayList<AddOnGiftingProductItemModel>()
+        for (product in addOnBottomSheet.products) {
+            val addOnProductItemModel = AddOnGiftingProductItemModel()
+            addOnProductItemModel.productName = product.productName
+            addOnProductItemModel.productImageUrl = product.productImageUrl
+            listProductAddOn.add(addOnProductItemModel)
+        }
+        addOnBottomSheetModel.products = listProductAddOn
+        addOnsDataModel.addOnsBottomSheetModel = addOnBottomSheetModel
+        val listAddOnDataItem = arrayListOf<AddOnGiftingDataItemModel>()
+        for (addOnData in addOnResult.addOnData) {
+            val addOnDataItemModel = AddOnGiftingDataItemModel()
+            val addOnNote = addOnData.addOnMetadata.addOnNote
+            addOnDataItemModel.addOnId = addOnData.addOnId
+            addOnDataItemModel.addOnUniqueId = addOnData.addOnUniqueId
+            addOnDataItemModel.addOnPrice = addOnData.addOnPrice
+            addOnDataItemModel.addOnQty = addOnData.addOnQty.toLong()
+            addOnDataItemModel.addOnMetadata = AddOnGiftingMetadataItemModel(
+                AddOnGiftingNoteItemModel(
+                    addOnNote.isCustomNote,
+                    addOnNote.to,
+                    addOnNote.from,
+                    addOnNote.notes
+                )
+            )
+            listAddOnDataItem.add(addOnDataItemModel)
+        }
+        addOnsDataModel.addOnsDataItemModelList = listAddOnDataItem
+//        view?.updateAddOnsData(identifier, cartString, cartId)
+//        if (isUsingDynamicDataPassing()) {
+//            view?.updateAddOnsDynamicDataPassing(
+//                addOnResult,
+//                identifier,
+//                cartString,
+//                cartId
+//            )
+//        }
+        return addOnsDataModel
     }
 
     fun getProductForRatesRequest(order: CheckoutOrderModel): ArrayList<Product> {
@@ -588,7 +695,10 @@ class CheckoutViewModel @Inject constructor(
                 val checkoutItems = listData.value.toMutableList()
                 val checkoutOrderModel = checkoutItems[cartPosition] as CheckoutOrderModel
                 checkoutItems[cartPosition] =
-                    checkoutOrderModel.copy(shipment = checkoutOrderModel.shipment.copy(isLoading = true), isShippingBorderRed = false)
+                    checkoutOrderModel.copy(
+                        shipment = checkoutOrderModel.shipment.copy(isLoading = true),
+                        isShippingBorderRed = false
+                    )
                 listData.value = checkoutItems
             }
             val newItems = promoProcessor.validateUseLogisticPromo(
@@ -634,8 +744,8 @@ class CheckoutViewModel @Inject constructor(
                 if (checkoutItem is CheckoutOrderModel) {
                     if (!checkoutItem.isError && checkoutItem.shipment.courierItemData == null) {
                         items[index] = checkoutItem.copy(
-                        isShippingBorderRed = true,
-                        isTriggerShippingVibrationAnimation = true
+                            isShippingBorderRed = true,
+                            isTriggerShippingVibrationAnimation = true
                         )
                         if (firstErrorIndex == -1) {
                             firstErrorIndex = index

@@ -132,7 +132,7 @@
 
     <include layout="@layout/layout_checkout_product" />
 
-    <com.tokopedia.purchase_platform.common.feature.gifting.view.ButtonGiftingAddOnView
+    <com.tokopedia.purchase_platform.common.feature.gifting.view.ButtonGiftingView
         android:id="@+id/button_gifting_addon_product_level"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

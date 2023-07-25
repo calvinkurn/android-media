@@ -251,6 +251,8 @@
         android:id="@+id/ic_checkout_cost_others_toggle"
         android:layout_width="16dp"
         android:layout_height="16dp"
+        app:icon_color_light_enable="@color/Unify_NN500"
+        app:icon_color_night_enable="@color/Unify_NN500"
         app:icon_name="CHEVRON_DOWN"
         app:layout_constraintBottom_toBottomOf="@id/tv_checkout_cost_others_title"
         app:layout_constraintStart_toEndOf="@id/tv_checkout_cost_others_title"
