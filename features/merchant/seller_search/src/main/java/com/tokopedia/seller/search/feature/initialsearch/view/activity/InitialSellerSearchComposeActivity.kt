@@ -92,45 +92,15 @@ class InitialSellerSearchComposeActivity :
                         suggestionSearchContainerId,
                         showSearchSuggestions
                     )
-                })
 
-                LaunchedEffect(key1 = showSearchSuggestions, block = {
-                    viewModel.uiEffect.collectLatest {
-                        when (it) {
-                            is GlobalSearchUiEvent.OnSearchBarCleared -> {
-                                SellerSearchTracking.clickClearSearchBoxEvent(userSession.userId)
-                                viewModel.setTypingSearch(String.EMPTY)
-                            }
-
-                            is GlobalSearchUiEvent.OnBackButtonClicked -> {
-                                SellerSearchTracking.clickBackButtonSearchEvent(
-                                    userSession.userId,
-                                    it.searchBarKeyword
-                                )
-                                finish()
-                            }
-
-                            is GlobalSearchUiEvent.OnUpdateSearchKeyword -> {
-                            }
-
-                            is GlobalSearchUiEvent.OnSearchResultKeyword -> {
-                                if (showSearchSuggestions) {
-                                    suggestionSearchFragment?.suggestionSearch(it.searchBarKeyword)
-                                        ?: (fragmentManager.findFragmentById(suggestionSearchContainerId) as? SuggestionSearchFragment)?.apply {
-                                            suggestionSearch(it.searchBarKeyword)
-                                        }
-                                } else {
-                                    initialSearchFragment?.historySearch(it.searchBarKeyword)
-                                        ?: (fragmentManager.findFragmentById(initialStateContainerId) as? InitialSearchFragment)?.apply {
-                                            historySearch(it.searchBarKeyword)
-                                        }
-                                }
-                            }
-
-                            else -> {
-                            }
-                        }
-                    }
+                    collectUiState(
+                        showSearchSuggestions,
+                        fragmentManager,
+                        suggestionSearchFragment,
+                        initialSearchFragment,
+                        suggestionSearchContainerId,
+                        initialStateContainerId
+                    )
                 })
 
                 InitialSearchActivityScreen(
@@ -156,6 +126,72 @@ class InitialSellerSearchComposeActivity :
             .globalSearchSellerComponent(GlobalSearchSellerComponentBuilder.getComponent(application))
             .initialSearchModule(InitialSearchModule())
             .build()
+    }
+
+    private suspend fun collectUiState(
+        showSearchSuggestions: Boolean,
+        fragmentManager: FragmentManager?,
+        suggestionSearchFragment: SuggestionSearchFragment?,
+        initialSearchFragment: InitialSearchFragment?,
+        suggestionSearchContainerId: Int,
+        initialStateContainerId: Int
+    ) {
+        viewModel.uiEffect.collectLatest {
+            when (it) {
+                is GlobalSearchUiEvent.OnSearchBarCleared -> {
+                    SellerSearchTracking.clickClearSearchBoxEvent(userSession.userId)
+                    viewModel.setTypingSearch(String.EMPTY)
+                }
+
+                is GlobalSearchUiEvent.OnBackButtonClicked -> {
+                    SellerSearchTracking.clickBackButtonSearchEvent(
+                        userSession.userId,
+                        it.searchBarKeyword
+                    )
+                    finish()
+                }
+
+                is GlobalSearchUiEvent.OnUpdateSearchKeyword -> {
+                }
+
+                is GlobalSearchUiEvent.OnSearchResultKeyword -> {
+                    onSearchResultKeywordFetch(
+                        showSearchSuggestions,
+                        fragmentManager,
+                        suggestionSearchFragment,
+                        initialSearchFragment,
+                        suggestionSearchContainerId,
+                        initialStateContainerId,
+                        it.searchBarKeyword
+                    )
+                }
+
+                else -> {
+                }
+            }
+        }
+    }
+
+    private fun onSearchResultKeywordFetch(
+        showSearchSuggestions: Boolean,
+        fragmentManager: FragmentManager?,
+        suggestionSearchFragment: SuggestionSearchFragment?,
+        initialSearchFragment: InitialSearchFragment?,
+        suggestionSearchContainerId: Int,
+        initialStateContainerId: Int,
+        searchBarKeyword: String
+    ) {
+        if (showSearchSuggestions) {
+            suggestionSearchFragment?.suggestionSearch(searchBarKeyword)
+                ?: (fragmentManager?.findFragmentById(suggestionSearchContainerId) as? SuggestionSearchFragment)?.apply {
+                    suggestionSearch(searchBarKeyword)
+                }
+        } else {
+            initialSearchFragment?.historySearch(searchBarKeyword)
+                ?: (fragmentManager?.findFragmentById(initialStateContainerId) as? InitialSearchFragment)?.apply {
+                    historySearch(searchBarKeyword)
+                }
+        }
     }
 
     private fun fetchSearchPlaceholder() {

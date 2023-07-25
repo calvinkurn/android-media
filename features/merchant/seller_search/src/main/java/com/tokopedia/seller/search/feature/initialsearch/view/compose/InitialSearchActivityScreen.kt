@@ -16,11 +16,8 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.fragment.app.FragmentContainerView
-import androidx.fragment.app.FragmentManager
-import com.tokopedia.seller.search.feature.initialsearch.view.fragment.InitialSearchFragment
 import com.tokopedia.seller.search.feature.initialsearch.view.model.compose.GlobalSearchUiEvent
 import com.tokopedia.seller.search.feature.initialsearch.view.model.compose.GlobalSearchUiState
-import com.tokopedia.seller.search.feature.suggestion.view.fragment.SuggestionSearchFragment
 import kotlinx.coroutines.delay
 
 const val DELAY_SHOW_KEYBOARD = 100L
@@ -103,50 +100,4 @@ fun InitialSearchFragmentContainer(
             FragmentContainerView(context).apply { id = containerId }
         }
     )
-}
-
-fun showInitialState(
-    fragmentManager: FragmentManager?,
-    fragmentContainerView: FragmentContainerView
-) {
-    val fragmentTag = InitialSearchFragment::class.java.simpleName
-    val fragment = fragmentManager?.findFragmentByTag(fragmentTag)
-    if (fragment == null) {
-        fragmentManager?.beginTransaction()
-            ?.replace(fragmentContainerView.id, InitialSearchFragment(), fragmentTag)
-            ?.commit()
-    } else {
-        // Show existing fragment
-        fragmentManager.beginTransaction().show(fragment).commit()
-    }
-
-    // Hide other fragments if any
-    fragmentManager?.fragments?.forEach { existingFragment ->
-        if (existingFragment.javaClass != fragment?.javaClass) {
-            fragmentManager.beginTransaction().hide(existingFragment).commit()
-        }
-    }
-}
-
-fun showSearchSuggestion(
-    fragmentManager: FragmentManager?,
-    fragmentContainerView: FragmentContainerView
-) {
-    val fragmentTag = SuggestionSearchFragment::class.java.simpleName
-    val fragment = fragmentManager?.findFragmentByTag(fragmentTag)
-    if (fragment == null) {
-        fragmentManager?.beginTransaction()
-            ?.replace(fragmentContainerView.id, SuggestionSearchFragment(), fragmentTag)
-            ?.commit()
-    } else {
-        // Show existing fragment
-        fragmentManager.beginTransaction().show(fragment).commit()
-    }
-
-    // Hide other fragments if any
-    fragmentManager?.fragments?.forEach { existingFragment ->
-        if (existingFragment.javaClass != SuggestionSearchFragment::class.java) {
-            fragmentManager.beginTransaction().hide(existingFragment).commit()
-        }
-    }
 }

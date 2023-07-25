@@ -6,12 +6,11 @@ import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.seller.search.common.domain.GetSellerSearchPlaceholderUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.channels.BroadcastChannel
-import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -31,7 +30,7 @@ class InitialSearchActivityViewModel @Inject constructor(
     val searchKeyword: LiveData<String>
         get() = _searchKeyword
 
-    val queryChannel = BroadcastChannel<String>(Channel.CONFLATED)
+    val queryChannel = MutableStateFlow(String.EMPTY)
 
     init {
         getSearchKeyword()
@@ -51,12 +50,12 @@ class InitialSearchActivityViewModel @Inject constructor(
     }
 
     fun getTypingSearch(keyword: String) {
-        queryChannel.trySend(keyword)
+        queryChannel.tryEmit(keyword)
     }
 
     private fun getSearchKeyword() {
         viewModelScope.launch {
-            queryChannel.asFlow()
+            queryChannel
                 .debounce(DEBOUNCE_DELAY_MILLIS)
                 .distinctUntilChanged()
                 .collectLatest {
