@@ -22,8 +22,22 @@ import androidx.compose.ui.platform.AbstractComposeView
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.findViewTreeLifecycleOwner
+import androidx.lifecycle.findViewTreeViewModelStoreOwner
+import androidx.lifecycle.get
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.tokopedia.nest.components.NestImage
 import com.tokopedia.nest.principles.ui.NestTheme
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.launch
 
 /**
  * Created by kenny.hadisaputra on 24/07/23
@@ -39,22 +53,71 @@ class StoriesAvatarView @JvmOverloads constructor(
 ) {
 
     private var mImageUrl by mutableStateOf("")
-    private var hasUnseenStories by mutableStateOf(false)
+    private var storiesStatus by mutableStateOf(StoriesStatus.NoStories)
+
+    private val shopId = MutableStateFlow("1")
+
+    private var mViewModel: StoriesAvatarViewModel? = null
+    private var observeJob: Job? = null
+
+    @Composable
+    override fun Content() {
+        StoriesAvatarContent(mImageUrl, storiesStatus)
+    }
+
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+
+        mViewModel = getViewModel()
+        startObserve()
+
+        updateStoriesStatus()
+    }
+
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+
+        observeJob?.cancel()
+        mViewModel = null
+    }
+
+    fun updateStoriesStatus() {
+        mViewModel?.onIntent(StoriesIntent.getStoriesStatus(shopId.value))
+    }
 
     fun setImageUrl(imageUrl: String) {
         mImageUrl = imageUrl
     }
 
-    @Composable
-    override fun Content() {
-        StoriesAvatarContent(mImageUrl, hasUnseenStories)
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private fun startObserve() {
+        val viewModel = mViewModel ?: return
+        val lifecycleOwner = getLifecycleOwner() ?: return
+        observeJob = lifecycleOwner.lifecycleScope.launch {
+            lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                shopId.flatMapLatest {
+                    viewModel.getStories(it)
+                }.collectLatest {
+                    storiesStatus = it.status
+                }
+            }
+        }
+    }
+
+    private fun getViewModel(): StoriesAvatarViewModel? {
+        val viewModelStoreOwner = findViewTreeViewModelStoreOwner() ?: return null
+        return ViewModelProvider(viewModelStoreOwner).get()
+    }
+
+    private fun getLifecycleOwner(): LifecycleOwner? {
+        return findViewTreeLifecycleOwner()
     }
 }
 
 @Composable
 private fun StoriesAvatarContent(
     imageUrl: String,
-    hasUnseenStories: Boolean,
+    storiesStatus: StoriesStatus,
     modifier: Modifier = Modifier,
     imageToBorderPadding: Dp = 8.dp
 ) {
@@ -64,15 +127,8 @@ private fun StoriesAvatarContent(
                 .fillMaxSize()
                 .clip(CircleShape)
                 .border(
-                    width = if (hasUnseenStories) 2.dp else 1.dp,
-                    brush = if (hasUnseenStories) {
-                        Brush.linearGradient(
-                            0f to Color(0xFF69F2E2),
-                            1f to Color(0xFF00AA5B)
-                        )
-                    } else {
-                        SolidColor(Color(0xFFD6DFEB))
-                    },
+                    width = storiesStatus.borderDp,
+                    brush = storiesStatus.brush,
                     shape = CircleShape
                 )
         ) {
@@ -90,10 +146,10 @@ private fun StoriesAvatarContent(
 @Preview
 @Preview(uiMode = UI_MODE_NIGHT_YES)
 @Composable
-private fun NoUnseenStoriesAvatarPreview() {
+private fun NoStoriesAvatarPreview() {
     StoriesAvatarContent(
         "https://4.img-dpreview.com/files/p/E~TS590x0~articles/3925134721/0266554465.jpeg",
-        false,
+        StoriesStatus.NoStories,
         Modifier.size(200.dp)
     )
 }
@@ -104,7 +160,37 @@ private fun NoUnseenStoriesAvatarPreview() {
 private fun HasUnseenStoriesAvatarPreview() {
     StoriesAvatarContent(
         "https://4.img-dpreview.com/files/p/E~TS590x0~articles/3925134721/0266554465.jpeg",
-        true,
+        StoriesStatus.HasUnseenStories,
         Modifier.size(200.dp)
     )
 }
+
+@Preview
+@Preview(uiMode = UI_MODE_NIGHT_YES)
+@Composable
+private fun AllStoriesSeenAvatarPreview() {
+    StoriesAvatarContent(
+        "https://4.img-dpreview.com/files/p/E~TS590x0~articles/3925134721/0266554465.jpeg",
+        StoriesStatus.AllStoriesSeen,
+        Modifier.size(200.dp)
+    )
+}
+
+private val StoriesStatus.borderDp: Dp
+    get() = when (this) {
+        StoriesStatus.NoStories -> 1.dp
+        StoriesStatus.HasUnseenStories -> 2.dp
+        StoriesStatus.AllStoriesSeen -> 1.dp
+    }
+
+private val StoriesStatus.brush: Brush
+    get() = when (this) {
+        StoriesStatus.NoStories -> SolidColor(Color(0x00000000))
+        StoriesStatus.HasUnseenStories -> {
+            Brush.linearGradient(
+                0f to Color(0xFF83ECB2),
+                1f to Color(0xFF00AA5B)
+            )
+        }
+        StoriesStatus.AllStoriesSeen -> SolidColor(Color(0xFFD6DFEB))
+    }

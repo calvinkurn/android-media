@@ -44,6 +44,10 @@ dependencies {
 
     implementation rootProject.ext.composeDependencies.composeUi
 
+    implementation rootProject.ext.miscDependencies.lifecycleRuntimeKtx
+    implementation rootProject.ext.miscDependencies.viewModel
+    implementation rootProject.ext.miscDependencies.viewModelKtx
+
     implementation rootProject.ext.unifyDependencies.nestPrinciples
     implementation rootProject.ext.unifyDependencies.nestComponents
 }
