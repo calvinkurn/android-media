@@ -102,6 +102,8 @@ class CheckoutCostViewHolder(
             hidePlatformFee()
         }
 
+        renderOtherFee(cost)
+
         binding.tvCheckoutCostTotalValue.setTextAndContentDescription(
             cost.totalPriceString,
             R.string.content_desc_tv_total_payment
@@ -119,6 +121,8 @@ class CheckoutCostViewHolder(
         binding.tickerPlatformFeeInfo.gone()
         binding.tvCheckoutCostPlatformFeeTitle.gone()
         binding.tvCheckoutCostPlatformFeeValue.gone()
+        binding.tvCheckoutCostPlatformFeeSlashedValue.gone()
+        binding.icCheckoutCostPlatformFee.gone()
         binding.loaderPlatformFeeLabel.gone()
         binding.loaderPlatformFeeValue.gone()
     }
@@ -213,6 +217,15 @@ class CheckoutCostViewHolder(
                 }
             }
         }
+    }
+
+    private fun renderOtherFee(cost: CheckoutCostModel) {
+        binding.tvCheckoutCostOthersTitle.isVisible = false
+        binding.icCheckoutCostOthersToggle.isVisible = false
+        binding.tvCheckoutCostOthersValue.isVisible = false
+        binding.llCheckoutCostOthers.isVisible = false
+        binding.llCheckoutCostOthersExpanded.isVisible = false
+        binding.vCheckoutCostOthersExpandedSeparator.isVisible = false
     }
 
     companion object {
