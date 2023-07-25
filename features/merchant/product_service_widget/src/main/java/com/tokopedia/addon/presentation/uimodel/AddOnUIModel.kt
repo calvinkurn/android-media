@@ -18,7 +18,7 @@ data class AddOnUIModel(
     var uniqueId: String = "",
     var description: String = "",
     var shopId: String = ""
-) : Serializable, ImpressHolder() {
+) : Serializable {
     fun getSelectedStatus(): AddOnSelectedStatus {
         return when {
             isMandatory -> AddOnSelectedStatus.MANDATORY
