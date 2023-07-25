@@ -4,11 +4,14 @@ import android.annotation.SuppressLint
 import android.text.InputType
 import android.view.LayoutInflater
 import android.view.MotionEvent
+import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.core.widget.doOnTextChanged
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.promousage.databinding.PromoUsageItemVoucherCodeBinding
 import com.tokopedia.promousage.domain.entity.list.VoucherCode
@@ -39,33 +42,48 @@ class VoucherCodeDelegateAdapter(
         viewHolder.bind(item)
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     inner class ViewHolder(private val binding: PromoUsageItemVoucherCodeBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
         init {
-            setupCta()
-            binding.tauVoucherCode.isClearable = false
             binding.tauVoucherCode.textInputLayout.editText?.maxLines = SINGLE_LINE
             binding.tauVoucherCode.textInputLayout.editText?.inputType = InputType.TYPE_CLASS_TEXT
-            binding.tauVoucherCode.editText.doOnTextChanged { _, _, _, count ->
-                if (count.isMoreThanZero()) {
-                    //binding.tauVoucherCode.clearIconView.gone()
-                    //binding.tauVoucherCode.icon2.visible()
-                    //binding.tauVoucherCode.icon2.setImageResource(R.drawable.promo_usage_ic_use_voucher)
-                } else {
-                    //binding.tauVoucherCode.icon2.gone()
-                }
-            }
 
-            binding.tauVoucherCode.clearIconView.setOnClickListener { onVoucherCodeClearIconClick() }
         }
 
         fun bind(item: VoucherCode) {
             val isVoucherCodeValid = item.voucher != null
+
+            binding.tauVoucherCode.editText.setText(item.userInputVoucherCode)
+            handleCtaClickListener(item.errorMessage)
+
             if (isVoucherCodeValid) {
                 handleVoucherSuccess(item.voucher)
             } else {
                 handleVoucherError(item.errorMessage)
+            }
+
+            binding.tauVoucherCode.editText.doOnTextChanged { text , _, _, _ ->
+                when {
+                    item.errorMessage.isEmpty() && text?.length.isZero() -> {
+                        hideCta()
+                    }
+                    item.errorMessage.isEmpty() && text?.length.isMoreThanZero()-> {
+                        showCta()
+                        binding.tauVoucherCode.isInputError = false
+                        binding.tauVoucherCode.setMessage("")
+                    }
+                    item.errorMessage.isNotEmpty() ->{
+                        showClearIcon()
+                        binding.tauVoucherCode.isLoading  = false
+                    }
+                }
+            }
+
+            if (item.errorMessage.isNotEmpty()) {
+                showClearIcon()
+                binding.tauVoucherCode.isLoading  = false
             }
         }
 
@@ -77,53 +95,66 @@ class VoucherCodeDelegateAdapter(
                 }
                 tauVoucherCode.isInputError = false
                 tauVoucherCode.setMessage("")
-
-
-                tauVoucherCode.isClearable = false
             }
         }
 
         private fun handleVoucherError(errorMessage: String) {
             binding.run {
                 userInputVoucherView.gone()
-
-                //hide pakai CTA
-
-
                 tauVoucherCode.isInputError = errorMessage.isNotEmpty()
                 tauVoucherCode.setMessage(errorMessage)
             }
         }
 
-        @SuppressLint("ClickableViewAccessibility")
-        private fun setupCta() {
-            binding.tauVoucherCode.iconContainer.post {
-                val rightDrawable = TextDrawable(
-                    binding.tauVoucherCode.context,
-                    binding.tauVoucherCode.context.getString(R.string.promo_voucher_use)
-                )
-                binding.tauVoucherCode.editText.setCompoundDrawables(
-                    null,
-                    null,
-                    rightDrawable,
-                    null
-                )
+        private fun handleCtaClickListener(errorMessage: String) {
+            binding.tauVoucherCode.editText.setOnTouchListener { _, motionEvent ->
 
-                binding.tauVoucherCode.editText.setOnTouchListener { view, motionEvent ->
+                if (motionEvent.action == MotionEvent.ACTION_UP) {
+                    if (motionEvent.rawX >= (binding.tauVoucherCode.editText.right - binding.tauVoucherCode.editText.compoundDrawables[2].bounds.width())) {
+                        val voucherCode = binding.tauVoucherCode.editText.text.toString()
 
-                    if (motionEvent.action == MotionEvent.ACTION_UP) {
-                        if (motionEvent.rawX >= (binding.tauVoucherCode.editText.getRight() - binding.tauVoucherCode.editText.getCompoundDrawables()[2].getBounds().width())) {
-                            val voucherCode = binding.tauVoucherCode.editText.text.toString()
+                        if (errorMessage.isNotEmpty()) {
+                            onVoucherCodeClearIconClick()
+                        } else {
                             onApplyVoucherCodeCtaClick(voucherCode)
-                            return@setOnTouchListener  true
                         }
-                    }
 
-                    return@setOnTouchListener false
+
+                        return@setOnTouchListener true
+                    }
                 }
+
+                return@setOnTouchListener false
             }
         }
 
+
+        private fun showCta() {
+            val rightDrawable = TextDrawable(
+                binding.tauVoucherCode.context,
+                binding.tauVoucherCode.context.getString(R.string.promo_voucher_use)
+            )
+            binding.tauVoucherCode.editText.setCompoundDrawables(
+                null,
+                null,
+                rightDrawable,
+                null
+            )
+        }
+
+        private fun hideCta() {
+            binding.tauVoucherCode.editText.setCompoundDrawablesWithIntrinsicBounds(
+                0,
+                0,
+                0,
+                0
+            )
+        }
+
+        private fun showClearIcon() {
+            binding.tauVoucherCode.icon2.setImageResource(R.drawable.promo_usage_ic_close_black)
+            binding.tauVoucherCode.         clearIconView.visibility = View.VISIBLE
+        }
     }
 
 

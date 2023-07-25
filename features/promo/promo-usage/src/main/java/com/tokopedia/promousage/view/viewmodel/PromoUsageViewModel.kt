@@ -267,7 +267,7 @@ class PromoUsageViewModel @Inject constructor(
                         true,
                         discountVouchers
                     ),
-                    VoucherCode(errorMessage = "", voucher = null),
+                    VoucherCode(userInputVoucherCode = "", errorMessage = "", voucher = null),
                     TermAndCondition
                 )
                 _items.postValue(Success(items))
@@ -349,7 +349,11 @@ class PromoUsageViewModel @Inject constructor(
 
                 val updatedItems = currentItems.map { item ->
                     if (item is VoucherCode) {
-                        item.copy(errorMessage = "", voucher = validatedVoucher)
+                        item.copy(
+                            userInputVoucherCode = voucherCode,
+                            errorMessage = "Tidak ditemukan",
+                            voucher = null
+                        )
                     } else {
                         item
                     }
