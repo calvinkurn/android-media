@@ -3,10 +3,12 @@ package com.tokopedia.productcard.layout.label
 import android.content.Context
 import android.view.View
 import android.widget.ImageView
+import android.widget.Space
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setMargin
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.R
 import com.tokopedia.productcard.utils.applyConstraintSet
@@ -19,7 +21,7 @@ import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 
-internal class LabelLayoutStrategyReposition : LabelLayoutStrategy {
+internal class LabelLayoutStrategyGridReposition : LabelLayoutStrategy {
     override fun renderLabelReposition(
         labelRepositionBackground: ImageView?,
         labelReposition: Typography?,
@@ -45,7 +47,7 @@ internal class LabelLayoutStrategyReposition : LabelLayoutStrategy {
         context: Context,
         productCardModel: ProductCardModel,
     ): Int {
-        return if (productCardModel.isShowLabelGimmick()) {
+        return if (!productCardModel.isShowLabelOverlay() && productCardModel.isShowLabelGimmick()) {
             val labelGimmick = productCardModel.getLabelGimmick()
 
             if (labelGimmick != null && labelGimmick.title.isNotEmpty())
@@ -71,7 +73,8 @@ internal class LabelLayoutStrategyReposition : LabelLayoutStrategy {
         context: Context,
         productCardModel: ProductCardModel,
     ): Int {
-        val hasLabelBestSeller = productCardModel.isShowLabelBestSeller()
+        val hasLabelBestSeller = !productCardModel.isShowLabelOverlay()
+            && productCardModel.isShowLabelBestSeller()
 
         return if (hasLabelBestSeller)
             context.resources.getDimensionPixelSize(R.dimen.product_card_label_best_seller_height) +
@@ -83,7 +86,8 @@ internal class LabelLayoutStrategyReposition : LabelLayoutStrategy {
         context: Context,
         productCardModel: ProductCardModel,
     ): Int {
-        val hasLabelBestSeller = productCardModel.isShowLabelBestSeller()
+        val hasLabelBestSeller = !productCardModel.isShowLabelOverlay()
+            && productCardModel.isShowLabelBestSeller()
 
         return if (hasLabelBestSeller)
             context.resources.getDimensionPixelSize(R.dimen.product_card_content_margin_top)
@@ -259,7 +263,8 @@ internal class LabelLayoutStrategyReposition : LabelLayoutStrategy {
         labelCampaign: Typography?,
         productCardModel: ProductCardModel
     ) {
-        val isShowCampaign = !productCardModel.isShowLabelOverlay()
+        val isShowCampaign = !productCardModel.isShowLabelOverlay() &&
+            productCardModel.isShowLabelCampaign()
         renderLabelCampaign(
             isShowCampaign,
             labelCampaignBackground,
@@ -302,5 +307,17 @@ internal class LabelLayoutStrategyReposition : LabelLayoutStrategy {
         } else {
             labelProductStatus?.hide()
         }
+    }
+
+    override fun renderSpaceCampaignBestSeller(
+        space: Space?,
+        productCardModel: ProductCardModel,
+    ) {
+        val isShowCampaign = !productCardModel.isShowLabelOverlay() &&
+            productCardModel.isShowLabelCampaign()
+        val isShowBestSeller = !productCardModel.isShowLabelOverlay()
+            && productCardModel.isShowLabelBestSeller()
+        val isShowCampaignOrBestSeller = isShowCampaign || isShowBestSeller
+        space?.showWithCondition(isShowCampaignOrBestSeller)
     }
 }
