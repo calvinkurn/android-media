@@ -28,8 +28,6 @@ import com.tokopedia.buyerorderdetail.presentation.uistate.BuyerOrderDetailUiSta
 import com.tokopedia.buyerorderdetail.presentation.uistate.OrderInsuranceUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.OrderResolutionTicketStatusUiState
 import com.tokopedia.recommendation_widget_common.R
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.remoteconfig.RemoteConfigKey
 
 @Suppress("UNCHECKED_CAST")
 open class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailTypeFactory) :
@@ -215,7 +213,7 @@ open class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailType
         context: Context?,
         productListHeaderUiModel: ProductListUiModel.ProductListHeaderUiModel
     ) {
-        if (productListHeaderUiModel.shouldShow(context) add(productListHeaderUiModel)
+        if (productListHeaderUiModel.shouldShow(context)) add(productListHeaderUiModel)
     }
 
     private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addTickerDetailsSection(
