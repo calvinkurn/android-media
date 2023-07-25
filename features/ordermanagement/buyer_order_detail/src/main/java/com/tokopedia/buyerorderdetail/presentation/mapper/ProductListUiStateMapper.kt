@@ -15,7 +15,6 @@ import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.StringRes
 import com.tokopedia.buyerorderdetail.presentation.model.TickerUiModel
 import com.tokopedia.buyerorderdetail.presentation.uistate.ProductListUiState
-import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isZero
@@ -379,7 +378,6 @@ object ProductListUiStateMapper {
          * collapsed. The addOnList contains the order-level addons UI models which
          * limited by the MAX_PRODUCT_WHEN_COLLAPSED minus the number of mapped bundled and non-bundled product.
          */
-        // remainingSlot = 1 - 0 - 1 = -1
         val (numOfRemovedAddOn, addOnList) = getAddonsSectionOrderLevel(
             addonInfo = addonInfo,
             collapseProductList = collapseProductList,
@@ -613,9 +611,9 @@ object ProductListUiStateMapper {
         return mappedAddOn?.run {
             if (collapseProductList) {
                 if (remainingSlot.isZero()) {
-                    Int.ONE to null
+                    addonsItemList.size to null
                 } else {
-                    (Int.ONE - remainingSlot).coerceAtLeast(Int.ZERO) to this
+                    (addonsItemList.size - remainingSlot).coerceAtLeast(Int.ZERO) to this
                 }
             } else {
                 Int.ZERO to this
