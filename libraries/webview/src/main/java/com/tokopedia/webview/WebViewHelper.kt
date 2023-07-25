@@ -78,7 +78,7 @@ object WebViewHelper {
         }
         if (whiteListedDomains.isEnabled) {
             whiteListedDomains.domains.forEach {
-                if (domain.endsWith(it)) {
+                if (domain == it || domain.endsWith(".$it")) {
                     return true
                 }
             }
