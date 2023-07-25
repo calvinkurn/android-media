@@ -180,6 +180,13 @@ private const val ACE_SEARCH_PRODUCT_QUERY = """
             }
             wishlist
           }
+          violation {
+            headerText
+            descriptionText
+            imageURL
+            ctaURL
+            buttonText
+          }
         }
       }
     }
