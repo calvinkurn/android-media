@@ -332,8 +332,6 @@ class PromoUsageViewModel @Inject constructor(
             dispatchers.io,
             block = {
                 //TODO implement gql call to validate voucher code
-                delay(1_000)
-
                 val validatedVoucher = Voucher(
                     131,
                     100_000,
@@ -368,7 +366,20 @@ class PromoUsageViewModel @Inject constructor(
     }
 
     fun onVoucherCodeClearIconClick() {
+        val currentItems = items.value?.currentItemsOrEmpty() ?: return
+        val updatedItems = currentItems.map { item ->
+            if (item is VoucherCode) {
+                item.copy(
+                    userInputVoucherCode = "",
+                    errorMessage = "",
+                    voucher = null
+                )
+            } else {
+                item
+            }
+        }
 
+        _items.postValue(Success(updatedItems))
     }
 
     private fun Result<List<DelegateAdapterItem>>.currentItemsOrEmpty(): List<DelegateAdapterItem> {
