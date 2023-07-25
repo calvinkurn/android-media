@@ -32,15 +32,6 @@ class FeedFollowProfileAdapterDelegate private constructor() {
             holder.bind(item)
         }
 
-        override fun onBindViewHolderWithPayloads(
-            item: FeedFollowProfileAdapter.Model.Profile,
-            holder: FeedFollowProfileViewHolder.Profile,
-            payloads: Bundle
-        ) {
-            super.onBindViewHolderWithPayloads(item, holder, payloads)
-            holder.bind(item, payloads)
-        }
-
         override fun onCreateViewHolder(
             parent: ViewGroup,
             basicView: View

@@ -1,6 +1,5 @@
 package com.tokopedia.feedplus.presentation.adapter.viewholder
 
-import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,7 +15,6 @@ import com.tokopedia.feedplus.presentation.adapter.FeedFollowProfileAdapter
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.presentation.adapter.listener.FeedFollowRecommendationListener
-import com.tokopedia.feedplus.presentation.adapter.util.FeedFollowProfilePayloadHelper
 import com.tokopedia.feedplus.presentation.model.FeedFollowRecommendationModel
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.hide
@@ -94,7 +92,7 @@ class FeedFollowProfileViewHolder private constructor() {
 
             mProfile = model
 
-            /** resume & pause video when user swipe the recommendation */
+            /** resume & pause video when user swipe the recommendation (left-right) / content (up-down) */
             if (model.isSelected) {
                 player.start(model.data.videoUrl, isMute = false)
                 followRecommendationListener.onImpressProfile(model.data)
@@ -117,20 +115,6 @@ class FeedFollowProfileViewHolder private constructor() {
             }
 
             setupListener(model)
-        }
-
-        /** resume & pause video when user swipe the content up & down */
-        fun bind(
-            model: FeedFollowProfileAdapter.Model.Profile,
-            payloads: Bundle
-        ) {
-            if (FeedFollowProfilePayloadHelper.isPlayVideo(payloads)) {
-                if (mProfile?.isSelected == true) {
-                    player.resume(shouldReset = true)
-                }
-            } else {
-                player.stop()
-            }
         }
 
         private fun setupListener(model: FeedFollowProfileAdapter.Model.Profile) {

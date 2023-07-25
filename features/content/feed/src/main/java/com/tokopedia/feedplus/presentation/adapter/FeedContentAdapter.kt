@@ -147,7 +147,7 @@ class FeedContentAdapter(
                 holder.bind(item.data)
             }
             holder is FeedFollowRecommendationViewHolder && item.data is FeedFollowRecommendationModel -> {
-                holder.bind(item.data)
+                holder.bind(item)
             }
             holder is LoadingMoreViewHolder && item.data is LoadingMoreModel -> {
                 holder.bind(item.data)

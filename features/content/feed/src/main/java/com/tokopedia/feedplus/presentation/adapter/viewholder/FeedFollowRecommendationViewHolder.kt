@@ -14,7 +14,6 @@ import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloads
 import com.tokopedia.feedplus.presentation.adapter.itemdecoration.FeedFollowProfileItemDecoration
 import com.tokopedia.feedplus.presentation.adapter.layoutmanager.FeedFollowProfileLayoutManager
 import com.tokopedia.feedplus.presentation.adapter.listener.FeedFollowRecommendationListener
-import com.tokopedia.feedplus.presentation.adapter.util.FeedFollowProfilePayloadHelper
 import com.tokopedia.feedplus.presentation.model.FeedFollowRecommendationModel
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 
@@ -55,19 +54,15 @@ class FeedFollowRecommendationViewHolder(
                 if (profileAdapter.itemCount == 0) return
                 if (newState != RecyclerView.SCROLL_STATE_IDLE) return
 
-                setupProfileList(selectedPosition = getSelectedPosition())
+                setupProfileList(selectedPosition = getSelectedPosition(), isViewHolderSelected = true)
             }
         })
     }
 
-    override fun bind(element: FeedFollowRecommendationModel?) {
-        mData = element
+    fun bind(item: FeedContentAdapter.Item) {
+        val element = item.data as FeedFollowRecommendationModel
 
-        mData?.let { model ->
-            setupHeader(model)
-            setupProfileList(model, getSelectedPosition())
-            setupEmptyLayout()
-        }
+        bind(element, item.isSelected)
     }
 
     fun bind(item: FeedContentAdapter.Item, payloads: MutableList<Any>) {
@@ -86,12 +81,22 @@ class FeedFollowRecommendationViewHolder(
     override fun bind(element: FeedFollowRecommendationModel?, payloads: MutableList<Any>) {
         element?.let {
             if (payloads.contains(FeedViewHolderPayloadActions.FEED_POST_SELECTED)) {
-                forcePlayVideo()
+                bind(it, isViewHolderSelected = true)
             }
 
             if (payloads.contains(FeedViewHolderPayloadActions.FEED_POST_NOT_SELECTED)) {
-                forceStopVideo()
+                bind(it, isViewHolderSelected = false)
             }
+        }
+    }
+
+    private fun bind(element: FeedFollowRecommendationModel, isViewHolderSelected: Boolean) {
+        mData = element
+
+        mData?.let { model ->
+            setupHeader(model)
+            setupProfileList(model, getSelectedPosition(), isViewHolderSelected)
+            setupEmptyLayout()
         }
     }
 
@@ -102,7 +107,8 @@ class FeedFollowRecommendationViewHolder(
 
     private fun setupProfileList(
         model: FeedFollowRecommendationModel? = mData,
-        selectedPosition: Int
+        selectedPosition: Int,
+        isViewHolderSelected: Boolean,
     ) {
         if (model == null) return
 
@@ -117,7 +123,7 @@ class FeedFollowRecommendationViewHolder(
         val mappedList = model.data.mapIndexed { idx, item ->
             FeedFollowProfileAdapter.Model.Profile(
                 data = item,
-                isSelected = idx == finalSelectedPosition,
+                isSelected = if (isViewHolderSelected) idx == finalSelectedPosition else false,
             )
         }
 
@@ -143,17 +149,13 @@ class FeedFollowRecommendationViewHolder(
         }
     }
 
-    private fun forcePlayVideo() {
-        profileAdapter.notifyItemChanged(getSelectedPosition(), FeedFollowProfilePayloadHelper.createPayload(isPlayVideo = true))
-    }
-
-    private fun forceStopVideo() {
-        profileAdapter.notifyItemChanged(getSelectedPosition(), FeedFollowProfilePayloadHelper.createPayload(isPlayVideo = false))
-    }
-
     private fun getSelectedPosition(): Int {
         val snappedView = snapHelper.findSnapView(layoutManager) ?: return 0
         return binding.rvFollowRecommendation.getChildAdapterPosition(snappedView)
+    }
+
+    override fun bind(element: FeedFollowRecommendationModel?) {
+        /** mandatory to be overriden but not used */
     }
 
     companion object {
