@@ -904,7 +904,6 @@ class FlightBookingFragment : BaseDaggerFragment() {
             ?: listOf<FlightBookingPassengerModel>()
         bookingViewModel.setPassengerModels(passengerModels)
 
-        // TODO: [Misael] check set & get parcelable
         val priceData = args.getParcelableArrayList(EXTRA_PRICE_DATA)
             ?: listOf<FlightPriceDetailEntity>()
         bookingViewModel.setPriceData(priceData)

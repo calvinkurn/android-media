@@ -77,6 +77,7 @@ class FlightBookingPriceAdapter(
         for (item in routePriceList) totalPrice += item.priceNumeric
         for (item in othersPriceList) totalPrice += item.priceNumeric
         for (item in amenityPriceList) totalPrice += item.priceNumeric
+        for (item in adminPriceList) totalPrice += item.priceNumeric
         priceListener?.onPriceChangeListener(FlightCurrencyFormatUtil.convertToIdrPrice(totalPrice), totalPrice)
     }
 
@@ -84,6 +85,7 @@ class FlightBookingPriceAdapter(
         var totalPrice = 0
         for (item in routePriceList) totalPrice += item.priceNumeric
         for (item in othersPriceList) totalPrice += item.priceNumeric
+        for (item in adminPriceList) totalPrice += item.priceNumeric
         return totalPrice
     }
 
