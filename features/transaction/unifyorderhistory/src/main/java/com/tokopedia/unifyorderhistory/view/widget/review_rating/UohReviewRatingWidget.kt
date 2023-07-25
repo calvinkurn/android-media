@@ -3,6 +3,7 @@
 package com.tokopedia.unifyorderhistory.view.widget.review_rating
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -10,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
@@ -46,7 +48,7 @@ import kotlinx.coroutines.delay
 
 private const val LABEL_WEIGHT = 1f
 private const val REVIEW_RATING_WIDGET_STAR_SIZE = 24
-private const val REVIEW_RATING_WIDGET_SPACE_IN_BETWEEN = 4
+private const val REVIEW_RATING_WIDGET_SPACE_IN_BETWEEN = 2
 private const val SPACER_WIDTH = 16
 private const val SPACER_HEIGHT = 0
 private const val CONTENT_PADDING = 8
@@ -122,10 +124,11 @@ private fun DrawContent(
             )
         }
     )
+    val cardBorderColor = NestTheme.colors.NN._50
 
     NestCard(
-        modifier = modifier,
-        type = NestCardType.Border
+        modifier = modifier.border(1.dp, cardBorderColor, RoundedCornerShape(8.dp)),
+        type = NestCardType.NoBorder
     ) {
         SubcomposeLayout(modifier = Modifier.fillMaxWidth()) { constraints ->
             val contentPlaceable = createContentSubCompose(

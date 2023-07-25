@@ -2,6 +2,7 @@ package com.tokopedia.unifyorderhistory.view.widget.review_rating
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
@@ -17,24 +18,26 @@ val previewConfig: MutableState<UohReviewRatingWidgetConfig> = mutableStateOf(cr
 @Composable
 private fun UohReviewRatingWidgetPreview() {
     NestTheme {
-        Column(modifier = Modifier.fillMaxWidth()) {
-            UohReviewRatingWidget(config = previewConfig.value)
-            NestButton(
-                text = "Show GoPay with stars",
-                onClick = { previewConfig.value = createGoPayWithStars() }
-            )
-            NestButton(
-                text = "Show interactive stars",
-                onClick = { previewConfig.value = createInteractiveStars() }
-            )
-            NestButton(
-                text = "Show GoPay without stars",
-                onClick = { previewConfig.value = createGoPayWithoutStars() }
-            )
-            NestButton(
-                text = "Hide",
-                onClick = { previewConfig.value = previewConfig.value.copy(show = false) }
-            )
+        Surface {
+            Column(modifier = Modifier.fillMaxWidth()) {
+                UohReviewRatingWidget(config = previewConfig.value)
+                NestButton(
+                    text = "Show GoPay with stars",
+                    onClick = { previewConfig.value = createGoPayWithStars() }
+                )
+                NestButton(
+                    text = "Show interactive stars",
+                    onClick = { previewConfig.value = createInteractiveStars() }
+                )
+                NestButton(
+                    text = "Show GoPay without stars",
+                    onClick = { previewConfig.value = createGoPayWithoutStars() }
+                )
+                NestButton(
+                    text = "Hide",
+                    onClick = { previewConfig.value = previewConfig.value.copy(show = false) }
+                )
+            }
         }
     }
 }
