@@ -3,13 +3,16 @@ package com.tokopedia.promocheckoutmarketplace.presentation.viewmodel
 import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider
 import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.providePromoListWithMultipleClashingBoPromo
 import com.tokopedia.promocheckoutmarketplace.data.response.CouponListRecommendationResponse
+import com.tokopedia.promocheckoutmarketplace.data.response.SectionTab
 import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoListItemUiModel
 import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoRecommendationUiModel
+import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoTabUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
 import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.just
+import org.junit.Assert
 import org.junit.Test
 
 class PromoCheckoutViewModelUICallbackTest : BasePromoCheckoutViewModelTest() {
@@ -154,6 +157,7 @@ class PromoCheckoutViewModelUICallbackTest : BasePromoCheckoutViewModelTest() {
 
         // WHEN
         viewModel.updatePromoListAfterClickPromoItem(promoListItemUiModel)
+        testDispatchers.coroutineDispatcher.advanceUntilIdle()
 
         // THEN
         assert(viewModel.fragmentUiModel.value?.uiState?.shouldShowTickerBoClashing == true)
@@ -294,6 +298,37 @@ class PromoCheckoutViewModelUICallbackTest : BasePromoCheckoutViewModelTest() {
         // THEN
         assert(!(viewModel.promoListUiModel.value?.get(1) as PromoListItemUiModel).uiState.isSelected)
         assert((viewModel.promoListUiModel.value?.get(2) as PromoListItemUiModel).uiState.isSelected)
+    }
+
+    @Test
+    fun `WHEN apply recommended promo has secondary promo THEN select secondary promo code`() {
+        // GIVEN
+        val response = GetPromoListDataProvider.provideGetPromoListResponseBoAndMvcSecondaryRecommended()
+        coEvery { getCouponListRecommendationUseCase.setParams(any(), any()) } just Runs
+        coEvery { getCouponListRecommendationUseCase.execute(any(), any()) } answers {
+            firstArg<(CouponListRecommendationResponse) -> Unit>().invoke(response)
+        }
+        viewModel.getPromoList(PromoRequest(), "")
+
+        every { analytics.eventClickPilihPromoRecommendation(any(), any()) } just Runs
+        every { analytics.eventClickPilihOnRecommendation(any(), any(), any()) } just Runs
+
+        // WHEN
+        val initialSelectedPromoCount = viewModel.promoListUiModel.value?.count {
+            it is PromoListItemUiModel && it.uiState.isSelected
+        }
+        viewModel.applyRecommendedPromo()
+
+        // THEN
+        val selectedBoPromo = viewModel.promoListUiModel.value?.firstOrNull {
+            it is PromoListItemUiModel && it.uiState.isRecommended && it.uiState.isSelected && it.uiState.isBebasOngkir
+        }
+        val selectedMvcWithSecondaryPromo = viewModel.promoListUiModel.value?.firstOrNull {
+            it is PromoListItemUiModel && it.uiState.isRecommended && it.uiState.isSelected && it.uiData.useSecondaryPromo
+        }
+        assert(initialSelectedPromoCount == 0)
+        Assert.assertNotNull(selectedBoPromo)
+        Assert.assertNotNull(selectedMvcWithSecondaryPromo)
     }
 
     @Test
@@ -440,6 +475,7 @@ class PromoCheckoutViewModelUICallbackTest : BasePromoCheckoutViewModelTest() {
 
         // WHEN
         viewModel.updatePromoListAfterClickPromoItem(selectedPromoItem)
+        testDispatchers.coroutineDispatcher.advanceUntilIdle()
 
         // THEN
         val lastModifiedData = viewModel.tmpUiModel.value as? Update<*>
@@ -479,5 +515,20 @@ class PromoCheckoutViewModelUICallbackTest : BasePromoCheckoutViewModelTest() {
         assert(lastModifiedData != null)
         assert(lastModifiedData?.data is PromoListItemUiModel)
         assert((lastModifiedData?.data as PromoListItemUiModel).uiData.errorMessage.isBlank())
+    }
+
+    @Test
+    fun `WHEN promo tab is changed THEN set current tab to selected tab`() {
+        // Given
+        val promoTabUiModel = PromoTabUiModel(
+            uiData = PromoTabUiModel.UiData(tabs = listOf(SectionTab(id = "1", title = "title"))),
+            uiState = PromoTabUiModel.UiState()
+        )
+
+        // When
+        viewModel.changeSelectedTab(promoTabUiModel)
+
+        // Then
+        assert(viewModel.promoTabUiModel.value == promoTabUiModel)
     }
 }

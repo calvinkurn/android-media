@@ -60,6 +60,8 @@ class ThankYouFragmentWithdrawal : BaseDaggerFragment(), TickerCallback {
             ) {
                 withdrawalRequest = it.getParcelable(ARG_WITHDRAWAL_REQUEST) ?: WithdrawalRequest()
                 withdrawalResponse = it.getParcelable(ARG_SUBMIT_WITHDRAWAL_RESPONSE) ?: SubmitWithdrawalResponse()
+
+                val bankImage = withdrawalRequest.bankAccount.bankImageUrl
             } else {
                 activity?.finish()
             }
@@ -92,13 +94,24 @@ class ThankYouFragmentWithdrawal : BaseDaggerFragment(), TickerCallback {
                 )
                 tvAdminFees.visible()
             }
-            tvAccountNumber.text = bankAccount.accountNo + "-" + bankAccount.accountName
+            tvAccountNumber.text =
+                if (bankAccount.accountNo?.isNotEmpty() == true && bankAccount.accountName?.isNotEmpty() == true)
+                    context?.getString(
+                        R.string.swd_account_number_name,
+                        bankAccount.accountNo,
+                        bankAccount.accountName
+                ) ?: ""
+                else if (bankAccount.accountNo?.isNotEmpty() == true) bankAccount.accountNo
+                else bankAccount.accountName
+
             tvTotalWithdrawalAmount.text = CurrencyFormatHelper.convertToRupiah(withdrawalRequest.withdrawal.toString())
             showRekeningWidgets(activity)
         }
         btnCta.setOnClickListener { onCtaClick() }
         btnCta.text = withdrawalResponse.ctaWording
+        ivBankImage.setImageUrl(withdrawalRequest.bankAccount.bankImageUrl ?: "")
         tvWithdrawalTitle.text = withdrawalResponse.title
+
         setContentImage()
         sendPageImpressionAnalytics()
     }
@@ -206,7 +219,7 @@ class ThankYouFragmentWithdrawal : BaseDaggerFragment(), TickerCallback {
         val spannableString = SpannableString(tryNowStr)
         val startIndex = 0
         val endIndex = spannableString.length
-        val color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
+        val color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
         spannableString.setSpan(color, startIndex, endIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         spannableString.setSpan(
             object : ClickableSpan() {

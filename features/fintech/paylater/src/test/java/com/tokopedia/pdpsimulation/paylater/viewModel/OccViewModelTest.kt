@@ -194,6 +194,7 @@ class OccViewModelTest {
             "",
             null,
             null,
+            AdditionalInformation(),
             false,
         )
         val basePayLaterOptimizedModel = PaylaterGetOptimizedModel(listOf(checkoutData), "")

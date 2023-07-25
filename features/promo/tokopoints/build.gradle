@@ -15,6 +15,11 @@ buildscript {
         classpath rootProject.ext.miscDependencies.hansel
     }
 }
+android {
+    namespace 'com.tokopedia.tokopoints'
+    testNamespace 'com.tokopedia.tokopoints.test'
+}
+
 dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
     implementation projectOrAar(rootProject.ext.features.resourcesCommon)
@@ -60,7 +65,6 @@ dependencies {
 
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.miscDependencies.dagger
-    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
     kapt rootProject.ext.miscDependencies.daggerCompiler
 
     implementation rootProject.ext.miscDependencies.viewModel

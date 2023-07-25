@@ -14,6 +14,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_IDLE
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.kotlin.extensions.view.ZERO
@@ -210,10 +211,14 @@ open class GalleryFragment @Inject constructor(
         viewModel.medias.observe(viewLifecycleOwner) {
             if (it.isNotEmpty()) {
                 if (uiModel.hasChangeAlbum) {
-                    mLayoutManager.scrollToPosition(Int.ZERO)
+                    val isNotComputingLayout = binding?.lstMedia?.isComputingLayout != true
+                    val isRecyclerViewIdle = binding?.lstMedia?.scrollState == SCROLL_STATE_IDLE
 
-                    featureAdapter.setItems(it)
-                    featureAdapter.notifyDataSetChanged()
+                    if (isNotComputingLayout && isRecyclerViewIdle) {
+                        mLayoutManager.scrollToPosition(Int.ZERO)
+                        featureAdapter.setItems(it)
+                        featureAdapter.notifyDataSetChanged()
+                    }
                 } else {
                     featureAdapter.addItems(it)
                     featureAdapter.notifyItemRangeInserted(featureAdapter.getItems().size, it.size)

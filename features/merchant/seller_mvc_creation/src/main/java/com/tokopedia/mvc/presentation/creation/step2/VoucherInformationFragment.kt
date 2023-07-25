@@ -62,7 +62,6 @@ import com.tokopedia.mvc.util.tracker.VoucherInfoTracker
 import com.tokopedia.utils.date.DateUtil
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
@@ -379,7 +378,7 @@ class VoucherInformationFragment : BaseDaggerFragment() {
                 getString(R.string.smvc_creation_step_two_out_of_three_sub_title_label)
             }
             setNavigationOnClickListener {
-                viewModel.processEvent(VoucherCreationStepTwoEvent.TapBackButton)
+                onFragmentBackPressed()
                 tracker.sendClickKembaliArrowEvent(voucherConfiguration.voucherId)
             }
         }
@@ -974,6 +973,7 @@ class VoucherInformationFragment : BaseDaggerFragment() {
         } else {
             navigateToVoucherSummaryPage(voucherConfiguration)
         }
+        activity?.finish()
     }
 
     private fun navigateToNextStep(

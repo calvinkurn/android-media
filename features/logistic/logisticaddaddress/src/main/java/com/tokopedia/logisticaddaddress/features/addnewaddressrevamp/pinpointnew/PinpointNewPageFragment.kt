@@ -49,6 +49,7 @@ import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
 import com.tokopedia.logisticCommon.data.constant.AddressConstant.EXTRA_CITY_NAME
 import com.tokopedia.logisticCommon.data.constant.AddressConstant.EXTRA_DISTRICT_NAME
 import com.tokopedia.logisticCommon.data.constant.AddressConstant.EXTRA_IS_GET_PINPOINT_ONLY
+import com.tokopedia.logisticCommon.data.constant.AddressConstant.EXTRA_WH_DISTRICT_ID
 import com.tokopedia.logisticCommon.data.constant.LogisticConstant.EXTRA_ADDRESS_NEW
 import com.tokopedia.logisticCommon.data.constant.PinpointSource
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
@@ -61,6 +62,7 @@ import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_FROM_ADDRESS_FORM
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_GMS_AVAILABILITY
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_IS_EDIT
+import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_IS_EDIT_WAREHOUSE
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_IS_POLYGON
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_IS_POSITIVE_FLOW
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_LAT
@@ -127,6 +129,9 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
 
     private var permissionState: Int = PERMISSION_NOT_DEFINED
     private var isAccessAppPermissionFromSettings: Boolean = false
+
+    private var isEditWarehouse: Boolean = false
+    private var whDistrictId: Long = 0
 
     private val requiredPermissions: Array<String>
         get() = arrayOf(
@@ -456,6 +461,8 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
                 districtName = it.getString(EXTRA_DISTRICT_NAME),
                 cityName = it.getString(EXTRA_CITY_NAME)
             )
+            isEditWarehouse = it.getBoolean(EXTRA_IS_EDIT_WAREHOUSE, false)
+            whDistrictId = it.getLong(EXTRA_WH_DISTRICT_ID, 0)
 
             getGmsAvailability(it)
         }
@@ -551,7 +558,7 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
                     }
                 }
                 else -> {
-                    //no-op
+                    // no-op
                 }
             }
         }
@@ -575,7 +582,7 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
                     }
                 }
                 else -> {
-                    //no-op
+                    // no-op
                 }
             }
         }
@@ -587,7 +594,7 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
                     viewModel.getDistrictData(it.data.latitude, it.data.longitude)
                 }
                 else -> {
-                    //no-op
+                    // no-op
                 }
             }
         }
@@ -598,7 +605,7 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
                     showBoundaries(it.data.geometry.listCoordinates)
                 }
                 else -> {
-                    //no-op
+                    // no-op
                 }
             }
         }
@@ -796,7 +803,18 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
 
     private fun onChoosePinpoint() {
         if (viewModel.isEditOrGetPinPointOnly) {
-            setResultAddressFormNegative()
+            if (isEditWarehouse && whDistrictId != 0L && whDistrictId != viewModel.getAddress().districtId) {
+                view?.let {
+                    Toaster.build(
+                        it,
+                        getString(R.string.toaster_not_avail_shop_loc),
+                        Toaster.LENGTH_SHORT,
+                        type = Toaster.TYPE_ERROR
+                    ).show()
+                }
+            } else {
+                setResultAddressFormNegative()
+            }
         } else {
             if (viewModel.isPositiveFlow) {
                 goToAddressForm()
@@ -924,25 +942,28 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
                 .addOnFailureListener(
                     context,
                     OnFailureListener { e ->
-                        when ((e as ApiException).statusCode) {
-                            LocationSettingsStatusCodes.RESOLUTION_REQUIRED ->
+                        if (e is ApiException) {
+                            when (e.statusCode) {
+                                LocationSettingsStatusCodes.RESOLUTION_REQUIRED ->
 
-                                try {
-                                    // Show the dialog by calling startResolutionForResult(), and check the
-                                    // result in onActivityResult().
-                                    val rae = e as ResolvableApiException
-                                    val intentSenderRequest = IntentSenderRequest.Builder(
-                                        rae.resolution.intentSender
-                                    ).build()
-                                    gpsResultResolutionContract.launch(intentSenderRequest)
-                                } catch (sie: IntentSender.SendIntentException) {
-                                    sie.printStackTrace()
+                                    try {
+                                        // Show the dialog by calling startResolutionForResult(), and check the
+                                        // result in onActivityResult().
+                                        if (e is ResolvableApiException) {
+                                            val intentSenderRequest = IntentSenderRequest.Builder(
+                                                e.resolution.intentSender
+                                            ).build()
+                                            gpsResultResolutionContract.launch(intentSenderRequest)
+                                        }
+                                    } catch (sie: IntentSender.SendIntentException) {
+                                        sie.printStackTrace()
+                                    }
+
+                                LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE -> {
+                                    val errorMessage =
+                                        "Location settings are inadequate, and cannot be " + "fixed here. Fix in Settings."
+                                    Toast.makeText(context, errorMessage, Toast.LENGTH_LONG).show()
                                 }
-
-                            LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE -> {
-                                val errorMessage =
-                                    "Location settings are inadequate, and cannot be " + "fixed here. Fix in Settings."
-                                Toast.makeText(context, errorMessage, Toast.LENGTH_LONG).show()
                             }
                         }
                     }
@@ -1259,6 +1280,8 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
                     )
                     putString(EXTRA_DISTRICT_NAME, extra.getString(EXTRA_DISTRICT_NAME))
                     putString(EXTRA_CITY_NAME, extra.getString(EXTRA_CITY_NAME))
+                    putBoolean(EXTRA_IS_EDIT_WAREHOUSE, extra.getBoolean(EXTRA_IS_EDIT_WAREHOUSE))
+                    putLong(EXTRA_WH_DISTRICT_ID, extra.getLong(EXTRA_WH_DISTRICT_ID))
                 }
             }
         }
