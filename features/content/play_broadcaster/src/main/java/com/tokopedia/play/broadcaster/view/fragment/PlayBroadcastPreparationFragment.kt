@@ -58,7 +58,8 @@ import com.tokopedia.play.broadcaster.ui.model.PlayBroadcastPreparationBannerMod
 import com.tokopedia.play.broadcaster.ui.model.PlayBroadcastPreparationBannerModel.Companion.TYPE_DASHBOARD
 import com.tokopedia.play.broadcaster.ui.model.PlayBroadcastPreparationBannerModel.Companion.TYPE_SHORTS
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
-import com.tokopedia.play.broadcaster.ui.model.livetovod.TickerBottomSheetPageType
+import com.tokopedia.play.broadcaster.ui.model.livetovod.TickerBottomSheetPage
+import com.tokopedia.play.broadcaster.ui.model.livetovod.TickerBottomSheetType
 import com.tokopedia.play.broadcaster.ui.model.livetovod.TickerBottomSheetUiModel
 import com.tokopedia.play.broadcaster.ui.model.page.PlayBroPageSource
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkState
@@ -414,7 +415,10 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                 childFragment.setupListener(object : PlayBroLiveToVodBottomSheet.Listener {
                     override fun onButtonActionPressed() {
                         parentViewModel.submitAction(
-                            PlayBroadcastAction.SetLiveToVodPref(TickerBottomSheetPageType.BOTTOM_SHEET)
+                            PlayBroadcastAction.SetLiveToVodPref(
+                                type = TickerBottomSheetType.BOTTOM_SHEET,
+                                page = TickerBottomSheetPage.LIVE_PREPARATION,
+                            )
                         )
                     }
                 })
@@ -997,10 +1001,10 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         prev: TickerBottomSheetUiModel?,
         state: TickerBottomSheetUiModel,
     ) {
-        if (prev == state) return
+        if (prev == state || state.page != TickerBottomSheetPage.LIVE_PREPARATION) return
 
         when (state.type) {
-            TickerBottomSheetPageType.BOTTOM_SHEET -> openDisableLiveToVodBottomSheet()
+            TickerBottomSheetType.BOTTOM_SHEET -> openDisableLiveToVodBottomSheet()
             else -> return
         }
     }

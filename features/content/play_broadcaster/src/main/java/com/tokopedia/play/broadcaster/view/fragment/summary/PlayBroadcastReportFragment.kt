@@ -22,7 +22,8 @@ import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastSummaryEvent
 import com.tokopedia.play.broadcaster.ui.model.TrafficMetricType
 import com.tokopedia.play.broadcaster.ui.model.TrafficMetricUiModel
 import com.tokopedia.play.broadcaster.ui.model.isGameParticipants
-import com.tokopedia.play.broadcaster.ui.model.livetovod.TickerBottomSheetPageType
+import com.tokopedia.play.broadcaster.ui.model.livetovod.TickerBottomSheetPage
+import com.tokopedia.play.broadcaster.ui.model.livetovod.TickerBottomSheetType
 import com.tokopedia.play.broadcaster.ui.model.livetovod.TickerBottomSheetUiModel
 import com.tokopedia.play.broadcaster.ui.state.ChannelSummaryUiState
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroInteractiveBottomSheet
@@ -157,7 +158,7 @@ class PlayBroadcastReportFragment @Inject constructor(
     private fun checkTickerLiveToVodConfig() {
         parentViewModel.submitAction(
             PlayBroadcastAction.GetTickerBottomSheetConfig(
-                page = TickerBottomSheetPageType.TICKER,
+                page = TickerBottomSheetPage.LIVE_REPORT,
             )
         )
     }
@@ -206,10 +207,10 @@ class PlayBroadcastReportFragment @Inject constructor(
         prev: TickerBottomSheetUiModel?,
         state: TickerBottomSheetUiModel,
     ) {
-        if (prev == state) return
+        if (prev == state || state.page != TickerBottomSheetPage.LIVE_REPORT) return
 
         when (state.type) {
-            TickerBottomSheetPageType.TICKER -> openTickerDisableLiveToVod(state)
+            TickerBottomSheetType.TICKER -> openTickerDisableLiveToVod(state)
             else -> return
         }
     }
@@ -223,7 +224,8 @@ class PlayBroadcastReportFragment @Inject constructor(
                     onDismissedPressed = {
                         parentViewModel.submitAction(
                             PlayBroadcastAction.SetLiveToVodPref(
-                                TickerBottomSheetPageType.TICKER
+                                type = TickerBottomSheetType.TICKER,
+                                page = TickerBottomSheetPage.LIVE_REPORT,
                             )
                         )
                         showWithCondition(false)

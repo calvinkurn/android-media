@@ -70,10 +70,10 @@ private fun LiveToVodBottomSheetContent(
             NestTypography(
                 text = descriptionText,
                 modifier = Modifier.padding(top = 8.dp),
-                textStyle = NestTheme.typography.body1
+                textStyle = NestTheme.typography.body2
                     .copy(
                         textAlign = TextAlign.Center,
-                        color = NestTheme.colors.NN._1000,
+                        color = NestTheme.colors.NN._600,
                     ),
                 onClickText = { offset ->
                     descriptionText.getStringAnnotations(offset, offset)
@@ -101,10 +101,10 @@ private fun LiveToVodBottomSheetContent(
         NestTypography(
             text = bottomText,
             modifier = Modifier.padding(top = 8.dp, bottom = 16.dp),
-            textStyle = NestTheme.typography.body2
+            textStyle = NestTheme.typography.body3
                 .copy(
                     textAlign = TextAlign.Center,
-                    color = NestTheme.colors.NN._1000,
+                    color = NestTheme.colors.NN._600,
                 ),
             onClickText = { offset ->
                 bottomText.getStringAnnotations(offset, offset)
@@ -120,15 +120,13 @@ private fun LiveToVodBottomSheetContent(
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(start = 8.dp, end = 8.dp),
+        modifier = Modifier.fillMaxWidth(),
     ) {
         NestImage(
             source = ImageSource.Remote(source = data.imageURL),
             modifier = Modifier
-                .aspectRatio(1f / 1f)
-                .padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
+                .aspectRatio(16f / 10f)
+                .padding(start = 16.dp, end = 16.dp, bottom = 8.dp),
         )
         mainText.MainText(onActionTextPressed)
         NestButton(

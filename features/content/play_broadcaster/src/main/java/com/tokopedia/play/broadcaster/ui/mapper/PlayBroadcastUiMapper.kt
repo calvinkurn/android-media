@@ -36,7 +36,8 @@ import com.tokopedia.play.broadcaster.ui.model.interactive.GiveawayConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveSessionUiModel
 import com.tokopedia.play.broadcaster.ui.model.interactive.QuizConfigUiModel
-import com.tokopedia.play.broadcaster.ui.model.livetovod.TickerBottomSheetPageType
+import com.tokopedia.play.broadcaster.ui.model.livetovod.TickerBottomSheetPage
+import com.tokopedia.play.broadcaster.ui.model.livetovod.TickerBottomSheetType
 import com.tokopedia.play.broadcaster.ui.model.livetovod.TickerBottomSheetUiModel
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageUiModel
@@ -614,11 +615,15 @@ class PlayBroadcastUiMapper @Inject constructor(
         response: GetTickerBottomSheetResponse
     ): TickerBottomSheetUiModel = with(response.data) {
         return TickerBottomSheetUiModel(
-            page = page,
+            page = when (page) {
+                GetTickerBottomSheetResponse.PAGE_PREPARATION -> TickerBottomSheetPage.LIVE_PREPARATION
+                GetTickerBottomSheetResponse.PAGE_REPORT -> TickerBottomSheetPage.LIVE_REPORT
+                else -> TickerBottomSheetPage.UNKNOWN
+            },
             type = when (type) {
-                GetTickerBottomSheetResponse.TYPE_BOTTOM_SHEET -> TickerBottomSheetPageType.BOTTOM_SHEET
-                GetTickerBottomSheetResponse.TYPE_TICKER -> TickerBottomSheetPageType.TICKER
-                else -> TickerBottomSheetPageType.UNKNOWN
+                GetTickerBottomSheetResponse.TYPE_BOTTOM_SHEET -> TickerBottomSheetType.BOTTOM_SHEET
+                GetTickerBottomSheetResponse.TYPE_TICKER -> TickerBottomSheetType.TICKER
+                else -> TickerBottomSheetType.UNKNOWN
             },
             imageURL = imageURL,
             bottomText = TickerBottomSheetUiModel.BottomText(

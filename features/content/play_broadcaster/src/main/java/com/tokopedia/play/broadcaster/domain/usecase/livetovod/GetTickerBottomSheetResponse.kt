@@ -9,6 +9,9 @@ data class GetTickerBottomSheetResponse(
     companion object {
         const val TYPE_BOTTOM_SHEET = 1
         const val TYPE_TICKER = 2
+
+        const val PAGE_PREPARATION = "live_preparation"
+        const val PAGE_REPORT = "live_report"
     }
 }
 

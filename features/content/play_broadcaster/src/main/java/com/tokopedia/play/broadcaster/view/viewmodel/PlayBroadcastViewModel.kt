@@ -49,7 +49,8 @@ import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizFormDataUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizFormStateUiModel
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveSetupUiModel
-import com.tokopedia.play.broadcaster.ui.model.livetovod.TickerBottomSheetPageType
+import com.tokopedia.play.broadcaster.ui.model.livetovod.TickerBottomSheetPage
+import com.tokopedia.play.broadcaster.ui.model.livetovod.TickerBottomSheetType
 import com.tokopedia.play.broadcaster.ui.model.livetovod.TickerBottomSheetUiModel
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageUiModel
@@ -523,7 +524,9 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             is PlayBroadcastAction.SwitchAccount -> handleSwitchAccount(event.needLoading)
             is PlayBroadcastAction.SuccessOnBoardingUGC -> handleSuccessOnBoardingUGC()
             is PlayBroadcastAction.GetTickerBottomSheetConfig -> handleTickerBottomSheetConfig(event.page)
-            is PlayBroadcastAction.SetLiveToVodPref -> handleLiveToVodPref(event.page)
+            is PlayBroadcastAction.SetLiveToVodPref -> handleLiveToVodPref(
+                type = event.type, page = event.page
+            )
 
             /** Game */
             is PlayBroadcastAction.ClickGameOption -> handleClickGameOption(event.gameType)
@@ -699,9 +702,9 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 PlayBroadcastEvent.InitializeBroadcaster(hydraConfigStore.getBroadcastingConfig())
             )
 
-            handleTickerBottomSheetConfig(page = TickerBottomSheetPageType.BOTTOM_SHEET)
-
             _observableConfigInfo.value = NetworkResult.Success(configUiModel)
+
+            handleTickerBottomSheetConfig(page = TickerBottomSheetPage.LIVE_PREPARATION)
         }) {
             _observableConfigInfo.value = NetworkResult.Fail(it) { getBroadcasterAuthorConfig(selectedAccount) }
         }
@@ -795,24 +798,46 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }) { }
     }
 
-    private fun handleTickerBottomSheetConfig(page: TickerBottomSheetPageType) {
+    private fun handleTickerBottomSheetConfig(page: TickerBottomSheetPage) {
         viewModelScope.launchCatchError(block = {
-            val pref = when (page) {
-                TickerBottomSheetPageType.BOTTOM_SHEET -> sharedPref.getLiveToVodBottomSheetPref(selectedAccount.id)
-                TickerBottomSheetPageType.TICKER -> sharedPref.getLiveToVodTickerPref(selectedAccount.id)
-                TickerBottomSheetPageType.UNKNOWN -> false
+            val response = repo.getTickerBottomSheetConfig(GetTickerBottomSheetRequest(page))
+            val pref = when (response.type) {
+                TickerBottomSheetType.BOTTOM_SHEET -> {
+                    sharedPref.getLiveToVodBottomSheetPref(
+                        page = page.value,
+                        authorId = selectedAccount.id
+                    )
+                }
+                TickerBottomSheetType.TICKER -> {
+                    sharedPref.getLiveToVodTickerPref(
+                        page = page.value,
+                        authorId = selectedAccount.id
+                    )
+                }
+                TickerBottomSheetType.UNKNOWN -> false
             }
-            _tickerBottomSheetConfig.value = if (pref) {
-                repo.getTickerBottomSheetConfig(GetTickerBottomSheetRequest(page))
-            } else TickerBottomSheetUiModel.Empty
-        }) { }
+
+            _tickerBottomSheetConfig.value = if (pref) response else TickerBottomSheetUiModel.Empty
+        }) {
+            _tickerBottomSheetConfig.value = TickerBottomSheetUiModel.Empty
+        }
     }
 
-    private fun handleLiveToVodPref(page: TickerBottomSheetPageType) {
-        when (page) {
-            TickerBottomSheetPageType.BOTTOM_SHEET -> sharedPref.setLiveToVodBottomSheetPref(selectedAccount.id)
-            TickerBottomSheetPageType.TICKER -> sharedPref.setLiveToVodTickerPref(selectedAccount.id)
-            TickerBottomSheetPageType.UNKNOWN -> return
+    private fun handleLiveToVodPref(type: TickerBottomSheetType, page: TickerBottomSheetPage) {
+        when (type) {
+            TickerBottomSheetType.BOTTOM_SHEET -> {
+                sharedPref.setLiveToVodBottomSheetPref(
+                    page = page.value,
+                    authorId = selectedAccount.id
+                )
+            }
+            TickerBottomSheetType.TICKER -> {
+                sharedPref.setLiveToVodTickerPref(
+                    page = page.value,
+                    authorId = selectedAccount.id
+                )
+            }
+            TickerBottomSheetType.UNKNOWN -> return
         }
     }
 

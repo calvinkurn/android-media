@@ -1,8 +1,8 @@
 package com.tokopedia.play.broadcaster.ui.model.livetovod
 
 data class TickerBottomSheetUiModel(
-    val page: String,
-    val type: TickerBottomSheetPageType,
+    val type: TickerBottomSheetType,
+    val page: TickerBottomSheetPage,
     val imageURL: String,
     val bottomText: BottomText,
     val mainText: List<MainText>,
@@ -39,8 +39,8 @@ data class TickerBottomSheetUiModel(
                     description = "Test Description",
                 )
             ),
-            page = "",
-            type = TickerBottomSheetPageType.BOTTOM_SHEET,
+            page = TickerBottomSheetPage.UNKNOWN,
+            type = TickerBottomSheetType.UNKNOWN,
             imageURL = "tokopedia.com",
             bottomText = BottomText(
                 action = listOf(
@@ -54,8 +54,8 @@ data class TickerBottomSheetUiModel(
             )
         )
         val Empty = TickerBottomSheetUiModel(
-            page = TickerBottomSheetPageType.UNKNOWN.value,
-            type = TickerBottomSheetPageType.UNKNOWN,
+            page = TickerBottomSheetPage.UNKNOWN,
+            type = TickerBottomSheetType.UNKNOWN,
             imageURL = "",
             bottomText = BottomText(
                 action = listOf(),
@@ -72,9 +72,14 @@ data class TickerBottomSheetUiModel(
     }
 }
 
-enum class TickerBottomSheetPageType(val value: String) {
-    BOTTOM_SHEET("test_bottomsheet"),
-    TICKER("test_ticker"),
+enum class TickerBottomSheetPage(val value: String) {
+    LIVE_PREPARATION("live_preparation"),
+    LIVE_REPORT("live_report"),
     UNKNOWN(""),
 }
 
+enum class TickerBottomSheetType {
+    BOTTOM_SHEET,
+    TICKER,
+    UNKNOWN,
+}

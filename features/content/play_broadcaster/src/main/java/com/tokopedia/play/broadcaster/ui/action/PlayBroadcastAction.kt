@@ -7,7 +7,8 @@ import com.tokopedia.play.broadcaster.ui.model.beautification.PresetFilterUiMode
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.GameType
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizFormDataUiModel
-import com.tokopedia.play.broadcaster.ui.model.livetovod.TickerBottomSheetPageType
+import com.tokopedia.play.broadcaster.ui.model.livetovod.TickerBottomSheetPage
+import com.tokopedia.play.broadcaster.ui.model.livetovod.TickerBottomSheetType
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play_common.model.ui.QuizChoicesUiModel
 import java.util.*
@@ -30,8 +31,8 @@ sealed interface PlayBroadcastAction {
     data class GetConfiguration(val selectedType: String = TYPE_UNKNOWN) : PlayBroadcastAction
     data class SwitchAccount(val needLoading: Boolean = true) : PlayBroadcastAction
 
-    data class GetTickerBottomSheetConfig(val page: TickerBottomSheetPageType) : PlayBroadcastAction
-    data class SetLiveToVodPref(val page: TickerBottomSheetPageType) : PlayBroadcastAction
+    data class GetTickerBottomSheetConfig(val page: TickerBottomSheetPage) : PlayBroadcastAction
+    data class SetLiveToVodPref(val type: TickerBottomSheetType, val page: TickerBottomSheetPage) : PlayBroadcastAction
 
     /** Game */
     data class ClickGameOption(val gameType: GameType) : PlayBroadcastAction
