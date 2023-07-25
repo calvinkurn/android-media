@@ -179,6 +179,7 @@ class PdpFintechWidget @JvmOverloads constructor(
                     fintechRedirectionWidgetDataClass.gatewayCode,
                     rediretionLink,
                     fintechRedirectionWidgetDataClass.promoName,
+                    fintechRedirectionWidgetDataClass.subtitle
                 )
             )
         else
@@ -192,6 +193,7 @@ class PdpFintechWidget @JvmOverloads constructor(
                     fintechRedirectionWidgetDataClass.gatewayCode,
                     rediretionLink,
                     fintechRedirectionWidgetDataClass.promoName,
+                    fintechRedirectionWidgetDataClass.subtitle
                 )
             )
     }
@@ -284,7 +286,8 @@ class PdpFintechWidget @JvmOverloads constructor(
                         chipList[i].userStatus ?: "",
                         NOT_BRANDER_CHIPS,
                         chipList[i].productCode ?: "",
-                        chipList[i].promoName
+                        chipList[i].promoName,
+                        chipList[i].subheader
                     )
                 )
             else
@@ -295,7 +298,8 @@ class PdpFintechWidget @JvmOverloads constructor(
                         chipList[i].userStatus ?: "",
                         BRANDER_CHIPS,
                         chipList[i].productCode ?: "",
-                        chipList[i].promoName
+                        chipList[i].promoName,
+                        chipList[i].subheader
                     )
                 )
 

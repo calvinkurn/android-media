@@ -65,7 +65,7 @@ class SaldoWithdrawalViewModelTest {
     @Test
     fun `getBankList fail`() {
         val result = mockk<Fail>()
-        coEvery { bankListUseCase.getBankList() } returns result
+        coEvery { bankListUseCase.getBankList(false) } returns result
         saldoWithdrawalViewModel.getBankList()
         saldoWithdrawalViewModel.bankListResponseMutableData.observeOnce {
             assert(it is Fail)
@@ -76,13 +76,13 @@ class SaldoWithdrawalViewModelTest {
     fun `getBankList success`() {
         val result = mockk<Success<GqlGetBankDataResponse>>()
         val bankAccountList = mockk<ArrayList<BankAccount>>()
-        coEvery { bankListUseCase.getBankList() } returns result
+        coEvery { bankListUseCase.getBankList(false) } returns result
         every { result.data.bankAccount.bankAccountList } returns bankAccountList
         saldoWithdrawalViewModel.getBankList()
         saldoWithdrawalViewModel.bankListResponseMutableData.observeOnce {
             when (it) {
                 is Success -> {
-                    assertEquals(it.data, bankAccountList)
+                    assertEquals(it.data, result.data.bankAccount)
                 }
                 else -> assert(false)
             }

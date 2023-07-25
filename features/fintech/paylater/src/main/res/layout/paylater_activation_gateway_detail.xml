@@ -70,12 +70,51 @@
         app:layout_constraintTop_toBottomOf="@+id/subheaderGatewayDetail"
         app:tickerType="error" />
 
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/groupAdditionalInformation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="additionalInformationIcon,additionalInformationTitle"/>
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/additionalInformationIcon"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="4dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/errorTicker"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/additionalInformationTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_NN950"
+        android:layout_marginStart="4dp"
+        app:layout_constraintStart_toEndOf="@id/additionalInformationIcon"
+        app:layout_constraintTop_toTopOf="@id/additionalInformationIcon"
+        app:layout_constraintBottom_toBottomOf="@id/additionalInformationIcon"
+        app:typographyType="heading_5"
+        tools:text="Hore, biaya cicilan kamu turun!" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/additionalInformationBottomsheetIcon"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="2dp"
+        app:layout_constraintStart_toEndOf="@id/additionalInformationTitle"
+        app:layout_constraintBottom_toBottomOf="@id/additionalInformationTitle"
+        app:layout_constraintTop_toTopOf="@id/additionalInformationTitle"
+        app:icon_name="INFORMATION"
+        app:icon_enable_state="true"/>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerTenureDetail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/unify_space_12"
-        app:layout_constraintTop_toBottomOf="@id/errorTicker"
+        app:layout_constraintTop_toBottomOf="@id/additionalInformationIcon"
         tools:itemCount="3"
         tools:listitem="@layout/paylater_activation_individual_tenure" />
 
