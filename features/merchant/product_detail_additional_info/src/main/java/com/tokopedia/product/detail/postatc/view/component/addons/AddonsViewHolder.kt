@@ -43,7 +43,7 @@ class AddonsViewHolder(
         indexChild: Int,
         addOnGroupUIModels: List<AddOnGroupUIModel>
     ) {
-        val addonsData = addOnGroupUIModels[index]
+        val addonsData = addOnGroupUIModels.getOrNull(index) ?: return
         callback.onClickAddonsItem(indexChild, addonsData)
     }
 
@@ -54,12 +54,10 @@ class AddonsViewHolder(
 
     override fun onSaveAddonLoading() {
         callback.onLoadingSaveAddons()
-        super.onSaveAddonLoading()
     }
 
     override fun onSaveAddonFailed(errorMessage: String) {
         callback.onFailedSaveAddons(errorMessage)
-        super.onSaveAddonFailed(errorMessage)
     }
 
     override fun onSaveAddonSuccess(
@@ -68,6 +66,19 @@ class AddonsViewHolder(
         addonGroups: List<AddOnGroupUIModel>
     ) {
         callback.onSuccessSaveAddons(selectedAddonIds.size)
-        super.onSaveAddonSuccess(selectedAddonIds, changedAddonSelections, addonGroups)
+    }
+
+    override fun onAddonHelpClick(position: Int, addOnUIModel: AddOnUIModel) {
+//        val addonsData = addOnGroupUIModels.getOrNull(index) ?: return
+//        callback.onClickAddonsInfo(indexChild, addonsData)
+    }
+
+    override fun onAddOnItemImpression(
+        index: Int,
+        indexChild: Int,
+        addonGroups: List<AddOnGroupUIModel>
+    ) {
+        val addonsData = addonGroups.getOrNull(index) ?: return
+        callback.onImpressAddonsItem(indexChild, addonsData)
     }
 }

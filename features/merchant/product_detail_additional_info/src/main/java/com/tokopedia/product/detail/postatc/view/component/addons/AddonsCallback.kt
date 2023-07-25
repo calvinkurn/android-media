@@ -117,19 +117,18 @@ class AddonsCallbackImpl(
         indexChild: Int,
         addonsData: AddOnGroupUIModel
     ) {
-        val addonsChild = addonsData.addon.getOrNull(indexChild) ?: return
-        val item = AddonsTracker.AddonsItem(
-            isChecked = addonsChild.isSelected,
-            subtitle = addonsChild.name,
-            position = indexChild,
-            title = addonsData.title
-        )
-
-        AddonsTracking.onClickAddonsInfo(
-            info = viewModel.postAtcInfo,
-            item = item,
-            userId = userSession.userId,
-            trackingQueue = trackingQueue
-        )
+//        val item = AddonsTracker.AddonsItem(
+//            isChecked = addons.isSelected,
+//            subtitle = addons.name,
+//            position = position,
+//            title = ""
+//        )
+//
+//        AddonsTracking.onClickAddonsInfo(
+//            info = viewModel.postAtcInfo,
+//            item = item,
+//            userId = userSession.userId,
+//            trackingQueue = trackingQueue
+//        )
     }
 }
