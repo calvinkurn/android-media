@@ -90,10 +90,6 @@ class FeedFollowRecommendationViewHolder(
                 bind(it, selectedPosition = getSelectedPosition(), isViewHolderSelected = false)
             }
 
-            if (payloads.contains(FeedViewHolderPayloadActions.FEED_FOLLOW_RECOM_CHANGED)) {
-                bind(it, selectedPosition = 0, isViewHolderSelected = true)
-            }
-
             payloads.forEach { payload ->
                 if (payload is FeedViewHolderPayloads) {
                     bind(
