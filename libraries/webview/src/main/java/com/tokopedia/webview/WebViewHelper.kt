@@ -78,7 +78,7 @@ object WebViewHelper {
         }
         if (whiteListedDomains.isEnabled) {
             whiteListedDomains.domains.forEach {
-                if (domain.endsWith(it)) {
+                if (domain == it || domain.endsWith(".$it")) {
                     return true
                 }
             }
@@ -504,8 +504,8 @@ object WebViewHelper {
         if (imageBase64 != null && docType != null) {
             val script = String.format(
                 "var event = new CustomEvent('cameraTriggered'," +
-                    "{ detail: {document: '%s', image: 'data:image/jpeg;base64,%s'}});" +
-                    "window.dispatchEvent(event);",
+                        "{ detail: {document: '%s', image: 'data:image/jpeg;base64,%s'}});" +
+                        "window.dispatchEvent(event);",
                 docType,
                 imageBase64
             )
