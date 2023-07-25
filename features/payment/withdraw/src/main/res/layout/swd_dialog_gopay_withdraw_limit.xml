@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvGopayDialogTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_NN950"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="heading_3"
+        app:typographyWeight="bold"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvGopayDialogDescription"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_NN950"
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toBottomOf="@id/tvGopayDialogTitle"
+        app:typographyType="paragraph_2"/>
+
+    <com.tokopedia.unifycomponents.CardUnify2
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="1dp"
+        android:layout_marginEnd="1dp"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvGopayDialogDescription">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.tokopedia.unifycomponents.ImageUnify
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:src="@drawable/swd_gopay_ticker_supergraphic"
+                android:adjustViewBounds="true"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
+            <com.tokopedia.unifycomponents.ImageUnify
+                android:id="@+id/icGopayLimitDialog"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginStart="18dp"
+                android:src="@drawable/swd_ic_gopay"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/tvGopayLimitDialogTitle"
+                app:layout_constraintBottom_toBottomOf="@id/tvGopayTickerDescription"/>
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tvGopayLimitDialogTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingTop="10dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="6dp"
+                app:typographyType="body_2"
+                app:layout_constraintStart_toEndOf="@id/icGopayLimitDialog"
+                app:layout_constraintTop_toTopOf="parent"/>
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tvGopayTickerLimit"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:paddingTop="10dp"
+                android:paddingLeft="2dp"
+                app:typographyType="body_2"
+                app:typographyWeight="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/tvGopayLimitDialogTitle"
+                app:layout_constraintStart_toEndOf="@id/tvGopayLimitDialogTitle"/>
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tvGopayTickerDescription"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:paddingBottom="10dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="6dp"
+                android:paddingTop="2dp"
+                android:textColor="@color/Unify_NN600"
+                app:typographyType="body_3"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/icGopayLimitDialog"
+                app:layout_constraintTop_toBottomOf="@id/tvGopayLimitDialogTitle"/>
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.tokopedia.unifycomponents.CardUnify2>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -47,7 +47,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:text="@string/seller_menu_new_order"
-            android:textColor="@color/Unify_N700_96"
+            android:textColor="@color/Unify_NN950_96"
             app:typographyWeight="bold"
             app:layout_constraintBottom_toBottomOf="@id/containerNewOrder"
             app:layout_constraintLeft_toRightOf="@id/containerNewOrder"
@@ -96,7 +96,7 @@
             android:layout_marginStart="8dp"
             android:text="@string/seller_menu_delivery"
             app:typographyWeight="bold"
-            android:textColor="@color/Unify_N700_96"
+            android:textColor="@color/Unify_NN950_96"
             app:layout_constraintBottom_toBottomOf="@id/containerReadyToShip"
             app:layout_constraintLeft_toRightOf="@id/containerReadyToShip"
             app:layout_constraintTop_toTopOf="@id/containerReadyToShip" />

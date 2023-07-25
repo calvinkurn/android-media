@@ -49,7 +49,6 @@ import com.tokopedia.content.common.view.getImeHeight
 import com.tokopedia.content.common.view.isImeVisible
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.hide
@@ -109,7 +108,7 @@ class ContentCommentBottomSheet @Inject constructor(
     }
 
     private val sheetMenu by lazyThreadSafetyNone {
-        ContentThreeDotsMenuBottomSheet.getFragment(
+        ContentThreeDotsMenuBottomSheet.getOrCreateFragment(
             childFragmentManager,
             requireActivity().classLoader
         )

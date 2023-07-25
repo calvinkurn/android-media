@@ -292,7 +292,6 @@ class LottieBottomNav : LinearLayout {
                             iconPlaceholder.setImageResource(it)
                         }
                         bottomMenuSelected.animToEnabledName?.let {
-                            iconSelected.setAnimation(it)
                             iconSelected.speed = bottomMenuSelected.animToEnabledSpeed
                         }
                     }
@@ -362,17 +361,17 @@ class LottieBottomNav : LinearLayout {
         addView(navbarContainer)
     }
 
-    private fun handleItemClicked(index: Int, bottomMenu: BottomMenu) {
+    private fun handleItemClicked(index: Int, bottomMenu: BottomMenu, shouldAnimate: Boolean) {
         Handler(Looper.getMainLooper()).post {
             if (selectedItem != index) {
                 listener?.menuClicked(index, bottomMenu.id).orTrue()
-                changeColor(index)
+                changeColor(index, shouldAnimate)
                 selectedItem = index
             }
         }
     }
 
-    private fun changeColor(newPosition: Int) {
+    private fun changeColor(newPosition: Int, shouldAnimate: Boolean) {
         if (selectedItem == newPosition) {
             listener?.menuReselected(newPosition, menu[newPosition].id)
             return
@@ -408,7 +407,15 @@ class LottieBottomNav : LinearLayout {
         val newSelectedItem = newSelectedItemPair.first
         if (!newSelectedItemPair.second) {
             newSelectedItem.visibility = View.VISIBLE
-            newSelectedItem.playAnimation()
+            if (shouldAnimate) {
+                newSelectedItem.playAnimation()
+            } else {
+                menu[newPosition].imageName?.let {
+                    iconPlaceholderList[newPosition].setImageResource(it)
+                    iconList[newPosition].first.visibility = View.INVISIBLE
+                    iconPlaceholderList[newPosition].visibility = View.VISIBLE
+                }
+            }
         }
 
         iconList[newPosition] = Pair(newSelectedItem, true)
@@ -420,9 +427,9 @@ class LottieBottomNav : LinearLayout {
         selectedItem = newPosition
     }
 
-    fun setSelected(position: Int) {
+    fun setSelected(position: Int, shouldAnimate: Boolean = true) {
         if (menu.size > position) {
-            handleItemClicked(position, menu[position])
+            handleItemClicked(position, menu[position], shouldAnimate)
         }
     }
 

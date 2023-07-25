@@ -19,8 +19,8 @@ class ChatBotTypingChatViewHolder(itemView: View) : AbstractViewHolder<TypingCha
 
     private val bg = generateLeftMessageBackground(
         typingDotContainer,
-        com.tokopedia.unifyprinciples.R.color.Unify_N0,
-        com.tokopedia.unifyprinciples.R.color.Unify_N700_20
+        com.tokopedia.unifyprinciples.R.color.Unify_NN0,
+        com.tokopedia.unifyprinciples.R.color.Unify_NN950_20
     )
 
     override fun bind(element: TypingChatModel) {

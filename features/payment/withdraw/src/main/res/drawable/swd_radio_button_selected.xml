@@ -2,14 +2,14 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item>
         <shape android:shape="oval">
-            <solid android:color="@color/Unify_N0"/>
+            <solid android:color="@color/Unify_NN0"/>
             <size android:width="@dimen/swd_radio_button" android:height="@dimen/swd_radio_button"/>
-            <stroke android:width="@dimen/spacing_lvl1" android:color="@color/Unify_G500"/>
+            <stroke android:width="@dimen/spacing_lvl1" android:color="@color/Unify_GN500"/>
         </shape>
     </item>
     <item android:bottom="@dimen/spacing_lvl2" android:left="@dimen/spacing_lvl2" android:right="@dimen/spacing_lvl2" android:top="@dimen/spacing_lvl2">
         <shape android:shape="oval">
-            <solid android:color="@color/Unify_G500"/>
+            <solid android:color="@color/Unify_GN500"/>
         </shape>
     </item>
 </layer-list>

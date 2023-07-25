@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.analytics.performance.fpi.FpiPerformanceData
 import com.tokopedia.analytics.performance.fpi.FragmentFramePerformanceIndexMonitoring
+import com.tokopedia.analytics.performance.perf.BlocksPerformanceTrace
 import com.tokopedia.analytics.performance.util.*
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeRevampFragment
 import com.tokopedia.home.beranda.presentation.view.listener.FramePerformanceIndexInterface
@@ -102,6 +103,9 @@ class InstrumentationHomeRevampTestActivity :
         return pageLoadTimePerformanceInterface
     }
 
+    override fun getBlocksPerformanceMonitoring(): BlocksPerformanceTrace? {
+        return null
+    }
     override fun stopHomePerformanceMonitoring(isCache: Boolean) {
         pageLoadTimePerformanceInterface?.stopRenderPerformanceMonitoring()
         pageLoadTimePerformanceInterface?.stopMonitoring()
