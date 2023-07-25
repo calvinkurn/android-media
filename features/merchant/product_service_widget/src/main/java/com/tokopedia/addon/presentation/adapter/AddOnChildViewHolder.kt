@@ -54,9 +54,9 @@ class AddOnChildViewHolder(
             tfDescription.text = item.description
             tfDescription.isVisible = showDescription
         }
-        /*itemView.addOnImpressionListener(item) {
+        itemView.addOnImpressionListener(item.impressHolder) {
             onItemImpression(bindingAdapterPosition, item)
-        }*/
+        }
     }
 
 }

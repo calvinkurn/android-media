@@ -165,8 +165,8 @@ class AddOnWidgetView : BaseCustomView {
         RouteManager.route(context, "${ApplinkConst.WEBVIEW}?url=${addOnUIModel.eduLink}")
     }
 
-    private fun onItemImpressionListener(index: Int, indexChild: Int, addOnUIModel: AddOnUIModel) {
-        listener?.onAddOnItemImpression(index, indexChild, addOnUIModel)
+    private fun onItemImpressionListener(index: Int, indexChild: Int, addonGroups: List<AddOnGroupUIModel>) {
+        listener?.onAddOnItemImpression(index, indexChild, addonGroups)
     }
 
     fun setTitleText(text: String) {
