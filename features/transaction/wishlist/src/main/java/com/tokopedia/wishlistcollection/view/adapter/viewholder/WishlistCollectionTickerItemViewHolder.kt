@@ -14,7 +14,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.wishlist.R
 import com.tokopedia.wishlist.databinding.CollectionWishlistTickerItemBinding
@@ -28,14 +28,12 @@ class WishlistCollectionTickerItemViewHolder(
     private val actionListener: WishlistCollectionAdapter.ActionListener?
 ) : RecyclerView.ViewHolder(binding.root) {
 
-    private val firebaseRemoteConfig = FirebaseRemoteConfigImpl(itemView.context)
-
+    private fun isAffiliateTickerEnabled() = RemoteConfigInstance.getInstance().abTestPlatform.getString(
+        RollenceKey.WISHLIST_AFFILIATE_TICKER,
+        ""
+    ) == RollenceKey.WISHLIST_AFFILIATE_TICKER
     fun bind(item: WishlistCollectionTypeLayoutData, isTickerClosed: Boolean) {
-        if (firebaseRemoteConfig.getString(
-                RollenceKey.WISHLIST_AFFILIATE_TICKER,
-                ""
-            ) == RollenceKey.WISHLIST_AFFILIATE_TICKER
-        ) {
+        if (isAffiliateTickerEnabled()) {
             showAffiliateTicker()
             return
         }
