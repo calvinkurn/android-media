@@ -27,7 +27,6 @@ import com.tokopedia.url.Env
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import com.tokopedia.webview.BaseSessionWebViewFragment
 import javax.inject.Inject
 
 class AffiliatePromoWebViewFragment : AffiliateBaseFragment<AffiliatePromoViewModel>() {
@@ -69,7 +68,7 @@ class AffiliatePromoWebViewFragment : AffiliateBaseFragment<AffiliatePromoViewMo
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         childFragmentManager.beginTransaction()
-            .add(R.id.promo_web_view_container, getWebViewFragment())
+            .add(R.id.promo_web_view_container, AffiliateHelpFragment.getFragmentInstance(url))
             .commit()
     }
 
@@ -83,14 +82,72 @@ class AffiliatePromoWebViewFragment : AffiliateBaseFragment<AffiliatePromoViewMo
         )
     }
 
-    private fun getWebViewFragment(): Fragment {
-        val url = if (TokopediaUrl.getInstance().TYPE == Env.STAGING) {
-            PROMO_WEBVIEW_URL_STAGING
-        } else {
-            PROMO_WEBVIEW_URL_PROD
-        }
-        return BaseSessionWebViewFragment.newInstance(url)
-    }
+//    override fun shouldOverrideUrlLoading(webview: WebView?, url: String): Boolean {
+//        val uri: Uri? = Uri.parse(url)
+//        val queryParam = mapQueryParam(uri)
+//
+//        when {
+//            url == ACTION_BLOCK_PROMO -> {
+//                val intent = Intent().apply {
+//                    putExtra(RESULT_KEY_REPORT_USER, RESULT_REPORT_BLOCK_PROMO)
+//                }
+//                activity?.setResult(Activity.RESULT_OK, intent)
+//                activity?.finish()
+//                return true
+//            }
+//            url == ACTION_BLOCK_PERSONAL -> {
+//                val intent = Intent().apply {
+//                    putExtra(RESULT_KEY_REPORT_USER, RESULT_REPORT_BLOCK_USER)
+//                }
+//                activity?.setResult(Activity.RESULT_OK, intent)
+//                activity?.finish()
+//                return true
+//            }
+//            uri?.host == "back" && queryParam[queryParamToasterMessage] != null -> {
+//                val intent = Intent().apply {
+//                    putExtra(RESULT_KEY_REPORT_USER, RESULT_REPORT_TOASTER)
+//                    putExtra(RESULT_KEY_PAYLOAD_REPORT_USER, queryParam[queryParamToasterMessage])
+//                }
+//                activity?.setResult(Activity.RESULT_OK, intent)
+//                activity?.finish()
+//                return true
+//            }
+//            uri?.host == "webview" && queryParam[queryParamUrl] != null -> {
+//                RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, queryParam[queryParamUrl])
+//                activity?.finish()
+//                return true
+//            }
+//        }
+//        return super.shouldOverrideUrlLoading(webview, url)
+//    }
+//
+//    private fun getWebViewFragment(): Fragment {
+//        val url = if (TokopediaUrl.getInstance().TYPE == Env.STAGING) {
+//            PROMO_WEBVIEW_URL_STAGING
+//        } else {
+//            PROMO_WEBVIEW_URL_PROD
+//        }
+//        return BaseSessionWebViewFragment.newInstance(url)
+//
+//
+//    }
+
+//    private fun getWebViewFragment(): Fragment {
+//
+//        return object : BaseSessionWebViewFragment(){
+//
+//            init {
+//                arguments = bundleOf(
+//                    KEY_URL to url
+//                )
+//            }
+//
+//            override fun shouldOverrideUrlLoading(webview: WebView?, url: String): Boolean {
+//
+//                return super.shouldOverrideUrlLoading(webview, url)
+//            }
+//        }
+//    }
 
     companion object {
         fun getFragmentInstance(): Fragment {
