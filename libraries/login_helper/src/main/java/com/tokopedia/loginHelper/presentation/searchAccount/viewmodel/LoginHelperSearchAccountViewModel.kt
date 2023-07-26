@@ -3,6 +3,7 @@ package com.tokopedia.loginHelper.presentation.searchAccount.viewmodel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.encryption.security.AESEncryptorCBC
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.loginHelper.data.mapper.toEnvString
@@ -37,7 +38,7 @@ class LoginHelperSearchAccountViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(LoginHelperSearchAccountUiState())
     val uiState = _uiState.asStateFlow()
 
-    private val _uiAction = MutableSharedFlow<LoginHelperSearchAccountAction>(replay = 1)
+    private val _uiAction = MutableSharedFlow<LoginHelperSearchAccountAction>()
     val uiAction = _uiAction.asSharedFlow()
 
     fun processEvent(event: LoginHelperSearchAccountEvent) {
@@ -103,7 +104,11 @@ class LoginHelperSearchAccountViewModel @Inject constructor(
             val response =
                 deleteUserRestUseCase.makeApiCall(_uiState.value.envType.toEnvString(), id)
             if (response?.code == SUCCESS_RESPONSE) {
-                _uiAction.tryEmit(LoginHelperSearchAccountAction.OnSuccessDeleteAccountAction)
+                _uiAction.tryEmit(
+                    LoginHelperSearchAccountAction.GoToRoute(
+                        ApplinkConstInternalGlobal.LOGIN_HELPER
+                    )
+                )
             } else {
                 _uiAction.tryEmit(LoginHelperSearchAccountAction.OnFailureDeleteAccountAction)
             }
@@ -179,7 +184,11 @@ class LoginHelperSearchAccountViewModel @Inject constructor(
     }
 
     private fun handleBackButtonTap() {
-        _uiAction.tryEmit(LoginHelperSearchAccountAction.TapBackSearchAccountAction)
+        _uiAction.tryEmit(
+            LoginHelperSearchAccountAction.GoToRoute(
+                ApplinkConstInternalGlobal.LOGIN_HELPER_ACCOUNTS_SETTINGS
+            )
+        )
     }
 
     companion object {
