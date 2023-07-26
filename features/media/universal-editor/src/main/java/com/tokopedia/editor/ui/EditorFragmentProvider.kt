@@ -4,25 +4,25 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.editor.ui.fragment.main.MainEditorFragment
 
-interface EditorFragmentProvider {
+interface EditorFragmentProvider : ImageFragmentProvider {
     /**
      * Fragment for main page of universal editor.
      * This fragment contains the editor tool, container view, etc.
      */
     fun mainEditorFragment(): Fragment
+
+    /**
+     * This fragment will maintain the input text for add text
+     * for both Video and Image. The fragment contains the text adjustment,
+     * custom styling, etc.
+     */
+    fun inputTextFragment(): Fragment
 }
 
-internal class EditorFragmentProviderImpl constructor(
-    private val fragmentManager: FragmentManager,
-    private val classLoader: ClassLoader
-) : EditorFragmentProvider {
+interface ImageFragmentProvider {
 
-    override fun mainEditorFragment(): Fragment {
-        return create(MainEditorFragment::class.java.name) as MainEditorFragment
-    }
-
-    private fun create(name: String): Fragment {
-        val fragmentFactory = fragmentManager.fragmentFactory
-        return fragmentFactory.instantiate(classLoader, name)
-    }
+    /**
+     * This tool allows user to scale, rotate, crop, nor resize the image within canvas.
+     */
+    fun imagePlacementFragment(): Fragment
 }
