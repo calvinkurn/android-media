@@ -1,6 +1,5 @@
 package com.tokopedia.seller.search.feature.initialsearch.view.compose
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -14,11 +13,13 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.platform.SoftwareKeyboardController
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.tokopedia.kotlin.extensions.view.EMPTY
+import com.tokopedia.nest.components.NestImage
+import com.tokopedia.nest.components.NestImageType
 import com.tokopedia.nest.components.NestSearchBar
+import com.tokopedia.nest.principles.utils.ImageSource
 import com.tokopedia.seller.search.R
 import com.tokopedia.seller.search.feature.initialsearch.view.model.compose.GlobalSearchUiEvent
 import com.tokopedia.seller.search.feature.initialsearch.view.model.compose.GlobalSearchUiState
@@ -38,15 +39,16 @@ fun GlobalSellerSearchView(
             .fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Image(
+        NestImage(
             modifier = Modifier
                 .padding(start = 12.dp)
                 .clickable {
                     uiEffect(GlobalSearchUiEvent.OnBackButtonClicked(uiState.searchBarKeyword))
                     keyboardController?.hide()
                 },
-            painter = painterResource(id = R.drawable.ic_back_searchbar),
-            contentDescription = null
+            source = ImageSource.Painter(R.drawable.ic_back_searchbar),
+            contentDescription = null,
+            type = NestImageType.Rect(rounded = 0.dp)
         )
 
         SearchBarUnify(

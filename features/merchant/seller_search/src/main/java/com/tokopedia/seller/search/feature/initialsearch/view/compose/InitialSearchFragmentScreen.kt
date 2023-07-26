@@ -1,21 +1,18 @@
 package com.tokopedia.seller.search.feature.initialsearch.view.compose
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusRequester.Companion.createRefs
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.intl.Locale
@@ -33,23 +30,54 @@ import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.nest.principles.utils.ImageSource
 import com.tokopedia.seller.search.R
+import com.tokopedia.seller.search.common.GlobalSearchSellerConstant
+import com.tokopedia.seller.search.feature.initialsearch.view.model.SellerSearchNoHistoryUiModel
 import com.tokopedia.seller.search.feature.initialsearch.view.model.compose.InitialSearchUiEvent
 import com.tokopedia.seller.search.feature.initialsearch.view.model.compose.InitialSearchUiState
+import com.tokopedia.seller.search.feature.initialsearch.view.model.initialsearch.HighlightInitialSearchUiModel
+import com.tokopedia.seller.search.feature.initialsearch.view.model.initialsearch.ItemHighlightInitialSearchUiModel
+import com.tokopedia.seller.search.feature.initialsearch.view.model.initialsearch.ItemInitialSearchUiModel
+import com.tokopedia.seller.search.feature.initialsearch.view.model.initialsearch.ItemTitleHighlightInitialSearchUiModel
+import com.tokopedia.seller.search.feature.initialsearch.view.model.initialsearch.ItemTitleInitialSearchUiModel
 
 const val OPACITY_68 = 0.68f
 
 @Composable
 fun InitialSearchFragmentScreen(
-    uiState: InitialSearchUiState
+    uiState: InitialSearchUiState?,
+    uiEvent: (InitialSearchUiEvent) -> Unit
 ) {
+    if (uiState == null) return
+    val initialStateList = uiState.initialStateList.filterIsInstance<ItemInitialSearchUiModel>()
+
     LazyColumn(Modifier.fillMaxSize()) {
-        itemsIndexed(uiState.initialStateList) { index, item ->
+        if (initialStateList.isEmpty()) {
+            itemsIndexed(uiState.initialStateList) { index, item ->
+                when (item) {
+                    is SellerSearchNoHistoryUiModel -> {
+                        NoHistoryState()
+                    }
+                    is ItemTitleInitialSearchUiModel -> {
+                        HistorySearchSectionTitle(uiState.titleList, uiEvent)
+                    }
+                    is ItemInitialSearchUiModel -> {
+                        ItemHistorySearch(item, index)
+                    }
+                    is ItemTitleHighlightInitialSearchUiModel -> {
+                        TitleSearchRecommendation(item.title)
+                    }
+                    is HighlightInitialSearchUiModel -> {
+                        ItemHighlightChips(item.highlightInitialList, uiEvent)
+                    }
+                }
+            }
         }
     }
 }
 
 @Composable
 fun HistorySearchSectionTitle(
+    titleList: List<String>,
     uiEvent: (InitialSearchUiEvent) -> Unit
 ) {
     ConstraintLayout(
@@ -60,7 +88,7 @@ fun HistorySearchSectionTitle(
         val (tvLatestSearch, tvClearAll) = createRefs()
 
         NestTypography(
-            text = stringResource(id = R.string.latest_search_label).toUpperCase(Locale.current),
+            text = stringResource(id = com.tokopedia.seller.search.R.string.latest_search_label).toUpperCase(Locale.current),
             textStyle = NestTheme.typography.body3.copy(
                 fontWeight = FontWeight.Bold,
                 color = NestTheme.colors.NN._950.copy(
@@ -76,7 +104,7 @@ fun HistorySearchSectionTitle(
         )
 
         NestTypography(
-            text = stringResource(id = R.string.clear_all_label),
+            text = stringResource(id = com.tokopedia.seller.search.R.string.clear_all_label),
             textStyle = NestTheme.typography.body3.copy(
                 fontWeight = FontWeight.Bold,
                 color = NestTheme.colors.GN._500
@@ -88,7 +116,7 @@ fun HistorySearchSectionTitle(
                     end.linkTo(parent.end)
                 }
                 .clickable {
-                    uiEvent(InitialSearchUiEvent.OnClearAllKeyword)
+                    uiEvent(InitialSearchUiEvent.OnClearAllHistory(titleList))
                 }
         )
     }
@@ -96,7 +124,7 @@ fun HistorySearchSectionTitle(
 
 @Composable
 fun ItemHistorySearch(
-    title: String,
+    item: ItemInitialSearchUiModel,
     position: Int,
     uiEvent: (InitialSearchUiEvent) -> Unit = {}
 ) {
@@ -104,13 +132,16 @@ fun ItemHistorySearch(
         modifier = Modifier
             .padding(vertical = 8.dp, horizontal = 16.dp)
             .fillMaxWidth()
-            .clickable { /* Handle item click */ }
+            .clickable {
+                uiEvent(InitialSearchUiEvent.OnItemHistoryClicked(item.title.orEmpty()))
+            }
     ) {
         val (ivHistoryTime, tvTitleHistory, ivCloseHistory) = createRefs()
 
-        Image(
-            painter = painterResource(id = R.drawable.ic_time_history),
-            contentDescription = "History Time",
+        NestImage(
+            source = ImageSource.Painter(com.tokopedia.seller.search.R.drawable.ic_time_history),
+            type = NestImageType.Rect(rounded = 0.dp),
+            contentDescription = null,
             modifier = Modifier
                 .constrainAs(ivHistoryTime) {
                     top.linkTo(parent.top)
@@ -122,7 +153,7 @@ fun ItemHistorySearch(
         )
 
         NestTypography(
-            text = title,
+            text = item.title.orEmpty(),
             textStyle = NestTheme.typography.body1,
             modifier = Modifier.constrainAs(tvTitleHistory) {
                 top.linkTo(parent.top)
@@ -134,7 +165,7 @@ fun ItemHistorySearch(
         )
 
         NestImage(
-            source = ImageSource.Painter(R.drawable.ic_close_history),
+            source = ImageSource.Painter(com.tokopedia.seller.search.R.drawable.ic_close_history),
             type = NestImageType.Rect(rounded = 0.dp),
             contentDescription = null,
             modifier = Modifier
@@ -145,7 +176,12 @@ fun ItemHistorySearch(
                     width = Dimension.fillToConstraints
                 }
                 .clickable {
-                    uiEvent(InitialSearchUiEvent.OnItemRemoveClicked(title, position))
+                    uiEvent(
+                        InitialSearchUiEvent.OnItemRemoveClicked(
+                            item.title.orEmpty(),
+                            position
+                        )
+                    )
                 }
                 .padding(start = 4.dp, end = 8.dp)
         )
@@ -153,10 +189,14 @@ fun ItemHistorySearch(
 }
 
 @Composable
-fun TitleSearchRecommendation() {
+fun TitleSearchRecommendation(
+    title: String
+) {
     NestTypography(
-        text = stringResource(id = R.string.highlight_search_label).toUpperCase(Locale.current),
-        textStyle = NestTheme.typography.body3.copy(
+        text = title.ifBlank {
+            stringResource(id = com.tokopedia.seller.search.R.string.highlight_search_label)
+        }.toUpperCase(Locale.current),
+        textStyle = NestTheme.typography.display3.copy(
             fontWeight = FontWeight.Bold,
             color = NestTheme.colors.NN._950.copy(
                 alpha = OPACITY_68
@@ -169,92 +209,89 @@ fun TitleSearchRecommendation() {
 }
 
 @Composable
-fun ItemHighlightChips() {
-}
-
-@Composable
-fun ChipsLayoutManager(chips: List<String>) {
-//    var availableWidth by remember { mutableStateOf(0.dp) }
-//
-//    BoxWithConstraints {
-//        availableWidth = maxWidth
-//
-//        var chipsInRow by remember { mutableStateOf(emptyList<String>()) }
-//
-//        Column {
-//            var currentRowWidth by remember { mutableStateOf(0.dp) }
-//
-//            chips.forEach { chipText ->
-//                val chipWidth = with(LocalDensity.current) {
-//                    (32 * chipText.length).dp
-//                }
-//                if (currentRowWidth + chipWidth <= availableWidth) {
-//                    currentRowWidth += chipWidth + 8.dp
-//                    chipsInRow = chipsInRow + chipText
-//                } else {
-//                    Row(
-//                        modifier = Modifier.fillMaxWidth(),
-//                        horizontalArrangement = Arrangement.Start
-//                    ) {
-//                        for (chip in chipsInRow) {
-//                            NestChips(
-//                                text = chip,
-//                                size = NestChipsSize.Medium,
-//                                state = NestChipsState.Default,
-//                                modifier = Modifier.padding(top = 8.dp)
-//                            )
-//                        }
-//                    }
-//                    chipsInRow = listOf(chipText)
-//                    currentRowWidth = chipWidth + 8.dp
-//                }
-//            }
-//
-//            if (chipsInRow.isNotEmpty()) {
-//                Row(
-//                    modifier = Modifier.fillMaxHeight(),
-//                    horizontalArrangement = Arrangement.Start
-//                ) {
-//                    for (chip in chipsInRow) {
-//                        NestChips(
-//                            text = chip,
-//                            size = NestChipsSize.Medium,
-//                            state = NestChipsState.Default,
-//                            modifier = Modifier.padding(top = 8.dp)
-//                        )
-//                    }
-//                }
-//            }
-//        }
-//    }
-
+fun ItemHighlightChips(
+    chips: List<ItemHighlightInitialSearchUiModel>,
+    uiEvent: (InitialSearchUiEvent) -> Unit
+) {
     Column(modifier = Modifier.fillMaxWidth()) {
         Row(
-            modifier = Modifier.padding(16.dp)
+            modifier = Modifier
+                .padding(16.dp)
+                .fillMaxWidth()
         ) {
-            chips.forEach { chip ->
+            chips.forEachIndexed { index, item ->
                 NestChips(
-                    text = chip,
+                    text = item.title.orEmpty(),
                     size = NestChipsSize.Medium,
                     state = NestChipsState.Default,
-                    modifier = Modifier.padding(top = 8.dp)
+                    modifier = Modifier
+                        .padding(top = 8.dp)
+                        .clickable {
+                            uiEvent(InitialSearchUiEvent.OnItemRecommendationClicked(item, index))
+                        }
                 )
             }
         }
     }
 }
 
-@Preview()
+@Composable
+fun NoHistoryState() {
+    ConstraintLayout(
+        modifier = Modifier
+            .padding(16.dp)
+            .fillMaxWidth()
+    ) {
+        val (ivNoHistory, tvTitleNoHistory, tvDescNoHistory) = createRefs()
+
+        NestImage(
+            modifier = Modifier
+                .width(140.dp)
+                .height(105.dp)
+                .constrainAs(ivNoHistory) {
+                    top.linkTo(parent.top)
+                    start.linkTo(parent.start)
+                },
+            source = ImageSource.Remote(source = GlobalSearchSellerConstant.IC_NO_HISTORY_URL),
+            contentDescription = null
+        )
+
+        NestTypography(
+            modifier = Modifier
+                .constrainAs(tvTitleNoHistory) {
+                    top.linkTo(parent.top)
+                    start.linkTo(ivNoHistory.end)
+                    end.linkTo(parent.end)
+                    width = Dimension.fillToConstraints
+                }
+                .padding(
+                    start = 4.dp,
+                    top = 8.dp
+                ),
+            textStyle = NestTheme.typography.display3.copy(fontWeight = FontWeight.Bold),
+            text = stringResource(id = R.string.title_no_history_label)
+        )
+
+        NestTypography(
+            modifier = Modifier
+                .constrainAs(tvDescNoHistory) {
+                    top.linkTo(tvTitleNoHistory.bottom)
+                    start.linkTo(ivNoHistory.end)
+                    end.linkTo(parent.end)
+                    width = Dimension.fillToConstraints
+                }
+                .padding(
+                    start = 4.dp,
+                    top = 4.dp
+                ),
+            textStyle = NestTheme.typography.display3,
+            text = stringResource(id = com.tokopedia.seller.search.R.string.desc_no_history_label)
+        )
+    }
+}
+
+@Preview
 @Composable
 fun TitleHistorySearchSectionPreview() {
-    ChipsLayoutManager(
-        chips = listOf(
-            "Dapatkan Gratis Broadcast Chat Disini",
-            "TopAds",
-            "Apa itu fitur Produk Unggulan?",
-            "Wawasan Toko",
-            "Apa itu Kupon Toko Saya?",
-            "Gunakan bebas Ongkir"
-        )
-    )
+    NoHistoryState()
 }

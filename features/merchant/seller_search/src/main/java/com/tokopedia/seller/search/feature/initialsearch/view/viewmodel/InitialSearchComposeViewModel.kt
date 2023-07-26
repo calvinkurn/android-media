@@ -5,16 +5,21 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.seller.search.common.domain.GetSellerSearchUseCase
 import com.tokopedia.seller.search.common.domain.mapper.GlobalSearchSellerMapper
 import com.tokopedia.seller.search.feature.initialsearch.domain.usecase.DeleteSuggestionHistoryUseCase
-import com.tokopedia.seller.search.feature.initialsearch.view.model.BaseInitialSearchSeller
-import com.tokopedia.seller.search.feature.initialsearch.view.model.deletehistory.DeleteHistorySearchUiModel
+import com.tokopedia.seller.search.feature.initialsearch.view.model.compose.InitialSearchUiEvent
+import com.tokopedia.seller.search.feature.initialsearch.view.model.compose.InitialSearchUiState
 import com.tokopedia.seller.search.feature.suggestion.domain.usecase.InsertSuccessSearchUseCase
 import com.tokopedia.seller.search.feature.suggestion.view.model.registersearch.RegisterSearchUiModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -25,19 +30,18 @@ class InitialSearchComposeViewModel @Inject constructor(
     private val insertSellerSearchUseCase: InsertSuccessSearchUseCase
 ) : BaseViewModel(dispatcherProvider.main) {
 
-    private val _deleteHistorySearch = MutableLiveData<Result<DeleteHistorySearchUiModel>>()
-    val deleteHistorySearch: LiveData<Result<DeleteHistorySearchUiModel>>
-        get() = _deleteHistorySearch
+    private val _uiState = MutableStateFlow(InitialSearchUiState())
+    val uiState: MutableStateFlow<InitialSearchUiState>
+        get() = _uiState
 
-    private val _getSearchSeller = MutableLiveData<Result<Pair<List<BaseInitialSearchSeller>, List<String>>>>()
-    val getSellerSearch: LiveData<Result<Pair<List<BaseInitialSearchSeller>, List<String>>>>
-        get() = _getSearchSeller
+    private val _uiEvent = MutableSharedFlow<InitialSearchUiEvent>(replay = Int.ONE)
+    val uiEvent get() = _uiEvent.asSharedFlow()
 
     private val _insertSuccessSearch = MutableLiveData<Result<RegisterSearchUiModel>>()
     val insertSuccessSearch: LiveData<Result<RegisterSearchUiModel>>
         get() = _insertSuccessSearch
 
-    fun getSellerSearch(keyword: String, section: String = "", shopId: String) {
+    fun fetchSellerSearch(keyword: String, section: String = "", shopId: String) {
         launchCatchError(block = {
             val responseGetSellerSearch = withContext(dispatcherProvider.io) {
                 getSellerSearchUseCase.params = GetSellerSearchUseCase.createParams(
@@ -47,21 +51,42 @@ class InitialSearchComposeViewModel @Inject constructor(
                 )
                 GlobalSearchSellerMapper.mapToInitialSearchVisitable(getSellerSearchUseCase.executeOnBackground())
             }
-            _getSearchSeller.postValue(Success(responseGetSellerSearch))
+            _uiState.update {
+                it.copy(initialStateList = responseGetSellerSearch.first, titleList = responseGetSellerSearch.second)
+            }
         }, onError = {
-                _getSearchSeller.postValue(Fail(it))
+                _uiState.update {
+                    it.copy(throwable = it.throwable)
+                }
             })
     }
 
-    fun deleteSuggestionSearch(keyword: List<String>) {
+    fun deleteSuggestionSearch(keyword: List<String>, itemPosition: Int?) {
         launchCatchError(block = {
-            val responseDeleteSearch = withContext(dispatcherProvider.io) {
-                deleteSuggestionHistoryUseCase.params = DeleteSuggestionHistoryUseCase.createParams(keyword)
-                GlobalSearchSellerMapper.mapToDeleteHistorySearchUiModel(deleteSuggestionHistoryUseCase.executeOnBackground())
+            withContext(dispatcherProvider.io) {
+                deleteSuggestionHistoryUseCase.params =
+                    DeleteSuggestionHistoryUseCase.createParams(keyword)
+                deleteSuggestionHistoryUseCase.executeOnBackground()
             }
-            _deleteHistorySearch.postValue(Success(responseDeleteSearch))
+
+            val initialStateList = _uiState.value.initialStateList
+
+            val updateInitialStateList = if (itemPosition == null) {
+                GlobalSearchSellerMapper.mapToDeleteAllSuggestionSearch(initialStateList)
+            } else {
+                GlobalSearchSellerMapper.mapToDeleteItemSuggestionSearch(
+                    initialStateList,
+                    itemPosition
+                )
+            }
+
+            _uiState.update {
+                it.copy(initialStateList = updateInitialStateList)
+            }
         }, onError = {
-                _deleteHistorySearch.postValue(Fail(it))
+                _uiState.update {
+                    it.copy(throwable = it.throwable)
+                }
             })
     }
 

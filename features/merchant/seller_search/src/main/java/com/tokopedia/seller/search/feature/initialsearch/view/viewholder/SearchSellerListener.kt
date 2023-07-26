@@ -44,6 +44,10 @@ interface HistoryViewUpdateListener {
     fun setKeywordSearchBarView(keyword: String)
 }
 
+interface HistoryViewUpdateComposeListener {
+    fun setKeywordSearchBarView(keyword: String)
+}
+
 interface SuggestionViewUpdateListener {
     fun showSuggestionView()
     fun dropKeyboardSuggestion()
