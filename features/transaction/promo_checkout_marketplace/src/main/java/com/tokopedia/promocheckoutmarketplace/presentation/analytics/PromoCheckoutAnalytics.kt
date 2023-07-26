@@ -5,7 +5,6 @@ import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.promocheckoutmarketplace.presentation.analytics.PromoCheckoutAnalytics.EventAction.CLICK_ACTIVATED_GOPAY_CICIL
 import com.tokopedia.promocheckoutmarketplace.presentation.analytics.PromoCheckoutAnalytics.EventAction.IMPRESSION_ELIGIBLE_PROMO_SECTION_GOPAY_CICIL
-import com.tokopedia.promocheckoutmarketplace.presentation.analytics.PromoCheckoutAnalytics.EventAction.IMPRESSION_INELIGIBLE_PROMO_SECTION_GOPAY_CICIL_APPROVAL
 import com.tokopedia.promocheckoutmarketplace.presentation.analytics.PromoCheckoutAnalytics.EventAction.IMPRESSION_INELIGIBLE_PROMO_SECTION_GOPAY_CICIL_PROMO_VALIDATION
 import com.tokopedia.promocheckoutmarketplace.presentation.analytics.PromoCheckoutAnalytics.EventAction.IMPRESSION_PROMO_ACTIVATED_GOPAY_CICIL
 import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoListItemUiModel
@@ -86,7 +85,6 @@ class PromoCheckoutAnalytics @Inject constructor(private val userSession: UserSe
         const val IMPRESSION_PROMO_ACTIVATED_GOPAY_CICIL = "impression - promo activated gopay cicil"
         const val CLICK_ACTIVATED_GOPAY_CICIL = "click - activated gopay cicil"
         const val IMPRESSION_ELIGIBLE_PROMO_SECTION_GOPAY_CICIL = "impression - eligible promo section - gopay cicil"
-        const val IMPRESSION_INELIGIBLE_PROMO_SECTION_GOPAY_CICIL_APPROVAL = "impression - ineligible promo section - gopay cicil approval"
         const val IMPRESSION_INELIGIBLE_PROMO_SECTION_GOPAY_CICIL_PROMO_VALIDATION = "impression - ineligible promo section - gopay cicil promo validation"
     }
 
@@ -748,34 +746,6 @@ class PromoCheckoutAnalytics @Inject constructor(private val userSession: UserSe
             .setEventCategory(eventCategory)
             .setEventLabel(eventLabel)
             .setCustomProperty(ExtraKey.TRACKER_ID, ConstantTransactionAnalytics.TrackerId.IMPRESSION_ELIGIBLE_PROMO_SECTION_GOPAY_CICIL)
-            .setBusinessUnit(CustomDimension.DIMENSION_BUSINESS_UNIT_PROMO)
-            .setCurrentSite(CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE)
-            .setCustomProperty(ExtraKey.PROMO_CODE, promoCode)
-            .setUserId(userSession.userId)
-            .build()
-            .send()
-    }
-
-    // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/4088
-    // Tracker ID: 45455
-    fun sendImpressionIneligiblePromoSectionGopayCicilApprovalEvent(
-        page: Int,
-        promoCode: String,
-        approvalStatus: String
-    ) {
-        val eventLabel = "$promoCode - $approvalStatus"
-        val eventCategory = when (page) {
-            PAGE_CART -> EventCategory.CART
-            PAGE_CHECKOUT -> EventCategory.COURIER_SELECTION
-            PAGE_OCC -> EventCategory.ORDER_SUMMARY
-            else -> ""
-        }
-        Tracker.Builder()
-            .setEvent(EVENT_NAME_VIEW_PG_IRIS)
-            .setEventAction(IMPRESSION_INELIGIBLE_PROMO_SECTION_GOPAY_CICIL_APPROVAL)
-            .setEventCategory(eventCategory)
-            .setEventLabel(eventLabel)
-            .setCustomProperty(ExtraKey.TRACKER_ID, ConstantTransactionAnalytics.TrackerId.IMPRESSION_INELIGIBLE_PROMO_SECTION_GOPAY_CICIL)
             .setBusinessUnit(CustomDimension.DIMENSION_BUSINESS_UNIT_PROMO)
             .setCurrentSite(CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE)
             .setCustomProperty(ExtraKey.PROMO_CODE, promoCode)

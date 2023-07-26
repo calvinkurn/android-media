@@ -181,7 +181,7 @@ class PromoCheckoutFragment :
         private const val DESTINATION_BACK = "back"
         private const val DESTINATION_REFRESH = "refresh"
 
-        private const val PROMO_GOPAY_LATER_CICIL = "GoPayLater Cicil"
+        private const val PROMO_GOPAY_LATER = "GoPay Later"
 
         fun createInstance(
             pageSource: Int,
@@ -1253,7 +1253,7 @@ class PromoCheckoutFragment :
 
         outerLoop@ for (promoInfo in element.uiData.promoInfos) {
             for (method in promoInfo.methods) {
-                if (method == PROMO_GOPAY_LATER_CICIL) {
+                if (method == PROMO_GOPAY_LATER) {
                     if (state == STATE_ENABLED || state == STATE_SELECTED) {
                         analytics.sendImpressionEligiblePromoSectionGopayCicilCartEvent(
                             viewModel.getPageSource(),
