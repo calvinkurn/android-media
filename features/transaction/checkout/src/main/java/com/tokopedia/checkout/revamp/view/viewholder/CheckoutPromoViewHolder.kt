@@ -37,6 +37,7 @@ class CheckoutPromoViewHolder(private val binding: ItemCheckoutPromoBinding, pri
         if (isApplied) {
             binding.btnCheckoutPromo.showApplied(
                 titleValue,
+                promo.additionalInfo.messageInfo.detail,
                 null,
                 promo.additionalInfo.usageSummaries.map { PromoEntryPointSummaryItem(it.description, it.amountStr) },
                 showConfetti = true
@@ -54,10 +55,21 @@ class CheckoutPromoViewHolder(private val binding: ItemCheckoutPromoBinding, pri
             }
         }
 
-        binding.btnCheckoutPromo.showActiveFlipping(
-            listOf("astaga 1, ini percobaan kalo textnya pannnjaaaaannggg sekaliiiii, astaga 2, ini percobaan kalo textnya pannnjaaaaannggg sekaliiiii", "wow bisa luar biasa sekali, tapi kenapa gak berhenti?"),
+//        binding.btnCheckoutPromo.showActiveFlipping(
+//            listOf("astaga 1, ini percobaan kalo textnya pannnjaaaaannggg sekaliiiii, astaga 2, ini percobaan kalo textnya pannnjaaaaannggg sekaliiiii", "wow bisa luar biasa sekali, tapi kenapa gak berhenti?"),
+//            IconUnify.CHEVRON_RIGHT
+//        )
+        binding.btnCheckoutPromo.showActive(
+            "makin hemat pakai promo",
             IconUnify.CHEVRON_RIGHT
-        )
+        ) {
+            binding.btnCheckoutPromo.showInactive(
+                "https://static.vecteezy.com/system/resources/previews/004/495/473/original/sales-promotion-line-icon-logo-free-vector.jpg",
+                "Pilih barang dulu sebelum pakai promo"
+            ) {
+                binding.btnCheckoutPromo.showApplied("Kamu bisa hemat Rp10.000", "1 promo dipakai", IconUnify.CHEVRON_RIGHT, emptyList())
+            }
+        }
 
 //        binding.btnCheckoutPromo.showActive(
 //            "https://static.vecteezy.com/system/resources/previews/004/495/473/original/sales-promotion-line-icon-logo-free-vector.jpg",

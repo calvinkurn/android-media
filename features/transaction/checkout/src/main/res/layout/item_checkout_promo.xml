@@ -13,7 +13,7 @@
         android:id="@+id/btn_checkout_promo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:rounded="false" />
+        app:rounded="true" />
 
     <com.tokopedia.unifycomponents.DividerUnify
         android:layout_width="match_parent"

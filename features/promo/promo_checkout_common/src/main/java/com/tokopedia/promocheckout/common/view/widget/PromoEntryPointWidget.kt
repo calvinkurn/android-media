@@ -38,6 +38,8 @@ class PromoEntryPointWidget @JvmOverloads constructor(
     private var activeViewRightIcon: IconUnify? = null
     private var activeViewLeftImage: ImageUnify? = null
     private var activeViewWording: TextSwitcher? = null
+    private var activeViewTitleWording: Typography? = null
+    private var activeViewDescWording: Typography? = null
     private var activeViewDivider: DividerUnify? = null
     private var activeViewSummaryLayout: LinearLayout? = null
     private var activeViewConfettiFrame: FrameLayout? = null
@@ -68,7 +70,9 @@ class PromoEntryPointWidget @JvmOverloads constructor(
 
         activeView = switcherView?.get(0)
         activeViewLeftImage = activeView?.findViewById(R.id.iv_promo_checkout_left)
-        activeViewWording = activeView?.findViewById(R.id.tv_promo_checkout_title)
+        activeViewWording = activeView?.findViewById(R.id.tv_promo_checkout_text)
+        activeViewTitleWording = activeView?.findViewById(R.id.tv_promo_checkout_title)
+        activeViewDescWording = activeView?.findViewById(R.id.tv_promo_checkout_desc)
         activeViewRightIcon = activeView?.findViewById(R.id.ic_promo_checkout_right)
         activeViewDivider = activeView?.findViewById(R.id.divider_promo_checkout)
         activeViewSummaryLayout = activeView?.findViewById(R.id.ll_promo_checkout_summary)
@@ -76,8 +80,12 @@ class PromoEntryPointWidget @JvmOverloads constructor(
 
         inActiveView = switcherView?.get(1)
         inActiveViewLeftImage = inActiveView?.findViewById(R.id.iv_promo_checkout_left)
-        inActiveViewWording = inActiveView?.findViewById(R.id.tv_promo_checkout_title)
+        inActiveViewWording = inActiveView?.findViewById(R.id.tv_promo_checkout_text)
         inActiveViewRightIcon = inActiveView?.findViewById(R.id.ic_promo_checkout_right)
+        inActiveView?.findViewById<Typography>(R.id.tv_promo_checkout_title)?.visibility =
+            View.GONE
+        inActiveView?.findViewById<Typography>(R.id.tv_promo_checkout_desc)?.visibility =
+            View.GONE
         inActiveView?.findViewById<DividerUnify>(R.id.divider_promo_checkout)?.visibility =
             View.GONE
         inActiveView?.findViewById<LinearLayout>(R.id.ll_promo_checkout_summary)?.visibility =
@@ -214,7 +222,7 @@ class PromoEntryPointWidget @JvmOverloads constructor(
         }
     }
 
-    fun showActive(
+    fun showActiveNew(
         leftImageUrl: String,
         wording: String,
         rightIcon: Int,
@@ -225,6 +233,9 @@ class PromoEntryPointWidget @JvmOverloads constructor(
         activeViewConfettiFrame?.visibility = View.GONE
         activeViewSummaryLayout?.visibility = View.GONE
         activeViewDivider?.visibility = View.GONE
+        activeViewTitleWording?.visibility = View.GONE
+        activeViewDescWording?.visibility = View.GONE
+        activeViewWording?.visibility = View.VISIBLE
         if (animate && switcherView?.visibility == View.VISIBLE) {
             activeViewLeftImage?.setImageUrl(leftImageUrl)
             activeViewRightIcon?.setImage(rightIcon)
@@ -252,6 +263,7 @@ class PromoEntryPointWidget @JvmOverloads constructor(
         }
     }
 
+    // cart makin hemat pakai promo
     fun showActive(
         wording: String,
         rightIcon: Int,
@@ -262,6 +274,9 @@ class PromoEntryPointWidget @JvmOverloads constructor(
         activeViewConfettiFrame?.visibility = View.GONE
         activeViewSummaryLayout?.visibility = View.GONE
         activeViewDivider?.visibility = View.GONE
+        activeViewTitleWording?.visibility = View.GONE
+        activeViewDescWording?.visibility = View.GONE
+        activeViewWording?.visibility = View.VISIBLE
         if (animate && switcherView?.visibility == View.VISIBLE) {
             activeViewLeftImage?.setImageResource(R.drawable.ic_promo_coupon_yellow)
             activeViewRightIcon?.setImage(rightIcon)
@@ -300,6 +315,9 @@ class PromoEntryPointWidget @JvmOverloads constructor(
         activeViewConfettiFrame?.visibility = View.GONE
         activeViewSummaryLayout?.visibility = View.GONE
         activeViewDivider?.visibility = View.GONE
+        activeViewWording?.visibility = View.VISIBLE
+        activeViewTitleWording?.visibility = View.GONE
+        activeViewDescWording?.visibility = View.GONE
         switcherView?.reset()
         activeViewLeftImage?.setImageResource(R.drawable.ic_promo_coupon_yellow)
         activeViewWording?.setCurrentText(MethodChecker.fromHtml(wordings.first()))
@@ -323,6 +341,7 @@ class PromoEntryPointWidget @JvmOverloads constructor(
     }
 
     private val flipper: Runnable = Runnable {
+        // todo: refactor into text flipper class
         flip()
     }
 
@@ -340,49 +359,33 @@ class PromoEntryPointWidget @JvmOverloads constructor(
         }
     }
 
+    // for old promo in cart & checkout, when has promo applied
     fun showApplied(
-        wording: String,
+        title: String,
+        desc: String,
         rightIcon: Int?,
         summaries: List<PromoEntryPointSummaryItem>,
         showConfetti: Boolean = false,
-        animate: Boolean = false,
-        animateWording: Boolean = false,
         onClickListener: () -> Unit = {}
     ) {
-        if (animate && switcherView?.visibility == View.VISIBLE) {
-            activeViewConfettiFrame?.visibility = if (showConfetti) View.VISIBLE else View.GONE
-            activeViewLeftImage?.setImageResource(R.drawable.ic_promo_applied_check)
-            if (rightIcon == null) {
-                activeViewRightIcon?.visibility = View.INVISIBLE
-            } else {
-                activeViewRightIcon?.visibility = View.VISIBLE
-                activeViewRightIcon?.setImage(rightIcon)
-            }
-            if (switcherView?.displayedChild != 0) {
-                // only trigger view switch animation if currently showing different view
-                activeViewWording?.setCurrentText(MethodChecker.fromHtml(wording))
-                switcherView?.displayedChild = 0
-            } else if (animateWording) {
-                activeViewWording?.setText(MethodChecker.fromHtml(wording))
-            }
-            errorView?.visibility = View.GONE
-            loadingView?.visibility = View.GONE
+        switcherView?.reset()
+        activeViewConfettiFrame?.visibility = if (showConfetti) View.VISIBLE else View.GONE
+        activeViewLeftImage?.setImageResource(R.drawable.ic_promo_applied_check)
+        activeViewTitleWording?.text = MethodChecker.fromHtml(title)
+        activeViewDescWording?.text = MethodChecker.fromHtml(desc)
+        activeViewWording?.visibility = View.GONE
+        activeViewTitleWording?.visibility = View.VISIBLE
+        activeViewDescWording?.visibility = View.VISIBLE
+        if (rightIcon == null) {
+            activeViewRightIcon?.visibility = View.INVISIBLE
         } else {
-            switcherView?.reset()
-            activeViewConfettiFrame?.visibility = if (showConfetti) View.VISIBLE else View.GONE
-            activeViewLeftImage?.setImageResource(R.drawable.ic_promo_applied_check)
-            activeViewWording?.setCurrentText(MethodChecker.fromHtml(wording))
-            if (rightIcon == null) {
-                activeViewRightIcon?.visibility = View.INVISIBLE
-            } else {
-                activeViewRightIcon?.visibility = View.VISIBLE
-                activeViewRightIcon?.setImage(rightIcon)
-            }
-            switcherView?.displayedChild = 0
-            switcherView?.visibility = View.VISIBLE
-            errorView?.visibility = View.GONE
-            loadingView?.visibility = View.GONE
+            activeViewRightIcon?.visibility = View.VISIBLE
+            activeViewRightIcon?.setImage(rightIcon)
         }
+        switcherView?.displayedChild = 0
+        switcherView?.visibility = View.VISIBLE
+        errorView?.visibility = View.GONE
+        loadingView?.visibility = View.GONE
         if (summaries.isNotEmpty()) {
             activeViewSummaryLayout?.visibility = View.VISIBLE
             activeViewDivider?.visibility = View.VISIBLE
