@@ -28,8 +28,16 @@ android {
     sourceSets {
         main {
             res {
-                srcDirs 'src/main/res', 'src/main/res/layouts/message_bubble', 'src/main/res/layouts/chatroom', 'src/main/res/reply', 'src/main/res/layouts/reply',
-                        'src/main/res/layouts/transaction', 'src/main/res/layouts/header', 'src/main/res/layouts/mqtt', 'src/main/res/layouts/bottomsheet'
+                srcDirs 'src/main/res',
+                        'src/main/res/layouts/message_bubble',
+                        'src/main/res/layouts/chatroom',
+                        'src/main/res/reply',
+                        'src/main/res/layouts/reply',
+                        'src/main/res/layouts/transaction',
+                        'src/main/res/layouts/header',
+                        'src/main/res/layouts/mqtt',
+                        'src/main/res/layouts/bottomsheet',
+                        'src/main/res/layouts/chatlist'
             }
         }
     }

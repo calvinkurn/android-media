@@ -2,8 +2,8 @@ package com.tokopedia.tokochat.domain.usecase
 
 import com.gojek.conversations.babble.message.data.SendMessageMetaData
 import com.gojek.conversations.extensions.ExtensionMessage
-import com.tokochat.tokochat_config_common.di.qualifier.TokoChatQualifier
-import com.tokochat.tokochat_config_common.repository.TokoChatRepository
+import com.tokopedia.tokochat.config.di.qualifier.TokoChatQualifier
+import com.tokopedia.tokochat.config.repository.TokoChatRepository
 import javax.inject.Inject
 
 open class TokoChatSendMessageUseCase @Inject constructor(

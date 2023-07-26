@@ -42,10 +42,10 @@ import com.tokopedia.tokochat.util.TokoChatValueUtil.PICTURE
 import com.tokopedia.tokochat.util.TokoChatViewUtil
 import com.tokopedia.tokochat.util.TokoChatViewUtil.Companion.getTokoChatPhotoPath
 import com.tokopedia.tokochat.view.chatroom.uimodel.TokoChatImageAttachmentExtensionProvider
-import com.tokopedia.tokochat_common.util.TokoChatCacheManager
-import com.tokopedia.tokochat_common.util.TokoChatCacheManagerImpl.Companion.TOKOCHAT_IMAGE_ATTACHMENT_MAP
-import com.tokopedia.tokochat_common.util.TokoChatValueUtil
-import com.tokopedia.tokochat_common.util.TokoChatValueUtil.IMAGE_ATTACHMENT_MSG
+import com.tokopedia.tokochat.common.util.TokoChatCacheManager
+import com.tokopedia.tokochat.common.util.TokoChatCacheManagerImpl.Companion.TOKOCHAT_IMAGE_ATTACHMENT_MAP
+import com.tokopedia.tokochat.common.util.TokoChatValueUtil
+import com.tokopedia.tokochat.common.util.TokoChatValueUtil.IMAGE_ATTACHMENT_MSG
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success

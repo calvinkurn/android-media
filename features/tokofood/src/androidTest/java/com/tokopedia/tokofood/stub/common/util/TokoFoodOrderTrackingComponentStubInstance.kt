@@ -2,7 +2,7 @@ package com.tokopedia.tokofood.stub.common.util
 
 import android.app.Application
 import android.content.Context
-import com.tokochat.tokochat_config_common.util.TokoChatConnection
+import com.tokopedia.tokochat.config.util.TokoChatConnection
 import com.tokopedia.tokofood.stub.postpurchase.di.component.DaggerTokoFoodOrderTrackingComponentStub
 import com.tokopedia.tokofood.stub.postpurchase.di.component.TokoFoodOrderTrackingComponentStub
 import com.tokopedia.tokofood.stub.postpurchase.di.module.TokoFoodCourierConversationModuleStub

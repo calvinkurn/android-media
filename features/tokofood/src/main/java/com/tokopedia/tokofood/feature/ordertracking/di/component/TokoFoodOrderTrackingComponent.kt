@@ -1,6 +1,6 @@
 package com.tokopedia.tokofood.feature.ordertracking.di.component
 
-import com.tokochat.tokochat_config_common.di.component.TokoChatConfigComponent
+import com.tokopedia.tokochat.config.di.component.TokoChatConfigComponent
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.tokofood.feature.ordertracking.base.presentation.fragment.BaseTokoFoodOrderTrackingFragment
 import com.tokopedia.tokofood.feature.ordertracking.di.module.TokoFoodOrderTrackingModule

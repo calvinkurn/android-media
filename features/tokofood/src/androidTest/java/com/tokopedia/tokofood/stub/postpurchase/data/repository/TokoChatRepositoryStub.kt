@@ -2,7 +2,7 @@ package com.tokopedia.tokofood.stub.postpurchase.data.repository
 
 import android.content.Context
 import com.gojek.conversations.courier.BabbleCourierClient
-import com.tokochat.tokochat_config_common.repository.TokoChatRepository
+import com.tokopedia.tokochat.config.common.repository.TokoChatRepository
 import retrofit2.Retrofit
 
 class TokoChatRepositoryStub(

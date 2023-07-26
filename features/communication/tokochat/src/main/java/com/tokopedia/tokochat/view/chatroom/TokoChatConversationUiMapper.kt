@@ -14,11 +14,11 @@ import com.tokopedia.tokochat.domain.response.message_data.TokoChatMessageWrappe
 import com.tokopedia.tokochat.util.TokoChatValueUtil.CENSOR_TEXT
 import com.tokopedia.tokochat.util.TokoChatValueUtil.PICTURE
 import com.tokopedia.tokochat.util.TokoChatValueUtil.VOICE_NOTES
-import com.tokopedia.tokochat_common.view.uimodel.TokoChatHeaderDateUiModel
-import com.tokopedia.tokochat_common.view.uimodel.TokoChatImageBubbleUiModel
-import com.tokopedia.tokochat_common.view.uimodel.TokoChatMessageBubbleCensorUiModel
-import com.tokopedia.tokochat_common.view.uimodel.TokoChatMessageBubbleUiModel
-import com.tokopedia.tokochat_common.view.uimodel.TokoChatReminderTickerUiModel
+import com.tokopedia.tokochat.common.view.chatroom.uimodel.TokoChatHeaderDateUiModel
+import com.tokopedia.tokochat.common.view.chatroom.uimodel.TokoChatImageBubbleUiModel
+import com.tokopedia.tokochat.common.view.chatroom.uimodel.TokoChatMessageBubbleCensorUiModel
+import com.tokopedia.tokochat.common.view.chatroom.uimodel.TokoChatMessageBubbleUiModel
+import com.tokopedia.tokochat.common.view.chatroom.uimodel.TokoChatReminderTickerUiModel
 import java.util.*
 import javax.inject.Inject
 
