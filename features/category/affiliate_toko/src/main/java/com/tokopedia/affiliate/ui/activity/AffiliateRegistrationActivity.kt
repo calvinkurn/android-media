@@ -49,6 +49,7 @@ class AffiliateRegistrationActivity :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        component.injectRegistrationActivity(this)
         binding = AffiliateRegistrationLayoutBinding.inflate(layoutInflater)
         affiliateRegistrationSharedViewModel =
             viewModelProvider?.let { ViewModelProvider(this, it) }
@@ -192,10 +193,6 @@ class AffiliateRegistrationActivity :
                 }
             )
         }
-    }
-
-    override fun onBackPressed() {
-        if (!showingSplashScreen) super.onBackPressed()
     }
 
     override fun getLayoutRes(): Int = R.layout.affiliate_registration_layout
