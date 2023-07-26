@@ -51,7 +51,6 @@ class ComposePersonaSelectTypeViewModel @Inject constructor(
                 val data = withContext(dispatchers.io) {
                     getPersonaListUseCase.get().execute()
                 }
-                delay(2000)
                 emitSuccessState(data, args)
             } catch (e: Exception) {
                 emitErrorState(e)
