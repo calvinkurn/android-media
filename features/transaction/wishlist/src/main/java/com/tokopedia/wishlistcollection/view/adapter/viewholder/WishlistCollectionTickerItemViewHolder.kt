@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.SPACE
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
@@ -64,7 +65,7 @@ class WishlistCollectionTickerItemViewHolder(
 
     private fun showAffiliateTicker() {
         binding.root.show()
-        binding.icCloseTickerCollectionWishlist.gone()
+        binding.icCloseTickerCollectionWishlist.invisible()
         binding.wishlistCollectionTickerBg.loadImage(BG_TICKER)
         binding.wishlistCollectionTickerTitle.text =
             itemView.context.getString(R.string.wishlist_affiliate_ticker_title)
