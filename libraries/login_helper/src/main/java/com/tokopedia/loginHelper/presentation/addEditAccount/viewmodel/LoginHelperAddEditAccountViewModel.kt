@@ -4,6 +4,7 @@ import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.encryption.security.AESEncryptorCBC
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -19,11 +20,12 @@ import com.tokopedia.loginHelper.presentation.addEditAccount.viewmodel.state.Log
 import com.tokopedia.loginHelper.util.CacheConstants.LOGIN_HELPER_LOCAL_USER_DATA_PROD
 import com.tokopedia.loginHelper.util.CacheConstants.LOGIN_HELPER_LOCAL_USER_DATA_STAGING
 import com.tokopedia.loginHelper.util.ENCRYPTION_KEY
-import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class LoginHelperAddEditAccountViewModel @Inject constructor(
@@ -34,8 +36,8 @@ class LoginHelperAddEditAccountViewModel @Inject constructor(
     val dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.main) {
 
-    private val _uiAction = MutableSharedFlow<LoginHelperAddEditAccountAction>(replay = 1)
-    val uiAction = _uiAction.asSharedFlow()
+    private val _uiActionChannel = Channel<LoginHelperAddEditAccountAction>()
+    val uiAction = _uiActionChannel.receiveAsFlow()
 
     private val _uiState = MutableStateFlow(LoginHelperAddEditAccountUiState())
     val uiState = _uiState.asStateFlow()
@@ -90,13 +92,13 @@ class LoginHelperAddEditAccountViewModel @Inject constructor(
                     _uiState.value.envType.toEnvString()
                 )
                 if (addUserResponse?.code == SUCCESS_STATUS) {
-                    _uiAction.tryEmit(LoginHelperAddEditAccountAction.OnSuccessAddDataToRest)
+                    _uiActionChannel.send(LoginHelperAddEditAccountAction.OnSuccessAddDataToRest)
                 } else {
-                    _uiAction.tryEmit(LoginHelperAddEditAccountAction.OnFailureAddDataToRest)
+                    _uiActionChannel.send(LoginHelperAddEditAccountAction.OnFailureAddDataToRest)
                 }
             },
             onError = {
-                _uiAction.tryEmit(LoginHelperAddEditAccountAction.OnFailureAddDataToRest)
+                _uiActionChannel.send(LoginHelperAddEditAccountAction.OnFailureAddDataToRest)
             }
         )
     }
@@ -113,12 +115,12 @@ class LoginHelperAddEditAccountViewModel @Inject constructor(
                 id
             )
             if (editResponse?.code == OK_STATUS) {
-                _uiAction.tryEmit(LoginHelperAddEditAccountAction.OnSuccessEditUserData)
+                _uiActionChannel.send(LoginHelperAddEditAccountAction.OnSuccessEditUserData)
             } else {
-                _uiAction.tryEmit(LoginHelperAddEditAccountAction.OnFailureEditUserData)
+                _uiActionChannel.send(LoginHelperAddEditAccountAction.OnFailureEditUserData)
             }
         }, {
-            _uiAction.tryEmit(LoginHelperAddEditAccountAction.OnFailureEditUserData)
+            _uiActionChannel.send(LoginHelperAddEditAccountAction.OnFailureEditUserData)
         })
     }
 
@@ -159,11 +161,23 @@ class LoginHelperAddEditAccountViewModel @Inject constructor(
     }
 
     private fun handleBackButtonTap() {
-        _uiAction.tryEmit(LoginHelperAddEditAccountAction.TapBackAction)
+        viewModelScope.launch {
+            _uiActionChannel.send(
+                LoginHelperAddEditAccountAction.GoToRoute(
+                    ApplinkConstInternalGlobal.LOGIN_HELPER_ACCOUNTS_SETTINGS
+                )
+            )
+        }
     }
 
     private fun handleGoToLoginHelperHome() {
-        _uiAction.tryEmit(LoginHelperAddEditAccountAction.GoToLoginHelperHome)
+        viewModelScope.launch {
+            _uiActionChannel.send(
+                LoginHelperAddEditAccountAction.GoToRoute(
+                    ApplinkConstInternalGlobal.LOGIN_HELPER
+                )
+            )
+        }
     }
 
     companion object {

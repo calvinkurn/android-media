@@ -43,6 +43,7 @@ import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import java.io.IOException
 import javax.inject.Inject
@@ -103,7 +104,7 @@ class LoginHelperSearchAccountFragment : BaseDaggerFragment(), LoginHelperSearch
     private fun observeUiAction() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.uiAction.collect { action ->
+                viewModel.uiAction.onEach { action ->
                     handleAction(action)
                 }
             }
@@ -241,11 +242,6 @@ class LoginHelperSearchAccountFragment : BaseDaggerFragment(), LoginHelperSearch
             viewModel.processEvent(LoginHelperSearchAccountEvent.TapBackButton)
         }
     }
-
-//    override fun onFragmentBackPressed(): Boolean {
-//        goToPage(ApplinkConstInternalGlobal.LOGIN_HELPER_ACCOUNTS_SETTINGS)
-//        return true
-//    }
 
     override fun initInjector() {
         DaggerLoginHelperComponent.builder()
