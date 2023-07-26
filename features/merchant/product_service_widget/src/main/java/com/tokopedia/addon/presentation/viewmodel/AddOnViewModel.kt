@@ -98,6 +98,7 @@ class AddOnViewModel @Inject constructor(
     }
 
     fun saveAddOnState(cartId: Long, source: String) {
+        if (AddOnMapper.getSelectedAddons(modifiedAddOnGroups.value).isEmpty()) return
         mSaveSelectionResult.value = Success(emptyList())
         saveAddOnStateUseCase.setParams(
             AddOnMapper.mapToSaveAddOnStateRequest(
