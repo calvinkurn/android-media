@@ -1,4 +1,4 @@
-package com.tokopedia.sellerpersona.view.compose.common
+package com.tokopedia.sellerpersona.view.compose.component
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
@@ -11,8 +11,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -48,7 +46,7 @@ fun Switch(
         mutableStateOf(isSwitchedOn)
     }
 
-    val alignment by animateAlignmentAsState(if (switchState.value) BiasEnd else BiasStart)
+    val alignment = rememberAnimateAlignmentAsState(if (switchState.value) BiasEnd else BiasStart)
 
     // switch track
     Box(
@@ -77,11 +75,11 @@ fun Switch(
 }
 
 @Composable
-private fun animateAlignmentAsState(
+private fun rememberAnimateAlignmentAsState(
     targetBiasValue: Float
-): State<BiasAlignment> {
+): BiasAlignment {
     val bias by animateFloatAsState(targetBiasValue)
     return remember {
-        derivedStateOf { BiasAlignment(horizontalBias = bias, verticalBias = 0f) }
+        BiasAlignment(horizontalBias = bias, verticalBias = 0f)
     }
 }

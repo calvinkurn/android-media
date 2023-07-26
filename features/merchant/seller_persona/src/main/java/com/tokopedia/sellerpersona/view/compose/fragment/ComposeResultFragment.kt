@@ -25,13 +25,12 @@ import com.tokopedia.sellerpersona.R
 import com.tokopedia.sellerpersona.analytics.SellerPersonaTracking
 import com.tokopedia.sellerpersona.data.local.PersonaSharedPref
 import com.tokopedia.sellerpersona.view.activity.SellerPersonaActivity
-import com.tokopedia.sellerpersona.view.compose.common.ErrorStateComponent
+import com.tokopedia.sellerpersona.view.compose.component.ErrorStateComponent
 import com.tokopedia.sellerpersona.view.compose.model.args.PersonaArgsUiModel
 import com.tokopedia.sellerpersona.view.compose.model.uievent.ResultUiEvent
-import com.tokopedia.sellerpersona.view.compose.screen.PersonaResultScreen
-import com.tokopedia.sellerpersona.view.compose.screen.ResultLoadingState
+import com.tokopedia.sellerpersona.view.compose.screen.persona_result.PersonaResultScreen
+import com.tokopedia.sellerpersona.view.compose.screen.persona_result.ResultLoadingState
 import com.tokopedia.sellerpersona.view.compose.viewmodel.ComposePersonaResultViewModel
-import com.tokopedia.sellerpersona.view.fragment.PersonaResultFragmentDirections
 import com.tokopedia.sellerpersona.view.model.isActive
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface

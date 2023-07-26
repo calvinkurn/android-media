@@ -1,4 +1,4 @@
-package com.tokopedia.sellerpersona.view.compose.common
+package com.tokopedia.sellerpersona.view.compose.component
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement

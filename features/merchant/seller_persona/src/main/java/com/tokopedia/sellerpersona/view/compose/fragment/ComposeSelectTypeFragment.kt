@@ -14,7 +14,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.sellerpersona.view.activity.SellerPersonaActivity
 import com.tokopedia.sellerpersona.view.compose.model.args.PersonaArgsUiModel
-import com.tokopedia.sellerpersona.view.compose.screen.SelectPersonaTypeScreen
+import com.tokopedia.sellerpersona.view.compose.screen.select_type.SelectPersonaTypeScreen
 import com.tokopedia.sellerpersona.view.compose.viewmodel.ComposePersonaSelectTypeViewModel
 import javax.inject.Inject
 

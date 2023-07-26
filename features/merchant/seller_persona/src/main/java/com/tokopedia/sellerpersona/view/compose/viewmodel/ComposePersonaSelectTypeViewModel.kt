@@ -17,6 +17,7 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -50,6 +51,7 @@ class ComposePersonaSelectTypeViewModel @Inject constructor(
                 val data = withContext(dispatchers.io) {
                     getPersonaListUseCase.get().execute()
                 }
+                delay(2000)
                 emitSuccessState(data, args)
             } catch (e: Exception) {
                 emitErrorState(e)

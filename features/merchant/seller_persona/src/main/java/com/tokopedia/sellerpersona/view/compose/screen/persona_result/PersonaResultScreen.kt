@@ -1,4 +1,4 @@
-package com.tokopedia.sellerpersona.view.compose.screen
+package com.tokopedia.sellerpersona.view.compose.screen.persona_result
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -42,7 +42,7 @@ import com.tokopedia.nest.principles.ui.NestNN
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.nest.principles.utils.ImageSource
 import com.tokopedia.sellerpersona.R
-import com.tokopedia.sellerpersona.view.compose.common.Switch
+import com.tokopedia.sellerpersona.view.compose.component.Switch
 import com.tokopedia.sellerpersona.view.compose.model.state.PersonaResultState
 import com.tokopedia.sellerpersona.view.compose.model.uievent.ResultUiEvent
 import com.tokopedia.sellerpersona.view.model.PersonaDataUiModel
