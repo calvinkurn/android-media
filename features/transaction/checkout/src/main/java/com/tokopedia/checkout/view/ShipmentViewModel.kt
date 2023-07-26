@@ -5506,26 +5506,28 @@ class ShipmentViewModel @Inject constructor(
     // endregion
 
     fun getDynamicPaymentFee(request: PaymentFeeCheckoutRequest?) {
-        view?.showPaymentFeeSkeletonLoading()
+        if (view != null) {
+            view?.showPaymentFeeSkeletonLoading()
 
-        getPaymentFeeCheckoutUseCase.setParams(request!!)
-        getPaymentFeeCheckoutUseCase.execute(
-            { (platformFeeData): PaymentFeeGqlResponse ->
-                if (view != null) {
-                    if (platformFeeData.success) {
-                        view?.showPaymentFeeData(platformFeeData)
-                    } else {
-                        view?.showPaymentFeeTickerFailedToLoad(shipmentPlatformFeeData.errorWording)
+            getPaymentFeeCheckoutUseCase.setParams(request!!)
+            getPaymentFeeCheckoutUseCase.execute(
+                { (platformFeeData): PaymentFeeGqlResponse ->
+                    if (view != null) {
+                        if (platformFeeData.success) {
+                            view?.showPaymentFeeData(platformFeeData)
+                        } else {
+                            view?.showPaymentFeeTickerFailedToLoad(shipmentPlatformFeeData.errorWording)
+                        }
                     }
+                    Unit
+                }
+            ) { throwable: Throwable ->
+                Timber.d(throwable)
+                if (view != null) {
+                    view?.showPaymentFeeTickerFailedToLoad(shipmentPlatformFeeData.errorWording)
                 }
                 Unit
             }
-        ) { throwable: Throwable ->
-            Timber.d(throwable)
-            if (view != null) {
-                view?.showPaymentFeeTickerFailedToLoad(shipmentPlatformFeeData.errorWording)
-            }
-            Unit
         }
     }
 
