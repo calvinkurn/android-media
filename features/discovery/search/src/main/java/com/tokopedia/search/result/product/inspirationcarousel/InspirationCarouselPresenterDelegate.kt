@@ -111,7 +111,7 @@ class InspirationCarouselPresenterDelegate @Inject constructor(
         externalReference: String
     ) = when {
         data.isDynamicProductLayout() ->
-            convertInspirationCarouselToSeamlessInspiration(data, externalReference)
+            convertInspirationCarouselToBroadMatch(data, externalReference)
 
         data.isVideoLayout() ->
             convertInspirationCarouselToInspirationCarouselVideo(data)

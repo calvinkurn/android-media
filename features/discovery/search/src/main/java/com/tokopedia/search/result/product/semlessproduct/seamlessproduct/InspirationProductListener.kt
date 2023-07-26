@@ -1,9 +1,9 @@
 package com.tokopedia.search.result.product.semlessproduct.seamlessproduct
 
 interface InspirationProductListener {
-    fun onInspirationProductItemImpressed(broadMatchItemDataView: InspirationProductItemDataView)
+    fun onInspirationProductItemImpressed(inspirationProductData: InspirationProductItemDataView)
 
-    fun onInspirationProductItemClicked(broadMatchItemDataView: InspirationProductItemDataView)
+    fun onInspirationProductItemClicked(inspirationProductData: InspirationProductItemDataView)
 
-    fun onInspirationProductItemThreeDotsClicked(broadMatchItemDataView: InspirationProductItemDataView)
+    fun onInspirationProductItemThreeDotsClicked(inspirationProductData: InspirationProductItemDataView)
 }

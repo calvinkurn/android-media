@@ -2,7 +2,6 @@ package com.tokopedia.search.result.product.semlessproduct.seamlessproduct
 
 import com.tokopedia.discovery.common.manager.showProductCardOptions
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
-import com.tokopedia.productcard.ProductCardLifecycleObserver
 import com.tokopedia.search.analytics.SearchEventTracking
 import com.tokopedia.search.analytics.SearchTracking
 import com.tokopedia.search.result.product.SearchParameterProvider
@@ -16,16 +15,16 @@ class InspirationProductListenerDelegate(
     SearchParameterProvider by searchParameterProvider,
     FragmentProvider by fragmentProvider {
 
-    override fun onInspirationProductItemImpressed(broadMatchItemDataView: InspirationProductItemDataView) {
-        presenter?.onInspirationProductItemImpressed(broadMatchItemDataView)
+    override fun onInspirationProductItemImpressed(inspirationProductData: InspirationProductItemDataView) {
+        presenter?.onInspirationProductItemImpressed(inspirationProductData)
     }
 
-    override fun onInspirationProductItemClicked(broadMatchItemDataView: InspirationProductItemDataView) {
-        presenter?.onInspirationProductItemClick(broadMatchItemDataView)
+    override fun onInspirationProductItemClicked(inspirationProductData: InspirationProductItemDataView) {
+        presenter?.onInspirationProductItemClick(inspirationProductData)
     }
 
-    override fun onInspirationProductItemThreeDotsClicked(broadMatchItemDataView: InspirationProductItemDataView) {
-        showProductCardOptions(getFragment(), createProductCardOptionsModel(broadMatchItemDataView))
+    override fun onInspirationProductItemThreeDotsClicked(inspirationProductData: InspirationProductItemDataView) {
+        showProductCardOptions(getFragment(), createProductCardOptionsModel(inspirationProductData))
     }
 
     private fun createProductCardOptionsModel(item: InspirationProductItemDataView): ProductCardOptionsModel {

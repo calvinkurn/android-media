@@ -2,7 +2,7 @@ package com.tokopedia.search.result.product.semlessproduct.seamlessproduct
 
 interface InspirationProductPresenter {
 
-    fun onInspirationProductItemImpressed(broadMatchItemDataView: InspirationProductItemDataView)
+    fun onInspirationProductItemImpressed(inspirationProductData: InspirationProductItemDataView)
 
-    fun onInspirationProductItemClick(broadMatchItemDataView: InspirationProductItemDataView)
+    fun onInspirationProductItemClick(inspirationProductData: InspirationProductItemDataView)
 }

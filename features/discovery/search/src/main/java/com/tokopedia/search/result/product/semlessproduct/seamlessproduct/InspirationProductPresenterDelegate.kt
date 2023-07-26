@@ -8,47 +8,47 @@ import javax.inject.Inject
 
 @SearchScope
 class InspirationProductPresenterDelegate @Inject constructor(
-    private val broadMatchView: InspirationProductView,
+    private val inspirationProductView: InspirationProductView,
     private val inspirationProductTracker: InspirationProductItemTracker,
     private val topAdsUrlHitter: TopAdsUrlHitter,
     private val classNameProvider: ClassNameProvider
 ) : InspirationProductPresenter {
-    override fun onInspirationProductItemImpressed(broadMatchItemDataView: InspirationProductItemDataView) {
-        if (broadMatchItemDataView.isOrganicAds)
-            sendTrackingImpressBroadMatchAds(broadMatchItemDataView)
+    override fun onInspirationProductItemImpressed(inspirationProductData: InspirationProductItemDataView) {
+        if (inspirationProductData.isOrganicAds)
+            sendTrackingImpressAsBroadMatchAds(inspirationProductData)
 
-        val seamlessInspirationProductType = broadMatchItemDataView.seamlessInspirationProductType
+        val seamlessInspirationProductType = inspirationProductData.seamlessInspirationProductType
         inspirationProductTracker.trackInspirationProductSeamlessImpression(
             seamlessInspirationProductType.type,
             seamlessInspirationProductType.inspirationCarouselProduct
         )
     }
 
-    override fun onInspirationProductItemClick(broadMatchItemDataView: InspirationProductItemDataView) {
-        val seamlessInspirationProductType = broadMatchItemDataView.seamlessInspirationProductType
+    override fun onInspirationProductItemClick(inspirationProductData: InspirationProductItemDataView) {
+        val seamlessInspirationProductType = inspirationProductData.seamlessInspirationProductType
         inspirationProductTracker.trackInspirationProductSeamlessClick(
             seamlessInspirationProductType.type,
             seamlessInspirationProductType.inspirationCarouselProduct
         )
 
-        broadMatchView.openLink(broadMatchItemDataView.applink, broadMatchItemDataView.url)
+        inspirationProductView.openLink(inspirationProductData.applink, inspirationProductData.url)
 
-        if (broadMatchItemDataView.isOrganicAds)
-            sendTrackingClickBroadMatchAds(broadMatchItemDataView)
+        if (inspirationProductData.isOrganicAds)
+            sendTrackingClickAsBroadMatchAds(inspirationProductData)
     }
 
-    private fun sendTrackingImpressBroadMatchAds(broadMatchItemDataView: InspirationProductItemDataView) {
+    private fun sendTrackingImpressAsBroadMatchAds(inspirationProductItemDataView: InspirationProductItemDataView) {
         topAdsUrlHitter.hitImpressionUrl(
             classNameProvider.className,
-            broadMatchItemDataView.topAdsViewUrl,
-            broadMatchItemDataView.id,
-            broadMatchItemDataView.name,
-            broadMatchItemDataView.imageUrl,
+            inspirationProductItemDataView.topAdsViewUrl,
+            inspirationProductItemDataView.id,
+            inspirationProductItemDataView.name,
+            inspirationProductItemDataView.imageUrl,
             SearchConstant.TopAdsComponent.BROAD_MATCH_ADS
         )
     }
 
-    private fun sendTrackingClickBroadMatchAds(broadMatchItemDataView: InspirationProductItemDataView) {
+    private fun sendTrackingClickAsBroadMatchAds(broadMatchItemDataView: InspirationProductItemDataView) {
         topAdsUrlHitter.hitClickUrl(
             classNameProvider.className,
             broadMatchItemDataView.topAdsClickUrl,
