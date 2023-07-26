@@ -1,29 +1,35 @@
 package com.tokopedia.play.broadcaster.view.bottomsheet.livetovod
 
 import android.os.Bundle
+import android.text.style.ForegroundColorSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.compose.ui.platform.ComposeView
-import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.FragmentManager
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.content.common.util.Router
-import com.tokopedia.play.broadcaster.R
+import com.tokopedia.play.broadcaster.databinding.BottomSheetPlayBroDisableLiveToVodBinding
 import com.tokopedia.play.broadcaster.ui.model.livetovod.TickerBottomSheetUiModel
+import com.tokopedia.play.broadcaster.ui.model.livetovod.generateSpanText
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import javax.inject.Inject
+import com.tokopedia.unifyprinciples.R as unifyPrinciplesR
 
 class PlayBroLiveToVodBottomSheet @Inject constructor(
     private val router: Router,
 ) : BottomSheetUnify() {
+
+    private var _binding: BottomSheetPlayBroDisableLiveToVodBinding? = null
+    private val binding: BottomSheetPlayBroDisableLiveToVodBinding
+        get() = _binding!!
 
     private var mData: TickerBottomSheetUiModel = TickerBottomSheetUiModel.Empty
     private var mListener: Listener? = null
 
     private fun generateInAppLink(appLink: String): String {
         return getString(
-            R.string.up_webview_template,
+            com.tokopedia.content.common.R.string.up_webview_template,
             ApplinkConst.WEBVIEW,
             appLink,
         )
@@ -34,27 +40,46 @@ class PlayBroLiveToVodBottomSheet @Inject constructor(
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        setupBottomSheet()
+        return super.onCreateView(inflater, container, savedInstanceState)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        initData(mData)
+    }
+
+    private fun setupBottomSheet() {
+        _binding = BottomSheetPlayBroDisableLiveToVodBinding.inflate(
+            LayoutInflater.from(requireContext())
+        )
+        setChild(binding.root)
         overlayClickDismiss = false
-        val composeView = ComposeView(requireContext()).apply {
-            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
-            setContent {
-                PlayBroadcasterLiveToVodBottomSheetScreen(
-                    data = mData,
-                    onButtonClick = {
-                        mListener?.onButtonActionPressed()
-                        dismiss()
-                    },
-                    onActionTextPressed = { appLink ->
-                        router.route(
-                            requireContext(),
-                            generateInAppLink(appLink),
-                        )
-                    },
+    }
+
+    private fun initData(data: TickerBottomSheetUiModel) = with(binding) {
+        val bottomText = generateSpanText(
+            fullText = data.bottomText.description,
+            action = data.bottomText.action,
+            color = ForegroundColorSpan(
+                MethodChecker.getColor(
+                    requireContext(),
+                    unifyPrinciplesR.color.Unify_GN500
+                )
+            ),
+            onTextCLick = { appLink ->
+                router.route(
+                    requireContext(),
+                    generateInAppLink(appLink),
                 )
             }
+        )
+        layout.apply {
+            ivDisableLiveToVod.setImageUrl(url = data.imageURL)
+            tvTitleDisableLiveToVod.text = data.mainText.first().title
+            tvDescriptionDisableLiveToVod.text = data.mainText.first().description
         }
-        setChild(composeView)
-        return super.onCreateView(inflater, container, savedInstanceState)
+        tvFooterDisableLiveToVod.text = bottomText
     }
 
     fun setupData(data: TickerBottomSheetUiModel) {
@@ -68,6 +93,12 @@ class PlayBroLiveToVodBottomSheet @Inject constructor(
     fun show(fragmentManager: FragmentManager) {
         if (isAdded) return
         showNow(fragmentManager, TAG)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        mListener = null
+        _binding = null
     }
 
     interface Listener {

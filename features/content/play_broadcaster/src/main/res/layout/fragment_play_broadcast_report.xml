@@ -34,10 +34,17 @@
         android:background="@color/Unify_NN200"
         app:layout_constraintTop_toBottomOf="@id/tv_bro_summary_page_title" />
 
-    <androidx.compose.ui.platform.ComposeView
-        android:id="@+id/compose_view_ticker"
+    <com.tokopedia.unifycomponents.ticker.Ticker
+        android:id="@+id/ticker_report_page"
+        app:titleText="Title Text"
+        app:descriptionText="Description Text"
+        app:closeButtonVisibility="visible"
+        app:enableAutoSlide="false"
+        app:tickerType="announcement"
+        app:tickerShapeType="full"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/view_bro_summary_divider" />
@@ -51,7 +58,7 @@
         app:layout_constraintBottom_toTopOf="@+id/view_bro_summary_bottom_divider"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/compose_view_ticker">
+        app:layout_constraintTop_toBottomOf="@+id/ticker_report_page">
 
         <include
             android:id="@+id/layout_play_summary_info"

@@ -4,4 +4,5 @@ data class SpanAnnotationTextModel(
     val item: String,
     val start: Int,
     val end: Int,
+    val link: String,
 )

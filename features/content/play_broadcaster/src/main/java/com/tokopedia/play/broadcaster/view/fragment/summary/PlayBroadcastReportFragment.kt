@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.applink.ApplinkConst
@@ -25,11 +24,11 @@ import com.tokopedia.play.broadcaster.ui.model.isGameParticipants
 import com.tokopedia.play.broadcaster.ui.model.livetovod.TickerBottomSheetPage
 import com.tokopedia.play.broadcaster.ui.model.livetovod.TickerBottomSheetType
 import com.tokopedia.play.broadcaster.ui.model.livetovod.TickerBottomSheetUiModel
+import com.tokopedia.play.broadcaster.ui.model.livetovod.generateHtmlSpanText
 import com.tokopedia.play.broadcaster.ui.state.ChannelSummaryUiState
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroInteractiveBottomSheet
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play.broadcaster.view.partial.SummaryInfoViewComponent
-import com.tokopedia.play.broadcaster.view.ticker.livetovod.PlayBroLiveToVodTicker
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastSummaryViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.factory.PlayBroadcastViewModelFactory
@@ -38,6 +37,7 @@ import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.util.PlayToaster
 import com.tokopedia.play_common.util.extension.withCache
 import com.tokopedia.play_common.viewcomponent.viewComponent
+import com.tokopedia.unifycomponents.ticker.TickerCallback
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
@@ -81,8 +81,16 @@ class PlayBroadcastReportFragment @Inject constructor(
         )
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        _binding = FragmentPlayBroadcastReportBinding.inflate(LayoutInflater.from(requireContext()), container, false)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        _binding = FragmentPlayBroadcastReportBinding.inflate(
+            LayoutInflater.from(requireContext()),
+            container,
+            false
+        )
         return _binding?.root
     }
 
@@ -126,12 +134,18 @@ class PlayBroadcastReportFragment @Inject constructor(
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.uiState.withCache().collectLatest {
                 renderChannelHeader(it.prevValue?.channelSummary, it.value.channelSummary)
-                renderReport(it.prevValue?.liveReport?.trafficMetricsResult, it.value.liveReport.trafficMetricsResult)
+                renderReport(
+                    it.prevValue?.liveReport?.trafficMetricsResult,
+                    it.value.liveReport.trafficMetricsResult
+                )
             }
         }
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             parentViewModel.uiState.withCache().collectLatest { (prevState, state) ->
-                renderTickerDisableLiveToVod(prevState?.tickerBottomSheetConfig, state.tickerBottomSheetConfig)
+                renderTickerDisableLiveToVod(
+                    prevState?.tickerBottomSheetConfig,
+                    state.tickerBottomSheetConfig
+                )
             }
         }
     }
@@ -139,17 +153,18 @@ class PlayBroadcastReportFragment @Inject constructor(
     private fun observeEvent() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.uiEvent.collect {
-                when(it) {
+                when (it) {
                     is PlayBroadcastSummaryEvent.VideoUnder60Seconds -> {
                         toaster.showToaster(
                             message = getString(R.string.play_bro_cant_post_video_message),
                             actionLabel = getString(R.string.play_ok),
                         )
                     }
+
                     PlayBroadcastSummaryEvent.CloseReportPage -> requireActivity().onBackPressed()
                     PlayBroadcastSummaryEvent.OpenLeaderboardBottomSheet -> openInteractiveLeaderboardSheet()
                     PlayBroadcastSummaryEvent.OpenPostVideoPage -> mListener?.onClickPostButton()
-                    else -> { }
+                    else -> {}
                 }
             }
         }
@@ -164,7 +179,7 @@ class PlayBroadcastReportFragment @Inject constructor(
     }
 
     private fun renderChannelHeader(prev: ChannelSummaryUiState?, value: ChannelSummaryUiState) {
-        if(prev == value || value.isEmpty()) return
+        if (prev == value || value.isEmpty()) return
 
         summaryInfoView.setChannelHeader(value)
         binding.flButtonSticky.showWithCondition(true)
@@ -174,29 +189,36 @@ class PlayBroadcastReportFragment @Inject constructor(
         }
     }
 
-    private fun renderReport(prev: NetworkResult<List<TrafficMetricUiModel>>?, value: NetworkResult<List<TrafficMetricUiModel>>) {
-        if(prev == value) return
+    private fun renderReport(
+        prev: NetworkResult<List<TrafficMetricUiModel>>?,
+        value: NetworkResult<List<TrafficMetricUiModel>>
+    ) {
+        if (prev == value) return
 
-        when(value) {
+        when (value) {
             is NetworkResult.Loading -> {
                 binding.layoutPlaySummaryInfo.loaderSummary.visible()
                 summaryInfoView.hideError()
             }
+
             is NetworkResult.Success -> {
                 binding.layoutPlaySummaryInfo.loaderSummary.gone()
                 summaryInfoView.hideError()
                 summaryInfoView.addTrafficMetrics(value.data)
                 checkTickerLiveToVodConfig()
             }
+
             is NetworkResult.Fail -> {
                 binding.layoutPlaySummaryInfo.loaderSummary.gone()
                 summaryInfoView.showError { value.onRetry() }
                 analytic.viewErrorOnReportPage(
                     channelId = viewModel.channelId,
                     titleChannel = viewModel.channelTitle,
-                    errorMessage = value.error.localizedMessage?:getString(R.string.play_broadcaster_default_error)
+                    errorMessage = value.error.localizedMessage
+                        ?: getString(R.string.play_broadcaster_default_error)
                 )
             }
+
             else -> {
                 //no-op
             }
@@ -216,40 +238,44 @@ class PlayBroadcastReportFragment @Inject constructor(
     }
 
     private fun openTickerDisableLiveToVod(state: TickerBottomSheetUiModel) {
-        binding.composeViewTicker.apply {
-            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
-            setContent {
-                PlayBroLiveToVodTicker(
-                    data = state,
-                    onDismissedPressed = {
-                        parentViewModel.submitAction(
-                            PlayBroadcastAction.SetLiveToVodPref(
-                                type = TickerBottomSheetType.TICKER,
-                                page = TickerBottomSheetPage.LIVE_REPORT,
-                            )
-                        )
-                        showWithCondition(false)
-                    },
-                    onActionTextPressed = { appLink ->
-                        router.route(
-                            requireContext(),
-                            generateInAppLink(appLink),
-                        )
-                    },
+        binding.tickerReportPage.apply {
+            tickerTitle = state.mainText.first().title
+            setHtmlDescription(
+                generateHtmlSpanText(
+                    fullText = state.mainText.first().description,
+                    action = state.mainText.first().action,
                 )
-            }
-            showWithCondition(true)
+            )
+            setDescriptionClickEvent(object : TickerCallback {
+                override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                    router.route(
+                        requireContext(),
+                        generateInAppLink(linkUrl.toString()),
+                    )
+                }
+
+                override fun onDismiss() {
+                    parentViewModel.submitAction(
+                        PlayBroadcastAction.SetLiveToVodPref(
+                            type = TickerBottomSheetType.TICKER,
+                            page = TickerBottomSheetPage.LIVE_REPORT,
+                        )
+                    )
+                }
+
+            })
+            visible()
         }
     }
 
     override fun onMetricClicked(view: SummaryInfoViewComponent, metricType: TrafficMetricType) {
-         if (metricType.isGameParticipants) {
-             analytic.clickInteractiveParticipantDetail(
-                 channelID = viewModel.channelId,
-                 channelTitle = viewModel.channelTitle,
-             )
-             viewModel.submitAction(PlayBroadcastSummaryAction.ClickViewLeaderboard)
-         }
+        if (metricType.isGameParticipants) {
+            analytic.clickInteractiveParticipantDetail(
+                channelID = viewModel.channelId,
+                channelTitle = viewModel.channelTitle,
+            )
+            viewModel.submitAction(PlayBroadcastSummaryAction.ClickViewLeaderboard)
+        }
     }
 
     private fun openInteractiveLeaderboardSheet() {
