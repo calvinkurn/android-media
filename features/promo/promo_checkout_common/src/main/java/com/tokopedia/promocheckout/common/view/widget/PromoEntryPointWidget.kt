@@ -24,7 +24,9 @@ import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 
 class PromoEntryPointWidget @JvmOverloads constructor(
-    context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0
 ) : BaseCustomView(context, attrs, defStyleAttr) {
 
     private fun getLayout(): Int {
@@ -50,6 +52,7 @@ class PromoEntryPointWidget @JvmOverloads constructor(
     private var inActiveViewRightIcon: IconUnify? = null
     private var errorView: View? = null
 
+    private var isFlipping: Boolean = false
     private var flippingWordings: List<String> = emptyList()
     private var flippingTextSwitcher: TextSwitcher? = null
 
@@ -337,12 +340,15 @@ class PromoEntryPointWidget @JvmOverloads constructor(
     private fun triggerTextFlip(wordings: List<String>, textSwitcher: TextSwitcher?) {
         flippingWordings = wordings
         flippingTextSwitcher = textSwitcher
+        isFlipping = true
         postDelayed(flipper, 3000)
     }
 
     private val flipper: Runnable = Runnable {
         // todo: refactor into text flipper class
-        flip()
+        if (isFlipping) {
+            flip()
+        }
     }
 
     private fun flip() {

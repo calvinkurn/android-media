@@ -67,7 +67,16 @@ class CheckoutPromoViewHolder(private val binding: ItemCheckoutPromoBinding, pri
                 "https://static.vecteezy.com/system/resources/previews/004/495/473/original/sales-promotion-line-icon-logo-free-vector.jpg",
                 "Pilih barang dulu sebelum pakai promo"
             ) {
-                binding.btnCheckoutPromo.showApplied("Kamu bisa hemat Rp10.000", "1 promo dipakai", IconUnify.CHEVRON_RIGHT, emptyList())
+                binding.btnCheckoutPromo.showApplied(
+                    "Kamu bisa hemat Rp10.000", "1 promo dipakai", IconUnify.CHEVRON_RIGHT,
+                    listOf(
+                        PromoEntryPointSummaryItem(
+                            "Bebas Ongkir",
+                            "Rp20.000",
+                            "(20.000 gopay coins)"
+                        )
+                    )
+                )
             }
         }
 
