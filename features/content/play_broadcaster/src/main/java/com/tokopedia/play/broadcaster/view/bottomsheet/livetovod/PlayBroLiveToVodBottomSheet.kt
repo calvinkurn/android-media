@@ -1,6 +1,7 @@
 package com.tokopedia.play.broadcaster.view.bottomsheet.livetovod
 
 import android.os.Bundle
+import android.text.method.LinkMovementMethod
 import android.text.style.ForegroundColorSpan
 import android.view.LayoutInflater
 import android.view.View
@@ -58,6 +59,22 @@ class PlayBroLiveToVodBottomSheet @Inject constructor(
     }
 
     private fun initData(data: TickerBottomSheetUiModel) = with(binding) {
+        val descriptionText = generateSpanText(
+            fullText = data.mainText.first().description,
+            action = data.mainText.first().action,
+            color = ForegroundColorSpan(
+                MethodChecker.getColor(
+                    requireContext(),
+                    unifyPrinciplesR.color.Unify_GN500
+                )
+            ),
+            onTextCLick = { appLink ->
+                router.route(
+                    requireContext(),
+                    generateInAppLink(appLink),
+                )
+            }
+        )
         val bottomText = generateSpanText(
             fullText = data.bottomText.description,
             action = data.bottomText.action,
@@ -77,9 +94,15 @@ class PlayBroLiveToVodBottomSheet @Inject constructor(
         layout.apply {
             ivDisableLiveToVod.setImageUrl(url = data.imageURL)
             tvTitleDisableLiveToVod.text = data.mainText.first().title
-            tvDescriptionDisableLiveToVod.text = data.mainText.first().description
+            tvDescriptionDisableLiveToVod.apply {
+                movementMethod = LinkMovementMethod.getInstance()
+                text = descriptionText
+            }
         }
-        tvFooterDisableLiveToVod.text = bottomText
+        tvFooterDisableLiveToVod.apply {
+            movementMethod = LinkMovementMethod.getInstance()
+            text = bottomText
+        }
     }
 
     fun setupData(data: TickerBottomSheetUiModel) {
