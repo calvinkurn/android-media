@@ -43,7 +43,6 @@ import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import java.io.IOException
 import javax.inject.Inject
@@ -104,7 +103,7 @@ class LoginHelperSearchAccountFragment : BaseDaggerFragment(), LoginHelperSearch
     private fun observeUiAction() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.uiAction.onEach { action ->
+                viewModel.uiAction.collect { action ->
                     handleAction(action)
                 }
             }
@@ -113,16 +112,16 @@ class LoginHelperSearchAccountFragment : BaseDaggerFragment(), LoginHelperSearch
 
     private fun handleAction(action: LoginHelperSearchAccountAction) {
         when (action) {
-            is LoginHelperSearchAccountAction.GoToRoute -> {
-                goToPage(action.route)
+            is LoginHelperSearchAccountAction.TapBackSearchAccountAction -> {
+                handleBackButtonPress()
+            }
+            is LoginHelperSearchAccountAction.OnSuccessDeleteAccountAction -> {
+                RouteManager.route(context, ApplinkConstInternalGlobal.LOGIN_HELPER)
             }
             is LoginHelperSearchAccountAction.OnFailureDeleteAccountAction -> {
                 showErrorOnFailure()
             }
         }
-    }
-    private fun goToPage(route: String) {
-        RouteManager.route(context, route)
     }
 
     private fun showErrorOnFailure() {
@@ -131,7 +130,7 @@ class LoginHelperSearchAccountFragment : BaseDaggerFragment(), LoginHelperSearch
                 it.getString(R.string.login_helper_delete_from_remote_failure),
                 it.getString(R.string.login_helper_save_to_local_go_to_home)
             ) {
-                goToPage(ApplinkConstInternalGlobal.LOGIN_HELPER)
+                RouteManager.route(context, ApplinkConstInternalGlobal.LOGIN_HELPER)
             }
         }
     }
@@ -241,6 +240,15 @@ class LoginHelperSearchAccountFragment : BaseDaggerFragment(), LoginHelperSearch
         setNavigationOnClickListener {
             viewModel.processEvent(LoginHelperSearchAccountEvent.TapBackButton)
         }
+    }
+
+    private fun handleBackButtonPress() {
+        RouteManager.route(context, ApplinkConstInternalGlobal.LOGIN_HELPER_ACCOUNTS_SETTINGS)
+    }
+
+    override fun onFragmentBackPressed(): Boolean {
+        handleBackButtonPress()
+        return true
     }
 
     override fun initInjector() {

@@ -3,7 +3,6 @@ package com.tokopedia.loginHelper.presentation.searchAccount.viewmodel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.encryption.security.AESEncryptorCBC
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.loginHelper.data.mapper.toEnvString
@@ -19,10 +18,10 @@ import com.tokopedia.loginHelper.presentation.searchAccount.viewmodel.state.Logi
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import javax.crypto.SecretKey
 import javax.inject.Inject
@@ -38,8 +37,8 @@ class LoginHelperSearchAccountViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(LoginHelperSearchAccountUiState())
     val uiState = _uiState.asStateFlow()
 
-    private val _uiActionChannel = Channel<LoginHelperSearchAccountAction>()
-    val uiAction = _uiActionChannel.receiveAsFlow()
+    private val _uiAction = MutableSharedFlow<LoginHelperSearchAccountAction>(replay = 1)
+    val uiAction = _uiAction.asSharedFlow()
 
     fun processEvent(event: LoginHelperSearchAccountEvent) {
         when (event) {
@@ -91,17 +90,13 @@ class LoginHelperSearchAccountViewModel @Inject constructor(
             val response =
                 deleteUserRestUseCase.makeApiCall(_uiState.value.envType.toEnvString(), id)
             if (response?.code == SUCCESS_RESPONSE) {
-                _uiActionChannel.send(
-                    LoginHelperSearchAccountAction.GoToRoute(
-                        ApplinkConstInternalGlobal.LOGIN_HELPER
-                    )
-                )
+                _uiAction.tryEmit(LoginHelperSearchAccountAction.OnSuccessDeleteAccountAction)
             } else {
-                _uiActionChannel.send(LoginHelperSearchAccountAction.OnFailureDeleteAccountAction)
+                _uiAction.tryEmit(LoginHelperSearchAccountAction.OnFailureDeleteAccountAction)
             }
             handleLoading(false)
         }, {
-            _uiActionChannel.send(LoginHelperSearchAccountAction.OnFailureDeleteAccountAction)
+            _uiAction.tryEmit(LoginHelperSearchAccountAction.OnFailureDeleteAccountAction)
             handleLoading(false)
         })
     }
@@ -171,17 +166,7 @@ class LoginHelperSearchAccountViewModel @Inject constructor(
     }
 
     private fun handleBackButtonTap() {
-        viewModelScope.launchCatchError(
-            block = {
-                _uiActionChannel.send(
-                    LoginHelperSearchAccountAction.GoToRoute(
-                        ApplinkConstInternalGlobal.LOGIN_HELPER_ACCOUNTS_SETTINGS
-                    )
-                )
-            },
-            onError = {
-            }
-        )
+        _uiAction.tryEmit(LoginHelperSearchAccountAction.TapBackSearchAccountAction)
     }
 
     companion object {

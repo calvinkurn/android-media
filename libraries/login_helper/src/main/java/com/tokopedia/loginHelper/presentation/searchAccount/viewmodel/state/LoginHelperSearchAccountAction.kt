@@ -1,7 +1,9 @@
 package com.tokopedia.loginHelper.presentation.searchAccount.viewmodel.state
 
 sealed class LoginHelperSearchAccountAction {
-    data class GoToRoute(val route: String) : LoginHelperSearchAccountAction()
+    object TapBackSearchAccountAction : LoginHelperSearchAccountAction()
 
-    object OnFailureDeleteAccountAction : LoginHelperSearchAccountAction()
+    object OnSuccessDeleteAccountAction: LoginHelperSearchAccountAction()
+
+    object OnFailureDeleteAccountAction: LoginHelperSearchAccountAction()
 }
