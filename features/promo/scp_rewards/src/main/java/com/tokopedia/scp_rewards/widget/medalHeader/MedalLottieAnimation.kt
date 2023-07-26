@@ -5,6 +5,8 @@ import android.graphics.Bitmap
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.graphics.scale
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.scp_rewards.R
 import com.tokopedia.scp_rewards.common.utils.downloadImage
 import com.tokopedia.scp_rewards.databinding.WidgetMedalLottieAnimationBinding
@@ -31,12 +33,17 @@ class MedalLottieAnimation(private val context: Context, attrs: AttributeSet?) :
 
     fun loadLottie(data: MedalHeaderData, onClickAction: (() -> Unit)? = null) {
         this.onClickAction = onClickAction
-        loadSparks(data.lottieSparklesUrl)
-        downloadImages(data, {
-            loadMedalBadge(data, it)
-        }, {
-            binding.lottieView.setImageResource(R.drawable.fallback_badge)
-        })
+        try {
+            loadSparks(data.lottieSparklesUrl)
+            downloadImages(data, {
+                loadMedalBadge(data, it)
+            }, {
+                binding.lottieView.setImageResource(R.drawable.fallback_badge)
+            })
+        } catch (ex: Throwable) {
+            // For Out of memory exceptions
+            FirebaseCrashlytics.getInstance().recordException(ex)
+        }
     }
 
     private fun loadSparks(lottieSparklesUrl: String?) {
@@ -52,19 +59,20 @@ class MedalLottieAnimation(private val context: Context, attrs: AttributeSet?) :
             lottieView.loadLottieFromUrl(
                 url = data.lottieUrl,
                 onLottieLoaded = {
-                    lottieView.maintainOriginalImageBounds = true
-                    map.forEach { (key, bitmap) -> lottieView.updateBitmap(key, bitmap) }
-                    val textAutoShow = lottieView.composition?.markers
-                        ?.map { it.name }
-                        ?.containsAll(
-                            listOf(
-                                SHUTTER_AUTO_CLOSE,
-                                SHUTTER_AUTO_OPEN,
-                                SHUTTER_MANUAL_OPEN,
-                                SHUTTER_MANUAL_CLOSE
-                            )
-                        )
-                    if (textAutoShow == true) {
+                    map.forEach { (key, bitmap) ->
+                        val imageAsset = lottieView.composition?.images?.get(key)
+                        lottieView.updateBitmap(key, bitmap?.scale(imageAsset?.width?: bitmap.width, imageAsset?.height?: bitmap.height))
+                    }
+                    val markersList = listOf(
+                        SHUTTER_AUTO_CLOSE,
+                        SHUTTER_AUTO_OPEN,
+                        SHUTTER_MANUAL_OPEN,
+                        SHUTTER_MANUAL_CLOSE
+                    )
+                    val textAutoShow = markersList.all { name ->
+                        lottieView.composition?.markers?.any { it.matchesName(name) } == true
+                    }
+                    if (textAutoShow) {
                         lottieView.setMaxFrame(SHUTTER_AUTO_CLOSE)
                     }
                     binding.lottieViewSparks.playAnimation()
@@ -73,10 +81,9 @@ class MedalLottieAnimation(private val context: Context, attrs: AttributeSet?) :
                     lottieView.setImageResource(R.drawable.fallback_badge)
                 },
                 onLottieEnded = {
-                    val markerName =
-                        lottieView.composition?.markers?.find { it.startFrame.toInt() == lottieView.frame }?.name
-                    when (markerName) {
-                        SHUTTER_AUTO_CLOSE -> {
+                    val marker = lottieView.composition?.markers?.find { it.startFrame.toInt() == lottieView.frame }
+                    when {
+                        marker?.matchesName(SHUTTER_AUTO_CLOSE) == true -> {
                             binding.tvShutter.animate().apply {
                                 duration = 120
                                 alpha(1F)
@@ -89,7 +96,7 @@ class MedalLottieAnimation(private val context: Context, attrs: AttributeSet?) :
                             lottieView.playAnimation()
                         }
 
-                        SHUTTER_AUTO_OPEN -> {
+                        marker?.matchesName(SHUTTER_AUTO_OPEN) == true -> {
                             binding.tvShutter.animate().apply {
                                 duration = 120
                                 alpha(0F)

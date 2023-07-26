@@ -86,7 +86,7 @@
     <string name="smvc_voucherlist_bookedquota_text">Kupon di keranjang</string>
     <string name="smvc_voucherlist_buyertarget_text">Target</string>
     <string name="smvc_voucherlist_vps_text">Paket Promosi</string>
-    <string name="smvc_voucherlist_subsidi_text">Dari Tokopedia</string>
+    <string name="smvc_voucherlist_subsidi_text">Dibuat Tokopedia</string>
     <string name="smvc_voucherlist_voucher_usage_delimiter">" dari "</string>
     <string name="smvc_voucherlist_error_quota_format">Kupon aktif maks. %d per periode (%d hari)</string>
     <string name="smvc_voucherlist_toaster_actiontext">Oke</string>
@@ -96,6 +96,7 @@
     <string name="smvc_voucherlist_search_placeholder">Cari Nama Kupon</string>
     <string name="smvc_voucherlist_quota_usage_format"><![CDATA[<b>%d</b> dari %d]]></string>
     <string name="smvc_general_error">Oops, ada gangguan yang perlu kami bereskan.</string>
+    <string name="smvc_placeholder_recurring_program_name">|  %s</string>
 
     <!--Common Bottomsheet-->
     <string name="smvc_bottomsheet_filter_voucher_title">Filter</string>
@@ -245,6 +246,21 @@
     <string name="smvc_voucherlist_empty_data_search_title_text">Kupon yang kamu cari nggak ditemukan</string>
     <string name="smvc_voucherlist_empty_data_search_description_text">Coba ulangi pencarian dengan kata kunci atau filter lain, ya.</string>
     <string name="smvc_voucher_type_editing_disabled">Jenis kupon tidak bisa diubah.</string>
+    <string name="smvc_voucher_performance_title_label">Performa Kupon</string>
+    <string name="smvc_used_quota_label">Total Kuota Terpakai</string>
+    <string name="smvc_used_quota_detail_label">Detail Kuota Terpakai</string>
+    <string name="smvc_quota_from_subsidy_label">Kuota dari subsidi</string>
+    <string name="smvc_quota_non_subsidy_label">Kuota non subsidi</string>
+    <string name="smvc_placeholder_total_used_quota">%d/%2d</string>
+    <string name="smvc_placeholder_recap_voucher_name">Kupon %s telah berakhir!</string>
+    <string name="smvc_recap_sub_text">Yuk, cek performa kuponmu di bawah ini</string>
+    <string name="smvc_total_voucher_performance_label">Total Performa Kupon</string>
+    <string name="smvc_all_quota_subsidized_label">(Semua kuota disubsidi)</string>
+    <string name="smvc_some_quota_subsidized_placeholder">(%d dari %2d kuota disubsidi)</string>
+    <string name="smvc_placeholder_vps_package_name">Dari Paket Promosi %s</string>
+    <string name="smvc_placeholder_intools_package_name">Dibuat %s</string>
+    <string name="smvc_update_coupon_tip_label_not_approved">Kupon yang sedang berpartisipasi di event campaign tidak bisa diubah hingga proses seleksi selesai.</string>
+    <string name="smvc_update_coupon_tip_label_approved">Kupon yang sedang mengikuti campaign tidak bisa di edit.</string>
 
     <!--Voucher 3 dots menu-->
     <string name="voucher_three_bots_title">Nama Kupon Maks. 30 character</string>
@@ -327,6 +343,8 @@
     <string name="smvc_summary_page_loading_dialog">Kupon lagi dibuat</string>
     <string name="smvc_summary_page_loading_dialog_desc">Mohon menunggu, ya</string>
     <string name="smvc_summary_page_duplicating_message">Informasi kupon %s berhasil diduplikat. Cek lagi sebelum buat kupon, ya.</string>
+    <string name="smvc_summary_coachmark_title">Cek perubahan Syarat &amp; Ketentuan, yuk!</string>
+    <string name="smvc_summary_coachmark_description">Ada update tentang pengaturan pembiayaan dan penggunaan kupon. Pelajari selengkapnya dengan klik di sini, ya.</string>
 
     <!--Voucher Creation Step One-->
     <string name="smvc_kupon_toko_label">Kupon Toko</string>
@@ -368,10 +386,10 @@
     <string name="smvc_canceled_voucher_confirmation_body_dialog">Dengan menghentikan kupon %s, calon pembeli tidak dapat menggunakan kupon ini, lho!</string>
     <string name="smvc_yes_deleted_voucher">Ya, Batalkan</string>
     <string name="smvc_yes_canceled_voucher">Ya, Hentikan</string>
-    <string name="smvc_cannot_deleted_call_tokopedia_care_title_dialog">Kupon dari Tokopedia tidak bisa dibatalkan sendiri</string>
-    <string name="smvc_cannot_deleted_call_tokopedia_care_desc_dialog">Kalau mau batalkan kupon ini, coba hubungi Tokopedia Care, ya.</string>
-    <string name="smvc_cannot_canceled_call_tokopedia_care_title_dialog">Kupon dari Tokopedia tidak bisa dihentikan sendiri</string>
-    <string name="smvc_cannot_canceled_call_tokopedia_care_desc_dialog">Kalau mau hentikan kupon ini, coba hubungi Tokopedia Care, ya.</string>
+    <string name="smvc_cannot_deleted_call_tokopedia_care_title_dialog">Kupon yang telah didaftarkan untuk partisipasi campaign tidak bisa dibatalkan</string>
+    <string name="smvc_cannot_deleted_call_tokopedia_care_desc_dialog">Jika kamu tetap ingin membatalkan kupon ini, hubungi Tokopedia Care, ya.</string>
+    <string name="smvc_cannot_canceled_call_tokopedia_care_title_dialog">Kupon yang telah didaftarkan untuk partisipasi campaign tidak bisa dibatalkan</string>
+    <string name="smvc_cannot_canceled_call_tokopedia_care_desc_dialog">Jika kamu tetap ingin membatalkan kupon ini, hubungi Tokopedia Care, ya.</string>
     <string name="smvc_call_tokopedia_care">Hubungi Tokopedia Care</string>
     <string name="smvc_failed_to_deleted_voucher">Kupon %s gagal dibatalkan.</string>
     <string name="smvc_success_to_deleted_voucher">Kupon %s berhasil dibatalkan.</string>
