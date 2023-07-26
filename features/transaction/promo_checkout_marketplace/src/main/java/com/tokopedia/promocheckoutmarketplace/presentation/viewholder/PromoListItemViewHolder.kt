@@ -823,6 +823,7 @@ class PromoListItemViewHolder(
     }
 
     private fun getPromoInformationDetailsCount(element: PromoListItemUiModel): Int {
+        var promoInformationDetailsCount = 0
         val promoInfos = if (element.uiData.useSecondaryPromo) {
             element.uiData.secondaryCoupons.first().promoInfos
         } else {

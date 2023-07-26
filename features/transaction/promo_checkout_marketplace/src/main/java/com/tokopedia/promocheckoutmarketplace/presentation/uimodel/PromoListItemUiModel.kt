@@ -96,7 +96,7 @@ data class PromoListItemUiModel(
         var isUpdateSelectionStateAction: Boolean = false,
         var isLastPromoItem: Boolean = false,
         var isBebasOngkir: Boolean = false,
-        var isContainActionableGopayCicilCTA: Boolean = false
+        var isContainActionableGopayCicilCTA: Boolean = false,
         var isLoading: Boolean = false
     )
 }

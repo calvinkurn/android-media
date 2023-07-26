@@ -526,12 +526,12 @@ class PromoCheckoutViewModelUICallbackTest : BasePromoCheckoutViewModelTest() {
         coEvery { getCouponListRecommendationUseCase.execute(any(), any()) } answers {
             firstArg<(CouponListRecommendationResponse) -> Unit>().invoke(response)
         }
+        coEvery { analytics.sendClickActivatedGopayCicilEvent(any(), any(), any(), any()) } just Runs
 
         viewModel.getPromoList(PromoRequest(), "")
 
         var selectedPromoItemWithActionableCTA: PromoListItemUiModel? = null
         viewModel.promoListUiModel.value?.forEach {
-            println(it)
             if (it is PromoListItemUiModel && it.uiState.isContainActionableGopayCicilCTA) {
                 selectedPromoItemWithActionableCTA = it
                 return@forEach
