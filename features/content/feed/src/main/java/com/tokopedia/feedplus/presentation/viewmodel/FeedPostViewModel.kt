@@ -502,32 +502,7 @@ class FeedPostViewModel @Inject constructor(
     fun doFollow(id: String, encryptedId: String, isShop: Boolean) {
         viewModelScope.launch {
             try {
-                val response = withContext(dispatchers.io) {
-                    if (isShop) {
-                        val response = shopFollowUseCase(shopFollowUseCase.createParams(id))
-                        FollowShopModel(
-                            id = id,
-                            encryptedId = encryptedId,
-                            success = response.followShop.success,
-                            isFollowing = response.followShop.isFollowing,
-                            isShop = true
-                        )
-                    } else {
-                        val response = userFollowUseCase.executeOnBackground(encryptedId)
-                        if (response.profileFollowers.errorCode.isNotEmpty()) {
-                            throw MessageErrorException(
-                                response.profileFollowers.messages.firstOrNull() ?: ""
-                            )
-                        }
-                        FollowShopModel(
-                            id = id,
-                            encryptedId = encryptedId,
-                            success = true,
-                            isFollowing = true,
-                            isShop = false
-                        )
-                    }
-                }
+                val response = followProfile(id, encryptedId, isShop)
 
                 updateFollowStatus(response.id, response.isFollowing)
                 _followResult.value = Success(if (isShop) SHOP else USER)
@@ -537,40 +512,98 @@ class FeedPostViewModel @Inject constructor(
         }
     }
 
-    fun doUnFollow(id: String, encryptedId: String, isShop: Boolean) {
+    fun doFollowProfileRecommendation(id: String, encryptedId: String, isShop: Boolean) {
         viewModelScope.launch {
             try {
-                val response = withContext(dispatchers.io) {
-                    if (isShop) {
-                        val response = shopFollowUseCase(shopFollowUseCase.createParams(id, ShopFollowAction.UnFollow))
-                        FollowShopModel(
-                            id = id,
-                            encryptedId = encryptedId,
-                            success = response.followShop.success,
-                            isFollowing = response.followShop.isFollowing,
-                            isShop = true
-                        )
-                    } else {
-                        val response = userUnfollowUseCase.executeOnBackground(encryptedId)
-                        if (response.profileFollowers.errorCode.isNotEmpty()) {
-                            throw MessageErrorException(
-                                response.profileFollowers.messages.firstOrNull() ?: ""
-                            )
-                        }
-                        FollowShopModel(
-                            id = id,
-                            encryptedId = encryptedId,
-                            success = true,
-                            isFollowing = false,
-                            isShop = false
-                        )
-                    }
-                }
+                updateFollowStatus(id, true)
 
-                updateFollowStatus(response.id, response.isFollowing)
-                _unfollowResult.value = Success(if (isShop) SHOP else USER)
-            } catch (it: Throwable) {
-                _unfollowResult.value = Fail(it)
+                val response = followProfile(id, encryptedId, isShop)
+
+                if (response.success) {
+                    _followResult.value = Success(if (isShop) SHOP else USER)
+                } else {
+                    throw Exception()
+                }
+            } catch (throwable: Throwable) {
+                updateFollowStatus(id, false)
+                _followResult.value = Fail(throwable)
+            }
+        }
+    }
+
+    fun doUnfollowProfileRecommendation(id: String, encryptedId: String, isShop: Boolean) {
+        viewModelScope.launch {
+            try {
+                updateFollowStatus(id, false)
+
+                val response = unfollowProfile(id, encryptedId, isShop)
+
+                if (response.success) {
+                    _unfollowResult.value = Success(if (isShop) SHOP else USER)
+                } else {
+                    throw Exception()
+                }
+            } catch (throwable: Throwable) {
+                updateFollowStatus(id, true)
+                _unfollowResult.value = Fail(throwable)
+            }
+        }
+    }
+
+    private suspend fun followProfile(id: String, encryptedId: String, isShop: Boolean): FollowShopModel {
+        return withContext(dispatchers.io) {
+            if (isShop) {
+                val response = shopFollowUseCase(shopFollowUseCase.createParams(id))
+                FollowShopModel(
+                    id = id,
+                    encryptedId = encryptedId,
+                    success = response.followShop.success,
+                    isFollowing = response.followShop.isFollowing,
+                    isShop = true
+                )
+            } else {
+                val response = userFollowUseCase.executeOnBackground(encryptedId)
+                if (response.profileFollowers.errorCode.isNotEmpty()) {
+                    throw MessageErrorException(
+                        response.profileFollowers.messages.firstOrNull() ?: ""
+                    )
+                }
+                FollowShopModel(
+                    id = id,
+                    encryptedId = encryptedId,
+                    success = true,
+                    isFollowing = true,
+                    isShop = false
+                )
+            }
+        }
+    }
+
+    private suspend fun unfollowProfile(id: String, encryptedId: String, isShop: Boolean): FollowShopModel {
+        return withContext(dispatchers.io) {
+            if (isShop) {
+                val response = shopFollowUseCase(shopFollowUseCase.createParams(id, ShopFollowAction.UnFollow))
+                FollowShopModel(
+                    id = id,
+                    encryptedId = encryptedId,
+                    success = response.followShop.success,
+                    isFollowing = response.followShop.isFollowing,
+                    isShop = true
+                )
+            } else {
+                val response = userUnfollowUseCase.executeOnBackground(encryptedId)
+                if (response.profileFollowers.errorCode.isNotEmpty()) {
+                    throw MessageErrorException(
+                        response.profileFollowers.messages.firstOrNull() ?: ""
+                    )
+                }
+                FollowShopModel(
+                    id = id,
+                    encryptedId = encryptedId,
+                    success = true,
+                    isFollowing = false,
+                    isShop = false
+                )
             }
         }
     }

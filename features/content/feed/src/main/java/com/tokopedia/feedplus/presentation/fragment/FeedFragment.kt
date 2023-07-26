@@ -257,9 +257,9 @@ class FeedFragment :
 
         override fun onClickFollow(profile: FeedFollowRecommendationModel.Profile) {
             if (profile.isFollowed) {
-                feedPostViewModel.doUnFollow(profile.id, profile.encryptedId, profile.isShop)
+                feedPostViewModel.doUnfollowProfileRecommendation(profile.id, profile.encryptedId, profile.isShop)
             } else {
-                feedPostViewModel.doFollow(profile.id, profile.encryptedId, profile.isShop)
+                feedPostViewModel.doFollowProfileRecommendation(profile.id, profile.encryptedId, profile.isShop)
             }
         }
 
