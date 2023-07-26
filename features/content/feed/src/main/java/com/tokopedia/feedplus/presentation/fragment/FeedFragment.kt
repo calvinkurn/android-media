@@ -242,6 +242,7 @@ class FeedFragment :
                 )
 
                 val position = getCurrentPosition()
+                updateBottomActionView(position)
                 adapter.select(position)
 
             }
@@ -958,6 +959,7 @@ class FeedFragment :
                         }
                     } else {
                         adapter.setList(it.data.items)
+                        updateBottomActionView(getCurrentPosition())
                         context?.let { ctx ->
                             if (feedPostViewModel.shouldShowNoMoreContent) {
                                 adapter.addElement(FeedNoContentModel.getNoMoreContentInstance(ctx))
@@ -1723,7 +1725,8 @@ class FeedFragment :
     private fun updateBottomActionView(position: Int) {
         with(binding) {
             val currentItem =
-                if (adapter.currentList.size > position) adapter.currentList[position] else null
+                if (position != RecyclerView.NO_POSITION && adapter.currentList.size > position)
+                    adapter.currentList[position] else null
 
             if (currentItem == null) {
                 containerBottomAction.hide()
