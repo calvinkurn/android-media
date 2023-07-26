@@ -75,10 +75,9 @@ class FeedXRecomWidgetUseCase @Inject constructor(
     )
 
     fun createFeedFollowRecomParams(
-        screenName: String,
         cursor: String
     ) = createParams(
-        screenName = screenName,
+        screenName = SCREEN_FOLLOWING_TAB,
         limit = FEED_FOLLOW_RECOM_LIMIT,
         cursor = cursor,
     )
@@ -89,6 +88,7 @@ class FeedXRecomWidgetUseCase @Inject constructor(
         private const val PARAM_LIMIT = "limit"
         private const val PARAM_CURSOR = "cursor"
 
+        private const val SCREEN_FOLLOWING_TAB = "following_tab"
         private const val FEED_FOLLOW_RECOM_LIMIT = 10
     }
 }
