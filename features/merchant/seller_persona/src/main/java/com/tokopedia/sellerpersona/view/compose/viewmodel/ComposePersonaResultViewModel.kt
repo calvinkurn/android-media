@@ -7,8 +7,8 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.sellerpersona.common.Constants
 import com.tokopedia.sellerpersona.data.remote.usecase.GetPersonaDataUseCase
 import com.tokopedia.sellerpersona.data.remote.usecase.TogglePersonaUseCase
-import com.tokopedia.sellerpersona.view.compose.model.state.PersonaResultState
 import com.tokopedia.sellerpersona.view.compose.model.args.PersonaArgsUiModel
+import com.tokopedia.sellerpersona.view.compose.model.state.PersonaResultState
 import com.tokopedia.sellerpersona.view.compose.model.uievent.ResultUiEvent
 import com.tokopedia.sellerpersona.view.model.PersonaDataUiModel
 import com.tokopedia.sellerpersona.view.model.PersonaStatus
@@ -16,6 +16,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -38,21 +39,18 @@ class ComposePersonaResultViewModel @Inject constructor(
     val personaState: StateFlow<PersonaResultState>
         get() = _personaState.asStateFlow()
 
-    private val _uiEvent = MutableSharedFlow<ResultUiEvent>(replay = 1)
-    val uiEvent = _uiEvent.asSharedFlow()
+    private val _uiEvent = MutableSharedFlow<ResultUiEvent>()
+    val uiEvent: SharedFlow<ResultUiEvent>
+        get() = _uiEvent.asSharedFlow()
 
     fun onEvent(event: ResultUiEvent) = viewModelScope.launch {
         when (event) {
             is ResultUiEvent.ApplyChanges -> onApplyClicked(event)
             is ResultUiEvent.CheckChanged -> onCheckedChanged(event)
             is ResultUiEvent.Reload -> reloadPage()
-            else -> {
-                _uiEvent.emit(event)
-                _uiEvent.emit(ResultUiEvent.None)
-            }
+            else -> _uiEvent.emit(event)
         }
     }
-
 
     fun fetchPersonaData(args: PersonaArgsUiModel) {
         viewModelScope.launchCatchError(block = {
@@ -108,7 +106,9 @@ class ComposePersonaResultViewModel @Inject constructor(
     private suspend fun onCheckedChanged(event: ResultUiEvent.CheckChanged) {
         val lastState = _personaState.value
         val checkedChangedState = lastState.copy(
-            isLoading = false, data = lastState.data.copy(isSwitchChecked = event.isChecked), error = null
+            isLoading = false,
+            data = lastState.data.copy(isSwitchChecked = event.isChecked),
+            error = null
         )
         _personaState.emit(checkedChangedState)
     }

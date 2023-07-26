@@ -1,4 +1,4 @@
-package com.tokopedia.sellerpersona.view.compose.screen.select_type
+package com.tokopedia.sellerpersona.view.compose.screen.selecttype
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource

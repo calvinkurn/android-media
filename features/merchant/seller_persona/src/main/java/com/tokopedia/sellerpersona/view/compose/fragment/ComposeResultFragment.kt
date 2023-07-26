@@ -28,8 +28,8 @@ import com.tokopedia.sellerpersona.view.activity.SellerPersonaActivity
 import com.tokopedia.sellerpersona.view.compose.component.ErrorStateComponent
 import com.tokopedia.sellerpersona.view.compose.model.args.PersonaArgsUiModel
 import com.tokopedia.sellerpersona.view.compose.model.uievent.ResultUiEvent
-import com.tokopedia.sellerpersona.view.compose.screen.persona_result.PersonaResultScreen
-import com.tokopedia.sellerpersona.view.compose.screen.persona_result.ResultLoadingState
+import com.tokopedia.sellerpersona.view.compose.screen.personaresult.PersonaResultScreen
+import com.tokopedia.sellerpersona.view.compose.screen.personaresult.ResultLoadingState
 import com.tokopedia.sellerpersona.view.compose.viewmodel.ComposePersonaResultViewModel
 import com.tokopedia.sellerpersona.view.model.isActive
 import com.tokopedia.unifycomponents.Toaster

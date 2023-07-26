@@ -13,7 +13,8 @@ data class SelectTypeState(
 ) {
     data class Data(
         val personaList: List<PersonaUiModel> = emptyList(),
-        val args: PersonaArgsUiModel = PersonaArgsUiModel()
+        val args: PersonaArgsUiModel = PersonaArgsUiModel(),
+        val ui: Ui = Ui()
     )
 
     sealed class State {
@@ -21,4 +22,6 @@ data class SelectTypeState(
         object Success : State()
         data class Error(val e: Exception) : State()
     }
+
+    data class Ui(val selectedIndex: Int = -1)
 }

@@ -1,4 +1,4 @@
-package com.tokopedia.sellerpersona.view.compose.screen.select_type
+package com.tokopedia.sellerpersona.view.compose.screen.selecttype
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -16,19 +16,25 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.NonRestartableComposable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -53,17 +59,23 @@ import com.tokopedia.sellerpersona.view.model.PersonaUiModel
  */
 
 private const val SUB_TITLE_FORMAT = "(%s)"
+private val CARD_WIDTH = 300.dp
+private val CARD_DECORATION_WIDTH = 16.dp
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 internal fun PersonSuccessState(
     data: SelectTypeState.Data, onEvent: (SelectTypeUiEvent) -> Unit
 ) {
+    val listState = rememberLazyListState()
+    val itemCount = remember { data.personaList.size }
+
+    LaunchScrollToPosition(listState, data.ui.selectedIndex)
+
     ConstraintLayout(
         modifier = Modifier.fillMaxSize()
     ) {
         val (personaList, divider, selectButton) = createRefs()
-        val rowState = rememberLazyListState()
         LazyRow(
             modifier = Modifier.constrainAs(personaList) {
                 top.linkTo(anchor = parent.top, margin = 16.dp)
@@ -73,14 +85,14 @@ internal fun PersonSuccessState(
                 width = Dimension.fillToConstraints
                 height = Dimension.fillToConstraints
             },
-            state = rowState,
-            flingBehavior = rememberSnapFlingBehavior(lazyListState = rowState)
+            state = listState,
+            flingBehavior = rememberSnapFlingBehavior(lazyListState = listState)
         ) {
-            item { Spacer(modifier = Modifier.width(8.dp)) }
-            items(items = data.personaList) { persona ->
-                PersonaTypeItemCard(persona, onEvent)
+            itemsIndexed(items = data.personaList) { index, persona ->
+                PersonaTypeItemCard(persona, index, itemCount) {
+                    onEvent(SelectTypeUiEvent.ClickPersonaCard(persona))
+                }
             }
-            item { Spacer(modifier = Modifier.width(8.dp)) }
         }
         Divider(modifier = Modifier.constrainAs(divider) {
             start.linkTo(anchor = parent.start, margin = 16.dp)
@@ -100,31 +112,74 @@ internal fun PersonSuccessState(
             variant = ButtonVariant.FILLED,
             onClick = {
                 onEvent(SelectTypeUiEvent.ClickSelectButton)
-            })
+            }
+        )
     }
 }
 
 @Composable
-private fun PersonaTypeItemCard(persona: PersonaUiModel, onEvent: (SelectTypeUiEvent) -> Unit) {
-    Row {
-        Spacer(modifier = Modifier.width(8.dp))
-        ConstraintLayout(modifier = Modifier
-            .width(300.dp)
-            .fillMaxHeight()
-            .clickable(indication = null, interactionSource = MutableInteractionSource()) {
-                onEvent(SelectTypeUiEvent.ClickPersonaCard(persona))
-            }
-            .background(
-                brush = getBackgroundState(persona.isSelected),
-                shape = RoundedCornerShape(size = 16.dp)
+@NonRestartableComposable
+fun LaunchScrollToPosition(listState: LazyListState, selectedIndex: Int) {
+    val configuration = LocalConfiguration.current
+    val screenWidthInDp = configuration.screenWidthDp.dp
+
+    val scrollOffset = remember(screenWidthInDp, selectedIndex) {
+        return@remember derivedStateOf {
+            val isFirstIndex = selectedIndex == 0
+            if (isFirstIndex) return@derivedStateOf 0
+
+            val screenWidth = screenWidthInDp.value.toInt()
+            val cardWidth = (CARD_WIDTH.minus(CARD_DECORATION_WIDTH)).value.toInt()
+            val halfScreen = screenWidth.div(2)
+            val halfCard = cardWidth.div(2)
+
+            return@derivedStateOf halfScreen.minus(halfCard).times(-2)
+        }
+    }
+
+    LaunchedEffect(key1 = selectedIndex, block = {
+        //scroll to position on every selectedIndex changed
+        val isValidIndex = selectedIndex >= 0
+        if (isValidIndex) {
+            listState.animateScrollToItem(
+                index = selectedIndex,
+                scrollOffset = scrollOffset.value
             )
-            .border(
-                width = 0.9.dp, color = if (persona.isSelected) {
-                    NestGN.light._500
-                } else {
-                    NestTheme.colors.NN._300
-                }, shape = RoundedCornerShape(size = 16.dp)
-            )) {
+        }
+    })
+}
+
+@Composable
+private fun PersonaTypeItemCard(
+    persona: PersonaUiModel,
+    index: Int,
+    itemCount: Int,
+    onClicked: () -> Unit
+) {
+    Row(
+        modifier = Modifier.clickable(
+            indication = null,
+            interactionSource = MutableInteractionSource(),
+            onClick = onClicked
+        )
+    ) {
+        Spacer(modifier = Modifier.width(if (index == 0) 16.dp else 8.dp))
+        ConstraintLayout(
+            modifier = Modifier
+                .width(CARD_WIDTH)
+                .fillMaxHeight()
+                .background(
+                    brush = getBackgroundState(persona.isSelected),
+                    shape = RoundedCornerShape(size = 16.dp)
+                )
+                .border(
+                    width = 0.9.dp, color = if (persona.isSelected) {
+                        NestGN.light._500
+                    } else {
+                        NestTheme.colors.NN._300
+                    }, shape = RoundedCornerShape(size = 16.dp)
+                )
+        ) {
             val (radio, avatar, tvSellerTypeLbl, tvPersonaType, tvSellerTypeStatus, dividerItemSelectType, tvSellerTypeLblInfo, columnSelectTypeInfo) = createRefs()
 
             val startGuideline = createGuidelineFromStart(16.dp)
@@ -134,14 +189,15 @@ private fun PersonaTypeItemCard(persona: PersonaUiModel, onEvent: (SelectTypeUiE
                 modifier = Modifier.constrainAs(radio) {
                     end.linkTo(parent.end)
                     top.linkTo(parent.top)
-                }, isChecked = persona.isSelected
-            ) {
-                onEvent(SelectTypeUiEvent.ClickPersonaCard(persona))
-            }
+                },
+                isChecked = persona.isSelected,
+                onClicked = onClicked
+            )
 
-            NestImage(source = ImageSource.Remote(
-                source = persona.avatarImage, loaderType = ImageSource.Remote.LoaderType.SHIMMER
-            ),
+            NestImage(
+                source = ImageSource.Remote(
+                    source = persona.avatarImage, loaderType = ImageSource.Remote.LoaderType.SHIMMER
+                ),
                 contentScale = ContentScale.Crop,
                 type = NestImageType.Circle,
                 modifier = Modifier
@@ -180,12 +236,18 @@ private fun PersonaTypeItemCard(persona: PersonaUiModel, onEvent: (SelectTypeUiE
                 )
             )
 
-            Divider(modifier = Modifier.constrainAs(dividerItemSelectType) {
-                top.linkTo(anchor = tvSellerTypeStatus.bottom, margin = 16.dp)
-                start.linkTo(anchor = startGuideline)
-                end.linkTo(anchor = endGuideline)
-                width = Dimension.fillToConstraints
-            })
+            Divider(
+                modifier = Modifier
+                    .background(
+                        color = NestTheme.colors.NN._300
+                    )
+                    .constrainAs(dividerItemSelectType) {
+                        top.linkTo(anchor = tvSellerTypeStatus.bottom, margin = 16.dp)
+                        start.linkTo(anchor = startGuideline)
+                        end.linkTo(anchor = endGuideline)
+                        width = Dimension.fillToConstraints
+                    }
+            )
 
             val sectionTextColor = getSectionTextColor(persona.isSelected)
             NestTypography(
@@ -227,7 +289,8 @@ private fun PersonaTypeItemCard(persona: PersonaUiModel, onEvent: (SelectTypeUiE
                 }
             }
         }
-        Spacer(modifier = Modifier.width(8.dp))
+        val isLastIndex = index == itemCount.minus(1)
+        Spacer(modifier = Modifier.width(if (isLastIndex) 16.dp else 8.dp))
     }
 }
 
@@ -237,13 +300,12 @@ fun getBackgroundState(isSelected: Boolean): Brush {
         arrayOf(
             0.0f to NestGN.light._100,
             0.20f to NestGN.light._50,
-            0.80f to NestGN.light._50,
-            1f to NestGN.light._100
+            0.70f to NestGN.light._50,
+            0.90f to NestGN.light._100,
+            1f to NestGN.light._200
         )
     } else {
-        arrayOf(
-            0f to NestTheme.colors.NN._50, 1f to NestTheme.colors.NN._50
-        )
+        arrayOf(0f to NestTheme.colors.NN._50, 1f to NestTheme.colors.NN._50)
     }
     return Brush.linearGradient(colorStops = colorStops)
 }
@@ -252,7 +314,7 @@ fun getBackgroundState(isSelected: Boolean): Brush {
 private fun rememberLabelTextColor(isSelected: Boolean): Color {
     val selectedColor = NestNN.light._900
     val unselectedColor = NestTheme.colors.NN._600
-    return remember {
+    return remember(isSelected) {
         when {
             isSelected -> selectedColor
             else -> unselectedColor
@@ -265,7 +327,7 @@ private fun rememberPersonaTypeTextColor(isSelected: Boolean): Color {
     val isDarkTheme = isSystemInDarkTheme()
     val selectedColor = NestNN.light._950
     val unselectedColor = NestTheme.colors.NN._950
-    return remember {
+    return remember(isSelected, isDarkTheme) {
         when {
             isDarkTheme && isSelected -> selectedColor
             else -> unselectedColor
@@ -277,7 +339,7 @@ private fun rememberPersonaTypeTextColor(isSelected: Boolean): Color {
 private fun rememberStatusTypeTextColor(isSelected: Boolean): Color {
     val selectedColor = NestTheme.colors.GN._500
     val unselectedColor = NestTheme.colors.NN._600
-    return remember {
+    return remember(isSelected) {
         when {
             isSelected -> selectedColor
             else -> unselectedColor
@@ -291,7 +353,7 @@ private fun getSectionTextColor(isSelected: Boolean): Color {
     val selectedColor = NestNN.light._900
     val unselectedColor = NestTheme.colors.NN._600
     val isDarkTheme = isSystemInDarkTheme()
-    return remember {
+    return remember(isSelected, isDarkTheme) {
         when {
             isDarkTheme && isSelected -> selectedDarkThemeColor
             isSelected -> selectedColor

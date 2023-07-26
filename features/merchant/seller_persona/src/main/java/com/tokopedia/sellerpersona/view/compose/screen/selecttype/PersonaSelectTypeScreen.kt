@@ -1,4 +1,4 @@
-package com.tokopedia.sellerpersona.view.compose.screen.select_type
+package com.tokopedia.sellerpersona.view.compose.screen.selecttype
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.LocalOverscrollConfiguration
@@ -45,7 +45,7 @@ fun Preview() {
     NestTheme(darkTheme = false) {
         SelectPersonaTypeScreen(
             data = SelectTypeState(
-                state = SelectTypeState.State.Error(Exception()),
+                state = SelectTypeState.State.Success,
                 data = SelectTypeState.Data(
                     personaList = listOf(
                         PersonaUiModel(

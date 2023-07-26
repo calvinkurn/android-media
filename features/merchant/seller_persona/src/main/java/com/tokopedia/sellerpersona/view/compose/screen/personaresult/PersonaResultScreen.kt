@@ -1,4 +1,4 @@
-package com.tokopedia.sellerpersona.view.compose.screen.persona_result
+package com.tokopedia.sellerpersona.view.compose.screen.personaresult
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
