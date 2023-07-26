@@ -41,6 +41,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
+//TODO need to combine this bottomsheet with ShopHomeCampaignTncBottomSheet in the future, since both of them have the same purpose
 class ShopHomeNplCampaignTncBottomSheet : BottomSheetUnify() {
 
     companion object {
@@ -236,7 +237,7 @@ class ShopHomeNplCampaignTncBottomSheet : BottomSheetUnify() {
         btnFollow?.apply {
             if (isFollowShop) {
                 buttonVariant = UnifyButton.Variant.GHOST
-                tfFollow?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
+                tfFollow?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
             } else {
                 buttonVariant = UnifyButton.Variant.FILLED
                 tfFollow?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Background))

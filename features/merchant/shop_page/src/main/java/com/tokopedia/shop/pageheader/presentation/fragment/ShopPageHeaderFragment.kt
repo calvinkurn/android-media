@@ -109,8 +109,10 @@ import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.searchbar.data.HintData
+import com.tokopedia.searchbar.navigation_component.NavSource
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
+import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.seller_migration_common.analytics.SellerMigrationTracking
 import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants
@@ -289,12 +291,14 @@ class ShopPageHeaderFragment :
         private const val PATH_FEED = "feed"
         private const val PATH_REVIEW = "review"
         private const val PATH_NOTE = "note"
+        private const val PATH_CAMPAIGN = "campaign"
         private const val QUERY_SHOP_REF = "shop_ref"
         private const val QUERY_SHOP_ATTRIBUTION = "tracker_attribution"
         private const val QUERY_AFFILIATE_UUID = "aff_unique_id"
         private const val QUERY_AFFILIATE_CHANNEL = "channel"
         private const val QUERY_CAMPAIGN_ID = "campaign_id"
         private const val QUERY_VARIANT_ID = "variant_id"
+        private const val QUERY_TAB = "tab"
         private const val START_PAGE = 1
         private const val IS_FIRST_TIME_VISIT = "isFirstTimeVisit"
         private const val SOURCE = "shop page"
@@ -446,6 +450,7 @@ class ShopPageHeaderFragment :
         val layoutParams = viewBindingShopContentLayout?.layoutPartialShopPageHeader?.root?.layoutParams as? LinearLayout.LayoutParams
         layoutParams?.bottomMargin.orZero()
     }
+    private var queryParamTab: String = ""
 
     override fun getComponent() = activity?.run {
         DaggerShopPageHeaderComponent.builder().shopPageHeaderModule(ShopPageHeaderModule())
@@ -591,13 +596,17 @@ class ShopPageHeaderFragment :
                 if (!isMyShop) {
                     shopPageTracking?.clickScrollToTop(shopId, userId)
                 }
-                val selectedFragment = viewPagerAdapterHeader?.getRegisteredFragment(viewPager?.currentItem.orZero())
-                (selectedFragment as? InterfaceShopPageClickScrollToTop)?.let {
-                    it.scrollToTop()
-                }
+                scrollSelectedTabToTop()
             }
         }
         hideShopPageFab()
+    }
+
+    private fun scrollSelectedTabToTop(isUserClick: Boolean = true) {
+        val selectedFragment = viewPagerAdapterHeader?.getRegisteredFragment(viewPager?.currentItem.orZero())
+        (selectedFragment as? InterfaceShopPageClickScrollToTop)?.let {
+            it.scrollToTop(isUserClick)
+        }
     }
 
     private fun initViewPager() {
@@ -1129,6 +1138,7 @@ class ShopPageHeaderFragment :
                     if (lastPathSegment.orEmpty() == PATH_NOTE) {
                         shouldOpenShopNoteBottomSheet = true
                     }
+                    queryParamTab = getQueryParameter(QUERY_TAB).orEmpty()
                     shopRef = getQueryParameter(QUERY_SHOP_REF) ?: ""
                     shopAttribution = getQueryParameter(QUERY_SHOP_ATTRIBUTION) ?: ""
                     checkAffiliateAppLink(this)
@@ -1349,7 +1359,8 @@ class ShopPageHeaderFragment :
             etalaseId = "",
             isRefresh = isRefresh,
             widgetUserAddressLocalData = localCacheModel ?: LocalCacheModel(),
-            extParam = extParam
+            extParam = extParam,
+            tabName = getSelectedTabName().takeIf { it.isNotEmpty() } ?: queryParamTab
         )
     }
 
@@ -1374,9 +1385,9 @@ class ShopPageHeaderFragment :
 
     private fun updateBackButtonColorForSellerViewToolbar() {
         context?.let { context ->
-            var color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N500)
+            var color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN600)
             if (context.isDarkMode()) {
-                color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N200)
+                color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN500)
             }
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 toolbar?.navigationIcon?.colorFilter = BlendModeColorFilter(color, BlendMode.SRC_IN)
@@ -1390,7 +1401,7 @@ class ShopPageHeaderFragment :
         newNavigationToolbar?.apply {
             viewLifecycleOwner.lifecycle.addObserver(this)
             show()
-            val iconBuilder = IconBuilder()
+            val iconBuilder = IconBuilder(builderFlags = IconBuilderFlag(pageSource = NavSource.SHOP))
             iconBuilder.addIcon(IconList.ID_SHARE) { clickShopShare() }
             if (isCartShownInNewNavToolbar()) {
                 iconBuilder.addIcon(IconList.ID_CART) {}
@@ -1807,10 +1818,12 @@ class ShopPageHeaderFragment :
     }
 
     private fun setupTabs() {
+        val prevSelectedTabName = getSelectedTabName()
         listShopPageTabModel = (createListShopPageDynamicTabModel() as? List<ShopPageHeaderTabModel>) ?: listOf()
+        val currSelectedTabName = getSelectedTabName()
         configureTab(listShopPageTabModel.size)
         viewPagerAdapterHeader?.setTabData(listShopPageTabModel)
-        selectedPosition = getSelectedDynamicTabPosition()
+        selectedPosition = getSelectedDynamicTabPosition(prevSelectedTabName != currSelectedTabName)
         tabLayout?.removeAllTabs()
         listShopPageTabModel.forEach {
             tabLayout?.newTab()?.apply {
@@ -1828,6 +1841,7 @@ class ShopPageHeaderFragment :
             }
         }
         viewPager?.setCurrentItem(selectedPosition, false)
+        setShopLayoutDataToSelectedTab()
         tabLayout?.getTabAt(selectedPosition)?.select()
         tabLayout?.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabReselected(tab: TabLayout.Tab) {
@@ -1862,11 +1876,50 @@ class ShopPageHeaderFragment :
                         }
                     }
                 }
+                checkShouldSendCampaignTabOpenScreenTracker()
                 hideScrollToTopButton()
                 hideShopPageFab()
                 isTabClickByUser = false
+                checkShouldScrollTabToTopWhenTabSelected()
             }
         })
+    }
+
+    private fun checkShouldScrollTabToTopWhenTabSelected() {
+        if (getSelectedTabName() == ShopPageHeaderTabName.CAMPAIGN) {
+            scrollSelectedTabToTop(isUserClick = false)
+        }
+    }
+
+    private fun checkShouldSendCampaignTabOpenScreenTracker() {
+        if (getSelectedTabName() == ShopPageHeaderTabName.CAMPAIGN) {
+            sendShopCampaignTabOpenScreenTracker()
+        }
+    }
+
+    private fun sendShopCampaignTabOpenScreenTracker() {
+        shopPageTracking?.sendOpenScreenShopCampaignTab(shopId, userId, isLogin)
+    }
+
+    private fun setShopLayoutDataToSelectedTab() {
+        val shopLayoutData = getShopLayoutDataBasedOnSelectedTab()
+        when (val selectedFragment = getSelectedFragmentInstance()) {
+            is ShopPageCampaignFragment -> {
+                selectedFragment.setListWidgetLayoutData(shopLayoutData)
+            }
+
+            is ShopPageHomeFragment -> {
+                selectedFragment.setListWidgetLayoutData(shopLayoutData)
+            }
+
+            else -> {}
+        }
+    }
+
+    private fun getShopLayoutDataBasedOnSelectedTab(): HomeLayoutData? {
+        return shopPageHeaderDataModel?.listDynamicTabData?.getOrNull(
+            getSelectedDynamicTabPosition()
+        )?.data?.homeLayoutData
     }
 
     private fun handleSelectedTab(tab: TabLayout.Tab, isActive: Boolean) {
@@ -1901,7 +1954,9 @@ class ShopPageHeaderFragment :
         viewOneTabSeparator?.show()
     }
 
-    private fun getSelectedDynamicTabPosition(): Int {
+    private fun getSelectedDynamicTabPosition(
+        isResetSelectedPosition: Boolean = false
+    ): Int {
         var selectedPosition = viewPager?.currentItem.orZero()
         if (tabLayout?.tabCount.isZero()) {
             if (shouldOverrideTabToHome || shouldOverrideTabToProduct || shouldOverrideTabToFeed || shouldOverrideTabToReview) {
@@ -1924,19 +1979,27 @@ class ShopPageHeaderFragment :
                 }
                 selectedPosition = getTabPositionBasedOnTabName(overrideTabName)
             } else {
-                val selectedTabData = listShopPageTabModel.firstOrNull {
-                    it.isFocus
-                } ?: run {
-                    listShopPageTabModel.firstOrNull {
-                        it.isDefault
-                    }
-                }
-                selectedPosition = listShopPageTabModel.indexOf(selectedTabData).takeIf {
-                    it >= Int.ZERO
-                } ?: Int.ZERO
+                selectedPosition = getSelectedPositionFromTabModel()
+            }
+        } else {
+            if(isResetSelectedPosition){
+                selectedPosition = getSelectedPositionFromTabModel()
             }
         }
         return selectedPosition
+    }
+
+    private fun getSelectedPositionFromTabModel(): Int {
+        val selectedTabData = listShopPageTabModel.firstOrNull {
+            it.isFocus
+        } ?: run {
+            listShopPageTabModel.firstOrNull {
+                it.isDefault
+            }
+        }
+        return listShopPageTabModel.indexOf(selectedTabData).takeIf {
+            it >= Int.ZERO
+        } ?: Int.ZERO
     }
 
     private fun getTabPositionBasedOnTabName(overrideTabName: String): Int {
@@ -2056,7 +2119,6 @@ class ShopPageHeaderFragment :
                         shopHeaderViewModel?.productListData?.let {
                             setInitialProductListData(it)
                         }
-                        setListWidgetLayoutData(it.data.homeLayoutData)
                         setHomeTabListBackgroundColor(it.listBackgroundColor)
                         setHomeTabBackgroundPatternImage(it.backgroundImage)
                         setHomeTabLottieUrl(it.lottieUrl)
@@ -2141,22 +2203,10 @@ class ShopPageHeaderFragment :
     private fun createCampaignTabFragment(
         tabData: ShopPageGetDynamicTabResponse.ShopPageGetDynamicTab.TabData
     ): Fragment {
-        return ShopPageCampaignFragment.createInstance(
-            shopId,
-            shopPageHeaderDataModel?.isOfficial ?: false,
-            shopPageHeaderDataModel?.isGoldMerchant ?: false,
-            shopPageHeaderDataModel?.shopName.orEmpty(),
-            shopAttribution ?: "",
-            shopRef,
-            shopPageHeaderDataModel?.isEnableDirectPurchase.orFalse()
-        ).apply {
-            setListWidgetLayoutData(
-                HomeLayoutData(
-                    widgetIdList = tabData.data.widgetIdList
-                )
-            )
-            setPageBackgroundColor(tabData.listBackgroundColor)
-            setPageTextColor(tabData.textColor)
+        return ShopPageCampaignFragment.createInstance(shopId).apply {
+            setCampaignTabListBackgroundColor(tabData.listBackgroundColor)
+            setListPatternImage(tabData.bgImages)
+            setIsDarkTheme(tabData.isDark)
         }
     }
 
@@ -2207,7 +2257,7 @@ class ShopPageHeaderFragment :
                 setTextColor(
                     MethodChecker.getColor(
                         context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_N700_68
+                        com.tokopedia.unifyprinciples.R.color.Unify_NN950_68
                     )
                 )
                 text = getString(R.string.shop_page_error_sub_title_get_p1)
@@ -3473,4 +3523,14 @@ class ShopPageHeaderFragment :
             shopHeaderViewModel?.checkAffiliate(inputAffiliate)
         }
     }
+
+    fun selectShopTab(tabName: String, isScrollToTop: Boolean = false) {
+        val selectedTabPosition = getTabPositionBasedOnTabName(tabName)
+        viewPager?.setCurrentItem(selectedTabPosition, false)
+        tabLayout?.getTabAt(selectedTabPosition)?.select()
+        if(isScrollToTop) {
+            scrollSelectedTabToTop(false)
+        }
+    }
+
 }

@@ -12,6 +12,8 @@ import com.tokopedia.content.common.comment.usecase.GetCountCommentsUseCase
 import com.tokopedia.content.common.model.FeedComplaintSubmitReportResponse
 import com.tokopedia.content.common.model.TrackVisitChannelResponse
 import com.tokopedia.content.common.usecase.BroadcasterReportTrackViewerUseCase
+import com.tokopedia.content.common.usecase.GetUserReportListUseCase
+import com.tokopedia.content.common.usecase.PostUserReportUseCase
 import com.tokopedia.content.common.usecase.FeedComplaintSubmitReportUseCase
 import com.tokopedia.content.common.usecase.TrackVisitChannelBroadcasterUseCase
 import com.tokopedia.content.common.util.UiEventManager
@@ -103,6 +105,8 @@ class FeedPostViewModelTest {
     private val getCountCommentsUseCase: GetCountCommentsUseCase = mockk()
     private val trackVisitChannelUseCase: TrackVisitChannelBroadcasterUseCase = mockk()
     private val trackReportViewerUseCase: BroadcasterReportTrackViewerUseCase = mockk()
+    private val getReportListUseCase: GetUserReportListUseCase = mockk()
+    private val postReportUseCase : PostUserReportUseCase = mockk()
     private val affiliateCookieHelper: AffiliateCookieHelper = mockk()
     private val submitReportUseCase: FeedComplaintSubmitReportUseCase = mockk()
 
@@ -130,6 +134,8 @@ class FeedPostViewModelTest {
             trackVisitChannelUseCase,
             trackReportViewerUseCase,
             submitReportUseCase,
+            getReportListUseCase,
+            postReportUseCase,
             uiEventManager,
             testDispatcher
         )
@@ -321,24 +327,26 @@ class FeedPostViewModelTest {
         coEvery { affiliateCookieHelper.initCookie(any(), any(), any()) } coAnswers {}
 
         val dummyData = FeedTaggedProductUiModel(
-            "dummyId",
-            FeedTaggedProductUiModel.Shop(
+            id = "dummyId",
+            parentID = "123",
+            showGlobalVariant = false,
+            shop = FeedTaggedProductUiModel.Shop(
                 "dummy-shop-id",
                 "dummy Name"
             ),
-            "dummy title",
-            "dummy image url",
-            FeedTaggedProductUiModel.NormalPrice(
+            title ="dummy title",
+            imageUrl = "dummy image url",
+            price = FeedTaggedProductUiModel.NormalPrice(
                 "Rp1.000.000",
                 1000000.0
             ),
-            "dummy applink",
-            FeedTaggedProductUiModel.Campaign(
+            appLink ="dummy applink",
+            campaign = FeedTaggedProductUiModel.Campaign(
                 FeedTaggedProductUiModel.CampaignType.NoCampaign,
                 FeedTaggedProductUiModel.CampaignStatus.Unknown,
                 false
             ),
-            FeedTaggedProductUiModel.Affiliate(
+            affiliate = FeedTaggedProductUiModel.Affiliate(
                 "xxx",
                 "play"
             )
@@ -357,24 +365,26 @@ class FeedPostViewModelTest {
     fun onAtc_whenFailed() {
         // given
         val dummyData = FeedTaggedProductUiModel(
-            "dummyId",
-            FeedTaggedProductUiModel.Shop(
+            id = "dummyId",
+            parentID = "123",
+            showGlobalVariant = false,
+            shop = FeedTaggedProductUiModel.Shop(
                 "dummy-shop-id",
                 "dummy Name"
             ),
-            "dummy title",
-            "dummy image url",
-            FeedTaggedProductUiModel.NormalPrice(
+            title ="dummy title",
+            imageUrl = "dummy image url",
+            price = FeedTaggedProductUiModel.NormalPrice(
                 "Rp1.000.000",
                 1000000.0
             ),
-            "dummy applink",
-            FeedTaggedProductUiModel.Campaign(
+            appLink ="dummy applink",
+            campaign = FeedTaggedProductUiModel.Campaign(
                 FeedTaggedProductUiModel.CampaignType.NoCampaign,
                 FeedTaggedProductUiModel.CampaignStatus.Unknown,
                 false
             ),
-            FeedTaggedProductUiModel.Affiliate(
+            affiliate = FeedTaggedProductUiModel.Affiliate(
                 "xxx",
                 "play"
             )
@@ -404,24 +414,26 @@ class FeedPostViewModelTest {
     fun onAtc_whenSuccess() {
         // given
         val dummyData = FeedTaggedProductUiModel(
-            "dummyId",
-            FeedTaggedProductUiModel.Shop(
+            id = "dummyId",
+            parentID = "123",
+            showGlobalVariant = false,
+            shop = FeedTaggedProductUiModel.Shop(
                 "dummy-shop-id",
                 "dummy Name"
             ),
-            "dummy title",
-            "dummy image url",
-            FeedTaggedProductUiModel.NormalPrice(
+            title ="dummy title",
+            imageUrl = "dummy image url",
+            price = FeedTaggedProductUiModel.NormalPrice(
                 "Rp1.000.000",
                 1000000.0
             ),
-            "dummy applink",
-            FeedTaggedProductUiModel.Campaign(
+            appLink ="dummy applink",
+            campaign = FeedTaggedProductUiModel.Campaign(
                 FeedTaggedProductUiModel.CampaignType.NoCampaign,
                 FeedTaggedProductUiModel.CampaignStatus.Unknown,
                 false
             ),
-            FeedTaggedProductUiModel.Affiliate(
+            affiliate = FeedTaggedProductUiModel.Affiliate(
                 "xxx",
                 "play"
             )
@@ -456,24 +468,26 @@ class FeedPostViewModelTest {
         coEvery { affiliateCookieHelper.initCookie(any(), any(), any()) } coAnswers {}
 
         val dummyData = FeedTaggedProductUiModel(
-            "dummyId",
-            FeedTaggedProductUiModel.Shop(
+            id = "dummyId",
+            parentID = "123",
+            showGlobalVariant = false,
+            shop = FeedTaggedProductUiModel.Shop(
                 "dummy-shop-id",
                 "dummy Name"
             ),
-            "dummy title",
-            "dummy image url",
-            FeedTaggedProductUiModel.NormalPrice(
+            title ="dummy title",
+            imageUrl = "dummy image url",
+            price = FeedTaggedProductUiModel.NormalPrice(
                 "Rp1.000.000",
                 1000000.0
             ),
-            "dummy applink",
-            FeedTaggedProductUiModel.Campaign(
+            appLink ="dummy applink",
+            campaign = FeedTaggedProductUiModel.Campaign(
                 FeedTaggedProductUiModel.CampaignType.NoCampaign,
                 FeedTaggedProductUiModel.CampaignStatus.Unknown,
                 false
             ),
-            FeedTaggedProductUiModel.Affiliate(
+            affiliate = FeedTaggedProductUiModel.Affiliate(
                 "xxx",
                 "play"
             )
@@ -492,24 +506,26 @@ class FeedPostViewModelTest {
     fun onBuyProduct_whenFailed() {
         // given
         val dummyData = FeedTaggedProductUiModel(
-            "dummyId",
-            FeedTaggedProductUiModel.Shop(
+            id = "dummyId",
+            parentID = "123",
+            showGlobalVariant = false,
+            shop = FeedTaggedProductUiModel.Shop(
                 "dummy-shop-id",
                 "dummy Name"
             ),
-            "dummy title",
-            "dummy image url",
-            FeedTaggedProductUiModel.NormalPrice(
+            title ="dummy title",
+            imageUrl = "dummy image url",
+            price = FeedTaggedProductUiModel.NormalPrice(
                 "Rp1.000.000",
                 1000000.0
             ),
-            "dummy applink",
-            FeedTaggedProductUiModel.Campaign(
+            appLink ="dummy applink",
+            campaign = FeedTaggedProductUiModel.Campaign(
                 FeedTaggedProductUiModel.CampaignType.NoCampaign,
                 FeedTaggedProductUiModel.CampaignStatus.Unknown,
                 false
             ),
-            FeedTaggedProductUiModel.Affiliate(
+            affiliate = FeedTaggedProductUiModel.Affiliate(
                 "xxx",
                 "play"
             )
@@ -539,24 +555,26 @@ class FeedPostViewModelTest {
     fun onBuyProduct_whenSuccess() {
         // given
         val dummyData = FeedTaggedProductUiModel(
-            "dummyId",
-            FeedTaggedProductUiModel.Shop(
+            id = "dummyId",
+            parentID = "123",
+            showGlobalVariant = false,
+            shop = FeedTaggedProductUiModel.Shop(
                 "dummy-shop-id",
                 "dummy Name"
             ),
-            "dummy title",
-            "dummy image url",
-            FeedTaggedProductUiModel.NormalPrice(
+            title ="dummy title",
+            imageUrl = "dummy image url",
+            price = FeedTaggedProductUiModel.NormalPrice(
                 "Rp1.000.000",
                 1000000.0
             ),
-            "dummy applink",
-            FeedTaggedProductUiModel.Campaign(
+            appLink ="dummy applink",
+            campaign = FeedTaggedProductUiModel.Campaign(
                 FeedTaggedProductUiModel.CampaignType.NoCampaign,
                 FeedTaggedProductUiModel.CampaignStatus.Unknown,
                 false
             ),
-            FeedTaggedProductUiModel.Affiliate(
+            affiliate = FeedTaggedProductUiModel.Affiliate(
                 "xxx",
                 "play"
             )

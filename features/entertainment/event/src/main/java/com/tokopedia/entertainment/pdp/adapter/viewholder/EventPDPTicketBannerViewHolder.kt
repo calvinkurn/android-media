@@ -12,7 +12,7 @@ class EventPDPTicketBannerViewHolder(view: View): AbstractViewHolder<EventPDPTic
         itemView.tgEventTicketRecommendationTitle.text =
                 getString(R.string.ent_event_pdp_ticket_recommendation_label)
         itemView.tgEventTicketRecommendationTitle.background =
-                itemView.context.getDrawable(com.tokopedia.unifyprinciples.R.color.Unify_N0)
+                itemView.context.getDrawable(com.tokopedia.unifyprinciples.R.color.Unify_NN0)
     }
 
     companion object {

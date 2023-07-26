@@ -108,12 +108,15 @@ class SaldoWithdrawalDetailFragment : BaseDaggerFragment() {
         setFeeDetailBreakup(data)
         setWithdrawalStatusData(data)
     }
-
     private fun setHeaderData(data: WithdrawalInfoData) {
         tvWithdrawalAmount.text =
             CurrencyFormatUtil.convertPriceValueToIdrFormat(data.amount, false)
         tvBankName.text = data.bankName
-        tvAccountName.text = "${data.accountNumber} - ${data.accountName}"
+
+        tvAccountName.text = if (data.accountNumber.isNotEmpty() && data.accountName.isNotEmpty()) {
+            context?.let { it.getString(R.string.saldo_transaction_detail_account_name, data.accountNumber, data.accountName) }
+        } else if (data.accountNumber.isNotEmpty()) data.accountNumber else data.accountName
+
         tvWithdrawalDate.text = data.createdTime
         withdrawalStatusLabel.setLabelType(SaldoDateUtil.getLocalLabelColor(data.labelColor))
         withdrawalStatusLabel.setLabel(data.labelStatus)

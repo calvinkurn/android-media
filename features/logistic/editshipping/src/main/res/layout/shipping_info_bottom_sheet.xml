@@ -15,7 +15,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
-        android:textColor="@color/Unify_N700"
+        android:textColor="@color/Unify_NN950"
         app:typographyType="body_1"
         tools:text="Courier Name Service" />
 
@@ -25,7 +25,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:layout_marginBottom="10dp"
-        android:textColor="@color/Unify_N700"
+        android:textColor="@color/Unify_NN950"
         app:typographyType="body_2"
         tools:text="Courier Information" />
 

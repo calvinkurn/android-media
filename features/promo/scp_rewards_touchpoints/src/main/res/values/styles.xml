@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="ScpTransparentBottomSheetDialogTheme" parent="Theme.Design.Light.BottomSheetDialog">
+        <item name="bottomSheetDialogTheme">@style/ScpTransparentBottomSheetStyle</item>
+    </style>
+
+    <style name="ScpTransparentBottomSheetStyle" parent="Widget.Design.BottomSheet.Modal">
+
+        <item name="android:background">@drawable/background_bottomsheet_round</item>
+
+    </style>
+
+    <style name="TransParentTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="colorPrimaryDark">@android:color/transparent</item>
+    </style>
+
+</resources>

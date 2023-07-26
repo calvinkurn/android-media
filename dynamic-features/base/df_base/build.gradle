@@ -120,6 +120,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.shopPage)
     implementation projectOrAar(rootProject.ext.features.shopPageWidget)
     implementation projectOrAar(rootProject.ext.features.feedShop)
+    implementation projectOrAar(rootProject.ext.features.sellerShopNib)
 
     //Operational
 

@@ -186,7 +186,7 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
         (activity as HotelRoomDetailActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         val navIcon = binding?.roomDetailDetailToolbar?.navigationIcon
-        navIcon?.setColorFilter(getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0), PorterDuff.Mode.SRC_ATOP)
+        navIcon?.setColorFilter(getColor(com.tokopedia.unifyprinciples.R.color.Unify_NN0), PorterDuff.Mode.SRC_ATOP)
         (activity as HotelRoomDetailActivity).supportActionBar?.setHomeAsUpIndicator(navIcon)
 
         binding?.roomDetailCollapsingToolbar?.title = ""
@@ -200,11 +200,11 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
                 }
                 if (scrollRange + verticalOffset == 0) {
                     binding?.roomDetailCollapsingToolbar?.title = hotelRoom.roomInfo.name
-                    navIcon?.setColorFilter(getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_96), PorterDuff.Mode.SRC_ATOP)
+                    navIcon?.setColorFilter(getColor(com.tokopedia.unifyprinciples.R.color.Unify_NN950_96), PorterDuff.Mode.SRC_ATOP)
                     isShow = true
                 } else if (isShow) {
                     binding?.roomDetailCollapsingToolbar?.title = " "
-                    navIcon?.setColorFilter(getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0), PorterDuff.Mode.SRC_ATOP)
+                    navIcon?.setColorFilter(getColor(com.tokopedia.unifyprinciples.R.color.Unify_NN0), PorterDuff.Mode.SRC_ATOP)
                     isShow = false
                 }
             }
