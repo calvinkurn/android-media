@@ -416,7 +416,7 @@ class CheckoutOrderViewHolder(
     }
 
     override fun onViewErrorInCourierSection(logPromoDesc: String) {
-        TODO("Not yet implemented")
+        // todo
     }
 
     override fun onChangeScheduleDelivery(scheduleDeliveryUiModel: ScheduleDeliveryUiModel) {
