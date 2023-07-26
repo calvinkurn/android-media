@@ -46,7 +46,7 @@ class ShopGradeWidget(
 
     companion object {
         private const val DATE_FORMAT = "dd MMM yyyy"
-        private const val END_OF_TENURE_DAYS = 90L
+        private const val END_OF_TENURE_DAYS = 60L
         val RES_LAYOUT = R.layout.widget_pm_shop_grade
         const val SATURATION_INACTIVE = 0.0f
     }
