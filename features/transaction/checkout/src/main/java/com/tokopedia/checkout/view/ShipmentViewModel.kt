@@ -2369,18 +2369,11 @@ class ShipmentViewModel @Inject constructor(
         if (lastValidateUseRequest != null) {
             for (shipmentCartItemModel in shipmentCartItemModelList) {
                 if (shipmentCartItemModel is ShipmentCartItemModel && shipmentCartItemModel.voucherLogisticItemUiModel != null) {
-                    for (order in lastValidateUseRequest!!.orders) {
-                        if (order.cartStringGroup == shipmentCartItemModel.cartStringGroup && order.codes.contains(
-                                shipmentCartItemModel.voucherLogisticItemUiModel!!.code
-                            )
-                        ) {
-                            doUnapplyBo(
-                                shipmentCartItemModel.cartStringGroup,
-                                shipmentCartItemModel.voucherLogisticItemUiModel!!.uniqueId,
-                                shipmentCartItemModel.voucherLogisticItemUiModel!!.code
-                            )
-                        }
-                    }
+                    doUnapplyBo(
+                        shipmentCartItemModel.cartStringGroup,
+                        shipmentCartItemModel.voucherLogisticItemUiModel!!.uniqueId,
+                        shipmentCartItemModel.voucherLogisticItemUiModel!!.code
+                    )
                 }
             }
         }
