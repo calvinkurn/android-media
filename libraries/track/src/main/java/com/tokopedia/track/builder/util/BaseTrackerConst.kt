@@ -155,7 +155,7 @@ abstract class BaseTrackerConst {
             val shopType: String = "",
             val pageName: String = "",
             val wishlistId: String = "",
-            val warehouseId: String = "",
+            val warehouseId: String? = null,
             val isFulfillment: Boolean? = null
     )
 
@@ -349,7 +349,7 @@ abstract class BaseTrackerConst {
                 map[KEY_SHOP_TYPE] = if(product.shopType.isNotBlank()) product.shopType else NONE
                 map[KEY_DIMENSION_83] = checkBebasOngkir(product)
             }
-            if(product.warehouseId.isNotEmpty()) { map[KEY_DIMENSION_56] = product.warehouseId }
+            if(product.warehouseId != null) { map[KEY_DIMENSION_56] = product.warehouseId.ifEmpty { "0" } }
             if(product.isFulfillment != null) { map[KEY_DIMENSION_58] = product.isFulfillment.toString() }
             return map
         }
@@ -379,7 +379,7 @@ abstract class BaseTrackerConst {
             if(product.cartId.isNotEmpty()) bundle.putString(KEY_DIMENSION_81, "")
             if(product.cartId.isNotEmpty()) bundle.putString(KEY_DIMENSION_82, NONE)
             if(product.quantity.isNotEmpty()) bundle.putString(KEY_QUANTITY, product.quantity)
-            if(product.warehouseId.isNotEmpty()) { bundle.putString(KEY_DIMENSION_56, product.warehouseId) }
+            if(product.warehouseId != null) { bundle.putString(KEY_DIMENSION_56, product.warehouseId.ifEmpty { "0" }) }
             if(product.isFulfillment != null) { bundle.putString(KEY_DIMENSION_56, product.isFulfillment.toString()) }
             return bundle
         }
