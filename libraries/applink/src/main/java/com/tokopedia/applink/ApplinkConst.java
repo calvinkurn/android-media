@@ -465,7 +465,7 @@ public interface ApplinkConst {
 
     String OCC = "tokopedia://occ";
 
-    String BUY_MORE_GET_MORE_OLP = "tokopedia://buy-more-get-more/olp/{shopId}";
+    String BUY_MORE_GET_MORE_OLP = "tokopedia://buy-more-get-more/{shop_id}/olp";
 
     String SELLER_MIGRATION = "tokopedia://seller/seller-migration";
 

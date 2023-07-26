@@ -2,7 +2,6 @@ package com.tokopedia.applink
 
 import android.content.Context
 import android.net.Uri
-import android.util.Log
 import com.tokopedia.applink.account.DeeplinkMapperAccount
 import com.tokopedia.applink.category.DeeplinkMapperCategory
 import com.tokopedia.applink.chatbot.DeeplinkMapperChatbot.getChatbotDeeplink
@@ -399,7 +398,6 @@ object DeeplinkMapper {
 
             deeplink.startsWithPattern(ApplinkConstInternalUserPlatform.GOTO_KYC) -> DeeplinkMapperUser.getRegisteredNavigationUser(deeplink)
 
-            DeeplinkMapperMerchant.isBuyMoreGetMoreOLPApplink(deeplink) -> DeeplinkMapperMerchant.getRegisteredNavigationForOfferLandingPage()
             else -> return ""
         }
     }

@@ -8,13 +8,23 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.buy_more_get_more.databinding.FragmentOfferLandingPageBinding
 import com.tokopedia.buy_more_get_more.di.component.DaggerBuyMoreGetMoreComponent
+import com.tokopedia.buy_more_get_more.utils.BundleConstant
 import com.tokopedia.campaign.delegates.HasPaginatedList
 import com.tokopedia.campaign.delegates.HasPaginatedListImpl
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
-class OfferLandingPageFragment:
+class OfferLandingPageFragment :
     BaseDaggerFragment(),
     HasPaginatedList by HasPaginatedListImpl() {
+
+    companion object {
+        @JvmStatic
+        fun newInstance(shopId: String) = OfferLandingPageFragment().apply {
+            arguments = Bundle().apply {
+                putString(BundleConstant.BUNDLE_SHOP_ID, shopId)
+            }
+        }
+    }
 
     private var binding by autoClearedNullable<FragmentOfferLandingPageBinding>()
 

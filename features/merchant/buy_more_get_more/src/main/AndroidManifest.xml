@@ -18,7 +18,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="@string/host_marketplace"
+                    android:host="@string/host_merchant"
                     android:pathPattern="@string/path_buy_more_get_more_olp"
                     android:scheme="@string/internal_scheme"  />
             </intent-filter>

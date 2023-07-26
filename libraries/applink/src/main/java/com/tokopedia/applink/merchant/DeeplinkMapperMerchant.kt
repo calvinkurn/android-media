@@ -1,12 +1,12 @@
 package com.tokopedia.applink.merchant
 
 import android.net.Uri
-import android.util.Log
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.inbox.DeeplinkMapperInbox
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.startsWithPattern
 import com.tokopedia.config.GlobalConfig
@@ -377,9 +377,8 @@ object DeeplinkMapperMerchant {
         return UriUtil.buildUri(ApplinkConstInternalSellerapp.SELLER_MVC_CREATE, voucherType)
     }
 
-    fun getRegisteredNavigationForOfferLandingPage(): String {
-        val shopId = "shopId"
-        return UriUtil.buildUri(ApplinkConst.BUY_MORE_GET_MORE_OLP, shopId)
+    fun getRegisteredNavigationForOfferLandingPage(shopId: String): String {
+        return UriUtil.buildUri(ApplinkConstInternalMechant.BUY_MORE_GET_MORE_OLP, shopId)
     }
 
     fun isShopPageSettingSellerApp(deeplink: String): Boolean {
@@ -413,7 +412,6 @@ object DeeplinkMapperMerchant {
     }
 
     fun isBuyMoreGetMoreOLPApplink(deeplink: String): Boolean {
-        Log.d("Masuk", "Masuk")
         return deeplink.startsWith(ApplinkConst.BUY_MORE_GET_MORE_OLP)
     }
 
