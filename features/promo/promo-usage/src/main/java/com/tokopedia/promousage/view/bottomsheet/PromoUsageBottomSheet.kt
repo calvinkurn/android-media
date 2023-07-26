@@ -235,7 +235,7 @@ class PromoUsageBottomSheet: BottomSheetDialogFragment() {
             layoutTotalSavings.isVisible = selectedVoucherCount.isMoreThanZero()
 
             val formattedTotalVoucherAmount = totalBenefits.splitByThousand()
-            val text = if (selectedVoucherCount > 1) {
+            val text = if (selectedVoucherCount == 1) {
                 context?.getString(
                     R.string.promo_voucher_placeholder_total_savings,
                     formattedTotalVoucherAmount

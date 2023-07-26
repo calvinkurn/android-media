@@ -98,7 +98,9 @@ class VoucherRecommendationDelegateAdapter(
 
             fun bind(voucher: Voucher) {
                 binding.voucherView.bind(voucher)
-                binding.root.setOnClickListener { onVoucherClick(voucher) }
+                binding.root.setOnClickListener {
+                    onVoucherClick(voucher)
+                }
             }
 
         }
