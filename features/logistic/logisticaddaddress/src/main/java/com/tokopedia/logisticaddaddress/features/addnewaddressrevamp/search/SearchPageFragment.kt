@@ -36,6 +36,8 @@ import com.google.android.gms.location.LocationSettingsRequest
 import com.google.android.gms.location.LocationSettingsStatusCodes
 import com.google.android.gms.tasks.OnFailureListener
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.PARAM_SOURCE
 import com.tokopedia.logisticCommon.data.constant.AddressConstant.EXTRA_IS_GET_PINPOINT_ONLY
 import com.tokopedia.logisticCommon.data.constant.LogisticConstant
@@ -57,7 +59,6 @@ import com.tokopedia.logisticaddaddress.databinding.BottomsheetLocationUndefined
 import com.tokopedia.logisticaddaddress.databinding.FragmentSearchAddressBinding
 import com.tokopedia.logisticaddaddress.di.addnewaddressrevamp.AddNewAddressRevampComponent
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.AddressUiState
-import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.addressform.AddressFormActivity
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.analytics.AddNewAddressRevampAnalytics
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.analytics.EditAddressRevampAnalytics
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.isAdd
@@ -426,7 +427,8 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
     }
 
     private fun goToAddressForm() {
-        val intent = Intent(context, AddressFormActivity::class.java).apply {
+        val intent = RouteManager.getIntent(context, "${ApplinkConstInternalLogistic.EDIT_ADDRESS_REVAMP}${saveAddressDataModel.id}")
+        intent.apply {
             putExtra(EXTRA_IS_POSITIVE_FLOW, false)
             putExtra(EXTRA_SAVE_DATA_UI_MODEL, saveAddressDataModel)
             putExtra(PARAM_SOURCE, source)
@@ -617,8 +619,8 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
                                     try {
                                         if (e is ResolvableApiException) {
                                             val intentSenderRequest =
-                                        IntentSenderRequest.Builder(e.resolution.intentSender)
-                                            .build()
+                                                IntentSenderRequest.Builder(e.resolution.intentSender)
+                                                    .build()
                                             gpsResultResolutionContract.launch(intentSenderRequest)
                                         }
                                     } catch (sie: IntentSender.SendIntentException) {
@@ -626,7 +628,7 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
                                     }
                                 LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE -> {
                                     val errorMessage =
-                                    "Location settings are inadequate, and cannot be " + "fixed here. Fix in Settings."
+                                        "Location settings are inadequate, and cannot be " + "fixed here. Fix in Settings."
                                     Toast.makeText(context, errorMessage, Toast.LENGTH_LONG).show()
                                 }
                             }
@@ -775,5 +777,4 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
             }
         }
     }
-
 }
