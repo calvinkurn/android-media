@@ -160,17 +160,13 @@ class LoginHelperAddEditAccountViewModel @Inject constructor(
 
     private fun handleBackButtonTap() {
         _uiAction.tryEmit(
-            LoginHelperAddEditAccountAction.GoToRoute(
-                ApplinkConstInternalGlobal.LOGIN_HELPER_ACCOUNTS_SETTINGS
-            )
+            LoginHelperAddEditAccountAction.TapBackAction
         )
     }
 
     private fun handleGoToLoginHelperHome() {
         _uiAction.tryEmit(
-            LoginHelperAddEditAccountAction.GoToRoute(
-                ApplinkConstInternalGlobal.LOGIN_HELPER
-            )
+            LoginHelperAddEditAccountAction.GoToLoginHelperHome
         )
     }
 
