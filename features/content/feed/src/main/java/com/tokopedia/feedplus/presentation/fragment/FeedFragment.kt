@@ -268,7 +268,8 @@ class FeedFragment :
         }
 
         override fun onClickProfileRecommendation(profile: FeedFollowRecommendationModel.Profile) {
-            /** TODO: handle this */
+            val baseAppLink = if (profile.isShop) ApplinkConst.SHOP else ApplinkConst.PROFILE
+            RouteManager.route(requireContext(), baseAppLink, profile.id)
         }
 
         override fun onLoadNextProfileRecommendation() {
