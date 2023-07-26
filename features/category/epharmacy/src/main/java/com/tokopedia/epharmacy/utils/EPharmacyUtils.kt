@@ -172,13 +172,16 @@ object EPharmacyUtils {
             )
         }
 
+        var orderNumber = 0
         data.detailData?.groupsData?.epharmacyGroups?.forEachIndexed { indexGroup, group ->
             if (!group?.shopInfo.isNullOrEmpty()) {
                 group?.shopInfo?.forEachIndexed { shopIndex, info ->
                     if (info?.products?.isEmpty() != true) {
+                        orderNumber++
                         listOfComponents.add(
                             getGroupComponent(
                                 group,
+                                orderNumber,
                                 info,
                                 shopIndex,
                                 EPharmacyMapper.isLastIndex(data.detailData?.groupsData?.epharmacyGroups, indexGroup)
@@ -193,11 +196,12 @@ object EPharmacyUtils {
 
     private fun getGroupComponent(
         group: EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup,
+        orderNumber: Int,
         info: EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo?,
         shopIndex: Int,
         isLastGroup: Boolean
     ): BaseEPharmacyDataModel {
-        return EPharmacyMapper.mapGroupsToAttachmentComponents(group, info, shopIndex, isLastGroup)
+        return EPharmacyMapper.mapGroupsToAttachmentComponents(group, orderNumber, info, shopIndex, isLastGroup)
     }
 }
 

@@ -9,6 +9,7 @@ data class EPharmacyAttachmentDataModel(
     val name: String = "",
     val type: String = "",
     val epharmacyGroupId: String?,
+    val orderTitle: String?,
     val enablerName: String?,
     val enablerLogo: String?,
     val chooserLogo: String?,

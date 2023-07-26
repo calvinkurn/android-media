@@ -38,6 +38,7 @@ import com.tokopedia.unifyprinciples.Typography
 class EPharmacyAttachmentViewHolder(private val view: View, private val ePharmacyListener: EPharmacyListener?) : AbstractViewHolder<EPharmacyAttachmentDataModel?>(view) {
 
     private val productText = view.findViewById<Typography>(R.id.lbl_PAP_productName)
+    private val orderTitleText = view.findViewById<Typography>(R.id.pesanan_title)
     private val shopNameText = view.findViewById<Typography>(R.id.lbl_PAP_shopName)
     private val shopIcon = view.findViewById<ImageUnify>(R.id.shop_icon)
     private val enablerImage = view.findViewById<ImageUnify>(R.id.enabler_image)
@@ -86,12 +87,22 @@ class EPharmacyAttachmentViewHolder(private val view: View, private val ePharmac
 
     private fun renderGroupData() {
         renderError()
+        renderOrderTitle()
         renderPartnerData()
         renderShopData()
         renderProductsData()
         renderButton()
         renderDivider()
         renderObstruction()
+    }
+
+    private fun renderOrderTitle() {
+        if(!dataModel?.orderTitle.isNullOrBlank()){
+            orderTitleText.show()
+            orderTitleText.text = dataModel?.orderTitle
+        }else {
+            orderTitleText.hide()
+        }
     }
 
     private fun renderError() {

@@ -10,6 +10,7 @@ object EPharmacyMapper {
 
     fun mapGroupsToAttachmentComponents(
         group: EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup,
+        orderNumber: Int,
         info: EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo?,
         shopIndex: Int,
         isLastGroup: Boolean
@@ -17,6 +18,7 @@ object EPharmacyMapper {
         return EPharmacyAttachmentDataModel(
             getUniqueModelName(group.epharmacyGroupId, shopIndex), GROUP_COMPONENT,
             group.epharmacyGroupId,
+            getOrderTitle(orderNumber),
             group.consultationSource?.enablerName,
             getPartnerLogo(group, info),
             group.consultationSource?.enablerLogoUrl,
@@ -52,5 +54,9 @@ object EPharmacyMapper {
 
     fun isLastIndex(list: List<Any?>?, index: Int): Boolean {
         return index == ((list?.size ?: 0) - 1)
+    }
+
+    private fun getOrderTitle(orderNumber: Int): String {
+        return "Pesanan $orderNumber"
     }
 }
