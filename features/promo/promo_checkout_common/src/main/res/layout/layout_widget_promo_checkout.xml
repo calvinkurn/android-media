@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/background_promo_checkout_active_teal_rounded">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="12dp">
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/iv_promo_checkout_left"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginEnd="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/tv_promo_checkout_title"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextSwitcher
+            android:id="@+id/tv_promo_checkout_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:inAnimation="@anim/anim_slide_up_in"
+            android:outAnimation="@anim/anim_slide_up_out"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/ic_promo_checkout_right"
+            app:layout_constraintStart_toEndOf="@id/iv_promo_checkout_left"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/Unify_NN950"
+                app:typographyType="display_3"
+                app:typographyWeight="reguler"
+                tools:text="Verifikasi nomor HP biar bisa pakai promo!Verifikasi nomor HP biar bisa pakai promo!" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/Unify_NN950"
+                app:typographyType="display_3"
+                app:typographyWeight="reguler"
+                tools:text="Ada promo Rp10.000 pakai JNE Same Day!Ada promo Rp10.000 pakai JNE Same Day!" />
+
+        </TextSwitcher>
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/ic_promo_checkout_right"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="4dp"
+            app:icon_name="CHEVRON_UP"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/tv_promo_checkout_title"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</FrameLayout>

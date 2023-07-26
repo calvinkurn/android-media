@@ -48,7 +48,6 @@ import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import rx.subjects.PublishSubject
 import rx.subscriptions.CompositeSubscription
-import java.util.HashMap
 import java.util.concurrent.TimeUnit
 import java.util.regex.Pattern
 
