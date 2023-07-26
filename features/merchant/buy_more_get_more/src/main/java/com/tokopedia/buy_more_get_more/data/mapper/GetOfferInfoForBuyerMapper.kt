@@ -5,10 +5,11 @@ import com.tokopedia.buy_more_get_more.data.response.OfferInfoForBuyerResponse.*
 import com.tokopedia.buy_more_get_more.domain.entity.OfferInfoForBuyer
 import com.tokopedia.buy_more_get_more.domain.entity.OfferInfoForBuyer.Offering.Tier
 import com.tokopedia.buy_more_get_more.domain.entity.OfferInfoForBuyer.Offering.Tier.Rule
+import javax.inject.Inject
 
-class GetOfferInfoForBuyerMapper {
+class GetOfferInfoForBuyerMapper @Inject constructor() {
 
-    fun mapToUiModel(response: OfferInfoForBuyerResponse): OfferInfoForBuyer {
+    fun map(response: OfferInfoForBuyerResponse): OfferInfoForBuyer {
         return response.let {
             OfferInfoForBuyer(
                 responseHeader = response.responseHeader.toResponseHeaderModel(),
@@ -55,7 +56,7 @@ class GetOfferInfoForBuyerMapper {
     private fun List<Offering.Tier.Rule>.toRuleListUiModel(): List<Rule> {
         return map {
             Rule(
-                type = it.type,
+                typeId = it.typeId,
                 operation = it.operation,
                 value = it.value
             )
@@ -65,7 +66,7 @@ class GetOfferInfoForBuyerMapper {
     private fun List<Offering.Tier.Benefit>.toBenefitListUiModel(): List<Tier.Benefit> {
         return map {
             Tier.Benefit(
-                type = it.type,
+                typeId = it.typeId,
                 value = it.value
             )
         }

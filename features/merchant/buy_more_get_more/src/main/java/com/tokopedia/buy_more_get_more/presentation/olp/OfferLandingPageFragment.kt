@@ -1,6 +1,7 @@
 package com.tokopedia.buy_more_get_more.presentation.olp
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,6 +13,7 @@ import com.tokopedia.buy_more_get_more.utils.BundleConstant
 import com.tokopedia.campaign.delegates.HasPaginatedList
 import com.tokopedia.campaign.delegates.HasPaginatedListImpl
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import javax.inject.Inject
 
 class OfferLandingPageFragment :
     BaseDaggerFragment(),
@@ -27,6 +29,9 @@ class OfferLandingPageFragment :
     }
 
     private var binding by autoClearedNullable<FragmentOfferLandingPageBinding>()
+
+    @Inject
+    lateinit var viewModel: OfferLandingPageViewModel
 
     override fun getScreenName() = ""
 
@@ -50,5 +55,17 @@ class OfferLandingPageFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupObservables()
+        viewModel.getOfferingIndo(listOf(0), "2323")
+    }
+
+    private fun setupObservables() {
+        viewModel.offeringInfo.observe(viewLifecycleOwner) { offerInfoForBuyer ->
+            Log.d("Masuk", offerInfoForBuyer.offeringJsonData)
+        }
+
+        viewModel.error.observe(viewLifecycleOwner) { throwable ->
+            Log.d("Masuk", throwable.localizedMessage)
+        }
     }
 }

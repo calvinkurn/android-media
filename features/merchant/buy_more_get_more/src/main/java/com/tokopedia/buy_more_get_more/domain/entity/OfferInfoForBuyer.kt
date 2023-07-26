@@ -1,7 +1,5 @@
 package com.tokopedia.buy_more_get_more.domain.entity
 
-import com.google.gson.annotations.SerializedName
-
 data class OfferInfoForBuyer(
     val responseHeader: ResponseHeader = ResponseHeader(),
     val offeringJsonData: String = "",
@@ -30,13 +28,13 @@ data class OfferInfoForBuyer(
             val attributes: String = ""
         ) {
             data class Rule(
-                val type: String = "",
+                val typeId: Long = 0,
                 val operation: String = "",
                 val value: Int = 0
             )
 
             data class Benefit(
-                val type: String = "",
+                val typeId: Long = 0,
                 val value: Int = 0
             )
         }

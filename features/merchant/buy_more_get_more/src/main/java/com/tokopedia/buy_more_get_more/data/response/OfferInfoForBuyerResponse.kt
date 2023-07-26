@@ -48,8 +48,8 @@ data class OfferInfoForBuyerResponse(
             val attributes: String = ""
         ) {
             data class Rule(
-                @SerializedName("type")
-                val type: String = "",
+                @SerializedName("type_id")
+                val typeId: Long = 0,
                 @SerializedName("operation")
                 val operation: String = "",
                 @SerializedName("value")
@@ -57,8 +57,8 @@ data class OfferInfoForBuyerResponse(
             )
 
             data class Benefit(
-                @SerializedName("type")
-                val type: String = "",
+                @SerializedName("type_id")
+                val typeId: Long = 0,
                 @SerializedName("value")
                 val value: Int = 0
             )
