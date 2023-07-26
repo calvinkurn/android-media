@@ -156,6 +156,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
                 android:text="@string/promo_voucher_total_price"
+                android:textColor="@color/Unify_NN600"
                 app:layout_constraintEnd_toStartOf="@+id/buttonBuy"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/buttonBuy"
