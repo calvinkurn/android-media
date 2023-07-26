@@ -454,6 +454,35 @@ class FeedPostViewModel @Inject constructor(
         }
     }
 
+    fun loadMoreFollowRecommendation(position: Int) {
+        viewModelScope.launchCatchError(block = {
+            feedHome.value?.let {
+                if (it is Success) {
+                    val followRecomData = it.data.items.getOrNull(position)
+
+                    if (followRecomData is FeedFollowRecommendationModel && followRecomData.hasNext && !followRecomData.isLoadMore) {
+
+                        updateFollowRecom(position) { followRecom ->
+                            followRecom.copy(isLoadMore = true)
+                        }
+
+                        val request = feedXRecomWidgetUseCase.createFeedFollowRecomParams(followRecomData.cursor)
+                        val response = feedXRecomWidgetUseCase(request)
+
+                        updateFollowRecom(position) { followRecom ->
+                            followRecom.copy(
+                                data = followRecom.data + response.data,
+                                isLoadMore = false,
+                            )
+                        }
+                    }
+                }
+            }
+        }) {
+            /** TODO: handle this */
+        }
+    }
+
     fun suspendFollow(id: String, encryptedId: String, isShop: Boolean) {
         _suspendedFollowData.value = FollowShopModel(
             id = id,
@@ -813,6 +842,33 @@ class FeedPostViewModel @Inject constructor(
                         it.data.copy(
                             items = it.data.items.map { item ->
                                 onUpdate(item)
+                            }
+                        )
+                    )
+                }
+                else -> {}
+            }
+        }
+    }
+
+    private fun updateFollowRecom(
+        position: Int = -1,
+        onUpdate: (FeedFollowRecommendationModel) -> FeedFollowRecommendationModel
+    ) {
+        val currentValue = feedHome.value
+
+        currentValue?.let {
+            when (it) {
+                is Success -> {
+                    _feedHome.value = Success(
+                        it.data.copy(
+                            items = it.data.items.mapIndexed { index, item ->
+                                when {
+                                    item is FeedFollowRecommendationModel && (index == position || position == -1) -> {
+                                        onUpdate(item)
+                                    }
+                                    else -> item
+                                }
                             }
                         )
                     )

@@ -273,7 +273,7 @@ class FeedFragment :
         }
 
         override fun onLoadNextProfileRecommendation() {
-            /** TODO: handle this */
+            feedPostViewModel.loadMoreFollowRecommendation(getCurrentPosition())
         }
 
         override fun onClickViewOtherContent() {

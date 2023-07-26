@@ -13,6 +13,7 @@ data class FeedFollowRecommendationModel(
     val data: List<Profile>,
     val cursor: String,
     val isFetch: Boolean,
+    val isLoadMore: Boolean,
 ) : Visitable<FeedAdapterTypeFactory> {
 
     val hasNext: Boolean
@@ -58,6 +59,7 @@ data class FeedFollowRecommendationModel(
                 data = emptyList(),
                 cursor = "",
                 isFetch = false,
+                isLoadMore = false,
             )
     }
 }
