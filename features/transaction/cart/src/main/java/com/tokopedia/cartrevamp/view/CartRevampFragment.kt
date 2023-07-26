@@ -67,8 +67,8 @@ import com.tokopedia.cartrevamp.view.mapper.CartUiModelMapper
 import com.tokopedia.cartrevamp.view.mapper.PromoRequestMapper
 import com.tokopedia.cartrevamp.view.mapper.RecentViewMapper
 import com.tokopedia.cartrevamp.view.mapper.WishlistMapper
-import com.tokopedia.cartrevamp.view.uimodel.AddCartToWishlistEvent
 import com.tokopedia.cartrevamp.view.uimodel.AddToCartEvent
+import com.tokopedia.cartrevamp.view.uimodel.AddToWishlistV2Event
 import com.tokopedia.cartrevamp.view.uimodel.CartBundlingBottomSheetData
 import com.tokopedia.cartrevamp.view.uimodel.CartCheckoutButtonState
 import com.tokopedia.cartrevamp.view.uimodel.CartGlobalEvent
@@ -163,7 +163,6 @@ import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -945,7 +944,7 @@ class CartRevampFragment :
         if (cartItemHolderData.isWishlisted) {
             viewModel.processAddCartToWishlist(
                 cartItemHolderData.productId,
-                cartItemHolderData.cartId,
+                userSession.userId,
                 isLastItem,
                 if (cartItemHolderData.isError) WISHLIST_SOURCE_UNAVAILABLE_ITEM else WISHLIST_SOURCE_AVAILABLE_ITEM,
                 wishlistIcon,
@@ -1825,31 +1824,20 @@ class CartRevampFragment :
     }
 
     private fun observeAddCartToWishlistEvent() {
-        viewModel.addCartToWishlistEvent.observe(viewLifecycleOwner) { event ->
-            event?.let {
-                when (event) {
-                    is AddCartToWishlistEvent.Success -> {
-                        if (event.data.status == CartViewModel.STATUS_OK) {
-                            if (event.data.success == 1) {
-                                onAddCartToWishlistSuccess(
-                                    event.data.message,
-                                    event.productId,
-                                    event.isLastItem,
-                                    event.source,
-                                    event.wishlistIcon,
-                                    event.animatedWishlistImage
-                                )
-                            } else {
-                                showToastMessageRed(event.data.message)
-                            }
-                        } else {
-                            showToastMessageRed(event.data.message)
-                        }
-                    }
-
-                    is AddCartToWishlistEvent.Failed -> {
-                        showToastMessageRed(event.throwable)
-                    }
+        viewModel.addToWishlistV2Event.observe(viewLifecycleOwner) { event ->
+            when (event) {
+                is AddToWishlistV2Event.Success -> {
+                    onAddCartToWishlistSuccess(
+                        event.data.message,
+                        event.productId,
+                        event.isLastItem,
+                        event.source,
+                        event.wishlistIcon,
+                        event.animatedWishlistImage
+                    )
+                }
+                is AddToWishlistV2Event.Failed -> {
+                    showToastMessageRed(event.throwable)
                 }
             }
         }
@@ -1857,35 +1845,33 @@ class CartRevampFragment :
 
     private fun observeAddToCart() {
         viewModel.addToCartEvent.observe(viewLifecycleOwner) { event ->
-            event?.let {
-                when (event) {
-                    is AddToCartEvent.Success -> {
-                        if (event.addToCartDataModel.status.equals(
-                                AddToCartDataModel.STATUS_OK,
-                                true
-                            ) && event.addToCartDataModel.data.success == 1
-                        ) {
-                            triggerSendEnhancedEcommerceAddToCartSuccess(
-                                event.addToCartDataModel,
-                                event.productModel
-                            )
-                            resetRecentViewList()
-                            viewModel.processInitialGetCartData("0", false, false)
-                            if (event.addToCartDataModel.data.message.size > 0) {
-                                showToastMessageGreen(event.addToCartDataModel.data.message[0])
-                                notifyBottomCartParent()
-                            }
-                        } else {
-                            if (event.addToCartDataModel.errorMessage.size > 0) {
-                                showToastMessageRed(event.addToCartDataModel.errorMessage[0])
-                            }
+            when (event) {
+                is AddToCartEvent.Success -> {
+                    if (event.addToCartDataModel.status.equals(
+                            AddToCartDataModel.STATUS_OK,
+                            true
+                        ) && event.addToCartDataModel.data.success == 1
+                    ) {
+                        triggerSendEnhancedEcommerceAddToCartSuccess(
+                            event.addToCartDataModel,
+                            event.productModel
+                        )
+                        resetRecentViewList()
+                        viewModel.processInitialGetCartData("0", false, false)
+                        if (event.addToCartDataModel.data.message.size > 0) {
+                            showToastMessageGreen(event.addToCartDataModel.data.message[0])
+                            notifyBottomCartParent()
+                        }
+                    } else {
+                        if (event.addToCartDataModel.errorMessage.size > 0) {
+                            showToastMessageRed(event.addToCartDataModel.errorMessage[0])
                         }
                     }
+                }
 
-                    is AddToCartEvent.Failed -> {
-                        hideProgressLoading()
-                        showToastMessageRed(event.throwable)
-                    }
+                is AddToCartEvent.Failed -> {
+                    hideProgressLoading()
+                    showToastMessageRed(event.throwable)
                 }
             }
         }
@@ -1899,19 +1885,17 @@ class CartRevampFragment :
 
     private fun observeCartEvent() {
         viewModel.loadCartState.observe(viewLifecycleOwner) { state ->
-            state?.let {
-                when (state) {
-                    is CartState.Success -> {
-                        renderLoadGetCartDataFinish()
-                        renderInitialGetCartListDataSuccess(state.data)
-                        stopCartPerformanceTrace(true)
-                    }
+            when (state) {
+                is CartState.Success -> {
+                    renderLoadGetCartDataFinish()
+                    renderInitialGetCartListDataSuccess(state.data)
+                    stopCartPerformanceTrace(true)
+                }
 
-                    is CartState.Failed -> {
-                        renderLoadGetCartDataFinish()
-                        renderErrorInitialGetCartListData(state.throwable)
-                        stopCartPerformanceTrace(false)
-                    }
+                is CartState.Failed -> {
+                    renderLoadGetCartDataFinish()
+                    renderErrorInitialGetCartListData(state.throwable)
+                    stopCartPerformanceTrace(false)
                 }
             }
         }
@@ -1919,19 +1903,17 @@ class CartRevampFragment :
 
     private fun observeCartTrackerEvent() {
         viewModel.cartTrackerEvent.observe(viewLifecycleOwner) { event ->
-            event?.let {
-                when (event) {
-                    is CartTrackerEvent.ATCTrackingURLRecent -> {
-                        sendATCTrackingURLRecent(event.productModel)
-                    }
+            when (event) {
+                is CartTrackerEvent.ATCTrackingURLRecent -> {
+                    sendATCTrackingURLRecent(event.productModel)
+                }
 
-                    is CartTrackerEvent.ATCTrackingURLRecommendation -> {
-                        sendATCTrackingURL(event.recommendationItem)
-                    }
+                is CartTrackerEvent.ATCTrackingURLRecommendation -> {
+                    sendATCTrackingURL(event.recommendationItem)
+                }
 
-                    is CartTrackerEvent.ATCTrackingURLBanner -> {
-                        sendATCTrackingURL(event.bannerShop)
-                    }
+                is CartTrackerEvent.ATCTrackingURLBanner -> {
+                    sendATCTrackingURL(event.bannerShop)
                 }
             }
         }
@@ -1941,43 +1923,41 @@ class CartRevampFragment :
         viewModel.cartCheckoutButtonState.observe(viewLifecycleOwner) { state ->
             when (state) {
                 CartCheckoutButtonState.ENABLE -> onCartDataEnableToCheckout()
-                else -> onCartDataDisableToCheckout()
+                CartCheckoutButtonState.DISABLE -> onCartDataDisableToCheckout()
             }
         }
     }
 
     private fun observeDeleteCartEvent() {
         viewModel.deleteCartEvent.observe(viewLifecycleOwner) { event ->
-            event?.let {
-                when (event) {
-                    is DeleteCartEvent.Success -> {
-                        event.apply {
-                            renderLoadGetCartDataFinish()
-                            onDeleteCartDataSuccess(
-                                toBeDeletedCartIds,
-                                removeAllItems,
-                                forceExpandCollapsedUnavailableItems,
-                                addWishList,
-                                isFromGlobalCheckbox,
-                                isFromEditBundle
-                            )
+            when (event) {
+                is DeleteCartEvent.Success -> {
+                    event.apply {
+                        renderLoadGetCartDataFinish()
+                        onDeleteCartDataSuccess(
+                            toBeDeletedCartIds,
+                            removeAllItems,
+                            forceExpandCollapsedUnavailableItems,
+                            addWishList,
+                            isFromGlobalCheckbox,
+                            isFromEditBundle
+                        )
 
-                            val params = generateParamGetLastApplyPromo()
-                            if (!removeAllItems && (isNeedHitUpdateCartAndValidateUse(params))) {
-                                renderPromoCheckoutLoading()
-                                viewModel.doUpdateCartAndGetLastApply(params)
-                            }
-                            viewModel.processUpdateCartCounter()
+                        val params = generateParamGetLastApplyPromo()
+                        if (!removeAllItems && (isNeedHitUpdateCartAndValidateUse(params))) {
+                            renderPromoCheckoutLoading()
+                            viewModel.doUpdateCartAndGetLastApply(params)
                         }
+                        viewModel.processUpdateCartCounter()
                     }
-                    is DeleteCartEvent.Failed -> {
-                        event.apply {
-                            if (forceExpandCollapsedUnavailableItems) {
-                                collapseOrExpandDisabledItem()
-                            }
-                            hideProgressLoading()
-                            showToastMessageRed(throwable)
+                }
+                is DeleteCartEvent.Failed -> {
+                    event.apply {
+                        if (forceExpandCollapsedUnavailableItems) {
+                            collapseOrExpandDisabledItem()
                         }
+                        hideProgressLoading()
+                        showToastMessageRed(throwable)
                     }
                 }
             }
@@ -2000,8 +1980,6 @@ class CartRevampFragment :
                     setHasTriedToLoadRecentView()
                     stopAllCartPerformanceTrace()
                 }
-
-                else -> {}
             }
         }
     }
@@ -2023,8 +2001,6 @@ class CartRevampFragment :
                     setHasTriedToLoadRecommendation()
                     stopAllCartPerformanceTrace()
                 }
-
-                else -> {}
             }
         }
     }
@@ -2056,8 +2032,6 @@ class CartRevampFragment :
                     setHasTriedToLoadWishList()
                     stopAllCartPerformanceTrace()
                 }
-
-                else -> {}
             }
         }
     }
@@ -2157,24 +2131,20 @@ class CartRevampFragment :
                     hideProgressLoading()
                     showToastMessageRed(data.throwable)
                 }
-
-                else -> {}
             }
         }
     }
 
     private fun observeUndoDeleteEvent() {
-        viewModel.undoDeleteEvent.observe(viewLifecycleOwner) {
-            it?.let { event ->
-                when (event) {
-                    UndoDeleteEvent.Success -> {
-                        hideProgressLoading()
-                        onUndoDeleteCartDataSuccess()
-                    }
-                    is UndoDeleteEvent.Failed -> {
-                        hideProgressLoading()
-                        showToastMessageRed(event.throwable)
-                    }
+        viewModel.undoDeleteEvent.observe(viewLifecycleOwner) { event ->
+            when (event) {
+                UndoDeleteEvent.Success -> {
+                    hideProgressLoading()
+                    onUndoDeleteCartDataSuccess()
+                }
+                is UndoDeleteEvent.Failed -> {
+                    hideProgressLoading()
+                    showToastMessageRed(event.throwable)
                 }
             }
         }
@@ -2196,8 +2166,6 @@ class CartRevampFragment :
                     }
                     renderPromoCheckoutButtonActiveDefault(emptyList())
                 }
-
-                else -> {}
             }
         }
     }

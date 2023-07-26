@@ -4,12 +4,12 @@ import android.widget.ImageView
 import androidx.lifecycle.LiveData
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.cartcommon.data.response.common.OutOfService
-import com.tokopedia.cartrevamp.domain.model.cartlist.AddCartToWishlistData
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopProductUiModel
+import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
 import com.tokopedia.wishlistcommon.data.response.GetWishlistV2Response
 
 sealed class CartState<out T : Any> {
@@ -22,9 +22,8 @@ sealed class Result<out T : Any> {
     data class Success<out T : Any>(val data: T) : Result<T>()
     data class Error(
         val exception: Exception,
-        val errorMessage: String,
+        val errorMessage: String
     ) : Result<Nothing>()
-
 }
 
 sealed class CartGlobalEvent {
@@ -115,17 +114,17 @@ sealed class UpdateCartAndGetLastApplyState {
     data class Failed(val throwable: Throwable) : UpdateCartAndGetLastApplyState()
 }
 
-sealed interface AddCartToWishlistEvent {
+sealed interface AddToWishlistV2Event {
     data class Success(
-        val data: AddCartToWishlistData,
+        val data: AddToWishlistV2Response.Data.WishlistAddV2,
         val productId: String,
         val isLastItem: Boolean,
         val source: String,
         val wishlistIcon: IconUnify,
         val animatedWishlistImage: ImageView
-    ) : AddCartToWishlistEvent
+    ) : AddToWishlistV2Event
 
-    data class Failed(val throwable: Throwable) : AddCartToWishlistEvent
+    data class Failed(val throwable: Throwable) : AddToWishlistV2Event
 }
 
 sealed interface LoadWishlistV2State {

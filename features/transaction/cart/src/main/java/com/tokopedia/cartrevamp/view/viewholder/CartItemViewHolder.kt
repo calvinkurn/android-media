@@ -490,6 +490,13 @@ class CartItemViewHolder constructor(
                     ConstraintSet.BOTTOM,
                     margin
                 )
+                connect(
+                    R.id.qty_editor_product,
+                    ConstraintSet.BOTTOM,
+                    ConstraintSet.PARENT_ID,
+                    ConstraintSet.BOTTOM,
+                    margin
+                )
             }
             applyTo(binding.containerProductInformation)
         }
@@ -524,8 +531,7 @@ class CartItemViewHolder constructor(
                         MARGIN_VERTICAL_SEPARATOR.dpToPx(itemView.resources.displayMetrics)
                     )
                 }
-            }
-            else {
+            } else {
                 connect(
                     R.id.v_bundling_product_separator,
                     ConstraintSet.TOP,
@@ -545,8 +551,7 @@ class CartItemViewHolder constructor(
                         ConstraintSet.BOTTOM,
                         MARGIN_VERTICAL_SEPARATOR.dpToPx(itemView.resources.displayMetrics)
                     )
-                }
-                else {
+                } else {
                     connect(
                         R.id.v_bundling_product_separator,
                         ConstraintSet.BOTTOM,
@@ -1295,7 +1300,7 @@ class CartItemViewHolder constructor(
 
     private fun handleQuantitySubtraction(data: CartItemHolderData) {
         val currentQuantity = if (data.isBundlingItem) data.bundleQuantity else data.quantity
-        Log.d("<RESULT>", "handleQuantitySubtraction: ${data.minOrder} | ${currentQuantity}")
+        Log.d("<RESULT>", "handleQuantitySubtraction: ${data.minOrder} | $currentQuantity")
 //        if (data.minOrder <= 1 && currentQuantity == data.minOrder) {
 //            actionListener?.onCartItemDeleteButtonClicked(data)
 //        }

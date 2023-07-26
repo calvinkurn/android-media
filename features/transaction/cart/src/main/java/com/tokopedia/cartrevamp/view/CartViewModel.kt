@@ -22,7 +22,6 @@ import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UndoDeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
-import com.tokopedia.cartrevamp.data.model.request.AddCartToWishlistRequest
 import com.tokopedia.cartrevamp.data.model.request.CartShopGroupTickerAggregatorParam
 import com.tokopedia.cartrevamp.data.model.request.UpdateCartWrapperRequest
 import com.tokopedia.cartrevamp.data.model.response.promo.LastApplyPromo
@@ -38,8 +37,8 @@ import com.tokopedia.cartrevamp.domain.usecase.UpdateAndReloadCartUseCase
 import com.tokopedia.cartrevamp.domain.usecase.UpdateCartAndGetLastApplyUseCase
 import com.tokopedia.cartrevamp.view.mapper.CartUiModelMapper
 import com.tokopedia.cartrevamp.view.mapper.PromoRequestMapper
-import com.tokopedia.cartrevamp.view.uimodel.AddCartToWishlistEvent
 import com.tokopedia.cartrevamp.view.uimodel.AddToCartEvent
+import com.tokopedia.cartrevamp.view.uimodel.AddToWishlistV2Event
 import com.tokopedia.cartrevamp.view.uimodel.CartBundlingBottomSheetData
 import com.tokopedia.cartrevamp.view.uimodel.CartCheckoutButtonState
 import com.tokopedia.cartrevamp.view.uimodel.CartEmptyHolderData
@@ -175,47 +174,47 @@ class CartViewModel @Inject constructor(
     private val _globalEvent: MutableLiveData<CartGlobalEvent> = MutableLiveData()
     val globalEvent: LiveData<CartGlobalEvent> = _globalEvent
 
-    private val _loadCartState: MutableLiveData<CartState<CartData>?> = MutableLiveData()
-    val loadCartState: LiveData<CartState<CartData>?> = _loadCartState
+    private val _loadCartState: MutableLiveData<CartState<CartData>> = MutableLiveData()
+    val loadCartState: LiveData<CartState<CartData>> = _loadCartState
 
-    private val _updateCartForCheckoutState: MutableLiveData<UpdateCartCheckoutState?> = MutableLiveData()
-    val updateCartForCheckoutState: LiveData<UpdateCartCheckoutState?> = _updateCartForCheckoutState
+    private val _updateCartForCheckoutState: MutableLiveData<UpdateCartCheckoutState> = MutableLiveData()
+    val updateCartForCheckoutState: LiveData<UpdateCartCheckoutState> = _updateCartForCheckoutState
 
-    private val _updateCartForPromoState: MutableLiveData<UpdateCartPromoState?> = MutableLiveData()
-    val updateCartForPromoState: LiveData<UpdateCartPromoState?> = _updateCartForPromoState
+    private val _updateCartForPromoState: MutableLiveData<UpdateCartPromoState> = MutableLiveData()
+    val updateCartForPromoState: LiveData<UpdateCartPromoState> = _updateCartForPromoState
 
-    private val _cartCheckoutButtonState: MutableLiveData<CartCheckoutButtonState?> = MutableLiveData()
-    val cartCheckoutButtonState: LiveData<CartCheckoutButtonState?> = _cartCheckoutButtonState
+    private val _cartCheckoutButtonState: MutableLiveData<CartCheckoutButtonState> = MutableLiveData()
+    val cartCheckoutButtonState: LiveData<CartCheckoutButtonState> = _cartCheckoutButtonState
 
-    private val _recentViewState: MutableLiveData<LoadRecentReviewState?> = MutableLiveData()
-    val recentViewState: LiveData<LoadRecentReviewState?> = _recentViewState
+    private val _recentViewState: MutableLiveData<LoadRecentReviewState> = MutableLiveData()
+    val recentViewState: LiveData<LoadRecentReviewState> = _recentViewState
 
-    private val _wishlistV2State: MutableLiveData<LoadWishlistV2State?> = MutableLiveData()
-    val wishlistV2State: LiveData<LoadWishlistV2State?> = _wishlistV2State
+    private val _wishlistV2State: MutableLiveData<LoadWishlistV2State> = MutableLiveData()
+    val wishlistV2State: LiveData<LoadWishlistV2State> = _wishlistV2State
 
-    private val _recommendationState: MutableLiveData<LoadRecommendationState?> = MutableLiveData()
-    val recommendationState: LiveData<LoadRecommendationState?> = _recommendationState
+    private val _recommendationState: MutableLiveData<LoadRecommendationState> = MutableLiveData()
+    val recommendationState: LiveData<LoadRecommendationState> = _recommendationState
 
-    private val _updateCartAndGetLastApplyState: MutableLiveData<UpdateCartAndGetLastApplyState?> = MutableLiveData()
-    val updateCartAndGetLastApplyState: LiveData<UpdateCartAndGetLastApplyState?> = _updateCartAndGetLastApplyState
+    private val _updateCartAndGetLastApplyState: MutableLiveData<UpdateCartAndGetLastApplyState> = MutableLiveData()
+    val updateCartAndGetLastApplyState: LiveData<UpdateCartAndGetLastApplyState> = _updateCartAndGetLastApplyState
 
     private val _selectedAmountState: MutableLiveData<Int> = MutableLiveData(0)
     val selectedAmountState: LiveData<Int> = _selectedAmountState
 
-    private val _cartTrackerEvent: MutableLiveData<CartTrackerEvent?> = MutableLiveData()
-    val cartTrackerEvent: LiveData<CartTrackerEvent?> = _cartTrackerEvent
+    private val _cartTrackerEvent: MutableLiveData<CartTrackerEvent> = MutableLiveData()
+    val cartTrackerEvent: LiveData<CartTrackerEvent> = _cartTrackerEvent
 
-    private val _addToCartEvent: MutableLiveData<AddToCartEvent?> = MutableLiveData(null)
-    val addToCartEvent: LiveData<AddToCartEvent?> = _addToCartEvent
+    private val _addToCartEvent: MutableLiveData<AddToCartEvent> = MutableLiveData()
+    val addToCartEvent: LiveData<AddToCartEvent> = _addToCartEvent
 
-    private val _addCartToWishlistEvent: MutableLiveData<AddCartToWishlistEvent?> = MutableLiveData(null)
-    val addCartToWishlistEvent: LiveData<AddCartToWishlistEvent?> = _addCartToWishlistEvent
+    private val _addToWishlistV2Event: MutableLiveData<AddToWishlistV2Event> = MutableLiveData()
+    val addToWishlistV2Event: LiveData<AddToWishlistV2Event> = _addToWishlistV2Event
 
-    private val _deleteCartEvent: MutableLiveData<DeleteCartEvent?> = MutableLiveData(null)
-    val deleteCartEvent: LiveData<DeleteCartEvent?> = _deleteCartEvent
+    private val _deleteCartEvent: MutableLiveData<DeleteCartEvent> = MutableLiveData()
+    val deleteCartEvent: LiveData<DeleteCartEvent> = _deleteCartEvent
 
-    private val _undoDeleteEvent: MutableLiveData<UndoDeleteEvent?> = MutableLiveData(null)
-    val undoDeleteEvent: LiveData<UndoDeleteEvent?> = _undoDeleteEvent
+    private val _undoDeleteEvent: MutableLiveData<UndoDeleteEvent> = MutableLiveData()
+    val undoDeleteEvent: LiveData<UndoDeleteEvent> = _undoDeleteEvent
 
     private val _tokoNowProductUpdater =
         MutableSharedFlow<Boolean>(replay = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST)
@@ -2530,31 +2529,29 @@ class CartViewModel @Inject constructor(
 
     fun processAddCartToWishlist(
         productId: String,
-        cartId: String,
+        userId: String,
         isLastItem: Boolean,
         source: String,
         wishlistIcon: IconUnify,
         animatedWishlistImage: ImageView
     ) {
         launch(dispatchers.io) {
-            try {
-                val addCartToWishlistRequest = AddCartToWishlistRequest()
-                addCartToWishlistRequest.cartIds = listOf(cartId)
-                val data = addCartToWishlistUseCase(addCartToWishlistRequest)
-                withContext(dispatchers.main) {
-                    _addCartToWishlistEvent.value = AddCartToWishlistEvent.Success(
-                        data,
+            launch(dispatchers.main) {
+                addToWishlistV2UseCase.setParams(productId, userId)
+                val result =
+                    withContext(dispatchers.io) { addToWishlistV2UseCase.executeOnBackground() }
+                if (result is Success) {
+                    _addToWishlistV2Event.value = AddToWishlistV2Event.Success(
+                        result.data,
                         productId,
                         isLastItem,
                         source,
                         wishlistIcon,
                         animatedWishlistImage
                     )
-                }
-            } catch (t: Throwable) {
-                withContext(dispatchers.main) {
-                    Timber.e(t)
-                    _addCartToWishlistEvent.value = AddCartToWishlistEvent.Failed(t)
+                } else {
+                    val error = (result as Fail).throwable
+                    _addToWishlistV2Event.value = AddToWishlistV2Event.Failed(error)
                 }
             }
         }
@@ -2593,17 +2590,21 @@ class CartViewModel @Inject constructor(
         var disabledAccordionHolderDataIndexPair: Pair<DisabledAccordionHolderData, Int>? = null
         loop@ for ((index, data) in cartDataList.value.withIndex()) {
             when {
-                data is CartSelectedAmountHolderData -> cartSelectedAmountHolderDataIndexPair =
-                    Pair(data, index)
+                data is CartSelectedAmountHolderData ->
+                    cartSelectedAmountHolderDataIndexPair =
+                        Pair(data, index)
 
-                data is CartItemTickerErrorHolderData -> cartItemTickerErrorHolderDataIndexPair =
-                    Pair(data, index)
+                data is CartItemTickerErrorHolderData ->
+                    cartItemTickerErrorHolderDataIndexPair =
+                        Pair(data, index)
 
-                data is DisabledItemHeaderHolderData -> disabledItemHeaderHolderDataIndexPair =
-                    Pair(data, index)
+                data is DisabledItemHeaderHolderData ->
+                    disabledItemHeaderHolderDataIndexPair =
+                        Pair(data, index)
 
-                data is DisabledAccordionHolderData -> disabledAccordionHolderDataIndexPair =
-                    Pair(data, index)
+                data is DisabledAccordionHolderData ->
+                    disabledAccordionHolderDataIndexPair =
+                        Pair(data, index)
 
                 data is CartGroupHolderData -> {
                     val toBeDeletedProducts = mutableListOf<CartItemHolderData>()
@@ -3044,6 +3045,24 @@ class CartViewModel @Inject constructor(
 
     suspend fun emitTokonowUpdated(value: Boolean) {
         _tokoNowProductUpdater.emit(value)
+    }
+
+    fun processAddToWishlistV2(
+        productId: String,
+        userId: String,
+        wishListActionListener: WishlistV2ActionListener
+    ) {
+        launch(dispatchers.main) {
+            addToWishlistV2UseCase.setParams(productId, userId)
+            val result =
+                withContext(dispatchers.io) { addToWishlistV2UseCase.executeOnBackground() }
+            if (result is Success) {
+                wishListActionListener.onSuccessAddWishlist(result.data, productId)
+            } else {
+                val error = (result as Fail).throwable
+                wishListActionListener.onErrorAddWishList(error, productId)
+            }
+        }
     }
 
     override fun onCleared() {
