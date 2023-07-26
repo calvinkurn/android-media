@@ -9,22 +9,19 @@ import android.graphics.drawable.Drawable
 import androidx.core.content.ContextCompat
 import com.tokopedia.promousage.R
 import com.tokopedia.unifycomponents.toDp
-import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 
-class TextDrawable(context: Context, private val text: String) : Drawable() {
+internal class TextDrawable(context: Context, private val text: String) : Drawable() {
     private val paint: Paint = Paint()
-    private var fontType = Typography.getFontType(context, true, Typography.PARAGRAPH_2)
-
 
     init {
         paint.color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
-        paint.textSize = context.resources.getDimension(R.dimen.textfield2_text_size)
-        paint.typeface = fontType
+        paint.textSize = context.resources.getDimension(R.dimen.promo_usage_cta_use_voucher_code_text_size)
+        paint.typeface = Typography.getFontType(context, true, Typography.PARAGRAPH_2)
         paint.isAntiAlias = true
         paint.textAlign = Paint.Align.LEFT
 
-        setBounds(-(24 - 0.toPx()), 0, paint.measureText(text).toInt(), 24.toDp())
+        setBounds((-24).toDp(), 0, paint.measureText(text).toInt(), 24.toDp())
     }
 
     override fun draw(canvas: Canvas) {

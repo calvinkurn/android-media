@@ -9,6 +9,7 @@ import androidx.core.widget.doOnTextChanged
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isZero
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.promousage.databinding.PromoUsageItemVoucherCodeBinding
 import com.tokopedia.promousage.domain.entity.list.VoucherCode
@@ -24,6 +25,8 @@ class VoucherCodeDelegateAdapter(
 
     companion object {
         private const val SINGLE_LINE = 1
+        private const val RIGHT_DRAWABLE_INDEX = 2
+        private const val NO_ERROR_MESSAGE = ""
     }
 
     override fun createViewHolder(parent: ViewGroup): RecyclerView.ViewHolder {
@@ -39,52 +42,36 @@ class VoucherCodeDelegateAdapter(
         viewHolder.bind(item)
     }
 
-    @SuppressLint("ClickableViewAccessibility")
     inner class ViewHolder(private val binding: PromoUsageItemVoucherCodeBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
         init {
-            setupCtaClickListener()
-            binding.tauVoucherCode.editText.doOnTextChanged { text , _, _, _ ->
-                if (text?.length.isZero()) {
-                    hideUseVoucherCodeCta()
-                } else {
-                    showUseVoucherCodeCta()
-                    binding.tauVoucherCode.icon2.gone()
-                    binding.tauVoucherCode.isInputError = false
-                    binding.tauVoucherCode.setMessage("")
-                }
-            }
-            binding.tauVoucherCode.textInputLayout.editText?.maxLines = SINGLE_LINE
-            binding.tauVoucherCode.textInputLayout.editText?.inputType = InputType.TYPE_CLASS_TEXT
+            setupVoucherCodeTextField()
         }
 
         fun bind(item: VoucherCode) {
-            val isVoucherCodeValid = item.voucher != null
-
+            val isVoucherCodeValid = item.errorMessage.isEmpty()
             binding.tauVoucherCode.editText.setText(item.userInputVoucherCode)
 
             if (isVoucherCodeValid) {
-                handleVoucherSuccess(item.voucher)
+                handleVoucherSuccess(item.userInputVoucherCode, item.voucher)
             } else {
                 handleVoucherError(item.errorMessage)
             }
-
-
-            if (item.errorMessage.isNotEmpty()) {
-                showClearIcon()
-            }
         }
 
-        private fun handleVoucherSuccess(voucher: Voucher?) {
+        private fun handleVoucherSuccess(userInputVoucherCode: String, voucher: Voucher?) {
             binding.run {
                 if (voucher != null) {
                     userInputVoucherView.visible()
                     userInputVoucherView.bind(voucher)
                 }
                 tauVoucherCode.isInputError = false
-                tauVoucherCode.setMessage("")
+                tauVoucherCode.setMessage(NO_ERROR_MESSAGE)
             }
+
+            hideClearIcon()
+            if (userInputVoucherCode.isNotEmpty()) showUseVoucherCodeCta()
         }
 
         private fun handleVoucherError(errorMessage: String) {
@@ -93,13 +80,36 @@ class VoucherCodeDelegateAdapter(
                 tauVoucherCode.isInputError = errorMessage.isNotEmpty()
                 tauVoucherCode.setMessage(errorMessage)
             }
+
+            showClearIcon()
+            hideUseVoucherCodeCta()
         }
 
-        private fun setupCtaClickListener() {
-            binding.tauVoucherCode.editText.setOnTouchListener { _, motionEvent ->
+        @SuppressLint("ClickableViewAccessibility")
+        private fun setupVoucherCodeTextField() {
+            binding.tauVoucherCode.editText.doOnTextChanged { text , _, _, _ ->
+                hideClearIcon()
 
-                if (motionEvent.action == MotionEvent.ACTION_UP) {
-                    if (motionEvent.rawX >= (binding.tauVoucherCode.editText.right - binding.tauVoucherCode.editText.compoundDrawables[2].bounds.width())) {
+                if (text?.length.isZero()) {
+                    hideUseVoucherCodeCta()
+                } else {
+                    showUseVoucherCodeCta()
+                    binding.tauVoucherCode.isInputError = false
+                    binding.tauVoucherCode.setMessage(NO_ERROR_MESSAGE)
+                }
+            }
+
+            binding.tauVoucherCode.textInputLayout.editText?.maxLines = SINGLE_LINE
+            binding.tauVoucherCode.textInputLayout.editText?.inputType = InputType.TYPE_CLASS_TEXT
+
+            binding.tauVoucherCode.editText.setOnTouchListener { _ , motionEvent ->
+
+                val drawables = binding.tauVoucherCode.editText.compoundDrawables
+                val rightDrawable = drawables.getOrNull(RIGHT_DRAWABLE_INDEX)
+                val hasUseVoucherCodeCta = rightDrawable != null
+
+                if (hasUseVoucherCodeCta && motionEvent.action == MotionEvent.ACTION_UP) {
+                    if (motionEvent.rawX >= (binding.tauVoucherCode.editText.right - rightDrawable?.bounds?.width().orZero())) {
                         val voucherCode = binding.tauVoucherCode.editText.text.toString()
                         onApplyVoucherCodeCtaClick(voucherCode)
                         return@setOnTouchListener true
@@ -127,16 +137,20 @@ class VoucherCodeDelegateAdapter(
         }
 
         private fun hideUseVoucherCodeCta() {
-            binding.tauVoucherCode.editText.setCompoundDrawablesWithIntrinsicBounds(
-                0,
-                0,
-                0,
-                0
+            binding.tauVoucherCode.editText.setCompoundDrawables(
+                null,
+                null,
+                null,
+                null
             )
         }
 
         private fun showClearIcon() {
             binding.tauVoucherCode.clearIconView.visible()
+        }
+
+        private fun hideClearIcon() {
+            binding.tauVoucherCode.clearIconView.gone()
         }
     }
 
