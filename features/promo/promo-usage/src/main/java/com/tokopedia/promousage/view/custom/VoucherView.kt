@@ -39,7 +39,7 @@ class VoucherView @JvmOverloads constructor(
 
 
     private var binding: PromoUsageVoucherViewBinding? = null
-
+    private var onHyperlinkTextClick : (String) -> Unit = {}
 
     init {
         binding = PromoUsageVoucherViewBinding.inflate(
@@ -156,9 +156,11 @@ class VoucherView @JvmOverloads constructor(
                     tpgAdditionalInformation.gone()
                     layoutActionable.visible()
                     tpgActionableText.text = voucherState.actionableText
-                    tpgActionableText.setHyperlinkText(voucherState.actionableText, voucherState.hyperlinkSubString) {
-
-                    }
+                    tpgActionableText.setHyperlinkText(
+                        fullText =  voucherState.actionableText,
+                        hyperlinkSubstring = voucherState.hyperlinkSubString,
+                        onHyperlinkClick = { onHyperlinkTextClick(voucherState.appLink) }
+                    )
 
                     hideLoadingAppearance()
 
@@ -378,5 +380,8 @@ class VoucherView @JvmOverloads constructor(
         return materialShapeDrawable
     }
 
+    fun setOnHyperlinkTextClick(onHyperlinkTextClick : (String) -> Unit) {
+        this.onHyperlinkTextClick = onHyperlinkTextClick
+    }
 
 }

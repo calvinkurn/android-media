@@ -15,6 +15,7 @@ import com.tokopedia.promousage.util.composite.DelegateAdapter
 class VoucherAccordionDelegateAdapter(
     private val onSectionClick: (VoucherAccordion) -> Unit,
     private val onVoucherClick: (Voucher) -> Unit,
+    private val onHyperlinkClick: (String) -> Unit,
     private val onViewAllVoucherClick: (VoucherAccordion) -> Unit
 ) : DelegateAdapter<VoucherAccordion, VoucherAccordionDelegateAdapter.ViewHolder>(VoucherAccordion::class.java) {
 
@@ -39,7 +40,7 @@ class VoucherAccordionDelegateAdapter(
 
         fun bind(section: VoucherAccordion) {
             bindChevron(section)
-            bindVouchers(section, onVoucherClick, onViewAllVoucherClick)
+            bindVouchers(section, onVoucherClick, onHyperlinkClick, onViewAllVoucherClick)
         }
 
         private fun bindChevron(section: VoucherAccordion) {
@@ -57,10 +58,11 @@ class VoucherAccordionDelegateAdapter(
         private fun bindVouchers(
             section: VoucherAccordion,
             onVoucherClick: (Voucher) -> Unit,
+            onHyperlinkClick: (String) -> Unit,
             onViewAllVoucherClick: (VoucherAccordion) -> Unit
         ) {
             val voucherAdapter = CompositeAdapter.Builder()
-                .add(VoucherAccordionChildDelegateAdapter(onVoucherClick))
+                .add(VoucherAccordionChildDelegateAdapter(onVoucherClick, onHyperlinkClick))
                 .add(ViewAllVoucherDelegateAdapter(section, onViewAllVoucherClick))
                 .build()
 

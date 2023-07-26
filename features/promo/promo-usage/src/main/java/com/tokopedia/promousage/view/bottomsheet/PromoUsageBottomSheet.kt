@@ -64,7 +64,7 @@ class PromoUsageBottomSheet: BottomSheetDialogFragment() {
     private val recyclerViewAdapter by lazy {
         CompositeAdapter.Builder()
             .add(VoucherRecommendationDelegateAdapter(onVoucherClick, onButtonUseRecommendedVoucherClick))
-            .add(VoucherAccordionDelegateAdapter(onVoucherAccordionClick, onVoucherClick, onViewAllVoucherCtaClick))
+            .add(VoucherAccordionDelegateAdapter(onVoucherAccordionClick, onVoucherClick, onHyperlinkClick, onViewAllVoucherCtaClick))
             .add(TermAndConditionDelegateAdapter(onTermAndConditionHyperlinkClick))
             .add(VoucherCodeDelegateAdapter(onApplyVoucherCodeCtaClick, onVoucherCodeClearIconClick))
             .build()
@@ -314,6 +314,10 @@ class PromoUsageBottomSheet: BottomSheetDialogFragment() {
 
 
     private val onVoucherClick = { selectedVoucher : Voucher ->
+
+    }
+
+    private val onHyperlinkClick = { appLink : String ->
 
     }
 
