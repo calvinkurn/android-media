@@ -396,19 +396,7 @@ class HomeVisitableFactoryImpl(
         bannerDataModel?.let {
             val channelModel = ChannelModel(
                 verticalPosition = index,
-                channelGrids = it.slides?.map {
-                    ChannelGrid(
-                        applink = it.applink,
-                        campaignCode = it.campaignCode,
-                        id = it.id.toString(),
-                        imageUrl = it.imageUrl,
-                        attribution = it.creativeName,
-                        persona = it.persona,
-                        categoryPersona = it.categoryPersona,
-                        brandId = it.brandId,
-                        categoryId = it.categoryId
-                    )
-                } ?: listOf(),
+                channelGrids = mapIntoGrids(it),
                 groupId = "",
                 id = "",
                 trackingAttributionModel = TrackingAttributionModel(
@@ -426,6 +414,22 @@ class HomeVisitableFactoryImpl(
                 )
             )
         }
+    }
+
+    private fun mapIntoGrids(bannerDataModel: com.tokopedia.home.beranda.domain.model.banner.BannerDataModel): List<ChannelGrid> {
+        return bannerDataModel.slides.takeIf { !isCache }?.map {
+            ChannelGrid(
+                applink = it.applink,
+                campaignCode = it.campaignCode,
+                id = it.id.toString(),
+                imageUrl = it.imageUrl,
+                attribution = it.creativeName,
+                persona = it.persona,
+                categoryPersona = it.categoryPersona,
+                brandId = it.brandId,
+                categoryId = it.categoryId
+            )
+        }.orEmpty()
     }
 
     override fun build(): List<Visitable<*>> = visitableList
