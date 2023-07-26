@@ -1395,10 +1395,10 @@ class WishlistCollectionDetailViewModelTest {
             )
         }
 
-//        with(slot.captured) {
-//            Assert.assertEquals(wishlistCollectionId, this.pageId)
-//            Assert.assertTrue(source is AffiliateSdkPageSource.Wishlist)
-//        }
+        with(slot.captured) {
+            Assert.assertEquals(wishlistCollectionId, this.pageId)
+            Assert.assertTrue(source is AffiliateSdkPageSource.Wishlist)
+        }
     }
 
     @Test
