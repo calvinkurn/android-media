@@ -15,6 +15,7 @@ import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.StringRes
 import com.tokopedia.buyerorderdetail.presentation.model.TickerUiModel
 import com.tokopedia.buyerorderdetail.presentation.uistate.ProductListUiState
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isZero
@@ -611,9 +612,9 @@ object ProductListUiStateMapper {
         return mappedAddOn?.run {
             if (collapseProductList) {
                 if (remainingSlot.isZero()) {
-                    addonsItemList.size to null
+                    Int.ONE to null
                 } else {
-                    (addonsItemList.size - remainingSlot).coerceAtLeast(Int.ZERO) to this
+                    (Int.ONE - remainingSlot).coerceAtLeast(Int.ZERO) to this
                 }
             } else {
                 Int.ZERO to this

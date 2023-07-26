@@ -6,7 +6,7 @@ import com.tokopedia.buyerorderdetail.presentation.model.OwocProductListUiModel
 import com.tokopedia.unifyprinciples.Typography
 
 class OwocPartialProductItemViewHolder(
-    private val itemView: View?,
+    itemView: View?,
     partialProductItemViewStub: View?,
     private var element: OwocProductListUiModel.ProductUiModel
 ) {
