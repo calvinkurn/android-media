@@ -22,14 +22,18 @@ data class FeedFollowRecommendationModel(
 
     data class Profile(
         val id: String,
+        val encryptedId: String,
         val name: String,
         val badge: String,
         val type: ProfileType,
         val imageUrl: String,
         val thumbnailUrl: String,
         val videoUrl: String,
-        val isFollow: Boolean,
-    )
+        val isFollowed: Boolean,
+    ) {
+        val isShop: Boolean
+            get() = type == ProfileType.Seller
+    }
 
     enum class ProfileType {
         Seller, Ugc, Unknown;

@@ -256,7 +256,11 @@ class FeedFragment :
         }
 
         override fun onClickFollow(profile: FeedFollowRecommendationModel.Profile) {
-            /** TODO: handle this */
+            if (profile.isFollowed) {
+                feedPostViewModel.doUnFollow(profile.id, profile.encryptedId, profile.isShop)
+            } else {
+                feedPostViewModel.doFollow(profile.id, profile.encryptedId, profile.isShop)
+            }
         }
 
         override fun onCloseProfileRecommendation(profile: FeedFollowRecommendationModel.Profile) {

@@ -23,8 +23,10 @@ import com.tokopedia.content.common.usecase.TrackVisitChannelBroadcasterUseCase
 import com.tokopedia.content.common.util.UiEventManager
 import com.tokopedia.createpost.common.domain.entity.SubmitPostData
 import com.tokopedia.feed.component.product.FeedTaggedProductUiModel
+import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowAction
 import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowUseCase
 import com.tokopedia.feedcomponent.people.usecase.ProfileFollowUseCase
+import com.tokopedia.feedcomponent.people.usecase.ProfileUnfollowedUseCase
 import com.tokopedia.feedcomponent.presentation.utils.FeedResult
 import com.tokopedia.feedcomponent.util.CustomUiMessageThrowable
 import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TOPADS_HEADLINE_VALUE_SRC
@@ -99,6 +101,7 @@ class FeedPostViewModel @Inject constructor(
     private val userSession: UserSessionInterface,
     private val shopFollowUseCase: ShopFollowUseCase,
     private val userFollowUseCase: ProfileFollowUseCase,
+    private val userUnfollowUseCase: ProfileUnfollowedUseCase,
     private val setCampaignReminderUseCase: FeedCampaignReminderUseCase,
     private val checkCampaignReminderUseCase: FeedCampaignCheckReminderUseCase,
     private val topAdsHeadlineUseCase: GetTopAdsHeadlineUseCase,
@@ -465,6 +468,44 @@ class FeedPostViewModel @Inject constructor(
         }
     }
 
+    fun doUnFollow(id: String, encryptedId: String, isShop: Boolean) {
+        viewModelScope.launch {
+            try {
+                val response = withContext(dispatchers.io) {
+                    if (isShop) {
+                        val response = shopFollowUseCase(shopFollowUseCase.createParams(id, ShopFollowAction.UnFollow))
+                        FollowShopModel(
+                            id = id,
+                            encryptedId = encryptedId,
+                            success = response.followShop.success,
+                            isFollowing = response.followShop.isFollowing,
+                            isShop = true
+                        )
+                    } else {
+                        val response = userUnfollowUseCase.executeOnBackground(encryptedId)
+                        if (response.profileFollowers.errorCode.isNotEmpty()) {
+                            throw MessageErrorException(
+                                response.profileFollowers.messages.firstOrNull() ?: ""
+                            )
+                        }
+                        FollowShopModel(
+                            id = id,
+                            encryptedId = encryptedId,
+                            success = true,
+                            isFollowing = false,
+                            isShop = false
+                        )
+                    }
+                }
+
+                updateFollowStatus(response.id, response.isFollowing)
+                _followResult.value = Success(if (isShop) SHOP else USER)
+            } catch (it: Throwable) {
+                _followResult.value = Fail(it)
+            }
+        }
+    }
+
     fun suspendLikeContent(contentId: String, rowNumber: Int) {
         _suspendedLikeData.value = LikeFeedDataModel(
             contentId,
@@ -656,6 +697,17 @@ class FeedPostViewModel @Inject constructor(
                         isFollowed = isFollowing
                     )
                 )
+                item is FeedFollowRecommendationModel -> {
+                    item.copy(
+                        data = item.data.map {
+                            if (it.id == id) {
+                                it.copy(isFollowed = isFollowing)
+                            } else {
+                                it
+                            }
+                        }
+                    )
+                }
                 else -> item
             }
         }

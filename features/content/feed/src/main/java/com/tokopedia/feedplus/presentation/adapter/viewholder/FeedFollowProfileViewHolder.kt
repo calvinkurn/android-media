@@ -97,7 +97,7 @@ class FeedFollowProfileViewHolder private constructor() {
             binding.imgThumbnail.setImageUrl(model.data.thumbnailUrl)
             binding.tvProfileName.text = model.data.name
             binding.btnFollow.apply {
-                if (model.data.isFollow) {
+                if (model.data.isFollowed) {
                     buttonVariant = UnifyButton.Variant.GHOST
                     text = itemView.context.getString(R.string.feed_following_label)
                 } else {

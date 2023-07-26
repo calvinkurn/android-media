@@ -22,13 +22,14 @@ class MapperFeedXRecomWidget @Inject constructor(
             data = data.items.map { profile ->
                 FeedFollowRecommendationModel.Profile(
                     id = profile.id,
+                    encryptedId = profile.encryptedId,
                     name = profile.name,
                     badge = profile.badgeImageUrl,
                     type = FeedFollowRecommendationModel.ProfileType.mapType(profile.type),
                     imageUrl = profile.logoImageUrl,
                     thumbnailUrl = profile.coverUrl,
                     videoUrl = profile.mediaUrl,
-                    isFollow = false,
+                    isFollowed = false,
                 )
             },
             cursor = data.nextCursor,
