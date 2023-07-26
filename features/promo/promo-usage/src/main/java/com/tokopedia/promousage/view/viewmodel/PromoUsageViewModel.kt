@@ -271,6 +271,18 @@ class PromoUsageViewModel @Inject constructor(
             VoucherSource.Promo,
             false
         ),
+        Voucher(
+            60,
+            100_000,
+            "Cashback - Actionable - Gopay Later Cicil",
+            "2 hari",
+            "https://images.tokopedia.net/img/android/promo/ic_voucher_cashback/ic_voucher_cashback.png",
+            "https://images.tokopedia.net/img/android/promo/bg_supergraphic_cashback/bg_supergraphic_cashback.png",
+            VoucherType.CASHBACK,
+            VoucherState.Actionable("Aktifkan GoPay Later Cicil untuk pakai promo", "Aktifkan GoPay Later Cicil", "tokopedia://cart"),
+            VoucherSource.Promo,
+            false
+        ),
     )
     private val freeShippingVouchers = listOf(
         Voucher(

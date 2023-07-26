@@ -42,12 +42,12 @@
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:visibility="gone"
-                tools:visibility="visible"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.0"
-                app:srcCompat="@drawable/promo_usage_ic_voucher_checkmark" />
+                app:srcCompat="@drawable/promo_usage_ic_voucher_checkmark"
+                tools:visibility="visible" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tpgVoucherType"
@@ -108,8 +108,8 @@
                 android:layout_width="102dp"
                 android:layout_height="16dp"
                 android:layout_marginStart="16dp"
-                android:visibility="gone"
                 android:layout_marginTop="6dp"
+                android:visibility="gone"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/middle_shimmer"
@@ -120,7 +120,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:barrierDirection="bottom"
-                app:constraint_referenced_ids="bottom_shimmer, tpgVoucherTnc"/>
+                app:constraint_referenced_ids="bottom_shimmer, tpgVoucherTnc" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tpgVoucherTnc"
@@ -189,5 +189,39 @@
         app:layout_constraintTop_toBottomOf="@+id/tpgVoucherExpiredDate"
         app:typographyType="paragraph_3"
         tools:text="Belum bisa dipakai barengan promo yang dipilih."
-        tools:visibility="visible" />
+        tools:visibility="gone" />
+
+    <RelativeLayout
+        android:id="@+id/layoutActionable"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tpgVoucherExpiredDate"
+        tools:visibility="visible">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tpgActionableText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/promo_usage_shape_voucher_actionable"
+            android:textColor="@color/Unify_NN950"
+            app:typographyType="paragraph_3"
+            tools:text="Belum bisa dipakai barengan promo yang dipilih."
+            tools:visibility="visible" />
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/iconChevronRight"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="12dp"
+            app:icon_color_light_enable="@color/Unify_GN500"
+            app:icon_color_night_enable="@color/Unify_GN500"
+            app:icon_name="CHEVRON_RIGHT" />
+
+    </RelativeLayout>
 </LinearLayout>
