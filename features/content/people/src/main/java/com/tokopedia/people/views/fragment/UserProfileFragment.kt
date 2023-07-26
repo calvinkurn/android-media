@@ -2,16 +2,17 @@ package com.tokopedia.people.views.fragment
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.Activity.RESULT_OK
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewGroup.MarginLayoutParams
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
-import androidx.core.view.updateMarginsRelative
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
@@ -24,6 +25,7 @@ import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.content.common.navigation.people.UserProfileActivityResult
 import com.tokopedia.content.common.navigation.people.UserProfileParam
 import com.tokopedia.content.common.navigation.shorts.PlayShorts
 import com.tokopedia.content.common.navigation.shorts.PlayShortsParam
@@ -258,6 +260,28 @@ class UserProfileFragment @Inject constructor(
         mBlockDialog = null
 
         _binding = null
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+
+        requireActivity().onBackPressedDispatcher.addCallback(
+            this,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    requireActivity().apply {
+                        setResult(
+                            RESULT_OK,
+                            UserProfileActivityResult.createResult(
+                                viewModel.profileUserID,
+                                viewModel.isFollowed
+                            )
+                        )
+                        finish()
+                    }
+                }
+            }
+        )
     }
 
     override fun onAttachFragment(childFragment: Fragment) {

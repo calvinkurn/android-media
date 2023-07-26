@@ -795,7 +795,7 @@ class FeedPostViewModel @Inject constructor(
             action = likeAction
         )
 
-    private fun updateFollowStatus(id: String, isFollowing: Boolean) {
+    fun updateFollowStatus(id: String, isFollowing: Boolean) {
         updateItems { item ->
             when {
                 item is FeedCardImageContentModel && item.author.id == id -> item.copy(

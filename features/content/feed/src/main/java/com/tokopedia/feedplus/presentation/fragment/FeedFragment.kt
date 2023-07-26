@@ -31,6 +31,7 @@ import com.tokopedia.content.common.comment.PageSource
 import com.tokopedia.content.common.comment.analytic.ContentCommentAnalytics
 import com.tokopedia.content.common.comment.analytic.ContentCommentAnalyticsModel
 import com.tokopedia.content.common.comment.ui.ContentCommentBottomSheet
+import com.tokopedia.content.common.navigation.people.UserProfileActivityResult
 import com.tokopedia.content.common.report_content.bottomsheet.ContentReportBottomSheet
 import com.tokopedia.content.common.report_content.bottomsheet.ContentSubmitReportBottomSheet
 import com.tokopedia.content.common.report_content.bottomsheet.ContentThreeDotsMenuBottomSheet
@@ -38,6 +39,7 @@ import com.tokopedia.content.common.report_content.model.FeedMenuIdentifier
 import com.tokopedia.content.common.report_content.model.FeedMenuItem
 import com.tokopedia.content.common.report_content.model.PlayUserReportReasoningUiModel
 import com.tokopedia.content.common.usecase.FeedComplaintSubmitReportUseCase
+import com.tokopedia.content.common.util.Router
 import com.tokopedia.createpost.common.view.viewmodel.CreatePostViewModel
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.feed.component.product.FeedTaggedProductBottomSheet
@@ -164,6 +166,9 @@ class FeedFragment :
     @Inject
     lateinit var dispatchers: CoroutineDispatchers
 
+    @Inject
+    lateinit var router: Router
+
     private val feedMainViewModel: FeedMainViewModel by viewModels(ownerProducer = { requireParentFragment() })
     private val feedPostViewModel: FeedPostViewModel by viewModels { viewModelFactory }
 
@@ -225,6 +230,16 @@ class FeedFragment :
             feedPostViewModel.processSuspendedBuyProduct()
         }
 
+    private val userProfileResult =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            it.data?.let { intent ->
+                val userId = UserProfileActivityResult.getUserId(intent)
+                val isFollow = UserProfileActivityResult.isFollow(intent)
+
+                feedPostViewModel.updateFollowStatus(userId, isFollow)
+            }
+        }
+
     private var feedFollowersOnlyBottomSheet: FeedFollowersOnlyBottomSheet? = null
 
     private val layoutManager by lazy { FeedPostLayoutManager(context) }
@@ -268,8 +283,11 @@ class FeedFragment :
         }
 
         override fun onClickProfileRecommendation(profile: FeedFollowRecommendationModel.Profile) {
-            val baseAppLink = if (profile.isShop) ApplinkConst.SHOP else ApplinkConst.PROFILE
-            RouteManager.route(requireContext(), baseAppLink, profile.id)
+            if (profile.isShop) {
+                router.route(requireContext(), ApplinkConst.SHOP, profile.id)
+            } else {
+                router.route(requireContext(), userProfileResult, ApplinkConst.PROFILE, profile.id)
+            }
         }
 
         override fun onLoadNextProfileRecommendation() {
