@@ -361,6 +361,11 @@ class FeedPostViewModel @Inject constructor(
         }
     } ?: false
 
+    fun fetchPlaceholderData() {
+        fetchTopAdsData()
+        fetchFollowRecommendationData()
+    }
+
     fun fetchTopAdsData() {
         viewModelScope.launch {
             feedHome.value?.let {
@@ -402,6 +407,37 @@ class FeedPostViewModel @Inject constructor(
                     indexToRemove.forEach { indexNumber ->
                         if (newItems.size <= indexNumber) return@forEach
                         newItems.removeAt(indexNumber)
+                    }
+
+                    _feedHome.value = Success(
+                        it.data.copy(
+                            items = newItems
+                        )
+                    )
+                }
+            }
+        }
+    }
+
+    fun fetchFollowRecommendationData() {
+
+        fun isUnfetchedFollowRecomExists(feedData: Result<FeedModel>): Boolean {
+            return feedData is Success && feedData.data.items.any { data ->
+                data is FeedFollowRecommendationModel && !data.isFetch
+            }
+        }
+
+        viewModelScope.launch {
+            feedHome.value?.let {
+                if (it is Success && isUnfetchedFollowRecomExists(it)) {
+                    val newItems = it.data.items.map { item ->
+                        when (item) {
+                            is FeedFollowRecommendationModel -> {
+                                val request = feedXRecomWidgetUseCase.createFeedFollowRecomParams("")
+                                feedXRecomWidgetUseCase(request)
+                            }
+                            else -> item
+                        }
                     }
 
                     _feedHome.value = Success(

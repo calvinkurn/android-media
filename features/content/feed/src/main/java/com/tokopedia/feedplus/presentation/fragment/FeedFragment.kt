@@ -979,7 +979,7 @@ class FeedFragment :
                                 adapter.addElement(FeedNoContentModel.getNoMoreContentInstance(ctx))
                             }
                         }
-                        feedPostViewModel.fetchTopAdsData()
+                        feedPostViewModel.fetchPlaceholderData()
                     }
                     feedMainViewModel.onPostDataLoaded(it.data.items.isNotEmpty())
                 }
