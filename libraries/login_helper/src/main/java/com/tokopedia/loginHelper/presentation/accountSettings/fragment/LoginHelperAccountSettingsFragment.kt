@@ -12,7 +12,6 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.loginHelper.databinding.FragmentLoginHelperAccountSettingsBinding
@@ -120,11 +119,6 @@ class LoginHelperAccountSettingsFragment : BaseDaggerFragment() {
             )
             .build()
             .inject(this)
-    }
-
-    override fun onFragmentBackPressed(): Boolean {
-        goToPage(ApplinkConstInternalGlobal.LOGIN_HELPER)
-        return true
     }
 
     companion object {
