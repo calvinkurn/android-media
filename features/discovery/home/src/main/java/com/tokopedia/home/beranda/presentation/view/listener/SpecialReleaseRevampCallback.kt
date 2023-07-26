@@ -4,42 +4,45 @@ import com.tokopedia.home.analytics.v2.SpecialReleaseRevampTracking
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
+import com.tokopedia.home_component.model.TrackingAttributionModel
 import com.tokopedia.home_component.widget.special_release.SpecialReleaseRevampListener
 
 class SpecialReleaseRevampCallback(
     private val homeCategoryListener: HomeCategoryListener
 ): SpecialReleaseRevampListener {
-    override fun onShopClicked(channel: ChannelModel, channelGrid: ChannelGrid, applink: String) {
-        SpecialReleaseRevampTracking.sendClickShop(channel, channelGrid, homeCategoryListener.userId)
-        homeCategoryListener.onDynamicChannelClicked(channelGrid.applink)
+    override fun onShopClicked(trackingAttributionModel: TrackingAttributionModel, channelGrid: ChannelGrid, applink: String) {
+        if(applink.isNotEmpty()) {
+            SpecialReleaseRevampTracking.sendClickShop(trackingAttributionModel, channelGrid, homeCategoryListener.userId)
+            homeCategoryListener.onDynamicChannelClicked(applink)
+        }
     }
 
-    override fun onShopImpressed(channel: ChannelModel, channelGrid: ChannelGrid) {
-        val tracker = SpecialReleaseRevampTracking.getImpressionShop(channel, channelGrid, homeCategoryListener.userId)
+    override fun onShopImpressed(trackingAttributionModel: TrackingAttributionModel, channelGrid: ChannelGrid) {
+        val tracker = SpecialReleaseRevampTracking.getImpressionShop(trackingAttributionModel, channelGrid, homeCategoryListener.userId)
         homeCategoryListener.getTrackingQueueObj()?.putEETracking(tracker)
     }
 
     override fun onProductCardImpressed(
-        channel: ChannelModel,
+        trackingAttributionModel: TrackingAttributionModel,
         channelGrid: ChannelGrid,
         position: Int
     ) {
-        val tracker = SpecialReleaseRevampTracking.getImpressionProduct(channel, channelGrid, homeCategoryListener.userId)
+        val tracker = SpecialReleaseRevampTracking.getImpressionProduct(trackingAttributionModel, channelGrid, homeCategoryListener.userId)
         homeCategoryListener.getTrackingQueueObj()?.putEETracking(tracker)
     }
 
     override fun onProductCardClicked(
-        channel: ChannelModel,
+        trackingAttributionModel: TrackingAttributionModel,
         channelGrid: ChannelGrid,
         position: Int,
         applink: String
     ) {
-        SpecialReleaseRevampTracking.sendClickProduct(channel, channelGrid, homeCategoryListener.userId)
-        homeCategoryListener.onDynamicChannelClicked(channelGrid.applink)
+        SpecialReleaseRevampTracking.sendClickProduct(trackingAttributionModel, channelGrid, homeCategoryListener.userId)
+        homeCategoryListener.onDynamicChannelClicked(applink)
     }
 
-    override fun onSeeAllClick(channel: ChannelModel, link: String) {
-        SpecialReleaseRevampTracking.sendClickViewAll(channel)
+    override fun onSeeAllClick(trackingAttributionModel: TrackingAttributionModel, link: String) {
+        SpecialReleaseRevampTracking.sendClickViewAll(trackingAttributionModel)
         homeCategoryListener.onDynamicChannelClicked(link)
     }
 }

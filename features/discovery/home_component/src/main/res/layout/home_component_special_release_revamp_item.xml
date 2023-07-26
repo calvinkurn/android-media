@@ -10,8 +10,6 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/container"
-        android:clickable="true"
-        android:focusable="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -38,10 +36,11 @@
             android:layout_marginTop="12dp"
             app:layout_goneMarginBottom="12dp"
             tools:text="Rilakkuma Official Store"
+            android:ellipsize="end"
             app:typographyType="display_3"
             app:typographyWeight="bold"
             android:layout_marginLeft="8dp"
-            android:layout_marginRight="12dp"/>
+            android:layout_marginRight="16dp"/>
 
         <FrameLayout
             android:id="@+id/container_shop_badge"
@@ -77,7 +76,7 @@
             app:layout_constraintVertical_chainStyle="packed"
             android:layout_marginBottom="12dp"
             android:layout_marginLeft="8dp"
-            android:layout_marginRight="12dp"
+            android:layout_marginRight="16dp"
             android:layout_marginTop="4dp"/>
 
         <com.tokopedia.unifycomponents.Label
@@ -135,8 +134,9 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toTopOf="@id/shop_divider"
             android:layout_marginRight="12dp"
-            android:layout_width="@dimen/home_channel_header_cta_icon"
-            android:layout_height="@dimen/home_channel_header_cta_icon"
+            android:padding="4dp"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
             android:contentDescription="@string/content_desc_special_release_cta"/>
 
         <com.tokopedia.unifycomponents.DividerUnify
@@ -153,6 +153,8 @@
             android:id="@+id/product_card"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:clickable="true"
+            android:focusable="true"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/shop_divider"

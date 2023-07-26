@@ -6,12 +6,15 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.home_component.R
 import com.tokopedia.home_component.customview.HeaderListener
 import com.tokopedia.home_component.databinding.HomeComponentSpecialReleaseRevampBinding
+import com.tokopedia.home_component.mapper.ChannelModelMapper
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.productcardgridcarousel.typeFactory.CommonCarouselProductCardTypeFactory
 import com.tokopedia.home_component.productcardgridcarousel.typeFactory.CommonCarouselProductCardTypeFactoryImpl
 import com.tokopedia.home_component.util.ChannelWidgetUtil
 import com.tokopedia.home_component.widget.common.CarouselListAdapter
 import com.tokopedia.home_component.widget.common.AbstractHomeViewHolder
+import com.tokopedia.productcard.ProductCardModel
+import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.utils.view.binding.viewBinding
 
 /**
@@ -72,7 +75,7 @@ class SpecialReleaseRevampViewHolder(
             channelModel,
             object: HeaderListener {
                 override fun onSeeAllClick(link: String) {
-                    specialReleaseRevampListener.onSeeAllClick(channelModel, link)
+                    specialReleaseRevampListener.onSeeAllClick(channelModel.trackingAttributionModel, link)
                 }
             }
         )
@@ -82,7 +85,14 @@ class SpecialReleaseRevampViewHolder(
         val items = model.channelModel.channelGrids.map {
             SpecialReleaseRevampItemDataModel(
                 it,
-                model.channelModel,
+                ChannelModelMapper.mapToProductCardModel(
+                    channelGrid = it,
+                    animateOnPress = CardUnify2.ANIMATE_NONE,
+                    cardType = CardUnify2.TYPE_CLEAR,
+                    productCardListType = ProductCardModel.ProductListType.BEST_SELLER,
+                    excludeShop = true
+                ),
+                model.channelModel.trackingAttributionModel,
                 listener = specialReleaseRevampListener
             )
         }

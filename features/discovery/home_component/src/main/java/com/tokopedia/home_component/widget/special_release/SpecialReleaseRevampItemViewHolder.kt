@@ -6,12 +6,9 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.home_component.R
 import com.tokopedia.home_component.databinding.HomeComponentSpecialReleaseRevampItemBinding
-import com.tokopedia.home_component.mapper.ChannelModelMapper
-import com.tokopedia.home_component.util.loadImage
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.unifycomponents.CardUnify2
 
@@ -29,6 +26,7 @@ class SpecialReleaseRevampItemViewHolder(itemView: View) : AbstractViewHolder<Sp
     private val binding: HomeComponentSpecialReleaseRevampItemBinding? by viewBinding()
 
     override fun bind(element: SpecialReleaseRevampItemDataModel) {
+        binding?.cardContainer?.animateOnPress = CardUnify2.ANIMATE_OVERLAY_BOUNCE
         renderShop(element)
         renderProduct(element)
     }
@@ -37,44 +35,40 @@ class SpecialReleaseRevampItemViewHolder(itemView: View) : AbstractViewHolder<Sp
         binding?.run {
             val grid = element.grid
             val shop = grid.shop
-            shopImage.loadImage(shop.shopProfileUrl)
+            shopImage.setImageUrl(shop.shopProfileUrl)
             if(grid.badges.isEmpty()) {
                 containerShopBadge.gone()
             } else {
                 containerShopBadge.visible()
-                shopBadge.loadImage(grid.badges[0].imageUrl)
+                shopBadge.setImageUrl(grid.badges[0].imageUrl)
             }
             shopName.text = shop.shopName
             if(grid.benefit.value.isNotEmpty()) {
                 groupLocation.gone()
                 label.visible()
-                label.text = grid.label
+                label.text = grid.benefit.value
             } else {
                 label.gone()
                 groupLocation.visible()
                 textLocation.text = grid.shop.shopLocation
             }
-            container.setOnClickListener {
-                element.listener.onShopClicked(element.channel, grid, grid.shop.shopApplink)
-            }
-            container.addOnImpressionListener(element.shopImpressHolder) {
+            if(shop.shopApplink.isEmpty()) cta.gone() else cta.visible()
+            cardContainer.addOnImpressionListener(element.shopImpressHolder) {
                 element.listener.onShopImpressed(
-                    element.channel,
+                    element.trackingAttributionModel,
                     element.grid
                 )
+            }
+            cardContainer.setOnClickListener {
+                element.listener.onShopClicked(element.trackingAttributionModel, grid, grid.shop.shopApplink)
             }
         }
     }
 
     private fun renderProduct(element: SpecialReleaseRevampItemDataModel) {
         binding?.productCard?.run {
-            val productCardModel = ChannelModelMapper.mapToProductCardModel(
-                channelGrid = element.grid,
-                animateOnPress = CardUnify2.ANIMATE_NONE,
-                cardType = CardUnify2.TYPE_CLEAR,
-                productCardListType = ProductCardModel.ProductListType.BEST_SELLER
-            )
-            setProductModel(productCardModel)
+            setProductModel(element.productCardModel)
+
             setOnClickListener {
                 if(element.grid.isTopads){
                     TopAdsUrlHitter(context).hitClickUrl(
@@ -86,7 +80,7 @@ class SpecialReleaseRevampItemViewHolder(itemView: View) : AbstractViewHolder<Sp
                     )
                 }
                 element.listener.onProductCardClicked(
-                    element.channel,
+                    element.trackingAttributionModel,
                     element.grid,
                     element.grid.position,
                     element.grid.applink
@@ -103,7 +97,7 @@ class SpecialReleaseRevampItemViewHolder(itemView: View) : AbstractViewHolder<Sp
                     )
                 }
                 element.listener.onProductCardImpressed(
-                    element.channel,
+                    element.trackingAttributionModel,
                     element.grid,
                     element.grid.position,
                 )

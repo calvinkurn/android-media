@@ -14,6 +14,7 @@ object ChannelModelMapper {
         isTopStockbar: Boolean = false,
         cardType: Int = CardUnify2.TYPE_SHADOW,
         productCardListType: ProductCardModel.ProductListType = ProductCardModel.ProductListType.CONTROL,
+        excludeShop: Boolean = false
     ): ProductCardModel {
         val productCardAnimate = if(cardInteration == true) ANIMATE_OVERLAY_BOUNCE else animateOnPress
         return ProductCardModel(
@@ -26,10 +27,10 @@ object ChannelModelMapper {
             stockBarLabel = channelGrid.label,
             isTopAds = channelGrid.isTopads,
             stockBarPercentage = channelGrid.soldPercentage,
-            shopLocation = channelGrid.shop.shopLocation,
+            shopLocation = channelGrid.shop.shopLocation.takeIf { !excludeShop }.orEmpty(),
             shopBadgeList = channelGrid.badges.map {
                 ProductCardModel.ShopBadge(imageUrl = it.imageUrl)
-            },
+            }.takeIf { !excludeShop }.orEmpty(),
             labelGroupList = channelGrid.labelGroup.map {
                 ProductCardModel.LabelGroup(
                     position = it.position,

@@ -79,7 +79,12 @@ object DynamicChannelComponentMapper {
                 campaignCode = channel.campaignCode,
                 homeAttribution = channel.homeAttribution,
                 promoName = channel.promoName,
-                campaignType = channel.campaignType
+                campaignType = channel.campaignType,
+                bannerId = channel.banner.id,
+                headerName = channel.header.name,
+                channelId = channel.id,
+                parentPosition = (verticalPosition + 1).toString(),
+                pageName = channel.pageName,
             ),
             channelGrids = channel.grids.mapIndexed { index, it ->
                 ChannelGrid(
