@@ -163,10 +163,12 @@ import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -226,7 +228,6 @@ class CartRevampFragment :
     private var hasTriedToLoadRecentViewList: Boolean = false
     private var shouldReloadRecentViewList: Boolean = false
     private var hasTriedToLoadRecommendation: Boolean = false
-    private val isToolbarWithBackButton = true
     private var delayShowPromoButtonJob: Job? = null
     private var delayShowSelectedAmountJob: Job? = null
     private var TRANSLATION_LENGTH = 0f
@@ -273,7 +274,7 @@ class CartRevampFragment :
         const val WORDING_GO_TO_HOMEPAGE = "Kembali ke Homepage"
         const val HEIGHT_DIFF_CONSTRAINT = 100
         const val DELAY_SHOW_PROMO_BUTTON_AFTER_SCROLL = 750L
-        const val DELAY_SHOW_SELECTED_AMOUNT_AFTER_SCROLL = 600L
+        const val DELAY_SHOW_SELECTED_AMOUNT_AFTER_SCROLL = 750L
         const val PROMO_ANIMATION_DURATION = 500L
         const val SELECTED_AMOUNT_ANIMATION_DURATION = 500L
         const val PROMO_POSITION_BUFFER = 10
@@ -288,6 +289,8 @@ class CartRevampFragment :
         const val KEY_OLD_BUNDLE_ID = "old_bundle_id"
         const val KEY_NEW_BUNLDE_ID = "new_bundle_id"
         const val KEY_IS_CHANGE_VARIANT = "is_variant_changed"
+
+        private const val TOKONOW_UPDATER_DEBOUNCE = 500L
 
         @JvmStatic
         fun newInstance(bundle: Bundle?, args: String): CartRevampFragment {
@@ -827,16 +830,54 @@ class CartRevampFragment :
         TODO("Not yet implemented")
     }
 
-    override fun onCartItemDeleteButtonClicked(cartItemHolderData: CartItemHolderData) {
-        TODO("Not yet implemented")
+    override fun onCartItemDeleteButtonClicked(cartItemHolderData: CartItemHolderData, isFromDeleteButton: Boolean) {
+        if (isFromDeleteButton) {
+            cartPageAnalytics.eventClickAtcCartClickTrashBin()
+        }
+        val allCartItemDataList = viewModel.getAllCartItemData()
+        val toBeDeletedProducts = mutableListOf<CartItemHolderData>()
+        if (cartItemHolderData.isBundlingItem) {
+            val cartGroupHolderData =
+                cartAdapter.getCartGroupHolderDataByCartItemHolderData(cartItemHolderData)
+            cartGroupHolderData?.let {
+                it.productUiModelList.forEach { product ->
+                    if (product.isBundlingItem && product.bundleId == cartItemHolderData.bundleId && product.bundleGroupId == cartItemHolderData.bundleGroupId) {
+                        toBeDeletedProducts.add(product)
+                    }
+                }
+            }
+        } else {
+            toBeDeletedProducts.add(cartItemHolderData)
+        }
+
+        if (toBeDeletedProducts.size > 0) {
+            // If unavailable item > 1 and state is collapsed, then expand first
+            var forceExpand = false
+            if (viewModel.getAllDisabledCartItemData().size > 1 && unavailableItemAccordionCollapseState) {
+                collapseOrExpandDisabledItem()
+                forceExpand = true
+            }
+
+            viewModel.processDeleteCartItem(
+                allCartItemDataList,
+                toBeDeletedProducts,
+                false,
+                forceExpand
+            )
+            if (isFromDeleteButton) {
+                cartPageAnalytics.enhancedECommerceRemoveFromCartClickHapusFromTrashBin(
+                    viewModel.generateDeleteCartDataAnalytics(toBeDeletedProducts)
+                )
+            }
+        }
     }
 
     override fun onCartItemQuantityPlusButtonClicked() {
-        TODO("Not yet implemented")
+        cartPageAnalytics.eventClickAtcCartClickButtonPlus()
     }
 
     override fun onCartItemQuantityMinusButtonClicked() {
-        TODO("Not yet implemented")
+        cartPageAnalytics.eventClickAtcCartClickButtonMinus()
     }
 
     override fun onCartItemProductClicked(cartItemHolderData: CartItemHolderData) {
@@ -975,7 +1016,30 @@ class CartRevampFragment :
         cartItemHolderData: CartItemHolderData,
         newQuantity: Int
     ) {
-        TODO("Not yet implemented")
+        if (cartItemHolderData.isBundlingItem) {
+            val cartGroupHolderData =
+                cartAdapter.getCartGroupHolderDataByCartItemHolderData(cartItemHolderData)
+            cartGroupHolderData?.let {
+                it.productUiModelList.forEach {
+                    if (it.isBundlingItem && it.bundleId == cartItemHolderData.bundleId && it.bundleGroupId == cartItemHolderData.bundleGroupId) {
+                        it.bundleQuantity = newQuantity
+                    }
+                }
+            }
+        } else {
+            cartItemHolderData.quantity = newQuantity
+        }
+
+        validateGoToCheckout()
+        val params = generateParamGetLastApplyPromo()
+        if (isNeedHitUpdateCartAndValidateUse(params)) {
+            renderPromoCheckoutLoading()
+            viewModel.doUpdateCartAndGetLastApply(params)
+        } else if (cartItemHolderData.isTokoNow) {
+            viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
+                viewModel.emitTokonowUpdated(true)
+            }
+        }
     }
 
     override fun onCartItemShowRemainingQty(productId: String) {
@@ -1660,6 +1724,12 @@ class CartRevampFragment :
     }
 
     private fun initViewModel() {
+        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
+            viewModel.tokoNowProductUpdater.debounce(TOKONOW_UPDATER_DEBOUNCE).collectLatest {
+                viewModel.processUpdateCartData(true, true)
+            }
+        }
+
         observeAddCartToWishlistEvent()
 
         observeAddToCart()
@@ -1995,7 +2065,6 @@ class CartRevampFragment :
     private fun observeGlobalEvent() {
         viewModel.globalEvent.observe(viewLifecycleOwner) { event ->
             when (event) {
-                is CartGlobalEvent.Normal -> {}
                 is CartGlobalEvent.ItemLoading -> {
                     if (event.isLoading) {
                         showItemLoading()
@@ -2051,29 +2120,29 @@ class CartRevampFragment :
 
     private fun observeUpdateCartEvent() {
         viewModel.updateCartForCheckoutState.observe(viewLifecycleOwner) { data ->
-            when (data) {
-                is UpdateCartCheckoutState.Success -> {
-                    renderToShipmentFormSuccess(
-                        data.eeCheckoutData,
-                        data.checkoutProductEligibleForCashOnDelivery,
-                        data.condition
-                    )
-                }
+            data?.let {
+                when (data) {
+                    is UpdateCartCheckoutState.Success -> {
+                        renderToShipmentFormSuccess(
+                            data.eeCheckoutData,
+                            data.checkoutProductEligibleForCashOnDelivery,
+                            data.condition
+                        )
+                    }
 
-                is UpdateCartCheckoutState.ErrorOutOfService -> {
-                    renderErrorToShipmentForm(data.outOfService)
-                }
+                    is UpdateCartCheckoutState.ErrorOutOfService -> {
+                        renderErrorToShipmentForm(data.outOfService)
+                    }
 
-                is UpdateCartCheckoutState.UnknownError -> {
-                    renderErrorToShipmentForm(data.message, data.ctaText)
-                }
+                    is UpdateCartCheckoutState.UnknownError -> {
+                        renderErrorToShipmentForm(data.message, data.ctaText)
+                    }
 
-                is UpdateCartCheckoutState.Failed -> {
-                    hideProgressLoading()
-                    renderErrorToShipmentForm(data.throwable)
+                    is UpdateCartCheckoutState.Failed -> {
+                        hideProgressLoading()
+                        renderErrorToShipmentForm(data.throwable)
+                    }
                 }
-
-                else -> {}
             }
         }
 
@@ -2481,7 +2550,7 @@ class CartRevampFragment :
 //        }
 
         // If action is on unavailable item, do collapse unavailable items if previously forced to expand (without user tap expand)
-        if (viewModel.allDisabledCartItemData.size > 1) {
+        if (viewModel.getAllDisabledCartItemData().size > 1) {
             if (forceExpandCollapsedUnavailableItems) {
                 collapseOrExpandDisabledItem()
             }

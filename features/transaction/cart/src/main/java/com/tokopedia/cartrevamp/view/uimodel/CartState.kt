@@ -17,8 +17,17 @@ sealed class CartState<out T : Any> {
     data class Failed(val throwable: Throwable) : CartState<Nothing>()
 }
 
+sealed class Result<out T : Any> {
+
+    data class Success<out T : Any>(val data: T) : Result<T>()
+    data class Error(
+        val exception: Exception,
+        val errorMessage: String,
+    ) : Result<Nothing>()
+
+}
+
 sealed class CartGlobalEvent {
-    object Normal : CartGlobalEvent()
     data class ItemLoading(val isLoading: Boolean) : CartGlobalEvent()
     data class ProgressLoading(val isLoading: Boolean) : CartGlobalEvent()
     object LoadGetCartData : CartGlobalEvent()
@@ -88,7 +97,6 @@ sealed interface UndoDeleteEvent {
 }
 
 sealed class UpdateCartCheckoutState {
-    object None : UpdateCartCheckoutState()
     data class Success(
         val eeCheckoutData: Map<String, Any>,
         val checkoutProductEligibleForCashOnDelivery: Boolean,
@@ -144,7 +152,6 @@ sealed interface LoadRecentReviewState {
 }
 
 sealed interface UpdateCartPromoState {
-    object None : UpdateCartPromoState
     object Success : UpdateCartPromoState
 
     data class Failed(val throwable: Throwable) : UpdateCartPromoState

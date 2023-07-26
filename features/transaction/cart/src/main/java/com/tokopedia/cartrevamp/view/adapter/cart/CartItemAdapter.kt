@@ -7,7 +7,7 @@ import com.tokopedia.iconunify.IconUnify
 
 class CartItemAdapter {
     interface ActionListener {
-        fun onCartItemDeleteButtonClicked(cartItemHolderData: CartItemHolderData)
+        fun onCartItemDeleteButtonClicked(cartItemHolderData: CartItemHolderData, isFromDeleteButton: Boolean = false)
         fun onCartItemQuantityPlusButtonClicked()
         fun onCartItemQuantityMinusButtonClicked()
         fun onCartItemProductClicked(cartItemHolderData: CartItemHolderData)
