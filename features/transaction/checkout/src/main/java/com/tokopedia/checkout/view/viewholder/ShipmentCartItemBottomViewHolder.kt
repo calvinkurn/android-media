@@ -29,7 +29,6 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticCommon.data.constant.InsuranceConstant
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticcart.shipping.features.shippingwidget.ShippingWidget
-import com.tokopedia.logisticcart.shipping.model.CartItemModel
 import com.tokopedia.logisticcart.shipping.model.CourierItemData
 import com.tokopedia.logisticcart.shipping.model.ScheduleDeliveryUiModel
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
@@ -48,7 +47,6 @@ import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import rx.subjects.PublishSubject
 import rx.subscriptions.CompositeSubscription
-import java.util.HashMap
 import java.util.concurrent.TimeUnit
 import java.util.regex.Pattern
 
@@ -749,7 +747,7 @@ class ShipmentCartItemBottomViewHolder(
                         }
                     }
                     if (cartItemModel.addOnProduct.listAddOnProductData.isNotEmpty()) {
-                        renderSubtotalAddOn(cartItemModel, itemView.context, shipmentCartItemModel.subtotalAddOnMap)
+                        renderSubtotalAddOn(shipmentCartItemModel, itemView.context)
                         cartItemModel.addOnProduct.listAddOnProductData.forEach {
                             if (it.status == 1) {
                                 totalAddOnProductPrice += it.price * cartItemModel.quantity
@@ -1205,17 +1203,40 @@ class ShipmentCartItemBottomViewHolder(
         }
     }
 
-    private fun renderSubtotalAddOn(cartItemModel: CartItemModel, context: Context, subtotalAddOnMap: HashMap<Int, String>) {
+    private fun renderSubtotalAddOn(shipmentCartItemModel: ShipmentCartItemModel, context: Context) {
+        val countMapSubtotal = hashMapOf<Int, Pair<Double, Int>>()
+        var qtyAddOn: Int
+        var totalPriceAddOn: Double
         val listShipmentAddOnSubtotalModel = arrayListOf<ShipmentAddOnSubtotalModel>()
-        cartItemModel.addOnProduct.listAddOnProductData.forEach {
-            for ((key, value) in subtotalAddOnMap) {
-                if (it.type == key && it.status == 1) {
-                    val shipmentAddOnSubtotalModel = ShipmentAddOnSubtotalModel(
-                        wording = value.replace(CartConstant.QTY_ADDON_REPLACE, cartItemModel.quantity.toString()),
-                        priceLabel = CurrencyFormatUtil.convertPriceValueToIdrFormat((it.price * cartItemModel.quantity), false).removeDecimalSuffix()
-                    )
-                    listShipmentAddOnSubtotalModel.add(shipmentAddOnSubtotalModel)
+
+        shipmentCartItemModel.cartItemModels.forEach { cartItemModel ->
+            cartItemModel.addOnProduct.listAddOnProductData.forEach { addOnProduct ->
+                if (addOnProduct.status == 1) {
+                    val addOnPrice = cartItemModel.quantity * addOnProduct.price
+                    qtyAddOn = if (countMapSubtotal.containsKey(addOnProduct.type)) {
+                        countMapSubtotal[addOnProduct.type]?.second?.plus(cartItemModel.quantity) ?: cartItemModel.quantity
+                    } else {
+                        cartItemModel.quantity
+                    }
+                    totalPriceAddOn = if (countMapSubtotal.containsKey(addOnProduct.type)) {
+                        countMapSubtotal[addOnProduct.type]?.first?.plus(addOnPrice) ?: addOnPrice
+                    } else {
+                        addOnPrice
+                    }
+                    countMapSubtotal[addOnProduct.type] = totalPriceAddOn to qtyAddOn
                 }
+            }
+        }
+
+        for ((key, value) in shipmentCartItemModel.subtotalAddOnMap) {
+            if (countMapSubtotal[key] != null) {
+                val subtotalLabel = value.replace(CartConstant.QTY_ADDON_REPLACE, countMapSubtotal[key]?.second.toString())
+                val subtotalPriceLabel = CurrencyFormatUtil.convertPriceValueToIdrFormat(countMapSubtotal[key]?.first ?: 0.0, false).removeDecimalSuffix()
+                val shipmentAddOnSubtotalModel = ShipmentAddOnSubtotalModel(
+                    wording = subtotalLabel,
+                    priceLabel = subtotalPriceLabel
+                )
+                listShipmentAddOnSubtotalModel.add(shipmentAddOnSubtotalModel)
             }
         }
 

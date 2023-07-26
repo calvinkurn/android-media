@@ -366,8 +366,8 @@ class ShipmentViewModel @Inject constructor(
         var hasAddOnSelected = false
         var totalAddOnGiftingPrice = 0.0
         var totalAddOnProductServicePrice = 0.0
-        var qtyAddOn = 0
-        var totalPriceAddOn = 0.0
+        var qtyAddOn: Int
+        var totalPriceAddOn: Double
         val countMapSummaries = hashMapOf<Int, Pair<Double, Int>>()
         val listShipmentAddOnSummary: ArrayList<ShipmentAddOnSummaryModel> = arrayListOf()
         for (shipmentData in shipmentCartItemModelList) {
