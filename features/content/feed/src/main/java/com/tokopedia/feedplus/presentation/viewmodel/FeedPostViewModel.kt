@@ -366,7 +366,7 @@ class FeedPostViewModel @Inject constructor(
         fetchFollowRecommendationData()
     }
 
-    fun fetchTopAdsData() {
+    private fun fetchTopAdsData() {
         viewModelScope.launch {
             feedHome.value?.let {
                 if (it is Success && shouldFetchTopAds) {
@@ -419,7 +419,7 @@ class FeedPostViewModel @Inject constructor(
         }
     }
 
-    fun fetchFollowRecommendationData() {
+    private fun fetchFollowRecommendationData() {
 
         fun isUnfetchedFollowRecomExists(feedData: Result<FeedModel>): Boolean {
             return feedData is Success && feedData.data.items.any { data ->
