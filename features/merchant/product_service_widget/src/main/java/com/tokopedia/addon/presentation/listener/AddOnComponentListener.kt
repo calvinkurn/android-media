@@ -14,7 +14,7 @@ interface AddOnComponentListener {
         addOnGroupUIModels: List<AddOnGroupUIModel>
     )
 
-    fun onAddonHelpClick(position: Int, addOnUIModel: AddOnUIModel) {}
+    fun onAddonHelpClick(index: Int, indexChild: Int, addonGroups: List<AddOnGroupUIModel>) {}
 
     fun onDataEmpty() {}
 
