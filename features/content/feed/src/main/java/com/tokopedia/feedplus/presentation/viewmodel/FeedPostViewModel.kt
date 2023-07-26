@@ -126,6 +126,10 @@ class FeedPostViewModel @Inject constructor(
     val followResult: LiveData<Result<String>>
         get() = _followResult
 
+    private val _unfollowResult = MutableLiveData<Result<String>>()
+    val unfollowResult: LiveData<Result<String>>
+        get() = _unfollowResult
+
     private val _likeKolResp = MutableLiveData<FeedResult<LikeFeedDataModel>>()
     val getLikeKolResp: LiveData<FeedResult<LikeFeedDataModel>>
         get() = _likeKolResp
@@ -535,9 +539,9 @@ class FeedPostViewModel @Inject constructor(
                 }
 
                 updateFollowStatus(response.id, response.isFollowing)
-                _followResult.value = Success(if (isShop) SHOP else USER)
+                _unfollowResult.value = Success(if (isShop) SHOP else USER)
             } catch (it: Throwable) {
-                _followResult.value = Fail(it)
+                _unfollowResult.value = Fail(it)
             }
         }
     }

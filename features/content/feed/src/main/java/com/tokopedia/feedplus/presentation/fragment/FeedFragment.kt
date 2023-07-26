@@ -335,6 +335,7 @@ class FeedFragment :
         observeReport()
         observeDelete()
         observeFollow()
+        observeUnfollow()
         observeLikeContent()
         observeResumePage()
         observeMerchantVoucher()
@@ -1013,6 +1014,25 @@ class FeedFragment :
                 is Fail -> {
                     showToast(
                         getString(feedR.string.feed_message_failed_follow),
+                        Toaster.TYPE_ERROR
+                    )
+                }
+            }
+        }
+    }
+
+    private fun observeUnfollow() {
+        feedPostViewModel.unfollowResult.observe(viewLifecycleOwner) {
+            when (it) {
+                is Success -> {
+                    showToast(
+                        getString(feedR.string.feed_message_success_unfollow, it.data),
+                        Toaster.TYPE_NORMAL
+                    )
+                }
+                is Fail -> {
+                    showToast(
+                        getString(feedR.string.feed_message_failed_unfollow),
                         Toaster.TYPE_ERROR
                     )
                 }
