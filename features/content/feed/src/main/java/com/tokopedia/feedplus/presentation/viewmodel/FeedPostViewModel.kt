@@ -431,8 +431,8 @@ class FeedPostViewModel @Inject constructor(
             feedHome.value?.let {
                 if (it is Success && isUnfetchedFollowRecomExists(it)) {
                     val newItems = it.data.items.map { item ->
-                        when (item) {
-                            is FeedFollowRecommendationModel -> {
+                        when {
+                            item is FeedFollowRecommendationModel && !item.isFetch -> {
                                 val request = feedXRecomWidgetUseCase.createFeedFollowRecomParams("")
                                 feedXRecomWidgetUseCase(request)
                             }
