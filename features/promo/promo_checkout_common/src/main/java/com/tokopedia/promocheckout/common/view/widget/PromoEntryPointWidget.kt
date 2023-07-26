@@ -5,6 +5,8 @@ import android.graphics.drawable.GradientDrawable
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.TextSwitcher
@@ -46,6 +48,14 @@ class PromoEntryPointWidget @JvmOverloads constructor(
     private var inActiveViewRightIcon: IconUnify? = null
     private var errorView: View? = null
 
+    private var flippingWordings: List<String> = emptyList()
+    private var flippingTextSwitcher: TextSwitcher? = null
+
+    private val animSlideUpIn: Animation by lazy { AnimationUtils.loadAnimation(context, R.anim.anim_slide_up_in) }
+    private val animSlideUpOut: Animation by lazy { AnimationUtils.loadAnimation(context, R.anim.anim_slide_up_out) }
+    private val animSlideDownIn: Animation by lazy { AnimationUtils.loadAnimation(context, R.anim.anim_slide_down_in) }
+    private val animSlideDownOut: Animation by lazy { AnimationUtils.loadAnimation(context, R.anim.anim_slide_down_out) }
+
     init {
         inflate(context, getLayout(), this)
         setupViews(attrs)
@@ -78,7 +88,7 @@ class PromoEntryPointWidget @JvmOverloads constructor(
         setupViewBackgrounds(attrs)
     }
 
-    internal open fun setupViewBackgrounds(attrs: AttributeSet?) {
+    private fun setupViewBackgrounds(attrs: AttributeSet?) {
         val styledAttributes = context.obtainStyledAttributes(attrs, R.styleable.PromoEntryPointWidget)
         try {
             if (styledAttributes.getBoolean(R.styleable.PromoEntryPointWidget_rounded, false)) {
@@ -276,6 +286,57 @@ class PromoEntryPointWidget @JvmOverloads constructor(
         }
         activeView?.setOnClickListener {
             onClickListener.invoke()
+        }
+    }
+
+    fun showActiveFlipping(
+        wordings: List<String>,
+        rightIcon: Int,
+        onClickListener: () -> Unit = {}
+    ) {
+        if (wordings.isEmpty()) {
+            return
+        }
+        activeViewConfettiFrame?.visibility = View.GONE
+        activeViewSummaryLayout?.visibility = View.GONE
+        activeViewDivider?.visibility = View.GONE
+        switcherView?.reset()
+        activeViewLeftImage?.setImageResource(R.drawable.ic_promo_coupon_yellow)
+        activeViewWording?.setCurrentText(MethodChecker.fromHtml(wordings.first()))
+        if (wordings.size > 1) {
+            triggerTextFlip(wordings, activeViewWording)
+        }
+        activeViewRightIcon?.setImage(rightIcon)
+        switcherView?.displayedChild = 0
+        switcherView?.visibility = View.VISIBLE
+        errorView?.visibility = View.GONE
+        loadingView?.visibility = View.GONE
+        activeView?.setOnClickListener {
+            onClickListener.invoke()
+        }
+    }
+
+    private fun triggerTextFlip(wordings: List<String>, textSwitcher: TextSwitcher?) {
+        flippingWordings = wordings
+        flippingTextSwitcher = textSwitcher
+        postDelayed(flipper, 3000)
+    }
+
+    private val flipper: Runnable = Runnable {
+        flip()
+    }
+
+    private fun flip() {
+        if (flippingTextSwitcher?.displayedChild == 0) {
+            flippingTextSwitcher?.inAnimation = animSlideUpIn
+            flippingTextSwitcher?.outAnimation = animSlideUpOut
+            flippingTextSwitcher?.setText(flippingWordings[1])
+            postDelayed(flipper, 3000)
+        } else if (flippingTextSwitcher?.displayedChild == 1) {
+            flippingTextSwitcher?.inAnimation = animSlideDownIn
+            flippingTextSwitcher?.outAnimation = animSlideDownOut
+            flippingTextSwitcher?.setText(flippingWordings[0])
+            postDelayed(flipper, 3000)
         }
     }
 

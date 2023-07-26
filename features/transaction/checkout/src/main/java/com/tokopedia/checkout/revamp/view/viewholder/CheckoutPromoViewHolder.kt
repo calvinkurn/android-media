@@ -54,6 +54,11 @@ class CheckoutPromoViewHolder(private val binding: ItemCheckoutPromoBinding, pri
             }
         }
 
+        binding.btnCheckoutPromo.showActiveFlipping(
+            listOf("astaga 1, ini percobaan kalo textnya pannnjaaaaannggg sekaliiiii, astaga 2, ini percobaan kalo textnya pannnjaaaaannggg sekaliiiii", "wow bisa luar biasa sekali, tapi kenapa gak berhenti?"),
+            IconUnify.CHEVRON_RIGHT
+        )
+
 //        binding.btnCheckoutPromo.showActive(
 //            "https://static.vecteezy.com/system/resources/previews/004/495/473/original/sales-promotion-line-icon-logo-free-vector.jpg",
 //            "gak bisa nih",
