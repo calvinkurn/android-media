@@ -61,17 +61,19 @@ class VoucherCodeDelegateAdapter(
         }
 
         private fun handleVoucherSuccess(userInputVoucherCode: String, voucher: Voucher?) {
+            if (userInputVoucherCode.isNotEmpty()) showUseVoucherCodeCta()
+
             binding.run {
                 if (voucher != null) {
                     userInputVoucherView.visible()
                     userInputVoucherView.bind(voucher)
+                    hideUseVoucherCodeCta()
                 }
                 tauVoucherCode.isInputError = false
                 tauVoucherCode.setMessage(NO_ERROR_MESSAGE)
             }
 
             hideClearIcon()
-            if (userInputVoucherCode.isNotEmpty()) showUseVoucherCodeCta()
         }
 
         private fun handleVoucherError(errorMessage: String) {
