@@ -12,7 +12,8 @@ data class FintechWidgetDataModel(
     var categoryId: String? = null,
     var idToPriceUrlMap: HashMap<String, FintechPriceDataModel> = HashMap(),
     var isLoggedIn: Boolean = false,
-    var shopId: String = ""
+    var shopId: String = "",
+    var parentId: String = ""
 ): DynamicPdpDataModel {
 
     override fun type() = type

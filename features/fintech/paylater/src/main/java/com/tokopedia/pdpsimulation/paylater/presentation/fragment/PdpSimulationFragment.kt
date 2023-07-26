@@ -20,6 +20,8 @@ import com.tokopedia.pdpsimulation.R
 import com.tokopedia.pdpsimulation.activateCheckout.viewmodel.ShowToasterException
 import com.tokopedia.pdpsimulation.common.analytics.PayLaterAnalyticsBase
 import com.tokopedia.pdpsimulation.common.analytics.PayLaterTenureClick
+import com.tokopedia.pdpsimulation.common.constants.PARAM_CATEGORY_ID
+import com.tokopedia.pdpsimulation.common.constants.PARAM_PARENT_ID
 import com.tokopedia.pdpsimulation.common.constants.PARAM_PRODUCT_ID
 import com.tokopedia.pdpsimulation.common.constants.PARAM_PRODUCT_TENURE
 import com.tokopedia.pdpsimulation.common.di.component.PdpSimulationComponent
@@ -72,8 +74,9 @@ class PdpSimulationFragment : BaseDaggerFragment() {
         PayLaterArgsDescriptor(
             arguments?.getString(PARAM_PRODUCT_ID) ?: "",
             (arguments?.getString(PARAM_PRODUCT_TENURE) ?: "0").toInt(),
-
-            )
+            arguments?.getString(PARAM_PARENT_ID).orEmpty(),
+            arguments?.getString(PARAM_CATEGORY_ID).orEmpty(),
+        )
     }
 
 
@@ -331,12 +334,16 @@ class PdpSimulationFragment : BaseDaggerFragment() {
                 data.campaingnDetail?.discountedPrice ?: DOUBLE_ZERO,
                 payLaterArgsDescriptor.productId,
                 data.shopDetail?.shopId,
+                payLaterArgsDescriptor.parentId,
+                payLaterArgsDescriptor.categoryId
             )
         } else {
             payLaterViewModel.getPayLaterAvailableDetail(
                 data.price ?: DOUBLE_ZERO,
                 payLaterArgsDescriptor.productId,
                 data.shopDetail?.shopId,
+                payLaterArgsDescriptor.parentId,
+                payLaterArgsDescriptor.categoryId
             )
         }
     }
