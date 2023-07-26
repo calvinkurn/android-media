@@ -27,8 +27,6 @@ import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.address.UserAddress
 import com.tokopedia.logisticcart.shipping.model.CourierItemData
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.purchase_platform.common.feature.dynamicdatapassing.data.request.DynamicDataPassingParamRequest
-import com.tokopedia.purchase_platform.common.feature.dynamicdatapassing.domain.UpdateDynamicDataPassingUseCase
 import com.tokopedia.usecase.RequestParams
 import dagger.Lazy
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -42,7 +40,6 @@ class CheckoutCartProcessor @Inject constructor(
     private val getShipmentAddressFormV4UseCase: GetShipmentAddressFormV4UseCase,
     private val saveShipmentStateGqlUseCase: SaveShipmentStateGqlUseCase,
     private val changeShippingAddressGqlUseCase: Lazy<ChangeShippingAddressGqlUseCase>,
-    private val updateDynamicDataPassingUseCase: UpdateDynamicDataPassingUseCase,
     private val releaseBookingUseCase: Lazy<ReleaseBookingUseCase>,
     private val dispatchers: CoroutineDispatchers
 ) {
@@ -298,7 +295,8 @@ class CheckoutCartProcessor @Inject constructor(
         withContext(dispatchers.io) {
             try {
                 val params = generateSaveShipmentStateRequestSingleAddress(
-                    listData.filterIsInstance(CheckoutOrderModel::class.java), recipientAddressModel
+                    listData.filterIsInstance(CheckoutOrderModel::class.java),
+                    recipientAddressModel
                 )
                 if (params.requestDataList.first().shopProductDataList.isNotEmpty()) {
                     saveShipmentStateGqlUseCase(params)
@@ -380,31 +378,6 @@ class CheckoutCartProcessor @Inject constructor(
         }
     }
 
-    suspend fun updateDynamicData(
-        dynamicDataPassingParamRequest: DynamicDataPassingParamRequest,
-        isFireAndForget: Boolean
-    ) {
-        withContext(dispatchers.io) {
-            updateDynamicDataPassingUseCase.setParams(
-                dynamicDataPassingParamRequest,
-                isFireAndForget
-            )
-            try {
-                val ddpResponse = updateDynamicDataPassingUseCase.executeOnBackground()
-                if (!isFireAndForget) {
-                    // do checkout
-                }
-            } catch (t: Throwable) {
-                Timber.d(t)
-                // toast error
-            }
-        }
-    }
-
-    suspend fun validateDynamicData(dynamicDataPassingParamRequest: DynamicDataPassingParamRequest) {
-        updateDynamicData(dynamicDataPassingParamRequest, false)
-    }
-
     @OptIn(DelicateCoroutinesApi::class)
     fun releaseBooking(listData: List<CheckoutItem>) {
         // As deals product is using OCS, the shipment should only contain 1 product
@@ -425,5 +398,5 @@ class CheckoutCartProcessor @Inject constructor(
 data class ChangeAddressResult(
     val isSuccess: Boolean,
     val toasterMessage: String = "",
-    val throwable: Throwable? = null,
+    val throwable: Throwable? = null
 )
