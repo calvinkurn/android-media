@@ -248,6 +248,6 @@ val SOCIAL_CHANNEL_LINK = mapOf(
 const val AFFILIATE_SSE_URL_STAGING = "https://sse-staging.tokopedia.com/affiliate/sse/connect"
 const val AFFILIATE_SSE_URL_PROD = "https://sse.tokopedia.com/affiliate/sse/connect"
 const val PROMO_WEBVIEW_URL_STAGING =
-    "https://268-beta-feature.tokopedia.com/browse?module=affiliate&titlebar=false"
+    "https://affiliate-staging.tokopedia.com/browse"
 const val PROMO_WEBVIEW_URL_PROD =
-    "https://268-beta-feature.tokopedia.com/browse?module=affiliate&titlebar=false"
+    "https://affiliate.tokopedia.com/browse?titlebar=false"
