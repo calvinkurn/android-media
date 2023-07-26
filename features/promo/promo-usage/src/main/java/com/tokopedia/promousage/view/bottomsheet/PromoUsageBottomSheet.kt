@@ -23,6 +23,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.setTextColorCompat
 import com.tokopedia.kotlin.extensions.view.splitByThousand
 import com.tokopedia.kotlin.extensions.view.visible
@@ -49,13 +50,15 @@ class PromoUsageBottomSheet: BottomSheetDialogFragment() {
 
     companion object {
         private const val BUNDLE_KEY_ENTRY_POINT = "entry_point"
+        private const val BUNDLE_KEY_ORIGINAL_TOTAL_PRICE = "original_total_price"
         private const val BOTTOM_SHEET_MARGIN_TOP_IN_DP = 64
 
         @JvmStatic
-        fun newInstance(entryPoint: EntryPoint): PromoUsageBottomSheet {
+        fun newInstance(entryPoint: EntryPoint, originalTotalPrice: Long): PromoUsageBottomSheet {
             return PromoUsageBottomSheet().apply {
                 arguments = Bundle().apply {
                     putSerializable(BUNDLE_KEY_ENTRY_POINT, entryPoint)
+                    putLong(BUNDLE_KEY_ORIGINAL_TOTAL_PRICE, originalTotalPrice)
                 }
             }
         }
@@ -80,6 +83,7 @@ class PromoUsageBottomSheet: BottomSheetDialogFragment() {
     private val entryPoint by lazy {
         arguments?.getSerializable(BUNDLE_KEY_ENTRY_POINT) as? EntryPoint ?: EntryPoint.CART_PAGE
     }
+    private val originalTotalPrice by lazy { arguments?.getLong(BUNDLE_KEY_ORIGINAL_TOTAL_PRICE).orZero() }
 
     private fun setupDependencyInjection() {
         activity?.let {
@@ -119,9 +123,11 @@ class PromoUsageBottomSheet: BottomSheetDialogFragment() {
         super.onViewCreated(view, savedInstanceState)
         setupView()
         setupRecyclerView()
-        observeBottomSheetContent()
+        observeVouchers()
+        observeSelectedVouchers()
         viewModel.getVouchers()
     }
+
 
     private fun applyBottomSheetMaxHeightRule() {
         val frameDialogView = binding?.bottomSheetWrapper?.parent as View
@@ -137,13 +143,12 @@ class PromoUsageBottomSheet: BottomSheetDialogFragment() {
         bottomSheet.peekHeight = maxPeekHeight
     }
 
-    private fun observeBottomSheetContent() {
-        viewModel.items.observe(viewLifecycleOwner) { result ->
+    private fun observeVouchers() {
+        viewModel.vouchers.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Success -> {
                     showContent()
                     handleBottomCardViewAppearance(entryPoint)
-                    showTotalSavingsSection(3, 40_000)
                     recyclerViewAdapter.submit(result.data)
                 }
                 is Fail -> {
@@ -153,15 +158,16 @@ class PromoUsageBottomSheet: BottomSheetDialogFragment() {
         }
     }
 
+    private fun observeSelectedVouchers() {
+        viewModel.selectedVouchers.observe(viewLifecycleOwner) { selectedVouchers ->
+            val totalBenefits = selectedVouchers.sumOf { it.benefitAmount }
+            refreshTotalSavings(selectedVouchers, totalBenefits)
+            refreshTotalPrice(originalTotalPrice, totalBenefits)
+        }
+    }
 
     private fun setupView() {
         binding?.run {
-            val formattedTotalPrice = 15_000.splitByThousand()
-            tpgTotalPrice.text = context?.getString(
-                R.string.promo_voucher_placeholder_total_price,
-                formattedTotalPrice
-            )
-
             buttonBuy.setOnClickListener {
                 viewModel.onButtonBuyClick(entryPoint)
                 dismiss()
@@ -221,12 +227,14 @@ class PromoUsageBottomSheet: BottomSheetDialogFragment() {
         }
     }
 
-    private fun showTotalSavingsSection(selectedVoucherCount: Int, totalVoucherAmount: Long) {
+    private fun refreshTotalSavings(selectedVouchers: Set<Voucher>, totalBenefits: Long) {
+        val selectedVoucherCount = selectedVouchers.size
+
         binding?.run {
 
-            tpgTotalSavings.isVisible = selectedVoucherCount.isMoreThanZero()
+            layoutTotalSavings.isVisible = selectedVoucherCount.isMoreThanZero()
 
-            val formattedTotalVoucherAmount = totalVoucherAmount.splitByThousand()
+            val formattedTotalVoucherAmount = totalBenefits.splitByThousand()
             val text = if (selectedVoucherCount > 1) {
                 context?.getString(
                     R.string.promo_voucher_placeholder_total_savings,
@@ -244,13 +252,20 @@ class PromoUsageBottomSheet: BottomSheetDialogFragment() {
         }
     }
 
+    private fun refreshTotalPrice(originalTotalPrice: Long, totalBenefits: Long) {
+        val totalPrice = originalTotalPrice - totalBenefits
+        binding?.tpgTotalPrice?.text = context?.getString(
+            R.string.promo_voucher_placeholder_total_price,
+            totalPrice.splitByThousand()
+        )
+    }
+
     private fun showContent() {
         binding?.run {
             shimmer.root.gone()
             layoutBottomSheetOverlay.visible()
             layoutBottomSheetHeader.visible()
             recyclerView.visible()
-            layoutTotalSavings.visible()
         }
     }
 
@@ -260,7 +275,6 @@ class PromoUsageBottomSheet: BottomSheetDialogFragment() {
             layoutBottomSheetOverlay.gone()
             layoutBottomSheetHeader.gone()
             recyclerView.gone()
-            layoutTotalSavings.gone()
             binding?.cardViewTotalPrice?.gone()
         }
     }
@@ -314,11 +328,11 @@ class PromoUsageBottomSheet: BottomSheetDialogFragment() {
 
 
     private val onVoucherClick = { selectedVoucher : Voucher ->
-
+        viewModel.onVoucherClick(selectedVoucher)
     }
 
     private val onHyperlinkClick = { appLink : String ->
-
+        //TODO Route to gopay later cicil page
     }
 
     private val onVoucherAccordionClick = { accordion : VoucherAccordion ->

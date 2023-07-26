@@ -26,12 +26,18 @@ class PromoUsageViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.main) {
 
-    private val _items = MutableLiveData<Result<List<DelegateAdapterItem>>>()
-    val items: LiveData<Result<List<DelegateAdapterItem>>>
-        get() = _items
-
+    private var selectedVouchersSet = mutableSetOf<Voucher>()
     private val currentItems : List<DelegateAdapterItem>
-        get() = _items.value?.currentItemsOrEmpty() ?: emptyList()
+        get() = _vouchers.value?.currentItemsOrEmpty() ?: emptyList()
+
+    private val _vouchers = MutableLiveData<Result<List<DelegateAdapterItem>>>()
+    val vouchers: LiveData<Result<List<DelegateAdapterItem>>>
+        get() = _vouchers
+
+    private val _selectedVouchers = MutableLiveData<Set<Voucher>>()
+    val selectedVouchers: LiveData<Set<Voucher>>
+        get() = _selectedVouchers
+
 
     fun getVouchers() {
         launchCatchError(
@@ -59,10 +65,10 @@ class PromoUsageViewModel @Inject constructor(
                     VoucherCode(userInputVoucherCode = "", errorMessage = "", voucher = null),
                     TermAndCondition
                 )
-                _items.postValue(Success(items))
+                _vouchers.postValue(Success(items))
             },
             onError = { throwable ->
-                _items.postValue(Fail(throwable))
+                _vouchers.postValue(Fail(throwable))
             }
         )
     }
@@ -78,7 +84,7 @@ class PromoUsageViewModel @Inject constructor(
         }
 
 
-        _items.value = Success(updatedItems)
+        _vouchers.value = Success(updatedItems)
     }
 
     fun onClickViewAllVoucher(selectedVoucherAccordion: VoucherAccordion) {
@@ -91,7 +97,7 @@ class PromoUsageViewModel @Inject constructor(
             }
         }
 
-        _items.value = Success(updatedItems)
+        _vouchers.value = Success(updatedItems)
     }
 
     fun onButtonBuyClick(entryPoint: EntryPoint) {
@@ -106,8 +112,63 @@ class PromoUsageViewModel @Inject constructor(
 
     }
 
-    fun onVoucherSelected(selectedVoucher: Voucher) {
+    fun onVoucherClick(selectedVoucher: Voucher) {
+        val isAlreadyInSelection =
+            selectedVouchersSet.any { voucher -> voucher.id == selectedVoucher.id }
 
+        if (isAlreadyInSelection) {
+            removeFromSelection(selectedVoucher)
+        } else {
+            addToSelection(selectedVoucher)
+        }
+    }
+
+    private fun addToSelection(selectedVoucher: Voucher) {
+        val updatedVouchers = currentItems.map { widget ->
+            if (widget is VoucherAccordion) {
+                val selectedVouchers = widget.vouchers.map { item ->
+                    val voucher = item as Voucher
+                    if (selectedVoucher.id == voucher.id) {
+                        voucher.copy(voucherState = VoucherState.Selected)
+                    } else {
+                        voucher
+                    }
+                }
+
+                widget.copy(vouchers = selectedVouchers)
+            } else {
+                widget
+            }
+        }
+
+        _vouchers.value = Success(updatedVouchers)
+
+        selectedVouchersSet.add(selectedVoucher)
+        _selectedVouchers.value = selectedVouchersSet
+    }
+
+    private fun removeFromSelection(selectedVoucher: Voucher) {
+        val updatedVouchers = currentItems.map { widget ->
+            if (widget is VoucherAccordion) {
+                val selectedVouchers = widget.vouchers.map { item ->
+                    val voucher = item as Voucher
+                    if (selectedVoucher.id == voucher.id) {
+                        voucher.copy(voucherState = VoucherState.Normal)
+                    } else {
+                        voucher
+                    }
+                }
+
+                widget.copy(vouchers = selectedVouchers)
+            } else {
+                widget
+            }
+        }
+
+        _vouchers.value = Success(updatedVouchers)
+
+        selectedVouchersSet.removeAll { voucher -> voucher.id == selectedVoucher.id }
+        _selectedVouchers.value = selectedVouchersSet
     }
 
     fun onCtaUseVoucherCodeClick(voucherCode: String) {
@@ -140,10 +201,10 @@ class PromoUsageViewModel @Inject constructor(
                     }
                 }
 
-                _items.postValue(Success(updatedItems))
+                _vouchers.postValue(Success(updatedItems))
             },
             onError = { throwable ->
-                _items.postValue(Fail(throwable))
+                _vouchers.postValue(Fail(throwable))
             }
         )
     }
@@ -161,7 +222,7 @@ class PromoUsageViewModel @Inject constructor(
             }
         }
 
-        _items.value = Success(updatedItems)
+        _vouchers.value = Success(updatedItems)
     }
 
     private fun Result<List<DelegateAdapterItem>>.currentItemsOrEmpty(): List<DelegateAdapterItem> {
@@ -238,12 +299,12 @@ class PromoUsageViewModel @Inject constructor(
         Voucher(
             3,
             100_000,
-            "Cashback - Selected",
+            "Cashback - Normal",
             "2 hari",
             "https://images.tokopedia.net/img/android/promo/ic_voucher_cashback/ic_voucher_cashback.png",
             "https://images.tokopedia.net/img/android/promo/bg_supergraphic_cashback/bg_supergraphic_cashback.png",
             VoucherType.CASHBACK,
-            VoucherState.Selected,
+            VoucherState.Normal,
             VoucherSource.Promo,
             false
         ),
@@ -312,12 +373,12 @@ class PromoUsageViewModel @Inject constructor(
         Voucher(
             8,
             100_000,
-            "Free shipping - Selected",
+            "Free shipping - Normal",
             "2 hari",
             "https://images.tokopedia.net/img/android/promo/ic_voucher_cashback/ic_voucher_cashback.png",
             "https://images.tokopedia.net/img/android/promo/bg_supergraphic_cashback/bg_supergraphic_cashback.png",
             VoucherType.FREE_SHIPPING,
-            VoucherState.Selected,
+            VoucherState.Normal,
             VoucherSource.Promo,
             true
         ),
@@ -374,12 +435,12 @@ class PromoUsageViewModel @Inject constructor(
         Voucher(
             13,
             100_000,
-            "Discount - Selected",
+            "Discount - Normal",
             "2 hari",
             "https://images.tokopedia.net/img/android/promo/ic_voucher_cashback/ic_voucher_cashback.png",
             "https://images.tokopedia.net/img/android/promo/bg_supergraphic_cashback/bg_supergraphic_cashback.png",
             VoucherType.DISCOUNT,
-            VoucherState.Selected,
+            VoucherState.Normal,
             VoucherSource.Promo,
             true
         ),
