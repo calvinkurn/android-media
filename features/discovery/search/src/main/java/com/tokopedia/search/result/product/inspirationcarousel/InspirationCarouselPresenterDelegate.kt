@@ -111,7 +111,7 @@ class InspirationCarouselPresenterDelegate @Inject constructor(
         externalReference: String
     ) = when {
         data.isDynamicProductLayout() ->
-            convertInspirationCarouselToBroadMatch(data, externalReference)
+            convertInspirationCarouselToSeamlessInspiration(data, externalReference)
 
         data.isVideoLayout() ->
             convertInspirationCarouselToInspirationCarouselVideo(data)
@@ -123,7 +123,7 @@ class InspirationCarouselPresenterDelegate @Inject constructor(
             inspirationListAtcPresenterDelegate.convertInspirationCarouselToInspirationListAtc(data)
 
         data.isSeamlessLayout() ->
-            convertInspirationCarouselToSeamlessInspiration(data)
+            convertInspirationCarouselToSeamlessInspiration(data, externalReference)
 
         else ->
             listOf(data)
@@ -179,12 +179,14 @@ class InspirationCarouselPresenterDelegate @Inject constructor(
     }
 
     private fun convertInspirationCarouselToSeamlessInspiration(
-        data: InspirationCarouselDataView
+        data: InspirationCarouselDataView,
+        externalReference: String
     ): List<Visitable<*>> {
         val inspirationKeywordVisitableList = mutableListOf<Visitable<*>>()
         val (inspirationKeyboard, inspirationProduct) = InspirationSeamlessMapper.convertToInspirationList(
             data.options,
-            data.type
+            data.type,
+            externalReference
         )
         inspirationKeywordVisitableList.add(
             InspirationKeyboardCardView.create(data.title, inspirationKeyboard)

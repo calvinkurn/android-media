@@ -8,7 +8,8 @@ object InspirationSeamlessMapper {
 
     fun convertToInspirationList(
         inspirationOptions: List<InspirationCarouselDataView.Option>,
-        type: String
+        type: String,
+        externalReference: String
     ):
         Pair<List<InspirationKeywordDataView>, List<InspirationProductItemDataView>> {
         val listOfInspirationKeywordItems = mutableListOf<InspirationKeywordDataView>()
@@ -17,7 +18,7 @@ object InspirationSeamlessMapper {
             listOfInspirationKeywordItems.add(
                 option.convertToInspirationKeywordDataView(type)
             )
-            listOfOptionProductItems.addAll(option.getTopThreeOfInspirationProduct())
+            listOfOptionProductItems.addAll(option.getTopThreeOfInspirationProduct(externalReference))
         }
         return Pair(listOfInspirationKeywordItems, listOfOptionProductItems)
     }
@@ -28,7 +29,7 @@ object InspirationSeamlessMapper {
             type,
         )
 
-    private fun InspirationCarouselDataView.Option.getTopThreeOfInspirationProduct(): List<InspirationProductItemDataView> {
+    private fun InspirationCarouselDataView.Option.getTopThreeOfInspirationProduct(externalReference : String): List<InspirationProductItemDataView> {
         val listOfOptionProductItems = mutableListOf<InspirationProductItemDataView>()
         this.product.mapIndexed { index, product ->
             if (index < MAXIMUM_INSPIRATION_PRODUCT_ITEM) {

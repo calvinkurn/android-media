@@ -6,7 +6,7 @@ import com.tokopedia.search.result.presentation.view.typefactory.ProductListType
 
 data class InspirationKeyboardCardView(
     val title: String = "",
-    val optionsItems: List<InspirationKeywordDataView>,
+    val optionsItems: List<InspirationKeywordDataView>
 ) : Visitable<ProductListTypeFactory> {
     override fun type(typeFactory: ProductListTypeFactory?): Int {
         return typeFactory?.type(this).orZero()
@@ -19,7 +19,7 @@ data class InspirationKeyboardCardView(
         ): InspirationKeyboardCardView {
             return InspirationKeyboardCardView(
                 title = title,
-                optionsItems = optionsItems,
+                optionsItems = optionsItems
             )
         }
     }

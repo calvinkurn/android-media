@@ -4,11 +4,14 @@ import com.tokopedia.search.utils.FragmentProvider
 
 class InspirationKeywordListenerDelegate(
     private val presenter: InspirationKeywordPresenter?,
-    fragmentProvider: FragmentProvider,
+    fragmentProvider: FragmentProvider
 ) : InspirationKeywordListener,
     FragmentProvider by fragmentProvider {
+    override fun onInspirationKeywordImpressed(inspirationKeywordData: InspirationKeywordDataView) {
+        presenter?.onInspirationKeywordImpressed(inspirationKeywordData)
+    }
 
-    override fun onBroadMatchItemClicked(broadMatchItemDataView: InspirationKeywordDataView) {
-        presenter?.onInspirationKeywordItemClick(broadMatchItemDataView)
+    override fun onInspirationKeywordItemClicked(inspirationKeywordData: InspirationKeywordDataView) {
+        presenter?.onInspirationKeywordItemClick(inspirationKeywordData)
     }
 }

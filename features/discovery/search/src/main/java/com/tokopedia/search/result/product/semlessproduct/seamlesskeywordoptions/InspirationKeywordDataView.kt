@@ -9,16 +9,14 @@ import com.tokopedia.search.result.product.semlessproduct.utils.INDEX_IMAGE_PROD
 
 data class InspirationKeywordDataView(
     val keyword: String = "",
-    val subtitle: String = "",
     val imageKeyword: String = "",
     val url: String = "",
     val applink: String = "",
     val isAppendTitleInTokopedia: Boolean = false,
     val dimension90: String = "",
-    val carouselOptionType: CarouselOptionType,
     val componentId: String = "",
     val trackingOption: Int = 0,
-    val actualKeyword: String = "",
+    val actualKeyword: String = ""
 ) : ImpressHolder(),
     SearchComponentTracking by searchComponentTracking(
         trackingOption = trackingOption,
@@ -32,14 +30,12 @@ data class InspirationKeywordDataView(
 
         fun create(
             option: InspirationCarouselDataView.Option,
-            type: String,
+            type: String
         ) = InspirationKeywordDataView(
             keyword = option.title,
-            subtitle = option.subtitle,
             imageKeyword = option.getFirstProductItemImage(),
             applink = option.applink,
-            carouselOptionType = CarouselOptionType.of(type, option),
-            trackingOption = option.trackingOption,
+            trackingOption = option.trackingOption
         )
         private fun InspirationCarouselDataView.Option.getFirstProductItemImage() = this.product[INDEX_IMAGE_PRODUCT_FOR_IMAGE_KEYWORD].imgUrl
     }

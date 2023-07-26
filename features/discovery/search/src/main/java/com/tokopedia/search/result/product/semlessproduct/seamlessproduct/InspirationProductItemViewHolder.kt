@@ -40,15 +40,6 @@ class InspirationProductItemViewHolder(
 
         productCardView.setProductModel(productCardModel)
 
-        /*productCardView.setThreeDotsOnClickListener {
-            inspirationProductListener.onInspirationProductItemThreeDotsClicked(productItemData)
-        }
-
-        productCardView.setOnLongClickListener {
-            inspirationProductListener.onInspirationProductItemThreeDotsClicked(productItemData)
-            true
-        }*/
-
         productCardView.setOnClickListener {
             inspirationProductListener.onInspirationProductItemClicked(productItemData)
         }

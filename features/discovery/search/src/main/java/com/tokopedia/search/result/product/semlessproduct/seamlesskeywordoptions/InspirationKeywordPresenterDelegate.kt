@@ -9,19 +9,21 @@ class InspirationKeywordPresenterDelegate @Inject constructor(
     private val inspirationKeywordView: InspirationKeywordView,
     private val applinkModifier: ApplinkModifier
 ) : InspirationKeywordPresenter {
+    override fun onInspirationKeywordImpressed(inspirationKeywordData: InspirationKeywordDataView) {
+        inspirationKeywordView.trackEventImpressionInspirationKeyword(inspirationKeywordData)
+    }
 
     override fun onInspirationKeywordItemClick(inspirationKeywordItemDataView: InspirationKeywordDataView) {
         val applink = applinkModifier.modifyApplink(inspirationKeywordItemDataView.applink)
-        handleBroadMatchSeeMoreClick(inspirationKeywordItemDataView, applink)
+        handleInspirationKeywordItemClick(inspirationKeywordItemDataView, applink)
     }
 
-    private fun handleBroadMatchSeeMoreClick(
-        broadMatchDataView: InspirationKeywordDataView,
+    private fun handleInspirationKeywordItemClick(
+        inspirationKeyword: InspirationKeywordDataView,
         applink: String
     ) {
-        trackClickItemKeywordClick(broadMatchDataView)
-
-        inspirationKeywordView.openLink(applink, broadMatchDataView.url)
+        trackClickItemKeywordClick(inspirationKeyword)
+        inspirationKeywordView.openLink(applink, inspirationKeyword.url)
     }
 
     private fun trackClickItemKeywordClick(inspirationKeyword: InspirationKeywordDataView) {

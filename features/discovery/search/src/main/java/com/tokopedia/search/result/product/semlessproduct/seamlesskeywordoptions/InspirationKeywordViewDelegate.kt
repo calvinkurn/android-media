@@ -1,6 +1,7 @@
 package com.tokopedia.search.result.product.semlessproduct.seamlesskeywordoptions
 
 import android.content.Context
+import com.tokopedia.iris.Iris
 import com.tokopedia.search.di.qualifier.SearchContext
 import com.tokopedia.search.di.scope.SearchScope
 import com.tokopedia.search.result.product.QueryKeyProvider
@@ -14,20 +15,27 @@ import javax.inject.Inject
 
 @SearchScope
 class InspirationKeywordViewDelegate @Inject constructor(
+    private val iris: Iris,
     @SearchContext
     context: Context,
-    queryKeyProvider: QueryKeyProvider,
+    queryKeyProvider: QueryKeyProvider
 ) : InspirationKeywordView,
     ApplinkOpener by ApplinkOpenerDelegate,
     ContextProvider by WeakReferenceContextProvider(context),
     QueryKeyProvider by queryKeyProvider {
+    override fun trackEventImpressionInspirationKeyword(inspirationKeywordData: InspirationKeywordDataView) {
+        BroadMatchTracking.trackEventImpressionBroadMatch(
+            iris,
+            inspirationKeywordData
+        )
+    }
 
-    override fun trackEventClickItemInspirationKeyword(broadMatchDataView: InspirationKeywordDataView) {
+    override fun trackEventClickItemInspirationKeyword(inspirationKeywordData: InspirationKeywordDataView) {
         BroadMatchTracking.trackEventClickBroadMatchSeeMore(
-            broadMatchDataView,
+            inspirationKeywordData,
             queryKey,
-            broadMatchDataView.keyword,
-            broadMatchDataView.dimension90,
+            inspirationKeywordData.keyword,
+            inspirationKeywordData.dimension90,
         )
     }
 

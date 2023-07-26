@@ -10,11 +10,11 @@ abstract class InspirationKeywordModule {
     @Binds
     @SearchScope
     abstract fun provideInspirationKeywordView(
-        broadMatchViewDelegate: InspirationKeywordViewDelegate
+        inspirationKeywordViewDelegate: InspirationKeywordViewDelegate
     ): InspirationKeywordView
 
     @Binds
     abstract fun provideInspirationKeywordPresenter(
-        broadMatchPresenterDelegate: InspirationKeywordPresenterDelegate
+        inspirationKeywordPresenterDelegate: InspirationKeywordPresenterDelegate
     ): InspirationKeywordPresenter
 }
