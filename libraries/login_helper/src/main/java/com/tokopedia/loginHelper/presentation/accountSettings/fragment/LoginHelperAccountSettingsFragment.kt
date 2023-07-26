@@ -106,6 +106,11 @@ class LoginHelperAccountSettingsFragment : BaseDaggerFragment() {
             viewModel.processEvent(LoginHelperAccountSettingsEvent.GoToLoginHelperHome)
         }
     }
+//
+//    override fun onFragmentBackPressed(): Boolean {
+//        goToPage(ApplinkConstInternalGlobal.LOGIN_HELPER)
+//        return true
+//    }
 
     override fun getScreenName(): String {
         return context?.resources?.getString(com.tokopedia.loginHelper.R.string.login_helper_accounts_header_title)

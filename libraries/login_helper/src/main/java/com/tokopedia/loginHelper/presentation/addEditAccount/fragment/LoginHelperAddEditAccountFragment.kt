@@ -34,7 +34,6 @@ import com.tokopedia.loginHelper.util.showToasterError
 import com.tokopedia.url.Env
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -129,7 +128,7 @@ class LoginHelperAddEditAccountFragment : BaseDaggerFragment() {
     private fun observeUiAction() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.uiAction.onEach { action ->
+                viewModel.uiAction.collect { action ->
                     handleAction(action)
                 }
             }
@@ -138,8 +137,8 @@ class LoginHelperAddEditAccountFragment : BaseDaggerFragment() {
 
     private fun handleAction(action: LoginHelperAddEditAccountAction) {
         when (action) {
-            is LoginHelperAddEditAccountAction.GoToRoute -> {
-                goToRoute(action.route)
+            is LoginHelperAddEditAccountAction.TapBackAction -> {
+                goToAccountSettingsScreen()
             }
             is LoginHelperAddEditAccountAction.GoToLoginHelperHome -> {
                 binding?.btnSaveToLocal?.isLoading = false
@@ -167,8 +166,13 @@ class LoginHelperAddEditAccountFragment : BaseDaggerFragment() {
         binding?.btnSaveToDb?.isLoading = state
     }
 
-    private fun goToRoute(route: String) {
-        RouteManager.route(context, route)
+    private fun goToAccountSettingsScreen() {
+        RouteManager.route(context, ApplinkConstInternalGlobal.LOGIN_HELPER_ACCOUNTS_SETTINGS)
+    }
+
+    override fun onFragmentBackPressed(): Boolean {
+        goToAccountSettingsScreen()
+        return true
     }
 
     private fun showSuccessAndGoToHomePage(isRemote: Boolean = false) {

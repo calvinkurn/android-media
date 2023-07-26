@@ -4,7 +4,6 @@ import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.encryption.security.AESEncryptorCBC
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
