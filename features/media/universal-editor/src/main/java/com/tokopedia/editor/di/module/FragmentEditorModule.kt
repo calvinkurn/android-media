@@ -4,7 +4,9 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import com.tokopedia.abstraction.base.view.fragment.FragmentKey
 import com.tokopedia.abstraction.base.view.fragment.TkpdFragmentFactory
+import com.tokopedia.editor.ui.fragment.image.placement.ImagePlacementFragment
 import com.tokopedia.editor.ui.fragment.main.MainEditorFragment
+import com.tokopedia.editor.ui.fragment.text.InputTextFragment
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -19,5 +21,15 @@ abstract class FragmentEditorModule {
     @IntoMap
     @FragmentKey(MainEditorFragment::class)
     internal abstract fun bindMainEditorFragment(fragment: MainEditorFragment): Fragment
+
+    @Binds
+    @IntoMap
+    @FragmentKey(InputTextFragment::class)
+    internal abstract fun bindInputTextFragment(fragment: InputTextFragment): Fragment
+
+    @Binds
+    @IntoMap
+    @FragmentKey(ImagePlacementFragment::class)
+    internal abstract fun bindImagePlacementFragment(fragment: ImagePlacementFragment): Fragment
 
 }

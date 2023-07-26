@@ -1,8 +1,6 @@
 package com.tokopedia.editor.ui
 
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
-import com.tokopedia.editor.ui.fragment.main.MainEditorFragment
 
 interface EditorFragmentProvider : ImageFragmentProvider {
     /**

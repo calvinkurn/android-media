@@ -17,7 +17,7 @@ import androidx.fragment.app.Fragment
  * Don't forget to use a view-binding to maintain type safety of view object references.
  *
  */
-abstract class BaseEditorFragment(layoutId: Int) : Fragment(layoutId) {
+abstract class BaseEditorFragment : Fragment() {
 
     /**
      * Any particular views (e.g. initial view state, set text, observe the click listener)
@@ -44,7 +44,7 @@ abstract class BaseEditorFragment(layoutId: Int) : Fragment(layoutId) {
      *
      * And To get the data, we could get it through [onLoadSavedState] method.
      */
-    abstract fun onLoadSavedState(bundle: Bundle?)
+    protected open fun onLoadSavedState(bundle: Bundle?) = Unit
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
