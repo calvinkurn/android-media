@@ -11,9 +11,11 @@ data class FeedFollowRecommendationModel(
     val title: String,
     val description: String,
     val data: List<Profile>,
-    val hasNext: Boolean,
     val cursor: String,
 ) : Visitable<FeedAdapterTypeFactory> {
+
+    val hasNext: Boolean
+        get() = cursor.isNotEmpty()
 
     override fun type(typeFactory: FeedAdapterTypeFactory): Int = typeFactory.type(this)
 
@@ -21,10 +23,24 @@ data class FeedFollowRecommendationModel(
         val id: String,
         val name: String,
         val badge: String,
-        val type: String,
+        val type: ProfileType,
         val imageUrl: String,
         val thumbnailUrl: String,
         val videoUrl: String,
         val isFollow: Boolean,
     )
+
+    enum class ProfileType {
+        Seller, Ugc, Unknown;
+
+        companion object {
+            fun mapType(type: Int): ProfileType {
+                return when (type) {
+                    2 -> Seller
+                    3 -> Ugc
+                    else -> Unknown
+                }
+            }
+        }
+    }
 }

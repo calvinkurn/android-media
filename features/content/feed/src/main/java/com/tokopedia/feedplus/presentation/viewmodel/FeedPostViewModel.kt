@@ -33,6 +33,7 @@ import com.tokopedia.feedplus.domain.mapper.MapperTopAdsXFeed.transformCpmToFeed
 import com.tokopedia.feedplus.domain.usecase.FeedCampaignCheckReminderUseCase
 import com.tokopedia.feedplus.domain.usecase.FeedCampaignReminderUseCase
 import com.tokopedia.feedplus.domain.usecase.FeedXHomeUseCase
+import com.tokopedia.feedplus.domain.usecase.FeedXRecomWidgetUseCase
 import com.tokopedia.feedplus.presentation.adapter.FeedAdapterTypeFactory
 import com.tokopedia.feedplus.presentation.fragment.FeedBaseFragment
 import com.tokopedia.feedplus.presentation.model.FeedCardImageContentModel
@@ -109,6 +110,7 @@ class FeedPostViewModel @Inject constructor(
     private val trackReportTrackViewerUseCase: BroadcasterReportTrackViewerUseCase,
     private val getReportUseCase: GetUserReportListUseCase,
     private val postReportUseCase: PostUserReportUseCase,
+    private val feedXRecomWidgetUseCase: FeedXRecomWidgetUseCase,
     private val uiEventManager: UiEventManager<FeedPostEvent>,
     private val dispatchers: CoroutineDispatchers
 ) : ViewModel() {
