@@ -7,6 +7,7 @@ import com.tokopedia.recommendation_widget_common.domain.coroutines.GetSingleRec
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationLabel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -28,6 +29,7 @@ import com.tokopedia.wishlistcollection.view.viewmodel.WishlistCollectionViewMod
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.RelaxedMockK
+import io.mockk.mockkStatic
 import io.mockk.spyk
 import org.assertj.core.api.SoftAssertions
 import org.junit.Before
@@ -239,6 +241,8 @@ class WishlistCollectionViewModelTest {
             singleRecommendationUseCase.getData(any())
         } returns RecommendationWidget()
 
+        mockkStatic(RemoteConfigInstance::class)
+
         // when
         wishlistCollectionViewModel.getWishlistCollections()
 
@@ -257,6 +261,8 @@ class WishlistCollectionViewModelTest {
         coEvery {
             singleRecommendationUseCase.getData(any())
         } returns RecommendationWidget()
+
+        mockkStatic(RemoteConfigInstance::class)
 
         // when
         wishlistCollectionViewModel.getWishlistCollections()
