@@ -1236,7 +1236,7 @@ class ChatItemListViewModelTest {
         } returns true
 
         // When
-        val result = viewModel.getBooleanCache(BROADCAST_FAB_LABEL_PREF_NAME)
+        val result = viewModel.getBooleanCache("${BROADCAST_FAB_LABEL_PREF_NAME}_${userSession.userId}",)
 
         // Then
         assertEquals(result, true)
@@ -1251,10 +1251,10 @@ class ChatItemListViewModelTest {
 
         // When
         viewModel.saveBooleanCache(
-            BROADCAST_FAB_LABEL_PREF_NAME,
+            "${BROADCAST_FAB_LABEL_PREF_NAME}_${userSession.userId}",
             true
         )
-        val result = viewModel.getBooleanCache(BROADCAST_FAB_LABEL_PREF_NAME)
+        val result = viewModel.getBooleanCache("${BROADCAST_FAB_LABEL_PREF_NAME}_${userSession.userId}",)
 
         // Then
         assertEquals(result, true)
