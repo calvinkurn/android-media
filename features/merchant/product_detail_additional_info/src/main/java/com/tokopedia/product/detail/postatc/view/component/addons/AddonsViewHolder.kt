@@ -68,9 +68,13 @@ class AddonsViewHolder(
         callback.onSuccessSaveAddons(selectedAddonIds.size)
     }
 
-    override fun onAddonHelpClick(position: Int, addOnUIModel: AddOnUIModel) {
-//        val addonsData = addOnGroupUIModels.getOrNull(index) ?: return
-//        callback.onClickAddonsInfo(indexChild, addonsData)
+    override fun onAddonHelpClick(
+        index: Int,
+        indexChild: Int,
+        addonGroups: List<AddOnGroupUIModel>
+    ) {
+        val addonsData = addonGroups.getOrNull(index) ?: return
+        callback.onClickAddonsInfo(indexChild, addonsData)
     }
 
     override fun onAddOnItemImpression(
