@@ -3,7 +3,6 @@ package com.tokopedia.search.result.product.semlessproduct.seamlesskeywordoption
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.search.R
 import com.tokopedia.search.databinding.SearchInspirationSemlessItemKeywordBinding
@@ -22,14 +21,10 @@ class InspirationKeywordItemViewHolder(
     private var binding: SearchInspirationSemlessItemKeywordBinding? by viewBinding()
 
     fun bind(
-        inspirationKeywordDataView: InspirationKeywordDataView
+        inspirationKeywordDataView: InspirationKeywordDataView,
     ) {
         val binding = binding ?: return
-        val imageViewKeyword = binding.ivSearchKeyword
-        imageViewKeyword.addOnImpressionListener(inspirationKeywordDataView) {
-            inspirationKeywordListener.onInspirationKeywordImpressed(inspirationKeywordDataView)
-        }
-        imageViewKeyword.loadImage(inspirationKeywordDataView.imageKeyword)
+        binding.ivSearchKeyword.loadImage(inspirationKeywordDataView.imageKeyword)
         binding.textViewKeyword.text = inspirationKeywordDataView.keyword
         binding.root.setOnClickListener {
             inspirationKeywordListener.onInspirationKeywordItemClicked(inspirationKeywordDataView)

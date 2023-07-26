@@ -246,7 +246,7 @@ class ProductListTypeFactoryImpl(
         InspirationKeywordViewHolder.LAYOUT
 
     override fun type(inspirationProductCardView: InspirationProductItemDataView): Int =
-        InspirationProductItemViewHolder.LAYOUT
+        InspirationProductItemViewHolder.layout(isUsingViewStub)
 
     @Suppress("ComplexMethod")
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
@@ -313,8 +313,8 @@ class ProductListTypeFactoryImpl(
                 AdsLowOrganicTitleViewHolder(view)
             InspirationKeywordViewHolder.LAYOUT ->
                 InspirationKeywordViewHolder(view, inspirationKeywordListener)
-            InspirationProductItemViewHolder.LAYOUT ->
-                InspirationProductItemViewHolder(view, inspirationProductListener)
+            InspirationProductItemViewHolder.LAYOUT, InspirationProductItemViewHolder.LAYOUT_WITH_VIEW_STUB ->
+                InspirationProductItemViewHolder(view, inspirationProductListener, productListener)
 
             else -> super.createViewHolder(view, type)
         }

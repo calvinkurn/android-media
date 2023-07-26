@@ -52,6 +52,7 @@ class ProductListAdapter(
                 && viewType != SmallGridInspirationCardViewHolder.LAYOUT
                 && viewType != InspirationKeywordViewHolder.LAYOUT
                 && viewType != InspirationProductItemViewHolder.LAYOUT
+                && viewType != InspirationProductItemViewHolder.LAYOUT_WITH_VIEW_STUB
     }
 
     override fun onBindViewHolder(holder: AbstractViewHolder<*>, position: Int, payloads: List<Any>) {

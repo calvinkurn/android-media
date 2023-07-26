@@ -31,6 +31,12 @@ class ProductItemDecoration(private val spacing: Int) : ItemDecoration() {
         R.layout.search_result_same_session_recommendation_product_layout,
     )
 
+    private val layoutSeamlessInspirationCard = listOf(
+        R.layout.search_inspiration_seamless_product_card,
+        R.layout.search_inspiration_seamless_product_card_with_viewstub,
+        R.layout.search_inspiration_semless_keyword
+    )
+
     override fun getItemOffsets(outRect: Rect,
                                 view: View,
                                 parent: RecyclerView,
@@ -38,7 +44,7 @@ class ProductItemDecoration(private val spacing: Int) : ItemDecoration() {
 
         val absolutePos = parent.getChildAdapterPosition(view)
 
-        if (isProductItem(parent, absolutePos)) {
+        if (isProductItemOrSeamlessInspirationItem(parent, absolutePos)) {
             val relativePos = getProductItemRelativePosition(parent, view)
             val totalSpanCount = getTotalSpanCount(parent)
 
@@ -66,7 +72,7 @@ class ProductItemDecoration(private val spacing: Int) : ItemDecoration() {
     private fun getProductItemRelativePositionNotStaggeredGrid(parent: RecyclerView, view: View): Int {
         val absolutePos = parent.getChildAdapterPosition(view)
         var firstProductItemPos = absolutePos
-        while (isProductItem(parent, firstProductItemPos - 1)) firstProductItemPos--
+        while (isProductItemOrSeamlessInspirationItem(parent, firstProductItemPos - 1)) firstProductItemPos--
         return absolutePos - firstProductItemPos
     }
 
@@ -168,7 +174,7 @@ class ProductItemDecoration(private val spacing: Int) : ItemDecoration() {
     private fun getBottomOffsetNotBottomItem() = spacing / BOTTOM_OFFSET_NOT_BOTTOM_ITEM_DIVISOR - verticalCardViewOffset
 
     private fun isTopProductItem(parent: RecyclerView, absolutePos: Int, relativePos: Int, totalSpanCount: Int): Boolean {
-        return !isProductItem(parent, absolutePos - relativePos % totalSpanCount - 1)
+        return !isProductItemOrSeamlessInspirationItem(parent, absolutePos - relativePos % totalSpanCount - 1)
     }
 
     private fun isFirstInRow(relativePos: Int, spanCount: Int): Boolean {
@@ -179,9 +185,17 @@ class ProductItemDecoration(private val spacing: Int) : ItemDecoration() {
         return relativePos % spanCount == spanCount - 1
     }
 
+    private fun isProductItemOrSeamlessInspirationItem(parent: RecyclerView, viewPosition: Int) =
+        isProductItem(parent, viewPosition) || isSeamlessInspirationCard(parent, viewPosition)
+
     private fun isProductItem(parent: RecyclerView, viewPosition: Int): Boolean {
         val viewType = getRecyclerViewViewType(parent, viewPosition)
         return viewType != -1 && allowedViewTypes.contains(viewType)
+    }
+
+    private fun isSeamlessInspirationCard(parent: RecyclerView, viewPosition: Int): Boolean {
+        val viewType = getRecyclerViewViewType(parent, viewPosition)
+        return viewType != -1 && layoutSeamlessInspirationCard.contains(viewType)
     }
 
     private fun getRecyclerViewViewType(parent: RecyclerView, viewPosition: Int): Int {
