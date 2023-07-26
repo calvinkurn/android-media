@@ -5,26 +5,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.tokopedia.searchbar.navigation_component.NavToolbar
-        android:id="@+id/promo_navToolbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:elevation="1dp"
-        android:minHeight="?actionBarSize"
-        app:contentInsetLeft="0dp"
-        app:contentInsetStart="0dp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:toolbarAlwaysShowShadow="false"
-        app:toolbarBackButton="back"
-        app:toolbarContentType="typeCustom"
-        app:toolbarCustomContent="@layout/affiliate_navbar_custom_content"
-        app:toolbarInitialFillColor="@color/Unify_NN0"
-        app:toolbarInitialTheme="light" />
-
     <FrameLayout
         android:id="@+id/promo_web_view_container"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/promo_navToolbar" />
+        app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

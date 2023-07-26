@@ -16,22 +16,13 @@ import com.tokopedia.affiliate.PROMO_WEBVIEW_URL_STAGING
 import com.tokopedia.affiliate.SYSTEM_DOWN
 import com.tokopedia.affiliate.di.AffiliateComponent
 import com.tokopedia.affiliate.di.DaggerAffiliateComponent
-import com.tokopedia.affiliate.ui.activity.AffiliateActivity
 import com.tokopedia.affiliate.ui.activity.AffiliateRegistrationActivity
 import com.tokopedia.affiliate.ui.custom.AffiliateBaseFragment
 import com.tokopedia.affiliate.viewmodel.AffiliatePromoViewModel
 import com.tokopedia.affiliate_toko.R
 import com.tokopedia.affiliate_toko.databinding.AffiliatePromoWebviewLayoutBinding
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.searchbar.navigation_component.NavSource
-import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
-import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
-import com.tokopedia.searchbar.navigation_component.icons.IconList
-import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.url.Env
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSessionInterface
@@ -41,6 +32,11 @@ import javax.inject.Inject
 
 class AffiliatePromoWebViewFragment : AffiliateBaseFragment<AffiliatePromoViewModel>() {
     private var affiliatePromoViewModel: AffiliatePromoViewModel? = null
+    val url = if (TokopediaUrl.getInstance().TYPE == Env.STAGING) {
+        PROMO_WEBVIEW_URL_STAGING
+    } else {
+        PROMO_WEBVIEW_URL_PROD
+    }
 
     @Inject
     @JvmField
@@ -72,32 +68,8 @@ class AffiliatePromoWebViewFragment : AffiliateBaseFragment<AffiliatePromoViewMo
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        binding?.promoNavToolbar?.run {
-            val iconBuilder =
-                IconBuilder(builderFlags = IconBuilderFlag(pageSource = NavSource.AFFILIATE))
-            if (isAffiliateNCEnabled()) {
-                iconBuilder.addIcon(IconList.ID_NOTIFICATION, disableRouteManager = true) {
-                    affiliatePromoViewModel?.resetNotificationCount()
-                    sendNotificationClickEvent()
-                    RouteManager.route(
-                        context,
-                        ApplinkConstInternalMarketplace.AFFILIATE_NOTIFICATION
-                    )
-                }
-            }
-            iconBuilder
-                .addIcon(IconList.ID_NAV_GLOBAL) {}
-            setIcon(iconBuilder)
-            getCustomViewContentView()?.findViewById<Typography>(R.id.navbar_tittle)?.text =
-                getString(R.string.affiliate_promo)
-            setOnBackButtonClickListener {
-                (activity as? AffiliateActivity)?.handleBackButton(false)
-            }
-        }
-
         childFragmentManager.beginTransaction()
             .add(R.id.promo_web_view_container, getWebViewFragment())
-            .addToBackStack(null)
             .commit()
     }
 
