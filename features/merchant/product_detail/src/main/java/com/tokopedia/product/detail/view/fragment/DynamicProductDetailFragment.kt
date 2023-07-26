@@ -4400,7 +4400,7 @@ open class DynamicProductDetailFragment :
 
     private fun getLightToolbarIconColor(): Int {
         val unifyColor = if (requireContext().isDarkMode()) {
-            com.tokopedia.unifyprinciples.R.color.Unify_Static_White
+            com.tokopedia.unifyprinciples.R.color.Unify_N700_68
         } else {
             com.tokopedia.searchbar.R.color.searchbar_dms_state_light_icon
         }
