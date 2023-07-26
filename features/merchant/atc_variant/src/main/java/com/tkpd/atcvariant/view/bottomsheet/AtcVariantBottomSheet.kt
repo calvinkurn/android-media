@@ -39,6 +39,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow.EDUCATIONAL_INFO
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
+import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.imagepreview.ImagePreviewActivity
@@ -505,7 +506,7 @@ class AtcVariantBottomSheet :
                 ProductCartHelper.goToCartCheckout(getAtcActivity(), cartId)
             }
             ProductDetailCommonConstant.ATC_BUTTON -> {
-                onSuccessAtc(result.errorMessage.firstOrNull(), cartId)
+                onSuccessAtc(result)
             }
         }
     }
@@ -604,14 +605,16 @@ class AtcVariantBottomSheet :
         }
     }
 
-    private fun onSuccessAtc(successMessage: String?, cartId: String) {
+    private fun onSuccessAtc(cartDataModel: AddToCartDataModel) {
+        val successMessage = cartDataModel.errorMessage.firstOrNull()
+        val cartData = cartDataModel.data
         val context = context ?: return
         val productId = adapter.getHeaderDataModel()?.productId ?: return
         val variantAggregatorData = viewModel.getVariantAggregatorData() ?: return
         val postAtcLayoutId = variantAggregatorData.variantData.postAtcLayout.layoutId
 
         if (postAtcLayoutId.isEmpty()) {
-            val message = if (successMessage == null || successMessage.isEmpty()) {
+            val message = if (successMessage.isNullOrEmpty()) {
                 context.getString(com.tokopedia.product.detail.common.R.string.merchant_product_detail_success_atc_default)
             } else {
                 successMessage
@@ -629,10 +632,10 @@ class AtcVariantBottomSheet :
             viewModel.updateActivityResult(
                 atcSuccessMessage = message,
                 requestCode = ProductDetailCommonConstant.REQUEST_CODE_CHECKOUT,
-                cartId = cartId
+                cartId = cartData.cartId
             )
         } else {
-            showPostATC(context, productId, postAtcLayoutId, cartId)
+            showPostATC(context, productId, postAtcLayoutId, cartData)
         }
     }
 
@@ -640,15 +643,21 @@ class AtcVariantBottomSheet :
         context: Context,
         productId: String,
         postAtcLayoutId: String,
-        cartId: String
+        cartData: DataModel
     ) {
         dismiss()
         PostAtcHelper.start(
             context,
             productId,
             layoutId = postAtcLayoutId,
-            cartId = cartId,
-            pageSource = PostAtcHelper.Source.PDP
+            cartId = cartData.cartId,
+            pageSource = PostAtcHelper.Source.PDP,
+            warehouseId = cartData.warehouseId,
+            isFulfillment = cartData.isFulfillment,
+            selectedAddonsIds = cartData.addOns.mapNotNull { item ->
+                item.id.takeIf { item.status == 1 }
+            },
+            quantity = cartData.quantity
         )
     }
 

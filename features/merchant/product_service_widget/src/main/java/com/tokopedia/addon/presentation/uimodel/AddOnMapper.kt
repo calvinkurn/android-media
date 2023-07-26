@@ -35,7 +35,8 @@ object AddOnMapper {
                     addOnType = it.basic.addOnType.toIntSafely(),
                     eduLink = it.basic.metadata.infoURL.eduPageURL,
                     uniqueId = it.basic.addOnKey,
-                    description = it.basic.metadata.description
+                    description = it.basic.metadata.description,
+                    shopId = it.basic.shopID
                 )
             }
             AddOnGroupUIModel(
@@ -67,9 +68,9 @@ object AddOnMapper {
         }
     }
 
-    fun getSelectedAddons(addOnGroupUIModels: List<AddOnGroupUIModel>): List<AddOnUIModel> {
+    fun getSelectedAddons(addOnGroupUIModels: List<AddOnGroupUIModel>?): List<AddOnUIModel> {
         val resultValue: MutableList<AddOnUIModel> = mutableListOf()
-        addOnGroupUIModels.forEach { addOnGroupUIModel ->
+        addOnGroupUIModels.orEmpty().forEach { addOnGroupUIModel ->
             resultValue.addAll(
                 addOnGroupUIModel.addon.filter { it.isSelected }
             )
@@ -88,6 +89,7 @@ object AddOnMapper {
     ): SaveAddOnStateRequest {
         val addons = flatmapToChangedAddonSelection(addonGroups)
         val request = AddOnRequest(
+            addOnKey = cartId.toString(),
             addOnLevel = addonGroups?.firstOrNull()?.addOnLevel.orEmpty(),
             cartProducts = listOf(
                 CartProduct(
@@ -123,9 +125,11 @@ object AddOnMapper {
 
     fun deepCopyAddonGroup(addonGroups: List<AddOnGroupUIModel>): List<AddOnGroupUIModel> {
         return addonGroups.map { group ->
-            group.copy(addon = group.addon.map { addon ->
-                addon.copy()
-            })
+            group.copy(
+                addon = group.addon.map { addon ->
+                    addon.copy()
+                }
+            )
         }
     }
 

@@ -66,5 +66,6 @@ data class Product(
     val shouldShowShopInfo: Boolean = false,
     val shopName: String = "",
     val shopTypeInfoData: ShopTypeInfoData = ShopTypeInfoData(),
-    val originWarehouseIds: List<Long> = emptyList()
+    val originWarehouseIds: List<Long> = emptyList(),
+    var campaignId: Int = -1
 ) : Parcelable

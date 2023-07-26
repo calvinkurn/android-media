@@ -9,5 +9,5 @@ data class ShipmentAddOnSummaryModel(
     var type: Int = -1,
     var qty: Int = -1,
     var priceLabel: String = "",
-    var priceValue: Double = 0.0
+    var priceValue: Long = 0L
 ) : Parcelable

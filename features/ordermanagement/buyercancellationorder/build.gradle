@@ -17,6 +17,8 @@ buildscript {
 }
 
 android {
+    namespace 'com.tokopedia.ordermanagement.buyercancellationorder'
+    testNamespace 'com.tokopedia.ordermanagement.buyercancellationorder.test'
     packagingOptions {
         exclude 'META-INF/**'
     }
@@ -43,7 +45,6 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.swipeRefresh
 
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
-    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
     implementation projectOrAar(rootProject.ext.libraries.graphql)
     implementation projectOrAar(rootProject.ext.libraries.applink)
     implementation projectOrAar(rootProject.ext.libraries.track)

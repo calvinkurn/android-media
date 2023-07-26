@@ -30,34 +30,51 @@ class PostAtcViewModel @Inject constructor(
     private val _recommendations = MutableLiveData<Pair<Int, Result<RecommendationWidget>>>()
     val recommendations: LiveData<Pair<Int, Result<RecommendationWidget>>> = _recommendations
 
-    val postAtcInfo: PostAtcInfo = PostAtcInfo()
+    var postAtcInfo: PostAtcInfo = PostAtcInfo()
+        private set
 
-    fun fetchLayout(
+    /**
+     * Pass data from Arguments
+     */
+    fun initializeParameters(
         productId: String,
         cartId: String,
+        isFulfillment: Boolean,
         layoutId: String,
-        pageSource: String
+        pageSource: String,
+        selectedAddonsIds: List<String>,
+        warehouseId: String,
+        quantity: Int
     ) {
+        postAtcInfo = postAtcInfo.copy(
+            productId = productId,
+            cartId = cartId,
+            isFulfillment = isFulfillment,
+            layoutId = layoutId,
+            pageSource = pageSource,
+            selectedAddonsIds = selectedAddonsIds,
+            warehouseId = warehouseId,
+            quantity = quantity
+        )
+
+        fetchLayout()
+    }
+
+    private fun fetchLayout() {
         launchCatchError(block = {
             val result = getPostAtcLayoutUseCase.execute(
-                productId,
-                cartId,
-                layoutId,
-                pageSource
+                postAtcInfo.productId,
+                postAtcInfo.cartId,
+                postAtcInfo.layoutId,
+                postAtcInfo.pageSource
             )
 
-            updateInfo(
-                productId,
-                cartId,
-                layoutId,
-                pageSource,
-                result
-            )
+            updateInfo(result)
 
             val components = result.components
             if (components.isEmpty()) throw Throwable()
 
-            val uiModels = result.components.mapToUiModel()
+            val uiModels = result.components.mapToUiModel(postAtcInfo)
             _layouts.value = uiModels.asSuccess()
         }, onError = { _layouts.value = it.asFail() })
     }
@@ -84,25 +101,25 @@ class PostAtcViewModel @Inject constructor(
         })
     }
 
-    private fun updateInfo(
-        productId: String,
-        cartId: String,
-        layoutId: String,
-        pageSource: String,
-        data: PostAtcLayout
-    ) {
-        postAtcInfo.apply {
-            this.productId = productId
-            this.cartId = cartId
-            this.layoutId = layoutId
-            this.pageSource = pageSource
-            layoutName = data.name
+    private fun updateInfo(data: PostAtcLayout) {
+        val basicInfo = data.basicInfo
+        val category = basicInfo.category
+        val footer = PostAtcInfo.Footer(
+            image = data.postAtcInfo.image,
+            description = data.postAtcInfo.title,
+            buttonText = data.postAtcInfo.button.text,
+            cartId = data.postAtcInfo.button.cartId
+        )
 
-            val basicInfo = data.basicInfo
-            val category = basicInfo.category
-            categoryId = category.id
-            categoryName = category.name
-            shopId = basicInfo.shopId
-        }
+        postAtcInfo = postAtcInfo.copy(
+            categoryId = category.id,
+            categoryName = category.name,
+            footer = footer,
+            layoutName = data.name,
+            shopId = basicInfo.shopId,
+            price = basicInfo.price,
+            originalPrice = basicInfo.originalPrice,
+            condition = basicInfo.condition
+        )
     }
 }

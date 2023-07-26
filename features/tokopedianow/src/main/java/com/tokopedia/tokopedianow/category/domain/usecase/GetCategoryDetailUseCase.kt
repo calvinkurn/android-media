@@ -6,6 +6,7 @@ import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.tokopedianow.category.domain.query.CategoryDetail
 import com.tokopedia.tokopedianow.category.domain.response.CategoryDetailResponse
+import com.tokopedia.tokopedianow.common.domain.model.WarehouseData
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
@@ -20,7 +21,7 @@ class GetCategoryDetailUseCase @Inject constructor(
         const val PARAM_CATEGORY_ID = "categoryID"
         const val PARAM_SLUG = "slug"
         const val PARAM_SOURCE = "source"
-        const val PARAM_WAREHOUSE_ID = "warehouseID"
+        const val PARAM_WAREHOUSES = "warehouses"
     }
 
     private val graphql by lazy { GraphqlUseCase<CategoryDetailResponse>(graphqlRepository) }
@@ -33,7 +34,7 @@ class GetCategoryDetailUseCase @Inject constructor(
     }
 
     suspend fun execute(
-        warehouseId: String,
+        warehouses: List<WarehouseData>,
         categoryIdL1: String
     ): CategoryDetailResponse {
         graphql.setRequestParams(
@@ -41,7 +42,7 @@ class GetCategoryDetailUseCase @Inject constructor(
                 putString(PARAM_CATEGORY_ID, categoryIdL1)
                 putString(PARAM_SLUG, String.EMPTY)
                 putString(PARAM_SOURCE, CATEGORY_PAGE_L1_SOURCE)
-                putString(PARAM_WAREHOUSE_ID, warehouseId)
+                putObject(PARAM_WAREHOUSES, warehouses)
             }.parameters
         )
         val detailResponse = graphql.executeOnBackground()

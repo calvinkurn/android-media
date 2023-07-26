@@ -15,7 +15,8 @@ data class AddOnUIModel(
     var addOnType: Int = 0,
     var eduLink: String = "",
     var uniqueId: String = "",
-    var description: String = ""
+    var description: String = "",
+    var shopId: String = ""
 ) : Serializable {
     fun getSelectedStatus(): AddOnSelectedStatus {
         return when {
@@ -49,6 +50,7 @@ data class AddOnPageResult(
     data class AggregatedData(
         val title: String = "",
         val price: Long = 0,
+        val selectedAddons: List<AddOnUIModel> = emptyList(),
         var isGetDataSuccess: Boolean = false,
         val getDataErrorMessage: String = ""
     ) : Parcelable

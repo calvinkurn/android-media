@@ -16,7 +16,6 @@ import com.tokopedia.content.common.databinding.FragmentGlobalSearchShopTabBindi
 import com.tokopedia.content.common.producttag.analytic.coordinator.ShopImpressionCoordinator
 import com.tokopedia.content.common.producttag.analytic.product.ContentProductTagAnalytic
 import com.tokopedia.content.common.producttag.util.extension.getVisibleItems
-import com.tokopedia.content.common.producttag.util.extension.withCache
 import com.tokopedia.content.common.producttag.view.adapter.ShopCardAdapter
 import com.tokopedia.content.common.producttag.view.fragment.base.BaseProductTagChildFragment
 import com.tokopedia.content.common.producttag.view.uimodel.NetworkResult
@@ -26,6 +25,7 @@ import com.tokopedia.content.common.producttag.view.uimodel.event.ProductTagUiEv
 import com.tokopedia.content.common.producttag.view.uimodel.state.GlobalSearchShopUiState
 import com.tokopedia.content.common.producttag.view.viewmodel.ProductTagViewModel
 import com.tokopedia.content.common.util.getParentFragmentByInstance
+import com.tokopedia.content.common.util.withCache
 import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.sortfilter.SortFilterItem

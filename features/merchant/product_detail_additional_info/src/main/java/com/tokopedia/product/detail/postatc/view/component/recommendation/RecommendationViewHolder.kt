@@ -2,7 +2,7 @@ package com.tokopedia.product.detail.postatc.view.component.recommendation
 
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.product.detail.databinding.ItemRecommendationBinding
-import com.tokopedia.product.detail.postatc.base.PostAtcListener
+import com.tokopedia.product.detail.postatc.base.PostAtcCallback
 import com.tokopedia.product.detail.postatc.base.PostAtcViewHolder
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecomCarouselWidgetBasicListener
@@ -11,7 +11,7 @@ import com.tokopedia.recommendation_widget_common.widget.carousel.Recommendation
 
 class RecommendationViewHolder(
     private val binding: ItemRecommendationBinding,
-    private val listener: PostAtcListener
+    private val callback: PostAtcCallback
 ) : PostAtcViewHolder<RecommendationUiModel>(binding.root),
     RecomCarouselWidgetBasicListener,
     RecommendationCarouselTokonowListener {
@@ -25,7 +25,7 @@ class RecommendationViewHolder(
                     basicListener = this@RecommendationViewHolder,
                     tokonowListener = this@RecommendationViewHolder
                 )
-                listener.fetchRecommendation(element.name, element.id)
+                callback.fetchRecommendation(element.name, element.id)
             } else {
                 postAtcRecommCarousel.bind(
                     carouselData = RecommendationCarouselData(
@@ -36,7 +36,7 @@ class RecommendationViewHolder(
                     tokonowListener = this@RecommendationViewHolder
                 )
                 root.addOnImpressionListener(element.impressHolder) {
-                    listener.impressComponent(getComponentTrackData(element))
+                    callback.impressComponent(getComponentTrackData(element))
                 }
             }
         }
@@ -46,7 +46,7 @@ class RecommendationViewHolder(
     }
 
     override fun onSeeAllBannerClicked(data: RecommendationCarouselData, applink: String) {
-        listener.goToAppLink(applink)
+        callback.goToAppLink(applink)
     }
 
     override fun onRecomChannelImpressed(data: RecommendationCarouselData) {
@@ -58,7 +58,7 @@ class RecommendationViewHolder(
         itemPosition: Int,
         adapterPosition: Int
     ) {
-        listener.onImpressRecommendationItem(recomItem)
+        callback.onImpressRecommendationItem(recomItem)
     }
 
     override fun onRecomProductCardClicked(
@@ -68,7 +68,7 @@ class RecommendationViewHolder(
         itemPosition: Int,
         adapterPosition: Int
     ) {
-        listener.onClickRecommendationItem(recomItem)
+        callback.onClickRecommendationItem(recomItem)
     }
 
     override fun onRecomBannerImpressed(data: RecommendationCarouselData, adapterPosition: Int) {

@@ -22,15 +22,19 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
+import com.tokopedia.addon.presentation.uimodel.AddOnExtraConstant
+import com.tokopedia.addon.presentation.uimodel.AddOnPageResult
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.analytics.performance.util.EmbraceKey
 import com.tokopedia.analytics.performance.util.EmbraceMonitoring.stopMoments
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalFintech
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.PARAM_SOURCE
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.checkout.R
@@ -97,6 +101,7 @@ import com.tokopedia.common_epharmacy.EPHARMACY_REDIRECT_CART_RESULT_CODE
 import com.tokopedia.common_epharmacy.EPHARMACY_REDIRECT_CHECKOUT_RESULT_CODE
 import com.tokopedia.common_epharmacy.network.response.EPharmacyMiniConsultationResult
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.common.ChosenAddress
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressTokonow
 import com.tokopedia.localizationchooseaddress.domain.mapper.TokonowWarehouseMapper.mapWarehousesAddAddressModelToLocal
@@ -160,6 +165,7 @@ import com.tokopedia.purchase_platform.common.constant.ARGS_VALIDATE_USE_REQUEST
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant.ADD_ON_PRODUCT_STATUS_CHECK
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant.ADD_ON_PRODUCT_STATUS_UNCHECK
+import com.tokopedia.purchase_platform.common.constant.AddOnConstant.SOURCE_NORMAL_CHECKOUT
 import com.tokopedia.purchase_platform.common.constant.CartConstant
 import com.tokopedia.purchase_platform.common.constant.CartConstant.SCREEN_NAME_CART_NEW_USER
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
@@ -199,6 +205,7 @@ import com.tokopedia.purchase_platform.common.feature.promonoteligible.NotEligib
 import com.tokopedia.purchase_platform.common.feature.sellercashback.SellerCashbackListener
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementHolderData
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
+import com.tokopedia.purchase_platform.common.utils.removeSingleDecimalSuffix
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
@@ -517,6 +524,10 @@ class ShipmentFragment :
             REQUEST_CODE_UPSELL -> {
                 onResultFromUpsell(data)
             }
+
+            REQUEST_CODE_ADD_ON_PRODUCT_SERVICE_BOTTOMSHEET -> {
+                onResultFromAddOnProductBottomSheet(resultCode, data)
+            }
         }
     }
     // endregion
@@ -537,7 +548,7 @@ class ShipmentFragment :
         activity?.window?.decorView?.setBackgroundColor(
             ContextCompat.getColor(
                 activity,
-                com.tokopedia.unifyprinciples.R.color.Unify_N50
+                com.tokopedia.unifyprinciples.R.color.Unify_NN50
             )
         )
     }
@@ -3875,13 +3886,13 @@ class ShipmentFragment :
 
     override fun onCheckboxAddonProductListener(isChecked: Boolean, addOnProductDataItemModel: AddOnProductDataItemModel, cartItemModel: CartItemModel, bindingAdapterPosition: Int) {
         if (isChecked) {
-            addOnProductDataItemModel.addOnDataStatus = ADD_ON_PRODUCT_STATUS_CHECK
+            addOnProductDataItemModel.status = ADD_ON_PRODUCT_STATUS_CHECK
         } else {
-            addOnProductDataItemModel.addOnDataStatus = ADD_ON_PRODUCT_STATUS_UNCHECK
+            addOnProductDataItemModel.status = ADD_ON_PRODUCT_STATUS_UNCHECK
         }
         cartItemModel.addOnProduct.listAddOnProductData.forEach {
-            if (it.addOnDataUniqueId == addOnProductDataItemModel.addOnDataUniqueId) {
-                it.addOnDataStatus = addOnProductDataItemModel.addOnDataStatus
+            if (it.uniqueId == addOnProductDataItemModel.uniqueId) {
+                it.status = addOnProductDataItemModel.status
             }
         }
         shipmentViewModel.saveAddOnsProduct(cartItemModel)
@@ -3899,17 +3910,41 @@ class ShipmentFragment :
         val cartId = cartItemModel.cartId
         val addOnIds = arrayListOf<Long>()
         cartItemModel.addOnProduct.listAddOnProductData.forEach { addOnItem ->
-            if (addOnItem.addOnDataStatus == ADD_ON_PRODUCT_STATUS_CHECK) {
-                addOnIds.add(addOnItem.addOnDataId)
+            if (addOnItem.status == ADD_ON_PRODUCT_STATUS_CHECK) {
+                addOnIds.add(addOnItem.id)
             }
         }
-        val warehouseId = cartItemModel.warehouseId
-        val isTokoCabang = cartItemModel.isTokoCabang // need to confirm
-        val applink = "tokopedia://addon/" + productId + "/?cartId=" + cartId +
-            "&selectedAddonIds=" + addOnIds.toString() + "&source=cart&warehouseId=" + warehouseId + "&isTokocabang=" + isTokoCabang
-        println("++ applink = " + applink)
+
+        var price: Double
+        var discountedPrice: Double
+        if (cartItemModel.campaignId == 0) {
+            price = cartItemModel.price
+            discountedPrice = cartItemModel.price
+        } else {
+            price = cartItemModel.originalPrice
+            discountedPrice = cartItemModel.price
+        }
+
+        val applinkAddon = ApplinkConst.ADDON.replace(AddOnConstant.QUERY_PARAM_ADDON_PRODUCT, productId.toString())
+        val applink = UriUtil.buildUriAppendParams(
+            applinkAddon,
+            mapOf(
+                AddOnConstant.QUERY_PARAM_CART_ID to cartId,
+                AddOnConstant.QUERY_PARAM_SELECTED_ADDON_IDS to addOnIds.toString().replace("[", "").replace("]", ""),
+                AddOnConstant.QUERY_PARAM_PAGE_ATC_SOURCE to SOURCE_NORMAL_CHECKOUT,
+                ApplinkConstInternalMechant.QUERY_PARAM_WAREHOUSE_ID to cartItemModel.warehouseId,
+                AddOnConstant.QUERY_PARAM_IS_TOKOCABANG to cartItemModel.isTokoCabang,
+                AddOnConstant.QUERY_PARAM_CATEGORY_ID to cartItemModel.productCatId,
+                AddOnConstant.QUERY_PARAM_SHOP_ID to cartItemModel.shopId,
+                AddOnConstant.QUERY_PARAM_QUANTITY to cartItemModel.quantity,
+                AddOnConstant.QUERY_PARAM_PRICE to price.toString().removeSingleDecimalSuffix(),
+                AddOnConstant.QUERY_PARAM_DISCOUNTED_PRICE to discountedPrice.toString().removeSingleDecimalSuffix()
+            )
+        )
+
         activity?.let {
-            RouteManager.route(it, applink)
+            val intent = RouteManager.getIntent(it, applink)
+            startActivityForResult(intent, REQUEST_CODE_ADD_ON_PRODUCT_SERVICE_BOTTOMSHEET)
         }
     }
     // endregion
@@ -4164,6 +4199,7 @@ class ShipmentFragment :
     }
     // endregion
 
+    // region platform fee
     override fun checkPlatformFee() {
         if (shipmentViewModel.getShipmentPlatformFeeData().isEnable) {
             val platformFeeModel = shipmentViewModel.shipmentCostModel.value.dynamicPlatformFee
@@ -4253,10 +4289,62 @@ class ShipmentFragment :
         hideLoaderTotalPayment()
         updateCost()
     }
+    // endregion
 
+    // region addons product service
     fun handleOnSuccessSaveAddOnProduct() {
         shipmentAdapter.checkDropshipperValidation()
     }
+
+    override fun addOnProductServiceImpression(addOnType: Int, productId: String) {
+        checkoutAnalyticsCourierSelection.eventViewAddOnsProductServiceWidget(addOnType, productId)
+    }
+
+    override fun onClickAddOnProductServiceWidgetItem(addOnType: Int, productId: String, isChecked: Boolean) {
+        checkoutAnalyticsCourierSelection.eventClickAddOnsProductServiceWidget(addOnType, productId, isChecked)
+    }
+
+    override fun onClickLihatSemuaAddOnProductServiceWidget() {
+        checkoutAnalyticsCourierSelection.eventClickLihatSemuaAddOnsProductServiceWidget()
+    }
+
+    private fun onResultFromAddOnProductBottomSheet(resultCode: Int, data: Intent?) {
+        if (resultCode == Activity.RESULT_OK) {
+            val addOnProductDataResult = data?.getParcelableExtra(AddOnExtraConstant.EXTRA_ADDON_PAGE_RESULT) ?: AddOnPageResult()
+
+            if (addOnProductDataResult.aggregatedData.isGetDataSuccess) {
+                val cartIdAddOn = addOnProductDataResult.cartId
+                val needUpdateAddOnItem = shipmentAdapter.getAddOnProductServicePosition(cartIdAddOn)
+
+                run loopAddOnProduct@{
+                    needUpdateAddOnItem.second?.addOnProduct?.listAddOnProductData?.forEach { addOnExisting ->
+                        for (addOnUiModel in addOnProductDataResult.aggregatedData.selectedAddons) {
+                            if (addOnUiModel.addOnType == addOnExisting.type) {
+                                addOnExisting.apply {
+                                    id = addOnUiModel.id.toLongOrZero()
+                                    uniqueId = addOnUiModel.uniqueId
+                                    price = addOnUiModel.price.toDouble()
+                                    infoLink = addOnUiModel.eduLink
+                                    name = addOnUiModel.name
+                                    status = addOnUiModel.getSelectedStatus().value
+                                    type = addOnUiModel.addOnType
+                                }
+                                onNeedUpdateViewItem(needUpdateAddOnItem.first)
+                                return@loopAddOnProduct
+                            }
+                        }
+                    }
+                }
+                updateCost()
+                shipmentAdapter.updateSubtotal()
+            } else {
+                view?.let { v ->
+                    Toaster.build(v, addOnProductDataResult.aggregatedData.getDataErrorMessage, type = Toaster.TYPE_ERROR).show()
+                }
+            }
+        }
+    }
+    // endregion
 
     companion object {
         private const val REQUEST_CODE_EDIT_ADDRESS = 11
@@ -4264,6 +4352,7 @@ class ShipmentFragment :
         private const val REQUEST_CODE_PROMO = 954
         const val REQUEST_CODE_UPLOAD_PRESCRIPTION = 10021
         const val REQUEST_CODE_MINI_CONSULTATION = 10022
+        const val REQUEST_CODE_ADD_ON_PRODUCT_SERVICE_BOTTOMSHEET = 10033
         private const val REQUEST_CODE_UPSELL = 777
         private const val ADD_ON_STATUS_ACTIVE = 1
         private const val ADD_ON_STATUS_DISABLE = 2

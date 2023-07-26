@@ -77,11 +77,11 @@ import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isValidGlideContext
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.linker.interfaces.ShareCallback
@@ -109,8 +109,10 @@ import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.searchbar.data.HintData
+import com.tokopedia.searchbar.navigation_component.NavSource
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
+import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.seller_migration_common.analytics.SellerMigrationTracking
 import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants
@@ -253,8 +255,7 @@ class ShopPageHeaderFragment :
     ScreenShotListener,
     PermissionListener,
     MiniCartWidgetListener,
-    FoldableSupportManager.FoldableInfoCallback
-{
+    FoldableSupportManager.FoldableInfoCallback {
 
     companion object {
         const val SHOP_ID = "EXTRA_SHOP_ID"
@@ -290,12 +291,14 @@ class ShopPageHeaderFragment :
         private const val PATH_FEED = "feed"
         private const val PATH_REVIEW = "review"
         private const val PATH_NOTE = "note"
+        private const val PATH_CAMPAIGN = "campaign"
         private const val QUERY_SHOP_REF = "shop_ref"
         private const val QUERY_SHOP_ATTRIBUTION = "tracker_attribution"
         private const val QUERY_AFFILIATE_UUID = "aff_unique_id"
         private const val QUERY_AFFILIATE_CHANNEL = "channel"
         private const val QUERY_CAMPAIGN_ID = "campaign_id"
         private const val QUERY_VARIANT_ID = "variant_id"
+        private const val QUERY_TAB = "tab"
         private const val START_PAGE = 1
         private const val IS_FIRST_TIME_VISIT = "isFirstTimeVisit"
         private const val SOURCE = "shop page"
@@ -323,6 +326,8 @@ class ShopPageHeaderFragment :
         private const val IMG_GENERATOR_SHOP_INFO_MAX_SIZE = 3
         private const val PARTIAL_SHOP_HEADER_MARGIN_BOTTOM_FOLDABLE = 8
         private const val WEBVIEW_ALLOW_OVERRIDE_FORMAT = "%s?allow_override=%b&url=%s"
+        private const val AFFILIATE_SITE_ID = "1"
+        private const val AFFILIATE_VERTICAL_ID = "1"
 
         @JvmStatic
         fun createInstance() = ShopPageHeaderFragment()
@@ -367,6 +372,7 @@ class ShopPageHeaderFragment :
     private var errorButton: View? = null
     private var shopPageFab: FloatingButtonUnify? = null
     private var isForceNotShowingTab: Boolean = false
+    private var isAffiliateShareIcon = false
 
     // tab icons
     private val iconTabHomeInactive: Int get() = IconUnify.SHOP
@@ -440,10 +446,11 @@ class ShopPageHeaderFragment :
 
     private var isConfettiAlreadyShown = false
     private var mBroadcasterConfig = Broadcaster.Config()
-    private val layoutPartialShopHeaderDefaultMarginBottom:  Int by lazy{
+    private val layoutPartialShopHeaderDefaultMarginBottom: Int by lazy {
         val layoutParams = viewBindingShopContentLayout?.layoutPartialShopPageHeader?.root?.layoutParams as? LinearLayout.LayoutParams
         layoutParams?.bottomMargin.orZero()
     }
+    private var queryParamTab: String = ""
 
     override fun getComponent() = activity?.run {
         DaggerShopPageHeaderComponent.builder().shopPageHeaderModule(ShopPageHeaderModule())
@@ -864,6 +871,9 @@ class ShopPageHeaderFragment :
                         it.tagline = result.data.shopCore.tagLine
                         it.shopStatus = result.data.statusInfo.shopStatus
                     }
+
+                    // check whether shop is eligible for affiliate or not
+                    checkAffiliate()
                 }
             }
         )
@@ -879,6 +889,12 @@ class ShopPageHeaderFragment :
                 }
             }
         )
+
+        shopHeaderViewModel?.resultAffiliate?.observe(viewLifecycleOwner) {
+            if (it is Success) {
+                updateShareIcon(it.data.eligibleCommission?.isEligible.orFalse())
+            }
+        }
     }
 
     private fun refreshCartCounterData() {
@@ -1118,6 +1134,7 @@ class ShopPageHeaderFragment :
                     if (lastPathSegment.orEmpty() == PATH_NOTE) {
                         shouldOpenShopNoteBottomSheet = true
                     }
+                    queryParamTab = getQueryParameter(QUERY_TAB).orEmpty()
                     shopRef = getQueryParameter(QUERY_SHOP_REF) ?: ""
                     shopAttribution = getQueryParameter(QUERY_SHOP_ATTRIBUTION) ?: ""
                     checkAffiliateAppLink(this)
@@ -1338,7 +1355,8 @@ class ShopPageHeaderFragment :
             etalaseId = "",
             isRefresh = isRefresh,
             widgetUserAddressLocalData = localCacheModel ?: LocalCacheModel(),
-            extParam = extParam
+            extParam = extParam,
+            tabName = getSelectedTabName().takeIf { it.isNotEmpty() } ?: queryParamTab
         )
     }
 
@@ -1363,9 +1381,9 @@ class ShopPageHeaderFragment :
 
     private fun updateBackButtonColorForSellerViewToolbar() {
         context?.let { context ->
-            var color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N500)
+            var color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN600)
             if (context.isDarkMode()) {
-                color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N200)
+                color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN500)
             }
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 toolbar?.navigationIcon?.colorFilter = BlendModeColorFilter(color, BlendMode.SRC_IN)
@@ -1379,13 +1397,8 @@ class ShopPageHeaderFragment :
         newNavigationToolbar?.apply {
             viewLifecycleOwner.lifecycle.addObserver(this)
             show()
-            val iconBuilder = IconBuilder()
-            val iconShare = if (isAffiliateShareIcon()) {
-                IconList.ID_SHARE_AB_TEST
-            } else {
-                IconList.ID_SHARE
-            }
-            iconBuilder.addIcon(iconShare) { clickShopShare() }
+            val iconBuilder = IconBuilder(builderFlags = IconBuilderFlag(pageSource = NavSource.SHOP))
+            iconBuilder.addIcon(IconList.ID_SHARE) { clickShopShare() }
             if (isCartShownInNewNavToolbar()) {
                 iconBuilder.addIcon(IconList.ID_CART) {}
             }
@@ -1398,11 +1411,24 @@ class ShopPageHeaderFragment :
         }
     }
 
-    private fun isAffiliateShareIcon(): Boolean {
+    private fun isEnableAffiliateShareIcon(): Boolean {
         val abTestValue = RemoteConfigInstance.getInstance().abTestPlatform.getString(
-            RollenceKey.AB_TEST_SHOP_AFFILIATE_SHARE_ICON
+            RollenceKey.AFFILIATE_SHARE_ICON
         )
-        return abTestValue == RollenceKey.AB_TEST_SHOP_AFFILIATE_SHARE_ICON
+        return abTestValue == RollenceKey.AFFILIATE_SHARE_ICON
+    }
+
+    /**
+     * only enable affiliate share icon when
+     * @param isAffiliate == true && [isMyShop] == true
+     */
+    private fun updateShareIcon(isAffiliate: Boolean) {
+        newNavigationToolbar?.let {
+            if (isEnableAffiliateShareIcon() && isAffiliate && !isMyShop) {
+                it.updateIcon(IconList.ID_SHARE, IconList.ID_SHARE_AB_TEST)
+                isAffiliateShareIcon = true
+            }
+        }
     }
 
     private fun getCartCounter(): Int {
@@ -1590,7 +1616,7 @@ class ShopPageHeaderFragment :
     }
 
     private fun clickShopShare() {
-        shopPageTracking?.clickShareButtonNewBottomSheet(customDimensionShopPage, userId)
+        shopPageTracking?.clickShareButtonNewBottomSheet(customDimensionShopPage, userId, isAffiliateShareIcon)
         if (!isMyShop) {
             shopPageTracking?.clickGlobalHeaderShareButton(customDimensionShopPage, userId)
         }
@@ -1809,6 +1835,7 @@ class ShopPageHeaderFragment :
             }
         }
         viewPager?.setCurrentItem(selectedPosition, false)
+        setShopLayoutDataToSelectedTab()
         tabLayout?.getTabAt(selectedPosition)?.select()
         tabLayout?.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabReselected(tab: TabLayout.Tab) {
@@ -1843,11 +1870,43 @@ class ShopPageHeaderFragment :
                         }
                     }
                 }
+                checkShouldSendCampaignTabOpenScreenTracker()
                 hideScrollToTopButton()
                 hideShopPageFab()
                 isTabClickByUser = false
             }
         })
+    }
+
+    private fun checkShouldSendCampaignTabOpenScreenTracker() {
+        if (getSelectedTabName() == ShopPageHeaderTabName.CAMPAIGN) {
+            sendShopCampaignTabOpenScreenTracker()
+        }
+    }
+
+    private fun sendShopCampaignTabOpenScreenTracker() {
+        shopPageTracking?.sendOpenScreenShopCampaignTab(shopId, userId, isLogin)
+    }
+
+    private fun setShopLayoutDataToSelectedTab() {
+        val shopLayoutData = getShopLayoutDataBasedOnSelectedTab()
+        when (val selectedFragment = getSelectedFragmentInstance()) {
+            is ShopPageCampaignFragment -> {
+                selectedFragment.setListWidgetLayoutData(shopLayoutData)
+            }
+
+            is ShopPageHomeFragment -> {
+                selectedFragment.setListWidgetLayoutData(shopLayoutData)
+            }
+
+            else -> {}
+        }
+    }
+
+    private fun getShopLayoutDataBasedOnSelectedTab(): HomeLayoutData? {
+        return shopPageHeaderDataModel?.listDynamicTabData?.getOrNull(
+            getSelectedDynamicTabPosition()
+        )?.data?.homeLayoutData
     }
 
     private fun handleSelectedTab(tab: TabLayout.Tab, isActive: Boolean) {
@@ -2037,7 +2096,6 @@ class ShopPageHeaderFragment :
                         shopHeaderViewModel?.productListData?.let {
                             setInitialProductListData(it)
                         }
-                        setListWidgetLayoutData(it.data.homeLayoutData)
                         setHomeTabListBackgroundColor(it.listBackgroundColor)
                         setHomeTabBackgroundPatternImage(it.backgroundImage)
                         setHomeTabLottieUrl(it.lottieUrl)
@@ -2122,22 +2180,10 @@ class ShopPageHeaderFragment :
     private fun createCampaignTabFragment(
         tabData: ShopPageGetDynamicTabResponse.ShopPageGetDynamicTab.TabData
     ): Fragment {
-        return ShopPageCampaignFragment.createInstance(
-            shopId,
-            shopPageHeaderDataModel?.isOfficial ?: false,
-            shopPageHeaderDataModel?.isGoldMerchant ?: false,
-            shopPageHeaderDataModel?.shopName.orEmpty(),
-            shopAttribution ?: "",
-            shopRef,
-            shopPageHeaderDataModel?.isEnableDirectPurchase.orFalse()
-        ).apply {
-            setListWidgetLayoutData(
-                HomeLayoutData(
-                    widgetIdList = tabData.data.widgetIdList
-                )
-            )
-            setPageBackgroundColor(tabData.listBackgroundColor)
-            setPageTextColor(tabData.textColor)
+        return ShopPageCampaignFragment.createInstance(shopId).apply {
+            setCampaignTabListBackgroundColor(tabData.listBackgroundColor)
+            setListPatternImage(tabData.bgImages)
+            setIsDarkTheme(tabData.isDark)
         }
     }
 
@@ -2188,7 +2234,7 @@ class ShopPageHeaderFragment :
                 setTextColor(
                     MethodChecker.getColor(
                         context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_N700_68
+                        com.tokopedia.unifyprinciples.R.color.Unify_NN950_68
                     )
                 )
                 text = getString(R.string.shop_page_error_sub_title_get_p1)
@@ -3071,7 +3117,7 @@ class ShopPageHeaderFragment :
     }
 
     private fun showUniversalShareBottomSheet(path: String? = null) {
-        universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
+        universalShareBottomSheet = UniversalShareBottomSheet.createInstance(view).apply {
             init(this@ShopPageHeaderFragment)
             path?.let {
                 setImageOnlySharingOption(true)
@@ -3395,7 +3441,7 @@ class ShopPageHeaderFragment :
     }
 
     private var foldableScreenHorizontalBottomBound: Int? = null
-    private var shopTickerVisibilityState: Int?= null
+    private var shopTickerVisibilityState: Int? = null
 
     override fun onChangeLayout(foldableInfo: FoldableInfo) {
         ShopUtil.isFoldable = foldableInfo.isFoldableDevice()
@@ -3409,7 +3455,7 @@ class ShopPageHeaderFragment :
         }
     }
 
-    //config shop header for foldable screen
+    // config shop header for foldable screen
     private fun configShopHeaderForFoldableScreen() {
         viewBindingShopContentLayout?.apply {
             val layoutPartialHeaderBottomMargin: Int = if (foldableScreenHorizontalBottomBound != null && shopTickerVisibilityState != null) {
@@ -3428,5 +3474,40 @@ class ShopPageHeaderFragment :
                 layoutPartialHeaderBottomMargin
             )
         }
+    }
+
+    /**
+     * function to check whether the input has been valid
+     * before hit [com.tokopedia.shop.pageheader.presentation.ShopPageHeaderViewModel.checkAffiliate]
+     * by checking shop status is > 0 due to this value the last updated property
+     */
+    private fun isAffiliateInputValid(shopStatus: Int): Boolean = shopStatus.isMoreThanZero()
+
+    /**
+     * check affiliate if [isEnableAffiliateShareIcon] == true && [isMyShop] != true
+     */
+    private fun checkAffiliate() {
+        if (!isEnableAffiliateShareIcon() || isMyShop) return
+        val inputAffiliate = AffiliateInput().apply {
+            pageDetail = PageDetail(pageId = shopId, pageType = PageType.SHOP.value, siteId = AFFILIATE_SITE_ID, verticalId = AFFILIATE_VERTICAL_ID)
+            pageType = PageType.SHOP.value
+            product = Product()
+            shop = Shop(shopID = shopId, shopStatus = shopPageHeaderDataModel?.shopStatus, isOS = shopPageHeaderDataModel?.isOfficial == true, isPM = shopPageHeaderDataModel?.isGoldMerchant == true)
+            affiliateLinkType = AffiliateLinkType.SHOP
+        }
+
+        if (isAffiliateInputValid(inputAffiliate.shop?.shopStatus ?: 0)) {
+            shopHeaderViewModel?.checkAffiliate(inputAffiliate)
+        }
+    }
+
+    fun selectShopTab(tabName: String) {
+        val selectedTabPosition = getTabPositionBasedOnTabName(tabName)
+        viewPager?.setCurrentItem(selectedTabPosition, false)
+        tabLayout?.getTabAt(selectedTabPosition)?.select()
+    }
+
+    fun resetSelectedPosition() {
+        viewPagerAdapterHeader?.clearTabData()
     }
 }

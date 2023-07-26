@@ -21,11 +21,11 @@ object ShipmentAddOnProductServiceMapper {
         val listAddOnRequest = arrayListOf<AddOnDataRequest>()
         cartItemModel.addOnProduct.listAddOnProductData.forEach { addOn ->
             val addOnRequest = AddOnDataRequest()
-            addOnRequest.addOnId = addOn.addOnDataId
+            addOnRequest.addOnId = addOn.id
             addOnRequest.addOnQty = 1
-            addOnRequest.addOnUniqueId = addOn.addOnDataUniqueId
-            addOnRequest.addOnType = addOn.addOnDataType
-            addOnRequest.addOnStatus = addOn.addOnDataStatus
+            addOnRequest.addOnUniqueId = addOn.uniqueId
+            addOnRequest.addOnType = addOn.type
+            addOnRequest.addOnStatus = addOn.status
             listAddOnRequest.add(addOnRequest)
         }
         return SaveAddOnStateRequest().apply {
@@ -34,7 +34,7 @@ object ShipmentAddOnProductServiceMapper {
             addOns = listOf(
                 AddOnRequest().apply {
                     addOnLevel = AddOnConstant.ADD_ON_LEVEL_PRODUCT
-                    addOnKey = ""
+                    addOnKey = cartItemModel.cartId.toString()
                     cartProducts = listOf(
                         CartProduct(
                             cartId = cartItemModel.cartId,
@@ -57,9 +57,9 @@ object ShipmentAddOnProductServiceMapper {
                 cartItem.addOnProduct.listAddOnProductData.forEach { addOnProduct ->
                     val addOnDataRequest = AddOnDataRequest(
                         addOnQty = 1,
-                        addOnUniqueId = addOnProduct.addOnDataUniqueId,
-                        addOnType = addOnProduct.addOnDataType,
-                        addOnStatus = addOnProduct.addOnDataStatus
+                        addOnUniqueId = addOnProduct.uniqueId,
+                        addOnType = addOnProduct.type,
+                        addOnStatus = addOnProduct.status
                     )
                     listAddOnProduct.add(addOnDataRequest)
                 }
@@ -90,20 +90,20 @@ object ShipmentAddOnProductServiceMapper {
     }
 
     fun mapSummaryAddOns(cartShipmentAddressFormData: CartShipmentAddressFormData): List<ShipmentAddOnSummaryModel> {
-        val countMapSummaries = hashMapOf<Int, Pair<Double, Int>>()
+        val countMapSummaries = hashMapOf<Int, Pair<Long, Int>>()
         val listShipmentAddOnSummary: ArrayList<ShipmentAddOnSummaryModel> = arrayListOf()
 
         var qtyAddOn = 0
-        var totalPriceAddOn: Double
+        var totalPriceAddOn: Long
         groupAddressLoop@ for (groupAddress in cartShipmentAddressFormData.groupAddress) {
             groupShopLoop@ for (groupShop in groupAddress.groupShop) {
                 groupShopV2Loop@ for (groupShopV2 in groupShop.groupShopData) {
                     productLoop@ for (product in groupShopV2.products) {
                         addOnLoop@ for (addon in product.addOnProduct.listAddOnProductData) {
-                            if (addon.addOnDataStatus == 1) {
+                            if (addon.status == 1) {
                                 qtyAddOn += product.productQuantity
-                                totalPriceAddOn = qtyAddOn * addon.addOnDataPrice
-                                countMapSummaries[addon.addOnDataType] = totalPriceAddOn to qtyAddOn
+                                totalPriceAddOn = (qtyAddOn * addon.price).toLong()
+                                countMapSummaries[addon.type] = totalPriceAddOn to qtyAddOn
                             }
                         }
                     }

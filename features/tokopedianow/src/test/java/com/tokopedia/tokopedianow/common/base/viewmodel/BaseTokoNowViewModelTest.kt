@@ -14,6 +14,7 @@ import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.advanceTimeBy
 import kotlinx.coroutines.test.runTest
+import org.junit.Assert.assertEquals
 import org.junit.Test
 
 @ExperimentalCoroutinesApi
@@ -355,7 +356,7 @@ class BaseTokoNowViewModelTest : BaseTokoNowViewModelTestFixture() {
             onGetMiniCart_thenReturn(miniCartResponse)
 
             viewModel.getMiniCart()
-            viewModel.onCartQuantityChanged(productId, shopId, newQuantity, 1 , false)
+            viewModel.onCartQuantityChanged(productId, shopId, newQuantity, 1, false)
             advanceTimeBy(CHANGE_QUANTITY_DELAY)
 
             verifyGetMiniCartUseCaseCalled()
@@ -545,5 +546,32 @@ class BaseTokoNowViewModelTest : BaseTokoNowViewModelTestFixture() {
         viewModel.getMiniCart()
 
         verifyGetMiniCartUseCaseNotCalled()
+    }
+
+    @Test
+    fun `given user not logged in when onCartQuantityChanged called should update openLoginPage live data`() {
+        onGetUserLoggedIn_thenReturn(isLoggedIn = false)
+
+        viewModel.onCartQuantityChanged(
+            productId = "",
+            shopId = "",
+            quantity = 0,
+            stock = 0,
+            isVariant = false
+        )
+
+        viewModel.openLoginPage.verifyValueEquals(Unit)
+    }
+
+    @Test
+    fun `when getTickerDataAsync error should return null`() {
+        runTest {
+            onGetTickerDataAsync_thenReturn(NullPointerException())
+
+            val actualResult = viewModel
+                .getTickerDataAsync(warehouseId = "1", page = "1").await()
+
+            assertEquals(null, actualResult)
+        }
     }
 }

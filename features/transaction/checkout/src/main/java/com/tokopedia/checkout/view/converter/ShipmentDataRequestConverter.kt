@@ -21,6 +21,9 @@ import com.tokopedia.logisticcart.shipping.model.CartItemModel
 import com.tokopedia.logisticcart.shipping.model.CourierItemData
 import com.tokopedia.logisticcart.shipping.model.SelectedShipperModel
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
+import com.tokopedia.purchase_platform.common.constant.AddOnConstant
+import com.tokopedia.purchase_platform.common.constant.AddOnConstant.ADD_ONS_PRODUCT_SERVICE
+import com.tokopedia.purchase_platform.common.feature.addons.data.model.AddOnProductDataModel
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingDataModel
 import com.tokopedia.purchase_platform.common.utils.isNotBlankOrZero
 import javax.inject.Inject
@@ -110,7 +113,7 @@ class ShipmentDataRequestConverter @Inject constructor(private val _gson: Gson) 
                             name = shipmentDetailData.dropshipperName ?: "",
                             telpNo = shipmentDetailData.dropshipperPhone ?: ""
                         ),
-                        checkoutGiftingOrderLevel = mapGiftingAddOn(shipmentCartItemModel.addOnsOrderLevelModel),
+                        checkoutGiftingOrderLevel = mapAddOnsProduct(shipmentCartItemModel.addOnsOrderLevelModel, AddOnProductDataModel()),
                         orderMetadata = mapOrderMetadata(shipmentCartItemModel, selectedShipper, promoRequests),
                         shopOrders = shopOrders
                     )
@@ -158,7 +161,7 @@ class ShipmentDataRequestConverter @Inject constructor(private val _gson: Gson) 
         val product = Product().apply {
             productId = it.productId.toString()
             isPpp = it.isProtectionOptIn
-            checkoutGiftingProductLevel = mapGiftingAddOn(it.addOnGiftingProductLevelModel)
+            checkoutGiftingProductLevel = mapAddOnsProduct(it.addOnGiftingProductLevelModel, it.addOnProduct)
             cartId = it.cartId.toString()
             productCategoryId = it.analyticsProductCheckoutData.productCategoryId
             protectionPricePerProduct = it.protectionPricePerProduct
@@ -168,7 +171,7 @@ class ShipmentDataRequestConverter @Inject constructor(private val _gson: Gson) 
         return product
     }
 
-    private fun mapGiftingAddOn(addOnsData: AddOnGiftingDataModel): List<CheckoutGiftingAddOn> {
+    private fun mapAddOnsProduct(addOnsData: AddOnGiftingDataModel, addOnProduct: AddOnProductDataModel): List<CheckoutGiftingAddOn> {
         val listCheckoutGiftingAddOn = arrayListOf<CheckoutGiftingAddOn>()
         if (addOnsData.status == 1) {
             for (addOnItem in addOnsData.addOnsDataItemModelList) {
@@ -178,6 +181,17 @@ class ShipmentDataRequestConverter @Inject constructor(private val _gson: Gson) 
                 addOnGiftingRequest.itemType = "add_ons"
                 addOnGiftingRequest.itemQty = addOnItem.addOnQty.toInt()
                 addOnGiftingRequest.itemMetadata = _gson.toJson(addOnItem.addOnMetadata)
+                listCheckoutGiftingAddOn.add(addOnGiftingRequest)
+            }
+        }
+        addOnProduct.listAddOnProductData.forEach { addOnProductItem ->
+            if (addOnProductItem.status == AddOnConstant.ADD_ON_PRODUCT_STATUS_CHECK) {
+                val addOnGiftingRequest = CheckoutGiftingAddOn()
+                addOnGiftingRequest.itemId = addOnProductItem.id.toString()
+                addOnGiftingRequest.itemUniqueId = addOnProductItem.uniqueId
+                addOnGiftingRequest.itemType = ADD_ONS_PRODUCT_SERVICE
+                addOnGiftingRequest.itemQty = addOnProductItem.qty
+                addOnGiftingRequest.itemMetadata = ""
                 listCheckoutGiftingAddOn.add(addOnGiftingRequest)
             }
         }

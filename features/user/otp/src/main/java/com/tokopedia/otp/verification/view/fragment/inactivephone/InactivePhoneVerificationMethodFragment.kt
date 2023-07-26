@@ -55,7 +55,7 @@ open class InactivePhoneVerificationMethodFragment : VerificationMethodFragment(
             }
         }
 
-        viewBound.phoneInactive?.setTextColor(ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_N200))
+        viewBound.phoneInactive?.setTextColor(ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_NN500))
         viewBound.phoneInactive?.movementMethod = LinkMovementMethod.getInstance()
         viewBound.phoneInactive?.show()
     }
@@ -106,7 +106,7 @@ open class InactivePhoneVerificationMethodFragment : VerificationMethodFragment(
 
             override fun updateDrawState(ds: TextPaint) {
                 ds.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
-                ds.color = MethodChecker.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_G500)
+                ds.color = MethodChecker.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_GN500)
             }
         }
     }

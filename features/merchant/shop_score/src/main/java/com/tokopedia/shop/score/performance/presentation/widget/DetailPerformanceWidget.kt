@@ -144,7 +144,7 @@ class DetailPerformanceWidget : ConstraintLayout {
                     setTextColor(
                         ContextCompat.getColor(
                             context,
-                            com.tokopedia.unifyprinciples.R.color.Unify_R600
+                            com.tokopedia.unifyprinciples.R.color.Unify_RN500
                         )
                     )
                 }
@@ -152,7 +152,7 @@ class DetailPerformanceWidget : ConstraintLayout {
                     setTextColor(
                         ContextCompat.getColor(
                             context,
-                            com.tokopedia.unifyprinciples.R.color.Unify_N700
+                            com.tokopedia.unifyprinciples.R.color.Unify_NN950
                         )
                     )
                 }
@@ -160,7 +160,7 @@ class DetailPerformanceWidget : ConstraintLayout {
                     setTextColor(
                         ContextCompat.getColor(
                             context,
-                            com.tokopedia.unifyprinciples.R.color.Unify_G500
+                            com.tokopedia.unifyprinciples.R.color.Unify_GN500
                         )
                     )
                 }

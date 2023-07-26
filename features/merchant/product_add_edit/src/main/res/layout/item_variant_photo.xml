@@ -12,7 +12,7 @@
         <View
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:background="@color/Unify_N50"
+            android:background="@color/Unify_NN50"
             app:layout_constraintBottom_toBottomOf="@+id/ivVariantPhoto"
             app:layout_constraintEnd_toEndOf="@+id/ivVariantPhoto"
             app:layout_constraintStart_toStartOf="@+id/ivVariantPhoto"
@@ -37,7 +37,7 @@
             android:ellipsize="end"
             android:gravity="center"
             android:lines="2"
-            android:textColor="@color/Unify_N700_68"
+            android:textColor="@color/Unify_NN950_68"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
