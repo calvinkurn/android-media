@@ -32,6 +32,7 @@ class MapperFeedXRecomWidget @Inject constructor(
                 )
             },
             cursor = data.nextCursor,
+            isFetch = true,
         )
     }
 }

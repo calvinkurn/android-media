@@ -12,6 +12,7 @@ data class FeedFollowRecommendationModel(
     val description: String,
     val data: List<Profile>,
     val cursor: String,
+    val isFetch: Boolean,
 ) : Visitable<FeedAdapterTypeFactory> {
 
     val hasNext: Boolean
@@ -42,5 +43,17 @@ data class FeedFollowRecommendationModel(
                 }
             }
         }
+    }
+
+    companion object {
+        val Empty: FeedFollowRecommendationModel
+            get() = FeedFollowRecommendationModel(
+                id = "",
+                title = "",
+                description = "",
+                data = emptyList(),
+                cursor = "",
+                isFetch = false,
+            )
     }
 }
