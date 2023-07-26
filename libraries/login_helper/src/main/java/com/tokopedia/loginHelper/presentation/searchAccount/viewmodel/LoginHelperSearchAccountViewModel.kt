@@ -74,23 +74,10 @@ class LoginHelperSearchAccountViewModel @Inject constructor(
             dispatchers.io,
             block = {
                 handleLoading(true)
-                val userDetails = getUserDetailsRestUseCase.makeNetworkCall(_uiState.value.envType)
-                val decryptedUsers = mutableListOf<UserDataUiModel>()
-                userDetails.remoteUserData?.users?.forEach {
-                    decryptedUsers.add(
-                        UserDataUiModel(
-                            decrypt(it.email),
-                            decrypt(it.password),
-                            it.tribe
-                        )
-                    )
+                val userDetails = getUserDetailsRestUseCase.getRemoteOnlyLoginData(_uiState.value.envType)
+                userDetails?.let {
+                    updateUserDataList(Success(userDetails))
                 }
-                val userList = LoginDataUiModel(
-                    userDetails.remoteUserData?.count,
-                    decryptedUsers
-                )
-
-                updateUserDataList(Success(userList))
             },
             onError = {
                 updateUserDataList(Fail(it))

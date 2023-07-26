@@ -2,16 +2,11 @@ package com.tokopedia.loginHelper.presentation.home.viewmodel
 
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.encryption.security.AESEncryptorCBC
 import com.tokopedia.encryption.security.RsaUtils
 import com.tokopedia.encryption.security.decodeBase64
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.kotlin.extensions.view.toBlankOrString
-import com.tokopedia.loginHelper.data.mapper.toLocalUserHeaderUiModel
 import com.tokopedia.loginHelper.data.mapper.toSearchResultsUserHeaderUiModel
-import com.tokopedia.loginHelper.data.mapper.toUserDataUiModel
 import com.tokopedia.loginHelper.data.response.LoginDataResponse
-import com.tokopedia.loginHelper.data.response.UserDataResponse
 import com.tokopedia.loginHelper.domain.LoginHelperDataSourceType
 import com.tokopedia.loginHelper.domain.LoginHelperEnvType
 import com.tokopedia.loginHelper.domain.uiModel.UnifiedLoginHelperData
@@ -45,7 +40,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import javax.crypto.SecretKey
 import javax.inject.Inject
 
 class LoginHelperViewModel @Inject constructor(
@@ -55,9 +49,7 @@ class LoginHelperViewModel @Inject constructor(
     private val generatePublicKeyUseCase: GeneratePublicKeyUseCase,
     private val userSession: UserSessionInterface,
     private val getProfileUseCase: GetProfileUseCase,
-    private val getAdminTypeUseCase: GetAdminTypeUseCase,
-    private val aesEncryptorCBC: AESEncryptorCBC,
-    private val secretKey: SecretKey
+    private val getAdminTypeUseCase: GetAdminTypeUseCase
 ) : BaseViewModel(dispatchers.main) {
 
     private val _uiState = MutableStateFlow(LoginHelperUiState())
@@ -113,45 +105,7 @@ class LoginHelperViewModel @Inject constructor(
             dispatchers.io,
             block = {
                 var userDetails = getUserDetailsRestUseCase.makeNetworkCall(_uiState.value.envType)
-
-                val persistanceData = mutableListOf<UserDataUiModel>()
-                userDetails.persistentCacheUserData?.users?.forEach {
-                    persistanceData.add(
-                        UserDataUiModel(
-                            decrypt(it.email),
-                            decrypt(it.password),
-                            it.tribe,
-                            it.id
-                        )
-                    )
-                }
-
-                val remoteData = mutableListOf<UserDataUiModel>()
-                userDetails.remoteUserData?.users?.forEach {
-                    remoteData.add(
-                        UserDataUiModel(
-                            decrypt(it.email),
-                            decrypt(it.password),
-                            it.tribe,
-                            it.id
-                        )
-                    )
-                }
-                val result = UnifiedLoginHelperData(
-                    LoginDataUiModel(
-                        userDetails.persistentCacheUserData?.count,
-                        persistanceData
-                    ),
-                    LoginDataUiModel(
-                        userDetails.remoteUserData?.count,
-                        remoteData
-                    )
-                )
-                updateUserDataList(
-                    Success(
-                        result
-                    )
-                )
+                updateUserDataList(Success(userDetails))
             },
             onError = {
                 updateUserDataList(Fail(it))
@@ -161,37 +115,8 @@ class LoginHelperViewModel @Inject constructor(
 
     // From the File
     private fun getLocalUserLoginData(loginData: LoginDataResponse) {
-        val decryptedUserDetails = mutableListOf<UserDataResponse>()
-        loginData.users?.forEach {
-            decryptedUserDetails.add(
-                UserDataResponse(
-                    decrypt(it.email.toBlankOrString()),
-                    decrypt(it.password.toBlankOrString()),
-                    it.tribe
-                )
-            )
-        }
-        val sortedUserList = decryptedUserDetails.sortedBy {
-            it.email
-        }
-
-        val userList =
-            LoginDataUiModel(
-                sortedUserList.size.toLocalUserHeaderUiModel(),
-                sortedUserList.toUserDataUiModel()
-            )
-        val unifiedUserList = UnifiedLoginHelperData(
-            persistentCacheUserData = userList,
-            remoteUserData = null
-        )
-        updateLocalUserDataList(Success(unifiedUserList))
-    }
-
-    private fun decrypt(text: String?): String {
-        text?.let {
-            return aesEncryptorCBC.decrypt(text, secretKey)
-        }
-        return ""
+        val userData = getUserDetailsRestUseCase.getUserDataFromLocalAssets(loginData)
+        updateLocalUserDataList(userData)
     }
 
     private fun loginUser(email: String, password: String, useHash: Boolean = true) {

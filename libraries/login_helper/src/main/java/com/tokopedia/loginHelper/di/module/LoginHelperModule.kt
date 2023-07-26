@@ -3,17 +3,12 @@ package com.tokopedia.loginHelper.di.module
 import android.content.Context
 import android.content.res.Resources
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.common.network.coroutines.RestRequestInteractor
-import com.tokopedia.common.network.coroutines.repository.RestRepository
 import com.tokopedia.encryption.security.AESEncryptorCBC
-import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
-import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.loginHelper.data.api.LoginHelperApiService
+import com.tokopedia.loginHelper.data.repository.LoginHelperRepositoryImpl
 import com.tokopedia.loginHelper.di.scope.LoginHelperScope
 import com.tokopedia.loginHelper.util.ENCRYPTION_KEY
 import com.tokopedia.loginHelper.util.LOGIN_HELPER_BASE_URL
-import com.tokopedia.sessioncommon.data.GenerateKeyPojo
-import com.tokopedia.sessioncommon.domain.usecase.GeneratePublicKeyUseCase
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -89,5 +84,19 @@ class LoginHelperModule {
         client.addInterceptor(loggingInterceptor)
         client.hostnameVerifier { _, _ -> true }
         return client.build()
+    }
+
+    @LoginHelperScope
+    @Provides
+    fun provideLoginHelperRepository(
+        api: LoginHelperApiService,
+        aesEncryptorCBC: AESEncryptorCBC,
+        secretKey: SecretKey
+    ): LoginHelperRepositoryImpl {
+        return LoginHelperRepositoryImpl(
+            api,
+            aesEncryptorCBC,
+            secretKey
+        )
     }
 }
