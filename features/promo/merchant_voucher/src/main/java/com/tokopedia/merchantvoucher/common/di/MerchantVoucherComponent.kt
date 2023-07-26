@@ -13,7 +13,6 @@ import dagger.Component
 interface MerchantVoucherComponent {
     fun inject(merchantVoucherListFragment: MerchantVoucherListFragment)
     fun inject(merchantVoucherDetailFragment: MerchantVoucherDetailFragment)
-    fun inject(merchantVoucherListBottomSheetFragment: MerchantVoucherListBottomSheetFragment)
 
     fun merchantVoucherListPresenter(): MerchantVoucherListPresenter
 }
