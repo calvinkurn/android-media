@@ -270,6 +270,8 @@ class ThankYouPageAnalytics @Inject constructor(
         map[KEY_CURRENT_SITE] = thanksPageData.currentSite
         map[KEY_PROMOTION] = getEnhancedECommerceBanner(banner, position)
         addCommonTrackingData(map, thanksPageData.paymentID)
+
+        analyticTracker.sendGeneralEvent(map)
     }
 
     fun sendBannerImpressionEvent(thanksPageData: ThanksPageData, banner: BannerItem, position: Int) {
@@ -283,6 +285,8 @@ class ThankYouPageAnalytics @Inject constructor(
         map[KEY_CURRENT_SITE] = thanksPageData.currentSite
         map[KEY_PROMOTION] = getEnhancedECommerceBanner(banner, position)
         addCommonTrackingData(map, thanksPageData.paymentID)
+
+        analyticTracker.sendGeneralEvent(map)
     }
 
     private fun getEnhancedECommerceBanner(
