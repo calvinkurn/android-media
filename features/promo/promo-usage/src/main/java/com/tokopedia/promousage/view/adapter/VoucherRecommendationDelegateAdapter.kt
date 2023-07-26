@@ -8,13 +8,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.promousage.databinding.PromoUsageItemVoucherBinding
 import com.tokopedia.promousage.databinding.PromoUsageItemVoucherRecommendationBinding
-import com.tokopedia.promousage.domain.entity.Promo
+import com.tokopedia.promousage.domain.entity.PromoItem
 import com.tokopedia.promousage.domain.entity.list.PromoRecommendationItem
 import com.tokopedia.promousage.util.composite.DelegateAdapter
 import com.tokopedia.promousage.util.extension.applyPaddingToLastItem
 
 class VoucherRecommendationDelegateAdapter(
-    private val onVoucherClick: (Promo) -> Unit,
+    private val onVoucherClick: (PromoItem) -> Unit,
     private val onButtonUseRecommendedVoucherClick: () -> Unit
 ) : DelegateAdapter<PromoRecommendationItem, VoucherRecommendationDelegateAdapter.ViewHolder>(PromoRecommendationItem::class.java) {
 
@@ -56,19 +56,19 @@ class VoucherRecommendationDelegateAdapter(
         }
 
     }
-    inner class VoucherAdapter(private val onVoucherClick: (Promo) -> Unit) : RecyclerView.Adapter<VoucherAdapter.ViewHolder>() {
+    inner class VoucherAdapter(private val onVoucherClick: (PromoItem) -> Unit) : RecyclerView.Adapter<VoucherAdapter.ViewHolder>() {
 
-        private val differCallback = object : DiffUtil.ItemCallback<Promo>() {
+        private val differCallback = object : DiffUtil.ItemCallback<PromoItem>() {
             override fun areItemsTheSame(
-                oldItem: Promo,
-                newItem: Promo
+                oldItem: PromoItem,
+                newItem: PromoItem
             ): Boolean {
                 return oldItem.id == newItem.id
             }
 
             override fun areContentsTheSame(
-                oldItem: Promo,
-                newItem: Promo
+                oldItem: PromoItem,
+                newItem: PromoItem
             ): Boolean {
                 return oldItem == newItem
             }
@@ -96,13 +96,13 @@ class VoucherRecommendationDelegateAdapter(
         inner class ViewHolder(private val binding: PromoUsageItemVoucherBinding) :
             RecyclerView.ViewHolder(binding.root) {
 
-            fun bind(promo: Promo) {
+            fun bind(promo: PromoItem) {
                 binding.voucherView.bind(promo)
                 binding.root.setOnClickListener { onVoucherClick(promo) }
             }
 
         }
-        fun submit(newPromos: List<Promo>) {
+        fun submit(newPromos: List<PromoItem>) {
             differ.submitList(newPromos)
         }
     }

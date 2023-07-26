@@ -1,6 +1,6 @@
 package com.tokopedia.promousage.domain.entity
 
-sealed interface PromoSection {
+sealed interface PromoPageSection {
 
     companion object {
         const val SECTION_RECOMMENDATION = "recommendation_coupons"

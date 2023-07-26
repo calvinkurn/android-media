@@ -1,6 +1,6 @@
 package com.tokopedia.promousage.domain.entity
 
-data class PromoCardDetail(
+data class PromoItemCardDetail(
     val state: String = TYPE_INITIAL,
     val color: String = "",
     val iconUrl: String = "",

@@ -1,674 +1,682 @@
 package com.tokopedia.promousage.data
 
-import com.tokopedia.promousage.domain.entity.Promo
-import com.tokopedia.promousage.domain.entity.PromoBenefitDetail
-import com.tokopedia.promousage.domain.entity.PromoCardDetail
-import com.tokopedia.promousage.domain.entity.PromoClashingInfo
-import com.tokopedia.promousage.domain.entity.PromoInfo
-import com.tokopedia.promousage.domain.entity.PromoState
+import com.tokopedia.promousage.domain.entity.PromoItem
+import com.tokopedia.promousage.domain.entity.PromoItemBenefitDetail
+import com.tokopedia.promousage.domain.entity.PromoItemCardDetail
+import com.tokopedia.promousage.domain.entity.PromoItemClashingInfo
+import com.tokopedia.promousage.domain.entity.PromoItemInfo
+import com.tokopedia.promousage.domain.entity.PromoPageTickerInfo
+import com.tokopedia.promousage.domain.entity.PromoItemState
 import com.tokopedia.promousage.domain.entity.list.PromoAccordionItem
 import com.tokopedia.promousage.domain.entity.list.PromoInputItem
 import com.tokopedia.promousage.domain.entity.list.PromoRecommendationItem
 import com.tokopedia.promousage.domain.entity.list.PromoTncItem
 import com.tokopedia.promousage.util.composite.DelegateAdapterItem
-import com.tokopedia.promousage.view.mapper.toCollapsibleList
+import com.tokopedia.promousage.view.viewmodel.toCollapsibleList
 
 object DummyData {
 
-    val attemptedPromo: Promo
-        get() = Promo(
+    val promoPageTickerInfo: PromoPageTickerInfo
+        get() = PromoPageTickerInfo(
+            message = "Kini Bebas Ongkir tersedia saat pilih pengiriman, ya.",
+            iconUrl = "",
+            backgroundUrl = ""
+        )
+
+    val attemptedPromo: PromoItem
+        get() = PromoItem(
             id = "1",
             index = 1,
             code = "ATTEMPTED01",
             benefitAmount = 30000.0,
             benefitAmountStr = "Rp30.000",
-            benefitDetail = PromoBenefitDetail(
+            benefitDetail = PromoItemBenefitDetail(
                 amountIdr = 30000.0,
-                benefitType = PromoBenefitDetail.BENEFIT_TYPE_CASHBACK
+                benefitType = PromoItemBenefitDetail.BENEFIT_TYPE_CASHBACK
             ),
             benefitTypeStr = "Cashback",
             cardDetails = listOf(
-                PromoCardDetail(
+                PromoItemCardDetail(
                     color = "",
                     iconUrl = "https://images.tokopedia.net/img/android/promo/ic_voucher_cashback/ic_voucher_cashback.png",
                     backgroundUrl = "https://images.tokopedia.net/img/android/promo/bg_supergraphic_cashback/bg_supergraphic_cashback.png"
                 )
             ),
             clashingInfos = listOf(
-                PromoClashingInfo(
+                PromoItemClashingInfo(
                     code = "",
                     message = "Belum bisa dipakai barengan promo yang dipilih."
                 )
             ),
-            promoInfos = listOf(
-                PromoInfo(
-                    type = PromoInfo.TYPE_PROMO_INFO,
+            promoItemInfos = listOf(
+                PromoItemInfo(
+                    type = PromoItemInfo.TYPE_PROMO_INFO,
                     title = "Disesuaikan jika pilih Bebas Ongkir"
                 )
             ),
             expiryInfo = "Berakhir dalam <a>3 jama</a>",
             expiryTimestamp = 1693451440,
-            state = PromoState.Normal,
+            state = PromoItemState.Normal,
             isAttempted = true
         )
 
-    val cashbackPromos: List<Promo>
+    val cashbackPromos: List<PromoItem>
         get() = listOf(
-            Promo(
+            PromoItem(
                 id = "2",
                 index = 2,
                 code = "CASHBACK1",
                 benefitAmount = 30000.0,
                 benefitAmountStr = "Rp30.000",
-                benefitDetail = PromoBenefitDetail(
+                benefitDetail = PromoItemBenefitDetail(
                     amountIdr = 30000.0,
-                    benefitType = PromoBenefitDetail.BENEFIT_TYPE_CASHBACK
+                    benefitType = PromoItemBenefitDetail.BENEFIT_TYPE_CASHBACK
                 ),
                 benefitTypeStr = "Cashback",
                 cardDetails = listOf(
-                    PromoCardDetail(
+                    PromoItemCardDetail(
                         color = "",
                         iconUrl = "https://images.tokopedia.net/img/android/promo/ic_voucher_cashback/ic_voucher_cashback.png",
                         backgroundUrl = "https://images.tokopedia.net/img/android/promo/bg_supergraphic_cashback/bg_supergraphic_cashback.png"
                     )
                 ),
                 clashingInfos = listOf(
-                    PromoClashingInfo(
+                    PromoItemClashingInfo(
                         code = "",
                         message = "Belum bisa dipakai barengan promo yang dipilih."
                     )
                 ),
-                promoInfos = listOf(
-                    PromoInfo(
-                        type = PromoInfo.TYPE_PROMO_INFO,
+                promoItemInfos = listOf(
+                    PromoItemInfo(
+                        type = PromoItemInfo.TYPE_PROMO_INFO,
                         title = "Disesuaikan jika pilih Bebas Ongkir"
                     )
                 ),
                 expiryInfo = "Berakhir dalam <a>3 jama</a>",
                 expiryTimestamp = 1693451440,
-                state = PromoState.Normal,
+                state = PromoItemState.Normal,
                 isAttempted = false,
                 isExpanded = true
             ),
-            Promo(
+            PromoItem(
                 id = "3",
                 index = 3,
                 code = "CASHBACK2",
                 benefitAmount = 30000.0,
                 benefitAmountStr = "Rp30.000",
-                benefitDetail = PromoBenefitDetail(
+                benefitDetail = PromoItemBenefitDetail(
                     amountIdr = 30000.0,
-                    benefitType = PromoBenefitDetail.BENEFIT_TYPE_CASHBACK
+                    benefitType = PromoItemBenefitDetail.BENEFIT_TYPE_CASHBACK
                 ),
                 benefitTypeStr = "Cashback",
                 cardDetails = listOf(
-                    PromoCardDetail(
+                    PromoItemCardDetail(
                         color = "",
                         iconUrl = "https://images.tokopedia.net/img/android/promo/ic_voucher_cashback/ic_voucher_cashback.png",
                         backgroundUrl = "https://images.tokopedia.net/img/android/promo/bg_supergraphic_cashback/bg_supergraphic_cashback.png"
                     )
                 ),
                 clashingInfos = listOf(
-                    PromoClashingInfo(
+                    PromoItemClashingInfo(
                         code = "",
                         message = "Belum bisa dipakai barengan promo yang dipilih."
                     )
                 ),
-                promoInfos = listOf(
-                    PromoInfo(
-                        type = PromoInfo.TYPE_PROMO_INFO,
+                promoItemInfos = listOf(
+                    PromoItemInfo(
+                        type = PromoItemInfo.TYPE_PROMO_INFO,
                         title = "Disesuaikan jika pilih Bebas Ongkir"
                     )
                 ),
                 expiryInfo = "Berakhir dalam <a>3 jama</a>",
                 expiryTimestamp = 1693451440,
-                state = PromoState.Selected,
+                state = PromoItemState.Selected,
                 isAttempted = false
             ),
-            Promo(
+            PromoItem(
                 id = "5",
                 index = 5,
                 code = "CASHBACK3",
                 benefitAmount = 30000.0,
                 benefitAmountStr = "Rp30.000",
-                benefitDetail = PromoBenefitDetail(
+                benefitDetail = PromoItemBenefitDetail(
                     amountIdr = 30000.0,
-                    benefitType = PromoBenefitDetail.BENEFIT_TYPE_CASHBACK
+                    benefitType = PromoItemBenefitDetail.BENEFIT_TYPE_CASHBACK
                 ),
                 benefitTypeStr = "Cashback",
                 cardDetails = listOf(
-                    PromoCardDetail(
+                    PromoItemCardDetail(
                         color = "",
                         iconUrl = "https://images.tokopedia.net/img/android/promo/ic_voucher_cashback/ic_voucher_cashback.png",
                         backgroundUrl = "https://images.tokopedia.net/img/android/promo/bg_supergraphic_cashback/bg_supergraphic_cashback.png"
                     )
                 ),
                 clashingInfos = listOf(
-                    PromoClashingInfo(
+                    PromoItemClashingInfo(
                         code = "",
                         message = "Belum bisa dipakai barengan promo yang dipilih."
                     )
                 ),
-                promoInfos = listOf(
-                    PromoInfo(
-                        type = PromoInfo.TYPE_PROMO_INFO,
+                promoItemInfos = listOf(
+                    PromoItemInfo(
+                        type = PromoItemInfo.TYPE_PROMO_INFO,
                         title = "Disesuaikan jika pilih Bebas Ongkir"
                     )
                 ),
                 expiryInfo = "Berakhir dalam <a>3 jama</a>",
                 expiryTimestamp = 1693451440,
-                state = PromoState.Loading,
+                state = PromoItemState.Loading,
                 isAttempted = false
             ),
-            Promo(
+            PromoItem(
                 id = "6",
                 index = 6,
                 code = "CASHBACK4",
                 benefitAmount = 30000.0,
                 benefitAmountStr = "Rp30.000",
-                benefitDetail = PromoBenefitDetail(
+                benefitDetail = PromoItemBenefitDetail(
                     amountIdr = 30000.0,
-                    benefitType = PromoBenefitDetail.BENEFIT_TYPE_CASHBACK
+                    benefitType = PromoItemBenefitDetail.BENEFIT_TYPE_CASHBACK
                 ),
                 benefitTypeStr = "Cashback",
                 cardDetails = listOf(
-                    PromoCardDetail(
+                    PromoItemCardDetail(
                         color = "",
                         iconUrl = "https://images.tokopedia.net/img/android/promo/ic_voucher_cashback/ic_voucher_cashback.png",
                         backgroundUrl = "https://images.tokopedia.net/img/android/promo/bg_supergraphic_cashback/bg_supergraphic_cashback.png"
                     )
                 ),
                 clashingInfos = listOf(
-                    PromoClashingInfo(
+                    PromoItemClashingInfo(
                         code = "",
                         message = "Belum bisa dipakai barengan promo yang dipilih."
                     )
                 ),
-                promoInfos = listOf(
-                    PromoInfo(
-                        type = PromoInfo.TYPE_PROMO_INFO,
+                promoItemInfos = listOf(
+                    PromoItemInfo(
+                        type = PromoItemInfo.TYPE_PROMO_INFO,
                         title = "Disesuaikan jika pilih Bebas Ongkir"
                     )
                 ),
                 expiryInfo = "Berakhir dalam <a>3 jama</a>",
                 expiryTimestamp = 1693451440,
-                state = PromoState.Disabled,
+                state = PromoItemState.Disabled,
                 isAttempted = false
             ),
-            Promo(
+            PromoItem(
                 id = "7",
                 index = 7,
                 code = "CASHBACK5",
                 benefitAmount = 30000.0,
                 benefitAmountStr = "Rp30.000",
-                benefitDetail = PromoBenefitDetail(
+                benefitDetail = PromoItemBenefitDetail(
                     amountIdr = 30000.0,
-                    benefitType = PromoBenefitDetail.BENEFIT_TYPE_CASHBACK
+                    benefitType = PromoItemBenefitDetail.BENEFIT_TYPE_CASHBACK
                 ),
                 benefitTypeStr = "Cashback",
                 cardDetails = listOf(
-                    PromoCardDetail(
+                    PromoItemCardDetail(
                         color = "",
                         iconUrl = "https://images.tokopedia.net/img/android/promo/ic_voucher_cashback/ic_voucher_cashback.png",
                         backgroundUrl = "https://images.tokopedia.net/img/android/promo/bg_supergraphic_cashback/bg_supergraphic_cashback.png"
                     )
                 ),
                 clashingInfos = listOf(
-                    PromoClashingInfo(
+                    PromoItemClashingInfo(
                         code = "CASHBACK4",
                         message = "Belum bisa dipakai barengan promo yang dipilih."
                     )
                 ),
-                promoInfos = listOf(
-                    PromoInfo(
-                        type = PromoInfo.TYPE_PROMO_INFO,
+                promoItemInfos = listOf(
+                    PromoItemInfo(
+                        type = PromoItemInfo.TYPE_PROMO_INFO,
                         title = "Disesuaikan jika pilih Bebas Ongkir"
                     )
                 ),
                 expiryInfo = "Berakhir dalam <a>3 jama</a>",
                 expiryTimestamp = 1693451440,
-                currentClashingPromoCode = listOf("CASHBACK4"),
-                state = PromoState.Ineligible,
+                currentClashingPromoCodes = listOf("CASHBACK4"),
+                state = PromoItemState.Ineligible,
                 isAttempted = false
             )
         )
 
-    val freeShippingPromos: List<Promo>
+    val freeShippingPromos: List<PromoItem>
         get() = listOf(
-            Promo(
+            PromoItem(
                 id = "8",
                 index = 8,
                 code = "FREESHIPPING1",
                 benefitAmount = 30000.0,
                 benefitAmountStr = "Rp30.000",
-                benefitDetail = PromoBenefitDetail(
+                benefitDetail = PromoItemBenefitDetail(
                     amountIdr = 30000.0,
-                    benefitType = PromoBenefitDetail.BENEFIT_TYPE_FREE_SHIPPING
+                    benefitType = PromoItemBenefitDetail.BENEFIT_TYPE_FREE_SHIPPING
                 ),
                 benefitTypeStr = "Gratis Ongkir",
                 cardDetails = listOf(
-                    PromoCardDetail(
+                    PromoItemCardDetail(
                         color = "",
                         iconUrl = "https://images.tokopedia.net/img/android/promo/ic_voucher_cashback/ic_voucher_cashback.png",
                         backgroundUrl = "https://images.tokopedia.net/img/android/promo/bg_supergraphic_cashback/bg_supergraphic_cashback.png"
                     )
                 ),
                 clashingInfos = listOf(
-                    PromoClashingInfo(
+                    PromoItemClashingInfo(
                         code = "",
                         message = "Belum bisa dipakai barengan promo yang dipilih."
                     )
                 ),
-                promoInfos = listOf(
-                    PromoInfo(
-                        type = PromoInfo.TYPE_PROMO_INFO,
+                promoItemInfos = listOf(
+                    PromoItemInfo(
+                        type = PromoItemInfo.TYPE_PROMO_INFO,
                         title = "Disesuaikan jika pilih Bebas Ongkir"
                     )
                 ),
                 expiryInfo = "Berakhir dalam <a>3 jama</a>",
                 expiryTimestamp = 1693451440,
-                state = PromoState.Normal,
+                state = PromoItemState.Normal,
                 isAttempted = false,
                 isExpanded = true
             ),
-            Promo(
+            PromoItem(
                 id = "9",
                 index = 9,
                 code = "FREESHIPPING2",
                 benefitAmount = 30000.0,
                 benefitAmountStr = "Rp30.000",
-                benefitDetail = PromoBenefitDetail(
+                benefitDetail = PromoItemBenefitDetail(
                     amountIdr = 30000.0,
-                    benefitType = PromoBenefitDetail.BENEFIT_TYPE_FREE_SHIPPING
+                    benefitType = PromoItemBenefitDetail.BENEFIT_TYPE_FREE_SHIPPING
                 ),
                 benefitTypeStr = "Gratis Ongkir",
                 cardDetails = listOf(
-                    PromoCardDetail(
+                    PromoItemCardDetail(
                         color = "",
                         iconUrl = "https://images.tokopedia.net/img/android/promo/ic_voucher_cashback/ic_voucher_cashback.png",
                         backgroundUrl = "https://images.tokopedia.net/img/android/promo/bg_supergraphic_cashback/bg_supergraphic_cashback.png"
                     )
                 ),
                 clashingInfos = listOf(
-                    PromoClashingInfo(
+                    PromoItemClashingInfo(
                         code = "",
                         message = "Belum bisa dipakai barengan promo yang dipilih."
                     )
                 ),
-                promoInfos = listOf(
-                    PromoInfo(
-                        type = PromoInfo.TYPE_PROMO_INFO,
+                promoItemInfos = listOf(
+                    PromoItemInfo(
+                        type = PromoItemInfo.TYPE_PROMO_INFO,
                         title = "Disesuaikan jika pilih Bebas Ongkir"
                     )
                 ),
                 expiryInfo = "Berakhir dalam <a>3 jama</a>",
                 expiryTimestamp = 1693451440,
-                state = PromoState.Selected,
+                state = PromoItemState.Selected,
                 isAttempted = false
             ),
-            Promo(
+            PromoItem(
                 id = "10",
                 index = 10,
                 code = "FREESHIPPING3",
                 benefitAmount = 30000.0,
                 benefitAmountStr = "Rp30.000",
-                benefitDetail = PromoBenefitDetail(
+                benefitDetail = PromoItemBenefitDetail(
                     amountIdr = 30000.0,
-                    benefitType = PromoBenefitDetail.BENEFIT_TYPE_FREE_SHIPPING
+                    benefitType = PromoItemBenefitDetail.BENEFIT_TYPE_FREE_SHIPPING
                 ),
                 benefitTypeStr = "Gratis Ongkir",
                 cardDetails = listOf(
-                    PromoCardDetail(
+                    PromoItemCardDetail(
                         color = "",
                         iconUrl = "https://images.tokopedia.net/img/android/promo/ic_voucher_cashback/ic_voucher_cashback.png",
                         backgroundUrl = "https://images.tokopedia.net/img/android/promo/bg_supergraphic_cashback/bg_supergraphic_cashback.png"
                     )
                 ),
                 clashingInfos = listOf(
-                    PromoClashingInfo(
+                    PromoItemClashingInfo(
                         code = "",
                         message = "Belum bisa dipakai barengan promo yang dipilih."
                     )
                 ),
-                promoInfos = listOf(
-                    PromoInfo(
-                        type = PromoInfo.TYPE_PROMO_INFO,
+                promoItemInfos = listOf(
+                    PromoItemInfo(
+                        type = PromoItemInfo.TYPE_PROMO_INFO,
                         title = "Disesuaikan jika pilih Bebas Ongkir"
                     )
                 ),
                 expiryInfo = "Berakhir dalam <a>3 jama</a>",
                 expiryTimestamp = 1693451440,
-                state = PromoState.Loading,
+                state = PromoItemState.Loading,
                 isAttempted = false
             ),
-            Promo(
+            PromoItem(
                 id = "11",
                 index = 11,
                 code = "FREESHIPPING4",
                 benefitAmount = 30000.0,
                 benefitAmountStr = "Rp30.000",
-                benefitDetail = PromoBenefitDetail(
+                benefitDetail = PromoItemBenefitDetail(
                     amountIdr = 30000.0,
-                    benefitType = PromoBenefitDetail.BENEFIT_TYPE_FREE_SHIPPING
+                    benefitType = PromoItemBenefitDetail.BENEFIT_TYPE_FREE_SHIPPING
                 ),
                 benefitTypeStr = "Gratis Ongkir",
                 cardDetails = listOf(
-                    PromoCardDetail(
+                    PromoItemCardDetail(
                         color = "",
                         iconUrl = "https://images.tokopedia.net/img/android/promo/ic_voucher_cashback/ic_voucher_cashback.png",
                         backgroundUrl = "https://images.tokopedia.net/img/android/promo/bg_supergraphic_cashback/bg_supergraphic_cashback.png"
                     )
                 ),
                 clashingInfos = listOf(
-                    PromoClashingInfo(
+                    PromoItemClashingInfo(
                         code = "",
                         message = "Belum bisa dipakai barengan promo yang dipilih."
                     )
                 ),
-                promoInfos = listOf(
-                    PromoInfo(
-                        type = PromoInfo.TYPE_PROMO_INFO,
+                promoItemInfos = listOf(
+                    PromoItemInfo(
+                        type = PromoItemInfo.TYPE_PROMO_INFO,
                         title = "Disesuaikan jika pilih Bebas Ongkir"
                     )
                 ),
                 expiryInfo = "Berakhir dalam <a>3 jama</a>",
                 expiryTimestamp = 1693451440,
-                state = PromoState.Disabled,
+                state = PromoItemState.Disabled,
                 isAttempted = false
             ),
-            Promo(
+            PromoItem(
                 id = "12",
                 index = 12,
                 code = "FREESHIPPING5",
                 benefitAmount = 30000.0,
                 benefitAmountStr = "Rp30.000",
-                benefitDetail = PromoBenefitDetail(
+                benefitDetail = PromoItemBenefitDetail(
                     amountIdr = 30000.0,
-                    benefitType = PromoBenefitDetail.BENEFIT_TYPE_FREE_SHIPPING
+                    benefitType = PromoItemBenefitDetail.BENEFIT_TYPE_FREE_SHIPPING
                 ),
                 benefitTypeStr = "Gratis Ongkir",
                 cardDetails = listOf(
-                    PromoCardDetail(
+                    PromoItemCardDetail(
                         color = "",
                         iconUrl = "https://images.tokopedia.net/img/android/promo/ic_voucher_cashback/ic_voucher_cashback.png",
                         backgroundUrl = "https://images.tokopedia.net/img/android/promo/bg_supergraphic_cashback/bg_supergraphic_cashback.png"
                     )
                 ),
                 clashingInfos = listOf(
-                    PromoClashingInfo(
+                    PromoItemClashingInfo(
                         code = "FREESHIPPING4",
                         message = "Belum bisa dipakai barengan promo yang dipilih."
                     )
                 ),
-                promoInfos = listOf(
-                    PromoInfo(
-                        type = PromoInfo.TYPE_PROMO_INFO,
+                promoItemInfos = listOf(
+                    PromoItemInfo(
+                        type = PromoItemInfo.TYPE_PROMO_INFO,
                         title = "Disesuaikan jika pilih Bebas Ongkir"
                     )
                 ),
                 expiryInfo = "Berakhir dalam <a>3 jama</a>",
                 expiryTimestamp = 1693451440,
-                currentClashingPromoCode = listOf("FREESHIPPING4"),
-                state = PromoState.Ineligible,
+                currentClashingPromoCodes = listOf("FREESHIPPING4"),
+                state = PromoItemState.Ineligible,
                 isAttempted = false
             )
         )
 
-    val discountPromos: List<Promo>
+    val discountPromos: List<PromoItem>
         get() = listOf(
-            Promo(
+            PromoItem(
                 id = "13",
                 index = 13,
                 code = "DISCOUNT1",
                 benefitAmount = 30000.0,
                 benefitAmountStr = "Rp30.000",
-                benefitDetail = PromoBenefitDetail(
+                benefitDetail = PromoItemBenefitDetail(
                     amountIdr = 30000.0,
-                    benefitType = PromoBenefitDetail.BENEFIT_TYPE_DISCOUNT
+                    benefitType = PromoItemBenefitDetail.BENEFIT_TYPE_DISCOUNT
                 ),
                 benefitTypeStr = "Diskon",
                 cardDetails = listOf(
-                    PromoCardDetail(
-                        state = PromoCardDetail.TYPE_INITIAL,
+                    PromoItemCardDetail(
+                        state = PromoItemCardDetail.TYPE_INITIAL,
                         color = "",
                         iconUrl = "https://images.tokopedia.net/img/android/promo/ic_voucher_cashback/ic_voucher_cashback.png",
                         backgroundUrl = "https://images.tokopedia.net/img/android/promo/bg_supergraphic_cashback/bg_supergraphic_cashback.png"
                     ),
-                    PromoCardDetail(
+                    PromoItemCardDetail(
 
                     )
                 ),
                 clashingInfos = listOf(
-                    PromoClashingInfo(
+                    PromoItemClashingInfo(
                         code = "",
                         message = "Belum bisa dipakai barengan promo yang dipilih."
                     )
                 ),
-                promoInfos = listOf(
-                    PromoInfo(
-                        type = PromoInfo.TYPE_PROMO_INFO,
+                promoItemInfos = listOf(
+                    PromoItemInfo(
+                        type = PromoItemInfo.TYPE_PROMO_INFO,
                         title = "Disesuaikan jika pilih Bebas Ongkir"
                     )
                 ),
                 expiryInfo = "Berakhir dalam <a>3 jama</a>",
                 expiryTimestamp = 1693451440,
-                state = PromoState.Normal,
+                state = PromoItemState.Normal,
                 isAttempted = false,
                 isExpanded = true
             ),
-            Promo(
+            PromoItem(
                 id = "14",
                 index = 14,
                 code = "DISCOUNT2",
                 benefitAmount = 30000.0,
                 benefitAmountStr = "Rp30.000",
-                benefitDetail = PromoBenefitDetail(
+                benefitDetail = PromoItemBenefitDetail(
                     amountIdr = 30000.0,
-                    benefitType = PromoBenefitDetail.BENEFIT_TYPE_DISCOUNT
+                    benefitType = PromoItemBenefitDetail.BENEFIT_TYPE_DISCOUNT
                 ),
                 benefitTypeStr = "Diskon",
                 cardDetails = listOf(
-                    PromoCardDetail(
+                    PromoItemCardDetail(
                         color = "",
                         iconUrl = "https://images.tokopedia.net/img/android/promo/ic_voucher_cashback/ic_voucher_cashback.png",
                         backgroundUrl = "https://images.tokopedia.net/img/android/promo/bg_supergraphic_cashback/bg_supergraphic_cashback.png"
                     )
                 ),
                 clashingInfos = listOf(
-                    PromoClashingInfo(
+                    PromoItemClashingInfo(
                         code = "",
                         message = "Belum bisa dipakai barengan promo yang dipilih."
                     )
                 ),
-                promoInfos = listOf(
-                    PromoInfo(
-                        type = PromoInfo.TYPE_PROMO_INFO,
+                promoItemInfos = listOf(
+                    PromoItemInfo(
+                        type = PromoItemInfo.TYPE_PROMO_INFO,
                         title = "Disesuaikan jika pilih Bebas Ongkir"
                     )
                 ),
                 expiryInfo = "Berakhir dalam <a>3 jama</a>",
                 expiryTimestamp = 1693451440,
-                state = PromoState.Selected,
+                state = PromoItemState.Selected,
                 isAttempted = false
             ),
-            Promo(
+            PromoItem(
                 id = "15",
                 index = 15,
                 code = "DISCOUNT3",
                 benefitAmount = 30000.0,
                 benefitAmountStr = "Rp30.000",
-                benefitDetail = PromoBenefitDetail(
+                benefitDetail = PromoItemBenefitDetail(
                     amountIdr = 30000.0,
-                    benefitType = PromoBenefitDetail.BENEFIT_TYPE_DISCOUNT
+                    benefitType = PromoItemBenefitDetail.BENEFIT_TYPE_DISCOUNT
                 ),
                 benefitTypeStr = "Diskon",
                 cardDetails = listOf(
-                    PromoCardDetail(
+                    PromoItemCardDetail(
                         color = "",
                         iconUrl = "https://images.tokopedia.net/img/android/promo/ic_voucher_cashback/ic_voucher_cashback.png",
                         backgroundUrl = "https://images.tokopedia.net/img/android/promo/bg_supergraphic_cashback/bg_supergraphic_cashback.png"
                     )
                 ),
                 clashingInfos = listOf(
-                    PromoClashingInfo(
+                    PromoItemClashingInfo(
                         code = "",
                         message = "Belum bisa dipakai barengan promo yang dipilih."
                     )
                 ),
-                promoInfos = listOf(
-                    PromoInfo(
-                        type = PromoInfo.TYPE_PROMO_INFO,
+                promoItemInfos = listOf(
+                    PromoItemInfo(
+                        type = PromoItemInfo.TYPE_PROMO_INFO,
                         title = "Disesuaikan jika pilih Bebas Ongkir"
                     )
                 ),
                 expiryInfo = "Berakhir dalam <a>3 jama</a>",
                 expiryTimestamp = 1693451440,
-                state = PromoState.Loading,
+                state = PromoItemState.Loading,
                 isAttempted = false
             ),
-            Promo(
+            PromoItem(
                 id = "16",
                 index = 16,
                 code = "DISCOUNT4",
                 benefitAmount = 30000.0,
                 benefitAmountStr = "Rp30.000",
-                benefitDetail = PromoBenefitDetail(
+                benefitDetail = PromoItemBenefitDetail(
                     amountIdr = 30000.0,
-                    benefitType = PromoBenefitDetail.BENEFIT_TYPE_DISCOUNT
+                    benefitType = PromoItemBenefitDetail.BENEFIT_TYPE_DISCOUNT
                 ),
                 benefitTypeStr = "Diskon",
                 cardDetails = listOf(
-                    PromoCardDetail(
+                    PromoItemCardDetail(
                         color = "",
                         iconUrl = "https://images.tokopedia.net/img/android/promo/ic_voucher_cashback/ic_voucher_cashback.png",
                         backgroundUrl = "https://images.tokopedia.net/img/android/promo/bg_supergraphic_cashback/bg_supergraphic_cashback.png"
                     )
                 ),
                 clashingInfos = listOf(
-                    PromoClashingInfo(
+                    PromoItemClashingInfo(
                         code = "",
                         message = "Belum bisa dipakai barengan promo yang dipilih."
                     )
                 ),
-                promoInfos = listOf(
-                    PromoInfo(
-                        type = PromoInfo.TYPE_PROMO_INFO,
+                promoItemInfos = listOf(
+                    PromoItemInfo(
+                        type = PromoItemInfo.TYPE_PROMO_INFO,
                         title = "Disesuaikan jika pilih Bebas Ongkir"
                     )
                 ),
                 expiryInfo = "Berakhir dalam <a>3 jama</a>",
                 expiryTimestamp = 1693451440,
-                state = PromoState.Disabled,
+                state = PromoItemState.Disabled,
                 isAttempted = false
             ),
-            Promo(
+            PromoItem(
                 id = "17",
                 index = 17,
                 code = "DISCOUNT5",
                 benefitAmount = 30000.0,
                 benefitAmountStr = "Rp30.000",
-                benefitDetail = PromoBenefitDetail(
+                benefitDetail = PromoItemBenefitDetail(
                     amountIdr = 30000.0,
-                    benefitType = PromoBenefitDetail.BENEFIT_TYPE_DISCOUNT
+                    benefitType = PromoItemBenefitDetail.BENEFIT_TYPE_DISCOUNT
                 ),
                 benefitTypeStr = "Diskon",
                 cardDetails = listOf(
-                    PromoCardDetail(
+                    PromoItemCardDetail(
                         color = "",
                         iconUrl = "https://images.tokopedia.net/img/android/promo/ic_voucher_cashback/ic_voucher_cashback.png",
                         backgroundUrl = "https://images.tokopedia.net/img/android/promo/bg_supergraphic_cashback/bg_supergraphic_cashback.png"
                     )
                 ),
                 clashingInfos = listOf(
-                    PromoClashingInfo(
+                    PromoItemClashingInfo(
                         code = "DISCOUNT4",
                         message = "Belum bisa dipakai barengan promo yang dipilih."
                     )
                 ),
-                promoInfos = listOf(
-                    PromoInfo(
-                        type = PromoInfo.TYPE_PROMO_INFO,
+                promoItemInfos = listOf(
+                    PromoItemInfo(
+                        type = PromoItemInfo.TYPE_PROMO_INFO,
                         title = "Disesuaikan jika pilih Bebas Ongkir"
                     )
                 ),
                 expiryInfo = "Berakhir dalam <a>3 jama</a>",
                 expiryTimestamp = 1693451440,
-                currentClashingPromoCode = listOf("DISCOUNT4"),
-                state = PromoState.Ineligible,
+                currentClashingPromoCodes = listOf("DISCOUNT4"),
+                state = PromoItemState.Ineligible,
                 isAttempted = false
             )
         )
 
-    val recommendedPromos: List<Promo>
+    val recommendedPromos: List<PromoItem>
         get() = listOf(
-            Promo(
+            PromoItem(
                 id = "18",
                 index = 18,
                 code = "RECOMDISCOUNT",
                 benefitAmount = 30000.0,
                 benefitAmountStr = "Rp30.000",
-                benefitDetail = PromoBenefitDetail(
+                benefitDetail = PromoItemBenefitDetail(
                     amountIdr = 30000.0,
-                    benefitType = PromoBenefitDetail.BENEFIT_TYPE_DISCOUNT
+                    benefitType = PromoItemBenefitDetail.BENEFIT_TYPE_DISCOUNT
                 ),
                 benefitTypeStr = "Diskon",
                 cardDetails = listOf(
-                    PromoCardDetail(
+                    PromoItemCardDetail(
                         color = "",
                         iconUrl = "https://images.tokopedia.net/img/android/promo/ic_voucher_cashback/ic_voucher_cashback.png",
                         backgroundUrl = "https://images.tokopedia.net/img/android/promo/bg_supergraphic_cashback/bg_supergraphic_cashback.png"
                     )
                 ),
                 clashingInfos = listOf(
-                    PromoClashingInfo(
+                    PromoItemClashingInfo(
                         code = "",
                         message = "Belum bisa dipakai barengan promo yang dipilih."
                     )
                 ),
-                promoInfos = listOf(
-                    PromoInfo(
-                        type = PromoInfo.TYPE_PROMO_INFO,
+                promoItemInfos = listOf(
+                    PromoItemInfo(
+                        type = PromoItemInfo.TYPE_PROMO_INFO,
                         title = "Disesuaikan jika pilih Bebas Ongkir"
                     )
                 ),
                 expiryInfo = "Berakhir dalam <a>3 jama</a>",
                 expiryTimestamp = 1693451440,
-                state = PromoState.Normal,
+                state = PromoItemState.Normal,
                 isAttempted = false
             ),
-            Promo(
+            PromoItem(
                 id = "19",
                 index = 19,
                 code = "RECOMCASHBACK",
                 benefitAmount = 30000.0,
                 benefitAmountStr = "Rp30.000",
-                benefitDetail = PromoBenefitDetail(
+                benefitDetail = PromoItemBenefitDetail(
                     amountIdr = 30000.0,
-                    benefitType = PromoBenefitDetail.BENEFIT_TYPE_CASHBACK
+                    benefitType = PromoItemBenefitDetail.BENEFIT_TYPE_CASHBACK
                 ),
                 benefitTypeStr = "Diskon",
                 cardDetails = listOf(
-                    PromoCardDetail(
+                    PromoItemCardDetail(
                         color = "",
                         iconUrl = "https://images.tokopedia.net/img/android/promo/ic_voucher_cashback/ic_voucher_cashback.png",
                         backgroundUrl = "https://images.tokopedia.net/img/android/promo/bg_supergraphic_cashback/bg_supergraphic_cashback.png"
                     )
                 ),
                 clashingInfos = listOf(
-                    PromoClashingInfo(
+                    PromoItemClashingInfo(
                         code = "",
                         message = "Belum bisa dipakai barengan promo yang dipilih."
                     )
                 ),
-                promoInfos = listOf(
-                    PromoInfo(
-                        type = PromoInfo.TYPE_PROMO_INFO,
+                promoItemInfos = listOf(
+                    PromoItemInfo(
+                        type = PromoItemInfo.TYPE_PROMO_INFO,
                         title = "Disesuaikan jika pilih Bebas Ongkir"
                     )
                 ),
                 expiryInfo = "Berakhir dalam <a>3 jama</a>",
                 expiryTimestamp = 1693451440,
-                state = PromoState.Selected,
+                state = PromoItemState.Selected,
                 isAttempted = false
             )
         )

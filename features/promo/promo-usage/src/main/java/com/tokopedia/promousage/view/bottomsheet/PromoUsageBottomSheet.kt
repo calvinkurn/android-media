@@ -29,9 +29,10 @@ import com.tokopedia.promousage.R
 import com.tokopedia.promousage.data.DummyData
 import com.tokopedia.promousage.databinding.PromoUsageBottomshetBinding
 import com.tokopedia.promousage.di.DaggerPromoUsageComponent
-import com.tokopedia.promousage.domain.entity.EntryPoint
-import com.tokopedia.promousage.domain.entity.Promo
+import com.tokopedia.promousage.domain.entity.PromoPageEntryPoint
+import com.tokopedia.promousage.domain.entity.PromoItem
 import com.tokopedia.promousage.domain.entity.PromoCta
+import com.tokopedia.promousage.domain.entity.PromoPageState
 import com.tokopedia.promousage.domain.entity.list.PromoAccordionItem
 import com.tokopedia.promousage.util.composite.CompositeAdapter
 import com.tokopedia.promousage.util.extension.foregroundDrawable
@@ -42,12 +43,10 @@ import com.tokopedia.promousage.view.adapter.VoucherRecommendationDelegateAdapte
 import com.tokopedia.promousage.view.viewmodel.PromoUsageViewModel
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
 import com.tokopedia.unifycomponents.toPx
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
-class PromoUsageBottomSheet: BottomSheetDialogFragment() {
+class PromoUsageBottomSheet : BottomSheetDialogFragment() {
 
     companion object {
         private const val BUNDLE_KEY_ENTRY_POINT = "entry_point"
@@ -57,7 +56,7 @@ class PromoUsageBottomSheet: BottomSheetDialogFragment() {
 
         @JvmStatic
         fun newInstance(
-            entryPoint: EntryPoint,
+            entryPoint: PromoPageEntryPoint,
             promoRequest: PromoRequest,
             chosenAddress: ChosenAddress? = null
         ): PromoUsageBottomSheet {
@@ -73,8 +72,19 @@ class PromoUsageBottomSheet: BottomSheetDialogFragment() {
 
     private val recyclerViewAdapter by lazy {
         CompositeAdapter.Builder()
-            .add(VoucherRecommendationDelegateAdapter(onVoucherClick, onButtonUseRecommendedVoucherClick))
-            .add(VoucherAccordionDelegateAdapter(onVoucherAccordionClick, onVoucherClick, onViewAllVoucherCtaClick))
+            .add(
+                VoucherRecommendationDelegateAdapter(
+                    onVoucherClick,
+                    onButtonUseRecommendedVoucherClick
+                )
+            )
+            .add(
+                VoucherAccordionDelegateAdapter(
+                    onVoucherAccordionClick,
+                    onVoucherClick,
+                    onViewAllVoucherCtaClick
+                )
+            )
             .add(TermAndConditionDelegateAdapter(onTermAndConditionHyperlinkClick))
             .add(VoucherCodeDelegateAdapter(onApplyVoucherCodeCtaClick))
             .build()
@@ -88,7 +98,7 @@ class PromoUsageBottomSheet: BottomSheetDialogFragment() {
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider[PromoUsageViewModel::class.java] }
     private val entryPoint by lazy {
-        arguments?.getSerializable(BUNDLE_KEY_ENTRY_POINT) as? EntryPoint ?: EntryPoint.CART_PAGE
+        arguments?.getSerializable(BUNDLE_KEY_ENTRY_POINT) as? PromoPageEntryPoint ?: PromoPageEntryPoint.CART_PAGE
     }
 
     private fun setupDependencyInjection() {
@@ -106,7 +116,10 @@ class PromoUsageBottomSheet: BottomSheetDialogFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setupDependencyInjection()
-        setStyle(DialogFragment.STYLE_NORMAL, com.tokopedia.unifycomponents.R.style.UnifyBottomSheetOverlapStyle)
+        setStyle(
+            DialogFragment.STYLE_NORMAL,
+            com.tokopedia.unifycomponents.R.style.UnifyBottomSheetOverlapStyle
+        )
     }
 
     override fun onCreateView(
@@ -154,16 +167,25 @@ class PromoUsageBottomSheet: BottomSheetDialogFragment() {
     }
 
     private fun observeBottomSheetContent() {
-        viewModel.items.observe(viewLifecycleOwner) { result ->
-            when (result) {
-                is Success -> {
+        viewModel.promoPageState.observe(viewLifecycleOwner) { state ->
+            when (state) {
+                is PromoPageState.InitialShimmer -> {
+
+                }
+
+                is PromoPageState.Success -> {
                     showContent()
                     handleBottomCardViewAppearance(entryPoint)
                     showTotalSavingsSection(3, 40_000)
-                    recyclerViewAdapter.submit(result.data)
+                    recyclerViewAdapter.submit(state.sections)
                 }
-                is Fail -> {
+
+                is PromoPageState.Error -> {
                     hideContent()
+                }
+
+                else -> {
+                    // TODO: Handle other states
                 }
             }
         }
@@ -189,22 +211,26 @@ class PromoUsageBottomSheet: BottomSheetDialogFragment() {
         }
     }
 
-    private fun handleBottomCardViewAppearance(entryPoint: EntryPoint) {
+    private fun handleBottomCardViewAppearance(entryPoint: PromoPageEntryPoint) {
         binding?.run {
             cardViewTotalPrice.visible()
 
-            tpgTotalPrice.isVisible = entryPoint == EntryPoint.CART_PAGE || entryPoint == EntryPoint.ONE_CLICK_CHECKOUT_PAGE
-            tpgTotalPriceLabel.isVisible = entryPoint == EntryPoint.CART_PAGE || entryPoint == EntryPoint.ONE_CLICK_CHECKOUT_PAGE
-            buttonBuy.isVisible = entryPoint == EntryPoint.CART_PAGE || entryPoint == EntryPoint.ONE_CLICK_CHECKOUT_PAGE
+            tpgTotalPrice.isVisible =
+                entryPoint == PromoPageEntryPoint.CART_PAGE || entryPoint == PromoPageEntryPoint.ONE_CLICK_CHECKOUT_PAGE
+            tpgTotalPriceLabel.isVisible =
+                entryPoint == PromoPageEntryPoint.CART_PAGE || entryPoint == PromoPageEntryPoint.ONE_CLICK_CHECKOUT_PAGE
+            buttonBuy.isVisible =
+                entryPoint == PromoPageEntryPoint.CART_PAGE || entryPoint == PromoPageEntryPoint.ONE_CLICK_CHECKOUT_PAGE
 
-            buttonBackToShipment.isVisible = entryPoint == EntryPoint.SHIPMENT_PAGE
+            buttonBackToShipment.isVisible = entryPoint == PromoPageEntryPoint.SHIPMENT_PAGE
         }
 
         when (entryPoint) {
-            EntryPoint.CART_PAGE -> {
+            PromoPageEntryPoint.CART_PAGE -> {
                 binding?.buttonBuy?.text = context?.getString(R.string.promo_voucher_buy)
             }
-            EntryPoint.ONE_CLICK_CHECKOUT_PAGE -> {
+
+            PromoPageEntryPoint.ONE_CLICK_CHECKOUT_PAGE -> {
                 binding?.buttonBuy?.text = context?.getString(R.string.promo_voucher_pay)
                 val icon = ContextCompat.getDrawable(
                     context ?: return,
@@ -212,8 +238,10 @@ class PromoUsageBottomSheet: BottomSheetDialogFragment() {
                 )
                 binding?.buttonBuy?.setDrawable(icon)
             }
-            EntryPoint.SHIPMENT_PAGE -> {
-                binding?.buttonBackToShipment?.text = context?.getString(R.string.promo_voucher_back_to_shipment)
+
+            PromoPageEntryPoint.SHIPMENT_PAGE -> {
+                binding?.buttonBackToShipment?.text =
+                    context?.getString(R.string.promo_voucher_back_to_shipment)
             }
         }
     }
@@ -227,7 +255,7 @@ class PromoUsageBottomSheet: BottomSheetDialogFragment() {
         binding?.recyclerView?.apply {
             layoutManager = LinearLayoutManager(context ?: return)
             adapter = recyclerViewAdapter
-            addOnScrollListener(object : OnScrollListener(){
+            addOnScrollListener(object : OnScrollListener() {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     super.onScrolled(recyclerView, dx, dy)
                     if (dy > 0) handleScrollDownEvent() else handleScrollUpEvent()
@@ -314,9 +342,10 @@ class PromoUsageBottomSheet: BottomSheetDialogFragment() {
         }
     }
 
-    private val onVoucherClick = { promo : Promo ->
-        val isRegisterGoPayLaterCicil = promo.couponType.contains(Promo.COUPON_TYPE_GOPAY_LATER_CICIL)
-            && promo.cta.type == PromoCta.TYPE_REGISTER_GOPAY_LATER_CICIL
+    private val onVoucherClick = { promo: PromoItem ->
+        val isRegisterGoPayLaterCicil =
+            promo.couponType.contains(PromoItem.COUPON_TYPE_GOPAY_LATER_CICIL)
+                && promo.cta.type == PromoCta.TYPE_REGISTER_GOPAY_LATER_CICIL
         if (isRegisterGoPayLaterCicil) {
             // TODO: Handle GoPay Later Cicil Registration
         } else {
@@ -324,11 +353,11 @@ class PromoUsageBottomSheet: BottomSheetDialogFragment() {
         }
     }
 
-    private val onVoucherAccordionClick = { accordion : PromoAccordionItem ->
+    private val onVoucherAccordionClick = { accordion: PromoAccordionItem ->
         viewModel.onClickVoucherAccordion(accordion)
     }
 
-    private val onViewAllVoucherCtaClick = { accordion : PromoAccordionItem ->
+    private val onViewAllVoucherCtaClick = { accordion: PromoAccordionItem ->
         viewModel.onClickViewAllVoucher(accordion)
     }
 

@@ -4,7 +4,7 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-enum class EntryPoint : Parcelable {
+enum class PromoPageEntryPoint : Parcelable {
     CART_PAGE,
     ONE_CLICK_CHECKOUT_PAGE,
     SHIPMENT_PAGE

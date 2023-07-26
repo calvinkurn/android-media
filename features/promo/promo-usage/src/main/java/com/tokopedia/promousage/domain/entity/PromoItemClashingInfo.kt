@@ -1,6 +1,6 @@
 package com.tokopedia.promousage.domain.entity
 
-data class PromoClashingInfo(
+data class PromoItemClashingInfo(
     val code: String = "",
     val message: String = ""
 )

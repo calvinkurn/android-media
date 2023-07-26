@@ -126,8 +126,6 @@ data class Coupon(
     val benefitDetails: List<BenefitDetail> = emptyList(),
     @SerializedName("clashing_infos")
     val clashingInfos: List<ClashingInfo> = emptyList(),
-    @SerializedName("bo_clashing_info")
-    val boClashingInfo: List<BoClashingInfo> = emptyList(),
     @SerializedName("additional_bo_datas")
     val boAdditionalData: List<AdditionalBoData> = emptyList(),
     @SerializedName("promo_infos")
@@ -187,21 +185,7 @@ data class AdditionalBoData(
     @SerializedName("shipping_id")
     val shippingId: Long = 0,
     @SerializedName("sp_id")
-    val shipperProductId: Long = 0,
-    @SerializedName("benefit_amount")
-    val benefitAmount: Double = 0.0,
-    @SerializedName("promo_id")
-    val promoId: Long = 0,
-    @SerializedName("shipping_price")
-    val shippingPrice: Double = 0.0,
-    @SerializedName("shipping_subsidy")
-    val shippingSubsidy: Long = 0,
-    @SerializedName("benefit_class")
-    val benefitClass: String = "",
-    @SerializedName("bo_campaign_id")
-    val boCampaignId: Long = 0,
-    @SerializedName("eta_txt")
-    val etaText: String = ""
+    val spId: Long = 0
 )
 
 data class PromoInfo(
@@ -235,5 +219,5 @@ data class TickerInfo(
     @SerializedName("icon_url")
     val iconUrl: String = "",
     @SerializedName("background_url")
-    val state: String = ""
+    val backgroundUrl: String = ""
 )

@@ -124,7 +124,7 @@ import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.productbundlewidget.model.BundleDetailUiModel
 import com.tokopedia.promocheckout.common.view.widget.ButtonPromoCheckoutView
-import com.tokopedia.promousage.domain.entity.EntryPoint
+import com.tokopedia.promousage.domain.entity.PromoPageEntryPoint
 import com.tokopedia.promousage.view.bottomsheet.PromoUsageBottomSheet
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCart
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics
@@ -4619,7 +4619,7 @@ class CartFragment :
 
      private fun showPromoCheckoutBottomSheet() {
          val bottomSheet = PromoUsageBottomSheet.newInstance(
-             entryPoint = EntryPoint.CART_PAGE,
+             entryPoint = PromoPageEntryPoint.CART_PAGE,
              promoRequest = generateParamsCouponList()
          )
          bottomSheet.show(childFragmentManager, bottomSheet.tag)

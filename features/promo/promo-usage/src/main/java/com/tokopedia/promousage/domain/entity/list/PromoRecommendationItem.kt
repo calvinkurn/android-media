@@ -1,6 +1,6 @@
 package com.tokopedia.promousage.domain.entity.list
 
-import com.tokopedia.promousage.domain.entity.Promo
+import com.tokopedia.promousage.domain.entity.PromoItem
 import com.tokopedia.promousage.util.composite.DelegateAdapterItem
 
 data class PromoRecommendationItem(
@@ -11,5 +11,5 @@ data class PromoRecommendationItem(
     val messageSelected: String = "",
     val backgroundUrl: String = "",
     val animationUrl: String = "",
-    val promos: List<Promo> = emptyList()
+    val promos: List<PromoItem> = emptyList()
 ) : DelegateAdapterItem

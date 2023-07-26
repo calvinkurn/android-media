@@ -19,10 +19,10 @@ import com.tokopedia.kotlin.extensions.view.setTextColorCompat
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.promousage.R
 import com.tokopedia.promousage.databinding.PromoUsageVoucherViewBinding
-import com.tokopedia.promousage.domain.entity.Promo
-import com.tokopedia.promousage.domain.entity.PromoBenefitDetail
-import com.tokopedia.promousage.domain.entity.PromoInfo
-import com.tokopedia.promousage.domain.entity.PromoState
+import com.tokopedia.promousage.domain.entity.PromoItem
+import com.tokopedia.promousage.domain.entity.PromoItemBenefitDetail
+import com.tokopedia.promousage.domain.entity.PromoItemInfo
+import com.tokopedia.promousage.domain.entity.PromoItemState
 import com.tokopedia.promousage.util.extension.grayscale
 import com.tokopedia.promousage.util.extension.onDrawn
 import com.tokopedia.promousage.util.extension.removeGrayscale
@@ -43,11 +43,11 @@ class VoucherView @JvmOverloads constructor(
         binding?.cardView?.elevation = 4f
     }
 
-    fun bind(promo: Promo) {
+    fun bind(promo: PromoItem) {
         binding?.run {
-            val promoInfos = promo.promoInfos.filter { it.type == PromoInfo.TYPE_PROMO_INFO }
-            if (promoInfos.size == 1) {
-                tpgPromoInfo.text = promoInfos.first().title
+            val promoItemInfos = promo.promoItemInfos.filter { it.type == PromoItemInfo.TYPE_PROMO_INFO }
+            if (promoItemInfos.size == 1) {
+                tpgPromoInfo.text = promoItemInfos.first().title
             } else {
                 // TODO: Handle multiple promo info
             }
@@ -56,7 +56,7 @@ class VoucherView @JvmOverloads constructor(
             imgPromoIcon.loadImage(cardDetail.iconUrl)
             imgPromoBackground.loadImage(cardDetail.backgroundUrl)
 
-            if (promo.state is PromoState.Ineligible || promo.state is PromoState.Disabled) {
+            if (promo.state is PromoItemState.Ineligible || promo.state is PromoItemState.Disabled) {
                 imgPromoBackground.grayscale()
                 imgPromoIcon.grayscale()
             } else {
@@ -64,11 +64,11 @@ class VoucherView @JvmOverloads constructor(
                 imgPromoIcon.removeGrayscale()
             }
 
-            imgCheckmark.isVisible = promo.state is PromoState.Selected
+            imgCheckmark.isVisible = promo.state is PromoItemState.Selected
 
             if (promo.expiryInfo.isNotBlank()) {
                 tpgPromoExpiryInfo.text = HtmlLinkHelper(context, promo.expiryInfo).spannedString
-                tpgPromoExpiryInfo.background = if (promo.state is PromoState.Selected) {
+                tpgPromoExpiryInfo.background = if (promo.state is PromoItemState.Selected) {
                     ContextCompat.getDrawable(
                         tpgPromoExpiryInfo.context,
                         R.drawable.promo_usage_shape_voucher_selected
@@ -85,17 +85,17 @@ class VoucherView @JvmOverloads constructor(
             }
 
             when (promo.benefitDetail.benefitType) {
-                PromoBenefitDetail.BENEFIT_TYPE_CASHBACK -> handleCashback(promo)
-                PromoBenefitDetail.BENEFIT_TYPE_DISCOUNT -> handleDiscount(promo)
-                PromoBenefitDetail.BENEFIT_TYPE_FREE_SHIPPING -> handleFreeShipping(promo)
+                PromoItemBenefitDetail.BENEFIT_TYPE_CASHBACK -> handleCashback(promo)
+                PromoItemBenefitDetail.BENEFIT_TYPE_DISCOUNT -> handleDiscount(promo)
+                PromoItemBenefitDetail.BENEFIT_TYPE_FREE_SHIPPING -> handleFreeShipping(promo)
             }
 
             tpgPromoCode.text = if (promo.isAttempted) promo.code else ""
             tpgPromoCode.isVisible = promo.isAttempted
 
-            if (promo.state is PromoState.Ineligible) {
+            if (promo.state is PromoItemState.Ineligible) {
                 val clashingInfo = promo.clashingInfos.firstOrNull {
-                    promo.currentClashingPromoCode.contains(it.code)
+                    promo.currentClashingPromoCodes.contains(it.code)
                 }
                 clashingInfo?.let {
                     tpgIneligibleReason.text = it.message
@@ -108,11 +108,11 @@ class VoucherView @JvmOverloads constructor(
             cardView.onDrawn { cardViewHeightPx ->
                 cardView.background = createVoucherShape(
                     cardViewHeightPx = cardViewHeightPx,
-                    isVoucherSelected = promo.state is PromoState.Selected
+                    isVoucherSelected = promo.state is PromoItemState.Selected
                 )
             }
 
-            if (promo.state is PromoState.Loading) {
+            if (promo.state is PromoItemState.Loading) {
                 tpgPromoBenefitAmount.gone()
                 tpgPromoInfo.gone()
                 topShimmer.visible()
@@ -128,11 +128,11 @@ class VoucherView @JvmOverloads constructor(
         }
     }
 
-    private fun handleCashback(promo: Promo) {
+    private fun handleCashback(promo: PromoItem) {
         val voucherTypeTextColorResId = when (promo.state) {
-            is PromoState.Selected -> com.tokopedia.unifyprinciples.R.color.Unify_GN500
-            is PromoState.Disabled -> com.tokopedia.unifyprinciples.R.color.Unify_NN600
-            is PromoState.Ineligible -> com.tokopedia.unifyprinciples.R.color.Unify_NN600
+            is PromoItemState.Selected -> com.tokopedia.unifyprinciples.R.color.Unify_GN500
+            is PromoItemState.Disabled -> com.tokopedia.unifyprinciples.R.color.Unify_NN600
+            is PromoItemState.Ineligible -> com.tokopedia.unifyprinciples.R.color.Unify_NN600
             else -> com.tokopedia.unifyprinciples.R.color.Unify_BN500
         }
 
@@ -145,11 +145,11 @@ class VoucherView @JvmOverloads constructor(
         }
     }
 
-    private fun handleFreeShipping(promo: Promo) {
+    private fun handleFreeShipping(promo: PromoItem) {
         val voucherTypeTextColorResId = when (promo.state) {
-            is PromoState.Selected -> com.tokopedia.unifyprinciples.R.color.Unify_GN500
-            is PromoState.Disabled -> com.tokopedia.unifyprinciples.R.color.Unify_NN600
-            is PromoState.Ineligible -> com.tokopedia.unifyprinciples.R.color.Unify_NN600
+            is PromoItemState.Selected -> com.tokopedia.unifyprinciples.R.color.Unify_GN500
+            is PromoItemState.Disabled -> com.tokopedia.unifyprinciples.R.color.Unify_NN600
+            is PromoItemState.Ineligible -> com.tokopedia.unifyprinciples.R.color.Unify_NN600
             else -> com.tokopedia.unifyprinciples.R.color.Unify_GN500
         }
 
@@ -162,11 +162,11 @@ class VoucherView @JvmOverloads constructor(
         }
     }
 
-    private fun handleDiscount(promo: Promo) {
+    private fun handleDiscount(promo: PromoItem) {
         val voucherTypeTextColorResId = when (promo.state) {
-            is PromoState.Selected -> com.tokopedia.unifyprinciples.R.color.Unify_GN500
-            is PromoState.Disabled -> com.tokopedia.unifyprinciples.R.color.Unify_NN600
-            is PromoState.Ineligible -> com.tokopedia.unifyprinciples.R.color.Unify_NN600
+            is PromoItemState.Selected -> com.tokopedia.unifyprinciples.R.color.Unify_GN500
+            is PromoItemState.Disabled -> com.tokopedia.unifyprinciples.R.color.Unify_NN600
+            is PromoItemState.Ineligible -> com.tokopedia.unifyprinciples.R.color.Unify_NN600
             else -> com.tokopedia.unifyprinciples.R.color.Unify_YN500
         }
 
@@ -179,10 +179,10 @@ class VoucherView @JvmOverloads constructor(
         }
     }
 
-    private fun TextView.setVoucherAmountTextColor(promo: Promo) {
+    private fun TextView.setVoucherAmountTextColor(promo: PromoItem) {
         val voucherAmountTextColorResId = when (promo.state) {
-            is PromoState.Disabled -> com.tokopedia.unifyprinciples.R.color.Unify_NN600
-            is PromoState.Ineligible -> com.tokopedia.unifyprinciples.R.color.Unify_NN600
+            is PromoItemState.Disabled -> com.tokopedia.unifyprinciples.R.color.Unify_NN600
+            is PromoItemState.Ineligible -> com.tokopedia.unifyprinciples.R.color.Unify_NN600
             else -> com.tokopedia.unifyprinciples.R.color.Unify_NN950
         }
         setTextColorCompat(voucherAmountTextColorResId)

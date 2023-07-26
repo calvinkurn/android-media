@@ -1,6 +1,6 @@
 package com.tokopedia.promousage.domain.entity
 
-data class PromoBenefitDetail(
+data class PromoItemBenefitDetail(
     val amountIdr: Double = 0.0,
     val benefitType: String = "",
     val dataType: String = ""

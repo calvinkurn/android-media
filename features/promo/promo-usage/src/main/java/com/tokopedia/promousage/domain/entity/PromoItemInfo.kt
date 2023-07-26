@@ -1,8 +1,6 @@
 package com.tokopedia.promousage.domain.entity
 
-import androidx.annotation.StringDef
-
-data class PromoInfo(
+data class PromoItemInfo(
     val type: String = "",
     val title: String = ""
 ) {
