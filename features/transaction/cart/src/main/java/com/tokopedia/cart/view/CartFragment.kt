@@ -4586,7 +4586,7 @@ class CartFragment :
     }
 
      private fun showPromoCheckoutBottomSheet() {
-         val bottomSheet = PromoUsageBottomSheet.newInstance(entryPoint = EntryPoint.CART_PAGE)
+         val bottomSheet = PromoUsageBottomSheet.newInstance(entryPoint = EntryPoint.CART_PAGE, originalTotalPrice = 1_000_000)
          bottomSheet.show(childFragmentManager, bottomSheet.tag)
     }
 }

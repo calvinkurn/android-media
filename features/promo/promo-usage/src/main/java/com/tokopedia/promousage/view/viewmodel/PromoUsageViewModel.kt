@@ -124,27 +124,31 @@ class PromoUsageViewModel @Inject constructor(
     }
 
     private fun addToSelection(selectedVoucher: Voucher) {
-        val updatedVouchers = currentItems.map { widget ->
-            if (widget is VoucherAccordion) {
-                val selectedVouchers = widget.vouchers.map { item ->
-                    val voucher = item as Voucher
-                    if (selectedVoucher.id == voucher.id) {
-                        voucher.copy(voucherState = VoucherState.Selected)
-                    } else {
-                        voucher
+        val isSelectable = selectedVoucher.voucherState is VoucherState.Normal || selectedVoucher.voucherState is VoucherState.Selected
+
+        if (isSelectable) {
+            val updatedVouchers = currentItems.map { widget ->
+                if (widget is VoucherAccordion) {
+                    val selectedVouchers = widget.vouchers.map { item ->
+                        val voucher = item as Voucher
+                        if (selectedVoucher.id == voucher.id) {
+                            voucher.copy(voucherState = VoucherState.Selected)
+                        } else {
+                            voucher
+                        }
                     }
+
+                    widget.copy(vouchers = selectedVouchers)
+                } else {
+                    widget
                 }
-
-                widget.copy(vouchers = selectedVouchers)
-            } else {
-                widget
             }
+
+            _vouchers.value = Success(updatedVouchers)
+
+            selectedVouchersSet.add(selectedVoucher)
+            _selectedVouchers.value = selectedVouchersSet
         }
-
-        _vouchers.value = Success(updatedVouchers)
-
-        selectedVouchersSet.add(selectedVoucher)
-        _selectedVouchers.value = selectedVouchersSet
     }
 
     private fun removeFromSelection(selectedVoucher: Voucher) {
