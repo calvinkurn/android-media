@@ -169,4 +169,6 @@ data class WalletAppData(
     @SerializedName("cta_link")
     @Expose
     var ctaLink: String = ""
-): Parcelable
+): Parcelable {
+
+}

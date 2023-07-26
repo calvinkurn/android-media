@@ -378,4 +378,5 @@ object TokopediaImageUrl {
     const val IMG_14TH_ANNIV_HOME_RM = "https://images.tokopedia.net/img/android/seller_home/img_14th_anniv_rm_background_effect.png"
     const val IMG_14TH_ANNIV_HOME_PM = "https://images.tokopedia.net/img/android/seller_home/img_14th_anniv_pm_background_effect.png"
     const val IMG_14TH_ANNIV_HOME_OS = "https://images.tokopedia.net/img/android/seller_home/img_14th_anniv_os_background_effect.png"
+    const val IMG_OPEN_IN_MAIN_APP_WITHDRAW = "https://images.tokopedia.net/img/android/payment/update-app-to-withdraw.png"
 }
