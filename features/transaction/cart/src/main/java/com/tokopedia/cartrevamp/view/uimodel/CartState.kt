@@ -109,9 +109,9 @@ sealed class UpdateCartCheckoutState {
     data class Failed(val throwable: Throwable) : UpdateCartCheckoutState()
 }
 
-sealed class UpdateCartAndGetLastApplyState {
-    data class Success(val promoUiModel: PromoUiModel) : UpdateCartAndGetLastApplyState()
-    data class Failed(val throwable: Throwable) : UpdateCartAndGetLastApplyState()
+sealed class UpdateCartAndGetLastApplyEvent {
+    data class Success(val promoUiModel: PromoUiModel) : UpdateCartAndGetLastApplyEvent()
+    data class Failed(val throwable: Throwable) : UpdateCartAndGetLastApplyEvent()
 }
 
 sealed interface AddToWishlistV2Event {

@@ -90,11 +90,12 @@ import com.tokopedia.cartrevamp.view.uimodel.LoadRecentReviewState
 import com.tokopedia.cartrevamp.view.uimodel.LoadRecommendationState
 import com.tokopedia.cartrevamp.view.uimodel.LoadWishlistV2State
 import com.tokopedia.cartrevamp.view.uimodel.UndoDeleteEvent
-import com.tokopedia.cartrevamp.view.uimodel.UpdateCartAndGetLastApplyState
+import com.tokopedia.cartrevamp.view.uimodel.UpdateCartAndGetLastApplyEvent
 import com.tokopedia.cartrevamp.view.uimodel.UpdateCartCheckoutState
 import com.tokopedia.cartrevamp.view.uimodel.UpdateCartPromoState
 import com.tokopedia.cartrevamp.view.viewholder.CartRecommendationViewHolder
 import com.tokopedia.coachmark.CoachMark2
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.dpToPx
@@ -794,7 +795,21 @@ class CartRevampFragment :
     }
 
     override fun onGlobalDeleteClicked() {
-        TODO("Not yet implemented")
+        cartPageAnalytics.eventClickGlobalDelete()
+        val allCartItemDataList = viewModel.getAllCartItemData()
+        val deletedCartItems = viewModel.getSelectedCartItemData()
+        val dialog = getMultipleItemsDialogDeleteConfirmation(deletedCartItems.size)
+        dialog?.setPrimaryCTAClickListener {
+            viewModel.processDeleteCartItem(
+                allCartItemData = allCartItemDataList,
+                removedCartItems = deletedCartItems,
+                addWishList = false,
+                isFromGlobalCheckbox = true
+            )
+            dialog.dismiss()
+        }
+        dialog?.setSecondaryCTAClickListener { dialog.dismiss() }
+        dialog?.show()
     }
 
     override fun onNeedToGoneLocalizingAddressWidget() {
@@ -1364,6 +1379,19 @@ class CartRevampFragment :
                 )
             }
         }
+    }
+
+    private fun getMultipleItemsDialogDeleteConfirmation(count: Int): DialogUnify? {
+        activity?.let {
+            return DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
+                setTitle(getString(R.string.label_dialog_title_delete_multiple_item, count))
+                setDescription(getString(R.string.cart_label_dialog_message_remove_cart_multiple_item))
+                setPrimaryCTAText(getString(R.string.label_dialog_action_delete_simple))
+                setSecondaryCTAText(getString(R.string.cart_label_dialog_action_cancel_simple))
+            }
+        }
+
+        return null
     }
 
     private fun getRedStatePromo(): Triple<Boolean, ArrayList<String>, ArrayList<ClearPromoOrder>> {
@@ -2151,13 +2179,12 @@ class CartRevampFragment :
     }
 
     private fun observeUpdateCartAndGetLastApply() {
-        viewModel.updateCartAndGetLastApplyState.observe(viewLifecycleOwner) { data ->
+        viewModel.updateCartAndGetLastApplyEvent.observe(viewLifecycleOwner) { data ->
             when (data) {
-                is UpdateCartAndGetLastApplyState.Success -> {
+                is UpdateCartAndGetLastApplyEvent.Success -> {
                     updatePromoCheckoutStickyButton(data.promoUiModel)
                 }
-
-                is UpdateCartAndGetLastApplyState.Failed -> {
+                is UpdateCartAndGetLastApplyEvent.Failed -> {
                     if (data.throwable is AkamaiErrorException) {
                         viewModel.doClearAllPromo()
                         if (!viewModel.cartModel.promoTicker.enable) {

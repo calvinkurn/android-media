@@ -34,8 +34,8 @@
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/image_shop_badge"
-            android:layout_width="18dp"
-            android:layout_height="18dp"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
             android:layout_marginStart="4dp"
             app:layout_constraintEnd_toStartOf="@id/tv_shop_name"
             app:layout_constraintHorizontal_bias="0"

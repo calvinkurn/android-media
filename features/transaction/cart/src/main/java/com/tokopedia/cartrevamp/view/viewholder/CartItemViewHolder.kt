@@ -365,17 +365,17 @@ class CartItemViewHolder constructor(
     private fun renderProductActionSection(data: CartItemHolderData) {
         if (data.isBundlingItem) {
             if (data.isMultipleBundleProduct && (data.bundlingItemPosition == BUNDLING_ITEM_HEADER || data.bundlingItemPosition == CartItemHolderData.BUNDLING_ITEM_DEFAULT)) {
-                binding.containerProductQuantityAction.invisible()
+                binding.qtyEditorProduct.invisible()
 //                binding.holderItemCartDivider.gone()
             } else {
-                binding.containerProductQuantityAction.show()
+                binding.qtyEditorProduct.show()
 //                binding.holderItemCartDivider.visibility =
 //                    if (data.isFinalItem) View.GONE else View.VISIBLE
             }
             binding.buttonChangeNote.show()
             binding.buttonToggleWishlist.show()
         } else {
-            binding.containerProductQuantityAction.show()
+            binding.qtyEditorProduct.show()
             binding.buttonChangeNote.show()
             binding.buttonToggleWishlist.show()
 //            binding.holderItemCartDivider.visibility =
@@ -389,8 +389,8 @@ class CartItemViewHolder constructor(
         val constraintSet = ConstraintSet()
         constraintSet.apply {
             clone(binding.containerProductInformation)
-            val margin = PRODUCT_ACTION_MARGIN.dpToPx(itemView.resources.displayMetrics)
-            val marginTop = WISHLIST_BUNDLE_MARGIN_TOP.dpToPx(itemView.resources.displayMetrics)
+            val margin = IMAGE_PRODUCT_MARGIN_START.dpToPx(itemView.resources.displayMetrics)
+            val marginTop = WISHLIST_ANIMATED_MARGIN_TOP.dpToPx(itemView.resources.displayMetrics)
             if (data.isBundlingItem) {
                 connect(
                     R.id.button_change_note,
@@ -413,22 +413,45 @@ class CartItemViewHolder constructor(
                     ConstraintSet.BOTTOM,
                     marginTop
                 )
-                clear(R.id.button_change_note, ConstraintSet.BOTTOM)
-                clear(R.id.button_toggle_wishlist, ConstraintSet.BOTTOM)
-                clear(R.id.iv_animated_wishlist, ConstraintSet.BOTTOM)
                 if (data.bundlingItemPosition == BUNDLING_ITEM_FOOTER || (!data.isMultipleBundleProduct)) {
                     connect(
                         R.id.qty_editor_product,
                         ConstraintSet.TOP,
                         R.id.button_change_note,
-                        ConstraintSet.BOTTOM
+                        ConstraintSet.BOTTOM,
+                        marginTop
                     )
+                    binding.qtyEditorProduct.setPadding(0, 0, 0, margin)
+                    clear(R.id.button_change_note, ConstraintSet.BOTTOM)
+                    clear(R.id.button_toggle_wishlist, ConstraintSet.BOTTOM)
+                    clear(R.id.iv_animated_wishlist, ConstraintSet.BOTTOM)
                     clear(R.id.qty_editor_product, ConstraintSet.BOTTOM)
                 } else {
                     connect(
                         R.id.qty_editor_product,
                         ConstraintSet.TOP,
                         R.id.item_addon_cart,
+                        ConstraintSet.BOTTOM,
+                        marginTop
+                    )
+                    connect(
+                        R.id.button_change_note,
+                        ConstraintSet.BOTTOM,
+                        ConstraintSet.PARENT_ID,
+                        ConstraintSet.BOTTOM,
+                        margin
+                    )
+                    connect(
+                        R.id.button_toggle_wishlist,
+                        ConstraintSet.BOTTOM,
+                        ConstraintSet.PARENT_ID,
+                        ConstraintSet.BOTTOM,
+                        margin
+                    )
+                    connect(
+                        R.id.iv_animated_wishlist,
+                        ConstraintSet.BOTTOM,
+                        ConstraintSet.PARENT_ID,
                         ConstraintSet.BOTTOM,
                         margin
                     )
@@ -439,6 +462,7 @@ class CartItemViewHolder constructor(
                         ConstraintSet.BOTTOM,
                         margin
                     )
+                    binding.qtyEditorProduct.setPadding(0, 0, 0, 0)
                 }
             } else {
                 connect(
@@ -497,6 +521,7 @@ class CartItemViewHolder constructor(
                     ConstraintSet.BOTTOM,
                     margin
                 )
+                binding.qtyEditorProduct.setPadding(0, 0, 0, 0)
             }
             applyTo(binding.containerProductInformation)
         }
@@ -896,6 +921,7 @@ class CartItemViewHolder constructor(
     }
 
     private fun renderProductNotes(element: CartItemHolderData) {
+        if (element.isError) return
         with(binding) {
 //            textNotes.setOnClickListener {
 //                renderProductNotesEditable(element)
@@ -1021,10 +1047,9 @@ class CartItemViewHolder constructor(
     private fun renderQuantity(data: CartItemHolderData, viewHolderListener: ViewHolderListener?) {
         val qtyEditorProduct = binding.qtyEditorProduct
         if (data.isError) {
-            binding.containerProductQuantityAction.gone()
+            binding.qtyEditorProduct.invisible()
             return
         }
-        qtyEditorProduct.show()
         qtyEditorProduct.autoHideKeyboard = true
         if (qtyTextWatcher != null) {
             // reset listener
@@ -1140,6 +1165,9 @@ class CartItemViewHolder constructor(
     }
 
     private fun renderActionWishlist(data: CartItemHolderData) {
+        if (data.isError) {
+            return
+        }
         if (data.isWishlisted) {
             val inWishlistColor = ContextCompat.getColor(
                 itemView.context,
@@ -1334,7 +1362,7 @@ class CartItemViewHolder constructor(
 
         private const val IMAGE_PRODUCT_MARGIN_START_6 = 6
         private const val MARGIN_VERTICAL_SEPARATOR = 8
-        private const val WISHLIST_BUNDLE_MARGIN_TOP = 13
+        private const val WISHLIST_ANIMATED_MARGIN_TOP = 13
         private const val IMAGE_PRODUCT_MARGIN_START = 12
         private const val PRODUCT_ACTION_MARGIN = 16
         private const val TEXT_NOTES_CHANGE_WIDTH = 40

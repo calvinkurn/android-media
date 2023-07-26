@@ -71,7 +71,7 @@ import com.tokopedia.cartrevamp.view.uimodel.LoadRecommendationState
 import com.tokopedia.cartrevamp.view.uimodel.LoadWishlistV2State
 import com.tokopedia.cartrevamp.view.uimodel.PromoSummaryDetailData
 import com.tokopedia.cartrevamp.view.uimodel.UndoDeleteEvent
-import com.tokopedia.cartrevamp.view.uimodel.UpdateCartAndGetLastApplyState
+import com.tokopedia.cartrevamp.view.uimodel.UpdateCartAndGetLastApplyEvent
 import com.tokopedia.cartrevamp.view.uimodel.UpdateCartCheckoutState
 import com.tokopedia.cartrevamp.view.uimodel.UpdateCartPromoState
 import com.tokopedia.iconunify.IconUnify
@@ -195,8 +195,8 @@ class CartViewModel @Inject constructor(
     private val _recommendationState: MutableLiveData<LoadRecommendationState> = MutableLiveData()
     val recommendationState: LiveData<LoadRecommendationState> = _recommendationState
 
-    private val _updateCartAndGetLastApplyState: MutableLiveData<UpdateCartAndGetLastApplyState> = MutableLiveData()
-    val updateCartAndGetLastApplyState: LiveData<UpdateCartAndGetLastApplyState> = _updateCartAndGetLastApplyState
+    private val _updateCartAndGetLastApplyEvent: MutableLiveData<UpdateCartAndGetLastApplyEvent> = MutableLiveData()
+    val updateCartAndGetLastApplyEvent: LiveData<UpdateCartAndGetLastApplyEvent> = _updateCartAndGetLastApplyEvent
 
     private val _selectedAmountState: MutableLiveData<Int> = MutableLiveData(0)
     val selectedAmountState: LiveData<Int> = _selectedAmountState
@@ -2089,14 +2089,14 @@ class CartViewModel @Inject constructor(
                                         lastUpdateCartAndGetLastApplyResponse =
                                             updateCartDataResponse
                                     }
-                                    _updateCartAndGetLastApplyState.value =
-                                        UpdateCartAndGetLastApplyState.Success(promoUiModel)
+                                    _updateCartAndGetLastApplyEvent.value =
+                                        UpdateCartAndGetLastApplyEvent.Success(promoUiModel)
                                 }
                             }
                         }
                     }
                 } catch (t: Throwable) {
-                    _updateCartAndGetLastApplyState.value = UpdateCartAndGetLastApplyState.Failed(t)
+                    _updateCartAndGetLastApplyEvent.value = UpdateCartAndGetLastApplyEvent.Failed(t)
                 }
             }
         } else {

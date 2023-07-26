@@ -64,4 +64,6 @@
     <string name="cart_label_discount_percentage">-%s</string>
     <string name="label_delete_with_amount">Hapus (%d)</string>
     <string name="label_cannot_be_processed_no_value">Tidak bisa diproses</string>
+    <string name="cart_label_dialog_message_remove_cart_multiple_item">Produk yang kamu pilih akan dihapus dari Keranjang.</string>
+    <string name="cart_label_dialog_action_cancel_simple">Batal</string>
 </resources>
