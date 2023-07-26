@@ -5,6 +5,7 @@ import android.graphics.Paint
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -94,64 +95,47 @@ class CartItemViewHolder constructor(
 
         renderAlpha(data)
         renderShopInfo(data)
-        renderProductInfo(data)
         renderLeftAnchor(data)
+        renderProductInfo(data)
         renderQuantity(data, viewHolderListener)
         renderProductAction(data)
     }
 
     private fun renderLeftAnchor(data: CartItemHolderData) {
+        binding.vBundlingProductSeparator.show()
         if (data.isBundlingItem) {
             with(binding) {
                 checkboxProduct.gone()
-                val marginStart: Int
-                if (data.isMultipleBundleProduct) {
-                    marginStart =
-                        IMAGE_PRODUCT_MARGIN_START.dpToPx(itemView.resources.displayMetrics)
-                    vBundlingProductSeparator.show()
-                } else {
-                    marginStart =
-                        BUNDLING_SEPARATOR_MARGIN_START.dpToPx(itemView.resources.displayMetrics)
-                    vBundlingProductSeparator.gone()
-                }
+//                vBundlingProductSeparator.show()
+                val marginStart = BUNDLING_SEPARATOR_MARGIN_START.dpToPx(itemView.resources.displayMetrics)
                 val constraintSet = ConstraintSet()
                 constraintSet.clone(containerProductInformation)
                 constraintSet.connect(
                     R.id.iu_image_product,
                     ConstraintSet.START,
-                    R.id.v_bundling_product_separator,
-                    ConstraintSet.END,
+                    ConstraintSet.PARENT_ID,
+                    ConstraintSet.START,
                     marginStart
                 )
                 constraintSet.connect(
                     R.id.iu_image_product,
                     ConstraintSet.TOP,
-                    R.id.container_product_information,
-                    ConstraintSet.TOP
+                    R.id.product_bundling_info,
+                    ConstraintSet.BOTTOM
                 )
                 constraintSet.applyTo(containerProductInformation)
                 renderCheckBoxBundle(data)
-
-                val params = vBundlingProductSeparator.layoutParams as ViewGroup.MarginLayoutParams
-                if (data.isError) {
-                    params.leftMargin = 0
-                } else {
-                    params.leftMargin =
-                        BUNDLING_SEPARATOR_MARGIN_START.dpToPx(itemView.resources.displayMetrics)
-                }
-
-//                val textFieldNotesParams =
-//                    textFieldNotes.layoutParams as ViewGroup.MarginLayoutParams
-//                textFieldNotesParams.leftMargin = marginStart
-//                val textNotesParams = textNotes.layoutParams as ViewGroup.MarginLayoutParams
-//                textNotesParams.leftMargin = marginStart
-//                val textNotesFilledParams =
-//                    textNotesFilled.layoutParams as ViewGroup.MarginLayoutParams
-//                textNotesFilledParams.leftMargin = marginStart
+//                val params = vBundlingProductSeparator.layoutParams as ViewGroup.MarginLayoutParams
+//                if (data.isError) {
+//                    params.leftMargin = 0
+//                } else {
+//                    params.leftMargin =
+//                        BUNDLING_SEPARATOR_MARGIN_START.dpToPx(itemView.resources.displayMetrics)
+//                }
             }
         } else {
             with(binding) {
-                vBundlingProductSeparator.gone()
+//                vBundlingProductSeparator.gone()
                 checkboxProduct.show()
                 val marginStart =
                     IMAGE_PRODUCT_MARGIN_START_6.dpToPx(itemView.resources.displayMetrics)
@@ -178,11 +162,12 @@ class CartItemViewHolder constructor(
 //                textFieldNotesParams.leftMargin = 0
 //                val textNotesParams = textNotes.layoutParams as ViewGroup.MarginLayoutParams
 //                textNotesParams.leftMargin = 0
-//                val textNotesFilledParams =
+//                val textNotesFilleadjustProductVerticalSeparatorConstraintdParams =
 //                    textNotesFilled.layoutParams as ViewGroup.MarginLayoutParams
 //                textNotesFilledParams.leftMargin = 0
             }
         }
+        adjustProductVerticalSeparatorConstraint(data)
     }
 
     private fun renderProductAction(data: CartItemHolderData) {
@@ -230,43 +215,13 @@ class CartItemViewHolder constructor(
     }
 
     private fun renderActionDelete(data: CartItemHolderData) {
-//        adjustButtonDeleteConstraint(data)
         binding.buttonDeleteCart.setOnClickListener {
             if (adapterPosition != RecyclerView.NO_POSITION) {
-                actionListener?.onCartItemDeleteButtonClicked(data)
+                actionListener?.onCartItemDeleteButtonClicked(data, true)
             }
         }
         binding.buttonDeleteCart.show()
     }
-
-//    private fun adjustButtonDeleteConstraint(data: CartItemHolderData) {
-//        with(binding) {
-//            if (data.isError) {
-//                val constraintSet = ConstraintSet()
-//                constraintSet.clone(containerProductAction)
-//                constraintSet.connect(
-//                    R.id.button_delete_cart,
-//                    ConstraintSet.END,
-//                    R.id.text_product_unavailable_action,
-//                    ConstraintSet.START,
-//                    0
-//                )
-//                constraintSet.applyTo(containerProductAction)
-//            } else {
-//                val constraintSet = ConstraintSet()
-//                constraintSet.clone(containerProductAction)
-//                constraintSet.connect(
-//                    R.id.button_delete_cart,
-//                    ConstraintSet.END,
-//                    R.id.qty_editor_product,
-//                    ConstraintSet.START,
-//                    itemView.context.resources.getDimension(com.tokopedia.abstraction.R.dimen.dp_16)
-//                        .toInt()
-//                )
-//                constraintSet.applyTo(containerProductAction)
-//            }
-//        }
-//    }
 
     private fun renderCheckBoxProduct(data: CartItemHolderData) {
         val checkboxProduct = binding.checkboxProduct
@@ -305,13 +260,14 @@ class CartItemViewHolder constructor(
 
     private fun renderCheckBoxBundle(data: CartItemHolderData) {
         val checkboxBundle = binding.checkboxBundle
+        val padding12 = IMAGE_PRODUCT_MARGIN_START.dpToPx(itemView.resources.displayMetrics)
+        val padding16 = PRODUCT_ACTION_MARGIN.dpToPx(itemView.resources.displayMetrics)
         if (data.isError) {
             checkboxBundle.gone()
-            val padding12 = itemView.resources.getDimensionPixelSize(R.dimen.dp_12)
-            binding.productBundlingInfo.setPadding(padding12, 0, 0, 0)
+            binding.productBundlingInfo.setPadding(padding12, 0, 0, padding16)
             return
         }
-        binding.productBundlingInfo.setPadding(0, 0, 0, 0)
+        binding.productBundlingInfo.setPadding(0, 0, 0, padding16)
         checkboxBundle.show()
         checkboxBundle.setOnCheckedChangeListener { compoundButton, b ->
             // disable listener before setting current selection state
@@ -386,9 +342,12 @@ class CartItemViewHolder constructor(
     private fun renderBundlingInfo(data: CartItemHolderData) {
         if (data.isBundlingItem && data.bundlingItemPosition == BUNDLING_ITEM_HEADER) {
             binding.productBundlingInfo.show()
+            binding.checkboxBundle.show()
+
             renderBundlingInfoDetail(data)
         } else {
             binding.productBundlingInfo.gone()
+            binding.checkboxBundle.gone()
         }
 
 //        if (data.isBundlingItem && !data.isMultipleBundleProduct && data.bundleLabelQuantity > 0) {
@@ -407,11 +366,11 @@ class CartItemViewHolder constructor(
         if (data.isBundlingItem) {
             if (data.isMultipleBundleProduct && (data.bundlingItemPosition == BUNDLING_ITEM_HEADER || data.bundlingItemPosition == CartItemHolderData.BUNDLING_ITEM_DEFAULT)) {
                 binding.containerProductQuantityAction.invisible()
-                binding.holderItemCartDivider.gone()
+//                binding.holderItemCartDivider.gone()
             } else {
                 binding.containerProductQuantityAction.show()
-                binding.holderItemCartDivider.visibility =
-                    if (data.isFinalItem) View.GONE else View.VISIBLE
+//                binding.holderItemCartDivider.visibility =
+//                    if (data.isFinalItem) View.GONE else View.VISIBLE
             }
             binding.buttonChangeNote.show()
             binding.buttonToggleWishlist.show()
@@ -419,11 +378,11 @@ class CartItemViewHolder constructor(
             binding.containerProductQuantityAction.show()
             binding.buttonChangeNote.show()
             binding.buttonToggleWishlist.show()
-            binding.holderItemCartDivider.visibility =
-                if (data.isFinalItem) View.GONE else View.VISIBLE
+//            binding.holderItemCartDivider.visibility =
+//                if (data.isFinalItem) View.GONE else View.VISIBLE
         }
         adjustProductActionConstraint(data)
-        adjustBundlingProductSeparatorConstraint(data)
+//        adjustBundlingProductSeparatorConstraint(data)
     }
 
     private fun adjustProductActionConstraint(data: CartItemHolderData) {
@@ -432,7 +391,7 @@ class CartItemViewHolder constructor(
             clone(binding.containerProductInformation)
             val margin = PRODUCT_ACTION_MARGIN.dpToPx(itemView.resources.displayMetrics)
             val marginTop = WISHLIST_BUNDLE_MARGIN_TOP.dpToPx(itemView.resources.displayMetrics)
-            if (data.isBundlingItem && data.isMultipleBundleProduct) {
+            if (data.isBundlingItem) {
                 connect(
                     R.id.button_change_note,
                     ConstraintSet.TOP,
@@ -457,18 +416,26 @@ class CartItemViewHolder constructor(
                 clear(R.id.button_change_note, ConstraintSet.BOTTOM)
                 clear(R.id.button_toggle_wishlist, ConstraintSet.BOTTOM)
                 clear(R.id.iv_animated_wishlist, ConstraintSet.BOTTOM)
-                if (data.bundlingItemPosition == BUNDLING_ITEM_FOOTER) {
+                if (data.bundlingItemPosition == BUNDLING_ITEM_FOOTER || (!data.isMultipleBundleProduct)) {
                     connect(
                         R.id.qty_editor_product,
                         ConstraintSet.TOP,
                         R.id.button_change_note,
                         ConstraintSet.BOTTOM
                     )
+                    clear(R.id.qty_editor_product, ConstraintSet.BOTTOM)
                 } else {
                     connect(
                         R.id.qty_editor_product,
                         ConstraintSet.TOP,
                         R.id.item_addon_cart,
+                        ConstraintSet.BOTTOM,
+                        margin
+                    )
+                    connect(
+                        R.id.qty_editor_product,
+                        ConstraintSet.BOTTOM,
+                        ConstraintSet.PARENT_ID,
                         ConstraintSet.BOTTOM,
                         margin
                     )
@@ -523,30 +490,86 @@ class CartItemViewHolder constructor(
                     ConstraintSet.BOTTOM,
                     margin
                 )
+                connect(
+                    R.id.qty_editor_product,
+                    ConstraintSet.BOTTOM,
+                    ConstraintSet.PARENT_ID,
+                    ConstraintSet.BOTTOM,
+                    margin
+                )
             }
             applyTo(binding.containerProductInformation)
         }
     }
 
-    private fun adjustBundlingProductSeparatorConstraint(data: CartItemHolderData) {
+    private fun adjustProductVerticalSeparatorConstraint(data: CartItemHolderData) {
+        if (data.isError || !data.isBundlingItem) {
+            binding.vBundlingProductSeparator.gone()
+            return
+        }
+        binding.vBundlingProductSeparator.visible()
         val constraintSet = ConstraintSet()
         constraintSet.apply {
             clone(binding.containerProductInformation)
-            if (data.isBundlingItem && data.isMultipleBundleProduct && data.bundlingItemPosition == BUNDLING_ITEM_FOOTER) {
+
+            // Top
+            if (data.isMultipleBundleProduct) {
+                if (data.bundlingItemPosition != BUNDLING_ITEM_HEADER) {
+                    connect(
+                        R.id.v_bundling_product_separator,
+                        ConstraintSet.TOP,
+                        ConstraintSet.PARENT_ID,
+                        ConstraintSet.TOP,
+                        0
+                    )
+                } else {
+                    connect(
+                        R.id.v_bundling_product_separator,
+                        ConstraintSet.TOP,
+                        R.id.checkbox_bundle,
+                        ConstraintSet.BOTTOM,
+                        MARGIN_VERTICAL_SEPARATOR.dpToPx(itemView.resources.displayMetrics)
+                    )
+                }
+            } else {
                 connect(
                     R.id.v_bundling_product_separator,
+                    ConstraintSet.TOP,
+                    R.id.checkbox_bundle,
                     ConstraintSet.BOTTOM,
-                    R.id.button_change_note,
-                    ConstraintSet.BOTTOM
+                    MARGIN_VERTICAL_SEPARATOR.dpToPx(itemView.resources.displayMetrics)
                 )
+            }
+
+            // Bottom
+            if (data.isMultipleBundleProduct) {
+                if (data.bundlingItemPosition == BUNDLING_ITEM_FOOTER) {
+                    connect(
+                        R.id.v_bundling_product_separator,
+                        ConstraintSet.BOTTOM,
+                        R.id.iu_image_product,
+                        ConstraintSet.BOTTOM,
+                        MARGIN_VERTICAL_SEPARATOR.dpToPx(itemView.resources.displayMetrics)
+                    )
+                } else {
+                    connect(
+                        R.id.v_bundling_product_separator,
+                        ConstraintSet.BOTTOM,
+                        ConstraintSet.PARENT_ID,
+                        ConstraintSet.BOTTOM,
+                        0
+                    )
+                }
             } else {
                 connect(
                     R.id.v_bundling_product_separator,
                     ConstraintSet.BOTTOM,
-                    ConstraintSet.PARENT_ID,
-                    ConstraintSet.BOTTOM
+                    R.id.iu_image_product,
+                    ConstraintSet.BOTTOM,
+                    MARGIN_VERTICAL_SEPARATOR.dpToPx(itemView.resources.displayMetrics)
                 )
             }
+
             applyTo(binding.containerProductInformation)
         }
     }
@@ -626,19 +649,6 @@ class CartItemViewHolder constructor(
     }
 
     private fun renderImage(data: CartItemHolderData) {
-        val layoutParams = binding.iuImageProduct.layoutParams
-        if (data.isBundlingItem) {
-            layoutParams.apply {
-                width = 56.dpToPx(itemView.resources.displayMetrics)
-                height = 56.dpToPx(itemView.resources.displayMetrics)
-            }
-        } else {
-            layoutParams.apply {
-                width = 80.dpToPx(itemView.resources.displayMetrics)
-                height = 80.dpToPx(itemView.resources.displayMetrics)
-            }
-        }
-        binding.iuImageProduct.layoutParams = layoutParams
         data.productImage.let {
             binding.iuImageProduct.loadImage(it)
         }
@@ -1011,7 +1021,7 @@ class CartItemViewHolder constructor(
     private fun renderQuantity(data: CartItemHolderData, viewHolderListener: ViewHolderListener?) {
         val qtyEditorProduct = binding.qtyEditorProduct
         if (data.isError) {
-            binding.containerProductQuantityAction.invisible()
+            binding.containerProductQuantityAction.gone()
             return
         }
         qtyEditorProduct.show()
@@ -1020,7 +1030,7 @@ class CartItemViewHolder constructor(
             // reset listener
             qtyEditorProduct.editText.removeTextChangedListener(qtyTextWatcher)
         }
-        qtyEditorProduct.minValue = data.minOrder
+        qtyEditorProduct.minValue = 0
         qtyEditorProduct.maxValue = data.maxOrder
         if (data.isBundlingItem) {
             qtyEditorProduct.setValue(data.bundleQuantity)
@@ -1061,6 +1071,7 @@ class CartItemViewHolder constructor(
         qtyEditorProduct.setSubstractListener {
             if (!data.isError && adapterPosition != RecyclerView.NO_POSITION) {
                 actionListener?.onCartItemQuantityMinusButtonClicked()
+                handleQuantitySubtraction(data)
             }
         }
         qtyEditorProduct.setAddClickListener {
@@ -1287,6 +1298,18 @@ class CartItemViewHolder constructor(
         }
     }
 
+    private fun handleQuantitySubtraction(data: CartItemHolderData) {
+        val currentQuantity = if (data.isBundlingItem) data.bundleQuantity else data.quantity
+        Log.d("<RESULT>", "handleQuantitySubtraction: ${data.minOrder} | $currentQuantity")
+//        if (data.minOrder <= 1 && currentQuantity == data.minOrder) {
+//            actionListener?.onCartItemDeleteButtonClicked(data)
+//        }
+//        else if (data.minOrder in 2 until currentQuantity) {
+//
+//        }
+//        actionListener?.onCartItemDeleteButtonClicked(data, true)
+    }
+
     interface ViewHolderListener {
 
         fun onNeedToRefreshSingleProduct(childPosition: Int)
@@ -1310,6 +1333,7 @@ class CartItemViewHolder constructor(
         const val ALPHA_FULL = 1.0f
 
         private const val IMAGE_PRODUCT_MARGIN_START_6 = 6
+        private const val MARGIN_VERTICAL_SEPARATOR = 8
         private const val WISHLIST_BUNDLE_MARGIN_TOP = 13
         private const val IMAGE_PRODUCT_MARGIN_START = 12
         private const val PRODUCT_ACTION_MARGIN = 16
