@@ -52,41 +52,18 @@ class VoucherView @JvmOverloads constructor(
 
     fun bind(voucher: Voucher) {
         binding?.run {
+            handleVoucherType(voucher)
+            handleVoucherState(voucher.voucherState)
+            handleVoucherSource(voucher.voucherSource)
+
             tpgVoucherTnc.text = voucher.termAndCondition
 
             tpgVoucherExpiredDate.text = context?.getString(R.string.promo_voucher_placeholder_expired_date, voucher.expiredDate)
+            tpgVoucherExpiredDate.text = MethodChecker.fromHtml(context?.getString(R.string.promo_voucher_placeholder_expired_date, voucher.expiredDate))
 
             imgSupergraphic.loadImage(voucher.superGraphicImageUrl)
             imgVoucherIcon.loadImage(voucher.iconImageUrl)
 
-            if (voucher.voucherState.isIneligible() || voucher.voucherState.isDisabled()) {
-                imgSupergraphic.grayscale()
-                imgVoucherIcon.grayscale()
-            } else {
-                imgSupergraphic.removeGrayscale()
-                imgVoucherIcon.removeGrayscale()
-            }
-
-            imgCheckmark.isVisible = voucher.voucherState.isSelected()
-
-            tpgVoucherExpiredDate.text = MethodChecker.fromHtml(context?.getString(R.string.promo_voucher_placeholder_expired_date, voucher.expiredDate))
-            tpgVoucherExpiredDate.background = if (voucher.voucherState.isSelected()) {
-                ContextCompat.getDrawable(tpgVoucherExpiredDate.context, R.drawable.promo_usage_shape_voucher_selected)
-            } else {
-                ContextCompat.getDrawable(tpgVoucherExpiredDate.context, R.drawable.promo_usage_shape_voucher_expired_date)
-            }
-
-            when(voucher.voucherType) {
-                VoucherType.CASHBACK -> handleCashback(voucher)
-                VoucherType.FREE_SHIPPING -> handleFreeShipping(voucher)
-                VoucherType.DISCOUNT -> handleDiscount(voucher)
-            }
-
-            tpgVoucherCode.text = voucher.voucherSource.voucherCodeOrEmpty()
-            tpgVoucherCode.isVisible = voucher.voucherSource is VoucherSource.UserInput
-
-            tpgIneligibleReason.text = voucher.voucherState.ineligibleMessageOrEmpty()
-            tpgIneligibleReason.isVisible = voucher.voucherState is VoucherState.Ineligible
 
             cardView.onDrawn { cardViewHeightPx ->
                 cardView.background = createVoucherShape(
@@ -94,24 +71,100 @@ class VoucherView @JvmOverloads constructor(
                     isVoucherSelected = voucher.voucherState.isSelected()
                 )
             }
-
-            if (voucher.voucherState is VoucherState.Loading) {
-                tpgVoucherAmount.gone()
-                tpgVoucherTnc.gone()
-                topShimmer.visible()
-                middleShimmer.visible()
-                bottomShimmer.visible()
-            } else {
-                tpgVoucherAmount.visible()
-                tpgVoucherTnc.visible()
-                topShimmer.gone()
-                middleShimmer.gone()
-                bottomShimmer.gone()
-            }
-
         }
     }
 
+    private fun handleVoucherSource(voucherSource: VoucherSource) {
+        binding?.run {
+            tpgVoucherCode.text = voucherSource.voucherCodeOrEmpty()
+            tpgVoucherCode.isVisible = voucherSource is VoucherSource.UserInput
+        }
+    }
+
+    private fun handleVoucherType(voucher: Voucher) {
+        when(voucher.voucherType) {
+            VoucherType.CASHBACK -> handleCashback(voucher)
+            VoucherType.FREE_SHIPPING -> handleFreeShipping(voucher)
+            VoucherType.DISCOUNT -> handleDiscount(voucher)
+        }
+    }
+
+    private fun handleVoucherState(voucherState: VoucherState) {
+        binding?.run {
+            when(voucherState) {
+                is VoucherState.Ineligible -> {
+                    imgCheckmark.gone()
+                    imgSupergraphic.grayscale()
+                    imgVoucherIcon.grayscale()
+
+                    tpgAdditionalInformation.text = voucherState.ineligibleReason
+                    tpgAdditionalInformation.visible()
+
+                    hideLoadingAppearance()
+
+                    tpgVoucherExpiredDate.background =  ContextCompat.getDrawable(tpgVoucherExpiredDate.context, R.drawable.promo_usage_shape_voucher_expired_date)
+                }
+                is VoucherState.Disabled -> {
+                    imgCheckmark.gone()
+                    imgSupergraphic.grayscale()
+                    imgVoucherIcon.grayscale()
+
+                    tpgAdditionalInformation.gone()
+
+                    hideLoadingAppearance()
+
+                    tpgVoucherExpiredDate.background =  ContextCompat.getDrawable(tpgVoucherExpiredDate.context, R.drawable.promo_usage_shape_voucher_expired_date)
+                }
+                is VoucherState.Actionable -> {
+                    imgCheckmark.gone()
+                    imgSupergraphic.removeGrayscale()
+                    imgVoucherIcon.removeGrayscale()
+
+                    tpgAdditionalInformation.text = voucherState.actionableText
+                    tpgAdditionalInformation.visible()
+
+                    hideLoadingAppearance()
+
+                    tpgVoucherExpiredDate.background =  ContextCompat.getDrawable(tpgVoucherExpiredDate.context, R.drawable.promo_usage_shape_voucher_expired_date)
+                }
+                is VoucherState.Selected -> {
+                    imgCheckmark.visible()
+                    imgSupergraphic.removeGrayscale()
+                    imgVoucherIcon.removeGrayscale()
+
+                    tpgAdditionalInformation.gone()
+
+                    hideLoadingAppearance()
+
+                    tpgVoucherExpiredDate.background = ContextCompat.getDrawable(tpgVoucherExpiredDate.context, R.drawable.promo_usage_shape_voucher_selected)
+                }
+
+                VoucherState.Loading -> {
+                    imgCheckmark.gone()
+                    imgSupergraphic.removeGrayscale()
+                    imgVoucherIcon.removeGrayscale()
+
+                    tpgAdditionalInformation.gone()
+
+                    showLoadingAppearance()
+
+                    tpgVoucherExpiredDate.background = ContextCompat.getDrawable(tpgVoucherExpiredDate.context, R.drawable.promo_usage_shape_voucher_expired_date)
+                }
+                VoucherState.Normal -> {
+                    imgCheckmark.gone()
+                    imgSupergraphic.removeGrayscale()
+                    imgVoucherIcon.removeGrayscale()
+
+                    tpgAdditionalInformation.gone()
+
+                    hideLoadingAppearance()
+
+                    tpgVoucherExpiredDate.background =  ContextCompat.getDrawable(tpgVoucherExpiredDate.context, R.drawable.promo_usage_shape_voucher_expired_date)
+                }
+            }
+        }
+
+    }
 
     private fun handleCashback(voucher: Voucher) {
         val voucherTypeTextColorResId = when {
@@ -174,11 +227,24 @@ class VoucherView @JvmOverloads constructor(
         setTextColorCompat(voucherAmountTextColorResId)
     }
 
-    private fun VoucherState.ineligibleMessageOrEmpty(): String {
-        return if (this is VoucherState.Ineligible) {
-            this.ineligibleReason
-        } else {
-            ""
+    private fun showLoadingAppearance() {
+        binding?.run {
+            tpgVoucherAmount.gone()
+            tpgVoucherTnc.gone()
+            topShimmer.visible()
+            middleShimmer.visible()
+            bottomShimmer.visible()
+        }
+
+    }
+
+    private fun hideLoadingAppearance() {
+        binding?.run {
+            tpgVoucherAmount.visible()
+            tpgVoucherTnc.visible()
+            topShimmer.gone()
+            middleShimmer.gone()
+            bottomShimmer.gone()
         }
     }
 
@@ -201,6 +267,8 @@ class VoucherView @JvmOverloads constructor(
     private fun VoucherState.isIneligible(): Boolean {
         return this is VoucherState.Ineligible
     }
+
+
 
     private fun createVoucherShape(cardViewHeightPx: Int, isVoucherSelected: Boolean): Drawable {
         val cardCornerRadius = 8.toPx().toFloat()

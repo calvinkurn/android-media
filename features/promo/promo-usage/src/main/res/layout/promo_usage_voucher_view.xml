@@ -177,7 +177,7 @@
     </androidx.cardview.widget.CardView>
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tpgIneligibleReason"
+        android:id="@+id/tpgAdditionalInformation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/promo_usage_shape_voucher_ineligible"
