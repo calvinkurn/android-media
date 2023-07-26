@@ -160,9 +160,9 @@ class AddOnWidgetView : BaseCustomView {
         viewModel.setSelectedAddons(addOnGroupUIModels)
     }
 
-    private fun onHelpClickListener(position: Int, addOnUIModel: AddOnUIModel) {
-        listener?.onAddonHelpClick(position, addOnUIModel)
-        RouteManager.route(context, "${ApplinkConst.WEBVIEW}?url=${addOnUIModel.eduLink}")
+    private fun onHelpClickListener(index: Int, indexChild: Int, addonGroups: List<AddOnGroupUIModel>, addonSelected: AddOnUIModel) {
+        listener?.onAddonHelpClick(index, indexChild, addonGroups)
+        RouteManager.route(context, "${ApplinkConst.WEBVIEW}?url=${addonSelected.eduLink}")
     }
 
     private fun onItemImpressionListener(index: Int, indexChild: Int, addonGroups: List<AddOnGroupUIModel>) {

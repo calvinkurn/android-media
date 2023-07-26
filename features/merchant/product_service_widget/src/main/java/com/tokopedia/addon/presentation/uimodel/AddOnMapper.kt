@@ -127,7 +127,7 @@ object AddOnMapper {
     ): List<AddOnUIModel> {
         return addonGroups.orEmpty()
             .flatMap { it.addon }
-            .filter { it.getSelectedStatus() != AddOnSelectedStatus.DEFAULT }
+            .filter { it.isSelected || it.getSelectedStatus() != AddOnSelectedStatus.DEFAULT }
     }
 
     fun deepCopyAddonGroup(addonGroups: List<AddOnGroupUIModel>): List<AddOnGroupUIModel> {
