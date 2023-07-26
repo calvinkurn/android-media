@@ -1,18 +1,19 @@
 package com.tokopedia.mvc.presentation.creation.step3
 
 import android.content.SharedPreferences
+import com.tokopedia.campaign.entity.RemoteTicker
+import com.tokopedia.campaign.usecase.GetTargetedTickerUseCase
+import com.tokopedia.campaign.utils.constant.TickerType
 import com.tokopedia.mvc.data.mapper.GetInitiateVoucherPageMapper
 import com.tokopedia.mvc.data.mapper.VoucherValidationPartialMapper
 import com.tokopedia.mvc.data.response.GetInitiateVoucherPageResponse
 import com.tokopedia.mvc.data.response.VoucherValidationPartialResponse
-import com.tokopedia.mvc.domain.entity.RemoteTicker
 import com.tokopedia.mvc.domain.entity.VoucherConfiguration
 import com.tokopedia.mvc.domain.entity.enums.BenefitType
 import com.tokopedia.mvc.domain.entity.enums.PageMode
 import com.tokopedia.mvc.domain.entity.enums.PromoType
 import com.tokopedia.mvc.domain.entity.enums.VoucherTargetBuyer
 import com.tokopedia.mvc.domain.usecase.GetInitiateVoucherPageUseCase
-import com.tokopedia.mvc.domain.usecase.GetTargetedTickerUseCase
 import com.tokopedia.mvc.domain.usecase.VoucherValidationPartialUseCase
 import com.tokopedia.mvc.presentation.creation.step3.uimodel.VoucherCreationStepThreeAction
 import com.tokopedia.mvc.presentation.creation.step3.uimodel.VoucherCreationStepThreeEvent
@@ -548,7 +549,16 @@ class VoucherSettingViewModelTest {
     }
 
     private fun mockGetTickerGQLCall() {
-        val remoteTickerResult = listOf(RemoteTicker("Title", "Description"))
+        val remoteTickerResult = listOf(
+            RemoteTicker(
+                title = "some ticker title",
+                description = "some ticker description",
+                type = TickerType.INFO,
+                actionLabel = "some ticker action label",
+                actionType = "link",
+                actionAppUrl = "https://tokopedia.com"
+            )
+        )
         coEvery { getTargetedTickerUseCase.execute(any()) } returns remoteTickerResult
     }
 }

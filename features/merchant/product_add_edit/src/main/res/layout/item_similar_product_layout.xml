@@ -53,7 +53,7 @@
             android:layout_height="14dp"
             android:layout_gravity="center"
             android:layout_marginStart="6dp"
-            app:icon_color_light_enable="@color/Unify_Y300"
+            app:icon_color_light_enable="@color/Unify_YN300"
             app:icon_name="STAR_FILLED" />
 
         <com.tokopedia.unifyprinciples.Typography

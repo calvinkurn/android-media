@@ -49,6 +49,6 @@
         tools:layout_height="8dp"
         app:layout_constraintTop_toBottomOf="@id/container_recycler_merchant"
         tools:visibility="visible"
-        tools:background="@color/Unify_B500"/>
+        tools:background="@color/Unify_BN500"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

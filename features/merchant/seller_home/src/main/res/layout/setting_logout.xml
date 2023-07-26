@@ -15,7 +15,7 @@
         android:layout_marginStart="@dimen/setting_logout_margin_start"
         android:gravity="center_vertical"
         android:text="@string/setting_logout"
-        android:textColor="@color/Unify_G500"
+        android:textColor="@color/Unify_GN500"
         app:layout_constraintStart_toStartOf="parent"
         app:typographyType="body_1"
         app:typographyWeight="reguler" />
@@ -26,7 +26,7 @@
         android:layout_height="match_parent"
         android:layout_marginEnd="16dp"
         android:gravity="center_vertical"
-        android:textColor="@color/Unify_N700_32"
+        android:textColor="@color/Unify_NN950_32"
         app:layout_constraintEnd_toEndOf="parent"
         app:typographyType="body_1"
         app:typographyWeight="reguler"
