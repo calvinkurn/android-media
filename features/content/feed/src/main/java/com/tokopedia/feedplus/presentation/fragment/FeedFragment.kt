@@ -342,6 +342,7 @@ class FeedFragment :
         observeAddProductToCart()
         observeBuyProduct()
         observeReminder()
+        observeFeedRecommendationResult()
 
         observeEvent()
     }
@@ -1650,6 +1651,20 @@ class FeedFragment :
                 type = if (it is Success) Toaster.TYPE_NORMAL else Toaster.TYPE_ERROR,
                 actionText = getString(feedR.string.feed_cta_ok_toaster)
             )
+        }
+    }
+
+    private fun observeFeedRecommendationResult() {
+        feedPostViewModel.followRecommendationResult.observe(viewLifecycleOwner) {
+            when (it) {
+                is Fail -> {
+                    showToast(
+                        getString(feedR.string.feed_load_follow_recommendation_failed),
+                        Toaster.TYPE_ERROR
+                    )
+                }
+                else -> {}
+            }
         }
     }
 

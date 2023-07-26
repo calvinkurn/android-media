@@ -142,6 +142,10 @@ class FeedPostViewModel @Inject constructor(
     val reminderResult: LiveData<Result<FeedReminderResultModel>>
         get() = _reminderResult
 
+    private val _followRecommendationResult = MutableLiveData<Result<String>>()
+    val followRecommendationResult: LiveData<Result<String>>
+        get() = _followRecommendationResult
+
     private val _suspendedFollowData = MutableLiveData<FollowShopModel>()
     private val _suspendedLikeData = MutableLiveData<LikeFeedDataModel>()
 
@@ -431,7 +435,7 @@ class FeedPostViewModel @Inject constructor(
             }
         }
 
-        viewModelScope.launch {
+        viewModelScope.launchCatchError(block = {
             feedHome.value?.let {
                 if (it is Success && isUnfetchedFollowRecomExists(it)) {
                     val newItems = it.data.items.map { item ->
@@ -451,6 +455,8 @@ class FeedPostViewModel @Inject constructor(
                     )
                 }
             }
+        }) { throwable ->
+            _followRecommendationResult.value = Fail(throwable)
         }
     }
 
@@ -478,8 +484,11 @@ class FeedPostViewModel @Inject constructor(
                     }
                 }
             }
-        }) {
-            /** TODO: handle this */
+        }) { throwable ->
+            updateFollowRecom(position) { followRecom ->
+                followRecom.copy(isLoadMore = false)
+            }
+            _followRecommendationResult.value = Fail(throwable)
         }
     }
 
