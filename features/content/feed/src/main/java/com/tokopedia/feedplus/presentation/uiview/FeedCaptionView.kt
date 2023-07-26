@@ -176,21 +176,28 @@ class FeedCaptionView(
     private fun getAmountOfCutChar(maxLines: Int, readMoreText: CharSequence): Int {
         val lastLineStartIndex = textView.layout.getLineVisibleEnd(maxLines - 2) + 1
         val lastLineEndIndex = textView.layout.getLineVisibleEnd(maxLines - 1)
-        val lastLineText = textView.text.substring(lastLineStartIndex, lastLineEndIndex)
 
-        val bounds = Rect()
-        textView.paint.getTextBounds(lastLineText, 0, lastLineText.length, bounds)
+        if (lastLineStartIndex > lastLineEndIndex) return 0
 
-        var cutTextAmount = -1
-        do {
-            cutTextAmount++
-            val subText = lastLineText.substring(0, lastLineText.length - cutTextAmount)
-            val replacedText = subText + readMoreText
-            textView.paint.getTextBounds(replacedText, 0, replacedText.length, bounds)
-            val replacedTextWidth = bounds.width()
-        } while (replacedTextWidth > textView.width)
+        return try {
+            val lastLineText = textView.text.substring(lastLineStartIndex, lastLineEndIndex)
 
-        return cutTextAmount
+            val bounds = Rect()
+            textView.paint.getTextBounds(lastLineText, 0, lastLineText.length, bounds)
+
+            var cutTextAmount = -1
+            do {
+                cutTextAmount++
+                val subText = lastLineText.substring(0, lastLineText.length - cutTextAmount)
+                val replacedText = subText + readMoreText
+                textView.paint.getTextBounds(replacedText, 0, replacedText.length, bounds)
+                val replacedTextWidth = bounds.width()
+            } while (replacedTextWidth > textView.width)
+
+            cutTextAmount
+        } catch (_: IndexOutOfBoundsException) {
+            0
+        }
     }
 
     companion object {
