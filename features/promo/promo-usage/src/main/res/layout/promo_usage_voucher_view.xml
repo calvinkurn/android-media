@@ -18,7 +18,7 @@
             android:layout_height="wrap_content">
 
             <com.tokopedia.unifycomponents.ImageUnify
-                android:id="@+id/imgSupergraphic"
+                android:id="@+id/imgPromoBackground"
                 android:layout_width="152dp"
                 android:layout_height="74dp"
                 android:contentDescription="@string/promo_voucher_cd_voucher_supergraphic"
@@ -28,13 +28,13 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <com.tokopedia.unifycomponents.ImageUnify
-                android:id="@+id/imgVoucherIcon"
+                android:id="@+id/imgPromoIcon"
                 android:layout_width="56dp"
                 android:layout_height="56dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="12dp"
                 android:contentDescription="@string/promo_voucher_cd_voucher_icon"
-                app:layout_constraintEnd_toEndOf="@+id/imgSupergraphic"
+                app:layout_constraintEnd_toEndOf="@+id/imgPromoBackground"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <androidx.appcompat.widget.AppCompatImageView
@@ -42,15 +42,15 @@
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:visibility="gone"
-                tools:visibility="visible"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.0"
-                app:srcCompat="@drawable/promo_usage_ic_voucher_checkmark" />
+                app:srcCompat="@drawable/promo_usage_ic_voucher_checkmark"
+                tools:visibility="visible" />
 
             <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/tpgVoucherType"
+                android:id="@+id/tpgPromoBenefitType"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
@@ -65,7 +65,7 @@
                 tools:text="Cashback" />
 
             <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/tpgVoucherAmount"
+                android:id="@+id/tpgPromoBenefitAmount"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
@@ -74,7 +74,7 @@
                 android:textColor="@color/Unify_NN950"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tpgVoucherType"
+                app:layout_constraintTop_toBottomOf="@id/tpgPromoBenefitType"
                 app:typographyType="display_2"
                 app:typographyWeight="bold"
                 tools:text="20.000 Gopay Coins" />
@@ -88,7 +88,7 @@
                 android:visibility="gone"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tpgVoucherType"
+                app:layout_constraintTop_toBottomOf="@id/tpgPromoBenefitType"
                 app:loader_type="rect" />
 
             <com.tokopedia.unifycomponents.LoaderUnify
@@ -108,8 +108,8 @@
                 android:layout_width="102dp"
                 android:layout_height="16dp"
                 android:layout_marginStart="16dp"
-                android:visibility="gone"
                 android:layout_marginTop="6dp"
+                android:visibility="gone"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/middle_shimmer"
@@ -120,10 +120,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:barrierDirection="bottom"
-                app:constraint_referenced_ids="bottom_shimmer, tpgVoucherTnc"/>
+                app:constraint_referenced_ids="bottom_shimmer, tpgPromoInfo" />
 
             <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/tpgVoucherTnc"
+                android:id="@+id/tpgPromoInfo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
@@ -132,13 +132,13 @@
                 android:textColor="@color/Unify_NN600"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tpgVoucherAmount"
+                app:layout_constraintTop_toBottomOf="@id/tpgPromoBenefitAmount"
                 app:typographyType="display_3"
                 tools:text="Disesuaikan jika pilih Bebas Ongkir" />
 
 
             <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/tpgVoucherExpiredDate"
+                android:id="@+id/tpgPromoExpiryInfo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="1dp"
@@ -156,23 +156,22 @@
                 tools:text="Berakhir dalam 2 hari" />
 
             <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/tpgVoucherCode"
+                android:id="@+id/tpgPromoCode"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="1dp"
                 android:layout_marginEnd="12dp"
                 android:textColor="@color/Unify_NN600"
-                app:layout_constraintBottom_toBottomOf="@+id/tpgVoucherExpiredDate"
+                app:layout_constraintBottom_toBottomOf="@+id/tpgPromoExpiryInfo"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/tpgVoucherExpiredDate"
+                app:layout_constraintTop_toTopOf="@+id/tpgPromoExpiryInfo"
                 app:typographyType="display_3"
                 app:typographyWeight="bold"
                 tools:text="TOKOPEDIAXBCA" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-
 
     </androidx.cardview.widget.CardView>
 
@@ -186,7 +185,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tpgVoucherExpiredDate"
+        app:layout_constraintTop_toBottomOf="@+id/tpgPromoExpiryInfo"
         app:typographyType="paragraph_3"
         tools:text="Belum bisa dipakai barengan promo yang dipilih."
         tools:visibility="visible" />

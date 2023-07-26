@@ -4618,10 +4618,10 @@ class CartFragment :
     }
 
      private fun showPromoCheckoutBottomSheet() {
-         //val view = LayoutInflater.from(context?: return).inflate(R.layout.promo_usage_bottomshet_promo_voucher_list, null, false)
-         //val bottomSheet = PromoBottomSheet.newInstance()
-         //bottomSheet.setChild(view)
-         val bottomSheet = PromoUsageBottomSheet.newInstance(entryPoint = EntryPoint.CART_PAGE)
+         val bottomSheet = PromoUsageBottomSheet.newInstance(
+             entryPoint = EntryPoint.CART_PAGE,
+             promoRequest = generateParamsCouponList()
+         )
          bottomSheet.show(childFragmentManager, bottomSheet.tag)
     }
 

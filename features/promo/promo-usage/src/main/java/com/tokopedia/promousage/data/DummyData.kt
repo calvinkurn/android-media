@@ -1,12 +1,17 @@
 package com.tokopedia.promousage.data
 
 import com.tokopedia.promousage.domain.entity.Promo
+import com.tokopedia.promousage.domain.entity.PromoBenefitDetail
 import com.tokopedia.promousage.domain.entity.PromoCardDetail
 import com.tokopedia.promousage.domain.entity.PromoClashingInfo
 import com.tokopedia.promousage.domain.entity.PromoInfo
-import com.tokopedia.promousage.domain.entity.PromoRecommendationSection
-import com.tokopedia.promousage.domain.entity.PromoSection
 import com.tokopedia.promousage.domain.entity.PromoState
+import com.tokopedia.promousage.domain.entity.list.PromoAccordionItem
+import com.tokopedia.promousage.domain.entity.list.PromoInputItem
+import com.tokopedia.promousage.domain.entity.list.PromoRecommendationItem
+import com.tokopedia.promousage.domain.entity.list.PromoTncItem
+import com.tokopedia.promousage.util.composite.DelegateAdapterItem
+import com.tokopedia.promousage.view.mapper.toCollapsibleList
 
 object DummyData {
 
@@ -15,9 +20,13 @@ object DummyData {
             id = "1",
             index = 1,
             code = "ATTEMPTED01",
-            benefitAmount = 30_000,
+            benefitAmount = 30000.0,
             benefitAmountStr = "Rp30.000",
-            benefitType = Promo.BENEFIT_TYPE_CASHBACK,
+            benefitDetail = PromoBenefitDetail(
+                amountIdr = 30000.0,
+                benefitType = PromoBenefitDetail.BENEFIT_TYPE_CASHBACK
+            ),
+            benefitTypeStr = "Cashback",
             cardDetails = listOf(
                 PromoCardDetail(
                     color = "",
@@ -49,9 +58,13 @@ object DummyData {
                 id = "2",
                 index = 2,
                 code = "CASHBACK1",
-                benefitAmount = 30_000,
+                benefitAmount = 30000.0,
                 benefitAmountStr = "Rp30.000",
-                benefitType = Promo.BENEFIT_TYPE_CASHBACK,
+                benefitDetail = PromoBenefitDetail(
+                    amountIdr = 30000.0,
+                    benefitType = PromoBenefitDetail.BENEFIT_TYPE_CASHBACK
+                ),
+                benefitTypeStr = "Cashback",
                 cardDetails = listOf(
                     PromoCardDetail(
                         color = "",
@@ -75,15 +88,19 @@ object DummyData {
                 expiryTimestamp = 1693451440,
                 state = PromoState.Normal,
                 isAttempted = false,
-                isVisible = true
+                isExpanded = true
             ),
             Promo(
                 id = "3",
                 index = 3,
                 code = "CASHBACK2",
-                benefitAmount = 30_000,
+                benefitAmount = 30000.0,
                 benefitAmountStr = "Rp30.000",
-                benefitType = Promo.BENEFIT_TYPE_CASHBACK,
+                benefitDetail = PromoBenefitDetail(
+                    amountIdr = 30000.0,
+                    benefitType = PromoBenefitDetail.BENEFIT_TYPE_CASHBACK
+                ),
+                benefitTypeStr = "Cashback",
                 cardDetails = listOf(
                     PromoCardDetail(
                         color = "",
@@ -112,9 +129,13 @@ object DummyData {
                 id = "5",
                 index = 5,
                 code = "CASHBACK3",
-                benefitAmount = 30_000,
+                benefitAmount = 30000.0,
                 benefitAmountStr = "Rp30.000",
-                benefitType = Promo.BENEFIT_TYPE_CASHBACK,
+                benefitDetail = PromoBenefitDetail(
+                    amountIdr = 30000.0,
+                    benefitType = PromoBenefitDetail.BENEFIT_TYPE_CASHBACK
+                ),
+                benefitTypeStr = "Cashback",
                 cardDetails = listOf(
                     PromoCardDetail(
                         color = "",
@@ -143,9 +164,13 @@ object DummyData {
                 id = "6",
                 index = 6,
                 code = "CASHBACK4",
-                benefitAmount = 30_000,
+                benefitAmount = 30000.0,
                 benefitAmountStr = "Rp30.000",
-                benefitType = Promo.BENEFIT_TYPE_CASHBACK,
+                benefitDetail = PromoBenefitDetail(
+                    amountIdr = 30000.0,
+                    benefitType = PromoBenefitDetail.BENEFIT_TYPE_CASHBACK
+                ),
+                benefitTypeStr = "Cashback",
                 cardDetails = listOf(
                     PromoCardDetail(
                         color = "",
@@ -174,9 +199,13 @@ object DummyData {
                 id = "7",
                 index = 7,
                 code = "CASHBACK5",
-                benefitAmount = 30_000,
+                benefitAmount = 30000.0,
                 benefitAmountStr = "Rp30.000",
-                benefitType = Promo.BENEFIT_TYPE_CASHBACK,
+                benefitDetail = PromoBenefitDetail(
+                    amountIdr = 30000.0,
+                    benefitType = PromoBenefitDetail.BENEFIT_TYPE_CASHBACK
+                ),
+                benefitTypeStr = "Cashback",
                 cardDetails = listOf(
                     PromoCardDetail(
                         color = "",
@@ -210,9 +239,13 @@ object DummyData {
                 id = "8",
                 index = 8,
                 code = "FREESHIPPING1",
-                benefitAmount = 30_000,
+                benefitAmount = 30000.0,
                 benefitAmountStr = "Rp30.000",
-                benefitType = Promo.BENEFIT_TYPE_FREE_SHIPPING,
+                benefitDetail = PromoBenefitDetail(
+                    amountIdr = 30000.0,
+                    benefitType = PromoBenefitDetail.BENEFIT_TYPE_FREE_SHIPPING
+                ),
+                benefitTypeStr = "Gratis Ongkir",
                 cardDetails = listOf(
                     PromoCardDetail(
                         color = "",
@@ -235,15 +268,20 @@ object DummyData {
                 expiryInfo = "Berakhir dalam <a>3 jama</a>",
                 expiryTimestamp = 1693451440,
                 state = PromoState.Normal,
-                isAttempted = false
+                isAttempted = false,
+                isExpanded = true
             ),
             Promo(
                 id = "9",
                 index = 9,
                 code = "FREESHIPPING2",
-                benefitAmount = 30_000,
+                benefitAmount = 30000.0,
                 benefitAmountStr = "Rp30.000",
-                benefitType = Promo.BENEFIT_TYPE_FREE_SHIPPING,
+                benefitDetail = PromoBenefitDetail(
+                    amountIdr = 30000.0,
+                    benefitType = PromoBenefitDetail.BENEFIT_TYPE_FREE_SHIPPING
+                ),
+                benefitTypeStr = "Gratis Ongkir",
                 cardDetails = listOf(
                     PromoCardDetail(
                         color = "",
@@ -272,9 +310,13 @@ object DummyData {
                 id = "10",
                 index = 10,
                 code = "FREESHIPPING3",
-                benefitAmount = 30_000,
+                benefitAmount = 30000.0,
                 benefitAmountStr = "Rp30.000",
-                benefitType = Promo.BENEFIT_TYPE_FREE_SHIPPING,
+                benefitDetail = PromoBenefitDetail(
+                    amountIdr = 30000.0,
+                    benefitType = PromoBenefitDetail.BENEFIT_TYPE_FREE_SHIPPING
+                ),
+                benefitTypeStr = "Gratis Ongkir",
                 cardDetails = listOf(
                     PromoCardDetail(
                         color = "",
@@ -303,9 +345,13 @@ object DummyData {
                 id = "11",
                 index = 11,
                 code = "FREESHIPPING4",
-                benefitAmount = 30_000,
+                benefitAmount = 30000.0,
                 benefitAmountStr = "Rp30.000",
-                benefitType = Promo.BENEFIT_TYPE_FREE_SHIPPING,
+                benefitDetail = PromoBenefitDetail(
+                    amountIdr = 30000.0,
+                    benefitType = PromoBenefitDetail.BENEFIT_TYPE_FREE_SHIPPING
+                ),
+                benefitTypeStr = "Gratis Ongkir",
                 cardDetails = listOf(
                     PromoCardDetail(
                         color = "",
@@ -334,9 +380,13 @@ object DummyData {
                 id = "12",
                 index = 12,
                 code = "FREESHIPPING5",
-                benefitAmount = 30_000,
+                benefitAmount = 30000.0,
                 benefitAmountStr = "Rp30.000",
-                benefitType = Promo.BENEFIT_TYPE_FREE_SHIPPING,
+                benefitDetail = PromoBenefitDetail(
+                    amountIdr = 30000.0,
+                    benefitType = PromoBenefitDetail.BENEFIT_TYPE_FREE_SHIPPING
+                ),
+                benefitTypeStr = "Gratis Ongkir",
                 cardDetails = listOf(
                     PromoCardDetail(
                         color = "",
@@ -370,9 +420,13 @@ object DummyData {
                 id = "13",
                 index = 13,
                 code = "DISCOUNT1",
-                benefitAmount = 30_000,
+                benefitAmount = 30000.0,
                 benefitAmountStr = "Rp30.000",
-                benefitType = Promo.BENEFIT_TYPE_DISCOUNT,
+                benefitDetail = PromoBenefitDetail(
+                    amountIdr = 30000.0,
+                    benefitType = PromoBenefitDetail.BENEFIT_TYPE_DISCOUNT
+                ),
+                benefitTypeStr = "Diskon",
                 cardDetails = listOf(
                     PromoCardDetail(
                         state = PromoCardDetail.TYPE_INITIAL,
@@ -399,15 +453,20 @@ object DummyData {
                 expiryInfo = "Berakhir dalam <a>3 jama</a>",
                 expiryTimestamp = 1693451440,
                 state = PromoState.Normal,
-                isAttempted = false
+                isAttempted = false,
+                isExpanded = true
             ),
             Promo(
                 id = "14",
                 index = 14,
                 code = "DISCOUNT2",
-                benefitAmount = 30_000,
+                benefitAmount = 30000.0,
                 benefitAmountStr = "Rp30.000",
-                benefitType = Promo.BENEFIT_TYPE_DISCOUNT,
+                benefitDetail = PromoBenefitDetail(
+                    amountIdr = 30000.0,
+                    benefitType = PromoBenefitDetail.BENEFIT_TYPE_DISCOUNT
+                ),
+                benefitTypeStr = "Diskon",
                 cardDetails = listOf(
                     PromoCardDetail(
                         color = "",
@@ -436,9 +495,13 @@ object DummyData {
                 id = "15",
                 index = 15,
                 code = "DISCOUNT3",
-                benefitAmount = 30_000,
+                benefitAmount = 30000.0,
                 benefitAmountStr = "Rp30.000",
-                benefitType = Promo.BENEFIT_TYPE_DISCOUNT,
+                benefitDetail = PromoBenefitDetail(
+                    amountIdr = 30000.0,
+                    benefitType = PromoBenefitDetail.BENEFIT_TYPE_DISCOUNT
+                ),
+                benefitTypeStr = "Diskon",
                 cardDetails = listOf(
                     PromoCardDetail(
                         color = "",
@@ -467,9 +530,13 @@ object DummyData {
                 id = "16",
                 index = 16,
                 code = "DISCOUNT4",
-                benefitAmount = 30_000,
+                benefitAmount = 30000.0,
                 benefitAmountStr = "Rp30.000",
-                benefitType = Promo.BENEFIT_TYPE_DISCOUNT,
+                benefitDetail = PromoBenefitDetail(
+                    amountIdr = 30000.0,
+                    benefitType = PromoBenefitDetail.BENEFIT_TYPE_DISCOUNT
+                ),
+                benefitTypeStr = "Diskon",
                 cardDetails = listOf(
                     PromoCardDetail(
                         color = "",
@@ -498,9 +565,13 @@ object DummyData {
                 id = "17",
                 index = 17,
                 code = "DISCOUNT5",
-                benefitAmount = 30_000,
+                benefitAmount = 30000.0,
                 benefitAmountStr = "Rp30.000",
-                benefitType = Promo.BENEFIT_TYPE_DISCOUNT,
+                benefitDetail = PromoBenefitDetail(
+                    amountIdr = 30000.0,
+                    benefitType = PromoBenefitDetail.BENEFIT_TYPE_DISCOUNT
+                ),
+                benefitTypeStr = "Diskon",
                 cardDetails = listOf(
                     PromoCardDetail(
                         color = "",
@@ -534,9 +605,13 @@ object DummyData {
                 id = "18",
                 index = 18,
                 code = "RECOMDISCOUNT",
-                benefitAmount = 30_000,
+                benefitAmount = 30000.0,
                 benefitAmountStr = "Rp30.000",
-                benefitType = Promo.BENEFIT_TYPE_DISCOUNT,
+                benefitDetail = PromoBenefitDetail(
+                    amountIdr = 30000.0,
+                    benefitType = PromoBenefitDetail.BENEFIT_TYPE_DISCOUNT
+                ),
+                benefitTypeStr = "Diskon",
                 cardDetails = listOf(
                     PromoCardDetail(
                         color = "",
@@ -565,9 +640,13 @@ object DummyData {
                 id = "19",
                 index = 19,
                 code = "RECOMCASHBACK",
-                benefitAmount = 30_000,
+                benefitAmount = 30000.0,
                 benefitAmountStr = "Rp30.000",
-                benefitType = Promo.BENEFIT_TYPE_CASHBACK,
+                benefitDetail = PromoBenefitDetail(
+                    amountIdr = 30000.0,
+                    benefitType = PromoBenefitDetail.BENEFIT_TYPE_CASHBACK
+                ),
+                benefitTypeStr = "Diskon",
                 cardDetails = listOf(
                     PromoCardDetail(
                         color = "",
@@ -594,10 +673,10 @@ object DummyData {
             )
         )
 
-    val sections: List<PromoSection>
+    val sections: List<DelegateAdapterItem>
         get() = listOf(
-            PromoRecommendationSection(
-                id = PromoSection.SECTION_RECOMMENDATION,
+            PromoRecommendationItem(
+                id = "recommendation_coupons",
                 title = "Kamu bisa hemat Rp30.000 dari 2 promo!",
                 codes = listOf(recommendedPromos[0].code, recommendedPromos[1].code),
                 message = "Kamu bisa hemat Rp30.000 dari 2 promo!",
@@ -606,7 +685,26 @@ object DummyData {
                 animationUrl = "",
                 promos = recommendedPromos
             ),
-
+            PromoAccordionItem(
+                id = "payment_coupons",
+                title = "1 promo buat pembayaran tertentu",
+                isExpanded = false,
+                sections = cashbackPromos.toCollapsibleList()
+            ),
+            PromoAccordionItem(
+                id = "shipping_coupons",
+                title = "5 promo buat pengiriman tertentu",
+                isExpanded = false,
+                sections = freeShippingPromos.toCollapsibleList()
+            ),
+            PromoAccordionItem(
+                id = "other_coupons",
+                title = "5 promo lainnya buat kamu",
+                isExpanded = false,
+                sections = discountPromos.toCollapsibleList()
+            ),
+            PromoInputItem(),
+            PromoTncItem()
         )
 
     val tncPromoCodes: List<String>

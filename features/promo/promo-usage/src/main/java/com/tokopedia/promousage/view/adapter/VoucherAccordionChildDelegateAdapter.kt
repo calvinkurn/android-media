@@ -29,11 +29,11 @@ class VoucherAccordionChildDelegateAdapter(
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(promo: Promo) {
-            if (promo.isVisible) {
+            if (promo.isExpanded) {
                 binding.voucherView.bind(promo)
             }
 
-            binding.voucherView.isVisible = promo.isVisible
+            binding.voucherView.isVisible = promo.isExpanded
 
             binding.root.setOnClickListener { onVoucherClick(promo) }
         }

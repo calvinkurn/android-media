@@ -1,6 +1,10 @@
 package com.tokopedia.promousage.domain.entity
 
-enum class EntryPoint {
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
+enum class EntryPoint : Parcelable {
     CART_PAGE,
     ONE_CLICK_CHECKOUT_PAGE,
     SHIPMENT_PAGE

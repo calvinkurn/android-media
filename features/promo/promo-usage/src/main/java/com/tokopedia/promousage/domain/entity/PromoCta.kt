@@ -9,9 +9,8 @@ data class PromoCta(
 ) {
 
     companion object {
-
         const val TYPE_REGISTER_GOPAY_LATER_CICIL = "register_gpl_cicil"
-        const val TYPE_UNKNOWN = "unknown"
+        const val TYPE_UNKNOWN = "unknown" // used for default value only
     }
 }
 

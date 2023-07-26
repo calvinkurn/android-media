@@ -5,14 +5,14 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.promousage.R
 import com.tokopedia.promousage.databinding.PromoUsageItemVoucherViewAllBinding
-import com.tokopedia.promousage.domain.entity.list.ViewAllVoucher
-import com.tokopedia.promousage.domain.entity.list.VoucherAccordion
+import com.tokopedia.promousage.domain.entity.list.PromoAccordionViewAllItem
+import com.tokopedia.promousage.domain.entity.list.PromoAccordionItem
 import com.tokopedia.promousage.util.composite.DelegateAdapter
 
 class ViewAllVoucherDelegateAdapter(
-    private val section: VoucherAccordion,
-    private val onViewAllVoucherClick: (VoucherAccordion) -> Unit
-) : DelegateAdapter<ViewAllVoucher, ViewAllVoucherDelegateAdapter.ViewHolder>(ViewAllVoucher::class.java) {
+    private val section: PromoAccordionItem,
+    private val onViewAllVoucherClick: (PromoAccordionItem) -> Unit
+) : DelegateAdapter<PromoAccordionViewAllItem, ViewAllVoucherDelegateAdapter.ViewHolder>(PromoAccordionViewAllItem::class.java) {
 
 
     override fun createViewHolder(parent: ViewGroup): RecyclerView.ViewHolder {
@@ -24,7 +24,7 @@ class ViewAllVoucherDelegateAdapter(
         return ViewHolder(binding)
     }
 
-    override fun bindViewHolder(item: ViewAllVoucher, viewHolder: ViewHolder) {
+    override fun bindViewHolder(item: PromoAccordionViewAllItem, viewHolder: ViewHolder) {
         viewHolder.bind(item)
     }
 
@@ -35,10 +35,10 @@ class ViewAllVoucherDelegateAdapter(
             binding.root.setOnClickListener { onViewAllVoucherClick(section) }
         }
 
-        fun bind(voucher: ViewAllVoucher) {
+        fun bind(voucher: PromoAccordionViewAllItem) {
             binding.tpgViewAll.text = binding.tpgViewAll.context.getString(
                 R.string.promo_voucher_placeholder_view_all_voucher,
-                voucher.collapsedVoucherCount
+                voucher.promoCount
             )
         }
     }

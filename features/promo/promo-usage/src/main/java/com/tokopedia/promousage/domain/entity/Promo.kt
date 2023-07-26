@@ -1,15 +1,16 @@
 package com.tokopedia.promousage.domain.entity
 
-import androidx.annotation.StringDef
 import com.tokopedia.promousage.util.composite.DelegateAdapterItem
 
 data class Promo(
-    val id: String = "",
+    override val id: String = "",
     val index: Int = 0,
     val code: String = "",
-    val benefitAmount: Long = 0,
+    val benefitAmount: Double = 0.0,
     val benefitAmountStr: String = "",
-    @BenefitType val benefitType: String = BENEFIT_TYPE_UNKNOWN,
+    val benefitDetail: PromoBenefitDetail = PromoBenefitDetail(),
+    val benefitTypeStr: String = "",
+    val remainingPromoCount: Int = 0,
     val cardDetails: List<PromoCardDetail> = emptyList(),
     val clashingInfos: List<PromoClashingInfo> = emptyList(),
     val boClashingInfos: List<PromoClashingInfo> = emptyList(),
@@ -18,28 +19,19 @@ data class Promo(
     val expiryInfo: String = "",
     val expiryTimestamp: Long = 0,
     val cta: PromoCta = PromoCta(),
+    val couponType: List<String> = emptyList(),
 
     val state: PromoState = PromoState.Normal,
     val currentClashingPromoCode: List<String> = emptyList(),
+    val isRecommended: Boolean = false,
+    val isSelected: Boolean = false,
     val isAttempted: Boolean = false,
-    val isVisible: Boolean = false
+    val isBebasOngkir: Boolean = false,
+    val isHighlighted: Boolean = false,
+    val isExpanded: Boolean = false
 ) : DelegateAdapterItem {
-    override fun id() = id
 
     companion object {
-
-        @StringDef(
-            BENEFIT_TYPE_CASHBACK,
-            BENEFIT_TYPE_DISCOUNT,
-            BENEFIT_TYPE_FREE_SHIPPING,
-            BENEFIT_TYPE_UNKNOWN
-        )
-        @Retention(AnnotationRetention.SOURCE)
-        annotation class BenefitType
-
-        const val BENEFIT_TYPE_CASHBACK = "cashback"
-        const val BENEFIT_TYPE_DISCOUNT = "discount"
-        const val BENEFIT_TYPE_FREE_SHIPPING = "gratis_ongkir"
-        const val BENEFIT_TYPE_UNKNOWN = "unknown"
+        const val COUPON_TYPE_GOPAY_LATER_CICIL = "gpl_cicil"
     }
 }

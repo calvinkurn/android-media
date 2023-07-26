@@ -5,9 +5,6 @@
 
     <string name="promo_voucher_promo">Promo</string>
     <string name="promo_voucher_use">Pakai</string>
-    <string name="promo_voucher_cashback">Cashback</string>
-    <string name="promo_voucher_free_shipping">Gratis Ongkir</string>
-    <string name="promo_voucher_discount">Diskon</string>
     <string name="promo_voucher_buy">Beli</string>
     <string name="promo_voucher_pay">Bayar</string>
     <string name="promo_voucher_back_to_shipment">Balik ke Pengiriman</string>

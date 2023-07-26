@@ -9,14 +9,14 @@ import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.promousage.databinding.PromoUsageItemVoucherSectionBinding
 import com.tokopedia.promousage.util.composite.CompositeAdapter
 import com.tokopedia.promousage.domain.entity.Promo
-import com.tokopedia.promousage.domain.entity.list.VoucherAccordion
+import com.tokopedia.promousage.domain.entity.list.PromoAccordionItem
 import com.tokopedia.promousage.util.composite.DelegateAdapter
 
 class VoucherAccordionDelegateAdapter(
-    private val onSectionClick: (VoucherAccordion) -> Unit,
+    private val onSectionClick: (PromoAccordionItem) -> Unit,
     private val onVoucherClick: (Promo) -> Unit,
-    private val onViewAllVoucherClick: (VoucherAccordion) -> Unit
-) : DelegateAdapter<VoucherAccordion, VoucherAccordionDelegateAdapter.ViewHolder>(VoucherAccordion::class.java) {
+    private val onViewAllVoucherClick: (PromoAccordionItem) -> Unit
+) : DelegateAdapter<PromoAccordionItem, VoucherAccordionDelegateAdapter.ViewHolder>(PromoAccordionItem::class.java) {
 
     override fun createViewHolder(parent: ViewGroup): RecyclerView.ViewHolder {
         val binding = PromoUsageItemVoucherSectionBinding.inflate(
@@ -28,7 +28,7 @@ class VoucherAccordionDelegateAdapter(
     }
 
     override fun bindViewHolder(
-        item: VoucherAccordion,
+        item: PromoAccordionItem,
         viewHolder: VoucherAccordionDelegateAdapter.ViewHolder
     ) {
         viewHolder.bind(item)
@@ -37,12 +37,12 @@ class VoucherAccordionDelegateAdapter(
     inner class ViewHolder(private val binding: PromoUsageItemVoucherSectionBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(section: VoucherAccordion) {
+        fun bind(section: PromoAccordionItem) {
             bindChevron(section)
             bindVouchers(section, onVoucherClick, onViewAllVoucherClick)
         }
 
-        private fun bindChevron(section: VoucherAccordion) {
+        private fun bindChevron(section: PromoAccordionItem) {
             binding.tpgSectionTitle.text = section.title
             val iconDrawable = if (section.isExpanded) {
                 IconUnify.CHEVRON_UP
@@ -55,9 +55,9 @@ class VoucherAccordionDelegateAdapter(
         }
 
         private fun bindVouchers(
-            section: VoucherAccordion,
+            section: PromoAccordionItem,
             onVoucherClick: (Promo) -> Unit,
-            onViewAllVoucherClick: (VoucherAccordion) -> Unit
+            onViewAllVoucherClick: (PromoAccordionItem) -> Unit
         ) {
             val voucherAdapter = CompositeAdapter.Builder()
                 .add(VoucherAccordionChildDelegateAdapter(onVoucherClick))
@@ -73,7 +73,7 @@ class VoucherAccordionDelegateAdapter(
             binding.childRecyclerView.isVisible = section.isExpanded
             binding.root.setOnClickListener { onSectionClick(section) }
 
-            voucherAdapter.submit(section.vouchers)
+            voucherAdapter.submit(section.sections)
         }
 
     }

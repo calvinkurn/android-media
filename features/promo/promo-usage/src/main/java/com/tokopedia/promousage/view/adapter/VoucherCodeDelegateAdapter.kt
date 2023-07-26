@@ -7,12 +7,12 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.promousage.data.DummyData
 import com.tokopedia.promousage.databinding.PromoUsageItemVoucherCodeBinding
-import com.tokopedia.promousage.domain.entity.list.VoucherCode
+import com.tokopedia.promousage.domain.entity.list.PromoInputItem
 import com.tokopedia.promousage.util.composite.DelegateAdapter
 
 class VoucherCodeDelegateAdapter(
     private val onApplyVoucherCodeCtaClick: () -> Unit
-) : DelegateAdapter<VoucherCode, VoucherCodeDelegateAdapter.ViewHolder>(VoucherCode::class.java) {
+) : DelegateAdapter<PromoInputItem, VoucherCodeDelegateAdapter.ViewHolder>(PromoInputItem::class.java) {
 
 
     override fun createViewHolder(parent: ViewGroup): RecyclerView.ViewHolder {
@@ -24,7 +24,7 @@ class VoucherCodeDelegateAdapter(
         return ViewHolder(binding)
     }
 
-    override fun bindViewHolder(item: VoucherCode, viewHolder: ViewHolder) {
+    override fun bindViewHolder(item: PromoInputItem, viewHolder: ViewHolder) {
         viewHolder.bind()
     }
 

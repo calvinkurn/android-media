@@ -9,14 +9,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.promousage.databinding.PromoUsageItemVoucherBinding
 import com.tokopedia.promousage.databinding.PromoUsageItemVoucherRecommendationBinding
 import com.tokopedia.promousage.domain.entity.Promo
-import com.tokopedia.promousage.domain.entity.list.VoucherRecommendation
+import com.tokopedia.promousage.domain.entity.list.PromoRecommendationItem
 import com.tokopedia.promousage.util.composite.DelegateAdapter
 import com.tokopedia.promousage.util.extension.applyPaddingToLastItem
 
 class VoucherRecommendationDelegateAdapter(
     private val onVoucherClick: (Promo) -> Unit,
     private val onButtonUseRecommendedVoucherClick: () -> Unit
-) : DelegateAdapter<VoucherRecommendation, VoucherRecommendationDelegateAdapter.ViewHolder>(VoucherRecommendation::class.java) {
+) : DelegateAdapter<PromoRecommendationItem, VoucherRecommendationDelegateAdapter.ViewHolder>(PromoRecommendationItem::class.java) {
 
     companion object {
         private const val PADDING_BOTTOM_DP = 16
@@ -31,7 +31,7 @@ class VoucherRecommendationDelegateAdapter(
         return ViewHolder(binding)
     }
 
-    override fun bindViewHolder(item: VoucherRecommendation, viewHolder: ViewHolder) {
+    override fun bindViewHolder(item: PromoRecommendationItem, viewHolder: ViewHolder) {
         viewHolder.bind(item)
     }
 
@@ -43,7 +43,7 @@ class VoucherRecommendationDelegateAdapter(
             binding.btnRecommendationUseVoucher.setOnClickListener { onButtonUseRecommendedVoucherClick() }
         }
 
-        fun bind(recommendation: VoucherRecommendation) {
+        fun bind(recommendation: PromoRecommendationItem) {
             val voucherAdapter = VoucherAdapter(onVoucherClick)
 
             binding.tpgRecommendationTitle.text = recommendation.title

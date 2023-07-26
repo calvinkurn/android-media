@@ -76,12 +76,11 @@ class CompositeAdapter(
         override fun getNewListSize() = newProductList.size
 
         override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-            return oldProductList[oldItemPosition].id() == newProductList[newItemPosition].id()
+            return oldProductList[oldItemPosition].id == newProductList[newItemPosition].id
         }
 
         override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
             return  oldProductList[oldItemPosition] == newProductList[newItemPosition]
         }
-
     }
 }
