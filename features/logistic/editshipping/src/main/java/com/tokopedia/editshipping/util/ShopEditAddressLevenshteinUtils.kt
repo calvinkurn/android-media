@@ -8,31 +8,21 @@ object ShopEditAddressLevenshteinUtils {
     private fun minLenSentence(addr1: String, addr2: String): Int {
         val saddr1 = addr1.split(" ")
         val saddr2 = addr2.split(" ")
-        return if (saddr1.size <= saddr2.size) {
-            saddr1.size
-        } else {
-            saddr2.size
-        }
+        return if (saddr1.size <= saddr2.size) saddr1.size else saddr2.size
     }
 
     private fun maxLen(w1: String, w2: String): Int {
-        return if (w1.length >= w2.length) {
-            w1.length
-        } else {
-            w2.length
-        }
+        return if (w1.length >= w2.length) w1.length else w2.length
     }
 
     private fun levenshteinDistance(a: String, b: String): Int {
         if (a.isEmpty()) return b.length
         if (b.isEmpty()) return a.length
-
         val matrix = Array(b.length + 1) { IntArray(a.length + 1) }
 
         for (i in 0..b.length) {
             matrix[i][0] = i
         }
-
         for (j in 0..a.length) {
             matrix[0][j] = j
         }
@@ -81,10 +71,8 @@ object ShopEditAddressLevenshteinUtils {
             if (smallestIndex != -1) {
                 matchWord++
             }
-
             flag[smallestIndex] = true
         }
-
         return matchWord
     }
 
@@ -105,7 +93,6 @@ object ShopEditAddressLevenshteinUtils {
         val matchWord = countSentenceMatch(addr1, addr2)
         val minWordLen = minLenSentence(addr1, addr2)
         val verboseTest = matchWord.toDouble() / minWordLen.toDouble()
-
         return verboseTest >= 0.4
     }
 }
