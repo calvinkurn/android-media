@@ -38,6 +38,7 @@ class AddOnWidgetView : BaseCustomView {
         ::onHelpClickListener, ::onItemImpressionListener)
     private var tfTitle: Typography? = null
     private var llSeeAll: LinearLayoutCompat? = null
+    private var divSeeAll: View? = null
     private var listener: AddOnComponentListener? = null
 
     constructor(context: Context) : super(context) {
@@ -65,6 +66,8 @@ class AddOnWidgetView : BaseCustomView {
                 viewModel.setSelectedAddons(it)
             }
             viewModel.isAddonDataEmpty.observe(this) {
+                llSeeAll?.isVisible = viewModel.isSimplified
+                divSeeAll?.isVisible = viewModel.isSimplified
                 if (it) listener?.onDataEmpty()
                 this@AddOnWidgetView.isVisible = !it
             }
@@ -109,6 +112,7 @@ class AddOnWidgetView : BaseCustomView {
         val rvAddons: RecyclerView = view.findViewById(R.id.rv_addons)
         tfTitle = view.findViewById(R.id.tf_widget_title)
         llSeeAll = view.findViewById(R.id.ll_see_all)
+        divSeeAll = view.findViewById(R.id.div_see_all)
         setupItems(rvAddons)
         defineCustomAttributes(attrs)
         initInjector()
@@ -118,6 +122,7 @@ class AddOnWidgetView : BaseCustomView {
     private fun setupSeeAll() {
         llSeeAll?.setOnClickListener {
             llSeeAll?.gone()
+            divSeeAll?.gone()
             viewModel.desimplifyAddonList()
         }
     }
@@ -177,16 +182,11 @@ class AddOnWidgetView : BaseCustomView {
         this.listener = listener
     }
 
-    /*
-    * Please use this function to show insurance addon data,
-    * otherwise it will not appeared, but still works for displaying installation addon data
-    */
     fun getAddonData(
         addOnParam: AddOnParam,
         isSimplified: Boolean = false
     ) {
         viewModel.getAddOn(addOnParam, isSimplified)
-        llSeeAll?.isVisible = isSimplified
     }
 
     fun setSelectedAddons(selectedAddonIds: List<String>) {
