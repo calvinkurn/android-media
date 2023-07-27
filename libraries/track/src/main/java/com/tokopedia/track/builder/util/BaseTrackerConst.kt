@@ -380,7 +380,7 @@ abstract class BaseTrackerConst {
             if(product.cartId.isNotEmpty()) bundle.putString(KEY_DIMENSION_82, NONE)
             if(product.quantity.isNotEmpty()) bundle.putString(KEY_QUANTITY, product.quantity)
             if(product.warehouseId != null) { bundle.putString(KEY_DIMENSION_56, product.warehouseId.ifEmpty { "0" }) }
-            if(product.isFulfillment != null) { bundle.putString(KEY_DIMENSION_56, product.isFulfillment.toString()) }
+            if(product.isFulfillment != null) { bundle.putString(KEY_DIMENSION_58, product.isFulfillment.toString()) }
             return bundle
         }
 
