@@ -150,8 +150,7 @@ class PromoUsageViewModel @Inject constructor(
                     }
 
                     is VoucherRecommendation -> {
-                        val selectedVouchers = widget.vouchers.map { item ->
-                            val voucher = item as Voucher
+                        val selectedVouchers = widget.vouchers.map { voucher ->
                             if (selectedVoucher.id == voucher.id) {
                                 voucher.copy(voucherState = VoucherState.Selected)
                             } else {
@@ -185,7 +184,7 @@ class PromoUsageViewModel @Inject constructor(
                         } else {
                             val voucher = item as Voucher
                             if (selectedVoucher.id == voucher.id) {
-                                voucher.copy(voucherState = VoucherState.Selected)
+                                voucher.copy(voucherState = VoucherState.Normal)
                             } else {
                                 voucher
                             }
@@ -196,8 +195,7 @@ class PromoUsageViewModel @Inject constructor(
                 }
 
                 is VoucherRecommendation -> {
-                    val selectedVouchers = widget.vouchers.map { item ->
-                        val voucher = item as Voucher
+                    val selectedVouchers = widget.vouchers.map { voucher ->
                         if (selectedVoucher.id == voucher.id) {
                             voucher.copy(voucherState = VoucherState.Normal)
                         } else {
