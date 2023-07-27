@@ -25,6 +25,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hideKeyboard
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.setTextColorCompat
@@ -191,6 +192,7 @@ class PromoUsageBottomSheet: BottomSheetDialogFragment() {
         viewModel.validatedVoucher.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Success -> {
+                    binding?.root?.hideKeyboard()
 
                 }
                 is Fail -> {
