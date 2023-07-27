@@ -123,7 +123,6 @@ class UohListUseCase @Inject constructor(
                         extraComponents {
                           type
                           action {
-                            actionType
                             appURL
                           }
                           label

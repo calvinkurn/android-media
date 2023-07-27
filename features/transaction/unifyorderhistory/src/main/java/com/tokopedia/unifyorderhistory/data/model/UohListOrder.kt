@@ -267,9 +267,6 @@ data class UohListOrder(
                     }
 
                     data class Action(
-                        @SerializedName("actionType")
-                        val actionType: String = "",
-
                         @SerializedName("appURL")
                         val appUrl: String = ""
                     )
