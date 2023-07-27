@@ -96,7 +96,6 @@ class ShopProductSortFragment : BaseListFragment<ShopProductSortModel, ShopProdu
         DaggerShopProductSortComponent
             .builder()
             .shopProductSortModule(ShopProductSortModule())
-//            .shopComponent(getComponent(ShopComponent::class.java))
             .build()
             .inject(this)
     }
