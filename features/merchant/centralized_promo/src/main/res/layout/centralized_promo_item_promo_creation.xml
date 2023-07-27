@@ -10,7 +10,7 @@
     <com.tokopedia.unifycomponents.CardUnify
         android:id="@+id/cardContent"
         android:layout_width="match_parent"
-        android:layout_height="150dp"
+        android:layout_height="160dp"
         android:clipToPadding="false"
         app:card_type="shadow"
         app:layout_constraintLeft_toLeftOf="parent"

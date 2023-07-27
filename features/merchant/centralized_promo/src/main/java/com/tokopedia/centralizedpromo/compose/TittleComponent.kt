@@ -15,15 +15,15 @@ import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
 
 @Composable
-fun CreatePromotionTittleHeader() {
+fun CreatePromotionTitleHeader(titleText: String, descriptionText: String) {
     Column(modifier = Modifier.padding(16.dp).wrapContentHeight().fillMaxWidth()) {
-        PromoSectionTittle(
-            text = "Buat Promosi",
+        PromoSectionTitle(
+            text = titleText,
             modifier = Modifier.fillMaxWidth()
         )
 
         NestTypography(
-            text = "Pasang promosi untuk tingkatkan performa tokomu.",
+            text = descriptionText,
             modifier = Modifier.padding(top = 4.dp).fillMaxWidth(),
             textStyle = NestTheme.typography.paragraph3.copy(
                 color = NestTheme.colors.NN._600
@@ -35,7 +35,7 @@ fun CreatePromotionTittleHeader() {
 }
 
 @Composable
-private fun PromoSectionTittle(text: String, modifier: Modifier = Modifier) {
+fun PromoSectionTitle(text: String, modifier: Modifier = Modifier) {
     NestTypography(
         text = text,
         modifier = modifier,
@@ -49,15 +49,18 @@ private fun PromoSectionTittle(text: String, modifier: Modifier = Modifier) {
 
 @Composable
 @Preview
-private fun CreatePromotionTittleHeaderPreview() {
+private fun CreatePromotionTitleHeaderPreview() {
     NestTheme {
         Surface {
             Column {
-                PromoSectionTittle(
+                PromoSectionTitle(
                     text = "Firut promosi aktifmu",
                     modifier = Modifier.padding(16.dp)
                 )
-                CreatePromotionTittleHeader()
+                CreatePromotionTitleHeader(
+                    "Buat Promosi",
+                    "Pasang promosi untuk tingkatkan performa tokomu."
+                )
             }
         }
     }
