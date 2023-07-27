@@ -42,6 +42,7 @@ buildscript {
 dependencies {
     implementation projectOrAar(rootProject.ext.libraries.applink)
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
+    implementation projectOrAar(rootProject.ext.libraries.utils)
 
     implementation projectOrAar(rootProject.ext.features.contentCommon)
 
@@ -61,7 +62,7 @@ project.ext {
     artifactId = 'stories-common'
     groupId = 'com.tokopedia.content'
     versionName = "0.0.1"
-    artifactName ="stories_common-release"
+    artifactName = "stories_common-release"
 }
 
 apply from: '../../../publish_local.gradle'

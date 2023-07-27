@@ -62,7 +62,7 @@ class StoriesAvatarView @JvmOverloads constructor(
         StoriesAvatarContent(
             mImageUrl,
             storiesStatus,
-            sizeConfig = mSizeConfiguration,
+            sizeConfig = mSizeConfiguration
         )
     }
 
@@ -71,6 +71,8 @@ class StoriesAvatarView @JvmOverloads constructor(
 
         observeJob?.cancel()
         mViewModel = null
+
+        coachMark.dismissCoachMark()
     }
 
     override fun setOnClickListener(l: OnClickListener?) {
@@ -151,7 +153,7 @@ class StoriesAvatarView @JvmOverloads constructor(
     }
 
     data class SizeConfiguration(
-        val imageToBorderGap: Dp,
+        val imageToBorderGap: Dp
     ) {
         companion object {
             val Default: SizeConfiguration

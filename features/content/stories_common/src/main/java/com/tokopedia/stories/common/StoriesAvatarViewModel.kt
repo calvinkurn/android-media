@@ -69,7 +69,8 @@ internal class StoriesAvatarViewModel @Inject constructor(
                 it + storiesStateMap
             }
 
-            showCoachMark(shopIds.first())
+            val firstHasStories = storiesState.firstOrNull { it.anyStoryExisted } ?: return@launch
+            showCoachMark(firstHasStories.shopId)
         }
     }
 
