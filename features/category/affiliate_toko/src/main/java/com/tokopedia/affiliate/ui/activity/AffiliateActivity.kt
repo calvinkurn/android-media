@@ -341,7 +341,11 @@ class AffiliateActivity :
             this,
             selectedTab
         )
-        affiliateBottomNavigation?.showBottomNav()
+        if (selectedTab == PROMO_MENU) {
+            affiliateBottomNavigation?.hideBottomNav()
+        } else {
+            affiliateBottomNavigation?.showBottomNav()
+        }
         affiliateBottomNavigation?.populateBottomNavigationView()
     }
 
