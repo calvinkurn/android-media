@@ -45,7 +45,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".features.addnewaddressrevamp.pinpointnew.PinpointNewPageActivity"
+            android:name=".features.pinpoint.pinpointnew.PinpointNewPageActivity"
             android:label="@string/title_pinpoint_new"
             android:theme="@style/Theme.WhiteUnify"
             android:screenOrientation="portrait"

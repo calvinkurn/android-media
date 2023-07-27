@@ -5,7 +5,7 @@ import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.logisticaddaddress.di.AddAddressBaseModule
 import com.tokopedia.logisticaddaddress.di.districtrecommendation.DistrictRecommendationModule
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.addressform.AddressFormFragment
-import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.pinpointnew.PinpointNewPageFragment
+import com.tokopedia.logisticaddaddress.features.pinpoint.pinpointnew.PinpointNewPageFragment
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.search.SearchPageFragment
 import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomBottomSheetRevamp
 import dagger.Component

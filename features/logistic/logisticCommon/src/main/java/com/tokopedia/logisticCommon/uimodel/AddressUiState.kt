@@ -1,4 +1,4 @@
-package com.tokopedia.logisticaddaddress.features.addnewaddressrevamp
+package com.tokopedia.logisticCommon.uimodel
 
 /**
  * Created by irpan on 20/06/23.

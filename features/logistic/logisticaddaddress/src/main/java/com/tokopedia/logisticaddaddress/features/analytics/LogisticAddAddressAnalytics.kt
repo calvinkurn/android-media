@@ -1,10 +1,14 @@
-package com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.analytics
+package com.tokopedia.logisticaddaddress.features.analytics
 
+import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.addressform.analytics.AddNewAddressRevampAnalytics
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.builder.BaseTrackerBuilder
 import com.tokopedia.track.builder.util.BaseTrackerConst
 
-object AddNewAddressRevampAnalytics : BaseTrackerConst() {
+/**
+ * Created by irpan on 27/07/23.
+ */
+object LogisticAddAddressAnalytics : BaseTrackerConst() {
 
     private const val CLICK_SEARCH = "clickSearch"
     private const val CLICK_PINPOINT = "clickPinPoint"
@@ -60,13 +64,12 @@ object AddNewAddressRevampAnalytics : BaseTrackerConst() {
     private const val KODE_POST_PAGE = "kode pos page"
 
     private const val BUSINESS_UNIT_LOGISTIC = "logistics & fulfillment"
-
     @JvmStatic
     fun sendScreenName(screenName: String?) {
         TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName)
     }
 
-    // Search Page
+    /*Search Page*/
     fun onClickFieldCariLokasi(userId: String) {
         getTracker().sendGeneralEvent(
             BaseTrackerBuilder()
@@ -193,7 +196,7 @@ object AddNewAddressRevampAnalytics : BaseTrackerConst() {
         )
     }
 
-    // Pinpoint Page
+    /*Pinpoint Page*/
     fun onImpressBottomSheetAlamatTidakTerdeteksi(userId: String) {
         getTracker().sendGeneralEvent(
             BaseTrackerBuilder()
@@ -418,13 +421,13 @@ object AddNewAddressRevampAnalytics : BaseTrackerConst() {
         )
     }
 
-    // ANA Positive
-    fun onClickFieldLabelAlamatPositive(userId: String) {
+    /*Discom Bottomsheet ANA Negative*/
+    fun onClickFieldCariKotaKecamatanNegative(userId: String) {
         getTracker().sendGeneralEvent(
             BaseTrackerBuilder()
                 .appendEvent(CLICK_ADDRESS)
-                .appendEventCategory(ANA_POSITIVE)
-                .appendEventAction(CLICK_FIELD_LABEL_ALAMAT)
+                .appendEventCategory("${ANA_NEGATIVE}, ${KOTA_KECAMATAN_PAGE}")
+                .appendEventAction(CLICK_FIELD_CARI_KOTA_KECAMATAN)
                 .appendEventLabel("")
                 .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
                 .appendCurrentSite(CurrentSite.DEFAULT)
@@ -433,12 +436,12 @@ object AddNewAddressRevampAnalytics : BaseTrackerConst() {
         )
     }
 
-    fun onClickChipsLabelAlamatPositive(userId: String) {
+    fun onClickChipsKotaKecamatanNegative(userId: String) {
         getTracker().sendGeneralEvent(
             BaseTrackerBuilder()
                 .appendEvent(CLICK_ADDRESS)
-                .appendEventCategory(ANA_POSITIVE)
-                .appendEventAction(CLICK_CHIPS_LABEL_ALAMAT)
+                .appendEventCategory("${ANA_NEGATIVE}, ${KOTA_KECAMATAN_PAGE}")
+                .appendEventAction(CLICK_CHIPS_KOTA_POPULER)
                 .appendEventLabel("")
                 .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
                 .appendCurrentSite(CurrentSite.DEFAULT)
@@ -447,137 +450,11 @@ object AddNewAddressRevampAnalytics : BaseTrackerConst() {
         )
     }
 
-    fun onClickFieldAlamatPositive(userId: String) {
+    fun onClickBackArrowDiscom(userId: String) {
         getTracker().sendGeneralEvent(
             BaseTrackerBuilder()
                 .appendEvent(CLICK_ADDRESS)
-                .appendEventCategory(ANA_POSITIVE)
-                .appendEventAction(CLICK_FIELD_ALAMAT)
-                .appendEventLabel("")
-                .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
-                .appendCurrentSite(CurrentSite.DEFAULT)
-                .appendUserId(userId)
-                .build()
-        )
-    }
-
-    fun onClickFieldCatatanKurirPositive(userId: String) {
-        getTracker().sendGeneralEvent(
-            BaseTrackerBuilder()
-                .appendEvent(CLICK_ADDRESS)
-                .appendEventCategory(ANA_POSITIVE)
-                .appendEventAction(CLICK_FIELD_CATATAN_KURIR)
-                .appendEventLabel("")
-                .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
-                .appendCurrentSite(CurrentSite.DEFAULT)
-                .appendUserId(userId)
-                .build()
-        )
-    }
-
-    fun onClickFieldNamaPenerimaPositive(userId: String) {
-        getTracker().sendGeneralEvent(
-            BaseTrackerBuilder()
-                .appendEvent(CLICK_ADDRESS)
-                .appendEventCategory(ANA_POSITIVE)
-                .appendEventAction(CLICK_FIELD_NAMA_PENERIMA)
-                .appendEventLabel("")
-                .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
-                .appendCurrentSite(CurrentSite.DEFAULT)
-                .appendUserId(userId)
-                .build()
-        )
-    }
-
-    fun onClickIconNamaPenerimaPositive(userId: String) {
-        getTracker().sendGeneralEvent(
-            BaseTrackerBuilder()
-                .appendEvent(CLICK_ADDRESS)
-                .appendEventCategory(ANA_POSITIVE)
-                .appendEventAction(CLICK_ICON_I_NAMA_PENERIMA)
-                .appendEventLabel("")
-                .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
-                .appendCurrentSite(CurrentSite.DEFAULT)
-                .appendUserId(userId)
-                .build()
-        )
-    }
-
-    fun onClickFieldNomorHpPositive(userId: String) {
-        getTracker().sendGeneralEvent(
-            BaseTrackerBuilder()
-                .appendEvent(CLICK_ADDRESS)
-                .appendEventCategory(ANA_POSITIVE)
-                .appendEventAction(CLICK_FIELD_NO_HP)
-                .appendEventLabel("")
-                .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
-                .appendCurrentSite(CurrentSite.DEFAULT)
-                .appendUserId(userId)
-                .build()
-        )
-    }
-
-    fun onClickIconPhoneBookPositive(userId: String) {
-        getTracker().sendGeneralEvent(
-            BaseTrackerBuilder()
-                .appendEvent(CLICK_ADDRESS)
-                .appendEventCategory(ANA_POSITIVE)
-                .appendEventAction(CLICK_PHONE_BOOK_ICON)
-                .appendEventLabel("")
-                .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
-                .appendCurrentSite(CurrentSite.DEFAULT)
-                .appendUserId(userId)
-                .build()
-        )
-    }
-
-    fun onClickBoxJadikanAlamatUtamaPositive(userId: String) {
-        getTracker().sendGeneralEvent(
-            BaseTrackerBuilder()
-                .appendEvent(CLICK_ADDRESS)
-                .appendEventCategory(ANA_POSITIVE)
-                .appendEventAction(CLICK_BOX_JADIKAN_ALAMAT_UTAMA)
-                .appendEventLabel("")
-                .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
-                .appendCurrentSite(CurrentSite.DEFAULT)
-                .appendUserId(userId)
-                .build()
-        )
-    }
-
-    fun onClickSimpanPositive(userId: String, eventLabel: String) {
-        getTracker().sendGeneralEvent(
-            BaseTrackerBuilder()
-                .appendEvent(CLICK_ADDRESS)
-                .appendEventCategory(ANA_POSITIVE)
-                .appendEventAction(CLICK_SIMPAN)
-                .appendEventLabel(eventLabel)
-                .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
-                .appendCurrentSite(CurrentSite.DEFAULT)
-                .appendUserId(userId)
-                .build()
-        )
-    }
-
-    fun onClickSimpanErrorPositive(userId: String, errorField: String) {
-        getTracker().sendGeneralEvent(
-            BaseTrackerBuilder()
-                .appendEvent(CLICK_ADDRESS)
-                .appendEventCategory(ANA_POSITIVE)
-                .appendEventAction(CLICK_SIMPAN_ERROR)
-                .appendEventLabel(errorField)
-                .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
-                .appendCurrentSite(CurrentSite.DEFAULT)
-                .appendUserId(userId)
-                .build()
-        )
-    }
-
-    fun onClickBackPositive(userId: String) {
-        getTracker().sendGeneralEvent(
-            BaseTrackerBuilder()
-                .appendEvent(CLICK_ADDRESS)
-                .appendEventCategory(ANA_POSITIVE)
+                .appendEventCategory("${ANA_NEGATIVE}, ${KOTA_KECAMATAN_PAGE}")
                 .appendEventAction(CLICK_BACK_ARROW)
                 .appendEventLabel("")
                 .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
@@ -587,13 +464,68 @@ object AddNewAddressRevampAnalytics : BaseTrackerConst() {
         )
     }
 
-    // ANA Negative
-    fun onClickFieldLabelAlamatNegative(userId: String) {
+    fun onClickFieldKodePosNegative(userId: String) {
         getTracker().sendGeneralEvent(
             BaseTrackerBuilder()
                 .appendEvent(CLICK_ADDRESS)
-                .appendEventCategory(ANA_NEGATIVE)
-                .appendEventAction(CLICK_FIELD_LABEL_ALAMAT)
+                .appendEventCategory("${ANA_NEGATIVE}, ${KODE_POST_PAGE}")
+                .appendEventAction(CLICK_FIELD_KODE_POS)
+                .appendEventLabel("")
+                .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
+                .appendCurrentSite(CurrentSite.DEFAULT)
+                .appendUserId(userId)
+                .build()
+        )
+    }
+
+    fun onClickDropDownSuggestionKotaNegative(userId: String) {
+        getTracker().sendGeneralEvent(
+            BaseTrackerBuilder()
+                .appendEvent(CLICK_ADDRESS)
+                .appendEventCategory("${ANA_NEGATIVE}, ${KOTA_KECAMATAN_PAGE}")
+                .appendEventAction(CLICK_DROPDOWN_SUGGESTION_KOTA_KECAMATAN)
+                .appendEventLabel("")
+                .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
+                .appendCurrentSite(CurrentSite.DEFAULT)
+                .appendUserId(userId)
+                .build()
+        )
+    }
+
+    fun onClickChipsKodePosNegative(userId: String) {
+        getTracker().sendGeneralEvent(
+            BaseTrackerBuilder()
+                .appendEvent(CLICK_ADDRESS)
+                .appendEventCategory("${ANA_NEGATIVE}, ${KODE_POST_PAGE}")
+                .appendEventAction(CLICK_CHIPS_KODE_POS)
+                .appendEventLabel("")
+                .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
+                .appendCurrentSite(CurrentSite.DEFAULT)
+                .appendUserId(userId)
+                .build()
+        )
+    }
+
+    fun onClickPilihKodePos(userId: String, eventLabel: String) {
+        getTracker().sendGeneralEvent(
+            BaseTrackerBuilder()
+                .appendEvent(CLICK_ADDRESS)
+                .appendEventCategory("${ANA_NEGATIVE}, ${KODE_POST_PAGE}")
+                .appendEventAction(CLICK_PILIH)
+                .appendEventLabel("")
+                .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
+                .appendCurrentSite(CurrentSite.DEFAULT)
+                .appendUserId(userId)
+                .build()
+        )
+    }
+
+    fun onViewErrorToasterPilih(userId: String) {
+        getTracker().sendGeneralEvent(
+            BaseTrackerBuilder()
+                .appendEvent(VIEW_ADDRESS_IRIS)
+                .appendEventCategory("${ANA_NEGATIVE}, ${KODE_POST_PAGE}")
+                .appendEventAction(VIEW_ERROR_TOASTER_KODE_POS)
                 .appendEventLabel("")
                 .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
                 .appendCurrentSite(CurrentSite.DEFAULT)
@@ -616,293 +548,12 @@ object AddNewAddressRevampAnalytics : BaseTrackerConst() {
         )
     }
 
-    fun onClickFieldAlamatNegative(userId: String) {
-        getTracker().sendGeneralEvent(
-            BaseTrackerBuilder()
-                .appendEvent(CLICK_ADDRESS)
-                .appendEventCategory(ANA_NEGATIVE)
-                .appendEventAction(CLICK_FIELD_ALAMAT)
-                .appendEventLabel("")
-                .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
-                .appendCurrentSite(CurrentSite.DEFAULT)
-                .appendUserId(userId)
-                .build()
-        )
-    }
-
-    fun onClickFieldCatatanKurirNegative(userId: String) {
-        getTracker().sendGeneralEvent(
-            BaseTrackerBuilder()
-                .appendEvent(CLICK_ADDRESS)
-                .appendEventCategory(ANA_NEGATIVE)
-                .appendEventAction(CLICK_FIELD_CATATAN_KURIR)
-                .appendEventLabel("")
-                .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
-                .appendCurrentSite(CurrentSite.DEFAULT)
-                .appendUserId(userId)
-                .build()
-        )
-    }
-
-    fun onClickFieldNamaPenerimaNegative(userId: String) {
-        getTracker().sendGeneralEvent(
-            BaseTrackerBuilder()
-                .appendEvent(CLICK_ADDRESS)
-                .appendEventCategory(ANA_NEGATIVE)
-                .appendEventAction(CLICK_FIELD_NAMA_PENERIMA)
-                .appendEventLabel("")
-                .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
-                .appendCurrentSite(CurrentSite.DEFAULT)
-                .appendUserId(userId)
-                .build()
-        )
-    }
-
-    fun onClickIconNamaPenerimaNegative(userId: String) {
-        getTracker().sendGeneralEvent(
-            BaseTrackerBuilder()
-                .appendEvent(CLICK_ADDRESS)
-                .appendEventCategory(ANA_NEGATIVE)
-                .appendEventAction(CLICK_ICON_I_NAMA_PENERIMA)
-                .appendEventLabel("")
-                .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
-                .appendCurrentSite(CurrentSite.DEFAULT)
-                .appendUserId(userId)
-                .build()
-        )
-    }
-
-    fun onClickFieldNomorHpNegative(userId: String) {
-        getTracker().sendGeneralEvent(
-            BaseTrackerBuilder()
-                .appendEvent(CLICK_ADDRESS)
-                .appendEventCategory(ANA_NEGATIVE)
-                .appendEventAction(CLICK_FIELD_NO_HP)
-                .appendEventLabel("")
-                .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
-                .appendCurrentSite(CurrentSite.DEFAULT)
-                .appendUserId(userId)
-                .build()
-        )
-    }
-
-    fun onClickIconPhoneBookNegative(userId: String) {
-        getTracker().sendGeneralEvent(
-            BaseTrackerBuilder()
-                .appendEvent(CLICK_ADDRESS)
-                .appendEventCategory(ANA_NEGATIVE)
-                .appendEventAction(CLICK_PHONE_BOOK_ICON)
-                .appendEventLabel("")
-                .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
-                .appendCurrentSite(CurrentSite.DEFAULT)
-                .appendUserId(userId)
-                .build()
-        )
-    }
-
-    fun onClickBoxJadikanAlamatUtamaNegative(userId: String) {
-        getTracker().sendGeneralEvent(
-            BaseTrackerBuilder()
-                .appendEvent(CLICK_ADDRESS)
-                .appendEventCategory(ANA_NEGATIVE)
-                .appendEventAction(CLICK_BOX_JADIKAN_ALAMAT_UTAMA)
-                .appendEventLabel("")
-                .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
-                .appendCurrentSite(CurrentSite.DEFAULT)
-                .appendUserId(userId)
-                .build()
-        )
-    }
-
-    fun onClickSimpanNegative(userId: String, eventLabel: String) {
-        getTracker().sendGeneralEvent(
-            BaseTrackerBuilder()
-                .appendEvent(CLICK_ADDRESS)
-                .appendEventCategory(ANA_NEGATIVE)
-                .appendEventAction(CLICK_SIMPAN)
-                .appendEventLabel(eventLabel)
-                .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
-                .appendCurrentSite(CurrentSite.DEFAULT)
-                .appendUserId(userId)
-                .build()
-        )
-    }
-
-    fun onClickSimpanErrorNegative(userId: String, errorField: String) {
-        getTracker().sendGeneralEvent(
-            BaseTrackerBuilder()
-                .appendEvent(CLICK_ADDRESS)
-                .appendEventCategory(ANA_NEGATIVE)
-                .appendEventAction(CLICK_SIMPAN_ERROR)
-                .appendEventLabel(errorField)
-                .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
-                .appendCurrentSite(CurrentSite.DEFAULT)
-                .appendUserId(userId)
-                .build()
-        )
-    }
-
-    fun onClickBackNegative(userId: String) {
-        getTracker().sendGeneralEvent(
-            BaseTrackerBuilder()
-                .appendEvent(CLICK_ADDRESS)
-                .appendEventCategory(ANA_NEGATIVE)
-                .appendEventAction(CLICK_BACK_ARROW)
-                .appendEventLabel("")
-                .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
-                .appendCurrentSite(CurrentSite.DEFAULT)
-                .appendUserId(userId)
-                .build()
-        )
-    }
-
-    fun onClickFieldKotaKecamatanNegative(userId: String) {
-        getTracker().sendGeneralEvent(
-            BaseTrackerBuilder()
-                .appendEvent(CLICK_ADDRESS)
-                .appendEventCategory(ANA_NEGATIVE)
-                .appendEventAction(CLICK_FIELD_KOTA_KECAMATAN)
-                .appendEventLabel("")
-                .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
-                .appendCurrentSite(CurrentSite.DEFAULT)
-                .appendUserId(userId)
-                .build()
-        )
-    }
-
-    fun onClickAturPinpointNegative(userId: String) {
-        getTracker().sendGeneralEvent(
-            BaseTrackerBuilder()
-                .appendEvent(CLICK_ADDRESS)
-                .appendEventCategory(ANA_NEGATIVE)
-                .appendEventAction(CLICK_ATUR_PINPOINT)
-                .appendEventLabel("")
-                .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
-                .appendCurrentSite(CurrentSite.DEFAULT)
-                .appendUserId(userId)
-                .build()
-        )
-    }
-
-    // Discom Bottomsheet ANA Negative
-    fun onClickFieldCariKotaKecamatanNegative(userId: String) {
-        getTracker().sendGeneralEvent(
-            BaseTrackerBuilder()
-                .appendEvent(CLICK_ADDRESS)
-                .appendEventCategory("$ANA_NEGATIVE, $KOTA_KECAMATAN_PAGE")
-                .appendEventAction(CLICK_FIELD_CARI_KOTA_KECAMATAN)
-                .appendEventLabel("")
-                .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
-                .appendCurrentSite(CurrentSite.DEFAULT)
-                .appendUserId(userId)
-                .build()
-        )
-    }
-
-    fun onClickChipsKotaKecamatanNegative(userId: String) {
-        getTracker().sendGeneralEvent(
-            BaseTrackerBuilder()
-                .appendEvent(CLICK_ADDRESS)
-                .appendEventCategory("$ANA_NEGATIVE, $KOTA_KECAMATAN_PAGE")
-                .appendEventAction(CLICK_CHIPS_KOTA_POPULER)
-                .appendEventLabel("")
-                .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
-                .appendCurrentSite(CurrentSite.DEFAULT)
-                .appendUserId(userId)
-                .build()
-        )
-    }
-
-    fun onClickBackArrowDiscom(userId: String) {
-        getTracker().sendGeneralEvent(
-            BaseTrackerBuilder()
-                .appendEvent(CLICK_ADDRESS)
-                .appendEventCategory("$ANA_NEGATIVE, $KOTA_KECAMATAN_PAGE")
-                .appendEventAction(CLICK_BACK_ARROW)
-                .appendEventLabel("")
-                .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
-                .appendCurrentSite(CurrentSite.DEFAULT)
-                .appendUserId(userId)
-                .build()
-        )
-    }
-
-    fun onClickFieldKodePosNegative(userId: String) {
-        getTracker().sendGeneralEvent(
-            BaseTrackerBuilder()
-                .appendEvent(CLICK_ADDRESS)
-                .appendEventCategory("$ANA_NEGATIVE, $KODE_POST_PAGE")
-                .appendEventAction(CLICK_FIELD_KODE_POS)
-                .appendEventLabel("")
-                .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
-                .appendCurrentSite(CurrentSite.DEFAULT)
-                .appendUserId(userId)
-                .build()
-        )
-    }
-
-    fun onClickDropDownSuggestionKotaNegative(userId: String) {
-        getTracker().sendGeneralEvent(
-            BaseTrackerBuilder()
-                .appendEvent(CLICK_ADDRESS)
-                .appendEventCategory("$ANA_NEGATIVE, $KOTA_KECAMATAN_PAGE")
-                .appendEventAction(CLICK_DROPDOWN_SUGGESTION_KOTA_KECAMATAN)
-                .appendEventLabel("")
-                .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
-                .appendCurrentSite(CurrentSite.DEFAULT)
-                .appendUserId(userId)
-                .build()
-        )
-    }
-
-    fun onClickChipsKodePosNegative(userId: String) {
-        getTracker().sendGeneralEvent(
-            BaseTrackerBuilder()
-                .appendEvent(CLICK_ADDRESS)
-                .appendEventCategory("$ANA_NEGATIVE, $KODE_POST_PAGE")
-                .appendEventAction(CLICK_CHIPS_KODE_POS)
-                .appendEventLabel("")
-                .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
-                .appendCurrentSite(CurrentSite.DEFAULT)
-                .appendUserId(userId)
-                .build()
-        )
-    }
-
-    fun onClickPilihKodePos(userId: String, eventLabel: String) {
-        getTracker().sendGeneralEvent(
-            BaseTrackerBuilder()
-                .appendEvent(CLICK_ADDRESS)
-                .appendEventCategory("$ANA_NEGATIVE, $KODE_POST_PAGE")
-                .appendEventAction(CLICK_PILIH)
-                .appendEventLabel("")
-                .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
-                .appendCurrentSite(CurrentSite.DEFAULT)
-                .appendUserId(userId)
-                .build()
-        )
-    }
-
-    fun onViewErrorToasterPilih(userId: String) {
-        getTracker().sendGeneralEvent(
-            BaseTrackerBuilder()
-                .appendEvent(VIEW_ADDRESS_IRIS)
-                .appendEventCategory("$ANA_NEGATIVE, $KODE_POST_PAGE")
-                .appendEventAction(VIEW_ERROR_TOASTER_KODE_POS)
-                .appendEventLabel("")
-                .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
-                .appendCurrentSite(CurrentSite.DEFAULT)
-                .appendUserId(userId)
-                .build()
-        )
-    }
-
-    //
+    /**/
     fun onClickBackArrowKodePos(userId: String) {
         getTracker().sendGeneralEvent(
             BaseTrackerBuilder()
                 .appendEvent(CLICK_ADDRESS)
-                .appendEventCategory("$ANA_NEGATIVE, $KODE_POST_PAGE")
+                .appendEventCategory("${ANA_NEGATIVE}, ${KODE_POST_PAGE}")
                 .appendEventAction(CLICK_BACK_ARROW_BUTTON)
                 .appendEventLabel("")
                 .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)

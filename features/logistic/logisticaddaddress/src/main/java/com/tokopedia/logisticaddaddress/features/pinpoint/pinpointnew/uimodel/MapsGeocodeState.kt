@@ -1,4 +1,4 @@
-package com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.pinpointnew.uimodel
+package com.tokopedia.logisticaddaddress.features.pinpoint.pinpointnew.uimodel
 
 import com.tokopedia.logisticCommon.data.entity.geolocation.coordinate.Location
 

@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.addressform.AddressFormViewModel
-import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.pinpointnew.PinpointNewPageViewModel
+import com.tokopedia.logisticaddaddress.features.pinpoint.pinpointnew.PinpointNewPageViewModel
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.search.SearchPageViewModel
 import dagger.Binds
 import dagger.Module

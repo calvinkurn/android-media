@@ -35,16 +35,16 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.logisticCommon.data.entity.response.Data
+import com.tokopedia.logisticCommon.uimodel.AddressUiState
+import com.tokopedia.logisticCommon.uimodel.isEdit
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.common.ChipsItemDecoration
 import com.tokopedia.logisticaddaddress.common.adapter.ZipCodeChipsAdapter
 import com.tokopedia.logisticaddaddress.databinding.BottomsheetDistcrictReccomendationRevampBinding
 import com.tokopedia.logisticaddaddress.di.addnewaddressrevamp.DaggerAddNewAddressRevampComponent
 import com.tokopedia.logisticaddaddress.domain.model.Address
-import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.AddressUiState
-import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.analytics.AddNewAddressRevampAnalytics
-import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.analytics.EditAddressRevampAnalytics
-import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.isEdit
+import com.tokopedia.logisticaddaddress.features.analytics.LogisticAddAddressAnalytics
+import com.tokopedia.logisticaddaddress.features.analytics.LogisticEditAddressAnalytics
 import com.tokopedia.logisticaddaddress.features.district_recommendation.adapter.DiscomAdapterRevamp
 import com.tokopedia.logisticaddaddress.features.district_recommendation.adapter.PopularCityAdapter
 import com.tokopedia.logisticaddaddress.utils.AddAddressConstant
@@ -178,10 +178,10 @@ class DiscomBottomSheetRevamp :
             if (isKodePosShown) {
                 when (addressUiState) {
                     AddressUiState.AddAddress -> {
-                        AddNewAddressRevampAnalytics.onClickBackArrowKodePos(userSession.userId)
+                        LogisticAddAddressAnalytics.onClickBackArrowKodePos(userSession.userId)
                     }
                     AddressUiState.EditAddress -> {
-                        EditAddressRevampAnalytics.onClickBackArrowKodePos(userSession.userId)
+                        LogisticEditAddressAnalytics.onClickBackArrowKodePos(userSession.userId)
                     }
                     else -> {
                         // no op
@@ -193,10 +193,10 @@ class DiscomBottomSheetRevamp :
             } else {
                 when (addressUiState) {
                     AddressUiState.AddAddress -> {
-                        AddNewAddressRevampAnalytics.onClickBackArrowDiscom(userSession.userId)
+                        LogisticAddAddressAnalytics.onClickBackArrowDiscom(userSession.userId)
                     }
                     AddressUiState.EditAddress -> {
-                        EditAddressRevampAnalytics.onClickBackArrowDiscom(userSession.userId)
+                        LogisticEditAddressAnalytics.onClickBackArrowDiscom(userSession.userId)
                     }
                     else -> {
                         // no op
@@ -258,10 +258,10 @@ class DiscomBottomSheetRevamp :
                 if (hasFocus) {
                     when (addressUiState) {
                         AddressUiState.AddAddress -> {
-                            AddNewAddressRevampAnalytics.onClickFieldCariKotaKecamatanNegative(userSession.userId)
+                            LogisticAddAddressAnalytics.onClickFieldCariKotaKecamatanNegative(userSession.userId)
                         }
                         AddressUiState.EditAddress -> {
-                            EditAddressRevampAnalytics.onClickFieldCariKotaKecamatan(userSession.userId)
+                            LogisticEditAddressAnalytics.onClickFieldCariKotaKecamatan(userSession.userId)
                         }
                         else -> {
                             // no op
@@ -272,10 +272,10 @@ class DiscomBottomSheetRevamp :
             setOnClickListener {
                 when (addressUiState) {
                     AddressUiState.AddAddress -> {
-                        AddNewAddressRevampAnalytics.onClickFieldCariKotaKecamatanNegative(userSession.userId)
+                        LogisticAddAddressAnalytics.onClickFieldCariKotaKecamatanNegative(userSession.userId)
                     }
                     AddressUiState.EditAddress -> {
-                        EditAddressRevampAnalytics.onClickFieldCariKotaKecamatan(userSession.userId)
+                        LogisticEditAddressAnalytics.onClickFieldCariKotaKecamatan(userSession.userId)
                     }
                     else -> {
                         // no op
@@ -325,12 +325,12 @@ class DiscomBottomSheetRevamp :
             if (viewBinding?.etKodepos?.textFieldInput?.text.toString().length < MIN_TEXT_LENGTH) {
                 when (addressUiState) {
                     AddressUiState.AddAddress -> {
-                        AddNewAddressRevampAnalytics.onViewErrorToasterPilih(userSession.userId)
-                        AddNewAddressRevampAnalytics.onClickPilihKodePos(userSession.userId, NOT_SUCCESS)
+                        LogisticAddAddressAnalytics.onViewErrorToasterPilih(userSession.userId)
+                        LogisticAddAddressAnalytics.onClickPilihKodePos(userSession.userId, NOT_SUCCESS)
                     }
                     AddressUiState.EditAddress -> {
-                        EditAddressRevampAnalytics.onViewErrorToaster(userSession.userId)
-                        EditAddressRevampAnalytics.onClickPilihKodePos(userSession.userId, false)
+                        LogisticEditAddressAnalytics.onViewErrorToaster(userSession.userId)
+                        LogisticEditAddressAnalytics.onClickPilihKodePos(userSession.userId, false)
                     }
                     else -> {
                         // no op
@@ -340,10 +340,10 @@ class DiscomBottomSheetRevamp :
             } else {
                 when (addressUiState) {
                     AddressUiState.AddAddress -> {
-                        AddNewAddressRevampAnalytics.onClickPilihKodePos(userSession.userId, SUCCESS)
+                        LogisticAddAddressAnalytics.onClickPilihKodePos(userSession.userId, SUCCESS)
                     }
                     AddressUiState.EditAddress -> {
-                        EditAddressRevampAnalytics.onClickPilihKodePos(userSession.userId, true)
+                        LogisticEditAddressAnalytics.onClickPilihKodePos(userSession.userId, true)
                     }
                     else -> {
                         // no op
@@ -355,7 +355,7 @@ class DiscomBottomSheetRevamp :
             }
         }
         viewBinding?.layoutUseCurrentLoc?.setOnClickListener {
-            EditAddressRevampAnalytics.onClickGunakanLokasiIni(userSession.userId)
+            LogisticEditAddressAnalytics.onClickGunakanLokasiIni(userSession.userId)
             requestPermissionLocation()
         }
     }
@@ -374,10 +374,10 @@ class DiscomBottomSheetRevamp :
     override fun onZipCodeClicked(zipCode: String) {
         when (addressUiState) {
             AddressUiState.AddAddress -> {
-                AddNewAddressRevampAnalytics.onClickChipsKodePosNegative(userSession.userId)
+                LogisticAddAddressAnalytics.onClickChipsKodePosNegative(userSession.userId)
             }
             AddressUiState.EditAddress -> {
-                EditAddressRevampAnalytics.onClickChipsKodePos(userSession.userId)
+                LogisticEditAddressAnalytics.onClickChipsKodePos(userSession.userId)
             }
             else -> {
                 // no op
@@ -392,10 +392,10 @@ class DiscomBottomSheetRevamp :
     override fun onCityChipClicked(city: String) {
         when (addressUiState) {
             AddressUiState.AddAddress -> {
-                AddNewAddressRevampAnalytics.onClickChipsKotaKecamatanNegative(userSession.userId)
+                LogisticAddAddressAnalytics.onClickChipsKotaKecamatanNegative(userSession.userId)
             }
             AddressUiState.EditAddress -> {
-                EditAddressRevampAnalytics.onClickChipsKotaKecamatan(userSession.userId)
+                LogisticEditAddressAnalytics.onClickChipsKotaKecamatan(userSession.userId)
             }
             else -> {
                 // no op
@@ -487,10 +487,10 @@ class DiscomBottomSheetRevamp :
     override fun onDistrictItemRevampClicked(districtModel: Address) {
         when (addressUiState) {
             AddressUiState.AddAddress -> {
-                AddNewAddressRevampAnalytics.onClickDropDownSuggestionKotaNegative(userSession.userId)
+                LogisticAddAddressAnalytics.onClickDropDownSuggestionKotaNegative(userSession.userId)
             }
             AddressUiState.EditAddress -> {
-                EditAddressRevampAnalytics.onClickDropDownSuggestionKota(userSession.userId)
+                LogisticEditAddressAnalytics.onClickDropDownSuggestionKota(userSession.userId)
             }
             else -> {
                 // no op
@@ -536,10 +536,10 @@ class DiscomBottomSheetRevamp :
                     if (hasFocus) {
                         when (addressUiState) {
                             AddressUiState.AddAddress -> {
-                                AddNewAddressRevampAnalytics.onClickFieldKodePosNegative(userSession.userId)
+                                LogisticAddAddressAnalytics.onClickFieldKodePosNegative(userSession.userId)
                             }
                             AddressUiState.EditAddress -> {
-                                EditAddressRevampAnalytics.onClickFieldKodePos(userSession.userId)
+                                LogisticEditAddressAnalytics.onClickFieldKodePos(userSession.userId)
                             }
                             else -> {
                                 // no op
@@ -552,10 +552,10 @@ class DiscomBottomSheetRevamp :
                 setOnClickListener {
                     when (addressUiState) {
                         AddressUiState.AddAddress -> {
-                            AddNewAddressRevampAnalytics.onClickFieldKodePosNegative(userSession.userId)
+                            LogisticAddAddressAnalytics.onClickFieldKodePosNegative(userSession.userId)
                         }
                         AddressUiState.EditAddress -> {
-                            EditAddressRevampAnalytics.onClickFieldKodePos(userSession.userId)
+                            LogisticEditAddressAnalytics.onClickFieldKodePos(userSession.userId)
                         }
                         else -> {
                             // no op

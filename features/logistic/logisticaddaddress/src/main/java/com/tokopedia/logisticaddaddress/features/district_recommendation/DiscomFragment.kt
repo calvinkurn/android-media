@@ -31,6 +31,7 @@ import com.tokopedia.logisticaddaddress.databinding.FragmentDistrictRecommendati
 import com.tokopedia.logisticaddaddress.di.districtrecommendation.DaggerDistrictRecommendationComponent
 import com.tokopedia.logisticaddaddress.domain.mapper.AddressMapper
 import com.tokopedia.logisticaddaddress.domain.model.Address
+import com.tokopedia.logisticCommon.uimodel.AddressUiState
 import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomContract.Constant.Companion.INTENT_DISTRICT_RECOMMENDATION_ADDRESS
 import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomContract.Constant.Companion.IS_LOCALIZATION
 import com.tokopedia.logisticaddaddress.features.district_recommendation.adapter.DistrictAdapterTypeFactory
@@ -522,4 +523,9 @@ class DiscomFragment :
             ).show()
         }
     }
+
+
+    private var districtBottomSheet: DiscomBottomSheetRevamp? = null
+    private var addressUiState: AddressUiState = AddressUiState.AddAddress
+
 }
