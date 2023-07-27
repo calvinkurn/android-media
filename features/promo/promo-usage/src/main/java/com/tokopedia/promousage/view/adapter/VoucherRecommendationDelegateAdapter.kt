@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.promousage.databinding.PromoUsageItemVoucherBinding
 import com.tokopedia.promousage.databinding.PromoUsageItemVoucherRecommendationBinding
 import com.tokopedia.promousage.domain.entity.list.Voucher
@@ -20,6 +21,7 @@ class VoucherRecommendationDelegateAdapter(
 
     companion object {
         private const val PADDING_BOTTOM_DP = 16
+        private const val ONE_VOUCHER = 1
     }
 
     override fun createViewHolder(parent: ViewGroup): RecyclerView.ViewHolder {
@@ -51,6 +53,8 @@ class VoucherRecommendationDelegateAdapter(
                 layoutManager = LinearLayoutManager(binding.recyclerView.context)
                 adapter = voucherAdapter
             }
+
+            binding.btnRecommendationUseVoucher.isVisible = recommendation.vouchers.size > ONE_VOUCHER
 
             voucherAdapter.submit(recommendation.vouchers)
         }
