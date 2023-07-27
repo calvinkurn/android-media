@@ -1,7 +1,9 @@
 package com.tokopedia.applink.find
 
 import android.content.Context
+import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import tokopedia.applink.R
@@ -54,5 +56,22 @@ object DeepLinkMapperFind {
 
         return if (cityKeyIndex == 1) "-di-" + searchSegments.last()
         else ""
+    }
+
+    fun navigateToAppNotifSettings(context: Context): String{
+        val APP_SETTING = "android.settings.APP_NOTIFICATION_SETTINGS"
+        val APP_PACKAGE = "app_package"
+        val APP_UID = "app_uid"
+        val APP_PACKAGE_NAME = "android.provider.extra.APP_PACKAGE"
+        val intent = Intent()
+        intent.action = APP_SETTING
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        intent.putExtra(APP_PACKAGE, context.packageName)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.DONUT) {
+            intent.putExtra(APP_UID, context.applicationInfo?.uid)
+        }
+        intent.putExtra(APP_PACKAGE_NAME, context.packageName)
+        context.startActivity(intent)
+        return ""
     }
 }

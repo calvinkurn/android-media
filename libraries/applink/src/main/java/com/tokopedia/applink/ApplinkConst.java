@@ -849,4 +849,8 @@ public interface ApplinkConst {
         //bundle params
         String IS_FROM_TOKOFOOD_POST_PURCHASE = "isFromTokoFoodPostPurchase";
     }
+
+    interface AppNotifSetting{
+        String APP_NOTIF_SETTINGS_PAGE = "app-notification-settings";
+    }
 }
