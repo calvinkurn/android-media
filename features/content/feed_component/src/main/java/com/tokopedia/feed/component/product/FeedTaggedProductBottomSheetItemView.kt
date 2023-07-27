@@ -90,10 +90,6 @@ class FeedTaggedProductBottomSheetItemView(
 
     private fun bindCampaign(campaign: FeedTaggedProductUiModel.Campaign) {
         if (campaign.status is FeedTaggedProductUiModel.CampaignStatus.Ongoing) {
-
-            binding.pbStock.onValueChangeListener =  {prev, curr ->
-                Log.d("hello", "prev $prev -- current $curr")
-            }
             binding.pbStock.setValue(campaign.status.stockInPercent.roundToInt(), true)
             binding.pbStock.progressBarColor = intArrayOf(
                 ContextCompat.getColor(

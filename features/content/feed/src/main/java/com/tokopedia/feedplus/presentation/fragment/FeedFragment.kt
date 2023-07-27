@@ -1468,11 +1468,7 @@ class FeedFragment :
         campaign: FeedCardCampaignModel
     ) {
         var isTopAds = false
-        val sourceType = when (trackerData?.type.orEmpty()) {
-            FeedXCard.TYPE_FEED_ASGC_RESTOCK, FeedXCard.TYPE_FEED_ASGC_NEW_PRODUCTS, FeedXCard.TYPE_FEED_ASGC_SHOP_DISCOUNT,
-            FeedXCard.TYPE_FEED_ASGC_SHOP_FLASH_SALE, FeedXCard.TYPE_FEED_ASGC_SPECIAL_RELEASE, FeedXCard.TYPE_FEED_TOP_ADS -> FeedTaggedProductUiModel.SourceType.NonOrganic
-            else -> FeedTaggedProductUiModel.SourceType.Organic
-        }
+        val sourceType = convertToSourceType(trackerData?.type.orEmpty())
         val taggedProductList = products.map {
             MapperProductsToXProducts.transform(it, campaign, sourceType)
         }
@@ -1506,9 +1502,16 @@ class FeedFragment :
             manager = childFragmentManager,
             tag = TAG_FEED_PRODUCT_BOTTOM_SHEET,
             products = if (isTopAds) taggedProductList else emptyList(),
-            cardType = sourceType
+            sourceType = sourceType
         )
         if (hasVoucher && author?.type?.isShop == true) getMerchantVoucher(author.id)
+    }
+
+    private fun convertToSourceType (type: String) : FeedTaggedProductUiModel.SourceType  =
+        when (type) {
+        FeedXCard.TYPE_FEED_ASGC_RESTOCK, FeedXCard.TYPE_FEED_ASGC_NEW_PRODUCTS, FeedXCard.TYPE_FEED_ASGC_SHOP_DISCOUNT,
+        FeedXCard.TYPE_FEED_ASGC_SHOP_FLASH_SALE, FeedXCard.TYPE_FEED_ASGC_SPECIAL_RELEASE, TYPE_FEED_TOP_ADS -> FeedTaggedProductUiModel.SourceType.NonOrganic
+        else -> FeedTaggedProductUiModel.SourceType.Organic
     }
 
     private fun openVariantBottomSheet(product: FeedTaggedProductUiModel) {
