@@ -17,6 +17,10 @@ buildscript {
 android {
     namespace 'com.tokopedia.product.detail.common'
     testNamespace 'com.tokopedia.product.detail.common.test'
+
+    buildFeatures {
+        viewBinding true
+    }
 }
 
 dependencies {

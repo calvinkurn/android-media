@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/bmgm_component"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="8dp">
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/bmgm_guideline_start"
+        android:layout_width="1dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="16dp" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/bmgm_guideline_top"
+        android:layout_width="1dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_begin="16dp" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/bmgm_guideline_end"
+        android:layout_width="1dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.96107054" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/bmgm_image_left"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        app:layout_constraintBottom_toBottomOf="@+id/bmgm_icon_right"
+        app:layout_constraintStart_toStartOf="@id/bmgm_guideline_start"
+        app:layout_constraintTop_toTopOf="@+id/bmgm_guideline_top" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/bmgm_icon_right"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        app:icon_name="CHEVRON_RIGHT"
+        app:layout_constraintEnd_toEndOf="@id/bmgm_guideline_end"
+        app:layout_constraintTop_toTopOf="@id/bmgm_guideline_top" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/bmgm_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="4dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textColor="@color/Unify_TN500"
+        app:layout_constraintBottom_toBottomOf="@+id/bmgm_icon_right"
+        app:layout_constraintEnd_toStartOf="@+id/bmgm_icon_right"
+        app:layout_constraintStart_toEndOf="@+id/bmgm_image_left"
+        app:layout_constraintTop_toTopOf="@+id/bmgm_guideline_top"
+        tools:text="Beli 2 atau lebih, diskon hingga 40%" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/bmgm_product_list"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:clipToPadding="true"
+        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+        app:layout_constraintEnd_toEndOf="@id/bmgm_guideline_end"
+        app:layout_constraintStart_toStartOf="@+id/bmgm_guideline_start"
+        app:layout_constraintTop_toBottomOf="@+id/bmgm_icon_right"
+        app:spanCount="3"
+        tools:itemCount="3"
+        tools:listitem="@layout/bmgm_product_view" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
