@@ -6,12 +6,15 @@
         android:toYScale="0"
         android:duration="1000"
         android:pivotX="50%"
-        android:pivotY="50%" >
+        android:pivotY="50%"
+        android:startOffset="2000">
+
     </scale>
 
     <alpha
         android:fromAlpha="1"
         android:toAlpha="0"
+        android:startOffset="3000"
         android:duration="1000" >
     </alpha>
 </set>

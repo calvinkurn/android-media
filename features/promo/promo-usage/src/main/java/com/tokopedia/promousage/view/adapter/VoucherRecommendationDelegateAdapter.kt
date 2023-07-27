@@ -65,6 +65,10 @@ class VoucherRecommendationDelegateAdapter(
 
                 })
                 binding.ivCheckmarkOutline.startAnimation(shrinkOutAnimation)
+
+
+                val zoomInAnimation = AnimationUtils.loadAnimation(binding.recyclerView.context, R.anim.zoom_in)
+                binding.recyclerView.startAnimation(zoomInAnimation)
             }
         }
 
