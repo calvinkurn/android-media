@@ -419,12 +419,12 @@ class PromoUsageBottomSheet: BottomSheetDialogFragment() {
     private fun showLottieConfettiAnimation() {
         binding?.lottieAnimationView?.apply {
 
-            val lottieCompositionLottieTask = LottieCompositionFactory.fromUrl(
+            val lottieTask = LottieCompositionFactory.fromUrl(
                 context,
                 CONFETTI_URL
             )
 
-            lottieCompositionLottieTask.addListener { result ->
+            lottieTask.addListener { result ->
                 visible()
                 setComposition(result)
                 playAnimation()
