@@ -5,12 +5,16 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.view.updatePadding
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.getBooleanArg
 import com.tokopedia.kotlin.extensions.view.getIntArg
+import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.getStringArg
 import com.tokopedia.kotlin.extensions.view.getStringArrayListArg
 import com.tokopedia.product.detail.R
@@ -38,6 +42,7 @@ import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
+import kotlin.math.roundToInt
 
 class PostAtcBottomSheet : BottomSheetUnify(), PostAtcBottomSheetDelegate {
 
@@ -121,6 +126,7 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcBottomSheetDelegate {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setRecyclerViewMaxHeight()
         observeViewModel()
         initData()
     }
@@ -157,6 +163,21 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcBottomSheetDelegate {
         postAtcRv.adapter = adapter
     }
 
+    /**
+     * Please Call this function when bottomSheetHeader finish render
+     */
+    private fun setRecyclerViewMaxHeight() {
+        val view = binding?.postAtcRv ?: return
+        val layoutParams = view.layoutParams as? ConstraintLayout.LayoutParams ?: return
+        val maxHeight = (getScreenHeight() * 0.7) - bottomSheetHeader.height
+        layoutParams.matchConstraintMaxHeight = maxHeight.roundToInt()
+        view.layoutParams = layoutParams
+    }
+
+    /**
+     * Section of Observe ViewModel
+     */
+
     private fun observeViewModel() = with(viewModel) {
         layouts.observe(viewLifecycleOwner, layoutsObserver)
         recommendations.observe(viewLifecycleOwner, recommendationsObserver)
@@ -189,6 +210,10 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcBottomSheetDelegate {
             })
         }
 
+    /**
+     * End of Observe ViewModel
+     */
+
     private fun updateFooter() {
         val data = viewModel.postAtcInfo.footer
         if (!data.shouldShow) return
@@ -199,6 +224,12 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcBottomSheetDelegate {
             postAtcFooterButtonMain.text = data.buttonText
             postAtcFooterButtonMain.setOnClickListener {
                 callback.goToCart(data.cartId)
+            }
+        }
+
+        footerView.addOneTimeGlobalLayoutListener {
+            footer?.root?.height?.let {
+                binding?.postAtcRv?.updatePadding(bottom = it)
             }
         }
     }
