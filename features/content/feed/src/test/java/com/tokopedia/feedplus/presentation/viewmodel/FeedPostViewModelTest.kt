@@ -41,6 +41,7 @@ import com.tokopedia.feedplus.presentation.model.FeedCardLivePreviewContentModel
 import com.tokopedia.feedplus.presentation.model.FeedCardVideoContentModel
 import com.tokopedia.feedplus.presentation.model.FeedCommentModel
 import com.tokopedia.feedplus.presentation.model.FeedFollowModel
+import com.tokopedia.feedplus.presentation.model.FeedFollowRecommendationModel
 import com.tokopedia.feedplus.presentation.model.FeedLikeModel
 import com.tokopedia.feedplus.presentation.model.FeedModel
 import com.tokopedia.feedplus.presentation.model.FeedNoContentModel
@@ -74,6 +75,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import java.util.*
 
 /**
  * Created By : Muhammad Furqan on 22/05/23
@@ -1046,6 +1048,105 @@ class FeedPostViewModelTest {
         viewModel.trackVisitChannel(getDummyFeedModel().items[1] as FeedCardVideoContentModel)
     }
 
+    /** Follow Recommendation */
+    @Test
+    fun onFetchBulkFollowRecommendation_Success() {
+        // prepare
+        val mockFollowRecommendationData = getDummyProfileRecommendationList()
+
+        coEvery { userSession.userId } returns ""
+        coEvery { topAdsAddressHelper.getAddressData() } returns mapOf()
+        coEvery { topAdsHeadlineUseCase.setParams(any(), any()) } coAnswers {}
+        coEvery { topAdsHeadlineUseCase.executeOnBackground() } returns TopAdsHeadlineResponse(
+            displayAds = CpmModel(data = mutableListOf())
+        )
+        coEvery { feedXRecomWidgetUseCase.createFeedFollowRecomParams(any()) } returns mapOf()
+        coEvery { feedXRecomWidgetUseCase(any()) } returns mockFollowRecommendationData
+
+        provideDefaultFeedPostMockData()
+
+        // test
+        viewModel.fetchPlaceholderData()
+
+        // verify
+        assert(viewModel.feedHome.value is Success)
+
+        val followRecomModel = (viewModel.feedHome.value as Success).data.items[5]
+
+        assert(followRecomModel is FeedFollowRecommendationModel)
+        assert((followRecomModel as FeedFollowRecommendationModel) == mockFollowRecommendationData)
+    }
+
+    @Test
+    fun onFetchBulkFollowRecommendation_Error() {
+        // prepare
+        val mockFollowRecommendationData = Exception("Network Error")
+
+        coEvery { userSession.userId } returns ""
+        coEvery { topAdsAddressHelper.getAddressData() } returns mapOf()
+        coEvery { topAdsHeadlineUseCase.setParams(any(), any()) } coAnswers {}
+        coEvery { topAdsHeadlineUseCase.executeOnBackground() } returns TopAdsHeadlineResponse(
+            displayAds = CpmModel(data = mutableListOf())
+        )
+        coEvery { feedXRecomWidgetUseCase.createFeedFollowRecomParams(any()) } returns mapOf()
+        coEvery { feedXRecomWidgetUseCase(any()) } throws mockFollowRecommendationData
+
+        provideDefaultFeedPostMockData()
+
+        // test
+        viewModel.fetchPlaceholderData()
+
+        // verify
+        assert(viewModel.feedHome.value is Success)
+
+        val followRecomModel = (viewModel.feedHome.value as Success).data.items[5]
+
+        assert(followRecomModel is FeedFollowRecommendationModel)
+        assert((followRecomModel as FeedFollowRecommendationModel).isError)
+        assert((followRecomModel as FeedFollowRecommendationModel).isFetch)
+    }
+
+    @Test
+    fun onFetchBulkFollowRecommendation_TryToRefetchTheFetchedModel() {
+        // prepare
+        val mock5FollowRecommendationData = getDummyProfileRecommendationList(profileSize = 5)
+        val mock10FollowRecommendationData = getDummyProfileRecommendationList(profileSize = 10)
+
+        coEvery { userSession.userId } returns ""
+        coEvery { topAdsAddressHelper.getAddressData() } returns mapOf()
+        coEvery { topAdsHeadlineUseCase.setParams(any(), any()) } coAnswers {}
+        coEvery { topAdsHeadlineUseCase.executeOnBackground() } returns TopAdsHeadlineResponse(
+            displayAds = CpmModel(data = mutableListOf())
+        )
+        coEvery { feedXRecomWidgetUseCase.createFeedFollowRecomParams(any()) } returns mapOf()
+        coEvery { feedXRecomWidgetUseCase(any()) } returns mock5FollowRecommendationData
+
+        provideDefaultFeedPostMockData()
+
+        // test
+        viewModel.fetchPlaceholderData()
+
+        // verify
+        assert(viewModel.feedHome.value is Success)
+
+        val followRecomModel = (viewModel.feedHome.value as Success).data.items[5]
+
+        assert(followRecomModel is FeedFollowRecommendationModel)
+        assert((followRecomModel as FeedFollowRecommendationModel) == mock5FollowRecommendationData)
+
+        // double test
+        coEvery { feedXRecomWidgetUseCase(any()) } returns mock10FollowRecommendationData
+        viewModel.fetchPlaceholderData()
+
+        // double verify
+        assert(viewModel.feedHome.value is Success)
+
+        val followRecomModel2 = (viewModel.feedHome.value as Success).data.items[5]
+
+        assert(followRecomModel2 is FeedFollowRecommendationModel)
+        assert((followRecomModel2 as FeedFollowRecommendationModel) == mock5FollowRecommendationData)
+    }
+
     private fun provideDefaultFeedPostMockData() {
         coEvery { feedXHomeUseCase.createParams(any(), any(), any(), any()) } returns emptyMap()
         coEvery { feedXHomeUseCase.createPostDetailParams("1") } returns emptyMap()
@@ -1226,6 +1327,7 @@ class FeedPostViewModelTest {
                 FeedCardCampaignModel(),
                 emptyList()
             ),
+            FeedFollowRecommendationModel.Empty,
             FeedNoContentModel(0, "", "", "")
         ),
         pagination = FeedPaginationModel(
@@ -1234,4 +1336,30 @@ class FeedPostViewModelTest {
             10
         )
     )
+
+    private fun getDummyProfileRecommendationList(
+        profileSize: Int = 5
+    ): FeedFollowRecommendationModel {
+        return FeedFollowRecommendationModel(
+            id = "follow-recommendation",
+            title = "Kayaknya joe bakal suka kreator ini~",
+            description = "Yuk, follow mereka buat dapetin update & konten yang pas banget buat joe!",
+            data = List(profileSize) {
+                FeedFollowRecommendationModel.Profile(
+                    id = it.toString(),
+                    encryptedId = it.toString(),
+                    name = "Profile $it",
+                    badge = "",
+                    type = if (it % 2 == 0) FeedFollowRecommendationModel.ProfileType.Seller else FeedFollowRecommendationModel.ProfileType.Ugc,
+                    thumbnailUrl = "https://images.tokopedia.net/img/jJtrdn/2022/1/21/2f1ba9eb-a8d4-4de1-b445-ed66b96f26a9.jpg?b=UaM%25G%23Rjn4WYVBx%5DjFWX%3D~t6bbWB0PkWkqoL",
+                    imageUrl = "https://images.tokopedia.net/img/seller_no_logo_1.png",
+                    videoUrl = "https://vod.tokopedia.com/view/adaptive.m3u8?id=4d30328d17e948b4b1c4c34c5bb9f372",
+                    isFollowed = it % 2 == 0,
+                )
+            },
+            cursor = "asdf",
+            status = FeedFollowRecommendationModel.Status.Success,
+            isFetch = true,
+        )
+    }
 }
