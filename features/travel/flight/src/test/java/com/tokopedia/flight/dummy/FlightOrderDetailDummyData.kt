@@ -62,7 +62,8 @@ val DUMMY_FAILED_ORDER_DETAIL_DATA = FlightOrderDetailDataModel(
                 "Jakarta",
                 "1234567890",
                 "Furqan",
-                "Rp1.000.000"
+                "Rp1.000.000",
+                ""
         ),
         arrayListOf(
                 FlightOrderDetailJourneyModel(
@@ -314,7 +315,8 @@ val DUMMY_ORDER_DETAIL_DATA = FlightOrderDetailDataModel(
                 "Jakarta",
                 "1234567890",
                 "Furqan",
-                "Rp1.000.000"
+                "Rp1.000.000",
+                ""
         ),
         arrayListOf(
                 FlightOrderDetailJourneyModel(
@@ -549,7 +551,8 @@ val DUMMY_ORDER_DETAIL_DATA_WITH_MULTI_AIRLINE = FlightOrderDetailDataModel(
                 "Jakarta",
                 "1234567890",
                 "Furqan",
-                "Rp1.000.000"
+                "Rp1.000.000",
+                ""
         ),
         arrayListOf(DUMMY_ORDER_DETAIL_JOURNEY_MULTI_AIRLINE),
         arrayListOf(

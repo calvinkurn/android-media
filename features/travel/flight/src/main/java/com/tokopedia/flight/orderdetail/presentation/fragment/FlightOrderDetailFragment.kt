@@ -313,7 +313,8 @@ class FlightOrderDetailFragment :
             flightOrderDetailViewModel.orderId,
             data.createTime,
             data.payment.gatewayName,
-            data.payment.totalAmountStr
+            data.payment.totalAmountStr,
+            data.payment.additionalInfo
         )
         binding?.flightOrderDetailHeaderStatus?.buildView()
 
@@ -543,10 +544,6 @@ class FlightOrderDetailFragment :
                 )
             )
         }
-    }
-
-    private fun renderAdminFeeInfoTicker() {
-        // TODO: [Misael] render
     }
 
     private fun renderErrorView(title: String, message: String) {

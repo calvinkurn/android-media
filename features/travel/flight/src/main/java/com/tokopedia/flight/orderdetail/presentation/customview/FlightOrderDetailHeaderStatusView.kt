@@ -8,6 +8,10 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.flight.R
 import com.tokopedia.flight.orderdetail.presentation.model.mapper.FlightOrderDetailStatusMapper
 import com.tokopedia.flight.orderdetail.presentation.utils.OrderDetailUtils
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.unifycomponents.HtmlLinkHelper
+import com.tokopedia.unifycomponents.UrlSpanNoUnderline
 import com.tokopedia.utils.date.DateUtil
 import kotlinx.android.synthetic.main.view_flight_order_detail_status_header.view.*
 
@@ -25,6 +29,7 @@ class FlightOrderDetailHeaderStatusView @JvmOverloads constructor(context: Conte
     private var transactionDate: String = ""
     private var paymentMethod: String = ""
     private var paymentAmount: String = ""
+    private var additionalInfo: String = ""
 
     init {
         View.inflate(context, R.layout.view_flight_order_detail_status_header, this)
@@ -35,13 +40,16 @@ class FlightOrderDetailHeaderStatusView @JvmOverloads constructor(context: Conte
                 invoiceId: String,
                 transactionDate: String,
                 paymentMethod: String,
-                paymentAmount: String) {
+                paymentAmount: String,
+                additionalInfo: String
+    ) {
         this.statusInt = statusInt
         this.statusStr = statusStr
         this.invoiceId = invoiceId
         this.transactionDate = transactionDate
         this.paymentMethod = paymentMethod
         this.paymentAmount = paymentAmount
+        this.additionalInfo = additionalInfo
     }
 
     fun buildView() {
@@ -49,6 +57,7 @@ class FlightOrderDetailHeaderStatusView @JvmOverloads constructor(context: Conte
         renderInvoiceId()
         renderTransactionDate()
         renderPaymentView()
+        renderAdditionalInfo()
     }
 
     private fun renderOrderStatus() {
@@ -97,6 +106,17 @@ class FlightOrderDetailHeaderStatusView @JvmOverloads constructor(context: Conte
         }
         ivFlightOrderLabelDetailPayment.setOnClickListener {
             listener?.onDetailPaymentClicked()
+        }
+    }
+
+    private fun renderAdditionalInfo() {
+        if (additionalInfo.isNotEmpty()) {
+            tgFlightOrderAdditionalInfo.text = HtmlLinkHelper(context, additionalInfo).spannedString
+            tgFlightOrderAdditionalInfo.show()
+            ivFlightOrderAdditionalInfo.show()
+        } else {
+            tgFlightOrderAdditionalInfo.hide()
+            ivFlightOrderAdditionalInfo.hide()
         }
     }
 

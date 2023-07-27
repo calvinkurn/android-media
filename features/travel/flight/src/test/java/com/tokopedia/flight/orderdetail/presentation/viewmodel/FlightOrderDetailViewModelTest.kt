@@ -733,7 +733,8 @@ class FlightOrderDetailViewModelTest {
                         "Jakarta",
                         "1234567890",
                         "Furqan",
-                        "Rp1.000.000"
+                        "Rp1.000.000",
+                        ""
                 ),
                 arrayListOf(
                         FlightOrderDetailJourneyModel(
@@ -893,7 +894,8 @@ class FlightOrderDetailViewModelTest {
                         "Jakarta",
                         "1234567890",
                         "Furqan",
-                        "Rp1.000.000"
+                        "Rp1.000.000",
+                        ""
                 ),
                 arrayListOf(
                         FlightOrderDetailJourneyModel(
@@ -1053,7 +1055,8 @@ class FlightOrderDetailViewModelTest {
                         "Jakarta",
                         "1234567890",
                         "Furqan",
-                        "Rp1.000.000"
+                        "Rp1.000.000",
+                        ""
                 ),
                 arrayListOf(
                         FlightOrderDetailJourneyModel(
@@ -1213,7 +1216,8 @@ class FlightOrderDetailViewModelTest {
                         "Jakarta",
                         "1234567890",
                         "Furqan",
-                        "Rp1.000.000"
+                        "Rp1.000.000",
+                        ""
                 ),
                 arrayListOf(
                         FlightOrderDetailJourneyModel(
