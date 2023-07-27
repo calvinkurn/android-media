@@ -250,13 +250,14 @@
                         android:layout_height="wrap_content"
                         app:constraint_referenced_ids="likeIcon,likeText" />
 
-                    <androidx.appcompat.widget.AppCompatImageView
+                    <com.tokopedia.iconunify.IconUnify
                         android:id="@+id/likeIcon"
                         android:layout_width="18dp"
                         android:layout_height="18dp"
                         android:layout_gravity="center"
                         android:contentDescription="@string/kol_action_like"
                         android:scaleType="fitCenter"
+                        app:icon_name="THUMB_FILLED"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
