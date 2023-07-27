@@ -133,19 +133,7 @@ class PromoUsageViewModel @Inject constructor(
             val updatedVouchers = currentItems.map { widget ->
                 when (widget) {
                     is VoucherAccordion -> {
-                        val selectedVouchers = widget.vouchers.map { item ->
-                            if (item is ViewAllVoucher) {
-                                item
-                            } else {
-                                val voucher = item as Voucher
-                                if (selectedVoucher.id == voucher.id) {
-                                    voucher.copy(voucherState = VoucherState.Selected)
-                                } else {
-                                    voucher
-                                }
-                            }
-                        }
-
+                        val selectedVouchers = updateVouchersToSelected(selectedVoucher, widget.vouchers)
                         widget.copy(vouchers = selectedVouchers)
                     }
 
@@ -161,9 +149,7 @@ class PromoUsageViewModel @Inject constructor(
                         widget.copy(vouchers = selectedVouchers)
                     }
 
-                    else -> {
-                        widget
-                    }
+                    else -> widget
                 }
             }
 
@@ -178,20 +164,8 @@ class PromoUsageViewModel @Inject constructor(
         val updatedVouchers = currentItems.map { widget ->
             when (widget) {
                 is VoucherAccordion -> {
-                    val selectedVouchers = widget.vouchers.map { item ->
-                        if (item is ViewAllVoucher) {
-                            item
-                        } else {
-                            val voucher = item as Voucher
-                            if (selectedVoucher.id == voucher.id) {
-                                voucher.copy(voucherState = VoucherState.Normal)
-                            } else {
-                                voucher
-                            }
-                        }
-                    }
-
-                    widget.copy(vouchers = selectedVouchers)
+                    val updatedVouchers = updateVouchersToNormal(selectedVoucher, widget.vouchers)
+                    widget.copy(vouchers = updatedVouchers)
                 }
 
                 is VoucherRecommendation -> {
@@ -206,9 +180,7 @@ class PromoUsageViewModel @Inject constructor(
                     widget.copy(vouchers = selectedVouchers)
                 }
 
-                else -> {
-                    widget
-                }
+                else -> widget
             }
         }
 
@@ -324,6 +296,37 @@ class PromoUsageViewModel @Inject constructor(
         return expandedVouchers
     }
 
+    private fun updateVouchersToSelected(selectedVoucher: Voucher, items: List<DelegateAdapterItem>): List<DelegateAdapterItem> {
+        return items.map { item ->
+            //There are 2 type of items that can exist on Voucher Accordion which are [Voucher, ViewAllVoucher]
+            if (item is ViewAllVoucher) {
+                item
+            } else {
+                val voucher = item as Voucher
+                if (selectedVoucher.id == voucher.id) {
+                    voucher.copy(voucherState = VoucherState.Selected)
+                } else {
+                    voucher
+                }
+            }
+        }
+    }
+
+    private fun updateVouchersToNormal(selectedVoucher: Voucher, items: List<DelegateAdapterItem>): List<DelegateAdapterItem> {
+        return items.map { item ->
+            //There are 2 type of items that can exist on Voucher Accordion which are [Voucher, ViewAllVoucher]
+            if (item is ViewAllVoucher) {
+                item
+            } else {
+                val voucher = item as Voucher
+                if (selectedVoucher.id == voucher.id) {
+                    voucher.copy(voucherState = VoucherState.Normal)
+                } else {
+                    voucher
+                }
+            }
+        }
+    }
 
     private val cashbackVouchers = listOf(
         Voucher(
