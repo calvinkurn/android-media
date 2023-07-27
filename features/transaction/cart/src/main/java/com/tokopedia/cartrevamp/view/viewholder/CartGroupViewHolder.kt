@@ -49,6 +49,7 @@ class CartGroupViewHolder(
     }
 
     fun bindData(cartGroupHolderData: CartGroupHolderData) {
+        renderDivider(cartGroupHolderData)
         renderGroupName(cartGroupHolderData)
         renderGroupBadge(cartGroupHolderData)
 //        renderIconPin(cartGroupHolderData)
@@ -106,6 +107,19 @@ class CartGroupViewHolder(
 //        }
 //    }
 
+    private fun renderDivider(cartGroupHolderData: CartGroupHolderData) {
+        if (cartGroupHolderData.isError) {
+            binding.headerDivider.gone()
+//            layoutParams.leftMargin = DEFAULT_DIVIDER_HEIGHT.dpToPx(itemView.resources.displayMetrics)
+//            binding.headerDivider.layoutParams.height =
+//                DEFAULT_DIVIDER_HEIGHT.dpToPx(itemView.resources.displayMetrics)
+        } else {
+            binding.headerDivider.visible()
+            binding.headerDivider.layoutParams.height =
+                AVAILABLE_DIVIDER_HEIGHT.dpToPx(itemView.resources.displayMetrics)
+        }
+    }
+
     private fun renderCartItems(cartGroupHolderData: CartGroupHolderData) {
         if (!cartGroupHolderData.isError && cartGroupHolderData.isCollapsed) {
             renderCollapsedCartItems(cartGroupHolderData)
@@ -126,8 +140,7 @@ class CartGroupViewHolder(
                 )
                 weightType = Typography.REGULAR
             }
-        }
-        else {
+        } else {
             binding.tvShopName.apply {
                 setTextColor(
                     ContextCompat.getColor(
@@ -142,7 +155,8 @@ class CartGroupViewHolder(
         binding.tvShopName.text = Utils.getHtmlFormat(cartGroupHolderData.groupName)
         if (cartGroupHolderData.isError) {
             val shopId = cartGroupHolderData.productUiModelList.getOrNull(0)?.shopHolderData?.shopId
-            val shopName = cartGroupHolderData.productUiModelList.getOrNull(0)?.shopHolderData?.shopName
+            val shopName =
+                cartGroupHolderData.productUiModelList.getOrNull(0)?.shopHolderData?.shopName
             binding.tvShopName.setOnClickListener {
                 actionListener.onCartShopNameClicked(
                     shopId,
@@ -163,9 +177,18 @@ class CartGroupViewHolder(
 
     private fun renderGroupBadge(cartGroupHolderData: CartGroupHolderData) {
         if (cartGroupHolderData.groupBadge.isNotBlank()) {
-            ImageHandler.loadImageWithoutPlaceholder(binding.imageShopBadge, cartGroupHolderData.groupBadge)
-            val contentDescription = if (cartGroupHolderData.isTypeOWOC()) cartGroupHolderData.groupName else cartGroupHolderData.productUiModelList.getOrNull(0)?.shopHolderData?.shopTypeInfo?.title
-            binding.imageShopBadge.contentDescription = itemView.context.getString(com.tokopedia.purchase_platform.common.R.string.pp_cd_image_shop_badge_with_shop_type, contentDescription)
+            ImageHandler.loadImageWithoutPlaceholder(
+                binding.imageShopBadge,
+                cartGroupHolderData.groupBadge
+            )
+            val contentDescription =
+                if (cartGroupHolderData.isTypeOWOC()) cartGroupHolderData.groupName else cartGroupHolderData.productUiModelList.getOrNull(
+                    0
+                )?.shopHolderData?.shopTypeInfo?.title
+            binding.imageShopBadge.contentDescription = itemView.context.getString(
+                com.tokopedia.purchase_platform.common.R.string.pp_cd_image_shop_badge_with_shop_type,
+                contentDescription
+            )
             binding.imageShopBadge.show()
         } else {
             binding.imageShopBadge.gone()
@@ -179,7 +202,8 @@ class CartGroupViewHolder(
         }
         val maxIndex = min(COLLAPSED_PRODUCTS_LIMIT, cartItemDataList.size)
         val cartCartCollapsedProductAdapter = CartCollapsedProductAdapter(actionListener)
-        cartCartCollapsedProductAdapter.cartCollapsedProductHolderDataList = cartItemDataList.subList(0, maxIndex)
+        cartCartCollapsedProductAdapter.cartCollapsedProductHolderDataList =
+            cartItemDataList.subList(0, maxIndex)
         val layoutManager = LinearLayoutManager(itemView.context, RecyclerView.HORIZONTAL, false)
         binding.rvCartItem.layoutManager = layoutManager
         binding.rvCartItem.adapter = cartCartCollapsedProductAdapter
@@ -192,7 +216,12 @@ class CartGroupViewHolder(
         }
         val paddingLeft = ITEM_DECORATION_PADDING_LEFT.dpToPx(itemView.resources.displayMetrics)
         val paddingRight = itemView.context?.resources?.getDimension(R.dimen.dp_16)?.toInt() ?: 0
-        binding.rvCartItem.addItemDecoration(CartHorizontalItemDecoration(paddingLeft, paddingRight))
+        binding.rvCartItem.addItemDecoration(
+            CartHorizontalItemDecoration(
+                paddingLeft,
+                paddingRight
+            )
+        )
     }
 
     private fun setCollapsedRecyclerViewHeight(cartItemDataList: List<CartItemHolderData>) {
@@ -206,9 +235,11 @@ class CartGroupViewHolder(
                 }
             }
             if (hasProductWithVariant) {
-                binding.rvCartItem.layoutParams.height = itemView.context.resources.getDimensionPixelSize(R.dimen.cart_collapsed_inner_recycler_view_height_with_variant)
+                binding.rvCartItem.layoutParams.height =
+                    itemView.context.resources.getDimensionPixelSize(R.dimen.cart_collapsed_inner_recycler_view_height_with_variant)
             } else {
-                binding.rvCartItem.layoutParams.height = itemView.context.resources.getDimensionPixelSize(R.dimen.cart_collapsed_inner_recycler_view_height_without_variant)
+                binding.rvCartItem.layoutParams.height =
+                    itemView.context.resources.getDimensionPixelSize(R.dimen.cart_collapsed_inner_recycler_view_height_without_variant)
             }
             binding.rvCartItem.requestLayout()
         }
@@ -232,10 +263,14 @@ class CartGroupViewHolder(
         }
     }
 
-    private fun initCheckboxWatcherDebouncer(cartGroupHolderData: CartGroupHolderData, compositeSubscription: CompositeSubscription) {
+    private fun initCheckboxWatcherDebouncer(
+        cartGroupHolderData: CartGroupHolderData,
+        compositeSubscription: CompositeSubscription
+    ) {
         binding.cbSelectShop.let {
             compositeSubscription.add(
-                rxViewClickDebounce(it, CHECKBOX_WATCHER_DEBOUNCE_TIME).subscribe(object : Subscriber<Boolean>() {
+                rxViewClickDebounce(it, CHECKBOX_WATCHER_DEBOUNCE_TIME).subscribe(object :
+                    Subscriber<Boolean>() {
                     override fun onNext(isChecked: Boolean) {
                         cbSelectShopClickListener(cartGroupHolderData)
                     }
@@ -280,7 +315,12 @@ class CartGroupViewHolder(
                 }
             } else {
                 constraintSet.apply {
-                    connect(R.id.image_shop_badge, ConstraintSet.BOTTOM, R.id.cb_select_shop, ConstraintSet.BOTTOM)
+                    connect(
+                        R.id.image_shop_badge,
+                        ConstraintSet.BOTTOM,
+                        R.id.cb_select_shop,
+                        ConstraintSet.BOTTOM
+                    )
                 }
             }
             constraintSet.applyTo(clShopHeader)
@@ -361,7 +401,8 @@ class CartGroupViewHolder(
                 } else {
                     com.tokopedia.purchase_platform.common.R.string.pp_cd_image_badge_bo
                 }
-                imgFreeShipping.contentDescription = itemView.context.getString(contentDescriptionStringResource)
+                imgFreeShipping.contentDescription =
+                    itemView.context.getString(contentDescriptionStringResource)
                 imgFreeShipping.show()
 //                separatorFreeShipping.show()
                 if (!cartGroupHolderData.hasSeenFreeShippingBadge && cartGroupHolderData.isFreeShippingPlus) {
@@ -397,9 +438,14 @@ class CartGroupViewHolder(
             if (extraWeight > 0 && descriptionText.isNotEmpty()) {
                 with(binding) {
                     tickerWarning.tickerTitle = null
-                    tickerWarning.setTextDescription(descriptionText.replace(CartGroupHolderData.MAXIMUM_WEIGHT_WORDING_REPLACE_KEY, NumberFormat.getNumberInstance(
-                        Locale("in", "id")
-                    ).format(extraWeight)))
+                    tickerWarning.setTextDescription(
+                        descriptionText.replace(
+                            CartGroupHolderData.MAXIMUM_WEIGHT_WORDING_REPLACE_KEY,
+                            NumberFormat.getNumberInstance(
+                                Locale("in", "id")
+                            ).format(extraWeight)
+                        )
+                    )
                     tickerWarning.tickerType = TYPE_WARNING
                     tickerWarning.tickerShape = SHAPE_LOOSE
                     tickerWarning.closeButtonVisibility = View.GONE
@@ -432,6 +478,10 @@ class CartGroupViewHolder(
         const val CHECKBOX_WATCHER_DEBOUNCE_TIME = 500L
         const val KEY_ONBOARDING_ICON_PIN = "KEY_ONBOARDING_ICON_PIN"
 //        const val KEY_HAS_SHOWN_ICON_PIN_ONBOARDING = "KEY_HAS_SHOWN_ICON_PIN_ONBOARDING"
+
+        private const val AVAILABLE_DIVIDER_HEIGHT = 8
+        private const val DEFAULT_DIVIDER_HEIGHT = 2
+        private const val ERROR_DIVIDER_MARGIN_START = 114
 
         private const val ITEM_DECORATION_PADDING_LEFT = 48
         private const val SHOP_HEADER_PADDING_12 = 12

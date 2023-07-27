@@ -81,6 +81,7 @@
             android:id="@+id/product_bundling_info"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="6dp"
             app:layout_constraintStart_toEndOf="@id/checkbox_bundle"
             app:layout_constraintTop_toTopOf="@id/checkbox_bundle"
             app:layout_constraintEnd_toEndOf="parent">
@@ -89,7 +90,6 @@
                 android:id="@+id/text_packet"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="6dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:typographyType="display_3"
@@ -125,7 +125,6 @@
                 android:id="@+id/flexboxLayout"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="6dp"
                 android:layout_marginTop="4dp"
                 app:flexWrap="wrap"
                 app:layout_constraintEnd_toStartOf="@+id/text_change_bundle"
@@ -535,6 +534,12 @@
 <!--            app:constraint_referenced_ids="qty_editor_product" />-->
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/bottom_divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/Unify_NN50" />
 
 <!--    <View-->
 <!--        android:id="@+id/holder_item_cart_divider"-->

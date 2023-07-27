@@ -318,7 +318,7 @@ object CartUiModelMapper {
             showAccordion = true
         }
 
-        cartData.unavailableSections.forEach { unavailableSection ->
+        cartData.unavailableSections.forEachIndexed { sectionIndex, unavailableSection ->
             val disabledReasonHolderData = mapDisabledReasonUiModel(unavailableSection)
             unavailableSectionList.add(disabledReasonHolderData)
             if (!showAccordion && unavailableSection.unavailableGroups.isNotEmpty()) {
@@ -342,7 +342,7 @@ object CartUiModelMapper {
                     }
                 }
             }
-            unavailableSection.unavailableGroups.forEach { unavailableGroup ->
+            unavailableSection.unavailableGroups.forEachIndexed { groupIndex, unavailableGroup ->
                 val productUiModelList = mutableListOf<CartItemHolderData>()
                 val shopUiModel = mapGroupShop(unavailableGroup.shop, unavailableGroup.cartDetails)
                 unavailableGroup.cartDetails.forEach { cartDetail ->
@@ -358,7 +358,12 @@ object CartUiModelMapper {
                         )
                         productUiModelList.add(productUiModel)
                     }
-                    productUiModelList.lastOrNull()?.isFinalItem = true
+                    productUiModelList.lastOrNull()?.apply {
+                        isFinalItem = true
+                        showErrorBottomDivider = sectionIndex != cartData.unavailableSections.lastIndex
+                            || (sectionIndex == cartData.unavailableSections.lastIndex && groupIndex != unavailableSection.unavailableGroups.lastIndex)
+                        shouldDivideHalfErrorBottomDivider = showErrorBottomDivider && groupIndex != unavailableSection.unavailableGroups.lastIndex
+                    }
                 }
                 val groupUiModel = CartGroupHolderData().apply {
                     this.productUiModelList = productUiModelList
@@ -423,7 +428,8 @@ object CartUiModelMapper {
         }
 
         return DisabledItemHeaderHolderData(
-            disabledItemCount = errorItemCount
+            disabledItemCount = errorItemCount,
+            isDividerShown = false
         )
     }
 
@@ -431,6 +437,7 @@ object CartUiModelMapper {
         return DisabledReasonHolderData().apply {
             title = unavailabeSection.title
             subTitle = unavailabeSection.unavailableDescription
+            productsCount = unavailabeSection.productsCount
         }
     }
 
@@ -442,10 +449,10 @@ object CartUiModelMapper {
             isCollapsed = true,
             showLessWording = cartData.unavailableSectionAction.find {
                 return@find it.id == Action.ACTION_SHOWLESS
-            }?.message ?: context?.getString(R.string.cart_default_wording_show_less) ?: "",
+            }?.message ?: context?.getString(R.string.cart_new_default_wording_show_less) ?: "",
             showMoreWording = cartData.unavailableSectionAction.find {
                 return@find it.id == Action.ACTION_SHOWMORE
-            }?.message ?: context?.getString(R.string.cart_default_wording_show_more) ?: ""
+            }?.message ?: context?.getString(R.string.cart_new_default_wording_show_more) ?: ""
         )
     }
 

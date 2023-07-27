@@ -86,6 +86,7 @@ import com.tokopedia.cartrevamp.view.uimodel.CartTrackerEvent
 import com.tokopedia.cartrevamp.view.uimodel.CartWishlistItemHolderData
 import com.tokopedia.cartrevamp.view.uimodel.DeleteCartEvent
 import com.tokopedia.cartrevamp.view.uimodel.DisabledAccordionHolderData
+import com.tokopedia.cartrevamp.view.uimodel.DisabledItemHeaderHolderData
 import com.tokopedia.cartrevamp.view.uimodel.LoadRecentReviewState
 import com.tokopedia.cartrevamp.view.uimodel.LoadRecommendationState
 import com.tokopedia.cartrevamp.view.uimodel.LoadWishlistV2State
@@ -145,6 +146,7 @@ import com.tokopedia.purchase_platform.common.feature.sellercashback.ShipmentSel
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.searchbar.navigation_component.NavSource
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
@@ -764,6 +766,11 @@ class CartRevampFragment :
             buttonWording
         )
         data.isCollapsed = !data.isCollapsed
+        val disabledItemHeaderHolderDataPosition =
+            viewModel.cartDataList.value.indexOfFirst { it is DisabledItemHeaderHolderData }
+        (cartAdapter.getData()[disabledItemHeaderHolderDataPosition] as DisabledItemHeaderHolderData).isDividerShown =
+            !data.isCollapsed
+        onNeedToUpdateViewItem(disabledItemHeaderHolderDataPosition)
         unavailableItemAccordionCollapseState = data.isCollapsed
         collapseOrExpandDisabledItem(data)
     }
@@ -844,7 +851,10 @@ class CartRevampFragment :
         TODO("Not yet implemented")
     }
 
-    override fun onCartItemDeleteButtonClicked(cartItemHolderData: CartItemHolderData, isFromDeleteButton: Boolean) {
+    override fun onCartItemDeleteButtonClicked(
+        cartItemHolderData: CartItemHolderData,
+        isFromDeleteButton: Boolean
+    ) {
         if (isFromDeleteButton) {
             cartPageAnalytics.eventClickAtcCartClickTrashBin()
         }
@@ -1700,7 +1710,7 @@ class CartRevampFragment :
                     backButtonClickListener = ::onBackPressed
                 )
                 setIcon(
-                    IconBuilder(IconBuilderFlag(pageSource = CART_PAGE)).addIcon(
+                    IconBuilder(IconBuilderFlag(pageSource = NavSource.CART)).addIcon(
                         iconId = IconList.ID_NAV_ANIMATED_WISHLIST,
                         disableDefaultGtmTracker = true,
                         onClick = ::onNavigationToolbarWishlistClicked
@@ -1864,6 +1874,7 @@ class CartRevampFragment :
                         event.animatedWishlistImage
                     )
                 }
+
                 is AddToWishlistV2Event.Failed -> {
                     showToastMessageRed(event.throwable)
                 }
@@ -1979,6 +1990,7 @@ class CartRevampFragment :
                         viewModel.processUpdateCartCounter()
                     }
                 }
+
                 is DeleteCartEvent.Failed -> {
                     event.apply {
                         if (forceExpandCollapsedUnavailableItems) {
@@ -2170,6 +2182,7 @@ class CartRevampFragment :
                     hideProgressLoading()
                     onUndoDeleteCartDataSuccess()
                 }
+
                 is UndoDeleteEvent.Failed -> {
                     hideProgressLoading()
                     showToastMessageRed(event.throwable)
@@ -2184,6 +2197,7 @@ class CartRevampFragment :
                 is UpdateCartAndGetLastApplyEvent.Success -> {
                     updatePromoCheckoutStickyButton(data.promoUiModel)
                 }
+
                 is UpdateCartAndGetLastApplyEvent.Failed -> {
                     if (data.throwable is AkamaiErrorException) {
                         viewModel.doClearAllPromo()
@@ -2229,10 +2243,15 @@ class CartRevampFragment :
         }
     }
 
-    private fun animateWishlisted(message: String, wishlistIcon: IconUnify, animatedWishlistImage: ImageView) {
+    private fun animateWishlisted(
+        message: String,
+        wishlistIcon: IconUnify,
+        animatedWishlistImage: ImageView
+    ) {
         wishlistIcon.invisible()
         animatedWishlistImage.show()
-        val animation: AnimatedVectorDrawableCompat? = AnimatedVectorDrawableCompat.create(requireContext(), R.drawable.wishlist)
+        val animation: AnimatedVectorDrawableCompat? =
+            AnimatedVectorDrawableCompat.create(requireContext(), R.drawable.wishlist)
         if (animation != null) {
             animatedWishlistImage.background = animation
             animation.start()
@@ -2392,7 +2411,8 @@ class CartRevampFragment :
         if (resultCode == Activity.RESULT_OK) {
             val oldBundleId = data?.getStringExtra(CartFragment.KEY_OLD_BUNDLE_ID) ?: ""
             val newBundleId = data?.getStringExtra(CartFragment.KEY_NEW_BUNLDE_ID) ?: ""
-            val isChangeVariant = data?.getBooleanExtra(CartFragment.KEY_IS_CHANGE_VARIANT, false) ?: false
+            val isChangeVariant =
+                data?.getBooleanExtra(CartFragment.KEY_IS_CHANGE_VARIANT, false) ?: false
             val toBeDeletedBundleGroupId = viewModel.cartModel.toBeDeletedBundleGroupId
             if (((oldBundleId.isNotBlank() && newBundleId.isNotBlank() && oldBundleId != newBundleId) || isChangeVariant) && toBeDeletedBundleGroupId.isNotEmpty()) {
                 val cartItems =
@@ -3785,7 +3805,10 @@ class CartRevampFragment :
 
     fun updateCartShopGroupTicker(cartGroupHolderData: CartGroupHolderData) {
         // TODO: change logic
-        val (index, groupData) = cartAdapter.getCartGroupHolderDataAndIndexByCartString(cartGroupHolderData.cartString, cartGroupHolderData.isError)
+        val (index, groupData) = cartAdapter.getCartGroupHolderDataAndIndexByCartString(
+            cartGroupHolderData.cartString,
+            cartGroupHolderData.isError
+        )
         if (index >= 0) {
             onNeedToUpdateViewItem(index + groupData.lastIndex)
         }

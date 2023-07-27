@@ -34,5 +34,8 @@ class CartSelectedAmountViewHolder(
             binding.root.resources.getString(R.string.cart_label_selected_amount),
             data.selectedAmount
         )
+        binding.textActionDelete.setOnClickListener {
+            listener?.onGlobalDeleteClicked()
+        }
     }
 }

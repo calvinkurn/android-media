@@ -6,10 +6,10 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.cart.databinding.HolderItemCartTickerErrorBinding
 import com.tokopedia.cart.databinding.ItemCartChooseAddressBinding
-import com.tokopedia.cart.databinding.ItemCartDisabledAccordionBinding
+import com.tokopedia.cart.databinding.ItemCartDisabledAccordionRevampBinding
 import com.tokopedia.cart.databinding.ItemCartDisabledCollapsedBinding
 import com.tokopedia.cart.databinding.ItemCartDisabledHeaderRevampBinding
-import com.tokopedia.cart.databinding.ItemCartDisabledReasonBinding
+import com.tokopedia.cart.databinding.ItemCartDisabledReasonRevampBinding
 import com.tokopedia.cart.databinding.ItemCartProductRevampBinding
 import com.tokopedia.cart.databinding.ItemCartRecentViewBinding
 import com.tokopedia.cart.databinding.ItemCartRecommendationBinding
@@ -305,7 +305,7 @@ class CartAdapter constructor(
             }
 
             DisabledReasonViewHolder.LAYOUT -> {
-                val binding = ItemCartDisabledReasonBinding.inflate(
+                val binding = ItemCartDisabledReasonRevampBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
                     false
@@ -314,7 +314,7 @@ class CartAdapter constructor(
             }
 
             DisabledAccordionViewHolder.LAYOUT -> {
-                val binding = ItemCartDisabledAccordionBinding.inflate(
+                val binding = ItemCartDisabledAccordionRevampBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
                     false
@@ -423,8 +423,7 @@ class CartAdapter constructor(
 
             DisabledItemHeaderViewHolder.LAYOUT -> {
                 val data = cartDataList[position] as DisabledItemHeaderHolderData
-                val dataBelowItemHeader = cartDataList.getOrNull(position + 1)
-                (holder as DisabledItemHeaderViewHolder).bind(data, dataBelowItemHeader !is DisabledCollapsedHolderData)
+                (holder as DisabledItemHeaderViewHolder).bind(data)
             }
 
             DisabledReasonViewHolder.LAYOUT -> {

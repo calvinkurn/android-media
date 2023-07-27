@@ -1,8 +1,10 @@
 package com.tokopedia.cartrevamp.view.decorator
 
 import android.content.Context
+import android.graphics.Canvas
 import android.graphics.Rect
 import android.view.View
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.cartrevamp.view.viewholder.CartChooseAddressViewHolder
 import com.tokopedia.cartrevamp.view.viewholder.CartGroupViewHolder
@@ -12,6 +14,7 @@ import com.tokopedia.cartrevamp.view.viewholder.CartTickerErrorViewHolder
 import com.tokopedia.cartrevamp.view.viewholder.DisabledAccordionViewHolder
 import com.tokopedia.cartrevamp.view.viewholder.DisabledItemHeaderViewHolder
 import com.tokopedia.cartrevamp.view.viewholder.DisabledReasonViewHolder
+import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.purchase_platform.common.feature.sellercashback.ShipmentSellerCashbackViewHolder
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementViewHolder
 import javax.inject.Inject
@@ -24,6 +27,10 @@ class CartItemDecoration @Inject constructor() : RecyclerView.ItemDecoration() {
 
     private var verticalSpaceHeight: Int = 0
     private var context: Context? = null
+
+    companion object {
+        private const val DEFAULT_DIVIDER_HEIGHT = 1
+    }
 
     override fun getItemOffsets(
         outRect: Rect,
@@ -63,62 +70,64 @@ class CartItemDecoration @Inject constructor() : RecyclerView.ItemDecoration() {
                     context?.resources?.getDimension(com.tokopedia.abstraction.R.dimen.dp_6)?.toInt()
                         ?: 0
 
-            is CartGroupViewHolder -> {
-                try {
-                    if (parent.adapter?.getItemViewType(viewHolder.absoluteAdapterPosition - 1) == DisabledReasonViewHolder.LAYOUT) {
-                        outRect.top = verticalSpaceHeight
-                    } else if (parent.adapter?.getItemViewType(viewHolder.absoluteAdapterPosition - 1) == CartItemViewHolder.TYPE_VIEW_ITEM_CART) {
-                        outRect.top = (context?.resources?.getDimension(com.tokopedia.abstraction.R.dimen.dp_6)?.toInt() ?: 0) + verticalSpaceHeight
-                    } else {
-                        outRect.top =
-                            context?.resources?.getDimension(com.tokopedia.abstraction.R.dimen.dp_6)
-                                ?.toInt() ?: 0
-                    }
-//                    outRect.bottom = verticalSpaceHeight
-                } catch (e: Exception) {
-                    // No-op
-                }
-            }
+//            is CartGroupViewHolder -> {
+//                try {
+//                    if (parent.adapter?.getItemViewType(viewHolder.absoluteAdapterPosition - 1) == DisabledReasonViewHolder.LAYOUT) {
+//                        outRect.top = verticalSpaceHeight
+//                    } else if (parent.adapter?.getItemViewType(viewHolder.absoluteAdapterPosition - 1) == CartItemViewHolder.TYPE_VIEW_ITEM_CART) {
+//                        outRect.top = (context?.resources?.getDimension(com.tokopedia.abstraction.R.dimen.dp_6)?.toInt() ?: 0) + verticalSpaceHeight
+//                    } else {
+//                        outRect.top =
+//                            context?.resources?.getDimension(com.tokopedia.abstraction.R.dimen.dp_6)
+//                                ?.toInt() ?: 0
+//                    }
+////                    outRect.bottom = verticalSpaceHeight
+//                } catch (e: Exception) {
+//                    // No-op
+//                }
+//            }
 
             is CartSectionHeaderViewHolder ->
                 outRect.top =
-                    context?.resources?.getDimension(com.tokopedia.abstraction.R.dimen.dp_6)?.toInt()
+                    context?.resources?.getDimension(com.tokopedia.abstraction.R.dimen.dp_8)?.toInt()
                         ?: 0
 
             is ShipmentSellerCashbackViewHolder ->
                 outRect.top =
-                    context?.resources?.getDimension(com.tokopedia.abstraction.R.dimen.dp_6)?.toInt()
+                    context?.resources?.getDimension(com.tokopedia.abstraction.R.dimen.dp_8)?.toInt()
                         ?: 0
 
-            is DisabledReasonViewHolder -> {
-                try {
-                    if (parent.adapter?.getItemViewType(viewHolder.absoluteAdapterPosition - 1) == DisabledItemHeaderViewHolder.LAYOUT) {
-                        outRect.top = verticalSpaceHeight
-                    } else {
-                        outRect.top =
-                            context?.resources?.getDimension(com.tokopedia.abstraction.R.dimen.dp_6)
-                                ?.toInt() ?: 0
-                    }
-                    outRect.bottom = verticalSpaceHeight
-                } catch (e: Exception) {
-                    // No-op
-                }
-            }
+//            is DisabledReasonViewHolder -> {
+//                try {
+//                    if (parent.adapter?.getItemViewType(viewHolder.absoluteAdapterPosition - 1) == DisabledItemHeaderViewHolder.LAYOUT) {
+//                        outRect.top = verticalSpaceHeight
+//                    } else {
+//                        outRect.top =
+//                            context?.resources?.getDimension(com.tokopedia.abstraction.R.dimen.dp_6)
+//                                ?.toInt() ?: 0
+//                    }
+//                    outRect.bottom = verticalSpaceHeight
+//                } catch (e: Exception) {
+//                    // No-op
+//                }
+//            }
 
             is DisabledItemHeaderViewHolder -> {
                 outRect.top =
-                    context?.resources?.getDimension(com.tokopedia.abstraction.R.dimen.dp_6)
+                    context?.resources?.getDimension(com.tokopedia.abstraction.R.dimen.dp_8)
                         ?.toInt() ?: 0
                 outRect.bottom = verticalSpaceHeight
             }
 
             is DisabledAccordionViewHolder -> {
-                outRect.top =
-                    context?.resources?.getDimension(com.tokopedia.abstraction.R.dimen.dp_6)
-                        ?.toInt() ?: 0
+                outRect.top = verticalSpaceHeight
             }
 
             else -> outRect.bottom = verticalSpaceHeight
         }
+    }
+
+    override fun onDraw(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
+        super.onDraw(c, parent, state)
     }
 }

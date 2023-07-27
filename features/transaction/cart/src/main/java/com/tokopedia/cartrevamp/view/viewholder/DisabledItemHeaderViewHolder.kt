@@ -11,7 +11,6 @@ import com.tokopedia.kotlin.extensions.view.visible
 /**
  * Created by Irfan Khoirul on 2019-10-16.
  */
-
 class DisabledItemHeaderViewHolder(
     private val binding: ItemCartDisabledHeaderRevampBinding,
     val actionListener: ActionListener?
@@ -22,8 +21,7 @@ class DisabledItemHeaderViewHolder(
     }
 
     fun bind(
-        data: DisabledItemHeaderHolderData,
-        isDividerShown: Boolean = false,
+        data: DisabledItemHeaderHolderData
     ) {
         val disabledLabelText = String.format(
             itemView.context.getString(R.string.label_delete_with_amount),
@@ -34,7 +32,7 @@ class DisabledItemHeaderViewHolder(
         binding.textDelete.text = disabledLabelText
         binding.textDelete.setOnClickListener { actionListener?.onDeleteAllDisabledProduct() }
 
-        if (isDividerShown) {
+        if (data.isDividerShown) {
             binding.headerDivider.visible()
         } else {
             binding.headerDivider.gone()
