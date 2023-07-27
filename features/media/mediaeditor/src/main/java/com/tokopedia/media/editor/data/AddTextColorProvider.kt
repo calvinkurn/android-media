@@ -24,7 +24,7 @@ interface AddTextColorProvider{
 }
 
 class AddTextColorProviderImpl @Inject constructor(
-    @ApplicationContext val context: Context
+    val context: Context
 ): AddTextColorProvider {
     private val black2 = ContextCompat.getColor(context, editorR.color.dms_editor_add_text_black)
     private val white2 = ContextCompat.getColor(context, editorR.color.dms_editor_add_text_white)
