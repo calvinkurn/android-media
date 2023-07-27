@@ -251,7 +251,6 @@ class CheckoutViewModel @Inject constructor(
 
                 val cost = CheckoutCostModel()
 
-                val crossSellGroup = CheckoutCrossSellGroupModel()
                 val crossSellList = arrayListOf<CheckoutCrossSellItem>()
                 crossSellList.addAll(
                     saf.cartShipmentAddressFormData.crossSell.mapIndexed { index, crossSellModel ->
@@ -266,9 +265,10 @@ class CheckoutViewModel @Inject constructor(
                 if (saf.cartShipmentAddressFormData.egoldAttributes != null) {
                     crossSellList.add(CheckoutEgoldModel(saf.cartShipmentAddressFormData.egoldAttributes!!))
                 }
-                if (saf.cartShipmentAddressFormData.donation != null) {
+                if (saf.cartShipmentAddressFormData.donation != null && saf.cartShipmentAddressFormData.donation!!.title.isNotEmpty() && saf.cartShipmentAddressFormData.donation!!.nominal != 0) {
                     crossSellList.add(CheckoutDonationModel(saf.cartShipmentAddressFormData.donation!!))
                 }
+                val crossSellGroup = CheckoutCrossSellGroupModel(crossSellList = crossSellList)
 
                 val buttonPayment = CheckoutButtonPaymentModel("")
 
@@ -881,9 +881,34 @@ class CheckoutViewModel @Inject constructor(
         }
     }
 
+    fun updateEgold(checked: Boolean) {
+        val checkoutItems = listData.value.toMutableList()
+        val crossSellGroup = checkoutItems.crossSellGroup()!!
+        val newList: MutableList<CheckoutCrossSellItem> = arrayListOf()
+        for (checkoutCrossSellItem in crossSellGroup.crossSellList) {
+            if (checkoutCrossSellItem is CheckoutEgoldModel) {
+                newList.add(checkoutCrossSellItem.copy(
+                    egoldAttributeModel = checkoutCrossSellItem.egoldAttributeModel.copy(isChecked = checked)
+                )
+            }
+        }
+        val egold =
+            crossSellGroup.crossSellList.firstOrNullInstanceOf(CheckoutEgoldModel::class.java)!!
+        egold.copy(
+            egoldAttributeModel = egold.egoldAttributeModel.copy(isChecked = checked)
+        )
+        checkoutItems[checkoutItems.size - 2] =
+    }
+
     companion object {
         const val PLATFORM_FEE_CODE = "platform_fee"
     }
+}
+
+internal fun <R> List<CheckoutCrossSellItem>.firstOrNullInstanceOf(kClass: Class<R>): R? {
+    val item = firstOrNull { kClass.isInstance(it) }
+    @Suppress("UNCHECKED_CAST")
+    return item as? R
 }
 
 internal fun <R> List<CheckoutItem>.firstOrNullInstanceOf(kClass: Class<R>): R? {

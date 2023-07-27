@@ -24,6 +24,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.checkout.R
+import com.tokopedia.checkout.analytics.CheckoutEgoldAnalytics
 import com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics
 import com.tokopedia.checkout.analytics.CornerAnalytics
 import com.tokopedia.checkout.databinding.BottomSheetPlatformFeeInfoBinding
@@ -152,6 +153,9 @@ class CheckoutFragment :
 
     @Inject
     lateinit var checkoutTradeInAnalytics: CheckoutTradeInAnalytics
+
+    @Inject
+    lateinit var checkoutEgoldAnalytics: CheckoutEgoldAnalytics
 
     @Inject
     lateinit var shippingCourierConverter: ShippingCourierConverter
@@ -1577,6 +1581,15 @@ class CheckoutFragment :
             CurrencyFormatUtil.convertPriceValueToIdrFormat(platformFeeModel.fee.toLong(), false)
                 .removeDecimalSuffix()
         )
+    }
+
+    override fun onEgoldChecked(checked: Boolean) {
+        viewModel.updateEgold(checked)
+//        shipmentAdapter.checkHasSelectAllCourier(true, -1, "", false, false)
+        checkoutEgoldAnalytics.eventClickEgoldRoundup(checked)
+        if (isTradeIn) {
+            checkoutTradeInAnalytics.eventTradeInClickEgoldOption(viewModel.isTradeInByDropOff, checked)
+        }
     }
 
     override fun onInsuranceTncClicked() {

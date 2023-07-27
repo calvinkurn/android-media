@@ -58,6 +58,8 @@ interface CheckoutAdapterListener {
 
     fun showPlatformFeeTooltipInfoBottomSheet(platformFeeModel: ShipmentPaymentFeeModel)
 
+    fun onEgoldChecked(checked: Boolean)
+
     fun onInsuranceTncClicked()
 
     fun onProcessToPayment()
