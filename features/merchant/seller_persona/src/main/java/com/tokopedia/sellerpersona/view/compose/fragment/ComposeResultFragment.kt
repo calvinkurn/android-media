@@ -80,7 +80,7 @@ class ComposeResultFragment : Fragment() {
             setContent {
 
                 LaunchedEffect(key1 = Unit, block = {
-                    viewModel.fetchPersonaData(getResultArguments())
+                    viewModel.fetchPersonaData(args = getResultArguments())
 
                     viewModel.uiEvent.collectLatest {
                         when (it) {

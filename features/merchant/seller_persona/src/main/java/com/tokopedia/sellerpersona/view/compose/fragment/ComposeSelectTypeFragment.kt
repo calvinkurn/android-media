@@ -50,7 +50,7 @@ class ComposeSelectTypeFragment : Fragment() {
         return ComposeView(inflater.context).apply {
             setContent {
                 LaunchedEffect(key1 = Unit, block = {
-                    viewModel.fetchPersonaList(getSelectTypeArguments())
+                    viewModel.fetchPersonaList(args = getSelectTypeArguments())
 
                     viewModel.uiEvent.collectLatest {
                         when (it) {
