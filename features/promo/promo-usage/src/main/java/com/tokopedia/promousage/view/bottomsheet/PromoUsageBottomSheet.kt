@@ -125,6 +125,7 @@ class PromoUsageBottomSheet: BottomSheetDialogFragment() {
         setupRecyclerView()
         observeVouchers()
         observeSelectedVouchers()
+        observeValidatedVoucher()
         viewModel.getVouchers()
     }
 
@@ -163,6 +164,19 @@ class PromoUsageBottomSheet: BottomSheetDialogFragment() {
             val totalBenefits = selectedVouchers.sumOf { it.benefitAmount }
             refreshTotalSavings(selectedVouchers, totalBenefits)
             refreshTotalPrice(originalTotalPrice, totalBenefits)
+        }
+    }
+
+    private fun observeValidatedVoucher() {
+        viewModel.validatedVoucher.observe(viewLifecycleOwner) { result ->
+            when (result) {
+                is Success -> {
+
+                }
+                is Fail -> {
+                    //TODO display toaster if voucher code is not found / invalid
+                }
+            }
         }
     }
 

@@ -38,6 +38,9 @@ class PromoUsageViewModel @Inject constructor(
     val selectedVouchers: LiveData<Set<Voucher>>
         get() = _selectedVouchers
 
+    private val _validatedVoucher = MutableLiveData<Result<Voucher>>()
+    val validatedVoucher: LiveData<Result<Voucher>>
+        get() = _validatedVoucher
 
     fun getVouchers() {
         launchCatchError(
@@ -224,7 +227,7 @@ class PromoUsageViewModel @Inject constructor(
                 //TODO implement gql call to validate voucher code
                 val validatedVoucher = Voucher(
                     181,
-                    100_000,
+                    200_000,
                     "From user input voucher code",
                     "2 hari",
                     "https://images.tokopedia.net/img/android/promo/ic_voucher_cashback/ic_voucher_cashback.png",
@@ -247,10 +250,18 @@ class PromoUsageViewModel @Inject constructor(
                     }
                 }
 
+                val isAlreadyInSelection = selectedVouchersSet.any { voucher -> voucher.id == validatedVoucher.id }
+                if (!isAlreadyInSelection) {
+                    selectedVouchersSet.add(validatedVoucher)
+                }
+
+                _selectedVouchers.postValue(selectedVouchersSet)
                 _vouchers.postValue(Success(updatedItems))
+
+                _validatedVoucher.postValue(Success(validatedVoucher))
             },
             onError = { throwable ->
-                _vouchers.postValue(Fail(throwable))
+                _validatedVoucher.postValue(Fail(throwable))
             }
         )
     }

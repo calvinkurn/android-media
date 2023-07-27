@@ -7,5 +7,5 @@ data class VoucherCode(
     val errorMessage: String,
     val voucher: Voucher? = null
 ) : DelegateAdapterItem {
-    override fun id() = errorMessage
+    override fun id() = userInputVoucherCode
 }
