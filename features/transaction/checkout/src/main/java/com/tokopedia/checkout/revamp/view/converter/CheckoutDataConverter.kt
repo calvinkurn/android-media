@@ -168,10 +168,10 @@ class CheckoutDataConverter @Inject constructor() {
         val groupShopList = cartShipmentAddressFormData.groupAddress[0].groupShop
         var isFirstPlusProductHasPassed = false
         for ((groupShopIndex, groupShop) in groupShopList.withIndex()) {
-            var orderIndex = 0
-            if (groupShopList.size > 1) {
-                orderIndex = groupShopIndex + 1
-            }
+//            var orderIndex = 0
+//            if (groupShopList.size > 1) {
+//                orderIndex = groupShopIndex + 1
+//            }
             val shipmentInformationData = groupShop.shipmentInformationData
             val shop = groupShop.groupShopData.first().shop
             var receiverName = ""
@@ -183,6 +183,7 @@ class CheckoutDataConverter @Inject constructor() {
             var cartItemIndex = 0
             groupShop.groupShopData.forEach {
                 val productList = convertFromProductList(
+                    groupShopIndex + 1,
                     cartItemIndex,
                     it,
                     groupShop,
@@ -224,7 +225,7 @@ class CheckoutDataConverter @Inject constructor() {
                 unblockingErrorMessage = groupShop.unblockingErrorMessage,
                 errorTitle = groupShop.errorMessage,
                 firstProductErrorIndex = groupShop.firstProductErrorIndex,
-                orderNumber = if (orderIndex > 0) orderIndex else 0,
+                orderNumber = groupShopIndex + 1,
                 preOrderInfo = if (shipmentInformationData.preorder.isPreorder) shipmentInformationData.preorder.duration else "",
                 freeShippingBadgeUrl = shipmentInformationData.freeShippingGeneral.badgeUrl,
                 isFreeShippingPlus = shipmentInformationData.freeShippingGeneral.isBoTypePlus(),
@@ -398,6 +399,7 @@ class CheckoutDataConverter @Inject constructor() {
     }
 
     private fun convertFromProductList(
+        groupShopIndex: Int,
         index: Int,
         groupShopV2: GroupShopV2,
         groupShop: GroupShop,
@@ -408,6 +410,7 @@ class CheckoutDataConverter @Inject constructor() {
         var counterIndex = index
         return groupShopV2.products.map { product ->
             val cartItem = convertFromProduct(
+                groupShopIndex,
                 counterIndex,
                 product,
                 groupShop,
@@ -422,6 +425,7 @@ class CheckoutDataConverter @Inject constructor() {
     }
 
     private fun convertFromProduct(
+        groupShopIndex: Int,
         index: Int,
         product: Product,
         groupShop: GroupShop,
@@ -513,6 +517,7 @@ class CheckoutDataConverter @Inject constructor() {
             groupInfoBadgeUrl = groupShop.groupInfoBadgeUrl,
             groupInfoDescription = groupShop.groupInfoDescription,
             groupInfoDescriptionBadgeUrl = groupShop.groupInfoDescriptionBadgeUrl,
+            orderNumber = groupShopIndex,
             groupPreOrderInfo = if (groupShop.shipmentInformationData.preorder.isPreorder) groupShop.shipmentInformationData.preorder.duration else "",
             freeShippingBadgeUrl = groupShop.shipmentInformationData.freeShippingGeneral.badgeUrl,
             isFreeShippingPlus = groupShop.shipmentInformationData.freeShippingGeneral.isBoTypePlus(),
