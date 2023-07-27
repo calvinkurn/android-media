@@ -1,5 +1,6 @@
 package com.tokopedia.flight.booking.presentation.adapter
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -48,24 +49,28 @@ class FlightBookingPriceAdapter(
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun updateRoutePriceList(list: List<FlightPriceDetailEntity>) {
         this.routePriceList = list
         countTotalPrice()
         notifyDataSetChanged()
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun updateOthersPriceList(list: List<FlightPriceDetailEntity>) {
         this.othersPriceList = list
         countTotalPrice()
         notifyDataSetChanged()
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun updateAmenityPriceList(list: List<FlightPriceDetailEntity>) {
         this.amenityPriceList = list
         countTotalPrice()
         notifyDataSetChanged()
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun updateAdminFeePriceList(list: List<FlightPriceDetailEntity>) {
         this.adminPriceList = list
         countTotalPrice()

@@ -75,6 +75,7 @@ class FlightBookingMapper {
                     item.departureTime.toDate(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z)
                         .toString(DateUtil.EEE_DD_MMM_YY)
                 departureDateString += String.format(
+                    Locale.getDefault(),
                     " • %s-%s",
                     item.departureTime.toDate(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z)
                         .toString(DateUtil.HH_MM),
@@ -83,6 +84,7 @@ class FlightBookingMapper {
                 )
                 if (item.addDayArrival > 0) {
                     departureDateString += String.format(
+                        Locale.getDefault(),
                         " (+%d hari)",
                         item.addDayArrival
                     )
@@ -91,6 +93,7 @@ class FlightBookingMapper {
                 newJourney.journeyId = item.id
                 newJourney.airline = airlineName
                 newJourney.routeName = String.format(
+                    Locale.getDefault(),
                     "%s (%s) → %s (%s)",
                     departureCityName,
                     item.departureAirportId,
@@ -164,7 +167,7 @@ class FlightBookingMapper {
                 val viewModel = FlightBookingPassengerModel()
                 viewModel.passengerLocalId = passengerNumber
                 viewModel.type = FlightBookingPassenger.ADULT.value
-                viewModel.headerTitle = String.format("Penumpang dewasa")
+                viewModel.headerTitle = String.format(Locale.getDefault(), "Penumpang dewasa")
                 viewModel.flightBookingLuggageMetaViewModels = arrayListOf()
                 viewModel.flightBookingMealMetaViewModels = arrayListOf()
                 viewModels.add(viewModel)
@@ -176,7 +179,7 @@ class FlightBookingMapper {
                     val viewModel = FlightBookingPassengerModel()
                     viewModel.passengerLocalId = passengerNumber
                     viewModel.type = FlightBookingPassenger.CHILDREN.value
-                    viewModel.headerTitle = String.format("Penumpang anak")
+                    viewModel.headerTitle = String.format(Locale.getDefault(), "Penumpang anak")
                     viewModel.flightBookingLuggageMetaViewModels = arrayListOf()
                     viewModel.flightBookingMealMetaViewModels = arrayListOf()
                     viewModels.add(viewModel)
@@ -189,7 +192,7 @@ class FlightBookingMapper {
                     val viewModel = FlightBookingPassengerModel()
                     viewModel.passengerLocalId = passengerNumber
                     viewModel.type = FlightBookingPassenger.INFANT.value
-                    viewModel.headerTitle = String.format("Penumpang bayi")
+                    viewModel.headerTitle = String.format(Locale.getDefault(), "Penumpang bayi")
                     viewModel.flightBookingLuggageMetaViewModels = arrayListOf()
                     viewModel.flightBookingMealMetaViewModels = arrayListOf()
                     viewModels.add(viewModel)
