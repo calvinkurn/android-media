@@ -2366,14 +2366,20 @@ class ShipmentViewModel @Inject constructor(
     }
 
     fun validateClearAllBoPromo() {
-        if (lastValidateUseRequest != null) {
+        val validateUseRequest = lastValidateUseRequest
+        if (validateUseRequest != null) {
             for (shipmentCartItemModel in shipmentCartItemModelList) {
                 if (shipmentCartItemModel is ShipmentCartItemModel && shipmentCartItemModel.voucherLogisticItemUiModel != null) {
-                    doUnapplyBo(
-                        shipmentCartItemModel.cartStringGroup,
-                        shipmentCartItemModel.voucherLogisticItemUiModel!!.uniqueId,
-                        shipmentCartItemModel.voucherLogisticItemUiModel!!.code
-                    )
+                    for (order in validateUseRequest.orders) {
+                        if (order.cartStringGroup == shipmentCartItemModel.cartStringGroup && order.codes.isEmpty()) {
+                            doUnapplyBo(
+                                shipmentCartItemModel.cartStringGroup,
+                                shipmentCartItemModel.voucherLogisticItemUiModel!!.uniqueId,
+                                shipmentCartItemModel.voucherLogisticItemUiModel!!.code
+                            )
+                            break
+                        }
+                    }
                 }
             }
         }
