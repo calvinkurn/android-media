@@ -79,7 +79,7 @@ class PromoUsageBottomSheet: BottomSheetDialogFragment() {
             .add(VoucherRecommendationDelegateAdapter(onVoucherClick, onButtonUseRecommendedVoucherClick))
             .add(VoucherAccordionDelegateAdapter(onVoucherAccordionClick, onVoucherClick, onHyperlinkClick, onViewAllVoucherCtaClick))
             .add(TermAndConditionDelegateAdapter(onTermAndConditionHyperlinkClick))
-            .add(VoucherCodeDelegateAdapter(onApplyVoucherCodeCtaClick, onVoucherCodeClearIconClick, onVoucherCodeTextFieldClick))
+            .add(VoucherCodeDelegateAdapter(onApplyVoucherCodeCtaClick, onVoucherCodeClearIconClick))
             .build()
     }
 
@@ -140,6 +140,20 @@ class PromoUsageBottomSheet: BottomSheetDialogFragment() {
         viewModel.getVouchers()
     }
 
+    private fun setupView() {
+        binding?.run {
+            tpgTotalPrice.text = originalTotalPrice.splitByThousand()
+            buttonBuy.setOnClickListener {
+                viewModel.onButtonBuyClick(entryPoint)
+                dismiss()
+            }
+
+            buttonBackToShipment.setOnClickListener {
+                viewModel.onButtonBackToShipmentClick()
+                dismiss()
+            }
+        }
+    }
 
     private fun applyBottomSheetMaxHeightRule() {
         val frameDialogView = binding?.bottomSheetWrapper?.parent as View
@@ -155,24 +169,6 @@ class PromoUsageBottomSheet: BottomSheetDialogFragment() {
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
     }
 
-    private fun listenKeyboardVisibility() {
-        activity?.let { activity ->
-            ViewCompat.setOnApplyWindowInsetsListener(activity.window.decorView) { v: View?, insets: WindowInsetsCompat ->
-                val isKeyboardVisible = insets.isVisible(WindowInsetsCompat.Type.ime())
-                val keyboardHeight = insets.getInsets(WindowInsetsCompat.Type.ime()).bottom
-
-                if (isKeyboardVisible) {
-                    val itemCount = recyclerViewAdapter.itemCount
-                    binding?.recyclerView?.smoothScrollToPosition(itemCount)
-                    binding?.recyclerView?.setPadding(0,0,0, keyboardHeight.toDp())
-                } else {
-                    binding?.recyclerView?.setPadding(0,0,0,0)
-                }
-
-                insets
-            }
-        }
-    }
     private fun observeVouchers() {
         viewModel.vouchers.observe(viewLifecycleOwner) { result ->
             when (result) {
@@ -187,21 +183,6 @@ class PromoUsageBottomSheet: BottomSheetDialogFragment() {
                     hideContent()
                 }
             }
-        }
-    }
-
-    private fun handlePromoRecommendationInfo() {
-        val showRecommendationInfoOverlay = false
-
-        binding?.layoutBottomSheetOverlay?.isVisible = showRecommendationInfoOverlay
-
-        if (!showRecommendationInfoOverlay) {
-
-            val layoutParams = binding?.layoutBottomSheetHeader?.layoutParams as? RelativeLayout.LayoutParams
-            layoutParams?.setMargins(0,0,0,0)
-
-            binding?.layoutBottomSheetHeader?.layoutParams = layoutParams
-            binding?.layoutBottomSheetHeader?.requestLayout()
         }
     }
 
@@ -227,18 +208,48 @@ class PromoUsageBottomSheet: BottomSheetDialogFragment() {
         }
     }
 
-    private fun setupView() {
-        binding?.run {
-            tpgTotalPrice.text = originalTotalPrice.splitByThousand()
-            buttonBuy.setOnClickListener {
-                viewModel.onButtonBuyClick(entryPoint)
-                dismiss()
-            }
+    private fun listenKeyboardVisibility() {
+        activity?.let { activity ->
+            ViewCompat.setOnApplyWindowInsetsListener(activity.window.decorView) { _: View?, insets: WindowInsetsCompat ->
+                val isKeyboardVisible = insets.isVisible(WindowInsetsCompat.Type.ime())
+                val keyboardHeight = insets.getInsets(WindowInsetsCompat.Type.ime()).bottom
 
-            buttonBackToShipment.setOnClickListener {
-                viewModel.onButtonBackToShipmentClick()
-                dismiss()
+                if (isKeyboardVisible) {
+                    //isKeyboardVisible means user tap voucher code text field
+                    scrollToVoucherCodeTextField(keyboardHeight)
+                } else {
+                    resetFocusFromVoucherCodeTextField()
+                }
+
+                insets
             }
+        }
+    }
+
+    private fun scrollToVoucherCodeTextField(keyboardHeight: Int) {
+        val itemCount = recyclerViewAdapter.itemCount
+        binding?.recyclerView?.smoothScrollToPosition(itemCount)
+
+        //Add padding to make voucher code text field displayed above keyboard
+        binding?.recyclerView?.setPadding(0,0,0, keyboardHeight.toDp())
+    }
+
+    private fun resetFocusFromVoucherCodeTextField() {
+        binding?.recyclerView?.setPadding(0,0,0,0)
+    }
+
+    private fun handlePromoRecommendationInfo() {
+        val showRecommendationInfoOverlay = false
+
+        binding?.layoutBottomSheetOverlay?.isVisible = showRecommendationInfoOverlay
+
+        if (!showRecommendationInfoOverlay) {
+
+            val layoutParams = binding?.layoutBottomSheetHeader?.layoutParams as? RelativeLayout.LayoutParams
+            layoutParams?.setMargins(0,0,0,0)
+
+            binding?.layoutBottomSheetHeader?.layoutParams = layoutParams
+            binding?.layoutBottomSheetHeader?.requestLayout()
         }
     }
 
@@ -436,9 +447,6 @@ class PromoUsageBottomSheet: BottomSheetDialogFragment() {
     }
 
     private val onVoucherCodeClearIconClick = { viewModel.onVoucherCodeClearIconClick() }
-    private val onVoucherCodeTextFieldClick : () -> Unit  = {
-
-    }
     private val onTermAndConditionHyperlinkClick = { showTermAndConditionBottomSheet() }
 
     private fun showLottieConfettiAnimation() {
