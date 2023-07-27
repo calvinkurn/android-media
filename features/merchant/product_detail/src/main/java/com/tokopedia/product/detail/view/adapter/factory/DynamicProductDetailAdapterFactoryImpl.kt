@@ -18,6 +18,7 @@ import com.tokopedia.product.detail.data.model.datamodel.OngoingCampaignDataMode
 import com.tokopedia.product.detail.data.model.datamodel.PageErrorDataModel
 import com.tokopedia.product.detail.data.model.datamodel.PdpComparisonWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.PdpRecommendationWidgetDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductBMGMDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductBundlingDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductCategoryCarouselDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductContentDataModel
@@ -59,6 +60,7 @@ import com.tokopedia.product.detail.view.viewholder.PageErrorViewHolder
 import com.tokopedia.product.detail.view.viewholder.PdpComparisonWidgetViewHolder
 import com.tokopedia.product.detail.view.viewholder.PdpRecommendationWidgetViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductArViewHolder
+import com.tokopedia.product.detail.view.viewholder.ProductBMGMViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductBundlingViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductCategoryCarouselViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductContentViewHolder
@@ -262,6 +264,10 @@ class DynamicProductDetailAdapterFactoryImpl(
         return OngoingCampaignViewHolder.LAYOUT
     }
 
+    override fun type(data: ProductBMGMDataModel): Int {
+        return ProductBMGMViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
             FintechWidgetViewHolder.LAYOUT -> FintechWidgetViewHolder(view, listener)
@@ -365,6 +371,7 @@ class DynamicProductDetailAdapterFactoryImpl(
                 listener = listener
             )
             OngoingCampaignViewHolder.LAYOUT -> OngoingCampaignViewHolder(view, listener)
+            ProductBMGMViewHolder.LAYOUT -> ProductBMGMViewHolder(view, listener)
             else -> super.createViewHolder(view, type)
         }
     }
