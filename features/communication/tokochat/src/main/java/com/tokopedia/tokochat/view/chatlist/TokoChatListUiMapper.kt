@@ -9,7 +9,16 @@ import javax.inject.Inject
 
 class TokoChatListUiMapper@Inject constructor() {
 
-    fun mapToChatListItem(conversationsChannel: ConversationsChannel): TokoChatListItemUiModel {
+    fun mapToListChat(listChannel: List<ConversationsChannel>): List<TokoChatListItemUiModel> {
+        val rawResult = listChannel.map {
+            mapToChatListItem(it)
+        }
+        return rawResult.sortedByDescending {
+            it.createAt
+        }
+    }
+
+    private fun mapToChatListItem(conversationsChannel: ConversationsChannel): TokoChatListItemUiModel {
         val orderInfo = conversationsChannel.metadata?.orderInfo
         val lastMessage = conversationsChannel.lastMessage
         return TokoChatListItemUiModel(

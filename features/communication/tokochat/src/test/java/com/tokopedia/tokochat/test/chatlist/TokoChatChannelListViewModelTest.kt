@@ -26,20 +26,21 @@ class TokoChatChannelListViewModelTest : TokoChatListViewModelTestFixture() {
         runBlocking {
             // Given
             val dummyChannelList = getDummyConversationChannelList()
-            every {
-                chatChannelUseCase.getAllCachedChannels(any())
-            } returns flowOf(dummyChannelList)
-            every {
-                mapper.mapToChatListItem(any())
-            } returns TokoChatListItemUiModel(
+            val dummChatList = TokoChatListItemUiModel(
                 "dummyName",
                 "", "", "", "",
                 Long.MAX_VALUE, 0, 0, ""
             )
+            every {
+                chatChannelUseCase.getAllCachedChannels(any())
+            } returns flowOf(dummyChannelList)
+            every {
+                mapper.mapToListChat(any())
+            } returns listOf(dummChatList)
 
             // When
             var result: Result<List<TokoChatListItemUiModel>>? = null
-            viewModel.getChatListFlow().collectLatest {
+            viewModel.getChatListFlow()?.collectLatest {
                 result = it
             }
 
@@ -62,7 +63,7 @@ class TokoChatChannelListViewModelTest : TokoChatListViewModelTestFixture() {
 
             // When
             var result: Result<List<TokoChatListItemUiModel>>? = null
-            viewModel.getChatListFlow().collectLatest {
+            viewModel.getChatListFlow()?.collectLatest {
                 result = it
             }
 
@@ -83,12 +84,12 @@ class TokoChatChannelListViewModelTest : TokoChatListViewModelTestFixture() {
                 chatChannelUseCase.getAllCachedChannels(any())
             } returns flowOf(dummyChannelList)
             every {
-                mapper.mapToChatListItem(any())
+                mapper.mapToListChat(any())
             } throws throwableDummy
 
             // When
             var result: Result<List<TokoChatListItemUiModel>>? = null
-            viewModel.getChatListFlow().collectLatest {
+            viewModel.getChatListFlow()?.collectLatest {
                 result = it
             }
 
@@ -110,7 +111,7 @@ class TokoChatChannelListViewModelTest : TokoChatListViewModelTestFixture() {
 
             // When
             var result: Result<List<TokoChatListItemUiModel>>? = null
-            viewModel.getChatListFlow().collectLatest {
+            viewModel.getChatListFlow()?.collectLatest {
                 result = it
             }
 

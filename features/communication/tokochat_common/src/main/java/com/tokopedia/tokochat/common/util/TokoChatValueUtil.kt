@@ -22,7 +22,7 @@ object TokoChatValueUtil {
             else -> ""
         }
     }
-    const val GOFOOD = " · GoSend"
+    const val GOFOOD = "GoFood"
 
     /**
      * Message status

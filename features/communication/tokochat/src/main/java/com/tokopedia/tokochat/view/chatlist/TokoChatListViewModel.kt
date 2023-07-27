@@ -2,6 +2,7 @@ package com.tokopedia.tokochat.view.chatlist
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.gojek.conversations.babble.channel.data.ChannelType
 import com.gojek.conversations.channel.ConversationsChannel
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
@@ -20,6 +21,7 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.transformLatest
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -40,20 +42,20 @@ class TokoChatListViewModel @Inject constructor(
     fun getChatListFlow(): Flow<Result<List<TokoChatListItemUiModel>>>? {
         return try {
             chatChannelUseCase.getAllCachedChannels(listOf(ChannelType.GroupBooking))
-                ?.onStart {
+                .onStart {
                     setPaginationTimeStamp(0L) // reset
                 }
-                ?.map {
+                .map {
                     filterExpiredChannelAndMap(it)
                 }
-                ?.flowOn(dispatcher.io)
-                ?.transformLatest { value ->
+                .transformLatest { value ->
                     emit(Success(value) as Result<List<TokoChatListItemUiModel>>)
                 }
-                ?.catch {
+                .catch {
                     _error.value = Pair(it, ::getChatListFlow.name)
                     emit(Fail(it))
-            }
+                }
+                .flowOn(dispatcher.io)
         } catch (throwable: Throwable) {
             Timber.d(throwable)
             flow {
@@ -67,27 +69,29 @@ class TokoChatListViewModel @Inject constructor(
         isLoadMore: Boolean,
         onCompleted: (Boolean) -> Unit = {}
     ) {
-        try {
-            chatChannelUseCase.getAllChannel(
-                channelTypes = listOf(ChannelType.GroupBooking),
-                batchSize = getBatchSize(localSize),
-                onSuccess = {
-                    // Set to -1 to mark as no more data
-                    setPaginationTimeStamp(it.lastOrNull()?.createdAt ?: -1)
-                    if (!isLoadMore) {
-                        emitChatListPairData(channelList = it)
+        viewModelScope.launch {
+            try {
+                chatChannelUseCase.getAllChannel(
+                    channelTypes = listOf(ChannelType.GroupBooking),
+                    batchSize = getBatchSize(localSize),
+                    onSuccess = {
+                        // Set to -1 to mark as no more data
+                        setPaginationTimeStamp(it.lastOrNull()?.createdAt ?: -1)
+                        if (!isLoadMore) {
+                            emitChatListPairData(channelList = it)
+                        }
+                        onCompleted(true)
+                    },
+                    onError = {
+                        it?.let { error ->
+                            _error.value = Pair(error, ::loadNextPageChatList.name)
+                        }
+                        onCompleted(false)
                     }
-                    onCompleted(true)
-                },
-                onError = {
-                    it?.let { error ->
-                        _error.value = Pair(error, ::loadNextPageChatList.name)
-                    }
-                    onCompleted(false)
-                }
-            )
-        } catch (throwable: Throwable) {
-            _error.value = Pair(throwable, ::loadNextPageChatList.name)
+                )
+            } catch (throwable: Throwable) {
+                _error.value = Pair(throwable, ::loadNextPageChatList.name)
+            }
         }
     }
 
@@ -113,8 +117,6 @@ class TokoChatListViewModel @Inject constructor(
         val filteredChannel = channelList.filter {
             it.expiresAt > System.currentTimeMillis()
         }
-        return filteredChannel.map {
-            mapper.mapToChatListItem(it)
-        }
+        return mapper.mapToListChat(filteredChannel)
     }
 }
