@@ -22,6 +22,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.Measurable
 import androidx.compose.ui.layout.SubcomposeLayout
@@ -43,6 +44,7 @@ import com.tokopedia.nest.principles.utils.toAnnotatedString
 import com.tokopedia.reviewcommon.feature.reviewer.presentation.widget.review_animated_rating.WidgetReviewAnimatedRating
 import com.tokopedia.reviewcommon.feature.reviewer.presentation.widget.review_animated_rating.WidgetReviewAnimatedRatingConfig
 import com.tokopedia.unifycomponents.HtmlLinkHelper
+import com.tokopedia.unifyorderhistory.R
 import com.tokopedia.unifyorderhistory.data.model.UohListOrder
 import kotlinx.coroutines.delay
 
@@ -124,7 +126,7 @@ private fun DrawContent(
             )
         }
     )
-    val cardBorderColor = NestTheme.colors.NN._50
+    val cardBorderColor = Color(R.color.dms_uoh_order_list_divider_color)
 
     NestCard(
         modifier = modifier.border(1.dp, cardBorderColor, RoundedCornerShape(8.dp)),
