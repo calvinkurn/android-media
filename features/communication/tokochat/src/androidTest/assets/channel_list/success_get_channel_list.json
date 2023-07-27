@@ -1,0 +1,365 @@
+{
+  "data": [
+    {
+      "id": "c3ec1087-a7f0-438d-8e6a-2f55ffa78877",
+      "name": "F-68720643549",
+      "type": "group-booking",
+      "created_by": {
+        "id": "00000000-0000-0000-0000-000000000000",
+        "name": "",
+        "phone": "",
+        "country_code": ""
+      },
+      "members": [
+        {
+          "id": "7b43637f-c332-4b6c-866c-b5922c91e804",
+          "name": "Tokofood Driver 14",
+          "owner_type": "driver",
+          "phone": "82240158006",
+          "country_code": "62",
+          "image_url": "www.picture.com/steve",
+          "unread_message_count": 0,
+          "unread_channel_count": 0,
+          "metadata": {
+            "licence_plate": "X001OAI"
+          }
+        },
+        {
+          "id": "93aa677d-fde6-47ff-a527-5c473f64e13d",
+          "name": "bcsatu",
+          "owner_type": "tokopedia_customer",
+          "phone": "85782377781",
+          "country_code": "62",
+          "image_url": "https://ecs7.tokopedia.net/img/cache/300/default_picture_user/default_toped-17.jpg",
+          "unread_message_count": 0,
+          "unread_channel_count": 0
+        }
+      ],
+      "unread_count": 1,
+      "last_message_sent": {
+        "id": "1893d7ba-b112-4c87-8240-48a4a782cb5d",
+        "channel_id": "c3ec1087-a7f0-438d-8e6a-2f55ffa78877",
+        "text": "Hloo",
+        "data": "{\"tracking_id\":\"9a537bac-2fac-495c-801b-eb28105884d3\"}",
+        "type": "text",
+        "sender": {
+          "id": "7b43637f-c332-4b6c-866c-b5922c91e804",
+          "name": "Tokofood Driver 14",
+          "phone": "82240158006",
+          "country_code": "62"
+        },
+        "sent_at": 1690441670772
+      },
+      "last_read": {
+        "7b43637f-c332-4b6c-866c-b5922c91e804": 1690441671277,
+        "93aa677d-fde6-47ff-a527-5c473f64e13d": 1690441438722
+      },
+      "created_at": 1690347441960,
+      "read_only": true,
+      "metadata": {
+        "order_info": {
+          "chat_type": "driver",
+          "service_type": 5,
+          "id": "F-68720643549",
+          "description_info": "TokoFood Outlet Test 1",
+          "status": "completed",
+          "driver": {
+            "driver_id": "942881876",
+            "driver_name": "Tokofood Driver 14",
+            "driver_phone": "+6282240158006",
+            "display_name": "Driver",
+            "driver_photo": "www.picture.com/steve"
+          },
+          "shopper": null,
+          "chat_window": {
+            "disabled": false
+          },
+          "country_code": "ID"
+        }
+      },
+      "read_mode_starts_at": 1690447698477,
+      "expires_at": 1690526898477,
+      "updated_at": 1690441671341
+    },
+    {
+      "id": "de9846e4-db72-4607-a977-f1ca9cbd2c8e",
+      "name": "F-68720644471",
+      "type": "group-booking",
+      "created_by": {
+        "id": "00000000-0000-0000-0000-000000000000",
+        "name": "",
+        "phone": "",
+        "country_code": ""
+      },
+      "members": [
+        {
+          "id": "f1f3ee3c-f6f4-4035-8779-8e9bfa829da5",
+          "name": "Witha Gofood",
+          "owner_type": "driver",
+          "phone": "81215622024",
+          "country_code": "62",
+          "image_url": "www.picture.com/steve",
+          "unread_message_count": 0,
+          "unread_channel_count": 0,
+          "metadata": {
+            "licence_plate": "X001ONW"
+          }
+        },
+        {
+          "id": "93aa677d-fde6-47ff-a527-5c473f64e13d",
+          "name": "bcsatu",
+          "owner_type": "tokopedia_customer",
+          "phone": "85782377781",
+          "country_code": "62",
+          "image_url": "https://ecs7.tokopedia.net/img/cache/300/default_picture_user/default_toped-17.jpg",
+          "unread_message_count": 0,
+          "unread_channel_count": 0
+        }
+      ],
+      "unread_count": 0,
+      "last_message_sent": null,
+      "last_read": {
+        "93aa677d-fde6-47ff-a527-5c473f64e13d": 1690441129589,
+        "f1f3ee3c-f6f4-4035-8779-8e9bfa829da5": 1690441387231
+      },
+      "created_at": 1690441129589,
+      "read_only": true,
+      "metadata": {
+        "order_info": {
+          "chat_type": "driver",
+          "service_type": 5,
+          "id": "F-68720644471",
+          "description_info": "Tokopedia Outlet Test 10 Tokopedia Outlet Test 10 Tokopedia Outlet Test 10",
+          "status": "completed",
+          "driver": {
+            "driver_id": "941652613",
+            "driver_name": "Witha Gofood",
+            "driver_phone": "+6281215622024",
+            "display_name": "Driver",
+            "driver_photo": "www.picture.com/steve"
+          },
+          "shopper": null,
+          "chat_window": {
+            "disabled": false
+          },
+          "country_code": "ID"
+        }
+      },
+      "read_mode_starts_at": 1690448938651,
+      "expires_at": 1690528138651,
+      "updated_at": 1690441738657
+    },
+    {
+      "id": "534af3dc-ee80-47e0-a910-2eb61c7f2330",
+      "name": "F-68720644263",
+      "type": "group-booking",
+      "created_by": {
+        "id": "00000000-0000-0000-0000-000000000000",
+        "name": "",
+        "phone": "",
+        "country_code": ""
+      },
+      "members": [
+        {
+          "id": "bf6ba1cf-90c4-4b8d-9dbb-f78279d67bfc",
+          "name": "Tokofood Driver 13 Tokofood Driver 13 Tokofood Driver 13 Tokofood Driver 13 Tokofood Driver 13",
+          "owner_type": "driver",
+          "phone": "82240158005",
+          "country_code": "62",
+          "image_url": "https://firebasestorage.googleapis.com/v0/b/driver-app-staging-face-recognition/o/20200409%2F58ccd062-f41c-41c8-a127-3c4a318961aa_1586419517506.jpg?alt\u003dmedia\u0026token\u003d4ac1628d-1233-480c-8bab-2b8a6f59ecde",
+          "unread_message_count": 0,
+          "unread_channel_count": 0,
+          "metadata": {
+            "licence_plate": "X001OAH"
+          }
+        },
+        {
+          "id": "93aa677d-fde6-47ff-a527-5c473f64e13d",
+          "name": "bcsatu",
+          "owner_type": "tokopedia_customer",
+          "phone": "85782377781",
+          "country_code": "62",
+          "image_url": "https://ecs7.tokopedia.net/img/cache/300/default_picture_user/default_toped-17.jpg",
+          "unread_message_count": 0,
+          "unread_channel_count": 0
+        }
+      ],
+      "unread_count": 0,
+      "last_message_sent": {
+        "id": "abeaf619-6fcf-4005-a93f-38ee0caec341",
+        "channel_id": "534af3dc-ee80-47e0-a910-2eb61c7f2330",
+        "text": "haloooo",
+        "data": "{\"tracking_id\":\"0ad67cb3-74aa-437a-a46a-40c954e118a9\"}",
+        "type": "text",
+        "sender": {
+          "id": "bf6ba1cf-90c4-4b8d-9dbb-f78279d67bfc",
+          "name": "Tokofood Driver 13 Tokofood Driver 13 Tokofood Driver 13 Tokofood Driver 13 Tokofood Driver 13",
+          "phone": "82240158005",
+          "country_code": "62"
+        },
+        "sent_at": 1690438709208
+      },
+      "last_read": {
+        "93aa677d-fde6-47ff-a527-5c473f64e13d": 1690440091987,
+        "bf6ba1cf-90c4-4b8d-9dbb-f78279d67bfc": 1690438710414
+      },
+      "created_at": 1690427488694,
+      "read_only": true,
+      "metadata": {
+        "order_info": {
+          "chat_type": "driver",
+          "service_type": 5,
+          "id": "F-68720644263",
+          "description_info": "TokoFood Outlet Test 1",
+          "status": "completed",
+          "driver": {
+            "driver_id": "942427243",
+            "driver_name": "Tokofood Driver 13 Tokofood Driver 13 Tokofood Driver 13 Tokofood Driver 13 Tokofood Driver 13",
+            "driver_phone": "+6282240158005",
+            "display_name": "Driver",
+            "driver_photo": "https://firebasestorage.googleapis.com/v0/b/driver-app-staging-face-recognition/o/20200409%2F58ccd062-f41c-41c8-a127-3c4a318961aa_1586419517506.jpg?alt\u003dmedia\u0026token\u003d4ac1628d-1233-480c-8bab-2b8a6f59ecde"
+          },
+          "shopper": null,
+          "chat_window": {
+            "disabled": false
+          },
+          "country_code": "ID"
+        }
+      },
+      "read_mode_starts_at": 1690445876566,
+      "expires_at": 1690525076566,
+      "updated_at": 1690440092076
+    },
+    {
+      "id": "6943fc58-b07c-4783-8f20-41022e17532a",
+      "name": "F-68720642829",
+      "type": "group-booking",
+      "created_by": {
+        "id": "00000000-0000-0000-0000-000000000000",
+        "name": "",
+        "phone": "",
+        "country_code": ""
+      },
+      "members": [
+        {
+          "id": "93aa677d-fde6-47ff-a527-5c473f64e13d",
+          "name": "bcsatu",
+          "owner_type": "tokopedia_customer",
+          "phone": "85782377781",
+          "country_code": "62",
+          "image_url": "https://ecs7.tokopedia.net/img/cache/300/default_picture_user/default_toped-17.jpg",
+          "unread_message_count": 0,
+          "unread_channel_count": 0
+        }
+      ],
+      "unread_count": 0,
+      "last_message_sent": null,
+      "last_read": {
+        "93aa677d-fde6-47ff-a527-5c473f64e13d": 1690252727410
+      },
+      "created_at": 1690252727410,
+      "read_only": false,
+      "metadata": {
+        "order_info": {
+          "chat_type": "driver",
+          "service_type": 5,
+          "id": "F-68720642829",
+          "description_info": "TokoFood Outlet Test 1",
+          "status": "ongoing",
+          "driver": null,
+          "shopper": null,
+          "chat_window": {
+            "disabled": false
+          },
+          "country_code": "ID"
+        }
+      },
+      "read_mode_starts_at": null,
+      "expires_at": 1690857527410,
+      "updated_at": 1690252727410
+    },
+    {
+      "id": "45e9465f-722e-45cc-a633-9995610d25dc",
+      "name": "F-68720639236",
+      "type": "group-booking",
+      "created_by": {
+        "id": "00000000-0000-0000-0000-000000000000",
+        "name": "",
+        "phone": "",
+        "country_code": ""
+      },
+      "members": [
+        {
+          "id": "65302cfd-065f-4929-ac33-8388b56ffbc4",
+          "name": "Tokofood Driver 10",
+          "owner_type": "driver",
+          "phone": "82240158002",
+          "country_code": "62",
+          "image_url": "https://firebasestorage.googleapis.com/v0/b/driver-app-staging-face-recognition/o/20200409%2F58ccd062-f41c-41c8-a127-3c4a318961aa_1586419517506.jpg?alt\u003dmedia\u0026token\u003d4ac1628d-1233-480c-8bab-2b8a6f59ecde",
+          "unread_message_count": 0,
+          "unread_channel_count": 0,
+          "metadata": {
+            "licence_plate": "X001OAE"
+          }
+        },
+        {
+          "id": "93aa677d-fde6-47ff-a527-5c473f64e13d",
+          "name": "bcsatu",
+          "owner_type": "tokopedia_customer",
+          "phone": "85782377781",
+          "country_code": "62",
+          "image_url": "https://ecs7.tokopedia.net/img/cache/300/default_picture_user/default_toped-17.jpg",
+          "unread_message_count": 0,
+          "unread_channel_count": 0
+        }
+      ],
+      "unread_count": 0,
+      "last_message_sent": {
+        "id": "b5f4018a-aa83-4128-b826-f817e44208e0",
+        "channel_id": "45e9465f-722e-45cc-a633-9995610d25dc",
+        "text": "Posisi di mana?",
+        "data": "{\"tracking_id\":\"C9E31F2F-6221-4908-B606-5441B82DB885\"}",
+        "type": "text",
+        "sender": {
+          "id": "93aa677d-fde6-47ff-a527-5c473f64e13d",
+          "name": "bcsatu",
+          "phone": "85782377781",
+          "country_code": "62"
+        },
+        "sent_at": 1689909328642
+      },
+      "last_read": {
+        "65302cfd-065f-4929-ac33-8388b56ffbc4": 1689584132040,
+        "93aa677d-fde6-47ff-a527-5c473f64e13d": 1689909328642
+      },
+      "created_at": 1689584093651,
+      "read_only": false,
+      "metadata": {
+        "order_info": {
+          "chat_type": "driver",
+          "service_type": 5,
+          "id": "F-68720639236",
+          "description_info": "TokoFood Outlet Test 1",
+          "status": "ongoing",
+          "driver": {
+            "driver_id": "942427191",
+            "driver_name": "Tokofood Driver 10",
+            "driver_phone": "+6282240158002",
+            "display_name": "Driver",
+            "driver_photo": "https://firebasestorage.googleapis.com/v0/b/driver-app-staging-face-recognition/o/20200409%2F58ccd062-f41c-41c8-a127-3c4a318961aa_1586419517506.jpg?alt\u003dmedia\u0026token\u003d4ac1628d-1233-480c-8bab-2b8a6f59ecde"
+          },
+          "shopper": null,
+          "chat_window": {
+            "disabled": false
+          },
+          "country_code": "ID"
+        }
+      },
+      "read_mode_starts_at": null,
+      "expires_at": 1690188893651,
+      "updated_at": 1689584132040
+    }
+  ],
+  "success": true,
+  "errors": []
+}

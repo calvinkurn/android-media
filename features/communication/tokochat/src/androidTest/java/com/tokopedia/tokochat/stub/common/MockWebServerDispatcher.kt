@@ -4,6 +4,7 @@ import com.tokopedia.tokochat.stub.common.util.ResponseReader
 import com.tokopedia.tokochat.stub.domain.response.ApiResponseStub
 import com.tokopedia.tokochat.stub.domain.response.ApiResponseStub.CHANNEL_API
 import com.tokopedia.tokochat.stub.domain.response.ApiResponseStub.CHANNEL_ID_API
+import com.tokopedia.tokochat.stub.domain.response.ApiResponseStub.CHANNEL_LIST
 import com.tokopedia.tokochat.stub.domain.response.ApiResponseStub.CONNECTION_API
 import com.tokopedia.tokochat.stub.domain.response.ApiResponseStub.IMAGE_UPLOAD_URL_API
 import com.tokopedia.tokochat.stub.domain.response.ApiResponseStub.IMAGE_URL_API
@@ -29,6 +30,9 @@ class MockWebServerDispatcher : Dispatcher() {
 
     private fun getPairResponse(url: String): Pair<Int, String> {
         return when {
+            /**
+             * Chat Room
+             */
             url.contains(CONNECTION_API) -> ApiResponseStub.connectionResponse
             url.contains(PROFILE_API) -> ApiResponseStub.profileResponse
             url.contains(CHANNEL_ID_API) -> {
@@ -46,6 +50,13 @@ class MockWebServerDispatcher : Dispatcher() {
                 }
             }
             (url.contains(SEND_MESSAGE_API)) -> ApiResponseStub.sendMessageResponse
+
+            /**
+             * Chat List
+             */
+            url.contains(CHANNEL_LIST) -> {
+                ApiResponseStub.channelListResponse
+            }
             else -> ApiResponseStub.generalEmptyResponse
         }
     }
