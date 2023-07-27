@@ -2,7 +2,7 @@
 <MotionScene xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <ConstraintSet android:id="@+id/initial_title_with_icon">
+    <ConstraintSet android:id="@+id/feed_initial_title_with_icon_state">
         <Constraint
             android:id="@+id/ty_feed_campaign_ribbon_title"
             android:layout_width="0dp"
@@ -57,7 +57,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
     </ConstraintSet>
-    <ConstraintSet android:id="@+id/start_in_state">
+    <ConstraintSet android:id="@+id/feed_start_in_state">
         <Constraint
             android:id="@+id/ty_feed_campaign_ribbon_title"
             android:layout_width="0dp"
@@ -112,7 +112,7 @@
             app:layout_constraintTop_toTopOf="parent" />
     </ConstraintSet>
 
-    <ConstraintSet android:id="@+id/initial_title_with_timer_and_icon">
+    <ConstraintSet android:id="@+id/feed_initial_title_with_timer_and_icon_state">
         <Constraint
             android:id="@+id/ty_feed_campaign_ribbon_title"
             android:layout_width="0dp"
@@ -167,7 +167,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
     </ConstraintSet>
-    <ConstraintSet android:id="@+id/availability_state">
+    <ConstraintSet android:id="@+id/feed_availability_state">
         <Constraint
             android:id="@+id/ty_feed_campaign_ribbon_title"
             android:layout_width="0dp"
@@ -227,7 +227,7 @@
             app:layout_constraintTop_toTopOf="parent" />
     </ConstraintSet>
 
-    <ConstraintSet android:id="@+id/second_title_with_icon">
+    <ConstraintSet android:id="@+id/feed_second_title_with_icon_state">
         <Constraint
             android:id="@+id/ty_feed_campaign_ribbon_title"
             android:layout_width="0dp"
@@ -282,7 +282,7 @@
             app:layout_constraintTop_toTopOf="parent" />
     </ConstraintSet>
 
-    <ConstraintSet android:id="@+id/cta_with_coupon">
+    <ConstraintSet android:id="@+id/feed_cta_with_coupon_state">
         <Constraint
             android:id="@+id/ty_feed_campaign_ribbon_title"
             android:layout_width="0dp"
@@ -340,7 +340,7 @@
             app:layout_constraintTop_toTopOf="parent" />
     </ConstraintSet>
 
-    <ConstraintSet android:id="@+id/cta_only">
+    <ConstraintSet android:id="@+id/feed_cta_only_state">
         <Constraint
             android:id="@+id/ty_feed_campaign_ribbon_title"
             android:layout_width="0dp"
@@ -397,10 +397,10 @@
             app:layout_constraintTop_toTopOf="parent" />
     </ConstraintSet>
 
-    <!-- START initial_title_with_icon TRANSITION-->
+    <!-- START feed_initial_title_with_icon_state TRANSITION-->
     <Transition
-        app:constraintSetEnd="@+id/second_title_with_icon"
-        app:constraintSetStart="@+id/initial_title_with_icon"
+        app:constraintSetEnd="@+id/feed_second_title_with_icon_state"
+        app:constraintSetStart="@+id/feed_initial_title_with_icon_state"
         app:duration="600">
         <KeyFrameSet>
             <KeyPosition
@@ -411,20 +411,20 @@
         </KeyFrameSet>
     </Transition>
     <Transition
-        app:constraintSetEnd="@+id/availability_state"
-        app:constraintSetStart="@+id/initial_title_with_icon"
+        app:constraintSetEnd="@+id/feed_availability_state"
+        app:constraintSetStart="@+id/feed_initial_title_with_icon_state"
         app:duration="600">
         <KeyFrameSet></KeyFrameSet>
     </Transition>
     <Transition
-        app:constraintSetEnd="@+id/initial_title_with_timer_and_icon"
-        app:constraintSetStart="@+id/initial_title_with_icon"
+        app:constraintSetEnd="@+id/feed_initial_title_with_timer_and_icon_state"
+        app:constraintSetStart="@+id/feed_initial_title_with_icon_state"
         app:duration="600">
         <KeyFrameSet></KeyFrameSet>
     </Transition>
     <Transition
-        app:constraintSetEnd="@+id/start_in_state"
-        app:constraintSetStart="@+id/initial_title_with_icon"
+        app:constraintSetEnd="@+id/feed_start_in_state"
+        app:constraintSetStart="@+id/feed_initial_title_with_icon_state"
         app:duration="600">
         <KeyFrameSet>
 
@@ -441,8 +441,9 @@
         </KeyFrameSet>
     </Transition>
     <Transition
-        app:constraintSetEnd="@+id/cta_with_coupon"
-        app:constraintSetStart="@+id/initial_title_with_icon">
+        app:constraintSetEnd="@+id/feed_cta_with_coupon_state"
+        app:constraintSetStart="@+id/feed_initial_title_with_icon_state"
+        app:duration="600">
         <KeyFrameSet>
             <KeyPosition
                 app:framePosition="50"
@@ -457,8 +458,9 @@
         </KeyFrameSet>
     </Transition>
     <Transition
-        app:constraintSetEnd="@+id/cta_only"
-        app:constraintSetStart="@+id/initial_title_with_icon">
+        app:constraintSetEnd="@+id/feed_cta_only_state"
+        app:constraintSetStart="@+id/feed_initial_title_with_icon_state"
+        app:duration="600">
         <KeyFrameSet>
             <KeyPosition
                 app:framePosition="50"
@@ -472,12 +474,12 @@
                 app:percentY="1.5" />
         </KeyFrameSet>
     </Transition>
-    <!-- END initial_title_with_icon TRANSITION-->
+    <!-- END feed_initial_title_with_icon_state TRANSITION-->
 
-    <!-- START start_in_state TRANSITION-->
+    <!-- START feed_start_in_state TRANSITION-->
     <Transition
-        app:constraintSetEnd="@+id/initial_title_with_icon"
-        app:constraintSetStart="@+id/start_in_state"
+        app:constraintSetEnd="@+id/feed_initial_title_with_icon_state"
+        app:constraintSetStart="@+id/feed_start_in_state"
         app:duration="600">
         <KeyFrameSet>
             <KeyPosition
@@ -523,8 +525,8 @@
         </KeyFrameSet>
     </Transition>
     <Transition
-        app:constraintSetEnd="@+id/initial_title_with_timer_and_icon"
-        app:constraintSetStart="@+id/start_in_state"
+        app:constraintSetEnd="@+id/feed_initial_title_with_timer_and_icon_state"
+        app:constraintSetStart="@+id/feed_start_in_state"
         app:duration="600">
         <KeyFrameSet>
             <KeyPosition
@@ -553,14 +555,14 @@
         </KeyFrameSet>
     </Transition>
     <Transition
-        app:constraintSetEnd="@+id/availability_state"
-        app:constraintSetStart="@+id/start_in_state"
+        app:constraintSetEnd="@+id/feed_availability_state"
+        app:constraintSetStart="@+id/feed_start_in_state"
         app:duration="600">
         <KeyFrameSet></KeyFrameSet>
     </Transition>
     <Transition
-        app:constraintSetEnd="@+id/second_title_with_icon"
-        app:constraintSetStart="@+id/start_in_state"
+        app:constraintSetEnd="@+id/feed_second_title_with_icon_state"
+        app:constraintSetStart="@+id/feed_start_in_state"
         app:duration="600">
         <KeyFrameSet>
             <KeyPosition
@@ -587,8 +589,9 @@
         </KeyFrameSet>
     </Transition>
     <Transition
-        app:constraintSetEnd="@+id/cta_with_coupon"
-        app:constraintSetStart="@+id/start_in_state">
+        app:constraintSetEnd="@+id/feed_cta_with_coupon_state"
+        app:constraintSetStart="@+id/feed_start_in_state"
+        app:duration="600">
         <KeyFrameSet>
             <KeyPosition
                 app:framePosition="1"
@@ -613,8 +616,9 @@
         </KeyFrameSet>
     </Transition>
     <Transition
-        app:constraintSetEnd="@+id/cta_only"
-        app:constraintSetStart="@+id/start_in_state">
+        app:constraintSetEnd="@+id/feed_cta_only_state"
+        app:constraintSetStart="@+id/feed_start_in_state"
+        app:duration="600">
         <KeyFrameSet>
             <KeyPosition
                 app:framePosition="1"
@@ -638,12 +642,12 @@
                 app:percentY="0" />
         </KeyFrameSet>
     </Transition>
-    <!-- END start_in_state TRANSITION-->
+    <!-- END feed_start_in_state TRANSITION-->
 
-    <!-- START initial_title_with_timer_and_icon TRANSITION-->
+    <!-- START feed_initial_title_with_timer_and_icon_state TRANSITION-->
     <Transition
-        app:constraintSetEnd="@+id/initial_title_with_icon"
-        app:constraintSetStart="@+id/initial_title_with_timer_and_icon"
+        app:constraintSetEnd="@+id/feed_initial_title_with_icon_state"
+        app:constraintSetStart="@+id/feed_initial_title_with_timer_and_icon_state"
         app:duration="600">
         <KeyFrameSet>
             <KeyPosition
@@ -659,8 +663,8 @@
         </KeyFrameSet>
     </Transition>
     <Transition
-        app:constraintSetEnd="@+id/start_in_state"
-        app:constraintSetStart="@+id/initial_title_with_timer_and_icon"
+        app:constraintSetEnd="@+id/feed_start_in_state"
+        app:constraintSetStart="@+id/feed_initial_title_with_timer_and_icon_state"
         app:duration="600">
         <KeyFrameSet>
             <KeyPosition
@@ -676,14 +680,14 @@
         </KeyFrameSet>
     </Transition>
     <Transition
-        app:constraintSetEnd="@+id/availability_state"
-        app:constraintSetStart="@+id/initial_title_with_timer_and_icon"
+        app:constraintSetEnd="@+id/feed_availability_state"
+        app:constraintSetStart="@+id/feed_initial_title_with_timer_and_icon_state"
         app:duration="600">
         <KeyFrameSet></KeyFrameSet>
     </Transition>
     <Transition
-        app:constraintSetEnd="@+id/second_title_with_icon"
-        app:constraintSetStart="@+id/initial_title_with_timer_and_icon"
+        app:constraintSetEnd="@+id/feed_second_title_with_icon_state"
+        app:constraintSetStart="@+id/feed_initial_title_with_timer_and_icon_state"
         app:duration="600">
         <KeyFrameSet>
             <KeyPosition
@@ -704,8 +708,9 @@
         </KeyFrameSet>
     </Transition>
     <Transition
-        app:constraintSetEnd="@+id/cta_with_coupon"
-        app:constraintSetStart="@+id/initial_title_with_timer_and_icon">
+        app:constraintSetEnd="@+id/feed_cta_with_coupon_state"
+        app:constraintSetStart="@+id/feed_initial_title_with_timer_and_icon_state"
+        app:duration="600">
         <KeyFrameSet>
             <KeyPosition
                 app:framePosition="50"
@@ -716,13 +721,24 @@
                 app:framePosition="51"
                 app:keyPositionType="parentRelative"
                 app:motionTarget="@+id/ty_feed_campaign_ribbon_title"
+                app:percentY="1.5" />
+            <KeyPosition
+                app:framePosition="75"
+                app:keyPositionType="parentRelative"
+                app:motionTarget="@+id/ty_feed_campaign_ribbon_subtitle"
                 app:percentY="1.5" />
         </KeyFrameSet>
     </Transition>
     <Transition
-        app:constraintSetEnd="@+id/cta_only"
-        app:constraintSetStart="@+id/initial_title_with_timer_and_icon">
+        app:constraintSetEnd="@+id/feed_cta_only_state"
+        app:constraintSetStart="@+id/feed_initial_title_with_timer_and_icon_state"
+        app:duration="600">
         <KeyFrameSet>
+            <KeyPosition
+                app:framePosition="1"
+                app:keyPositionType="pathRelative"
+                app:motionTarget="@+id/ty_feed_campaign_ribbon_title"
+                app:percentY="0" />
             <KeyPosition
                 app:framePosition="50"
                 app:keyPositionType="parentRelative"
@@ -735,12 +751,12 @@
                 app:percentY="1.5" />
         </KeyFrameSet>
     </Transition>
-    <!-- END initial_title_with_timer_and_icon TRANSITION-->
+    <!-- END feed_initial_title_with_timer_and_icon_state TRANSITION-->
 
-    <!-- START availability_state TRANSITION-->
+    <!-- START feed_availability_state TRANSITION-->
     <Transition
-        app:constraintSetEnd="@+id/initial_title_with_icon"
-        app:constraintSetStart="@+id/availability_state"
+        app:constraintSetEnd="@+id/feed_initial_title_with_icon_state"
+        app:constraintSetStart="@+id/feed_availability_state"
         app:duration="600">
         <KeyFrameSet>
             <KeyPosition
@@ -794,12 +810,12 @@
         </KeyFrameSet>
     </Transition>
     <Transition
-        app:constraintSetEnd="@+id/start_in_state"
-        app:constraintSetStart="@+id/availability_state"
+        app:constraintSetEnd="@+id/feed_start_in_state"
+        app:constraintSetStart="@+id/feed_availability_state"
         app:duration="600" />
     <Transition
-        app:constraintSetEnd="@+id/initial_title_with_timer_and_icon"
-        app:constraintSetStart="@+id/availability_state"
+        app:constraintSetEnd="@+id/feed_initial_title_with_timer_and_icon_state"
+        app:constraintSetStart="@+id/feed_availability_state"
         app:duration="600">
         <KeyFrameSet>
             <KeyPosition
@@ -843,8 +859,8 @@
         </KeyFrameSet>
     </Transition>
     <Transition
-        app:constraintSetEnd="@+id/second_title_with_icon"
-        app:constraintSetStart="@+id/availability_state"
+        app:constraintSetEnd="@+id/feed_second_title_with_icon_state"
+        app:constraintSetStart="@+id/feed_availability_state"
         app:duration="600">
         <KeyFrameSet>
             <KeyPosition
@@ -885,8 +901,9 @@
         </KeyFrameSet>
     </Transition>
     <Transition
-        app:constraintSetEnd="@+id/cta_with_coupon"
-        app:constraintSetStart="@+id/availability_state">
+        app:constraintSetEnd="@+id/feed_cta_with_coupon_state"
+        app:constraintSetStart="@+id/feed_availability_state"
+        app:duration="600">
         <KeyFrameSet>
             <KeyPosition
                 app:framePosition="1"
@@ -923,31 +940,12 @@
                 app:keyPositionType="parentRelative"
                 app:motionTarget="@+id/ty_feed_campaign_ribbon_title"
                 app:percentY="1.5" />
-            <KeyPosition
-                app:framePosition="1"
-                app:keyPositionType="pathRelative"
-                app:motionTarget="@+id/ty_feed_campaign_ribbon_title"
-                app:percentY="0" />
-            <KeyPosition
-                app:framePosition="1"
-                app:keyPositionType="pathRelative"
-                app:motionTarget="@+id/ty_feed_campaign_ribbon_title"
-                app:percentY="0" />
-            <KeyPosition
-                app:framePosition="50"
-                app:keyPositionType="parentRelative"
-                app:motionTarget="@+id/ty_feed_campaign_ribbon_title"
-                app:percentY="-1" />
-            <KeyPosition
-                app:framePosition="1"
-                app:keyPositionType="pathRelative"
-                app:motionTarget="@+id/ty_feed_campaign_ribbon_title"
-                app:percentY="0" />
         </KeyFrameSet>
     </Transition>
     <Transition
-        app:constraintSetEnd="@+id/cta_only"
-        app:constraintSetStart="@+id/availability_state">
+        app:constraintSetEnd="@+id/feed_cta_only_state"
+        app:constraintSetStart="@+id/feed_availability_state"
+        app:duration="600">
         <KeyFrameSet>
             <KeyPosition
                 app:framePosition="1"
@@ -984,34 +982,14 @@
                 app:keyPositionType="parentRelative"
                 app:motionTarget="@+id/ty_feed_campaign_ribbon_title"
                 app:percentY="1.5" />
-            <KeyPosition
-                app:framePosition="1"
-                app:keyPositionType="pathRelative"
-                app:motionTarget="@+id/ty_feed_campaign_ribbon_title"
-                app:percentY="0" />
-            <KeyPosition
-                app:framePosition="1"
-                app:keyPositionType="pathRelative"
-                app:motionTarget="@+id/ty_feed_campaign_ribbon_title"
-                app:percentY="0" />
-            <KeyPosition
-                app:framePosition="50"
-                app:keyPositionType="parentRelative"
-                app:motionTarget="@+id/ty_feed_campaign_ribbon_title"
-                app:percentY="-1" />
-            <KeyPosition
-                app:framePosition="1"
-                app:keyPositionType="pathRelative"
-                app:motionTarget="@+id/ty_feed_campaign_ribbon_title"
-                app:percentY="0" />
         </KeyFrameSet>
     </Transition>
-    <!-- END availability_state TRANSITION-->
+    <!-- END feed_availability_state TRANSITION-->
 
-    <!-- START second_title_with_icon TRANSITION-->
+    <!-- START feed_second_title_with_icon_state TRANSITION-->
     <Transition
-        app:constraintSetEnd="@+id/initial_title_with_icon"
-        app:constraintSetStart="@+id/second_title_with_icon"
+        app:constraintSetEnd="@+id/feed_initial_title_with_icon_state"
+        app:constraintSetStart="@+id/feed_second_title_with_icon_state"
         app:duration="600">
         <KeyFrameSet>
             <KeyPosition
@@ -1040,8 +1018,8 @@
         </KeyFrameSet>
     </Transition>
     <Transition
-        app:constraintSetEnd="@+id/start_in_state"
-        app:constraintSetStart="@+id/second_title_with_icon"
+        app:constraintSetEnd="@+id/feed_start_in_state"
+        app:constraintSetStart="@+id/feed_second_title_with_icon_state"
         app:duration="600">
         <KeyFrameSet>
             <KeyPosition
@@ -1077,8 +1055,8 @@
         </KeyFrameSet>
     </Transition>
     <Transition
-        app:constraintSetEnd="@+id/initial_title_with_timer_and_icon"
-        app:constraintSetStart="@+id/second_title_with_icon"
+        app:constraintSetEnd="@+id/feed_initial_title_with_timer_and_icon_state"
+        app:constraintSetStart="@+id/feed_second_title_with_icon_state"
         app:duration="600">
         <KeyFrameSet>
             <KeyPosition
@@ -1102,8 +1080,8 @@
         </KeyFrameSet>
     </Transition>
     <Transition
-        app:constraintSetEnd="@+id/availability_state"
-        app:constraintSetStart="@+id/second_title_with_icon"
+        app:constraintSetEnd="@+id/feed_availability_state"
+        app:constraintSetStart="@+id/feed_second_title_with_icon_state"
         app:duration="600">
         <KeyFrameSet>
             <KeyPosition
@@ -1119,8 +1097,9 @@
         </KeyFrameSet>
     </Transition>
     <Transition
-        app:constraintSetEnd="@+id/cta_with_coupon"
-        app:constraintSetStart="@+id/second_title_with_icon">
+        app:constraintSetEnd="@+id/feed_cta_with_coupon_state"
+        app:constraintSetStart="@+id/feed_second_title_with_icon_state"
+        app:duration="600">
         <KeyFrameSet>
             <KeyPosition
                 app:framePosition="1"
@@ -1150,8 +1129,9 @@
         </KeyFrameSet>
     </Transition>
     <Transition
-        app:constraintSetEnd="@+id/cta_only"
-        app:constraintSetStart="@+id/second_title_with_icon">
+        app:constraintSetEnd="@+id/feed_cta_only_state"
+        app:constraintSetStart="@+id/feed_second_title_with_icon_state"
+        app:duration="600">
         <KeyFrameSet>
             <KeyPosition
                 app:framePosition="1"
@@ -1180,12 +1160,13 @@
                 app:percentY="0" />
         </KeyFrameSet>
     </Transition>
-    <!-- END second_title_with_icon TRANSITION-->
+    <!-- END feed_second_title_with_icon_state TRANSITION-->
 
-    <!-- START cta_with_coupon TRANSITION-->
+    <!-- START feed_cta_with_coupon_state TRANSITION-->
     <Transition
-        app:constraintSetEnd="@+id/initial_title_with_icon"
-        app:constraintSetStart="@+id/cta_with_coupon">
+        app:constraintSetEnd="@+id/feed_initial_title_with_icon_state"
+        app:constraintSetStart="@+id/feed_cta_with_coupon_state"
+        app:duration="600">
         <KeyFrameSet>
             <KeyPosition
                 app:framePosition="50"
@@ -1220,13 +1201,15 @@
         </KeyFrameSet>
     </Transition>
     <Transition
-        app:constraintSetEnd="@+id/start_in_state"
-        app:constraintSetStart="@+id/cta_with_coupon">
+        app:constraintSetEnd="@+id/feed_start_in_state"
+        app:constraintSetStart="@+id/feed_cta_with_coupon_state"
+        app:duration="600">
         <KeyFrameSet></KeyFrameSet>
     </Transition>
     <Transition
-        app:constraintSetEnd="@+id/initial_title_with_timer_and_icon"
-        app:constraintSetStart="@+id/cta_with_coupon">
+        app:constraintSetEnd="@+id/feed_initial_title_with_timer_and_icon_state"
+        app:constraintSetStart="@+id/feed_cta_with_coupon_state"
+        app:duration="600">
         <KeyFrameSet>
             <KeyPosition
                 app:framePosition="50"
@@ -1251,13 +1234,15 @@
         </KeyFrameSet>
     </Transition>
     <Transition
-        app:constraintSetEnd="@+id/availability_state"
-        app:constraintSetStart="@+id/cta_with_coupon">
+        app:constraintSetEnd="@+id/feed_availability_state"
+        app:constraintSetStart="@+id/feed_cta_with_coupon_state"
+        app:duration="600">
         <KeyFrameSet></KeyFrameSet>
     </Transition>
     <Transition
-        app:constraintSetEnd="@+id/second_title_with_icon"
-        app:constraintSetStart="@+id/cta_with_coupon">
+        app:constraintSetEnd="@+id/feed_second_title_with_icon_state"
+        app:constraintSetStart="@+id/feed_cta_with_coupon_state"
+        app:duration="600">
         <KeyFrameSet>
             <KeyPosition
                 app:framePosition="60"
@@ -1286,12 +1271,13 @@
                 app:percentY="-1" />
         </KeyFrameSet>
     </Transition>
-    <!-- END cta_with_coupon TRANSITION-->
+    <!-- END feed_cta_with_coupon_state TRANSITION-->
 
-    <!-- START cta_only TRANSITION-->
+    <!-- START feed_cta_only_state TRANSITION-->
     <Transition
-        app:constraintSetEnd="@+id/initial_title_with_icon"
-        app:constraintSetStart="@+id/cta_only">
+        app:constraintSetEnd="@+id/feed_initial_title_with_icon_state"
+        app:constraintSetStart="@+id/feed_cta_only_state"
+        app:duration="600">
         <KeyFrameSet>
             <KeyPosition
                 app:framePosition="50"
@@ -1316,13 +1302,15 @@
         </KeyFrameSet>
     </Transition>
     <Transition
-        app:constraintSetEnd="@+id/start_in_state"
-        app:constraintSetStart="@+id/cta_only">
+        app:constraintSetEnd="@+id/feed_start_in_state"
+        app:constraintSetStart="@+id/feed_cta_only_state"
+        app:duration="600">
         <KeyFrameSet></KeyFrameSet>
     </Transition>
     <Transition
-        app:constraintSetEnd="@+id/initial_title_with_timer_and_icon"
-        app:constraintSetStart="@+id/cta_with_coupon">
+        app:constraintSetEnd="@+id/feed_initial_title_with_timer_and_icon_state"
+        app:constraintSetStart="@+id/feed_cta_with_coupon_state"
+        app:duration="600">
         <KeyFrameSet>
             <KeyPosition
                 app:framePosition="50"
@@ -1347,13 +1335,15 @@
         </KeyFrameSet>
     </Transition>
     <Transition
-        app:constraintSetEnd="@+id/availability_state"
-        app:constraintSetStart="@+id/cta_only">
+        app:constraintSetEnd="@+id/feed_availability_state"
+        app:constraintSetStart="@+id/feed_cta_only_state"
+        app:duration="600">
         <KeyFrameSet></KeyFrameSet>
     </Transition>
     <Transition
-        app:constraintSetEnd="@+id/second_title_with_icon"
-        app:constraintSetStart="@+id/cta_only">
+        app:constraintSetEnd="@+id/feed_second_title_with_icon_state"
+        app:constraintSetStart="@+id/feed_cta_only_state"
+        app:duration="600">
         <KeyFrameSet>
             <KeyPosition
                 app:framePosition="35"
@@ -1372,6 +1362,6 @@
                 app:percentY="-1" />
         </KeyFrameSet>
     </Transition>
-    <!-- END cta_only TRANSITION-->
+    <!-- END feed_cta_only_state TRANSITION-->
 
 </MotionScene>
