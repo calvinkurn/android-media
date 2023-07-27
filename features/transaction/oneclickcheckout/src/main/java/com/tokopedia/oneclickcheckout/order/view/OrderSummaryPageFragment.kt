@@ -379,25 +379,27 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                 val listProducts = adapter.products
                 for (index in listProducts.indices) {
                     if (listProducts[index].cartId == cartId) {
-                        val addonProduct = listProducts[index].addOnsProductData
-                        addOnProductDataResult.aggregatedData.selectedAddons.forEach { addOnUiModel ->
-                            addonProduct.data.forEach { addonExisting ->
-                                if (addOnUiModel.addOnType == addonExisting.type) {
-                                    addonExisting.apply {
-                                        id = addOnUiModel.id
-                                        uniqueId = addOnUiModel.uniqueId
-                                        price = addOnUiModel.price
-                                        infoLink = addOnUiModel.eduLink
-                                        name = addOnUiModel.name
-                                        status = addOnUiModel.getSelectedStatus().value
-                                        type = addOnUiModel.addOnType
+                        run loopAddOnProduct@{
+                            listProducts[index].addOnsProductData.data.forEach { addOnExisting ->
+                                for (addOnUiModel in addOnProductDataResult.aggregatedData.selectedAddons) {
+                                    if (addOnUiModel.addOnType == addOnExisting.type) {
+                                        addOnExisting.apply {
+                                            id = addOnUiModel.id
+                                            uniqueId = addOnUiModel.uniqueId
+                                            price = addOnUiModel.price
+                                            infoLink = addOnUiModel.eduLink
+                                            name = addOnUiModel.name
+                                            status = addOnUiModel.getSelectedStatus().value
+                                            type = addOnUiModel.addOnType
+                                        }
+                                        adapter.notifyItemChanged(adapter.getAddOnProductServiceIndex(cartId))
+                                        return@loopAddOnProduct
                                     }
                                 }
                             }
                         }
                     }
                 }
-                adapter.notifyItemChanged(adapter.getAddOnProductServiceIndex(cartId))
                 viewModel.calculateTotal()
             } else {
                 view?.let { v ->
