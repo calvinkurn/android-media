@@ -679,12 +679,6 @@ class CreateReviewViewModel @Inject constructor(
         reviewTemplates: ReviewTemplateRequestState
     ): CreateReviewTemplateUiState {
         val templates = when (reviewTemplates) {
-            is RequestState.Idle -> {
-                return CreateReviewTemplateUiState.Loading
-            }
-            is RequestState.Requesting -> {
-                return CreateReviewTemplateUiState.Loading
-            }
             is RequestState.CompleteRequestState -> {
                 if (reviewTemplates is RequestState.Success) {
                     if (canRenderForm) {
@@ -700,6 +694,7 @@ class CreateReviewViewModel @Inject constructor(
                     }
                 }
             }
+            else -> return CreateReviewTemplateUiState.Loading
         }
         return when {
             templates.isEmpty() -> CreateReviewTemplateUiState.Hidden(emptyList())

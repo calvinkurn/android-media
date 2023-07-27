@@ -216,6 +216,10 @@ abstract class CreateReviewViewModelTestFixture {
         coEvery { getProductReputationForm.getReputationForm(any()) } throws Exception()
     }
 
+    protected fun mockErrorGetReviewTemplate() {
+        coEvery { getReviewTemplatesUseCase.executeOnBackground() } throws Exception()
+    }
+
     protected fun mockSuccessGetReviewTemplate(
         response: ProductrevGetReviewTemplateResponseWrapper = getReviewTemplateUseCaseResultSuccessEmpty
     ) {

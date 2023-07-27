@@ -417,6 +417,21 @@ class CreateReviewViewModelTest: CreateReviewViewModelTestFixture() {
         }
 
     @Test
+    fun `templateUiState should equal to CreateReviewTemplateUiState#Hidden when canRenderForm is true and template is error`() =
+        runCollectingStateFlows(
+            setupMock = {
+                mockSuccessGetReputationForm()
+                mockSuccessGetBadRatingCategory()
+                mockErrorGetReviewTemplate()
+                mockSuccessGetProductIncentiveOvo()
+            },
+            block = {
+                setInitialData()
+                assertInstanceOf<CreateReviewTemplateUiState.Hidden>(viewModel.templateUiState.value)
+            }
+        )
+
+    @Test
     fun `templateUiState should equal to CreateReviewTemplateUiState#Showing when canRenderForm is true and template is not empty`() =
         runCollectingStateFlows(
             setupMock = {
@@ -1809,4 +1824,33 @@ class CreateReviewViewModelTest: CreateReviewViewModelTestFixture() {
                 (createReviewBottomSheetUiState as CreateReviewBottomSheetUiState.Showing).bottomInset
             )
         }
+
+    @Test
+    fun `submitReview should trigger submit review when there is no error media upload`() =
+        runCollectingStateFlows{
+            setInitialData()
+            viewModel.updateMediaPicker(listOf("image.jpg"))
+            viewModel.submitReview()
+            coVerify(exactly = 1) { submitReviewUseCase.executeOnBackground() }
+            coVerify(exactly = 1) { getPostSubmitBottomSheetUseCase.executeOnBackground() }
+        }
+
+    @Test
+    fun `submitReview should not trigger submit review when there is any error media upload`() =
+        runCollectingStateFlows(
+            setupMock = {
+                mockSuccessGetReputationForm()
+                mockSuccessGetBadRatingCategory()
+                mockSuccessGetReviewTemplate()
+                mockSuccessGetProductIncentiveOvo()
+                mockErrorUploadMedia()
+            },
+            block = {
+                setInitialData()
+                viewModel.updateMediaPicker(listOf("image.jpg"))
+                viewModel.submitReview()
+                coVerify(inverse = true) { submitReviewUseCase.executeOnBackground() }
+                coVerify(inverse = true) { getPostSubmitBottomSheetUseCase.executeOnBackground() }
+            }
+        )
 }
