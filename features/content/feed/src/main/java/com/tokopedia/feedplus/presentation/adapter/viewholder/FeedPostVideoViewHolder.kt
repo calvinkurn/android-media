@@ -24,6 +24,9 @@ import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_SELECTED_CHANGED
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloads
 import com.tokopedia.feedplus.presentation.adapter.listener.FeedListener
+import com.tokopedia.feedplus.presentation.adapter.viewholder.FeedPostImageViewHolder.Companion.FULL_OPACITY
+import com.tokopedia.feedplus.presentation.adapter.viewholder.FeedPostImageViewHolder.Companion.OPACITY_ANIMATE_DURATION
+import com.tokopedia.feedplus.presentation.adapter.viewholder.FeedPostImageViewHolder.Companion.SCROLL_OPACITY
 import com.tokopedia.feedplus.presentation.customview.FeedPlayerControl
 import com.tokopedia.feedplus.presentation.model.FeedCardVideoContentModel
 import com.tokopedia.feedplus.presentation.model.FeedLikeModel
@@ -203,12 +206,14 @@ class FeedPostVideoViewHolder(
 
     fun bind(item: FeedContentAdapter.Item, payloads: MutableList<Any>) {
         val selectedPayload = if (item.isSelected) FEED_POST_SELECTED else FEED_POST_NOT_SELECTED
-        val feedPayloads = payloads.firstOrNull { it is FeedViewHolderPayloads } as? FeedViewHolderPayloads
-        val newPayloads = if (feedPayloads != null && feedPayloads.payloads.contains(FEED_POST_SELECTED_CHANGED)) {
-            payloads.toMutableList().also { it.add(selectedPayload) }
-        } else {
-            payloads
-        }
+        val feedPayloads =
+            payloads.firstOrNull { it is FeedViewHolderPayloads } as? FeedViewHolderPayloads
+        val newPayloads =
+            if (feedPayloads != null && feedPayloads.payloads.contains(FEED_POST_SELECTED_CHANGED)) {
+                payloads.toMutableList().also { it.add(selectedPayload) }
+            } else {
+                payloads
+            }
         bind(item.data as FeedCardVideoContentModel, newPayloads)
     }
 
@@ -243,6 +248,14 @@ class FeedPostVideoViewHolder(
 
             if (payloads.contains(FeedViewHolderPayloadActions.FEED_POST_FOLLOW_CHANGED)) {
                 bindAuthor(element)
+            }
+
+            if (payloads.contains(FeedViewHolderPayloadActions.FEED_POST_SCROLLING)) {
+                onScrolling()
+            }
+
+            if (payloads.contains(FeedViewHolderPayloadActions.FEED_POST_DONE_SCROLL)) {
+                onDoneScroll()
             }
 
             payloads.forEach { payload ->
@@ -447,9 +460,76 @@ class FeedPostVideoViewHolder(
         productButtonView.showIfPossible()
     }
 
+    private fun onScrolling() {
+        with(binding) {
+            layoutAuthorInfo.root.animate().alpha(SCROLL_OPACITY).duration =
+                OPACITY_ANIMATE_DURATION
+            tvFeedCaption.animate().alpha(SCROLL_OPACITY).duration =
+                OPACITY_ANIMATE_DURATION
+            postLikeButton.root.animate().alpha(SCROLL_OPACITY).duration =
+                OPACITY_ANIMATE_DURATION
+            feedCommentButton.root.animate().alpha(SCROLL_OPACITY).duration =
+                OPACITY_ANIMATE_DURATION
+            menuButton.animate().alpha(SCROLL_OPACITY).duration =
+                OPACITY_ANIMATE_DURATION
+            shareButton.animate().alpha(SCROLL_OPACITY).duration =
+                OPACITY_ANIMATE_DURATION
+            productTagButton.root.animate().alpha(SCROLL_OPACITY).duration =
+                OPACITY_ANIMATE_DURATION
+            productTagView.root.animate().alpha(SCROLL_OPACITY).duration =
+                OPACITY_ANIMATE_DURATION
+            overlayTop.root.animate().alpha(SCROLL_OPACITY).duration =
+                OPACITY_ANIMATE_DURATION
+            overlayBottom.root.animate().alpha(SCROLL_OPACITY).duration =
+                OPACITY_ANIMATE_DURATION
+            overlayRight.root.animate().alpha(SCROLL_OPACITY).duration =
+                OPACITY_ANIMATE_DURATION
+            btnDisableClearMode.animate().alpha(SCROLL_OPACITY).duration =
+                OPACITY_ANIMATE_DURATION
+            productTagView.root.animate().alpha(SCROLL_OPACITY).duration =
+                OPACITY_ANIMATE_DURATION
+            productTagButton.root.animate().alpha(SCROLL_OPACITY).duration =
+                OPACITY_ANIMATE_DURATION
+        }
+    }
+
+    private fun onDoneScroll() {
+        with(binding) {
+            layoutAuthorInfo.root.animate().alpha(FULL_OPACITY).duration =
+                OPACITY_ANIMATE_DURATION
+            tvFeedCaption.animate().alpha(FULL_OPACITY).duration =
+                OPACITY_ANIMATE_DURATION
+            postLikeButton.root.animate().alpha(FULL_OPACITY).duration =
+                OPACITY_ANIMATE_DURATION
+            feedCommentButton.root.animate().alpha(FULL_OPACITY).duration =
+                OPACITY_ANIMATE_DURATION
+            menuButton.animate().alpha(FULL_OPACITY).duration =
+                OPACITY_ANIMATE_DURATION
+            shareButton.animate().alpha(FULL_OPACITY).duration =
+                OPACITY_ANIMATE_DURATION
+            productTagButton.root.animate().alpha(FULL_OPACITY).duration =
+                OPACITY_ANIMATE_DURATION
+            productTagView.root.animate().alpha(FULL_OPACITY).duration =
+                OPACITY_ANIMATE_DURATION
+            overlayTop.root.animate().alpha(FULL_OPACITY).duration =
+                OPACITY_ANIMATE_DURATION
+            overlayBottom.root.animate().alpha(FULL_OPACITY).duration =
+                OPACITY_ANIMATE_DURATION
+            overlayRight.root.animate().alpha(FULL_OPACITY).duration =
+                OPACITY_ANIMATE_DURATION
+            btnDisableClearMode.animate().alpha(FULL_OPACITY).duration =
+                OPACITY_ANIMATE_DURATION
+            productTagView.root.animate().alpha(FULL_OPACITY).duration =
+                OPACITY_ANIMATE_DURATION
+            productTagButton.root.animate().alpha(FULL_OPACITY).duration =
+                OPACITY_ANIMATE_DURATION
+        }
+    }
+
     private fun onSelected(element: FeedCardVideoContentModel) {
         mIsSelected = true
-        val trackerModel = trackerDataModel ?: trackerMapper.transformVideoContentToTrackerModel(element)
+        val trackerModel =
+            trackerDataModel ?: trackerMapper.transformVideoContentToTrackerModel(element)
         listener.onPostImpression(
             trackerModel,
             element.id,

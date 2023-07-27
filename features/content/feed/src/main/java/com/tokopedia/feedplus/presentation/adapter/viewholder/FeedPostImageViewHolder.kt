@@ -240,12 +240,14 @@ class FeedPostImageViewHolder(
 
     fun bind(item: FeedContentAdapter.Item, payloads: MutableList<Any>) {
         val selectedPayload = if (item.isSelected) FEED_POST_SELECTED else FEED_POST_NOT_SELECTED
-        val feedPayloads = payloads.firstOrNull { it is FeedViewHolderPayloads } as? FeedViewHolderPayloads
-        val newPayloads = if (feedPayloads != null && feedPayloads.payloads.contains(FEED_POST_SELECTED_CHANGED)) {
-            payloads.toMutableList().also { it.add(selectedPayload) }
-        } else {
-            payloads
-        }
+        val feedPayloads =
+            payloads.firstOrNull { it is FeedViewHolderPayloads } as? FeedViewHolderPayloads
+        val newPayloads =
+            if (feedPayloads != null && feedPayloads.payloads.contains(FEED_POST_SELECTED_CHANGED)) {
+                payloads.toMutableList().also { it.add(selectedPayload) }
+            } else {
+                payloads
+            }
         bind(item.data as FeedCardImageContentModel, newPayloads)
     }
 
@@ -281,6 +283,14 @@ class FeedPostImageViewHolder(
 
             if (payloads.contains(FeedViewHolderPayloadActions.FEED_POST_FOLLOW_CHANGED)) {
                 bindAuthor(element)
+            }
+
+            if (payloads.contains(FeedViewHolderPayloadActions.FEED_POST_SCROLLING)) {
+                onScrolling()
+            }
+
+            if (payloads.contains(FeedViewHolderPayloadActions.FEED_POST_DONE_SCROLL)) {
+                onDoneScroll()
             }
 
             payloads.forEach { payload ->
@@ -548,6 +558,46 @@ class FeedPostImageViewHolder(
         productButtonView.showIfPossible()
     }
 
+    private fun onScrolling() {
+        with(binding) {
+            layoutAuthorInfo.root.animate().alpha(SCROLL_OPACITY).duration =
+                OPACITY_ANIMATE_DURATION
+            tvFeedCaption.animate().alpha(SCROLL_OPACITY).duration = OPACITY_ANIMATE_DURATION
+            menuButton.animate().alpha(SCROLL_OPACITY).duration = OPACITY_ANIMATE_DURATION
+            shareButton.animate().alpha(SCROLL_OPACITY).duration = OPACITY_ANIMATE_DURATION
+            overlayTop.root.animate().alpha(SCROLL_OPACITY).duration = OPACITY_ANIMATE_DURATION
+            overlayBottom.root.animate().alpha(SCROLL_OPACITY).duration = OPACITY_ANIMATE_DURATION
+            overlayRight.root.animate().alpha(SCROLL_OPACITY).duration = OPACITY_ANIMATE_DURATION
+            btnDisableClearMode.animate().alpha(SCROLL_OPACITY).duration = OPACITY_ANIMATE_DURATION
+            postLikeButton.root.animate().alpha(SCROLL_OPACITY).duration = OPACITY_ANIMATE_DURATION
+            feedCommentButton.root.animate().alpha(SCROLL_OPACITY).duration =
+                OPACITY_ANIMATE_DURATION
+            productTagView.root.animate().alpha(SCROLL_OPACITY).duration = OPACITY_ANIMATE_DURATION
+            productTagButton.root.animate().alpha(SCROLL_OPACITY).duration =
+                OPACITY_ANIMATE_DURATION
+        }
+    }
+
+    private fun onDoneScroll() {
+        with(binding) {
+            layoutAuthorInfo.root.animate().alpha(FULL_OPACITY).duration =
+                OPACITY_ANIMATE_DURATION
+            tvFeedCaption.animate().alpha(FULL_OPACITY).duration = OPACITY_ANIMATE_DURATION
+            menuButton.animate().alpha(FULL_OPACITY).duration = OPACITY_ANIMATE_DURATION
+            shareButton.animate().alpha(FULL_OPACITY).duration = OPACITY_ANIMATE_DURATION
+            overlayTop.root.animate().alpha(FULL_OPACITY).duration = OPACITY_ANIMATE_DURATION
+            overlayBottom.root.animate().alpha(FULL_OPACITY).duration = OPACITY_ANIMATE_DURATION
+            overlayRight.root.animate().alpha(FULL_OPACITY).duration = OPACITY_ANIMATE_DURATION
+            btnDisableClearMode.animate().alpha(FULL_OPACITY).duration = OPACITY_ANIMATE_DURATION
+            postLikeButton.root.animate().alpha(FULL_OPACITY).duration = OPACITY_ANIMATE_DURATION
+            feedCommentButton.root.animate().alpha(FULL_OPACITY).duration =
+                OPACITY_ANIMATE_DURATION
+            productTagView.root.animate().alpha(FULL_OPACITY).duration = OPACITY_ANIMATE_DURATION
+            productTagButton.root.animate().alpha(FULL_OPACITY).duration =
+                OPACITY_ANIMATE_DURATION
+        }
+    }
+
     private fun runAutoSwipe() {
         job?.cancel()
         job = scope.launch {
@@ -587,6 +637,10 @@ class FeedPostImageViewHolder(
     companion object {
         const val PRODUCT_COUNT_ZERO = 0
         const val PRODUCT_COUNT_ONE = 1
+
+        const val SCROLL_OPACITY = .3f
+        const val FULL_OPACITY = 1f
+        const val OPACITY_ANIMATE_DURATION = 300L
 
         private const val MINIMUM_DISTANCE_SWIPE = 100
 

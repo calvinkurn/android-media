@@ -16,6 +16,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager2.widget.ViewPager2.SCROLL_STATE_DRAGGING
 import androidx.viewpager2.widget.ViewPager2.SCROLL_STATE_IDLE
 import com.tkpd.atcvariant.view.bottomsheet.AtcVariantBottomSheet
 import com.tkpd.atcvariant.view.viewmodel.AtcVariantSharedViewModel
@@ -244,7 +245,9 @@ class FeedFragment :
                 val position = getCurrentPosition()
                 updateBottomActionView(position)
                 adapter.select(position)
-
+            } else if (newState == SCROLL_STATE_DRAGGING) {
+                val position = getCurrentPosition()
+                adapter.onScrolling(position)
             }
         }
     }
