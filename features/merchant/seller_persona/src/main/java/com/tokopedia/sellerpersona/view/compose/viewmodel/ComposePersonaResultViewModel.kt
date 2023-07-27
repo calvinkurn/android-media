@@ -35,7 +35,9 @@ class ComposePersonaResultViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers
 ) : ViewModel() {
 
-    private val _personaState = MutableStateFlow(PersonaResultState(isLoading = true, error = null))
+    private val _personaState = MutableStateFlow(
+        PersonaResultState(state = PersonaResultState.State.Loading)
+    )
     val personaState: StateFlow<PersonaResultState>
         get() = _personaState.asStateFlow()
 
@@ -106,9 +108,7 @@ class ComposePersonaResultViewModel @Inject constructor(
     private suspend fun onCheckedChanged(event: ResultUiEvent.CheckChanged) {
         val lastState = _personaState.value
         val checkedChangedState = lastState.copy(
-            isLoading = false,
-            data = lastState.data.copy(isSwitchChecked = event.isChecked),
-            error = null
+            data = lastState.data.copy(isSwitchChecked = event.isChecked)
         )
         _personaState.emit(checkedChangedState)
     }
@@ -120,33 +120,31 @@ class ComposePersonaResultViewModel @Inject constructor(
         val isSwitchCheckedByDefault = args.paramPersona.isNotBlank()
         return if (isSwitchCheckedByDefault) {
             lastState.copy(
-                isLoading = false,
-                data = data.copy(isSwitchChecked = true, args = args),
-                error = null
+                state = PersonaResultState.State.Success,
+                data = data.copy(isSwitchChecked = true, args = args)
             )
         } else {
-            lastState.copy(isLoading = false, data = data.copy(args = args), error = null)
+            lastState.copy(state = PersonaResultState.State.Success, data = data.copy(args = args))
         }
     }
 
     private fun getLoadingState(): PersonaResultState {
         val lastState = _personaState.value
-        return lastState.copy(isLoading = true, data = lastState.data, error = null)
+        return lastState.copy(state = PersonaResultState.State.Loading, data = lastState.data)
     }
 
     private fun getErrorState(args: PersonaArgsUiModel, throwable: Throwable): PersonaResultState {
         val lastState = _personaState.value
         return lastState.copy(
-            isLoading = false, data = lastState.data.copy(args = args), error = throwable
+            state = PersonaResultState.State.Error(throwable),
+            data = lastState.data.copy(args = args)
         )
     }
 
     private suspend fun updatePersonaLocalData(status: PersonaStatus) {
         val lastState = _personaState.value
         val personaStatusState = lastState.copy(
-            data = lastState.data.copy(
-                isApplyLoading = false, personaStatus = status
-            )
+            data = lastState.data.copy(isApplyLoading = false, personaStatus = status)
         )
         _personaState.emit(personaStatusState)
     }

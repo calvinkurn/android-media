@@ -27,6 +27,7 @@ import com.tokopedia.sellerpersona.data.local.PersonaSharedPref
 import com.tokopedia.sellerpersona.view.activity.SellerPersonaActivity
 import com.tokopedia.sellerpersona.view.compose.component.ErrorStateComponent
 import com.tokopedia.sellerpersona.view.compose.model.args.PersonaArgsUiModel
+import com.tokopedia.sellerpersona.view.compose.model.state.PersonaResultState
 import com.tokopedia.sellerpersona.view.compose.model.uievent.ResultUiEvent
 import com.tokopedia.sellerpersona.view.compose.screen.personaresult.PersonaResultScreen
 import com.tokopedia.sellerpersona.view.compose.screen.personaresult.ResultLoadingState
@@ -97,20 +98,19 @@ class ComposeResultFragment : Fragment() {
                     Surface(color = MaterialTheme.colors.background) {
                         val state = viewModel.personaState.collectAsState()
 
-                        val isLoading = state.value.isLoading
-                        val isError = state.value.error != null
-
-                        when {
-                            isLoading -> ResultLoadingState()
-                            isError -> {
-                                ErrorStateComponent(actionText = stringResource(id = R.string.sp_reload),
+                        when (state.value.state) {
+                            is PersonaResultState.State.Loading -> ResultLoadingState()
+                            is PersonaResultState.State.Error -> {
+                                ErrorStateComponent(
+                                    actionText = stringResource(id = R.string.sp_reload),
                                     title = stringResource(id = R.string.sp_common_global_error_title),
                                     onActionClicked = {
                                         viewModel.onEvent(ResultUiEvent.Reload)
-                                    })
+                                    }
+                                )
                             }
 
-                            else -> {
+                            is PersonaResultState.State.Success -> {
                                 updatePersonaStatusFlag(state.value.data.personaStatus.isActive())
                                 markForCheckedChanged(state.value.data.isSwitchChecked)
                                 PersonaResultScreen(state.value, viewModel::onEvent)

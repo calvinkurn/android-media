@@ -7,7 +7,13 @@ import com.tokopedia.sellerpersona.view.model.PersonaDataUiModel
  */
 
 data class PersonaResultState(
-    val isLoading: Boolean = true,
-    val error: Throwable? = null,
+    val state: State = State.Loading,
     val data: PersonaDataUiModel = PersonaDataUiModel()
-)
+) {
+
+    sealed class State {
+        object Loading : State()
+        data class Error(val throwable: Throwable) : State()
+        object Success : State()
+    }
+}
