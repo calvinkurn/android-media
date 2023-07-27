@@ -492,7 +492,7 @@ class DigitalPDPDataPlanFragment :
                 is RechargeNetworkResult.Success -> {
                     if (::productDescBottomSheet.isInitialized) productDescBottomSheet.dismiss()
                     hideLoadingDialog()
-                    digitalPDPAnalytics.addToswCart(
+                    digitalPDPAnalytics.addToCart(
                         atcData.data.categoryId,
                         DigitalPDPCategoryUtil.getCategoryName(categoryId),
                         operator.attributes.name,
