@@ -20,7 +20,8 @@ import com.tokopedia.promousage.util.TextDrawable
 
 class VoucherCodeDelegateAdapter(
     private val onApplyVoucherCodeCtaClick: (String) -> Unit,
-    private val onVoucherCodeClearIconClick: () -> Unit
+    private val onVoucherCodeClearIconClick: () -> Unit,
+    private val onVoucherCodeTextFieldClick: () -> Unit
 ) : DelegateAdapter<VoucherCode, VoucherCodeDelegateAdapter.ViewHolder>(VoucherCode::class.java) {
 
     companion object {
@@ -105,6 +106,7 @@ class VoucherCodeDelegateAdapter(
             binding.tauVoucherCode.textInputLayout.editText?.inputType = InputType.TYPE_CLASS_TEXT
 
             binding.tauVoucherCode.editText.setOnTouchListener { _ , motionEvent ->
+                onVoucherCodeTextFieldClick()
 
                 val drawables = binding.tauVoucherCode.editText.compoundDrawables
                 val rightDrawable = drawables.getOrNull(RIGHT_DRAWABLE_INDEX)

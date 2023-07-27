@@ -11,6 +11,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.RelativeLayout
 import androidx.core.content.ContextCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProvider
@@ -46,11 +48,13 @@ import com.tokopedia.promousage.view.adapter.VoucherAccordionDelegateAdapter
 import com.tokopedia.promousage.view.adapter.VoucherCodeDelegateAdapter
 import com.tokopedia.promousage.view.adapter.VoucherRecommendationDelegateAdapter
 import com.tokopedia.promousage.view.viewmodel.PromoUsageViewModel
+import com.tokopedia.unifycomponents.toDp
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
+
 
 class PromoUsageBottomSheet: BottomSheetDialogFragment() {
 
@@ -75,7 +79,7 @@ class PromoUsageBottomSheet: BottomSheetDialogFragment() {
             .add(VoucherRecommendationDelegateAdapter(onVoucherClick, onButtonUseRecommendedVoucherClick))
             .add(VoucherAccordionDelegateAdapter(onVoucherAccordionClick, onVoucherClick, onHyperlinkClick, onViewAllVoucherCtaClick))
             .add(TermAndConditionDelegateAdapter(onTermAndConditionHyperlinkClick))
-            .add(VoucherCodeDelegateAdapter(onApplyVoucherCodeCtaClick, onVoucherCodeClearIconClick))
+            .add(VoucherCodeDelegateAdapter(onApplyVoucherCodeCtaClick, onVoucherCodeClearIconClick, onVoucherCodeTextFieldClick))
             .build()
     }
 
@@ -128,6 +132,7 @@ class PromoUsageBottomSheet: BottomSheetDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupView()
+        listenKeyboardVisibility()
         setupRecyclerView()
         observeVouchers()
         observeSelectedVouchers()
@@ -146,10 +151,28 @@ class PromoUsageBottomSheet: BottomSheetDialogFragment() {
         val maxPeekHeight: Int = screenHeight - BOTTOM_SHEET_MARGIN_TOP_IN_DP.toPx()
         frameDialogView.layoutParams.height = maxPeekHeight
 
-        val bottomSheet = BottomSheetBehavior.from(frameDialogView)
-        bottomSheet.peekHeight = maxPeekHeight
+        val bottomSheetBehavior = BottomSheetBehavior.from(frameDialogView)
+        bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
     }
 
+    private fun listenKeyboardVisibility() {
+        activity?.let { activity ->
+            ViewCompat.setOnApplyWindowInsetsListener(activity.window.decorView) { v: View?, insets: WindowInsetsCompat ->
+                val isKeyboardVisible = insets.isVisible(WindowInsetsCompat.Type.ime())
+                val keyboardHeight = insets.getInsets(WindowInsetsCompat.Type.ime()).bottom
+
+                if (isKeyboardVisible) {
+                    val itemCount = recyclerViewAdapter.itemCount
+                    binding?.recyclerView?.smoothScrollToPosition(itemCount)
+                    binding?.recyclerView?.setPadding(0,0,0, keyboardHeight.toDp())
+                } else {
+                    binding?.recyclerView?.setPadding(0,0,0,0)
+                }
+
+                insets
+            }
+        }
+    }
     private fun observeVouchers() {
         viewModel.vouchers.observe(viewLifecycleOwner) { result ->
             when (result) {
@@ -413,7 +436,9 @@ class PromoUsageBottomSheet: BottomSheetDialogFragment() {
     }
 
     private val onVoucherCodeClearIconClick = { viewModel.onVoucherCodeClearIconClick() }
+    private val onVoucherCodeTextFieldClick : () -> Unit  = {
 
+    }
     private val onTermAndConditionHyperlinkClick = { showTermAndConditionBottomSheet() }
 
     private fun showLottieConfettiAnimation() {

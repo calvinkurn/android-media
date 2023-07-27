@@ -46,7 +46,7 @@ class PromoUsageViewModel @Inject constructor(
         launchCatchError(
             dispatchers.io,
             block = {
-                delay(2_000)
+                delay(500)
 
                 val items = listOf<DelegateAdapterItem>(
                     VoucherRecommendation("Kamu bisa hemat Rp30.000 dari 2 promo!", recommendationVouchers),
