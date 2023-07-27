@@ -79,7 +79,6 @@ class PlayBroadcastChannelRepositoryImpl @Inject constructor(
                 hasContent = response.authorConfig.hasContent,
                 tnc = response.authorConfig.tnc,
                 beautificationConfig = mapBeautificationConfig(response.authorConfig.beautificationConfig),
-                showSaveButton = response.authorConfig.showSaveButton,
             )
         )
     }

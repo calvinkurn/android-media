@@ -69,7 +69,6 @@ class PlayBroadcastSummaryViewModelRobot(
         getInteractiveSummaryLivestreamUseCase = getInteractiveSummaryLivestreamUseCase,
         account = account,
         hydraConfigStore = hydraConfigStore,
-        remoteConfig = remoteConfig,
     )
 
     fun recordState(fn: suspend PlayBroadcastSummaryViewModelRobot.() -> Unit): PlayBroadcastSummaryUiState {
