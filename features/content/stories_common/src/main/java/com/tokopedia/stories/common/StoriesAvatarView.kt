@@ -30,6 +30,7 @@ import androidx.lifecycle.findViewTreeViewModelStoreOwner
 import androidx.lifecycle.get
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.nest.components.NestImage
 import com.tokopedia.nest.principles.ui.NestTheme
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -53,12 +54,20 @@ class StoriesAvatarView @JvmOverloads constructor(
 ) {
 
     private var mImageUrl by mutableStateOf("")
-    private var storiesStatus by mutableStateOf(StoriesStatus.NoStories)
+    private var storiesStatus by mutableStateOf(StoriesStatus.HasUnseenStories)
 
-    private val shopId = MutableStateFlow("1")
+    private val shopId = MutableStateFlow("2")
 
     private var mViewModel: StoriesAvatarViewModel? = null
     private var observeJob: Job? = null
+
+    private var mOnNoStoriesClicked: OnClickListener? = null
+
+    init {
+        super.setOnClickListener {
+            mViewModel?.onIntent(StoriesAvatarIntent.OpenStoriesDetail(shopId.value))
+        }
+    }
 
     @Composable
     override fun Content() {
@@ -81,8 +90,12 @@ class StoriesAvatarView @JvmOverloads constructor(
         mViewModel = null
     }
 
+    override fun setOnClickListener(l: OnClickListener?) {
+        mOnNoStoriesClicked = l
+    }
+
     fun updateStoriesStatus() {
-        mViewModel?.onIntent(StoriesIntent.getStoriesStatus(shopId.value))
+        mViewModel?.onIntent(StoriesAvatarIntent.GetStoriesStatus(shopId.value))
     }
 
     fun setImageUrl(imageUrl: String) {
@@ -94,11 +107,34 @@ class StoriesAvatarView @JvmOverloads constructor(
         val viewModel = mViewModel ?: return
         val lifecycleOwner = getLifecycleOwner() ?: return
         observeJob = lifecycleOwner.lifecycleScope.launch {
-            lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                shopId.flatMapLatest {
-                    viewModel.getStories(it)
-                }.collectLatest {
-                    storiesStatus = it.status
+            launch {
+                lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                    shopId.flatMapLatest {
+                        viewModel.getStoriesState(it)
+                    }.collectLatest {
+                        storiesStatus = it.status
+                    }
+                }
+            }
+
+            launch {
+                lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                    shopId.flatMapLatest {
+                        viewModel.getStoriesMessage(it)
+                    }.collect { message ->
+                        if (message == null) return@collect
+
+                        when (message) {
+                            is StoriesAvatarMessage.OpenStoriesDetail -> {
+                                RouteManager.route(context, message.appLink)
+                            }
+                            is StoriesAvatarMessage.OpenDetailWithNoStories -> {
+                                mOnNoStoriesClicked?.onClick(this@StoriesAvatarView)
+                            }
+                        }
+
+                        viewModel.clearMessage(message.id)
+                    }
                 }
             }
         }

@@ -1,6 +1,7 @@
 package com.tokopedia.stories.common
 
 import android.os.Bundle
+import android.widget.Toast
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.stories.common.databinding.ActivityStoriesAvatarSampleBinding
 
@@ -19,6 +20,10 @@ class StoriesAvatarSampleActivity : BaseActivity() {
 
         binding.btnToggle.setOnClickListener {
             binding.storiesAvatar.setImageUrl("https://4.img-dpreview.com/files/p/E~TS590x0~articles/3925134721/0266554465.jpeg")
+        }
+
+        binding.storiesAvatar.setOnClickListener {
+            Toast.makeText(this, "Opening Not Detail", Toast.LENGTH_SHORT).show()
         }
     }
 }

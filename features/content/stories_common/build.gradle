@@ -40,7 +40,10 @@ buildscript {
 }
 
 dependencies {
+    implementation projectOrAar(rootProject.ext.libraries.applink)
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
+
+    implementation projectOrAar(rootProject.ext.features.contentCommon)
 
     implementation rootProject.ext.composeDependencies.composeUi
 
