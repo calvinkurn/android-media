@@ -39,15 +39,11 @@ fun Switch(
     isSwitchedOn: Boolean,
     onCheckedChanged: ((Boolean) -> Unit)? = null
 ) {
-
     val staticThumbColor = NestNN.light._0
     val checkedTrackColor: Color = NestTheme.colors.GN._500
     val uncheckedTrackColor: Color = NestTheme.colors.NN._900
 
-    val switchState = remember {
-        mutableStateOf(isSwitchedOn)
-    }
-
+    val switchState = remember { mutableStateOf(isSwitchedOn) }
     val alignment by rememberAnimateAlignmentAsState(if (switchState.value) BiasEnd else BiasStart)
 
     // switch track
@@ -59,13 +55,14 @@ fun Switch(
                 shape = RoundedCornerShape(percent = 50)
             )
             .clickable(
-                indication = null, interactionSource = MutableInteractionSource()
+                indication = null,
+                interactionSource = MutableInteractionSource()
             ) {
                 switchState.value = !switchState.value
                 onCheckedChanged?.invoke(switchState.value)
-            }, contentAlignment = alignment
+            },
+        contentAlignment = alignment
     ) {
-
         // switch thumb
         Box(
             modifier = Modifier
