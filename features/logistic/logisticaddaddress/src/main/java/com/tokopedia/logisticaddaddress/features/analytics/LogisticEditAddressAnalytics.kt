@@ -1,9 +1,7 @@
 package com.tokopedia.logisticaddaddress.features.analytics
 
-import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.addressform.analytics.EditAddressRevampAnalytics
 import com.tokopedia.track.builder.BaseTrackerBuilder
 import com.tokopedia.track.builder.util.BaseTrackerConst
-
 
 object LogisticEditAddressAnalytics : BaseTrackerConst() {
     //    event name
@@ -15,19 +13,7 @@ object LogisticEditAddressAnalytics : BaseTrackerConst() {
     private const val LABEL_NOT_SUCCESS = "not success"
 
     //    event action
-    private const val ACTION_VIEW_EDIT_ADDRESS_NEW = "view edit address page new"
-    private const val ACTION_CLICK_BUTTON_SIMPAN = "click button simpan - edit address new"
-    private const val ACTION_CLICK_ATUR_PINPOINT = "click atur pinpoint"
-    private const val ACTION_CLICK_LABEL_ALAMAT = "click field label alamat"
-    private const val ACTION_CLICK_CHIPS_LABEL_ALAMAT = "click chips label alamat"
-    private const val ACTION_CLICK_FIELD_ALAMAT = "click field alamat"
-    private const val ACTION_CLICK_FIELD_CATATAN_KURIR = "click field catatan untuk kurir"
-    private const val ACTION_CLICK_FIELD_NAMA_PENERIMA = "click field nama penerima"
-    private const val ACTION_CLICK_FIELD_NO_HP = "click field nomor hp"
-    private const val ACTION_CLICK_PHONE_BOOK_ICON = "click phone book icon"
     private const val ACTION_CLICK_BACK_ARROW = "click back arrow on top left corner"
-    private const val ACTION_CLICK_SIMPAN_ERROR = "click simpan button, error in 1 or more field"
-    private const val ACTION_CLICK_FIELD_KOTA_KECAMATAN = "click field kota & kecamatan"
     private const val ACTION_CLICK_FIELD_CARI_KOTA_KECAMATAN = "click field cari kota kecamatan"
     private const val ACTION_CLICK_CHIPS_KOTA_POPULER = "click chips kota populer"
     private const val ACTION_CLICK_DROPDOWN_SUGGESTION_KOTA_KECAMATAN = "click dropdown suggestion kota kecamatan"
@@ -45,7 +31,6 @@ object LogisticEditAddressAnalytics : BaseTrackerConst() {
     private const val ACTION_CLICK_DROPDOWN_SUGGESTION_ALAMAT = "click dropdown suggestion alamat"
 
     //    event category
-    const val CATEGORY_EDIT_ADDRESS_PAGE = "edit address page"
     private const val CATEGORY_EDIT_KOTA_KECAMATAN_PAGE = "edit address, kota kecamatan page"
     private const val CATEGORY_EDIT_KODE_POS_PAGE = "edit address, kode pos page"
     private const val CATEGORY_EDIT_PINPOINT_PAGE = "edit address, pinpoint page"
@@ -53,8 +38,6 @@ object LogisticEditAddressAnalytics : BaseTrackerConst() {
 
     //    business unit
     private const val BUSINESS_UNIT_LOGISTIC = "logistic"
-
-
 
     fun onClickFieldCariKotaKecamatan(userId: String) {
         getTracker().sendGeneralEvent(

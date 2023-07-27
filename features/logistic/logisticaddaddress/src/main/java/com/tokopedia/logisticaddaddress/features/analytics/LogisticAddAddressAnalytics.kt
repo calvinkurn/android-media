@@ -1,6 +1,5 @@
 package com.tokopedia.logisticaddaddress.features.analytics
 
-import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.addressform.analytics.AddNewAddressRevampAnalytics
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.builder.BaseTrackerBuilder
 import com.tokopedia.track.builder.util.BaseTrackerConst
@@ -27,43 +26,34 @@ object LogisticAddAddressAnalytics : BaseTrackerConst() {
     private const val CLICK_BACK_ARROW = "click back arrow on top left corner"
     private const val CLICK_BACK_ARROW_BUTTON = "click back arrow button on top left corner"
     private const val IMPRESSION_BOTTOMSHEET_ALAMAT_TIDAK_TERDETEKSI = "impression bottomsheet alamat tidak terdeteksi"
-    private const val CLICK_ISI_ALAMAT_MANUAL_FROM_UNDETECTED_LOC_BOTTOMSHEET = "click isi alamat manual from undetected location bottomsheet"
+    private const val CLICK_ISI_ALAMAT_MANUAL_FROM_UNDETECTED_LOC_BOTTOMSHEET =
+        "click isi alamat manual from undetected location bottomsheet"
     private const val IMPRESSION_BOTTOMSHEET_OUT_OF_INDO = "impression out of indonesia"
     private const val CLICK_ISI_ALAMAT_MANUAL_FROM_OUT_OF_INDO = "click isi alamat manual from out of indonesia bottomsheet"
     private const val CLICK_CARI_ULANG_ALAMAT = "click cari ulang alamat"
     private const val CLICK_ICON_QUESTION = "click icon ?"
     private const val CLICK_PILIH_LOKASI_DAN_LANJUT_ISI_ALAMAT = "click pilih lokasi dan lanjut isi alamat"
     private const val CLICK_PILIH_LOKASI_DAN_LANJUT_ISI_ALAMAT_NEGATIVE = "click pilih lokasi dan lanjut isi alamat negative"
-    private const val VIEW_TOASTER_PASTIKAN_PINPOINT_SESUAI_KOTA_KECAMATAN = "view toaster pastikan pinpoint lokasi sesuai dengan kota dan kecamatanmu"
-    private const val CLICK_FIELD_LABEL_ALAMAT = "click field label alamat"
+    private const val VIEW_TOASTER_PASTIKAN_PINPOINT_SESUAI_KOTA_KECAMATAN =
+        "view toaster pastikan pinpoint lokasi sesuai dengan kota dan kecamatanmu"
     private const val CLICK_CHIPS_LABEL_ALAMAT = "click chips label alamat"
-    private const val CLICK_FIELD_ALAMAT = "click field alamat"
-    private const val CLICK_FIELD_CATATAN_KURIR = "click field catatan untuk kurir"
-    private const val CLICK_FIELD_NAMA_PENERIMA = "click field nama penerima"
-    private const val CLICK_ICON_I_NAMA_PENERIMA = "click icon i nama penerima"
-    private const val CLICK_FIELD_NO_HP = "click field nomor hp"
-    private const val CLICK_PHONE_BOOK_ICON = "click phone book icon"
-    private const val CLICK_BOX_JADIKAN_ALAMAT_UTAMA = "click box jadikan alamat utama"
-    private const val CLICK_SIMPAN = "click simpan"
-    private const val CLICK_SIMPAN_ERROR = "click simpan button, error in 1 or more field"
+
     private const val CLICK_FIELD_CARI_KOTA_KECAMATAN = "click field cari kota kecamatan"
-    private const val CLICK_FIELD_KOTA_KECAMATAN = "click field kota dan kecamatan"
     private const val CLICK_CHIPS_KOTA_POPULER = "click chips kota populer"
     private const val CLICK_DROPDOWN_SUGGESTION_KOTA_KECAMATAN = "click dropdown suggestion kota kecamatan"
     private const val CLICK_FIELD_KODE_POS = "click field kode pos"
     private const val CLICK_CHIPS_KODE_POS = "click chips kode pos"
     private const val CLICK_PILIH = "click pilih"
     private const val VIEW_ERROR_TOASTER_KODE_POS = "view error toaster kode pos terlalu pendek, min 5 karakter"
-    private const val CLICK_ATUR_PINPOINT = "click atur pinpoint"
 
     private const val SEARCH_PAGE = "search page"
     private const val PINPOINT_PAGE = "pinpoint page"
-    private const val ANA_POSITIVE = "add new address positive"
     private const val ANA_NEGATIVE = "add new address negative"
     private const val KOTA_KECAMATAN_PAGE = "kota kecamatan page"
     private const val KODE_POST_PAGE = "kode pos page"
 
     private const val BUSINESS_UNIT_LOGISTIC = "logistics & fulfillment"
+
     @JvmStatic
     fun sendScreenName(screenName: String?) {
         TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName)
@@ -426,7 +416,7 @@ object LogisticAddAddressAnalytics : BaseTrackerConst() {
         getTracker().sendGeneralEvent(
             BaseTrackerBuilder()
                 .appendEvent(CLICK_ADDRESS)
-                .appendEventCategory("${ANA_NEGATIVE}, ${KOTA_KECAMATAN_PAGE}")
+                .appendEventCategory("$ANA_NEGATIVE, $KOTA_KECAMATAN_PAGE")
                 .appendEventAction(CLICK_FIELD_CARI_KOTA_KECAMATAN)
                 .appendEventLabel("")
                 .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
@@ -440,7 +430,7 @@ object LogisticAddAddressAnalytics : BaseTrackerConst() {
         getTracker().sendGeneralEvent(
             BaseTrackerBuilder()
                 .appendEvent(CLICK_ADDRESS)
-                .appendEventCategory("${ANA_NEGATIVE}, ${KOTA_KECAMATAN_PAGE}")
+                .appendEventCategory("$ANA_NEGATIVE, $KOTA_KECAMATAN_PAGE")
                 .appendEventAction(CLICK_CHIPS_KOTA_POPULER)
                 .appendEventLabel("")
                 .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
@@ -454,7 +444,7 @@ object LogisticAddAddressAnalytics : BaseTrackerConst() {
         getTracker().sendGeneralEvent(
             BaseTrackerBuilder()
                 .appendEvent(CLICK_ADDRESS)
-                .appendEventCategory("${ANA_NEGATIVE}, ${KOTA_KECAMATAN_PAGE}")
+                .appendEventCategory("$ANA_NEGATIVE, $KOTA_KECAMATAN_PAGE")
                 .appendEventAction(CLICK_BACK_ARROW)
                 .appendEventLabel("")
                 .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
@@ -468,7 +458,7 @@ object LogisticAddAddressAnalytics : BaseTrackerConst() {
         getTracker().sendGeneralEvent(
             BaseTrackerBuilder()
                 .appendEvent(CLICK_ADDRESS)
-                .appendEventCategory("${ANA_NEGATIVE}, ${KODE_POST_PAGE}")
+                .appendEventCategory("$ANA_NEGATIVE, $KODE_POST_PAGE")
                 .appendEventAction(CLICK_FIELD_KODE_POS)
                 .appendEventLabel("")
                 .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
@@ -482,7 +472,7 @@ object LogisticAddAddressAnalytics : BaseTrackerConst() {
         getTracker().sendGeneralEvent(
             BaseTrackerBuilder()
                 .appendEvent(CLICK_ADDRESS)
-                .appendEventCategory("${ANA_NEGATIVE}, ${KOTA_KECAMATAN_PAGE}")
+                .appendEventCategory("$ANA_NEGATIVE, $KOTA_KECAMATAN_PAGE")
                 .appendEventAction(CLICK_DROPDOWN_SUGGESTION_KOTA_KECAMATAN)
                 .appendEventLabel("")
                 .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
@@ -496,7 +486,7 @@ object LogisticAddAddressAnalytics : BaseTrackerConst() {
         getTracker().sendGeneralEvent(
             BaseTrackerBuilder()
                 .appendEvent(CLICK_ADDRESS)
-                .appendEventCategory("${ANA_NEGATIVE}, ${KODE_POST_PAGE}")
+                .appendEventCategory("$ANA_NEGATIVE, $KODE_POST_PAGE")
                 .appendEventAction(CLICK_CHIPS_KODE_POS)
                 .appendEventLabel("")
                 .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
@@ -510,7 +500,7 @@ object LogisticAddAddressAnalytics : BaseTrackerConst() {
         getTracker().sendGeneralEvent(
             BaseTrackerBuilder()
                 .appendEvent(CLICK_ADDRESS)
-                .appendEventCategory("${ANA_NEGATIVE}, ${KODE_POST_PAGE}")
+                .appendEventCategory("$ANA_NEGATIVE, $KODE_POST_PAGE")
                 .appendEventAction(CLICK_PILIH)
                 .appendEventLabel("")
                 .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
@@ -524,7 +514,7 @@ object LogisticAddAddressAnalytics : BaseTrackerConst() {
         getTracker().sendGeneralEvent(
             BaseTrackerBuilder()
                 .appendEvent(VIEW_ADDRESS_IRIS)
-                .appendEventCategory("${ANA_NEGATIVE}, ${KODE_POST_PAGE}")
+                .appendEventCategory("$ANA_NEGATIVE, $KODE_POST_PAGE")
                 .appendEventAction(VIEW_ERROR_TOASTER_KODE_POS)
                 .appendEventLabel("")
                 .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
@@ -553,7 +543,7 @@ object LogisticAddAddressAnalytics : BaseTrackerConst() {
         getTracker().sendGeneralEvent(
             BaseTrackerBuilder()
                 .appendEvent(CLICK_ADDRESS)
-                .appendEventCategory("${ANA_NEGATIVE}, ${KODE_POST_PAGE}")
+                .appendEventCategory("$ANA_NEGATIVE, $KODE_POST_PAGE")
                 .appendEventAction(CLICK_BACK_ARROW_BUTTON)
                 .appendEventLabel("")
                 .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)

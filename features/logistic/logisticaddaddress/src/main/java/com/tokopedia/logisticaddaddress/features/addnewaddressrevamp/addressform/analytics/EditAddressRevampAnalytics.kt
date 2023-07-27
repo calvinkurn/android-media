@@ -28,28 +28,9 @@ object EditAddressRevampAnalytics : BaseTrackerConst() {
     private const val ACTION_CLICK_BACK_ARROW = "click back arrow on top left corner"
     private const val ACTION_CLICK_SIMPAN_ERROR = "click simpan button, error in 1 or more field"
     private const val ACTION_CLICK_FIELD_KOTA_KECAMATAN = "click field kota & kecamatan"
-    private const val ACTION_CLICK_FIELD_CARI_KOTA_KECAMATAN = "click field cari kota kecamatan"
-    private const val ACTION_CLICK_CHIPS_KOTA_POPULER = "click chips kota populer"
-    private const val ACTION_CLICK_DROPDOWN_SUGGESTION_KOTA_KECAMATAN = "click dropdown suggestion kota kecamatan"
-    private const val ACTION_CLICK_GUNAKAN_LOKASI_INI = "click gunakan lokasi ini"
-    private const val ACTION_CLICK_FIELD_KODE_POS = "click field kode pos"
-    private const val ACTION_CLICK_CHIPS_KODE_POS = "click chips kode pos"
-    private const val ACTION_CLICK_PILIH = "click pilih"
-    private const val ACTION_VIEW_ERROR_TOASTER_KODE_POS = "view error toaster kode pos terlalu pendek, min 5 karakter"
-    private const val ACTION_CLICK_GUNAKAN_LOKASI_SAAT_INI = "click gunakan lokasi saat ini"
-    private const val ACTION_CLICK_CARI_ULANG_ALAMAT = "click cari ulang alamat"
-    private const val ACTION_CLICK_PILIH_LOKASI_INI = "click pilih lokasi ini"
-    private const val ACTION_IMPRESSION_BOTTOMSHEET_OUT_OF_INDO = "impression out of indonesia"
-    private const val ACTION_IMPRESSION_BOTTOMSHEET_ALAMAT_TIDAK_TERDETEKSI = "impression bottomsheet alamat tidak terdeteksi"
-    private const val ACTION_CLICK_FIELD_CARI_LOKASI = "click field cari lokasi"
-    private const val ACTION_CLICK_DROPDOWN_SUGGESTION_ALAMAT = "click dropdown suggestion alamat"
 
     //    event category
     const val CATEGORY_EDIT_ADDRESS_PAGE = "edit address page"
-    private const val CATEGORY_EDIT_KOTA_KECAMATAN_PAGE = "edit address, kota kecamatan page"
-    private const val CATEGORY_EDIT_KODE_POS_PAGE = "edit address, kode pos page"
-    private const val CATEGORY_EDIT_PINPOINT_PAGE = "edit address, pinpoint page"
-    private const val CATEGORY_EDIT_SEARCH_PAGE = "edit address, search page"
 
     //    business unit
     private const val BUSINESS_UNIT_LOGISTIC = "logistic"
@@ -240,5 +221,4 @@ object EditAddressRevampAnalytics : BaseTrackerConst() {
                 .build()
         )
     }
-
 }
