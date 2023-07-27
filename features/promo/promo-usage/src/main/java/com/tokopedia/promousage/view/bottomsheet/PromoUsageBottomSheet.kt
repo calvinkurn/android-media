@@ -1,5 +1,6 @@
 package com.tokopedia.promousage.view.bottomsheet
 
+import android.animation.Animator
 import android.content.Intent
 import android.content.res.Configuration
 import android.graphics.Color
@@ -15,6 +16,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.OnScrollListener
+import com.airbnb.lottie.LottieCompositionFactory
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -52,7 +54,7 @@ class PromoUsageBottomSheet: BottomSheetDialogFragment() {
         private const val BUNDLE_KEY_ENTRY_POINT = "entry_point"
         private const val BUNDLE_KEY_ORIGINAL_TOTAL_PRICE = "original_total_price"
         private const val BOTTOM_SHEET_MARGIN_TOP_IN_DP = 64
-
+        private const val CONFETTI_URL = "https://assets.tokopedia.net/asts/android/shop_page/shop_campaign_tab_confetti.json"
         @JvmStatic
         fun newInstance(entryPoint: EntryPoint, originalTotalPrice: Long): PromoUsageBottomSheet {
             return PromoUsageBottomSheet().apply {
@@ -359,7 +361,7 @@ class PromoUsageBottomSheet: BottomSheetDialogFragment() {
     }
 
     private val onButtonUseRecommendedVoucherClick = {
-
+        showLottieConfettiAnimation()
     }
 
     private val onApplyVoucherCodeCtaClick = { voucherCode : String ->
@@ -369,6 +371,33 @@ class PromoUsageBottomSheet: BottomSheetDialogFragment() {
     private val onVoucherCodeClearIconClick = { viewModel.onVoucherCodeClearIconClick() }
 
     private val onTermAndConditionHyperlinkClick = { showTermAndConditionBottomSheet() }
+
+    private fun showLottieConfettiAnimation() {
+        binding?.lottieAnimationView?.apply {
+
+            val lottieCompositionLottieTask = LottieCompositionFactory.fromUrl(
+                context,
+                CONFETTI_URL
+            )
+
+            lottieCompositionLottieTask.addListener { result ->
+                visible()
+                setComposition(result)
+                playAnimation()
+
+                addAnimatorListener(object : Animator.AnimatorListener {
+                    override fun onAnimationStart(p0: Animator) {}
+
+                    override fun onAnimationEnd(p0: Animator) {
+                        gone()
+                    }
+
+                    override fun onAnimationCancel(p0: Animator) {}
+                    override fun onAnimationRepeat(p0: Animator) {}
+                })
+            }
+        }
+    }
 }
 
 

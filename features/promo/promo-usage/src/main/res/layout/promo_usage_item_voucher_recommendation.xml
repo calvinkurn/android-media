@@ -2,7 +2,6 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:orientation="horizontal"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_height="wrap_content">
@@ -58,6 +57,4 @@
         app:layout_constraintTop_toBottomOf="@+id/btnRecommendationUseVoucher"
         tools:itemCount="3"
         tools:listitem="@layout/promo_usage_item_voucher" />
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -207,4 +207,14 @@
 
     </androidx.cardview.widget.CardView>
 
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/lottieAnimationView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scaleType="centerCrop"
+        android:layout_below="@id/layoutBottomSheetHeader"
+        android:visibility="gone"
+        app:lottie_autoPlay="false"
+        app:lottie_loop="false" />
+
 </RelativeLayout>

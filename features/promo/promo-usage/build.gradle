@@ -56,6 +56,8 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
     implementation projectOrAar(rootProject.ext.libraries.utils)
     implementation projectOrAar(rootProject.ext.libraries.usersession)
+
+    implementation rootProject.ext.miscDependencies.lottie
 }
 
 project.ext {
