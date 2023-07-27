@@ -371,7 +371,7 @@ class FeedPostViewModel @Inject constructor(
 
     fun fetchPlaceholderData() {
         fetchTopAdsData()
-        fetchFollowRecommendationData()
+        fetchBulkFollowRecommendationData()
     }
 
     private fun fetchTopAdsData() {
@@ -427,7 +427,7 @@ class FeedPostViewModel @Inject constructor(
         }
     }
 
-    private fun fetchFollowRecommendationData() {
+    private fun fetchBulkFollowRecommendationData() {
 
         fun isUnfetchedFollowRecomExists(feedData: Result<FeedModel>): Boolean {
             return feedData is Success && feedData.data.items.any { data ->
@@ -435,14 +435,21 @@ class FeedPostViewModel @Inject constructor(
             }
         }
 
-        viewModelScope.launchCatchError(block = {
+        viewModelScope.launch {
             feedHome.value?.let {
                 if (it is Success && isUnfetchedFollowRecomExists(it)) {
                     val newItems = it.data.items.map { item ->
                         when {
                             item is FeedFollowRecommendationModel && !item.isFetch -> {
-                                val request = feedXRecomWidgetUseCase.createFeedFollowRecomParams("")
-                                feedXRecomWidgetUseCase(request)
+                                try {
+                                    val request = feedXRecomWidgetUseCase.createFeedFollowRecomParams("")
+                                    feedXRecomWidgetUseCase(request)
+                                } catch (throwable: Throwable) {
+                                    item.copy(
+                                        status = FeedFollowRecommendationModel.Status.getErrorStatus(throwable),
+                                        isFetch = true,
+                                    )
+                                }
                             }
                             else -> item
                         }
@@ -455,30 +462,28 @@ class FeedPostViewModel @Inject constructor(
                     )
                 }
             }
-        }) { throwable ->
-            _followRecommendationResult.value = Fail(throwable)
         }
     }
 
-    fun loadMoreFollowRecommendation(position: Int) {
+    fun fetchFollowRecommendation(position: Int) {
         viewModelScope.launchCatchError(block = {
             feedHome.value?.let {
                 if (it is Success) {
                     val followRecomData = it.data.items.getOrNull(position)
 
-                    if (followRecomData is FeedFollowRecommendationModel && followRecomData.hasNext && !followRecomData.isLoadMore) {
-
+                    if (followRecomData is FeedFollowRecommendationModel &&
+                        (followRecomData.isError || (followRecomData.hasNext && !followRecomData.isLoading))
+                    ) {
                         updateFollowRecom(position) { followRecom ->
-                            followRecom.copy(isLoadMore = true)
+                            followRecom.copy(status = FeedFollowRecommendationModel.Status.Loading)
                         }
 
                         val request = feedXRecomWidgetUseCase.createFeedFollowRecomParams(followRecomData.cursor)
                         val response = feedXRecomWidgetUseCase(request)
 
                         updateFollowRecom(position) { followRecom ->
-                            followRecom.copy(
-                                data = followRecom.data + response.data,
-                                isLoadMore = false,
+                            response.copy(
+                                data = followRecom.data + response.data
                             )
                         }
                     }
@@ -486,9 +491,15 @@ class FeedPostViewModel @Inject constructor(
             }
         }) { throwable ->
             updateFollowRecom(position) { followRecom ->
-                followRecom.copy(isLoadMore = false)
+                followRecom.copy(
+                    status = if (followRecom.data.isEmpty()) {
+                        FeedFollowRecommendationModel.Status.getErrorStatus(throwable)
+                    } else {
+                        _followRecommendationResult.value = Fail(throwable)
+                        FeedFollowRecommendationModel.Status.Success
+                    }
+                )
             }
-            _followRecommendationResult.value = Fail(throwable)
         }
     }
 

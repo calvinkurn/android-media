@@ -302,8 +302,12 @@ class FeedFragment :
             goToProfilePage(completeAppLink, profile.isShop)
         }
 
+        override fun reloadProfileRecommendation() {
+            feedPostViewModel.fetchFollowRecommendation(getCurrentPosition())
+        }
+
         override fun onLoadNextProfileRecommendation() {
-            feedPostViewModel.loadMoreFollowRecommendation(getCurrentPosition())
+            feedPostViewModel.fetchFollowRecommendation(getCurrentPosition())
         }
 
         override fun onClickViewOtherContent() {

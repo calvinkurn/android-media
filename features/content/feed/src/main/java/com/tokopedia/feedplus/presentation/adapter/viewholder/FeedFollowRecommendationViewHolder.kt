@@ -15,7 +15,10 @@ import com.tokopedia.feedplus.presentation.adapter.itemdecoration.FeedFollowProf
 import com.tokopedia.feedplus.presentation.adapter.layoutmanager.FeedFollowProfileLayoutManager
 import com.tokopedia.feedplus.presentation.adapter.listener.FeedFollowRecommendationListener
 import com.tokopedia.feedplus.presentation.model.FeedFollowRecommendationModel
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 
 /**
  * Created By : Jonathan Darwin on July 04, 2023
@@ -110,14 +113,63 @@ class FeedFollowRecommendationViewHolder(
 
         mData?.let { model ->
             setupHeader(model)
-            setupProfileList(model, selectedPosition, isViewHolderSelected)
-            setupEmptyLayout()
+            setupLayout(model, selectedPosition, isViewHolderSelected)
         }
     }
 
     private fun setupHeader(model: FeedFollowRecommendationModel) {
         binding.tvTitle.text = model.title
         binding.tvDesc.text = model.description
+    }
+
+    private fun setupLayout(
+        model: FeedFollowRecommendationModel,
+        selectedPosition: Int,
+        isViewHolderSelected: Boolean
+    ) {
+        when (model.status) {
+            FeedFollowRecommendationModel.Status.Loading -> {
+                if (model.data.isEmpty()) {
+                    profileAdapter.setItemsAndAnimateChanges(List(5) { FeedFollowProfileAdapter.Model.Loading })
+                }
+
+                binding.clMain.showWithCondition(true)
+                binding.feedNoContent.root.showWithCondition(false)
+            }
+            FeedFollowRecommendationModel.Status.Success -> {
+                setupProfileList(model, selectedPosition, isViewHolderSelected)
+            }
+            FeedFollowRecommendationModel.Status.Error -> {
+                binding.feedNoContent.iconFeedNoContent.setImage(IconUnify.RELOAD)
+                binding.feedNoContent.tyFeedNoContentTitle.text =
+                    binding.root.context.getString(R.string.feed_load_follow_recommendation_error)
+                binding.feedNoContent.tyFeedNoContentSubtitle.hide()
+                binding.feedNoContent.btnShowOtherContent.text =
+                    binding.root.context.getString(R.string.feed_label_error_fetch_button)
+                binding.feedNoContent.btnShowOtherContent.setOnClickListener {
+                    listener.reloadProfileRecommendation()
+                }
+
+                binding.clMain.showWithCondition(false)
+                binding.feedNoContent.root.showWithCondition(true)
+            }
+            FeedFollowRecommendationModel.Status.NoInternet -> {
+                binding.feedNoContent.iconFeedNoContent.setImage(IconUnify.SIGNAL_INACTIVE)
+                binding.feedNoContent.tyFeedNoContentTitle.text =
+                    binding.root.context.getString(R.string.feed_label_error_fetch_title)
+                binding.feedNoContent.tyFeedNoContentSubtitle.show()
+                binding.feedNoContent.tyFeedNoContentSubtitle.text =
+                    binding.root.context.getString(R.string.feed_label_error_fetch_subtitle)
+                binding.feedNoContent.btnShowOtherContent.text =
+                    binding.root.context.getString(R.string.feed_label_error_fetch_button)
+                binding.feedNoContent.btnShowOtherContent.setOnClickListener {
+                    listener.reloadProfileRecommendation()
+                }
+
+                binding.clMain.showWithCondition(false)
+                binding.feedNoContent.root.showWithCondition(true)
+            }
+        }
     }
 
     private fun setupProfileList(
@@ -154,14 +206,12 @@ class FeedFollowRecommendationViewHolder(
         if (isNeedForceScroll)
             binding.rvFollowRecommendation.smoothScrollToPosition(finalSelectedPosition)
 
-        binding.clMain.showWithCondition(isDataAvailable)
-        binding.feedNoContent.root.showWithCondition(!isDataAvailable)
-    }
-
-    private fun setupEmptyLayout() {
         binding.feedNoContent.btnShowOtherContent.setOnClickListener {
             listener.onClickViewOtherContent()
         }
+
+        binding.clMain.showWithCondition(isDataAvailable)
+        binding.feedNoContent.root.showWithCondition(!isDataAvailable)
     }
 
     private fun getSelectedPosition(): Int {

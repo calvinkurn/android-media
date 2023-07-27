@@ -33,8 +33,8 @@ class MapperFeedXRecomWidget @Inject constructor(
                 )
             },
             cursor = data.nextCursor,
+            status = FeedFollowRecommendationModel.Status.Success,
             isFetch = true,
-            isLoadMore = false,
         )
     }
 }

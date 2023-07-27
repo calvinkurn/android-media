@@ -2,6 +2,8 @@ package com.tokopedia.feedplus.presentation.model
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.feedplus.presentation.adapter.FeedAdapterTypeFactory
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 
 /**
  * Created By : Jonathan Darwin on July 04, 2023
@@ -12,14 +14,38 @@ data class FeedFollowRecommendationModel(
     val description: String,
     val data: List<Profile>,
     val cursor: String,
+    val status: Status,
     val isFetch: Boolean,
-    val isLoadMore: Boolean,
 ) : Visitable<FeedAdapterTypeFactory> {
 
     val hasNext: Boolean
         get() = cursor.isNotEmpty()
 
+    val isError: Boolean
+        get() = status == Status.Error || status == Status.NoInternet
+
+    val isLoading: Boolean
+        get() = status == Status.Loading
+
     override fun type(typeFactory: FeedAdapterTypeFactory): Int = typeFactory.type(this)
+
+    enum class Status {
+        Loading,
+        Success,
+        Error,
+        NoInternet;
+
+        companion object {
+            fun getErrorStatus(throwable: Throwable): Status {
+                return when (throwable) {
+                    is UnknownHostException, is SocketTimeoutException -> {
+                        FeedFollowRecommendationModel.Status.NoInternet
+                    }
+                    else -> FeedFollowRecommendationModel.Status.Error
+                }
+            }
+        }
+    }
 
     data class Profile(
         val id: String,
@@ -58,8 +84,8 @@ data class FeedFollowRecommendationModel(
                 description = "",
                 data = emptyList(),
                 cursor = "",
+                status = Status.Loading,
                 isFetch = false,
-                isLoadMore = false,
             )
     }
 }

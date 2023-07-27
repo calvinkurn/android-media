@@ -162,5 +162,6 @@ dari Feed.</string>
     <string name="feed_success_report_video">Video berhasil dilaporkan</string>
 
     <!-- Follow Recommendation -->
+    <string name="feed_load_follow_recommendation_error">Yaah, gagal memuat konten</string>
     <string name="feed_load_follow_recommendation_failed">Gagal memuat rekomendasi akun. Coba lagi, ya</string>
 </resources>
