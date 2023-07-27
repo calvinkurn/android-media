@@ -4,7 +4,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
 
-data class InspirationKeyboardCardView(
+data class InspirationKeywordCardView(
     val title: String = "",
     val optionsItems: List<InspirationKeywordDataView>
 ) : Visitable<ProductListTypeFactory> {
@@ -16,8 +16,8 @@ data class InspirationKeyboardCardView(
         fun create(
             title: String,
             optionsItems: List<InspirationKeywordDataView>
-        ): InspirationKeyboardCardView {
-            return InspirationKeyboardCardView(
+        ): InspirationKeywordCardView {
+            return InspirationKeywordCardView(
                 title = title,
                 optionsItems = optionsItems
             )

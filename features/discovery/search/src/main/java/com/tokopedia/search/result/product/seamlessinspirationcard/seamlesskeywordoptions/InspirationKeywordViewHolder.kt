@@ -16,7 +16,7 @@ import com.tokopedia.utils.view.binding.viewBinding
 class InspirationKeywordViewHolder(
     itemView: View,
     private val inspirationCarouselListener: InspirationKeywordListener
-) : AbstractViewHolder<InspirationKeyboardCardView>(itemView) {
+) : AbstractViewHolder<InspirationKeywordCardView>(itemView) {
 
     companion object {
         @LayoutRes
@@ -26,7 +26,7 @@ class InspirationKeywordViewHolder(
 
     private var binding: SearchInspirationSemlessKeywordBinding? by viewBinding()
 
-    override fun bind(element: InspirationKeyboardCardView?) {
+    override fun bind(element: InspirationKeywordCardView?) {
         if (binding == null || element == null) return
 
         initCardView()

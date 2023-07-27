@@ -13,7 +13,7 @@ import com.tokopedia.search.result.product.chooseaddress.ChooseAddressPresenterD
 import com.tokopedia.search.result.product.inspirationbundle.InspirationProductBundlingDataViewMapper.convertToInspirationProductBundleDataView
 import com.tokopedia.search.result.product.inspirationlistatc.InspirationListAtcPresenterDelegate
 import com.tokopedia.search.result.product.requestparamgenerator.RequestParamsGenerator
-import com.tokopedia.search.result.product.seamlessinspirationcard.seamlesskeywordoptions.InspirationKeyboardCardView
+import com.tokopedia.search.result.product.seamlessinspirationcard.seamlesskeywordoptions.InspirationKeywordCardView
 import com.tokopedia.search.result.product.seamlessinspirationcard.utils.InspirationSeamlessMapper
 import com.tokopedia.search.result.product.suggestion.SuggestionDataView
 import com.tokopedia.search.result.product.videowidget.InspirationCarouselVideoDataView
@@ -51,7 +51,7 @@ class InspirationCarouselPresenterDelegate @Inject constructor(
     fun processInspirationCarouselPosition(
         productList: List<Visitable<*>>,
         externalReference: String,
-        action: (Int, List<Visitable<*>>) -> Unit
+        action: (Int, List<Visitable<*>>) -> Unit,
     ) {
         if (inspirationCarouselDataViewList.isEmpty()) return
 
@@ -76,9 +76,9 @@ class InspirationCarouselPresenterDelegate @Inject constructor(
     }
 
     private fun isInvalidInspirationCarouselLayout(data: InspirationCarouselDataView): Boolean {
-        return data.isInvalidCarouselChipsLayout() ||
-            data.isInvalidCarouselVideoLayout() ||
-            data.isInvalidProductBundleLayout()
+        return data.isInvalidCarouselChipsLayout()
+            || data.isInvalidCarouselVideoLayout()
+            || data.isInvalidProductBundleLayout()
     }
 
     private fun InspirationCarouselDataView.isInvalidCarouselChipsLayout(): Boolean {
@@ -108,7 +108,7 @@ class InspirationCarouselPresenterDelegate @Inject constructor(
 
     private fun constructInspirationCarouselVisitableList(
         data: InspirationCarouselDataView,
-        externalReference: String
+        externalReference: String,
     ) = when {
         data.isDynamicProductLayout() ->
             convertInspirationCarouselToBroadMatch(data, externalReference)
@@ -151,7 +151,7 @@ class InspirationCarouselPresenterDelegate @Inject constructor(
         return listOf(
             data.convertToInspirationProductBundleDataView(
                 view.queryKey,
-                externalReference
+                externalReference,
             )
         )
     }
@@ -189,7 +189,7 @@ class InspirationCarouselPresenterDelegate @Inject constructor(
             externalReference
         )
         inspirationKeywordVisitableList.add(
-            InspirationKeyboardCardView.create(data.title, inspirationKeyboard)
+            InspirationKeywordCardView.create(data.title, inspirationKeyboard)
         )
         inspirationKeywordVisitableList.addAll(inspirationProduct)
         return inspirationKeywordVisitableList
@@ -265,7 +265,7 @@ class InspirationCarouselPresenterDelegate @Inject constructor(
         adapterPosition: Int,
         inspirationCarouselViewModel: InspirationCarouselDataView,
         clickedInspirationCarouselOption: InspirationCarouselDataView.Option,
-        searchParameter: Map<String, Any>
+        searchParameter: Map<String, Any>,
     ) {
         changeActiveInspirationCarouselChips(
             inspirationCarouselViewModel,
@@ -281,13 +281,13 @@ class InspirationCarouselPresenterDelegate @Inject constructor(
             adapterPosition,
             clickedInspirationCarouselOption,
             searchParameter,
-            inspirationCarouselViewModel.title
+            inspirationCarouselViewModel.title,
         )
     }
 
     private fun changeActiveInspirationCarouselChips(
         inspirationCarouselViewModel: InspirationCarouselDataView,
-        clickedInspirationCarouselOption: InspirationCarouselDataView.Option
+        clickedInspirationCarouselOption: InspirationCarouselDataView.Option,
     ) {
         inspirationCarouselViewModel.options.forEach {
             it.isChipsActive = false
@@ -300,7 +300,7 @@ class InspirationCarouselPresenterDelegate @Inject constructor(
         adapterPosition: Int,
         clickedInspirationCarouselOption: InspirationCarouselDataView.Option,
         searchParameter: Map<String, Any>,
-        inspirationCarouselTitle: String
+        inspirationCarouselTitle: String,
     ) {
         getInspirationCarouselChipsUseCase.get().unsubscribe()
 
@@ -316,7 +316,7 @@ class InspirationCarouselPresenterDelegate @Inject constructor(
             createGetInspirationCarouselChipProductsSubscriber(
                 adapterPosition,
                 clickedInspirationCarouselOption,
-                inspirationCarouselTitle
+                inspirationCarouselTitle,
             )
         )
     }
@@ -324,7 +324,7 @@ class InspirationCarouselPresenterDelegate @Inject constructor(
     private fun createGetInspirationCarouselChipProductsSubscriber(
         adapterPosition: Int,
         clickedInspirationCarouselOption: InspirationCarouselDataView.Option,
-        inspirationCarouselTitle: String
+        inspirationCarouselTitle: String,
     ): Subscriber<InspirationCarouselChipsProductModel> {
         return object : Subscriber<InspirationCarouselChipsProductModel>() {
             override fun onCompleted() {}
@@ -336,7 +336,7 @@ class InspirationCarouselPresenterDelegate @Inject constructor(
                     adapterPosition,
                     inspirationCarouselChipsProductModel,
                     clickedInspirationCarouselOption,
-                    inspirationCarouselTitle
+                    inspirationCarouselTitle,
                 )
             }
         }
@@ -346,7 +346,7 @@ class InspirationCarouselPresenterDelegate @Inject constructor(
         adapterPosition: Int,
         inspirationCarouselChipsProductModel: InspirationCarouselChipsProductModel,
         clickedInspirationCarouselOption: InspirationCarouselDataView.Option,
-        inspirationCarouselTitle: String
+        inspirationCarouselTitle: String,
     ) {
         val mapper = InspirationCarouselProductDataViewMapper()
         val productList = mapper.convertToInspirationCarouselProductDataView(
@@ -358,7 +358,7 @@ class InspirationCarouselPresenterDelegate @Inject constructor(
             clickedInspirationCarouselOption.title,
             inspirationCarouselTitle,
             clickedInspirationCarouselOption.dimension90,
-            clickedInspirationCarouselOption.externalReference
+            clickedInspirationCarouselOption.externalReference,
         )
 
         clickedInspirationCarouselOption.product = productList
@@ -367,7 +367,7 @@ class InspirationCarouselPresenterDelegate @Inject constructor(
     }
 
     private fun productLabelGroupToLabelGroupDataView(
-        productLabelGroupList: List<SearchProductModel.ProductLabelGroup>
+        productLabelGroupList: List<SearchProductModel.ProductLabelGroup>,
     ): List<LabelGroupDataView> {
         return productLabelGroupList.map {
             LabelGroupDataView(
