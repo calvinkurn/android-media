@@ -961,11 +961,26 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment(), RewardContainerListener {
     }
 
     override fun onTrigger(position: Int) {
+        applyCoupon(position)
+        routeBasedOnActionButton()
+    }
+
+    private fun routeBasedOnActionButton() {
+        val actionButtonList = giftBoxRewardEntity?.gamiCrack?.actionButton
+        if (!actionButtonList.isNullOrEmpty()) {
+            val applink = actionButtonList[0].applink
+            if (!applink.isNullOrEmpty()) {
+                RouteManager.route(context, applink)
+            }
+        }
+    }
+
+    private fun applyCoupon(position: Int) {
         val dummyCode = giftBoxRewardEntity?.gamiCrack?.benefits?.get(position)?.dummyCode
         val referenceId = giftBoxRewardEntity?.gamiCrack?.benefits?.get(position)?.referenceID
         val label = "$dummyCode - $referenceId"
         dummyCode?.let {
-            code ->
+                code ->
             viewModel.autoApply(code)
             GtmEvents.sendClickCouponImageEvent(label)
         }
