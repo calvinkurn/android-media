@@ -2,6 +2,9 @@ package com.tokopedia.promousage.view.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.view.animation.Animation
+import android.view.animation.Animation.AnimationListener
+import android.view.animation.AnimationUtils
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -15,6 +18,7 @@ import com.tokopedia.promousage.domain.entity.list.Voucher
 import com.tokopedia.promousage.domain.entity.list.VoucherRecommendation
 import com.tokopedia.promousage.util.composite.DelegateAdapter
 import com.tokopedia.promousage.util.extension.applyPaddingToLastItem
+import com.tokopedia.promousage.R
 
 class VoucherRecommendationDelegateAdapter(
     private val onVoucherClick: (Voucher) -> Unit,
@@ -48,6 +52,19 @@ class VoucherRecommendationDelegateAdapter(
                 onButtonUseRecommendedVoucherClick()
                 binding.btnRecommendationUseVoucher.gone()
                 binding.ivCheckmark.visible()
+                binding.ivCheckmarkOutline.visible()
+                val shrinkOutAnimation = AnimationUtils.loadAnimation(binding.ivCheckmarkOutline.context, R.anim.shrink_out)
+                shrinkOutAnimation.setAnimationListener(object : AnimationListener {
+                    override fun onAnimationStart(p0: Animation?) {}
+
+                    override fun onAnimationEnd(p0: Animation?) {
+                        binding.ivCheckmarkOutline.gone()
+                    }
+
+                    override fun onAnimationRepeat(p0: Animation?) {}
+
+                })
+                binding.ivCheckmarkOutline.startAnimation(shrinkOutAnimation)
             }
         }
 
