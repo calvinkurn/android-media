@@ -48,7 +48,9 @@ data class RatesParam(
     var cart_data: String = "",
     var warehouse_id: String = "",
     // new owoc
-    val group_type: Int = 0
+    val group_type: Int = 0,
+
+    var shopShipments: List<ShopShipment> = listOf()
 ) {
 
     private constructor(builder: Builder) : this(
@@ -82,7 +84,8 @@ data class RatesParam(
         cart_data = builder.cartData,
         occ = builder.occ,
         warehouse_id = builder.warehouseId,
-        group_type = builder.groupType
+        group_type = builder.groupType,
+        shopShipments = builder.shopShipments
     )
 
     @Deprecated("please use RatesV3Param or RatesV3ApiParam")

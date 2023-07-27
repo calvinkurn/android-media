@@ -18,4 +18,4 @@ class ShippingCourierUiModel(
     var isAllowDropshipper: Boolean = false,
     var isSelected: Boolean = false,
     var preOrderModel: PreOrderModel? = null
-) : Parcelable, RatesViewModelType
+) : RatesViewModelType, Parcelable

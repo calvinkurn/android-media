@@ -20,4 +20,4 @@ class ShippingDurationUiModel(
     var merchantVoucherModel: MerchantVoucherModel? = null,
     var etaErrorCode: Int = 0,
     var dynamicPriceModel: DynamicPriceModel? = null
-) : Parcelable, RatesViewModelType
+) : RatesViewModelType, Parcelable

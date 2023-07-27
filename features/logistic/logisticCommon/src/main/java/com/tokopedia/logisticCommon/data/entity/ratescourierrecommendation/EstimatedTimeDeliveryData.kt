@@ -4,8 +4,14 @@ import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 import kotlinx.parcelize.Parcelize
 
+/**
+ * Created by Irfan Khoirul on 02/08/18.
+ */
 @Parcelize
-data class DynamicPriceData(
-    @SerializedName("text_label")
-    val textLabel: String = ""
+data class EstimatedTimeDeliveryData(
+    @SerializedName("min_etd")
+    val minEtd: Int = 0,
+
+    @SerializedName("max_etd")
+    var maxEtd: Int = 0
 ) : Parcelable

@@ -84,61 +84,43 @@ class ShippingDurationPresenter @Inject constructor(
             shipmentDetailData.selectedCourier?.let { selectedCourier ->
                 selectedSpId = selectedCourier.shipperProductId
             }
+            val param = RatesParam.Builder(shopShipmentList, shippingParam)
+                .isCorner(isCorner)
+                .codHistory(codHistory)
+                .isLeasing(isLeasing)
+                .promoCode(pslCode)
+                .mvc(mvc)
+                .isOcc(isOcc)
+                .cartData(cartData)
+                .warehouseId(warehouseId)
+                .build()
             loadDuration(
+                ratesParam = param,
+                isRatesTradeInApi = isTradeInDropOff,
                 selectedSpId = selectedSpId,
                 selectedServiceId = selectedServiceId,
-                codHistory = codHistory,
-                isCorner = isCorner,
-                isLeasing = isLeasing,
-                shopShipmentList = shopShipmentList,
-                isRatesTradeInApi = isTradeInDropOff,
-                shippingParam = shippingParam,
-                pslCode = pslCode,
-                mvc = mvc,
-                cartData = cartData,
-                isOcc = isOcc,
-                disableCourierPromo = isDisableCourierPromo,
-                warehouseId = warehouseId
+                isOcc = isOcc
             )
         }
     }
 
-    private fun loadDuration(
+    override fun loadDuration(
         selectedSpId: Int,
         selectedServiceId: Int,
-        codHistory: Int,
-        isCorner: Boolean,
-        isLeasing: Boolean,
-        shopShipmentList: List<ShopShipment>,
+        ratesParam: RatesParam,
         isRatesTradeInApi: Boolean,
-        shippingParam: ShippingParam,
-        pslCode: String,
-        mvc: String,
-        cartData: String,
-        isOcc: Boolean,
-        disableCourierPromo: Boolean,
-        warehouseId: String
+        isOcc: Boolean
     ) {
-        val param = RatesParam.Builder(shopShipmentList, shippingParam)
-            .isCorner(isCorner)
-            .codHistory(codHistory)
-            .isLeasing(isLeasing)
-            .promoCode(pslCode)
-            .mvc(mvc)
-            .isOcc(isOcc)
-            .cartData(cartData)
-            .warehouseId(warehouseId)
-            .build()
         val observable: Observable<ShippingRecommendationData> = if (isRatesTradeInApi) {
-            ratesApiUseCase.execute(param)
+            ratesApiUseCase.execute(ratesParam)
         } else {
-            ratesUseCase.execute(param)
+            ratesUseCase.execute(ratesParam)
         }
         observable
             .map { shippingRecommendationData: ShippingRecommendationData ->
                 stateConverter.fillState(
                     shippingRecommendationData,
-                    shopShipmentList,
+                    ratesParam.shopShipments,
                     selectedSpId,
                     selectedServiceId
                 )
@@ -163,14 +145,6 @@ class ShippingDurationPresenter @Inject constructor(
                                 it.showNoCourierAvailable(shippingRecommendationData.errorMessage)
                                 it.stopTrace()
                             } else if (shippingRecommendationData.shippingDurationUiModels.isNotEmpty()) {
-                                if (disableCourierPromo) {
-                                    for (shippingDurationUiModel in shippingRecommendationData.shippingDurationUiModels) {
-                                        shippingDurationUiModel.serviceData.isPromo = 0
-                                        for (productData in shippingDurationUiModel.serviceData.products) {
-                                            productData.promoCode = ""
-                                        }
-                                    }
-                                }
                                 shippingData = shippingRecommendationData
                                 it.showData(
                                     convertServiceListToUiModel(
@@ -260,7 +234,7 @@ class ShippingDurationPresenter @Inject constructor(
     ): ShippingCourierUiModel? {
         return shippingCourierUiModelList.takeIf { serviceData.selectedShipperProductId > 0 }
             ?.find { shippingCourierUiModel -> shippingCourierUiModel.productData.shipperProductId == serviceData.selectedShipperProductId }
-            ?: shippingCourierUiModelList.firstOrNull { it.productData.isRecommend && !it.productData.isUiRatesHidden && it.productData.error?.errorMessage?.isEmpty() != false }
+            ?: shippingCourierUiModelList.firstOrNull { it.productData.isRecommend && !it.productData.isUiRatesHidden && it.productData.error.errorMessage.isEmpty() }
     }
 
     private fun findAutoSelectedCourier(
@@ -268,7 +242,7 @@ class ShippingDurationPresenter @Inject constructor(
         shippingCourierUiModelList: List<ShippingCourierUiModel>
     ): ShippingCourierUiModel {
         return findRecommendedCourier(serviceData, shippingCourierUiModelList)
-            ?: shippingCourierUiModelList.firstOrNull { !it.productData.isUiRatesHidden && (it.productData.error?.errorMessage?.isEmpty() != false) }
+            ?: shippingCourierUiModelList.firstOrNull { !it.productData.isUiRatesHidden && it.productData.error.errorMessage.isEmpty() }
             ?: shippingCourierUiModelList.first()
     }
 
@@ -348,9 +322,7 @@ class ShippingDurationPresenter @Inject constructor(
             findRecommendedCourier(serviceData, shippingCourierUiModelList)
         }
         if (!isOcc) {
-            if (serviceData.error != null && serviceData.error.errorId == ErrorProductData.ERROR_PINPOINT_NEEDED &&
-                serviceData.error.errorMessage.isNotEmpty()
-            ) {
+            if (serviceData.error.errorId == ErrorProductData.ERROR_PINPOINT_NEEDED && serviceData.error.errorMessage.isNotEmpty()) {
                 flagNeedToSetPinpoint = true
                 selectedServiceId = serviceData.serviceId
             }
@@ -358,10 +330,7 @@ class ShippingDurationPresenter @Inject constructor(
             shippingCourierUiModelList.forEach { shippingCourierUiModel ->
                 shippingCourierUiModel.isSelected =
                     shippingCourierUiModel == selectedShippingCourierUiModel
-                if (shippingCourierUiModel.productData.error != null &&
-                    shippingCourierUiModel.productData.error.errorMessage != null &&
-                    shippingCourierUiModel.productData.error.errorId != null &&
-                    shippingCourierUiModel.productData.error.errorId == ErrorProductData.ERROR_PINPOINT_NEEDED
+                if (shippingCourierUiModel.productData.error.errorId == ErrorProductData.ERROR_PINPOINT_NEEDED
                 ) {
                     selectedServiceId = shippingCourierUiModel.serviceData.serviceId
                     flagNeedToSetPinpoint = true

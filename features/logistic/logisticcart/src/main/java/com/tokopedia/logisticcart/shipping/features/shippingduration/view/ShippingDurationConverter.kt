@@ -170,7 +170,7 @@ class ShippingDurationConverter @Inject constructor() {
         shippingCourierUiModel.ratesId = ratesId
         shippingCourierUiModel.preOrderModel = preOrderModel
         shippingCourierUiModel.productData.isRecommend =
-            productData.isRecommend && (productData.error?.errorMessage?.isEmpty() != false)
+            productData.isRecommend && (productData.error.errorMessage.isEmpty())
         shippingCourierUiModels.add(shippingCourierUiModel)
     }
 

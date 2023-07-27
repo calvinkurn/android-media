@@ -34,84 +34,125 @@ import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.SaveA
 class OrderSummaryPageViewModelTestHelper {
 
     val firstCourierFirstDuration = ShippingCourierUiModel().apply {
-        productData = ProductData().apply {
-            shipperName = "kirimin"
-            shipperId = 1
-            shipperProductId = 1
-            insurance = InsuranceData()
-            price = PriceData().apply {
+        productData = ProductData(
+            shipperName = "kirimin",
+            shipperId = 1,
+            shipperProductId = 1,
+            insurance = InsuranceData(),
+            price = PriceData(
                 price = 1000
-            }
-        }
+            )
+        )
         ratesId = "0"
     }
 
     val secondCourierFirstDuration = ShippingCourierUiModel().apply {
-        productData = ProductData().apply {
-            shipperName = "pakirim"
-            shipperId = 2
-            shipperProductId = 2
-            insurance = InsuranceData()
-            price = PriceData().apply {
+        productData = ProductData(
+            shipperName = "pakirim",
+            shipperId = 2,
+            shipperProductId = 2,
+            insurance = InsuranceData(),
+            price = PriceData(
                 price = 1500
-            }
-        }
+            )
+        )
         ratesId = "0"
     }
 
     val firstDuration = ShippingDurationUiModel().apply {
-        serviceData = ServiceData().apply {
-            serviceId = 1
-            serviceName = "durasi (1 hari)"
-            error = ErrorServiceData()
+        serviceData = ServiceData(
+            serviceId = 1,
+            serviceName = "durasi (1 hari)",
+            error = ErrorServiceData(),
             texts = ServiceTextData()
-        }
+        )
         shippingCourierViewModelList = listOf(firstCourierFirstDuration, secondCourierFirstDuration)
     }
 
     val firstCourierSecondDuration = ShippingCourierUiModel().apply {
-        productData = ProductData().apply {
-            shipperName = "pakirim"
-            shipperId = 2
-            shipperProductId = 3
-            insurance = InsuranceData()
-            price = PriceData().apply {
+        productData = ProductData(
+            shipperName = "pakirim",
+            shipperId = 2,
+            shipperProductId = 3,
+            insurance = InsuranceData(),
+            price = PriceData(
                 price = 2000
-            }
-        }
+            )
+        )
         ratesId = "0"
     }
 
     val secondDuration = ShippingDurationUiModel().apply {
-        serviceData = ServiceData().apply {
-            serviceId = 2
-            serviceName = "durasi (2 hari)"
-            error = ErrorServiceData()
+        serviceData = ServiceData(
+            serviceId = 2,
+            serviceName = "durasi (2 hari)",
+            error = ErrorServiceData(),
             texts = ServiceTextData()
-        }
+        )
         shippingCourierViewModelList = listOf(firstCourierSecondDuration)
     }
 
     val logisticPromo = LogisticPromoUiModel(
-        "bbo", "bbo", "bbo", firstCourierSecondDuration.productData.shipperName,
-        secondDuration.serviceData.serviceId, firstCourierSecondDuration.productData.shipperId, firstCourierSecondDuration.productData.shipperProductId,
-        "", "", "", false, "",
-        500, 2000, 1500, false, false, CodDataPromo(), EstimatedTimeArrivalPromo(), "Bebas Ongkir (Rp 0)", "Bebas Ongkir", "Tersedia bbo", false,
+        "bbo",
+        "bbo",
+        "bbo",
+        firstCourierSecondDuration.productData.shipperName,
+        secondDuration.serviceData.serviceId,
+        firstCourierSecondDuration.productData.shipperId,
+        firstCourierSecondDuration.productData.shipperProductId,
+        "",
+        "",
+        "",
+        false,
+        "",
+        500,
+        2000,
+        1500,
+        false,
+        false,
+        CodDataPromo(),
+        EstimatedTimeArrivalPromo(),
+        "Bebas Ongkir (Rp 0)",
+        "Bebas Ongkir",
+        "Tersedia bbo",
+        false,
         freeShippingMetadata = """{"sent_shipper_partner":true}"""
     )
 
     val logisticPromoEko = LogisticPromoUiModel(
-        "boeko", "boeko", "boeko", firstCourierSecondDuration.productData.shipperName,
-        secondDuration.serviceData.serviceId, firstCourierSecondDuration.productData.shipperId, firstCourierSecondDuration.productData.shipperProductId,
-        "", "", "", false, "",
-        500, 2000, 1500, false, false, CodDataPromo(), EstimatedTimeArrivalPromo(), "Bebas Ongkir (Rp 0)", "Bebas Ongkir", "Tersedia bbo", false,
+        "boeko",
+        "boeko",
+        "boeko",
+        firstCourierSecondDuration.productData.shipperName,
+        secondDuration.serviceData.serviceId,
+        firstCourierSecondDuration.productData.shipperId,
+        firstCourierSecondDuration.productData.shipperProductId,
+        "",
+        "",
+        "",
+        false,
+        "",
+        500,
+        2000,
+        1500,
+        false,
+        false,
+        CodDataPromo(),
+        EstimatedTimeArrivalPromo(),
+        "Bebas Ongkir (Rp 0)",
+        "Bebas Ongkir",
+        "Tersedia bbo",
+        false,
         freeShippingMetadata = """{"sent_shipper_partner":false}"""
     )
 
     val shippingRecommendationData = ShippingRecommendationData().apply {
         shippingDurationUiModels = listOf(firstDuration, secondDuration)
         logisticPromo = this@OrderSummaryPageViewModelTestHelper.logisticPromo
-        listLogisticPromo = listOf(this@OrderSummaryPageViewModelTestHelper.logisticPromo, this@OrderSummaryPageViewModelTestHelper.logisticPromoEko)
+        listLogisticPromo = listOf(
+            this@OrderSummaryPageViewModelTestHelper.logisticPromo,
+            this@OrderSummaryPageViewModelTestHelper.logisticPromoEko
+        )
     }
 
     val address = OrderProfileAddress(addressId = "1", latitude = "0", longitude = "0")
@@ -135,7 +176,13 @@ class OrderSummaryPageViewModelTestHelper {
 
     val product = OrderProduct(productId = Long.MAX_VALUE.toString(), orderQuantity = 1)
 
-    val orderData = OrderData(cart = OrderCart(shop = OrderShop(shopId = Long.MAX_VALUE.toString()), products = mutableListOf(product)), preference = preference)
+    val orderData = OrderData(
+        cart = OrderCart(
+            shop = OrderShop(shopId = Long.MAX_VALUE.toString()),
+            products = mutableListOf(product)
+        ),
+        preference = preference
+    )
 
     val saveAddOnStateShopLevelResult = SaveAddOnStateResult(
         addOns = listOf(

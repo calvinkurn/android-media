@@ -8,7 +8,7 @@ import com.tokopedia.logisticCommon.util.StringFormatterHelper.appendHtmlStriket
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-class DeliveryProduct(
+data class DeliveryProduct(
     @SerializedName("title")
     val title: String = "",
     @SerializedName("text")

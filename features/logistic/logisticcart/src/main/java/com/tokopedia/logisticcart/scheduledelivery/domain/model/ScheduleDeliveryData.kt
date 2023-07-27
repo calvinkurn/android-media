@@ -6,7 +6,7 @@ import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.Error
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-class ScheduleDeliveryData(
+data class ScheduleDeliveryData(
     @SerializedName("rates_id")
     val ratesId: Long = 0,
     @SerializedName("available")
