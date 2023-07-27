@@ -54,13 +54,13 @@ class PromoUsageViewModel @Inject constructor(
                     ),
                     VoucherAccordion(
                         "${freeShippingVouchers.size} promo buat pengiriman kamu",
-                        false,
-                        freeShippingVouchers
+                        true,
+                        freeShippingVouchers.toCollapsibleList()
                     ),
                     VoucherAccordion(
                         "${discountVouchers.size} promo buat diskon kamu",
-                        false,
-                        discountVouchers
+                        true,
+                        discountVouchers.toCollapsibleList()
                     ),
                     VoucherCode(userInputVoucherCode = "", errorMessage = "", voucher = null),
                     TermAndCondition
@@ -128,7 +128,54 @@ class PromoUsageViewModel @Inject constructor(
 
         if (isSelectable) {
             val updatedVouchers = currentItems.map { widget ->
-                if (widget is VoucherAccordion) {
+                when (widget) {
+                    is VoucherAccordion -> {
+                        val selectedVouchers = widget.vouchers.map { item ->
+                            if (item is ViewAllVoucher) {
+                                item
+                            } else {
+                                val voucher = item as Voucher
+                                if (selectedVoucher.id == voucher.id) {
+                                    voucher.copy(voucherState = VoucherState.Selected)
+                                } else {
+                                    voucher
+                                }
+                            }
+                        }
+
+                        widget.copy(vouchers = selectedVouchers)
+                    }
+
+                    is VoucherRecommendation -> {
+                        val selectedVouchers = widget.vouchers.map { item ->
+                            val voucher = item as Voucher
+                            if (selectedVoucher.id == voucher.id) {
+                                voucher.copy(voucherState = VoucherState.Selected)
+                            } else {
+                                voucher
+                            }
+                        }
+
+                        widget.copy(vouchers = selectedVouchers)
+                    }
+
+                    else -> {
+                        widget
+                    }
+                }
+            }
+
+            _vouchers.value = Success(updatedVouchers)
+
+            selectedVouchersSet.add(selectedVoucher)
+            _selectedVouchers.value = selectedVouchersSet
+        }
+    }
+
+    private fun removeFromSelection(selectedVoucher: Voucher) {
+        val updatedVouchers = currentItems.map { widget ->
+            when (widget) {
+                is VoucherAccordion -> {
                     val selectedVouchers = widget.vouchers.map { item ->
                         if (item is ViewAllVoucher) {
                             item
@@ -143,60 +190,24 @@ class PromoUsageViewModel @Inject constructor(
                     }
 
                     widget.copy(vouchers = selectedVouchers)
-                } else if (widget is VoucherRecommendation) {
+                }
+
+                is VoucherRecommendation -> {
                     val selectedVouchers = widget.vouchers.map { item ->
                         val voucher = item as Voucher
                         if (selectedVoucher.id == voucher.id) {
-                            voucher.copy(voucherState = VoucherState.Selected)
+                            voucher.copy(voucherState = VoucherState.Normal)
                         } else {
                             voucher
                         }
                     }
 
                     widget.copy(vouchers = selectedVouchers)
-                } else {
+                }
+
+                else -> {
                     widget
                 }
-            }
-
-            _vouchers.value = Success(updatedVouchers)
-
-            selectedVouchersSet.add(selectedVoucher)
-            _selectedVouchers.value = selectedVouchersSet
-        }
-    }
-
-    private fun removeFromSelection(selectedVoucher: Voucher) {
-        val updatedVouchers = currentItems.map { widget ->
-            if (widget is VoucherAccordion) {
-                val selectedVouchers = widget.vouchers.map { item ->
-                    if (item is ViewAllVoucher) {
-                        item
-                    } else {
-                        val voucher = item as Voucher
-                        if (selectedVoucher.id == voucher.id) {
-                            voucher.copy(voucherState = VoucherState.Selected)
-                        } else {
-                            voucher
-                        }
-                    }
-                }
-
-                widget.copy(vouchers = selectedVouchers)
-            } else if (widget is VoucherRecommendation) {
-                val selectedVouchers = widget.vouchers.map { item ->
-                    val voucher = item as Voucher
-                    if (selectedVoucher.id == voucher.id) {
-                        voucher.copy(voucherState = VoucherState.Normal)
-                    } else {
-                        voucher
-                    }
-                }
-
-                widget.copy(vouchers = selectedVouchers)
-            }
-            else {
-                widget
             }
         }
 
@@ -403,7 +414,7 @@ class PromoUsageViewModel @Inject constructor(
             VoucherType.FREE_SHIPPING,
             VoucherState.Normal,
             VoucherSource.Promo,
-            true
+            false
         ),
         Voucher(
             8,
@@ -415,7 +426,7 @@ class PromoUsageViewModel @Inject constructor(
             VoucherType.FREE_SHIPPING,
             VoucherState.Normal,
             VoucherSource.Promo,
-            true
+            false
         ),
         Voucher(
             9,
@@ -427,7 +438,7 @@ class PromoUsageViewModel @Inject constructor(
             VoucherType.FREE_SHIPPING,
             VoucherState.Disabled,
             VoucherSource.Promo,
-            true
+            false
         ),
         Voucher(
             10,
@@ -439,7 +450,7 @@ class PromoUsageViewModel @Inject constructor(
             VoucherType.FREE_SHIPPING,
             VoucherState.Ineligible("Belum bisa dipakai barengan promo yang dipilih."),
             VoucherSource.Promo,
-            true
+            false
         ),
     )
     private val discountVouchers = listOf(
@@ -477,7 +488,7 @@ class PromoUsageViewModel @Inject constructor(
             VoucherType.DISCOUNT,
             VoucherState.Normal,
             VoucherSource.Promo,
-            true
+            false
         ),
         Voucher(
             14,
@@ -489,7 +500,7 @@ class PromoUsageViewModel @Inject constructor(
             VoucherType.DISCOUNT,
             VoucherState.Disabled,
             VoucherSource.Promo,
-            true
+            false
         ),
         Voucher(
             15,
@@ -501,7 +512,7 @@ class PromoUsageViewModel @Inject constructor(
             VoucherType.DISCOUNT,
             VoucherState.Ineligible("Belum bisa dipakai barengan promo yang dipilih."),
             VoucherSource.Promo,
-            true
+            false
         ),
     )
     private val recommendationVouchers = listOf(

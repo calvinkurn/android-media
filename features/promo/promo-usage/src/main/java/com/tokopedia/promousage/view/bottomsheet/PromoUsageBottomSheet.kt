@@ -168,6 +168,7 @@ class PromoUsageBottomSheet: BottomSheetDialogFragment() {
 
     private fun setupView() {
         binding?.run {
+            tpgTotalPrice.text = originalTotalPrice.splitByThousand()
             buttonBuy.setOnClickListener {
                 viewModel.onButtonBuyClick(entryPoint)
                 dismiss()
