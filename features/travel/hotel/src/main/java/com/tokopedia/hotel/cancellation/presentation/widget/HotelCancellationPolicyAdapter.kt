@@ -45,8 +45,8 @@ class HotelCancellationPolicyAdapter: RecyclerView.Adapter<HotelCancellationPoli
                     hotel_cancellation_policy_item_icon_deactivate.hide()
                 } else if (item.styling.equals(GREYOUT_STATE, true)) {
                     hotel_cancellation_policy_item_icon_deactivate.show()
-                    hotel_cancellation_policy_item_title.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_44))
-                    hotel_cancellation_policy_item_desc.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_44))
+                    hotel_cancellation_policy_item_title.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_44))
+                    hotel_cancellation_policy_item_desc.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_44))
                 }
 
                 if (isOnlyOneItem || isLastItem) hotel_cancellation_refund_connecting_line.hide()

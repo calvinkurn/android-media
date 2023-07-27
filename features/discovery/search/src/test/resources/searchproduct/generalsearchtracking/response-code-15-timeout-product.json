@@ -1,0 +1,35 @@
+{
+  "ace_search_product_v4": {
+    "header": {
+      "responseCode": 0,
+      "keywordProcess": "5",
+      "totalData": 0,
+      "totalDataText": "0",
+      "additionalParams": "",
+      "errorMessage": "",
+      "defaultView": 1
+    },
+    "data": {
+      "isQuerySafe": true,
+      "autocompleteApplink": "tokopedia://search-autocomplete?q=baju",
+      "backendFilters": "fcity=123,234#456&official=true",
+      "redirection": {
+        "redirectApplink": ""
+      },
+      "ticker": {
+        "text": "",
+        "query": ""
+      },
+      "suggestion": {
+        "suggestion": "",
+        "text": "Tidak dapat menemukan hasil untuk <strong>\"baju\"</strong>. </br> Menampilkan hasil untuk <strong>\"baju\"</strong>",
+        "query": ""
+      },
+      "related": {
+        "relatedKeyword": "",
+        "otherRelated": []
+      },
+      "products": []
+    }
+  }
+}

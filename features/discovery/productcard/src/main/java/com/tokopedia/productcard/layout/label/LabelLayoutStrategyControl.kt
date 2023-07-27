@@ -157,6 +157,16 @@ internal class LabelLayoutStrategyControl: LabelLayoutStrategy {
                 R.id.textViewPrice,
                 ConstraintSet.BOTTOM,
             )
+
+            it.connect(
+                R.id.textViewSlashedPrice,
+                ConstraintSet.TOP,
+                R.id.labelDiscount,
+                ConstraintSet.TOP,
+                0.toPx()
+            )
+            it.setGoneMargin(R.id.textViewSlashedPrice, ConstraintSet.START, 0.toPx())
+            it.setMargin(R.id.textViewSlashedPrice, ConstraintSet.START, 4.toPx())
         }
     }
 

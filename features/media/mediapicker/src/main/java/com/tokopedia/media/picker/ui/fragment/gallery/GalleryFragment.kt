@@ -14,8 +14,10 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_IDLE
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -155,9 +157,6 @@ open class GalleryFragment @Inject constructor(
             uiModel.bucketId = id
 
             endlessScrollListener.resetState()
-            // force move to top every single bucketId has changed
-            binding?.lstMedia?.smoothScrollToPosition(0)
-
             viewModel.loadMedia(uiModel.bucketId)
         }
     }
@@ -212,16 +211,14 @@ open class GalleryFragment @Inject constructor(
         viewModel.medias.observe(viewLifecycleOwner) {
             if (it.isNotEmpty()) {
                 if (uiModel.hasChangeAlbum) {
-                    featureAdapter.setItems(it)
+                    val isNotComputingLayout = binding?.lstMedia?.isComputingLayout != true
+                    val isRecyclerViewIdle = binding?.lstMedia?.scrollState == SCROLL_STATE_IDLE
 
-                    /*
-                     * since the initial state will reflect all items,
-                     * we have to notify for all data set.
-                     *
-                     * Since the gallery is pagination, hence the performance
-                     * wouldn't be impacted to this operation.
-                     */
-                    featureAdapter.notifyDataSetChanged()
+                    if (isNotComputingLayout && isRecyclerViewIdle) {
+                        mLayoutManager.scrollToPosition(Int.ZERO)
+                        featureAdapter.setItems(it)
+                        featureAdapter.notifyDataSetChanged()
+                    }
                 } else {
                     featureAdapter.addItems(it)
                     featureAdapter.notifyItemRangeInserted(featureAdapter.getItems().size, it.size)

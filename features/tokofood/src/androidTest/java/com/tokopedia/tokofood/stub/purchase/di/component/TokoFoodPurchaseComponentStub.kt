@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.tokofood.common.domain.usecase.KeroEditAddressUseCase
 import com.tokopedia.tokofood.common.domain.usecase.KeroGetAddressUseCase
+import com.tokopedia.tokofood.feature.purchase.promopage.domain.usecase.PromoListTokoFoodUseCase
 import com.tokopedia.tokofood.feature.purchase.purchasepage.di.TokoFoodPurchaseComponent
 import com.tokopedia.tokofood.feature.purchase.purchasepage.di.TokoFoodPurchaseScope
 import com.tokopedia.tokofood.feature.purchase.purchasepage.domain.usecase.CheckoutGeneralTokoFoodUseCase
@@ -42,5 +43,7 @@ interface TokoFoodPurchaseComponentStub: TokoFoodPurchaseComponent {
     fun checkoutTokofoodUseCase(): CheckoutTokoFoodUseCase
 
     fun checkoutGeneralTokoFoodUseCase(): CheckoutGeneralTokoFoodUseCase
+
+    fun promoListTokoFoodUseCase(): PromoListTokoFoodUseCase
 
 }

@@ -31,7 +31,7 @@
         android:layout_height="wrap_content"
         tools:text="Jakarta"
         app:typographyType="heading_5"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         android:layout_marginLeft="@dimen/spacing_lvl2"
         android:layout_marginRight="@dimen/spacing_lvl2"/>
 
@@ -40,7 +40,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         tools:text="1.000+ properti"
-        android:textColor="@color/Unify_N700_68"
+        android:textColor="@color/Unify_NN950_68"
         app:typographyType="small"
         android:layout_marginLeft="@dimen/spacing_lvl2"
         android:layout_marginRight="@dimen/spacing_lvl2"

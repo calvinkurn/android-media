@@ -124,7 +124,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_1"
         android:layout_marginTop="@dimen/layout_lvl2"
-        android:background="@color/Unify_N75"
+        android:background="@color/Unify_NN50"
         app:layout_constraintTop_toBottomOf="@id/read_review_image_loading_4" />
 
     <com.tokopedia.unifycomponents.ImageUnify
@@ -201,7 +201,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_1"
         android:layout_marginTop="@dimen/layout_lvl2"
-        android:background="@color/Unify_N75"
+        android:background="@color/Unify_NN50"
         app:layout_constraintTop_toBottomOf="@id/read_review_content_loading_6" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

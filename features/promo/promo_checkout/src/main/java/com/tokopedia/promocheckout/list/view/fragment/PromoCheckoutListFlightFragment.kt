@@ -32,7 +32,7 @@ class PromoCheckoutListFlightFragment : PromoCheckoutListDigitalFragment(), Prom
 
     override fun onPromoCodeUse(promoCode: String) {
         context?.run {
-            if (promoCode.isNotEmpty()) promoCheckoutListFlightPresenter.checkPromoCode(cartID, promoCode, ColorUtil.getColorFromResToString(this, com.tokopedia.unifyprinciples.R.color.Unify_G200))
+            if (promoCode.isNotEmpty()) promoCheckoutListFlightPresenter.checkPromoCode(cartID, promoCode, ColorUtil.getColorFromResToString(this, com.tokopedia.unifyprinciples.R.color.Unify_GN100))
         }
     }
 

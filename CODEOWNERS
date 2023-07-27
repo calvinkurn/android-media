@@ -137,7 +137,6 @@
 /features/merchant/seller_feedback/                     @tokopedia/android-minionstuart-dev
 /features/merchant/seller_persona/                      @tokopedia/android-minionstuart-dev
 /features/merchant/centralized_promo/                   @tokopedia/android-minionstuart-dev
-/libraries/kotlin_extensions/                           @tokopedia/android-minionstuart-dev
 
 /features/content/affiliate_common/     				@tokopedia/android-minionlance-dev
 /features/content/play/                                 @tokopedia/android-minionlance-dev
@@ -273,6 +272,10 @@
 /features/fintech/insurance           				    @tokopedia/android-minionmark-dev
 /features/promo/tokopoints              				@tokopedia/android-minionsolo-dev
 /features/promo/tokopoints_notification 				@tokopedia/android-minionsolo-dev
+/features/promo/scp_rewards                             @tokopedia/android-minionsolo-dev
+/features/promo/scp_rewards_common                      @tokopedia/android-minionsolo-dev
+/features/promo/scp_rewards_widgets                     @tokopedia/android-minionsolo-dev
+/features/promo/scp_rewards_touchpoints 				@tokopedia/android-minionsolo-dev
 /features/promo/gamification            				@tokopedia/android-minionsolo-dev
 /features/kyc                           				@tokopedia/android-minionyoda-dev
 /features/promo/merchant_voucher                        @tokopedia/android-minionsolo-dev
@@ -283,6 +286,7 @@
 /features/promo/promotions_target					    @tokopedia/android-minionsolo-dev
 /features/promo/promo_ui_common					        @tokopedia/android-minionsolo-dev
 /features/promo/quest_widget  					        @tokopedia/android-minionsolo-dev
+/features/promo/tokomember                              @tokopedia/android-minionsolo-dev
 /features/promo/tokomember_seller_dashboard  	        @tokopedia/android-minionsolo-dev
 /features/promo/tokomember_common_widget 		        @tokopedia/android-minionsolo-dev
 /features/promo/tokomember               		        @tokopedia/android-minionsolo-dev
@@ -344,7 +348,6 @@
 /libraries/instrumentation_test                         @tokopedia/android-core-dev
 /libraries/iris/										@tokopedia/android-gatekeeperanalytic-dev
 /libraries/iris_session/	                            @tokopedia/android-gatekeeperanalytic-dev
-/libraries/kotlin_extensions/							@tokopedia/android-core-dev
 /libraries/linker/										@tokopedia/android-minionkevin-dev
 /libraries/lint/										@tokopedia/android-miniondarth-dev
 /libraries/liveness_lib/								@tokopedia/android-core-dev
@@ -355,6 +358,8 @@
 /libraries/mapviewer/								    @tokopedia/android-core-dev
 /libraries/network/                                     @tokopedia/android-core-dev
 /libraries/oms/											@tokopedia/android-core-dev
+/libraries/page_info_pusher/                            @tokopedia/android-core-dev
+/libraries/poc_new_relic/                               @tokopedia/android-core-dev
 /libraries/pre_release_inspector/			            @tokopedia/android-core-dev
 /libraries/pre_release_inspector_no_op/					@tokopedia/android-core-dev
 /libraries/journey_debugger/			                @tokopedia/android-core-dev

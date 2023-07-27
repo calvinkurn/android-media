@@ -15,6 +15,8 @@ object MapperProductsToXProducts {
         val newCampaign = mapCampaignProduct(product, campaign)
         return FeedTaggedProductUiModel(
             id = product.id,
+            parentID = product.parentID,
+            showGlobalVariant = product.hasVariant && product.isParent,
             shop = FeedTaggedProductUiModel.Shop(
                 id = product.shopId,
                 name = product.shopName

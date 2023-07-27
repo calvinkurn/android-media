@@ -67,12 +67,12 @@ class ChatbotVideoUploadViewHolder(
 
     private val bgSender = ViewUtil.generateBackgroundWithoutShadow(
         chatBalloon,
-        com.tokopedia.unifyprinciples.R.color.Unify_N75,
+        com.tokopedia.unifyprinciples.R.color.Unify_NN50,
         com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
         com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
         com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
         com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
-        com.tokopedia.unifyprinciples.R.color.Unify_G200,
+        com.tokopedia.unifyprinciples.R.color.Unify_GN100,
         getStrokeWidthSenderDimenRes()
     )
 
@@ -165,7 +165,7 @@ class ChatbotVideoUploadViewHolder(
         changeHourColor(
             MethodChecker.getColor(
                 itemView.context,
-                com.tokopedia.unifyprinciples.R.color.Unify_N0
+                com.tokopedia.unifyprinciples.R.color.Unify_NN0
             )
         )
         if (element.isDummy) {
