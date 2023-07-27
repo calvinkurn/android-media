@@ -194,6 +194,23 @@ class PromoEntryPointWidget @JvmOverloads constructor(
     }
 
     fun showInactive(
+        wording: String,
+        onClickListener: () -> Unit = {}
+    ) {
+        switcherView?.reset()
+        inActiveViewLeftImage?.setImageResource(R.drawable.ic_promo_empty)
+        inActiveViewWording?.setCurrentText(MethodChecker.fromHtml(wording))
+        inActiveViewRightIcon?.visibility = View.GONE
+        switcherView?.displayedChild = 1
+        switcherView?.visibility = View.VISIBLE
+        errorView?.visibility = View.GONE
+        loadingView?.visibility = View.GONE
+        inActiveView?.setOnClickListener {
+            onClickListener.invoke()
+        }
+    }
+
+    fun showInactiveNew(
         leftImageUrl: String,
         wording: String,
         animate: Boolean = false,
@@ -405,6 +422,14 @@ class PromoEntryPointWidget @JvmOverloads constructor(
                         it.title
                     summaryView.findViewById<Typography>(R.id.tv_promo_checkout_summary_value).text =
                         it.value
+                    if (it.subValue.isNotEmpty()) {
+                        summaryView.findViewById<Typography>(R.id.tv_promo_checkout_summary_subvalue).apply {
+                            text = it.value
+                            visibility = View.VISIBLE
+                        }
+                    } else {
+                        summaryView.findViewById<Typography>(R.id.tv_promo_checkout_summary_subvalue).visibility = View.GONE
+                    }
                     this.addView(summaryView)
                 }
             }
