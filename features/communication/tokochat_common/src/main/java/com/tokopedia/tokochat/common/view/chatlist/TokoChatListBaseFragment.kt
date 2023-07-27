@@ -7,6 +7,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewbinding.ViewBinding
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -90,10 +92,21 @@ abstract class TokoChatListBaseFragment<viewBinding : ViewBinding> : BaseDaggerF
             onActionClick()
         }
         if (errorType == GlobalError.SERVER_ERROR) {
-            baseBinding?.tokochatIncludeGlobalError?.tokochatGlobalError
-                ?.errorAction?.text = getString(R.string.tokochat_list_error_back_to_home)
+            baseBinding?.tokochatIncludeGlobalError?.tokochatGlobalError?.errorAction?.apply {
+                text = getString(R.string.tokochat_list_error_back_to_home)
+                setOnClickListener {
+                    goToHome()
+                }
+            }
         }
         baseBinding?.tokochatIncludeGlobalError?.tokochatLayoutGlobalError?.show()
+    }
+
+    private fun goToHome() {
+        context?.let {
+            val intent = RouteManager.getIntent(it, ApplinkConst.HOME)
+            startActivity(intent)
+        }
     }
 
     protected fun toggleRecyclerViewLayout(shouldShow: Boolean) {
@@ -124,8 +137,8 @@ abstract class TokoChatListBaseFragment<viewBinding : ViewBinding> : BaseDaggerF
         adapter.notifyItemInserted(adapter.itemCount)
     }
 
-    protected fun removeInitialShimmering() {
-        if (adapter.isShimmeringExist()) {
+    protected fun removeInitialShimmeringAndEmptyView() {
+        if (adapter.isShimmeringExist() || adapter.isEmptyViewExist()) {
             adapter.clearAllItems()
         }
     }

@@ -2,11 +2,11 @@ package com.tokopedia.tokochat.view.chatlist
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.gojek.conversations.babble.channel.data.ChannelType
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.tokochat.common.util.TokoChatCacheManager
 import com.tokopedia.tokochat.common.util.TokoChatValueUtil.BATCH_LIMIT
 import com.tokopedia.tokochat.common.view.chatlist.uimodel.TokoChatListItemUiModel
 import com.tokopedia.tokochat.domain.usecase.TokoChatChannelUseCase
@@ -19,12 +19,12 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.transformLatest
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class TokoChatListViewModel @Inject constructor(
     private val chatChannelUseCase: TokoChatChannelUseCase,
     private val mapper: TokoChatListUiMapper,
-    private val cacheManager: TokoChatCacheManager,
     private val dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main) {
 
@@ -38,11 +38,8 @@ class TokoChatListViewModel @Inject constructor(
                 setPaginationTimeStamp(0L) // reset
             }
             ?.map {
-                it.map { channel ->
-                    mapper.mapToChatListItem(channel)
-                }
+                mapper.mapToListChat(it)
             }
-            ?.flowOn(dispatcher.io)
             ?.transformLatest { value ->
                 emit(Success(value) as Result<List<TokoChatListItemUiModel>>)
             }
@@ -50,30 +47,33 @@ class TokoChatListViewModel @Inject constructor(
                 _error.value = Pair(it, ::getChatListFlow.name)
                 emit(Fail(it))
             }
+            ?.flowOn(dispatcher.io)
     }
 
     fun loadNextPageChatList(
         localSize: Int = Int.ZERO,
         onCompleted: (Boolean) -> Unit = {}
     ) {
-        try {
-            chatChannelUseCase.getAllChannel(
-                channelTypes = listOf(ChannelType.GroupBooking),
-                batchSize = getBatchSize(localSize),
-                onSuccess = {
-                    // Set to -1 to mark as no more data
-                    setPaginationTimeStamp(it.lastOrNull()?.createdAt ?: -1)
-                    onCompleted(true)
-                },
-                onError = {
-                    it?.let { error ->
-                        _error.value = Pair(error, ::loadNextPageChatList.name)
+        viewModelScope.launch {
+            try {
+                chatChannelUseCase.getAllChannel(
+                    channelTypes = listOf(ChannelType.GroupBooking),
+                    batchSize = getBatchSize(localSize),
+                    onSuccess = {
+                        // Set to -1 to mark as no more data
+                        setPaginationTimeStamp(it.lastOrNull()?.createdAt ?: -1)
+                        onCompleted(true)
+                    },
+                    onError = {
+                        it?.let { error ->
+                            _error.value = Pair(error, ::loadNextPageChatList.name)
+                        }
+                        onCompleted(false)
                     }
-                    onCompleted(false)
-                }
-            )
-        } catch (throwable: Throwable) {
-            _error.value = Pair(throwable, ::loadNextPageChatList.name)
+                )
+            } catch (throwable: Throwable) {
+                _error.value = Pair(throwable, ::loadNextPageChatList.name)
+            }
         }
     }
 

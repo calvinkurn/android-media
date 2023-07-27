@@ -1,17 +1,22 @@
 package com.tokopedia.tokochat.view.chatlist
 
-import android.content.Context
 import com.gojek.conversations.channel.ConversationsChannel
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.tokochat.common.view.chatlist.uimodel.TokoChatListItemUiModel
 import javax.inject.Inject
 
-class TokoChatListUiMapper@Inject constructor(
-    @ApplicationContext private val context: Context
-) {
+class TokoChatListUiMapper@Inject constructor() {
 
-    fun mapToChatListItem(conversationsChannel: ConversationsChannel): TokoChatListItemUiModel {
+    fun mapToListChat(listChannel: List<ConversationsChannel>): List<TokoChatListItemUiModel> {
+        val rawResult = listChannel.map {
+            mapToChatListItem(it)
+        }
+        return rawResult.sortedByDescending {
+            it.createAt
+        }
+    }
+
+    private fun mapToChatListItem(conversationsChannel: ConversationsChannel): TokoChatListItemUiModel {
         val orderInfo = conversationsChannel.metadata?.orderInfo
         val lastMessage = conversationsChannel.lastMessage
         return TokoChatListItemUiModel(

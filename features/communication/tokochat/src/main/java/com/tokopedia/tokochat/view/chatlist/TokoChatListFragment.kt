@@ -1,7 +1,6 @@
 package com.tokopedia.tokochat.view.chatlist
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,24 +11,26 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalCommunication
-import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.tokochat.common.util.TokoChatValueUtil
 import com.tokopedia.tokochat.common.view.chatlist.TokoChatListBaseFragment
 import com.tokopedia.tokochat.common.view.chatlist.adapter.TokoChatListBaseAdapter
 import com.tokopedia.tokochat.common.view.chatlist.listener.TokoChatListItemListener
 import com.tokopedia.tokochat.common.view.chatlist.uimodel.TokoChatListEmptyUiModel
 import com.tokopedia.tokochat.common.view.chatlist.uimodel.TokoChatListItemUiModel
+import com.tokopedia.tokochat.config.util.TokoChatErrorLogger
 import com.tokopedia.tokochat.databinding.TokochatChatlistFragmentBinding
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 class TokoChatListFragment @Inject constructor(
-    private val viewModel: TokoChatListViewModel
+    private val viewModel: TokoChatListViewModel,
+    private var userSession: UserSessionInterface
 ) :
     TokoChatListBaseFragment<TokochatChatlistFragmentBinding>(),
     TokoChatListItemListener {
@@ -83,11 +84,13 @@ class TokoChatListFragment @Inject constructor(
     }
 
     private fun setChatListData(newData: List<TokoChatListItemUiModel>) {
-        removeInitialShimmering()
+        removeInitialShimmeringAndEmptyView()
         if (newData.isEmpty()) {
             addEmptyChatItem()
         } else {
-            adapter.setItemsAndAnimateChanges(newData)
+            baseBinding?.tokochatListRv?.post {
+                adapter.setItemsAndAnimateChanges(newData)
+            }
         }
     }
 
@@ -110,14 +113,18 @@ class TokoChatListFragment @Inject constructor(
     }
 
     private fun toggleSwipeRefreshState(value: Boolean) {
-        if (baseBinding?.tokochatListLayoutSwipeRefresh?.isRefreshing != value) {
-            baseBinding?.tokochatListLayoutSwipeRefresh?.isRefreshing = value
-        }
+        baseBinding?.tokochatListLayoutSwipeRefresh?.isRefreshing = value
     }
 
     override fun initObservers() {
         viewModel.error.observe(viewLifecycleOwner) {
-            Log.d("TOKOCHAT-LIST", it.first.stackTraceToString())
+            TokoChatErrorLogger.logExceptionToServerLogger(
+                TokoChatErrorLogger.PAGE.TOKOCHAT,
+                it.first,
+                TokoChatErrorLogger.ErrorType.ERROR_PAGE,
+                userSession.deviceId.orEmpty(),
+                it.second
+            )
         }
     }
 
@@ -130,12 +137,13 @@ class TokoChatListFragment @Inject constructor(
     private fun resetChatList() {
         endlessRecyclerViewScrollListener?.resetState()
         adapter.clearAllItemsAndAnimateChanges()
-        chatListJob?.cancel()
-        initChatListData()
+        lifecycleScope.launch {
+            chatListJob?.cancelAndJoin()
+            initChatListData()
+        }
     }
 
     private fun addEmptyChatItem() {
-        adapter.clearAllItems()
         adapter.addItem(TokoChatListEmptyUiModel())
         baseBinding?.tokochatListRv?.post {
             adapter.notifyItemInserted(adapter.lastIndex)

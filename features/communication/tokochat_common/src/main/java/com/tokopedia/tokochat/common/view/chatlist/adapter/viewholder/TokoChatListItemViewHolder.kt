@@ -3,13 +3,14 @@ package com.tokopedia.tokochat.common.view.chatlist.adapter.viewholder
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.adapterdelegate.BaseViewHolder
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.loader.loadImage
-import com.tokopedia.tokochat.common.util.TokoChatTimeUtil.getRelativeDate
+import com.tokopedia.tokochat.common.util.TokoChatTimeUtil.getRelativeTimeFromNow
 import com.tokopedia.tokochat.common.util.TokoChatUrlUtil.IC_TOKOFOOD_SOURCE
 import com.tokopedia.tokochat.common.util.TokoChatValueUtil.TOKOFOOD_SERVICE_TYPE
 import com.tokopedia.tokochat.common.view.chatlist.listener.TokoChatListItemListener
@@ -35,8 +36,7 @@ class TokoChatListItemViewHolder(
     }
 
     private fun bindDriver(element: TokoChatListItemUiModel) {
-        val driverText = "${element.driverName}${element.getStringOrderType()}"
-        binding?.tokochatListTvDriverName?.text = driverText
+        binding?.tokochatListTvDriverName?.text = getDriverNameWithOrder(element)
         if (imageUrl != element.imageUrl) {
             binding?.tokochatListIvDriver?.loadImage(element.imageUrl)
             imageUrl = element.imageUrl
@@ -46,6 +46,21 @@ class TokoChatListItemViewHolder(
             else -> ""
         }
         binding?.tokochatListIvLogo?.loadImage(logoUrl)
+    }
+
+    private fun getDriverName(fullName: String): String {
+        return if (fullName.length > THRESHOLD_NAME) {
+            fullName.substring(Int.ZERO, THRESHOLD_NAME + Int.ONE) + ELLIPSIZE
+        } else {
+            fullName
+        }
+    }
+
+    private fun getDriverNameWithOrder(element: TokoChatListItemUiModel): String {
+        val driverName = getDriverName(element.driverName)
+        val orderName = getString(
+            R.string.tokochat_list_driver_order_type, element.getStringOrderType())
+        return "$driverName $orderName"
     }
 
     private fun bindMessage(element: TokoChatListItemUiModel) {
@@ -72,8 +87,8 @@ class TokoChatListItemViewHolder(
 
     private fun bindTime(element: TokoChatListItemUiModel, shouldShow: Boolean) {
         binding?.tokochatListTvTime?.apply {
-            text = getRelativeDate(
-                dateTimestamp = element.createAt
+            text = getRelativeTimeFromNow(
+                timeMillis = element.createAt
             )
             showWithCondition(shouldShow)
         }
@@ -103,5 +118,8 @@ class TokoChatListItemViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.tokochat_list_item_chat_list
+
+        private const val THRESHOLD_NAME = 10
+        private const val ELLIPSIZE = "…"
     }
 }
