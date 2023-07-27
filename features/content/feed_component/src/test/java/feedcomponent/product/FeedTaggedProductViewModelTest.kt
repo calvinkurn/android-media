@@ -21,7 +21,7 @@ import org.junit.Rule
 import org.junit.Test
 
 /**
- * Created By : Muhammad Furqan on 11/07/23
+ * Created By : astidhiyaa on 11/07/23
  */
 internal class FeedTaggedProductViewModelTest {
 
@@ -66,7 +66,7 @@ internal class FeedTaggedProductViewModelTest {
         coEvery { feedXGetActivityProductsUseCase(any()) } throws Throwable("Failed")
 
         // when
-        viewModel.fetchFeedProduct(activityId, emptyList(),  FeedTaggedProductUiModel.SourceType.Organic)
+        viewModel.fetchFeedProduct(activityId, emptyList(), FeedTaggedProductUiModel.SourceType.Organic)
 
         // then
         assert(viewModel.feedTagProductList.value is Fail)
@@ -117,7 +117,7 @@ internal class FeedTaggedProductViewModelTest {
             )
         )
 
-        viewModel.fetchFeedProduct(activityId, emptyList(),  FeedTaggedProductUiModel.SourceType.NonOrganic)
+        viewModel.fetchFeedProduct(activityId, emptyList(), FeedTaggedProductUiModel.SourceType.NonOrganic)
 
         assert(viewModel.feedTagProductList.value is Success)
         val response = viewModel.feedTagProductList.value as Success
@@ -143,7 +143,7 @@ internal class FeedTaggedProductViewModelTest {
             )
         )
 
-        viewModel.fetchFeedProduct(activityId, emptyList(),  FeedTaggedProductUiModel.SourceType.NonOrganic)
+        viewModel.fetchFeedProduct(activityId, emptyList(), FeedTaggedProductUiModel.SourceType.NonOrganic)
 
         assert(viewModel.feedTagProductList.value is Success)
         val response = viewModel.feedTagProductList.value as Success
@@ -169,7 +169,7 @@ internal class FeedTaggedProductViewModelTest {
             )
         )
 
-        viewModel.fetchFeedProduct(activityId, emptyList(),  FeedTaggedProductUiModel.SourceType.Organic)
+        viewModel.fetchFeedProduct(activityId, emptyList(), FeedTaggedProductUiModel.SourceType.Organic)
 
         assert(viewModel.feedTagProductList.value is Success)
         val response = viewModel.feedTagProductList.value as Success
@@ -195,7 +195,7 @@ internal class FeedTaggedProductViewModelTest {
             )
         )
 
-        viewModel.fetchFeedProduct(activityId, emptyList(),  FeedTaggedProductUiModel.SourceType.Organic)
+        viewModel.fetchFeedProduct(activityId, emptyList(), FeedTaggedProductUiModel.SourceType.Organic)
 
         assert(viewModel.feedTagProductList.value is Success)
         val response = viewModel.feedTagProductList.value as Success
@@ -206,6 +206,86 @@ internal class FeedTaggedProductViewModelTest {
         }
     }
 
+    @Test
+    fun non_organic_topads_if_stock_not_available_return_available() {
+        val data = List(4) { buildProduct(isStockAvailable = false) }
+        coEvery {
+            feedXGetActivityProductsUseCase.getFeedDetailParam(
+                activityId,
+                ""
+            )
+        } returns mapOf()
+        coEvery { feedXGetActivityProductsUseCase(any()) } returns FeedXGQLResponse(
+            data = FeedXGetActivityProductsResponse(
+                products = data
+            )
+        )
+
+        val expected = List(4) {
+            FeedTaggedProductUiModel(
+                id = "1",
+                parentID = "10",
+                showGlobalVariant = false,
+                shop = FeedTaggedProductUiModel.Shop(id = "3", name = "Miau"),
+                title = "Vitamin Kucing",
+                imageUrl = "",
+                price = FeedTaggedProductUiModel.NormalPrice("Rp.100", 100.0),
+                appLink = "",
+                campaign = FeedTaggedProductUiModel.Campaign(type = FeedTaggedProductUiModel.CampaignType.NoCampaign, status = FeedTaggedProductUiModel.CampaignStatus.Unknown, isExclusiveForMember = false),
+                affiliate = FeedTaggedProductUiModel.Affiliate(id = "4", channel = "here"),
+                stock = FeedTaggedProductUiModel.Stock.Available
+            )
+        }
+
+        viewModel.fetchFeedProduct(activityId, expected, FeedTaggedProductUiModel.SourceType.NonOrganic)
+
+        assert(viewModel.feedTagProductList.value is Success)
+        val response = viewModel.feedTagProductList.value as Success
+
+        (viewModel.feedTagProductList.getOrAwaitValue() as Success).data.forEach {
+            assert(it.stock is FeedTaggedProductUiModel.Stock.Available)
+        }
+    }
+
+    @Test
+    fun non_organic_topads_if_stock_available_return_available() {
+        val data = List(4) { buildProduct(isStockAvailable = true) }
+        coEvery {
+            feedXGetActivityProductsUseCase.getFeedDetailParam(
+                activityId,
+                ""
+            )
+        } returns mapOf()
+        coEvery { feedXGetActivityProductsUseCase(any()) } returns FeedXGQLResponse(
+            data = FeedXGetActivityProductsResponse(
+                products = data
+            )
+        )
+
+        val expected = List(4) {
+            FeedTaggedProductUiModel(
+                id = "1",
+                parentID = "10",
+                showGlobalVariant = false,
+                shop = FeedTaggedProductUiModel.Shop(id = "3", name = "Miau"),
+                title = "Vitamin Kucing",
+                imageUrl = "",
+                price = FeedTaggedProductUiModel.NormalPrice("Rp.100", 100.0),
+                appLink = "",
+                campaign = FeedTaggedProductUiModel.Campaign(type = FeedTaggedProductUiModel.CampaignType.NoCampaign, status = FeedTaggedProductUiModel.CampaignStatus.Unknown, isExclusiveForMember = false),
+                affiliate = FeedTaggedProductUiModel.Affiliate(id = "4", channel = "here"),
+                stock = FeedTaggedProductUiModel.Stock.Available
+            )
+        }
+
+        viewModel.fetchFeedProduct(activityId, expected, FeedTaggedProductUiModel.SourceType.NonOrganic)
+
+        assert(viewModel.feedTagProductList.value is Success)
+        (viewModel.feedTagProductList.getOrAwaitValue() as Success).data.forEach {
+            assert(it.stock is FeedTaggedProductUiModel.Stock.Available)
+        }
+    }
+
     private fun getDummyData(): FeedXGQLResponse = FeedXGQLResponse(
         data = FeedXGetActivityProductsResponse(
             products = listOf(
@@ -213,7 +293,7 @@ internal class FeedTaggedProductViewModelTest {
                 FeedXProduct(),
                 FeedXProduct(),
                 FeedXProduct(),
-                FeedXProduct(),
+                FeedXProduct()
             ),
             isFollowed = true,
             contentType = "content type",
@@ -230,6 +310,8 @@ internal class FeedTaggedProductViewModelTest {
     ) =
         FeedXProduct(
             appLink = "",
-            isAvailable = isStockAvailable, name = name, priceOriginalFmt = price
+            isAvailable = isStockAvailable,
+            name = name,
+            priceOriginalFmt = price
         )
 }
