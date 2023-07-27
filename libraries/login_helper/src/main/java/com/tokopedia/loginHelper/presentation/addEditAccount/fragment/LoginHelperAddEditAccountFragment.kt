@@ -154,6 +154,7 @@ class LoginHelperAddEditAccountFragment : BaseDaggerFragment() {
                 setSaveToDbBtnLoadingState(false)
             }
             is LoginHelperAddEditAccountAction.OnSuccessEditUserData -> {
+                setSaveToDbBtnLoadingState(false)
                 showEditAccountSuccessAndGoToHomePage()
             }
             is LoginHelperAddEditAccountAction.OnFailureEditUserData -> {
