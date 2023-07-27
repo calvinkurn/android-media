@@ -138,14 +138,7 @@ class PromoUsageViewModel @Inject constructor(
                     }
 
                     is VoucherRecommendation -> {
-                        val selectedVouchers = widget.vouchers.map { voucher ->
-                            if (selectedVoucher.id == voucher.id) {
-                                voucher.copy(voucherState = VoucherState.Selected)
-                            } else {
-                                voucher
-                            }
-                        }
-
+                        val selectedVouchers = updateRecommendationVouchersToSelected(selectedVoucher, widget.vouchers)
                         widget.copy(vouchers = selectedVouchers)
                     }
 
@@ -169,15 +162,8 @@ class PromoUsageViewModel @Inject constructor(
                 }
 
                 is VoucherRecommendation -> {
-                    val selectedVouchers = widget.vouchers.map { voucher ->
-                        if (selectedVoucher.id == voucher.id) {
-                            voucher.copy(voucherState = VoucherState.Normal)
-                        } else {
-                            voucher
-                        }
-                    }
-
-                    widget.copy(vouchers = selectedVouchers)
+                    val updatedVouchers = updateRecommendationVouchersToNormal(selectedVoucher, widget.vouchers)
+                    widget.copy(vouchers = updatedVouchers)
                 }
 
                 else -> widget
@@ -324,6 +310,32 @@ class PromoUsageViewModel @Inject constructor(
                 } else {
                     voucher
                 }
+            }
+        }
+    }
+
+    private fun updateRecommendationVouchersToSelected(
+        selectedVoucher: Voucher,
+        vouchers: List<Voucher>
+    ): List<Voucher> {
+        return vouchers.map { voucher ->
+            if (selectedVoucher.id == voucher.id) {
+                voucher.copy(voucherState = VoucherState.Selected)
+            } else {
+                voucher
+            }
+        }
+    }
+
+    private fun updateRecommendationVouchersToNormal(
+        selectedVoucher: Voucher,
+        vouchers: List<Voucher>
+    ): List<Voucher> {
+        return vouchers.map { voucher ->
+            if (selectedVoucher.id == voucher.id) {
+                voucher.copy(voucherState = VoucherState.Normal)
+            } else {
+                voucher
             }
         }
     }
