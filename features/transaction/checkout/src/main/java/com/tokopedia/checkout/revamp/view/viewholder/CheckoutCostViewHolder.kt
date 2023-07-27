@@ -28,40 +28,23 @@ class CheckoutCostViewHolder(
     fun bind(cost: CheckoutCostModel) {
         binding.tvCheckoutCostItemPriceTitle.text =
             getTotalItemLabel(binding.tvCheckoutCostItemPriceTitle.context, cost.totalItem)
-        if (cost.finalItemPrice < cost.originalItemPrice) {
-            binding.tvCheckoutCostItemPriceSlashedValue.setTextAndContentDescription(
-                CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                    cost.originalItemPrice,
-                    false
-                ).removeDecimalSuffix(),
-                R.string.content_desc_tv_total_item_price_summary
-            )
-            binding.tvCheckoutCostItemPriceSlashedValue.paintFlags =
-                binding.tvCheckoutCostItemPriceSlashedValue.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
-            binding.tvCheckoutCostItemPriceSlashedValue.isVisible = true
-            binding.tvCheckoutCostItemPriceValue.setTextColorCompat(com.tokopedia.unifyprinciples.R.color.Unify_TN500)
-            binding.tvCheckoutCostItemPriceValue.setTextAndContentDescription(
-                CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                    cost.finalItemPrice,
-                    false
-                ).removeDecimalSuffix(),
-                R.string.content_desc_tv_total_item_price_summary
-            )
+        renderItemPrice(cost)
+        renderShippingPrice(cost)
+        if (cost.totalItem > 0) {
+            renderPlatformFee(cost.dynamicPlatformFee)
         } else {
-            binding.tvCheckoutCostItemPriceSlashedValue.isVisible = false
-            binding.tvCheckoutCostItemPriceValue.setTextColorCompat(com.tokopedia.unifyprinciples.R.color.Unify_NN950)
-            binding.tvCheckoutCostItemPriceValue.setTextAndContentDescription(
-                if (cost.originalItemPrice == 0.0) {
-                    "-"
-                } else {
-                    CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                        cost.originalItemPrice,
-                        false
-                    ).removeDecimalSuffix()
-                },
-                R.string.content_desc_tv_total_item_price_summary
-            )
+            hidePlatformFee()
         }
+
+        renderOtherFee(cost)
+
+        binding.tvCheckoutCostTotalValue.setTextAndContentDescription(
+            cost.totalPriceString,
+            R.string.content_desc_tv_total_payment
+        )
+    }
+
+    private fun renderShippingPrice(cost: CheckoutCostModel) {
         if (cost.finalShippingFee < cost.originalShippingFee) {
             binding.tvCheckoutCostShippingSlashedValue.setTextAndContentDescription(
                 CurrencyFormatUtil.convertPriceValueToIdrFormat(
@@ -96,18 +79,43 @@ class CheckoutCostViewHolder(
                 R.string.content_desc_tv_shipping_fee_summary
             )
         }
-        if (cost.totalItem > 0) {
-            renderPlatformFee(cost.dynamicPlatformFee)
+    }
+
+    private fun renderItemPrice(cost: CheckoutCostModel) {
+        if (cost.finalItemPrice < cost.originalItemPrice) {
+            binding.tvCheckoutCostItemPriceSlashedValue.setTextAndContentDescription(
+                CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                    cost.originalItemPrice,
+                    false
+                ).removeDecimalSuffix(),
+                R.string.content_desc_tv_total_item_price_summary
+            )
+            binding.tvCheckoutCostItemPriceSlashedValue.paintFlags =
+                binding.tvCheckoutCostItemPriceSlashedValue.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+            binding.tvCheckoutCostItemPriceSlashedValue.isVisible = true
+            binding.tvCheckoutCostItemPriceValue.setTextColorCompat(com.tokopedia.unifyprinciples.R.color.Unify_TN500)
+            binding.tvCheckoutCostItemPriceValue.setTextAndContentDescription(
+                CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                    cost.finalItemPrice,
+                    false
+                ).removeDecimalSuffix(),
+                R.string.content_desc_tv_total_item_price_summary
+            )
         } else {
-            hidePlatformFee()
+            binding.tvCheckoutCostItemPriceSlashedValue.isVisible = false
+            binding.tvCheckoutCostItemPriceValue.setTextColorCompat(com.tokopedia.unifyprinciples.R.color.Unify_NN950)
+            binding.tvCheckoutCostItemPriceValue.setTextAndContentDescription(
+                if (cost.originalItemPrice == 0.0) {
+                    "-"
+                } else {
+                    CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                        cost.originalItemPrice,
+                        false
+                    ).removeDecimalSuffix()
+                },
+                R.string.content_desc_tv_total_item_price_summary
+            )
         }
-
-        renderOtherFee(cost)
-
-        binding.tvCheckoutCostTotalValue.setTextAndContentDescription(
-            cost.totalPriceString,
-            R.string.content_desc_tv_total_payment
-        )
     }
 
     private fun getTotalItemLabel(context: Context, totalItem: Int): String {

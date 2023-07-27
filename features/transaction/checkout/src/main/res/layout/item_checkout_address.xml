@@ -25,8 +25,8 @@
         android:layout_height="16dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="4dp"
-        app:icon_color_night_enable="@color/Unify_GN500"
         app:icon_color_light_enable="@color/Unify_GN500"
+        app:icon_color_night_enable="@color/Unify_GN500"
         app:icon_name="LOCATION_FILLED"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_checkout_address_header" />
@@ -53,11 +53,9 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:layout_marginEnd="18dp"
-        android:layout_marginBottom="24dp"
         android:ellipsize="end"
         android:lines="1"
         android:textColor="@color/Unify_NN600"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/ic_checkout_address_chevron"
         app:layout_constraintStart_toStartOf="@id/ic_checkout_address"
         app:layout_constraintTop_toBottomOf="@id/tv_checkout_address_title"
@@ -78,8 +76,10 @@
         app:layout_constraintTop_toTopOf="@id/ic_checkout_address" />
 
     <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/divider_checkout_address"
         android:layout_width="0dp"
         android:layout_height="8dp"
+        android:layout_marginTop="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

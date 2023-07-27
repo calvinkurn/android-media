@@ -286,8 +286,6 @@ class PromoEntryPointWidget @JvmOverloads constructor(
     fun showActive(
         wording: String,
         rightIcon: Int,
-        animate: Boolean = false,
-        animateWording: Boolean = false,
         onClickListener: () -> Unit = {}
     ) {
         activeViewConfettiFrame?.visibility = View.GONE
@@ -296,28 +294,14 @@ class PromoEntryPointWidget @JvmOverloads constructor(
         activeViewTitleWording?.visibility = View.GONE
         activeViewDescWording?.visibility = View.GONE
         activeViewWording?.visibility = View.VISIBLE
-        if (animate && switcherView?.visibility == View.VISIBLE) {
-            activeViewLeftImage?.setImageResource(R.drawable.ic_promo_coupon_yellow)
-            activeViewRightIcon?.setImage(rightIcon)
-            if (switcherView?.displayedChild != 0) {
-                // only trigger view switch animation if currently showing different view
-                activeViewWording?.setCurrentText(MethodChecker.fromHtml(wording))
-                switcherView?.displayedChild = 0
-            } else if (animateWording) {
-                activeViewWording?.setText(MethodChecker.fromHtml(wording))
-            }
-            errorView?.visibility = View.GONE
-            loadingView?.visibility = View.GONE
-        } else {
-            switcherView?.reset()
-            activeViewLeftImage?.setImageResource(R.drawable.ic_promo_coupon_yellow)
-            activeViewWording?.setCurrentText(MethodChecker.fromHtml(wording))
-            activeViewRightIcon?.setImage(rightIcon)
-            switcherView?.displayedChild = 0
-            switcherView?.visibility = View.VISIBLE
-            errorView?.visibility = View.GONE
-            loadingView?.visibility = View.GONE
-        }
+        switcherView?.reset()
+        activeViewLeftImage?.setImageUrl("https://images.tokopedia.net/img/ios/promo_widget/promo_coupon.png")
+        activeViewWording?.setCurrentText(MethodChecker.fromHtml(wording))
+        activeViewRightIcon?.setImage(rightIcon)
+        switcherView?.displayedChild = 0
+        switcherView?.visibility = View.VISIBLE
+        errorView?.visibility = View.GONE
+        loadingView?.visibility = View.GONE
         activeView?.setOnClickListener {
             onClickListener.invoke()
         }

@@ -15,7 +15,8 @@ class CheckoutCrossSellViewHolder(private val binding: ItemCheckoutCrossSellBind
 
     fun bind(checkoutCrossSellGroupModel: CheckoutCrossSellGroupModel) {
         if (checkoutCrossSellGroupModel.crossSellList.isEmpty()) {
-            binding.root.isVisible = false
+            binding.rvCheckoutCrossSell.isVisible = false
+            binding.itemCheckoutCrossSellItem.root.isVisible = false
         } else if (checkoutCrossSellGroupModel.crossSellList.size == 1) {
             val crossSellItem = checkoutCrossSellGroupModel.crossSellList[0]
             renderCrossSellSingleItem(crossSellItem)
