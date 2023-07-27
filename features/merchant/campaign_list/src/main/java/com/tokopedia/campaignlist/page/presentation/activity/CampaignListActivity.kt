@@ -4,6 +4,8 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
@@ -97,6 +99,8 @@ class CampaignListActivity : BaseActivity(), ShareBottomsheetListener {
 
                 val uiState = viewModel.uiState.collectAsState()
 
+                val searchBarKeyword = remember { mutableStateOf("") }
+
                 CampaignListScreen(
                     uiState = uiState.value,
                     onTapCampaignStatusFilter = { campaignStatuses -> showCampaignStatusBottomSheet(campaignStatuses) },
@@ -112,15 +116,18 @@ class CampaignListActivity : BaseActivity(), ShareBottomsheetListener {
                         )
                     },
                     onClearFilter = { viewModel.onEvent(CampaignListViewModel.UiEvent.ClearFilter) },
-                    onSearchBarKeywordSubmit = { searchQuery ->
-                        viewModel.setCampaignName(searchQuery)
+                    onSearchBarKeywordSubmit = {
+                        viewModel.setCampaignName(searchBarKeyword.value)
                         val campaignTypeId = viewModel.getCampaignTypeId()
                         val campaignStatusId = viewModel.getCampaignStatusId()
                         viewModel.getCampaignList(
-                            campaignName = searchQuery,
+                            campaignName = searchBarKeyword.value,
                             campaignTypeId = campaignTypeId,
                             statusId = campaignStatusId
                         )
+                    },
+                    onSearchBarKeywordChanged = {
+                        searchBarKeyword.value = it
                     },
                     onSearchbarCleared = { viewModel.getCampaignList() },
                     onTickerDismissed = { viewModel.onEvent(CampaignListViewModel.UiEvent.DismissTicker) },
