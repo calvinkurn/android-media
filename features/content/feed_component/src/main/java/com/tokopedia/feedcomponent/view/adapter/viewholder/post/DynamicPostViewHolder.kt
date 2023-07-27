@@ -581,34 +581,20 @@ open class DynamicPostViewHolder(
     }
 
     private fun bindLike(like: Like) {
-        val likedColor = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
-        val dislikeColor = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN300)
         when {
             like.isChecked -> {
-                itemView.likeIcon.setImage(
-                    newIconId = IconUnify.THUMB_FILLED,
-                    newLightEnable = likedColor,
-                    newLightDisable = dislikeColor,
-                    newDarkEnable = likedColor,
-                    newDarkDisable = dislikeColor,
-                )
+                updateLikeButton(true)
                 val likeCount = if (like.fmt.isEmpty()) like.value.toString() else like.fmt
                 itemView.likeText.text = likeCount
                 itemView.likeText.setTextColor(
                     MethodChecker.getColor(
                         itemView.likeText.context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_G500
+                        com.tokopedia.unifyprinciples.R.color.Unify_GN500
                     )
                 )
             }
             like.value > 0 -> {
-                itemView.likeIcon.setImage(
-                    newIconId = IconUnify.THUMB_FILLED,
-                    newLightEnable = dislikeColor,
-                    newLightDisable = likedColor,
-                    newDarkEnable = dislikeColor,
-                    newDarkDisable = likedColor,
-                )
+                updateLikeButton(false)
                 itemView.likeText.text = like.fmt
                 itemView.likeText.setTextColor(
                     MethodChecker.getColor(
@@ -618,13 +604,7 @@ open class DynamicPostViewHolder(
                 )
             }
             else -> {
-                itemView.likeIcon.setImage(
-                    newIconId = IconUnify.THUMB_FILLED,
-                    newLightEnable = dislikeColor,
-                    newLightDisable = likedColor,
-                    newDarkEnable = dislikeColor,
-                    newDarkDisable = likedColor,
-                )
+                updateLikeButton(false)
                 val text: String =
                     if (like.fmt.isNotEmpty() && !like.fmt.equals("0")) like.fmt
                     else getString(com.tokopedia.content.common.R.string.kol_action_like)
@@ -636,6 +616,28 @@ open class DynamicPostViewHolder(
                     )
                 )
             }
+        }
+    }
+    
+    private fun updateLikeButton(isLiked: Boolean) {
+        val likedColor = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
+        val dislikeColor = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN300)
+        if (isLiked) {
+            itemView.likeIcon.setImage(
+                newIconId = IconUnify.THUMB_FILLED,
+                newLightEnable = likedColor,
+                newLightDisable = dislikeColor,
+                newDarkEnable = likedColor,
+                newDarkDisable = dislikeColor,
+            )
+        } else {
+            itemView.likeIcon.setImage(
+                newIconId = IconUnify.THUMB_FILLED,
+                newLightEnable = dislikeColor,
+                newLightDisable = likedColor,
+                newDarkEnable = dislikeColor,
+                newDarkDisable = likedColor,
+            )
         }
     }
 

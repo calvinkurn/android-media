@@ -29,7 +29,6 @@ import com.tokopedia.feedcomponent.util.TimeConverter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder
 import com.tokopedia.feedcomponent.view.viewmodel.DynamicPostUiModel
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kol.R
 import com.tokopedia.kol.common.di.DaggerKolComponent
 import com.tokopedia.kol.common.util.resize
@@ -482,64 +481,59 @@ class VideoDetailFragment :
     private fun bindLike(like: FeedXLike) {
         when {
             like.isLiked -> {
-                likeIcon.setImageDrawable(
-                    getIconUnifyDrawable(
-                        requireContext(),
-                        IconUnify.THUMB_FILLED,
-                        MethodChecker.getColor(
-                            requireContext(),
-                            com.tokopedia.unifyprinciples.R.color.Unify_G500,
-                        )
-                    )
-                )
+                updateLikeButton(true)
                 likeText.text = like.countFmt
                 likeText.setTextColor(
                     MethodChecker.getColor(
                         likeText.context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_G500
+                        com.tokopedia.unifyprinciples.R.color.Unify_GN500
                     )
                 )
             }
 
             like.count > 0 -> {
-                likeIcon.setImageDrawable(
-                        getIconUnifyDrawable(
-                            requireContext(),
-                            IconUnify.THUMB_FILLED,
-                            MethodChecker.getColor(
-                                requireContext(),
-                                com.tokopedia.unifyprinciples.R.color.Unify_Static_White,
-                            )
-                        )
-                    )
+                updateLikeButton(false)
                 likeText.text = like.countFmt
                 likeText.setTextColor(
                     MethodChecker.getColor(
                         likeText.context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_N0
+                        com.tokopedia.unifyprinciples.R.color.Unify_NN0
                     )
                 )
             }
 
             else -> {
-                likeIcon.setImageDrawable(
-                    getIconUnifyDrawable(
-                        requireContext(),
-                        IconUnify.THUMB_FILLED,
-                        MethodChecker.getColor(
-                            requireContext(),
-                            com.tokopedia.unifyprinciples.R.color.Unify_Static_White,
-                        )
-                    )
-                )
+                updateLikeButton(false)
                 likeText.setText(com.tokopedia.content.common.R.string.kol_action_like)
                 likeText.setTextColor(
                     MethodChecker.getColor(
                         likeIcon.context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_N0
+                        com.tokopedia.unifyprinciples.R.color.Unify_NN0
                     )
                 )
             }
+        }
+    }
+
+    private fun updateLikeButton(isLiked: Boolean) {
+        val likedColor = MethodChecker.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_GN500)
+        val dislikeColor = MethodChecker.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_Static_White)
+        if (isLiked) {
+            likeIcon.setImage(
+                newIconId = IconUnify.THUMB_FILLED,
+                newLightEnable = likedColor,
+                newLightDisable = dislikeColor,
+                newDarkEnable = likedColor,
+                newDarkDisable = dislikeColor,
+            )
+        } else {
+            likeIcon.setImage(
+                newIconId = IconUnify.THUMB_FILLED,
+                newLightEnable = dislikeColor,
+                newLightDisable = likedColor,
+                newDarkEnable = dislikeColor,
+                newDarkDisable = likedColor,
+            )
         }
     }
 
