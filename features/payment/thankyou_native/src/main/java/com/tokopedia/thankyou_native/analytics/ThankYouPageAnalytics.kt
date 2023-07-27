@@ -295,7 +295,7 @@ class ThankYouPageAnalytics @Inject constructor(
     ): Map<String, Any> {
         return mapOf(
             KEY_ITEM_NAME to banner.assetUrl,
-            KEY_ITEM_ID to banner.id,
+            KEY_ITEM_ID to banner.itemId,
             KEY_CREATIVE_NAME to banner.assetUrl,
             KEY_CREATIVE_SLOT to position,
         )

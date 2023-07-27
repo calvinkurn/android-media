@@ -20,5 +20,5 @@ data class BannerWidgetModel(
 data class BannerItem(
     val assetUrl: String = "",
     val applink: String = "",
-    val id: Long = 0L
+    val itemId: String = ""
 )

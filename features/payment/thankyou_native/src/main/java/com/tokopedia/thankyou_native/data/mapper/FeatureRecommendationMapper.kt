@@ -143,8 +143,8 @@ object FeatureRecommendationMapper {
         if (engineData != null && !engineData.featureEngineItem.isNullOrEmpty()) {
             try {
                 val bannerItem = engineData.featureEngineItem.find {
-                    val a = JsonParser.parseString(it.detail).asJsonObject[KEY_TYPE].asString
-                    a.equals(TYPE_BANNER, true)
+                    val type = JsonParser.parseString(it.detail).asJsonObject[KEY_TYPE].asString
+                    type.equals(TYPE_BANNER, true)
                 } ?: return null
 
                 val bannerDetail = JsonParser.parseString(bannerItem.detail).asJsonObject
@@ -156,7 +156,7 @@ object FeatureRecommendationMapper {
                         BannerItem(
                             bannerData[i].asJsonObject[KEY_ASSET_URL].asString,
                             bannerData[i].asJsonObject[KEY_APPLINK].asString,
-                            bannerData[i].asJsonObject[KEY_ID].asLong,
+                            bannerItem.id.toString() + " - " + bannerDetail[KEY_TITLE].asString
                         )
                     )
                 }
