@@ -66,10 +66,12 @@ class AddOnWidgetView : BaseCustomView {
                 viewModel.setSelectedAddons(it)
             }
             viewModel.isAddonDataEmpty.observe(this) {
-                llSeeAll?.isVisible = viewModel.isSimplified
-                divSeeAll?.isVisible = viewModel.isSimplified
                 if (it) listener?.onDataEmpty()
                 this@AddOnWidgetView.isVisible = !it
+            }
+            viewModel.shouldShowSeeAll.observe(this) {
+                llSeeAll?.isVisible = it
+                divSeeAll?.isVisible = it
             }
             viewModel.totalPrice.observe(this) {
                 listener?.onTotalPriceCalculated(it)
