@@ -139,31 +139,9 @@ class FeedCampaignRibbonView(
 
     fun startAnimation() {
         if (binding.root.visibility == VISIBLE) {
-            when (type) {
-                FeedCampaignRibbonType.ASGC_GENERAL -> {
-                    startDelayProcess(TWO_SECOND) {
-                        setBackgroundGradient()
-                        runLoopAnimation(index = START_ANIMATION_INDEX)
-                    }
-                }
-                FeedCampaignRibbonType.ASGC_DISCOUNT -> {
-                    startDelayProcess(TWO_SECOND) {
-                        setBackgroundGradient()
-                        runLoopAnimation(index = START_ANIMATION_INDEX)
-                    }
-                }
-                FeedCampaignRibbonType.ASGC_FLASH_SALE_ONGOING, FeedCampaignRibbonType.ASGC_SPECIAL_RELEASE_ONGOING -> {
-                    startDelayProcess(TWO_SECOND) {
-                        setBackgroundGradient()
-                        runLoopAnimation(index = START_ANIMATION_INDEX)
-                    }
-                }
-                FeedCampaignRibbonType.ASGC_FLASH_SALE_UPCOMING, FeedCampaignRibbonType.ASGC_SPECIAL_RELEASE_UPCOMING -> {
-                    startDelayProcess(TWO_SECOND) {
-                        setBackgroundGradient()
-                        runLoopAnimation(index = START_ANIMATION_INDEX)
-                    }
-                }
+            startDelayProcess(TWO_SECOND) {
+                setBackgroundGradient()
+                runLoopAnimation(index = START_ANIMATION_INDEX)
             }
         }
     }
@@ -270,10 +248,7 @@ class FeedCampaignRibbonView(
                     setupTimer("") {}
                     tyFeedCampaignRibbonSubtitle.text = ""
 
-                    var text = ""
-                    if (!mCta?.texts.isNullOrEmpty()) {
-                        text = mCta?.texts!![0]
-                    }
+                    val text = mCta?.texts?.firstOrNull().orEmpty()
                     tyFeedCampaignRibbonTitle.text = text
                     tyFeedCampaignRibbonTitleSecond.text = text
 
@@ -498,16 +473,12 @@ class FeedCampaignRibbonView(
 
                         if (animationTextList.size > animationIndex) {
                             when (animationState) {
-                                R.id.feed_initial_title_with_icon_state -> {
+                                R.id.feed_initial_title_with_icon_state, R.id.feed_cta_only_state -> {
                                     tyFeedCampaignRibbonTitle.text =
                                         animationTextList[animationIndex]
                                 }
                                 R.id.feed_second_title_with_icon_state -> {
                                     tyFeedCampaignRibbonTitleSecond.text =
-                                        animationTextList[animationIndex]
-                                }
-                                R.id.feed_cta_only_state -> {
-                                    tyFeedCampaignRibbonTitle.text =
                                         animationTextList[animationIndex]
                                 }
                                 R.id.feed_cta_with_coupon_state -> {
@@ -556,11 +527,6 @@ class FeedCampaignRibbonView(
 
         mCta?.texts?.forEach {
             prevState = when (prevState) {
-                R.id.feed_initial_title_with_icon_state -> {
-                    animationTextList.add(it)
-                    animationStateList.add(R.id.feed_second_title_with_icon_state)
-                    R.id.feed_second_title_with_icon_state
-                }
                 R.id.feed_second_title_with_icon_state -> {
                     animationTextList.add(it)
                     animationStateList.add(R.id.feed_initial_title_with_icon_state)
