@@ -69,7 +69,7 @@ class FlightOrderDetailViewModel @Inject constructor(
     fun fetchOrderDetailData() {
         launchCatchError(dispatcherProvider.main, block = {
             val orderDetailData = orderDetailUseCase.execute(orderId)
-            if(orderDetailData is Success){
+            if (orderDetailData is Success) {
                 orderDetailData.let {
                     it.data.journeys.map { journey ->
                         journey.airlineLogo = getAirlineLogo(journey)
@@ -108,8 +108,13 @@ class FlightOrderDetailViewModel @Inject constructor(
 
     fun fetchCrossSellData() {
         launch(dispatcherProvider.main) {
-            mutableCrossSell.postValue(crossSellUseCase.execute(QueryTravelCrossSelling(),
-                    orderId, TravelCrossSellingUseCase.PARAM_FLIGHT_PRODUCT))
+            mutableCrossSell.postValue(
+                crossSellUseCase.execute(
+                    QueryTravelCrossSelling(),
+                    orderId,
+                    TravelCrossSellingUseCase.PARAM_FLIGHT_PRODUCT
+                )
+            )
         }
     }
 
@@ -170,33 +175,37 @@ class FlightOrderDetailViewModel @Inject constructor(
             }
 
             for ((key, value) in journeyFare) {
-                val adultPriceTotal = (passengers[FlightPassengerType.ADULT.id]
-                        ?: 0) * (value[FlightPassengerType.ADULT.id] ?: 0)
+                val adultPriceTotal = (
+                    passengers[FlightPassengerType.ADULT.id]
+                        ?: 0
+                    ) * (value[FlightPassengerType.ADULT.id] ?: 0)
                 returnData.add(
-                        FlightOrderDetailSimpleModel(
-                                "$key ${FlightPassengerType.ADULT.type} x${passengers[FlightPassengerType.ADULT.id]}",
-                                "Rp${CurrencyFormatHelper.convertToRupiah(adultPriceTotal.toString())}",
-                                false,
-                                false,
-                                false,
-                                false,
-                                true
-                        )
+                    FlightOrderDetailSimpleModel(
+                        "$key ${FlightPassengerType.ADULT.type} x${passengers[FlightPassengerType.ADULT.id]}",
+                        "Rp${CurrencyFormatHelper.convertToRupiah(adultPriceTotal.toString())}",
+                        false,
+                        false,
+                        false,
+                        false,
+                        true
+                    )
                 )
 
                 if (value.containsKey(FlightPassengerType.CHILDREN.id)) {
-                    val childrenPriceTotal = (passengers[FlightPassengerType.CHILDREN.id]
-                            ?: 0) * (value[FlightPassengerType.CHILDREN.id] ?: 0)
+                    val childrenPriceTotal = (
+                        passengers[FlightPassengerType.CHILDREN.id]
+                            ?: 0
+                        ) * (value[FlightPassengerType.CHILDREN.id] ?: 0)
                     returnData.add(
-                            FlightOrderDetailSimpleModel(
-                                    "$key ${FlightPassengerType.CHILDREN.type} x${passengers[FlightPassengerType.CHILDREN.id]}",
-                                    "Rp${CurrencyFormatHelper.convertToRupiah(childrenPriceTotal.toString())}",
-                                    false,
-                                    false,
-                                    false,
-                                    false,
-                                    true
-                            )
+                        FlightOrderDetailSimpleModel(
+                            "$key ${FlightPassengerType.CHILDREN.type} x${passengers[FlightPassengerType.CHILDREN.id]}",
+                            "Rp${CurrencyFormatHelper.convertToRupiah(childrenPriceTotal.toString())}",
+                            false,
+                            false,
+                            false,
+                            false,
+                            true
+                        )
                     )
                 }
 
@@ -204,15 +213,15 @@ class FlightOrderDetailViewModel @Inject constructor(
                     val leftValue = "$key ${FlightPassengerType.INFANT.type} x${passengers[FlightPassengerType.INFANT.id]}"
                     val rightValue = "Rp${CurrencyFormatHelper.convertToRupiah(value[FlightPassengerType.INFANT.id].toString())}"
                     returnData.add(
-                            FlightOrderDetailSimpleModel(
-                                    leftValue,
-                                    rightValue,
-                                    false,
-                                    false,
-                                    false,
-                                    false,
-                                    true
-                            )
+                        FlightOrderDetailSimpleModel(
+                            leftValue,
+                            rightValue,
+                            false,
+                            false,
+                            false,
+                            false,
+                            true
+                        )
                     )
                 }
             }
@@ -236,15 +245,15 @@ class FlightOrderDetailViewModel @Inject constructor(
                         }
                         val rightValue = "Rp${CurrencyFormatHelper.convertToRupiah(amenity.priceNumeric.toString())}"
                         returnData.add(
-                                FlightOrderDetailSimpleModel(
-                                        leftValue,
-                                        rightValue,
-                                        false,
-                                        false,
-                                        false,
-                                        false,
-                                        true
-                                )
+                            FlightOrderDetailSimpleModel(
+                                leftValue,
+                                rightValue,
+                                false,
+                                false,
+                                false,
+                                false,
+                                true
+                            )
                         )
                     }
                 }
@@ -259,21 +268,21 @@ class FlightOrderDetailViewModel @Inject constructor(
         val orderDetailData = orderDetailData.value
 
         if (orderDetailData != null && orderDetailData is Success) {
-            totalAmount = "Rp${CurrencyFormatHelper.convertToRupiah(orderDetailData.data.totalPriceNumeric.toString())}"
+            totalAmount = orderDetailData.data.payment.totalAmountStr
         }
 
         return totalAmount
     }
 
     fun getOrderDetailStatus(): String =
-            orderDetailData.value?.let {
-                (it as Success).data.statusString
-            } ?: ""
+        orderDetailData.value?.let {
+            (it as Success).data.statusString
+        } ?: ""
 
     fun trackOpenOrderDetail(statusString: String) {
         flightAnalytics.openOrderDetail(
-                "$statusString - $orderId",
-                userSession.userId
+            "$statusString - $orderId",
+            userSession.userId
         )
     }
 
@@ -281,8 +290,8 @@ class FlightOrderDetailViewModel @Inject constructor(
         val orderDetailData = mutableOrderDetailData.value
         if (orderDetailData != null && orderDetailData is Success) {
             flightAnalytics.eventSendETicketOrderDetail(
-                    "${orderDetailData.data.statusString} - $orderId",
-                    userSession.userId
+                "${orderDetailData.data.statusString} - $orderId",
+                userSession.userId
             )
         }
     }
@@ -291,8 +300,8 @@ class FlightOrderDetailViewModel @Inject constructor(
         val orderDetailData = mutableOrderDetailData.value
         if (orderDetailData != null && orderDetailData is Success) {
             flightAnalytics.eventWebCheckInOrderDetail(
-                    "${orderDetailData.data.statusString} - $orderId",
-                    userSession.userId
+                "${orderDetailData.data.statusString} - $orderId",
+                userSession.userId
             )
         }
     }
@@ -301,8 +310,8 @@ class FlightOrderDetailViewModel @Inject constructor(
         val orderDetailData = mutableOrderDetailData.value
         if (orderDetailData != null && orderDetailData is Success) {
             flightAnalytics.eventCancelTicketOrderDetail(
-                    "${orderDetailData.data.statusString} - $orderId",
-                    userSession.userId
+                "${orderDetailData.data.statusString} - $orderId",
+                userSession.userId
             )
         }
     }
@@ -348,15 +357,19 @@ class FlightOrderDetailViewModel @Inject constructor(
     }
 
     private fun getDepartureDateAndTime(journey: FlightOrderDetailJourneyModel): Pair<String, String> {
-
-        val time = "${DateUtil.formatDate(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
-                DateUtil.HH_MM, journey.departureTime)} - ${DateUtil.formatDate(
-                DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, DateUtil.HH_MM, journey.arrivalTime)}"
+        val time = "${DateUtil.formatDate(
+            DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
+            DateUtil.HH_MM,
+            journey.departureTime
+        )} - ${DateUtil.formatDate(
+            DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
+            DateUtil.HH_MM,
+            journey.arrivalTime
+        )}"
 
         return Pair(
-                DateUtil.formatDate(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, DateUtil.EEE_DD_MMM_YY, journey.departureTime),
-                time
+            DateUtil.formatDate(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, DateUtil.EEE_DD_MMM_YY, journey.departureTime),
+            time
         )
     }
-
 }

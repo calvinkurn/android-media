@@ -11,15 +11,14 @@ import com.tokopedia.flight.orderdetail.presentation.utils.OrderDetailUtils
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.HtmlLinkHelper
-import com.tokopedia.unifycomponents.UrlSpanNoUnderline
 import com.tokopedia.utils.date.DateUtil
 import kotlinx.android.synthetic.main.view_flight_order_detail_status_header.view.*
 
 /**
  * @author by furqan on 11/11/2020
  */
-class FlightOrderDetailHeaderStatusView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0)
-    : FrameLayout(context, attrs, defStyleAttr) {
+class FlightOrderDetailHeaderStatusView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
+    FrameLayout(context, attrs, defStyleAttr) {
 
     var listener: Listener? = null
 
@@ -35,13 +34,14 @@ class FlightOrderDetailHeaderStatusView @JvmOverloads constructor(context: Conte
         View.inflate(context, R.layout.view_flight_order_detail_status_header, this)
     }
 
-    fun setData(statusInt: Int,
-                statusStr: String,
-                invoiceId: String,
-                transactionDate: String,
-                paymentMethod: String,
-                paymentAmount: String,
-                additionalInfo: String
+    fun setData(
+        statusInt: Int,
+        statusStr: String,
+        invoiceId: String,
+        transactionDate: String,
+        paymentMethod: String,
+        paymentAmount: String,
+        additionalInfo: String
     ) {
         this.statusInt = statusInt
         this.statusStr = statusStr
@@ -92,9 +92,10 @@ class FlightOrderDetailHeaderStatusView @JvmOverloads constructor(context: Conte
 
     private fun renderTransactionDate() {
         tgFlightOrderCreateTime.text = DateUtil.formatDate(
-                DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
-                DateUtil.DEFAULT_VIEW_TIME_FORMAT,
-                transactionDate)
+            DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
+            DateUtil.DEFAULT_VIEW_TIME_FORMAT,
+            transactionDate
+        )
     }
 
     private fun renderPaymentView() {
@@ -125,5 +126,4 @@ class FlightOrderDetailHeaderStatusView @JvmOverloads constructor(context: Conte
         fun onDetailPaymentClicked()
         fun onInvoiceIdClicked()
     }
-
 }
