@@ -104,6 +104,10 @@ class PlayBroLiveToVodBottomSheet @Inject constructor(
             movementMethod = LinkMovementMethod.getInstance()
             text = bottomText
         }
+        btnAction.setOnClickListener {
+            mListener?.onButtonActionPressed()
+            dismiss()
+        }
     }
 
     fun setupData(data: TickerBottomSheetUiModel) {
