@@ -13,6 +13,7 @@ import com.tokopedia.addon.presentation.uimodel.AddOnParam
 import com.tokopedia.gifting.domain.usecase.GetAddOnUseCase
 import com.tokopedia.gifting.presentation.uimodel.AddOnType
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.purchase_platform.common.feature.addons.domain.SaveAddOnStateUseCase
 import com.tokopedia.usecase.coroutines.Fail
@@ -58,6 +59,12 @@ class AddOnViewModel @Inject constructor(
 
     val isAddonDataEmpty = Transformations.map(getAddOnResult) {
         it.isEmpty()
+    }
+
+    val shouldShowSeeAll = Transformations.map(mGetAddOnResult) { addonGroups ->
+        isSimplified && addonGroups.any {
+            it.addon.size > Int.ONE
+        }
     }
 
     val totalPrice = Transformations.map(modifiedAddOnGroups) { modifiedAddOnGroups ->
