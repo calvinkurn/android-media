@@ -7,8 +7,9 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -19,7 +20,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Divider
@@ -61,7 +61,7 @@ import com.tokopedia.sellerpersona.view.model.PersonaUiModel
 
 private const val SUB_TITLE_FORMAT = "(%s)"
 private val CARD_WIDTH = 300.dp
-private val CARD_DECORATION_WIDTH = 16.dp
+private val CARD_SPACE_DP = 16.dp
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -69,7 +69,6 @@ internal fun PersonSuccessState(
     data: SelectTypeState.Data, onEvent: (SelectTypeUiEvent) -> Unit
 ) {
     val listState = rememberLazyListState()
-    val itemCount = remember { data.personaList.size }
 
     LaunchScrollToPosition(listState, data.ui.selectedIndex)
 
@@ -79,18 +78,20 @@ internal fun PersonSuccessState(
         val (personaList, divider, selectButton) = createRefs()
         LazyRow(
             modifier = Modifier.constrainAs(personaList) {
-                top.linkTo(anchor = parent.top, margin = 16.dp)
+                top.linkTo(anchor = parent.top)
                 start.linkTo(anchor = parent.start)
                 end.linkTo(anchor = parent.end)
-                bottom.linkTo(anchor = divider.top, margin = 16.dp)
+                bottom.linkTo(anchor = divider.top)
                 width = Dimension.fillToConstraints
                 height = Dimension.fillToConstraints
             },
             state = listState,
-            flingBehavior = rememberSnapFlingBehavior(lazyListState = listState)
+            flingBehavior = rememberSnapFlingBehavior(lazyListState = listState),
+            contentPadding = PaddingValues(all = CARD_SPACE_DP),
+            horizontalArrangement = Arrangement.spacedBy(CARD_SPACE_DP)
         ) {
-            itemsIndexed(items = data.personaList) { index, persona ->
-                PersonaTypeItemCard(persona, index, itemCount) {
+            items(items = data.personaList) { persona ->
+                PersonaTypeItemCard(persona) {
                     onEvent(SelectTypeUiEvent.ClickPersonaCard(persona))
                 }
             }
@@ -130,12 +131,12 @@ fun LaunchScrollToPosition(listState: LazyListState, selectedIndex: Int) {
             val isFirstIndex = selectedIndex == 0
             if (isFirstIndex) return@derivedStateOf 0
 
-            val screenWidth = screenWidthInDp.value.toInt()
-            val cardWidth = (CARD_WIDTH.minus(CARD_DECORATION_WIDTH)).value.toInt()
+            val screenWidth = screenWidthInDp.value
+            val cardWidth = CARD_WIDTH.value
             val halfScreen = screenWidth.div(2)
             val halfCard = cardWidth.div(2)
 
-            return@derivedStateOf halfScreen.minus(halfCard).times(-2)
+            return@derivedStateOf halfScreen.minus(halfCard).times(-2).toInt()
         }
     }
 
@@ -152,12 +153,7 @@ fun LaunchScrollToPosition(listState: LazyListState, selectedIndex: Int) {
 }
 
 @Composable
-private fun PersonaTypeItemCard(
-    persona: PersonaUiModel,
-    index: Int,
-    itemCount: Int,
-    onClicked: () -> Unit
-) {
+private fun PersonaTypeItemCard(persona: PersonaUiModel, onClicked: () -> Unit) {
     Row(
         modifier = Modifier.clickable(
             indication = null,
@@ -165,7 +161,6 @@ private fun PersonaTypeItemCard(
             onClick = onClicked
         )
     ) {
-        Spacer(modifier = Modifier.width(if (index == 0) 16.dp else 8.dp))
         ConstraintLayout(
             modifier = Modifier
                 .width(CARD_WIDTH)
@@ -291,8 +286,6 @@ private fun PersonaTypeItemCard(
                 }
             }
         }
-        val isLastIndex = index == itemCount.minus(1)
-        Spacer(modifier = Modifier.width(if (isLastIndex) 16.dp else 8.dp))
     }
 }
 
