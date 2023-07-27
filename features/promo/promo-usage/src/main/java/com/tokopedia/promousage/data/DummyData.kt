@@ -1,18 +1,20 @@
 package com.tokopedia.promousage.data
 
-import com.tokopedia.promousage.domain.entity.PromoItem
 import com.tokopedia.promousage.domain.entity.PromoItemBenefitDetail
 import com.tokopedia.promousage.domain.entity.PromoItemCardDetail
 import com.tokopedia.promousage.domain.entity.PromoItemClashingInfo
 import com.tokopedia.promousage.domain.entity.PromoItemInfo
-import com.tokopedia.promousage.domain.entity.PromoPageTickerInfo
 import com.tokopedia.promousage.domain.entity.PromoItemState
-import com.tokopedia.promousage.domain.entity.list.PromoAccordionItem
+import com.tokopedia.promousage.domain.entity.PromoPageSection
+import com.tokopedia.promousage.domain.entity.PromoPageTickerInfo
+import com.tokopedia.promousage.domain.entity.SecondaryPromoItem
+import com.tokopedia.promousage.domain.entity.list.PromoAccordionHeaderItem
+import com.tokopedia.promousage.domain.entity.list.PromoAccordionViewAllItem
 import com.tokopedia.promousage.domain.entity.list.PromoInputItem
+import com.tokopedia.promousage.domain.entity.list.PromoItem
 import com.tokopedia.promousage.domain.entity.list.PromoRecommendationItem
 import com.tokopedia.promousage.domain.entity.list.PromoTncItem
 import com.tokopedia.promousage.util.composite.DelegateAdapterItem
-import com.tokopedia.promousage.view.viewmodel.toCollapsibleList
 
 object DummyData {
 
@@ -37,10 +39,17 @@ object DummyData {
             benefitTypeStr = "Cashback",
             cardDetails = listOf(
                 PromoItemCardDetail(
+                    state = PromoItemCardDetail.TYPE_INITIAL,
                     color = "",
                     iconUrl = "https://images.tokopedia.net/img/android/promo/ic_voucher_cashback/ic_voucher_cashback.png",
                     backgroundUrl = "https://images.tokopedia.net/img/android/promo/bg_supergraphic_cashback/bg_supergraphic_cashback.png"
-                )
+                ),
+                PromoItemCardDetail(
+                    state = PromoItemCardDetail.TYPE_SELECTED,
+                    color = "",
+                    iconUrl = "https://images.tokopedia.net/img/android/promo/ic_voucher_cashback/ic_voucher_cashback.png",
+                    backgroundUrl = "https://images.tokopedia.net/img/android/promo/bg_supergraphic_cashback/bg_supergraphic_cashback.png"
+                ),
             ),
             clashingInfos = listOf(
                 PromoItemClashingInfo(
@@ -54,9 +63,16 @@ object DummyData {
                     title = "Disesuaikan jika pilih Bebas Ongkir"
                 )
             ),
-            expiryInfo = "Berakhir dalam <a>3 jama</a>",
+            expiryInfo = "Berakhir dalam <a>3 jam</a>",
             expiryTimestamp = 1693451440,
-            state = PromoItemState.Normal,
+            state = PromoItemState.Normal(
+                PromoItemCardDetail(
+                    state = PromoItemCardDetail.TYPE_INITIAL,
+                    color = "",
+                    iconUrl = "https://images.tokopedia.net/img/android/promo/ic_voucher_cashback/ic_voucher_cashback.png",
+                    backgroundUrl = "https://images.tokopedia.net/img/android/promo/bg_supergraphic_cashback/bg_supergraphic_cashback.png"
+                )
+            ),
             isAttempted = true
         )
 
@@ -75,10 +91,17 @@ object DummyData {
                 benefitTypeStr = "Cashback",
                 cardDetails = listOf(
                     PromoItemCardDetail(
+                        state = PromoItemCardDetail.TYPE_INITIAL,
                         color = "",
                         iconUrl = "https://images.tokopedia.net/img/android/promo/ic_voucher_cashback/ic_voucher_cashback.png",
                         backgroundUrl = "https://images.tokopedia.net/img/android/promo/bg_supergraphic_cashback/bg_supergraphic_cashback.png"
-                    )
+                    ),
+                    PromoItemCardDetail(
+                        state = PromoItemCardDetail.TYPE_SELECTED,
+                        color = "",
+                        iconUrl = "https://images.tokopedia.net/img/android/promo/ic_voucher_cashback/ic_voucher_cashback.png",
+                        backgroundUrl = "https://images.tokopedia.net/img/android/promo/bg_supergraphic_cashback/bg_supergraphic_cashback.png"
+                    ),
                 ),
                 clashingInfos = listOf(
                     PromoItemClashingInfo(
@@ -92,11 +115,19 @@ object DummyData {
                         title = "Disesuaikan jika pilih Bebas Ongkir"
                     )
                 ),
-                expiryInfo = "Berakhir dalam <a>3 jama</a>",
+                expiryInfo = "Berakhir dalam <a>3 jam</a>",
                 expiryTimestamp = 1693451440,
-                state = PromoItemState.Normal,
+                state = PromoItemState.Normal(
+                    PromoItemCardDetail(
+                        state = PromoItemCardDetail.TYPE_INITIAL,
+                        color = "",
+                        iconUrl = "https://images.tokopedia.net/img/android/promo/ic_voucher_cashback/ic_voucher_cashback.png",
+                        backgroundUrl = "https://images.tokopedia.net/img/android/promo/bg_supergraphic_cashback/bg_supergraphic_cashback.png"
+                    )
+                ),
                 isAttempted = false,
-                isExpanded = true
+                isExpanded = false,
+                isVisible = true
             ),
             PromoItem(
                 id = "3",
@@ -111,10 +142,17 @@ object DummyData {
                 benefitTypeStr = "Cashback",
                 cardDetails = listOf(
                     PromoItemCardDetail(
+                        state = PromoItemCardDetail.TYPE_INITIAL,
                         color = "",
                         iconUrl = "https://images.tokopedia.net/img/android/promo/ic_voucher_cashback/ic_voucher_cashback.png",
                         backgroundUrl = "https://images.tokopedia.net/img/android/promo/bg_supergraphic_cashback/bg_supergraphic_cashback.png"
-                    )
+                    ),
+                    PromoItemCardDetail(
+                        state = PromoItemCardDetail.TYPE_SELECTED,
+                        color = "",
+                        iconUrl = "https://images.tokopedia.net/img/android/promo/ic_voucher_cashback/ic_voucher_cashback.png",
+                        backgroundUrl = "https://images.tokopedia.net/img/android/promo/bg_supergraphic_cashback/bg_supergraphic_cashback.png"
+                    ),
                 ),
                 clashingInfos = listOf(
                     PromoItemClashingInfo(
@@ -128,10 +166,19 @@ object DummyData {
                         title = "Disesuaikan jika pilih Bebas Ongkir"
                     )
                 ),
-                expiryInfo = "Berakhir dalam <a>3 jama</a>",
+                expiryInfo = "Berakhir dalam <a>3 jam</a>",
                 expiryTimestamp = 1693451440,
-                state = PromoItemState.Selected,
-                isAttempted = false
+                state = PromoItemState.Selected(
+                    PromoItemCardDetail(
+                        state = PromoItemCardDetail.TYPE_SELECTED,
+                        color = "",
+                        iconUrl = "https://images.tokopedia.net/img/android/promo/ic_voucher_cashback/ic_voucher_cashback.png",
+                        backgroundUrl = "https://images.tokopedia.net/img/android/promo/bg_supergraphic_cashback/bg_supergraphic_cashback.png"
+                    )
+                ),
+                isAttempted = false,
+                isExpanded = true,
+                isVisible = false
             ),
             PromoItem(
                 id = "5",
@@ -146,10 +193,17 @@ object DummyData {
                 benefitTypeStr = "Cashback",
                 cardDetails = listOf(
                     PromoItemCardDetail(
+                        state = PromoItemCardDetail.TYPE_INITIAL,
                         color = "",
                         iconUrl = "https://images.tokopedia.net/img/android/promo/ic_voucher_cashback/ic_voucher_cashback.png",
                         backgroundUrl = "https://images.tokopedia.net/img/android/promo/bg_supergraphic_cashback/bg_supergraphic_cashback.png"
-                    )
+                    ),
+                    PromoItemCardDetail(
+                        state = PromoItemCardDetail.TYPE_SELECTED,
+                        color = "",
+                        iconUrl = "https://images.tokopedia.net/img/android/promo/ic_voucher_cashback/ic_voucher_cashback.png",
+                        backgroundUrl = "https://images.tokopedia.net/img/android/promo/bg_supergraphic_cashback/bg_supergraphic_cashback.png"
+                    ),
                 ),
                 clashingInfos = listOf(
                     PromoItemClashingInfo(
@@ -163,10 +217,12 @@ object DummyData {
                         title = "Disesuaikan jika pilih Bebas Ongkir"
                     )
                 ),
-                expiryInfo = "Berakhir dalam <a>3 jama</a>",
+                expiryInfo = "Berakhir dalam <a>3 jam</a>",
                 expiryTimestamp = 1693451440,
                 state = PromoItemState.Loading,
-                isAttempted = false
+                isAttempted = false,
+                isExpanded = true,
+                isVisible = false
             ),
             PromoItem(
                 id = "6",
@@ -181,10 +237,17 @@ object DummyData {
                 benefitTypeStr = "Cashback",
                 cardDetails = listOf(
                     PromoItemCardDetail(
+                        state = PromoItemCardDetail.TYPE_INITIAL,
                         color = "",
                         iconUrl = "https://images.tokopedia.net/img/android/promo/ic_voucher_cashback/ic_voucher_cashback.png",
                         backgroundUrl = "https://images.tokopedia.net/img/android/promo/bg_supergraphic_cashback/bg_supergraphic_cashback.png"
-                    )
+                    ),
+                    PromoItemCardDetail(
+                        state = PromoItemCardDetail.TYPE_SELECTED,
+                        color = "",
+                        iconUrl = "https://images.tokopedia.net/img/android/promo/ic_voucher_cashback/ic_voucher_cashback.png",
+                        backgroundUrl = "https://images.tokopedia.net/img/android/promo/bg_supergraphic_cashback/bg_supergraphic_cashback.png"
+                    ),
                 ),
                 clashingInfos = listOf(
                     PromoItemClashingInfo(
@@ -198,10 +261,12 @@ object DummyData {
                         title = "Disesuaikan jika pilih Bebas Ongkir"
                     )
                 ),
-                expiryInfo = "Berakhir dalam <a>3 jama</a>",
+                expiryInfo = "Berakhir dalam <a>3 jam</a>",
                 expiryTimestamp = 1693451440,
-                state = PromoItemState.Disabled,
-                isAttempted = false
+                state = PromoItemState.Disabled("Belum bisa dipakai barengan promo yang dipilih."),
+                isAttempted = false,
+                isExpanded = true,
+                isVisible = false
             ),
             PromoItem(
                 id = "7",
@@ -233,11 +298,13 @@ object DummyData {
                         title = "Disesuaikan jika pilih Bebas Ongkir"
                     )
                 ),
-                expiryInfo = "Berakhir dalam <a>3 jama</a>",
+                expiryInfo = "Berakhir dalam <a>3 jam</a>",
                 expiryTimestamp = 1693451440,
                 currentClashingPromoCodes = listOf("CASHBACK4"),
-                state = PromoItemState.Ineligible,
-                isAttempted = false
+                state = PromoItemState.Ineligible("+Rp50.000 buat pakai promonya"),
+                isAttempted = false,
+                isExpanded = true,
+                isVisible = false
             )
         )
 
@@ -256,10 +323,17 @@ object DummyData {
                 benefitTypeStr = "Gratis Ongkir",
                 cardDetails = listOf(
                     PromoItemCardDetail(
+                        state = PromoItemCardDetail.TYPE_INITIAL,
                         color = "",
                         iconUrl = "https://images.tokopedia.net/img/android/promo/ic_voucher_cashback/ic_voucher_cashback.png",
                         backgroundUrl = "https://images.tokopedia.net/img/android/promo/bg_supergraphic_cashback/bg_supergraphic_cashback.png"
-                    )
+                    ),
+                    PromoItemCardDetail(
+                        state = PromoItemCardDetail.TYPE_SELECTED,
+                        color = "",
+                        iconUrl = "https://images.tokopedia.net/img/android/promo/ic_voucher_cashback/ic_voucher_cashback.png",
+                        backgroundUrl = "https://images.tokopedia.net/img/android/promo/bg_supergraphic_cashback/bg_supergraphic_cashback.png"
+                    ),
                 ),
                 clashingInfos = listOf(
                     PromoItemClashingInfo(
@@ -273,11 +347,19 @@ object DummyData {
                         title = "Disesuaikan jika pilih Bebas Ongkir"
                     )
                 ),
-                expiryInfo = "Berakhir dalam <a>3 jama</a>",
+                expiryInfo = "Berakhir dalam <a>3 jam</a>",
                 expiryTimestamp = 1693451440,
-                state = PromoItemState.Normal,
+                state = PromoItemState.Normal(
+                    PromoItemCardDetail(
+                        state = PromoItemCardDetail.TYPE_INITIAL,
+                        color = "",
+                        iconUrl = "https://images.tokopedia.net/img/android/promo/ic_voucher_cashback/ic_voucher_cashback.png",
+                        backgroundUrl = "https://images.tokopedia.net/img/android/promo/bg_supergraphic_cashback/bg_supergraphic_cashback.png"
+                    )
+                ),
                 isAttempted = false,
-                isExpanded = true
+                isExpanded = false,
+                isVisible = true
             ),
             PromoItem(
                 id = "9",
@@ -292,10 +374,17 @@ object DummyData {
                 benefitTypeStr = "Gratis Ongkir",
                 cardDetails = listOf(
                     PromoItemCardDetail(
+                        state = PromoItemCardDetail.TYPE_INITIAL,
                         color = "",
                         iconUrl = "https://images.tokopedia.net/img/android/promo/ic_voucher_cashback/ic_voucher_cashback.png",
                         backgroundUrl = "https://images.tokopedia.net/img/android/promo/bg_supergraphic_cashback/bg_supergraphic_cashback.png"
-                    )
+                    ),
+                    PromoItemCardDetail(
+                        state = PromoItemCardDetail.TYPE_SELECTED,
+                        color = "",
+                        iconUrl = "https://images.tokopedia.net/img/android/promo/ic_voucher_cashback/ic_voucher_cashback.png",
+                        backgroundUrl = "https://images.tokopedia.net/img/android/promo/bg_supergraphic_cashback/bg_supergraphic_cashback.png"
+                    ),
                 ),
                 clashingInfos = listOf(
                     PromoItemClashingInfo(
@@ -309,10 +398,19 @@ object DummyData {
                         title = "Disesuaikan jika pilih Bebas Ongkir"
                     )
                 ),
-                expiryInfo = "Berakhir dalam <a>3 jama</a>",
+                expiryInfo = "Berakhir dalam <a>3 jam</a>",
                 expiryTimestamp = 1693451440,
-                state = PromoItemState.Selected,
-                isAttempted = false
+                state = PromoItemState.Selected(
+                    PromoItemCardDetail(
+                        state = PromoItemCardDetail.TYPE_SELECTED,
+                        color = "",
+                        iconUrl = "https://images.tokopedia.net/img/android/promo/ic_voucher_cashback/ic_voucher_cashback.png",
+                        backgroundUrl = "https://images.tokopedia.net/img/android/promo/bg_supergraphic_cashback/bg_supergraphic_cashback.png"
+                    )
+                ),
+                isAttempted = false,
+                isExpanded = false,
+                isVisible = false
             ),
             PromoItem(
                 id = "10",
@@ -327,10 +425,17 @@ object DummyData {
                 benefitTypeStr = "Gratis Ongkir",
                 cardDetails = listOf(
                     PromoItemCardDetail(
+                        state = PromoItemCardDetail.TYPE_INITIAL,
                         color = "",
                         iconUrl = "https://images.tokopedia.net/img/android/promo/ic_voucher_cashback/ic_voucher_cashback.png",
                         backgroundUrl = "https://images.tokopedia.net/img/android/promo/bg_supergraphic_cashback/bg_supergraphic_cashback.png"
-                    )
+                    ),
+                    PromoItemCardDetail(
+                        state = PromoItemCardDetail.TYPE_SELECTED,
+                        color = "",
+                        iconUrl = "https://images.tokopedia.net/img/android/promo/ic_voucher_cashback/ic_voucher_cashback.png",
+                        backgroundUrl = "https://images.tokopedia.net/img/android/promo/bg_supergraphic_cashback/bg_supergraphic_cashback.png"
+                    ),
                 ),
                 clashingInfos = listOf(
                     PromoItemClashingInfo(
@@ -344,10 +449,12 @@ object DummyData {
                         title = "Disesuaikan jika pilih Bebas Ongkir"
                     )
                 ),
-                expiryInfo = "Berakhir dalam <a>3 jama</a>",
+                expiryInfo = "Berakhir dalam <a>3 jam</a>",
                 expiryTimestamp = 1693451440,
                 state = PromoItemState.Loading,
-                isAttempted = false
+                isAttempted = false,
+                isExpanded = false,
+                isVisible = false
             ),
             PromoItem(
                 id = "11",
@@ -362,10 +469,17 @@ object DummyData {
                 benefitTypeStr = "Gratis Ongkir",
                 cardDetails = listOf(
                     PromoItemCardDetail(
+                        state = PromoItemCardDetail.TYPE_INITIAL,
                         color = "",
                         iconUrl = "https://images.tokopedia.net/img/android/promo/ic_voucher_cashback/ic_voucher_cashback.png",
                         backgroundUrl = "https://images.tokopedia.net/img/android/promo/bg_supergraphic_cashback/bg_supergraphic_cashback.png"
-                    )
+                    ),
+                    PromoItemCardDetail(
+                        state = PromoItemCardDetail.TYPE_SELECTED,
+                        color = "",
+                        iconUrl = "https://images.tokopedia.net/img/android/promo/ic_voucher_cashback/ic_voucher_cashback.png",
+                        backgroundUrl = "https://images.tokopedia.net/img/android/promo/bg_supergraphic_cashback/bg_supergraphic_cashback.png"
+                    ),
                 ),
                 clashingInfos = listOf(
                     PromoItemClashingInfo(
@@ -379,10 +493,12 @@ object DummyData {
                         title = "Disesuaikan jika pilih Bebas Ongkir"
                     )
                 ),
-                expiryInfo = "Berakhir dalam <a>3 jama</a>",
+                expiryInfo = "Berakhir dalam <a>3 jam</a>",
                 expiryTimestamp = 1693451440,
-                state = PromoItemState.Disabled,
-                isAttempted = false
+                state = PromoItemState.Disabled("Belum bisa dipakai barengan promo yang dipilih."),
+                isAttempted = false,
+                isExpanded = false,
+                isVisible = false
             ),
             PromoItem(
                 id = "12",
@@ -397,10 +513,17 @@ object DummyData {
                 benefitTypeStr = "Gratis Ongkir",
                 cardDetails = listOf(
                     PromoItemCardDetail(
+                        state = PromoItemCardDetail.TYPE_INITIAL,
                         color = "",
                         iconUrl = "https://images.tokopedia.net/img/android/promo/ic_voucher_cashback/ic_voucher_cashback.png",
                         backgroundUrl = "https://images.tokopedia.net/img/android/promo/bg_supergraphic_cashback/bg_supergraphic_cashback.png"
-                    )
+                    ),
+                    PromoItemCardDetail(
+                        state = PromoItemCardDetail.TYPE_SELECTED,
+                        color = "",
+                        iconUrl = "https://images.tokopedia.net/img/android/promo/ic_voucher_cashback/ic_voucher_cashback.png",
+                        backgroundUrl = "https://images.tokopedia.net/img/android/promo/bg_supergraphic_cashback/bg_supergraphic_cashback.png"
+                    ),
                 ),
                 clashingInfos = listOf(
                     PromoItemClashingInfo(
@@ -414,11 +537,13 @@ object DummyData {
                         title = "Disesuaikan jika pilih Bebas Ongkir"
                     )
                 ),
-                expiryInfo = "Berakhir dalam <a>3 jama</a>",
+                expiryInfo = "Berakhir dalam <a>3 jam</a>",
                 expiryTimestamp = 1693451440,
                 currentClashingPromoCodes = listOf("FREESHIPPING4"),
-                state = PromoItemState.Ineligible,
-                isAttempted = false
+                state = PromoItemState.Ineligible("+Rp50.000 buat pakai promonya"),
+                isAttempted = false,
+                isExpanded = false,
+                isVisible = false
             )
         )
 
@@ -443,8 +568,11 @@ object DummyData {
                         backgroundUrl = "https://images.tokopedia.net/img/android/promo/bg_supergraphic_cashback/bg_supergraphic_cashback.png"
                     ),
                     PromoItemCardDetail(
-
-                    )
+                        state = PromoItemCardDetail.TYPE_SELECTED,
+                        color = "",
+                        iconUrl = "https://images.tokopedia.net/img/android/promo/ic_voucher_cashback/ic_voucher_cashback.png",
+                        backgroundUrl = "https://images.tokopedia.net/img/android/promo/bg_supergraphic_cashback/bg_supergraphic_cashback.png"
+                    ),
                 ),
                 clashingInfos = listOf(
                     PromoItemClashingInfo(
@@ -458,11 +586,19 @@ object DummyData {
                         title = "Disesuaikan jika pilih Bebas Ongkir"
                     )
                 ),
-                expiryInfo = "Berakhir dalam <a>3 jama</a>",
+                expiryInfo = "Berakhir dalam <a>3 jam</a>",
                 expiryTimestamp = 1693451440,
-                state = PromoItemState.Normal,
+                state = PromoItemState.Normal(
+                    PromoItemCardDetail(
+                        state = PromoItemCardDetail.TYPE_INITIAL,
+                        color = "",
+                        iconUrl = "https://images.tokopedia.net/img/android/promo/ic_voucher_cashback/ic_voucher_cashback.png",
+                        backgroundUrl = "https://images.tokopedia.net/img/android/promo/bg_supergraphic_cashback/bg_supergraphic_cashback.png"
+                    )
+                ),
                 isAttempted = false,
-                isExpanded = true
+                isExpanded = false,
+                isVisible = true
             ),
             PromoItem(
                 id = "14",
@@ -477,10 +613,17 @@ object DummyData {
                 benefitTypeStr = "Diskon",
                 cardDetails = listOf(
                     PromoItemCardDetail(
+                        state = PromoItemCardDetail.TYPE_INITIAL,
                         color = "",
                         iconUrl = "https://images.tokopedia.net/img/android/promo/ic_voucher_cashback/ic_voucher_cashback.png",
                         backgroundUrl = "https://images.tokopedia.net/img/android/promo/bg_supergraphic_cashback/bg_supergraphic_cashback.png"
-                    )
+                    ),
+                    PromoItemCardDetail(
+                        state = PromoItemCardDetail.TYPE_SELECTED,
+                        color = "",
+                        iconUrl = "https://images.tokopedia.net/img/android/promo/ic_voucher_cashback/ic_voucher_cashback.png",
+                        backgroundUrl = "https://images.tokopedia.net/img/android/promo/bg_supergraphic_cashback/bg_supergraphic_cashback.png"
+                    ),
                 ),
                 clashingInfos = listOf(
                     PromoItemClashingInfo(
@@ -494,10 +637,19 @@ object DummyData {
                         title = "Disesuaikan jika pilih Bebas Ongkir"
                     )
                 ),
-                expiryInfo = "Berakhir dalam <a>3 jama</a>",
+                expiryInfo = "Berakhir dalam <a>3 jam</a>",
                 expiryTimestamp = 1693451440,
-                state = PromoItemState.Selected,
-                isAttempted = false
+                state = PromoItemState.Selected(
+                    PromoItemCardDetail(
+                        state = PromoItemCardDetail.TYPE_SELECTED,
+                        color = "",
+                        iconUrl = "https://images.tokopedia.net/img/android/promo/ic_voucher_cashback/ic_voucher_cashback.png",
+                        backgroundUrl = "https://images.tokopedia.net/img/android/promo/bg_supergraphic_cashback/bg_supergraphic_cashback.png"
+                    )
+                ),
+                isAttempted = false,
+                isExpanded = false,
+                isVisible = false
             ),
             PromoItem(
                 id = "15",
@@ -512,10 +664,17 @@ object DummyData {
                 benefitTypeStr = "Diskon",
                 cardDetails = listOf(
                     PromoItemCardDetail(
+                        state = PromoItemCardDetail.TYPE_INITIAL,
                         color = "",
                         iconUrl = "https://images.tokopedia.net/img/android/promo/ic_voucher_cashback/ic_voucher_cashback.png",
                         backgroundUrl = "https://images.tokopedia.net/img/android/promo/bg_supergraphic_cashback/bg_supergraphic_cashback.png"
-                    )
+                    ),
+                    PromoItemCardDetail(
+                        state = PromoItemCardDetail.TYPE_SELECTED,
+                        color = "",
+                        iconUrl = "https://images.tokopedia.net/img/android/promo/ic_voucher_cashback/ic_voucher_cashback.png",
+                        backgroundUrl = "https://images.tokopedia.net/img/android/promo/bg_supergraphic_cashback/bg_supergraphic_cashback.png"
+                    ),
                 ),
                 clashingInfos = listOf(
                     PromoItemClashingInfo(
@@ -529,10 +688,12 @@ object DummyData {
                         title = "Disesuaikan jika pilih Bebas Ongkir"
                     )
                 ),
-                expiryInfo = "Berakhir dalam <a>3 jama</a>",
+                expiryInfo = "Berakhir dalam <a>3 jam</a>",
                 expiryTimestamp = 1693451440,
                 state = PromoItemState.Loading,
-                isAttempted = false
+                isAttempted = false,
+                isExpanded = false,
+                isVisible = false
             ),
             PromoItem(
                 id = "16",
@@ -547,10 +708,17 @@ object DummyData {
                 benefitTypeStr = "Diskon",
                 cardDetails = listOf(
                     PromoItemCardDetail(
+                        state = PromoItemCardDetail.TYPE_INITIAL,
                         color = "",
                         iconUrl = "https://images.tokopedia.net/img/android/promo/ic_voucher_cashback/ic_voucher_cashback.png",
                         backgroundUrl = "https://images.tokopedia.net/img/android/promo/bg_supergraphic_cashback/bg_supergraphic_cashback.png"
-                    )
+                    ),
+                    PromoItemCardDetail(
+                        state = PromoItemCardDetail.TYPE_SELECTED,
+                        color = "",
+                        iconUrl = "https://images.tokopedia.net/img/android/promo/ic_voucher_cashback/ic_voucher_cashback.png",
+                        backgroundUrl = "https://images.tokopedia.net/img/android/promo/bg_supergraphic_cashback/bg_supergraphic_cashback.png"
+                    ),
                 ),
                 clashingInfos = listOf(
                     PromoItemClashingInfo(
@@ -564,10 +732,12 @@ object DummyData {
                         title = "Disesuaikan jika pilih Bebas Ongkir"
                     )
                 ),
-                expiryInfo = "Berakhir dalam <a>3 jama</a>",
+                expiryInfo = "Berakhir dalam <a>3 jam</a>",
                 expiryTimestamp = 1693451440,
-                state = PromoItemState.Disabled,
-                isAttempted = false
+                state = PromoItemState.Disabled("Belum bisa dipakai barengan promo yang dipilih."),
+                isAttempted = false,
+                isExpanded = false,
+                isVisible = false
             ),
             PromoItem(
                 id = "17",
@@ -582,10 +752,17 @@ object DummyData {
                 benefitTypeStr = "Diskon",
                 cardDetails = listOf(
                     PromoItemCardDetail(
+                        state = PromoItemCardDetail.TYPE_INITIAL,
                         color = "",
                         iconUrl = "https://images.tokopedia.net/img/android/promo/ic_voucher_cashback/ic_voucher_cashback.png",
                         backgroundUrl = "https://images.tokopedia.net/img/android/promo/bg_supergraphic_cashback/bg_supergraphic_cashback.png"
-                    )
+                    ),
+                    PromoItemCardDetail(
+                        state = PromoItemCardDetail.TYPE_SELECTED,
+                        color = "",
+                        iconUrl = "https://images.tokopedia.net/img/android/promo/ic_voucher_cashback/ic_voucher_cashback.png",
+                        backgroundUrl = "https://images.tokopedia.net/img/android/promo/bg_supergraphic_cashback/bg_supergraphic_cashback.png"
+                    ),
                 ),
                 clashingInfos = listOf(
                     PromoItemClashingInfo(
@@ -599,17 +776,20 @@ object DummyData {
                         title = "Disesuaikan jika pilih Bebas Ongkir"
                     )
                 ),
-                expiryInfo = "Berakhir dalam <a>3 jama</a>",
+                expiryInfo = "Berakhir dalam <a>3 jam</a>",
                 expiryTimestamp = 1693451440,
                 currentClashingPromoCodes = listOf("DISCOUNT4"),
-                state = PromoItemState.Ineligible,
-                isAttempted = false
+                state = PromoItemState.Ineligible("+Rp50.000 buat pakai promonya"),
+                isAttempted = false,
+                isExpanded = false,
+                isVisible = false
             )
         )
 
     val recommendedPromos: List<PromoItem>
         get() = listOf(
             PromoItem(
+                headerId = PromoPageSection.SECTION_RECOMMENDATION,
                 id = "18",
                 index = 18,
                 code = "RECOMDISCOUNT",
@@ -622,10 +802,17 @@ object DummyData {
                 benefitTypeStr = "Diskon",
                 cardDetails = listOf(
                     PromoItemCardDetail(
+                        state = PromoItemCardDetail.TYPE_INITIAL,
                         color = "",
                         iconUrl = "https://images.tokopedia.net/img/android/promo/ic_voucher_cashback/ic_voucher_cashback.png",
                         backgroundUrl = "https://images.tokopedia.net/img/android/promo/bg_supergraphic_cashback/bg_supergraphic_cashback.png"
-                    )
+                    ),
+                    PromoItemCardDetail(
+                        state = PromoItemCardDetail.TYPE_SELECTED,
+                        color = "",
+                        iconUrl = "https://images.tokopedia.net/img/android/promo/ic_voucher_cashback/ic_voucher_cashback.png",
+                        backgroundUrl = "https://images.tokopedia.net/img/android/promo/bg_supergraphic_cashback/bg_supergraphic_cashback.png"
+                    ),
                 ),
                 clashingInfos = listOf(
                     PromoItemClashingInfo(
@@ -639,12 +826,23 @@ object DummyData {
                         title = "Disesuaikan jika pilih Bebas Ongkir"
                     )
                 ),
-                expiryInfo = "Berakhir dalam <a>3 jama</a>",
+                expiryInfo = "Berakhir dalam <a>3 jam</a>",
                 expiryTimestamp = 1693451440,
-                state = PromoItemState.Normal,
-                isAttempted = false
+                secondaryPromo = SecondaryPromoItem(),
+                state = PromoItemState.Normal(
+                    PromoItemCardDetail(
+                        state = PromoItemCardDetail.TYPE_INITIAL,
+                        color = "",
+                        iconUrl = "https://images.tokopedia.net/img/android/promo/ic_voucher_cashback/ic_voucher_cashback.png",
+                        backgroundUrl = "https://images.tokopedia.net/img/android/promo/bg_supergraphic_cashback/bg_supergraphic_cashback.png"
+                    )
+                ),
+                isAttempted = false,
+                isExpanded = true,
+                isVisible = true
             ),
             PromoItem(
+                headerId = PromoPageSection.SECTION_RECOMMENDATION,
                 id = "19",
                 index = 19,
                 code = "RECOMCASHBACK",
@@ -657,10 +855,17 @@ object DummyData {
                 benefitTypeStr = "Diskon",
                 cardDetails = listOf(
                     PromoItemCardDetail(
+                        state = PromoItemCardDetail.TYPE_INITIAL,
                         color = "",
                         iconUrl = "https://images.tokopedia.net/img/android/promo/ic_voucher_cashback/ic_voucher_cashback.png",
                         backgroundUrl = "https://images.tokopedia.net/img/android/promo/bg_supergraphic_cashback/bg_supergraphic_cashback.png"
-                    )
+                    ),
+                    PromoItemCardDetail(
+                        state = PromoItemCardDetail.TYPE_SELECTED,
+                        color = "",
+                        iconUrl = "https://images.tokopedia.net/img/android/promo/ic_voucher_cashback/ic_voucher_cashback.png",
+                        backgroundUrl = "https://images.tokopedia.net/img/android/promo/bg_supergraphic_cashback/bg_supergraphic_cashback.png"
+                    ),
                 ),
                 clashingInfos = listOf(
                     PromoItemClashingInfo(
@@ -674,15 +879,26 @@ object DummyData {
                         title = "Disesuaikan jika pilih Bebas Ongkir"
                     )
                 ),
-                expiryInfo = "Berakhir dalam <a>3 jama</a>",
+                expiryInfo = "Berakhir dalam <a>3 jam</a>",
                 expiryTimestamp = 1693451440,
-                state = PromoItemState.Selected,
-                isAttempted = false
+                secondaryPromo = SecondaryPromoItem(),
+                state = PromoItemState.Selected(
+                    PromoItemCardDetail(
+                        state = PromoItemCardDetail.TYPE_SELECTED,
+                        color = "",
+                        iconUrl = "https://images.tokopedia.net/img/android/promo/ic_voucher_cashback/ic_voucher_cashback.png",
+                        backgroundUrl = "https://images.tokopedia.net/img/android/promo/bg_supergraphic_cashback/bg_supergraphic_cashback.png"
+                    )
+                ),
+                isAttempted = false,
+                isExpanded = true,
+                isVisible = true
             )
         )
 
-    val sections: List<DelegateAdapterItem>
-        get() = listOf(
+    fun dummySections(): List<DelegateAdapterItem> {
+        val items = mutableListOf<DelegateAdapterItem>()
+        items.add(
             PromoRecommendationItem(
                 id = "recommendation_coupons",
                 title = "Kamu bisa hemat Rp30.000 dari 2 promo!",
@@ -692,29 +908,75 @@ object DummyData {
                 backgroundUrl = "",
                 animationUrl = "",
                 promos = recommendedPromos
-            ),
-            PromoAccordionItem(
+            )
+        )
+        items.add(
+            PromoAccordionHeaderItem(
                 id = "payment_coupons",
                 title = "1 promo buat pembayaran tertentu",
-                isExpanded = false,
-                sections = cashbackPromos.toCollapsibleList()
-            ),
-            PromoAccordionItem(
+            )
+        )
+        items.addAll(
+            discountPromos.map {
+                it.copy(
+                    headerId = "payment_coupons",
+                    secondaryPromo = it.secondaryPromo.copy(headerId = "payment_coupons")
+                )
+            }
+        )
+        items.add(PromoAccordionViewAllItem(
+            headerId = "payment_coupons",
+            visiblePromoCount = discountPromos.size - discountPromos.count { it.isVisible },
+            isExpanded = false,
+            isVisible = true
+        ))
+        items.add(
+            PromoAccordionHeaderItem(
                 id = "shipping_coupons",
                 title = "5 promo buat pengiriman tertentu",
-                isExpanded = false,
-                sections = freeShippingPromos.toCollapsibleList()
-            ),
-            PromoAccordionItem(
+            )
+        )
+        items.addAll(
+            freeShippingPromos.map {
+                it.copy(
+                    headerId = "shipping_coupons",
+                    secondaryPromo = it.secondaryPromo.copy(headerId = "shipping_coupons")
+                )
+            }
+        )
+        items.add(PromoAccordionViewAllItem(
+            headerId = "shipping_coupons",
+            visiblePromoCount = freeShippingPromos.size - freeShippingPromos.count { it.isVisible },
+            isExpanded = false,
+            isVisible = true
+        ))
+        items.add(
+            PromoAccordionHeaderItem(
                 id = "other_coupons",
                 title = "5 promo lainnya buat kamu",
-                isExpanded = false,
-                sections = discountPromos.toCollapsibleList()
-            ),
-            PromoInputItem(),
-            PromoTncItem()
+            )
         )
-
-    val tncPromoCodes: List<String>
-        get() = listOf("TESTCODE01", "TESTCODE02")
+        items.addAll(
+            cashbackPromos.map {
+                it.copy(
+                    headerId = "other_coupons",
+                    secondaryPromo = it.secondaryPromo.copy(headerId = "other_coupons")
+                )
+            }
+        )
+        items.add(PromoAccordionViewAllItem(
+            headerId = "other_coupons",
+            visiblePromoCount = cashbackPromos.size - cashbackPromos.count { it.isVisible },
+            isExpanded = false,
+            isVisible = true
+        ))
+        items.add(PromoInputItem())
+        val selectedPromoCodes = items.filterIsInstance<PromoItem>()
+            .filter { it.state is PromoItemState.Selected }
+            .map { it.code }
+        if (selectedPromoCodes.isNotEmpty()) {
+            items.add(PromoTncItem(selectedPromoCodes = selectedPromoCodes))
+        }
+        return items
+    }
 }

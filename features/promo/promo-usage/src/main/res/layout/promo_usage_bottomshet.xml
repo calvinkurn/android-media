@@ -79,7 +79,6 @@
 
     </RelativeLayout>
 
-
     <include
         android:id="@+id/shimmer"
         layout="@layout/promo_usage_shimmer"

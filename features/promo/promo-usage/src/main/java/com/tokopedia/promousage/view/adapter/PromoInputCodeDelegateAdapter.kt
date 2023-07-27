@@ -10,17 +10,14 @@ import com.tokopedia.promousage.databinding.PromoUsageItemVoucherCodeBinding
 import com.tokopedia.promousage.domain.entity.list.PromoInputItem
 import com.tokopedia.promousage.util.composite.DelegateAdapter
 
-class VoucherCodeDelegateAdapter(
+class PromoInputCodeDelegateAdapter(
     private val onApplyVoucherCodeCtaClick: () -> Unit
-) : DelegateAdapter<PromoInputItem, VoucherCodeDelegateAdapter.ViewHolder>(PromoInputItem::class.java) {
+) : DelegateAdapter<PromoInputItem, PromoInputCodeDelegateAdapter.ViewHolder>(PromoInputItem::class.java) {
 
 
     override fun createViewHolder(parent: ViewGroup): RecyclerView.ViewHolder {
-        val binding = PromoUsageItemVoucherCodeBinding.inflate(
-            LayoutInflater.from(parent.context),
-            parent,
-            false
-        )
+        val binding = PromoUsageItemVoucherCodeBinding
+            .inflate(LayoutInflater.from(parent.context), parent, false)
         return ViewHolder(binding)
     }
 

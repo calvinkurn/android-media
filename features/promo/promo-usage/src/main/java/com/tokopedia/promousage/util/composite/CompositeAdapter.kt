@@ -45,11 +45,6 @@ class CompositeAdapter(
         diffResult.dispatchUpdatesTo(this)
     }
 
-
-    fun snapshot(): List<DelegateAdapterItem> {
-        return this.items
-    }
-
     class Builder {
 
         private var count: Int = 0

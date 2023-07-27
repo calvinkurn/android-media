@@ -9,9 +9,9 @@ import com.tokopedia.promousage.domain.entity.list.PromoTncItem
 import com.tokopedia.promousage.util.composite.DelegateAdapter
 import com.tokopedia.promousage.util.extension.setHyperlinkText
 
-class TermAndConditionDelegateAdapter(
+class PromoTncDelegateAdapter(
     private val onTermAndConditionHyperlinkClick : () -> Unit
-) : DelegateAdapter<PromoTncItem, TermAndConditionDelegateAdapter.ViewHolder>(PromoTncItem::class.java) {
+) : DelegateAdapter<PromoTncItem, PromoTncDelegateAdapter.ViewHolder>(PromoTncItem::class.java) {
 
     override fun createViewHolder(parent: ViewGroup): RecyclerView.ViewHolder {
         val binding = PromoUsageItemTncBinding.inflate(

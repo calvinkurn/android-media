@@ -12,7 +12,7 @@ sealed class PromoPageState {
 
     data class Success(
         val tickerInfo: PromoPageTickerInfo,
-        val sections: List<DelegateAdapterItem>
+        val items: List<DelegateAdapterItem>
     ) : PromoPageState()
 
     object Error : PromoPageState()

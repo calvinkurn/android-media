@@ -5,20 +5,25 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.removeFirst
 import com.tokopedia.localizationchooseaddress.common.ChosenAddress
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
 import com.tokopedia.promousage.data.request.GetCouponListRecommendationParam
 import com.tokopedia.promousage.data.response.GetCouponListRecommendationResponse
+import com.tokopedia.promousage.domain.entity.PromoItemCardDetail
+import com.tokopedia.promousage.domain.entity.PromoItemState
 import com.tokopedia.promousage.domain.entity.PromoPageEntryPoint
-import com.tokopedia.promousage.domain.entity.PromoItem
 import com.tokopedia.promousage.domain.entity.PromoPageState
-import com.tokopedia.promousage.domain.entity.list.PromoAccordionItem
+import com.tokopedia.promousage.domain.entity.list.PromoAccordionHeaderItem
 import com.tokopedia.promousage.domain.entity.list.PromoAccordionViewAllItem
+import com.tokopedia.promousage.domain.entity.list.PromoItem
+import com.tokopedia.promousage.domain.entity.list.PromoTncItem
 import com.tokopedia.promousage.domain.usecase.GetCouponListRecommendationUseCase
 import com.tokopedia.promousage.util.composite.DelegateAdapterItem
 import com.tokopedia.promousage.view.mapper.PromoUsageMapper
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
 import kotlinx.coroutines.delay
+import timber.log.Timber
 import javax.inject.Inject
 
 class PromoUsageViewModel @Inject constructor(
@@ -31,6 +36,12 @@ class PromoUsageViewModel @Inject constructor(
     private val _promoPageState = MutableLiveData<PromoPageState>()
     val promoPageState: LiveData<PromoPageState>
         get() = _promoPageState
+
+    private val _tncItemUpdate = MutableLiveData<PromoTncItem>()
+    val tncItemUpdate: LiveData<PromoTncItem>
+        get() = _tncItemUpdate
+
+
 
     fun getPromoList(
         promoRequest: PromoRequest? = null,
@@ -84,59 +95,112 @@ class PromoUsageViewModel @Inject constructor(
                 //val response = getCouponListRecommendationUseCase(param)
                 val response = GetCouponListRecommendationResponse()
                 val tickerInfo =
-                    promoUsageMapper.mapCouponListRecommendationResponseToPagetickerInfo(response)
+                    promoUsageMapper.mapCouponListRecommendationResponseToPageTickerInfo(response)
                 val sections =
                     promoUsageMapper.mapCouponListRecommendationResponseToPromoSections(response)
                 _promoPageState.postValue(
                     PromoPageState.Success(
                         tickerInfo = tickerInfo,
-                        sections = sections
+                        items = sections
                     )
                 )
             },
             onError = { throwable ->
+                Timber.e(throwable)
                 _promoPageState.postValue(PromoPageState.Error)
             }
         )
     }
 
-    fun onClickVoucherAccordion(selectedPromoAccordionSection: PromoAccordionItem) {
+    fun onClickPromo(clickedItem: PromoItem) {
         val pageState = _promoPageState.value
         if (pageState is PromoPageState.Success) {
-            val currentSections = pageState.sections
-            val updatedSections = currentSections.map { item ->
-                if (item is PromoAccordionItem && item.id == selectedPromoAccordionSection.id) {
-                    val isExpanded = selectedPromoAccordionSection.isExpanded
-                    selectedPromoAccordionSection.copy(isExpanded = !isExpanded)
-                } else {
-                    item
+            val currentItems = pageState.items
+            val updatedItems = currentItems
+                .map { item ->
+                    if (item is PromoItem && item.id == clickedItem.id) {
+                        val newState = if (clickedItem.state is PromoItemState.Normal) {
+                            val cardDetail = clickedItem.cardDetails.first { it.state == PromoItemCardDetail.TYPE_SELECTED }
+                            PromoItemState.Selected(cardDetail)
+                        } else {
+                            val cardDetail = clickedItem.cardDetails.first { it.state == PromoItemCardDetail.TYPE_INITIAL }
+                            PromoItemState.Normal(cardDetail)
+                        }
+                        item.copy(state = newState)
+                    } else {
+                        item
+                    }
                 }
+                .toMutableList()
+            val tncItem = updatedItems.getTncItem() ?: PromoTncItem()
+            val selectedPromoCodes = updatedItems.getSelectedPromoCodes()
+            updatedItems.removeFirst { it is PromoTncItem }
+            if (selectedPromoCodes.isNotEmpty()) {
+                updatedItems.add(tncItem.copy(selectedPromoCodes = selectedPromoCodes))
             }
             _promoPageState.postValue(
-                pageState.copy(sections = updatedSections)
+                pageState.copy(items = updatedItems)
             )
         }
     }
 
-    fun onClickViewAllVoucher(selectedPromoAccordionSection: PromoAccordionItem) {
+    fun onClickAccordionHeader(clickedItem: PromoAccordionHeaderItem) {
         val pageState = _promoPageState.value
         if (pageState is PromoPageState.Success) {
-            val currentSections = pageState.sections
-            val updatedSections = currentSections.map { item ->
-                if (item is PromoAccordionItem && item.id == selectedPromoAccordionSection.id) {
-                    val expandedVouchers = item.sections.viewAll()
-                    item.copy(sections = expandedVouchers)
-                } else {
-                    item
+            val currentItems = pageState.items
+            val updatedItems = currentItems
+                .map { item ->
+                    val isExpanded = !clickedItem.isExpanded
+                    if (item is PromoAccordionHeaderItem && item.id == clickedItem.id) {
+                        item.copy(isExpanded = isExpanded)
+                    } else if (item is PromoItem && item.headerId == clickedItem.id) {
+                        item.copy(isExpanded = isExpanded)
+                    } else if (item is PromoAccordionViewAllItem && item.headerId == clickedItem.id) {
+                        item.copy(isExpanded = isExpanded)
+                    } else {
+                        item
+                    }
                 }
-            }
             _promoPageState.postValue(
-                pageState.copy(sections = updatedSections)
+                pageState.copy(items = updatedItems)
             )
         }
     }
 
-    fun onButtonBuyClick(entryPoint: PromoPageEntryPoint) {
+    fun onClickViewAllAccordion(clickedItem: PromoAccordionViewAllItem) {
+        val pageState = _promoPageState.value
+        if (pageState is PromoPageState.Success) {
+            val currentItems = pageState.items
+            val updatedItems = currentItems
+                .map { item ->
+                    if (item is PromoItem && item.headerId == clickedItem.headerId) {
+                        item.copy(isVisible = true)
+                    } else {
+                        item
+                    }
+                }
+                .filterNot {
+                    it is PromoAccordionViewAllItem && it.headerId == clickedItem.headerId
+                }
+            _promoPageState.postValue(
+                pageState.copy(items = updatedItems)
+            )
+        }
+    }
+
+    fun onClickTnc() {
+        val pageState = _promoPageState.value
+        if (pageState is PromoPageState.Success) {
+            val currentItems = pageState.items
+            val tncItem = currentItems.getTncItem()
+            tncItem?.let {
+                val selectedPromoCodes = currentItems.getSelectedPromoCodes()
+                _tncItemUpdate.postValue(it.copy(selectedPromoCodes = selectedPromoCodes))
+            }
+        }
+    }
+
+    fun onClickBuyButton(entryPoint: PromoPageEntryPoint) {
         if (entryPoint == PromoPageEntryPoint.CART_PAGE) {
             // TODO: Handle callback to Cart page
         } else if (entryPoint == PromoPageEntryPoint.ONE_CLICK_CHECKOUT_PAGE) {
@@ -144,47 +208,16 @@ class PromoUsageViewModel @Inject constructor(
         }
     }
 
-    fun onButtonBackToShipmentClick() {
+    fun onClickBackToCheckoutButton() {
 
     }
 
-    fun onVoucherSelected(selectedPromo: PromoItem) {
-
+    private fun List<DelegateAdapterItem>.getTncItem(): PromoTncItem? {
+        return this.filterIsInstance<PromoTncItem>().firstOrNull()
     }
 
-    private fun List<DelegateAdapterItem>.viewAll(): List<DelegateAdapterItem> {
-        //Inside VoucherAccordion there are 2 items [Voucher, ViewAllVoucher] model
-        val updatedVoucherAccordionItems = this.toMutableList()
-
-        //Remove ViewAllVoucher to make view all CTA gone
-        updatedVoucherAccordionItems.removeAll { it is PromoAccordionViewAllItem }
-
-        //Change Voucher visible state to true to make all voucher visible
-        val expandedVouchers = updatedVoucherAccordionItems.map { item ->
-            val promo = item as PromoItem
-            promo.copy(isExpanded = true)
-        }
-
-        return expandedVouchers
+    private fun List<DelegateAdapterItem>.getSelectedPromoCodes() : List<String> {
+        return this.filterIsInstance<PromoItem>().filter { it.state is PromoItemState.Selected }
+            .map { it.code }
     }
-}
-
-fun List<PromoItem>.toCollapsibleList(): List<DelegateAdapterItem> {
-    if (isEmpty()) return emptyList()
-
-    val formattedVouchers = mutableListOf<DelegateAdapterItem>()
-
-    val numberOfExpandedVoucher = count { it.isExpanded }
-
-    val lastIndexOfExpandedVoucher = indexOfLast { it.isExpanded }
-
-    val collapsedVoucherCount = size - numberOfExpandedVoucher
-    val viewAllWidgetItem = PromoAccordionViewAllItem(promoCount = collapsedVoucherCount)
-
-    formattedVouchers.addAll(this)
-
-    //Modify the list ordering. Placing view all widget item after last index of expanded voucher
-    formattedVouchers.add(lastIndexOfExpandedVoucher + 1, viewAllWidgetItem)
-
-    return formattedVouchers
 }

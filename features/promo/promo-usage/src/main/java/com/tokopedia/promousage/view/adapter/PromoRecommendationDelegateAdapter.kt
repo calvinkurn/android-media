@@ -8,26 +8,23 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.promousage.databinding.PromoUsageItemVoucherBinding
 import com.tokopedia.promousage.databinding.PromoUsageItemVoucherRecommendationBinding
-import com.tokopedia.promousage.domain.entity.PromoItem
+import com.tokopedia.promousage.domain.entity.list.PromoItem
 import com.tokopedia.promousage.domain.entity.list.PromoRecommendationItem
 import com.tokopedia.promousage.util.composite.DelegateAdapter
 import com.tokopedia.promousage.util.extension.applyPaddingToLastItem
 
-class VoucherRecommendationDelegateAdapter(
+class PromoRecommendationDelegateAdapter(
     private val onVoucherClick: (PromoItem) -> Unit,
     private val onButtonUseRecommendedVoucherClick: () -> Unit
-) : DelegateAdapter<PromoRecommendationItem, VoucherRecommendationDelegateAdapter.ViewHolder>(PromoRecommendationItem::class.java) {
+) : DelegateAdapter<PromoRecommendationItem, PromoRecommendationDelegateAdapter.ViewHolder>(PromoRecommendationItem::class.java) {
 
     companion object {
         private const val PADDING_BOTTOM_DP = 16
     }
 
     override fun createViewHolder(parent: ViewGroup): RecyclerView.ViewHolder {
-        val binding = PromoUsageItemVoucherRecommendationBinding.inflate(
-            LayoutInflater.from(parent.context),
-            parent,
-            false
-        )
+        val binding = PromoUsageItemVoucherRecommendationBinding
+            .inflate(LayoutInflater.from(parent.context), parent, false)
         return ViewHolder(binding)
     }
 
@@ -106,5 +103,4 @@ class VoucherRecommendationDelegateAdapter(
             differ.submitList(newPromos)
         }
     }
-
 }

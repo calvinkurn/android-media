@@ -90,6 +90,8 @@ data class Coupon(
     val index: Int = 0,
     @SerializedName("code")
     val code: String = "",
+    @SerializedName("message")
+    val message: String = "",
     @SerializedName("coupon_type")
     val couponType: List<String> = emptyList(),
     @SerializedName("expiry_info")
@@ -102,8 +104,6 @@ data class Coupon(
     val shopId: Long = 0,
     @SerializedName("group_id")
     val groupId: Long = 0,
-    @SerializedName("is_recommended")
-    val isRecommended: Boolean = false,
     @SerializedName("is_selected")
     val isSelected: Boolean = false,
     @SerializedName("is_attempted")
@@ -113,7 +113,7 @@ data class Coupon(
     @SerializedName("is_highlighted")
     val isHighlighted: Boolean = false,
     @SerializedName("radio_check_state")
-    val isExpanded: Boolean = false,
+    val radioCheckState: String = "",
     @SerializedName("benefit_type_str")
     val benefitTypeStr: String = "",
     @SerializedName("benefit_amount")
@@ -131,7 +131,9 @@ data class Coupon(
     @SerializedName("promo_infos")
     val promoInfos: List<PromoInfo> = emptyList(),
     @SerializedName("cta")
-    val cta: Cta = Cta()
+    val cta: Cta = Cta(),
+    @SerializedName("secondary_promo")
+    val secondaryCoupon: List<SecondaryCoupon> = emptyList()
 )
 
 data class CouponGroup(
@@ -202,6 +204,55 @@ data class Cta(
     val text: String = "",
     @SerializedName("applink")
     val applink: String = ""
+)
+
+data class SecondaryCoupon(
+    @SerializedName("promo_id")
+    val id: String = "",
+    @SerializedName("index")
+    val index: Int = 0,
+    @SerializedName("code")
+    val code: String = "",
+    @SerializedName("coupon_type")
+    val couponType: List<String> = emptyList(),
+    @SerializedName("expiry_info")
+    val expiryInfo: String = "",
+    @SerializedName("expiry_countdown")
+    val expiryCountdown: Long = 0,
+    @SerializedName("unique_id")
+    val uniqueId: String = "",
+    @SerializedName("shop_id")
+    val shopId: Long = 0,
+    @SerializedName("group_id")
+    val groupId: Long = 0,
+    @SerializedName("is_selected")
+    val isSelected: Boolean = false,
+    @SerializedName("is_attempted")
+    val isAttempted: Boolean = false,
+    @SerializedName("is_bebas_ongkir")
+    val isBebasOngkir: Boolean = false,
+    @SerializedName("is_highlighted")
+    val isHighlighted: Boolean = false,
+    @SerializedName("radio_check_state")
+    val radioCheckState: String = "",
+    @SerializedName("benefit_type_str")
+    val benefitTypeStr: String = "",
+    @SerializedName("benefit_amount")
+    val benefitAmount: Double = 0.0,
+    @SerializedName("benefit_amount_str")
+    val benefitAmountStr: String = "",
+    @SerializedName("coupon_card_details")
+    val couponCardDetails: List<CouponCardDetail> = emptyList(),
+    @SerializedName("benefit_details")
+    val benefitDetails: List<BenefitDetail> = emptyList(),
+    @SerializedName("clashing_infos")
+    val clashingInfos: List<ClashingInfo> = emptyList(),
+    @SerializedName("additional_bo_datas")
+    val boAdditionalData: List<AdditionalBoData> = emptyList(),
+    @SerializedName("promo_infos")
+    val promoInfos: List<PromoInfo> = emptyList(),
+    @SerializedName("cta")
+    val cta: Cta = Cta()
 )
 
 data class EntryPointInfo(

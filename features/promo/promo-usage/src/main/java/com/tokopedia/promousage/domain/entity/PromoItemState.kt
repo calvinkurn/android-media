@@ -4,11 +4,11 @@ sealed class PromoItemState {
 
     object Loading : PromoItemState()
 
-    object Normal : PromoItemState()
+    data class Normal(val cardDetail: PromoItemCardDetail) : PromoItemState()
 
-    object Selected : PromoItemState()
+    data class Selected(val cardDetail: PromoItemCardDetail) : PromoItemState()
 
-    object Disabled : PromoItemState()
+    data class Disabled(val message: String) : PromoItemState()
 
-    object Ineligible : PromoItemState()
+    data class Ineligible(val message: String) : PromoItemState()
 }

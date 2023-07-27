@@ -19,7 +19,7 @@ import com.tokopedia.kotlin.extensions.view.setTextColorCompat
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.promousage.R
 import com.tokopedia.promousage.databinding.PromoUsageVoucherViewBinding
-import com.tokopedia.promousage.domain.entity.PromoItem
+import com.tokopedia.promousage.domain.entity.list.PromoItem
 import com.tokopedia.promousage.domain.entity.PromoItemBenefitDetail
 import com.tokopedia.promousage.domain.entity.PromoItemInfo
 import com.tokopedia.promousage.domain.entity.PromoItemState

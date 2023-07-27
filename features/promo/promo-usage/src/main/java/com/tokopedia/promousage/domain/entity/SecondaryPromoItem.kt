@@ -4,8 +4,10 @@ import com.tokopedia.promousage.util.composite.DelegateAdapterItem
 
 data class SecondaryPromoItem(
     override val id: String = "",
+    val headerId: String = "",
     val index: Int = 0,
     val code: String = "",
+    val message: String = "",
     val benefitAmount: Double = 0.0,
     val benefitAmountStr: String = "",
     val benefitDetail: PromoItemBenefitDetail = PromoItemBenefitDetail(),
