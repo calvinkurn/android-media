@@ -2,12 +2,12 @@ package com.tokopedia.tokochat.test.chatroom
 
 import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.tokochat.stub.domain.response.ApiResponseStub
-import com.tokopedia.tokochat.test.base.BaseTokoChatTest
+import com.tokopedia.tokochat.test.base.BaseTokoChatRoomTest
 import com.tokopedia.tokochat.test.chatroom.robot.state.StateResult
 import org.junit.Test
 
 @UiTest
-class TokoChatStateChatRoomTest : BaseTokoChatTest() {
+class TokoChatStateChatRoomTest : BaseTokoChatRoomTest() {
 
     override fun resetDatabase() {
         super.resetDatabase()

@@ -1,21 +1,21 @@
 package com.tokopedia.tokochat.test.chatroom
 
 import com.tokopedia.test.application.annotations.UiTest
+import com.tokopedia.tokochat.common.util.OrderStatusType
+import com.tokopedia.tokochat.common.util.TokoChatValueUtil.MAX_DISPLAYED_STRING
 import com.tokopedia.tokochat.stub.domain.response.GqlResponseStub.chatOrderHistoryResponse
 import com.tokopedia.tokochat.stub.domain.response.GqlResponseStub.getNeedConsentResponse
-import com.tokopedia.tokochat.test.base.BaseTokoChatTest
+import com.tokopedia.tokochat.test.base.BaseTokoChatRoomTest
 import com.tokopedia.tokochat.test.chatroom.robot.consent.ConsentResult
 import com.tokopedia.tokochat.test.chatroom.robot.consent.ConsentRobot
 import com.tokopedia.tokochat.test.chatroom.robot.header.HeaderResult
 import com.tokopedia.tokochat.test.chatroom.robot.reply_area.ReplyAreaResult
 import com.tokopedia.tokochat.test.chatroom.robot.reply_area.ReplyAreaRobot
 import com.tokopedia.tokochat_common.R
-import com.tokopedia.tokochat.common.util.OrderStatusType
-import com.tokopedia.tokochat_common.util.TokoChatValueUtil.MAX_DISPLAYED_STRING
 import org.junit.Test
 
 @UiTest
-class TokoChatGeneralTest : BaseTokoChatTest() {
+class TokoChatGeneralTest : BaseTokoChatRoomTest() {
 
     @Test
     fun should_show_chat_room_header_with_censored_plat_number() {

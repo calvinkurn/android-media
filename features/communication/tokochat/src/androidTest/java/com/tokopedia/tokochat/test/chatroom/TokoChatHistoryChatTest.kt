@@ -12,9 +12,10 @@ import com.tokopedia.picker.common.EXTRA_RESULT_PICKER
 import com.tokopedia.picker.common.PickerResult
 import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.tokochat.R
+import com.tokopedia.tokochat.common.util.TokoChatCacheManagerImpl.Companion.TOKOCHAT_IMAGE_ATTACHMENT_MAP
 import com.tokopedia.tokochat.stub.domain.response.ApiResponseStub
 import com.tokopedia.tokochat.stub.domain.usecase.TokoChatSendMessageUseCaseStub.Companion.TEST_ID
-import com.tokopedia.tokochat.test.base.BaseTokoChatTest
+import com.tokopedia.tokochat.test.base.BaseTokoChatRoomTest
 import com.tokopedia.tokochat.test.chatroom.robot.general.GeneralResult
 import com.tokopedia.tokochat.test.chatroom.robot.header_date.HeaderDateResult
 import com.tokopedia.tokochat.test.chatroom.robot.message_bubble.MessageBubbleResult
@@ -22,14 +23,13 @@ import com.tokopedia.tokochat.test.chatroom.robot.message_bubble.MessageBubbleRo
 import com.tokopedia.tokochat.test.chatroom.robot.reply_area.ReplyAreaRobot
 import com.tokopedia.tokochat.test.chatroom.robot.ticker.TickerResult
 import com.tokopedia.tokochat.util.TokoChatViewUtil
-import com.tokopedia.tokochat_common.util.TokoChatCacheManagerImpl
 import com.tokopedia.utils.file.FileUtil
 import org.junit.Test
 import timber.log.Timber
 import java.io.FileOutputStream
 
 @UiTest
-class TokoChatHistoryChatTest : BaseTokoChatTest() {
+class TokoChatHistoryChatTest : BaseTokoChatRoomTest() {
 
     @Test
     fun should_show_date_header_in_chat_history() {
@@ -116,7 +116,7 @@ class TokoChatHistoryChatTest : BaseTokoChatTest() {
             200,
             "image_attachment/fail_upload_image_attachment.json"
         )
-        cacheManager.saveCache(TokoChatCacheManagerImpl.TOKOCHAT_IMAGE_ATTACHMENT_MAP, mapOf(Pair(TEST_ID, TEST_ID)))
+        cacheManager.saveCache(TOKOCHAT_IMAGE_ATTACHMENT_MAP, mapOf(Pair(TEST_ID, TEST_ID)))
         saveDummyImage()
 
         // When
