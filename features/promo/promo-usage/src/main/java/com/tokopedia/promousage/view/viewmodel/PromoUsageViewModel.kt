@@ -51,18 +51,18 @@ class PromoUsageViewModel @Inject constructor(
                 val items = listOf<DelegateAdapterItem>(
                     VoucherRecommendation("Kamu bisa hemat Rp30.000 dari 2 promo!", recommendationVouchers),
                     VoucherAccordion(
-                        "${cashbackVouchers.size} promo buat cashback",
-                        true,
+                        "${cashbackVouchers.size} promo buat pembayaran tertentu",
+                        false,
                         cashbackVouchers.toCollapsibleList()
                     ),
                     VoucherAccordion(
                         "${freeShippingVouchers.size} promo buat pengiriman kamu",
-                        true,
+                        false,
                         freeShippingVouchers.toCollapsibleList()
                     ),
                     VoucherAccordion(
-                        "${discountVouchers.size} promo buat diskon kamu",
-                        true,
+                        "${discountVouchers.size} promo lainnya buat kamu",
+                        false,
                         discountVouchers.toCollapsibleList()
                     ),
                     VoucherCode(userInputVoucherCode = "", errorMessage = "", voucher = null),

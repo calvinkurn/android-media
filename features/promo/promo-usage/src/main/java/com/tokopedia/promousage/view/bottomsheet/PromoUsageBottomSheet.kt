@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.RelativeLayout
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
@@ -151,13 +152,29 @@ class PromoUsageBottomSheet: BottomSheetDialogFragment() {
             when (result) {
                 is Success -> {
                     showContent()
-                    handleBottomCardViewAppearance(entryPoint)
+                    handlePromoRecommendationInfo()
+                    handleTotalPriceSection(entryPoint)
                     recyclerViewAdapter.submit(result.data)
                 }
                 is Fail -> {
                     hideContent()
                 }
             }
+        }
+    }
+
+    private fun handlePromoRecommendationInfo() {
+        val showRecommendationInfoOverlay = false
+
+        binding?.layoutBottomSheetOverlay?.isVisible = showRecommendationInfoOverlay
+
+        if (!showRecommendationInfoOverlay) {
+
+            val layoutParams = binding?.layoutBottomSheetHeader?.layoutParams as? RelativeLayout.LayoutParams
+            layoutParams?.setMargins(0,0,0,0)
+
+            binding?.layoutBottomSheetHeader?.layoutParams = layoutParams
+            binding?.layoutBottomSheetHeader?.requestLayout()
         }
     }
 
@@ -197,7 +214,7 @@ class PromoUsageBottomSheet: BottomSheetDialogFragment() {
         }
     }
 
-    private fun handleBottomCardViewAppearance(entryPoint: EntryPoint) {
+    private fun handleTotalPriceSection(entryPoint: EntryPoint) {
         binding?.run {
             cardViewTotalPrice.visible()
 
@@ -280,7 +297,6 @@ class PromoUsageBottomSheet: BottomSheetDialogFragment() {
     private fun showContent() {
         binding?.run {
             shimmer.root.gone()
-            layoutBottomSheetOverlay.visible()
             layoutBottomSheetHeader.visible()
             recyclerView.visible()
         }
