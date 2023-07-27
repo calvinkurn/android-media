@@ -298,6 +298,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         .filterNotNull()
         .map {
             PlayChannelUiState(
+                showPostVideoButton = it.showSaveButton && remoteConfig.getBoolean(SHOW_LIVE_TO_VOD_BUTTON_KEY, true),
                 streamAllowed = it.streamAllowed,
                 shortVideoAllowed = it.shortVideoAllowed,
                 hasContent = it.hasContent,
@@ -2377,5 +2378,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         private const val ERROR_EVENT_DELAY = 500L
 
         private const val REMOTE_CONFIG_ENABLE_BEAUTIFICATION_KEY = "android_enable_beautification"
+        private const val SHOW_LIVE_TO_VOD_BUTTON_KEY = "android_show_live_to_vod_button_play_broadcaster"
+
     }
 }

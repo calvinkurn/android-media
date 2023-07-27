@@ -20,7 +20,6 @@ data class ChannelSummaryUiState(
     val date: String,
     val duration: String,
     val isEligiblePostVideo: Boolean,
-    val showButtonPostVideo: Boolean,
     val author: ContentAccountUiModel,
 ) {
     fun isEmpty() = title.isEmpty() && coverUrl.isEmpty() && date.isEmpty() && duration.isEmpty() && !isEligiblePostVideo
@@ -32,7 +31,6 @@ data class ChannelSummaryUiState(
             date = "",
             duration = "",
             isEligiblePostVideo = false,
-            showButtonPostVideo = false,
             author = ContentAccountUiModel.Empty,
         )
     }

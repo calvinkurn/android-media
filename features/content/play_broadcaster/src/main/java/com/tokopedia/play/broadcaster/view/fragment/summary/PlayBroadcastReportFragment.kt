@@ -26,6 +26,7 @@ import com.tokopedia.play.broadcaster.ui.model.livetovod.TickerBottomSheetType
 import com.tokopedia.play.broadcaster.ui.model.livetovod.TickerBottomSheetUiModel
 import com.tokopedia.play.broadcaster.ui.model.livetovod.generateHtmlSpanText
 import com.tokopedia.play.broadcaster.ui.state.ChannelSummaryUiState
+import com.tokopedia.play.broadcaster.ui.state.PlayChannelUiState
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroInteractiveBottomSheet
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play.broadcaster.view.partial.SummaryInfoViewComponent
@@ -146,6 +147,10 @@ class PlayBroadcastReportFragment @Inject constructor(
                     prevState?.tickerBottomSheetConfig,
                     state.tickerBottomSheetConfig
                 )
+                renderPostVideoButton(
+                    prevState?.channel,
+                    state.channel
+                )
             }
         }
     }
@@ -183,10 +188,7 @@ class PlayBroadcastReportFragment @Inject constructor(
 
         summaryInfoView.setChannelHeader(value)
         binding.flButtonSticky.showWithCondition(true)
-        binding.btnPostVideo.apply {
-            showWithCondition(value.showButtonPostVideo)
-            isEnabled = value.isEligiblePostVideo
-        }
+        binding.btnPostVideo.isEnabled = value.isEligiblePostVideo
     }
 
     private fun renderReport(
@@ -235,6 +237,12 @@ class PlayBroadcastReportFragment @Inject constructor(
             TickerBottomSheetType.TICKER -> openTickerDisableLiveToVod(state)
             else -> return
         }
+    }
+
+    private fun renderPostVideoButton(prev: PlayChannelUiState?, state: PlayChannelUiState) {
+        if (prev == state) return
+
+        binding.btnPostVideo.showWithCondition(state.showPostVideoButton)
     }
 
     private fun openTickerDisableLiveToVod(state: TickerBottomSheetUiModel) {

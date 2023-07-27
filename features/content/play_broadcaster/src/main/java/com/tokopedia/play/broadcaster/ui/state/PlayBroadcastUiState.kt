@@ -52,6 +52,7 @@ data class PlayBroadcastUiState(
         val Empty: PlayBroadcastUiState
             get() = PlayBroadcastUiState(
                 channel = PlayChannelUiState(
+                    showPostVideoButton = true,
                     streamAllowed = true,
                     shortVideoAllowed = false,
                     hasContent = false,
@@ -84,6 +85,7 @@ data class PlayBroadcastUiState(
 }
 
 data class PlayChannelUiState(
+    val showPostVideoButton: Boolean,
     val streamAllowed: Boolean,
     val shortVideoAllowed: Boolean,
     val hasContent: Boolean,
