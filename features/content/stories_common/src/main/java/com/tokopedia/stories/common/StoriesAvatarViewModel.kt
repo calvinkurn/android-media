@@ -54,6 +54,8 @@ internal class StoriesAvatarViewModel : ViewModel() {
             delay(5000)
             val hasStories = if (shopId.toLong() % 2 == 0L) StoriesStatus.HasUnseenStories else StoriesStatus.AllStoriesSeen
             updateStoriesForId(shopId, StoriesAvatarState(shopId, hasStories, "a"))
+
+            uiMessageManager.emitEvent(StoriesAvatarMessage.ShowCoachMark(shopId))
         }
     }
 

@@ -13,4 +13,5 @@ sealed class StoriesAvatarMessage : UiEvent {
 
     data class OpenDetailWithNoStories(override val shopId: String) : StoriesAvatarMessage()
     data class OpenStoriesDetail(override val shopId: String, val appLink: String) : StoriesAvatarMessage()
+    data class ShowCoachMark(override val shopId: String) : StoriesAvatarMessage()
 }

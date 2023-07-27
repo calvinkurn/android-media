@@ -51,6 +51,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.viewModel
     implementation rootProject.ext.miscDependencies.viewModelKtx
 
+    implementation rootProject.ext.unifyDependencies.coach_mark
     implementation rootProject.ext.unifyDependencies.nestPrinciples
     implementation rootProject.ext.unifyDependencies.nestComponents
 }

@@ -31,6 +31,8 @@ import androidx.lifecycle.get
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.coachmark.CoachMark2
+import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.nest.components.NestImage
 import com.tokopedia.nest.principles.ui.NestTheme
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -62,6 +64,8 @@ class StoriesAvatarView @JvmOverloads constructor(
     private var observeJob: Job? = null
 
     private var mOnNoStoriesClicked: OnClickListener? = null
+
+    private val coachMark = CoachMark2(context)
 
     init {
         super.setOnClickListener {
@@ -131,6 +135,9 @@ class StoriesAvatarView @JvmOverloads constructor(
                             is StoriesAvatarMessage.OpenDetailWithNoStories -> {
                                 mOnNoStoriesClicked?.onClick(this@StoriesAvatarView)
                             }
+                            is StoriesAvatarMessage.ShowCoachMark -> {
+                                showCoachMark()
+                            }
                         }
 
                         viewModel.clearMessage(message.id)
@@ -147,6 +154,14 @@ class StoriesAvatarView @JvmOverloads constructor(
 
     private fun getLifecycleOwner(): LifecycleOwner? {
         return findViewTreeLifecycleOwner()
+    }
+
+    private fun showCoachMark() {
+        coachMark.showCoachMark(
+            arrayListOf(
+                CoachMark2Item(this, "Ada update menarik dari toko ini", "")
+            )
+        )
     }
 }
 
