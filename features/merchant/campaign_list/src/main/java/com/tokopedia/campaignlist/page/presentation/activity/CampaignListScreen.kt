@@ -61,7 +61,8 @@ fun CampaignListScreen(
     onTapCampaignStatusFilter: (List<CampaignStatusSelection>) -> Unit,
     onTapCampaignTypeFilter: (List<CampaignTypeSelection>) -> Unit,
     onClearFilter: () -> Unit,
-    onSearchBarKeywordSubmit: (String) -> Unit,
+    onSearchBarKeywordChanged: (String) -> Unit,
+    onSearchBarKeywordSubmit: () -> Unit,
     onSearchbarCleared: () -> Unit,
     onTickerDismissed: () -> Unit,
     onTapShareCampaignButton: (ActiveCampaign) -> Unit,
@@ -81,6 +82,7 @@ fun CampaignListScreen(
 
             SearchBar(
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
+                onSearchBarKeywordChanged = onSearchBarKeywordChanged,
                 onSearchBarKeywordSubmit = onSearchBarKeywordSubmit,
                 onSearchbarCleared = onSearchbarCleared
             )
@@ -131,13 +133,18 @@ fun List(
 @Composable
 private fun SearchBar(
     modifier: Modifier = Modifier,
-    onSearchBarKeywordSubmit: (String) -> Unit,
+    onSearchBarKeywordChanged: (String) -> Unit,
+    onSearchBarKeywordSubmit: () -> Unit,
     onSearchbarCleared: () -> Unit
 ) {
     NestSearchBar(
+        value = "",
         placeholderText = stringResource(id = R.string.cl_search_active_campaign),
         modifier = modifier.fillMaxWidth(),
         onSearchBarCleared = onSearchbarCleared,
+        onTextChanged = {
+            onSearchBarKeywordChanged(it)
+        },
         onKeyboardSearchAction = onSearchBarKeywordSubmit
     )
 }
@@ -449,7 +456,8 @@ private fun CampaignListPreview() {
             onTickerDismissed = {},
             onTapShareCampaignButton = {},
             onToolbarBackIconPressed = {},
-            onCampaignScrolled = {}
+            onCampaignScrolled = {},
+            onSearchBarKeywordChanged = {}
         )
     }
 }
@@ -489,7 +497,8 @@ private fun CampaignListFilterSelectedPreview() {
             onTickerDismissed = {},
             onTapShareCampaignButton = {},
             onToolbarBackIconPressed = {},
-            onCampaignScrolled = {}
+            onCampaignScrolled = {},
+            onSearchBarKeywordChanged = { }
         )
     }
 }
