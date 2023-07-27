@@ -47,6 +47,7 @@ dependencies {
 
     implementation rootProject.ext.composeDependencies.composeUi
 
+    implementation rootProject.ext.miscDependencies.dataStorePreferences
     implementation rootProject.ext.miscDependencies.lifecycleRuntimeKtx
     implementation rootProject.ext.miscDependencies.viewModel
     implementation rootProject.ext.miscDependencies.viewModelKtx

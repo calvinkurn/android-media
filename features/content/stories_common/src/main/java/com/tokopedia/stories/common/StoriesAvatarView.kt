@@ -1,27 +1,12 @@
 package com.tokopedia.stories.common
 
 import android.content.Context
-import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import android.util.AttributeSet
-import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.AbstractComposeView
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProvider
@@ -30,11 +15,12 @@ import androidx.lifecycle.findViewTreeViewModelStoreOwner
 import androidx.lifecycle.get
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
-import com.tokopedia.nest.components.NestImage
-import com.tokopedia.nest.principles.ui.NestTheme
+import com.tokopedia.stories.common.di.DaggerStoriesAvatarComponent
+import com.tokopedia.stories.common.di.StoriesAvatarComponent
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -66,6 +52,9 @@ class StoriesAvatarView @JvmOverloads constructor(
     private var mOnNoStoriesClicked: OnClickListener? = null
 
     private val coachMark = CoachMark2(context)
+
+    private val component = createComponent()
+    private val viewModelFactory = component.viewModelFactory()
 
     init {
         super.setOnClickListener {
@@ -149,7 +138,7 @@ class StoriesAvatarView @JvmOverloads constructor(
 
     private fun getViewModel(): StoriesAvatarViewModel? {
         val viewModelStoreOwner = findViewTreeViewModelStoreOwner() ?: return null
-        return ViewModelProvider(viewModelStoreOwner).get()
+        return ViewModelProvider(viewModelStoreOwner, viewModelFactory).get()
     }
 
     private fun getLifecycleOwner(): LifecycleOwner? {
@@ -163,85 +152,10 @@ class StoriesAvatarView @JvmOverloads constructor(
             )
         )
     }
-}
 
-@Composable
-private fun StoriesAvatarContent(
-    imageUrl: String,
-    storiesStatus: StoriesStatus,
-    modifier: Modifier = Modifier,
-    imageToBorderPadding: Dp = 8.dp
-) {
-    NestTheme {
-        Box(
-            modifier
-                .fillMaxSize()
-                .clip(CircleShape)
-                .border(
-                    width = storiesStatus.borderDp,
-                    brush = storiesStatus.brush,
-                    shape = CircleShape
-                )
-        ) {
-            NestImage(
-                imageUrl = imageUrl,
-                Modifier
-                    .matchParentSize()
-                    .padding(imageToBorderPadding)
-                    .clip(CircleShape)
-            )
-        }
+    private fun createComponent(): StoriesAvatarComponent {
+        return DaggerStoriesAvatarComponent.builder()
+            .baseAppComponent((context.applicationContext as BaseMainApplication).baseAppComponent)
+            .build()
     }
 }
-
-@Preview
-@Preview(uiMode = UI_MODE_NIGHT_YES)
-@Composable
-private fun NoStoriesAvatarPreview() {
-    StoriesAvatarContent(
-        "https://4.img-dpreview.com/files/p/E~TS590x0~articles/3925134721/0266554465.jpeg",
-        StoriesStatus.NoStories,
-        Modifier.size(200.dp)
-    )
-}
-
-@Preview
-@Preview(uiMode = UI_MODE_NIGHT_YES)
-@Composable
-private fun HasUnseenStoriesAvatarPreview() {
-    StoriesAvatarContent(
-        "https://4.img-dpreview.com/files/p/E~TS590x0~articles/3925134721/0266554465.jpeg",
-        StoriesStatus.HasUnseenStories,
-        Modifier.size(200.dp)
-    )
-}
-
-@Preview
-@Preview(uiMode = UI_MODE_NIGHT_YES)
-@Composable
-private fun AllStoriesSeenAvatarPreview() {
-    StoriesAvatarContent(
-        "https://4.img-dpreview.com/files/p/E~TS590x0~articles/3925134721/0266554465.jpeg",
-        StoriesStatus.AllStoriesSeen,
-        Modifier.size(200.dp)
-    )
-}
-
-private val StoriesStatus.borderDp: Dp
-    get() = when (this) {
-        StoriesStatus.NoStories -> 1.dp
-        StoriesStatus.HasUnseenStories -> 2.dp
-        StoriesStatus.AllStoriesSeen -> 1.dp
-    }
-
-private val StoriesStatus.brush: Brush
-    get() = when (this) {
-        StoriesStatus.NoStories -> SolidColor(Color(0x00000000))
-        StoriesStatus.HasUnseenStories -> {
-            Brush.linearGradient(
-                0f to Color(0xFF83ECB2),
-                1f to Color(0xFF00AA5B)
-            )
-        }
-        StoriesStatus.AllStoriesSeen -> SolidColor(Color(0xFFD6DFEB))
-    }
