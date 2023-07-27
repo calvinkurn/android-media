@@ -7,6 +7,8 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.promousage.databinding.PromoUsageItemVoucherBinding
 import com.tokopedia.promousage.databinding.PromoUsageItemVoucherRecommendationBinding
 import com.tokopedia.promousage.domain.entity.list.Voucher
@@ -42,7 +44,11 @@ class VoucherRecommendationDelegateAdapter(
 
         init {
             binding.recyclerView.applyPaddingToLastItem(PADDING_BOTTOM_DP)
-            binding.btnRecommendationUseVoucher.setOnClickListener { onButtonUseRecommendedVoucherClick() }
+            binding.btnRecommendationUseVoucher.setOnClickListener {
+                onButtonUseRecommendedVoucherClick()
+                binding.btnRecommendationUseVoucher.gone()
+                binding.ivCheckmark.visible()
+            }
         }
 
         fun bind(recommendation: VoucherRecommendation) {

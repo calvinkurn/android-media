@@ -45,6 +45,17 @@
         app:unifyButtonSize="medium"
         app:unifyButtonVariant="ghost" />
 
+    <ImageView
+        android:id="@+id/ivCheckmark"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginEnd="16dp"
+        android:background="@drawable/promo_usage_ic_voucher_recommendation_applied"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/tpgRecommendationTitle"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tpgRecommendationTitle" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"

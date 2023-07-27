@@ -37,7 +37,9 @@ import com.tokopedia.promousage.di.DaggerPromoUsageComponent
 import com.tokopedia.promousage.domain.entity.EntryPoint
 import com.tokopedia.promousage.domain.entity.list.Voucher
 import com.tokopedia.promousage.domain.entity.list.VoucherAccordion
+import com.tokopedia.promousage.domain.entity.list.VoucherRecommendation
 import com.tokopedia.promousage.util.composite.CompositeAdapter
+import com.tokopedia.promousage.util.composite.DelegateAdapterItem
 import com.tokopedia.promousage.util.extension.foregroundDrawable
 import com.tokopedia.promousage.view.adapter.TermAndConditionDelegateAdapter
 import com.tokopedia.promousage.view.adapter.VoucherAccordionDelegateAdapter
@@ -152,7 +154,7 @@ class PromoUsageBottomSheet: BottomSheetDialogFragment() {
         viewModel.vouchers.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Success -> {
-                    handleBottomSheetHeaderBackground(hasRecommendationVoucher = true) //TODO: Replace with real hasRecommendationVoucher value
+                    handleBottomSheetHeaderBackground(result.data)
                     showContent()
                     handlePromoRecommendationInfo()
                     handleTotalPriceSection(entryPoint)
@@ -258,30 +260,31 @@ class PromoUsageBottomSheet: BottomSheetDialogFragment() {
         }
     }
 
-    private fun handleBottomSheetHeaderBackground(hasRecommendationVoucher: Boolean) {
-        val background = if (hasRecommendationVoucher) {
-            ContextCompat.getDrawable(
-                context ?: return,
-                R.drawable.promo_usage_bg_bottomsheet_header
-            )
+    private fun handleBottomSheetHeaderBackground(items: List<DelegateAdapterItem>) {
+        val recommendationVoucherWidget = items.filterIsInstance<VoucherRecommendation>()
+        val recommendationVouchers = recommendationVoucherWidget.getOrNull(0)?.vouchers
+        val recommendationVoucherCount = recommendationVouchers?.size.orZero()
+        val hasRecommendationVoucher = recommendationVoucherCount.isMoreThanZero()
+
+        if (hasRecommendationVoucher) {
+            useGradientHeaderColor()
+            addRecyclerViewScrollListener()
         } else {
-            ContextCompat.getDrawable(
-                context ?: return,
-                R.drawable.promo_usage_bg_bottomsheet_header_scrolled
-            )
+            useWhiteHeaderColor()
         }
-
-        binding?.layoutBottomSheetHeader?.background = background
-        handleScrollDownEvent()
-
-        if (hasRecommendationVoucher) addRecyclerViewScrollListener()
     }
 
     private fun addRecyclerViewScrollListener() {
         binding?.recyclerView?.addOnScrollListener(object : OnScrollListener(){
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
-                if (dy > 0) handleScrollDownEvent() else handleScrollUpEvent()
+                if (dy > 0) {
+                    //Scroll down
+                    useWhiteHeaderColor()
+                } else {
+                    //Scroll up
+                    useGradientHeaderColor()
+                }
             }
         })
     }
@@ -337,7 +340,7 @@ class PromoUsageBottomSheet: BottomSheetDialogFragment() {
         }
     }
 
-    private fun handleScrollDownEvent() {
+    private fun useWhiteHeaderColor() {
         binding?.run {
             layoutBottomSheetHeader.background = ContextCompat.getDrawable(
                 layoutBottomSheetHeader.context ?: return,
@@ -369,7 +372,7 @@ class PromoUsageBottomSheet: BottomSheetDialogFragment() {
         return nightModeFlags == Configuration.UI_MODE_NIGHT_YES
     }
 
-    private fun handleScrollUpEvent() {
+    private fun useGradientHeaderColor() {
         binding?.run {
             layoutBottomSheetHeader.background = ContextCompat.getDrawable(
                 layoutBottomSheetHeader.context ?: return,
