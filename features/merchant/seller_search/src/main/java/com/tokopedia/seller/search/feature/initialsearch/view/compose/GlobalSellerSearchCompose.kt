@@ -15,7 +15,6 @@ import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.platform.SoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.nest.components.NestImage
 import com.tokopedia.nest.components.NestImageType
 import com.tokopedia.nest.components.NestSearchBar
@@ -30,13 +29,11 @@ fun GlobalSellerSearchView(
     modifier: Modifier,
     uiState: GlobalSearchUiState,
     uiEffect: (GlobalSearchUiEvent) -> Unit,
-    onSearchBarTextChanged: (String) -> Unit,
     focusRequester: FocusRequester,
     keyboardController: SoftwareKeyboardController?
 ) {
     Row(
-        modifier = modifier
-            .fillMaxWidth(),
+        modifier = modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
     ) {
         NestImage(
@@ -66,8 +63,7 @@ fun GlobalSellerSearchView(
                     }
                 },
             uiState = uiState,
-            uiEffect = uiEffect,
-            onSearchBarTextChanged = onSearchBarTextChanged
+            uiEffect = uiEffect
         )
     }
 }
@@ -76,21 +72,19 @@ fun GlobalSellerSearchView(
 private fun SearchBarUnify(
     modifier: Modifier,
     uiState: GlobalSearchUiState,
-    uiEffect: (GlobalSearchUiEvent) -> Unit,
-    onSearchBarTextChanged: (String) -> Unit
+    uiEffect: (GlobalSearchUiEvent) -> Unit
 ) {
     NestSearchBar(
+        value = uiState.searchBarKeyword,
         placeholderText = uiState.searchBarPlaceholder.ifBlank { stringResource(id = R.string.placeholder_search_seller) },
         modifier = modifier,
         onSearchBarCleared = {
             uiEffect(GlobalSearchUiEvent.OnSearchBarCleared)
-            onSearchBarTextChanged(String.EMPTY)
         },
         onKeyboardSearchAction = {
-            uiEffect(GlobalSearchUiEvent.OnKeyboardSearchSubmit(it))
+            uiEffect(GlobalSearchUiEvent.OnKeyboardSearchSubmit(uiState.searchBarKeyword))
         },
         onTextChanged = {
-            onSearchBarTextChanged(it)
             uiEffect(GlobalSearchUiEvent.OnKeywordTextChanged(it))
         }
     )

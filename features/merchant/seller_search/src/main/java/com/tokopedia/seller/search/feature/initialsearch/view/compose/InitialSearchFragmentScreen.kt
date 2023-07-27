@@ -47,28 +47,27 @@ fun InitialSearchFragmentScreen(
     uiState: InitialSearchUiState?,
     uiEvent: (InitialSearchUiEvent) -> Unit
 ) {
-    if (uiState == null) return
-    val initialStateList = uiState.initialStateList.filterIsInstance<ItemInitialSearchUiModel>()
-
     LazyColumn(Modifier.fillMaxSize()) {
-        if (initialStateList.isEmpty()) {
-            itemsIndexed(uiState.initialStateList) { index, item ->
-                when (item) {
-                    is SellerSearchNoHistoryUiModel -> {
-                        NoHistoryState()
-                    }
-                    is ItemTitleInitialSearchUiModel -> {
-                        HistorySearchSectionTitle(uiState.titleList, uiEvent)
-                    }
-                    is ItemInitialSearchUiModel -> {
-                        ItemHistorySearch(item, index)
-                    }
-                    is ItemTitleHighlightInitialSearchUiModel -> {
-                        TitleSearchRecommendation(item.title)
-                    }
-                    is HighlightInitialSearchUiModel -> {
-                        ItemHighlightChips(item.highlightInitialList, uiEvent)
-                    }
+        itemsIndexed(uiState?.initialStateList.orEmpty()) { index, item ->
+            when (item) {
+                is SellerSearchNoHistoryUiModel -> {
+                    NoHistoryState()
+                }
+
+                is ItemTitleInitialSearchUiModel -> {
+                    HistorySearchSectionTitle(uiState?.titleList.orEmpty(), uiEvent)
+                }
+
+                is ItemInitialSearchUiModel -> {
+                    ItemHistorySearch(item, index)
+                }
+
+                is ItemTitleHighlightInitialSearchUiModel -> {
+                    TitleSearchRecommendation()
+                }
+
+                is HighlightInitialSearchUiModel -> {
+                    ItemHighlightChips(item.highlightInitialList, uiEvent)
                 }
             }
         }
@@ -82,13 +81,14 @@ fun HistorySearchSectionTitle(
 ) {
     ConstraintLayout(
         modifier = Modifier
-            .padding(16.dp)
             .fillMaxWidth()
     ) {
         val (tvLatestSearch, tvClearAll) = createRefs()
 
         NestTypography(
-            text = stringResource(id = com.tokopedia.seller.search.R.string.latest_search_label).toUpperCase(Locale.current),
+            text = stringResource(id = com.tokopedia.seller.search.R.string.latest_search_label).toUpperCase(
+                Locale.current
+            ),
             textStyle = NestTheme.typography.body3.copy(
                 fontWeight = FontWeight.Bold,
                 color = NestTheme.colors.NN._950.copy(
@@ -96,7 +96,7 @@ fun HistorySearchSectionTitle(
                 )
             ),
             modifier = Modifier
-                .padding(horizontal = 16.dp, vertical = 8.dp)
+                .padding(top = 24.dp, start = 16.dp)
                 .constrainAs(tvLatestSearch) {
                     top.linkTo(parent.top)
                     start.linkTo(parent.start)
@@ -110,7 +110,7 @@ fun HistorySearchSectionTitle(
                 color = NestTheme.colors.GN._500
             ),
             modifier = Modifier
-                .padding(horizontal = 16.dp, vertical = 8.dp)
+                .padding(top = 24.dp, end = 16.dp)
                 .constrainAs(tvClearAll) {
                     top.linkTo(parent.top)
                     end.linkTo(parent.end)
@@ -133,7 +133,7 @@ fun ItemHistorySearch(
             .padding(vertical = 8.dp, horizontal = 16.dp)
             .fillMaxWidth()
             .clickable {
-                uiEvent(InitialSearchUiEvent.OnItemHistoryClicked(item.title.orEmpty()))
+                uiEvent(InitialSearchUiEvent.OnItemHistoryClicked(item.title.orEmpty(), position))
             }
     ) {
         val (ivHistoryTime, tvTitleHistory, ivCloseHistory) = createRefs()
@@ -189,13 +189,9 @@ fun ItemHistorySearch(
 }
 
 @Composable
-fun TitleSearchRecommendation(
-    title: String
-) {
+fun TitleSearchRecommendation() {
     NestTypography(
-        text = title.ifBlank {
-            stringResource(id = com.tokopedia.seller.search.R.string.highlight_search_label)
-        }.toUpperCase(Locale.current),
+        text = stringResource(id = com.tokopedia.seller.search.R.string.highlight_search_label).toUpperCase(Locale.current),
         textStyle = NestTheme.typography.display3.copy(
             fontWeight = FontWeight.Bold,
             color = NestTheme.colors.NN._950.copy(
@@ -203,7 +199,7 @@ fun TitleSearchRecommendation(
             )
         ),
         modifier = Modifier
-            .padding(horizontal = 16.dp, vertical = 8.dp)
+            .padding(top = 16.dp, start = 16.dp)
             .fillMaxWidth()
     )
 }
@@ -216,7 +212,7 @@ fun ItemHighlightChips(
     Column(modifier = Modifier.fillMaxWidth()) {
         Row(
             modifier = Modifier
-                .padding(16.dp)
+                .padding(horizontal = 16.dp)
                 .fillMaxWidth()
         ) {
             chips.forEachIndexed { index, item ->

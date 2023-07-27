@@ -8,7 +8,8 @@ sealed class InitialSearchUiEvent {
         val titleList: List<String>
     ) : InitialSearchUiEvent()
     data class OnItemHistoryClicked(
-        val itemTitle: String
+        val searchBarKeyword: String,
+        val position: Int
     ) : InitialSearchUiEvent()
 
     data class OnItemRemoveClicked(
@@ -18,6 +19,20 @@ sealed class InitialSearchUiEvent {
 
     data class OnItemRecommendationClicked(
         val item: ItemHighlightInitialSearchUiModel,
+        val position: Int
+    ) : InitialSearchUiEvent()
+
+    data class OnClearAllHistoryAction(
+        val titleList: List<String>
+    ) : InitialSearchUiEvent()
+
+    data class OnItemHistoryClickedAction(
+        val searchBarKeyword: String,
+        val position: Int
+    ) : InitialSearchUiEvent()
+
+    data class OnItemRemoveClickedAction(
+        val searchBarKeyword: String,
         val position: Int
     ) : InitialSearchUiEvent()
 }

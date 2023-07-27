@@ -7,6 +7,4 @@ sealed class GlobalSearchUiEvent {
     data class OnKeywordTextChanged(val searchBarKeyword: String) : GlobalSearchUiEvent()
 
     data class OnSearchResultKeyword(val searchBarKeyword: String) : GlobalSearchUiEvent()
-
-    data class OnUpdateSearchKeyword(val searchBarKeyword: String) : GlobalSearchUiEvent()
 }

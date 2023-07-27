@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -27,7 +26,6 @@ const val DELAY_SHOW_KEYBOARD = 100L
 fun InitialSearchActivityScreen(
     uiState: GlobalSearchUiState,
     uiEffect: (GlobalSearchUiEvent) -> Unit = {},
-    stateKeyword: MutableState<String>,
     showSearchSuggestions: Boolean,
     initialStateContainerId: Int,
     suggestionSearchContainerId: Int
@@ -51,9 +49,6 @@ fun InitialSearchActivityScreen(
             GlobalSellerSearchView(
                 uiState = uiState,
                 uiEffect = uiEffect,
-                onSearchBarTextChanged = {
-                    stateKeyword.value = it
-                },
                 modifier = Modifier
                     .height(56.dp)
                     .fillMaxWidth(),

@@ -9,11 +9,14 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.seller.search.common.plt.GlobalSearchSellerPerformanceMonitoringListener
 import com.tokopedia.seller.search.feature.analytics.SellerSearchTracking
 import com.tokopedia.seller.search.feature.initialsearch.di.component.InitialSearchComponent
@@ -25,7 +28,8 @@ import com.tokopedia.seller.search.feature.initialsearch.view.viewmodel.InitialS
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
-class InitialSearchComposeFragment : BaseDaggerFragment() {
+@OptIn(ExperimentalComposeUiApi::class)
+class InitialSearchComposeFragment : Fragment() {
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -39,37 +43,42 @@ class InitialSearchComposeFragment : BaseDaggerFragment() {
 
     private var historyViewUpdateComposeListener: HistoryViewUpdateComposeListener? = null
 
-    override fun getScreenName(): String = ""
-
-    override fun initInjector() {
-        getComponent(InitialSearchComponent::class.java).inject(this)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        initInjector()
     }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return context?.let { ComposeView(it) }?.apply {
-            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+    ): View {
+        return ComposeView(requireContext()).apply {
+//            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 val isMonitoringStarted = remember { mutableStateOf(false) }
                 val isMonitoringFinished = remember { mutableStateOf(false) }
 
+                val softwareKeyboardController = LocalSoftwareKeyboardController.current
+
                 val getActivity = LocalContext.current as? InitialSellerSearchComposeActivity
                 val sellerSearchResult by viewModel.uiState.collectAsState(initial = null)
 
-                LaunchedEffect(Unit) {
+                LaunchedEffect(sellerSearchResult) {
                     if (!isMonitoringStarted.value) {
                         (getActivity as? GlobalSearchSellerPerformanceMonitoringListener)?.startRenderPerformanceMonitoring()
                         isMonitoringStarted.value = true
                     }
 
-                    sellerSearchResult?.let { result ->
+                    sellerSearchResult.let { result ->
                         if (!isMonitoringFinished.value) {
                             (getActivity as? GlobalSearchSellerPerformanceMonitoringListener)?.finishMonitoring()
                             isMonitoringFinished.value = true
                         }
+                    }
+
+                    if (sellerSearchResult?.isInsertSearchSuccess == true) {
+                        softwareKeyboardController?.hide()
                     }
                 }
 
@@ -81,8 +90,12 @@ class InitialSearchComposeFragment : BaseDaggerFragment() {
         }
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    private fun initInjector() {
+        getComponent(InitialSearchComponent::class.java)?.inject(this)
+    }
+
+    private fun <C> getComponent(componentType: Class<C>): C? {
+        return componentType.cast((activity as? HasComponent<C>)?.component)
     }
 
     private fun onUiEvent(uiEvent: InitialSearchUiEvent) {
@@ -98,19 +111,36 @@ class InitialSearchComposeFragment : BaseDaggerFragment() {
             }
 
             is InitialSearchUiEvent.OnItemHistoryClicked -> {
+                historyViewUpdateComposeListener?.setKeywordSearchBarView(uiEvent.searchBarKeyword)
+                SellerSearchTracking.clickRecommendWordingEvent(userSession.userId)
             }
 
             is InitialSearchUiEvent.OnItemRecommendationClicked -> {
+                viewModel.insertSearchSeller(
+                    uiEvent.item.title.orEmpty(),
+                    uiEvent.item.id.orEmpty(),
+                    uiEvent.item.title.orEmpty(),
+                    uiEvent.position
+                )
+                startActivityFromAutoComplete(uiEvent.item.appUrl.orEmpty())
+                SellerSearchTracking.clickOnItemSearchHighlights(userSession.userId)
+            }
+            else -> {
             }
         }
     }
 
-    override fun onDestroy() {
-        viewModel.insertSuccessSearch.removeObservers(this)
-        super.onDestroy()
+    private fun startActivityFromAutoComplete(appLink: String) {
+        if (activity == null) return
+        RouteManager.route(activity, appLink)
+        activity?.finish()
     }
 
-    fun historySearch(searchKeyword: String) {
+    fun setHistoryViewUpdateListener(historyViewUpdateComposeListener: HistoryViewUpdateComposeListener) {
+        this.historyViewUpdateComposeListener = historyViewUpdateComposeListener
+    }
+
+    fun fetchHistorySearch(searchKeyword: String) {
         (activity as? GlobalSearchSellerPerformanceMonitoringListener)?.startNetworkPerformanceMonitoring()
         viewModel.fetchSellerSearch(keyword = searchKeyword, shopId = userSession.shopId)
     }

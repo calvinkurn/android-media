@@ -6,7 +6,6 @@ import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.commit
@@ -24,9 +23,9 @@ import com.tokopedia.seller.search.feature.initialsearch.di.component.DaggerInit
 import com.tokopedia.seller.search.feature.initialsearch.di.component.InitialSearchComponent
 import com.tokopedia.seller.search.feature.initialsearch.di.module.InitialSearchModule
 import com.tokopedia.seller.search.feature.initialsearch.view.compose.InitialSearchActivityScreen
-import com.tokopedia.seller.search.feature.initialsearch.view.fragment.InitialSearchFragment
+import com.tokopedia.seller.search.feature.initialsearch.view.fragment.InitialSearchComposeFragment
 import com.tokopedia.seller.search.feature.initialsearch.view.model.compose.GlobalSearchUiEvent
-import com.tokopedia.seller.search.feature.initialsearch.view.viewholder.HistoryViewUpdateListener
+import com.tokopedia.seller.search.feature.initialsearch.view.viewholder.HistoryViewUpdateComposeListener
 import com.tokopedia.seller.search.feature.initialsearch.view.viewmodel.InitialSearchActivityComposeViewModel
 import com.tokopedia.seller.search.feature.suggestion.view.fragment.SuggestionSearchFragment
 import com.tokopedia.user.session.UserSessionInterface
@@ -36,7 +35,7 @@ import javax.inject.Inject
 class InitialSellerSearchComposeActivity :
     AppCompatActivity(),
     HasComponent<InitialSearchComponent>,
-    HistoryViewUpdateListener,
+    HistoryViewUpdateComposeListener,
     GlobalSearchSellerPerformanceMonitoringListener {
 
     @Inject
@@ -66,10 +65,6 @@ class InitialSellerSearchComposeActivity :
 
         setContent {
             NestTheme {
-                val searchKeyword = remember { mutableStateOf("") }
-                val showSearchSuggestions =
-                    searchKeyword.value.length >= GlobalSearchSellerConstant.MIN_KEYWORD_SEARCH
-
                 val initialStateContainerId = remember { View.generateViewId() }
                 val suggestionSearchContainerId = remember { View.generateViewId() }
 
@@ -78,10 +73,12 @@ class InitialSellerSearchComposeActivity :
                 val suggestionSearchFragment =
                     remember { fragmentManager.findFragmentById(suggestionSearchContainerId) as? SuggestionSearchFragment }
                 val initialSearchFragment = remember {
-                    fragmentManager.findFragmentById(initialStateContainerId) as? InitialSearchFragment
+                    fragmentManager.findFragmentById(initialStateContainerId) as? InitialSearchComposeFragment
                 }
 
                 val uiState = viewModel.globalSearchUiState.collectAsState()
+
+                val showSearchSuggestions = uiState.value.searchBarKeyword.isNotBlank()
 
                 LaunchedEffect(key1 = showSearchSuggestions, block = {
                     showSearchFragment(
@@ -106,7 +103,6 @@ class InitialSellerSearchComposeActivity :
                 InitialSearchActivityScreen(
                     uiEffect = viewModel::onUiEffect,
                     uiState = uiState.value,
-                    stateKeyword = searchKeyword,
                     showSearchSuggestions = showSearchSuggestions,
                     initialStateContainerId = initialStateContainerId,
                     suggestionSearchContainerId = suggestionSearchContainerId
@@ -132,7 +128,7 @@ class InitialSellerSearchComposeActivity :
         showSearchSuggestions: Boolean,
         fragmentManager: FragmentManager?,
         suggestionSearchFragment: SuggestionSearchFragment?,
-        initialSearchFragment: InitialSearchFragment?,
+        initialSearchFragment: InitialSearchComposeFragment?,
         suggestionSearchContainerId: Int,
         initialStateContainerId: Int
     ) {
@@ -151,7 +147,8 @@ class InitialSellerSearchComposeActivity :
                     finish()
                 }
 
-                is GlobalSearchUiEvent.OnUpdateSearchKeyword -> {
+                is GlobalSearchUiEvent.OnKeyboardSearchSubmit -> {
+                    viewModel.setTypingSearch(it.searchBarKeyword)
                 }
 
                 is GlobalSearchUiEvent.OnSearchResultKeyword -> {
@@ -176,7 +173,7 @@ class InitialSellerSearchComposeActivity :
         showSearchSuggestions: Boolean,
         fragmentManager: FragmentManager?,
         suggestionSearchFragment: SuggestionSearchFragment?,
-        initialSearchFragment: InitialSearchFragment?,
+        initialSearchFragment: InitialSearchComposeFragment?,
         suggestionSearchContainerId: Int,
         initialStateContainerId: Int,
         searchBarKeyword: String
@@ -187,9 +184,9 @@ class InitialSellerSearchComposeActivity :
                     suggestionSearch(searchBarKeyword)
                 }
         } else {
-            initialSearchFragment?.historySearch(searchBarKeyword)
-                ?: (fragmentManager?.findFragmentById(initialStateContainerId) as? InitialSearchFragment)?.apply {
-                    historySearch(searchBarKeyword)
+            initialSearchFragment?.fetchHistorySearch(searchBarKeyword)
+                ?: (fragmentManager?.findFragmentById(initialStateContainerId) as? InitialSearchComposeFragment)?.apply {
+                    fetchHistorySearch(searchBarKeyword)
                 }
         }
     }
@@ -211,7 +208,7 @@ class InitialSellerSearchComposeActivity :
 
     private fun showSearchFragment(
         fragmentManager: FragmentManager?,
-        initialSearchFragment: InitialSearchFragment?,
+        initialSearchFragment: InitialSearchComposeFragment?,
         suggestionSearchFragment: SuggestionSearchFragment?,
         initialStateContainerId: Int,
         suggestionSearchContainerId: Int,
@@ -228,7 +225,12 @@ class InitialSellerSearchComposeActivity :
             } else {
                 suggestionSearchFragment?.let { hide(it) }
                 if (initialSearchFragment == null) {
-                    add(initialStateContainerId, InitialSearchFragment())
+                    add(
+                        initialStateContainerId,
+                        InitialSearchComposeFragment().apply {
+                            setHistoryViewUpdateListener(this@InitialSellerSearchComposeActivity)
+                        }
+                    )
                 } else {
                     show(initialSearchFragment)
                 }
@@ -248,10 +250,7 @@ class InitialSellerSearchComposeActivity :
         performanceMonitoring.stopPerformanceMonitoring()
     }
 
-    override fun showHistoryView() {
-        // no op
-    }
-
     override fun setKeywordSearchBarView(keyword: String) {
+        viewModel.setTypingSearch(keyword)
     }
 }

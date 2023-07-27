@@ -23,6 +23,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
+@OptIn(FlowPreview::class)
 class InitialSearchActivityComposeViewModel @Inject constructor(
     private val getPlaceholderUseCase: GetSellerSearchPlaceholderUseCase,
     private val dispatchers: CoroutineDispatchers
@@ -44,9 +45,6 @@ class InitialSearchActivityComposeViewModel @Inject constructor(
     fun onUiEffect(event: GlobalSearchUiEvent) {
         viewModelScope.launch {
             when (event) {
-                is GlobalSearchUiEvent.OnKeyboardSearchSubmit -> {
-                    setTypingSearch(event.searchBarKeyword)
-                }
                 is GlobalSearchUiEvent.OnKeywordTextChanged -> {
                     setTypingSearch(event.searchBarKeyword)
                 }
@@ -75,10 +73,12 @@ class InitialSearchActivityComposeViewModel @Inject constructor(
     }
 
     fun setTypingSearch(keyword: String) {
+        _globalSearchUiState.update {
+            it.copy(searchBarKeyword = keyword)
+        }
         searchTypingStateFlow.tryEmit(keyword)
     }
 
-    @OptIn(FlowPreview::class)
     private fun getSearchKeyword() {
         viewModelScope.launch {
             searchTypingStateFlow

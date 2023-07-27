@@ -1,7 +1,6 @@
 package com.tokopedia.seller.search.feature.initialsearch.view.viewmodel
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -12,14 +11,11 @@ import com.tokopedia.seller.search.feature.initialsearch.domain.usecase.DeleteSu
 import com.tokopedia.seller.search.feature.initialsearch.view.model.compose.InitialSearchUiEvent
 import com.tokopedia.seller.search.feature.initialsearch.view.model.compose.InitialSearchUiState
 import com.tokopedia.seller.search.feature.suggestion.domain.usecase.InsertSuccessSearchUseCase
-import com.tokopedia.seller.search.feature.suggestion.view.model.registersearch.RegisterSearchUiModel
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Result
-import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -37,9 +33,17 @@ class InitialSearchComposeViewModel @Inject constructor(
     private val _uiEvent = MutableSharedFlow<InitialSearchUiEvent>(replay = Int.ONE)
     val uiEvent get() = _uiEvent.asSharedFlow()
 
-    private val _insertSuccessSearch = MutableLiveData<Result<RegisterSearchUiModel>>()
-    val insertSuccessSearch: LiveData<Result<RegisterSearchUiModel>>
-        get() = _insertSuccessSearch
+    fun onUiEffect(event: InitialSearchUiEvent) {
+        viewModelScope.launch {
+            when (event) {
+                is InitialSearchUiEvent.OnItemHistoryClickedAction -> {
+                }
+                else -> {
+                    _uiEvent.emit(event)
+                }
+            }
+        }
+    }
 
     fun fetchSellerSearch(keyword: String, section: String = "", shopId: String) {
         launchCatchError(block = {
@@ -52,7 +56,10 @@ class InitialSearchComposeViewModel @Inject constructor(
                 GlobalSearchSellerMapper.mapToInitialSearchVisitable(getSellerSearchUseCase.executeOnBackground())
             }
             _uiState.update {
-                it.copy(initialStateList = responseGetSellerSearch.first, titleList = responseGetSellerSearch.second)
+                it.copy(
+                    initialStateList = responseGetSellerSearch.first,
+                    titleList = responseGetSellerSearch.second
+                )
             }
         }, onError = {
                 _uiState.update {
@@ -92,18 +99,23 @@ class InitialSearchComposeViewModel @Inject constructor(
 
     fun insertSearchSeller(keyword: String, id: String, title: String, index: Int) {
         launchCatchError(block = {
-            val responseInsertSearch = withContext(dispatcherProvider.io) {
+            withContext(dispatcherProvider.io) {
                 insertSellerSearchUseCase.params = InsertSuccessSearchUseCase.createParams(
                     keyword,
                     id,
                     title,
                     index
                 )
-                GlobalSearchSellerMapper.mapToRegisterSearchUiModel(insertSellerSearchUseCase.executeOnBackground())
+                insertSellerSearchUseCase.executeOnBackground()
             }
-            _insertSuccessSearch.postValue(Success(responseInsertSearch))
+
+            _uiState.update {
+                it.copy(isInsertSearchSuccess = true)
+            }
         }, onError = {
-                _insertSuccessSearch.postValue(Fail(it))
+                _uiState.update {
+                    it.copy(isInsertSearchSuccess = true, throwable = it.throwable)
+                }
             })
     }
 }
