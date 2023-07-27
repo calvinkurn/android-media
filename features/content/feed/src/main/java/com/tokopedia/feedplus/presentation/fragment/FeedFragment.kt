@@ -23,6 +23,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.INTERNAL_AFFILIATE_CREATE_POST_V2
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.UF_EXTRA_FEED_SOURCE_ID
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.UF_EXTRA_FEED_SOURCE_NAME
@@ -77,6 +78,7 @@ import com.tokopedia.feedplus.presentation.model.FeedShareModel
 import com.tokopedia.feedplus.presentation.model.FeedTrackerDataModel
 import com.tokopedia.feedplus.presentation.model.PostSourceModel
 import com.tokopedia.feedplus.presentation.model.FeedFollowRecommendationModel
+import com.tokopedia.feedplus.presentation.model.type.AuthorType
 import com.tokopedia.feedplus.presentation.uiview.FeedCampaignRibbonType
 import com.tokopedia.feedplus.presentation.uiview.FeedProductTagView
 import com.tokopedia.feedplus.presentation.util.VideoPlayerManager
@@ -294,11 +296,10 @@ class FeedFragment :
         }
 
         override fun onClickProfileRecommendation(profile: FeedFollowRecommendationModel.Profile) {
-            if (profile.isShop) {
-                router.route(requireContext(), shopPageResult, ApplinkConst.SHOP, profile.id)
-            } else {
-                router.route(requireContext(), userProfileResult, ApplinkConst.PROFILE, profile.id)
-            }
+            val templateAppLink = if (profile.isShop) ApplinkConst.SHOP else ApplinkConst.PROFILE
+            val completeAppLink = UriUtil.buildUri(templateAppLink, profile.id)
+
+            goToProfilePage(completeAppLink, profile.isShop)
         }
 
         override fun onLoadNextProfileRecommendation() {
@@ -419,6 +420,10 @@ class FeedFragment :
                 feedPostViewModel.getReport()
             }
         }
+    }
+
+    override fun onProfileClicked(appLink: String, type: AuthorType) {
+        goToProfilePage(appLink, type.isShop)
     }
 
     override fun onMenuItemClick(feedMenuItem: FeedMenuItem, contentId: String) {
@@ -1784,6 +1789,14 @@ class FeedFragment :
                 }
             )
         )
+    }
+
+    private fun goToProfilePage(appLink: String, isShop: Boolean) {
+        if (isShop) {
+            router.route(requireContext(), shopPageResult, appLink)
+        } else {
+            router.route(requireContext(), userProfileResult, appLink)
+        }
     }
 
     private fun dismissFeedProductBottomSheet() {
