@@ -2,6 +2,7 @@ package com.tokopedia.search.result.product.seamlessinspirationcard.seamlesskeyw
 
 import android.view.View
 import androidx.annotation.LayoutRes
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.search.R
 import com.tokopedia.search.databinding.SearchInspirationSemlessItemKeywordBinding
@@ -9,10 +10,10 @@ import com.tokopedia.search.result.product.seamlessinspirationcard.seamlesskeywo
 import com.tokopedia.search.result.product.seamlessinspirationcard.seamlesskeywordoptions.InspirationKeywordListener
 import com.tokopedia.utils.view.binding.viewBinding
 
-class GridInspirationKeywordItemViewHolder(
+class SmallInspirationKeywordItemViewHolder(
     itemView: View,
     private val inspirationKeywordListener: InspirationKeywordListener
-) : InspirationKeywordItemViewHolder(itemView) {
+) : AbstractViewHolder<InspirationKeywordDataView>(itemView) {
 
     companion object {
         @JvmField

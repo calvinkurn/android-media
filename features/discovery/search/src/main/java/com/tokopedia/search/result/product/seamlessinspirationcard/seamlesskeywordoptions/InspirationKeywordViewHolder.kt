@@ -12,6 +12,7 @@ import com.tokopedia.search.R
 import com.tokopedia.search.databinding.SearchInspirationSemlessKeywordBinding
 import com.tokopedia.search.result.product.changeview.ChangeViewListener
 import com.tokopedia.search.result.product.changeview.ViewType
+import com.tokopedia.search.result.product.seamlessinspirationcard.seamlesskeywordoptions.typefactory.InspirationKeywordsTypeFactoryImpl
 import com.tokopedia.search.result.product.seamlessinspirationcard.utils.INDEX_IMPRESISON_KEYWORD_TO_BE_TRACK
 import com.tokopedia.search.result.product.seamlessinspirationcard.utils.InspirationKeywordGridLayoutManager
 import com.tokopedia.search.result.product.seamlessinspirationcard.utils.KeywordItemDecoration
@@ -20,7 +21,7 @@ import com.tokopedia.utils.view.binding.viewBinding
 
 class InspirationKeywordViewHolder(
     itemView: View,
-    private val inspirationCarouselListener: InspirationKeywordListener,
+    private val inspirationKeywordListener: InspirationKeywordListener,
     private val changeViewListener: ChangeViewListener
 ) : AbstractViewHolder<InspirationKeywordCardView>(itemView) {
 
@@ -30,7 +31,7 @@ class InspirationKeywordViewHolder(
         val LAYOUT = R.layout.search_inspiration_semless_keyword
         private const val BIG_GRID_COLUMN = 2
         private const val SMALL_GRID_COLUMN = 1
-        val QTY_EXAMPLE_DATA = 4
+        val QTY_EXAMPLE_DATA = 3
     }
 
     private var binding: SearchInspirationSemlessKeywordBinding? by viewBinding()
@@ -54,7 +55,7 @@ class InspirationKeywordViewHolder(
 
     private fun InspirationKeywordDataView.doImpressedTracker() {
         binding?.cardViewInspirationKeywordOptions?.addOnImpressionListener(this) {
-            inspirationCarouselListener.onInspirationKeywordImpressed(this)
+            inspirationKeywordListener.onInspirationKeywordImpressed(this)
         }
     }
 
@@ -68,16 +69,23 @@ class InspirationKeywordViewHolder(
             )
             it.adapter =
                 InspirationKeywordAdapter(
-                    inspirationKeywords,
-                    inspirationCarouselListener,
-                    viewType
-                )
+                    createInspirationKeywordTypeFactory(columnQty)
+                ).apply {
+                    setList(inspirationKeywords)
+                }
             it.setItemDecoration(
                 spacing = it.context.getSpacingResource(),
                 spanQty = columnQty
             )
         }
     }
+
+    private fun createInspirationKeywordTypeFactory(columnQty: Int) = InspirationKeywordsTypeFactoryImpl(
+        inspirationKeywordListener,
+        changeViewListener,
+        columnQty,
+        false
+    )
 
     private fun RecyclerView.setItemDecoration(spacing: Int, spanQty: Int) {
         this.addRemoveItemDecoration(KeywordItemDecoration(spacing, spanQty))
@@ -115,7 +123,7 @@ class InspirationKeywordViewHolder(
         InspirationKeywordGridLayoutManager(context, sizeList)
 
     private fun generateColumnQty(sizeList: Int) =
-        when(changeViewListener.viewType) {
+        when (changeViewListener.viewType) {
             ViewType.BIG_GRID -> BIG_GRID_COLUMN
             ViewType.SMALL_GRID -> SMALL_GRID_COLUMN
             ViewType.LIST -> sizeList

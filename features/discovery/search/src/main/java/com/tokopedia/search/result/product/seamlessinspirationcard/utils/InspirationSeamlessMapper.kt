@@ -24,10 +24,7 @@ object InspirationSeamlessMapper {
     }
 
     private fun InspirationCarouselDataView.Option.convertToInspirationKeywordDataView(type: String) =
-        InspirationKeywordDataView.create(
-            this,
-            type,
-        )
+        InspirationKeywordDataView.create(this)
 
     private fun InspirationCarouselDataView.Option.getTopThreeOfInspirationProduct(externalReference : String): List<InspirationProductItemDataView> {
         val listOfOptionProductItems = mutableListOf<InspirationProductItemDataView>()

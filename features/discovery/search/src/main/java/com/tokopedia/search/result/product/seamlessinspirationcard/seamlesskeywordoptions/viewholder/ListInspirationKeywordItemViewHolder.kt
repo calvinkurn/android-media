@@ -3,10 +3,10 @@ package com.tokopedia.search.result.product.seamlessinspirationcard.seamlesskeyw
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.constraintlayout.widget.ConstraintSet
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.search.R
 import com.tokopedia.search.databinding.SearchInspirationSemlessItemKeywordListBinding
-import com.tokopedia.search.result.product.changeview.ViewType
 import com.tokopedia.search.result.product.seamlessinspirationcard.seamlesskeywordoptions.InspirationKeywordDataView
 import com.tokopedia.search.result.product.seamlessinspirationcard.seamlesskeywordoptions.InspirationKeywordListener
 import com.tokopedia.unifycomponents.ImageUnify
@@ -15,9 +15,8 @@ import com.tokopedia.utils.view.binding.viewBinding
 class ListInspirationKeywordItemViewHolder(
     itemView: View,
     private val inspirationKeywordListener: InspirationKeywordListener,
-    private val itemSize: Int,
-    private val styleView: ViewType
-) : InspirationKeywordItemViewHolder(itemView) {
+    private val isNeedAdjustImageRation: Boolean,
+) : AbstractViewHolder<InspirationKeywordDataView>(itemView) {
 
     companion object {
         @JvmField
@@ -41,7 +40,7 @@ class ListInspirationKeywordItemViewHolder(
     }
 
     private fun ImageUnify.adjustRatioImage() {
-        if (itemSize % 2 != 0 || styleView == ViewType.BIG_GRID) {
+        if (isNeedAdjustImageRation) {
             val constrainProductLayout = binding?.containerCardViewOptionsKeywordCard ?: return
             val imageProduct = this.id
             val set = ConstraintSet()

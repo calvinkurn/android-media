@@ -1,9 +1,11 @@
 package com.tokopedia.search.result.product.seamlessinspirationcard.seamlesskeywordoptions
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.discovery.common.analytics.SearchComponentTracking
 import com.tokopedia.discovery.common.analytics.searchComponentTracking
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
+import com.tokopedia.search.result.product.seamlessinspirationcard.seamlesskeywordoptions.typefactory.InspirationKeywordsTypeFactory
 import com.tokopedia.search.result.product.seamlessinspirationcard.utils.INDEX_IMAGE_PRODUCT_FOR_IMAGE_KEYWORD
 
 data class InspirationKeywordDataView(
@@ -17,6 +19,7 @@ data class InspirationKeywordDataView(
     val trackingOption: Int = 0,
     val actualKeyword: String = ""
 ) : ImpressHolder(),
+    Visitable<InspirationKeywordsTypeFactory>,
     SearchComponentTracking by searchComponentTracking(
         trackingOption = trackingOption,
         keyword = actualKeyword,
@@ -28,8 +31,7 @@ data class InspirationKeywordDataView(
     companion object {
 
         fun create(
-            option: InspirationCarouselDataView.Option,
-            type: String
+            option: InspirationCarouselDataView.Option
         ) = InspirationKeywordDataView(
             keyword = option.title,
             imageKeyword = option.getFirstProductItemImage(),
@@ -37,5 +39,9 @@ data class InspirationKeywordDataView(
             trackingOption = option.trackingOption
         )
         private fun InspirationCarouselDataView.Option.getFirstProductItemImage() = this.product[INDEX_IMAGE_PRODUCT_FOR_IMAGE_KEYWORD].imgUrl
+    }
+
+    override fun type(typeFactory: InspirationKeywordsTypeFactory): Int {
+        return typeFactory.type(this)
     }
 }

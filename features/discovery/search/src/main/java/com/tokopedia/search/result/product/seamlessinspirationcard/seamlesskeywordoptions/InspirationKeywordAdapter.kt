@@ -1,58 +1,51 @@
 package com.tokopedia.search.result.product.seamlessinspirationcard.seamlesskeywordoptions
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.search.result.product.changeview.ViewType
-import com.tokopedia.search.result.product.seamlessinspirationcard.seamlesskeywordoptions.viewholder.GridInspirationKeywordItemViewHolder
-import com.tokopedia.search.result.product.seamlessinspirationcard.seamlesskeywordoptions.viewholder.InspirationKeywordItemViewHolder
-import com.tokopedia.search.result.product.seamlessinspirationcard.seamlesskeywordoptions.viewholder.ListInspirationKeywordItemViewHolder
+import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.search.result.product.seamlessinspirationcard.seamlesskeywordoptions.typefactory.InspirationKeywordsTypeFactory
 
 class InspirationKeywordAdapter(
-    private val inspirationKeywordDataView: List<InspirationKeywordDataView>,
-    private val inspirationKeywordListener: InspirationKeywordListener,
-    private val styleView: ViewType
-) : RecyclerView.Adapter<InspirationKeywordItemViewHolder>() {
+    private val typeFactory: InspirationKeywordsTypeFactory
+) : RecyclerView.Adapter<AbstractViewHolder<*>>() {
 
-    override fun onCreateViewHolder(
-        parent: ViewGroup,
-        viewType: Int
-    ): InspirationKeywordItemViewHolder {
+    private val list = mutableListOf<Visitable<*>>()
+    fun setList(listKeywords: List<InspirationKeywordDataView>){
+        list.addAll(listKeywords)
+        notifyItemRangeInserted(0, list.size)
+    }
+
+    val itemList: List<Visitable<*>>
+        get() = list
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbstractViewHolder<*> {
         val context = parent.context
-        val view = LayoutInflater.from(context).inflate(getLayoutId(styleView), parent, false)
+        val view = LayoutInflater.from(context).inflate(viewType, parent, false)
+        return typeFactory.createViewHolder(view, viewType)
+    }
 
-        return getAdapter(styleView, view, inspirationKeywordDataView.size)
+    override fun onBindViewHolder(holder: AbstractViewHolder<*>, position: Int) {
+        @Suppress("UNCHECKED_CAST")
+        (holder as AbstractViewHolder<Visitable<*>>).bind(list[position])
+    }
+
+    override fun onBindViewHolder(holder: AbstractViewHolder<*>, position: Int, payloads: List<Any>) {
+        if (payloads.isNotEmpty()) {
+            @Suppress("UNCHECKED_CAST")
+            (holder as AbstractViewHolder<Visitable<*>>).bind(list[position], payloads)
+        } else {
+            super.onBindViewHolder(holder, position, payloads)
+        }
     }
 
     override fun getItemCount(): Int {
-        return inspirationKeywordDataView.size
+        return list.size
     }
 
-    override fun onBindViewHolder(holder: InspirationKeywordItemViewHolder, position: Int) {
-        holder.bind(inspirationKeywordDataView[position])
+    override fun getItemViewType(position: Int): Int {
+        @Suppress("UNCHECKED_CAST")
+        return (list[position] as Visitable<InspirationKeywordsTypeFactory>).type(typeFactory)
     }
-
-    private fun getAdapter(viewType: ViewType, view: View, totalItem: Int) =
-        when (viewType) {
-            ViewType.LIST, ViewType.BIG_GRID ->
-                ListInspirationKeywordItemViewHolder(
-                    view,
-                    inspirationKeywordListener,
-                    totalItem,
-                    styleView
-                )
-
-            else ->
-                GridInspirationKeywordItemViewHolder(view, inspirationKeywordListener)
-        }
-
-    private fun getLayoutId(viewType: ViewType): Int =
-        when (viewType) {
-            ViewType.LIST, ViewType.BIG_GRID ->
-                ListInspirationKeywordItemViewHolder.LAYOUT
-
-            else ->
-                GridInspirationKeywordItemViewHolder.LAYOUT
-        }
 }
