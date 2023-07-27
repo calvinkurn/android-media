@@ -8,6 +8,7 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationLabel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -28,6 +29,7 @@ import com.tokopedia.wishlistcollection.domain.UpdateWishlistCollectionUseCase
 import com.tokopedia.wishlistcollection.view.viewmodel.WishlistCollectionViewModel
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
+import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.mockkStatic
 import io.mockk.spyk
@@ -243,10 +245,14 @@ class WishlistCollectionViewModelTest {
 
         mockkStatic(RemoteConfigInstance::class)
 
+        every {
+            RemoteConfigInstance.getInstance().abTestPlatform.getString(RollenceKey.WISHLIST_AFFILIATE_TICKER, "")
+        } returns RollenceKey.WISHLIST_AFFILIATE_TICKER
+
         // when
         wishlistCollectionViewModel.getWishlistCollections()
 
-        // then
+        // the
         assert(wishlistCollectionViewModel.collections.value is Success)
         assert((wishlistCollectionViewModel.collections.value as Success).data.errorMessage.isEmpty())
     }
@@ -263,6 +269,10 @@ class WishlistCollectionViewModelTest {
         } returns RecommendationWidget()
 
         mockkStatic(RemoteConfigInstance::class)
+
+        every {
+            RemoteConfigInstance.getInstance().abTestPlatform.getString(RollenceKey.WISHLIST_AFFILIATE_TICKER, "")
+        } returns RollenceKey.WISHLIST_AFFILIATE_TICKER
 
         // when
         wishlistCollectionViewModel.getWishlistCollections()
