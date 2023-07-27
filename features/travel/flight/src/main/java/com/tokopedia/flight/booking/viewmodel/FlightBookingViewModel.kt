@@ -56,6 +56,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.text.ParseException
+import java.util.*
 import java.util.regex.Pattern
 import javax.inject.Inject
 
@@ -545,7 +546,7 @@ class FlightBookingViewModel @Inject constructor(
             passenger.type = FlightBookingPassenger.ADULT.value
             passenger.flightBookingLuggageMetaViewModels = arrayListOf()
             passenger.flightBookingMealMetaViewModels = arrayListOf()
-            passenger.headerTitle = String.format("Penumpang dewasa")
+            passenger.headerTitle = String.format(Locale.getDefault(), "Penumpang dewasa")
             passengers[0] = passenger
             _flightPassengersData.value = passengers
         }
@@ -597,11 +598,12 @@ class FlightBookingViewModel @Inject constructor(
         for ((key, value) in meals) {
             val count = mealsCount[key] ?: 1
             if (count > 1) {
-                prices.add(FlightCart.PriceDetail(String.format("%s %s (x%s)", "Makanan", key, count), FlightCurrencyFormatUtil.convertToIdrPrice(value), value))
+                prices.add(FlightCart.PriceDetail(String.format(Locale.getDefault(), "%s %s (x%s)", "Makanan", key, count), FlightCurrencyFormatUtil.convertToIdrPrice(value), value))
             } else {
                 prices.add(
                     FlightCart.PriceDetail(
                         String.format(
+                            Locale.getDefault(),
                             "%s %s",
                             "Makanan",
                             key
@@ -616,11 +618,17 @@ class FlightBookingViewModel @Inject constructor(
         for ((key, value) in luggages) {
             val count = luggageCount[key] ?: 1
             if (count > 1) {
-                prices.add(FlightCart.PriceDetail(String.format("%s %s (x%s)", "Bagasi", key, count), FlightCurrencyFormatUtil.convertToIdrPrice(value), value))
+                prices.add(
+                    FlightCart.PriceDetail(
+                        String.format(Locale.getDefault(), "%s %s (x%s)", "Bagasi", key, count),
+                        FlightCurrencyFormatUtil.convertToIdrPrice(value),
+                        value
+                    )
+                )
             } else {
                 prices.add(
                     FlightCart.PriceDetail(
-                        String.format("%s %s", "Bagasi", key),
+                        String.format(Locale.getDefault(), "%s %s", "Bagasi", key),
                         FlightCurrencyFormatUtil.convertToIdrPrice(value),
                         value
                     )
@@ -666,7 +674,7 @@ class FlightBookingViewModel @Inject constructor(
                 flightBookingParam.insurances = insuranceTemp
                 otherPrices.add(
                     FlightPriceDetailEntity(
-                        label = String.format("%s (x%d)", insurance.name, flightPassengersData.value!!.size),
+                        label = String.format(Locale.getDefault(), "%s (x%d)", insurance.name, flightPassengersData.value!!.size),
                         priceNumeric = insurance.totalPriceNumeric,
                         price = FlightCurrencyFormatUtil.convertToIdrPrice(insurance.totalPriceNumeric),
                         priceDetailId = insurance.id
