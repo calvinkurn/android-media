@@ -64,6 +64,7 @@
             android:layout_weight="1"
             android:background="@drawable/bg_et_comment"
             android:hint="@string/content_comment_edit_text_hint"
+            android:textColorHint="@color/Unify_NN600"
             android:inputType="textMultiLine"
             android:paddingStart="@dimen/unify_space_16"
             android:paddingTop="@dimen/content_common_space_6"
