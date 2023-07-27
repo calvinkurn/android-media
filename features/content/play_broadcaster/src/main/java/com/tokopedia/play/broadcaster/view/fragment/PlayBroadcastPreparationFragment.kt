@@ -58,6 +58,9 @@ import com.tokopedia.play.broadcaster.ui.model.PlayBroadcastPreparationBannerMod
 import com.tokopedia.play.broadcaster.ui.model.PlayBroadcastPreparationBannerModel.Companion.TYPE_DASHBOARD
 import com.tokopedia.play.broadcaster.ui.model.PlayBroadcastPreparationBannerModel.Companion.TYPE_SHORTS
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
+import com.tokopedia.play.broadcaster.ui.model.livetovod.TickerBottomSheetPage
+import com.tokopedia.play.broadcaster.ui.model.livetovod.TickerBottomSheetType
+import com.tokopedia.play.broadcaster.ui.model.livetovod.TickerBottomSheetUiModel
 import com.tokopedia.play.broadcaster.ui.model.page.PlayBroPageSource
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkState
 import com.tokopedia.play.broadcaster.ui.state.ScheduleUiModel
@@ -407,6 +410,19 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                 childFragment.needToShowCoachMark(isShowCoachMark)
                 if (isShowCoachMark) parentViewModel.submitAction(PlayBroadcastAction.SetShowSetupCoverCoachMark)
             }
+            is PlayBroLiveToVodBottomSheet -> {
+                childFragment.setupData(parentViewModel.tickerBottomSheetConfig)
+                childFragment.setupListener(object : PlayBroLiveToVodBottomSheet.Listener {
+                    override fun onButtonActionPressed() {
+                        parentViewModel.submitAction(
+                            PlayBroadcastAction.SetLiveToVodPref(
+                                type = TickerBottomSheetType.BOTTOM_SHEET,
+                                page = TickerBottomSheetPage.LIVE_PREPARATION,
+                            )
+                        )
+                    }
+                })
+            }
         }
     }
 
@@ -741,6 +757,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                 renderSchedulePicker(prevState?.schedule, state.schedule)
                 renderAccountStateInfo(prevState?.accountStateInfo, state.accountStateInfo)
                 renderBannerPreparationPage(prevState?.bannerPreparation, state.bannerPreparation)
+                renderBottomSheetDisableLiveToVod(prevState?.tickerBottomSheetConfig, state.tickerBottomSheetConfig)
             }
         }
     }
@@ -977,6 +994,18 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                 analytic.onViewCoachMarkPerformanceDashboardPrepPage(parentViewModel.authorId)
                 setupCoachMark(coachMark)
             }
+        }
+    }
+
+    private fun renderBottomSheetDisableLiveToVod(
+        prev: TickerBottomSheetUiModel?,
+        state: TickerBottomSheetUiModel,
+    ) {
+        if (prev == state || state.page != TickerBottomSheetPage.LIVE_PREPARATION) return
+
+        when (state.type) {
+            TickerBottomSheetType.BOTTOM_SHEET -> openDisableLiveToVodBottomSheet()
+            else -> return
         }
     }
 

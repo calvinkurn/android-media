@@ -42,12 +42,6 @@
     <string name="play_prepare_broadcast_promo_quota_max_error_label">Maks. kuota 999</string>
     <string name="play_prepare_broadcast_promo_detail_title">Diskon Produk &amp; Kuotanya</string>
     <string name="play_prepare_broadcast_promo_detail_description"><![CDATA[<b>Diskon %1$d\%%</b> (%2$d Kuota)]]></string>
-    <string name="play_prepare_broadcaster_disable_live_to_vod_title_bottom_sheet">Live shopping aja langsung, yuk!</string>
-    <string name="play_prepare_broadcaster_disable_live_to_vod_description_bottom_sheet">Per 1 Agustus 2023, Live tidak bisa di-posting jadi video. Tapi kamu masih bisa buat video pendek jika mau di-posting di halaman Tokomu.</string>
-    <string name="play_prepare_broadcaster_disable_live_to_vod_learn_more_text_bottom_sheet">Yuk, cari tahun ifno tentang perubahan fitur ini!</string>
-    <string name="play_prepare_broadcaster_disable_live_to_vod_learn_more">Pelajari.</string>
-    <string name="play_prepare_broadcaster_disable_live_to_vod_title_ticker">Live akan tidak bisa di-posting per 1 Agu 2023"</string>
-    <string name="play_prepare_broadcaster_disable_live_to_vod_description_ticker">Live-mu yang sudah di-posting jadi video juga akan dihapus pada tanggal tersebut, ya.</string>
 
     <!--Cover-->
     <string name="play_prepare_cover_title_title">Tambah Cover</string>

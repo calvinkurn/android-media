@@ -25,8 +25,6 @@ data class GetBroadcasterAuthorConfigResponse(
         val tnc: List<TermsAndCondition> = emptyList(),
         @SerializedName("beautificationConfig")
         val beautificationConfig: String = "",
-        @SerializedName("show_save_button")
-        val showSaveButton: Boolean = false,
     )
 
     data class TermsAndCondition(
