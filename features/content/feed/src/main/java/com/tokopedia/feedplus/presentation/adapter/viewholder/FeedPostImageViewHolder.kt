@@ -575,6 +575,9 @@ class FeedPostImageViewHolder(
             productTagView.root.animate().alpha(SCROLL_OPACITY).duration = OPACITY_ANIMATE_DURATION
             productTagButton.root.animate().alpha(SCROLL_OPACITY).duration =
                 OPACITY_ANIMATE_DURATION
+            rvFeedAsgcTags.animate().alpha(SCROLL_OPACITY).duration = OPACITY_ANIMATE_DURATION
+            feedCampaignRibbon.root.animate().alpha(SCROLL_OPACITY).duration =
+                OPACITY_ANIMATE_DURATION
         }
     }
 
@@ -594,6 +597,9 @@ class FeedPostImageViewHolder(
                 OPACITY_ANIMATE_DURATION
             productTagView.root.animate().alpha(FULL_OPACITY).duration = OPACITY_ANIMATE_DURATION
             productTagButton.root.animate().alpha(FULL_OPACITY).duration =
+                OPACITY_ANIMATE_DURATION
+            rvFeedAsgcTags.animate().alpha(FULL_OPACITY).duration = OPACITY_ANIMATE_DURATION
+            feedCampaignRibbon.root.animate().alpha(FULL_OPACITY).duration =
                 OPACITY_ANIMATE_DURATION
         }
     }
