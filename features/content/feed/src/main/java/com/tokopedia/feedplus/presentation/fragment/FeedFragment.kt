@@ -96,6 +96,7 @@ import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantBottomSheetParams
+import com.tokopedia.shop.common.util.ShopPageActivityResult
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
@@ -240,6 +241,16 @@ class FeedFragment :
             }
         }
 
+    private val shopPageResult =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            it.data?.let { intent ->
+                val shopId = ShopPageActivityResult.getShopId(intent)
+                val isFollow = ShopPageActivityResult.isFollow(intent)
+
+                feedPostViewModel.updateFollowStatus(shopId, isFollow)
+            }
+        }
+
     private var feedFollowersOnlyBottomSheet: FeedFollowersOnlyBottomSheet? = null
 
     private val layoutManager by lazy { FeedPostLayoutManager(context) }
@@ -284,7 +295,7 @@ class FeedFragment :
 
         override fun onClickProfileRecommendation(profile: FeedFollowRecommendationModel.Profile) {
             if (profile.isShop) {
-                router.route(requireContext(), ApplinkConst.SHOP, profile.id)
+                router.route(requireContext(), shopPageResult, ApplinkConst.SHOP, profile.id)
             } else {
                 router.route(requireContext(), userProfileResult, ApplinkConst.PROFILE, profile.id)
             }
