@@ -129,8 +129,11 @@ class PdpFintechWidget @JvmOverloads constructor(
         if(Utils.safeLet(listOfAllChecker) == true) {
             binding.pdpFintechWidgetSeeMore.setOnClickListener {
                 routeToPdp(
-                    returnRouteObject(chipsData)
-                    )
+                    returnRouteObject(chipsData).also { data ->
+                        data.categoryId = categoryId.orEmpty()
+                        data.parentId = parentId
+                    }
+                )
             }
         }
     }
@@ -260,7 +263,8 @@ class PdpFintechWidget @JvmOverloads constructor(
             fintechWidgetViewModel.getWidgetData(
                 it,
                 idToPriceMap,
-                shopID
+                shopID,
+                parentId
             )
         }
     }
@@ -325,6 +329,8 @@ class PdpFintechWidget @JvmOverloads constructor(
     companion object {
         const val ACTIVATION_LINKINING_FLOW = 2
         const val LIHAT_SEMU_GATEWAY_ID = "0"
+        const val PARAM_PARENT_ID = "parentId"
+        const val PARAM_CATEGORY_ID = "categoryId"
     }
 
 }
