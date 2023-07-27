@@ -319,7 +319,7 @@ class ProductListTypeFactoryImpl(
             AdsLowOrganicTitleViewHolder.LAYOUT ->
                 AdsLowOrganicTitleViewHolder(view)
             InspirationKeywordViewHolder.LAYOUT ->
-                InspirationKeywordViewHolder(view, inspirationKeywordListener)
+                InspirationKeywordViewHolder(view, inspirationKeywordListener, changeViewListener)
             GridInspirationProductItemViewHolder.LAYOUT, GridInspirationProductItemViewHolder.LAYOUT_WITH_VIEW_STUB ->
                 GridInspirationProductItemViewHolder(view, inspirationProductListener, productListener)
             ListInspirationProductItemViewHolder.LAYOUT, ListInspirationProductItemViewHolder.LAYOUT_WITH_VIEW_STUB ->

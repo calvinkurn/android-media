@@ -11,9 +11,14 @@
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/iv_search_keyword"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:adjustViewBounds="true"
+        android:gravity="center"
+        android:scaleType="centerCrop"
+        android:visibility="visible"
+        app:layout_constraintDimensionRatio="H,1:1"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="ContentDescription" />
@@ -24,16 +29,15 @@
         android:layout_height="wrap_content"
         android:ellipsize="end"
         android:maxLines="2"
-        android:textColor="@color/Unify_NN950_96"
+        android:textAlignment="center"
+        android:textColor="@color/Unify_NN950"
         android:visibility="visible"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        app:layout_constraintBottom_toBottomOf="@+id/iv_search_keyword"
+        android:layout_marginTop="8dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/iv_search_keyword"
-        app:layout_constraintTop_toTopOf="@+id/iv_search_keyword"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/iv_search_keyword"
         app:layout_goneMarginTop="@dimen/product_card_text_view_product_name_gone_margin_top"
-        app:typographyType="paragraph_3"
+        app:typographyType="body_3"
         tools:text="Product Name" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

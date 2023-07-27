@@ -31,15 +31,14 @@ object InspirationSeamlessMapper {
 
     private fun InspirationCarouselDataView.Option.getTopThreeOfInspirationProduct(externalReference : String): List<InspirationProductItemDataView> {
         val listOfOptionProductItems = mutableListOf<InspirationProductItemDataView>()
-        this.product.mapIndexed { index, product ->
-            if (index < MAXIMUM_INSPIRATION_PRODUCT_ITEM) {
-                listOfOptionProductItems.add(
-                    product.convertToInspirationProduct(
-                        option = this,
-                        index = index
-                    )
+        val topThreeProducts = this.product.take(MAXIMUM_INSPIRATION_PRODUCT_ITEM)
+        topThreeProducts.mapIndexed { index, product ->
+            listOfOptionProductItems.add(
+                product.convertToInspirationProduct(
+                    option = this,
+                    index = index
                 )
-            }
+            )
         }
         return listOfOptionProductItems
     }

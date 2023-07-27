@@ -1,17 +1,18 @@
-package com.tokopedia.search.result.product.seamlessinspirationcard.seamlesskeywordoptions
+package com.tokopedia.search.result.product.seamlessinspirationcard.seamlesskeywordoptions.viewholder
 
 import android.view.View
 import androidx.annotation.LayoutRes
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.search.R
 import com.tokopedia.search.databinding.SearchInspirationSemlessItemKeywordBinding
+import com.tokopedia.search.result.product.seamlessinspirationcard.seamlesskeywordoptions.InspirationKeywordDataView
+import com.tokopedia.search.result.product.seamlessinspirationcard.seamlesskeywordoptions.InspirationKeywordListener
 import com.tokopedia.utils.view.binding.viewBinding
 
-class InspirationKeywordItemViewHolder(
+class GridInspirationKeywordItemViewHolder(
     itemView: View,
     private val inspirationKeywordListener: InspirationKeywordListener
-) : RecyclerView.ViewHolder(itemView) {
+) : InspirationKeywordItemViewHolder(itemView) {
 
     companion object {
         @JvmField
@@ -20,7 +21,7 @@ class InspirationKeywordItemViewHolder(
     }
     private var binding: SearchInspirationSemlessItemKeywordBinding? by viewBinding()
 
-    fun bind(
+    override fun bind(
         inspirationKeywordDataView: InspirationKeywordDataView,
     ) {
         val binding = binding ?: return
