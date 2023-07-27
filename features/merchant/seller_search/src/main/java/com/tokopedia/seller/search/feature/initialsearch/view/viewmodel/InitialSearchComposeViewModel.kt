@@ -13,7 +13,9 @@ import com.tokopedia.seller.search.feature.initialsearch.view.model.compose.Init
 import com.tokopedia.seller.search.feature.suggestion.domain.usecase.InsertSuccessSearchUseCase
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -27,17 +29,45 @@ class InitialSearchComposeViewModel @Inject constructor(
 ) : BaseViewModel(dispatcherProvider.main) {
 
     private val _uiState = MutableStateFlow(InitialSearchUiState())
-    val uiState: MutableStateFlow<InitialSearchUiState>
-        get() = _uiState
+    val uiState: StateFlow<InitialSearchUiState>
+        get() = _uiState.asStateFlow()
 
     private val _uiEvent = MutableSharedFlow<InitialSearchUiEvent>(replay = Int.ONE)
     val uiEvent get() = _uiEvent.asSharedFlow()
 
-    fun onUiEffect(event: InitialSearchUiEvent) {
+    fun onUiEvent(event: InitialSearchUiEvent) {
         viewModelScope.launch {
             when (event) {
-                is InitialSearchUiEvent.OnItemHistoryClickedAction -> {
+                is InitialSearchUiEvent.OnItemHighlightClicked -> {
+                    insertSearchSeller(
+                        event.item.title.orEmpty(),
+                        event.item.id.orEmpty(),
+                        event.item.title.orEmpty(),
+                        event.position
+                    )
+                    _uiEvent.emit(
+                        InitialSearchUiEvent.OnItemHighlightClickedAction(
+                            event.item,
+                            event.position
+                        )
+                    )
                 }
+
+                is InitialSearchUiEvent.OnClearAllHistory -> {
+                    deleteSuggestionSearch(event.titleList, null)
+                    _uiEvent.emit(InitialSearchUiEvent.OnClearAllHistoryAction(event.titleList))
+                }
+
+                is InitialSearchUiEvent.OnItemRemoveClicked -> {
+                    deleteSuggestionSearch(listOf(event.title), event.position)
+                    _uiEvent.emit(
+                        InitialSearchUiEvent.OnItemRemoveClickedAction(
+                            event.title,
+                            event.position
+                        )
+                    )
+                }
+
                 else -> {
                     _uiEvent.emit(event)
                 }
@@ -53,7 +83,7 @@ class InitialSearchComposeViewModel @Inject constructor(
                     shopId,
                     section
                 )
-                GlobalSearchSellerMapper.mapToInitialSearchVisitable(getSellerSearchUseCase.executeOnBackground())
+                GlobalSearchSellerMapper.mapToInitialSearchVisitableCompose(getSellerSearchUseCase.executeOnBackground())
             }
             _uiState.update {
                 it.copy(

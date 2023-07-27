@@ -13,9 +13,8 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.seller.search.common.plt.GlobalSearchSellerPerformanceMonitoringListener
 import com.tokopedia.seller.search.feature.analytics.SellerSearchTracking
@@ -26,10 +25,12 @@ import com.tokopedia.seller.search.feature.initialsearch.view.model.compose.Init
 import com.tokopedia.seller.search.feature.initialsearch.view.viewholder.HistoryViewUpdateComposeListener
 import com.tokopedia.seller.search.feature.initialsearch.view.viewmodel.InitialSearchComposeViewModel
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
 @OptIn(ExperimentalComposeUiApi::class)
-class InitialSearchComposeFragment : Fragment() {
+class InitialSearchComposeFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -43,18 +44,12 @@ class InitialSearchComposeFragment : Fragment() {
 
     private var historyViewUpdateComposeListener: HistoryViewUpdateComposeListener? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        initInjector()
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
-        return ComposeView(requireContext()).apply {
-//            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+    ): View? {
+        return context?.let { ComposeView(it) }?.apply {
             setContent {
                 val isMonitoringStarted = remember { mutableStateOf(false) }
                 val isMonitoringFinished = remember { mutableStateOf(false) }
@@ -62,7 +57,7 @@ class InitialSearchComposeFragment : Fragment() {
                 val softwareKeyboardController = LocalSoftwareKeyboardController.current
 
                 val getActivity = LocalContext.current as? InitialSellerSearchComposeActivity
-                val sellerSearchResult by viewModel.uiState.collectAsState(initial = null)
+                val sellerSearchResult = viewModel.uiState.collectAsState()
 
                 LaunchedEffect(sellerSearchResult) {
                     if (!isMonitoringStarted.value) {
@@ -77,63 +72,61 @@ class InitialSearchComposeFragment : Fragment() {
                         }
                     }
 
-                    if (sellerSearchResult?.isInsertSearchSuccess == true) {
+                    if (sellerSearchResult.value.isInsertSearchSuccess) {
                         softwareKeyboardController?.hide()
                     }
                 }
 
+                LaunchedEffect(key1 = Unit, block = {
+                    onUiEvent(viewModel.uiEvent)
+                })
+
                 InitialSearchFragmentScreen(
-                    sellerSearchResult,
-                    ::onUiEvent
+                    sellerSearchResult.value,
+                    viewModel::onUiEvent
                 )
             }
         }
     }
 
-    private fun initInjector() {
+    override fun getScreenName(): String = ""
+
+    override fun initInjector() {
         getComponent(InitialSearchComponent::class.java)?.inject(this)
     }
 
-    private fun <C> getComponent(componentType: Class<C>): C? {
-        return componentType.cast((activity as? HasComponent<C>)?.component)
-    }
+    private suspend fun onUiEvent(uiEvent: SharedFlow<InitialSearchUiEvent>) {
+        uiEvent.collectLatest {
+            when (it) {
+                is InitialSearchUiEvent.OnClearAllHistoryAction -> {
+                    SellerSearchTracking.clickDeleteAllSearchEvent(userSession.userId)
+                }
 
-    private fun onUiEvent(uiEvent: InitialSearchUiEvent) {
-        when (uiEvent) {
-            is InitialSearchUiEvent.OnClearAllHistory -> {
-                viewModel.deleteSuggestionSearch(uiEvent.titleList, null)
-                SellerSearchTracking.clickDeleteAllSearchEvent(userSession.userId)
-            }
+                is InitialSearchUiEvent.OnItemRemoveClickedAction -> {
+                    SellerSearchTracking.clickDeleteSelectedSearch(userSession.userId)
+                }
 
-            is InitialSearchUiEvent.OnItemRemoveClicked -> {
-                viewModel.deleteSuggestionSearch(listOf(uiEvent.title), uiEvent.position)
-                SellerSearchTracking.clickDeleteSelectedSearch(userSession.userId)
-            }
+                is InitialSearchUiEvent.OnItemHistoryClicked -> {
+                    historyViewUpdateComposeListener?.setKeywordSearchBarView(it.searchBarKeyword)
+                    SellerSearchTracking.clickRecommendWordingEvent(userSession.userId)
+                }
 
-            is InitialSearchUiEvent.OnItemHistoryClicked -> {
-                historyViewUpdateComposeListener?.setKeywordSearchBarView(uiEvent.searchBarKeyword)
-                SellerSearchTracking.clickRecommendWordingEvent(userSession.userId)
-            }
+                is InitialSearchUiEvent.OnItemHighlightClickedAction -> {
+                    startActivityFromAutoComplete(it.item.appUrl.orEmpty())
+                    SellerSearchTracking.clickOnItemSearchHighlights(userSession.userId)
+                }
 
-            is InitialSearchUiEvent.OnItemRecommendationClicked -> {
-                viewModel.insertSearchSeller(
-                    uiEvent.item.title.orEmpty(),
-                    uiEvent.item.id.orEmpty(),
-                    uiEvent.item.title.orEmpty(),
-                    uiEvent.position
-                )
-                startActivityFromAutoComplete(uiEvent.item.appUrl.orEmpty())
-                SellerSearchTracking.clickOnItemSearchHighlights(userSession.userId)
-            }
-            else -> {
+                else -> {
+                    // no op
+                }
             }
         }
     }
 
     private fun startActivityFromAutoComplete(appLink: String) {
-        if (activity == null) return
-        RouteManager.route(activity, appLink)
-        activity?.finish()
+        activity?.let {
+            RouteManager.route(it, appLink)
+        }
     }
 
     fun setHistoryViewUpdateListener(historyViewUpdateComposeListener: HistoryViewUpdateComposeListener) {

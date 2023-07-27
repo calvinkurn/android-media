@@ -315,7 +315,6 @@ object GlobalSearchSellerMapper {
                         add(ItemTitleInitialSearchUiModel())
                         addAll(mapToItemInitialSearchUiModel(sellerSearch))
                     }
-
                     HIGHLIGHTS -> {
                         add(ItemTitleHighlightInitialSearchUiModel(it.title.orEmpty()))
                         add(
@@ -372,12 +371,13 @@ object GlobalSearchSellerMapper {
             addAll(initialSearchSellerList)
         }
 
-        val indexItemTitleInitial =
-            initialSearchSellerMutableList.indexOfFirst { it is ItemTitleInitialSearchUiModel }
-        initialSearchSellerMutableList.removeAt(indexItemTitleInitial)
+        initialSearchSellerMutableList.removeItemTitleInitial()
+
         initialSearchSellerMutableList.removeAll { it is ItemInitialSearchUiModel }
 
-        return initialSearchSellerList.toList()
+        initialSearchSellerMutableList.add(Int.ZERO, SellerSearchNoHistoryUiModel())
+
+        return initialSearchSellerMutableList.toList()
     }
 
     fun mapToDeleteItemSuggestionSearch(
@@ -395,10 +395,18 @@ object GlobalSearchSellerMapper {
         val itemInitialStateList = initialSearchSellerMutableList.filterIsInstance<ItemInitialSearchUiModel>()
 
         if (itemInitialStateList.isEmpty()) {
+            initialSearchSellerMutableList.removeItemTitleInitial()
             initialSearchSellerMutableList.add(Int.ZERO, SellerSearchNoHistoryUiModel())
         }
 
-        return initialSearchSellerList.toList()
+        return initialSearchSellerMutableList.toList()
+    }
+
+    private fun MutableList<BaseInitialSearchSeller>.removeItemTitleInitial() {
+        val indexItemTitleInitial = indexOfFirst { it is ItemTitleInitialSearchUiModel }
+        if (indexItemTitleInitial > -Int.ONE) {
+            this.removeAt(indexItemTitleInitial)
+        }
     }
 
     private fun mapToItemInitialSearchUiModel(sellerSearch: SellerSearchResponse.SellerSearch): List<ItemInitialSearchUiModel> {

@@ -17,7 +17,7 @@ sealed class InitialSearchUiEvent {
         val position: Int
     ) : InitialSearchUiEvent()
 
-    data class OnItemRecommendationClicked(
+    data class OnItemHighlightClicked(
         val item: ItemHighlightInitialSearchUiModel,
         val position: Int
     ) : InitialSearchUiEvent()
@@ -26,13 +26,13 @@ sealed class InitialSearchUiEvent {
         val titleList: List<String>
     ) : InitialSearchUiEvent()
 
-    data class OnItemHistoryClickedAction(
-        val searchBarKeyword: String,
+    data class OnItemRemoveClickedAction(
+        val title: String,
         val position: Int
     ) : InitialSearchUiEvent()
 
-    data class OnItemRemoveClickedAction(
-        val searchBarKeyword: String,
+    data class OnItemHighlightClickedAction(
+        val item: ItemHighlightInitialSearchUiModel,
         val position: Int
     ) : InitialSearchUiEvent()
 }

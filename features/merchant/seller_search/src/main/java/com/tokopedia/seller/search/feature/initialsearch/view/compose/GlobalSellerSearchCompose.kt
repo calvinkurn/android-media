@@ -6,6 +6,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -14,6 +18,8 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.platform.SoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextRange
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import com.tokopedia.nest.components.NestImage
 import com.tokopedia.nest.components.NestImageType
@@ -74,8 +80,17 @@ private fun SearchBarUnify(
     uiState: GlobalSearchUiState,
     uiEffect: (GlobalSearchUiEvent) -> Unit
 ) {
+    val searchBarTextState by remember(uiState.searchBarKeyword) {
+        mutableStateOf(
+            TextFieldValue(
+                uiState.searchBarKeyword,
+                selection = TextRange(uiState.searchBarKeyword.length)
+            )
+        )
+    }
+
     NestSearchBar(
-        value = uiState.searchBarKeyword,
+        value = searchBarTextState.text,
         placeholderText = uiState.searchBarPlaceholder.ifBlank { stringResource(id = R.string.placeholder_search_seller) },
         modifier = modifier,
         onSearchBarCleared = {

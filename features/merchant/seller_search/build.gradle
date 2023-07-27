@@ -65,6 +65,8 @@ dependencies {
     /**
      * COMPOSE
      */
+    implementation rootProject.ext.composeDependencies.composeFoundation
+    implementation rootProject.ext.composeDependencies.accompanistFlowLayout
     implementation rootProject.ext.composeDependencies.composeActivity
     implementation rootProject.ext.composeDependencies.composeConstraint
     implementation rootProject.ext.composeDependencies.composeLiveData
