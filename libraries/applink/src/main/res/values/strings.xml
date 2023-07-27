@@ -206,4 +206,7 @@
 
     <!-- Payment Thank You -->
     <string name="payment_title_thank_you">Thank You Page</string>
+
+    <!-- Promo Scp -->
+    <string name="title_scp_rewards">SCP Rewards</string>
 </resources>
