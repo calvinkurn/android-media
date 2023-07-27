@@ -253,7 +253,8 @@ private fun ResultHeaderSectionUi(persona: PersonaUiModel) {
         NestImage(
             source = ImageSource.Remote(source = persona.backgroundImage),
             modifier = Modifier.fillMaxSize(),
-            contentScale = ContentScale.Crop
+            contentScale = ContentScale.Crop,
+            type = NestImageType.Rect(rounded = 0.dp)
         )
         Column(
             verticalArrangement = Arrangement.Center,

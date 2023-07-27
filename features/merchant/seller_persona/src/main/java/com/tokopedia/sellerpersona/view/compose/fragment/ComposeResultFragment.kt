@@ -111,8 +111,8 @@ class ComposeResultFragment : Fragment() {
                             }
 
                             else -> {
-                                markForCheckedChanged(state.value.data.isSwitchChecked)
                                 updatePersonaStatusFlag(state.value.data.personaStatus.isActive())
+                                markForCheckedChanged(state.value.data.isSwitchChecked)
                                 PersonaResultScreen(state.value, viewModel::onEvent)
                             }
                         }
