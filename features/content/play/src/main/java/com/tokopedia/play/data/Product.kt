@@ -57,7 +57,7 @@ data class Product(
         @SerializedName("social_proof_raw_value")
         val rank: Int = 0,
         @SerializedName("social_proof_tag_color")
-        val ribbonColors: List<String> = emptyList(),
+        val ribbonColors: List<String>? = emptyList(),
         @SerializedName("social_proof_type_value")
         val rankType: String = "",
 ){
