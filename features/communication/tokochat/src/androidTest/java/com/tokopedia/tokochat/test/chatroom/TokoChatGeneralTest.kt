@@ -1,14 +1,14 @@
-package com.tokopedia.tokochat.test
+package com.tokopedia.tokochat.test.chatroom
 
 import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.tokochat.stub.domain.response.GqlResponseStub.chatOrderHistoryResponse
 import com.tokopedia.tokochat.stub.domain.response.GqlResponseStub.getNeedConsentResponse
 import com.tokopedia.tokochat.test.base.BaseTokoChatTest
-import com.tokopedia.tokochat.test.robot.consent.ConsentResult
-import com.tokopedia.tokochat.test.robot.consent.ConsentRobot
-import com.tokopedia.tokochat.test.robot.header.HeaderResult
-import com.tokopedia.tokochat.test.robot.reply_area.ReplyAreaResult
-import com.tokopedia.tokochat.test.robot.reply_area.ReplyAreaRobot
+import com.tokopedia.tokochat.test.chatroom.robot.consent.ConsentResult
+import com.tokopedia.tokochat.test.chatroom.robot.consent.ConsentRobot
+import com.tokopedia.tokochat.test.chatroom.robot.header.HeaderResult
+import com.tokopedia.tokochat.test.chatroom.robot.reply_area.ReplyAreaResult
+import com.tokopedia.tokochat.test.chatroom.robot.reply_area.ReplyAreaRobot
 import com.tokopedia.tokochat_common.R
 import com.tokopedia.tokochat.common.util.OrderStatusType
 import com.tokopedia.tokochat_common.util.TokoChatValueUtil.MAX_DISPLAYED_STRING

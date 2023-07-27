@@ -1,4 +1,4 @@
-package com.tokopedia.tokochat.test.robot.header_date
+package com.tokopedia.tokochat.test.chatroom.robot.header_date
 
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.assertion.ViewAssertions

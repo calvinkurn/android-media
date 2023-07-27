@@ -1,4 +1,4 @@
-package com.tokopedia.tokochat.test.robot.reply_area
+package com.tokopedia.tokochat.test.chatroom.robot.reply_area
 
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.action.ViewActions.clearText

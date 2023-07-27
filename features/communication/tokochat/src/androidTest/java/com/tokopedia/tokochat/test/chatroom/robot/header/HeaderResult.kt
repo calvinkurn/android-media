@@ -1,4 +1,4 @@
-package com.tokopedia.tokochat.test.robot.header
+package com.tokopedia.tokochat.test.chatroom.robot.header
 
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches

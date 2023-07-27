@@ -1,4 +1,4 @@
-package com.tokopedia.tokochat.test
+package com.tokopedia.tokochat.test.chatroom
 
 import android.app.Activity
 import android.app.Instrumentation
@@ -15,12 +15,12 @@ import com.tokopedia.tokochat.R
 import com.tokopedia.tokochat.stub.domain.response.ApiResponseStub
 import com.tokopedia.tokochat.stub.domain.usecase.TokoChatSendMessageUseCaseStub.Companion.TEST_ID
 import com.tokopedia.tokochat.test.base.BaseTokoChatTest
-import com.tokopedia.tokochat.test.robot.general.GeneralResult
-import com.tokopedia.tokochat.test.robot.header_date.HeaderDateResult
-import com.tokopedia.tokochat.test.robot.message_bubble.MessageBubbleResult
-import com.tokopedia.tokochat.test.robot.message_bubble.MessageBubbleRobot
-import com.tokopedia.tokochat.test.robot.reply_area.ReplyAreaRobot
-import com.tokopedia.tokochat.test.robot.ticker.TickerResult
+import com.tokopedia.tokochat.test.chatroom.robot.general.GeneralResult
+import com.tokopedia.tokochat.test.chatroom.robot.header_date.HeaderDateResult
+import com.tokopedia.tokochat.test.chatroom.robot.message_bubble.MessageBubbleResult
+import com.tokopedia.tokochat.test.chatroom.robot.message_bubble.MessageBubbleRobot
+import com.tokopedia.tokochat.test.chatroom.robot.reply_area.ReplyAreaRobot
+import com.tokopedia.tokochat.test.chatroom.robot.ticker.TickerResult
 import com.tokopedia.tokochat.util.TokoChatViewUtil
 import com.tokopedia.tokochat_common.util.TokoChatCacheManagerImpl
 import com.tokopedia.utils.file.FileUtil

@@ -1,9 +1,9 @@
-package com.tokopedia.tokochat.test
+package com.tokopedia.tokochat.test.chatroom
 
 import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.tokochat.stub.domain.response.ApiResponseStub
 import com.tokopedia.tokochat.test.base.BaseTokoChatTest
-import com.tokopedia.tokochat.test.robot.state.StateResult
+import com.tokopedia.tokochat.test.chatroom.robot.state.StateResult
 import org.junit.Test
 
 @UiTest

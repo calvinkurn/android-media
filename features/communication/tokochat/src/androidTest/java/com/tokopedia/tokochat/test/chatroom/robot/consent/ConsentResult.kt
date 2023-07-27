@@ -1,4 +1,4 @@
-package com.tokopedia.tokochat.test.robot.consent
+package com.tokopedia.tokochat.test.chatroom.robot.consent
 
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.assertion.ViewAssertions

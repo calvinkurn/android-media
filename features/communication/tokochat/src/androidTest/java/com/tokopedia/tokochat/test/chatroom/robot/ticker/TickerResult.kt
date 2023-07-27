@@ -1,4 +1,4 @@
-package com.tokopedia.tokochat.test.robot.ticker
+package com.tokopedia.tokochat.test.chatroom.robot.ticker
 
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist

@@ -1,4 +1,4 @@
-package com.tokopedia.tokochat.test.robot.message_bubble
+package com.tokopedia.tokochat.test.chatroom.robot.message_bubble
 
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions
