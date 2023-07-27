@@ -103,6 +103,17 @@ class PromoUsageViewModel @Inject constructor(
         _vouchers.value = Success(updatedItems)
     }
 
+    fun onButtonUseRecommendationVoucherClick() {
+        currentItems.forEach { item ->
+            if (item is VoucherRecommendation) {
+                val vouchers = item.vouchers
+                vouchers.forEach { voucher ->
+                    addToSelection(voucher)
+                }
+            }
+        }
+    }
+
     fun onButtonBuyClick(entryPoint: EntryPoint) {
         if (entryPoint == EntryPoint.CART_PAGE) {
 

@@ -440,6 +440,7 @@ class PromoUsageBottomSheet: BottomSheetDialogFragment() {
 
     private val onButtonUseRecommendedVoucherClick = {
         showLottieConfettiAnimation()
+        viewModel.onButtonUseRecommendationVoucherClick()
     }
 
     private val onApplyVoucherCodeCtaClick = { voucherCode : String ->
