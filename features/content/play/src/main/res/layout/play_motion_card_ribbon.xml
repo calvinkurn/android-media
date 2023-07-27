@@ -46,7 +46,7 @@
         android:paddingTop="@dimen/unify_space_2"
         android:paddingEnd="@dimen/unify_space_8"
         android:paddingBottom="@dimen/unify_space_2"
-        android:text="Terlaris"
+        tools:text="Terlaris"
         android:textColor="@color/Unify_Static_White"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
