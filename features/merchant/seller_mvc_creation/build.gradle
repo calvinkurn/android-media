@@ -101,6 +101,9 @@ dependencies {
     //Campaign Common
     implementation projectOrAar(rootProject.ext.features.campaignCommon)
 
+    //Image assets
+    implementation projectOrAar(rootProject.ext.libraries.imageAssets)
+
     // UI test
     androidTestImplementation rootProject.ext.testDependencies.espressoCore
     androidTestImplementation rootProject.ext.testDependencies.espressoContrib
