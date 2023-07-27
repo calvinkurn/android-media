@@ -37,6 +37,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
@@ -108,6 +109,7 @@ internal fun PersonSuccessState(
                 bottom.linkTo(anchor = parent.bottom, margin = 16.dp)
                 width = Dimension.fillToConstraints
             },
+            isLoading = data.ui.isSelectButtonLoading,
             text = stringResource(R.string.sp_select),
             variant = ButtonVariant.FILLED,
             onClick = {
@@ -358,6 +360,63 @@ private fun getSectionTextColor(isSelected: Boolean): Color {
             isDarkTheme && isSelected -> selectedDarkThemeColor
             isSelected -> selectedColor
             else -> unselectedColor
+        }
+    }
+}
+
+@Preview
+@Composable
+fun SuccessStatePreview() {
+    NestTheme(darkTheme = false) {
+        PersonSuccessState(
+            SelectTypeState.Data(
+                ui = SelectTypeState.Ui(isSelectButtonLoading = false),
+                personaList = listOf(
+                    PersonaUiModel(
+                        value = "corporate-supervisor-owner",
+                        headerTitle = "Gedongan",
+                        headerSubTitle = "Pemilik Toko",
+                        avatarImage = "https://images.tokopedia.net/img/android/sellerapp/seller_persona/img_persona_avatar_gedongan-min.png",
+                        backgroundImage = "https://images.tokopedia.net/img/android/sellerapp/seller_persona/img_persona_background_gedongan-min.png",
+                        bodyTitle = "Pilih tipe ini jika kamu:",
+                        itemList = listOf(
+                            "Menerima 1-10 pesanan per hari",
+                            "Punya toko fisik (offline)",
+                            "Punya pegawai yang mengurus operasional toko",
+                            "Sering mencari peluang untuk strategi baru"
+                        ),
+                        isSelected = true
+                    ), PersonaUiModel(
+                        value = "corporate-supervisor-owner",
+                        headerTitle = "Gedongan",
+                        headerSubTitle = "Pemilik Toko",
+                        avatarImage = "https://images.tokopedia.net/img/android/sellerapp/seller_persona/img_persona_avatar_gedongan-min.png",
+                        backgroundImage = "https://images.tokopedia.net/img/android/sellerapp/seller_persona/img_persona_background_gedongan-min.png",
+                        bodyTitle = "Pilih tipe ini jika kamu:",
+                        itemList = listOf(
+                            "Menerima 1-10 pesanan per hari",
+                            "Punya toko fisik (offline)",
+                            "Punya pegawai yang mengurus operasional toko",
+                            "Sering mencari peluang untuk strategi baru"
+                        )
+                    ), PersonaUiModel(
+                        value = "corporate-supervisor-owner",
+                        headerTitle = "Gedongan",
+                        headerSubTitle = "Pemilik Toko",
+                        avatarImage = "https://images.tokopedia.net/img/android/sellerapp/seller_persona/img_persona_avatar_gedongan-min.png",
+                        backgroundImage = "https://images.tokopedia.net/img/android/sellerapp/seller_persona/img_persona_background_gedongan-min.png",
+                        bodyTitle = "Pilih tipe ini jika kamu:",
+                        itemList = listOf(
+                            "Menerima 1-10 pesanan per hari",
+                            "Punya toko fisik (offline)",
+                            "Punya pegawai yang mengurus operasional toko",
+                            "Sering mencari peluang untuk strategi baru"
+                        )
+                    )
+                )
+            )
+        ) {
+
         }
     }
 }

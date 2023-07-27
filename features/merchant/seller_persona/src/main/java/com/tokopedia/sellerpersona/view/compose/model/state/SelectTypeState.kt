@@ -23,5 +23,8 @@ data class SelectTypeState(
         data class Error(val e: Exception) : State()
     }
 
-    data class Ui(val selectedIndex: Int = -1)
+    data class Ui(
+        val selectedIndex: Int = -1,
+        val isSelectButtonLoading: Boolean = false
+    )
 }

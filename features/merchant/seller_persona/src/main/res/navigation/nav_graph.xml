@@ -81,9 +81,9 @@
             app:nullable="true" />
         <action
             android:id="@+id/actionSelectTypeToResult"
-            app:destination="@id/resultFragment"
+            app:destination="@id/composeResultFragment"
             app:launchSingleTop="true"
-            app:popUpTo="@id/selectTypeFragment"
+            app:popUpTo="@id/composeSelectTypeFragment"
             app:popUpToInclusive="true" />
     </fragment>
 

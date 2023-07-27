@@ -1,20 +1,14 @@
 package com.tokopedia.sellerpersona.view.compose.viewmodel
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.sellerpersona.data.remote.usecase.GetPersonaListUseCase
 import com.tokopedia.sellerpersona.data.remote.usecase.SetPersonaUseCase
 import com.tokopedia.sellerpersona.view.compose.model.args.PersonaArgsUiModel
 import com.tokopedia.sellerpersona.view.compose.model.state.SelectTypeState
 import com.tokopedia.sellerpersona.view.compose.model.uievent.SelectTypeUiEvent
 import com.tokopedia.sellerpersona.view.model.PersonaUiModel
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Result
-import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -36,16 +30,11 @@ class ComposePersonaSelectTypeViewModel @Inject constructor(
     private val setPersonaUseCase: Lazy<SetPersonaUseCase>,
     private val userSession: Lazy<UserSessionInterface>,
     private val dispatchers: CoroutineDispatchers
-) : BaseViewModel(dispatchers.main) {
+) : ViewModel() {
 
     private val _state = MutableStateFlow(SelectTypeState(state = SelectTypeState.State.Loading))
     val state: StateFlow<SelectTypeState>
         get() = _state.asStateFlow()
-
-    val setPersonaResult: LiveData<Result<String>>
-        get() = _setPersonaResult
-
-    private val _setPersonaResult = MutableLiveData<Result<String>>()
 
     private val _uiEvent = MutableSharedFlow<SelectTypeUiEvent>()
     val uiEvent: SharedFlow<SelectTypeUiEvent>
@@ -65,18 +54,6 @@ class ComposePersonaSelectTypeViewModel @Inject constructor(
         }
     }
 
-    fun setPersona(persona: String) {
-        launchCatchError(block = {
-            val shopId = userSession.get().shopId
-            val result = setPersonaUseCase.get().execute(
-                shopId = shopId, persona = persona, answers = emptyList()
-            )
-            _setPersonaResult.postValue(Success(result))
-        }, onError = {
-            _setPersonaResult.postValue(Fail(it))
-        })
-    }
-
     fun onEvent(event: SelectTypeUiEvent) = viewModelScope.launch {
         when (event) {
             is SelectTypeUiEvent.Reload -> reloadPage()
@@ -84,6 +61,34 @@ class ComposePersonaSelectTypeViewModel @Inject constructor(
             is SelectTypeUiEvent.ClickSelectButton -> submitSelectedType()
             else -> _uiEvent.emit(event)
         }
+    }
+
+    private fun setPersona(persona: String) {
+        viewModelScope.launch {
+            try {
+                emitSelectButtonLoading(isLoading = true)
+                val result = withContext(dispatchers.io) {
+                    val shopId = userSession.get().shopId
+                    setPersonaUseCase.get().execute(
+                        shopId = shopId, persona = persona, answers = emptyList()
+                    )
+                }
+                emitSelectButtonLoading(isLoading = false)
+                emitOnPersonaChanged(persona = result)
+            } catch (e: Exception) {
+                emitSelectButtonLoading(isLoading = false)
+                emitOnPersonaChanged(e = e)
+            }
+        }
+    }
+
+    private suspend fun emitOnPersonaChanged(persona: String = "", e: Exception? = null) {
+        _uiEvent.emit(
+            SelectTypeUiEvent.OnPersonaChanged(
+                persona = persona,
+                exception = e
+            )
+        )
     }
 
     private fun reloadPage() {
@@ -119,8 +124,34 @@ class ComposePersonaSelectTypeViewModel @Inject constructor(
         }
     }
 
-    private fun submitSelectedType() {
+    private fun submitSelectedType() = viewModelScope.launch {
+        val currentState = _state.value
+        val data = currentState.data
+        val defaultPersona = data.args.paramPersona
 
+        val currentSelectedPersona = data.personaList.firstOrNull { it.isSelected }?.value.orEmpty()
+        if (currentSelectedPersona == defaultPersona) {
+            eventCloseThePage(defaultPersona)
+            return@launch
+        }
+
+        setPersona(currentSelectedPersona)
+    }
+
+    private suspend fun emitSelectButtonLoading(isLoading: Boolean) {
+        _uiEvent.emit(SelectTypeUiEvent.SetBackPressedEnabled(!isLoading))
+
+        val currentState = _state.value
+        val data = currentState.data
+        val loadingUi = data.ui.copy(isSelectButtonLoading = isLoading)
+        val selectButtonLoadingState = currentState.copy(
+            data = data.copy(ui = loadingUi)
+        )
+        _state.emit(selectButtonLoadingState)
+    }
+
+    private suspend fun eventCloseThePage(persona: String) {
+        _uiEvent.emit(SelectTypeUiEvent.CloseThePage(persona))
     }
 
     private suspend fun emitErrorState(e: Exception) {
