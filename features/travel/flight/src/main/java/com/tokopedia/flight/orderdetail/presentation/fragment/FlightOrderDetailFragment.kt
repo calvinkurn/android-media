@@ -470,6 +470,7 @@ class FlightOrderDetailFragment :
         val bottomSheet = FlightOrderDetailPaymentDetailBottomSheet.getInstance(
             flightOrderDetailViewModel.buildPaymentDetailData(),
             flightOrderDetailViewModel.buildAmenitiesPaymentDetailData(),
+            flightOrderDetailViewModel.buildInsurancePaymentDetailData(),
             flightOrderDetailViewModel.getTotalAmount()
         )
         bottomSheet.setShowListener {

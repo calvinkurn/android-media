@@ -306,8 +306,8 @@ val DUMMY_ORDER_DETAIL_DATA = FlightOrderDetailDataModel(
                 "rp0",
                 0,
                 "Rp0",
-                0,
-                "Rp0",
+                1000000,
+                "Rp1.000.000",
                 0,
                 "Rp0",
                 0,
@@ -468,7 +468,15 @@ val DUMMY_ORDER_DETAIL_DATA = FlightOrderDetailDataModel(
         ),
         arrayListOf(),
         arrayListOf(),
-        arrayListOf(),
+        arrayListOf(
+            FlightOrderDetailInsuranceModel(
+                id = "123456",
+                title = "Asuransi Pembatalan Penerbangan",
+                tagline = "",
+                paidAmount = "Rp 100.000",
+                paidAmountNumeric = 100000
+            )
+        ),
         arrayListOf(
                 FlightOrderDetailCancellationModel(
                         cancelId = "1234567890",

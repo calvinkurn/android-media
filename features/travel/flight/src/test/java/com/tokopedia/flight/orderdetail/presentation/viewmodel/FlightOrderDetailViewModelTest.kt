@@ -1423,6 +1423,40 @@ class FlightOrderDetailViewModelTest {
     }
 
     @Test
+    fun buildInsurancePaymentDetailData_failedToFetchOrderDetail() {
+        // given
+        coEvery { useCase.execute(any(), any()) } coAnswers { throw UnsupportedOperationException() }
+
+        // when
+        val paymentData = viewModel.buildInsurancePaymentDetailData()
+
+        // then
+        paymentData.size shouldBe 0
+    }
+
+    @Test
+    fun buildInsurancePaymentDetailData_successToFetchOrderDetail() {
+        // given
+        val dummyData = DUMMY_ORDER_DETAIL_DATA
+        coEvery { useCase.execute(any(), any()) } returns Success(dummyData)
+        viewModel.fetchOrderDetailData()
+
+        // when
+        val insuranceData = viewModel.buildInsurancePaymentDetailData()
+
+        // then
+        insuranceData.size shouldBe 1
+
+        insuranceData[0].leftValue shouldBe "Asuransi Pembatalan Penerbangan"
+        insuranceData[0].rightValue shouldBe "Rp 100.000"
+        insuranceData[0].isLeftBold shouldBe false
+        insuranceData[0].isRightBold shouldBe false
+        insuranceData[0].isLeftStriked shouldBe false
+        insuranceData[0].isRightStriked shouldBe false
+        insuranceData[0].isRightAlign shouldBe true
+    }
+
+    @Test
     fun getTotalAmount() {
         // given
         val dummyData = DUMMY_ORDER_DETAIL_DATA

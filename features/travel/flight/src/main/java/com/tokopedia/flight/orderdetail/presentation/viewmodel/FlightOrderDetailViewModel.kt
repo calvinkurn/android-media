@@ -19,6 +19,7 @@ import com.tokopedia.flight.orderdetail.presentation.model.FlightOrderDetailSimp
 import com.tokopedia.flight.orderdetail.presentation.model.mapper.FlightOrderDetailCancellationMapper
 import com.tokopedia.flight.orderdetail.presentation.model.mapper.FlightOrderDetailStatusMapper
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -256,6 +257,31 @@ class FlightOrderDetailViewModel @Inject constructor(
                             )
                         )
                     }
+                }
+            }
+        }
+
+        return returnData
+    }
+
+    fun buildInsurancePaymentDetailData(): List<FlightOrderDetailSimpleModel> {
+        val returnData = arrayListOf<FlightOrderDetailSimpleModel>()
+        val orderDetailData = orderDetailData.value
+
+        if (orderDetailData != null && orderDetailData is Success) {
+            for (insurance in orderDetailData.data.insurances) {
+                if (!insurance.paidAmountNumeric.isZero()) {
+                    returnData.add(
+                        FlightOrderDetailSimpleModel(
+                            insurance.title,
+                            insurance.paidAmount,
+                            false,
+                            false,
+                            false,
+                            false,
+                            true
+                        )
+                    )
                 }
             }
         }
