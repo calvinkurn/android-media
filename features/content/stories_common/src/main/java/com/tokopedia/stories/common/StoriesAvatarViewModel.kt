@@ -3,8 +3,8 @@ package com.tokopedia.stories.common
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.content.common.util.UiEventManager
+import com.tokopedia.stories.common.domain.ShopStoriesState
 import com.tokopedia.stories.common.domain.StoriesAvatarRepository
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -55,9 +55,15 @@ internal class StoriesAvatarViewModel @Inject constructor(
 
     private fun onGetStories(shopId: String) {
         viewModelScope.launch {
-            delay(2000)
-            val hasStories = if (shopId.toLong() % 2 == 0L) StoriesStatus.HasUnseenStories else StoriesStatus.AllStoriesSeen
-            updateStoriesForId(shopId, StoriesAvatarState(shopId, hasStories, "a"))
+            val storiesState = repository.getShopStoriesState(shopId)
+            updateStoriesForId(
+                shopId,
+                StoriesAvatarState(
+                    shopId,
+                    storiesState.getStoriesStatus(),
+                    storiesState.appLink
+                )
+            )
 
             showCoachMark(shopId)
         }
@@ -79,6 +85,14 @@ internal class StoriesAvatarViewModel @Inject constructor(
 
         uiMessageManager.emitEvent(StoriesAvatarMessage.ShowCoachMark(shopId))
         repository.setHasSeenCoachMark()
+    }
+
+    private fun ShopStoriesState.getStoriesStatus(): StoriesStatus {
+        return when {
+            !anyStoryExisted -> StoriesStatus.NoStories
+            hasUnseenStories -> StoriesStatus.HasUnseenStories
+            else -> StoriesStatus.AllStoriesSeen
+        }
     }
 
     private suspend fun updateStoriesForId(shopId: String, state: StoriesAvatarState) = mutex.withLock {

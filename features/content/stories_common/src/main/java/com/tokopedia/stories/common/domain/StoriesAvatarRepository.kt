@@ -8,4 +8,6 @@ interface StoriesAvatarRepository {
     suspend fun setHasSeenCoachMark()
 
     suspend fun hasSeenCoachMark(): Boolean
+
+    suspend fun getShopStoriesState(shopId: String): ShopStoriesState
 }
