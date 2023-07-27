@@ -609,17 +609,21 @@ object ProductListUiStateMapper {
             )
         }
 
-        return mappedAddOn?.run {
-            if (collapseProductList) {
-                if (remainingSlot.isZero()) {
-                    Int.ONE to null
+        return if (mappedAddOn?.addonsItemList.isNullOrEmpty()) {
+            Int.ZERO to null
+        } else {
+            mappedAddOn?.run {
+                if (collapseProductList) {
+                    if (remainingSlot.isZero()) {
+                        Int.ONE to null
+                    } else {
+                        (Int.ONE - remainingSlot).coerceAtLeast(Int.ZERO) to this
+                    }
                 } else {
-                    (Int.ONE - remainingSlot).coerceAtLeast(Int.ZERO) to this
+                    Int.ZERO to this
                 }
-            } else {
-                Int.ZERO to this
-            }
-        } ?: (Int.ZERO to null)
+            } ?: (Int.ZERO to null)
+        }
     }
 
     private fun getUnFulfilledProducts(
