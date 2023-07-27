@@ -139,8 +139,6 @@ class ComposePersonaSelectTypeViewModel @Inject constructor(
     }
 
     private suspend fun emitSelectButtonLoading(isLoading: Boolean) {
-        _uiEvent.emit(SelectTypeUiEvent.SetBackPressedEnabled(!isLoading))
-
         val currentState = _state.value
         val data = currentState.data
         val loadingUi = data.ui.copy(isSelectButtonLoading = isLoading)

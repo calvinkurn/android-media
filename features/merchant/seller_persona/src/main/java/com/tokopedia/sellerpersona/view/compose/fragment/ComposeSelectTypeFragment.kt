@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.OnBackPressedCallback
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.platform.ComposeView
@@ -37,7 +36,6 @@ class ComposeSelectTypeFragment : Fragment() {
         ViewModelProvider(this, viewModelFactory)[ComposePersonaSelectTypeViewModel::class.java]
     }
     private val args: ComposeSelectTypeFragmentArgs by navArgs()
-    private var isBackPressedEnabled = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,7 +56,6 @@ class ComposeSelectTypeFragment : Fragment() {
                         when (it) {
                             is SelectTypeUiEvent.CloseThePage -> closeThePage()
                             is SelectTypeUiEvent.OnPersonaChanged -> setOnPersonaChanged(it)
-                            is SelectTypeUiEvent.SetBackPressedEnabled -> setBackPressedEnabled(it.enabled)
                             else -> {/* no-op */
                             }
                         }
@@ -71,27 +68,6 @@ class ComposeSelectTypeFragment : Fragment() {
                 }
             }
         }
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        setupBackPressedCallback()
-    }
-
-    private fun setBackPressedEnabled(enabled: Boolean) {
-        isBackPressedEnabled = enabled
-    }
-
-    private fun setupBackPressedCallback() {
-        val callback = object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                if (isBackPressedEnabled) {
-                    closeThePage()
-                }
-            }
-        }
-        activity?.onBackPressedDispatcher?.addCallback(viewLifecycleOwner, callback)
     }
 
     private fun setOnPersonaChanged(model: SelectTypeUiEvent.OnPersonaChanged) {

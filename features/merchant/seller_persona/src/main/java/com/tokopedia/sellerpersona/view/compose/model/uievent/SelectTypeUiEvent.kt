@@ -15,5 +15,4 @@ sealed class SelectTypeUiEvent {
         val persona: String,
         val exception: Exception? = null
     ) : SelectTypeUiEvent()
-    data class SetBackPressedEnabled(val enabled: Boolean) : SelectTypeUiEvent()
 }
