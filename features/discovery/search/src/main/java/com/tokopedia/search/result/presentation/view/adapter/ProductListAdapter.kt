@@ -12,8 +12,8 @@ import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
 import com.tokopedia.search.result.product.inspirationwidget.card.SmallGridInspirationCardViewHolder
 import com.tokopedia.search.result.product.lastfilter.LastFilterDataView
-import com.tokopedia.search.result.product.semlessproduct.seamlesskeywordoptions.InspirationKeywordViewHolder
-import com.tokopedia.search.result.product.semlessproduct.seamlessproduct.InspirationProductItemViewHolder
+import com.tokopedia.search.result.product.seamlessinspirationcard.seamlesskeywordoptions.InspirationKeywordViewHolder
+import com.tokopedia.search.result.product.seamlessinspirationcard.seamlessproduct.viewholder.GridInspirationProductItemViewHolder
 
 class ProductListAdapter(
     private val typeFactory: ProductListTypeFactory,
@@ -51,8 +51,8 @@ class ProductListAdapter(
                 && viewType != RecommendationItemViewHolder.LAYOUT
                 && viewType != SmallGridInspirationCardViewHolder.LAYOUT
                 && viewType != InspirationKeywordViewHolder.LAYOUT
-                && viewType != InspirationProductItemViewHolder.LAYOUT
-                && viewType != InspirationProductItemViewHolder.LAYOUT_WITH_VIEW_STUB
+                && viewType != GridInspirationProductItemViewHolder.LAYOUT
+                && viewType != GridInspirationProductItemViewHolder.LAYOUT_WITH_VIEW_STUB
     }
 
     override fun onBindViewHolder(holder: AbstractViewHolder<*>, position: Int, payloads: List<Any>) {

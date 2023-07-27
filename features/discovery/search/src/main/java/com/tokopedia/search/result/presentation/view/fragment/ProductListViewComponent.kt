@@ -34,8 +34,8 @@ import com.tokopedia.search.result.product.performancemonitoring.PerformanceMoni
 import com.tokopedia.search.result.product.responsecode.ResponseCodeProviderModule
 import com.tokopedia.search.result.product.safesearch.SafeSearchModule
 import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationModule
-import com.tokopedia.search.result.product.semlessproduct.seamlesskeywordoptions.InspirationKeywordModule
-import com.tokopedia.search.result.product.semlessproduct.seamlessproduct.InspirationProductModule
+import com.tokopedia.search.result.product.seamlessinspirationcard.seamlesskeywordoptions.InspirationKeywordModule
+import com.tokopedia.search.result.product.seamlessinspirationcard.seamlessproduct.InspirationProductModule
 import com.tokopedia.search.result.product.similarsearch.SimilarSearchModule
 import com.tokopedia.search.result.product.ticker.TickerModule
 import com.tokopedia.search.result.product.video.VideoModule

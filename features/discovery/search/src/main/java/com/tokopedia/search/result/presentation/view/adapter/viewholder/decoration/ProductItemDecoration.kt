@@ -34,6 +34,8 @@ class ProductItemDecoration(private val spacing: Int) : ItemDecoration() {
     private val layoutSeamlessInspirationCard = listOf(
         R.layout.search_inspiration_seamless_product_card,
         R.layout.search_inspiration_seamless_product_card_with_viewstub,
+        R.layout.search_inspiration_seamless_product_card_list,
+        R.layout.search_inspiration_seamless_product_card_list_with_viewstub,
         R.layout.search_inspiration_semless_keyword
     )
 

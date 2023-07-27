@@ -26,8 +26,8 @@ import com.tokopedia.search.result.product.inspirationwidget.filter.InspirationF
 import com.tokopedia.search.result.product.lastfilter.LastFilterDataView
 import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationDataView
 import com.tokopedia.search.result.product.searchintokopedia.SearchInTokopediaDataView
-import com.tokopedia.search.result.product.semlessproduct.seamlesskeywordoptions.InspirationKeyboardCardView
-import com.tokopedia.search.result.product.semlessproduct.seamlessproduct.InspirationProductItemDataView
+import com.tokopedia.search.result.product.seamlessinspirationcard.seamlesskeywordoptions.InspirationKeyboardCardView
+import com.tokopedia.search.result.product.seamlessinspirationcard.seamlessproduct.InspirationProductItemDataView
 import com.tokopedia.search.result.product.videowidget.InspirationCarouselVideoDataView
 import com.tokopedia.search.result.product.violation.ViolationDataView
 

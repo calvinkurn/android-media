@@ -74,10 +74,10 @@ import com.tokopedia.search.result.product.responsecode.ResponseCodeImpl
 import com.tokopedia.search.result.product.responsecode.ResponseCodeProvider
 import com.tokopedia.search.result.product.safesearch.SafeSearchPresenter
 import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationPresenterDelegate
-import com.tokopedia.search.result.product.semlessproduct.seamlesskeywordoptions.InspirationKeywordPresenter
-import com.tokopedia.search.result.product.semlessproduct.seamlesskeywordoptions.InspirationKeywordPresenterDelegate
-import com.tokopedia.search.result.product.semlessproduct.seamlessproduct.InspirationProductPresenter
-import com.tokopedia.search.result.product.semlessproduct.seamlessproduct.InspirationProductPresenterDelegate
+import com.tokopedia.search.result.product.seamlessinspirationcard.seamlesskeywordoptions.InspirationKeywordPresenter
+import com.tokopedia.search.result.product.seamlessinspirationcard.seamlesskeywordoptions.InspirationKeywordPresenterDelegate
+import com.tokopedia.search.result.product.seamlessinspirationcard.seamlessproduct.InspirationProductPresenter
+import com.tokopedia.search.result.product.seamlessinspirationcard.seamlessproduct.InspirationProductPresenterDelegate
 import com.tokopedia.search.result.product.similarsearch.SimilarSearchOnBoardingPresenterDelegate
 import com.tokopedia.search.result.product.suggestion.SuggestionPresenter
 import com.tokopedia.search.result.product.ticker.TickerPresenter

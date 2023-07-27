@@ -78,12 +78,13 @@ import com.tokopedia.search.result.product.samesessionrecommendation.SameSession
 import com.tokopedia.search.result.product.searchintokopedia.SearchInTokopediaDataView
 import com.tokopedia.search.result.product.searchintokopedia.SearchInTokopediaListener
 import com.tokopedia.search.result.product.searchintokopedia.SearchInTokopediaViewHolder
-import com.tokopedia.search.result.product.semlessproduct.seamlesskeywordoptions.InspirationKeyboardCardView
-import com.tokopedia.search.result.product.semlessproduct.seamlesskeywordoptions.InspirationKeywordListener
-import com.tokopedia.search.result.product.semlessproduct.seamlesskeywordoptions.InspirationKeywordViewHolder
-import com.tokopedia.search.result.product.semlessproduct.seamlessproduct.InspirationProductItemDataView
-import com.tokopedia.search.result.product.semlessproduct.seamlessproduct.InspirationProductItemViewHolder
-import com.tokopedia.search.result.product.semlessproduct.seamlessproduct.InspirationProductListener
+import com.tokopedia.search.result.product.seamlessinspirationcard.seamlesskeywordoptions.InspirationKeyboardCardView
+import com.tokopedia.search.result.product.seamlessinspirationcard.seamlesskeywordoptions.InspirationKeywordListener
+import com.tokopedia.search.result.product.seamlessinspirationcard.seamlesskeywordoptions.InspirationKeywordViewHolder
+import com.tokopedia.search.result.product.seamlessinspirationcard.seamlessproduct.InspirationProductItemDataView
+import com.tokopedia.search.result.product.seamlessinspirationcard.seamlessproduct.viewholder.GridInspirationProductItemViewHolder
+import com.tokopedia.search.result.product.seamlessinspirationcard.seamlessproduct.InspirationProductListener
+import com.tokopedia.search.result.product.seamlessinspirationcard.seamlessproduct.viewholder.ListInspirationProductItemViewHolder
 import com.tokopedia.search.result.product.videowidget.InspirationCarouselVideoDataView
 import com.tokopedia.search.result.product.violation.ViolationDataView
 import com.tokopedia.search.result.product.violation.ViolationListener
@@ -245,8 +246,14 @@ class ProductListTypeFactoryImpl(
     override fun type(inspirationKeyboardCardView: InspirationKeyboardCardView): Int =
         InspirationKeywordViewHolder.LAYOUT
 
-    override fun type(inspirationProductCardView: InspirationProductItemDataView): Int =
-        InspirationProductItemViewHolder.layout(isUsingViewStub)
+    override fun type(inspirationProductCardView: InspirationProductItemDataView): Int {
+        return when (changeViewListener.viewType) {
+            ViewType.LIST ->
+                ListInspirationProductItemViewHolder.layout(isUsingViewStub)
+            else ->
+                GridInspirationProductItemViewHolder.layout(isUsingViewStub)
+        }
+    }
 
     @Suppress("ComplexMethod")
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
@@ -313,8 +320,10 @@ class ProductListTypeFactoryImpl(
                 AdsLowOrganicTitleViewHolder(view)
             InspirationKeywordViewHolder.LAYOUT ->
                 InspirationKeywordViewHolder(view, inspirationKeywordListener)
-            InspirationProductItemViewHolder.LAYOUT, InspirationProductItemViewHolder.LAYOUT_WITH_VIEW_STUB ->
-                InspirationProductItemViewHolder(view, inspirationProductListener, productListener)
+            GridInspirationProductItemViewHolder.LAYOUT, GridInspirationProductItemViewHolder.LAYOUT_WITH_VIEW_STUB ->
+                GridInspirationProductItemViewHolder(view, inspirationProductListener, productListener)
+            ListInspirationProductItemViewHolder.LAYOUT, ListInspirationProductItemViewHolder.LAYOUT_WITH_VIEW_STUB ->
+                ListInspirationProductItemViewHolder(view, inspirationProductListener, productListener)
 
             else -> super.createViewHolder(view, type)
         }

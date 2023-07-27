@@ -13,8 +13,8 @@ import com.tokopedia.search.result.product.chooseaddress.ChooseAddressPresenterD
 import com.tokopedia.search.result.product.inspirationbundle.InspirationProductBundlingDataViewMapper.convertToInspirationProductBundleDataView
 import com.tokopedia.search.result.product.inspirationlistatc.InspirationListAtcPresenterDelegate
 import com.tokopedia.search.result.product.requestparamgenerator.RequestParamsGenerator
-import com.tokopedia.search.result.product.semlessproduct.seamlesskeywordoptions.InspirationKeyboardCardView
-import com.tokopedia.search.result.product.semlessproduct.utils.InspirationSeamlessMapper
+import com.tokopedia.search.result.product.seamlessinspirationcard.seamlesskeywordoptions.InspirationKeyboardCardView
+import com.tokopedia.search.result.product.seamlessinspirationcard.utils.InspirationSeamlessMapper
 import com.tokopedia.search.result.product.suggestion.SuggestionDataView
 import com.tokopedia.search.result.product.videowidget.InspirationCarouselVideoDataView
 import com.tokopedia.search.utils.applinkopener.ApplinkOpener
