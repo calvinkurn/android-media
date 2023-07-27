@@ -36,8 +36,6 @@
 
     <com.tokopedia.unifycomponents.ticker.Ticker
         android:id="@+id/ticker_report_page"
-        app:titleText="Title Text"
-        app:descriptionText="Description Text"
         app:closeButtonVisibility="visible"
         app:enableAutoSlide="false"
         app:tickerType="announcement"

@@ -23,7 +23,7 @@ data class Data(
     @SerializedName("imageURL")
     val imageURL: String = "",
     @SerializedName("mainText")
-    val mainText: List<MainText> = listOf(),
+    val mainText: List<MainText> = emptyList(),
     @SerializedName("bottomText")
     val bottomText: BottomText = BottomText(),
 )
@@ -34,14 +34,14 @@ data class MainText(
     @SerializedName("description")
     val description: String = "",
     @SerializedName("action")
-    val action: List<Action> = listOf(),
+    val action: List<Action> = emptyList(),
 )
 
 data class BottomText(
     @SerializedName("description")
     val description: String = "",
     @SerializedName("action")
-    val action: List<Action> = listOf(),
+    val action: List<Action> = emptyList(),
 )
 
 data class Action(

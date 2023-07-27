@@ -67,12 +67,12 @@ data class TickerBottomSheetUiModel(
             type = TickerBottomSheetType.UNKNOWN,
             imageURL = "",
             bottomText = BottomText(
-                action = listOf(),
+                action = emptyList(),
                 description = "",
             ),
             mainText = listOf(
                 MainText(
-                    action = listOf(),
+                    action = emptyList(),
                     title = "",
                     description = "",
                 ),

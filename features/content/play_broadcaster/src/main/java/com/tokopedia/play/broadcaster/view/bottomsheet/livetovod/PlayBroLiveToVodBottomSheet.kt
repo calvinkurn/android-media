@@ -92,7 +92,7 @@ class PlayBroLiveToVodBottomSheet @Inject constructor(
                 )
             }
         )
-        layout.apply {
+        layoutDisableLiveToVodContent.apply {
             ivDisableLiveToVod.setImageUrl(url = data.imageURL)
             tvTitleDisableLiveToVod.text = data.mainText.first().title
             tvDescriptionDisableLiveToVod.apply {
