@@ -165,7 +165,6 @@ class CheckoutProductViewHolder(
             )
             binding.tvCheckoutOrderNumber.isVisible = true
             binding.bgCheckoutSupergraphicOrder.isVisible = true
-            binding.vDividerShop.isVisible = product.orderNumber > 1
             if (product.groupInfoBadgeUrl.isNotEmpty()) {
                 binding.ivCheckoutOrderBadge.setImageUrl(product.groupInfoBadgeUrl)
                 if (product.uiGroupType == GroupShop.UI_GROUP_TYPE_NORMAL) {
@@ -225,6 +224,7 @@ class CheckoutProductViewHolder(
             }
             binding.tvCheckoutShopName.text = product.shopName.getHtmlFormat()
             binding.tvCheckoutShopName.isVisible = true
+            binding.vDividerShop.isVisible = product.cartItemPosition > 0
         } else {
             binding.ivCheckoutShopBadge.isVisible = false
             binding.tvCheckoutShopName.isVisible = false
