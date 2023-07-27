@@ -151,6 +151,7 @@ class PromoUsageBottomSheet: BottomSheetDialogFragment() {
         viewModel.vouchers.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Success -> {
+                    handleBottomSheetHeaderBackground(hasRecommendationVoucher = true) //TODO: Replace with real hasRecommendationVoucher value
                     showContent()
                     handlePromoRecommendationInfo()
                     handleTotalPriceSection(entryPoint)
@@ -252,13 +253,35 @@ class PromoUsageBottomSheet: BottomSheetDialogFragment() {
         binding?.recyclerView?.apply {
             layoutManager = LinearLayoutManager(context ?: return)
             adapter = recyclerViewAdapter
-            addOnScrollListener(object : OnScrollListener(){
-                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                    super.onScrolled(recyclerView, dx, dy)
-                    if (dy > 0) handleScrollDownEvent() else handleScrollUpEvent()
-                }
-            })
         }
+    }
+
+    private fun handleBottomSheetHeaderBackground(hasRecommendationVoucher: Boolean) {
+        val background = if (hasRecommendationVoucher) {
+            ContextCompat.getDrawable(
+                context ?: return,
+                R.drawable.promo_usage_bg_bottomsheet_header
+            )
+        } else {
+            ContextCompat.getDrawable(
+                context ?: return,
+                R.drawable.promo_usage_bg_bottomsheet_header_scrolled
+            )
+        }
+
+        binding?.layoutBottomSheetHeader?.background = background
+        handleScrollDownEvent()
+
+        if (hasRecommendationVoucher) addRecyclerViewScrollListener()
+    }
+
+    private fun addRecyclerViewScrollListener() {
+        binding?.recyclerView?.addOnScrollListener(object : OnScrollListener(){
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                if (dy > 0) handleScrollDownEvent() else handleScrollUpEvent()
+            }
+        })
     }
 
     private fun refreshTotalSavings(selectedVouchers: Set<Voucher>, totalBenefits: Long) {
