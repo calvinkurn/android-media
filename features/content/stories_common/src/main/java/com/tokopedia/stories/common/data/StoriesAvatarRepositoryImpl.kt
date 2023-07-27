@@ -23,14 +23,17 @@ class StoriesAvatarRepositoryImpl @Inject constructor(
         return prefUtil.hasSeenCoachMark()
     }
 
-    override suspend fun getShopStoriesState(shopId: String): ShopStoriesState =
+    override suspend fun getShopStoriesState(shopIds: List<String>): List<ShopStoriesState> =
         withContext(dispatchers.io) {
             delay(2000)
-            ShopStoriesState(
-                shopId,
-                anyStoryExisted = true,
-                hasUnseenStories = true,
-                "tokopedia://play/12669"
-            )
+            shopIds.map { shopId ->
+                val shopInt = shopId.toInt()
+                ShopStoriesState(
+                    shopId,
+                    anyStoryExisted = shopInt % 2 == 0,
+                    hasUnseenStories = shopInt % 4 == 0,
+                    "tokopedia://play/12669"
+                )
+            }
         }
 }

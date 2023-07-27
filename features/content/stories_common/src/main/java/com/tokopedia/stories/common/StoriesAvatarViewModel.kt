@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.mapNotNull
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
@@ -34,13 +34,13 @@ internal class StoriesAvatarViewModel @Inject constructor(
 
     fun onIntent(intent: StoriesAvatarIntent) {
         when (intent) {
-            is StoriesAvatarIntent.GetStoriesStatus -> onGetStories(intent.shopId)
+            is StoriesAvatarIntent.GetStoriesStatus -> onGetStories(intent.shopIds)
             is StoriesAvatarIntent.OpenStoriesDetail -> onOpenStoriesDetail(intent.shopId)
         }
     }
 
-    fun getStoriesState(shopId: String): Flow<StoriesAvatarState> {
-        return _storiesMap.mapNotNull { it[shopId] }.distinctUntilChanged()
+    fun getStoriesState(shopId: String): Flow<StoriesAvatarState?> {
+        return _storiesMap.map { it[shopId] }.distinctUntilChanged()
     }
 
     fun getStoriesMessage(shopId: String): Flow<StoriesAvatarMessage?> {
@@ -53,19 +53,23 @@ internal class StoriesAvatarViewModel @Inject constructor(
         }
     }
 
-    private fun onGetStories(shopId: String) {
-        viewModelScope.launch {
-            val storiesState = repository.getShopStoriesState(shopId)
-            updateStoriesForId(
-                shopId,
-                StoriesAvatarState(
-                    shopId,
-                    storiesState.getStoriesStatus(),
-                    storiesState.appLink
-                )
-            )
+    private fun onGetStories(shopIds: List<String>) {
+        if (shopIds.isEmpty()) return
 
-            showCoachMark(shopId)
+        viewModelScope.launch {
+            val storiesState = repository.getShopStoriesState(shopIds)
+            val storiesStateMap = storiesState.associate {
+                it.shopId to StoriesAvatarState(
+                    it.shopId,
+                    it.getStoriesStatus(),
+                    it.appLink
+                )
+            }
+            _storiesMap.update {
+                it + storiesStateMap
+            }
+
+            showCoachMark(shopIds.first())
         }
     }
 

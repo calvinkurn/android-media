@@ -9,5 +9,5 @@ interface StoriesAvatarRepository {
 
     suspend fun hasSeenCoachMark(): Boolean
 
-    suspend fun getShopStoriesState(shopId: String): ShopStoriesState
+    suspend fun getShopStoriesState(shopIds: List<String>): List<ShopStoriesState>
 }

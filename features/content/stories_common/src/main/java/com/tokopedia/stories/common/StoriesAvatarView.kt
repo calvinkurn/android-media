@@ -7,25 +7,22 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.AbstractComposeView
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.findViewTreeLifecycleOwner
-import androidx.lifecycle.findViewTreeViewModelStoreOwner
-import androidx.lifecycle.get
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
-import com.tokopedia.stories.common.di.DaggerStoriesAvatarComponent
-import com.tokopedia.stories.common.di.StoriesAvatarComponent
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 /**
@@ -42,7 +39,8 @@ class StoriesAvatarView @JvmOverloads constructor(
 ) {
 
     private var mImageUrl by mutableStateOf("")
-    private var storiesStatus by mutableStateOf(StoriesStatus.HasUnseenStories)
+    private var storiesStatus by mutableStateOf(StoriesStatus.NoStories)
+    private var mSizeConfiguration by mutableStateOf(SizeConfiguration.Default)
 
     private val shopId = MutableStateFlow("2")
 
@@ -53,9 +51,6 @@ class StoriesAvatarView @JvmOverloads constructor(
 
     private val coachMark = CoachMark2(context)
 
-    private val component = createComponent()
-    private val viewModelFactory = component.viewModelFactory()
-
     init {
         super.setOnClickListener {
             mViewModel?.onIntent(StoriesAvatarIntent.OpenStoriesDetail(shopId.value))
@@ -64,16 +59,11 @@ class StoriesAvatarView @JvmOverloads constructor(
 
     @Composable
     override fun Content() {
-        StoriesAvatarContent(mImageUrl, storiesStatus)
-    }
-
-    override fun onAttachedToWindow() {
-        super.onAttachedToWindow()
-
-        mViewModel = getViewModel()
-        startObserve()
-
-        updateStoriesStatus()
+        StoriesAvatarContent(
+            mImageUrl,
+            storiesStatus,
+            sizeConfig = mSizeConfiguration,
+        )
     }
 
     override fun onDetachedFromWindow() {
@@ -87,17 +77,29 @@ class StoriesAvatarView @JvmOverloads constructor(
         mOnNoStoriesClicked = l
     }
 
-    fun updateStoriesStatus() {
-        mViewModel?.onIntent(StoriesAvatarIntent.GetStoriesStatus(shopId.value))
-    }
-
     fun setImageUrl(imageUrl: String) {
         mImageUrl = imageUrl
     }
 
+    fun updateSizeConfig(update: (SizeConfiguration) -> SizeConfiguration) {
+        mSizeConfiguration = update(mSizeConfiguration)
+    }
+
+    fun associateToShopId(shopId: String) {
+        this.shopId.update { shopId }
+    }
+
+    internal fun attach(viewModel: StoriesAvatarViewModel) {
+        mViewModel = viewModel
+        startObserve(viewModel)
+    }
+
+    internal fun detach() {
+        mViewModel = null
+    }
+
     @OptIn(ExperimentalCoroutinesApi::class)
-    private fun startObserve() {
-        val viewModel = mViewModel ?: return
+    private fun startObserve(viewModel: StoriesAvatarViewModel) {
         val lifecycleOwner = getLifecycleOwner() ?: return
         observeJob = lifecycleOwner.lifecycleScope.launch {
             launch {
@@ -105,7 +107,7 @@ class StoriesAvatarView @JvmOverloads constructor(
                     shopId.flatMapLatest {
                         viewModel.getStoriesState(it)
                     }.collectLatest {
-                        storiesStatus = it.status
+                        storiesStatus = it?.status ?: StoriesStatus.NoStories
                     }
                 }
             }
@@ -136,11 +138,6 @@ class StoriesAvatarView @JvmOverloads constructor(
         }
     }
 
-    private fun getViewModel(): StoriesAvatarViewModel? {
-        val viewModelStoreOwner = findViewTreeViewModelStoreOwner() ?: return null
-        return ViewModelProvider(viewModelStoreOwner, viewModelFactory).get()
-    }
-
     private fun getLifecycleOwner(): LifecycleOwner? {
         return findViewTreeLifecycleOwner()
     }
@@ -153,9 +150,14 @@ class StoriesAvatarView @JvmOverloads constructor(
         )
     }
 
-    private fun createComponent(): StoriesAvatarComponent {
-        return DaggerStoriesAvatarComponent.builder()
-            .baseAppComponent((context.applicationContext as BaseMainApplication).baseAppComponent)
-            .build()
+    data class SizeConfiguration(
+        val imageToBorderGap: Dp,
+    ) {
+        companion object {
+            val Default: SizeConfiguration
+                get() = SizeConfiguration(
+                    imageToBorderGap = 8.dp
+                )
+        }
     }
 }

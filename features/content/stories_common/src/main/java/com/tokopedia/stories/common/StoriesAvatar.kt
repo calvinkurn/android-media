@@ -27,7 +27,7 @@ internal fun StoriesAvatarContent(
     imageUrl: String,
     storiesStatus: StoriesStatus,
     modifier: Modifier = Modifier,
-    imageToBorderPadding: Dp = 8.dp
+    sizeConfig: StoriesAvatarView.SizeConfiguration = StoriesAvatarView.SizeConfiguration.Default,
 ) {
     NestTheme {
         Box(
@@ -44,7 +44,7 @@ internal fun StoriesAvatarContent(
                 imageUrl = imageUrl,
                 Modifier
                     .matchParentSize()
-                    .padding(imageToBorderPadding)
+                    .padding(sizeConfig.imageToBorderGap)
                     .clip(CircleShape)
             )
         }
