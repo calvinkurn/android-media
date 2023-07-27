@@ -7,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
-import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.TextSwitcher
 import android.widget.ViewSwitcher
@@ -44,7 +43,7 @@ class PromoEntryPointWidget @JvmOverloads constructor(
     private var activeViewDescWording: Typography? = null
     private var activeViewDivider: DividerUnify? = null
     private var activeViewSummaryLayout: LinearLayout? = null
-    private var activeViewConfettiFrame: FrameLayout? = null
+    private var activeViewConfettiFrame: ImageUnify? = null
 
     private var inActiveView: View? = null
     private var inActiveViewLeftImage: ImageUnify? = null
@@ -93,7 +92,7 @@ class PromoEntryPointWidget @JvmOverloads constructor(
             View.GONE
         inActiveView?.findViewById<LinearLayout>(R.id.ll_promo_checkout_summary)?.visibility =
             View.GONE
-        inActiveView?.findViewById<FrameLayout>(R.id.frame_promo_checkout_header)?.visibility =
+        inActiveView?.findViewById<ImageUnify>(R.id.frame_promo_checkout_header)?.visibility =
             View.GONE
 
         setupViewBackgrounds(attrs)
@@ -393,7 +392,7 @@ class PromoEntryPointWidget @JvmOverloads constructor(
     ) {
         switcherView?.reset()
         activeViewConfettiFrame?.visibility = if (showConfetti) View.VISIBLE else View.GONE
-        activeViewLeftImage?.setImageResource(R.drawable.ic_promo_applied_check)
+        activeViewLeftImage?.setImageUrl("https://images.tokopedia.net/img/ios/promo_widget/checklist.png")
         activeViewTitleWording?.text = MethodChecker.fromHtml(title)
         activeViewDescWording?.text = MethodChecker.fromHtml(desc)
         activeViewWording?.visibility = View.GONE
