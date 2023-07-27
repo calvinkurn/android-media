@@ -126,7 +126,7 @@ private fun DrawContent(
             )
         }
     )
-    val cardBorderColor = Color(R.color.dms_uoh_order_list_divider_color)
+    val cardBorderColor = Color(LocalContext.current.resources.getColor(R.color.dms_uoh_order_list_divider_color))
 
     NestCard(
         modifier = modifier.border(1.dp, cardBorderColor, RoundedCornerShape(8.dp)),

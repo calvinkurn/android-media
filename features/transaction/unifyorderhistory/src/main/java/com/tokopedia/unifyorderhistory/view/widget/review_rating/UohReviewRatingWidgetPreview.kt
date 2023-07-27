@@ -1,5 +1,6 @@
 package com.tokopedia.unifyorderhistory.view.widget.review_rating
 
+import android.content.res.Configuration
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.Surface
@@ -16,7 +17,8 @@ import com.tokopedia.unifyorderhistory.data.model.UohListOrder
 
 val previewConfig: MutableState<UohReviewRatingWidgetConfig> = mutableStateOf(createInteractiveStars())
 
-@Preview
+@Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(name = "Night", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun UohReviewRatingWidgetPreview() {
     val colors = NestTheme.colors
