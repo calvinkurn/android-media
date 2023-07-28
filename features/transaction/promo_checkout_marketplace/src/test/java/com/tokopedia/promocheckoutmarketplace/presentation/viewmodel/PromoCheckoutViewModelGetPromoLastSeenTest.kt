@@ -76,9 +76,15 @@ class PromoCheckoutViewModelGetPromoLastSeenTest : BasePromoCheckoutViewModelTes
 
     @Test
     fun `WHEN get promo last seen failed THEN should update state to release lock flag`() {
-        // given
-        val throwable = MessageErrorException("Tokopedia")
+        // given: promo data available
+        val response = provideGetPromoLastSeenSuccessWithData()
+        coEvery { getPromoSuggestionUseCase.execute(any(), any()) } answers {
+            firstArg<(GetPromoSuggestionResponse) -> Unit>().invoke(response)
+        }
+        viewModel.getPromoSuggestion()
 
+        // given: retry
+        val throwable = MessageErrorException("Tokopedia")
         coEvery { getPromoSuggestionUseCase.execute(any(), any()) } answers {
             secondArg<(Throwable) -> Unit>().invoke(throwable)
         }
