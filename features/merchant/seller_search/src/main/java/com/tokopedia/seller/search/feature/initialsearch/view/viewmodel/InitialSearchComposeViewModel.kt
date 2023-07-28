@@ -1,23 +1,17 @@
 package com.tokopedia.seller.search.feature.initialsearch.view.viewmodel
 
-import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.seller.search.common.domain.GetSellerSearchUseCase
 import com.tokopedia.seller.search.common.domain.mapper.GlobalSearchSellerMapper
 import com.tokopedia.seller.search.feature.initialsearch.domain.usecase.DeleteSuggestionHistoryUseCase
-import com.tokopedia.seller.search.feature.initialsearch.view.model.compose.InitialSearchUiEvent
 import com.tokopedia.seller.search.feature.initialsearch.view.model.compose.InitialSearchUiState
 import com.tokopedia.seller.search.feature.suggestion.domain.usecase.InsertSuccessSearchUseCase
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -31,49 +25,6 @@ class InitialSearchComposeViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(InitialSearchUiState())
     val uiState: StateFlow<InitialSearchUiState>
         get() = _uiState.asStateFlow()
-
-    private val _uiEvent = MutableSharedFlow<InitialSearchUiEvent>(replay = Int.ONE)
-    val uiEvent get() = _uiEvent.asSharedFlow()
-
-    fun onUiEvent(event: InitialSearchUiEvent) {
-        viewModelScope.launch {
-            when (event) {
-                is InitialSearchUiEvent.OnItemHighlightClicked -> {
-                    insertSearchSeller(
-                        event.item.title.orEmpty(),
-                        event.item.id.orEmpty(),
-                        event.item.title.orEmpty(),
-                        event.position
-                    )
-                    _uiEvent.emit(
-                        InitialSearchUiEvent.OnItemHighlightClickedAction(
-                            event.item,
-                            event.position
-                        )
-                    )
-                }
-
-                is InitialSearchUiEvent.OnClearAllHistory -> {
-                    deleteSuggestionSearch(event.titleList, null)
-                    _uiEvent.emit(InitialSearchUiEvent.OnClearAllHistoryAction(event.titleList))
-                }
-
-                is InitialSearchUiEvent.OnItemRemoveClicked -> {
-                    deleteSuggestionSearch(listOf(event.title), event.position)
-                    _uiEvent.emit(
-                        InitialSearchUiEvent.OnItemRemoveClickedAction(
-                            event.title,
-                            event.position
-                        )
-                    )
-                }
-
-                else -> {
-                    _uiEvent.emit(event)
-                }
-            }
-        }
-    }
 
     fun fetchSellerSearch(keyword: String, section: String = "", shopId: String) {
         launchCatchError(block = {
@@ -91,9 +42,9 @@ class InitialSearchComposeViewModel @Inject constructor(
                     titleList = responseGetSellerSearch.second
                 )
             }
-        }, onError = {
+        }, onError = { throwable ->
                 _uiState.update {
-                    it.copy(throwable = it.throwable)
+                    it.copy(throwable = throwable)
                 }
             })
     }
@@ -120,9 +71,9 @@ class InitialSearchComposeViewModel @Inject constructor(
             _uiState.update {
                 it.copy(initialStateList = updateInitialStateList)
             }
-        }, onError = {
+        }, onError = { throwable ->
                 _uiState.update {
-                    it.copy(throwable = it.throwable)
+                    it.copy(throwable = throwable)
                 }
             })
     }
@@ -142,9 +93,9 @@ class InitialSearchComposeViewModel @Inject constructor(
             _uiState.update {
                 it.copy(isInsertSearchSuccess = true)
             }
-        }, onError = {
+        }, onError = { throwable ->
                 _uiState.update {
-                    it.copy(isInsertSearchSuccess = true, throwable = it.throwable)
+                    it.copy(isInsertSearchSuccess = true, throwable = throwable)
                 }
             })
     }

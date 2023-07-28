@@ -25,8 +25,6 @@ import com.tokopedia.seller.search.feature.initialsearch.view.model.compose.Init
 import com.tokopedia.seller.search.feature.initialsearch.view.viewholder.HistoryViewUpdateComposeListener
 import com.tokopedia.seller.search.feature.initialsearch.view.viewmodel.InitialSearchComposeViewModel
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -77,13 +75,9 @@ class InitialSearchComposeFragment : BaseDaggerFragment() {
                     }
                 }
 
-                LaunchedEffect(key1 = Unit, block = {
-                    onUiEvent(viewModel.uiEvent)
-                })
-
                 InitialSearchFragmentScreen(
                     sellerSearchResult.value,
-                    viewModel::onUiEvent
+                    ::onUiEvent
                 )
             }
         }
@@ -95,30 +89,36 @@ class InitialSearchComposeFragment : BaseDaggerFragment() {
         getComponent(InitialSearchComponent::class.java)?.inject(this)
     }
 
-    private suspend fun onUiEvent(uiEvent: SharedFlow<InitialSearchUiEvent>) {
-        uiEvent.collectLatest {
-            when (it) {
-                is InitialSearchUiEvent.OnClearAllHistoryAction -> {
-                    SellerSearchTracking.clickDeleteAllSearchEvent(userSession.userId)
-                }
+    private fun onUiEvent(uiEvent: InitialSearchUiEvent) {
+        when (uiEvent) {
+            is InitialSearchUiEvent.OnClearAllHistory -> {
+                viewModel.deleteSuggestionSearch(uiEvent.titleList, null)
+                SellerSearchTracking.clickDeleteAllSearchEvent(userSession.userId)
+            }
 
-                is InitialSearchUiEvent.OnItemRemoveClickedAction -> {
-                    SellerSearchTracking.clickDeleteSelectedSearch(userSession.userId)
-                }
+            is InitialSearchUiEvent.OnItemRemoveClicked -> {
+                viewModel.deleteSuggestionSearch(listOf(uiEvent.title), uiEvent.position)
+                SellerSearchTracking.clickDeleteSelectedSearch(userSession.userId)
+            }
 
-                is InitialSearchUiEvent.OnItemHistoryClicked -> {
-                    historyViewUpdateComposeListener?.setKeywordSearchBarView(it.searchBarKeyword)
-                    SellerSearchTracking.clickRecommendWordingEvent(userSession.userId)
-                }
+            is InitialSearchUiEvent.OnItemHistoryClicked -> {
+                historyViewUpdateComposeListener?.setKeywordSearchBarView(uiEvent.searchBarKeyword)
+                SellerSearchTracking.clickRecommendWordingEvent(userSession.userId)
+            }
 
-                is InitialSearchUiEvent.OnItemHighlightClickedAction -> {
-                    startActivityFromAutoComplete(it.item.appUrl.orEmpty())
-                    SellerSearchTracking.clickOnItemSearchHighlights(userSession.userId)
-                }
+            is InitialSearchUiEvent.OnItemHighlightClicked -> {
+                viewModel.insertSearchSeller(
+                    uiEvent.item.title.orEmpty(),
+                    uiEvent.item.id.orEmpty(),
+                    uiEvent.item.title.orEmpty(),
+                    uiEvent.position
+                )
+                startActivityFromAutoComplete(uiEvent.item.appUrl.orEmpty())
+                SellerSearchTracking.clickOnItemSearchHighlights(userSession.userId)
+            }
 
-                else -> {
-                    // no op
-                }
+            else -> {
+                // no op
             }
         }
     }
@@ -126,6 +126,7 @@ class InitialSearchComposeFragment : BaseDaggerFragment() {
     private fun startActivityFromAutoComplete(appLink: String) {
         activity?.let {
             RouteManager.route(it, appLink)
+            it.finish()
         }
     }
 

@@ -9,6 +9,7 @@ import com.tokopedia.seller.search.feature.initialsearch.view.viewmodel.InitialS
 import com.tokopedia.seller.search.feature.initialsearch.view.viewmodel.InitialSearchActivityViewModel
 import com.tokopedia.seller.search.feature.initialsearch.view.viewmodel.InitialSearchComposeViewModel
 import com.tokopedia.seller.search.feature.initialsearch.view.viewmodel.InitialSearchViewModel
+import com.tokopedia.seller.search.feature.suggestion.view.viewmodel.SuggestionSearchComposeViewModel
 import com.tokopedia.seller.search.feature.suggestion.view.viewmodel.SuggestionSearchViewModel
 import dagger.Binds
 import dagger.Module
@@ -45,4 +46,9 @@ abstract class InitialSearchViewModelModule {
     @IntoMap
     @ViewModelKey(InitialSearchComposeViewModel::class)
     abstract fun initialSearchComposeViewModel(initialSearchComposeViewModel: InitialSearchComposeViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(SuggestionSearchComposeViewModel::class)
+    abstract fun suggestionSearchComposeViewModel(suggestionSearchComposeViewModel: SuggestionSearchComposeViewModel): ViewModel
 }
