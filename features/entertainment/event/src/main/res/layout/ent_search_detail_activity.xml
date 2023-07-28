@@ -26,21 +26,29 @@
                 android:id="@+id/txt_search"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="@dimen/spacing_lvl4"
+                android:layout_marginEnd="16dp"
                 app:search_bar_placeholder="@string/ent_search_placeholder"
                 app:search_bar_show_icon="false" />
 
         </androidx.appcompat.widget.Toolbar>
 
-        <include
-            layout="@layout/ent_search_category_text"
+        <androidx.recyclerview.widget.RecyclerView
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/recycler_view_category"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_lvl4"
-            android:layout_marginBottom="@dimen/spacing_lvl4" />
+            android:layout_marginBottom="@dimen/spacing_lvl4"
+            android:orientation="horizontal"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:listitem="@layout/ent_search_category_text_item" />
     </com.google.android.material.appbar.AppBarLayout>
 
     <include
+        android:id="@+id/shimmering_layout_category"
         layout="@layout/ent_search_detail_shimmer" />
 
     <include

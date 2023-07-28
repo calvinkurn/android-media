@@ -597,13 +597,17 @@ class ShopPageHeaderFragment :
                 if (!isMyShop) {
                     shopPageTracking?.clickScrollToTop(shopId, userId)
                 }
-                val selectedFragment = viewPagerAdapterHeader?.getRegisteredFragment(viewPager?.currentItem.orZero())
-                (selectedFragment as? InterfaceShopPageClickScrollToTop)?.let {
-                    it.scrollToTop()
-                }
+                scrollSelectedTabToTop()
             }
         }
         hideShopPageFab()
+    }
+
+    private fun scrollSelectedTabToTop(isUserClick: Boolean = true) {
+        val selectedFragment = viewPagerAdapterHeader?.getRegisteredFragment(viewPager?.currentItem.orZero())
+        (selectedFragment as? InterfaceShopPageClickScrollToTop)?.let {
+            it.scrollToTop(isUserClick)
+        }
     }
 
     private fun initViewPager() {
@@ -1818,10 +1822,12 @@ class ShopPageHeaderFragment :
     }
 
     private fun setupTabs() {
+        val prevSelectedTabName = getSelectedTabName()
         listShopPageTabModel = (createListShopPageDynamicTabModel() as? List<ShopPageHeaderTabModel>) ?: listOf()
+        val currSelectedTabName = getSelectedTabName()
         configureTab(listShopPageTabModel.size)
         viewPagerAdapterHeader?.setTabData(listShopPageTabModel)
-        selectedPosition = getSelectedDynamicTabPosition()
+        selectedPosition = getSelectedDynamicTabPosition(prevSelectedTabName != currSelectedTabName)
         tabLayout?.removeAllTabs()
         listShopPageTabModel.forEach {
             tabLayout?.newTab()?.apply {
@@ -1878,8 +1884,15 @@ class ShopPageHeaderFragment :
                 hideScrollToTopButton()
                 hideShopPageFab()
                 isTabClickByUser = false
+                checkShouldScrollTabToTopWhenTabSelected()
             }
         })
+    }
+
+    private fun checkShouldScrollTabToTopWhenTabSelected() {
+        if (getSelectedTabName() == ShopPageHeaderTabName.CAMPAIGN) {
+            scrollSelectedTabToTop(isUserClick = false)
+        }
     }
 
     private fun checkShouldSendCampaignTabOpenScreenTracker() {
@@ -1945,7 +1958,9 @@ class ShopPageHeaderFragment :
         viewOneTabSeparator?.show()
     }
 
-    private fun getSelectedDynamicTabPosition(): Int {
+    private fun getSelectedDynamicTabPosition(
+        isResetSelectedPosition: Boolean = false
+    ): Int {
         var selectedPosition = viewPager?.currentItem.orZero()
         if (tabLayout?.tabCount.isZero()) {
             if (shouldOverrideTabToHome || shouldOverrideTabToProduct || shouldOverrideTabToFeed || shouldOverrideTabToReview) {
@@ -1968,19 +1983,27 @@ class ShopPageHeaderFragment :
                 }
                 selectedPosition = getTabPositionBasedOnTabName(overrideTabName)
             } else {
-                val selectedTabData = listShopPageTabModel.firstOrNull {
-                    it.isFocus
-                } ?: run {
-                    listShopPageTabModel.firstOrNull {
-                        it.isDefault
-                    }
-                }
-                selectedPosition = listShopPageTabModel.indexOf(selectedTabData).takeIf {
-                    it >= Int.ZERO
-                } ?: Int.ZERO
+                selectedPosition = getSelectedPositionFromTabModel()
+            }
+        } else {
+            if(isResetSelectedPosition){
+                selectedPosition = getSelectedPositionFromTabModel()
             }
         }
         return selectedPosition
+    }
+
+    private fun getSelectedPositionFromTabModel(): Int {
+        val selectedTabData = listShopPageTabModel.firstOrNull {
+            it.isFocus
+        } ?: run {
+            listShopPageTabModel.firstOrNull {
+                it.isDefault
+            }
+        }
+        return listShopPageTabModel.indexOf(selectedTabData).takeIf {
+            it >= Int.ZERO
+        } ?: Int.ZERO
     }
 
     private fun getTabPositionBasedOnTabName(overrideTabName: String): Int {
@@ -3505,14 +3528,13 @@ class ShopPageHeaderFragment :
         }
     }
 
-    fun selectShopTab(tabName: String) {
+    fun selectShopTab(tabName: String, isScrollToTop: Boolean = false) {
         val selectedTabPosition = getTabPositionBasedOnTabName(tabName)
         viewPager?.setCurrentItem(selectedTabPosition, false)
         tabLayout?.getTabAt(selectedTabPosition)?.select()
-    }
-
-    fun resetSelectedPosition() {
-        viewPagerAdapterHeader?.clearTabData()
+        if(isScrollToTop) {
+            scrollSelectedTabToTop(false)
+        }
     }
 
     /**
