@@ -44,7 +44,7 @@ class RewardSummaryView : FrameLayout {
     lateinit var tvTitle: AppCompatTextView
     lateinit var tvMessage: AppCompatTextView
     lateinit var imageBox: AppCompatImageView
-    lateinit var llButton: LinearLayout
+    private var llButton: LinearLayout? = null
 
     lateinit var rvAdapter: RewardSummaryAdapter
     lateinit var decoration: RewardItemDecoration
@@ -93,7 +93,7 @@ class RewardSummaryView : FrameLayout {
         rvRewards.addItemDecoration(decoration)
 
         viewFlipper.alpha = 0f
-        llButton.alpha = 0f
+        llButton?.alpha = 0f
     }
 
     fun playRewardItemAnimation() {
@@ -111,7 +111,7 @@ class RewardSummaryView : FrameLayout {
                     val button = getRewardButton(rb.backgroundColor)
 
                     if (button != null) {
-                        llButton.addView(button)
+                        llButton?.addView(button)
 
                         button.text = rb.text
                         button.setOnClickListener {
@@ -163,7 +163,7 @@ class RewardSummaryView : FrameLayout {
         buttonsMap.filter { it.key != RewardButtonType.EXIT }.forEach { it.value.gone() }
 
         viewFlipper.animate().alpha(1f).setDuration(300L).start()
-        llButton.animate().alpha(1f).setDuration(300L).start()
+        llButton?.animate().alpha(1f).setDuration(300L).start()
     }
 
     private fun setRewardSummaryData(rewardSummaryItemList: List<RewardSummaryItem>) {
@@ -171,7 +171,7 @@ class RewardSummaryView : FrameLayout {
         buttonsMap.forEach { it.value.visible() }
 
         viewFlipper.alpha = 1f
-        llButton.alpha = 1f
+        llButton?.alpha = 1f
 
         val list = mutableListOf<RewardSummaryItem>()
         list.addAll(rewardSummaryItemList)
