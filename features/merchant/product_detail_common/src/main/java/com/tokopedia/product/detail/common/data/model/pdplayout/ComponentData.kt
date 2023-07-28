@@ -158,15 +158,13 @@ data class ComponentData(
     @SerializedName("variantCampaign")
     val variantCampaign: VariantCampaign = VariantCampaign(),
 
-    // region a plus image data
-    @SerializedName("aPlusTitle")
-    val aPlusTitle: String = "",
-    @SerializedName("aPlusMedia")
-    val aPlusMedia: List<APlusMedia> = listOf(),
-    @SerializedName("aPlusShow")
-    val aPlusShow: Boolean = false,
-    @SerializedName("aPlusCtaText")
-    val aPlusCtaText: String = ""
+    // region a plus content data
+    @SerializedName("contentMedia")
+    val contentMedia: List<ContentMedia> = listOf(),
+    @SerializedName("show")
+    val show: Boolean = false,
+    @SerializedName("ctaText")
+    val ctaText: String = ""
     // endregion
 ) {
     companion object {
@@ -245,7 +243,7 @@ data class VariantCampaign(
     val thematicCampaigns: List<ThematicCampaign> = emptyList()
 )
 
-data class APlusMedia(
+data class ContentMedia(
     @SerializedName("url")
     val url: String,
     @SerializedName("ratio")

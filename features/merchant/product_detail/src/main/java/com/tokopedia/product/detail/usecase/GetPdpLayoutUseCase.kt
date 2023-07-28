@@ -412,6 +412,15 @@ open class GetPdpLayoutUseCase @Inject constructor(
                       title
                       status
                     }
+                    ... on pdpDataProductDetailMediaComponent {
+                      title
+                      contentMedia {
+                        url
+                        ratio
+                      }
+                      show
+                      ctaText
+                    }
                   }
                 }
               }
