@@ -109,13 +109,12 @@ class FlightOrderDetailViewModel @Inject constructor(
 
     fun fetchCrossSellData() {
         launch(dispatcherProvider.main) {
-            mutableCrossSell.postValue(
-                crossSellUseCase.execute(
-                    QueryTravelCrossSelling(),
-                    orderId,
-                    TravelCrossSellingUseCase.PARAM_FLIGHT_PRODUCT
-                )
+            val data = crossSellUseCase.execute(
+                QueryTravelCrossSelling(),
+                orderId,
+                TravelCrossSellingUseCase.PARAM_FLIGHT_PRODUCT
             )
+            mutableCrossSell.postValue(data)
         }
     }
 
