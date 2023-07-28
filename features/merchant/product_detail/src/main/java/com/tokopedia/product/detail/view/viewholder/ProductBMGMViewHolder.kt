@@ -30,7 +30,7 @@ class ProductBMGMViewHolder(
 
     override fun bind(element: ProductBMGMDataModel) {
         binding.pdpBmgmWidget.setData(
-            uiModel = element.data,
+            uiState = element.state,
             router = object : BMGMRouter {
                 override fun goToAppLink(url: String) {
                     listener.goToApplink(url)

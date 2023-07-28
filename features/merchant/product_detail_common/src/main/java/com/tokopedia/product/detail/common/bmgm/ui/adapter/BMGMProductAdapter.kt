@@ -3,7 +3,7 @@ package com.tokopedia.product.detail.common.bmgm.ui.adapter
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
-import com.tokopedia.product.detail.common.bmgm.model.BMGMUiModel
+import com.tokopedia.product.detail.common.bmgm.ui.model.BMGMUiModel
 
 /**
  * Created by yovi.putra on 27/07/23"
@@ -38,7 +38,7 @@ class BMGMProductAdapter : ListAdapter<BMGMUiModel.Product, BMGMProductViewHolde
         holder.bind(
             product = product,
             loadMoreText = loadMoreText,
-            isEndItem = itemCount == position
+            isEndItem = itemCount.dec() == position
         )
     }
 

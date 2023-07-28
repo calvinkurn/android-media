@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.media.loader.loadImage
-import com.tokopedia.product.detail.common.bmgm.model.BMGMUiModel
+import com.tokopedia.product.detail.common.bmgm.ui.model.BMGMUiModel
 import com.tokopedia.product.detail.common.databinding.BmgmProductShowMoreViewBinding
 import com.tokopedia.product.detail.common.databinding.BmgmProductViewBinding
 

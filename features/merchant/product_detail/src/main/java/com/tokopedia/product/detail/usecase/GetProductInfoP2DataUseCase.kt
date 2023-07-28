@@ -612,6 +612,20 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
               isShow
               appLink
             }
+            bmgm {
+                backgroundColor
+                titleColor
+                iconUrl
+                titles
+                action {
+                    type
+                    link
+                }
+                contents {
+                    imageUrl
+                }
+                loadMoreText
+            }
           }
         }
 """.trimIndent()

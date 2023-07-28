@@ -43,6 +43,7 @@ import com.tokopedia.product.detail.data.model.datamodel.LoadingDataModel
 import com.tokopedia.product.detail.data.model.datamodel.MediaDataModel
 import com.tokopedia.product.detail.data.model.datamodel.OneLinersDataModel
 import com.tokopedia.product.detail.data.model.datamodel.OngoingCampaignDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductBMGMDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductBundlingDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductCategoryCarouselDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductContentDataModel
@@ -306,6 +307,11 @@ object DynamicProductDetailMapper {
                 ProductDetailConstant.SHOP_REVIEW -> {
                     listOfComponent.add(
                         ProductShopReviewDataModel(type = component.type, name = component.componentName)
+                    )
+                }
+                ProductDetailConstant.BMGM_TYPE -> {
+                    listOfComponent.add(
+                        ProductBMGMDataModel(type = component.type, name = component.componentName)
                     )
                 }
             }

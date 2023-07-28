@@ -2,6 +2,8 @@ package com.tokopedia.product.detail.data.model
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.product.detail.common.bmgm.model.BMGMData
+import com.tokopedia.product.detail.common.bmgm.model.asUiModel
 import com.tokopedia.product.detail.common.data.model.ar.ProductArInfo
 import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkir
 import com.tokopedia.product.detail.common.data.model.bundleinfo.BundleInfo
@@ -181,7 +183,11 @@ data class ProductInfoP2Data(
 
     @SerializedName("bottomSheetEdu")
     @Expose
-    val bottomSheetEdu: BottomSheetEduData = BottomSheetEduData()
+    val bottomSheetEdu: BottomSheetEduData = BottomSheetEduData(),
+
+    @SerializedName("bmgm")
+    @Expose
+    val bmgm: BMGMData = BMGMData()
 ) {
     data class Response(
         @SerializedName("pdpGetData")
@@ -225,5 +231,6 @@ fun ProductInfoP2Data.asUiModel() = ProductInfoP2UiData(
     customInfoTitle = customInfoTitle,
     socialProof = socialProof.asUiModel(),
     shopReview = shopReview.asUiModel(),
-    bottomSheetEdu = bottomSheetEdu.asUiModel()
+    bottomSheetEdu = bottomSheetEdu.asUiModel(),
+    bmgm = bmgm.asUiModel()
 )

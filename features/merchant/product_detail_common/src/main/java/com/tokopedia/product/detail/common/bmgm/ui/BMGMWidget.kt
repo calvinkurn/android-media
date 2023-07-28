@@ -1,20 +1,18 @@
 package com.tokopedia.product.detail.common.bmgm.ui
 
 import android.content.Context
-import android.graphics.Rect
+import android.graphics.drawable.GradientDrawable
 import android.util.AttributeSet
-import android.view.LayoutInflater
-import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
-import com.tokopedia.product.detail.common.bmgm.model.BMGMUiModel
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.product.detail.common.bmgm.ui.adapter.BMGMProductAdapter
+import com.tokopedia.product.detail.common.bmgm.ui.model.BMGMUiModel
+import com.tokopedia.product.detail.common.bmgm.ui.model.BMGMUiState
 import com.tokopedia.product.detail.common.databinding.BmgmWidgetBinding
-import com.tokopedia.unifyprinciples.microinteraction.toPx
+import com.tokopedia.unifyprinciples.stringToUnifyColor
 
 /**
  * Created by yovi.putra on 27/07/23"
@@ -33,57 +31,65 @@ class BMGMWidget @JvmOverloads constructor(
     }
 
     private val binding by lazyThreadSafetyNone {
-        val inflater = LayoutInflater.from(context)
-        BmgmWidgetBinding.inflate(inflater)
+        val view = inflate(context, com.tokopedia.product.detail.common.R.layout.bmgm_widget, this)
+        BmgmWidgetBinding.bind(view).apply {
+            bmgmProductList.layoutManager =
+                GridLayoutManager(context, SPAN_COUNT, GridLayoutManager.VERTICAL, false)
+            bmgmProductList.adapter = productAdapter
+        }
     }
 
     private val productAdapter by lazyThreadSafetyNone {
         BMGMProductAdapter()
     }
 
-    init {
-        prepareUI()
-    }
+    fun setData(uiState: BMGMUiState, router: BMGMRouter) {
+        when (uiState) {
+            is BMGMUiState.Loading -> {
+                // no - ops
+            }
 
-    private fun prepareUI() {
-        with(binding.bmgmProductList) {
-            layoutManager = GridLayoutManager(context, SPAN_COUNT, GridLayoutManager.VERTICAL, false)
-            addItemDecoration(GridSpacingItemDecorator())
-            adapter = productAdapter
-        }
-    }
-
-    class GridSpacingItemDecorator : ItemDecoration() {
-
-        private val offset = 16.toPx()
-
-        override fun getItemOffsets(
-            outRect: Rect,
-            view: View,
-            parent: RecyclerView,
-            state: RecyclerView.State
-        ) {
-            val position = parent.getChildAdapterPosition(view)
-            if (position == 0) {
-                outRect.left = 0
-            } else {
-                outRect.left = offset
+            is BMGMUiState.Loaded -> {
+                onLoaded(uiModel = uiState.uiModel, router = router)
             }
         }
     }
 
-    fun setData(uiModel: BMGMUiModel, router: BMGMRouter) {
-        productAdapter.submit(uiModel.products, uiModel.loadMoreText)
+    private fun onLoaded(uiModel: BMGMUiModel, router: BMGMRouter) {
+        binding.bmgmImageLeft.loadImage(uiModel.iconUrl)
 
-        setTitle(titles = uiModel.titles)
+        setTitle(titles = uiModel.titles, titleColor = uiModel.titleColor)
 
         if (uiModel.loadMoreText.isNotBlank()) {
             setEvent(action = uiModel.action, router = router)
         }
+
+        setBackgroundGradient(colors = uiModel.backgroundColor)
+
+        productAdapter.submit(uiModel.products, uiModel.loadMoreText)
     }
 
-    private fun setTitle(titles: List<String>) {
+    private fun setTitle(titles: List<String>, titleColor: String) {
         binding.bmgmTitle.text = titles.firstOrNull()
+
+        if (titleColor.isNotBlank()) {
+            val default = com.tokopedia.unifyprinciples.R.color.Unify_TN500
+            val unifyColor = runCatching {
+                stringToUnifyColor(context, titleColor).unifyColor
+            }.getOrNull() ?: default
+            binding.bmgmTitle.setTextColor(unifyColor)
+        }
+    }
+
+    private fun setBackgroundGradient(colors: String) {
+        val mColors = colors.split(",").map {
+            runCatching {
+                stringToUnifyColor(context, it).unifyColor
+            }.getOrNull() ?: Int.ZERO
+        }.toIntArray()
+
+        val gradient = GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, mColors)
+        background = gradient
     }
 
     private fun setEvent(action: BMGMUiModel.Action, router: BMGMRouter) {
