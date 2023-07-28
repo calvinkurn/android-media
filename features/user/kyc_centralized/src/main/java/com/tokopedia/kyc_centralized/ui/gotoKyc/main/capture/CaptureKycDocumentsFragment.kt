@@ -153,7 +153,7 @@ class CaptureKycDocumentsFragment : BaseDaggerFragment() {
                 activity?.setResult(Activity.RESULT_CANCELED)
                 activity?.finish()
             } else {
-                oneKycSdk.launchKyc(launchSource = KycSdkPartner.TOKOPEDIA_CORE.name, partner = KycSdkPartner.TOKOPEDIA_CORE, activity = requireActivity())
+                oneKycSdk.launchKyc(launchSource = KycSdkPartner.TOKOPEDIA_CORE.name, partner = KycSdkPartner.TOKOPEDIA_CORE, isSharia = false, activity = requireActivity())
             }
         }
     }
