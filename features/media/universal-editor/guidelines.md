@@ -10,9 +10,9 @@ Which means the user will get an amazing experience to design their media for cu
 ### Using Picker Builder (:poc)
 ```kotlin
 val intent = MediaPicker.intent(context) {
-    withNewEditor() // with default configuration; or
+   withImmersiveEditor() // with default configuration; or
     
-    withNewEditor { // with a custom configuration
+    withImmersiveEditor { // with a custom configuration
         setTitle("")
     }
 }

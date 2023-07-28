@@ -1,9 +1,8 @@
 package com.tokopedia.editor.ui.main
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentFactory
-import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.editor.R
 import com.tokopedia.editor.di.ModuleInjector
 import com.tokopedia.editor.ui.EditorFragmentProvider
@@ -22,7 +21,7 @@ import javax.inject.Inject
  *
  * @applink tokopedia-android-internal://global/universal-editor
  */
-class MainEditorActivity : BaseActivity() {
+class MainEditorActivity : AppCompatActivity() {
 
     @Inject
     lateinit var fragmentFactory: FragmentFactory
@@ -37,8 +36,9 @@ class MainEditorActivity : BaseActivity() {
 
     private fun inflateFragment() {
         val fragment = fragmentProvider().mainEditorFragment()
+
         supportFragmentManager.beginTransaction()
-            .replace(R.id.fragment_container, fragment, this.javaClass.name)
+            .replace(R.id.fragment_container, fragment)
             .commit()
     }
 

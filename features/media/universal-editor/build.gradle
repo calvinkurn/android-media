@@ -25,6 +25,36 @@ android {
         testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
     }
 
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
+    }
+
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_11
+    }
+
+    buildTypes {
+        debug {
+            ext.enableHansel = project.hasProperty('hanselEnableDebug')
+            testCoverageEnabled (project.hasProperty('coverage'))
+        }
+        release {
+            ext.enableHansel = !project.hasProperty('hanselDisableRelease')
+            minifyEnabled false
+            consumerProguardFiles 'proguard-rules.pro'
+        }
+    }
+
+    testOptions {
+        unitTests.all {
+            jacoco {
+                includeNoLocationClasses = true
+                excludes = ['jdk.internal.*']
+            }
+        }
+    }
+
     buildFeatures {
         viewBinding true
     }
@@ -33,6 +63,7 @@ android {
         main {
             res {
                 srcDirs 'src/main/res',
+                        'src/main/res/layout',
                         'src/main/res/layouts/parent',
                         'src/main/res/layouts/image',
                         'src/main/res/layouts/vod'
