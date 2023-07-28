@@ -112,6 +112,8 @@ class PlayCoverSetupViewModel @AssistedInject constructor(
             params = GetOriginalProductImageUseCase.createParams(productId)
         }.executeOnBackground()
 
+        yield()
+
         val resizedUrlLastSegments = resizedImageUrl.split("/")
                 .let { it[it.lastIndex] }
 
@@ -122,7 +124,7 @@ class PlayCoverSetupViewModel @AssistedInject constructor(
 
     fun uploadCover() {
         _observableUploadCoverEvent.value = NetworkResult.Loading
-        viewModelScope.launchCatchError(context = dispatcher.main, block = {
+        viewModelScope.launchCatchError(block = {
             uploadImageAndUpdateCoverState()
 
             val result = setupDataStore.uploadSelectedCover(account.id, channelId)

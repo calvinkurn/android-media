@@ -210,7 +210,7 @@ class PlayCoverSetupViewModelTest {
 
         coEvery { getOriginalProductImageUseCase.executeOnBackground() } returns mockOriginalImageUrlList
 
-        runBlocking {
+        dispatchers.coroutineDispatcher.runBlockingTest {
             val originalImageUrl = viewModel.getOriginalImageUrl("", mockResizedImageUrl)
 
             Assertions
