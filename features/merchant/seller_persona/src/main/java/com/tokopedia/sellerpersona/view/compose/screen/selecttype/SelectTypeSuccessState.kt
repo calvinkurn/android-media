@@ -132,7 +132,8 @@ fun LaunchScrollToPosition(listState: LazyListState, selectedIndex: Int) {
             if (isFirstIndex) return@derivedStateOf 0
 
             val screenWidth = screenWidthInDp.value
-            val cardWidth = CARD_WIDTH.value
+            val borderWidth = 2.dp
+            val cardWidth = CARD_WIDTH.plus(borderWidth).value
             val halfScreen = screenWidth.div(2)
             val halfCard = cardWidth.div(2)
 
@@ -236,7 +237,7 @@ private fun PersonaTypeItemCard(persona: PersonaUiModel, onClicked: () -> Unit) 
             Divider(
                 modifier = Modifier
                     .background(
-                        color = NestTheme.colors.NN._300
+                        color = NestTheme.colors.NN._200
                     )
                     .constrainAs(dividerItemSelectType) {
                         top.linkTo(anchor = tvSellerTypeStatus.bottom, margin = 16.dp)

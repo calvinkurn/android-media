@@ -63,22 +63,20 @@ class ComposePersonaSelectTypeViewModel @Inject constructor(
         }
     }
 
-    private fun setPersona(persona: String) {
-        viewModelScope.launch {
-            try {
-                emitSelectButtonLoading(isLoading = true)
-                val result = withContext(dispatchers.io) {
-                    val shopId = userSession.get().shopId
-                    setPersonaUseCase.get().execute(
-                        shopId = shopId, persona = persona, answers = emptyList()
-                    )
-                }
-                emitSelectButtonLoading(isLoading = false)
-                emitOnPersonaChanged(persona = result)
-            } catch (e: Exception) {
-                emitSelectButtonLoading(isLoading = false)
-                emitOnPersonaChanged(e = e)
+    private suspend fun setPersona(persona: String) {
+        try {
+            emitSelectButtonLoading(isLoading = true)
+            val result = withContext(dispatchers.io) {
+                val shopId = userSession.get().shopId
+                return@withContext setPersonaUseCase.get().execute(
+                    shopId = shopId, persona = persona, answers = emptyList()
+                )
             }
+            emitSelectButtonLoading(isLoading = false)
+            emitOnPersonaChanged(persona = result)
+        } catch (e: Exception) {
+            emitSelectButtonLoading(isLoading = false)
+            emitOnPersonaChanged(e = e)
         }
     }
 
@@ -124,7 +122,7 @@ class ComposePersonaSelectTypeViewModel @Inject constructor(
         }
     }
 
-    private fun submitSelectedType() = viewModelScope.launch {
+    private suspend fun submitSelectedType() {
         val currentState = _state.value
         val data = currentState.data
         val defaultPersona = data.args.paramPersona
@@ -132,7 +130,7 @@ class ComposePersonaSelectTypeViewModel @Inject constructor(
         val currentSelectedPersona = data.personaList.firstOrNull { it.isSelected }?.value.orEmpty()
         if (currentSelectedPersona == defaultPersona) {
             eventCloseThePage(defaultPersona)
-            return@launch
+            return
         }
 
         setPersona(currentSelectedPersona)
