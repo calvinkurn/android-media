@@ -1,10 +1,10 @@
 package com.tokopedia.developer_options.presentation.viewholder
 
 import android.content.Context
+import android.content.Context.MODE_PRIVATE
 import android.view.View
 import android.widget.CompoundButton
 import androidx.annotation.LayoutRes
-import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.developer_options.R
 import com.tokopedia.developer_options.presentation.activity.DeveloperOptionActivity
@@ -31,7 +31,7 @@ class EnableFpiMonitoringViewHolder(
     private fun Context.setFpiMonitoringState(state: Boolean) {
         val sharedPref = getSharedPreferences(
             DeveloperOptionActivity.PREF_KEY_FPI_MONITORING_POPUP,
-            BaseActivity.MODE_PRIVATE
+            MODE_PRIVATE
         )
         val editor = sharedPref.edit().putBoolean(
             DeveloperOptionActivity.PREF_KEY_FPI_MONITORING_POPUP,
@@ -42,7 +42,7 @@ class EnableFpiMonitoringViewHolder(
 
     private fun Context.isFpiMonitoringEnable(): Boolean = getSharedPreferences(
         DeveloperOptionActivity.PREF_KEY_FPI_MONITORING_POPUP,
-        BaseActivity.MODE_PRIVATE
+        MODE_PRIVATE
     ).getBoolean(DeveloperOptionActivity.PREF_KEY_FPI_MONITORING_POPUP, false)
 
 }
