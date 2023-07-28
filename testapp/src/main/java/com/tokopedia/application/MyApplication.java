@@ -99,7 +99,7 @@ public class MyApplication extends BaseMainApplication
 
         NetworkClient.init(this);
         registerActivityLifecycleCallbacks(new GqlActivityCallback());
-        registerActivityLifecycleCallbacks(new FrameMetricsMonitoring(this));
+        registerActivityLifecycleCallbacks(new FrameMetricsMonitoring(this, true));
 
         if (BuildConfig.DEBUG) {
             Timber.plant(new Timber.DebugTree());
