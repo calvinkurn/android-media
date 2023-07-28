@@ -582,10 +582,10 @@ class CheckoutViewModel @Inject constructor(
                                 orderModel.validationMetadata
                         }
                     }
-    //                        removeInvalidBoCodeFromPromoRequest(
-    //                            shipmentGetCourierHolderData,
-    //                            validateUsePromoRequest
-    //                        )
+                    //                        removeInvalidBoCodeFromPromoRequest(
+                    //                            shipmentGetCourierHolderData,
+                    //                            validateUsePromoRequest
+                    //                        )
                     doValidateUseLogisticPromoNew(
                         cartPosition,
                         orderModel.cartStringGroup,
@@ -681,10 +681,10 @@ class CheckoutViewModel @Inject constructor(
                                 orderModel.validationMetadata
                         }
                     }
-    //                        removeInvalidBoCodeFromPromoRequest(
-    //                            shipmentGetCourierHolderData,
-    //                            validateUsePromoRequest
-    //                        )
+                    //                        removeInvalidBoCodeFromPromoRequest(
+                    //                            shipmentGetCourierHolderData,
+                    //                            validateUsePromoRequest
+                    //                        )
                     doValidateUseLogisticPromoNew(
                         cartPosition,
                         orderModel.cartStringGroup,
@@ -887,17 +887,19 @@ class CheckoutViewModel @Inject constructor(
         val newList: MutableList<CheckoutCrossSellItem> = arrayListOf()
         for (checkoutCrossSellItem in crossSellGroup.crossSellList) {
             if (checkoutCrossSellItem is CheckoutEgoldModel) {
-                newList.add(checkoutCrossSellItem.copy(
-                    egoldAttributeModel = checkoutCrossSellItem.egoldAttributeModel.copy(isChecked = checked)
+                newList.add(
+                    checkoutCrossSellItem.copy(
+                        egoldAttributeModel = checkoutCrossSellItem.egoldAttributeModel.copy(
+                            isChecked = checked
+                        )
+                    )
                 )
+            } else {
+                newList.add(checkoutCrossSellItem)
             }
         }
-        val egold =
-            crossSellGroup.crossSellList.firstOrNullInstanceOf(CheckoutEgoldModel::class.java)!!
-        egold.copy(
-            egoldAttributeModel = egold.egoldAttributeModel.copy(isChecked = checked)
-        )
-        checkoutItems[checkoutItems.size - 2] =
+        checkoutItems[checkoutItems.size - 2] = crossSellGroup.copy(crossSellList = newList)
+        listData.value = checkoutItems
     }
 
     companion object {
@@ -905,17 +907,17 @@ class CheckoutViewModel @Inject constructor(
     }
 }
 
-internal fun <R> List<CheckoutCrossSellItem>.firstOrNullInstanceOf(kClass: Class<R>): R? {
+internal fun <T, R> List<T>.firstOrNullInstanceOf(kClass: Class<R>): R? {
     val item = firstOrNull { kClass.isInstance(it) }
     @Suppress("UNCHECKED_CAST")
     return item as? R
 }
 
-internal fun <R> List<CheckoutItem>.firstOrNullInstanceOf(kClass: Class<R>): R? {
-    val item = firstOrNull { kClass.isInstance(it) }
-    @Suppress("UNCHECKED_CAST")
-    return item as? R
-}
+// internal fun <R> List<CheckoutItem>.firstOrNullInstanceOf(kClass: Class<R>): R? {
+//    val item = firstOrNull { kClass.isInstance(it) }
+//    @Suppress("UNCHECKED_CAST")
+//    return item as? R
+// }
 
 internal fun List<CheckoutItem>.address(): CheckoutAddressModel? {
     val item = getOrNull(1)

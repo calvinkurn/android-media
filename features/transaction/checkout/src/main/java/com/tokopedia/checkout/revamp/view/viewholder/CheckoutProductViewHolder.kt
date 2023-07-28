@@ -1,6 +1,10 @@
 package com.tokopedia.checkout.revamp.view.viewholder
 
 import android.annotation.SuppressLint
+import android.text.Spannable
+import android.text.SpannableStringBuilder
+import android.text.style.DynamicDrawableSpan
+import android.text.style.ImageSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup.MarginLayoutParams
@@ -16,6 +20,7 @@ import com.tokopedia.checkout.revamp.view.uimodel.CheckoutProductModel
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.media.loader.getBitmapImageUrl
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant
 import com.tokopedia.purchase_platform.common.databinding.ItemAddOnProductBinding
 import com.tokopedia.purchase_platform.common.utils.getHtmlFormat
@@ -116,6 +121,17 @@ class CheckoutProductViewHolder(
 
         productBinding.ivProductImage.setImageUrl(product.imageUrl)
         productBinding.tvProductName.text = product.name
+        if (product.ethicalDrugDataModel.iconUrl.isNotEmpty()) {
+            product.ethicalDrugDataModel.iconUrl.getBitmapImageUrl(productBinding.root.context) {
+                try {
+                    productBinding.tvProductName.text = SpannableStringBuilder("  ${product.name}").apply {
+                        setSpan(ImageSpan(productBinding.root.context, it, DynamicDrawableSpan.ALIGN_CENTER), 0, 1, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
+                    }
+                } catch (t: Throwable) {
+                    t.printStackTrace()
+                }
+            }
+        }
         if (product.variant.isNotBlank()) {
             productBinding.textVariant.text = product.variant
             productBinding.textVariant.isVisible = true

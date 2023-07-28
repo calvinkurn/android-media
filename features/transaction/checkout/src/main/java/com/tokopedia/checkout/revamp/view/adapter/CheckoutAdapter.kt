@@ -136,7 +136,7 @@ class CheckoutAdapter(
             }
 
             CheckoutCrossSellViewHolder.VIEW_TYPE -> {
-                CheckoutCrossSellViewHolder(ItemCheckoutCrossSellBinding.inflate(inflater, parent, false))
+                CheckoutCrossSellViewHolder(ItemCheckoutCrossSellBinding.inflate(inflater, parent, false), listener)
             }
 
             else -> {
