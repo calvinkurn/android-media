@@ -74,7 +74,7 @@ class BannerItemViewHolder(
                 slideToShow =
                     if (data.items.size > 1) SLIDE_TO_SHOW_MULTIPLE_ITEM else SLIDE_TO_SHOW_1_ITEM
 
-                addOnImpressionListener(data) {
+                addOnImpressionListener(bannerItem) {
                     bannerListener.onBannerImpressed(bannerItem, index)
                 }
             }

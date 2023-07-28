@@ -1,6 +1,7 @@
 package com.tokopedia.thankyou_native.presentation.adapter.model
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.thankyou_native.presentation.adapter.factory.BottomContentFactory
 
 data class BannerWidgetModel(
@@ -21,4 +22,4 @@ data class BannerItem(
     val assetUrl: String = "",
     val applink: String = "",
     val itemId: String = ""
-)
+): ImpressHolder()

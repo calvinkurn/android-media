@@ -1,15 +1,22 @@
 package com.tokopedia.thankyou_native.analytics
 
+import android.os.Bundle
 import com.google.gson.Gson
 import com.google.gson.JsonArray
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.thankyou_native.analytics.EnhancedEcommerceKey.KEY_CREATIVE_NAME
 import com.tokopedia.thankyou_native.analytics.EnhancedEcommerceKey.KEY_CREATIVE_SLOT
 import com.tokopedia.thankyou_native.analytics.EnhancedEcommerceKey.KEY_ITEM_ID
 import com.tokopedia.thankyou_native.analytics.EnhancedEcommerceKey.KEY_ITEM_NAME
 import com.tokopedia.thankyou_native.analytics.ParentTrackingKey.KEY_BUSINESS_UNIT_NON_E_COMMERCE_VALUE
 import com.tokopedia.thankyou_native.analytics.ParentTrackingKey.KEY_CURRENT_SITE
+import com.tokopedia.thankyou_native.analytics.ParentTrackingKey.KEY_ECOMMERCE
+import com.tokopedia.thankyou_native.analytics.ParentTrackingKey.KEY_EVENT
+import com.tokopedia.thankyou_native.analytics.ParentTrackingKey.KEY_EVENT_ACTION
+import com.tokopedia.thankyou_native.analytics.ParentTrackingKey.KEY_EVENT_CATEGORY
+import com.tokopedia.thankyou_native.analytics.ParentTrackingKey.KEY_EVENT_LABEL
 import com.tokopedia.thankyou_native.analytics.ParentTrackingKey.KEY_EVENT_SELECT_CONTENT
 import com.tokopedia.thankyou_native.analytics.ParentTrackingKey.KEY_EVENT_VIEW_ITEM
 import com.tokopedia.thankyou_native.analytics.ParentTrackingKey.KEY_MERCHANT_CODE
@@ -260,45 +267,45 @@ class ThankYouPageAnalytics @Inject constructor(
     }
 
     fun sendBannerClickEvent(thanksPageData: ThanksPageData, banner: BannerItem, position: Int) {
-        val map = TrackAppUtils.gtmData(
-            KEY_EVENT_SELECT_CONTENT,
-            EVENT_CATEGORY_ORDER_COMPLETE,
-            EVENT_ACTION_CLICK_BANNER,
-            ""
-        )
-        map[KEY_TRACKER_ID] = TRACKER_45032
-        map[KEY_CURRENT_SITE] = thanksPageData.currentSite
-        map[KEY_PROMOTION] = getEnhancedECommerceBanner(banner, position)
-        addCommonTrackingData(map, thanksPageData.paymentID)
+        val promotionBundle = getEnhancedECommerceBanner(banner, position)
+        val bundle = Bundle().apply {
+            putString(KEY_EVENT, KEY_EVENT_SELECT_CONTENT)
+            putString(KEY_EVENT_CATEGORY, EVENT_CATEGORY_ORDER_COMPLETE)
+            putString(KEY_EVENT_ACTION, EVENT_ACTION_CLICK_BANNER)
+            putString(KEY_EVENT_LABEL, String.EMPTY)
+            putString(KEY_TRACKER_ID, TRACKER_45032)
+            putString(KEY_CURRENT_SITE, thanksPageData.currentSite)
+            putBundle(KEY_PROMOTION, promotionBundle)
+        }
 
-        analyticTracker.sendGeneralEvent(map)
+        analyticTracker.sendEnhanceEcommerceEvent(KEY_EVENT_SELECT_CONTENT, bundle)
     }
 
     fun sendBannerImpressionEvent(thanksPageData: ThanksPageData, banner: BannerItem, position: Int) {
-        val map = TrackAppUtils.gtmData(
-            KEY_EVENT_VIEW_ITEM,
-            EVENT_CATEGORY_ORDER_COMPLETE,
-            EVENT_ACTION_VIEW_BANNER,
-            ""
-        )
-        map[KEY_TRACKER_ID] = TRACKER_45031
-        map[KEY_CURRENT_SITE] = thanksPageData.currentSite
-        map[KEY_PROMOTION] = getEnhancedECommerceBanner(banner, position)
-        addCommonTrackingData(map, thanksPageData.paymentID)
+        val promotionBundle = getEnhancedECommerceBanner(banner, position)
+        val bundle = Bundle().apply {
+            putString(KEY_EVENT, KEY_EVENT_VIEW_ITEM)
+            putString(KEY_EVENT_CATEGORY, EVENT_CATEGORY_ORDER_COMPLETE)
+            putString(KEY_EVENT_ACTION, EVENT_ACTION_VIEW_BANNER)
+            putString(KEY_EVENT_LABEL, String.EMPTY)
+            putString(KEY_TRACKER_ID, TRACKER_45031)
+            putString(KEY_CURRENT_SITE, thanksPageData.currentSite)
+            putBundle(KEY_PROMOTION, promotionBundle)
+        }
 
-        analyticTracker.sendGeneralEvent(map)
+        analyticTracker.sendEnhanceEcommerceEvent(KEY_EVENT_SELECT_CONTENT, bundle)
     }
 
     private fun getEnhancedECommerceBanner(
         banner: BannerItem,
         position: Int
-    ): Map<String, Any> {
-        return mapOf(
-            KEY_ITEM_NAME to banner.assetUrl,
-            KEY_ITEM_ID to banner.itemId,
-            KEY_CREATIVE_NAME to banner.assetUrl,
-            KEY_CREATIVE_SLOT to position,
-        )
+    ): Bundle {
+        return Bundle().apply {
+            putString(KEY_ITEM_NAME, banner.assetUrl)
+            putString(KEY_ITEM_ID, banner.itemId)
+            putString(KEY_CREATIVE_NAME, banner.assetUrl)
+            putString(KEY_CREATIVE_SLOT, position.toString())
+        }
     }
 
     private fun addCommonTrackingData(map: MutableMap<String, Any>, paymentId: String) {
