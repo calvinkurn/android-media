@@ -314,7 +314,7 @@ class AddressFormFragment :
                     }
                 }
                 else -> {
-                    //no-op
+                    // no-op
                 }
             }
         }
@@ -366,7 +366,7 @@ class AddressFormFragment :
                     )
                 }
                 else -> {
-                    //no-op
+                    // no-op
                 }
             }
         }
@@ -399,7 +399,7 @@ class AddressFormFragment :
                     )
                 }
                 else -> {
-                    //no-op
+                    // no-op
                 }
             }
         }
@@ -1160,6 +1160,7 @@ class AddressFormFragment :
                 Intent().apply {
                     putExtra(EXTRA_EDIT_ADDRESS, viewModel.saveDataModel?.id?.toString())
                     putExtra(EXTRA_IS_STATE_CHOSEN_ADDRESS_CHANGED, isEditChosenAddress)
+                    putExtra(EXTRA_ADDRESS_NEW, viewModel.saveDataModel)
                 }
             )
             finish()
@@ -1264,7 +1265,9 @@ class AddressFormFragment :
                     setBtnSaveAddressEnable(true)
                 }
             }?.load(
-                viewLifecycleOwner, this, ConsentCollectionParam(
+                viewLifecycleOwner,
+                this,
+                ConsentCollectionParam(
                     collectionId = viewModel.getCollectionId()
                 )
             )

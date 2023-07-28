@@ -7,14 +7,15 @@ import androidx.lifecycle.viewModelScope
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.logisticCommon.data.constant.ManageAddressSource
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
+import com.tokopedia.logisticCommon.data.entity.address.WarehouseDataModel
 import com.tokopedia.logisticCommon.data.mapper.AddAddressMapper
 import com.tokopedia.logisticCommon.data.repository.KeroRepository
 import com.tokopedia.logisticCommon.data.response.DataAddAddress
 import com.tokopedia.logisticCommon.data.response.DefaultAddressData
 import com.tokopedia.logisticCommon.data.response.KeroEditAddressResponse
 import com.tokopedia.logisticCommon.data.response.PinpointValidationResponse
-import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.uimodel.FieldType
 import com.tokopedia.logisticaddaddress.common.AddressConstants
+import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.uimodel.FieldType
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RollenceKey.KEY_ADDRESS_IMPROVEMENTS
 import com.tokopedia.url.Env
@@ -205,6 +206,7 @@ class AddressFormViewModel @Inject constructor(private val repo: KeroRepository)
         viewModelScope.launch {
             try {
                 val editAddressData = repo.editAddress(model, getSourceValue())
+                saveDataModel = editAddressData.keroEditAddress.data.toSaveAddressDataModel()
                 _editAddress.value = Success(editAddressData.keroEditAddress.data)
             } catch (e: Throwable) {
                 _editAddress.value = Fail(e)
@@ -398,5 +400,25 @@ class AddressFormViewModel @Inject constructor(private val repo: KeroRepository)
                 AddressConstants.ADD_ADDRESS_COLLECTION_ID_PRODUCTION
             }
         }
+    }
+
+    private fun KeroEditAddressResponse.Data.KeroEditAddress.KeroEditAddressSuccessResponse.toSaveAddressDataModel(): SaveAddressDataModel {
+        val addressData = this.chosenAddressData
+        val tokonowData = this.tokonow
+        val warehouses = tokonowData.warehouses.map { WarehouseDataModel(warehouseId = it.warehouseId, serviceType = it.serviceType) }
+        return SaveAddressDataModel(
+            id = addressData.addressId,
+            addressName = addressData.addressName,
+            receiverName = addressData.receiverName,
+            postalCode = addressData.postalCode,
+            cityId = addressData.cityId.toLong(),
+            districtId = addressData.districtId.toLong(),
+            latitude = addressData.latitude,
+            longitude = addressData.longitude,
+            shopId = tokonowData.shopId,
+            warehouseId = tokonowData.warehouseId,
+            serviceType = tokonowData.serviceType,
+            warehouses = warehouses
+        )
     }
 }
