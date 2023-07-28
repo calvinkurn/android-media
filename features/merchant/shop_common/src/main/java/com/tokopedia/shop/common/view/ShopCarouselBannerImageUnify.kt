@@ -88,7 +88,7 @@ class ShopCarouselBannerImageUnify : AppCompatImageView {
     )
     private val defaultPlaceholderDrawable = LayerDrawable(arrayOf(AppCompatResources.getDrawable(context, com.tokopedia.unifycomponents.R.drawable.imagestate_placeholder)))
     private val defaultBackgroundDrawable =
-            ColorDrawable(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N75))
+            ColorDrawable(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN50))
 
     var isRetryable = false
 

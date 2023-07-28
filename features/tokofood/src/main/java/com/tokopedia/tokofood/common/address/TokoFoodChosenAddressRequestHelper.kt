@@ -6,7 +6,7 @@ import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import javax.inject.Inject
 
-class TokoFoodChosenAddressRequestHelper @Inject constructor(@ApplicationContext private val context: Context) {
+open class TokoFoodChosenAddressRequestHelper @Inject constructor(@ApplicationContext private val context: Context) {
 
     private fun getContext(): Context {
         return context

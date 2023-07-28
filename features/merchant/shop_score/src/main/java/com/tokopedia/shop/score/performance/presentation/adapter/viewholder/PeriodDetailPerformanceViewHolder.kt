@@ -33,7 +33,7 @@ class PeriodDetailPerformanceViewHolder(view: View) :
                 containerSectionDetailPerformance.setBackgroundColor(
                     ContextCompat.getColor(
                         root.context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_N0
+                        com.tokopedia.unifyprinciples.R.color.Unify_NN0
                     )
                 )
             }

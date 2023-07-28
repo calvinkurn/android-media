@@ -1,167 +1,97 @@
 package com.tokopedia.homenav.mainnav.view.analytics
 
 import android.os.Bundle
-import com.tokopedia.homenav.common.TrackingConst.CATEGORY_GLOBAL_MENU
-import com.tokopedia.homenav.common.TrackingConst.DEFAULT_BANNER
-import com.tokopedia.homenav.common.TrackingConst.DEFAULT_BUSINESS_UNIT
-import com.tokopedia.homenav.common.TrackingConst.DEFAULT_CURRENT_SITE
-import com.tokopedia.homenav.common.TrackingConst.DEFAULT_EMPTY
-import com.tokopedia.homenav.common.TrackingConst.DEFAULT_PAGE_SOURCE
-import com.tokopedia.homenav.common.TrackingConst.EVENT_CLICK_NAVIGATION_DRAWER
-import com.tokopedia.homenav.common.TrackingConst.PAGE_SOURCE
 import com.tokopedia.homenav.mainnav.domain.model.NavReviewModel
 import com.tokopedia.homenav.mainnav.domain.model.NavWishlistModel
+import com.tokopedia.homenav.mainnav.view.analytics.MainNavTrackingConst.KEY_PAGE_SOURCE
+import com.tokopedia.homenav.mainnav.view.analytics.MainNavTrackingConst.asTrackingPageSource
+import com.tokopedia.searchbar.navigation_component.NavSource
 import com.tokopedia.track.builder.BaseTrackerBuilder
 import com.tokopedia.track.builder.util.BaseTrackerConst
 
 object TrackingTransactionSection : BaseTrackerConst() {
-    private const val ACTION_CLICK_ON_ALL_TRANSACTION = "click on all transaction"
-    private const val ACTION_CLICK_ON_TICKET = "click on e-ticket and e-voucher"
-    private const val ACTION_CLICK_ON_REVIEW = "click on review"
-    private const val ACTION_CLICK_ON_WISHLIST = "click on Wishlist"
-    private const val ACTION_CLICK_ON_FAVOURITE_SHOP = "click on Favorite Shop"
-    private const val ACTION_CLICK_ON_ORDER_STATUS = "click on order status"
-    private const val ACTION_CLICK_ON_REVIEW_STAR_RATING = "click review card - product star rating"
-    private const val ACTION_CLICK_ON_REVIEW_CARD = "click review card - product card"
-    private const val ACTION_CLICK_VIEW_ALL_TRANSACTION = "click view all transaction"
-    private const val IMPRESSION_ON_ORDER_STATUS = "impression on order status"
-    private const val IMPRESSION_ON_REVIEW_CARD = "impression review card"
-    private const val TEMPLATE_GLOBAL_MENU = "/global_menu - order_status_card"
-    private const val PROMOTION_NAME_FORMAT = "/%s - %s"
-    private const val GLOBAL_MENU = "global_menu"
-    private const val REVIEW_CARD = "review_card"
+    private const val PROMOTION_NAME_REVIEW = "/global_menu - review_card"
     private const val PROMOTION_ID_FORMAT = "%s_%s_%s"
-    private const val EVENT_LABEL_CLICK_REVIEW_STAR_RATING_FORMAT = "%s - %s - %s - %s"
-    private const val EVENT_LABEL_CLICK_REVIEW_FORMAT = "%s - %s - %s"
     private const val STAR_RATING = "star rating"
     private const val PRODUCT_CARD = "product card"
     private const val CREATIVE_NAME_CLICK_REVIEW_FORMAT = "%s_%s"
     private const val ITEM_NAME_WISHLIST = "/global_menu - wishlist_card"
-    private const val IMPRESSION_ON_WISHLIST_CARD = "impression wishlist card"
-    private const val ACTION_CLICK_ON_WISHLIST_CARD = "click wishlist card"
-    private const val ACTION_CLICK_ON_WISHLIST_VIEW_ALL = "click view all wishlist"
-    private const val ITEM_NAME_FAVORITE_SHOP = "/global_menu - favorite_shop_card"
-    private const val IMPRESSION_ON_FAVORITE_SHOP_CARD = "impression favorite shop card"
-    private const val ACTION_CLICK_ON_FAVORITE_SHOP_CARD = "click favorite shop card"
-    private const val ACTION_CLICK_ON_FAVORITE_SHOP_VIEW_ALL = "click view all favorite shop"
-    private const val ACTION_CLICK_ON_REVIEW_VIEW_ALL = "click view all review"
-    private const val ITEM_ID_FORMAT = "0_%s"
-    private const val FORMAT_DASH_TWO_VALUES = "%s - %s"
-    private const val WISHLIST_IMPRESSION_TRACKER_ID = "30836"
-    private const val WISHLIST_CLICK_TRACKER_ID = "30837"
 
-    fun clickOnAllTransaction(userId: String) {
+    /**
+     * Tracker ID: 18484
+     * Thanos: https://mynakama.tokopedia.com/datatracker/requestdetail/view/1890
+     */
+    fun clickOnOrderStatus(
+        orderLabel: String,
+        pageSource: NavSource,
+        pageSourcePath: String = ""
+    ) {
         val trackingBuilder = BaseTrackerBuilder()
         trackingBuilder.constructBasicGeneralClick(
             event = Event.CLICK_HOMEPAGE,
-            eventCategory = CATEGORY_GLOBAL_MENU,
-            eventAction = ACTION_CLICK_ON_ALL_TRANSACTION,
-            eventLabel = DEFAULT_EMPTY
-        )
-        trackingBuilder.appendCurrentSite(DEFAULT_CURRENT_SITE)
-        trackingBuilder.appendUserId(userId)
-        trackingBuilder.appendBusinessUnit(DEFAULT_BUSINESS_UNIT)
-        getTracker().sendGeneralEvent(trackingBuilder.build())
-    }
-
-    fun clickOnTicket(userId: String) {
-        val trackingBuilder = BaseTrackerBuilder()
-        trackingBuilder.constructBasicGeneralClick(
-            event = EVENT_CLICK_NAVIGATION_DRAWER,
-            eventCategory = CATEGORY_GLOBAL_MENU,
-            eventAction = ACTION_CLICK_ON_TICKET,
-            eventLabel = DEFAULT_EMPTY
-        )
-        trackingBuilder.appendCurrentSite(DEFAULT_CURRENT_SITE)
-        trackingBuilder.appendUserId(userId)
-        trackingBuilder.appendBusinessUnit(DEFAULT_BUSINESS_UNIT)
-        getTracker().sendGeneralEvent(trackingBuilder.build())
-    }
-
-    fun clickOnReview(userId: String) {
-        val trackingBuilder = BaseTrackerBuilder()
-        trackingBuilder.constructBasicGeneralClick(
-            event = EVENT_CLICK_NAVIGATION_DRAWER,
-            eventCategory = CATEGORY_GLOBAL_MENU,
-            eventAction = ACTION_CLICK_ON_REVIEW,
-            eventLabel = DEFAULT_EMPTY
-        )
-        trackingBuilder.appendCurrentSite(DEFAULT_CURRENT_SITE)
-        trackingBuilder.appendUserId(userId)
-        trackingBuilder.appendBusinessUnit(DEFAULT_BUSINESS_UNIT)
-        getTracker().sendGeneralEvent(trackingBuilder.build())
-    }
-
-    fun clickOnWishlist(userId: String) {
-        val trackingBuilder = BaseTrackerBuilder()
-        trackingBuilder.constructBasicGeneralClick(
-            event = EVENT_CLICK_NAVIGATION_DRAWER,
-            eventCategory = CATEGORY_GLOBAL_MENU,
-            eventAction = ACTION_CLICK_ON_WISHLIST,
-            eventLabel = DEFAULT_EMPTY
-        )
-        trackingBuilder.appendCurrentSite(DEFAULT_CURRENT_SITE)
-        trackingBuilder.appendUserId(userId)
-        trackingBuilder.appendBusinessUnit(DEFAULT_BUSINESS_UNIT)
-        getTracker().sendGeneralEvent(trackingBuilder.build())
-    }
-
-    fun clickOnTokoFavorit(userId: String) {
-        val trackingBuilder = BaseTrackerBuilder()
-        trackingBuilder.constructBasicGeneralClick(
-            event = EVENT_CLICK_NAVIGATION_DRAWER,
-            eventCategory = CATEGORY_GLOBAL_MENU,
-            eventAction = ACTION_CLICK_ON_FAVOURITE_SHOP,
-            eventLabel = DEFAULT_EMPTY
-        )
-        trackingBuilder.appendCurrentSite(DEFAULT_CURRENT_SITE)
-        trackingBuilder.appendUserId(userId)
-        trackingBuilder.appendBusinessUnit(DEFAULT_BUSINESS_UNIT)
-        getTracker().sendGeneralEvent(trackingBuilder.build())
-    }
-
-    fun clickOnOrderStatus(userId: String, orderLabel: String) {
-        val trackingBuilder = BaseTrackerBuilder()
-        trackingBuilder.constructBasicGeneralClick(
-            event = Event.CLICK_HOMEPAGE,
-            eventCategory = CATEGORY_GLOBAL_MENU,
-            eventAction = ACTION_CLICK_ON_ORDER_STATUS,
+            eventCategory = MainNavTrackingConst.GLOBAL_MENU,
+            eventAction = "click on order status",
             eventLabel = orderLabel
         )
-        trackingBuilder.appendCurrentSite(DEFAULT_CURRENT_SITE)
-        trackingBuilder.appendUserId(userId)
-        trackingBuilder.appendBusinessUnit(DEFAULT_BUSINESS_UNIT)
+        trackingBuilder.appendCurrentSite(CurrentSite.DEFAULT)
+        trackingBuilder.appendBusinessUnit(BusinessUnit.DEFAULT)
+        trackingBuilder.appendCustomKeyValue(TrackerId.KEY, "18484")
+        trackingBuilder.appendCustomKeyValue(KEY_PAGE_SOURCE, pageSource.asTrackingPageSource(pageSourcePath))
         getTracker().sendGeneralEvent(trackingBuilder.build())
     }
 
-    fun getImpressionOnOrderStatus(userId: String, orderLabel: String, position: Int, bannerId: String = "0", orderId: String): HashMap<String, Any> {
+    /**
+     * Tracker ID: 30622
+     * Thanos: https://mynakama.tokopedia.com/datatracker/requestdetail/view/1890
+     */
+    fun getImpressionOnOrderStatus(
+        userId: String,
+        orderLabel: String,
+        bannerId: String = "0",
+        orderId: String,
+        position: Int,
+        pageSource: NavSource,
+        pageSourcePath: String = ""
+    ): HashMap<String, Any> {
         val trackingBuilder = BaseTrackerBuilder()
         return trackingBuilder.constructBasicPromotionView(
             event = Event.PROMO_VIEW,
-            eventCategory = CATEGORY_GLOBAL_MENU,
-            eventAction = IMPRESSION_ON_ORDER_STATUS,
-            eventLabel = "",
+            eventCategory = MainNavTrackingConst.GLOBAL_MENU,
+            eventAction = "impression on order status",
+            eventLabel = Label.NONE,
             promotions = listOf(
                 Promotion(
                     creative = orderLabel,
-                    id = FORMAT_DASH_TWO_VALUES.format(bannerId, orderId),
-                    name = TEMPLATE_GLOBAL_MENU,
+                    id = "%s - %s".format(bannerId, orderId),
+                    name = "/global_menu - order_status_card",
                     creativeUrl = "",
                     position = (position + 1).toString()
                 )
             )
         )
-            .appendCurrentSite(DEFAULT_CURRENT_SITE)
+            .appendCurrentSite(CurrentSite.DEFAULT)
             .appendUserId(userId)
-            .appendBusinessUnit(DEFAULT_BUSINESS_UNIT)
+            .appendBusinessUnit(BusinessUnit.DEFAULT)
+            .appendCustomKeyValue(TrackerId.KEY, "30622")
+            .appendCustomKeyValue(KEY_PAGE_SOURCE, pageSource.asTrackingPageSource(pageSourcePath))
             .build() as HashMap<String, Any>
     }
 
-    fun getImpressionOnWishlist(userId: String, position: Int, wishlistModel: NavWishlistModel): HashMap<String, Any> {
+    /**
+     * Tracker ID: 30836
+     * Thanos: https://mynakama.tokopedia.com/datatracker/requestdetail/view/1890
+     */
+    fun getImpressionOnWishlist(
+        userId: String,
+        position: Int,
+        wishlistModel: NavWishlistModel,
+        pageSource: NavSource,
+        pageSourcePath: String = ""
+    ): HashMap<String, Any> {
         return BaseTrackerBuilder().constructBasicPromotionView(
             event = Event.PROMO_VIEW,
-            eventCategory = CATEGORY_GLOBAL_MENU,
-            eventAction = IMPRESSION_ON_WISHLIST_CARD,
+            eventCategory = MainNavTrackingConst.GLOBAL_MENU,
+            eventAction = "impression wishlist card",
             eventLabel = wishlistModel.id,
             promotions = listOf(
                 Promotion(
@@ -173,22 +103,33 @@ object TrackingTransactionSection : BaseTrackerConst() {
                 )
             )
         )
-            .appendCurrentSite(DEFAULT_CURRENT_SITE)
+            .appendCurrentSite(CurrentSite.DEFAULT)
             .appendUserId(userId)
-            .appendBusinessUnit(DEFAULT_BUSINESS_UNIT)
-            .appendCustomKeyValue(TrackerId.KEY, WISHLIST_IMPRESSION_TRACKER_ID)
+            .appendBusinessUnit(BusinessUnit.DEFAULT)
+            .appendCustomKeyValue(TrackerId.KEY, "30836")
+            .appendCustomKeyValue(KEY_PAGE_SOURCE, pageSource.asTrackingPageSource(pageSourcePath))
             .build() as HashMap<String, Any>
     }
 
-    fun clickOnWishlistItem(userId: String, wishlistModel: NavWishlistModel, position: Int) {
+    /**
+     * Tracker ID: 30837
+     * Thanos: https://mynakama.tokopedia.com/datatracker/requestdetail/view/1890
+     */
+    fun clickOnWishlistItem(
+        userId: String,
+        wishlistModel: NavWishlistModel,
+        position: Int,
+        pageSource: NavSource,
+        pageSourcePath: String = ""
+    ) {
         val bundle = Bundle()
         bundle.putString(Event.KEY, Event.SELECT_CONTENT)
-        bundle.putString(Category.KEY, CATEGORY_GLOBAL_MENU)
-        bundle.putString(Action.KEY, ACTION_CLICK_ON_WISHLIST_CARD)
+        bundle.putString(Category.KEY, MainNavTrackingConst.GLOBAL_MENU)
+        bundle.putString(Action.KEY, "click wishlist card")
         bundle.putString(Label.KEY, wishlistModel.id)
-        bundle.putString(CurrentSite.KEY, DEFAULT_CURRENT_SITE)
+        bundle.putString(CurrentSite.KEY, CurrentSite.DEFAULT)
         bundle.putString(UserId.KEY, userId)
-        bundle.putString(BusinessUnit.KEY, DEFAULT_BUSINESS_UNIT)
+        bundle.putString(BusinessUnit.KEY, BusinessUnit.DEFAULT)
         val promotions = arrayListOf(
             Bundle().apply {
                 putString(Promotion.CREATIVE_NAME, Value.EMPTY)
@@ -198,54 +139,88 @@ object TrackingTransactionSection : BaseTrackerConst() {
             }
         )
         bundle.putParcelableArrayList(Promotion.KEY, promotions)
-        bundle.putString(TrackerId.KEY, WISHLIST_CLICK_TRACKER_ID)
+        bundle.putString(TrackerId.KEY, "30837")
+        bundle.putString(KEY_PAGE_SOURCE, pageSource.asTrackingPageSource(pageSourcePath))
         getTracker().sendEnhanceEcommerceEvent(Event.SELECT_CONTENT, bundle)
     }
 
-    fun clickOnWishlistViewAll() {
-        val bundle = Bundle()
-        bundle.putString(Event.KEY, Event.CLICK_HOMEPAGE)
-        bundle.putString(Category.KEY, CATEGORY_GLOBAL_MENU)
-        bundle.putString(Action.KEY, ACTION_CLICK_ON_WISHLIST_VIEW_ALL)
-        bundle.putString(Label.KEY, Label.NONE)
-        bundle.putString(CurrentSite.KEY, DEFAULT_CURRENT_SITE)
-        bundle.putString(BusinessUnit.KEY, DEFAULT_BUSINESS_UNIT)
-        getTracker().sendEnhanceEcommerceEvent(Event.CLICK_HOMEPAGE, bundle)
+    /**
+     * Tracker ID: 30859
+     * Thanos: https://mynakama.tokopedia.com/datatracker/requestdetail/view/1890
+     */
+    fun clickOnWishlistViewAll(
+        pageSource: NavSource,
+        pageSourcePath: String = ""
+    ) {
+        val trackingBuilder = BaseTrackerBuilder()
+        trackingBuilder.constructBasicGeneralClick(
+            event = Event.CLICK_HOMEPAGE,
+            eventCategory = MainNavTrackingConst.GLOBAL_MENU,
+            eventAction = "click view all wishlist",
+            eventLabel = Label.NONE
+        )
+        trackingBuilder.appendCurrentSite(CurrentSite.DEFAULT)
+        trackingBuilder.appendBusinessUnit(BusinessUnit.DEFAULT)
+        trackingBuilder.appendCustomKeyValue(TrackerId.KEY, "30859")
+        trackingBuilder.appendCustomKeyValue(KEY_PAGE_SOURCE, pageSource.asTrackingPageSource(pageSourcePath))
+        getTracker().sendGeneralEvent(trackingBuilder.build())
     }
 
-    fun getImpressionOnReviewProduct(position: Int, userId: String, element: NavReviewModel): HashMap<String, Any> {
+    /**
+     * Tracker ID: 30840
+     * Thanos: https://mynakama.tokopedia.com/datatracker/requestdetail/view/1890
+     */
+    fun getImpressionOnReviewProduct(
+        position: Int,
+        userId: String,
+        element: NavReviewModel,
+        pageSource: NavSource,
+        pageSourcePath: String = ""
+    ): HashMap<String, Any> {
         val trackingBuilder = BaseTrackerBuilder()
         val positionCard = (position + 1).toString()
         return trackingBuilder.constructBasicPromotionView(
             event = Event.PROMO_VIEW,
-            eventCategory = CATEGORY_GLOBAL_MENU,
-            eventAction = IMPRESSION_ON_REVIEW_CARD,
-            eventLabel = DEFAULT_EMPTY,
+            eventCategory = MainNavTrackingConst.GLOBAL_MENU,
+            eventAction = "impression review card",
+            eventLabel = Label.NONE,
             promotions = listOf(
                 Promotion(
-                    creative = DEFAULT_EMPTY,
-                    id = PROMOTION_ID_FORMAT.format(DEFAULT_BANNER, element.reputationId, element.productId),
-                    name = PROMOTION_NAME_FORMAT.format(GLOBAL_MENU, REVIEW_CARD),
-                    creativeUrl = DEFAULT_EMPTY,
+                    creative = Value.EMPTY,
+                    id = PROMOTION_ID_FORMAT.format("0", element.reputationId, element.productId),
+                    name = PROMOTION_NAME_REVIEW,
+                    creativeUrl = Value.EMPTY,
                     position = positionCard
                 )
             )
         )
-            .appendCurrentSite(DEFAULT_CURRENT_SITE)
+            .appendCurrentSite(CurrentSite.DEFAULT)
             .appendUserId(userId)
-            .appendBusinessUnit(DEFAULT_BUSINESS_UNIT)
-            .appendCustomKeyValue(PAGE_SOURCE, DEFAULT_PAGE_SOURCE)
+            .appendBusinessUnit(BusinessUnit.DEFAULT)
+            .appendCustomKeyValue(TrackerId.KEY, "30840")
+            .appendCustomKeyValue(KEY_PAGE_SOURCE, pageSource.asTrackingPageSource(pageSourcePath))
             .build() as HashMap<String, Any>
     }
 
-    fun getClickReviewStars(position: Int, userId: String, element: NavReviewModel, starRating: String): Pair<String, Bundle> {
+    /**
+     * Tracker ID: 30845
+     * Thanos: https://mynakama.tokopedia.com/datatracker/requestdetail/view/1890
+     */
+    fun clickReviewStars(
+        position: Int,
+        userId: String,
+        element: NavReviewModel,
+        starRating: String,
+        pageSource: NavSource,
+        pageSourcePath: String = ""
+    ) {
         val bundle = Bundle()
         bundle.putString(Event.KEY, Event.SELECT_CONTENT)
-        bundle.putString(Action.KEY, ACTION_CLICK_ON_REVIEW_STAR_RATING)
-        bundle.putString(Category.KEY, CATEGORY_GLOBAL_MENU)
+        bundle.putString(Action.KEY, "click review card - product star rating")
+        bundle.putString(Category.KEY, MainNavTrackingConst.GLOBAL_MENU)
         bundle.putString(
             Label.KEY,
-            EVENT_LABEL_CLICK_REVIEW_STAR_RATING_FORMAT.format(
+            "%s - %s - %s - %s".format(
                 STAR_RATING,
                 element.reputationId,
                 starRating,
@@ -254,8 +229,9 @@ object TrackingTransactionSection : BaseTrackerConst() {
         )
         bundle.putString(BusinessUnit.KEY, BusinessUnit.DEFAULT)
         bundle.putString(CurrentSite.KEY, CurrentSite.DEFAULT)
-        bundle.putString(PAGE_SOURCE, DEFAULT_PAGE_SOURCE)
+        bundle.putString(KEY_PAGE_SOURCE, pageSource.asTrackingPageSource(pageSourcePath))
         bundle.putString(UserId.KEY, userId)
+        bundle.putString(TrackerId.KEY, "30845")
         val promotion = Bundle()
         promotion.putString(
             Promotion.CREATIVE_NAME,
@@ -265,29 +241,39 @@ object TrackingTransactionSection : BaseTrackerConst() {
         promotion.putString(Promotion.CREATIVE_SLOT, horizontalPosition)
         promotion.putString(
             Promotion.ITEM_NAME,
-            PROMOTION_NAME_FORMAT.format(GLOBAL_MENU, REVIEW_CARD)
+            PROMOTION_NAME_REVIEW
         )
         promotion.putString(
             Promotion.ITEM_ID,
             String.format(
                 PROMOTION_ID_FORMAT,
-                DEFAULT_BANNER,
+                "0",
                 element.reputationId,
                 element.productId
             )
         )
         bundle.putParcelableArrayList(Promotion.KEY, arrayListOf(promotion))
-        return Pair(Event.SELECT_CONTENT, bundle)
+        getTracker().sendEnhanceEcommerceEvent(Event.SELECT_CONTENT, bundle)
     }
 
-    fun getClickReviewCard(position: Int, userId: String, element: NavReviewModel): Pair<String, Bundle> {
+    /**
+     * Tracker ID: 31120
+     * Thanos: https://mynakama.tokopedia.com/datatracker/requestdetail/view/1890
+     */
+    fun clickReviewCard(
+        position: Int,
+        userId: String,
+        element: NavReviewModel,
+        pageSource: NavSource,
+        pageSourcePath: String = ""
+    ) {
         val bundle = Bundle()
         bundle.putString(Event.KEY, Event.SELECT_CONTENT)
-        bundle.putString(Action.KEY, ACTION_CLICK_ON_REVIEW_CARD)
-        bundle.putString(Category.KEY, CATEGORY_GLOBAL_MENU)
+        bundle.putString(Action.KEY, "click review card - product card")
+        bundle.putString(Category.KEY, MainNavTrackingConst.GLOBAL_MENU)
         bundle.putString(
             Label.KEY,
-            EVENT_LABEL_CLICK_REVIEW_FORMAT.format(
+            "%s - %s - %s".format(
                 PRODUCT_CARD,
                 element.reputationId,
                 element.productId
@@ -295,50 +281,69 @@ object TrackingTransactionSection : BaseTrackerConst() {
         )
         bundle.putString(BusinessUnit.KEY, BusinessUnit.DEFAULT)
         bundle.putString(CurrentSite.KEY, CurrentSite.DEFAULT)
-        bundle.putString(PAGE_SOURCE, DEFAULT_PAGE_SOURCE)
+        bundle.putString(KEY_PAGE_SOURCE, pageSource.asTrackingPageSource(pageSourcePath))
         bundle.putString(UserId.KEY, userId)
+        bundle.putString(TrackerId.KEY, "31120")
         val promotion = Bundle()
         promotion.putString(
             Promotion.CREATIVE_NAME,
-            CREATIVE_NAME_CLICK_REVIEW_FORMAT.format(PRODUCT_CARD, DEFAULT_EMPTY)
+            CREATIVE_NAME_CLICK_REVIEW_FORMAT.format(PRODUCT_CARD, Value.EMPTY)
         )
         val horizontalPosition = (position + 1).toString()
         promotion.putString(Promotion.CREATIVE_SLOT, horizontalPosition)
         promotion.putString(
             Promotion.ITEM_NAME,
-            PROMOTION_NAME_FORMAT.format(GLOBAL_MENU, REVIEW_CARD)
+            PROMOTION_NAME_REVIEW
         )
         promotion.putString(
             Promotion.ITEM_ID,
             PROMOTION_ID_FORMAT.format(
-                DEFAULT_BANNER,
+                "0",
                 element.reputationId,
                 element.productId
             )
         )
         bundle.putParcelableArrayList(Promotion.KEY, arrayListOf(promotion))
-        return Pair(Event.SELECT_CONTENT, bundle)
+        getTracker().sendEnhanceEcommerceEvent(Event.SELECT_CONTENT, bundle)
     }
 
-    fun getClickViewAllTransaction() {
+    /**
+     * Tracker ID: 30860
+     * Thanos: https://mynakama.tokopedia.com/datatracker/requestdetail/view/1890
+     */
+    fun getClickViewAllTransaction(
+        pageSource: NavSource,
+        pageSourcePath: String = ""
+    ) {
         val bundle = Bundle()
         bundle.putString(Event.KEY, Event.CLICK_HOMEPAGE)
-        bundle.putString(Action.KEY, ACTION_CLICK_VIEW_ALL_TRANSACTION)
-        bundle.putString(Category.KEY, CATEGORY_GLOBAL_MENU)
-        bundle.putString(Label.KEY, DEFAULT_EMPTY)
+        bundle.putString(Action.KEY, "click view all transaction")
+        bundle.putString(Category.KEY, MainNavTrackingConst.GLOBAL_MENU)
+        bundle.putString(Label.KEY, Label.NONE)
         bundle.putString(BusinessUnit.KEY, BusinessUnit.DEFAULT)
         bundle.putString(CurrentSite.KEY, CurrentSite.DEFAULT)
+        bundle.putString(KEY_PAGE_SOURCE, pageSource.asTrackingPageSource(pageSourcePath))
+        bundle.putString(TrackerId.KEY, "30860")
         getTracker().sendEnhanceEcommerceEvent(Event.CLICK_HOMEPAGE, bundle)
     }
 
-    fun clickOnReviewViewAll() {
+    /**
+     * Tracker ID: 40850
+     * Thanos: https://mynakama.tokopedia.com/datatracker/requestdetail/view/1890
+     */
+    fun clickOnReviewViewAll(
+        pageSource: NavSource,
+        pageSourcePath: String = ""
+    ) {
         val bundle = Bundle()
         bundle.putString(Event.KEY, Event.CLICK_HOMEPAGE)
-        bundle.putString(Category.KEY, CATEGORY_GLOBAL_MENU)
-        bundle.putString(Action.KEY, ACTION_CLICK_ON_REVIEW_VIEW_ALL)
+        bundle.putString(Category.KEY, MainNavTrackingConst.GLOBAL_MENU)
+        bundle.putString(Action.KEY, "click view all review")
         bundle.putString(Label.KEY, Label.NONE)
-        bundle.putString(CurrentSite.KEY, DEFAULT_CURRENT_SITE)
-        bundle.putString(BusinessUnit.KEY, DEFAULT_BUSINESS_UNIT)
+        bundle.putString(CurrentSite.KEY, CurrentSite.DEFAULT)
+        bundle.putString(BusinessUnit.KEY, BusinessUnit.DEFAULT)
+        bundle.putString(KEY_PAGE_SOURCE, pageSource.asTrackingPageSource(pageSourcePath))
+        bundle.putString(TrackerId.KEY, "40850")
         getTracker().sendEnhanceEcommerceEvent(Event.CLICK_HOMEPAGE, bundle)
     }
 }

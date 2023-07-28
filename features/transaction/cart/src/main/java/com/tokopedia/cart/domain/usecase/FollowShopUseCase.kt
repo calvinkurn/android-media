@@ -1,58 +1,39 @@
 package com.tokopedia.cart.domain.usecase
 
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.gql_query_annotation.GqlQuery
+import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.network.exception.ResponseErrorException
-import com.tokopedia.purchase_platform.common.schedulers.ExecutorSchedulers
 import com.tokopedia.shop.common.domain.interactor.model.favoriteshop.DataFollowShop
-import com.tokopedia.usecase.RequestParams
-import com.tokopedia.usecase.UseCase
-import rx.Observable
 import javax.inject.Inject
-import javax.inject.Named
 
 class FollowShopUseCase @Inject constructor(
-    @Named(MUTATION_NAME) private val mutationString: String,
-    private val graphqlUseCase: GraphqlUseCase,
-    private val schedulers: ExecutorSchedulers
-) : UseCase<DataFollowShop>() {
+    @ApplicationContext private val graphqlRepository: GraphqlRepository,
+    dispatcher: CoroutineDispatchers
+) : CoroutineUseCase<String, DataFollowShop>(dispatcher.io) {
 
     companion object {
-        const val MUTATION_NAME = "followShop"
-
         const val PARAM_INPUT = "input"
         const val PARAM_SHOP_ID = "shopID"
+
+        const val QUERY_FOLLOW_SHOP = "FollowShopQuery"
     }
 
-    fun buildRequestParams(shopId: String): RequestParams {
-        val variables = HashMap<String, Any>()
-        variables[PARAM_INPUT] = mapOf(PARAM_SHOP_ID to shopId)
+    override fun graphqlQuery(): String = FOLLOW_SHOP_QUERY
 
-        return RequestParams.create().apply {
-            putAll(variables)
+    @GqlQuery(QUERY_FOLLOW_SHOP, FOLLOW_SHOP_QUERY)
+    override suspend fun execute(params: String): DataFollowShop {
+        val param = HashMap<String, Any>()
+        param[PARAM_INPUT] = mapOf(PARAM_SHOP_ID to params)
+        val request = GraphqlRequest(FollowShopQuery(), DataFollowShop::class.java, param)
+        val followShopResponse = graphqlRepository.response(listOf(request)).getSuccessData<DataFollowShop>()
+        if (followShopResponse.followShop?.isSuccess != true) {
+            throw ResponseErrorException(followShopResponse.followShop?.message)
         }
-    }
-
-    override fun createObservable(requestParams: RequestParams?): Observable<DataFollowShop> {
-        val graphqlRequest = GraphqlRequest(
-            mutationString,
-            DataFollowShop::class.java,
-            requestParams?.parameters
-                ?: emptyMap()
-        )
-        graphqlUseCase.clearRequest()
-        graphqlUseCase.addRequest(graphqlRequest)
-
-        return graphqlUseCase.createObservable(RequestParams.EMPTY)
-            .map {
-                val followShopResponse = it.getData<DataFollowShop>(DataFollowShop::class.java)
-                    ?: throw ResponseErrorException()
-                if (followShopResponse.followShop?.isSuccess != true) {
-                    throw ResponseErrorException(followShopResponse.followShop?.message)
-                }
-                followShopResponse
-            }
-            .subscribeOn(schedulers.io)
-            .observeOn(schedulers.main)
+        return followShopResponse
     }
 }

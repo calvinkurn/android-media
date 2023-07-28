@@ -33,7 +33,7 @@ class MerchantVoucherViewUsed : CustomVoucherView {
     private var btnUseVoucher: Button? = null
     private var ivVoucherType: MerchantVoucherImageType? = null
     private var vgVoucherView: View? = null
-    
+
     var onMerchantVoucherViewListener: OnMerchantVoucherViewListener? = null
 
     interface OnMerchantVoucherViewListener {
@@ -68,7 +68,7 @@ class MerchantVoucherViewUsed : CustomVoucherView {
         btnUseVoucher = view.findViewById(R.id.btnUseVoucher)
         ivVoucherType = view.findViewById(R.id.iv_voucher_type)
         vgVoucherView = view.findViewById(R.id.vgVoucherView)
-        
+
         clipToPadding = false
 
         MethodChecker.setBackground(
@@ -154,7 +154,7 @@ class MerchantVoucherViewUsed : CustomVoucherView {
                             MethodChecker.getDrawable(context, R.drawable.bg_used_voucher)
                     )
                     btnUseVoucher?.setTextColor(
-                            MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+                            MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN0)
                     )
                     btnUseVoucher?.visibility = View.VISIBLE
                     btnUseVoucher?.isEnabled = false

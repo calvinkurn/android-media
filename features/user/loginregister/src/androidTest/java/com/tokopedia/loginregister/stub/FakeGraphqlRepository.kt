@@ -4,11 +4,16 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.loginregister.discover.pojo.DiscoverData
-import com.tokopedia.loginregister.discover.pojo.DiscoverPojo
-import com.tokopedia.loginregister.discover.pojo.ProviderData
+import com.tokopedia.loginregister.common.domain.pojo.DiscoverData
+import com.tokopedia.loginregister.common.domain.pojo.DiscoverPojo
+import com.tokopedia.loginregister.common.domain.pojo.DynamicBannerDataModel
+import com.tokopedia.loginregister.common.domain.pojo.ProviderData
+import com.tokopedia.loginregister.common.domain.pojo.TickerInfoData
+import com.tokopedia.loginregister.common.domain.pojo.TickersInfoPojo
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckPojo
+import com.tokopedia.sessioncommon.data.GenerateKeyPojo
+import com.tokopedia.sessioncommon.data.KeyData
 import com.tokopedia.test.application.graphql.GqlMockUtil
 import com.tokopedia.test.application.graphql.GqlQueryParser
 import timber.log.Timber
@@ -22,7 +27,7 @@ class FakeGraphqlRepository : GraphqlRepository {
         requests: List<GraphqlRequest>,
         cacheStrategy: GraphqlCacheStrategy
     ): GraphqlResponse {
-        Timber.d("Pass through FakeGraphql $requests")
+        Timber.d("Passed through FakeGraphql: ${requests.first().query.slice(0..20)}")
         return when (GqlQueryParser.parse(requests).first()) {
             "registerCheck" -> {
                 val obj: RegisterCheckPojo = when (registerCheckConfig) {
@@ -36,10 +41,12 @@ class FakeGraphqlRepository : GraphqlRepository {
                             view = "yoris.prayogo@tokopedia.com"
                         )
                     )
+
                     else -> throw IllegalStateException()
                 }
                 GqlMockUtil.createSuccessResponse(obj)
             }
+
             "discover" -> {
                 val obj: DiscoverPojo = when (discoverConfig) {
                     is Config.Default -> DiscoverPojo(
@@ -51,19 +58,43 @@ class FakeGraphqlRepository : GraphqlRepository {
                                     "https://accounts.tokopedia.com/gplus-login",
                                     "",
                                     "#FFFFFF"
-                                ),
-                            ), ""
+                                )
+                            ),
+                            ""
                         )
                     )
+
                     is Config.Error -> throw Exception("mocked error")
                     else -> DiscoverPojo()
                 }
                 GqlMockUtil.createSuccessResponse(obj)
             }
-            else -> throw IllegalArgumentException()
+
+            "generate_key" -> {
+                GqlMockUtil.createSuccessResponse(
+                    GenerateKeyPojo(
+                        KeyData(
+                            key = "stubbedPublicKey",
+                            hash = "1234"
+                        )
+                    )
+                )
+            }
+
+            "GetBanner" -> {
+                GqlMockUtil.createSuccessResponse(DynamicBannerDataModel())
+            }
+
+            "ticker" -> {
+                GqlMockUtil.createSuccessResponse(TickerInfoData(TickersInfoPojo(listOf())))
+            }
+
+            else -> {
+                Timber.w("unhandled request ${GqlQueryParser.parse(requests).joinToString()}")
+                throw IllegalArgumentException()
+            }
         }
     }
-
 }
 
 sealed class Config {
