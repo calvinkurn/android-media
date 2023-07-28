@@ -47,7 +47,8 @@ object AddOnMapper {
                 addon = addonsUi,
                 productId = addonResponse.productID.toLongOrZero(),
                 warehouseId = warehouseId,
-                addOnLevel = addonResponse.addOnLevel
+                addOnLevel = addonResponse.addOnLevel,
+                addonCount = addonsUi.size
             )
         }.orEmpty()
     }
