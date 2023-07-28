@@ -81,7 +81,7 @@ class BankAccountViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         }
 
         if (bankAccount.status == INACTIVE_BANK_STATUS) {
-            val disabledColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_32)
+            val disabledColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_32)
             bankName.setTextColor(disabledColor)
             bankAccountNumber.setTextColor(disabledColor)
             bankAdminFee.setTextColor(disabledColor)
@@ -92,9 +92,9 @@ class BankAccountViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         } else {
             ivPremiumAccount.alpha = ALPHA_ENABLED
             tvSpecialOffer.alpha = ALPHA_ENABLED
-            bankName.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
-            bankAccountNumber.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
-            bankAdminFee.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+            bankName.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_96))
+            bankAccountNumber.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_68))
+            bankAdminFee.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_68))
             itemView.setOnClickListener { onBankAccountSelected(bankAccount) }
             ivPremiumAccount.setOnClickListener { listener.showPremiumAccountDialog(bankAccount) }
         }
@@ -103,8 +103,8 @@ class BankAccountViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
     private fun getWarningTextColor(warningColor: Int): Int {
         return if (warningColor == WARNING_COLOR_RED)
-            com.tokopedia.unifyprinciples.R.color.Unify_R600
-        else com.tokopedia.unifyprinciples.R.color.Unify_N700_32
+            com.tokopedia.unifyprinciples.R.color.Unify_RN500
+        else com.tokopedia.unifyprinciples.R.color.Unify_NN950_32
     }
 
     fun getPowerMerchantImageView(): View = ivPremiumAccount

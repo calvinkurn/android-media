@@ -148,7 +148,7 @@ class TokoChatChannelViewModelTest : TokoChatViewModelTestFixture() {
             } returns MutableLiveData(conversationChannelDummy)
 
             // When
-            val result = viewModel.getLiveChannel(CHANNEL_ID_DUMMY).observeAwaitValue()
+            val result = viewModel.getLiveChannel(CHANNEL_ID_DUMMY)?.observeAwaitValue()
 
             // Then
             Assert.assertEquals(conversationChannelDummy, result)

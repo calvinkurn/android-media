@@ -698,7 +698,7 @@ open class TokoChatFragment @Inject constructor(
     private fun observeMemberLeft() {
         // reset member left live data before observe to remove old data
         viewModel.resetMemberLeft()
-        observe(viewModel.getMemberLeft()) {
+        viewModel.getMemberLeft()?.observe(viewLifecycleOwner) {
             // If the livedata gives null, then do nothing
             // If the livedata gives old data, then do nothing
             if (it != null && it == headerUiModel?.id) {
@@ -756,7 +756,7 @@ open class TokoChatFragment @Inject constructor(
     }
 
     private fun observeLiveChannel() {
-        observe(viewModel.getLiveChannel(viewModel.channelId)) {
+        viewModel.getLiveChannel(viewModel.channelId)?.observe(viewLifecycleOwner) {
             it?.let { channel ->
                 // Show bottom sheet if channel expires
                 expiresAt = channel.expiresAt
@@ -998,7 +998,7 @@ open class TokoChatFragment @Inject constructor(
     }
 
     private fun observeChatHistory() {
-        observe(viewModel.getChatHistory(viewModel.channelId)) {
+        viewModel.getChatHistory(viewModel.channelId)?.observe(viewLifecycleOwner) {
             // First time get Chat History
             handleFirstTimeGetChatHistory()
 
@@ -1040,7 +1040,7 @@ open class TokoChatFragment @Inject constructor(
     }
 
     private fun observerTyping() {
-        viewModel.getTypingStatus().observe(viewLifecycleOwner) {
+        viewModel.getTypingStatus()?.observe(viewLifecycleOwner) {
             if (headerUiModel != null && it.contains(headerUiModel?.id)) {
                 showInterlocutorTypingStatus()
             } else {
@@ -1128,6 +1128,7 @@ open class TokoChatFragment @Inject constructor(
         element: TokoChatImageBubbleUiModel,
         isFromRetry: Boolean
     ) {
+        if (element.isImageReady) return
         viewModel.getImageWithId(
             imageId = element.imageId,
             channelId = viewModel.channelId,

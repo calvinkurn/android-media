@@ -16,6 +16,8 @@ buildscript {
     }
 }
 android {
+    namespace 'com.tkpd.remoteresourcerequest'
+    testNamespace 'com.tkpd.remoteresourcerequest.test'
     compileSdkVersion rootProject.ext.compileSdkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
 
@@ -51,7 +53,7 @@ dependencies {
     kapt rootProject.ext.dbDependencies.dbRoomCompiler
 
 
-    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
+    implementation projectOrAar(rootProject.ext.libraries.utils)
 
     //test
     testImplementation rootProject.ext.testDependencies.junit

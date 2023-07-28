@@ -176,7 +176,7 @@ class TopAdsHeadlineAdDetailViewActivity : TopAdsBaseDetailActivity(),
             clearImage()
             setImageDrawable(getIconUnifyDrawable(context,
                 IconUnify.EDIT,
-                ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700)))
+                ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950)))
             setOnClickListener {
                 val intent = RouteManager.getIntent(context,
                     ApplinkConstInternalTopAds.TOPADS_HEADLINE_ADS_EDIT)?.apply {

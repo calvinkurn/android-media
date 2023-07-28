@@ -13,7 +13,7 @@
         android:layout_height="match_parent">
 
         <com.tokopedia.unifycomponents.ContainerUnify
-            android:background="@color/Unify_N50"
+            android:background="@color/Unify_NN50"
             app:container_color="GREY"
             android:id="@+id/fragment_fingerprint_setting_container_switch"
             android:padding="@dimen/loginfingerprint_20"

@@ -27,7 +27,7 @@
         android:layout_width="@dimen/unify_space_0"
         android:layout_height="wrap_content"
         android:text="@string/ent_search_search_first_time_first_heading"
-        android:textColor="@color/Unify_N700"
+        android:textColor="@color/Unify_NN950"
         android:layout_marginLeft="@dimen/dimen_dp_10"
         app:typographyType="heading_4"
         app:typographyWeight="bold"

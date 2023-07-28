@@ -1,14 +1,13 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:versionCode="1"
-    android:versionName="1.0.0"
-    package="com.tokopedia.shop">
+    android:versionName="1.0.0">
 
     <application
         android:label="Shop Page Test"
         tools:replace="android:label">
         <activity
             android:theme="@style/ShopPageActivityTheme"
-            android:name=".environment.InstrumentationShopPageTestActivity"/>
+            android:name="com.tokopedia.shop.environment.InstrumentationShopPageTestActivity"/>
     </application>
 </manifest>

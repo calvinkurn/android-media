@@ -75,7 +75,7 @@ class TokoChatUserViewModelTest : TokoChatViewModelTestFixture() {
 
             // When
             viewModel.resetMemberLeft()
-            val result = viewModel.getMemberLeft().value
+            val result = viewModel.getMemberLeft()?.value
 
             // Then
             Assert.assertEquals(null, result)

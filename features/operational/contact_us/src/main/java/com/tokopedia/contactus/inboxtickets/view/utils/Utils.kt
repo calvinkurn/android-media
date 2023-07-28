@@ -59,7 +59,7 @@ class Utils {
             val occurences = findOccurrences(what, src)
             for (start in occurences) {
                 val styleSpan = getColorResource(
-                    com.tokopedia.unifyprinciples.R.color.Unify_Y200,
+                    com.tokopedia.unifyprinciples.R.color.Unify_YN200,
                     context
                 )
                 spannableString.setSpan(

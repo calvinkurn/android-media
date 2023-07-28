@@ -169,7 +169,10 @@ open class TokoFoodOrderTrackingViewModel @Inject constructor(
 
     fun getUnReadChatCount(channelId: String): LiveData<Result<Int>> {
         return try {
-            Transformations.map(getUnReadChatCountUseCase.get().unReadCount(channelId)) {
+            Transformations.map(
+                getUnReadChatCountUseCase.get().unReadCount(channelId)
+                    ?: MutableLiveData(Int.ZERO) // Zero if unRead LiveData is null
+            ) {
                 if (it != null) {
                     Success(it)
                 } else {

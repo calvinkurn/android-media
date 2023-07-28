@@ -1,31 +1,30 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:versionCode="1"
-    android:versionName="1.0.0"
-    package="com.tokopedia.productcard.test">
+    android:versionName="1.0.0">
 
     <application
         android:label="Product Card Test"
         tools:replace="android:label">
 
         <activity
-            android:name=".grid.ProductCardGridActivityTest"
+            android:name="com.tokopedia.productcard.test.grid.ProductCardGridActivityTest"
             android:theme="@style/Theme.White"/>
 
         <activity
-            android:name=".list.ProductCardListActivityTest"
+            android:name="com.tokopedia.productcard.test.list.ProductCardListActivityTest"
             android:theme="@style/Theme.White"/>
 
         <activity
-            android:name=".grid.ProductCardGridViewStubActivityTest"
+            android:name="com.tokopedia.productcard.test.grid.ProductCardGridViewStubActivityTest"
             android:theme="@style/Theme.White"/>
 
         <activity
-            android:name=".list.ProductCardListViewStubActivityTest"
+            android:name="com.tokopedia.productcard.test.list.ProductCardListViewStubActivityTest"
             android:theme="@style/Theme.White"/>
 
         <activity
-            android:name=".generator.ProductCardIDGeneratorActivityTest"
+            android:name="com.tokopedia.productcard.test.generator.ProductCardIDGeneratorActivityTest"
             android:theme="@style/Theme.White"/>
 
     </application>
