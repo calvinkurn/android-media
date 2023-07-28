@@ -99,7 +99,12 @@ import timber.log.Timber
 import java.io.File
 import javax.inject.Inject
 
-open class TokoChatFragment :
+open class TokoChatFragment @Inject constructor(
+    private var viewModel: TokoChatViewModel,
+    private var userSession: UserSessionInterface,
+    private var mapper: TokoChatConversationUiMapper,
+    private var remoteConfig: RemoteConfig
+) :
     TokoChatBaseFragment<TokochatChatroomFragmentBinding>(),
     ConversationsGroupBookingListener,
     TokoChatTypingListener,
@@ -114,19 +119,7 @@ open class TokoChatFragment :
     MaskingPhoneNumberBottomSheet.AnalyticsListener,
     TokoChatBubblesAwarenessBottomSheet.AnalyticsListener {
 
-    @Inject
-    lateinit var viewModel: TokoChatViewModel
-
-    @Inject
-    lateinit var userSession: UserSessionInterface
-
-    @Inject
-    lateinit var mapper: TokoChatConversationUiMapper
-
     private var tokoChatAnalytics: TokoChatAnalytics? = null
-
-    @Inject
-    lateinit var remoteConfig: RemoteConfig
 
     private var headerUiModel: TokoChatHeaderUiModel? = null
     private var selfUiModel: TokoChatHeaderUiModel? = null
@@ -146,9 +139,7 @@ open class TokoChatFragment :
 
     override fun getScreenName(): String = TAG
 
-    override fun initInjector() {
-        getComponent(TokoChatComponent::class.java).inject(this)
-    }
+    override fun initInjector() {}
 
     override fun onClickAttachmentButton() {
         baseBinding?.tokochatLayoutMenu?.toggleAttachmentMenu(

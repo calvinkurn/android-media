@@ -46,6 +46,7 @@ import com.tokopedia.tokochat.common.util.TokoChatCacheManager
 import com.tokopedia.tokochat.common.util.TokoChatCacheManagerImpl.Companion.TOKOCHAT_IMAGE_ATTACHMENT_MAP
 import com.tokopedia.tokochat.common.util.TokoChatValueUtil
 import com.tokopedia.tokochat.common.util.TokoChatValueUtil.IMAGE_ATTACHMENT_MSG
+import com.tokopedia.tokochat.common.util.TokoChatValueUtil.TOKOFOOD_SERVICE_TYPE
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -635,7 +636,6 @@ class TokoChatViewModel @Inject constructor(
     }
 
     companion object {
-        const val TOKOFOOD_SERVICE_TYPE = 5
         const val DELAY_UPDATE_ORDER_STATE = 5000L
         private const val DELAY_FETCH_IMAGE = 500L
         private const val ERROR_COMPRESSED_IMAGE_NULL = "Compressed image null"
