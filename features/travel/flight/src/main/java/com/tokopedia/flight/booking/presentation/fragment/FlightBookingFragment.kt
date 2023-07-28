@@ -734,6 +734,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
                 }
             )
             val layoutManager = LinearLayoutManager(activity, RecyclerView.VERTICAL, false)
+            binding?.rvFlightPriceDetail?.recycledViewPool?.setMaxRecycledViews(Int.ZERO, Int.ZERO)
             binding?.rvFlightPriceDetail?.layoutManager = layoutManager
             binding?.rvFlightPriceDetail?.setHasFixedSize(true)
             binding?.rvFlightPriceDetail?.adapter = flightPriceAdapter
