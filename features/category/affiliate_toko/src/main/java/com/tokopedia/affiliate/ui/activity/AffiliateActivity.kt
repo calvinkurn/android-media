@@ -83,8 +83,6 @@ class AffiliateActivity :
     private var fragmentStack = Stack<String>()
     private var affiliateBottomNavigation: AffiliateBottomNavbar? = null
 
-    fun getBottomNav() = affiliateBottomNavigation
-
     private var fromHelpAppLink = false
     private var fromAppLink = false
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -351,22 +349,34 @@ class AffiliateActivity :
 
     override fun menuClicked(position: Int, id: Int, isNotFromBottom: Boolean): Boolean {
         when (position) {
-            ADP_MENU -> openFragment(AffiliateAdpFragment.getFragmentInstance(this, this))
-            PROMO_MENU -> openFragment(AffiliatePromoWebViewFragment.getFragmentInstance())
-            INCOME_MENU -> openFragment(
-                AffiliateIncomeFragment.getFragmentInstance(
-                    userSessionInterface?.name.orEmpty(),
-                    userSessionInterface?.profilePicture.orEmpty(),
-                    this
+            ADP_MENU -> {
+                affiliateBottomNavigation?.showBottomNav()
+                openFragment(AffiliateAdpFragment.getFragmentInstance(this, this))
+            }
+            PROMO_MENU -> {
+                openFragment(AffiliatePromoWebViewFragment.getFragmentInstance())
+                affiliateBottomNavigation?.hideBottomNav()
+            }
+            INCOME_MENU -> {
+                affiliateBottomNavigation?.showBottomNav()
+                openFragment(
+                    AffiliateIncomeFragment.getFragmentInstance(
+                        userSessionInterface?.name.orEmpty(),
+                        userSessionInterface?.profilePicture.orEmpty(),
+                        this
+                    )
                 )
-            )
+            }
 
-            EDUKASI_MENU -> openFragment(
-                AffiliateEducationLandingPage.getFragmentInstance(
-                    fromAppLink = fromAppLink,
-                    fromHelpAppLink = fromHelpAppLink
+            EDUKASI_MENU -> {
+                affiliateBottomNavigation?.showBottomNav()
+                openFragment(
+                    AffiliateEducationLandingPage.getFragmentInstance(
+                        fromAppLink = fromAppLink,
+                        fromHelpAppLink = fromHelpAppLink
+                    )
                 )
-            )
+            }
         }
         if (!isNotFromBottom) sendBottomNavClickEvent(position)
         return true
@@ -485,6 +495,11 @@ class AffiliateActivity :
 
     override fun selectItem(position: Int, id: Int, isNotFromBottom: Boolean) {
         affiliateBottomNavigation?.setSelected(position, isNotFromBottom)
+        if (position == PROMO_MENU) {
+            affiliateBottomNavigation?.hideBottomNav()
+        } else {
+            affiliateBottomNavigation?.showBottomNav()
+        }
     }
 
     override fun onBackPressed() {
