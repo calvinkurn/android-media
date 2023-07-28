@@ -504,12 +504,14 @@ class AffiliateActivity :
 
     override fun onBackPressed() {
         val currentFragment =
-            supportFragmentManager.findFragmentByTag(AffiliatePromoFragment::class.java.name)
+            supportFragmentManager.findFragmentById(R.id.parent_view)
         if (currentFragment != null && currentFragment.isVisible) {
             if (currentFragment is AffiliatePromoFragment) {
                 (currentFragment as? AffiliatePromoFragment)?.handleBack()
             } else if (currentFragment is AffiliateEducationLandingPage) {
                 (currentFragment as? AffiliateEducationLandingPage)?.handleBack()
+            } else if (currentFragment is AffiliatePromoWebViewFragment) {
+                (currentFragment as? AffiliatePromoWebViewFragment)?.handleBack()
             }
         } else {
             handleBackButton(false)

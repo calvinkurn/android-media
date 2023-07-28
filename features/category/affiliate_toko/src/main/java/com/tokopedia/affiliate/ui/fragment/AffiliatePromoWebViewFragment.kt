@@ -49,6 +49,8 @@ class AffiliatePromoWebViewFragment : AffiliateBaseFragment<AffiliatePromoViewMo
 
     private var binding by autoClearedNullable<AffiliatePromoWebviewLayoutBinding>()
 
+    private var webViewFragment: Fragment? = null
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -59,12 +61,15 @@ class AffiliatePromoWebViewFragment : AffiliateBaseFragment<AffiliatePromoViewMo
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        childFragmentManager.beginTransaction()
-            .add(
-                R.id.promo_web_view_container,
-                AffiliateHelpFragment.getFragmentInstance(url, isPromo = true)
-            )
-            .commit()
+        webViewFragment = AffiliateHelpFragment.getFragmentInstance(url, isPromo = true)
+        webViewFragment?.let {
+            childFragmentManager.beginTransaction()
+                .add(
+                    R.id.promo_web_view_container,
+                    it
+                )
+                .commit()
+        }
     }
 
     companion object {
@@ -119,5 +124,9 @@ class AffiliatePromoWebViewFragment : AffiliateBaseFragment<AffiliatePromoViewMo
 
     override fun getViewModelType(): Class<AffiliatePromoViewModel> {
         return AffiliatePromoViewModel::class.java
+    }
+
+    fun handleBack() {
+        (webViewFragment as? AffiliateHelpFragment)?.handleBack()
     }
 }
