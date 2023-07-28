@@ -1,5 +1,6 @@
 package com.tokopedia.promocheckoutmarketplace.presentation.viewmodel
 
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.promocheckoutmarketplace.GetPromoLastSeenDataProvider.provideGetPromoLastSeenSuccessEmpty
 import com.tokopedia.promocheckoutmarketplace.GetPromoLastSeenDataProvider.provideGetPromoLastSeenSuccessWithData
 import com.tokopedia.promocheckoutmarketplace.data.response.GetPromoSuggestionResponse
@@ -71,5 +72,21 @@ class PromoCheckoutViewModelGetPromoLastSeenTest : BasePromoCheckoutViewModelTes
 
         // then
         assert(viewModel.getPromoSuggestionResponse.value?.state != GetPromoSuggestionAction.ACTION_SHOW)
+    }
+
+    @Test
+    fun `WHEN get promo last seen failed THEN should update state to release lock flag`() {
+        // given
+        val throwable = MessageErrorException("Tokopedia")
+
+        coEvery { getPromoSuggestionUseCase.execute(any(), any()) } answers {
+            secondArg<(Throwable) -> Unit>().invoke(throwable)
+        }
+
+        // when
+        viewModel.getPromoSuggestion()
+
+        // then
+        assert(viewModel.getPromoSuggestionResponse.value?.state == GetPromoSuggestionAction.ACTION_RELEASE_LOCK_FLAG)
     }
 }
