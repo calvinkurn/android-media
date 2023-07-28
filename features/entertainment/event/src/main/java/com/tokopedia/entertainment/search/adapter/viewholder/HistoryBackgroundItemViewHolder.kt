@@ -5,21 +5,23 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.entertainment.R
+import com.tokopedia.entertainment.databinding.EntSearchEventListItemBinding
+import com.tokopedia.entertainment.databinding.EntSearchHistorySearchBinding
 import com.tokopedia.entertainment.search.adapter.SearchEventViewHolder
 import com.tokopedia.entertainment.search.adapter.viewmodel.HistoryModel
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.setMargin
-import kotlinx.android.synthetic.main.ent_search_event_list_item.view.*
-import kotlinx.android.synthetic.main.ent_search_history_search.view.*
+import com.tokopedia.media.loader.loadImage
+import com.tokopedia.utils.view.binding.viewBinding
 
 class HistoryBackgroundItemViewHolder(val view: View) : SearchEventViewHolder<HistoryModel>(view){
 
-    val listAdapter = EventAdapter()
-
+    private val listAdapter = EventAdapter()
+    private val binding: EntSearchHistorySearchBinding? by viewBinding()
     init {
-        itemView.recycler_view.apply{
+        binding?.recyclerView?.run {
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(itemView.context, RecyclerView.VERTICAL, false)
             adapter = listAdapter
@@ -42,31 +44,36 @@ class HistoryBackgroundItemViewHolder(val view: View) : SearchEventViewHolder<Hi
         lateinit var list: List<EventModel>
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EventViewHolder {
-            return EventViewHolder(LayoutInflater.from(parent.context)
-                    .inflate(R.layout.ent_search_event_list_item, parent, false))
+            val binding = EntSearchEventListItemBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent,
+                false
+            )
+            return EventViewHolder(binding)
         }
 
         override fun getItemCount(): Int = list.size
 
         override fun onBindViewHolder(holder: EventViewHolder, position: Int) {
-            var element: EventModel = list.get(position)
-
-            Glide.with(holder.view)
-                    .load(element.image_url)
-                    .centerCrop()
-                    .into(holder.view.imgEvent)
-            holder.view.txtTanggalSearch.text = element.tanggal_event
-            holder.view.txtJudulEvent.text = element.nama_event
-            holder.view.txtLokasiSearch.text = element.lokasi_event
-            holder.view.setOnClickListener {
-                RouteManager.route(holder.view.context, element.app_url)
-            }
-
-            if(element.tanggal_event.isBlank()){
-                holder.view.txtLokasiSearch.setMargin(0,0,0,0)
-            }
+            holder.bind(list[position])
         }
     }
 
-    class EventViewHolder(val view: View) : RecyclerView.ViewHolder(view)
+    class EventViewHolder(val binding: EntSearchEventListItemBinding) : RecyclerView.ViewHolder(binding.root) {
+        fun bind(element: EventModel) {
+            with(binding) {
+                imgEvent.loadImage(element.image_url)
+                txtTanggalSearch.text = element.tanggal_event
+                txtJudulEvent.text = element.nama_event
+                txtLokasiSearch.text = element.lokasi_event
+                root.setOnClickListener {
+                    RouteManager.route(root.context, element.app_url)
+                }
+
+                if(element.tanggal_event.isBlank()){
+                    txtLokasiSearch.setMargin(Int.ZERO, Int.ZERO, Int.ZERO, Int.ZERO)
+                }
+            }
+        }
+    }
 }
