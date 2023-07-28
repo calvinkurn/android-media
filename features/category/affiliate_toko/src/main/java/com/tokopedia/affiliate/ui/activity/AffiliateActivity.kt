@@ -173,7 +173,7 @@ class AffiliateActivity :
         finish()
     }
 
-    private val isAffiliatePromoWebViewEnabled =
+    private fun isAffiliatePromoWebViewEnabled() =
         RemoteConfigInstance.getInstance()?.abTestPlatform?.getString(
             AFFILIATE_PROMO_WEBVIEW,
             ""
@@ -237,7 +237,7 @@ class AffiliateActivity :
                                     coachMarkItemList[currentIndex].anchorView = it
                                     viewFound = true
                                 }
-                                if (isAffiliatePromoWebViewEnabled) {
+                                if (isAffiliatePromoWebViewEnabled()) {
                                     setBottomState(AffiliatePromoWebViewFragment::class.java.name)
                                 } else {
                                     setBottomState(AffiliatePromoFragment::class.java.name)
@@ -267,7 +267,7 @@ class AffiliateActivity :
     }
 
     private fun getPromoFragmentView(): AffiliateLinkTextField? {
-        if (!isAffiliatePromoWebViewEnabled) {
+        if (!isAffiliatePromoWebViewEnabled()) {
             openFragment(AffiliatePromoFragment.getFragmentInstance())
             val currentFragment =
                 supportFragmentManager.findFragmentByTag(AffiliatePromoFragment::class.java.name)
@@ -281,7 +281,7 @@ class AffiliateActivity :
     }
 
     private fun getHomeFragmentView(): Typography? {
-        if (!isAffiliatePromoWebViewEnabled) {
+        if (!isAffiliatePromoWebViewEnabled()) {
             val currentFragment =
                 supportFragmentManager.findFragmentByTag(AffiliatePromoFragment::class.java.name)
             currentFragment?.let { fragment ->
@@ -354,8 +354,13 @@ class AffiliateActivity :
                 openFragment(AffiliateAdpFragment.getFragmentInstance(this, this))
             }
             PROMO_MENU -> {
-                openFragment(AffiliatePromoWebViewFragment.getFragmentInstance())
-                affiliateBottomNavigation?.hideBottomNav()
+                if (isAffiliatePromoWebViewEnabled()) {
+                    openFragment(AffiliatePromoWebViewFragment.getFragmentInstance())
+                    affiliateBottomNavigation?.hideBottomNav()
+                } else {
+                    openFragment(AffiliatePromoFragment.getFragmentInstance())
+                    affiliateBottomNavigation?.showBottomNav()
+                }
             }
             INCOME_MENU -> {
                 affiliateBottomNavigation?.showBottomNav()
@@ -506,12 +511,18 @@ class AffiliateActivity :
         val currentFragment =
             supportFragmentManager.findFragmentById(R.id.parent_view)
         if (currentFragment != null && currentFragment.isVisible) {
-            if (currentFragment is AffiliatePromoFragment) {
-                (currentFragment as? AffiliatePromoFragment)?.handleBack()
-            } else if (currentFragment is AffiliateEducationLandingPage) {
-                (currentFragment as? AffiliateEducationLandingPage)?.handleBack()
-            } else if (currentFragment is AffiliatePromoWebViewFragment) {
-                (currentFragment as? AffiliatePromoWebViewFragment)?.handleBack()
+            when (currentFragment) {
+                is AffiliatePromoFragment -> {
+                    (currentFragment as? AffiliatePromoFragment)?.handleBack()
+                }
+
+                is AffiliateEducationLandingPage -> {
+                    (currentFragment as? AffiliateEducationLandingPage)?.handleBack()
+                }
+
+                is AffiliatePromoWebViewFragment -> {
+                    (currentFragment as? AffiliatePromoWebViewFragment)?.handleBack()
+                }
             }
         } else {
             handleBackButton(false)
