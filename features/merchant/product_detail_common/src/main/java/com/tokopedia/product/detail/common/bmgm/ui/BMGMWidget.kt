@@ -1,6 +1,7 @@
 package com.tokopedia.product.detail.common.bmgm.ui
 
 import android.content.Context
+import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.util.AttributeSet
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -33,8 +34,9 @@ class BMGMWidget @JvmOverloads constructor(
     private val binding by lazyThreadSafetyNone {
         val view = inflate(context, com.tokopedia.product.detail.common.R.layout.bmgm_widget, this)
         BmgmWidgetBinding.bind(view).apply {
-            bmgmProductList.layoutManager =
-                GridLayoutManager(context, SPAN_COUNT, GridLayoutManager.VERTICAL, false)
+            bmgmProductList.layoutManager = GridLayoutManager(
+                context, SPAN_COUNT, GridLayoutManager.VERTICAL, false
+            )
             bmgmProductList.adapter = productAdapter
         }
     }
@@ -74,23 +76,26 @@ class BMGMWidget @JvmOverloads constructor(
 
         if (titleColor.isNotBlank()) {
             val default = com.tokopedia.unifyprinciples.R.color.Unify_TN500
-            val unifyColor = runCatching {
-                stringToUnifyColor(context, titleColor).unifyColor
-            }.getOrNull() ?: default
+            val unifyColor = getStringUnifyColor(titleColor, default)
             binding.bmgmTitle.setTextColor(unifyColor)
         }
     }
 
     private fun setBackgroundGradient(colors: String) {
-        val mColors = colors.split(",").map {
-            runCatching {
-                stringToUnifyColor(context, it).unifyColor
-            }.getOrNull() ?: Int.ZERO
-        }.toIntArray()
-
-        val gradient = GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, mColors)
-        background = gradient
+        val mColors = getGradientColors(colors = colors)
+        background = GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, mColors)
     }
+
+    private fun getGradientColors(colors: String) = colors.split(",").map {
+        val color = it.trim()
+        getStringUnifyColor(color, Int.ZERO)
+    }.toIntArray()
+
+    private fun getStringUnifyColor(color: String, default: Int) = runCatching {
+        stringToUnifyColor(context, color).unifyColor
+    }.getOrNull() ?: runCatching {
+        Color.parseColor(color)
+    }.getOrNull() ?: default
 
     private fun setEvent(action: BMGMUiModel.Action, router: BMGMRouter) {
         binding.root.setOnClickListener {
