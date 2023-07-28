@@ -4,8 +4,16 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.LocalOverscrollConfiguration
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material.MaterialTheme
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -16,8 +24,11 @@ import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.sellerpersona.R
 import com.tokopedia.sellerpersona.view.activity.SellerPersonaActivity
 import com.tokopedia.sellerpersona.view.compose.model.args.PersonaArgsUiModel
+import com.tokopedia.sellerpersona.view.compose.model.state.SelectTypeState
 import com.tokopedia.sellerpersona.view.compose.model.uievent.SelectTypeUiEvent
-import com.tokopedia.sellerpersona.view.compose.screen.selecttype.SelectPersonaTypeScreen
+import com.tokopedia.sellerpersona.view.compose.screen.selecttype.PersonSuccessState
+import com.tokopedia.sellerpersona.view.compose.screen.selecttype.SelectTypeErrorState
+import com.tokopedia.sellerpersona.view.compose.screen.selecttype.SelectTypeLoadingState
 import com.tokopedia.sellerpersona.view.compose.viewmodel.ComposePersonaSelectTypeViewModel
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.flow.collectLatest
@@ -42,6 +53,7 @@ class ComposeSelectTypeFragment : Fragment() {
         inject()
     }
 
+    @OptIn(ExperimentalFoundationApi::class)
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -63,8 +75,25 @@ class ComposeSelectTypeFragment : Fragment() {
                 })
 
                 NestTheme {
-                    val state = viewModel.state.collectAsState()
-                    SelectPersonaTypeScreen(data = state.value, onEvent = viewModel::onEvent)
+                    CompositionLocalProvider(LocalOverscrollConfiguration provides null) {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .background(color = MaterialTheme.colors.background)
+                        ) {
+                            val state = viewModel.state.collectAsState()
+                            val data = state.value
+
+                            when (data.state) {
+                                is SelectTypeState.State.Loading -> SelectTypeLoadingState()
+                                is SelectTypeState.State.Error -> SelectTypeErrorState(viewModel::onEvent)
+                                is SelectTypeState.State.Success -> PersonSuccessState(
+                                    data.data,
+                                    viewModel::onEvent
+                                )
+                            }
+                        }
+                    }
                 }
             }
         }

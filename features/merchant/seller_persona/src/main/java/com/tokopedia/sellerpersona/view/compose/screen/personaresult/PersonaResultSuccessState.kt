@@ -34,9 +34,6 @@ import com.tokopedia.nest.components.ButtonVariant
 import com.tokopedia.nest.components.NestButton
 import com.tokopedia.nest.components.NestImage
 import com.tokopedia.nest.components.NestImageType
-import com.tokopedia.nest.components.loader.NestLoader
-import com.tokopedia.nest.components.loader.NestLoaderSize
-import com.tokopedia.nest.components.loader.NestLoaderType
 import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestNN
 import com.tokopedia.nest.principles.ui.NestTheme
@@ -58,7 +55,7 @@ private const val PERSONA_TITLE = "\uD83C\uDF1F %s \uD83C\uDF1F"
 private const val CORPORATE_EMPLOYEE = "corporate-employee"
 
 @Composable
-internal fun PersonaResultScreen(
+internal fun ResultSuccessState(
     state: PersonaResultState, onEvent: (ResultUiEvent) -> Unit
 ) {
     LazyColumn(modifier = Modifier.fillMaxSize()) {
@@ -300,24 +297,11 @@ private fun ResultHeaderSectionUi(persona: PersonaUiModel) {
     }
 }
 
-@Composable
-fun ResultLoadingState() {
-    Box(
-        modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center
-    ) {
-        NestLoader(
-            variant = NestLoaderType.Circular(
-                size = NestLoaderSize.Small
-            )
-        )
-    }
-}
-
 @Preview(showBackground = true)
 @Composable
 fun PreviewPersonaResultScreen() {
     NestTheme(darkTheme = false) {
-        PersonaResultScreen(state = PersonaResultState(
+        ResultSuccessState(state = PersonaResultState(
             state = PersonaResultState.State.Success,
             data = PersonaDataUiModel(
                 persona = "corporate-supervisor-owner",

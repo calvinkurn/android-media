@@ -21,9 +21,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.tokopedia.nest.principles.ui.NestTheme
-import com.tokopedia.sellerpersona.view.compose.component.NestShimmer
+import com.tokopedia.sellerpersona.view.compose.component.RectShimmer
 
 /**
  * Created by @ilhamsuaib on 26/07/23.
@@ -31,7 +32,7 @@ import com.tokopedia.sellerpersona.view.compose.component.NestShimmer
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-internal fun PersonaTypeLoadingState() {
+internal fun SelectTypeLoadingState() {
     val rowState = rememberLazyListState()
     LazyRow(
         modifier = Modifier
@@ -63,58 +64,58 @@ internal fun PersonaTypeLoadingState() {
                             .padding(start = 16.dp, end = 16.dp)
                     ) {
                         Spacer(modifier = Modifier.height(16.dp))
-                        NestShimmer(modifier = Modifier.size(80.dp), rounded = 32.dp)
+                        RectShimmer(modifier = Modifier.size(80.dp), rounded = 32.dp)
                         Spacer(modifier = Modifier.height(12.dp))
-                        NestShimmer(
+                        RectShimmer(
                             modifier = Modifier
                                 .width(92.dp)
                                 .height(16.dp),
                             rounded = 6.dp
                         )
                         Spacer(modifier = Modifier.height(8.dp))
-                        NestShimmer(
+                        RectShimmer(
                             modifier = Modifier
                                 .width(164.dp)
                                 .height(16.dp),
                             rounded = 6.dp
                         )
                         Spacer(modifier = Modifier.height(8.dp))
-                        NestShimmer(
+                        RectShimmer(
                             modifier = Modifier
                                 .width(116.dp)
                                 .height(16.dp),
                             rounded = 6.dp
                         )
                         Spacer(modifier = Modifier.height(16.dp))
-                        NestShimmer(
+                        RectShimmer(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .height(1.dp),
                             rounded = 0.5.dp
                         )
                         Spacer(modifier = Modifier.height(16.dp))
-                        NestShimmer(
+                        RectShimmer(
                             modifier = Modifier
                                 .width(116.dp)
                                 .height(16.dp),
                             rounded = 6.dp
                         )
                         Spacer(modifier = Modifier.height(16.dp))
-                        NestShimmer(
+                        RectShimmer(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .height(16.dp),
                             rounded = 6.dp
                         )
                         Spacer(modifier = Modifier.height(8.dp))
-                        NestShimmer(
+                        RectShimmer(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .height(16.dp),
                             rounded = 6.dp
                         )
                         Spacer(modifier = Modifier.height(8.dp))
-                        NestShimmer(
+                        RectShimmer(
                             modifier = Modifier
                                 .width(176.dp)
                                 .height(16.dp),
@@ -126,11 +127,19 @@ internal fun PersonaTypeLoadingState() {
                             .align(alignment = Alignment.TopEnd)
                             .padding(all = 16.dp)
                     ) {
-                        NestShimmer(modifier = Modifier.size(24.dp), rounded = 12.dp)
+                        RectShimmer(modifier = Modifier.size(24.dp), rounded = 12.dp)
                     }
                 }
             }
         }
         item { Spacer(modifier = Modifier.width(8.dp)) }
+    }
+}
+
+@Preview
+@Composable
+fun SelectTypeLoadingStatePreview() {
+    NestTheme(darkTheme = false) {
+        SelectTypeLoadingState()
     }
 }

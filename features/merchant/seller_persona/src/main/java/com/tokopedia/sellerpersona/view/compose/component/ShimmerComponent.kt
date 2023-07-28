@@ -13,7 +13,7 @@ import com.tokopedia.nest.components.loader.NestShimmerType
  */
 
 @Composable
-internal fun NestShimmer(rounded: Dp = 8.dp, modifier: Modifier) {
+internal fun RectShimmer(rounded: Dp = 8.dp, modifier: Modifier) {
     NestLoader(
         variant = NestLoaderType.Shimmer(NestShimmerType.Rect(rounded = rounded)),
         modifier = modifier

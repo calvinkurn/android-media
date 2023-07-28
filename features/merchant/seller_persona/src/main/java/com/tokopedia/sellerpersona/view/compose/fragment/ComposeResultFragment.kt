@@ -10,7 +10,6 @@ import androidx.compose.material.Surface
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.platform.ComposeView
-import androidx.compose.ui.res.stringResource
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
@@ -25,11 +24,11 @@ import com.tokopedia.sellerpersona.R
 import com.tokopedia.sellerpersona.analytics.SellerPersonaTracking
 import com.tokopedia.sellerpersona.data.local.PersonaSharedPref
 import com.tokopedia.sellerpersona.view.activity.SellerPersonaActivity
-import com.tokopedia.sellerpersona.view.compose.component.ErrorStateComponent
 import com.tokopedia.sellerpersona.view.compose.model.args.PersonaArgsUiModel
 import com.tokopedia.sellerpersona.view.compose.model.state.PersonaResultState
 import com.tokopedia.sellerpersona.view.compose.model.uievent.ResultUiEvent
-import com.tokopedia.sellerpersona.view.compose.screen.personaresult.PersonaResultScreen
+import com.tokopedia.sellerpersona.view.compose.screen.personaresult.ResultSuccessState
+import com.tokopedia.sellerpersona.view.compose.screen.personaresult.ResultErrorState
 import com.tokopedia.sellerpersona.view.compose.screen.personaresult.ResultLoadingState
 import com.tokopedia.sellerpersona.view.compose.viewmodel.ComposePersonaResultViewModel
 import com.tokopedia.sellerpersona.view.model.isActive
@@ -100,20 +99,11 @@ class ComposeResultFragment : Fragment() {
 
                         when (state.value.state) {
                             is PersonaResultState.State.Loading -> ResultLoadingState()
-                            is PersonaResultState.State.Error -> {
-                                ErrorStateComponent(
-                                    actionText = stringResource(id = R.string.sp_reload),
-                                    title = stringResource(id = R.string.sp_common_global_error_title),
-                                    onActionClicked = {
-                                        viewModel.onEvent(ResultUiEvent.Reload)
-                                    }
-                                )
-                            }
-
+                            is PersonaResultState.State.Error -> ResultErrorState(viewModel::onEvent)
                             is PersonaResultState.State.Success -> {
                                 updatePersonaStatusFlag(state.value.data.personaStatus.isActive())
                                 markForCheckedChanged(state.value.data.isSwitchChecked)
-                                PersonaResultScreen(state.value, viewModel::onEvent)
+                                ResultSuccessState(state.value, viewModel::onEvent)
                             }
                         }
                     }
