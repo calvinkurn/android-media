@@ -214,7 +214,13 @@ class CartListPresenter @Inject constructor(
             CartUiModelMapper.mapPromoSummaryUiModel(cartListData.promoSummary)
     }
 
-    override fun getSummaryTransactionUiModel(): SummaryTransactionUiModel? {
+    override fun getSummaryTransactionUiModel(selectedCartItemData: List<CartItemHolderData>): SummaryTransactionUiModel? {
+        val updatedAddOnSummary = cartListData?.shoppingSummary?.summaryAddOnList?.let {
+            CartUiModelMapper.mapSummariesAddOnsFromSelectedItems(it, selectedCartItemData)
+        }
+        if (updatedAddOnSummary != null) {
+            summaryTransactionUiModel?.listSummaryAddOns = updatedAddOnSummary
+        }
         return summaryTransactionUiModel
     }
 

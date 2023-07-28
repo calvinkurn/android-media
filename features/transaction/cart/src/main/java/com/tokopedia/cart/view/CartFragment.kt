@@ -830,12 +830,13 @@ class CartFragment :
             context?.let { context ->
                 fragmentManager?.let { fragmentManager ->
                     val promoSummaryUiModel = dPresenter.getPromoSummaryUiModel()
-                    dPresenter.getSummaryTransactionUiModel()?.let { summaryTransactionUiModel ->
+                    dPresenter.getSummaryTransactionUiModel(cartAdapter.selectedCartItemData)?.let { summaryTransactionUiModel ->
                         showSummaryTransactionBottomsheet(
                             summaryTransactionUiModel,
                             promoSummaryUiModel,
                             fragmentManager,
-                            context
+                            context,
+                            cartAdapter.selectedCartItemData
                         )
                     }
                 }

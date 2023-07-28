@@ -32,7 +32,7 @@ interface ICartListPresenter {
 
     fun setCartListData(cartListData: CartData)
 
-    fun getSummaryTransactionUiModel(): SummaryTransactionUiModel?
+    fun getSummaryTransactionUiModel(selectedCartItemData: List<CartItemHolderData>): SummaryTransactionUiModel?
 
     fun getPromoSummaryUiModel(): PromoSummaryData?
 
