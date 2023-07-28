@@ -77,6 +77,8 @@ data class CouponSection(
     val id: String = "",
     @SerializedName("title")
     val title: String = "",
+    @SerializedName("is_collapse")
+    val isCollapse: Boolean = false,
     @SerializedName("coupons")
     val coupons: List<Coupon>,
     @SerializedName("coupon_groups")

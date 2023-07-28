@@ -10,10 +10,12 @@ import com.tokopedia.localizationchooseaddress.common.ChosenAddress
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
 import com.tokopedia.promousage.data.request.GetCouponListRecommendationParam
 import com.tokopedia.promousage.data.response.GetCouponListRecommendationResponse
+import com.tokopedia.promousage.domain.entity.PromoCta
 import com.tokopedia.promousage.domain.entity.PromoItemCardDetail
 import com.tokopedia.promousage.domain.entity.PromoItemState
 import com.tokopedia.promousage.domain.entity.PromoPageEntryPoint
 import com.tokopedia.promousage.domain.entity.PromoPageState
+import com.tokopedia.promousage.domain.entity.PromoSavingInfo
 import com.tokopedia.promousage.domain.entity.list.PromoAccordionHeaderItem
 import com.tokopedia.promousage.domain.entity.list.PromoAccordionViewAllItem
 import com.tokopedia.promousage.domain.entity.list.PromoItem
@@ -33,21 +35,31 @@ class PromoUsageViewModel @Inject constructor(
     private val promoUsageMapper: PromoUsageMapper
 ) : BaseViewModel(dispatchers.main) {
 
-    private val _promoPageState = MutableLiveData<PromoPageState>()
+    private val _promoPageState = MutableLiveData<PromoPageState>(PromoPageState.Initial)
     val promoPageState: LiveData<PromoPageState>
         get() = _promoPageState
 
-    private val _tncItemUpdate = MutableLiveData<PromoTncItem>()
-    val tncItemUpdate: LiveData<PromoTncItem>
-        get() = _tncItemUpdate
+    private val _promoTncAction = MutableLiveData<PromoTncItem>()
+    val promoTncAction: LiveData<PromoTncItem>
+        get() = _promoTncAction
 
+    private val _promoCtaAction = MutableLiveData<PromoCta>()
+    val promoCtaAction: LiveData<PromoCta>
+        get() = _promoCtaAction
 
-
-    fun getPromoList(
+    fun loadPromoList(
         promoRequest: PromoRequest? = null,
         chosenAddress: ChosenAddress? = null,
-        attemptedPromoCode: String = ""
+        attemptedPromoCode: String = "",
+        onSuccess: (() -> Unit)? = null
     ) {
+        val currentState = _promoPageState.value
+        if (currentState is PromoPageState.Success) {
+            _promoPageState.postValue(PromoPageState.Loading)
+        } else {
+            _promoPageState.postValue(PromoPageState.Initial)
+        }
+
         // Reset pre-selected promo param
         var newPromoRequest = promoRequest ?: PromoRequest()
         newPromoRequest = newPromoRequest.copy(
@@ -89,6 +101,7 @@ class PromoUsageViewModel @Inject constructor(
         launchCatchError(
             context = dispatchers.io,
             block = {
+                _promoPageState.postValue(PromoPageState.Loading)
                 // TODO: Remove artificial delay
                 delay(2_000)
 
@@ -96,18 +109,47 @@ class PromoUsageViewModel @Inject constructor(
                 val response = GetCouponListRecommendationResponse()
                 val tickerInfo =
                     promoUsageMapper.mapCouponListRecommendationResponseToPageTickerInfo(response)
-                val sections =
+                val items =
                     promoUsageMapper.mapCouponListRecommendationResponseToPromoSections(response)
+                val updatedSavingInfo = calculatePromoSavingInfo(items)
+
                 _promoPageState.postValue(
                     PromoPageState.Success(
                         tickerInfo = tickerInfo,
-                        items = sections
+                        items = items,
+                        savingInfo = updatedSavingInfo
                     )
                 )
+                onSuccess?.invoke()
             },
             onError = { throwable ->
                 Timber.e(throwable)
                 _promoPageState.postValue(PromoPageState.Error)
+            }
+        )
+    }
+
+    fun loadPromoListWithPreSelectedPromo(
+        promoRequest: PromoRequest? = null,
+        chosenAddress: ChosenAddress? = null,
+        attemptedPromoCode: String = "",
+        preSelectPromoCode: String = ""
+    ) {
+        _promoPageState.postValue(PromoPageState.Initial)
+        loadPromoList(
+            promoRequest = promoRequest,
+            chosenAddress = chosenAddress,
+            attemptedPromoCode = attemptedPromoCode,
+            onSuccess = {
+                if (preSelectPromoCode.isNotBlank()) {
+                    val pageState = _promoPageState.value
+                    if (pageState is PromoPageState.Success) {
+                        val preSelectedPromo = pageState.items.getPromoByCode(preSelectPromoCode)
+                        if (preSelectedPromo != null) {
+                            onClickPromo(preSelectedPromo)
+                        }
+                    }
+                }
             }
         )
     }
@@ -120,10 +162,12 @@ class PromoUsageViewModel @Inject constructor(
                 .map { item ->
                     if (item is PromoItem && item.id == clickedItem.id) {
                         val newState = if (clickedItem.state is PromoItemState.Normal) {
-                            val cardDetail = clickedItem.cardDetails.first { it.state == PromoItemCardDetail.TYPE_SELECTED }
+                            val cardDetail =
+                                clickedItem.cardDetails.first { it.state == PromoItemCardDetail.TYPE_SELECTED }
                             PromoItemState.Selected(cardDetail)
                         } else {
-                            val cardDetail = clickedItem.cardDetails.first { it.state == PromoItemCardDetail.TYPE_INITIAL }
+                            val cardDetail =
+                                clickedItem.cardDetails.first { it.state == PromoItemCardDetail.TYPE_INITIAL }
                             PromoItemState.Normal(cardDetail)
                         }
                         item.copy(state = newState)
@@ -138,8 +182,12 @@ class PromoUsageViewModel @Inject constructor(
             if (selectedPromoCodes.isNotEmpty()) {
                 updatedItems.add(tncItem.copy(selectedPromoCodes = selectedPromoCodes))
             }
+            val updatedSavingInfo = calculatePromoSavingInfo(updatedItems)
             _promoPageState.postValue(
-                pageState.copy(items = updatedItems)
+                pageState.copy(
+                    items = updatedItems,
+                    savingInfo = updatedSavingInfo
+                )
             )
         }
     }
@@ -195,7 +243,7 @@ class PromoUsageViewModel @Inject constructor(
             val tncItem = currentItems.getTncItem()
             tncItem?.let {
                 val selectedPromoCodes = currentItems.getSelectedPromoCodes()
-                _tncItemUpdate.postValue(it.copy(selectedPromoCodes = selectedPromoCodes))
+                _promoTncAction.postValue(it.copy(selectedPromoCodes = selectedPromoCodes))
             }
         }
     }
@@ -212,12 +260,34 @@ class PromoUsageViewModel @Inject constructor(
 
     }
 
-    private fun List<DelegateAdapterItem>.getTncItem(): PromoTncItem? {
-        return this.filterIsInstance<PromoTncItem>().firstOrNull()
+    private fun calculatePromoSavingInfo(items: List<DelegateAdapterItem>): PromoSavingInfo {
+        val selectedPromoCount = items.getSelectedPromoCodes().size
+        val totalSelectedPromoBenefit = items.sumSelectedPromoBenefit()
+        return PromoSavingInfo(
+            selectedPromoCount = selectedPromoCount,
+            totalSelectedPromoBenefitAmount = totalSelectedPromoBenefit
+        )
     }
 
-    private fun List<DelegateAdapterItem>.getSelectedPromoCodes() : List<String> {
-        return this.filterIsInstance<PromoItem>().filter { it.state is PromoItemState.Selected }
+    private fun List<DelegateAdapterItem>.getPromoByCode(promoCode: String): PromoItem? {
+        return asSequence()
+            .filterIsInstance<PromoItem>()
+            .firstOrNull { it.code == promoCode || it.secondaryPromo.code == promoCode }
+    }
+
+    private fun List<DelegateAdapterItem>.getTncItem(): PromoTncItem? {
+        return filterIsInstance<PromoTncItem>().firstOrNull()
+    }
+
+    private fun List<DelegateAdapterItem>.getSelectedPromoCodes(): List<String> {
+        return filterIsInstance<PromoItem>()
+            .filter { it.state is PromoItemState.Selected }
             .map { it.code }
+    }
+
+    private fun List<DelegateAdapterItem>.sumSelectedPromoBenefit(): Double {
+        return filterIsInstance<PromoItem>()
+            .filter { it.state is PromoItemState.Selected }
+            .sumOf { it.benefitDetail.amountIdr }
     }
 }

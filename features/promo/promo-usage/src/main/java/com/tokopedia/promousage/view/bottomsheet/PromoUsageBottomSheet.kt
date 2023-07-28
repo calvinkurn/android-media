@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
@@ -17,6 +18,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
@@ -28,20 +30,21 @@ import com.tokopedia.promousage.R
 import com.tokopedia.promousage.databinding.PromoUsageBottomshetBinding
 import com.tokopedia.promousage.di.DaggerPromoUsageComponent
 import com.tokopedia.promousage.domain.entity.PromoCta
-import com.tokopedia.promousage.domain.entity.list.PromoItem
 import com.tokopedia.promousage.domain.entity.PromoPageEntryPoint
 import com.tokopedia.promousage.domain.entity.PromoPageState
+import com.tokopedia.promousage.domain.entity.PromoSavingInfo
 import com.tokopedia.promousage.domain.entity.list.PromoAccordionHeaderItem
 import com.tokopedia.promousage.domain.entity.list.PromoAccordionViewAllItem
+import com.tokopedia.promousage.domain.entity.list.PromoItem
 import com.tokopedia.promousage.domain.entity.list.PromoTncItem
 import com.tokopedia.promousage.util.composite.CompositeAdapter
 import com.tokopedia.promousage.util.extension.foregroundDrawable
-import com.tokopedia.promousage.view.adapter.PromoAccordionViewAllDelegateAdapter
-import com.tokopedia.promousage.view.adapter.PromoTncDelegateAdapter
-import com.tokopedia.promousage.view.adapter.PromoAccordionItemDelegateAdapter
 import com.tokopedia.promousage.view.adapter.PromoAccordionHeaderDelegateAdapter
+import com.tokopedia.promousage.view.adapter.PromoAccordionItemDelegateAdapter
+import com.tokopedia.promousage.view.adapter.PromoAccordionViewAllDelegateAdapter
 import com.tokopedia.promousage.view.adapter.PromoInputCodeDelegateAdapter
 import com.tokopedia.promousage.view.adapter.PromoRecommendationDelegateAdapter
+import com.tokopedia.promousage.view.adapter.PromoTncDelegateAdapter
 import com.tokopedia.promousage.view.viewmodel.PromoUsageViewModel
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
 import com.tokopedia.unifycomponents.toPx
@@ -53,13 +56,16 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
     companion object {
         private const val BUNDLE_KEY_ENTRY_POINT = "entry_point"
         private const val BUNDLE_KEY_PROMO_REQUEST = "promo_request"
+        private const val BUNDLE_KEY_TOTAL_AMOUNT = "total_amount"
         private const val BUNDLE_KEY_CHOSEN_ADDRESS = "chosen_address"
+        private const val BUNDLE_KEY_PROMO_CODE = "promo_code"
         private const val BOTTOM_SHEET_MARGIN_TOP_IN_DP = 64
 
         @JvmStatic
         fun newInstance(
             entryPoint: PromoPageEntryPoint,
             promoRequest: PromoRequest,
+            totalAmount: Double,
             chosenAddress: ChosenAddress? = null
         ): PromoUsageBottomSheet {
             return PromoUsageBottomSheet().apply {
@@ -67,6 +73,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
                     putParcelable(BUNDLE_KEY_ENTRY_POINT, entryPoint)
                     putParcelable(BUNDLE_KEY_PROMO_REQUEST, promoRequest)
                     putParcelable(BUNDLE_KEY_CHOSEN_ADDRESS, chosenAddress)
+                    putDouble(BUNDLE_KEY_TOTAL_AMOUNT, totalAmount)
                 }
             }
         }
@@ -99,6 +106,15 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
         arguments?.getSerializable(BUNDLE_KEY_ENTRY_POINT) as? PromoPageEntryPoint
             ?: PromoPageEntryPoint.CART_PAGE
     }
+    private val registerGopayLaterCicilLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            val promoCode = result.data?.getStringExtra(BUNDLE_KEY_PROMO_CODE)
+            if (!promoCode.isNullOrBlank()) {
+                val promoRequest = arguments?.getParcelable(BUNDLE_KEY_PROMO_REQUEST) ?: PromoRequest()
+                val chosenAddress = arguments?.getParcelable<ChosenAddress>(BUNDLE_KEY_CHOSEN_ADDRESS)
+                viewModel.loadPromoListWithPreSelectedPromo(promoRequest, chosenAddress, promoCode)
+            }
+        }
 
     private fun setupDependencyInjection() {
         activity?.let {
@@ -139,17 +155,21 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupView()
+        setupListener()
         setupRecyclerView()
+
         observePromoPageState()
         observeTncItemUpdate()
 
-        val promoRequest = arguments?.getParcelable<PromoRequest>(BUNDLE_KEY_PROMO_REQUEST)
+        val promoRequest = arguments?.getParcelable(BUNDLE_KEY_PROMO_REQUEST) ?: PromoRequest()
         val chosenAddress = arguments?.getParcelable<ChosenAddress>(BUNDLE_KEY_CHOSEN_ADDRESS)
-        viewModel.getPromoList(
+        viewModel.loadPromoList(
             promoRequest = promoRequest,
             chosenAddress = chosenAddress
         )
+
+        val totalAmount = arguments?.getDouble(BUNDLE_KEY_TOTAL_AMOUNT) ?: 0.0
+        renderTotalAmount(entryPoint, totalAmount)
     }
 
     private fun applyBottomSheetMaxHeightRule() {
@@ -169,14 +189,10 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
     private fun observePromoPageState() {
         viewModel.promoPageState.observe(viewLifecycleOwner) { state ->
             when (state) {
-                is PromoPageState.InitialShimmer -> {
-
-                }
 
                 is PromoPageState.Success -> {
                     showContent()
-                    handleBottomCardViewAppearance(entryPoint)
-                    showTotalSavingsSection(3, 40_000)
+                    renderSavingInfo(state.savingInfo)
                     recyclerViewAdapter.submit(state.items)
                 }
 
@@ -192,62 +208,20 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
     }
 
     private fun observeTncItemUpdate() {
-        viewModel.tncItemUpdate.observe(viewLifecycleOwner) { item ->
+        viewModel.promoTncAction.observe(viewLifecycleOwner) { item ->
             showPromoTncBottomSheet(item)
         }
     }
 
-    private fun setupView() {
+    private fun setupListener() {
         binding?.run {
-            val formattedTotalPrice = 15_000.splitByThousand()
-            tpgTotalPrice.text = context?.getString(
-                R.string.promo_voucher_placeholder_total_price,
-                formattedTotalPrice
-            )
-
             buttonBuy.setOnClickListener {
                 viewModel.onClickBuyButton(entryPoint)
                 dismiss()
             }
-
             buttonBackToShipment.setOnClickListener {
                 viewModel.onClickBackToCheckoutButton()
                 dismiss()
-            }
-        }
-    }
-
-    private fun handleBottomCardViewAppearance(entryPoint: PromoPageEntryPoint) {
-        binding?.run {
-            cardViewTotalPrice.visible()
-
-            tpgTotalPrice.isVisible =
-                entryPoint == PromoPageEntryPoint.CART_PAGE || entryPoint == PromoPageEntryPoint.ONE_CLICK_CHECKOUT_PAGE
-            tpgTotalPriceLabel.isVisible =
-                entryPoint == PromoPageEntryPoint.CART_PAGE || entryPoint == PromoPageEntryPoint.ONE_CLICK_CHECKOUT_PAGE
-            buttonBuy.isVisible =
-                entryPoint == PromoPageEntryPoint.CART_PAGE || entryPoint == PromoPageEntryPoint.ONE_CLICK_CHECKOUT_PAGE
-
-            buttonBackToShipment.isVisible = entryPoint == PromoPageEntryPoint.SHIPMENT_PAGE
-        }
-
-        when (entryPoint) {
-            PromoPageEntryPoint.CART_PAGE -> {
-                binding?.buttonBuy?.text = context?.getString(R.string.promo_voucher_buy)
-            }
-
-            PromoPageEntryPoint.ONE_CLICK_CHECKOUT_PAGE -> {
-                binding?.buttonBuy?.text = context?.getString(R.string.promo_voucher_pay)
-                val icon = ContextCompat.getDrawable(
-                    context ?: return,
-                    R.drawable.promo_usage_ic_protection_check
-                )
-                binding?.buttonBuy?.setDrawable(icon)
-            }
-
-            PromoPageEntryPoint.SHIPMENT_PAGE -> {
-                binding?.buttonBackToShipment?.text =
-                    context?.getString(R.string.promo_voucher_back_to_shipment)
             }
         }
     }
@@ -270,26 +244,63 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
         }
     }
 
-    private fun showTotalSavingsSection(selectedVoucherCount: Int, totalVoucherAmount: Long) {
+    private fun renderTotalAmount(entryPoint: PromoPageEntryPoint, totalAmount: Double) {
+        val formattedTotalPrice = totalAmount.splitByThousand()
+        binding?.tpgTotalPrice?.text = context?.getString(
+            R.string.promo_voucher_placeholder_total_price,
+            formattedTotalPrice
+        )
+
         binding?.run {
+            cardViewTotalPrice.visible()
+            tpgTotalPrice.isVisible =
+                entryPoint == PromoPageEntryPoint.CART_PAGE || entryPoint == PromoPageEntryPoint.ONE_CLICK_CHECKOUT_PAGE
+            tpgTotalPriceLabel.isVisible =
+                entryPoint == PromoPageEntryPoint.CART_PAGE || entryPoint == PromoPageEntryPoint.ONE_CLICK_CHECKOUT_PAGE
+            buttonBuy.isVisible =
+                entryPoint == PromoPageEntryPoint.CART_PAGE || entryPoint == PromoPageEntryPoint.ONE_CLICK_CHECKOUT_PAGE
+            buttonBackToShipment.isVisible = entryPoint == PromoPageEntryPoint.SHIPMENT_PAGE
+        }
+        when (entryPoint) {
 
-            tpgTotalSavings.isVisible = selectedVoucherCount.isMoreThanZero()
+            PromoPageEntryPoint.CART_PAGE -> {
+                binding?.buttonBuy?.text = context?.getString(R.string.promo_voucher_buy)
+            }
 
-            val formattedTotalVoucherAmount = totalVoucherAmount.splitByThousand()
-            val text = if (selectedVoucherCount > 1) {
+            PromoPageEntryPoint.ONE_CLICK_CHECKOUT_PAGE -> {
+                binding?.buttonBuy?.text = context?.getString(R.string.promo_voucher_pay)
+                val icon = ContextCompat.getDrawable(
+                    context ?: return,
+                    R.drawable.promo_usage_ic_protection_check
+                )
+                binding?.buttonBuy?.setDrawable(icon)
+            }
+
+            PromoPageEntryPoint.SHIPMENT_PAGE -> {
+                binding?.buttonBackToShipment?.text =
+                    context?.getString(R.string.promo_voucher_back_to_shipment)
+            }
+        }
+    }
+
+    private fun renderSavingInfo(promoSavingInfo: PromoSavingInfo) {
+        binding?.run {
+            val formattedTotalVoucherAmount =
+                promoSavingInfo.totalSelectedPromoBenefitAmount.splitByThousand()
+            val text = if (promoSavingInfo.selectedPromoCount > 1) {
+                context?.getString(
+                    R.string.promo_voucher_placeholder_total_savings_multi_voucher,
+                    formattedTotalVoucherAmount,
+                    promoSavingInfo.selectedPromoCount
+                )
+            } else {
                 context?.getString(
                     R.string.promo_voucher_placeholder_total_savings,
                     formattedTotalVoucherAmount
                 )
-            } else {
-                context?.getString(
-                    R.string.promo_voucher_placeholder_total_savings_multi_voucher,
-                    formattedTotalVoucherAmount,
-                    selectedVoucherCount
-                )
             }
-
             tpgTotalSavings.text = MethodChecker.fromHtml(text)
+            layoutSavingInfo.isVisible = promoSavingInfo.selectedPromoCount.isMoreThanZero()
         }
     }
 
@@ -299,7 +310,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
             layoutBottomSheetOverlay.visible()
             layoutBottomSheetHeader.visible()
             recyclerView.visible()
-            layoutTotalSavings.visible()
+            layoutSavingInfo.visible()
         }
     }
 
@@ -309,7 +320,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
             layoutBottomSheetOverlay.gone()
             layoutBottomSheetHeader.gone()
             recyclerView.gone()
-            layoutTotalSavings.gone()
+            layoutSavingInfo.gone()
             binding?.cardViewTotalPrice?.gone()
         }
     }
@@ -353,7 +364,10 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
             clickedItem.couponType.contains(PromoItem.COUPON_TYPE_GOPAY_LATER_CICIL)
                 && clickedItem.cta.type == PromoCta.TYPE_REGISTER_GOPAY_LATER_CICIL
         if (isRegisterGoPayLaterCicil) {
-            // TODO: Handle GoPay Later Cicil Registrationd
+            val appLink = clickedItem.cta.appLink
+            if (appLink.isNotBlank()) {
+                goToRegisterGoPayLaterCicilRegistration(appLink)
+            }
         } else {
             viewModel.onClickPromo(clickedItem)
         }
@@ -377,5 +391,10 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
 
     private val onTermAndConditionHyperlinkClick = {
         viewModel.onClickTnc()
+    }
+
+    private fun goToRegisterGoPayLaterCicilRegistration(appLink: String) {
+        val intent = RouteManager.getIntent(context, appLink)
+        registerGopayLaterCicilLauncher.launch(intent)
     }
 }

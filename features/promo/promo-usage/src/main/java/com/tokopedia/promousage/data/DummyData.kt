@@ -168,9 +168,9 @@ object DummyData {
                 ),
                 expiryInfo = "Berakhir dalam <a>3 jam</a>",
                 expiryTimestamp = 1693451440,
-                state = PromoItemState.Selected(
+                state = PromoItemState.Normal(
                     PromoItemCardDetail(
-                        state = PromoItemCardDetail.TYPE_SELECTED,
+                        state = PromoItemCardDetail.TYPE_INITIAL,
                         color = "",
                         iconUrl = "https://images.tokopedia.net/img/android/promo/ic_voucher_cashback/ic_voucher_cashback.png",
                         backgroundUrl = "https://images.tokopedia.net/img/android/promo/bg_supergraphic_cashback/bg_supergraphic_cashback.png"
@@ -882,9 +882,9 @@ object DummyData {
                 expiryInfo = "Berakhir dalam <a>3 jam</a>",
                 expiryTimestamp = 1693451440,
                 secondaryPromo = SecondaryPromoItem(),
-                state = PromoItemState.Selected(
+                state = PromoItemState.Normal(
                     PromoItemCardDetail(
-                        state = PromoItemCardDetail.TYPE_SELECTED,
+                        state = PromoItemCardDetail.TYPE_INITIAL,
                         color = "",
                         iconUrl = "https://images.tokopedia.net/img/android/promo/ic_voucher_cashback/ic_voucher_cashback.png",
                         backgroundUrl = "https://images.tokopedia.net/img/android/promo/bg_supergraphic_cashback/bg_supergraphic_cashback.png"

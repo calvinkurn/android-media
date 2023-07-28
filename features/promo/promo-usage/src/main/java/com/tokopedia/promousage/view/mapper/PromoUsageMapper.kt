@@ -77,9 +77,10 @@ class PromoUsageMapper @Inject constructor() {
                             isExpanded = false
                         )
                     )
-                    couponSection.coupons.forEach { coupon ->
+                    couponSection.coupons.forEachIndexed { index, coupon ->
                         items.add(
                             mapCouponToPromo(
+                                index = index,
                                 couponSection = couponSection,
                                 coupon = coupon,
                                 recommendedPromoCodes = recommendedPromoCodes,
@@ -87,15 +88,18 @@ class PromoUsageMapper @Inject constructor() {
                             )
                         )
                     }
-                    val visiblePromoCount = couponSection.coupons.count { it.radioCheckState == "enabled" }
-                    items.add(
-                        PromoAccordionViewAllItem(
-                            headerId = couponSection.id,
-                            visiblePromoCount = visiblePromoCount,
-                            isExpanded = false,
-                            isVisible = true
+                    val totalPromoInSectionCount = couponSection.coupons.size
+                    if (totalPromoInSectionCount > 1) {
+                        val hiddenPromoCount = totalPromoInSectionCount - 1
+                        items.add(
+                            PromoAccordionViewAllItem(
+                                headerId = couponSection.id,
+                                visiblePromoCount = hiddenPromoCount,
+                                isExpanded = !couponSection.isCollapse,
+                                isVisible = !couponSection.isCollapse
+                            )
                         )
-                    )
+                    }
                 }
             }
         }
@@ -115,8 +119,9 @@ class PromoUsageMapper @Inject constructor() {
             messageSelected = promoRecommendation.messageSelected,
             backgroundUrl = promoRecommendation.backgroundUrl,
             animationUrl = promoRecommendation.animationUrl,
-            promos = couponSection.coupons.map { coupon ->
+            promos = couponSection.coupons.mapIndexed { index, coupon ->
                 mapCouponToPromo(
+                    index = index,
                     couponSection = couponSection,
                     coupon = coupon,
                     recommendedPromoCodes = recommendedPromoCodes,
@@ -127,6 +132,7 @@ class PromoUsageMapper @Inject constructor() {
     }
 
     private fun mapCouponToPromo(
+        index: Int,
         couponSection: CouponSection,
         coupon: Coupon,
         recommendedPromoCodes: List<String>,
@@ -175,7 +181,7 @@ class PromoUsageMapper @Inject constructor() {
         } else if (secondaryClashingInfos.isNotEmpty()) {
             state = PromoItemState.Disabled(secondaryClashingInfos.first().message)
         }
-        if (coupon.message.isNotBlank()) {
+        if (coupon.radioCheckState == "disabled" && coupon.message.isNotBlank()) {
             state = PromoItemState.Ineligible(coupon.message)
         }
 
@@ -237,8 +243,8 @@ class PromoUsageMapper @Inject constructor() {
             isAttempted = coupon.isAttempted || secondaryCoupon.isAttempted,
             isBebasOngkir = coupon.isBebasOngkir || secondaryCoupon.isBebasOngkir,
             isHighlighted = coupon.isHighlighted || secondaryCoupon.isHighlighted,
-            isExpanded = false,
-            isVisible = coupon.radioCheckState == "enabled" || secondaryCoupon.radioCheckState == "enabled",
+            isExpanded = !couponSection.isCollapse && index == 0,
+            isVisible = !couponSection.isCollapse && index == 0,
         )
     }
 

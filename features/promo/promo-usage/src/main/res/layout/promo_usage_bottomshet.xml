@@ -91,13 +91,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/layoutBottomSheetHeader"
-        android:layout_above="@id/layoutTotalSavings"
+        android:layout_above="@id/layoutSavingInfo"
         tools:itemCount="3"
         tools:listitem="@layout/promo_usage_item_voucher_section" />
 
     <!--Total Savings-->
     <RelativeLayout
-        android:id="@+id/layoutTotalSavings"
+        android:id="@+id/layoutSavingInfo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/promo_usage_shape_voucher_summary"
