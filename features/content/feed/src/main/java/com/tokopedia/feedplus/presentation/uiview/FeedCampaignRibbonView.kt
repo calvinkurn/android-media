@@ -336,10 +336,11 @@ class FeedCampaignRibbonView(
                     animationStateList.add(R.id.feed_availability_state)
                     animationTextList.add("")
 
-                    mCta?.texts?.let {
-                        if (it.isNotEmpty()) {
-                            animationTextList.addAll(it)
-                            if (it.size > ONE) {
+                    mCta?.let {
+                        if (it.texts.isNotEmpty()) {
+                            animationTextList.add(it.texts.first())
+                            if (it.subtitles.isNotEmpty()) {
+                                animationTextList.add(it.subtitles.first())
                                 animationStateList.add(R.id.feed_cta_with_coupon_state)
                             } else {
                                 animationStateList.add(R.id.feed_cta_only_state)
@@ -399,10 +400,11 @@ class FeedCampaignRibbonView(
                     animationStateList.add(R.id.feed_start_in_state)
                     animationTextList.add("")
 
-                    mCta?.texts?.let {
-                        if (it.isNotEmpty()) {
-                            animationTextList.addAll(it)
-                            if (it.size > ONE) {
+                    mCta?.let {
+                        if (it.texts.isNotEmpty()) {
+                            animationTextList.add(it.texts.first())
+                            if (it.subtitles.isNotEmpty()) {
+                                animationTextList.add(it.subtitles.first())
                                 animationStateList.add(R.id.feed_cta_with_coupon_state)
                             } else {
                                 animationStateList.add(R.id.feed_cta_only_state)
