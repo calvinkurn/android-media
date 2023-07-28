@@ -19,6 +19,7 @@ import com.tokopedia.tokochat.common.view.chatlist.adapter.TokoChatListBaseAdapt
 import com.tokopedia.tokochat.common.view.chatlist.listener.TokoChatListItemListener
 import com.tokopedia.tokochat.common.view.chatlist.uimodel.TokoChatListEmptyUiModel
 import com.tokopedia.tokochat.common.view.chatlist.uimodel.TokoChatListItemUiModel
+import com.tokopedia.tokochat.common.view.chatlist.uimodel.TokoChatListLoaderUiModel
 import com.tokopedia.tokochat.config.util.TokoChatErrorLogger
 import com.tokopedia.tokochat.databinding.TokochatChatlistFragmentBinding
 import com.tokopedia.usecase.coroutines.Fail
@@ -156,7 +157,11 @@ class TokoChatListFragment @Inject constructor(
     }
 
     override fun onLoadMore() {
-        viewModel.loadNextPageChatList {}
+        adapter.addItem(TokoChatListLoaderUiModel())
+        baseBinding?.tokochatListRv?.post {
+            adapter.notifyItemInserted(adapter.lastIndex)
+            viewModel.loadNextPageChatList {}
+        }
     }
 
     override fun onClickChatItem(position: Int, element: TokoChatListItemUiModel) {

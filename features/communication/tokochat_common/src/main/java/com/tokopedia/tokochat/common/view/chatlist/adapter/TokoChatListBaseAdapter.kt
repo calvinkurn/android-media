@@ -3,6 +3,7 @@ package com.tokopedia.tokochat.common.view.chatlist.adapter
 import com.tokopedia.adapterdelegate.BaseCommonAdapter
 import com.tokopedia.tokochat.common.view.chatlist.adapter.delegate.TokoChatListEmptyItemDelegate
 import com.tokopedia.tokochat.common.view.chatlist.adapter.delegate.TokoChatListItemDelegate
+import com.tokopedia.tokochat.common.view.chatlist.adapter.delegate.TokoChatListLoaderDelegate
 import com.tokopedia.tokochat.common.view.chatlist.adapter.delegate.TokoChatListShimmerDelegate
 import com.tokopedia.tokochat.common.view.chatlist.listener.TokoChatListItemListener
 import com.tokopedia.tokochat.common.view.chatlist.uimodel.TokoChatListItemUiModel
@@ -16,6 +17,7 @@ class TokoChatListBaseAdapter(
         delegatesManager.addDelegate(TokoChatListItemDelegate(itemListener))
         delegatesManager.addDelegate(TokoChatListShimmerDelegate())
         delegatesManager.addDelegate(TokoChatListEmptyItemDelegate())
+        delegatesManager.addDelegate(TokoChatListLoaderDelegate())
     }
 
     fun isShimmeringExist(): Boolean {
