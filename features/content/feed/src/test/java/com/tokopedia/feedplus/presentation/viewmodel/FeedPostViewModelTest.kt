@@ -633,14 +633,15 @@ class FeedPostViewModelTest {
         assert(!viewModel.shouldShowNoMoreContent)
         assert(viewModel.feedHome.value is Success)
         val data = (viewModel.feedHome.value as Success).data
-        assert(data.items.size == 7)
+        assert(data.items.size == 8)
         assert(data.items[0] is FeedCardImageContentModel)
         assert(data.items[1] is FeedCardVideoContentModel)
         assert(data.items[2] is FeedCardLivePreviewContentModel)
         assert(data.items[3] is FeedCardImageContentModel)
         assert(data.items[4] is FeedCardVideoContentModel)
         assert(data.items[5] is FeedCardLivePreviewContentModel)
-        assert(data.items[6] is FeedNoContentModel)
+        assert(data.items[6] is FeedFollowRecommendationModel)
+        assert(data.items[7] is FeedNoContentModel)
     }
 
     @Test
@@ -658,21 +659,23 @@ class FeedPostViewModelTest {
         assert(!viewModel.shouldShowNoMoreContent)
         assert(viewModel.feedHome.value is Success)
         val data = (viewModel.feedHome.value as Success).data
-        assert(data.items.size == 14)
+        assert(data.items.size == 16)
         assert(data.items[0] is FeedCardImageContentModel)
         assert(data.items[1] is FeedCardVideoContentModel)
         assert(data.items[2] is FeedCardLivePreviewContentModel)
         assert(data.items[3] is FeedCardImageContentModel)
         assert(data.items[4] is FeedCardVideoContentModel)
         assert(data.items[5] is FeedCardLivePreviewContentModel)
-        assert(data.items[6] is FeedNoContentModel)
-        assert(data.items[7] is FeedCardImageContentModel)
-        assert(data.items[8] is FeedCardVideoContentModel)
-        assert(data.items[9] is FeedCardLivePreviewContentModel)
-        assert(data.items[10] is FeedCardImageContentModel)
-        assert(data.items[11] is FeedCardVideoContentModel)
-        assert(data.items[12] is FeedCardLivePreviewContentModel)
-        assert(data.items[13] is FeedNoContentModel)
+        assert(data.items[6] is FeedFollowRecommendationModel)
+        assert(data.items[7] is FeedNoContentModel)
+        assert(data.items[8] is FeedCardImageContentModel)
+        assert(data.items[9] is FeedCardVideoContentModel)
+        assert(data.items[10] is FeedCardLivePreviewContentModel)
+        assert(data.items[11] is FeedCardImageContentModel)
+        assert(data.items[12] is FeedCardVideoContentModel)
+        assert(data.items[13] is FeedCardLivePreviewContentModel)
+        assert(data.items[14] is FeedFollowRecommendationModel)
+        assert(data.items[15] is FeedNoContentModel)
     }
 
     @Test
@@ -826,7 +829,8 @@ class FeedPostViewModelTest {
         assert(!(feedData.items[4] as FeedCardVideoContentModel).campaign.isReminderActive)
         assert(feedData.items[5] is FeedCardLivePreviewContentModel)
         assert(!(feedData.items[5] as FeedCardLivePreviewContentModel).campaign.isReminderActive)
-        assert(feedData.items[6] is FeedNoContentModel)
+        assert(feedData.items[6] is FeedFollowRecommendationModel)
+        assert(feedData.items[7] is FeedNoContentModel)
     }
 
     @Test
@@ -1052,18 +1056,12 @@ class FeedPostViewModelTest {
     @Test
     fun onFetchBulkFollowRecommendation_Success() {
         // prepare
+        provideMockForFollowRecommendation()
+
         val mockFollowRecommendationData = getDummyProfileRecommendationList()
 
-        coEvery { userSession.userId } returns ""
-        coEvery { topAdsAddressHelper.getAddressData() } returns mapOf()
-        coEvery { topAdsHeadlineUseCase.setParams(any(), any()) } coAnswers {}
-        coEvery { topAdsHeadlineUseCase.executeOnBackground() } returns TopAdsHeadlineResponse(
-            displayAds = CpmModel(data = mutableListOf())
-        )
         coEvery { feedXRecomWidgetUseCase.createFeedFollowRecomParams(any()) } returns mapOf()
         coEvery { feedXRecomWidgetUseCase(any()) } returns mockFollowRecommendationData
-
-        provideDefaultFeedPostMockData()
 
         // test
         viewModel.fetchPlaceholderData()
@@ -1071,7 +1069,7 @@ class FeedPostViewModelTest {
         // verify
         assert(viewModel.feedHome.value is Success)
 
-        val followRecomModel = (viewModel.feedHome.value as Success).data.items[5]
+        val followRecomModel = (viewModel.feedHome.value as Success).data.items[6]
 
         assert(followRecomModel is FeedFollowRecommendationModel)
         assert((followRecomModel as FeedFollowRecommendationModel) == mockFollowRecommendationData)
@@ -1080,18 +1078,12 @@ class FeedPostViewModelTest {
     @Test
     fun onFetchBulkFollowRecommendation_Error() {
         // prepare
+        provideMockForFollowRecommendation()
+
         val mockFollowRecommendationData = Exception("Network Error")
 
-        coEvery { userSession.userId } returns ""
-        coEvery { topAdsAddressHelper.getAddressData() } returns mapOf()
-        coEvery { topAdsHeadlineUseCase.setParams(any(), any()) } coAnswers {}
-        coEvery { topAdsHeadlineUseCase.executeOnBackground() } returns TopAdsHeadlineResponse(
-            displayAds = CpmModel(data = mutableListOf())
-        )
         coEvery { feedXRecomWidgetUseCase.createFeedFollowRecomParams(any()) } returns mapOf()
         coEvery { feedXRecomWidgetUseCase(any()) } throws mockFollowRecommendationData
-
-        provideDefaultFeedPostMockData()
 
         // test
         viewModel.fetchPlaceholderData()
@@ -1099,7 +1091,7 @@ class FeedPostViewModelTest {
         // verify
         assert(viewModel.feedHome.value is Success)
 
-        val followRecomModel = (viewModel.feedHome.value as Success).data.items[5]
+        val followRecomModel = (viewModel.feedHome.value as Success).data.items[6]
 
         assert(followRecomModel is FeedFollowRecommendationModel)
         assert((followRecomModel as FeedFollowRecommendationModel).isError)
@@ -1109,19 +1101,13 @@ class FeedPostViewModelTest {
     @Test
     fun onFetchBulkFollowRecommendation_TryToRefetchTheFetchedModel() {
         // prepare
+        provideMockForFollowRecommendation()
+
         val mock5FollowRecommendationData = getDummyProfileRecommendationList(profileSize = 5)
         val mock10FollowRecommendationData = getDummyProfileRecommendationList(profileSize = 10)
 
-        coEvery { userSession.userId } returns ""
-        coEvery { topAdsAddressHelper.getAddressData() } returns mapOf()
-        coEvery { topAdsHeadlineUseCase.setParams(any(), any()) } coAnswers {}
-        coEvery { topAdsHeadlineUseCase.executeOnBackground() } returns TopAdsHeadlineResponse(
-            displayAds = CpmModel(data = mutableListOf())
-        )
         coEvery { feedXRecomWidgetUseCase.createFeedFollowRecomParams(any()) } returns mapOf()
         coEvery { feedXRecomWidgetUseCase(any()) } returns mock5FollowRecommendationData
-
-        provideDefaultFeedPostMockData()
 
         // test
         viewModel.fetchPlaceholderData()
@@ -1129,7 +1115,7 @@ class FeedPostViewModelTest {
         // verify
         assert(viewModel.feedHome.value is Success)
 
-        val followRecomModel = (viewModel.feedHome.value as Success).data.items[5]
+        val followRecomModel = (viewModel.feedHome.value as Success).data.items[6]
 
         assert(followRecomModel is FeedFollowRecommendationModel)
         assert((followRecomModel as FeedFollowRecommendationModel) == mock5FollowRecommendationData)
@@ -1141,10 +1127,59 @@ class FeedPostViewModelTest {
         // double verify
         assert(viewModel.feedHome.value is Success)
 
-        val followRecomModel2 = (viewModel.feedHome.value as Success).data.items[5]
+        val followRecomModel2 = (viewModel.feedHome.value as Success).data.items[6]
 
         assert(followRecomModel2 is FeedFollowRecommendationModel)
         assert((followRecomModel2 as FeedFollowRecommendationModel) == mock5FollowRecommendationData)
+    }
+
+    @Test
+    fun onFetchFollowRecommendation_Success() {
+        // prepare
+        provideMockForFollowRecommendation()
+
+        val mockFollowRecommendationData = getDummyProfileRecommendationList()
+
+        coEvery { feedXRecomWidgetUseCase.createFeedFollowRecomParams(any()) } returns mapOf()
+        coEvery { feedXRecomWidgetUseCase(any()) } returns mockFollowRecommendationData
+
+        viewModel.fetchPlaceholderData()
+
+        // test
+        viewModel.fetchFollowRecommendation(5)
+
+        // verify
+        assert(viewModel.feedHome.value is Success)
+
+        val followRecomModel = (viewModel.feedHome.value as Success).data.items[6]
+
+        assert(followRecomModel is FeedFollowRecommendationModel)
+        assert(followRecomModel == mockFollowRecommendationData)
+    }
+
+    @Test
+    fun onFetchFollowRecommendation_InitialFetchError_RetrySuccess() {
+
+    }
+
+    @Test
+    fun onFetchFollowRecommendation_InitialFetchError_RetryError() {
+
+    }
+
+    @Test
+    fun onFetchFollowRecommendation_LoadMore_Success() {
+
+    }
+
+    @Test
+    fun onFetchFollowRecommendation_LoadMore_Error() {
+
+    }
+
+    @Test
+    fun onFetchFollowRecommendation_LoadMore_NoMorePage() {
+
     }
 
     private fun provideDefaultFeedPostMockData() {
@@ -1152,6 +1187,33 @@ class FeedPostViewModelTest {
         coEvery { feedXHomeUseCase.createPostDetailParams("1") } returns emptyMap()
         coEvery { feedXHomeUseCase(any()) } returns getDummyFeedModel()
         viewModel.fetchFeedPosts("")
+    }
+
+    private fun provideMockForFollowRecommendation() {
+        coEvery { userSession.userId } returns ""
+        coEvery { topAdsAddressHelper.getAddressData() } returns mapOf()
+        coEvery { topAdsHeadlineUseCase.setParams(any(), any()) } coAnswers {}
+        coEvery { topAdsHeadlineUseCase.executeOnBackground() } returns TopAdsHeadlineResponse(
+            displayAds = CpmModel(
+                data = mutableListOf(
+                    CpmData(
+                        id = "",
+                        adRefKey = "",
+                        redirect = "",
+                        adClickUrl = "",
+                        cpm = Cpm(
+                            cpmShop = CpmShop(
+                                domain = "domain.com",
+                                id = "shopId"
+                            )
+                        ),
+                        applinks = ""
+                    )
+                )
+            )
+        )
+
+        provideDefaultFeedPostMockData()
     }
 
     private fun getAuthorModelDefault() =
