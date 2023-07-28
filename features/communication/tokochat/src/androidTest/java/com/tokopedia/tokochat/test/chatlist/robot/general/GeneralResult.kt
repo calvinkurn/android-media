@@ -4,9 +4,12 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withSubstring
+import com.tokopedia.tokochat.stub.common.matcher.withItemCount
 import com.tokopedia.tokochat.stub.common.matcher.withRecyclerView
 import com.tokopedia.tokochat_common.R
+import org.hamcrest.CoreMatchers.equalTo
 
 object GeneralResult {
 
@@ -79,5 +82,11 @@ object GeneralResult {
             withRecyclerView(R.id.tokochat_list_rv)
                 .atPositionOnView(position, R.id.tokochat_list_counter)
         ).check(matches(ViewMatchers.withEffectiveVisibility(ViewMatchers.Visibility.INVISIBLE)))
+    }
+
+    fun assertChatListItemTotal(count: Int) {
+        onView(
+            withId(R.id.tokochat_list_rv)
+        ).check(withItemCount(equalTo(count)))
     }
 }

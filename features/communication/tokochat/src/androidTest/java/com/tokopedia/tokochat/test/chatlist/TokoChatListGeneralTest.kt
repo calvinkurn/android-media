@@ -8,6 +8,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.tokochat.common.util.TokoChatValueUtil
+import com.tokopedia.tokochat.stub.domain.response.ApiResponseModelStub
 import com.tokopedia.tokochat.stub.domain.response.ApiResponseStub
 import com.tokopedia.tokochat.test.base.BaseTokoChatListTest
 import com.tokopedia.tokochat.test.chatlist.robot.generalResult
@@ -183,5 +184,34 @@ class TokoChatListGeneralTest : BaseTokoChatListTest() {
             "tokopedia://tokochat?${ApplinkConst.TokoChat.PARAM_SOURCE}=${TokoChatValueUtil.TOKOFOOD}&${ApplinkConst.TokoChat.ORDER_ID_GOJEK}=$GOJEK_ORDER_ID_DUMMY"
         )
         Intents.intended(IntentMatchers.hasData(intent.data))
+    }
+
+    @Test
+    fun should_load_more() {
+        // When
+        launchChatListActivity()
+
+        // Then
+        generalResult {
+            assertChatListItemTotal(10)
+        }
+        Thread.sleep(1000)
+
+        // Given
+        ApiResponseStub.channelListResponse = ApiResponseModelStub(
+            200,
+            "channel_list/success_get_load_more_channel_list.json"
+        )
+
+        // When
+        generalRobot {
+            scrollToPosition(10)
+        }
+        Thread.sleep(300)
+
+        // Then
+        generalResult {
+            assertChatListItemTotal(11)
+        }
     }
 }
