@@ -6,8 +6,10 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toDp
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.wishlist.R
@@ -22,6 +24,8 @@ class BottomSheetWishlistAffiliateOnBoarding :
     init {
         showCloseIcon = true
         showHeader = true
+        isDragable = true
+        customPeekHeight = (getScreenHeight() * CUSTOM_HEIGHT_FACTOR).toDp().toInt()
     }
 
     override fun onCreateView(
@@ -76,6 +80,7 @@ class BottomSheetWishlistAffiliateOnBoarding :
         private const val BULLET_THREE = "3"
         private const val SOURCE_KEY = "source"
         private const val SOURCE_WISHLIST = "wishlist"
+        private const val CUSTOM_HEIGHT_FACTOR = 0.9f
 
         fun getFragmentInstance(isRegistered: Boolean): BottomSheetWishlistAffiliateOnBoarding {
             return BottomSheetWishlistAffiliateOnBoarding().apply {
