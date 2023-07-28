@@ -1,7 +1,5 @@
 package com.tokopedia.scp_rewards_touchpoints.touchpoints
 
-import android.animation.ObjectAnimator
-import android.animation.ValueAnimator
 import android.graphics.Color
 import android.view.Gravity
 import android.view.View
@@ -13,7 +11,8 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.unifyprinciples.UnifyMotion
 import com.tokopedia.scp_rewards_touchpoints.R
 import com.tokopedia.scp_rewards_touchpoints.bottomsheet.utils.loadImage
-import com.tokopedia.scp_rewards_touchpoints.touchpoints.model.ScpToasterData
+import com.tokopedia.scp_rewards_touchpoints.common.util.ViewUtil.rotate
+import com.tokopedia.scp_rewards_touchpoints.touchpoints.data.model.ScpToasterData
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.toPx
@@ -49,18 +48,18 @@ object ScpRewardsToaster {
     var toasterCustomCtaWidth: Int = 0
 
     @JvmStatic
-    fun build(view: View,toasterData: ScpToasterData,duration: Int = LENGTH_SHORT, type: Int = TYPE_NORMAL,clickListener: View.OnClickListener = View.OnClickListener {}) : Snackbar{
+    fun build(view: View, toasterData: ScpToasterData, duration: Int = LENGTH_SHORT, type: Int = TYPE_NORMAL, clickListener: View.OnClickListener = View.OnClickListener {}) : Snackbar{
         toasterLength = duration
         val cta = if (toasterData.ctaIsShown) WITH_CTA else WITHOUT_CTA
         if (cta == WITH_CTA) {
             onCTAClick = clickListener
-            ctaText = toasterData.ctaTitle
+            ctaText = toasterData.ctaText
         }
         return initToaster(view, toasterData, type, cta)!!
     }
 
 
-    private fun initToaster(view: View,toasterData: ScpToasterData, type: Int = TYPE_NORMAL, cta: Int = WITHOUT_CTA): Snackbar? {
+    private fun initToaster(view: View, toasterData: ScpToasterData, type: Int = TYPE_NORMAL, cta: Int = WITHOUT_CTA): Snackbar? {
         val viewTarget : View = view
         Toaster
         val tempSnackBar = Snackbar.make(viewTarget, "", toasterLength)
@@ -74,8 +73,8 @@ object ScpRewardsToaster {
         tv_title.text = toasterData.title
         tv_desc.text = toasterData.subtitle
 
-        frame_icon.loadImage(toasterData.sunflare)
-        badge.loadImage(toasterData.badgeImage)
+        frame_icon.loadImage(toasterData.sunburstImage)
+        badge.loadImage(toasterData.iconImage)
 
         val constraintLayoutToaster = viewLayout.findViewById<View>(R.id.constraintLayoutToaster)
 
@@ -156,20 +155,9 @@ object ScpRewardsToaster {
 
         toasterCustomBottomHeight = 0
 
-        rotateSunflare(frame_icon)
+        frame_icon.rotate()
 
         return tempSnackBar
-    }
-
-    private fun rotateSunflare(frame_icon: ImageUnify) {
-        frame_icon.apply {
-            ObjectAnimator.ofFloat(this, View.ROTATION, 0f, 360f).apply {
-                duration = 5000
-                interpolator = null
-                repeatCount = ValueAnimator.INFINITE
-                start()
-            }
-        }
     }
 }
 

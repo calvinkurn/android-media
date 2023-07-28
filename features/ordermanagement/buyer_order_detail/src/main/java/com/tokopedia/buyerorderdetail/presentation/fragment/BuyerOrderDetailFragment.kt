@@ -33,6 +33,7 @@ import com.tokopedia.buyerorderdetail.di.BuyerOrderDetailComponent
 import com.tokopedia.buyerorderdetail.domain.models.FinishOrderResponse
 import com.tokopedia.buyerorderdetail.presentation.activity.BuyerOrderDetailActivity
 import com.tokopedia.buyerorderdetail.presentation.adapter.BuyerOrderDetailAdapter
+import com.tokopedia.buyerorderdetail.presentation.adapter.callback.ScpRewardsMedalTouchPointWidgetCallback
 import com.tokopedia.buyerorderdetail.presentation.adapter.typefactory.BuyerOrderDetailTypeFactory
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.CourierInfoViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.DigitalRecommendationViewHolder
@@ -64,15 +65,23 @@ import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationAdditionalTrackingData
 import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationPage
 import com.tokopedia.digital.digital_recommendation.utils.DigitalRecommendationData
-import com.tokopedia.empty_state.EmptyStateUnify
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toIntSafely
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.logisticCommon.ui.DelayedEtaBottomSheetFragment
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigKey.SCP_REWARDS_MEDALI_TOUCH_POINT
+import com.tokopedia.scp_rewards_touchpoints.touchpoints.ScpToasterHelper
+import com.tokopedia.scp_rewards_touchpoints.touchpoints.analytics.ScpRewardsToasterAnalytics
+import com.tokopedia.scp_rewards_touchpoints.touchpoints.data.response.ScpRewardsMedalTouchPointResponse
+import com.tokopedia.scp_rewards_touchpoints.touchpoints.viewmodel.ScpRewardsMedalTouchPointViewModel
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -84,8 +93,6 @@ import com.tokopedia.utils.text.currency.StringUtils
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
-import kotlin.coroutines.Continuation
-import kotlin.coroutines.resume
 
 open class BuyerOrderDetailFragment :
     BaseDaggerFragment(),
@@ -107,6 +114,8 @@ open class BuyerOrderDetailFragment :
             }
         }
 
+        private const val SOURCE_NAME_FOR_MEDAL_TOUCH_POINT = "order_detail_page"
+
         const val RESULT_CODE_INSTANT_CANCEL_BUYER_REQUEST = 100
         const val RESULT_CODE_CANCEL_ORDER_DISABLE = 102
     }
@@ -127,7 +136,11 @@ open class BuyerOrderDetailFragment :
     private var binding by autoClearedNullable<FragmentBuyerOrderDetailBinding>()
 
     private val viewModel: BuyerOrderDetailViewModel by lazy {
-        ViewModelProvider(this, viewModelFactory).get(BuyerOrderDetailViewModel::class.java)
+        ViewModelProvider(this, viewModelFactory)[BuyerOrderDetailViewModel::class.java]
+    }
+
+    private val scpMedalTouchPointViewModel by lazy {
+        ViewModelProvider(this, viewModelFactory)[ScpRewardsMedalTouchPointViewModel::class.java]
     }
 
     private val toolbarMenuAnimator by lazy {
@@ -147,6 +160,7 @@ open class BuyerOrderDetailFragment :
             this,
             this,
             this,
+            scpRewardsMedalTouchPointWidgetCallback(),
             this,
             navigator,
             this,
@@ -162,6 +176,10 @@ open class BuyerOrderDetailFragment :
     protected val navigator: BuyerOrderDetailNavigator by lazy {
         BuyerOrderDetailNavigator(requireActivity(), this)
     }
+    private val remoteConfig: FirebaseRemoteConfigImpl by lazy {
+        FirebaseRemoteConfigImpl(context)
+    }
+
     protected val digitalRecommendationData: DigitalRecommendationData
         get() = DigitalRecommendationData(
             viewModelFactory,
@@ -247,6 +265,7 @@ open class BuyerOrderDetailFragment :
         observeReceiveConfirmation()
         observeAddSingleToCart()
         observeAddMultipleToCart()
+        observeMedalTouchPoint()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -432,6 +451,34 @@ open class BuyerOrderDetailFragment :
         }
     }
 
+    private fun observeMedalTouchPoint() {
+        scpMedalTouchPointViewModel.medalTouchPointData.observe(viewLifecycleOwner) {
+            if (it is com.tokopedia.scp_rewards_touchpoints.common.Success<*>) {
+                val data = (it.data as ScpRewardsMedalTouchPointResponse)
+                if (data.scpRewardsMedaliTouchpointOrder.isShown) {
+                    view?.let { view ->
+                        ScpToasterHelper.showToaster(
+                            view = view,
+                            data = data,
+                            customBottomHeight = getStickyActionButtonHeight()
+                        )
+                        ScpRewardsToasterAnalytics.sendViewToasterEvent(
+                            badgeId = data.scpRewardsMedaliTouchpointOrder.medaliTouchpointOrder.medaliID.toString()
+                        )
+                        viewModel.updateScpRewardsMedalTouchPointWidgetState(
+                            data = data.scpRewardsMedaliTouchpointOrder.medaliTouchpointOrder,
+                            marginLeft = resources.getDimension(R.dimen.buyer_order_detail_scp_rewards_medal_touch_point_margin_left).toIntSafely(),
+                            marginTop = resources.getDimension(R.dimen.buyer_order_detail_scp_rewards_medal_touch_point_margin_top).toIntSafely(),
+                            marginRight = resources.getDimension(R.dimen.buyer_order_detail_scp_rewards_medal_touch_point_margin_right).toIntSafely()
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    private fun getStickyActionButtonHeight(): Int = stickyActionButton?.height.orZero()
+
     private fun onSuccessGetBuyerOrderDetail(
         uiState: BuyerOrderDetailUiState.HasData.Showing
     ) {
@@ -502,6 +549,16 @@ open class BuyerOrderDetailFragment :
         bottomSheetManager.dismissBottomSheets()
         showCommonToaster(data.message.firstOrNull().orEmpty())
         loadBuyerOrderDetail(false)
+        getMedalTouchPoint()
+    }
+
+    private fun getMedalTouchPoint() {
+        if (isScpRewardTouchPointEnabled()) {
+            scpMedalTouchPointViewModel.getMedalTouchPoint(
+                orderId = viewModel.getOrderId().toLongOrZero(),
+                sourceName = SOURCE_NAME_FOR_MEDAL_TOUCH_POINT
+            )
+        }
     }
 
     private fun onFailedReceiveConfirmation(throwable: Throwable) {
@@ -838,4 +895,8 @@ open class BuyerOrderDetailFragment :
             PofDetailRefundedBottomSheet.newInstance(cacheManager?.id.orEmpty())
         bottomSheet.show(childFragmentManager)
     }
+
+    private fun isScpRewardTouchPointEnabled(): Boolean = remoteConfig.getBoolean(SCP_REWARDS_MEDALI_TOUCH_POINT, true)
+
+    private fun scpRewardsMedalTouchPointWidgetCallback() = ScpRewardsMedalTouchPointWidgetCallback()
 }

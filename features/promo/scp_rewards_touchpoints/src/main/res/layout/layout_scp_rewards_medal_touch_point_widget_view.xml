@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/constraintLayoutToaster"
+    android:background="@color/scp_rewards_medal_touch_point_widget_background_color_dms"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/aciv_background_widget"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/iu_background_icon"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="4dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/iu_sunburst_icon"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        app:layout_constraintBottom_toBottomOf="@id/iu_background_icon"
+        app:layout_constraintEnd_toEndOf="@id/iu_background_icon"
+        app:layout_constraintStart_toStartOf="@id/iu_background_icon"
+        app:layout_constraintTop_toTopOf="@id/iu_background_icon" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/iu_icon"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        app:layout_constraintBottom_toBottomOf="@id/iu_sunburst_icon"
+        app:layout_constraintEnd_toEndOf="@id/iu_sunburst_icon"
+        app:layout_constraintStart_toStartOf="@id/iu_sunburst_icon"
+        app:layout_constraintTop_toTopOf="@id/iu_sunburst_icon" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/scp_toaster_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="12dp"
+        android:gravity="bottom"
+        android:textColor="@color/Unify_NN950"
+        app:layout_constraintBottom_toTopOf="@+id/scp_toaster_subtitle"
+        app:layout_constraintEnd_toStartOf="@+id/icu_chevron"
+        app:layout_constraintStart_toEndOf="@+id/iu_sunburst_icon"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed"
+        app:typographyType="display_2"
+        app:typographyWeight="bold"
+        tools:text="Ada medali baru buatmu!" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/scp_toaster_subtitle"
+        android:layout_width="0dp"
+        android:layout_height="16dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="12dp"
+        android:textColor="@color/scp_rewards_medal_touch_point_widget_subtitle_color_dms"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/icu_chevron"
+        app:layout_constraintStart_toEndOf="@+id/iu_sunburst_icon"
+        app:layout_constraintTop_toBottomOf="@+id/scp_toaster_title"
+        app:layout_constraintVertical_chainStyle="packed"
+        app:typographyType="display_3"
+        tools:text="Jagoan Rumah Tangga Unilever" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/icu_chevron"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginEnd="8dp"
+        app:icon_name="CHEVRON_RIGHT"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
