@@ -11,6 +11,8 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalCommunication
+import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.tokochat.common.util.TokoChatNetworkUtil
 import com.tokopedia.tokochat.common.util.TokoChatValueUtil
 import com.tokopedia.tokochat.common.view.chatlist.TokoChatListBaseFragment
 import com.tokopedia.tokochat.common.view.chatlist.adapter.TokoChatListBaseAdapter
@@ -30,7 +32,8 @@ import javax.inject.Inject
 
 class TokoChatListFragment @Inject constructor(
     private val viewModel: TokoChatListViewModel,
-    private var userSession: UserSessionInterface
+    private var userSession: UserSessionInterface,
+    private var networkUtil: TokoChatNetworkUtil
 ) :
     TokoChatListBaseFragment<TokochatChatlistFragmentBinding>(),
     TokoChatListItemListener {
@@ -84,9 +87,11 @@ class TokoChatListFragment @Inject constructor(
     }
 
     private fun setChatListData(newData: List<TokoChatListItemUiModel>) {
-        removeInitialShimmeringAndEmptyView()
-        if (newData.isEmpty()) {
-            addEmptyChatItem()
+        if (adapter.isShimmeringExist() || newData.isEmpty()) {
+            adapter.clearAllItems()
+            if (newData.isEmpty()) {
+                addEmptyChatItem()
+            }
         } else {
             baseBinding?.tokochatListRv?.post {
                 adapter.setItemsAndAnimateChanges(newData)
@@ -161,6 +166,22 @@ class TokoChatListFragment @Inject constructor(
             val applink = "${ApplinkConstInternalCommunication.TOKO_CHAT}$source$paramOrderIdGojek"
             val intent = RouteManager.getIntent(it, applink)
             startActivity(intent)
+        }
+    }
+
+    private fun isConnectedToNetwork(): Boolean {
+        return if (context != null) {
+            networkUtil.isNetworkAvailable(requireContext())
+        } else {
+            false
+        }
+    }
+
+    override fun getErrorType(): Int {
+        return if (isConnectedToNetwork()) {
+            GlobalError.SERVER_ERROR
+        } else {
+            GlobalError.NO_CONNECTION
         }
     }
 

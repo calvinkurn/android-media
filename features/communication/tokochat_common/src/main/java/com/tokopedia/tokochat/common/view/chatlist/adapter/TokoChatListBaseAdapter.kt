@@ -5,13 +5,12 @@ import com.tokopedia.tokochat.common.view.chatlist.adapter.delegate.TokoChatList
 import com.tokopedia.tokochat.common.view.chatlist.adapter.delegate.TokoChatListItemDelegate
 import com.tokopedia.tokochat.common.view.chatlist.adapter.delegate.TokoChatListShimmerDelegate
 import com.tokopedia.tokochat.common.view.chatlist.listener.TokoChatListItemListener
-import com.tokopedia.tokochat.common.view.chatlist.uimodel.TokoChatListEmptyUiModel
 import com.tokopedia.tokochat.common.view.chatlist.uimodel.TokoChatListItemUiModel
 import com.tokopedia.tokochat.common.view.chatlist.uimodel.TokoChatListShimmerUiModel
 
 class TokoChatListBaseAdapter(
     itemListener: TokoChatListItemListener
-): BaseCommonAdapter() {
+) : BaseCommonAdapter() {
 
     init {
         delegatesManager.addDelegate(TokoChatListItemDelegate(itemListener))
@@ -25,25 +24,19 @@ class TokoChatListBaseAdapter(
         } != null
     }
 
-    fun isEmptyViewExist(): Boolean {
-        return itemList.find {
-            it is TokoChatListEmptyUiModel
-        } != null
-    }
-
     override fun areItemsTheSame(oldItem: Any, newItem: Any): Boolean {
         return if (oldItem is TokoChatListItemUiModel && newItem is TokoChatListItemUiModel) {
             (
                 oldItem.orderId == newItem.orderId &&
-                oldItem.channelId == newItem.channelId &&
-                oldItem.driverName == newItem.driverName &&
-                oldItem.message == newItem.message &&
-                oldItem.business == newItem.business &&
-                oldItem.createAt == newItem.createAt &&
-                oldItem.counter == newItem.counter &&
-                oldItem.serviceType == newItem.serviceType &&
-                oldItem.imageUrl == newItem.imageUrl
-            )
+                    oldItem.channelId == newItem.channelId &&
+                    oldItem.driverName == newItem.driverName &&
+                    oldItem.message == newItem.message &&
+                    oldItem.business == newItem.business &&
+                    oldItem.createAt == newItem.createAt &&
+                    oldItem.counter == newItem.counter &&
+                    oldItem.serviceType == newItem.serviceType &&
+                    oldItem.imageUrl == newItem.imageUrl
+                )
         } else {
             super.areItemsTheSame(oldItem, newItem)
         }
@@ -53,15 +46,15 @@ class TokoChatListBaseAdapter(
         return if (oldItem is TokoChatListItemUiModel && newItem is TokoChatListItemUiModel) {
             (
                 oldItem.orderId == newItem.orderId &&
-                oldItem.channelId == newItem.channelId &&
-                oldItem.driverName == newItem.driverName &&
-                oldItem.message == newItem.message &&
-                oldItem.business == newItem.business &&
-                oldItem.createAt == newItem.createAt &&
-                oldItem.counter == newItem.counter &&
-                oldItem.serviceType == newItem.serviceType &&
-                oldItem.imageUrl == newItem.imageUrl
-            )
+                    oldItem.channelId == newItem.channelId &&
+                    oldItem.driverName == newItem.driverName &&
+                    oldItem.message == newItem.message &&
+                    oldItem.business == newItem.business &&
+                    oldItem.createAt == newItem.createAt &&
+                    oldItem.counter == newItem.counter &&
+                    oldItem.serviceType == newItem.serviceType &&
+                    oldItem.imageUrl == newItem.imageUrl
+                )
         } else {
             super.areItemsTheSame(oldItem, newItem)
         }
