@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.gojek.conversations.babble.channel.data.ChannelType
+import com.gojek.conversations.channel.ConversationsChannel
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.view.ZERO
@@ -38,7 +39,7 @@ class TokoChatListViewModel @Inject constructor(
                 setPaginationTimeStamp(0L) // reset
             }
             ?.map {
-                mapper.mapToListChat(it)
+                filterExpiredChannelAndMap(it)
             }
             ?.transformLatest { value ->
                 emit(Success(value) as Result<List<TokoChatListItemUiModel>>)
@@ -87,5 +88,14 @@ class TokoChatListViewModel @Inject constructor(
 
     private fun setPaginationTimeStamp(newTimeStamp: Long) {
         chatChannelUseCase.setLastTimeStamp(newTimeStamp)
+    }
+
+    private fun filterExpiredChannelAndMap(
+        channelList: List<ConversationsChannel>
+    ): List<TokoChatListItemUiModel> {
+        val filteredChannel = channelList.filter {
+            it.expiresAt > System.currentTimeMillis()
+        }
+        return mapper.mapToListChat(filteredChannel)
     }
 }
