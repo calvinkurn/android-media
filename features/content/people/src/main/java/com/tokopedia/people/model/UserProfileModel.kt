@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 data class ProfileHeaderBase(
     @SerializedName("feedXProfileHeader")
-    val profileHeader: FeedXProfileHeader = FeedXProfileHeader(),
+    val profileHeader: FeedXProfileHeader = FeedXProfileHeader()
 )
 
 data class FeedXProfileHeader(
@@ -24,7 +24,7 @@ data class FeedXProfileHeader(
     val isBlocking: Boolean = false,
 
     @SerializedName("isBlockedBy")
-    val isBlockedBy: Boolean = false,
+    val isBlockedBy: Boolean = false
 )
 
 data class Profile(
@@ -49,11 +49,17 @@ data class Profile(
     @SerializedName("sharelink")
     val sharelink: Link = Link(),
 
+    /**
+     * "badges": [
+     *   "Official Store",
+     *   "https://images.tokopedia.net/img/official_store/badge_os.png"
+     *  ]
+     */
     @SerializedName("badges")
     val badges: List<String> = emptyList(),
 
     @SerializedName("liveplaychannel")
-    val liveplaychannel: Liveplaychannel = Liveplaychannel(),
+    val liveplaychannel: Liveplaychannel = Liveplaychannel()
 )
 
 data class Liveplaychannel(
@@ -64,7 +70,7 @@ data class Liveplaychannel(
     val liveplaychannelid: String = "",
 
     @SerializedName("liveplaychannellink")
-    val liveplaychannellink: Link = Link(),
+    val liveplaychannellink: Link = Link()
 )
 
 data class Link(
@@ -72,7 +78,7 @@ data class Link(
     val applink: String = "",
 
     @SerializedName("weblink")
-    val weblink: String = "",
+    val weblink: String = ""
 )
 
 data class Stats(
@@ -106,5 +112,5 @@ data class ExtraStats(
     val count: Int = 0,
 
     @SerializedName("countFmt")
-    val countFmt: String = "",
+    val countFmt: String = ""
 )

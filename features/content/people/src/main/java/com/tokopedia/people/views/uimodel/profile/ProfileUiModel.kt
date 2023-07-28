@@ -10,12 +10,11 @@ data class ProfileUiModel(
     val name: String,
     val username: String,
     val biography: String,
-    val badges: List<String>,
     val stats: ProfileStatsUiModel,
     val shareLink: LinkUiModel,
     val liveInfo: LivePlayChannelUiModel,
     val isBlocking: Boolean,
-    val isBlockedBy: Boolean,
+    val isBlockedBy: Boolean
 ) {
 
     companion object {
@@ -27,12 +26,11 @@ data class ProfileUiModel(
                 name = "",
                 username = "",
                 biography = "",
-                badges = emptyList(),
                 stats = ProfileStatsUiModel.Empty,
                 shareLink = LinkUiModel.Empty,
                 liveInfo = LivePlayChannelUiModel.Empty,
                 isBlocking = false,
-                isBlockedBy = false,
+                isBlockedBy = false
             )
     }
 }
