@@ -327,6 +327,10 @@ class FlightHomepageViewModel @Inject constructor(
         }
     }
 
+    fun sendTrackingClickTransaction(screenName: String) {
+        flightAnalytics.eventClickTransactions(screenName)
+    }
+
     private fun mapSearchPassDataToDashboardModel(flightSearchData: FlightSearchPassDataModel): FlightHomepageModel {
         val dashboardModel = FlightHomepageModel()
 

@@ -1,21 +1,19 @@
 package com.tokopedia.entertainment.pdp.adapter
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.entertainment.R
-import kotlinx.android.synthetic.main.item_event_form_bottomsheet_list.view.*
+import com.tokopedia.entertainment.databinding.ItemEventFormBottomsheetListBinding
 
 class EventFormBottomSheetAdapter(val formBottomSheetListener: Listener) : RecyclerView.Adapter<EventFormBottomSheetAdapter.EventFormBottomSheetViewHolder>(){
 
     private var listString = emptyList<String>()
 
-    inner class EventFormBottomSheetViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    inner class EventFormBottomSheetViewHolder(val binding: ItemEventFormBottomsheetListBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(title: String) {
-            with(itemView) {
-                tg_event_form_bottom_sheet.text = title
-                ll_event_form_bottom_sheet.setOnClickListener {
+            with(binding) {
+                tgEventFormBottomSheet.text = title
+                llEventFormBottomSheet.setOnClickListener {
                     formBottomSheetListener.getActiveKeyPosition(position)
                 }
             }
@@ -27,8 +25,12 @@ class EventFormBottomSheetAdapter(val formBottomSheetListener: Listener) : Recyc
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EventFormBottomSheetViewHolder {
-        val itemView = LayoutInflater.from(parent.context).inflate(R.layout.item_event_form_bottomsheet_list, parent, false)
-        return EventFormBottomSheetViewHolder(itemView)
+        val binding = ItemEventFormBottomsheetListBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent,
+            false
+        )
+        return EventFormBottomSheetViewHolder(binding)
     }
 
     override fun getItemCount(): Int {

@@ -732,7 +732,7 @@ class UserProfileFragment @Inject constructor(
 
                 if (value.profileTab.tabs == pagerAdapter.getTabs()) return
 
-                pagerAdapter.insertFragment(value.profileTab.tabs)
+                pagerAdapter.updateFragment(value.profileTab.tabs)
                 mainBinding.profileTabs.tabLayout.showWithCondition(value.profileTab.showTabs)
 
                 val selectedTabKey = UserProfileParam.getSelectedTab(activity?.intent, isRemoveAfterGet = true).key
