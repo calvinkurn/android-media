@@ -15,7 +15,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:src="@color/Unify_Y500" />
+        tools:src="@color/Unify_YN500" />
 
     <ImageView
         android:id="@+id/ivPin"
@@ -71,7 +71,7 @@
         android:ellipsize="end"
         android:includeFontPadding="false"
         android:maxLines="1"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         app:layout_constrainedWidth="true"
         app:layout_constraintEnd_toStartOf="@+id/time"
         app:layout_constraintHorizontal_bias="0"
@@ -137,7 +137,7 @@
         android:background="@drawable/bg_red_dot_unread"
         android:gravity="center"
         android:includeFontPadding="false"
-        android:textColor="@color/Unify_N0"
+        android:textColor="@color/Unify_NN0"
         android:visibility="visible"
         app:layout_constraintEnd_toEndOf="@+id/time"
         app:layout_constraintTop_toBottomOf="@+id/time"

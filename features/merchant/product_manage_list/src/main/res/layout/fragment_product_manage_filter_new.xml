@@ -18,7 +18,7 @@
             android:id="@+id/filterRecyclerView"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:background="@color/Unify_N0"
+            android:background="@color/Unify_NN0"
             android:paddingLeft="16dp"
             android:paddingRight="16dp"
             android:layout_below="@id/bottomsheet_title_divider"

@@ -31,7 +31,7 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="8dp"
             android:layout_marginTop="8dp"
-            android:textColor="@color/Unify_N700_68"
+            android:textColor="@color/Unify_NN950_68"
             app:layout_constraintTop_toBottomOf="@id/image_event"
             app:typographyType="small"
             tools:text="Kisah Inspiratif" />

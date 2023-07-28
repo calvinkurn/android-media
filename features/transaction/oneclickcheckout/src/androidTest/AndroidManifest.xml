@@ -1,6 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.tokopedia.oneclickcheckout"
     android:versionCode="1"
     android:versionName="1.0.0">
 
@@ -8,7 +7,7 @@
         android:label="OCC Test"
         tools:replace="android:label">
         <activity
-            android:name=".order.view.TestOrderSummaryPageActivity"
+            android:name="com.tokopedia.oneclickcheckout.order.view.TestOrderSummaryPageActivity"
             android:label="@string/title_one_click_checkout"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />

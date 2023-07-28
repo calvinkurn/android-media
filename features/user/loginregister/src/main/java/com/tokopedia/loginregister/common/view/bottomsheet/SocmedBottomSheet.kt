@@ -6,8 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.loginregister.R
+import com.tokopedia.loginregister.common.domain.pojo.ProviderData
 import com.tokopedia.loginregister.databinding.LayoutSocmedBottomsheetBinding
-import com.tokopedia.loginregister.discover.ProviderData
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
@@ -20,8 +20,7 @@ interface SocmedBottomSheetListener {
     fun onItemClick(provider: ProviderData)
 }
 
-class SocmedBottomSheet(
-): BottomSheetUnify() {
+class SocmedBottomSheet() : BottomSheetUnify() {
 
     var listener: SocmedBottomSheetListener? = null
 

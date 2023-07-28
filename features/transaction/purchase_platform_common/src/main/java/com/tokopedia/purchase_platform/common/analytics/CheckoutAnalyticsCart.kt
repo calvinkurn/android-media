@@ -1030,4 +1030,33 @@ class CheckoutAnalyticsCart(context: Context) : TransactionAnalytics() {
         gtmData[ExtraKey.TRACKER_ID] = ConstantTransactionAnalytics.TrackerId.VIEW_GOTOPLUS_TICKER_CART
         sendGeneralEvent(gtmData)
     }
+
+    // addons product service
+    // tracker id : 45176
+    fun eventViewAddOnsProductWidgetCart(addOnType: Int, productId: String) {
+        val gtmData = getGtmData(
+            ConstantTransactionAnalytics.EventName.VIEW_PP_IRIS,
+            ConstantTransactionAnalytics.EventCategory.CART,
+            ConstantTransactionAnalytics.EventAction.VIEW_ADD_ONS_PRODUCT_WIDGET,
+            "$addOnType - $productId"
+        )
+        gtmData[ExtraKey.TRACKER_ID] = ConstantTransactionAnalytics.TrackerId.VIEW_ADDONS_PRODUCT_WIDGET_CART
+        gtmData[ExtraKey.CURRENT_SITE] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        gtmData[ExtraKey.BUSINESS_UNIT] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
+        sendGeneralEvent(gtmData)
+    }
+
+    // tracker id : 45177
+    fun eventClickAddOnsWidgetCart(addOnType: Int, productId: String) {
+        val gtmData = getGtmData(
+            ConstantTransactionAnalytics.EventName.CLICK_PP,
+            ConstantTransactionAnalytics.EventCategory.CART,
+            ConstantTransactionAnalytics.EventAction.CLICK_ADD_ONS_PRODUCT_WIDGET,
+            "$addOnType - $productId"
+        )
+        gtmData[ExtraKey.TRACKER_ID] = ConstantTransactionAnalytics.TrackerId.CLICK_ADDONS_PRODUCT_WIDGET_CART
+        gtmData[ExtraKey.CURRENT_SITE] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        gtmData[ExtraKey.BUSINESS_UNIT] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
+        sendGeneralEvent(gtmData)
+    }
 }

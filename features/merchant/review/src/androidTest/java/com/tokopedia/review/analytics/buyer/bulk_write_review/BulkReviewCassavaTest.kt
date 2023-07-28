@@ -224,7 +224,7 @@ class BulkReviewCassavaTest : CassavaTestFixture() {
                     clickChildViewWithId(R.id.ic_bulk_review_remove)
                 )
             }
-            clickRecyclerViewItem(R.id.rv_bulk_review_mini_action, 0)
+            clickAction(R.id.bulk_review_mini_action_testimony)
         } assertTest {
             performClose(activityRule)
             validateWithTimeout(cassavaTestRule, TRACKER_ADD_TESTIMONY_MINI_ACTION_CLICK)
@@ -243,7 +243,7 @@ class BulkReviewCassavaTest : CassavaTestFixture() {
                     clickChildViewWithId(R.id.ic_bulk_review_remove)
                 )
             }
-            clickRecyclerViewItem(R.id.rv_bulk_review_mini_action, 1)
+            clickAction(R.id.bulk_review_mini_action_attachment)
         } assertTest {
             performClose(activityRule)
             validateWithTimeout(cassavaTestRule, TRACKER_ADD_ATTACHMENT_MINI_ACTION_CLICK)

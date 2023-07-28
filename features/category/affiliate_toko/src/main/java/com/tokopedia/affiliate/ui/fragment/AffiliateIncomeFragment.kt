@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
@@ -50,8 +49,11 @@ import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImageCircle
+import com.tokopedia.searchbar.navigation_component.NavSource
+import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
+import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
@@ -112,7 +114,6 @@ class AffiliateIncomeFragment :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        affiliateIncomeViewModel = ViewModelProvider(this)[AffiliateIncomeViewModel::class.java]
         setObservers()
     }
 
@@ -373,6 +374,7 @@ class AffiliateIncomeFragment :
                 resetItems()
             }
             binding?.appbar
+
                 ?.addOnOffsetChangedListener { _, verticalOffset ->
                     it.isEnabled = verticalOffset == 0
                 }
@@ -405,7 +407,7 @@ class AffiliateIncomeFragment :
             }
         }
         binding?.withdrawalNavToolbar?.run {
-            val iconBuilder = IconBuilder()
+            val iconBuilder = IconBuilder(builderFlags = IconBuilderFlag(pageSource = NavSource.AFFILIATE))
             if (isAffiliateNCEnabled()) {
                 iconBuilder.addIcon(IconList.ID_NOTIFICATION, disableRouteManager = true) {
                     affiliateIncomeViewModel?.resetNotificationCount()
@@ -419,7 +421,9 @@ class AffiliateIncomeFragment :
             iconBuilder.addIcon(IconList.ID_NAV_GLOBAL) {}
             setIcon(iconBuilder)
             getCustomViewContentView()?.findViewById<Typography>(R.id.navbar_tittle)?.text =
-                getString(R.string.affiliate_withdrawal)
+                getString(
+                    R.string.affiliate_withdrawal
+                )
         }
         initDateRangeClickListener()
         affiliateIncomeViewModel?.getAffiliateValidateUser(userSession?.email.orEmpty())
@@ -459,10 +463,11 @@ class AffiliateIncomeFragment :
                 affiliateIncomeViewModel?.getSelectedDate()
                     ?: AffiliateBottomDatePicker.THIRTY_DAYS,
                 this
-            ).show(
-                childFragmentManager,
-                ""
             )
+                .show(
+                    childFragmentManager,
+                    ""
+                )
         }
     }
 
@@ -582,5 +587,7 @@ class AffiliateIncomeFragment :
         return AffiliateIncomeViewModel::class.java
     }
 
-    override fun setViewModel(viewModel: BaseViewModel) = Unit
+    override fun setViewModel(viewModel: BaseViewModel) {
+        affiliateIncomeViewModel = viewModel as AffiliateIncomeViewModel
+    }
 }

@@ -156,7 +156,11 @@ data class ComponentData(
     // endregion
 
     @SerializedName("variantCampaign")
-    val variantCampaign: VariantCampaign = VariantCampaign()
+    val variantCampaign: VariantCampaign = VariantCampaign(),
+    @SerializedName("text")
+    val text: String = "",
+    @SerializedName("chevronPos")
+    val chevronPos: String = ""
 ) {
     companion object {
         private const val PRODUCT_IMAGE_TYPE = "image"

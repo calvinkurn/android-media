@@ -28,7 +28,7 @@ class MediaTarget<T : View>(
 
 }
 
-class MediaBitmapEmptyTarget<T>(
+class MediaBitmapEmptyTarget<T : Any>(
     private val onCleared: (placeholder: Drawable?) -> Unit = {},
     private val onReady: (resource: Bitmap) -> Unit = {},
     private val onFailed: (errorDrawable: Drawable?) -> Unit = {}

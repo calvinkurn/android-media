@@ -98,7 +98,7 @@ class TokoNowDynamicHeaderView @JvmOverloads constructor(context: Context, attrs
                 } else {
                     itemView?.context?.getString(R.string.tokopedianow_mix_left_carousel_widget_see_all)
                 }
-                tpSeeAll?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
+                tpSeeAll?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
                 tpSeeAll?.setOnClickListener {
                     listener?.onSeeAllClicked(
                         context = context,
