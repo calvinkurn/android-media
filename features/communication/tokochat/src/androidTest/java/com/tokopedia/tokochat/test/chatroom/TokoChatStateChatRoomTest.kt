@@ -1,6 +1,7 @@
 package com.tokopedia.tokochat.test.chatroom
 
 import com.tokopedia.test.application.annotations.UiTest
+import com.tokopedia.tokochat.stub.domain.response.ApiResponseModelStub
 import com.tokopedia.tokochat.stub.domain.response.ApiResponseStub
 import com.tokopedia.tokochat.test.base.BaseTokoChatRoomTest
 import com.tokopedia.tokochat.test.chatroom.robot.state.StateResult
@@ -17,7 +18,7 @@ class TokoChatStateChatRoomTest : BaseTokoChatRoomTest() {
     @Test
     fun should_show_global_error_when_fail_get_channel_id() {
         // Given
-        ApiResponseStub.channelIdResponse = Pair(
+        ApiResponseStub.channelIdResponse = ApiResponseModelStub(
             400,
             "channel_id/fail_get_channel_id_invalid_channel.json"
         )
@@ -42,7 +43,7 @@ class TokoChatStateChatRoomTest : BaseTokoChatRoomTest() {
     @Test
     fun should_show_unavailable_bottom_sheet() {
         // Given
-        ApiResponseStub.channelIdResponse = Pair(
+        ApiResponseStub.channelIdResponse = ApiResponseModelStub(
             400,
             "channel_id/fail_get_channel_id_chat_closed.json"
         )
@@ -70,7 +71,7 @@ class TokoChatStateChatRoomTest : BaseTokoChatRoomTest() {
     @Test
     fun should_show_read_only_chatroom() {
         // Given
-        ApiResponseStub.channelDetailsResponse = Pair(
+        ApiResponseStub.channelDetailsResponse = ApiResponseModelStub(
             200,
             "channel_details/success_get_channel_details_read_only.json"
         )

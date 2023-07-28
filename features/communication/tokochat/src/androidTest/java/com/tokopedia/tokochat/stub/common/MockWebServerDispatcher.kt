@@ -1,6 +1,7 @@
 package com.tokopedia.tokochat.stub.common
 
 import com.tokopedia.tokochat.stub.common.util.ResponseReader
+import com.tokopedia.tokochat.stub.domain.response.ApiResponseModelStub
 import com.tokopedia.tokochat.stub.domain.response.ApiResponseStub
 import com.tokopedia.tokochat.stub.domain.response.ApiResponseStub.CHANNEL_API
 import com.tokopedia.tokochat.stub.domain.response.ApiResponseStub.CHANNEL_ID_API
@@ -22,13 +23,13 @@ class MockWebServerDispatcher : Dispatcher() {
     }
 
     private fun getMockResponse(url: String): MockResponse {
-        val pairResponse = getPairResponse(url)
+        val apiResponse = getApiResponse(url)
         return MockResponse()
-            .setResponseCode(pairResponse.first)
-            .setBody(getStreamResponse(pairResponse.second))
+            .setResponseCode(apiResponse.responseCode)
+            .setBody(getStreamResponse(apiResponse))
     }
 
-    private fun getPairResponse(url: String): Pair<Int, String> {
+    private fun getApiResponse(url: String): ApiResponseModelStub {
         return when {
             /**
              * Chat Room
@@ -61,7 +62,8 @@ class MockWebServerDispatcher : Dispatcher() {
         }
     }
 
-    private fun getStreamResponse(fileName: String): String {
-        return ResponseReader.convertJsonToStream(fileName)
+    private fun getStreamResponse(apiResponse: ApiResponseModelStub): String {
+        val rawResponse = ResponseReader.convertJsonToStream(apiResponse.responseJsonPath)
+        return apiResponse.responseEditor?.invoke(rawResponse) ?: rawResponse
     }
 }
