@@ -163,7 +163,7 @@ class RewardSummaryView : FrameLayout {
         buttonsMap.filter { it.key != RewardButtonType.EXIT }.forEach { it.value.gone() }
 
         viewFlipper.animate().alpha(1f).setDuration(300L).start()
-        llButton?.animate().alpha(1f).setDuration(300L).start()
+        llButton?.animate()?.alpha(1f)?.setDuration(300L)?.start()
     }
 
     private fun setRewardSummaryData(rewardSummaryItemList: List<RewardSummaryItem>) {
