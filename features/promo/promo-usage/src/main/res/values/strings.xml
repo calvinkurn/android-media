@@ -18,6 +18,7 @@
     <string name="promo_voucher_placeholder_voucher_amount">Rp%s</string>
     <string name="promo_voucher_placeholder_total_price">Rp%s</string>
     <string name="promo_voucher_placeholder_gopay_coins">%s GoPay Coins</string>
+    <string name="promo_voucher_placeholder_remaining_quota">Sisa %d</string>
     <string name="promo_voucher_placeholder_view_all_voucher">Lihat %d Promo Lainnya</string>
     <string name="promo_voucher_placeholder_total_savings">Yay, kamu hemat <![CDATA[<b>Rp%s</b>]]> (1 promo)</string>
     <string name="promo_voucher_placeholder_total_savings_multi_voucher">Wih, total hemat kamu <![CDATA[<b>Rp%s</b>]]> (%d promo)</string>

@@ -51,19 +51,19 @@ class PromoUsageViewModel @Inject constructor(
                 val items = listOf<DelegateAdapterItem>(
                     VoucherRecommendation("Kamu bisa hemat Rp30.000 dari 2 promo!", recommendationVouchers),
                     VoucherAccordion(
-                        "${cashbackVouchers.size} promo buat pembayaran tertentu",
+                        "${paymentMethodVouchers.size} promo buat pembayaran tertentu",
                         false,
-                        cashbackVouchers.toCollapsibleList()
+                        paymentMethodVouchers.toCollapsibleList()
                     ),
                     VoucherAccordion(
-                        "${freeShippingVouchers.size} promo buat pengiriman kamu",
+                        "${shippingVouchers.size} promo buat pengiriman kamu",
                         false,
-                        freeShippingVouchers.toCollapsibleList()
+                        shippingVouchers.toCollapsibleList()
                     ),
                     VoucherAccordion(
-                        "${discountVouchers.size} promo lainnya buat kamu",
+                        "${otherVouchers.size} promo lainnya buat kamu",
                         false,
-                        discountVouchers.toCollapsibleList()
+                        otherVouchers.toCollapsibleList()
                     ),
                     VoucherCode(userInputVoucherCode = "", errorMessage = "", voucher = null),
                     TermAndCondition
@@ -202,7 +202,9 @@ class PromoUsageViewModel @Inject constructor(
                     VoucherType.CASHBACK,
                     VoucherState.Selected,
                     VoucherSource.UserInput(voucherCode),
-                    true
+                    true,
+                    5,
+                    false
                 )
 
                 val updatedItems = currentItems.map { item ->
@@ -351,7 +353,7 @@ class PromoUsageViewModel @Inject constructor(
         }
     }
 
-    private val cashbackVouchers = listOf(
+    private val paymentMethodVouchers = listOf(
         Voucher(
             1,
             100_000,
@@ -362,7 +364,9 @@ class PromoUsageViewModel @Inject constructor(
             VoucherType.CASHBACK,
             VoucherState.Loading,
             VoucherSource.Promo,
-            true
+            true,
+            5,
+            false
         ),
 
         Voucher(
@@ -375,6 +379,8 @@ class PromoUsageViewModel @Inject constructor(
             VoucherType.CASHBACK,
             VoucherState.Normal,
             VoucherSource.Promo,
+            false,
+            5,
             false
         ),
         Voucher(
@@ -387,6 +393,8 @@ class PromoUsageViewModel @Inject constructor(
             VoucherType.CASHBACK,
             VoucherState.Normal,
             VoucherSource.Promo,
+            false,
+            5,
             false
         ),
         Voucher(
@@ -399,6 +407,8 @@ class PromoUsageViewModel @Inject constructor(
             VoucherType.CASHBACK,
             VoucherState.Disabled,
             VoucherSource.Promo,
+            false,
+            5,
             false
         ),
         Voucher(
@@ -411,6 +421,8 @@ class PromoUsageViewModel @Inject constructor(
             VoucherType.CASHBACK,
             VoucherState.Ineligible("Belum bisa dipakai barengan promo yang dipilih."),
             VoucherSource.Promo,
+            false,
+            5,
             false
         ),
         Voucher(
@@ -423,10 +435,26 @@ class PromoUsageViewModel @Inject constructor(
             VoucherType.CASHBACK,
             VoucherState.Actionable("Aktifkan GoPay Later Cicil untuk pakai promo", "Aktifkan GoPay Later Cicil", "tokopedia://cart"),
             VoucherSource.Promo,
+            false,
+            5,
             false
         ),
+        Voucher(
+            63,
+            100_000,
+            "Cashback - Pembayaran - Low Quota",
+            "2 hari",
+            "https://images.tokopedia.net/img/android/promo/ic_voucher_cashback/ic_voucher_cashback.png",
+            "https://images.tokopedia.net/img/android/promo/bg_supergraphic_cashback/bg_supergraphic_cashback.png",
+            VoucherType.CASHBACK,
+            VoucherState.Normal,
+            VoucherSource.Promo,
+            false,
+            5,
+            true
+        ),
     )
-    private val freeShippingVouchers = listOf(
+    private val shippingVouchers = listOf(
         Voucher(
             6,
             100_000,
@@ -437,7 +465,9 @@ class PromoUsageViewModel @Inject constructor(
             VoucherType.FREE_SHIPPING,
             VoucherState.Loading,
             VoucherSource.Promo,
-            true
+            true,
+            5,
+            false
         ),
         Voucher(
             7,
@@ -449,6 +479,8 @@ class PromoUsageViewModel @Inject constructor(
             VoucherType.FREE_SHIPPING,
             VoucherState.Normal,
             VoucherSource.Promo,
+            false,
+            5,
             false
         ),
         Voucher(
@@ -461,6 +493,8 @@ class PromoUsageViewModel @Inject constructor(
             VoucherType.FREE_SHIPPING,
             VoucherState.Normal,
             VoucherSource.Promo,
+            false,
+            5,
             false
         ),
         Voucher(
@@ -473,6 +507,8 @@ class PromoUsageViewModel @Inject constructor(
             VoucherType.FREE_SHIPPING,
             VoucherState.Disabled,
             VoucherSource.Promo,
+            false,
+            5,
             false
         ),
         Voucher(
@@ -485,10 +521,26 @@ class PromoUsageViewModel @Inject constructor(
             VoucherType.FREE_SHIPPING,
             VoucherState.Ineligible("Belum bisa dipakai barengan promo yang dipilih."),
             VoucherSource.Promo,
+            false,
+            5,
             false
         ),
+        Voucher(
+            68,
+            100_000,
+            "Free Shipping - Pembayaran - Low Quota",
+            "2 hari",
+            "https://images.tokopedia.net/img/android/promo/ic_voucher_cashback/ic_voucher_cashback.png",
+            "https://images.tokopedia.net/img/android/promo/bg_supergraphic_cashback/bg_supergraphic_cashback.png",
+            VoucherType.CASHBACK,
+            VoucherState.Normal,
+            VoucherSource.Promo,
+            false,
+            5,
+            true
+        ),
     )
-    private val discountVouchers = listOf(
+    private val otherVouchers = listOf(
         Voucher(
             11,
             100_000,
@@ -499,7 +551,9 @@ class PromoUsageViewModel @Inject constructor(
             VoucherType.DISCOUNT,
             VoucherState.Loading,
             VoucherSource.Promo,
-            true
+            true,
+            5,
+            false
         ),
         Voucher(
             12,
@@ -511,7 +565,9 @@ class PromoUsageViewModel @Inject constructor(
             VoucherType.DISCOUNT,
             VoucherState.Normal,
             VoucherSource.Promo,
-            true
+            true,
+            5,
+            false
         ),
         Voucher(
             13,
@@ -523,6 +579,8 @@ class PromoUsageViewModel @Inject constructor(
             VoucherType.DISCOUNT,
             VoucherState.Normal,
             VoucherSource.Promo,
+            false,
+            5,
             false
         ),
         Voucher(
@@ -535,6 +593,8 @@ class PromoUsageViewModel @Inject constructor(
             VoucherType.DISCOUNT,
             VoucherState.Disabled,
             VoucherSource.Promo,
+            false,
+            5,
             false
         ),
         Voucher(
@@ -547,7 +607,23 @@ class PromoUsageViewModel @Inject constructor(
             VoucherType.DISCOUNT,
             VoucherState.Ineligible("Belum bisa dipakai barengan promo yang dipilih."),
             VoucherSource.Promo,
+            false,
+            5,
             false
+        ),
+        Voucher(
+            198,
+            100_000,
+            "Discount - Other - Low Quota",
+            "2 hari",
+            "https://images.tokopedia.net/img/android/promo/ic_voucher_cashback/ic_voucher_cashback.png",
+            "https://images.tokopedia.net/img/android/promo/bg_supergraphic_cashback/bg_supergraphic_cashback.png",
+            VoucherType.CASHBACK,
+            VoucherState.Normal,
+            VoucherSource.Promo,
+            false,
+            5,
+            true
         ),
     )
     private val recommendationVouchers = listOf(
@@ -561,7 +637,9 @@ class PromoUsageViewModel @Inject constructor(
             VoucherType.CASHBACK,
             VoucherState.Normal,
             VoucherSource.Promo,
-            true
+            true,
+            5,
+            false
         ),
         Voucher(
             31,
@@ -573,7 +651,23 @@ class PromoUsageViewModel @Inject constructor(
             VoucherType.DISCOUNT,
             VoucherState.Normal,
             VoucherSource.Promo,
+            true,
+            5,
+            false
+        ),
+        Voucher(
+            99,
+            100_000,
+            "Recom - Free shipping - Low Quota",
+            "2 hari",
+            "https://images.tokopedia.net/img/android/promo/ic_voucher_cashback/ic_voucher_cashback.png",
+            "https://images.tokopedia.net/img/android/promo/bg_supergraphic_cashback/bg_supergraphic_cashback.png",
+            VoucherType.FREE_SHIPPING,
+            VoucherState.Normal,
+            VoucherSource.Promo,
+            false,
+            5,
             true
-        )
+        ),
     )
 }

@@ -6,7 +6,9 @@ import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.LinearLayout
+import android.widget.RelativeLayout
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.google.android.material.bottomappbar.BottomAppBarTopEdgeTreatment
 import com.google.android.material.shape.MaterialShapeDrawable
@@ -56,6 +58,7 @@ class VoucherView @JvmOverloads constructor(
             handleVoucherType(voucher)
             handleVoucherState(voucher.voucherState)
             handleVoucherSource(voucher.voucherSource)
+            handleVoucherQuota(voucher.remainingQuota, voucher.showRemainingQuotaRibbon)
 
             tpgVoucherTnc.text = voucher.termAndCondition
 
@@ -80,7 +83,28 @@ class VoucherView @JvmOverloads constructor(
                     isVoucherSelected = voucher.voucherState.isSelected()
                 )
             }
+
+
         }
+    }
+
+    private fun handleVoucherQuota(remainingQuota: Int, showRemainingQuotaRibbon: Boolean) {
+        if (showRemainingQuotaRibbon) {
+            binding?.layoutRemainingQuotaRibbon?.visible()
+            binding?.tpgRemainingQuota?.text = context?.getString(
+                R.string.promo_voucher_placeholder_remaining_quota,
+                remainingQuota
+            )
+
+            updateVoucherTypeMarginTop(16.toPx())
+            updateVoucherCardViewTypeMargin(4.toPx(), 8.toPx())
+        } else {
+            binding?.layoutRemainingQuotaRibbon?.gone()
+
+            updateVoucherTypeMarginTop(12.toPx())
+            updateVoucherCardViewTypeMargin(0.toPx(), 0.toPx())
+        }
+
     }
 
     private fun handleVoucherSource(voucherSource: VoucherSource) {
@@ -382,6 +406,22 @@ class VoucherView @JvmOverloads constructor(
 
     fun setOnHyperlinkTextClick(onHyperlinkTextClick : (String) -> Unit) {
         this.onHyperlinkTextClick = onHyperlinkTextClick
+    }
+
+    private fun updateVoucherTypeMarginTop(marginTop: Int) {
+        val layoutParams = binding?.tpgVoucherType?.layoutParams as? ConstraintLayout.LayoutParams
+        layoutParams?.setMargins(0, marginTop, 0, 0)
+
+        binding?.tpgVoucherType?.layoutParams = layoutParams
+        binding?.tpgVoucherType?.requestLayout()
+    }
+
+    private fun updateVoucherCardViewTypeMargin(marginStart: Int, marginTop: Int) {
+        val layoutParams = binding?.cardView?.layoutParams as? RelativeLayout.LayoutParams
+        layoutParams?.setMargins(marginStart, marginTop, 0, 0)
+
+        binding?.cardView?.layoutParams = layoutParams
+        binding?.cardView?.requestLayout()
     }
 
 }
