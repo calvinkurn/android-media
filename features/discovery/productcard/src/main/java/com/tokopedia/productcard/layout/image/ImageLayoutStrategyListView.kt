@@ -1,6 +1,5 @@
 package com.tokopedia.productcard.layout.image
 
-import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.Space
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -9,13 +8,14 @@ import com.tokopedia.productcard.utils.SQUARE_IMAGE_RATIO
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.video_widget.VideoPlayerView
 
-internal class ImageLayoutStrategyControl : ImageLayoutStrategy {
+internal class ImageLayoutStrategyListView: ImageLayoutStrategy {
+
     override fun setupImageRatio(
         constraintLayoutProductCard: ConstraintLayout?,
         imageProduct: ImageView?,
         mediaAnchorProduct: Space?,
         videoProduct: VideoPlayerView?,
-        productCardModel: ProductCardModel,
+        productCardModel: ProductCardModel
     ) {
         com.tokopedia.productcard.utils.setupImageRatio(
             constraintLayoutProductCard,
@@ -26,19 +26,20 @@ internal class ImageLayoutStrategyControl : ImageLayoutStrategy {
         )
     }
 
-    override fun getImageHeight(
-        imageWidth: Int,
-        productCardModel: ProductCardModel,
-    ): Int = imageWidth
+    override fun getImageHeight(imageWidth: Int, productCardModel: ProductCardModel): Int =
+        LIST_VIEW_IMAGE_SIZE_DP.toPx()
 
     override fun setImageSizeListView(mediaAnchorProduct: Space?) {
         val layoutParams = mediaAnchorProduct?.layoutParams
-        layoutParams?.width = IMAGE_SIZE_DP.toPx()
-        layoutParams?.height = IMAGE_SIZE_DP.toPx()
+        layoutParams?.width = LIST_VIEW_IMAGE_SIZE_DP.toPx()
+        layoutParams?.height = LIST_VIEW_IMAGE_SIZE_DP.toPx()
         mediaAnchorProduct?.layoutParams = layoutParams
     }
 
+    override fun imageCornerRadius(): Float = LIST_VIEW_IMAGE_ROUNDED_CORNER_DP.toPx().toFloat()
+
     companion object {
-        private const val IMAGE_SIZE_DP = 96
+        private const val LIST_VIEW_IMAGE_SIZE_DP = 120
+        private const val LIST_VIEW_IMAGE_ROUNDED_CORNER_DP = 12
     }
 }
