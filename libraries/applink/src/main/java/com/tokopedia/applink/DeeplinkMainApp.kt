@@ -127,10 +127,6 @@ object DeeplinkMainApp {
                 DeepLinkMapperFind::getRegisteredFind
             )
         ),
-
-        "notif-settings" to mutableListOf(
-            DLP.startsWith(ApplinkConst.AppNotifSetting.DEVICE_APP_NOTIF_SETTINGS_PAGE) { ctx, uri, _, _ -> navigateToAppNotifSettings(ctx) },
-            ),
         "belanja" to mutableListOf(
             DLP.matchPattern("order", DeeplinkMapperUoh::getRegisteredNavigationUohOrder)
         ),
@@ -424,6 +420,9 @@ object DeeplinkMainApp {
         ),
         "notif-center" to mutableListOf(
             DLP.matchPattern("", DeeplinkMapperInbox::getRegisteredNavigationNotifcenter)
+        ),
+        "notif-settings" to mutableListOf(
+            DLP.startsWith(ApplinkConst.AppNotifSetting.DEVICE_APP_NOTIF_SETTINGS_PAGE) { ctx, uri, _, _ -> navigateToAppNotifSettings(ctx) },
         ),
         "notification" to mutableListOf(
             DLP.matchPattern("", DeeplinkMapperInbox::getRegisteredNavigationNotifcenter)
