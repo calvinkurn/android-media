@@ -25,6 +25,9 @@ import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
 import com.tokopedia.play.broadcaster.ui.model.ProductTagConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.beautification.BeautificationConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.config.BroadcastingConfigUiModel
+import com.tokopedia.play.broadcaster.ui.model.livetovod.TickerBottomSheetPage
+import com.tokopedia.play.broadcaster.ui.model.livetovod.TickerBottomSheetType
+import com.tokopedia.play.broadcaster.ui.model.livetovod.TickerBottomSheetUiModel
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageUiModel
 import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagUiModel
@@ -279,6 +282,40 @@ class UiModelBuilder {
         coverImage = coverImage,
         coverSource = coverSource,
     )
+
+    fun buildTickerBottomSheetResponse(
+        page: TickerBottomSheetPage = TickerBottomSheetPage.UNKNOWN,
+        type: TickerBottomSheetType = TickerBottomSheetType.UNKNOWN,
+    ): TickerBottomSheetUiModel {
+        return TickerBottomSheetUiModel(
+            mainText = listOf(
+                TickerBottomSheetUiModel.MainText(
+                    action = listOf(
+                        TickerBottomSheetUiModel.Action(
+                            item = "key item 1",
+                            text = "text link",
+                            link = "tokopedia.com",
+                        )
+                    ),
+                    title = "Test Title",
+                    description = "Test Description",
+                )
+            ),
+            page = page,
+            type = type,
+            imageURL = "tokopedia.com",
+            bottomText = TickerBottomSheetUiModel.BottomText(
+                action = listOf(
+                    TickerBottomSheetUiModel.Action(
+                        item = "key item 1",
+                        text = "text link",
+                        link = "tokopedia.com",
+                    )
+                ),
+                description = "Test Description"
+            )
+        )
+    }
 
     fun buildTags(
         size: Int = 5
