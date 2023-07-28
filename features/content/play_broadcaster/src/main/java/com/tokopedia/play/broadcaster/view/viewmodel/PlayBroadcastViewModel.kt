@@ -525,7 +525,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             is PlayBroadcastAction.SwitchAccount -> handleSwitchAccount(event.needLoading)
             is PlayBroadcastAction.SuccessOnBoardingUGC -> handleSuccessOnBoardingUGC()
             is PlayBroadcastAction.GetTickerBottomSheetConfig -> handleTickerBottomSheetConfig(event.page)
-            is PlayBroadcastAction.SetLiveToVodPref -> handleLiveToVodPref(
+            is PlayBroadcastAction.SetLiveToVodPref -> handleSetLiveToVodPref(
                 type = event.type, page = event.page
             )
 
@@ -824,7 +824,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }
     }
 
-    private fun handleLiveToVodPref(type: TickerBottomSheetType, page: TickerBottomSheetPage) {
+    private fun handleSetLiveToVodPref(type: TickerBottomSheetType, page: TickerBottomSheetPage) {
         when (type) {
             TickerBottomSheetType.BOTTOM_SHEET -> {
                 sharedPref.setLiveToVodBottomSheetPref(

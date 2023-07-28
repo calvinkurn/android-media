@@ -23,6 +23,12 @@ fun <T : Any> T.assertEqualTo(expected: T) {
         .isEqualTo(expected)
 }
 
+fun <T : Any> T.assertNotEqualTo(expected: T) {
+    Assertions
+        .assertThat(this)
+        .isNotEqualTo(expected)
+}
+
 fun <T : Any> T.isEqualToComparingFieldByField(expected: T) {
     Assertions
             .assertThat(this)
