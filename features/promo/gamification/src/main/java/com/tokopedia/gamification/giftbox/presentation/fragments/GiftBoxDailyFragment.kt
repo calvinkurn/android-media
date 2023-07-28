@@ -977,8 +977,9 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment(), RewardContainerListener {
 
     private fun applyCoupon(position: Int) {
         val dummyCode = giftBoxRewardEntity?.gamiCrack?.benefits?.get(position)?.dummyCode
+        val campaignSlug = viewModel.campaignSlug
         val referenceId = giftBoxRewardEntity?.gamiCrack?.benefits?.get(position)?.referenceID
-        val label = "$dummyCode - $referenceId"
+        val label = "$campaignSlug - $referenceId"
         dummyCode?.let {
                 code ->
             viewModel.autoApply(code)
