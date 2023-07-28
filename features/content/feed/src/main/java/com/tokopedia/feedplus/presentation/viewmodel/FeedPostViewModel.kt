@@ -38,6 +38,7 @@ import com.tokopedia.feedplus.presentation.fragment.FeedBaseFragment
 import com.tokopedia.feedplus.presentation.model.FeedCardImageContentModel
 import com.tokopedia.feedplus.presentation.model.FeedCardLivePreviewContentModel
 import com.tokopedia.feedplus.presentation.model.FeedCardVideoContentModel
+import com.tokopedia.feedplus.presentation.model.FeedFollowRecommendationModel
 import com.tokopedia.feedplus.presentation.model.FeedLikeModel
 import com.tokopedia.feedplus.presentation.model.FeedModel
 import com.tokopedia.feedplus.presentation.model.FeedPaginationModel
@@ -944,16 +945,51 @@ class FeedPostViewModel @Inject constructor(
         }
     }
 
-    private val Result<FeedModel>.cursor: String
-        get() = when (this) {
-            is Success -> data.pagination.cursor
-            else -> ""
+    /**
+     * Follow Recommendation
+     */
+    fun removeProfileRecommendation(profile: FeedFollowRecommendationModel.Profile) {
+        viewModelScope.launch {
+            val feedHome = if (_feedHome.value != null && _feedHome.value is Success)
+                _feedHome.value
+            else
+                return@launch
+
+            if (feedHome == null) return@launch
+
+            _feedHome.value = Success(
+                data = FeedModel(
+                    items = feedHome.items.map { model ->
+                        when (model) {
+                            is FeedFollowRecommendationModel -> {
+                                model.copy(
+                                    data = model.data.filter { item ->
+                                        item != profile
+                                    }
+                                )
+                            }
+                            else -> model
+                        }
+                    },
+                    pagination = feedHome.pagination
+                )
+            )
         }
+    }
+
+    private val Result<FeedModel>.cursor: String
+        get() = pagination.cursor
 
     private val Result<FeedModel>.items: List<Visitable<FeedAdapterTypeFactory>>
         get() = when (this) {
             is Success -> data.items
             else -> emptyList()
+        }
+
+    private val Result<FeedModel>.pagination: FeedPaginationModel
+        get() = when (this) {
+            is Success -> data.pagination
+            else -> FeedPaginationModel.Empty
         }
 
     companion object {

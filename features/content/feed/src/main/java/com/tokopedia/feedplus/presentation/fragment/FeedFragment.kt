@@ -58,6 +58,7 @@ import com.tokopedia.feedplus.domain.mapper.MapperFeedModelToTrackerDataModel
 import com.tokopedia.feedplus.domain.mapper.MapperProductsToXProducts
 import com.tokopedia.feedplus.presentation.adapter.FeedAdapterTypeFactory
 import com.tokopedia.feedplus.presentation.adapter.FeedContentAdapter
+import com.tokopedia.feedplus.presentation.adapter.listener.FeedFollowRecommendationListener
 import com.tokopedia.feedplus.presentation.adapter.listener.FeedListener
 import com.tokopedia.feedplus.presentation.adapter.util.FeedPostLayoutManager
 import com.tokopedia.feedplus.presentation.model.FeedAuthorModel
@@ -73,6 +74,7 @@ import com.tokopedia.feedplus.presentation.model.FeedPostEvent
 import com.tokopedia.feedplus.presentation.model.FeedShareModel
 import com.tokopedia.feedplus.presentation.model.FeedTrackerDataModel
 import com.tokopedia.feedplus.presentation.model.PostSourceModel
+import com.tokopedia.feedplus.presentation.model.FeedFollowRecommendationModel
 import com.tokopedia.feedplus.presentation.uiview.FeedCampaignRibbonType
 import com.tokopedia.feedplus.presentation.uiview.FeedProductTagView
 import com.tokopedia.feedplus.presentation.util.VideoPlayerManager
@@ -125,8 +127,10 @@ class FeedFragment :
         FeedContentAdapter(
             FeedAdapterTypeFactory(
                 this,
+                viewLifecycleOwner,
                 binding.rvFeedPost,
-                trackerModelMapper
+                trackerModelMapper,
+                feedFollowRecommendationListener,
             )
         ) {
             if (feedPostViewModel.shouldShowNoMoreContent) return@FeedContentAdapter
@@ -244,6 +248,33 @@ class FeedFragment :
     private var mProducts: List<FeedCardProductModel>? = null
     private var mHasVoucher: Boolean = false
     private var mCampaign: FeedCardCampaignModel? = null
+
+    private val feedFollowRecommendationListener = object : FeedFollowRecommendationListener {
+
+        override fun onImpressProfile(profile: FeedFollowRecommendationModel.Profile) {
+            /** TODO: handle this */
+        }
+
+        override fun onClickFollow(profile: FeedFollowRecommendationModel.Profile) {
+            /** TODO: handle this */
+        }
+
+        override fun onCloseProfileRecommendation(profile: FeedFollowRecommendationModel.Profile) {
+            feedPostViewModel.removeProfileRecommendation(profile)
+        }
+
+        override fun onClickProfileRecommendation(profile: FeedFollowRecommendationModel.Profile) {
+            /** TODO: handle this */
+        }
+
+        override fun onLoadNextProfileRecommendation() {
+            /** TODO: handle this */
+        }
+
+        override fun onClickViewOtherContent() {
+            feedMainViewModel.changeCurrentTabByType(FeedBaseFragment.TAB_TYPE_FOR_YOU)
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -1119,6 +1150,7 @@ class FeedFragment :
         when (item) {
             is FeedCardVideoContentModel -> pauseVideo(item.id)
             is FeedCardLivePreviewContentModel -> pauseVideo(item.id)
+            is FeedFollowRecommendationModel -> adapter.pauseFollowRecommendationVideo(currentIndex)
             else -> {}
         }
     }
@@ -1131,6 +1163,7 @@ class FeedFragment :
         when (item) {
             is FeedCardVideoContentModel -> resumeVideo(item.id)
             is FeedCardLivePreviewContentModel -> resumeVideo(item.id)
+            is FeedFollowRecommendationModel -> adapter.resumeFollowRecommendationVideo(currentIndex)
             else -> {}
         }
     }
