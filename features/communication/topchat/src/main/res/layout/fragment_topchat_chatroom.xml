@@ -64,7 +64,7 @@
         android:id="@+id/notifier"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/Unify_N700"
+        android:background="@color/Unify_NN950"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:paddingStart="@dimen/spacing_lvl4"
@@ -81,7 +81,7 @@
             android:layout_marginEnd="@dimen/dp_topchat_85"
             android:layout_marginRight="@dimen/dp_topchat_85"
             android:layout_weight="1"
-            android:textColor="@color/Unify_N0"
+            android:textColor="@color/Unify_NN0"
             app:typographyType="body_3"
             tools:text="@string/error_no_connection_retrying" />
 
@@ -89,7 +89,7 @@
             android:id="@+id/action"
             android:layout_width="@dimen/layout_lvl2"
             android:layout_height="@dimen/layout_lvl2"
-            android:textColor="@color/Unify_N0"
+            android:textColor="@color/Unify_NN0"
             app:loader_type="circular_white" />
 
     </LinearLayout>
@@ -119,7 +119,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
                 android:text="@string/desc_chat_blocked"
-                android:textColor="@color/Unify_N700_68"
+                android:textColor="@color/Unify_NN950_68"
                 app:typographyType="body_3" />
 
             <com.tokopedia.unifyprinciples.Typography
@@ -129,7 +129,7 @@
                 android:layout_below="@+id/blocked_text"
                 android:gravity="center_horizontal"
                 android:text="@string/enable_chat_settings"
-                android:textColor="@color/Unify_G500"
+                android:textColor="@color/Unify_GN500"
                 app:typographyType="body_3"
                 app:typographyWeight="bold" />
 

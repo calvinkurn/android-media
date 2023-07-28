@@ -33,7 +33,7 @@
         android:layout_marginRight="24dp"
         android:layout_marginBottom="8dp"
         android:gravity="center_horizontal"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         app:layout_constraintBottom_toTopOf="@id/txt_sub_header"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

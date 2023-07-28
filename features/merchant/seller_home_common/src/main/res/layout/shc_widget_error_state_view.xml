@@ -31,7 +31,7 @@
         android:maxLines="3"
         android:text="@string/shc_failed_to_load_information"
         android:textAlignment="center"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

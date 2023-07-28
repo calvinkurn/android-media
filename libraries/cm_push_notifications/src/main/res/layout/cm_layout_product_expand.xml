@@ -65,7 +65,7 @@
                     android:layout_below="@+id/tv_stock"
                     android:ellipsize="end"
                     android:maxLines="2"
-                    android:textColor="@color/Unify_N700_96"
+                    android:textColor="@color/Unify_NN950_96"
                     android:textSize="14sp"
                     tools:text="Lorem ipsum dolor sit amet" />
 
@@ -95,7 +95,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="4dp"
-                        android:textColor="@color/Unify_N700_68"
+                        android:textColor="@color/Unify_NN950_68"
                         android:textSize="12sp"
                         tools:text="Rp1500000" />
 
@@ -107,7 +107,7 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/ll_oldPriceAndDiscount"
                     android:layout_marginTop="5dp"
-                    android:textColor="@color/Unify_N700_96"
+                    android:textColor="@color/Unify_NN950_96"
                     android:textSize="15sp"
                     android:textStyle="bold"
                     tools:text="Rp1500000" />
@@ -134,7 +134,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textStyle="bold"
-                        android:textColor="@color/Unify_N700_68"
+                        android:textColor="@color/Unify_NN950_68"
                         android:textSize="12sp"
                         android:layout_marginStart="4dp"
                         tools:text="4.5" />
@@ -144,7 +144,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textSize="12sp"
-                        android:textColor="@color/Unify_N700_68"
+                        android:textColor="@color/Unify_NN950_68"
                         android:layout_marginStart="4dp"
                         tools:text="(60)" />
 

@@ -211,7 +211,7 @@ open class MerchantVoucherListFragment : BaseListFragment<MerchantVoucherViewMod
             val snackbar = Snackbar.make(findViewById(android.R.id.content), getString(R.string.title_voucher_code_copied),
                     Snackbar.LENGTH_LONG)
             snackbar.setAction(activity!!.getString(R.string.close)) { snackbar.dismiss() }
-            snackbar.setActionTextColor(androidx.core.content.ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+            snackbar.setActionTextColor(androidx.core.content.ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_NN0))
             snackbar.show()
         }
     }

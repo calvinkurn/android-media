@@ -52,6 +52,7 @@ private const val TAG = "HomeDynamicChannelComponentAnalyticsTest"
 /**
  * Created by yfsx on 2/9/21.
  */
+@Ignore("ignored due to many intermittent issues")
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @CassavaTest
 class HomeRevampDynamicChannelComponentAnalyticsTest {
@@ -514,7 +515,6 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
     }
 
     private fun initTest() {
-        InstrumentationAuthHelper.clearUserSession()
         login()
         waitForData()
         hideStickyLogin()

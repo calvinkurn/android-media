@@ -20,6 +20,7 @@ import com.tokopedia.developer_options.presentation.model.FakeResponseActivityUi
 import com.tokopedia.developer_options.presentation.model.ForceCrashUiModel
 import com.tokopedia.developer_options.presentation.model.ForceDarkModeUiModel
 import com.tokopedia.developer_options.presentation.model.ForceLogoutUiModel
+import com.tokopedia.developer_options.presentation.model.FpiMonitoringUiModel
 import com.tokopedia.developer_options.presentation.model.FpmLogOnFileUiModel
 import com.tokopedia.developer_options.presentation.model.FpmLogOnNotificationUiModel
 import com.tokopedia.developer_options.presentation.model.HomeAndNavigationRevampSwitcherUiModel
@@ -40,7 +41,6 @@ import com.tokopedia.developer_options.presentation.model.RouteManagerUiModel
 import com.tokopedia.developer_options.presentation.model.SellerAppReviewDebuggingUiModel
 import com.tokopedia.developer_options.presentation.model.SendFirebaseCrashExceptionUiModel
 import com.tokopedia.developer_options.presentation.model.SharedPreferencesEditorUiModel
-import com.tokopedia.developer_options.presentation.model.ShopIdUiModel
 import com.tokopedia.developer_options.presentation.model.ShowApplinkOnToastUiModel
 import com.tokopedia.developer_options.presentation.model.StrictModeLeakPublisherUiModel
 import com.tokopedia.developer_options.presentation.model.SystemNonSystemAppsUiModel
@@ -49,7 +49,6 @@ import com.tokopedia.developer_options.presentation.model.TopchatWebSocketLoggin
 import com.tokopedia.developer_options.presentation.model.TranslatorUiModel
 import com.tokopedia.developer_options.presentation.model.TypographySwitchUiModel
 import com.tokopedia.developer_options.presentation.model.UrlEnvironmentUiModel
-import com.tokopedia.developer_options.presentation.model.UserIdUiModel
 import com.tokopedia.developer_options.presentation.model.ViewAnalyticsLogUiModel
 import com.tokopedia.developer_options.presentation.model.ViewApplinkLogUiModel
 import com.tokopedia.developer_options.presentation.model.ViewFpmLogUiModel
@@ -58,6 +57,8 @@ import com.tokopedia.developer_options.presentation.model.ViewIrisLogUiModel
 import com.tokopedia.developer_options.presentation.model.ViewJourneyLogUiModel
 import com.tokopedia.developer_options.presentation.model.ViewNetworkLogUiModel
 import com.tokopedia.developer_options.presentation.model.ViewTopAdsLogUiModel
+import com.tokopedia.developer_options.presentation.model.ShopIdUiModel
+import com.tokopedia.developer_options.presentation.model.UserIdUiModel
 import com.tokopedia.developer_options.presentation.viewholder.AccessTokenViewHolder
 import com.tokopedia.developer_options.presentation.viewholder.AnalyticsLogOnNotificationViewHolder
 import com.tokopedia.developer_options.presentation.viewholder.AppVersionViewHolder
@@ -70,6 +71,7 @@ import com.tokopedia.developer_options.presentation.viewholder.DeprecatedAPISwit
 import com.tokopedia.developer_options.presentation.viewholder.DevOptsAuthorizationViewHolder
 import com.tokopedia.developer_options.presentation.viewholder.DeveloperOptionsOnNotificationViewHolder
 import com.tokopedia.developer_options.presentation.viewholder.DeviceIdViewHolder
+import com.tokopedia.developer_options.presentation.viewholder.EnableFpiMonitoringViewHolder
 import com.tokopedia.developer_options.presentation.viewholder.FakeResponseActivityViewHolder
 import com.tokopedia.developer_options.presentation.viewholder.ForceCrashViewHolder
 import com.tokopedia.developer_options.presentation.viewholder.ForceDarkModeViewHolder
@@ -95,7 +97,6 @@ import com.tokopedia.developer_options.presentation.viewholder.RouteManagerViewH
 import com.tokopedia.developer_options.presentation.viewholder.SellerAppReviewDebuggingViewHolder
 import com.tokopedia.developer_options.presentation.viewholder.SendFirebaseCrashExceptionViewHolder
 import com.tokopedia.developer_options.presentation.viewholder.SharedPreferencesEditorViewHolder
-import com.tokopedia.developer_options.presentation.viewholder.ShopIdViewHolder
 import com.tokopedia.developer_options.presentation.viewholder.ShowApplinkOnToastViewHolder
 import com.tokopedia.developer_options.presentation.viewholder.StrictModeLeakPublisherViewHolder
 import com.tokopedia.developer_options.presentation.viewholder.SystemNonSystemAppsViewHolder
@@ -104,7 +105,6 @@ import com.tokopedia.developer_options.presentation.viewholder.TopchatWebSocketL
 import com.tokopedia.developer_options.presentation.viewholder.TranslatorSettingViewHolder
 import com.tokopedia.developer_options.presentation.viewholder.TypographySwitcherViewHolder
 import com.tokopedia.developer_options.presentation.viewholder.UrlEnvironmentViewHolder
-import com.tokopedia.developer_options.presentation.viewholder.UserIdViewHolder
 import com.tokopedia.developer_options.presentation.viewholder.ViewAnalyticsLogViewHolder
 import com.tokopedia.developer_options.presentation.viewholder.ViewApplinkLogViewHolder
 import com.tokopedia.developer_options.presentation.viewholder.ViewFpmLogViewHolder
@@ -113,6 +113,8 @@ import com.tokopedia.developer_options.presentation.viewholder.ViewIrisLogViewHo
 import com.tokopedia.developer_options.presentation.viewholder.ViewJourneyLogViewHolder
 import com.tokopedia.developer_options.presentation.viewholder.ViewNetworkLogViewHolder
 import com.tokopedia.developer_options.presentation.viewholder.ViewTopAdsLogViewHolder
+import com.tokopedia.developer_options.presentation.viewholder.UserIdViewHolder
+import com.tokopedia.developer_options.presentation.viewholder.ShopIdViewHolder
 
 /**
  * @author Said Faisal on 24/11/2021
@@ -184,6 +186,8 @@ class DeveloperOptionTypeFactoryImpl(
     override fun type(uiModel: DevOptsAuthorizationUiModel): Int = DevOptsAuthorizationViewHolder.LAYOUT
     override fun type(uiModel: DeprecatedApiSwitcherToasterUiModel): Int = DeprecatedAPISwitcherToasterViewHolder.LAYOUT
     override fun type(uiModel: BranchLinkUiModel): Int = BranchLinkViewHolder.LAYOUT
+    override fun type(uiModel: FpiMonitoringUiModel): Int = EnableFpiMonitoringViewHolder.LAYOUT
+
     override fun type(uiModel: UserIdUiModel): Int = UserIdViewHolder.LAYOUT
     override fun type(uiModel: ShopIdUiModel): Int = ShopIdViewHolder.LAYOUT
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<out Visitable<*>> {
@@ -240,6 +244,7 @@ class DeveloperOptionTypeFactoryImpl(
             DevOptsAuthorizationViewHolder.LAYOUT -> DevOptsAuthorizationViewHolder(view, authorizeListener)
             DeprecatedAPISwitcherToasterViewHolder.LAYOUT -> DeprecatedAPISwitcherToasterViewHolder(view)
             BranchLinkViewHolder.LAYOUT -> BranchLinkViewHolder(branchListener, view)
+            EnableFpiMonitoringViewHolder.LAYOUT -> EnableFpiMonitoringViewHolder(view)
             UserIdViewHolder.LAYOUT -> UserIdViewHolder(view, userIdListener)
             ShopIdViewHolder.LAYOUT -> ShopIdViewHolder(view, shopIdListener)
             else -> super.createViewHolder(view, type)

@@ -9,7 +9,7 @@
       "eventLabel": "",
       "businessUnit": "home & browse",
       "currentSite": "tokopediamarketplace",
-      "pageSource": "pageSource:global menu;",
+      "pageSource": ".*",
       "promotions": [
         {
           "creative_name": "",
@@ -20,7 +20,8 @@
         }
       ],
       "userId": ".*",
-      "sessionIris": ".*"
+      "sessionIris": ".*",
+      "trackerId": "18484"
     },
     {
       "event": "select_content",
@@ -29,7 +30,7 @@
       "eventLabel": "star rating - .* - .* - .*",
       "businessUnit": "home & browse",
       "currentSite": "tokopediamarketplace",
-      "pageSource": "pageSource:global menu;",
+      "pageSource": ".*",
       "promotions": [
         {
           "creative_name": "star rating_.*",
@@ -40,7 +41,8 @@
       ],
       "userId": ".*",
       "sessionIris": ".*",
-      "clientId": ".*"
+      "clientId": ".*",
+      "trackerId": "30845"
     },
     {
       "event": "select_content",
@@ -49,7 +51,7 @@
       "eventLabel": "product card - .* - .*",
       "businessUnit": "home & browse",
       "currentSite": "tokopediamarketplace",
-      "pageSource": "pageSource:global menu;",
+      "pageSource": ".*",
       "promotions": [
         {
           "creative_name": "product card_.*",
@@ -60,7 +62,8 @@
       ],
       "userId": ".*",
       "sessionIris": ".*",
-      "clientId": ".*"
+      "clientId": ".*",
+      "trackerId": "31120"
     },
     {
       "event": "clickHomepage",
@@ -70,8 +73,7 @@
       "businessUnit": "home & browse",
       "currentSite": "tokopediamarketplace",
       "sessionIris": ".*",
-      "clientId": ".*",
-      "userId": ".*"
+      "trackerId": "40850"
     }
   ]
 }

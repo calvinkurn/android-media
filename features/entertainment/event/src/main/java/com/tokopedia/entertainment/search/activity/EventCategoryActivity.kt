@@ -1,5 +1,6 @@
 package com.tokopedia.entertainment.search.activity
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -10,14 +11,12 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.entertainment.R
+import com.tokopedia.entertainment.databinding.EntSearchDetailActivityBinding
 import com.tokopedia.entertainment.search.Link
 import com.tokopedia.entertainment.search.di.DaggerEventSearchComponent
 import com.tokopedia.entertainment.search.di.EventSearchComponent
 import com.tokopedia.entertainment.search.fragment.EventCategoryFragment
-import kotlinx.android.synthetic.main.ent_search_activity.*
-import kotlinx.android.synthetic.main.ent_search_detail_activity.*
-import kotlinx.android.synthetic.main.ent_search_detail_activity.txt_search
-import timber.log.Timber
+import com.tokopedia.kotlin.extensions.view.ZERO
 
 /**
  * Author errysuprayogi on 27,February,2020
@@ -31,9 +30,18 @@ class EventCategoryActivity : BaseSimpleActivity(), HasComponent<EventSearchComp
     var uriString: String? = ""
     var uri: Uri = Uri.EMPTY
 
+    var binding: EntSearchDetailActivityBinding? = null
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        binding = EntSearchDetailActivityBinding.inflate(layoutInflater)
+        setContentView(binding?.root)
+
+        setSupportActionBar(binding?.toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayShowHomeEnabled(true)
+
         bundle = intent.extras
         uriString = intent.dataString
 
@@ -41,24 +49,27 @@ class EventCategoryActivity : BaseSimpleActivity(), HasComponent<EventSearchComp
         INIT_CITY_ID = parseQuery("id_city")
         INIT_CATEGORY = parseQuery("category_id")
 
-        txt_search.searchBarTextField.inputType = 0
-        txt_search.searchBarTextField.setOnTouchListener { v, event ->
-            when (event.action) {
-                MotionEvent.ACTION_DOWN -> openSearchActivity()
+        binding?.txtSearch?.run {
+            searchBarTextField.inputType = Int.ZERO
+            searchBarTextField.setOnTouchListener { v, event ->
+                when (event.action) {
+                    MotionEvent.ACTION_DOWN -> openSearchActivity()
+                }
+                return@setOnTouchListener true
             }
-            return@setOnTouchListener true
-        }
-        txt_search.searchBarIcon.setOnClickListener {
-            txt_search.searchBarTextField.text.clear()
-            INIT_QUERY_TEXT = ""
+            searchBarIcon.setOnClickListener {
+                searchBarTextField.text.clear()
+                INIT_QUERY_TEXT = ""
+            }
+            searchBarTextField.setText(INIT_QUERY_TEXT)
         }
     }
 
     private fun parseQuery(text_to_find: String): String{
         var text: String? = ""
         if(bundle != null){
-            if(bundle!!.getString(text_to_find) != null){
-                text= bundle!!.getString(text_to_find, "")
+            if(bundle?.getString(text_to_find) != null){
+                text= bundle?.getString(text_to_find, "") ?: ""
                 return text
             }
         }
@@ -88,15 +99,20 @@ class EventCategoryActivity : BaseSimpleActivity(), HasComponent<EventSearchComp
         return R.id.parent_view
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        binding = null
+    }
+
     override fun getLayoutRes(): Int {
         return R.layout.ent_search_detail_activity
     }
 
-    fun getQueryText(): String? = INIT_QUERY_TEXT
+    fun getQueryText(): String = INIT_QUERY_TEXT
 
-    fun getCityId(): String? = INIT_CITY_ID
+    fun getCityId(): String = INIT_CITY_ID
 
-    fun getCategoryId(): String? = INIT_CATEGORY
+    fun getCategoryId(): String = INIT_CATEGORY
 
     override fun getComponent(): EventSearchComponent = DaggerEventSearchComponent.builder()
             .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent).build()

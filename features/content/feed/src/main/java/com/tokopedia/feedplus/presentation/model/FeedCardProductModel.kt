@@ -5,6 +5,9 @@ package com.tokopedia.feedplus.presentation.model
  */
 data class FeedCardProductModel(
     val id: String = "",
+    val isParent: Boolean = false,
+    val parentID: String = "",
+    val hasVariant: Boolean = false,
     val name: String = "",
     val coverUrl: String = "",
     val weblink: String = "",
@@ -32,7 +35,8 @@ data class FeedCardProductModel(
     val stockSoldPercentage: Float = 0f,
     val cartable: Boolean = false,
     val isCashback: Boolean = false,
-    val cashbackFmt: String = ""
+    val cashbackFmt: String = "",
+    val isAvailable: Boolean = false,
 )
 
 data class FeedCardProductAffiliate(

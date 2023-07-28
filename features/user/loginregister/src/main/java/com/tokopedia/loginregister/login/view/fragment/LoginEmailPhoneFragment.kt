@@ -265,7 +265,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
             context?.let {
                 devOpsText.setSpan(
                     ForegroundColorSpan(
-                        MethodChecker.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N700_96)
+                        MethodChecker.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_NN950_96)
                     ),
                     0,
                     devOpsText.length,
@@ -420,9 +420,19 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     }
 
     private fun checkLoginOption() {
-        viewModel.checkLoginOption(isEnableSeamlessLogin, isEnableFingerprint, isEnableDirectBiometric, isEnableOcl)
+        if (GlobalConfig.isSellerApp()){
+            viewModel.checkLoginOption(
+                isEnableSeamless = false,
+                isEnableFingerprint = false,
+                isEnableDirectBiometric = false,
+                isEnableOcl = false
+            )
+        } else {
+            viewModel.checkLoginOption(isEnableSeamlessLogin, isEnableFingerprint, isEnableDirectBiometric, isEnableOcl)
+        }
         showLoadingOverlay()
     }
+
 
     private fun showLoadingOverlay() {
         viewBinding?.loginLoadingOverlay?.root?.show()
@@ -878,7 +888,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
                     override fun updateDrawState(ds: TextPaint) {
                         ds.color = MethodChecker.getColor(
                             activity,
-                            com.tokopedia.unifyprinciples.R.color.Unify_G400
+                            com.tokopedia.unifyprinciples.R.color.Unify_GN500
                         )
                         ds.typeface = Typeface.create(
                             "sans-serif",
@@ -908,7 +918,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
                 }
 
                 override fun updateDrawState(ds: TextPaint) {
-                    ds.color = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
+                    ds.color = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
                     ds.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
                 }
             },
