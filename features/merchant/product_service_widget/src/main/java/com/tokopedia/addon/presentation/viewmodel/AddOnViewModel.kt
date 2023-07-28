@@ -82,7 +82,10 @@ class AddOnViewModel @Inject constructor(
     var isSimplified = false
 
     private fun generateEmptyAggregatedData(): AddOnPageResult.AggregatedData {
-        return AddOnPageResult.AggregatedData(isGetDataSuccess = true)
+        return AddOnPageResult.AggregatedData(
+            isGetDataSuccess = true,
+            selectedAddons = AddOnMapper.getPPSelectedAddons(modifiedAddOnGroups.value)
+        )
     }
 
     fun getAddOn(param: AddOnParam, isSimplified: Boolean) {
@@ -155,7 +158,7 @@ class AddOnViewModel @Inject constructor(
             mAggregatedData.value = AddOnPageResult.AggregatedData(
                 title = result.aggregatedData.title,
                 price = result.aggregatedData.price,
-                selectedAddons = AddOnMapper.getSelectedAddons(modifiedAddOnGroups.value),
+                selectedAddons = AddOnMapper.getPPSelectedAddons(modifiedAddOnGroups.value),
                 isGetDataSuccess = result.error.messages.isEmpty(),
                 getDataErrorMessage = result.error.messages
             )
