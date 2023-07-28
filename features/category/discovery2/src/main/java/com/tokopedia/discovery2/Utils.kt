@@ -354,21 +354,14 @@ class Utils {
         fun getShareUrlQueryParamAppended(url: String?, queryParameterMap: Map<String, String?>?): String {
             var isAllKeyNullOrEmpty = true
             val queryString = StringBuilder()
+            val queryParent = queryParameterMap?.get(QUERY_PARENT)
+            val queryParams = queryParent?.processQueryParent()
+            queryParams?.let {
+                isAllKeyNullOrEmpty = false
+                queryString.appendParams(it.first, it.second)
+            }
             queryParameterMap?.forEach { (key, value) ->
-                if (!value.isNullOrEmpty() && key == DiscoveryActivity.QUERY_PARENT) {
-                    val queryParams = value.split('=', '&')
-                    var queryIndex = 0
-                    while (queryIndex < queryParams.size - 1) {
-                        val paramKey = queryParams[queryIndex]
-                        val paramValue = queryParams[queryIndex + 1]
-
-                        if (paramKey == "q") {
-                            isAllKeyNullOrEmpty = false
-                            queryString.appendParams(paramKey, paramValue)
-                        }
-                        queryIndex = queryIndex + 2
-                    }
-                } else if (!value.isNullOrEmpty() && !setOfKeysToNotSendToShare.contains(key)) {
+                if (!value.isNullOrEmpty() && !setOfKeysToNotSendToShare.contains(key)) {
                     isAllKeyNullOrEmpty = false
                     queryString.appendParams(key, value)
                 }
@@ -381,6 +374,23 @@ class Utils {
             } else {
                 "$url?$queryString"
             }
+        }
+
+        private fun String?.processQueryParent(): Pair<String, String>? {
+            if (!this.isNullOrEmpty()) {
+                val queryParams = this.split('=', '&')
+                var queryIndex = 0
+                while (queryIndex < queryParams.size - 1) {
+                    val paramKey = queryParams[queryIndex]
+                    val paramValue = queryParams[queryIndex + 1]
+
+                    if (paramKey == "q") {
+                        return (Pair(paramKey, paramValue))
+                    }
+                    queryIndex = queryIndex + 2
+                }
+            }
+            return null
         }
 
         private fun StringBuilder.appendParams(key: String, value: String) {
