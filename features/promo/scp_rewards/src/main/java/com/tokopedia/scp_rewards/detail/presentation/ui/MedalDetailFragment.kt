@@ -424,7 +424,7 @@ class MedalDetailFragment : BaseDaggerFragment() {
         (activity as? AppCompatActivity)?.apply {
             window?.statusBarColor = Color.WHITE
             binding.toolbar.setBackgroundColor(Color.WHITE)
-            setToolbarBackButtonTint(R.color.Unify_NN900)
+            setToolbarBackButtonTint(com.tokopedia.unifyprinciples.R.color.Unify_NN900)
 
             windowInsetsController?.isAppearanceLightStatusBars = true
             binding.tvTermsConditions.setTextColor(
@@ -440,7 +440,7 @@ class MedalDetailFragment : BaseDaggerFragment() {
         (activity as? AppCompatActivity)?.apply {
             activity?.window?.statusBarColor = Color.TRANSPARENT
             binding.toolbar.setBackgroundColor(Color.TRANSPARENT)
-            setToolbarBackButtonTint(R.color.Unify_NN0)
+            setToolbarBackButtonTint(com.tokopedia.unifyprinciples.R.color.Unify_NN0)
 
             windowInsetsController?.isAppearanceLightStatusBars = false
             binding.tvTermsConditions.setTextColor(
@@ -479,7 +479,7 @@ class MedalDetailFragment : BaseDaggerFragment() {
 
     private fun handleError(scpError: Error) {
         binding.loadContainer.loaderFlipper.displayedChild = 1
-        setToolbarBackButtonTint(R.color.Unify_NN900)
+        setToolbarBackButtonTint(com.tokopedia.unifyprinciples.R.color.Unify_NN900)
         val error = scpError.error
 
         when {
@@ -529,7 +529,7 @@ class MedalDetailFragment : BaseDaggerFragment() {
         binding.mainFlipper.displayedChild = 0
         binding.loadContainer.loaderFlipper.displayedChild = 0
         getMedaliDetail()
-        setToolbarBackButtonTint(R.color.Unify_NN0)
+        setToolbarBackButtonTint(com.tokopedia.unifyprinciples.R.color.Unify_NN0)
     }
 
     private fun setToolbarBackButtonTint(color: Int) {

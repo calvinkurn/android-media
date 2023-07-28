@@ -8,7 +8,6 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.scp_rewards_common.R
 import com.tokopedia.scp_rewards_widgets.common.VerticalSpacing
 import com.tokopedia.scp_rewards_widgets.databinding.WidgetMedalTaskProgressBinding
 import com.tokopedia.unifycomponents.ProgressBarUnify
@@ -28,7 +27,7 @@ class WidgetMedalTaskProgress(private val context: Context, attrs: AttributeSet?
     }
 
     init {
-        background = ContextCompat.getDrawable(context, R.drawable.card_border)
+        background = ContextCompat.getDrawable(context, com.tokopedia.unifycomponents.R.drawable.card_border)
         binding.progressBar.progressBarHeight = ProgressBarUnify.SIZE_MEDIUM
 
         binding.rvTasks.apply {
