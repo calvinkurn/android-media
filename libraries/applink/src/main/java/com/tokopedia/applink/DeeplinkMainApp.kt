@@ -128,8 +128,8 @@ object DeeplinkMainApp {
             )
         ),
 
-        "app-notification-settings" to mutableListOf(
-            DLP.startsWith(ApplinkConst.AppNotifSetting.APP_NOTIF_SETTINGS_PAGE) { ctx, uri, _, _ -> navigateToAppNotifSettings(ctx) },
+        "notif-settings" to mutableListOf(
+            DLP.startsWith(ApplinkConst.AppNotifSetting.DEVICE_APP_NOTIF_SETTINGS_PAGE) { ctx, uri, _, _ -> navigateToAppNotifSettings(ctx) },
             ),
         "belanja" to mutableListOf(
             DLP.matchPattern("order", DeeplinkMapperUoh::getRegisteredNavigationUohOrder)

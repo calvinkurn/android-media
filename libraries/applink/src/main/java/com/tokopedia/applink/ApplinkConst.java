@@ -851,6 +851,6 @@ public interface ApplinkConst {
     }
 
     interface AppNotifSetting{
-        String APP_NOTIF_SETTINGS_PAGE = "app-notification-settings";
+        String DEVICE_APP_NOTIF_SETTINGS_PAGE = "device-level-navigation";
     }
 }
