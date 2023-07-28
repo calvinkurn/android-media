@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.promousage.databinding.PromoUsageItemVoucherBinding
 import com.tokopedia.promousage.databinding.PromoUsageItemVoucherRecommendationBinding

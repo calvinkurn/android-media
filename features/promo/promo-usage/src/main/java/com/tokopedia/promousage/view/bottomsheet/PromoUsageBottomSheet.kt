@@ -239,7 +239,7 @@ class PromoUsageBottomSheet: BottomSheetDialogFragment() {
     }
 
     private fun handlePromoRecommendationInfo() {
-        val showRecommendationInfoOverlay = false
+        val showRecommendationInfoOverlay = true //TODO Hardcoded for testing purpose. Replace with real values
 
         binding?.layoutBottomSheetOverlay?.isVisible = showRecommendationInfoOverlay
 
