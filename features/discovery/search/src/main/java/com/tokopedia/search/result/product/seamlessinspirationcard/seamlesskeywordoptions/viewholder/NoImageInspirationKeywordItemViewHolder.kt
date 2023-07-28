@@ -13,6 +13,7 @@ import com.tokopedia.search.result.product.changeview.ChangeViewListener
 import com.tokopedia.search.result.product.seamlessinspirationcard.seamlesskeywordoptions.InspirationKeywordDataView
 import com.tokopedia.search.result.product.seamlessinspirationcard.seamlesskeywordoptions.InspirationKeywordListener
 import com.tokopedia.search.result.product.seamlessinspirationcard.utils.isBigGridView
+import com.tokopedia.unifycomponents.CardUnify2.Companion.ANIMATE_OVERLAY
 import com.tokopedia.unifycomponents.CardUnify2.Companion.TYPE_BORDER
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
@@ -38,6 +39,7 @@ class NoImageInspirationKeywordItemViewHolder(
         val containerCard = binding.containerCardViewOptionsKeywordCard
 
         containerCard.cardType = TYPE_BORDER
+        containerCard.animateOnPress = ANIMATE_OVERLAY
         textKeyword.adjustRatioImage()
         textKeyword.text = inspirationKeywordDataView.keyword
         binding.root.setOnClickListener {
