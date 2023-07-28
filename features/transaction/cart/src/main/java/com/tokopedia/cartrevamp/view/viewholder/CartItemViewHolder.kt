@@ -931,6 +931,9 @@ class CartItemViewHolder constructor(
 //                renderProductNotesEditable(element)
 //            }
             binding.buttonChangeNote.show()
+            binding.buttonChangeNote.setOnClickListener {
+                actionListener?.onNoteClicked(element)
+            }
             if (element.notes.isNotBlank()) {
                 renderProductNotesFilled(element)
             } else {

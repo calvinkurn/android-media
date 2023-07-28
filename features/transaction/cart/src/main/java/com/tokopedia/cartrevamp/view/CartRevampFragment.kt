@@ -58,6 +58,7 @@ import com.tokopedia.cartrevamp.data.model.response.shopgroupsimplified.CartData
 import com.tokopedia.cartrevamp.data.model.response.shopgroupsimplified.LocalizationChooseAddress
 import com.tokopedia.cartrevamp.view.adapter.cart.CartAdapter
 import com.tokopedia.cartrevamp.view.adapter.cart.CartItemAdapter
+import com.tokopedia.cartrevamp.view.bottomsheet.CartNoteBottomSheet
 import com.tokopedia.cartrevamp.view.bottomsheet.showGlobalErrorBottomsheet
 import com.tokopedia.cartrevamp.view.bottomsheet.showSummaryTransactionBottomsheet
 import com.tokopedia.cartrevamp.view.compoundview.CartToolbarListener
@@ -74,6 +75,7 @@ import com.tokopedia.cartrevamp.view.uimodel.CartCheckoutButtonState
 import com.tokopedia.cartrevamp.view.uimodel.CartGlobalEvent
 import com.tokopedia.cartrevamp.view.uimodel.CartGroupHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartItemHolderData
+import com.tokopedia.cartrevamp.view.uimodel.CartNoteBottomSheetData
 import com.tokopedia.cartrevamp.view.uimodel.CartRecentViewHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartRecentViewItemHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartRecommendationItemHolderData
@@ -1004,6 +1006,19 @@ class CartRevampFragment :
                 }
             )
         }
+    }
+
+    override fun onNoteClicked(data: CartItemHolderData) {
+        val bottomSheet = CartNoteBottomSheet.newInstance(
+            CartNoteBottomSheetData(
+                productName = data.productName,
+                productImage = data.productImage,
+                variant = data.variant,
+                note = data.notes
+            )
+        )
+        if (bottomSheet.isAdded || childFragmentManager.isStateSaved) return
+        bottomSheet.show(childFragmentManager, CartNoteBottomSheet.TAG)
     }
 
     override fun onNeedToRefreshSingleShop(
