@@ -4,8 +4,6 @@ import android.util.Base64
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.encryption.security.AESEncryptorCBC
 import com.tokopedia.encryption.security.RsaUtils
-import com.tokopedia.loginHelper.data.response.LoginDataResponse
-import com.tokopedia.loginHelper.data.response.UserDataResponse
 import com.tokopedia.loginHelper.domain.LoginHelperDataSourceType
 import com.tokopedia.loginHelper.domain.LoginHelperEnvType
 import com.tokopedia.loginHelper.domain.usecase.GetUserDetailsRestUseCase
@@ -104,8 +102,7 @@ class LoginHelperViewModelTest {
                 generatePublicKeyUseCase,
                 userSession,
                 getProfileUseCase,
-                getAdminTypeUseCase,
-                aesEncryptorCBC, secretKey
+                getAdminTypeUseCase
             )
     }
 
@@ -466,34 +463,6 @@ class LoginHelperViewModelTest {
         )
         val result = viewModel.uiState.value.dataSourceType
         assertEquals(result, LoginHelperDataSourceType.LOCAL)
-    }
-
-    @Test
-    fun `processEvent with GetLocalLoginData with no data`() {
-        viewModel.processEvent(LoginHelperEvent.GetLocalLoginData(LoginDataResponse()))
-
-        assertTrue(viewModel.uiState.value.localLoginDataList is Success)
-    }
-
-    @Test
-    fun `processEvent with GetLocalLoginData`() {
-        viewModel.processEvent(
-            LoginHelperEvent.GetLocalLoginData(
-                LoginDataResponse(
-                    count = 1,
-                    users = listOf(
-                        UserDataResponse(
-                            email = "test_email",
-                            password = "test_password",
-                            tribe = "test_tribe",
-                            id = 0
-                        )
-                    )
-                )
-            )
-        )
-
-        assertTrue(viewModel.uiState.value.localLoginDataList is Success)
     }
 
     @Test

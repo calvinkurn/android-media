@@ -62,7 +62,7 @@ class LoginHelperAccountSettingsViewModelTest {
             }
             viewModel.processEvent(LoginHelperAccountSettingsEvent.GoToLoginHelperHome)
             val actualEvent = emittedValues.last()
-            val goToLoginHelperHomePage = actualEvent is LoginHelperAccountSettingsAction.GoToLoginHelperHome
+            val goToLoginHelperHomePage = actualEvent is LoginHelperAccountSettingsAction.RouteToPage
             Assert.assertEquals(true, goToLoginHelperHomePage)
             job.cancel()
         }
@@ -77,7 +77,7 @@ class LoginHelperAccountSettingsViewModelTest {
             }
             viewModel.processEvent(LoginHelperAccountSettingsEvent.GoToAddAccount)
             val actualEvent = emittedValues.last()
-            val goToAddAccount = actualEvent is LoginHelperAccountSettingsAction.GoToAddAccount
+            val goToAddAccount = actualEvent is LoginHelperAccountSettingsAction.RouteToPage
             Assert.assertEquals(true, goToAddAccount)
             job.cancel()
         }
@@ -92,7 +92,7 @@ class LoginHelperAccountSettingsViewModelTest {
             }
             viewModel.processEvent(LoginHelperAccountSettingsEvent.GoToEditAccount)
             val actualEvent = emittedValues.last()
-            val goToEditPage = actualEvent is LoginHelperAccountSettingsAction.GoToEditAccount
+            val goToEditPage = actualEvent is LoginHelperAccountSettingsAction.RouteToPage
             Assert.assertEquals(true, goToEditPage)
             job.cancel()
         }
@@ -107,7 +107,7 @@ class LoginHelperAccountSettingsViewModelTest {
             }
             viewModel.processEvent(LoginHelperAccountSettingsEvent.GoToDeleteAccount)
             val actualEvent = emittedValues.last()
-            val goToDeleteAccount = actualEvent is LoginHelperAccountSettingsAction.GoToDeleteAccount
+            val goToDeleteAccount = actualEvent is LoginHelperAccountSettingsAction.RouteToPage
             Assert.assertEquals(true, goToDeleteAccount)
             job.cancel()
         }

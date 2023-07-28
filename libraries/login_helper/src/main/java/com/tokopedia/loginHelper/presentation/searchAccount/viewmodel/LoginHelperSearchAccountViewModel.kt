@@ -3,7 +3,6 @@ package com.tokopedia.loginHelper.presentation.searchAccount.viewmodel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.encryption.security.AESEncryptorCBC
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.loginHelper.data.mapper.toEnvString
 import com.tokopedia.loginHelper.domain.LoginHelperEnvType
@@ -23,14 +22,11 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import javax.crypto.SecretKey
 import javax.inject.Inject
 
 class LoginHelperSearchAccountViewModel @Inject constructor(
     private val getUserDetailsRestUseCase: GetUserDetailsRestUseCase,
     private val deleteUserRestUseCase: DeleteUserRestUseCase,
-    private val aesEncryptorCBC: AESEncryptorCBC,
-    private val secretKey: SecretKey,
     val dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.main) {
 
@@ -158,11 +154,6 @@ class LoginHelperSearchAccountViewModel @Inject constructor(
                 filteredUserList = filteredUserList
             )
         }
-    }
-
-    private fun decrypt(text: String?): String {
-        text?.let { return aesEncryptorCBC.decrypt(text, secretKey) }
-        return ""
     }
 
     private fun handleBackButtonTap() {

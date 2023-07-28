@@ -1,11 +1,9 @@
 package com.tokopedia.loginHelper
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.encryption.security.AESEncryptorCBC
 import com.tokopedia.encryption.security.RsaUtils
 import com.tokopedia.loginHelper.data.response.LoginDataResponse
 import com.tokopedia.loginHelper.domain.LoginHelperEnvType
-import com.tokopedia.loginHelper.domain.uiModel.UnifiedLoginHelperData
 import com.tokopedia.loginHelper.domain.uiModel.deleteUser.LoginHelperDeleteUserUiModel
 import com.tokopedia.loginHelper.domain.uiModel.users.HeaderUiModel
 import com.tokopedia.loginHelper.domain.uiModel.users.LoginDataUiModel
@@ -37,7 +35,6 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
-import javax.crypto.SecretKey
 
 @ExperimentalCoroutinesApi
 @RunWith(JUnit4::class)
@@ -51,8 +48,6 @@ class LoginHelperSearchAccountViewModelTest {
 
     private lateinit var getUserDetailsRestCase: GetUserDetailsRestUseCase
     private lateinit var deleteUserRestUseCase: DeleteUserRestUseCase
-    private lateinit var aesEncryptorCBC: AESEncryptorCBC
-    private lateinit var secretKey: SecretKey
 
     private lateinit var viewModel: LoginHelperSearchAccountViewModel
     private lateinit var userSession: UserSessionInterface
@@ -70,14 +65,10 @@ class LoginHelperSearchAccountViewModelTest {
         getUserDetailsRestCase = mockk(relaxed = true)
         deleteUserRestUseCase = mockk(relaxed = true)
         userSession = mockk(relaxed = true)
-        aesEncryptorCBC = mockk(relaxed = true)
-        secretKey = mockk(relaxed = true)
         viewModel =
             LoginHelperSearchAccountViewModel(
                 getUserDetailsRestCase,
                 deleteUserRestUseCase,
-                aesEncryptorCBC,
-                secretKey,
                 testRule.dispatchers
             )
     }
@@ -90,10 +81,10 @@ class LoginHelperSearchAccountViewModelTest {
 
     @Test
     fun `processEvent when GetUserDataFromRemoteDB success`() {
-        val response: UnifiedLoginHelperData = mockk(relaxed = true)
+        val response: LoginDataUiModel = mockk(relaxed = true)
 
         coEvery {
-            getUserDetailsRestCase.makeNetworkCall(
+            getUserDetailsRestCase.getRemoteOnlyLoginData(
                 any()
             )
         } returns response
@@ -109,22 +100,15 @@ class LoginHelperSearchAccountViewModelTest {
 
     @Test
     fun `processEvent when GetUserDataFromRemoteDB success with data`() {
-        val response = UnifiedLoginHelperData(
-            persistentCacheUserData = null,
-            remoteUserData = LoginDataUiModel(
-                HeaderUiModel(1),
-                users = listOf(
-                    UserDataUiModel(
-                        mockEmail,
-                        mockPassword,
-                        mockTribe
-                    )
-                )
+        val response = LoginDataUiModel(
+            count = HeaderUiModel(1),
+            users = listOf(
+                UserDataUiModel(mockEmail, mockPassword, mockTribe)
             )
         )
 
         coEvery {
-            getUserDetailsRestCase.makeNetworkCall(
+            getUserDetailsRestCase.getRemoteOnlyLoginData(
                 any()
             )
         } returns response
