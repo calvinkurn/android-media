@@ -26,23 +26,18 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/bmgm_title"
+    <com.tokopedia.product.detail.common.view.RollingTextSwitcher
+        android:id="@+id/bmgm_titles"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
         android:layout_marginEnd="4dp"
-        android:ellipsize="end"
-        android:maxLines="1"
-        android:textColor="@color/Unify_TN500"
-        android:gravity="center_vertical"
-        app:typographyType="paragraph_3"
-        app:typographyWeight="bold"
+        android:inAnimation="@anim/slide_in_bottom"
+        android:outAnimation="@anim/slide_out_top"
         app:layout_constraintBottom_toBottomOf="@+id/bmgm_icon_right"
         app:layout_constraintEnd_toStartOf="@+id/bmgm_icon_right"
         app:layout_constraintStart_toEndOf="@+id/bmgm_image_left"
-        app:layout_constraintTop_toTopOf="@+id/bmgm_icon_right"
-        tools:text="Beli 2 atau lebih, diskon hingga 40%" />
+        app:layout_constraintTop_toTopOf="@+id/bmgm_icon_right"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/bmgm_product_list"

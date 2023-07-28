@@ -4,7 +4,6 @@ import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.util.AttributeSet
-import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import com.tokopedia.kotlin.extensions.view.ZERO
@@ -30,22 +29,29 @@ class BMGMWidget @JvmOverloads constructor(
 
     companion object {
         private const val SPAN_COUNT = 3
+
+        private const val TEXT_SWITCH_INTERVAL = 3000L //millisecond
     }
 
     private val binding by lazyThreadSafetyNone {
         val view = inflate(context, com.tokopedia.product.detail.common.R.layout.bmgm_widget, this)
         BmgmWidgetBinding.bind(view).apply {
-            bmgmProductList.layoutManager = GridLayoutManager(
-                context, SPAN_COUNT, GridLayoutManager.VERTICAL, false
-            )
-            bmgmProductList.adapter = productAdapter
+            prepareUI(context)
         }
     }
 
-    private val productAdapter by lazyThreadSafetyNone {
-        BMGMProductAdapter()
-    }
+    private val productAdapter by lazyThreadSafetyNone { BMGMProductAdapter() }
 
+    // region prepare UI
+    private fun BmgmWidgetBinding.prepareUI(context: Context) {
+        bmgmProductList.layoutManager = GridLayoutManager(
+            context, SPAN_COUNT, GridLayoutManager.VERTICAL, false
+        )
+        bmgmProductList.adapter = productAdapter
+    }
+    // endregion
+
+    // region expose
     fun setData(uiState: BMGMUiState, router: BMGMRouter) {
         when (uiState) {
             is BMGMUiState.Loading -> {
@@ -57,11 +63,17 @@ class BMGMWidget @JvmOverloads constructor(
             }
         }
     }
+    // endregion
 
+    // region loaded state
     private fun onLoaded(uiModel: BMGMUiModel, router: BMGMRouter) {
         binding.bmgmImageLeft.loadImage(uiModel.iconUrl)
 
-        setTitle(titles = uiModel.titles, titleColor = uiModel.titleColor)
+        binding.bmgmTitles.setTitle(
+            titles = uiModel.titles,
+            titleColor = uiModel.titleColor,
+            interval = TEXT_SWITCH_INTERVAL
+        )
 
         if (uiModel.loadMoreText.isNotBlank()) {
             setEvent(action = uiModel.action, router = router)
@@ -71,17 +83,9 @@ class BMGMWidget @JvmOverloads constructor(
 
         productAdapter.submit(uiModel.products, uiModel.loadMoreText)
     }
+    // endregion
 
-    private fun setTitle(titles: List<String>, titleColor: String) {
-        binding.bmgmTitle.text = titles.firstOrNull()
-
-        if (titleColor.isNotBlank()) {
-            val default = com.tokopedia.unifyprinciples.R.color.Unify_TN500
-            val unifyColor = getStringUnifyColor(titleColor, default)
-            binding.bmgmTitle.setTextColor(unifyColor)
-        }
-    }
-
+    // region background
     private fun setBackgroundGradient(colors: String) {
         val mColors = getGradientColors(colors = colors)
         background = GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, mColors)
@@ -91,13 +95,9 @@ class BMGMWidget @JvmOverloads constructor(
         val color = it.trim()
         getStringUnifyColor(color, Int.ZERO)
     }.toIntArray()
+    // endregion
 
-    private fun getStringUnifyColor(color: String, default: Int) = runCatching {
-        stringToUnifyColor(context, color).unifyColor
-    }.getOrNull() ?: runCatching {
-        Color.parseColor(color)
-    }.getOrNull() ?: default
-
+    // region event
     private fun setEvent(action: BMGMUiModel.Action, router: BMGMRouter) {
         binding.bmgmComponent.setOnClickListener {
             setRouting(action, router)
@@ -113,4 +113,13 @@ class BMGMWidget @JvmOverloads constructor(
             BMGMUiModel.Action.WEBVIEW -> router.goToWebView(action.link)
         }
     }
+    // endregion
+
+    // region common utils
+    private fun getStringUnifyColor(color: String, default: Int) = runCatching {
+        stringToUnifyColor(context, color).unifyColor
+    }.getOrNull() ?: runCatching {
+        Color.parseColor(color)
+    }.getOrNull() ?: default
+    // endregion
 }
