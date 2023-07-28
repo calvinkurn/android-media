@@ -1542,6 +1542,82 @@ class FeedPostViewModelTest {
         assert(viewModel.unfollowResult.value is Fail)
     }
 
+    /** Remove Profile Recommendation */
+    @Test
+    fun RemoveProfileRecommendation_Success() {
+        // prepare
+        provideMockForFollowRecommendation()
+
+        val mockFollowRecommendationData = getDummyProfileRecommendationList()
+        val selectedRemovedProfile = mockFollowRecommendationData.data[2]
+
+        coEvery { feedXRecomWidgetUseCase.createFeedFollowRecomParams(any()) } returns mapOf()
+        coEvery { feedXRecomWidgetUseCase(any()) } returns mockFollowRecommendationData
+
+        viewModel.fetchPlaceholderData()
+
+        // test
+        viewModel.removeProfileRecommendation(selectedRemovedProfile)
+
+        // verify
+        assert(viewModel.feedHome.value is Success)
+
+        val followRecomModel = (viewModel.feedHome.value as Success).data.items[6]
+
+        assert(followRecomModel is FeedFollowRecommendationModel)
+        assert((followRecomModel as FeedFollowRecommendationModel).data.size == mockFollowRecommendationData.data.size-1)
+        assert((followRecomModel as FeedFollowRecommendationModel).data.indexOf(selectedRemovedProfile) == -1)
+    }
+
+    @Test
+    fun RemoveProfileRecommendation_NotFound() {
+        // prepare
+        provideMockForFollowRecommendation()
+
+        val mockFollowRecommendationData = getDummyProfileRecommendationList()
+        val selectedRemovedProfile = mockFollowRecommendationData.data[1].copy(
+            id = "asdfasdf",
+            encryptedId = "asdfasdf",
+        )
+
+        coEvery { feedXRecomWidgetUseCase.createFeedFollowRecomParams(any()) } returns mapOf()
+        coEvery { feedXRecomWidgetUseCase(any()) } returns mockFollowRecommendationData
+
+        viewModel.fetchPlaceholderData()
+
+        // test
+        viewModel.removeProfileRecommendation(selectedRemovedProfile)
+
+        // verify
+        assert(viewModel.feedHome.value is Success)
+
+        val followRecomModel = (viewModel.feedHome.value as Success).data.items[6]
+
+        assert(followRecomModel is FeedFollowRecommendationModel)
+        println("JOE LOG ${(followRecomModel as FeedFollowRecommendationModel).data.size}")
+        println("JOE LOG ${mockFollowRecommendationData.data.size}")
+        assert((followRecomModel as FeedFollowRecommendationModel).data.size == mockFollowRecommendationData.data.size)
+    }
+
+    @Test
+    fun RemoveProfileRecommendation_NoRecommendation_TryToRemove() {
+        // prepare
+        val mockFollowRecommendationData = getDummyProfileRecommendationList()
+        val selectedRemovedProfile = mockFollowRecommendationData.data[1]
+
+        coEvery { feedXHomeUseCase.createParams(any(), any(), any(), any()) } returns emptyMap()
+        coEvery { feedXHomeUseCase.createPostDetailParams("1") } returns emptyMap()
+        coEvery { feedXHomeUseCase(any()) } throws MessageErrorException("Failed")
+
+        viewModel.fetchFeedPosts("", true, null)
+
+        // test
+        viewModel.removeProfileRecommendation(selectedRemovedProfile)
+
+        // verify
+        assert(viewModel.feedHome.value is Fail)
+    }
+
     private fun provideDefaultFeedPostMockData() {
         coEvery { feedXHomeUseCase.createParams(any(), any(), any(), any()) } returns emptyMap()
         coEvery { feedXHomeUseCase.createPostDetailParams("1") } returns emptyMap()
