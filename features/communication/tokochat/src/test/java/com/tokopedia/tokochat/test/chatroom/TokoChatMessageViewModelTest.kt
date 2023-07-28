@@ -1,4 +1,4 @@
-package com.tokopedia.tokochat.test
+package com.tokopedia.tokochat.test.chatroom
 
 import com.tokopedia.tokochat.base.TokoChatViewModelTestFixture
 import com.tokopedia.tokochat.utils.observeAwaitValue
