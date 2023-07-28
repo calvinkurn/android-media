@@ -4,11 +4,11 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.gojek.conversations.babble.channel.data.ChannelType
+import com.gojek.conversations.channel.ConversationsChannel
 import com.gojek.conversations.utils.ConversationsConstants
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.tokochat.common.util.TokoChatCacheManager
 import com.tokopedia.tokochat.common.view.chatlist.uimodel.TokoChatListItemUiModel
 import com.tokopedia.tokochat.domain.usecase.TokoChatChannelUseCase
 import com.tokopedia.usecase.coroutines.Fail
@@ -24,9 +24,12 @@ import javax.inject.Inject
 class TokoChatListViewModel @Inject constructor(
     private val chatChannelUseCase: TokoChatChannelUseCase,
     private val mapper: TokoChatListUiMapper,
-    private val cacheManager: TokoChatCacheManager,
-    private val dispatcher: CoroutineDispatchers
+    dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main) {
+
+    private val _chatListPair = MutableLiveData<Map<String, Int>>()
+    val chatListPair: LiveData<Map<String, Int>>
+        get() = _chatListPair
 
     private val _error = MutableLiveData<Pair<Throwable, String>>()
     val error: LiveData<Pair<Throwable, String>>
@@ -52,7 +55,10 @@ class TokoChatListViewModel @Inject constructor(
             }
     }
 
-    fun loadNextPageChatList(localSize: Int = Int.ZERO) {
+    fun loadNextPageChatList(
+        localSize: Int = Int.ZERO,
+        isLoadMore: Boolean
+    ) {
         try {
             chatChannelUseCase.getAllChannel(
                 channelTypes = listOf(ChannelType.GroupBooking),
@@ -60,6 +66,9 @@ class TokoChatListViewModel @Inject constructor(
                 onSuccess = {
                     // Set to -1 to mark as no more data
                     setPaginationTimeStamp(it.lastOrNull()?.createdAt ?: -1)
+                    if (!isLoadMore) {
+                        emitChatListPairData(channelList = it)
+                    }
                 },
                 onError = {
                     it?.let { error ->
@@ -82,5 +91,9 @@ class TokoChatListViewModel @Inject constructor(
 
     private fun setPaginationTimeStamp(newTimeStamp: Long) {
         chatChannelUseCase.setLastTimeStamp(newTimeStamp)
+    }
+
+    private fun emitChatListPairData(channelList: List<ConversationsChannel>) {
+        _chatListPair.value = mapper.mapToTypeCounter(channelList)
     }
 }
