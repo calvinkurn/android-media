@@ -214,6 +214,8 @@ class PlayBroadcastSummaryPostVideoModelTest {
             getInteractiveSummaryLivestreamUseCase = mockGetInteractiveSummaryLivestreamUseCase,
         )
 
+        testDispatcher.coroutineDispatcher.resumeDispatcher()
+
         robot.use {
             val state = it.recordState {
                 submitAction(
@@ -249,6 +251,8 @@ class PlayBroadcastSummaryPostVideoModelTest {
             getSellerLeaderboardUseCase = mockGetSellerLeaderboardUseCase,
             getInteractiveSummaryLivestreamUseCase = mockGetInteractiveSummaryLivestreamUseCase,
         )
+
+        testDispatcher.coroutineDispatcher.resumeDispatcher()
 
         robot.use {
             val state = it.recordState {
@@ -320,6 +324,8 @@ class PlayBroadcastSummaryPostVideoModelTest {
             getSellerLeaderboardUseCase = mockGetSellerLeaderboardUseCase,
             getInteractiveSummaryLivestreamUseCase = mockGetInteractiveSummaryLivestreamUseCase,
         )
+
+        testDispatcher.coroutineDispatcher.resumeDispatcher()
 
         robot.use {
             val state = it.recordState {
