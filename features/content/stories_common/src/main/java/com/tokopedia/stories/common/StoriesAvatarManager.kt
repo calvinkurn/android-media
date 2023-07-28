@@ -4,6 +4,7 @@ import android.content.Context
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.get
@@ -16,16 +17,27 @@ import com.tokopedia.stories.common.di.StoriesAvatarComponent
  */
 class StoriesAvatarManager(
     context: Context,
-    private val viewModelStoreOwner: ViewModelStoreOwner,
+    private val lifecycleOwner: LifecycleOwner,
+    private val viewModelStoreOwner: ViewModelStoreOwner
 ) {
 
     private val component = createComponent(context)
     private val viewModelFactory = component.viewModelFactory()
 
-    fun manage(storiesView: StoriesAvatarView) {
+    private val viewToObserverMap = mutableMapOf<StoriesAvatarView, StoriesAvatarObserver>()
+
+    private val observerListener = object : StoriesAvatarObserver.Listener {
+        override fun onMessage(observer: StoriesAvatarObserver, message: StoriesAvatarMessage) {
+        }
+    }
+
+    init {
+    }
+
+    fun manage(storiesView: StoriesAvatarView, shopId: String) {
         storiesView.addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
             override fun onViewAttachedToWindow(view: View) {
-                storiesView.onAttached()
+                storiesView.onAttached(shopId)
             }
 
             override fun onViewDetachedFromWindow(view: View) {
@@ -50,19 +62,43 @@ class StoriesAvatarManager(
             .build()
     }
 
-    private fun StoriesAvatarView.onAttached() {
-        attach(getViewModel())
+    private fun StoriesAvatarView.onAttached(shopId: String) {
+        val observer = getOrCreateObserver()
+        observer.observe(shopId)
+        assign(observer)
     }
 
     private fun StoriesAvatarView.onDetached() {
-        detach()
+//        detach()
+    }
+
+    private fun StoriesAvatarView.getObserver(): StoriesAvatarObserver? {
+        return viewToObserverMap[this]
+    }
+
+    private fun StoriesAvatarView.createObserver(): StoriesAvatarObserver {
+        return StoriesAvatarObserver(
+            getViewModel(),
+            lifecycleOwner,
+            this,
+            observerListener
+        )
+    }
+
+    private fun StoriesAvatarView.getOrCreateObserver(): StoriesAvatarObserver {
+        return getObserver() ?: createObserver()
+    }
+
+    private fun StoriesAvatarView.assign(observer: StoriesAvatarObserver) {
+        viewToObserverMap[this] = observer
     }
 
     companion object {
         fun tiedTo(fragment: Fragment): StoriesAvatarManager {
             return StoriesAvatarManager(
                 fragment.requireContext(),
-                fragment,
+                fragment.viewLifecycleOwner,
+                fragment
             )
         }
 
@@ -70,6 +106,7 @@ class StoriesAvatarManager(
             return StoriesAvatarManager(
                 activity,
                 activity,
+                activity
             )
         }
     }

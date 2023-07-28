@@ -35,7 +35,6 @@ internal class StoriesAvatarViewModel @Inject constructor(
     fun onIntent(intent: StoriesAvatarIntent) {
         when (intent) {
             is StoriesAvatarIntent.GetStoriesStatus -> onGetStories(intent.shopIds)
-            is StoriesAvatarIntent.OpenStoriesDetail -> onOpenStoriesDetail(intent.shopId)
         }
     }
 
@@ -60,7 +59,6 @@ internal class StoriesAvatarViewModel @Inject constructor(
             val storiesState = repository.getShopStoriesState(shopIds)
             val storiesStateMap = storiesState.associate {
                 it.shopId to StoriesAvatarState(
-                    it.shopId,
                     it.getStoriesStatus(),
                     it.appLink
                 )
@@ -71,17 +69,6 @@ internal class StoriesAvatarViewModel @Inject constructor(
 
             val firstHasStories = storiesState.firstOrNull { it.anyStoryExisted } ?: return@launch
             showCoachMark(firstHasStories.shopId)
-        }
-    }
-
-    private fun onOpenStoriesDetail(shopId: String) {
-        viewModelScope.launch {
-            val state = getStoriesStateById(shopId)
-            if (state == null || state.status == StoriesStatus.NoStories || state.appLink.isBlank()) {
-                uiMessageManager.emitEvent(StoriesAvatarMessage.OpenDetailWithNoStories(shopId))
-            } else {
-                uiMessageManager.emitEvent(StoriesAvatarMessage.OpenStoriesDetail(shopId, state.appLink))
-            }
         }
     }
 

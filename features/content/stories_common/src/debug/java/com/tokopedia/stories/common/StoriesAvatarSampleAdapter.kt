@@ -12,7 +12,7 @@ import com.tokopedia.stories.common.databinding.ItemStoriesAvatarSampleBinding
  * Created by kenny.hadisaputra on 27/07/23
  */
 class StoriesAvatarSampleAdapter(
-    private val storiesAvatarManager: StoriesAvatarManager,
+    private val storiesAvatarManager: StoriesAvatarManager
 ) : ListAdapter<String, StoriesAvatarSampleAdapter.ViewHolder>(
     object : DiffUtil.ItemCallback<String>() {
         override fun areItemsTheSame(oldItem: String, newItem: String): Boolean {
@@ -35,12 +35,10 @@ class StoriesAvatarSampleAdapter(
 
     class ViewHolder(
         private val binding: ItemStoriesAvatarSampleBinding,
-        private val storiesAvatarManager: StoriesAvatarManager,
+        private val storiesAvatarManager: StoriesAvatarManager
     ) : RecyclerView.ViewHolder(binding.root) {
 
         init {
-            storiesAvatarManager.manage(binding.root)
-
             binding.root.updateSizeConfig {
                 it.copy(imageToBorderGap = 4.dp)
             }
@@ -48,8 +46,7 @@ class StoriesAvatarSampleAdapter(
 
         fun bind(shopId: String) {
             binding.root.setImageUrl("https://4.img-dpreview.com/files/p/E~TS590x0~articles/3925134721/0266554465.jpeg")
-            binding.root.associateToShopId(shopId)
-
+            storiesAvatarManager.manage(binding.root, shopId)
         }
 
         companion object {
@@ -58,9 +55,9 @@ class StoriesAvatarSampleAdapter(
                     ItemStoriesAvatarSampleBinding.inflate(
                         LayoutInflater.from(parent.context),
                         parent,
-                        false,
+                        false
                     ),
-                    storiesAvatarManager,
+                    storiesAvatarManager
                 )
             }
         }

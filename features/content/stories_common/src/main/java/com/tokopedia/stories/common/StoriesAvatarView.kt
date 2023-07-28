@@ -9,21 +9,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.AbstractComposeView
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.findViewTreeLifecycleOwner
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.coachmark.CoachMark2
-import com.tokopedia.coachmark.CoachMark2Item
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 
 /**
  * Created by kenny.hadisaputra on 24/07/23
@@ -39,21 +25,21 @@ class StoriesAvatarView @JvmOverloads constructor(
 ) {
 
     private var mImageUrl by mutableStateOf("")
-    private var storiesStatus by mutableStateOf(StoriesStatus.NoStories)
+    private var mState by mutableStateOf(StoriesAvatarState.Default)
     private var mSizeConfiguration by mutableStateOf(SizeConfiguration.Default)
-
-    private val shopId = MutableStateFlow("2")
-
-    private var mViewModel: StoriesAvatarViewModel? = null
-    private var observeJob: Job? = null
 
     private var mOnNoStoriesClicked: OnClickListener? = null
 
-    private val coachMark = CoachMark2(context)
-
     init {
         super.setOnClickListener {
-            mViewModel?.onIntent(StoriesAvatarIntent.OpenStoriesDetail(shopId.value))
+            when (mState.status) {
+                StoriesStatus.NoStories -> {
+                    mOnNoStoriesClicked?.onClick(this)
+                }
+                else -> {
+                    RouteManager.route(context, mState.appLink)
+                }
+            }
         }
     }
 
@@ -61,22 +47,17 @@ class StoriesAvatarView @JvmOverloads constructor(
     override fun Content() {
         StoriesAvatarContent(
             mImageUrl,
-            storiesStatus,
+            mState.status,
             sizeConfig = mSizeConfiguration
         )
     }
 
-    override fun onDetachedFromWindow() {
-        super.onDetachedFromWindow()
-
-        observeJob?.cancel()
-        mViewModel = null
-
-        coachMark.dismissCoachMark()
-    }
-
     override fun setOnClickListener(l: OnClickListener?) {
         mOnNoStoriesClicked = l
+    }
+
+    fun setState(onUpdate: (StoriesAvatarState) -> StoriesAvatarState) {
+        mState = onUpdate(mState)
     }
 
     fun setImageUrl(imageUrl: String) {
@@ -87,69 +68,12 @@ class StoriesAvatarView @JvmOverloads constructor(
         mSizeConfiguration = update(mSizeConfiguration)
     }
 
-    fun associateToShopId(shopId: String) {
-        this.shopId.update { shopId }
-    }
-
-    internal fun attach(viewModel: StoriesAvatarViewModel) {
-        mViewModel = viewModel
-        startObserve(viewModel)
-    }
-
-    internal fun detach() {
-        mViewModel = null
-    }
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    private fun startObserve(viewModel: StoriesAvatarViewModel) {
-        val lifecycleOwner = getLifecycleOwner() ?: return
-        observeJob = lifecycleOwner.lifecycleScope.launch {
-            launch {
-                lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                    shopId.flatMapLatest {
-                        viewModel.getStoriesState(it)
-                    }.collectLatest {
-                        storiesStatus = it?.status ?: StoriesStatus.NoStories
-                    }
-                }
-            }
-
-            launch {
-                lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                    shopId.flatMapLatest {
-                        viewModel.getStoriesMessage(it)
-                    }.collect { message ->
-                        if (message == null) return@collect
-
-                        when (message) {
-                            is StoriesAvatarMessage.OpenStoriesDetail -> {
-                                RouteManager.route(context, message.appLink)
-                            }
-                            is StoriesAvatarMessage.OpenDetailWithNoStories -> {
-                                mOnNoStoriesClicked?.onClick(this@StoriesAvatarView)
-                            }
-                            is StoriesAvatarMessage.ShowCoachMark -> {
-                                showCoachMark()
-                            }
-                        }
-
-                        viewModel.clearMessage(message.id)
-                    }
-                }
-            }
-        }
-    }
-
-    private fun getLifecycleOwner(): LifecycleOwner? {
-        return findViewTreeLifecycleOwner()
-    }
-
     private fun showCoachMark() {
-        coachMark.showCoachMark(
-            arrayListOf(
-                CoachMark2Item(this, "Ada update menarik dari toko ini", "")
-            )
-        )
+//        coachMark.showCoachMark(
+//            arrayListOf(
+//                CoachMark2Item(this, "Ada update menarik dari toko ini", "")
+//            )
+//        )
     }
 
     data class SizeConfiguration(
