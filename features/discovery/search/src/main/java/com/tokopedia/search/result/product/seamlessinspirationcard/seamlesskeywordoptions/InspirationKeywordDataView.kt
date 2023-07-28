@@ -34,11 +34,10 @@ data class InspirationKeywordDataView(
             option: InspirationCarouselDataView.Option
         ) = InspirationKeywordDataView(
             keyword = option.title,
-            imageKeyword = option.getFirstProductItemImage(),
+            imageKeyword = option.bannerImageUrl,
             applink = option.applink,
             trackingOption = option.trackingOption
         )
-        private fun InspirationCarouselDataView.Option.getFirstProductItemImage() = this.product[INDEX_IMAGE_PRODUCT_FOR_IMAGE_KEYWORD].imgUrl
     }
 
     override fun type(typeFactory: InspirationKeywordsTypeFactory): Int {

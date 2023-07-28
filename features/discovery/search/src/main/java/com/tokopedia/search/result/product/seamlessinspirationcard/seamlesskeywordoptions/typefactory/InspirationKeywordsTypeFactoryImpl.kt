@@ -2,14 +2,18 @@ package com.tokopedia.search.result.product.seamlessinspirationcard.seamlesskeyw
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.base.view.adapter.exception.TypeNotSupportedException
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.search.result.product.changeview.ChangeViewListener
-import com.tokopedia.search.result.product.changeview.ViewType
 import com.tokopedia.search.result.product.seamlessinspirationcard.seamlesskeywordoptions.InspirationKeywordDataView
 import com.tokopedia.search.result.product.seamlessinspirationcard.seamlesskeywordoptions.InspirationKeywordListener
 import com.tokopedia.search.result.product.seamlessinspirationcard.seamlesskeywordoptions.viewholder.ListInspirationKeywordItemViewHolder
+import com.tokopedia.search.result.product.seamlessinspirationcard.seamlesskeywordoptions.viewholder.NoImageInspirationKeywordItemViewHolder
 import com.tokopedia.search.result.product.seamlessinspirationcard.seamlesskeywordoptions.viewholder.SmallInspirationKeywordItemViewHolder
+import com.tokopedia.search.result.product.seamlessinspirationcard.utils.isBigGridView
+import com.tokopedia.search.result.product.seamlessinspirationcard.utils.isListView
+import com.tokopedia.search.result.product.seamlessinspirationcard.utils.isSmallGridView
 
 class InspirationKeywordsTypeFactoryImpl(
     private val inspirationKeywordListener: InspirationKeywordListener,
@@ -19,11 +23,13 @@ class InspirationKeywordsTypeFactoryImpl(
 ) :
     BaseAdapterTypeFactory(), InspirationKeywordsTypeFactory {
     override fun type(item: InspirationKeywordDataView): Int {
-        return when (changeViewListener.viewType) {
-            ViewType.LIST, ViewType.BIG_GRID ->
+        return when  {
+            isNoImageCard -> NoImageInspirationKeywordItemViewHolder.LAYOUT
+            isListView() || isBigGridView() ->
                 ListInspirationKeywordItemViewHolder.LAYOUT
-            ViewType.SMALL_GRID ->
+            isSmallGridView() ->
                 SmallInspirationKeywordItemViewHolder.LAYOUT
+            else -> throw TypeNotSupportedException.create("Layout not supported")
         }
     }
 
@@ -43,13 +49,18 @@ class InspirationKeywordsTypeFactoryImpl(
                 )
             type.isSmallInspirationKeywordItemViewHolder() && isSmallGridView() ->
                 SmallInspirationKeywordItemViewHolder(view, inspirationKeywordListener)
+            isNoImageCard -> NoImageInspirationKeywordItemViewHolder(
+                view,
+                inspirationKeywordListener,
+                changeViewListener
+            )
             else -> super.createViewHolder(view, type)
         }
     }
 
-    private fun isListView() = changeViewListener.viewType.value == ViewType.LIST.value
-    private fun isBigGridView() = changeViewListener.viewType.value == ViewType.BIG_GRID.value
-    private fun isSmallGridView() = changeViewListener.viewType.value == ViewType.SMALL_GRID.value
+    private fun isListView() = changeViewListener.isListView()
+    private fun isBigGridView() = changeViewListener.isBigGridView()
+    private fun isSmallGridView() = changeViewListener.isSmallGridView()
 
     private fun Int.isListInspirationKeywordItemViewHolder() = this == ListInspirationKeywordItemViewHolder.LAYOUT
     private fun Int.isSmallInspirationKeywordItemViewHolder() = this == SmallInspirationKeywordItemViewHolder.LAYOUT

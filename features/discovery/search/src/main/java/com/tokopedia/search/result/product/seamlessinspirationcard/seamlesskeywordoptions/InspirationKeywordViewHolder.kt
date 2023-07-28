@@ -16,6 +16,10 @@ import com.tokopedia.search.result.product.seamlessinspirationcard.seamlesskeywo
 import com.tokopedia.search.result.product.seamlessinspirationcard.utils.INDEX_IMPRESISON_KEYWORD_TO_BE_TRACK
 import com.tokopedia.search.result.product.seamlessinspirationcard.utils.InspirationKeywordGridLayoutManager
 import com.tokopedia.search.result.product.seamlessinspirationcard.utils.KeywordItemDecoration
+import com.tokopedia.search.result.product.seamlessinspirationcard.utils.isBigGridView
+import com.tokopedia.search.result.product.seamlessinspirationcard.utils.isListView
+import com.tokopedia.search.result.product.seamlessinspirationcard.utils.isSmallGridView
+import com.tokopedia.search.utils.addItemDecorationIfNotExists
 import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.utils.view.binding.viewBinding
 
@@ -29,8 +33,8 @@ class InspirationKeywordViewHolder(
         @LayoutRes
         @JvmField
         val LAYOUT = R.layout.search_inspiration_semless_keyword
-        private const val BIG_GRID_COLUMN = 2
-        private const val SMALL_GRID_COLUMN = 1
+        private const val TWO_COLUMN = 2
+        private const val ONE_COLUMN = 1
         val QTY_EXAMPLE_DATA = 3
     }
 
@@ -59,9 +63,13 @@ class InspirationKeywordViewHolder(
         }
     }
 
-    private fun initRecyclerView(inspirationKeywords: List<InspirationKeywordDataView>, viewType: ViewType) {
+    private fun initRecyclerView(
+        inspirationKeywords: List<InspirationKeywordDataView>,
+        viewType: ViewType
+    ) {
         binding?.inspirationKeywordOptionList?.let {
-            val columnQty = generateColumnQty(inspirationKeywords.size)
+            val isNeedToShowNoImageCard = inspirationKeywords.none { it.imageKeyword.isNotEmpty() }
+            val columnQty = generateColumnQty(inspirationKeywords.size, isNeedToShowNoImageCard)
             it.layoutManager = createLayoutManager(
                 context = it.context,
                 columnQty = columnQty,
@@ -69,7 +77,7 @@ class InspirationKeywordViewHolder(
             )
             it.adapter =
                 InspirationKeywordAdapter(
-                    createInspirationKeywordTypeFactory(columnQty)
+                    createInspirationKeywordTypeFactory(columnQty, isNeedToShowNoImageCard)
                 ).apply {
                     setList(inspirationKeywords)
                 }
@@ -80,12 +88,13 @@ class InspirationKeywordViewHolder(
         }
     }
 
-    private fun createInspirationKeywordTypeFactory(columnQty: Int) = InspirationKeywordsTypeFactoryImpl(
-        inspirationKeywordListener,
-        changeViewListener,
-        columnQty,
-        false
-    )
+    private fun createInspirationKeywordTypeFactory(columnQty: Int, isNoImageCard: Boolean) =
+        InspirationKeywordsTypeFactoryImpl(
+            inspirationKeywordListener,
+            changeViewListener,
+            columnQty,
+            isNoImageCard
+        )
 
     private fun RecyclerView.setItemDecoration(spacing: Int, spanQty: Int) {
         this.addRemoveItemDecoration(KeywordItemDecoration(spacing, spanQty))
@@ -94,10 +103,10 @@ class InspirationKeywordViewHolder(
     private fun RecyclerView.addRemoveItemDecoration(itemDecoration: RecyclerView.ItemDecoration) {
         val hasNoItemDecoration = itemDecorationCount == 0
         if (hasNoItemDecoration) {
-            addItemDecoration(itemDecoration)
+            addItemDecorationIfNotExists(itemDecoration)
         } else {
             removeItemDecorationAt(0)
-            addItemDecoration(itemDecoration)
+            addItemDecorationIfNotExists(itemDecoration)
         }
     }
 
@@ -107,10 +116,15 @@ class InspirationKeywordViewHolder(
             ?.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_8)
             ?: 0
 
-    private fun createLayoutManager(context: Context, columnQty: Int, viewType: ViewType): RecyclerView.LayoutManager {
+    private fun createLayoutManager(
+        context: Context,
+        columnQty: Int,
+        viewType: ViewType
+    ): RecyclerView.LayoutManager {
         return when (viewType) {
             ViewType.LIST, ViewType.BIG_GRID ->
                 createGridLayoutManager(context, columnQty)
+
             else ->
                 createLinearLayoutManager()
         }
@@ -122,12 +136,18 @@ class InspirationKeywordViewHolder(
     private fun createGridLayoutManager(context: Context, sizeList: Int) =
         InspirationKeywordGridLayoutManager(context, sizeList)
 
-    private fun generateColumnQty(sizeList: Int) =
-        when (changeViewListener.viewType) {
-            ViewType.BIG_GRID -> BIG_GRID_COLUMN
-            ViewType.SMALL_GRID -> SMALL_GRID_COLUMN
-            ViewType.LIST -> sizeList
+    private fun generateColumnQty(sizeList: Int, isNoImageCard: Boolean) =
+        when {
+            changeViewListener.isBigGridView() || isBigGridOrListAndNoImage(
+                isNoImageCard
+            ) -> TWO_COLUMN
+            changeViewListener.isSmallGridView() -> ONE_COLUMN
+            changeViewListener.isListView() -> sizeList
+            else -> 1
         }
+
+    private fun isBigGridOrListAndNoImage(isNoImage: Boolean) =
+        changeViewListener.isBigGridView() && isNoImage || isNoImage && changeViewListener.isListView()
 
     private fun List<InspirationKeywordDataView>.getItemOptionsOn(position: Int) =
         this[position]
