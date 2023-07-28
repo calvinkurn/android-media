@@ -35,6 +35,10 @@ class ProductBMGMViewHolder(
                 override fun goToAppLink(url: String) {
                     listener.goToApplink(url)
                 }
+
+                override fun goToWebView(url: String) {
+                    listener.goToWebView(url)
+                }
             }
         )
 

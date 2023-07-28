@@ -26,6 +26,7 @@ data class BMGMUiModel(
     ) {
         companion object {
             const val APPLINK = "applink"
+            const val WEBVIEW = "webview"
         }
     }
 }

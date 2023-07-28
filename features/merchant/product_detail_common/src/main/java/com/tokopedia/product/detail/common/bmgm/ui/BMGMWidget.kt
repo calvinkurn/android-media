@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.util.AttributeSet
+import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import com.tokopedia.kotlin.extensions.view.ZERO
@@ -98,8 +99,18 @@ class BMGMWidget @JvmOverloads constructor(
     }.getOrNull() ?: default
 
     private fun setEvent(action: BMGMUiModel.Action, router: BMGMRouter) {
-        binding.root.setOnClickListener {
-            router.goToAppLink(action.link)
+        binding.bmgmComponent.setOnClickListener {
+            setRouting(action, router)
+        }
+    }
+
+    private fun setRouting(
+        action: BMGMUiModel.Action,
+        router: BMGMRouter
+    ) {
+        when (action.type) {
+            BMGMUiModel.Action.APPLINK -> router.goToAppLink(action.link)
+            BMGMUiModel.Action.WEBVIEW -> router.goToWebView(action.link)
         }
     }
 }

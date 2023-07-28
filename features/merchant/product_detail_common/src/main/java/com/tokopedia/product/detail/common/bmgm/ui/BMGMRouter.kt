@@ -8,4 +8,6 @@ package com.tokopedia.product.detail.common.bmgm.ui
 interface BMGMRouter {
 
     fun goToAppLink(url: String)
+
+    fun goToWebView(url: String)
 }
