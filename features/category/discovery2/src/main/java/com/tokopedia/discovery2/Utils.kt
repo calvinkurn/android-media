@@ -24,7 +24,6 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Compa
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
-import com.tokopedia.localizationchooseaddress.domain.model.LocalWarehouseModel
 import com.tokopedia.minicart.common.domain.data.*
 import com.tokopedia.user.session.UserSession
 import java.net.URLDecoder
@@ -165,7 +164,7 @@ class Utils {
             filtersMasterMapParam.remove(QUERY_PARENT)
 
             component?.let {
-                filtersMasterMapParam.putAll(addAddressQueryMapWithWareHouse(it.userAddressData))
+                filtersMasterMapParam.putAll(addAddressQueryMap(it.userAddressData))
             }
             if (addCountFilters && selectedFilterMapParameter != null) {
                 val filtersMap = selectedFilterMapParameter as MutableMap<String, String?>
@@ -229,19 +228,8 @@ class Utils {
                 if (it.warehouse_id.isNotEmpty()) {
                     addressQueryParameterMap[Constant.ChooseAddressQueryParams.RPC_USER_WAREHOUSE_ID] = userAddressData.warehouse_id
                 }
-                if (!it.warehouses.isNullOrEmpty()) {
-                    addressQueryParameterMap[Constant.ChooseAddressQueryParams.RPC_USER_WAREHOUSE_IDS] = setUserWarehouseIds(userAddressData.warehouses)
-                }
             }
             return addressQueryParameterMap
-        }
-
-        private fun setUserWarehouseIds(warehouses: List<LocalWarehouseModel>): String {
-            val userWarehouseIds = mutableListOf<String>()
-            warehouses.forEach { warehouseModel ->
-                userWarehouseIds.add(warehouseModel.warehouse_id.toString() + "#" + warehouseModel.service_type)
-            }
-            return userWarehouseIds.joinToString(separator = ",")
         }
 
         fun addQueryParamMap(queryParameterMap: MutableMap<String, String?>): String {
