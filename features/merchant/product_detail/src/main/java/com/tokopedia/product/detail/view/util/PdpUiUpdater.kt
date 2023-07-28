@@ -405,7 +405,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                     idToPriceUrlMap = productIdToPriceURLMap
                     isLoggedIn = loggedIn
                     shopId = productDetail.basic.shopID
-                    parentId = variantData?.parentId.orEmpty()
+                    parentId = variantData?.parentId ?: productId
                 }
             }
         }
