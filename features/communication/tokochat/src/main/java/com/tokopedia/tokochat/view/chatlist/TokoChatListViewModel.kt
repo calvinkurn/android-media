@@ -21,8 +21,8 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.transformLatest
-import kotlinx.coroutines.launch
 import timber.log.Timber
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class TokoChatListViewModel @Inject constructor(

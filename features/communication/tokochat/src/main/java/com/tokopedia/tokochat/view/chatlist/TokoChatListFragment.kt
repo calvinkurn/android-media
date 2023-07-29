@@ -160,7 +160,7 @@ class TokoChatListFragment @Inject constructor(
     }
 
     override fun onLoadMore() {
-        viewModel.loadNextPageChatList(isLoadMore = true)
+        viewModel.loadNextPageChatList(isLoadMore = true) {}
     }
 
     override fun onClickChatItem(element: TokoChatListItemUiModel) {
