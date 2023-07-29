@@ -42,20 +42,20 @@ class TokoChatListViewModel @Inject constructor(
     fun getChatListFlow(): Flow<Result<List<TokoChatListItemUiModel>>>? {
         return try {
             chatChannelUseCase.getAllCachedChannels(listOf(ChannelType.GroupBooking))
-                ?.onStart {
+                .onStart {
                     setPaginationTimeStamp(0L) // reset
                 }
-                ?.map {
+                .map {
                     filterExpiredChannelAndMap(it)
                 }
-                ?.transformLatest { value ->
+                .transformLatest { value ->
                     emit(Success(value) as Result<List<TokoChatListItemUiModel>>)
                 }
-                ?.catch {
+                .catch {
                     _error.value = Pair(it, ::getChatListFlow.name)
                     emit(Fail(it))
                 }
-                ?.flowOn(dispatcher.io)
+                .flowOn(dispatcher.io)
         } catch (throwable: Throwable) {
             Timber.d(throwable)
             flow {
@@ -80,6 +80,7 @@ class TokoChatListViewModel @Inject constructor(
                         if (!isLoadMore) {
                             emitChatListPairData(channelList = it)
                         }
+                        onCompleted(true)
                     },
                     onError = {
                         it?.let { error ->

@@ -36,7 +36,7 @@ object TokoChatTimeUtil {
         }
     }
 
-    fun getRelativeTimeFromNow(timeMillis: Long, locale: Locale = getLocale()): String {
+    fun getRelativeTime(timeMillis: Long, locale: Locale = getLocale()): String {
         val diff: Long = getNowTimeStamp() - timeMillis
         return when {
             diff / DAYS_90_IN_SECOND > 0 -> format(timeMillis, "MMM yyyy", locale)

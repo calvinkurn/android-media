@@ -10,7 +10,7 @@ import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.loader.loadImage
-import com.tokopedia.tokochat.common.util.TokoChatTimeUtil.getRelativeTimeFromNow
+import com.tokopedia.tokochat.common.util.TokoChatTimeUtil.getRelativeTime
 import com.tokopedia.tokochat.common.util.TokoChatUrlUtil.IC_TOKOFOOD_SOURCE
 import com.tokopedia.tokochat.common.util.TokoChatValueUtil.TOKOFOOD_SERVICE_TYPE
 import com.tokopedia.tokochat.common.view.chatlist.listener.TokoChatListItemListener
@@ -87,7 +87,7 @@ class TokoChatListItemViewHolder(
 
     private fun bindTime(element: TokoChatListItemUiModel, shouldShow: Boolean) {
         binding?.tokochatListTvTime?.apply {
-            text = getRelativeTimeFromNow(
+            text = getRelativeTime(
                 timeMillis = element.createAt
             )
             showWithCondition(shouldShow)

@@ -12,7 +12,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalCommunication
 import com.tokopedia.tokochat.analytics.TokoChatAnalytics
-import com.tokopedia.tokochat.common.util.TokoChatTimeUtil
+import com.tokopedia.tokochat.common.util.TokoChatTimeUtil.getRelativeTime
 import com.tokopedia.tokochat.common.util.TokoChatValueUtil.getSource
 import com.tokopedia.tokochat.common.view.chatlist.TokoChatListBaseFragment
 import com.tokopedia.tokochat.common.view.chatlist.adapter.TokoChatListBaseAdapter
@@ -169,7 +169,7 @@ class TokoChatListFragment @Inject constructor(
             gojekOrderId = element.orderId,
             serviceTypeName = serviceName,
             counter = element.counter,
-            chatDuration = TokoChatTimeUtil.getRelativeTimeFromNow(element.createAt)
+            chatDuration = getRelativeTime(element.createAt)
         )
         context?.let {
             val source = "?${ApplinkConst.TokoChat.PARAM_SOURCE}=$serviceName"
