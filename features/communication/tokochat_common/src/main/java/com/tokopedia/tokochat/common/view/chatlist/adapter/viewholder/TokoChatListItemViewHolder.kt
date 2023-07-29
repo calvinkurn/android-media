@@ -111,7 +111,7 @@ class TokoChatListItemViewHolder(
 
     private fun bindListener(element: TokoChatListItemUiModel) {
         binding?.tokochatListLayoutItem?.setOnClickListener {
-            listener.onClickChatItem(absoluteAdapterPosition, element)
+            listener.onClickChatItem(element)
         }
     }
 

@@ -1,4 +1,4 @@
-package com.tokopedia.tokochat.test
+package com.tokopedia.tokochat.test.chatroom
 
 import android.widget.ImageView
 import com.tokopedia.tokochat.base.TokoChatViewModelTestFixture

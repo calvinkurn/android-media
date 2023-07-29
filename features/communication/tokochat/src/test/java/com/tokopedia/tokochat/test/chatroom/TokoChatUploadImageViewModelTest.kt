@@ -1,4 +1,4 @@
-package com.tokopedia.tokochat.test
+package com.tokopedia.tokochat.test.chatroom
 
 import android.net.Uri
 import androidx.lifecycle.LifecycleOwner

@@ -2,7 +2,6 @@ package com.tokopedia.inbox.universalinbox.view.adapter
 
 import com.tokopedia.adapterdelegate.BaseCommonAdapter
 import com.tokopedia.inbox.universalinbox.data.entity.UniversalInboxAllCounterResponse
-import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil
 import com.tokopedia.inbox.universalinbox.view.adapter.delegate.UniversalInboxMenuItemDelegate
 import com.tokopedia.inbox.universalinbox.view.adapter.delegate.UniversalInboxMenuSectionDelegate
 import com.tokopedia.inbox.universalinbox.view.adapter.delegate.UniversalInboxMenuSeparatorDelegate
@@ -21,6 +20,8 @@ import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxMenuUiModel
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxRecommendationLoaderUiModel
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxTopAdsBannerUiModel
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxWidgetMetaUiModel
+import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxWidgetUiModel
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.topads.sdk.listener.TdnBannerResponseListener
@@ -139,23 +140,49 @@ class UniversalInboxAdapter(
         return itemList.firstOrNull() is UniversalInboxWidgetMetaUiModel
     }
 
-    fun isHelpWidgetAdded(): Boolean {
-        return try {
+    fun getWidgetPosition(widgetType: Int): Int {
+        var position = -1
+        try {
             if (isWidgetMetaAdded()) {
                 val widgetMetaUiModel = itemList.firstOrNull() as? UniversalInboxWidgetMetaUiModel
-                var result = false
-                widgetMetaUiModel?.widgetList?.forEach {
-                    if (it.type == UniversalInboxValueUtil.CHATBOT_TYPE) {
-                        result = true
+                widgetMetaUiModel?.widgetList?.forEachIndexed { index, uiModel ->
+                    if (uiModel.type == widgetType) {
+                        position = index
                     }
                 }
-                result
-            } else {
-                false
             }
         } catch (throwable: Throwable) {
             Timber.d(throwable)
-            false
         }
+        return position
+    }
+
+    fun addWidget(
+        position: Int,
+        uiModel: UniversalInboxWidgetUiModel
+    ) {
+        (itemList.firstOrNull() as? UniversalInboxWidgetMetaUiModel)
+            ?.widgetList?.add(position, uiModel)
+        notifyItemChanged(Int.ZERO) // notify item changed in page rv, first item
+    }
+
+    fun updateWidgetCounter(
+        position: Int,
+        counter: Int,
+        additionalAction: (UniversalInboxWidgetUiModel) -> Unit = {}
+    ) {
+        (itemList.firstOrNull() as? UniversalInboxWidgetMetaUiModel)?.let {
+            it.widgetList.getOrNull(position)?.let { uiModel ->
+                uiModel.counter = counter
+                additionalAction(uiModel)
+            }
+            notifyItemChanged(Int.ZERO)
+        }
+    }
+
+    fun removeWidget(position: Int) {
+        (itemList.firstOrNull() as? UniversalInboxWidgetMetaUiModel)
+            ?.widgetList?.removeAt(position)
+        notifyItemChanged(Int.ZERO) // notify item changed in page rv, first item
     }
 }

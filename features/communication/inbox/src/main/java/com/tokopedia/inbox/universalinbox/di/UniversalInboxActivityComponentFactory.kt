@@ -2,6 +2,7 @@ package com.tokopedia.inbox.universalinbox.di
 
 import android.app.Application
 import androidx.annotation.VisibleForTesting
+import com.tokochat.tokochat_config_common.util.TokoChatConnection
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 
 open class UniversalInboxActivityComponentFactory {
@@ -9,6 +10,7 @@ open class UniversalInboxActivityComponentFactory {
     open fun createUniversalInboxComponent(application: Application): UniversalInboxComponent {
         return DaggerUniversalInboxComponent.builder()
             .baseAppComponent((application as BaseMainApplication).baseAppComponent)
+            .tokoChatConfigComponent(TokoChatConnection.getComponent(application.applicationContext))
             .build()
     }
 

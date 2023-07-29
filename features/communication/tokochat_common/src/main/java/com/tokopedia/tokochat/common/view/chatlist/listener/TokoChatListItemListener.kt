@@ -4,5 +4,5 @@ import com.tokopedia.tokochat.common.view.chatlist.uimodel.TokoChatListItemUiMod
 
 interface TokoChatListItemListener {
 
-    fun onClickChatItem(position: Int, element: TokoChatListItemUiModel)
+    fun onClickChatItem(element: TokoChatListItemUiModel)
 }
