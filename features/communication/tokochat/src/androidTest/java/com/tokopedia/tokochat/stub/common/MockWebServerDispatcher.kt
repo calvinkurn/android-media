@@ -6,6 +6,7 @@ import com.tokopedia.tokochat.stub.domain.response.ApiResponseStub
 import com.tokopedia.tokochat.stub.domain.response.ApiResponseStub.CHANNEL_API
 import com.tokopedia.tokochat.stub.domain.response.ApiResponseStub.CHANNEL_ID_API
 import com.tokopedia.tokochat.stub.domain.response.ApiResponseStub.CHANNEL_LIST
+import com.tokopedia.tokochat.stub.domain.response.ApiResponseStub.CHANNEL_LIST_MORE
 import com.tokopedia.tokochat.stub.domain.response.ApiResponseStub.CONNECTION_API
 import com.tokopedia.tokochat.stub.domain.response.ApiResponseStub.IMAGE_UPLOAD_URL_API
 import com.tokopedia.tokochat.stub.domain.response.ApiResponseStub.IMAGE_URL_API
@@ -15,7 +16,6 @@ import com.tokopedia.tokochat.stub.domain.response.ApiResponseStub.SEND_MESSAGE_
 import okhttp3.mockwebserver.Dispatcher
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.RecordedRequest
-import okhttp3.mockwebserver.SocketPolicy
 
 class MockWebServerDispatcher : Dispatcher() {
 
@@ -28,7 +28,6 @@ class MockWebServerDispatcher : Dispatcher() {
         return MockResponse()
             .setResponseCode(apiResponse.responseCode)
             .setBody(getStreamResponse(apiResponse))
-            .setSocketPolicy(SocketPolicy.KEEP_OPEN)
     }
 
     private fun getApiResponse(url: String): ApiResponseModelStub {
@@ -57,7 +56,7 @@ class MockWebServerDispatcher : Dispatcher() {
             /**
              * Chat List
              */
-            url.contains(CHANNEL_LIST) -> {
+            url.contains(CHANNEL_LIST) || url.contains(CHANNEL_LIST_MORE) -> {
                 ApiResponseStub.channelListResponse
             }
             else -> ApiResponseStub.generalEmptyResponse

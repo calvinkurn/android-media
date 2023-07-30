@@ -26,6 +26,8 @@ import java.util.concurrent.TimeUnit
 @Module
 object TokoChatNetworkModuleStub {
 
+    const val PORT_NUMBER = 8090
+
     private const val NET_READ_TIMEOUT = 1
     private const val NET_WRITE_TIMEOUT = 1
     private const val NET_CONNECT_TIMEOUT = 1
@@ -104,7 +106,7 @@ object TokoChatNetworkModuleStub {
         @TokoChatQualifier okHttpClient: OkHttpClient
     ): Retrofit {
         return retrofitBuilder
-            .baseUrl("http://localhost:8090/") // local base url
+            .baseUrl("http://localhost:$PORT_NUMBER/") // local base url
             .addConverterFactory(StringResponseConverter())
             .client(okHttpClient).build()
     }

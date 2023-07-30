@@ -125,8 +125,8 @@ class TokoChatListGeneralTest : BaseTokoChatListTest() {
 
         // Then
         generalResult {
-            assertDriverName(1, "Kartolo") // Move to position 1
-            assertTimeStamp(1, "1 hari lalu")
+            assertDriverName(0, "Kartolo")
+            assertTimeStamp(0, "1 hari lalu")
         }
     }
 
@@ -188,6 +188,10 @@ class TokoChatListGeneralTest : BaseTokoChatListTest() {
     @Test
     fun should_load_more() {
         // When
+        ApiResponseStub.channelListResponse = ApiResponseModelStub(
+            200,
+            "channel_list/success_get_channel_list_big_size.json"
+        )
         launchChatListActivity()
 
         // Then

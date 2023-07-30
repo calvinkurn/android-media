@@ -21,8 +21,9 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.transformLatest
-import timber.log.Timber
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import timber.log.Timber
 import javax.inject.Inject
 
 class TokoChatListViewModel @Inject constructor(
@@ -71,24 +72,26 @@ class TokoChatListViewModel @Inject constructor(
     ) {
         viewModelScope.launch {
             try {
-                chatChannelUseCase.getAllChannel(
-                    channelTypes = listOf(ChannelType.GroupBooking),
-                    batchSize = getBatchSize(localSize),
-                    onSuccess = {
-                        // Set to -1 to mark as no more data
-                        setPaginationTimeStamp(it.lastOrNull()?.createdAt ?: -1)
-                        if (!isLoadMore) {
-                            emitChatListPairData(channelList = it)
+                withContext(dispatcher.io) {
+                    chatChannelUseCase.getAllChannel(
+                        channelTypes = listOf(ChannelType.GroupBooking),
+                        batchSize = getBatchSize(localSize),
+                        onSuccess = {
+                            // Set to -1 to mark as no more data
+                            setPaginationTimeStamp(it.lastOrNull()?.createdAt ?: -1)
+                            if (!isLoadMore) {
+                                emitChatListPairData(channelList = it)
+                            }
+                            onCompleted(true)
+                        },
+                        onError = {
+                            it?.let { error ->
+                                _error.postValue(Pair(error, ::loadNextPageChatList.name))
+                            }
+                            onCompleted(false)
                         }
-                        onCompleted(true)
-                    },
-                    onError = {
-                        it?.let { error ->
-                            _error.value = Pair(error, ::loadNextPageChatList.name)
-                        }
-                        onCompleted(false)
-                    }
-                )
+                    )
+                }
             } catch (throwable: Throwable) {
                 _error.value = Pair(throwable, ::loadNextPageChatList.name)
             }
@@ -108,7 +111,7 @@ class TokoChatListViewModel @Inject constructor(
     }
 
     private fun emitChatListPairData(channelList: List<ConversationsChannel>) {
-        _chatListPair.value = mapper.mapToTypeCounter(channelList)
+        _chatListPair.postValue(mapper.mapToTypeCounter(channelList))
     }
 
     private fun filterExpiredChannelAndMap(

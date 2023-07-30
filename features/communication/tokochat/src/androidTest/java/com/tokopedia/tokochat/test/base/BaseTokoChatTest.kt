@@ -22,6 +22,7 @@ import com.tokopedia.tokochat.stub.common.BabbleCourierClientStub
 import com.tokopedia.tokochat.stub.common.ConversationsPreferencesStub
 import com.tokopedia.tokochat.stub.common.MockWebServerDispatcher
 import com.tokopedia.tokochat.stub.common.TokoChatCacheManagerStub
+import com.tokopedia.tokochat.stub.di.TokoChatNetworkModuleStub.PORT_NUMBER
 import com.tokopedia.tokochat.stub.domain.response.ApiResponseStub
 import com.tokopedia.tokochat.stub.domain.response.GqlResponseStub
 import com.tokopedia.tokochat.stub.domain.usecase.TokoChatChannelUseCaseStub
@@ -40,7 +41,7 @@ abstract class BaseTokoChatTest {
         get() = InstrumentationRegistry
             .getInstrumentation().context.applicationContext
 
-    private val mockWebServer = MockWebServer()
+    private lateinit var mockWebServer: MockWebServer
     private val mockWebServerDispatcher = MockWebServerDispatcher()
     private lateinit var okHttp3IdlingResource: OkHttp3IdlingResource
 
@@ -89,8 +90,7 @@ abstract class BaseTokoChatTest {
             idlingResourceDatabaseChannel,
             idlingResourcePrepareDb
         )
-        mockWebServer.start(8080)
-        mockWebServer.dispatcher = mockWebServerDispatcher
+        setMockWebServer()
         resetDatabase()
         removeDummyCache()
         prepareDatabase()
@@ -107,6 +107,12 @@ abstract class BaseTokoChatTest {
             idlingResourceDatabaseChannel,
             idlingResourcePrepareDb
         )
+    }
+
+    private fun setMockWebServer() {
+        mockWebServer = MockWebServer()
+        mockWebServer.start(PORT_NUMBER)
+        mockWebServer.dispatcher = mockWebServerDispatcher
     }
 
     private fun resetResponses() {
