@@ -18,6 +18,10 @@ const val RESULT_INTENT_PREVIEW = "result-intent-preview"
 const val EXTRA_INTENT_EDITOR = "extra-intent-editor"
 const val RESULT_INTENT_EDITOR = "result-intent-preview"
 
+// universal media editor
+const val EXTRA_UNIVERSAL_EDITOR_PARAM = "extra-universal-editor-param"
+const val RESULT_UNIVERSAL_EDITOR = "result-universal-editor-param"
+
 // picker editor rollence
 const val PICKER_TO_EDITOR_ROLLENCE = "android_editor"
 

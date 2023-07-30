@@ -1,4 +1,4 @@
-package com.tokopedia.editor.ui.fragment.text
+package com.tokopedia.editor.ui.text
 
 import com.tokopedia.editor.R
 import com.tokopedia.editor.base.BaseEditorFragment

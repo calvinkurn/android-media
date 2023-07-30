@@ -74,7 +74,7 @@ android {
                 srcDirs 'src/main/res',
                         'src/main/res/layouts/parent',
                         'src/main/res/layouts/image',
-                        'src/main/res/layouts/vod'
+                        'src/main/res/layouts/video'
             }
         }
     }
@@ -124,6 +124,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.multiDex
 
     implementation rootProject.ext.miscDependencies.navigationFragmentKtx
+    implementation rootProject.ext.miscDependencies.dataStorePreferences
     implementation rootProject.ext.miscDependencies.coroutineAndroid
     implementation rootProject.ext.miscDependencies.coroutineCore
     implementation rootProject.ext.miscDependencies.viewModelKtx

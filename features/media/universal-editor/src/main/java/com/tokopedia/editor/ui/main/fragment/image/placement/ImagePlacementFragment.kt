@@ -1,4 +1,4 @@
-package com.tokopedia.editor.ui.fragment.image.placement
+package com.tokopedia.editor.ui.main.fragment.image.placement
 
 import android.widget.Toast
 import com.tokopedia.editor.R
