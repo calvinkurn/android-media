@@ -14,7 +14,7 @@ object CategoryRecommendationMapper {
                 title = it.name,
                 imageUrl = it.imageUrl,
                 appLink = it.applinks,
-                color = it.color,
+                color = it.colorObj.hexLight,
                 headerName = String.EMPTY
             )
         },
