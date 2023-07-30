@@ -3,7 +3,7 @@ package com.tokopedia.editor.ui.main
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentFactory
-import com.tokopedia.editor.R
+import com.tokopedia.editor.databinding.ActivityMainEditorBinding
 import com.tokopedia.editor.di.ModuleInjector
 import com.tokopedia.editor.ui.EditorFragmentProvider
 import com.tokopedia.editor.ui.EditorFragmentProviderImpl
@@ -21,16 +21,21 @@ import javax.inject.Inject
  *
  * @applink tokopedia-android-internal://global/universal-editor
  */
-class MainEditorActivity : AppCompatActivity() {
+open class MainEditorActivity : AppCompatActivity() {
 
     @Inject
     lateinit var fragmentFactory: FragmentFactory
+
+    private lateinit var binding: ActivityMainEditorBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         initInjector()
         supportFragmentManager.fragmentFactory = fragmentFactory
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main_editor)
+
+        binding = ActivityMainEditorBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
         inflateFragment()
     }
 
@@ -38,7 +43,7 @@ class MainEditorActivity : AppCompatActivity() {
         val fragment = fragmentProvider().mainEditorFragment()
 
         supportFragmentManager.beginTransaction()
-            .replace(R.id.fragment_container, fragment)
+            .replace(binding.container.id, fragment)
             .commit()
     }
 
@@ -51,7 +56,7 @@ class MainEditorActivity : AppCompatActivity() {
 
     private fun initInjector() {
         ModuleInjector
-            .get(applicationContext)
+            .get(this)
             .inject(this)
     }
 }

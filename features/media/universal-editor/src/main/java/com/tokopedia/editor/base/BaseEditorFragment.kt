@@ -2,7 +2,6 @@ package com.tokopedia.editor.base
 
 import android.os.Bundle
 import android.view.View
-import androidx.annotation.LayoutRes
 import androidx.fragment.app.Fragment
 
 /**
@@ -18,7 +17,7 @@ import androidx.fragment.app.Fragment
  * Don't forget to use a view-binding to maintain type safety of view object references.
  *
  */
-abstract class BaseEditorFragment(@LayoutRes val id: Int) : Fragment(id) {
+abstract class BaseEditorFragment(layoutId: Int) : Fragment(layoutId) {
 
     /**
      * Any particular views (e.g. initial view state, set text, observe the click listener)

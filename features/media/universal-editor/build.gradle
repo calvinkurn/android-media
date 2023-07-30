@@ -34,6 +34,15 @@ android {
         jvmTarget = JavaVersion.VERSION_11
     }
 
+    sourceSets {
+        test {
+            java.srcDirs += "$projectDir/src/testCommon/java"
+        }
+        androidTest {
+            java.srcDirs += "$projectDir/src/testCommon/java"
+        }
+    }
+
     buildTypes {
         debug {
             ext.enableHansel = project.hasProperty('hanselEnableDebug')
@@ -63,7 +72,6 @@ android {
         main {
             res {
                 srcDirs 'src/main/res',
-                        'src/main/res/layout',
                         'src/main/res/layouts/parent',
                         'src/main/res/layouts/image',
                         'src/main/res/layouts/vod'
@@ -121,6 +129,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.viewModelKtx
     implementation rootProject.ext.miscDependencies.liveDataKtx
 
+    compileOnly rootProject.ext.miscDependencies.javaxAnnotation
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler
 
@@ -138,8 +147,6 @@ dependencies {
     androidTestImplementation rootProject.ext.testDependencies.espressoContrib
     androidTestImplementation rootProject.ext.testDependencies.espressoIntents
     androidTestImplementation rootProject.ext.testDependencies.espressoCore
-    androidTestImplementation rootProject.ext.miscDependencies.dagger
-    kaptAndroidTest rootProject.ext.miscDependencies.daggerCompiler
 
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.archCoreTesting
@@ -156,3 +163,4 @@ project.ext {
 
 apply from: '../../../publish_local.gradle'
 apply from: '../../../jacoco_task.gradle'
+apply from: '../../../sonar_config.gradle'

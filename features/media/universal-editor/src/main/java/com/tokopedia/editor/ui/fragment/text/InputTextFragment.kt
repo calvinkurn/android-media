@@ -19,5 +19,4 @@ class InputTextFragment @Inject constructor() : BaseEditorFragment(R.layout.frag
     override fun initObserver() {
 
     }
-
 }

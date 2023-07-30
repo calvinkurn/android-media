@@ -18,5 +18,4 @@ class ImagePlacementFragment @Inject constructor() : BaseEditorFragment(R.layout
     override fun initObserver() {
 
     }
-
 }
