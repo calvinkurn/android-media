@@ -21,7 +21,8 @@ class ProfileUiModelBuilder {
         shareLink: LinkUiModel = LinkUiModel.Empty,
         liveInfo: LivePlayChannelUiModel = LivePlayChannelUiModel.Empty,
         isBlocking: Boolean = false,
-        isBlockedBy: Boolean = false
+        isBlockedBy: Boolean = false,
+        badge: ProfileUiModel.Badge = ProfileUiModel.Badge.Empty
     ) = ProfileUiModel(
         userID = userID,
         encryptedUserID = encryptedUserID,
@@ -33,6 +34,7 @@ class ProfileUiModelBuilder {
         shareLink = shareLink,
         liveInfo = liveInfo,
         isBlocking = isBlocking,
-        isBlockedBy = isBlockedBy
+        isBlockedBy = isBlockedBy,
+        badge = badge
     )
 }
