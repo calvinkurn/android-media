@@ -98,7 +98,7 @@ object ApiResponseStub {
     /**
      * Chat List
      */
-    const val CHANNEL_LIST = "v2/chat/channels?batch_size=10&timestamp="
+    const val CHANNEL_LIST = "/v2/chat/channels?batch_size=10&timestamp="
 
     // Values
     const val MESSAGES = "messages"

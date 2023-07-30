@@ -3,16 +3,22 @@ package com.tokopedia.inbox.universalinbox.view
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.switchMap
 import androidx.lifecycle.viewModelScope
+import com.gojek.conversations.channel.ConversationsChannel
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.inbox.universalinbox.data.entity.UniversalInboxAllCounterResponse
+import com.tokopedia.inbox.universalinbox.data.entity.UniversalInboxWidgetDataResponse
 import com.tokopedia.inbox.universalinbox.data.entity.UniversalInboxWidgetMetaResponse
 import com.tokopedia.inbox.universalinbox.domain.UniversalInboxGetAllCounterUseCase
+import com.tokopedia.inbox.universalinbox.domain.UniversalInboxGetAllDriverChannelsUseCase
 import com.tokopedia.inbox.universalinbox.domain.UniversalInboxGetWidgetMetaUseCase
+import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.GOJEK_TYPE
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.PAGE_NAME
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxWidgetMetaUiModel
 import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.recommendation_widget_common.DEFAULT_VALUE_X_DEVICE
 import com.tokopedia.recommendation_widget_common.DEFAULT_VALUE_X_SOURCE
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
@@ -39,6 +45,7 @@ class UniversalInboxViewModel @Inject constructor(
     private val getRecommendationUseCase: GetRecommendationUseCase,
     private val addWishListV2UseCase: AddToWishlistV2UseCase,
     private val deleteWishlistV2UseCase: DeleteWishlistV2UseCase,
+    private val getDriverChatCounterUseCase: UniversalInboxGetAllDriverChannelsUseCase,
     private val inboxMenuMapper: UniversalInboxMenuMapper,
     private val userSession: UserSessionInterface,
     private val dispatcher: CoroutineDispatchers
@@ -64,6 +71,24 @@ class UniversalInboxViewModel @Inject constructor(
     val morePageRecommendation: LiveData<Result<List<RecommendationItem>>>
         get() = _morePageRecommendation
 
+    private var _allChannelsLiveData: LiveData<List<ConversationsChannel>>? = null
+
+    val driverChatCounter: LiveData<Result<Pair<Int, Int>>>?
+        get() {
+            setAllDriverChannels()
+            return _allChannelsLiveData?.switchMap {
+                getDriverUnreadCount(it)
+            }
+        }
+
+    var driverChatWidgetData: Pair<Int, UniversalInboxWidgetDataResponse>? = null
+    var driverChatData: Result<Pair<Int, Int>>? = null
+
+    // Error live data for all purpose
+    private val _error = MutableLiveData<Throwable>()
+    val error: LiveData<Throwable>
+        get() = _error
+
     fun generateStaticMenu() {
         val staticMenuList = inboxMenuMapper.getStaticMenu(userSession)
         _inboxMenu.postValue(staticMenuList)
@@ -73,10 +98,17 @@ class UniversalInboxViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 val widgetMetaResponse = getWidgetMetaAsync().await()
+                // Save driver chat data for dynamic show
+                widgetMetaResponse?.metaData?.forEachIndexed { index, response ->
+                    if (response.type == GOJEK_TYPE) {
+                        driverChatWidgetData = Pair(index, response)
+                    }
+                }
                 val allCounterResponse = getAllCounterAsync().await()
                 val result = inboxMenuMapper.mapWidgetMetaToUiModel(
                     widgetMetaResponse,
-                    allCounterResponse
+                    allCounterResponse,
+                    driverChatData
                 )
                 _widget.value = Pair(result, allCounterResponse)
             } catch (throwable: Throwable) {
@@ -84,6 +116,42 @@ class UniversalInboxViewModel @Inject constructor(
                 _widget.value = Pair(UniversalInboxWidgetMetaUiModel(isError = true), null)
             }
         }
+    }
+
+    private fun setAllDriverChannels() {
+        try {
+            if (_allChannelsLiveData == null) {
+                _allChannelsLiveData = getDriverChatCounterUseCase.getAllChannels()
+            }
+        } catch (throwable: Throwable) {
+            Timber.d(throwable)
+            _error.value = throwable
+        }
+    }
+
+    private fun getDriverUnreadCount(
+        channelList: List<ConversationsChannel>
+    ): LiveData<Result<Pair<Int, Int>>> {
+        val unreadDriverChatCount = MutableLiveData<Result<Pair<Int, Int>>>()
+        viewModelScope.launch {
+            try {
+                var activeChannel = Int.ZERO
+                var unreadTotal = Int.ZERO
+                channelList.forEach { channel ->
+                    if (channel.expiresAt > System.currentTimeMillis()) {
+                        activeChannel++
+                        unreadTotal += channel.unreadCount
+                    }
+                }
+                unreadDriverChatCount.value = Success(
+                    Pair(activeChannel, unreadTotal)
+                )
+            } catch (throwable: Throwable) {
+                Timber.d(throwable)
+                unreadDriverChatCount.value = Fail(throwable)
+            }
+        }
+        return unreadDriverChatCount
     }
 
     private suspend fun getWidgetMetaAsync(): Deferred<UniversalInboxWidgetMetaResponse?> {

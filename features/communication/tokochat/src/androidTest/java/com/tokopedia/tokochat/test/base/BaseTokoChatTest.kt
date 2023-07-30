@@ -89,7 +89,7 @@ abstract class BaseTokoChatTest {
             idlingResourceDatabaseChannel,
             idlingResourcePrepareDb
         )
-        mockWebServer.start(8090)
+        mockWebServer.start(8080)
         mockWebServer.dispatcher = mockWebServerDispatcher
         resetDatabase()
         removeDummyCache()
@@ -131,12 +131,9 @@ abstract class BaseTokoChatTest {
 
     protected open fun resetDatabase() {
         runBlocking(Dispatchers.Main) {
-            try {
-                idlingResourceDatabaseMessage.increment()
-                database.messageDao().deleteAll()
-            } finally {
-                idlingResourceDatabaseMessage.decrement()
-            }
+            idlingResourceDatabaseMessage.increment()
+            database.messageDao().deleteAll()
+            idlingResourceDatabaseMessage.decrement()
         }
     }
 

@@ -12,8 +12,10 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalCommunication
 import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.tokochat.analytics.TokoChatAnalytics
+import com.tokopedia.tokochat.common.util.TokoChatTimeUtil.getRelativeTime
+import com.tokopedia.tokochat.common.util.TokoChatValueUtil.getSource
 import com.tokopedia.tokochat.common.util.TokoChatNetworkUtil
-import com.tokopedia.tokochat.common.util.TokoChatValueUtil
 import com.tokopedia.tokochat.common.view.chatlist.TokoChatListBaseFragment
 import com.tokopedia.tokochat.common.view.chatlist.adapter.TokoChatListBaseAdapter
 import com.tokopedia.tokochat.common.view.chatlist.listener.TokoChatListItemListener
@@ -45,6 +47,8 @@ class TokoChatListFragment @Inject constructor(
         itemListener = this
     )
 
+    private var tokoChatAnalytics = TokoChatAnalytics()
+
     override fun getScreenName(): String = TAG
 
     override fun initInjector() {}
@@ -69,7 +73,7 @@ class TokoChatListFragment @Inject constructor(
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 var isCompleted = false
-                viewModel.getChatListFlow()?.collectLatest {
+                viewModel.getChatListFlow().collectLatest {
                     when (it) {
                         is Success -> {
                             setChatListData(it.data)
@@ -102,7 +106,7 @@ class TokoChatListFragment @Inject constructor(
 
     private fun loadChatListData(size: Int) {
         toggleSwipeRefreshState(true)
-        viewModel.loadNextPageChatList(size) { isSuccess ->
+        viewModel.loadNextPageChatList(size, false) { isSuccess ->
             if (!isSuccess) {
                 showErrorLayout()
             }
@@ -123,6 +127,12 @@ class TokoChatListFragment @Inject constructor(
     }
 
     override fun initObservers() {
+        viewModel.chatListPair.observe(viewLifecycleOwner) {
+            if (it.isNotEmpty()) {
+                tokoChatAnalytics.viewDriverChatList(it)
+            }
+        }
+
         viewModel.error.observe(viewLifecycleOwner) {
             TokoChatErrorLogger.logExceptionToServerLogger(
                 TokoChatErrorLogger.PAGE.TOKOCHAT,
@@ -160,13 +170,20 @@ class TokoChatListFragment @Inject constructor(
         adapter.addItem(TokoChatListLoaderUiModel())
         baseBinding?.tokochatListRv?.post {
             adapter.notifyItemInserted(adapter.lastIndex)
-            viewModel.loadNextPageChatList {}
+            viewModel.loadNextPageChatList(isLoadMore = true) {}
         }
     }
 
-    override fun onClickChatItem(position: Int, element: TokoChatListItemUiModel) {
+    override fun onClickChatItem(element: TokoChatListItemUiModel) {
+        val serviceName = getSource(element.serviceType)
+        tokoChatAnalytics.clickDriverChatList(
+            gojekOrderId = element.orderId,
+            serviceTypeName = serviceName,
+            counter = element.counter,
+            chatDuration = getRelativeTime(element.createAt)
+        )
         context?.let {
-            val source = "?${ApplinkConst.TokoChat.PARAM_SOURCE}=${TokoChatValueUtil.getSource(element.serviceType)}"
+            val source = "?${ApplinkConst.TokoChat.PARAM_SOURCE}=$serviceName"
             val paramOrderIdGojek = "&${ApplinkConst.TokoChat.ORDER_ID_GOJEK}=${element.orderId}"
             val applink = "${ApplinkConstInternalCommunication.TOKO_CHAT}$source$paramOrderIdGojek"
             val intent = RouteManager.getIntent(it, applink)

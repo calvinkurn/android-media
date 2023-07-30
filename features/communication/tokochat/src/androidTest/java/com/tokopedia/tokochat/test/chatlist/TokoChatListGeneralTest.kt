@@ -122,7 +122,6 @@ class TokoChatListGeneralTest : BaseTokoChatListTest() {
 
         // When
         launchChatListActivity()
-        Thread.sleep(10000)
 
         // Then
         generalResult {

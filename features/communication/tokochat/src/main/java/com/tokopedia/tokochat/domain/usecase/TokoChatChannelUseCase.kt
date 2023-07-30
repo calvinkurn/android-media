@@ -99,11 +99,9 @@ open class TokoChatChannelUseCase @Inject constructor(
 
     fun getAllCachedChannels(
         channelTypes: List<ChannelType>
-    ): Flow<List<ConversationsChannel>>? {
-        return repository
-            .getConversationRepository()
-            ?.getAllCachedChannels(channelTypes)
-            ?.asFlow()
+    ): Flow<List<ConversationsChannel>> {
+        return repository.getConversationRepository()!!.getAllCachedChannels(channelTypes)
+            .asFlow()
     }
 
     fun setLastTimeStamp(timeStamp: Long) {

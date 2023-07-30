@@ -15,6 +15,7 @@ import com.tokopedia.tokochat.stub.domain.response.ApiResponseStub.SEND_MESSAGE_
 import okhttp3.mockwebserver.Dispatcher
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.RecordedRequest
+import okhttp3.mockwebserver.SocketPolicy
 
 class MockWebServerDispatcher : Dispatcher() {
 
@@ -27,6 +28,7 @@ class MockWebServerDispatcher : Dispatcher() {
         return MockResponse()
             .setResponseCode(apiResponse.responseCode)
             .setBody(getStreamResponse(apiResponse))
+            .setSocketPolicy(SocketPolicy.KEEP_OPEN)
     }
 
     private fun getApiResponse(url: String): ApiResponseModelStub {
