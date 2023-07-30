@@ -11,6 +11,7 @@ import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.people.model.ExtraStats
 import com.tokopedia.people.model.GetProfileSettingsResponse
 import com.tokopedia.people.model.GetUserReviewListResponse
+import com.tokopedia.people.model.Profile
 import com.tokopedia.people.model.ProfileHeaderBase
 import com.tokopedia.people.model.SetLikeStatusResponse
 import com.tokopedia.people.model.UserPostModel
@@ -72,7 +73,19 @@ class UserProfileUiMapperImpl @Inject constructor(
                 )
             ),
             isBlocking = response.profileHeader.isBlocking,
-            isBlockedBy = response.profileHeader.isBlockedBy
+            isBlockedBy = response.profileHeader.isBlockedBy,
+            badge = badge(response.profileHeader.profile.profileBadges)
+        )
+    }
+
+    private fun badge(badgeList: List<Profile.Badge>): ProfileUiModel.Badge {
+        val badge = badgeList.firstOrNull() ?: return ProfileUiModel.Badge.Empty
+        return ProfileUiModel.Badge.Verified(
+            badge.badgeUrl,
+            if (badge.isClickable) ProfileUiModel.Badge.Verified.Detail(
+                badge.bottomSheetTitle,
+                badge.bottomSheetDesc
+            ) else null
         )
     }
 

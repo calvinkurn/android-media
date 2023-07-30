@@ -111,6 +111,9 @@ class UserProfileViewModel @AssistedInject constructor(
             else -> ProfileTabUiModel()
         }
 
+    val badge: ProfileUiModel.Badge
+        get() = _profileInfo.value.badge
+
     private val isFirstTimeSeeReviewTab: Boolean
         get() = isSelfProfile &&
             _reviewSettings.value.isEnabled &&

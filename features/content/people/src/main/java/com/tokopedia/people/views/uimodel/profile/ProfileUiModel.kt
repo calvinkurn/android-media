@@ -14,8 +14,24 @@ data class ProfileUiModel(
     val shareLink: LinkUiModel,
     val liveInfo: LivePlayChannelUiModel,
     val isBlocking: Boolean,
-    val isBlockedBy: Boolean
+    val isBlockedBy: Boolean,
+    val badge: Badge = Badge.Empty
 ) {
+    sealed class Badge {
+
+        object Empty: Badge()
+
+        data class Verified(
+            val url: String,
+            val detail: Detail?
+        ): Badge() {
+
+            data class Detail(
+                val title: String,
+                val desc: String
+            )
+        }
+    }
 
     companion object {
         val Empty: ProfileUiModel

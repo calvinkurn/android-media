@@ -7,11 +7,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewGroup.MarginLayoutParams
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
-import androidx.core.view.updateMarginsRelative
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
@@ -71,6 +69,7 @@ import com.tokopedia.people.views.activity.FollowerFollowingListingActivity
 import com.tokopedia.people.views.activity.ProfileSettingsActivity
 import com.tokopedia.people.views.activity.UserProfileActivity.Companion.EXTRA_USERNAME
 import com.tokopedia.people.views.adapter.UserProfilePagerAdapter
+import com.tokopedia.people.views.fragment.bottomsheet.UserProfileBadgeBottomSheet
 import com.tokopedia.people.views.fragment.bottomsheet.UserProfileOptionBottomSheet
 import com.tokopedia.people.views.fragment.bottomsheet.UserProfileReviewOnboardingBottomSheet
 import com.tokopedia.people.views.uimodel.action.UserProfileAction
@@ -81,6 +80,7 @@ import com.tokopedia.people.views.uimodel.profile.ProfileTabUiModel
 import com.tokopedia.people.views.uimodel.profile.ProfileType
 import com.tokopedia.people.views.uimodel.profile.ProfileUiModel
 import com.tokopedia.people.views.uimodel.state.UserProfileUiState
+import com.tokopedia.play_common.view.loadImage
 import com.tokopedia.searchbar.navigation_component.NavSource
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.UnifyButton
@@ -95,7 +95,6 @@ import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomshee
 import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import java.net.SocketTimeoutException
 import java.net.URLEncoder
@@ -175,6 +174,11 @@ class UserProfileFragment @Inject constructor(
         ) {
             refreshLandingPageData(isRefreshPost = true)
         }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setupAttachChildFragmentListener()
     }
 
     override fun onCreateView(
@@ -258,6 +262,16 @@ class UserProfileFragment @Inject constructor(
         mBlockDialog = null
 
         _binding = null
+    }
+
+    private fun setupAttachChildFragmentListener() {
+        childFragmentManager.addFragmentOnAttachListener { _, fragment ->
+            if (fragment is UserProfileBadgeBottomSheet) {
+                fragment.setDataSource(object : UserProfileBadgeBottomSheet.DataSource {
+                    override fun badge(): ProfileUiModel.Badge = viewModel.badge
+                })
+            }
+        }
     }
 
     override fun onAttachFragment(childFragment: Fragment) {
@@ -562,6 +576,7 @@ class UserProfileFragment @Inject constructor(
                 textUserName.text = getString(R.string.up_username_template, curr.username)
             }
             textDisplayName.text = curr.name
+            setProfileBadge(curr.badge)
             layoutUserProfileStats.textContentCount.text = curr.stats.totalPostFmt
             layoutUserProfileStats.textReviewCount.text = curr.stats.totalReviewFmt
             layoutUserProfileStats.textFollowerCount.text = curr.stats.totalFollowerFmt
@@ -873,6 +888,21 @@ class UserProfileFragment @Inject constructor(
                 imgProfileImage.setOnClickListener {
                     userProfileTracker.clickProfilePicture(userSession.userId, self = viewModel.isSelfProfile, profile.liveInfo.channelId)
                 }
+            }
+        }
+    }
+
+    private fun setProfileBadge(badge: ProfileUiModel.Badge) {
+        if (badge is ProfileUiModel.Badge.Empty) return
+        if (badge is ProfileUiModel.Badge.Verified) {
+            mainBinding.iconBadge.loadImage(badge.url)
+            mainBinding.iconBadge.visible()
+            if (badge.detail == null) return
+            mainBinding.iconBadge.setOnClickListener {
+                UserProfileBadgeBottomSheet.getOrCreate(
+                    childFragmentManager,
+                    requireContext().classLoader
+                ).show(childFragmentManager)
             }
         }
     }

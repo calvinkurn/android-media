@@ -60,6 +60,12 @@ class UserDetailsUseCase @Inject constructor(
                         weblink
                       }
                     }
+                    userBadges {
+                      link
+                      isClickable
+                      bottomsheetTitle
+                      bottomsheetDescription
+                    }
                   }
                   stats {
                     totalPost

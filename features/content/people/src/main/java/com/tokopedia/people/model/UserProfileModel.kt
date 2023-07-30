@@ -59,8 +59,35 @@ data class Profile(
     val badges: List<String> = emptyList(),
 
     @SerializedName("liveplaychannel")
-    val liveplaychannel: Liveplaychannel = Liveplaychannel()
-)
+    val liveplaychannel: Liveplaychannel = Liveplaychannel(),
+
+    /**
+     * "userBadges": [
+     *   {
+     *   "link": "https://images.tokopedia.net/img/feeds-profile/badge/verified_badge.png",
+     *   "isClickable": true,
+     *   "bottomsheetTitle": "Akun terverifikasi",
+     *   "bottomsheetDescription": "Terverifikasi sejak Januari 2017 karena dikelola oleh Tokopedia."
+     *   }
+     *   ]
+     */
+    @SerializedName("userBadges")
+    val profileBadges: List<Badge> = emptyList()
+) {
+    data class Badge(
+        @SerializedName("link")
+        val badgeUrl: String = "",
+
+        @SerializedName("isClickable")
+        val isClickable: Boolean = false,
+
+        @SerializedName("bottomsheetTitle")
+        val bottomSheetTitle: String = "",
+
+        @SerializedName("bottomsheetDescription")
+        val bottomSheetDesc: String = ""
+    )
+}
 
 data class Liveplaychannel(
     @SerializedName("islive")
