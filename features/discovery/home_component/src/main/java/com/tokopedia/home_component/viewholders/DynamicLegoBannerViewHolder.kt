@@ -140,6 +140,7 @@ class DynamicLegoBannerViewHolder(
 
     private fun setViewportImpression(element: DynamicLegoBannerDataModel) {
         itemView.addOnImpressionListener(element.channelModel) {
+            legoListener?.onViewportImpression(element.channelModel)
             when (element.channelModel.channelConfig.layout) {
                 DynamicChannelLayout.LAYOUT_6_IMAGE -> {
                     legoListener?.onChannelImpressionSixImage(element.channelModel, adapterPosition)

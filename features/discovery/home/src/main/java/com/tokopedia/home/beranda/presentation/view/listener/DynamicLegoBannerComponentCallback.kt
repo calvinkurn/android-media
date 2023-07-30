@@ -52,18 +52,6 @@ class DynamicLegoBannerComponentCallback(val context: Context?, val homeCategory
                     channelGrid.applink else channelGrid.url)
     }
 
-    override fun onImpressionGridSixImage(channelModel: ChannelModel, parentPosition: Int) {
-
-    }
-
-    override fun onImpressionGridFourImage(channelModel: ChannelModel, parentPosition: Int) {
-
-    }
-
-    override fun onImpressionGridThreeImage(channelModel: ChannelModel, parentPosition: Int) {
-
-    }
-
     override fun onChannelImpressionSixImage(channelModel: ChannelModel, parentPosition: Int) {
         homeCategoryListener.putEEToIris(
                 LegoBannerTracking.getLegoBannerSixImageImpression(
@@ -100,15 +88,17 @@ class DynamicLegoBannerComponentCallback(val context: Context?, val homeCategory
                     channelGrid.applink else channelGrid.url)
     }
 
-    override fun onImpressionGridTwoImage(channelModel: ChannelModel, parentPosition: Int) {
-
-    }
-
     override fun onChannelImpressionTwoImage(channelModel: ChannelModel, parentPosition: Int) {
         homeCategoryListener.putEEToIris(
                 LegoBannerTracking.getLegoBannerTwoImageImpression(
                         channelModel, parentPosition, true, homeCategoryListener.userId
                 ) as HashMap<String, Any>
+        )
+    }
+
+    override fun onViewportImpression(channelModel: ChannelModel) {
+        homeCategoryListener.putEEToTrackingQueue(
+            LegoBannerTracking.getLegoImpression(channelModel, userId)
         )
     }
 
