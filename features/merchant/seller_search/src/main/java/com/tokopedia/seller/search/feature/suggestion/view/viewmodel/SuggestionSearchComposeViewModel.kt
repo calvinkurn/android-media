@@ -25,6 +25,9 @@ class SuggestionSearchComposeViewModel @Inject constructor(
 
     fun fetchSellerSearch(keyword: String, section: String = "", shopId: String) {
         launchCatchError(block = {
+            _uiState.update {
+                it.copy(isLoadingState = true)
+            }
             val responseGetSellerSearch = withContext(dispatcherProvider.io) {
                 getSellerSearchUseCase.params =
                     GetSellerSearchUseCase.createParams(keyword, shopId, section)
@@ -34,11 +37,14 @@ class SuggestionSearchComposeViewModel @Inject constructor(
                 )
             }
             _uiState.update {
-                it.copy(suggestionSellerSearchList = responseGetSellerSearch)
+                it.copy(
+                    suggestionSellerSearchList = responseGetSellerSearch,
+                    isLoadingState = false
+                )
             }
         }, onError = { throwable ->
                 _uiState.update {
-                    it.copy(throwable = throwable)
+                    it.copy(throwable = throwable, isLoadingState = false)
                 }
             })
     }

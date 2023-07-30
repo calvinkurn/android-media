@@ -4,6 +4,7 @@ import com.tokopedia.seller.search.feature.suggestion.view.model.BaseSuggestionS
 
 data class SuggestionSearchUiState(
     val suggestionSellerSearchList: List<BaseSuggestionSearchSeller> = emptyList(),
+    val isLoadingState: Boolean = false,
     val isInsertSuccessSearch: Boolean = false,
     val throwable: Throwable? = null
 )

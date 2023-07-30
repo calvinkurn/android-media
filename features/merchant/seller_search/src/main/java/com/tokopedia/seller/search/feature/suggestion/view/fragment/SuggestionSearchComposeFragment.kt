@@ -1,14 +1,217 @@
 package com.tokopedia.seller.search.feature.suggestion.view.fragment
 
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.ui.ExperimentalComposeUiApi
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.seller.search.common.plt.GlobalSearchSellerPerformanceMonitoringListener
+import com.tokopedia.seller.search.common.util.addWWWPrefix
+import com.tokopedia.seller.search.feature.analytics.SellerSearchTracking
+import com.tokopedia.seller.search.feature.initialsearch.di.component.InitialSearchComponent
+import com.tokopedia.seller.search.feature.initialsearch.view.activity.InitialSellerSearchComposeActivity
+import com.tokopedia.seller.search.feature.suggestion.view.model.sellersearch.ArticleSellerSearchUiModel
+import com.tokopedia.seller.search.feature.suggestion.view.model.sellersearch.FaqSellerSearchUiModel
+import com.tokopedia.seller.search.feature.suggestion.view.model.sellersearch.NavigationSellerSearchUiModel
+import com.tokopedia.seller.search.feature.suggestion.view.model.sellersearch.OrderSellerSearchUiModel
+import com.tokopedia.seller.search.feature.suggestion.view.model.sellersearch.ProductSellerSearchUiModel
+import com.tokopedia.seller.search.feature.suggestion.view.model.sellersearch.TitleHasMoreSellerSearchUiModel
+import com.tokopedia.seller.search.feature.suggestion.view.model.sellersearch.hightlights.ItemHighlightSuggestionSearchUiModel
+import com.tokopedia.seller.search.feature.suggestion.view.viewmodel.SuggestionSearchComposeViewModel
+import com.tokopedia.user.session.UserSessionInterface
+import javax.inject.Inject
 
-class SuggestionSearchComposeFragment: BaseDaggerFragment() {
+@OptIn(ExperimentalComposeUiApi::class)
+class SuggestionSearchComposeFragment : BaseDaggerFragment() {
 
-    override fun getScreenName(): String {
-        TODO("Not yet implemented")
+    @Inject
+    lateinit var userSession: UserSessionInterface
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    private val viewModel: SuggestionSearchComposeViewModel by lazy {
+        ViewModelProvider(this, viewModelFactory).get(SuggestionSearchComposeViewModel::class.java)
     }
 
+    private var searchKeyword = ""
+    override fun getScreenName(): String = ""
+
     override fun initInjector() {
-        TODO("Not yet implemented")
+        getComponent(InitialSearchComponent::class.java).inject(this)
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        return context?.let { ComposeView(it) }?.apply {
+            setContent {
+                val isMonitoringStarted = remember { mutableStateOf(false) }
+                val isMonitoringFinished = remember { mutableStateOf(false) }
+
+                val softwareKeyboardController = LocalSoftwareKeyboardController.current
+
+                val getActivity = LocalContext.current as? InitialSellerSearchComposeActivity
+                val sellerSearchResult = viewModel.uiState.collectAsState()
+
+                LaunchedEffect(sellerSearchResult) {
+                    if (!isMonitoringStarted.value) {
+                        (getActivity as? GlobalSearchSellerPerformanceMonitoringListener)?.startRenderPerformanceMonitoring()
+                        isMonitoringStarted.value = true
+                    }
+
+                    sellerSearchResult.let { result ->
+                        if (!isMonitoringFinished.value) {
+                            (getActivity as? GlobalSearchSellerPerformanceMonitoringListener)?.finishMonitoring()
+                            isMonitoringFinished.value = true
+                        }
+                    }
+
+                    if (sellerSearchResult.value.isInsertSuccessSearch) {
+                        softwareKeyboardController?.hide()
+                    }
+                }
+            }
+        }
+    }
+
+    fun suggestionSearch(keyword: String) {
+        this.searchKeyword = keyword
+        viewModel.fetchSellerSearch(keyword = searchKeyword, shopId = userSession.shopId)
+    }
+
+    private fun startActivityFromAutoComplete(appLink: String) {
+        activity?.let {
+            RouteManager.route(it, appLink)
+            it.finish()
+        }
+    }
+
+    private fun onNavigationItemClicked(data: NavigationSellerSearchUiModel, position: Int) {
+        viewModel.insertSearchSeller(
+            data.title.orEmpty(),
+            data.id.orEmpty(),
+            data.title.orEmpty(),
+            position
+        )
+        SellerSearchTracking.clickOnSearchResult(userSession.userId, data.section.orEmpty(), searchKeyword)
+        startActivityFromAutoComplete(data.appUrl.orEmpty())
+//        dropKeyBoard()
+    }
+
+    private fun onOrderItemClicked(data: OrderSellerSearchUiModel, position: Int) {
+        viewModel.insertSearchSeller(
+            data.title.orEmpty(),
+            data.id.orEmpty(),
+            data.title.orEmpty(),
+            position
+        )
+        SellerSearchTracking.clickOnSearchResult(userSession.userId, data.section.orEmpty(), searchKeyword)
+        startActivityFromAutoComplete(data.appUrl.orEmpty())
+//        dropKeyBoard()
+    }
+
+    private fun onOrderMoreClicked(element: TitleHasMoreSellerSearchUiModel) {
+        SellerSearchTracking.clickOtherResult(userSession.userId, element.title, searchKeyword)
+        startActivityFromAutoComplete(element.appActionLink)
+//        dropKeyBoard()
+    }
+
+    private fun onProductItemClicked(data: ProductSellerSearchUiModel, position: Int) {
+        viewModel.insertSearchSeller(
+            data.title.orEmpty(),
+            data.id.orEmpty(),
+            data.title.orEmpty(),
+            position
+        )
+        SellerSearchTracking.clickOnSearchResult(userSession.userId, data.section.orEmpty(), searchKeyword)
+        startActivityFromAutoComplete(data.appUrl.orEmpty())
+//        dropKeyBoard()
+    }
+
+    private fun onProductMoreClicked(element: TitleHasMoreSellerSearchUiModel) {
+        SellerSearchTracking.clickOtherResult(userSession.userId, element.title, searchKeyword)
+        startActivityFromAutoComplete(element.appActionLink)
+//        dropKeyBoard()
+    }
+
+    private fun onFaqItemClicked(data: FaqSellerSearchUiModel, position: Int) {
+        itemRedirectToWebView(
+            data.title.orEmpty(),
+            data.id.orEmpty(),
+            data.section.orEmpty(),
+            data.appUrl.orEmpty(),
+            position
+        )
+    }
+
+    private fun onFaqMoreClicked(element: TitleHasMoreSellerSearchUiModel) {
+        moreRedirectToWebView(element.title, element.appActionLink)
+    }
+
+    private fun onArticleMoreClicked(element: TitleHasMoreSellerSearchUiModel) {
+        moreRedirectToWebView(element.title, element.appActionLink)
+    }
+
+    private fun onHighlightItemClicked(data: ItemHighlightSuggestionSearchUiModel, position: Int) {
+        viewModel.insertSearchSeller(
+            data.title.orEmpty(),
+            data.id.orEmpty(),
+            data.title.orEmpty(),
+            position
+        )
+        startActivityFromAutoComplete(data.appUrl.orEmpty())
+        SellerSearchTracking.clickOnItemSearchHighlights(userSession.userId)
+    }
+
+    private fun onArticleItemClicked(data: ArticleSellerSearchUiModel, position: Int) {
+        itemRedirectToWebView(
+            data.title.orEmpty(),
+            data.id.orEmpty(),
+            data.section.orEmpty(),
+            data.appUrl.orEmpty(),
+            position
+        )
+    }
+
+    private fun moreRedirectToWebView(
+        title: String,
+        appUrl: String
+    ) {
+        SellerSearchTracking.clickOtherResult(userSession.userId, title, searchKeyword)
+        val appUrlFormatted = appUrl.addWWWPrefix
+        RouteManager.route(activity, appUrlFormatted)
+//        dropKeyBoard()
+    }
+
+    private fun itemRedirectToWebView(
+        title: String,
+        id: String,
+        section: String,
+        appUrl: String,
+        position: Int
+    ) {
+        SellerSearchTracking.clickOnSearchResult(userSession.userId, section, searchKeyword)
+        viewModel.insertSearchSeller(
+            title,
+            id,
+            title,
+            position
+        )
+        val appUrlFormatted = appUrl.addWWWPrefix
+        RouteManager.route(activity, appUrlFormatted)
+//        dropKeyBoard()
     }
 }
