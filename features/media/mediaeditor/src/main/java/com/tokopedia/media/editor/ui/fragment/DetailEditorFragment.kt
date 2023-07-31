@@ -497,8 +497,8 @@ class DetailEditorFragment @Inject constructor(
     }
 
     override fun onTemplateSave(isSave: Boolean) {
-        editorDetailAnalytics.clickAddTextTemplate()
         if (isSave) {
+            editorDetailAnalytics.clickAddTextTemplate()
             showAddTextTemplateSaveDialog()
         } else {
             showAddTextTemplateLoadDialog()
