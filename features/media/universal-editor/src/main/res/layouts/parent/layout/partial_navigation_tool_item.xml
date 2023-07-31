@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="80dp"
+    android:layout_height="56dp"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:layout_margin="4dp"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?selectableItemBackground"
+    android:background="@drawable/bg_partial_navigation_tool">
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/img_icon"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        app:icon_color_light_enable="@color/Unify_Static_White"
+        app:icon_color_night_enable="@color/Unify_Static_White"
+        app:icon_name="TEXT" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/txt_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="Teks"
+        android:layout_marginTop="4dp"
+        android:textColor="@color/Unify_Static_White"
+        app:typographyType="display_3" />
+
+</LinearLayout>
