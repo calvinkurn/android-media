@@ -356,6 +356,10 @@ class BuyerOrderDetailViewModel @Inject constructor(
         )
     }
 
+    fun hideScpRewardsMedalTouchPointWidget() {
+        scpRewardsMedalTouchPointWidgetUiState.value = ScpRewardsMedalTouchPointWidgetUiState.HasData.Hidden
+    }
+
     private fun <T> Flow<T>.toStateFlow(initialValue: T) = stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(FLOW_TIMEOUT_MILLIS),

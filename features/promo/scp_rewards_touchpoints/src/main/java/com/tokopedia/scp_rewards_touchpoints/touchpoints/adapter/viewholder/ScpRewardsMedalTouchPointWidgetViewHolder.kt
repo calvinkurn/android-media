@@ -1,19 +1,18 @@
 package com.tokopedia.scp_rewards_touchpoints.touchpoints.adapter.viewholder
 
-import android.content.Context
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.scp_rewards_touchpoints.R
-import com.tokopedia.scp_rewards_touchpoints.touchpoints.data.model.ScpRewardsMedalTouchPointModel
 import com.tokopedia.scp_rewards_touchpoints.databinding.ItemScpRewardsMedalTouchPointBinding
 import com.tokopedia.scp_rewards_touchpoints.touchpoints.adapter.uimodel.ScpRewardsMedalTouchPointWidgetUiModel
+import com.tokopedia.scp_rewards_touchpoints.touchpoints.data.model.ScpRewardsMedalTouchPointModel
 import com.tokopedia.utils.view.binding.viewBinding
 
 class ScpRewardsMedalTouchPointWidgetViewHolder(
     itemView: View?,
     val listener: ScpRewardsMedalTouchPointWidgetListener? = null
-): AbstractViewHolder<ScpRewardsMedalTouchPointWidgetUiModel>(itemView) {
+) : AbstractViewHolder<ScpRewardsMedalTouchPointWidgetUiModel>(itemView) {
     companion object {
         val LAYOUT = R.layout.item_scp_rewards_medal_touch_point
     }
@@ -41,7 +40,6 @@ class ScpRewardsMedalTouchPointWidgetViewHolder(
             )
             setOnClickListener {
                 listener?.onClickWidgetListener(
-                    context = context,
                     appLink = element.ctaAppLink
                 )
             }
@@ -50,7 +48,6 @@ class ScpRewardsMedalTouchPointWidgetViewHolder(
 
     interface ScpRewardsMedalTouchPointWidgetListener {
         fun onClickWidgetListener(
-            context: Context,
             appLink: String
         )
     }

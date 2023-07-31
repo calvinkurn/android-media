@@ -73,6 +73,7 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey.HOME_ENABLE_AUTO_REFRESH_UOH
 import com.tokopedia.remoteconfig.RemoteConfigKey.SCP_REWARDS_MEDALI_TOUCH_POINT
+import com.tokopedia.scp_rewards_touchpoints.common.Error
 import com.tokopedia.scp_rewards_touchpoints.touchpoints.ScpToasterHelper
 import com.tokopedia.scp_rewards_touchpoints.touchpoints.analytics.ScpRewardsToasterAnalytics.sendViewToasterEvent
 import com.tokopedia.scp_rewards_touchpoints.touchpoints.data.response.ScpRewardsMedalTouchPointResponse
@@ -842,19 +843,27 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
 
     private fun observeScpToaster() {
         scpTouchPointViewModel.medalTouchPointData.observe(viewLifecycleOwner) {
-            if (it is com.tokopedia.scp_rewards_touchpoints.common.Success<*>) {
-                val data = (it.data as ScpRewardsMedalTouchPointResponse)
-                if (data.scpRewardsMedaliTouchpointOrder.isShown) {
-                    view?.let { view ->
-                        ScpToasterHelper.showToaster(
-                            view = view,
-                            data = data
-                        )
-                        sendViewToasterEvent(
-                            badgeId = data.scpRewardsMedaliTouchpointOrder.medaliTouchpointOrder.medaliID.toString()
-                        )
+            when (it) {
+                is com.tokopedia.scp_rewards_touchpoints.common.Success<*> -> {
+                    val data = (it.data as ScpRewardsMedalTouchPointResponse)
+                    if (data.scpRewardsMedaliTouchpointOrder.isShown) {
+                        view?.let { view ->
+                            ScpToasterHelper.showToaster(
+                                view = view,
+                                data = data
+                            )
+                            sendViewToasterEvent(
+                                badgeId = data.scpRewardsMedaliTouchpointOrder.medaliTouchpointOrder.medaliID.toString()
+                            )
+                        }
+                    } else {
+                        showFinishOrderToaster()
                     }
                 }
+                is Error -> {
+                    showFinishOrderToaster()
+                }
+                else -> {}
             }
         }
     }
@@ -879,12 +888,13 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
             when (it) {
                 is Success -> {
                     responseFinishOrder = it.data
-                    showFinishOrderToaster()
                     if (isScpRewardTouchPointEnabled()) {
                         scpTouchPointViewModel.getMedalTouchPoint(
                             orderId = responseFinishOrder.orderId.toLongOrZero(),
                             sourceName = SOURCE_NAME
                         )
+                    } else {
+                        showFinishOrderToaster()
                     }
                 }
                 is Fail -> {
