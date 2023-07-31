@@ -62,7 +62,7 @@ private enum class Slots { Content, Background }
 @Composable
 fun UohReviewRatingWidget(config: UohReviewRatingWidgetConfig) {
     var rating by rememberRating(config.componentData)
-    if (rating == Int.ZERO) SetupRatingChangedListener(rating, config)
+    SetupRatingChangedListener(rating, config)
     DrawContent(
         modifier = Modifier.fillMaxWidth(),
         config = config,
@@ -97,7 +97,11 @@ private fun rememberReviewRatingWidgetConfig(
             spaceInBetween = REVIEW_RATING_WIDGET_SPACE_IN_BETWEEN.dp,
             skipInitialAnimation = true,
             onStarClicked = { previousRating: Int, currentRating: Int ->
-                if (previousRating != currentRating) onRatingChanged(currentRating)
+                // only process when previously clicked star is not the same as currently clicked star
+                // and if user haven't clicked any star previously (only process rating change once)
+                if (previousRating != currentRating && previousRating == Int.ZERO) {
+                    onRatingChanged(currentRating)
+                }
             }
         )
     }
