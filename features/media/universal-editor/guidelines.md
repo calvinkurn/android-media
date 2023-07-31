@@ -25,6 +25,8 @@ val intent = MediaPicker.intent(context) {
       - protected
       - ui-component
       - private
+        - val/var
+        - late-init
     - override method
     - protected method
     - private method

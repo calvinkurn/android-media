@@ -1,8 +1,10 @@
 package com.tokopedia.editor.ui.main
 
 import android.os.Bundle
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentFactory
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.editor.databinding.ActivityMainEditorBinding
 import com.tokopedia.editor.di.ModuleInjector
@@ -28,15 +30,14 @@ import javax.inject.Inject
  */
 open class MainEditorActivity : AppCompatActivity() {
 
-    @Inject
-    lateinit var fragmentFactory: FragmentFactory
-
-    @Inject
-    lateinit var paramFetcher: EditorParamFetcher
+    @Inject lateinit var fragmentFactory: FragmentFactory
+    @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private val pagerContainer by uiComponent {
         PagerContainerUiComponent(it, fragmentProvider(), this)
     }
+
+    private val viewModel: MainEditorViewModel by viewModels { viewModelFactory }
 
     private lateinit var binding: ActivityMainEditorBinding
 
@@ -54,24 +55,20 @@ open class MainEditorActivity : AppCompatActivity() {
     private fun setDataParam() {
         val param = intent?.getParcelableExtra<UniversalEditorParam>(
             EXTRA_UNIVERSAL_EDITOR_PARAM
-        ) ?: return
+        ) ?: error("Please provide the universal media editor parameter.")
 
-        lifecycleScope.launchWhenStarted {
-            paramFetcher.set(param)
-        }
+        viewModel.setParam(param)
     }
 
     private fun initObserver() {
         lifecycleScope.launchWhenCreated {
-            val param = paramFetcher() ?: return@launchWhenCreated
+            viewModel.param.collect { param ->
+                if (param == null) return@collect
 
-            dismissIfNeeded(param.paths)
-            setupPagerContainer(param)
+                dismissIfNeeded(param.paths)
+                pagerContainer.setupView(param)
+            }
         }
-    }
-
-    private fun setupPagerContainer(param: UniversalEditorParam) {
-        pagerContainer.setupView(param)
     }
 
     private fun dismissIfNeeded(paths: List<String>) {

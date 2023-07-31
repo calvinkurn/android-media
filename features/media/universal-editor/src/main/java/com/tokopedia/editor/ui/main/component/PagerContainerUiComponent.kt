@@ -32,10 +32,10 @@ class PagerContainerUiComponent constructor(
             adapter = mAdapter
         }
 
-        shouldFragmentDisplayed(param)
+        setFragmentDisplayed(param)
     }
 
-    private fun shouldFragmentDisplayed(param: UniversalEditorParam) {
+    private fun setFragmentDisplayed(param: UniversalEditorParam) {
         // Since current editor only supported single selection, hence we've get the first item of [paths]
         val file = param.paths.firstOrNull() ?: return
 
