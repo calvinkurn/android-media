@@ -62,6 +62,8 @@ class PromoUsageBottomSheet: BottomSheetDialogFragment() {
         private const val BUNDLE_KEY_ENTRY_POINT = "entry_point"
         private const val BUNDLE_KEY_ORIGINAL_TOTAL_PRICE = "original_total_price"
         private const val BOTTOM_SHEET_MARGIN_TOP_IN_DP = 64
+
+        //TODO: Replace with animation url from BE
         private const val CONFETTI_URL = "https://assets.tokopedia.net/asts/android/shop_page/shop_campaign_tab_confetti.json"
         @JvmStatic
         fun newInstance(entryPoint: EntryPoint, originalTotalPrice: Long): PromoUsageBottomSheet {
@@ -167,6 +169,7 @@ class PromoUsageBottomSheet: BottomSheetDialogFragment() {
 
         val bottomSheetBehavior = BottomSheetBehavior.from(frameDialogView)
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+        bottomSheetBehavior.peekHeight = maxPeekHeight
     }
 
     private fun observeVouchers() {
