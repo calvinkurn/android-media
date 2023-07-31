@@ -12,9 +12,9 @@ import com.tokopedia.content.common.comment.usecase.GetCountCommentsUseCase
 import com.tokopedia.content.common.model.FeedComplaintSubmitReportResponse
 import com.tokopedia.content.common.model.TrackVisitChannelResponse
 import com.tokopedia.content.common.usecase.BroadcasterReportTrackViewerUseCase
+import com.tokopedia.content.common.usecase.FeedComplaintSubmitReportUseCase
 import com.tokopedia.content.common.usecase.GetUserReportListUseCase
 import com.tokopedia.content.common.usecase.PostUserReportUseCase
-import com.tokopedia.content.common.usecase.FeedComplaintSubmitReportUseCase
 import com.tokopedia.content.common.usecase.TrackVisitChannelBroadcasterUseCase
 import com.tokopedia.content.common.util.UiEventManager
 import com.tokopedia.feed.component.product.FeedTaggedProductUiModel
@@ -106,11 +106,9 @@ class FeedPostViewModelTest {
     private val trackVisitChannelUseCase: TrackVisitChannelBroadcasterUseCase = mockk()
     private val trackReportViewerUseCase: BroadcasterReportTrackViewerUseCase = mockk()
     private val getReportListUseCase: GetUserReportListUseCase = mockk()
-    private val postReportUseCase : PostUserReportUseCase = mockk()
+    private val postReportUseCase: PostUserReportUseCase = mockk()
     private val affiliateCookieHelper: AffiliateCookieHelper = mockk()
     private val submitReportUseCase: FeedComplaintSubmitReportUseCase = mockk()
-    private val uiEventManager = UiEventManager<FeedPostEvent>()
-
     private val uiEventManager = UiEventManager<FeedPostEvent>()
 
     private lateinit var viewModel: FeedPostViewModel
@@ -118,27 +116,27 @@ class FeedPostViewModelTest {
     @Before
     fun setUp() {
         viewModel = FeedPostViewModel(
-            feedXHomeUseCase,
-            atcUseCase,
-            likeContentUseCase,
-            deletePostUseCase,
-            userSession,
-            shopFollowUseCase,
-            userFollowUseCase,
-            campaignReminderUseCase,
-            checkCampaignReminderUseCase,
-            topAdsHeadlineUseCase,
-            mvcSummaryUseCase,
-            topAdsAddressHelper,
-            getCountCommentsUseCase,
-            affiliateCookieHelper,
-            trackVisitChannelUseCase,
-            trackReportViewerUseCase,
-            submitReportUseCase,
-            getReportListUseCase,
-            postReportUseCase,
-            uiEventManager,
-            testDispatcher
+            feedXHomeUseCase = feedXHomeUseCase,
+            addToCartUseCase = atcUseCase,
+            likeContentUseCase = likeContentUseCase,
+            deletePostUseCase = deletePostUseCase,
+            userSession = userSession,
+            shopFollowUseCase = shopFollowUseCase,
+            userFollowUseCase = userFollowUseCase,
+            setCampaignReminderUseCase = campaignReminderUseCase,
+            checkCampaignReminderUseCase = checkCampaignReminderUseCase,
+            topAdsHeadlineUseCase = topAdsHeadlineUseCase,
+            mvcSummaryUseCase = mvcSummaryUseCase,
+            topAdsAddressHelper = topAdsAddressHelper,
+            getCountCommentsUseCase = getCountCommentsUseCase,
+            affiliateCookieHelper = affiliateCookieHelper,
+            trackVisitChannelUseCase = trackVisitChannelUseCase,
+            trackReportTrackViewerUseCase = trackReportViewerUseCase,
+            submitReportUseCase = submitReportUseCase,
+            getReportUseCase = getReportListUseCase,
+            postReportUseCase = postReportUseCase,
+            uiEventManager = uiEventManager,
+            dispatchers = testDispatcher
         )
     }
 
@@ -335,13 +333,13 @@ class FeedPostViewModelTest {
                 "dummy-shop-id",
                 "dummy Name"
             ),
-            title ="dummy title",
+            title = "dummy title",
             imageUrl = "dummy image url",
             price = FeedTaggedProductUiModel.NormalPrice(
                 "Rp1.000.000",
                 1000000.0
             ),
-            appLink ="dummy applink",
+            appLink = "dummy applink",
             campaign = FeedTaggedProductUiModel.Campaign(
                 FeedTaggedProductUiModel.CampaignType.NoCampaign,
                 FeedTaggedProductUiModel.CampaignStatus.Unknown,
@@ -374,13 +372,13 @@ class FeedPostViewModelTest {
                 "dummy-shop-id",
                 "dummy Name"
             ),
-            title ="dummy title",
+            title = "dummy title",
             imageUrl = "dummy image url",
             price = FeedTaggedProductUiModel.NormalPrice(
                 "Rp1.000.000",
                 1000000.0
             ),
-            appLink ="dummy applink",
+            appLink = "dummy applink",
             campaign = FeedTaggedProductUiModel.Campaign(
                 FeedTaggedProductUiModel.CampaignType.NoCampaign,
                 FeedTaggedProductUiModel.CampaignStatus.Unknown,
@@ -424,13 +422,13 @@ class FeedPostViewModelTest {
                 "dummy-shop-id",
                 "dummy Name"
             ),
-            title ="dummy title",
+            title = "dummy title",
             imageUrl = "dummy image url",
             price = FeedTaggedProductUiModel.NormalPrice(
                 "Rp1.000.000",
                 1000000.0
             ),
-            appLink ="dummy applink",
+            appLink = "dummy applink",
             campaign = FeedTaggedProductUiModel.Campaign(
                 FeedTaggedProductUiModel.CampaignType.NoCampaign,
                 FeedTaggedProductUiModel.CampaignStatus.Unknown,
@@ -479,13 +477,13 @@ class FeedPostViewModelTest {
                 "dummy-shop-id",
                 "dummy Name"
             ),
-            title ="dummy title",
+            title = "dummy title",
             imageUrl = "dummy image url",
             price = FeedTaggedProductUiModel.NormalPrice(
                 "Rp1.000.000",
                 1000000.0
             ),
-            appLink ="dummy applink",
+            appLink = "dummy applink",
             campaign = FeedTaggedProductUiModel.Campaign(
                 FeedTaggedProductUiModel.CampaignType.NoCampaign,
                 FeedTaggedProductUiModel.CampaignStatus.Unknown,
@@ -518,13 +516,13 @@ class FeedPostViewModelTest {
                 "dummy-shop-id",
                 "dummy Name"
             ),
-            title ="dummy title",
+            title = "dummy title",
             imageUrl = "dummy image url",
             price = FeedTaggedProductUiModel.NormalPrice(
                 "Rp1.000.000",
                 1000000.0
             ),
-            appLink ="dummy applink",
+            appLink = "dummy applink",
             campaign = FeedTaggedProductUiModel.Campaign(
                 FeedTaggedProductUiModel.CampaignType.NoCampaign,
                 FeedTaggedProductUiModel.CampaignStatus.Unknown,
@@ -568,13 +566,13 @@ class FeedPostViewModelTest {
                 "dummy-shop-id",
                 "dummy Name"
             ),
-            title ="dummy title",
+            title = "dummy title",
             imageUrl = "dummy image url",
             price = FeedTaggedProductUiModel.NormalPrice(
                 "Rp1.000.000",
                 1000000.0
             ),
-            appLink ="dummy applink",
+            appLink = "dummy applink",
             campaign = FeedTaggedProductUiModel.Campaign(
                 FeedTaggedProductUiModel.CampaignType.NoCampaign,
                 FeedTaggedProductUiModel.CampaignStatus.Unknown,
