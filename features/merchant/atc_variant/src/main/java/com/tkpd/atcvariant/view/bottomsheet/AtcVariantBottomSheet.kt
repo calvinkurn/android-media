@@ -652,7 +652,7 @@ class AtcVariantBottomSheet :
         cartData: DataModel
     ) {
         val pageSource = sharedViewModel.aggregatorParams.value?.pageSource ?: ""
-        val postAtcPageSource = if (pageSource == VariantPageSource.PDP_PAGESOURCE.name) {
+        val postAtcPageSource = if (pageSource == VariantPageSource.PDP_PAGESOURCE.source) {
             PostAtcHelper.Source.PDP
         } else {
             PostAtcHelper.Source.Default
