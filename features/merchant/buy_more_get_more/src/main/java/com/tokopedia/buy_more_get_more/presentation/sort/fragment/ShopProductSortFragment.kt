@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.buy_more_get_more.di.component.DaggerShopProductSortComponent
 import com.tokopedia.buy_more_get_more.di.module.ShopProductSortModule
 import com.tokopedia.buy_more_get_more.presentation.sort.activity.ShopProductSortActivity
 import com.tokopedia.buy_more_get_more.presentation.sort.adapter.ShopProductSortAdapterTypeFactory
