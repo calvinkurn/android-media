@@ -13,6 +13,7 @@ data class AddOnUIModel(
     var isSelected: Boolean = false,
     var isPreselected: Boolean = false,
     var isMandatory: Boolean = false,
+    var isAutoselect: Boolean = false,
     var addOnType: Int = 0,
     var eduLink: String = "",
     var uniqueId: String = "",

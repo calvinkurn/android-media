@@ -33,6 +33,7 @@ object AddOnMapper {
                     discountedPrice = it.inventory.price.toLong(),
                     isSelected = it.basic.rules.autoSelect || it.basic.rules.mandatory,
                     isMandatory = it.basic.rules.mandatory,
+                    isAutoselect = it.basic.rules.autoSelect,
                     addOnType = it.basic.addOnType.toIntSafely(),
                     eduLink = it.basic.metadata.infoURL.eduPageURL,
                     uniqueId = it.basic.addOnKey,
@@ -60,7 +61,11 @@ object AddOnMapper {
         return addonGroupList.map {
             it.copy(
                 addon = it.addon.map { addon ->
-                    val isPreselected = addon.id in selectedAddonIds || addon.isMandatory
+                    val isPreselected = if (selectedAddonIds.isEmpty()) {
+                        addon.isMandatory || addon.isAutoselect
+                    } else {
+                        addon.id in selectedAddonIds || addon.isMandatory
+                    }
                     addon.copy(
                         isSelected = isPreselected,
                         isPreselected = isPreselected
