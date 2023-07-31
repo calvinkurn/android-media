@@ -22,18 +22,19 @@
             android:id="@+id/product_image"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:paddingStart="8dp"
             android:scaleType="fitCenter"
+            app:unify_image_corner_radius="8"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:src="@drawable/ic_tanya_dark_mode" />
+            tools:src="@drawable/background_countdown" />
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/shop_badge"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
             android:layout_marginStart="8dp"
+            tools:visibility="visible"
             app:layout_constraintStart_toEndOf="@id/product_image"
             app:layout_constraintTop_toTopOf="@id/product_image"
             tools:src="@drawable/ic_tanya_dark_mode" />

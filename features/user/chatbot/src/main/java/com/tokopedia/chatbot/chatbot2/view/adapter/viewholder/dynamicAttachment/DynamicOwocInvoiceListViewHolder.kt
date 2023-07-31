@@ -1,9 +1,9 @@
 package com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.dynamicAttachment
 
 import android.view.View
+import androidx.constraintlayout.widget.ConstraintLayout.LayoutParams
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.chatbot.chatbot2.data.owocinvoice.DynamicOwocInvoicePojo
-import com.tokopedia.chatbot.databinding.ItemChatbotDynamicOwocBinding
 import com.tokopedia.chatbot.databinding.ItemChatbotOwocInvoiceBinding
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.utils.view.binding.viewBinding
@@ -20,8 +20,15 @@ class DynamicOwocInvoiceListViewHolder(itemView: View) : RecyclerView.ViewHolder
                 textShopName.text = shopName
                 textProductName.text = productName
                 textProductDescription.text = productDescription
-                if (shopBadgeImageUrl?.isEmpty() == true)
+                if (shopBadgeImageUrl?.isEmpty() == true) {
                     shopBadge.hide()
+//                    val params = LayoutParams(
+//                        LayoutParams.WRAP_CONTENT,
+//                        LayoutParams.WRAP_CONTENT
+//                    )
+//                    params.setMargins(8, 0, 0, 0)
+//                    textShopName.layoutParams = params
+                }
             }
         }
     }

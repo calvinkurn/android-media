@@ -4,11 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.chatbot.chatbot2.data.owocinvoice.DynamicOwocInvoicePojo
-import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.BaseChatBotViewHolder
 import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.dynamicAttachment.DynamicOwocInvoiceListViewHolder
-import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.dynamicAttachment.DynamicOwocInvoiceViewHolder
-import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.listener.ChatbotDynamicOwocListener
-import com.tokopedia.chatbot.chatbot2.view.uimodel.dynamicattachment.DynamicOwocInvoiceUiModel
 import com.tokopedia.chatbot.databinding.ItemChatbotOwocInvoiceBinding
 
 class ChatbotDynamicOwocInvoiceAdapter: RecyclerView.Adapter<DynamicOwocInvoiceListViewHolder>() {

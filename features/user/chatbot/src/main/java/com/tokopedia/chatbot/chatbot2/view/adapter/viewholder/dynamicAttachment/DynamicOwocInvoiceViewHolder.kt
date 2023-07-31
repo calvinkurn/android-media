@@ -10,7 +10,6 @@ import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.chatbot2.data.owocinvoice.DynamicOwocInvoicePojo
 import com.tokopedia.chatbot.chatbot2.view.adapter.ChatbotDynamicOwocInvoiceAdapter
 import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.BaseChatBotViewHolder
-import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.listener.ChatbotDynamicOwocListener
 import com.tokopedia.chatbot.chatbot2.view.uimodel.dynamicattachment.DynamicOwocInvoiceUiModel
 import com.tokopedia.chatbot.chatbot2.view.util.generateLeftMessageBackground
 import com.tokopedia.chatbot.chatbot2.view.util.helper.ChatbotMessageViewHolderBinder
