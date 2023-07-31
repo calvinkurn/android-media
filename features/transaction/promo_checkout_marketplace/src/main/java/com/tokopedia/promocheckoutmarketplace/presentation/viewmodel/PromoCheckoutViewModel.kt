@@ -182,6 +182,10 @@ class PromoCheckoutViewModel @Inject constructor(
 
     override fun onCleared() {
         super.onCleared()
+        cancelAllJobs()
+    }
+
+    fun cancelAllJobs() {
         getCouponListRecommendationUseCase.cancelJobs()
         validateUseUseCase.cancelJobs()
         clearCacheAutoApplyStackUseCase.cancelJobs()

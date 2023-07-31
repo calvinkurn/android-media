@@ -12,6 +12,7 @@ import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.just
+import io.mockk.verify
 import org.junit.Assert
 import org.junit.Test
 
@@ -592,5 +593,23 @@ class PromoCheckoutViewModelUICallbackTest : BasePromoCheckoutViewModelTest() {
 
         // Then
         assert(viewModel.promoTabUiModel.value == promoTabUiModel)
+    }
+
+    @Test
+    fun `WHEN app trigger onCleared THEN should cancel all use case JOBS`() {
+        // given
+        every { getCouponListRecommendationUseCase.cancelJobs() } just Runs
+        every { validateUseUseCase.cancelJobs() } just Runs
+        every { clearCacheAutoApplyUseCase.cancelJobs() } just Runs
+        every { getPromoSuggestionUseCase.cancelJobs() } just Runs
+
+        // when
+        viewModel.cancelAllJobs()
+
+        // then
+        verify { getCouponListRecommendationUseCase.cancelJobs() }
+        verify { validateUseUseCase.cancelJobs() }
+        verify { clearCacheAutoApplyUseCase.cancelJobs() }
+        verify { getPromoSuggestionUseCase.cancelJobs() }
     }
 }
