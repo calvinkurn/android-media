@@ -961,8 +961,9 @@ class FeedFragment :
                             )
                         }
                     } else {
-                        adapter.setList(it.data.items)
-                        updateBottomActionView(getCurrentPosition())
+                        adapter.setList(it.data.items) {
+                            updateBottomActionView(getCurrentPosition())
+                        }
                         context?.let { ctx ->
                             if (feedPostViewModel.shouldShowNoMoreContent) {
                                 adapter.addElement(FeedNoContentModel.getNoMoreContentInstance(ctx))
