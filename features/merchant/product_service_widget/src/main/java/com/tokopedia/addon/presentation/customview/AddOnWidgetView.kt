@@ -165,6 +165,12 @@ class AddOnWidgetView : BaseCustomView {
     ) {
         listener?.onAddonComponentClick(index, indexChild, addOnGroupUIModels)
         viewModel.setSelectedAddons(addOnGroupUIModels)
+        try {
+            var aaa = addOnGroupUIModels[index].addon[indexChild]
+            viewModel.tempAddon[index] = aaa
+        } catch (e: Exception) {
+            println(e.message)
+        }
     }
 
     private fun onHelpClickListener(index: Int, indexChild: Int, addonGroups: List<AddOnGroupUIModel>, addonSelected: AddOnUIModel) {
