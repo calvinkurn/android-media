@@ -2,24 +2,23 @@ package com.tokopedia.entertainment.pdp.adapter
 
 import android.text.Html
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.entertainment.R
+import com.tokopedia.entertainment.databinding.ItemEventPdpDetailLocationBinding
 import com.tokopedia.entertainment.pdp.data.ValueBullet
-import kotlinx.android.synthetic.main.item_event_pdp_detail_location.view.*
 
-class EventPDPLocationDetailAdapter(): RecyclerView.Adapter<EventPDPLocationDetailAdapter.EventPDPLocationDetailViewHolder>() {
+class EventPDPLocationDetailAdapter: RecyclerView.Adapter<EventPDPLocationDetailAdapter.EventPDPLocationDetailViewHolder>() {
 
     private var listBullet = emptyList<ValueBullet>()
 
-    inner class EventPDPLocationDetailViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    inner class EventPDPLocationDetailViewHolder(val binding: ItemEventPdpDetailLocationBinding) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(valueBullet: ValueBullet) {
-            with(itemView) {
-                tg_event_pdp_how_to_get_there_number.text = valueBullet.bullet
-                tg_event_pdp_how_to_get_there_desc.
-                        setText(Html.fromHtml(resources.getString(R.string.ent_checkout_location_span, valueBullet.title,valueBullet.description)))
+            with(binding) {
+                tgEventPdpHowToGetThereNumber.text = valueBullet.bullet
+                tgEventPdpHowToGetThereDesc.
+                        setText(Html.fromHtml(root.context.getString(R.string.ent_checkout_location_span, valueBullet.title,valueBullet.description)))
             }
         }
     }
@@ -30,8 +29,12 @@ class EventPDPLocationDetailAdapter(): RecyclerView.Adapter<EventPDPLocationDeta
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, p1: Int): EventPDPLocationDetailViewHolder {
-        val itemView = LayoutInflater.from(parent.context).inflate(R.layout.item_event_pdp_detail_location, parent, false)
-        return EventPDPLocationDetailViewHolder(itemView)
+        val binding = ItemEventPdpDetailLocationBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent,
+            false
+        )
+        return EventPDPLocationDetailViewHolder(binding)
     }
 
     fun setList(list: List<ValueBullet>) {

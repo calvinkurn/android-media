@@ -45,7 +45,6 @@ class SmallGridProductItemViewHolder(
                 false,
                 productItemData.getProductListTypeEnum()
             )
-        this.productCardModel = productCardModel
 
         registerLifecycleObserver(productCardModel)
 
@@ -95,6 +94,7 @@ class SmallGridProductItemViewHolder(
             SearchConstant.ProductListType.GIMMICK -> ProductCardModel.ProductListType.GIMMICK
             SearchConstant.ProductListType.PORTRAIT -> ProductCardModel.ProductListType.PORTRAIT
             SearchConstant.ProductListType.ETA -> ProductCardModel.ProductListType.ETA
+            SearchConstant.ProductListType.FIXED_GRID -> ProductCardModel.ProductListType.FIXED_GRID
             else -> ProductCardModel.ProductListType.CONTROL
         }
     }

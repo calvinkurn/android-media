@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.entertainment.R
+import com.tokopedia.entertainment.databinding.EntTicketListingActivityBinding
 import com.tokopedia.entertainment.pdp.di.DaggerEventPDPComponent
 import com.tokopedia.entertainment.pdp.di.EventPDPComponent
 import com.tokopedia.entertainment.pdp.fragment.EventPDPTicketFragment
@@ -15,6 +16,8 @@ class EventPDPTicketActivity: BaseSimpleActivity(), HasComponent<EventPDPCompone
     private var startDate = ""
     private var selectedDate = ""
     private var endDate = ""
+
+    var binding: EntTicketListingActivityBinding? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val uri = intent.data
@@ -32,7 +35,12 @@ class EventPDPTicketActivity: BaseSimpleActivity(), HasComponent<EventPDPCompone
             endDate = intent.getStringExtra(END_DATE) ?: ""
         }
         super.onCreate(savedInstanceState)
+        binding = EntTicketListingActivityBinding.inflate(layoutInflater)
+        setContentView(binding?.root)
+        setSupportActionBar(binding?.toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayShowHomeEnabled(true)
     }
 
     override fun getToolbarResourceID(): Int {
@@ -51,6 +59,11 @@ class EventPDPTicketActivity: BaseSimpleActivity(), HasComponent<EventPDPCompone
 
     override fun getComponent(): EventPDPComponent = DaggerEventPDPComponent.builder()
             .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent).build()
+
+    override fun onDestroy() {
+        super.onDestroy()
+        binding = null
+    }
 
     companion object{
         const val EXTRA_URL_PDP= "EXTRA_URL_PDP"
