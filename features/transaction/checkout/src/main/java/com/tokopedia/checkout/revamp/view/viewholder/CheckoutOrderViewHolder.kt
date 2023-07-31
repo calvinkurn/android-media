@@ -441,7 +441,7 @@ class CheckoutOrderViewHolder(
     }
 
     override fun onChangeScheduleDelivery(scheduleDeliveryUiModel: ScheduleDeliveryUiModel) {
-        TODO("Not yet implemented")
+        listener.onChangeScheduleDelivery(scheduleDeliveryUiModel, order, bindingAdapterPosition)
     }
 
     override fun getHostFragmentManager(): FragmentManager {
