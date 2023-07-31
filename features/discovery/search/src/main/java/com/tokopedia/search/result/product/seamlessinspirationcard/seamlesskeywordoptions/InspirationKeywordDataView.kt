@@ -6,7 +6,6 @@ import com.tokopedia.discovery.common.analytics.searchComponentTracking
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
 import com.tokopedia.search.result.product.seamlessinspirationcard.seamlesskeywordoptions.typefactory.InspirationKeywordsTypeFactory
-import com.tokopedia.search.result.product.seamlessinspirationcard.utils.INDEX_IMAGE_PRODUCT_FOR_IMAGE_KEYWORD
 
 data class InspirationKeywordDataView(
     val keyword: String = "",
