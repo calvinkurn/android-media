@@ -22,7 +22,7 @@ data class BannerRevampDataModel(
     }
 
     override fun equalsWith(b: Any?): Boolean {
-        return b is BannerRevampDataModel && b.channelModel == channelModel
+        return b is BannerRevampDataModel && b.isCache == isCache && b.channelModel == channelModel
     }
 
     override fun getChangePayloadFrom(b: Any?): Bundle? {
