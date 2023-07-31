@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -1478,131 +1477,132 @@ class CheckoutFragment :
             if (courierItemData != null) {
                 val newCourierItemData =
                     CourierItemData.clone(courierItemData, scheduleDeliveryUiModel)
-                val hasNoPromo =
-                    TextUtils.isEmpty(courierItemData.selectedShipper.logPromoCode) && TextUtils.isEmpty(
-                        newCourierItemData.selectedShipper.logPromoCode
-                    )
-                if (scheduleDeliveryUiModel.isSelected) {
-                    order.scheduleDate = scheduleDeliveryUiModel.scheduleDate
-                    order.timeslotId = scheduleDeliveryUiModel.timeslotId
-                    order.validationMetadata =
-                        scheduleDeliveryUiModel.deliveryProduct.validationMetadata
-                } else {
-                    order.scheduleDate = ""
-                    order.timeslotId = 0
-                    order.validationMetadata = ""
-                }
-                val selectedShipper = newCourierItemData.selectedShipper
-                val shouldValidateUse =
-                    selectedShipper.logPromoCode != null && selectedShipper.logPromoCode!!.isNotEmpty()
-//                val hasCheckAllCourier =
-//                    shipmentAdapter.checkHasSelectAllCourier(true, -1, "", false, false)
-                val haveToClearCache = (
-                    (
-                        order.voucherLogisticItemUiModel != null && !TextUtils.isEmpty(
-                            order.voucherLogisticItemUiModel!!.code
-                        )
-                        ) ||
-                        !courierItemData.selectedShipper.logPromoCode.isNullOrEmpty()
-                    ) &&
-                    TextUtils.isEmpty(newCourierItemData.selectedShipper.logPromoCode)
-//                val shouldStopInClearCache = haveToClearCache && !hasCheckAllCourier
-//                val shouldStopInDoValidateUseLogistic = shouldValidateUse && !hasCheckAllCourier
-//                viewModel.setScheduleDeliveryMapData(
-//                    order.cartStringGroup,
-//                    ShipmentScheduleDeliveryMapData(
-//                        donePublisher,
-//                        shouldStopInClearCache,
-//                        shouldStopInDoValidateUseLogistic
+                viewModel.setSelectedScheduleDelivery(position, order, courierItemData, scheduleDeliveryUiModel, newCourierItemData)
+//                val hasNoPromo =
+//                    TextUtils.isEmpty(courierItemData.selectedShipper.logPromoCode) && TextUtils.isEmpty(
+//                        newCourierItemData.selectedShipper.logPromoCode
 //                    )
-//                )
-                if (haveToClearCache) {
-                    val promoLogisticCode = order.voucherLogisticItemUiModel?.code
-                        ?: courierItemData.selectedShipper.logPromoCode!!
-//                    viewModel.cancelAutoApplyPromoStackLogistic(
-//                        position,
-//                        promoLogisticCode,
-//                        shipmentCartItemModel.cartStringGroup,
-//                        shipmentCartItemModel.voucherLogisticItemUiModel?.uniqueId
-//                            ?: shipmentCartItemModel.cartItemModels.first().cartStringOrder,
-//                        shipmentCartItemModel
-//                    )
-//                    val validateUsePromoRequest = viewModel.lastValidateUseRequest
-//                    if (validateUsePromoRequest != null) {
-//                        for (ordersItem in validateUsePromoRequest.orders) {
-//                            if (ordersItem.codes.size > 0) {
-//                                ordersItem.codes.remove(promoLogisticCode)
-//                                ordersItem.boCode = ""
-//                            }
-//                        }
-//                    }
-                    order.voucherLogisticItemUiModel = null
-//                    shipmentAdapter.clearTotalPromoStackAmount()
-//                    shipmentViewModel.updateShipmentCostModel()
-//                    shipmentViewModel.updateCheckoutButtonData()
-                }
-//                shipmentAdapter.setSelectedCourier(
-//                    position,
-//                    newCourierItemData,
-//                    true,
-//                    shouldValidateUse
-//                )
-//                shipmentViewModel.processSaveShipmentState(shipmentCartItemModel)
-                if (shouldValidateUse) {
-//                    val validateUsePromoRequest =
-//                        shipmentViewModel.generateValidateUsePromoRequest().copy()
-//                    if (selectedShipper.logPromoCode != null && selectedShipper.logPromoCode!!.isNotEmpty()) {
-//                        for (order in validateUsePromoRequest.orders) {
-//                            if (order.cartStringGroup == shipmentCartItemModel.cartStringGroup && !order.codes.contains(
-//                                    newCourierItemData.selectedShipper.logPromoCode
-//                                )
-//                            ) {
-//                                if (shipmentCartItemModel.voucherLogisticItemUiModel != null) {
-//                                    // remove previous logistic promo code
-//                                    order.codes.remove(shipmentCartItemModel.voucherLogisticItemUiModel!!.code)
-//                                }
-//                                order.codes.add(selectedShipper.logPromoCode!!)
-//                                order.boCode = selectedShipper.logPromoCode!!
-//                            }
-//                        }
-//                    }
-//                    val shipmentCartItemModelLists = shipmentAdapter.shipmentCartItemModelList
-//                    if (!shipmentCartItemModelLists.isNullOrEmpty()) {
-//                        for (tmpShipmentCartItemModel in shipmentCartItemModelLists) {
-//                            for (order in validateUsePromoRequest.orders) {
-//                                if (shipmentCartItemModel.cartStringGroup != tmpShipmentCartItemModel.cartStringGroup && tmpShipmentCartItemModel.cartStringGroup == order.cartStringGroup && tmpShipmentCartItemModel.voucherLogisticItemUiModel != null &&
-//                                    !tmpShipmentCartItemModel.isFreeShippingPlus
-//                                ) {
-//                                    order.codes.remove(tmpShipmentCartItemModel.voucherLogisticItemUiModel!!.code)
-//                                    order.boCode = ""
-//                                }
-//                            }
-//                        }
-//                    }
-//                    for (ordersItem in validateUsePromoRequest.orders) {
-//                        if (ordersItem.cartStringGroup == shipmentCartItemModel.cartStringGroup) {
-//                            ordersItem.spId = selectedShipper.shipperProductId
-//                            ordersItem.shippingId = selectedShipper.shipperId
-//                            ordersItem.freeShippingMetadata = selectedShipper.freeShippingMetadata
-//                            ordersItem.boCampaignId = selectedShipper.boCampaignId
-//                            ordersItem.shippingSubsidy = selectedShipper.shippingSubsidy
-//                            ordersItem.benefitClass = selectedShipper.benefitClass
-//                            ordersItem.shippingPrice = selectedShipper.shippingRate.toDouble()
-//                            ordersItem.etaText = selectedShipper.etaText!!
-//                            ordersItem.validationMetadata = shipmentCartItemModel.validationMetadata
-//                        }
-//                    }
-//                    shipmentViewModel.doValidateUseLogisticPromoNew(
-//                        position,
-//                        shipmentCartItemModel.cartStringGroup,
-//                        validateUsePromoRequest,
-//                        selectedShipper.logPromoCode!!,
-//                        false,
-//                        null
-//                    )
-                } /* else if (!shouldStopInClearCache && !shouldStopInDoValidateUseLogistic && !hasCheckAllCourier || hasNoPromo) {
-                    donePublisher.onCompleted()
-                }*/
+//                if (scheduleDeliveryUiModel.isSelected) {
+//                    order.scheduleDate = scheduleDeliveryUiModel.scheduleDate
+//                    order.timeslotId = scheduleDeliveryUiModel.timeslotId
+//                    order.validationMetadata =
+//                        scheduleDeliveryUiModel.deliveryProduct.validationMetadata
+//                } else {
+//                    order.scheduleDate = ""
+//                    order.timeslotId = 0
+//                    order.validationMetadata = ""
+//                }
+//                val selectedShipper = newCourierItemData.selectedShipper
+//                val shouldValidateUse =
+//                    selectedShipper.logPromoCode != null && selectedShipper.logPromoCode!!.isNotEmpty()
+// //                val hasCheckAllCourier =
+// //                    shipmentAdapter.checkHasSelectAllCourier(true, -1, "", false, false)
+//                val haveToClearCache = (
+//                    (
+//                        order.voucherLogisticItemUiModel != null && !TextUtils.isEmpty(
+//                            order.voucherLogisticItemUiModel!!.code
+//                        )
+//                        ) ||
+//                        !courierItemData.selectedShipper.logPromoCode.isNullOrEmpty()
+//                    ) &&
+//                    TextUtils.isEmpty(newCourierItemData.selectedShipper.logPromoCode)
+// //                val shouldStopInClearCache = haveToClearCache && !hasCheckAllCourier
+// //                val shouldStopInDoValidateUseLogistic = shouldValidateUse && !hasCheckAllCourier
+// //                viewModel.setScheduleDeliveryMapData(
+// //                    order.cartStringGroup,
+// //                    ShipmentScheduleDeliveryMapData(
+// //                        donePublisher,
+// //                        shouldStopInClearCache,
+// //                        shouldStopInDoValidateUseLogistic
+// //                    )
+// //                )
+//                if (haveToClearCache) {
+//                    val promoLogisticCode = order.voucherLogisticItemUiModel?.code
+//                        ?: courierItemData.selectedShipper.logPromoCode!!
+// //                    viewModel.cancelAutoApplyPromoStackLogistic(
+// //                        position,
+// //                        promoLogisticCode,
+// //                        shipmentCartItemModel.cartStringGroup,
+// //                        shipmentCartItemModel.voucherLogisticItemUiModel?.uniqueId
+// //                            ?: shipmentCartItemModel.cartItemModels.first().cartStringOrder,
+// //                        shipmentCartItemModel
+// //                    )
+// //                    val validateUsePromoRequest = viewModel.lastValidateUseRequest
+// //                    if (validateUsePromoRequest != null) {
+// //                        for (ordersItem in validateUsePromoRequest.orders) {
+// //                            if (ordersItem.codes.size > 0) {
+// //                                ordersItem.codes.remove(promoLogisticCode)
+// //                                ordersItem.boCode = ""
+// //                            }
+// //                        }
+// //                    }
+//                    order.voucherLogisticItemUiModel = null
+// //                    shipmentAdapter.clearTotalPromoStackAmount()
+// //                    shipmentViewModel.updateShipmentCostModel()
+// //                    shipmentViewModel.updateCheckoutButtonData()
+//                }
+// //                shipmentAdapter.setSelectedCourier(
+// //                    position,
+// //                    newCourierItemData,
+// //                    true,
+// //                    shouldValidateUse
+// //                )
+// //                shipmentViewModel.processSaveShipmentState(shipmentCartItemModel)
+//                if (shouldValidateUse) {
+// //                    val validateUsePromoRequest =
+// //                        shipmentViewModel.generateValidateUsePromoRequest().copy()
+// //                    if (selectedShipper.logPromoCode != null && selectedShipper.logPromoCode!!.isNotEmpty()) {
+// //                        for (order in validateUsePromoRequest.orders) {
+// //                            if (order.cartStringGroup == shipmentCartItemModel.cartStringGroup && !order.codes.contains(
+// //                                    newCourierItemData.selectedShipper.logPromoCode
+// //                                )
+// //                            ) {
+// //                                if (shipmentCartItemModel.voucherLogisticItemUiModel != null) {
+// //                                    // remove previous logistic promo code
+// //                                    order.codes.remove(shipmentCartItemModel.voucherLogisticItemUiModel!!.code)
+// //                                }
+// //                                order.codes.add(selectedShipper.logPromoCode!!)
+// //                                order.boCode = selectedShipper.logPromoCode!!
+// //                            }
+// //                        }
+// //                    }
+// //                    val shipmentCartItemModelLists = shipmentAdapter.shipmentCartItemModelList
+// //                    if (!shipmentCartItemModelLists.isNullOrEmpty()) {
+// //                        for (tmpShipmentCartItemModel in shipmentCartItemModelLists) {
+// //                            for (order in validateUsePromoRequest.orders) {
+// //                                if (shipmentCartItemModel.cartStringGroup != tmpShipmentCartItemModel.cartStringGroup && tmpShipmentCartItemModel.cartStringGroup == order.cartStringGroup && tmpShipmentCartItemModel.voucherLogisticItemUiModel != null &&
+// //                                    !tmpShipmentCartItemModel.isFreeShippingPlus
+// //                                ) {
+// //                                    order.codes.remove(tmpShipmentCartItemModel.voucherLogisticItemUiModel!!.code)
+// //                                    order.boCode = ""
+// //                                }
+// //                            }
+// //                        }
+// //                    }
+// //                    for (ordersItem in validateUsePromoRequest.orders) {
+// //                        if (ordersItem.cartStringGroup == shipmentCartItemModel.cartStringGroup) {
+// //                            ordersItem.spId = selectedShipper.shipperProductId
+// //                            ordersItem.shippingId = selectedShipper.shipperId
+// //                            ordersItem.freeShippingMetadata = selectedShipper.freeShippingMetadata
+// //                            ordersItem.boCampaignId = selectedShipper.boCampaignId
+// //                            ordersItem.shippingSubsidy = selectedShipper.shippingSubsidy
+// //                            ordersItem.benefitClass = selectedShipper.benefitClass
+// //                            ordersItem.shippingPrice = selectedShipper.shippingRate.toDouble()
+// //                            ordersItem.etaText = selectedShipper.etaText!!
+// //                            ordersItem.validationMetadata = shipmentCartItemModel.validationMetadata
+// //                        }
+// //                    }
+// //                    shipmentViewModel.doValidateUseLogisticPromoNew(
+// //                        position,
+// //                        shipmentCartItemModel.cartStringGroup,
+// //                        validateUsePromoRequest,
+// //                        selectedShipper.logPromoCode!!,
+// //                        false,
+// //                        null
+// //                    )
+//                } /* else if (!shouldStopInClearCache && !shouldStopInDoValidateUseLogistic && !hasCheckAllCourier || hasNoPromo) {
+//                    donePublisher.onCompleted()
+//                }*/
             }
         }
     }

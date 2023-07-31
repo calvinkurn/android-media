@@ -46,6 +46,7 @@ import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.Locatio
 import com.tokopedia.logisticcart.shipping.model.CodModel
 import com.tokopedia.logisticcart.shipping.model.CourierItemData
 import com.tokopedia.logisticcart.shipping.model.Product
+import com.tokopedia.logisticcart.shipping.model.ScheduleDeliveryUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
 import com.tokopedia.purchase_platform.common.feature.dynamicdatapassing.data.request.DynamicDataPassingParamRequest
@@ -263,7 +264,13 @@ class CheckoutViewModel @Inject constructor(
                     }
                 )
                 if (saf.cartShipmentAddressFormData.egoldAttributes != null && saf.cartShipmentAddressFormData.egoldAttributes!!.isEnabled && saf.cartShipmentAddressFormData.egoldAttributes!!.isEligible) {
-                    crossSellList.add(CheckoutEgoldModel(saf.cartShipmentAddressFormData.egoldAttributes!!, saf.cartShipmentAddressFormData.egoldAttributes!!.isChecked, saf.cartShipmentAddressFormData.egoldAttributes!!.buyEgoldValue))
+                    crossSellList.add(
+                        CheckoutEgoldModel(
+                            saf.cartShipmentAddressFormData.egoldAttributes!!,
+                            saf.cartShipmentAddressFormData.egoldAttributes!!.isChecked,
+                            saf.cartShipmentAddressFormData.egoldAttributes!!.buyEgoldValue
+                        )
+                    )
                 }
                 if (saf.cartShipmentAddressFormData.donation != null && saf.cartShipmentAddressFormData.donation!!.title.isNotEmpty() && saf.cartShipmentAddressFormData.donation!!.nominal != 0) {
                     crossSellList.add(CheckoutDonationModel(saf.cartShipmentAddressFormData.donation!!))
@@ -823,6 +830,160 @@ class CheckoutViewModel @Inject constructor(
             )
             listData.value = newItems
             calculateTotal()
+        }
+    }
+
+    fun setSelectedScheduleDelivery(
+        cartPosition: Int,
+        order: CheckoutOrderModel,
+        courierItemData: CourierItemData,
+        scheduleDeliveryUiModel: ScheduleDeliveryUiModel,
+        newCourierItemData: CourierItemData
+    ) {
+        viewModelScope.launch(dispatchers.immediate) {
+            if (scheduleDeliveryUiModel.isSelected) {
+                order.scheduleDate = newCourierItemData.selectedShipper.scheduleDate
+                order.timeslotId = newCourierItemData.selectedShipper.timeslotId
+                order.validationMetadata =
+                    scheduleDeliveryUiModel.deliveryProduct.validationMetadata
+            } else {
+                order.scheduleDate = ""
+                order.timeslotId = 0
+                order.validationMetadata = ""
+            }
+            if (courierItemData.selectedShipper.logPromoCode.isNullOrEmpty() && newCourierItemData.selectedShipper.logPromoCode.isNullOrEmpty()) {
+                // no promo
+                val checkoutItems = listData.value.toMutableList()
+                val checkoutOrderModel = checkoutItems[cartPosition] as CheckoutOrderModel
+                val shipment = checkoutOrderModel.shipment
+                val newShipment = shipment.copy(
+                    isLoading = false,
+                    courierItemData = courierItemData
+//                    shippingCourierUiModels = shippingCourierUiModels
+                )
+                val newOrder = checkoutOrderModel.copy(shipment = newShipment)
+                checkoutItems[cartPosition] = newOrder
+                listData.value = checkoutItems
+                cartProcessor.processSaveShipmentState(
+                    newOrder,
+                    listData.value.address()!!.recipientAddressModel
+                )
+                calculateTotal()
+            } else if (!courierItemData.selectedShipper.logPromoCode.isNullOrEmpty() && newCourierItemData.selectedShipper.logPromoCode.isNullOrEmpty()) {
+                // need to clear old promo code
+                val checkoutItems = listData.value.toMutableList()
+                val checkoutOrderModel = checkoutItems[cartPosition] as CheckoutOrderModel
+                val shipment = checkoutOrderModel.shipment
+                val newShipment = shipment.copy(
+                    isLoading = true,
+                    courierItemData = courierItemData
+                )
+                val newOrder = checkoutOrderModel.copy(shipment = newShipment)
+                checkoutItems[cartPosition] = newOrder
+                listData.value = checkoutItems
+                val shouldClearPromoBenefit = promoProcessor.clearPromo(
+                    ClearPromoOrder(
+                        checkoutOrderModel.boUniqueId,
+                        checkoutOrderModel.boMetadata.boType,
+                        arrayListOf(courierItemData.logPromoCode!!),
+                        checkoutOrderModel.shopId,
+                        checkoutOrderModel.isProductIsPreorder,
+                        checkoutOrderModel.products.first().preOrderDurationDay.toString(),
+                        checkoutOrderModel.fulfillmentId,
+                        checkoutOrderModel.cartStringGroup
+                    )
+                )
+                if (shouldClearPromoBenefit) {
+                    val list = listData.value.toMutableList()
+                    val newPromo = list.promo()!!.copy(promo = LastApplyUiModel())
+                    list[list.size - 4] = newPromo
+                    listData.value = list
+                }
+                val list = listData.value.toMutableList()
+                var newOrder1 = list[cartPosition] as CheckoutOrderModel
+                val newShipment1 = shipment.copy(
+                    isLoading = false,
+                    courierItemData = courierItemData
+                )
+                newOrder1 = newOrder1.copy(shipment = newShipment1, isShippingBorderRed = false)
+                list[cartPosition] = newOrder1
+                listData.value = list
+                cartProcessor.processSaveShipmentState(
+                    newOrder1,
+                    listData.value.address()!!.recipientAddressModel
+                )
+                calculateTotal()
+            } else {
+                // need to apply promo
+                if (courierItemData.selectedShipper.logPromoCode != newCourierItemData.selectedShipper.logPromoCode) {
+                    // clear old promo before applying new one
+                    promoProcessor.clearPromo(
+                        ClearPromoOrder(
+                            order.boUniqueId,
+                            order.boMetadata.boType,
+                            arrayListOf(courierItemData.logPromoCode!!),
+                            order.shopId,
+                            order.isProductIsPreorder,
+                            order.products.first().preOrderDurationDay.toString(),
+                            order.fulfillmentId,
+                            order.cartStringGroup
+                        )
+                    )
+                }
+                val validateUsePromoRequest = generateValidateUsePromoRequest()
+                val selectedShipper = newCourierItemData.selectedShipper
+                if (selectedShipper.logPromoCode != null && selectedShipper.logPromoCode!!.isNotEmpty()) {
+                    for (orderPromo in validateUsePromoRequest.orders) {
+                        if (orderPromo.cartStringGroup == order.cartStringGroup && !orderPromo.codes.contains(
+                                newCourierItemData.selectedShipper.logPromoCode
+                            )
+                        ) {
+                            if (order.voucherLogisticItemUiModel != null) {
+                                // remove previous logistic promo code
+                                orderPromo.codes.remove(order.voucherLogisticItemUiModel!!.code)
+                            }
+                            orderPromo.codes.add(selectedShipper.logPromoCode!!)
+                            orderPromo.boCode = selectedShipper.logPromoCode!!
+                        }
+                    }
+                }
+                val shipmentCartItemModelLists =
+                    listData.value.filterIsInstance(CheckoutOrderModel::class.java)
+                if (shipmentCartItemModelLists.isNotEmpty()) {
+                    for (tmpShipmentCartItemModel in shipmentCartItemModelLists) {
+                        for (orderPromo in validateUsePromoRequest.orders) {
+                            if (order.cartStringGroup != tmpShipmentCartItemModel.cartStringGroup && tmpShipmentCartItemModel.cartStringGroup == orderPromo.cartStringGroup && tmpShipmentCartItemModel.voucherLogisticItemUiModel != null &&
+                                !tmpShipmentCartItemModel.isFreeShippingPlus
+                            ) {
+                                orderPromo.codes.remove(tmpShipmentCartItemModel.voucherLogisticItemUiModel!!.code)
+                                orderPromo.boCode = ""
+                            }
+                        }
+                    }
+                }
+                for (ordersItem in validateUsePromoRequest.orders) {
+                    if (ordersItem.cartStringGroup == order.cartStringGroup) {
+                        ordersItem.spId = selectedShipper.shipperProductId
+                        ordersItem.shippingId = selectedShipper.shipperId
+                        ordersItem.freeShippingMetadata = selectedShipper.freeShippingMetadata
+                        ordersItem.boCampaignId = selectedShipper.boCampaignId
+                        ordersItem.shippingSubsidy = selectedShipper.shippingSubsidy
+                        ordersItem.benefitClass = selectedShipper.benefitClass
+                        ordersItem.shippingPrice = selectedShipper.shippingRate.toDouble()
+                        ordersItem.etaText = selectedShipper.etaText!!
+                        ordersItem.validationMetadata = order.validationMetadata
+                    }
+                }
+                val newItems = promoProcessor.validateUseLogisticPromo(
+                    validateUsePromoRequest,
+                    order.cartStringGroup,
+                    newCourierItemData.selectedShipper.logPromoCode!!,
+                    listData.value,
+                    newCourierItemData
+                )
+                listData.value = newItems
+                calculateTotal()
+            }
         }
     }
 
