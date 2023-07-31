@@ -97,12 +97,12 @@ class VoucherView @JvmOverloads constructor(
             )
 
             updateVoucherTypeMarginTop(16.toPx())
-            updateVoucherCardViewTypeMargin(4.toPx(), 8.toPx())
+            updateCardViewMargin(4.toPx(), 8.toPx())
         } else {
             binding?.layoutRemainingQuotaRibbon?.gone()
 
             updateVoucherTypeMarginTop(12.toPx())
-            updateVoucherCardViewTypeMargin(0.toPx(), 0.toPx())
+            updateCardViewMargin(0.toPx(), 0.toPx())
         }
 
     }
@@ -416,7 +416,7 @@ class VoucherView @JvmOverloads constructor(
         binding?.tpgVoucherType?.requestLayout()
     }
 
-    private fun updateVoucherCardViewTypeMargin(marginStart: Int, marginTop: Int) {
+    private fun updateCardViewMargin(marginStart: Int, marginTop: Int) {
         val layoutParams = binding?.cardView?.layoutParams as? RelativeLayout.LayoutParams
         layoutParams?.setMargins(marginStart, marginTop, 0, 0)
 
