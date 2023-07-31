@@ -382,7 +382,7 @@ object DeeplinkMainApp {
             DLP.startsWith(ApplinkConst.ScpRewards.SCP_TOASTER) { ctx, uri, _, _ -> invokeScpToasterUniversalAppLink(ctx, uri) },
             DLP.startsWith(ApplinkConst.ScpRewards.MEDAL_DETAIL_BASE) { _, uri, _, _ -> getInternalDeeplinkForScpMedalDetail(uri) },
             DLP.startsWith(ApplinkConst.ScpRewards.SEE_MORE_MEDAL) { _, uri, _, _ -> getInternalDeeplinkForScpMedalCabinetSeeMore(uri) },
-            DLP.matchPattern(""){ _, uri, _, _ -> getInternalDeeplinkForScpMedalCabinet(uri) }
+            DLP.matchPattern("") { _, uri, _, _ -> getInternalDeeplinkForScpMedalCabinet(uri) }
         ),
         "media-editor" to mutableListOf(
             DLP.matchPattern("", ApplinkConstInternalMedia.INTERNAL_MEDIA_EDITOR)
@@ -464,7 +464,8 @@ object DeeplinkMainApp {
                 DeeplinkMapperTokopediaNow::getRegisteredNavigationTokopediaNowRecipeAutoComplete
             ),
             DLP.startsWith(
-                "see-all-category", ApplinkConstInternalTokopediaNow::SEE_ALL_CATEGORY
+                "see-all-category",
+                ApplinkConstInternalTokopediaNow::SEE_ALL_CATEGORY
             )
         ),
         "occ" to mutableListOf(
@@ -960,8 +961,8 @@ object DeeplinkMainApp {
             DLP.matchPattern("", ApplinkConstInternalMechant.SHOP_NIB_CUSTOMER_APP)
         ),
         "shop-penalty" to mutableListOf(
-            DLP.matchPattern("") { ctx, _, _, _ ->
-                ShopScoreDeepLinkMapper.getInternalApplinkPenalty(ctx)
+            DLP.matchPattern("") { context, _, _, _ ->
+                ShopScoreDeepLinkMapper.getInternalApplinkPenalty(context)
             }
         ),
         "shop-penalty-detail" to mutableListOf(
@@ -1037,7 +1038,7 @@ object DeeplinkMainApp {
             DLP.matchPattern("{video_id}") { _, _, _, idList ->
                 UriUtil.buildUri(ApplinkConstInternalGlobal.YOUTUBE_PLAYER, idList?.getOrNull(0))
             }
-        ),
+        )
 
     )
 }

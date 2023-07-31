@@ -25,6 +25,9 @@ class RegisterProgressiveUseCase @Inject constructor(
                   status
                   rejectionReasonCode
                   rejectionReasonMessage
+                  cooldownTimeInSeconds
+                  maximumAttemptsAllowed
+                  message
                 }
               }
             }
@@ -37,7 +40,12 @@ class RegisterProgressiveUseCase @Inject constructor(
                 params
             ).registerProgressiveKYC
 
-        return if (response.errorMessages.isNotEmpty()) {
+        return if (response.data.message == KEY_EXHAUSTED) {
+            RegisterProgressiveResult.Exhausted(
+                cooldownTimeInSeconds = response.data.cooldownTimeInSeconds,
+                maximumAttemptsAllowed = response.data.maximumAttemptsAllowed
+            )
+        } else if (response.errorMessages.isNotEmpty()) {
             RegisterProgressiveResult.Failed(throwable = Throwable(message = response.errorMessages.joinToString()))
         } else if (response.data.challengeID.isNotEmpty()) {
             RegisterProgressiveResult.RiskyUser(challengeId = response.data.challengeID)
@@ -45,12 +53,20 @@ class RegisterProgressiveUseCase @Inject constructor(
             RegisterProgressiveResult.NotRiskyUser(status = response.data.status, rejectionReason = response.data.rejectionReasonMessage)
         }
     }
+
+    companion object {
+        private const val KEY_EXHAUSTED = "KYC_CHALLENGE_CREATION_QUOTA_EXCEEDED"
+    }
 }
 
 sealed class RegisterProgressiveResult {
     object Loading : RegisterProgressiveResult()
     data class RiskyUser(val challengeId: String) : RegisterProgressiveResult()
     data class NotRiskyUser(val status: Int, val rejectionReason: String = "") : RegisterProgressiveResult()
+    class Exhausted(
+        val cooldownTimeInSeconds: String,
+        val maximumAttemptsAllowed: String
+    ): RegisterProgressiveResult()
     data class Failed(val throwable: Throwable) : RegisterProgressiveResult()
 }
 

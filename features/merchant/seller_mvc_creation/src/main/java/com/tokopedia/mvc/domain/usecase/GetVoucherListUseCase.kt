@@ -68,6 +68,33 @@ class GetVoucherListUseCase @Inject constructor(
                           parent_product_id
                           child_product_id
                         }
+                        label_voucher{
+                          label_quota
+                          label_quota_formatted
+                          label_quota_color_type
+                          label_creator
+                          label_creator_formatted
+                          label_creator_color_type
+                          label_subsidy_info
+                          label_subsidy_info_formatted
+                          label_subsidy_info_color_type
+                          label_budgets_voucher{
+                            label_budget_voucher_formatted
+                            label_budget_voucher
+                            label_budget_voucher_value
+                          }
+                        }
+                        is_editable
+                        subsidy_detail{
+                          program_detail{
+                            program_name
+                            program_status
+                            program_label
+                            program_label_detail
+                            promotion_status
+                            promotion_label
+                          }
+                        }
                       }
                     }
                 }
