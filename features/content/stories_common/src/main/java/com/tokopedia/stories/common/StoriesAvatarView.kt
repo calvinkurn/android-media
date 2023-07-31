@@ -68,14 +68,6 @@ class StoriesAvatarView @JvmOverloads constructor(
         mSizeConfiguration = update(mSizeConfiguration)
     }
 
-    private fun showCoachMark() {
-//        coachMark.showCoachMark(
-//            arrayListOf(
-//                CoachMark2Item(this, "Ada update menarik dari toko ini", "")
-//            )
-//        )
-    }
-
     data class SizeConfiguration(
         val imageToBorderGap: Dp
     ) {

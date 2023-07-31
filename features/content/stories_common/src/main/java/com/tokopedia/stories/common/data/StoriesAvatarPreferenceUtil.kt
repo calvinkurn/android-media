@@ -7,7 +7,6 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.preferencesDataStore
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import kotlinx.coroutines.flow.firstOrNull
 import javax.inject.Inject
 
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore("stories_avatar_settings")
@@ -21,7 +20,8 @@ class StoriesAvatarPreferenceUtil @Inject constructor(
     private val hasSeenCoachMark = booleanPreferencesKey(KEY_HAS_SEEN_COACH_MARK)
 
     suspend fun hasSeenCoachMark(): Boolean {
-        return appContext.dataStore.data.firstOrNull()?.get(hasSeenCoachMark) ?: false
+//        return appContext.dataStore.data.firstOrNull()?.get(hasSeenCoachMark) ?: false
+        return false
     }
 
     suspend fun setHasSeenCoachMark() {

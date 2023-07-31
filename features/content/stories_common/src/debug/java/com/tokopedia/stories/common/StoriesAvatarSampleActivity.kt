@@ -1,7 +1,6 @@
 package com.tokopedia.stories.common
 
 import android.os.Bundle
-import android.widget.Toast
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.stories.common.databinding.ActivityStoriesAvatarSampleBinding
 
@@ -39,6 +38,6 @@ class StoriesAvatarSampleActivity : BaseActivity() {
         val shopIds = List(20) { it.toString() }
         adapter.submitList(shopIds)
 
-        storiesManager.updateStories(shopIds.filter { it.toInt() % 2 == 0 })
+        storiesManager.updateStories(shopIds)
     }
 }

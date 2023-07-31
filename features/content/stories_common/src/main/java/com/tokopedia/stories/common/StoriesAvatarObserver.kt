@@ -39,7 +39,13 @@ internal class StoriesAvatarObserver(
                         viewModel.getStoriesMessage(it)
                     }.collect { message ->
                         if (message == null) return@collect
-                        listener.onMessage(this@StoriesAvatarObserver, message)
+
+                        when (message) {
+                            is StoriesAvatarMessage.ShowCoachMark -> {
+                                listener.onShowCoachMark(this@StoriesAvatarObserver, view)
+                            }
+                        }
+
                         viewModel.clearMessage(message.id)
                     }
                 }
@@ -52,6 +58,6 @@ internal class StoriesAvatarObserver(
     }
 
     internal interface Listener {
-        fun onMessage(observer: StoriesAvatarObserver, message: StoriesAvatarMessage)
+        fun onShowCoachMark(observer: StoriesAvatarObserver, view: StoriesAvatarView)
     }
 }

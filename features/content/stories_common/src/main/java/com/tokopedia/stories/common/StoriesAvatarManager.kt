@@ -9,6 +9,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.get
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.coachmark.CoachMark2
+import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.stories.common.di.DaggerStoriesAvatarComponent
 import com.tokopedia.stories.common.di.StoriesAvatarComponent
 
@@ -27,9 +29,16 @@ class StoriesAvatarManager(
     private val viewToObserverMap = mutableMapOf<StoriesAvatarView, StoriesAvatarObserver>()
 
     private val observerListener = object : StoriesAvatarObserver.Listener {
-        override fun onMessage(observer: StoriesAvatarObserver, message: StoriesAvatarMessage) {
+        override fun onShowCoachMark(observer: StoriesAvatarObserver, view: StoriesAvatarView) {
+            coachMark.showCoachMark(
+                arrayListOf(
+                    CoachMark2Item(view, "Ada update menarik dari toko ini", "")
+                )
+            )
         }
     }
+
+    private val coachMark = CoachMark2(context)
 
     init {
     }
@@ -69,7 +78,10 @@ class StoriesAvatarManager(
     }
 
     private fun StoriesAvatarView.onDetached() {
-//        detach()
+        val coachMarkItems = coachMark.coachMarkItem
+        if (coachMarkItems.firstOrNull { it.anchorView == this } == null) return
+
+        coachMark.dismissCoachMark()
     }
 
     private fun StoriesAvatarView.getObserver(): StoriesAvatarObserver? {
