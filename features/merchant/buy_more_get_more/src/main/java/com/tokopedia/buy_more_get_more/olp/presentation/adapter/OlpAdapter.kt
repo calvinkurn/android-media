@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory
+import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferProductSortingUiModel
 import com.tokopedia.buy_more_get_more.olp.view.widget.OnStickySingleHeaderListener
 import com.tokopedia.buy_more_get_more.olp.view.widget.StickySingleHeaderView
 
@@ -38,21 +39,30 @@ open class OlpAdapter(
     }
 
     override val stickyHeaderPosition: Int
-        get() = TODO("Not yet implemented")
+        get() = visitables.indexOfFirst {
+            it::class.java == OfferProductSortingUiModel::class.java
+        }
 
-    override fun createStickyViewHolder(parent: ViewGroup?): RecyclerView.ViewHolder? {
-        TODO("Not yet implemented")
+    override fun createStickyViewHolder(parent: ViewGroup?): RecyclerView.ViewHolder {
+        val stickyViewType = getItemViewType(stickyHeaderPosition)
+        val view = onCreateViewItem(parent, stickyViewType)
+        return adapterTypeFactory.createViewHolder(view, stickyViewType)
     }
 
     override fun bindSticky(viewHolder: RecyclerView.ViewHolder?) {
-        TODO("Not yet implemented")
+        if (viewHolder is OfferingProductSortingViewHolder) {
+            visitables.filterIsInstance(OfferProductSortingUiModel::class.java).firstOrNull()?.let {
+                viewHolder.bind(it)
+            }
+        }
     }
 
     override fun setListener(onStickySingleHeaderViewListener: OnStickySingleHeaderListener?) {
-        TODO("Not yet implemented")
+        this.onStickySingleHeaderViewListener = onStickySingleHeaderViewListener
     }
 
     override fun onStickyHide() {
-        TODO("Not yet implemented")
+        val newList = getNewVisitableItems()
+        submitList(newList)
     }
 }

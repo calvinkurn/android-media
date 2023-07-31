@@ -23,6 +23,7 @@ import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import com.tokopedia.buy_more_get_more.R
 import com.tokopedia.buy_more_get_more.olp.di.component.DaggerBuyMoreGetMoreComponent
 import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferInfoForBuyerUiModel
+import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferProductSortingUiModel
 import com.tokopedia.buy_more_get_more.olp.presentation.adapter.OlpAdapter
 import com.tokopedia.buy_more_get_more.olp.presentation.adapter.OlpAdapterTypeFactoryImpl
 import javax.inject.Inject
@@ -69,7 +70,7 @@ class OfferLandingPageFragment :
         return olpAdapterTypeFactory
     }
 
-    override fun onItemClicked(t: Visitable<*>?) { }
+    override fun onItemClicked(t: Visitable<*>?) {}
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -88,6 +89,23 @@ class OfferLandingPageFragment :
         viewModel.getOfferingIndo(listOf(0), shopId)
     }
 
+    private fun setupContent() {
+        olpAdapter?.submitList(
+            newList = listOf(
+                OfferInfoForBuyerUiModel(),
+                OfferProductSortingUiModel(67)
+            )
+        )
+    }
+
+    private fun setupObservables() {
+        viewModel.offeringInfo.observe(viewLifecycleOwner) { offerInfoForBuyer ->
+        }
+
+        viewModel.error.observe(viewLifecycleOwner) { throwable ->
+        }
+    }
+
     private fun setupHeader() {
         setupToolbar()
     }
@@ -100,8 +118,10 @@ class OfferLandingPageFragment :
                 com.tokopedia.unifyprinciples.R.color.Unify_GN500
             )
             header.headerSubTitle = "Offering name" //update this with real data
-            header.addRightIcon(com.tokopedia.iconunify.R.drawable.iconunify_cart).apply { setOnClickListener { } }
-            header.addRightIcon(com.tokopedia.iconunify.R.drawable.iconunify_menu_hamburger).apply { setOnClickListener { } }
+            header.addRightIcon(com.tokopedia.iconunify.R.drawable.iconunify_cart)
+                .apply { setOnClickListener { } }
+            header.addRightIcon(com.tokopedia.iconunify.R.drawable.iconunify_menu_hamburger)
+                .apply { setOnClickListener { } }
             header.setNavigationOnClickListener { activity?.finish() }
             header.setBackgroundColor(colorBackground)
         }
@@ -110,32 +130,24 @@ class OfferLandingPageFragment :
     private fun setStatusBarColor() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (activity?.isDarkMode() == true) {
-                activity?.window?.decorView?.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+                activity?.window?.decorView?.systemUiVisibility =
+                    View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
             }
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            activity?.let {
-                it.window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
-                it.window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-                WindowCompat.getInsetsController(it.window, it.window.decorView).apply {
-                    isAppearanceLightStatusBars = false
-                }
-                it.window.statusBarColor = ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
+        activity?.let {
+            it.window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
+            it.window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+            WindowCompat.getInsetsController(it.window, it.window.decorView).apply {
+                isAppearanceLightStatusBars = false
             }
+            it.window.statusBarColor =
+                ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
         }
     }
 
-    private fun setupContent() {
-        olpAdapter?.submitList(newList = listOf(OfferInfoForBuyerUiModel()))
-    }
+    private fun setupSortFilter() {
 
-    private fun setupObservables() {
-        viewModel.offeringInfo.observe(viewLifecycleOwner) { offerInfoForBuyer ->
-        }
-
-        viewModel.error.observe(viewLifecycleOwner) { throwable ->
-        }
     }
 
     override fun getRecyclerViewResourceId(): Int {
