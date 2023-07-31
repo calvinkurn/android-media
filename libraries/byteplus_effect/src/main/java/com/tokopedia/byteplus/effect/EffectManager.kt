@@ -17,6 +17,15 @@ interface EffectManager {
     fun setupTexture(
         surfaceWidth: Int,
         surfaceHeight: Int,
+        textureWidth: Int,
+        textureHeight: Int,
+    )
+
+    fun updateSurfaceTexture(
+        surfaceWidth: Int,
+        surfaceHeight: Int,
+        textureWidth: Int,
+        textureHeight: Int,
     )
 
     fun setRenderListener(

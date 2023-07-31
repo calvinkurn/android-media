@@ -120,15 +120,31 @@ class EffectManagerImpl @Inject constructor(
     override fun setupTexture(
         surfaceWidth: Int,
         surfaceHeight: Int,
+        textureWidth: Int,
+        textureHeight: Int,
     ) {
         // initialize surface texture
         mTextureId = OpenGLUtils.getExternalOESTextureID()
         mSurfaceTexture = SurfaceTexture(mTextureId)
 
-        mTextureWidth = surfaceWidth
-        mTextureHeight = surfaceHeight
+        mTextureWidth = textureWidth
+        mTextureHeight = textureHeight
 
-        mSurfaceTexture?.setDefaultBufferSize(mTextureWidth, mTextureHeight)
+        mSurfaceTexture?.setDefaultBufferSize(surfaceWidth, surfaceHeight)
+    }
+
+    override fun updateSurfaceTexture(
+        surfaceWidth: Int,
+        surfaceHeight: Int,
+        textureWidth: Int,
+        textureHeight: Int,
+    ) {
+        mGLHandler?.post {
+            mTextureWidth = textureWidth
+            mTextureHeight = textureHeight
+
+            mSurfaceTexture?.setDefaultBufferSize(surfaceWidth, surfaceHeight)
+        }
     }
 
     override fun setRenderListener(
@@ -145,8 +161,8 @@ class EffectManagerImpl @Inject constructor(
                         textureId = mTextureId,
                         textureWidth = mTextureWidth,
                         textureHeight = mTextureHeight,
-                        width = surfaceWidth,
-                        height = surfaceHeight,
+                        width = mTextureWidth,
+                        height = mTextureHeight,
                     )
 
                     listener.onRenderFrame(destinationTexture, mTextureWidth, mTextureHeight)
