@@ -39,6 +39,9 @@ class VoucherView @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : LinearLayout(context, attrs, defStyleAttr) {
 
+    companion object {
+        private const val CIRCLE_COT_OUT_MARGIN_BOTTOM_DP = 58
+    }
 
     private var binding: PromoUsageVoucherViewBinding? = null
     private var onHyperlinkTextClick : (String) -> Unit = {}
@@ -349,7 +352,7 @@ class VoucherView @JvmOverloads constructor(
         val stokeWidth = 1
 
 
-        val distanceFromBottom = cardViewHeightPx - 58.toPx()
+        val distanceFromBottom = cardViewHeightPx - CIRCLE_COT_OUT_MARGIN_BOTTOM_DP.toPx()
         val offsetY = distanceFromBottom / 4
 
 
