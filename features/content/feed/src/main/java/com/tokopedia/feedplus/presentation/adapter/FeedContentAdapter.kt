@@ -100,12 +100,26 @@ class FeedContentAdapter(
                     if (oldItem.isSelected != newItem.isSelected) {
                         add(FeedViewHolderPayloadActions.FEED_POST_SELECTED_CHANGED)
                     }
+                    if (oldItem.isScrolling != newItem.isScrolling) {
+                        if (newItem.isScrolling) {
+                            add(FeedViewHolderPayloadActions.FEED_POST_SCROLLING)
+                        } else {
+                            add(FeedViewHolderPayloadActions.FEED_POST_DONE_SCROLL)
+                        }
+                    }
                 }
                 if (payloads.isNotEmpty()) FeedViewHolderPayloads(payloads) else null
             } else if (oldItem.data is FeedCardLivePreviewContentModel && newItem.data is FeedCardLivePreviewContentModel) {
                 val payloads = buildList {
                     if (oldItem.isSelected != newItem.isSelected) {
                         add(FeedViewHolderPayloadActions.FEED_POST_SELECTED_CHANGED)
+                    }
+                    if (oldItem.isScrolling != newItem.isScrolling) {
+                        if (newItem.isScrolling) {
+                            add(FeedViewHolderPayloadActions.FEED_POST_SCROLLING)
+                        } else {
+                            add(FeedViewHolderPayloadActions.FEED_POST_DONE_SCROLL)
+                        }
                     }
                 }
                 if (payloads.isNotEmpty()) FeedViewHolderPayloads(payloads) else null
