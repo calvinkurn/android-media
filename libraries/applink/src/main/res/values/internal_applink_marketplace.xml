@@ -15,7 +15,6 @@
         order by name
     -->
     <string name="host_feed_detail_page" translatable="false">feedcommunicationdetail</string>
-    <string name="host_unified_feed_detail_page" translatable="false">content-detail</string>
     <string name="host_feed_play_live_detail" translatable="false">feedplaylivedetail</string>
     <string name="path_category_detail" translatable="false">/category/.*\\/</string>
 
