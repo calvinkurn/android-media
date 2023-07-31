@@ -84,15 +84,15 @@ class EditorHomeAnalyticsImpl @Inject constructor(
         )
     }
 
-    override fun clickAddLogo() {
+    override fun clickToolAddLogo() {
         sendGeneralEvent(
-            ACTION_CLICK_ADD_LOGO,
+            ACTION_CLICK_TOOL_ADD_LOGO,
             "$pageSource - $userId - $shopId",
-            TRACKER_ID_CLICK_ADD_LOGO
+            TRACKER_ID_CLICK_TOOL_ADD_LOGO
         )
     }
 
-    override fun clickAddText() {
+    override fun clickToolAddText() {
         sendGeneralEvent(
             ACTION_CLICK_ADD_TEXT,
             "$pageSource - $userId - $shopId",

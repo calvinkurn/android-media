@@ -9,7 +9,7 @@ interface EditorHomeAnalytics {
     fun clickRotate()
     fun clickWatermark()
     fun clickRemoveBackground()
-    fun clickAddLogo()
-    fun clickAddText()
+    fun clickToolAddLogo()
+    fun clickToolAddText()
     fun autoCropProcessTime(loadTime: Long, fileNumber: Int)
 }

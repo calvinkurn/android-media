@@ -3,7 +3,7 @@ package com.tokopedia.media.editor.analytics.editordetail
 interface EditorDetailAnalytics {
     fun clickRotationFlip()
     fun clickRotationRotate()
-    fun clickAddLogoUpload()
+    fun clickAddLogoUpload(logoState: String)
     fun clickAddLogoLoadRetry()
     fun clickAddTextFreeText()
     fun clickAddTextBackgroundText()

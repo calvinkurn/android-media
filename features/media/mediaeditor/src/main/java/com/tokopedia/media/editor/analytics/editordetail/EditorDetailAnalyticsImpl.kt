@@ -1,8 +1,9 @@
 package com.tokopedia.media.editor.analytics.editordetail
 
+import androidx.compose.ui.text.toLowerCase
 import com.tokopedia.kotlin.extensions.view.toZeroStringIfNullOrBlank
+import com.tokopedia.media.editor.analytics.ACTION_CLICK_ADD_LOGO
 import com.tokopedia.media.editor.analytics.ACTION_CLICK_LOGO_LOAD_RETRY
-import com.tokopedia.media.editor.analytics.ACTION_CLICK_LOGO_UPLOAD
 import com.tokopedia.media.editor.analytics.ACTION_CLICK_SAVE
 import com.tokopedia.media.editor.analytics.ACTION_CLICK_TEXT_BACKGROUND
 import com.tokopedia.media.editor.analytics.ACTION_CLICK_TEXT_FREE
@@ -63,10 +64,10 @@ class EditorDetailAnalyticsImpl @Inject constructor(
         )
     }
 
-    override fun clickAddLogoUpload() {
+    override fun clickAddLogoUpload(logoState: String) {
         sendGeneralEvent(
-            ACTION_CLICK_LOGO_UPLOAD,
-            "$pageSource - $userId - $shopId",
+            ACTION_CLICK_ADD_LOGO,
+            "$pageSource - $userId - $shopId - ${logoState.lowercase()}",
             TRACKER_ID_CLICK_LOGO_UPLOAD
         )
     }

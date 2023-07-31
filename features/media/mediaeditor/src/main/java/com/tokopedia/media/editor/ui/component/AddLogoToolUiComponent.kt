@@ -173,6 +173,11 @@ class AddLogoToolUiComponent constructor(
         )
     }
 
+    // for tracker only
+    fun getUploadState(): String {
+        return uploadText.text.toString()
+    }
+
     private fun isLogoChosen(finishedUrl: String) {
         // restore previous selected logo from state
         if (selectedLogoUrl.isNotEmpty() && selectedLogoUrl == finishedUrl) {

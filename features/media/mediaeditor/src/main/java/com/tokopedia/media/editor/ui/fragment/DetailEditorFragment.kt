@@ -422,7 +422,10 @@ class DetailEditorFragment @Inject constructor(
     }
 
     override fun onUpload() {
-        editorDetailAnalytics.clickAddLogoUpload()
+        editorDetailAnalytics.clickAddLogoUpload(
+            addLogoComponent.getUploadState()
+        )
+
         if (!addLogoComponent.isUploadAvatarReady() && !isAddLogoTipsShowed) {
             showAddLogoUploadTips()
         } else {
