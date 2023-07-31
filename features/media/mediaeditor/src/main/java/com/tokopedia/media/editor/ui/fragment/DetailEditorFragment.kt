@@ -87,6 +87,7 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import java.io.File
 import javax.inject.Inject
+import kotlin.math.abs
 import kotlin.math.max
 
 class DetailEditorFragment @Inject constructor(
@@ -983,7 +984,8 @@ class DetailEditorFragment @Inject constructor(
                         viewBinding?.imgUcropPreview?.cropImageView?.imageMatrix?.values()
                     currentMatrix?.let {
                         initialMatrixValue.forEachIndexed { index, value ->
-                            if (value != currentMatrix[index]) {
+                            val diffValue = abs(abs(value) - abs(currentMatrix[index]))
+                            if (diffValue > UCROP_MATRIX_TOLERANCE_VALUE) {
                                 isEdited = true
                             }
                         }
@@ -1600,5 +1602,7 @@ class DetailEditorFragment @Inject constructor(
 
         private const val ORIENTATION_ORIGINAL = 0
         private const val ORIENTATION_ROTATED = 1
+
+        private const val UCROP_MATRIX_TOLERANCE_VALUE = 0.001f
     }
 }
