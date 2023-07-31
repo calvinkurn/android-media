@@ -48,6 +48,7 @@
     <string name="view_network_log">View Network Log</string>
     <string name="device_id">DEVICE ID:</string>
     <string name="force_dark_mode">Force Dark Mode</string>
+    <string name="fpi_monitoring">Enable FPI Monitoring PopUp</string>
     <string name="enable_topads_notif">Enable TopAds Log on Notification</string>
     <string name="view_topads_log">View TopAds Log</string>
     <string name="enable_applink_notif">Enable Applink Log on Notification</string>

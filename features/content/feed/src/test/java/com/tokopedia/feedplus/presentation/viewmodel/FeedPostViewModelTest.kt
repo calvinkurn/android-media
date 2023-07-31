@@ -109,6 +109,7 @@ class FeedPostViewModelTest {
     private val postReportUseCase : PostUserReportUseCase = mockk()
     private val affiliateCookieHelper: AffiliateCookieHelper = mockk()
     private val submitReportUseCase: FeedComplaintSubmitReportUseCase = mockk()
+    private val uiEventManager = UiEventManager<FeedPostEvent>()
 
     private val uiEventManager = UiEventManager<FeedPostEvent>()
 
@@ -349,7 +350,8 @@ class FeedPostViewModelTest {
             affiliate = FeedTaggedProductUiModel.Affiliate(
                 "xxx",
                 "play"
-            )
+            ),
+            FeedTaggedProductUiModel.Stock.Available
         )
 
         // when
@@ -387,7 +389,8 @@ class FeedPostViewModelTest {
             affiliate = FeedTaggedProductUiModel.Affiliate(
                 "xxx",
                 "play"
-            )
+            ),
+            FeedTaggedProductUiModel.Stock.Available
         )
 
         coEvery { userSession.userId } returns "1"
@@ -436,7 +439,8 @@ class FeedPostViewModelTest {
             affiliate = FeedTaggedProductUiModel.Affiliate(
                 "xxx",
                 "play"
-            )
+            ),
+            FeedTaggedProductUiModel.Stock.Available
         )
         val dummyAtcResult = AddToCartDataModel(
             errorMessage = arrayListOf(),
@@ -490,7 +494,8 @@ class FeedPostViewModelTest {
             affiliate = FeedTaggedProductUiModel.Affiliate(
                 "xxx",
                 "play"
-            )
+            ),
+            FeedTaggedProductUiModel.Stock.Available
         )
 
         // when
@@ -528,7 +533,8 @@ class FeedPostViewModelTest {
             affiliate = FeedTaggedProductUiModel.Affiliate(
                 "xxx",
                 "play"
-            )
+            ),
+            FeedTaggedProductUiModel.Stock.Available
         )
 
         coEvery { affiliateCookieHelper.initCookie(any(), any(), any()) } coAnswers {}
@@ -577,7 +583,8 @@ class FeedPostViewModelTest {
             affiliate = FeedTaggedProductUiModel.Affiliate(
                 "xxx",
                 "play"
-            )
+            ),
+            FeedTaggedProductUiModel.Stock.Available
         )
         val dummyAtcResult = AddToCartDataModel(
             errorMessage = arrayListOf(),

@@ -4,6 +4,7 @@
     <color name="content_dms_soft_gray">#AAB4C8</color>
     <color name="content_dms_soft_dark">#212121</color>
     <color name="content_dms_bg_label">#B32E3137</color>
+    <color name="content_dms_product_tag_oos_overlay">#802E3137</color>
 
     <!--Vertical Swipe-->
     <color name="play_dms_vertical_swipe_overlay">#99212121</color>
