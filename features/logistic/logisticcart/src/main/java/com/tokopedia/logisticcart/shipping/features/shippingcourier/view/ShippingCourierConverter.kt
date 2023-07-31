@@ -75,7 +75,7 @@ class ShippingCourierConverter @Inject constructor() {
             courierItemData.ut = it.productData.unixTime
             courierItemData.blackboxInfo = it.blackboxInfo
             courierItemData.isSelected = true
-            courierItemData.preOrderModel = it.preOrderModel
+            courierItemData.preOrderModel = it.productShipmentDetailModel?.preOrderModel
 
             /*on time delivery*/
             if (shippingCourierUiModel.productData.features.ontimeDeliveryGuarantee != null) {

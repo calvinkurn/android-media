@@ -6,8 +6,8 @@ import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ServiceData
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
-import com.tokopedia.logisticcart.shipping.model.PreOrderModel
 import com.tokopedia.logisticcart.shipping.model.Product
+import com.tokopedia.logisticcart.shipping.model.ProductShipmentDetailModel
 import com.tokopedia.logisticcart.shipping.model.RatesParam
 import com.tokopedia.logisticcart.shipping.model.RatesViewModelType
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData
@@ -81,8 +81,8 @@ interface ShippingDurationContract {
         fun convertServiceListToUiModel(
             shippingDurationUiModels: List<ShippingDurationUiModel>,
             promoUiModel: List<LogisticPromoUiModel>,
-            preOrderModel: PreOrderModel?,
-            isOcc: Boolean
+            isOcc: Boolean,
+            productShipmentDetailModel: ProductShipmentDetailModel?
         ): MutableList<RatesViewModelType>
 
         fun onChooseDuration(

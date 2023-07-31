@@ -8,8 +8,8 @@ import com.tokopedia.logisticcart.R
 import com.tokopedia.logisticcart.shipping.model.DividerModel
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.logisticcart.shipping.model.NotifierModel
-import com.tokopedia.logisticcart.shipping.model.PreOrderModel
 import com.tokopedia.logisticcart.shipping.model.Product
+import com.tokopedia.logisticcart.shipping.model.ProductShipmentDetailModel
 import com.tokopedia.logisticcart.shipping.model.RatesParam
 import com.tokopedia.logisticcart.shipping.model.RatesViewModelType
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData
@@ -95,10 +95,10 @@ class ShippingDurationPresenter @Inject constructor(
                 .warehouseId(warehouseId)
                 .build()
             loadDuration(
-                ratesParam = param,
-                isRatesTradeInApi = isTradeInDropOff,
                 selectedSpId = selectedSpId,
                 selectedServiceId = selectedServiceId,
+                ratesParam = param,
+                isRatesTradeInApi = isTradeInDropOff,
                 isOcc = isOcc
             )
         }
@@ -150,8 +150,8 @@ class ShippingDurationPresenter @Inject constructor(
                                     convertServiceListToUiModel(
                                         shippingRecommendationData.shippingDurationUiModels,
                                         shippingRecommendationData.listLogisticPromo,
-                                        shippingRecommendationData.preOrderModel,
-                                        isOcc
+                                        isOcc,
+                                        shippingRecommendationData.productShipmentDetailModel
                                     )
                                 )
 
@@ -261,8 +261,8 @@ class ShippingDurationPresenter @Inject constructor(
     override fun convertServiceListToUiModel(
         shippingDurationUiModels: List<ShippingDurationUiModel>,
         promoUiModel: List<LogisticPromoUiModel>,
-        preOrderModel: PreOrderModel?,
-        isOcc: Boolean
+        isOcc: Boolean,
+        productShipmentDetailModel: ProductShipmentDetailModel?
     ): MutableList<RatesViewModelType> {
         val eligibleServices = shippingDurationUiModels.filter { !it.serviceData.isUiRatesHidden }
         if (!isOcc && promoUiModel.any { it.etaData.textEta.isEmpty() && it.etaData.errorCode == 1 }) {
@@ -276,14 +276,12 @@ class ShippingDurationPresenter @Inject constructor(
             uiModelList.addAll(0, promoUiModel + listOf<RatesViewModelType>(DividerModel()))
         }
 
-        preOrderModel?.let {
-            if (it.display) {
-                uiModelList.add(0, it)
-            }
-        }
-
         if (!isOcc && eligibleServices.getOrNull(0)?.etaErrorCode == 1) {
             uiModelList.add(0, NotifierModel(NotifierModel.TYPE_DEFAULT))
+        }
+
+        productShipmentDetailModel?.let {
+            uiModelList.add(0, it)
         }
 
         return uiModelList

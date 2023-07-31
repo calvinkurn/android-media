@@ -3,10 +3,13 @@ package com.tokopedia.logisticcart.shipping.features.shippingcourier.view
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.logisticcart.databinding.ItemProductShipmentDetailBinding
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.NotifierViewHolder
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.PreOrderViewHolder
+import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ProductShipmentDetailViewHolder
 import com.tokopedia.logisticcart.shipping.model.NotifierModel
 import com.tokopedia.logisticcart.shipping.model.PreOrderModel
+import com.tokopedia.logisticcart.shipping.model.ProductShipmentDetailModel
 import com.tokopedia.logisticcart.shipping.model.RatesViewModelType
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 
@@ -36,6 +39,7 @@ class ShippingCourierAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun getItemViewType(position: Int): Int = when (data[position]) {
         is PreOrderModel -> PreOrderViewHolder.LAYOUT
         is NotifierModel -> NotifierViewHolder.LAYOUT
+        is ProductShipmentDetailModel -> ProductShipmentDetailViewHolder.LAYOUT
         else -> ShippingCourierViewHolder.ITEM_VIEW_SHIPMENT_COURIER
     }
 
@@ -44,6 +48,7 @@ class ShippingCourierAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         return when (viewType) {
             PreOrderViewHolder.LAYOUT -> PreOrderViewHolder(view)
             NotifierViewHolder.LAYOUT -> NotifierViewHolder(view)
+            ProductShipmentDetailViewHolder.LAYOUT -> ProductShipmentDetailViewHolder(ItemProductShipmentDetailBinding.bind(view))
             else -> ShippingCourierViewHolder(view, cartPosition)
         }
     }
@@ -57,6 +62,7 @@ class ShippingCourierAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             is PreOrderViewHolder -> holder.bindData(data[position] as PreOrderModel)
             is ShippingCourierViewHolder -> holder.bindData(data[position] as ShippingCourierUiModel, shippingCourierAdapterListener, position == itemCount - 1)
             is NotifierViewHolder -> holder.bindData(data[position] as NotifierModel)
+            is ProductShipmentDetailViewHolder -> holder.bindData(data[position] as ProductShipmentDetailModel)
         }
     }
 }

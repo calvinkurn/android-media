@@ -520,8 +520,8 @@ class ShippingDurationPresenterTest {
         val actual = presenter.convertServiceListToUiModel(
             shippingRecommendationData.shippingDurationUiModels,
             shippingRecommendationData.listLogisticPromo,
-            shippingRecommendationData.preOrderModel,
-            false
+            false,
+            shippingRecommendationData.productShipmentDetailModel
         )
 
         // Then
@@ -537,8 +537,8 @@ class ShippingDurationPresenterTest {
         val actual = presenter.convertServiceListToUiModel(
             shippingRecommendationData.shippingDurationUiModels,
             shippingRecommendationData.listLogisticPromo,
-            shippingRecommendationData.preOrderModel,
-            false
+            false,
+            shippingRecommendationData.productShipmentDetailModel
         )
         val lastIndexOfPromoModel = actual.indexOfLast { it is LogisticPromoUiModel }
 
@@ -556,8 +556,8 @@ class ShippingDurationPresenterTest {
         val actual = presenter.convertServiceListToUiModel(
             shippingRecommendationData.shippingDurationUiModels,
             shippingRecommendationData.listLogisticPromo,
-            shippingRecommendationData.preOrderModel,
-            false
+            false,
+            shippingRecommendationData.productShipmentDetailModel
         )
 
         // Then
@@ -573,8 +573,8 @@ class ShippingDurationPresenterTest {
         val actual = presenter.convertServiceListToUiModel(
             shippingRecommendationData.shippingDurationUiModels,
             shippingRecommendationData.listLogisticPromo,
-            shippingRecommendationData.preOrderModel,
-            false
+            false,
+            shippingRecommendationData.productShipmentDetailModel
         )
 
         // Then
@@ -591,8 +591,8 @@ class ShippingDurationPresenterTest {
         val actual = presenter.convertServiceListToUiModel(
             shippingRecommendationData.shippingDurationUiModels,
             shippingRecommendationData.listLogisticPromo,
-            shippingRecommendationData.preOrderModel,
-            false
+            false,
+            shippingRecommendationData.productShipmentDetailModel
         )
 
         // Then
@@ -611,8 +611,8 @@ class ShippingDurationPresenterTest {
         presenter.convertServiceListToUiModel(
             shippingRecommendationData.shippingDurationUiModels,
             shippingRecommendationData.listLogisticPromo,
-            shippingRecommendationData.preOrderModel,
-            false
+            false,
+            shippingRecommendationData.productShipmentDetailModel
         )
 
         // Then
@@ -630,8 +630,8 @@ class ShippingDurationPresenterTest {
         val actual = presenter.convertServiceListToUiModel(
             shippingRecommendationData.shippingDurationUiModels,
             shippingRecommendationData.listLogisticPromo,
-            shippingRecommendationData.preOrderModel,
-            false
+            false,
+            shippingRecommendationData.productShipmentDetailModel
         )
 
         // Then
@@ -649,8 +649,8 @@ class ShippingDurationPresenterTest {
         val actual = presenter.convertServiceListToUiModel(
             shippingRecommendationData.shippingDurationUiModels,
             shippingRecommendationData.listLogisticPromo,
-            shippingRecommendationData.preOrderModel,
-            true
+            true,
+            shippingRecommendationData.productShipmentDetailModel
         )
 
         // Then
@@ -667,8 +667,8 @@ class ShippingDurationPresenterTest {
         val actual = presenter.convertServiceListToUiModel(
             shippingRecommendationData.shippingDurationUiModels,
             shippingRecommendationData.listLogisticPromo,
-            shippingRecommendationData.preOrderModel,
-            false
+            false,
+            shippingRecommendationData.productShipmentDetailModel
         )
 
         // Then
@@ -686,8 +686,8 @@ class ShippingDurationPresenterTest {
         val actual = presenter.convertServiceListToUiModel(
             shippingRecommendationData.shippingDurationUiModels,
             shippingRecommendationData.listLogisticPromo,
-            shippingRecommendationData.preOrderModel,
-            false
+            false,
+            shippingRecommendationData.productShipmentDetailModel
         )
 
         // Then
@@ -703,8 +703,8 @@ class ShippingDurationPresenterTest {
         val actual = presenter.convertServiceListToUiModel(
             shippingRecommendationData.shippingDurationUiModels,
             shippingRecommendationData.listLogisticPromo,
-            shippingRecommendationData.preOrderModel,
-            true
+            true,
+            shippingRecommendationData.productShipmentDetailModel
         )
 
         // Then

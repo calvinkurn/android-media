@@ -46,7 +46,6 @@ class ShippingDurationViewHolder(itemView: View, private val cartPosition: Int) 
     private val rlContent: RelativeLayout = itemView.findViewById(R.id.rl_content)
     private val tvOrderPrioritas: TextView = itemView.findViewById(R.id.tv_order_prioritas)
     private val tvShippingInformation: Typography = itemView.findViewById(R.id.tv_shipping_information)
-    private val labelCodAvailable: Label = itemView.findViewById(R.id.lbl_cod_available)
     private val labelCodAvailableEta: Label = itemView.findViewById(R.id.lbl_cod_available_eta)
     private val tvMvcError: Typography = itemView.findViewById(R.id.tv_mvc_error)
     private val imgMvc: ImageView = itemView.findViewById(R.id.img_mvc)
@@ -129,15 +128,13 @@ class ShippingDurationViewHolder(itemView: View, private val cartPosition: Int) 
                 tvPriceOrDuration.setText(R.string.estimasi_tidak_tersedia)
             }
             setTextAndContentDescription(tvDurationOrPrice, shipperNameEta, tvDurationOrPrice.context.getString(R.string.content_desc_tv_duration))
-            labelCodAvailable.visibility = View.GONE
             labelCodAvailableEta.text = shippingDurationUiModel.codText
             labelCodAvailableEta.visibility = if (shippingDurationUiModel.isCodAvailable) View.VISIBLE else View.GONE
         } else {
             setTextAndContentDescription(tvDurationOrPrice, shippingDurationUiModel.serviceData.serviceName, tvDurationOrPrice.context.getString(R.string.content_desc_tv_duration))
             tvPriceOrDuration.text = shippingDurationUiModel.serviceData.texts.textRangePrice
-            labelCodAvailableEta.visibility = View.GONE
-            labelCodAvailable.text = shippingDurationUiModel.codText
-            labelCodAvailable.visibility = if (shippingDurationUiModel.isCodAvailable) View.VISIBLE else View.GONE
+            labelCodAvailableEta.text = shippingDurationUiModel.codText
+            labelCodAvailableEta.visibility = if (shippingDurationUiModel.isCodAvailable) View.VISIBLE else View.GONE
         }
 
         /*Dynamic Price*/

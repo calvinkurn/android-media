@@ -18,7 +18,7 @@ import com.tokopedia.logisticcart.R
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.di.DaggerShippingCourierComponent
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.di.ShippingCourierModule
 import com.tokopedia.logisticcart.shipping.model.NotifierModel
-import com.tokopedia.logisticcart.shipping.model.PreOrderModel
+import com.tokopedia.logisticcart.shipping.model.ProductShipmentDetailModel
 import com.tokopedia.logisticcart.shipping.model.RatesViewModelType
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -41,7 +41,7 @@ class ShippingCourierBottomsheet : ShippingCourierContract.View, ShippingCourier
     private var shippingCourierBottomsheetListener: ShippingCourierBottomsheetListener? = null
 
     private var mCourierModelList: List<ShippingCourierUiModel> = ArrayList()
-    private var mPreOrderModel: PreOrderModel? = null
+    private var productShipmentDetailModel: ProductShipmentDetailModel? = null
     private var mRecipientAddress: RecipientAddressModel? = null
     private var isOcc: Boolean = false
 
@@ -73,7 +73,7 @@ class ShippingCourierBottomsheet : ShippingCourierContract.View, ShippingCourier
         bundle = Bundle()
         if (shippingCourierUiModels != null) {
             bundle?.putParcelableArrayList(ARGUMENT_SHIPPING_COURIER_VIEW_MODEL_LIST, ArrayList(shippingCourierUiModels))
-            bundle?.putParcelable(ARGUMENT_PRE_ORDER_MODEL, shippingCourierUiModels[0].preOrderModel)
+            bundle?.putParcelable(ARGUMENT_PRODUCT_SHIPMENT_DETAIL, shippingCourierUiModels[0].productShipmentDetailModel)
         }
         bundle?.putParcelable(ARGUMENT_RECIPIENT_ADDRESS_MODEL, recipientAddressModel)
         bundle?.putInt(ARGUMENT_CART_POSITION, cartPosition)
@@ -119,7 +119,7 @@ class ShippingCourierBottomsheet : ShippingCourierContract.View, ShippingCourier
             mRecipientAddress = it.getParcelable(ARGUMENT_RECIPIENT_ADDRESS_MODEL)
             val cartPosition = it.getInt(ARGUMENT_CART_POSITION)
             val shippingCourierUiModels: ArrayList<ShippingCourierUiModel>? = it.getParcelableArrayList(ARGUMENT_SHIPPING_COURIER_VIEW_MODEL_LIST)
-            mPreOrderModel = it.getParcelable(ARGUMENT_PRE_ORDER_MODEL)
+            productShipmentDetailModel = it.getParcelable(ARGUMENT_PRODUCT_SHIPMENT_DETAIL)
             if (shippingCourierUiModels != null) {
                 mCourierModelList = shippingCourierUiModels
                 setupRecyclerView(cartPosition)
@@ -131,7 +131,7 @@ class ShippingCourierBottomsheet : ShippingCourierContract.View, ShippingCourier
 
     private fun setupRecyclerView(cartPosition: Int) {
         shippingCourierAdapter.setShippingCourierAdapterListener(this)
-        shippingCourierAdapter.setShippingCourierViewModels(convertCourierListToUiModel(mCourierModelList, mPreOrderModel, isOcc))
+        shippingCourierAdapter.setShippingCourierViewModels(convertCourierListToUiModel(mCourierModelList, productShipmentDetailModel, isOcc))
         shippingCourierAdapter.setCartPosition(cartPosition)
         val linearLayoutManager = LinearLayoutManager(
             activity,
@@ -191,7 +191,7 @@ class ShippingCourierBottomsheet : ShippingCourierContract.View, ShippingCourier
         }
     }
 
-    private fun convertCourierListToUiModel(shippingCourierUiModels: List<ShippingCourierUiModel>, preOrderModel: PreOrderModel?, isOcc: Boolean): MutableList<RatesViewModelType> {
+    private fun convertCourierListToUiModel(shippingCourierUiModels: List<ShippingCourierUiModel>, productShipmentDetailModel: ProductShipmentDetailModel?, isOcc: Boolean): MutableList<RatesViewModelType> {
         val eligibleCourierList = shippingCourierUiModels.filter { courier -> !courier.productData.isUiRatesHidden }.toMutableList()
         val uiModel: MutableList<RatesViewModelType> = mutableListOf()
         uiModel.addAll(eligibleCourierList)
@@ -200,9 +200,7 @@ class ShippingCourierBottomsheet : ShippingCourierContract.View, ShippingCourier
             setNotifierModel(uiModel, firstCourier, isOcc)
         }
 
-        if (preOrderModel?.display == true) {
-            preOrderModel.let { uiModel.add(0, it) }
-        }
+        productShipmentDetailModel?.run { uiModel.add(0, this)}
         return uiModel
     }
 
@@ -226,6 +224,6 @@ class ShippingCourierBottomsheet : ShippingCourierContract.View, ShippingCourier
         const val ARGUMENT_SHIPPING_COURIER_VIEW_MODEL_LIST = "ARGUMENT_SHIPPING_COURIER_VIEW_MODEL_LIST"
         const val ARGUMENT_CART_POSITION = "ARGUMENT_CART_POSITION"
         const val ARGUMENT_RECIPIENT_ADDRESS_MODEL = "ARGUMENT_RECIPIENT_ADDRESS_MODEL"
-        const val ARGUMENT_PRE_ORDER_MODEL = "ARGUMENT_PRE_ORDER_MODEL"
+        const val ARGUMENT_PRODUCT_SHIPMENT_DETAIL = "ARGUMENT_PRODUCT_SHIPMENT_DETAIL"
     }
 }

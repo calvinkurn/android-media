@@ -31,7 +31,7 @@ class GetRatesWithScheduleDeliveryCoroutineUseCase @Inject constructor(
         this.shippingDurationUiModels = ratesResponse.shippingDurationUiModels
         this.logisticPromo = ratesResponse.logisticPromo
         this.listLogisticPromo = ratesResponse.listLogisticPromo
-        this.preOrderModel = ratesResponse.preOrderModel
+        this.productShipmentDetailModel = ratesResponse.productShipmentDetailModel
         this.errorMessage = ratesResponse.errorMessage
         this.errorId = ratesResponse.errorId
         this.scheduleDeliveryData = scheduleDeliveryData.ongkirGetScheduledDeliveryRates.scheduleDeliveryData
