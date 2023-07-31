@@ -1,4 +1,4 @@
-package com.tokopedia.promogamification.common;
+package com.tokopedia.promogamification.common.applink;
 
 /**
  * Created by nabillasabbaha on 4/4/18.
