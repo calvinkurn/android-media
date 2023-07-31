@@ -835,8 +835,7 @@ class CartFragment :
                             summaryTransactionUiModel,
                             promoSummaryUiModel,
                             fragmentManager,
-                            context,
-                            cartAdapter.selectedCartItemData
+                            context
                         )
                     }
                 }
@@ -4602,13 +4601,13 @@ class CartFragment :
             val addOnProductDataResult = data?.getParcelableExtra(AddOnExtraConstant.EXTRA_ADDON_PAGE_RESULT) ?: AddOnPageResult()
 
             if (addOnProductDataResult.aggregatedData.isGetDataSuccess) {
-                val cartId = addOnProductDataResult.cartId
                 var newAddOnWording = ""
                 if (addOnProductDataResult.aggregatedData.title.isNotEmpty()) {
                     newAddOnWording = "${addOnProductDataResult.aggregatedData.title} <b>(${addOnProductDataResult.aggregatedData.price})</b>"
                 }
 
                 cartAdapter.updateAddOnByCartId(addOnProductDataResult.cartId.toString(), newAddOnWording, addOnProductDataResult.aggregatedData.selectedAddons)
+                onNeedToRecalculate()
             } else {
                 showToastMessageRed(addOnProductDataResult.aggregatedData.getDataErrorMessage)
             }

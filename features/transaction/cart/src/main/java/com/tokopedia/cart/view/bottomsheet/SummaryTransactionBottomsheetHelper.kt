@@ -11,7 +11,6 @@ import com.tokopedia.cart.databinding.LayoutBottomsheetSummaryTransactionBinding
 import com.tokopedia.cart.domain.model.cartlist.SummaryTransactionUiModel
 import com.tokopedia.cart.view.adapter.cart.CartAddOnSummaryAdapter
 import com.tokopedia.cart.view.adapter.cart.CartPromoSummaryAdapter
-import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.cart.view.uimodel.PromoSummaryData
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
@@ -23,8 +22,7 @@ fun showSummaryTransactionBottomsheet(
     summaryTransactionUiModel: SummaryTransactionUiModel,
     promoSummaryUiModel: PromoSummaryData?,
     fragmentManager: FragmentManager,
-    context: Context,
-    selectedCartItemData: List<CartItemHolderData>
+    context: Context
 ) {
     val bottomSheet = BottomSheetUnify().apply {
         showKnob = true
@@ -44,7 +42,7 @@ fun showSummaryTransactionBottomsheet(
         renderPromo(binding, it)
     }
     renderSellerCashback(binding, summaryTransactionUiModel)
-    renderSummaryAddon(binding, summaryTransactionUiModel, selectedCartItemData)
+    renderSummaryAddon(binding, summaryTransactionUiModel)
     renderSeparatorBenefit(binding, summaryTransactionUiModel, promoSummaryUiModel)
 
     bottomSheet.setChild(binding.root)
@@ -146,7 +144,7 @@ private fun renderPriceTotal(binding: LayoutBottomsheetSummaryTransactionBinding
     }
 }
 
-private fun renderSummaryAddon(binding: LayoutBottomsheetSummaryTransactionBinding, summaryTransactionUiModel: SummaryTransactionUiModel, selectedCartItemData: List<CartItemHolderData>) {
+private fun renderSummaryAddon(binding: LayoutBottomsheetSummaryTransactionBinding, summaryTransactionUiModel: SummaryTransactionUiModel) {
     with(binding) {
         if (summaryTransactionUiModel.listSummaryAddOns.isNotEmpty()) {
             val adapter = CartAddOnSummaryAdapter(summaryTransactionUiModel.listSummaryAddOns)
