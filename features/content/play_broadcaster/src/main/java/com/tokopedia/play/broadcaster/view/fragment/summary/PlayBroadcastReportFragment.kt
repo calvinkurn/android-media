@@ -167,7 +167,7 @@ class PlayBroadcastReportFragment @Inject constructor(
                     }
 
                     PlayBroadcastSummaryEvent.CloseReportPage -> requireActivity().onBackPressed()
-                    PlayBroadcastSummaryEvent.OpenLeaderboardBottomSheet -> openInteractiveLeaderboardSheet()
+                    PlayBroadcastSummaryEvent.OpenLeaderboardBottomSheet -> showInteractiveLeaderboardSheet()
                     PlayBroadcastSummaryEvent.OpenPostVideoPage -> mListener?.onClickPostButton()
                     else -> {}
                 }
@@ -286,7 +286,7 @@ class PlayBroadcastReportFragment @Inject constructor(
         }
     }
 
-    private fun openInteractiveLeaderboardSheet() {
+    private fun showInteractiveLeaderboardSheet() {
         val leaderboardReportBottomSheet = PlayBroInteractiveBottomSheet.setupReportLeaderboard(
             childFragmentManager,
             requireContext().classLoader
