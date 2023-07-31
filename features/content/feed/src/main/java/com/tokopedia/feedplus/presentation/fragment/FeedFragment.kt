@@ -1740,7 +1740,7 @@ class FeedFragment :
                 if (position != RecyclerView.NO_POSITION && adapter.currentList.size > position)
                     adapter.currentList[position] else null
 
-            if (currentItem == null) {
+            if (currentItem == null || !isCdp) {
                 containerBottomAction.hide()
                 return@with
             }
