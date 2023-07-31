@@ -653,21 +653,7 @@ class PromoUsageViewModel @Inject constructor(
             VoucherSource.Promo,
             true,
             5,
-            false
-        ),
-        Voucher(
-            99,
-            100_000,
-            "Recom - Free shipping - Low Quota",
-            "2 hari",
-            "https://images.tokopedia.net/img/android/promo/ic_voucher_cashback/ic_voucher_cashback.png",
-            "https://images.tokopedia.net/img/android/promo/bg_supergraphic_cashback/bg_supergraphic_cashback.png",
-            VoucherType.FREE_SHIPPING,
-            VoucherState.Normal,
-            VoucherSource.Promo,
-            false,
-            5,
             true
-        ),
+        )
     )
 }
