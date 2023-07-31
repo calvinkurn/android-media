@@ -2424,6 +2424,11 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
     }
 
     override fun onReviewRatingClicked(index: Int, order: UohListOrder.UohOrders.Order, appLink: String) {
+        UohAnalytics.clickPrimaryButtonOnOrderCard(
+            verticalLabel = order.verticalCategory,
+            primaryButton = UohConsts.EVENT_LABEL_STAR_RATING,
+            userId = userSession.userId
+        )
         handleRouting(appLink, index, order)
     }
 

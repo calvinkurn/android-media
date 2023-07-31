@@ -62,7 +62,7 @@ private enum class Slots { Content, Background }
 @Composable
 fun UohReviewRatingWidget(config: UohReviewRatingWidgetConfig) {
     var rating by rememberRating(config.componentData)
-    SetupRatingChangedListener(rating, config)
+    if (rating == Int.ZERO) SetupRatingChangedListener(rating, config)
     DrawContent(
         modifier = Modifier.fillMaxWidth(),
         config = config,

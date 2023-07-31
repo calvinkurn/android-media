@@ -184,4 +184,5 @@ object UohConsts {
     const val EVENT_LABEL_CART_EXISTING = "toaster"
     const val EVENT_LABEL_CART_REDIRECTION = "cart"
     const val EVENT_LABEL_OCC_REDIRECTION = "occ"
+    const val EVENT_LABEL_STAR_RATING = "star rating"
 }
