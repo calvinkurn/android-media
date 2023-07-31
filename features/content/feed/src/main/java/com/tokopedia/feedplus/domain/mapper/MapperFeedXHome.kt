@@ -68,7 +68,7 @@ class MapperFeedXHome @Inject constructor(
                 } else if (isLivePreviewPost(card)) {
                     transformToFeedCardLivePreview(card)
                 } else if (isFollowRecomWidget(card)) {
-                    transformToFollowRecomWidget()
+                    transformToFollowRecomWidget(card)
                 } else {
                     transformToFeedCardImage(card)
                 }
@@ -225,7 +225,7 @@ class MapperFeedXHome @Inject constructor(
             }
         )
 
-    private fun transformToFollowRecomWidget() = FeedFollowRecommendationModel.Empty
+    private fun transformToFollowRecomWidget(card: FeedXCard) = FeedFollowRecommendationModel.Empty.copy(id = card.id)
 
     private fun transformAuthor(author: FeedXAuthor): FeedAuthorModel = FeedAuthorModel(
         id = author.id,

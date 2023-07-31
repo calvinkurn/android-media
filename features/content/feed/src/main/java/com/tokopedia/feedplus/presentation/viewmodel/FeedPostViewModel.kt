@@ -442,7 +442,7 @@ class FeedPostViewModel @Inject constructor(
                         when {
                             item is FeedFollowRecommendationModel && !item.isFetch -> {
                                 try {
-                                    val request = feedXRecomWidgetUseCase.createFeedFollowRecomParams("")
+                                    val request = feedXRecomWidgetUseCase.createFeedFollowRecomParams("", item.id)
                                     feedXRecomWidgetUseCase(request)
                                 } catch (throwable: Throwable) {
                                     item.copy(
@@ -478,7 +478,7 @@ class FeedPostViewModel @Inject constructor(
                             followRecom.copy(status = FeedFollowRecommendationModel.Status.Loading)
                         }
 
-                        val request = feedXRecomWidgetUseCase.createFeedFollowRecomParams(followRecomData.cursor)
+                        val request = feedXRecomWidgetUseCase.createFeedFollowRecomParams(followRecomData.cursor, followRecomData.id)
                         val response = feedXRecomWidgetUseCase(request)
 
                         updateFollowRecom(position) { followRecom ->
