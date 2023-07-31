@@ -858,7 +858,7 @@ class CheckoutViewModel @Inject constructor(
                 val shipment = checkoutOrderModel.shipment
                 val newShipment = shipment.copy(
                     isLoading = false,
-                    courierItemData = courierItemData
+                    courierItemData = newCourierItemData
 //                    shippingCourierUiModels = shippingCourierUiModels
                 )
                 val newOrder = checkoutOrderModel.copy(shipment = newShipment)
@@ -876,7 +876,7 @@ class CheckoutViewModel @Inject constructor(
                 val shipment = checkoutOrderModel.shipment
                 val newShipment = shipment.copy(
                     isLoading = true,
-                    courierItemData = courierItemData
+                    courierItemData = newCourierItemData
                 )
                 val newOrder = checkoutOrderModel.copy(shipment = newShipment)
                 checkoutItems[cartPosition] = newOrder
@@ -903,7 +903,7 @@ class CheckoutViewModel @Inject constructor(
                 var newOrder1 = list[cartPosition] as CheckoutOrderModel
                 val newShipment1 = shipment.copy(
                     isLoading = false,
-                    courierItemData = courierItemData
+                    courierItemData = newCourierItemData
                 )
                 newOrder1 = newOrder1.copy(shipment = newShipment1, isShippingBorderRed = false)
                 list[cartPosition] = newOrder1
