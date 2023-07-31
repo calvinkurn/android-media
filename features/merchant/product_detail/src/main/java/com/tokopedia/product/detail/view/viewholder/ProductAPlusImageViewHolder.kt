@@ -23,9 +23,14 @@ class ProductAPlusImageViewHolder(
     private val binding = ItemDynamicAPlusImageBinding.bind(itemView)
 
     override fun bind(element: ProductAPlusImageDataModel) {
+        setupDivider(element.showTopDivider)
         setupTitle(element)
         setupImage(element)
         setupToggle(element)
+    }
+
+    private fun setupDivider(showTopDivider: Boolean) {
+        binding.dividerProductDetailAPlusImage.showWithCondition(showTopDivider)
     }
 
     private fun setupTitle(element: ProductAPlusImageDataModel) {

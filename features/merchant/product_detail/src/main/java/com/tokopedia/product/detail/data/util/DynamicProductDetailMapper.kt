@@ -112,6 +112,7 @@ object DynamicProductDetailMapper {
      */
     fun mapIntoVisitable(data: List<Component>): MutableList<DynamicPdpDataModel> {
         val listOfComponent: MutableList<DynamicPdpDataModel> = mutableListOf()
+        var firstAPlusMedia = true
         data.forEachIndexed { index, component ->
             when (component.type) {
                 ProductDetailConstant.NOTIFY_ME -> {
@@ -316,9 +317,11 @@ object DynamicProductDetailMapper {
                                 ratio = aPlusMediaData.ratio,
                                 title = aPlusData.title,
                                 showOnCollapsed = aPlusData.show,
-                                ctaText = aPlusData.ctaText
+                                ctaText = aPlusData.ctaText,
+                                showTopDivider = firstAPlusMedia
                             )
                         )
+                        firstAPlusMedia = false
                     }
                 }
             }

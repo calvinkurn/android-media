@@ -12,7 +12,8 @@ data class ProductAPlusImageDataModel(
     var title: String = "",
     var showOnCollapsed: Boolean = true,
     var ctaText: String = "",
-    var collapsed: Boolean = true
+    var collapsed: Boolean = true,
+    var showTopDivider: Boolean = false
 ) : DynamicPdpDataModel {
     override fun type(): String = type
 
