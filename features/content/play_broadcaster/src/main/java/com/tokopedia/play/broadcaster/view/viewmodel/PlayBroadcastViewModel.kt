@@ -705,7 +705,11 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
             _observableConfigInfo.value = NetworkResult.Success(configUiModel)
 
-            handleTickerBottomSheetConfig(page = TickerBottomSheetPage.LIVE_PREPARATION)
+            if (configUiModel.channelStatus == ChannelStatus.Draft ||
+                configUiModel.channelStatus == ChannelStatus.CompleteDraft
+            ) {
+                handleTickerBottomSheetConfig(page = TickerBottomSheetPage.LIVE_PREPARATION)
+            }
         }) {
             _observableConfigInfo.value = NetworkResult.Fail(it) { getBroadcasterAuthorConfig(selectedAccount) }
         }
