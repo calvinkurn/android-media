@@ -4,7 +4,7 @@ import com.tokopedia.promousage.util.composite.DelegateAdapterItem
 
 data class PromoInputItem(
     override val id: String = "promo_code",
-    val userInputVoucherCode: String = "",
+    val currentPromoCode: String = "",
     val errorMessage: String = "",
-    val voucher: PromoItem? = null
+    val promo: PromoItem? = null
 ) : DelegateAdapterItem

@@ -8,15 +8,17 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.promousage.databinding.PromoUsageItemVoucherBinding
 import com.tokopedia.promousage.databinding.PromoUsageItemVoucherRecommendationBinding
-import com.tokopedia.promousage.domain.entity.list.PromoRecommendationItem
 import com.tokopedia.promousage.domain.entity.list.PromoItem
+import com.tokopedia.promousage.domain.entity.list.PromoRecommendationItem
 import com.tokopedia.promousage.util.composite.DelegateAdapter
 import com.tokopedia.promousage.util.extension.applyPaddingToLastItem
 
-class VoucherRecommendationDelegateAdapter(
+class PromoRecommendationDelegateAdapter(
     private val onVoucherClick: (PromoItem) -> Unit,
-    private val onButtonUseRecommendedVoucherClick: () -> Unit
-) : DelegateAdapter<PromoRecommendationItem, VoucherRecommendationDelegateAdapter.ViewHolder>(PromoRecommendationItem::class.java) {
+    private val onButtonUseRecommendedVoucherClick: (PromoRecommendationItem) -> Unit
+) : DelegateAdapter<PromoRecommendationItem, PromoRecommendationDelegateAdapter.ViewHolder>(
+    PromoRecommendationItem::class.java
+) {
 
     companion object {
         private const val PADDING_BOTTOM_DP = 16
@@ -40,23 +42,28 @@ class VoucherRecommendationDelegateAdapter(
 
         init {
             binding.recyclerView.applyPaddingToLastItem(PADDING_BOTTOM_DP)
-            binding.btnRecommendationUseVoucher.setOnClickListener { onButtonUseRecommendedVoucherClick() }
+
         }
 
-        fun bind(recommendation: PromoRecommendationItem) {
+        fun bind(item: PromoRecommendationItem) {
+            binding.btnRecommendationUseVoucher.setOnClickListener {
+                onButtonUseRecommendedVoucherClick(item)
+            }
             val voucherAdapter = VoucherAdapter(onVoucherClick)
 
-            binding.tpgRecommendationTitle.text = recommendation.title
+            binding.tpgRecommendationTitle.text = item.title
             binding.recyclerView.apply {
                 layoutManager = LinearLayoutManager(binding.recyclerView.context)
                 adapter = voucherAdapter
             }
 
-            voucherAdapter.submit(recommendation.promos)
+            voucherAdapter.submit(item.promos)
         }
 
     }
-    inner class VoucherAdapter(private val onVoucherClick: (PromoItem) -> Unit) : RecyclerView.Adapter<VoucherAdapter.ViewHolder>() {
+
+    inner class VoucherAdapter(private val onVoucherClick: (PromoItem) -> Unit) :
+        RecyclerView.Adapter<VoucherAdapter.ViewHolder>() {
 
         private val differCallback = object : DiffUtil.ItemCallback<PromoItem>() {
             override fun areItemsTheSame(

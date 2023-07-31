@@ -906,7 +906,7 @@ object DummyData {
                 message = "Kamu bisa hemat Rp30.000 dari 2 promo!",
                 messageSelected = "Kamu hemat Rp30.000 dari 2 promo!",
                 backgroundUrl = "",
-                animationUrl = "",
+                animationUrl = "https://assets.tokopedia.net/asts/android/shop_page/shop_campaign_tab_confetti.json",
                 promos = recommendedPromos
             )
         )

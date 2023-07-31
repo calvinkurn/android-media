@@ -12,8 +12,9 @@ import com.tokopedia.promousage.util.composite.DelegateAdapter
 
 class PromoInputCodeDelegateAdapter(
     private val onApplyVoucherCodeCtaClick: () -> Unit
-) : DelegateAdapter<PromoInputItem, PromoInputCodeDelegateAdapter.ViewHolder>(PromoInputItem::class.java) {
-
+) : DelegateAdapter<PromoInputItem, PromoInputCodeDelegateAdapter.ViewHolder>(
+    PromoInputItem::class.java
+) {
 
     override fun createViewHolder(parent: ViewGroup): RecyclerView.ViewHolder {
         val binding = PromoUsageItemVoucherCodeBinding

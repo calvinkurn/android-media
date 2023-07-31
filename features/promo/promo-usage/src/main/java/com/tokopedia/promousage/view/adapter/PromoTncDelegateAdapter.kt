@@ -10,15 +10,12 @@ import com.tokopedia.promousage.util.composite.DelegateAdapter
 import com.tokopedia.promousage.util.extension.setHyperlinkText
 
 class PromoTncDelegateAdapter(
-    private val onTermAndConditionHyperlinkClick : () -> Unit
+    private val onTermAndConditionHyperlinkClick: () -> Unit
 ) : DelegateAdapter<PromoTncItem, PromoTncDelegateAdapter.ViewHolder>(PromoTncItem::class.java) {
 
     override fun createViewHolder(parent: ViewGroup): RecyclerView.ViewHolder {
-        val binding = PromoUsageItemTncBinding.inflate(
-            LayoutInflater.from(parent.context),
-            parent,
-            false
-        )
+        val binding = PromoUsageItemTncBinding
+            .inflate(LayoutInflater.from(parent.context), parent, false)
         return ViewHolder(binding)
     }
 
