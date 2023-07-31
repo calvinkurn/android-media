@@ -215,8 +215,7 @@ class DeveloperOptionAdapter(
             )
         ),
         TopchatWebSocketLoggingUiModel(listOf(KEYWORD_TOPCHAT_WEB_SOCKET_LOGGING)),
-        FpiMonitoringUiModel(listOf(FPI_MONITORING))
-        TopchatWebSocketLoggingUiModel(listOf(KEYWORD_TOPCHAT_WEB_SOCKET_LOGGING)),
+        FpiMonitoringUiModel(listOf(FPI_MONITORING)),
         UserIdUiModel(listOf(KEYWORD_GET_USER_ID)),
         ShopIdUiModel(listOf(KEYWORD_GET_SHOP_ID))
     )
