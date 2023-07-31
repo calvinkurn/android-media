@@ -7,6 +7,10 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
+import com.tokopedia.common_sdk_affiliate_toko.model.AffiliatePageDetail
+import com.tokopedia.common_sdk_affiliate_toko.model.AffiliateSdkPageSource
+import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateAtcSource
+import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetSingleRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
@@ -18,13 +22,13 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.wishlist.data.model.WishlistV2BulkRemoveAdditionalParams
 import com.tokopedia.wishlist.data.model.WishlistV2RecommendationDataModel
 import com.tokopedia.wishlist.data.model.WishlistV2TypeLayoutData
+import com.tokopedia.wishlist.data.model.WishlistV2UiModel
 import com.tokopedia.wishlist.data.model.response.BulkDeleteWishlistV2Response
 import com.tokopedia.wishlist.data.model.response.DeleteWishlistProgressResponse
 import com.tokopedia.wishlist.domain.BulkDeleteWishlistV2UseCase
 import com.tokopedia.wishlist.domain.DeleteWishlistProgressUseCase
 import com.tokopedia.wishlist.util.WishlistIdlingResource
 import com.tokopedia.wishlist.util.WishlistV2Consts
-import com.tokopedia.wishlist.util.WishlistV2Consts.EMPTY_WISHLIST_PAGE_NAME
 import com.tokopedia.wishlist.util.WishlistV2Consts.WISHLIST_TOPADS_ADS_COUNT
 import com.tokopedia.wishlist.util.WishlistV2Consts.WISHLIST_TOPADS_DIMENS
 import com.tokopedia.wishlist.util.WishlistV2Consts.WISHLIST_TOPADS_SOURCE
@@ -34,7 +38,10 @@ import com.tokopedia.wishlist.util.WishlistV2Utils.organizeWishlistV2Data
 import com.tokopedia.wishlistcollection.data.params.*
 import com.tokopedia.wishlistcollection.data.response.*
 import com.tokopedia.wishlistcollection.domain.*
+import com.tokopedia.wishlistcommon.data.params.UpdateWishlistCollectionParams
+import com.tokopedia.wishlistcommon.data.response.UpdateWishlistCollectionResponse
 import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
+import com.tokopedia.wishlistcommon.domain.UpdateWishlistCollectionUseCase
 import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts
 import kotlinx.coroutines.launch
@@ -58,7 +65,8 @@ class WishlistCollectionDetailViewModel @Inject constructor(
     private val getWishlistCollectionSharingDataUseCase: GetWishlistCollectionSharingDataUseCase,
     private val getWishlistCollectionTypeUseCase: GetWishlistCollectionTypeUseCase,
     private val addWishlistBulkUseCase: AddWishlistBulkUseCase,
-    private val addToWishlistV2UseCase: AddToWishlistV2UseCase
+    private val addToWishlistV2UseCase: AddToWishlistV2UseCase,
+    private val affiliateCookieHelper: AffiliateCookieHelper
 ) : BaseViewModel(dispatcher.main) {
     private var recommSrc = ""
 
@@ -91,7 +99,8 @@ class WishlistCollectionDetailViewModel @Inject constructor(
     val deleteCollectionResult: LiveData<Result<DeleteWishlistCollectionResponse.DeleteWishlistCollection>>
         get() = _deleteCollectionResult
 
-    private val _deleteWishlistProgressResult = MutableLiveData<Result<DeleteWishlistProgressResponse.DeleteWishlistProgress>>()
+    private val _deleteWishlistProgressResult =
+        MutableLiveData<Result<DeleteWishlistProgressResponse.DeleteWishlistProgress>>()
     val deleteWishlistProgressResult: LiveData<Result<DeleteWishlistProgressResponse.DeleteWishlistProgress>>
         get() = _deleteWishlistProgressResult
 
@@ -99,15 +108,18 @@ class WishlistCollectionDetailViewModel @Inject constructor(
     val atcResult: LiveData<Result<AddToCartDataModel>>
         get() = _atcResult
 
-    private val _addWishlistCollectionItem = MutableLiveData<Result<AddWishlistCollectionItemsResponse.AddWishlistCollectionItems>>()
+    private val _addWishlistCollectionItem =
+        MutableLiveData<Result<AddWishlistCollectionItemsResponse.AddWishlistCollectionItems>>()
     val addWishlistCollectionItem: LiveData<Result<AddWishlistCollectionItemsResponse.AddWishlistCollectionItems>>
         get() = _addWishlistCollectionItem
 
-    private val _updateWishlistCollectionResult = MutableLiveData<Result<UpdateWishlistCollectionResponse.UpdateWishlistCollection>>()
+    private val _updateWishlistCollectionResult =
+        MutableLiveData<Result<UpdateWishlistCollectionResponse.UpdateWishlistCollection>>()
     val updateWishlistCollectionResult: LiveData<Result<UpdateWishlistCollectionResponse.UpdateWishlistCollection>>
         get() = _updateWishlistCollectionResult
 
-    private val _getWishlistCollectionSharingDataResult = MutableLiveData<Result<GetWishlistCollectionSharingDataResponse.GetWishlistCollectionSharingData>>()
+    private val _getWishlistCollectionSharingDataResult =
+        MutableLiveData<Result<GetWishlistCollectionSharingDataResponse.GetWishlistCollectionSharingData>>()
     val getWishlistCollectionSharingDataResult: LiveData<Result<GetWishlistCollectionSharingDataResponse.GetWishlistCollectionSharingData>>
         get() = _getWishlistCollectionSharingDataResult
 
@@ -129,7 +141,8 @@ class WishlistCollectionDetailViewModel @Inject constructor(
         WishlistIdlingResource.increment()
         launchCatchError(block = {
             val result = getWishlistCollectionItemsUseCase(params)
-            recommSrc = if (result.getWishlistCollectionItems.totalData == 0) EMPTY_WISHLIST_PAGE_NAME else WISHLIST_PAGE_NAME
+            recommSrc =
+                if (result.getWishlistCollectionItems.totalData == 0) EMPTY_WISHLIST_PAGE_NAME else WISHLIST_PAGE_NAME
             _collectionItems.value = Success(result)
             _collectionData.value = Success(
                 organizeWishlistV2Data(
@@ -223,7 +236,13 @@ class WishlistCollectionDetailViewModel @Inject constructor(
         }
     }
 
-    fun bulkDeleteWishlistV2(listProductId: List<String>, userId: String, mode: Int, additionalParams: WishlistV2BulkRemoveAdditionalParams, source: String) {
+    fun bulkDeleteWishlistV2(
+        listProductId: List<String>,
+        userId: String,
+        mode: Int,
+        additionalParams: WishlistV2BulkRemoveAdditionalParams,
+        source: String
+    ) {
         launch {
             _bulkDeleteWishlistV2Result.value = bulkDeleteWishlistV2UseCase.executeSuspend(
                 listProductId,
@@ -317,7 +336,8 @@ class WishlistCollectionDetailViewModel @Inject constructor(
         launchCatchError(block = {
             val result = getWishlistCollectionSharingDataUseCase(collectionId)
             if (result.getWishlistCollectionSharingData.status == WishlistV2CommonConsts.OK) {
-                _getWishlistCollectionSharingDataResult.value = Success(result.getWishlistCollectionSharingData)
+                _getWishlistCollectionSharingDataResult.value =
+                    Success(result.getWishlistCollectionSharingData)
             } else {
                 _getWishlistCollectionSharingDataResult.value = Fail(Throwable())
             }
@@ -344,7 +364,12 @@ class WishlistCollectionDetailViewModel @Inject constructor(
             })
     }
 
-    fun addWishListV2(productId: String, userId: String, listener: WishlistV2ActionListener, sourceCollectionId: String) {
+    fun addWishListV2(
+        productId: String,
+        userId: String,
+        listener: WishlistV2ActionListener,
+        sourceCollectionId: String
+    ) {
         launch(dispatcher.main) {
             addToWishlistV2UseCase.setParams(productId, userId, sourceCollectionId)
             val result =
@@ -355,6 +380,55 @@ class WishlistCollectionDetailViewModel @Inject constructor(
                 listener.onErrorAddWishList((result as Fail).throwable, productId)
             }
         }
+    }
+
+    fun hitAffiliateCookie(
+        affiliateUuid: String,
+        affiliateChannel: String,
+        wishlistCollectionId: String
+    ) {
+        launchCatchError(block = {
+            affiliateCookieHelper.initCookie(
+                affiliateUUID = affiliateUuid,
+                affiliateChannel = affiliateChannel,
+                affiliatePageDetail = AffiliatePageDetail(
+                    pageId = wishlistCollectionId,
+                    source = AffiliateSdkPageSource.Wishlist()
+                )
+            )
+        }, onError = {
+                // no op, expect to be handled by Affiliate SDK
+            })
+    }
+
+    fun checkShouldCreateAffiliateCookieAtcProduct(
+        affiliateUUID: String,
+        affiliateChannel: String,
+        wishlistItemOnAtc: WishlistV2UiModel.Item
+    ) {
+        if (affiliateUUID.isNotEmpty()) {
+            launchCatchError(block = {
+                val affiliateSource = AffiliateSdkPageSource.DirectATC(
+                    AffiliateAtcSource.SHOP_PAGE,
+                    wishlistItemOnAtc.shop.id,
+                    null
+                )
+                affiliateCookieHelper.initCookie(
+                    affiliateUUID = affiliateUUID,
+                    affiliateChannel = affiliateChannel,
+                    affiliatePageDetail = AffiliatePageDetail(
+                        pageId = wishlistItemOnAtc.id,
+                        source = affiliateSource
+                    )
+                )
+            }, onError = {
+                    // no op, expect to be handled by Affiliate SDK
+                })
+        }
+    }
+
+    fun createAffiliateLink(url: String): String {
+        return affiliateCookieHelper.createAffiliateLink(url)
     }
 
     companion object {

@@ -45,7 +45,6 @@ class WishlistV2ListItemViewHolder(private val binding: WishlistV2ListItemBindin
             }
 
             binding.pcListItem.setThreeDotsWishlistOnClickListener { actionListener?.onThreeDotsMenuClicked(item.wishlistItem) }
-            actionListener?.onViewProductCard(item.wishlistItem, position)
         }
     }
 

@@ -1,15 +1,20 @@
 package com.tokopedia.search.di.module
 
+import android.content.Context
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.GridLayoutManager.SpanSizeLookup
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.tokopedia.search.di.qualifier.SearchContext
 import com.tokopedia.search.di.scope.SearchScope
+import com.tokopedia.search.result.product.grid.SearchProductGridSpanSizeLookup
 import com.tokopedia.search.utils.SmallGridSpanCount
 import dagger.Module
 import dagger.Provides
 import timber.log.Timber
 
 @Module
-class StaggeredGridLayoutManagerModule {
+class ProductGridLayoutManagerModule {
 
     @SearchScope
     @Provides
@@ -86,5 +91,23 @@ class StaggeredGridLayoutManagerModule {
         }.apply {
             gapStrategy = StaggeredGridLayoutManager.GAP_HANDLING_NONE
         }
+    }
+
+    @SearchScope
+    @Provides
+    fun provideGridLayoutManager(
+        @SearchContext
+        context: Context,
+        smallGridSpanCount: SmallGridSpanCount
+    ): GridLayoutManager {
+        return GridLayoutManager(context, smallGridSpanCount())
+    }
+
+    @SearchScope
+    @Provides
+    fun provideGridSpanSizeLookup(
+        spanSizeLookup: SearchProductGridSpanSizeLookup
+    ): SpanSizeLookup {
+        return spanSizeLookup
     }
 }
