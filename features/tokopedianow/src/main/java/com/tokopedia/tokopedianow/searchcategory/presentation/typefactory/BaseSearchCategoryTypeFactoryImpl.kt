@@ -162,7 +162,7 @@ abstract class BaseSearchCategoryTypeFactoryImpl(
             )
             TokoNowEmptyStateNoResultViewHolder.LAYOUT -> TokoNowEmptyStateNoResultViewHolder(
                 itemView = view,
-                tokoNowEmptyStateNoResultListener = tokoNowEmptyStateNoResultListener
+                listener  = tokoNowEmptyStateNoResultListener
             )
             TokoNowEmptyStateOocViewHolder.LAYOUT -> TokoNowEmptyStateOocViewHolder(
                 itemView = view,

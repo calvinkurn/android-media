@@ -23,6 +23,7 @@ import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.constant.TokoNowStaticLayoutType.Companion.PRODUCT_ADS_CAROUSEL
+import com.tokopedia.tokopedianow.search.analytics.SearchEmptyNoResultAdultAnalytics
 import com.tokopedia.tokopedianow.search.analytics.SearchProductAdsAnalytics
 import com.tokopedia.tokopedianow.search.analytics.SearchResultTracker.Action.ACTION_CLICK_ATC_SRP_PRODUCT
 import com.tokopedia.tokopedianow.search.analytics.SearchResultTracker.Action.ACTION_CLICK_SRP_PRODUCT
@@ -78,6 +79,9 @@ class TokoNowSearchFragment :
 
     @Inject
     lateinit var productAdsAnalytics: SearchProductAdsAnalytics
+
+    @Inject
+    lateinit var searchEmptyNoResultAdultAnalytics: SearchEmptyNoResultAdultAnalytics
 
     private lateinit var tokoNowSearchViewModel: TokoNowSearchViewModel
 
@@ -572,4 +576,15 @@ class TokoNowSearchFragment :
             event.invoke(userId,warehouseId,isSearchResult)
     }
 
+    override fun onDefaultPrimaryButtonClicked() {
+        searchEmptyNoResultAdultAnalytics.sendClickLearnMoreNoResultForAdultProductEvent(
+            keyword = getViewModel().query
+        )
+    }
+
+    override fun onEmptyStateNoResultImpressed() {
+        searchEmptyNoResultAdultAnalytics.sendImpressionNoResultForAdultProductEvent(
+            keyword = getViewModel().query
+        )
+    }
 }

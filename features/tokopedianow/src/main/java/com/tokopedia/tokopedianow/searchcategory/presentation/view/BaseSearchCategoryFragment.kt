@@ -945,6 +945,10 @@ abstract class BaseSearchCategoryFragment:
         getViewModel().onViewRemoveFilter(option)
     }
 
+    override fun onDefaultPrimaryButtonClicked() { /* nothing to do */ }
+
+    override fun onEmptyStateNoResultImpressed() { /* nothing to do */ }
+
     private fun sendAddToCartRecommendationTrackingEvent(
         addToCartDataTrackerModel: AddToCartDataTrackerModel
     ) {
