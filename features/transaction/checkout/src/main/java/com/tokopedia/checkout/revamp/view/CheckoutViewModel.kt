@@ -504,9 +504,9 @@ class CheckoutViewModel @Inject constructor(
     }
 
     fun loadShipping(order: CheckoutOrderModel, cartPosition: Int) {
-        if (order.isShowScheduleDelivery) {
+        if (order.ratesValidationFlow) {
             viewModelScope.launch(dispatchers.immediate) {
-                loadShippingNormal(cartPosition, order)
+                loadShippingWithSelly(cartPosition, order)
             }
         } else {
             viewModelScope.launch(dispatchers.immediate) {
@@ -527,7 +527,7 @@ class CheckoutViewModel @Inject constructor(
         )
         listData.value = checkoutItems
 
-        val result = logisticProcessor.getRates(
+        val result = logisticProcessor.getRatesWithScheduleDelivery(
             logisticProcessor.getRatesParam(
                 order,
                 listData.value.address()!!.recipientAddressModel,
@@ -539,6 +539,7 @@ class CheckoutViewModel @Inject constructor(
             order.shopShipmentList,
             order.shippingId,
             order.spId,
+            order.fulfillmentId.toString(),
             order
         )
         val list = listData.value.toMutableList()

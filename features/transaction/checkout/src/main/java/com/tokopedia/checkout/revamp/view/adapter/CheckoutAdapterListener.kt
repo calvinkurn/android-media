@@ -1,5 +1,6 @@
 package com.tokopedia.checkout.revamp.view.adapter
 
+import androidx.fragment.app.FragmentManager
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutProductModel
 import com.tokopedia.checkout.view.uimodel.ShipmentNewUpsellModel
@@ -49,6 +50,8 @@ interface CheckoutAdapterListener {
     fun onChangeShippingDuration(order: CheckoutOrderModel, position: Int)
 
     fun onChangeShippingCourier(order: CheckoutOrderModel, position: Int)
+
+    fun getHostFragmentManager(): FragmentManager
 
     fun onClickPromoCheckout(lastApplyUiModel: LastApplyUiModel)
 

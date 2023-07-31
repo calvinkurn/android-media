@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.view.isVisible
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DiffUtil
@@ -935,15 +936,17 @@ class CheckoutFragment :
                         product.addOnGiftingWording.invoiceNotSendToRecipient
                     ),
                     shopName = product.shopName,
-                    products = listOf(GiftingProduct(
-                        product.cartId.toString(),
-                        product.productId.toString(),
-                        product.name,
-                        product.imageUrl,
-                        product.price.toLong(),
-                        product.quantity,
-                        product.variantParentId
-                    )),
+                    products = listOf(
+                        GiftingProduct(
+                            product.cartId.toString(),
+                            product.productId.toString(),
+                            product.name,
+                            product.imageUrl,
+                            product.price.toLong(),
+                            product.quantity,
+                            product.variantParentId
+                        )
+                    ),
                     addOnSavedStates = product.addOnGiftingProductLevelModel.addOnsDataItemModelList.map {
                         AddOnData(
                             it.addOnId,
@@ -977,7 +980,8 @@ class CheckoutFragment :
                 RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.ADD_ON_GIFTING)
             intent.putExtra(AddOnConstant.EXTRA_ADD_ON_PRODUCT_DATA, addOnProductData)
             intent.putExtra(AddOnConstant.EXTRA_ADD_ON_SOURCE, AddOnConstant.ADD_ON_SOURCE_CHECKOUT)
-            startActivityForResult(intent,
+            startActivityForResult(
+                intent,
                 CheckoutConstant.REQUEST_ADD_ON_PRODUCT_LEVEL_BOTTOMSHEET
             )
             checkoutAnalyticsCourierSelection.eventClickAddOnsDetail(product.productId.toString())
@@ -1460,6 +1464,10 @@ class CheckoutFragment :
 
     override fun onCourierShipmentRecommendationCloseClicked() {
         // todo
+    }
+
+    override fun getHostFragmentManager(): FragmentManager {
+        return parentFragmentManager
     }
 
     override fun onClickPromoCheckout(lastApplyUiModel: LastApplyUiModel) {

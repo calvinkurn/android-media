@@ -121,7 +121,7 @@ class CheckoutProductViewHolder(
 
         productBinding.ivProductImage.setImageUrl(product.imageUrl)
         productBinding.tvProductName.text = product.name
-        if (product.ethicalDrugDataModel.iconUrl.isNotEmpty()) {
+        if (product.ethicalDrugDataModel.needPrescription && product.ethicalDrugDataModel.iconUrl.isNotEmpty()) {
             product.ethicalDrugDataModel.iconUrl.getBitmapImageUrl(productBinding.root.context) {
                 try {
                     productBinding.tvProductName.text = SpannableStringBuilder("  ${product.name}").apply {

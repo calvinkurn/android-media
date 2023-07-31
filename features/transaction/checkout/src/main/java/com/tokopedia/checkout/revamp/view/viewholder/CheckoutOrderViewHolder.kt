@@ -89,14 +89,35 @@ class CheckoutOrderViewHolder(
 //                    shippingWidget.layoutStateNoSelectedShipping
 //                )
                 loadCourierState(order, addressModel?.recipientAddressModel)
-            } else if (order.isShowScheduleDelivery) {
+            } else if (courierItemData.scheduleDeliveryUiModel != null) {
                 binding.shippingWidget.prepareLoadCourierState()
                 binding.shippingWidget.hideShippingStateLoading()
                 binding.shippingWidget.showContainerShippingExperience()
                 // todo selly
                 binding.shippingWidget.renderScheduleDeliveryWidget(
                     ShippingWidgetUiModel(
-                        currentAddress = RecipientAddressModel()
+                        // CourierItemData.etaErrorCode
+                        etaErrorCode = courierItemData.etaErrorCode,
+                        // CourierItemData.etaText
+                        estimatedTimeArrival = courierItemData.etaText ?: "",
+
+                        // Bebas ongkir & NOW Shipment
+                        hideShipperName = courierItemData.isHideShipperName,
+                        freeShippingTitle = courierItemData.freeShippingChosenCourierTitle,
+                        // Now Shipment
+                        // label
+                        logPromoDesc = courierItemData.logPromoDesc ?: "",
+                        voucherLogisticExists = !courierItemData.logPromoCode.isNullOrEmpty(),
+                        isHasShownCourierError = false,
+
+                        // CourierItemData.name
+                        courierName = courierItemData.name ?: "",
+                        // CourierItemData.shipperPrice
+                        courierShipperPrice = courierItemData.shipperPrice,
+
+                        currentAddress = RecipientAddressModel(),
+
+                        scheduleDeliveryUiModel = courierItemData.scheduleDeliveryUiModel
                     )
                 )
             } else if (order.isDisableChangeCourier) {
@@ -424,6 +445,6 @@ class CheckoutOrderViewHolder(
     }
 
     override fun getHostFragmentManager(): FragmentManager {
-        TODO("Not yet implemented")
+        return listener.getHostFragmentManager()
     }
 }
