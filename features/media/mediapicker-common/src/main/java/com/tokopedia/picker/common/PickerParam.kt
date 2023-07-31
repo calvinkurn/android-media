@@ -24,12 +24,14 @@ data class PickerParam(
     @SerializedName("minStorageThreshold") private var minStorageThreshold: Long = 150_000_000, // 150 mb
     @SerializedName("isIncludeAnimation") private var isIncludeAnimation: Boolean = false,
     @SerializedName("withEditor") private var withEditor: Boolean = false,
+    @SerializedName("withImmersiveEditor") private var withImmersiveEditor: Boolean = false,
     @SerializedName("pageSource") private var pageSource: PageSource = PageSource.Unknown,
     @SerializedName("subPageSource") private var subPageSource: PageSource = PageSource.Unknown,
     @SerializedName("includeMedias") private var includeMedias: List<String> = emptyList(),
     @SerializedName("excludedMedias") private var excludedMedias: List<File> = emptyList(),
     @SerializedName("previewActionText") private var previewActionText: String = "",
-    @SerializedName("editorParam") private var editorParam: EditorParam? = null
+    @SerializedName("editorParam") private var editorParam: EditorParam? = null,
+    @SerializedName("universalEditorParam") private var universalEditorParam: UniversalEditorParam? = null
 ) : Parcelable {
 
     // getter
@@ -60,6 +62,7 @@ data class PickerParam(
     fun maxImageFileSize() = maxImageFileSize
     fun minStorageThreshold() = minStorageThreshold
     fun isEditorEnabled() = withEditor
+    fun isImmersiveEditorEnabled() = withImmersiveEditor
     fun getEditorParam() = editorParam
     fun previewActionText(): String {
         return if (previewActionText.length > CUSTOM_ACTION_TEXT_LIMIT) {
@@ -90,6 +93,11 @@ data class PickerParam(
     fun withEditor(param: EditorParam.() -> Unit = {}) = apply {
         withEditor = true
         editorParam = EditorParam().apply(param)
+    }
+
+    fun withImmersiveEditor(param: UniversalEditorParam.() -> Unit = {}) = apply {
+        withImmersiveEditor = true
+        universalEditorParam = UniversalEditorParam().apply(param)
     }
 
     fun withoutEditor() = apply { withEditor = false }
