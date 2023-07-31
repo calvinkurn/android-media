@@ -366,8 +366,8 @@ class ShipmentViewModel @Inject constructor(
         var hasAddOnSelected = false
         var totalAddOnGiftingPrice = 0.0
         var totalAddOnProductServicePrice = 0.0
-        var qtyAddOn = 0
-        var totalPriceAddOn = 0.0
+        var qtyAddOn: Int
+        var totalPriceAddOn: Double
         val countMapSummaries = hashMapOf<Int, Pair<Double, Int>>()
         val listShipmentAddOnSummary: ArrayList<ShipmentAddOnSummaryModel> = arrayListOf()
         for (shipmentData in shipmentCartItemModelList) {
@@ -403,12 +403,18 @@ class ShipmentViewModel @Inject constructor(
                             for (addOnProductService in cartItem.addOnProduct.listAddOnProductData) {
                                 if (addOnProductService.status == 1) {
                                     totalAddOnProductServicePrice += (addOnProductService.price * cartItem.quantity)
-                                    if (countMapSummaries.containsKey(addOnProductService.type)) {
-                                        qtyAddOn += cartItem.quantity
+                                    qtyAddOn = if (countMapSummaries.containsKey(addOnProductService.type)) {
+                                        countMapSummaries[addOnProductService.type]?.second?.plus(cartItem.quantity) ?: cartItem.quantity
                                     } else {
-                                        qtyAddOn = cartItem.quantity
+                                        cartItem.quantity
                                     }
-                                    totalPriceAddOn = qtyAddOn * addOnProductService.price
+
+                                    val addOnPrice = cartItem.quantity * addOnProductService.price
+                                    totalPriceAddOn = if (countMapSummaries.containsKey(addOnProductService.type)) {
+                                        countMapSummaries[addOnProductService.type]?.first?.plus(addOnPrice) ?: addOnPrice
+                                    } else {
+                                        addOnPrice
+                                    }
                                     countMapSummaries[addOnProductService.type] = totalPriceAddOn to qtyAddOn
                                 }
                             }

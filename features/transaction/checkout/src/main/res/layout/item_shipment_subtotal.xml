@@ -120,7 +120,6 @@
             android:layout_below="@id/tv_shipping_fee"
             tools:itemCount="2"
             tools:listitem="@layout/item_shipment_add_on_summary"
-            android:layout_marginBottom="16dp"
             android:visibility="gone"/>
 
         <com.tokopedia.unifyprinciples.Typography
@@ -128,6 +127,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/rv_subtotal_addon"
+            android:layout_marginTop="16dp"
             android:layout_marginBottom="16dp"
             android:text="@string/label_insurance_price"
             app:typographyType="body_3"

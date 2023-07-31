@@ -5,18 +5,23 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.view.updatePadding
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.getBooleanArg
 import com.tokopedia.kotlin.extensions.view.getIntArg
+import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.getStringArg
 import com.tokopedia.kotlin.extensions.view.getStringArrayListArg
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.databinding.PostAtcBottomSheetBinding
 import com.tokopedia.product.detail.databinding.ViewPostAtcFooterBinding
 import com.tokopedia.product.detail.postatc.base.PostAtcAdapter
+import com.tokopedia.product.detail.postatc.base.PostAtcBottomSheetDelegate
 import com.tokopedia.product.detail.postatc.base.PostAtcCallback
 import com.tokopedia.product.detail.postatc.base.PostAtcLayoutManager
 import com.tokopedia.product.detail.postatc.base.PostAtcUiModel
@@ -37,8 +42,9 @@ import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
+import kotlin.math.roundToInt
 
-class PostAtcBottomSheet : BottomSheetUnify() {
+class PostAtcBottomSheet : BottomSheetUnify(), PostAtcBottomSheetDelegate {
 
     companion object {
         const val TAG = "post_atc_bs"
@@ -76,27 +82,20 @@ class PostAtcBottomSheet : BottomSheetUnify() {
     }
 
     @Inject
-    lateinit var userSession: UserSessionInterface
+    override lateinit var userSession: UserSessionInterface
 
     @Inject
-    lateinit var trackingQueue: TrackingQueue
+    override lateinit var trackingQueue: TrackingQueue
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    private val component by lazy {
-        DaggerPostAtcComponent.builder()
-            .baseAppComponent((activity?.applicationContext as BaseMainApplication).baseAppComponent)
-            .postAtcModule(PostAtcModule())
-            .build()
-    }
+    private val component by getComponent()
+    override val viewModel by getViewModel()
 
-    val viewModel by lazy {
-        ViewModelProvider(this, viewModelFactory)[PostAtcViewModel::class.java]
-    }
+    private val callback = PostAtcCallback(this)
+    override val adapter = PostAtcAdapter(callback)
 
-    internal var binding: PostAtcBottomSheetBinding? = null
-        private set
     private val argProductId: String by getStringArg(ARG_PRODUCT_ID)
     private val argCartId: String by getStringArg(ARG_CART_ID)
     private val argIsFulfillment: Boolean by getBooleanArg(ARG_IS_FULFILLMENT)
@@ -106,10 +105,10 @@ class PostAtcBottomSheet : BottomSheetUnify() {
     private val argWarehouseId: String by getStringArg(ARG_WAREHOUSE_ID)
     private val argQuantity: Int by getIntArg(ARG_QUANTITY)
 
-    private val callback = PostAtcCallback(this)
-    internal val adapter = PostAtcAdapter(callback)
-
-    internal var footer: ViewPostAtcFooterBinding? = null
+    override var binding: PostAtcBottomSheetBinding? = null
+        private set
+    override var footer: ViewPostAtcFooterBinding? = null
+        private set
 
     override fun onCreate(savedInstanceState: Bundle?) {
         component.inject(this)
@@ -127,6 +126,7 @@ class PostAtcBottomSheet : BottomSheetUnify() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setRecyclerViewMaxHeight()
         observeViewModel()
         initData()
     }
@@ -163,6 +163,21 @@ class PostAtcBottomSheet : BottomSheetUnify() {
         postAtcRv.adapter = adapter
     }
 
+    /**
+     * Please Call this function when bottomSheetHeader finish render
+     */
+    private fun setRecyclerViewMaxHeight() {
+        val view = binding?.postAtcRv ?: return
+        val layoutParams = view.layoutParams as? ConstraintLayout.LayoutParams ?: return
+        val maxHeight = (getScreenHeight() * 0.7) - bottomSheetHeader.height
+        layoutParams.matchConstraintMaxHeight = maxHeight.roundToInt()
+        view.layoutParams = layoutParams
+    }
+
+    /**
+     * Section of Observe ViewModel
+     */
+
     private fun observeViewModel() = with(viewModel) {
         layouts.observe(viewLifecycleOwner, layoutsObserver)
         recommendations.observe(viewLifecycleOwner, recommendationsObserver)
@@ -195,6 +210,10 @@ class PostAtcBottomSheet : BottomSheetUnify() {
             })
         }
 
+    /**
+     * End of Observe ViewModel
+     */
+
     private fun updateFooter() {
         val data = viewModel.postAtcInfo.footer
         if (!data.shouldShow) return
@@ -207,6 +226,12 @@ class PostAtcBottomSheet : BottomSheetUnify() {
                 callback.goToCart(data.cartId)
             }
         }
+
+        footerView.addOneTimeGlobalLayoutListener {
+            footer?.root?.height?.let {
+                binding?.postAtcRv?.updatePadding(bottom = it)
+            }
+        }
     }
 
     private fun showError(it: Throwable) {
@@ -217,7 +242,7 @@ class PostAtcBottomSheet : BottomSheetUnify() {
         }
     }
 
-    internal fun initData() {
+    override fun initData() {
         /**
          * Init Loading
          */
@@ -232,5 +257,16 @@ class PostAtcBottomSheet : BottomSheetUnify() {
             argWarehouseId,
             argQuantity
         )
+    }
+
+    private fun getComponent() = lazy {
+        DaggerPostAtcComponent.builder()
+            .baseAppComponent((activity?.applicationContext as BaseMainApplication).baseAppComponent)
+            .postAtcModule(PostAtcModule())
+            .build()
+    }
+
+    private fun getViewModel() = lazy {
+        ViewModelProvider(this, viewModelFactory)[PostAtcViewModel::class.java]
     }
 }
