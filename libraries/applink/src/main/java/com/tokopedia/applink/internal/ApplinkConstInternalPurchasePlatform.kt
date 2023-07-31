@@ -18,10 +18,14 @@ object ApplinkConstInternalPurchasePlatform {
 
     // Wishlist Collection
     const val WISHLIST_COLLECTION = "$INTERNAL_TRANSACTION/wishlist-collection"
+    const val WISHLIST_COLLECTION_EDIT = "$INTERNAL_TRANSACTION/wishlist-collection/edit"
     const val WISHLIST_COLLECTION_BOTTOMSHEET = "$INTERNAL_TRANSACTION/wishlist-collection-bottomsheet"
+    const val WISHLIST_COLLECTION_CREATE_BOTTOMSHEET = "$INTERNAL_TRANSACTION/wishlist-collection-create-bottomsheet"
     const val WISHLIST_COLLECTION_DETAIL_INTERNAL = "$INTERNAL_TRANSACTION/wishlist/collection/{collection_id}/"
+    const val WISHLIST_COLLECTION_DETAIL_WITH_AFFILIATE_UUID = "$INTERNAL_TRANSACTION/wishlist/collection/{collection_id}/?aff_unique_id={affiliate_uuid}"
     const val PATH_PRODUCT_ID = "productId"
     const val PATH_COLLECTION_ID = "collectionId"
+    const val PATH_AFFILIATE_UNIQUE_ID = "aff_unique_id"
     const val PATH_SRC = "src"
     const val BOOLEAN_EXTRA_NEED_REFRESH = "needRefresh"
     const val BOOLEAN_EXTRA_SUCCESS = "success"

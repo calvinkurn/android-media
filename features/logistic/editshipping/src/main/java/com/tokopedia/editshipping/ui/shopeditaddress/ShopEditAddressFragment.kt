@@ -34,9 +34,10 @@ import com.tokopedia.editshipping.util.EditShippingConstant.EXTRA_IS_FULL_FLOW
 import com.tokopedia.editshipping.util.EditShippingConstant.EXTRA_LAT
 import com.tokopedia.editshipping.util.EditShippingConstant.EXTRA_LONG
 import com.tokopedia.editshipping.util.EditShippingConstant.EXTRA_WAREHOUSE_DATA
-import com.tokopedia.editshipping.util.ShopEditAddressUtils
+import com.tokopedia.editshipping.util.ShopEditAddressLevenshteinUtils
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.logisticCommon.data.constant.AddressConstant
+import com.tokopedia.logisticCommon.data.constant.AddressConstant.EXTRA_WH_DISTRICT_ID
 import com.tokopedia.logisticCommon.data.entity.address.DistrictRecommendationAddress
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.data.entity.shoplocation.Warehouse
@@ -319,9 +320,9 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
     }
 
     private fun checkValidateAddressDetail(addressHelper: String, userAddress: String) {
-        val normalizeAddressHelper = ShopEditAddressUtils.normalize(addressHelper)
-        val normalizeUserAddress = ShopEditAddressUtils.normalize(userAddress)
-        if (ShopEditAddressUtils.validateAddressSimilarity(
+        val normalizeAddressHelper = ShopEditAddressLevenshteinUtils.normalize(addressHelper)
+        val normalizeUserAddress = ShopEditAddressLevenshteinUtils.normalize(userAddress)
+        if (ShopEditAddressLevenshteinUtils.validateAddressSimilarity(
                 normalizeAddressHelper,
                 normalizeUserAddress
             )
@@ -536,6 +537,13 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
                     if (lat != null && long != null) {
                         putDouble(AddressConstant.EXTRA_LAT, lat)
                         putDouble(AddressConstant.EXTRA_LONG, long)
+                        putBoolean(EXTRA_IS_EDIT_WAREHOUSE, true)
+                        warehouseDataModel?.districtId?.let { districtId ->
+                            putLong(
+                                EXTRA_WH_DISTRICT_ID,
+                                districtId
+                            )
+                        }
                     }
                 }
                 RouteManager.getIntent(activity, ApplinkConstInternalLogistic.PINPOINT).apply {

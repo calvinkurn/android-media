@@ -1,60 +1,70 @@
 package com.tokopedia.product.detail.view.viewholder
 
 import android.view.View
-import android.view.ViewGroup
-import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.model.ImpressHolder
-import com.tokopedia.mvcwidget.AnimatedInfos
+import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.mvcwidget.MvcData
 import com.tokopedia.mvcwidget.trackers.MvcSource
-import com.tokopedia.mvcwidget.views.MvcView
 import com.tokopedia.product.detail.R
-import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMerchantVoucherSummaryDataModel
+import com.tokopedia.product.detail.databinding.ItemDynamicMerchantVoucherSummaryBinding
+import com.tokopedia.product.detail.databinding.ItemDynamicMvcContentBinding
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 
-class ProductMerchantVoucherSummaryViewHolder(val view: View, val listener:DynamicProductDetailListener): AbstractViewHolder<ProductMerchantVoucherSummaryDataModel>(view) {
+class ProductMerchantVoucherSummaryViewHolder(
+    val view: View,
+    val listener: DynamicProductDetailListener
+) : ProductDetailPageViewHolder<ProductMerchantVoucherSummaryDataModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.item_dynamic_merchant_voucher_summary
     }
 
-    private var merchantVoucher: MvcView? = null
+    private val rootBinding by lazyThreadSafetyNone {
+        ItemDynamicMerchantVoucherSummaryBinding.bind(view)
+    }
+
+    private val mvcBinding by lazyThreadSafetyNone {
+        ItemDynamicMvcContentBinding.bind(rootBinding.mvcContentStub.inflate())
+    }
+
+    private val mvcWidget by lazyThreadSafetyNone {
+        mvcBinding.productDetailMerchantVoucherWidget
+    }
 
     override fun bind(element: ProductMerchantVoucherSummaryDataModel?) {
-        if(element?.isShown != true) {
-            view.layoutParams.height = 0
+        val uiModel = element?.uiModel
+
+        if (uiModel?.isShown != true) {
             return
         }
-        view.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
-        initMerchantVoucher()
-        element.let {
-            setMerchantVoucher(it.animatedInfos, it.shopId, element.productIdMVC)
+
+        setImpression(element = element)
+        setMerchantVoucher(uiModel = element.uiModel)
+    }
+
+    private fun setImpression(element: ProductMerchantVoucherSummaryDataModel) {
+        mvcWidget.addOnImpressionListener(ImpressHolder()) {
+            mvcWidget.sendImpressionTrackerForPdp()
         }
 
-        merchantVoucher?.addOnImpressionListener(ImpressHolder()){
-            merchantVoucher?.sendImpressionTrackerForPdp()
-        }
-
-        view.addOnImpressionListener(element.impressHolder){
+        view.addOnImpressionListener(element.impressHolder) {
             listener.onImpressComponent(getComponentTrackData(element))
         }
     }
 
-    private fun initMerchantVoucher() {
-        merchantVoucher = view.findViewById(R.id.productDetailMerchantVoucherWidget)
+    private fun setMerchantVoucher(uiModel: ProductMerchantVoucherSummaryDataModel.UiModel) {
+        val source = MvcSource.PDP
+        mvcWidget.setData(
+            mvcData = MvcData(uiModel.animatedInfo),
+            shopId = uiModel.shopId,
+            source = source,
+            startActivityForResultFunction = {
+                listener.onMerchantVoucherSummaryClicked(source = source, uiModel = uiModel)
+            }
+        )
+        mvcWidget.show()
     }
-
-    private fun setMerchantVoucher(animatedInfos: List<AnimatedInfos>, shopId: String, productId: String) {
-        merchantVoucher?.setData(MvcData(animatedInfos), shopId, MvcSource.PDP,{
-            listener.onMerchantVoucherSummaryClicked(shopId, MvcSource.PDP, productId = productId)
-        })
-        merchantVoucher?.show()
-    }
-
-    private fun getComponentTrackData(
-        element: ProductMerchantVoucherSummaryDataModel
-    ) = ComponentTrackDataModel(element.type, element.name, adapterPosition + 1)
 }

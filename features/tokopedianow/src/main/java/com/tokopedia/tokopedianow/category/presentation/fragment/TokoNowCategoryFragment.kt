@@ -1328,7 +1328,8 @@ class TokoNowCategoryFragment :
             viewModel = viewModel,
             analytic = analytic.productAdsAnalytic,
             categoryIdL1 = categoryIdL1,
-            startActivityResult = ::startActivityForResult
+            startActivityResult = ::startActivityForResult,
+            showToasterWhenAddToCartBlocked = ::showToasterWhenAddToCartBlocked
         )
     }
 }

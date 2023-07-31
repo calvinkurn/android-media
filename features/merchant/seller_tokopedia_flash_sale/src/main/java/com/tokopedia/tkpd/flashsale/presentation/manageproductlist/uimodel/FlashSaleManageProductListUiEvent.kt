@@ -1,5 +1,6 @@
 package com.tokopedia.tkpd.flashsale.presentation.manageproductlist.uimodel
 
+import com.tokopedia.campaign.entity.RemoteTicker
 import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct
 
 sealed class FlashSaleManageProductListUiEvent {
@@ -32,6 +33,10 @@ sealed class FlashSaleManageProductListUiEvent {
 
     data class UpdateProductData(
         val productData: ReservedProduct.Product
+    ) : FlashSaleManageProductListUiEvent()
+
+    data class GetTickerData(
+        val rollenceValueList : List<String>
     ) : FlashSaleManageProductListUiEvent()
 
 }

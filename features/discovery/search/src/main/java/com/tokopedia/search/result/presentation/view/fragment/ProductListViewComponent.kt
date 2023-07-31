@@ -4,12 +4,12 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.recommendation_widget_common.di.RecommendationModule
 import com.tokopedia.search.di.module.FilterControllerModule
 import com.tokopedia.search.di.module.IrisModule
+import com.tokopedia.search.di.module.ProductGridLayoutManagerModule
 import com.tokopedia.search.di.module.RecycledViewPoolModule
 import com.tokopedia.search.di.module.RemoteConfigModule
 import com.tokopedia.search.di.module.SearchContextModule
 import com.tokopedia.search.di.module.SearchNavigationListenerModule
 import com.tokopedia.search.di.module.SearchOnBoardingLocalCacheModule
-import com.tokopedia.search.di.module.StaggeredGridLayoutManagerModule
 import com.tokopedia.search.di.module.TrackingQueueModule
 import com.tokopedia.search.di.module.UserSessionModule
 import com.tokopedia.search.di.scope.SearchScope
@@ -69,7 +69,7 @@ import dagger.Component
     ProductListProvidersModule::class,
     FilterControllerModule::class,
     ProductListPresenterModule::class,
-    StaggeredGridLayoutManagerModule::class,
+    ProductGridLayoutManagerModule::class,
     BannedProductsViewModule::class,
     RecycledViewPoolModule::class,
     SearchNavigationListenerModule::class,

@@ -3,6 +3,7 @@ package com.tokopedia.feedplus.presentation.adapter.viewholder
 import android.annotation.SuppressLint
 import android.view.GestureDetector
 import android.view.MotionEvent
+import android.view.View
 import android.view.ViewParent
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
@@ -14,6 +15,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.databinding.ItemFeedPostBinding
 import com.tokopedia.feedplus.domain.mapper.MapperFeedModelToTrackerDataModel
+import com.tokopedia.feedplus.presentation.adapter.FeedContentAdapter
 import com.tokopedia.feedplus.presentation.adapter.FeedPostImageAdapter
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_CLEAR_MODE
@@ -22,16 +24,19 @@ import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_NOT_SELECTED
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_REMINDER_CHANGED
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_SELECTED
+import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_SELECTED_CHANGED
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloads
 import com.tokopedia.feedplus.presentation.adapter.listener.FeedListener
 import com.tokopedia.feedplus.presentation.model.*
 import com.tokopedia.feedplus.presentation.uiview.*
 import com.tokopedia.feedplus.presentation.util.animation.FeedLikeAnimationComponent
 import com.tokopedia.feedplus.presentation.util.animation.FeedSmallLikeIconAnimationComponent
+import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.play_common.util.extension.changeConstraint
 import kotlinx.coroutines.*
 import kotlin.math.abs
 
@@ -53,8 +58,18 @@ class FeedPostImageViewHolder(
         LinearLayoutManager(binding.root.context, RecyclerView.HORIZONTAL, false)
     private var adapter: FeedPostImageAdapter? = null
 
+    private val captionViewListener = object : FeedCaptionView.Listener {
+        override fun onExpanded(view: FeedCaptionView) {
+            val screenHeight = getScreenHeight()
+            val maxHeight = screenHeight * 0.45f
+            binding.root.changeConstraint {
+                constrainMaxHeight(binding.layoutFeedCaption.id, maxHeight.toInt())
+            }
+        }
+    }
+
     private val authorView = FeedAuthorInfoView(binding.layoutAuthorInfo, listener)
-    private val captionView = FeedCaptionView(binding.tvFeedCaption, listener)
+    private val captionView = FeedCaptionView(binding.tvFeedCaption, binding.layoutFeedCaption, listener, captionViewListener)
     private val productButtonView = FeedProductButtonView(binding.productTagButton, listener)
     private val asgcTagsView = FeedAsgcTagsView(binding.rvFeedAsgcTags)
     private val campaignView = FeedCampaignRibbonView(binding.feedCampaignRibbon, listener)
@@ -74,6 +89,15 @@ class FeedPostImageViewHolder(
     private var mData: FeedCardImageContentModel? = null
 
     init {
+        binding.root.addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
+            override fun onViewAttachedToWindow(p0: View) {
+            }
+
+            override fun onViewDetachedFromWindow(p0: View) {
+                onNotSelected()
+            }
+        })
+
         with(binding) {
             indicatorFeedContent.activeColor = ContextCompat.getColor(
                 binding.root.context,
@@ -170,6 +194,12 @@ class FeedPostImageViewHolder(
         binding.scrollableHost.setTargetParent(parentToBeDisabled)
     }
 
+    fun bind(item: FeedContentAdapter.Item) {
+        val data = item.data as FeedCardImageContentModel
+        bind(data)
+        if (item.isSelected) onSelected(data)
+    }
+
     override fun bind(element: FeedCardImageContentModel?) {
         mData = element
         element?.let { data ->
@@ -220,6 +250,17 @@ class FeedPostImageViewHolder(
         }
     }
 
+    fun bind(item: FeedContentAdapter.Item, payloads: MutableList<Any>) {
+        val selectedPayload = if (item.isSelected) FEED_POST_SELECTED else FEED_POST_NOT_SELECTED
+        val feedPayloads = payloads.firstOrNull { it is FeedViewHolderPayloads } as? FeedViewHolderPayloads
+        val newPayloads = if (feedPayloads != null && feedPayloads.payloads.contains(FEED_POST_SELECTED_CHANGED)) {
+            payloads.toMutableList().also { it.add(selectedPayload) }
+        } else {
+            payloads
+        }
+        bind(item.data as FeedCardImageContentModel, newPayloads)
+    }
+
     override fun bind(element: FeedCardImageContentModel?, payloads: MutableList<Any>) {
         super.bind(element, payloads)
         mData = element
@@ -243,21 +284,11 @@ class FeedPostImageViewHolder(
             }
 
             if (payloads.contains(FEED_POST_SELECTED)) {
-                campaignView.resetView()
-                campaignView.startAnimation()
-                sendImpressionTracker(it)
-                updateProductTagText(it)
-
-                isAutoSwipeOn = true
-                runAutoSwipe()
+                onSelected(element)
             }
 
             if (payloads.contains(FEED_POST_NOT_SELECTED)) {
-                job?.cancel()
-                campaignView.resetView()
-                hideClearView()
-
-                isAutoSwipeOn = false
+                onNotSelected()
             }
 
             if (payloads.contains(FeedViewHolderPayloadActions.FEED_POST_FOLLOW_CHANGED)) {
@@ -273,6 +304,24 @@ class FeedPostImageViewHolder(
                 }
             }
         }
+    }
+
+    private fun onSelected(data: FeedCardImageContentModel) {
+        campaignView.resetView()
+        campaignView.startAnimation()
+        sendImpressionTracker(data)
+        updateProductTagText(data)
+
+        isAutoSwipeOn = true
+        runAutoSwipe()
+    }
+
+    private fun onNotSelected() {
+        job?.cancel()
+        campaignView.resetView()
+        hideClearView()
+
+        isAutoSwipeOn = false
     }
 
     private fun updateProductTagText(element: FeedCardImageContentModel) {
