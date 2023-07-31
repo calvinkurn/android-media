@@ -112,6 +112,7 @@ class DeveloperOptionActivity :
         const val EXTRA_IS_COACHMARK = "EXTRA_IS_COACHMARK"
         const val DEPRECATED_API_SWITCHER_TOASTER_SP_NAME = "deprecated_switcher_toggle"
         const val DEPRECATED_API_SWITCHER_TOASTER_KEY = "deprecated_switcher_key"
+        const val PREF_KEY_FPI_MONITORING_POPUP = "fpi_monitoring_popup"
     }
 
     private var userSession: UserSession? = null

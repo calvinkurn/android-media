@@ -1,11 +1,22 @@
 package com.tokopedia.scp_rewards.widget.medalHeader
 
+import android.animation.ObjectAnimator
+import android.animation.PropertyValuesHolder
 import android.content.Context
 import android.graphics.Bitmap
 import android.util.AttributeSet
+import android.util.Property
 import android.view.LayoutInflater
+import android.view.MotionEvent
+import android.view.View
+import android.view.animation.AccelerateDecelerateInterpolator
+import android.view.animation.OvershootInterpolator
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.graphics.scale
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.scp_rewards.R
+import com.tokopedia.scp_rewards.common.constants.EASE_IN_OUT
+import com.tokopedia.scp_rewards.common.constants.OVER_SHOOT
 import com.tokopedia.scp_rewards.common.utils.downloadImage
 import com.tokopedia.scp_rewards.databinding.WidgetMedalLottieAnimationBinding
 import com.tokopedia.scp_rewards_common.loadLottieFromUrl
@@ -24,6 +35,12 @@ private const val SHUTTER_MANUAL_OPEN = "shutter_manual_open"
 class MedalLottieAnimation(private val context: Context, attrs: AttributeSet?) :
     ConstraintLayout(context, attrs) {
 
+    private companion object {
+        const val SCALE_100 = 1f
+        const val SCALE_75 = 0.75f
+        const val DURATION = 300L
+    }
+
     private val binding =
         WidgetMedalLottieAnimationBinding.inflate(LayoutInflater.from(context), this)
 
@@ -31,12 +48,17 @@ class MedalLottieAnimation(private val context: Context, attrs: AttributeSet?) :
 
     fun loadLottie(data: MedalHeaderData, onClickAction: (() -> Unit)? = null) {
         this.onClickAction = onClickAction
-        loadSparks(data.lottieSparklesUrl)
-        downloadImages(data, {
-            loadMedalBadge(data, it)
-        }, {
-            binding.lottieView.setImageResource(R.drawable.fallback_badge)
-        })
+        try {
+            loadSparks(data.lottieSparklesUrl)
+            downloadImages(data, {
+                loadMedalBadge(data, it)
+            }, {
+                binding.lottieView.setImageResource(R.drawable.fallback_badge)
+            })
+        } catch (ex: Throwable) {
+            // For Out of memory exceptions
+            FirebaseCrashlytics.getInstance().recordException(ex)
+        }
     }
 
     private fun loadSparks(lottieSparklesUrl: String?) {
@@ -52,19 +74,27 @@ class MedalLottieAnimation(private val context: Context, attrs: AttributeSet?) :
             lottieView.loadLottieFromUrl(
                 url = data.lottieUrl,
                 onLottieLoaded = {
-                    lottieView.maintainOriginalImageBounds = true
-                    map.forEach { (key, bitmap) -> lottieView.updateBitmap(key, bitmap) }
-                    val textAutoShow = lottieView.composition?.markers
-                        ?.map { it.name }
-                        ?.containsAll(
-                            listOf(
-                                SHUTTER_AUTO_CLOSE,
-                                SHUTTER_AUTO_OPEN,
-                                SHUTTER_MANUAL_OPEN,
-                                SHUTTER_MANUAL_CLOSE
+                    map.forEach { (key, bitmap) ->
+                        val imageAsset = lottieView.composition?.images?.get(key)
+                        lottieView.updateBitmap(
+                            key,
+                            bitmap?.scale(
+                                imageAsset?.width
+                                    ?: bitmap.width,
+                                imageAsset?.height ?: bitmap.height
                             )
                         )
-                    if (textAutoShow == true) {
+                    }
+                    val markersList = listOf(
+                        SHUTTER_AUTO_CLOSE,
+                        SHUTTER_AUTO_OPEN,
+                        SHUTTER_MANUAL_OPEN,
+                        SHUTTER_MANUAL_CLOSE
+                    )
+                    val textAutoShow = markersList.all { name ->
+                        lottieView.composition?.markers?.any { it.matchesName(name) } == true
+                    }
+                    if (textAutoShow) {
                         lottieView.setMaxFrame(SHUTTER_AUTO_CLOSE)
                     }
                     binding.lottieViewSparks.playAnimation()
@@ -73,10 +103,9 @@ class MedalLottieAnimation(private val context: Context, attrs: AttributeSet?) :
                     lottieView.setImageResource(R.drawable.fallback_badge)
                 },
                 onLottieEnded = {
-                    val markerName =
-                        lottieView.composition?.markers?.find { it.startFrame.toInt() == lottieView.frame }?.name
-                    when (markerName) {
-                        SHUTTER_AUTO_CLOSE -> {
+                    val marker = lottieView.composition?.markers?.find { it.startFrame.toInt() == lottieView.frame }
+                    when {
+                        marker?.matchesName(SHUTTER_AUTO_CLOSE) == true -> {
                             binding.tvShutter.animate().apply {
                                 duration = 120
                                 alpha(1F)
@@ -89,7 +118,7 @@ class MedalLottieAnimation(private val context: Context, attrs: AttributeSet?) :
                             lottieView.playAnimation()
                         }
 
-                        SHUTTER_AUTO_OPEN -> {
+                        marker?.matchesName(SHUTTER_AUTO_OPEN) == true -> {
                             binding.tvShutter.animate().apply {
                                 duration = 120
                                 alpha(0F)
@@ -140,14 +169,32 @@ class MedalLottieAnimation(private val context: Context, attrs: AttributeSet?) :
                 isOpenToClose = !isOpenToClose
                 playAnimation()
             }
+
+            setOnTouchListener { _, event ->
+                when (event?.action) {
+                    MotionEvent.ACTION_UP -> {
+                        scaleView(SCALE_75, SCALE_100, OVER_SHOOT)
+                        binding.tvShutter.scaleView(SCALE_75, SCALE_100, OVER_SHOOT)
+                        performClick()
+                    }
+
+                    MotionEvent.ACTION_CANCEL, MotionEvent.ACTION_MOVE -> {
+                        scaleView(SCALE_75, SCALE_100, OVER_SHOOT)
+                        binding.tvShutter.scaleView(SCALE_75, SCALE_100, OVER_SHOOT)
+                    }
+
+                    MotionEvent.ACTION_DOWN -> {
+                        scaleView(SCALE_100, SCALE_75, EASE_IN_OUT)
+                        binding.tvShutter.scaleView(SCALE_100, SCALE_75, EASE_IN_OUT)
+                    }
+                }
+
+                return@setOnTouchListener true
+            }
         }
     }
 
-    private fun downloadImages(
-        data: MedalHeaderData,
-        onSuccess: (Map<String, Bitmap?>) -> Unit,
-        onFailure: () -> Unit
-    ) {
+    private fun downloadImages(data: MedalHeaderData, onSuccess: (Map<String, Bitmap?>) -> Unit, onFailure: () -> Unit) {
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val map = mutableMapOf<String, Bitmap?>()
@@ -176,5 +223,21 @@ class MedalLottieAnimation(private val context: Context, attrs: AttributeSet?) :
         }
     }
 
+    private fun View.scaleView(from: Float, to: Float, interpolatorType: Int) {
+        if (to == scaleX && to == scaleY) {
+            return
+        }
 
+        ObjectAnimator.ofPropertyValuesHolder(this, scaleProperty(View.SCALE_X, from, to), scaleProperty(View.SCALE_Y, from, to)).apply {
+            this.duration = DURATION
+            interpolator = when (interpolatorType) {
+                EASE_IN_OUT -> AccelerateDecelerateInterpolator()
+                OVER_SHOOT -> OvershootInterpolator()
+                else -> AccelerateDecelerateInterpolator()
+            }
+            start()
+        }
+    }
+
+    private fun scaleProperty(property: Property<View, Float>, from: Float, to: Float) = PropertyValuesHolder.ofFloat(property, from, to)
 }
