@@ -19,6 +19,9 @@ object TopAdsDashboardConstant {
     const val PARAM_LEVEL = "level"
     const val HEADLINE = "headline"
     const val SOURCE_ANDROID_HEADLINE = "android.topads_headline"
+    const val SOURCE_PRODUCT_GROUP_DETAIL_PAGE = "android.topads_product_group_detail_page"
+    const val SOURCE_HEADLINE_GROUP_DETAIL_PAGE = "android.topads_headline_group_detail_page"
+    const val SOURCE_HEADLINE__PAGE = "android.topads_dashboard_headline_page"
 
     const val SHOP_ID = "shopId"
     const val OFFSCREEN_PAGE_LIMIT = 3

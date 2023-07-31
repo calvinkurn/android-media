@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/insight_centre_widget_entry_point_bg">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/insightWidgetIcon"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="12dp"
+        app:layout_constraintBottom_toTopOf="@+id/widgetCTAButton"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:srcCompat="@drawable/performance_widget_default_icon" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/insightWidgetTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="16dp"
+        android:textColor="@color/Unify_NN950"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/insightWidgetIcon"
+        app:layout_constraintTop_toTopOf="@+id/insightWidgetIcon"
+        app:typographyType="display_3"
+        app:typographyWeight="bold"
+        tools:text="Baru 2 dari 12 iklanmu yang maksimal" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/insightWidgetSubtitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="16dp"
+        android:textColor="@color/Unify_NN950"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/insightWidgetIcon"
+        app:layout_constraintTop_toBottomOf="@id/insightWidgetTitle"
+        app:typographyType="display_3"
+        tools:text="Yuk, cek Saran TopAds untuk maksimalkan performa iklanmu!" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/widgetCTAButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="12dp"
+        android:text="Lihat Selengkapnya"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/insightWidgetSubtitle"
+        app:unifyButtonSize="medium"
+        app:unifyButtonType="main"
+        app:unifyButtonVariant="ghost" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

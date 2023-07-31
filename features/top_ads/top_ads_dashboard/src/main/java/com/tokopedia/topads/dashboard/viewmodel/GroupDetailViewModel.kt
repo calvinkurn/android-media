@@ -2,6 +2,8 @@ package com.tokopedia.topads.dashboard.viewmodel
 
 import android.content.res.Resources
 import android.os.Bundle
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
@@ -28,6 +30,9 @@ import com.tokopedia.topads.dashboard.data.model.CountDataItem
 import com.tokopedia.topads.dashboard.data.model.DataStatistic
 import com.tokopedia.topads.dashboard.data.model.KeywordsResponse
 import com.tokopedia.topads.dashboard.domain.interactor.*
+import com.tokopedia.topads.dashboard.recommendation.data.model.cloud.TopAdsBatchGetInsightCountByAdGroupIDResponse
+import com.tokopedia.topads.dashboard.recommendation.data.model.local.TopAdsListAllInsightState
+import com.tokopedia.topads.dashboard.recommendation.usecase.TopAdsBatchGetInsightCountByAdGroupIDUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import java.util.*
 import javax.inject.Inject
@@ -51,8 +56,12 @@ class GroupDetailViewModel @Inject constructor(
     private val getHeadlineInfoUseCase: GetHeadlineInfoUseCase,
     private val bidInfoUseCase: BidInfoUseCase,
     private val topAdsCreateUseCase: TopAdsCreateUseCase,
+    private val topAdsBatchGetInsightCountByAdGroupIDUseCase: TopAdsBatchGetInsightCountByAdGroupIDUseCase,
     private val userSession: UserSessionInterface
 ) : BaseViewModel(dispatcher.main) {
+
+    private var _groupInsightCount: MutableLiveData<TopAdsListAllInsightState<TopAdsBatchGetInsightCountByAdGroupIDResponse>> = MutableLiveData()
+    val groupInsightCount: LiveData<TopAdsListAllInsightState<TopAdsBatchGetInsightCountByAdGroupIDResponse>> = _groupInsightCount
 
     fun getGroupProductData(
         page: Int,
@@ -400,6 +409,15 @@ class GroupDetailViewModel @Inject constructor(
                 it.printStackTrace()
             }
         )
+    }
+
+    fun getGroupInsightData(groupId: String, source:String) {
+        launchCatchError(dispatcher.main, block = {
+            _groupInsightCount.value = topAdsBatchGetInsightCountByAdGroupIDUseCase.invoke(groupId, source)
+        },
+            onError = {
+                _groupInsightCount.value = TopAdsListAllInsightState.Fail(it)
+            })
     }
 
     public override fun onCleared() {

@@ -65,6 +65,7 @@ import com.tokopedia.topads.dashboard.view.fragment.TopAdsDashboardBerandaFragme
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsProductIklanFragment
 import com.tokopedia.topads.dashboard.view.fragment.insight.TopAdsInsightShopKeywordRecommendationFragment
 import com.tokopedia.topads.dashboard.view.fragment.insight.TopAdsRecommendationFragment
+import com.tokopedia.topads.dashboard.view.listener.RecommendationWidgetCTAListener
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDashboardPresenter
 import com.tokopedia.topads.dashboard.view.sheet.CustomDatePicker
 import com.tokopedia.topads.dashboard.view.sheet.DatePickerSheet
@@ -97,7 +98,8 @@ class TopAdsDashboardActivity :
     TopAdsProductIklanFragment.AppBarAction,
     TopAdsProductIklanFragment.AdInfo,
     TopAdsHeadlineBaseFragment.AppBarActionHeadline,
-    CustomDatePicker.ActionListener {
+    CustomDatePicker.ActionListener,
+    RecommendationWidgetCTAListener {
 
     private var appBarLayout: AppBarLayout? = null
     private var tabLayout: TabsUnify? = null
@@ -662,5 +664,9 @@ class TopAdsDashboardActivity :
                 is TopAdsDashboardBerandaFragment -> (frag.fragment as TopAdsDashboardBerandaFragment).loadSummaryStats()
             }
         }
+    }
+
+    override fun onWidgetCTAClick() {
+        switchTab(INSIGHT_PAGE)
     }
 }
