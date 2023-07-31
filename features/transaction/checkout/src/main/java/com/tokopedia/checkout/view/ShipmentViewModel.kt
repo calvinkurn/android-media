@@ -125,6 +125,7 @@ import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceCheckout
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceProductCartMapData
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant.ADD_ON_PRODUCT_STATUS_CHECK
+import com.tokopedia.purchase_platform.common.constant.AddOnConstant.ADD_ON_PRODUCT_STATUS_MANDATORY
 import com.tokopedia.purchase_platform.common.constant.CartConstant
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.DEFAULT_ERROR_MESSAGE_FAIL_APPLY_BBO
@@ -402,7 +403,7 @@ class ShipmentViewModel @Inject constructor(
                         }
                         if (cartItem.addOnProduct.listAddOnProductData.isNotEmpty()) {
                             for (addOnProductService in cartItem.addOnProduct.listAddOnProductData) {
-                                if (addOnProductService.status == ADD_ON_PRODUCT_STATUS_CHECK) {
+                                if (addOnProductService.status == ADD_ON_PRODUCT_STATUS_CHECK || addOnProductService.status == ADD_ON_PRODUCT_STATUS_MANDATORY) {
                                     totalAddOnProductServicePrice += (addOnProductService.price * cartItem.quantity)
                                     qtyAddOn = if (countMapSummaries.containsKey(addOnProductService.type)) {
                                         countMapSummaries[addOnProductService.type]?.second?.plus(cartItem.quantity) ?: cartItem.quantity
