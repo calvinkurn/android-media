@@ -20,7 +20,6 @@ import com.tokopedia.unifyprinciples.stringToUnifyColor
  * Project name: android-tokopedia-core
  **/
 
-
 class BMGMWidget @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
@@ -30,12 +29,13 @@ class BMGMWidget @JvmOverloads constructor(
     companion object {
         private const val SPAN_COUNT = 3
 
-        private const val TEXT_SWITCH_INTERVAL = 3000L //millisecond
+        private const val TEXT_SWITCH_INTERVAL = 3000L // millisecond
     }
 
     private val binding by lazyThreadSafetyNone {
         val view = inflate(context, com.tokopedia.product.detail.common.R.layout.bmgm_widget, this)
         BmgmWidgetBinding.bind(view).apply {
+            // prepare UI in lazy block after inflated, cause prevent rendering before data loaded
             prepareUI(context)
         }
     }
@@ -45,13 +45,16 @@ class BMGMWidget @JvmOverloads constructor(
     // region prepare UI
     private fun BmgmWidgetBinding.prepareUI(context: Context) {
         bmgmProductList.layoutManager = GridLayoutManager(
-            context, SPAN_COUNT, GridLayoutManager.VERTICAL, false
+            context,
+            SPAN_COUNT,
+            GridLayoutManager.VERTICAL,
+            false
         )
         bmgmProductList.adapter = productAdapter
     }
     // endregion
 
-    // region expose
+    // region expose function
     fun setData(uiState: BMGMUiState, router: BMGMRouter) {
         when (uiState) {
             is BMGMUiState.Loading -> {
@@ -67,7 +70,7 @@ class BMGMWidget @JvmOverloads constructor(
 
     // region loaded state
     private fun onLoaded(uiModel: BMGMUiModel, router: BMGMRouter) {
-        binding.bmgmImageLeft.loadImage(uiModel.iconUrl)
+        binding.bmgmImageLeft.loadImage(url = uiModel.iconUrl)
 
         binding.bmgmTitles.setTitle(
             titles = uiModel.titles,
@@ -81,7 +84,9 @@ class BMGMWidget @JvmOverloads constructor(
 
         setBackgroundGradient(colors = uiModel.backgroundColor)
 
-        productAdapter.submit(uiModel.products, uiModel.loadMoreText)
+        productAdapter.submit(uiModel.products, uiModel.loadMoreText) {
+            setRouting(action = uiModel.action, router = router)
+        }
     }
     // endregion
 
@@ -93,14 +98,14 @@ class BMGMWidget @JvmOverloads constructor(
 
     private fun getGradientColors(colors: String) = colors.split(",").map {
         val color = it.trim()
-        getStringUnifyColor(color, Int.ZERO)
+        getStringUnifyColor(color = color, default = Int.ZERO)
     }.toIntArray()
     // endregion
 
     // region event
     private fun setEvent(action: BMGMUiModel.Action, router: BMGMRouter) {
         binding.bmgmComponent.setOnClickListener {
-            setRouting(action, router)
+            setRouting(action = action, router = router)
         }
     }
 
