@@ -1598,8 +1598,10 @@ class ShipmentViewModel @Inject constructor(
                         }
                         onValidatePromoSuccess(shipmentValidatePromoHolderData, validateUsePromoRevampUiModel)
                     } catch (t: Throwable) {
-                        promoQueue.remove()
-                        itemToProcess = promoQueue.peek()
+                        if (promoQueue.isNotEmpty()) {
+                            promoQueue.remove()
+                            itemToProcess = promoQueue.peek()
+                        }
                         if (promoQueue.any { it.cartString == shipmentValidatePromoHolderData.cartString }) {
                             // ignore this, because there is a new one in the queue
                             continue@loopProcess
@@ -1639,8 +1641,10 @@ class ShipmentViewModel @Inject constructor(
                         onCancelPromoSuccess(shipmentValidatePromoHolderData, responseData)
                     } catch (t: Throwable) {
                         Timber.d(t)
-                        promoQueue.remove()
-                        itemToProcess = promoQueue.peek()
+                        if (promoQueue.isNotEmpty()) {
+                            promoQueue.remove()
+                            itemToProcess = promoQueue.peek()
+                        }
                         if (promoQueue.any { it.cartString == shipmentValidatePromoHolderData.cartString }) {
                             // ignore this, because there is a new one in the queue
                             continue@loopProcess
@@ -3196,8 +3200,10 @@ class ShipmentViewModel @Inject constructor(
                                 v.showToastErrorAkamai(exception.message)
                             }
                         }
-                        ratesQueue.remove()
-                        itemToProcess = ratesQueue.peek()
+                        if (ratesQueue.isNotEmpty()) {
+                            ratesQueue.remove()
+                            itemToProcess = ratesQueue.peek()
+                        }
                     }
                 } else {
                     try {
@@ -3569,8 +3575,10 @@ class ShipmentViewModel @Inject constructor(
                                 v.showToastErrorAkamai(exception.message)
                             }
                         }
-                        ratesQueue.remove()
-                        itemToProcess = ratesQueue.peek()
+                        if (ratesQueue.isNotEmpty()) {
+                            ratesQueue.remove()
+                            itemToProcess = ratesQueue.peek()
+                        }
                     }
                 }
             }
