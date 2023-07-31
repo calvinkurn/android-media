@@ -26,6 +26,7 @@ class OfferingProductSortingViewHolder(view: View) :
             chipsSorting.apply {
                 val filter = SortFilterItem("Urutkan")
                 addItem(arrayListOf(filter))
+                filter.refChipUnify.setChevronClickListener { }
             }
         }
     }
