@@ -10,6 +10,7 @@ import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.chatbot2.data.owocinvoice.DynamicOwocInvoicePojo
 import com.tokopedia.chatbot.chatbot2.view.adapter.ChatbotDynamicOwocInvoiceAdapter
 import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.BaseChatBotViewHolder
+import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.listener.ChatbotOwocListener
 import com.tokopedia.chatbot.chatbot2.view.uimodel.dynamicattachment.DynamicOwocInvoiceUiModel
 import com.tokopedia.chatbot.chatbot2.view.util.generateLeftMessageBackground
 import com.tokopedia.chatbot.chatbot2.view.util.helper.ChatbotMessageViewHolderBinder
@@ -21,7 +22,8 @@ import com.tokopedia.utils.view.binding.viewBinding
 
 class DynamicOwocInvoiceViewHolder(
     itemView: View,
-    private val chatLinkHandlerListener: ChatLinkHandlerListener
+    private val chatLinkHandlerListener: ChatLinkHandlerListener,
+    private val listener: ChatbotOwocListener
 ) : BaseChatBotViewHolder<DynamicOwocInvoiceUiModel>(itemView) {
 
     private var binding: ItemChatbotDynamicOwocBinding? by viewBinding()
