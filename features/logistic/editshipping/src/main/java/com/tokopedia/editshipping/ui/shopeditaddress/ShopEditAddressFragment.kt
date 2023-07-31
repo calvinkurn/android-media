@@ -37,6 +37,7 @@ import com.tokopedia.editshipping.util.EditShippingConstant.EXTRA_WAREHOUSE_DATA
 import com.tokopedia.editshipping.util.ShopEditAddressUtils
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.logisticCommon.data.constant.AddressConstant
+import com.tokopedia.logisticCommon.data.constant.AddressConstant.EXTRA_WH_DISTRICT_ID
 import com.tokopedia.logisticCommon.data.entity.address.DistrictRecommendationAddress
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.data.entity.shoplocation.Warehouse
@@ -536,6 +537,13 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
                     if (lat != null && long != null) {
                         putDouble(AddressConstant.EXTRA_LAT, lat)
                         putDouble(AddressConstant.EXTRA_LONG, long)
+                        putBoolean(EXTRA_IS_EDIT_WAREHOUSE, true)
+                        warehouseDataModel?.districtId?.let { districtId ->
+                            putLong(
+                                EXTRA_WH_DISTRICT_ID,
+                                districtId
+                            )
+                        }
                     }
                 }
                 RouteManager.getIntent(activity, ApplinkConstInternalLogistic.PINPOINT).apply {

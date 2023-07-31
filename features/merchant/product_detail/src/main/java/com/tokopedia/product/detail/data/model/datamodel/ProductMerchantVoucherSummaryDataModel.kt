@@ -6,13 +6,18 @@ import com.tokopedia.mvcwidget.AnimatedInfos
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
 
 data class ProductMerchantVoucherSummaryDataModel(
-        val type: String = "",
-        val name: String = "",
-        var animatedInfos: List<AnimatedInfos> = listOf(),
-        var isShown: Boolean = false,
-        var shopId: String = "",
-        var productIdMVC: String = ""
+    val type: String = "",
+    val name: String = "",
+    var uiModel: UiModel = UiModel()
 ) : DynamicPdpDataModel {
+
+    data class UiModel(
+        val animatedInfo: List<AnimatedInfos> = listOf(),
+        val isShown: Boolean = false,
+        val shopId: String = "",
+        val productIdMVC: String = "",
+        val additionalData: String = ""
+    )
 
     override val impressHolder: ImpressHolder = ImpressHolder()
 
@@ -26,7 +31,7 @@ data class ProductMerchantVoucherSummaryDataModel(
 
     override fun equalsWith(newData: DynamicPdpDataModel): Boolean {
         return if (newData is ProductMerchantVoucherSummaryDataModel) {
-            newData.animatedInfos.hashCode() == animatedInfos.hashCode()
+            newData.uiModel.animatedInfo.hashCode() == uiModel.animatedInfo.hashCode()
         } else {
             false
         }
@@ -39,5 +44,4 @@ data class ProductMerchantVoucherSummaryDataModel(
     override fun getChangePayload(newData: DynamicPdpDataModel): Bundle? {
         return null
     }
-
 }
