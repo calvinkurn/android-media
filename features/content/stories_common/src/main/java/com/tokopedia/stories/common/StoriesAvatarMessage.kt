@@ -9,7 +9,6 @@ import java.util.UUID
 sealed class StoriesAvatarMessage : UiEvent {
 
     override val id: Long = UUID.randomUUID().mostSignificantBits
-    abstract val shopId: String
 
-    data class ShowCoachMark(override val shopId: String) : StoriesAvatarMessage()
+    data class ShowCoachMark(val shopId: String) : StoriesAvatarMessage()
 }

@@ -6,4 +6,8 @@ package com.tokopedia.stories.common
 internal sealed interface StoriesAvatarIntent {
 
     data class GetStoriesStatus(val shopIds: List<String>) : StoriesAvatarIntent
+
+    object ShowCoachMark : StoriesAvatarIntent
+
+    object HasSeenCoachMark : StoriesAvatarIntent
 }

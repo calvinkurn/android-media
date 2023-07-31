@@ -7,13 +7,12 @@ import com.tokopedia.stories.common.domain.ShopStoriesState
 import com.tokopedia.stories.common.domain.StoriesAvatarRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
 import javax.inject.Inject
 
 /**
@@ -24,10 +23,10 @@ internal class StoriesAvatarViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _storiesMap = MutableStateFlow(emptyMap<String, StoriesAvatarState>())
+    val stories: StateFlow<Map<String, StoriesAvatarState>> get() = _storiesMap.asStateFlow()
 
     private val uiMessageManager = UiEventManager<StoriesAvatarMessage>()
-
-    private val mutex = Mutex()
+    val uiMessage: Flow<StoriesAvatarMessage?> get() = uiMessageManager.event
 
     init {
     }
@@ -35,15 +34,13 @@ internal class StoriesAvatarViewModel @Inject constructor(
     fun onIntent(intent: StoriesAvatarIntent) {
         when (intent) {
             is StoriesAvatarIntent.GetStoriesStatus -> onGetStories(intent.shopIds)
+            StoriesAvatarIntent.ShowCoachMark -> onShowCoachMark()
+            StoriesAvatarIntent.HasSeenCoachMark -> onHasSeenCoachMark()
         }
     }
 
     fun getStoriesState(shopId: String): Flow<StoriesAvatarState?> {
         return _storiesMap.map { it[shopId] }.distinctUntilChanged()
-    }
-
-    fun getStoriesMessage(shopId: String): Flow<StoriesAvatarMessage?> {
-        return uiMessageManager.event.filter { it?.shopId == shopId }
     }
 
     fun clearMessage(id: Long) {
@@ -66,17 +63,33 @@ internal class StoriesAvatarViewModel @Inject constructor(
             _storiesMap.update {
                 it + storiesStateMap
             }
+        }
+    }
 
-            val firstHasStories = storiesState.firstOrNull { it.anyStoryExisted } ?: return@launch
-            showCoachMark(firstHasStories.shopId)
+    private fun onShowCoachMark() {
+        viewModelScope.launch {
+            if (repository.hasSeenCoachMark()) return@launch
+
+            runCatching {
+                _storiesMap.value.firstNotNullOf {
+                    if (it.value.status != StoriesStatus.NoStories) {
+                        it.key
+                    } else {
+                        null
+                    }
+                }
+            }.onSuccess { shopId -> showCoachMark(shopId) }
+        }
+    }
+
+    private fun onHasSeenCoachMark() {
+        viewModelScope.launch {
+            repository.setHasSeenCoachMark()
         }
     }
 
     private suspend fun showCoachMark(shopId: String) {
-        if (repository.hasSeenCoachMark()) return
-
         uiMessageManager.emitEvent(StoriesAvatarMessage.ShowCoachMark(shopId))
-        repository.setHasSeenCoachMark()
     }
 
     private fun ShopStoriesState.getStoriesStatus(): StoriesStatus {
@@ -85,14 +98,5 @@ internal class StoriesAvatarViewModel @Inject constructor(
             hasUnseenStories -> StoriesStatus.HasUnseenStories
             else -> StoriesStatus.AllStoriesSeen
         }
-    }
-
-    private suspend fun updateStoriesForId(shopId: String, state: StoriesAvatarState) = mutex.withLock {
-        _storiesMap.update { it + (shopId to state) }
-    }
-
-    private suspend fun getStoriesStateById(shopId: String) = mutex.withLock {
-        val storiesMap = _storiesMap.value
-        storiesMap[shopId]
     }
 }

@@ -17,11 +17,11 @@ import kotlinx.coroutines.launch
 internal class StoriesAvatarObserver(
     viewModel: StoriesAvatarViewModel,
     lifecycleOwner: LifecycleOwner,
-    view: StoriesAvatarView,
-    listener: Listener
+    view: StoriesAvatarView
 ) {
 
     private val _shopId = MutableStateFlow("")
+    val shopId: String get() = _shopId.value
 
     init {
         lifecycleOwner.lifecycleScope.launch {
@@ -33,31 +33,11 @@ internal class StoriesAvatarObserver(
                         view.setState { newState ?: it }
                     }
                 }
-
-                launch {
-                    _shopId.flatMapLatest {
-                        viewModel.getStoriesMessage(it)
-                    }.collect { message ->
-                        if (message == null) return@collect
-
-                        when (message) {
-                            is StoriesAvatarMessage.ShowCoachMark -> {
-                                listener.onShowCoachMark(this@StoriesAvatarObserver, view)
-                            }
-                        }
-
-                        viewModel.clearMessage(message.id)
-                    }
-                }
             }
         }
     }
 
     fun observe(shopId: String) {
         _shopId.value = shopId
-    }
-
-    internal interface Listener {
-        fun onShowCoachMark(observer: StoriesAvatarObserver, view: StoriesAvatarView)
     }
 }

@@ -2,17 +2,21 @@ package com.tokopedia.stories.common
 
 import android.content.Context
 import android.view.View
+import android.view.View.OnAttachStateChangeListener
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.get
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.coachmark.CoachMark2
-import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.stories.common.di.DaggerStoriesAvatarComponent
 import com.tokopedia.stories.common.di.StoriesAvatarComponent
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 /**
  * Created by kenny.hadisaputra on 27/07/23
@@ -26,25 +30,51 @@ class StoriesAvatarManager(
     private val component = createComponent(context)
     private val viewModelFactory = component.viewModelFactory()
 
-    private val viewToObserverMap = mutableMapOf<StoriesAvatarView, StoriesAvatarObserver>()
+    private val viewToObserverMap = mutableMapOf<StoriesAvatarView, StoriesAvatarMeta>()
 
-    private val observerListener = object : StoriesAvatarObserver.Listener {
-        override fun onShowCoachMark(observer: StoriesAvatarObserver, view: StoriesAvatarView) {
-            coachMark.showCoachMark(
-                arrayListOf(
-                    CoachMark2Item(view, "Ada update menarik dari toko ini", "")
-                )
-            )
+    private val viewModelProvider by lazy {
+        ViewModelProvider(viewModelStoreOwner, viewModelFactory)
+    }
+
+    private val coachMark = StoriesAvatarCoachMark(context)
+    private var mCoachMarkedShopId: String? = null
+
+    init {
+        lifecycleOwner.lifecycleScope.launch {
+            lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                val viewModel = getViewModel()
+
+                launch {
+                    viewModel.stories.collectLatest {
+                        viewModel.onIntent(StoriesAvatarIntent.ShowCoachMark)
+                    }
+                }
+
+                launch {
+                    viewModel.uiMessage.collect { message ->
+                        if (message == null) return@collect
+
+                        when (message) {
+                            is StoriesAvatarMessage.ShowCoachMark -> {
+                                mCoachMarkedShopId = message.shopId
+                                showCoachMarkOnId(message.shopId)
+                            }
+                        }
+
+                        viewModel.clearMessage(message.id)
+                    }
+                }
+            }
         }
     }
 
-    private val coachMark = CoachMark2(context)
-
-    init {
-    }
-
     fun manage(storiesView: StoriesAvatarView, shopId: String) {
-        storiesView.addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
+        val meta = storiesView.getMeta() ?: StoriesAvatarMeta.Empty
+        meta.attachListener?.let {
+            storiesView.removeOnAttachStateChangeListener(it)
+        }
+
+        val listener = object : OnAttachStateChangeListener {
             override fun onViewAttachedToWindow(view: View) {
                 storiesView.onAttached(shopId)
             }
@@ -52,7 +82,9 @@ class StoriesAvatarManager(
             override fun onViewDetachedFromWindow(view: View) {
                 storiesView.onDetached()
             }
-        })
+        }
+        storiesView.setMeta(meta.copy(attachListener = listener))
+        storiesView.addOnAttachStateChangeListener(listener)
     }
 
     fun updateStories(shopIds: List<String>) {
@@ -62,7 +94,7 @@ class StoriesAvatarManager(
     }
 
     private fun getViewModel(): StoriesAvatarViewModel {
-        return ViewModelProvider(viewModelStoreOwner, viewModelFactory).get()
+        return viewModelProvider.get()
     }
 
     private fun createComponent(context: Context): StoriesAvatarComponent {
@@ -71,29 +103,39 @@ class StoriesAvatarManager(
             .build()
     }
 
+    private fun showCoachMarkOnId(shopId: String) {
+        getViewByShopId(shopId)
+            ?.let(::showCoachMarkOnView)
+    }
+
+    private fun showCoachMarkOnView(view: StoriesAvatarView) {
+        coachMark.showCoachMark(
+            view,
+            "Ada update menarik dari toko ini"
+        )
+    }
+
     private fun StoriesAvatarView.onAttached(shopId: String) {
         val observer = getOrCreateObserver()
         observer.observe(shopId)
-        assign(observer)
+        assign(shopId, observer)
+
+        if (mCoachMarkedShopId == shopId) showCoachMarkOnView(this)
     }
 
     private fun StoriesAvatarView.onDetached() {
-        val coachMarkItems = coachMark.coachMarkItem
-        if (coachMarkItems.firstOrNull { it.anchorView == this } == null) return
-
-        coachMark.dismissCoachMark()
+        coachMark.dismissCoachMark(this)
     }
 
     private fun StoriesAvatarView.getObserver(): StoriesAvatarObserver? {
-        return viewToObserverMap[this]
+        return viewToObserverMap[this]?.observer
     }
 
     private fun StoriesAvatarView.createObserver(): StoriesAvatarObserver {
         return StoriesAvatarObserver(
             getViewModel(),
             lifecycleOwner,
-            this,
-            observerListener
+            this
         )
     }
 
@@ -101,11 +143,35 @@ class StoriesAvatarManager(
         return getObserver() ?: createObserver()
     }
 
-    private fun StoriesAvatarView.assign(observer: StoriesAvatarObserver) {
-        viewToObserverMap[this] = observer
+    private fun StoriesAvatarView.assign(shopId: String, observer: StoriesAvatarObserver) {
+        val meta = getOrCreateMeta().copy(
+            shopId = shopId,
+            observer = observer
+        )
+        viewToObserverMap[this] = meta
+    }
+
+    private fun getViewByShopId(shopId: String): StoriesAvatarView? {
+        val meta = viewToObserverMap.entries.firstOrNull {
+            it.value.observer?.shopId == shopId
+        } ?: return null
+        return meta.key
+    }
+
+    private fun StoriesAvatarView.getMeta(): StoriesAvatarMeta? {
+        return viewToObserverMap[this]
+    }
+
+    private fun StoriesAvatarView.getOrCreateMeta(): StoriesAvatarMeta {
+        return getMeta() ?: StoriesAvatarMeta.Empty
+    }
+
+    private fun StoriesAvatarView.setMeta(meta: StoriesAvatarMeta) {
+        viewToObserverMap[this] = meta
     }
 
     companion object {
+
         fun tiedTo(fragment: Fragment): StoriesAvatarManager {
             return StoriesAvatarManager(
                 fragment.requireContext(),
@@ -120,6 +186,21 @@ class StoriesAvatarManager(
                 activity,
                 activity
             )
+        }
+    }
+
+    internal data class StoriesAvatarMeta(
+        val shopId: String,
+        val observer: StoriesAvatarObserver?,
+        val attachListener: OnAttachStateChangeListener?
+    ) {
+        companion object {
+            val Empty: StoriesAvatarMeta
+                get() = StoriesAvatarMeta(
+                    "",
+                    null,
+                    null
+                )
         }
     }
 }
