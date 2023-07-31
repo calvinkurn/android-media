@@ -48,7 +48,7 @@ class AddOnViewHolder(
                 showDescription(isShowDescription)
                 setItems(item.addon)
             }
-            tfHint.isVisible = item.addon.size > Int.ONE
+            tfHint.isVisible = item.addonCount > Int.ONE
         }
     }
 

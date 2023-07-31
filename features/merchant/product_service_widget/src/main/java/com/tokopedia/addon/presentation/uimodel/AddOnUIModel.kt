@@ -39,6 +39,7 @@ data class AddOnGroupUIModel(
     val productId: Long = 0L,
     val warehouseId: Long = 0L,
     val addOnLevel: String = "",
+    val addonCount: Int = 0,
     var addon: List<AddOnUIModel> = emptyList()
 )
 
