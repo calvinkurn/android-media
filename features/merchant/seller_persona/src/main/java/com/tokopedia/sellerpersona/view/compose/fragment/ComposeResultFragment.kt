@@ -5,10 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -94,16 +96,22 @@ class ComposeResultFragment : Fragment() {
                 })
 
                 NestTheme {
-                    Surface(color = MaterialTheme.colors.background) {
+                    Surface(
+                        modifier = Modifier.fillMaxSize(),
+                        color = MaterialTheme.colors.background
+                    ) {
                         val state = viewModel.personaState.collectAsState()
 
                         when (state.value.state) {
                             is PersonaResultState.State.Loading -> ResultLoadingState()
                             is PersonaResultState.State.Error -> ResultErrorState(viewModel::onEvent)
                             is PersonaResultState.State.Success -> {
-                                updatePersonaStatusFlag(state.value.data.personaStatus.isActive())
-                                markForCheckedChanged(state.value.data.isSwitchChecked)
-                                ResultSuccessState(state.value, viewModel::onEvent)
+                                updateActiveStatusFlag(state.value.data.personaStatus.isActive())
+                                updateAnyChangesFlag(state.value.data.isSwitchChecked)
+                                ResultSuccessState(
+                                    state = state.value,
+                                    onEvent = viewModel::onEvent
+                                )
                             }
                         }
                     }
@@ -124,7 +132,7 @@ class ComposeResultFragment : Fragment() {
     }
 
     private fun onPersonaStatusChanged(data: ResultUiEvent.OnPersonaStatusChanged) {
-        updatePersonaStatusFlag(data.personaStatus.isActive())
+        updateActiveStatusFlag(data.personaStatus.isActive())
         if (data.isSuccess()) {
             goToSellerHome()
         } else {
@@ -132,11 +140,11 @@ class ComposeResultFragment : Fragment() {
         }
     }
 
-    private fun markForCheckedChanged(isSwitchChecked: Boolean) {
+    private fun updateAnyChangesFlag(isSwitchChecked: Boolean) {
         isAnyChanges = isSwitchChecked != isPersonaActive
     }
 
-    private fun updatePersonaStatusFlag(isActive: Boolean) {
+    private fun updateActiveStatusFlag(isActive: Boolean) {
         isPersonaActive = isActive
     }
 

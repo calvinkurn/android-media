@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.sellerpersona.di.module.SellerPersonaModule
 import com.tokopedia.sellerpersona.di.module.ViewModelModule
 import com.tokopedia.sellerpersona.view.activity.SellerPersonaActivity
+import com.tokopedia.sellerpersona.view.compose.fragment.ComposeQuestionnaireFragment
 import com.tokopedia.sellerpersona.view.compose.fragment.ComposeResultFragment
 import com.tokopedia.sellerpersona.view.compose.fragment.ComposeSelectTypeFragment
 import com.tokopedia.sellerpersona.view.fragment.PersonaQuestionnaireFragment
@@ -36,4 +37,6 @@ interface SellerPersonaComponent {
     fun inject(fragment: ComposeResultFragment)
 
     fun inject(fragment: ComposeSelectTypeFragment)
+
+    fun inject(fragment: ComposeQuestionnaireFragment)
 }

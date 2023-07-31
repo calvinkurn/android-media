@@ -6,10 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.LocalOverscrollConfiguration
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -75,12 +74,11 @@ class ComposeSelectTypeFragment : Fragment() {
                 })
 
                 NestTheme {
-                    CompositionLocalProvider(LocalOverscrollConfiguration provides null) {
-                        Column(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .background(color = MaterialTheme.colors.background)
-                        ) {
+                    Surface(
+                        modifier = Modifier.fillMaxSize(),
+                        color = MaterialTheme.colors.background
+                    ) {
+                        CompositionLocalProvider(LocalOverscrollConfiguration provides null) {
                             val state = viewModel.state.collectAsState()
                             val data = state.value
 
@@ -88,8 +86,8 @@ class ComposeSelectTypeFragment : Fragment() {
                                 is SelectTypeState.State.Loading -> SelectTypeLoadingState()
                                 is SelectTypeState.State.Error -> SelectTypeErrorState(viewModel::onEvent)
                                 is SelectTypeState.State.Success -> PersonSuccessState(
-                                    data.data,
-                                    viewModel::onEvent
+                                    data = data.data,
+                                    onEvent = viewModel::onEvent
                                 )
                             }
                         }
