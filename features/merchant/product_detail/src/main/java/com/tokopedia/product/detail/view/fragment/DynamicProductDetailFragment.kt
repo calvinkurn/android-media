@@ -139,8 +139,8 @@ import com.tokopedia.product.detail.common.data.model.ar.ProductArInfo
 import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkir
 import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkirImage
 import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
+import com.tokopedia.product.detail.common.data.model.carttype.PostAtcLayout
 import com.tokopedia.product.detail.common.data.model.constant.ProductStatusTypeDef
-import com.tokopedia.product.detail.common.data.model.pdplayout.BasicInfo
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.pdplayout.ProductDetailGallery
 import com.tokopedia.product.detail.common.data.model.product.ProductParams
@@ -3656,22 +3656,24 @@ open class DynamicProductDetailFragment :
     private fun showAddToCartDoneBottomSheet(cartDataModel: DataModel) {
         val productInfo = viewModel.getDynamicProductInfoP1 ?: return
         val basicInfo = productInfo.basic
-        val postATCLayoutId = basicInfo.postAtcLayout.layoutId
+
+        val cartData = viewModel.p2Data.value?.cartRedirection?.getOrDefault(basicInfo.productID, null)
+        val postAtcLayout = cartData?.postAtcLayout
 
         val remoteNewATC = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_POST_ATC_PDP, true)
-        if (postATCLayoutId.isNotBlank() && remoteNewATC) {
-            showGlobalPostATC(cartDataModel, basicInfo)
+        if (postAtcLayout?.showPostAtc == true && remoteNewATC) {
+            showGlobalPostATC(cartDataModel, basicInfo.productID, postAtcLayout)
         } else {
             showOldPostATC(cartDataModel.cartId)
         }
     }
 
-    private fun showGlobalPostATC(cartDataModel: DataModel, basicInfo: BasicInfo) {
+    private fun showGlobalPostATC(cartDataModel: DataModel, productId: String, postAtcLayout: PostAtcLayout) {
         val context = context ?: return
         PostAtcHelper.start(
             context,
-            basicInfo.productID,
-            layoutId = basicInfo.postAtcLayout.layoutId,
+            productId,
+            layoutId = postAtcLayout.layoutId,
             cartId = cartDataModel.cartId,
             selectedAddonsIds = cartDataModel.addOns.mapNotNull { item ->
                 item.id.takeIf { item.status == 1 }
@@ -3679,7 +3681,8 @@ open class DynamicProductDetailFragment :
             isFulfillment = cartDataModel.isFulfillment,
             pageSource = PostAtcHelper.Source.PDP,
             warehouseId = cartDataModel.warehouseId,
-            quantity = cartDataModel.quantity
+            quantity = cartDataModel.quantity,
+            postAtcSession = postAtcLayout.postAtcSession
         )
     }
 

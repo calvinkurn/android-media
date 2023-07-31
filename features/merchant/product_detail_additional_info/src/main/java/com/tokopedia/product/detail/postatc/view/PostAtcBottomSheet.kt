@@ -57,6 +57,7 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcBottomSheetDelegate {
         private const val ARG_SELECTED_ADDONS_IDS = "selected_addons_ids"
         private const val ARG_WAREHOUSE_ID = "warehouse_id"
         private const val ARG_QUANTITY = "quantity"
+        private const val ARG_POST_ATC_SESSION = "postAtcSession"
 
         fun instance(
             productId: String,
@@ -66,7 +67,8 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcBottomSheetDelegate {
             pageSource: String,
             selectedAddonsIds: List<String>,
             warehouseId: String,
-            quantity: Int
+            quantity: Int,
+            postAtcSession: String
         ) = PostAtcBottomSheet().apply {
             arguments = Bundle().apply {
                 putString(ARG_PRODUCT_ID, productId)
@@ -77,6 +79,7 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcBottomSheetDelegate {
                 putStringArrayList(ARG_SELECTED_ADDONS_IDS, ArrayList(selectedAddonsIds))
                 putString(ARG_WAREHOUSE_ID, warehouseId)
                 putInt(ARG_QUANTITY, quantity)
+                putString(ARG_POST_ATC_SESSION, postAtcSession)
             }
         }
     }

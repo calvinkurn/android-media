@@ -17,6 +17,7 @@ object PostAtcHelper {
     const val PARAM_PAGE_SOURCE = "pageSource"
     const val PARAM_WAREHOUSE_ID = "warehouse_id"
     const val PARAM_QUANTITY = "quantity"
+    const val PARAM_POST_ATC_SESSION = "postAtcSession"
 
     fun start(
         context: Context,
@@ -27,7 +28,8 @@ object PostAtcHelper {
         pageSource: Source = Source.Default,
         selectedAddonsIds: List<String> = emptyList(),
         warehouseId: String = "",
-        quantity: Int
+        quantity: Int,
+        postAtcSession: String
     ) {
         val intent = getIntent(
             context,
@@ -38,7 +40,8 @@ object PostAtcHelper {
             pageSource,
             selectedAddonsIds,
             warehouseId,
-            quantity
+            quantity,
+            postAtcSession
         )
         context.startActivity(intent)
     }
@@ -52,7 +55,8 @@ object PostAtcHelper {
         pageSource: Source = Source.Default,
         selectedAddonsIds: List<String> = emptyList(),
         warehouseId: String = "",
-        quantity: Int
+        quantity: Int,
+        postAtcSession: String
     ): Intent {
         return RouteManager.getIntent(
             context,
@@ -66,6 +70,7 @@ object PostAtcHelper {
             putExtra(PARAM_SELECTED_ADDONS_IDS, ArrayList(selectedAddonsIds))
             putExtra(PARAM_WAREHOUSE_ID, warehouseId)
             putExtra(PARAM_QUANTITY, quantity)
+            putExtra(PARAM_POST_ATC_SESSION, postAtcSession)
         }
     }
 

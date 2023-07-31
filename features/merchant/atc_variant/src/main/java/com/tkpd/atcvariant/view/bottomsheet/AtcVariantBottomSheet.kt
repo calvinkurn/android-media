@@ -62,6 +62,7 @@ import com.tokopedia.product.detail.common.ProductTrackingCommon
 import com.tokopedia.product.detail.common.VariantConstant
 import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantBottomSheetParams
+import com.tokopedia.product.detail.common.data.model.carttype.PostAtcLayout
 import com.tokopedia.product.detail.common.data.model.re.RestrictionData
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
 import com.tokopedia.product.detail.common.mapper.AtcVariantMapper
@@ -612,10 +613,13 @@ class AtcVariantBottomSheet :
         val cartData = cartDataModel.data
         val context = context ?: return
         val productId = adapter.getHeaderDataModel()?.productId ?: return
-        val variantAggregatorData = viewModel.getVariantAggregatorData() ?: return
-        val postAtcLayoutId = variantAggregatorData.variantData.postAtcLayout.layoutId
 
-        if (postAtcLayoutId.isEmpty()) {
+        val postAtcLayout = viewModel.getVariantAggregatorData()?.cardRedirection?.getOrDefault(
+            productId,
+            null
+        )?.postAtcLayout
+
+        if (postAtcLayout?.showPostAtc != true) {
             val message = if (successMessage.isNullOrEmpty()) {
                 context.getString(com.tokopedia.product.detail.common.R.string.merchant_product_detail_success_atc_default)
             } else {
@@ -637,28 +641,35 @@ class AtcVariantBottomSheet :
                 cartId = cartData.cartId
             )
         } else {
-            showPostATC(context, productId, postAtcLayoutId, cartData)
+            showPostATC(context, productId, postAtcLayout, cartData)
         }
     }
 
     private fun showPostATC(
         context: Context,
         productId: String,
-        postAtcLayoutId: String,
+        postAtcLayout: PostAtcLayout,
         cartData: DataModel
     ) {
+        val pageSource = sharedViewModel.aggregatorParams.value?.pageSource ?: ""
+        val postAtcPageSource = if (pageSource == VariantPageSource.PDP_PAGESOURCE.name) {
+            PostAtcHelper.Source.PDP
+        } else {
+            PostAtcHelper.Source.Default
+        }
         PostAtcHelper.start(
             context,
             productId,
-            layoutId = postAtcLayoutId,
+            layoutId = postAtcLayout.layoutId,
             cartId = cartData.cartId,
-            pageSource = PostAtcHelper.Source.PDP,
+            pageSource = postAtcPageSource,
             warehouseId = cartData.warehouseId,
             isFulfillment = cartData.isFulfillment,
             selectedAddonsIds = cartData.addOns.mapNotNull { item ->
                 item.id.takeIf { item.status == 1 }
             },
-            quantity = cartData.quantity
+            quantity = cartData.quantity,
+            postAtcSession = postAtcLayout.postAtcSession
         )
         dismiss()
     }
