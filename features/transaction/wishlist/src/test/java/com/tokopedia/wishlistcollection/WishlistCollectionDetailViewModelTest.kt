@@ -6,6 +6,9 @@ import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
+import com.tokopedia.common_sdk_affiliate_toko.model.AffiliatePageDetail
+import com.tokopedia.common_sdk_affiliate_toko.model.AffiliateSdkPageSource
+import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetSingleRecommendationUseCase
@@ -21,22 +24,50 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.data.model.WishlistV2BulkRemoveAdditionalParams
 import com.tokopedia.wishlist.data.model.WishlistV2RecommendationDataModel
 import com.tokopedia.wishlist.data.model.WishlistV2TypeLayoutData
+import com.tokopedia.wishlist.data.model.WishlistV2UiModel
 import com.tokopedia.wishlist.data.model.response.BulkDeleteWishlistV2Response
 import com.tokopedia.wishlist.data.model.response.DeleteWishlistProgressResponse
 import com.tokopedia.wishlist.domain.BulkDeleteWishlistV2UseCase
 import com.tokopedia.wishlist.domain.DeleteWishlistProgressUseCase
 import com.tokopedia.wishlist.util.WishlistV2Consts
-import com.tokopedia.wishlistcollection.data.params.*
-import com.tokopedia.wishlistcollection.data.response.*
-import com.tokopedia.wishlistcollection.domain.*
+import com.tokopedia.wishlistcollection.data.params.AddWishlistBulkParams
+import com.tokopedia.wishlistcollection.data.params.AddWishlistCollectionsHostBottomSheetParams
+import com.tokopedia.wishlistcollection.data.params.GetWishlistCollectionItemsParams
+import com.tokopedia.wishlistcollection.data.response.AddWishlistBulkResponse
+import com.tokopedia.wishlistcollection.data.response.AddWishlistCollectionItemsResponse
+import com.tokopedia.wishlistcollection.data.response.DeleteWishlistCollectionItemsResponse
+import com.tokopedia.wishlistcollection.data.response.DeleteWishlistCollectionResponse
+import com.tokopedia.wishlistcollection.data.response.GetWishlistCollectionItemsResponse
+import com.tokopedia.wishlistcollection.data.response.GetWishlistCollectionSharingDataResponse
+import com.tokopedia.wishlistcollection.data.response.GetWishlistCollectionTypeResponse
+import com.tokopedia.wishlistcollection.domain.AddWishlistBulkUseCase
+import com.tokopedia.wishlistcollection.domain.AddWishlistCollectionItemsUseCase
+import com.tokopedia.wishlistcollection.domain.DeleteWishlistCollectionItemsUseCase
+import com.tokopedia.wishlistcollection.domain.DeleteWishlistCollectionUseCase
+import com.tokopedia.wishlistcollection.domain.GetWishlistCollectionItemsUseCase
+import com.tokopedia.wishlistcollection.domain.GetWishlistCollectionSharingDataUseCase
+import com.tokopedia.wishlistcollection.domain.GetWishlistCollectionTypeUseCase
 import com.tokopedia.wishlistcollection.view.viewmodel.WishlistCollectionDetailViewModel
+import com.tokopedia.wishlistcommon.data.params.UpdateWishlistCollectionParams
 import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
 import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
+import com.tokopedia.wishlistcommon.data.response.UpdateWishlistCollectionResponse
 import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
+import com.tokopedia.wishlistcommon.domain.UpdateWishlistCollectionUseCase
 import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
-import io.mockk.*
+import io.mockk.MockKAnnotations
+import io.mockk.Runs
+import io.mockk.coEvery
+import io.mockk.coVerify
+import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
+import io.mockk.just
+import io.mockk.mockk
+import io.mockk.slot
+import io.mockk.spyk
+import io.mockk.verify
 import org.assertj.core.api.SoftAssertions.assertSoftly
+import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -102,6 +133,9 @@ class WishlistCollectionDetailViewModelTest {
 
     @RelaxedMockK
     lateinit var addToWishlistV2UseCase: AddToWishlistV2UseCase
+
+    @RelaxedMockK
+    lateinit var affiliateCookieHelper: AffiliateCookieHelper
 
     private var getWishlistCollectionItemsResponseDataStatusOk = GetWishlistCollectionItemsResponse(
         getWishlistCollectionItems = GetWishlistCollectionItemsResponse.GetWishlistCollectionItems(errorMessage = "")
@@ -356,7 +390,10 @@ class WishlistCollectionDetailViewModelTest {
                 addWishlistCollectionItemsUseCase,
                 updateWishlistCollectionUseCase,
                 getWishlistCollectionSharingDataUseCase,
-                getWishlistCollectionTypeUseCase, addWishlistBulkUseCase, addToWishlistV2UseCase
+                getWishlistCollectionTypeUseCase,
+                addWishlistBulkUseCase,
+                addToWishlistV2UseCase,
+                affiliateCookieHelper
             )
         )
         topAdsImageViewModel = TopAdsImageViewModel(bannerName = "testBanner")
@@ -1333,5 +1370,147 @@ class WishlistCollectionDetailViewModelTest {
 
         verify { addToWishlistV2UseCase.setParams(recommendationItem.productId.toString(), userSessionInterface.userId, sourceCollectionId) }
         coVerify { addToWishlistV2UseCase.executeOnBackground() }
+    }
+
+    @Test
+    fun `integration test affiliate cookie sdk`() {
+        val wishlistCollectionId = "12"
+
+        val affiliateUUID = "123"
+        val affiliateChannel = "affiliate channel"
+
+        val slot = slot<AffiliatePageDetail>()
+
+        wishlistCollectionDetailViewModel.hitAffiliateCookie(
+            affiliateUuid = affiliateUUID,
+            affiliateChannel = affiliateChannel,
+            wishlistCollectionId = wishlistCollectionId
+        )
+
+        coVerify {
+            affiliateCookieHelper.initCookie(
+                affiliateUUID,
+                affiliateChannel,
+                capture(slot)
+            )
+        }
+
+        with(slot.captured) {
+            Assert.assertEquals(wishlistCollectionId, this.pageId)
+            Assert.assertTrue(source is AffiliateSdkPageSource.Wishlist)
+        }
+    }
+
+    @Test
+    fun `when init affiliate cookie throw, no op`() {
+        val wishlistCollectionId = "12"
+
+        val affiliateUUID = "123"
+        val affiliateChannel = "affiliate channel"
+
+        coEvery {
+            affiliateCookieHelper.initCookie(
+                affiliateUUID,
+                affiliateChannel,
+                any()
+            )
+        } throws Throwable("fail")
+
+        wishlistCollectionDetailViewModel.hitAffiliateCookie(
+            affiliateUuid = affiliateUUID,
+            affiliateChannel = affiliateChannel,
+            wishlistCollectionId = wishlistCollectionId
+        )
+
+        coVerify {
+            affiliateCookieHelper.initCookie(
+                affiliateUUID,
+                affiliateChannel,
+                any()
+            )
+        }
+        // no op, expect to be handled by Affiliate SDK
+    }
+
+    @Test
+    fun `integration test affiliate cookie sdk from atc`() {
+        val productId = "2"
+        val wishlistItem = WishlistV2UiModel.Item(
+            shop = WishlistV2UiModel.Item.Shop(id = "1"),
+            id = productId
+        )
+
+        val affiliateUUID = "123"
+        val affiliateChannel = "affiliate channel"
+
+        val slot = slot<AffiliatePageDetail>()
+
+        wishlistCollectionDetailViewModel.checkShouldCreateAffiliateCookieAtcProduct(
+            affiliateUUID = affiliateUUID,
+            affiliateChannel = affiliateChannel,
+            wishlistItemOnAtc = wishlistItem
+        )
+
+        coVerify {
+            affiliateCookieHelper.initCookie(
+                affiliateUUID,
+                affiliateChannel,
+                capture(slot)
+            )
+        }
+
+        with(slot.captured) {
+            Assert.assertEquals(productId, this.pageId)
+            Assert.assertTrue(source is AffiliateSdkPageSource.DirectATC)
+        }
+    }
+
+    @Test
+    fun `when init affiliate cookie from atc throw, no op`() {
+        val productId = "2"
+        val wishlistItem = WishlistV2UiModel.Item(
+            shop = WishlistV2UiModel.Item.Shop(id = "1"),
+            id = productId
+        )
+
+        val affiliateUUID = "123"
+        val affiliateChannel = "affiliate channel"
+
+        coEvery {
+            affiliateCookieHelper.initCookie(
+                affiliateUUID,
+                affiliateChannel,
+                any()
+            )
+        } throws Throwable("fail")
+
+        wishlistCollectionDetailViewModel.checkShouldCreateAffiliateCookieAtcProduct(
+            affiliateUUID = affiliateUUID,
+            affiliateChannel = affiliateChannel,
+            wishlistItemOnAtc = wishlistItem
+        )
+
+        coVerify {
+            affiliateCookieHelper.initCookie(
+                affiliateUUID,
+                affiliateChannel,
+                any()
+            )
+        }
+        // no op, expect to be handled by Affiliate SDK
+    }
+
+    @Test
+    fun `create affiliate link should call affiliate sdk`() {
+        // given
+        val productUrl = "https://www.tokopedia.com/logitech/logitech-b175-mouse-wireless-untuk-windows-mac-linux-dan-chromeos"
+
+        // when
+        wishlistCollectionDetailViewModel.createAffiliateLink(productUrl)
+
+        // then
+        verify {
+            affiliateCookieHelper.createAffiliateLink(any())
+        }
     }
 }

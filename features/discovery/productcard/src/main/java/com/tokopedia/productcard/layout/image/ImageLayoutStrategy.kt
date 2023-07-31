@@ -18,7 +18,7 @@ internal interface ImageLayoutStrategy {
 
     fun getImageHeight(imageWidth: Int, productCardModel: ProductCardModel): Int
 
-    fun setImageSize(mediaAnchorProduct: Space?) { }
+    fun setImageSizeListView(mediaAnchorProduct: Space?) { }
 
     fun imageCornerRadius(): Float = 6.toPx().toFloat()
 }
