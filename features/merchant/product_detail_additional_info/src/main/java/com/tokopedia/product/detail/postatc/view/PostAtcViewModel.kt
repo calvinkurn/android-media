@@ -44,7 +44,8 @@ class PostAtcViewModel @Inject constructor(
         pageSource: String,
         selectedAddonsIds: List<String>,
         warehouseId: String,
-        quantity: Int
+        quantity: Int,
+        postAtcSession: String
     ) {
         postAtcInfo = postAtcInfo.copy(
             productId = productId,
@@ -54,7 +55,8 @@ class PostAtcViewModel @Inject constructor(
             pageSource = pageSource,
             selectedAddonsIds = selectedAddonsIds,
             warehouseId = warehouseId,
-            quantity = quantity
+            quantity = quantity,
+            postAtcSession = postAtcSession
         )
 
         fetchLayout()
@@ -66,7 +68,8 @@ class PostAtcViewModel @Inject constructor(
                 postAtcInfo.productId,
                 postAtcInfo.cartId,
                 postAtcInfo.layoutId,
-                postAtcInfo.pageSource
+                postAtcInfo.pageSource,
+                postAtcInfo.postAtcSession
             )
 
             updateInfo(result)
@@ -97,8 +100,8 @@ class PostAtcViewModel @Inject constructor(
 
             _recommendations.value = uniqueId to widget.asSuccess()
         }, onError = {
-            _recommendations.value = uniqueId to it.asFail()
-        })
+                _recommendations.value = uniqueId to it.asFail()
+            })
     }
 
     private fun updateInfo(data: PostAtcLayout) {

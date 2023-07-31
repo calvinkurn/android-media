@@ -16,7 +16,8 @@ data class PostAtcInfo(
     val quantity: Int = 0,
     val price: Double = 0.0,
     val originalPrice: Double = 0.0,
-    val condition: String = ""
+    val condition: String = "",
+    val postAtcSession: String = ""
 ) {
     data class Footer(
         val image: String = "",
@@ -27,6 +28,5 @@ data class PostAtcInfo(
     ) {
         val shouldShow: Boolean
             get() = image.isNotEmpty() && description.isNotEmpty()
-
     }
 }

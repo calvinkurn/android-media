@@ -107,6 +107,7 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcBottomSheetDelegate {
     private val argSelectedAddonsIds: List<String> by getStringArrayListArg(ARG_SELECTED_ADDONS_IDS)
     private val argWarehouseId: String by getStringArg(ARG_WAREHOUSE_ID)
     private val argQuantity: Int by getIntArg(ARG_QUANTITY)
+    private val argPostAtcSession: String by getStringArg(ARG_POST_ATC_SESSION)
 
     override var binding: PostAtcBottomSheetBinding? = null
         private set
@@ -258,7 +259,8 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcBottomSheetDelegate {
             argPageSource,
             argSelectedAddonsIds,
             argWarehouseId,
-            argQuantity
+            argQuantity,
+            argPostAtcSession
         )
     }
 
