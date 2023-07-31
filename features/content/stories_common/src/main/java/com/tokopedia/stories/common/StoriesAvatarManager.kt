@@ -36,8 +36,9 @@ class StoriesAvatarManager(
         ViewModelProvider(viewModelStoreOwner, viewModelFactory)
     }
 
-    private val coachMark = StoriesAvatarCoachMark(context)
-    private var mCoachMarkedShopId: String? = null
+    private val coachMark = StoriesAvatarCoachMark(context) {
+        getViewModel().onIntent(StoriesAvatarIntent.HasSeenCoachMark)
+    }
 
     init {
         lifecycleOwner.lifecycleScope.launch {
@@ -56,7 +57,6 @@ class StoriesAvatarManager(
 
                         when (message) {
                             is StoriesAvatarMessage.ShowCoachMark -> {
-                                mCoachMarkedShopId = message.shopId
                                 showCoachMarkOnId(message.shopId)
                             }
                         }
@@ -109,7 +109,7 @@ class StoriesAvatarManager(
     }
 
     private fun showCoachMarkOnView(view: StoriesAvatarView) {
-        coachMark.showCoachMark(
+        coachMark.show(
             view,
             "Ada update menarik dari toko ini"
         )
@@ -120,11 +120,11 @@ class StoriesAvatarManager(
         observer.observe(shopId)
         assign(shopId, observer)
 
-        if (mCoachMarkedShopId == shopId) showCoachMarkOnView(this)
+        getViewModel().onIntent(StoriesAvatarIntent.ShowCoachMark)
     }
 
     private fun StoriesAvatarView.onDetached() {
-        coachMark.dismissCoachMark(this)
+        coachMark.forceDismiss(this)
     }
 
     private fun StoriesAvatarView.getObserver(): StoriesAvatarObserver? {

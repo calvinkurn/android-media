@@ -15,12 +15,16 @@ class StoriesAvatarRepositoryImpl @Inject constructor(
     private val dispatchers: CoroutineDispatchers
 ) : StoriesAvatarRepository {
 
+    private var mHasSeen = false
+
     override suspend fun setHasSeenCoachMark() {
-        prefUtil.setHasSeenCoachMark()
+//        prefUtil.setHasSeenCoachMark()
+        mHasSeen = true
     }
 
     override suspend fun hasSeenCoachMark(): Boolean {
-        return prefUtil.hasSeenCoachMark()
+//        return prefUtil.hasSeenCoachMark()
+        return mHasSeen
     }
 
     override suspend fun getShopStoriesState(shopIds: List<String>): List<ShopStoriesState> =

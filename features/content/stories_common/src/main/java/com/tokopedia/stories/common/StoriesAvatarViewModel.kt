@@ -28,8 +28,7 @@ internal class StoriesAvatarViewModel @Inject constructor(
     private val uiMessageManager = UiEventManager<StoriesAvatarMessage>()
     val uiMessage: Flow<StoriesAvatarMessage?> get() = uiMessageManager.event
 
-    init {
-    }
+    init {}
 
     fun onIntent(intent: StoriesAvatarIntent) {
         when (intent) {
