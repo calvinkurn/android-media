@@ -37,14 +37,18 @@ class RemoveBackgroundRepositoryImpl @Inject constructor(
                 val result = services.removeBackground(fileBody)
 
                 emit(result)
+            } ?: run {
+                emit(null)
             }
-        }.map {
-            val compressFormat = filePath.getCompressFormat()
-            ImageProcessingUtil.writeImageToTkpdPath(
-                it.byteStream(),
-                compressFormat,
-                directoryRelativePath = getEditorSaveFolderPath()
-            )
+        }.map { responseBody ->
+            responseBody?.let {
+                val compressFormat = filePath.getCompressFormat()
+                ImageProcessingUtil.writeImageToTkpdPath(
+                    it.byteStream(),
+                    compressFormat,
+                    directoryRelativePath = getEditorSaveFolderPath()
+                )
+            }
         }
     }
 

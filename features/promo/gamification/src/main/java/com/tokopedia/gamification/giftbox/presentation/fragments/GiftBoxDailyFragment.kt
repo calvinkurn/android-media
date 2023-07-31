@@ -56,7 +56,6 @@ import com.tokopedia.notifications.settings.NotificationGeneralPromptLifecycleCa
 import com.tokopedia.notifications.settings.NotificationReminderPrompt
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.unifycomponents.toPx
-import kotlinx.android.synthetic.main.fragment_gift_box_daily.*
 import timber.log.Timber
 import java.util.Locale
 
@@ -397,8 +396,8 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                                     && !actionButtonList[0].type.isNullOrEmpty()
                                     && actionButtonList[0].type == "redirect"
                             ) {
-                                tokoBtnContainer.setSecondButtonText(actionButtonList[0].text)
-                                tokoBtnContainer.btnSecond.setOnClickListener {
+                                tokoButtonContainer.setSecondButtonText(actionButtonList[0].text)
+                                tokoButtonContainer.btnSecond.setOnClickListener {
                                     checkInternetOnButtonActionAndRedirect()
                                 }
                             } else {

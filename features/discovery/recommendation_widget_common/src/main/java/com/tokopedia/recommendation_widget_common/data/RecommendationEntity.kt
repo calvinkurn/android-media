@@ -77,6 +77,9 @@ data class RecommendationEntity(
         @SerializedName("shop")
         val shop: Shop = Shop()
 
+        @SerializedName("warehouseID")
+        val warehouseId: Long = 0L
+
         @SerializedName("freeOngkir")
         val freeOngkirInformation: FreeOngkirInformation = FreeOngkirInformation()
 

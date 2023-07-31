@@ -103,10 +103,6 @@ data class SearchProductModel(
             @Expose
             val totalDataText: String = "",
 
-            @SerializedName("defaultView")
-            @Expose
-            val defaultView: Int = 0,
-
             @SerializedName("responseCode")
             @Expose
             val responseCode: String = "0",

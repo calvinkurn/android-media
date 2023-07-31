@@ -123,7 +123,9 @@ class ProductHighlightItem(
             with(singleBinding) {
                 if (this != null) {
                     try {
-                        bgImage.backgroundTintList = ColorStateList.valueOf(Color.parseColor(productHighlightData.boxColor))
+                        if(!productHighlightData.boxColor.isNullOrEmpty()) {
+                            bgImage.setColorFilter(Color.parseColor(productHighlightData.boxColor))
+                        }
                     } catch (e: Exception) {
                         Utils.logException(e)
                     }
@@ -193,7 +195,6 @@ class ProductHighlightItem(
                     }
 
                     if (productHighlightData.isActive == false) {
-                        phImageTextBottom.text = context.getString(R.string.terjual_habis_camel)
                         val matrix = ColorMatrix().apply {
                             setSaturation(0f)
                         }
@@ -235,7 +236,9 @@ class ProductHighlightItem(
             with(multipleBinding) {
                 if (this != null) {
                     try {
-                        bgImage.backgroundTintList = ColorStateList.valueOf(Color.parseColor(productHighlightData.boxColor))
+                        if(!productHighlightData.boxColor.isNullOrEmpty()) {
+                            bgImage.setColorFilter(Color.parseColor(productHighlightData.boxColor))
+                        }
                     } catch (e: Exception) {
                         Utils.logException(e)
                     }
@@ -306,7 +309,6 @@ class ProductHighlightItem(
                     }
 
                     if (productHighlightData.isActive == false) {
-                        phImageTextBottom.text = context.getString(R.string.terjual_habis_camel)
                         val matrix = ColorMatrix().apply {
                             setSaturation(0f)
                         }
@@ -344,11 +346,11 @@ class ProductHighlightItem(
                 phProductPrice.setType(com.tokopedia.unifyprinciples.Typography.DISPLAY_2)
                 phProductPrice.setWeight(com.tokopedia.unifyprinciples.Typography.BOLD)
                 productHighlightImage.layoutParams.width = getScreenWidth() / 2 - context.resources.getDimensionPixelSize(R.dimen.dp_36)
+                guideline.setGuidelineBegin(productHighlightImage.layoutParams.width - context.resources.getDimensionPixelSize(R.dimen.dp_36))
                 phProductName.setMargin(context.resources.getDimensionPixelSize(R.dimen.dp_8), context.resources.getDimensionPixelSize(R.dimen.dp_56), context.resources.getDimensionPixelSize(R.dimen.dp_8), 0)
             }
         } else if (productHighlightData.typeProductHighlightComponentCard == TRIPLE) {
             with(discoItemMultiProductHighlightBinding) {
-                guideline.setGuidelinePercent(0.41f)
                 phProductPrice.setType(com.tokopedia.unifyprinciples.Typography.DISPLAY_3)
                 phProductPrice.setWeight(com.tokopedia.unifyprinciples.Typography.BOLD)
                 phProductDiscount.setPadding(
@@ -358,6 +360,7 @@ class ProductHighlightItem(
                     context.resources.getDimensionPixelOffset(R.dimen.dp_2)
                 )
                 productHighlightImage.layoutParams.width = getScreenWidth() / 3 - context.resources.getDimensionPixelSize(R.dimen.dp_24)
+                guideline.setGuidelineBegin(productHighlightImage.layoutParams.width - context.resources.getDimensionPixelSize(R.dimen.dp_22))
                 phProductName.setMargin(context.resources.getDimensionPixelSize(R.dimen.dp_8), context.resources.getDimensionPixelSize(R.dimen.dp_36), context.resources.getDimensionPixelSize(R.dimen.dp_8), 0)
             }
         }

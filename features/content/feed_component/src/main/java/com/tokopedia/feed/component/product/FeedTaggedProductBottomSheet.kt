@@ -31,9 +31,14 @@ class FeedTaggedProductBottomSheet : BottomSheetUnify() {
 
     private var activityId: String = ""
     private var viewModel: FeedTaggedProductViewModel? = null
+    private var isFirst: Boolean = true
 
     private val maxHeight by lazyThreadSafetyNone {
         (getScreenHeight() * HEIGHT_PERCENT).roundToInt()
+    }
+
+    private val minHeight by lazyThreadSafetyNone {
+        (getScreenHeight() * MIN_HEIGHT_PERCENT).roundToInt()
     }
 
     private val mAdapterListener = object : FeedTaggedProductBottomSheetViewHolder.Listener {
@@ -66,10 +71,6 @@ class FeedTaggedProductBottomSheet : BottomSheetUnify() {
         mListener = listener
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -96,7 +97,10 @@ class FeedTaggedProductBottomSheet : BottomSheetUnify() {
 
     override fun onResume() {
         super.onResume()
-        showLoading()
+        if (isFirst) {
+            showLoading()
+            isFirst = false
+        }
     }
 
     private fun observeProducts() {
@@ -113,6 +117,8 @@ class FeedTaggedProductBottomSheet : BottomSheetUnify() {
                                     view.layoutParams = view.layoutParams.apply {
                                         if (view.measuredHeight > maxHeight) {
                                             height = maxHeight
+                                        } else if (view.measuredHeight < minHeight) {
+                                            height = minHeight
                                         } else if (height != ViewGroup.LayoutParams.WRAP_CONTENT) {
                                             height = ViewGroup.LayoutParams.WRAP_CONTENT
                                         }
@@ -131,15 +137,17 @@ class FeedTaggedProductBottomSheet : BottomSheetUnify() {
         viewModelOwner: ViewModelStoreOwner,
         viewModelFactory: ViewModelProvider.Factory,
         manager: FragmentManager,
-        tag: String
+        tag: String,
+        products: List<FeedTaggedProductUiModel> = emptyList(),
+        sourceType: FeedTaggedProductUiModel.SourceType
     ) {
+        this.isFirst = true
         this.activityId = activityId
         viewModel = ViewModelProvider(
             viewModelOwner,
             viewModelFactory
         )[FeedTaggedProductViewModel::class.java]
-        viewModel?.fetchFeedProduct(activityId)
-
+        viewModel?.fetchFeedProduct(activityId, products, sourceType)
         show(manager, tag)
     }
 
@@ -216,5 +224,6 @@ class FeedTaggedProductBottomSheet : BottomSheetUnify() {
 
     companion object {
         private const val HEIGHT_PERCENT = 0.8
+        private const val MIN_HEIGHT_PERCENT = 0.2
     }
 }

@@ -8,6 +8,7 @@ import com.tokopedia.applink.ApplinkConst.AFFILIATE_UNIQUE_ID
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
+import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.applink.salam.DeeplinkMapperSalam
 import com.tokopedia.applink.startsWithPattern
@@ -101,4 +102,15 @@ object DeeplinkMapperMarketplace {
         }
     }
 
+    fun getRegisteredWishlistCollectionDetail(uri: Uri, idList: List<String>?): String {
+        return if (uri.queryParameterNames.contains(AFFILIATE_UNIQUE_ID)) {
+            UriUtil.buildUri(
+                ApplinkConstInternalPurchasePlatform.WISHLIST_COLLECTION_DETAIL_WITH_AFFILIATE_UUID,
+                idList?.getOrNull(0),
+                uri.getQueryParameter(AFFILIATE_UNIQUE_ID)
+            )
+        } else {
+            UriUtil.buildUri(ApplinkConstInternalPurchasePlatform.WISHLIST_COLLECTION_DETAIL_INTERNAL, idList?.getOrNull(0))
+        }
+    }
 }
