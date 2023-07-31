@@ -33,8 +33,9 @@
         android:layout_height="0dp"
         android:layout_marginHorizontal="16dp"
         android:layout_marginTop="16dp"
-        android:scaleType="fitXY"
-        app:layout_constraintDimensionRatio="1:1"
+        android:adjustViewBounds="true"
+        android:scaleType="fitCenter"
+        app:layout_constraintDimensionRatio="2:1"
         app:layout_constraintTop_toBottomOf="@id/tv_product_detail_a_plus_image_title"
         app:unify_image_corner_radius="0"
         tools:src="@drawable/qc_launcher" />
