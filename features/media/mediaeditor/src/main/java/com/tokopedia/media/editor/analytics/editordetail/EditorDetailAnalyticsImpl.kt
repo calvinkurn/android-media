@@ -1,9 +1,8 @@
 package com.tokopedia.media.editor.analytics.editordetail
 
-import androidx.compose.ui.text.toLowerCase
 import com.tokopedia.kotlin.extensions.view.toZeroStringIfNullOrBlank
 import com.tokopedia.media.editor.analytics.ACTION_CLICK_ADD_LOGO
-import com.tokopedia.media.editor.analytics.ACTION_CLICK_LOGO_LOAD_RETRY
+import com.tokopedia.media.editor.analytics.ACTION_VIEW_LOGO_LOAD_RETRY
 import com.tokopedia.media.editor.analytics.ACTION_CLICK_SAVE
 import com.tokopedia.media.editor.analytics.ACTION_CLICK_TEXT_BACKGROUND
 import com.tokopedia.media.editor.analytics.ACTION_CLICK_TEXT_FREE
@@ -14,6 +13,7 @@ import com.tokopedia.media.editor.analytics.BUSINESS_UNIT
 import com.tokopedia.media.editor.analytics.CURRENT_SITE
 import com.tokopedia.media.editor.analytics.EVENT
 import com.tokopedia.media.editor.analytics.EVENT_CATEGORY
+import com.tokopedia.media.editor.analytics.EVENT_VIEW
 import com.tokopedia.media.editor.analytics.KEY_BUSINESS_UNIT
 import com.tokopedia.media.editor.analytics.KEY_CURRENT_SITE
 import com.tokopedia.media.editor.analytics.KEY_EVENT
@@ -22,7 +22,7 @@ import com.tokopedia.media.editor.analytics.KEY_EVENT_CATEGORY
 import com.tokopedia.media.editor.analytics.KEY_EVENT_LABEL
 import com.tokopedia.media.editor.analytics.KEY_TRACKER_ID
 import com.tokopedia.media.editor.analytics.KEY_USER_ID
-import com.tokopedia.media.editor.analytics.TRACKER_ID_CLICK_LOGO_LOAD_RETRY
+import com.tokopedia.media.editor.analytics.TRACKER_ID_VIEW_LOGO_LOAD_RETRY
 import com.tokopedia.media.editor.analytics.TRACKER_ID_CLICK_LOGO_UPLOAD
 import com.tokopedia.media.editor.analytics.TRACKER_ID_CLICK_SAVE
 import com.tokopedia.media.editor.analytics.TRACKER_ID_CLICK_TEXT_BACKGROUND
@@ -72,11 +72,13 @@ class EditorDetailAnalyticsImpl @Inject constructor(
         )
     }
 
-    override fun clickAddLogoLoadRetry() {
+    // add logo failed to load shop logo
+    override fun viewAddLogoLoadRetry() {
         sendGeneralEvent(
-            ACTION_CLICK_LOGO_LOAD_RETRY,
+            ACTION_VIEW_LOGO_LOAD_RETRY,
             "$pageSource - $userId - $shopId",
-            TRACKER_ID_CLICK_LOGO_LOAD_RETRY
+            TRACKER_ID_VIEW_LOGO_LOAD_RETRY,
+            eventName = EVENT_VIEW
         )
     }
 
@@ -136,10 +138,11 @@ class EditorDetailAnalyticsImpl @Inject constructor(
         eventAction: String,
         eventLabel: String,
         trackerID: String,
-        additionalEvent: Map<String, String> = mapOf()
+        additionalEvent: Map<String, String> = mapOf(),
+        eventName: String? = null
     ) {
         val generalEvent = mutableMapOf(
-            KEY_EVENT to EVENT,
+            KEY_EVENT to (eventName ?: EVENT),
             KEY_EVENT_ACTION to eventAction,
             KEY_EVENT_CATEGORY to EVENT_CATEGORY,
             KEY_EVENT_LABEL to eventLabel,

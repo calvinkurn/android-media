@@ -4,7 +4,7 @@ interface EditorDetailAnalytics {
     fun clickRotationFlip()
     fun clickRotationRotate()
     fun clickAddLogoUpload(logoState: String)
-    fun clickAddLogoLoadRetry()
+    fun viewAddLogoLoadRetry()
     fun clickAddTextFreeText()
     fun clickAddTextBackgroundText()
     fun clickAddTextTemplate()

@@ -433,8 +433,8 @@ class DetailEditorFragment @Inject constructor(
         }
     }
 
-    override fun onLoadRetry() {
-        editorDetailAnalytics.clickAddLogoLoadRetry()
+    override fun onLoadFailedToasterShow() {
+        editorDetailAnalytics.viewAddLogoLoadRetry()
     }
 
     override fun onLoadFailed() {
