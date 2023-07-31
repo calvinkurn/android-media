@@ -2,6 +2,7 @@ package com.tokopedia.gifting.domain.model
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.addon.domain.model.Additional
 
 data class GetAddOnRequest(
     @SerializedName("RequestData")
@@ -36,7 +37,13 @@ data class RequestData(
 data class AddOnRequest(
     @SerializedName("AddOnID")
     @Expose
-    val addOnID: String = ""
+    val addOnID: String = "",
+    @SerializedName("AddOnType")
+    @Expose
+    val addOnType: String = "",
+    @SerializedName("Additional")
+    @Expose
+    val additional: Additional = Additional(),
 )
 
 data class Source(

@@ -1,6 +1,7 @@
 package com.tokopedia.addon.presentation.uimodel
 
 import com.tokopedia.addon.domain.model.GetAddOnByProductResponse
+import com.tokopedia.gifting.presentation.uimodel.AddOnType
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
@@ -46,7 +47,8 @@ object AddOnMapper {
                 addon = addonsUi,
                 productId = addonResponse.productID.toLongOrZero(),
                 warehouseId = warehouseId,
-                addOnLevel = addonResponse.addOnLevel
+                addOnLevel = addonResponse.addOnLevel,
+                addonCount = addonsUi.size
             )
         }.orEmpty()
     }
@@ -78,8 +80,24 @@ object AddOnMapper {
         return resultValue
     }
 
+    fun getPPSelectedAddons(addOnGroupUIModels: List<AddOnGroupUIModel>?): List<AddOnUIModel> {
+        val resultValue: MutableList<AddOnUIModel> = mutableListOf()
+        addOnGroupUIModels.orEmpty().forEach { addOnGroupUIModel ->
+            resultValue.addAll(
+                addOnGroupUIModel.addon.filter { it.getSelectedStatus().value > 0 }
+            )
+        }
+        return resultValue
+    }
+
     fun getSelectedAddonsIds(addOnGroupUIModels: List<AddOnGroupUIModel>): List<String> {
         return getSelectedAddons(addOnGroupUIModels).map { it.id }
+    }
+
+    fun getSelectedAddonsTypes(addOnGroupUIModels: List<AddOnGroupUIModel>): List<String> {
+        return getSelectedAddons(addOnGroupUIModels).map {
+            AddOnType.values().getOrNull(it.addOnType.dec())?.name.orEmpty()
+        }
     }
 
     fun mapToSaveAddOnStateRequest(
@@ -120,7 +138,7 @@ object AddOnMapper {
     ): List<AddOnUIModel> {
         return addonGroups.orEmpty()
             .flatMap { it.addon }
-            .filter { it.getSelectedStatus() != AddOnSelectedStatus.DEFAULT }
+            .filter { it.isSelected || it.getSelectedStatus() != AddOnSelectedStatus.DEFAULT }
     }
 
     fun deepCopyAddonGroup(addonGroups: List<AddOnGroupUIModel>): List<AddOnGroupUIModel> {

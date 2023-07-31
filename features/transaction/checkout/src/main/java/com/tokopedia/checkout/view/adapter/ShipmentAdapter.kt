@@ -1306,10 +1306,6 @@ class ShipmentAdapter @Inject constructor(
         shipmentAdapterActionListener.addOnProductServiceImpression(addonType, productId)
     }
 
-    override fun onClickAddOnsProductWidget(addonType: Int, productId: String, isChecked: Boolean) {
-        shipmentAdapterActionListener.onClickAddOnProductServiceWidgetItem(addonType, productId, isChecked)
-    }
-
     override fun onClickLihatSemuaAddOnProductWidget() {
         shipmentAdapterActionListener.onClickLihatSemuaAddOnProductServiceWidget()
     }

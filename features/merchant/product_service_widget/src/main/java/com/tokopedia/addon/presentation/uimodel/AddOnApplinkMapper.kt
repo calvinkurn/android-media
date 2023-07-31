@@ -27,7 +27,7 @@ object AddOnApplinkMapper {
     fun getSelectedAddonIdsFromUri(uri: Uri): List<String> {
         var selectedProductIds: List<String> = emptyList()
         try {
-            uri.getQueryParameter(SELECTED_ADDON_IDS)?.let {
+            uri.getQueryParameter(SELECTED_ADDON_IDS)?.filterNot { it.isWhitespace() }?.let {
                 if (it.isNotEmpty()) selectedProductIds = it.split(APPLINK_ARRAY_DELIMITER)
             }
         } catch (e: Exception) { }

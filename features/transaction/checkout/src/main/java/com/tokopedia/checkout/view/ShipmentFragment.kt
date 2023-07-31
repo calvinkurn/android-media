@@ -3898,6 +3898,8 @@ class ShipmentFragment :
         shipmentViewModel.saveAddOnsProduct(cartItemModel)
         shipmentAdapter.checkHasSelectAllCourier(true, -1, "", false, false)
         shipmentAdapter.updateSubtotal()
+
+        checkoutAnalyticsCourierSelection.eventClickAddOnsProductServiceWidget(addOnProductDataItemModel.type, cartItemModel.productId.toString(), isChecked)
     }
 
     override fun onClickAddonProductInfoIcon(addOnDataInfoLink: String) {
@@ -4298,10 +4300,6 @@ class ShipmentFragment :
 
     override fun addOnProductServiceImpression(addOnType: Int, productId: String) {
         checkoutAnalyticsCourierSelection.eventViewAddOnsProductServiceWidget(addOnType, productId)
-    }
-
-    override fun onClickAddOnProductServiceWidgetItem(addOnType: Int, productId: String, isChecked: Boolean) {
-        checkoutAnalyticsCourierSelection.eventClickAddOnsProductServiceWidget(addOnType, productId, isChecked)
     }
 
     override fun onClickLihatSemuaAddOnProductServiceWidget() {

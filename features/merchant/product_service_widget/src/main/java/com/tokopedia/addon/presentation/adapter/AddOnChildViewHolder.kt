@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.addon.presentation.uimodel.AddOnUIModel
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.strikethrough
@@ -15,7 +16,8 @@ import com.tokopedia.utils.view.binding.viewBinding
 class AddOnChildViewHolder(
     itemView: View,
     onClickListener: (index: Int, isChecked: Boolean) -> Unit,
-    onHelpClickListener: (index: Int) -> Unit
+    onHelpClickListener: (index: Int) -> Unit,
+    private val onItemImpression: (index: Int, addOnUIModel: AddOnUIModel) -> Unit
 ): RecyclerView.ViewHolder(itemView) {
 
     companion object {
@@ -51,6 +53,9 @@ class AddOnChildViewHolder(
             root.isEnabled = !item.isMandatory
             tfDescription.text = item.description
             tfDescription.isVisible = showDescription
+        }
+        itemView.addOnImpressionListener(item.impressHolder) {
+            onItemImpression(bindingAdapterPosition, item)
         }
     }
 
