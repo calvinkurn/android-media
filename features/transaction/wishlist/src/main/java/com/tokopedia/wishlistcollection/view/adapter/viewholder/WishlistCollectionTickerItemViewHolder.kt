@@ -15,26 +15,20 @@ import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
-import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.wishlist.R
 import com.tokopedia.wishlist.databinding.CollectionWishlistTickerItemBinding
 import com.tokopedia.wishlistcollection.data.model.WishlistCollectionTypeLayoutData
 import com.tokopedia.wishlistcollection.data.response.GetWishlistCollectionResponse
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.BG_TICKER
+import com.tokopedia.wishlistcollection.util.WishlistCollectionUtils
 import com.tokopedia.wishlistcollection.view.adapter.WishlistCollectionAdapter
 
 class WishlistCollectionTickerItemViewHolder(
     private val binding: CollectionWishlistTickerItemBinding,
     private val actionListener: WishlistCollectionAdapter.ActionListener?
 ) : RecyclerView.ViewHolder(binding.root) {
-
-    private fun isAffiliateTickerEnabled() = RemoteConfigInstance.getInstance().abTestPlatform.getString(
-        RollenceKey.WISHLIST_AFFILIATE_TICKER,
-        ""
-    ) == RollenceKey.WISHLIST_AFFILIATE_TICKER
     fun bind(item: WishlistCollectionTypeLayoutData, isTickerClosed: Boolean) {
-        if (isAffiliateTickerEnabled()) {
+        if (WishlistCollectionUtils.isAffiliateTickerEnabled()) {
             showAffiliateTicker()
             return
         }

@@ -21,7 +21,7 @@ import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.TYPE_COLLE
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.TYPE_COLLECTION_TICKER
 
 object WishlistCollectionUtils {
-    private fun isAffiliateTickerEnabled() = RemoteConfigInstance.getInstance().abTestPlatform.getString(
+    fun isAffiliateTickerEnabled() = RemoteConfigInstance.getInstance().abTestPlatform.getString(
         RollenceKey.WISHLIST_AFFILIATE_TICKER,
         ""
     ) == RollenceKey.WISHLIST_AFFILIATE_TICKER
