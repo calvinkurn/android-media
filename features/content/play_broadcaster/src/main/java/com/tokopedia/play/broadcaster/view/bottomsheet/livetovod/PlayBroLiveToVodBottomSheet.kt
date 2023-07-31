@@ -123,8 +123,8 @@ class PlayBroLiveToVodBottomSheet @Inject constructor(
         showNow(fragmentManager, TAG)
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onDestroyView() {
+        super.onDestroyView()
         mListener = null
         _binding = null
     }
