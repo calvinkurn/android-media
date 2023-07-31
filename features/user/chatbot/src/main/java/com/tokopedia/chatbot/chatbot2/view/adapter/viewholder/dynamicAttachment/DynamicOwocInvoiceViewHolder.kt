@@ -69,6 +69,7 @@ class DynamicOwocInvoiceViewHolder(
 
     private fun ItemChatbotDynamicOwocBinding.setUpReadMoreButtonClickListener(uiModel: DynamicOwocInvoiceUiModel) {
         btnReadMore.root.setOnClickListener {
+            showSeeAll = !showSeeAll
             if (showSeeAll) {
                 modifiedInvoiceList = uiModel.invoiceList?.take(INVOICE_LIST_SIZE)
                 initializeAdapter(modifiedInvoiceList)
@@ -76,7 +77,6 @@ class DynamicOwocInvoiceViewHolder(
                 initializeAdapter(uiModel.invoiceList)
             }
             setupReadMoreButton()
-            showSeeAll = !showSeeAll
         }
     }
 
