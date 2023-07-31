@@ -8,23 +8,26 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.promousage.databinding.PromoUsageItemVoucherBinding
 import com.tokopedia.promousage.databinding.PromoUsageItemVoucherRecommendationBinding
-import com.tokopedia.promousage.domain.entity.list.PromoItem
 import com.tokopedia.promousage.domain.entity.list.PromoRecommendationItem
+import com.tokopedia.promousage.domain.entity.list.PromoItem
 import com.tokopedia.promousage.util.composite.DelegateAdapter
 import com.tokopedia.promousage.util.extension.applyPaddingToLastItem
 
-class PromoRecommendationDelegateAdapter(
+class VoucherRecommendationDelegateAdapter(
     private val onVoucherClick: (PromoItem) -> Unit,
     private val onButtonUseRecommendedVoucherClick: () -> Unit
-) : DelegateAdapter<PromoRecommendationItem, PromoRecommendationDelegateAdapter.ViewHolder>(PromoRecommendationItem::class.java) {
+) : DelegateAdapter<PromoRecommendationItem, VoucherRecommendationDelegateAdapter.ViewHolder>(PromoRecommendationItem::class.java) {
 
     companion object {
         private const val PADDING_BOTTOM_DP = 16
     }
 
     override fun createViewHolder(parent: ViewGroup): RecyclerView.ViewHolder {
-        val binding = PromoUsageItemVoucherRecommendationBinding
-            .inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding = PromoUsageItemVoucherRecommendationBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent,
+            false
+        )
         return ViewHolder(binding)
     }
 
@@ -93,14 +96,14 @@ class PromoRecommendationDelegateAdapter(
         inner class ViewHolder(private val binding: PromoUsageItemVoucherBinding) :
             RecyclerView.ViewHolder(binding.root) {
 
-            fun bind(promo: PromoItem) {
-                binding.voucherView.bind(promo)
-                binding.root.setOnClickListener { onVoucherClick(promo) }
+            fun bind(item: PromoItem) {
+                binding.voucherView.bind(item)
+                binding.root.setOnClickListener { onVoucherClick(item) }
             }
-
         }
-        fun submit(newPromos: List<PromoItem>) {
-            differ.submitList(newPromos)
+
+        fun submit(promos: List<PromoItem>) {
+            differ.submitList(promos)
         }
     }
 }

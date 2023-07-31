@@ -256,6 +256,10 @@ class PromoUsageViewModel @Inject constructor(
         }
     }
 
+    fun onButtonUseRecommendationVoucherClick() {
+
+    }
+
     fun onClickBackToCheckoutButton() {
 
     }
@@ -267,6 +271,14 @@ class PromoUsageViewModel @Inject constructor(
             selectedPromoCount = selectedPromoCount,
             totalSelectedPromoBenefitAmount = totalSelectedPromoBenefit
         )
+    }
+
+    fun onCtaUseVoucherCodeClick() {
+
+    }
+
+    fun onVoucherCodeClearIconClick() {
+
     }
 
     private fun List<DelegateAdapterItem>.getPromoByCode(promoCode: String): PromoItem? {

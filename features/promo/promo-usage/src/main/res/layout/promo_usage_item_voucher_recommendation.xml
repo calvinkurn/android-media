@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:orientation="horizontal"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
     <ImageView
@@ -12,6 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:background="@drawable/promo_usage_bg_bottomsheet_voucher_recommendation"
+        android:contentDescription="@string/promo_voucher_cd_recommended_voucher_background"
         app:layout_constraintBottom_toBottomOf="@id/recyclerView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -27,7 +26,7 @@
         android:ellipsize="end"
         android:maxLines="2"
         android:textColor="@color/promo_dms_white"
-        app:layout_constraintEnd_toStartOf="@+id/btnRecommendationUseVoucher"
+        app:layout_constraintEnd_toStartOf="@+id/barrier"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="heading_3"
@@ -44,7 +43,32 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/tpgRecommendationTitle"
         app:unifyButtonSize="medium"
-        app:unifyButtonVariant="ghost" />
+        app:unifyButtonVariant="ghost"
+        tools:visibility="gone" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/ivCheckmarkOutline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/promo_usage_ic_checkmark_outline"
+        tools:visibility="visible" />
+
+    <ImageView
+        android:id="@+id/ivCheckmark"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="16dp"
+        android:background="@drawable/promo_usage_ic_voucher_recommendation_applied"
+        android:contentDescription="@string/promo_voucher_cd_recommended_voucher_used"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/tpgRecommendationTitle"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tpgRecommendationTitle"
+        tools:visibility="visible" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
@@ -55,9 +79,22 @@
         android:layout_marginEnd="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnRecommendationUseVoucher"
+        app:layout_constraintTop_toBottomOf="@+id/recyclerViewBarrier"
         tools:itemCount="3"
         tools:listitem="@layout/promo_usage_item_voucher" />
 
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrier"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="left"
+        app:constraint_referenced_ids="btnRecommendationUseVoucher, ivCheckmark" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/recyclerViewBarrier"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="btnRecommendationUseVoucher, ivCheckmark" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
