@@ -2,6 +2,7 @@ package com.tokopedia.buy_more_get_more.olp.presentation
 
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -100,6 +101,7 @@ class OfferLandingPageFragment :
 
     private fun setupObservables() {
         viewModel.offeringInfo.observe(viewLifecycleOwner) { offerInfoForBuyer ->
+            Log.d("Masuk", offerInfoForBuyer.offeringJsonData)
         }
 
         viewModel.error.observe(viewLifecycleOwner) { throwable ->

@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.buy_more_get_more.R
 import com.tokopedia.buy_more_get_more.databinding.ItemOlpSortingBinding
 import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferProductSortingUiModel
+import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.utils.view.binding.viewBinding
 
 class OfferingProductSortingViewHolder(view: View) :
@@ -23,9 +24,9 @@ class OfferingProductSortingViewHolder(view: View) :
             tpgProductCount?.text =
                 getString(R.string.bmgm_product_count_placeholder, data.productCount.toString())
             chipsSorting.apply {
-                prefixText = "Sorting"
+                val filter = SortFilterItem("Urutkan")
+                addItem(arrayListOf(filter))
             }
         }
-
     }
 }

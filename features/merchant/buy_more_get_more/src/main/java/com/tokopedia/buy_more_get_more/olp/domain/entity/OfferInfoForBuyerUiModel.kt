@@ -5,7 +5,7 @@ import com.tokopedia.buy_more_get_more.olp.presentation.adapter.OlpAdapterTypeFa
 
 data class OfferInfoForBuyerUiModel(
     val responseHeader: ResponseHeader = ResponseHeader(),
-    val offeringJsonData: String = "",
+    val offeringJsonData: String = "hakuna matata",
     val offerings: List<Offering> = emptyList()
 ): Visitable<OlpAdapterTypeFactory> {
     data class ResponseHeader(

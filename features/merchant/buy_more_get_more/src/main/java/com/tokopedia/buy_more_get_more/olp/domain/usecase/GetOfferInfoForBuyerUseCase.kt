@@ -1,6 +1,7 @@
 package com.tokopedia.buy_more_get_more.olp.domain.usecase
 
 import com.tokopedia.buy_more_get_more.olp.data.mapper.GetOfferInfoForBuyerMapper
+import com.tokopedia.buy_more_get_more.olp.data.request.GetOfferingInfoForBuyerRequestParam
 import com.tokopedia.buy_more_get_more.olp.data.response.OfferInfoForBuyerResponse
 import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferInfoForBuyerUiModel
 import com.tokopedia.gql_query_annotation.GqlQueryInterface
@@ -22,6 +23,7 @@ class GetOfferInfoForBuyerUseCase @Inject constructor(
     }
 
     companion object {
+        private const val REQUEST_PARAM_INPUT = "input"
         private const val REQUEST_PARAM_OFFER_IDS = "offer_ids"
         private const val REQUEST_PARAM_SOURCE = "source"
     }
@@ -29,39 +31,41 @@ class GetOfferInfoForBuyerUseCase @Inject constructor(
     private val query = object : GqlQueryInterface {
         private val OPERATION_NAME = "getOfferingInfoForBuyer"
         private val QUERY = """
-              query $OPERATION_NAME(${'$'}offer_ids: [Int], ${'$'}source: String) {
-                  $OPERATION_NAME(offer_ids: ${'$'}offer_ids, source: ${'$'}source) {
+              query $OPERATION_NAME(${'$'}input: GetOfferingInfoForBuyerRequest!) {
+                  GetOfferingInfoForBuyer(input: ${'$'}input) {
                      response_header{
-                      status
-                      error_message
-                      success
-                      process_time
-                      reason
-                      error_code
-                    }
-                    offering_json_data
-                    offering{
-                      offer_id
-                      offer_name
-                      shop_name
-                      start_date
-                      end_date
-                      tier_list{
-                        tier_id
-                        level
-                        rule{
-                          type_id
-                          operation
-                          value
+                          status
+                          errorMessage
+                          success
+                          processTime
                         }
-                        benefit{
-                          type_id
-                          value
+                        offering_json_data
+                        offering{
+                          offer_id
+                          shop_data{
+                            shop_id
+                            shop_name
+                            badge
+                          }
+                          offer_name
+                          start_date
+                          end_date
+                          tier_list{
+                            tier_id
+                            level
+                            rule{
+                              type_id
+                              operation
+                              value
+                            }
+                            benefit{
+                              type_id
+                              value
+                            }
+                          }
                         }
-                      }  
+                      }
                     }
-                  }
-                }
 
 
         """.trimIndent()
@@ -71,17 +75,16 @@ class GetOfferInfoForBuyerUseCase @Inject constructor(
         override fun getTopOperationName(): String = OPERATION_NAME
     }
 
-    suspend fun execute(param: Param): OfferInfoForBuyerUiModel {
+    suspend fun execute(param: GetOfferingInfoForBuyerRequestParam): OfferInfoForBuyerUiModel {
         val request = buildRequest(param)
         val response = repository.response(listOf(request))
         val data = response.getSuccessData<OfferInfoForBuyerResponse>()
         return mapper.map(data)
     }
 
-    private fun buildRequest(param: Param): GraphqlRequest {
+    private fun buildRequest(param: GetOfferingInfoForBuyerRequestParam): GraphqlRequest {
         val params = mapOf(
-            REQUEST_PARAM_OFFER_IDS to param.offerIds,
-            REQUEST_PARAM_SOURCE to param.source
+            REQUEST_PARAM_INPUT to param
         )
 
         return GraphqlRequest(
@@ -90,10 +93,4 @@ class GetOfferInfoForBuyerUseCase @Inject constructor(
             params
         )
     }
-
-    data class Param(
-        val offerIds: List<Int> = emptyList(),
-        val shopId: Int = 0,
-        val source: String = "shop"
-    )
 }
