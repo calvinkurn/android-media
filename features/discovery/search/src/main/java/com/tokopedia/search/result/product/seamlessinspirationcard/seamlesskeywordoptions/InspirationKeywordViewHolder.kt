@@ -13,7 +13,7 @@ import com.tokopedia.search.databinding.SearchInspirationSemlessKeywordBinding
 import com.tokopedia.search.result.product.changeview.ChangeViewListener
 import com.tokopedia.search.result.product.changeview.ViewType
 import com.tokopedia.search.result.product.seamlessinspirationcard.seamlesskeywordoptions.typefactory.InspirationKeywordsTypeFactoryImpl
-import com.tokopedia.search.result.product.seamlessinspirationcard.utils.INDEX_IMPRESISON_KEYWORD_TO_BE_TRACK
+import com.tokopedia.search.result.product.seamlessinspirationcard.utils.INDEX_IMPRESSION_KEYWORD_TO_BE_TRACK
 import com.tokopedia.search.result.product.seamlessinspirationcard.utils.InspirationKeywordGridLayoutManager
 import com.tokopedia.search.result.product.seamlessinspirationcard.utils.KeywordItemDecoration
 import com.tokopedia.search.result.product.seamlessinspirationcard.utils.isBigGridView
@@ -45,7 +45,7 @@ class InspirationKeywordViewHolder(
 
         initCardView()
         val optionItem = element.optionsItems.take(QTY_EXAMPLE_DATA)
-        optionItem.getItemOptionsOn(INDEX_IMPRESISON_KEYWORD_TO_BE_TRACK).doImpressedTracker()
+        optionItem.getItemOptionsOn(INDEX_IMPRESSION_KEYWORD_TO_BE_TRACK).doImpressedTracker()
         val viewType = changeViewListener.viewType
         initRecyclerView(optionItem, viewType)
     }
