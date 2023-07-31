@@ -32,6 +32,11 @@ abstract class FocusedCarouselItemDecoration(
 
     private val whiteColor = MethodChecker.getColor(context, unifyR.color.Unify_Static_White)
 
+    private val rect = Rect()
+    private val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        color = whiteColor
+    }
+
     fun getHorizontalOffset(): Int {
         return 2 * offset6
     }
@@ -50,11 +55,6 @@ abstract class FocusedCarouselItemDecoration(
 
         val midPoint = parent.width / 2
         val itemCount = parent.childCount
-
-        val rect = Rect()
-        val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-            color = whiteColor
-        }
 
         for (i in 0 until itemCount) {
             val child = parent.getChildAt(i)
