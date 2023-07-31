@@ -153,7 +153,7 @@ class StoriesAvatarManager(
 
     private fun getViewByShopId(shopId: String): StoriesAvatarView? {
         val meta = viewToObserverMap.entries.firstOrNull {
-            it.value.observer?.shopId == shopId
+            it.value.shopId == shopId
         } ?: return null
         return meta.key
     }

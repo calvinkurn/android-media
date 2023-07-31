@@ -21,7 +21,6 @@ internal class StoriesAvatarObserver(
 ) {
 
     private val _shopId = MutableStateFlow("")
-    val shopId: String get() = _shopId.value
 
     init {
         lifecycleOwner.lifecycleScope.launch {
