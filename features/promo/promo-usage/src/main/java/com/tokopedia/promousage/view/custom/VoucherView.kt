@@ -346,12 +346,11 @@ class VoucherView @JvmOverloads constructor(
     private fun createVoucherShape(cardViewHeightPx: Int, isVoucherSelected: Boolean): Drawable {
         val cardCornerRadius = 8.toPx().toFloat()
         val notchRadius = 18
-
         val stokeWidth = 1
 
 
-        val distance = cardViewHeightPx - 48.toPx()
-        val offsetY = distance / 4
+        val distanceFromBottom = cardViewHeightPx - 58.toPx()
+        val offsetY = distanceFromBottom / 4
 
 
         val roundTreatment = BottomAppBarTopEdgeTreatment(0f, 0f, 0f)
