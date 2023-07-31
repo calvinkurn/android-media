@@ -20,6 +20,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
 import com.google.android.gms.common.api.ApiException
@@ -52,6 +53,8 @@ import com.tokopedia.logisticaddaddress.utils.AddNewAddressUtils
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.permission.PermissionCheckerHelper
@@ -65,8 +68,30 @@ class DiscomBottomSheetRevamp :
     DiscomContract.View,
     DiscomAdapterRevamp.ActionListener {
 
+    companion object {
+        private const val SUCCESS = "success"
+        private const val NOT_SUCCESS = "not success"
+
+        private const val MIN_TEXT_LENGTH = 4
+        private const val DELAY_MILIS: Long = 200
+        private const val LOCATION_REQUEST_INTERVAL = 10000L
+        private const val LOCATION_REQUEST_FASTEST_INTERVAL = 2000L
+    }
+
+//    @Inject
+//    lateinit var viewModelFactory: ViewModelProvider.Factory
+//
+//    private val viewModel: DiscomViewModel by lazy {
+//        ViewModelProvider(
+//            requireParentFragment(),
+//            viewModelFactory
+//        )[DiscomViewModel::class.java]
+//    }
+//
     @Inject
-    lateinit var presenter: DiscomContract.Presenter
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    private var viewModel: DiscomViewModel? = null
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -91,7 +116,7 @@ class DiscomBottomSheetRevamp :
     private val searchHandler = Handler()
     private val mEndlessListener = object : EndlessRecyclerViewScrollListener(mLayoutManager) {
         override fun onLoadMore(page: Int, totalItemsCount: Int) {
-            presenter.loadData(input, page + 1)
+            viewModel?.loadData(input, page + 1)
         }
     }
 
@@ -126,12 +151,48 @@ class DiscomBottomSheetRevamp :
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         initLayout()
+        initObserver()
         return super.onCreateView(inflater, container, savedInstanceState)
+    }
+
+    private fun initObserver() {
+        viewModel?.autoFill?.observe(viewLifecycleOwner) {
+            when (it) {
+                is Success -> {
+                    setResultDistrict(it.data.data, it.data.lat, it.data.long)
+                }
+
+                is Fail -> {
+                    showToasterError(it.throwable.message.orEmpty())
+                }
+            }
+        }
+
+        viewModel?.districtRecommendation?.observe(viewLifecycleOwner) {
+            when (it) {
+                is Success -> {
+                    if (it.data.addresses.isNotEmpty()) {
+                        renderData(it.data.addresses, it.data.isNextAvailable)
+                    } else {
+                        showEmpty()
+                    }
+                }
+
+                is Fail -> {
+                    showGetListError(it.throwable)
+                }
+            }
+        }
+
+        viewModel?.loading?.observe(viewLifecycleOwner) {
+            setLoadingState(it)
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initInjector()
+        viewModel = ViewModelProvider(this, viewModelFactory)[DiscomViewModel::class.java]
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -155,18 +216,10 @@ class DiscomBottomSheetRevamp :
         }
     }
 
-    override fun onDetach() {
-        super.onDetach()
-        if (::presenter.isInitialized) {
-            presenter.detach()
-        }
-    }
-
     private fun initInjector() {
         DaggerAddNewAddressRevampComponent.builder()
             .baseAppComponent((context?.applicationContext as BaseMainApplication).baseAppComponent)
             .build().inject(this)
-        presenter.attach(this)
     }
 
     private fun initLayout() {
@@ -308,7 +361,7 @@ class DiscomBottomSheetRevamp :
                         input = viewBinding?.searchPageInput?.searchBarTextField?.text.toString()
                         mIsInitialLoading = true
                         searchHandler.postDelayed({
-                            presenter.loadData(input, page)
+                            viewModel?.loadData(input, page)
                         }, DELAY_MILIS)
                     }
                 }
@@ -642,7 +695,7 @@ class DiscomBottomSheetRevamp :
     fun getLocation() {
         fusedLocationClient?.lastLocation?.addOnSuccessListener { data ->
             if (data != null) {
-                presenter.autoFill(data.latitude, data.longitude)
+                viewModel?.reverseGeoCode(data.latitude, data.longitude)
             } else {
                 fusedLocationClient?.requestLocationUpdates(
                     AddNewAddressUtils.getLocationRequest(),
@@ -744,7 +797,7 @@ class DiscomBottomSheetRevamp :
         object : LocationCallback() {
             override fun onLocationResult(locationResult: LocationResult) {
                 stopLocationUpdate()
-                presenter.autoFill(locationResult.lastLocation.latitude, locationResult.lastLocation.longitude)
+                viewModel?.reverseGeoCode(locationResult.lastLocation.latitude, locationResult.lastLocation.longitude)
             }
         }
 
@@ -753,15 +806,5 @@ class DiscomBottomSheetRevamp :
             PermissionCheckerHelper.Companion.PERMISSION_ACCESS_FINE_LOCATION,
             PermissionCheckerHelper.Companion.PERMISSION_ACCESS_COARSE_LOCATION
         )
-    }
-
-    companion object {
-        private const val SUCCESS = "success"
-        private const val NOT_SUCCESS = "not success"
-
-        private const val MIN_TEXT_LENGTH = 4
-        private const val DELAY_MILIS: Long = 200
-        private const val LOCATION_REQUEST_INTERVAL = 10000L
-        private const val LOCATION_REQUEST_FASTEST_INTERVAL = 2000L
     }
 }
