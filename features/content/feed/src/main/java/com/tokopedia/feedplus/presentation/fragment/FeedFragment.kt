@@ -181,9 +181,10 @@ class FeedFragment :
             val feedMenuSheet =
                 childFragmentManager.findFragmentByTag(TAG_FEED_MENU_BOTTOMSHEET) as? ContentThreeDotsMenuBottomSheet
             if (feedMenuSheet != null && userSession.isLoggedIn) {
-                val isVideo =
-                    feedPostViewModel.userReportList is Success && (feedPostViewModel.userReportList as? Success<List<PlayUserReportReasoningUiModel>>)?.data?.isNotEmpty()
-                        .orFalse()
+                val currentIndex = layoutManager.findFirstVisibleItemPosition()
+                val item = adapter.currentList[currentIndex]?.data
+                val isVideo = item is FeedCardVideoContentModel || item is FeedCardLivePreviewContentModel
+
                 feedMenuSheet.showReportLayoutWhenLaporkanClicked(isVideo = isVideo, action = {
                     ContentReportBottomSheet.getOrCreate(
                         childFragmentManager,
@@ -360,9 +361,9 @@ class FeedFragment :
                 if (!userSession.isLoggedIn) {
                     onGoToLogin()
                 } else {
-                    val isVideo =
-                        feedPostViewModel.userReportList is Success && (feedPostViewModel.userReportList as? Success<List<PlayUserReportReasoningUiModel>>)?.data?.isNotEmpty()
-                            .orFalse()
+                    val currentIndex = layoutManager.findFirstVisibleItemPosition()
+                    val item = adapter.currentList[currentIndex]?.data
+                    val isVideo = item is FeedCardVideoContentModel || item is FeedCardLivePreviewContentModel
                     (childFragmentManager.findFragmentByTag(TAG_FEED_MENU_BOTTOMSHEET) as? ContentThreeDotsMenuBottomSheet)?.showReportLayoutWhenLaporkanClicked(
                         isVideo = isVideo,
                         action = {
