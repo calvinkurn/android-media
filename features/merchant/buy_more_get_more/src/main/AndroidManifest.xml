@@ -25,6 +25,12 @@
 
         </activity>
 
+        <activity
+            android:name=".presentation.sort.activity.ShopProductSortActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.WhiteUnify" />
+
     </application>
 
 </manifest>

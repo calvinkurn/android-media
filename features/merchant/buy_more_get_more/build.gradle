@@ -102,6 +102,9 @@ dependencies {implementation rootProject.ext.supportLibDependencies.recyclerView
     //Campaign Common
     implementation projectOrAar(rootProject.ext.features.campaignCommon)
 
+    //Shop Common
+    implementation projectOrAar(rootProject.ext.features.shopCommon)
+
     //Image assets
     implementation projectOrAar(rootProject.ext.libraries.imageAssets)
 
