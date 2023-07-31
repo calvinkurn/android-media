@@ -17,6 +17,9 @@ val intent = MediaPicker.intent(context) {
     }
 }
 ```
+
+### Development Scopes
+
 ### Basic Rules
 1. Sort the method based on modifier
     - variable

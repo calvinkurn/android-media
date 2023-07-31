@@ -2,32 +2,56 @@ package com.tokopedia.editor.ui.main
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.tokopedia.editor.util.TIMBER_TAG
+import com.tokopedia.editor.data.repository.NavigationToolRepository
 import com.tokopedia.picker.common.UniversalEditorParam
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 class MainEditorViewModel @Inject constructor(
+    private val navigationToolRepository: NavigationToolRepository,
     private val paramFetcher: EditorParamFetcher
 ) : ViewModel() {
 
-    private val _param = MutableStateFlow<UniversalEditorParam?>(null)
-    val param = _param.asStateFlow()
+    private val _event = MutableSharedFlow<MainEditorEvent>(replay = 50)
+
+    private val _state = MutableStateFlow(MainEditorUiModel())
+    val state = _state.asStateFlow()
 
     init {
         viewModelScope.launch {
-            _param.value = paramFetcher().also {
-                Timber.d("$TIMBER_TAG: $it")
+            _event.collect { event ->
+                when (event) {
+                    is MainEditorEvent.SetParam -> {
+                        setParam(event.param)
+                        setAction(MainEditorEvent.GetNavigationTool)
+                    }
+                    is MainEditorEvent.GetNavigationTool -> {
+                        getNavigationTool()
+                    }
+                }
             }
         }
     }
 
-    fun setParam(param: UniversalEditorParam) {
-        viewModelScope.launch {
-            paramFetcher.set(param)
+    fun setAction(action: MainEditorEvent) {
+        _event.tryEmit(action)
+    }
+
+    private fun getNavigationTool() {
+        _state.update {
+            it.copy(tools = navigationToolRepository.tools())
+        }
+    }
+
+    private fun setParam(param: UniversalEditorParam) {
+        paramFetcher.set(param)
+
+        _state.update {
+            it.copy(param = param)
         }
     }
 }

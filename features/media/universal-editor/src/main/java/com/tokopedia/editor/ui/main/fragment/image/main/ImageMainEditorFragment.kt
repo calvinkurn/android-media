@@ -17,7 +17,7 @@ class ImageMainEditorFragment @Inject constructor(
 
     override fun initView() {
         lifecycleScope.launchWhenCreated {
-            val file = param.invoke()?.paths?.first() ?: return@launchWhenCreated
+            val file = param.get().firstFile.path
             binding?.imgSample?.loadImage(file)
         }
     }

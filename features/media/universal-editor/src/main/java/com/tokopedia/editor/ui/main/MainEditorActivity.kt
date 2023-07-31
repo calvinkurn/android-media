@@ -1,5 +1,7 @@
 package com.tokopedia.editor.ui.main
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -10,10 +12,14 @@ import com.tokopedia.editor.databinding.ActivityMainEditorBinding
 import com.tokopedia.editor.di.ModuleInjector
 import com.tokopedia.editor.ui.EditorFragmentProvider
 import com.tokopedia.editor.ui.EditorFragmentProviderImpl
+import com.tokopedia.editor.ui.main.component.NavigationToolUiComponent
 import com.tokopedia.editor.ui.main.component.PagerContainerUiComponent
 import com.tokopedia.picker.common.EXTRA_UNIVERSAL_EDITOR_PARAM
+import com.tokopedia.picker.common.RESULT_UNIVERSAL_EDITOR
 import com.tokopedia.picker.common.UniversalEditorParam
 import com.tokopedia.picker.common.basecomponent.uiComponent
+import com.tokopedia.picker.common.component.NavToolbarComponent
+import com.tokopedia.picker.common.component.ToolbarTheme
 import javax.inject.Inject
 
 /**
@@ -28,13 +34,31 @@ import javax.inject.Inject
  *
  * @applink tokopedia-android-internal://global/universal-editor
  */
-open class MainEditorActivity : AppCompatActivity() {
+open class MainEditorActivity : AppCompatActivity(), NavToolbarComponent.Listener {
 
     @Inject lateinit var fragmentFactory: FragmentFactory
     @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
 
+    private val toolbar by uiComponent {
+        NavToolbarComponent(
+            listener = this,
+            parent = it,
+            useArrowIcon = true
+        )
+    }
+
     private val pagerContainer by uiComponent {
-        PagerContainerUiComponent(it, fragmentProvider(), this)
+        PagerContainerUiComponent(
+            parent = it,
+            fragment = fragmentProvider(),
+            activity = this
+        )
+    }
+
+    private val navigationTool by uiComponent {
+        NavigationToolUiComponent(
+            parent = it
+        )
     }
 
     private val viewModel: MainEditorViewModel by viewModels { viewModelFactory }
@@ -48,8 +72,20 @@ open class MainEditorActivity : AppCompatActivity() {
 
         binding = ActivityMainEditorBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
         setDataParam()
         initObserver()
+    }
+
+    override fun onCloseClicked() {
+        finish()
+    }
+
+    override fun onContinueClicked() {
+        val intent = Intent()
+        intent.putExtra(RESULT_UNIVERSAL_EDITOR, "")
+        setResult(Activity.RESULT_OK, intent)
+        finish()
     }
 
     private fun setDataParam() {
@@ -57,25 +93,29 @@ open class MainEditorActivity : AppCompatActivity() {
             EXTRA_UNIVERSAL_EDITOR_PARAM
         ) ?: error("Please provide the universal media editor parameter.")
 
-        viewModel.setParam(param)
+        viewModel.setAction(MainEditorEvent.SetParam(param))
     }
 
     private fun initObserver() {
         lifecycleScope.launchWhenCreated {
-            viewModel.param.collect { param ->
-                if (param == null) return@collect
+            viewModel.state.collect {
+                initView(it.param)
 
-                dismissIfNeeded(param.paths)
-                pagerContainer.setupView(param)
+                // Navigation tool
+                navigationTool.setupView(it.tools)
             }
         }
     }
 
-    private fun dismissIfNeeded(paths: List<String>) {
-        val shouldMediaPathExist = paths.isNotEmpty()
-        if (shouldMediaPathExist) return
+    private fun initView(param: UniversalEditorParam) {
+        pagerContainer.setupView(param)
+        setupToolbar(param)
+    }
 
-        error("You have to at least add 1 media file using filePaths(listOf()) in builder.")
+    private fun setupToolbar(param: UniversalEditorParam) {
+        toolbar.onToolbarThemeChanged(ToolbarTheme.Transparent)
+        toolbar.setTitle(getString(param.headerTitle))
+        toolbar.setContinueTitle(getString(param.proceedButtonText))
     }
 
     private fun fragmentProvider(): EditorFragmentProvider {
