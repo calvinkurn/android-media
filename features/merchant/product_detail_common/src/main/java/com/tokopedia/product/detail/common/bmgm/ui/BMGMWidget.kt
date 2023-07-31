@@ -7,6 +7,7 @@ import android.util.AttributeSet
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.product.detail.common.bmgm.ui.adapter.BMGMProductAdapter
@@ -30,6 +31,7 @@ class BMGMWidget @JvmOverloads constructor(
         private const val SPAN_COUNT = 3
 
         private const val TEXT_SWITCH_INTERVAL = 3000L // millisecond
+        private const val MIN_GRADIENT_COLOR = 2
     }
 
     private val binding by lazyThreadSafetyNone {
@@ -74,7 +76,7 @@ class BMGMWidget @JvmOverloads constructor(
 
         binding.bmgmTitles.setTitle(
             titles = uiModel.titles,
-            titleColor = uiModel.titleColor,
+            color = uiModel.titleColor,
             interval = TEXT_SWITCH_INTERVAL
         )
 
@@ -93,7 +95,12 @@ class BMGMWidget @JvmOverloads constructor(
     // region background
     private fun setBackgroundGradient(colors: String) {
         val mColors = getGradientColors(colors = colors)
-        background = GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, mColors)
+
+        if (mColors.size < MIN_GRADIENT_COLOR) {
+            setBackgroundColor(mColors.firstOrNull().orZero())
+        } else {
+            background = GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, mColors)
+        }
     }
 
     private fun getGradientColors(colors: String) = colors.split(",").map {

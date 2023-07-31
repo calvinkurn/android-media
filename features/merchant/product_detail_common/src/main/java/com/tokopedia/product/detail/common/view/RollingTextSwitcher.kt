@@ -20,24 +20,27 @@ import kotlin.coroutines.CoroutineContext
  * Project name: android-tokopedia-core
  **/
 
-
 class RollingTextSwitcher @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null
 ) : TextSwitcher(context, attrs), CoroutineScope {
 
     override val coroutineContext: CoroutineContext
-        get() = Dispatchers.Main
+        get() = Dispatchers.IO
 
-    private var currentIndexRollingText = 0
-
+    // region field need for rolling text
     private val textViews = mutableListOf<Typography>()
-
     private var job: Job? = null
-
+    private var currentIndexRollingText = 0
     private var isRunning = true
-
     private var currentTitle = ""
+    // endregion
+
+    // region mandatory parameter needed from caller
+    private var titles: List<String> = emptyList()
+    private var color: String = ""
+    private var interval: Long = 0
+    // endregion
 
     init {
         setFactory {
@@ -47,12 +50,16 @@ class RollingTextSwitcher @JvmOverloads constructor(
         }
     }
 
-    fun setTitle(titles: List<String>, titleColor: String, interval: Long) {
-        setTextColor(textColor = titleColor)
-        startRollingTitle(titles = titles, interval = interval)
+    fun setTitle(titles: List<String>, color: String, interval: Long) {
+        this.titles = titles
+        this.color = color
+        this.interval = interval
+
+        setTextColor()
+        startRollingTitle()
     }
 
-    private fun startRollingTitle(titles: List<String>, interval: Long) {
+    private fun startRollingTitle() {
         // when refresh page data
         clear()
 
@@ -64,7 +71,7 @@ class RollingTextSwitcher @JvmOverloads constructor(
     }
 
     private suspend fun rollingTitle(titles: List<String>, interval: Long) {
-       withContext(Dispatchers.IO) {
+        withContext(Dispatchers.IO) {
             while (isRunning) {
                 val title = titles[currentIndexRollingText]
 
@@ -78,6 +85,14 @@ class RollingTextSwitcher @JvmOverloads constructor(
                 delay(interval)
                 incrementIndex(size = titles.size)
             }
+        }
+    }
+
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+
+        if (!isRunning) {
+            startRollingTitle()
         }
     }
 
@@ -107,10 +122,10 @@ class RollingTextSwitcher @JvmOverloads constructor(
         ellipsize = TextUtils.TruncateAt.END
     }
 
-    private fun setTextColor(textColor: String) {
+    private fun setTextColor() {
         textViews.forEach {
             val default = com.tokopedia.unifyprinciples.R.color.Unify_TN500
-            val unifyColor = getStringUnifyColor(textColor, default)
+            val unifyColor = getStringUnifyColor(color, default)
             it.setTextColor(unifyColor)
         }
     }
