@@ -1,4 +1,4 @@
-package com.tokopedia.buy_more_get_more.data.response
+package com.tokopedia.buy_more_get_more.olp.data.response
 
 import com.google.gson.annotations.SerializedName
 

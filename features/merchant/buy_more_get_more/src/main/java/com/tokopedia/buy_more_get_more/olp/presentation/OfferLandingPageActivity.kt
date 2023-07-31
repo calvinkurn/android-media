@@ -1,4 +1,4 @@
-package com.tokopedia.buy_more_get_more.presentation.olp
+package com.tokopedia.buy_more_get_more.olp.presentation
 
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity

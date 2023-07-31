@@ -1,35 +1,33 @@
-package com.tokopedia.buy_more_get_more.data.mapper
+package com.tokopedia.buy_more_get_more.olp.data.mapper
 
-import com.tokopedia.buy_more_get_more.data.response.OfferInfoForBuyerResponse
-import com.tokopedia.buy_more_get_more.data.response.OfferInfoForBuyerResponse.*
-import com.tokopedia.buy_more_get_more.domain.entity.OfferInfoForBuyer
-import com.tokopedia.buy_more_get_more.domain.entity.OfferInfoForBuyer.Offering.Tier
-import com.tokopedia.buy_more_get_more.domain.entity.OfferInfoForBuyer.Offering.Tier.Rule
+import com.tokopedia.buy_more_get_more.olp.data.response.OfferInfoForBuyerResponse
+import com.tokopedia.buy_more_get_more.olp.data.response.OfferInfoForBuyerResponse.*
+import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferInfoForBuyerUiModel
+import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferInfoForBuyerUiModel.Offering.Tier
+import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferInfoForBuyerUiModel.Offering.Tier.Rule
 import javax.inject.Inject
 
 class GetOfferInfoForBuyerMapper @Inject constructor() {
 
-    fun map(response: OfferInfoForBuyerResponse): OfferInfoForBuyer {
-        return response.let {
-            OfferInfoForBuyer(
-                responseHeader = response.responseHeader.toResponseHeaderModel(),
-                offeringJsonData = response.offeringJsonData,
-                offerings = response.offerings.toOfferingUiModel()
-            )
-        }
+    fun map(response: OfferInfoForBuyerResponse): OfferInfoForBuyerUiModel {
+        return OfferInfoForBuyerUiModel(
+            responseHeader = response.responseHeader.toResponseHeaderModel(),
+            offeringJsonData = response.offeringJsonData,
+            offerings = response.offerings.toOfferingUiModel()
+        )
     }
 
-    private fun ResponseHeader.toResponseHeaderModel(): OfferInfoForBuyer.ResponseHeader {
-        return OfferInfoForBuyer.ResponseHeader(
+    private fun ResponseHeader.toResponseHeaderModel(): OfferInfoForBuyerUiModel.ResponseHeader {
+        return OfferInfoForBuyerUiModel.ResponseHeader(
             success = success,
             error_code = error_code,
             processTime = processTime
         )
     }
 
-    private fun List<Offering>.toOfferingUiModel(): List<OfferInfoForBuyer.Offering> {
+    private fun List<Offering>.toOfferingUiModel(): List<OfferInfoForBuyerUiModel.Offering> {
         return map {
-            OfferInfoForBuyer.Offering(
+            OfferInfoForBuyerUiModel.Offering(
                 id = it.id,
                 offerName = it.offerName,
                 offerTypeId = it.offerTypeId,

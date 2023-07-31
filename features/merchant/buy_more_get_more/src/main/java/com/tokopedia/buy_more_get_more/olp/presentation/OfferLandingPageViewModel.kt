@@ -1,11 +1,11 @@
-package com.tokopedia.buy_more_get_more.presentation.olp
+package com.tokopedia.buy_more_get_more.olp.presentation
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.buy_more_get_more.domain.entity.OfferInfoForBuyer
-import com.tokopedia.buy_more_get_more.domain.usecase.GetOfferInfoForBuyerUseCase
+import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferInfoForBuyerUiModel
+import com.tokopedia.buy_more_get_more.olp.domain.usecase.GetOfferInfoForBuyerUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import javax.inject.Inject
@@ -15,8 +15,8 @@ class OfferLandingPageViewModel @Inject constructor(
     private val getOfferInfoForBuyerUseCase: GetOfferInfoForBuyerUseCase
 ) : BaseViewModel(dispatchers.main) {
 
-    private val _offeringInfo = MutableLiveData<OfferInfoForBuyer>()
-    val offeringInfo: LiveData<OfferInfoForBuyer>
+    private val _offeringInfo = MutableLiveData<OfferInfoForBuyerUiModel>()
+    val offeringInfo: LiveData<OfferInfoForBuyerUiModel>
         get() = _offeringInfo
 
     private val _error = MutableLiveData<Throwable>()

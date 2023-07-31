@@ -1,8 +1,8 @@
-package com.tokopedia.buy_more_get_more.domain.usecase
+package com.tokopedia.buy_more_get_more.olp.domain.usecase
 
-import com.tokopedia.buy_more_get_more.data.mapper.GetOfferInfoForBuyerMapper
-import com.tokopedia.buy_more_get_more.data.response.OfferInfoForBuyerResponse
-import com.tokopedia.buy_more_get_more.domain.entity.OfferInfoForBuyer
+import com.tokopedia.buy_more_get_more.olp.data.mapper.GetOfferInfoForBuyerMapper
+import com.tokopedia.buy_more_get_more.olp.data.response.OfferInfoForBuyerResponse
+import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferInfoForBuyerUiModel
 import com.tokopedia.gql_query_annotation.GqlQueryInterface
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
@@ -15,7 +15,7 @@ import javax.inject.Inject
 class GetOfferInfoForBuyerUseCase @Inject constructor(
     private val repository: GraphqlRepository,
     private val mapper: GetOfferInfoForBuyerMapper
-) : GraphqlUseCase<OfferInfoForBuyer>(repository) {
+) : GraphqlUseCase<OfferInfoForBuyerUiModel>(repository) {
 
     init {
         setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
@@ -71,7 +71,7 @@ class GetOfferInfoForBuyerUseCase @Inject constructor(
         override fun getTopOperationName(): String = OPERATION_NAME
     }
 
-    suspend fun execute(param: Param): OfferInfoForBuyer {
+    suspend fun execute(param: Param): OfferInfoForBuyerUiModel {
         val request = buildRequest(param)
         val response = repository.response(listOf(request))
         val data = response.getSuccessData<OfferInfoForBuyerResponse>()

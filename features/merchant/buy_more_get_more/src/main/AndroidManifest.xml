@@ -4,7 +4,7 @@
 
     <application>
         <activity
-            android:name=".presentation.olp.OfferLandingPageActivity"
+            android:name=".olp.presentation.OfferLandingPageActivity"
             android:configChanges="orientation"
             android:exported="false"
             android:label="@string/title_activity_offer_landing_page"

@@ -1,11 +1,11 @@
-package com.tokopedia.buy_more_get_more.di.module
+package com.tokopedia.buy_more_get_more.olp.di.module
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
-import com.tokopedia.buy_more_get_more.di.scope.BuyMoreGetMoreScope
-import com.tokopedia.buy_more_get_more.presentation.olp.OfferLandingPageViewModel
+import com.tokopedia.buy_more_get_more.olp.di.scope.BuyMoreGetMoreScope
+import com.tokopedia.buy_more_get_more.olp.presentation.OfferLandingPageViewModel
 import dagger.Binds
 import dagger.multibindings.IntoMap
 

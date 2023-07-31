@@ -1,8 +1,8 @@
-package com.tokopedia.buy_more_get_more.di.module
+package com.tokopedia.buy_more_get_more.olp.di.module
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.buy_more_get_more.di.scope.BuyMoreGetMoreScope
+import com.tokopedia.buy_more_get_more.olp.di.scope.BuyMoreGetMoreScope
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface

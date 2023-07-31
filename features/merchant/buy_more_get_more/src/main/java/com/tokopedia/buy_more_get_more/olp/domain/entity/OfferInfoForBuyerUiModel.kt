@@ -1,10 +1,13 @@
-package com.tokopedia.buy_more_get_more.domain.entity
+package com.tokopedia.buy_more_get_more.olp.domain.entity
 
-data class OfferInfoForBuyer(
+import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.buy_more_get_more.olp.presentation.adapter.OlpAdapterTypeFactory
+
+data class OfferInfoForBuyerUiModel(
     val responseHeader: ResponseHeader = ResponseHeader(),
     val offeringJsonData: String = "",
     val offerings: List<Offering> = emptyList()
-) {
+): Visitable<OlpAdapterTypeFactory> {
     data class ResponseHeader(
         val success: Boolean = true,
         val error_code: Long = 0,
@@ -38,5 +41,9 @@ data class OfferInfoForBuyer(
                 val value: Int = 0
             )
         }
+    }
+
+    override fun type(typeFactory: OlpAdapterTypeFactory): Int {
+        return typeFactory.type(this)
     }
 }
