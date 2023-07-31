@@ -49,6 +49,10 @@ class EditorAddTextUiModel(
         }
     }
 
+    fun getTemplateColor(): Int {
+        return textTemplateBackgroundDetail?.addTextBackgroundColor ?: COLOR_NOT_FOUND
+    }
+
     /**
      * @return one of [Typeface.BOLD, Typeface.ITALIC, Typeface.NORMAL]
      */
@@ -58,6 +62,10 @@ class EditorAddTextUiModel(
             AddTextStyle.ITALIC -> Typeface.ITALIC
             else -> Typeface.NORMAL
         }
+    }
+
+    companion object {
+        private const val COLOR_NOT_FOUND = -1
     }
 }
 

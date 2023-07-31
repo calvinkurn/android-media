@@ -71,7 +71,7 @@ const val ADD_LOGO_TYPE_CUSTOM = "custom"
 const val ADD_LOGO_TYPE_PROFILE = "profile"
 
 const val ADD_TEXT_BEBAS = "bebas"
-const val ADD_TEXT_TEMPLATE = "template"
+const val ADD_TEXT_TEMPLATE = "latar"
 
 const val ADD_TEXT_POSITION_TOP = "_top"
 const val ADD_TEXT_POSITION_RIGHT = "_right"

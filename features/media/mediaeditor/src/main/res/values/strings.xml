@@ -110,4 +110,16 @@
     <!-- Add Text color text -->
     <string name="add_text_color_name_black">Hitam</string>
     <string name="add_text_color_name_white">Putih</string>
+    <string name="add_text_color_name_black_idn">black</string>
+    <string name="add_text_color_name_white_idn">white</string>
+
+    <!-- Tracker tools name -->
+    <string name="tracker_tool_name_brightness">Brightness</string>
+    <string name="tracker_tool_name_contrast">Contrast</string>
+    <string name="tracker_tool_name_rotate">Rotate</string>
+    <string name="tracker_tool_name_crop">Crop</string>
+    <string name="tracker_tool_name_remove_bg">Removebg</string>
+    <string name="tracker_tool_name_watermark">Watermark</string>
+    <string name="tracker_tool_name_add_logo">Logo</string>
+    <string name="tracker_tool_name_add_text">add_text</string>
 </resources>

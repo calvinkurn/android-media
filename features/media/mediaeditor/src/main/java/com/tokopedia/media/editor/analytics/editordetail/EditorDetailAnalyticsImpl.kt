@@ -31,6 +31,7 @@ import com.tokopedia.media.editor.analytics.TRACKER_ID_CLICK_TEXT_TEMPLATE
 import com.tokopedia.media.editor.analytics.TRACKER_ID_ROTATION_FLIP
 import com.tokopedia.media.editor.analytics.TRACKER_ID_ROTATION_ROTATE
 import com.tokopedia.picker.common.cache.PickerCacheManager
+import com.tokopedia.picker.common.types.EditorToolType
 import com.tokopedia.track.TrackApp
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
@@ -107,6 +108,7 @@ class EditorDetailAnalyticsImpl @Inject constructor(
     }
 
     override fun clickSave(
+        editorToolType: Int,
         editorText: String,
         brightnessValue: Int,
         contrastValue: Int,
@@ -117,19 +119,21 @@ class EditorDetailAnalyticsImpl @Inject constructor(
         addLogoValue: String,
         addTextValue: String
     ) {
-
-        val historyList = "{$brightnessValue}, " +
-                "{$contrastValue}, " +
-                "{$rotateValue}, " +
-                "{$cropText}, " +
-                "{$removeBackgroundText}, " +
-                "{$watermarkText}, " +
-                "{$addLogoValue}" +
-                "{$addTextValue}"
+        val toolDetail = when(editorToolType) {
+            EditorToolType.BRIGHTNESS -> "{$brightnessValue}"
+            EditorToolType.CONTRAST -> "{$contrastValue}"
+            EditorToolType.ROTATE -> "{$rotateValue}"
+            EditorToolType.CROP -> cropText
+            EditorToolType.REMOVE_BACKGROUND -> removeBackgroundText
+            EditorToolType.WATERMARK -> watermarkText
+            EditorToolType.ADD_LOGO -> addLogoValue
+            EditorToolType.ADD_TEXT -> addTextValue
+            else -> ""
+        }
 
         sendGeneralEvent(
             ACTION_CLICK_SAVE,
-            "$pageSource - $userId - $shopId - $editorText - $historyList",
+            "$pageSource - $userId - $shopId - $editorText - $toolDetail",
             TRACKER_ID_CLICK_SAVE
         )
     }

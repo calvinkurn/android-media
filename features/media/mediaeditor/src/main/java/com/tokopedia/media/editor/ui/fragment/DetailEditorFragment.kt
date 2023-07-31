@@ -1201,13 +1201,14 @@ class DetailEditorFragment @Inject constructor(
             val addTextValue = data.addTextValue?.let {
                 addTextToText(
                     it,
-                    addTextColorProvider.getTextColorName(it.textColor)
+                    addTextColorProvider.getTextColorName(it.getTemplateColor())
                 )
             } ?: ""
 
             val currentEditorText =
                 requireContext().getText(getToolEditorText(data.editorToolType)).toString()
             editorDetailAnalytics.clickSave(
+                data.editorToolType,
                 currentEditorText,
                 brightnessText,
                 contrastText,

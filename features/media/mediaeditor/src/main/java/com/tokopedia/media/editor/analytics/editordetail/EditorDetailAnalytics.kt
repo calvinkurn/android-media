@@ -9,6 +9,7 @@ interface EditorDetailAnalytics {
     fun clickAddTextBackgroundText()
     fun clickAddTextTemplate()
     fun clickSave(
+        editorToolType: Int,
         editorText: String,
         brightnessValue: Int,
         contrastValue: Int,
