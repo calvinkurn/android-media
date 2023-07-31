@@ -37,14 +37,12 @@ class PlayShortsAccountViewModelTest {
     private val mockAccountManager: PlayShortsAccountManager = mockk(relaxed = true)
 
     private val uiModelBuilder = UiModelBuilder()
-    private val productModelBuilder = ProductSetupUiModelBuilder()
 
     private val mockAccountList = uiModelBuilder.buildAccountListModel()
     private val mockAccountShop = mockAccountList.first()
     private val mockAccountUser = mockAccountList.last()
     private val mockAccountListBeforeAcceptTnc = uiModelBuilder.buildAccountListModel(tncBuyer = false, usernameBuyer = false)
     private val mockAccountListAfterAcceptTnc = uiModelBuilder.buildAccountListModel(tncBuyer = true, usernameBuyer = true)
-    private val mockProducts = productModelBuilder.buildProductTagSectionList()
 
     private val mockConfig = uiModelBuilder.buildShortsConfig()
     private val mockConfigBanned = uiModelBuilder.buildShortsConfig(isBanned = true)
