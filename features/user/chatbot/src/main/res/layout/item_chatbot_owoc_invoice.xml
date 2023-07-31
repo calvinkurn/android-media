@@ -23,6 +23,7 @@
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:scaleType="fitCenter"
+            android:layout_marginStart="8dp"
             app:unify_image_corner_radius="8"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
