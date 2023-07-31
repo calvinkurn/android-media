@@ -1,7 +1,6 @@
 package com.tokopedia.play.broadcaster.shorts.viewmodel.preparation
 
 import com.tokopedia.play.broadcaster.model.UiModelBuilder
-import com.tokopedia.play.broadcaster.model.setup.product.ProductSetupUiModelBuilder
 import com.tokopedia.play.broadcaster.shorts.domain.PlayShortsRepository
 import com.tokopedia.play.broadcaster.shorts.domain.manager.PlayShortsAccountManager
 import com.tokopedia.play.broadcaster.shorts.robot.PlayShortsViewModelRobot
