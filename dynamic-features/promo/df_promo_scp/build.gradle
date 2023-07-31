@@ -61,6 +61,4 @@ dependencies {
 
     implementation projectOrAar(rootProject.ext.features.scpRewards)
     implementation projectOrAar(rootProject.ext.features.scpRewardsTouchpoints)
-    implementation projectOrAar(rootProject.ext.features.scpRewardsCommon)
-    implementation projectOrAar(rootProject.ext.features.scpRewardsWidgets)
 }
