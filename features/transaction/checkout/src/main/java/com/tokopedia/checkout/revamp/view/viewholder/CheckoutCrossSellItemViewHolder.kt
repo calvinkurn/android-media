@@ -1,7 +1,7 @@
 package com.tokopedia.checkout.revamp.view.viewholder
 
 import android.annotation.SuppressLint
-import android.view.ViewGroup
+import android.widget.CompoundButton
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.checkout.databinding.ItemCheckoutCrossSellItemBinding
@@ -12,21 +12,15 @@ import com.tokopedia.checkout.revamp.view.uimodel.CheckoutEgoldModel
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.utils.currency.CurrencyFormatUtil
+import com.tokopedia.checkout.R
+import com.tokopedia.checkout.revamp.view.adapter.CheckoutAdapterListener
 
-class CheckoutCrossSellItemViewHolder(private val binding: ItemCheckoutCrossSellItemBinding) :
+class CheckoutCrossSellItemViewHolder(private val binding: ItemCheckoutCrossSellItemBinding, private val listener: CheckoutAdapterListener) :
     RecyclerView.ViewHolder(binding.root) {
-    fun bind(checkoutCrossSellItem: CheckoutCrossSellItem, parent: ViewGroup?) {
-        val parentWidth = parent?.width ?: 0
-        val defaultWidth = 340.dpToPx(binding.root.context.resources.displayMetrics)
-        val expectedWidth = parentWidth - 40.dpToPx(binding.root.context.resources.displayMetrics)
-        binding.root.maxWidth = if (expectedWidth > 0) {
-            minOf(
-                defaultWidth,
-                expectedWidth
-            )
-        } else {
-            defaultWidth
-        }
+
+    fun bind(checkoutCrossSellItem: CheckoutCrossSellItem, parentWidth: Int) {
+        val expectedWidth = parentWidth - 50.dpToPx(binding.root.context.resources.displayMetrics)
+        binding.root.layoutParams.width = expectedWidth
         renderCrossSellItem(checkoutCrossSellItem)
     }
 
@@ -57,6 +51,7 @@ class CheckoutCrossSellItemViewHolder(private val binding: ItemCheckoutCrossSell
         donationModel: CheckoutDonationModel,
         itemBinding: ItemCheckoutCrossSellItemBinding
     ) {
+        itemBinding.ivCheckoutCrossSellItem.setImageResource(R.drawable.ic_donasi_lingkungan)
         itemBinding.tvCheckoutCrossSellItem.text = donationModel.donation.title
     }
 
@@ -65,6 +60,7 @@ class CheckoutCrossSellItemViewHolder(private val binding: ItemCheckoutCrossSell
         egoldModel: CheckoutEgoldModel,
         itemBinding: ItemCheckoutCrossSellItemBinding
     ) {
+        itemBinding.ivCheckoutCrossSellItem.setImageResource(R.drawable.ic_logam_mulia)
         val text = "${egoldModel.egoldAttributeModel.titleText} (${
             CurrencyFormatUtil.convertPriceValueToIdrFormat(
                 egoldModel.egoldAttributeModel.buyEgoldValue,
@@ -89,5 +85,13 @@ class CheckoutCrossSellItemViewHolder(private val binding: ItemCheckoutCrossSell
             }
         }
         itemBinding.tvCheckoutCrossSellItem.text = text
+        itemBinding.cbCheckoutCrossSellItem.setOnCheckedChangeListener { _, _ -> }
+        itemBinding.cbCheckoutCrossSellItem.isChecked = egoldModel.egoldAttributeModel.isChecked
+        itemBinding.cbCheckoutCrossSellItem.skipAnimation()
+        itemBinding.cbCheckoutCrossSellItem.setOnCheckedChangeListener { _: CompoundButton?, isChecked: Boolean ->
+            if (egoldModel.egoldAttributeModel.isEnabled) {
+                listener.onEgoldChecked(isChecked)
+            }
+        }
     }
 }

@@ -6,7 +6,8 @@ import com.tokopedia.checkout.view.uimodel.EgoldAttributeModel
 
 data class CheckoutCrossSellGroupModel(
     override val cartStringGroup: String = "",
-    val crossSellList: List<CheckoutCrossSellItem> = emptyList()
+    val crossSellList: List<CheckoutCrossSellItem> = emptyList(),
+    var shouldTriggerScrollInteraction: Boolean = true
 ) : CheckoutItem
 
 sealed interface CheckoutCrossSellItem
@@ -19,7 +20,9 @@ data class CheckoutCrossSellModel(
 ): CheckoutCrossSellItem
 
 data class CheckoutEgoldModel(
-    var egoldAttributeModel: EgoldAttributeModel
+    val egoldAttributeModel: EgoldAttributeModel,
+    val isChecked: Boolean = false,
+    val buyEgoldValue: Long = 0
 ): CheckoutCrossSellItem
 
 data class CheckoutDonationModel(

@@ -262,8 +262,8 @@ class CheckoutViewModel @Inject constructor(
                         )
                     }
                 )
-                if (saf.cartShipmentAddressFormData.egoldAttributes != null) {
-                    crossSellList.add(CheckoutEgoldModel(saf.cartShipmentAddressFormData.egoldAttributes!!))
+                if (saf.cartShipmentAddressFormData.egoldAttributes != null && saf.cartShipmentAddressFormData.egoldAttributes!!.isEnabled && saf.cartShipmentAddressFormData.egoldAttributes!!.isEligible) {
+                    crossSellList.add(CheckoutEgoldModel(saf.cartShipmentAddressFormData.egoldAttributes!!, saf.cartShipmentAddressFormData.egoldAttributes!!.isChecked, saf.cartShipmentAddressFormData.egoldAttributes!!.buyEgoldValue))
                 }
                 if (saf.cartShipmentAddressFormData.donation != null && saf.cartShipmentAddressFormData.donation!!.title.isNotEmpty() && saf.cartShipmentAddressFormData.donation!!.nominal != 0) {
                     crossSellList.add(CheckoutDonationModel(saf.cartShipmentAddressFormData.donation!!))
@@ -892,7 +892,8 @@ class CheckoutViewModel @Inject constructor(
                     checkoutCrossSellItem.copy(
                         egoldAttributeModel = checkoutCrossSellItem.egoldAttributeModel.copy(
                             isChecked = checked
-                        )
+                        ),
+                        isChecked = checked
                     )
                 )
             } else {
@@ -901,6 +902,7 @@ class CheckoutViewModel @Inject constructor(
         }
         checkoutItems[checkoutItems.size - 2] = crossSellGroup.copy(crossSellList = newList)
         listData.value = checkoutItems
+        calculateTotal()
     }
 
     companion object {

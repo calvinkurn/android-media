@@ -9,6 +9,7 @@ import com.tokopedia.checkout.revamp.view.promo
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutButtonPaymentModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutCostModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutCrossSellGroupModel
+import com.tokopedia.checkout.revamp.view.uimodel.CheckoutCrossSellItem
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutCrossSellModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutDonationModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutEgoldModel
@@ -238,6 +239,7 @@ class CheckoutCalculator @Inject constructor(private val dispatchers: CoroutineD
         }
         val listCheckedCrossModel = ArrayList<CheckoutCrossSellModel>()
         val crossSellGroup = listData.crossSellGroup() ?: CheckoutCrossSellGroupModel()
+        val listCrossSellItem = arrayListOf<CheckoutCrossSellItem>()
         for (crossSellModel in crossSellGroup.crossSellList.asReversed()) {
             when (crossSellModel) {
                 is CheckoutCrossSellModel -> {
@@ -246,6 +248,7 @@ class CheckoutCalculator @Inject constructor(private val dispatchers: CoroutineD
                         totalPrice += crossSellModel.crossSellModel.price
                         shipmentCost = shipmentCost.copy(totalPrice = totalPrice)
                     }
+                    listCrossSellItem.add(0, crossSellModel)
                 }
                 is CheckoutDonationModel -> {
                     if (crossSellModel.donation.isChecked) {
@@ -256,11 +259,12 @@ class CheckoutCalculator @Inject constructor(private val dispatchers: CoroutineD
                         }
                     }
                     totalPrice += shipmentCost.donation
+                    listCrossSellItem.add(0, crossSellModel)
                 }
                 is CheckoutEgoldModel -> {
-                    val egoldAttribute = crossSellModel.egoldAttributeModel
+                    var egoldAttribute = crossSellModel.egoldAttributeModel
                     if (egoldAttribute.isEligible) {
-                        crossSellModel.egoldAttributeModel = updateEmasCostModel(shipmentCost, egoldAttribute)
+                        egoldAttribute = updateEmasCostModel(shipmentCost, egoldAttribute)
                         if (egoldAttribute.isChecked) {
                             totalPrice += egoldAttribute.buyEgoldValue.toDouble()
                             shipmentCost = shipmentCost.copy(totalPrice = totalPrice)
@@ -269,6 +273,7 @@ class CheckoutCalculator @Inject constructor(private val dispatchers: CoroutineD
                             shipmentCost.emasPrice = 0.0
                         }
                     }
+                    listCrossSellItem.add(0, crossSellModel.copy(egoldAttributeModel = egoldAttribute, buyEgoldValue = egoldAttribute.buyEgoldValue))
                 }
             }
         }
@@ -313,6 +318,7 @@ class CheckoutCalculator @Inject constructor(private val dispatchers: CoroutineD
 
         return listData.toMutableList().apply {
             set(size - 3, shipmentCost)
+            set(size - 2, crossSellGroup.copy(crossSellList = listCrossSellItem))
             set(size - 1, buttonPaymentModel)
         }
     }

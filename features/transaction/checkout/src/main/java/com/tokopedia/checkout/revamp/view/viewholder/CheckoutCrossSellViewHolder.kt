@@ -4,29 +4,43 @@ import android.annotation.SuppressLint
 import android.widget.CompoundButton
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.checkout.R
 import com.tokopedia.checkout.databinding.ItemCheckoutCrossSellBinding
 import com.tokopedia.checkout.databinding.ItemCheckoutCrossSellItemBinding
 import com.tokopedia.checkout.revamp.view.adapter.CheckoutAdapterListener
+import com.tokopedia.checkout.revamp.view.adapter.CheckoutCrossSellDiffUtilCallback
 import com.tokopedia.checkout.revamp.view.adapter.CrossSellAdapter
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutCrossSellGroupModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutCrossSellItem
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutCrossSellModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutDonationModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutEgoldModel
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.dpToPx
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.utils.currency.CurrencyFormatUtil
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
-class CheckoutCrossSellViewHolder(private val binding: ItemCheckoutCrossSellBinding, private val listener: CheckoutAdapterListener) :
+class CheckoutCrossSellViewHolder(
+    private val binding: ItemCheckoutCrossSellBinding,
+    private val listener: CheckoutAdapterListener
+) :
     RecyclerView.ViewHolder(binding.root) {
 
-    private val adapter: CrossSellAdapter = CrossSellAdapter()
+    private val adapter: CrossSellAdapter = CrossSellAdapter(listener)
 
     init {
-        binding.rvCheckoutCrossSell.layoutManager = LinearLayoutManager(binding.root.context, LinearLayoutManager.HORIZONTAL, false)
+        binding.rvCheckoutCrossSell.layoutManager =
+            LinearLayoutManager(binding.root.context, LinearLayoutManager.HORIZONTAL, false)
         binding.rvCheckoutCrossSell.adapter = adapter
+        LinearSnapHelper().attachToRecyclerView(binding.rvCheckoutCrossSell)
     }
 
     fun bind(checkoutCrossSellGroupModel: CheckoutCrossSellGroupModel) {
@@ -39,7 +53,7 @@ class CheckoutCrossSellViewHolder(private val binding: ItemCheckoutCrossSellBind
             val crossSellItem = checkoutCrossSellGroupModel.crossSellList[0]
             renderCrossSellSingleItem(crossSellItem)
         } else {
-            renderCrossSellItems(checkoutCrossSellGroupModel.crossSellList)
+            renderCrossSellItems(checkoutCrossSellGroupModel)
             binding.dividerCheckoutCrossSell.isVisible = true
             binding.rvCheckoutCrossSell.isVisible = true
             binding.itemCheckoutCrossSellItem.root.isVisible = false
@@ -112,12 +126,12 @@ class CheckoutCrossSellViewHolder(private val binding: ItemCheckoutCrossSellBind
             }
         }
         itemBinding.tvCheckoutCrossSellItem.text = text
-        itemBinding.root.setOnClickListener {
-            if (egoldModel.egoldAttributeModel.isEnabled) {
-                itemBinding.cbCheckoutCrossSellItem.isChecked = !itemBinding.cbCheckoutCrossSellItem.isChecked
-            }
-        }
-        itemBinding.cbCheckoutCrossSellItem.setOnCheckedChangeListener { _, _ ->  }
+//        itemBinding.root.setOnClickListener {
+//            if (egoldModel.egoldAttributeModel.isEnabled) {
+//                itemBinding.cbCheckoutCrossSellItem.isChecked = !itemBinding.cbCheckoutCrossSellItem.isChecked
+//            }
+//        }
+        itemBinding.cbCheckoutCrossSellItem.setOnCheckedChangeListener { _, _ -> }
         itemBinding.cbCheckoutCrossSellItem.isChecked = egoldModel.egoldAttributeModel.isChecked
         itemBinding.cbCheckoutCrossSellItem.setOnCheckedChangeListener { _: CompoundButton?, isChecked: Boolean ->
             if (egoldModel.egoldAttributeModel.isEnabled) {
@@ -126,9 +140,93 @@ class CheckoutCrossSellViewHolder(private val binding: ItemCheckoutCrossSellBind
         }
     }
 
-    private fun renderCrossSellItems(crossSellList: List<CheckoutCrossSellItem>) {
-        adapter.list = crossSellList
-        adapter.notifyDataSetChanged()
+    private fun renderCrossSellItems(checkoutCrossSellGroupModel: CheckoutCrossSellGroupModel) {
+        var parentWidth = binding.root.width
+        if (parentWidth <= 0) {
+            parentWidth = listener.getParentWidth()
+        }
+        if (parentWidth <= 0) {
+            parentWidth = 500.dpToPx(binding.root.context.resources.displayMetrics)
+        }
+//        if (binding.llCheckoutContainerCrossSellItems.childCount > checkoutCrossSellGroupModel.crossSellList.size) {
+//            binding.llCheckoutContainerCrossSellItems.removeAllViews()
+//        }
+//        for ((index, checkoutCrossSellItem) in checkoutCrossSellGroupModel.crossSellList.withIndex()) {
+//            val view = binding.llCheckoutContainerCrossSellItems.getChildAt(index)
+//            if (view != null) {
+//                val itemBinding = ItemCheckoutCrossSellItemBinding.bind(view)
+//                itemBinding.root.layoutParams.width = parentWidth - 30.dpToPx(binding.root.context.resources.displayMetrics)
+//                when (checkoutCrossSellItem) {
+//                    is CheckoutCrossSellModel -> renderCrossSell(
+//                        checkoutCrossSellItem,
+//                        itemBinding
+//                    )
+//
+//                    is CheckoutDonationModel -> renderDonation(
+//                        checkoutCrossSellItem,
+//                        itemBinding
+//                    )
+//
+//                    is CheckoutEgoldModel -> renderEgold(checkoutCrossSellItem, itemBinding)
+//                }
+//            } else {
+//                val itemBinding = ItemCheckoutCrossSellItemBinding.inflate(LayoutInflater.from(binding.llCheckoutContainerCrossSellItems.context), binding.llCheckoutContainerCrossSellItems, false)
+//                itemBinding.root.layoutParams.width = parentWidth - 30.dpToPx(binding.root.context.resources.displayMetrics)
+//                when (checkoutCrossSellItem) {
+//                    is CheckoutCrossSellModel -> renderCrossSell(
+//                        checkoutCrossSellItem,
+//                        itemBinding
+//                    )
+//
+//                    is CheckoutDonationModel -> renderDonation(
+//                        checkoutCrossSellItem,
+//                        itemBinding
+//                    )
+//
+//                    is CheckoutEgoldModel -> renderEgold(checkoutCrossSellItem, itemBinding)
+//                }
+//                binding.llCheckoutContainerCrossSellItems.addView(itemBinding.root)
+//            }
+//        }
+//        if (checkoutCrossSellGroupModel.shouldTriggerScrollInteraction) {
+//            binding.llCheckoutContainerCrossSellItems.scrollX = 40.dpToPx(binding.root.context.resources.displayMetrics)
+//            checkoutCrossSellGroupModel.shouldTriggerScrollInteraction = false
+//        }
+        val oldList = adapter.list
+        val diffResult = DiffUtil.calculateDiff(CheckoutCrossSellDiffUtilCallback(checkoutCrossSellGroupModel.crossSellList, oldList))
+        adapter.parentWidth = parentWidth
+        adapter.list = checkoutCrossSellGroupModel.crossSellList
+        if (binding.rvCheckoutCrossSell.isComputingLayout) {
+            binding.rvCheckoutCrossSell.post {
+//                diffResult.dispatchUpdatesTo(adapter)
+                // todo fix this
+                adapter.notifyDataSetChanged()
+            }
+        } else {
+            // todo fix this
+//            diffResult.dispatchUpdatesTo(adapter)
+            adapter.notifyDataSetChanged()
+        }
+        if (checkoutCrossSellGroupModel.shouldTriggerScrollInteraction) {
+            binding.rvCheckoutCrossSell.addOnImpressionListener(ImpressHolder()) {
+                if (checkoutCrossSellGroupModel.shouldTriggerScrollInteraction) {
+                    checkoutCrossSellGroupModel.shouldTriggerScrollInteraction = false
+                    GlobalScope.launch {
+                        delay(500)
+                        val scrollX = 80.dpToPx(binding.root.context.resources.displayMetrics)
+                        binding.rvCheckoutCrossSell.smoothScrollBy(
+                            scrollX,
+                            0
+                        )
+                        delay(500)
+                        binding.rvCheckoutCrossSell.smoothScrollBy(
+                            scrollX * -1,
+                            0
+                        )
+                    }
+                }
+            }
+        }
     }
 
     companion object {

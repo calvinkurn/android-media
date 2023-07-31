@@ -1591,6 +1591,10 @@ class CheckoutFragment :
         )
     }
 
+    override fun getParentWidth(): Int {
+        return binding.root.width
+    }
+
     override fun onEgoldChecked(checked: Boolean) {
         viewModel.updateEgold(checked)
 //        shipmentAdapter.checkHasSelectAllCourier(true, -1, "", false, false)
