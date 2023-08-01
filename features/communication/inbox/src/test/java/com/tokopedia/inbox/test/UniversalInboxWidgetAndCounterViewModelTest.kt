@@ -54,7 +54,7 @@ class UniversalInboxWidgetAndCounterViewModelTest : UniversalInboxViewModelTestF
             } returns dummyWidgetMetaResponse
 
             every {
-                inboxMenuMapper.mapWidgetMetaToUiModel(any(), any())
+                inboxMenuMapper.mapWidgetMetaToUiModel(any(), any(), any())
             } returns dummyWidgetUi
 
             // When
@@ -85,7 +85,7 @@ class UniversalInboxWidgetAndCounterViewModelTest : UniversalInboxViewModelTestF
             } returns dummyWidgetMetaResponse
 
             every {
-                inboxMenuMapper.mapWidgetMetaToUiModel(any(), any())
+                inboxMenuMapper.mapWidgetMetaToUiModel(any(), any(), any())
             } returns dummyWidgetUi
 
             // When
@@ -116,7 +116,7 @@ class UniversalInboxWidgetAndCounterViewModelTest : UniversalInboxViewModelTestF
             } throws dummyThrowable
 
             every {
-                inboxMenuMapper.mapWidgetMetaToUiModel(any(), any())
+                inboxMenuMapper.mapWidgetMetaToUiModel(any(), any(), any())
             } returns dummyWidgetUiError
 
             // When
@@ -147,7 +147,7 @@ class UniversalInboxWidgetAndCounterViewModelTest : UniversalInboxViewModelTestF
             } returns dummyWidgetMetaResponse
 
             every {
-                inboxMenuMapper.mapWidgetMetaToUiModel(any(), any())
+                inboxMenuMapper.mapWidgetMetaToUiModel(any(), any(), any())
             } throws dummyThrowable
 
             // When

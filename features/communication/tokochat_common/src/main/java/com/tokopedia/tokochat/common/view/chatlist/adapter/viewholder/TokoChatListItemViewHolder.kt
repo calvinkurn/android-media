@@ -3,11 +3,14 @@ package com.tokopedia.tokochat.common.view.chatlist.adapter.viewholder
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.adapterdelegate.BaseViewHolder
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.tokochat.common.util.TokoChatTimeUtil.getRelativeTime
 import com.tokopedia.tokochat.common.util.TokoChatUrlUtil.IC_TOKOFOOD_SOURCE
 import com.tokopedia.tokochat.common.util.TokoChatValueUtil.TOKOFOOD_SERVICE_TYPE
 import com.tokopedia.tokochat.common.view.chatlist.listener.TokoChatListItemListener
@@ -28,13 +31,12 @@ class TokoChatListItemViewHolder(
     fun bind(element: TokoChatListItemUiModel) {
         bindDriver(element)
         bindMessage(element)
-        bindTime(element)
-        bindCounter(element)
+        bindBusiness(element)
         bindListener(element)
     }
 
     private fun bindDriver(element: TokoChatListItemUiModel) {
-        binding?.tokochatListTvDriverName?.text = element.driverName
+        binding?.tokochatListTvDriverName?.text = getDriverNameWithOrder(element)
         if (imageUrl != element.imageUrl) {
             binding?.tokochatListIvDriver?.loadImage(element.imageUrl)
             imageUrl = element.imageUrl
@@ -46,15 +48,33 @@ class TokoChatListItemViewHolder(
         binding?.tokochatListIvLogo?.loadImage(logoUrl)
     }
 
-    private fun bindMessage(element: TokoChatListItemUiModel) {
-        binding?.tokochatListTvMessage?.apply {
-            if (element.message.isNotBlank()) {
-                text = element.message
-                show()
-            } else {
-                hide()
-            }
+    private fun getDriverName(fullName: String): String {
+        return if (fullName.length > THRESHOLD_NAME) {
+            fullName.substring(Int.ZERO, THRESHOLD_NAME + Int.ONE) + ELLIPSIZE
+        } else {
+            fullName
         }
+    }
+
+    private fun getDriverNameWithOrder(element: TokoChatListItemUiModel): String {
+        val driverName = getDriverName(element.driverName)
+        val orderName = getString(
+            R.string.tokochat_list_driver_order_type, element.getStringOrderType())
+        return "$driverName $orderName"
+    }
+
+    private fun bindMessage(element: TokoChatListItemUiModel) {
+        val isMessageNotEmpty = element.message.isNotBlank()
+        if (isMessageNotEmpty) {
+            binding?.tokochatListTvMessage?.text = element.message
+        } else {
+            binding?.tokochatListTvMessage?.text = getString(R.string.tokochat_list_default_message)
+        }
+        bindCounter(element, isMessageNotEmpty)
+        bindTime(element, isMessageNotEmpty)
+    }
+
+    private fun bindBusiness(element: TokoChatListItemUiModel) {
         binding?.tokochatListTvBusinessName?.apply {
             if (element.business.isNotBlank()) {
                 text = element.business
@@ -65,18 +85,18 @@ class TokoChatListItemViewHolder(
         }
     }
 
-    private fun bindTime(element: TokoChatListItemUiModel) {
-        binding?.tokochatListTvTime?.text = element.getRelativeTime()
-        binding?.tokochatListCounter?.setNotification(
-            notif = element.counter.toString(),
-            notificationType = NotificationUnify.COUNTER_TYPE,
-            NotificationUnify.COLOR_PRIMARY
-        )
+    private fun bindTime(element: TokoChatListItemUiModel, shouldShow: Boolean) {
+        binding?.tokochatListTvTime?.apply {
+            text = getRelativeTime(
+                timeMillis = element.createAt
+            )
+            showWithCondition(shouldShow)
+        }
     }
 
-    private fun bindCounter(element: TokoChatListItemUiModel) {
+    private fun bindCounter(element: TokoChatListItemUiModel, shouldShow: Boolean) {
         binding?.tokochatListCounter?.apply {
-            if (element.counter > Int.ZERO) {
+            if (element.counter > Int.ZERO && shouldShow) {
                 setNotification(
                     notif = element.counter.toString(),
                     notificationType = NotificationUnify.COUNTER_TYPE,
@@ -98,5 +118,8 @@ class TokoChatListItemViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.tokochat_list_item_chat_list
+
+        private const val THRESHOLD_NAME = 10
+        private const val ELLIPSIZE = "…"
     }
 }

@@ -3,13 +3,22 @@ package com.tokopedia.tokochat.view.chatlist
 import android.util.ArrayMap
 import com.gojek.conversations.channel.ConversationsChannel
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.tokochat.common.util.TokoChatValueUtil.getSource
 import com.tokopedia.tokochat.common.view.chatlist.uimodel.TokoChatListItemUiModel
-import com.tokopedia.tokochat.common.view.chatlist.uimodel.TokoChatListItemUiModel.Companion.getServiceTypeName
 import javax.inject.Inject
 
 class TokoChatListUiMapper@Inject constructor() {
 
-    fun mapToChatListItem(conversationsChannel: ConversationsChannel): TokoChatListItemUiModel {
+    fun mapToListChat(listChannel: List<ConversationsChannel>): List<TokoChatListItemUiModel> {
+        val rawResult = listChannel.map {
+            mapToChatListItem(it)
+        }
+        return rawResult.sortedByDescending {
+            it.createAt
+        }
+    }
+
+    private fun mapToChatListItem(conversationsChannel: ConversationsChannel): TokoChatListItemUiModel {
         val orderInfo = conversationsChannel.metadata?.orderInfo
         val lastMessage = conversationsChannel.lastMessage
         return TokoChatListItemUiModel(
@@ -28,7 +37,7 @@ class TokoChatListUiMapper@Inject constructor() {
     fun mapToTypeCounter(channelList: List<ConversationsChannel>): Map<String, Int> {
         val result = ArrayMap<String, Int>()
         channelList.forEach {
-            val serviceTypeName = getServiceTypeName(
+            val serviceTypeName = getSource(
                 it.metadata?.orderInfo?.serviceType ?: Int.ZERO
             )
             val lastCounter: Int = result.getOrDefault(serviceTypeName, Int.ZERO)

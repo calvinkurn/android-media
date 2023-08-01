@@ -7,9 +7,18 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewbinding.ViewBinding
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.tokochat.common.util.TokoChatNetworkUtil
 import com.tokopedia.tokochat_common.databinding.TokochatListBaseFragmentBinding
 import com.tokopedia.tokochat.common.view.chatlist.adapter.TokoChatListBaseAdapter
+import com.tokopedia.tokochat.common.view.chatlist.uimodel.TokoChatListShimmerUiModel
 import com.tokopedia.tokochat.common.view.chatroom.listener.TokoChatEndlessScrollListener
+import com.tokopedia.tokochat_common.R
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
 abstract class TokoChatListBaseFragment<viewBinding : ViewBinding> : BaseDaggerFragment() {
@@ -18,7 +27,7 @@ abstract class TokoChatListBaseFragment<viewBinding : ViewBinding> : BaseDaggerF
     protected var baseBinding: TokochatListBaseFragmentBinding? by autoClearedNullable()
     abstract var adapter: TokoChatListBaseAdapter
 
-    private var endlessRecyclerViewScrollListener: TokoChatEndlessScrollListener? = null
+    protected var endlessRecyclerViewScrollListener: TokoChatEndlessScrollListener? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -73,6 +82,65 @@ abstract class TokoChatListBaseFragment<viewBinding : ViewBinding> : BaseDaggerF
 
     protected fun isRecyclerViewLoadingMore(): Boolean {
         return endlessRecyclerViewScrollListener?.getLoadingStatus() == true
+    }
+
+    protected fun showGlobalErrorLayout(onActionClick: () -> Unit) {
+        val errorType = getErrorType()
+        baseBinding?.tokochatIncludeGlobalError?.tokochatGlobalError?.setType(errorType)
+        baseBinding?.tokochatIncludeGlobalError?.tokochatGlobalError?.setActionClickListener {
+            baseBinding?.tokochatIncludeGlobalError?.tokochatLayoutGlobalError?.hide()
+            onActionClick()
+        }
+        if (errorType == GlobalError.SERVER_ERROR) {
+            baseBinding?.tokochatIncludeGlobalError?.tokochatGlobalError?.errorAction?.apply {
+                text = getString(R.string.tokochat_list_error_back_to_home)
+                setOnClickListener {
+                    goToHome()
+                }
+            }
+        }
+        baseBinding?.tokochatIncludeGlobalError?.tokochatLayoutGlobalError?.show()
+    }
+
+    private fun goToHome() {
+        context?.let {
+            val intent = RouteManager.getIntent(it, ApplinkConst.HOME)
+            startActivity(intent)
+        }
+    }
+
+    protected fun toggleRecyclerViewLayout(shouldShow: Boolean) {
+        baseBinding?.tokochatListRv?.showWithCondition(shouldShow)
+    }
+
+    private fun getErrorType(): Int {
+        return if (isConnectedToNetwork()) {
+            GlobalError.SERVER_ERROR
+        } else {
+            GlobalError.NO_CONNECTION
+        }
+    }
+
+    private fun isConnectedToNetwork(): Boolean {
+        return if (context != null) {
+            TokoChatNetworkUtil.isNetworkAvailable(requireContext())
+        } else {
+            false
+        }
+    }
+
+    protected fun addInitialShimmering() {
+        adapter.clearAllItems()
+        for (i in 0..4) { // 5 shimmers from figma
+            adapter.addItem(TokoChatListShimmerUiModel())
+        }
+        adapter.notifyItemInserted(adapter.itemCount)
+    }
+
+    protected fun removeInitialShimmeringAndEmptyView() {
+        if (adapter.isShimmeringExist() || adapter.isEmptyViewExist()) {
+            adapter.clearAllItems()
+        }
     }
 
     abstract fun getViewBindingInflate(container: ViewGroup?): viewBinding

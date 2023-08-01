@@ -1,9 +1,9 @@
 package com.tokopedia.inbox.universalinbox.di
 
-import com.tokochat.tokochat_config_common.di.component.TokoChatConfigComponent
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.inbox.universalinbox.view.UniversalInboxActivity
+import com.tokopedia.tokochat.config.di.component.TokoChatConfigComponent
 import dagger.Component
 
 @ActivityScope

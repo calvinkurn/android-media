@@ -1,7 +1,6 @@
 package com.tokopedia.tokochat.common.view.chatlist.uimodel
 
-import com.tokopedia.tokochat.common.util.TokoChatValueUtil
-import com.tokopedia.tokochat.common.util.TokoChatValueUtil.TOKOFOOD
+import com.tokopedia.tokochat.common.util.TokoChatValueUtil.GOFOOD
 import com.tokopedia.tokochat.common.util.TokoChatValueUtil.TOKOFOOD_SERVICE_TYPE
 
 data class TokoChatListItemUiModel(
@@ -15,18 +14,10 @@ data class TokoChatListItemUiModel(
     val serviceType: Int,
     val imageUrl: String
 ) {
-    fun getRelativeTime(): String {
-        return TokoChatValueUtil.getRelativeDate(
-            dateTimestamp = createAt
-        )
-    }
-
-    companion object {
-        fun getServiceTypeName(serviceType: Int): String {
-            return when (serviceType) {
-                TOKOFOOD_SERVICE_TYPE -> TOKOFOOD
-                else -> ""
-            }
+    fun getStringOrderType(): String {
+        return when (serviceType) {
+            TOKOFOOD_SERVICE_TYPE -> GOFOOD
+            else -> ""
         }
     }
 }

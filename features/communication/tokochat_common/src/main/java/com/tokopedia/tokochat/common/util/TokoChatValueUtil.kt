@@ -1,11 +1,8 @@
 package com.tokopedia.tokochat.common.util
 
-import android.text.format.DateUtils
-import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
 import com.tokopedia.url.Env
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.usercomponents.userconsent.domain.collection.ConsentCollectionParam
-import java.util.*
 
 object TokoChatValueUtil {
     /**
@@ -19,6 +16,13 @@ object TokoChatValueUtil {
      */
     const val TOKOFOOD = "tokofood"
     const val TOKOFOOD_SERVICE_TYPE = 5
+    fun getSource(serviceType: Int): String {
+        return when (serviceType) {
+            TOKOFOOD_SERVICE_TYPE -> TOKOFOOD
+            else -> ""
+        }
+    }
+    const val GOFOOD = "GoFood"
 
     /**
      * Message status
@@ -27,30 +31,6 @@ object TokoChatValueUtil {
     const val SENT_VALUE = 1
     const val READ_VALUE = 2
     const val FAILED_VALUE = 3
-
-    /**
-     * Date Format
-     */
-    const val DATE_FORMAT = "d MMM yyyy"
-    const val RELATIVE_TODAY = "Hari ini"
-    const val RELATIVE_YESTERDAY = "Kemarin"
-    const val HEADER_DATE_FORMAT = "d MMMM, yyyy"
-    fun getRelativeDate(
-        date: String = "",
-        dateTimestamp: Long
-    ): String {
-        return when {
-            DateUtils.isToday(dateTimestamp) -> RELATIVE_TODAY
-            DateUtils.isToday(dateTimestamp + DateUtils.DAY_IN_MILLIS) -> RELATIVE_YESTERDAY
-            else -> {
-                if (date.isNotBlank()) {
-                    DateFormatUtils.formatDate(DATE_FORMAT, HEADER_DATE_FORMAT, date, Locale.ENGLISH)
-                } else {
-                    DateFormatUtils.getFormattedDate(dateTimestamp, DATE_FORMAT)
-                }
-            }
-        }
-    }
 
     /**
      * Compose & Bubble Message
@@ -97,4 +77,9 @@ object TokoChatValueUtil {
      * TokoChat Bubbles
      */
     const val IS_FROM_BUBBLE_KEY = "isFromBubble"
+
+    /**
+     * TokoChat List
+     */
+    const val BATCH_LIMIT = 10
 }

@@ -2,6 +2,7 @@ package com.tokopedia.inbox.base
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.inbox.universalinbox.domain.UniversalInboxGetAllCounterUseCase
+import com.tokopedia.inbox.universalinbox.domain.UniversalInboxGetAllDriverChannelsUseCase
 import com.tokopedia.inbox.universalinbox.domain.UniversalInboxGetWidgetMetaUseCase
 import com.tokopedia.inbox.universalinbox.view.UniversalInboxMenuMapper
 import com.tokopedia.inbox.universalinbox.view.UniversalInboxViewModel
@@ -43,6 +44,9 @@ abstract class UniversalInboxViewModelTestFixture {
     protected lateinit var deleteWishlistV2UseCase: DeleteWishlistV2UseCase
 
     @RelaxedMockK
+    protected lateinit var getDriverChatCounterUseCase: UniversalInboxGetAllDriverChannelsUseCase
+
+    @RelaxedMockK
     protected lateinit var inboxMenuMapper: UniversalInboxMenuMapper
 
     @RelaxedMockK
@@ -60,6 +64,7 @@ abstract class UniversalInboxViewModelTestFixture {
             getRecommendationUseCase,
             addWishListV2UseCase,
             deleteWishlistV2UseCase,
+            getDriverChatCounterUseCase,
             inboxMenuMapper,
             userSession,
             CoroutineTestDispatchersProvider
