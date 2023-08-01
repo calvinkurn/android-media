@@ -3,7 +3,6 @@ package com.tokopedia.buy_more_get_more.olp.presentation.adapter.viewholder
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView.LayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.buy_more_get_more.R
@@ -24,15 +23,13 @@ class OfferingInfoViewHolder(itemView: View) :
     }
 
     override fun bind(data: OfferInfoForBuyerUiModel) {
-        binding?.tpgShopName?.text = "hakuna matata"
+        binding?.tpgShopName?.text = data.offerings.firstOrNull()?.offerName ?: "Hakuna Matata"
         setupTierList(data)
     }
 
     private fun setupTierList(data: OfferInfoForBuyerUiModel) {
         tierListAdapter.let { adapter ->
-            data.offerings.firstOrNull()?.tierList?.forEach { tier ->
-                adapter.tierList.add(tier)
-            }
+            data.offerings.firstOrNull()?.tierList?.let { adapter.tierList = it }
         }
         binding?.run {
             cardTierInfo.setCardUnifyBackgroundColor(

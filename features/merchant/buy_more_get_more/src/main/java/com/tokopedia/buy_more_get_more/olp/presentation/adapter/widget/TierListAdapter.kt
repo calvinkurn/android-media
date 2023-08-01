@@ -5,16 +5,16 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.buy_more_get_more.R
 import com.tokopedia.buy_more_get_more.databinding.ItemTierListBinding
 import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferInfoForBuyerUiModel.Offering.Tier
-import com.tokopedia.utils.view.binding.viewBinding
-import com.tokopedia.buy_more_get_more.R
 import com.tokopedia.kotlin.extensions.view.inflateLayout
 import com.tokopedia.kotlin.extensions.view.visibleWithCondition
+import com.tokopedia.utils.view.binding.viewBinding
 
 class TierListAdapter : RecyclerView.Adapter<TierListAdapter.TierListViewHolder>() {
 
-    var tierList: MutableList<Tier> = mutableListOf()
+    var tierList: List<Tier> = listOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TierListViewHolder {
         return TierListViewHolder(parent.inflateLayout(R.layout.item_tier_list))

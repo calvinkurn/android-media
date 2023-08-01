@@ -1,6 +1,5 @@
 package com.tokopedia.buy_more_get_more.sort.fragment
 
-
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -24,7 +23,6 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
-
 
 class ShopProductSortFragment : BaseListFragment<ShopProductSortModel, ShopProductSortAdapterTypeFactory>() {
     //    @kotlin.jvm.JvmField
@@ -106,7 +104,7 @@ class ShopProductSortFragment : BaseListFragment<ShopProductSortModel, ShopProdu
     }
 
     override fun onItemClicked(filterModel: ShopProductSortModel?) {
-        shopFilterFragmentListener?.select(filterModel?.key, filterModel?.value, filterModel?.name)
+        shopFilterFragmentListener?.onSortItemSelected(filterModel?.key, filterModel?.value, filterModel?.name)
     }
 
     private fun observeLiveData() {

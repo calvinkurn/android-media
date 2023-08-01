@@ -5,11 +5,9 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
-import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.buy_more_get_more.R
 import com.tokopedia.buy_more_get_more.sort.fragment.ShopProductSortFragment
 import com.tokopedia.buy_more_get_more.sort.listener.ShopProductSortFragmentListener
-
 
 class ShopProductSortActivity : BaseSimpleActivity(), ShopProductSortFragmentListener {
     private var sortName: String? = null
@@ -38,15 +36,6 @@ class ShopProductSortActivity : BaseSimpleActivity(), ShopProductSortFragmentLis
         }
     }
 
-    override fun select(sortId: String?, sortValue: String?, name: String?) {
-        val intent = Intent()
-        intent.putExtra(SORT_ID, sortId)
-        intent.putExtra(SORT_VALUE, sortValue)
-        intent.putExtra(SORT_NAME, name)
-        setResult(RESULT_OK, intent)
-        finish()
-    }
-
     override fun getParentViewResourceID(): Int {
         return R.id.parent_view
     }
@@ -64,5 +53,14 @@ class ShopProductSortActivity : BaseSimpleActivity(), ShopProductSortFragmentLis
             intent.putExtra(SORT_VALUE, sortName)
             return intent
         }
+    }
+
+    override fun onSortItemSelected(sortId: String?, sortValue: String?, name: String?) {
+        val intent = Intent()
+        intent.putExtra(SORT_ID, sortId)
+        intent.putExtra(SORT_VALUE, sortValue)
+        intent.putExtra(SORT_NAME, name)
+        setResult(RESULT_OK, intent)
+        finish()
     }
 }

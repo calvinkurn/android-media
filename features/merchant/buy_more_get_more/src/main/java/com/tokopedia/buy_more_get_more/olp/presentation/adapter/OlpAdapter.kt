@@ -11,11 +11,12 @@ import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferProductSortingUiMo
 import com.tokopedia.buy_more_get_more.olp.presentation.adapter.viewholder.OfferingProductSortingViewHolder
 import com.tokopedia.buy_more_get_more.olp.view.widget.OnStickySingleHeaderListener
 import com.tokopedia.buy_more_get_more.olp.view.widget.StickySingleHeaderView
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 
 open class OlpAdapter(
     private val adapterTypeFactory: AdapterTypeFactory
-): BaseListAdapter<Visitable<*>, AdapterTypeFactory>(adapterTypeFactory),
-    StickySingleHeaderView.OnStickySingleHeaderAdapter{
+) : BaseListAdapter<Visitable<*>, AdapterTypeFactory>(adapterTypeFactory),
+    StickySingleHeaderView.OnStickySingleHeaderAdapter {
 
     private var onStickySingleHeaderViewListener: OnStickySingleHeaderListener? = null
     private var recyclerView: RecyclerView? = null
@@ -50,6 +51,17 @@ open class OlpAdapter(
         }
     }
 
+    fun changeSelectedSortFilter(sortId: String, sortName: String) {
+        val newList = getNewVisitableItems()
+        val sortFilter = newList
+            .filterIsInstance<OfferProductSortingUiModel>().firstOrNull()
+        sortFilter?.apply {
+            selectedSortId = sortId.toIntOrZero()
+            selectedSortName = sortName
+        }
+        submitList(newList)
+    }
+
     override val stickyHeaderPosition: Int
         get() = visitables.indexOfFirst {
             it::class.java == OfferProductSortingUiModel::class.java
@@ -77,7 +89,6 @@ open class OlpAdapter(
         val newList = getNewVisitableItems()
         submitList(newList)
     }
-
 
     override fun hideLoading() {
         val newList = getNewVisitableItems()
