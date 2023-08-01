@@ -1,7 +1,0 @@
-query {
-  chatBlastSellerMetadata {
-    status
-    url
-    urlBroadcast
-  }
-}

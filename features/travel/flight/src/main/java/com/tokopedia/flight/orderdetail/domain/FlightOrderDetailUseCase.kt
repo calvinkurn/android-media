@@ -137,7 +137,8 @@ class FlightOrderDetailUseCase @Inject constructor(
                                     accountBranch = payment.manualTransfer.accountBranch,
                                     accountNo = payment.manualTransfer.accountNo,
                                     accountName = payment.manualTransfer.accountName,
-                                    total = payment.manualTransfer.total
+                                    total = payment.manualTransfer.total,
+                                    additionalInfo = payment.additionalInfo
                             )
                         },
                         journeys = it.flight.journeys.map { journey ->
