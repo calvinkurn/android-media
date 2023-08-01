@@ -8,14 +8,17 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.flight.R
 import com.tokopedia.flight.orderdetail.presentation.model.mapper.FlightOrderDetailStatusMapper
 import com.tokopedia.flight.orderdetail.presentation.utils.OrderDetailUtils
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.utils.date.DateUtil
 import kotlinx.android.synthetic.main.view_flight_order_detail_status_header.view.*
 
 /**
  * @author by furqan on 11/11/2020
  */
-class FlightOrderDetailHeaderStatusView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0)
-    : FrameLayout(context, attrs, defStyleAttr) {
+class FlightOrderDetailHeaderStatusView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
+    FrameLayout(context, attrs, defStyleAttr) {
 
     var listener: Listener? = null
 
@@ -25,23 +28,28 @@ class FlightOrderDetailHeaderStatusView @JvmOverloads constructor(context: Conte
     private var transactionDate: String = ""
     private var paymentMethod: String = ""
     private var paymentAmount: String = ""
+    private var additionalInfo: String = ""
 
     init {
         View.inflate(context, R.layout.view_flight_order_detail_status_header, this)
     }
 
-    fun setData(statusInt: Int,
-                statusStr: String,
-                invoiceId: String,
-                transactionDate: String,
-                paymentMethod: String,
-                paymentAmount: String) {
+    fun setData(
+        statusInt: Int,
+        statusStr: String,
+        invoiceId: String,
+        transactionDate: String,
+        paymentMethod: String,
+        paymentAmount: String,
+        additionalInfo: String
+    ) {
         this.statusInt = statusInt
         this.statusStr = statusStr
         this.invoiceId = invoiceId
         this.transactionDate = transactionDate
         this.paymentMethod = paymentMethod
         this.paymentAmount = paymentAmount
+        this.additionalInfo = additionalInfo
     }
 
     fun buildView() {
@@ -49,6 +57,7 @@ class FlightOrderDetailHeaderStatusView @JvmOverloads constructor(context: Conte
         renderInvoiceId()
         renderTransactionDate()
         renderPaymentView()
+        renderAdditionalInfo()
     }
 
     private fun renderOrderStatus() {
@@ -83,9 +92,10 @@ class FlightOrderDetailHeaderStatusView @JvmOverloads constructor(context: Conte
 
     private fun renderTransactionDate() {
         tgFlightOrderCreateTime.text = DateUtil.formatDate(
-                DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
-                DateUtil.DEFAULT_VIEW_TIME_FORMAT,
-                transactionDate)
+            DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
+            DateUtil.DEFAULT_VIEW_TIME_FORMAT,
+            transactionDate
+        )
     }
 
     private fun renderPaymentView() {
@@ -100,10 +110,20 @@ class FlightOrderDetailHeaderStatusView @JvmOverloads constructor(context: Conte
         }
     }
 
+    private fun renderAdditionalInfo() {
+        if (additionalInfo.isNotEmpty()) {
+            tgFlightOrderAdditionalInfo.text = HtmlLinkHelper(context, additionalInfo).spannedString
+            tgFlightOrderAdditionalInfo.show()
+            ivFlightOrderAdditionalInfo.show()
+        } else {
+            tgFlightOrderAdditionalInfo.hide()
+            ivFlightOrderAdditionalInfo.hide()
+        }
+    }
+
     interface Listener {
         fun onCopyInvoiceIdClicked(invoiceId: String)
         fun onDetailPaymentClicked()
         fun onInvoiceIdClicked()
     }
-
 }

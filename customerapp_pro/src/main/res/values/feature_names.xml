@@ -346,6 +346,7 @@
     <string name="page_name_wishlist_collection_detail">Wishlist Collection Detail</string>
     <string name="page_name_wishlist_edit">Ubah Wishlist</string>
     <string name="page_name_wishlist_collection_host_bottomsheet">Wishlist Collection Host BottomSheet Activity</string>
+    <string name="page_name_wishlist_collection_create_host_bottomsheet">Wishlist Collection Create Host BottomSheet Activity</string>
 
     <!-- Dynamic feature for cart -->
     <string name="checkout_module_title_activity_cart">Keranjang</string>

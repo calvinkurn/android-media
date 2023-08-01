@@ -9,6 +9,7 @@ import com.tokopedia.search.listShouldBe
 import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.domain.model.SearchProductModel.InspirationCarouselProduct
 import com.tokopedia.search.result.presentation.ProductListSectionContract
+import com.tokopedia.search.result.product.changeview.ViewType
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
 import com.tokopedia.search.shouldBe
 import io.mockk.CapturingSlot
@@ -40,7 +41,7 @@ fun MockKVerificationScope.verifyProcessingData(
     productListView.saveLastProductItemPositionToCache(any())
 
     productListView.setAutocompleteApplink(searchProductModel.searchProduct.data.autocompleteApplink)
-    productListView.setDefaultLayoutType(searchProductModel.searchProduct.header.defaultView)
+    productListView.setDefaultLayoutType(ViewType.SMALL_GRID.value)
     productListView.removeLoading()
     productListView.setProductList(capture(visitableListSlot))
     productListView.backToTop()
