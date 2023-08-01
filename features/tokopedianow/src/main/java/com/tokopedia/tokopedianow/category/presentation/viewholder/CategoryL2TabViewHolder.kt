@@ -58,10 +58,13 @@ class CategoryL2TabViewHolder(
     }
 
     private fun setupViewPager(data: CategoryL2TabUiModel) {
-        data.categoryL2Ids.forEach {
-            val fragment = TokoNowCategoryL2TabFragment
-                .newInstance(data.categoryIdL1, it, data.componentList)
-            viewPagerAdapter.addFragment(fragment)
+        binding?.apply {
+            data.categoryL2Ids.forEach {
+                val fragment = TokoNowCategoryL2TabFragment
+                    .newInstance(data.categoryIdL1, it, data.componentList)
+                viewPagerAdapter.addFragment(fragment)
+            }
+            viewPager.currentItem = data.selectedTabPosition
         }
     }
 
@@ -77,9 +80,11 @@ class CategoryL2TabViewHolder(
     private fun setupTabLayout(data: CategoryL2TabUiModel) {
         binding?.tabUnify?.apply {
             val selectedTabPosition = data.selectedTabPosition
-            tabLayout.removeOnTabSelectedListener(tabSelectedListener)
-            tabLayout.getTabAt(selectedTabPosition)?.select()
-            tabLayout.addOnTabSelectedListener(tabSelectedListener)
+            tabLayout.post {
+                tabLayout.removeOnTabSelectedListener(tabSelectedListener)
+                tabLayout.getTabAt(selectedTabPosition)?.select()
+                tabLayout.addOnTabSelectedListener(tabSelectedListener)
+            }
             customTabMode = TabLayout.MODE_SCROLLABLE
         }
     }
