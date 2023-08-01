@@ -275,10 +275,6 @@ class TokoNowRepurchaseFragment:
 
     override fun onRemoveFilterClick(option: Option) { /* noting to do */ }
 
-    override fun onEmptyStateNoResultImpressed() { /* noting to do */ }
-
-    override fun onDefaultPrimaryButtonClicked() { /* noting to do */ }
-
     override fun onClickRecommendationCarouselItem(
         model: TokoNowProductRecommendationOocUiModel?,
         data: RecommendationCarouselData,

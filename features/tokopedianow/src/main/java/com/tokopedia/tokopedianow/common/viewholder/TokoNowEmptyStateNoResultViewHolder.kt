@@ -27,7 +27,8 @@ import com.tokopedia.utils.view.binding.viewBinding
 
 class TokoNowEmptyStateNoResultViewHolder(
         itemView: View,
-        private val listener: TokoNowEmptyStateNoResultListener? = null,
+        private val tokoNowEmptyStateNoResultListener: TokoNowEmptyStateNoResultListener? = null,
+        private val tokoNowEmptyStateNoResultTrackerListener: TokoNowEmptyStateNoResultTrackerListener? = null
 ): AbstractViewHolder<TokoNowEmptyStateNoResultUiModel>(itemView) {
 
     companion object {
@@ -99,7 +100,7 @@ class TokoNowEmptyStateNoResultViewHolder(
                     element.activeFilterList.orEmpty(),
                     getString(R.string.tokopedianow_empty_product_filter_price_name)
             )
-            filterList.adapter = Adapter(optionList, listener)
+            filterList.adapter = Adapter(optionList, tokoNowEmptyStateNoResultListener)
             filterList.layoutManager = layoutManager
 
             val chipSpacing = itemView.context.resources.getDimensionPixelSize(
@@ -122,14 +123,14 @@ class TokoNowEmptyStateNoResultViewHolder(
                     text = element.defaultTextPrimaryButton
                     buttonType = UnifyButton.Type.MAIN
                     setOnClickListener {
-                        listener?.onDefaultPrimaryButtonClicked()
+                        tokoNowEmptyStateNoResultTrackerListener?.trackClickDefaultPrimaryButton()
                         RouteManager.route(context, "${ApplinkConst.WEBVIEW}?url=${element.defaultUrlPrimaryButton}")
                     }
                 } else {
                     element.globalSearchBtnTextResId?.let { text = getString(it) }
                     buttonType = UnifyButton.Type.ALTERNATE
                     setOnClickListener {
-                        listener?.onFindInTokopediaClick()
+                        tokoNowEmptyStateNoResultListener?.onFindInTokopediaClick()
                     }
                 }
             }
@@ -145,14 +146,14 @@ class TokoNowEmptyStateNoResultViewHolder(
                 shouldShow = !hasActiveFilter && element.defaultTextPrimaryButton.isBlank()
             )
             tokonowEmptyProductSecondaryButton.setOnClickListener {
-                listener?.goToTokopediaNowHome()
+                tokoNowEmptyStateNoResultListener?.goToTokopediaNowHome()
             }
         }
     }
 
     private fun impressRoot(element: TokoNowEmptyStateNoResultUiModel) {
         binding?.root?.addOnImpressionListener(element) {
-            listener?.onEmptyStateNoResultImpressed()
+            tokoNowEmptyStateNoResultTrackerListener?.trackImpressEmptyStateNoResult()
         }
     }
 
@@ -218,9 +219,11 @@ class TokoNowEmptyStateNoResultViewHolder(
         fun goToTokopediaNowHome()
 
         fun onRemoveFilterClick(option: Option)
+    }
 
-        fun onEmptyStateNoResultImpressed()
+    interface TokoNowEmptyStateNoResultTrackerListener {
+        fun trackImpressEmptyStateNoResult()
 
-        fun onDefaultPrimaryButtonClicked()
+        fun trackClickDefaultPrimaryButton()
     }
 }
