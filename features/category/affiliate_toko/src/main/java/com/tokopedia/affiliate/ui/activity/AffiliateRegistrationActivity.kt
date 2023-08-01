@@ -6,14 +6,11 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.view.View
-import androidx.constraintlayout.widget.Group
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.affiliate.AFFILIATE_APP_LINK
 import com.tokopedia.affiliate.AFFILIATE_SPLASH_TIME
 import com.tokopedia.affiliate.di.AffiliateComponent
@@ -25,13 +22,9 @@ import com.tokopedia.affiliate.viewmodel.AffiliateRegistrationSharedViewModel
 import com.tokopedia.affiliate_toko.R
 import com.tokopedia.affiliate_toko.databinding.AffiliateRegistrationLayoutBinding
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.user.session.UserSessionInterface
-import timber.log.Timber
 import javax.inject.Inject
 
 class AffiliateRegistrationActivity :
