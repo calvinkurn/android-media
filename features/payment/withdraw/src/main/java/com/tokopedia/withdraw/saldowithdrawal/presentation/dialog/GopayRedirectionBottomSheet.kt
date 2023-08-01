@@ -33,12 +33,13 @@ class GopayRedirectionBottomSheet: BottomSheetUnify() {
                 null, false)
 
             setChild(childView)
-            setUpView()
 
             image = it.getString(ARG_IMAGE, "")
             title = it.getString(ARG_TITLE, "")
             description = it.getString(ARG_DESCRIPTION, "")
             applink = it.getString(ARG_APPLINK, "")
+
+            setUpView()
         }
     }
 
