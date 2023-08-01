@@ -32,7 +32,7 @@ data class GetCategoryLayoutResponse(
 
     data class BasicInfo(
         @SerializedName("id")
-        val id: Int = 0,
+        val id: String = "",
         @SerializedName("name")
         val name: String = "",
         @SerializedName("tree")

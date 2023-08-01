@@ -6,27 +6,34 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
+import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2Mapper.addChooseAddress
+import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2Mapper.getCategoryTabs
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2Mapper.mapToCategoryUiModel
+import com.tokopedia.tokopedianow.category.domain.response.CategoryDetailResponse
 import com.tokopedia.tokopedianow.category.domain.response.GetCategoryLayoutResponse.CategoryGetDetailModular
+import com.tokopedia.tokopedianow.category.domain.usecase.GetCategoryDetailUseCase
 import com.tokopedia.tokopedianow.category.domain.usecase.GetCategoryLayoutUseCase
 import com.tokopedia.tokopedianow.category.domain.usecase.GetCategoryProductUseCase
-import com.tokopedia.tokopedianow.category.presentation.constant.CategoryComponentType.Companion.TABS_HORIZONTAL_SCROLL
 import com.tokopedia.tokopedianow.category.presentation.model.CategoryL2TabModel
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryL2TabUiModel
+import com.tokopedia.tokopedianow.common.domain.mapper.AceSearchParamMapper
 import com.tokopedia.tokopedianow.common.domain.usecase.GetProductAdsUseCase
 import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase
 import com.tokopedia.tokopedianow.common.service.NowAffiliateService
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
 import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.Deferred
 import javax.inject.Inject
 
 class TokoNowCategoryL2ViewModel @Inject constructor(
     private val getCategoryLayout: GetCategoryLayoutUseCase,
+    private val getCategoryDetailUseCase: GetCategoryDetailUseCase,
+    private val addressData: TokoNowLocalAddress,
     getCategoryProductUseCase: GetCategoryProductUseCase,
     getProductAdsUseCase: GetProductAdsUseCase,
     getTargetedTickerUseCase: GetTargetedTickerUseCase,
@@ -36,7 +43,7 @@ class TokoNowCategoryL2ViewModel @Inject constructor(
     updateCartUseCase: UpdateCartUseCase,
     deleteCartUseCase: DeleteCartUseCase,
     affiliateService: NowAffiliateService,
-    addressData: TokoNowLocalAddress,
+    aceSearchParamMapper: AceSearchParamMapper,
     userSession: UserSessionInterface,
     dispatchers: CoroutineDispatchers
 ) : BaseCategoryViewModel(
@@ -49,6 +56,7 @@ class TokoNowCategoryL2ViewModel @Inject constructor(
     updateCartUseCase = updateCartUseCase,
     deleteCartUseCase = deleteCartUseCase,
     affiliateService = affiliateService,
+    aceSearchParamMapper = aceSearchParamMapper,
     addressData = addressData,
     userSession = userSession,
     dispatchers = dispatchers
@@ -63,17 +71,21 @@ class TokoNowCategoryL2ViewModel @Inject constructor(
     override fun loadFirstPage(tickerList: List<TickerData>) {
         launchCatchError(
             block = {
-                val getCategoryLayoutResponse = getCategoryLayout.execute(categoryIdL2)
-                val categoryTabList = mapToCategoryTabList(getCategoryLayoutResponse)
-                val components = getCategoryLayoutResponse.components
+                val getCategoryLayout = getCategoryLayoutAsync()
+                val getCategoryDetail = getCategoryDetailAsync()
 
                 visitableList.clear()
                 visitableList.addChooseAddress(getAddressData())
-                visitableList.mapToCategoryUiModel(categoryIdL1, categoryIdL2, components)
+                visitableList.mapToCategoryUiModel(
+                    categoryIdL1,
+                    categoryIdL2,
+                    getCategoryLayout.await(),
+                    getCategoryDetail.await()
+                )
 
                 hidePageLoading()
+                updateCategoryTab()
                 updateVisitableListLiveData()
-                updateCategoryTab(categoryTabList)
                 sendOpenScreenTracker(id = "", name = "", url = "")
             },
             onError = {
@@ -97,13 +109,25 @@ class TokoNowCategoryL2ViewModel @Inject constructor(
         return visitableList.indexOfFirst { it is CategoryL2TabUiModel }
     }
 
-    private fun mapToCategoryTabList(response: CategoryGetDetailModular): List<CategoryL2TabModel> {
-        return response.components
-            .firstOrNull { it.type == TABS_HORIZONTAL_SCROLL }?.data.orEmpty()
-            .map { CategoryL2TabModel(it.id, it.categoryName)}
+    private suspend fun getCategoryLayoutAsync(): Deferred<CategoryGetDetailModular?> {
+        return asyncCatchError(block = {
+            getCategoryLayout.execute(categoryIdL1)
+        }) {
+            null
+        }
     }
 
-    private fun updateCategoryTab(categoryTabs: List<CategoryL2TabModel>) {
+    private fun getCategoryDetailAsync(): Deferred<CategoryDetailResponse?> {
+        return asyncCatchError(block = {
+            val warehouseId = addressData.getWarehouseId().toString()
+            getCategoryDetailUseCase.execute(warehouseId, categoryIdL1)
+        }) {
+            null
+        }
+    }
+
+    private fun updateCategoryTab() {
+        val categoryTabs = visitableList.getCategoryTabs()
         _categoryTabs.postValue(categoryTabs)
     }
 }
