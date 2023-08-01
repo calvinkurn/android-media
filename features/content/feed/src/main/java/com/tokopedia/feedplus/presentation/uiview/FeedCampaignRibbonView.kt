@@ -487,10 +487,10 @@ class FeedCampaignRibbonView(
                                     tyFeedCampaignRibbonTitle.text =
                                         animationTextList[animationIndex]
                                     if (animationTextList.size > animationIndex + ONE) {
-                                        tyFeedCampaignRibbonSubtitle.text =
+                                        tyFeedCampaignRibbonSecondSubtitle.text =
                                             animationTextList[animationIndex + ONE]
                                     } else {
-                                        tyFeedCampaignRibbonSubtitle.text = ""
+                                        tyFeedCampaignRibbonSecondSubtitle.text = ""
                                     }
                                 }
                                 R.id.feed_availability_state -> {
@@ -515,10 +515,10 @@ class FeedCampaignRibbonView(
 
                         root.setTransition(root.currentState, animationState)
                         root.transitionToEnd()
-                    }
 
-                    val nextIndex = if (index < animationStateList.size) index + ONE else ZERO
-                    runLoopAnimation(nextIndex)
+                        val nextIndex = if (index < animationStateList.size) index + ONE else ZERO
+                        runLoopAnimation(nextIndex)
+                    }
                 }
             }
         }
@@ -547,6 +547,7 @@ class FeedCampaignRibbonView(
         private const val TWO_SECOND = 2000L
         private const val THREE_SECOND = 3000L
         private const val COLOR_TRANSITION_DURATION = 250
+        private const val TEXT_TRANSITION_DURATION = 300L
 
         private const val SEVENTY_FIVE_PERCENT = 75
         private const val EIGHTY_FIVE_PERCENT = 85

@@ -62,6 +62,19 @@
         app:typographyType="small"
         tools:text="@string/feed_campaign_start_from_label" />
 
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/ty_feed_campaign_ribbon_second_subtitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_Static_White"
+        app:layout_constraintBottom_toTopOf="@id/pb_feed_campaign_ribbon"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="small"
+        tools:text="@string/feed_campaign_start_from_label" />
+
     <com.tokopedia.unifycomponents.ProgressBarUnify
         android:id="@+id/pb_feed_campaign_ribbon"
         android:layout_width="96dp"
