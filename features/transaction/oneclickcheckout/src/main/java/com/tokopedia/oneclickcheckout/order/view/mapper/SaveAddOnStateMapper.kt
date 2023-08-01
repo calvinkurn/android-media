@@ -83,7 +83,7 @@ internal object SaveAddOnStateMapper {
                     addOnData = product.addOnsProductData.data.map { addOnProductData ->
                         AddOnDataRequest(
                             addOnId = addOnProductData.id.toLongOrZero(),
-                            addOnQty = SAVE_ADD_ON_STATE_QUANTITY,
+                            addOnQty = product.orderQuantity,
                             addOnMetadata = AddOnMetadataRequest(),
                             addOnUniqueId = addOnProductData.uniqueId,
                             addOnType = addOnProductData.type,
