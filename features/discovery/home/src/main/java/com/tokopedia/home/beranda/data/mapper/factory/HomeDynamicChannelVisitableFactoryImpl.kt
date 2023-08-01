@@ -219,7 +219,8 @@ class HomeDynamicChannelVisitableFactoryImpl(
                 DynamicChannelComponentMapper.mapHomeChannelToComponentBannerHeader(channel, verticalPosition)
             )
         )
-        if (!isCache && channel.convertPromoEnhanceLegoBannerDataLayerForCombination().isNotEmpty()) {
+        if (!isCache && channel.convertPromoEnhanceLegoBannerDataLayerForCombination().isNotEmpty() &&
+            !HomeComponentRemoteConfigController.isUsingNewLegoTracking(remoteConfig)) {
             HomePageTracking.eventEnhanceImpressionLegoAndCuratedHomePage(
                 trackingQueue,
                 channel.convertPromoEnhanceLegoBannerDataLayerForCombination()
@@ -550,7 +551,7 @@ class HomeDynamicChannelVisitableFactoryImpl(
             channelModel = DynamicChannelComponentMapper.mapHomeChannelToComponent(channel, verticalPosition),
             isCache = isCache
         )
-        if (!isCache) {
+        if (!isCache && !HomeComponentRemoteConfigController.isUsingNewLegoTracking(remoteConfig)) {
             HomePageTracking.eventEnhanceImpressionLegoAndCuratedHomePage(
                 trackingQueue,
                 LegoBannerTracking.convertLegoSixAutoBannerDataLayerForCombination(channel, verticalPosition)
