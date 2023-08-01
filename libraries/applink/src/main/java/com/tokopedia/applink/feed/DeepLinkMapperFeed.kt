@@ -6,16 +6,20 @@ import com.tokopedia.applink.internal.ApplinkConstInternalFeed.INTERNAL_FEED_DET
 import com.tokopedia.applink.internal.ApplinkConstInternalFeed.INTERNAL_UNIFIED_FEED_DETAILS
 
 object DeepLinkMapperFeed {
-    fun getRegisteredFeed(deepLink: String): String =
+    fun getRegisteredFeed(deepLink: String): String {
+        var returnedDeeplink = deepLink
+
         when {
-            deepLink.startsWith(ApplinkConst.FEED_DETAILS) -> deepLink.replace(
+            deepLink.startsWith(ApplinkConst.FEED_DETAILS) -> returnedDeeplink = deepLink.replace(
                 ApplinkConst.FEED_DETAILS,
                 INTERNAL_FEED_DETAILS
             )
-            deepLink.startsWith(FEED_UNIFIED_DETAILS) -> deepLink.replace(
+            deepLink.startsWith(FEED_UNIFIED_DETAILS) -> returnedDeeplink = deepLink.replace(
                 FEED_UNIFIED_DETAILS,
                 INTERNAL_UNIFIED_FEED_DETAILS
             )
-            else -> deepLink
         }
+
+        return returnedDeeplink
+    }
 }
