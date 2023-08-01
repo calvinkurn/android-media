@@ -24,6 +24,7 @@ import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_SELECTED_CHANGED
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloads
 import com.tokopedia.feedplus.presentation.adapter.listener.FeedListener
+import com.tokopedia.feedplus.presentation.adapter.util.animateAlpha
 import com.tokopedia.feedplus.presentation.adapter.viewholder.FeedPostImageViewHolder.Companion.FULL_OPACITY
 import com.tokopedia.feedplus.presentation.adapter.viewholder.FeedPostImageViewHolder.Companion.OPACITY_ANIMATE_DURATION
 import com.tokopedia.feedplus.presentation.adapter.viewholder.FeedPostImageViewHolder.Companion.SCROLL_OPACITY
@@ -61,7 +62,12 @@ class FeedPostVideoViewHolder(
     }
 
     private val authorView = FeedAuthorInfoView(binding.layoutAuthorInfo, listener)
-    private val captionView = FeedCaptionView(binding.tvFeedCaption, binding.layoutFeedCaption, listener, captionViewListener)
+    private val captionView = FeedCaptionView(
+        binding.tvFeedCaption,
+        binding.layoutFeedCaption,
+        listener,
+        captionViewListener
+    )
     private val productTagView = FeedProductTagView(binding.productTagView, listener)
     private val productButtonView = FeedProductButtonView(binding.productTagButton, listener)
     private val asgcTagsView = FeedAsgcTagsView(binding.rvFeedAsgcTags)
@@ -75,6 +81,25 @@ class FeedPostVideoViewHolder(
     private var mData: FeedCardVideoContentModel? = null
 
     private var trackerDataModel: FeedTrackerDataModel? = null
+
+    private val opacityViewList = listOf(
+        binding.layoutAuthorInfo.root,
+        binding.tvFeedCaption,
+        binding.postLikeButton.root,
+        binding.feedCommentButton.root,
+        binding.menuButton,
+        binding.shareButton,
+        binding.productTagButton.root,
+        binding.productTagView.root,
+        binding.overlayTop.root,
+        binding.overlayBottom.root,
+        binding.overlayRight.root,
+        binding.btnDisableClearMode,
+        binding.productTagView.root,
+        binding.productTagButton.root,
+        binding.rvFeedAsgcTags,
+        binding.feedCampaignRibbon.root,
+    )
 
     init {
         binding.root.addOnAttachStateChangeListener(object : OnAttachStateChangeListener {
@@ -473,76 +498,14 @@ class FeedPostVideoViewHolder(
     }
 
     private fun onScrolling() {
-        with(binding) {
-            layoutAuthorInfo.root.animate().alpha(SCROLL_OPACITY).duration =
-                OPACITY_ANIMATE_DURATION
-            tvFeedCaption.animate().alpha(SCROLL_OPACITY).duration =
-                OPACITY_ANIMATE_DURATION
-            postLikeButton.root.animate().alpha(SCROLL_OPACITY).duration =
-                OPACITY_ANIMATE_DURATION
-            feedCommentButton.root.animate().alpha(SCROLL_OPACITY).duration =
-                OPACITY_ANIMATE_DURATION
-            menuButton.animate().alpha(SCROLL_OPACITY).duration =
-                OPACITY_ANIMATE_DURATION
-            shareButton.animate().alpha(SCROLL_OPACITY).duration =
-                OPACITY_ANIMATE_DURATION
-            productTagButton.root.animate().alpha(SCROLL_OPACITY).duration =
-                OPACITY_ANIMATE_DURATION
-            productTagView.root.animate().alpha(SCROLL_OPACITY).duration =
-                OPACITY_ANIMATE_DURATION
-            overlayTop.root.animate().alpha(SCROLL_OPACITY).duration =
-                OPACITY_ANIMATE_DURATION
-            overlayBottom.root.animate().alpha(SCROLL_OPACITY).duration =
-                OPACITY_ANIMATE_DURATION
-            overlayRight.root.animate().alpha(SCROLL_OPACITY).duration =
-                OPACITY_ANIMATE_DURATION
-            btnDisableClearMode.animate().alpha(SCROLL_OPACITY).duration =
-                OPACITY_ANIMATE_DURATION
-            productTagView.root.animate().alpha(SCROLL_OPACITY).duration =
-                OPACITY_ANIMATE_DURATION
-            productTagButton.root.animate().alpha(SCROLL_OPACITY).duration =
-                OPACITY_ANIMATE_DURATION
-            rvFeedAsgcTags.animate().alpha(SCROLL_OPACITY).duration =
-                OPACITY_ANIMATE_DURATION
-            feedCampaignRibbon.root.animate().alpha(SCROLL_OPACITY).duration =
-                OPACITY_ANIMATE_DURATION
+        opacityViewList.forEach {
+            it.animateAlpha(SCROLL_OPACITY, OPACITY_ANIMATE_DURATION)
         }
     }
 
     private fun onDoneScroll() {
-        with(binding) {
-            layoutAuthorInfo.root.animate().alpha(FULL_OPACITY).duration =
-                OPACITY_ANIMATE_DURATION
-            tvFeedCaption.animate().alpha(FULL_OPACITY).duration =
-                OPACITY_ANIMATE_DURATION
-            postLikeButton.root.animate().alpha(FULL_OPACITY).duration =
-                OPACITY_ANIMATE_DURATION
-            feedCommentButton.root.animate().alpha(FULL_OPACITY).duration =
-                OPACITY_ANIMATE_DURATION
-            menuButton.animate().alpha(FULL_OPACITY).duration =
-                OPACITY_ANIMATE_DURATION
-            shareButton.animate().alpha(FULL_OPACITY).duration =
-                OPACITY_ANIMATE_DURATION
-            productTagButton.root.animate().alpha(FULL_OPACITY).duration =
-                OPACITY_ANIMATE_DURATION
-            productTagView.root.animate().alpha(FULL_OPACITY).duration =
-                OPACITY_ANIMATE_DURATION
-            overlayTop.root.animate().alpha(FULL_OPACITY).duration =
-                OPACITY_ANIMATE_DURATION
-            overlayBottom.root.animate().alpha(FULL_OPACITY).duration =
-                OPACITY_ANIMATE_DURATION
-            overlayRight.root.animate().alpha(FULL_OPACITY).duration =
-                OPACITY_ANIMATE_DURATION
-            btnDisableClearMode.animate().alpha(FULL_OPACITY).duration =
-                OPACITY_ANIMATE_DURATION
-            productTagView.root.animate().alpha(FULL_OPACITY).duration =
-                OPACITY_ANIMATE_DURATION
-            productTagButton.root.animate().alpha(FULL_OPACITY).duration =
-                OPACITY_ANIMATE_DURATION
-            rvFeedAsgcTags.animate().alpha(FULL_OPACITY).duration =
-                OPACITY_ANIMATE_DURATION
-            feedCampaignRibbon.root.animate().alpha(FULL_OPACITY).duration =
-                OPACITY_ANIMATE_DURATION
+        opacityViewList.forEach {
+            it.alpha = FULL_OPACITY
         }
     }
 
