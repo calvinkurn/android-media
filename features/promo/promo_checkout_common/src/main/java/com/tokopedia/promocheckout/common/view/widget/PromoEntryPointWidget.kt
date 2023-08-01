@@ -197,7 +197,7 @@ class PromoEntryPointWidget @JvmOverloads constructor(
         onClickListener: () -> Unit = {}
     ) {
         switcherView?.reset()
-        inActiveViewLeftImage?.setImageResource(R.drawable.ic_promo_empty)
+        inActiveViewLeftImage?.setImageUrl("https://images.tokopedia.net/img/ios/promo_widget/disabled_product.png")
         inActiveViewWording?.setCurrentText(MethodChecker.fromHtml(wording))
         inActiveViewRightIcon?.visibility = View.GONE
         switcherView?.displayedChild = 1

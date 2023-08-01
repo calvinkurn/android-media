@@ -11,8 +11,8 @@ import com.tokopedia.checkout.revamp.view.adapter.CheckoutAdapterListener
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutAddressModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderModel
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
-import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.InsuranceData
 import com.tokopedia.logisticcart.shipping.features.shippingwidget.ShippingCheckoutRevampWidget
+import com.tokopedia.logisticcart.shipping.model.InsuranceWidgetUiModel
 import com.tokopedia.logisticcart.shipping.model.ScheduleDeliveryUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingWidgetUiModel
 
@@ -197,7 +197,7 @@ class CheckoutOrderViewHolder(
                         whitelabelEtaText = courierItemData.durationCardDescription,
 
                         scheduleDeliveryUiModel = null,
-                        insuranceData = InsuranceData()
+                        insuranceData = InsuranceWidgetUiModel()
                     )
                 )
             } else if (courierItemData.isHideChangeCourierCard) {
@@ -247,7 +247,7 @@ class CheckoutOrderViewHolder(
                         whitelabelEtaText = courierItemData.durationCardDescription,
 
                         scheduleDeliveryUiModel = null,
-                        insuranceData = InsuranceData()
+                        insuranceData = InsuranceWidgetUiModel()
                     ),
                     RecipientAddressModel()
                 )
@@ -298,7 +298,7 @@ class CheckoutOrderViewHolder(
                         whitelabelEtaText = courierItemData.durationCardDescription,
 
                         scheduleDeliveryUiModel = null,
-                        insuranceData = InsuranceData()
+                        insuranceData = InsuranceWidgetUiModel()
                     ),
                     RecipientAddressModel()
                 )
