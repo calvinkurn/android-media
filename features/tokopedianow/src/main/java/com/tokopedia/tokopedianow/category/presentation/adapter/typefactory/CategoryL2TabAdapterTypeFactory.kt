@@ -11,6 +11,7 @@ import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryProductL
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryQuickFilterUiModel
 import com.tokopedia.tokopedianow.category.presentation.viewholder.CategoryProductListViewHolder
 import com.tokopedia.tokopedianow.category.presentation.viewholder.CategoryQuickFilterViewHolder
+import com.tokopedia.tokopedianow.category.presentation.viewholder.CategoryQuickFilterViewHolder.CategoryQuickFilterListener
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowAdsCarouselTypeFactory
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowProductItemTypeFactory
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowProgressBarTypeFactory
@@ -20,13 +21,12 @@ import com.tokopedia.tokopedianow.common.model.TokoNowProgressBarUiModel
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowAdsCarouselViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowProgressBarViewHolder
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ProductItemListener
-import com.tokopedia.tokopedianow.searchcategory.presentation.listener.QuickFilterListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewholder.ProductItemViewHolder
 
 class CategoryL2TabAdapterTypeFactory(
     private var adsCarouselListener: ProductAdsCarouselListener?,
-    private var quickFilterListener: QuickFilterListener?,
+    private var quickFilterListener: CategoryQuickFilterListener?,
     private var productItemListener: ProductItemListener?,
     private var productCardCompactListener: ProductCardCompactListener?,
     private var similarProductTrackerListener: ProductCardCompactSimilarProductTrackerListener?,
@@ -68,7 +68,7 @@ class CategoryL2TabAdapterTypeFactory(
             CategoryQuickFilterViewHolder.LAYOUT -> {
                 CategoryQuickFilterViewHolder(
                     itemView = view,
-                    quickFilterListener = quickFilterListener
+                    listener = quickFilterListener
                 )
             }
             ProductItemViewHolder.LAYOUT -> {

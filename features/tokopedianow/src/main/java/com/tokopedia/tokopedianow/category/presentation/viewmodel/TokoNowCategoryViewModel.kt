@@ -40,6 +40,7 @@ import com.tokopedia.tokopedianow.category.presentation.util.CategoryLayoutType.
 import com.tokopedia.tokopedianow.category.presentation.util.CategoryLayoutType.PRODUCT_RECOMMENDATION
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.constant.TokoNowStaticLayoutType.Companion.PRODUCT_ADS_CAROUSEL
+import com.tokopedia.tokopedianow.common.domain.mapper.AceSearchParamMapper
 import com.tokopedia.tokopedianow.common.domain.mapper.ProductAdsMapper.addProductAdsCarousel
 import com.tokopedia.tokopedianow.common.domain.mapper.ProductAdsMapper.findAdsProductCarousel
 import com.tokopedia.tokopedianow.common.domain.usecase.GetProductAdsUseCase
@@ -64,6 +65,7 @@ class TokoNowCategoryViewModel @Inject constructor(
     updateCartUseCase: UpdateCartUseCase,
     deleteCartUseCase: DeleteCartUseCase,
     affiliateService: NowAffiliateService,
+    aceSearchParamMapper: AceSearchParamMapper,
     addressData: TokoNowLocalAddress,
     userSession: UserSessionInterface,
     dispatchers: CoroutineDispatchers
@@ -77,6 +79,7 @@ class TokoNowCategoryViewModel @Inject constructor(
     updateCartUseCase = updateCartUseCase,
     deleteCartUseCase = deleteCartUseCase,
     affiliateService = affiliateService,
+    aceSearchParamMapper = aceSearchParamMapper,
     addressData = addressData,
     userSession = userSession,
     dispatchers = dispatchers

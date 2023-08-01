@@ -21,6 +21,7 @@ import com.tokopedia.tokopedianow.category.presentation.model.CategoryL2Model
 import com.tokopedia.tokopedianow.category.presentation.model.CategoryOpenScreenTrackerModel
 import com.tokopedia.tokopedianow.common.base.viewmodel.BaseTokoNowViewModel
 import com.tokopedia.tokopedianow.common.constant.TokoNowStaticLayoutType.Companion.PRODUCT_ADS_CAROUSEL
+import com.tokopedia.tokopedianow.common.domain.mapper.AceSearchParamMapper
 import com.tokopedia.tokopedianow.common.domain.param.GetProductAdsParam
 import com.tokopedia.tokopedianow.common.domain.param.GetProductAdsParam.Companion.SRC_DIRECTORY_TOKONOW
 import com.tokopedia.tokopedianow.common.domain.usecase.GetProductAdsUseCase
@@ -28,6 +29,7 @@ import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase
 import com.tokopedia.tokopedianow.common.service.NowAffiliateService
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel
+import com.tokopedia.tokopedianow.searchcategory.utils.CATEGORY_TOKONOW_DIRECTORY
 import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Deferred
@@ -37,6 +39,7 @@ abstract class BaseCategoryViewModel(
     private val getCategoryProductUseCase: GetCategoryProductUseCase,
     private val getProductAdsUseCase: GetProductAdsUseCase,
     private val getShopAndWarehouseUseCase: GetChosenAddressWarehouseLocUseCase,
+    private val aceSearchParamMapper: AceSearchParamMapper,
     private val addressData: TokoNowLocalAddress,
     getTargetedTickerUseCase: GetTargetedTickerUseCase,
     getMiniCartUseCase: GetMiniCartListSimplifiedUseCase,
@@ -111,7 +114,7 @@ abstract class BaseCategoryViewModel(
         categoryL2Model: CategoryL2Model
     ): Deferred<Unit?> = asyncCatchError(block = {
         val response = getCategoryProductUseCase.execute(
-            categoryIdL2 = categoryL2Model.id
+            queryParams = createRequestQueryParams()
         )
         onSuccessGetCategoryProduct(response, categoryL2Model)
     }) {
@@ -200,6 +203,13 @@ abstract class BaseCategoryViewModel(
         updateAddressData()
         loadMoreJob = null
         _refreshState.value = Unit
+    }
+
+    private fun createRequestQueryParams(): Map<String?, Any?> {
+        return aceSearchParamMapper.createRequestParams(
+            source = CATEGORY_TOKONOW_DIRECTORY,
+            srpPageId = categoryIdL1
+        )
     }
 
     private fun processLoadDataPage() {

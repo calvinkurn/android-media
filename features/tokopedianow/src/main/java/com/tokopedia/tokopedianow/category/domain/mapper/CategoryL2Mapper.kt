@@ -19,9 +19,9 @@ object CategoryL2Mapper {
     )
 
     fun MutableList<Visitable<*>>.mapToCategoryUiModel(
-        componentsResponse: List<Component>,
         categoryIdL1: String,
-        categoryIdL2: String
+        categoryIdL2: String,
+        componentsResponse: List<Component>
     ) {
         componentsResponse.filter { SUPPORTED_LAYOUT_TYPES.contains(it.type) }.forEach { componentResponse ->
             when(componentResponse.type) {

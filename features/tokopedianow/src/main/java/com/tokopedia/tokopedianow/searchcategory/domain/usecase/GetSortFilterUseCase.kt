@@ -25,20 +25,10 @@ class GetSortFilterUseCase @Inject constructor(
         }
     }
 
-    suspend fun execute(
-        source: String,
-        srpPageId: String = "",
-        sc: String = ""
-    ): DynamicFilterModel {
-        val params = aceSearchParamMapper.createRequestParams(
-            source = source,
-            srpPageId = srpPageId,
-            sc = sc
-        )
-
+    suspend fun execute(queryParams: Map<String?, Any?>): DynamicFilterModel {
         graphql.setRequestParams(
             RequestParams.create().apply {
-                putString(KEY_PARAMS, UrlParamUtils.generateUrlParamString(params))
+                putString(KEY_PARAMS, UrlParamUtils.generateUrlParamString(queryParams))
             }.parameters
         )
 

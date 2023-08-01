@@ -18,6 +18,11 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
+import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet
+import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet.ApplySortFilterModel
+import com.tokopedia.filter.common.data.DynamicFilterModel
+import com.tokopedia.filter.common.data.Filter
+import com.tokopedia.filter.common.data.Option
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.VariantPageSource
@@ -32,13 +37,14 @@ import com.tokopedia.tokopedianow.category.domain.response.GetCategoryLayoutResp
 import com.tokopedia.tokopedianow.category.presentation.adapter.CategoryL2TabAdapter
 import com.tokopedia.tokopedianow.category.presentation.adapter.differ.CategoryL2TabDiffer
 import com.tokopedia.tokopedianow.category.presentation.adapter.typefactory.CategoryL2TabAdapterTypeFactory
+import com.tokopedia.tokopedianow.category.presentation.viewholder.CategoryQuickFilterViewHolder.CategoryQuickFilterListener
 import com.tokopedia.tokopedianow.category.presentation.viewmodel.TokoNowCategoryL2TabViewModel
 import com.tokopedia.tokopedianow.common.listener.ProductAdsCarouselListener
 import com.tokopedia.tokopedianow.common.util.RecyclerViewGridUtil.addProductItemDecoration
 import com.tokopedia.tokopedianow.databinding.FragmentTokopedianowL2TabBinding
 import com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking.Misc.TOKONOW_CATEGORY_ORGANIC
+import com.tokopedia.tokopedianow.searchcategory.presentation.customview.CategoryChooserBottomSheet
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ProductItemListener
-import com.tokopedia.tokopedianow.searchcategory.presentation.listener.QuickFilterListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewholder.ProductItemViewHolder
 import com.tokopedia.tokopedianow.similarproduct.presentation.activity.TokoNowSimilarProductBottomSheetActivity
@@ -47,7 +53,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
-
 
 open class TokoNowCategoryL2TabFragment : Fragment() {
 
@@ -93,6 +98,8 @@ open class TokoNowCategoryL2TabFragment : Fragment() {
 
     private var loginActivityResult: ActivityResultLauncher<Intent>? = null
     private var addToCartVariantResult: ActivityResultLauncher<Intent>? = null
+    private var sortFilterBottomSheet: SortFilterBottomSheet? = null
+    private var categoryChooserBottomSheet: CategoryChooserBottomSheet? = null
 
     private var categoryIdL1: String = ""
     private var categoryIdL2: String = ""
@@ -122,6 +129,8 @@ open class TokoNowCategoryL2TabFragment : Fragment() {
     override fun onDestroy() {
         loginActivityResult = null
         addToCartVariantResult = null
+        sortFilterBottomSheet = null
+        categoryChooserBottomSheet = null
         adapterTypeFactory.onDestroy()
         super.onDestroy()
     }
@@ -165,7 +174,18 @@ open class TokoNowCategoryL2TabFragment : Fragment() {
             }
         }
 
-        observe(viewModel.routeAppLink) {
+        observe(viewModel.filterProductCountLiveData) {
+            val countText = String.format(
+                getString(R.string.tokopedianow_apply_filter_text), it)
+            sortFilterBottomSheet?.setResultCountText(countText)
+            categoryChooserBottomSheet?.setResultCountText(countText)
+        }
+
+        observe(viewModel.dynamicFilterModelLiveData) {
+            openFilterBottomSheet(it)
+        }
+
+        observe(viewModel.routeAppLinkLiveData) {
             RouteManager.route(context, it)
         }
 
@@ -184,7 +204,7 @@ open class TokoNowCategoryL2TabFragment : Fragment() {
 
     private fun registerActivityResults() {
         loginActivityResult = registerActivityResult {
-            viewModel.refreshPage(components)
+            viewModel.refreshPage()
         }
         addToCartVariantResult = registerActivityResult {
             getMiniCart()
@@ -288,6 +308,18 @@ open class TokoNowCategoryL2TabFragment : Fragment() {
         val actionText = getString(R.string.tokopedianow_toaster_ok)
         showToaster(message = message, actionText = actionText)
         getMiniCart()
+    }
+
+    private fun openCategoryChooserFilterPage(filter: Filter) {
+        categoryChooserBottomSheet = CategoryChooserBottomSheet()
+        val callback = createCategoryChooserCallback()
+
+        categoryChooserBottomSheet?.show(
+            parentFragmentManager,
+            viewModel.getMapParameter(),
+            filter,
+            callback,
+        )
     }
 
     private fun injectDependencies() {
@@ -464,9 +496,63 @@ open class TokoNowCategoryL2TabFragment : Fragment() {
         }
     }
 
-    private fun createQuickFilterListener(): QuickFilterListener {
-        return object : QuickFilterListener {
+    private fun createQuickFilterListener(): CategoryQuickFilterListener {
+        return object : CategoryQuickFilterListener {
             override fun openFilterPage() {
+                viewModel.onOpenFilterPage()
+            }
+
+            override fun openL3FilterPage(filter: Filter) {
+                openCategoryChooserFilterPage(filter)
+            }
+
+            override fun applyFilter(filter: Filter, option: Option) {
+                viewModel.applyQuickFilter(filter, option)
+            }
+        }
+    }
+
+    private fun openFilterBottomSheet(dynamicFilterModel: DynamicFilterModel?) {
+        if(dynamicFilterModel == null) return
+        val mapParameter = viewModel.getMapParameter()
+
+        sortFilterBottomSheet = SortFilterBottomSheet().apply {
+            setDynamicFilterModel(dynamicFilterModel)
+            setOnDismissListener {
+                viewModel.onDismissFilterBottomSheet()
+            }
+        }
+
+        sortFilterBottomSheet?.show(
+            parentFragmentManager,
+            mapParameter,
+            dynamicFilterModel,
+            createFilterBottomSheetCallback()
+        )
+    }
+
+    private fun createFilterBottomSheetCallback(): SortFilterBottomSheet.Callback {
+        return object : SortFilterBottomSheet.Callback {
+            override fun onApplySortFilter(applySortFilterModel: ApplySortFilterModel) {
+                sortFilterBottomSheet?.dismiss()
+                viewModel.applySortFilter(applySortFilterModel)
+            }
+
+            override fun getResultCount(mapParameter: Map<String, String>) {
+                viewModel.getProductCount(mapParameter)
+            }
+        }
+    }
+
+    private fun createCategoryChooserCallback(): CategoryChooserBottomSheet.Callback {
+        return object : CategoryChooserBottomSheet.Callback {
+            override fun onApplyCategory(selectedOption: Option) {
+                categoryChooserBottomSheet?.dismiss()
+                viewModel.applyFilterFromCategoryChooser(selectedOption)
+            }
+
+            override fun getResultCount(selectedOption: Option) {
+                viewModel.getProductCount(selectedOption)
             }
         }
     }

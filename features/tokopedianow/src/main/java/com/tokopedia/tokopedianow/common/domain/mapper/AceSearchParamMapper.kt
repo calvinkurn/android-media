@@ -1,7 +1,6 @@
 package com.tokopedia.tokopedianow.common.domain.mapper
 
 import com.tokopedia.discovery.common.constants.SearchApiConst
-import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.network.authentication.AuthHelper
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
 import com.tokopedia.user.session.UserSessionInterface

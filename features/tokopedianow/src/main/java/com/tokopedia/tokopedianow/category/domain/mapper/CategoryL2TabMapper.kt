@@ -2,6 +2,7 @@ package com.tokopedia.tokopedianow.category.domain.mapper
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.filter.common.data.DynamicFilterModel
+import com.tokopedia.filter.newdynamicfilter.controller.FilterController
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryProductMapper.mapResponseToProductItem
@@ -14,7 +15,6 @@ import com.tokopedia.tokopedianow.category.presentation.constant.CategoryCompone
 import com.tokopedia.tokopedianow.category.presentation.constant.CategoryStaticLayoutId
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryProductListUiModel
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryQuickFilterUiModel
-import com.tokopedia.tokopedianow.category.presentation.uimodel.CategorySortFilterItemUiModel
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.domain.mapper.ProductAdsMapper
 import com.tokopedia.tokopedianow.common.domain.mapper.ProductAdsMapper.addProductAdsCarousel
@@ -52,20 +52,17 @@ object CategoryL2TabMapper {
     }
 
     fun MutableList<Visitable<*>>.mapToQuickFilter(
-        productFilterItem: CategoryQuickFilterUiModel,
-        filterResponse: DynamicFilterModel
+        quickFilterUiModel: CategoryQuickFilterUiModel,
+        quickFilterResponse: DynamicFilterModel,
+        categoryFilterResponse: DynamicFilterModel,
+        filterController: FilterController
     ) {
-        val filterListResponse = filterResponse.data.filter
-
-        val filterItemList = filterListResponse.map {
-            val showNewNotification = it.options.firstOrNull()?.isNew ?: false
-            CategorySortFilterItemUiModel(it.title, showNewNotification)
-        }
-
-        updateItemById(productFilterItem.id) {
-            productFilterItem.copy(
-                itemList = filterItemList,
-                state = TokoNowLayoutState.LOADED
+        updateItemById(quickFilterUiModel.id) {
+            CategoryL2QuickFilterMapper.mapQuickFilter(
+                quickFilterUiModel = quickFilterUiModel,
+                quickFilterResponse = quickFilterResponse,
+                categoryFilterResponse = categoryFilterResponse,
+                filterController = filterController
             )
         }
     }
