@@ -45,6 +45,23 @@ class PromoCheckoutViewModelUICallbackTest : BasePromoCheckoutViewModelTest() {
     }
 
     @Test
+    fun `WHEN call reset promo with clashing promo THEN should clear the clashing promo`() {
+        // GIVEN
+        viewModel.setPromoListValue(GetPromoListDataProvider.provideCurrentSelectedPromoListResponseWithClashingData())
+
+        every { analytics.eventClickResetPromo(any()) } just Runs
+
+        // WHEN
+        viewModel.resetPromo()
+
+        // THEN
+        viewModel.promoListUiModel.value?.forEach {
+            assert(it is PromoListItemUiModel)
+            assert((it as PromoListItemUiModel).uiData.currentClashingPromo.size == 0)
+        }
+    }
+
+    @Test
     fun `WHEN call reset promo THEN fragment state should be no selected promo`() {
         // GIVEN
         viewModel.setPromoListValue(GetPromoListDataProvider.provideCurrentSelectedExpandedMerchantPromoData())
