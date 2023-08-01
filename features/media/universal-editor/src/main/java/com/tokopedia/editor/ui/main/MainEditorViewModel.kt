@@ -49,9 +49,9 @@ class MainEditorViewModel @Inject constructor(
         val file = param.firstFile
 
         val model = if (file.isImage()) {
-            EditorModel.createImage(ImageModel())
+            EditorModel(image = ImageModel())
         } else {
-            EditorModel.createVideo(VideoModel())
+            EditorModel(video = VideoModel())
         }
 
         _state.update {

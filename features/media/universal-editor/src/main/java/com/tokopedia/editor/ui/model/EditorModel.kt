@@ -12,21 +12,6 @@ import kotlinx.parcelize.Parcelize
  */
 @Parcelize
 data class EditorModel(
-    val image: ImageModel?,
-    val video: VideoModel?,
-) : Parcelable {
-
-    companion object {
-        fun default(): EditorModel {
-            return EditorModel(null, null)
-        }
-
-        fun createImage(image: ImageModel): EditorModel {
-            return EditorModel(image = image, video = null)
-        }
-
-        fun createVideo(video: VideoModel): EditorModel {
-            return EditorModel(video = video, image = null)
-        }
-    }
-}
+    val image: ImageModel? = null,
+    val video: VideoModel? = null,
+) : Parcelable

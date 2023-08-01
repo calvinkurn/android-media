@@ -46,7 +46,7 @@ class NavigationToolAdapter constructor(
             }
         }
 
-        interface Listener {
+        fun interface Listener {
             fun onToolClicked(tool: NavigationTool)
         }
 

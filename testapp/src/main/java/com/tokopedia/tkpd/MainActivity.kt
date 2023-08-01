@@ -162,7 +162,7 @@ class MainActivity : AppCompatActivity() {
         /*
          * Put your default applink here
          */
-        return "tokopedia-android-internal://global/universal-editor"
+        return ""
     }
 
     data class Model(

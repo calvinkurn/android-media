@@ -12,8 +12,7 @@ import com.tokopedia.picker.common.types.ToolType
 class NavigationToolUiComponent constructor(
     parent: ViewGroup,
     private val listener: Listener? = null
-) : UiComponent(parent, R.id.uc_navigation_tool)
-    , NavigationToolAdapter.NavigationToolViewHolder.Listener {
+) : UiComponent(parent, R.id.uc_navigation_tool) {
 
     private val lstTool: RecyclerView = findViewById(R.id.lst_tool)
     private var mAdapter: NavigationToolAdapter? = null
@@ -30,12 +29,11 @@ class NavigationToolUiComponent constructor(
             false
         )
 
-        mAdapter = NavigationToolAdapter(this)
-        lstTool.adapter = mAdapter
-    }
+        mAdapter = NavigationToolAdapter {
+            listener?.toolClicked(it.type)
+        }
 
-    override fun onToolClicked(tool: NavigationTool) {
-        listener?.toolClicked(tool.type)
+        lstTool.adapter = mAdapter
     }
 
     override fun release() {
