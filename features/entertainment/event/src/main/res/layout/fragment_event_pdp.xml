@@ -110,7 +110,7 @@
                 tools:visibility="visible" />
 
             <include
-                android:id="@+id/shimmering_bottom"
+                android:id="@+id/container_pdp_price"
                 layout="@layout/partial_event_pdp_price"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

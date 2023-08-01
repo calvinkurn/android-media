@@ -1,10 +1,11 @@
 package com.tokopedia.play.analytic.kebab
 
+import com.tokopedia.content.analytic.BusinessUnit
+import com.tokopedia.content.analytic.CurrentSite
+import com.tokopedia.content.analytic.Event
+import com.tokopedia.content.analytic.EventCategory
+import com.tokopedia.content.analytic.Key
 import com.tokopedia.play.analytic.*
-import com.tokopedia.play.analytic.KEY_TRACK_BUSINESS_UNIT
-import com.tokopedia.play.analytic.KEY_TRACK_GROUP_CHAT_ROOM
-import com.tokopedia.play.analytic.KEY_TRACK_TRACKER_ID
-import com.tokopedia.play.analytic.KEY_TRACK_VIEW_CONTENT_IRIS
 import com.tokopedia.play.view.uimodel.recom.PlayChannelInfoUiModel
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.builder.Tracker
@@ -18,13 +19,13 @@ import dagger.assisted.AssistedInject
  */
 class PlayKebabAnalyticImpl @AssistedInject constructor(
     @Assisted private val channelInfo: PlayChannelInfoUiModel,
-    private val userSession: UserSessionInterface,
+    private val userSession: UserSessionInterface
 ) : PlayKebabAnalytic {
 
     @AssistedFactory
     interface Factory : PlayKebabAnalytic.Factory {
         override fun create(
-            channelInfo: PlayChannelInfoUiModel,
+            channelInfo: PlayChannelInfoUiModel
         ): PlayKebabAnalyticImpl
     }
 
@@ -42,14 +43,14 @@ class PlayKebabAnalyticImpl @AssistedInject constructor(
 
     override fun impressKebab() {
         Tracker.Builder()
-            .setEvent(KEY_TRACK_VIEW_CONTENT_IRIS)
+            .setEvent(Event.viewContentIris)
             .setEventAction("impression - three dots")
-            .setEventCategory(KEY_TRACK_GROUP_CHAT_ROOM)
+            .setEventCategory(EventCategory.groupChatRoom)
             .setEventLabel("$channelId - $channelType")
-            .setCustomProperty(KEY_TRACK_TRACKER_ID, "39865")
-            .setBusinessUnit(KEY_TRACK_BUSINESS_UNIT)
-            .setCurrentSite(KEY_TRACK_CURRENT_SITE)
-            .setCustomProperty(KEY_SESSION_IRIS, sessionIris)
+            .setCustomProperty(Key.trackerId, "39865")
+            .setBusinessUnit(BusinessUnit.play)
+            .setCurrentSite(CurrentSite.tokopediaMarketplace)
+            .setCustomProperty(Key.sessionIris, sessionIris)
             .setUserId(userId)
             .build()
             .send()
@@ -57,14 +58,14 @@ class PlayKebabAnalyticImpl @AssistedInject constructor(
 
     override fun impressPiP() {
         Tracker.Builder()
-            .setEvent(KEY_TRACK_VIEW_CONTENT_IRIS)
+            .setEvent(Event.viewContentIris)
             .setEventAction("impression - pip button")
-            .setEventCategory(KEY_TRACK_GROUP_CHAT_ROOM)
+            .setEventCategory(EventCategory.groupChatRoom)
             .setEventLabel("$channelId - $channelType")
-            .setCustomProperty(KEY_TRACK_TRACKER_ID, "39867")
-            .setBusinessUnit(KEY_TRACK_BUSINESS_UNIT)
-            .setCurrentSite(KEY_TRACK_CURRENT_SITE)
-            .setCustomProperty(KEY_SESSION_IRIS, sessionIris)
+            .setCustomProperty(Key.trackerId, "39867")
+            .setBusinessUnit(BusinessUnit.play)
+            .setCurrentSite(CurrentSite.tokopediaMarketplace)
+            .setCustomProperty(Key.sessionIris, sessionIris)
             .setUserId(userId)
             .build()
             .send()
@@ -72,14 +73,14 @@ class PlayKebabAnalyticImpl @AssistedInject constructor(
 
     override fun impressChromecast() {
         Tracker.Builder()
-            .setEvent(KEY_TRACK_VIEW_CONTENT_IRIS)
+            .setEvent(Event.viewContentIris)
             .setEventAction("impression - chromecast button")
-            .setEventCategory(KEY_TRACK_GROUP_CHAT_ROOM)
+            .setEventCategory(EventCategory.groupChatRoom)
             .setEventLabel("$channelId - $channelType")
-            .setCustomProperty(KEY_TRACK_TRACKER_ID, "39868")
-            .setBusinessUnit(KEY_TRACK_BUSINESS_UNIT)
-            .setCurrentSite(KEY_TRACK_CURRENT_SITE)
-            .setCustomProperty(KEY_SESSION_IRIS, sessionIris)
+            .setCustomProperty(Key.trackerId, "39868")
+            .setBusinessUnit(BusinessUnit.play)
+            .setCurrentSite(CurrentSite.tokopediaMarketplace)
+            .setCustomProperty(Key.sessionIris, sessionIris)
             .setUserId(userId)
             .build()
             .send()
@@ -87,14 +88,14 @@ class PlayKebabAnalyticImpl @AssistedInject constructor(
 
     override fun impressWatchMode() {
         Tracker.Builder()
-            .setEvent(KEY_TRACK_VIEW_CONTENT_IRIS)
+            .setEvent(Event.viewContentIris)
             .setEventAction("impression - mode nonton button")
-            .setEventCategory(KEY_TRACK_GROUP_CHAT_ROOM)
+            .setEventCategory(EventCategory.groupChatRoom)
             .setEventLabel("$channelId - $channelType")
-            .setCustomProperty(KEY_TRACK_TRACKER_ID, "39869")
-            .setBusinessUnit(KEY_TRACK_BUSINESS_UNIT)
-            .setCurrentSite(KEY_TRACK_CURRENT_SITE)
-            .setCustomProperty(KEY_SESSION_IRIS, sessionIris)
+            .setCustomProperty(Key.trackerId, "39869")
+            .setBusinessUnit(BusinessUnit.play)
+            .setCurrentSite(CurrentSite.tokopediaMarketplace)
+            .setCustomProperty(Key.sessionIris, sessionIris)
             .setUserId(userId)
             .build()
             .send()
@@ -102,14 +103,14 @@ class PlayKebabAnalyticImpl @AssistedInject constructor(
 
     override fun impressUserReport() {
         Tracker.Builder()
-            .setEvent(KEY_TRACK_VIEW_CONTENT_IRIS)
+            .setEvent(Event.viewContentIris)
             .setEventAction("impression - laporkan video")
-            .setEventCategory(KEY_TRACK_GROUP_CHAT_ROOM)
+            .setEventCategory(EventCategory.groupChatRoom)
             .setEventLabel("$channelId - $channelType")
-            .setCustomProperty(KEY_TRACK_TRACKER_ID, "39870")
-            .setBusinessUnit(KEY_TRACK_BUSINESS_UNIT)
-            .setCurrentSite(KEY_TRACK_CURRENT_SITE)
-            .setCustomProperty(KEY_SESSION_IRIS, sessionIris)
+            .setCustomProperty(Key.trackerId, "39870")
+            .setBusinessUnit(BusinessUnit.play)
+            .setCurrentSite(CurrentSite.tokopediaMarketplace)
+            .setCustomProperty(Key.sessionIris, sessionIris)
             .setUserId(userId)
             .build()
             .send()
@@ -117,14 +118,14 @@ class PlayKebabAnalyticImpl @AssistedInject constructor(
 
     override fun clickPiP() {
         Tracker.Builder()
-            .setEvent(KEY_TRACK_CLICK_CONTENT)
+            .setEvent(Event.clickContent)
             .setEventAction("click - picture in picture")
-            .setEventCategory(KEY_TRACK_GROUP_CHAT_ROOM)
+            .setEventCategory(EventCategory.groupChatRoom)
             .setEventLabel("$channelId - $channelType")
-            .setCustomProperty(KEY_TRACK_TRACKER_ID, "39871")
-            .setBusinessUnit(KEY_TRACK_BUSINESS_UNIT)
-            .setCurrentSite(KEY_TRACK_CURRENT_SITE)
-            .setCustomProperty(KEY_SESSION_IRIS, sessionIris)
+            .setCustomProperty(Key.trackerId, "39871")
+            .setBusinessUnit(BusinessUnit.play)
+            .setCurrentSite(CurrentSite.tokopediaMarketplace)
+            .setCustomProperty(Key.sessionIris, sessionIris)
             .setUserId(userId)
             .build()
             .send()
@@ -132,14 +133,14 @@ class PlayKebabAnalyticImpl @AssistedInject constructor(
 
     override fun clickChromecast() {
         Tracker.Builder()
-            .setEvent(KEY_TRACK_CLICK_CONTENT)
+            .setEvent(Event.clickContent)
             .setEventAction("click - chromecast button")
-            .setEventCategory(KEY_TRACK_GROUP_CHAT_ROOM)
+            .setEventCategory(EventCategory.groupChatRoom)
             .setEventLabel("$channelId - $channelType")
-            .setCustomProperty(KEY_TRACK_TRACKER_ID, "39872")
-            .setBusinessUnit(KEY_TRACK_BUSINESS_UNIT)
-            .setCurrentSite(KEY_TRACK_CURRENT_SITE)
-            .setCustomProperty(KEY_SESSION_IRIS, sessionIris)
+            .setCustomProperty(Key.trackerId, "39872")
+            .setBusinessUnit(BusinessUnit.play)
+            .setCurrentSite(CurrentSite.tokopediaMarketplace)
+            .setCustomProperty(Key.sessionIris, sessionIris)
             .setUserId(userId)
             .build()
             .send()
@@ -147,14 +148,14 @@ class PlayKebabAnalyticImpl @AssistedInject constructor(
 
     override fun clickWatchMode() {
         Tracker.Builder()
-            .setEvent(KEY_TRACK_CLICK_CONTENT)
+            .setEvent(Event.clickContent)
             .setEventAction("click - mode nonton button")
-            .setEventCategory(KEY_TRACK_GROUP_CHAT_ROOM)
+            .setEventCategory(EventCategory.groupChatRoom)
             .setEventLabel("$channelId - $channelType")
-            .setCustomProperty(KEY_TRACK_TRACKER_ID, "39873")
-            .setBusinessUnit(KEY_TRACK_BUSINESS_UNIT)
-            .setCurrentSite(KEY_TRACK_CURRENT_SITE)
-            .setCustomProperty(KEY_SESSION_IRIS, sessionIris)
+            .setCustomProperty(Key.trackerId, "39873")
+            .setBusinessUnit(BusinessUnit.play)
+            .setCurrentSite(CurrentSite.tokopediaMarketplace)
+            .setCustomProperty(Key.sessionIris, sessionIris)
             .setUserId(userId)
             .build()
             .send()

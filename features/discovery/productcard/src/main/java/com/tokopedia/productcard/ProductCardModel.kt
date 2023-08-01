@@ -411,5 +411,7 @@ data class ProductCardModel (
         PORTRAIT,
         ETA,
         BEST_SELLER,
+        FIXED_GRID,
+        LIST_VIEW,
     }
 }

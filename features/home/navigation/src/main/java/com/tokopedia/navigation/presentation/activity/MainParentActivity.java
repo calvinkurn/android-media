@@ -33,6 +33,7 @@ import androidx.appcompat.app.AppCompatDelegate;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.LifecycleOwnerKt;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.google.android.material.snackbar.Snackbar;
@@ -47,6 +48,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.analyticconstant.DataLayer;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
+import com.tokopedia.analytics.performance.perf.BlocksPerformanceTrace;
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback;
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface;
 import com.tokopedia.applink.ApplinkConst;
@@ -63,7 +65,6 @@ import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.devicefingerprint.submitdevice.service.SubmitDeviceWorker;
 import com.tokopedia.dynamicfeatures.DFInstaller;
-import com.tokopedia.graphql.interceptor.MockInterceptor;
 import com.tokopedia.home.HomeInternalRouter;
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeRevampFragment;
 import com.tokopedia.inappupdate.AppUpdateManagerWrapper;
@@ -198,6 +199,8 @@ public class MainParentActivity extends BaseActivity implements
     private static final String DISCOVERY_END_POINT = "end_point";
     private static final String SOS_END_POINT = "sos";
 
+    private static final String PERFORMANCE_TRACE_HOME = "home";
+
     ArrayList<BottomMenu> menu = new ArrayList<>();
 
     @Inject
@@ -232,6 +235,8 @@ public class MainParentActivity extends BaseActivity implements
 
     private PerformanceMonitoring mainParentPerformanceMonitoring;
 
+    private BlocksPerformanceTrace performanceTrace;
+
     private PageLoadTimePerformanceCallback pageLoadTimePerformanceCallback;
     private PageLoadTimePerformanceCallback mainParentPageLoadTimePerformanceCallback;
 
@@ -258,6 +263,18 @@ public class MainParentActivity extends BaseActivity implements
         //changes for triggering unittest checker
         startSelectedPagePerformanceMonitoring();
         startMainParentPerformanceMonitoring();
+        try {
+            performanceTrace = new BlocksPerformanceTrace(
+                    this.getContext().getApplicationContext(),
+                    PERFORMANCE_TRACE_HOME,
+                    LifecycleOwnerKt.getLifecycleScope(this),
+                    this,
+                    null
+            );
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         if (pageLoadTimePerformanceCallback != null) {
             pageLoadTimePerformanceCallback.startCustomMetric(MAIN_PARENT_ON_CREATE_METRICS);
         }
@@ -1131,6 +1148,11 @@ public class MainParentActivity extends BaseActivity implements
     @Override
     public PageLoadTimePerformanceInterface getPageLoadTimePerformanceInterface() {
         return pageLoadTimePerformanceCallback;
+    }
+
+    @Override
+    public BlocksPerformanceTrace getBlocksPerformanceMonitoring() {
+        return performanceTrace;
     }
 
     @Override

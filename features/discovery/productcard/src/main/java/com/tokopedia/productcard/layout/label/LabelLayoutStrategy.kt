@@ -3,6 +3,7 @@ package com.tokopedia.productcard.layout.label
 import android.content.Context
 import android.view.View
 import android.widget.ImageView
+import android.widget.Space
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifyprinciples.Typography
@@ -61,4 +62,6 @@ internal interface LabelLayoutStrategy {
         labelProductStatus: Label?,
         productCardModel: ProductCardModel,
     )
+
+    fun renderSpaceCampaignBestSeller(space: Space?, productCardModel: ProductCardModel)
 }

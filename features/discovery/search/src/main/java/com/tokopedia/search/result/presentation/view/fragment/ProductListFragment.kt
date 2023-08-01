@@ -8,8 +8,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.GridLayoutManager.SpanSizeLookup
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -82,6 +83,7 @@ import com.tokopedia.search.result.product.emptystate.EmptyStateListenerDelegate
 import com.tokopedia.search.result.product.filter.analytics.SearchSortFilterTracking
 import com.tokopedia.search.result.product.filter.bottomsheetfilter.BottomSheetFilterViewDelegate
 import com.tokopedia.search.result.product.globalnavwidget.GlobalNavListenerDelegate
+import com.tokopedia.search.result.product.grid.ProductGridType
 import com.tokopedia.search.result.product.inspirationbundle.InspirationBundleListenerDelegate
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselListenerDelegate
 import com.tokopedia.search.result.product.inspirationlistatc.InspirationListAtcListenerDelegate
@@ -144,6 +146,7 @@ class ProductListFragment: BaseDaggerFragment(),
         private const val SEARCH_RESULT_ENHANCE_ANALYTIC = "SEARCH_RESULT_ENHANCE_ANALYTIC"
         private const val LAST_POSITION_ENHANCE_PRODUCT = "LAST_POSITION_ENHANCE_PRODUCT"
         private const val EXTRA_SEARCH_PARAMETER = "EXTRA_SEARCH_PARAMETER"
+        private const val LABEL_POSITION_VIEW = "view"
 
         fun newInstance(searchParameter: SearchParameter?): ProductListFragment {
             val args = Bundle().apply {
@@ -184,7 +187,10 @@ class ProductListFragment: BaseDaggerFragment(),
     lateinit var onBoardingListenerDelegate: OnBoardingListenerDelegate
 
     @Inject
-    lateinit var staggeredGridLayoutManager: StaggeredGridLayoutManager
+    lateinit var gridLayoutManager: GridLayoutManager
+
+    @Inject
+    lateinit var spanSizeLookup: SpanSizeLookup
 
     @Inject @Suppress("LateinitUsage")
     lateinit var sameSessionRecommendationListener: SameSessionRecommendationListener
@@ -220,7 +226,7 @@ class ProductListFragment: BaseDaggerFragment(),
     lateinit var searchVideoPreference: SearchVideoPreference
 
     private var refreshLayout: SwipeRefreshLayout? = null
-    private var staggeredGridLayoutLoadMoreTriggerListener: EndlessRecyclerViewScrollListener? = null
+    private var gridLayoutLoadMoreTriggerListener: EndlessRecyclerViewScrollListener? = null
     private var searchNavigationListener: SearchNavigationListener? = null
     private var performanceMonitoring: PageLoadTimePerformanceInterface? = null
     private var redirectionListener: RedirectionListener? = null
@@ -386,8 +392,8 @@ class ProductListFragment: BaseDaggerFragment(),
     }
 
     private fun initLoadMoreListener() {
-        val layoutManager = staggeredGridLayoutManager ?: return
-        staggeredGridLayoutLoadMoreTriggerListener = getEndlessRecyclerViewListener(layoutManager)
+        val layoutManager = changeView.activeLayoutManager ?: return
+        gridLayoutLoadMoreTriggerListener = getEndlessRecyclerViewListener(layoutManager)
     }
 
     private fun getEndlessRecyclerViewListener(
@@ -403,11 +409,12 @@ class ProductListFragment: BaseDaggerFragment(),
     }
 
     private fun setupRecyclerView(rootView: View) {
+        gridLayoutManager.spanSizeLookup = spanSizeLookup
         recyclerViewUpdater.initialize(
             rootView.findViewById(R.id.recyclerview),
-            staggeredGridLayoutManager,
+            changeView.activeLayoutManager,
             listOf(
-                staggeredGridLayoutLoadMoreTriggerListener,
+                gridLayoutLoadMoreTriggerListener,
                 onBoardingListenerDelegate.createScrollListener(),
             ),
             createProductListTypeFactory(),
@@ -694,6 +701,11 @@ class ProductListFragment: BaseDaggerFragment(),
         presenter?.onProductImpressed(item, adapterPosition)
     }
 
+    private val additionalPositionMap: Map<String, String>
+        get() = mapOf(
+            LABEL_POSITION_VIEW to changeView.viewType.trackingLabel,
+        )
+
     override fun sendProductImpressionTrackingEvent(
         item: ProductItemDataView,
         suggestedRelatedKeyword: String,
@@ -712,6 +724,7 @@ class ProductListFragment: BaseDaggerFragment(),
             item.getProductAsObjectDataLayer(
                 filterSortParams,
                 pageComponentId,
+                additionalPositionMap,
             )
         )
         productItemDataViews.add(item)
@@ -747,7 +760,7 @@ class ProductListFragment: BaseDaggerFragment(),
             getUserId(),
             irisSessionId,
             item.topadsTag,
-            item.dimension115,
+            item.getDimension115(additionalPositionMap),
             item.dimension131,
             pageComponentId,
         )
@@ -791,7 +804,7 @@ class ProductListFragment: BaseDaggerFragment(),
             getUserId(),
             item.dimension90,
             item.topadsTag,
-            item.dimension115,
+            item.getDimension115(additionalPositionMap),
             item.dimension131,
             pageComponentId,
         )
@@ -815,7 +828,11 @@ class ProductListFragment: BaseDaggerFragment(),
             componentId = pageComponentId,
         )
         SearchTracking.trackEventClickSearchResultProduct(
-            item.getProductAsObjectDataLayer(filterSortParams, pageComponentId),
+            item.getProductAsObjectDataLayer(
+                filterSortParams,
+                pageComponentId,
+                additionalPositionMap,
+            ),
             eventLabel,
             userId,
             productAnalyticsData,
@@ -1101,6 +1118,22 @@ class ProductListFragment: BaseDaggerFragment(),
     override fun setDefaultLayoutType(defaultView: Int) {
         changeView.change(defaultView)
     }
+
+    override fun setProductGridType(productGridType: ProductGridType) {
+        changeView.onProductGridTypeChanged(productGridType) {
+            changeRecyclerViewLayoutManager(it)
+        }
+    }
+
+    private fun changeRecyclerViewLayoutManager(layoutManager: RecyclerView.LayoutManager) {
+        val oldLoadMoreListener = gridLayoutLoadMoreTriggerListener
+        initLoadMoreListener()
+        recyclerViewUpdater.changeLayoutManager(
+            layoutManager,
+            listOf(oldLoadMoreListener),
+            listOf(gridLayoutLoadMoreTriggerListener),
+        )
+    }
     //endregion
 
     override fun backToTop() {
@@ -1127,7 +1160,7 @@ class ProductListFragment: BaseDaggerFragment(),
     }
 
     override fun updateScrollListener() {
-        staggeredGridLayoutLoadMoreTriggerListener?.updateStateAfterGetData()
+        gridLayoutLoadMoreTriggerListener?.updateStateAfterGetData()
 
         tryForceLoadNextPage()
     }
@@ -1137,7 +1170,7 @@ class ProductListFragment: BaseDaggerFragment(),
 
         recyclerView.post {
             if (!recyclerView.canScrollVertically(1))
-                staggeredGridLayoutLoadMoreTriggerListener?.loadMoreNextPage()
+                gridLayoutLoadMoreTriggerListener?.loadMoreNextPage()
         }
     }
 
@@ -1240,8 +1273,13 @@ class ProductListFragment: BaseDaggerFragment(),
 
     //region on boarding / coachmark
     override fun showOnBoarding(firstProductPosition: Int) {
-        onBoardingListenerDelegate.showOnBoarding(firstProductPosition)
+        onBoardingListenerDelegate.showProductWithBOEOnBoarding(firstProductPosition)
     }
+
+    override fun enableProductViewTypeOnBoarding() {
+        onBoardingListenerDelegate.enableProductViewTypeCoachmark()
+    }
+
     //endregion
 
     //region Bottom Sheet Filter
