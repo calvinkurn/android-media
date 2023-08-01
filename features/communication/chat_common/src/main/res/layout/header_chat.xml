@@ -61,7 +61,7 @@
         <ImageView
             android:id="@+id/ivBadge"
             android:layout_width="@dimen/chatcommon_26dp"
-            android:layout_height="wrap_content"
+            android:layout_height="22dp"
             android:layout_gravity="center_vertical"
             android:layout_marginTop="@dimen/chatcommon_1dp"
             android:layout_marginEnd="@dimen/spacing_lvl2"
