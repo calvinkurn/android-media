@@ -11,6 +11,7 @@ import com.tokopedia.scp_rewards_touchpoints.common.Loading
 import com.tokopedia.scp_rewards_touchpoints.common.ScpResult
 import com.tokopedia.scp_rewards_touchpoints.common.Success
 import com.tokopedia.scp_rewards_touchpoints.touchpoints.domain.ScpRewardsMedalTouchPointUseCase
+import kotlinx.coroutines.delay
 import javax.inject.Inject
 
 class ScpRewardsMedalTouchPointViewModel @Inject constructor(
@@ -18,16 +19,24 @@ class ScpRewardsMedalTouchPointViewModel @Inject constructor(
     dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.io) {
 
+    companion object {
+        private const val INITIAL_DELAY = 0L
+    }
+
     private val _medalTouchPointData: MutableLiveData<ScpResult> = MutableLiveData()
     val medalTouchPointData: LiveData<ScpResult> = _medalTouchPointData
 
     fun getMedalTouchPoint(
         orderId: Long,
         pageName: String = String.EMPTY,
-        sourceName: String
+        sourceName: String,
+        delayTime: Long = INITIAL_DELAY
     ) {
         launchCatchError(
             block = {
+                if (delayTime != INITIAL_DELAY) {
+                    delay(delayTime)
+                }
                 _medalTouchPointData.postValue(Loading)
                 val response = medalTouchPointUseCase.getTouchPoint(
                     orderId = orderId,
@@ -38,7 +47,8 @@ class ScpRewardsMedalTouchPointViewModel @Inject constructor(
                     getMedalTouchPoint(
                         orderId = orderId,
                         pageName = pageName,
-                        sourceName = sourceName
+                        sourceName = sourceName,
+                        delayTime = response.scpRewardsMedaliTouchpointOrder.medaliTouchpointOrder.retryChecking.durationToRetry
                     )
                 } else {
                     _medalTouchPointData.postValue(Success(response))
