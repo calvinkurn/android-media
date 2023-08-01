@@ -12,8 +12,8 @@ import androidx.core.view.marginTop
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.cart.databinding.LayoutBottomsheetCartBundlingBinding
-import com.tokopedia.cart.view.bottomsheet.CartBundlingBottomSheetListener
-import com.tokopedia.cart.view.uimodel.CartBundlingBottomSheetData
+import com.tokopedia.cartrevamp.view.bottomsheet.CartBundlingBottomSheetListener
+import com.tokopedia.cartrevamp.view.uimodel.CartBundlingBottomSheetData
 import com.tokopedia.common.ProductServiceWidgetConstant
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
