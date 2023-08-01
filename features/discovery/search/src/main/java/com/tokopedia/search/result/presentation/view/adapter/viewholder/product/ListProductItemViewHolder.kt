@@ -2,6 +2,7 @@ package com.tokopedia.search.result.presentation.view.adapter.viewholder.product
 
 import android.view.View
 import androidx.annotation.LayoutRes
+import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.productcard.IProductCardView
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.search.R
@@ -42,9 +43,8 @@ class ListProductItemViewHolder(
             productItemData.toProductCardModel(
                 productItemData.imageUrl,
                 true,
-                ProductCardModel.ProductListType.CONTROL
+                productItemData.getProductListTypeEnum()
             )
-        this.productCardModel = productCardModel
 
         registerLifecycleObserver(productCardModel)
 
@@ -71,5 +71,12 @@ class ListProductItemViewHolder(
             productItemData,
             createImageProductViewHintListener(productItemData)
         )
+    }
+
+    private fun ProductItemDataView.getProductListTypeEnum(): ProductCardModel.ProductListType {
+        return when (productListType) {
+            SearchConstant.ProductListType.LIST_VIEW -> ProductCardModel.ProductListType.LIST_VIEW
+            else -> ProductCardModel.ProductListType.CONTROL
+        }
     }
 }
