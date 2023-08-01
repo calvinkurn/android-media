@@ -1594,14 +1594,10 @@ class PromoCheckoutViewModel @Inject constructor(
             it.uiState.isButtonSelectEnabled = false
 
             val expandedParentIdentifierList = mutableSetOf<Int>()
+            // Apply recommended promo from primary
             promoListUiModel.value?.forEach {
                 if (it is PromoListItemUiModel) {
-                    val promoCode = if (it.uiData.useSecondaryPromo) {
-                        it.uiData.secondaryCoupons.first().code
-                    } else {
-                        it.uiData.promoCode
-                    }
-                    if (promoRecommendation.uiData.promoCodes.contains(promoCode)) {
+                    if (promoRecommendation.uiData.promoCodes.contains(it.uiData.promoCode)) {
                         uncheckSibling(it)
                         it.uiState.isSelected = true
                         it.uiState.isRecommended = true
@@ -1610,7 +1606,25 @@ class PromoCheckoutViewModel @Inject constructor(
                         expandedParentIdentifierList.add(it.uiData.parentIdentifierId)
                         analytics.eventClickPilihOnRecommendation(
                             getPageSource(),
-                            promoCode,
+                            it.uiData.promoCode,
+                            it.uiState.isCausingOtherPromoClash
+                        )
+                    }
+                }
+            }
+            // Apply recommended promo from secondary promo
+            promoListUiModel.value?.forEach {
+                if (it is PromoListItemUiModel) {
+                    if (it.uiData.useSecondaryPromo && promoRecommendation.uiData.promoCodes.contains(it.uiData.secondaryCoupons.first().code)) {
+                        uncheckSibling(it)
+                        it.uiState.isSelected = true
+                        it.uiState.isRecommended = true
+                        _tmpUiModel.value = Update(it)
+                        calculateClash(it, true)
+                        expandedParentIdentifierList.add(it.uiData.parentIdentifierId)
+                        analytics.eventClickPilihOnRecommendation(
+                            getPageSource(),
+                            it.uiData.secondaryCoupons.first().code,
                             it.uiState.isCausingOtherPromoClash
                         )
                     }

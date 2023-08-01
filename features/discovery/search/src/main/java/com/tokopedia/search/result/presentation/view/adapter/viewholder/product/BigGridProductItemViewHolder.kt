@@ -37,7 +37,7 @@ class BigGridProductItemViewHolder(
                 true,
                 ProductCardModel.ProductListType.CONTROL
             )
-        this.productCardModel = productCardModel
+
         registerLifecycleObserver(productCardModel)
 
         productCardView.setProductModel(productCardModel)
