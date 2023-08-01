@@ -286,6 +286,7 @@ class FeedFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        showLoading()
         feedPostViewModel.fetchFeedPosts(
             data?.type ?: "",
             isNewData = true,
@@ -914,16 +915,11 @@ class FeedFragment :
             it.rvFeedPost.removeOnScrollListener(contentScrollListener)
             it.rvFeedPost.addOnScrollListener(contentScrollListener)
             it.rvFeedPost.itemAnimator = null
-
-            if (adapter.itemCount == 0) {
-                showLoading()
-            }
         }
     }
 
     private fun observePostData() {
         feedPostViewModel.feedHome.observe(viewLifecycleOwner) {
-            hideLoading()
             binding.swipeRefreshFeedLayout.isRefreshing = false
             adapter.hideLoading()
             when (it) {
@@ -946,8 +942,10 @@ class FeedFragment :
                         feedPostViewModel.fetchTopAdsData()
                     }
                     feedMainViewModel.onPostDataLoaded(it.data.items.isNotEmpty())
+                    hideLoading()
                 }
                 is Fail -> {
+                    hideLoading()
                     adapter.showErrorNetwork()
                 }
                 else -> {}
