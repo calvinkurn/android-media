@@ -25,7 +25,7 @@ class FeedDetailActivity : BaseActivity() {
         binding = ActivityFeedDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        postId = intent.data?.lastPathSegment ?: ""
+        postId = intent.data?.lastPathSegment.orEmpty()
         setupView()
     }
 
