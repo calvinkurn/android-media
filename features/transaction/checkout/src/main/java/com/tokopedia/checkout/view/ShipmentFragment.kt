@@ -4324,7 +4324,7 @@ class ShipmentFragment :
                                     price = addOnUiModel.price.toDouble()
                                     infoLink = addOnUiModel.eduLink
                                     name = addOnUiModel.name
-                                    status = addOnUiModel.getSelectedStatus().value
+                                    status = addOnUiModel.getSaveAddonSelectedStatus().value
                                     type = addOnUiModel.addOnType
                                 }
                                 onNeedUpdateViewItem(needUpdateAddOnItem.first)
