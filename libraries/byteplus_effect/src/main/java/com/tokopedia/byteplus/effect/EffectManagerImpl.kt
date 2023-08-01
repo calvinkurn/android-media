@@ -148,8 +148,6 @@ class EffectManagerImpl @Inject constructor(
     }
 
     override fun setRenderListener(
-        surfaceWidth: Int,
-        surfaceHeight: Int,
         listener: EffectManager.Listener
     ) {
         mSurfaceTexture?.setOnFrameAvailableListener {

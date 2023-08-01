@@ -29,8 +29,6 @@ interface EffectManager {
     )
 
     fun setRenderListener(
-        surfaceWidth: Int,
-        surfaceHeight: Int,
         listener: Listener,
     )
 

@@ -325,7 +325,7 @@ class BroadcastManager @Inject constructor(
                     builder.setSurface(Surface(effectManager.getSurfaceTexture()))
                 }
 
-                effectManager.setRenderListener(surfaceSize.width, surfaceSize.height, object : EffectManager.Listener {
+                effectManager.setRenderListener(object : EffectManager.Listener {
                     override fun onRenderFrame(
                         destinationTexture: Int,
                         textureWidth: Int,
