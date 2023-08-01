@@ -176,13 +176,13 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
     }
 
     fun onOpenFilterPage() {
-        if(filterBottomSheetOpened) return
+        if (filterBottomSheetOpened) return
         filterBottomSheetOpened = true
 
         launchCatchError(block = {
             val dynamicFilterModel = dynamicFilterModelLiveData.value
 
-            val getFilterResponse = if(dynamicFilterModel == null) {
+            val getFilterResponse = if (dynamicFilterModel == null) {
                 val response = getSortFilterUseCase.execute(createRequestQueryParams())
                 val filterList = response.data.filter
 
@@ -339,7 +339,7 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
 
             val response = getProductAdsUseCase.execute(params)
 
-            if(response.productList.isNotEmpty()) {
+            if (response.productList.isNotEmpty()) {
                 visitableList.mapProductAdsCarousel(
                     item = item,
                     response = response,
@@ -352,7 +352,6 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
 
             updateVisitableListLiveData()
         }) {
-
         }
     }
 
@@ -421,6 +420,29 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
         }
     }
 
+    private fun createFilterParams(source: String): MutableMap<String, String> {
+        return FilterHelper.createParamsWithoutExcludes(queryParams)
+            .toMutableMap()
+            .also {
+                it[SearchApiConst.NAVSOURCE] = source
+                it[SearchApiConst.SOURCE] = source
+            }
+    }
+
+    private fun createAceSearchParams(
+        source: String,
+        rows: Int,
+        page: Int?
+    ): MutableMap<String?, Any?> {
+        return aceSearchParamMapper.createRequestParams(
+            source = source,
+            srpPageId = categoryIdL1,
+            sc = categoryIdL2,
+            rows = rows,
+            page = page
+        )
+    }
+
     private fun createGetProductCountRequestParams(
         mapParameter: Map<String, String>
     ): RequestParams {
@@ -475,28 +497,5 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
         page = FIRST_PAGE
         filterBottomSheetOpened = false
         _dynamicFilterModelLiveData.postValue(null)
-    }
-
-    private fun createFilterParams(source: String): MutableMap<String, String> {
-        return FilterHelper.createParamsWithoutExcludes(queryParams)
-            .toMutableMap()
-            .also {
-                it[SearchApiConst.NAVSOURCE] = source
-                it[SearchApiConst.SOURCE] = source
-            }
-    }
-
-    private fun createAceSearchParams(
-        source: String,
-        rows: Int,
-        page: Int?
-    ): MutableMap<String?, Any?> {
-        return aceSearchParamMapper.createRequestParams(
-            source = source,
-            srpPageId = categoryIdL1,
-            sc = categoryIdL2,
-            rows = rows,
-            page = page
-        )
     }
 }
