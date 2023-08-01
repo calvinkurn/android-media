@@ -2,16 +2,24 @@ package com.tokopedia.promousage.view.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.view.animation.Animation
+import android.view.animation.Animation.AnimationListener
+import android.view.animation.AnimationUtils
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.promousage.databinding.PromoUsageItemVoucherBinding
 import com.tokopedia.promousage.databinding.PromoUsageItemVoucherRecommendationBinding
 import com.tokopedia.promousage.domain.entity.list.Voucher
 import com.tokopedia.promousage.domain.entity.list.VoucherRecommendation
 import com.tokopedia.promousage.util.composite.DelegateAdapter
 import com.tokopedia.promousage.util.extension.applyPaddingToLastItem
+import com.tokopedia.promousage.R
+import com.tokopedia.promousage.domain.entity.VoucherState
 
 class VoucherRecommendationDelegateAdapter(
     private val onVoucherClick: (Voucher) -> Unit,
@@ -40,11 +48,20 @@ class VoucherRecommendationDelegateAdapter(
 
         init {
             binding.recyclerView.applyPaddingToLastItem(PADDING_BOTTOM_DP)
-            binding.btnRecommendationUseVoucher.setOnClickListener { onButtonUseRecommendedVoucherClick() }
+            binding.btnRecommendationUseVoucher.setOnClickListener {
+                onButtonUseRecommendedVoucherClick()
+                binding.btnRecommendationUseVoucher.gone()
+                binding.ivCheckmark.visible()
+                binding.ivCheckmarkOutline.visible()
+                startButtonUseVoucherAnimation()
+            }
         }
 
         fun bind(recommendation: VoucherRecommendation) {
             val voucherAdapter = VoucherAdapter(onVoucherClick)
+
+            val selectedVoucherCount = recommendation.vouchers.count { it.voucherState == VoucherState.Selected }
+            val isAllRecommendationVoucherSelected = selectedVoucherCount == recommendation.vouchers.size
 
             binding.tpgRecommendationTitle.text = recommendation.title
             binding.recyclerView.apply {
@@ -52,7 +69,32 @@ class VoucherRecommendationDelegateAdapter(
                 adapter = voucherAdapter
             }
 
+            binding.btnRecommendationUseVoucher.isVisible = selectedVoucherCount < recommendation.vouchers.size
+            binding.ivCheckmark.isVisible = isAllRecommendationVoucherSelected
+            binding.ivCheckmarkOutline.isVisible = isAllRecommendationVoucherSelected
+
             voucherAdapter.submit(recommendation.vouchers)
+
+            if (isAllRecommendationVoucherSelected) startButtonUseVoucherAnimation()
+        }
+
+        private fun startButtonUseVoucherAnimation() {
+            val shrinkOutAnimation = AnimationUtils.loadAnimation(binding.ivCheckmarkOutline.context, R.anim.shrink_out)
+            shrinkOutAnimation.setAnimationListener(object : AnimationListener {
+                override fun onAnimationStart(p0: Animation?) {}
+
+                override fun onAnimationEnd(p0: Animation?) {
+                    binding.ivCheckmarkOutline.gone()
+                }
+
+                override fun onAnimationRepeat(p0: Animation?) {}
+
+            })
+            binding.ivCheckmarkOutline.startAnimation(shrinkOutAnimation)
+
+
+            val zoomInAnimation = AnimationUtils.loadAnimation(binding.recyclerView.context, R.anim.zoom_in)
+            binding.recyclerView.startAnimation(zoomInAnimation)
         }
 
     }
@@ -98,7 +140,9 @@ class VoucherRecommendationDelegateAdapter(
 
             fun bind(voucher: Voucher) {
                 binding.voucherView.bind(voucher)
-                binding.root.setOnClickListener { onVoucherClick(voucher) }
+                binding.root.setOnClickListener {
+                    onVoucherClick(voucher)
+                }
             }
 
         }

@@ -46,10 +46,11 @@
         android:id="@+id/layoutBottomSheetHeader"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="38dp"
+        android:layout_below="@id/layoutBottomSheetOverlay"
         android:visibility="gone"
         tools:visibility="visible"
-        android:background="@drawable/promo_usage_bg_bottomsheet_header"
+        android:layout_marginTop="-16dp"
+        tools:background="@drawable/promo_usage_bg_bottomsheet_header"
         android:orientation="horizontal">
 
         <ImageView
@@ -100,6 +101,9 @@
     <RelativeLayout
         android:id="@+id/layoutTotalSavings"
         android:layout_width="match_parent"
+        android:layout_marginBottom="-2dp"
+        android:layout_marginStart="-1dp"
+        android:layout_marginEnd="-1dp"
         android:layout_height="wrap_content"
         android:background="@drawable/promo_usage_shape_voucher_summary"
         android:visibility="gone"
@@ -153,6 +157,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
                 android:text="@string/promo_voucher_total_price"
+                android:textColor="@color/Unify_NN600"
                 app:layout_constraintEnd_toStartOf="@+id/buttonBuy"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/buttonBuy"
@@ -202,5 +207,15 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.cardview.widget.CardView>
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/lottieAnimationView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scaleType="centerCrop"
+        android:layout_alignTop="@id/layoutBottomSheetHeader"
+        android:visibility="gone"
+        app:lottie_autoPlay="false"
+        app:lottie_loop="false" />
 
 </RelativeLayout>

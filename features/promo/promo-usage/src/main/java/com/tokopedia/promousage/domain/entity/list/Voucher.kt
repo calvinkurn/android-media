@@ -15,7 +15,9 @@ data class Voucher(
     val voucherType: VoucherType,
     val voucherState: VoucherState,
     val voucherSource: VoucherSource = VoucherSource.Promo,
-    val visible: Boolean
+    val visible: Boolean,
+    val remainingQuota: Int,
+    val showRemainingQuotaRibbon: Boolean
 ) : DelegateAdapterItem {
     override fun id() = id
 }

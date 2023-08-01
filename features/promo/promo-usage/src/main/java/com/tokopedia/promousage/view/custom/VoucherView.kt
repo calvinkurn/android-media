@@ -6,7 +6,9 @@ import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.LinearLayout
+import android.widget.RelativeLayout
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.google.android.material.bottomappbar.BottomAppBarTopEdgeTreatment
 import com.google.android.material.shape.MaterialShapeDrawable
@@ -28,6 +30,7 @@ import com.tokopedia.promousage.domain.entity.VoucherType
 import com.tokopedia.promousage.util.extension.grayscale
 import com.tokopedia.promousage.util.extension.onDrawn
 import com.tokopedia.promousage.util.extension.removeGrayscale
+import com.tokopedia.promousage.util.extension.setHyperlinkText
 import com.tokopedia.unifycomponents.toPx
 
 class VoucherView @JvmOverloads constructor(
@@ -36,9 +39,12 @@ class VoucherView @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : LinearLayout(context, attrs, defStyleAttr) {
 
+    companion object {
+        private const val CIRCLE_COT_OUT_MARGIN_BOTTOM_DP = 58
+    }
 
     private var binding: PromoUsageVoucherViewBinding? = null
-
+    private var onHyperlinkTextClick : (String) -> Unit = {}
 
     init {
         binding = PromoUsageVoucherViewBinding.inflate(
@@ -52,41 +58,27 @@ class VoucherView @JvmOverloads constructor(
 
     fun bind(voucher: Voucher) {
         binding?.run {
+            handleVoucherType(voucher)
+            handleVoucherState(voucher.voucherState)
+            handleVoucherSource(voucher.voucherSource)
+            handleVoucherQuota(voucher.remainingQuota, voucher.showRemainingQuotaRibbon)
+
             tpgVoucherTnc.text = voucher.termAndCondition
 
-            tpgVoucherExpiredDate.text = context?.getString(R.string.promo_voucher_placeholder_expired_date, voucher.expiredDate)
+            tpgVoucherExpiredDate.text = context?.getString(
+                R.string.promo_voucher_placeholder_expired_date,
+                voucher.expiredDate
+            )
+            tpgVoucherExpiredDate.text = MethodChecker.fromHtml(
+                context?.getString(
+                    R.string.promo_voucher_placeholder_expired_date,
+                    voucher.expiredDate
+                )
+            )
 
             imgSupergraphic.loadImage(voucher.superGraphicImageUrl)
             imgVoucherIcon.loadImage(voucher.iconImageUrl)
 
-            if (voucher.voucherState.isIneligible() || voucher.voucherState.isDisabled()) {
-                imgSupergraphic.grayscale()
-                imgVoucherIcon.grayscale()
-            } else {
-                imgSupergraphic.removeGrayscale()
-                imgVoucherIcon.removeGrayscale()
-            }
-
-            imgCheckmark.isVisible = voucher.voucherState.isSelected()
-
-            tpgVoucherExpiredDate.text = MethodChecker.fromHtml(context?.getString(R.string.promo_voucher_placeholder_expired_date, voucher.expiredDate))
-            tpgVoucherExpiredDate.background = if (voucher.voucherState.isSelected()) {
-                ContextCompat.getDrawable(tpgVoucherExpiredDate.context, R.drawable.promo_usage_shape_voucher_selected)
-            } else {
-                ContextCompat.getDrawable(tpgVoucherExpiredDate.context, R.drawable.promo_usage_shape_voucher_expired_date)
-            }
-
-            when(voucher.voucherType) {
-                VoucherType.CASHBACK -> handleCashback(voucher)
-                VoucherType.FREE_SHIPPING -> handleFreeShipping(voucher)
-                VoucherType.DISCOUNT -> handleDiscount(voucher)
-            }
-
-            tpgVoucherCode.text = voucher.voucherSource.voucherCodeOrEmpty()
-            tpgVoucherCode.isVisible = voucher.voucherSource is VoucherSource.UserInput
-
-            tpgIneligibleReason.text = voucher.voucherState.ineligibleMessageOrEmpty()
-            tpgIneligibleReason.isVisible = voucher.voucherState is VoucherState.Ineligible
 
             cardView.onDrawn { cardViewHeightPx ->
                 cardView.background = createVoucherShape(
@@ -95,23 +87,150 @@ class VoucherView @JvmOverloads constructor(
                 )
             }
 
-            if (voucher.voucherState is VoucherState.Loading) {
-                tpgVoucherAmount.gone()
-                tpgVoucherTnc.gone()
-                topShimmer.visible()
-                middleShimmer.visible()
-                bottomShimmer.visible()
-            } else {
-                tpgVoucherAmount.visible()
-                tpgVoucherTnc.visible()
-                topShimmer.gone()
-                middleShimmer.gone()
-                bottomShimmer.gone()
-            }
 
         }
     }
 
+    private fun handleVoucherQuota(remainingQuota: Int, showRemainingQuotaRibbon: Boolean) {
+        if (showRemainingQuotaRibbon) {
+            binding?.layoutRemainingQuotaRibbon?.visible()
+            binding?.tpgRemainingQuota?.text = context?.getString(
+                R.string.promo_voucher_placeholder_remaining_quota,
+                remainingQuota
+            )
+
+            updateVoucherTypeMarginTop(16.toPx())
+            updateCardViewMargin(4.toPx(), 8.toPx())
+        } else {
+            binding?.layoutRemainingQuotaRibbon?.gone()
+
+            updateVoucherTypeMarginTop(12.toPx())
+            updateCardViewMargin(0.toPx(), 0.toPx())
+        }
+
+    }
+
+    private fun handleVoucherSource(voucherSource: VoucherSource) {
+        binding?.run {
+            tpgVoucherCode.text = voucherSource.voucherCodeOrEmpty()
+            tpgVoucherCode.isVisible = voucherSource is VoucherSource.UserInput
+        }
+    }
+
+    private fun handleVoucherType(voucher: Voucher) {
+        when (voucher.voucherType) {
+            VoucherType.CASHBACK -> handleCashback(voucher)
+            VoucherType.FREE_SHIPPING -> handleFreeShipping(voucher)
+            VoucherType.DISCOUNT -> handleDiscount(voucher)
+        }
+    }
+
+    private fun handleVoucherState(voucherState: VoucherState) {
+        binding?.run {
+            when (voucherState) {
+                VoucherState.Loading -> {
+                    imgCheckmark.gone()
+                    imgSupergraphic.removeGrayscale()
+                    imgVoucherIcon.removeGrayscale()
+
+                    tpgAdditionalInformation.gone()
+                    layoutActionable.gone()
+
+                    showLoadingAppearance()
+
+                    tpgVoucherExpiredDate.background = ContextCompat.getDrawable(
+                        tpgVoucherExpiredDate.context,
+                        R.drawable.promo_usage_shape_voucher_expired_date
+                    )
+                }
+
+                VoucherState.Normal -> {
+                    imgCheckmark.gone()
+                    imgSupergraphic.removeGrayscale()
+                    imgVoucherIcon.removeGrayscale()
+
+                    tpgAdditionalInformation.gone()
+                    layoutActionable.gone()
+
+                    hideLoadingAppearance()
+
+                    tpgVoucherExpiredDate.background = ContextCompat.getDrawable(
+                        tpgVoucherExpiredDate.context,
+                        R.drawable.promo_usage_shape_voucher_expired_date
+                    )
+                }
+                is VoucherState.Ineligible -> {
+                    imgCheckmark.gone()
+                    imgSupergraphic.grayscale()
+                    imgVoucherIcon.grayscale()
+
+                    tpgAdditionalInformation.text = voucherState.ineligibleReason
+                    tpgAdditionalInformation.visible()
+                    layoutActionable.gone()
+
+                    hideLoadingAppearance()
+
+                    tpgVoucherExpiredDate.background = ContextCompat.getDrawable(
+                        tpgVoucherExpiredDate.context,
+                        R.drawable.promo_usage_shape_voucher_expired_date
+                    )
+                }
+                is VoucherState.Actionable -> {
+                    imgCheckmark.gone()
+                    imgSupergraphic.removeGrayscale()
+                    imgVoucherIcon.removeGrayscale()
+
+                    tpgAdditionalInformation.gone()
+                    layoutActionable.visible()
+                    tpgActionableText.text = voucherState.actionableText
+                    tpgActionableText.setHyperlinkText(
+                        fullText =  voucherState.actionableText,
+                        hyperlinkSubstring = voucherState.hyperlinkSubString,
+                        onHyperlinkClick = { onHyperlinkTextClick(voucherState.appLink) }
+                    )
+
+                    hideLoadingAppearance()
+
+                    tpgVoucherExpiredDate.background = ContextCompat.getDrawable(
+                        tpgVoucherExpiredDate.context,
+                        R.drawable.promo_usage_shape_voucher_expired_date
+                    )
+                }
+                is VoucherState.Disabled -> {
+                    imgCheckmark.gone()
+                    imgSupergraphic.grayscale()
+                    imgVoucherIcon.grayscale()
+
+                    tpgAdditionalInformation.gone()
+                    layoutActionable.gone()
+
+                    hideLoadingAppearance()
+
+                    tpgVoucherExpiredDate.background = ContextCompat.getDrawable(
+                        tpgVoucherExpiredDate.context,
+                        R.drawable.promo_usage_shape_voucher_expired_date
+                    )
+                }
+                is VoucherState.Selected -> {
+                    imgCheckmark.visible()
+                    imgSupergraphic.removeGrayscale()
+                    imgVoucherIcon.removeGrayscale()
+
+                    tpgAdditionalInformation.gone()
+                    layoutActionable.gone()
+
+                    hideLoadingAppearance()
+
+                    tpgVoucherExpiredDate.background = ContextCompat.getDrawable(
+                        tpgVoucherExpiredDate.context,
+                        R.drawable.promo_usage_shape_voucher_selected
+                    )
+                }
+
+            }
+        }
+
+    }
 
     private fun handleCashback(voucher: Voucher) {
         val voucherTypeTextColorResId = when {
@@ -125,10 +244,14 @@ class VoucherView @JvmOverloads constructor(
             tpgVoucherType.text = context?.getString(R.string.promo_voucher_cashback)
             tpgVoucherType.setTextColorCompat(voucherTypeTextColorResId)
 
-            tpgVoucherAmount.text = context?.getString(R.string.promo_voucher_placeholder_gopay_coins, voucher.benefitAmount.splitByThousand())
+            tpgVoucherAmount.text = context?.getString(
+                R.string.promo_voucher_placeholder_gopay_coins,
+                voucher.benefitAmount.splitByThousand()
+            )
             tpgVoucherAmount.setVoucherAmountTextColor(voucher)
         }
     }
+
     private fun handleFreeShipping(voucher: Voucher) {
         val voucherTypeTextColorResId = when {
             voucher.voucherState.isSelected() -> com.tokopedia.unifyprinciples.R.color.Unify_GN500
@@ -141,10 +264,14 @@ class VoucherView @JvmOverloads constructor(
             tpgVoucherType.text = context?.getString(R.string.promo_voucher_free_shipping)
             tpgVoucherType.setTextColorCompat(voucherTypeTextColorResId)
 
-            tpgVoucherAmount.text = context?.getString(R.string.promo_voucher_placeholder_voucher_amount, voucher.benefitAmount.splitByThousand())
+            tpgVoucherAmount.text = context?.getString(
+                R.string.promo_voucher_placeholder_voucher_amount,
+                voucher.benefitAmount.splitByThousand()
+            )
             tpgVoucherAmount.setVoucherAmountTextColor(voucher)
         }
     }
+
     private fun handleDiscount(voucher: Voucher) {
         val voucherTypeTextColorResId = when {
             voucher.voucherState.isSelected() -> com.tokopedia.unifyprinciples.R.color.Unify_GN500
@@ -157,7 +284,10 @@ class VoucherView @JvmOverloads constructor(
             tpgVoucherType.text = context?.getString(R.string.promo_voucher_discount)
             tpgVoucherType.setTextColorCompat(voucherTypeTextColorResId)
 
-            tpgVoucherAmount.text = context?.getString(R.string.promo_voucher_placeholder_voucher_amount, voucher.benefitAmount.splitByThousand())
+            tpgVoucherAmount.text = context?.getString(
+                R.string.promo_voucher_placeholder_voucher_amount,
+                voucher.benefitAmount.splitByThousand()
+            )
             tpgVoucherAmount.setVoucherAmountTextColor(voucher)
         }
 
@@ -174,11 +304,24 @@ class VoucherView @JvmOverloads constructor(
         setTextColorCompat(voucherAmountTextColorResId)
     }
 
-    private fun VoucherState.ineligibleMessageOrEmpty(): String {
-        return if (this is VoucherState.Ineligible) {
-            this.ineligibleReason
-        } else {
-            ""
+    private fun showLoadingAppearance() {
+        binding?.run {
+            tpgVoucherAmount.gone()
+            tpgVoucherTnc.gone()
+            topShimmer.visible()
+            middleShimmer.visible()
+            bottomShimmer.visible()
+        }
+
+    }
+
+    private fun hideLoadingAppearance() {
+        binding?.run {
+            tpgVoucherAmount.visible()
+            tpgVoucherTnc.visible()
+            topShimmer.gone()
+            middleShimmer.gone()
+            bottomShimmer.gone()
         }
     }
 
@@ -202,15 +345,15 @@ class VoucherView @JvmOverloads constructor(
         return this is VoucherState.Ineligible
     }
 
+
     private fun createVoucherShape(cardViewHeightPx: Int, isVoucherSelected: Boolean): Drawable {
         val cardCornerRadius = 8.toPx().toFloat()
         val notchRadius = 18
-
         val stokeWidth = 1
 
 
-        val distance = cardViewHeightPx - 48.toPx()
-        val offsetY = distance / 4
+        val distanceFromBottom = cardViewHeightPx - CIRCLE_COT_OUT_MARGIN_BOTTOM_DP.toPx()
+        val offsetY = distanceFromBottom / 4
 
 
         val roundTreatment = BottomAppBarTopEdgeTreatment(0f, 0f, 0f)
@@ -225,7 +368,6 @@ class VoucherView @JvmOverloads constructor(
             .setRightEdge(OffsetEdgeTreatment(roundTreatment, -1 * offsetY.toFloat()))
             .setAllCornerSizes(cardCornerRadius)
             .build()
-
 
 
         val materialShapeDrawable = MaterialShapeDrawable(voucherShapeAppearanceModel).apply {
@@ -264,5 +406,24 @@ class VoucherView @JvmOverloads constructor(
         return materialShapeDrawable
     }
 
+    fun setOnHyperlinkTextClick(onHyperlinkTextClick : (String) -> Unit) {
+        this.onHyperlinkTextClick = onHyperlinkTextClick
+    }
+
+    private fun updateVoucherTypeMarginTop(marginTop: Int) {
+        val layoutParams = binding?.tpgVoucherType?.layoutParams as? ConstraintLayout.LayoutParams
+        layoutParams?.setMargins(0, marginTop, 0, 0)
+
+        binding?.tpgVoucherType?.layoutParams = layoutParams
+        binding?.tpgVoucherType?.requestLayout()
+    }
+
+    private fun updateCardViewMargin(marginStart: Int, marginTop: Int) {
+        val layoutParams = binding?.cardView?.layoutParams as? RelativeLayout.LayoutParams
+        layoutParams?.setMargins(marginStart, marginTop, 0, 0)
+
+        binding?.cardView?.layoutParams = layoutParams
+        binding?.cardView?.requestLayout()
+    }
 
 }

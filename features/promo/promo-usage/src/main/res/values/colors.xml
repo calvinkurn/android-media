@@ -8,8 +8,8 @@
     <color name="promo_dms_bottom_sheet_header_overlay_gradient_end">#11CEBC</color>
 
     <!--Not using Nest color because we want the same color on both light and dark mode for bottom sheet header -->
-    <color name="promo_dms_bottom_sheet_header_gradient_start">#4a7bcb</color>
-    <color name="promo_dms_bottom_sheet_header_gradient_end">#1cbebf</color>
+    <color name="promo_dms_bottom_sheet_header_gradient_start">#17c7be</color>
+    <color name="promo_dms_bottom_sheet_header_gradient_end">#763bd7</color>
 
     <color name="promo_dms_white">#FFFFFF</color>
 
