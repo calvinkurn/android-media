@@ -1,5 +1,11 @@
 package com.tokopedia.feedplus.analytics
 
+import com.tokopedia.content.analytic.BusinessUnit
+import com.tokopedia.content.analytic.CurrentSite
+import com.tokopedia.content.analytic.Event
+import com.tokopedia.content.analytic.EventCategory
+import com.tokopedia.content.analytic.Key
+import com.tokopedia.content.analytic.Value
 import com.tokopedia.feedplus.presentation.model.FeedFollowRecommendationModel
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.builder.Tracker
@@ -80,11 +86,9 @@ class FeedFollowRecommendationAnalytics @Inject constructor(
         authorType: AuthorType,
         authorId: String
     ): String {
-
-        /** TODO: will replace hardcoded with ContentAnalytics */
         val authorTypeValue = when (authorType) {
-            AuthorType.User -> "user"
-            AuthorType.Shop -> "shop"
+            AuthorType.User -> Value.user
+            AuthorType.Shop -> Value.shop
             else -> ""
         }
 
@@ -96,17 +100,16 @@ class FeedFollowRecommendationAnalytics @Inject constructor(
         eventLabel: String,
         trackerId: String,
     ) {
-        /** TODO: will replace hardcoded with ContentAnalytics */
         Tracker.Builder()
-            .setEvent("clickContent")
+            .setEvent(Event.clickContent)
             .setEventAction(eventAction)
             .setEventLabel(eventLabel)
-            .setEventCategory("unified feed")
-            .setBusinessUnit("content")
-            .setCurrentSite("tokopediamarketplace")
+            .setEventCategory(EventCategory.unifiedFeed)
+            .setBusinessUnit(BusinessUnit.content)
+            .setCurrentSite(CurrentSite.tokopediaMarketplace)
             .setUserId(userSession.userId)
-            .setCustomProperty("sessionIris", TrackApp.getInstance().gtm.irisSessionId)
-            .setCustomProperty("trackerId", trackerId)
+            .setCustomProperty(Key.sessionIris, TrackApp.getInstance().gtm.irisSessionId)
+            .setCustomProperty(Key.trackerId, trackerId)
             .build()
             .send()
     }
