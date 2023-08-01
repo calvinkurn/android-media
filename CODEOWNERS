@@ -111,6 +111,7 @@
 /features/merchant/product_manage_list/                 @tokopedia/android-minionken-dev
 /features/merchant/seller_mvc_creation                  @tokopedia/android-minionken-dev
 /features/merchant/seller_shop_nib                      @tokopedia/android-minionken-dev
+/features/promo/merchant_voucher                        @tokopedia/android-minionken-dev
 
 /features/top_ads/top_ads_dashboard/                    @tokopedia/android-minionsolo-dev
 /features/top_ads/top_ads_management/                   @tokopedia/android-minionsolo-dev
@@ -278,7 +279,7 @@
 /features/promo/scp_rewards_touchpoints 				@tokopedia/android-minionsolo-dev
 /features/promo/gamification            				@tokopedia/android-minionsolo-dev
 /features/kyc                           				@tokopedia/android-minionyoda-dev
-/features/promo/merchant_voucher                        @tokopedia/android-minionsolo-dev
+
 /features/tokopedianow/                                 @tokopedia/android-minionsolo-dev
 /features/promo/promo_gamification_common               @tokopedia/android-minionsolo-dev
 /features/promo/loyalty                                 @tokopedia/android-minionsolo-dev
@@ -290,6 +291,7 @@
 /features/promo/tokomember_seller_dashboard  	        @tokopedia/android-minionsolo-dev
 /features/promo/tokomember_common_widget 		        @tokopedia/android-minionsolo-dev
 /features/promo/tokomember               		        @tokopedia/android-minionsolo-dev
+
 
 
 /features/im/install_referral                           @tokopedia/android-core-dev

@@ -26,6 +26,7 @@ import com.tokopedia.affiliate.ui.fragment.AffiliateHelpFragment
 import com.tokopedia.affiliate.ui.fragment.AffiliateAdpFragment
 import com.tokopedia.affiliate.ui.fragment.AffiliatePromoFragment
 import com.tokopedia.affiliate.ui.fragment.AffiliatePromoSearchFragment
+import com.tokopedia.affiliate.ui.fragment.AffiliatePromoWebViewFragment
 import com.tokopedia.affiliate.ui.fragment.AffiliatePromotionHistoryFragment
 import com.tokopedia.affiliate.ui.fragment.AffiliateRecommendedProductFragment
 import com.tokopedia.affiliate.ui.fragment.AffiliateSSAShopListFragment
@@ -113,4 +114,7 @@ interface AffiliateComponent {
     fun injectCommissionEventActivity(commissionEventActivity: AffiliateDiscoPromoListActivity)
 
     fun injectCommissionEventFragment(commissionEventFragment: AffiliateDiscoPromoListFragment)
+
+    fun injectPromoWebViewFragment(affiliatePromoFragment: AffiliatePromoWebViewFragment)
+
 }
