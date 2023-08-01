@@ -40,7 +40,7 @@ class TokoChatListViewModel @Inject constructor(
     val error: LiveData<Pair<Throwable, String>>
         get() = _error
 
-    fun getChatListFlow(): Flow<Result<List<TokoChatListItemUiModel>>> {
+    fun getChatListFlow(): Flow<Result<List<TokoChatListItemUiModel>>> { // change it to regular livedata
         return try {
             chatChannelUseCase.getAllCachedChannels(listOf(ChannelType.GroupBooking))
                 .onStart {
@@ -68,7 +68,7 @@ class TokoChatListViewModel @Inject constructor(
     fun loadNextPageChatList(
         localSize: Int = Int.ZERO,
         isLoadMore: Boolean,
-        onCompleted: (Boolean) -> Unit = {}
+        onCompleted: (Pair<Boolean, Int?>) -> Unit = {}
     ) {
         viewModelScope.launch {
             try {
@@ -82,13 +82,13 @@ class TokoChatListViewModel @Inject constructor(
                             if (!isLoadMore) {
                                 emitChatListPairData(channelList = it)
                             }
-                            onCompleted(true)
+                            onCompleted(Pair(true, it.size))
                         },
                         onError = {
                             it?.let { error ->
                                 _error.postValue(Pair(error, ::loadNextPageChatList.name))
                             }
-                            onCompleted(false)
+                            onCompleted(Pair(false, null))
                         }
                     )
                 }

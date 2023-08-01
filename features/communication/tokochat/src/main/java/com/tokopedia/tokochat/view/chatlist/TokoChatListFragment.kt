@@ -12,10 +12,11 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalCommunication
 import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.tokochat.analytics.TokoChatAnalytics
+import com.tokopedia.tokochat.common.util.TokoChatNetworkUtil
 import com.tokopedia.tokochat.common.util.TokoChatTimeUtil.getRelativeTime
 import com.tokopedia.tokochat.common.util.TokoChatValueUtil.getSource
-import com.tokopedia.tokochat.common.util.TokoChatNetworkUtil
 import com.tokopedia.tokochat.common.view.chatlist.TokoChatListBaseFragment
 import com.tokopedia.tokochat.common.view.chatlist.adapter.TokoChatListBaseAdapter
 import com.tokopedia.tokochat.common.view.chatlist.listener.TokoChatListItemListener
@@ -72,14 +73,14 @@ class TokoChatListFragment @Inject constructor(
         addInitialShimmering()
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                var isCompleted = false
+                var isFirstLoad = true
                 viewModel.getChatListFlow().collectLatest {
                     when (it) {
                         is Success -> {
-                            setChatListData(it.data)
-                            if (!isCompleted) {
+                            setChatListData(it.data, isFirstLoad)
+                            if (isFirstLoad) {
                                 loadChatListData(it.data.size)
-                                isCompleted = true
+                                isFirstLoad = false
                             }
                         }
                         is Fail -> {
@@ -91,12 +92,22 @@ class TokoChatListFragment @Inject constructor(
         }
     }
 
-    private fun setChatListData(newData: List<TokoChatListItemUiModel>) {
-        if (adapter.isShimmeringExist() || newData.isEmpty()) {
-            adapter.clearAllItems()
-            if (newData.isEmpty()) {
-                addEmptyChatItem()
-            }
+    private fun setChatListData(
+        newData: List<TokoChatListItemUiModel>,
+        isFirstLoad: Boolean
+    ) {
+        if (isFirstLoad) {
+            setFirstLoadChatListData(newData)
+        } else {
+            updateChatListData(newData)
+        }
+    }
+
+    private fun setFirstLoadChatListData(newData: List<TokoChatListItemUiModel>) {
+        // Clear all and add data accordingly
+        adapter.clearAllItems()
+        if (newData.isEmpty()) {
+            addEmptyChatItem()
         } else {
             baseBinding?.tokochatListRv?.post {
                 adapter.setItemsAndAnimateChanges(newData)
@@ -104,9 +115,21 @@ class TokoChatListFragment @Inject constructor(
         }
     }
 
+    private fun updateChatListData(newData: List<TokoChatListItemUiModel>) {
+        // Add data to list if not first load
+        baseBinding?.tokochatListRv?.post {
+            val emptyPosition = adapter.getEmptyViewPosition()
+            if (emptyPosition >= Int.ZERO) {
+                adapter.clearAllItems()
+                adapter.setItemsAndAnimateChanges(newData)
+            } else {
+                adapter.addOrUpdateChatListData(newData)
+            }
+        }
+    }
+
     private fun loadChatListData(size: Int) {
-        toggleSwipeRefreshState(true)
-        viewModel.loadNextPageChatList(size, false) { isSuccess ->
+        viewModel.loadNextPageChatList(size, false) { (isSuccess, _) ->
             if (!isSuccess) {
                 showErrorLayout()
             }
@@ -146,6 +169,7 @@ class TokoChatListFragment @Inject constructor(
 
     private fun initListeners() {
         baseBinding?.tokochatListLayoutSwipeRefresh?.setOnRefreshListener {
+            toggleSwipeRefreshState(true)
             resetChatList()
         }
     }
@@ -167,10 +191,26 @@ class TokoChatListFragment @Inject constructor(
     }
 
     override fun onLoadMore() {
-        adapter.addItem(TokoChatListLoaderUiModel())
+        if (!adapter.isLoaderExist()) {
+            val loaderUiModel = TokoChatListLoaderUiModel()
+            adapter.addItem(loaderUiModel)
+            baseBinding?.tokochatListRv?.post {
+                adapter.notifyItemInserted(adapter.lastIndex)
+                viewModel.loadNextPageChatList(isLoadMore = true) { (_, newSize) ->
+                    removeLoader(loaderUiModel)
+                    toggleSwipeRefreshState(false)
+                    endlessRecyclerViewScrollListener?.setHasNextPage(
+                        (newSize ?: Int.ZERO) > Int.ZERO
+                    )
+                }
+            }
+        }
+    }
+
+    private fun removeLoader(loaderUiModel: TokoChatListLoaderUiModel) {
+        adapter.removeItem(loaderUiModel)
         baseBinding?.tokochatListRv?.post {
-            adapter.notifyItemInserted(adapter.lastIndex)
-            viewModel.loadNextPageChatList(isLoadMore = true) {}
+            adapter.notifyItemRemoved(adapter.lastIndex)
         }
     }
 
