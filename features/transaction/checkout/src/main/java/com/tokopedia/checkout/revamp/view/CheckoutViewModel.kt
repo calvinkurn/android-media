@@ -29,6 +29,7 @@ import com.tokopedia.checkout.revamp.view.uimodel.CheckoutDonationModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutEgoldModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutEpharmacyModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutItem
+import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderInsurance
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPageState
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPageToaster
@@ -41,8 +42,10 @@ import com.tokopedia.checkout.view.converter.ShipmentDataRequestConverter
 import com.tokopedia.checkout.view.uimodel.ShipmentAddOnSummaryModel
 import com.tokopedia.common_epharmacy.network.response.EPharmacyMiniConsultationResult
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
+import com.tokopedia.logisticCommon.data.constant.InsuranceConstant
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.InsuranceData
 import com.tokopedia.logisticcart.shipping.model.CodModel
 import com.tokopedia.logisticcart.shipping.model.CourierItemData
 import com.tokopedia.logisticcart.shipping.model.Product
@@ -600,7 +603,8 @@ class CheckoutViewModel @Inject constructor(
                         validateUsePromoRequest,
                         result.first.logPromoCode!!,
                         true,
-                        result.first
+                        result.first,
+                        result.second
                     )
                     return
                 }
@@ -609,7 +613,27 @@ class CheckoutViewModel @Inject constructor(
                 shipment = orderModel.shipment.copy(
                     isLoading = false,
                     courierItemData = result?.first,
-                    shippingCourierUiModels = result?.second ?: emptyList()
+                    shippingCourierUiModels = result?.third ?: emptyList(),
+                    insurance = result?.second?.let {
+                        CheckoutOrderInsurance(
+                            result.second,
+                            when (result.second.insuranceType) {
+                                InsuranceConstant.INSURANCE_TYPE_MUST -> {
+                                    true
+                                }
+
+                                InsuranceConstant.INSURANCE_TYPE_NO -> {
+                                    false
+                                }
+
+                                InsuranceConstant.INSURANCE_TYPE_OPTIONAL -> {
+                                    result.second.insuranceUsedDefault == InsuranceConstant.INSURANCE_USED_DEFAULT_YES
+                                }
+
+                                else -> false
+                            }
+                        )
+                    } ?: CheckoutOrderInsurance()
                 )
             )
             list[cartPosition] = newOrderModel
@@ -699,7 +723,8 @@ class CheckoutViewModel @Inject constructor(
                         validateUsePromoRequest,
                         result.first.logPromoCode!!,
                         true,
-                        result.first
+                        result.first,
+                        result.second
                     )
                     return
                 }
@@ -708,7 +733,27 @@ class CheckoutViewModel @Inject constructor(
                 shipment = orderModel.shipment.copy(
                     isLoading = false,
                     courierItemData = result?.first,
-                    shippingCourierUiModels = result?.second ?: emptyList()
+                    shippingCourierUiModels = result?.third ?: emptyList(),
+                    insurance = result?.second?.let {
+                        CheckoutOrderInsurance(
+                            result.second,
+                            when (result.second.insuranceType) {
+                                InsuranceConstant.INSURANCE_TYPE_MUST -> {
+                                    true
+                                }
+
+                                InsuranceConstant.INSURANCE_TYPE_NO -> {
+                                    false
+                                }
+
+                                InsuranceConstant.INSURANCE_TYPE_OPTIONAL -> {
+                                    result.second.insuranceUsedDefault == InsuranceConstant.INSURANCE_USED_DEFAULT_YES
+                                }
+
+                                else -> false
+                            }
+                        )
+                    } ?: CheckoutOrderInsurance()
                 )
             )
             list[cartPosition] = newOrderModel
@@ -724,7 +769,8 @@ class CheckoutViewModel @Inject constructor(
     fun setSelectedCourier(
         cartPosition: Int,
         courierItemData: CourierItemData,
-        shippingCourierUiModels: List<ShippingCourierUiModel>
+        shippingCourierUiModels: List<ShippingCourierUiModel>,
+        insurance: InsuranceData
     ) {
         viewModelScope.launch(dispatchers.immediate) {
             val checkoutItems = listData.value.toMutableList()
@@ -737,7 +783,25 @@ class CheckoutViewModel @Inject constructor(
                 val newShipment = shipment.copy(
                     isLoading = true,
                     courierItemData = courierItemData,
-                    shippingCourierUiModels = shippingCourierUiModels
+                    shippingCourierUiModels = shippingCourierUiModels,
+                    insurance = CheckoutOrderInsurance(
+                        insurance,
+                        when (insurance.insuranceType) {
+                            InsuranceConstant.INSURANCE_TYPE_MUST -> {
+                                true
+                            }
+
+                            InsuranceConstant.INSURANCE_TYPE_NO -> {
+                                false
+                            }
+
+                            InsuranceConstant.INSURANCE_TYPE_OPTIONAL -> {
+                                insurance.insuranceUsedDefault == InsuranceConstant.INSURANCE_USED_DEFAULT_YES
+                            }
+
+                            else -> false
+                        }
+                    )
                 )
                 val newOrder = checkoutOrderModel.copy(shipment = newShipment)
                 checkoutItems[cartPosition] = newOrder
@@ -808,7 +872,8 @@ class CheckoutViewModel @Inject constructor(
         validateUsePromoRequest: ValidateUsePromoRequest,
         promoCode: String,
         showLoading: Boolean,
-        courierItemData: CourierItemData
+        courierItemData: CourierItemData,
+        insurance: InsuranceData
     ) {
         viewModelScope.launch {
             if (showLoading) {
@@ -1066,6 +1131,16 @@ class CheckoutViewModel @Inject constructor(
         calculateTotal()
     }
 
+    fun validatePrescriptionOnBackPressed(): CheckoutEpharmacyModel? {
+        val epharmacy = listData.value.epharmacy()
+        if (epharmacy != null && epharmacy.epharmacy.showImageUpload) {
+            if (epharmacy.epharmacy.uploadedImageCount > 0 || epharmacy.epharmacy.hasInvalidPrescription) {
+                return epharmacy
+            }
+        }
+        return null
+    }
+
     companion object {
         const val PLATFORM_FEE_CODE = "platform_fee"
     }
@@ -1093,6 +1168,12 @@ internal fun List<CheckoutItem>.upsell(): CheckoutUpsellModel? {
     val item = getOrNull(2)
     @Suppress("UNCHECKED_CAST")
     return item as? CheckoutUpsellModel
+}
+
+internal fun List<CheckoutItem>.epharmacy(): CheckoutEpharmacyModel? {
+    val item = getOrNull(size - 4)
+    @Suppress("UNCHECKED_CAST")
+    return item as? CheckoutEpharmacyModel
 }
 
 internal fun List<CheckoutItem>.promo(): CheckoutPromoModel? {

@@ -10,6 +10,7 @@ import com.tokopedia.checkout.databinding.ItemCheckoutOrderBinding
 import com.tokopedia.checkout.revamp.view.adapter.CheckoutAdapterListener
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutAddressModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderModel
+import com.tokopedia.logisticCommon.data.constant.InsuranceConstant
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticcart.shipping.features.shippingwidget.ShippingCheckoutRevampWidget
 import com.tokopedia.logisticcart.shipping.model.InsuranceWidgetUiModel
@@ -78,6 +79,7 @@ class CheckoutOrderViewHolder(
             binding.shippingWidget.renderLoadingCourierState()
         } else {
             val courierItemData = order.shipment.courierItemData
+            val insurance = order.shipment.insurance
             if (courierItemData == null) {
                 binding.shippingWidget.prepareLoadCourierState()
                 binding.shippingWidget.hideShippingStateLoading()
@@ -298,7 +300,9 @@ class CheckoutOrderViewHolder(
                         whitelabelEtaText = courierItemData.durationCardDescription,
 
                         scheduleDeliveryUiModel = null,
-                        insuranceData = InsuranceWidgetUiModel()
+                        insuranceData = InsuranceWidgetUiModel(
+                            show = insurance.insuranceData != null && !(insurance.insuranceData.insuranceType == InsuranceConstant.INSURANCE_TYPE_NO || insurance.insuranceData.insuranceType == InsuranceConstant.INSURANCE_TYPE_NONE)
+                        )
                     ),
                     RecipientAddressModel()
                 )
