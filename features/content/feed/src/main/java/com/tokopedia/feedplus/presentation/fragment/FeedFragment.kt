@@ -52,6 +52,7 @@ import com.tokopedia.feedcomponent.util.FeedVideoCache
 import com.tokopedia.feedcomponent.util.util.DataMapper
 import com.tokopedia.feedcomponent.view.widget.FeedExoPlayer
 import com.tokopedia.feedplus.analytics.FeedAnalytics
+import com.tokopedia.feedplus.analytics.FeedFollowRecommendationAnalytics
 import com.tokopedia.feedplus.analytics.FeedMVCAnalytics
 import com.tokopedia.feedplus.data.FeedXCard
 import com.tokopedia.feedplus.data.FeedXCard.Companion.TYPE_FEED_TOP_ADS
@@ -162,6 +163,9 @@ class FeedFragment :
 
     @Inject
     lateinit var commentAnalytics: ContentCommentAnalytics.Creator
+
+    @Inject
+    lateinit var feedFollowRecommendationAnalytics: FeedFollowRecommendationAnalytics
 
     @Inject
     lateinit var fragmentFactory: FragmentFactory
@@ -280,7 +284,7 @@ class FeedFragment :
     private val feedFollowRecommendationListener = object : FeedFollowRecommendationListener {
 
         override fun onImpressProfile(profile: FeedFollowRecommendationModel.Profile) {
-            /** TODO: handle this */
+            feedFollowRecommendationAnalytics.eventImpressProfileRecommendation(profile)
         }
 
         override fun onClickFollow(profile: FeedFollowRecommendationModel.Profile) {
@@ -292,10 +296,13 @@ class FeedFragment :
         }
 
         override fun onCloseProfileRecommendation(profile: FeedFollowRecommendationModel.Profile) {
+            feedFollowRecommendationAnalytics.eventClickRemoveProfileRecommendation()
             feedPostViewModel.removeProfileRecommendation(profile)
         }
 
         override fun onClickProfileRecommendation(profile: FeedFollowRecommendationModel.Profile) {
+            feedFollowRecommendationAnalytics.eventClickProfileRecommendation()
+
             val templateAppLink = if (profile.isShop) ApplinkConst.SHOP else ApplinkConst.PROFILE
             val completeAppLink = UriUtil.buildUri(templateAppLink, profile.id)
 
