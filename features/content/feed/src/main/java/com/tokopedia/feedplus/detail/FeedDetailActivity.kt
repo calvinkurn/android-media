@@ -17,12 +17,15 @@ import com.tokopedia.play_common.util.extension.commit
  */
 class FeedDetailActivity : BaseActivity() {
 
-    private lateinit var binding: ActivityFeedDetailBinding
+    private var _binding: ActivityFeedDetailBinding? = null
+    private val binding: ActivityFeedDetailBinding
+        get() = _binding!!
+
     private var postId: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityFeedDetailBinding.inflate(layoutInflater)
+        _binding = ActivityFeedDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         postId = intent.data?.lastPathSegment.orEmpty()
