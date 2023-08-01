@@ -507,11 +507,12 @@ class BroadcastManager @Inject constructor(
         mStreamerWrapper?.setSurfaceSize(Streamer.Size(surfaceSize.width, surfaceSize.height))
         GLES20.glViewport(0, 0, surfaceSize.width, surfaceSize.height)
 
-
         if (mWithByteplus == true) {
+            val videoSize = mVideoSize ?: return
+
             val textureSize = getSurfaceSizeForPusher(
                 surfaceSize = Streamer.Size(surfaceSize.width, surfaceSize.height),
-                videoSize = mVideoSize ?: Streamer.Size(0, 0)
+                videoSize = videoSize
             )
 
             effectManager.updateSurfaceTexture(
