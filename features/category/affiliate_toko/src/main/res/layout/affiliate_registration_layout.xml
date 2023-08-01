@@ -30,8 +30,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/affiliate_splash_background"
-        tools:visibility="visible" />
+        app:srcCompat="@drawable/affiliate_splash_background" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/splash_title"
@@ -45,8 +44,7 @@
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:visibility="visible" />
+        app:layout_constraintTop_toTopOf="parent" />
 
 
     <com.tokopedia.unifyprinciples.Typography
@@ -61,8 +59,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/splash_title"
-        app:typographyType="body_2"
-        tools:visibility="visible" />
+        app:typographyType="body_2" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/horizontal_guide"
@@ -75,6 +72,7 @@
         android:id="@+id/affiliate_splash_image"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_marginBottom="40dp"
         android:visibility="gone"
         app:completeUrl="https://images.tokopedia.net/img/android/res/singleDpi/affiliate_splash_image.png"
         app:imageDpiSupportType="singleDpi"
@@ -84,24 +82,31 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/horizontal_guide" />
 
-    <com.tokopedia.unifycomponents.UnifyButton
-        android:id="@+id/back_to_wishlist"
+    <LinearLayout
+        android:id="@+id/action_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="16dp"
-        android:layout_marginBottom="8dp"
+        android:background="@drawable/affiliate_splash_action_bg"
+        android:orientation="vertical"
+        android:paddingTop="40dp"
         android:visibility="gone"
-        android:text="@string/affiliate_back_to_wishlist"
-        app:layout_constraintBottom_toTopOf="@id/go_to_promote"
-        app:unifyButtonType="main" />
+        app:layout_constraintBottom_toBottomOf="parent">
 
-    <com.tokopedia.unifycomponents.UnifyButton
-        android:id="@+id/go_to_promote"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:visibility="gone"
-        android:text="@string/affiliate_go_to_promote"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:unifyButtonVariant="ghost" />
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/back_to_wishlist"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:text="@string/affiliate_back_to_wishlist"
+            app:layout_constraintBottom_toTopOf="@id/go_to_promote"
+            app:unifyButtonType="main" />
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/go_to_promote"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:text="@string/affiliate_go_to_promote"
+            app:unifyButtonVariant="ghost" />
+    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
