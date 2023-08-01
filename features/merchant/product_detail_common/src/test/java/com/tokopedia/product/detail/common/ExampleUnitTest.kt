@@ -1,17 +1,25 @@
-package com.tokopedia.product.detail.common;
+package com.tokopedia.product.detail.common
 
-import org.junit.Test;
-
-import static org.junit.Assert.*;
+import com.tokopedia.product.detail.common.bmgm.ui.model.BMGMUiModel
+import org.junit.Test
 
 /**
  * Example local unit test, which will execute on the development machine (host).
  *
- * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
+ * @see [Testing documentation](http://d.android.com/tools/testing)
  */
-public class ExampleUnitTest {
+class ExampleUnitTest {
     @Test
-    public void addition_isCorrect() {
-        assertEquals(4, 2 + 2);
+    fun hashCodeChecker() {
+        var bmgm = BMGMUiModel.Product(imageUrl = "aaaa")
+        println(bmgm.hashCode())
+        bmgm = bmgm.copy(loadMoreText = "bbb")
+        println(bmgm.hashCode())
+        bmgm = bmgm.copy(loadMoreText = "bbb")
+        println(bmgm.hashCode())
+        bmgm = bmgm.copy(loadMoreText = "aaa")
+        println(bmgm.hashCode())
+        bmgm = bmgm.copy(loadMoreText = "bbb", imageUrl = "cccc")
+        println(bmgm.hashCode())
     }
 }

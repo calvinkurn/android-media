@@ -5,14 +5,12 @@ package com.tokopedia.product.detail.common.bmgm.ui.model
  * Project name: android-tokopedia-core
  **/
 
-
 data class BMGMUiModel(
     val titles: List<String> = emptyList(),
     val iconUrl: String = "",
     val products: List<Product> = emptyList(),
     val backgroundColor: String = "",
     val action: Action = Action(),
-    val loadMoreText: String = "",
     val titleColor: String = ""
 ) {
 
@@ -20,7 +18,8 @@ data class BMGMUiModel(
         get() = titles.isNotEmpty()
 
     data class Product(
-        val imageUrl: String = ""
+        val imageUrl: String = "",
+        val loadMoreText: String = ""
     )
 
     data class Action(

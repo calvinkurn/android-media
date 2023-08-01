@@ -14,7 +14,6 @@ import com.tokopedia.product.detail.common.databinding.BmgmProductShowMoreViewBi
  * Project name: android-tokopedia-core
  **/
 
-
 class BMGMProductViewHolder(
     private val binding: BmgmProductItemBinding
 ) : RecyclerView.ViewHolder(binding.root) {
@@ -24,11 +23,11 @@ class BMGMProductViewHolder(
         BmgmProductShowMoreViewBinding.bind(view)
     }
 
-    fun bind(product: BMGMUiModel.Product, loadMoreText: String, isEndItem: Boolean) {
+    fun bind(product: BMGMUiModel.Product) {
         binding.bmgmProductImage.loadImage(product.imageUrl)
 
-        if (isEndItem && loadMoreText.isNotBlank()) {
-            overlayBinding.bmgmShowMoreText.text = loadMoreText
+        if (product.loadMoreText.isNotBlank()) {
+            overlayBinding.bmgmShowMoreText.text = product.loadMoreText
         }
     }
 

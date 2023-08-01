@@ -10,7 +10,6 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.product.detail.common.bmgm.ui.adapter.BMGMProductAdapter
@@ -86,10 +85,7 @@ class BMGMWidget @JvmOverloads constructor(
             interval = TEXT_SWITCH_INTERVAL
         )
 
-        if (uiModel.loadMoreText.isNotBlank()) {
-            setEvent(action = uiModel.action, router = router)
-        }
-
+        setEvent(action = uiModel.action, router = router)
         setBackgroundGradient(colors = uiModel.backgroundColor)
         setProductList(uiModel = uiModel, router = router)
     }
@@ -99,7 +95,7 @@ class BMGMWidget @JvmOverloads constructor(
         if (uiModel.products.isNotEmpty()) {
             productListBinding.root.show()
 
-            productAdapter.submit(uiModel.products, uiModel.loadMoreText) {
+            productAdapter.submit(uiModel.products) {
                 setRouting(action = uiModel.action, router = router)
             }
         } else if (binding.bmgmProductListStub.parent == null) { // stub has already inflated

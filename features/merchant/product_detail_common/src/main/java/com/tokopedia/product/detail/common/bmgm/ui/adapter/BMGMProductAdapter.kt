@@ -22,11 +22,10 @@ class BMGMProductAdapter : ListAdapter<BMGMUiModel.Product, BMGMProductViewHolde
             override fun areContentsTheSame(
                 oldItem: BMGMUiModel.Product,
                 newItem: BMGMUiModel.Product
-            ): Boolean = oldItem.imageUrl == newItem.imageUrl
+            ): Boolean = oldItem.hashCode() == newItem.hashCode()
         }
     }
 
-    private var loadMoreText = ""
     private var onClick: () -> Unit = {}
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BMGMProductViewHolder {
@@ -36,19 +35,14 @@ class BMGMProductAdapter : ListAdapter<BMGMUiModel.Product, BMGMProductViewHolde
     override fun onBindViewHolder(holder: BMGMProductViewHolder, position: Int) {
         val product = getItem(position) ?: return
 
-        holder.bind(
-            product = product,
-            loadMoreText = loadMoreText,
-            isEndItem = itemCount.dec() == position
-        )
+        holder.bind(product = product)
 
         holder.itemView.setOnClickListener {
             onClick.invoke()
         }
     }
 
-    fun submit(products: List<BMGMUiModel.Product>, loadMoreText: String, onClick: () -> Unit) {
-        this.loadMoreText = loadMoreText
+    fun submit(products: List<BMGMUiModel.Product>, onClick: () -> Unit) {
         this.onClick = onClick
         submitList(products)
     }

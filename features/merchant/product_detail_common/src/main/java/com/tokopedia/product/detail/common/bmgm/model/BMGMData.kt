@@ -30,7 +30,7 @@ data class BMGMData(
     val contents: List<Content> = emptyList(),
     @SerializedName("loadMoreText")
     @Expose
-    val loadMoreText: String = "",
+    val loadMoreText: String = ""
 ) {
 
     data class Action(
@@ -39,21 +39,30 @@ data class BMGMData(
         val type: String = "",
         @SerializedName("link")
         @Expose
-        val link: String = "",
+        val link: String = ""
     )
 
     data class Content(
         @SerializedName("imageUrl")
         @Expose
-        val imageUrl: String = "",
+        val imageUrl: String = ""
     )
 }
 
-fun BMGMData.Content.asUiModel() = BMGMUiModel.Product(
-    imageUrl = imageUrl
+fun BMGMData.Content.asUiModel(loadMoreText: String) = BMGMUiModel.Product(
+    imageUrl = imageUrl,
+    loadMoreText = loadMoreText
 )
 
-fun List<BMGMData.Content>.asUiModel() = map { it.asUiModel() }
+fun List<BMGMData.Content>.asUiModel(loadMoreText: String) = mapIndexed { index, content ->
+    content.asUiModel(
+        loadMoreText = if (index == size.dec()) {
+            loadMoreText
+        } else {
+            ""
+        }
+    )
+}
 
 fun BMGMData.Action.asUiModel() = BMGMUiModel.Action(
     type = type,
@@ -63,9 +72,8 @@ fun BMGMData.Action.asUiModel() = BMGMUiModel.Action(
 fun BMGMData.asUiModel() = BMGMUiModel(
     titles = titles,
     iconUrl = iconUrl,
-    products = contents.asUiModel(),
+    products = contents.asUiModel(loadMoreText = loadMoreText),
     backgroundColor = backgroundColor,
     action = action.asUiModel(),
-    loadMoreText = loadMoreText,
     titleColor = titleColor
 )
