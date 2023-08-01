@@ -21,7 +21,7 @@ import com.tokopedia.promousage.domain.entity.PromoPageTickerInfo
 import com.tokopedia.promousage.domain.entity.SecondaryPromoItem
 import com.tokopedia.promousage.domain.entity.list.PromoAccordionHeaderItem
 import com.tokopedia.promousage.domain.entity.list.PromoAccordionViewAllItem
-import com.tokopedia.promousage.domain.entity.list.PromoInputItem
+import com.tokopedia.promousage.domain.entity.list.PromoAttemptItem
 import com.tokopedia.promousage.domain.entity.list.PromoRecommendationItem
 import com.tokopedia.promousage.util.composite.DelegateAdapterItem
 import com.tokopedia.purchase_platform.common.utils.isNotBlankOrZero
@@ -66,7 +66,7 @@ class PromoUsageMapper @Inject constructor() {
                 }
 
                 PromoPageSection.SECTION_INPUT_PROMO_CODE -> {
-                    items.add(PromoInputItem(id = couponSection.id))
+                    items.add(PromoAttemptItem(id = couponSection.id))
                 }
 
                 else -> {
@@ -94,7 +94,7 @@ class PromoUsageMapper @Inject constructor() {
                         items.add(
                             PromoAccordionViewAllItem(
                                 headerId = couponSection.id,
-                                visiblePromoCount = hiddenPromoCount,
+                                hiddenPromoCount = hiddenPromoCount,
                                 isExpanded = !couponSection.isCollapse,
                                 isVisible = !couponSection.isCollapse
                             )

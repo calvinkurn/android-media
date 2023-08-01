@@ -10,7 +10,7 @@ import com.tokopedia.promousage.domain.entity.PromoPageTickerInfo
 import com.tokopedia.promousage.domain.entity.SecondaryPromoItem
 import com.tokopedia.promousage.domain.entity.list.PromoAccordionHeaderItem
 import com.tokopedia.promousage.domain.entity.list.PromoAccordionViewAllItem
-import com.tokopedia.promousage.domain.entity.list.PromoInputItem
+import com.tokopedia.promousage.domain.entity.list.PromoAttemptItem
 import com.tokopedia.promousage.domain.entity.list.PromoItem
 import com.tokopedia.promousage.domain.entity.list.PromoRecommendationItem
 import com.tokopedia.promousage.domain.entity.list.PromoTncItem
@@ -21,7 +21,7 @@ object DummyData {
     val promoPageTickerInfo: PromoPageTickerInfo
         get() = PromoPageTickerInfo(
             message = "Kini Bebas Ongkir tersedia saat pilih pengiriman, ya.",
-            iconUrl = "",
+            iconUrl = "https://images.tokopedia.net/img/bundling/icons/product_bundling_dark.png",
             backgroundUrl = ""
         )
 
@@ -127,7 +127,8 @@ object DummyData {
                 ),
                 isAttempted = false,
                 isExpanded = false,
-                isVisible = true
+                isVisible = true,
+                remainingPromoCount = 5
             ),
             PromoItem(
                 id = "3",
@@ -222,7 +223,8 @@ object DummyData {
                 state = PromoItemState.Loading,
                 isAttempted = false,
                 isExpanded = true,
-                isVisible = false
+                isVisible = false,
+                remainingPromoCount = 3
             ),
             PromoItem(
                 id = "6",
@@ -410,7 +412,8 @@ object DummyData {
                 ),
                 isAttempted = false,
                 isExpanded = false,
-                isVisible = false
+                isVisible = false,
+                remainingPromoCount = 2
             ),
             PromoItem(
                 id = "10",
@@ -926,7 +929,7 @@ object DummyData {
         )
         items.add(PromoAccordionViewAllItem(
             headerId = "payment_coupons",
-            visiblePromoCount = discountPromos.size - discountPromos.count { it.isVisible },
+            hiddenPromoCount = discountPromos.size - discountPromos.count { it.isVisible },
             isExpanded = false,
             isVisible = true
         ))
@@ -946,7 +949,7 @@ object DummyData {
         )
         items.add(PromoAccordionViewAllItem(
             headerId = "shipping_coupons",
-            visiblePromoCount = freeShippingPromos.size - freeShippingPromos.count { it.isVisible },
+            hiddenPromoCount = freeShippingPromos.size - freeShippingPromos.count { it.isVisible },
             isExpanded = false,
             isVisible = true
         ))
@@ -966,11 +969,11 @@ object DummyData {
         )
         items.add(PromoAccordionViewAllItem(
             headerId = "other_coupons",
-            visiblePromoCount = cashbackPromos.size - cashbackPromos.count { it.isVisible },
+            hiddenPromoCount = cashbackPromos.size - cashbackPromos.count { it.isVisible },
             isExpanded = false,
             isVisible = true
         ))
-        items.add(PromoInputItem())
+        items.add(PromoAttemptItem())
         val selectedPromoCodes = items.filterIsInstance<PromoItem>()
             .filter { it.state is PromoItemState.Selected }
             .map { it.code }

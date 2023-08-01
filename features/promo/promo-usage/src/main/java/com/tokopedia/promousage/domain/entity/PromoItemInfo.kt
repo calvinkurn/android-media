@@ -2,6 +2,7 @@ package com.tokopedia.promousage.domain.entity
 
 data class PromoItemInfo(
     val type: String = "",
+    val icon: String = "",
     val title: String = ""
 ) {
     companion object {

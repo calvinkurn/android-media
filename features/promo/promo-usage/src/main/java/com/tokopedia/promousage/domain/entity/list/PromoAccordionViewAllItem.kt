@@ -5,7 +5,7 @@ import com.tokopedia.promousage.util.composite.DelegateAdapterItem
 data class PromoAccordionViewAllItem(
     override val id: String = "promo_accordion_view_all",
     val headerId: String = "",
-    val visiblePromoCount: Int = 0,
+    val hiddenPromoCount: Int = 0,
     val isExpanded: Boolean = false,
     val isVisible: Boolean = false
 ) : DelegateAdapterItem

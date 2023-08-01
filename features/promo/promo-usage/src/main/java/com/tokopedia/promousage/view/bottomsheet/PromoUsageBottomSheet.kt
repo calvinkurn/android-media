@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.RelativeLayout
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
@@ -26,23 +27,25 @@ import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.setTextColorCompat
 import com.tokopedia.kotlin.extensions.view.splitByThousand
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.localizationchooseaddress.common.ChosenAddress
 import com.tokopedia.promousage.R
 import com.tokopedia.promousage.databinding.PromoUsageBottomshetBinding
-import com.tokopedia.promousage.domain.entity.PromoCta
+import com.tokopedia.promousage.di.DaggerPromoUsageComponent
 import com.tokopedia.promousage.domain.entity.PromoPageEntryPoint
 import com.tokopedia.promousage.domain.entity.PromoPageState
+import com.tokopedia.promousage.domain.entity.PromoPageTickerInfo
 import com.tokopedia.promousage.domain.entity.PromoSavingInfo
 import com.tokopedia.promousage.domain.entity.list.PromoAccordionHeaderItem
 import com.tokopedia.promousage.domain.entity.list.PromoAccordionViewAllItem
-import com.tokopedia.promousage.domain.entity.list.PromoInputItem
 import com.tokopedia.promousage.domain.entity.list.PromoItem
 import com.tokopedia.promousage.domain.entity.list.PromoRecommendationItem
 import com.tokopedia.promousage.domain.entity.list.PromoTncItem
 import com.tokopedia.promousage.util.composite.CompositeAdapter
+import com.tokopedia.promousage.util.composite.DelegateAdapterItem
 import com.tokopedia.promousage.util.extension.foregroundDrawable
 import com.tokopedia.promousage.view.adapter.PromoAccordionHeaderDelegateAdapter
 import com.tokopedia.promousage.view.adapter.PromoAccordionItemDelegateAdapter
@@ -51,12 +54,14 @@ import com.tokopedia.promousage.view.adapter.PromoInputCodeDelegateAdapter
 import com.tokopedia.promousage.view.adapter.PromoRecommendationDelegateAdapter
 import com.tokopedia.promousage.view.adapter.PromoTncDelegateAdapter
 import com.tokopedia.promousage.view.viewmodel.PromoUsageViewModel
+import com.tokopedia.promousage.view.viewmodel.getRecommendationItem
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
 import com.tokopedia.unifycomponents.toDp
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import javax.inject.Inject
+import kotlin.math.max
 
 class PromoUsageBottomSheet : BottomSheetDialogFragment() {
 
@@ -87,33 +92,27 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
         }
     }
 
-    private val recyclerViewAdapter by lazy {
-        CompositeAdapter.Builder()
-            .add(
-                PromoRecommendationDelegateAdapter(
-                    onClickPromoItem,
-                    onClickPromoRecommendation
-                )
-            )
-            .add(PromoAccordionHeaderDelegateAdapter(onClickPromoAccordionHeader))
-            .add(PromoAccordionItemDelegateAdapter(onClickPromoItem))
-            .add(PromoAccordionViewAllDelegateAdapter(onClickPromoAccordionViewAll))
-            .add(PromoTncDelegateAdapter(onTermAndConditionHyperlinkClick))
-            .add(PromoInputCodeDelegateAdapter(onApplyPromoInputCode))
-            .build()
-    }
-
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private val viewModel: PromoUsageViewModel by lazy {
         ViewModelProvider(this, viewModelFactory)[PromoUsageViewModel::class.java]
     }
 
-    private var binding by autoClearedNullable<PromoUsageBottomshetBinding>()
-    private val entryPoint by lazy {
-        arguments?.getSerializable(BUNDLE_KEY_ENTRY_POINT) as? PromoPageEntryPoint
-            ?: PromoPageEntryPoint.CART_PAGE
+    private var _binding by autoClearedNullable<PromoUsageBottomshetBinding>()
+    private val binding: PromoUsageBottomshetBinding
+        get() = _binding!!
+    private val recyclerViewAdapter by lazy {
+        CompositeAdapter.Builder()
+            .add(PromoRecommendationDelegateAdapter(onClickPromoItem, onClickPromoRecommendation))
+            .add(PromoAccordionHeaderDelegateAdapter(onClickPromoAccordionHeader))
+            .add(PromoAccordionItemDelegateAdapter(onClickPromoItem))
+            .add(PromoAccordionViewAllDelegateAdapter(onClickPromoAccordionViewAll))
+            .add(PromoTncDelegateAdapter(onClickTnc))
+            .add(PromoInputCodeDelegateAdapter(onAttemptPromoCode))
+            .build()
     }
+
+    @Suppress("DEPRECATION")
     private val registerGopayLaterCicilLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             val promoCode = result.data?.getStringExtra(BUNDLE_KEY_PROMO_CODE)
@@ -151,20 +150,20 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        binding = PromoUsageBottomshetBinding.inflate(inflater, container, false)
+    ): View {
+        _binding = PromoUsageBottomshetBinding.inflate(inflater, container, false)
 
-        binding?.bottomSheetTitle?.text = context?.getString(R.string.promo_voucher_promo)
-        binding?.bottomSheetClose?.setOnClickListener { dismissAllowingStateLoss() }
-        binding?.layoutBottomSheetHeader?.foregroundDrawable(R.drawable.promo_usage_bg_confetti)
+        binding.bottomSheetTitle.text = context?.getString(R.string.promo_voucher_promo)
+        binding.bottomSheetClose.setOnClickListener { dismissAllowingStateLoss() }
+        binding.layoutBottomSheetHeader.foregroundDrawable(R.drawable.promo_usage_bg_confetti)
 
         dialog?.setOnShowListener { applyBottomSheetMaxHeightRule() }
 
-        return binding?.root
+        return binding.root
     }
 
     private fun applyBottomSheetMaxHeightRule() {
-        val frameDialogView = binding?.bottomSheetWrapper?.parent as View
+        val frameDialogView = binding.bottomSheetWrapper.parent as View
         frameDialogView.setBackgroundColor(Color.TRANSPARENT)
 
         frameDialogView.bringToFront()
@@ -178,15 +177,18 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
         bottomSheetBehavior.peekHeight = maxPeekHeight
     }
 
+    @Suppress("DEPRECATION")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val entryPoint =
+            arguments?.getParcelable(BUNDLE_KEY_ENTRY_POINT) ?: PromoPageEntryPoint.CART_PAGE
         val totalAmount = arguments?.getDouble(BUNDLE_KEY_TOTAL_AMOUNT) ?: 0.0
         setupView(entryPoint, totalAmount)
         setupObservers()
 
         val promoRequest = arguments?.getParcelable(BUNDLE_KEY_PROMO_REQUEST) ?: PromoRequest()
-        val chosenAddress = arguments?.getParcelable<ChosenAddress>(BUNDLE_KEY_CHOSEN_ADDRESS)
+        val chosenAddress = arguments?.getParcelable(BUNDLE_KEY_CHOSEN_ADDRESS) ?: ChosenAddress()
         viewModel.loadPromoList(
             promoRequest = promoRequest,
             chosenAddress = chosenAddress
@@ -194,63 +196,75 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
     }
 
     private fun setupView(entryPoint: PromoPageEntryPoint, totalAmount: Double) {
-        binding?.run {
+        binding.recyclerView.layoutManager = LinearLayoutManager(context ?: return)
+        binding.recyclerView.adapter = recyclerViewAdapter
+        binding.run {
             cardViewTotalPrice.visible()
 
-            tpgTotalPrice.isVisible = entryPoint == PromoPageEntryPoint.SHIPMENT_PAGE || entryPoint == PromoPageEntryPoint.ONE_CLICK_CHECKOUT_PAGE
-            tpgTotalPriceLabel.isVisible = entryPoint == PromoPageEntryPoint.CART_PAGE || entryPoint == PromoPageEntryPoint.ONE_CLICK_CHECKOUT_PAGE
-            buttonBuy.isVisible = entryPoint == PromoPageEntryPoint.CART_PAGE || entryPoint == PromoPageEntryPoint.ONE_CLICK_CHECKOUT_PAGE
+            tpgTotalPrice.isVisible =
+                entryPoint == PromoPageEntryPoint.CHECKOUT_PAGE || entryPoint == PromoPageEntryPoint.ONE_CLICK_CHECKOUT_PAGE
+            tpgTotalPriceLabel.isVisible =
+                entryPoint == PromoPageEntryPoint.CART_PAGE || entryPoint == PromoPageEntryPoint.ONE_CLICK_CHECKOUT_PAGE
+            buttonBuy.isVisible =
+                entryPoint == PromoPageEntryPoint.CART_PAGE || entryPoint == PromoPageEntryPoint.ONE_CLICK_CHECKOUT_PAGE
 
-            buttonBackToShipment.isVisible = entryPoint == PromoPageEntryPoint.SHIPMENT_PAGE
+            buttonBackToShipment.isVisible = entryPoint == PromoPageEntryPoint.CHECKOUT_PAGE
         }
 
-
-        binding?.recyclerView?.apply {
-            layoutManager = LinearLayoutManager(context ?: return)
-            adapter = recyclerViewAdapter
-            addOnScrollListener(object : OnScrollListener() {
-                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                    super.onScrolled(recyclerView, dx, dy)
-                    if (dy > 0) {
-                        useWhiteHeaderColor()
-                    } else {
-                        useGradientHeaderColor()
-                    }
-                }
-            })
-        }
-        binding?.tpgTotalPrice?.text = context?.getString(
+        binding.tpgTotalPrice.text = context?.getString(
             R.string.promo_voucher_placeholder_total_price,
             totalAmount.splitByThousand()
         )
+        binding.tpgTotalPrice.visible()
         when (entryPoint) {
             PromoPageEntryPoint.CART_PAGE -> {
-                binding?.buttonBuy?.text = context?.getString(R.string.promo_voucher_buy)
+                binding.buttonBuy.text = context?.getString(R.string.promo_voucher_buy)
             }
+
             PromoPageEntryPoint.ONE_CLICK_CHECKOUT_PAGE -> {
-                binding?.buttonBuy?.text = context?.getString(R.string.promo_voucher_pay)
+                binding.buttonBuy.text = context?.getString(R.string.promo_voucher_pay)
                 val icon = ContextCompat.getDrawable(
                     context ?: return, R.drawable.promo_usage_ic_protection_check
                 )
-                binding?.buttonBuy?.setDrawable(icon)
+                binding.buttonBuy.setDrawable(icon)
             }
-            PromoPageEntryPoint.SHIPMENT_PAGE-> {
-                binding?.buttonBackToShipment?.text = context?.getString(R.string.promo_voucher_back_to_shipment)
+
+            PromoPageEntryPoint.CHECKOUT_PAGE -> {
+                binding.buttonBackToShipment.text =
+                    context?.getString(R.string.promo_voucher_back_to_shipment)
             }
         }
-        binding?.buttonBuy?.setOnClickListener {
+        binding.buttonBuy.setOnClickListener {
             viewModel.onClickBuyButton(entryPoint)
             dismiss()
         }
-        binding?.buttonBackToShipment?.setOnClickListener {
+        binding.buttonBackToShipment.setOnClickListener {
             viewModel.onClickBackToCheckoutButton()
             dismiss()
         }
         observeKeyboardVisibility()
     }
 
+    private fun addHeaderScrollListener() {
+        binding.recyclerView.clearOnScrollListeners()
+        binding.recyclerView.addOnScrollListener(object : OnScrollListener() {
+            var scrollY = 0f
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                scrollY += dy.toFloat()
+                scrollY = max(scrollY, 0f)
+
+                if (scrollY > 0) {
+                    useWhiteHeaderColor()
+                } else {
+                    useGradientHeaderColor()
+                }
+            }
+        })
+    }
+
     private fun useWhiteHeaderColor() {
-        binding?.run {
+        binding.run {
             layoutBottomSheetHeader.background = ContextCompat.getDrawable(
                 layoutBottomSheetHeader.context ?: return,
                 R.drawable.promo_usage_bg_bottomsheet_header_scrolled
@@ -278,7 +292,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
     }
 
     private fun useGradientHeaderColor() {
-        binding?.run {
+        binding.run {
             layoutBottomSheetHeader.background = ContextCompat.getDrawable(
                 layoutBottomSheetHeader.context ?: return,
                 R.drawable.promo_usage_bg_bottomsheet_header
@@ -310,19 +324,33 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
 
     private fun scrollToVoucherCodeTextField(keyboardHeight: Int) {
         val itemCount = recyclerViewAdapter.itemCount
-        binding?.recyclerView?.smoothScrollToPosition(itemCount)
+        binding.recyclerView.smoothScrollToPosition(itemCount)
 
         // Add padding to make voucher code text field displayed above keyboard
-        binding?.recyclerView?.setPadding(0, 0, 0, keyboardHeight.toDp())
+        binding.recyclerView.setPadding(0, 0, 0, keyboardHeight.toDp())
     }
 
     private fun resetFocusFromVoucherCodeTextField() {
-        binding?.recyclerView?.setPadding(0, 0, 0, 0)
+        binding.recyclerView.setPadding(0, 0, 0, 0)
     }
 
     private fun setupObservers() {
+        observePromoRecommendation()
         observePromoPageState()
-        observeTncUpdate()
+        observeCtaAction()
+        observeTncAction()
+    }
+
+    private fun observePromoRecommendation() {
+        viewModel.promoRecommendation.observe(viewLifecycleOwner) { item ->
+            val hasRecommendedItems = item != null && item.promos.isNotEmpty()
+            if (hasRecommendedItems) {
+                addHeaderScrollListener()
+                useGradientHeaderColor()
+            } else {
+                useWhiteHeaderColor()
+            }
+        }
     }
 
     private fun observePromoPageState() {
@@ -330,9 +358,10 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
             when (state) {
 
                 is PromoPageState.Success -> {
+                    updateTickerInfo(state.tickerInfo)
+                    updateRecyclerView(state.items)
+                    updateSavingInfo(state.savingInfo)
                     showContent()
-                    renderSavingInfo(state.savingInfo)
-                    recyclerViewAdapter.submit(state.items)
                 }
 
                 is PromoPageState.Error -> {
@@ -346,8 +375,30 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
         }
     }
 
+    private fun updateTickerInfo(tickerInfo: PromoPageTickerInfo) {
+        val hasTickerInfo = tickerInfo.message.isNotBlank() && tickerInfo.iconUrl.isNotBlank()
+            //&& tickerInfo.backgroundUrl.isNotBlank()
+        if (hasTickerInfo) {
+            // TODO: Handle tickerInfo.backgroundUrl
+            binding.iconTickerInfo.loadImage(tickerInfo.iconUrl)
+            binding.tpgTickerInfoMessage.text = tickerInfo.message
+            binding.layoutTickerInfo.isVisible = true
+        } else {
+            val layoutParams =
+                binding.layoutBottomSheetHeader.layoutParams as? RelativeLayout.LayoutParams
+            layoutParams?.setMargins(0, 0, 0, 0)
+            binding.layoutBottomSheetHeader.layoutParams = layoutParams
+            binding.layoutBottomSheetHeader.requestLayout()
+            binding.layoutTickerInfo.isVisible = false
+        }
+    }
+
+    private fun updateRecyclerView(items: List<DelegateAdapterItem>) {
+        recyclerViewAdapter.submit(items)
+    }
+
     private fun showContent() {
-        binding?.run {
+        binding.run {
             shimmer.root.gone()
             layoutBottomSheetHeader.visible()
             recyclerView.visible()
@@ -356,18 +407,18 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
     }
 
     private fun hideContent() {
-        binding?.run {
+        binding.run {
             shimmer.root.gone()
-            layoutBottomSheetOverlay.gone()
+            layoutTickerInfo.gone()
             layoutBottomSheetHeader.gone()
             recyclerView.gone()
             layoutSavingInfo.gone()
-            binding?.cardViewTotalPrice?.gone()
+            binding.cardViewTotalPrice.gone()
         }
     }
 
-    private fun renderSavingInfo(promoSavingInfo: PromoSavingInfo) {
-        binding?.run {
+    private fun updateSavingInfo(promoSavingInfo: PromoSavingInfo) {
+        binding.run {
             val formattedTotalVoucherAmount =
                 promoSavingInfo.totalSelectedPromoBenefitAmount.splitByThousand()
             val text = if (promoSavingInfo.selectedPromoCount > 1) {
@@ -387,7 +438,16 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
         }
     }
 
-    private fun observeTncUpdate() {
+    private fun observeCtaAction() {
+        viewModel.promoCtaAction.observe(viewLifecycleOwner) { item ->
+            val ctaAppLink = item.appLink
+            if (ctaAppLink.isNotBlank()) {
+                goToRegisterGoPayLaterCicilRegistration(ctaAppLink)
+            }
+        }
+    }
+
+    private fun observeTncAction() {
         viewModel.promoTncAction.observe(viewLifecycleOwner) { item ->
             showPromoTncBottomSheet(item)
         }
@@ -406,17 +466,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
         }
 
     private val onClickPromoItem = { clickedItem: PromoItem ->
-        val isRegisterGoPayLaterCicil =
-            clickedItem.couponType.contains(PromoItem.COUPON_TYPE_GOPAY_LATER_CICIL)
-                && clickedItem.cta.type == PromoCta.TYPE_REGISTER_GOPAY_LATER_CICIL
-        if (isRegisterGoPayLaterCicil) {
-            val appLink = clickedItem.cta.appLink
-            if (appLink.isNotBlank()) {
-                goToRegisterGoPayLaterCicilRegistration(appLink)
-            }
-        } else {
-            viewModel.onClickPromo(clickedItem)
-        }
+        viewModel.onClickPromo(clickedItem)
     }
 
     private val onClickPromoAccordionHeader: (PromoAccordionHeaderItem) -> Unit =
@@ -436,16 +486,16 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
 
     private fun showLottieConfettiAnimation(item: PromoRecommendationItem) {
         LottieCompositionFactory.fromUrl(context, item.animationUrl).addListener { result ->
-            binding?.lottieAnimationView?.visible()
-            binding?.lottieAnimationView?.setComposition(result)
-            binding?.lottieAnimationView?.playAnimation()
-            binding?.lottieAnimationView?.addAnimatorListener(object : Animator.AnimatorListener {
+            binding.lottieAnimationView.visible()
+            binding.lottieAnimationView.setComposition(result)
+            binding.lottieAnimationView.playAnimation()
+            binding.lottieAnimationView.addAnimatorListener(object : Animator.AnimatorListener {
                 override fun onAnimationStart(animator: Animator) {
                     // no-op
                 }
 
                 override fun onAnimationEnd(animator: Animator) {
-                    binding?.lottieAnimationView?.gone()
+                    binding.lottieAnimationView.gone()
                 }
 
                 override fun onAnimationCancel(animator: Animator) {
@@ -459,145 +509,11 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
         }
     }
 
-    private val onTermAndConditionHyperlinkClick: () -> Unit = {
-
+    private val onClickTnc: () -> Unit = {
+        viewModel.onClickTnc()
     }
 
-    private val onApplyPromoInputCode: () -> Unit = {
-        viewModel.onCtaUseVoucherCodeClick()
+    private val onAttemptPromoCode: (String) -> Unit = { attemptedPromoCode ->
+        viewModel.onAttemptPromoCode(attemptedPromoCode)
     }
-
-//    private fun observeVouchers() {
-//        viewModel.vouchers.observe(viewLifecycleOwner) { result ->
-//            when (result) {
-//                is Success -> {
-//                    handleBottomSheetHeaderBackground(result.data)
-//                    showContent()
-//                    handlePromoRecommendationInfo()
-//                    handleTotalPriceSection(entryPoint)
-//                    recyclerViewAdapter.submit(result.data)
-//                }
-//                is Fail -> {
-//                    hideContent()
-//                }
-//            }
-//        }
-//    }
-//
-//    private fun observeValidatedVoucher() {
-//        viewModel.validatedVoucher.observe(viewLifecycleOwner) { result ->
-//            when (result) {
-//                is Success -> {
-//                    binding?.root?.hideKeyboard()
-//
-//                }
-//                is Fail -> {
-//                    //TODO display toaster if voucher code is not found / invalid
-//                }
-//            }
-//        }
-//    }
-//
-//
-//
-//    private fun handlePromoRecommendationInfo() {
-//        val showRecommendationInfoOverlay = true //TODO Hardcoded for testing purpose. Replace with real values
-//
-//        binding?.layoutBottomSheetOverlay?.isVisible = showRecommendationInfoOverlay
-//
-//        if (!showRecommendationInfoOverlay) {
-//
-//            val layoutParams = binding?.layoutBottomSheetHeader?.layoutParams as? RelativeLayout.LayoutParams
-//            layoutParams?.setMargins(0,0,0,0)
-//
-//            binding?.layoutBottomSheetHeader?.layoutParams = layoutParams
-//            binding?.layoutBottomSheetHeader?.requestLayout()
-//        }
-//    }
-//
-//    private fun handleTotalPriceSection(entryPoint: EntryPoint) {
-
-//
-//    }
-//
-//    private fun showTermAndConditionBottomSheet() {
-//
-//    }
-//
-//
-//
-//    private fun handleBottomSheetHeaderBackground(items: List<DelegateAdapterItem>) {
-//        val recommendationVoucherWidget = items.filterIsInstance<VoucherRecommendation>()
-//        val recommendationVouchers = recommendationVoucherWidget.getOrNull(0)?.vouchers
-//        val recommendationVoucherCount = recommendationVouchers?.size.orZero()
-//        val hasRecommendationVoucher = recommendationVoucherCount.isMoreThanZero()
-//
-//        if (hasRecommendationVoucher) {
-//            useGradientHeaderColor()
-//            addRecyclerViewScrollListener()
-//        } else {
-//            useWhiteHeaderColor()
-//        }
-//    }
-//
-//    private fun addRecyclerViewScrollListener() {
-//        binding?.recyclerView?.addOnScrollListener(object : OnScrollListener(){
-//            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-//                super.onScrolled(recyclerView, dx, dy)
-//                if (dy > 0) {
-//                    //Scroll down
-//                    useWhiteHeaderColor()
-//                } else {
-//                    //Scroll up
-//                    useGradientHeaderColor()
-//                }
-//            }
-//        })
-//    }
-//
-//    private fun refreshTotalSavings(selectedVouchers: Set<Voucher>, totalBenefits: Long) {
-//        val selectedVoucherCount = selectedVouchers.size
-//        binding?.run {
-//            cardViewTotalPrice.visible()
-//            tpgTotalPrice.isVisible =
-//                entryPoint == PromoPageEntryPoint.CART_PAGE || entryPoint == PromoPageEntryPoint.ONE_CLICK_CHECKOUT_PAGE
-//            tpgTotalPriceLabel.isVisible =
-//                entryPoint == PromoPageEntryPoint.CART_PAGE || entryPoint == PromoPageEntryPoint.ONE_CLICK_CHECKOUT_PAGE
-//            buttonBuy.isVisible =
-//                entryPoint == PromoPageEntryPoint.CART_PAGE || entryPoint == PromoPageEntryPoint.ONE_CLICK_CHECKOUT_PAGE
-//            buttonBackToShipment.isVisible = entryPoint == PromoPageEntryPoint.SHIPMENT_PAGE
-//        }
-//        when (entryPoint) {
-//
-
-//
-//    private fun refreshTotalPrice(originalTotalPrice: Long, totalBenefits: Long) {
-//        val totalPrice = originalTotalPrice - totalBenefits
-//        binding?.tpgTotalPrice?.text = context?.getString(
-//            R.string.promo_voucher_placeholder_total_price,
-//            totalPrice.splitByThousand()
-//        )
-//    }
-//
-
-//
-//<<<<<<< HEAD
-//
-//    private val onHyperlinkClick = { appLink : String ->
-//        //TODO Route to gopay later cicil page
-//    }
-//
-
-//
-//
-
-//
-//    private val onTermAndConditionHyperlinkClick = {
-//        viewModel.onClickTnc()
-//    }
-//
-//
-//    private val onVoucherCodeClearIconClick = { viewModel.onVoucherCodeClearIconClick() }
-//        private val onTermAndConditionHyperlinkClick = { showTermAndConditionBottomSheet() }
-//
 }

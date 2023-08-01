@@ -11,7 +11,9 @@ import com.tokopedia.promousage.util.composite.DelegateAdapter
 
 class PromoAccordionItemDelegateAdapter(
     private val onClickPromo: (PromoItem) -> Unit
-) : DelegateAdapter<PromoItem, PromoAccordionItemDelegateAdapter.ViewHolder>(PromoItem::class.java) {
+) : DelegateAdapter<PromoItem, PromoAccordionItemDelegateAdapter.ViewHolder>(
+    PromoItem::class.java
+) {
 
     override fun createViewHolder(parent: ViewGroup): RecyclerView.ViewHolder {
         val binding = PromoUsageItemVoucherBinding
@@ -28,14 +30,18 @@ class PromoAccordionItemDelegateAdapter(
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: PromoItem) {
-            if (item.isExpanded) {
-                binding.voucherView.bind(item)
-            }
             binding.root.setOnClickListener {
-                if (item.state is PromoItemState.Normal || item.state is PromoItemState.Selected) {
-                    onClickPromo(item)
+                when (item.state) {
+                    is PromoItemState.Normal, is PromoItemState.Selected -> {
+                        onClickPromo(item)
+                    }
+
+                    else -> {
+                        // no-op
+                    }
                 }
             }
+            binding.voucherView.bind(item)
             binding.voucherView.isVisible = item.isExpanded && item.isVisible
         }
     }

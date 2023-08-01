@@ -10,8 +10,6 @@
         android:id="@+id/cardView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="8dp"
         app:cardElevation="4dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -204,7 +202,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/cardView"
-        android:layout_marginStart="4dp"
         android:background="@drawable/promo_usage_shape_voucher_ineligible"
         android:textColor="@color/Unify_YN600"
         android:visibility="gone"
@@ -217,7 +214,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/cardView"
-        android:layout_marginStart="4dp"
         android:visibility="gone"
         tools:visibility="visible">
 

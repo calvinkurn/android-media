@@ -13,7 +13,7 @@
 
     <!--Voucher Recommendation Info-->
     <LinearLayout
-        android:id="@+id/layoutBottomSheetOverlay"
+        android:id="@+id/layoutTickerInfo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/promo_usage_bg_bottomsheet_header_overlay"
@@ -21,21 +21,20 @@
         android:visibility="gone"
         tools:visibility="visible">
 
-        <com.tokopedia.iconunify.IconUnify
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/iconTickerInfo"
             android:layout_width="20dp"
-            android:layout_height="20dp"
-            app:icon_color_light_enable="@color/promo_dms_white"
-            app:icon_color_night_enable="@color/promo_dms_white"
-            app:icon_name="COURIER_FAST" />
+            android:layout_height="20dp" />
 
         <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tpgTickerInfoMessage"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginStart="4dp"
-            android:text="@string/promo_voucher_promo_overlay_text"
             android:textColor="@color/promo_dms_white"
-            app:typographyType="paragraph_3" />
+            app:typographyType="paragraph_3"
+            tools:text="Kini Bebas Ongkir hanya bisa dipilih di Pengiriman." />
 
     </LinearLayout>
 
@@ -45,7 +44,7 @@
         android:id="@+id/layoutBottomSheetHeader"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/layoutBottomSheetOverlay"
+        android:layout_below="@id/layoutTickerInfo"
         android:layout_marginTop="-16dp"
         android:orientation="horizontal"
         android:visibility="gone"
@@ -172,7 +171,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:typographyType="display_2"
                 app:typographyWeight="bold"
-                tools:text="Rp 78.000" />
+                tools:text="Rp78.000" />
 
             <com.tokopedia.unifycomponents.UnifyButton
                 android:id="@+id/buttonBuy"

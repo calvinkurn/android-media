@@ -37,20 +37,20 @@ class PromoRecommendationDelegateAdapter(
         viewHolder.bind(item)
     }
 
-    inner class ViewHolder(private val binding: PromoUsageItemVoucherRecommendationBinding) :
-        RecyclerView.ViewHolder(binding.root) {
+    inner class ViewHolder(
+        private val binding: PromoUsageItemVoucherRecommendationBinding
+    ) : RecyclerView.ViewHolder(binding.root) {
 
         init {
             binding.recyclerView.applyPaddingToLastItem(PADDING_BOTTOM_DP)
-
         }
 
         fun bind(item: PromoRecommendationItem) {
             binding.btnRecommendationUseVoucher.setOnClickListener {
                 onButtonUseRecommendedVoucherClick(item)
             }
-            val voucherAdapter = VoucherAdapter(onVoucherClick)
 
+            val voucherAdapter = VoucherAdapter(onVoucherClick)
             binding.tpgRecommendationTitle.text = item.title
             binding.recyclerView.apply {
                 layoutManager = LinearLayoutManager(binding.recyclerView.context)
@@ -59,11 +59,11 @@ class PromoRecommendationDelegateAdapter(
 
             voucherAdapter.submit(item.promos)
         }
-
     }
 
-    inner class VoucherAdapter(private val onVoucherClick: (PromoItem) -> Unit) :
-        RecyclerView.Adapter<VoucherAdapter.ViewHolder>() {
+    inner class VoucherAdapter(
+        private val onVoucherClick: (PromoItem) -> Unit
+    ) : RecyclerView.Adapter<VoucherAdapter.ViewHolder>() {
 
         private val differCallback = object : DiffUtil.ItemCallback<PromoItem>() {
             override fun areItemsTheSame(
@@ -84,11 +84,8 @@ class PromoRecommendationDelegateAdapter(
         private val differ = AsyncListDiffer(this, differCallback)
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-            val binding = PromoUsageItemVoucherBinding.inflate(
-                LayoutInflater.from(parent.context),
-                parent,
-                false
-            )
+            val binding = PromoUsageItemVoucherBinding
+                .inflate(LayoutInflater.from(parent.context), parent, false)
             return ViewHolder(binding)
         }
 
@@ -100,8 +97,9 @@ class PromoRecommendationDelegateAdapter(
             holder.bind(differ.currentList[position])
         }
 
-        inner class ViewHolder(private val binding: PromoUsageItemVoucherBinding) :
-            RecyclerView.ViewHolder(binding.root) {
+        inner class ViewHolder(
+            private val binding: PromoUsageItemVoucherBinding
+        ) : RecyclerView.ViewHolder(binding.root) {
 
             fun bind(item: PromoItem) {
                 binding.voucherView.bind(item)

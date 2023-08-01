@@ -1,5 +1,6 @@
 package com.tokopedia.promousage.view.custom
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.drawable.Drawable
@@ -44,7 +45,6 @@ class VoucherView @JvmOverloads constructor(
     }
 
     private var binding: PromoUsageVoucherViewBinding? = null
-    private var onHyperlinkTextClick : (String) -> Unit = {}
 
     init {
         binding = PromoUsageVoucherViewBinding.inflate(LayoutInflater.from(context), this, true)
@@ -347,6 +347,7 @@ class VoucherView @JvmOverloads constructor(
         }
     }
 
+    @SuppressLint("RestrictedApi")
     private fun createVoucherShape(cardViewHeightPx: Int, isVoucherSelected: Boolean): Drawable {
         val cardCornerRadius = 8.toPx().toFloat()
         val notchRadius = 18
@@ -401,10 +402,6 @@ class VoucherView @JvmOverloads constructor(
         }
 
         return materialShapeDrawable
-    }
-
-    fun setOnHyperlinkTextClick(onHyperlinkTextClick : (String) -> Unit) {
-        this.onHyperlinkTextClick = onHyperlinkTextClick
     }
 
     private fun updateVoucherTypeMarginTop(marginTop: Int) {

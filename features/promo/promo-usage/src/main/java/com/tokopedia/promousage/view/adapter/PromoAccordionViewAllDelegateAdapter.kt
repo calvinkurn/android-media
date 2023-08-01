@@ -14,6 +14,7 @@ class PromoAccordionViewAllDelegateAdapter(
 ) : DelegateAdapter<PromoAccordionViewAllItem, PromoAccordionViewAllDelegateAdapter.ViewHolder>(
     PromoAccordionViewAllItem::class.java
 ) {
+
     override fun createViewHolder(parent: ViewGroup): RecyclerView.ViewHolder {
         val binding = PromoUsageItemVoucherViewAllBinding
             .inflate(LayoutInflater.from(parent.context), parent, false)
@@ -29,13 +30,13 @@ class PromoAccordionViewAllDelegateAdapter(
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: PromoAccordionViewAllItem) {
-            binding.root.setOnClickListener { onViewAllVoucherClick(item) }
             binding.tpgViewAll.text = binding.tpgViewAll.context.getString(
                 R.string.promo_voucher_placeholder_view_all_voucher,
-                item.visiblePromoCount
+                item.hiddenPromoCount
             )
             binding.tpgViewAll.isVisible = item.isExpanded && item.isVisible
             binding.iconChevron.isVisible = item.isExpanded && item.isVisible
+            binding.root.setOnClickListener { onViewAllVoucherClick(item) }
         }
     }
 }

@@ -9,7 +9,7 @@ import com.tokopedia.promousage.domain.entity.list.PromoAccordionHeaderItem
 import com.tokopedia.promousage.util.composite.DelegateAdapter
 
 class PromoAccordionHeaderDelegateAdapter(
-    private val onVoucherAccordionClick: (PromoAccordionHeaderItem) -> Unit
+    private val onVoucherAccordionHeaderClick: (PromoAccordionHeaderItem) -> Unit
 ) : DelegateAdapter<PromoAccordionHeaderItem, PromoAccordionHeaderDelegateAdapter.ViewHolder>(
     PromoAccordionHeaderItem::class.java
 ) {
@@ -30,14 +30,14 @@ class PromoAccordionHeaderDelegateAdapter(
 
         fun bind(item: PromoAccordionHeaderItem) {
             with(binding) {
-                tpgSectionTitle.text = item.title
-                val iconDrawable = if (item.isExpanded) {
+                tpgHeaderTitle.text = item.title
+                val chevronIcon = if (item.isExpanded) {
                     IconUnify.CHEVRON_UP
                 } else {
                     IconUnify.CHEVRON_DOWN
                 }
-                binding.iconChevron.setImage(iconDrawable)
-                binding.root.setOnClickListener { onVoucherAccordionClick(item) }
+                binding.iconChevron.setImage(chevronIcon)
+                binding.root.setOnClickListener { onVoucherAccordionHeaderClick(item) }
             }
         }
     }

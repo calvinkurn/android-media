@@ -7,5 +7,5 @@ import kotlinx.parcelize.Parcelize
 enum class PromoPageEntryPoint : Parcelable {
     CART_PAGE,
     ONE_CLICK_CHECKOUT_PAGE,
-    SHIPMENT_PAGE
+    CHECKOUT_PAGE
 }
