@@ -190,6 +190,7 @@ object DealsAnalyticsConstants {
     const val SCREEN_NAME_DEALS_CHECKOUT = "/digital/deals/checkout"
     const val ITEMS = "items"
     const val ITEM_LIST = "item_list"
+    const val ITEM_LIST_NAME = "item_list_name"
     const val ITEM_ID = "item_id"
     const val CATEGORY_ID = "category_id"
     const val QUANTITY = "quantity"
