@@ -28,6 +28,7 @@ import com.tokopedia.buy_more_get_more.sort.activity.ShopProductSortActivity
 import com.tokopedia.buy_more_get_more.sort.listener.ProductSortListener
 import com.tokopedia.campaign.delegates.HasPaginatedList
 import com.tokopedia.campaign.delegates.HasPaginatedListImpl
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import javax.inject.Inject
@@ -51,6 +52,12 @@ class OfferLandingPageFragment :
     private var binding by autoClearedNullable<FragmentOfferLandingPageBinding>()
     private val olpAdapter: OlpAdapter?
         get() = adapter as? OlpAdapter
+
+    private val localCacheModel by lazy {
+        context?.let {
+            ChooseAddressUtils.getLocalizingAddressData(it)
+        }
+    }
 
     private val olpAdapterTypeFactory by lazy {
         OlpAdapterTypeFactoryImpl(this)
@@ -93,7 +100,7 @@ class OfferLandingPageFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupObservables()
-        viewModel.getOfferingIndo(listOf(0), shopId)
+        viewModel.getOfferingIndo(listOf(0), shopId, localCacheModel)
     }
 
     private fun setupObservables() {
