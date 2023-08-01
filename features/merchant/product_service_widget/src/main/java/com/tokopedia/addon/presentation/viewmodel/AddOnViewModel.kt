@@ -10,6 +10,7 @@ import com.tokopedia.addon.presentation.uimodel.AddOnGroupUIModel
 import com.tokopedia.addon.presentation.uimodel.AddOnMapper
 import com.tokopedia.addon.presentation.uimodel.AddOnPageResult
 import com.tokopedia.addon.presentation.uimodel.AddOnParam
+import com.tokopedia.addon.presentation.uimodel.AddOnUIModel
 import com.tokopedia.gifting.domain.usecase.GetAddOnUseCase
 import com.tokopedia.gifting.presentation.uimodel.AddOnType
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -80,6 +81,8 @@ class AddOnViewModel @Inject constructor(
     var preselectedAddonIds: List<String> = emptyList()
     var lastSelectedAddOn: List<AddOnGroupUIModel> = emptyList()
     var isSimplified = false
+
+    var tempAddon: MutableList<AddOnUIModel> = mutableListOf(AddOnUIModel(), AddOnUIModel())
 
     private fun generateEmptyAggregatedData(): AddOnPageResult.AggregatedData {
         return AddOnPageResult.AggregatedData(
@@ -158,7 +161,7 @@ class AddOnViewModel @Inject constructor(
             mAggregatedData.value = AddOnPageResult.AggregatedData(
                 title = result.aggregatedData.title,
                 price = result.aggregatedData.price,
-                selectedAddons = AddOnMapper.getPPSelectedAddons(modifiedAddOnGroups.value),
+                selectedAddons = tempAddon.filter { it.id.isNotEmpty() },
                 isGetDataSuccess = result.error.messages.isEmpty(),
                 getDataErrorMessage = result.error.messages
             )

@@ -43,6 +43,7 @@ import com.tokopedia.cart.view.uimodel.DisabledReasonHolderData
 import com.tokopedia.cart.view.uimodel.PromoSummaryData
 import com.tokopedia.cart.view.uimodel.PromoSummaryDetailData
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.purchase_platform.common.constant.AddOnConstant
 import com.tokopedia.purchase_platform.common.constant.CartConstant
 import com.tokopedia.purchase_platform.common.constant.CartConstant.QTY_ADDON_REPLACE
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.response.EpharmacyConsultationInfoResponse
@@ -788,19 +789,30 @@ object CartUiModelMapper {
         return mapSummary
     }
 
-    fun mapSummariesAddOns(summariesItemList: List<ShoppingSummary.SummaryAddOn>, availableGroupGroups: List<AvailableGroup>): List<SummaryTransactionUiModel.SummaryAddOns> {
+    private fun mapSummariesAddOns(summariesItemList: List<ShoppingSummary.SummaryAddOn>, availableGroupGroups: List<AvailableGroup>): List<SummaryTransactionUiModel.SummaryAddOns> {
         val countMapSummaries = hashMapOf<Int, Pair<Double, Int>>()
         val summaryAddOnList = ArrayList<SummaryTransactionUiModel.SummaryAddOns>()
-        var qtyAddOn = 0
+        var qtyAddOn: Int
         var totalPriceAddOn: Double
         shopLoop@ for (groupShop in availableGroupGroups) {
             groupShopCart@ for (groupShopCart in groupShop.groupShopCartData) {
                 cartDetailLoop@ for (cartDetail in groupShopCart.cartDetails) {
                     productLoop@ for (product in cartDetail.products) {
                         addOnLoop@ for (addon in product.addOn.addOnData) {
-                            qtyAddOn += product.productQuantity
-                            totalPriceAddOn = qtyAddOn * addon.price
-                            countMapSummaries[addon.type] = totalPriceAddOn to qtyAddOn
+                            if (addon.status == AddOnConstant.ADD_ON_PRODUCT_STATUS_CHECK) {
+                                qtyAddOn = if (countMapSummaries.containsKey(addon.type)) {
+                                    countMapSummaries[addon.type]?.second?.plus(product.productQuantity) ?: product.productQuantity
+                                } else {
+                                    product.productQuantity
+                                }
+                                val addOnPrice = product.productQuantity * addon.price
+                                totalPriceAddOn = if (countMapSummaries.containsKey(addon.type)) {
+                                    countMapSummaries[addon.type]?.first?.plus(addOnPrice) ?: addOnPrice
+                                } else {
+                                    addOnPrice
+                                }
+                                countMapSummaries[addon.type] = totalPriceAddOn to qtyAddOn
+                            }
                         }
                     }
                 }
@@ -856,5 +868,45 @@ object CartUiModelMapper {
                 ?: "0"
             enablerLabel = if (shop.enabler.showLabel) shop.enabler.labelName else ""
         }
+    }
+
+    fun mapSummariesAddOnsFromSelectedItems(summariesItemList: List<ShoppingSummary.SummaryAddOn>, selectedCartItemData: List<CartItemHolderData>): List<SummaryTransactionUiModel.SummaryAddOns> {
+        val countMapSummaries = hashMapOf<Int, Pair<Double, Int>>()
+        val summaryAddOnList = ArrayList<SummaryTransactionUiModel.SummaryAddOns>()
+        var qtyAddOn: Int
+        var totalPriceAddOn: Double
+        for (cartItemData in selectedCartItemData) {
+            for (addOn in cartItemData.addOnsProduct.listData) {
+                if (addOn.status == AddOnConstant.ADD_ON_PRODUCT_STATUS_CHECK) {
+                    qtyAddOn = if (countMapSummaries.containsKey(addOn.type)) {
+                        countMapSummaries[addOn.type]?.second?.plus(cartItemData.quantity) ?: cartItemData.quantity
+                    } else {
+                        cartItemData.quantity
+                    }
+                    val addOnPrice = cartItemData.quantity * addOn.price
+                    totalPriceAddOn = if (countMapSummaries.containsKey(addOn.type)) {
+                        countMapSummaries[addOn.type]?.first?.plus(addOnPrice) ?: addOnPrice
+                    } else {
+                        addOnPrice
+                    }
+                    countMapSummaries[addOn.type] = totalPriceAddOn to qtyAddOn
+                }
+            }
+        }
+
+        val mapSummary = getShoppingSummaryAddOns(summariesItemList)
+        for (entry in countMapSummaries) {
+            val addOnWording = mapSummary[entry.key]?.replace(QTY_ADDON_REPLACE, entry.value.second.toString())
+            val addOnPrice = CurrencyFormatUtil.convertPriceValueToIdrFormat(entry.value.first, false).removeDecimalSuffix()
+            val summaryAddOn = SummaryTransactionUiModel.SummaryAddOns(
+                wording = addOnWording ?: "",
+                type = entry.key,
+                qty = entry.value.second,
+                priceLabel = addOnPrice,
+                priceValue = entry.value.first
+            )
+            summaryAddOnList.add(summaryAddOn)
+        }
+        return summaryAddOnList
     }
 }
