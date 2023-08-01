@@ -28,7 +28,6 @@ import javax.inject.Inject
 import android.view.inputmethod.EditorInfo
 import androidx.fragment.app.viewModels
 import com.tokopedia.content.common.util.hideKeyboard
-import kotlinx.coroutines.flow.distinctUntilChangedBy
 
 
 /**
