@@ -9,8 +9,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import com.tokopedia.editor.databinding.ActivityMainEditorBinding
 import com.tokopedia.editor.di.ModuleInjector
+import com.tokopedia.editor.R
 import com.tokopedia.editor.ui.EditorFragmentProvider
 import com.tokopedia.editor.ui.EditorFragmentProviderImpl
 import com.tokopedia.editor.ui.main.component.NavigationToolUiComponent
@@ -76,15 +76,12 @@ open class MainEditorActivity : AppCompatActivity(), NavToolbarComponent.Listene
 
     private val viewModel: MainEditorViewModel by viewModels { viewModelFactory }
 
-    private lateinit var binding: ActivityMainEditorBinding
-
     override fun onCreate(savedInstanceState: Bundle?) {
         initInjector()
         supportFragmentManager.fragmentFactory = fragmentFactory
-        super.onCreate(savedInstanceState)
 
-        binding = ActivityMainEditorBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main_editor)
 
         setDataParam()
         initObserver()

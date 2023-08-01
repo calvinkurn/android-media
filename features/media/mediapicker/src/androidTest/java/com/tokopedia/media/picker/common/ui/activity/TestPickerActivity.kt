@@ -13,7 +13,7 @@ class TestPickerActivity : PickerActivity() {
 
     override fun createFragmentFactory(): PickerFragmentFactory {
         return TestPickerFragmentFactory(
-            fragmentManager = supportFragmentManager,
+            mFragmentManager = supportFragmentManager,
             classLoader = applicationContext.classLoader
         )
     }
