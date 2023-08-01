@@ -14,11 +14,11 @@ import com.tokopedia.logisticaddaddress.domain.mapper.DistrictBoundaryMapper
 import com.tokopedia.logisticaddaddress.domain.mapper.GetDistrictMapper
 import com.tokopedia.logisticaddaddress.domain.model.mapsgeocode.MapsGeocodeParam
 import com.tokopedia.logisticaddaddress.domain.usecase.MapsGeocodeUseCase
-import com.tokopedia.logisticaddaddress.features.pinpoint.pinpointnew.PinpointNewPageFragment.Companion.LOCATION_NOT_FOUND_MESSAGE
-import com.tokopedia.logisticaddaddress.features.pinpoint.pinpointnew.uimodel.MapsGeocodeState
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.uimodel.DistrictBoundaryResponseUiModel
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.uimodel.DistrictCenterUiModel
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.uimodel.GetDistrictDataUiModel
+import com.tokopedia.logisticaddaddress.features.pinpoint.pinpointnew.PinpointNewPageFragment.Companion.LOCATION_NOT_FOUND_MESSAGE
+import com.tokopedia.logisticaddaddress.features.pinpoint.pinpointnew.uimodel.MapsGeocodeState
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success

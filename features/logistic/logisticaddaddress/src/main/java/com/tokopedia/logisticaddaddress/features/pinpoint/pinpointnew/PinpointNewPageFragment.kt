@@ -57,6 +57,12 @@ import com.tokopedia.logisticCommon.data.constant.LogisticConstant.EXTRA_ADDRESS
 import com.tokopedia.logisticCommon.data.constant.PinpointSource
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.data.entity.response.Data
+import com.tokopedia.logisticCommon.uimodel.AddressUiState
+import com.tokopedia.logisticCommon.uimodel.isAdd
+import com.tokopedia.logisticCommon.uimodel.isEdit
+import com.tokopedia.logisticCommon.uimodel.isEditOrPinpointOnly
+import com.tokopedia.logisticCommon.uimodel.isPinpointOnly
+import com.tokopedia.logisticCommon.uimodel.toAddressUiState
 import com.tokopedia.logisticCommon.util.MapsAvailabilityHelper
 import com.tokopedia.logisticCommon.util.getLatLng
 import com.tokopedia.logisticCommon.util.rxPinPoint
@@ -79,18 +85,11 @@ import com.tokopedia.logisticaddaddress.databinding.BottomsheetLocationUnmatched
 import com.tokopedia.logisticaddaddress.databinding.FragmentPinpointNewBinding
 import com.tokopedia.logisticaddaddress.di.addnewaddressrevamp.AddNewAddressRevampComponent
 import com.tokopedia.logisticaddaddress.domain.mapper.SaveAddressMapper
-import com.tokopedia.logisticaddaddress.domain.usecase.GetDistrictUseCase
-import com.tokopedia.logisticCommon.uimodel.AddressUiState
-import com.tokopedia.logisticCommon.uimodel.isAdd
-import com.tokopedia.logisticCommon.uimodel.isEdit
-import com.tokopedia.logisticCommon.uimodel.isEditOrPinpointOnly
-import com.tokopedia.logisticCommon.uimodel.isPinpointOnly
-import com.tokopedia.logisticaddaddress.features.pinpoint.pinpointnew.uimodel.MapsGeocodeState
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.search.SearchPageActivity
-import com.tokopedia.logisticCommon.uimodel.toAddressUiState
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.uimodel.GetDistrictDataUiModel
 import com.tokopedia.logisticaddaddress.features.analytics.LogisticAddAddressAnalytics
 import com.tokopedia.logisticaddaddress.features.analytics.LogisticEditAddressAnalytics
+import com.tokopedia.logisticaddaddress.features.pinpoint.pinpointnew.uimodel.MapsGeocodeState
 import com.tokopedia.logisticaddaddress.features.pinpoint.webview.PinpointWebviewActivity
 import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.EXTRA_PLACE_ID
 import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.IMAGE_OUTSIDE_INDONESIA
@@ -840,7 +839,7 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
         val savedModel = SaveAddressMapper.map(data, null, viewModel.getAddress())
         viewModel.setAddress(savedModel)
         with(data.errMessage) {
-            if (this != null && this.contains(GetDistrictUseCase.LOCATION_NOT_FOUND_MESSAGE)) {
+            if (this != null && this.contains(LOCATION_NOT_FOUND_MESSAGE)) {
                 showNotFoundLocation()
             } else {
                 updateGetDistrictBottomSheet(savedModel)
