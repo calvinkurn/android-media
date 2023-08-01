@@ -247,12 +247,7 @@ class PersonaQuestionnaireFragment : BaseFragment<FragmentPersonaQuestionnaireBi
     }
 
     private fun onSuccessPersonaResult(persona: String) {
-        val isComposeEnabled = true
-        val action = if (isComposeEnabled) {
-            PersonaQuestionnaireFragmentDirections.actionQuestionnaireToResultCompose(paramPersona = persona)
-        } else {
-            PersonaQuestionnaireFragmentDirections.actionQuestionnaireToResult(paramPersona = persona)
-        }
+        val action = PersonaQuestionnaireFragmentDirections.actionQuestionnaireToResult(paramPersona = persona)
         findNavController().navigate(action)
     }
 

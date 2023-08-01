@@ -68,7 +68,6 @@ class ComposeQuestionnaireFragment : Fragment() {
                             )
                         }
                     }
-
                 }
             }
         }

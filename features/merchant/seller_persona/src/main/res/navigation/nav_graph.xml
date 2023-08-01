@@ -46,13 +46,8 @@
             app:launchSingleTop="true"
             app:popUpTo="@id/questionnaireFragment"
             app:popUpToInclusive="true" />
-        <action
-            android:id="@+id/actionQuestionnaireToResultCompose"
-            app:destination="@id/composeResultFragment"
-            app:launchSingleTop="true"
-            app:popUpTo="@id/questionnaireFragment"
-            app:popUpToInclusive="true" />
     </fragment>
+
     <fragment
         android:id="@+id/selectTypeFragment"
         android:name="com.tokopedia.sellerpersona.view.fragment.PersonaSelectTypeFragment"
@@ -94,7 +89,7 @@
         tools:layout="@layout/fragment_persona_opening">
         <action
             android:id="@+id/actionComposeOpeningToQuestionnaire"
-            app:destination="@id/questionnaireFragment" />
+            app:destination="@id/composeQuestionnaireFragment" />
     </fragment>
 
     <fragment
@@ -104,7 +99,7 @@
         tools:layout="@layout/fragment_persona_result">
         <action
             android:id="@+id/actionResultFragmentToQuestionnaireFragment"
-            app:destination="@id/questionnaireFragment" />
+            app:destination="@id/composeQuestionnaireFragment" />
         <action
             android:id="@+id/actionToSelectTypeScreen"
             app:destination="@id/composeSelectTypeFragment"
@@ -113,5 +108,24 @@
             android:name="param_persona"
             android:defaultValue=""
             app:argType="string" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/composeQuestionnaireFragment"
+        android:name="com.tokopedia.sellerpersona.view.fragment.PersonaQuestionnaireFragment"
+        android:label="@string/sp_opening_page_type"
+        tools:layout="@layout/fragment_persona_questionnaire">
+        <action
+            android:id="@+id/actionQuestionnaireToResult"
+            app:destination="@id/composeResultFragment"
+            app:launchSingleTop="true"
+            app:popUpTo="@id/composeQuestionnaireFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/actionQuestionnaireToResultCompose"
+            app:destination="@id/composeResultFragment"
+            app:launchSingleTop="true"
+            app:popUpTo="@id/composeQuestionnaireFragment"
+            app:popUpToInclusive="true" />
     </fragment>
 </navigation>
