@@ -129,7 +129,7 @@ class MiniCartProductViewHolder(
                 textQtyLeft.text = element.productQtyLeft
                 textQtyLeft.show()
                 if (element.productVariantName.isNotBlank()) {
-                    textQtyLeft.setPadding(itemView.resources.getDimensionPixelOffset(com.tokopedia.abstraction.R.dimen.dp_4), itemView.resources.getDimensionPixelOffset(com.tokopedia.abstraction.R.dimen.dp_2), 0, 0)
+                    textQtyLeft.setPadding(itemView.resources.getDimensionPixelOffset(R.dimen.dp_4), itemView.resources.getDimensionPixelOffset(com.tokopedia.abstraction.R.dimen.dp_2), 0, 0)
                 } else {
                     textQtyLeft.setPadding(0, 0, 0, 0)
                 }
@@ -795,7 +795,7 @@ class MiniCartProductViewHolder(
     private fun adjustProductPriceConstraint() {
         with(viewBinding) {
             val margin4dp = itemView.context.resources
-                .getDimension(com.tokopedia.abstraction.R.dimen.dp_4).toInt()
+                .getDimension(R.dimen.dp_4).toInt()
             val constraintSet = ConstraintSet()
             constraintSet.clone(containerProduct)
             constraintSet.connect(
