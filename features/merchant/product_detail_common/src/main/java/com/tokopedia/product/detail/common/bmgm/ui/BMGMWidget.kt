@@ -7,12 +7,16 @@ import android.util.AttributeSet
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.product.detail.common.bmgm.ui.adapter.BMGMProductAdapter
 import com.tokopedia.product.detail.common.bmgm.ui.model.BMGMUiModel
 import com.tokopedia.product.detail.common.bmgm.ui.model.BMGMUiState
+import com.tokopedia.product.detail.common.databinding.BmgmProductListBinding
 import com.tokopedia.product.detail.common.databinding.BmgmWidgetBinding
 import com.tokopedia.unifyprinciples.stringToUnifyColor
 
@@ -36,24 +40,26 @@ class BMGMWidget @JvmOverloads constructor(
 
     private val binding by lazyThreadSafetyNone {
         val view = inflate(context, com.tokopedia.product.detail.common.R.layout.bmgm_widget, this)
-        BmgmWidgetBinding.bind(view).apply {
-            // prepare UI in lazy block after inflated, cause prevent rendering before data loaded
-            prepareUI(context)
+        BmgmWidgetBinding.bind(view)
+    }
+
+    private val productListBinding by lazyThreadSafetyNone {
+        val productListStub = binding.bmgmProductListStub.inflate()
+        BmgmProductListBinding.bind(productListStub)
+    }
+
+    private val productAdapter by lazyThreadSafetyNone {
+        BMGMProductAdapter().apply {
+            productListBinding.bmgmProductList.layoutManager = GridLayoutManager(
+                context,
+                SPAN_COUNT,
+                GridLayoutManager.VERTICAL,
+                false
+            )
+            productListBinding.bmgmProductList.adapter = this
         }
     }
 
-    private val productAdapter by lazyThreadSafetyNone { BMGMProductAdapter() }
-
-    // region prepare UI
-    private fun BmgmWidgetBinding.prepareUI(context: Context) {
-        bmgmProductList.layoutManager = GridLayoutManager(
-            context,
-            SPAN_COUNT,
-            GridLayoutManager.VERTICAL,
-            false
-        )
-        bmgmProductList.adapter = productAdapter
-    }
     // endregion
 
     // region expose function
@@ -85,12 +91,21 @@ class BMGMWidget @JvmOverloads constructor(
         }
 
         setBackgroundGradient(colors = uiModel.backgroundColor)
-
-        productAdapter.submit(uiModel.products, uiModel.loadMoreText) {
-            setRouting(action = uiModel.action, router = router)
-        }
+        setProductList(uiModel = uiModel, router = router)
     }
     // endregion
+
+    private fun setProductList(uiModel: BMGMUiModel, router: BMGMRouter) {
+        if (uiModel.products.isNotEmpty()) {
+            productListBinding.root.show()
+
+            productAdapter.submit(uiModel.products, uiModel.loadMoreText) {
+                setRouting(action = uiModel.action, router = router)
+            }
+        } else if (binding.bmgmProductListStub.parent == null) { // stub has already inflated
+            productListBinding.root.gone()
+        }
+    }
 
     // region background
     private fun setBackgroundGradient(colors: String) {

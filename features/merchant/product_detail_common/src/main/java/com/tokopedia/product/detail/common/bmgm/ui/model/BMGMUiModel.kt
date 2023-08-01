@@ -16,6 +16,9 @@ data class BMGMUiModel(
     val titleColor: String = ""
 ) {
 
+    val shouldRendered
+        get() = titles.isNotEmpty()
+
     data class Product(
         val imageUrl: String = ""
     )

@@ -6,8 +6,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.product.detail.common.bmgm.ui.model.BMGMUiModel
+import com.tokopedia.product.detail.common.databinding.BmgmProductItemBinding
 import com.tokopedia.product.detail.common.databinding.BmgmProductShowMoreViewBinding
-import com.tokopedia.product.detail.common.databinding.BmgmProductViewBinding
 
 /**
  * Created by yovi.putra on 27/07/23"
@@ -16,7 +16,7 @@ import com.tokopedia.product.detail.common.databinding.BmgmProductViewBinding
 
 
 class BMGMProductViewHolder(
-    private val binding: BmgmProductViewBinding
+    private val binding: BmgmProductItemBinding
 ) : RecyclerView.ViewHolder(binding.root) {
 
     private val overlayBinding by lazyThreadSafetyNone {
@@ -36,7 +36,7 @@ class BMGMProductViewHolder(
 
         fun create(parent: ViewGroup): BMGMProductViewHolder {
             val inflater = LayoutInflater.from(parent.context)
-            val view = BmgmProductViewBinding.inflate(inflater)
+            val view = BmgmProductItemBinding.inflate(inflater)
             return BMGMProductViewHolder(view)
         }
     }

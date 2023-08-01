@@ -1247,10 +1247,10 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
     private fun updateBMGMSneakPeak(p2UiData: ProductInfoP2UiData) {
         val bmgm = p2UiData.bmgm
 
-        if (bmgm.products.isEmpty()) {
-            removeComponent(ProductDetailConstant.BMGM_SNEAK_PEAK_NAME)
-        } else {
+        if (bmgm.shouldRendered) {
             bmgmSneakPeak?.state = BMGMUiState.Loaded(uiModel = bmgm)
+        } else {
+            removeComponent(ProductDetailConstant.BMGM_SNEAK_PEAK_NAME)
         }
     }
 }
